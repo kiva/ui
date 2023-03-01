@@ -42,7 +42,7 @@ export default {
 		isPercentage: false,
 		displayedUnit: undefined,
 	},
-	getOptions: allFacets => transformGenderOptions(allFacets.genderFacets),
+	getOptions: allFacets => transformGenderOptions(allFacets?.genderFacets),
 	showSavedSearch: loanSearchState => !!loanSearchState.gender,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.gender) {

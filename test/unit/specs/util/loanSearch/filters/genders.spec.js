@@ -114,6 +114,10 @@ describe('genders.js', () => {
 	});
 
 	describe('transformGenderOptions', () => {
+		it('should handle undefined', () => {
+			expect(transformGenderOptions(undefined)).toEqual([]);
+		});
+
 		it('should handle empty', () => {
 			expect(transformGenderOptions([])).toEqual([]);
 		});

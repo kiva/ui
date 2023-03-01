@@ -33,19 +33,21 @@ export const filterUiType = {
  * @returns {Array<Object>} The transformed radio group options
  */
 export function transformRadioGroupOptions(options, order, displayMap, valueMap = {}) {
-	const capitalizedOrder = order.map(o => o.toUpperCase());
+	const capitalizedOrder = order?.map(o => o.toUpperCase());
 
-	const transformed = options.filter(o => capitalizedOrder.includes(o.name.toUpperCase())).map(o => {
+	const transformed = options?.filter(o => capitalizedOrder?.includes(o.name.toUpperCase()))?.map(o => {
 		const key = o.name.toUpperCase();
 
 		return {
 			name: o.name,
-			title: displayMap[key] ?? o,
+			title: displayMap?.[key] ?? o,
 			value: valueMap[key] ?? o.name,
 		};
-	}).sort((a, b) => capitalizedOrder.indexOf(a.name.toUpperCase()) - capitalizedOrder.indexOf(b.name.toUpperCase()));
+	}).sort((a, b) => {
+		return capitalizedOrder?.indexOf(a.name.toUpperCase()) - capitalizedOrder?.indexOf(b.name.toUpperCase());
+	});
 
-	return transformed;
+	return transformed ?? [];
 }
 
 /**
