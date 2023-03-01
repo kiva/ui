@@ -36,6 +36,7 @@
 				/>
 				<campaign-loan-wrapper
 					ref="mlLoanDisplay"
+					:promo-name="campaignPartnerName"
 					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">

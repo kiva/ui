@@ -2,11 +2,8 @@
 	<section class="loan-categories section" id="campaignLoanSection" ref="campaignLoanSection">
 		<div class="row">
 			<div class="columns">
-				<h2 class="tw-mb-4 tw-text-center">
-					Support causes you care about.
-				</h2>
-
 				<campaign-loan-filters
+					:promo-name="promoName"
 					:applied-filters="componentProps.filters"
 					:initial-filters="componentProps.initialFilters"
 					:excluded-tags="componentProps.excludedTags"
@@ -81,7 +78,11 @@ export default {
 		componentProps: {
 			type: Object,
 			default: () => {}
-		}
+		},
+		promoName: {
+			type: String,
+			default: null
+		},
 	}
 };
 </script>
