@@ -1,7 +1,22 @@
 <template>
 	<div
 		v-if="promoAmount"
-		class="__campaign-progress tw-rounded tw-bg-brand-100 tw-w-full tw-py-1 tw-px-1 tw-mb-2 tw-mt-2"
+		class="
+			tw-rounded
+			tw-bg-brand-100
+			tw-w-full
+			tw-py-1
+			tw-px-1
+			tw-mb-2
+			tw-mt-2
+			tw-flex-col
+			tw-flex
+			lg:tw-flex-row
+			tw-justify-start
+			lg:tw-justify-between
+			lg:tw-align-center
+			lg:tw-mt-4
+			"
 	>
 		<div class="tw-flex-grow">
 			<h4 v-if="creditLeft === promoAmount" class="tw-mb-1 tw-px-3">
@@ -25,7 +40,7 @@
 				/>
 			</kv-grid>
 		</div>
-		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3">
+		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
 			<kv-ui-button to="#show-basket">
 				Checkout now
 			</kv-ui-button>
@@ -71,20 +86,3 @@ export default {
 	},
 };
 </script>
-<style lang="scss" scoped>
-@import 'settings';
-.__campaign-progress {
-	flex-direction: column;
-	display: block;
-	justify-content: left;
-	width: 100%;
-
-	@include breakpoint(large) {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		flex-direction: row;
-	}
-}
-
-</style>
