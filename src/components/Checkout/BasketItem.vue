@@ -84,16 +84,16 @@
 			</div>
 		</div>
 		<div
-			v-if="leftoverCreditAllocationLoanId !== String(loan.id)"
+			v-else
 			class="
-			tw-flex-none
-			tw-w-full
-			md:tw-w-auto
-			md:tw-ml-3
-			lg:tw-ml-4.5
-			tw-mt-1.5
-			md:tw-mt-0
-			loan-res-price-wrapper"
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0
+				loan-res-price-wrapper"
 		>
 			<loan-price
 				data-testid="basket-loan-price-selector"

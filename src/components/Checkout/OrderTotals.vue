@@ -2,11 +2,11 @@
 	<div class="tw-mb-1">
 		<div
 			v-if="showPromoCreditTotal"
-			class="tw-flex tw-flex-row tw-w-full tw-mb-2"
+			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
 			data-testid="basket-order-total"
 		>
 			<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
-				Total:
+				Order Total:
 			</div>
 			<span class="tw-float-right md:tw-float-none tw-text-right tw-pl-2">
 				{{ itemTotal }}</span>
@@ -79,14 +79,28 @@
 
 		<div v-if="showPromoCreditTotal">
 			<div
-				class="tw-mb-2 tw-text-left md:tw-text-right
+				class="tw-text-h3 tw-mb-2 tw-text-left md:tw-text-right
 			tw-flex tw-justify-end tw-items-center" data-testid="basket-promo-total"
 			>
+				<span class="tw-w-full">
+					<template v-if="availablePromoTotal">
+						{{ availablePromoTotal }}
+					</template>
+					<span
+						class="tw-text-brand"
+						id="promo_name"
+						data-testid="basket-promo-name"
+						v-if="promoFundDisplayName"
+					>
+						{{ promoFundDisplayName }}
+					</span> promotion:
+				</span>
+
 				<div class="tw-flex tw-items-center">
 					<span
 						data-testid="promo-amount"
 						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
-					>{{ promoFundDisplayName }} pays {{ appliedPromoTotal }}</span>
+					>- {{ appliedPromoTotal }}</span>
 					<button
 						v-if="showRemoveActivePromoCredit"
 						@click="promoOptOutLightboxVisible = true"
@@ -108,7 +122,22 @@
 				>
 					Apply
 				</button>
+				<div v-if="hasUPCCode" class="upc-disclaimer" data-testid="basket-upc-promo-disclaimer">
+					<p class="tw-text-small">
+						Remember to use all your {{ promoFundDisplayName }} credits in one transaction.
+						You cannot use the remaining credits later.
+					</p>
+				</div>
 			</div>
+			<kv-tooltip
+				class="tooltip"
+				data-testid="promo-tool-tip"
+				controller="promo_name"
+				theme="mint"
+				v-if="promoFundDisplayDescription"
+			>
+				{{ promoFundDisplayDescription }}
+			</kv-tooltip>
 		</div>
 
 		<div class="tw-text-h3 tw-mb-1 tw-text-right" data-testid="total-due">
@@ -118,7 +147,7 @@
 						Total:
 					</template>
 					<template v-else>
-						You'll pay:
+						Total Due:
 					</template>
 				</div>
 				<div
@@ -154,6 +183,7 @@ import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import { removeCredit } from '@/util/checkoutUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
+import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
@@ -168,6 +198,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 export default {
 	name: 'OrderTotals',
 	components: {
+		KvTooltip,
 		VerifyRemovePromoCredit,
 		DonationItem,
 		KvMaterialIcon
@@ -409,4 +440,29 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.order-totals {
+	.tooltip {
+		text-align: left;
+	}
+
+	.upc-disclaimer {
+
+		@include breakpoint(medium) {
+			margin-right: 2.25rem;
+		}
+
+		p {
+			display: block;
+			color: $kiva-accent-red;
+			line-height: 1.25;
+			background: $very-light-gray;
+			padding: 0.3rem 0.3rem 0.1rem;
+			border-radius: 0.25rem;
+
+			@include breakpoint(medium) {
+				max-width: 22rem;
+			}
+		}
+	}
+}
 </style>

@@ -1321,12 +1321,11 @@ export default {
 				apollo: this.apollo,
 				loanId
 			}).then(() => {
-				console.log(`Successfully added loan with id ${loanId} to basket`);
 				this.$emit('add-to-basket', { loanId, success: true });
 				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
 			}).catch(e => {
-				console.log(`Failed to add loan with id ${loanId} to basket`);
+				logFormatter(`Failed to add loan with id ${loanId} to basket`, 'error');
 				let msg = 'There was a problem adding the loan to your basket';
 				switch (e[0].extensions.code) {
 					case 'reached_anonymous_basket_limit':
@@ -1352,7 +1351,6 @@ export default {
 				apollo: this.apollo,
 				loanId: payload.loanId,
 			}).then(() => {
-				console.log(`Successfully updated loan price to $${payload.lendAmount} for loan with id ${loanId}`);
 				this.$emit('add-to-basket', { loanId, success: true });
 				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
@@ -1361,7 +1359,10 @@ export default {
 				}
 			}).catch(e => {
 				let notAllSharesAdded = false;
-				console.log(`Failed to update loan price to $${payload.lendAmount} for loan with id ${loanId}`);
+				logFormatter(
+					`Failed to update loan price to $${payload.lendAmount} for loan with id ${loanId}`,
+					'error'
+				);
 				let msg = 'There was a problem updating a loan in your basket';
 				switch (e[0].extensions.code) {
 					case 'reached_anonymous_basket_limit':
