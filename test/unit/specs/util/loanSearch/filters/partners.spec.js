@@ -24,6 +24,12 @@ describe('partners.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = partners.getValidatedSearchState({ partnerId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ partnerId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = partners.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ partnerId: [] });

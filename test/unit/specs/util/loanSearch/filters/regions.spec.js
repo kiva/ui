@@ -39,6 +39,12 @@ describe('regions.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = regions.getValidatedSearchState({ countryIsoCode: ['US'] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ countryIsoCode: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = regions.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ countryIsoCode: [] });

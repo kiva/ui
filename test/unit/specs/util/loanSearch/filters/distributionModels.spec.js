@@ -31,6 +31,12 @@ describe('distributionModels.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = distributionModels.getValidatedSearchState({}, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ distributionModel: null });
+			});
+
+			it('should handle empty', () => {
 				const result = distributionModels.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ distributionModel: null });

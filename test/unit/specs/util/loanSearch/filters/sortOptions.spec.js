@@ -6,6 +6,12 @@ describe('sortOptions.js', () => {
 	describe('sortOptions', () => {
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = sortOptions.getValidatedSearchState({}, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ sortBy: null });
+			});
+
+			it('should handle empty', () => {
 				const result = sortOptions.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ sortBy: null });
