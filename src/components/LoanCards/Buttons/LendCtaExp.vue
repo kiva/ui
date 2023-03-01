@@ -42,19 +42,19 @@
 					>
 						{{ ctaButtonText }}
 					</kv-ui-button>
-				</div>
 
-				<!-- Lend again/lent previously button -->
-				<kv-ui-button
-					key="lendAgainButton"
-					v-if="isLentTo && !isLessThan25"
-					class="tw-inline-flex tw-flex-1"
-					data-testid="bp-lend-cta-lend-again-button"
-					type="submit"
-					v-kv-track-event="['Lending', 'Add to basket', 'Lend again', loanId, loanId]"
-				>
-					Lend again
-				</kv-ui-button>
+					<!-- Lend again/lent previously button -->
+					<kv-ui-button
+						key="lendAgainButton"
+						v-if="isLentTo && !isLessThan25"
+						class="lend-again"
+						data-testid="bp-lend-cta-lend-again-button"
+						type="submit"
+						v-kv-track-event="['Lending', 'Add to basket', 'Lend again', loanId, loanId]"
+					>
+						Lend again
+					</kv-ui-button>
+				</div>
 
 				<!-- Stranded loans -->
 				<lend-amount-button
@@ -280,9 +280,17 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .amountDropdownWrapper >>> select {
 	border-radius: 14px 0 0 14px;
+}
+
+.lend-again ::v-deep span {
+	@apply tw-px-0;
+}
+
+.lend-again ::v-deep > span {
+	@apply tw-px-1;
 }
 
 .lendButtonWrapper >>> span:first-child {
