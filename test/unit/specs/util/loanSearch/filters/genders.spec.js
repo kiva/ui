@@ -32,6 +32,12 @@ describe('genders.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = genders.getValidatedSearchState({}, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ gender: null });
+			});
+
+			it('should handle empty', () => {
 				const result = genders.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ gender: null });

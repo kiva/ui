@@ -77,7 +77,7 @@ export default {
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } })
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
-		distributionModel: allFacets.distributionModels.includes(loanSearchState?.distributionModel?.toUpperCase())
+		distributionModel: allFacets?.distributionModels?.includes(loanSearchState?.distributionModel?.toUpperCase())
 			? loanSearchState.distributionModel
 			: null
 	}),

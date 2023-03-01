@@ -171,7 +171,7 @@ export default {
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
 		countryIsoCode: loanSearchState?.countryIsoCode
-			?.filter(c => allFacets.countryIsoCodes.includes(c.toUpperCase())) ?? []
+			?.filter(c => allFacets?.countryIsoCodes?.includes(c.toUpperCase())) ?? []
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets) ?? []

@@ -26,6 +26,12 @@ describe('tags.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = tags.getValidatedSearchState({ tagId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ tagId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = tags.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ tagId: [] });

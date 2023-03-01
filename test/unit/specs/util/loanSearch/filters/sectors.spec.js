@@ -26,6 +26,12 @@ describe('sectors.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = sectors.getValidatedSearchState({ sectorId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ sectorId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = sectors.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ sectorId: [] });
