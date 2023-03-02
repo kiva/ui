@@ -3,10 +3,10 @@
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
-		<kv-default-wrapper>
-			<div class="row">
-				<the-portfolio-tertiary-menu class="show-for-large" />
-				<div class="small-12 large-9 columns">
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12">
+				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
+				<div class="tw-col-span-12 lg:tw-col-span-9">
 					<h1 class="tw-mb-4">
 						Lending stats
 					</h1>
@@ -79,8 +79,8 @@
 						you've supported and the number to go.
 					</p>
 				</div>
-			</div>
-		</kv-default-wrapper>
+			</kv-grid>
+		</kv-page-container>
 	</www-page>
 </template>
 
@@ -94,15 +94,17 @@ import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.g
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 import BadgesSection from '@/pages/LendingStats/BadgesSection';
 import StatsSection from './StatsSection';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'LendingStatsPage',
 	components: {
 		BadgesSection,
-		KvDefaultWrapper,
+		KvGrid,
+		KvPageContainer,
 		StatsSection,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,

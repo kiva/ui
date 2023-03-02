@@ -1,9 +1,0 @@
-query portfolioTertiaryMenu {
-	my {
-		userAccount {
-			id
-			publicId
-			balance
-		}
-	}
-}
