@@ -1,3 +1,10 @@
+### [2.504.1-next.2](https://github.com/kiva/ui/compare/v2.504.1-next.1...v2.504.1-next.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* remaining tracking ([54cd967](https://github.com/kiva/ui/commit/54cd967f9bf2eaa2e7b813bb0970dc9ffa27dafd))
+
 ### [2.504.1-next.1](https://github.com/kiva/ui/compare/v2.504.0...v2.504.1-next.1) (2023-03-02)
 
 
