@@ -500,6 +500,14 @@ module.exports = [
 		}
 	},
 	{
+		path: '/portfolio/overview',
+		component: () => import('@/pages/Portfolio/PortfolioOverviewPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio/lending-stats',
 		component: () => import('@/pages/LendingStats/LendingStatsPage'),
 		meta: {

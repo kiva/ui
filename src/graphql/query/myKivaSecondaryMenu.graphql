@@ -1,9 +1,0 @@
-query myKivaSecondaryMenu {
-	my {
-		isBorrower
-		trustee {
-			id
-		}
-	}
-	usingTouch @client
-}
