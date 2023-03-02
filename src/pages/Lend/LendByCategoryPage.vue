@@ -114,6 +114,8 @@ import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
 import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
 import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 
+const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
+
 export default {
 	name: 'LendByCategoryPage',
 	components: {
@@ -850,13 +852,13 @@ export default {
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
-		const { enabled } = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		const { enabled } = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP);
 		if (enabled) {
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'categories_page',
+				CATEGORIES_REDIRECT_EXP,
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
