@@ -79,11 +79,13 @@ import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
+import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
+const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
 
 export default {
 	name: 'LoanFinding',
@@ -100,12 +102,7 @@ export default {
 	data() {
 		return {
 			userInfo: {},
-			recommendedLoans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 }
-			],
+			recommendedLoans: [],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
@@ -117,9 +114,16 @@ export default {
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			return client.query({
+			const userInfoPromise = client.query({
 				query: userInfoQuery,
 			});
+
+			const recommendedLoansPromise = client.query({
+				query: flssLoansQuery,
+				variables: prefetchedRecommendedLoansVariables
+			});
+
+			return Promise.all([userInfoPromise, recommendedLoansPromise]);
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};
@@ -144,10 +148,19 @@ export default {
 		async getRecommendedLoans() {
 			const { loans } = await runLoansQuery(
 				this.apollo,
-				{ sortBy: 'personalized', pageLimit: 12 },
+				{ pageLimit: 12 },
 				FLSS_ORIGIN_LENDING_HOME
 			);
-			this.recommendedLoans = loans;
+
+			// Ensure unique loans are pushed since recommendations can change quickly
+			const remainingRecommendedLoans = loans
+				.filter(l => !this.recommendedLoans.filter(r => r.id === l.id).length)
+				.slice(0, 10);
+
+			this.recommendedLoans = [
+				...this.recommendedLoans.slice(0, 2),
+				...remainingRecommendedLoans
+			];
 		},
 		async getSecondCategoryData() {
 			this.secondCategoryLoans = await this.getMatchedLoans();
@@ -215,6 +228,20 @@ export default {
 		}
 	},
 	created() {
+		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
+		const cachedRecommendedLoans = this.apollo.readQuery({
+			query: flssLoansQuery,
+			variables: prefetchedRecommendedLoansVariables
+		})?.fundraisingLoans?.values ?? [];
+		this.recommendedLoans = [
+			...cachedRecommendedLoans,
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 }
+		];
+
 		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
 		if (loanCardExpData.enabled) {
 			const { version } = trackExperimentVersion(
