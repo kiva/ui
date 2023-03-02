@@ -1,3 +1,15 @@
+## [2.512.0](https://github.com/kiva/ui/compare/v2.511.0...v2.512.0) (2023-03-02)
+
+
+### Features
+
+* additional pages added to quick filter sections in lh ([6c64ef8](https://github.com/kiva/ui/commit/6c64ef88f977469c1dac61d44367a0021b9c240a))
+
+
+### Bug Fixes
+
+* unused method removed in quickfiltersection component ([45a2302](https://github.com/kiva/ui/commit/45a23028bd71dd78b5ad400335391f36d174d07b))
+
 ## [2.511.0](https://github.com/kiva/ui/compare/v2.510.2...v2.511.0) (2023-03-02)
 
 
