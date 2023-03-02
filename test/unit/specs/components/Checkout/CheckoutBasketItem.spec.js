@@ -1,6 +1,6 @@
-//import { getByDisplayValue, getByTestId, render } from '@testing-library/vue';
+// import { getByDisplayValue, getByTestId, render } from '@testing-library/vue';
 import BasketItem from '@/components/Checkout/BasketItem';
-//import LoanReservation from '@/components/Checkout/LoanReservation';
+// import LoanReservation from '@/components/Checkout/LoanReservation';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
 import VueRouter from 'vue-router';
 import numeralFilter from '@/plugins/numeral-filter';
@@ -8,48 +8,45 @@ import CookieStore from '@/util/cookieStore';
 import { MockKvAuth0 } from '@/util/KvAuth0';
 import { screen } from '@testing-library/dom';
 import promoLoanReservation from '../../../fixtures/PromoLoanReservation.json';
-//import JoinTeam from "../../../../../src/pages/LoginAndRegister/JoinTeam";
-//import {number} from "tailwindcss/lib/util/dataTypes";
+// import JoinTeam from "../../../../../src/pages/LoginAndRegister/JoinTeam";
+// import {number} from "tailwindcss/lib/util/dataTypes";
 
 const emptyComponent = {
 	template: '<div></div>',
 };
 
 // set up data injections
-const PromoLoanReservationData = promoLoanReservation;
-const DateUpdateData = {
-	"loan": {
-			"id": 2444883,
-			"name": "Twubakane Cb Group",
-			"use": "to buy more beans and sorghum with her loan.",
-			"status": "fundraising",
-			"matchingText": "2x Matching by Coca Cola Foundation",
-			"loanAmount": "8750.00",
-			"plannedExpirationDate": "2050-10-12T19:40:15Z",
-			"sector": {"id": 12, "name": "Food", "__typename": "Sector"},
-			"activity": {"id": 67, "name": "Food Production/Sales", "__typename": "Activity"},
-			"geocode": {
-				"country": {"name": "Rwanda", "isoCode": "RW", "__typename": "Country"},
-				"__typename": "Geocode"
-			},
-			"loanFundraisingInfo": {
-				"isExpiringSoon": false,
-				"fundedAmount": "5065.00",
-				"reservedAmount": "25.00",
-				"__typename": "LoanFundraisingInfo"
-			},
-			"image": {
-				"id": 4947325,
-				"url": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s150/aa895120425465e8437e08e69c72218b.jpg",
-				"url_2x": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s300/aa895120425465e8437e08e69c72218b.jpg",
-				"__typename": "Image"
-			},
-			"sponsor_name": "Urwego Bank",
-			"__typename": "LoanPartner"
-		}
-	};
-
-
+const PromoLoanReservationData = {
+	loan: {
+		'id': 2444883,
+		'name': 'Twubakane Cb Group',
+		'use': 'to buy more beans and sorghum with her loan.',
+		'status': 'fundraising',
+		'matchingText': '2x Matching by Coca Cola Foundation',
+		'loanAmount': '8750.00',
+		'plannedExpirationDate': '2050-10-12T19:40:15Z',
+		'sector': {'id': 12, 'name': 'Food', '__typename': 'Sector'},
+		'activity': {'id': 67, 'name': 'Food Production/Sales', '__typename': 'Activity'},
+		'geocode': {
+			'country': {'name': 'Rwanda', 'isoCode': 'RW', '__typename': 'Country'},
+			'__typename': 'Geocode'
+		},
+		'loanFundraisingInfo': {
+			'isExpiringSoon': false,
+			'fundedAmount': '5065.00',
+			'reservedAmount': '25.00',
+			'__typename': 'LoanFundraisingInfo'
+		},
+		'image': {
+			'id': 4947325,
+			'url': 'https://www-dev-kiva-org-0.freetls.fastly.net/img/s150/aa895120425465e8437e08e69c72218b.jpg',
+			'url_2x': 'https://www-dev-kiva-org-0.freetls.fastly.net/img/s300/aa895120425465e8437e08e69c72218b.jpg',
+			'__typename': 'Image'
+		},
+		'sponsor_name': 'Urwego Bank',
+		'__typename': 'LoanPartner'
+	}
+};
 
 // Test that the basket item renders the components it contains:
 // Checkout Item Img, Remove Basket Item, Loan Reservation, Team Attribution, Loan Promo Credits,
@@ -76,9 +73,9 @@ describe('BasketItem loan', () => {
 					loan: promoLoanReservation,
 					teams: [
 						{
-							__typename: "Team",
+							__typename: 'Team',
 							id: 23770,
-							name: "Donut Empire"
+							name: 'Donut Empire'
 						}
 					]
 				},
@@ -115,10 +112,10 @@ describe('BasketItem loan', () => {
 
 		const LoanPromoCredits = getByText('25.00 credit applied');
 		expect(LoanPromoCredits).toBeDefined();
-		}
-		)
 	}
 	)
+}
+);
 
 // now we test each individual component that we checked above
 // describe('LoanReservation', () => {
