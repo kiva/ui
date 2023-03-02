@@ -84,6 +84,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
+const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 
 export default {
 	name: 'LoanFinding',
@@ -246,13 +247,13 @@ export default {
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
-		const categoriesRedirectData = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		const categoriesRedirectData = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP_KEY);
 		if (categoriesRedirectData.enabled) {
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'categories_page',
+				CATEGORIES_REDIRECT_EXP_KEY,
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
