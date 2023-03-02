@@ -1,3 +1,15 @@
+## [2.510.0](https://github.com/kiva/ui/compare/v2.509.0...v2.510.0) (2023-03-02)
+
+
+### Features
+
+* portfolio overview page frame and account summary MARS-349 ([5dcda40](https://github.com/kiva/ui/commit/5dcda4077d819a9ace30dbb93c35a23b2c4e53ae))
+
+
+### Bug Fixes
+
+* remove foundation styles from portfolio & settings menus and lending stats page ([7f1ce30](https://github.com/kiva/ui/commit/7f1ce30bca3ea52d0f2f209fffb022ac4e01877c))
+
 ## [2.509.0](https://github.com/kiva/ui/compare/v2.508.1...v2.509.0) (2023-03-01)
 
 
