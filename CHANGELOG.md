@@ -1,3 +1,10 @@
+## [2.511.0](https://github.com/kiva/ui/compare/v2.510.2...v2.511.0) (2023-03-02)
+
+
+### Features
+
+* server cache data for first two recommended loans ([872bd23](https://github.com/kiva/ui/commit/872bd23809eb63156367b6d709580abd40e83498))
+
 ### [2.510.2](https://github.com/kiva/ui/compare/v2.510.1...v2.510.2) (2023-03-02)
 
 
