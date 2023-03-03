@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="promoAmount"
+		v-if="promoAmount && promoAmount > 0"
 		class="
 			tw-rounded
 			tw-bg-brand-100
@@ -41,7 +41,10 @@
 			</kv-grid>
 		</div>
 		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
-			<kv-ui-button to="#show-basket">
+			<kv-ui-button
+				v-show="itemsInBasket.length > 0"
+				to="#show-basket"
+			>
 				Checkout now
 			</kv-ui-button>
 		</div>
@@ -68,7 +71,11 @@ export default {
 		upcCreditRemaining: {
 			type: String,
 			default: '0.00'
-		}
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
+		},
 	},
 	computed: {
 		campaignPartnerName() {
