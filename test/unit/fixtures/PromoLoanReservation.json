@@ -24,7 +24,7 @@
 		"name": "Twubakane Cb Group",
 		"use": "to buy more beans and sorghum with her loan.",
 		"status": "fundraising",
-		"matchingText": "",
+		"matchingText": "2x Matching by Coca Cola Foundation",
 		"loanAmount": "8750.00",
 		"plannedExpirationDate": "2050-10-12T19:40:15Z",
 		"sector": {"id": 12, "name": "Food", "__typename": "Sector"},
