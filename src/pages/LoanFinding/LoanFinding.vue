@@ -42,6 +42,9 @@
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
+			<!-- Element to trigger spotlight observer -->
+			<div ref="secondCategoryObserver"></div>
+
 			<partner-spotlight-section
 				class="tw-pt-3"
 				:enable-loan-card-exp="enableLoanCardExp"
@@ -76,6 +79,7 @@ import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
@@ -109,7 +113,8 @@ export default {
 			spotlightLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
-			spotlightIndex: 0
+			spotlightIndex: 0,
+			spotlightViewportObserver: null,
 		};
 	},
 	apollo: {
@@ -226,7 +231,24 @@ export default {
 			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
 			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
 			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
-		}
+		},
+		createSpotlightViewportObserver() {
+			this.spotlightViewportObserver = createIntersectionObserver({
+				targets: [this.$refs.secondCategoryObserver],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.fetchSpotlightLoans();
+						}
+					});
+				}
+			});
+		},
+		destroySpotlightViewportObserver() {
+			if (this.spotlightViewportObserver) {
+				this.spotlightViewportObserver.disconnect();
+			}
+		},
 	},
 	created() {
 		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
@@ -259,8 +281,10 @@ export default {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
-		this.fetchSpotlightLoans();
 		this.showToast();
+
+		// create observer for spotlight loans
+		this.createSpotlightViewportObserver();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
 		if (enabled) {
@@ -284,6 +308,9 @@ export default {
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+	},
+	beforeDestroy() {
+		this.destroySpotlightViewportObserver();
 	},
 };
 </script>
