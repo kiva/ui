@@ -20,6 +20,7 @@
 				<campaign-progress-bar
 					:promo-amount="componentProps.promoAmount"
 					:upc-credit-remaining="componentProps.upcCreditRemaining"
+					:items-in-basket="componentProps.itemsInBasket"
 				/>
 
 				<campaign-loan-row

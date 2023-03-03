@@ -744,11 +744,6 @@ export default {
 					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
 				);
 			}
-		},
-		scrollToLoans() {
-			if (this.scrollToLoans) {
-				this.checkoutVisible = false;
-			}
 		}
 	},
 	computed: {
@@ -1225,7 +1220,7 @@ export default {
 				if (item.id === this.leftoverCreditAllocationLoanId) {
 					const prevLCALoanId = this.cookieStore.get('lcaid');
 					if (this.leftoverCreditAllocationLoanId !== prevLCALoanId) {
-						return this.cookieStore.set('lcaid', this.leftoverCreditAllocationLoanId);
+						this.cookieStore.set('lcaid', this.leftoverCreditAllocationLoanId);
 					}
 				}
 			});
@@ -1252,7 +1247,9 @@ export default {
 
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
+					console.log('incontextcheckout ref: ', this.$refs.inContextCheckoutRef);
 					if (this.$refs.inContextCheckoutRef) {
+						this.balanceLeftoverCredits();
 						this.$refs.inContextCheckoutRef.updatingTotals = false;
 					}
 
@@ -1291,11 +1288,6 @@ export default {
 					'ManagedLendingCampaign',
 					'modal-team-join-initialized'
 				);
-			} else {
-				// Show checkout if:
-				// - Not actively logged in, with a "Continue" button that goes to login
-				// - Checkout is ready
-				this.showCheckout();
 			}
 		},
 		amountLeftOnLoan(loan) {
@@ -1323,7 +1315,7 @@ export default {
 				apollo: this.apollo,
 				loanId
 			}).then(() => {
-				this.$emit('add-to-basket', { loanId, success: true });
+				this.handleAddToBasket({ loanId, success: true });
 				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
 			}).catch(e => {
@@ -1345,19 +1337,20 @@ export default {
 				}
 			});
 		},
-		updateBasketItem(payload) {
-			this.$emit('updating-totals', true);
+		updateLeftoverCreditAllocationBasketItem(payload) {
+			this.$refs.inContextCheckoutRef?.setUpdatingTotals(true);
 			const { loanId } = payload;
 			setLendAmount({
 				amount: payload.lendAmount,
 				apollo: this.apollo,
 				loanId: payload.loanId,
 			}).then(() => {
-				this.$emit('add-to-basket', { loanId, success: true });
-				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
 				if (payload.lendAmount === Number(0)) {
-					this.completeRemoveBasketItem();
+					this.completeRemoveLeftoverCreditAllocationBasketItem();
+				} else {
+					this.handleAddToBasket({ loanId, success: true });
+					this.leftoverCreditAllocationLoanId = loanId;
 				}
 			}).catch(e => {
 				let notAllSharesAdded = false;
@@ -1385,19 +1378,17 @@ export default {
 				// - we need to refresh the page to get back into updated state
 				if (typeof window !== 'undefined' && notAllSharesAdded) {
 					window.setTimeout(window.location.reload(), 8000);
-				} else {
-					this.$emit('updating-totals', false);
 				}
 			});
 		},
-		completeRemoveBasketItem() {
+		completeRemoveLeftoverCreditAllocationBasketItem() {
 			this.$closeTipMsg();
-			this.trackItemRemoved();
-			this.$emit('refreshtotals', 'removeLoan');
-			this.$emit('updating-totals', false);
+			this.trackLeftoverCreditAllocationItemRemoved();
+			console.log(this.$refs.inContextCheckoutRef?.$refs.basketItemsListRef);
+			this.refreshTotals();
 			this.updateBasketState();
 		},
-		trackItemRemoved() {
+		trackLeftoverCreditAllocationItemRemoved() {
 			const category = 'basket';
 			let action = 'Update Loan Amount';
 			let label = 'Loan Removed';
@@ -1409,12 +1400,10 @@ export default {
 			this.$kvTrackEvent(
 				category,
 				action,
-				label,
-				0,
-				0
+				label
 			);
 		},
-		showCheckout() {
+		async balanceLeftoverCredits() {
 			if (this.basketLoans.length && this.checkoutVisible) {
 				const LCALoanId = this.cookieStore.get('lcaid');
 				// Check if there is already a loan id that has unspent credit allocated to it
@@ -1429,7 +1418,7 @@ export default {
 								lCALoanPrice = 0;
 							}
 							// Set the LCA loan price that balances the delta
-							this.updateBasketItem({
+							this.updateLeftoverCreditAllocationBasketItem({
 								loanId: Number(LCALoanId),
 								lendAmount: lCALoanPrice
 							});
@@ -1455,14 +1444,22 @@ export default {
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
 			if (this.$route.hash === '#show-basket') {
+				const { scrollY } = window;
 				this.$nextTick(() => {
 					this.$router.push(this.adjustRouteHash('')).then(() => {
-						if (this.scrollToLoans) {
-							this.scrollToLoans = false;
-							this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
-						}
+						this.handleScrollPosition(scrollY);
 					}).catch(() => {});
 				});
+			} else {
+				this.handleScrollPosition();
+			}
+		},
+		handleScrollPosition(y) {
+			if (this.scrollToLoans) {
+				this.scrollToLoans = false;
+				this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			} else if (y) {
+				window.scrollTo(0, y);
 			}
 		},
 		transactionComplete(payload) {
@@ -1521,8 +1518,6 @@ export default {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
 				if (this.teamJoinStatus !== 'declined') {
 					this.addTeamToLoans();
-				} else {
-					this.showCheckout();
 				}
 			});
 		},
@@ -1588,7 +1583,6 @@ export default {
 		jumpToLoans() {
 			this.scrollToLoans = true;
 			this.checkoutLightboxClosed();
-			this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
@@ -1627,8 +1621,8 @@ export default {
 	beforeRouteUpdate(to, from, next) {
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
+			this.refreshTotals();
 		}
-		this.showCheckout();
 		next();
 	},
 };

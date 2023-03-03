@@ -446,7 +446,8 @@ export default {
 	}
 
 	.upc-disclaimer {
-
+		display: flex;
+		justify-content: right;
 		@include breakpoint(medium) {
 			margin-right: 2.25rem;
 		}
