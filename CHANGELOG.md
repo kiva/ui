@@ -1,3 +1,10 @@
+## [2.513.0](https://github.com/kiva/ui/compare/v2.512.0...v2.513.0) (2023-03-03)
+
+
+### Features
+
+* lazy loading method added to spotlight section in lending home ([2fb4428](https://github.com/kiva/ui/commit/2fb4428894c68dd7cea0d2e8ed68c4a9ea5030de))
+
 ## [2.512.0](https://github.com/kiva/ui/compare/v2.511.0...v2.512.0) (2023-03-02)
 
 
