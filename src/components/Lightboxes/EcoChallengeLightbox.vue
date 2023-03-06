@@ -106,14 +106,14 @@
 <script>
 // This component was used in the Eco Challenge. Currently not in use.
 
-import IconClimateChallenge from '@/assets/icons/inline/eco-challenge/globe-leaf.svg';
+import IconClimateChallenge from '@/assets/icons/inline/achievements/globe-leaf.svg';
 import {
 	mdiArrowRight,
 	mdiCheckboxBlankCircleOutline,
 	mdiCheckCircle
 } from '@mdi/js';
 import { joinArray } from '@/util/joinArray';
-import { missingMilestones } from '@/util/ecoChallengeUtils';
+import { missingMilestones } from '@/util/achievementUtils';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
