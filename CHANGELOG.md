@@ -1,3 +1,15 @@
+## [2.515.0](https://github.com/kiva/ui/compare/v2.514.1...v2.515.0) (2023-03-06)
+
+
+### Features
+
+* messages updated for already loans in lendctaexp component ([2160e02](https://github.com/kiva/ui/commit/2160e0244502eebac93907ec3b062c626fc198e8))
+
+
+### Bug Fixes
+
+* bg color replaced for funded message ([7678577](https://github.com/kiva/ui/commit/7678577cf197e6f01c8ba122825d75a0db8f6637))
+
 ### [2.514.1](https://github.com/kiva/ui/compare/v2.514.0...v2.514.1) (2023-03-06)
 
 
