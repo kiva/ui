@@ -58,7 +58,7 @@
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div v-if="loans.length > 0" class="tw-w-full">
-				<div v-if="!displayLoanPromoCard">
+				<div v-if="!displayLoanPromoCard || emptyState">
 					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in loans">
 							<kiva-classic-basic-loan-card-exp
@@ -500,7 +500,7 @@ export default {
 			return !hasSortBy && this.allLoans.length > 8;
 		},
 		emptyState() {
-			return this.allLoans.length < 1;
+			return this.allLoans.length <= 0;
 		}
 	},
 	apollo: {
