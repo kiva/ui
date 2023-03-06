@@ -49,6 +49,12 @@
 		</div>
 
 		<div class="row tw-relative">
+			<!-- emtpy state for no loans result -->
+			<empty-state
+				v-show="emptyState"
+				class="tw-mb-2 tw-mx-1 md:tw-mx-2"
+			/>
+
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div v-if="loans.length > 0" class="tw-w-full">
@@ -213,6 +219,7 @@ import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import EmptyState from '@/components/LoanFinding/EmptyState';
 
 const defaultLoansPerPage = 12;
 
@@ -343,6 +350,7 @@ export default {
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
 		PromoGridLoanCardExp,
+		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -422,6 +430,7 @@ export default {
 			if (this.showHelpMeChooseFeat) {
 				return _filter(this.allLoans, (loan, index) => index < 6);
 			}
+			if (this.emptyState) return this.backupLoans;
 			return this.allLoans;
 		},
 		firstLoan() {
@@ -489,6 +498,9 @@ export default {
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
 			return !hasSortBy && this.allLoans.length > 8;
+		},
+		emptyState() {
+			return this.allLoans.length < 1;
 		}
 	},
 	apollo: {
@@ -622,6 +634,8 @@ export default {
 
 		// Load all available facets for specified sector
 		await this.fetchFacets();
+
+		this.backupLoans = this.loans.slice(3);
 	},
 	methods: {
 		handleQuickFiltersOverlay(showOverlay) {
