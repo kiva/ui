@@ -1,3 +1,10 @@
+## [2.505.0-next.1](https://github.com/kiva/ui/compare/v2.504.1-next.2...v2.505.0-next.1) (2023-03-06)
+
+
+### Features
+
+* iwd challenge redirect and thank you page ([8119f0c](https://github.com/kiva/ui/commit/8119f0c2a72e78eaa0a2b4484f6e605686cfff6a))
+
 ### [2.504.1-next.2](https://github.com/kiva/ui/compare/v2.504.1-next.1...v2.504.1-next.2) (2023-03-02)
 
 
