@@ -1,3 +1,10 @@
+## [2.505.0-next.2](https://github.com/kiva/ui/compare/v2.505.0-next.1...v2.505.0-next.2) (2023-03-06)
+
+
+### Bug Fixes
+
+* use prefetch client ([ef789fa](https://github.com/kiva/ui/commit/ef789fa7dbce3e33f01a6bb0b380de4774042620))
+
 ## [2.505.0-next.1](https://github.com/kiva/ui/compare/v2.504.1-next.2...v2.505.0-next.1) (2023-03-06)
 
 
