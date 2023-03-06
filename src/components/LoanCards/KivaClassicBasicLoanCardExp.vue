@@ -145,7 +145,7 @@
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
 				class="tw-mt-auto"
-				:class="{ 'tw-w-full' : unreservedAmount < 1 }"
+				:class="{ 'tw-w-full' : unreservedAmount <= 0 }"
 			/>
 		</div>
 	</div>

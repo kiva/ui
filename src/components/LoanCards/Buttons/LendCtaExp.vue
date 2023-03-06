@@ -97,7 +97,11 @@
 		</kv-ui-button>
 
 		<!-- Funded / expired -->
-		<div v-if="isFunded" class="tw-w-full tw-text-center tw-rounded tw-bg-tertiary tw-p-2">
+		<div
+			v-if="isFunded"
+			class="tw-w-full tw-text-center tw-rounded tw-p-2"
+			style="background: #f1f1f1;"
+		>
 			This loan was just funded! 🎉
 		</div>
 	</div>
