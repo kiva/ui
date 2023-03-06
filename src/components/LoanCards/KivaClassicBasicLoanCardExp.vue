@@ -116,7 +116,7 @@
 			</div>
 
 			<router-link
-				v-else
+				v-if="unreservedAmount > 0"
 				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
@@ -145,6 +145,7 @@
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
 				class="tw-mt-auto"
+				:class="{ 'tw-w-full' : unreservedAmount < 1 }"
 			/>
 		</div>
 	</div>

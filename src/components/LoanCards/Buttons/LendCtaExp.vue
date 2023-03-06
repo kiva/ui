@@ -88,13 +88,18 @@
 			Checkout now
 		</kv-ui-button>
 
-		<!-- Funded, refunded, expired/ allSharesReserved button -->
+		<!-- Refunded, allSharesReserved button -->
 		<kv-ui-button
 			v-if="showNonActionableLoanButton"
 			class="tw-inline-flex tw-flex-1"
 		>
 			{{ ctaButtonText }}
 		</kv-ui-button>
+
+		<!-- Funded / expired -->
+		<div v-if="isFunded" class="tw-w-full tw-text-center tw-rounded tw-bg-tertiary tw-p-2">
+			This loan was just funded! 🎉
+		</div>
 	</div>
 </template>
 
@@ -203,12 +208,8 @@ export default {
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
-				case 'funded':
-					return 'Find another loan';
 				case 'refunded':
 				case 'expired':
-				case 'fully-reserved':
-					return 'Find another loan';
 				default:
 					return 'Lend';
 			}
@@ -248,10 +249,8 @@ export default {
 			return this.state === 'lend' || this.state === 'loading';
 		},
 		showNonActionableLoanButton() {
-			return this.state === 'funded'
-				|| this.state === 'refunded'
-				|| this.state === 'expired'
-				|| this.state === 'fully-reserved';
+			return this.state === 'refunded'
+				|| this.state === 'expired';
 		},
 		hideShowLendDropdown() {
 			return this.state === 'lend' || this.state === 'lent-to';
@@ -274,7 +273,11 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
-		}
+		},
+		isFunded() {
+			return this.state === 'funded'
+				|| this.state === 'fully-reserved';
+		},
 	},
 };
 
