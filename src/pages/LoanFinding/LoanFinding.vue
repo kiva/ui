@@ -31,6 +31,9 @@
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
 
+			<!-- Element to trigger spotlight observer -->
+			<div ref="spotlightObserver"></div>
+
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
 				v-if="secondCategoryLoans.length > 0"
@@ -41,9 +44,6 @@
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
-
-			<!-- Element to trigger spotlight observer -->
-			<div ref="secondCategoryObserver"></div>
 
 			<partner-spotlight-section
 				class="tw-pt-3"
@@ -234,7 +234,7 @@ export default {
 		},
 		createSpotlightViewportObserver() {
 			this.spotlightViewportObserver = createIntersectionObserver({
-				targets: [this.$refs.secondCategoryObserver],
+				targets: [this.$refs.spotlightObserver],
 				callback: entries => {
 					entries.forEach(entry => {
 						if (entry.isIntersecting) {
