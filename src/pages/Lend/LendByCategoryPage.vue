@@ -2,18 +2,6 @@
 	<www-page class="lend-by-category-page">
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
-		<!-- MFI Recommendations Section -->
-		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
-			<m-f-i-hero />
-
-			<mfi-loans-wrapper
-				v-if="selectedChannelLoanIds.length > 0"
-				:selected-channel-loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
-				class="tw-my-4"
-			/>
-		</div>
-
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
@@ -110,9 +98,6 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
-import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
-import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
 
@@ -128,8 +113,6 @@ export default {
 		FavoriteCountryLoans,
 		MGDigestLightbox,
 		MGLightbox,
-		MFIHero,
-		MfiLoansWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -172,9 +155,6 @@ export default {
 			activatedWatchers: false,
 			showMGDigestLightbox: false,
 			rowTrackCounter: 0,
-			mfiRecommendationsExp: false,
-			mfiRecommendationsLoans: [],
-			selectedChannel: {},
 		};
 	},
 	computed: {
@@ -248,9 +228,6 @@ export default {
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
-		},
-		selectedChannelLoanIds() {
-			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
 		},
 	},
 	methods: {
@@ -658,46 +635,6 @@ export default {
 				this.activateWatchers();
 			}
 		},
-		initializeMFIRecommendationsExperiment() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:mfi_recommendations',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (layoutEXP.version) {
-				if (layoutEXP.version === 'b') {
-					this.mfiRecommendationsExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-628-AUG-2022',
-					layoutEXP.version
-				);
-			}
-		},
-		fetchMFILoans() {
-			// Load mfi recommendations loans data
-			return this.apollo.query({
-				query: mfiRecommendationsLoans,
-			}).then(({ data }) => {
-				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
-				const numberLoans = this.mfiRecommendationsLoans.length;
-				if (numberLoans > 0) {
-					this.$kvTrackEvent(
-						'Lending',
-						'view-MFI-feature',
-						'pro mujer',
-						'',
-						numberLoans
-					);
-				} else {
-					this.$kvTrackEvent(
-						'Lending',
-						'no-featured-loan-available'
-					);
-				}
-			});
-		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -710,8 +647,6 @@ export default {
 				return Promise.all([
 					// experiment: GROW-330 Machine Learning Category row
 					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: CORE-698 MFI Recommendations
-					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
 					// experiment: VUE- Category Service driven FLSS channels
 					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
 					// experiment: CORE-854 Loan Finding Page
@@ -805,9 +740,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.lendFilterExpVersion = lendFilterEXP.version;
-
-		// Initialize CORE-698 MFI Recommendations Experiment
-		this.initializeMFIRecommendationsExperiment();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
@@ -830,11 +762,6 @@ export default {
 			} else if (this.$route.query.utm_content === 'no') {
 				this.$kvTrackEvent('Monthly Digest', 'loan-feedback', 'dislike');
 			}
-		}
-
-		// Fetching MFI Recommendations Loans
-		if (this.mfiRecommendationsExp) {
-			this.fetchMFILoans();
 		}
 
 		// The lending-home experiment tracking should only be enabled for logged-in users
