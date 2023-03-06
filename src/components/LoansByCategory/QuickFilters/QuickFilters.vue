@@ -3,9 +3,8 @@
 		<div
 			class="tw-flex"
 			:class="{
-				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap'
-					: !withCategories,
-				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full' : withCategories
+				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': !withCategories,
+				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': withCategories
 			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -39,7 +38,7 @@
 				/>
 				<div v-if="!filtersLoaded" class="tw-flex tw-gap-1 placeholder">
 					<kv-loading-placeholder
-						style="height: 2.75rem; width: 100px;"
+						style="width: 100px;"
 						v-for="(index) in 3"
 						:key="index"
 					/>
@@ -102,15 +101,15 @@
 					</label>
 					<div
 						class="
-						pill-container
-						tw-rounded
-						tw-transition
-						tw-bg-white
-						tw-h-full
-						md:tw-w-auto
-						tw-relative
-						tw-pointer-events-none
-					"
+							pill-container
+							tw-rounded
+							tw-transition
+							tw-bg-white
+							tw-h-full
+							md:tw-w-auto
+							tw-relative
+							tw-pointer-events-none
+						"
 					>
 						<kv-material-icon
 							:icon="mdiSort"
@@ -120,16 +119,16 @@
 						<select
 							id="sortBy"
 							class="
-							tw-bg-transparent
-							tw-font-medium
-							tw-transition
-							tw-rounded
-							filter-pill
-							tw-w-full
-							tw-h-full
-							tw-pointer-events-auto
-							tw-cursor-pointer
-						"
+								tw-bg-transparent
+								tw-font-medium
+								tw-transition
+								tw-rounded
+								filter-pill
+								tw-w-full
+								tw-h-full
+								tw-pointer-events-auto
+								tw-cursor-pointer
+							"
 							:disabled="!filtersLoaded"
 							v-model="sortBy"
 						>
@@ -171,7 +170,8 @@
 			</div>
 			<div class="tw-flex md:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-base">
-					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
+					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans
+				</span>
 				<!-- eslint-disable-next-line max-len -->
 				<button v-show="filtersLoaded && !hideReset" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
 					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
@@ -279,8 +279,8 @@ export default {
 				this.presetFilterActive.endingSoon = true;
 			} else {
 				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
-				// we don't currently have this option for these categories, also irrelevant since
-				// the user has a sort by dropdown available to them
+					// we don't currently have this option for these categories, also irrelevant since
+					// the user has a sort by dropdown available to them
 					delete categoryFilter.sortBy;
 				}
 				this.$emit('update-filters', categoryFilter);
