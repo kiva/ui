@@ -1,3 +1,10 @@
+### [2.514.1](https://github.com/kiva/ui/compare/v2.514.0...v2.514.1) (2023-03-06)
+
+
+### Bug Fixes
+
+* use prefetch client ([2c96783](https://github.com/kiva/ui/commit/2c96783dd1f2c75294a02ab8ca741462dcd54c9d))
+
 ## [2.514.0](https://github.com/kiva/ui/compare/v2.513.0...v2.514.0) (2023-03-06)
 
 
