@@ -1,3 +1,15 @@
+## [2.514.0](https://github.com/kiva/ui/compare/v2.513.0...v2.514.0) (2023-03-06)
+
+
+### Features
+
+* mfi recommendations experiment removed from lbc page ([1b5f39c](https://github.com/kiva/ui/commit/1b5f39cfbfc03f04df30fcafe5b7d9338744967a))
+
+
+### Bug Fixes
+
+* trigger moved for spotlight observer ([5975272](https://github.com/kiva/ui/commit/597527257b9ad4cdf11d308128def2b71506eaa4))
+
 ## [2.513.0](https://github.com/kiva/ui/compare/v2.512.0...v2.513.0) (2023-03-03)
 
 
