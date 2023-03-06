@@ -1,3 +1,15 @@
+## [2.516.0](https://github.com/kiva/ui/compare/v2.515.0...v2.516.0) (2023-03-06)
+
+
+### Features
+
+* loading state for quick filter genders ([0b58eeb](https://github.com/kiva/ui/commit/0b58eebd5066f25beff7ee04925cc8c5e0170f5a))
+
+
+### Bug Fixes
+
+* minor clean-up ([80223a3](https://github.com/kiva/ui/commit/80223a3263e2ad811eb7c837ab445e712be02500))
+
 ## [2.515.0](https://github.com/kiva/ui/compare/v2.514.1...v2.515.0) (2023-03-06)
 
 
