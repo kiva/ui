@@ -1,17 +1,6 @@
 query lendByCategory($basketId: String) {
+	hasEverLoggedIn @client
 	general {
-		mlServiceBandit: uiExperimentSetting(key: "EXP-ML-Service-Bandit-LendByCategory") {
-			key
-			value
-		}
-		mfiRecommendations: uiExperimentSetting(key: "mfi_recommendations") {
-			key
-			value
-		}
-		lbcCategoryServiceRows: uiExperimentSetting(key: "flss_category_service") {
-			key
-			value
-		}
 		loanFindingPage: uiExperimentSetting(key: "loan_finding_page") {
 			key
 			value

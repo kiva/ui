@@ -408,7 +408,6 @@ module.exports = [
 		component: () => import('@/pages/LoanFinding/LoanFinding'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			authenticationRequired: true,
 		}
 	},
 	{
