@@ -12,13 +12,14 @@
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
-					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+					Welcome back{{ firstName ? ', ' : '' }}
+					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
 			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				title="Recommended for you"
-				subtitle="Loans handpicked for you based on your lending history"
+				:title="recommendedTitle"
+				:subtitle="recommendedSubtitle"
 				:loans="recommendedLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
@@ -136,6 +137,9 @@ export default {
 		}
 	},
 	computed: {
+		isLoggedIn() {
+			return !!this.userInfo?.id;
+		},
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		},
@@ -148,7 +152,15 @@ export default {
 		},
 		activeSpotlightData() {
 			return spotlightData[this.spotlightIndex] ?? {};
-		}
+		},
+		recommendedTitle() {
+			return this.isLoggedIn ? 'Recommended for you' : 'Recommended by others';
+		},
+		recommendedSubtitle() {
+			return this.isLoggedIn
+				? 'Loans handpicked for you based on your lending history'
+				: 'These borrowers need your support. Log in for personalized recommendations.';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
