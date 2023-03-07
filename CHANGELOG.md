@@ -1,3 +1,11 @@
+## [2.519.0](https://github.com/kiva/ui/compare/v2.518.0...v2.519.0) (2023-03-07)
+
+
+### Features
+
+* allow guest users who have logged in to participate in lending-home exp ([cd80a91](https://github.com/kiva/ui/commit/cd80a916ada09c5cb465074708d58ec106e6ea52))
+* change LH headers for logged out users ([f9682e8](https://github.com/kiva/ui/commit/f9682e8ce6d1defd74a4c3148ad54f4251e69a03))
+
 ## [2.518.0](https://github.com/kiva/ui/compare/v2.517.0...v2.518.0) (2023-03-07)
 
 
