@@ -2,7 +2,6 @@
 	<div class="tw-flex tw-gap-1" :class="{ 'tw-opacity-low': !filtersLoaded }">
 		<div
 			class="tw-shrink-0 pill-container tw-rounded"
-			:class="{'first' : selectedOptions.includes(option.key) }"
 			v-for="(option) in options"
 			:key="option.key"
 		>
@@ -84,9 +83,5 @@ export default {
 
 .filter-pill.selected {
 	@apply tw-bg-black tw-text-white;
-}
-
-.pill-container.first {
-	order: -1;
 }
 </style>

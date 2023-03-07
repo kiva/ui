@@ -1,3 +1,35 @@
+## [2.518.0](https://github.com/kiva/ui/compare/v2.517.0...v2.518.0) (2023-03-07)
+
+
+### Features
+
+* field partner replaced by lending partner at bottom of bp ([232c950](https://github.com/kiva/ui/commit/232c9505cae3160f636873e764457b28cecd5498))
+* stop gender pills moving when selected ([2802a1b](https://github.com/kiva/ui/commit/2802a1b75ef2d4c3c4d894fcd11bb03258388097))
+
+## [2.517.0](https://github.com/kiva/ui/compare/v2.516.0...v2.517.0) (2023-03-07)
+
+
+### Features
+
+* empty state added to category page for non-loans result ([b0c49e7](https://github.com/kiva/ui/commit/b0c49e7b8fade0cc7b86bcccc5d9d1b98ab517c9))
+
+
+### Bug Fixes
+
+* emtpy state fixed for promo card version ([994cad7](https://github.com/kiva/ui/commit/994cad77f8e1e95bf6a2a6beb9b687039857df8f))
+
+## [2.516.0](https://github.com/kiva/ui/compare/v2.515.0...v2.516.0) (2023-03-06)
+
+
+### Features
+
+* loading state for quick filter genders ([0b58eeb](https://github.com/kiva/ui/commit/0b58eebd5066f25beff7ee04925cc8c5e0170f5a))
+
+
+### Bug Fixes
+
+* minor clean-up ([80223a3](https://github.com/kiva/ui/commit/80223a3263e2ad811eb7c837ab445e712be02500))
+
 ## [2.515.0](https://github.com/kiva/ui/compare/v2.514.1...v2.515.0) (2023-03-06)
 
 
