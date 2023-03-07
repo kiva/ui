@@ -26,7 +26,7 @@
 					data-testid="bp-detail-field-partner-tab"
 					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
 				>
-					Field Partner
+					Lending Partner
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"

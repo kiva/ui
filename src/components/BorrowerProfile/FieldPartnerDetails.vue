@@ -82,7 +82,7 @@
 							linkText: 'Field Partner risk rating'
 						})"
 					>
-						Field Partner risk rating
+						Lending Partner risk rating
 					</button>
 				</dt>
 				<dd>
