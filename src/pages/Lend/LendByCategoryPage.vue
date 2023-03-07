@@ -98,8 +98,12 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
+const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LendByCategoryPage',
@@ -640,38 +644,27 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(({ data }) => {
-				// check logged in user
-				const loggedIn = data?.my?.userAccount?.id ?? false;
-				// Get the array of channel objects from settings
-				return Promise.all([
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: VUE- Category Service driven FLSS channels
-					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
-					// experiment: CORE-854 Loan Finding Page
-					// eslint-disable-next-line max-len
-					loggedIn ? client.query({ query: experimentQuery, variables: { id: 'loan_finding_page' } }) : Promise.resolve()
-				]);
-			})
-				.then(expAssignments => {
-					const experimentSettings = expAssignments.filter(item => item?.data?.experiment);
-					// Initialize CORE-854 Loan Finding Page Experiment an redirect
-					const LoanFindingExp = experimentSettings
-						.find(item => item.data.experiment.id === 'loan_finding_page');
-					const enableLoanFindingPage = LoanFindingExp?.data?.experiment?.version === 'b' ?? false;
-					if (enableLoanFindingPage) {
-						return Promise.reject({
-							path: '/lending-home',
-						});
-					}
-					Promise.resolve();
-				})
-				.then(() => {
-					return client.query({
-						query: mlOrderedLoanChannels
+			}).then(() => {
+				return client.query({ query: experimentQuery, variables: { id: LOAN_FINDING_EXP_KEY } })
+					.then(() => {
+						// Redirect to /lending-home if user has previously signed in and experiment is assigned
+						if (getHasEverLoggedIn(client)) {
+							const { enabled } = getExperimentSettingCached(client, LOAN_FINDING_EXP_KEY);
+							if (enabled) {
+								const { version } = client.readFragment({
+									id: `Experiment:${LOAN_FINDING_EXP_KEY}`,
+									fragment: experimentVersionFragment,
+								}) ?? {};
+
+								if (version === 'b') {
+									return Promise.reject({ path: '/lending-home' });
+								}
+							}
+						}
+
+						return client.query({ query: mlOrderedLoanChannels });
 					});
-				});
+			});
 		},
 	},
 	created() {
@@ -764,15 +757,15 @@ export default {
 			}
 		}
 
-		// The lending-home experiment tracking should only be enabled for logged-in users
-		if (this.isLoggedIn) {
-			const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
+		// The /lending-home experiment should only be tracked for users who have logged in
+		if (getHasEverLoggedIn(this.apollo)) {
+			const { enabled } = getExperimentSettingCached(this.apollo, LOAN_FINDING_EXP_KEY);
 			if (enabled) {
 				trackExperimentVersion(
 					this.apollo,
 					this.$kvTrackEvent,
 					'Lending',
-					'loan_finding_page',
+					LOAN_FINDING_EXP_KEY,
 					'EXP-CORE-854-Dec2022'
 				);
 			}
