@@ -21,16 +21,9 @@
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
 			/>
-			<!-- eslint-disable max-len -->
-			<div
-				v-show="emptyState"
-				class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-bg-white tw-px-2 tw-pb-2 lg:tw-py-4 lg:tw-px-8 tw-items-center"
-			>
-				<img class="tw-w-8 lg:tw-w-16" src="~@/assets/images/sad_cloud.svg">
-				<h2 class="tw-text-h2">
-					We couldn’t find any loans that match your current filters but here are other recommended loans for you.
-				</h2>
-			</div>
+			<!-- emtpy state for no loans result -->
+			<empty-state v-show="emptyState" />
+
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
 				<template v-for="(loan, index) in loans">
 					<kiva-classic-basic-loan-card-exp
@@ -78,6 +71,7 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
+import EmptyState from './EmptyState';
 
 export default {
 	name: 'QuickFiltersSection',
@@ -86,6 +80,7 @@ export default {
 		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCard,
 		KvPagination,
+		EmptyState
 	},
 	inject: ['apollo'],
 	props: {
