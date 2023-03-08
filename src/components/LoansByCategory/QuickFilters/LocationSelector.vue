@@ -29,7 +29,6 @@
 			<div
 				class="
 					tw-flex
-					tw-bg-primary
 					filter-pill
 					tw-transition
 					tw-rounded
