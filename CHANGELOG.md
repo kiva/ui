@@ -1,3 +1,10 @@
+### [2.519.1](https://github.com/kiva/ui/compare/v2.519.0...v2.519.1) (2023-03-08)
+
+
+### Bug Fixes
+
+* added loan amount to ATB events on category and lend/filter pages ([71404b5](https://github.com/kiva/ui/commit/71404b5f94a346a78bfef5e1ec21e14638e7a1d2))
+
 ## [2.519.0](https://github.com/kiva/ui/compare/v2.518.0...v2.519.0) (2023-03-07)
 
 
