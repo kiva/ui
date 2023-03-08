@@ -1,3 +1,10 @@
+## [2.520.0](https://github.com/kiva/ui/compare/v2.519.1...v2.520.0) (2023-03-08)
+
+
+### Features
+
+* update auto deposit copy ([ef31c8e](https://github.com/kiva/ui/commit/ef31c8e931acee41857290f8ef7760ad134d9efd))
+
 ### [2.519.1](https://github.com/kiva/ui/compare/v2.519.0...v2.519.1) (2023-03-08)
 
 
