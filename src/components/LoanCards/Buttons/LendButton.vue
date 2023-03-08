@@ -15,6 +15,7 @@ import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
+import { handleInvalidBasket } from '@/util/basketUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -22,7 +23,7 @@ export default {
 	components: {
 		KvButton,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		loanId: {
 			type: Number,
@@ -56,7 +57,6 @@ export default {
 				if (errors) {
 					// Handle errors from adding to basket
 					errors.forEach(error => {
-						this.$showTipMsg(error.message, 'error');
 						try {
 							this.$kvTrackEvent(
 								'Lending',
@@ -64,6 +64,16 @@ export default {
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
 							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							if (error?.extensions?.code === 'shop.invalidBasketId') {
+								return handleInvalidBasket({
+									cookieStore: this.cookieStore,
+									loan: {
+										id: this.loanId,
+										price: this.price
+									}
+								});
+							}
+							this.$showTipMsg(error.message, 'error');
 						} catch (e) {
 							// no-op
 						}

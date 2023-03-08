@@ -19,7 +19,9 @@ function logSetLendAmountError(loanId, err) {
 	}
 }
 
-export function setLendAmount({ amount, apollo, loanId }) {
+export function setLendAmount({
+	amount, apollo, loanId, basketId = ''
+}) {
 	return new Promise((resolve, reject) => {
 		const price = numeral(amount).format('0.00');
 		apollo.mutate({
@@ -42,6 +44,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 			optimisticResponse: {
 				__typename: 'Mutation',
 				shop: {
+					id: basketId,
 					__typename: 'ShopMutation',
 					updateLoanReservation: {
 						__typename: 'LoanReservation',
@@ -76,4 +79,10 @@ export function setLendAmount({ amount, apollo, loanId }) {
 
 export function setDonationAmount() {
 	// TODO
+}
+
+export function handleInvalidBasket({ loan, cookieStore }) {
+	cookieStore.remove('kvbskt', { path: '/', secure: true });
+	cookieStore.set('failedLoan', JSON.stringify(loan));
+	window.location.reload();
 }
