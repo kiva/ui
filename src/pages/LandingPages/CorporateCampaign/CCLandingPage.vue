@@ -606,7 +606,9 @@ export default {
 			pageFrame: WwwPageCorporate,
 			availableLoans: [],
 			leftoverCreditAllocationLoanId: null,
-			scrollToLoans: false
+			scrollToLoans: false,
+			basketUpdating: false,
+			basketBalancing: false
 		};
 	},
 	metaInfo() {
@@ -745,6 +747,12 @@ export default {
 					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
 				);
 			}
+		},
+		basketBalancing() {
+			this.setCheckoutLoadingState();
+		},
+		basketUpdating() {
+			this.setCheckoutLoadingState();
 		}
 	},
 	computed: {
@@ -1139,6 +1147,10 @@ export default {
 		refreshTotals() {
 			this.initializeBasketRefresh();
 		},
+		setCheckoutLoadingState() {
+			const loading = this.basketBalancing || this.basketUpdating;
+			this.$refs.inContextCheckoutRef?.setUpdatingTotals(loading);
+		},
 		initializeBasketRefresh() {
 			// TDOO: Consider extending loading state for basket updates
 			// Query to update basket state
@@ -1147,7 +1159,7 @@ export default {
 		updateBasketState() {
 			// Ensure basket state is loading
 			if (this.$refs.inContextCheckoutRef) {
-				this.$refs.inContextCheckoutRef.updatingTotals = true;
+				this.basketUpdating = true;
 			}
 
 			// get our basket id
@@ -1249,8 +1261,9 @@ export default {
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
 					if (this.$refs.inContextCheckoutRef) {
+						this.basketBalancing = true;
+						this.basketUpdating = false;
 						this.balanceLeftoverCredits();
-						this.$refs.inContextCheckoutRef.updatingTotals = false;
 					}
 
 					// signify checkout is ready
@@ -1318,6 +1331,7 @@ export default {
 				this.handleAddToBasket({ loanId, success: true });
 				this.leftoverCreditAllocationLoanId = loanId;
 				this.updateBasketState();
+				this.basketBalancing = false;
 			}).catch(e => {
 				logFormatter(`Failed to add loan with id ${loanId} to basket`, 'error');
 				let msg = 'There was a problem adding the loan to your basket';
@@ -1335,10 +1349,10 @@ export default {
 					default:
 						this.$showTipMsg(msg, 'error');
 				}
+				this.basketBalancing = false;
 			});
 		},
 		updateLeftoverCreditAllocationBasketItem(payload) {
-			this.$refs.inContextCheckoutRef?.setUpdatingTotals(true);
 			const { loanId } = payload;
 			setLendAmount({
 				amount: payload.lendAmount,
@@ -1352,6 +1366,7 @@ export default {
 					this.handleAddToBasket({ loanId, success: true });
 					this.leftoverCreditAllocationLoanId = loanId;
 				}
+				this.basketBalancing = false;
 			}).catch(e => {
 				let notAllSharesAdded = false;
 				logFormatter(
@@ -1379,14 +1394,15 @@ export default {
 				if (typeof window !== 'undefined' && notAllSharesAdded) {
 					window.setTimeout(window.location.reload(), 8000);
 				}
+				this.basketBalancing = false;
 			});
 		},
 		completeRemoveLeftoverCreditAllocationBasketItem() {
 			this.$closeTipMsg();
 			this.trackLeftoverCreditAllocationItemRemoved();
-			console.log(this.$refs.inContextCheckoutRef?.$refs.basketItemsListRef);
 			this.refreshTotals();
 			this.updateBasketState();
+			this.basketBalancing = false;
 		},
 		trackLeftoverCreditAllocationItemRemoved() {
 			const category = 'basket';
@@ -1404,6 +1420,7 @@ export default {
 			);
 		},
 		async balanceLeftoverCredits() {
+			this.basketBalancing = true;
 			if (this.basketLoans.length && this.checkoutVisible) {
 				const LCALoanId = this.cookieStore.get('lcaid');
 				// Check if there is already a loan id that has unspent credit allocated to it
@@ -1429,6 +1446,7 @@ export default {
 					} else {
 						this.cookieStore.remove('lcaid');
 					}
+					this.basketBalancing = false;
 				} else if (this.upcCreditRemaining > 0) {
 					// If there's no existing loan that we've allocated the unspent credit to
 					// Then get a loan from the carousel and add it to the basket,
@@ -1436,9 +1454,12 @@ export default {
 					this.allocateLeftoverCredits({
 						lendAmount: this.upcCreditRemaining
 					});
+				} else {
+					this.basketBalancing = false;
 				}
 			} else {
 				this.checkoutVisible = false;
+				this.basketBalancing = false;
 			}
 		},
 		checkoutLightboxClosed() {
