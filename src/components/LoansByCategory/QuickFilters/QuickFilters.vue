@@ -1,10 +1,24 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
+		<div v-if="!withCategories && !enableFilterPills" class="tw-flex tw-items-center tw-mb-2">
+			<div v-if="!withCategories" class="tw-flex tw-items-center">
+				<h3 class="tw-text-h3">
+					Quick filters
+				</h3>
+				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
+				<button
+					v-show="filtersLoaded && !hideReset"
+					class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters"
+				>
+					Reset filters
+				</button>
+			</div>
+		</div>
 		<div
 			class="tw-flex"
 			:class="{
-				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': !withCategories,
-				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': withCategories
+				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': enableFilterPills,
+				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': !enableFilterPills
 			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -29,7 +43,7 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && !withCategories" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
+			<div v-if="!removeGenderDropdown && enableFilterPills" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
 				<filter-pills
 					:filters-loaded="filtersLoaded"
 					:options="filterOptions.gender"
@@ -45,7 +59,7 @@
 				</div>
 			</div>
 
-			<div v-if="!removeGenderDropdown && withCategories" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="!removeGenderDropdown && !enableFilterPills" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
 					for="gender"
@@ -71,8 +85,8 @@
 
 			<div
 				:class="{
-					'tw-flex tw-gap-1 overflow-container': !withCategories,
-					'tw-w-full': withCategories}"
+					'tw-flex tw-gap-1 overflow-container': enableFilterPills,
+					'tw-w-full': !enableFilterPills}"
 			>
 				<location-selector
 					v-if="!removeLocationDropdown"
@@ -85,10 +99,11 @@
 					ref="locationSelector"
 					:tracking-category="trackingCategory"
 					:with-categories="withCategories"
+					:enable-filter-pills="enableFilterPills"
 				/>
 
 				<div
-					v-if="!removeSortByDropdown && !withCategories"
+					v-if="!removeSortByDropdown && enableFilterPills"
 					class="tw-pb-1 tw-shrink-0"
 					:class="{ 'tw-opacity-low': !filtersLoaded }"
 					@click="trackDropdownClick('sort')"
@@ -142,6 +157,32 @@
 						</select>
 					</div>
 				</div>
+			</div>
+			<div
+				v-if="!removeSortByDropdown && !enableFilterPills && !withCategories"
+				class="tw-flex tw-flex-col tw-grow"
+			>
+				<label
+					class="tw-text-h4"
+					for="sortBy"
+				>
+					Sort By
+				</label>
+				<kv-select
+					id="sortBy"
+					:disabled="!filtersLoaded"
+					v-model="sortBy"
+					style="min-width: 180px;"
+					@click.native="trackDropdownClick('sort')"
+				>
+					<option
+						v-for="sortType in filterOptions.sorting"
+						:key="sortType.key"
+						:value="sortType.key"
+					>
+						{{ sortType.title }}
+					</option>
+				</kv-select>
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
@@ -221,6 +262,10 @@ export default {
 		defaultSort: {
 			type: String,
 			default: 'personalized',
+		},
+		enableFilterPills: {
+			type: Boolean,
+			default: false
 		},
 	},
 	components: {
