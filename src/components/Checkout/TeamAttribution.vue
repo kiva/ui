@@ -101,7 +101,7 @@ export default {
 							this.selectedId === 0 ? 'Team Attribution Removed'
 								: 'Team Attribution Removal Success', numeral(this.selectedId).value()
 						);
-						this.$emit('refreshtotals', 'team-update');
+						this.$emit('refresh-totals', 'team-update');
 						this.cachedId = this.selectedId;
 					}
 				}).catch(error => {
