@@ -1,6 +1,5 @@
 <template>
 	<kv-button
-		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
 		:state="buttonState"
 		@click="addToBasket"
 	>
@@ -40,6 +39,13 @@ export default {
 	},
 	methods: {
 		addToBasket() {
+			this.$kvTrackEvent(
+				'Lending',
+				'Add to basket',
+				'lend-button-click',
+				this.loanId,
+				this.price
+			);
 			this.setLoading(true);
 			this.apollo.mutate({
 				mutation: updateLoanReservation,

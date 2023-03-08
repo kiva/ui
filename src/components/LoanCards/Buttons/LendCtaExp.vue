@@ -38,7 +38,6 @@
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
-						v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
 					>
 						{{ ctaButtonText }}
 					</kv-ui-button>
@@ -46,11 +45,10 @@
 					<!-- Lend again/lent previously button -->
 					<kv-ui-button
 						key="lendAgainButton"
-						v-if="isLentTo && !isLessThan25"
+						v-if="showLendAgain"
 						class="lend-again"
 						data-testid="bp-lend-cta-lend-again-button"
 						type="submit"
-						v-kv-track-event="['Lending', 'Add to basket', 'Lend again', loanId, loanId]"
 					>
 						Lend again
 					</kv-ui-button>
@@ -151,10 +149,14 @@ export default {
 	},
 	methods: {
 		async addToBasket() {
-			this.$emit(
-				'add-to-basket',
-				isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption
+			this.$kvTrackEvent(
+				'Lending',
+				'Add to basket',
+				this.showLendAgain ? 'Lend again' : 'lend-button-click',
+				this.loanId,
+				this.amountToLend
 			);
+			this.$emit('add-to-basket', this.amountToLend);
 		},
 	},
 	watch: {
@@ -281,6 +283,12 @@ export default {
 		isFunded() {
 			return this.state === 'funded'
 				|| this.state === 'fully-reserved';
+		},
+		amountToLend() {
+			return this.isLessThan25 ? this.unreservedAmount : this.selectedOption;
+		},
+		showLendAgain() {
+			return this.isLentTo && !this.isLessThan25;
 		},
 	},
 };
