@@ -20,7 +20,7 @@ function logSetLendAmountError(loanId, err) {
 }
 
 export function setLendAmount({
-	amount, apollo, loanId, basketId = ''
+	amount, apollo, loanId, basketId = 0
 }) {
 	return new Promise((resolve, reject) => {
 		const price = numeral(amount).format('0.00');
@@ -83,6 +83,6 @@ export function setDonationAmount() {
 
 export function handleInvalidBasket({ loan, cookieStore }) {
 	cookieStore.remove('kvbskt', { path: '/', secure: true });
-	cookieStore.set('failedLoan', JSON.stringify(loan));
+	cookieStore.set('kvatbid', JSON.stringify(loan));
 	window.location.reload();
 }

@@ -452,6 +452,8 @@ export default {
 				Sentry.captureException(e);
 				// Handle errors from adding to basket
 				if (e?.[0]?.extensions?.code === 'shop.invalidBasketId') {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
 					return handleInvalidBasket({
 						cookieStore: this.cookieStore,
 						loan: {

@@ -10,7 +10,7 @@ export default {
 		checkInjections(this, injections);
 
 		// Handle expired basket cookie after refresh
-		const failedLoan = this.cookieStore.get('failedLoan');
+		const failedLoan = this.cookieStore.get('kvatbid');
 		if (failedLoan) {
 			this.$kvTrackEvent('Lending', 'Add to basket', 'Retry after basket cookie refresh');
 			const loan = JSON.parse(failedLoan);
@@ -18,7 +18,6 @@ export default {
 				apollo: this.apollo,
 				amount: loan.price,
 				loanId: loan.id,
-				basketId: this.cookieStore.get('ksbskt')
 			}).then(() => {
 				this.triggerAddToBasketInterstitial(loan.id);
 				this.$emit('add-to-basket', { loanId: loan.id, success: true });
@@ -29,7 +28,7 @@ export default {
 
 				this.$showTipMsg(msg, 'error');
 			});
-			this.cookieStore.remove('failedLoan');
+			this.cookieStore.remove('kvatbid');
 		}
 	}
 };
