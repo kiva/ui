@@ -227,10 +227,6 @@ export default {
 			type: String,
 			required: true,
 		},
-		withCategories: {
-			type: Boolean,
-			required: true,
-		},
 		enableFilterPills: {
 			type: Boolean,
 			default: false

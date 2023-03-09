@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
 		<div v-if="!withCategories && !enableFilterPills" class="tw-flex tw-items-center tw-mb-2">
-			<div v-if="!withCategories" class="tw-flex tw-items-center">
+			<div class="tw-flex tw-items-center">
 				<h3 class="tw-text-h3">
 					Quick filters
 				</h3>
