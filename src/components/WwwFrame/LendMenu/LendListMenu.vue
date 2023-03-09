@@ -4,12 +4,9 @@
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
 			@click.native="trackMgLinkClick"
-			:class="{ 'hover:tw-no-underline': newMgEntrypoint}"
 		>
-			<!-- NEW MG ENTRYPOINT CORE-641 -->
-			<monthly-good-entrypoint v-if="newMgEntrypoint" />
 			<!-- eslint-disable-next-line max-len -->
-			<span v-else class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
+			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
 				Lend monthly
 				<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
 			</span>
@@ -186,7 +183,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import MonthlyGoodEntrypoint from './MonthlyGoodEntrypoint';
 
 export default {
 	name: 'LendListMenu',
@@ -200,7 +196,6 @@ export default {
 		KvTabs,
 		KvLoadingPlaceholder,
 		SearchList,
-		MonthlyGoodEntrypoint
 	},
 	props: {
 		categories: {
