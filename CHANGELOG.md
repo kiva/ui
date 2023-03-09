@@ -1,3 +1,16 @@
+## [2.522.0](https://github.com/kiva/ui/compare/v2.521.1...v2.522.0) (2023-03-09)
+
+
+### Features
+
+* new ui for quick filters showed under a test ([3ca3400](https://github.com/kiva/ui/commit/3ca34009dc06a97c069380e7c746e3b618bfc5b6))
+
+
+### Bug Fixes
+
+* padding fixed when pills are showed ([f749500](https://github.com/kiva/ui/commit/f74950021a618d3e4b400d300248644d72b890b9))
+* unused prop removed from locationselector component ([1fe526c](https://github.com/kiva/ui/commit/1fe526c74d6aa029c9cc443ac6a333b32a89b05a))
+
 ### [2.521.1](https://github.com/kiva/ui/compare/v2.521.0...v2.521.1) (2023-03-09)
 
 
