@@ -230,10 +230,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		newMgEntrypoint: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	data() {
 		return {
@@ -266,8 +262,7 @@ export default {
 			}
 		},
 		trackMgLinkClick() {
-			const trackerLA = this.newMgEntrypoint ? 'Become-a-member' : 'Lend-monthly';
-			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', trackerLA);
+			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend-monthly');
 		}
 	},
 };
