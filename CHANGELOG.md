@@ -1,3 +1,15 @@
+## [2.521.0](https://github.com/kiva/ui/compare/v2.520.0...v2.521.0) (2023-03-09)
+
+
+### Features
+
+* mg experiment removed from lend menu ([7c7c7e2](https://github.com/kiva/ui/commit/7c7c7e2b2bad87dd7332312690b830f1261f5d4f))
+
+
+### Bug Fixes
+
+* unusued mgentrypoint instances removed ([d83c391](https://github.com/kiva/ui/commit/d83c391478a44102ac9b4964ef260b923e2f3000))
+
 ## [2.520.0](https://github.com/kiva/ui/compare/v2.519.1...v2.520.0) (2023-03-08)
 
 
