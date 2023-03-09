@@ -25,13 +25,13 @@
 					</span>
 				</div>
 				<div v-if="this.organizationType">
-					<dt>Trustee type:</dt>
+					<dt>Organization type:</dt>
 					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ organizationType }}
 					</dd>
 				</div>
 				<div v-if="this.trusteeLocation">
-					<dt>Locatiion:</dt>
+					<dt>Location:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ trusteeLocation }}
 					</dd>
