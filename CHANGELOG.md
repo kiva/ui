@@ -1,3 +1,10 @@
+## [2.523.0](https://github.com/kiva/ui/compare/v2.522.0...v2.523.0) (2023-03-09)
+
+
+### Features
+
+* add test id based on loan type to bp ([914d0d6](https://github.com/kiva/ui/commit/914d0d64b988227ebd7f6fe10f78e8d0b5ae7a50))
+
 ## [2.522.0](https://github.com/kiva/ui/compare/v2.521.1...v2.522.0) (2023-03-09)
 
 
