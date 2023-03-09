@@ -12,13 +12,14 @@
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
-					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+					Welcome back{{ firstName ? ', ' : '' }}
+					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
 			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				title="Recommended for you"
-				subtitle="Loans handpicked for you based on your lending history"
+				:title="recommendedTitle"
+				:subtitle="recommendedSubtitle"
 				:loans="recommendedLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
@@ -30,6 +31,9 @@
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
+
+			<!-- Element to trigger spotlight observer -->
+			<div ref="spotlightObserver"></div>
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
@@ -76,6 +80,7 @@ import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
@@ -109,7 +114,8 @@ export default {
 			spotlightLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
-			spotlightIndex: 0
+			spotlightIndex: 0,
+			spotlightViewportObserver: null,
 		};
 	},
 	apollo: {
@@ -131,6 +137,9 @@ export default {
 		}
 	},
 	computed: {
+		isLoggedIn() {
+			return !!this.userInfo?.id;
+		},
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		},
@@ -143,7 +152,15 @@ export default {
 		},
 		activeSpotlightData() {
 			return spotlightData[this.spotlightIndex] ?? {};
-		}
+		},
+		recommendedTitle() {
+			return this.isLoggedIn ? 'Recommended for you' : 'Recommended by others';
+		},
+		recommendedSubtitle() {
+			return this.isLoggedIn
+				? 'Loans handpicked for you based on your lending history'
+				: 'These borrowers need your support. Log in for personalized recommendations.';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
@@ -226,7 +243,24 @@ export default {
 			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
 			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
 			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
-		}
+		},
+		createSpotlightViewportObserver() {
+			this.spotlightViewportObserver = createIntersectionObserver({
+				targets: [this.$refs.spotlightObserver],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.fetchSpotlightLoans();
+						}
+					});
+				}
+			});
+		},
+		destroySpotlightViewportObserver() {
+			if (this.spotlightViewportObserver) {
+				this.spotlightViewportObserver.disconnect();
+			}
+		},
 	},
 	created() {
 		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
@@ -259,8 +293,10 @@ export default {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
-		this.fetchSpotlightLoans();
 		this.showToast();
+
+		// create observer for spotlight loans
+		this.createSpotlightViewportObserver();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
 		if (enabled) {
@@ -284,6 +320,9 @@ export default {
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+	},
+	beforeDestroy() {
+		this.destroySpotlightViewportObserver();
 	},
 };
 </script>

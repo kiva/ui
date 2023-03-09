@@ -6,6 +6,7 @@
 		<loan-channel-category-control
 			:enable-loan-tags="enableLoanTags"
 			:enable-loan-card-exp="enableLoanCardExp"
+			:enable-filter-pills="enableFilterPillsTest"
 		/>
 
 		<add-to-basket-interstitial />
@@ -34,6 +35,10 @@ const pageQuery = gql`
 				key
 				value
 			}
+			filterPills: uiExperimentSetting(key: "filter_pills") {
+				key
+				value
+			}
 		}
 	}
 `;
@@ -55,6 +60,7 @@ export default {
 			pageLayout: 'control',
 			enableLoanTags: false,
 			enableLoanCardExp: false,
+			enableFilterPillsTest: false,
 		};
 	},
 	apollo: {
@@ -65,6 +71,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
 				]);
 			});
 		}
@@ -82,6 +89,9 @@ export default {
 
 		// Initialize New Loan Card Experiment
 		this.initializeNewLoanCardTest();
+
+		// Initialize Filter Pills Experimentx
+		this.initializeFilterPillsTest();
 	},
 	methods: {
 		initializeNewLoanCardTest() {
@@ -109,6 +119,20 @@ export default {
 					'Lending',
 					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
+				);
+			}
+		},
+		initializeFilterPillsTest() {
+			const filterPilssExp = this.apollo.readFragment({
+				id: 'Experiment:filter_pills',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.enableFilterPillsTest = filterPilssExp.version === 'b';
+			if (filterPilssExp.version) {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CORE-1195-Mar2023',
+					filterPilssExp.version
 				);
 			}
 		},

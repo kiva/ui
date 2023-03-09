@@ -73,7 +73,7 @@ import { mdiMapMarker } from '@mdi/js';
 const imageRequire = require.context('@/assets/images/mfi_recommendations/', true);
 
 export default {
-	name: 'MFIHero',
+	name: 'SpotlightHero',
 	props: {
 		sectionTitle: {
 			type: String,

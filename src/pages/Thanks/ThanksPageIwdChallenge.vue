@@ -189,7 +189,7 @@ export default {
 					visitorId: cookieStore.get('uiv') || null,
 				}
 			}).then(({ data }) => {
-				return this.apollo.query({
+				return client.query({
 					query: userAchievementsProgress,
 					variables: {
 						userId: data?.my?.userAccount?.id,

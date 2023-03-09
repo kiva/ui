@@ -1,11 +1,24 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
+		<div v-if="!withCategories && !enableFilterPills" class="tw-flex tw-items-center tw-mb-2">
+			<div class="tw-flex tw-items-center">
+				<h3 class="tw-text-h3">
+					Quick filters
+				</h3>
+				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
+				<button
+					v-show="filtersLoaded && !hideReset"
+					class="tw-ml-2 tw-text-small tw-text-action" @click="resetFilters"
+				>
+					Reset filters
+				</button>
+			</div>
+		</div>
 		<div
 			class="tw-flex"
 			:class="{
-				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap'
-					: !withCategories,
-				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full' : withCategories
+				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': enableFilterPills,
+				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': !enableFilterPills
 			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
@@ -30,16 +43,23 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && !withCategories" class="tw-overflow-x-auto tw-pb-1">
+			<div v-if="!removeGenderDropdown && enableFilterPills" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
 				<filter-pills
 					:filters-loaded="filtersLoaded"
 					:options="filterOptions.gender"
 					:selected-values="selectedGenders"
 					@update-values="updateGenders($event)"
 				/>
+				<div v-if="!filtersLoaded" class="tw-flex tw-gap-1 placeholder">
+					<kv-loading-placeholder
+						style="width: 100px;"
+						v-for="(index) in 3"
+						:key="index"
+					/>
+				</div>
 			</div>
 
-			<div v-if="!removeGenderDropdown && withCategories" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="!removeGenderDropdown && !enableFilterPills" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
 					for="gender"
@@ -65,8 +85,8 @@
 
 			<div
 				:class="{
-					'tw-flex tw-gap-1 overflow-container': !withCategories,
-					'tw-w-full': withCategories}"
+					'tw-flex tw-gap-1 overflow-container': enableFilterPills,
+					'tw-w-full': !enableFilterPills}"
 			>
 				<location-selector
 					v-if="!removeLocationDropdown"
@@ -79,10 +99,11 @@
 					ref="locationSelector"
 					:tracking-category="trackingCategory"
 					:with-categories="withCategories"
+					:enable-filter-pills="enableFilterPills"
 				/>
 
 				<div
-					v-if="!removeSortByDropdown && !withCategories"
+					v-if="!removeSortByDropdown && enableFilterPills"
 					class="tw-pb-1 tw-shrink-0"
 					:class="{ 'tw-opacity-low': !filtersLoaded }"
 					@click="trackDropdownClick('sort')"
@@ -95,15 +116,15 @@
 					</label>
 					<div
 						class="
-						pill-container
-						tw-rounded
-						tw-transition
-						tw-bg-white
-						tw-h-full
-						md:tw-w-auto
-						tw-relative
-						tw-pointer-events-none
-					"
+							pill-container
+							tw-rounded
+							tw-transition
+							tw-bg-white
+							tw-h-full
+							md:tw-w-auto
+							tw-relative
+							tw-pointer-events-none
+						"
 					>
 						<kv-material-icon
 							:icon="mdiSort"
@@ -113,16 +134,16 @@
 						<select
 							id="sortBy"
 							class="
-							tw-bg-transparent
-							tw-font-medium
-							tw-transition
-							tw-rounded
-							filter-pill
-							tw-w-full
-							tw-h-full
-							tw-pointer-events-auto
-							tw-cursor-pointer
-						"
+								tw-bg-transparent
+								tw-font-medium
+								tw-transition
+								tw-rounded
+								filter-pill
+								tw-w-full
+								tw-h-full
+								tw-pointer-events-auto
+								tw-cursor-pointer
+							"
 							:disabled="!filtersLoaded"
 							v-model="sortBy"
 						>
@@ -136,6 +157,32 @@
 						</select>
 					</div>
 				</div>
+			</div>
+			<div
+				v-if="!removeSortByDropdown && !enableFilterPills && !withCategories"
+				class="tw-flex tw-flex-col tw-grow"
+			>
+				<label
+					class="tw-text-h4"
+					for="sortBy"
+				>
+					Sort By
+				</label>
+				<kv-select
+					id="sortBy"
+					:disabled="!filtersLoaded"
+					v-model="sortBy"
+					style="min-width: 180px;"
+					@click.native="trackDropdownClick('sort')"
+				>
+					<option
+						v-for="sortType in filterOptions.sorting"
+						:key="sortType.key"
+						:value="sortType.key"
+					>
+						{{ sortType.title }}
+					</option>
+				</kv-select>
 			</div>
 		</div>
 		<div class="tw-flex tw-justify-between tw-items-start tw-mt-2" v-if="withCategories">
@@ -164,7 +211,8 @@
 			</div>
 			<div class="tw-flex md:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-base">
-					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
+					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans
+				</span>
 				<!-- eslint-disable-next-line max-len -->
 				<button v-show="filtersLoaded && !hideReset" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
 					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
@@ -180,6 +228,7 @@ import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import FilterPills from './FilterPills';
 
 export default {
@@ -214,12 +263,17 @@ export default {
 			type: String,
 			default: 'personalized',
 		},
+		enableFilterPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		KvSelect,
 		LocationSelector,
 		KvMaterialIcon,
-		FilterPills
+		FilterPills,
+		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
@@ -234,7 +288,7 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
-			}
+			},
 		};
 	},
 	mixins: [
@@ -270,8 +324,8 @@ export default {
 				this.presetFilterActive.endingSoon = true;
 			} else {
 				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
-				// we don't currently have this option for these categories, also irrelevant since
-				// the user has a sort by dropdown available to them
+					// we don't currently have this option for these categories, also irrelevant since
+					// the user has a sort by dropdown available to them
 					delete categoryFilter.sortBy;
 				}
 				this.$emit('update-filters', categoryFilter);
@@ -403,6 +457,20 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	.placeholder > div {
+		@apply tw-rounded !important;
+	}
+
+	.placeholder {
+		display: none;
+	}
+
+	@media screen and (min-width: 600px) {
+		.placeholder {
+			display: flex;
+		}
+	}
+
 	.overflow-container {
 		overflow-x: auto;
 	}

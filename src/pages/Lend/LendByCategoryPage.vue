@@ -2,18 +2,6 @@
 	<www-page class="lend-by-category-page">
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
-		<!-- MFI Recommendations Section -->
-		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
-			<m-f-i-hero />
-
-			<mfi-loans-wrapper
-				v-if="selectedChannelLoanIds.length > 0"
-				:selected-channel-loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
-				class="tw-my-4"
-			/>
-		</div>
-
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
@@ -110,11 +98,12 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
-import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
-import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
+const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LendByCategoryPage',
@@ -128,8 +117,6 @@ export default {
 		FavoriteCountryLoans,
 		MGDigestLightbox,
 		MGLightbox,
-		MFIHero,
-		MfiLoansWrapper,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
@@ -172,9 +159,6 @@ export default {
 			activatedWatchers: false,
 			showMGDigestLightbox: false,
 			rowTrackCounter: 0,
-			mfiRecommendationsExp: false,
-			mfiRecommendationsLoans: [],
-			selectedChannel: {},
 		};
 	},
 	computed: {
@@ -248,9 +232,6 @@ export default {
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
-		},
-		selectedChannelLoanIds() {
-			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
 		},
 	},
 	methods: {
@@ -658,85 +639,32 @@ export default {
 				this.activateWatchers();
 			}
 		},
-		initializeMFIRecommendationsExperiment() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:mfi_recommendations',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (layoutEXP.version) {
-				if (layoutEXP.version === 'b') {
-					this.mfiRecommendationsExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-628-AUG-2022',
-					layoutEXP.version
-				);
-			}
-		},
-		fetchMFILoans() {
-			// Load mfi recommendations loans data
-			return this.apollo.query({
-				query: mfiRecommendationsLoans,
-			}).then(({ data }) => {
-				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
-				const numberLoans = this.mfiRecommendationsLoans.length;
-				if (numberLoans > 0) {
-					this.$kvTrackEvent(
-						'Lending',
-						'view-MFI-feature',
-						'pro mujer',
-						'',
-						numberLoans
-					);
-				} else {
-					this.$kvTrackEvent(
-						'Lending',
-						'no-featured-loan-available'
-					);
-				}
-			});
-		},
 	},
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(({ data }) => {
-				// check logged in user
-				const loggedIn = data?.my?.userAccount?.id ?? false;
-				// Get the array of channel objects from settings
-				return Promise.all([
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: CORE-698 MFI Recommendations
-					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
-					// experiment: VUE- Category Service driven FLSS channels
-					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
-					// experiment: CORE-854 Loan Finding Page
-					// eslint-disable-next-line max-len
-					loggedIn ? client.query({ query: experimentQuery, variables: { id: 'loan_finding_page' } }) : Promise.resolve()
-				]);
-			})
-				.then(expAssignments => {
-					const experimentSettings = expAssignments.filter(item => item?.data?.experiment);
-					// Initialize CORE-854 Loan Finding Page Experiment an redirect
-					const LoanFindingExp = experimentSettings
-						.find(item => item.data.experiment.id === 'loan_finding_page');
-					const enableLoanFindingPage = LoanFindingExp?.data?.experiment?.version === 'b' ?? false;
-					if (enableLoanFindingPage) {
-						return Promise.reject({
-							path: '/lending-home',
-						});
-					}
-					Promise.resolve();
-				})
-				.then(() => {
-					return client.query({
-						query: mlOrderedLoanChannels
+			}).then(() => {
+				return client.query({ query: experimentQuery, variables: { id: LOAN_FINDING_EXP_KEY } })
+					.then(() => {
+						// Redirect to /lending-home if user has previously signed in and experiment is assigned
+						if (getHasEverLoggedIn(client)) {
+							const { enabled } = getExperimentSettingCached(client, LOAN_FINDING_EXP_KEY);
+							if (enabled) {
+								const { version } = client.readFragment({
+									id: `Experiment:${LOAN_FINDING_EXP_KEY}`,
+									fragment: experimentVersionFragment,
+								}) ?? {};
+
+								if (version === 'b') {
+									return Promise.reject({ path: '/lending-home' });
+								}
+							}
+						}
+
+						return client.query({ query: mlOrderedLoanChannels });
 					});
-				});
+			});
 		},
 	},
 	created() {
@@ -805,9 +733,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.lendFilterExpVersion = lendFilterEXP.version;
-
-		// Initialize CORE-698 MFI Recommendations Experiment
-		this.initializeMFIRecommendationsExperiment();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
@@ -832,20 +757,15 @@ export default {
 			}
 		}
 
-		// Fetching MFI Recommendations Loans
-		if (this.mfiRecommendationsExp) {
-			this.fetchMFILoans();
-		}
-
-		// The lending-home experiment tracking should only be enabled for logged-in users
-		if (this.isLoggedIn) {
-			const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
+		// The /lending-home experiment should only be tracked for users who have logged in
+		if (getHasEverLoggedIn(this.apollo)) {
+			const { enabled } = getExperimentSettingCached(this.apollo, LOAN_FINDING_EXP_KEY);
 			if (enabled) {
 				trackExperimentVersion(
 					this.apollo,
 					this.$kvTrackEvent,
 					'Lending',
-					'loan_finding_page',
+					LOAN_FINDING_EXP_KEY,
 					'EXP-CORE-854-Dec2022'
 				);
 			}

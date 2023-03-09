@@ -38,7 +38,6 @@
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
-						v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
 					>
 						{{ ctaButtonText }}
 					</kv-ui-button>
@@ -46,11 +45,10 @@
 					<!-- Lend again/lent previously button -->
 					<kv-ui-button
 						key="lendAgainButton"
-						v-if="isLentTo && !isLessThan25"
+						v-if="showLendAgain"
 						class="lend-again"
 						data-testid="bp-lend-cta-lend-again-button"
 						type="submit"
-						v-kv-track-event="['Lending', 'Add to basket', 'Lend again', loanId, loanId]"
 					>
 						Lend again
 					</kv-ui-button>
@@ -88,13 +86,22 @@
 			Checkout now
 		</kv-ui-button>
 
-		<!-- Funded, refunded, expired/ allSharesReserved button -->
+		<!-- Refunded, allSharesReserved button -->
 		<kv-ui-button
 			v-if="showNonActionableLoanButton"
 			class="tw-inline-flex tw-flex-1"
 		>
 			{{ ctaButtonText }}
 		</kv-ui-button>
+
+		<!-- Funded / expired -->
+		<div
+			v-if="isFunded"
+			class="tw-w-full tw-text-center tw-rounded tw-p-2"
+			style="background: #f1f1f1;"
+		>
+			This loan was just funded! 🎉
+		</div>
 	</div>
 </template>
 
@@ -142,10 +149,14 @@ export default {
 	},
 	methods: {
 		async addToBasket() {
-			this.$emit(
-				'add-to-basket',
-				isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption
+			this.$kvTrackEvent(
+				'Lending',
+				'Add to basket',
+				this.showLendAgain ? 'Lend again' : 'lend-button-click',
+				this.loanId,
+				this.amountToLend
 			);
+			this.$emit('add-to-basket', this.amountToLend);
 		},
 	},
 	watch: {
@@ -203,12 +214,8 @@ export default {
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
-				case 'funded':
-					return 'Find another loan';
 				case 'refunded':
 				case 'expired':
-				case 'fully-reserved':
-					return 'Find another loan';
 				default:
 					return 'Lend';
 			}
@@ -248,10 +255,8 @@ export default {
 			return this.state === 'lend' || this.state === 'loading';
 		},
 		showNonActionableLoanButton() {
-			return this.state === 'funded'
-				|| this.state === 'refunded'
-				|| this.state === 'expired'
-				|| this.state === 'fully-reserved';
+			return this.state === 'refunded'
+				|| this.state === 'expired';
 		},
 		hideShowLendDropdown() {
 			return this.state === 'lend' || this.state === 'lent-to';
@@ -274,7 +279,17 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
-		}
+		},
+		isFunded() {
+			return this.state === 'funded'
+				|| this.state === 'fully-reserved';
+		},
+		amountToLend() {
+			return this.isLessThan25 ? this.unreservedAmount : this.selectedOption;
+		},
+		showLendAgain() {
+			return this.isLentTo && !this.isLessThan25;
+		},
 	},
 };
 

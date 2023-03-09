@@ -37,11 +37,13 @@
 		<div class="row">
 			<quick-filters
 				class="tw-z-2"
+				:class="{ 'tw-px-1 md:tw-px-2' : !enableFilterPills }"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				tracking-category="search"
+				:enable-filter-pills="enableFilterPills"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
@@ -49,10 +51,16 @@
 		</div>
 
 		<div class="row tw-relative">
+			<!-- emtpy state for no loans result -->
+			<empty-state
+				v-show="emptyState"
+				class="tw-mb-2 tw-mx-1 md:tw-mx-2"
+			/>
+
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
 			<div v-if="loans.length > 0" class="tw-w-full">
-				<div v-if="!displayLoanPromoCard">
+				<div v-if="!displayLoanPromoCard || emptyState">
 					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in loans">
 							<kiva-classic-basic-loan-card-exp
@@ -213,6 +221,7 @@ import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import EmptyState from '@/components/LoanFinding/EmptyState';
 
 const defaultLoansPerPage = 12;
 
@@ -332,6 +341,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFilterPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		LoanCardController,
@@ -343,6 +356,7 @@ export default {
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
 		PromoGridLoanCardExp,
+		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
@@ -422,6 +436,7 @@ export default {
 			if (this.showHelpMeChooseFeat) {
 				return _filter(this.allLoans, (loan, index) => index < 6);
 			}
+			if (this.emptyState) return this.backupLoans;
 			return this.allLoans;
 		},
 		firstLoan() {
@@ -489,6 +504,9 @@ export default {
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
 			return !hasSortBy && this.allLoans.length > 8;
+		},
+		emptyState() {
+			return this.allLoans.length <= 0;
 		}
 	},
 	apollo: {
@@ -622,6 +640,8 @@ export default {
 
 		// Load all available facets for specified sector
 		await this.fetchFacets();
+
+		this.backupLoans = this.loans.slice(3);
 	},
 	methods: {
 		handleQuickFiltersOverlay(showOverlay) {

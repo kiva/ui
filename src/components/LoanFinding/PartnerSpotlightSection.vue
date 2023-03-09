@@ -1,7 +1,7 @@
 <template>
 	<div v-if="loans.length > 0" class="tw-w-full tw-bg-secondary">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<m-f-i-hero
+			<spotlight-hero
 				section-title="IMPACT AT KIVA"
 				:headline="headline"
 				:subheadline="subheadline"
@@ -35,13 +35,13 @@
 </template>
 
 <script>
-import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
+import SpotlightHero from './SpotlightHero';
 
 export default {
 	name: 'PartnerSpotlightSection',
 	components: {
-		MFIHero,
+		SpotlightHero,
 		LendingCategorySection
 	},
 	inject: ['apollo', 'cookieStore'],
