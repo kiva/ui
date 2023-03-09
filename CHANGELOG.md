@@ -1,3 +1,11 @@
+### [2.521.1](https://github.com/kiva/ui/compare/v2.521.0...v2.521.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* api error from querying trusteeType ([c3bf4b7](https://github.com/kiva/ui/commit/c3bf4b7eeca184066cf190ca35d402ac2268db39))
+* labels ([9b8ec8b](https://github.com/kiva/ui/commit/9b8ec8bb612d6f502794b3fce278f4e8967a48f0))
+
 ## [2.521.0](https://github.com/kiva/ui/compare/v2.520.0...v2.521.0) (2023-03-09)
 
 
