@@ -529,8 +529,6 @@ import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
-import { setLendAmount } from '@/util/basketUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -553,9 +551,6 @@ const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
 
 export default {
 	name: 'TheHeader',
-	mixins: [
-		addToBasketInsterstitial
-	],
 	components: {
 		CampaignLogoGroup,
 		KivaLogo,
@@ -688,27 +683,6 @@ export default {
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
 			this.hasEverLoggedIn = data?.hasEverLoggedIn;
-
-			// Handle expired basket cookie after refresh
-			const failedLoan = this.cookieStore.get('failedLoan');
-			if (failedLoan) {
-				const loan = JSON.parse(failedLoan);
-				setLendAmount({
-					apollo: this.apollo,
-					amount: loan.price,
-					loanId: loan.id,
-					basketId: this.cookieStore.get('ksbskt')
-				}).then(() => {
-					this.triggerAddToBasketInterstitial(loan.id);
-				}).catch(e => {
-					const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
-						? e[0].message
-						: 'There was a problem adding the loan to your basket';
-
-					this.$showTipMsg(msg, 'error');
-				});
-				this.cookieStore.remove('failedLoan');
-			}
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
