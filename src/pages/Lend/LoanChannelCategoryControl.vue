@@ -36,7 +36,8 @@
 
 		<div class="row">
 			<quick-filters
-				class="tw-z-2 tw-px-1 md:tw-px-2"
+				class="tw-z-2"
+				:class="{ 'tw-px-1 md:tw-px-2' : !enableFilterPills }"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
