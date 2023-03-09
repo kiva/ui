@@ -37,11 +37,13 @@
 		<div class="row">
 			<quick-filters
 				class="tw-z-2"
+				:class="{ 'tw-px-1 md:tw-px-2' : !enableFilterPills }"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				tracking-category="search"
+				:enable-filter-pills="enableFilterPills"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
@@ -336,6 +338,10 @@ export default {
 			default: false
 		},
 		enableLoanCardExp: {
+			type: Boolean,
+			default: false
+		},
+		enableFilterPills: {
 			type: Boolean,
 			default: false
 		},

@@ -5,12 +5,12 @@
 		v-click-outside="closeRegions"
 	>
 		<label
-			:class="{'tw-text-h4': withCategories, 'tw-hidden': !withCategories}"
+			:class="{'tw-text-h4': !enableFilterPills, 'tw-hidden': enableFilterPills}"
 			for="location"
 		>
 			Location
 		</label>
-		<div v-if="withCategories">
+		<div v-if="!enableFilterPills">
 			<kv-text-input
 				type="text"
 				id="location"
@@ -29,7 +29,6 @@
 			<div
 				class="
 					tw-flex
-					tw-bg-primary
 					filter-pill
 					tw-transition
 					tw-rounded
@@ -228,10 +227,10 @@ export default {
 			type: String,
 			required: true,
 		},
-		withCategories: {
+		enableFilterPills: {
 			type: Boolean,
-			required: true,
-		}
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -345,7 +344,7 @@ export default {
 			return 'All countries';
 		},
 		wrapperClass() {
-			return this.withCategories ? 'locationWrapper' : '';
+			return !this.enableFilterPills ? 'locationWrapper' : '';
 		}
 	},
 	watch: {
