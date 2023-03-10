@@ -20,7 +20,7 @@ function logSetLendAmountError(loanId, err) {
 }
 
 export function setLendAmount({
-	amount, apollo, loanId, basketId = 0
+	amount, apollo, loanId, basketId = '0'
 }) {
 	return new Promise((resolve, reject) => {
 		const price = numeral(amount).format('0.00');
