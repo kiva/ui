@@ -1,3 +1,18 @@
+## [2.524.0](https://github.com/kiva/ui/compare/v2.523.1...v2.524.0) (2023-03-10)
+
+
+### Features
+
+* handle invalid basket cookie ([4816b70](https://github.com/kiva/ui/commit/4816b70bad225d4a397668bae2042b9893051f8f))
+* retry add loan to the basket when basket cookie has expired ([2871c8a](https://github.com/kiva/ui/commit/2871c8a75c7ab229c3dc4ef58948dcd36432a797))
+
+
+### Bug Fixes
+
+* cookie name and show tip msg when reloading the page ([407ff9c](https://github.com/kiva/ui/commit/407ff9c14b997b27ac5b9850c7df11454bbcbab9))
+* mutation basketId type ([2a01cae](https://github.com/kiva/ui/commit/2a01caee1230508e6ae30f068fb684deda616979))
+* set placeholder for shop id optimisticResponse ([390d273](https://github.com/kiva/ui/commit/390d2732007e142133c5b3698eb90b900051ce7f))
+
 ### [2.523.1](https://github.com/kiva/ui/compare/v2.523.0...v2.523.1) (2023-03-10)
 
 
