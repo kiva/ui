@@ -1,3 +1,15 @@
+## [2.526.0](https://github.com/kiva/ui/compare/v2.525.1...v2.526.0) (2023-03-10)
+
+
+### Features
+
+* more link element added to loanuse component ([fe1204d](https://github.com/kiva/ui/commit/fe1204d92d81a143f8f64fcf850a431ef6a9a872))
+
+
+### Bug Fixes
+
+* prop an unused css code removed ([9b8544f](https://github.com/kiva/ui/commit/9b8544f17e4337a672fb005bbbefc0618535bd8c))
+
 ### [2.525.1](https://github.com/kiva/ui/compare/v2.525.0...v2.525.1) (2023-03-10)
 
 
