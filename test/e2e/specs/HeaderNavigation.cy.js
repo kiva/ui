@@ -10,7 +10,8 @@ describe('Header Navigation', () => {
 		});
 
 		// Go to the lend/filter page
-		cy.visit('lend/filter?setuiab=lend_menu_buttons.a');
+		cy.visit('ui-site-map');
+		cy.visit('ui-site-map?setuiab=lend_menu_buttons.a');
 		// Type 'f' in the search bar
 		cy.findByPlaceholderText('Search all loans').type('f');
 		// Wait for search results request to complete
@@ -18,7 +19,7 @@ describe('Header Navigation', () => {
 		// Click on the "Fabrics" tag in the search results
 		cy.contains('Fabrics').click();
 		// Expect to visit the lend page
-		cy.location('pathname').should('eq', '/lend/filter');
+		cy.location('pathname', { timeout: 10000 }).should('eq', '/lend/filter');
 		// Wait for loan facets to load
 		cy.wait('@gqlflssLoanFacetsQuery');
 		// Expect "Fabrics" filter chip to exist
