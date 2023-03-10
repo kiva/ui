@@ -23,6 +23,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
@@ -50,6 +51,7 @@ export default {
 		LoanChannelCategoryControl,
 		WwwPage,
 	},
+	mixins: [retryAfterExpiredBasket],
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

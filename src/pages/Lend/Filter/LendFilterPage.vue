@@ -127,6 +127,7 @@ import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu'
 import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 
 // TODO: Use this
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -196,6 +197,7 @@ export default {
 		algoliaInit,
 		algoliaCustomCategories,
 		lendFilterExpMixin,
+		retryAfterExpiredBasket
 	],
 	created() {
 		// subscribe to and set page query data

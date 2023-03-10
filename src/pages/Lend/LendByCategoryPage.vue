@@ -99,6 +99,7 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
 const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
@@ -118,6 +119,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 	},
+	mixins: [retryAfterExpiredBasket],
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
 		return {
