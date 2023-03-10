@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-mb-3 tw-rounded md:tw-bg-primary md:tw-p-3">
+	<section class="tw-mb-3 tw-px-2 tw-rounded md:tw-bg-primary md:tw-p-3">
 		<h1 class="tw-text-h3 tw-mb-2">
 			Account overview
 		</h1>
@@ -52,7 +52,7 @@
 			<kv-button
 				class="tw-col-span-12 lg:tw-col-span-4"
 				to="/lend-by-category"
-				v-kv-track-event="['Portfolio', 'click', 'find-a-loan']"
+				v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
 			>
 				Find a loan
 			</kv-button>
