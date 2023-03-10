@@ -71,23 +71,24 @@
 						v-if="isLoading"
 						:style="{ width: '100%', height: '5.5rem' }"
 					/>
-
-					<router-link
-						v-else
-						:is="allSharesReserved ? 'span' : 'router-link'"
-						:to="customLoanDetails ? '' : `/lend/${loanId}`"
-						v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-						class="loan-card-use tw-text-primary"
-					>
-						<loan-use
-							:use="loanUse"
-							:loan-amount="loanAmount"
-							:status="loanStatus"
-							:borrower-count="loanBorrowerCount"
-							:name="borrowerName"
-							:distribution-model="distributionModel"
-						/>
-					</router-link>
+					<div v-else>
+						<router-link
+							:is="allSharesReserved ? 'span' : 'router-link'"
+							:to="customLoanDetails ? '' : `/lend/${loanId}`"
+							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+							class="loan-card-use tw-text-primary"
+						>
+							<loan-use
+								:use="loanUse"
+								:loan-amount="loanAmount"
+								:status="loanStatus"
+								:borrower-count="loanBorrowerCount"
+								:name="borrowerName"
+								:distribution-model="distributionModel"
+								:show-more="true"
+							/>
+						</router-link>
+					</div>
 				</div>
 			</div>
 
@@ -229,6 +230,10 @@ export default {
 		categoryPageName: {
 			type: String,
 			default: '',
+		},
+		showMoreLink: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -511,7 +516,7 @@ export default {
 }
 
 .loan-card-active-hover:hover .loan-card-use {
-	@apply tw-underline;
+	@apply tw-no-underline;
 }
 
 .loan-card-progress >>> [role=progressbar] {

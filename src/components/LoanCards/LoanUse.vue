@@ -1,6 +1,13 @@
 <template>
 	<p class="tw-line-clamp-4">
 		{{ loanUse }}
+
+		<span
+			v-if="showMore"
+			class="tw-text-action tw-text-h5 tw-underline tw-inline"
+		>
+			More
+		</span>
 	</p>
 </template>
 
@@ -44,6 +51,10 @@ export default {
 			type: String,
 			default: DIRECT
 		},
+		showMore: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		helpLanguage() {
