@@ -18,7 +18,6 @@
 					@click="showLoanDetails"
 				>
 					<router-link
-						:is="allSharesReserved ? 'span' : 'router-link'"
 						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 						class="tw-flex"
@@ -73,7 +72,6 @@
 					/>
 					<div v-else>
 						<router-link
-							:is="allSharesReserved ? 'span' : 'router-link'"
 							:to="customLoanDetails ? '' : `/lend/${loanId}`"
 							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
 							class="loan-card-use tw-text-primary"
@@ -118,7 +116,6 @@
 
 			<router-link
 				v-if="unreservedAmount > 0"
-				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
 				class="loan-card-progress tw-mt-1"
@@ -168,13 +165,11 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
 import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}
@@ -242,8 +237,6 @@ export default {
 		LoanProgressGroup,
 		KvMaterialIcon,
 		SummaryTag,
-		KvUiButton,
-		ActionButton,
 		LendCtaExp,
 		LoanTagV2,
 		LoanCallouts,
@@ -331,12 +324,6 @@ export default {
 				return formattedString;
 			}
 			return this.countryName;
-		},
-		allSharesReserved() {
-			if (parseFloat(this.loan?.unreservedAmount) === 0) {
-				return true;
-			}
-			return false;
 		},
 		loanUse() {
 			return this.loan?.use ?? '';
