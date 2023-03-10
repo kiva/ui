@@ -1,3 +1,10 @@
+### [2.525.1](https://github.com/kiva/ui/compare/v2.525.0...v2.525.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* remove organizationType due to redundancy and being not used ([1b2bc3c](https://github.com/kiva/ui/commit/1b2bc3c45e5f7ecb31d41c370e4e556d19042173))
+
 ## [2.525.0](https://github.com/kiva/ui/compare/v2.524.0...v2.525.0) (2023-03-10)
 
 
