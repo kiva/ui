@@ -165,13 +165,11 @@ import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
 import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}
@@ -239,8 +237,6 @@ export default {
 		LoanProgressGroup,
 		KvMaterialIcon,
 		SummaryTag,
-		KvUiButton,
-		ActionButton,
 		LendCtaExp,
 		LoanTagV2,
 		LoanCallouts,
