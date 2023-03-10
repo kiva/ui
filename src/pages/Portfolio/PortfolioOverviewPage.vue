@@ -4,11 +4,11 @@
 			<the-my-kiva-secondary-menu />
 		</template>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12">
+			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0">
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
 				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-3">
 					<account-overview />
-					<!-- recent loans -->
+					<recent-loans-list />
 					<!-- rec'd loans -->
 					<!-- kiva effect -->
 					<!-- updates -->
@@ -28,6 +28,7 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
+import RecentLoansList from './RecentLoansList';
 
 export default {
 	name: 'PortfolioOverviewPage',
@@ -35,6 +36,7 @@ export default {
 		AccountOverview,
 		KvGrid,
 		KvPageContainer,
+		RecentLoansList,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,

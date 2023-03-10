@@ -26,7 +26,6 @@ query loanPartnerTrustee(
 				trustee {
 					id
 					organizationName
-					organizationType
 					contactRecord {
 						state
 					}

@@ -24,12 +24,6 @@
 						{{ trusteeName }}
 					</span>
 				</div>
-				<div v-if="this.organizationType">
-					<dt>Organization type:</dt>
-					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
-						{{ organizationType }}
-					</dd>
-				</div>
 				<div v-if="this.trusteeLocation">
 					<dt>Location:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
@@ -132,7 +126,6 @@ export default {
 		return {
 			// borrowerName: '',
 			trusteeName: '',
-			organizationType: '',
 			trusteeLocation: '',
 			timeOnKiva: '',
 			numBorrowers: '',
@@ -156,7 +149,6 @@ export default {
 		result({ data }) {
 			// this.borrowerName = _get(data, 'lend.loan.name');
 			this.trusteeName = _get(data, 'lend.loan.trustee.organizationName');
-			this.organizationType = _get(data, 'lend.loan.trustee.organizationType');
 			this.trusteeLocation = _get(data, 'lend.loan.trustee.trusteeLocation');
 			this.timeOnKiva = _get(data, 'lend.loan.trustee.memberSince');
 			this.numBorrowers = _get(data, 'lend.loan.trustee.trusteeStats.numLoansEndorsedPublic');
