@@ -1,3 +1,13 @@
+### [2.526.2](https://github.com/kiva/ui/compare/v2.526.1...v2.526.2) (2023-03-10)
+
+
+### Bug Fixes
+
+* ensure e2e test uses ui header ([4e8f958](https://github.com/kiva/ui/commit/4e8f958b5ffbbeff283e4148bfc68a227940fb11))
+* removed unused components ([287d2ce](https://github.com/kiva/ui/commit/287d2ce2b08061164beb20bcbd3055037210b51f))
+* reserved loan cards should still be clickable ([6edd204](https://github.com/kiva/ui/commit/6edd204d06e8968ea3b63e96fa9923596048e2fc))
+* use sitemap instead ([0985655](https://github.com/kiva/ui/commit/0985655dcca043668aa1260a8ea4ad5fd399953a))
+
 ### [2.526.1](https://github.com/kiva/ui/compare/v2.526.0...v2.526.1) (2023-03-10)
 
 
