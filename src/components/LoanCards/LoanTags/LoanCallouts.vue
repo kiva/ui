@@ -17,7 +17,6 @@
 					tw-text-ellipsis
 					tw-overflow-hidden
 					tw-rounded-full
-					tw-bg-tertiary
 					tw-font-medium
 					tw-py-0.5
 					tw-px-1

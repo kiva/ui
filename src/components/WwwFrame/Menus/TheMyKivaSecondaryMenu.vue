@@ -1,35 +1,43 @@
 <template>
-	<div>
-		<secondary-menu class="show-for-large">
-			<ul class="row">
-				<li>
+	<div class="tw-bg-action-highlight tw-font-medium">
+		<kv-page-container class="tw-hidden md:tw-block">
+			<ul>
+				<li class="tw-inline-block">
 					<router-link
 						to="/portfolio"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
 					>
 						Portfolio
 					</router-link>
 				</li>
-				<li>
+				<li class="tw-inline-block">
 					<router-link
 						to="/teams/my-teams"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-My-teams']"
 					>
 						My teams
 					</router-link>
 				</li>
-				<li>
+				<li class="tw-inline-block">
 					<router-link
 						to="/account/messages"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Messages']"
 					>
 						Messages
 					</router-link>
 				</li>
-				<li>
+				<li class="tw-inline-block">
 					<router-link
 						id="settings-link"
 						to="/settings"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Settings']"
 					>
 						Settings
@@ -37,37 +45,49 @@
 					<kv-dropdown
 						controller="settings-link"
 					>
-						<the-settings-tertiary-menu
-							class="tertiary-menu"
-						/>
+						<the-settings-tertiary-menu />
 					</kv-dropdown>
 				</li>
-				<li v-if="isBorrower">
+				<li class="tw-inline-block" v-if="isBorrower">
 					<router-link
 						to="/my/borrower"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-dashboard']"
 					>
 						Borrower Dashboard
 					</router-link>
 				</li>
-				<li v-if="isTrustee">
+				<li class="tw-inline-block" v-if="isTrustee">
 					<router-link
 						to="/my/trustee"
+						active-class="tw-underline"
+						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Trustee-dashboard']"
 					>
 						Trustee Dashboard
 					</router-link>
 				</li>
 			</ul>
-		</secondary-menu>
-		<div class="mobile-nav hide-for-large">
+		</kv-page-container>
+		<div class="md:tw-hidden">
 			<button
 				@click="toggle"
 				aria-controls="tertiary-combo-nav"
 				:aria-expanded="open ? 'true' : 'false'"
+				class="
+					tw-bg-action-highlight
+					tw-w-full tw-h-8 tw-px-2
+					tw-text-primary-inverse hover:tw-underline
+					tw-flex tw-items-center tw-justify-between
+				"
 			>
-				<span class="mobile-nav-title">{{ myKivaCategory }}</span>
-				<kv-icon name="small-chevron-mobile" class="chevron-icon" :from-sprite="true" />
+				<span class="tw-capitalize">{{ myKivaCategory }}</span>
+				<kv-material-icon
+					class="tw-h-4 tw-w-4 tw-transition tw-transform tw-duration-500 tw-ease"
+					:class="{ 'tw-rotate-180' : open }"
+					:icon="mdiChevronDown"
+				/>
 			</button>
 			<kv-expandable easing="ease-in-out">
 				<div
@@ -77,15 +97,16 @@
 					:aria-hidden="open ? 'false' : 'true'"
 				>
 					<template v-if="myKivaCategory === 'portfolio'">
-						<the-portfolio-tertiary-menu />
+						<the-portfolio-tertiary-menu class="tw-bg-tertiary tw-py-1 tw-pl-4" />
 					</template>
 					<template v-else-if="myKivaCategory === 'settings'">
-						<the-settings-tertiary-menu />
+						<the-settings-tertiary-menu class="tw-bg-tertiary tw-py-1 tw-pl-2" />
 					</template>
-					<ul>
+					<ul class="tw-bg-secondary">
 						<li>
 							<router-link
 								to="/portfolio"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
 							>
 								Portfolio
@@ -94,6 +115,7 @@
 						<li>
 							<router-link
 								to="/teams/my-teams"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-My-teams']"
 							>
 								My teams
@@ -102,6 +124,7 @@
 						<li>
 							<router-link
 								to="/account/messages"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Messages']"
 							>
 								Messages
@@ -110,6 +133,7 @@
 						<li>
 							<router-link
 								to="/settings"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Settings']"
 							>
 								Settings
@@ -118,6 +142,7 @@
 						<li v-if="isBorrower">
 							<router-link
 								to="/my/borrower"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-dashboard']"
 							>
 								Borrower Dashboard
@@ -126,6 +151,7 @@
 						<li v-if="isTrustee">
 							<router-link
 								to="/my/trustee"
+								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Trustee-dashboard']"
 							>
 								Trustee Dashboard
@@ -139,27 +165,27 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
+import { gql } from '@apollo/client';
+import { mdiChevronDown } from '@mdi/js';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
 } from '@/util/touchEvents';
-import myKivaMenuQuery from '@/graphql/query/myKivaSecondaryMenu.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
-import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'TheMyKivaSecondaryMenu',
 	components: {
 		KvDropdown,
 		KvExpandable,
-		KvIcon,
-		SecondaryMenu,
+		KvMaterialIcon,
+		KvPageContainer,
 		ThePortfolioTertiaryMenu,
 		TheSettingsTertiaryMenu
 	},
@@ -170,15 +196,24 @@ export default {
 			isBorrower: false,
 			isTrustee: false,
 			usingTouch: false,
+			mdiChevronDown,
 		};
 	},
 	apollo: {
-		query: myKivaMenuQuery,
+		query: gql`query myKivaSecondaryMenu {
+			my {
+				isBorrower
+				trustee {
+					id
+				}
+			}
+			usingTouch @client
+		}`,
 		preFetch: true,
 		result({ data }) {
-			this.isBorrower = _get(data, 'my.isBorrower');
-			this.isTrustee = !!_get(data, 'my.trustee.id');
-			this.usingTouch = _get(data, 'usingTouch');
+			this.isBorrower = data?.my?.isBorrower ?? false;
+			this.isTrustee = !!data?.my?.trustee?.id;
+			this.usingTouch = data?.usingTouch ?? false;
 		},
 	},
 	computed: {
@@ -215,102 +250,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import 'settings';
+<style lang="postcss" scoped>
+.desktop-link {
+	@apply tw-block tw-pr-4 tw-py-2 tw-text-primary-inverse hover:tw-underline hover:tw-text-primary-inverse;
+}
 
-.mobile-nav {
-	background-color: $kiva-bg-lightgray;
-	margin: 0;
-
-	.mobile-nav-title {
-		text-transform: capitalize;
-	}
-
-	.sec-ter-combo-nav {
-		position: absolute;
-		top: rem-calc(90);
-		width: 100%;
-		z-index: 10;
-	}
-
-	ul {
-		margin: 0;
-		background-color: $kiva-bg-lightgray;
-		list-style-type: none;
-
-		li {
-			border-bottom: 1px solid $kiva-stroke-gray;
-
-			a,
-			a:active,
-			a:visited,
-			a.router-link-active {
-				padding: 0 1rem;
-				font-weight: normal;
-				line-height: rem-calc(45);
-			}
-		}
-	}
-
-	button {
-		display: block;
-		color: $white;
-		font-weight: normal;
-		padding: 0 1rem;
-		background-color: $kiva-darkgreen;
-		width: 100%;
-		text-align: left;
-		line-height: rem-calc(45);
-
-		&:hover {
-			span {
-				text-decoration: underline;
-			}
-		}
-
-		.chevron-icon {
-			stroke: $white;
-			color: $white;
-			float: right;
-			height: rem-calc(45);
-			width: rem-calc(25);
-			transition: transform 300ms ease;
-		}
-	}
-
-	button:focus {
-		outline: none;
-	}
-
-	button[aria-expanded="true"] {
-		.chevron-icon {
-			transform: rotate(-180deg);
-		}
-	}
-
-	.tertiary-nav {
-		padding: 0;
-
-		ul {
-			background-color: $kiva-bg-darkgray;
-
-			li {
-				margin: 0;
-				border: none;
-
-				a,
-				a:active,
-				a:visited,
-				a:hover,
-				a.router-link-active {
-					padding: 0 1rem 0 1.75rem;
-				}
-
-				a.router-link-exact-active {
-					color: $kiva-text-light;
-				}
-			}
-		}
-	}
+.mobile-link {
+	@apply tw-block tw-px-2 tw-py-1 tw-w-full tw-border-b tw-border-tertiary;
 }
 </style>

@@ -42,6 +42,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 			optimisticResponse: {
 				__typename: 'Mutation',
 				shop: {
+					id: '0',
 					__typename: 'ShopMutation',
 					updateLoanReservation: {
 						__typename: 'LoanReservation',
@@ -76,4 +77,10 @@ export function setLendAmount({ amount, apollo, loanId }) {
 
 export function setDonationAmount() {
 	// TODO
+}
+
+export function handleInvalidBasket({ loan, cookieStore }) {
+	cookieStore.remove('kvbskt', { path: '/', secure: true });
+	cookieStore.set('kvatbid', JSON.stringify(loan));
+	window.location.reload();
 }

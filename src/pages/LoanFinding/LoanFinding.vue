@@ -12,13 +12,14 @@
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
-					Welcome back, <span class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+					Welcome back{{ firstName ? ', ' : '' }}
+					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
 			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				title="Recommended for you"
-				subtitle="Loans handpicked for you based on your lending history"
+				:title="recommendedTitle"
+				:subtitle="recommendedSubtitle"
 				:loans="recommendedLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
@@ -30,6 +31,9 @@
 				:enable-loan-card-exp="enableLoanCardExp"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
+
+			<!-- Element to trigger spotlight observer -->
+			<div ref="spotlightObserver"></div>
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
@@ -76,14 +80,19 @@ import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
+import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
+const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
+const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
 
 export default {
 	name: 'LoanFinding',
@@ -97,35 +106,42 @@ export default {
 		WelcomeLightbox,
 		KvLightbox
 	},
+	mixins: [retryAfterExpiredBasket],
 	data() {
 		return {
 			userInfo: {},
-			recommendedLoans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 }
-			],
+			recommendedLoans: [],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
 			showLightbox: false,
 			enableLoanCardExp: false,
-			spotlightIndex: 0
+			spotlightIndex: 0,
+			spotlightViewportObserver: null,
 		};
 	},
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			return client.query({
+			const userInfoPromise = client.query({
 				query: userInfoQuery,
 			});
+
+			const recommendedLoansPromise = client.query({
+				query: flssLoansQuery,
+				variables: prefetchedRecommendedLoansVariables
+			});
+
+			return Promise.all([userInfoPromise, recommendedLoansPromise]);
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};
 		}
 	},
 	computed: {
+		isLoggedIn() {
+			return !!this.userInfo?.id;
+		},
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		},
@@ -138,16 +154,33 @@ export default {
 		},
 		activeSpotlightData() {
 			return spotlightData[this.spotlightIndex] ?? {};
-		}
+		},
+		recommendedTitle() {
+			return this.isLoggedIn ? 'Recommended for you' : 'Recommended by others';
+		},
+		recommendedSubtitle() {
+			return this.isLoggedIn
+				? 'Loans handpicked for you based on your lending history'
+				: 'These borrowers need your support. Log in for personalized recommendations.';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
 			const { loans } = await runLoansQuery(
 				this.apollo,
-				{ sortBy: 'personalized', pageLimit: 12 },
+				{ pageLimit: 12 },
 				FLSS_ORIGIN_LENDING_HOME
 			);
-			this.recommendedLoans = loans;
+
+			// Ensure unique loans are pushed since recommendations can change quickly
+			const remainingRecommendedLoans = loans
+				.filter(l => !this.recommendedLoans.filter(r => r.id === l.id).length)
+				.slice(0, 10);
+
+			this.recommendedLoans = [
+				...this.recommendedLoans.slice(0, 2),
+				...remainingRecommendedLoans
+			];
 		},
 		async getSecondCategoryData() {
 			this.secondCategoryLoans = await this.getMatchedLoans();
@@ -212,9 +245,40 @@ export default {
 			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
 			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
 			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
-		}
+		},
+		createSpotlightViewportObserver() {
+			this.spotlightViewportObserver = createIntersectionObserver({
+				targets: [this.$refs.spotlightObserver],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.fetchSpotlightLoans();
+						}
+					});
+				}
+			});
+		},
+		destroySpotlightViewportObserver() {
+			if (this.spotlightViewportObserver) {
+				this.spotlightViewportObserver.disconnect();
+			}
+		},
 	},
 	created() {
+		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
+		const cachedRecommendedLoans = this.apollo.readQuery({
+			query: flssLoansQuery,
+			variables: prefetchedRecommendedLoansVariables
+		})?.fundraisingLoans?.values ?? [];
+		this.recommendedLoans = [
+			...cachedRecommendedLoans,
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 }
+		];
+
 		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
 		if (loanCardExpData.enabled) {
 			const { version } = trackExperimentVersion(
@@ -231,8 +295,10 @@ export default {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
-		this.fetchSpotlightLoans();
 		this.showToast();
+
+		// create observer for spotlight loans
+		this.createSpotlightViewportObserver();
 
 		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
 		if (enabled) {
@@ -246,16 +312,19 @@ export default {
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
-		const categoriesRedirectData = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		const categoriesRedirectData = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP_KEY);
 		if (categoriesRedirectData.enabled) {
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'categories_page',
+				CATEGORIES_REDIRECT_EXP_KEY,
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+	},
+	beforeDestroy() {
+		this.destroySpotlightViewportObserver();
 	},
 };
 </script>

@@ -1,3 +1,229 @@
+### [2.525.1](https://github.com/kiva/ui/compare/v2.525.0...v2.525.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* remove organizationType due to redundancy and being not used ([1b2bc3c](https://github.com/kiva/ui/commit/1b2bc3c45e5f7ecb31d41c370e4e556d19042173))
+
+## [2.525.0](https://github.com/kiva/ui/compare/v2.524.0...v2.525.0) (2023-03-10)
+
+
+### Features
+
+* recent loans section for Portfolio Overview page MARS-350 ([b16a796](https://github.com/kiva/ui/commit/b16a79633a599d3740e77365e3e502b40bee6f12))
+
+## [2.524.0](https://github.com/kiva/ui/compare/v2.523.1...v2.524.0) (2023-03-10)
+
+
+### Features
+
+* handle invalid basket cookie ([4816b70](https://github.com/kiva/ui/commit/4816b70bad225d4a397668bae2042b9893051f8f))
+* retry add loan to the basket when basket cookie has expired ([2871c8a](https://github.com/kiva/ui/commit/2871c8a75c7ab229c3dc4ef58948dcd36432a797))
+
+
+### Bug Fixes
+
+* cookie name and show tip msg when reloading the page ([407ff9c](https://github.com/kiva/ui/commit/407ff9c14b997b27ac5b9850c7df11454bbcbab9))
+* mutation basketId type ([2a01cae](https://github.com/kiva/ui/commit/2a01caee1230508e6ae30f068fb684deda616979))
+* set placeholder for shop id optimisticResponse ([390d273](https://github.com/kiva/ui/commit/390d2732007e142133c5b3698eb90b900051ce7f))
+
+### [2.523.1](https://github.com/kiva/ui/compare/v2.523.0...v2.523.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* comment out lp route handling for cms-page-server verification ([48ad0c6](https://github.com/kiva/ui/commit/48ad0c6dc0caa85c71bed8f25c7fdecfe2300f4a))
+
+## [2.523.0](https://github.com/kiva/ui/compare/v2.522.0...v2.523.0) (2023-03-09)
+
+
+### Features
+
+* add test id based on loan type to bp ([914d0d6](https://github.com/kiva/ui/commit/914d0d64b988227ebd7f6fe10f78e8d0b5ae7a50))
+
+## [2.522.0](https://github.com/kiva/ui/compare/v2.521.1...v2.522.0) (2023-03-09)
+
+
+### Features
+
+* new ui for quick filters showed under a test ([3ca3400](https://github.com/kiva/ui/commit/3ca34009dc06a97c069380e7c746e3b618bfc5b6))
+
+
+### Bug Fixes
+
+* padding fixed when pills are showed ([f749500](https://github.com/kiva/ui/commit/f74950021a618d3e4b400d300248644d72b890b9))
+* unused prop removed from locationselector component ([1fe526c](https://github.com/kiva/ui/commit/1fe526c74d6aa029c9cc443ac6a333b32a89b05a))
+
+### [2.521.1](https://github.com/kiva/ui/compare/v2.521.0...v2.521.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* api error from querying trusteeType ([c3bf4b7](https://github.com/kiva/ui/commit/c3bf4b7eeca184066cf190ca35d402ac2268db39))
+* labels ([9b8ec8b](https://github.com/kiva/ui/commit/9b8ec8bb612d6f502794b3fce278f4e8967a48f0))
+
+## [2.521.0](https://github.com/kiva/ui/compare/v2.520.0...v2.521.0) (2023-03-09)
+
+
+### Features
+
+* mg experiment removed from lend menu ([7c7c7e2](https://github.com/kiva/ui/commit/7c7c7e2b2bad87dd7332312690b830f1261f5d4f))
+
+
+### Bug Fixes
+
+* unusued mgentrypoint instances removed ([d83c391](https://github.com/kiva/ui/commit/d83c391478a44102ac9b4964ef260b923e2f3000))
+
+## [2.520.0](https://github.com/kiva/ui/compare/v2.519.1...v2.520.0) (2023-03-08)
+
+
+### Features
+
+* update auto deposit copy ([ef31c8e](https://github.com/kiva/ui/commit/ef31c8e931acee41857290f8ef7760ad134d9efd))
+
+### [2.519.1](https://github.com/kiva/ui/compare/v2.519.0...v2.519.1) (2023-03-08)
+
+
+### Bug Fixes
+
+* added loan amount to ATB events on category and lend/filter pages ([71404b5](https://github.com/kiva/ui/commit/71404b5f94a346a78bfef5e1ec21e14638e7a1d2))
+
+## [2.519.0](https://github.com/kiva/ui/compare/v2.518.0...v2.519.0) (2023-03-07)
+
+
+### Features
+
+* allow guest users who have logged in to participate in lending-home exp ([cd80a91](https://github.com/kiva/ui/commit/cd80a916ada09c5cb465074708d58ec106e6ea52))
+* change LH headers for logged out users ([f9682e8](https://github.com/kiva/ui/commit/f9682e8ce6d1defd74a4c3148ad54f4251e69a03))
+
+## [2.518.0](https://github.com/kiva/ui/compare/v2.517.0...v2.518.0) (2023-03-07)
+
+
+### Features
+
+* field partner replaced by lending partner at bottom of bp ([232c950](https://github.com/kiva/ui/commit/232c9505cae3160f636873e764457b28cecd5498))
+* stop gender pills moving when selected ([2802a1b](https://github.com/kiva/ui/commit/2802a1b75ef2d4c3c4d894fcd11bb03258388097))
+
+## [2.517.0](https://github.com/kiva/ui/compare/v2.516.0...v2.517.0) (2023-03-07)
+
+
+### Features
+
+* empty state added to category page for non-loans result ([b0c49e7](https://github.com/kiva/ui/commit/b0c49e7b8fade0cc7b86bcccc5d9d1b98ab517c9))
+
+
+### Bug Fixes
+
+* emtpy state fixed for promo card version ([994cad7](https://github.com/kiva/ui/commit/994cad77f8e1e95bf6a2a6beb9b687039857df8f))
+
+## [2.516.0](https://github.com/kiva/ui/compare/v2.515.0...v2.516.0) (2023-03-06)
+
+
+### Features
+
+* loading state for quick filter genders ([0b58eeb](https://github.com/kiva/ui/commit/0b58eebd5066f25beff7ee04925cc8c5e0170f5a))
+
+
+### Bug Fixes
+
+* minor clean-up ([80223a3](https://github.com/kiva/ui/commit/80223a3263e2ad811eb7c837ab445e712be02500))
+
+## [2.515.0](https://github.com/kiva/ui/compare/v2.514.1...v2.515.0) (2023-03-06)
+
+
+### Features
+
+* messages updated for already loans in lendctaexp component ([2160e02](https://github.com/kiva/ui/commit/2160e0244502eebac93907ec3b062c626fc198e8))
+
+
+### Bug Fixes
+
+* bg color replaced for funded message ([7678577](https://github.com/kiva/ui/commit/7678577cf197e6f01c8ba122825d75a0db8f6637))
+
+### [2.514.1](https://github.com/kiva/ui/compare/v2.514.0...v2.514.1) (2023-03-06)
+
+
+### Bug Fixes
+
+* use prefetch client ([2c96783](https://github.com/kiva/ui/commit/2c96783dd1f2c75294a02ab8ca741462dcd54c9d))
+
+## [2.514.0](https://github.com/kiva/ui/compare/v2.513.0...v2.514.0) (2023-03-06)
+
+
+### Features
+
+* mfi recommendations experiment removed from lbc page ([1b5f39c](https://github.com/kiva/ui/commit/1b5f39cfbfc03f04df30fcafe5b7d9338744967a))
+
+
+### Bug Fixes
+
+* trigger moved for spotlight observer ([5975272](https://github.com/kiva/ui/commit/597527257b9ad4cdf11d308128def2b71506eaa4))
+
+## [2.513.0](https://github.com/kiva/ui/compare/v2.512.0...v2.513.0) (2023-03-03)
+
+
+### Features
+
+* lazy loading method added to spotlight section in lending home ([2fb4428](https://github.com/kiva/ui/commit/2fb4428894c68dd7cea0d2e8ed68c4a9ea5030de))
+
+## [2.512.0](https://github.com/kiva/ui/compare/v2.511.0...v2.512.0) (2023-03-02)
+
+
+### Features
+
+* additional pages added to quick filter sections in lh ([6c64ef8](https://github.com/kiva/ui/commit/6c64ef88f977469c1dac61d44367a0021b9c240a))
+
+
+### Bug Fixes
+
+* unused method removed in quickfiltersection component ([45a2302](https://github.com/kiva/ui/commit/45a23028bd71dd78b5ad400335391f36d174d07b))
+
+## [2.511.0](https://github.com/kiva/ui/compare/v2.510.2...v2.511.0) (2023-03-02)
+
+
+### Features
+
+* server cache data for first two recommended loans ([872bd23](https://github.com/kiva/ui/commit/872bd23809eb63156367b6d709580abd40e83498))
+
+### [2.510.2](https://github.com/kiva/ui/compare/v2.510.1...v2.510.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* remaining tracking ([1ec8b1b](https://github.com/kiva/ui/commit/1ec8b1bb30ef251bcef64a5a5c815a93737789ae))
+
+### [2.510.1](https://github.com/kiva/ui/compare/v2.510.0...v2.510.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* mismatched experiment key ([973a28f](https://github.com/kiva/ui/commit/973a28f0147cc75c208fba4910bed9d48e26dd2e))
+
+## [2.510.0](https://github.com/kiva/ui/compare/v2.509.0...v2.510.0) (2023-03-02)
+
+
+### Features
+
+* portfolio overview page frame and account summary MARS-349 ([5dcda40](https://github.com/kiva/ui/commit/5dcda4077d819a9ace30dbb93c35a23b2c4e53ae))
+
+
+### Bug Fixes
+
+* remove foundation styles from portfolio & settings menus and lending stats page ([7f1ce30](https://github.com/kiva/ui/commit/7f1ce30bca3ea52d0f2f209fffb022ac4e01877c))
+
+## [2.509.0](https://github.com/kiva/ui/compare/v2.508.1...v2.509.0) (2023-03-01)
+
+
+### Features
+
+* padding decreased for lend again button in lendctaexp component ([8d74d4d](https://github.com/kiva/ui/commit/8d74d4df27b15a62ca24cd91317bd080a1a46e49))
+
+
+### Bug Fixes
+
+* css fixed for first span in lend again button ([d4eb750](https://github.com/kiva/ui/commit/d4eb750d41ad8b56190200a1e88a6571129bbdd2))
+* css updates lendctaexp ([670a291](https://github.com/kiva/ui/commit/670a2911191f9a78da3f902a3830d683f09ec11f))
+
 ### [2.508.1](https://github.com/kiva/ui/compare/v2.508.0...v2.508.1) (2023-03-01)
 
 

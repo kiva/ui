@@ -1,6 +1,7 @@
 <template>
 	<www-page
 		id="borrower-profile"
+		:data-testid="loanType"
 	>
 		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
@@ -559,6 +560,13 @@ export default {
 		},
 		showFundraising() {
 			return this.amountLeft && this.status === 'fundraising';
+		},
+		loanType() {
+			// eslint-disable-next-line no-underscore-dangle
+			if (this.loan?.__typename === 'LoanDirect') {
+				return 'direct-loan';
+			}
+			return 'partner-loan';
 		}
 	},
 	created() {

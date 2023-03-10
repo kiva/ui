@@ -21,16 +21,9 @@
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
 			/>
-			<!-- eslint-disable max-len -->
-			<div
-				v-show="emptyState"
-				class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-bg-white tw-px-2 tw-pb-2 lg:tw-py-4 lg:tw-px-8 tw-items-center"
-			>
-				<img class="tw-w-8 lg:tw-w-16" src="~@/assets/images/sad_cloud.svg">
-				<h2 class="tw-text-h2">
-					We couldn’t find any loans that match your current filters but here are other recommended loans for you.
-				</h2>
-			</div>
+			<!-- emtpy state for no loans result -->
+			<empty-state v-show="emptyState" />
+
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
 				<template v-for="(loan, index) in loans">
 					<kiva-classic-basic-loan-card-exp
@@ -41,6 +34,7 @@
 						:use-full-width="true"
 						:show-tags="true"
 						@add-to-basket="addToBasket"
+						style="min-height: 500px;"
 					/>
 					<kiva-classic-basic-loan-card
 						v-else
@@ -58,25 +52,12 @@
 			<div class="tw-w-full tw-my-4">
 				<kv-pagination
 					v-show="!emptyState"
-					:total="totalCount >= 12 ? 12 : totalCount"
+					:total="totalCount"
 					:limit="loanSearchState.pageLimit"
 					:offset="loanSearchState.pageOffset"
 					@page-changed="pageChange"
 					:scroll-to-top="false"
 				/>
-			</div>
-			<div v-show="showSeeMoreCta" class="tw-w-full tw-my-4 tw-text-center">
-				<kv-button
-					variant="secondary"
-					:href="filterPageUrl()"
-					v-kv-track-event="[
-						'lending-home',
-						'click',
-						'quick-filters-view-more-loans'
-					]"
-				>
-					See more loans
-				</kv-button>
 			</div>
 		</div>
 	</div>
@@ -90,7 +71,7 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import EmptyState from './EmptyState';
 
 export default {
 	name: 'QuickFiltersSection',
@@ -99,7 +80,7 @@ export default {
 		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCard,
 		KvPagination,
-		KvButton
+		EmptyState
 	},
 	inject: ['apollo'],
 	props: {
@@ -156,29 +137,9 @@ export default {
 		this.totalCount = totalCount;
 		this.backupLoans = this.loans.slice(3);
 	},
-	computed: {
-		showSeeMoreCta() {
-			return this.loanSearchState.pageOffset !== 0 && !this.flssLoanSearch.activityId;
-		}
-	},
 	methods: {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		},
-		filterPageUrl() {
-			const location = this.flssLoanSearch.countryIsoCode?.toString();
-			// parse, stringify, and undefined are all needed to ensure
-			// we don't have a gender=undefined or gender= in our string
-			const paramStr = JSON.parse(JSON.stringify({
-				gender: this.flssLoanSearch.gender || undefined,
-				sortBy: this.flssLoanSearch.sortBy || undefined,
-				sector: this.flssLoanSearch.sectorId || undefined,
-				tag: this.flssLoanSearch.tagId || undefined,
-				attribute: this.flssLoanSearch.themeId || undefined,
-				location: location || undefined,
-			}));
-			const params = new URLSearchParams(paramStr);
-			return `/lend/filter?${params.toString()}`;
 		},
 		// TODO: Rearchitect this at some point.
 		// This won't work for categories that have

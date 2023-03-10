@@ -116,7 +116,7 @@
 			</div>
 
 			<router-link
-				v-else
+				v-if="unreservedAmount > 0"
 				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
@@ -145,6 +145,7 @@
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
 				class="tw-mt-auto"
+				:class="{ 'tw-w-full' : unreservedAmount <= 0 }"
 			/>
 		</div>
 	</div>
@@ -164,7 +165,7 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, handleInvalidBasket } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
@@ -442,14 +443,26 @@ export default {
 					this.lessThan25 ? this.amountLeft : 25
 				);
 			}).catch(e => {
-				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
 					? e?.[0]?.message
 					: 'There was a problem adding the loan to your basket';
-				this.$showTipMsg(msg, 'error');
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(e);
+				// Handle errors from adding to basket
+				if (e?.[0]?.extensions?.code === 'shop.invalidBasketId') {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+					return handleInvalidBasket({
+						cookieStore: this.cookieStore,
+						loan: {
+							id: this.loanId,
+							price: lendAmount
+						}
+					});
+				}
+				this.$showTipMsg(msg, 'error');
+				this.isAdding = false;
 			});
 		},
 	},

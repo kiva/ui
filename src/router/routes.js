@@ -408,7 +408,6 @@ module.exports = [
 		component: () => import('@/pages/LoanFinding/LoanFinding'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			authenticationRequired: true,
 		}
 	},
 	{
@@ -446,6 +445,8 @@ module.exports = [
 		path: '/lp/support-refugees',
 		redirect: '/refugees'
 	},
+	// Preserved for cms-page-server rollout, will remove after validation
+	/*
 	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -455,6 +456,7 @@ module.exports = [
 			unbouncePopUp: true,
 		},
 	},
+	*/
 	{
 		path: '/hp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -496,6 +498,14 @@ module.exports = [
 		}),
 		meta: {
 			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/portfolio/overview',
+		component: () => import('@/pages/Portfolio/PortfolioOverviewPage'),
+		meta: {
+			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},
