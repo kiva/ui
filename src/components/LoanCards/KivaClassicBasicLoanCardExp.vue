@@ -6,7 +6,7 @@
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<div class="tw-grow">
-			<div :class="{ 'loan-card-active-hover': !allSharesReserved }">
+			<div>
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
@@ -231,10 +231,6 @@ export default {
 			type: String,
 			default: '',
 		},
-		showMoreLink: {
-			type: Boolean,
-			default: false
-		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -510,13 +506,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+
+.loan-card-use,
 .loan-card-use:hover,
 .loan-card-use:focus {
-	@apply tw-text-primary;
-}
-
-.loan-card-active-hover:hover .loan-card-use {
-	@apply tw-no-underline;
+	@apply tw-text-primary tw-no-underline;
 }
 
 .loan-card-progress >>> [role=progressbar] {
