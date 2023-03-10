@@ -6,7 +6,7 @@
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<div class="tw-grow">
-			<div :class="{ 'loan-card-active-hover': !allSharesReserved }">
+			<div>
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
@@ -71,23 +71,24 @@
 						v-if="isLoading"
 						:style="{ width: '100%', height: '5.5rem' }"
 					/>
-
-					<router-link
-						v-else
-						:is="allSharesReserved ? 'span' : 'router-link'"
-						:to="customLoanDetails ? '' : `/lend/${loanId}`"
-						v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-						class="loan-card-use tw-text-primary"
-					>
-						<loan-use
-							:use="loanUse"
-							:loan-amount="loanAmount"
-							:status="loanStatus"
-							:borrower-count="loanBorrowerCount"
-							:name="borrowerName"
-							:distribution-model="distributionModel"
-						/>
-					</router-link>
+					<div v-else>
+						<router-link
+							:is="allSharesReserved ? 'span' : 'router-link'"
+							:to="customLoanDetails ? '' : `/lend/${loanId}`"
+							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+							class="loan-card-use tw-text-primary"
+						>
+							<loan-use
+								:use="loanUse"
+								:loan-amount="loanAmount"
+								:status="loanStatus"
+								:borrower-count="loanBorrowerCount"
+								:name="borrowerName"
+								:distribution-model="distributionModel"
+								:show-more="true"
+							/>
+						</router-link>
+					</div>
 				</div>
 			</div>
 
@@ -229,7 +230,7 @@ export default {
 		categoryPageName: {
 			type: String,
 			default: '',
-		}
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -505,13 +506,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+
+.loan-card-use,
 .loan-card-use:hover,
 .loan-card-use:focus {
-	@apply tw-text-primary;
-}
-
-.loan-card-active-hover:hover .loan-card-use {
-	@apply tw-underline;
+	@apply tw-text-primary tw-no-underline;
 }
 
 .loan-card-progress >>> [role=progressbar] {
