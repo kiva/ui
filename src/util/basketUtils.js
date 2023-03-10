@@ -19,9 +19,7 @@ function logSetLendAmountError(loanId, err) {
 	}
 }
 
-export function setLendAmount({
-	amount, apollo, loanId, basketId = '0'
-}) {
+export function setLendAmount({ amount, apollo, loanId }) {
 	return new Promise((resolve, reject) => {
 		const price = numeral(amount).format('0.00');
 		apollo.mutate({
@@ -44,7 +42,7 @@ export function setLendAmount({
 			optimisticResponse: {
 				__typename: 'Mutation',
 				shop: {
-					id: basketId,
+					id: '0',
 					__typename: 'ShopMutation',
 					updateLoanReservation: {
 						__typename: 'LoanReservation',

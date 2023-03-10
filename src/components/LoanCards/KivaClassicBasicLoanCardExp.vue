@@ -432,7 +432,6 @@ export default {
 				amount: lendAmount,
 				apollo: this.apollo,
 				loanId: this.loanId,
-				basketId: this.cookieStore.get('kvbskt'),
 			}).then(() => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
