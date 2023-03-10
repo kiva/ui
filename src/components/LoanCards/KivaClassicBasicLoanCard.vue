@@ -249,7 +249,7 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, handleInvalidBasket } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
@@ -543,6 +543,17 @@ export default {
 			}).catch(e => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
+				if (['shop.invalidBasketId', 'shop.basketRequired'].includes(e?.[0]?.extensions?.code)) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+					return handleInvalidBasket({
+						cookieStore: this.cookieStore,
+						loan: {
+							id: this.loanId,
+							price: this.lendAmount
+						}
+					});
+				}
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';

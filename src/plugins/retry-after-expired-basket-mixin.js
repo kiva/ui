@@ -6,7 +6,7 @@ const injections = ['apollo', 'cookieStore'];
 
 export default {
 	mixins: [addToBasketInsterstitial],
-	created() {
+	mounted() {
 		checkInjections(this, injections);
 
 		// Handle expired basket cookie after refresh
