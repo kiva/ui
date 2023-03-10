@@ -18,7 +18,6 @@
 					@click="showLoanDetails"
 				>
 					<router-link
-						:is="allSharesReserved ? 'span' : 'router-link'"
 						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 						class="tw-flex"
@@ -73,7 +72,6 @@
 					/>
 					<div v-else>
 						<router-link
-							:is="allSharesReserved ? 'span' : 'router-link'"
 							:to="customLoanDetails ? '' : `/lend/${loanId}`"
 							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
 							class="loan-card-use tw-text-primary"
@@ -118,7 +116,6 @@
 
 			<router-link
 				v-if="unreservedAmount > 0"
-				:is="allSharesReserved ? 'span' : 'router-link'"
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
 				class="loan-card-progress tw-mt-1"
@@ -331,12 +328,6 @@ export default {
 				return formattedString;
 			}
 			return this.countryName;
-		},
-		allSharesReserved() {
-			if (parseFloat(this.loan?.unreservedAmount) === 0) {
-				return true;
-			}
-			return false;
 		},
 		loanUse() {
 			return this.loan?.use ?? '';
