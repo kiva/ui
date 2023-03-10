@@ -445,6 +445,8 @@ module.exports = [
 		path: '/lp/support-refugees',
 		redirect: '/refugees'
 	},
+	// Preserved for cms-page-server rollout, will remove after validation
+	/*
 	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -454,6 +456,7 @@ module.exports = [
 			unbouncePopUp: true,
 		},
 	},
+	*/
 	{
 		path: '/hp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
