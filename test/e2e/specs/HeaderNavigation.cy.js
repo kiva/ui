@@ -9,8 +9,8 @@ describe('Header Navigation', () => {
 			aliasQuery(req, 'flssLoanFacets');
 		});
 
-		// Go to the home page
-		cy.visit('/');
+		// Go to the lend/filter page
+		cy.visit('lend/filter?setuiab=lend_menu_buttons.a');
 		// Type 'f' in the search bar
 		cy.findByPlaceholderText('Search all loans').type('f');
 		// Wait for search results request to complete
