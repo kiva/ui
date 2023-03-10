@@ -1,3 +1,10 @@
+### [2.526.1](https://github.com/kiva/ui/compare/v2.526.0...v2.526.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* add new error code when basket.shop is null and move retry atb to mounted hook ([a419244](https://github.com/kiva/ui/commit/a4192445ec4f09df48027612b6d39445892b288d))
+
 ## [2.526.0](https://github.com/kiva/ui/compare/v2.525.1...v2.526.0) (2023-03-10)
 
 
