@@ -1,3 +1,10 @@
+### [2.523.1](https://github.com/kiva/ui/compare/v2.523.0...v2.523.1) (2023-03-10)
+
+
+### Bug Fixes
+
+* comment out lp route handling for cms-page-server verification ([48ad0c6](https://github.com/kiva/ui/commit/48ad0c6dc0caa85c71bed8f25c7fdecfe2300f4a))
+
 ## [2.523.0](https://github.com/kiva/ui/compare/v2.522.0...v2.523.0) (2023-03-09)
 
 
