@@ -1,3 +1,10 @@
+## [2.525.0](https://github.com/kiva/ui/compare/v2.524.0...v2.525.0) (2023-03-10)
+
+
+### Features
+
+* recent loans section for Portfolio Overview page MARS-350 ([b16a796](https://github.com/kiva/ui/commit/b16a79633a599d3740e77365e3e502b40bee6f12))
+
 ## [2.524.0](https://github.com/kiva/ui/compare/v2.523.1...v2.524.0) (2023-03-10)
 
 
