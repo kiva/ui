@@ -166,7 +166,7 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import { setLendAmount, handleInvalidBasket } from '@/util/basketUtils';
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
@@ -451,7 +451,7 @@ export default {
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(e);
 				// Handle errors from adding to basket
-				if (e?.[0]?.extensions?.code === 'shop.invalidBasketId') {
+				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
 					return handleInvalidBasket({

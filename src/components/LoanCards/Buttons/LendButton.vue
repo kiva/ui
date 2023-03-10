@@ -14,7 +14,7 @@ import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
-import { handleInvalidBasket } from '@/util/basketUtils';
+import { handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -70,7 +70,7 @@ export default {
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
 							Sentry.captureMessage(`Add to Basket: ${error.message}`);
-							if (error?.extensions?.code === 'shop.invalidBasketId') {
+							if (hasBasketExpired(error?.extensions?.code)) {
 								// eslint-disable-next-line max-len
 								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
 								return handleInvalidBasket({

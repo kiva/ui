@@ -84,3 +84,7 @@ export function handleInvalidBasket({ loan, cookieStore }) {
 	cookieStore.set('kvatbid', JSON.stringify(loan));
 	window.location.reload();
 }
+
+export function hasBasketExpired(errorCode) {
+	return ['shop.invalidBasketId', 'shop.basketRequired'].includes(errorCode);
+}
