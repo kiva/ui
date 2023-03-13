@@ -1,35 +1,8 @@
 
 query getPersonalizedLoans($limit: Int!, $filters: [FundraisingLoanSearchFilterInput!], $origin: String) {
 	fundraisingLoans(limit: $limit, sortBy: personalized, filters: $filters, origin: $origin) {
-		totalCount
 		values {
 			id
-			distributionModel
-			status
-			loanFundraisingInfo {
-				fundedAmount
-				isExpiringSoon
-				reservedAmount
-			}
-			geocode {
-				city
-				state
-				country {
-					name
-					isoCode
-				}
-			}
-			image {
-				id
-				hash
-			}
-			name
-
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
-			borrowerCount
 		}
 	}
 }

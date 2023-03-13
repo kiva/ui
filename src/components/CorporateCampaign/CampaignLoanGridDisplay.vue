@@ -5,7 +5,6 @@
 	>
 		<div class="columns align-self-middle" v-if="isVisible && loans.length > 0">
 			<div class="loan-card-group row tw-gap-x-4">
-				<!-- GridLoanCard or LendHomepageLoanCard -->
 				<kiva-classic-basic-loan-card
 					class="tw-mb-4"
 					v-for="(loan, index) in loanIds"

@@ -102,7 +102,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import { createIntersectionObserver } from '@/util/observerUtils';
@@ -338,8 +337,8 @@ export default {
 								loanId: parseInt(this.loan.id, 10),
 								limit: row.limit
 							}
-						}).then(data => {
-							const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
+						}).then(({ data }) => {
+							const loans = data?.ml?.relatedLoansByTopics[0]?.values ?? [];
 							this.categories = [
 								...this.categories,
 								{

@@ -158,8 +158,6 @@ import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
-import loanUseFilter from '@/plugins/loan-use-filter';
-
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
 const preFetchQuery = gql`
@@ -210,6 +208,7 @@ const preFetchQuery = gql`
 				loanAmount
 				status
 				use
+				fullLoanUse @client
 				fundraisingPercent @client
 				loanFundraisingInfo {
 					fundedAmount
@@ -383,11 +382,10 @@ export default {
 			numLenders: 0,
 			name: '',
 			hash: '',
-			borrowerCount: 0,
 			anonymizationLevel: 'none',
 			loanAmount: '0',
 			status: '',
-			use: '',
+			fullLoanUse: '',
 			loanFundraisingInfo: {},
 			shareCardLanguageVersion: '',
 			inviterName: '',
@@ -470,11 +468,10 @@ export default {
 			this.hash = loan?.image?.hash ?? '';
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.endDate = loan?.plannedExpirationDate ? format(parseISO(loan?.plannedExpirationDate), 'M/d') : '';
-			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
-			this.use = loan?.use ?? '';
+			this.fullLoanUse = loan?.fullLoanUse ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
@@ -539,8 +536,7 @@ export default {
 			return `Lend to ${this.name} in ${this.countryName}`;
 		},
 		pageDescription() {
-			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
-				this.loanUseMaxLength, this.anonymizationLevel);
+			return this.fullLoanUse;
 		},
 		shareTitle() {
 			if (this.anonymizationLevel === 'full') {

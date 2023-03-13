@@ -162,12 +162,8 @@ export default {
 	},
 	computed: {
 		loanUse() {
-			return this.$options.filters.loanUse(this.loan.use,
-				this.loan.name,
-				this.loan.status,
-				this.loan.loanAmount,
-				this.loan.borrowerCount,
-				this.loanUseMaxLength);
+			const use = this.loan?.fullLoanUse ?? '';
+			return use.length > this.loanUseMaxLength ? `${use.slice(0, this.loanUseMaxLength)}...` : use;
 		},
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
