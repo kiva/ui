@@ -2,22 +2,11 @@
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
 			<span class="tw-mb-2 md:tw-mb-0">
-				<kv-button
-					class="loan-filters__toggle tw-pr-2"
-					variant="secondary"
-					@click.native.prevent="showFilters()"
-				>
-					<span class="loan-filters__toggle-text">
-						Filter loans
-					</span>
-					<kv-material-icon
-						aria-hidden="true"
-						class="loan-filters__toggle-icon"
-						name="chevron-down"
-						:icon="mdiChevronDown"
-					/>
-				</kv-button>
-				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
+				<div class="tw-inline-flex tw-items-center">
+					<h2 class="tw-text-center">
+						{{ promoName }} recommends these people
+					</h2>
+				</div>
 			</span>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
@@ -25,6 +14,17 @@
 					class="tw-flex tw-cursor-pointer tw-items-center"
 					id="view-toggle"
 				>
+					<span class=" tw-inline-block tw-border-r tw-border-tertiary tw-px-1.5">
+						{{ totalCount }} loans
+					</span>
+					<span
+						class="tw-inline-flex"
+						@click="showFilters()"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-border-r tw-border-tertiary tw-px-1.5">
+							Filter loans
+						</h4>
+					</span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
 					>
@@ -33,7 +33,7 @@
 							v-show="activeLoanDisplay === 'grid'"
 							@click="setLoanDisplayMode('rows')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
 								Row View
 							</h4>
 							<kv-material-icon
@@ -44,7 +44,6 @@
 						</span>
 					</span>
 
-					<span class="divider"></span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
 					>
@@ -53,7 +52,7 @@
 							v-show="activeLoanDisplay === 'rows'"
 							@click="setLoanDisplayMode('grid')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
 								Grid View
 							</h4>
 							<kv-material-icon
@@ -306,6 +305,10 @@ export default {
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
+		},
+		promoName: {
+			type: String,
+			default: null
 		},
 		showLoanDisplayToggle: {
 			type: Boolean,
