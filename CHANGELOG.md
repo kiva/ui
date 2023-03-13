@@ -1,3 +1,15 @@
+## [2.527.0](https://github.com/kiva/ui/compare/v2.526.2...v2.527.0) (2023-03-13)
+
+
+### Features
+
+* [CIT-102] changing cc landing page header to match design specs ([6a772d9](https://github.com/kiva/ui/commit/6a772d9d3a82f8fd5665b812e64cb16d76d3295e))
+
+
+### Bug Fixes
+
+* indentation and other linting issues ([f187df4](https://github.com/kiva/ui/commit/f187df4149d8641d9fc7560a42ef56bb288d423b))
+
 ### [2.526.2](https://github.com/kiva/ui/compare/v2.526.1...v2.526.2) (2023-03-10)
 
 
