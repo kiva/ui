@@ -651,14 +651,6 @@ export default {
 	}
 }
 
-.divider {
-		border-left: 4px solid $kiva-stroke-gray;
-		float: left;
-		height: 99%;
-		padding-left: 0.75rem;
-
-	}
-
 .chips {
 	&__toggle-container {
 		display: block;
