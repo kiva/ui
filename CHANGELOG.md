@@ -1,3 +1,10 @@
+### [2.527.2](https://github.com/kiva/ui/compare/v2.527.1...v2.527.2) (2023-03-14)
+
+
+### Bug Fixes
+
+* unable to read undefined props in CCLanding and LoanChannel pages ([9ebf147](https://github.com/kiva/ui/commit/9ebf147d90609d5128796749a10c65b7ccdc2c1e))
+
 ### [2.527.1](https://github.com/kiva/ui/compare/v2.527.0...v2.527.1) (2023-03-14)
 
 
