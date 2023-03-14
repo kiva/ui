@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="columns">
 				<campaign-loan-filters
-					:promo-name="promoName"
+					:promo-name="componentProps.promoName"
 					:applied-filters="componentProps.filters"
 					:initial-filters="componentProps.initialFilters"
 					:excluded-tags="componentProps.excludedTags"
@@ -89,11 +89,7 @@ export default {
 		componentProps: {
 			type: Object,
 			default: () => {}
-		},
-		promoName: {
-			type: String,
-			default: null
-		},
+		}
 	}
 };
 </script>

@@ -36,7 +36,6 @@
 				/>
 				<campaign-loan-wrapper
 					ref="mlLoanDisplay"
-					:promo-name="campaignPartnerName"
 					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
@@ -784,7 +783,8 @@ export default {
 				handleUpdateAvailableLoans: this.handleUpdateAvailableLoans,
 				promoAmount: numeral(this.promoAmount).format('0.00'),
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
-				basketLoans: this.basketLoans
+				basketLoans: this.basketLoans,
+				promoName: this.campaignPartnerName
 			};
 		},
 		pageSettingData() {
@@ -1065,6 +1065,7 @@ export default {
 			}).then(response => {
 				// eslint-disable-next-line max-len
 				const isLendingReward = response.data?.shop?.promoCampaign?.managedAccount?.managementType === 'lending_reward';
+				debugger;
 				// Verify that applied promotion is for current page
 				if (this.verifyPromoMatchesPageId(response.data?.shop?.promoCampaign?.managedAccount?.pageId)) {
 					this.promoData = response.data?.shop?.promoCampaign;
