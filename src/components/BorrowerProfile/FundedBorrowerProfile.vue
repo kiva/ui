@@ -338,7 +338,7 @@ export default {
 								limit: row.limit
 							}
 						}).then(({ data }) => {
-							const loans = data?.ml?.relatedLoansByTopics[0]?.values ?? [];
+							const loans = data?.ml?.relatedLoansByTopics?.[0]?.values ?? [];
 							this.categories = [
 								...this.categories,
 								{
