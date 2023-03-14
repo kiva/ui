@@ -63,10 +63,6 @@
 				</div>
 				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-xlarge">
 					<borrower-info-body
-						:amount="loan.loanAmount"
-						:borrower-count="loan.borrowerCount"
-						:name="loan.name"
-						:status="loan.status"
 						:max-use-length="200"
 						:use="loan.fullLoanUse"
 						:loan-id="loan.id"
