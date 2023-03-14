@@ -2,14 +2,33 @@
 	<div class="tw-mb-1">
 		<div
 			v-if="showPromoCreditTotal"
-			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
+			class="tw-flex tw-flex-row tw-w-full tw-mb-2"
 			data-testid="basket-order-total"
 		>
-			<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+			<div
+				class="tw-w-auto tw-text-right tw-flex-1"
+				v-if="isCorporateCampaignPage"
+			>
+				Total:
+			</div>
+			<span
+				v-if="isCorporateCampaignPage"
+				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2"
+			>
+				{{ itemTotal }}
+			</span>
+			<div
+				class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1 tw-text-h3"
+				v-if="!isCorporateCampaignPage"
+			>
 				Order Total:
 			</div>
-			<span class="tw-float-right md:tw-float-none tw-text-right tw-pl-2">
-				{{ itemTotal }}</span>
+			<span
+				v-if="!isCorporateCampaignPage"
+				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2 tw-text-h3"
+			>
+				{{ itemTotal }}
+			</span>
 			<!-- icon spacer -->
 			<span class="tw-w-4.5"></span>
 		</div>
@@ -79,10 +98,10 @@
 
 		<div v-if="showPromoCreditTotal">
 			<div
-				class="tw-text-h3 tw-mb-2 tw-text-left md:tw-text-right
+				class="tw-mb-2 tw-text-left md:tw-text-right
 			tw-flex tw-justify-end tw-items-center" data-testid="basket-promo-total"
 			>
-				<span class="tw-w-full">
+				<span class="tw-w-full tw-text-h3 " v-if="!isCorporateCampaignPage">
 					<template v-if="availablePromoTotal">
 						{{ availablePromoTotal }}
 					</template>
@@ -98,9 +117,15 @@
 
 				<div class="tw-flex tw-items-center">
 					<span
+						v-if="!isCorporateCampaignPage"
+						data-testid="promo-amount"
+						class="tw-pl-2 tw-text-right tw-whitespace-nowrap tw-text-h3 "
+					>- {{ appliedPromoTotal }}</span>
+					<span
+						v-else
 						data-testid="promo-amount"
 						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
-					>- {{ appliedPromoTotal }}</span>
+					>{{ promoFundDisplayName }} pays {{ appliedPromoTotal }}</span>
 					<button
 						v-if="showRemoveActivePromoCredit"
 						@click="promoOptOutLightboxVisible = true"
@@ -122,7 +147,11 @@
 				>
 					Apply
 				</button>
-				<div v-if="hasUPCCode" class="upc-disclaimer" data-testid="basket-upc-promo-disclaimer">
+				<div
+					v-if="hasUPCCode && !isCorporateCampaignPage"
+					class="upc-disclaimer"
+					data-testid="basket-upc-promo-disclaimer"
+				>
 					<p class="tw-text-small">
 						Remember to use all your {{ promoFundDisplayName }} credits in one transaction.
 						You cannot use the remaining credits later.
@@ -134,7 +163,7 @@
 				data-testid="promo-tool-tip"
 				controller="promo_name"
 				theme="mint"
-				v-if="promoFundDisplayDescription"
+				v-if="promoFundDisplayDescription && !isCorporateCampaignPage"
 			>
 				{{ promoFundDisplayDescription }}
 			</kv-tooltip>
@@ -142,12 +171,23 @@
 
 		<div class="tw-text-h3 tw-mb-1 tw-text-right" data-testid="total-due">
 			<div class="tw-flex tw-w-full tw-justify-end tw-items-center">
-				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
+				<div
+					class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1"
+					v-if="!isCorporateCampaignPage"
+				>
 					<template v-if="!showPromoCreditTotal">
 						Total:
 					</template>
 					<template v-else>
 						Total Due:
+					</template>
+				</div>
+				<div
+					v-if="isCorporateCampaignPage"
+					class="tw-w-auto tw-text-right tw-flex-1"
+				>
+					<template>
+						You'll pay:
 					</template>
 				</div>
 				<div
@@ -352,6 +392,9 @@ export default {
 				isUserEdited: false,
 				price: numeral(this.totals.donationTotal)
 			};
+		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
 		}
 	},
 	methods: {

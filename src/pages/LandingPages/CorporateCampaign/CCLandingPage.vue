@@ -164,6 +164,7 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+					custom-checkout-button-text="Checkout"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refreshtotals="refreshTotals"
@@ -1245,7 +1246,6 @@ export default {
 
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
-					console.log('incontextcheckout ref: ', this.$refs.inContextCheckoutRef);
 					if (this.$refs.inContextCheckoutRef) {
 						this.balanceLeftoverCredits();
 						this.$refs.inContextCheckoutRef.updatingTotals = false;

@@ -28,7 +28,10 @@
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+		<div
+			:class="`in-context-login ${isCorporateCampaignPage ? '' : 'tw-text-right'}`"
+			v-if="!isActivelyLoggedIn"
+		>
 			<kv-button
 				v-if="!isActivelyLoggedIn"
 				class="smaller checkout-button"
@@ -36,7 +39,7 @@
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
 			>
-				Continue
+				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
 		<div class="in-context-payment-conttrols" v-else>
@@ -132,6 +135,10 @@ export default {
 		promoFund: {
 			type: Object,
 			default: () => {},
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Continue'
 		}
 	},
 	data() {
@@ -169,6 +176,9 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
+		}
 	},
 	methods: {
 		completeTransaction(transactionId) {
