@@ -496,7 +496,7 @@ const getContentGroups = pageData => {
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
-	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+	const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 	return pageEntry ? processPageContent(pageEntry) : { error: 'Contentful entry not found' };
 };
 
@@ -662,16 +662,16 @@ export default {
 		});
 
 		this.rawPageData = data;
-		const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
-		this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
-		this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
-		this.initialBasketCredits = data.shop?.basket?.credits?.values ?? [];
+		this.lendingRewardOffered = data?.shop?.lendingRewardOffered ?? false;
+		this.hasFreeCredits = data?.shop?.basket?.hasFreeCredits ?? false;
+		this.initialBasketCredits = data?.shop?.basket?.credits?.values ?? [];
 
-		const basketItems = data.shop?.basket?.items?.values ?? [];
+		const basketItems = data?.shop?.basket?.items?.values ?? [];
 		this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
-		this.isVisitor = !data.my?.userAccount?.id ?? true;
+		this.isVisitor = !data?.my?.userAccount?.id ?? true;
 
 		const pageData = getPageData(data);
 		this.contentGroups = getContentGroups(pageData);
