@@ -17,7 +17,10 @@
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 				/>
 
-				<campaign-progress-bar />
+				<campaign-progress-bar
+					:promo-amount="componentProps.promoAmount"
+					:upc-credit-remaining="componentProps.upcCreditRemaining"
+				/>
 
 				<campaign-loan-row
 					name="Loan Row"
@@ -26,6 +29,7 @@
 					:filters="componentProps.filters"
 					:is-visitor="componentProps.isVisitor"
 					:items-in-basket="componentProps.itemsInBasket"
+					:basket-loans="componentProps.basketLoans"
 					:is-logged-in="!componentProps.isVisitor"
 					:is-visible="componentProps.showLoanRows"
 					:key="'one-category'"
@@ -48,6 +52,7 @@
 					:is-visible="!componentProps.showLoanRows"
 					:is-visitor="componentProps.isVisitor"
 					:items-in-basket="componentProps.itemsInBasket"
+					:basket-loans="componentProps.basketLoans"
 					:promo-only="componentProps.promoOnlyQuery"
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"

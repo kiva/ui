@@ -12,8 +12,9 @@
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
+			@jump-to-loans="$emit('jump-to-loans')"
 		/>
 
 		<hr>
@@ -23,7 +24,7 @@
 			:totals="totals"
 			:promo-fund="derivedPromoFund"
 			@credit-removed="$emit('credit-removed')"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
 		/>
 
@@ -44,7 +45,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -52,7 +53,7 @@
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -131,7 +132,7 @@ export default {
 		promoFund: {
 			type: Object,
 			default: () => {},
-		},
+		}
 	},
 	data() {
 		return {

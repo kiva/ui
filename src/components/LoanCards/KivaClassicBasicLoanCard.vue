@@ -143,7 +143,7 @@
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
-						Checkout now
+						{{ customCheckoutButtonText }}
 						<kv-material-icon
 							class="tw-w-2.5 tw-h-2.5"
 							:icon="mdiCheckCircleOutline"
@@ -319,6 +319,10 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Checkout now'
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
