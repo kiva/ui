@@ -1333,7 +1333,7 @@ export default {
 						msg = e[0].message;
 						loanIdx += 1;
 						newPayload.loanIdx = loanIdx;
-						this.allocateLeftoverCredits(newPayload).bind(this);
+						this.allocateLeftoverCredits(newPayload);
 						break;
 					default:
 						this.$showTipMsg(msg, 'error');
@@ -1439,7 +1439,7 @@ export default {
 					// and apply the unspent credits to that loan.
 					this.allocateLeftoverCredits({
 						lendAmount: this.upcCreditRemaining
-					}).bind(this);
+					});
 				}
 			} else {
 				this.checkoutVisible = false;

@@ -75,7 +75,7 @@
 							tw-block"
 				>
 					<u
-						class="choose-borrower"
+						class="tw-cursor-pointer"
 						@click="$emit('jump-to-loans')"
 					>
 						Choose another borrower
@@ -186,8 +186,3 @@ export default {
 	},
 };
 </script>
-<style>
-.choose-borrower {
-	cursor: pointer;
-}
-</style>
