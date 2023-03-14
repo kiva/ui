@@ -1,3 +1,10 @@
+## [2.528.0](https://github.com/kiva/ui/compare/v2.527.2...v2.528.0) (2023-03-14)
+
+
+### Features
+
+* replace router-link for hp and comment out hp route ([a789dd0](https://github.com/kiva/ui/commit/a789dd0d79bd88833bab8ba429ee81c7a3f544f5))
+
 ### [2.527.2](https://github.com/kiva/ui/compare/v2.527.1...v2.527.2) (2023-03-14)
 
 
