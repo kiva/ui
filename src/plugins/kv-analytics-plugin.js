@@ -292,7 +292,7 @@ export default {
 				});
 			},
 			trackOPTransaction: transactionData => {
-				if (transactionData.depositTotal) {
+				if (transactionData.depositTotal > 0) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'deposit',
@@ -303,7 +303,7 @@ export default {
 					});
 				}
 
-				if (transactionData.loanTotal) {
+				if (transactionData.loanTotal > 0) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'loan_share_purchase',
@@ -314,7 +314,7 @@ export default {
 					});
 				}
 
-				if (transactionData.donationTotal) {
+				if (transactionData.donationTotal > 0) {
 					window.optimizely.push({
 						type: 'event',
 						eventName: 'donation',
