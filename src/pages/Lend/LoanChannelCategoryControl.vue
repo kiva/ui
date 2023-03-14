@@ -59,7 +59,7 @@
 
 			<!-- eslint-disable max-len -->
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
-			<div v-if="loans.length > 0" class="tw-w-full">
+			<div v-if="loans && loans.length > 0" class="tw-w-full">
 				<div v-if="!displayLoanPromoCard || emptyState">
 					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in loans">
@@ -441,7 +441,7 @@ export default {
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.allLoans[0] ? [this.allLoans[0]] : [];
+			return this.allLoans?.[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
 			if (this.showHelpMeChooseFeat) {
@@ -503,10 +503,10 @@ export default {
 
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
-			return !hasSortBy && this.allLoans.length > 8;
+			return !hasSortBy && this.allLoans?.length > 8;
 		},
 		emptyState() {
-			return this.allLoans.length <= 0;
+			return this.allLoans?.length <= 0;
 		}
 	},
 	apollo: {
@@ -641,7 +641,7 @@ export default {
 		// Load all available facets for specified sector
 		await this.fetchFacets();
 
-		this.backupLoans = this.loans.slice(3);
+		this.backupLoans = this.loans?.slice(3) ?? [];
 	},
 	methods: {
 		handleQuickFiltersOverlay(showOverlay) {
