@@ -1258,11 +1258,9 @@ export default {
 
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
-					if (this.$refs.inContextCheckoutRef) {
-						this.basketBalancing = true;
-						this.basketUpdating = false;
-						this.balanceLeftoverCredits();
-					}
+					this.basketBalancing = true;
+					this.basketUpdating = false;
+					this.balanceLeftoverCredits();
 
 					// signify checkout is ready
 					this.handleBasketValidation();
@@ -1419,44 +1417,39 @@ export default {
 		},
 		async balanceLeftoverCredits() {
 			this.basketBalancing = true;
-			if (this.basketLoans.length && this.checkoutVisible) {
-				const LCALoanId = this.cookieStore.get('lcaid');
-				// Check if there is already a loan id that has unspent credit allocated to it
-				if (LCALoanId) {
-					// Try getting that loan from the basket
-					const basketLCALoan = this.basketLoans.find(loan => String(loan.id) === LCALoanId);
-					if (basketLCALoan?.price) {
-						// If there's a delta between total checkout price and credit available
-						if (this.upcCreditRemaining !== 0) {
-							let lCALoanPrice = parseFloat(basketLCALoan.price) + parseFloat(this.upcCreditRemaining);
-							if (lCALoanPrice < 0) {
-								lCALoanPrice = 0;
-							}
-							// Set the LCA loan price that balances the delta
-							this.updateLeftoverCreditAllocationBasketItem({
-								loanId: Number(LCALoanId),
-								lendAmount: lCALoanPrice
-							});
-							if (lCALoanPrice === 0) {
-								this.cookieStore.remove('lcaid');
-							}
+			const LCALoanId = this.cookieStore.get('lcaid');
+			// Check if there is already a loan id that has unspent credit allocated to it
+			if (LCALoanId) {
+				// Try getting that loan from the basket
+				const basketLCALoan = this.basketLoans.find(loan => String(loan.id) === LCALoanId);
+				if (basketLCALoan?.price) {
+					// If there's a delta between total checkout price and credit available
+					if (this.upcCreditRemaining !== 0) {
+						let lCALoanPrice = parseFloat(basketLCALoan.price) + parseFloat(this.upcCreditRemaining);
+						if (lCALoanPrice < 0) {
+							lCALoanPrice = 0;
 						}
-					} else {
-						this.cookieStore.remove('lcaid');
+						// Set the LCA loan price that balances the delta
+						this.updateLeftoverCreditAllocationBasketItem({
+							loanId: Number(LCALoanId),
+							lendAmount: lCALoanPrice
+						});
+						if (lCALoanPrice === 0) {
+							this.cookieStore.remove('lcaid');
+						}
 					}
-					this.basketBalancing = false;
-				} else if (this.upcCreditRemaining > 0) {
-					// If there's no existing loan that we've allocated the unspent credit to
-					// Then get a loan from the carousel and add it to the basket,
-					// and apply the unspent credits to that loan.
-					this.allocateLeftoverCredits({
-						lendAmount: this.upcCreditRemaining
-					});
 				} else {
-					this.basketBalancing = false;
+					this.cookieStore.remove('lcaid');
 				}
+				this.basketBalancing = false;
+			} else if (this.upcCreditRemaining > 0 && this.checkoutVisible) {
+				// If there's no existing loan that we've allocated the unspent credit to
+				// Then get a loan from the carousel and add it to the basket,
+				// and apply the unspent credits to that loan.
+				this.allocateLeftoverCredits({
+					lendAmount: this.upcCreditRemaining
+				});
 			} else {
-				this.checkoutVisible = false;
 				this.basketBalancing = false;
 			}
 		},

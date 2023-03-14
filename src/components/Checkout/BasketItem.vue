@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<div
-			v-if="leftoverCreditAllocationLoanId === String(loan.id)"
+			v-if="leftoverCreditAllocationLoanId === String(loan.id) && isCorporateCampaignPage"
 			class="tw-w-full
 					md:tw-w-auto
 					md:tw-ml-3
@@ -168,6 +168,9 @@ export default {
 		},
 		leftoverCreditAllocationLoanId() {
 			return this.cookieStore.get('lcaid');
+		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
 		}
 	},
 	methods: {
