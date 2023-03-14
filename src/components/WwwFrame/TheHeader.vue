@@ -260,12 +260,12 @@
 											</router-link>
 										</li>
 										<li>
-											<router-link
-												to="/about/how"
+											<a
+												href="/about/how"
 												v-kv-track-event="['TopNav','click-About-How Kiva works']"
 											>
 												How Kiva works
-											</router-link>
+											</a>
 										</li>
 										<li>
 											<router-link
@@ -300,12 +300,12 @@
 											</router-link>
 										</li>
 										<li>
-											<router-link
-												to="/about/press-center"
+											<a
+												href="/about/press-center"
 												v-kv-track-event="['TopNav','click-About-Press']"
 											>
 												Press
-											</router-link>
+											</a>
 										</li>
 										<li>
 											<router-link
