@@ -1,3 +1,10 @@
+### [2.527.1](https://github.com/kiva/ui/compare/v2.527.0...v2.527.1) (2023-03-14)
+
+
+### Bug Fixes
+
+* only send optimizely events if tracked value is greater than 0 ([76eda71](https://github.com/kiva/ui/commit/76eda71043d88b51323888aa08653a49d8fafc61))
+
 ## [2.527.0](https://github.com/kiva/ui/compare/v2.526.2...v2.527.0) (2023-03-13)
 
 
