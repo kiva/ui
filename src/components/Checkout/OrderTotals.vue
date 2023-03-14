@@ -22,7 +22,7 @@
 			:order-total-variant="donateItemExperimentVersion === 'e'"
 			:loan-count="Number(totals.loanReservationTotal) > 0 ? 1 : 0"
 			:loan-reservation-total="Number(totals.loanReservationTotal)"
-			@refresh-totals="$emit('refreshtotals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="$emit('updating-totals', $event)"
 		/>
 
