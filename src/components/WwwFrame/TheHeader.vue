@@ -8,15 +8,15 @@
 				<!-- minimal header -->
 				<template v-if="minimal">
 					<div class="tw-flex tw-justify-center">
-						<router-link
+						<a
 							class="header__button"
-							to="/"
+							href="/"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
 							<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 							<span class="tw-sr-only">Kiva Home</span>
-						</router-link>
+						</a>
 					</div>
 				</template>
 
@@ -100,15 +100,15 @@
 					>
 						<!-- Logo -->
 						<div class="header__logo">
-							<router-link
+							<a
 								class="header__button"
-								to="/"
+								href="/"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
 								<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 								<span class="tw-sr-only">Kiva Home</span>
-							</router-link>
+							</a>
 						</div>
 
 						<template v-if="lendMenuButtonExp">

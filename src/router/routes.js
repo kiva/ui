@@ -1,21 +1,21 @@
 module.exports = [
-	{
-		path: '/',
-		name: 'homepage',
-		component: () => import('@/pages/Homepage/Homepage'),
-		meta: {
-			contentfulPage: (route, apollo, experimentVersionFragment) => {
-				const exp = apollo?.readFragment({
-					id: 'Experiment:new_home_layout',
-					fragment: experimentVersionFragment,
-				}) || {};
+	// {
+	// 	path: '/',
+	// 	name: 'homepage',
+	// 	component: () => import('@/pages/Homepage/Homepage'),
+	// 	meta: {
+	// 		contentfulPage: (route, apollo, experimentVersionFragment) => {
+	// 			const exp = apollo?.readFragment({
+	// 				id: 'Experiment:new_home_layout',
+	// 				fragment: experimentVersionFragment,
+	// 			}) || {};
 
-				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
-			},
-			unbounceEmailCapture: true,
-			unbouncePopUp: true,
-		},
-	},
+	// 			return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
+	// 		},
+	// 		unbounceEmailCapture: true,
+	// 		unbouncePopUp: true,
+	// 	},
+	// },
 	{
 		path: '/homepage-classic',
 		redirect: '/',
