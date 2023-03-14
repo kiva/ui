@@ -57,7 +57,7 @@
 				</template>
 			</div>
 		</div>
-		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2">
+		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2" data-testid="bp-summary-loan-use">
 			{{ use }}
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
