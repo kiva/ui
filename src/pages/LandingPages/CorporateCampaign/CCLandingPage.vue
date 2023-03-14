@@ -218,7 +218,6 @@ import syncDate from '@/util/syncDate';
 import trackTransactionEvent from '@/util/trackTransactionEvent';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
@@ -1401,7 +1400,7 @@ export default {
 		},
 		showCheckout() {
 			if (this.basketLoans.length) {
-				const remainingCredit = this.basketTotals.creditAvailableTotal - this.basketTotals.itemTotal;
+				const remainingCredit = this.basketTotals.universalCodeAvailableTotal - this.basketTotals.itemTotal;
 				const LCALoanId = this.cookieStore.get('leftoverCreditAllocationLoanId');
 				// Check if there is already a loan id that has unspent credit allocated to it
 				if (LCALoanId) {
