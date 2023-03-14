@@ -17,6 +17,11 @@
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 				/>
 
+				<campaign-progress-bar
+					:promo-amount="promoAmount"
+					:promo-name="promoName"
+				/>
+
 				<campaign-loan-row
 					name="Loan Row"
 					v-show="componentProps.showLoanRows"
