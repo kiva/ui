@@ -3,19 +3,17 @@
 		v-if="promoAmount && promoAmount > 0"
 		class="
 			tw-rounded
-			tw-bg-brand-100
+			tw-bg-brand-50
 			tw-w-full
-			tw-py-1
+			tw-py-3
 			tw-px-1
 			tw-mb-2
-			tw-mt-2
 			tw-flex-col
 			tw-flex
 			lg:tw-flex-row
 			tw-justify-start
 			lg:tw-justify-between
 			lg:tw-align-center
-			lg:tw-mt-4
 			"
 	>
 		<div class="tw-flex-grow">
@@ -42,7 +40,7 @@
 		</div>
 		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
 			<kv-ui-button
-				v-show="itemsInBasket.length > 0"
+				v-show="basketLoans.length > 0"
 				to="#show-basket"
 			>
 				Checkout now
@@ -72,7 +70,7 @@ export default {
 			type: String,
 			default: '0.00'
 		},
-		itemsInBasket: {
+		basketLoans: {
 			type: Array,
 			default: () => []
 		},
@@ -88,7 +86,8 @@ export default {
 			return this.upcCreditRemaining > 0 ? this.upcCreditRemaining : 0;
 		},
 		percentageLeft() {
-			return 100 - ((this.upcCreditRemaining / this.promoAmount) * 100);
+			const pLeft = 100 - ((this.upcCreditRemaining / this.promoAmount) * 100);
+			return pLeft <= 0 ? 1 : pLeft;
 		}
 	},
 };
