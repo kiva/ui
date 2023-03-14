@@ -62,9 +62,25 @@
 					tw-bg-brand-50
 					tw-rounded
 					tw-p-2
-			">
-				<span class="tw-text-action tw-block">The remaining ${{loan.price}} will be lent to this borrower.</span>
-				<span class="tw-text-primary tw-block"><u>Choose another borrower</u></span>
+			"
+			>
+				<span
+					class="tw-text-action
+							tw-block"
+				>
+					The remaining ${{ loan.price }} will be lent to this borrower.
+				</span>
+				<span
+					class="tw-text-primary
+							tw-block"
+				>
+					<u
+						class="choose-borrower"
+						@click="$emit('jump-to-loans')"
+					>
+						Choose another borrower
+					</u>
+				</span>
 			</div>
 		</div>
 		<div
@@ -151,7 +167,7 @@ export default {
 			return [];
 		},
 		leftoverCreditAllocationLoanId() {
-			return this.cookieStore.get('leftoverCreditAllocationLoanId');
+			return this.cookieStore.get('lcaid');
 		}
 	},
 	methods: {
@@ -170,3 +186,8 @@ export default {
 	},
 };
 </script>
+<style>
+.choose-borrower {
+	cursor: pointer;
+}
+</style>

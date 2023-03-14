@@ -10,6 +10,7 @@
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@jump-to-loans="$emit('jump-to-loans')"
 				/>
 			</li>
 			<li v-for="(kivaCard, index) in kivaCards" :key="kivaCard.id">
@@ -74,7 +75,7 @@ export default {
 		loanReservationTotal: {
 			type: Number,
 			default: 0,
-		},
+		}
 	},
 	components: {
 		BasketItem,

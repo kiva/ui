@@ -1,56 +1,59 @@
 <template>
 	<div
-		class="tw-rounded tw-bg-brand-100 tw-w-full tw-py-1 tw-px-1 tw-mb-2 tw-mt-2"
+		v-if="promoAmount"
+		class="__campaign-progress tw-rounded tw-bg-brand-100 tw-w-full tw-py-1 tw-px-1 tw-mb-2 tw-mt-2"
 	>
-		<template v-if="promoAmount === '$0.00'">
-			<h4 class="tw-mb-1 tw-px-3">
+		<div class="tw-flex-grow">
+			<h4 v-if="creditLeft === promoAmount" class="tw-mb-1 tw-px-3">
 				Let's Get Started
 			</h4>
-			<h3 class="tw-mb-2 tw-px-3">
-				You have ${{ promoAmount | numeral }} in credit left
-				<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
-			</h3>
-			<kv-progress-bar class="tw-mb-1 tw-px-3 tw-w-1/4" />
-		</template>
-
-		<template v-if="promoAmount !=='$0.00'">
-			<h4 class="tw-mb-1 tw-px-3">
+			<h4 v-else-if="creditLeft > 0" class="tw-mb-1 tw-px-3">
 				Keep Going!
 			</h4>
-			<h3 class="tw-mb-2 tw-px-3">
-				You have ${{ promoAmount | numeral }} in credit left
-				<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
-			</h3>
-			<kv-progress-bar class="tw-mb-1 tw-px-3 tw-w-1/4" />
-		</template>
-
-		<template v-if="promoAmount === numeral">
-			<h4 class="tw-mb-1 tw-px-3">
+			<h4 v-else-if="creditLeft === 0" class="tw-mb-1 tw-px-3">
 				You Did It!
 			</h4>
 			<h3 class="tw-mb-2 tw-px-3">
-				You have ${{ promoAmount | numeral }} in credit left
+				You have ${{ creditLeft }} in credit left
 				<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
 			</h3>
-			<kv-progress-bar class="tw-mb-1 tw-px-3 tw-w-1/4" />
-		</template>
+			<kv-grid class="tw-grid-cols-2">
+				<kv-progress-bar
+					:value="percentageLeft"
+					class="tw-mb-1.5 lg:tw-mb-1 tw-ml-3 tw-col-span-1"
+					:aria-label="`You have $${ creditLeft } in credit left`"
+				/>
+			</kv-grid>
+		</div>
+		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3">
+			<kv-ui-button to="#show-basket">
+				Checkout now
+			</kv-ui-button>
+		</div>
 	</div>
 </template>
 
 <script>
-import numeral from 'numeral';
-import KvProgressBar from '@/components/Kv/KvProgressBar';
+import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'CampaignProgressBar',
 	components: {
-		KvProgressBar
+		KvProgressBar,
+		KvUiButton,
+		KvGrid
 	},
 	props: {
 		promoAmount: {
 			type: String,
-			default: '$0.00'
+			default: '0.00'
 		},
+		upcCreditRemaining: {
+			type: String,
+			default: '0.00'
+		}
 	},
 	computed: {
 		campaignPartnerName() {
@@ -59,6 +62,29 @@ export default {
 			}
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
+		creditLeft() {
+			return this.upcCreditRemaining > 0 ? this.upcCreditRemaining : 0;
+		},
+		percentageLeft() {
+			return 100 - ((this.upcCreditRemaining / this.promoAmount) * 100);
+		}
 	},
 };
 </script>
+<style lang="scss" scoped>
+@import 'settings';
+.__campaign-progress {
+	flex-direction: column;
+	display: block;
+	justify-content: left;
+	width: 100%;
+
+	@include breakpoint(large) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-direction: row;
+	}
+}
+
+</style>
