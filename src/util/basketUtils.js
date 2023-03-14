@@ -42,11 +42,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 			optimisticResponse: {
 				__typename: 'Mutation',
 				shop: {
-<<<<<<< HEAD
 					id: '0',
-=======
-					id: 0,
->>>>>>> 72b44802a (fix: only add leftover credit allocation when checkout is visible)
 					__typename: 'ShopMutation',
 					updateLoanReservation: {
 						__typename: 'LoanReservation',
