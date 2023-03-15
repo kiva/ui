@@ -99,20 +99,15 @@
 			v-if="isLoading"
 			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 		/>
-
-		<loan-use
-			v-if="!isLoading"
-			class="tw-mb-2.5 tw-flex-grow"
-			:loan-use-max-length="52"
-			:loan-id="`${allSharesReserved ? '' : loanId}`"
-			:use="loanUse"
-			:name="borrowerName"
-			:status="loanStatus"
-			:loan-amount="loanAmount"
-			:borrower-count="loanBorrowerCount"
-			:custom-loan-details="customLoanDetails"
-			@show-loan-details="showLoanDetails"
-		/>
+		<p v-if="!isLoading" class="tw-mb-2.5 tw-flex-grow">
+			{{ loanUse }}
+			<kv-text-link
+				v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
+				@click="showLoanDetails"
+			>
+				Learn more
+			</kv-text-link>
+		</p>
 
 		<!-- Matching text  -->
 		<kv-loading-placeholder
@@ -240,7 +235,6 @@ import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -256,6 +250,7 @@ import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}
@@ -328,12 +323,12 @@ export default {
 		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
-		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton,
+		KvTextLink,
 		ActionButton,
 		LoanTag,
 	},
@@ -447,7 +442,8 @@ export default {
 			return this.lendNowButton;
 		},
 		loanUse() {
-			return this.loan?.use ?? '';
+			const use = this.loan?.fullLoanUse ?? '';
+			return use.length > 75 ? `${use.slice(0, 75)}...` : use;
 		},
 		loanStatus() {
 			return this.loan?.status ?? '';

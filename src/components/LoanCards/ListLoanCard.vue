@@ -99,11 +99,7 @@
 			</div>
 			<div class="list-loan-card-body-info row">
 				<borrower-info-body
-					:amount="loan.loanAmount"
-					:borrower-count="loan.borrowerCount"
-					:name="loan.name"
-					:status="loan.status"
-					:use="loan.use"
+					:use="loan.fullLoanUse"
 					:loan-id="loan.id"
 					class="small-12 columns"
 					@track-loan-card-interaction="trackInteraction"

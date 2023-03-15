@@ -23,14 +23,16 @@ const queryResult = {
 				sector: {
 					name: "Services"
 				},
-				whySpecial: "It helps Field Partners withstand negative economic impacts of the COVID-19 pandemic.",
+				whySpecial: "It helps Lending Partners withstand negative economic impacts of the COVID-19 pandemic.",
 				userProperties: {
 					lentTo: null
 				},
-				use: "this Field Partner provide loans to women in rural Malawi during the COVID-19 crisis.",
+				use: "this Lending Partner provide loans to women in rural Malawi during the COVID-19 crisis.",
 				status: "fundraising",
 				loanAmount: "250000.00",
 				borrowerCount: 1,
+				anonymizationLevel: "none",
+				fullLoanUse: "A loan of $250,000 helps this Lending Partner provide loans to women in rural Malawi during the COVID-19 crisis.",
 				fundraisingPercent: 0.75,
 				unreservedAmount: '600',
 				loanFundraisingInfo: {
