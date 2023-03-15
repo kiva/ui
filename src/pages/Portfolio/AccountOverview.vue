@@ -16,9 +16,11 @@
 					<dt class="tw-text-h4">
 						Available to lend
 					</dt>
-					<div v-if="loading" class="tw-w-12 tw-h-3 md:tw-h-3.5 lg:tw-h-4 tw-my-0.5 lg:tw-my-1">
-						<kv-loading-placeholder />
-					</div>
+					<kv-loading-placeholder
+						v-if="loading"
+						class="placeholder tw-my-0.5 lg:tw-my-1"
+						style="width: 6rem;"
+					/>
 					<dd v-else class="tw-text-h2 tw-text-brand">
 						{{ availableBalance | numeral('$0,0.00') }}
 					</dd>
@@ -30,9 +32,11 @@
 					<dt class="tw-text-h4">
 						Outstanding loans
 					</dt>
-					<div v-if="loading" class="tw-w-12 tw-h-3 md:tw-h-3.5 lg:tw-h-4 tw-my-0.5 lg:tw-my-1">
-						<kv-loading-placeholder />
-					</div>
+					<kv-loading-placeholder
+						v-if="loading"
+						class="placeholder tw-my-0.5 lg:tw-my-1"
+						style="width: 6rem;"
+					/>
 					<dd v-else class="tw-text-h2 tw-text-secondary">
 						{{ amountOutstanding | numeral('$0,0.00') }}
 					</dd>
@@ -41,9 +45,11 @@
 					<dt class="tw-text-h4">
 						Loans made
 					</dt>
-					<div v-if="loading" class="tw-w-6 tw-h-3 md:tw-h-3.5 lg:tw-h-4 tw-my-0.5 lg:tw-my-1">
-						<kv-loading-placeholder />
-					</div>
+					<kv-loading-placeholder
+						v-if="loading"
+						class="placeholder tw-my-0.5 lg:tw-my-1"
+						style="width: 3rem;"
+					/>
 					<dd v-else class="tw-text-h2 tw-text-secondary">
 						{{ numberOfLoans | numeral('0,0') }}
 					</dd>
@@ -113,3 +119,21 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.placeholder {
+	height: 22px;
+}
+
+@screen md {
+	.placeholder {
+		height: 27px;
+	}
+}
+
+@screen lg {
+	.placeholder {
+		height: 32px;
+	}
+}
+</style>

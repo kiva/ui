@@ -5,6 +5,7 @@ const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlPossibleTypes = require('./util/getGqlPossibleTypes');
 const getSessionCookies = require('./util/getSessionCookies');
+const log = require('./util/log');
 const protectedRoutes = require('./util/protectedRoutes.js');
 const vueSsrCache = require('./util/vueSsrCache');
 const tracer = require('./util/ddTrace');
@@ -84,23 +85,20 @@ module.exports = function createMiddleware({
 		}
 
 		// get graphql api possible types for the graphql client
-		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache);
+		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache)
+			.finally(() => {
+				if (!isProd) {
+					log.info(`fragment fetch: ${Date.now() - s}ms`);
+				}
+			});
 
 		// fetch initial session cookies in case starting session with this request
-		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
-
-		if (!isProd) {
-			typesPromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `types fetch: ${Date.now() - s}ms`
-			})));
-			cookiePromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `session fetch: ${Date.now() - s}ms`
-			})));
-		}
+		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies)
+			.finally(() => {
+				if (!isProd) {
+					log.info(`session fetch: ${Date.now() - s}ms`);
+				}
+			});
 
 		Promise.all([typesPromise, cookiePromise])
 			.then(([types, cookieInfo]) => {
@@ -118,11 +116,7 @@ module.exports = function createMiddleware({
 				// send the final rendered html
 				res.send(html);
 				if (!isProd) {
-					console.info(JSON.stringify({
-						meta: {},
-						level: 'info',
-						message: `whole request: ${Date.now() - s}ms`
-					}));
+					log.info(`whole request: ${Date.now() - s}ms`);
 				}
 			}).catch(err => {
 				if (err.url) {
