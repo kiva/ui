@@ -1,3 +1,17 @@
+## [2.530.0](https://github.com/kiva/ui/compare/v2.529.0...v2.530.0) (2023-03-15)
+
+
+### Features
+
+* recommended loans section for portfolio overiew page MARS-351 ([69d715e](https://github.com/kiva/ui/commit/69d715e5b56a25ff03bd094a9ef3debea3036138))
+
+
+### Bug Fixes
+
+* adjust loading styles to minimize CLS for AccountOverview MARS-349 ([6c3da17](https://github.com/kiva/ui/commit/6c3da1777e33dd2d5516464fea5cc3cc9395611c))
+* adjust loading styles to minimize CLS for Recent Loans section MARS-350 ([88aa4ba](https://github.com/kiva/ui/commit/88aa4ba5bc2daa47df95ba91f589951e32ca4657))
+* handle uncaught promise to prevent dev server crash ([3dacd40](https://github.com/kiva/ui/commit/3dacd407a813cffe3f326591b47111ff342b825f))
+
 ## [2.529.0](https://github.com/kiva/ui/compare/v2.528.2...v2.529.0) (2023-03-15)
 
 
