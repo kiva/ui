@@ -81,11 +81,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								fundedAmount
 								reservedAmount
 							}
-							sector {
-								id
-								name
-							}
-							gender
 							distributionModel
 							unreservedAmount @client
 						}
@@ -135,10 +130,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
-			key
-			value
-		}
-		categoryShare: uiExperimentSetting(key: "category_share") {
 			key
 			value
 		}
