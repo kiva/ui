@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 export const runManyTimes = cb => {
 	for (let i = 1; i < 100; i += 1) {
 		cb();
