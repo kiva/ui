@@ -2,7 +2,6 @@
 	<div>
 		<ShareStepper
 			:lender-name="lender.firstName"
-			:show-lender-name="showLenderName"
 			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
 		/>
 		<div class="row page-content">
@@ -14,7 +13,7 @@
 							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
 						</div>
 						<borrower-image
-							v-else-if="showCategoryShareControl"
+							v-else
 							class="
 								tw-w-full
 								tw-bg-black
@@ -36,13 +35,7 @@
 								{ width: 280 },
 							]"
 						/>
-						<div v-else>
-							<img
-								:alt="`${categoryName} category image`"
-								:src="imageRequire(`./${categoryName}_thanks_page.png`)"
-							>
-						</div>
-						<div v-if="showCategoryShareControl && calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
+						<div v-if="calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
@@ -86,13 +79,6 @@
 							<!-- eslint-disable-next-line max-len -->
 							<template v-if="!calculatePeopleQtyToGoal()">
 								Can you share Kiva with one more person?
-							</template>
-							<template v-else-if="categoryShareVersion === 'a' && categoryName">
-								<!-- eslint-disable-next-line max-len -->
-								<span class="data-hj-suppress">{{ lender.firstName }}</span>, share now to find allies in the fight against economic inequity for {{ categoryName }}.
-							</template>
-							<template v-else-if="categoryShareVersion === 'b' && categoryName">
-								More loans like yours mean more opportunities for {{ categoryName }}.
 							</template>
 							<template v-else>
 								Can you share this loan with one more person?
@@ -190,7 +176,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
-const imageRequire = require.context('@/assets/images/category-share-experiment', true);
 const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
@@ -216,10 +201,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		simpleSocialShareVersion: {
-			type: String,
-			default: ''
-		},
 		shareCardLanguageVersion: {
 			type: String,
 			default: ''
@@ -228,10 +209,6 @@ export default {
 			type: String,
 			default: 'a'
 		},
-		categoryShareVersion: {
-			type: String,
-			default: 'c'
-		}
 	},
 	metaInfo() {
 		return {
@@ -240,7 +217,6 @@ export default {
 	},
 	data() {
 		return {
-			imageRequire,
 			thanksImgRequire,
 			isGuest: false,
 			mdiCheckAll,
@@ -254,9 +230,6 @@ export default {
 		};
 	},
 	computed: {
-		showLoanProgress() {
-			return (this.categoryShareVersion === 'c' || !this.categoryName) && this.calculatePeopleQtyToGoal();
-		},
 		loanId() {
 			return this.loan?.id ?? undefined;
 		},
@@ -298,14 +271,6 @@ export default {
 				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}`, args);
 			}
 
-			// Category share URL for MARS-310 Experiment
-			if (this.categoryName && ['a', 'b'].includes(this.categoryShareVersion)) {
-				if (this.lender.public && this.lender.publicName) {
-					args.lender = this.lender.publicName;
-				}
-				args.category_share_version = this.categoryShareVersion;
-				return getFullUrl(`${base}/lend-by-category/${this.categoryName}`, args);
-			}
 			// Share specific loan URL
 			if (this.loan.id) {
 				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}`, args);
@@ -335,57 +300,15 @@ export default {
 				via: 'Kiva',
 			});
 		},
-		categoryName() {
-			if (this.loan?.gender?.toLowerCase() === 'female') {
-				return 'women';
-			}
-			if (['education', 'agriculture'].includes(this.loan?.sector?.name?.toLowerCase())) {
-				return this.loan?.sector?.name?.toLowerCase();
-			}
-			return '';
-		},
 		thanksPageBody() {
-			let pageBody = '';
 			if (!this.calculatePeopleQtyToGoal()) {
 				return '1.4 billion people are currently unbanked with no access to basic financial services. '
 					+ 'Sharing Kiva with others can help inspire them to give people '
 					+ 'the funds they need to improve their lives.';
 			}
-			if (this.showCategoryShareControl) {
-				// eslint-disable-next-line max-len
-				return `${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25 and they could be fully funded in a matter of hours!`;
-			}
-			if (this.categoryShareVersion === 'a') {
-				pageBody = '1.4 billion people are currently unbanked with no access to basic financial services.';
-				if (this.categoryName === 'women') {
-					pageBody += ' Your loan will help women access to the funds they need to improve their lives.';
-				}
-				if (['education', 'agriculture'].includes(this.categoryName)) {
-					// eslint-disable-next-line max-len
-					pageBody += ` Your loan will help borrowers access the funds they need to invest in ${this.categoryName}.`;
-				}
-				pageBody += ' The more people join our cause, the bigger impact we\'ll make.';
-			} else if (this.categoryShareVersion === 'b') {
-				pageBody = 'Share Kiva.org with others to rally more allies around this cause.';
-				if (this.categoryName === 'women') {
-					// eslint-disable-next-line max-len
-					pageBody += ' Many women around the world lack access to the financial services they need to improve their lives. ';
-				}
-				if (['education', 'agriculture'].includes(this.categoryName)) {
-					// eslint-disable-next-line max-len
-					pageBody += ' Many people around the world lack access to the financial services they need to improve their lives. ';
-				}
-				pageBody += 'Together, we can address this inequity, one loan at a time.';
-			}
-
-			return pageBody;
+			// eslint-disable-next-line max-len
+			return `${this.loan.name} only needs ${this.calculatePeopleQtyToGoal()} more people to lend $25 and they could be fully funded in a matter of hours!`;
 		},
-		showLenderName() {
-			return ['b', 'c'].includes(this.categoryShareVersion) || !this.categoryName;
-		},
-		showCategoryShareControl() {
-			return !this.categoryName || !this.categoryShareVersion || this.categoryShareVersion === 'c';
-		}
 	},
 	methods: {
 		handleFacebookResponse() {
