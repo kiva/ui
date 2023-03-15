@@ -82,7 +82,7 @@ import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
-import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
+import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';

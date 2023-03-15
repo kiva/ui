@@ -49,7 +49,7 @@ import {
 import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingAsync,
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 
 const initialLoanCount = 4;
 const categoryServiceExpKey = 'flss_category_service';

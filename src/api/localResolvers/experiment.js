@@ -1,4 +1,4 @@
-import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
+import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experiment/experimentUtils';
 import { hashCode, readJSONSetting } from '@/util/settingsUtils';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import logReadQueryError from '@/util/logReadQueryError';

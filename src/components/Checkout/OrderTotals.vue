@@ -189,7 +189,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import DonationItem from '@/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
 

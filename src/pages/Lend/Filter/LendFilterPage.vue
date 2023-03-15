@@ -107,7 +107,7 @@ import {
 	getExperimentSettingAsync,
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 // Algolia Imports
