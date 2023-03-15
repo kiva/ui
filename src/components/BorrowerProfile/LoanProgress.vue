@@ -37,7 +37,7 @@
 				</p>
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%') }} funded
+						{{ progressPercent | numeral('0%', Math.floor) }} funded
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
@@ -55,7 +55,7 @@
 				</p>
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%') }} funded
+						{{ progressPercent | numeral('0%', Math.floor) }} funded
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
@@ -106,7 +106,7 @@
 						{{ moneyLeft | numeral('$0,0[.]00') }} to go
 					</p>
 					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%') }} funded
+						{{ progressPercent | numeral('0%', Math.floor) }} funded
 					</p>
 				</div>
 			</template>
