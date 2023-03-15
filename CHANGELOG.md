@@ -1,3 +1,12 @@
+### [2.528.1](https://github.com/kiva/ui/compare/v2.528.0...v2.528.1) (2023-03-15)
+
+
+### Bug Fixes
+
+* add missing optional chaining operator in FundedBorrowerProfile ([d756a62](https://github.com/kiva/ui/commit/d756a6277842b225af744b35df3429dbbd5e5e85))
+* remove unused props and components ([e88d02d](https://github.com/kiva/ui/commit/e88d02dbe82f65121d913a0b39a58e9a54d9a55d))
+* restore bp summary card loan use test id ([47fba10](https://github.com/kiva/ui/commit/47fba103f04ed73bdb72301991f3629d299cbfbd))
+
 ## [2.528.0](https://github.com/kiva/ui/compare/v2.527.2...v2.528.0) (2023-03-14)
 
 
