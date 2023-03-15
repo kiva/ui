@@ -1,3 +1,10 @@
+## [2.529.0](https://github.com/kiva/ui/compare/v2.528.2...v2.529.0) (2023-03-15)
+
+
+### Features
+
+* mixin for five dollars notes test added to some pages ([eab0b05](https://github.com/kiva/ui/commit/eab0b05990b40d3c70721f94d1be4c3dd845a6d6))
+
 ### [2.528.2](https://github.com/kiva/ui/compare/v2.528.1...v2.528.2) (2023-03-15)
 
 
