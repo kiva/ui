@@ -6,6 +6,7 @@ import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { readJSONSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
+import Alea from './Alea';
 
 /**
  * Parse the experiment cookie value into an object
@@ -178,6 +179,56 @@ export function assignVersion({
 		return 'unassigned';
 	}
 	// doing nothing here returns undefined, indicating that the experiment is not active
+}
+
+/**
+ * Experiment assignment algorithm for login ID
+ *
+ * An example json value for the experiment data stored in SettingsManager:
+ * {
+ *     "name": "TestUiExp",
+ *     "distribution": {
+ *         "control": 0.5,
+ *         "a": 0.2,
+ *         "b": 0.3
+ *     },
+ *     "population": 0.5,
+ * }
+ *
+ * @param {String} param0.name The name of the experiment
+ * @param {Object} param0.distribution An object of the variant weights, where each key is the
+ * variant ID and the value is the weight of the variant. The weight must be a number between 0 and 1.
+ * @param {Number} param0.population A number between 0 and 1 representing the fraction of the population
+ * that should be included in the experiment.
+ * @param {String|Number} loginId The login ID of the current user. This ID can be the user or visitor ID.
+ * @returns {String|Number} Returns a variant ID of the experiment
+ */
+export function assignVersionForLoginId({ name, distribution, population }, loginId) {
+	// Seed the pseudo random number generator with the experiment name and login ID
+	// The seed ensures that the same number is generated for this experiment and login ID combination
+	const marker = Alea(name, loginId)();
+
+	let cutoff = 0;
+
+	// Turn the distribution object into an array for easier iterating
+	const weights = Object.keys(distribution).map(key => [key, distribution[key]]);
+
+	// Now loop through and see which element of the distribution that random number falls into
+	for (let i = 0; i < weights.length; i += 1) {
+		const [key, weight] = weights[i];
+		// Add the current distribution to our cutoff
+		if (typeof population === 'undefined') {
+			cutoff += weight;
+		} else {
+			cutoff += weight * population;
+		}
+		// Exit the loop and return the current version
+		if (marker <= cutoff) return key;
+	}
+
+	// If no version was selected, mark them as 'unassigned' so that they will be re-assigned
+	// if/when the population percent changes.
+	return 'unassigned';
 }
 
 /**

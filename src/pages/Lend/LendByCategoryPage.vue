@@ -77,7 +77,7 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';

@@ -1,5 +1,5 @@
 import CookieStore from '@/util/cookieStore';
-import * as expUtils from '@/util/experimentUtils';
+import * as expUtils from '@/util/experiment/experimentUtils';
 import expResolverFactory from '@/api/localResolvers/experiment';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 

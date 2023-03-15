@@ -7,7 +7,7 @@ import {
 	watchChannelQuery,
 } from '@/util/loanChannelUtils';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import * as experimentalUtils from '@/util/experimentUtils';
+import * as experimentalUtils from '@/util/experiment/experimentUtils';
 import * as flssUtils from '@/util/flssUtils';
 import { getLoanChannelVariables } from '@/util/flssUtils';
 

@@ -38,7 +38,7 @@ import IconSadCloud from '@/assets/icons/inline/sad-cloud.svg';
 import {
 	getExperimentSettingAsync,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
