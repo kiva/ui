@@ -140,6 +140,7 @@ import {
 } from 'date-fns';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -401,6 +402,7 @@ export default {
 			isoCode: '',
 		};
 	},
+	mixins: [fiveDollarsTest],
 	apollo: {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
