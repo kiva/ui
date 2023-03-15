@@ -37,7 +37,7 @@
 				</p>
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%', Math.floor) }} funded
+						{{ progressPercentRounded }} funded
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
@@ -55,7 +55,7 @@
 				</p>
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%', Math.floor) }} funded
+						{{ progressPercentRounded }} funded
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
@@ -106,7 +106,7 @@
 						{{ moneyLeft | numeral('$0,0[.]00') }} to go
 					</p>
 					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
-						{{ progressPercent | numeral('0%', Math.floor) }} funded
+						{{ progressPercentRounded }} funded
 					</p>
 				</div>
 			</template>
@@ -117,6 +117,7 @@
 <script>
 import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
 import CountdownTimer from '@/components/BorrowerProfile/CountdownTimer';
+import numeral from 'numeral';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
@@ -169,7 +170,17 @@ export default {
 				return 0;
 			}
 			return (this.numberOfLenders / this.pfpMinLenders) * 100;
-		}
+		},
+		progressPercentRounded() {
+			const rounded = numeral(this.progressPercent).format('0%');
+
+			// Ensure loans with 99.x% don't get rounded up to 100%
+			if (rounded === '100%' && this.progressPercent < 1) {
+				return '99%';
+			}
+
+			return rounded;
+		},
 	},
 };
 </script>
