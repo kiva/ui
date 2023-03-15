@@ -148,7 +148,7 @@ export default {
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}`
+					href: `${this.$appConfig.transport}://${this.$appConfig.host}${this.$route.path}`
 				}
 			].concat(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? [
 				{

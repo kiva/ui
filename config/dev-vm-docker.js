@@ -2,12 +2,16 @@ const { merge } = require('webpack-merge');
 var base = require('./index.js')
 var devVm  = require('./dev-vm.js')
 
+const transport = process.env.TRANSPORT || "http"
+const monolithHostname = process.env.MONOLITH_HOSTNAME || "monolith.kiva.local"
+const apiHostname = process.env.API_HOSTNAME || "fed.kiva.local"
+
 module.exports = merge(base, devVm, {
 	app: {
-		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
+		graphqlUri: `http://${apiHostname}/graphql`,
 	},
 	server: {
-		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
+		graphqlUri: `http://${apiHostname}/graphql`,
 		// memcachedEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers: 'memcached:11211',
