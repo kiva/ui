@@ -1,3 +1,10 @@
+### [2.528.2](https://github.com/kiva/ui/compare/v2.528.1...v2.528.2) (2023-03-15)
+
+
+### Bug Fixes
+
+* header rendering (added a fallback option when promoName is false) ([5d7d220](https://github.com/kiva/ui/commit/5d7d220ce952d06a892a85e172c7bb5f5bdf3649))
+
 ### [2.528.1](https://github.com/kiva/ui/compare/v2.528.0...v2.528.1) (2023-03-15)
 
 
