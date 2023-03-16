@@ -1,6 +1,6 @@
 <template>
 	<div class="borrower-info-body loan-use">
-		<span>{{ use | loanUse(name, status, amount, borrowerCount, maxUseLength) }}</span>
+		<span>{{ loanUse }}</span>
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, loanId]"
@@ -24,25 +24,9 @@
 export default {
 	name: 'BorrowerInfoBody',
 	props: {
-		amount: {
-			type: String,
-			default: ''
-		},
-		borrowerCount: {
-			type: Number,
-			default: 1
-		},
 		loanId: {
 			type: Number,
 			default: null
-		},
-		name: {
-			type: String,
-			default: ''
-		},
-		status: {
-			type: String,
-			default: ''
 		},
 		use: {
 			type: String,
@@ -50,7 +34,7 @@ export default {
 		},
 		maxUseLength: {
 			type: Number,
-			default: 500
+			default: 0
 		},
 		readMoreLinkText: {
 			type: String,
@@ -59,6 +43,14 @@ export default {
 		disableLink: {
 			type: Boolean,
 			default: false,
+		},
+	},
+	computed: {
+		loanUse() {
+			if (this.maxUseLength > 0 && this.use.length > this.maxUseLength) {
+				return `${this.use.slice(0, this.maxUseLength)}...`;
+			}
+			return this.use;
 		},
 	},
 	methods: {

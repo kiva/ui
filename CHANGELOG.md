@@ -1,3 +1,59 @@
+## [2.531.0](https://github.com/kiva/ui/compare/v2.530.1...v2.531.0) (2023-03-16)
+
+
+### Features
+
+* round down percentages to the nearest whole number of BP ([9362f67](https://github.com/kiva/ui/commit/9362f67943e221bdfa3a0813bb04ae8335fe9df5))
+
+
+### Bug Fixes
+
+* more targeted rounding ([b648e67](https://github.com/kiva/ui/commit/b648e673fe941073f839ee91f77272135f80761f))
+
+### [2.530.1](https://github.com/kiva/ui/compare/v2.530.0...v2.530.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* cleanup old experiment setting loading of thanks_share_module ([a9ee213](https://github.com/kiva/ui/commit/a9ee213f03bdeafeabc506eef856330285edf863))
+
+## [2.530.0](https://github.com/kiva/ui/compare/v2.529.0...v2.530.0) (2023-03-15)
+
+
+### Features
+
+* recommended loans section for portfolio overiew page MARS-351 ([69d715e](https://github.com/kiva/ui/commit/69d715e5b56a25ff03bd094a9ef3debea3036138))
+
+
+### Bug Fixes
+
+* adjust loading styles to minimize CLS for AccountOverview MARS-349 ([6c3da17](https://github.com/kiva/ui/commit/6c3da1777e33dd2d5516464fea5cc3cc9395611c))
+* adjust loading styles to minimize CLS for Recent Loans section MARS-350 ([88aa4ba](https://github.com/kiva/ui/commit/88aa4ba5bc2daa47df95ba91f589951e32ca4657))
+* handle uncaught promise to prevent dev server crash ([3dacd40](https://github.com/kiva/ui/commit/3dacd407a813cffe3f326591b47111ff342b825f))
+
+## [2.529.0](https://github.com/kiva/ui/compare/v2.528.2...v2.529.0) (2023-03-15)
+
+
+### Features
+
+* mixin for five dollars notes test added to some pages ([eab0b05](https://github.com/kiva/ui/commit/eab0b05990b40d3c70721f94d1be4c3dd845a6d6))
+
+### [2.528.2](https://github.com/kiva/ui/compare/v2.528.1...v2.528.2) (2023-03-15)
+
+
+### Bug Fixes
+
+* header rendering (added a fallback option when promoName is false) ([5d7d220](https://github.com/kiva/ui/commit/5d7d220ce952d06a892a85e172c7bb5f5bdf3649))
+
+### [2.528.1](https://github.com/kiva/ui/compare/v2.528.0...v2.528.1) (2023-03-15)
+
+
+### Bug Fixes
+
+* add missing optional chaining operator in FundedBorrowerProfile ([d756a62](https://github.com/kiva/ui/commit/d756a6277842b225af744b35df3429dbbd5e5e85))
+* remove unused props and components ([e88d02d](https://github.com/kiva/ui/commit/e88d02dbe82f65121d913a0b39a58e9a54d9a55d))
+* restore bp summary card loan use test id ([47fba10](https://github.com/kiva/ui/commit/47fba103f04ed73bdb72301991f3629d299cbfbd))
+
 ## [2.528.0](https://github.com/kiva/ui/compare/v2.527.2...v2.528.0) (2023-03-14)
 
 

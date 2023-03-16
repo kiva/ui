@@ -171,13 +171,6 @@ module.exports = [
 		}
 	},
 	{
-		path: '/flss',
-		component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/funded/:id',
 		redirect: '/lend/:id'
 	},

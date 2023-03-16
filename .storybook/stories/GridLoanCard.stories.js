@@ -47,6 +47,7 @@ export default {
 				reservedAmount: 0,
 				isExpiringSoon: false,
 			},
+			fullLoanUse: 'A loan of $1,250 helps to buy more fire wood to sell at local market to meet customer demand.'
 		},
 	},
 };

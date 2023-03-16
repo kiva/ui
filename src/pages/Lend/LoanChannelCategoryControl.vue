@@ -261,26 +261,9 @@ function getPageOffset(query, limit) {
 	return pageNum > 0 ? limit * pageNum : 0;
 }
 
-const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
-
 export default {
 	name: 'LoanChannelCategoryControl',
 	metaInfo() {
-		let image = '';
-		let title = null;
-		if (this.$route.query.category_share_version
-			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
-			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
-			title = this.$route.query.lender ? `Can you help ${this.$route.query.lender} ` : 'Can you help ';
-			if (this.$route.params.category === 'women') {
-				title += 'support women around the world?';
-			} else if (this.$route.params.category === 'education') {
-				title += 'expand access to education around the world?';
-			} else if (this.$route.params.category === 'agriculture') {
-				title += 'support smallholder farmers around the world?';
-			}
-		}
-
 		return {
 			title: this.metaTitle,
 			link: [
@@ -300,7 +283,7 @@ export default {
 				{
 					vmid: 'og:title',
 					property: 'og:title',
-					content: title ?? this.metaTitle
+					content: this.metaTitle
 				},
 				{
 					vmid: 'og:description',
@@ -311,25 +294,14 @@ export default {
 				{
 					vmid: 'twitter:title',
 					name: 'twitter:title',
-					content: title ?? this.metaTitle
+					content: this.metaTitle
 				},
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
 					content: this.metaDescription
 				}
-			]).concat(image ? [
-				{
-					property: 'og:image',
-					vmid: 'og:image',
-					content: image
-				},
-				{
-					name: 'twitter:image',
-					vmid: 'twitter:image',
-					content: image
-				}
-			] : [])
+			])
 		};
 	},
 	props: {
@@ -345,6 +317,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		LoanCardController,
@@ -484,13 +460,6 @@ export default {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
 			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
-			}
-			// MARS-310 Category Share on Thanks page
-			if (this.$route.query.category_share_version
-				&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
-				const params = this.$router.currentRoute.query;
-				const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-				url = `${url}?${queryString}`;
 			}
 			return url;
 		},

@@ -7,6 +7,7 @@ import {
 } from 'date-fns';
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
+import getLoanUse from '@/util/loanUse';
 
 // Return true if the given loan object is missing the given field.
 // Logs an error to the console if the field is missing.
@@ -38,6 +39,45 @@ function missingLoanFields({
 		resolver,
 		type,
 	}));
+}
+
+/**
+ * Resolves the full loan use for display.
+ *
+ * Example fragment:
+ * ... on LoanBasic {
+	 anonymizationLevel
+	 borrowerCount
+	 loanAmount
+	 name
+	 status
+	 use
+	 fullLoanUse(maxLength: 100) @client
+ * }
+* */
+function fullLoanUse(loan, args) {
+	// Handle missing required loan fields
+	if (missingLoanFields({
+		loan,
+		fields: [
+			'anonymizationLevel',
+			'borrowerCount',
+			'loanAmount',
+			'name',
+			'status',
+			'use',
+		],
+		resolver: 'fullLoanUse',
+	})) {
+		return '';
+	}
+
+	const { maxLength = 0 } = args || {};
+
+	return getLoanUse({
+		...loan,
+		maxLength,
+	});
 }
 
 /**
@@ -197,12 +237,14 @@ export default () => {
 	return {
 		resolvers: {
 			LoanPartner: {
+				fullLoanUse,
 				fundraisingPercent,
 				fundraisingTimeLeft,
 				fundraisingTimeLeftMilliseconds,
 				unreservedAmount,
 			},
 			LoanDirect: {
+				fullLoanUse,
 				fundraisingPercent,
 				fundraisingTimeLeft,
 				fundraisingTimeLeftMilliseconds,

@@ -20,15 +20,12 @@
 			<borrower-info
 				:loan-id="loan.id"
 				:name="loan.name"
-				:amount="loan.loanAmount"
-				:use="loan.use"
+				:use="loan.fullLoanUse"
 				:country="loan.geocode.country.name"
 				:iso-code="loan.geocode.country.isoCode"
 				:state="loan.geocode.state"
 				:city="loan.geocode.city"
 				:status="loan.status"
-				:borrower-count="loan.borrowerCount"
-				:loan-length="loan.lenderRepaymentTerm"
 
 				@track-loan-card-interaction="trackInteraction"
 			/>

@@ -33,6 +33,7 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -281,6 +282,7 @@ import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErro
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -349,7 +351,8 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [
-		checkoutUtils
+		checkoutUtils,
+		fiveDollarsTest
 	],
 	metaInfo: {
 		title: 'Checkout'

@@ -7,6 +7,7 @@
 			:enable-loan-tags="enableLoanTags"
 			:enable-loan-card-exp="enableLoanCardExp"
 			:enable-filter-pills="enableFilterPillsTest"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
 		/>
 
 		<add-to-basket-interstitial />
@@ -24,6 +25,7 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
@@ -51,7 +53,7 @@ export default {
 		LoanChannelCategoryControl,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
