@@ -33,7 +33,6 @@
 			:original-language="originalLanguage"
 			:partner-name="partnerName"
 			:reviewer="reviewer"
-			:enabled-experiment-variant="enabledExperimentVariant"
 			:story-description="description"
 			:previous-loan-id="previousLoanId"
 		/>
