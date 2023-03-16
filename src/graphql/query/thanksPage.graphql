@@ -121,10 +121,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
-			key
-			value
-		}
 		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
 			key
 			value
