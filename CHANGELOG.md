@@ -1,3 +1,10 @@
+## [2.529.0-next.3](https://github.com/kiva/ui/compare/v2.529.0-next.2...v2.529.0-next.3) (2023-03-16)
+
+
+### Features
+
+* a tags for cps contentful pages ([15af896](https://github.com/kiva/ui/commit/15af8966a2092f5d904457cab985db0663dd382d))
+
 ## [2.529.0-next.2](https://github.com/kiva/ui/compare/v2.529.0-next.1...v2.529.0-next.2) (2023-03-16)
 
 
