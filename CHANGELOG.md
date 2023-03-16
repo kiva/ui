@@ -1,3 +1,10 @@
+### [2.530.1](https://github.com/kiva/ui/compare/v2.530.0...v2.530.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* cleanup old experiment setting loading of thanks_share_module ([a9ee213](https://github.com/kiva/ui/commit/a9ee213f03bdeafeabc506eef856330285edf863))
+
 ## [2.530.0](https://github.com/kiva/ui/compare/v2.529.0...v2.530.0) (2023-03-15)
 
 
