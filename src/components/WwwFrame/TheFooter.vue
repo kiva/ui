@@ -100,22 +100,22 @@
 								</router-link>
 							</li>
 							<li>
-								<router-link
-									to="/about/how"
+								<a
+									href="/about/how"
 									v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
 									class="tw-text-small"
 								>
 									How Kiva works
-								</router-link>
+								</a>
 							</li>
 							<li>
-								<router-link
-									to="/about/how#faq-hkw-section"
+								<a
+									href="/about/how#faq-hkw-section"
 									v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
 									class="tw-text-small"
 								>
 									FAQs
-								</router-link>
+								</a>
 							</li>
 							<li>
 								<router-link
@@ -556,22 +556,22 @@
 									</router-link>
 								</li>
 								<li>
-									<router-link
-										to="/about/how"
+									<a
+										href="/about/how"
 										v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
 										class="tw-text-small"
 									>
 										How Kiva works
-									</router-link>
+									</a>
 								</li>
 								<li>
-									<router-link
-										to="/about/how#faq-hkw-section"
+									<a
+										href="/about/how#faq-hkw-section"
 										v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
 										class="tw-text-small"
 									>
 										FAQs
-									</router-link>
+									</a>
 								</li>
 								<li>
 									<router-link
