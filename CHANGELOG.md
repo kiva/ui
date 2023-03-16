@@ -1,3 +1,10 @@
+## [2.529.0-next.2](https://github.com/kiva/ui/compare/v2.529.0-next.1...v2.529.0-next.2) (2023-03-16)
+
+
+### Bug Fixes
+
+* add donate pages ([d4211ff](https://github.com/kiva/ui/commit/d4211ff473402238901a8bbb802991f097ecd2c2))
+
 ## [2.529.0-next.1](https://github.com/kiva/ui/compare/v2.528.0...v2.529.0-next.1) (2023-03-16)
 
 
