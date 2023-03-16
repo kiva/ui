@@ -1,3 +1,10 @@
+### [2.531.1](https://github.com/kiva/ui/compare/v2.531.0...v2.531.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* add donate pages ([36999b7](https://github.com/kiva/ui/commit/36999b71a6f39eb867625f37514e95a229a8f390))
+
 ## [2.531.0](https://github.com/kiva/ui/compare/v2.530.1...v2.531.0) (2023-03-16)
 
 
