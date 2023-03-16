@@ -3,6 +3,7 @@
 		<ShareStepper
 			:lender-name="lender.firstName"
 			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
+			:show-lender-name="!isGuest"
 		/>
 		<div class="row page-content">
 			<div class="large-2"></div>
@@ -150,7 +151,16 @@
 							<div class="large-2"></div>
 						</div>
 						<div class="continue-link">
+							<button
+								class="tw-text-action tw-underline"
+								@click="emitGuestCreateAccount"
+								v-if="isGuest"
+								v-kv-track-event="['Thanks','click-create-account','Create my account']"
+							>
+								Create my account
+							</button>
 							<router-link
+								v-else
 								to="/portfolio"
 								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 							>
@@ -209,6 +219,10 @@ export default {
 			type: String,
 			default: 'a'
 		},
+		isGuest: {
+			type: Boolean,
+			default: false
+		},
 	},
 	metaInfo() {
 		return {
@@ -218,7 +232,6 @@ export default {
 	data() {
 		return {
 			thanksImgRequire,
-			isGuest: false,
 			mdiCheckAll,
 			mdiLink,
 			message: '',
@@ -263,7 +276,8 @@ export default {
 				utm_campaign: this.utmCampaign,
 				utm_content: this.utmContent,
 			};
-			if (!this.calculatePeopleQtyToGoal()) {
+
+			if (!this.calculatePeopleQtyToGoal() && !this.isGuest) {
 				if (this.lender.public && this.lender.publicName) {
 					args.lender = this.lender.publicName;
 				}
@@ -271,8 +285,12 @@ export default {
 				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}`, args);
 			}
 
+			// There should always be a loan for the guest version of this.
 			// Share specific loan URL
 			if (this.loan.id) {
+				if (this.isGuest) {
+					return getFullUrl(`${base}/lend/${this.loan.id}`, args);
+				}
 				return getFullUrl(`${base}/invitedby/${this.lender.inviterName}/for/${this.loan.id}`, args);
 			}
 			// Share generic Kiva URL
@@ -355,7 +373,10 @@ export default {
 		calculatePeopleQtyToGoal() {
 			const remainingAmount = parseFloat(this.loan.unreservedAmount);
 			return remainingAmount === 0 ? 0 : Math.ceil(remainingAmount / 25);
-		}
+		},
+		emitGuestCreateAccount() {
+			this.$emit('guest-create-account');
+		},
 	},
 	mounted() {
 		if (this.receipt) {

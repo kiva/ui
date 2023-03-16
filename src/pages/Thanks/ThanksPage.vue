@@ -84,6 +84,8 @@
 			:loan="selectedLoan"
 			:share-card-language-version="shareCardLanguageVersion"
 			:share-ask-copy-version="shareAskCopyVersion"
+			:is-guest="isGuest"
+			@guest-create-account="createGuestAccount"
 		/>
 	</www-page>
 </template>
@@ -143,6 +145,7 @@ export default {
 			pageData: {},
 			shareCardLanguageVersion: '',
 			shareAskCopyVersion: '',
+			jumpToGuestUpsell: false,
 		};
 	},
 	apollo: {
@@ -201,8 +204,17 @@ export default {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
 		showFocusedShareAsk() {
-			// Only show focused share ask for non-guest loan purchases
-			return !this.isGuest && this.selectedLoan.id;
+			// if jumpToGuestUpsell is true, don't show focused share ask;
+			if (this.jumpToGuestUpsell) {
+				return false;
+			}
+			// Only show focused share ask for non-guest loan purchases or for only US loan purchases from guests
+			return (this.selectedLoan.id && !this.isGuest) || this.isGuestUsCheckout;
+		},
+		isGuestUsCheckout() {
+			// Is a guest checking out only with US loans?
+			// eslint-disable-next-line no-underscore-dangle
+			return this.isGuest && this.loans.every(loan => loan?.__typename === 'LoanDirect');
 		}
 	},
 	created() {
@@ -222,7 +234,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, `Thanks page readQuery failed: (transaction_id: ${transactionId})`);
 		}
-
 		const hasEverLoggedIn = data?.hasEverLoggedIn;
 		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 		this.hasModernSub = modernSubscriptions.length !== 0;
@@ -244,7 +255,6 @@ export default {
 		this.loans = loansResponse
 			.filter(item => item.basketItemType === 'loan_reservation')
 			.map(item => item.loan);
-
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
@@ -321,6 +331,13 @@ export default {
 					this.shareAskCopyVersion,
 				);
 			}
+		}
+	},
+	methods: {
+		createGuestAccount() {
+			// This is the only place this variable should be set.
+			// When this is true, it will override all logic and show the thanks page v2
+			this.jumpToGuestUpsell = true;
 		}
 	}
 };
