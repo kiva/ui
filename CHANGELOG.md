@@ -1,3 +1,15 @@
+## [2.531.0](https://github.com/kiva/ui/compare/v2.530.1...v2.531.0) (2023-03-16)
+
+
+### Features
+
+* round down percentages to the nearest whole number of BP ([9362f67](https://github.com/kiva/ui/commit/9362f67943e221bdfa3a0813bb04ae8335fe9df5))
+
+
+### Bug Fixes
+
+* more targeted rounding ([b648e67](https://github.com/kiva/ui/commit/b648e673fe941073f839ee91f77272135f80761f))
+
 ### [2.530.1](https://github.com/kiva/ui/compare/v2.530.0...v2.530.1) (2023-03-16)
 
 
