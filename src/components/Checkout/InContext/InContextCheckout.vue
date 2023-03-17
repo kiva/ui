@@ -29,7 +29,8 @@
 		/>
 
 		<div
-			:class="`in-context-login ${isCorporateCampaignPage ? '' : 'tw-text-right'}`"
+			class="in-context-login"
+			:class="{ 'tw-text-right' : !isCorporateCampaignPage }"
 			v-if="!isActivelyLoggedIn"
 		>
 			<kv-button
