@@ -257,7 +257,7 @@ describe('experimentUtils.js', () => {
 
 			afterEach(jest.restoreAllMocks);
 
-			it('should return "unassigned" when dice roll lands outside population level', () => {
+			it('should return undefined when dice roll lands outside population level', () => {
 				const data = { ...experiment };
 
 				spyAlea.mockReturnValueOnce(() => 0.5);
@@ -267,12 +267,12 @@ describe('experimentUtils.js', () => {
 
 				spyAlea.mockReturnValueOnce(() => 0.51);
 				data.population = 0.5;
-				expect(assignVersionForLoginId(data, loginId)).toBe('unassigned');
+				expect(assignVersionForLoginId(data, loginId)).toBe(undefined);
 				expect(spyAlea).toHaveBeenCalledTimes(2);
 
 				spyAlea.mockReturnValueOnce(() => 0.9);
 				data.population = 0.5;
-				expect(assignVersionForLoginId(data, loginId)).toBe('unassigned');
+				expect(assignVersionForLoginId(data, loginId)).toBe(undefined);
 				expect(spyAlea).toHaveBeenCalledTimes(3);
 			});
 

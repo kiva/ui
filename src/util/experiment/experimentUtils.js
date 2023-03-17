@@ -225,10 +225,6 @@ export function assignVersionForLoginId({ name, distribution, population }, logi
 		// Exit the loop and return the current version
 		if (marker <= cutoff) return key;
 	}
-
-	// If no version was selected, mark them as 'unassigned' so that they will be re-assigned
-	// if/when the population percent changes.
-	return 'unassigned';
 }
 
 /**
