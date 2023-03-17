@@ -1,3 +1,10 @@
+## [2.533.0](https://github.com/kiva/ui/compare/v2.532.0...v2.533.0) (2023-03-17)
+
+
+### Features
+
+* kiva credit stats for portfolio overview page MARS-352 ([eeb7262](https://github.com/kiva/ui/commit/eeb72623dfb4d73f4c3e15d6cc6da65114f353e6))
+
 ## [2.532.0](https://github.com/kiva/ui/compare/v2.531.1...v2.532.0) (2023-03-16)
 
 
