@@ -807,7 +807,7 @@ import logFormatter from '@/util/logFormatter';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
