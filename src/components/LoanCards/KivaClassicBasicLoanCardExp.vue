@@ -206,6 +206,10 @@ export default {
 			type: Number,
 			required: true,
 		},
+		checkoutButtonEnabled: {
+			type: Boolean,
+			default: false
+		},
 		customLoanDetails: {
 			type: Boolean,
 			default: false

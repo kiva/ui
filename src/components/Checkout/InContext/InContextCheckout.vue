@@ -12,8 +12,9 @@
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
+			@jump-to-loans="$emit('jump-to-loans')"
 		/>
 
 		<hr>
@@ -23,11 +24,14 @@
 			:totals="totals"
 			:promo-fund="derivedPromoFund"
 			@credit-removed="$emit('credit-removed')"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+		<div
+			:class="`in-context-login ${isCorporateCampaignPage ? '' : 'tw-text-right'}`"
+			v-if="!isActivelyLoggedIn"
+		>
 			<kv-button
 				v-if="!isActivelyLoggedIn"
 				class="smaller checkout-button"
@@ -35,7 +39,7 @@
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
 			>
-				Continue
+				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
 		<div class="in-context-payment-conttrols" v-else>
@@ -44,7 +48,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -52,7 +56,7 @@
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -132,6 +136,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Continue'
+		}
 	},
 	data() {
 		return {
@@ -168,6 +176,9 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
+		}
 	},
 	methods: {
 		completeTransaction(transactionId) {
