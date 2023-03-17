@@ -8,10 +8,10 @@ const apiHostname = process.env.API_HOSTNAME || "fed.kiva.local"
 
 module.exports = merge(base, devVm, {
 	app: {
-		graphqlUri: `http://${apiHostname}/graphql`,
+		graphqlUri: `https://${apiHostname}/fed/graphql`,
 	},
 	server: {
-		graphqlUri: `http://${apiHostname}/graphql`,
+		graphqlUri: `https://${apiHostname}/fed/graphql`,
 		// memcachedEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers: 'memcached:11211',
