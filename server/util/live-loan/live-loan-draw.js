@@ -2,7 +2,7 @@ const path = require('path');
 const { createCanvas, registerFont, loadImage } = require('canvas');
 const deePool = require('deepool');
 const { ellipsisLine, wrapText, roundRect } = require('./canvas-utils');
-const loanUseFilter = require('../../../src/plugins/loan-use-filter');
+const getLoanUse = require('../../../src/util/loanUse');
 const tracer = require('../ddTrace');
 
 const resizeFactor = 3;
@@ -82,14 +82,7 @@ module.exports = async function draw(loanData) {
 			const useYPos = 315 * resizeFactor;
 			const useMaxLines = 3;
 			const useMaxLineHeight = 16 * 1.3 * resizeFactor;
-			const useText = loanUseFilter(
-				loanData.use,
-				loanData.name,
-				loanData.status,
-				loanData.loanAmount,
-				loanData.borrowerCount,
-				100
-			);
+			const useText = getLoanUse({ ...loanData, maxLength: 100 });
 			ctx.fillStyle = kivaColors.textDark;
 			ctx.font = `400 ${16 * resizeFactor}px "Kiva Post Grot"`;
 			wrapText(ctx, useText, useXPos, useYPos, bodyWidth, useMaxLines, useMaxLineHeight);

@@ -22,9 +22,11 @@
 			</router-link>
 		</div>
 		<!-- name (link) -->
-		<div v-if="loading" class="tw-mx-auto tw-w-12 tw-h-3" style="margin-bottom: 14px;">
-			<kv-loading-placeholder />
-		</div>
+		<kv-loading-placeholder
+			v-if="loading"
+			class="tw-mx-auto"
+			style="width: 6rem; height: 1.5rem; margin-bottom: 14px;"
+		/>
 		<h2 v-else class="tw-text-h3 tw-mb-1 tw-truncate">
 			<router-link
 				:to="`/lend/${loanId}`"
@@ -34,9 +36,11 @@
 			</router-link>
 		</h2>
 		<!-- progress bar -->
-		<div v-if="loadingProgress" class="tw-h-1 tw-mb-1 tw-mx-auto" style="max-width: 160px;">
-			<kv-loading-placeholder />
-		</div>
+		<kv-loading-placeholder
+			v-if="loadingProgress"
+			class="tw-mb-1 tw-mx-auto"
+			style="height: 8px; max-width: 160px;"
+		/>
 		<kv-progress-bar
 			v-else
 			class="tw-mb-0.5 tw-mx-auto"
@@ -47,9 +51,11 @@
 			:variant="progressVariant"
 		/>
 		<!-- status -->
-		<div v-if="loadingProgress" class="tw-mx-auto tw-w-10 tw-h-2.5 tw-mb-0.5">
-			<kv-loading-placeholder />
-		</div>
+		<kv-loading-placeholder
+			v-if="loadingProgress"
+			class="tw-mb-0.5 tw-mx-auto"
+			style="height: 20px; width: 5rem;"
+		/>
 		<p v-else class="tw-mb-0.5">
 			{{ statusDescription }}
 		</p>

@@ -1,20 +1,17 @@
 <template>
 	<async-portfolio-section v-show="totalLoans > 0 || loading" @visible="fetchAsyncData">
-		<div v-if="loading" class="tw-h-3.5 tw-mb-1 md:tw-h-4 lg:tw-h-5 lg:tw-mb-2" style="width: 40%;">
-			<kv-loading-placeholder />
-		</div>
+		<!-- headline -->
+		<kv-loading-placeholder v-if="loading" class="header-placeholder tw-mb-1 lg:tw-mb-1.5" style="width: 40%;" />
 		<h2 v-else class="tw-mb-0.5">
 			Thank you, {{ lenderName }}
 		</h2>
-		<div v-if="loading" class="tw-h-2.5 lg:tw-h-3 tw-mb-1 md:tw-mb-4" style="width: 65%;">
-			<kv-loading-placeholder />
-		</div>
-		<div v-if="loading" class="tw-h-2.5 tw-mb-4 md:tw-hidden" style="width: 25%;">
-			<kv-loading-placeholder />
-		</div>
+		<!-- sub headline -->
+		<kv-loading-placeholder v-if="loading" class="sub-placeholder tw-mb-1 md:tw-mb-4" style="width: 65%;" />
+		<kv-loading-placeholder v-if="loading" class="sub-placeholder tw-mb-4 md:tw-hidden" style="width: 25%;" />
 		<p v-else class="tw-mb-4">
 			{{ totalLoansString }} and counting! You are changing lives!
 		</p>
+		<!-- loan grid -->
 		<kv-grid as="ol" class="tw-grid-cols-12">
 			<recent-loan-item
 				v-for="(id, index) in loanIds"
@@ -23,6 +20,7 @@
 				class="tw-col-span-6 lg:tw-col-span-4"
 			/>
 		</kv-grid>
+		<!-- all loans link -->
 		<p v-if="totalLoans > 6" class="tw-text-center tw-mt-4">
 			<router-link
 				to="/portfolio/loans"
@@ -97,3 +95,30 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.header-placeholder {
+	height: 28px;
+}
+
+.sub-placeholder {
+	height: 19px;
+}
+
+@screen md {
+	.header-placeholder {
+		height: 36px;
+	}
+}
+
+@screen lg {
+	.header-placeholder {
+		height: 40px;
+		margin-top: 2px;
+	}
+
+	.sub-placeholder {
+		height: 24px;
+	}
+}
+</style>

@@ -81,11 +81,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								fundedAmount
 								reservedAmount
 							}
-							sector {
-								id
-								name
-							}
-							gender
 							distributionModel
 							unreservedAmount @client
 						}
@@ -126,19 +121,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
-			key
-			value
-		}
 		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
 			key
 			value
 		}
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
-			key
-			value
-		}
-		categoryShare: uiExperimentSetting(key: "category_share") {
 			key
 			value
 		}

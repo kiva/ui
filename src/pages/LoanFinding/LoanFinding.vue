@@ -86,6 +86,7 @@ import { getExperimentSettingCached, trackExperimentVersion } from '@/util/exper
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
@@ -106,7 +107,7 @@ export default {
 		WelcomeLightbox,
 		KvLightbox
 	},
-	mixins: [retryAfterExpiredBasket],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	data() {
 		return {
 			userInfo: {},

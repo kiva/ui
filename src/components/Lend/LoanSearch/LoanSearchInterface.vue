@@ -185,6 +185,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {

@@ -39,13 +39,9 @@
 					:single-line="true"
 				/>
 				<borrower-info-body
-					:amount="loan.loanAmount"
-					:borrower-count="loan.borrowerCount"
-					:name="loan.name"
-					:status="loan.status"
-					:use="loan.use"
+					:use="loan.fullLoanUse"
 					:loan-id="loan.id"
-					:max-use-length="145"
+					:max-use-length="170"
 					@track-loan-card-interaction="trackInteraction"
 				/>
 				<action-button

@@ -48,6 +48,10 @@ fragment loanCardFields on LoanBasic {
 		hash
 	}
 
+	# for fullLoanUse, along with use, borrowerCount, status, name, loanAmount
+	anonymizationLevel
+	fullLoanUse @client
+
 	# lenders added for DetailedLoanCard Query Cache
 	lenders(limit: 0) {
 		totalCount

@@ -56,6 +56,7 @@ extend type My {
 }
 
 extend interface LoanBasic {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
@@ -63,6 +64,7 @@ extend interface LoanBasic {
 }
 
 extend type LoanPartner {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
@@ -70,6 +72,7 @@ extend type LoanPartner {
 }
 
 extend type LoanDirect {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!

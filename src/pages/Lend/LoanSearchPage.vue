@@ -34,6 +34,7 @@
 				<loan-search-interface
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 				/>
 			</kv-page-container>
 		</article>
@@ -47,6 +48,7 @@ import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -82,6 +84,7 @@ export default {
 			savedSearchName: '',
 		};
 	},
+	mixins: [fiveDollarsTest],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: pageQuery,

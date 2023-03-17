@@ -57,16 +57,9 @@
 				</template>
 			</div>
 		</div>
-		<loan-use
-			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
-			data-testid="bp-summary-loan-use"
-			:borrower-count="borrowerCount"
-			:loan-amount="loanAmount"
-			:name="name"
-			:status="status"
-			:use="use"
-			:anonymization-level="anonymizationLevel"
-		/>
+		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2" data-testid="bp-summary-loan-use">
+			{{ use }}
+		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
 				<kv-loading-placeholder style="height: 1.9rem; width: 50%;" />
@@ -121,7 +114,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
-import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 import JumpLinks from './JumpLinks';
@@ -132,16 +124,18 @@ const preFetchQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
-				borrowerCount
 				image {
 					id
 					hash
 				}
-				loanAmount
 				name
 				status
 				use
+				# for fullLoanUse
 				anonymizationLevel
+				borrowerCount
+				loanAmount
+				fullLoanUse @client
 			}
 		}
 		my {
@@ -197,7 +191,6 @@ export default {
 		BorrowerName,
 		KvMaterialIcon,
 		LoanProgress,
-		LoanUse,
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
@@ -214,11 +207,9 @@ export default {
 			isLoading: true,
 			isLoggedIn: false,
 			activityName: '',
-			borrowerCount: 0,
 			countryName: '',
 			fundraisingPercent: 0,
 			hash: '',
-			loanAmount: '0',
 			mdiMapMarker,
 			name: '',
 			status: '',
@@ -228,7 +219,6 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
-			anonymizationLevel: 'none',
 			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
@@ -294,13 +284,10 @@ export default {
 		result(result) {
 			const loan = result?.data?.lend?.loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.hash = loan?.image?.hash ?? '';
-			this.loanAmount = loan?.loanAmount ?? '0';
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
-			this.use = loan?.use ?? '';
-			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+			this.use = loan?.fullLoanUse ?? '';
 		},
 	},
 };

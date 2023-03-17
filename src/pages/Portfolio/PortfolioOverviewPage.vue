@@ -9,8 +9,8 @@
 				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-3">
 					<account-overview />
 					<recent-loans-list />
-					<!-- rec'd loans -->
-					<!-- kiva effect -->
+					<recommended-loans-list />
+					<kiva-credit-stats />
 					<!-- updates -->
 					<!-- lending insights -->
 					<!-- teams -->
@@ -28,15 +28,19 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
+import KivaCreditStats from './KivaCreditStats';
 import RecentLoansList from './RecentLoansList';
+import RecommendedLoansList from './RecommendedLoansList';
 
 export default {
 	name: 'PortfolioOverviewPage',
 	components: {
 		AccountOverview,
+		KivaCreditStats,
 		KvGrid,
 		KvPageContainer,
 		RecentLoansList,
+		RecommendedLoansList,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,

@@ -28,6 +28,7 @@
 					:is-logged-in="isLoggedIn"
 					:show-category-description="showCategoryDescription"
 					:show-expandable-loan-cards="false"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					ref="categoryRow"
 					@add-to-basket="handleAddToBasket"
 				/>
@@ -100,6 +101,7 @@ import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLo
 import { createIntersectionObserver } from '@/util/observerUtils';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
 const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
@@ -119,7 +121,7 @@ export default {
 		MGDigestLightbox,
 		MGLightbox,
 	},
-	mixins: [retryAfterExpiredBasket],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
 		return {

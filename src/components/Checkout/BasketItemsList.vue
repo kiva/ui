@@ -75,6 +75,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		BasketItem,

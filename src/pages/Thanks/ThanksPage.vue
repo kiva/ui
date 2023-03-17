@@ -43,7 +43,6 @@
 				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 				:show-guest-upsell="isGuest"
 				:show-share="loans.length > 0"
-				:thanks-social-share-version="simpleSocialShareVersion"
 			>
 				<template #receipt>
 					<checkout-receipt
@@ -83,10 +82,8 @@
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
-			:simple-social-share-version="simpleSocialShareVersion"
 			:share-card-language-version="shareCardLanguageVersion"
 			:share-ask-copy-version="shareAskCopyVersion"
-			:category-share-version="categoryShareVersion"
 		/>
 	</www-page>
 </template>
@@ -145,9 +142,7 @@ export default {
 			isGuest: false,
 			pageData: {},
 			shareCardLanguageVersion: '',
-			simpleSocialShareVersion: '',
 			shareAskCopyVersion: '',
-			categoryShareVersion: ''
 		};
 	},
 	apollo: {
@@ -164,10 +159,8 @@ export default {
 				}
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'thanks_share_module' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'category_share' } }),
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -180,26 +173,6 @@ export default {
 	},
 	computed: {
 		selectedLoan() {
-			if (this.categoryShareVersion === 'a' || this.categoryShareVersion === 'b') {
-				const loans = [...this.loans];
-				loans.sort((a, b) => {
-					const aSector = a?.sector?.name?.toLowerCase();
-					const bSector = b?.sector?.name?.toLowerCase();
-					if (a?.gender?.toLowerCase() === 'female') return -1;
-					if (b?.gender?.toLowerCase() === 'female') return 1;
-					if (aSector === 'education') return -1;
-					if (bSector === 'education') return 1;
-					if (aSector === 'agriculture') return -1;
-					if (bSector === 'agriculture') return 1;
-					return 0;
-				});
-
-				const firstLoan = loans[0];
-				if (firstLoan?.gender === 'female'
-					|| ['agriculture', 'education'].includes(firstLoan?.sector?.name.toLowerCase())) {
-					return firstLoan;
-				}
-			}
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
 			return orderedLoans[0] || {};
 		},
@@ -346,24 +319,6 @@ export default {
 					'EXP-MARS-202-Aug2022',
 					this.shareAskCopyVersion,
 				);
-			}
-
-			// MARS-310 Category Share on Thanks page
-			if (!this.isGuest) {
-				const categoryShareResult = this.apollo.readFragment({
-					id: 'Experiment:category_share',
-					fragment: experimentVersionFragment,
-				}) || {};
-
-				this.categoryShareVersion = categoryShareResult?.version;
-				if (this.categoryShareVersion && (this.selectedLoan?.gender?.toLowerCase() === 'female'
-					|| ['education', 'agriculture'].includes(this.selectedLoan?.sector?.name?.toLowerCase()))) {
-					this.$kvTrackEvent(
-						'Thanks',
-						'EXP-MARS-310-Nov2022',
-						this.categoryShareVersion,
-					);
-				}
 			}
 		}
 	}

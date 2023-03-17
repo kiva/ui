@@ -79,7 +79,6 @@ const ExpandableLoanCardCollapsed = () => {
 const FeaturedHeroLoan = () => import('@/components/LoansByCategory/FeaturedHeroLoan');
 const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
 const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
-const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLoanCard');
 const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
 
 export default {
@@ -205,8 +204,6 @@ export default {
 					return GridLoanCard;
 				case 'HoverLoanCard':
 					return HoverLoanCard;
-				case 'LendHomepageLoanCard':
-					return LendHomepageLoanCard;
 				case 'ListLoanCard':
 					return ListLoanCard;
 				default:

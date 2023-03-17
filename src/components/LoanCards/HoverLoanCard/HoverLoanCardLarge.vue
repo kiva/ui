@@ -39,13 +39,9 @@
 			</div>
 			<borrower-info-body
 				class="hover-borrower-info-body tw-text-small tw-font-book"
-				:amount="loan.loanAmount"
-				:borrower-count="loan.borrowerCount"
-				:name="loan.name"
-				:status="loan.status"
-				:use="loan.use"
+				:use="loan.fullLoanUse"
 				:loan-id="loan.id"
-				:max-use-length="73"
+				:max-use-length="100"
 				:disable-link="true"
 				read-more-link-text="Expand to learn more"
 				@read-more-link="updateDetailedLoanIndex"
