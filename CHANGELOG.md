@@ -1,3 +1,17 @@
+## [2.534.0](https://github.com/kiva/ui/compare/v2.533.0...v2.534.0) (2023-03-17)
+
+
+### Features
+
+* experiment assignment with alea pseudo random number generator ([b4fab35](https://github.com/kiva/ui/commit/b4fab35832674bb5b593acc6a4f49870094f4720))
+
+
+### Bug Fixes
+
+* eslint disable no longer needed ([7d8f809](https://github.com/kiva/ui/commit/7d8f8095cdd048129cd58d0feefbf193a370a059))
+* merge issue ([1705dd1](https://github.com/kiva/ui/commit/1705dd1debdc10a1e7b5a637482aeb1558c0a866))
+* unassigned string is no longer needed for comparisons ([3d596e9](https://github.com/kiva/ui/commit/3d596e991645f3d50b5a196f4253685f7599083a))
+
 ## [2.533.0](https://github.com/kiva/ui/compare/v2.532.0...v2.533.0) (2023-03-17)
 
 
