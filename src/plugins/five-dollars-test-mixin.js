@@ -1,4 +1,4 @@
-import { trackExperimentVersion } from '@/util/experimentUtils';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 export default {
