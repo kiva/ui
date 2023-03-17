@@ -47,7 +47,7 @@
 
 		<div
 			v-if="showKivaCredit"
-			class="tw-flex tw-flex-row tw-w-full tw-mb-2 tw-text-h3"
+			:class="`tw-flex tw-flex-row tw-w-full tw-mb-2${isCorporateCampaignPage ? '' : ' tw-text-h3' }`"
 			data-testid="basket-kiva-credit"
 		>
 			<template v-if="showRemoveKivaCredit">
@@ -60,7 +60,7 @@
 					<span
 						data-testid="applied-kiva-credit-amount"
 						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
-					>- {{ kivaCredit }}</span>
+					>{{ isCorporateCampaignPage ? '' : '- ' }}{{ kivaCredit }}</span>
 					<button
 						v-if="showRemoveKivaCredit"
 						@click="removeCredit('kiva_credit')"
@@ -217,7 +217,6 @@
 
 <script>
 import { gql } from '@apollo/client';
-
 import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
@@ -232,7 +231,6 @@ import {
 } from '@/util/experiment/experimentUtils';
 import DonationItem from '@/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
-
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
