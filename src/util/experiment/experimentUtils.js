@@ -272,9 +272,11 @@ export function getExperimentSettingCached(client, key) {
  * @param  {Function} trackEvent       the tracking function to call (usually this.$kvTrackEvent)
  * @param  {string} category           the tracking category
  * @param  {string} key                the experiment key
+ * @param  {string} action             the tracking action parameter
+ * @param  {string} property           the tracking property parameter
  * @return {Experiment}                the experiment assignment object read from the client cache
  */
-export function trackExperimentVersion(client, trackEvent, category, key, action) {
+export function trackExperimentVersion(client, trackEvent, category, key, action, property = undefined) {
 	// get assignment for experiment key
 	const exp = client.readFragment({
 		id: `Experiment:${key}`,
@@ -287,6 +289,7 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 			category,
 			action ?? key,
 			exp.version,
+			property
 		);
 	}
 	return exp;
