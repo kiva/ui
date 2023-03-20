@@ -9,7 +9,7 @@
 		<form id="guestUpsellForm" action="." @submit.prevent.stop="submit">
 			<kv-base-input
 				name="firstName"
-				class="data-hj-suppress"
+				class="data-hj-suppress tw-mb-2"
 				type="text"
 				v-model.trim="firstName"
 				:validation="$v.firstName"
@@ -21,7 +21,7 @@
 			</kv-base-input>
 			<kv-base-input
 				name="lastName"
-				class="data-hj-suppress"
+				class="data-hj-suppress tw-mb-2"
 				type="text"
 				v-model.trim="lastName"
 				:validation="$v.lastName"
