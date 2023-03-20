@@ -31,6 +31,7 @@
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
 import {
 	buildPriceArray,
+	build5DollarsPriceArray,
 	isLessThan25,
 	isBetween25And500
 } from '@/util/loanUtils';
@@ -60,6 +61,10 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		amountLeft() {
@@ -81,7 +86,7 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.amountLeft < 25 ? this.loan.minNoteSize : 25); // 25_hard_coded
 			// cap at 20 prices
-			const priceArray = buildPriceArray(parseFloat(this.amountLeft), minAmount).slice(0, 20);
+			const priceArray = this.enableFiveDollarsNotes ? build5DollarsPriceArray(parseFloat(this.amountLeft)).slice(0, 28) : buildPriceArray(parseFloat(this.amountLeft), minAmount).slice(0, 20); // eslint-disable-line max-len
 			const amountLeftFixed = Number(this.amountLeft).toFixed();
 			if (this.isCompleteLoanActive && !priceArray.includes(amountLeftFixed)) {
 				priceArray.push(amountLeftFixed);

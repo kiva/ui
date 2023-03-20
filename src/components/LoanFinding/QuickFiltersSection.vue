@@ -33,6 +33,7 @@
 						:show-action-button="true"
 						:use-full-width="true"
 						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 						style="min-height: 500px;"
 					/>
@@ -44,6 +45,7 @@
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mr-2"
 						@add-to-basket="addToBasket"
 					/>
@@ -85,6 +87,10 @@ export default {
 	inject: ['apollo'],
 	props: {
 		enableLoanCardExp: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

@@ -53,6 +53,7 @@
 					:is-funded="isFunded"
 					:is-selected-by-another="isSelectedByAnother"
 					:is-simple-lend-button="true"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 
 					@click.native="trackInteraction({
 						interactionType: 'addToBasket',
@@ -87,6 +88,12 @@ import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	name: 'ExpandableLoanCard',
+	props: {
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
+	},
 	components: {
 		ActionButton,
 		BorrowerInfoHeaderExpandable,

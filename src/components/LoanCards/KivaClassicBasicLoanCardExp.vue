@@ -141,6 +141,7 @@
 				:basket-items="basketItems"
 				:is-loading="isLoading"
 				:is-adding="isAdding"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="addToBasket"
 				class="tw-mt-auto"
 				:class="{ 'tw-w-full' : unreservedAmount <= 0 }"
@@ -226,6 +227,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],

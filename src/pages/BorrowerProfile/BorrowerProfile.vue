@@ -50,6 +50,7 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					>
 						<template #sharebutton>
 							<!-- Share button -->

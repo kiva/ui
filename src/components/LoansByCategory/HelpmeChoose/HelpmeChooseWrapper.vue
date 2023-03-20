@@ -49,6 +49,7 @@
 					:show-tags="enableLoanTags"
 					:category-page-name="loanChannelName"
 					:use-full-width="true"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 				/>
 				<loan-card-controller
 					v-else
@@ -58,6 +59,7 @@
 					:loan="loan"
 					loan-card-type="GridLoanCard"
 					:show-tags="enableLoanTags"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 				/>
 			</template>
 		</div>
@@ -109,6 +111,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
