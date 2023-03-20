@@ -70,6 +70,7 @@
 						:hover-loan-index="hoverLoanIndex"
 						:shift-increment="calculateCardShiftIncrement(index)"
 						:prevent-updating-detailed-card="preventUpdatingDetailedCard"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 
 						@add-to-basket="handleAddToBasket"
 						@update-detailed-loan-index="updateDetailedLoanIndex"
@@ -128,6 +129,7 @@
 					:card-number="detailedLoanIndex + 1"
 					:enable-tracking="true"
 					:is-visitor="!isLoggedIn"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@add-to-basket="handleAddToBasket"
 					@close-detailed-loan-card="detailedLoanIndex = null"
 				/>
@@ -185,6 +187,10 @@ export default {
 			type: String,
 			default: 'Control'
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

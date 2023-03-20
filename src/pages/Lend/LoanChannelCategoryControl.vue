@@ -72,6 +72,7 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 							<loan-card-controller
 								v-else
@@ -81,6 +82,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 					</div>
@@ -97,6 +99,7 @@
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
 						:enable-loan-card-exp="enableLoanCardExp"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
 				<div v-else>
@@ -111,6 +114,7 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 							<loan-card-controller
 								v-else
@@ -120,6 +124,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 
@@ -144,6 +149,7 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 							<loan-card-controller
 								v-else
@@ -153,6 +159,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 					</div>
@@ -169,6 +176,7 @@
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
 						:enable-loan-card-exp="enableLoanCardExp"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
 				<kv-pagination

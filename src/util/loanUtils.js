@@ -75,6 +75,22 @@ export function buildPriceArray(amountLeft, minAmount) {
 	return priceArray;
 }
 
+export function build5DollarsPriceArray(amountLeft) {
+	const limit5 = amountLeft < 50 ? amountLeft : 50;
+	const N_5 = limit5 / 5;
+	const N_25 = (amountLeft - limit5) / 25 + 1;
+	const priceArray = [];
+	for (let i = 1; i <= N_5; i += 1) {
+		priceArray.push(numeral(5 * i).format('0,0'));
+	}
+	if (amountLeft > limit5) {
+		for (let i = 3; i <= N_25; i += 1) {
+			priceArray.push(numeral(25 * i).format('0,0'));
+		}
+	}
+	return priceArray;
+}
+
 export function toParagraphs(text) {
 	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
 }

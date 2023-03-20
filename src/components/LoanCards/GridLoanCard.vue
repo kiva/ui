@@ -48,6 +48,7 @@
 					:is-amount-lend-button="lessThan25"
 					:amount-left="amountLeft"
 					:show-now="true"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
 					@click.native="trackInteraction({
@@ -144,6 +145,10 @@ export default {
 			default: ''
 		},
 		showTags: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

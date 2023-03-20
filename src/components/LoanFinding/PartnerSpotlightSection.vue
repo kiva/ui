@@ -19,6 +19,7 @@
 			:title="carouselTitle"
 			:loans="loans"
 			:enable-loan-card-exp="enableLoanCardExp"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 
@@ -58,6 +59,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		headline() {

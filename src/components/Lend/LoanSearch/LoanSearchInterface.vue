@@ -109,6 +109,7 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="ListLoanCard"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:rounded-corners="true"
 					/>
 				</kv-grid>

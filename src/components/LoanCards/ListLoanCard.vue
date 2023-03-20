@@ -78,6 +78,7 @@
 						:is-amount-lend-button="lessThan25"
 						:amount-left="amountLeft"
 						:show-now="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mt-0 tw-w-full"
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -131,6 +132,7 @@
 						:is-amount-lend-button="lessThan25"
 						:amount-left="amountLeft"
 						:show-now="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mt-0 tw-w-full"
 
 						@click.native="trackInteraction({
@@ -232,6 +234,10 @@ export default {
 			default: 0,
 		},
 		roundedCorners: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

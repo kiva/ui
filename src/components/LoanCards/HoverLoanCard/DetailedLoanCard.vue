@@ -97,6 +97,7 @@
 							:is-amount-lend-button="lessThan25"
 							:amount-left="amountLeft"
 							:show-now="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@click.native="trackInteraction({
 								interactionType: 'addToBasket',
 								interactionElement: 'Lend25'
@@ -237,6 +238,10 @@ export default {
 		hideLendCta: {
 			type: Boolean,
 			default: false,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {

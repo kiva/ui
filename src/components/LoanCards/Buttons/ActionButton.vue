@@ -8,6 +8,7 @@
 		@add-to-basket="handleAddToBasketEvent"
 		:show-now="showNow"
 		:amount-left="amountLeft"
+		:enable-five-dollars-notes="enableFiveDollarsNotes"
 	/>
 </template>
 
@@ -81,6 +82,10 @@ export default {
 		amountLeft: {
 			type: Number,
 			default: 0,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

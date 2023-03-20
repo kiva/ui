@@ -9,6 +9,7 @@
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
 			:use-category-service="categoryServiceExpActive"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			@loaded="trackFeaturedLoan"
 		/>
 
