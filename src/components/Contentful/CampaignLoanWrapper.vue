@@ -21,6 +21,7 @@
 					:promo-amount="componentProps.promoAmount"
 					:upc-credit-remaining="componentProps.upcCreditRemaining"
 					:basket-loans="componentProps.basketLoans"
+					:promo-name="componentProps.promoName"
 				/>
 
 				<campaign-loan-row
@@ -38,6 +39,7 @@
 					:row-number="1"
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"
+					:checkout-route="checkoutRoute"
 					@add-to-basket="componentProps.handleAddToBasket"
 					@update-available-loans="componentProps.handleUpdateAvailableLoans"
 					@update-total-count="componentProps.setTotalCount"
@@ -57,6 +59,7 @@
 					:promo-only="componentProps.promoOnlyQuery"
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"
+					:checkout-route="checkoutRoute"
 					@add-to-basket="componentProps.handleAddToBasket"
 					@update-total-count="componentProps.setTotalCount"
 					@show-loan-details="componentProps.showLoanDetails"
@@ -89,6 +92,11 @@ export default {
 		componentProps: {
 			type: Object,
 			default: () => {}
+		}
+	},
+	computed: {
+		checkoutRoute() {
+			return Number(this.componentProps.promoAmount) > 0 ? '' : '#show-basket';
 		}
 	}
 };

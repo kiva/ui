@@ -52,7 +52,7 @@
 		>
 			<template v-if="showRemoveKivaCredit">
 				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
-					Kiva Credit:
+					{{ isCorporateCampaignPage ? 'Remaining Kiva credit:' : 'Kiva Credit:' }}
 				</div>
 				<div
 					class="tw-flex-none tw-w-auto tw-flex tw-items-center"

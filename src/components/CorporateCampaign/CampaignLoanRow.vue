@@ -37,7 +37,7 @@
 						:key="`loan-${loan}`"
 						:loan-id="loan"
 						:lend-now-button="true"
-						:checkout-button-enabled="false"
+						:checkout-route="checkoutRoute"
 						:custom-loan-details="true"
 						:custom-checkout-button-text="getCheckoutBtnText(loan)"
 						@show-loan-details="showLoanDetails(loans[index])"
@@ -121,6 +121,10 @@ export default {
 		handleAddToBasket: {
 			type: Function,
 			default: () => {}
+		},
+		checkoutRoute: {
+			type: String,
+			default: '#show-basket'
 		}
 	},
 	data() {

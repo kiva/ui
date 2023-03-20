@@ -66,6 +66,10 @@ export default {
 			type: String,
 			default: '0.00'
 		},
+		promoName: {
+			type: String,
+			default: ''
+		},
 		upcCreditRemaining: {
 			type: String,
 			default: '0.00'

@@ -135,7 +135,7 @@
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
-				title="Checkout"
+				title="You're almost there!"
 				style="z-index: 1199 !important;"
 			>
 				<campaign-status
@@ -163,6 +163,8 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+					:promo-name="campaignPartnerName"
+					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
@@ -607,7 +609,8 @@ export default {
 			leftoverCreditAllocationLoanId: null,
 			scrollToLoans: false,
 			basketUpdating: false,
-			basketBalancing: false
+			basketBalancing: false,
+			lcaLoanPrice: 0
 		};
 	},
 	metaInfo() {
@@ -786,7 +789,7 @@ export default {
 				promoAmount: numeral(this.promoAmount).format('0.00'),
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
 				basketLoans: this.basketLoans,
-				promoName: this.campaignPartnerName
+				promoName: this.campaignPartnerName,
 			};
 		},
 		pageSettingData() {
@@ -1423,23 +1426,24 @@ export default {
 			// Check if there is already a loan id that has unspent credit allocated to it
 			if (LCALoanId) {
 				// Try getting that loan from the basket
-				const basketLCALoan = this.basketLoans.find(loan => String(loan.id) === LCALoanId);
+				const basketLCALoan = this.basketLoans.find(loan => String(loan?.id) === LCALoanId);
 				if (basketLCALoan?.price) {
 					// If there's a delta between total checkout price and credit available
+					let lcaLoanPrice = parseFloat(basketLCALoan.price) + parseFloat(this.upcCreditRemaining);
 					if (this.upcCreditRemaining !== 0) {
-						let lCALoanPrice = parseFloat(basketLCALoan.price) + parseFloat(this.upcCreditRemaining);
-						if (lCALoanPrice < 0) {
-							lCALoanPrice = 0;
+						if (lcaLoanPrice < 0) {
+							lcaLoanPrice = 0;
 						}
 						// Set the LCA loan price that balances the delta
 						this.updateLeftoverCreditAllocationBasketItem({
 							loanId: Number(LCALoanId),
-							lendAmount: lCALoanPrice
+							lendAmount: lcaLoanPrice
 						});
-						if (lCALoanPrice === 0) {
+						if (this.lcaLoanPrice === 0) {
 							this.cookieStore.remove('lcaid');
 						}
 					}
+					this.lcaLoanPrice = Number(lcaLoanPrice);
 				} else {
 					this.cookieStore.remove('lcaid');
 				}

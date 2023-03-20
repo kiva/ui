@@ -3,6 +3,32 @@
 		class="in-context-checkout"
 		id="inContextCheckout"
 	>
+		<div
+			v-if="isCorporateCampaignPage && cookieStore.get('lcaid')"
+			class="tw-pb-4"
+		>
+			<div
+				class="tw-bg-brand-50
+						tw-rounded
+						tw-p-2
+						row
+						align-center"
+			>
+				<kv-icon
+					class="tw-w-4"
+					name="piggy-bank"
+				/>
+				<span v-if="promoFund.displayName">
+					{{ promoName }} has given you ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span v-else>
+					You have been given ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span>
+					&nbsp;&nbsp;We've suggested a borrower to lend your remaining ${{ lcaLoanPrice }} credit to.
+				</span>
+			</div>
+		</div>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
 			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
@@ -29,7 +55,7 @@
 		/>
 
 		<div
-			:class="`in-context-login ${isCorporateCampaignPage ? '' : 'tw-text-right'}`"
+			:class="`in-context-login ${isCorporateCampaignPage ? 'tw-text-right' : ''}`"
 			v-if="!isActivelyLoggedIn"
 		>
 			<kv-button
@@ -79,6 +105,7 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -90,7 +117,8 @@ export default {
 		KvButton,
 		KivaCreditPayment,
 		KvLoadingOverlay,
-		OrderTotals
+		OrderTotals,
+		KvIcon
 	},
 	mixins: [
 		checkoutUtils
@@ -135,6 +163,14 @@ export default {
 		promoFund: {
 			type: Object,
 			default: () => {},
+		},
+		promoName: {
+			type: String,
+			default: () => {},
+		},
+		lcaLoanPrice: {
+			type: Number,
+			default: 0,
 		},
 		customCheckoutButtonText: {
 			type: String,
