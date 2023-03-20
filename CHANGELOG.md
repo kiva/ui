@@ -1,3 +1,10 @@
+## [2.535.0](https://github.com/kiva/ui/compare/v2.534.0...v2.535.0) (2023-03-20)
+
+
+### Features
+
+* show the focused share ask for guest checkout for us loans ([8bb6b10](https://github.com/kiva/ui/commit/8bb6b1062987a8629b63aee5d69d2d28f6bff8c8))
+
 ## [2.534.0](https://github.com/kiva/ui/compare/v2.533.0...v2.534.0) (2023-03-17)
 
 
