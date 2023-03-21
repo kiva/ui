@@ -1,9 +1,8 @@
 import { render } from '@testing-library/vue';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
-import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
+import basketLoanTeams from '../../../../fixtures/BasketLoanTeams.json';
 
 describe('TeamDropDown', () => {
-	afterEach(jest.clearAllMocks);
 	it('should contain these components', () => {
 		const {
 			getByText, getAllByTestId, getByRole, getByDisplayValue
