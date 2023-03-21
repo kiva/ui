@@ -19,7 +19,7 @@
 
 				<campaign-loan-row
 					name="Loan Row"
-					v-if="componentProps.showLoanRows"
+					v-show="componentProps.showLoanRows"
 					id="campaignLoanRowDisplay"
 					:filters="componentProps.filters"
 					:is-visitor="componentProps.isVisitor"
@@ -38,7 +38,7 @@
 				/>
 
 				<campaign-loan-grid-display
-					v-if="!componentProps.showLoanRows"
+					v-show="!componentProps.showLoanRows"
 					id="campaignLoanDisplay"
 					:checkout-visible="componentProps.checkoutVisible || componentProps.showThanks"
 					:filters="componentProps.filters"
