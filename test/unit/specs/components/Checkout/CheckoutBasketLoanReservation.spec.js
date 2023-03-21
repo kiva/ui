@@ -7,7 +7,6 @@ const Time = new Date(); // creates a new date/time based on now
 Time.setMinutes(Time.getMinutes() + 5);
 
 describe('LoanReservation', () => {
-
 	it('should contain these components in these states of visibility', () => {
 		// lightbox is the same one used everywhere and should be tested separately
 		const {
@@ -41,8 +40,7 @@ describe('LoanReservation', () => {
 
 		getByText('What does it mean that my loan is not reserved?');
 		getByTestId('basket-loan-why-lightbox');
-		getByText('Reservation expires in 4m', { exact: false } );
+		getByText('Reservation expires in 4m', { exact: false });
 		getByText('Loans will not be reserved', { exact: false });
-
 	});
 });

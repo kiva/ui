@@ -16,7 +16,6 @@ const emptyComponent = {
 };
 
 describe('BasketItem loan', () => {
-
 	it('should contain these components and text', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
 		const {
