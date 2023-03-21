@@ -4,7 +4,6 @@ import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 
 describe('TeamDropDown', () => {
 	afterEach(jest.clearAllMocks);
-
 	it('should contain these components', () => {
 		const {
 			getByText, getAllByTestId, getByRole, getByDisplayValue
