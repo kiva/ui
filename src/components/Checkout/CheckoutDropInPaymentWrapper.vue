@@ -168,7 +168,7 @@ export default {
 			} else if (this.isGuestCheckout && this.promoFundId) {
 				this.$v.$touch();
 				if (!this.$v.$invalid) {
-					this.validateGuestBasketAndCheckout();
+					this.validatePromoGuestBasketAndCheckout();
 				}
 			} else {
 				this.validateBasketAndCheckout();
