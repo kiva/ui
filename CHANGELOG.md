@@ -1,3 +1,10 @@
+### [2.535.1](https://github.com/kiva/ui/compare/v2.535.0...v2.535.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* row view on new campaign pages is showing fewer loans than grid view ([e1d2873](https://github.com/kiva/ui/commit/e1d2873698d11ae2f3a3ec877a86a56980e12214))
+
 ## [2.535.0](https://github.com/kiva/ui/compare/v2.534.0...v2.535.0) (2023-03-20)
 
 
