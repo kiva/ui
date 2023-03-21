@@ -1,13 +1,11 @@
 import { render } from '@testing-library/vue';
-import TeamAttribution from '../../../../../src/components/Checkout/TeamAttribution';
+import TeamAttribution from '@/components/Checkout/TeamAttribution';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 
 describe('TeamDropDown', () => {
-	beforeEach(() => {
-	});
 	afterEach(jest.clearAllMocks);
 
-	it('should contain these components', async () => {
+	it('should contain these components', () => {
 		const {
 			getByText, getAllByTestId, getByRole, getByDisplayValue
 		} = render(
@@ -35,22 +33,22 @@ describe('TeamDropDown', () => {
 			'(A+) Atheists, Agnostics, Skeptics, Freethinkers, Secular Humanists and the Non-Religious'
 		);
 
-		const TeamShowing = getByDisplayValue('None');
 		const TeamAttributionOption0 = getByRole('option', { name: 'None' });
 		const TeamAttributionOption1 = getByRole('option', { name: 'Donut Empire' });
 		const TeamAttributionOption2 = getByRole('option', { name: 'Nerdfighters' });
 		const TeamAttributionOption3 = getByRole('option', {
 			name: '(A+) Atheists, Agnostics, Skeptics, Freethinkers, Secular Humanists and the Non-Religious'
 		});
+		// should return only the team currently selected
+		getByDisplayValue('None');
 
 		expect(TeamSelector[1]).toMatchObject(TeamAttributionOption0);
-		expect(TeamShowing).toBeDefined();
 		expect(TeamOption1).toBe(TeamAttributionOption1);
 		expect(TeamOption2).toBe(TeamAttributionOption2);
 		expect(TeamOption3).toBe(TeamAttributionOption3);
 	});
 
-	it('should be hidden entirely if there are no teams given', async () => {
+	it('should be hidden entirely if there are no teams given', () => {
 		const {
 			getAllByTestId, getByRole
 		} = render(
@@ -64,13 +62,12 @@ describe('TeamDropDown', () => {
 				},
 			}
 		);
-		const TeamSelection = getAllByTestId('basket-loan-team-selector');
+		getAllByTestId('basket-loan-team-selector');
 		const TeamSelector = getByRole('img', { hidden: true });
 		const TeamSelectorHidden = TeamSelector.getAttribute('aria-hidden');
 		const TeamSelect = document.getElementById('team_select');
 
 		expect(TeamSelect.classList[8]).toBe('tw-appearance-none');
 		expect(TeamSelectorHidden).toBe('true');
-		expect(TeamSelection).toBeDefined();
 	});
 });

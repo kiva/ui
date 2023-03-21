@@ -16,11 +16,8 @@ const emptyComponent = {
 };
 
 describe('BasketItem loan', () => {
-	beforeEach(() => {
-	});
-	afterEach(jest.clearAllMocks);
 
-	it('should contain these components and text', async () => {
+	it('should contain these components and text', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
 		const {
 			getByText, getByTestId, getAllByTestId, getAllByRole, getByRole,
@@ -72,11 +69,11 @@ describe('BasketItem loan', () => {
 
 		const LoanPrice = document.getElementById('loan-price');
 		const LoanPriceSelected = LoanPrice.options[LoanPrice.selectedIndex].getAttribute('value');
-		const LoanPriceSelection = getByTestId('basket-loan-price-selector');
-		const LoanPriceDisplay = getByText('$25');
-		const LoanPriceDisplayNext = getByText('$50');
+		getByTestId('basket-loan-price-selector');
+		getByText('$25');
+		getByText('$50');
 		// 25 should be selected by default
-		const LoanPriceDisplayValue = getByDisplayValue('$25');
+		getByDisplayValue('$25');
 		const LoanPriceDisplayValueNext = queryByDisplayValue('$50');
 		expect(LoanPriceDisplayValueNext).toBe(null);
 		expect(LoanPriceSelected).toBe('25');
@@ -84,29 +81,21 @@ describe('BasketItem loan', () => {
 		expect(LoanPrice.value).not.toBe('50');
 		expect(within(LoanPrice).getByRole('option', { name: '$50' }));
 		expect(within(LoanPrice).getByRole('option', { name: '$975' }));
-		expect(LoanPriceSelection).toBeDefined();
-		expect(LoanPriceDisplay).toBeDefined();
-		expect(LoanPriceDisplayNext).toBeDefined();
-		expect(LoanPriceDisplayValue).toBeDefined();
 		// 1000 should not exist in drop down
 		const LoanPriceOptionNull = queryByText('$1000');
 		expect(LoanPriceOptionNull).toBeNull();
 
-		const TeamSelector = getAllByTestId('basket-loan-team-selector');
-		expect(TeamSelector).toBeDefined();
+		getAllByTestId('basket-loan-team-selector');
 
-		const RemoveBasketItem = getAllByTestId('removeBasketItem');
-		const BasketLoanInfo = getByTestId('basket-loan-info');
+		getAllByTestId('removeBasketItem');
+		getByTestId('basket-loan-info');
 		const RemoveButton = getAllByRole('button', { name: 'Close' });
 		expect(within(RemoveButton[0]).getByTitle('Remove from cart'));
 		expect(within(RemoveButton[1]).getByTitle('Remove from cart'));
-		expect(RemoveButton[0].classList[1]).toBe('md:tw-hidden'); // mobile version
-		expect(RemoveButton[1].classList[6]).toBe('md:tw-flex'); // tablet and up sizes
-		expect(RemoveBasketItem).toBeDefined();
-		expect(BasketLoanInfo).toBeDefined();
+		expect(RemoveButton[0].classList.contains('md:tw-hidden')).toBe(true); // mobile version
+		expect(RemoveButton[1].classList.contains('md:tw-flex')).toBe(true); // tablet and up sizes
 
-		const MatchText = getByText('Matched by Coca Cola Foundation');
-		expect(MatchText).toBeDefined();
+		getByText('Matched by Coca Cola Foundation');
 
 		const LoanPromoCredit = getByTestId('basket-loan-promo-credit');
 		expect(within(LoanPromoCredit).getByText('25.00 credit applied'));
