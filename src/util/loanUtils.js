@@ -76,19 +76,24 @@ export function buildPriceArray(amountLeft, minAmount) {
 }
 
 export function build5DollarsPriceArray(amountLeft) {
-	const limit5 = amountLeft < 50 ? amountLeft : 50;
-	const N_5 = limit5 / 5;
-	const N_25 = (amountLeft - limit5) / 25 + 1;
+	const limit5Notes = amountLeft < 50 ? amountLeft : 50;
+	const numberOf5 = limit5Notes / 5;
+	const numberOf25 = Math.ceil((amountLeft - limit5Notes) / 25) + 1;
 	const priceArray = [];
-	for (let i = 1; i <= N_5; i += 1) {
+	for (let i = 1; i <= numberOf5; i += 1) {
 		priceArray.push(numeral(5 * i).format('0,0'));
 	}
-	if (amountLeft > limit5) {
-		for (let i = 3; i <= N_25; i += 1) {
+	if (amountLeft > limit5Notes) {
+		for (let i = 3; i <= numberOf25; i += 1) {
 			priceArray.push(numeral(25 * i).format('0,0'));
 		}
 	}
 	return priceArray;
+}
+
+export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = true) {
+	const parsedAmountLeft = parseFloat(unreservedAmount);
+	return (enableFiveDollarsNotes && inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
 }
 
 export function toParagraphs(text) {

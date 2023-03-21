@@ -107,8 +107,7 @@
 
 <script>
 import {
-	buildPriceArray,
-	build5DollarsPriceArray,
+	getDropdownPriceArray,
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500
@@ -205,7 +204,7 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit price options
-			const priceArray = this.enableFiveDollarsNotes ? build5DollarsPriceArray(parseFloat(this.unreservedAmount)).slice(0, 28) : buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20); // eslint-disable-line max-len
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes);
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());

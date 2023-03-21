@@ -84,7 +84,7 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<complete-loan-wrapper :is-complete-loan-active="isCompleteLoanActive">
+								<complete-loan-wrapper :is-complete-loan-active="showSparkles">
 									<template #button>
 
 										<!-- Lend button -->
@@ -305,8 +305,7 @@ import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
-	buildPriceArray,
-	build5DollarsPriceArray,
+	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
 	isBetween25And50,
@@ -595,7 +594,7 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit price options
-			const priceArray = (this.enableFiveDollarsNotes && !this.inPfp) ? build5DollarsPriceArray(parseFloat(this.unreservedAmount)).slice(0, 28) : buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20); // eslint-disable-line max-len
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, !this.inPfp); // eslint-disable-line max-len
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
@@ -603,7 +602,7 @@ export default {
 			return priceArray;
 		},
 		lgScreenheadline() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return `${this.name}'s loan is almost funded!`;
 			}
 			switch (this.state) {
@@ -620,7 +619,7 @@ export default {
 			}
 		},
 		ctaButtonText() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return 'Lend now';
 			}
 			switch (this.state) {
@@ -710,7 +709,10 @@ export default {
 		},
 		isCompleteLoanActive() {
 			// eslint-disable-next-line
-			return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
+		},
+		showSparkles() {
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedOption;
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
