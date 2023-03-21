@@ -4,8 +4,8 @@ import VueRouter from 'vue-router';
 import numeralFilter from '@/plugins/numeral-filter';
 import CookieStore from '@/util/cookieStore';
 import { render, within } from '@testing-library/vue';
-import loanReservation from '../../../../fixtures/MatchedPromoLoanReservation.json';
-import basketLoanTeams from '../../../../fixtures/BasketLoanTeams.json';
+import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
+import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 
 // Test that the basket item renders the components it contains:
 // Checkout Item Img/Borrower Link, Remove Basket Item Button, Loan Reservation, Team Attribution, Loan Promo Credits,
