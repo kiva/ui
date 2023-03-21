@@ -128,7 +128,7 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		promoFund: {
+		promoFundId: {
 			type: Object,
 			default: () => {},
 		},
