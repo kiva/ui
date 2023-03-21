@@ -166,6 +166,7 @@
 					:promo-name="campaignPartnerName"
 					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
+					:promo-fund-id="promoFundId"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refreshtotals="refreshTotals"

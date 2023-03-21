@@ -82,6 +82,38 @@ export default {
 				});
 			});
 		},
+		validateGuestPromoBasket(guestEmail, emailUpdates, promoFundId) {
+			checkInjections(this, injections);
+
+			return new Promise((resolve, reject) => {
+				this.apollo.mutate({
+					mutation: shopValidateGuestPromoBasket,
+					variables: {
+						email: guestEmail,
+						emailOptIn: emailUpdates,
+						promoId: promoFundId,
+						visitorId: this.cookieStore.get('uiv') || null
+					}
+				}).then(data => {
+					const validationResult = _get(data, 'data.shop.validatePreCheckout');
+					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
+						this.$kvTrackEvent(
+							'basket', 'Validate Guest Basket', 'Validation Success'
+						);
+						resolve(true);
+					} else {
+						this.$kvTrackEvent(
+							'basket', 'Validate Guest Basket', 'Validation Failure'
+						);
+						resolve(validationResult);
+					}
+				}).catch(errorResponse => {
+					logFormatter(errorResponse, 'error');
+					Sentry.captureException(errorResponse);
+					reject(errorResponse);
+				});
+			});
+		},
 
 		/**
 		 * Call the shop checkout graphql mutation

@@ -133,6 +133,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		promoFundId: {
+			type: String,
+			default: '',
+		}
 	},
 	data() {
 		return {
@@ -161,6 +165,11 @@ export default {
 				if (!this.$v.$invalid) {
 					this.validateGuestBasketAndCheckout();
 				}
+			} else if (this.isGuestCheckout && this.promoFundId) {
+				this.$v.$touch();
+				if (!this.$v.$invalid) {
+					this.validateGuestBasketAndCheckout();
+				}
 			} else {
 				this.validateBasketAndCheckout();
 			}
@@ -168,6 +177,50 @@ export default {
 		validateGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
 			this.validateGuestBasket(this.email, this.emailUpdates)
+				.then(validationStatus => {
+					if (validationStatus === true) {
+						this.submitDropInPayment();
+					} else {
+						const errorMessage = _get(
+							validationStatus,
+							'[0].error'
+						);
+						if (errorMessage === 'api.authenticationRequired') {
+							const loginHint = encodeURIComponent(
+								`login|${JSON.stringify({
+									msg: 're-auth-acc-exists',
+								})}`
+							);
+							window.location = `/ui-login?force=true&doneUrl=/checkout&loginHint=${loginHint}`;
+						} else {
+							this.$emit('updating-totals', false);
+							this.showCheckoutError(validationStatus);
+							this.$emit('refreshtotals');
+						}
+					}
+					return validationStatus;
+				})
+				.catch(error => {
+					this.$emit('updating-totals', false);
+					const errorCode = _get(error, 'errors[0].code');
+					const errorMessage = _get(error, 'errors[0].message');
+
+					Sentry.withScope(scope => {
+						scope.setTag(
+							'bt_stage_dropin',
+							'btSubmitValidationCatch'
+						);
+						scope.setTag(
+							'bt_basket_validation_error',
+							errorMessage
+						);
+						Sentry.captureException(errorCode);
+					});
+				});
+		},
+		validatePromoGuestBasketAndCheckout() {
+			this.$emit('updating-totals', true);
+			this.validatePromoGuestBasket(this.email, this.emailUpdates)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();
