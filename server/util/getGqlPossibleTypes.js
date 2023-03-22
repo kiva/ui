@@ -27,7 +27,8 @@ function fetchGqlPossibleTypes(url, cache) {
 		.then(({
 			types, queryType, mutationType, subscriptionType
 		}) => {
-			const possibleTypes = { Mergable: [] };
+			// TODO: remove "My" when "id" field exists on prod for "My" - the field currently exists only on dev
+			const possibleTypes = { Mergable: ['My'] };
 			types?.forEach(type => {
 				// Skip adding possible types for built-in GraphQL types and root types
 				if (GQL_BUILT_IN_TYPES.includes(type.name)
