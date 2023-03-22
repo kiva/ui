@@ -167,6 +167,7 @@
 					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
 					:promo-fund-id="promoFundId"
+					:managed-account-id="managedAccountId"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refreshtotals="refreshTotals"
