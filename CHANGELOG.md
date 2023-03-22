@@ -1,3 +1,10 @@
+### [2.536.1](https://github.com/kiva/ui/compare/v2.536.0...v2.536.1) (2023-03-22)
+
+
+### Bug Fixes
+
+* temp fix for new id field on my endpoint ([6dc580c](https://github.com/kiva/ui/commit/6dc580ce3135b1cab95be8e5c0a574dff7cebfbb))
+
 ## [2.536.0](https://github.com/kiva/ui/compare/v2.535.1...v2.536.0) (2023-03-22)
 
 
