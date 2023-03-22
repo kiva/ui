@@ -136,7 +136,11 @@ export default {
 		promoFundId: {
 			type: String,
 			default: '',
-		}
+		},
+		managedAccountId: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
@@ -220,7 +224,7 @@ export default {
 		},
 		validatePromoGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validatePromoGuestBasket(this.email, this.emailUpdates)
+			this.validatePromoGuestBasket(this.email, this.emailUpdates, this.managedAccountId)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();

@@ -165,6 +165,7 @@
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
 					:promo-fund-id="promoFundId"
+					:managed-account-id="managedAccountId"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refresh-totals="refreshTotals"

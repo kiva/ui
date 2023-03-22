@@ -82,7 +82,7 @@ export default {
 				});
 			});
 		},
-		validateGuestPromoBasket(guestEmail, emailUpdates, promoFundId) {
+		validateGuestPromoBasket(guestEmail, emailUpdates, promoFundId, managedAccountId) {
 			checkInjections(this, injections);
 
 			return new Promise((resolve, reject) => {
@@ -92,6 +92,7 @@ export default {
 						email: guestEmail,
 						emailOptIn: emailUpdates,
 						promoId: promoFundId,
+						managedAccount: managedAccountId,
 						visitorId: this.cookieStore.get('uiv') || null
 					}
 				}).then(data => {
