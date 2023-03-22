@@ -220,6 +220,7 @@
 						:is-amount-lend-button="isLessThan25"
 						:amount-left="amountLeft"
 						:show-now="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 					/>
 				</template>
@@ -315,6 +316,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],

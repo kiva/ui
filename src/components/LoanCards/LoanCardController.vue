@@ -48,6 +48,7 @@
 		@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
 
 		:show-tags="showTags"
+		:enable-five-dollars-notes="enableFiveDollarsNotes"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -184,6 +185,10 @@ export default {
 		showTags: {
 			type: Boolean,
 			default: false,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo'],

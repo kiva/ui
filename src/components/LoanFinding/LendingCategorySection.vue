@@ -25,6 +25,7 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:per-row="perStep"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
 					/>
@@ -36,6 +37,7 @@
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mr-2"
 						@add-to-basket="addToBasket"
 					/>
@@ -76,6 +78,10 @@ export default {
 			default: 3
 		},
 		enableLoanCardExp: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

@@ -23,12 +23,14 @@
 				:loans="recommendedLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
 			<quick-filters-section
 				class="tw-mt-3"
 				:enable-loan-card-exp="enableLoanCardExp"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 			/>
 
@@ -43,6 +45,7 @@
 				:loans="secondCategoryLoans"
 				class="tw-py-3"
 				:enable-loan-card-exp="enableLoanCardExp"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 			/>
 
@@ -51,6 +54,7 @@
 				:enable-loan-card-exp="enableLoanCardExp"
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
 		</div>

@@ -84,7 +84,7 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<complete-loan-wrapper :is-complete-loan-active="isCompleteLoanActive">
+								<complete-loan-wrapper :is-complete-loan-active="showSparkles">
 									<template #button>
 
 										<!-- Lend button -->
@@ -305,7 +305,7 @@ import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
 import { setLendAmount } from '@/util/basketUtils';
 import {
-	buildPriceArray,
+	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
 	isBetween25And50,
@@ -330,6 +330,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	components: {
@@ -373,6 +377,7 @@ export default {
 			completeLoanView: true,
 			slotMachineInterval: null,
 			currentSlotStat: '',
+			inPfp: false
 		};
 	},
 	apollo: {
@@ -385,6 +390,7 @@ export default {
 						name
 						minNoteSize
 						loanAmount
+						inPfp
 						matchingText
 						matchRatio
 						unreservedAmount @client
@@ -449,6 +455,7 @@ export default {
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
+			this.inPfp = loan?.inPfp ?? false;
 
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
@@ -586,8 +593,8 @@ export default {
 			// We don't want to open up $5 loan shares for loans with more than $25 at this time
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
-			// limit at 20 price options
-			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
+			// limit price options
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp); // eslint-disable-line max-len
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
@@ -595,7 +602,7 @@ export default {
 			return priceArray;
 		},
 		lgScreenheadline() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return `${this.name}'s loan is almost funded!`;
 			}
 			switch (this.state) {
@@ -612,7 +619,7 @@ export default {
 			}
 		},
 		ctaButtonText() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return 'Lend now';
 			}
 			switch (this.state) {
@@ -702,7 +709,10 @@ export default {
 		},
 		isCompleteLoanActive() {
 			// eslint-disable-next-line
-			return (isLessThan25(this.unreservedAmount)) || (isBetween25And500(this.unreservedAmount) && Number(this.unreservedAmount).toFixed() === this.selectedOption);
+			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
+		},
+		showSparkles() {
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedOption;
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
