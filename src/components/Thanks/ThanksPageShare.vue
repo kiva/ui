@@ -211,10 +211,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		shareCardLanguageVersion: {
-			type: String,
-			default: ''
-		},
 		shareAskCopyVersion: {
 			type: String,
 			default: 'a'
@@ -266,9 +262,9 @@ export default {
 		},
 		utmCampaign() {
 			if (this.shareAskCopyVersion === 'b') {
-				return `social_share_checkout_variant_scle_${this.shareCardLanguageVersion}`;
+				return 'social_share_checkout_variant';
 			}
-			return `social_share_checkout_control_scle_${this.shareCardLanguageVersion}`;
+			return 'social_share_checkout_control';
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;

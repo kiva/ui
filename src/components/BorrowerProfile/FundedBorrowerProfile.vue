@@ -187,7 +187,6 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			shareCardLanguageVersion: ''
 		};
 	},
 	computed: {
@@ -214,18 +213,6 @@ export default {
 			}
 			return this.loan?.loanFundraisingInfo?.fundedAmount / this.loan?.loanAmount;
 		},
-	},
-	created() {
-		if (this.$route.query?.utm_campaign?.includes('scle')) {
-			// EXP-MARS-143-Jul2022
-			// Extract exp version from utm_campaign
-			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
-			this.$kvTrackEvent(
-				'Thanks',
-				'EXP-MARS-143-Jul2022',
-				this.shareCardLanguageVersion.replace('-normal', '')
-			);
-		}
 	},
 	mounted() {
 		this.createViewportObserver();

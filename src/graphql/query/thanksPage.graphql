@@ -121,10 +121,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	general {
-		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
-			key
-			value
-		}
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
 			key
 			value
