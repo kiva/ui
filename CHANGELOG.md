@@ -1,3 +1,17 @@
+## [2.536.0](https://github.com/kiva/ui/compare/v2.535.1...v2.536.0) (2023-03-22)
+
+
+### Features
+
+* function to get dropdown options array added to loanutils file ([0b981ba](https://github.com/kiva/ui/commit/0b981ba7022b7755ae741d5a92c9799d0816fff0))
+* price array updated for five dollars notes in some pages ([7b8924c](https://github.com/kiva/ui/commit/7b8924cae6c847e4674612f36600484a637ce26d))
+* unit tests added for getdropdownpricearray function in loanutils file ([1bccfe1](https://github.com/kiva/ui/commit/1bccfe1d777594cc3f0cf61b31de456d4e8745e3))
+
+
+### Bug Fixes
+
+* unit test fixed for loanutils file ([d44bea1](https://github.com/kiva/ui/commit/d44bea11c54a436a677c6fd6a75a4f4bd43a2168))
+
 ### [2.535.1](https://github.com/kiva/ui/compare/v2.535.0...v2.535.1) (2023-03-21)
 
 
