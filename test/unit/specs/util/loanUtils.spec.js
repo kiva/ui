@@ -154,7 +154,7 @@ describe('loanUtils.js', () => {
 			expect(result).toEqual(['Agriculture']);
 		});
 	});
-	describe('DropdownPrices', () => {
+	describe('getDropdownPriceArray', () => {
 		const unreservedAmount = 2000;
 		const minAmount = 25;
 		const enableFiveDollarsNotes = false;
@@ -178,15 +178,17 @@ describe('loanUtils.js', () => {
 		});
 
 		it('should return 5 as first option if $5 notes test enabled', () => {
-			const FiveDollarsNotes = true;
-			const result = getDropdownPriceArray(unreservedAmount, minAmount, FiveDollarsNotes);
+			const result = getDropdownPriceArray(unreservedAmount, minAmount, true);
 			expect(result[0]).toEqual('5');
 		});
 
 		it('should return 25 as first option if $5 notes test enabled and loan in PFP', () => {
-			const FiveDollarsNotes = true;
-			const inPfp = true;
-			const result = getDropdownPriceArray(unreservedAmount, minAmount, FiveDollarsNotes, inPfp);
+			const result = getDropdownPriceArray(unreservedAmount, minAmount, true, true);
+			expect(result[0]).toEqual('25');
+		});
+
+		it('should work passing a string as unreserved amount', () => {
+			const result = getDropdownPriceArray('230', minAmount, enableFiveDollarsNotes);
 			expect(result[0]).toEqual('25');
 		});
 	});
