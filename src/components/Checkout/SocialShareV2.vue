@@ -17,7 +17,7 @@
 					'post-checkout',
 					'share',
 					'facebook',
-					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					`social_share_checkout`,
 					selectedLoanId]"
 			>
 				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
@@ -33,7 +33,7 @@
 					'post-checkout',
 					'share',
 					'twitter',
-					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					`social_share_checkout`,
 					selectedLoanId]"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
@@ -50,7 +50,7 @@
 					'post-checkout',
 					'share',
 					'linkedin',
-					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					`social_share_checkout`,
 					selectedLoanId]"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
@@ -66,7 +66,7 @@
 					'post-checkout',
 					'share',
 					'copy-link',
-					`social_share_checkout_scle_${this.shareCardLanguageVersion}`,
+					`social_share_checkout`,
 					selectedLoanId]"
 				@click="copyLink"
 			>
@@ -102,10 +102,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		shareCardLanguageVersion: {
-			type: String,
-			default: ''
-		}
 	},
 	data() {
 		return {
@@ -155,27 +151,27 @@ export default {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoanId}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
 			}
 
-			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout`; // eslint-disable-line max-len
 		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return getFullUrl('https://www.facebook.com/dialog/share', {
 				app_id: this.$appConfig.fbApplicationId,
 				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
+				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`, // eslint-disable-line max-len
 				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
 				quote: this.shareMessage,
 			});
 		},
 		linkedInShareUrl() {
 			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}` // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout` // eslint-disable-line max-len
 			});
 		},
 		twitterShareUrl() {
 			return getFullUrl('https://twitter.com/intent/tweet', {
 				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`, // eslint-disable-line max-len
+				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`, // eslint-disable-line max-len
 				via: 'Kiva',
 			});
 		},
@@ -216,7 +212,7 @@ export default {
 			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout_scle_${this.shareCardLanguageVersion}`; // eslint-disable-line max-len
+			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout`; // eslint-disable-line max-len
 			try {
 				await clipboardCopy(url);
 				this.copyStatus = {
