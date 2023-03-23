@@ -96,12 +96,12 @@ export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDol
 	return (enableFiveDollarsNotes && !inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
 }
 
-export function getDropdownPriceArrayCheckout(unreservedAmount, minAmount, enableFiveDollarsNotes) {
+export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes) {
 	if (enableFiveDollarsNotes) {
-		const parsedAmountLeft = parseFloat(unreservedAmount);
+		const parsedAmountLeft = parseFloat(remainingAmount);
 		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
 	}
-	const pricesArray = buildPriceArray(unreservedAmount, minAmount);
+	const pricesArray = buildPriceArray(remainingAmount, minAmount);
 	const reducedArray = pricesArray.filter(element => {
 		return element % 25 === 0;
 	});

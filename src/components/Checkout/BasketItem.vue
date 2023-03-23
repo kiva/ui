@@ -68,7 +68,6 @@
 				:min-amount="loan.loan.minNoteSize"
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
-				:unreserved-amount="loan.loan.loanFundraisingInfo.unreservedAmount"
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@refreshtotals="onLoanUpdate($event)"
