@@ -96,6 +96,18 @@ export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDol
 	return (enableFiveDollarsNotes && !inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
 }
 
+export function getDropdownPriceArrayCheckout(unreservedAmount, minAmount, enableFiveDollarsNotes) {
+	if (enableFiveDollarsNotes) {
+		const parsedAmountLeft = parseFloat(unreservedAmount);
+		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
+	}
+	const pricesArray = buildPriceArray(unreservedAmount, minAmount);
+	const reducedArray = pricesArray.filter(element => {
+		return element % 25 === 0;
+	});
+	return reducedArray;
+}
+
 export function toParagraphs(text) {
 	return String(text).replace(/\r|\n|<br\s*\/?>/g, '\n').split(/\n+/);
 }
