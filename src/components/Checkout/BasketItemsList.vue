@@ -7,6 +7,7 @@
 					:disable-redirects="disableRedirects"
 					:loan="loan"
 					:teams="teams"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
