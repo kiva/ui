@@ -19,6 +19,7 @@
 					type="email"
 					name="email"
 					v-model="email"
+					ref="email"
 					data-testid="basket-guest-email-input"
 					id="email"
 					class="data-hj-suppress tw-mb-2 tw-w-full"
@@ -30,6 +31,9 @@
 				/>
 				<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
+				</p>
+				<p v-else-if="validateCampaignEmail&&$v.email.error">
+					Valid campaign email required
 				</p>
 				<kv-checkbox
 					data-testid="basket-guest-terms-agreement"
@@ -379,6 +383,10 @@ export default {
 					}
 					return kivaBraintreeResponse;
 				});
+		},
+		validateCampaignEmail() {
+			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${promoFundEmail}`);
+			return emailRegex.test(this.$refs.email);
 		},
 	},
 };
