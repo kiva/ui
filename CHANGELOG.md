@@ -1,3 +1,15 @@
+## [2.537.0](https://github.com/kiva/ui/compare/v2.536.1...v2.537.0) (2023-03-23)
+
+
+### Features
+
+* five dollars notes test options added to checkout page ([6071d6e](https://github.com/kiva/ui/commit/6071d6e2f870ec0babe22be9dfeca2f66414fef2))
+
+
+### Bug Fixes
+
+* unused prop removed ([c9edb2e](https://github.com/kiva/ui/commit/c9edb2eaf6bb0d53566aa71fdead9cbe81c6c87e))
+
 ### [2.536.1](https://github.com/kiva/ui/compare/v2.536.0...v2.536.1) (2023-03-22)
 
 
