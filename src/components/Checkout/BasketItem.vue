@@ -68,7 +68,9 @@
 				:min-amount="loan.loan.minNoteSize"
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
+				:unreserved-amount="loan.loan.loanFundraisingInfo.unreservedAmount"
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
@@ -110,6 +112,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
