@@ -68,7 +68,7 @@
 				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
-		<div class="in-context-payment-conttrols" v-else>
+		<div class="in-context-payment-conttrols">
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
 				@complete-transaction="completeTransaction"
@@ -160,7 +160,7 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		promoFundId: {
+		promoFund: {
 			type: Object,
 			default: () => {},
 		},
@@ -175,7 +175,11 @@ export default {
 		customCheckoutButtonText: {
 			type: String,
 			default: 'Continue'
-		}
+		},
+		promoFundId: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
