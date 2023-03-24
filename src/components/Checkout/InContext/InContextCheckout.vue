@@ -27,7 +27,7 @@
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+		<!-- <div class="in-context-login" v-if="!isActivelyLoggedIn">
 			<kv-button
 				v-if="!isActivelyLoggedIn"
 				class="smaller checkout-button"
@@ -37,8 +37,8 @@
 			>
 				Continue
 			</kv-button>
-		</div>
-		<div class="in-context-payment-conttrols" v-else>
+		</div> -->
+		<div class="in-context-payment-conttrols">
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
 				@complete-transaction="completeTransaction"
@@ -128,9 +128,13 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		promoFundId: {
+		promoFund: {
 			type: Object,
 			default: () => {},
+		},
+		promoFundId: {
+			type: String,
+			default: '',
 		},
 	},
 	data() {

@@ -164,7 +164,7 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
-					:promo-fund-id="promoFundId"
+					:promo-fund-id="String(promoFundId)"
 					:managed-account-id="managedAccountId"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"

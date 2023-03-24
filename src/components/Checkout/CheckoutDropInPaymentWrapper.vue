@@ -32,7 +32,7 @@
 				<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<p v-else-if="validateCampaignEmail&&$v.email.error">
+				<p v-else-if="validateCampaignEmail && $v.email.error">
 					Valid campaign email required
 				</p>
 				<kv-checkbox
