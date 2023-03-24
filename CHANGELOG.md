@@ -1,3 +1,10 @@
+## [2.538.0](https://github.com/kiva/ui/compare/v2.537.1...v2.538.0) (2023-03-24)
+
+
+### Features
+
+* add earth day theme ([a9fa55e](https://github.com/kiva/ui/commit/a9fa55ed082be182743834b8d06e6f1da724039b))
+
 ### [2.537.1](https://github.com/kiva/ui/compare/v2.537.0...v2.537.1) (2023-03-24)
 
 
