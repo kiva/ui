@@ -206,8 +206,6 @@ import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
@@ -343,10 +341,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [
-		lendFilterExpMixin,
-		loanChannelQueryMapMixin,
-	],
+	mixins: [loanChannelQueryMapMixin],
 	data() {
 		return {
 			offset: 0,
@@ -359,7 +354,6 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
-			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
 			selectedChannelLoanIds: [],
@@ -591,19 +585,10 @@ export default {
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
-
-		/*
-		 * Experiment Initializations
-		*/
-
-		// Lend Filter Redirects
-		this.initializeLendFilterRedirects();
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
-
-		this.updateLendFilterExp();
 
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
@@ -743,16 +728,6 @@ export default {
 			}
 			// use default
 			return '/lend/filter';
-		},
-		initializeLendFilterRedirects() {
-			const lendFilterEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_filter_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.lendFilterExpVersion = lendFilterEXP.version;
-
-			// Update Lend Filter Exp CASH-545
-			this.getLendFilterExpVersion();
 		},
 		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');

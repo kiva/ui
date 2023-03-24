@@ -4,7 +4,7 @@
 			<span class="tw-bg-caution tw-text-black tw-text-small tw-px-2 tw-py-0.5">Beta</span>
 			<p>
 				Welcome to Kiva's new filter page! Take it for a spin below, or
-				<button class="tw-text-link" @click="exitLendFilterExp('click-return-classic')">
+				<button class="tw-text-link" @click="advancedFilters">
 					return to the classic view
 				</button> at any time.
 			</p>
@@ -38,7 +38,7 @@
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
-					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
+					@exit-lend-filter-exp="advancedFilters"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="lend-filter-results-container small-12 columns">
@@ -136,8 +136,6 @@ import LendHeader from '@/pages/Lend/LendHeader';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
-import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
-
 const lendFilterRedirectEXP = 'lend_filter_flss_v1';
 
 function isFLSSEligible(route = {}) {
@@ -196,7 +194,6 @@ export default {
 	mixins: [
 		algoliaInit,
 		algoliaCustomCategories,
-		lendFilterExpMixin,
 		retryAfterExpiredBasket
 	],
 	created() {
@@ -215,9 +212,6 @@ export default {
 				this.userId = _get(data, 'my.userAccount.id') || '';
 			},
 		});
-
-		// Get Lend Filter Exp version
-		this.getLendFilterExpVersion();
 	},
 	data() {
 		return {
@@ -310,9 +304,6 @@ export default {
 			this.filterMenuPinned = true;
 		}
 
-		// update global lend filter experiment setting
-		this.updateLendFilterExp();
-
 		// Check cached for lend/filter-alpha experiment state and track if present
 		// NOTE: The cached setting/exp state may not be available on subsequent page loads after algolia alters params
 		const { enabled } = getExperimentSettingCached(this.apollo, lendFilterRedirectEXP);
@@ -358,6 +349,11 @@ export default {
 					false,
 				);
 			});
+		},
+		advancedFilters() {
+			this.$kvTrackEvent('Lending', 'click-advanced-filters', 'Advanced filters');
+
+			window.location.href = '/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c';
 		},
 	},
 };

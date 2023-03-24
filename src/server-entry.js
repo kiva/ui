@@ -138,7 +138,8 @@ export default context => {
 			device,
 			kvAuth0,
 			locale,
-			fetch
+			fetch,
+			url,
 		});
 
 		// redirect to the resolved url if it does not match the requested url

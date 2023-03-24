@@ -26,8 +26,6 @@ describe('loanUtils.js', () => {
 		it('should handle undefined activity', () => {
 			const result = loanCallouts({ ...loan, activity: undefined });
 
-			console.log(result);
-
 			expect(result).toEqual(['Agriculture']);
 		});
 

@@ -106,6 +106,9 @@ import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning en
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
 const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
+const ADD_TO_BASKET_V2_EXP = 'add_to_basket_v2';
+const BANDIT_EXP = 'EXP-ML-Service-Bandit-LendByCategory';
+const FLSS_CATEGORY_SERVICE_EXP = 'flss_category_service';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -151,7 +154,6 @@ export default {
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
-			lendFilterExpVersion: '',
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
 			showHoverLoanCards: true,
@@ -233,7 +235,7 @@ export default {
 			return _without(this.categoryIds, ...this.customCategoryIds);
 		},
 		leadHeaderFilterLink() {
-			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
+			return '/lend/filter';
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -481,7 +483,7 @@ export default {
 		},
 		initializeCategoryServiceRowExp() {
 			const categoryServiceEXP = this.apollo.readFragment({
-				id: 'Experiment:flss_category_service',
+				id: `Experiment:${FLSS_CATEGORY_SERVICE_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.categoryServiceExpActive = categoryServiceEXP.version === 'b';
@@ -499,7 +501,7 @@ export default {
 			// get assignment
 			const mlServiceBandit = 0;
 			const mlServiceBanditEXP = this.apollo.readFragment({
-				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
+				id: `Experiment:${BANDIT_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
@@ -507,7 +509,7 @@ export default {
 			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-ML-Service-Bandit-LendByCategory',
+					BANDIT_EXP,
 					this.mlServiceBanditExpVersion,
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
@@ -667,7 +669,13 @@ export default {
 							}
 						}
 
-						return client.query({ query: mlOrderedLoanChannels });
+						return Promise.all([
+							client.query({ query: mlOrderedLoanChannels }),
+							client.query({ query: experimentQuery, variables: { id: CATEGORIES_REDIRECT_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: ADD_TO_BASKET_V2_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: BANDIT_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FLSS_CATEGORY_SERVICE_EXP } }),
+						]);
 					});
 			});
 		},
@@ -705,7 +713,7 @@ export default {
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_v2',
+			id: `Experiment:${ADD_TO_BASKET_V2_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
@@ -732,12 +740,6 @@ export default {
 				active: true,
 			}
 		});
-
-		const lendFilterEXP = this.apollo.readFragment({
-			id: 'Experiment:lend_filter_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.lendFilterExpVersion = lendFilterEXP.version;
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
