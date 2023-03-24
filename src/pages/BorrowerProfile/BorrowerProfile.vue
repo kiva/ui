@@ -158,9 +158,12 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
+
+const LEND_URGENCY_EXP = 'lend_urgency';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -440,6 +443,9 @@ export default {
 							query,
 						});
 					}
+
+					// eslint-disable-next-line max-len
+					return client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } });
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -569,9 +575,8 @@ export default {
 		}
 	},
 	created() {
-		// this experiment is assigned in experimentPreFetch.js
 		const urgencyExperiment = this.apollo.readFragment({
-			id: 'Experiment:lend_urgency',
+			id: `Experiment:${LEND_URGENCY_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 

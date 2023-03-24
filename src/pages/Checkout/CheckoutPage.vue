@@ -306,11 +306,14 @@ import {
 	getExperimentSettingCached,
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const iwdChallengeExpKey = 'iwd_challenge';
+const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
+const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -430,6 +433,9 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: iwdChallengeExpKey } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 					]);
 				});
 		},
@@ -487,7 +493,7 @@ export default {
 
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({
-			id: 'Experiment:checkout_login_cta',
+			id: `Experiment:${CHECKOUT_LOGIN_CTA_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 
@@ -502,7 +508,7 @@ export default {
 
 		if (this.eligibleForGuestCheckout) {
 			const guestCheckoutCTAExperiment = this.apollo.readFragment({
-				id: 'Experiment:guest_checkout_cta',
+				id: `Experiment:${GUEST_CHECKOUT_CTA_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 

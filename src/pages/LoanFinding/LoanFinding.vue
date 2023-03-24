@@ -91,6 +91,7 @@ import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightDat
 import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
@@ -137,7 +138,13 @@ export default {
 				variables: prefetchedRecommendedLoansVariables
 			});
 
-			return Promise.all([userInfoPromise, recommendedLoansPromise]);
+			return Promise.all([
+				userInfoPromise,
+				recommendedLoansPromise,
+				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
+			]);
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};
