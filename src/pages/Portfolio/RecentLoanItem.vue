@@ -103,7 +103,8 @@ export default {
 			imageUrl: '',
 			imageRetinaUrl: '',
 			borrowerName: '',
-			progressPercent: 0,
+			fundedPercent: 0,
+			repaidPercent: 0,
 			loanStatus: '',
 			loanDelinquent: false,
 		};
@@ -114,6 +115,24 @@ export default {
 				return 'Percent the loan has funded';
 			}
 			return 'Percent the loan has been paid back';
+		},
+		progressPercent() {
+			switch (this.loanStatus) {
+				case FUNDRAISING:
+				case FUNDED:
+				case RAISED:
+					return this.fundedPercent;
+				case PAYING_BACK:
+				case ENDED:
+				case DELINQUENT:
+				case DEFAULTED:
+					return this.repaidPercent;
+				case REFUNDED:
+				case EXPIRED:
+					return 1;
+				default:
+					return 0;
+			}
 		},
 		progressVariant() {
 			switch (this.loanStatus) {
@@ -219,14 +238,12 @@ export default {
 					}
 
 					const loanAmount = numeral(data?.lend?.loan?.loanAmount ?? 1);
-					if ([FUNDRAISING, FUNDED, RAISED].includes(this.loanStatus)) {
-						const funded = numeral(data?.lend?.loan?.loanFundraisingInfo?.fundedAmount ?? 0);
-						const reserved = numeral(data?.lend?.loan?.loanFundraisingInfo?.reservedAmount ?? 0);
-						this.progressPercent = (funded.value() + reserved.value()) / loanAmount.value();
-					} else {
-						const paid = numeral(data?.loan?.paidAmount ?? 0);
-						this.progressPercent = paid.value() / loanAmount.value();
-					}
+					const funded = numeral(data?.lend?.loan?.loanFundraisingInfo?.fundedAmount ?? 0);
+					const reserved = numeral(data?.lend?.loan?.loanFundraisingInfo?.reservedAmount ?? 0);
+					this.fundedPercent = (funded.value() + reserved.value()) / loanAmount.value();
+
+					const paid = numeral(data?.lend?.loan?.paidAmount ?? 0);
+					this.repaidPercent = paid.value() / loanAmount.value();
 				});
 			}
 		},
