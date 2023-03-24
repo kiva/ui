@@ -1,3 +1,11 @@
+### [2.537.1](https://github.com/kiva/ui/compare/v2.537.0...v2.537.1) (2023-03-24)
+
+
+### Bug Fixes
+
+* copy fixes for kiva credit stats MARS-352 ([c79be68](https://github.com/kiva/ui/commit/c79be68c78402be0bb53d2c321af913ee211e0b9))
+* recent loans progress bar width fixes MARS-350 ([6eea1e1](https://github.com/kiva/ui/commit/6eea1e1533f163b33e22c5f53ff0aa75e2a6fb6e))
+
 ## [2.537.0](https://github.com/kiva/ui/compare/v2.536.1...v2.537.0) (2023-03-23)
 
 
