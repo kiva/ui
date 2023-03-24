@@ -11,7 +11,7 @@
 					<recent-loans-list />
 					<recommended-loans-list />
 					<kiva-credit-stats />
-					<!-- updates -->
+					<account-updates />
 					<!-- lending insights -->
 					<!-- teams -->
 					<!-- stat graphs -->
@@ -28,6 +28,7 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
+import AccountUpdates from './AccountUpdates';
 import KivaCreditStats from './KivaCreditStats';
 import RecentLoansList from './RecentLoansList';
 import RecommendedLoansList from './RecommendedLoansList';
@@ -36,6 +37,7 @@ export default {
 	name: 'PortfolioOverviewPage',
 	components: {
 		AccountOverview,
+		AccountUpdates,
 		KivaCreditStats,
 		KvGrid,
 		KvPageContainer,
