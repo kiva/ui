@@ -67,7 +67,6 @@
 						class="thanks__social-share"
 						:lender="lender"
 						:loans="loans"
-						:share-card-language-version="shareCardLanguageVersion"
 					/>
 				</template>
 				<template #guest>
@@ -82,7 +81,6 @@
 			:receipt="receipt"
 			:lender="lender"
 			:loan="selectedLoan"
-			:share-card-language-version="shareCardLanguageVersion"
 			:share-ask-copy-version="shareAskCopyVersion"
 			:is-guest="isGuest"
 			@guest-create-account="createGuestAccount"
@@ -143,7 +141,6 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
-			shareCardLanguageVersion: '',
 			shareAskCopyVersion: '',
 			jumpToGuestUpsell: false,
 		};
@@ -162,7 +159,6 @@ export default {
 				}
 			}).then(() => {
 				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_card_language' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 				]);
 			}).catch(errorResponse => {
@@ -302,20 +298,6 @@ export default {
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
 		if (this.showFocusedShareAsk) {
-			const shareCardLanguage = this.apollo.readFragment({
-				id: 'Experiment:share_card_language',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.shareCardLanguageVersion = shareCardLanguage.version;
-			if (this.shareCardLanguageVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-143-Jul2022-inviter',
-					this.shareCardLanguageVersion,
-				);
-			}
-
 			// MARS-202 Share copy ask experiment
 			const shareAskCopyResult = this.apollo.readFragment({
 				id: 'Experiment:share_ask_copy',
