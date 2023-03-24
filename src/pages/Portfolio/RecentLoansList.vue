@@ -9,7 +9,7 @@
 		<kv-loading-placeholder v-if="loading" class="sub-placeholder tw-mb-1 md:tw-mb-4" style="width: 65%;" />
 		<kv-loading-placeholder v-if="loading" class="sub-placeholder tw-mb-4 md:tw-hidden" style="width: 25%;" />
 		<p v-else class="tw-mb-4">
-			{{ totalLoansString }} and counting! You are changing lives!
+			{{ totalLoansString }} and counting. You are changing lives!
 		</p>
 		<!-- loan grid -->
 		<kv-grid as="ol" class="tw-grid-cols-12">
