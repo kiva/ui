@@ -63,6 +63,7 @@ export default {
 				client.query({
 					query: gql`query userIsMonthlyGoodSubscriber {
 							my {
+								id
 								autoDeposit {
 									id
 									isSubscriber

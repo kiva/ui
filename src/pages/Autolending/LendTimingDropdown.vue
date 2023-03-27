@@ -88,6 +88,7 @@ export default {
 	apollo: {
 		query: gql`query lendTimingDropdown {
 			my {
+				id
 				userAccount {
 					id
 					balance

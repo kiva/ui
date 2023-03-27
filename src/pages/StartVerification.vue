@@ -60,6 +60,7 @@ function getFullPath(url = '/') {
 const getVerificationState = gql`
 	query emailVerificationState {
 		my {
+			id
 			emailVerifiedRecently
 			userAccount {
 				id

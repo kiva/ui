@@ -9,6 +9,7 @@ query countriesNotLentTo {
 		}
 	}
 	my {
+		id
 		lendingStats {
 			id
 			countriesLentTo {

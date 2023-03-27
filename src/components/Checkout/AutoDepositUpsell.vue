@@ -114,6 +114,7 @@ const eligibilityCheckQuery = gql`query autoDepositEligibilityQuery {
 		}
 	}
 	my {
+		id
 		userAccount{
 			id
 		}

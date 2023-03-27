@@ -98,6 +98,7 @@ export default {
 	apollo: {
 		query: gql`query accountOverview {
 			my {
+				id
 				userStats {
 					amount_outstanding
 					number_of_loans

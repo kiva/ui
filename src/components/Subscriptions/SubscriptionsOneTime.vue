@@ -153,6 +153,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query oneTimeSubscription {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

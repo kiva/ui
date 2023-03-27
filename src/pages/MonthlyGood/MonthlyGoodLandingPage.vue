@@ -143,6 +143,7 @@ const mgLandingPageImageRequire = require.context('@/assets/images/mg-landing-pa
 const pageQuery = gql`
 	query monthlyGoodLandingPage {
 		my {
+			id
 			autoDeposit {
 				id
 				isSubscriber

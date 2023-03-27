@@ -78,6 +78,7 @@ export default {
 				this.apollo.query({
 					query: gql`query kivaCreditStats {
 						my {
+							id
 							lendingStats {
 								id
 								totalAmountDeposited

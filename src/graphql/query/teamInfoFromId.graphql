@@ -7,6 +7,7 @@ query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int])
 		}
 	}
 	my {
+		id
 		teamRecruitment(id: $team_recruitment_id) {
 			id
 			recruiterDisplayName
