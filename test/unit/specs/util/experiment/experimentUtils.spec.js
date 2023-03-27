@@ -489,7 +489,7 @@ describe('experimentUtils.js', () => {
 				id: `Experiment:${key}`,
 				fragment: experimentVersionFragment
 			});
-			expect(trackEvent).toHaveBeenCalledWith(category, action, data.version);
+			expect(trackEvent).toHaveBeenCalledWith(category, action, data.version, undefined);
 			expect(result).toBe(data);
 		});
 
@@ -508,7 +508,7 @@ describe('experimentUtils.js', () => {
 				id: `Experiment:${key}`,
 				fragment: experimentVersionFragment
 			});
-			expect(trackEvent).toHaveBeenCalledWith(category, key, data.version);
+			expect(trackEvent).toHaveBeenCalledWith(category, key, data.version, undefined);
 			expect(result).toBe(data);
 		});
 	});
