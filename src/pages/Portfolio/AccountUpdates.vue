@@ -1,12 +1,12 @@
 <template>
 	<async-portfolio-section v-show="totalCount > 0 || loading" @visible="fetchAsyncData">
-		<h2 class="tw-mb-0.5">
+		<h2 class="tw-mb-4">
 			Updates from borrowers
 		</h2>
 		<ul>
 			<li
-				v-for="update in updates"
-				:key="update.id"
+				v-for="(update, index) in updates"
+				:key="`${update.id}-${index}`"
 				class="md:tw-flex tw-items-start tw-mt-4"
 			>
 				<!-- update image -->
@@ -175,7 +175,6 @@ export default {
 					}`
 				}).then(({ data }) => {
 					this.loading = false;
-					console.log(data);
 					this.totalCount = data?.my?.updates?.totalCount ?? 0;
 					this.updates = (data?.my?.updates?.values ?? []).map(this.transformUpdate);
 				});
