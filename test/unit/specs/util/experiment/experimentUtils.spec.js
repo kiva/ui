@@ -652,11 +652,17 @@ describe('experimentUtils.js', () => {
 		});
 
 		it('should get forced assignment from cookie', () => {
-			const cookieStore = new CookieStore({ uiab: 'asd:variant:1753809052:0.5' });
+			const hash = 1753809052;
+			const cookieStore = new CookieStore({ uiab: `asd:variant:${hash}:0.5` });
 
 			const result = getForcedAssignment(cookieStore, '', 'asd', experimentSetting);
 
-			expect(result).toEqual({ ...experimentSetting, version: 'variant', queryForced: false });
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'variant',
+				hash,
+				queryForced: false
+			});
 		});
 
 		it('should ensure query forced assignment matches', () => {
@@ -684,11 +690,17 @@ describe('experimentUtils.js', () => {
 		});
 
 		it('should get forced unassigned assignment from cookie', () => {
-			const cookieStore = new CookieStore({ uiab: 'asd:unassigned:1753809052:0.5' });
+			const hash = 1753809052;
+			const cookieStore = new CookieStore({ uiab: `asd:unassigned:${hash}:0.5` });
 
 			const result = getForcedAssignment(cookieStore, '', 'asd', experimentSetting);
 
-			expect(result).toEqual({ ...experimentSetting, version: 'unassigned', queryForced: false });
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'unassigned',
+				hash,
+				queryForced: false
+			});
 		});
 	});
 
