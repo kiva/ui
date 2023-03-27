@@ -392,7 +392,6 @@ export default {
 			status: '',
 			fullLoanUse: '',
 			loanFundraisingInfo: {},
-			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			inPfp: false,
@@ -591,17 +590,6 @@ export default {
 					this.isUrgencyExpVersionShown ? 'b' : 'a'
 				);
 			}
-		}
-
-		if (this.$route.query?.utm_campaign?.includes('scle')) {
-			// EXP-MARS-143-Jul2022
-			// Extract exp version from utm_campaign
-			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
-			this.$kvTrackEvent(
-				'Thanks',
-				'EXP-MARS-143-Jul2022',
-				this.shareCardLanguageVersion.replace('-normal', '')
-			);
 		}
 
 		const publicId = getPublicId(this.$route);

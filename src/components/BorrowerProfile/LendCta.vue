@@ -47,9 +47,16 @@
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-pb-1 lg:tw-pb-2.5">
+					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2">
+						<!-- Highlighted matching text mobile  -->
+						<!-- padding-left class makes room for the sparkle icon
+						and makes sure long match text isnt covered -->
+						<span
+							class="tw-line-clamp-1 match-text tw-mb-0.5 md:tw-hidden tw-pl-3"
+							v-if="matchingHighlightExpShown"
+						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
 						<!-- eslint-disable-next-line max-len -->
-						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex tw-relative">
 							<fieldset
 								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
@@ -64,7 +71,7 @@
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
-									class="tw-mr-2.5 lg:tw-mb-2 tw-min-w-12"
+									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
 									v-kv-track-event="[
@@ -137,8 +144,26 @@
 									</template>
 								</complete-loan-wrapper>
 							</fieldset>
+							<!-- Matching text bubble sparkle  -->
+							<span
+								:class="[
+									'tw-flex',
+									'tw-items-center',
+									'tw-justify-center',
+									'tw-w-4',
+									'tw-h-4',
+									'tw-absolute',
+									'tw-left-0',
+									'tw-top-[-1.5rem]',
+									'md:tw-top-auto',
+									'tw-bottom-auto',
+									'md:tw-bottom-[-1.5rem]']"
+								v-if="matchingHighlightExpShown"
+							>
+								<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
+								<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
+							</span>
 						</form>
-
 						<!-- Continue to checkout button -->
 						<kv-ui-button
 							v-if="this.state === 'basketed'"
@@ -169,7 +194,17 @@
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
+
+						<!-- Highlighted matching text desktop  -->
+						<!-- padding-left class makes room for the sparkle icon
+						and makes sure long match text isnt covered -->
+						<span
+							class="md:tw-line-clamp-1 match-text tw-mt-0.5 tw-hidden md:tw-block tw-pl-3"
+							v-if="matchingHighlightExpShown"
+						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
+
 					</span>
+
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
@@ -211,6 +246,7 @@
 				:enter-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
+				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
 				<kv-grid
 					v-show="lenderCountVisibility || matchingTextVisibility"
 					key="grid"
@@ -229,6 +265,10 @@
 							'md:tw-px-4': isSticky,
 						},
 						'lg:tw-px-0',
+						{
+							'tw-hidden': matchingHighlightExpShown,
+							'md:tw-grid': matchingHighlightExpShown
+						}
 					]"
 				>
 					<div
@@ -312,12 +352,17 @@ import {
 	isBetween25And500
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experiment/experimentUtils';
 
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
+import KvIcon from '@/components/Kv/KvIcon';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -339,6 +384,7 @@ export default {
 	components: {
 		LendAmountButton,
 		KvGrid,
+		KvIcon,
 		KvMaterialIcon,
 		KvUiButton,
 		KvUiSelect,
@@ -377,6 +423,7 @@ export default {
 			completeLoanView: true,
 			slotMachineInterval: null,
 			currentSlotStat: '',
+			matchingHighlightExpShown: false,
 			inPfp: false
 		};
 	},
@@ -425,6 +472,12 @@ export default {
 						id
 					}
 				}
+				general {
+					uiExperimentSetting(key: "matching_highlight") {
+						key
+						value
+					}
+				}
 			}
 		`,
 		preFetch: false,
@@ -456,13 +509,15 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
-
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
+
+			// Load matching experiment when data is available
+			this.initializeMatchingHighlightExp();
 		},
 	},
 	methods: {
@@ -549,6 +604,23 @@ export default {
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
 		},
+		initializeMatchingHighlightExp() {
+			const matchingHighlightExpData = getExperimentSettingCached(this.apollo, 'matching_highlight');
+			// Tracking for EXP-ACK-538-Mar2023
+			if (matchingHighlightExpData?.enabled && this.matchingTextVisibility) {
+				const { version } = trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'borrower-profile',
+					'matching_highlight',
+					'EXP-ACK-538-Mar2023',
+					`${this.matchRatio + 1}x`
+				);
+				if (version) {
+					this.matchingHighlightExpShown = version === 'b';
+				}
+			}
+		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -724,6 +796,15 @@ export default {
 	beforeDestroy() {
 		this.destroyWrapperObserver();
 	},
+
 };
 
 </script>
+
+<style lang="postcss" scoped>
+.match-text {
+	/* TODO make this color a variable */
+	color: #CE4A00;
+	@apply tw-w-full tw-text-small tw-text-center tw-font-medium;
+}
+</style>

@@ -28,11 +28,11 @@
 					</dd>
 					<dd class="tw-basis-full tw-text-secondary tw-text-small tw-mt-0.5 tw-mb-3 tw-pr-8">
 						The total amount of funds you've lent to borrowers.
-						This Include loans made using repaid Kiva credit.
+						This includes loans made using repaid Kiva credit.
 					</dd>
 				</dl>
 				<kv-text-link :icon="mdiFileDocumentOutline" @click="showCreditSummary = true">
-					Credit summary
+					Details
 				</kv-text-link>
 				<credit-summary-lightbox v-if="false" />
 			</div>

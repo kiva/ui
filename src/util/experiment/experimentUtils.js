@@ -198,9 +198,11 @@ export function assignVersionForLoginId({ name, distribution, population = 1 }, 
  * @param {Function} trackEvent The tracking function to call (usually this.$kvTrackEvent)
  * @param {string} category The tracking category
  * @param {string} key The experiment key
+ * @param {string} action The tracking action parameter
+ * @param {string} property The tracking property parameter
  * @return {Experiment} The experiment assignment object read from the client cache
  */
-export function trackExperimentVersion(client, trackEvent, category, key, action) {
+export function trackExperimentVersion(client, trackEvent, category, key, action, property = undefined) {
 	// Get assignment for experiment key
 	const exp = client.readFragment({
 		id: `Experiment:${key}`,
@@ -213,6 +215,7 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 			category,
 			action ?? key,
 			exp.version,
+			property
 		);
 	}
 	return exp;
