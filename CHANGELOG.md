@@ -1,3 +1,16 @@
+## [2.541.0](https://github.com/kiva/ui/compare/v2.540.0...v2.541.0) (2023-03-27)
+
+
+### Features
+
+* portfolio overview lending insights MARS-355 ([e69c465](https://github.com/kiva/ui/commit/e69c46565eba3e425ff0445e7b4d5c3e3bc786b9))
+
+
+### Bug Fixes
+
+* create variants of portfolio section for minor style differences ([f721c1b](https://github.com/kiva/ui/commit/f721c1ba48a009d936a3ca30221bc9f24ad21745))
+* handle duplicate update ids MARS-354 ([20e70d7](https://github.com/kiva/ui/commit/20e70d70cfc35a308b2453540cf423d44751d6c9))
+
 ## [2.540.0](https://github.com/kiva/ui/compare/v2.539.0...v2.540.0) (2023-03-27)
 
 
