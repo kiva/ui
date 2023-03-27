@@ -1,6 +1,6 @@
 <template>
 	<div class="loan-price-wrapper tw-flex">
-		<div v-if="price > 24" class="loan-price-select tw-flex-grow">
+		<div v-if="price > 24 || enableFiveDollarsNotes" class="loan-price-select tw-flex-grow">
 			<label for="loan-price" class="tw-sr-only">Loan Price</label>
 			<kv-select
 				v-model="selectedOption"
