@@ -2,6 +2,7 @@
 
 query fullAutolendProfile {
 	my {
+		id
 		autolendProfile {
 			id
 			...autolendProfileFragment

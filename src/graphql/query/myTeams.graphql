@@ -1,5 +1,6 @@
 query myTeams($teamIds: [Int]) {
 	my {
+		id
 		teams(teamIds:$teamIds) {
 			values {
 				id

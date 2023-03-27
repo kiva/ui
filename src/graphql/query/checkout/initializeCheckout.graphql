@@ -3,6 +3,7 @@
 query initializeCheckout($basketId: String) {
 	hasEverLoggedIn @client
 	my {
+		id
 		lastLoginTimestamp @client
 		userAccount {
 			id

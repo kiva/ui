@@ -212,6 +212,7 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 
 const userQuery = gql`query userQuery {
 	my {
+		id
 		lender {
 			id
 			publicId

@@ -346,6 +346,7 @@ import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
 const pageQuery = gql`
 	query communicationPreferences {
 		my {
+			id
 			autoDeposit {
 				id
 				isSubscriber

@@ -80,6 +80,7 @@ export default {
 			query: gql`
 				query mostRecentBorrowedLoan {
 					my {
+						id
 						mostRecentBorrowedLoan {
 							id
 						}

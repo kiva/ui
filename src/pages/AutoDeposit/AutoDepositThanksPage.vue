@@ -75,6 +75,7 @@ const imageRequire = require.context('@/assets/images/kiva-classic-illustrations
 
 const pageQuery = gql`query autoDepositThanksPage {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

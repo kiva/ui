@@ -264,6 +264,7 @@ const mountedQuery = gql`
 			}
 		}
 		my {
+			id
 			userAccount {
 				id
 				inviterName

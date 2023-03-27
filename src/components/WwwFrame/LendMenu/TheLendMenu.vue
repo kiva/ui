@@ -42,6 +42,7 @@ import LendMegaMenu from './LendMegaMenu';
 
 const pageQuery = gql`query lendMenu {
 		my {
+			id
 			userAccount {
 				id
 			}

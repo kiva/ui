@@ -202,6 +202,7 @@ export default {
 	apollo: {
 		query: gql`query myKivaSecondaryMenu {
 			my {
+				id
 				isBorrower
 				trustee {
 					id
