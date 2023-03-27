@@ -13,6 +13,7 @@
 					<kiva-credit-stats />
 					<account-updates />
 					<!-- lending insights -->
+					<lending-insights />
 					<!-- teams -->
 					<!-- stat graphs -->
 				</div>
@@ -30,6 +31,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import KivaCreditStats from './KivaCreditStats';
+import LendingInsights from './LendingInsights';
 import RecentLoansList from './RecentLoansList';
 import RecommendedLoansList from './RecommendedLoansList';
 
@@ -41,6 +43,7 @@ export default {
 		KivaCreditStats,
 		KvGrid,
 		KvPageContainer,
+		LendingInsights,
 		RecentLoansList,
 		RecommendedLoansList,
 		TheMyKivaSecondaryMenu,
