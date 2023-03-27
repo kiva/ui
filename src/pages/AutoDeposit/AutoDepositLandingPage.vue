@@ -119,6 +119,7 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`query autoDepositLandingPage {
 	my {
+		id
 		subscriptions {
 			values {
 				id

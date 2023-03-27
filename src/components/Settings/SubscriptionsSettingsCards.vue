@@ -87,6 +87,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
+		id
 		autoDeposit {
 			id
 			isSubscriber

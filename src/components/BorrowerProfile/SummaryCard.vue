@@ -139,6 +139,7 @@ const preFetchQuery = gql`
 			}
 		}
 		my {
+			id
 			userAccount {
 				id
 			}

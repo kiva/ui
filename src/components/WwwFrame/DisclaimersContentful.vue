@@ -24,6 +24,7 @@ const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
 	}
 	my {
+		id
 		userAccount {
 			id
 			promoBalance

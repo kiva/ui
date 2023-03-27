@@ -69,6 +69,7 @@ export default {
 				this.apollo.query({
 					query: gql`query recentLoansOverview {
 						my {
+							id
 							loans(limit: 6) {
 								values {
 									id

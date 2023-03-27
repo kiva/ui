@@ -1,5 +1,6 @@
 query userInfo {
 	my {
+		id
 		userAccount {
 			id
 			email

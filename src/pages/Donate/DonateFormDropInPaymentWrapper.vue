@@ -110,6 +110,7 @@ export default {
 		preFetch: true,
 		query: gql`query donateForm {
 			my {
+				id
 				userAccount {
 					id
 				}

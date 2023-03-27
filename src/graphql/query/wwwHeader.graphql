@@ -28,6 +28,7 @@ query wwwHeader($basketId: String) {
 		}
 	}
 	my {
+		id
 		userAccount {
 			id
 			balance

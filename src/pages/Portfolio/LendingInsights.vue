@@ -155,6 +155,7 @@ export default {
 				this.apollo.query({
 					query: gql`query lendingInsights {
 						my {
+							id
 							lendingStats {
 								id
 								amountLentPercentile

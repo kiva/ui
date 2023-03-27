@@ -315,6 +315,7 @@ const iwdChallengeExpKey = 'iwd_challenge';
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
 	my {
+		id
 		lender {
 			id
 			teams(limit: 100) {

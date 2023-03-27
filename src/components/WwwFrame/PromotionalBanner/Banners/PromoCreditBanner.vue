@@ -70,6 +70,7 @@ import { indexIn } from '@/util/comparators';
 const promoCampaignInfo = gql`
 	query promoCampaign($basketId: String, $promoFundId: String) {
 		my {
+			id
 			userAccount {
 				id
 				promoBalance

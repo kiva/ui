@@ -133,6 +133,7 @@ export default {
 				this.apollo.query({
 					query: gql`query kivaCreditStats {
 						my {
+							id
 							updates(limit:3) {
 								totalCount
 								values {

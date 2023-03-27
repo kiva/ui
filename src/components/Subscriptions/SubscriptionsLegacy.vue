@@ -25,6 +25,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query legacySubscription {
 	my {
+		id
 		subscriptions {
 			values {
 				id
