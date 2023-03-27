@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section class="md:tw-bg-brand-100" @visible="fetchAsyncData">
+	<async-portfolio-section class="md:tw-bg-brand-100" @visible="fetchAsyncData" variant="minimal">
 		<h2 class="tw-mb-3">
 			Recommended borrowers
 		</h2>
