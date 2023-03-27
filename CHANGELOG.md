@@ -1,3 +1,10 @@
+## [2.539.0](https://github.com/kiva/ui/compare/v2.538.0...v2.539.0) (2023-03-27)
+
+
+### Features
+
+* matching highlight experiment ([b968c90](https://github.com/kiva/ui/commit/b968c9047f81d12078366fbc5723bfe83ad90ef3))
+
 ## [2.538.0](https://github.com/kiva/ui/compare/v2.537.1...v2.538.0) (2023-03-24)
 
 
