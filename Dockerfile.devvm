@@ -36,9 +36,6 @@ COPY --from=build-stage /ui/package.json .
 COPY --from=build-stage /ui/package-lock.json .
 COPY --from=build-stage /ui/node_modules .
 
-COPY tls/*.crt /etc/ssl/certs/
-COPY tls/*.key /etc/ssl/private/
-
 # Install PROD dependencies only
 RUN HUSKY=0 NODE_ENV=production npm install --only=production
 
