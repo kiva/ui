@@ -323,10 +323,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		customCheckoutButtonText: {
-			type: String,
-			default: 'Checkout now'
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
