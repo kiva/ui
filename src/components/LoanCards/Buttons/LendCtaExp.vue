@@ -6,7 +6,7 @@
 				data-testid="bp-lend-cta-select-and-button"
 			>
 				<label
-					v-if="hideShowLendDropdown && !isLessThan25"
+					v-if="hideShowLendDropdown && !isLessThan25 || enableFiveDollarsNotes"
 					for="LoanAmountDropdown"
 					class="tw-sr-only"
 				>
@@ -14,7 +14,7 @@
 				</label>
 				<div class="amountDropdownWrapper">
 					<kv-ui-select
-						v-if="hideShowLendDropdown && !isLessThan25"
+						v-if="hideShowLendDropdown && !isLessThan25 || enableFiveDollarsNotes"
 						id="LoanAmountDropdown"
 						class="tw-min-w-12"
 						v-model="selectedOption"
@@ -34,7 +34,7 @@
 				<div :class="{ 'lendButtonWrapper' : hideShowLendDropdown}">
 					<kv-ui-button
 						key="lendButton"
-						v-if="lendButtonVisibility && !isLessThan25"
+						v-if="lendButtonVisibility && !isLessThan25 || enableFiveDollarsNotes"
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
@@ -147,7 +147,6 @@ export default {
 	},
 	data() {
 		return {
-			selectedOption: '25',
 			completeLoanView: true,
 		};
 	},
@@ -164,14 +163,6 @@ export default {
 		},
 	},
 	watch: {
-		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
-			}
-		},
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView) {
 				this.completeLoanView = false;
@@ -282,7 +273,7 @@ export default {
 			return (isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount));
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
+			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount) && !this.enableFiveDollarsNotes); // eslint-disable-line max-len
 		},
 		isFunded() {
 			return this.state === 'funded'
@@ -294,6 +285,12 @@ export default {
 		showLendAgain() {
 			return this.isLentTo && !this.isLessThan25;
 		},
+		selectedOption() {
+			if (isBetween25And50(this.unreservedAmount) || (isLessThan25(this.unreservedAmount) && this.enableFiveDollarsNotes)) { // eslint-disable-line max-len
+				return Number(this.unreservedAmount).toFixed();
+			}
+			return '25';
+		}
 	},
 };
 

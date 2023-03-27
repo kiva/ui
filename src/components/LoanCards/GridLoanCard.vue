@@ -47,7 +47,7 @@
 					:is-selected-by-another="isSelectedByAnother"
 					:is-amount-lend-button="lessThan25"
 					:amount-left="amountLeft"
-					:show-now="true"
+					:show-now="!enableFiveDollarsNotes"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"

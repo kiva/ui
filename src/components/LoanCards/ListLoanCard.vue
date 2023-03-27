@@ -75,9 +75,9 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						:is-amount-lend-button="lessThan25"
+						:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mt-0 tw-w-full"
 						@click.native="trackInteraction({
@@ -129,9 +129,9 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						:is-amount-lend-button="lessThan25"
+						:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mt-0 tw-w-full"
 
