@@ -1,3 +1,10 @@
+## [2.540.0](https://github.com/kiva/ui/compare/v2.539.0...v2.540.0) (2023-03-27)
+
+
+### Features
+
+* journal updates about loans on portfolio overview MARS-354 ([e5c6ba5](https://github.com/kiva/ui/commit/e5c6ba5aa418bb383dc775d00e1babecf8fa4d9c))
+
 ## [2.539.0](https://github.com/kiva/ui/compare/v2.538.0...v2.539.0) (2023-03-27)
 
 
