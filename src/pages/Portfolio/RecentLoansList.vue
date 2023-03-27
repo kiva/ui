@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section v-show="totalLoans > 0 || loading" @visible="fetchAsyncData">
+	<async-portfolio-section v-show="totalLoans > 0 || loading" @visible="fetchAsyncData" variant="minimal">
 		<!-- headline -->
 		<kv-loading-placeholder v-if="loading" class="header-placeholder tw-mb-1 lg:tw-mb-1.5" style="width: 40%;" />
 		<h2 v-else class="tw-mb-0.5">
