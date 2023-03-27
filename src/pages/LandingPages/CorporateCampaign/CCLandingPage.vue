@@ -284,6 +284,7 @@ const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String)
 		lendingRewardOffered
 	}
 	my {
+		id
 		userAccount {
 			id
 		}
@@ -437,6 +438,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
 	my {
+		id
 		lender {
 			id
 			teams(limit: 100) {

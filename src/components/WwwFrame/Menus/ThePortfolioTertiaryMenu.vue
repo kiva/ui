@@ -163,6 +163,7 @@ export default {
 	apollo: {
 		query: gql`query portfolioTertiaryMenu {
 			my {
+				id
 				userAccount {
 					id
 					publicId

@@ -332,6 +332,7 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		}
 	}
 	my {
+		id
 		subscriptions {
 			values {
 				id

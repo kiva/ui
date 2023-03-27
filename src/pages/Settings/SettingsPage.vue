@@ -183,6 +183,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`query settingsQuery {
 	my {
+		id
 		autoDeposit {
 			id
 			isSubscriber # signifies monthly good is active

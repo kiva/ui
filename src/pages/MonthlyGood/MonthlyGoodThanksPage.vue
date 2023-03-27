@@ -32,6 +32,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const pageQuery = gql`query monthlyGoodThanksPage {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

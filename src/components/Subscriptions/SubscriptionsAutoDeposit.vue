@@ -325,6 +325,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

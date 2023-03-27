@@ -2,6 +2,7 @@
 
 query shopBasketUpdate($basketId: String) {
 	my {
+		id
 		lastLoginTimestamp @client
 		userAccount {
 			id

@@ -191,6 +191,7 @@ import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

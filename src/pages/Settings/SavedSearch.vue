@@ -50,6 +50,7 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 const pageQuery = gql`query savedSearchPage {
 	my {
+		id
 		savedSearches {
 			totalCount
 		}

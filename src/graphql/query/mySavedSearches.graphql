@@ -2,6 +2,7 @@
 
 query savedSearches($offset: Int, $limit: Int) {
 	my {
+		id
 		savedSearches(offset: $offset, limit: $limit){
 			values {
 				id

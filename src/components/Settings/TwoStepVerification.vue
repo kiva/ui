@@ -51,6 +51,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
+		id
 		authenticatorEnrollments(mfa_token: $mfa_token) {
 			id
 			active

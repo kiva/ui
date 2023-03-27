@@ -540,6 +540,7 @@ const hasDepositBeforeCookie = 'kvu_db';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
   	my {
+		id
     	loans(limit:1) {
       		totalCount
     	}

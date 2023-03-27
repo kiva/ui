@@ -1,5 +1,6 @@
 query userId {
 	my {
+		id
 		userAccount {
 			id
 		}

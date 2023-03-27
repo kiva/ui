@@ -7,6 +7,7 @@ query lendByCategory($basketId: String) {
 		}
 	}
 	my {
+		id
 		recommendations {
 			topCountry
 		}
