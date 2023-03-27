@@ -1,3 +1,10 @@
+### [2.541.1](https://github.com/kiva/ui/compare/v2.541.0...v2.541.1) (2023-03-27)
+
+
+### Bug Fixes
+
+* add missing new id field ([13e4bc2](https://github.com/kiva/ui/commit/13e4bc24d78280ad915ff36e5014dfe1bedc29dc))
+
 ## [2.541.0](https://github.com/kiva/ui/compare/v2.540.0...v2.541.0) (2023-03-27)
 
 
