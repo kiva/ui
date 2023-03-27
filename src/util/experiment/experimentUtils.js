@@ -286,7 +286,14 @@ export const getForcedAssignment = (cookieStore, url, id, experimentSetting) => 
 
 	// Return forced assignment if the version wasn't undefined
 	if (typeof forcedVersion !== 'undefined') {
-		return { ...experimentSetting, version: forcedVersion, queryForced };
+		// Get hash from cookie so that forced assignments don't get re-assigned because of missing hash
+		const forcedHash = cookieAssignment?.hash;
+		return {
+			...experimentSetting,
+			version: forcedVersion,
+			...(forcedHash && { hash: forcedHash }),
+			queryForced
+		};
 	}
 };
 
