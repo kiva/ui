@@ -948,7 +948,7 @@ export default {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
 		},
 		logoHeight() {
-			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoHeight;
+			return String(this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoHeight);
 		},
 		logoClasses() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoClasses;
@@ -1266,9 +1266,6 @@ export default {
 					this.basketBalancing = true;
 					this.basketUpdating = false;
 					this.balanceLeftoverCredits();
-
-					// signify checkout is ready
-					this.handleBasketValidation();
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 				}).finally(() => {
@@ -1639,6 +1636,7 @@ export default {
 	beforeRouteUpdate(to, from, next) {
 		if (to.hash === '#show-basket') {
 			this.checkoutVisible = true;
+			this.handleBasketValidation();
 			this.refreshTotals();
 		}
 		next();
