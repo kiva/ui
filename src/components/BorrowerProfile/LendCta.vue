@@ -62,14 +62,14 @@
 								data-testid="bp-lend-cta-select-and-button"
 							>
 								<label
-									v-if="hideShowLendDropdown && !isLessThan25 || enableFiveDollarsNotes"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									for="LoanAmountDropdown"
 									class="tw-sr-only"
 								>
 									Lend amount
 								</label>
 								<kv-ui-select
-									v-if="hideShowLendDropdown && !isLessThan25 || enableFiveDollarsNotes"
+									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
 									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
@@ -97,7 +97,7 @@
 										<!-- Lend button -->
 										<kv-ui-button
 											key="lendButton"
-											v-if="lendButtonVisibility && !isLessThan25 || enableFiveDollarsNotes"
+											v-if="lendButtonVisibility && !isLessThan25"
 											class="tw-inline-flex tw-flex-1"
 											data-testid="bp-lend-cta-lend-button"
 											type="submit"
@@ -129,7 +129,7 @@
 											:amount-left="unreservedAmount"
 											@add-to-basket="addToBasket"
 											:complete-loan="isCompleteLoanActive"
-											v-if="isLendAmountButton"
+											v-if="isLendAmountButton && !enableFiveDollarsNotes"
 										/>
 
 										<!-- Adding to basket button -->
@@ -692,9 +692,6 @@ export default {
 			}
 		},
 		ctaButtonText() {
-			if (this.enableFiveDollarsNotes) {
-				return 'Lend';
-			}
 			if (this.showSparkles) {
 				return 'Lend now';
 			}
@@ -778,6 +775,7 @@ export default {
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		isLessThan25() {
+			if (this.enableFiveDollarsNotes) return false;
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {
@@ -788,10 +786,10 @@ export default {
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {
-			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedOption;
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === Number(this.selectedOption).toFixed(); // eslint-disable-line max-len
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount) && !this.enableFiveDollarsNotes); // eslint-disable-line max-len
+			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
 		}
 	},
 	mounted() {

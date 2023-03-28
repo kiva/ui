@@ -7,7 +7,7 @@ export default {
 			enableFiveDollarsNotes: false
 		};
 	},
-	mounted() {
+	created() {
 		const fiveDollarsNotesEXP = this.apollo.readFragment({
 			id: 'Experiment:five_dollars_notes',
 			fragment: experimentVersionFragment,
