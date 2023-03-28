@@ -112,6 +112,7 @@ export function parseExpCookie(cookie) {
 				version: expValues[1],
 				hash: parseInt(expValues[2], 10),
 				population: parseFloat(expValues[3]),
+				queryForced: expValues[4]?.toUpperCase() === true.toString().toUpperCase(),
 			};
 		}
 	});
@@ -133,9 +134,10 @@ export function serializeExpCookie(assignments) {
 
 	// eslint-disable-next-line no-unused-vars
 	const expStrings = Object.entries(assignments).map(([_, {
-		id, version, hash, population
+		id, version, hash, population, queryForced
 	}]) => {
-		return `${id}:${version}:${hash || 'no-hash'}:${population || 'no-pop'}`;
+		// eslint-disable-next-line max-len
+		return `${id}:${version}:${hash || 'no-hash'}:${population || 'no-pop'}:${queryForced === true ? true.toString() : false.toString()}`;
 	});
 
 	// Filter out strings that end with a ':', as they have no assignment
@@ -280,6 +282,7 @@ export const getForcedAssignment = (cookieStore, url, id, experimentSetting) => 
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
 	const forcedExp = setuiab?.split('.') ?? [];
 	const queryForced = forcedExp[0] === id && !!forcedExp[1];
+	const cookieQueryForced = !!cookieAssignment?.queryForced;
 	const forcedVersion = (queryForced && encodeURIComponent(forcedExp[1])) || cookieAssignment?.version;
 
 	// Return forced assignment if the version wasn't undefined
@@ -290,7 +293,7 @@ export const getForcedAssignment = (cookieStore, url, id, experimentSetting) => 
 			...experimentSetting,
 			version: forcedVersion,
 			...(forcedHash && { hash: forcedHash }),
-			queryForced
+			queryForced: queryForced || cookieQueryForced,
 		};
 	}
 };
