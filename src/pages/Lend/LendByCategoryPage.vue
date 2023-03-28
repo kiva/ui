@@ -291,7 +291,7 @@ export default {
 			const loansDisplayed = [];
 			// Add a tracking object for each loan in each category
 			categories.forEach((category, catIndex) => {
-				const loans = category?.loans?.values ?? category?.values ?? [];
+				const loans = category?.loans?.values ?? category?.values ?? category?.savedSearch?.loans?.values ?? [];
 				loans.forEach((loan, loanIndex) => {
 					loansDisplayed.push({
 						r: this.rowTrackCounter + catIndex + 1,
