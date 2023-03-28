@@ -12,9 +12,8 @@
 					<recommended-loans-list />
 					<kiva-credit-stats />
 					<account-updates />
-					<!-- lending insights -->
 					<lending-insights />
-					<!-- teams -->
+					<your-teams />
 					<!-- stat graphs -->
 				</div>
 			</kv-grid>
@@ -34,6 +33,7 @@ import KivaCreditStats from './KivaCreditStats';
 import LendingInsights from './LendingInsights';
 import RecentLoansList from './RecentLoansList';
 import RecommendedLoansList from './RecommendedLoansList';
+import YourTeams from './YourTeams';
 
 export default {
 	name: 'PortfolioOverviewPage',
@@ -49,6 +49,7 @@ export default {
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
+		YourTeams,
 	},
 };
 </script>
