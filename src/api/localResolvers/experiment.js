@@ -86,6 +86,7 @@ export default ({ cookieStore, url = '' }) => {
 								: assignVersionForLoginId(experimentSetting, getLoginId(cookieStore)),
 							hash,
 							population,
+							queryForced: currentAssignment.queryForced,
 						};
 
 						// Update the "uiab" cookie if the assignment was forced via the "setuiab" query string param

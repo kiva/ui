@@ -259,24 +259,132 @@ describe('experimentUtils.js', () => {
 					version: 'x',
 					hash: NaN,
 					population: NaN,
+					queryForced: false,
 				},
 				cd: {
 					id: 'cd',
 					version: 'y',
 					hash: 1234,
 					population: 0.4,
+					queryForced: false,
 				},
 				ef: {
 					id: 'ef',
 					version: 'z',
 					hash: NaN,
 					population: NaN,
+					queryForced: false,
 				},
 				gh: {
 					id: 'gh',
 					version: 'w',
 					hash: 1234,
 					population: NaN,
+					queryForced: false,
+				},
+			});
+		});
+
+		it('should return a correctly parsed cookie object with query forced', () => {
+			expect(parseExpCookie('ab:x:no-hash:no-pop:false|cd:y:1234:0.4:true|xd:z:3421:0.5:false')).toEqual({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: false,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: true
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: false
+				},
+			});
+		});
+
+		it('should return a correctly parsed cookie object with query forced missing', () => {
+			expect(parseExpCookie('ab:x:no-hash:no-pop|cd:y:1234:0.4|xd:z:3421:0.5')).toEqual({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: false,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: false
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: false
+				},
+			});
+		});
+
+		it('should return a correctly parsed cookie object with bad query forced string', () => {
+			expect(parseExpCookie('ab:x:no-hash:no-pop:asd|cd:y:1234:0.4:|xd:z:3421:0.5:1')).toEqual({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: false,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: false
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: false
+				},
+			});
+		});
+
+		it('should return a correctly parsed cookie object with query forced case insensitive', () => {
+			expect(parseExpCookie('ab:x:no-hash:no-pop:TRUE|cd:y:1234:0.4:True|xd:z:3421:0.5:trUE')).toEqual({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: true,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: true
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: true
 				},
 			});
 		});
@@ -313,7 +421,89 @@ describe('experimentUtils.js', () => {
 					version: 'w',
 					hash: 1234,
 				},
-			})).toBe('ab:x:no-hash:no-pop|cd:y:1234:0.4|ef:z:no-hash:no-pop|gh:w:1234:no-pop');
+			})).toBe('ab:x:no-hash:no-pop:false|cd:y:1234:0.4:false|ef:z:no-hash:no-pop:false|gh:w:1234:no-pop:false');
+		});
+
+		it('should return a correctly serialized cookie string with query forced', () => {
+			expect(serializeExpCookie({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: false,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: true
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: true
+				},
+			})).toBe('ab:x:no-hash:no-pop:false|cd:y:1234:0.4:true|xd:z:3421:0.5:true');
+		});
+
+		it('should return a correctly serialized cookie string with missing query forced', () => {
+			expect(serializeExpCookie({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+				},
+			})).toBe('ab:x:no-hash:no-pop:false|cd:y:1234:0.4:false|xd:z:3421:0.5:false');
+		});
+
+		it('should return a correctly serialized cookie string with bad query forced values', () => {
+			expect(serializeExpCookie({
+				ab: {
+					id: 'ab',
+					version: 'x',
+					hash: NaN,
+					population: NaN,
+					queryForced: null,
+				},
+				cd: {
+					id: 'cd',
+					version: 'y',
+					hash: 1234,
+					population: 0.4,
+					queryForced: undefined,
+				},
+				xd: {
+					id: 'xd',
+					version: 'z',
+					hash: 3421,
+					population: 0.5,
+					queryForced: '',
+				},
+				zz: {
+					id: 'zz',
+					version: 'y',
+					hash: 54,
+					population: 0.3,
+					queryForced: 'true',
+				},
+			})).toBe('ab:x:no-hash:no-pop:false|cd:y:1234:0.4:false|xd:z:3421:0.5:false|zz:y:54:0.3:false');
 		});
 	});
 
@@ -578,7 +768,8 @@ describe('experimentUtils.js', () => {
 					id: 'ab',
 					version: 'variant',
 					hash: 1753809052,
-					population: 0.5
+					population: 0.5,
+					queryForced: false,
 				}
 			});
 		});
@@ -612,7 +803,7 @@ describe('experimentUtils.js', () => {
 
 			setCookieAssignments(cookieStore, mockAssignments);
 
-			expect(cookieStore.getSetCookies()[0]).toBe('uiab=ab:variant:1753809052:0.5; Path=/');
+			expect(cookieStore.getSetCookies()[0]).toBe('uiab=ab:variant:1753809052:0.5:false; Path=/');
 		});
 	});
 
@@ -699,6 +890,30 @@ describe('experimentUtils.js', () => {
 				...experimentSetting,
 				version: 'unassigned',
 				hash,
+				queryForced: false
+			});
+		});
+
+		it('should get query forced setting from cookie', () => {
+			const hash1 = 1753809052;
+			const hash2 = 456;
+			const cookieStore = new CookieStore({ uiab: `asd:variant:${hash1}:0.5:true|qwe:a:${hash2}:0.1:false` });
+
+			let result = getForcedAssignment(cookieStore, '', 'asd', experimentSetting);
+
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'variant',
+				hash: hash1,
+				queryForced: true
+			});
+
+			result = getForcedAssignment(cookieStore, '', 'qwe', experimentSetting);
+
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'a',
+				hash: hash2,
 				queryForced: false
 			});
 		});
