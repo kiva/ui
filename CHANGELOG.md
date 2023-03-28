@@ -1,3 +1,27 @@
+### [2.543.1](https://github.com/kiva/ui/compare/v2.543.0...v2.543.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* add spacing below team koin prompt MARS-356 ([3a814b7](https://github.com/kiva/ui/commit/3a814b77639466cac60c8bc650229a474499d794))
+* adjust padding and col-span for lending stats page ([edd779a](https://github.com/kiva/ui/commit/edd779ac315cb9edcbf358ca6f7f110cd9093697))
+* link to my-loans page for credit stats details MARS-352 ([162c921](https://github.com/kiva/ui/commit/162c921add50872c4d565cba2229f61fa517a148))
+* use numeral to format percentile stat MARS-355 ([a37786f](https://github.com/kiva/ui/commit/a37786f7ce28e8b8274dcddc43abeb08023d0633))
+
+## [2.543.0](https://github.com/kiva/ui/compare/v2.542.1...v2.543.0) (2023-03-28)
+
+
+### Features
+
+* your teams section for portfolio overview MARS-356 ([a5cb1b5](https://github.com/kiva/ui/commit/a5cb1b5f4ed4280cc847a1164ee1dc6e8a9dc2fd))
+
+### [2.542.1](https://github.com/kiva/ui/compare/v2.542.0...v2.542.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* loans were missing from bandit data ([06ea760](https://github.com/kiva/ui/commit/06ea7601c2e2960319b5536c25a52958881688c3))
+
 ## [2.542.0](https://github.com/kiva/ui/compare/v2.541.1...v2.542.0) (2023-03-28)
 
 
