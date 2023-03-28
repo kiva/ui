@@ -1,158 +1,108 @@
-import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experiment/experimentUtils';
-import { hashCode, readJSONSetting } from '@/util/settingsUtils';
-import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
+import {
+	getForcedAssignment,
+	assignVersionForLoginId,
+	getActiveExperiments,
+	getExperimentSetting,
+	calculateHash,
+	getLoginId,
+	getCookieAssignments,
+	setCookieAssignments,
+} from '@/util/experiment/experimentUtils';
+import Experiment from '@/api/fixtures/Experiment';
+import logFormatter from '@/util/logFormatter';
 
 /**
- * Experiment resolvers
+ * Local resolvers for experiment assignment
+ *
+ * @param {Object} param0.cookieStore The cookie mixin
+ * @param {String} param0.url The initial URL loaded by the application
+ * @returns {Object} The local resolvers
  */
-export default ({ cookieStore }) => {
-	// initialize the assignments from the experiment cookie
-	const assignments = parseExpCookie(cookieStore.get('uiab'));
+export default ({ cookieStore, url = '' }) => {
 	return {
 		resolvers: {
 			Query: {
-				experiment(_, { id }, { cache }) {
-					// get the existing assigned version for this experiment id
-					let currentAssignment = assignments[id] || {};
-
-					let experimentData = null;
-					try {
-						experimentData = cache.readQuery({
-							query: experimentSettingQuery,
-							variables: {
-								key: id || '',
-							}
-						});
-					} catch (e) {
-						logReadQueryError(e, 'ExperimentResolver experimentSettingQuery');
+				/**
+				 * Assigns the experiment based on the provided ID if the experiment is active and has settings
+				 *
+				 * @param {Object} _ The previous resolver in the resolver chain
+				 * @param {String} param1.id The ID of the experiment
+				 * @param {Object} param2.cache The Apollo cache
+				 * @param {Object} param2.client The Apollo client
+				 * @returns The active experiment assignment
+				 */
+				async experiment(_, { id = '' }, { cache, client }) {
+					// Get the list of active experiments
+					const activeExperiments = await getActiveExperiments(cache, client);
+					if (!activeExperiments?.length) {
+						logFormatter('Active experiments list is empty', 'warn');
+						return Experiment({ id });
 					}
 
-					const experiment = readJSONSetting(experimentData, 'general.uiExperimentSetting.value');
-
-					// create targeted subset of experiment setting to use in hash
-					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
-					const {
-						name, distribution, variants, control
-					} = experiment || {};
-					const experimentSubset = {
-						name, distribution, variants, control
-					};
-
-					// get the hash for our current experiment setting
-					const settingHash = hashCode(JSON.stringify(experimentSubset));
-					const population = experiment?.population ?? 1;
-
-					// Add hash to existing cookie exps if it's missing
-					if (typeof currentAssignment.hash === 'undefined') {
-						currentAssignment.hash = settingHash;
+					// Check if the requested experiment is active
+					if (!activeExperiments.includes(id)) {
+						logFormatter('Experiment is not in active experiments list', 'warn');
+						return Experiment({ id });
 					}
 
-					// Add population to existing cookie experiments if it's missing
-					if (typeof currentAssignment.population === 'undefined') {
-						currentAssignment.population = population;
+					// Get the settings of the experiment (name, distribution, population)
+					const experimentSetting = await getExperimentSetting(id, client);
+					if (!experimentSetting.name) {
+						logFormatter('Experiment setting is missing', 'warn');
+						return Experiment({ id });
 					}
 
-					// assign an experiment version if:
-					// - we have an experiment
-					// - and the experiment is enabled
-					// - and currentAssignment.version is undefined or the hashes don't match
-					// - current version is 'unassigned' and the population value has changed
-					if (experiment !== null
-						&& experiment.enabled
-						&& (
-							typeof currentAssignment.version === 'undefined'
-							|| settingHash !== currentAssignment.hash
-							|| (
-								population !== currentAssignment.population
-								&& currentAssignment.version === 'unassigned'
-							)
+					// Get forced assignment if there's an assignment in "setuiab" query string param or "uiab" cookie
+					const forcedAssignment = getForcedAssignment(cookieStore, url, id, experimentSetting);
+
+					// Create initial current assignment object
+					let currentAssignment = { ...(forcedAssignment || { id }) };
+
+					// Get the hash and population based on the experiment settings
+					const hash = calculateHash(experimentSetting);
+					const population = experimentSetting?.population ?? 1;
+
+					// Get new experiment assignment if:
+					// - Assignment is forced via the "setuiab" query string param
+					// - Version is undefined (current assignment wasn't forced)
+					// - Hash changed (distribution or population changed for cookie assignments)
+					// - Population changed and previous forced version undefined or cookie assignment unassigned
+					if (currentAssignment.queryForced
+						|| typeof currentAssignment.version === 'undefined'
+						|| hash !== currentAssignment.hash
+						|| (
+							population !== currentAssignment.population
+								&& (
+									typeof currentAssignment.version === 'undefined'
+										|| currentAssignment.version === 'unassigned'
+								)
 						)
 					) {
-						// assign the version using the experiment data (undefined if experiment disabled)
-						currentAssignment = {
+						// Get new assignment with updated props
+						const updatedAssignment = {
 							id,
-							version: assignVersion(experiment, cookieStore),
-							hash: settingHash,
+							version: currentAssignment.queryForced
+								? currentAssignment.version
+								: assignVersionForLoginId(experimentSetting, getLoginId(cookieStore)),
+							hash,
 							population,
 						};
 
-						// only update assignments and set cookie if the version is set
-						if (typeof currentAssignment.version !== 'undefined' && experiment.enabled) {
-							// apply updates to assignments object
-							assignments[id] = currentAssignment;
-
-							// save the new assignments to the experiment cookie
-							cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
-						} else {
-							// otherwise set the version to null
-							currentAssignment.version = null;
+						// Update the "uiab" cookie if the assignment was forced via the "setuiab" query string param
+						if (currentAssignment.queryForced) {
+							const cookieAssignments = getCookieAssignments(cookieStore);
+							cookieAssignments[id] = updatedAssignment;
+							setCookieAssignments(cookieStore, cookieAssignments);
 						}
+
+						// Update the current assignment that will be returned
+						currentAssignment = updatedAssignment;
 					}
 
-					return {
-						id,
-						// if experiment exist & enabled = false return a null version
-						// > we don't want to render a disabled experiment even if a cookie version is present
-						version: (!id?.length || experiment === null || !experiment.enabled)
-							? null : currentAssignment.version,
-						__typename: 'Experiment',
-					};
+					// Return the current experiment assignment
+					return Experiment({ id, version: currentAssignment.version });
 				},
 			},
-			Mutation: {
-				updateExperimentVersion(_, { id, version }) {
-					// start with previously assigned version for this experiment id
-					let updatedVersion = assignments[id] || {};
-
-					// re-assign experiment version
-					if (updatedVersion.version !== version) {
-						// assign the passed version
-						updatedVersion = {
-							// get the new assignment
-							version,
-							id,
-							hash: updatedVersion.hash || 0
-						};
-
-						// apply updates to assignments object
-						assignments[id] = updatedVersion;
-
-						// save the new assignments to the experiment cookie
-						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
-					}
-
-					return {
-						id,
-						// return null if undefined so that apollo saves the value
-						version: typeof version === 'undefined' ? null : version,
-						__typename: 'Experiment',
-					};
-				},
-				// COMING SOON
-				// eslint-disable-next-line
-				cleanExperimentCookie(_, data, context) {
-					// get array of active experiment ids from cache
-					// const activeExperiments = JSON.parse(_get(
-					// 	context,
-					// 	`cache.data.data['Setting:ui.active_experiments'].value` // eslint-disable-line
-					// ));
-					// console.log('------- Active Exps in cookie cleaner -------');
-					// console.log(activeExperiments);
-
-					// if (activeExperiments.length) {
-					// 	const currentAssignments = parseExpCookie(cookieStore.get('uiab'));
-					// 	console.log('current cookie assignments: ', currentAssignments);
-					// 	const remainingAssignments = _filter(currentAssignments, (value, index) => {
-					// 		return activeExperiments.indexOf(index) !== -1;
-					// 	});
-					// 	console.log('new cookie assignments: ', remainingAssignments);
-					// 	// cookieStore.set('uiab', serializeExpCookie(remainingAssignments), { path: '/' });
-					// }
-
-					return true;
-				}
-			}
 		}
 	};
 };

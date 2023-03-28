@@ -1,5 +1,8 @@
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+const FIVE_DOLLARS_NOTES_EXP = 'five_dollars_notes';
 
 export default {
 	data() {
@@ -7,9 +10,10 @@ export default {
 			enableFiveDollarsNotes: false
 		};
 	},
-	created() {
+	async mounted() {
+		await this.apollo.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } });
 		const fiveDollarsNotesEXP = this.apollo.readFragment({
-			id: 'Experiment:five_dollars_notes',
+			id: `Experiment:${FIVE_DOLLARS_NOTES_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.enableFiveDollarsNotes = fiveDollarsNotesEXP.version ? fiveDollarsNotesEXP.version === 'b' : false;
@@ -18,7 +22,7 @@ export default {
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'five_dollars_notes',
+				FIVE_DOLLARS_NOTES_EXP,
 				'EXP-CORE-1104-Mar2023'
 			);
 		}

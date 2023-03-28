@@ -21,7 +21,6 @@
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import { userHasEverLoggedInBefore } from '@/util/optimizelyUserMetrics';
 import logReadQueryError from '@/util/logReadQueryError';
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
@@ -65,14 +64,8 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				fetchAllExpSettings(config, client, {
-					query: route?.query,
-					path: route?.path
-				})
-			]);
+		preFetch(_, client) {
+			return client.query({ query: hasEverLoggedInQuery });
 		},
 	},
 	created() {

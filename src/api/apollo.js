@@ -14,7 +14,8 @@ export default function createApolloClient({
 	kvAuth0,
 	types,
 	uri,
-	fetch
+	fetch,
+	url = '',
 }) {
 	const cache = new InMemoryCache({
 		possibleTypes: types,
@@ -28,7 +29,12 @@ export default function createApolloClient({
 		}
 	});
 
-	const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
+	const { resolvers } = initState({
+		appConfig,
+		cookieStore,
+		kvAuth0,
+		url,
+	});
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([

@@ -529,6 +529,7 @@ import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -549,6 +550,8 @@ const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
    		}
 	}
 }`;
+
+const LEND_MENU_BUTTONS_EXP = 'lend_menu_buttons';
 
 export default {
 	name: 'TheHeader',
@@ -668,8 +671,11 @@ export default {
 				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
 				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
 
-				return data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) // eslint-disable-line max-len
-					? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve();
+				return Promise.all([
+					// eslint-disable-next-line max-len
+					data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) ? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve(),
+					client.query({ query: experimentAssignmentQuery, variables: { id: LEND_MENU_BUTTONS_EXP } }),
+				]);
 			});
 		},
 		result({ data }) {
@@ -847,7 +853,7 @@ export default {
 		},
 		initializeLendMenuButtonExp() {
 			const experiment = this.apollo.readFragment({
-				id: 'Experiment:lend_menu_buttons',
+				id: `Experiment:${LEND_MENU_BUTTONS_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 

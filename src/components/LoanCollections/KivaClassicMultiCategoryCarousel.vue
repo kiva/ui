@@ -20,6 +20,9 @@ import { gql } from '@apollo/client';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+const LEND_URGENCY_EXP = 'lend_urgency';
 
 export default {
 	name: 'KivaClassicMultiCategoryCarousel',
@@ -90,12 +93,16 @@ export default {
 	mounted() {
 		this.fetchLoanChannel();
 	},
+	apollo: {
+		preFetch(_, client) {
+			return client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } });
+		},
+	},
 	created() {
 		// run urgency experiment if we are on the homepage
 		if (this.$route.name === 'homepage') {
-			// this experiment is assigned in experimentPreFetch.js
 			const urgencyExperiment = this.apollo.readFragment({
-				id: 'Experiment:lend_urgency',
+				id: `Experiment:${LEND_URGENCY_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
