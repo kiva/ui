@@ -106,7 +106,7 @@
 			<div class="tw-col-span-12 md:tw-col-span-6">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
-					{{ percentile }}th
+					{{ percentile }}
 				</dt>
 				<dd class="stat-def">
 					Lending percentile on Kiva
@@ -175,7 +175,7 @@ export default {
 				}).then(({ data }) => {
 					this.loading = false;
 					this.countryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
-					this.percentile = data?.my?.lendingStats?.amountLentPercentile ?? 0;
+					this.percentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 					this.inviteeLoanCount = data?.my?.userStats?.number_of_loans_by_invitees ?? 0;
 
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
