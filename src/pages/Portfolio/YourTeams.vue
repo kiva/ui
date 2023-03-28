@@ -47,7 +47,7 @@
 			</li>
 		</ol>
 		<!-- no-teams paragraph -->
-		<p v-if="!loading && !hasTeams">
+		<p v-if="!loading && !hasTeams" class="tw-mb-2">
 			Find like-minded lenders. Find a network of individuals that share your interests, school affiliation or
 			location &amp; work together to achieve shared goals.
 		</p>

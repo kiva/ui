@@ -6,7 +6,14 @@
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12">
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
-				<div class="tw-col-span-12 lg:tw-col-span-9">
+				<div
+					class="
+						tw-col-span-12 md:tw-col-span-9
+						tw-pt-4 tw-pb-8
+						md:tw-pt-6 md:tw-pb-12
+						lg:tw-pt-8 lg:tw-pb-16
+					"
+				>
 					<h1 class="tw-mb-4">
 						Lending stats
 					</h1>
