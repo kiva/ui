@@ -357,6 +357,8 @@ import {
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
 
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
@@ -605,7 +607,8 @@ export default {
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
 		},
-		initializeMatchingHighlightExp() {
+		async initializeMatchingHighlightExp() {
+			await this.apollo.query({ query: experimentAssignmentQuery, variables: { id: 'matching_highlight' } });
 			const matchingHighlightExpData = getExperimentSettingCached(this.apollo, 'matching_highlight');
 			// Tracking for EXP-ACK-538-Mar2023
 			if (matchingHighlightExpData?.enabled && this.matchingTextVisibility) {
