@@ -1,3 +1,16 @@
+## [2.542.0](https://github.com/kiva/ui/compare/v2.541.1...v2.542.0) (2023-03-28)
+
+
+### Features
+
+* experimentation refactor with login ID assignment ([c01880b](https://github.com/kiva/ui/commit/c01880be0586415e91b5e2d7032e82e693dc1a3f))
+
+
+### Bug Fixes
+
+* get hash from forced assignment in cookie ([88af92a](https://github.com/kiva/ui/commit/88af92addcda2bf78d3ab5027e74283052bfec61))
+* undefined now also passed to track event ([0d0d658](https://github.com/kiva/ui/commit/0d0d65870fe65864b667a64d9873363b31a5d4b3))
+
 ### [2.541.1](https://github.com/kiva/ui/compare/v2.541.0...v2.541.1) (2023-03-27)
 
 
