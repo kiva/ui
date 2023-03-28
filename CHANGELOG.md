@@ -1,3 +1,10 @@
+## [2.543.0](https://github.com/kiva/ui/compare/v2.542.1...v2.543.0) (2023-03-28)
+
+
+### Features
+
+* your teams section for portfolio overview MARS-356 ([a5cb1b5](https://github.com/kiva/ui/commit/a5cb1b5f4ed4280cc847a1164ee1dc6e8a9dc2fd))
+
 ### [2.542.1](https://github.com/kiva/ui/compare/v2.542.0...v2.542.1) (2023-03-28)
 
 
