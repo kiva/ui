@@ -1,3 +1,10 @@
+## [2.544.0](https://github.com/kiva/ui/compare/v2.543.1...v2.544.0) (2023-03-28)
+
+
+### Features
+
+* query forced saved in cookie assignment ([99f645c](https://github.com/kiva/ui/commit/99f645c1126434cfcf53182dc48c2fcf4acd4801))
+
 ### [2.543.1](https://github.com/kiva/ui/compare/v2.543.0...v2.543.1) (2023-03-28)
 
 
