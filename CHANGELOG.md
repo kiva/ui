@@ -1,3 +1,10 @@
+### [2.541.2-next.1](https://github.com/kiva/ui/compare/v2.541.1...v2.541.2-next.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* loans were missing from bandit data ([0bc1d9d](https://github.com/kiva/ui/commit/0bc1d9d09b6aab35288f927f32a0ca7afc78ffb3))
+
 ### [2.541.1](https://github.com/kiva/ui/compare/v2.541.0...v2.541.1) (2023-03-27)
 
 
