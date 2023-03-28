@@ -31,7 +31,11 @@
 						This includes loans made using repaid Kiva credit.
 					</dd>
 				</dl>
-				<kv-text-link :icon="mdiFileDocumentOutline" @click="showCreditSummary = true">
+				<kv-text-link
+					:icon="mdiFileDocumentOutline"
+					to="/portfolio/loans"
+					v-kv-track-event="['portfolio', 'click', 'credit-stats-details']"
+				>
 					Details
 				</kv-text-link>
 				<credit-summary-lightbox v-if="false" />
