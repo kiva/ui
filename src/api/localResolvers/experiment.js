@@ -15,10 +15,10 @@ import logFormatter from '@/util/logFormatter';
  * Local resolvers for experiment assignment
  *
  * @param {Object} param0.cookieStore The cookie mixin
- * @param {String} param0.url The initial URL loaded by the application
+ * @param {Object} param0.route The initial route resolved by the Vue router
  * @returns {Object} The local resolvers
  */
-export default ({ cookieStore, url = '' }) => {
+export default ({ cookieStore, route }) => {
 	return {
 		resolvers: {
 			Query: {
@@ -53,7 +53,7 @@ export default ({ cookieStore, url = '' }) => {
 					}
 
 					// Get forced assignment if there's an assignment in "setuiab" query string param or "uiab" cookie
-					const forcedAssignment = getForcedAssignment(cookieStore, url, id, experimentSetting);
+					const forcedAssignment = getForcedAssignment(cookieStore, route, id, experimentSetting);
 
 					// Create initial current assignment object
 					let currentAssignment = { ...(forcedAssignment || { id }) };
