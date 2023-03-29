@@ -1,3 +1,19 @@
+## [2.546.0](https://github.com/kiva/ui/compare/v2.545.0...v2.546.0) (2023-03-29)
+
+
+### Features
+
+* five dollars notes added when amount left in a loan is less than 25 dollars ([436658c](https://github.com/kiva/ui/commit/436658c43c7117763642be6994066515b17f4bef))
+* five dollars notes test added to checkout page for cases with less than 25 as amount left ([c764bc3](https://github.com/kiva/ui/commit/c764bc37886c0d73d5f405258c021c5d492590ce))
+
+
+### Bug Fixes
+
+* bugs fixed for borrower profile and checkout page ([a65259c](https://github.com/kiva/ui/commit/a65259c803e0d951bc685bd81348894ce791985a))
+* comments added to computed prop ([5d6baba](https://github.com/kiva/ui/commit/5d6baba917969637af8dbab9faef3e5ccfe45bae))
+* prefetching five dollars test in checkout page and other issues ([7732f25](https://github.com/kiva/ui/commit/7732f25583f599a666463ff2ace5c059eda47270))
+* unneeded experiment assignment removed ([7b4e399](https://github.com/kiva/ui/commit/7b4e39910656a84861d8cd7190661055c6ef4920))
+
 ## [2.545.0](https://github.com/kiva/ui/compare/v2.544.1...v2.545.0) (2023-03-29)
 
 
