@@ -829,24 +829,54 @@ describe('experimentUtils.js', () => {
 
 			expect(result).toBe(undefined);
 
-			result = getForcedAssignment(cookieStore, 'asd', undefined, experimentSetting);
+			result = getForcedAssignment(cookieStore, {}, undefined, experimentSetting);
+
+			expect(result).toBe(undefined);
+
+			result = getForcedAssignment(cookieStore, { query: {} }, undefined, experimentSetting);
+
+			expect(result).toBe(undefined);
+
+			result = getForcedAssignment(cookieStore, { query: { setuiab: [] } }, undefined, experimentSetting);
+
+			expect(result).toBe(undefined);
+
+			result = getForcedAssignment(cookieStore, { query: { setuiab: '' } }, undefined, experimentSetting);
+
+			expect(result).toBe(undefined);
+
+			result = getForcedAssignment(cookieStore, { query: { setuiab: null } }, undefined, experimentSetting);
 
 			expect(result).toBe(undefined);
 		});
 
 		it('should get forced assignment from query string', () => {
 			const cookieStore = new CookieStore();
+			const route = { query: { setuiab: 'asd.x' } };
 
-			const result = getForcedAssignment(cookieStore, '?setuiab=asd.x', 'asd', experimentSetting);
+			const result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
 
 			expect(result).toEqual({ ...experimentSetting, version: 'x', queryForced: true });
+		});
+
+		it('should get multiple forced assignments from query string', () => {
+			const cookieStore = new CookieStore();
+			const route = { query: { setuiab: ['asd.x', 'qwe.b'] } };
+
+			let result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
+
+			expect(result).toEqual({ ...experimentSetting, version: 'x', queryForced: true });
+
+			result = getForcedAssignment(cookieStore, route, 'qwe', experimentSetting);
+
+			expect(result).toEqual({ ...experimentSetting, version: 'b', queryForced: true });
 		});
 
 		it('should get forced assignment from cookie', () => {
 			const hash = 1753809052;
 			const cookieStore = new CookieStore({ uiab: `asd:variant:${hash}:0.5` });
 
-			const result = getForcedAssignment(cookieStore, '', 'asd', experimentSetting);
+			const result = getForcedAssignment(cookieStore, {}, 'asd', experimentSetting);
 
 			expect(result).toEqual({
 				...experimentSetting,
@@ -858,16 +888,22 @@ describe('experimentUtils.js', () => {
 
 		it('should ensure query forced assignment matches', () => {
 			const cookieStore = new CookieStore();
+			const route = { query: { setuiab: 'asd.x' } };
 
-			const result = getForcedAssignment(cookieStore, '?setuiab=asd.x', 'a', experimentSetting);
+			const result = getForcedAssignment(cookieStore, route, 'a', experimentSetting);
 
 			expect(result).toEqual(undefined);
 		});
 
 		it('should handle bad query string', () => {
 			const cookieStore = new CookieStore();
+			const route = { query: { setuiab: 'asd' } };
 
-			const result = getForcedAssignment(cookieStore, '?setuiab=asd', 'a', experimentSetting);
+			let result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
+
+			expect(result).toEqual(undefined);
+
+			result = getForcedAssignment(cookieStore, route, 'asd.', experimentSetting);
 
 			expect(result).toEqual(undefined);
 		});
