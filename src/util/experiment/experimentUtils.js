@@ -267,23 +267,31 @@ export const setCookieAssignments = (cookieStore, assignments) => {
  * Get current experiment assignments forced via either query string or cookie
  *
  * @param {string} cookieStore The cookie mixin
- * @param {string} url The URL to check for query forced assignments
+ * @param {Object} route The initial route resolved by the Vue router
  * @param {string} id The ID of the assignment to check
  * @param {Object} experimentSetting The experiment settings
  * @returns The forced experiment assignment
  */
-export const getForcedAssignment = (cookieStore, url, id, experimentSetting) => {
-	// Get setuiab value
-	const { setuiab } = new Proxy(new URLSearchParams(url?.split('?')?.[1] ?? ''), {
-		get: (searchParams, prop) => searchParams.get(prop),
-	});
-
-	// Parse forced experiment assignment
+export const getForcedAssignment = (cookieStore, route, id, experimentSetting) => {
+	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
-	const forcedExp = setuiab?.split('.') ?? [];
-	const queryForced = forcedExp[0] === id && !!forcedExp[1];
 	const cookieQueryForced = !!cookieAssignment?.queryForced;
-	const forcedVersion = (queryForced && encodeURIComponent(forcedExp[1])) || cookieAssignment?.version;
+
+	let queryForced;
+	let forcedVersion = cookieAssignment?.version;
+
+	// Look through setuiab assignments
+	const setuiabQuery = route?.query?.setuiab;
+	// Route query param will be an array if more than one instance in URL
+	const setuiab = typeof setuiabQuery === 'string' ? [setuiabQuery] : (setuiabQuery ?? []);
+	for (let i = 0; i < setuiab.length; i += 1) {
+		const forcedExp = setuiab[i]?.split('.') ?? [];
+		if (forcedExp[0] === id) {
+			queryForced = !!forcedExp[1];
+			forcedVersion = (queryForced && encodeURIComponent(forcedExp[1])) || forcedVersion;
+			break;
+		}
+	}
 
 	// Return forced assignment if the version wasn't undefined
 	if (typeof forcedVersion !== 'undefined') {

@@ -399,5 +399,24 @@ describe('experiment.js', () => {
 			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
+
+		it('should pass expected params to get forced assignment', async () => {
+			const cookieStore = { asd: 1 };
+			const route = { qwe: 2 };
+			const { resolvers } = expResolverFactory({ cookieStore, route });
+			assignVersionForLoginIdSpy.mockReturnValue(undefined);
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: undefined }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledWith(cookieStore, route, EXP_ID, experiment);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
 	});
 });
