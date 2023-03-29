@@ -228,7 +228,7 @@ export default {
 		},
 		validatePromoGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validatePromoGuestBasket(this.email, this.emailUpdates, this.managedAccountId)
+			this.validatePromoGuestBasket(this.email, this.emailUpdates, 'kiva.org')
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();
