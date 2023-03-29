@@ -1,3 +1,10 @@
+### [2.541.2-next.2](https://github.com/kiva/ui/compare/v2.541.2-next.1...v2.541.2-next.2) (2023-03-29)
+
+
+### Bug Fixes
+
+* wrong category ID prop was being used ([2a93ab1](https://github.com/kiva/ui/commit/2a93ab1ad806a895b3a0ec3c751b921dd7f10ed7))
+
 ### [2.541.2-next.1](https://github.com/kiva/ui/compare/v2.541.1...v2.541.2-next.1) (2023-03-28)
 
 
