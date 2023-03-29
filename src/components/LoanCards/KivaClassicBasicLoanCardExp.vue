@@ -6,7 +6,7 @@
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<div class="tw-grow">
-			<div :class="{ 'loan-card-active-hover': !allSharesReserved }">
+			<div class="loan-card-active-hover">
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
