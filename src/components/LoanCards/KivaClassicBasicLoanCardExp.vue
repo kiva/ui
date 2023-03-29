@@ -6,7 +6,7 @@
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<div class="tw-grow">
-			<div>
+			<div :class="{ 'loan-card-active-hover': !allSharesReserved }">
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
@@ -83,7 +83,7 @@
 								:borrower-count="loanBorrowerCount"
 								:name="borrowerName"
 								:distribution-model="distributionModel"
-								:show-more="true"
+								:show-more="enableMoreCta"
 							/>
 						</router-link>
 					</div>
@@ -230,7 +230,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableMoreCta: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -499,10 +503,13 @@ export default {
 
 <style lang="postcss" scoped>
 
-.loan-card-use,
 .loan-card-use:hover,
 .loan-card-use:focus {
-	@apply tw-text-primary tw-no-underline;
+	@apply tw-text-primary;
+}
+
+.loan-card-active-hover:hover .loan-card-use {
+	@apply tw-underline;
 }
 
 .loan-card-progress >>> [role=progressbar] {
@@ -523,4 +530,5 @@ export default {
 #loanProgress >>> h4 {
 	text-transform: lowercase;
 }
+
 </style>
