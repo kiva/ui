@@ -83,6 +83,7 @@
 				v-else
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
+				:is-guest-checkout="true"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>

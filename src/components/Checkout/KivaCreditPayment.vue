@@ -28,7 +28,7 @@ export default {
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
-			this.validateBasket()
+			this.validateGuestPromoBasket(this.email, this.emailUpdates, 'kiva.org')
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						// succesful validation
