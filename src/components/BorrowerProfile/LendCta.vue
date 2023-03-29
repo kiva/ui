@@ -778,7 +778,7 @@ export default {
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		isLessThan25() {
-			if (this.enableFiveDollarsNotes) return false;
+			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {

@@ -263,7 +263,7 @@ export default {
 			return false;
 		},
 		isLessThan25() {
-			if (this.enableFiveDollarsNotes) return false;
+			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {
