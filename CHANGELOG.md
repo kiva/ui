@@ -1,3 +1,16 @@
+## [2.545.0](https://github.com/kiva/ui/compare/v2.544.1...v2.545.0) (2023-03-29)
+
+
+### Features
+
+* allow multiple setuiab query string params in same URL ([663b9c6](https://github.com/kiva/ui/commit/663b9c66e3999cda4ec3ba580a95589a4a1cdb3a))
+
+
+### Bug Fixes
+
+* missed change jsdoc type ([1812f2e](https://github.com/kiva/ui/commit/1812f2e6ea635ed7284bc5463dc5c239976a6479))
+* one test wasn't quite right ([fb2eaae](https://github.com/kiva/ui/commit/fb2eaaef87e3e175ed6a40a7e705285dd4a010c8))
+
 ### [2.544.1](https://github.com/kiva/ui/compare/v2.544.0...v2.544.1) (2023-03-29)
 
 
