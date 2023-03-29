@@ -87,13 +87,12 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate({
-					mutation: shopValidateGuestPromoBasket,
+					mutation: RegisterUser,
 					variables: {
-						email: guestEmail,
-						emailOptIn: emailUpdates,
-						promoId: promoFundId,
-						managedAccount: managedAccountId,
-						visitorId: this.cookieStore.get('uiv') || null
+						userEmailAddress: guestEmail,
+						promoFundId,
+						managedAccountId,
+						userId: this.cookieStore.get('uiv') || null
 					}
 				}).then(data => {
 					const validationResult = _get(data, 'data.shop.validatePreCheckout');
