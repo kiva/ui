@@ -298,7 +298,7 @@ export default {
 					loansDisplayed.push({
 						r: this.rowTrackCounter + catIndex + 1,
 						p: loanIndex + 1,
-						c: category.id,
+						c: category.loanChannelId ?? category.id,
 						l: loan.id
 					});
 				});
