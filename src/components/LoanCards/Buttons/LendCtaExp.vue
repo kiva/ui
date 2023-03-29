@@ -61,7 +61,7 @@
 					:show-now="false"
 					:amount-left="unreservedAmount"
 					@add-to-basket="addToBasket"
-					v-if="isLendAmountButton"
+					v-if="isLendAmountButton && !enableFiveDollarsNotes"
 				/>
 
 				<!-- Adding to basket button -->
