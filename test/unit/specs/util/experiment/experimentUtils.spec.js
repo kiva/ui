@@ -897,13 +897,15 @@ describe('experimentUtils.js', () => {
 
 		it('should handle bad query string', () => {
 			const cookieStore = new CookieStore();
-			const route = { query: { setuiab: 'asd' } };
+			let route = { query: { setuiab: 'asd' } };
 
 			let result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
 
 			expect(result).toEqual(undefined);
 
-			result = getForcedAssignment(cookieStore, route, 'asd.', experimentSetting);
+			route = { query: { setuiab: 'asd.' } };
+
+			result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
 
 			expect(result).toEqual(undefined);
 		});
