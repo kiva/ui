@@ -15,7 +15,7 @@ import logFormatter from '@/util/logFormatter';
  * Local resolvers for experiment assignment
  *
  * @param {Object} param0.cookieStore The cookie mixin
- * @param {String} param0.route The initial route resolved by the Vue router
+ * @param {Object} param0.route The initial route resolved by the Vue router
  * @returns {Object} The local resolvers
  */
 export default ({ cookieStore, route }) => {
