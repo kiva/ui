@@ -55,7 +55,8 @@
 		/>
 
 		<div
-			:class="`in-context-login ${isCorporateCampaignPage ? 'tw-text-right' : ''}`"
+			class="in-context-login"
+			:class="{ 'tw-text-right' : !isCorporateCampaignPage }"
 			v-if="!isActivelyLoggedIn"
 		>
 			<kv-button
@@ -212,9 +213,6 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
-		isCorporateCampaignPage() {
-			return this.$route.path.substring(0, 4) === '/cc/';
-		}
 	},
 	methods: {
 		completeTransaction(transactionId) {

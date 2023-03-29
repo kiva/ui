@@ -120,3 +120,14 @@ export function removeCredit(apollo, creditType) {
 		}
 	});
 }
+
+/**
+ * checks if it isCorporateCampaignPage
+ *
+ * @param {Object}
+ * @returns {String}
+ */
+export function isCorporateCampaignPage() {
+	// Fetch route path
+	return this.$route.path.substring(0, 4) === '/cc/';
+}
