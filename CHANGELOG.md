@@ -1,3 +1,10 @@
+### [2.546.1](https://github.com/kiva/ui/compare/v2.546.0...v2.546.1) (2023-03-29)
+
+
+### Bug Fixes
+
+* five dollar notes fixed for amounts left less than 25 dollars ([aa6742f](https://github.com/kiva/ui/commit/aa6742fd504186be7b7e776396d0d55a8fc0515e))
+
 ## [2.546.0](https://github.com/kiva/ui/compare/v2.545.0...v2.546.0) (2023-03-29)
 
 
