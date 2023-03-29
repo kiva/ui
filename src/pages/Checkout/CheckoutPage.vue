@@ -282,7 +282,6 @@ import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErro
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -314,6 +313,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const iwdChallengeExpKey = 'iwd_challenge';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
+const FIVE_DOLLARS_NOTES_EXP = 'five_dollars_notes';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -354,10 +354,7 @@ export default {
 		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [
-		checkoutUtils,
-		fiveDollarsTest
-	],
+	mixins: [checkoutUtils],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -437,6 +434,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: iwdChallengeExpKey } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
 				});
 		},
@@ -528,6 +526,21 @@ export default {
 			return hasCredits && isMatchedLoan;
 		});
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
+
+		const fiveDollarsNotesEXP = this.apollo.readFragment({
+			id: `Experiment:${FIVE_DOLLARS_NOTES_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableFiveDollarsNotes = fiveDollarsNotesEXP.version ? fiveDollarsNotesEXP.version === 'b' : false;
+		if (fiveDollarsNotesEXP.version) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				FIVE_DOLLARS_NOTES_EXP,
+				'EXP-CORE-1104-Mar2023'
+			);
+		}
 	},
 	mounted() {
 		// update current time every second for reactivity

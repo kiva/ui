@@ -22,7 +22,9 @@
 			:loan-id="loanId"
 			:loading.sync="loading"
 			@add-to-basket="$emit('add-to-basket', $event)"
-		/>
+		>
+			{{ buttonText }}
+		</lend-button>
 	</div>
 </template>
 
@@ -63,7 +65,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		showNow: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		amountLeft() {
@@ -96,6 +102,16 @@ export default {
 			// eslint-disable-next-line
 			return isLessThan25(this.amountLeft) || isBetween25And500(this.amountLeft);
 		},
+		buttonText() {
+			let str = '';
+
+			str = 'Lend';
+			if (this.showNow) {
+				str += ' now';
+			}
+
+			return str;
+		}
 	},
 	watch: {
 		loan: {

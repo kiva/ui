@@ -129,7 +129,7 @@
 											:amount-left="unreservedAmount"
 											@add-to-basket="addToBasket"
 											:complete-loan="isCompleteLoanActive"
-											v-if="isLendAmountButton"
+											v-if="isLendAmountButton && !enableFiveDollarsNotes"
 										/>
 
 										<!-- Adding to basket button -->
@@ -778,6 +778,7 @@ export default {
 			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
 		},
 		isLessThan25() {
+			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {
@@ -788,10 +789,10 @@ export default {
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {
-			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedOption;
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === Number(this.selectedOption).toFixed(); // eslint-disable-line max-len
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
+			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
 		}
 	},
 	mounted() {

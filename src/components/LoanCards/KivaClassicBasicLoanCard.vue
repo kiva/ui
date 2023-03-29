@@ -217,9 +217,9 @@
 						:is-lent-to="isLentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
-						:is-amount-lend-button="isLessThan25"
+						:is-amount-lend-button="isLessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 					/>

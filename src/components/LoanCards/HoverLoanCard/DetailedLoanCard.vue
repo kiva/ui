@@ -94,9 +94,9 @@
 							:is-selected-by-another="isSelectedByAnother"
 							:is-simple-lend-button="false"
 							:disable-redirects="disableRedirects"
-							:is-amount-lend-button="lessThan25"
+							:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 							:amount-left="amountLeft"
-							:show-now="true"
+							:show-now="!enableFiveDollarsNotes"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@click.native="trackInteraction({
 								interactionType: 'addToBasket',

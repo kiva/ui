@@ -147,7 +147,6 @@ export default {
 	},
 	data() {
 		return {
-			selectedOption: '25',
 			completeLoanView: true,
 		};
 	},
@@ -164,14 +163,6 @@ export default {
 		},
 	},
 	watch: {
-		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
-			}
-		},
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView) {
 				this.completeLoanView = false;
@@ -272,6 +263,7 @@ export default {
 			return false;
 		},
 		isLessThan25() {
+			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
 			return isLessThan25(this.unreservedAmount);
 		},
 		isLentTo() {
@@ -294,6 +286,12 @@ export default {
 		showLendAgain() {
 			return this.isLentTo && !this.isLessThan25;
 		},
+		selectedOption() {
+			if (isBetween25And50(this.unreservedAmount) || isLessThan25(this.unreservedAmount)) {
+				return Number(this.unreservedAmount).toFixed();
+			}
+			return '25';
+		}
 	},
 };
 
