@@ -1,0 +1,12 @@
+mutation registerUser($user_id: String!, $user_email_address: String!, $managed_account_id: String!, $promo_fund_id: String!) {
+  my {
+    registerUser (
+      user_id: $user_id,
+      user_email_address: $user_email_address,
+      managed_account_id: $managed_account_id,
+      promo_fund_id: $promo_fund_id
+    ) {
+      status
+    }
+  }
+}

@@ -2,6 +2,7 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
+import registerUser from '@/graphql/mutation/checkout/registerUser.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '@/util/logFormatter';
@@ -86,8 +87,9 @@ export default {
 			checkInjections(this, injections);
 
 			return new Promise((resolve, reject) => {
+				debugger;
 				this.apollo.mutate({
-					mutation: RegisterUser,
+					mutation: registerUser,
 					variables: {
 						userEmailAddress: guestEmail,
 						promoFundId,

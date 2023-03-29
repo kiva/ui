@@ -52,6 +52,7 @@
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
+				:is-guest-checkout="true"
 				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"

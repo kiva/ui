@@ -168,15 +168,16 @@ export default {
 	},
 	methods: {
 		submit() {
-			if (this.isGuestCheckout) {
-				this.$v.$touch();
-				if (!this.$v.$invalid) {
-					this.validateGuestBasketAndCheckout();
-				}
-			} else if (this.isGuestCheckout && this.promoFundId) {
+			debugger;
+			if (this.isGuestCheckout && this.promoFundId) {
 				this.$v.$touch();
 				if (!this.$v.$invalid) {
 					this.validatePromoGuestBasketAndCheckout();
+				}
+			} else if (this.isGuestCheckout) {
+				this.$v.$touch();
+				if (!this.$v.$invalid) {
+					this.validateGuestBasketAndCheckout();
 				}
 			} else {
 				this.validateBasketAndCheckout();
@@ -228,7 +229,7 @@ export default {
 		},
 		validatePromoGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validatePromoGuestBasket(this.email, this.emailUpdates, 'kiva.org')
+			this.validateGuestPromoBasket(this.email, this.emailUpdates, 'kiva.org')
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();
