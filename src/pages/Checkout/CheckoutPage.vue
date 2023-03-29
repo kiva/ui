@@ -527,7 +527,6 @@ export default {
 		});
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
-		this.apollo.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } });
 		const fiveDollarsNotesEXP = this.apollo.readFragment({
 			id: `Experiment:${FIVE_DOLLARS_NOTES_EXP}`,
 			fragment: experimentVersionFragment,
