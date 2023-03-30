@@ -3,6 +3,7 @@ var path = require('path')
 module.exports = {
 	app: {
 		host: 'www.kiva.org',
+		transport: 'https',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
 		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',

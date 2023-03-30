@@ -1,3 +1,31 @@
+### [2.549.1](https://github.com/kiva/ui/compare/v2.549.0...v2.549.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* active experiment list should be split ([f8712f5](https://github.com/kiva/ui/commit/f8712f5d6e202ea739a1f98f1ee1f6b5485d6725))
+
+## [2.549.0](https://github.com/kiva/ui/compare/v2.548.0...v2.549.0) (2023-03-30)
+
+
+### Features
+
+* add id to experiment log message ([e040945](https://github.com/kiva/ui/commit/e04094560c5d79bb91c139076cfa55183261ba8b))
+
+## [2.548.0](https://github.com/kiva/ui/compare/v2.547.0...v2.548.0) (2023-03-30)
+
+
+### Features
+
+* add kiva capital page to Footer ([e06ffd4](https://github.com/kiva/ui/commit/e06ffd4824c441cf800e84f14d39f5a410e4e5e1))
+
+## [2.547.0](https://github.com/kiva/ui/compare/v2.546.2...v2.547.0) (2023-03-30)
+
+
+### Features
+
+* localized meta properties experiment ([ffa47fd](https://github.com/kiva/ui/commit/ffa47fd74502f507394fc10525b820eb48132f2f))
+
 ### [2.546.2](https://github.com/kiva/ui/compare/v2.546.1...v2.546.2) (2023-03-29)
 
 
