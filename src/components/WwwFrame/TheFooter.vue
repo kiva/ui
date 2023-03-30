@@ -215,6 +215,15 @@
 						<ul class="tw-mb-2">
 							<li>
 								<router-link
+									to="/kiva-capital"
+									v-kv-track-event="['Footer', 'click-Explore-Kiva Capital']"
+									class="tw-text-small"
+								>
+									Kiva Capital
+								</router-link>
+							</li>
+							<li>
+								<router-link
 									to="/protocol"
 									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
 									class="tw-text-small"
@@ -501,6 +510,15 @@
 								Explore
 							</h2>
 							<ul>
+								<li>
+									<router-link
+										to="/kiva-capital"
+										v-kv-track-event="['Footer', 'click-Explore-Kiva Capital']"
+										class="tw-text-small"
+									>
+										Kiva Capital
+									</router-link>
+								</li>
 								<li>
 									<router-link
 										to="/protocol"
