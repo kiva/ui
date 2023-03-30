@@ -40,7 +40,7 @@ export default ({ cookieStore, route }) => {
 					}
 
 					// Check if the requested experiment is active
-					if (!activeExperiments.includes(id)) {
+					if (!activeExperiments.split(',').includes(id)) {
 						logFormatter(`Experiment is not in active experiments list: ${id}`, 'warn');
 						return Experiment({ id });
 					}

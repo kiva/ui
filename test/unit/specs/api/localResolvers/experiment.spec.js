@@ -40,7 +40,7 @@ describe('experiment.js', () => {
 		beforeEach(() => {
 			consoleWarnSpy = jest.spyOn(global.console, 'warn').mockImplementation();
 			getActiveExperimentsSpy = jest.spyOn(expUtils, 'getActiveExperiments')
-				.mockImplementation(() => Promise.resolve([EXP_ID]));
+				.mockImplementation(() => Promise.resolve(EXP_ID));
 			getExperimentSettingSpy = jest.spyOn(expUtils, 'getExperimentSetting')
 				.mockImplementation(() => Promise.resolve(experiment));
 			getForcedAssignmentSpy = jest.spyOn(expUtils, 'getForcedAssignment').mockReturnValue(undefined);
@@ -75,6 +75,25 @@ describe('experiment.js', () => {
 
 		it('should return undefined assignment when active experiments list is missing experiment', async () => {
 			const { resolvers } = expResolverFactory({});
+
+			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
+
+			expect(result).toEqual(Experiment({ id: 'x' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment is not in active experiments list: x"}');
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(0);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return undefined assignment when active experiments has similarly named experiment', async () => {
+			const { resolvers } = expResolverFactory({});
+			getActiveExperimentsSpy.mockImplementation(() => Promise.resolve(`asd_${EXP_ID}`));
 
 			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
 
