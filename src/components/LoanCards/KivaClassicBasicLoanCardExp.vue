@@ -62,7 +62,14 @@
 				</div>
 
 				<!-- Loan tag -->
-				<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
+				<router-link
+					v-if="showTags && !isLoading"
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+					class="tw-text-primary hover:tw-no-underline"
+				>
+					<loan-tag-v2 :loan="loan" :amount-left="amountLeft" />
+				</router-link>
 
 				<!-- Loan use  -->
 				<div class="tw-mb-1.5 tw-mt-1">
