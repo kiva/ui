@@ -1,3 +1,10 @@
+### [2.549.1](https://github.com/kiva/ui/compare/v2.549.0...v2.549.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* active experiment list should be split ([f8712f5](https://github.com/kiva/ui/commit/f8712f5d6e202ea739a1f98f1ee1f6b5485d6725))
+
 ## [2.549.0](https://github.com/kiva/ui/compare/v2.548.0...v2.549.0) (2023-03-30)
 
 
