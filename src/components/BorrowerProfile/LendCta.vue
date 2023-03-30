@@ -228,11 +228,17 @@
 						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
 					>
 						<loan-bookmark
-							v-if="isLoggedIn"
+							v-if="bookmarkVersion === 'bookmark'"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
 							class="tw-hidden md:tw-inline-block lg:tw-hidden"
 						/>
+						<loan-follow
+							v-if="bookmarkVersion === 'follow'"
+							data-testid="bp-lend-cta-loan-follow"
+							class="tw-hidden md:tw-inline-block lg:tw-hidden tw-mr-2"
+						/>
+
 						<jump-links
 							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
@@ -361,6 +367,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
+import LoanFollow from '@/components/BorrowerProfile/LoanFollow';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
@@ -392,6 +399,7 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
+		LoanFollow,
 		CompleteLoanWrapper,
 	},
 	data() {
@@ -426,7 +434,8 @@ export default {
 			slotMachineInterval: null,
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
-			inPfp: false
+			inPfp: false,
+			distributionModel: '',
 		};
 	},
 	apollo: {
@@ -436,6 +445,7 @@ export default {
 					loan(id: $loanId) {
 						id
 						status
+						distributionModel
 						name
 						minNoteSize
 						loanAmount
@@ -515,6 +525,7 @@ export default {
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
+			this.distributionModel = loan?.distributionModel ?? '';
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
@@ -793,6 +804,17 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		bookmarkVersion() {
+			// Display follow for all US loans no matter login state
+			if (this.distributionModel === 'direct') {
+				return 'follow';
+			}
+			// Display bookmark for logged in users, non us loans
+			if (this.isLoggedIn) {
+				return 'bookmark';
+			}
+			return 'none';
 		}
 	},
 	mounted() {
