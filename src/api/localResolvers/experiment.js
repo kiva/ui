@@ -41,14 +41,14 @@ export default ({ cookieStore, route }) => {
 
 					// Check if the requested experiment is active
 					if (!activeExperiments.includes(id)) {
-						logFormatter('Experiment is not in active experiments list', 'warn');
+						logFormatter(`Experiment is not in active experiments list: ${id}`, 'warn');
 						return Experiment({ id });
 					}
 
 					// Get the settings of the experiment (name, distribution, population)
 					const experimentSetting = await getExperimentSetting(id, client);
 					if (!experimentSetting.name) {
-						logFormatter('Experiment setting is missing', 'warn');
+						logFormatter(`Experiment setting is missing: ${id}`, 'warn');
 						return Experiment({ id });
 					}
 

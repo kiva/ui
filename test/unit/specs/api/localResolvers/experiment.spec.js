@@ -81,7 +81,7 @@ describe('experiment.js', () => {
 			expect(result).toEqual(Experiment({ id: 'x' }));
 			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
 			// eslint-disable-next-line max-len
-			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment is not in active experiments list"}');
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment is not in active experiments list: x"}');
 			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(0);
 			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
 			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
@@ -101,7 +101,7 @@ describe('experiment.js', () => {
 			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
 			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
 			// eslint-disable-next-line max-len
-			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment setting is missing"}');
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment setting is missing: test_experiment"}');
 			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
 			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
 			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
