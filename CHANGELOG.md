@@ -1,3 +1,10 @@
+## [2.549.0](https://github.com/kiva/ui/compare/v2.548.0...v2.549.0) (2023-03-30)
+
+
+### Features
+
+* add id to experiment log message ([e040945](https://github.com/kiva/ui/commit/e04094560c5d79bb91c139076cfa55183261ba8b))
+
 ## [2.548.0](https://github.com/kiva/ui/compare/v2.547.0...v2.548.0) (2023-03-30)
 
 
