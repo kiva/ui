@@ -27,7 +27,7 @@ module.exports = merge(base, devVm, {
 	},
 	server: {
 		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
-		sessionUri: `${transport}://${monolithHostname}/start-ui-session`
+		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
 		// memcachedEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',

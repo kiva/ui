@@ -1,13 +1,12 @@
 # build stage
 FROM node:16-alpine as build-stage
-WORKDIR /ui
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
-RUN apk add --no-cache make gcc g++ pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+RUN apk add --no-cache make gcc g++ python2 pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
 
-COPY . .
-COPY package.json .
-COPY package-lock.json .
+RUN mkdir /ui
+COPY ./ /ui/
+WORKDIR /ui
 
 RUN HUSKY=0 npm ci
 RUN npm run build:vm
@@ -16,7 +15,7 @@ RUN npm run build:vm
 FROM node:16-alpine as run-stage
 RUN apk add --no-cache git
 RUN apk add --no-cache tini
-RUN apk add --no-cache make gcc g++ pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+RUN apk add --no-cache make gcc g++ python2 pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
 
 # Use Tini for entrypoint, available at /sbin/tini
 # NOTE: Overridden when starting K8s pods
@@ -34,10 +33,9 @@ COPY --from=build-stage /ui/server ./server
 COPY --from=build-stage /ui/src ./src
 COPY --from=build-stage /ui/package.json .
 COPY --from=build-stage /ui/package-lock.json .
-COPY --from=build-stage /ui/node_modules .
 
 # Install PROD dependencies only
-RUN HUSKY=0 NODE_ENV=production npm install --only=production
+RUN HUSKY=0 NODE_ENV=production npm ci
 
 # Expose API port to the outside
 EXPOSE 8888
