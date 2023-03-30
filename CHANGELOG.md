@@ -1,3 +1,10 @@
+## [2.547.0](https://github.com/kiva/ui/compare/v2.546.2...v2.547.0) (2023-03-30)
+
+
+### Features
+
+* localized meta properties experiment ([ffa47fd](https://github.com/kiva/ui/commit/ffa47fd74502f507394fc10525b820eb48132f2f))
+
 ### [2.546.2](https://github.com/kiva/ui/compare/v2.546.1...v2.546.2) (2023-03-29)
 
 
