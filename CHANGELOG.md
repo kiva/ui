@@ -1,3 +1,10 @@
+## [2.548.0](https://github.com/kiva/ui/compare/v2.547.0...v2.548.0) (2023-03-30)
+
+
+### Features
+
+* add kiva capital page to Footer ([e06ffd4](https://github.com/kiva/ui/commit/e06ffd4824c441cf800e84f14d39f5a410e4e5e1))
+
 ## [2.547.0](https://github.com/kiva/ui/compare/v2.546.2...v2.547.0) (2023-03-30)
 
 
