@@ -31,7 +31,7 @@
 								class="tw-block md:tw-hidden tw-mt-3"
 								:loan="loan"
 								:lender="lender"
-								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:campaign="shareCampaign"
 								:in-pfp="inPfp"
 								:pfp-min-lenders="pfpMinLenders"
 								:num-lenders="numLenders"
@@ -58,7 +58,7 @@
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
 								:loan="loan"
 								:lender="lender"
-								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:campaign="shareCampaign"
 								:in-pfp="inPfp"
 								:pfp-min-lenders="pfpMinLenders"
 								:num-lenders="numLenders"
@@ -141,7 +141,13 @@ import {
 } from 'date-fns';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+
+import {
+	trackExperimentVersion
+} from '@/util/experiment/experimentUtils';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
@@ -158,12 +164,12 @@ import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
 const LEND_URGENCY_EXP = 'lend_urgency';
+const SHARE_LANGUAGE_EXP = 'share_language_bp';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -179,7 +185,7 @@ const preFetchQuery = gql`
 				key
 				value
 			}
-			userContext: uiExperimentSetting(key: "new_users_context") {
+			uiExperimentSetting(key: "share_language_bp") {
 				key
 				value
 			}
@@ -194,6 +200,7 @@ const preFetchQuery = gql`
 				}
 				geocode {
 					city
+					state
 					country {
 						name
 						isoCode
@@ -404,6 +411,9 @@ export default {
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
+			shareLanguageExpVersion: 'a',
+			city: '',
+			state: ''
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -444,8 +454,10 @@ export default {
 						});
 					}
 
-					// eslint-disable-next-line max-len
-					return client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } });
+					return Promise.all([
+						client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
+					]);
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -489,6 +501,8 @@ export default {
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.city = loan?.geocode?.city ?? '';
+			this.state = loan?.geocode?.state ?? '';
 		},
 	},
 	async mounted() {
@@ -510,8 +524,24 @@ export default {
 		this.partnerName = loan?.partnerName ?? '';
 		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		this.lender = data?.my?.userAccount ?? {};
+
+		// ACK-469 Experiment Tracking for generating the scle in utm_campaign
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'borrower-profile',
+			SHARE_LANGUAGE_EXP,
+			'EXP-ACK-469-Apr2023',
+		);
+		if (version) {
+			this.shareLanguageExpVersion = version;
+		}
 	},
 	computed: {
+		shareCampaign() {
+			// eslint-disable-next-line max-len
+			return this.inPfp ? `social_share_bp_pfp_scle_${this.shareLanguageExpVersion}` : `social_share_bp_scle_${this.shareLanguageExpVersion}`;
+		},
 		loanId() {
 			return Number(this.$route.params.id || 0);
 		},
@@ -551,17 +581,33 @@ export default {
 			if (this.anonymizationLevel === 'full') {
 				return 'Can you help support this loan?';
 			}
+			if (this.shareLanguageExpVersion === 'a') {
+				// control scle
+				/** if inviterName is blank or share query param (used for sharing your own loan)
+				 * is set to true, then we don't want to use the inviter name in the share title
+				 */
+				if (this.inviterName === '' || this.$route.query.share === 'true') {
+					return `Can you help support ${this.name}?`;
+				}
+				return `Can you help ${this.inviterName} support ${this.name}?`;
+			}
+			// variant scle
 			/** if inviterName is blank or share query param (used for sharing your own loan)
 			 * is set to true, then we don't want to use the inviter name in the share title
 			 */
 			if (this.inviterName === '' || this.$route.query.share === 'true') {
-				return `Can you help support ${this.name}?`;
+				return `Can you help support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
 			}
-			return `Can you help ${this.inviterName} support ${this.name}?`;
+			// eslint-disable-next-line max-len
+			return `Can you help ${this.inviterName} support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
 		},
 		shareDescription() {
+			if (this.anonymizationLevel === 'full' || this.shareLanguageExpVersion === 'a') {
+				// eslint-disable-next-line max-len
+				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			}
 			// eslint-disable-next-line max-len
-			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			return `Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in ${this.city}${this.state ? `, ${this.state}` : ''}`;
 		},
 		showFundraising() {
 			return this.amountLeft && this.status === 'fundraising';
