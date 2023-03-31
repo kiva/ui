@@ -6,7 +6,7 @@
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
 		<div class="tw-grow">
-			<div>
+			<div class="loan-card-active-hover">
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
@@ -62,20 +62,26 @@
 				</div>
 
 				<!-- Loan tag -->
-				<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
+				<router-link
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Tag', loanId]"
+					class="tw-flex hover:tw-no-underline focus:tw-no-underline"
+				>
+					<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
+				</router-link>
 
-				<!-- Loan use  -->
-				<div class="tw-mb-1.5 tw-mt-1">
-					<kv-loading-paragraph
-						v-if="isLoading"
-						:style="{ width: '100%', height: '5.5rem' }"
-					/>
-					<div v-else>
-						<router-link
-							:to="customLoanDetails ? '' : `/lend/${loanId}`"
-							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-							class="loan-card-use tw-text-primary"
-						>
+				<router-link
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+					class="loan-card-use tw-text-primary"
+				>
+					<!-- Loan use  -->
+					<div class="tw-mb-1.5 tw-pt-1">
+						<kv-loading-paragraph
+							v-if="isLoading"
+							:style="{ width: '100%', height: '5.5rem' }"
+						/>
+						<div v-else>
 							<loan-use
 								:use="loanUse"
 								:loan-amount="loanAmount"
@@ -83,11 +89,11 @@
 								:borrower-count="loanBorrowerCount"
 								:name="borrowerName"
 								:distribution-model="distributionModel"
-								:show-more="true"
+								:show-more="enableMoreCta"
 							/>
-						</router-link>
+						</div>
 					</div>
-				</div>
+				</router-link>
 			</div>
 
 			<!-- Loan call outs -->
@@ -230,7 +236,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableMoreCta: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -499,10 +509,13 @@ export default {
 
 <style lang="postcss" scoped>
 
-.loan-card-use,
 .loan-card-use:hover,
 .loan-card-use:focus {
-	@apply tw-text-primary tw-no-underline;
+	@apply tw-text-primary;
+}
+
+.loan-card-active-hover:hover .loan-card-use {
+	@apply tw-underline;
 }
 
 .loan-card-progress >>> [role=progressbar] {
@@ -523,4 +536,5 @@ export default {
 #loanProgress >>> h4 {
 	text-transform: lowercase;
 }
+
 </style>

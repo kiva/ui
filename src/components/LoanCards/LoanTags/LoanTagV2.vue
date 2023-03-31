@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="!!variation && timeLeftMs > 0"
-		class="tw-text-small tw-font-medium tw-mt-0.5 tw-line-clamp-1"
+		class="tw-text-small tw-font-medium tw-pt-0.5 tw-line-clamp-1"
 		style="color: #CE4A00;"
 	>
 		{{ tagText }}
