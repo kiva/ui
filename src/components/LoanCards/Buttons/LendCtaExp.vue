@@ -148,7 +148,7 @@ export default {
 	data() {
 		return {
 			completeLoanView: true,
-			selectedOption: '25',
+			selectedOption: this.getSelectedOption(this.loan?.unreservedAmount),
 		};
 	},
 	methods: {
@@ -162,13 +162,17 @@ export default {
 			);
 			this.$emit('add-to-basket', this.amountToLend);
 		},
+		getSelectedOption(unreservedAmount) {
+			if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
+				return Number(unreservedAmount).toFixed();
+			}
+			return '25';
+		},
 	},
 	watch: {
 		unreservedAmount(newValue, previousValue) {
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
+			if (newValue !== previousValue && previousValue === '') {
+				this.selectedOption = this.getSelectedOption(newValue);
 			}
 		},
 		isCompleteLoanActive() {
