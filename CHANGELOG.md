@@ -1,3 +1,11 @@
+## [2.551.0](https://github.com/kiva/ui/compare/v2.550.0...v2.551.0) (2023-03-31)
+
+
+### Features
+
+* add feature flag for follow us loans functionality ([3942c37](https://github.com/kiva/ui/commit/3942c379b00bbdc68c2927a2f62a9a7ee9246146))
+* add follow button to scroll to links on us loans ([c1d5786](https://github.com/kiva/ui/commit/c1d578607795a95d2eac25133a11987e03993709))
+
 ## [2.550.0](https://github.com/kiva/ui/compare/v2.549.1...v2.550.0) (2023-03-31)
 
 
