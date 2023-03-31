@@ -306,6 +306,7 @@ import {
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -313,7 +314,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const iwdChallengeExpKey = 'iwd_challenge';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
-const FIVE_DOLLARS_NOTES_EXP = 'five_dollars_notes';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -354,7 +354,7 @@ export default {
 		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils],
+	mixins: [checkoutUtils, fiveDollarsTest],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -527,20 +527,7 @@ export default {
 		});
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
-		const fiveDollarsNotesEXP = this.apollo.readFragment({
-			id: `Experiment:${FIVE_DOLLARS_NOTES_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableFiveDollarsNotes = fiveDollarsNotesEXP.version ? fiveDollarsNotesEXP.version === 'b' : false;
-		if (fiveDollarsNotesEXP.version) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				FIVE_DOLLARS_NOTES_EXP,
-				'EXP-CORE-1104-Mar2023'
-			);
-		}
+		this.initializeFiveDollarsNotes();
 	},
 	mounted() {
 		// update current time every second for reactivity

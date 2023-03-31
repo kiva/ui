@@ -24,7 +24,7 @@ export async function getActiveExperiments(cache, client) {
 	// First check if the active experiments are cached
 	try {
 		const data = cache.readQuery({ query: experimentIdsQuery });
-		activeExperiments = data?.general?.activeExperiments?.value;
+		activeExperiments = JSON.parse(data?.general?.activeExperiments?.value).split(',');
 	} catch {
 		// noop
 	}
@@ -33,7 +33,7 @@ export async function getActiveExperiments(cache, client) {
 	if (!activeExperiments?.length) {
 		try {
 			const { data } = await client.query({ query: experimentIdsQuery });
-			activeExperiments = data?.general?.activeExperiments?.value;
+			activeExperiments = JSON.parse(data?.general?.activeExperiments?.value).split(',');
 		} catch {
 			// noop
 		}

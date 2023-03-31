@@ -42,12 +42,11 @@ describe('experimentUtils.js', () => {
 		});
 
 		it('should get active experiments from cache', async () => {
-			const mockActiveExperiments = ['asd'];
 			const cache = {
 				readQuery: jest.fn().mockReturnValue({
 					general: {
 						activeExperiments: {
-							value: mockActiveExperiments
+							value: '"asd,qwe"'
 						}
 					}
 				})
@@ -58,13 +57,12 @@ describe('experimentUtils.js', () => {
 
 			const result = await getActiveExperiments(cache, client);
 
-			expect(result).toEqual(mockActiveExperiments);
+			expect(result).toEqual(['asd', 'qwe']);
 			expect(cache.readQuery).toHaveBeenCalledWith({ query: experimentIdsQuery });
 			expect(client.query).toHaveBeenCalledTimes(0);
 		});
 
 		it('should get active experiments from client', async () => {
-			const mockActiveExperiments = ['asd'];
 			const cache = {
 				readQuery: jest.fn().mockReturnValue({})
 			};
@@ -73,7 +71,7 @@ describe('experimentUtils.js', () => {
 					data: {
 						general: {
 							activeExperiments: {
-								value: mockActiveExperiments
+								value: '"asd,qwe"'
 							}
 						}
 					}
@@ -82,7 +80,7 @@ describe('experimentUtils.js', () => {
 
 			const result = await getActiveExperiments(cache, client);
 
-			expect(result).toEqual(mockActiveExperiments);
+			expect(result).toEqual(['asd', 'qwe']);
 			expect(cache.readQuery).toHaveBeenCalledWith({ query: experimentIdsQuery });
 			expect(client.query).toHaveBeenCalledWith({ query: experimentIdsQuery });
 		});

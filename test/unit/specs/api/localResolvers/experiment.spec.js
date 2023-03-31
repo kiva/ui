@@ -40,7 +40,7 @@ describe('experiment.js', () => {
 		beforeEach(() => {
 			consoleWarnSpy = jest.spyOn(global.console, 'warn').mockImplementation();
 			getActiveExperimentsSpy = jest.spyOn(expUtils, 'getActiveExperiments')
-				.mockImplementation(() => Promise.resolve(EXP_ID));
+				.mockImplementation(() => Promise.resolve([EXP_ID]));
 			getExperimentSettingSpy = jest.spyOn(expUtils, 'getExperimentSetting')
 				.mockImplementation(() => Promise.resolve(experiment));
 			getForcedAssignmentSpy = jest.spyOn(expUtils, 'getForcedAssignment').mockReturnValue(undefined);
@@ -93,7 +93,7 @@ describe('experiment.js', () => {
 
 		it('should return undefined assignment when active experiments has similarly named experiment', async () => {
 			const { resolvers } = expResolverFactory({});
-			getActiveExperimentsSpy.mockImplementation(() => Promise.resolve(`asd_${EXP_ID}`));
+			getActiveExperimentsSpy.mockImplementation(() => Promise.resolve([`asd_${EXP_ID}`]));
 
 			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
 

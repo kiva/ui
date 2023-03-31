@@ -142,13 +142,10 @@ import {
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
-
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import {
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '@/components/BorrowerProfile/SidebarContainer';
@@ -457,6 +454,7 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
 				});
 		},
@@ -641,6 +639,8 @@ export default {
 
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
+
+		this.initializeFiveDollarsNotes();
 	},
 };
 </script>
