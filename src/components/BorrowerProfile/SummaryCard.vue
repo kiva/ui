@@ -80,12 +80,16 @@
 				</summary-tag>
 			</template>
 
-			<!-- only show option to bookmark loan if user is logged in -->
 			<loan-bookmark
-				v-if="isLoggedIn"
+				v-if="bookmarkVersion === 'bookmark'"
 				:loan-id="loanId"
 				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
 				data-testid="bp-summary-bookmark"
+			/>
+			<loan-follow
+				v-if="bookmarkVersion === 'follow'"
+				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
+				data-testid="bp-summary-follow"
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
@@ -96,10 +100,15 @@
 		>
 			<!-- only show option to bookmark loan if user is logged in -->
 			<loan-bookmark
-				v-if="isLoggedIn"
+				v-if="bookmarkVersion === 'bookmark'"
 				:loan-id="loanId"
 				class="md:tw-hidden tw-mt-1"
 				data-testid="bp-mobile-summary-bookmark"
+			/>
+			<loan-follow
+				v-if="bookmarkVersion === 'follow'"
+				class="md:tw-hidden tw-mt-0.5 tw-mr-2"
+				data-testid="bp-mobile-summary-follow"
 			/>
 
 			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
@@ -116,6 +125,7 @@ import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
+import LoanFollow from './LoanFollow';
 import JumpLinks from './JumpLinks';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
@@ -142,6 +152,12 @@ const preFetchQuery = gql`
 			id
 			userAccount {
 				id
+			}
+		}
+		general {
+			followUsLoans: uiConfigSetting(key: "follow_us_loans") {
+				key
+				value
 			}
 		}
 	}
@@ -194,6 +210,7 @@ export default {
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
+		LoanFollow,
 		JumpLinks,
 		KvLoadingPlaceholder,
 	},
@@ -224,6 +241,7 @@ export default {
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
+			followUsLoansEnabled: false,
 		};
 	},
 	computed: {
@@ -240,6 +258,17 @@ export default {
 				return formattedString;
 			}
 			return this.countryName;
+		},
+		bookmarkVersion() {
+			// Display follow for all US loans no matter login state
+			if (this.distributionModel === 'direct' && this.followUsLoansEnabled) {
+				return 'follow';
+			}
+			// Display bookmark for logged in users, non us loans or if follow setting is disabled
+			if (this.isLoggedIn) {
+				return 'bookmark';
+			}
+			return 'none';
 		}
 	},
 	async mounted() {
@@ -289,6 +318,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
 			this.use = loan?.fullLoanUse ?? '';
+			this.followUsLoansEnabled = result?.data?.general?.followUsLoans?.value === 'true' || false;
 		},
 	},
 };

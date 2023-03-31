@@ -46,7 +46,10 @@
 					>
 					</div>
 				</div>
-
+			</div>
+			<!-- "Follow" button for US loans links here from SummaryCard and LendCta -->
+			<a name="follow"></a>
+			<div v-if="!partnerName && !loading">
 				<borrower-business-details
 					class="tw-mb-2"
 					:borrower-business-name="borrowerBusinessName"
