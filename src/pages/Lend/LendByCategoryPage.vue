@@ -102,7 +102,7 @@ import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLo
 import { createIntersectionObserver } from '@/util/observerUtils';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 
 const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
 const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
@@ -675,6 +675,7 @@ export default {
 							client.query({ query: experimentQuery, variables: { id: ADD_TO_BASKET_V2_EXP } }),
 							client.query({ query: experimentQuery, variables: { id: BANDIT_EXP } }),
 							client.query({ query: experimentQuery, variables: { id: FLSS_CATEGORY_SERVICE_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						]);
 					});
 			});
@@ -740,6 +741,8 @@ export default {
 				active: true,
 			}
 		});
+
+		this.initializeFiveDollarsNotes();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];

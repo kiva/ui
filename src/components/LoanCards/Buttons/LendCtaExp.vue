@@ -148,6 +148,7 @@ export default {
 	data() {
 		return {
 			completeLoanView: true,
+			selectedOption: this.getSelectedOption(this.loan?.unreservedAmount),
 		};
 	},
 	methods: {
@@ -161,8 +162,19 @@ export default {
 			);
 			this.$emit('add-to-basket', this.amountToLend);
 		},
+		getSelectedOption(unreservedAmount) {
+			if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
+				return Number(unreservedAmount).toFixed();
+			}
+			return '25';
+		},
 	},
 	watch: {
+		unreservedAmount(newValue, previousValue) {
+			if (newValue !== previousValue && previousValue === '') {
+				this.selectedOption = this.getSelectedOption(newValue);
+			}
+		},
 		isCompleteLoanActive() {
 			if (this.isCompleteLoanActive && this.completeLoanView) {
 				this.completeLoanView = false;
@@ -286,12 +298,6 @@ export default {
 		showLendAgain() {
 			return this.isLentTo && !this.isLessThan25;
 		},
-		selectedOption() {
-			if (isBetween25And50(this.unreservedAmount) || isLessThan25(this.unreservedAmount)) {
-				return Number(this.unreservedAmount).toFixed();
-			}
-			return '25';
-		}
 	},
 };
 

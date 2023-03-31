@@ -48,7 +48,7 @@ import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -95,6 +95,7 @@ export default {
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 					client.query({ query: experimentQuery, variables: { id: 'EXP-FLSS-Lend-Filter' } }),
+					client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				]);
 			});
 		},
@@ -127,5 +128,8 @@ export default {
 			}
 		}
 	},
+	created() {
+		this.initializeFiveDollarsNotes();
+	}
 };
 </script>

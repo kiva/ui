@@ -90,7 +90,7 @@ import { getExperimentSettingCached, trackExperimentVersion } from '@/util/exper
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -144,6 +144,7 @@ export default {
 				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 			]);
 		},
 		result({ data }) {
@@ -302,6 +303,8 @@ export default {
 			);
 			this.enableLoanCardExp = version === 'b' ?? false;
 		}
+
+		this.initializeFiveDollarsNotes();
 	},
 	mounted() {
 		this.getRecommendedLoans();

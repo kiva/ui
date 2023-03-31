@@ -19,13 +19,11 @@ import { gql } from '@apollo/client';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest from '@/plugins/five-dollars-test-mixin'; // returning enableFiveDollarsNotes from assignment
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 
 const pageQuery = gql`
 	query LoanChannelCategoryPageExperiments {
@@ -76,6 +74,7 @@ export default {
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				]);
 			});
 		}
@@ -96,6 +95,8 @@ export default {
 
 		// Initialize Filter Pills Experimentx
 		this.initializeFilterPillsTest();
+
+		this.initializeFiveDollarsNotes();
 	},
 	methods: {
 		initializeNewLoanCardTest() {
