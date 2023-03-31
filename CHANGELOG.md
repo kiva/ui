@@ -1,3 +1,20 @@
+## [2.550.0](https://github.com/kiva/ui/compare/v2.549.1...v2.550.0) (2023-03-31)
+
+
+### Features
+
+* clickable loan tags in new loan card ([eb92d0a](https://github.com/kiva/ui/commit/eb92d0a99a773cb710fce00e047b32c79ec487df))
+* no underline added when link is focused ([4de6dc9](https://github.com/kiva/ui/commit/4de6dc92b90167e4e7607a768f0148c42b014548))
+* prop added to new loan card to hide more cta in use component ([b469d2a](https://github.com/kiva/ui/commit/b469d2a8502b85f481c9e969a9a23571ea3a098e))
+
+
+### Bug Fixes
+
+* margins replaced by paddings to avoid cursor gaps between elements ([d5255d9](https://github.com/kiva/ui/commit/d5255d9ccfbc878d7654d208f2c1c6083918d8a8))
+* resolve $5 notes issues ([8371691](https://github.com/kiva/ui/commit/83716918aa76a1ddb44ef84b354951dc43660b8e))
+* some loans get the loan data immediately ([2b79502](https://github.com/kiva/ui/commit/2b795020aa9c6783226fef8020fa060cf566a522))
+* unused condition removed ([663b624](https://github.com/kiva/ui/commit/663b624e65d9f76ee23e618838d349cc3253337e))
+
 ### [2.549.1](https://github.com/kiva/ui/compare/v2.549.0...v2.549.1) (2023-03-30)
 
 
