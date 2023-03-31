@@ -436,6 +436,7 @@ export default {
 			matchingHighlightExpShown: false,
 			inPfp: false,
 			distributionModel: '',
+			followUsLoansEnabled: false,
 		};
 	},
 	apollo: {
@@ -490,6 +491,10 @@ export default {
 						key
 						value
 					}
+					followUsLoans: uiConfigSetting(key: "follow_us_loans") {
+						key
+						value
+					}
 				}
 			}
 		`,
@@ -526,6 +531,7 @@ export default {
 				this.lenderCountVisibility = true;
 			}
 			this.distributionModel = loan?.distributionModel ?? '';
+			this.followUsLoansEnabled = result?.data?.general?.followUsLoans?.value === 'true' || false;
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
@@ -807,10 +813,10 @@ export default {
 		},
 		bookmarkVersion() {
 			// Display follow for all US loans no matter login state
-			if (this.distributionModel === 'direct') {
+			if (this.distributionModel === 'direct' && this.followUsLoansEnabled) {
 				return 'follow';
 			}
-			// Display bookmark for logged in users, non us loans
+			// Display bookmark for logged in users, non us loans or if follow setting is disabled
 			if (this.isLoggedIn) {
 				return 'bookmark';
 			}
