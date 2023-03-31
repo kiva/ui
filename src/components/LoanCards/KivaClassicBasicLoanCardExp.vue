@@ -63,26 +63,25 @@
 
 				<!-- Loan tag -->
 				<router-link
-					v-if="showTags && !isLoading"
 					:to="customLoanDetails ? '' : `/lend/${loanId}`"
-					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-					class="tw-text-primary hover:tw-no-underline"
+					v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
+					class="tw-flex hover:tw-no-underline"
 				>
-					<loan-tag-v2 :loan="loan" :amount-left="amountLeft" />
+					<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 				</router-link>
 
-				<!-- Loan use  -->
-				<div class="tw-mb-1.5 tw-mt-1">
-					<kv-loading-paragraph
-						v-if="isLoading"
-						:style="{ width: '100%', height: '5.5rem' }"
-					/>
-					<div v-else>
-						<router-link
-							:to="customLoanDetails ? '' : `/lend/${loanId}`"
-							v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
-							class="loan-card-use tw-text-primary"
-						>
+				<router-link
+					:to="customLoanDetails ? '' : `/lend/${loanId}`"
+					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
+					class="loan-card-use tw-text-primary"
+				>
+					<!-- Loan use  -->
+					<div class="tw-mb-1.5 tw-pt-1">
+						<kv-loading-paragraph
+							v-if="isLoading"
+							:style="{ width: '100%', height: '5.5rem' }"
+						/>
+						<div v-else>
 							<loan-use
 								:use="loanUse"
 								:loan-amount="loanAmount"
@@ -92,9 +91,9 @@
 								:distribution-model="distributionModel"
 								:show-more="enableMoreCta"
 							/>
-						</router-link>
+						</div>
 					</div>
-				</div>
+				</router-link>
 			</div>
 
 			<!-- Loan call outs -->
