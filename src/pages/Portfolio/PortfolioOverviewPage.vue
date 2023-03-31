@@ -14,7 +14,7 @@
 					<account-updates />
 					<lending-insights />
 					<your-teams />
-					<!-- stat graphs -->
+					<distribution-graphs />
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -29,6 +29,7 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
+import DistributionGraphs from './DistributionGraphs';
 import KivaCreditStats from './KivaCreditStats';
 import LendingInsights from './LendingInsights';
 import RecentLoansList from './RecentLoansList';
@@ -40,6 +41,7 @@ export default {
 	components: {
 		AccountOverview,
 		AccountUpdates,
+		DistributionGraphs,
 		KivaCreditStats,
 		KvGrid,
 		KvPageContainer,
