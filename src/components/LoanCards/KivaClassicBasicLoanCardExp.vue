@@ -64,8 +64,8 @@
 				<!-- Loan tag -->
 				<router-link
 					:to="customLoanDetails ? '' : `/lend/${loanId}`"
-					v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
-					class="tw-flex hover:tw-no-underline"
+					v-kv-track-event="['Lending', 'click-Read more', 'Tag', loanId]"
+					class="tw-flex hover:tw-no-underline focus:tw-no-underline"
 				>
 					<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 				</router-link>
