@@ -119,6 +119,7 @@
 <script>
 import { gql } from '@apollo/client';
 import numeral from 'numeral';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -128,6 +129,7 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 
 export default {
 	name: 'LendingInsights',
+	serverCacheKey: () => getCacheKey('LendingInsights'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -140,6 +142,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			donationLightboxVisible: false,
 			// loanLightboxVisible: false,
 			countryCount: 0,
@@ -151,8 +154,8 @@ export default {
 	},
 	methods: {
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
 						my {
 							id
@@ -186,6 +189,8 @@ export default {
 
 					this.averageDonation = donation.format('$0,0[.]00');
 					this.amountLent = amountOfLoans.format('$0,0[.]00');
+				}).finally(() => {
+					this.loadingPromise = null;
 				});
 			}
 		},

@@ -69,12 +69,14 @@
 <script>
 import { gql } from '@apollo/client';
 import numeral from 'numeral';
+import getCacheKey from '@/util/getCacheKey';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'AccountOverview',
+	serverCacheKey: () => getCacheKey('AccountOverview'),
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvButton,

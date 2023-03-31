@@ -82,12 +82,14 @@
 <script>
 import { gql } from '@apollo/client';
 import numeral from 'numeral';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'YourTeams',
+	serverCacheKey: () => getCacheKey('YourTeams'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -97,6 +99,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			teams: [],
 			totalTeams: 0,
 			defaultImageUrl: `${this.$appConfig.photoPath}s32/726677.jpg`,
@@ -113,8 +116,8 @@ export default {
 	},
 	methods: {
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: gql`query myTopTeams {
 						my {
 							id
@@ -148,6 +151,8 @@ export default {
 						imageAlt: `Avatar for lending team ${team.name}`,
 						amount: numeral(amountLent).format('$0,0[.]00'),
 					}));
+				}).finally(() => {
+					this.loadingPromise = null;
 				});
 			}
 		},
