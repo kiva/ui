@@ -36,7 +36,16 @@ export default {
 	},
 	// TODO: Add prop for tooltip placement, Currently defaults to 'top' but will flip to bottom when constrained
 	props: {
-		controller: { type: [String, HTMLElement], required: true },
+		controller: {
+			validator(value) {
+				if (value instanceof String) return true;
+				if (typeof window !== 'undefined'
+					&& 'HTMLElement' in window
+					&& value instanceof HTMLElement) return true;
+				return false;
+			},
+			required: true,
+		},
 		theme: {
 			type: String,
 			default: 'default',

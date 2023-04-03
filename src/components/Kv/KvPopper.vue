@@ -21,7 +21,16 @@ import {
 export default {
 	name: 'KvPopper',
 	props: {
-		controller: { type: [String, HTMLElement], required: true },
+		controller: {
+			validator(value) {
+				if (value instanceof String) return true;
+				if (typeof window === 'object'
+					&& 'HTMLElement' in window
+					&& value instanceof HTMLElement) return true;
+				return false;
+			},
+			required: true,
+		},
 		openDelay: { type: Number, default: 0 },
 		closeDelay: { type: Number, default: 200 },
 		// must be defined in our globa/transitions.scss
