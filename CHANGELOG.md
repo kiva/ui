@@ -1,3 +1,10 @@
+### [2.552.1](https://github.com/kiva/ui/compare/v2.552.0...v2.552.1) (2023-04-03)
+
+
+### Bug Fixes
+
+* don't assume HTMLElement exists globally ([a979df5](https://github.com/kiva/ui/commit/a979df518155d76db19eefed8ca8a149c305e155))
+
 ## [2.552.0](https://github.com/kiva/ui/compare/v2.551.0...v2.552.0) (2023-04-03)
 
 
