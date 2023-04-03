@@ -48,6 +48,7 @@
 import { gql } from '@apollo/client';
 import { mdiFileDocumentOutline } from '@mdi/js';
 import numeral from 'numeral';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KivaEffectFigure from './KivaEffectFigure';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -58,6 +59,7 @@ const CreditSummaryLightbox = () => import('./CreditSummaryLightbox');
 
 export default {
 	name: 'KivaCreditStats',
+	serverCacheKey: () => getCacheKey('KivaCreditStats'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -70,6 +72,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			depositAmount: 25,
 			lendAmount: 1000,
 			mdiFileDocumentOutline,
@@ -78,8 +81,8 @@ export default {
 	},
 	methods: {
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: gql`query kivaCreditStats {
 						my {
 							id
@@ -96,6 +99,8 @@ export default {
 					this.loading = false;
 					this.depositAmount = numeral(data?.my?.lendingStats?.totalAmountDeposited ?? 0).value();
 					this.lendAmount = numeral(data?.my?.userStats?.amount_of_loans ?? 0).value();
+				}).finally(() => {
+					this.loadingPromise = null;
 				});
 			}
 		},

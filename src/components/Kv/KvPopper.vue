@@ -1,7 +1,7 @@
 <template>
 	<transition :name="transitionType">
 		<div
-			class="popper-pane"
+			class="tw-absolute"
 			:style="styles"
 			:aria-hidden="show ? 'false' : 'true'"
 			v-show="show"
@@ -12,10 +12,6 @@
 </template>
 
 <script>
-import Popper from 'popper.js';
-import _map from 'lodash/map';
-import _merge from 'lodash/merge';
-import usingTouchMixin from '@/plugins/touch-detection-mixin';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
@@ -24,9 +20,8 @@ import {
 
 export default {
 	name: 'KvPopper',
-	mixins: [usingTouchMixin],
 	props: {
-		controller: { type: String, required: true },
+		controller: { type: [String, HTMLElement], required: true },
 		openDelay: { type: Number, default: 0 },
 		closeDelay: { type: Number, default: 200 },
 		// must be defined in our globa/transitions.scss
@@ -37,6 +32,7 @@ export default {
 	data() {
 		return {
 			popper: null,
+			popperPromise: null,
 			styles: {},
 			show: false,
 			timeout: null,
@@ -44,15 +40,10 @@ export default {
 	},
 	computed: {
 		reference() {
-			return document.getElementById(this.controller);
+			return typeof this.controller === 'string' ? document.getElementById(this.controller) : this.controller;
 		},
 	},
 	watch: {
-		usingTouch() {
-			if (this.usingTouch && this.popper) {
-				this.removeMouseEvents();
-			}
-		},
 		show(showing) {
 			if (this.reference) {
 				this.reference.setAttribute('aria-expanded', showing ? 'true' : 'false');
@@ -61,7 +52,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.initPopper();
+		this.reference.tabIndex = 0;
 		this.attachEvents();
 	},
 	updated() {
@@ -77,19 +68,17 @@ export default {
 	},
 	methods: {
 		open() {
-			this.setTimeout(() => {
-				this.show = true;
-				if (this.usingTouch) {
+			this.initPopper().then(() => {
+				this.setTimeout(() => {
+					this.show = true;
 					this.attachBodyEvents();
-				}
-			}, this.openDelay);
+				}, this.openDelay);
+			});
 		},
 		close() {
 			this.setTimeout(() => {
 				this.show = false;
-				if (this.usingTouch) {
-					this.removeBodyEvents();
-				}
+				this.removeBodyEvents();
 			}, this.closeDelay);
 		},
 		toggle() {
@@ -99,20 +88,33 @@ export default {
 				this.open();
 			}
 		},
+		update() {
+			if (this.popper) {
+				this.popper.scheduleUpdate();
+			}
+		},
 		initPopper() {
-			this.popper = new Popper(this.reference, this.$el, {
-				placement: this.popperPlacement,
-				modifiers: _merge({
-					applyStyle: data => {
-						this.styles = data.styles;
-						this.setAttributes(data.attributes);
+			// skip loading if popper already created
+			if (this.popper) return Promise.resolve();
+			// skip loading if loading already started
+			if (this.popperPromise) return this.popperPromise;
+			// import and init Popper.js
+			this.popperPromise = import('popper.js').then(({ default: Popper }) => {
+				this.popper = new Popper(this.reference, this.$el, {
+					placement: this.popperPlacement,
+					modifiers: {
+						applyStyle: data => {
+							this.styles = data.styles;
+							this.setAttributes(data.attributes);
+						},
+						preventOverflow: {
+							padding: 0,
+						},
+						...this.popperModifiers,
 					},
-					preventOverflow: {
-						padding: 0,
-					}
-				}, this.popperModifiers)
+				});
 			});
-			this.reference.tabIndex = 0;
+			return this.popperPromise;
 		},
 		bodyTouchHandler(e) {
 			if (!isTargetElement(e, [this.reference, this.$el])) {
@@ -137,13 +139,10 @@ export default {
 			onBodyTouchstart(this.bodyTouchHandler);
 		},
 		removeEvents() {
-			this.removeMouseEvents();
 			this.removeBodyEvents();
 			this.reference.removeEventListener('touchstart', this.referenceTapHandler);
-		},
-		removeMouseEvents() {
 			this.reference.removeEventListener('mouseover', this.open);
-			this.reference.removeEventListener('mouseover', this.close);
+			this.reference.removeEventListener('mouseout', this.close);
 			this.$el.removeEventListener('mouseover', this.open);
 			this.$el.removeEventListener('mouseout', this.close);
 		},
@@ -151,7 +150,8 @@ export default {
 			offBodyTouchstart(this.bodyTouchHandler);
 		},
 		setAttributes(attrs) {
-			_map(attrs, (value, attr) => {
+			Object.keys(attrs).forEach(attr => {
+				const value = attrs[attr];
 				if (value === false) {
 					this.$el.removeAttribute(attr);
 				} else {
@@ -166,9 +166,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-.popper-pane {
-	position: absolute;
-}
-</style>

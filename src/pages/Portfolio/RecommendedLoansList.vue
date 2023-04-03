@@ -20,12 +20,14 @@
 <script>
 import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
 import { FLSS_ORIGIN_PORTFOLIO_OVERVIEW } from '@/util/flssUtils';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import RecommendedLoanSlide from './RecommendedLoanSlide';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'RecommendedLoansList',
+	serverCacheKey: () => getCacheKey('RecommendedLoansList'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -35,6 +37,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			loans: [],
 		};
 	},
@@ -47,8 +50,8 @@ export default {
 	},
 	methods: {
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: personalizedLoansQuery,
 					variables: {
 						limit: 3,
@@ -57,6 +60,8 @@ export default {
 				}).then(({ data }) => {
 					this.loading = false;
 					this.loans = data?.fundraisingLoans?.values ?? [];
+				}).finally(() => {
+					this.loadingPromise = null;
 				});
 			}
 		},

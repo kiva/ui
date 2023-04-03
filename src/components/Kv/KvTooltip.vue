@@ -36,13 +36,13 @@ export default {
 	},
 	// TODO: Add prop for tooltip placement, Currently defaults to 'top' but will flip to bottom when constrained
 	props: {
-		controller: { type: String, required: true },
+		controller: { type: [String, HTMLElement], required: true },
 		theme: {
 			type: String,
 			default: 'default',
 			validator(value) {
 				// The value must match one of these strings
-				return ['mint', 'dark'].indexOf(value) !== -1;
+				return ['default', 'mint', 'dark'].indexOf(value) !== -1;
 			}
 		},
 	},
@@ -77,6 +77,11 @@ $outer-arrow-width: rem-calc($arrow-width);
 $inner-arrow-width: rem-calc($arrow-width - 2);
 $inner-arrow-offset: rem-calc($arrow-width - 1);
 $border-color: var(--bg-primary);
+
+.tooltip-pane,
+.tooltip-arrow {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
 .tooltip-arrow {
 	margin: $outer-arrow-width;

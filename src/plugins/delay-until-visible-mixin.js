@@ -7,14 +7,14 @@ export default {
 		};
 	},
 	methods: {
-		delayUntilVisible(callback, element) {
-			const el = element ?? this.$el;
+		delayUntilVisible(callback, elements) {
+			const targets = elements ?? [this.$el];
 			// Watch for this element being in the viewport
 			this.delayUntilVisibleObserver = createIntersectionObserver({
-				targets: [el],
+				targets,
 				callback: entries => {
 					entries.forEach(entry => {
-						if (entry.target === el && entry.intersectionRatio > 0) {
+						if (entry.intersectionRatio > 0) {
 							// This element is in the viewport, so call the callback.
 							callback(entry);
 						}

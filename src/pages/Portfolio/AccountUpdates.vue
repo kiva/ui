@@ -80,11 +80,13 @@
 import { gql } from '@apollo/client';
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'AccountUpdates',
+	serverCacheKey: () => getCacheKey('AccountUpdates'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -93,6 +95,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			totalCount: 0,
 			// start with blank updates for loading placeholders
 			updates: [{ id: 0 }, { id: 1 }, { id: 2 }],
@@ -129,8 +132,8 @@ export default {
 			};
 		},
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: gql`query kivaCreditStats {
 						my {
 							id
@@ -178,6 +181,8 @@ export default {
 					this.loading = false;
 					this.totalCount = data?.my?.updates?.totalCount ?? 0;
 					this.updates = (data?.my?.updates?.values ?? []).map(this.transformUpdate);
+				}).finally(() => {
+					this.loadingPromise = null;
 				});
 			}
 		},

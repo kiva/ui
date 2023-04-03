@@ -36,6 +36,7 @@
 <script>
 import { gql } from '@apollo/client';
 import numeral from 'numeral';
+import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import RecentLoanItem from './RecentLoanItem';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -43,6 +44,7 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 
 export default {
 	name: 'RecentLoansList',
+	serverCacheKey: () => getCacheKey('RecentLoansList'),
 	inject: ['apollo'],
 	components: {
 		AsyncPortfolioSection,
@@ -53,6 +55,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			loadingPromise: null,
 			lenderName: '',
 			totalLoans: 0,
 			loanIds: [0, 0, 0, 0, 0],
@@ -65,8 +68,8 @@ export default {
 	},
 	methods: {
 		fetchAsyncData() {
-			if (this.loading) {
-				this.apollo.query({
+			if (this.loading && !this.loadingPromise) {
+				this.loadingPromise = this.apollo.query({
 					query: gql`query recentLoansOverview {
 						my {
 							id
@@ -90,7 +93,9 @@ export default {
 					this.totalLoans = data?.my?.userStats?.number_of_loans ?? 0;
 					const loanIds = (data?.my?.loans?.values ?? []).map(({ id }) => id);
 					this.loanIds = loanIds.length ? loanIds : [0, 0, 0, 0, 0];
-				}); // TODO catch?
+				}).finally(() => {
+					this.loadingPromise = null;
+				});
 			}
 		}
 	},
