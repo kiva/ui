@@ -56,7 +56,7 @@
 			class="tw-mb-0.5 tw-mx-auto"
 			style="height: 20px; width: 5rem;"
 		/>
-		<p v-else class="tw-mb-0.5">
+		<p v-else class="tw-mb-0.5 tw-text-secondary">
 			{{ statusDescription }}
 		</p>
 	</li>
