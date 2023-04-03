@@ -100,7 +100,7 @@
 <script>
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
-import isCCPage from '@/util/routeUtils';
+import { isCCPage } from '@/util/urlUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
