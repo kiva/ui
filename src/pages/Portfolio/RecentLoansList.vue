@@ -12,7 +12,7 @@
 			{{ totalLoansString }} and counting. You are changing lives!
 		</p>
 		<!-- loan grid -->
-		<kv-grid as="ol" class="tw-grid-cols-12">
+		<kv-grid as="ol" class="tw-grid-cols-12 tw-gap-y-6 md:tw-gap-y-7 lg:tw-gap-y-7">
 			<recent-loan-item
 				v-for="(id, index) in loanIds"
 				:key="index"
