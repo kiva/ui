@@ -1,3 +1,10 @@
+### [2.552.2](https://github.com/kiva/ui/compare/v2.552.1...v2.552.2) (2023-04-03)
+
+
+### Bug Fixes
+
+* increase gap between rows of recent loans on portfolio overview MARS-350 ([c0f0cc0](https://github.com/kiva/ui/commit/c0f0cc0b6d7a774f4b120fc9ef54e6c9f9a8d752))
+
 ### [2.552.1](https://github.com/kiva/ui/compare/v2.552.0...v2.552.1) (2023-04-03)
 
 
