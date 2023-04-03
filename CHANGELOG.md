@@ -1,3 +1,13 @@
+## [2.552.0](https://github.com/kiva/ui/compare/v2.551.0...v2.552.0) (2023-04-03)
+
+
+### Features
+
+* html elements as KvPopper controllers and KvTooltip drop shadow ([0bb3430](https://github.com/kiva/ui/commit/0bb3430a9495ec2f1f92fb7f2d8f87524da2ab64))
+* portfolio loan count distribution graphs MARS-357 ([300eae9](https://github.com/kiva/ui/commit/300eae936a54de412df301982280acc5fa90c722))
+* server caching and query failure handling for portfolio overview components ([fea3057](https://github.com/kiva/ui/commit/fea30575ccf543669a35b7b61645cfc9665396fe))
+* support multiple target elements in delayUntilVisible mixin ([6ecd96d](https://github.com/kiva/ui/commit/6ecd96d42fa7e493ed79446ce14827d36975fd30))
+
 ## [2.551.0](https://github.com/kiva/ui/compare/v2.550.0...v2.551.0) (2023-03-31)
 
 
