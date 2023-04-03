@@ -37,7 +37,7 @@ import RecommendedLoansList from './RecommendedLoansList';
 import YourTeams from './YourTeams';
 
 export default {
-	name: 'PortfolioOverviewPage',
+	name: 'ImpactDashboardPage',
 	components: {
 		AccountOverview,
 		AccountUpdates,
