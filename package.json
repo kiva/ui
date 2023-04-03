@@ -80,7 +80,7 @@
 		"express-winston": "^4.0.3",
 		"flag-icon-css": "kiva/flag-icon-css.git#sprite",
 		"foundation-sites": "6.7.4",
-		"fuse.js": "^5.2.3",
+		"fuse.js": "^6.6.2",
 		"get-user-locale": "^1.4.0",
 		"graphql": "^15.4.0",
 		"gsap": "^3.5.1",
