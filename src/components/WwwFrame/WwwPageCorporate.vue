@@ -55,8 +55,8 @@ export default {
 			default: ''
 		},
 		logoHeight: {
-			type: Number,
-			default: 28
+			type: String,
+			default: '28'
 		}
 	},
 	apollo: {

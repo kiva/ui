@@ -139,11 +139,11 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
+				:to="checkoutRoute"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
-						Checkout now
+						{{ customCheckoutButtonText }}
 						<kv-material-icon
 							class="tw-w-2.5 tw-h-2.5"
 							:icon="mdiCheckCircleOutline"
@@ -296,9 +296,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		customCheckoutRoute: {
+		checkoutRoute: {
 			type: String,
-			default: ''
+			default: '/basket'
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Checkout now'
 		},
 		customLoanDetails: {
 			type: Boolean,
@@ -470,7 +474,7 @@ export default {
 		},
 		loanReservedAmount() {
 			return this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
-		},
+		}
 	},
 	methods: {
 		showLoanDetails(e) {

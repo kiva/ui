@@ -3,6 +3,32 @@
 		class="in-context-checkout"
 		id="inContextCheckout"
 	>
+		<div
+			v-if="isCorporateCampaignPage && cookieStore.get('lcaid')"
+			class="tw-pb-4"
+		>
+			<div
+				class="tw-bg-brand-50
+						tw-rounded
+						tw-p-2
+						row
+						align-center"
+			>
+				<kv-icon
+					class="tw-w-4"
+					name="piggy-bank"
+				/>
+				<span v-if="promoFund.displayName">
+					{{ promoName }} has given you ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span v-else>
+					You have been given ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span>
+					&nbsp;&nbsp;We've suggested a borrower to lend your remaining ${{ lcaLoanPrice }} credit to.
+				</span>
+			</div>
+		</div>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
 			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
@@ -12,8 +38,9 @@
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
+			@jump-to-loans="$emit('jump-to-loans')"
 		/>
 
 		<hr>
@@ -23,11 +50,14 @@
 			:totals="totals"
 			:promo-fund="derivedPromoFund"
 			@credit-removed="$emit('credit-removed')"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+		<div
+			:class="`in-context-login ${isCorporateCampaignPage ? 'tw-text-right' : ''}`"
+			v-if="!isActivelyLoggedIn"
+		>
 			<kv-button
 				v-if="!isActivelyLoggedIn"
 				class="smaller checkout-button"
@@ -35,7 +65,7 @@
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
 			>
-				Continue
+				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
 		<div class="in-context-payment-conttrols" v-else>
@@ -44,7 +74,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -52,7 +82,7 @@
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -75,6 +105,7 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -86,7 +117,8 @@ export default {
 		KvButton,
 		KivaCreditPayment,
 		KvLoadingOverlay,
-		OrderTotals
+		OrderTotals,
+		KvIcon
 	},
 	mixins: [
 		checkoutUtils
@@ -132,6 +164,18 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		promoName: {
+			type: String,
+			default: () => {},
+		},
+		lcaLoanPrice: {
+			type: Number,
+			default: 0,
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Continue'
+		}
 	},
 	data() {
 		return {
@@ -168,6 +212,9 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
+		}
 	},
 	methods: {
 		completeTransaction(transactionId) {
