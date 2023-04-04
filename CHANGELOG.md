@@ -1,3 +1,35 @@
+## [2.554.0](https://github.com/kiva/ui/compare/v2.553.0...v2.554.0) (2023-04-04)
+
+
+### Features
+
+* add messaging to top of checkout modal ([71b495b](https://github.com/kiva/ui/commit/71b495b291cdc4670af154a7c479a521992e5a86))
+* adding automatic allocation of excess credits ([f310af9](https://github.com/kiva/ui/commit/f310af96f049088a00132d5b025dec8c40388aa5))
+* adding loan to basket when upc credit is excess ([7e5843b](https://github.com/kiva/ui/commit/7e5843bff306fc68945754cab090112024cd8a01))
+* campaign progress bar edits ([d3d0186](https://github.com/kiva/ui/commit/d3d01860dc68b8223bfea1e030b7082415cdedd7))
+
+
+### Bug Fixes
+
+* add a conditional in case promo name doesn't come up ([6a0fee7](https://github.com/kiva/ui/commit/6a0fee7dc213110a7e31d45aa8b1e6a7dcd537c7))
+* adding ordertotal changes in with flag indicating if we are on the campaign page, addressing basket error as well ([3c734f8](https://github.com/kiva/ui/commit/3c734f85761bdacb824a73b2511126b8721fb96d))
+* addressing pr comments ([a9647ac](https://github.com/kiva/ui/commit/a9647acd979efa1ede1b6c31dc0fce1bd1d96d0d))
+* addressing pr comments ([ae4251d](https://github.com/kiva/ui/commit/ae4251d28b0ca18360a574c62e8c091eb2b36aba))
+* addressing some errors ([d87a5bf](https://github.com/kiva/ui/commit/d87a5bf13ee586bc8e032f1ec3a9d94448fd79fc))
+* change font size and format for kiva credits ([6941b89](https://github.com/kiva/ui/commit/6941b89d4383e507fc7f0acd23e3a158691197bb))
+* CIT-67 and CIT-69 ([807e6d0](https://github.com/kiva/ui/commit/807e6d0b66f159951cb9c140ad89b148ad370dc6))
+* fixing jump to loans behavior ([b3f8b7a](https://github.com/kiva/ui/commit/b3f8b7ae9e42dcb5a501911db9577cd42918376a))
+* get logic for adding and removing allocated excess credits right ([083af77](https://github.com/kiva/ui/commit/083af77d1b8b1e3832e42c35581fea686449b685))
+* merge conflict ([10bb25e](https://github.com/kiva/ui/commit/10bb25e29d006a05ba90b7644bd55d24f3417cee))
+* merge conflicts ([2f48f29](https://github.com/kiva/ui/commit/2f48f2942402e2b3b878c8ef80fbf3ab5453513c))
+* only add leftover credit allocation when checkout is visible ([da6bade](https://github.com/kiva/ui/commit/da6badedb99d4a09f189e68717bc87f9ce68e427))
+* package-lock.json ([606758b](https://github.com/kiva/ui/commit/606758bcea34c0aae8446f4c130e2fabf9cc0231))
+* package-lock.json ([1a29d95](https://github.com/kiva/ui/commit/1a29d950035e71036d3cbb67239e26105c52db62))
+* pr updates working on loading states for checkout ([7a474b6](https://github.com/kiva/ui/commit/7a474b671dab61f63d6215f94bc5229b6746e54e))
+* promoName reinstated ([01d8961](https://github.com/kiva/ui/commit/01d8961160fdf31c5c9b4910bef46deb3a653aae))
+* removed duplicate key ([61f5d0e](https://github.com/kiva/ui/commit/61f5d0e73b52a510e485c33e96f4acd08c7c78a4))
+* removed updated npm/node ([7eba5de](https://github.com/kiva/ui/commit/7eba5de70622cae7102ad49962060bf4a57a4c41))
+
 ## [2.553.0](https://github.com/kiva/ui/compare/v2.552.2...v2.553.0) (2023-04-04)
 
 
