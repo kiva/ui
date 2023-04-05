@@ -99,7 +99,20 @@
 						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 					</p>
 				</template>
-				<kv-grid class="tw-grid-rows-4">
+				<kv-grid v-if="enableNewLoanCard" class="tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2">
+					<kiva-classic-basic-loan-card-exp
+						v-for="(loan, index) in loans"
+						:key="`new-card-${index}`"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:show-tags="true"
+						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						@add-to-basket="addToBasket"
+						class="tw-h-full"
+					/>
+				</kv-grid>
+				<kv-grid v-else class="tw-grid-rows-4">
 					<loan-card-controller
 						v-for="loan in loans"
 						:items-in-basket="itemsInBasket"
@@ -149,6 +162,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
@@ -175,7 +189,8 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
-		LoanSearchSavedSearch
+		LoanSearchSavedSearch,
+		KivaClassicBasicLoanCardExp
 	},
 	props: {
 		extendFlssFilters: {
@@ -190,6 +205,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		enableNewLoanCard: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -308,6 +327,7 @@ export default {
 		defaultPageLimit() {
 			const storedPageLimit = this.cookieStore.get(COOKIE_KEY);
 
+			if (this.enableNewLoanCard) return 16;
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
 		showSavedSearch() {
@@ -388,6 +408,9 @@ export default {
 			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
 
 			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
+		},
+		addToBasket(payload) {
+			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
 		}
 	},
 	watch: {

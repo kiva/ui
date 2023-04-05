@@ -35,6 +35,7 @@
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-new-loan-card="enableNewLoanCard"
 				/>
 			</kv-page-container>
 		</article>
@@ -46,6 +47,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { gql } from '@apollo/client';
+import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
@@ -65,6 +67,8 @@ const pageQuery = gql`query loanSearchPage {
 	}
 }`;
 
+const LOAN_CARD_EXP_KEY = 'new_loan_card';
+
 export default {
 	name: 'LoanSearchPage',
 	components: {
@@ -82,6 +86,7 @@ export default {
 			mdiFilter,
 			mdiClose,
 			savedSearchName: '',
+			enableNewLoanCard: false
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -96,6 +101,7 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 					client.query({ query: experimentQuery, variables: { id: 'EXP-FLSS-Lend-Filter' } }),
 					client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					client.query({ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				]);
 			});
 		},
@@ -130,6 +136,18 @@ export default {
 	},
 	created() {
 		this.initializeFiveDollarsNotes();
+
+		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
+		if (loanCardExpData.enabled) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_CARD_EXP_KEY,
+				'EXP-CORE-1174-Apr2023'
+			);
+			this.enableNewLoanCard = version === 'b' ?? false;
+		}
 	}
 };
 </script>
