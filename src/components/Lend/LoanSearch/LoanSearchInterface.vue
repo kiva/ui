@@ -141,7 +141,7 @@
 						@page-changed="handlePageChange"
 					/>
 					<kv-results-per-page
-						:options="enableNewLoanCard ? [10, 20, 50] : []"
+						:options="enableNewLoanCard ? [10, 20, 50] : [15, 25, 50]"
 						:selected="loanSearchState.pageLimit"
 						@updated="handleResultsPerPage"
 					/>
@@ -228,7 +228,10 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			itemsInBasket: [],
-			loanSearchState: getDefaultLoanSearchState(),
+			loanSearchState: {
+				...getDefaultLoanSearchState(),
+				...(this.enableNewLoanCard && { pageLimit: 10 }),
+			},
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
@@ -330,7 +333,6 @@ export default {
 				this.trackLoans();
 			}
 		});
-		if (this.enableNewLoanCard) this.updateState({ ...this.loanSearchState, pageLimit: 10, pageOffset: 0 });
 	},
 	computed: {
 		defaultPageLimit() {

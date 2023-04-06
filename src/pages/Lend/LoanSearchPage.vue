@@ -47,7 +47,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { gql } from '@apollo/client';
-import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
@@ -137,17 +137,14 @@ export default {
 	created() {
 		this.initializeFiveDollarsNotes();
 
-		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
-		if (loanCardExpData.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				LOAN_CARD_EXP_KEY,
-				'EXP-CORE-1174-Apr2023'
-			);
-			this.enableNewLoanCard = version === 'b' ?? false;
-		}
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			LOAN_CARD_EXP_KEY,
+			'EXP-CORE-1174-Apr2023'
+		);
+		this.enableNewLoanCard = version === 'b';
 	}
 };
 </script>
