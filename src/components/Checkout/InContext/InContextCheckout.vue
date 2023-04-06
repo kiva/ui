@@ -170,7 +170,6 @@ export default {
 			type: Object,
 			default: () => {},
 		},
-<<<<<<< HEAD
 		promoName: {
 			type: String,
 			default: () => {},
@@ -184,9 +183,10 @@ export default {
 			default: 'Continue'
 		},
 		promoFundId: {
-=======
+			type: String,
+			default: ''
+		},
 		managedAccountId: {
->>>>>>> 454b9b2a4 (feat: guest checkout api changes)
 			type: String,
 			default: ''
 		}
