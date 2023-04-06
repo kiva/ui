@@ -77,7 +77,10 @@
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap">
+					<div
+						class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap"
+						:class="{ 'lg:tw-pl-4' : enableNewLoanCard }"
+					>
 						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
 							{{ totalCount }} Loans
 						</p>
@@ -99,7 +102,11 @@
 						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 					</p>
 				</template>
-				<kv-grid v-if="enableNewLoanCard" class="tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2">
+				<!-- eslint-disable max-len -->
+				<div
+					v-if="enableNewLoanCard"
+					class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4"
+				>
 					<kiva-classic-basic-loan-card-exp
 						v-for="(loan, index) in loans"
 						:key="`new-card-${index}`"
@@ -111,7 +118,7 @@
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
 					/>
-				</kv-grid>
+				</div>
 				<kv-grid v-else class="tw-grid-rows-4">
 					<loan-card-controller
 						v-for="loan in loans"
@@ -134,6 +141,7 @@
 						@page-changed="handlePageChange"
 					/>
 					<kv-results-per-page
+						:options="enableNewLoanCard ? [10, 20, 50] : []"
 						:selected="loanSearchState.pageLimit"
 						@updated="handleResultsPerPage"
 					/>
@@ -322,12 +330,12 @@ export default {
 				this.trackLoans();
 			}
 		});
+		if (this.enableNewLoanCard) this.updateState({ ...this.loanSearchState, pageLimit: 10, pageOffset: 0 });
 	},
 	computed: {
 		defaultPageLimit() {
 			const storedPageLimit = this.cookieStore.get(COOKIE_KEY);
 
-			if (this.enableNewLoanCard) return 16;
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
 		showSavedSearch() {
