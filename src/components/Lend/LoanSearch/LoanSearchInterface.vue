@@ -77,7 +77,10 @@
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap">
+					<div
+						class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap"
+						:class="{ 'lg:tw-pl-4' : enableNewLoanCard }"
+					>
 						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
 							{{ totalCount }} Loans
 						</p>
@@ -99,7 +102,24 @@
 						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 					</p>
 				</template>
-				<kv-grid class="tw-grid-rows-4">
+				<!-- eslint-disable max-len -->
+				<div
+					v-if="enableNewLoanCard"
+					class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4"
+				>
+					<kiva-classic-basic-loan-card-exp
+						v-for="(loan, index) in loans"
+						:key="`new-card-${index}`"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:show-tags="true"
+						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						@add-to-basket="addToBasket"
+						class="tw-h-full"
+					/>
+				</div>
+				<kv-grid v-else class="tw-grid-rows-4">
 					<loan-card-controller
 						v-for="loan in loans"
 						:items-in-basket="itemsInBasket"
@@ -121,6 +141,7 @@
 						@page-changed="handlePageChange"
 					/>
 					<kv-results-per-page
+						:options="enableNewLoanCard ? [10, 20, 50] : [15, 25, 50]"
 						:selected="loanSearchState.pageLimit"
 						@updated="handleResultsPerPage"
 					/>
@@ -149,6 +170,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
@@ -175,7 +197,8 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
-		LoanSearchSavedSearch
+		LoanSearchSavedSearch,
+		KivaClassicBasicLoanCardExp
 	},
 	props: {
 		extendFlssFilters: {
@@ -190,6 +213,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		enableNewLoanCard: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -201,7 +228,10 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			itemsInBasket: [],
-			loanSearchState: getDefaultLoanSearchState(),
+			loanSearchState: {
+				...getDefaultLoanSearchState(),
+				...(this.enableNewLoanCard && { pageLimit: 10 }),
+			},
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
@@ -388,6 +418,9 @@ export default {
 			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
 
 			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
+		},
+		addToBasket(payload) {
+			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
 		}
 	},
 	watch: {
