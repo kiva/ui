@@ -1,3 +1,10 @@
+## [2.556.0](https://github.com/kiva/ui/compare/v2.555.0...v2.556.0) (2023-04-06)
+
+
+### Features
+
+* tracking event added where dropdown changes for new and old loan cards ([cf71fad](https://github.com/kiva/ui/commit/cf71fad5f7ad86051c6017106425ee1074b6015f))
+
 ## [2.555.0](https://github.com/kiva/ui/compare/v2.554.0...v2.555.0) (2023-04-06)
 
 
