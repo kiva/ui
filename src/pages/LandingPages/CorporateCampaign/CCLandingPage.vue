@@ -163,11 +163,15 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+<<<<<<< HEAD
 					:promo-name="campaignPartnerName"
 					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
 					:promo-fund-id="String(promoFundId)"
 					:managed-account-id="managedAccountId"
+=======
+					:managed-account-id="String(managedAccountId)"
+>>>>>>> 454b9b2a4 (feat: guest checkout api changes)
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refreshtotals="refreshTotals"

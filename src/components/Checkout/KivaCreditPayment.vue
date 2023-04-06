@@ -24,11 +24,21 @@ export default {
 	mixins: [
 		checkoutUtils
 	],
+	props: {
+		managedAccountId: {
+			type: String,
+			default: '',
+		},
+		promoFundId: {
+			type: String,
+			default: ''
+		}
+	},
 	methods: {
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
-			this.validateGuestPromoBasket(this.email, this.emailUpdates, 'kiva.org')
+			this.validateGuestPromoBasket(this.email, this.emailUpdates, 'kiva.org', this.managedAccountId)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						// succesful validation

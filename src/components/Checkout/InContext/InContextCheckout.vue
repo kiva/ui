@@ -74,7 +74,9 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refreshtotals')"
+				:promo-fund-id="String(promoFundId)"
+				:managed-account-id="managedAccountId"
+				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -84,6 +86,9 @@
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
 				:is-guest-checkout="true"
+				:promo-fund-id="String(promoFundId)"
+				:managed-account-id="managedAccountId"
+				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -165,6 +170,7 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+<<<<<<< HEAD
 		promoName: {
 			type: String,
 			default: () => {},
@@ -178,9 +184,12 @@ export default {
 			default: 'Continue'
 		},
 		promoFundId: {
+=======
+		managedAccountId: {
+>>>>>>> 454b9b2a4 (feat: guest checkout api changes)
 			type: String,
-			default: '',
-		},
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -210,6 +219,9 @@ export default {
 			});
 			// Using the first promoFund available
 			return appliedCreditsPromoFunds[0] || null;
+		},
+		promoFundId() {
+			return this.promoFund?.id || null;
 		},
 		registerOrLoginHref() {
 			return `/ui-login?autoPage=true&force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;

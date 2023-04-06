@@ -142,7 +142,7 @@ export default {
 			default: '',
 		},
 		managedAccountId: {
-			type: String,
+			type: Number,
 			default: '',
 		},
 	},
@@ -229,7 +229,7 @@ export default {
 		},
 		validatePromoGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validateGuestPromoBasket(this.email, this.emailUpdates, 'kiva.org')
+			this.validateGuestPromoBasket(this.email, this.emailUpdates, this.promoFundId, this.managedAccountId)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();

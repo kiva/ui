@@ -2,7 +2,7 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
-import registerUser from '@/graphql/mutation/checkout/registerUser.graphql';
+import recordUserForPromo from '@/graphql/mutation/checkout/recordUserForPromo.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '@/util/logFormatter';
@@ -89,9 +89,10 @@ export default {
 			return new Promise((resolve, reject) => {
 				debugger;
 				this.apollo.mutate({
-					mutation: registerUser,
+					mutation: recordUserForPromo,
 					variables: {
-						userEmailAddress: guestEmail,
+						// userEmailAddress: guestEmail,
+						userEmailAddress: "myfancyemail@gmail.com",
 						promoFundId,
 						managedAccountId,
 						userId: this.cookieStore.get('uiv') || null

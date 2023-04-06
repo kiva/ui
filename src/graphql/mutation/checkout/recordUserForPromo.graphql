@@ -1,0 +1,10 @@
+mutation recordUserForPromo($userId: Int!, $userEmailAddress: String!, $managedAccountId: Int!, $promoFundId: Int!) {
+    recordUserForPromo (
+      userId: $userId,
+      userEmailAddress: $userEmailAddress,
+      managedAccountId: $managedAccountId,
+      promoFundId: $promoFundId
+    ) {
+      status
+    }
+}
