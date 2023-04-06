@@ -4,6 +4,7 @@
 			<kv-select
 				id="lend-increment-amount"
 				v-model="selectedOption"
+				@update:modelValue="trackLendAmountSelection"
 			>
 				<option
 					v-for="price in prices"
@@ -121,5 +122,14 @@ export default {
 			immediate: true,
 		}
 	},
+	methods: {
+		trackLendAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'Lending',
+				'Modify lend amount',
+				selectedDollarAmount
+			);
+		},
+	}
 };
 </script>

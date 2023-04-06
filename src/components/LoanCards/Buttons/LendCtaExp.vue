@@ -19,6 +19,7 @@
 						class="tw-min-w-12"
 						v-model="selectedOption"
 						v-kv-track-event="['Lending', 'click-Modify loan amount', 'open dialog', loanId, loanId]"
+						@update:modelValue="trackLendAmountSelection"
 					>
 						<option
 							v-for="priceOption in prices"
@@ -167,6 +168,13 @@ export default {
 				return Number(unreservedAmount).toFixed();
 			}
 			return '25';
+		},
+		trackLendAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'Lending',
+				'Modify lend amount',
+				selectedDollarAmount
+			);
 		},
 	},
 	watch: {
