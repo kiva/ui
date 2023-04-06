@@ -1,3 +1,16 @@
+## [2.555.0](https://github.com/kiva/ui/compare/v2.554.0...v2.555.0) (2023-04-06)
+
+
+### Features
+
+* grid added to filter page for new loan cards test ([e22cd0e](https://github.com/kiva/ui/commit/e22cd0e4311467b7650243682544468265a07462))
+* new loan card test added to filter page ([2477a34](https://github.com/kiva/ui/commit/2477a341fbc2698056b6cbb97843d64b5d5e1c15))
+
+
+### Bug Fixes
+
+* avoid updating state for new loan card test ([a3db5ac](https://github.com/kiva/ui/commit/a3db5aca682c0edc106a3a3952cf349d09b84510))
+
 ## [2.554.0](https://github.com/kiva/ui/compare/v2.553.0...v2.554.0) (2023-04-04)
 
 
