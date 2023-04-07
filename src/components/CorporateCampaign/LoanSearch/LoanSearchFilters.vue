@@ -2,20 +2,12 @@
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
 			<span class="tw-mb-2 md:tw-mb-0">
-				<div
-					v-if="promoName"
-					class="tw-inline-flex tw-items-center"
-				>
-					<h2 class="tw-text-center">
+				<div class="tw-inline-flex tw-items-center">
+					<h2 v-if="promoName" class="tw-text-center">
 						{{ promoName }} recommends these people
 					</h2>
-				</div>
-				<div
-					v-else
-					class="tw-inline-flex tw-items-center"
-				>
-					<h2 class="tw-text-center">
-						Support causes you care about
+					<h2 v-else class="tw-text-center">
+						Support causes you care about.
 					</h2>
 				</div>
 			</span>

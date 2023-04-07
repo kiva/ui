@@ -33,6 +33,7 @@
 				:is-visitor="isVisitor"
 				:user-data="userData"
 				:is-loading="isLoading"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 			/>
 		</div>
 

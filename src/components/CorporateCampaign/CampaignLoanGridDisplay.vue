@@ -12,8 +12,9 @@
 					:key="`loan-${loan}`"
 					:loan-id="loan"
 					:lend-now-button="true"
-					custom-checkout-route="#show-basket"
+					:checkout-route="checkoutRoute"
 					:custom-loan-details="true"
+					:custom-checkout-button-text="getCheckoutBtnText(loan)"
 					@show-loan-details="showLoanDetails(loans[index])"
 					@add-to-basket="addToBasket"
 				/>
@@ -60,6 +61,7 @@ import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import numeral from 'numeral';
 
 const loansPerPage = 9;
 
@@ -125,6 +127,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		basketLoans: {
+			type: Array,
+			default: () => []
+		},
 		promoOnly: {
 			type: Object,
 			default: null
@@ -132,6 +138,10 @@ export default {
 		sortBy: {
 			type: String,
 			default: 'popularity'
+		},
+		checkoutRoute: {
+			type: String,
+			default: '#show-basket'
 		}
 	},
 	data() {
@@ -203,6 +213,13 @@ export default {
 		this.loanQueryFilters = this.filters;
 	},
 	methods: {
+		getCheckoutBtnText(loan) {
+			const amount = this.getAmountLended(loan);
+			if (amount > 0) {
+				return `Supported for ${numeral(amount).format('$0')}`;
+			}
+			return 'Supported';
+		},
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
@@ -271,6 +288,11 @@ export default {
 		},
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
+		},
+		getAmountLended(loanId) {
+			if (this.basketLoans.length > 0) {
+				return this.basketLoans?.find(loan => String(loan.id) === String(loanId))?.price;
+			}
 		}
 	},
 };

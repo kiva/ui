@@ -49,15 +49,51 @@
 			</div>
 		</div>
 		<div
+			v-if="leftoverCreditAllocationLoanId === String(loan.id) && isCorporateCampaignPage"
+			class="tw-w-full
+					md:tw-w-auto
+					md:tw-ml-3
+					lg:tw-ml-6
+					tw-mt-1.5
+					md:tw-mt-0"
+		>
+			<div
+				class="
+					tw-bg-brand-50
+					tw-rounded
+					tw-p-2
+			"
+			>
+				<span
+					class="tw-text-action
+							tw-block"
+				>
+					The remaining ${{ loan.price }} will be lent to this borrower.
+				</span>
+				<span
+					class="tw-text-primary
+							tw-block"
+				>
+					<u
+						class="tw-cursor-pointer"
+						@click="$emit('jump-to-loans')"
+					>
+						Choose another borrower
+					</u>
+				</span>
+			</div>
+		</div>
+		<div
+			v-else
 			class="
-			tw-flex-none
-			tw-w-full
-			md:tw-w-auto
-			md:tw-ml-3
-			lg:tw-ml-4.5
-			tw-mt-1.5
-			md:tw-mt-0
-			loan-res-price-wrapper"
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0
+				loan-res-price-wrapper"
 		>
 			<loan-price
 				data-testid="basket-loan-price-selector"
@@ -97,7 +133,7 @@ export default {
 		RemoveBasketItem,
 		TeamAttribution
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		disableRedirects: {
 			type: Boolean,
@@ -134,6 +170,12 @@ export default {
 				return appliedCredits.length ? appliedCredits : [];
 			}
 			return [];
+		},
+		leftoverCreditAllocationLoanId() {
+			return this.cookieStore.get('lcaid');
+		},
+		isCorporateCampaignPage() {
+			return this.$route.path.substring(0, 4) === '/cc/';
 		}
 	},
 	methods: {

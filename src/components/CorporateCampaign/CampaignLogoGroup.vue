@@ -38,8 +38,8 @@ export default {
 			required: false
 		},
 		logoHeight: {
-			type: Number,
-			default: 28,
+			type: String,
+			default: '28',
 			required: false
 		}
 	},

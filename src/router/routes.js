@@ -100,8 +100,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/checkout/iwd-challenge/thanks',
-		component: () => import('@/pages/Thanks/ThanksPageIwdChallenge'),
+		path: '/checkout/earthday-challenge/thanks',
+		component: () => import('@/pages/Thanks/ThanksPageEarthDayChallenge'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}

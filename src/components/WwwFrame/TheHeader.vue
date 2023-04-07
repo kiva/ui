@@ -41,7 +41,7 @@
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								{{ basketCount }}
+								{{ basketCount - lcaLoanCount }}
 							</span>
 							Basket
 						</router-link>
@@ -578,6 +578,7 @@ export default {
 			trusteeId: null,
 			isFreeTrial: false,
 			basketCount: 0,
+			lcaLoanCount: 0,
 			balance: 0,
 			profilePic: '',
 			profilePicId: null,
@@ -612,8 +613,8 @@ export default {
 			default: ''
 		},
 		logoHeight: {
-			type: Number,
-			default: 28,
+			type: String,
+			default: '28',
 			required: false
 		},
 		logoClasses: {
@@ -644,6 +645,9 @@ export default {
 			};
 		},
 		hasBasket() {
+			if (this.corporate) {
+				return this.basketCount - this.lcaLoanCount > 0 && !this.isFreeTrial;
+			}
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
 		hidePromoCreditBanner() {
@@ -886,6 +890,10 @@ export default {
 					document.removeEventListener('pointerup', this.withinBoundaryCheck);
 				}
 			});
+		},
+		basketCount() {
+			// update leftover credit allocation loan count when basket count is updated
+			this.lcaLoanCount = this.cookieStore.get('lcaid') ? 1 : 0;
 		}
 	}
 };
