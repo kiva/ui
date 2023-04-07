@@ -1,7 +1,8 @@
 <template>
 	<div
 		:id="`${loanId}-loan-card`"
-		class="tw-flex tw-flex-col tw-p-1 tw-bg-white tw-rounded tw-w-full"
+		class="tw-flex tw-flex-col tw-bg-white tw-rounded tw-w-full tw-pb-1"
+		:class="{ 'tw-p-1': !largeCard }"
 		style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"
 		:style="{ minWidth: '230px', maxWidth: cardWidth }"
 	>
@@ -10,7 +11,9 @@
 				<!-- Borrower image -->
 				<kv-loading-placeholder
 					v-if="isLoading"
-					class="tw-mb-1 tw-rounded" :style="{ width: '100%', height: imgPlaceholderHeight }"
+					class="tw-mb-1 tw-w-full"
+					:class="{ 'tw-rounded-t tw-rounded-b-none': largeCard, 'tw-rounded': !largeCard }"
+					:style="{ height: '15rem' }"
 				/>
 				<div
 					v-else
@@ -27,20 +30,13 @@
 								tw-relative
 								tw-w-full
 								tw-bg-black
-								tw-rounded
 							"
+							:class="{ 'tw-rounded-t': largeCard, 'tw-rounded': !largeCard }"
 							:alt="`Photo of ${borrowerName}`"
-							:aspect-ratio="3 / 4"
-							:default-image="{ width: 336 }"
+							:aspect-ratio="imageAspectRatio"
+							:default-image="{ width: imageDefaultWidth }"
 							:hash="imageHash"
-							:images="[
-								{ width: largestImageWidth, viewSize: 1024 },
-								{ width: largestImageWidth, viewSize: 768 },
-								{ width: 416, viewSize: 480 },
-								{ width: 374, viewSize: 414 },
-								{ width: 335, viewSize: 375 },
-								{ width: 280 },
-							]"
+							:images="imageSizes"
 						/>
 
 						<div v-if="countryName">
@@ -66,6 +62,7 @@
 					:to="customLoanDetails ? '' : `/lend/${loanId}`"
 					v-kv-track-event="['Lending', 'click-Read more', 'Tag', loanId]"
 					class="tw-flex hover:tw-no-underline focus:tw-no-underline"
+					:class="{ 'tw-px-1': largeCard }"
 				>
 					<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 				</router-link>
@@ -79,7 +76,9 @@
 					<div class="tw-mb-1.5 tw-pt-1">
 						<kv-loading-paragraph
 							v-if="isLoading"
-							:style="{ width: '100%', height: '5.5rem' }"
+							class="tw-w-full"
+							:class="{ 'tw-px-1': largeCard }"
+							:style="{ height: '5.5rem' }"
 						/>
 						<div v-else>
 							<loan-use
@@ -90,6 +89,7 @@
 								:name="borrowerName"
 								:distribution-model="distributionModel"
 								:show-more="enableMoreCta"
+								:class="{ 'tw-px-1': largeCard }"
 							/>
 						</div>
 					</div>
@@ -99,14 +99,15 @@
 			<!-- Loan call outs -->
 			<kv-loading-placeholder
 				v-if="isLoading || typeof loanCallouts === 'undefined'"
-				class="tw-mt-1.5 tw-mb-2"
+				class="tw-mt-1.5 tw-mb-1"
+				:class="{ 'tw-mx-1': largeCard }"
 				:style="{ width: '60%', height: '1.75rem', 'border-radius': '500rem' }"
 			/>
 
-			<loan-callouts v-else :callouts="loanCallouts" class="tw-mt-1.5" />
+			<loan-callouts v-else :callouts="loanCallouts" class="tw-mt-1.5" :class="{ 'tw-px-1': largeCard }" />
 		</div>
 
-		<div class="tw-flex tw-justify-between tw-mt-2">
+		<div class="tw-flex tw-justify-between tw-mt-2" :class="{ 'tw-px-1': largeCard }">
 			<!-- Fundraising -->
 			<div v-if="!hasProgressData" class="tw-w-full tw-pt-1 tw-pr-1">
 				<kv-loading-placeholder
@@ -229,10 +230,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		perRow: {
-			type: Number,
-			default: 3
-		},
 		categoryPageName: {
 			type: String,
 			default: '',
@@ -242,6 +239,10 @@ export default {
 			default: false
 		},
 		enableMoreCta: {
+			type: Boolean,
+			default: false
+		},
+		largeCard: {
 			type: Boolean,
 			default: false
 		},
@@ -277,12 +278,6 @@ export default {
 	computed: {
 		cardWidth() {
 			return this.useFullWidth ? '100%' : '374px';
-		},
-		largestImageWidth() {
-			// We currently only use grid or carousel rows with 2 or 3 loan cards
-			// TODO: update cloudinary image settings to allow for exact new size if experiment wins
-			// https://kiva.atlassian.net/browse/CORE-1045
-			return this.perRow === 2 ? 548 : 336;
 		},
 		amountLeft() {
 			const loanFundraisingInfo = this.loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
@@ -356,17 +351,31 @@ export default {
 		loanBorrowerCount() {
 			return this.loan?.borrowerCount ?? 0;
 		},
-		imgPlaceholderHeight() {
-			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-
-			if (viewportWidth >= 1024) {
-				if (this.perRow === 2) return '23rem'; return '14rem';
-			}
-			return '14rem';
-		},
 		lessThan25() {
 			return this.amountLeft < 25 && this.amountLeft !== 0;
 		},
+		imageAspectRatio() {
+			if (this.largeCard) {
+				return 5 / 8;
+			}
+			return 3 / 4;
+		},
+		imageDefaultWidth() {
+			return this.largeCard ? 480 : 336;
+		},
+		imageSizes() {
+			if (this.largeCard) {
+				return [{ width: 480 }];
+			}
+			return [
+				{ width: this.imageDefaultWidth, viewSize: 1024 },
+				{ width: this.imageDefaultWidth, viewSize: 768 },
+				{ width: 416, viewSize: 480 },
+				{ width: 374, viewSize: 414 },
+				{ width: 335, viewSize: 375 },
+				{ width: 300 },
+			];
+		}
 	},
 	methods: {
 		showLoanDetails(e) {

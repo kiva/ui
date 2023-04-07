@@ -42,7 +42,7 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 				:loan-id="loanId"
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
-				:per-row="perRow"
+				:large-card="largeCard"
 			/>
 		`,
 	})
@@ -85,7 +85,14 @@ export const InBasket = story({
 	loanId: loan.id,
 }, false, {}, { shop: { basket: { items: { values: [{ id: loan.id, __typename: 'LoanReservation' }] } } } });
 
-export const LargerImage = story({
+export const LargeCardLoading = story({
 	loanId: loan.id,
-	perRow: 2
+	showTags: true,
+	largeCard: true
+}, true);
+
+export const LargeCard = story({
+	loanId: loan.id,
+	showTags: true,
+	largeCard: true
 });
