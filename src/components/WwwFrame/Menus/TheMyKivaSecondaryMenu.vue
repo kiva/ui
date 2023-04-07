@@ -4,6 +4,16 @@
 			<ul>
 				<li class="tw-inline-block">
 					<router-link
+						v-if="showImpactDashboard"
+						to="/portfolio/impact"
+						active-class="tw-underline"
+						class="desktop-link"
+						v-kv-track-event="['SecondaryNav','click-MyKiva-My-impact']"
+					>
+						My impact
+					</router-link>
+					<router-link
+						v-else
 						to="/portfolio"
 						active-class="tw-underline"
 						class="desktop-link"
@@ -197,6 +207,7 @@ export default {
 			isTrustee: false,
 			usingTouch: false,
 			mdiChevronDown,
+			showImpactDashboard: false,
 		};
 	},
 	apollo: {
@@ -209,12 +220,17 @@ export default {
 				}
 			}
 			usingTouch @client
+			impactDashboard: experiment(id: "impact_dashboard") @client {
+				id
+				version
+			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.isTrustee = !!data?.my?.trustee?.id;
 			this.usingTouch = data?.usingTouch ?? false;
+			this.showImpactDashboard = data?.impactDashboard?.version === 'b';
 		},
 	},
 	computed: {

@@ -463,8 +463,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/portfolio/overview',
-		component: () => import('@/pages/Portfolio/PortfolioOverviewPage'),
+		path: '/portfolio/impact',
+		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -472,7 +472,7 @@ module.exports = [
 	},
 	{
 		path: '/portfolio/lending-stats',
-		component: () => import('@/pages/LendingStats/LendingStatsPage'),
+		component: () => import('@/pages/Portfolio/LendingStats/LendingStatsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
