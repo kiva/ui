@@ -25,7 +25,7 @@
 					class="tw-col-span-12 md:tw-col-span-6"
 				>
 					<img
-						src="@/assets/images/achievements/thankyou_badge@2x.jpg"
+						src="@/assets/images/achievements/thankyou_badge_earthday@2x.jpg"
 						alt="Thank you badge"
 						class="tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
 					>
@@ -35,24 +35,24 @@
 					<h2>Way to go!</h2>
 					<p class="tw-text-subhead tw-mt-1">
 						<!-- eslint-disable-next-line max-len -->
-						You earned the 2023 International Women’s Day badge by lending to a woman! Thank you for supporting gender equity worldwide.
+						You earned the 2023 Earth Day badge by lending to a climate-smart loan! Thank you for helping people solve climate-related issues in their communities and build resilience for the future.
 					</p>
 					<router-link
 						to="/portfolio/lending-stats"
 						class="tw-mt-2 tw-inline-block"
-						v-kv-track-event="['post-checkout', 'click', 'iwd-thanks-view-your-badge']"
+						v-kv-track-event="['post-checkout', 'click', 'view-your-badge', 'challenge-earth-day']"
 					>
 						<h3>View your badge</h3>
 					</router-link>
 					<div
 						class="tw-bg-black tw-bg-opacity-[65%] tw-rounded tw-flex tw-items-center
-						tw-p-1 tw-mt-3 md:tw-mt-6"
+						tw-p-1.5 tw-mt-3 md:tw-mt-6"
 						style="max-width: 295px;"
 					>
 						<h3 class="tw-text-primary-inverse tw-mr-1.5">
 							You've completed your {{ achievementNumberLanguage }} challenge.
 						</h3>
-						<iwd-challenge-badge class="tw-h-6 tw-w-6 tw-flex-none tw-mx-auto" />
+						<earth-day-challenge-badge class="tw-h-6 tw-w-6 tw-flex-none tw-mx-auto" />
 					</div>
 				</div>
 			</kv-grid>
@@ -72,7 +72,7 @@
 					>
 						<div>
 							<h3 class="tw-mb-1">
-								2023 Women's Day challenge
+								2023 Earth Day challenge
 							</h3>
 							<kv-progress-bar
 								aria-label="Completion of challenge"
@@ -85,30 +85,30 @@
 					</div>
 				</div>
 				<div class="tw-mt-3 tw-mb-4 md:tw-mb-6">
-					<p class="tw-text-subhead" v-html="iwdFact">
+					<p class="tw-text-subhead" v-html="earthDayFact">
 					</p>
 					<div class="tw-flex">
 						<kv-social-share-button
 							class="tw-mt-3"
-							modal-title="Spread the word about gender equity"
-							:share-message="iwdFact"
-							share-url="/gender-equality"
+							modal-title="Spread the word about climate resilience"
+							:share-message="earthDayFact"
+							share-url="/blog/climate-resilience"
 							variant="primary"
-							utm-campaign="iwd_challenge_thanks_page"
+							utm-campaign="earthday_challenge_thanks_page"
 							style="max-width: 190px;"
 							tracking-category="post-checkout"
 						>
 							Share this fact
 							<template #modal-content>
-								{{ iwdFact }}
+								{{ earthDayFact }}
 							</template>
 						</kv-social-share-button>
 						<kv-button
 							class="tw-mt-3 tw-ml-3"
-							href="/gender-equality"
+							href="/blog/climate-resilience"
 							variant="secondary"
 							style="max-width: 190px;"
-							v-kv-track-event="['post-checkout', 'click', 'iwd-thanks-learn-more']"
+							v-kv-track-event="['post-checkout', 'click', 'learn-more', 'challenge-earth-day']"
 						>
 							Learn More
 						</kv-button>
@@ -118,7 +118,7 @@
 			<div class="tw-text-center tw-mt-1 tw-mb-4">
 				<router-link
 					to="/portfolio"
-					v-kv-track-event="['post-checkout', 'click', 'iwd-thanks-portfolio']"
+					v-kv-track-event="['post-checkout', 'click', 'portfolio', 'challenge-earth-day']"
 				>
 					Continue to my portfolio
 				</router-link>
@@ -135,14 +135,13 @@ import numeral from 'numeral';
 
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
-import { FLSS_ORIGIN_THANKS } from '@/util/flssUtils';
 import logFormatter from '@/util/logFormatter';
 import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
 
-import IwdChallengeBadge from '@/assets/icons/inline/achievements/iwd-badge.svg';
+import EarthDayChallengeBadge from '@/assets/icons/inline/achievements/earthday-badge.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -150,9 +149,9 @@ import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
-	name: 'ThanksPageIwdChallenge',
+	name: 'ThanksPageEarthDayChallenge',
 	components: {
-		IwdChallengeBadge,
+		EarthDayChallengeBadge,
 		KvGrid,
 		KvMaterialIcon,
 		KvPageContainer,
@@ -173,7 +172,6 @@ export default {
 			allAchievements: [],
 			mdiCheckAll,
 			receipt: null,
-			ecoExpQueryContext: FLSS_ORIGIN_THANKS
 		};
 	},
 	apollo: {
@@ -192,12 +190,12 @@ export default {
 				return client.query({
 					query: userAchievementsProgress,
 					variables: {
-						userId: data?.my?.userAccount?.id,
+						userId: data?.my?.userAccount?.id?.toString(),
 					},
 				});
 			}).catch(errorResponse => {
 				logFormatter(
-					`Thanks iwd challenge page preFetch failed: (transaction_id: ${transactionId})`,
+					`Thanks earthday challenge page preFetch failed: (transaction_id: ${transactionId})`,
 					'error',
 					{ errorResponse }
 				);
@@ -205,9 +203,9 @@ export default {
 		}
 	},
 	computed: {
-		iwdFact() {
+		earthDayFact() {
 			// eslint-disable-next-line max-len
-			return 'This International Women’s Day, you made a tangible difference in a woman’s life! Globally, the number of unbanked women has dropped 24% in the last six years. Kiva is chipping away at that number and advancing gender equity every day.';
+			return 'Thank you for helping someone make a climate-positive change in their community! Climate change could reduce agriculture yields by up to 30% by 2050. Learn more about how Kiva supports climate resilience for smallholder farmers worldwide.';
 		},
 		completedAchievements() {
 			return this.allAchievements.filter(
@@ -215,8 +213,11 @@ export default {
 			);
 		},
 		achievementNumberLanguage() {
-			if (this.completedAchievements.length > 0) {
+			if (this.completedAchievements.length === 3) {
 				// there have only been 2 achievements so far
+				return 'third';
+			}
+			if (this.completedAchievements.length === 2) {
 				return 'second';
 			}
 			return 'first';
@@ -238,7 +239,7 @@ export default {
 			});
 		} catch (e) {
 			logReadQueryError(e,
-				`Thanks iwd challenge page readQuery failed: (transaction_id: ${transactionId})`);
+				`Thanks earthday challenge page readQuery failed: (transaction_id: ${transactionId})`);
 		}
 		this.lender = {
 			...(data?.my?.userAccount ?? {})
@@ -249,20 +250,7 @@ export default {
 		// But it will not throw a server error.
 		this.receipt = data?.shop?.receipt ?? null;
 
-		let achievementData = {};
-		try {
-			achievementData = this.apollo.readQuery({
-				query: userAchievementsProgress,
-				variables: {
-					userId: data?.my?.userAccount?.id,
-				}
-			});
-		} catch (e) {
-			logReadQueryError(e,
-				`Thanks iwd challenge achievements readQuery failed: (transaction_id: ${transactionId})`);
-		}
-		this.allAchievements = achievementData?.data?.userAchievementProgress?.achievementProgress ?? [];
-
+		// log errors if data is missing
 		if (!data?.my?.userAccount) {
 			logFormatter(
 				`Failed to get lender for transaction id: ${transactionId}`,
@@ -277,6 +265,21 @@ export default {
 				{ data }
 			);
 		}
+
+		// Get achievement completion status
+		let achievementData = {};
+		try {
+			achievementData = this.apollo.readQuery({
+				query: userAchievementsProgress,
+				variables: {
+					userId: data?.my?.userAccount?.id?.toString(),
+				}
+			});
+		} catch (e) {
+			logReadQueryError(e,
+				`Thanks earthday challenge achievements readQuery failed: (transaction_id: ${transactionId})`);
+		}
+		this.allAchievements = achievementData?.userAchievementProgress?.achievementProgress ?? [];
 	},
 	mounted() {
 		if (this.receipt) {
