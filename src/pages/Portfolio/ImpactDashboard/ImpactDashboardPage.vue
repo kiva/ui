@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -38,6 +40,7 @@ import YourTeams from './YourTeams';
 
 export default {
 	name: 'ImpactDashboardPage',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AccountOverview,
 		AccountUpdates,
@@ -53,5 +56,29 @@ export default {
 		WwwPage,
 		YourTeams,
 	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: experimentAssignmentQuery,
+				variables: {
+					id: 'impact_dashboard',
+				},
+			}).then(({ data }) => {
+				if (data?.experiment?.version !== 'b') {
+					return Promise.reject({ path: '/portfolio' });
+				}
+			});
+		},
+	},
+	mounted() {
+		// Impact Dashboard page redesign experiment MARS-344 MARS-348
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Portfolio',
+			'impact_dashboard',
+			'EXP-MARS-344-Mar2023'
+		);
+	}
 };
 </script>

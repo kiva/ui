@@ -2,6 +2,16 @@
 	<ul class="tw-font-medium">
 		<li>
 			<router-link
+				v-if="showImpactDashboard"
+				to="/portfolio/impact"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"
+			>
+				My impact
+			</router-link>
+			<router-link
+				v-else
 				to="/portfolio"
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
@@ -143,6 +153,7 @@ export default {
 		return {
 			userBalance: 0,
 			publicId: '',
+			showImpactDashboard: false,
 		};
 	},
 	computed: {
@@ -170,11 +181,16 @@ export default {
 					balance
 				}
 			}
+			impactDashboard: experiment(id: "impact_dashboard") @client {
+				id
+				version
+			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.userBalance = data?.my?.userAccount?.balance ?? 0;
 			this.publicId = data?.my?.userAccount?.publicId ?? '';
+			this.showImpactDashboard = data?.impactDashboard?.version === 'b';
 		}
 	},
 };
