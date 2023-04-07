@@ -64,6 +64,9 @@
 				>
 					I want to receive updates about my loans, Kiva news, and promotions in my inbox
 				</kv-base-input>
+				<p v-if="showSsoTerms" class="tw-text-tertiary tw-text-small">
+					{{ ssoTerms }}
+				</p>
 				<kv-button
 					class="register-button tw-w-full tw-mb-2"
 					type="submit"
@@ -114,6 +117,7 @@ export default {
 			needsNews: false,
 			newAcctTerms: false,
 			newsConsent: false,
+			showSsoTerms: false,
 		};
 	},
 	computed: {
@@ -127,6 +131,9 @@ export default {
 			}
 			return parts.length ? `To finish creating your account, please ${parts.join(' and ')}.` : '';
 		},
+		ssoTerms() {
+			return 'Kiva will share your name and email address with the organization you are registering with to let them know you\'ve redeemed your credits.';
+		}
 	},
 	validations() {
 		const validations = {};
@@ -150,6 +157,9 @@ export default {
 		}
 		if (this.$route.query.news) {
 			this.needsNews = true;
+		}
+		if (this.$route.query.sso) {
+			this.showSsoTerms = true;
 		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms && !this.$route.query.names && !this.$route.query.news) {
