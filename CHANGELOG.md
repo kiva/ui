@@ -1,3 +1,10 @@
+## [2.560.0](https://github.com/kiva/ui/compare/v2.559.1...v2.560.0) (2023-04-10)
+
+
+### Features
+
+* add sso terms to social registration page when custom sso is used ([e1672e2](https://github.com/kiva/ui/commit/e1672e247a11683695879eaa7085ef3404720819))
+
 ### [2.559.1](https://github.com/kiva/ui/compare/v2.559.0...v2.559.1) (2023-04-10)
 
 
