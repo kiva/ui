@@ -1,3 +1,10 @@
+### [2.559.1](https://github.com/kiva/ui/compare/v2.559.0...v2.559.1) (2023-04-10)
+
+
+### Bug Fixes
+
+* don't show CTA until progress loaded ([2be99e8](https://github.com/kiva/ui/commit/2be99e89dc8448b362f3298caa85a57a2aaff808))
+
 ## [2.559.0](https://github.com/kiva/ui/compare/v2.558.0...v2.559.0) (2023-04-10)
 
 
