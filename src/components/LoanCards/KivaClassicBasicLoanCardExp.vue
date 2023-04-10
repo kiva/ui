@@ -20,6 +20,13 @@
 					class="tw-relative"
 					@click="showLoanDetails"
 				>
+					<loan-bookmark-exp
+						v-if="!isVisitor"
+						:loan-id="loanId"
+						class="tw-absolute tw-right-1 tw-z-2"
+						style="top: -6px;"
+						data-testid="loan-card-bookmark"
+					/>
 					<router-link
 						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
@@ -175,6 +182,7 @@ import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/bas
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
+import LoanBookmarkExp from '@/components/LoanCards/Buttons/LoanBookmarkExp';
 import LoanTagV2 from '@/components/LoanCards/LoanTags/LoanTagV2';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -203,6 +211,12 @@ const loanQuery = gql`
 			unreservedAmount @client
 			fundraisingPercent @client
 			fundraisingTimeLeft @client
+		}
+	}
+	my {
+		id
+		userAccount {
+			id
 		}
 	}
 }`;
@@ -260,6 +274,7 @@ export default {
 		LendCtaExp,
 		LoanTagV2,
 		LoanCallouts,
+		LoanBookmarkExp,
 	},
 	data() {
 		return {
@@ -273,6 +288,7 @@ export default {
 			viewportObserver: null,
 			isAdding: false,
 			loanCallouts: undefined,
+			isVisitor: true,
 		};
 	},
 	computed: {
@@ -435,6 +451,8 @@ export default {
 					// no-op
 				}
 			}
+
+			this.isVisitor = !result.data?.my?.userAccount?.id ?? true;
 
 			this.loan = result.data?.lend?.loan || null;
 
