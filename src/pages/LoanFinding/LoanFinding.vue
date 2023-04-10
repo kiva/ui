@@ -39,7 +39,7 @@
 
 			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				v-if="secondCategoryLoans.length > 0"
+				v-if="secondCategoryActive"
 				:title="secondCategoryTitle"
 				:subtitle="secondCategorySubtitle"
 				:loans="secondCategoryLoans"
@@ -124,6 +124,7 @@ export default {
 			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
+			secondCategoryActive: false,
 		};
 	},
 	apollo: {
@@ -198,7 +199,11 @@ export default {
 		async getSecondCategoryData() {
 			this.secondCategoryLoans = await this.getMatchedLoans();
 			this.matchedLoansTotal = this.secondCategoryLoans.length;
-			if (this.matchedLoansTotal < 3) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
+			if (this.matchedLoansTotal < 3) {
+				const fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
+				this.secondCategoryLoans = [...this.secondCategoryLoans, ...fallbackLoans].slice(0, 9);
+			}
+			this.secondCategoryActive = true;
 		},
 		async getExpiringSoonAlmostFundedCombo() {
 			const expiringSoonData = await runLoansQuery(
