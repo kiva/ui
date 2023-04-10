@@ -58,6 +58,10 @@ export const Loading = story({
 	loanId: loan.id,
 }, true);
 
+export const PartialLoading = story({
+	loanId: loan.id,
+}, false, { unreservedAmount: undefined, fundraisingPercent: undefined });
+
 export const UseFullWidth = story({
 	loanId: loan.id,
 	useFullWidth: true
