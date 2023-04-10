@@ -138,7 +138,7 @@
 
 			<!-- CTA Button -->
 			<kv-loading-placeholder
-				v-if="isLoading"
+				v-if="!allDataLoaded"
 				class="tw-rounded tw-self-start" :style="{ width: '9rem', height: '3rem' }"
 			/>
 
@@ -318,6 +318,9 @@ export default {
 			// Local resolver values for the progress bar load client-side
 			return typeof this.loan?.unreservedAmount !== 'undefined'
 				&& typeof this.loan?.fundraisingPercent !== 'undefined';
+		},
+		allDataLoaded() {
+			return !this.isLoading && this.hasProgressData;
 		},
 		fundraisingPercent() {
 			return this.loan?.fundraisingPercent ?? 0;
