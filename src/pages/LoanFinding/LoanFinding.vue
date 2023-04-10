@@ -198,7 +198,7 @@ export default {
 		async getSecondCategoryData() {
 			this.secondCategoryLoans = await this.getMatchedLoans();
 			this.matchedLoansTotal = this.secondCategoryLoans.length;
-			if (this.matchedLoansTotal === 0) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
+			if (this.matchedLoansTotal < 3) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
 		},
 		async getExpiringSoonAlmostFundedCombo() {
 			const expiringSoonData = await runLoansQuery(
