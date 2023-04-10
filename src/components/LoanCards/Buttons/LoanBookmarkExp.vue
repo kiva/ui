@@ -2,8 +2,8 @@
 	<div>
 		<template>
 			<button
-				style="border-radius: 8px;"
-				class="tw-cursor-pointer tw-font-medium tw-bg-white tw-p-0.5 tw-flex tw-justify-center"
+				style="border-radius: 8px; padding: 3px;"
+				class="tw-cursor-pointer tw-font-medium tw-bg-white tw-flex tw-justify-center"
 				@click="toggleBookmark()"
 			>
 				<kv-material-icon

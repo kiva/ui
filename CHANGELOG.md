@@ -1,3 +1,10 @@
+### [2.560.1](https://github.com/kiva/ui/compare/v2.560.0...v2.560.1) (2023-04-10)
+
+
+### Bug Fixes
+
+* use experiment key instead of name ([023d65d](https://github.com/kiva/ui/commit/023d65d666d3012a6f2dd16fae4d051146561917))
+
 ## [2.560.0](https://github.com/kiva/ui/compare/v2.559.1...v2.560.0) (2023-04-10)
 
 

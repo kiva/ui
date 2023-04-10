@@ -23,7 +23,7 @@
 					<loan-bookmark-exp
 						v-if="!isVisitor"
 						:loan-id="loanId"
-						class="tw-absolute tw-right-1.5 tw-z-2"
+						class="tw-absolute tw-right-1 tw-z-2"
 						style="top: -6px;"
 						data-testid="loan-card-bookmark"
 					/>

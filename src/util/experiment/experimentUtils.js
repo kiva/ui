@@ -159,20 +159,20 @@ export function serializeExpCookie(assignments) {
  *     "population": 0.5,
  * }
  *
- * @param {string} param0.name The name of the experiment
- * @param {Object} param0.distribution An object of the variant weights, where each key is the
+ * @param {string} experimentKey The key of the experiment
+ * @param {Object} param1.distribution An object of the variant weights, where each key is the
  * variant ID and the value is the weight of the variant. The weight must be a number between 0 and 1.
- * @param {number} param0.population A number between 0 and 1 representing the fraction of the population
+ * @param {number} param1.population A number between 0 and 1 representing the fraction of the population
  * that should be included in the experiment.
  * @param {string|number} loginId The login ID of the current user. This ID can be the user or visitor ID.
  * @returns {string|number} Returns a variant ID of the experiment
  */
-export function assignVersionForLoginId({ name, distribution, population = 1 }, loginId) {
-	if (!name || !distribution || !loginId) return;
+export function assignVersionForLoginId(experimentKey, { distribution, population = 1 }, loginId) {
+	if (!experimentKey || !distribution || !loginId) return;
 
-	// Seed the pseudo random number generator with the experiment name and login ID
+	// Seed the pseudo random number generator with the experiment key and login ID
 	// The seed ensures that the same number is generated for this experiment and login ID combination
-	const marker = Alea(name, loginId)();
+	const marker = Alea(experimentKey, loginId)();
 
 	let cutoff = 0;
 
