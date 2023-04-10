@@ -196,9 +196,13 @@ export default {
 			];
 		},
 		async getSecondCategoryData() {
-			this.secondCategoryLoans = await this.getMatchedLoans();
-			this.matchedLoansTotal = this.secondCategoryLoans.length;
-			if (this.matchedLoansTotal === 0) this.secondCategoryLoans = await this.getExpiringSoonAlmostFundedCombo(); // eslint-disable-line max-len
+			let fallbackLoans = [];
+			const matchedLoans = await this.getMatchedLoans();
+			this.matchedLoansTotal = matchedLoans.length;
+			if (this.matchedLoansTotal < 3) {
+				fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
+			}
+			this.secondCategoryLoans = [...matchedLoans, ...fallbackLoans].slice(0, 9);
 		},
 		async getExpiringSoonAlmostFundedCombo() {
 			const expiringSoonData = await runLoansQuery(
