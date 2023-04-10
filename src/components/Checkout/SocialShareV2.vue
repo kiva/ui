@@ -12,12 +12,12 @@
 			<a
 				data-testid="share-facebook-button"
 				class="social__btn social__btn--facebook"
-				:href="facebookShareUrl"
+				:href="facebookShareUrl({utmCampaign, utmContent})"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
 					'facebook',
-					`social_share_checkout`,
+					utmCampaign,
 					selectedLoanId]"
 			>
 				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
@@ -26,14 +26,14 @@
 			<a
 				data-testid="share-twitter-button"
 				class="social__btn social__btn--twitter"
-				:href="twitterShareUrl"
+				:href="twitterShareUrl({utmCampaign, utmContent})"
 				target="_blank"
 				rel="noopener"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
 					'twitter',
-					`social_share_checkout`,
+					utmCampaign,
 					selectedLoanId]"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
@@ -43,14 +43,14 @@
 			<a
 				data-testid="share-linkedin-button"
 				class="social__btn social__btn--linkedin"
-				:href="linkedInShareUrl"
+				:href="linkedInShareUrl({utmCampaign, utmContent})"
 				target="_blank"
 				rel="noopener"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
 					'linkedin',
-					`social_share_checkout`,
+					utmCampaign,
 					selectedLoanId]"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
@@ -66,9 +66,9 @@
 					'post-checkout',
 					'share',
 					'copy-link',
-					`social_share_checkout`,
+					utmCampaign,
 					selectedLoanId]"
-				@click="copyLink"
+				@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 			>
 				<kv-icon name="clipboard" class="social__icon" />
 				<span>{{ copyStatus.text }}</span>
@@ -79,9 +79,8 @@
 
 <script>
 import orderBy from 'lodash/orderBy';
-import clipboardCopy from 'clipboard-copy';
-import { getFullUrl } from '@/util/urlUtils';
 import KvIcon from '@/components/Kv/KvIcon';
+import socialSharingMixin from '@/plugins/social-sharing-mixin';
 
 export default {
 	name: 'SocialShareV2',
@@ -114,8 +113,10 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
+			utmCampaign: 'social_share_checkout'
 		};
 	},
+	mixins: [socialSharingMixin],
 	computed: {
 		selectedLoan() {
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
@@ -148,54 +149,16 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoanId) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoanId}?utm_content=${this.utmContent}`; // eslint-disable-line max-len
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoanId}`; // eslint-disable-line max-len
 			}
 
-			return `${base}?utm_content=${this.utmContent}&utm_campaign=social_share_checkout`; // eslint-disable-line max-len
-		},
-		facebookShareUrl() {
-			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			return getFullUrl('https://www.facebook.com/dialog/share', {
-				app_id: this.$appConfig.fbApplicationId,
-				display: 'page',
-				href: `${this.shareLink}&utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`, // eslint-disable-line max-len
-				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
-				quote: this.shareMessage,
-			});
-		},
-		linkedInShareUrl() {
-			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
-				url: `${this.shareLink}&utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout` // eslint-disable-line max-len
-			});
-		},
-		twitterShareUrl() {
-			return getFullUrl('https://twitter.com/intent/tweet', {
-				text: this.shareMessage,
-				url: `${this.shareLink}&utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`, // eslint-disable-line max-len
-				via: 'Kiva',
-			});
+			return base; // eslint-disable-line max-len
 		},
 		shareSubtitle() {
 			return `You can make change happen faster for ${this.selectedLoan.name} by getting the word out. Share their loan with others and have an even bigger impact.`; // eslint-disable-line max-len
 		}
 	},
 	methods: {
-		handleFacebookResponse() {
-			// Check for the route hash that facebook adds to the request
-			if (this.$route.hash === '#_=_') {
-				// Check for an error
-				const { error_code: code, error_message: message } = this.$route.query;
-				if (code) {
-					// The 4201 error code means the user pressed 'Cancel', so can be ignored
-					if (code !== '4201') {
-						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
-					}
-					this.$kvTrackEvent('post-checkout', 'fail', 'share-facebook');
-				} else {
-					this.$showTipMsg('Thanks for sharing to Facebook!');
-				}
-			}
-		},
 		onLoanSelect(index) {
 			// are we currently using the suggested message?
 			const isUsingSuggestedMessage = this.isSuggestedMessage;
@@ -211,34 +174,9 @@ export default {
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
 		},
-		async copyLink() {
-			const url = `${this.shareLink}&utm_source=social_share_link&utm_campaign=social_share_checkout`; // eslint-disable-line max-len
-			try {
-				await clipboardCopy(url);
-				this.copyStatus = {
-					class: 'social__btn--success',
-					disabled: true,
-					text: 'Copied!'
-				};
-			} catch (err) {
-				this.copyStatus = {
-					class: 'social__btn--error',
-					disabled: true,
-					text: 'Error'
-				};
-			} finally {
-				setTimeout(() => {
-					this.copyStatus = {
-						class: '',
-						disabled: false,
-						text: 'Copy Link'
-					};
-				}, 500);
-			}
-		}
 	},
 	mounted() {
-		this.handleFacebookResponse();
+		this.handleFacebookResponse('post-checkout');
 	},
 };
 </script>
