@@ -1,3 +1,16 @@
+## [2.559.0](https://github.com/kiva/ui/compare/v2.558.0...v2.559.0) (2023-04-10)
+
+
+### Features
+
+* large loan card variation ([8e856fb](https://github.com/kiva/ui/commit/8e856fba8e5ae77d352a5484c218afa32131a13c))
+
+
+### Bug Fixes
+
+* callouts work fine without 50% restriction ([9aebe3e](https://github.com/kiva/ui/commit/9aebe3e248143e9d130497eae227fa4dce3eff68))
+* portfolio stories needed updated path ([7853198](https://github.com/kiva/ui/commit/785319802d48cee5bcc5705119b0767078b682ba))
+
 ## [2.558.0](https://github.com/kiva/ui/compare/v2.557.0...v2.558.0) (2023-04-07)
 
 
