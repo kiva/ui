@@ -89,3 +89,7 @@ export const LargerImage = story({
 	loanId: loan.id,
 	perRow: 2
 });
+
+export const LongCallouts = story({
+	loanId: loan.id,
+}, false, { activity: { id: 1, name: 'Longer activity name test that will be longer than 50% of the card' } });

@@ -1,6 +1,6 @@
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KivaCreditStats from '@/pages/Portfolio/KivaCreditStats';
+import KivaCreditStats from '@/pages/Portfolio/ImpactDashboard/KivaCreditStats';
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
