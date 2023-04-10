@@ -1,3 +1,15 @@
+## [2.561.0](https://github.com/kiva/ui/compare/v2.560.1...v2.561.0) (2023-04-10)
+
+
+### Features
+
+* new bookmark button added to new loan card ([6593f3b](https://github.com/kiva/ui/commit/6593f3b22e85c3fdcd4aa6ab2c44fad38ce8fa93))
+
+
+### Bug Fixes
+
+* design fixes and unused code removed ([75a5f37](https://github.com/kiva/ui/commit/75a5f37b3b5ac1c81ae8c4ee99c5fc3f5e052573))
+
 ### [2.560.1](https://github.com/kiva/ui/compare/v2.560.0...v2.560.1) (2023-04-10)
 
 
