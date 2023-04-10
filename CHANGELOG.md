@@ -1,3 +1,16 @@
+## [2.562.0](https://github.com/kiva/ui/compare/v2.561.0...v2.562.0) (2023-04-10)
+
+
+### Features
+
+* fallback loans added to matched loans if they are less than 3 in lending home ([98e01da](https://github.com/kiva/ui/commit/98e01da3b9500d3e8b87032e0ee11045f036e560))
+* using fallback function when matched loans are less than 3 instead of 1 ([d475c86](https://github.com/kiva/ui/commit/d475c86dab259c1a71af9db0078ebbe914071fb4))
+
+
+### Bug Fixes
+
+* flag removed ([975653c](https://github.com/kiva/ui/commit/975653cde9266917ad581ddb56e8014ea86fd40b))
+
 ## [2.561.0](https://github.com/kiva/ui/compare/v2.560.1...v2.561.0) (2023-04-10)
 
 
