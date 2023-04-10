@@ -24,7 +24,7 @@
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
-						:per-row="perStep"
+						:large-card="isLargeCard"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
@@ -87,6 +87,9 @@ export default {
 		}
 	},
 	computed: {
+		isLargeCard() {
+			return this.perStep === 2;
+		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 			// handle tiny screens
@@ -99,9 +102,9 @@ export default {
 			}
 			if (viewportWidth >= 1024) {
 				if (this.enableLoanCardExp) {
-					if (this.perStep === 2) return '512px'; return '328px';
+					if (this.isLargeCard) return '512px'; return '328px';
 				}
-				if (this.perStep === 2) return '520px'; return '336px';
+				if (this.isLargeCard) return '520px'; return '336px';
 			}
 			return '336px';
 		},
