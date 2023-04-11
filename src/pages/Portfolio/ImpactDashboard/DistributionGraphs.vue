@@ -6,16 +6,28 @@
 		<!-- tabs -->
 		<kv-tabs>
 			<template #tabNav>
-				<kv-tab for-panel="location-stat-panel">
+				<kv-tab
+					for-panel="location-stat-panel"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-location']"
+				>
 					Location
 				</kv-tab>
-				<kv-tab for-panel="gender-stat-panel">
+				<kv-tab
+					for-panel="gender-stat-panel"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-gender']"
+				>
 					Gender
 				</kv-tab>
-				<kv-tab for-panel="sector-stat-panel">
+				<kv-tab
+					for-panel="sector-stat-panel"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-sector']"
+				>
 					Sector
 				</kv-tab>
-				<kv-tab for-panel="partner-stat-panel">
+				<kv-tab
+					for-panel="partner-stat-panel"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-lending-partner']"
+				>
 					Lending partner
 				</kv-tab>
 			</template>
