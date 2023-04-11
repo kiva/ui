@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-mb-3 tw-px-2 tw-rounded md:tw-bg-primary md:tw-p-3">
+	<section class="tw-mb-3 tw-px-2 tw-rounded md:tw-bg-primary md:tw-p-3" data-testid="account-overview">
 		<h1 class="tw-text-h3 tw-mb-2">
 			Account overview
 		</h1>

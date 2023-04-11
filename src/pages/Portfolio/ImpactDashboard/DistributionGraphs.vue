@@ -1,21 +1,37 @@
 <template>
-	<async-portfolio-section>
+	<async-portfolio-section data-testid="distribution-graphs">
 		<h2 class="tw-mb-2">
 			Portfolio distribution
 		</h2>
 		<!-- tabs -->
 		<kv-tabs>
 			<template #tabNav>
-				<kv-tab for-panel="location-stat-panel">
+				<kv-tab
+					for-panel="location-stat-panel"
+					data-testid="location-stat-panel-tab"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-location']"
+				>
 					Location
 				</kv-tab>
-				<kv-tab for-panel="gender-stat-panel">
+				<kv-tab
+					for-panel="gender-stat-panel"
+					data-testid="gender-stat-panel-tab"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-gender']"
+				>
 					Gender
 				</kv-tab>
-				<kv-tab for-panel="sector-stat-panel">
+				<kv-tab
+					for-panel="sector-stat-panel"
+					data-testid="sector-stat-panel-tab"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-sector']"
+				>
 					Sector
 				</kv-tab>
-				<kv-tab for-panel="partner-stat-panel">
+				<kv-tab
+					for-panel="partner-stat-panel"
+					data-testid="partner-stat-panel-tab"
+					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-lending-partner']"
+				>
 					Lending partner
 				</kv-tab>
 			</template>

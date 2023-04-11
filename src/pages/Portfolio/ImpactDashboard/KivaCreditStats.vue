@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section @visible="fetchAsyncData">
+	<async-portfolio-section @visible="fetchAsyncData" data-testid="credit-stats">
 		<h2 class="tw-mb-0.5">
 			The Kiva effect
 		</h2>
