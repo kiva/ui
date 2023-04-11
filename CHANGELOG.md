@@ -1,3 +1,10 @@
+### [2.562.2](https://github.com/kiva/ui/compare/v2.562.1...v2.562.2) (2023-04-11)
+
+
+### Bug Fixes
+
+* experiment name needed to be consistent with previous experiment ([9ffad31](https://github.com/kiva/ui/commit/9ffad31e0bdefbbacfd8f0cdd3303e494ee74cee))
+
 ### [2.562.1](https://github.com/kiva/ui/compare/v2.562.0...v2.562.1) (2023-04-11)
 
 
