@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section v-show="totalCount > 0 || loading" @visible="fetchAsyncData">
+	<async-portfolio-section v-show="totalCount > 0 || loading" @visible="fetchAsyncData" data-testid="account-updates">
 		<h2 class="tw-mb-4">
 			Updates from borrowers
 		</h2>
