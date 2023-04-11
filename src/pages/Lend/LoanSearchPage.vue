@@ -142,7 +142,7 @@ export default {
 			this.$kvTrackEvent,
 			'Lending',
 			LOAN_CARD_EXP_KEY,
-			'EXP-CORE-1174-Apr2023'
+			'EXP-CORE-941-Feb2023'
 		);
 		this.enableNewLoanCard = version === 'b';
 	}
