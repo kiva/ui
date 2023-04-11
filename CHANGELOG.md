@@ -1,3 +1,10 @@
+## [2.563.0](https://github.com/kiva/ui/compare/v2.562.2...v2.563.0) (2023-04-11)
+
+
+### Features
+
+* copy updated for matched lending row in lending home when adding fallback options ([8604b8c](https://github.com/kiva/ui/commit/8604b8cc514c03a9ff7b328da49d694204bc88f3))
+
 ### [2.562.2](https://github.com/kiva/ui/compare/v2.562.1...v2.562.2) (2023-04-11)
 
 
