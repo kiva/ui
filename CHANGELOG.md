@@ -1,3 +1,11 @@
+### [2.562.1](https://github.com/kiva/ui/compare/v2.562.0...v2.562.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* add test ids for impact dashboard sections ([1c1bbd9](https://github.com/kiva/ui/commit/1c1bbd90af4af87bd96857f0ff245db456231729))
+* tracking events for distribution graph tab clicks MARS-357 ([9a56587](https://github.com/kiva/ui/commit/9a56587872ea01d9182336bb84c5426864700ef3))
+
 ## [2.562.0](https://github.com/kiva/ui/compare/v2.561.0...v2.562.0) (2023-04-10)
 
 
