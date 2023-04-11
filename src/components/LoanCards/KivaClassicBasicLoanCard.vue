@@ -140,6 +140,7 @@
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
 				:to="checkoutRoute"
+				@click="$emit('custom-checkout-button-action', loanId)"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
@@ -299,6 +300,10 @@ export default {
 		checkoutRoute: {
 			type: String,
 			default: '/basket'
+		},
+		customCheckoutButtonAction: {
+			type: Function,
+			default: () => {}
 		},
 		customCheckoutButtonText: {
 			type: String,

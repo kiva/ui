@@ -790,6 +790,7 @@ export default {
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
+				removeLoanFromBasket: this.removeLoanFromBasket,
 			};
 		},
 		pageSettingData() {
@@ -1350,7 +1351,7 @@ export default {
 				this.basketBalancing = false;
 			});
 		},
-		updateLeftoverCreditAllocationBasketItem(payload) {
+		updateBasketItem(payload) {
 			const { loanId } = payload;
 			setLendAmount({
 				amount: payload.lendAmount,
@@ -1432,7 +1433,7 @@ export default {
 							lcaLoanPrice = 0;
 						}
 						// Set the LCA loan price that balances the delta
-						this.updateLeftoverCreditAllocationBasketItem({
+						this.updateBasketItem({
 							loanId: Number(LCALoanId),
 							lendAmount: lcaLoanPrice
 						});
@@ -1631,7 +1632,13 @@ export default {
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
-		}
+		},
+		removeLoanFromBasket(loanId) {
+			this.updateBasketItem({
+				loanId: Number(loanId),
+				lendAmount: 0
+			});
+		},
 	},
 	beforeRouteUpdate(to, from, next) {
 		if (to.hash === '#show-basket') {
