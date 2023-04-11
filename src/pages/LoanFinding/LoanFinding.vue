@@ -159,10 +159,17 @@ export default {
 			return this.userInfo?.firstName ?? '';
 		},
 		secondCategoryTitle() {
-			if (this.matchedLoansTotal > 0) return 'Matched lending'; return 'Borrowers at the finish line';
+			if (this.matchedLoansTotal > 0) {
+				if (this.matchedLoansTotal < 3) return 'Help these borrowers cross the finish line';
+				return 'Matched lending';
+			}
+			return 'Borrowers at the finish line';
 		},
 		secondCategorySubtitle() {
-			if (this.matchedLoansTotal > 0) return 'Stretch your funds further with the help of our partners and Kivans just like you'; // eslint-disable-line max-len
+			if (this.matchedLoansTotal > 0) {
+				if (this.matchedLoansTotal < 3) return 'Loans that are ending soon, almost funded, and matched';
+				return 'Stretch your funds further with the help of our partners and Kivans just like you';
+			}
 			return 'Loans that are ending soon or almost funded';
 		},
 		activeSpotlightData() {
