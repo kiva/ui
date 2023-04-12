@@ -1,3 +1,16 @@
+## [2.565.0](https://github.com/kiva/ui/compare/v2.564.0...v2.565.0) (2023-04-12)
+
+
+### Features
+
+* make the supported button remove loans from the basket ([2434252](https://github.com/kiva/ui/commit/2434252be89472aad5000c7ec1b211aed477e342))
+
+
+### Bug Fixes
+
+* ensure that a logo height value is read even when not provided via contentful ([47c135f](https://github.com/kiva/ui/commit/47c135f7e057e3232c6c4a580678213bc6036d4e))
+* removed unused prop ([d2b8548](https://github.com/kiva/ui/commit/d2b85481bc302827fba8c7356cc5047583d89a02))
+
 ## [2.564.0](https://github.com/kiva/ui/compare/v2.563.0...v2.564.0) (2023-04-12)
 
 
