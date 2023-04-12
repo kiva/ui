@@ -10,7 +10,7 @@
 			v-if="corporateLogoUrl"
 			:class="`campaign-logo-group__corporate ${logoClasses}`"
 			:contentful-src="corporateLogoUrl"
-			:height="logoHeight"
+			:height="Number(logoHeight)"
 			alt=""
 			fallback-format="png"
 		/>
