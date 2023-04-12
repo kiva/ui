@@ -301,10 +301,6 @@ export default {
 			type: String,
 			default: '/basket'
 		},
-		customCheckoutButtonAction: {
-			type: Function,
-			default: () => {}
-		},
 		customCheckoutButtonText: {
 			type: String,
 			default: 'Checkout now'
