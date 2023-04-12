@@ -1,3 +1,10 @@
+## [2.564.0](https://github.com/kiva/ui/compare/v2.563.0...v2.564.0) (2023-04-12)
+
+
+### Features
+
+* lending home test added for new users and rolled out to existing users ([17ace4b](https://github.com/kiva/ui/commit/17ace4b927d66057249197f89bd33eaff6a24915))
+
 ## [2.563.0](https://github.com/kiva/ui/compare/v2.562.2...v2.563.0) (2023-04-11)
 
 
