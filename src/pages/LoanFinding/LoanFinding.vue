@@ -78,6 +78,7 @@
 
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
@@ -94,6 +95,8 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
@@ -326,14 +329,14 @@ export default {
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();
 
-		const { enabled } = getExperimentSettingCached(this.apollo, EXP_KEY);
-		if (enabled) {
+		// The /lending-home experiment should only be tracked for users who have not logged in
+		if (!getHasEverLoggedIn(this.apollo)) {
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
 				EXP_KEY,
-				'EXP-CORE-854-Dec2022'
+				'EXP-CORE-1009-April2023'
 			);
 		}
 
