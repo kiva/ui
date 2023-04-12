@@ -654,19 +654,19 @@ export default {
 			}).then(() => {
 				return client.query({ query: experimentQuery, variables: { id: LOAN_FINDING_EXP_KEY } })
 					.then(() => {
-						// Redirect to /lending-home if user has previously signed in and experiment is assigned
+						// Redirect to /lending-home if user has previously signed in
 						if (getHasEverLoggedIn(client)) {
-							const { enabled } = getExperimentSettingCached(client, LOAN_FINDING_EXP_KEY);
-							if (enabled) {
-								const { version } = client.readFragment({
-									id: `Experiment:${LOAN_FINDING_EXP_KEY}`,
-									fragment: experimentVersionFragment,
-								}) ?? {};
+							return Promise.reject({ path: '/lending-home' });
+						}
 
-								if (version === 'b') {
-									return Promise.reject({ path: '/lending-home' });
-								}
-							}
+						// Redirect to /lending-home if user has not previously signed in and experiment is assigned
+						const { version } = client.readFragment({
+							id: `Experiment:${LOAN_FINDING_EXP_KEY}`,
+							fragment: experimentVersionFragment,
+						}) ?? {};
+
+						if (version === 'b') {
+							return Promise.reject({ path: '/lending-home' });
 						}
 
 						return Promise.all([
@@ -767,18 +767,15 @@ export default {
 			}
 		}
 
-		// The /lending-home experiment should only be tracked for users who have logged in
-		if (getHasEverLoggedIn(this.apollo)) {
-			const { enabled } = getExperimentSettingCached(this.apollo, LOAN_FINDING_EXP_KEY);
-			if (enabled) {
-				trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'Lending',
-					LOAN_FINDING_EXP_KEY,
-					'EXP-CORE-854-Dec2022'
-				);
-			}
+		// The /lending-home experiment should only be tracked for users who have not logged in
+		if (!getHasEverLoggedIn(this.apollo)) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_FINDING_EXP_KEY,
+				'EXP-CORE-1009-April2023'
+			);
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
