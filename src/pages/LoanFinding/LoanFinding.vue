@@ -1,13 +1,5 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
-		<kv-lightbox
-			:visible="showLightbox"
-			title="Welcome to Lending Home"
-			@lightbox-closed="closeLightbox"
-		>
-			<welcome-lightbox @close-lightbox="closeLightbox" />
-		</kv-lightbox>
-
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
@@ -58,21 +50,6 @@
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
 		</div>
-
-		<kv-toast
-			ref="welcomeToastMessage"
-			@close="closeToast()"
-			class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
-		>
-			<template #toastContent>
-				<div>
-					Welcome to Lending home! We’re doing something new based on your feedback this year.
-					<button @click="openLightbox()" class="tw-text-action">
-						Read more here
-					</button>
-				</div>
-			</template>
-		</kv-toast>
 	</www-page>
 </template>
 
@@ -86,15 +63,12 @@ import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSe
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import WelcomeLightbox from '@/components/LoanFinding/WelcomeLightbox';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import KvToast from '~/@kiva/kv-components/vue/KvToast';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -111,9 +85,6 @@ export default {
 		LendingCategorySection,
 		QuickFiltersSection,
 		PartnerSpotlightSection,
-		KvToast,
-		WelcomeLightbox,
-		KvLightbox
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	data() {
@@ -123,7 +94,6 @@ export default {
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
-			showLightbox: false,
 			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
@@ -248,24 +218,6 @@ export default {
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
 		},
-		closeToast() {
-			this.$kvTrackEvent('event-tracking', 'dismiss', 'lending-home-toast-dismissed');
-		},
-		showToast() {
-			if (!this.cookieStore.get('lending-home-toast')) {
-				this.$refs.welcomeToastMessage.show('', 'kiva-logo', false, 10000);
-				this.cookieStore.set('lending-home-toast', true);
-				this.$kvTrackEvent('event-tracking', 'show', 'lending-home-toast-showed');
-			}
-		},
-		openLightbox() {
-			this.showLightbox = true;
-			this.$refs.welcomeToastMessage.close();
-			this.$kvTrackEvent('event-tracking', 'click', 'lending-home-toast-read-more-clicked');
-		},
-		closeLightbox() {
-			this.showLightbox = false;
-		},
 		verifySpotlightIndex() {
 			const spotlightCookie = this.cookieStore.get('lh_spotlight') || null;
 			const cookieIndexNumber = Number(spotlightCookie);
@@ -324,7 +276,6 @@ export default {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
-		this.showToast();
 
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();
