@@ -1,3 +1,15 @@
+## [2.566.0](https://github.com/kiva/ui/compare/v2.565.0...v2.566.0) (2023-04-12)
+
+
+### Features
+
+* toast welcome message and lightbox removed from lh page ([209cb15](https://github.com/kiva/ui/commit/209cb158d94b4ec911d3702245d352da0fe199ee))
+
+
+### Bug Fixes
+
+* unused images removed ([ccf89b7](https://github.com/kiva/ui/commit/ccf89b71d0787ff9b515f62a0695005c8163095a))
+
 ## [2.565.0](https://github.com/kiva/ui/compare/v2.564.0...v2.565.0) (2023-04-12)
 
 
