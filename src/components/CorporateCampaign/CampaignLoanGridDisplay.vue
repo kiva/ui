@@ -12,11 +12,12 @@
 					:key="`loan-${loan}`"
 					:loan-id="loan"
 					:lend-now-button="true"
-					:checkout-route="checkoutRoute"
 					:custom-loan-details="true"
 					:custom-checkout-button-text="getCheckoutBtnText(loan)"
+					:checkout-route="checkoutRoute"
 					@show-loan-details="showLoanDetails(loans[index])"
 					@add-to-basket="addToBasket"
+					@custom-checkout-button-action="removeLoanFromBasket(loan)"
 				/>
 			</div>
 			<kv-pagination
@@ -141,7 +142,7 @@ export default {
 		},
 		checkoutRoute: {
 			type: String,
-			default: '#show-basket'
+			default: ''
 		}
 	},
 	data() {
@@ -222,6 +223,9 @@ export default {
 		},
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+		},
+		removeLoanFromBasket(loanId) {
+			this.$emit('remove-loan-from-basket', loanId);
 		},
 		showLoanDetails(loan) {
 			this.$emit('show-loan-details', loan);

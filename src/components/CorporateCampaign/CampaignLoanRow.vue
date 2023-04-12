@@ -42,6 +42,7 @@
 						:custom-checkout-button-text="getCheckoutBtnText(loan)"
 						@show-loan-details="showLoanDetails(loans[index])"
 						@add-to-basket="addToBasket"
+						@custom-checkout-button-action="removeLoanFromBasket(loan)"
 					/>
 				</div>
 			</template>
@@ -124,7 +125,7 @@ export default {
 		},
 		checkoutRoute: {
 			type: String,
-			default: '#show-basket'
+			default: ''
 		}
 	},
 	data() {
@@ -236,6 +237,9 @@ export default {
 		addToBasket(payload) {
 			this.loanAdded = true;
 			this.$emit('add-to-basket', payload);
+		},
+		removeLoanFromBasket(loanId) {
+			this.$emit('remove-loan-from-basket', loanId);
 		},
 		fetchLoans() {
 			if (this.isVisible) {
