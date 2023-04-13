@@ -1,3 +1,10 @@
+## [2.569.0](https://github.com/kiva/ui/compare/v2.568.0...v2.569.0) (2023-04-13)
+
+
+### Features
+
+* add matching bubble when loan is in basket ([0e71045](https://github.com/kiva/ui/commit/0e71045fdf7e98cc5f5914ddbdc683039302b077))
+
 ## [2.568.0](https://github.com/kiva/ui/compare/v2.567.0...v2.568.0) (2023-04-13)
 
 
