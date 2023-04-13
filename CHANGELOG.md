@@ -1,3 +1,10 @@
+## [2.568.0](https://github.com/kiva/ui/compare/v2.567.0...v2.568.0) (2023-04-13)
+
+
+### Features
+
+* min height removed from new loan cards in quick filters section in lending home ([c1a3381](https://github.com/kiva/ui/commit/c1a3381618c5797af136feef2757686bb209f240))
+
 ## [2.567.0](https://github.com/kiva/ui/compare/v2.566.0...v2.567.0) (2023-04-13)
 
 
