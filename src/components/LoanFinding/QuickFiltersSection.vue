@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-w-full tw-bg-secondary">
+	<div ref="sectionTop" class="tw-w-full tw-bg-secondary">
 		<div class="tw-mx-auto tw-pt-2 tw-pb-1 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<div
 				v-show="showOverlay"
@@ -35,7 +35,6 @@
 						:show-tags="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
-						style="min-height: 500px;"
 					/>
 					<kiva-classic-basic-loan-card
 						v-else
@@ -279,6 +278,7 @@ export default {
 			);
 			this.loanSearchState.pageOffset = pageOffset;
 			this.updateLoans();
+			this.$refs.sectionTop.scrollIntoView({ behavior: 'smooth' });
 		},
 		async updateLoans() {
 			const { loans } = await runLoansQuery(
