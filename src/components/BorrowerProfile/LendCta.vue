@@ -47,7 +47,7 @@
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2">
+					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2 tw-relative">
 						<!-- Highlighted matching text mobile  -->
 						<!-- padding-left class makes room for the sparkle icon
 						and makes sure long match text isnt covered -->
@@ -56,7 +56,7 @@
 							v-if="matchingHighlightExpShown"
 						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
 						<!-- eslint-disable-next-line max-len -->
-						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex tw-relative">
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
 								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
@@ -144,25 +144,6 @@
 									</template>
 								</complete-loan-wrapper>
 							</fieldset>
-							<!-- Matching text bubble sparkle  -->
-							<span
-								:class="[
-									'tw-flex',
-									'tw-items-center',
-									'tw-justify-center',
-									'tw-w-4',
-									'tw-h-4',
-									'tw-absolute',
-									'tw-left-0',
-									'tw-top-[-1.5rem]',
-									'md:tw-top-auto',
-									'tw-bottom-auto',
-									'md:tw-bottom-[-1.5rem]']"
-								v-if="matchingHighlightExpShown"
-							>
-								<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
-								<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
-							</span>
 						</form>
 						<!-- Continue to checkout button -->
 						<kv-ui-button
@@ -194,6 +175,26 @@
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
+
+						<!-- Matching text bubble sparkle  -->
+						<span
+							:class="[
+								'tw-flex',
+								'tw-items-center',
+								'tw-justify-center',
+								'tw-w-4',
+								'tw-h-4',
+								'tw-absolute',
+								'tw-left-0',
+								'tw-top-[0.15rem]',
+								'md:tw-top-auto',
+								'tw-bottom-auto',
+								'md:tw-bottom-2']"
+							v-if="matchingHighlightExpShown"
+						>
+							<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
+							<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
+						</span>
 
 						<!-- Highlighted matching text desktop  -->
 						<!-- padding-left class makes room for the sparkle icon
