@@ -1,3 +1,10 @@
+## [2.567.0](https://github.com/kiva/ui/compare/v2.566.0...v2.567.0) (2023-04-13)
+
+
+### Features
+
+* prioritize video on borrower profile ([f41301a](https://github.com/kiva/ui/commit/f41301aad3fe526d6ab7bc4f0bc78526764a8eae))
+
 ## [2.566.0](https://github.com/kiva/ui/compare/v2.565.0...v2.566.0) (2023-04-12)
 
 
