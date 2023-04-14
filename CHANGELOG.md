@@ -1,3 +1,10 @@
+## [2.570.0](https://github.com/kiva/ui/compare/v2.569.0...v2.570.0) (2023-04-14)
+
+
+### Features
+
+* lending home header updated ([38e1ffb](https://github.com/kiva/ui/commit/38e1ffbdf4ce19454cff463308ae292da793874d))
+
 ## [2.569.0](https://github.com/kiva/ui/compare/v2.568.0...v2.569.0) (2023-04-13)
 
 
