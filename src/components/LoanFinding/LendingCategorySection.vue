@@ -1,9 +1,7 @@
 <template>
 	<div class="tw-w-full">
 		<div class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<h2 class="tw-text-h2 tw-text-primary">
-				{{ title }}
-			</h2>
+			<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
 			<p v-if="subtitle" class="tw-text-subhead tw-text-primary">
 				{{ subtitle }}
 			</p>
