@@ -149,12 +149,14 @@ export default {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
 		recommendedTitle() {
-			return this.isLoggedIn ? 'Recommended for you' : 'Recommended by others';
+			return this.isLoggedIn
+				? 'Recommended for you'
+				: 'Make a difference <span class="tw-text-action">today</span>';
 		},
 		recommendedSubtitle() {
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
-				: 'These borrowers need your support. Log in for personalized recommendations.';
+				: 'Support a featured borrower with a microloan. Log in for personalized recommendations.';
 		},
 	},
 	methods: {
