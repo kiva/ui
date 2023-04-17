@@ -526,6 +526,7 @@ export default {
 			this.loan = cachedLoan;
 			this.isLoading = false;
 		}
+		this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
 	},
 	watch: {
 		// When loan id changes, update watch query variables

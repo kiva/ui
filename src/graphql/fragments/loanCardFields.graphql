@@ -56,6 +56,12 @@ fragment loanCardFields on LoanBasic {
 	lenders(limit: 0) {
 		totalCount
 	}
+	
+	# for loan-progress component and lend cta component
+	unreservedAmount @client
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
+	
 	... on LoanPartner {
 		partnerName
 		themes
