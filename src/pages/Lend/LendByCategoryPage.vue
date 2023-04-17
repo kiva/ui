@@ -648,7 +648,7 @@ export default {
 		},
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
 			return client.query({
 				query: lendByCategoryQuery
 			}).then(() => {
@@ -664,7 +664,7 @@ export default {
 								}) ?? {};
 
 								if (version === 'b') {
-									return Promise.reject({ path: '/lending-home' });
+									return Promise.reject({ path: '/lending-home', query: route.query });
 								}
 							}
 						}
