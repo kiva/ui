@@ -648,15 +648,17 @@ export default {
 		},
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, args) {
 			return client.query({
 				query: lendByCategoryQuery
 			}).then(() => {
 				return client.query({ query: experimentQuery, variables: { id: LOAN_FINDING_EXP_KEY } })
 					.then(() => {
+						const query = args?.route?.query ?? {};
+
 						// Redirect to /lending-home if user has previously signed in
 						if (getHasEverLoggedIn(client)) {
-							return Promise.reject({ path: '/lending-home' });
+							return Promise.reject({ path: '/lending-home', query });
 						}
 
 						// Redirect to /lending-home if user has not previously signed in and experiment is assigned
@@ -666,7 +668,7 @@ export default {
 						}) ?? {};
 
 						if (version === 'b') {
-							return Promise.reject({ path: '/lending-home' });
+							return Promise.reject({ path: '/lending-home', query });
 						}
 
 						return Promise.all([
