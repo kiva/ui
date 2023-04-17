@@ -1,4 +1,4 @@
-import { getFullUrl } from '@/util/urlUtils';
+import { getFullUrl, isCCPage } from '@/util/urlUtils';
 
 describe('urlUtils.js', () => {
 	describe('getFullUrl', () => {
@@ -37,6 +37,21 @@ describe('urlUtils.js', () => {
 		it('return a valid url if empty args', () => {
 			expect(getFullUrl('https://www.facebook.com/dialog/share', {}))
 				.toBe('https://www.facebook.com/dialog/share');
+		});
+	});
+
+	describe('isCCPage', () => {
+		it('returns true if it is corporate campaign page', () => {
+			expect(isCCPage({ path: '/cc/zuora' })).toBe(true);
+		});
+		it('returns true if it is corporate campaign page', () => {
+			expect(isCCPage({ path: '/cc/etsy?upc=etsy#show-basket' })).toBe(true);
+		});
+		it('returns true if it is corporate campaign page', () => {
+			expect(isCCPage({ path: '/cc/boa?upc=boa' })).toBe(true);
+		});
+		it('does not return a true since it is not corporate campaign page', () => {
+			expect(isCCPage('http://kiva.org')).toBe(false);
 		});
 	});
 });
