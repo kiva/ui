@@ -1,3 +1,11 @@
+### [2.570.1](https://github.com/kiva/ui/compare/v2.570.0...v2.570.1) (2023-04-17)
+
+
+### Bug Fixes
+
+* defensive programming ([0eaef95](https://github.com/kiva/ui/commit/0eaef95c443d15d737a27f29b37b8cd7228ff3e0))
+* pass query params with redirect to LH ([a3441b9](https://github.com/kiva/ui/commit/a3441b96c24f66457d7256dfa6ae03afafb6fb5a))
+
 ## [2.570.0](https://github.com/kiva/ui/compare/v2.569.0...v2.570.0) (2023-04-14)
 
 
