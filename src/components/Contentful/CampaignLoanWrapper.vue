@@ -22,6 +22,7 @@
 					:upc-credit-remaining="componentProps.upcCreditRemaining"
 					:basket-loans="componentProps.basketLoans"
 					:promo-name="componentProps.promoName"
+					@show-basket="componentProps.showBasket"
 				/>
 
 				<campaign-loan-row
