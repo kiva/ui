@@ -1,3 +1,10 @@
+### [2.560.2-next.3](https://github.com/kiva/ui/compare/v2.560.2-next.2...v2.560.2-next.3) (2023-04-18)
+
+
+### Bug Fixes
+
+* email verification bug fix ([869470d](https://github.com/kiva/ui/commit/869470d129cfe45696d5f90a83b45434eba63049))
+
 ### [2.560.2-next.2](https://github.com/kiva/ui/compare/v2.560.2-next.1...v2.560.2-next.2) (2023-04-17)
 
 
