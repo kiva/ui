@@ -1,4 +1,4 @@
-fragment loanCardFields on LoanBasic {
+fragment loanCardFieldsExtended on LoanBasic {
 	id
 	distributionModel
 	status
@@ -56,6 +56,12 @@ fragment loanCardFields on LoanBasic {
 	lenders(limit: 0) {
 		totalCount
 	}
+
+	# for loan-progress and lend cta components
+	unreservedAmount @client
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
+	
 	... on LoanPartner {
 		partnerName
 		themes

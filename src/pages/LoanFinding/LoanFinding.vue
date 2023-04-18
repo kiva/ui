@@ -65,7 +65,7 @@ import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
-import flssLoansQuery from '@/graphql/query/flssLoansQuery.graphql';
+import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -107,7 +107,7 @@ export default {
 			});
 
 			const recommendedLoansPromise = client.query({
-				query: flssLoansQuery,
+				query: flssLoansQueryExtended,
 				variables: prefetchedRecommendedLoansVariables
 			});
 
@@ -248,7 +248,7 @@ export default {
 	created() {
 		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
 		const cachedRecommendedLoans = this.apollo.readQuery({
-			query: flssLoansQuery,
+			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
 		})?.fundraisingLoans?.values ?? [];
 		this.recommendedLoans = [

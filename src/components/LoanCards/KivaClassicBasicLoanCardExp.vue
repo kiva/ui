@@ -179,7 +179,7 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
-import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
+import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsExtended.graphql';
 import LoanCallouts from '@/components/LoanCards/LoanTags/LoanCallouts';
 import LendCtaExp from '@/components/LoanCards/Buttons/LendCtaExp';
 import LoanBookmarkExp from '@/components/LoanCards/Buttons/LoanBookmarkExp';
@@ -188,7 +188,7 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const loanQuery = gql`
-	${loanCardFieldsFragment}
+	${loanCardFieldsExtendedFragment}
 	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
@@ -205,12 +205,7 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
-			...loanCardFields
-
-			# for loan-progress component
-			unreservedAmount @client
-			fundraisingPercent @client
-			fundraisingTimeLeft @client
+			...loanCardFieldsExtended
 		}
 	}
 	my {
@@ -520,7 +515,7 @@ export default {
 		const cachedLoan = readLoanFragment({
 			apollo: this.apollo,
 			loanId: this.loanId,
-			fragment: loanCardFieldsFragment,
+			fragment: loanCardFieldsExtendedFragment,
 		});
 		if (cachedLoan) {
 			this.loan = cachedLoan;
