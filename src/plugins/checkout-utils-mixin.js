@@ -2,7 +2,7 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
-import recordUserForPromo from '@/graphql/mutation/checkout/recordUserForPromo.graphql';
+import validateLenderEmailForPromo from '@/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '@/util/logFormatter';
@@ -89,27 +89,15 @@ export default {
 			return new Promise((resolve, reject) => {
 				debugger;
 				this.apollo.mutate({
-					mutation: recordUserForPromo,
+					mutation: validateLenderEmailForPromo,
 					variables: {
-						// userEmailAddress: guestEmail,
-						userEmailAddress: "myfancyemail@gmail.com",
-						promoFundId,
-						managedAccountId,
-						userId: this.cookieStore.get('uiv') || null
+						lenderEmailAddress: guestEmail,
+						promoFundId: Number(promoFundId),
+						managedAccountId: Number(managedAccountId),
 					}
 				}).then(data => {
-					const validationResult = _get(data, 'data.shop.validatePreCheckout');
-					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
-						this.$kvTrackEvent(
-							'basket', 'Validate Guest Basket', 'Validation Success'
-						);
-						resolve(true);
-					} else {
-						this.$kvTrackEvent(
-							'basket', 'Validate Guest Basket', 'Validation Failure'
-						);
-						resolve(validationResult);
-					}
+					debugger;
+					resolve(this.validateGuestBasket(guestEmail, emailUpdates));
 				}).catch(errorResponse => {
 					logFormatter(errorResponse, 'error');
 					Sentry.captureException(errorResponse);

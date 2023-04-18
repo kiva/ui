@@ -87,16 +87,6 @@
 				@team-process-complete="handleTeamJoinProcess"
 			/>
 
-			<campaign-verification-form
-				v-if="showVerification"
-				:form-id="externalFormId"
-				:ma-id="String(managedAccountId)"
-				:pf-id="String(promoFundId)"
-				:user-id="this.myId"
-				@verification-complete="verificationComplete"
-				@campaign-verification-opt-out="handleVerificationOptOut"
-			/>
-
 			<!-- Warn about removing promo credit -->
 			<verify-remove-promo-credit
 				:visible="showVerifyRemovePromoCredit"
@@ -226,7 +216,6 @@ import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationT
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
-import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -519,7 +508,6 @@ export default {
 		CampaignPartner,
 		CampaignStatus,
 		CampaignThanks,
-		CampaignVerificationForm,
 		DynamicHeroClassic,
 		InContextCheckout,
 		KvLightbox,
@@ -589,7 +577,6 @@ export default {
 			pageQuery: { page: '1' },
 			showLoans: false,
 			checkoutVisible: false,
-			showVerification: false,
 			showTeamForm: false,
 			showThanks: false,
 			sortBy: 'popularity',
@@ -601,7 +588,6 @@ export default {
 			detailedLoan: null,
 			useMatcherAccountIds: true,
 			initialFilters: {},
-			verificationSumbitted: false,
 			loadingPage: false,
 			showLoanDisplayToggle: true,
 			showVerifyRemovePromoCredit: false,
@@ -912,12 +898,6 @@ export default {
 			}
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
-		verificationRequired() {
-			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
-				return true;
-			}
-			return false;
-		},
 		usesDynamicContentfulRendering() {
 			return this.pageSettingData?.dynamicRendering;
 		},
@@ -1143,11 +1123,9 @@ export default {
 			}
 		},
 		handleCreditRemoved() {
-			this.showVerification = false;
 			this.$router.push(this.$route.path); // remove promo query param from url
 			this.promoApplied = false;
 			this.refreshTotals();
-			this.verificationComplete();
 		},
 		refreshTotals() {
 			this.initializeBasketRefresh();
@@ -1254,6 +1232,9 @@ export default {
 				console.log(simpleCheckoutRestrictedMessage);
 				// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
 			}
+			if (this.$route.hash === '#show-basket') {
+				this.checkoutVisible = true;
+			}
 
 			this.validateBasket()
 				.then(validationStatus => {
@@ -1275,20 +1256,7 @@ export default {
 				});
 		},
 		handleBasketValidation() {
-			// check for verification form requirement
 			if (
-				this.isActivelyLoggedIn
-				&& this.verificationRequired
-				&& this.externalFormId
-				&& !this.verificationSumbitted
-				&& this.basketLoans.length
-			) {
-				this.showVerification = true;
-				this.$kvTrackEvent(
-					'ManagedLendingCampaign',
-					'modal-campaign-verification-initialized'
-				);
-			} else if (
 				this.basketLoans.length
 				&& this.isActivelyLoggedIn
 				&& this.teamId
@@ -1556,24 +1524,6 @@ export default {
 				});
 			}
 		},
-
-		verificationComplete() {
-			this.verificationSumbitted = true;
-			this.handleBasketValidation();
-			let verificationEventLabel = 'Verification should have completed';
-			if (!this.promoApplied) {
-				verificationEventLabel = 'Verification may have failed or lender opted out';
-			}
-			this.$kvTrackEvent(
-				'ManagedLendingCampaign',
-				'modal-campaign-verification-complete',
-				verificationEventLabel
-			);
-		},
-		handleVerificationOptOut() {
-			this.showVerification = false;
-			this.showVerifyRemovePromoCredit = true;
-		},
 		handleCancelPromoOptOut() {
 			this.showVerifyRemovePromoCredit = false;
 			this.handleBasketValidation();
@@ -1637,7 +1587,6 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		if (to.hash === '#show-basket') {
-			this.checkoutVisible = true;
 			this.handleBasketValidation();
 			this.refreshTotals();
 		}

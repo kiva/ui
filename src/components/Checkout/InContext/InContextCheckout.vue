@@ -54,20 +54,6 @@
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div
-			:class="`in-context-login ${isCorporateCampaignPage ? 'tw-text-right' : ''}`"
-			v-if="!isActivelyLoggedIn"
-		>
-			<kv-button
-				v-if="!isActivelyLoggedIn"
-				class="smaller checkout-button"
-				id="Continue-to-legacy-button"
-				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-				:href="registerOrLoginHref"
-			>
-				{{ customCheckoutButtonText }}
-			</kv-button>
-		</div>
 		<div class="in-context-payment-conttrols">
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
@@ -88,7 +74,6 @@
 				:is-guest-checkout="true"
 				:promo-fund-id="String(promoFundId)"
 				:managed-account-id="managedAccountId"
-				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -219,9 +204,6 @@ export default {
 			});
 			// Using the first promoFund available
 			return appliedCreditsPromoFunds[0] || null;
-		},
-		promoFundId() {
-			return this.promoFund?.id || null;
 		},
 		registerOrLoginHref() {
 			return `/ui-login?autoPage=true&force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;

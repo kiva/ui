@@ -168,7 +168,6 @@ export default {
 	},
 	methods: {
 		submit() {
-			debugger;
 			if (this.isGuestCheckout && this.promoFundId) {
 				this.$v.$touch();
 				if (!this.$v.$invalid) {
