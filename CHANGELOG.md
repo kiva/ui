@@ -1,3 +1,10 @@
+### [2.570.2](https://github.com/kiva/ui/compare/v2.570.1...v2.570.2) (2023-04-18)
+
+
+### Bug Fixes
+
+* email verification bug fix ([e679b6b](https://github.com/kiva/ui/commit/e679b6bb9ff03bf5b5bcb8736818c8c14d2445e4))
+
 ### [2.570.1](https://github.com/kiva/ui/compare/v2.570.0...v2.570.1) (2023-04-17)
 
 
