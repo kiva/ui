@@ -5,7 +5,7 @@
 	>
 		<div class="columns align-self-middle" v-if="isVisible && loans.length > 0">
 			<div class="loan-card-group row tw-gap-x-4">
-				<kiva-classic-basic-loan-card
+				<c-c-loan-card
 					class="tw-mb-4"
 					v-for="(loan, index) in loanIds"
 					:item-index="index"
@@ -60,7 +60,7 @@ import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import CCLoanCard from '@/components/LoanCards/CCLoanCard';
 import numeral from 'numeral';
 
 const loansPerPage = 9;
@@ -100,7 +100,7 @@ export default {
 		// KvButton,
 		KvLoadingOverlay,
 		KvPagination,
-		KivaClassicBasicLoanCard,
+		CCLoanCard
 	},
 	props: {
 		checkoutVisible: {

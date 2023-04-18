@@ -32,7 +32,7 @@
 		>
 			<template v-for="(loan, index) in loanIds" #[`slide${index}`]>
 				<div :key="`loan-${loan}-${index}`">
-					<kiva-classic-basic-loan-card
+					<c-c-loan-card
 						:item-index="index"
 						:key="`loan-${loan}`"
 						:loan-id="loan"
@@ -69,7 +69,7 @@
 <script>
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import CCLoanCard from '@/components/LoanCards/CCLoanCard';
 import numeral from 'numeral';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -79,7 +79,7 @@ export default {
 	components: {
 		KvCarousel,
 		KvLoadingSpinner,
-		KivaClassicBasicLoanCard
+		CCLoanCard,
 	},
 	props: {
 		filters: {
