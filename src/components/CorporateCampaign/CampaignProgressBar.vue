@@ -41,7 +41,7 @@
 		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
 			<kv-ui-button
 				v-show="basketLoans.length > 0"
-				to="#show-basket"
+				@click="$emit('show-basket')"
 			>
 				Checkout now
 			</kv-ui-button>

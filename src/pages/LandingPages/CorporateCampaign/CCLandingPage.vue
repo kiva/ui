@@ -89,10 +89,10 @@
 
 			<campaign-verification-form
 				v-if="showVerification"
-				:form-id="externalFormId"
+				:form-id="String(externalFormId)"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
-				:user-id="this.myId"
+				:user-id="String(this.myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>
@@ -714,12 +714,6 @@ export default {
 		// check for applied promo
 		this.verifyOrApplyPromotion();
 
-		// clean up show-basket process
-		// TODO: Revisit this control flow
-		if (this.$route.hash === '#show-basket') {
-			this.$router.push(this.adjustRouteHash('')).catch(() => {});
-		}
-
 		// Ensure browser clock is correct before using current time
 		syncDate().then(() => {
 			// update current time every second for reactivity
@@ -790,6 +784,7 @@ export default {
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
+				showBasket: this.handleBasketValidation
 			};
 		},
 		pageSettingData() {
@@ -1135,7 +1130,6 @@ export default {
 		handleAddToBasket(payload) {
 			if (payload.eventSource === 'checkoutBtnClick') {
 				this.loanDetailsVisible = false;
-				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
 			}
@@ -1282,6 +1276,7 @@ export default {
 				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
+				this.checkoutVisible = false;
 				this.$kvTrackEvent(
 					'ManagedLendingCampaign',
 					'modal-campaign-verification-initialized'
@@ -1299,6 +1294,8 @@ export default {
 					'ManagedLendingCampaign',
 					'modal-team-join-initialized'
 				);
+			} else {
+				this.checkoutVisible = true;
 			}
 		},
 		amountLeftOnLoan(loan) {
@@ -1458,16 +1455,6 @@ export default {
 		},
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
-			if (this.$route.hash === '#show-basket') {
-				const { scrollY } = window;
-				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash('')).then(() => {
-						this.handleScrollPosition(scrollY);
-					}).catch(() => {});
-				});
-			} else {
-				this.handleScrollPosition();
-			}
 		},
 		handleScrollPosition(y) {
 			if (this.scrollToLoans) {
@@ -1535,6 +1522,7 @@ export default {
 					this.addTeamToLoans();
 				}
 			});
+			this.handleBasketValidation();
 		},
 		addTeamToLoans() {
 			if (this.basketLoans.length && this.teamId) {
@@ -1634,11 +1622,8 @@ export default {
 		}
 	},
 	beforeRouteUpdate(to, from, next) {
-		if (to.hash === '#show-basket') {
-			this.checkoutVisible = true;
-			this.handleBasketValidation();
-			this.refreshTotals();
-		}
+		this.handleBasketValidation();
+		this.refreshTotals();
 		next();
 	},
 };
