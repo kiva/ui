@@ -1,3 +1,12 @@
+## [2.571.0](https://github.com/kiva/ui/compare/v2.570.2...v2.571.0) (2023-04-19)
+
+
+### Features
+
+* code fixed to get recommended loans data cached to avoid loaders for visisble loans ([06dd3b4](https://github.com/kiva/ui/commit/06dd3b472d5e7633cc0d6a92e21f3f2b57ec6eeb))
+* extended fragment and query added to recommended loans prefetch in lh page ([660d427](https://github.com/kiva/ui/commit/660d427073b422546a3babfca268f0d23cedb9df))
+* method added to get loan callouts ([6a1c590](https://github.com/kiva/ui/commit/6a1c5905633cfc9023e32d579fdd46010e476486))
+
 ### [2.570.2](https://github.com/kiva/ui/compare/v2.570.1...v2.570.2) (2023-04-18)
 
 
