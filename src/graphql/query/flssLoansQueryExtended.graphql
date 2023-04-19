@@ -1,0 +1,31 @@
+#import '../fragments/loanCardFieldsExtended.graphql'
+
+query flssLoanData(
+	$filterObject: [FundraisingLoanSearchFilterInput!]
+	$sortBy: SortEnum = personalized
+	$pageNumber: Int = 0
+	$pageLimit: Int = 0
+	$imgDefaultSize: String = "w480h360"
+	$imgRetinaSize: String = "w960h720"
+	$origin: String
+) {
+	fundraisingLoans(
+		filters: $filterObject,
+		limit: $pageLimit,
+		pageNumber: $pageNumber,
+		sortBy: $sortBy,
+		origin: $origin
+	) {
+		totalCount
+		values {
+			id
+			...loanCardFieldsExtended
+			image {
+				id
+				default: url(customSize: $imgDefaultSize)
+				retina: url(customSize: $imgRetinaSize)
+				hash
+			}
+		}
+	}
+}
