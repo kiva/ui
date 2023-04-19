@@ -1,3 +1,10 @@
+### [2.571.1](https://github.com/kiva/ui/compare/v2.571.0...v2.571.1) (2023-04-19)
+
+
+### Bug Fixes
+
+* test higher cpu request to see how it affects k8s throttling ([e206d19](https://github.com/kiva/ui/commit/e206d19f3bdcb01117319236e1040e41f203fe52))
+
 ## [2.571.0](https://github.com/kiva/ui/compare/v2.570.2...v2.571.0) (2023-04-19)
 
 
