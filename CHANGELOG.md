@@ -1,3 +1,12 @@
+### [2.571.2](https://github.com/kiva/ui/compare/v2.571.1...v2.571.2) (2023-04-19)
+
+
+### Bug Fixes
+
+* changed cursor class of basket link in header ([253a474](https://github.com/kiva/ui/commit/253a4744d877fa0d16df5ea7cc5fbf2d4e4aa6bd))
+* ensure scroll handler is called ([9434673](https://github.com/kiva/ui/commit/94346730900e5e52e30c7e2ee127a8b3fd94c3da))
+* show basket button not working ([977e4bf](https://github.com/kiva/ui/commit/977e4bf4f5d4103942b26caa42cab701cc980ea5))
+
 ### [2.571.1](https://github.com/kiva/ui/compare/v2.571.0...v2.571.1) (2023-04-19)
 
 

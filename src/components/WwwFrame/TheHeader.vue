@@ -33,18 +33,18 @@
 							:logo-classes="logoClasses"
 						/>
 						<div class="tw-flex-1"></div>
-						<router-link
+						<span
 							v-show="hasBasket"
-							:to="addHashToRoute('show-basket')"
+							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket"
+							class="header__button header__basket tw-cursor-pointer"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
 								{{ basketCount - lcaLoanCount }}
 							</span>
 							Basket
-						</router-link>
+						</span>
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
