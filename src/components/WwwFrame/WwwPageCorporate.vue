@@ -19,6 +19,7 @@
 		<the-basket-bar
 			:corporate="true"
 			:floating="true"
+			@show-basket="handleBasketValidation"
 		/>
 		<cookie-banner />
 	</div>
@@ -57,7 +58,7 @@ export default {
 		logoHeight: {
 			type: String,
 			default: '28'
-		}
+		},
 	},
 	apollo: {
 		preFetch(_, client) {

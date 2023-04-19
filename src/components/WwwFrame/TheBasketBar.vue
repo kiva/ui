@@ -10,7 +10,7 @@
 	>
 		<!--eslint-enable max-len -->
 		<kv-button
-			:to="basketLink"
+			@click="$emit('show-basket')"
 			v-kv-track-event="['BasketBar','click-Basket']"
 			:class="[
 				{ 'tw-w-full tw-shadow-sm' : !floating },
@@ -68,9 +68,8 @@ export default {
 		},
 	},
 	computed: {
-		basketLink() {
-			return this.corporate ? this.addHashToRoute('show-basket') : '/basket';
-		},
+		/*  basketLink() {	return this.corporate ? this.addHashToRoute('show-basket') : '/basket'; },
+		*/
 		hideBasketBar() {
 			// hide this banner on managed lending landing + checkout pages
 			const routeExclusions = ['/join-team', '/checkout', '/lend'];
