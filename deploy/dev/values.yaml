@@ -18,10 +18,10 @@ service:
 
 resources:
   requests:
-    cpu: 500m
+    cpu: 1000m
     memory: 2000Mi
   limits:
-    cpu: 500m
+    cpu: 1000m
     memory: 2000Mi
 
 replicaCount: 4
@@ -32,7 +32,7 @@ metrics:
   name: cpu
   target:
     type: Utilization
-    averageUtilization: 25
+    averageUtilization: 12
 
 ingress:
   host: "ui-dev.dk1.kiva.org"
