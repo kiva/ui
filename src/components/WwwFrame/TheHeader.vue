@@ -37,7 +37,7 @@
 							v-show="hasBasket"
 							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket"
+							class="header__button header__basket tw-cursor-pointer"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
