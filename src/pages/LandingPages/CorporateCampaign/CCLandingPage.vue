@@ -1456,6 +1456,7 @@ export default {
 		},
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
+			this.handleScrollPosition();
 		},
 		handleScrollPosition(y) {
 			if (this.scrollToLoans) {
