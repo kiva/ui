@@ -5,21 +5,15 @@
 				class="tw-w-full tw-flex" :disabled="isAdding"
 				data-testid="bp-lend-cta-select-and-button"
 			>
-				<label
-					v-if="hideShowLendDropdown && !isLessThan25"
-					for="LoanAmountDropdown"
-					class="tw-sr-only"
-				>
-					Lend amount
-				</label>
 				<div class="amountDropdownWrapper">
 					<kv-ui-select
 						v-if="hideShowLendDropdown && !isLessThan25"
-						id="LoanAmountDropdown"
+						:id="`LoanAmountDropdown_${loan.id}`"
 						class="tw-min-w-12"
 						v-model="selectedOption"
 						v-kv-track-event="['Lending', 'click-Modify loan amount', 'open dialog', loanId, loanId]"
 						@update:modelValue="trackLendAmountSelection"
+						aria-label="Lend amount"
 					>
 						<option
 							v-for="priceOption in prices"
