@@ -1,9 +1,10 @@
 <template>
-	<div>
-		<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+	<div aria-hidden="true">
+		<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex" aria-hidden="true">
 			<fieldset
 				class="tw-w-full tw-flex" :disabled="isAdding"
 				data-testid="bp-lend-cta-select-and-button"
+				aria-hidden="true"
 			>
 				<label
 					v-if="hideShowLendDropdown && !isLessThan25"
@@ -12,14 +13,15 @@
 				>
 					Lend amount
 				</label>
-				<div class="amountDropdownWrapper">
+				<div class="amountDropdownWrapper" aria-hidden="true">
 					<kv-ui-select
 						v-if="hideShowLendDropdown && !isLessThan25"
-						id="LoanAmountDropdown"
+						:id="`LoanAmountDropdown_${loan.id}`"
 						class="tw-min-w-12"
 						v-model="selectedOption"
 						v-kv-track-event="['Lending', 'click-Modify loan amount', 'open dialog', loanId, loanId]"
 						@update:modelValue="trackLendAmountSelection"
+						aria-hidden="true"
 					>
 						<option
 							v-for="priceOption in prices"
@@ -32,7 +34,7 @@
 				</div>
 
 				<!-- Lend button -->
-				<div :class="{ 'lendButtonWrapper' : hideShowLendDropdown}">
+				<div aria-hidden="true" :class="{ 'lendButtonWrapper' : hideShowLendDropdown}">
 					<kv-ui-button
 						key="lendButton"
 						v-if="lendButtonVisibility && !isLessThan25"
@@ -63,6 +65,7 @@
 					:amount-left="unreservedAmount"
 					@add-to-basket="addToBasket"
 					v-if="isLendAmountButton && !enableFiveDollarsNotes"
+					aria-hidden="true"
 				/>
 
 				<!-- Adding to basket button -->

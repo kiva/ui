@@ -31,6 +31,7 @@
 						:to="customLoanDetails ? '' : `/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId]"
 						class="tw-flex"
+						aria-label="Read more cta"
 					>
 						<borrower-image
 							class="
@@ -70,6 +71,7 @@
 					v-kv-track-event="['Lending', 'click-Read more', 'Tag', loanId]"
 					class="tw-flex hover:tw-no-underline focus:tw-no-underline"
 					:class="{ 'tw-px-1': largeCard }"
+					aria-label="Read more cta"
 				>
 					<loan-tag-v2 v-if="showTags && !isLoading" :loan="loan" :amount-left="amountLeft" />
 				</router-link>
@@ -78,6 +80,7 @@
 					:to="customLoanDetails ? '' : `/lend/${loanId}`"
 					v-kv-track-event="['Lending', 'click-Read more', 'Use', loanId]"
 					class="loan-card-use tw-text-primary"
+					aria-label="Read more cta"
 				>
 					<!-- Loan use  -->
 					<div class="tw-mb-1.5 tw-pt-1">
@@ -133,6 +136,7 @@
 				:to="customLoanDetails ? '' : `/lend/${loanId}`"
 				v-kv-track-event="['Lending', 'click-Read more', 'Progress', loanId]"
 				class="loan-card-progress tw-mt-1"
+				aria-label="Read more cta"
 			>
 				<loan-progress-group
 					:money-left="unreservedAmount"
