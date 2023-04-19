@@ -452,7 +452,7 @@ export default {
 			this.loan = result.data?.lend?.loan || null;
 
 			// Set client-side to prevent call outs from changing on page load due to random selections
-			this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
+			this.getLoanCallouts();
 
 			if (this.loan) this.isLoading = false;
 
@@ -497,6 +497,9 @@ export default {
 				this.isAdding = false;
 			});
 		},
+		getLoanCallouts() {
+			this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
+		}
 	},
 	mounted() {
 		if (this.loan) {
@@ -521,7 +524,7 @@ export default {
 			this.loan = cachedLoan;
 			this.isLoading = false;
 		}
-		this.loanCallouts = loanCallouts(this.loan, this.categoryPageName);
+		this.getLoanCallouts();
 	},
 	watch: {
 		// When loan id changes, update watch query variables
