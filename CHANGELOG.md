@@ -1,3 +1,10 @@
+### [2.572.3](https://github.com/kiva/ui/compare/v2.572.2...v2.572.3) (2023-04-20)
+
+
+### Reverts
+
+* Revert "fix: show basket button not working" ([fb39f12](https://github.com/kiva/ui/commit/fb39f12a4f0bb42e649f19f4f32c41d624c9c987))
+
 ### [2.572.2](https://github.com/kiva/ui/compare/v2.572.1...v2.572.2) (2023-04-20)
 
 
