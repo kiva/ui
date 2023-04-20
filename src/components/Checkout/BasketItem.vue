@@ -161,7 +161,7 @@ export default {
 	},
 	computed: {
 		isCorporateCampaign() {
-			return isCCPage(this.route);
+			return isCCPage(this.$route);
 		},
 		creditsUsed() {
 			return this.loan?.creditsUsed ?? [];

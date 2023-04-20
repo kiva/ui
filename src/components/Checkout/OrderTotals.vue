@@ -393,7 +393,7 @@ export default {
 			};
 		},
 		isCorporateCampaign() {
-			return isCCPage(this.route);
+			return isCCPage(this.$route);
 		},
 	},
 	methods: {

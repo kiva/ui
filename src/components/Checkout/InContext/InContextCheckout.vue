@@ -215,7 +215,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		isCorporateCampaign() {
-			return isCCPage(this.route);
+			return isCCPage(this.$route);
 		},
 	},
 	methods: {
