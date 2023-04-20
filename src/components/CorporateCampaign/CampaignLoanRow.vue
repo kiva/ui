@@ -32,7 +32,6 @@
 		>
 			<template v-for="(loan, index) in loanIds" #[`slide${index}`]>
 				<div :key="`loan-${loan}-${index}`">
-					<!-- -->
 					<kiva-classic-basic-loan-card
 						:item-index="index"
 						:key="`loan-${loan}`"

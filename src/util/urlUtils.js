@@ -62,3 +62,17 @@ export function getFullUrl(base, args) {
 		.join('&');
 	return `${baseUrlWithoutHash}${querystring ? `?${querystring}` : ''}${hashParams}`;
 }
+
+/**
+ * checks and compares on if the page is a Corporate Campaign Page
+ *
+ * @param {Object}
+ * @returns {String}
+ */
+
+export function isCCPage(
+	route = {}
+) {
+	// Fetch route path
+	return route.path?.substring(0, 4) === '/cc/';
+}

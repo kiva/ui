@@ -4,7 +4,7 @@
 		id="inContextCheckout"
 	>
 		<div
-			v-if="isCorporateCampaignPage && cookieStore.get('lcaid')"
+			v-if="ccPageCheck($route) && cookieStore.get('lcaid')"
 			class="tw-pb-4"
 		>
 			<div
@@ -55,7 +55,8 @@
 		/>
 
 		<div
-			:class="`in-context-login ${isCorporateCampaignPage ? 'tw-text-right' : ''}`"
+			class="in-context-login"
+			:class="{ 'tw-text-right' : !ccPageCheck($route) }"
 			v-if="!isActivelyLoggedIn"
 		>
 			<kv-button
@@ -99,6 +100,7 @@
 <script>
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { isCCPage } from '@/util/urlUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -212,11 +214,11 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
-		isCorporateCampaignPage() {
-			return this.$route.path.substring(0, 4) === '/cc/';
-		}
 	},
 	methods: {
+		ccPageCheck(route) {
+			return isCCPage(route);
+		},
 		completeTransaction(transactionId) {
 			// compile transaction data
 			const transactionData = formatTransactionData(
