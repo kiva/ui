@@ -21,7 +21,7 @@ resources:
     memory: 120Mi
   # limits signal a need to shutdown the instance
   limits:
-    cpu: 200m
+    # cpu: 200m
     memory: 200Mi
 
 # initial number of instances

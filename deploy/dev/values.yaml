@@ -21,7 +21,7 @@ resources:
     cpu: 1000m
     memory: 2000Mi
   limits:
-    cpu: 1000m
+    # cpu: 1000m
     memory: 2000Mi
 
 replicaCount: 4
