@@ -1,3 +1,10 @@
+### [2.572.4](https://github.com/kiva/ui/compare/v2.572.3...v2.572.4) (2023-04-20)
+
+
+### Bug Fixes
+
+* here is the commit again ([0d4c55d](https://github.com/kiva/ui/commit/0d4c55d0be7543802df3c265b9844403d522d398))
+
 ### [2.572.3](https://github.com/kiva/ui/compare/v2.572.2...v2.572.3) (2023-04-20)
 
 
