@@ -1,3 +1,21 @@
+## [2.561.0-next.1](https://github.com/kiva/ui/compare/v2.560.1...v2.561.0-next.1) (2023-04-20)
+
+
+### Features
+
+* remove unused prop ([b4e0626](https://github.com/kiva/ui/commit/b4e0626fc47dcc30c9c3dfd0203a7b267a6ce047))
+
+
+### Bug Fixes
+
+* changed cursor class of basket link in header ([4f4f388](https://github.com/kiva/ui/commit/4f4f3882d3c914edb0ebc692942e7a2ff30a274e))
+* defensive programming ([bc4c7c4](https://github.com/kiva/ui/commit/bc4c7c4cb311c3cc68ea9748a7f6e7f206c6d1de))
+* email verification bug fix ([bfbf2c5](https://github.com/kiva/ui/commit/bfbf2c54ec37ddf8e77e4f7ad33eefaba1673522))
+* ensure scroll handler is called ([f2aad7f](https://github.com/kiva/ui/commit/f2aad7f91c30df4b6e843fd4f3a25861fc9f8d4d))
+* experiment name needed to be consistent with previous experiment ([d01ca77](https://github.com/kiva/ui/commit/d01ca7721707d27b9d7f623bdd23e2bad7c945f0))
+* pass query params with redirect to LH ([036165a](https://github.com/kiva/ui/commit/036165a9352b303c3ee4980dacc8c28ace0cfc94))
+* show basket button not working ([691761c](https://github.com/kiva/ui/commit/691761c31f262eee7d3933741bd84ed71c983c63))
+
 ### [2.560.1](https://github.com/kiva/ui/compare/v2.560.0...v2.560.1) (2023-04-10)
 
 
