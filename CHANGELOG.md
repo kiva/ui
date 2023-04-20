@@ -1,3 +1,16 @@
+## [2.572.0](https://github.com/kiva/ui/compare/v2.571.2...v2.572.0) (2023-04-20)
+
+
+### Features
+
+* additions to improve lighthouse scores in lending home ([d2eb366](https://github.com/kiva/ui/commit/d2eb3666cc0c2c7948508b2f28be0a4cfe6e1973))
+* unused label removed from lend cta ([a45c1ff](https://github.com/kiva/ui/commit/a45c1ff35bb78b07a50f4694bb2e874bafc56481))
+
+
+### Bug Fixes
+
+* aria hidden changes reverted ([918f41d](https://github.com/kiva/ui/commit/918f41d528239dc36d9a9152d530353080f80140))
+
 ### [2.571.2](https://github.com/kiva/ui/compare/v2.571.1...v2.571.2) (2023-04-19)
 
 
