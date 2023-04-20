@@ -1,3 +1,10 @@
+### [2.572.2](https://github.com/kiva/ui/compare/v2.572.1...v2.572.2) (2023-04-20)
+
+
+### Bug Fixes
+
+* remove unused prop ([6b8882d](https://github.com/kiva/ui/commit/6b8882da1996285200f1357c9a809ec89b80be85))
+
 ### [2.572.1](https://github.com/kiva/ui/compare/v2.572.0...v2.572.1) (2023-04-20)
 
 
