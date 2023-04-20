@@ -1,3 +1,10 @@
+### [2.573.1](https://github.com/kiva/ui/compare/v2.573.0...v2.573.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* testing ui dev deploy without k8s cpu limits ([3875663](https://github.com/kiva/ui/commit/38756635298aa113643047b3145bfef140dd8c8a))
+
 ## [2.573.0](https://github.com/kiva/ui/compare/v2.572.4...v2.573.0) (2023-04-20)
 
 
