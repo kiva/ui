@@ -3,7 +3,7 @@
 		:corporate-logo-url="corporateLogoUrl"
 		:logo-height="logoHeight"
 		:logo-classes="logoClasses"
-		@show-basket="handleBasketValidation"
+		@show-basket="showBasket"
 	>
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
@@ -786,7 +786,7 @@ export default {
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
 				removeLoanFromBasket: this.removeLoanFromBasket,
-				showBasket: this.handleBasketValidation
+				showBasket: this.showBasket
 			};
 		},
 		pageSettingData() {
@@ -1097,6 +1097,10 @@ export default {
 
 				this.setAuthStatus(this.kvAuth0?.user);
 
+				if (this.$route.hash === '#show-basket') {
+					this.showBasket();
+				}
+
 				this.updateBasketState();
 			});
 		},
@@ -1268,7 +1272,8 @@ export default {
 					this.loadingPage = false;
 				});
 		},
-		handleBasketValidation() {
+		showBasket() {
+			this.$router.push(this.adjustRouteHash('#show-basket')).catch(() => {});
 			// check for verification form requirement
 			if (
 				this.isActivelyLoggedIn
@@ -1458,6 +1463,7 @@ export default {
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
 			this.handleScrollPosition();
+			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		},
 		handleScrollPosition(y) {
 			if (this.scrollToLoans) {
@@ -1525,7 +1531,7 @@ export default {
 					this.addTeamToLoans();
 				}
 			});
-			this.handleBasketValidation();
+			this.showBasket();
 		},
 		addTeamToLoans() {
 			if (this.basketLoans.length && this.teamId) {
@@ -1548,7 +1554,7 @@ export default {
 
 		verificationComplete() {
 			this.verificationSumbitted = true;
-			this.handleBasketValidation();
+			this.showBasket();
 			let verificationEventLabel = 'Verification should have completed';
 			if (!this.promoApplied) {
 				verificationEventLabel = 'Verification may have failed or lender opted out';
@@ -1565,7 +1571,7 @@ export default {
 		},
 		handleCancelPromoOptOut() {
 			this.showVerifyRemovePromoCredit = false;
-			this.handleBasketValidation();
+			this.showBasket();
 		},
 		verifyPromoMatchesPageId(pageId) {
 			const promoPageId = pageId || this.promoData?.managedAccount?.pageId;
@@ -1631,7 +1637,6 @@ export default {
 		},
 	},
 	beforeRouteUpdate(to, from, next) {
-		this.handleBasketValidation();
 		this.refreshTotals();
 		next();
 	},
