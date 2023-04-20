@@ -282,7 +282,7 @@ export default {
 			mdiChevronDown,
 			selectedCategory: 0,
 			selectedGender: 'all',
-			selectedGenders: ['all'], // TODO: Remove selectedGender and just use this, see CORE-1163
+			selectedGenders: ['all'],
 			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
