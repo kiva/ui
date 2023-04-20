@@ -1,3 +1,10 @@
+## [2.573.0](https://github.com/kiva/ui/compare/v2.572.4...v2.573.0) (2023-04-20)
+
+
+### Features
+
+* update meta and add canonical link to LH ([0aeec9f](https://github.com/kiva/ui/commit/0aeec9f372b864354427b1f9a35bf6b6c3da76d9))
+
 ### [2.572.4](https://github.com/kiva/ui/compare/v2.572.3...v2.572.4) (2023-04-20)
 
 
