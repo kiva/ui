@@ -7,7 +7,6 @@
 			:logo-height="logoHeight"
 			:logo-classes="logoClasses"
 			class="tw-sticky tw-z-sticky tw-top-0"
-			@show-basket="$emit('show-basket')"
 		/>
 		<main>
 			<slot></slot>

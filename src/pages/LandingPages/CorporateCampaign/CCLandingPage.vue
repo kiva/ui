@@ -3,7 +3,6 @@
 		:corporate-logo-url="corporateLogoUrl"
 		:logo-height="logoHeight"
 		:logo-classes="logoClasses"
-		@show-basket="handleBasketValidation"
 	>
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
