@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<div
-			v-if="leftoverCreditAllocationLoanId === String(loan.id) && isCorporateCampaignPage"
+			v-if="leftoverCreditAllocationLoanId === String(loan.id) && ccPageCheck($route)"
 			class="tw-w-full
 					md:tw-w-auto
 					md:tw-ml-3
@@ -114,6 +114,7 @@
 </template>
 
 <script>
+import { isCCPage } from '@/util/urlUtils';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanPromoCredits from '@/components/Checkout/LoanPromoCredits';
@@ -174,11 +175,11 @@ export default {
 		leftoverCreditAllocationLoanId() {
 			return this.cookieStore.get('lcaid');
 		},
-		isCorporateCampaignPage() {
-			return this.$route.path.substring(0, 4) === '/cc/';
-		}
 	},
 	methods: {
+		ccPageCheck(route) {
+			return isCCPage(route);
+		},
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
