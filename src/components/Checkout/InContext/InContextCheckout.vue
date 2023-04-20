@@ -4,7 +4,7 @@
 		id="inContextCheckout"
 	>
 		<div
-			v-if="ccPageCheck($route) && cookieStore.get('lcaid')"
+			v-if="isCorporateCampaign && cookieStore.get('lcaid')"
 			class="tw-pb-4"
 		>
 			<div
@@ -56,7 +56,7 @@
 
 		<div
 			class="in-context-login"
-			:class="{ 'tw-text-right' : !ccPageCheck($route) }"
+			:class="{ 'tw-text-right' : !isCorporateCampaign }"
 			v-if="!isActivelyLoggedIn"
 		>
 			<kv-button
@@ -214,11 +214,11 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		isCorporateCampaign() {
+			return isCCPage(this.route);
+		},
 	},
 	methods: {
-		ccPageCheck(route) {
-			return isCCPage(route);
-		},
 		completeTransaction(transactionId) {
 			// compile transaction data
 			const transactionData = formatTransactionData(

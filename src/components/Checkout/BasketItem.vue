@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<div
-			v-if="leftoverCreditAllocationLoanId === String(loan.id) && ccPageCheck($route)"
+			v-if="leftoverCreditAllocationLoanId === String(loan.id) && isCorporateCampaign"
 			class="tw-w-full
 					md:tw-w-auto
 					md:tw-ml-3
@@ -160,6 +160,9 @@ export default {
 		};
 	},
 	computed: {
+		isCorporateCampaign() {
+			return isCCPage(this.route);
+		},
 		creditsUsed() {
 			return this.loan?.creditsUsed ?? [];
 		},
@@ -177,9 +180,6 @@ export default {
 		},
 	},
 	methods: {
-		ccPageCheck(route) {
-			return isCCPage(route);
-		},
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
