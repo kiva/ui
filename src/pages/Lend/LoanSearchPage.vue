@@ -80,7 +80,6 @@ export default {
 	data() {
 		return {
 			extendFlssFilters: false,
-			enableFlssQueryExp: false,
 			enableSavedSearch: true,
 			mdiEarth,
 			mdiFilter,
@@ -124,7 +123,6 @@ export default {
 				id: 'Experiment:EXP-FLSS-Lend-Filter',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.enableFlssQueryExp = lendFilterFlssQuery.version;
 			if (lendFilterFlssQuery.version) {
 				this.$kvTrackEvent(
 					'Lending',
