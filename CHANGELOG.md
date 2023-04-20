@@ -1,3 +1,10 @@
+### [2.573.2](https://github.com/kiva/ui/compare/v2.573.1...v2.573.2) (2023-04-20)
+
+
+### Bug Fixes
+
+* fixed issue with basket opening handler, ensured that after login, checkout modal state is maintained ([8091109](https://github.com/kiva/ui/commit/8091109157c59f4c9955158f6bca932b917e5867))
+
 ### [2.573.1](https://github.com/kiva/ui/compare/v2.573.0...v2.573.1) (2023-04-20)
 
 
