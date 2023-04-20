@@ -1,3 +1,10 @@
+### [2.572.1](https://github.com/kiva/ui/compare/v2.572.0...v2.572.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* random small change ([b0c5cf1](https://github.com/kiva/ui/commit/b0c5cf1d5ff66ddf37bcbbdb2a344dfb0e262dbe))
+
 ## [2.572.0](https://github.com/kiva/ui/compare/v2.571.2...v2.572.0) (2023-04-20)
 
 
