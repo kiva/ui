@@ -10,7 +10,7 @@
 						v-if="hideShowLendDropdown && !isLessThan25"
 						:id="`LoanAmountDropdown_${loan.id}`"
 						class="tw-min-w-12"
-						v-model="defaultOption"
+						v-model="selectedOption"
 						v-kv-track-event="['Lending', 'click-Modify loan amount', 'open dialog', loanId, loanId]"
 						@update:modelValue="trackLendAmountSelection"
 						aria-label="Lend amount"
@@ -143,7 +143,7 @@ export default {
 	data() {
 		return {
 			completeLoanView: true,
-			selectedOption: '25',
+			selectedOption: this.getSelectedOption(this.loan?.unreservedAmount),
 		};
 	},
 	methods: {
@@ -300,14 +300,6 @@ export default {
 		showLendAgain() {
 			return this.isLentTo && !this.isLessThan25;
 		},
-		defaultOption: {
-			get() {
-				return this.getSelectedOption(this.loan?.unreservedAmount);
-			},
-			set(value) {
-				this.selectedOption = value;
-			}
-		}
 	},
 };
 
