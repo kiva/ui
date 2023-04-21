@@ -1450,7 +1450,7 @@ export default {
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
-			this.checkoutVisible = false;
+			this.checkoutLightboxClosed();
 			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
 			this.apollo.mutate({

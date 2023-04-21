@@ -87,15 +87,22 @@
 <script>
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
+import { validationMixin } from 'vuelidate';
+import { required, email } from 'vuelidate/lib/validators';
 export default {
 	name: 'KivaCreditPayment',
 	components: {
-		KvButton
+		KvButton,
+		KvCheckbox,
+		KvTextInput
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
-		checkoutUtils
+		checkoutUtils,
+		validationMixin
 	],
 	props: {
 		managedAccountId: {
@@ -105,7 +112,25 @@ export default {
 		promoFundId: {
 			type: String,
 			default: ''
-		}
+		},
+		isGuestCheckout: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	data() {
+		return {
+			email: null,
+			termsAgreement: false,
+			emailUpdates: false,
+		};
+	},
+	validations: {
+		email: {
+			required,
+			email,
+		},
+		termsAgreement: { required: value => value === true },
 	},
 	methods: {
 		validateCreditBasket() {
@@ -146,6 +171,10 @@ export default {
 					this.$emit('updating-totals', false);
 					console.error(errorResponse);
 				});
+		},
+		validateCampaignEmail() {
+			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${promoFundEmail}`);
+			return emailRegex.test(this.$refs.email);
 		},
 	}
 };

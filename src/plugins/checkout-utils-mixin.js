@@ -87,7 +87,6 @@ export default {
 			checkInjections(this, injections);
 
 			return new Promise((resolve, reject) => {
-				debugger;
 				this.apollo.mutate({
 					mutation: validateLenderEmailForPromo,
 					variables: {
@@ -96,7 +95,6 @@ export default {
 						managedAccountId: Number(managedAccountId),
 					}
 				}).then(data => {
-					debugger;
 					resolve(this.validateGuestBasket(guestEmail, emailUpdates));
 				}).catch(errorResponse => {
 					logFormatter(errorResponse, 'error');

@@ -57,6 +57,7 @@
 		<div class="in-context-payment-conttrols">
 			<kiva-credit-payment
 				v-if="showKivaCreditButton"
+				:is-guest-checkout="true"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
