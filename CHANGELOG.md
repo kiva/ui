@@ -1,3 +1,11 @@
+### [2.573.3](https://github.com/kiva/ui/compare/v2.573.2...v2.573.3) (2023-04-21)
+
+
+### Bug Fixes
+
+* checkout screen freezes during checkout for managed lending campaign ([6ef7042](https://github.com/kiva/ui/commit/6ef7042dd9abd08a27671e2b6d8f064cff6b355e))
+* linting ([59ccf9a](https://github.com/kiva/ui/commit/59ccf9ae50f78a4225634f72df841716a755e4a7))
+
 ### [2.573.2](https://github.com/kiva/ui/compare/v2.573.1...v2.573.2) (2023-04-20)
 
 
