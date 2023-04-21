@@ -216,7 +216,10 @@ export default {
 			return this.$route.path.substring(0, 4) === '/cc/';
 		},
 		showLcaLoanMessage() {
-			return this.isCorporateCampaignPage && cookieStore.get('lcaid') && this.promoFund?.promoPrice && this.lcaLoanPrice > 0;
+			return this.isCorporateCampaignPage
+				&& this.cookieStore.get('lcaid')
+				&& this.promoFund?.promoPrice
+				&& this.lcaLoanPrice > 0;
 		}
 	},
 	methods: {
