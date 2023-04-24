@@ -28,7 +28,7 @@
 				<template v-for="(loan, index) in loans">
 					<kiva-classic-basic-loan-card-exp
 						v-if="enableLoanCardExp"
-						:key="`new-card-${index}`"
+						:key="`new-card-${loan.id}-${index}`"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:use-full-width="true"
