@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -24,25 +23,6 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-
-const pageQuery = gql`
-	query LoanChannelCategoryPageExperiments {
-		general {
-			loanTags: uiExperimentSetting(key: "loan_tags") {
-				key
-				value
-			}
-			newLoanCard: uiExperimentSetting(key: "new_loan_card") {
-				key
-				value
-			}
-			filterPills: uiExperimentSetting(key: "filter_pills") {
-				key
-				value
-			}
-		}
-	}
-`;
 
 export default {
 	name: 'LoanChannelCategoryPage',
@@ -67,16 +47,12 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-				]);
-			});
+			return Promise.all([
+				client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+			]);
 		}
 	},
 	created() {

@@ -1,3 +1,39 @@
+## [2.576.0](https://github.com/kiva/ui/compare/v2.575.0...v2.576.0) (2023-04-24)
+
+
+### Features
+
+* ensure correct channel data is collected ([713429c](https://github.com/kiva/ui/commit/713429cd70dd11ebffc45edab842336f64933b67))
+
+## [2.575.0](https://github.com/kiva/ui/compare/v2.574.0...v2.575.0) (2023-04-24)
+
+
+### Features
+
+* computed prop added for selected option in lend cta exp component ([f4309d0](https://github.com/kiva/ui/commit/f4309d0b5f3c2979840451854635290a1b86820a))
+
+
+### Bug Fixes
+
+* key structure updated ([37639ad](https://github.com/kiva/ui/commit/37639ad57c0f11cbf648d30ae08f72878691ff13))
+* key updated in qf section to re render loan card ([34f12b1](https://github.com/kiva/ui/commit/34f12b130112f709370d9268bfe94c175ed02502))
+
+## [2.574.0](https://github.com/kiva/ui/compare/v2.573.3...v2.574.0) (2023-04-24)
+
+
+### Features
+
+* add FLSS tracking to all pages and rename keys ([5966e5c](https://github.com/kiva/ui/commit/5966e5ceceb88ca57cd965df76431cf1783b2007))
+* update ML experiment tracking ([d111bc8](https://github.com/kiva/ui/commit/d111bc8d0f8b0ad65cc8cae9f355e9aaeb0b2ef7))
+
+### [2.573.3](https://github.com/kiva/ui/compare/v2.573.2...v2.573.3) (2023-04-21)
+
+
+### Bug Fixes
+
+* checkout screen freezes during checkout for managed lending campaign ([6ef7042](https://github.com/kiva/ui/commit/6ef7042dd9abd08a27671e2b6d8f064cff6b355e))
+* linting ([59ccf9a](https://github.com/kiva/ui/commit/59ccf9ae50f78a4225634f72df841716a755e4a7))
+
 ### [2.573.2](https://github.com/kiva/ui/compare/v2.573.1...v2.573.2) (2023-04-20)
 
 

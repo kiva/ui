@@ -4,7 +4,7 @@
 		id="inContextCheckout"
 	>
 		<div
-			v-if="isCorporateCampaign && cookieStore.get('lcaid')"
+			v-if="isCorporateCampaign && showLcaLoanMessage"
 			class="tw-pb-4"
 		>
 			<div
@@ -217,6 +217,12 @@ export default {
 		isCorporateCampaign() {
 			return isCCPage(this.$route);
 		},
+		showLcaLoanMessage() {
+			return this.isCorporateCampaignPage
+				&& this.cookieStore.get('lcaid')
+				&& this.promoFund?.promoPrice
+				&& this.lcaLoanPrice > 0;
+		}
 	},
 	methods: {
 		completeTransaction(transactionId) {
