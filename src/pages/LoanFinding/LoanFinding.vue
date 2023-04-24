@@ -124,24 +124,27 @@ export default {
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			const userInfoPromise = client.query({
-				query: userInfoQuery,
-			});
-
-			const recommendedLoansPromise = client.query({
-				query: flssLoansQueryExtended,
-				variables: prefetchedRecommendedLoansVariables
-			});
-
 			return Promise.all([
-				userInfoPromise,
-				recommendedLoansPromise,
 				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-			]);
+			]).then(() => {
+				const userInfoPromise = client.query({
+					query: userInfoQuery,
+				});
+
+				const recommendedLoansPromise = client.query({
+					query: flssLoansQueryExtended,
+					variables: prefetchedRecommendedLoansVariables
+				});
+
+				return Promise.all([
+					userInfoPromise,
+					recommendedLoansPromise,
+				]);
+			});
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};

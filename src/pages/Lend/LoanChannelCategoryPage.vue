@@ -23,9 +23,6 @@ import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketIntersti
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 
 export default {
 	name: 'LoanChannelCategoryPage',
@@ -55,7 +52,6 @@ export default {
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 			]);
 		}
 	},
@@ -77,14 +73,6 @@ export default {
 		this.initializeFilterPillsTest();
 
 		this.initializeFiveDollarsNotes();
-
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			FLSS_ONGOING_EXP_KEY,
-			'EXP-VUE-FLSS-Ongoing-Sitewide'
-		);
 	},
 	methods: {
 		initializeNewLoanCardTest() {
