@@ -1,3 +1,16 @@
+## [2.575.0](https://github.com/kiva/ui/compare/v2.574.0...v2.575.0) (2023-04-24)
+
+
+### Features
+
+* computed prop added for selected option in lend cta exp component ([f4309d0](https://github.com/kiva/ui/commit/f4309d0b5f3c2979840451854635290a1b86820a))
+
+
+### Bug Fixes
+
+* key structure updated ([37639ad](https://github.com/kiva/ui/commit/37639ad57c0f11cbf648d30ae08f72878691ff13))
+* key updated in qf section to re render loan card ([34f12b1](https://github.com/kiva/ui/commit/34f12b130112f709370d9268bfe94c175ed02502))
+
 ## [2.574.0](https://github.com/kiva/ui/compare/v2.573.3...v2.574.0) (2023-04-24)
 
 
