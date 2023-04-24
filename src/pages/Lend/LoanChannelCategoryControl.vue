@@ -491,15 +491,17 @@ export default {
 			return Promise.all([
 				loanChannelPageQueryPromise,
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-			]).then(({ data }) => {
+			]).then(data => {
+				const loanChannelPageQueryData = data?.[0]?.data ?? {};
+
 				// combine both 'pages' of loan channels
 				const pageQueryData = {
-					...data,
+					...loanChannelPageQueryData,
 					lend: {
 						loanChannels: {
 							values: [
-								...(data?.lend?.firstLoanChannels?.values ?? []),
-								...(data?.lend?.secondLoanChannels?.values ?? [])
+								...(loanChannelPageQueryData?.lend?.firstLoanChannels?.values ?? []),
+								...(loanChannelPageQueryData?.lend?.secondLoanChannels?.values ?? [])
 							]
 						}
 					}
