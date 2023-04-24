@@ -1,3 +1,10 @@
+## [2.576.0](https://github.com/kiva/ui/compare/v2.575.0...v2.576.0) (2023-04-24)
+
+
+### Features
+
+* ensure correct channel data is collected ([713429c](https://github.com/kiva/ui/commit/713429cd70dd11ebffc45edab842336f64933b67))
+
 ## [2.575.0](https://github.com/kiva/ui/compare/v2.574.0...v2.575.0) (2023-04-24)
 
 
