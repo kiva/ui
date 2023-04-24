@@ -228,8 +228,12 @@ import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import EmptyState from '@/components/LoanFinding/EmptyState';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
+
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -482,9 +486,12 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			return client.query({
-				query: loanChannelPageQuery
-			}).then(({ data }) => {
+			const loanChannelPageQueryPromise = client.query({ query: loanChannelPageQuery });
+
+			return Promise.all([
+				loanChannelPageQueryPromise,
+				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+			]).then(({ data }) => {
 				// combine both 'pages' of loan channels
 				const pageQueryData = {
 					...data,
@@ -585,6 +592,14 @@ export default {
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status

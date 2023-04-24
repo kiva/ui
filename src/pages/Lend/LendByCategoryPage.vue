@@ -109,6 +109,7 @@ const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
 const ADD_TO_BASKET_V2_EXP = 'add_to_basket_v2';
 const BANDIT_EXP = 'EXP-ML-Service-Bandit-LendByCategory';
 const FLSS_CATEGORY_SERVICE_EXP = 'flss_category_service';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -678,6 +679,7 @@ export default {
 							client.query({ query: experimentQuery, variables: { id: BANDIT_EXP } }),
 							client.query({ query: experimentQuery, variables: { id: FLSS_CATEGORY_SERVICE_EXP } }),
 							client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 						]);
 					});
 			});
@@ -791,6 +793,14 @@ export default {
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();

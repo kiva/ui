@@ -76,6 +76,7 @@ const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 
 export default {
 	name: 'LoanFinding',
@@ -123,23 +124,27 @@ export default {
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			const userInfoPromise = client.query({
-				query: userInfoQuery,
-			});
-
-			const recommendedLoansPromise = client.query({
-				query: flssLoansQueryExtended,
-				variables: prefetchedRecommendedLoansVariables
-			});
-
 			return Promise.all([
-				userInfoPromise,
-				recommendedLoansPromise,
 				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-			]);
+				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+			]).then(() => {
+				const userInfoPromise = client.query({
+					query: userInfoQuery,
+				});
+
+				const recommendedLoansPromise = client.query({
+					query: flssLoansQueryExtended,
+					variables: prefetchedRecommendedLoansVariables
+				});
+
+				return Promise.all([
+					userInfoPromise,
+					recommendedLoansPromise,
+				]);
+			});
 		},
 		result({ data }) {
 			this.userInfo = data?.my?.userAccount ?? {};
@@ -325,6 +330,14 @@ export default {
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
 	beforeDestroy() {
 		this.destroySpotlightViewportObserver();
