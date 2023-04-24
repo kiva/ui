@@ -1,3 +1,11 @@
+## [2.574.0](https://github.com/kiva/ui/compare/v2.573.3...v2.574.0) (2023-04-24)
+
+
+### Features
+
+* add FLSS tracking to all pages and rename keys ([5966e5c](https://github.com/kiva/ui/commit/5966e5ceceb88ca57cd965df76431cf1783b2007))
+* update ML experiment tracking ([d111bc8](https://github.com/kiva/ui/commit/d111bc8d0f8b0ad65cc8cae9f355e9aaeb0b2ef7))
+
 ### [2.573.3](https://github.com/kiva/ui/compare/v2.573.2...v2.573.3) (2023-04-21)
 
 
