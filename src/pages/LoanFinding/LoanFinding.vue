@@ -16,6 +16,7 @@
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-relending-exp="enableRelendingExp"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -77,6 +78,7 @@ const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const RELENDING_EXP_KEY = 'lh_relending';
 
 export default {
 	name: 'LoanFinding',
@@ -119,31 +121,41 @@ export default {
 			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
+			enableRelendingExp: false
 		};
 	},
 	apollo: {
 		query: userInfoQuery,
 		preFetch(config, client) {
-			return Promise.all([
-				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-			]).then(() => {
-				const userInfoPromise = client.query({
-					query: userInfoQuery,
-				});
-
-				const recommendedLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedRecommendedLoansVariables
-				});
+			return client.query({
+				query: userInfoQuery
+			}).then(({ data }) => {
+				const userBalance = Number(data?.my?.userAccount?.balance) ?? null;
 
 				return Promise.all([
-					userInfoPromise,
-					recommendedLoansPromise,
-				]);
+					client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+					// Relending test for users with balance
+					// eslint-disable-next-line max-len
+					userBalance > 0 ? client.query({ query: experimentAssignmentQuery, variables: { id: RELENDING_EXP_KEY } }) : Promise.resolve()
+				]).then(() => {
+					const userInfoPromise = client.query({
+						query: userInfoQuery,
+					});
+
+					const recommendedLoansPromise = client.query({
+						query: flssLoansQueryExtended,
+						variables: prefetchedRecommendedLoansVariables
+					});
+
+					return Promise.all([
+						userInfoPromise,
+						recommendedLoansPromise,
+					]);
+				});
 			});
 		},
 		result({ data }) {
@@ -299,6 +311,16 @@ export default {
 		}
 
 		this.initializeFiveDollarsNotes();
+
+		// Relending test for users with balance
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			RELENDING_EXP_KEY,
+			'EXP-CORE-1276-April2023'
+		);
+		this.enableRelendingExp = version === 'b';
 	},
 	mounted() {
 		this.getRecommendedLoans();
