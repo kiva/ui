@@ -1,3 +1,10 @@
+## [2.580.0](https://github.com/kiva/ui/compare/v2.579.1...v2.580.0) (2023-04-25)
+
+
+### Features
+
+* copy updated in recommended section for relending test ([067c978](https://github.com/kiva/ui/commit/067c9782c4cd5221956dea319393f22d1ccef6f9))
+
 ### [2.579.1](https://github.com/kiva/ui/compare/v2.579.0...v2.579.1) (2023-04-25)
 
 
