@@ -16,6 +16,7 @@
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-relending-exp="enableRelendingExp"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -77,6 +78,7 @@ const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const RELENDING_EXP_KEY = 'lh_relending';
 
 export default {
 	name: 'LoanFinding',
@@ -119,6 +121,7 @@ export default {
 			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
+			enableRelendingExp: false
 		};
 	},
 	apollo: {
@@ -130,6 +133,7 @@ export default {
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: RELENDING_EXP_KEY } }),
 			]).then(() => {
 				const userInfoPromise = client.query({
 					query: userInfoQuery,
@@ -299,6 +303,19 @@ export default {
 		}
 
 		this.initializeFiveDollarsNotes();
+
+		const userBalance = Number(this.userInfo?.balance ?? 0);
+		// Relending test for users with balance
+		if (userBalance) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				RELENDING_EXP_KEY,
+				'EXP-CORE-1276-April2023'
+			);
+			this.enableRelendingExp = version === 'b';
+		}
 	},
 	mounted() {
 		this.getRecommendedLoans();

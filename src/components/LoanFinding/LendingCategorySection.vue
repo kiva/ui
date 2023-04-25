@@ -82,7 +82,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableRelendingExp: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		isLargeCard() {
