@@ -2,7 +2,7 @@
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<div v-if="!enableRelendingExp" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
 					Welcome back{{ firstName ? ', ' : '' }}
 					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
@@ -18,6 +18,7 @@
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
 				@add-to-basket="trackCategory($event, 'recommended')"
+				:class="{ 'tw-mt-3' : enableRelendingExp }"
 			/>
 
 			<quick-filters-section
@@ -161,6 +162,10 @@ export default {
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		},
+		userBalance() {
+			const balance = this.userInfo?.balance ?? '';
+			return balance;
+		},
 		secondCategoryTitle() {
 			if (this.matchedLoansTotal > 0) {
 				if (this.matchedLoansTotal < 3) return 'Help these borrowers cross the finish line';
@@ -179,11 +184,13 @@ export default {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
 		recommendedTitle() {
+			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalance}</span> to good use`; // eslint-disable-line max-len
 			return this.isLoggedIn
 				? 'Recommended for you'
 				: 'Make a difference <span class="tw-text-action">today</span>';
 		},
 		recommendedSubtitle() {
+			if (this.enableRelendingExp) return 'Loans we think you\'ll love based on your lending history';
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
 				: 'Support a featured borrower with a microloan. Log in for personalized recommendations.';
