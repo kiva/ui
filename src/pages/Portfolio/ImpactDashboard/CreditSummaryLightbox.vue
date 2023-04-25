@@ -291,7 +291,7 @@ export default {
 
 					this.amountDonated = asNumber(data?.my?.amountDonated);
 					this.currencyLossesAmount = asNumber(data?.my?.currencyLossesAmount);
-					this.defaultLossesAmount = asNumber(data?.my?.defaultLossesAmount);
+					this.defaultLossesAmount = asNumber(data?.my?.defaultLossesAmount) * -1;
 					this.kivaCardsPurchasedAmount = asNumber(data?.my?.kivaCardsPurchasedAmount);
 					this.amountWithdrawn = asNumber(data?.my?.amountWithdrawn);
 

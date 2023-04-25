@@ -184,7 +184,7 @@ export default {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
 		recommendedTitle() {
-			if (this.enableRelendingExp) return `${this.firstName}, lets put your <span class="tw-text-action">$${this.userBalance}</span> to good use`; // eslint-disable-line max-len
+			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalance}</span> to good use`; // eslint-disable-line max-len
 			return this.isLoggedIn
 				? 'Recommended for you'
 				: 'Make a difference <span class="tw-text-action">today</span>';
