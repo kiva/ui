@@ -1,3 +1,16 @@
+## [2.578.0](https://github.com/kiva/ui/compare/v2.577.1...v2.578.0) (2023-04-25)
+
+
+### Features
+
+* test setup added to lending home page for users with balance ([ce3b213](https://github.com/kiva/ui/commit/ce3b21323bd85632bcc03e123a3004875fa2c573))
+
+
+### Bug Fixes
+
+* balance validation changed in prefetch ([87a272b](https://github.com/kiva/ui/commit/87a272b1592ecd424977246b39a20cb9aa6d9079))
+* userbalance const updated ([7ef5426](https://github.com/kiva/ui/commit/7ef5426ec961eee6da5eb84432dafd0fc26e623a))
+
 ### [2.577.1](https://github.com/kiva/ui/compare/v2.577.0...v2.577.1) (2023-04-25)
 
 
