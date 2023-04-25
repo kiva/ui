@@ -1,3 +1,10 @@
+### [2.579.1](https://github.com/kiva/ui/compare/v2.579.0...v2.579.1) (2023-04-25)
+
+
+### Bug Fixes
+
+* default losses needed to be negated for display and totals MARS-361 ([0d92e4b](https://github.com/kiva/ui/commit/0d92e4bb7481e556f218e5efa1e0f0ba0d5b174f))
+
 ## [2.579.0](https://github.com/kiva/ui/compare/v2.578.0...v2.579.0) (2023-04-25)
 
 
