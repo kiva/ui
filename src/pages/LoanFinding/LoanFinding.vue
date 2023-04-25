@@ -304,7 +304,7 @@ export default {
 
 		this.initializeFiveDollarsNotes();
 
-		const userBalance = Number(this.userInfo?.balance) ?? 0;
+		const userBalance = Number(this.userInfo?.balance ?? 0);
 		// Relending test for users with balance
 		if (userBalance) {
 			const { version } = trackExperimentVersion(
