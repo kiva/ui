@@ -7,24 +7,24 @@
 		>
 			<div
 				class="tw-w-auto tw-text-right tw-flex-1"
-				v-if="isCorporateCampaignPage"
+				v-if="isCorporateCampaign"
 			>
 				Total:
 			</div>
 			<span
-				v-if="isCorporateCampaignPage"
+				v-if="isCorporateCampaign"
 				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2"
 			>
 				{{ itemTotal }}
 			</span>
 			<div
 				class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1 tw-text-h3"
-				v-if="!isCorporateCampaignPage"
+				v-if="!isCorporateCampaign"
 			>
 				Order Total:
 			</div>
 			<span
-				v-if="!isCorporateCampaignPage"
+				v-if="!isCorporateCampaign"
 				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2 tw-text-h3"
 			>
 				{{ itemTotal }}
@@ -47,12 +47,12 @@
 
 		<div
 			v-if="showKivaCredit"
-			:class="`tw-flex tw-flex-row tw-w-full tw-mb-2${isCorporateCampaignPage ? '' : ' tw-text-h3' }`"
+			:class="`tw-flex tw-flex-row tw-w-full tw-mb-2${isCorporateCampaign ? '' : ' tw-text-h3' }`"
 			data-testid="basket-kiva-credit"
 		>
 			<template v-if="showRemoveKivaCredit">
 				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
-					{{ isCorporateCampaignPage ? 'Remaining Kiva credit:' : 'Kiva Credit:' }}
+					{{ isCorporateCampaign ? 'Remaining Kiva credit:' : 'Kiva Credit:' }}
 				</div>
 				<div
 					class="tw-flex-none tw-w-auto tw-flex tw-items-center"
@@ -60,7 +60,7 @@
 					<span
 						data-testid="applied-kiva-credit-amount"
 						class="tw-pl-2 tw-text-right tw-whitespace-nowrap"
-					>{{ isCorporateCampaignPage ? '' : '- ' }}{{ kivaCredit }}</span>
+					>{{ isCorporateCampaign ? '' : '- ' }}{{ kivaCredit }}</span>
 					<button
 						v-if="showRemoveKivaCredit"
 						@click="removeCredit('kiva_credit')"
@@ -101,7 +101,7 @@
 				class="tw-mb-2 tw-text-left md:tw-text-right
 			tw-flex tw-justify-end tw-items-center" data-testid="basket-promo-total"
 			>
-				<span class="tw-w-full tw-text-h3 " v-if="!isCorporateCampaignPage">
+				<span class="tw-w-full tw-text-h3 " v-if="!isCorporateCampaign">
 					<template v-if="availablePromoTotal">
 						{{ availablePromoTotal }}
 					</template>
@@ -117,7 +117,7 @@
 
 				<div class="tw-flex tw-items-center">
 					<span
-						v-if="!isCorporateCampaignPage"
+						v-if="!isCorporateCampaign"
 						data-testid="promo-amount"
 						class="tw-pl-2 tw-text-right tw-whitespace-nowrap tw-text-h3 "
 					>- {{ appliedPromoTotal }}</span>
@@ -148,7 +148,7 @@
 					Apply
 				</button>
 				<div
-					v-if="hasUPCCode && !isCorporateCampaignPage"
+					v-if="hasUPCCode && !isCorporateCampaign"
 					class="upc-disclaimer"
 					data-testid="basket-upc-promo-disclaimer"
 				>
@@ -163,7 +163,7 @@
 				data-testid="promo-tool-tip"
 				controller="promo_name"
 				theme="mint"
-				v-if="promoFundDisplayDescription && !isCorporateCampaignPage"
+				v-if="promoFundDisplayDescription && !isCorporateCampaign"
 			>
 				{{ promoFundDisplayDescription }}
 			</kv-tooltip>
@@ -173,7 +173,7 @@
 			<div class="tw-flex tw-w-full tw-justify-end tw-items-center">
 				<div
 					class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1"
-					v-if="!isCorporateCampaignPage"
+					v-if="!isCorporateCampaign"
 				>
 					<template v-if="!showPromoCreditTotal">
 						Total:
@@ -183,7 +183,7 @@
 					</template>
 				</div>
 				<div
-					v-if="isCorporateCampaignPage"
+					v-if="isCorporateCampaign"
 					class="tw-w-auto tw-text-right tw-flex-1"
 				>
 					<template>
@@ -221,6 +221,7 @@ import numeral from 'numeral';
 import logFormatter from '@/util/logFormatter';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import { removeCredit } from '@/util/checkoutUtils';
+import { isCCPage } from '@/util/urlUtils';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
@@ -391,9 +392,9 @@ export default {
 				price: numeral(this.totals.donationTotal)
 			};
 		},
-		isCorporateCampaignPage() {
-			return this.$route.path.substring(0, 4) === '/cc/';
-		}
+		isCorporateCampaign() {
+			return isCCPage(this.$route);
+		},
 	},
 	methods: {
 		addCredit(type) {
