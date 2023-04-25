@@ -141,7 +141,7 @@
 		"@storybook/addon-postcss": "^2.0.0",
 		"@storybook/addon-storysource": "^6.5.9",
 		"@storybook/addons": "^6.5.9",
-		"@storybook/storybook-deployer": "^2.8.11",
+		"@storybook/storybook-deployer": "^2.8.16",
 		"@storybook/vue": "^6.5.9",
 		"@testing-library/cypress": "^8.0.3",
 		"@testing-library/user-event": "^14.2.0",
