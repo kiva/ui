@@ -1,3 +1,10 @@
+### [2.577.1](https://github.com/kiva/ui/compare/v2.577.0...v2.577.1) (2023-04-25)
+
+
+### Bug Fixes
+
+* restore credit summary ([c02da8a](https://github.com/kiva/ui/commit/c02da8a3dc4d0a96ccf481500da4bc3ec02c61d4))
+
 ## [2.577.0](https://github.com/kiva/ui/compare/v2.576.0...v2.577.0) (2023-04-25)
 
 
