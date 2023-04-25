@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section @visible="whenVisible" data-testid="credit-stats">
+	<async-portfolio-section @visible="fetchAsyncData" data-testid="credit-stats">
 		<h2 class="tw-mb-0.5">
 			The Kiva effect
 		</h2>
@@ -31,7 +31,14 @@
 						This includes loans made using repaid Kiva credit.
 					</dd>
 				</dl>
-				<credit-summary-lightbox v-if="showCreditSummary" />
+				<kv-text-link
+					:icon="mdiFileDocumentOutline"
+					to="/portfolio/loans"
+					v-kv-track-event="['portfolio', 'click', 'credit-stats-details']"
+				>
+					Details
+				</kv-text-link>
+				<credit-summary-lightbox v-if="false" />
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
@@ -39,12 +46,14 @@
 
 <script>
 import { gql } from '@apollo/client';
+import { mdiFileDocumentOutline } from '@mdi/js';
 import numeral from 'numeral';
 import getCacheKey from '@/util/getCacheKey';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KivaEffectFigure from './KivaEffectFigure';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 const CreditSummaryLightbox = () => import('./CreditSummaryLightbox');
 
@@ -58,6 +67,7 @@ export default {
 		KivaEffectFigure,
 		KvGrid,
 		KvLoadingPlaceholder,
+		KvTextLink,
 	},
 	data() {
 		return {
@@ -65,6 +75,7 @@ export default {
 			loadingPromise: null,
 			depositAmount: 25,
 			lendAmount: 1000,
+			mdiFileDocumentOutline,
 			showCreditSummary: false,
 		};
 	},
@@ -93,10 +104,6 @@ export default {
 				});
 			}
 		},
-		whenVisible() {
-			this.showCreditSummary = true;
-			this.fetchAsyncData();
-		}
 	},
 };
 </script>
