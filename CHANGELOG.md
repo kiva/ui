@@ -1,3 +1,23 @@
+## [2.579.0](https://github.com/kiva/ui/compare/v2.578.0...v2.579.0) (2023-04-25)
+
+
+### Features
+
+* including tests for new urlUtils function ([05a33de](https://github.com/kiva/ui/commit/05a33def322f7f82b23228cc688463eb24623cda))
+* including tests for new urlUtils function ([f841bd0](https://github.com/kiva/ui/commit/f841bd04077e4ef57a0c1a29a451e1232f1a9b11))
+* updated route usability ([4149b35](https://github.com/kiva/ui/commit/4149b353d374d43cadfcf812a0e7ebfedd60cbf4))
+
+
+### Bug Fixes
+
+* added global instance of route to computed property ([2239f9e](https://github.com/kiva/ui/commit/2239f9e193c404a1b1f5d550188752dded63ba73))
+* adding back CampaignLoanRow.vue file; also merging remote branch of 'CIT-109.5' to local one ([b85098c](https://github.com/kiva/ui/commit/b85098c1f8c58ac967b0381d42bf98f9e9d753e0))
+* adding back src/components/LoanCards/CorporateCampaignLoanCard.vue file ([507d692](https://github.com/kiva/ui/commit/507d692213d6549ad4607e0fb01395a7f4824ccb))
+* additional edits ([9ddb502](https://github.com/kiva/ui/commit/9ddb502900b1047ff1d8097a2203d42dab097f99))
+* minor fixes based on CIT-checkout-flow-improvemnt PR comments [CIT-110] ([bf0ba4c](https://github.com/kiva/ui/commit/bf0ba4cd151b53e0dcb5bbfa5f5000d9b335ed93))
+* removed routeUtils, changed urlUtils, standardized isCCPage function acrossfiles ([e4cefc3](https://github.com/kiva/ui/commit/e4cefc304405e637b7c057883d23884423d05d1d))
+* tests (CampaignLoanRow file is restored) ([dce074e](https://github.com/kiva/ui/commit/dce074e757aa2b18b3f074294e1a0cf40a3d27c6))
+
 ## [2.578.0](https://github.com/kiva/ui/compare/v2.577.1...v2.578.0) (2023-04-25)
 
 
