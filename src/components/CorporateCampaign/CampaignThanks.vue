@@ -129,6 +129,7 @@ export default {
 					checkoutId: this.transactionId
 				}
 			}).then(async ({ data }) => {
+				debugger;
 				this.lender = {
 					...data.my.userAccount,
 					teams: data.my.teams.values.map(value => value.team)

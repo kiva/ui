@@ -142,7 +142,7 @@ export default {
 			default: '',
 		},
 		managedAccountId: {
-			type: Number,
+			type: String,
 			default: '',
 		},
 	},
