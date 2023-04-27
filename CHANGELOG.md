@@ -1,3 +1,11 @@
+### [2.580.1](https://github.com/kiva/ui/compare/v2.580.0...v2.580.1) (2023-04-27)
+
+
+### Bug Fixes
+
+* add missing initial click event for braintree type checkout button ([aeecc61](https://github.com/kiva/ui/commit/aeecc61c7089f96c925697ca936d67ea00d1d409))
+* use new event format ([c703037](https://github.com/kiva/ui/commit/c703037f09e9f994a46c3ce18d3bebadf806e563))
+
 ## [2.580.0](https://github.com/kiva/ui/compare/v2.579.1...v2.580.0) (2023-04-25)
 
 
