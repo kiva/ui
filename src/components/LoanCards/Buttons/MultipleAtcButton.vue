@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<button
-			class="tw-flex tw-items-center tw-pl-1.5"
-			style="font-size: 17px; font-weight: 611; border-radius: 16px; border: 1px solid #C4C4C4;"
+			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary"
+			style="font-size: 17px; font-weight: 611; border-radius: 16px;"
 		>
 			${{ amount }}
 			<div
@@ -31,8 +31,7 @@ export default {
 	},
 	computed: {
 		buttonCopy() {
-			if (this.loansNumber === 4) return 'Add all 4 cart';
-			if (this.loansNumber === 3) return 'Add all 3 cart';
+			if (this.loansNumber > 2) return `Add all ${this.loansNumber} cart`;
 			return 'Add both to cart';
 		}
 	}
