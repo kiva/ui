@@ -156,6 +156,7 @@ export default {
 	},
 	methods: {
 		submit() {
+			this.$kvTrackEvent('basket', 'Braintree Checkout', 'Button Click');
 			if (this.isGuestCheckout) {
 				this.$v.$touch();
 				if (!this.$v.$invalid) {
