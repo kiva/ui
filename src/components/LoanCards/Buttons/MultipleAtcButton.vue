@@ -1,13 +1,13 @@
 <template>
 	<div>
+		<!-- eslint-disable max-len -->
 		<button
-			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary"
-			style="font-size: 17px; font-weight: 611; border-radius: 16px;"
+			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary tw-text-base tw-rounded"
 		>
 			${{ amount }}
 			<div
-				class="tw-ml-1.5"
-				style="background: #F4B539; font-weight: 621; border-radius: 0 14px 14px 0; padding: 12px 18px;"
+				class="tw-ml-1.5 tw-bg-marigold"
+				style="border-radius: 0 14px 14px 0; padding: 12px 18px; font-weight: 621;"
 			>
 				{{ buttonCopy }}
 			</div>
