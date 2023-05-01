@@ -1,10 +1,23 @@
 <template>
 	<div class="tw-w-full">
 		<div class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
-			<p v-if="subtitle" class="tw-text-subhead tw-text-primary">
-				{{ subtitle }}
-			</p>
+			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center">
+				<div class="tw-w-full lg:tw-w-auto">
+					<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
+					<p
+						v-if="subtitle"
+						class="tw-text-subhead tw-text-primary"
+						:class="{ 'tw-hidden lg:tw-block' : enableRelendingExp }"
+					>
+						{{ subtitle }}
+					</p>
+				</div>
+				<multiple-atc-button
+					v-if="enableRelendingExp"
+					amount="50"
+					:loans-number="2"
+				/>
+			</div>
 			<kv-carousel
 				class="tw-w-full tw-overflow-hidden tw-mt-1"
 				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
@@ -48,6 +61,7 @@
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -55,7 +69,8 @@ export default {
 	components: {
 		KvCarousel,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCard
+		KivaClassicBasicLoanCard,
+		MultipleAtcButton
 	},
 	props: {
 		title: {

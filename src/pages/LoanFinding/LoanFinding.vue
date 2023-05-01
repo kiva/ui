@@ -164,6 +164,7 @@ export default {
 		},
 		userBalance() {
 			const balance = this.userInfo?.balance ?? '';
+			if (balance % 1 === 0) return Number(balance).toFixed();
 			return balance;
 		},
 		secondCategoryTitle() {
