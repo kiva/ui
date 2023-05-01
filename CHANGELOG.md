@@ -1,3 +1,18 @@
+## [2.581.0](https://github.com/kiva/ui/compare/v2.580.1...v2.581.0) (2023-05-01)
+
+
+### Features
+
+* edited Kiva Classic Loan Card (dropdown menu and alignment fix) [CIT-68] ([aed48dc](https://github.com/kiva/ui/commit/aed48dc6791fea7057108a814c2fb8ceeda323ae))
+* new button creadted for multiple atc actions in relending experiment ([169e8f6](https://github.com/kiva/ui/commit/169e8f6c782ad7afae828dc3fc79c880835baae2))
+
+
+### Bug Fixes
+
+* css attr replaced with tw configs ([b8c723a](https://github.com/kiva/ui/commit/b8c723a32ae5be9d832d6101d1aa5701e294c845))
+* kv tokens updated ([23f4d9e](https://github.com/kiva/ui/commit/23f4d9ed5f4fab299d02eb6e8c14e83492b4a140))
+* multipleactbutton simplified ([d62fbe6](https://github.com/kiva/ui/commit/d62fbe647e0d7dac8f1df81c2d5cc319a3c6223c))
+
 ### [2.580.1](https://github.com/kiva/ui/compare/v2.580.0...v2.580.1) (2023-04-27)
 
 
