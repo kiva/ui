@@ -36,7 +36,7 @@
 						:item-index="index"
 						:key="`loan-${loan}`"
 						:loan-id="loan"
-						:lend-now-button="true"
+						:show-action-button="true"
 						:checkout-route="checkoutRoute"
 						:custom-loan-details="true"
 						:custom-checkout-button-text="getCheckoutBtnText(loan)"
@@ -300,7 +300,7 @@ export default {
 @import 'foundation';
 
 .component-wrapper {
-	text-align: center;
+	text-align: left;
 	min-height: rem-calc(500); // prevents layout shift as loans load in
 	display: flex;
 	align-items: center;

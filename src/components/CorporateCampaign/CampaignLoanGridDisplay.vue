@@ -11,7 +11,7 @@
 					:item-index="index"
 					:key="`loan-${loan}`"
 					:loan-id="loan"
-					:lend-now-button="true"
+					:show-action-button="true"
 					:custom-loan-details="true"
 					:custom-checkout-button-text="getCheckoutBtnText(loan)"
 					:checkout-route="checkoutRoute"
