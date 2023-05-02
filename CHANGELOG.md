@@ -1,3 +1,10 @@
+### [2.581.1](https://github.com/kiva/ui/compare/v2.581.0...v2.581.1) (2023-05-02)
+
+
+### Bug Fixes
+
+* hotjar suppression classes for PII on impact dashboard MARS-389 ([#4806](https://github.com/kiva/ui/issues/4806)) ([a60215c](https://github.com/kiva/ui/commit/a60215c02cb6a9042e45f96ebffa32a06546c9e2))
+
 ## [2.581.0](https://github.com/kiva/ui/compare/v2.580.1...v2.581.0) (2023-05-01)
 
 
