@@ -13,7 +13,7 @@
 				<kv-loading-placeholder v-if="loading" class="tw-mr-3 tw-mb-2" style="width: 100px; height: 100px;" />
 				<img
 					v-if="!loading"
-					class="tw-shrink-0 tw-rounded tw-mr-3 tw-mb-2"
+					class="data-hj-suppress tw-shrink-0 tw-rounded tw-mr-3 tw-mb-2"
 					:srcset="`${update.imageRetinaUrl} 2x`"
 					:src="update.imageUrl"
 					width="100"
@@ -45,7 +45,7 @@
 						class="tw-mb-1 md:tw-mb-3"
 						style="height: 1rem; width: 70%;"
 					/>
-					<p v-if="!loading" class="tw-break-words tw-mb-1 md:tw-mb-2">
+					<p v-if="!loading" class="data-hj-suppress tw-break-words tw-mb-1 md:tw-mb-2">
 						{{ update.body }}<span v-if="update.truncated">...</span>
 						<router-link
 							v-if="update.truncated"
@@ -57,7 +57,7 @@
 					</p>
 					<!-- author name -->
 					<kv-loading-placeholder v-if="loading" style="height: 1rem; width: 10rem;" />
-					<p v-if="!loading" class="tw-text-small tw-text-secondary">
+					<p v-if="!loading" class="data-hj-suppress tw-text-small tw-text-secondary">
 						Posted by {{ update.authorName }} • {{ update.date }}
 					</p>
 				</div>

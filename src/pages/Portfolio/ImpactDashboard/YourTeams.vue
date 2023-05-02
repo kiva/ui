@@ -12,7 +12,7 @@
 		</h2>
 		<!-- team list -->
 		<ol v-if="hasTeams" class="tw-mb-2">
-			<li v-for="team in loopTeams" :key="team.id" class="tw-flex tw-items-center tw-mb-1">
+			<li v-for="team in loopTeams" :key="team.id" class="data-hj-suppress tw-flex tw-items-center tw-mb-1">
 				<!-- team photo -->
 				<kv-loading-placeholder v-if="loading" class="tw-mr-1.5" style="width: 2rem; height: 2rem;" />
 				<img

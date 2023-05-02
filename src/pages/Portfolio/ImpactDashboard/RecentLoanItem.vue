@@ -1,5 +1,5 @@
 <template>
-	<li class="tw-text-center md:tw-px-3">
+	<li class="data-hj-suppress tw-text-center md:tw-px-3">
 		<!-- photo (link) -->
 		<div
 			class="tw-overflow-hidden tw-rounded-full tw-bg-secondary tw-mx-auto tw-mb-2 tw-max-w-full"
