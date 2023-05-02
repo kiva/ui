@@ -1097,10 +1097,6 @@ export default {
 
 				this.setAuthStatus(this.kvAuth0?.user);
 
-				if (this.$route.hash === '#show-basket') {
-					this.showBasket();
-				}
-
 				this.updateBasketState();
 			});
 		},
@@ -1240,6 +1236,10 @@ export default {
 					}
 				}
 			});
+
+			if (this.$route.hash === '#show-basket') {
+				this.showBasket();
+			}
 
 			// eslint-disable-next-line no-underscore-dangle
 			this.donations = basketItems.filter(item => item.__typename === 'Donation');
