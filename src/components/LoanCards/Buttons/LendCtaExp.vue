@@ -7,7 +7,7 @@
 			>
 				<div class="amountDropdownWrapper">
 					<kv-ui-select
-						v-if="hideShowLendDropdown && !isLessThan25"
+						v-if="hideShowLendDropdown && !isLessThan25 && !enableRelendingExp"
 						:id="`LoanAmountDropdown_${loan.id}`"
 						class="tw-min-w-12"
 						v-model="selectedOption"
@@ -29,7 +29,7 @@
 				<div :class="{ 'lendButtonWrapper' : hideShowLendDropdown}">
 					<kv-ui-button
 						key="lendButton"
-						v-if="lendButtonVisibility && !isLessThan25"
+						v-if="lendButtonVisibility && !isLessThan25 && !enableRelendingExp"
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
@@ -56,7 +56,7 @@
 					:show-now="false"
 					:amount-left="unreservedAmount"
 					@add-to-basket="addToBasket"
-					v-if="isLendAmountButton && !enableFiveDollarsNotes"
+					v-if="isLendAmountButton"
 				/>
 
 				<!-- Adding to basket button -->
@@ -133,6 +133,14 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
+		},
+		enableRelendingExp: {
+			type: Boolean,
+			default: false
+		},
+		userBalance: {
+			type: Number,
+			default: 0
 		}
 	},
 	components: {
@@ -194,6 +202,14 @@ export default {
 			return this.loan?.minNoteSize ?? '';
 		},
 		unreservedAmount() {
+			if (this.enableRelendingExp) {
+				if (this.enableFiveDollarsNotes) {
+					if (this.userBalance > 20) return '25';
+					return '5';
+				}
+				if (this.loan.unreservedAmount > 25) return '25';
+				return this.loan?.unreservedAmount ?? '';
+			}
 			return this.loan?.unreservedAmount ?? '';
 		},
 		lentPreviously() {
@@ -288,7 +304,9 @@ export default {
 			return (isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount));
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
+			if (this.enableRelendingExp) return (this.lendButtonVisibility || this.state === 'lent-to');
+			// eslint-disable-next-line
+			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount) && !this.enableFiveDollarsNotes;
 		},
 		isFunded() {
 			return this.state === 'funded'

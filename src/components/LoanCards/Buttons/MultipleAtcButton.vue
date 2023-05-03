@@ -3,6 +3,7 @@
 		<!-- eslint-disable max-len -->
 		<button
 			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary tw-text-base tw-rounded"
+			@click="$emit('add-multiple')"
 		>
 			${{ amount }}
 			<div
@@ -21,8 +22,8 @@ export default {
 	name: 'MultipleAtcButton',
 	props: {
 		amount: {
-			type: String,
-			default: '0'
+			type: Number,
+			default: 0
 		},
 		loansNumber: {
 			type: Number,
