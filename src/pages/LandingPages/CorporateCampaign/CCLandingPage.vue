@@ -1097,10 +1097,6 @@ export default {
 
 				this.setAuthStatus(this.kvAuth0?.user);
 
-				if (this.$route.hash === '#show-basket') {
-					this.showBasket();
-				}
-
 				this.updateBasketState();
 			});
 		},
@@ -1270,6 +1266,9 @@ export default {
 					console.error(errorResponse);
 				}).finally(() => {
 					this.loadingPage = false;
+					if (this.$route.hash === '#show-basket') {
+						this.showBasket();
+					}
 				});
 		},
 		showBasket() {

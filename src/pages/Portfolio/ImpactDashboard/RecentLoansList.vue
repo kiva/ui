@@ -7,7 +7,7 @@
 	>
 		<!-- headline -->
 		<kv-loading-placeholder v-if="loading" class="header-placeholder tw-mb-1 lg:tw-mb-1.5" style="width: 40%;" />
-		<h2 v-else class="tw-mb-0.5">
+		<h2 v-else class="data-hj-suppress tw-mb-0.5">
 			Thank you, {{ lenderName }}
 		</h2>
 		<!-- sub headline -->

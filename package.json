@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.581.0",
+	"version": "2.581.4",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -211,7 +211,7 @@
 		"webpack-svgstore-plugin": "kiva/webpack-svgstore-plugin#develop"
 	},
 	"engines": {
-		"node": "16.20.0",
+		"node": "16.15.0",
 		"npm": ">= 6.0.0"
 	},
 	"browserslist": [

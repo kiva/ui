@@ -1,3 +1,32 @@
+### [2.581.4](https://github.com/kiva/ui/compare/v2.581.3...v2.581.4) (2023-05-03)
+
+
+### Bug Fixes
+
+* revert to prior node version until we can update other deps ([2fc28b6](https://github.com/kiva/ui/commit/2fc28b6842cb79ace121b2df1a5d8805177d28a1))
+
+### [2.581.3](https://github.com/kiva/ui/compare/v2.581.2...v2.581.3) (2023-05-03)
+
+
+### Bug Fixes
+
+* update donation page copy ([82f59ae](https://github.com/kiva/ui/commit/82f59aee3c766e0831ad5a9623430d0f5a5f5798))
+
+### [2.581.2](https://github.com/kiva/ui/compare/v2.581.1...v2.581.2) (2023-05-02)
+
+
+### Bug Fixes
+
+* changed location of the check that shows the basket when the show basket hash is present ([9759575](https://github.com/kiva/ui/commit/9759575c91ddc12afa97e6151ee4b03e5e0be53f))
+* email verification form not appearing for every user ([6e687d7](https://github.com/kiva/ui/commit/6e687d7ce85d87a2077ca9ce72e7c47385098c01))
+
+### [2.581.1](https://github.com/kiva/ui/compare/v2.581.0...v2.581.1) (2023-05-02)
+
+
+### Bug Fixes
+
+* hotjar suppression classes for PII on impact dashboard MARS-389 ([#4806](https://github.com/kiva/ui/issues/4806)) ([a60215c](https://github.com/kiva/ui/commit/a60215c02cb6a9042e45f96ebffa32a06546c9e2))
+
 ## [2.581.0](https://github.com/kiva/ui/compare/v2.580.1...v2.581.0) (2023-05-01)
 
 
