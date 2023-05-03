@@ -55,7 +55,7 @@
 				<router-link to="/settings/subscriptions">
 					subscription settings
 				</router-link>
-				page to review and or make adjustments.
+				page to review, make adjustments, or cancel.
 			</p>
 		</div>
 	</div>
