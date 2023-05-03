@@ -160,9 +160,11 @@
 				:is-loading="isLoading"
 				:is-adding="isAdding"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				@add-to-basket="addToBasket"
+				:enable-relending-exp="enableRelendingExp"
+				:user-balance="userBalance"
 				class="tw-mt-auto"
 				:class="{ 'tw-w-full' : unreservedAmount <= 0 }"
+				@add-to-basket="addToBasket"
 			/>
 		</div>
 	</div>
@@ -255,6 +257,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableRelendingExp: {
+			type: Boolean,
+			default: false
+		},
+		userBalance: {
+			type: Number,
+			default: 0
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],

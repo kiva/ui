@@ -10,13 +10,14 @@
 			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				:title="recommendedTitle"
-				:subtitle="recommendedSubtitle"
-				:loans="recommendedLoans"
+				:title="firstRowTitle"
+				:subtitle="firstRowSubtitle"
+				:loans="firstRowLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
+				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				:class="{ 'tw-mt-3' : enableRelendingExp }"
 			/>
@@ -77,7 +78,7 @@ const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedI
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
-const prefetchedRecommendedLoansVariables = { pageLimit: 2, origin: FLSS_ORIGIN_LENDING_HOME };
+const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LENDING_HOME };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RELENDING_EXP_KEY = 'lh_relending';
 
@@ -115,14 +116,15 @@ export default {
 	data() {
 		return {
 			userInfo: {},
-			recommendedLoans: [],
+			firstRowLoans: [],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
 			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
-			enableRelendingExp: false
+			enableRelendingExp: false,
+			userBalance: 0
 		};
 	},
 	apollo: {
@@ -162,7 +164,7 @@ export default {
 		firstName() {
 			return this.userInfo?.firstName ?? '';
 		},
-		userBalance() {
+		userBalanceString() {
 			const balance = this.userInfo?.balance ?? '';
 			if (balance % 1 === 0) return Number(balance).toFixed();
 			return balance;
@@ -184,13 +186,13 @@ export default {
 		activeSpotlightData() {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
-		recommendedTitle() {
-			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalance}</span> to good use`; // eslint-disable-line max-len
+		firstRowTitle() {
+			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalanceString}</span> to good use`; // eslint-disable-line max-len
 			return this.isLoggedIn
 				? 'Recommended for you'
 				: 'Make a difference <span class="tw-text-action">today</span>';
 		},
-		recommendedSubtitle() {
+		firstRowSubtitle() {
 			if (this.enableRelendingExp) return 'Loans we think you\'ll love based on your lending history';
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
@@ -207,11 +209,11 @@ export default {
 
 			// Ensure unique loans are pushed since recommendations can change quickly
 			const remainingRecommendedLoans = loans
-				.filter(l => !this.recommendedLoans.filter(r => r.id === l.id).length)
-				.slice(0, 10);
+				.filter(l => !this.firstRowLoans.filter(r => r.id === l.id).length)
+				.slice(0, 8);
 
-			this.recommendedLoans = [
-				...this.recommendedLoans.slice(0, 2),
+			this.firstRowLoans = [
+				...this.firstRowLoans.slice(0, 4),
 				...remainingRecommendedLoans
 			];
 		},
@@ -289,14 +291,6 @@ export default {
 			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
 		})?.fundraisingLoans?.values ?? [];
-		this.recommendedLoans = [
-			...cachedRecommendedLoans,
-			{ id: 0 }, { id: 0 },
-			{ id: 0 }, { id: 0 },
-			{ id: 0 }, { id: 0 },
-			{ id: 0 }, { id: 0 },
-			{ id: 0 }, { id: 0 }
-		];
 
 		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
 		if (loanCardExpData.enabled) {
@@ -324,9 +318,34 @@ export default {
 			);
 			this.enableRelendingExp = version === 'b';
 		}
+
+		const recommendedArray = [
+			...cachedRecommendedLoans,
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+		];
+
+		let relendingArray = [
+			...cachedRecommendedLoans,
+		];
+
+		/* eslint-disable max-len */
+		if (this.enableFiveDollarsNotes) {
+			if ((userBalance > 0 && userBalance < 10) || (userBalance > 20 && userBalance < 50)) relendingArray = relendingArray.slice(0, 2);
+			if ((userBalance > 10 && userBalance < 15) || (userBalance > 50 && userBalance < 75)) relendingArray = relendingArray.slice(0, 3);
+		} else {
+			if (userBalance > 0 && userBalance < 50) relendingArray = relendingArray.slice(0, 2);
+			if (userBalance > 50 && userBalance < 75) relendingArray = relendingArray.slice(0, 3);
+		}
+		/* eslint-enable max-len */
+
+		this.userBalance = userBalance;
+		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
 	},
 	mounted() {
-		this.getRecommendedLoans();
+		if (!this.enableRelendingExp) this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
 

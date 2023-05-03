@@ -14,8 +14,9 @@
 				</div>
 				<multiple-atc-button
 					v-if="enableRelendingExp"
-					amount="50"
-					:loans-number="2"
+					:amount="multipleAmount"
+					:loans-number="totalLoans"
+					@add-multiple="addMultipleLoans"
 				/>
 			</div>
 			<kv-carousel
@@ -30,15 +31,18 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
 						v-if="enableLoanCardExp"
-						:key="`new-card-${index}`"
+						:key="loanCardKey(index)"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
 						:large-card="isLargeCard"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						@add-to-basket="addToBasket"
 						class="tw-h-full"
+						:ref="loanCardKey(index)"
+						:enable-relending-exp="enableRelendingExp"
+						:user-balance="userBalance"
+						@add-to-basket="addToBasket"
 					/>
 					<kiva-classic-basic-loan-card
 						v-else
@@ -102,6 +106,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		userBalance: {
+			type: Number,
+			default: 0
+		}
 	},
 	computed: {
 		isLargeCard() {
@@ -125,10 +133,46 @@ export default {
 			}
 			return '336px';
 		},
+		multipleAmount() {
+			let amount = 0;
+			for (let index = 0; index < this.totalLoans; index += 1) {
+				const loan = this.loans[index];
+				const { unreservedAmount } = loan;
+
+				if (this.enableFiveDollarsNotes) {
+					if (this.userBalance > 20) {
+						amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
+					} else {
+						amount += unreservedAmount > 5 ? 5 : Number(unreservedAmount);
+					}
+				} else {
+					amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
+				}
+			}
+			return amount;
+		},
+		totalLoans() {
+			return this.loans.length;
+		}
 	},
 	methods: {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+		},
+		addMultipleLoans() {
+			for (let index = 0; index < this.totalLoans; index += 1) {
+				const { unreservedAmount } = this.loans[index];
+				const key = this.loanCardKey(index);
+
+				let amount = '';
+				amount = unreservedAmount > 25 ? '25' : unreservedAmount;
+				if (this.enableFiveDollarsNotes) amount = unreservedAmount > 5 ? '5' : unreservedAmount;
+
+				this.$refs[key][0].addToBasket(amount);
+			}
+		},
+		loanCardKey(index) {
+			return `loan-card-${index}`;
 		}
 	},
 };

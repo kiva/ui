@@ -7,7 +7,7 @@
 			>
 				<div class="amountDropdownWrapper">
 					<kv-ui-select
-						v-if="hideShowLendDropdown && !isLessThan25"
+						v-if="hideShowLendDropdown && !isLessThan25 && !enableRelendingExp"
 						:id="`LoanAmountDropdown_${loan.id}`"
 						class="tw-min-w-12"
 						v-model="selectedOption"
@@ -29,7 +29,7 @@
 				<div :class="{ 'lendButtonWrapper' : hideShowLendDropdown}">
 					<kv-ui-button
 						key="lendButton"
-						v-if="lendButtonVisibility && !isLessThan25"
+						v-if="lendButtonVisibility && !isLessThan25 && !enableRelendingExp"
 						class="tw-inline-flex tw-flex-1"
 						data-testid="bp-lend-cta-lend-button"
 						type="submit"
@@ -54,9 +54,9 @@
 					class="tw-w-full"
 					:loan-id="loan.id"
 					:show-now="false"
-					:amount-left="unreservedAmount"
+					:amount-left="amountLeft"
 					@add-to-basket="addToBasket"
-					v-if="isLendAmountButton && !enableFiveDollarsNotes"
+					v-if="isLendAmountButton"
 				/>
 
 				<!-- Adding to basket button -->
@@ -133,6 +133,14 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
+		},
+		enableRelendingExp: {
+			type: Boolean,
+			default: false
+		},
+		userBalance: {
+			type: Number,
+			default: 0
 		}
 	},
 	components: {
@@ -195,6 +203,16 @@ export default {
 		},
 		unreservedAmount() {
 			return this.loan?.unreservedAmount ?? '';
+		},
+		amountLeft() {
+			if (this.enableRelendingExp) {
+				if (this.enableFiveDollarsNotes) {
+					if (this.userBalance > 20) return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount;
+					return this.unreservedAmount > 5 ? '5' : this.unreservedAmount;
+				}
+				if (this.unreservedAmount > 25) return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount; // eslint-disable-line max-len
+			}
+			return this.unreservedAmount ?? '';
 		},
 		lentPreviously() {
 			return this.loan?.userProperties?.lentTo ?? false;
@@ -288,7 +306,9 @@ export default {
 			return (isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount));
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount);
+			if (this.enableRelendingExp) return (this.lendButtonVisibility || this.state === 'lent-to');
+			// eslint-disable-next-line
+			return (this.lendButtonVisibility || this.state === 'lent-to') && isLessThan25(this.unreservedAmount) && !this.enableFiveDollarsNotes;
 		},
 		isFunded() {
 			return this.state === 'funded'
