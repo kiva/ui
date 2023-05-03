@@ -19,30 +19,34 @@
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
-				:class="{ 'tw-mt-3' : enableRelendingExp }"
+				:class="{ 'tw-mt-3 tw-bg-secondary' : enableRelendingExp }"
 			/>
 
-			<quick-filters-section
-				class="tw-mt-3"
-				:enable-loan-card-exp="enableLoanCardExp"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				@add-to-basket="trackCategory($event, 'quick-filters')"
-			/>
+			<div class="tw-flex tw-flex-col">
+				<quick-filters-section
+					class="tw-mt-3"
+					:class="{ 'tw-order-last' : enableRelendingExp }"
+					:enable-loan-card-exp="enableLoanCardExp"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					@add-to-basket="trackCategory($event, 'quick-filters')"
+				/>
 
-			<!-- Element to trigger spotlight observer -->
-			<div ref="spotlightObserver"></div>
+				<!-- Element to trigger spotlight observer -->
+				<div ref="spotlightObserver"></div>
 
-			<!-- Second category row: Matched loans section -->
-			<lending-category-section
-				v-if="secondCategoryLoans.length > 0"
-				:title="secondCategoryTitle"
-				:subtitle="secondCategorySubtitle"
-				:loans="secondCategoryLoans"
-				class="tw-py-3"
-				:enable-loan-card-exp="enableLoanCardExp"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				@add-to-basket="trackCategory($event, 'matched-lending')"
-			/>
+				<!-- Second category row: Matched loans section -->
+				<lending-category-section
+					v-if="secondCategoryLoans.length > 0"
+					:title="secondCategoryTitle"
+					:subtitle="secondCategorySubtitle"
+					:loans="secondCategoryLoans"
+					class="tw-py-3"
+					:class="{ 'tw-order-first' : enableRelendingExp }"
+					:enable-loan-card-exp="enableLoanCardExp"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					@add-to-basket="trackCategory($event, 'matched-lending')"
+				/>
+			</div>
 
 			<partner-spotlight-section
 				class="tw-pt-3"
@@ -170,6 +174,7 @@ export default {
 			return balance;
 		},
 		secondCategoryTitle() {
+			if (this.enableRelendingExp) return '<span class="tw-text-action">Recycle your balance</span> and get these borrowers funded '; // eslint-disable-line max-len
 			if (this.matchedLoansTotal > 0) {
 				if (this.matchedLoansTotal < 3) return 'Help these borrowers cross the finish line';
 				return 'Matched lending';
