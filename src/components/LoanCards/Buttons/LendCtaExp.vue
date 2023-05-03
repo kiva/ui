@@ -54,7 +54,7 @@
 					class="tw-w-full"
 					:loan-id="loan.id"
 					:show-now="false"
-					:amount-left="unreservedAmount"
+					:amount-left="amountLeft"
 					@add-to-basket="addToBasket"
 					v-if="isLendAmountButton"
 				/>
@@ -202,15 +202,17 @@ export default {
 			return this.loan?.minNoteSize ?? '';
 		},
 		unreservedAmount() {
+			return this.loan?.unreservedAmount ?? '';
+		},
+		amountLeft() {
 			if (this.enableRelendingExp) {
 				if (this.enableFiveDollarsNotes) {
-					if (this.userBalance > 20) return '25';
-					return '5';
+					if (this.userBalance > 20) return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount;
+					return this.unreservedAmount > 5 ? '5' : this.unreservedAmount;
 				}
-				if (this.loan.unreservedAmount > 25) return '25';
-				return this.loan?.unreservedAmount ?? '';
+				if (this.unreservedAmount > 25) return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount; // eslint-disable-line max-len
 			}
-			return this.loan?.unreservedAmount ?? '';
+			return this.unreservedAmount ?? '';
 		},
 		lentPreviously() {
 			return this.loan?.userProperties?.lentTo ?? false;
