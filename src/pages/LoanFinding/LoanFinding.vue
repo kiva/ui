@@ -19,7 +19,10 @@
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
-				:class="{ 'tw-pt-3 tw-pb-4 tw-bg-secondary' : enableRelendingExp || !isLoggedIn }"
+				:class="{
+					'tw-pt-3 tw-pb-4 tw-bg-secondary' : enableRelendingExp,
+					'tw-pt-3' : !isLoggedIn,
+				}"
 			/>
 
 			<div class="tw-flex tw-flex-col">
