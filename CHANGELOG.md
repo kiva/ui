@@ -1,3 +1,10 @@
+## [2.584.0](https://github.com/kiva/ui/compare/v2.583.0...v2.584.0) (2023-05-04)
+
+
+### Features
+
+* add hotjar event to US borrower profile ([d0d9528](https://github.com/kiva/ui/commit/d0d952896cf6a78255a5f8ae699df1dbe41b1a56))
+
 ## [2.583.0](https://github.com/kiva/ui/compare/v2.582.0...v2.583.0) (2023-05-04)
 
 
