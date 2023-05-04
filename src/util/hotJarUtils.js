@@ -2,7 +2,7 @@
  * Sets the user attributes for the hotjar API
  * @param userData {Object}
  */
-export default function setHotJarUserAttributes(userData) {
+export function setHotJarUserAttributes(userData) {
 	if (typeof window === 'undefined') {
 		return;
 	}
@@ -21,5 +21,18 @@ export default function setHotJarUserAttributes(userData) {
 				'Has core loan': userData?.hasCoreLoan,
 			});
 		}
+	}
+}
+
+/**
+ * Fires an event to the hotjar API
+ * @param eventName String
+ */
+export function fireHotJarEvent(eventName) {
+	if (typeof window === 'undefined') {
+		return;
+	}
+	if (window.hj) {
+		window.hj('event', eventName);
 	}
 }

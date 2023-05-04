@@ -105,7 +105,7 @@ import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
+import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
