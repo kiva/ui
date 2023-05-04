@@ -85,9 +85,6 @@ const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LENDING_HOME };
-const prefetchedMatchedLoansVariables = { isMatchable: true, pageLimit: 9, origin: FLSS_ORIGIN_LENDING_HOME };
-const prefetchedExpiringSoonLoansVariables = { sortBy: 'expiringSoon', pageLimit: 5, origin: FLSS_ORIGIN_LENDING_HOME };
-const prefetchedAlmostFundedLoansVariables = { sortBy: 'amountLeft', pageLimit: 4, origin: FLSS_ORIGIN_LENDING_HOME };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RELENDING_EXP_KEY = 'lh_relending';
 
@@ -126,7 +123,11 @@ export default {
 		return {
 			userInfo: {},
 			firstRowLoans: [],
-			secondCategoryLoans: [],
+			secondCategoryLoans: [
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 },
+				{ id: 0 }, { id: 0 }, { id: 0 },
+			],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
 			enableLoanCardExp: false,
@@ -156,27 +157,9 @@ export default {
 					variables: prefetchedRecommendedLoansVariables
 				});
 
-				const matchedLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedMatchedLoansVariables
-				});
-
-				const expiringSoonLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedExpiringSoonLoansVariables
-				});
-
-				const almostFundedLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedAlmostFundedLoansVariables
-				});
-
 				return Promise.all([
 					userInfoPromise,
 					recommendedLoansPromise,
-					matchedLoansPromise,
-					expiringSoonLoansPromise,
-					almostFundedLoansPromise
 				]);
 			});
 		},
@@ -248,33 +231,35 @@ export default {
 				...remainingRecommendedLoans
 			];
 		},
-		getSecondCategoryData() {
+		async getSecondCategoryData() {
 			let fallbackLoans = [];
-			const matchedLoans = this.getMatchedLoans();
+			const matchedLoans = await this.getMatchedLoans();
 			this.matchedLoansTotal = matchedLoans.length;
 			if (this.matchedLoansTotal < 3) {
-				fallbackLoans = this.getExpiringSoonAlmostFundedCombo();
+				fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
 			}
 			this.secondCategoryLoans = [...matchedLoans, ...fallbackLoans].slice(0, 9);
 		},
-		getExpiringSoonAlmostFundedCombo() {
-			const cachedExpiringSoonLoans = this.apollo.readQuery({
-				query: flssLoansQueryExtended,
-				variables: prefetchedExpiringSoonLoansVariables
-			})?.fundraisingLoans?.values ?? [];
-
-			const cachedAlmostFundedLoans = this.apollo.readQuery({
-				query: flssLoansQueryExtended,
-				variables: prefetchedExpiringSoonLoansVariables
-			})?.fundraisingLoans?.values ?? [];
-			return [...cachedExpiringSoonLoans, ...cachedAlmostFundedLoans];
+		async getExpiringSoonAlmostFundedCombo() {
+			const expiringSoonData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'expiringSoon', pageLimit: 5 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			const almostFundedData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit: 4 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			return [...expiringSoonData.loans, ...almostFundedData.loans];
 		},
-		getMatchedLoans() {
-			const cachedMatchedLoans = this.apollo.readQuery({
-				query: flssLoansQueryExtended,
-				variables: prefetchedMatchedLoansVariables
-			})?.fundraisingLoans?.values ?? [];
-			return cachedMatchedLoans ?? [];
+		async getMatchedLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ isMatchable: true, pageLimit: 9 },
+				FLSS_ORIGIN_LENDING_HOME
+			);
+			return loans ?? [];
 		},
 		async fetchSpotlightLoans() {
 			const flssFilterCriteria = this.activeSpotlightData?.flssLoanSearch ?? {};
@@ -372,11 +357,10 @@ export default {
 
 		this.userBalance = userBalance;
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
-
-		this.getSecondCategoryData();
 	},
 	mounted() {
 		if (!this.enableRelendingExp) this.getRecommendedLoans();
+		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
 
 		// create observer for spotlight loans
