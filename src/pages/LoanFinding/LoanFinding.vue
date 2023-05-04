@@ -2,7 +2,7 @@
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<div class="tw-w-full">
 			<!-- eslint-disable-next-line max-len -->
-			<div v-if="!enableRelendingExp" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
 					Welcome back{{ firstName ? ', ' : '' }}
 					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
@@ -19,7 +19,7 @@
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
-				:class="{ 'tw-mt-3' : enableRelendingExp }"
+				:class="{ 'tw-mt-3' : enableRelendingExp || !isLoggedIn }"
 			/>
 
 			<quick-filters-section
@@ -196,8 +196,12 @@ export default {
 			if (this.enableRelendingExp) return 'Loans we think you\'ll love based on your lending history';
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
-				: 'Support a featured borrower with a microloan. Log in for personalized recommendations.';
+				: 'Support a featured borrower with a microloan.';
 		},
+		showWelcomeMsg() {
+			if (this.isLoggedIn && !this.enableRelendingExp) return true;
+			return false;
+		}
 	},
 	methods: {
 		async getRecommendedLoans() {
