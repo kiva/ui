@@ -162,6 +162,7 @@ import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
+import { fireHotJarEvent } from '@/util/hotJarUtils';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
@@ -641,6 +642,11 @@ export default {
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
 		this.initializeFiveDollarsNotes();
-	},
+
+		// If loanType is direct fire hotjar event
+		if (this.loanType === 'direct-loan') {
+			fireHotJarEvent('us_borrower_profile');
+		}
+	}
 };
 </script>

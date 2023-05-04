@@ -1,3 +1,17 @@
+### [2.584.1](https://github.com/kiva/ui/compare/v2.584.0...v2.584.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* padding and spacing needed fixing for terms and conditions for SSO ([4a42fc3](https://github.com/kiva/ui/commit/4a42fc3ecfea1d449479afdea35e3f2266b83b21))
+
+## [2.584.0](https://github.com/kiva/ui/compare/v2.583.0...v2.584.0) (2023-05-04)
+
+
+### Features
+
+* add hotjar event to US borrower profile ([d0d9528](https://github.com/kiva/ui/commit/d0d952896cf6a78255a5f8ae699df1dbe41b1a56))
+
 ## [2.583.0](https://github.com/kiva/ui/compare/v2.582.0...v2.583.0) (2023-05-04)
 
 
