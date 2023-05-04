@@ -64,7 +64,7 @@ import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
+import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 const hasLentBeforeCookie = 'kvu_lb';
