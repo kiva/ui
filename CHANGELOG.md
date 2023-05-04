@@ -1,3 +1,15 @@
+## [2.582.0](https://github.com/kiva/ui/compare/v2.581.4...v2.582.0) (2023-05-03)
+
+
+### Features
+
+* relending experience added to lending home page as a test ([6439ed0](https://github.com/kiva/ui/commit/6439ed0eea546ab2528b6d52c1879d58b7d670a2))
+
+
+### Bug Fixes
+
+* logic updated ([27e869e](https://github.com/kiva/ui/commit/27e869e7824319cafae6326011f18497664167ad))
+
 ### [2.581.4](https://github.com/kiva/ui/compare/v2.581.3...v2.581.4) (2023-05-03)
 
 

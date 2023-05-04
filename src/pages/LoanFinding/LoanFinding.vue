@@ -10,9 +10,9 @@
 			</div>
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				:title="recommendedTitle"
-				:subtitle="recommendedSubtitle"
-				:loans="recommendedLoans"
+				:title="firstRowTitle"
+				:subtitle="firstRowSubtitle"
+				:loans="firstRowLoans"
 				:per-step="2"
 				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
@@ -120,7 +120,7 @@ export default {
 	data() {
 		return {
 			userInfo: {},
-			recommendedLoans: [],
+			firstRowLoans: [],
 			secondCategoryLoans: [],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
@@ -191,13 +191,13 @@ export default {
 		activeSpotlightData() {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
-		recommendedTitle() {
+		firstRowTitle() {
 			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalanceString}</span> to good use`; // eslint-disable-line max-len
 			return this.isLoggedIn
 				? 'Recommended for you'
 				: 'Make a difference <span class="tw-text-action">today</span>';
 		},
-		recommendedSubtitle() {
+		firstRowSubtitle() {
 			if (this.enableRelendingExp) return 'Loans we think you\'ll love based on your lending history';
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
@@ -214,11 +214,11 @@ export default {
 
 			// Ensure unique loans are pushed since recommendations can change quickly
 			const remainingRecommendedLoans = loans
-				.filter(l => !this.recommendedLoans.filter(r => r.id === l.id).length)
+				.filter(l => !this.firstRowLoans.filter(r => r.id === l.id).length)
 				.slice(0, 8);
 
-			this.recommendedLoans = [
-				...this.recommendedLoans.slice(0, 4),
+			this.firstRowLoans = [
+				...this.firstRowLoans.slice(0, 4),
 				...remainingRecommendedLoans
 			];
 		},
@@ -344,9 +344,10 @@ export default {
 			if (userBalance > 0 && userBalance < 50) relendingArray = relendingArray.slice(0, 2);
 			if (userBalance > 50 && userBalance < 75) relendingArray = relendingArray.slice(0, 3);
 		}
+		/* eslint-enable max-len */
 
 		this.userBalance = userBalance;
-		this.recommendedLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
+		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
 	},
 	mounted() {
 		if (!this.enableRelendingExp) this.getRecommendedLoans();

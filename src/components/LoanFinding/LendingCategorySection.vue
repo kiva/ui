@@ -31,7 +31,7 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
 						v-if="enableLoanCardExp"
-						:key="`new-card-${index}`"
+						:key="loanCardKey(index)"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
@@ -39,7 +39,7 @@
 						:large-card="isLargeCard"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-h-full"
-						:ref="`relending-${index}`"
+						:ref="loanCardKey(index)"
 						:enable-relending-exp="enableRelendingExp"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
@@ -140,7 +140,11 @@ export default {
 				const { unreservedAmount } = loan;
 
 				if (this.enableFiveDollarsNotes) {
-					amount += this.userBalance > 20 ? 25 : 5;
+					if (this.userBalance > 20) {
+						amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
+					} else {
+						amount += unreservedAmount > 5 ? 5 : Number(unreservedAmount);
+					}
 				} else {
 					amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
 				}
@@ -158,14 +162,17 @@ export default {
 		addMultipleLoans() {
 			for (let index = 0; index < this.totalLoans; index += 1) {
 				const { unreservedAmount } = this.loans[index];
-				const key = `relending-${index}`;
+				const key = this.loanCardKey(index);
 
 				let amount = '';
 				amount = unreservedAmount > 25 ? '25' : unreservedAmount;
-				if (this.enableFiveDollarsNotes) amount = '5';
+				if (this.enableFiveDollarsNotes) amount = unreservedAmount > 5 ? '5' : unreservedAmount;
 
 				this.$refs[key][0].addToBasket(amount);
 			}
+		},
+		loanCardKey(index) {
+			return `loan-card-${index}`;
 		}
 	},
 };
