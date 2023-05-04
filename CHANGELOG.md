@@ -1,3 +1,16 @@
+## [2.585.0](https://github.com/kiva/ui/compare/v2.584.1...v2.585.0) (2023-05-04)
+
+
+### Features
+
+* property and value added to tracking event ([f5112dd](https://github.com/kiva/ui/commit/f5112dd5bcdd6b60b0dbfc686fab420dbf081999))
+* tracking event added to multiple add to cart button un lending home ([7cbf867](https://github.com/kiva/ui/commit/7cbf8678a81a5359f1dbb206189dc4dce1c24c4a))
+
+
+### Bug Fixes
+
+* tracking event modified to align with our list of web events actions ([40a48e2](https://github.com/kiva/ui/commit/40a48e2a257dc9f245029deda8af7b5e7a1eca87))
+
 ### [2.584.1](https://github.com/kiva/ui/compare/v2.584.0...v2.584.1) (2023-05-04)
 
 
