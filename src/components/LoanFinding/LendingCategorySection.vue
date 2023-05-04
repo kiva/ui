@@ -160,6 +160,7 @@ export default {
 			this.$emit('add-to-basket', payload);
 		},
 		addMultipleLoans() {
+			const { multipleAmount } = this;
 			for (let index = 0; index < this.totalLoans; index += 1) {
 				const { unreservedAmount } = this.loans[index];
 				const key = this.loanCardKey(index);
@@ -170,7 +171,7 @@ export default {
 
 				this.$refs[key][0].addToBasket(amount);
 			}
-			this.$kvTrackEvent('loan-card', 'add-to-basket', 'relending-lending-home-add-all');
+			this.$kvTrackEvent('loan-card', 'add-to-basket', 'relending-lending-home-add-all', this.userBalance, multipleAmount); // eslint-disable-line max-len
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;
