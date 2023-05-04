@@ -1,3 +1,15 @@
+## [2.583.0](https://github.com/kiva/ui/compare/v2.582.0...v2.583.0) (2023-05-04)
+
+
+### Features
+
+* welcome message removed in lending home for logged out users ([a28ac86](https://github.com/kiva/ui/commit/a28ac86bfd821a601d86df6a7fa2e3799ca129f4))
+
+
+### Bug Fixes
+
+* condition to show message improved ([add635f](https://github.com/kiva/ui/commit/add635f8fe785dd7634c02083dec306e68efd89b))
+
 ## [2.582.0](https://github.com/kiva/ui/compare/v2.581.4...v2.582.0) (2023-05-03)
 
 
