@@ -36,7 +36,6 @@
 
 				<!-- Second category row: Matched loans section -->
 				<lending-category-section
-					v-if="secondCategoryLoans.length > 0"
 					:title="secondCategoryTitle"
 					:subtitle="secondCategorySubtitle"
 					:loans="secondCategoryLoans"
@@ -246,16 +245,16 @@ export default {
 				...remainingRecommendedLoans
 			];
 		},
-		async getSecondCategoryData() {
+		getSecondCategoryData() {
 			let fallbackLoans = [];
-			const matchedLoans = await this.getMatchedLoans();
+			const matchedLoans = this.getMatchedLoans();
 			this.matchedLoansTotal = matchedLoans.length;
 			if (this.matchedLoansTotal < 3) {
-				fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
+				fallbackLoans = this.getExpiringSoonAlmostFundedCombo();
 			}
 			this.secondCategoryLoans = [...matchedLoans, ...fallbackLoans].slice(0, 9);
 		},
-		async getExpiringSoonAlmostFundedCombo() {
+		getExpiringSoonAlmostFundedCombo() {
 			const cachedExpiringSoonLoans = this.apollo.readQuery({
 				query: flssLoansQueryExtended,
 				variables: prefetchedExpiringSoonLoansVariables
@@ -267,7 +266,7 @@ export default {
 			})?.fundraisingLoans?.values ?? [];
 			return [...cachedExpiringSoonLoans, ...cachedAlmostFundedLoans];
 		},
-		async getMatchedLoans() {
+		getMatchedLoans() {
 			const cachedMatchedLoans = this.apollo.readQuery({
 				query: flssLoansQueryExtended,
 				variables: prefetchedMatchedLoansVariables
