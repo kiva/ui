@@ -170,6 +170,7 @@ export default {
 
 				this.$refs[key][0].addToBasket(amount);
 			}
+			this.$kvTrackEvent('event-tracking', 'add-all-to-basket', 'relending-lending-home');
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;
