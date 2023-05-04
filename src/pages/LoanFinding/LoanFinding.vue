@@ -225,8 +225,7 @@ export default {
 				: 'Support a featured borrower with a microloan.';
 		},
 		showWelcomeMsg() {
-			if (this.isLoggedIn && !this.enableRelendingExp) return true;
-			return false;
+			return this.isLoggedIn && !this.enableRelendingExp;
 		}
 	},
 	methods: {
