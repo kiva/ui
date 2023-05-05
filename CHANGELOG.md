@@ -1,3 +1,10 @@
+### [2.587.2](https://github.com/kiva/ui/compare/v2.587.1...v2.587.2) (2023-05-05)
+
+
+### Bug Fixes
+
+* remove earth day id ([40cc15f](https://github.com/kiva/ui/commit/40cc15f7c5d9a7b344ee275cbf5be788d50a9526))
+
 ### [2.587.1](https://github.com/kiva/ui/compare/v2.587.0...v2.587.1) (2023-05-05)
 
 
