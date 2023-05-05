@@ -1,3 +1,10 @@
+## [2.587.0](https://github.com/kiva/ui/compare/v2.586.0...v2.587.0) (2023-05-05)
+
+
+### Features
+
+* redirect and disabled option added to multiple button in lh ([68c9635](https://github.com/kiva/ui/commit/68c96352ae783f22a301d654bf3f125bb5cb1b64))
+
 ## [2.586.0](https://github.com/kiva/ui/compare/v2.585.0...v2.586.0) (2023-05-05)
 
 
