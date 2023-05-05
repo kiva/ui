@@ -154,12 +154,6 @@ const preFetchQuery = gql`
 				id
 			}
 		}
-		general {
-			followUsLoans: uiConfigSetting(key: "follow_us_loans") {
-				key
-				value
-			}
-		}
 	}
 `;
 
@@ -241,7 +235,6 @@ export default {
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
-			followUsLoansEnabled: false,
 		};
 	},
 	computed: {
@@ -261,10 +254,10 @@ export default {
 		},
 		bookmarkVersion() {
 			// Display follow for all US loans no matter login state
-			if (this.distributionModel === 'direct' && this.followUsLoansEnabled) {
+			if (this.distributionModel === 'direct') {
 				return 'follow';
 			}
-			// Display bookmark for logged in users, non us loans or if follow setting is disabled
+			// Display bookmark for logged in users, non us loans
 			if (this.isLoggedIn) {
 				return 'bookmark';
 			}
@@ -318,7 +311,6 @@ export default {
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
 			this.use = loan?.fullLoanUse ?? '';
-			this.followUsLoansEnabled = result?.data?.general?.followUsLoans?.value === 'true' || false;
 		},
 	},
 };
