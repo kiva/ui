@@ -1,3 +1,18 @@
+## [2.586.0](https://github.com/kiva/ui/compare/v2.585.0...v2.586.0) (2023-05-05)
+
+
+### Features
+
+* matched loans section moved up ([e026331](https://github.com/kiva/ui/commit/e0263316645b308199c5668b80994f9d474ca01b))
+* matched loans section moved up quick filters and data prefetched ([4b0a449](https://github.com/kiva/ui/commit/4b0a44960b7e5db76533299865ac435ceac8b621))
+* matched loans section position move up for relending test ([9b2bc5e](https://github.com/kiva/ui/commit/9b2bc5e6d6320b45ab716c9318be25e20eabcd1f))
+
+
+### Bug Fixes
+
+* dynamic class updated for first section ([994b162](https://github.com/kiva/ui/commit/994b162763bc0ad4a4daa8ba09f823acd74af579))
+* prefetched data for matched loans section removed in lh ([4128c43](https://github.com/kiva/ui/commit/4128c435acebb304ec61e29ecf2130cd05f0b719))
+
 ## [2.585.0](https://github.com/kiva/ui/compare/v2.584.1...v2.585.0) (2023-05-04)
 
 
