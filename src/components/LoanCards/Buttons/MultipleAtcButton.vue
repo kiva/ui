@@ -3,6 +3,7 @@
 		<!-- eslint-disable max-len -->
 		<button
 			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary tw-text-base tw-rounded"
+			:disabled="disabled"
 			@click="$emit('add-multiple')"
 		>
 			${{ amount }}
@@ -28,6 +29,10 @@ export default {
 		loansNumber: {
 			type: Number,
 			default: 2
+		},
+		disabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {

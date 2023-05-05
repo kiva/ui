@@ -16,6 +16,7 @@
 					v-if="enableRelendingExp"
 					:amount="multipleAmount"
 					:loans-number="totalLoans"
+					:disabled="disableMultipleButton"
 					@add-multiple="addMultipleLoans"
 				/>
 			</div>
@@ -111,6 +112,11 @@ export default {
 			default: 0
 		}
 	},
+	data() {
+		return {
+			disableMultipleButton: false
+		};
+	},
 	computed: {
 		isLargeCard() {
 			return this.perStep === 2;
@@ -160,6 +166,7 @@ export default {
 			this.$emit('add-to-basket', payload);
 		},
 		addMultipleLoans() {
+			this.disableMultipleButton = true;
 			const { multipleAmount } = this;
 			for (let index = 0; index < this.totalLoans; index += 1) {
 				const { unreservedAmount } = this.loans[index];
@@ -172,6 +179,9 @@ export default {
 				this.$refs[key][0].addToBasket(amount);
 			}
 			this.$kvTrackEvent('loan-card', 'add-to-basket', 'relending-lending-home-add-all', this.userBalance, multipleAmount); // eslint-disable-line max-len
+			this.$router.push({
+				path: '/checkout',
+			});
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;
