@@ -1,3 +1,11 @@
+### [2.587.1](https://github.com/kiva/ui/compare/v2.587.0...v2.587.1) (2023-05-05)
+
+
+### Reverts
+
+* Revert "feat: add follow button to scroll to links on us loans" ([44e13f5](https://github.com/kiva/ui/commit/44e13f5b55f136b5cb45078dd1dd0cbf202a4bdf))
+* Revert "feat: add feature flag for follow us loans functionality" ([dff7aa4](https://github.com/kiva/ui/commit/dff7aa450e830879c9c90f1c7d12d228e87244ed))
+
 ## [2.587.0](https://github.com/kiva/ui/compare/v2.586.0...v2.587.0) (2023-05-05)
 
 
