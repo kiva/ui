@@ -24,7 +24,7 @@ export default {
 	props: {
 		loan: {
 			type: Object,
-			required: true,
+			default: null,
 		},
 		amountLeft: {
 			type: Number,

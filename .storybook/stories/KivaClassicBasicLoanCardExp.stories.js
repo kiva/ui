@@ -43,6 +43,8 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
 				:large-card="largeCard"
+				:enable-relending-exp="enableRelendingExp"
+				:user-balance="userBalance"
 			/>
 		`,
 	})
@@ -75,11 +77,13 @@ export const ShowTags = story({
 export const Matched = story({
 	loanId: loan.id,
 	showTags: true,
-}, false, { matchingText: 'Matched by Ebay', matchRatio: 1, loanFundraisingInfo: {
-	fundedAmount: '200.00',
-	isExpiringSoon: false,
-	reservedAmount: '0.00'
-} });
+}, false, {
+	matchingText: 'Matched by Ebay', matchRatio: 1, loanFundraisingInfo: {
+		fundedAmount: '200.00',
+		isExpiringSoon: false,
+		reservedAmount: '0.00'
+	}
+});
 
 export const AllSharesReserved = story({
 	loanId: loan.id,
@@ -104,3 +108,27 @@ export const LargeCard = story({
 export const LongCallouts = story({
 	loanId: loan.id,
 }, false, { activity: { id: 1, name: 'Longer activity name test that will be longer than 50% of the card' } });
+
+export const LendAgain = story({
+	loanId: loan.id,
+}, false, { userProperties: { lentTo: true } });
+
+export const LendAgainSmallAmount = story({
+	loanId: loan.id,
+}, false, {
+	userProperties: { lentTo: true },
+	unreservedAmount: '5.00'
+});
+
+export const Relending = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 50,
+}, false);
+
+
+export const RelendingSmallAmount = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 20,
+}, false, { userProperties: { lentTo: true } });

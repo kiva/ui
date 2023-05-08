@@ -157,7 +157,6 @@
 				v-else
 				:loan="loan"
 				:basket-items="basketItems"
-				:is-loading="isLoading"
 				:is-adding="isAdding"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
