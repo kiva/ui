@@ -1,3 +1,10 @@
+## [2.588.0](https://github.com/kiva/ui/compare/v2.587.3...v2.588.0) (2023-05-08)
+
+
+### Features
+
+* copy updated for autolending pages from field partner to lending partner ([a045e52](https://github.com/kiva/ui/commit/a045e52f6ab4b5b6e02f7cd376a718767c193a97))
+
 ### [2.587.3](https://github.com/kiva/ui/compare/v2.587.2...v2.587.3) (2023-05-08)
 
 
