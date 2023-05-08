@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h4 class="tw-mb-2">
-			Field Partners
+			Lending Partners
 		</h4>
 		<div class="row collapse">
 			<div class="small-12 columns">
