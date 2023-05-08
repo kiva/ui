@@ -146,6 +146,7 @@ export default {
 					this.teams = (data?.my?.teams?.values ?? []).map(({ amountLent, team }) => ({
 						id: team.id,
 						name: team.name,
+						teamPublicId: team.teamPublicId,
 						imageUrl: team.image?.regular ?? this.defaultImageUrl,
 						imageRetinaUrl: team.image?.retina ?? this.defaultImageRetinaUrl,
 						imageAlt: `Avatar for lending team ${team.name}`,

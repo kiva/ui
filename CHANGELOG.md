@@ -1,3 +1,10 @@
+### [2.587.3](https://github.com/kiva/ui/compare/v2.587.2...v2.587.3) (2023-05-08)
+
+
+### Bug Fixes
+
+* team link for teams in new portfolio ([4605f5e](https://github.com/kiva/ui/commit/4605f5e402aa8f144b35217f2792f6dd31c87104))
+
 ### [2.587.2](https://github.com/kiva/ui/compare/v2.587.1...v2.587.2) (2023-05-05)
 
 
