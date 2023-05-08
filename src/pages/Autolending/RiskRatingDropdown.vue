@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partner risk ratings
+			Lending Partner risk ratings
 		</h3>
 		<kv-select v-model="riskRating">
 			<option value="0">

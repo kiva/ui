@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partner default rates
+			Lending Partner default rates
 		</h3>
 		<kv-select v-model="defaultRate">
 			<option value="0">

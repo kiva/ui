@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partners
+			Lending Partners
 		</h3>
 		<kv-radio
 			:id="`filter-all-partners`"
@@ -9,7 +9,7 @@
 			v-model="radio"
 			@click="saveAny"
 		>
-			Any Field Partners
+			Any Lending Partners
 		</kv-radio>
 		<kv-radio
 			:id="`filter-some-partners`"
@@ -17,7 +17,7 @@
 			v-model="radio"
 			@click="emitChangeEvent('some')"
 		>
-			Selected Field Partners only
+			Selected Lending Partners only
 			<button
 				v-if="currentFilterValues.length > 0"
 				class="tw-text-link"
