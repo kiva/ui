@@ -173,8 +173,11 @@ export default {
 				const key = this.loanCardKey(index);
 
 				let amount = '';
-				amount = unreservedAmount > 25 ? '25' : unreservedAmount;
-				if (this.enableFiveDollarsNotes) amount = unreservedAmount > 5 ? '5' : unreservedAmount;
+				if (this.enableFiveDollarsNotes && this.userBalance <= 20) {
+					amount = Number(unreservedAmount) > 5 ? '5' : unreservedAmount;
+				} else {
+					amount = Number(unreservedAmount) > 25 ? '25' : unreservedAmount;
+				}
 
 				this.$refs[key][0].addToBasket(amount);
 			}
