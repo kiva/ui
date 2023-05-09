@@ -24,27 +24,17 @@
 				}"
 			/>
 
-<<<<<<< Updated upstream
 			<div class="tw-flex tw-flex-col">
 				<quick-filters-section
 					class="tw-mt-3"
 					:class="{ 'tw-order-last' : enableRelendingExp }"
-					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 				/>
-=======
-			<quick-filters-section
-				class="tw-mt-3"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				@add-to-basket="trackCategory($event, 'quick-filters')"
-			/>
->>>>>>> Stashed changes
 
 				<!-- Element to trigger spotlight observer -->
 				<div ref="spotlightObserver"></div>
 
-<<<<<<< Updated upstream
 				<!-- Second category row: Matched loans section -->
 				<lending-category-section
 					:title="secondCategoryTitle"
@@ -52,23 +42,10 @@
 					:loans="secondCategoryLoans"
 					class="tw-py-3"
 					:class="{ 'tw-order-first' : enableRelendingExp }"
-					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 				/>
 			</div>
-=======
-			<!-- Second category row: Matched loans section -->
-			<lending-category-section
-				v-if="secondCategoryLoans.length > 0"
-				:title="secondCategoryTitle"
-				:subtitle="secondCategorySubtitle"
-				:loans="secondCategoryLoans"
-				class="tw-py-3"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				@add-to-basket="trackCategory($event, 'matched-lending')"
-			/>
->>>>>>> Stashed changes
 
 			<partner-spotlight-section
 				class="tw-pt-3"

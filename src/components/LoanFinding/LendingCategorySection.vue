@@ -21,12 +21,7 @@
 				/>
 			</div>
 			<kv-carousel
-<<<<<<< Updated upstream
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2"
-				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
-=======
-				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-px-1 tw-pt-1"
->>>>>>> Stashed changes
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
@@ -35,12 +30,7 @@
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
-<<<<<<< Updated upstream
-						v-if="enableLoanCardExp"
 						:key="loanCardKey(index)"
-=======
-						:key="`new-card-${index}`"
->>>>>>> Stashed changes
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
@@ -61,11 +51,7 @@
 
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
-<<<<<<< Updated upstream
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
-=======
->>>>>>> Stashed changes
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -73,11 +59,7 @@ export default {
 	components: {
 		KvCarousel,
 		KivaClassicBasicLoanCardExp,
-<<<<<<< Updated upstream
-		KivaClassicBasicLoanCard,
 		MultipleAtcButton
-=======
->>>>>>> Stashed changes
 	},
 	props: {
 		title: {
