@@ -49,12 +49,16 @@ import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const LOAN_CARD_EXP_KEY = 'new_loan_card';
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LoanSearchPage',
@@ -78,13 +82,28 @@ export default {
 	mixins: [fiveDollarsTest],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		preFetch(config, client) {
-			return Promise.all([
-				client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
-				client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-				client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-				client.query({ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
-			]);
+		preFetch(config, client, args) {
+			return client.query({ query: experimentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } })
+				.then(() => {
+					const query = args?.route?.query ?? {};
+
+					// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
+					const { version } = client.readFragment({
+						id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
+						fragment: experimentVersionFragment,
+					}) ?? {};
+
+					if (version === 'b' && getHasEverLoggedIn(client)) {
+						return Promise.reject({ path: '/lend-category-beta', query });
+					}
+
+					return Promise.all([
+						client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
+						client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+						client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
+					]);
+				});
 		},
 	},
 	created() {
@@ -120,6 +139,15 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-	}
+	},
+	mounted() {
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			CATEGORY_REDIRECT_EXP_KEY,
+			'EXP-CORE-1205-May2023'
+		);
+	},
 };
 </script>
