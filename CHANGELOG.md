@@ -1,3 +1,10 @@
+## [2.589.0](https://github.com/kiva/ui/compare/v2.588.0...v2.589.0) (2023-05-09)
+
+
+### Features
+
+* fixes needed for relending experiment ([a144582](https://github.com/kiva/ui/commit/a14458281891c46ea13cb57c4a2b7818a79db87d))
+
 ## [2.588.0](https://github.com/kiva/ui/compare/v2.587.3...v2.588.0) (2023-05-08)
 
 
