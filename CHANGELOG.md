@@ -1,3 +1,10 @@
+## [2.592.0](https://github.com/kiva/ui/compare/v2.591.0...v2.592.0) (2023-05-09)
+
+
+### Features
+
+* test setup added to filter page to redirect to new category filter page ([286463a](https://github.com/kiva/ui/commit/286463a58081379f0087bb91b433afd1fa894530))
+
 ## [2.591.0](https://github.com/kiva/ui/compare/v2.590.0...v2.591.0) (2023-05-09)
 
 
