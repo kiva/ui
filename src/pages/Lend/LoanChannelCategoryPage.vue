@@ -18,11 +18,17 @@
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+
+const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LoanChannelCategoryPage',
@@ -46,13 +52,30 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
-			return Promise.all([
-				client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-			]);
+		preFetch(config, client, args) {
+			return client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } })
+				.then(() => {
+					const query = args?.route?.query ?? {};
+
+					// Redirect to /lend-category-beta/** if user has previously signed in and experiment is assigned
+					const { version } = client.readFragment({
+						id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
+						fragment: experimentVersionFragment,
+					}) ?? {};
+
+					const category = args?.route?.params?.category ?? '';
+
+					if (version === 'b' && getHasEverLoggedIn(client)) {
+						return Promise.reject({ path: `/lend-category-beta/${category}`, query });
+					}
+
+					return Promise.all([
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'new_loan_card' } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					]);
+				});
 		}
 	},
 	created() {
@@ -73,6 +96,15 @@ export default {
 		this.initializeFilterPillsTest();
 
 		this.initializeFiveDollarsNotes();
+	},
+	mounted() {
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			CATEGORY_REDIRECT_EXP_KEY,
+			'EXP-CORE-1205-May2023'
+		);
 	},
 	methods: {
 		initializeNewLoanCardTest() {
