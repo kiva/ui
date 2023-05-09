@@ -21,7 +21,7 @@
 				/>
 			</div>
 			<kv-carousel
-				class="tw-w-full tw-overflow-hidden tw-mt-1"
+				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2"
 				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
