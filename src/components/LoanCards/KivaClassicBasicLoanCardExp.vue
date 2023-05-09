@@ -458,12 +458,15 @@ export default {
 
 			this.isVisitor = !result.data?.my?.userAccount?.id ?? true;
 
-			this.loan = result.data?.lend?.loan || null;
+			// Some pages initially show loading cards without loan IDs
+			if (result.data?.lend?.loan) {
+				this.loan = result.data.lend.loan;
 
-			// Set client-side to prevent call outs from changing on page load due to random selections
-			this.getLoanCallouts();
+				// Set client-side to prevent call outs from changing on page load due to random selections
+				this.getLoanCallouts();
 
-			if (this.loan) this.isLoading = false;
+				this.isLoading = false;
+			}
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
