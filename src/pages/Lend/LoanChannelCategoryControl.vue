@@ -35,7 +35,7 @@
 		</div>
 
 		<div class="row">
-			<quick-filters
+			<quick-filters-channel
 				class="tw-z-2"
 				:class="{ 'tw-px-1 md:tw-px-2' : !enableFilterPills }"
 				:total-loans="totalCount"
@@ -206,7 +206,7 @@ import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
+import { loanChannelQueryMap, countryUtils } from '@kiva/kv-loan-filters';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -222,9 +222,8 @@ import {
 	getFLSSQueryMap,
 } from '@/util/loanChannelUtils';
 import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
-import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
+import QuickFiltersChannel from '@/components/LoansByCategory/QuickFilters/QuickFiltersChannel';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import EmptyState from '@/components/LoanFinding/EmptyState';
@@ -337,7 +336,7 @@ export default {
 		KvPagination,
 		KvLoadingOverlay,
 		PromoGridLoanCard,
-		QuickFilters,
+		QuickFiltersChannel,
 		HelpmeChooseWrapper,
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
@@ -345,7 +344,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin],
+	mixins: [loanChannelQueryMap],
 	data() {
 		return {
 			offset: 0,
@@ -524,7 +523,7 @@ export default {
 				return preFetchChannel(
 					client,
 					// Access map directly since SSR doesn't have mixins available
-					loanChannelQueryMapMixin.data().loanChannelQueryMap,
+					loanChannelQueryMap.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
 					{
@@ -769,7 +768,7 @@ export default {
 
 			// Merge all facet options with filtered options
 			const facets = {
-				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+				regions: countryUtils.transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 			};
 
 			this.quickFiltersOptions.location = facets.regions;

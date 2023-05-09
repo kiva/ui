@@ -20,7 +20,6 @@
 						</template>
 						<loan-search-filter
 							style="min-width: 285px;"
-							:extend-flss-filters="extendFlssFilters"
 							:loading="!initialLoadComplete"
 							:is-logged-in="userId !== null"
 							:facets="facets"
@@ -58,7 +57,6 @@
 			<div class="tw-flex tw-mr-4">
 				<div class="tw-hidden lg:tw-block" style="width: 285px;">
 					<loan-search-filter
-						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
 						:facets="facets"
 						:is-logged-in="userId !== null"
@@ -161,22 +159,26 @@ import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import {
+	filterUtils,
+	filterOptionUtils,
+	numberUtils,
+	searchStateUtils,
+	queryParamUtils,
+} from '@kiva/kv-loan-filters';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { convertQueryToFilters, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
-import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
-import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
-import filterConfig from '@/util/loanSearch/filterConfig';
 import DonationCTA from '@/components/Lend/DonationCTA';
+import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
+import VueRouter from 'vue-router';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -201,10 +203,6 @@ export default {
 		KivaClassicBasicLoanCardExp
 	},
 	props: {
-		extendFlssFilters: {
-			type: Boolean,
-			default: false,
-		},
 		enableSavedSearch: {
 			type: Boolean,
 			default: false,
@@ -232,7 +230,7 @@ export default {
 				...getDefaultLoanSearchState(),
 				...(this.enableNewLoanCard && { pageLimit: 10 }),
 			},
-			queryType: FLSS_QUERY_TYPE,
+			queryType: filterOptionUtils.FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
 			userId: null,
@@ -241,7 +239,7 @@ export default {
 	apollo: {
 		preFetch(config, client, { route }) {
 			// Handle temporary query param exclusions
-			if (Object.keys(route?.query).length && hasExcludedQueryParams(route?.query)) {
+			if (Object.keys(route?.query).length && queryParamUtils.hasExcludedQueryParams(route?.query)) {
 				// fallback to legacy lend with original query params
 				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
 			}
@@ -321,7 +319,14 @@ export default {
 				}
 
 				// Update the query string with the latest loan search state
-				updateQueryParams(state, this.$router, this.queryType);
+				queryParamUtils.updateQueryParams(state, this.$router, this.queryType)?.catch(e => {
+					const { isNavigationFailure, NavigationFailureType } = VueRouter;
+
+					// Ignore "navigation canceled" errors from clicking filter options quickly
+					if (!isNavigationFailure(e, NavigationFailureType.cancelled)) {
+						throw e;
+					}
+				});
 
 				// Toggle loading flags
 				if (!this.initialLoadComplete) {
@@ -338,11 +343,11 @@ export default {
 		defaultPageLimit() {
 			const storedPageLimit = this.cookieStore.get(COOKIE_KEY);
 
-			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
+			return numberUtils.isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
 		showSavedSearch() {
-			return filterConfig.keys.reduce((prev, key) => {
-				return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
+			return filterUtils.keys.reduce((prev, key) => {
+				return prev || filterUtils.filters[key].showSavedSearch(this.loanSearchState);
 			}, false);
 		},
 		hasOnePageOfLoans() {
@@ -355,13 +360,9 @@ export default {
 			const filteredFacets = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LEND_FILTER);
 
 			// Merge all facet options with filtered options
-			this.facets = filterConfig.keys.reduce((prev, next) => {
+			this.facets = filterUtils.keys.reduce((prev, next) => {
 				// eslint-disable-next-line no-param-reassign
-				prev[next] = filterConfig.config[next].getOptions(
-					this.allFacets,
-					filteredFacets,
-					this.extendFlssFilters
-				);
+				prev[next] = filterUtils.filters[next].getOptions(this.allFacets, filteredFacets);
 				return prev;
 			}, {});
 		},
@@ -387,7 +388,14 @@ export default {
 			this.isLightboxVisible = toggle;
 		},
 		updateState(filters = {}) {
-			updateSearchState(this.apollo, filters, this.allFacets, this.queryType, this.loanSearchState);
+			searchStateUtils.updateSearchState(
+				this.apollo,
+				updateLoanSearchMutation,
+				filters,
+				this.allFacets,
+				this.queryType,
+				this.loanSearchState
+			);
 		},
 		handleUpdatedFilters(filters) {
 			this.updateState({ ...this.loanSearchState, ...filters, pageOffset: 0 });
@@ -415,9 +423,16 @@ export default {
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
 		applyQuery: async (apollo, query, allFacets, queryType, pageLimit, loanSearchState = {}) => {
-			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
+			const filters = queryParamUtils.convertQueryToFilters(query, allFacets, queryType, pageLimit);
 
-			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
+			await searchStateUtils.updateSearchState(
+				apollo,
+				updateLoanSearchMutation,
+				filters,
+				allFacets,
+				queryType,
+				loanSearchState
+			);
 		},
 		addToBasket(payload) {
 			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');

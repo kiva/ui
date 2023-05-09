@@ -27,8 +27,7 @@
 </template>
 
 <script>
-import { isNumber } from '@/util/numberUtils';
-import { getDisplayedNumber } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils, numberUtils } from '@kiva/kv-loan-filters';
 
 export default {
 	name: 'KvRangeMinMaxSlider',
@@ -66,7 +65,7 @@ export default {
 		return {
 			minSelected: this.getValidatedValue(this.min),
 			maxSelected: this.getValidatedValue(this.max),
-			getDisplayedNumber,
+			getDisplayedNumber: filterOptionUtils.getDisplayedNumber,
 		};
 	},
 	computed: {
@@ -106,7 +105,7 @@ export default {
 			set(value) {
 				const parsed = +value;
 
-				const validated = isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMin;
+				const validated = numberUtils.isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMin;
 
 				// Move max slider if new min selected value is above previous max
 				if (validated > this.maxSelected) {
@@ -123,7 +122,7 @@ export default {
 			set(value) {
 				const parsed = +value;
 
-				const validated = isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMax;
+				const validated = numberUtils.isNumber(parsed) ? this.getValidatedValue(parsed) : this.rangeMax;
 
 				// Move min slider if new max selected value is below previous min
 				if (validated < this.minSelected) {

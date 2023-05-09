@@ -38,7 +38,7 @@
 
 <script>
 import { gql } from '@apollo/client';
-import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 import { getInputRange } from '@/api/fixtures/MinMaxRange';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -67,7 +67,7 @@ export default {
 	computed: {
 		sortByText() {
 			const sortType = this.savedSearch?.loanSearchCriteria?.sortBy;
-			return sortByNameToDisplay?.[sortType] ?? sortType;
+			return filterOptionUtils.sortByNameToDisplay?.[sortType] ?? sortType;
 		},
 		viewLoansText() {
 			return this.availableLoanCount > 0 ? `View ${this.availableLoanCount} loans` : 'View loans';

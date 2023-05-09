@@ -5,60 +5,51 @@
 				v-show="showOverlay"
 				style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-1"
 			></div>
+
 			<h2 class="tw-text-h2 tw-mb-1 tw-text-primary">
 				Find a loan by category and location
 			</h2>
+
 			<quick-filters
-				class="tw-z-2"
+				ref="quickFilters"
+				:loan-search-state="loanSearchState"
 				:total-loans="totalCount"
-				:filter-options="quickFiltersOptions"
-				:filters-loaded="filtersLoaded"
-				:targeted-loan-channel-url="targetedLoanChannelURL"
+				:facets="facets"
+				:loading="loading"
+				:targeted-loan-channel-id="targetedLoanChannelId"
 				:with-categories="true"
-				default-sort="amountLeft"
 				tracking-category="lending-home"
-				@update-filters="updateQuickFilters"
-				@reset-filters="resetFilters"
+				@update-filters="handleUpdatedFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
 			/>
-			<!-- emtpy state for no loans result -->
+
+			<!-- empty state for no loans result -->
 			<empty-state v-show="emptyState" />
 
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<template v-for="(loan, index) in loans">
-					<kiva-classic-basic-loan-card-exp
-						v-if="enableLoanCardExp"
-						:key="`new-card-${loan.id}-${index}`"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:use-full-width="true"
-						:show-tags="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						@add-to-basket="addToBasket"
-					/>
-					<kiva-classic-basic-loan-card
-						v-else
-						:key="index"
-						:item-index="index"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:show-tags="true"
-						:use-full-width="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						class="tw-mr-2"
-						@add-to-basket="addToBasket"
-					/>
-				</template>
+				<kiva-classic-basic-loan-card-exp
+					v-for="(loan, index) in loans"
+					:key="`new-card-${loan.id}-${index}`"
+					:loan-id="loan.id"
+					:show-action-button="true"
+					:use-full-width="true"
+					:show-tags="true"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					@add-to-basket="addToBasket"
+				/>
 			</div>
-			<div class="tw-w-full tw-my-4">
+
+			<div v-if="!emptyState" class="tw-w-full tw-my-4">
 				<kv-pagination
-					v-show="!emptyState"
 					:total="totalCount"
 					:limit="loanSearchState.pageLimit"
 					:offset="loanSearchState.pageOffset"
-					@page-changed="pageChange"
-					:scroll-to-top="false"
+					:scroll-to-top="!!targetedLoanChannelId"
+					@page-changed="handlePageChange"
 				/>
+				<div class="tw-text-tertiary tw-text-center tw-mx-2">
+					{{ totalCount }} loans
+				</div>
 			</div>
 		</div>
 	</div>
@@ -67,227 +58,200 @@
 <script>
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { fetchCategories, FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
-import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
+import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import {
+	filterUiConfigs,
+	filterUtils,
+	filterOptionUtils,
+	searchStateUtils,
+} from '@kiva/kv-loan-filters';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
+import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
+import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
 import EmptyState from './EmptyState';
+
+const defaultLoanSearchState = () => ({
+	...getDefaultLoanSearchState(),
+	category: '',
+	gender: '',
+	sortBy: 'amountLeft',
+	pageLimit: 6,
+});
 
 export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCard,
 		KvPagination,
 		EmptyState
 	},
 	inject: ['apollo'],
 	props: {
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		queryType: {
+			type: String,
+			default: filterOptionUtils.FLSS_QUERY_TYPE
+		},
+		targetedLoanChannelId: {
+			type: String,
+			default: null,
+		},
+		displayLoanPromoCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
-			totalCount: 0,
-			targetedLoanChannelURL: '',
-			filtersLoaded: false,
-			flssLoanSearch: {},
-			loanSearchState: {
-				pageOffset: 0,
-				pageLimit: 6,
-				sortBy: 'amountLeft'
-			},
+			loading: true,
+			emptyState: false,
+			loanSearchState: defaultLoanSearchState(),
 			// Default loans for loading animations
 			loans: [
 				{ id: 0 }, { id: 0 }, { id: 0 },
 				{ id: 0 }, { id: 0 }, { id: 0 }
 			],
-			backupLoans: [],
-			quickFiltersOptions: {
-				categories: [{
-					title: 'All categories',
-					key: 0
-				}],
-				gender: [{
-					key: 'all',
-					title: 'All genders'
-				}],
-				sorting: [{
-					title: 'Almost funded',
-					key: 'amountLeft',
-				}],
-			},
+			totalCount: 0,
+			backupLoans: undefined,
+			facets: {},
 			allFacets: [],
-			emptyState: false,
 			showOverlay: false,
 		};
 	},
 	async mounted() {
+		// Get all available facets
 		this.allFacets = await fetchLoanFacets(this.apollo);
-		await this.fetchFilterData(this.flssLoanSearch);
-		const { loans, totalCount } = await runLoansQuery(
-			this.apollo,
-			{ ...this.flssLoanSearch, ...this.loanSearchState },
-			FLSS_ORIGIN_LENDING_HOME
-		);
-		this.loans = loans;
-		this.totalCount = totalCount;
-		this.backupLoans = this.loans.slice(3);
+
+		// Get filtered facets and update search state with defaults
+		await Promise.all([
+			this.fetchFacets(),
+			searchStateUtils.updateSearchState(
+				this.apollo,
+				updateLoanSearchMutation,
+				defaultLoanSearchState(),
+				this.allFacets,
+				filterOptionUtils.FLSS_QUERY_TYPE,
+				{},
+			)
+		]);
+
+		this.apollo.watchQuery({ query: loanSearchStateQuery }).subscribe({
+			next: async ({ data }) => {
+				this.loading = true;
+
+				this.loanSearchState = data?.loanSearchState;
+
+				const [{ loans, totalCount }] = await Promise.all([
+					// Get filtered loans from FLSS
+					await runLoansQuery(this.apollo, this.loanSearchState, FLSS_ORIGIN_LENDING_HOME),
+					// Get filtered facet options from FLSS
+					await this.fetchFacets()
+				]);
+
+				// Store backup loans on first loan fetch
+				if (!this.backupLoans?.length && loans.length) {
+					this.backupLoans = loans.slice(3);
+				}
+
+				this.emptyState = loans.length === 0;
+
+				// Set loans or use backup
+				if (this.emptyState) {
+					this.loans = this.backupLoans;
+					this.totalCount = this.loans.length;
+					this.$kvTrackEvent(
+						'lending-home',
+						'show',
+						'quick-filters-empty-state'
+					);
+				} else {
+					this.loans = loans;
+					this.totalCount = totalCount;
+				}
+
+				this.loading = false;
+			}
+		});
 	},
 	methods: {
-		addToBasket(payload) {
-			this.$emit('add-to-basket', payload);
+		async fetchFacets() {
+			const filteredFacets = await runFacetsQueries(this.apollo, this.loanSearchState, FLSS_ORIGIN_LENDING_HOME);
+
+			// Merge all facet options with filtered options
+			this.facets = filterUtils.keys.reduce((prev, next) => {
+				// eslint-disable-next-line no-param-reassign
+				prev[next] = filterUtils.filters[next].getOptions(this.allFacets, filteredFacets);
+				return prev;
+			}, {});
 		},
-		// TODO: Rearchitect this at some point.
-		// This won't work for categories that have
-		// multiple criteria applied to their FLSSLoanSearch criteria.
-		// See CORE-944
-		async updateQuickFilters(filter) {
-			this.loanSearchState.pageOffset = 0;
-			if (filter?.gender !== undefined) {
-				this.flssLoanSearch.gender = filter.gender;
-			} else if (filter?.sortBy) {
-				this.flssLoanSearch.sortBy = filter.sortBy;
-				this.loanSearchState.sortBy = filter.sortBy;
-			} else if (filter?.country) {
-				this.flssLoanSearch.countryIsoCode = filter.country;
-			} else {
-				// We want to reset the flss paramaters for categories
-				delete this.flssLoanSearch.sectorId;
-				delete this.flssLoanSearch.tagId;
-				delete this.flssLoanSearch.activityId;
-				delete this.flssLoanSearch.themeId;
-				delete this.flssLoanSearch.partnerId;
-				this.flssLoanSearch = {
-					...this.flssLoanSearch,
-					...filter
-				};
+		handleUpdatedFilters({ key, value }) {
+			let filters = {
+				// Use previous state as base
+				...this.loanSearchState,
+				// Set page offset first in case this method was triggered by the pager
+				pageOffset: 0,
+				// Add new changed state value
+				[key]: value
+			};
+
+			// Handle special cases when the filters contain a category
+			const categoriesStateKey = filterUiConfigs.categories().stateKey;
+			if (key === categoriesStateKey || filters[categoriesStateKey]) {
+				const defaults = defaultLoanSearchState();
+
+				// Get category filters
+				const categoriesState = filterUtils.filters.categories.getValidatedSearchState(filters, this.allFacets);
+
+				if (key === categoriesStateKey) {
+					// Clear previous category filters before applying new category
+					const previousCategoriesState = filterUtils.filters.categories.getValidatedSearchState(
+						this.loanSearchState,
+						this.allFacets
+					);
+					Object.keys(previousCategoriesState).forEach(f => {
+						filters[f] = defaults[f];
+					});
+
+					// Category filters take precedence when the category filter is changed
+					filters = { ...filters, ...categoriesState };
+				} else if (categoriesState[key]) {
+					// Reset category filters when the new filter is included in the current category filters
+					filters[categoriesStateKey] = null;
+					Object.keys(categoriesState).forEach(f => {
+						// Don't reset the filter currently being applied
+						if (f !== key) {
+							filters[f] = defaults[f];
+						}
+					});
+				}
 			}
-			this.fetchFilterData(this.flssLoanSearch);
-			const { loans, totalCount } = await runLoansQuery(
+
+			searchStateUtils.updateSearchState(
 				this.apollo,
-				{ ...this.flssLoanSearch, ...this.loanSearchState },
-				FLSS_ORIGIN_LENDING_HOME
+				updateLoanSearchMutation,
+				filters,
+				this.allFacets,
+				filterOptionUtils.FLSS_QUERY_TYPE,
+				this.loanSearchState,
 			);
-			this.totalCount = totalCount;
-			if (loans.length > 0) {
-				this.emptyState = false;
-				this.loans = loans;
-			} else {
-				this.emptyState = true;
-				this.loans = this.backupLoans;
-				this.$kvTrackEvent(
-					'lending-home',
-					'show',
-					'quick-filters-empty-state'
-				);
-			}
-		},
-		async resetFilters() {
-			this.loanSearchState.pageOffset = 0;
-			this.flssLoanSearch = {};
-			this.updateLoans();
 		},
 		handleQuickFiltersOverlay(showOverlay) {
 			this.showOverlay = showOverlay;
 		},
-		async fetchFilterData(loanSearchState = {}) {
-			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes } = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LENDING_HOME);
-			const fetchedCategories = await fetchCategories(this.apollo);
-
-			// Merge all facet options with filtered options
-			const facets = {
-				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-			};
-
-			const categories = fetchedCategories.lend?.loanChannels?.values;
-			const sortedCategories = [...categories].sort(
-				// eslint-disable-next-line no-nested-ternary
-				(catA, catB) => {
-					if (catA.title < catB.title) return -1;
-					if (catA.title > catB.title) return 1;
-					return 0;
-				}
-			);
-
-			this.quickFiltersOptions.categories = [
-				...[{ title: 'All categories', key: 0 }],
-				...sortedCategories
-			];
-
-			this.quickFiltersOptions.location = facets.regions;
-			// TODO: Pull sort by and gender filters from API
-			this.quickFiltersOptions.sorting = [
-				{
-					title: 'Almost funded',
-					key: 'amountLeft',
-				},
-				{
-					title: 'Recommended',
-					key: 'personalized',
-				},
-				{
-					title: 'Amount high to low',
-					key: 'amountHighToLow'
-				},
-				{
-					title: 'Amount low to high',
-					key: 'amountLowToHigh'
-				},
-				{
-					title: 'Ending soon',
-					key: 'expiringSoon'
-				}
-			];
-			this.quickFiltersOptions.gender = [
-				{
-					title: 'All genders',
-					key: 'all',
-				},
-				{
-					title: 'Women',
-					key: 'female',
-				},
-				{
-					title: 'Men',
-					key: 'male',
-				},
-				{
-					title: 'Non-binary',
-					key: 'nonbinary',
-				}
-			];
-
-			this.filtersLoaded = true;
-		},
-		pageChange({ pageOffset }) {
-			const label = this.loanSearchState.pageOffset === 0 ? 'next' : 'back';
-			this.$kvTrackEvent(
-				'lending-home',
-				'click',
-				label
-			);
-			this.loanSearchState.pageOffset = pageOffset;
-			this.updateLoans();
+		handlePageChange({ pageOffset }) {
+			const pageOffsetStateKey = filterUiConfigs.pageOffset().stateKey;
+			this.handleUpdatedFilters({ key: pageOffsetStateKey, value: pageOffset });
 			this.$refs.sectionTop.scrollIntoView({ behavior: 'smooth' });
 		},
-		async updateLoans() {
-			const { loans } = await runLoansQuery(
-				this.apollo,
-				{ ...this.flssLoanSearch, ...this.loanSearchState },
-				FLSS_ORIGIN_LENDING_HOME
-			);
-			this.loans = loans;
-		}
+		addToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 	},
 };
 </script>

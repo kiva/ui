@@ -22,8 +22,7 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
@@ -35,7 +34,7 @@ export default {
 	},
 	props: {
 		/**
-		 * allSortOptions contains all sort emuns tagged with their type
+		 * allSortOptions contains all sort enums tagged with their type
 		 * lend > loans > sortBy:LoanSearchSortByEnum
 		 * fundraisingLoans > sortBy:SortEnum
 		 *   {
@@ -47,10 +46,6 @@ export default {
 			type: Array,
 			default: undefined
 		},
-		extendFlssFilters: {
-			type: Boolean,
-			default: false,
-		},
 		isLoggedIn: {
 			type: Boolean,
 			default: false
@@ -59,13 +54,9 @@ export default {
 			type: String,
 			default: null
 		},
-		queryType: {
-			type: String,
-			default: FLSS_QUERY_TYPE
-		}
 	},
 	data() {
-		const defaultSort = this.queryType === FLSS_QUERY_TYPE ? 'personalized' : 'popularity';
+		const defaultSort = 'personalized';
 
 		return {
 			mdiInformation,
@@ -91,14 +82,11 @@ export default {
 		 */
 		validSortOptions() {
 			return this.allSortOptions?.filter(sortOption => {
-				if (this.queryType === FLSS_QUERY_TYPE) {
-					return sortOption.sortSrc === FLSS_QUERY_TYPE;
-				}
-				return sortOption.sortSrc === STANDARD_QUERY_TYPE;
+				return sortOption.sortSrc === filterOptionUtils.FLSS_QUERY_TYPE;
 			}).map(option => {
 				return {
 					...option,
-					label: sortByNameToDisplay[option.name]
+					label: filterOptionUtils.sortByNameToDisplay[option.name]
 				};
 			}) ?? [];
 		},

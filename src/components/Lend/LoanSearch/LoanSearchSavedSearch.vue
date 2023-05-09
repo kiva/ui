@@ -49,9 +49,9 @@
 
 <script>
 import IconAdd from '@/assets/icons/inline/add.svg';
-import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
+import { createSavedSearch } from '@/util/savedSearchUtils';
 import logFormatter from '@/util/logFormatter';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { filterUtils } from '@kiva/kv-loan-filters';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -99,8 +99,8 @@ export default {
 	},
 	computed: {
 		reformattedSearchState() {
-			return filterConfig.keys.reduce((prev, key) => {
-				return { ...prev, ...filterConfig.config[key].getSavedSearch(this.loanSearchState, this.allFacets) };
+			return filterUtils.keys.reduce((prev, key) => {
+				return { ...prev, ...filterUtils.filters[key].getSavedSearch(this.loanSearchState, this.allFacets) };
 			}, {});
 		},
 		loginUrl() {

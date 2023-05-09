@@ -28,7 +28,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { filterUtils } from '@kiva/kv-loan-filters';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
@@ -75,11 +75,11 @@ export default {
 	},
 	methods: {
 		formatRemovedFacet(facet) {
-			return filterConfig.config[facet.key].getRemovedFacet(this.loanSearchState, facet);
+			return filterUtils.filters[facet.key].getRemovedFacet(this.loanSearchState, facet);
 		},
 		getLabelsFromState() {
-			return filterConfig.keys.reduce((prev, key) => {
-				const chips = filterConfig.config[key].getFilterChips(this.loanSearchState, this.allFacets);
+			return filterUtils.keys.reduce((prev, key) => {
+				const chips = filterUtils.filters[key].getFilterChips(this.loanSearchState, this.allFacets);
 				prev.push(...chips.map(f => ({ ...f, key })));
 				return prev;
 			}, []);

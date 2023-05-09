@@ -88,7 +88,7 @@ import { indexIn } from '@/util/comparators';
 import { mdiMagnify } from '@mdi/js';
 import lockScrollUtils from '@/plugins/lock-scroll';
 import getCacheKey from '@/util/getCacheKey';
-import { hasExcludedQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { queryParamUtils } from '@kiva/kv-loan-filters';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const engine = new SearchEngine();
@@ -235,7 +235,7 @@ export default {
 
 				// Fallback to legacy filter if there's an unsupported query param
 				let filterUrl = '/lend/filter';
-				if (hasExcludedQueryParams(query)) {
+				if (queryParamUtils.hasExcludedQueryParams(query)) {
 					filterUrl = '/lend';
 				}
 

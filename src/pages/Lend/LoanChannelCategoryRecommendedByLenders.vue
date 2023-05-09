@@ -78,7 +78,7 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
+import { loanChannelQueryMap } from '@kiva/kv-loan-filters';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
@@ -188,7 +188,7 @@ export default {
 		ViewToggle,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin],
+	mixins: [loanChannelQueryMap],
 	metaInfo() {
 		return {
 			link: [

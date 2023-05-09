@@ -8,7 +8,7 @@
 
 <script>
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 
 export default {
 	name: 'LoanSearchCheckboxListFilter',
@@ -43,7 +43,7 @@ export default {
 		items() {
 			return this.displayed.map(d => ({
 				value: d.id.toString(),
-				title: getCheckboxLabel(d),
+				title: filterOptionUtils.getCheckboxLabel(d),
 				disabled: d.numLoansFundraising === 0
 			}));
 		},
@@ -69,7 +69,7 @@ export default {
 	},
 	watch: {
 		options(next) {
-			this.displayed = getUpdatedNumLoansFundraising(this.displayed, next);
+			this.displayed = filterOptionUtils.getUpdatedNumLoansFundraising(this.displayed, next);
 		},
 		ids(next) {
 			if ([...next].sort().toString() !== [...this.selectedIds].sort().toString()) {

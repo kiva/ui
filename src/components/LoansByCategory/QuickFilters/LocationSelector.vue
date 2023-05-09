@@ -1,62 +1,22 @@
 <template>
 	<div
-		:id="wrapperClass"
+		id="location-wrapper"
 		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
-		<label
-			:class="{'tw-text-h4': !enableFilterPills, 'tw-hidden': enableFilterPills}"
-			for="location"
-		>
-			Location
-		</label>
-		<div v-if="!enableFilterPills">
-			<kv-text-input
-				type="text"
-				id="location"
-				ref="input"
-				:model-value="term"
-				class="tw-w-full"
-				@click="toggleRegions()"
-				placeholder="All countries"
-				:disabled="!filtersLoaded"
-				autocomplete="off"
-				readonly
-				:icon="mdiChevronDown"
-			/>
-		</div>
-		<div v-else class="tw-pb-1">
-			<div
-				class="
-					tw-flex
-					filter-pill
-					tw-transition
-					tw-rounded
-					tw-justify-center
-					tw-text-black
-					tw-bg-white
-					"
-				:class="{ 'tw-opacity-low': !filtersLoaded }"
-				@click="toggleRegions()"
-			>
-				<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
-				<input
-					type="text"
-					class="selector tw-w-full tw-appearance-none tw-transition tw-border-none tw-pl-1"
-					:class="{ 'tw-pointer-events-none': !filtersLoaded}"
-					id="location"
-					ref="input"
-					:value="term"
-					placeholder="All countries"
-					:disabled="!filtersLoaded"
-					readonly
-				>
-				<kv-material-icon
-					:icon="mdiChevronDown"
-					class="tw-w-3"
-				/>
-			</div>
-		</div>
+		<kv-text-input
+			type="text"
+			id="location"
+			ref="input"
+			:model-value="term"
+			class="tw-w-full"
+			@click="toggleRegions()"
+			placeholder="All countries"
+			:disabled="loading"
+			autocomplete="off"
+			readonly
+			:icon="mdiChevronDown"
+		/>
 		<div
 			v-show="showRegions"
 			class="
@@ -78,7 +38,7 @@
 				tw-overflow-auto
 
 				md:tw-absolute
-				md:tw-mt-9
+				md:tw-mt-6
 				md:tw-bottom-auto
 				md:tw-top-auto
 				md:tw-rounded
@@ -148,7 +108,7 @@
 					</li>
 				</ol>
 				<div class="tw-flex tw-gap-2 tw-justify-between md:tw-hidden tw-py-4">
-					<button @click="selectedCountries = []" class="tw-text-link">
+					<button @click="resetCountries" class="tw-text-link">
 						Reset country selection
 					</button>
 
@@ -170,7 +130,7 @@
 					@closeRegions="toggleRegions()"
 				/>
 				<div class="tw-flex tw-gap-2 tw-justify-end">
-					<button @click="selectedCountries = []" class="tw-text-link">
+					<button @click="resetCountries" class="tw-text-link">
 						Reset country selection
 					</button>
 
@@ -186,11 +146,9 @@
 </template>
 
 <script>
-import {
-	mdiMagnify, mdiChevronDown, mdiClose, mdiMapMarker
-} from '@mdi/js';
+import { mdiChevronDown, mdiClose } from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -219,28 +177,26 @@ export default {
 			type: Number,
 			default: 0
 		},
-		filtersLoaded: {
+		loading: {
 			type: Boolean,
-			default: false
+			default: true
 		},
 		trackingCategory: {
 			type: String,
 			required: true,
 		},
-		enableFilterPills: {
-			type: Boolean,
-			default: false
-		},
+		countries: {
+			type: Array,
+			default: () => ([]),
+		}
 	},
 	data() {
 		return {
-			mdiMagnify,
 			mdiChevronDown,
 			mdiClose,
-			mdiMapMarker,
 			hasFocus: false,
 			selectedRegion: null,
-			selectedCountries: [],
+			selectedCountries: this.countries,
 			showRegions: false
 		};
 	},
@@ -254,17 +210,15 @@ export default {
 				'see-loans',
 			);
 		},
-		emptyCountries() {
-			this.selectedCountries = [];
-		},
 		resetCountries() {
-			this.emptyCountries();
 			this.$kvTrackEvent(
 				this.trackingCategory,
 				'filter',
 				'quick-filters-reset',
 				'countries',
 			);
+			this.selectedCountries = [];
+			this.$emit('update-location', []);
 		},
 		toggleRegions() {
 			this.showRegions = !this.showRegions;
@@ -295,7 +249,7 @@ export default {
 			// Disable checkboxes based on whether the current applied filters have loans fundraising for that country
 			return countries.map(c => ({
 				value: c.isoCode,
-				title: getCheckboxLabel(c),
+				title: filterOptionUtils.getCheckboxLabel(c),
 				disabled: c.numLoansFundraising === 0
 			}));
 		},
@@ -311,10 +265,8 @@ export default {
 					this.selectedCountries.push(isoCode);
 				}
 			}
-		},
-		setCountry(countryIsoCode) {
-			this.emptyCountries();
-			this.selectedCountries.push(countryIsoCode);
+
+			this.$emit('update-location', [...this.selectedCountries]);
 		},
 		numberByRegion(region) {
 			let total = 0;
@@ -331,7 +283,7 @@ export default {
 			}
 
 			return total;
-		}
+		},
 	},
 	computed: {
 		activeCountries() {
@@ -339,52 +291,38 @@ export default {
 		},
 		term() {
 			if (this.selectedCountries.length > 0) {
-				return this.selectedCountries.length === 1 ? '1 country' : `${this.selectedCountries.length} countries`; // eslint-disable-line max-len
+				return this.selectedCountries.length === 1
+					? '1 country'
+					: `${this.selectedCountries.length} countries`;
 			}
 			return 'All countries';
 		},
-		wrapperClass() {
-			return !this.enableFilterPills ? 'locationWrapper' : '';
-		}
 	},
 	watch: {
-		selectedCountries() {
-			this.$emit('update-location', [...this.selectedCountries]);
-		}
+		countries(next) {
+			// Deep copy the selected countries
+			const nextValues = [...(next ?? [])];
+
+			if (nextValues.sort().join() !== [...this.selectedCountries].sort().join()) {
+				// Set the new selected values without emitting the change
+				this.selectedCountries = nextValues;
+			}
+		},
 	}
 
 };
 </script>
 
 <style lang="postcss" scoped>
-.filter-pill {
-	padding: 10px 20px;
-	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
-}
-
-.filter-pill input {
-	min-width: 135px;
-}
-
-.filter-pill:hover input,
-.filter-pill.hover input,
-.filter-pill:hover {
-	@apply tw-bg-black tw-text-white tw-cursor-pointer;
-}
-
-.selector {
-	@apply focus:tw-outline-none focus:tw-ring-0 focus:tw-border-transparent;
-}
-
-#locationWrapper >>> input {
+#location-wrapper >>> input {
 	padding-left: 16px;
 }
 
-#locationWrapper >>> input::placeholder {
+#location-wrapper >>> input::placeholder {
 	color: black;
 }
 
-#locationWrapper >>> span {
+#location-wrapper >>> span {
 	left: auto;
 	right: 8px;
 }

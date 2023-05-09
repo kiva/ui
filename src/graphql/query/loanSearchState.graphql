@@ -30,5 +30,6 @@ query loanSearchStateQuery {
 			max
 		}
 		isMatchable
+		category
 	}
 }

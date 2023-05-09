@@ -2,12 +2,12 @@ import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { filterUtils } from '@kiva/kv-loan-filters';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('@kiva/kv-loan-filters', () => {
 	return {
-		config: {
+		filters: {
 			a: {
 				getFilterChips: jest.fn().mockReturnValue([{ name: 'a', __typename: 'TypeA' }]),
 				getRemovedFacet: jest.fn().mockReturnValue({ a: null }),
@@ -46,7 +46,7 @@ describe('LoanSearchFilterChips', () => {
 		});
 	});
 
-	it('should call filterConfig and render state', () => {
+	it('should call filterUtils and render state', () => {
 		const { getByText } = render(LoanSearchFilterChips, {
 			props: {
 				loanSearchState: mockState,
@@ -56,10 +56,10 @@ describe('LoanSearchFilterChips', () => {
 
 		getByText('a');
 		getByText('b');
-		expect(filterConfig.config.a.getFilterChips).toHaveBeenCalledTimes(1);
-		expect(filterConfig.config.a.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
-		expect(filterConfig.config.b.getFilterChips).toHaveBeenCalledTimes(1);
-		expect(filterConfig.config.b.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
+		expect(filterUtils.filters.a.getFilterChips).toHaveBeenCalledTimes(1);
+		expect(filterUtils.filters.a.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
+		expect(filterUtils.filters.b.getFilterChips).toHaveBeenCalledTimes(1);
+		expect(filterUtils.filters.b.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
 	});
 
 	it('should handle render state with missing state', () => {
@@ -71,7 +71,7 @@ describe('LoanSearchFilterChips', () => {
 		});
 	});
 
-	it('should call filterConfig and remove chip', async () => {
+	it('should call filterUtils and remove chip', async () => {
 		const user = userEvent.setup();
 
 		const { getByText, emitted } = render(LoanSearchFilterChips, {
@@ -83,8 +83,8 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('a'));
 
-		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(1);
-		expect(filterConfig.config.a.getRemovedFacet)
+		expect(filterUtils.filters.a.getRemovedFacet).toHaveBeenCalledTimes(1);
+		expect(filterUtils.filters.a.getRemovedFacet)
 			.toHaveBeenCalledWith({ name: 'a' }, { name: 'a', key: 'a', __typename: 'TypeA' });
 		expect(emitted().updated[0]).toEqual([{ a: null }]);
 	});

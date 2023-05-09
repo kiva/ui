@@ -1,9 +1,8 @@
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { filterUtils } from '@kiva/kv-loan-filters';
 
 /**
  * FLSS Query Context Const lists
@@ -25,8 +24,8 @@ export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';
  * @returns {Object} The filters in the correct FLSS format
  */
 export function getFlssFilters(loanSearchState) {
-	return filterConfig.keys.reduce((prev, key) => {
-		return { ...prev, ...filterConfig.config[key].getFlssFilter(loanSearchState) };
+	return filterUtils.keys.reduce((prev, key) => {
+		return { ...prev, ...filterUtils.filters[key].getFlssFilter(loanSearchState) };
 	}, {});
 }
 
@@ -64,26 +63,6 @@ export async function fetchFacets(
 		return result.data;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchFacets flssLoanFacetsQuery');
-	}
-}
-
-/**
- * Fetches list of categories from FLSS
- *
- * @param {Object} apollo The Apollo client instant
- * @returns {Promise<Array<Object>>} Promise for category name/id
- */
-export async function fetchCategories(
-	apollo
-) {
-	try {
-		const result = await apollo.query({
-			query: categoryListFlssQuery,
-			fetchPolicy: 'network-only',
-		});
-		return result.data;
-	} catch (e) {
-		logReadQueryError(e, 'flssUtils fetchCategories categoryListFlssQuery');
 	}
 }
 

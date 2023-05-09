@@ -32,7 +32,6 @@
 					</a>
 				</div>
 				<loan-search-interface
-					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:enable-new-loan-card="enableNewLoanCard"
@@ -70,7 +69,6 @@ export default {
 	},
 	data() {
 		return {
-			extendFlssFilters: false,
 			enableSavedSearch: true,
 			mdiEarth,
 			mdiFilter,

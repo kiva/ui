@@ -28,7 +28,7 @@ import { FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
 import {
 	getLoanChannel,
 } from '@/util/loanChannelUtils';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
+import { loanChannelQueryMap } from '@kiva/kv-loan-filters';
 
 export default {
 	name: 'KivaClassicSingleCategoryCarousel',
@@ -94,7 +94,7 @@ export default {
 		};
 	},
 	mixins: [
-		loanChannelQueryMapMixin,
+		loanChannelQueryMap,
 	],
 	computed: {
 		loanQueryLimit() {

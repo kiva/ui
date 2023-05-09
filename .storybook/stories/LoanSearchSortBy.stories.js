@@ -1,5 +1,5 @@
 import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 
 export default {
 	title: 'Loan Search/Loan Search Sort Order',
@@ -7,18 +7,18 @@ export default {
 };
 
 const allSortOptions = [
-	{ name: 'amountLeft', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'expiringSoon', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'loanAmount', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'loanAmountDesc', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'newest', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'popularity', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'random', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'repaymentTerm', sortSrc: STANDARD_QUERY_TYPE },
-	{ name: 'amountHighToLow', sortSrc: FLSS_QUERY_TYPE },
-	{ name: 'amountLowToHigh', sortSrc: FLSS_QUERY_TYPE },
-	{ name: 'expiringSoon', sortSrc: FLSS_QUERY_TYPE },
-	{ name: 'personalized', sortSrc: FLSS_QUERY_TYPE }
+	{ name: 'amountLeft', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'expiringSoon', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'loanAmount', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'loanAmountDesc', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'newest', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'popularity', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'random', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'repaymentTerm', sortSrc: filterOptionUtils.STANDARD_QUERY_TYPE },
+	{ name: 'amountHighToLow', sortSrc: filterOptionUtils.FLSS_QUERY_TYPE },
+	{ name: 'amountLowToHigh', sortSrc: filterOptionUtils.FLSS_QUERY_TYPE },
+	{ name: 'expiringSoon', sortSrc: filterOptionUtils.FLSS_QUERY_TYPE },
+	{ name: 'personalized', sortSrc: filterOptionUtils.FLSS_QUERY_TYPE }
 ];
 
 const story = (args = {}) => {

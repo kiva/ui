@@ -1,7 +1,6 @@
 import {
 	fetchFacets,
 	fetchLoans,
-	fetchCategories,
 	getFlssFilters,
 	getLoanChannelVariables,
 	fetchLoanChannel,
@@ -11,12 +10,11 @@ import {
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { filterUtils } from '@kiva/kv-loan-filters';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('@kiva/kv-loan-filters', () => {
 	return {
-		config: {
+		filters: {
 			a: { getFlssFilter: jest.fn().mockReturnValue({ a: 'a' }) },
 			b: { getFlssFilter: jest.fn().mockReturnValue({ b: 'b' }) },
 		},
@@ -28,14 +26,14 @@ describe('flssUtils.js', () => {
 	beforeEach(jest.clearAllMocks);
 
 	describe('getFlssFilters', () => {
-		it('should call filterConfig', () => {
+		it('should call filterUtils', () => {
 			const result = getFlssFilters({ test: 'test' });
 
 			expect(result).toEqual({ a: 'a', b: 'b' });
-			expect(filterConfig.config.a.getFlssFilter).toHaveBeenCalledTimes(1);
-			expect(filterConfig.config.a.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
-			expect(filterConfig.config.b.getFlssFilter).toHaveBeenCalledTimes(1);
-			expect(filterConfig.config.b.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
+			expect(filterUtils.filters.a.getFlssFilter).toHaveBeenCalledTimes(1);
+			expect(filterUtils.filters.a.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
+			expect(filterUtils.filters.b.getFlssFilter).toHaveBeenCalledTimes(1);
+			expect(filterUtils.filters.b.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
 		});
 	});
 
@@ -60,23 +58,6 @@ describe('flssUtils.js', () => {
 
 		it('should return the fundraising facets data', async () => {
 			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
-			expect(data).toBe(result);
-		});
-	});
-
-	describe('fetchCategories', () => {
-		const result = {};
-		const dataObj = { data: result };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
-		const apolloVariables = { query: categoryListFlssQuery, fetchPolicy: 'network-only' };
-
-		it('should pass the correct query variables to apollo', async () => {
-			await fetchCategories(apollo);
-			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should return the categories data', async () => {
-			const data = await fetchCategories(apollo);
 			expect(data).toBe(result);
 		});
 	});

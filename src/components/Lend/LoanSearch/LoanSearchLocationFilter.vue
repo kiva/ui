@@ -31,9 +31,7 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
-import { getUpdatedRegions } from '@/util/loanSearch/filters/regions';
-import { getIsoCodes, mapIsoCodesToCountryNames } from '@/util/loanSearch/countryUtils';
+import { filterOptionUtils, countryUtils } from '@kiva/kv-loan-filters';
 
 export default {
 	name: 'LoanSearchLocationFilter',
@@ -66,9 +64,9 @@ export default {
 	data() {
 		return {
 			displayedRegions: this.regions,
-			selectedCountries: mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions),
+			selectedCountries: countryUtils.mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions),
 			openRegions: [],
-			getCheckboxLabel
+			getCheckboxLabel: filterOptionUtils.getCheckboxLabel
 		};
 	},
 	methods: {
@@ -76,7 +74,7 @@ export default {
 			// Disable checkboxes based on whether the current applied filters have loans fundraising for that country
 			return countries.map(c => ({
 				value: c.name,
-				title: getCheckboxLabel(c),
+				title: filterOptionUtils.getCheckboxLabel(c),
 				disabled: c.numLoansFundraising === 0
 			}));
 		},
@@ -94,7 +92,9 @@ export default {
 		updateRegion(region, { values, changed, wasSelectAll }) {
 			this.$set(this.selectedCountries, region, values);
 
-			this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, this.selectedCountries) });
+			this.$emit('updated', {
+				countryIsoCode: countryUtils.getIsoCodes(this.displayedRegions, this.selectedCountries)
+			});
 
 			let appliedState = '';
 
@@ -115,16 +115,16 @@ export default {
 			if (!this.activeIsoCodes || !this.regions) return;
 
 			const nextISO = [...(next || this.activeIsoCodes)];
-			const prevISO = getIsoCodes(this.displayedRegions, this.selectedCountries);
+			const prevISO = countryUtils.getIsoCodes(this.displayedRegions, this.selectedCountries);
 
 			if (nextISO.sort().toString() !== prevISO.sort().toString()) {
-				this.selectedCountries = mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
+				this.selectedCountries = countryUtils.mapIsoCodesToCountryNames(this.activeIsoCodes, this.regions);
 			}
 		},
 	},
 	watch: {
 		regions(next) {
-			this.displayedRegions = getUpdatedRegions(this.displayedRegions, next);
+			this.displayedRegions = filterOptionUtils.getUpdatedRegionsNumLoansFundraising(this.displayedRegions, next);
 
 			this.updateSelectedCountries();
 		},

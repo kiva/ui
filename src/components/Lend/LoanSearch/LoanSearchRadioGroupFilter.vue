@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getFilterKeyFromValue } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 export const ALL_LOANS_TITLE = 'All loans';
@@ -65,7 +65,7 @@ export default {
 	},
 	methods: {
 		getFilterKey(value) {
-			return this.valueMap ? getFilterKeyFromValue(value, this.valueMap) : value;
+			return this.valueMap ? filterOptionUtils.getFilterKeyFromValue(value, this.valueMap) : value;
 		},
 		getOptionFromValue(value) {
 			// The KvRadio component can't handle a null value

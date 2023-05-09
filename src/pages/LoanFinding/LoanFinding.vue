@@ -14,7 +14,6 @@
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
 				:per-step="2"
-				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
@@ -25,6 +24,7 @@
 				}"
 			/>
 
+<<<<<<< Updated upstream
 			<div class="tw-flex tw-flex-col">
 				<quick-filters-section
 					class="tw-mt-3"
@@ -33,10 +33,18 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 				/>
+=======
+			<quick-filters-section
+				class="tw-mt-3"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				@add-to-basket="trackCategory($event, 'quick-filters')"
+			/>
+>>>>>>> Stashed changes
 
 				<!-- Element to trigger spotlight observer -->
 				<div ref="spotlightObserver"></div>
 
+<<<<<<< Updated upstream
 				<!-- Second category row: Matched loans section -->
 				<lending-category-section
 					:title="secondCategoryTitle"
@@ -49,10 +57,21 @@
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 				/>
 			</div>
+=======
+			<!-- Second category row: Matched loans section -->
+			<lending-category-section
+				v-if="secondCategoryLoans.length > 0"
+				:title="secondCategoryTitle"
+				:subtitle="secondCategorySubtitle"
+				:loans="secondCategoryLoans"
+				class="tw-py-3"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				@add-to-basket="trackCategory($event, 'matched-lending')"
+			/>
+>>>>>>> Stashed changes
 
 			<partner-spotlight-section
 				class="tw-pt-3"
-				:enable-loan-card-exp="enableLoanCardExp"
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
@@ -82,7 +101,6 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 const EXP_KEY = 'loan_finding_page';
-const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LENDING_HOME };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
@@ -130,7 +148,6 @@ export default {
 			],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
-			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
 			enableRelendingExp: false,
@@ -142,7 +159,6 @@ export default {
 		preFetch(config, client) {
 			return Promise.all([
 				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
@@ -305,18 +321,6 @@ export default {
 			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
 		})?.fundraisingLoans?.values ?? [];
-
-		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
-		if (loanCardExpData.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				LOAN_CARD_EXP_KEY,
-				'EXP-CORE-1073-Feb2023'
-			);
-			this.enableLoanCardExp = version === 'b' ?? false;
-		}
 
 		this.initializeFiveDollarsNotes();
 

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
 
 const NUM_ITEMS = 4;
@@ -20,7 +20,7 @@ describe('LoanSearchLocationFilter', () => {
 		const regions = getRegions();
 		const { getByText } = render(LoanSearchLocationFilter, { props: { regions } });
 		regions.forEach(async region => {
-			getByText(getCheckboxLabel(region));
+			getByText(filterOptionUtils.getCheckboxLabel(region));
 		});
 	});
 
@@ -31,20 +31,20 @@ describe('LoanSearchLocationFilter', () => {
 
 		// Open all regions
 		await Promise.all(regions.map(async region => {
-			const button = getByText(getCheckboxLabel(region));
+			const button = getByText(filterOptionUtils.getCheckboxLabel(region));
 			await user.click(button);
 		}));
 
-		let countries = queryAllByText(getCheckboxLabel(regions[0].countries[0]));
+		let countries = queryAllByText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0]));
 		expect(countries.length).toBe(NUM_ITEMS);
 
 		// Close all regions
 		await Promise.all(regions.map(async region => {
-			const button = getByText(getCheckboxLabel(region));
+			const button = getByText(filterOptionUtils.getCheckboxLabel(region));
 			await user.click(button);
 		}));
 
-		countries = queryAllByText(getCheckboxLabel(regions[0].countries[0]));
+		countries = queryAllByText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0]));
 		expect(countries.length).toBe(0);
 	});
 
@@ -58,10 +58,10 @@ describe('LoanSearchLocationFilter', () => {
 		});
 
 		// Open first region
-		const region = getByText(getCheckboxLabel(regions[0]));
+		const region = getByText(filterOptionUtils.getCheckboxLabel(regions[0]));
 		await user.click(region);
 
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
 	});
 
 	it('should select based on prop', async () => {
@@ -72,21 +72,21 @@ describe('LoanSearchLocationFilter', () => {
 		const { getByText, getByLabelText, updateProps } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open first region
-		const region = getByText(getCheckboxLabel(regions[0]));
+		const region = getByText(filterOptionUtils.getCheckboxLabel(regions[0]));
 		await user.click(region);
 
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
 
 		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode] });
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
 
 		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode, regions[0].countries[1].isoCode] });
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[1])).checked).toBeTruthy();
 
 		await updateProps({ activeIsoCodes: [] });
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
-		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeFalsy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(regions[0].countries[1])).checked).toBeFalsy();
 	});
 
 	it('should emit updated', async () => {
@@ -95,11 +95,11 @@ describe('LoanSearchLocationFilter', () => {
 		const { getByText, emitted } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open first region
-		const region = getByText(getCheckboxLabel(regions[0]));
+		const region = getByText(filterOptionUtils.getCheckboxLabel(regions[0]));
 		await user.click(region);
 
 		// Select first country
-		const country = getByText(getCheckboxLabel(regions[0].countries[0]));
+		const country = getByText(filterOptionUtils.getCheckboxLabel(regions[0].countries[0]));
 		await user.click(country);
 
 		// Expect ISO code to be emitted
@@ -115,7 +115,8 @@ describe('LoanSearchLocationFilter', () => {
 		const regions = getRegions(true);
 		await updateProps({ regions });
 
-		await user.click(getByText(getCheckboxLabel(regions[0])));
-		regions[0].countries.forEach(c => expect(getByLabelText(getCheckboxLabel(c)).disabled).toBeTruthy());
+		await user.click(getByText(filterOptionUtils.getCheckboxLabel(regions[0])));
+		regions[0].countries
+			.forEach(c => expect(getByLabelText(filterOptionUtils.getCheckboxLabel(c)).disabled).toBeTruthy());
 	});
 });

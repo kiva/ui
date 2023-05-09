@@ -20,6 +20,12 @@ query loanFacets {
 			name
 			vocabularyId
 		}
+		loanChannels (popular: true) {
+			values {
+				id
+				name
+			}
+		}
 	}
 	general {
 		partners (filters: { status: active }, limit: null) {

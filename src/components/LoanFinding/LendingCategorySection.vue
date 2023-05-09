@@ -21,8 +21,12 @@
 				/>
 			</div>
 			<kv-carousel
+<<<<<<< Updated upstream
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2"
 				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
+=======
+				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-px-1 tw-pt-1"
+>>>>>>> Stashed changes
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
@@ -31,8 +35,12 @@
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
+<<<<<<< Updated upstream
 						v-if="enableLoanCardExp"
 						:key="loanCardKey(index)"
+=======
+						:key="`new-card-${index}`"
+>>>>>>> Stashed changes
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
@@ -45,18 +53,6 @@
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 					/>
-					<kiva-classic-basic-loan-card
-						v-else
-						:key="index"
-						:item-index="index"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:show-tags="true"
-						:use-full-width="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						class="tw-mr-2"
-						@add-to-basket="addToBasket"
-					/>
 				</template>
 			</kv-carousel>
 		</div>
@@ -65,8 +61,11 @@
 
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+<<<<<<< Updated upstream
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
+=======
+>>>>>>> Stashed changes
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -74,8 +73,11 @@ export default {
 	components: {
 		KvCarousel,
 		KivaClassicBasicLoanCardExp,
+<<<<<<< Updated upstream
 		KivaClassicBasicLoanCard,
 		MultipleAtcButton
+=======
+>>>>>>> Stashed changes
 	},
 	props: {
 		title: {
@@ -94,10 +96,6 @@ export default {
 		perStep: {
 			type: Number,
 			default: 3
-		},
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
 		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -129,13 +127,10 @@ export default {
 			}
 			if (viewportWidth >= 414 && viewportWidth < 768) return '278px';
 			if (viewportWidth >= 768 && viewportWidth < 1024) {
-				if (this.enableLoanCardExp) return '328px'; return '336px';
+				return '328px';
 			}
 			if (viewportWidth >= 1024) {
-				if (this.enableLoanCardExp) {
-					if (this.isLargeCard) return '512px'; return '328px';
-				}
-				if (this.isLargeCard) return '520px'; return '336px';
+				if (this.isLargeCard) return '512px'; return '328px';
 			}
 			return '336px';
 		},

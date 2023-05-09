@@ -11,7 +11,7 @@ import logFormatter from '@/util/logFormatter';
 /**
  * Returns the FLSS loan search state object based on the map and category
  *
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {Array} queryMap The map mixin from loan channel query map
  * @param {string} category The category from $route.params.category
  * @returns {Object} The loan search state object
  */
@@ -42,7 +42,7 @@ export function transformFLSSData(data) {
  * Used to pre-fetch the loan channel data in the control component
  *
  * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {Array} queryMap The map mixin from loan channel query map
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  */
@@ -68,7 +68,7 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
  * Gets the loan channel data from the Apollo cache
  *
  * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {Array} queryMap The map mixin from loan channel query map
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  * @returns {Object} The loan channel data
@@ -91,7 +91,7 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
  * Gets the loan channel data from the API
  *
  * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {Array} queryMap The map mixin from loan channel query map
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  * @param {Object} filterOverrides Filters that override or extend the query map filters (only for FLSS)
@@ -116,7 +116,7 @@ export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars
  * Watches the loan channel query and returns the observer
  *
  * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {Array} queryMap The map mixin from loan channel query map
  * @param {string} channelUrl The URL of the loan channel
  * @param {Object} loanQueryVars The loan channel query variables
  * @param {function} next The function to call in the observer subscription next callback

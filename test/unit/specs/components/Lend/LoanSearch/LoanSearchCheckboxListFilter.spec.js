@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import { filterOptionUtils } from '@kiva/kv-loan-filters';
 
 const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 	id: i,
@@ -26,7 +26,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
-		options.forEach(item => getByText(getCheckboxLabel(item)));
+		options.forEach(item => getByText(filterOptionUtils.getCheckboxLabel(item)));
 	});
 
 	it('should pre-select', () => {
@@ -38,7 +38,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 			}
 		});
 
-		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(options[0])).checked).toBeTruthy();
 	});
 
 	it('should select based on prop', async () => {
@@ -49,14 +49,14 @@ describe('LoanSearchCheckboxListFilter', () => {
 		});
 
 		await updateProps({ ids: [0] });
-		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(options[0])).checked).toBeTruthy();
 
 		await updateProps({ ids: [0, 1] });
-		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
-		expect(getByLabelText(getCheckboxLabel(options[1])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(options[0])).checked).toBeTruthy();
+		expect(getByLabelText(filterOptionUtils.getCheckboxLabel(options[1])).checked).toBeTruthy();
 
 		await updateProps({ ids: [] });
-		options.forEach(item => expect(getByLabelText(getCheckboxLabel(item)).checked).toBeFalsy());
+		options.forEach(item => expect(getByLabelText(filterOptionUtils.getCheckboxLabel(item)).checked).toBeFalsy());
 	});
 
 	it('should emit updated', async () => {
@@ -67,7 +67,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
-		const option = getByText(getCheckboxLabel(options[0]));
+		const option = getByText(filterOptionUtils.getCheckboxLabel(options[0]));
 		await user.click(option);
 
 		expect(emitted().updated[0]).toEqual([{ key: [options[0].id] }]);
@@ -81,12 +81,12 @@ describe('LoanSearchCheckboxListFilter', () => {
 			{ props: { options: initialOptions, filterKey: 'key', eventAction: 'action' } }
 		);
 
-		initialOptions.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeFalsy());
+		initialOptions.forEach(s => expect(getByLabelText(filterOptionUtils.getCheckboxLabel(s)).disabled).toBeFalsy());
 
 		const options = getOptions(true);
 		await updateProps({ options });
 
-		options.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeTruthy());
+		options.forEach(s => expect(getByLabelText(filterOptionUtils.getCheckboxLabel(s)).disabled).toBeTruthy());
 	});
 
 	it('should track event', async () => {
@@ -97,10 +97,10 @@ describe('LoanSearchCheckboxListFilter', () => {
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
-		let option = getByText(getCheckboxLabel(options[0]));
+		let option = getByText(filterOptionUtils.getCheckboxLabel(options[0]));
 		await user.click(option);
 
-		option = getByText(getCheckboxLabel(options[0]));
+		option = getByText(filterOptionUtils.getCheckboxLabel(options[0]));
 		await user.click(option);
 
 		expect(spyTrackEvent).toHaveBeenCalledTimes(2);
