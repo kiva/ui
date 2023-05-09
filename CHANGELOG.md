@@ -1,3 +1,10 @@
+## [2.590.0](https://github.com/kiva/ui/compare/v2.589.0...v2.590.0) (2023-05-09)
+
+
+### Features
+
+* match logic in CTA component for add all relending ([d05ada9](https://github.com/kiva/ui/commit/d05ada9219a780196fd7c1eb975fab6d6cf1e753))
+
 ## [2.589.0](https://github.com/kiva/ui/compare/v2.588.0...v2.589.0) (2023-05-09)
 
 
