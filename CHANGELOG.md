@@ -1,3 +1,10 @@
+## [2.594.0](https://github.com/kiva/ui/compare/v2.593.0...v2.594.0) (2023-05-10)
+
+
+### Features
+
+* check amount before ATB ([ec104ad](https://github.com/kiva/ui/commit/ec104ad06728af0e1dcdc725eb4a29c715b89958))
+
 ## [2.593.0](https://github.com/kiva/ui/compare/v2.592.0...v2.593.0) (2023-05-10)
 
 
