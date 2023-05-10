@@ -179,7 +179,10 @@ export default {
 					amount = Number(unreservedAmount) > 25 ? '25' : unreservedAmount;
 				}
 
-				this.$refs[key][0].addToBasket(amount);
+				// We occasionally get fully funded loans from dev FLSS
+				if (Number(amount) > 0) {
+					this.$refs[key][0].addToBasket(amount);
+				}
 			}
 			this.$kvTrackEvent('loan-card', 'add-to-basket', 'relending-lending-home-add-all', this.userBalance, multipleAmount); // eslint-disable-line max-len
 			this.$router.push({
