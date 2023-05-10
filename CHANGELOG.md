@@ -1,3 +1,10 @@
+## [2.593.0](https://github.com/kiva/ui/compare/v2.592.0...v2.593.0) (2023-05-10)
+
+
+### Features
+
+* there was an edge case where a loan could be cleared by the "loading state" ([4cbdcdb](https://github.com/kiva/ui/commit/4cbdcdb3beeb22088c16ff08d08ed7a34ffcd3a9))
+
 ## [2.592.0](https://github.com/kiva/ui/compare/v2.591.0...v2.592.0) (2023-05-09)
 
 
