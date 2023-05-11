@@ -1,6 +1,6 @@
 <template>
 	<article>
-		<div v-if="loading" class="tw-w-full">
+		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
 			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '1.6rem'}" />
 			<kv-loading-placeholder
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
@@ -8,26 +8,42 @@
 		</div>
 
 		<h2 class="tw-sr-only">
-			Why this loan is special
+			Loan Endorsements
 		</h2>
-		<p v-if="!loading" class="tw-text-h2">
-			{{ fullWhySpecial }}
-		</p>
+		<div v-if="!loading" class="tw-my-5 md:tw-my-6 lg:tw-my-8">
+			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false }">
+				<template v-for="(comment, index) in comments" #[`slide${index}`]>
+					<div :key="index">
+						<h2>
+							<em>"{{ comment.body }}"</em>
+						</h2>
+						<h2 class="tw-text-right">
+							{{ comment.authorName }}
+						</h2>
+					</div>
+				</template>
+
+				<why-special data-testid="bp-why-special" :loan-id="loanId" />
+			</kv-carousel>
+		</div>
 	</article>
 </template>
 
 <script>
 import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import { formatWhySpecial } from '@/util/loanUtils';
+import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
-	name: 'WhySpecial',
+	name: 'EndorsementsAndWhySpecial',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		KvCarousel,
 		KvLoadingPlaceholder,
+		WhySpecial,
 	},
 	props: {
 		loanId: {
@@ -38,20 +54,24 @@ export default {
 	data() {
 		return {
 			loading: true,
-			whySpecial: '',
+			comments: [],
 		};
 	},
 	computed: {
-		fullWhySpecial() {
-			return formatWhySpecial(this.whySpecial);
-		}
 	},
 	apollo: {
-		query: gql`query whySpecial($loanId: Int!) {
+		query: gql`query endorsements($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
 					id
-					whySpecial
+					comments {
+						values {
+							id
+							userId
+							body
+							date
+						}
+					}
 				}
 			}
 		}`,
@@ -61,7 +81,7 @@ export default {
 			};
 		},
 		result(result) {
-			this.whySpecial = result?.data?.lend?.loan?.whySpecial ?? '';
+			this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
 		},
 	},
 	methods: {
@@ -92,11 +112,17 @@ export default {
 		},
 		loadData() {
 			this.apollo.query({
-				query: gql`query whySpecial($loanId: Int!) {
+				query: gql`query endorsements($loanId: Int!) {
 					lend {
 						loan(id: $loanId) {
 							id
-							whySpecial
+							comments {
+								values {
+									id
+									authorName
+									body
+								}
+							}
 						}
 					}
 				}`,
@@ -104,8 +130,7 @@ export default {
 					loanId: this.loanId
 				},
 			}).then(result => {
-				this.whySpecial = result?.data?.lend?.loan?.whySpecial ?? '';
-
+				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
 				this.loading = false;
 			});
 		},

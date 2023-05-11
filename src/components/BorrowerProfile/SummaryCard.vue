@@ -31,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5"
 					:name="name"
 				/>
 				<template v-if="isLoading">
@@ -42,9 +42,17 @@
 					</div>
 				</template>
 				<template v-else>
+					<kv-pill v-if="totalComments > 0">
+						<template #icon>
+							<sparkle-base class="tw-h-2 tw-w-2 tw-mr-0.5" />
+						</template>
+						<template #text>
+							{{ totalComments }} Endorsement{{ totalComments > 1 ? 's' : '' }}
+						</template>
+					</kv-pill>
 					<loan-progress
 						data-testid="bp-summary-progress"
-						class="tw-mb-2"
+						class="tw-mb-2 tw-mt-1.5"
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
@@ -110,6 +118,8 @@
 <script>
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
+import KvPill from '@/components/Kv/KvPill';
+import SparkleBase from '@/assets/icons/inline/sparkle-base.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -179,6 +189,9 @@ const mountQuery = gql`
 				lenders {
 					totalCount
 				}
+				comments {
+					totalCount
+				}
 			}
 		}
 	}
@@ -196,6 +209,8 @@ export default {
 		LoanBookmark,
 		JumpLinks,
 		KvLoadingPlaceholder,
+		KvPill,
+		SparkleBase,
 	},
 	props: {
 		showUrgencyExp: {
@@ -224,6 +239,7 @@ export default {
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
+			totalComments: 0,
 		};
 	},
 	computed: {
@@ -267,6 +283,7 @@ export default {
 		if (this.unreservedAmount === '0') {
 			this.fundraisingPercent = 1;
 		}
+		this.totalComments = loan?.comments?.totalCount ?? 0;
 		this.isLoading = false;
 	},
 	apollo: {
