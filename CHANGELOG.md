@@ -1,3 +1,16 @@
+## [2.595.0](https://github.com/kiva/ui/compare/v2.594.0...v2.595.0) (2023-05-11)
+
+
+### Features
+
+* fixed issue with add all race condition ([6ddd591](https://github.com/kiva/ui/commit/6ddd591c61ad2a43f961e8ab5fd4c9856260a960))
+
+
+### Bug Fixes
+
+* $5 notes exp CTA was missing ([7c25de4](https://github.com/kiva/ui/commit/7c25de42c87c6aa022a2fc2c15397e63b49c27ed))
+* wrap add to basket in try catch ([4a3f269](https://github.com/kiva/ui/commit/4a3f269b94df92c764c4abd7eb82633be880ba1f))
+
 ## [2.594.0](https://github.com/kiva/ui/compare/v2.593.0...v2.594.0) (2023-05-10)
 
 
