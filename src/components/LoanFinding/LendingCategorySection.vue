@@ -16,7 +16,7 @@
 					v-if="enableRelendingExp"
 					:amount="multipleAmount"
 					:loans-number="totalLoans"
-					:disabled="disableMultipleButton"
+					:is-adding="isAddingMultiple"
 					@add-multiple="addMultipleLoans"
 				/>
 			</div>
@@ -114,7 +114,7 @@ export default {
 	},
 	data() {
 		return {
-			disableMultipleButton: false
+			isAddingMultiple: false
 		};
 	},
 	computed: {
@@ -165,9 +165,11 @@ export default {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
-		addMultipleLoans() {
-			this.disableMultipleButton = true;
+		async addMultipleLoans() {
+			this.isAddingMultiple = true;
+
 			const { multipleAmount } = this;
+
 			for (let index = 0; index < this.totalLoans; index += 1) {
 				const { unreservedAmount } = this.loans[index];
 				const key = this.loanCardKey(index);
@@ -181,13 +183,25 @@ export default {
 
 				// We occasionally get fully funded loans from dev FLSS
 				if (Number(amount) > 0) {
-					this.$refs[key][0].addToBasket(amount);
+					try {
+						// Ensure the reservations happen synchronously to prevent race conditions with the basket
+						// eslint-disable-next-line no-await-in-loop
+						await this.$refs[key][0].addToBasket(amount);
+					} catch {
+						// no-op
+					}
 				}
 			}
-			this.$kvTrackEvent('loan-card', 'add-to-basket', 'relending-lending-home-add-all', this.userBalance, multipleAmount); // eslint-disable-line max-len
-			this.$router.push({
-				path: '/checkout',
-			});
+
+			this.$kvTrackEvent(
+				'loan-card',
+				'add-to-basket',
+				'relending-lending-home-add-all',
+				this.userBalance,
+				multipleAmount
+			);
+
+			this.isAddingMultiple = false;
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;

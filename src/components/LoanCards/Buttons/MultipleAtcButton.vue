@@ -1,9 +1,17 @@
 <template>
 	<div>
-		<!-- eslint-disable max-len -->
 		<button
-			class="tw-flex tw-items-center tw-pl-1.5 tw-border tw-border-tertiary tw-text-base tw-rounded"
-			:disabled="disabled"
+			class="
+				multiple-act-button
+				tw-flex
+				tw-items-center
+				tw-pl-1.5
+				tw-border
+				tw-border-tertiary
+				tw-text-base
+				tw-rounded
+			"
+			:disabled="isAdding"
 			@click="$emit('add-multiple')"
 		>
 			${{ amount }}
@@ -18,7 +26,6 @@
 </template>
 
 <script>
-
 export default {
 	name: 'MultipleAtcButton',
 	props: {
@@ -30,17 +37,23 @@ export default {
 			type: Number,
 			default: 2
 		},
-		disabled: {
+		isAdding: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	computed: {
 		buttonCopy() {
+			if (this.isAdding) return 'Adding to basket';
 			if (this.loansNumber > 2) return `Add all ${this.loansNumber} cart`;
 			return 'Add both to cart';
 		}
 	}
 };
-
 </script>
+
+<style scoped>
+.multiple-act-button:hover {
+	filter: brightness(0.95);
+}
+</style>
