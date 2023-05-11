@@ -472,7 +472,7 @@ export default {
 		},
 		addToBasket(lendAmount) {
 			this.isAdding = true;
-			setLendAmount({
+			return setLendAmount({
 				amount: lendAmount,
 				apollo: this.apollo,
 				loanId: this.loanId,
