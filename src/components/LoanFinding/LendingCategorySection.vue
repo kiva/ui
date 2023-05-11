@@ -183,9 +183,13 @@ export default {
 
 				// We occasionally get fully funded loans from dev FLSS
 				if (Number(amount) > 0) {
-					// Ensure the reservations happen synchronously to prevent race conditions with the basket
-					// eslint-disable-next-line no-await-in-loop
-					await this.$refs[key][0].addToBasket(amount);
+					try {
+						// Ensure the reservations happen synchronously to prevent race conditions with the basket
+						// eslint-disable-next-line no-await-in-loop
+						await this.$refs[key][0].addToBasket(amount);
+					} catch {
+						// no-op
+					}
 				}
 			}
 
