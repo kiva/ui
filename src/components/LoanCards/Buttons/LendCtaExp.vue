@@ -279,7 +279,9 @@ export default {
 		},
 		showLendAmountButton() {
 			return (this.state === 'lend' || this.isLentTo || this.state === 'loading')
-				&& (this.enableRelendingExp || (!this.enableFiveDollarsNotes && isLessThan25(this.unreservedAmount)));
+				&& (this.enableRelendingExp
+					|| this.enableFiveDollarsNotes
+					|| (!this.enableFiveDollarsNotes && isLessThan25(this.unreservedAmount)));
 		},
 		showLendDropdown() {
 			return (this.state === 'lend' || this.isLentTo)
