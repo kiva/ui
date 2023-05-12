@@ -125,13 +125,53 @@ export const Relending = story({
 	loanId: loan.id,
 	enableRelendingExp: true,
 	userBalance: 50,
-}, false);
+});
 
-export const RelendingSmallAmount = story({
+export const RelendingLendAgain = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 50,
+}, false, { userProperties: { lentTo: true } });
+
+export const RelendingSmallBalance = story({
 	loanId: loan.id,
 	enableRelendingExp: true,
 	userBalance: 20,
+});
+
+export const RelendingSmallBalanceSmallAmount = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 20,
+}, false, { unreservedAmount: '5.00' });
+
+export const RelendingFiveDollarNotes = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 50,
+});
+
+export const RelendingFiveDollarNotesLendAgain = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 50,
 }, false, { userProperties: { lentTo: true } });
+
+export const RelendingFiveDollarNotesSmallBalance = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 20,
+});
+
+export const RelendingFiveDollarNotesSmallBalanceSmallAmount = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 20,
+}, false, { unreservedAmount: '5.00' });
 
 export const FiveDollarNotes = story({
 	loanId: loan.id,
