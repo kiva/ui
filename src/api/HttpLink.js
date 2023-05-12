@@ -1,7 +1,13 @@
 import * as Sentry from '@sentry/vue';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
+import { HttpLink } from '@apollo/client/link/http';
 
-export default ({ kvAuth0, uri = '', fetch }) => {
+export default ({
+	kvAuth0,
+	uri = '',
+	fetch,
+	apolloBatching,
+}) => {
 	const onVm = uri.indexOf('vm') > -1;
 
 	const options = {
@@ -30,6 +36,11 @@ export default ({ kvAuth0, uri = '', fetch }) => {
 	} catch (e) {
 		console.error(e);
 		Sentry.captureException(e);
+	}
+
+	// Use the regular HttpLink if batching is disabled.
+	if (!apolloBatching) {
+		return new HttpLink(options);
 	}
 
 	return new BatchHttpLink(options);

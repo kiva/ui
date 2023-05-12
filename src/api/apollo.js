@@ -44,7 +44,12 @@ export default function createApolloClient({
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
-			HttpLinkCreator({ kvAuth0, uri, fetch }),
+			HttpLinkCreator({
+				kvAuth0,
+				uri,
+				fetch,
+				apolloBatching: appConfig?.apolloBatching ?? true,
+			}),
 		]),
 		cache,
 		resolvers,
