@@ -44,6 +44,7 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 				:show-tags="showTags"
 				:large-card="largeCard"
 				:enable-relending-exp="enableRelendingExp"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
 			/>
 		`,
@@ -126,9 +127,18 @@ export const Relending = story({
 	userBalance: 50,
 }, false);
 
-
 export const RelendingSmallAmount = story({
 	loanId: loan.id,
 	enableRelendingExp: true,
 	userBalance: 20,
 }, false, { userProperties: { lentTo: true } });
+
+export const FiveDollarNotes = story({
+	loanId: loan.id,
+	enableFiveDollarsNotes: true,
+});
+
+export const FiveDollarNotesSmallAmount = story({
+	loanId: loan.id,
+	enableFiveDollarsNotes: true,
+}, false, { unreservedAmount: '5.00' });
