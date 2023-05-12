@@ -1,3 +1,11 @@
+## [2.596.0](https://github.com/kiva/ui/compare/v2.595.0...v2.596.0) (2023-05-12)
+
+
+### Features
+
+* added more stories to cover use cases ([c72c8f0](https://github.com/kiva/ui/commit/c72c8f0077490f5744959dbdb7559ec457441230))
+* fixed lend cta for five dollar notes ([b0e037e](https://github.com/kiva/ui/commit/b0e037eddd6671556d90e51620bb13334acb38f3))
+
 ## [2.595.0](https://github.com/kiva/ui/compare/v2.594.0...v2.595.0) (2023-05-11)
 
 
