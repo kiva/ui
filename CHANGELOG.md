@@ -1,3 +1,10 @@
+### [2.596.1](https://github.com/kiva/ui/compare/v2.596.0...v2.596.1) (2023-05-12)
+
+
+### Bug Fixes
+
+* revert synchronous ATB ([85f5d31](https://github.com/kiva/ui/commit/85f5d31aba89bc61e38b722bc89a90e540437c32))
+
 ## [2.596.0](https://github.com/kiva/ui/compare/v2.595.0...v2.596.0) (2023-05-12)
 
 
