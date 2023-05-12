@@ -5,10 +5,11 @@ var devVm  = require('./dev-vm.js')
 const transport = process.env.TRANSPORT || "https"
 const monolithHostname = process.env.MONOLITH_HOSTNAME || "monolith.kiva.local"
 const apiHostname = process.env.API_HOSTNAME || "api.kiva.local"
+const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 
 module.exports = merge(base, devVm, {
 	app: {
-		apolloBatching: false,
+		apolloBatching,
 		host: `${monolithHostname}`,
 		transport: `${transport}`,
 		publicPath: `${transport}://${monolithHostname}/ui/`,
