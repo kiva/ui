@@ -1,3 +1,15 @@
+## [2.597.0](https://github.com/kiva/ui/compare/v2.596.1...v2.597.0) (2023-05-12)
+
+
+### Features
+
+* implement config based toggle for apollo batch link which remains on by default ([a01a1be](https://github.com/kiva/ui/commit/a01a1bec5bf529b331a352a6dc2f5c247bfd0b06))
+
+
+### Bug Fixes
+
+* wire up process.env check to config var ([b676ddc](https://github.com/kiva/ui/commit/b676ddc790242c32480989d03f08c0d7bde1a0c7))
+
 ### [2.596.1](https://github.com/kiva/ui/compare/v2.596.0...v2.596.1) (2023-05-12)
 
 
