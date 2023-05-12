@@ -8,6 +8,7 @@ const apiHostname = process.env.API_HOSTNAME || "api.kiva.local"
 
 module.exports = merge(base, devVm, {
 	app: {
+		apolloBatching: false,
 		host: `${monolithHostname}`,
 		transport: `${transport}`,
 		publicPath: `${transport}://${monolithHostname}/ui/`,
@@ -23,7 +24,7 @@ module.exports = merge(base, devVm, {
 			},
 			browserCallbackUri: `${transport}://${monolithHostname}/process-browser-auth`,
 			serverCallbackUri: `${transport}://${monolithHostname}/process-ssr-auth`,
-		}
+		},
 	},
 	server: {
 		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
