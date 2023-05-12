@@ -186,7 +186,7 @@ export default {
 					try {
 						// Ensure the reservations happen synchronously to prevent race conditions with the basket
 						// eslint-disable-next-line no-await-in-loop
-						await this.$refs[key][0].addToBasket(amount);
+						this.$refs[key][0].addToBasket(amount);
 					} catch {
 						// no-op
 					}
@@ -201,7 +201,7 @@ export default {
 				multipleAmount
 			);
 
-			this.isAddingMultiple = false;
+			this.$router.push({ path: '/checkout' });
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;
