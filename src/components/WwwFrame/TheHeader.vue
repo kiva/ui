@@ -150,10 +150,6 @@
 								to="/lend-by-category"
 								data-testid="header-lend"
 								class="header__button header__lend"
-								:class="{
-									'tw-hidden': !isVisitor,
-									'header__button !tw-hidden md:!tw-flex': isVisitor
-								}"
 								v-kv-track-event="['TopNav','click-Lend']"
 								@pointerenter.native.stop="onLendLinkPointerEnter"
 								@pointerleave.native.stop="onLendLinkPointerLeave"
