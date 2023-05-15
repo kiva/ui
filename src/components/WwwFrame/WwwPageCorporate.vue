@@ -32,6 +32,7 @@ import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
 import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
+import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
 
 export default {
 	name: 'WwwPageCorporate',
@@ -62,8 +63,11 @@ export default {
 	},
 	apollo: {
 		preFetch(_, client) {
-			return client.query({ query: hasEverLoggedInQuery });
-		}
+			return Promise.all([
+				client.query({ query: hasEverLoggedInQuery }),
+				assignAllActiveExperiments(client)
+			]);
+		},
 	}
 };
 </script>
