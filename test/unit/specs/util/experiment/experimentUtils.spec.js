@@ -12,12 +12,14 @@ import {
 	setCookieAssignments,
 	getForcedAssignment,
 	getLoginId,
+	assignAllActiveExperiments,
 } from '@/util/experiment/experimentUtils';
 import * as Alea from '@/util/experiment/Alea';
 import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CookieStore from '@/util/cookieStore';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
@@ -1006,6 +1008,47 @@ describe('experimentUtils.js', () => {
 			const result = getLoginId(cookieStore);
 
 			expect(result).toBe(mockVisitorId);
+		});
+	});
+
+	describe('assignAllActiveExperiments', () => {
+		it('should get active experiments', async () => {
+			const apollo = {
+				cache: {
+					readQuery: jest.fn()
+				}
+			};
+
+			await assignAllActiveExperiments(apollo);
+
+			expect(apollo.cache.readQuery).toHaveBeenCalledTimes(1);
+		});
+
+		it('should assign active experiments', async () => {
+			const apollo = {
+				cache: {
+					readQuery: jest.fn().mockReturnValue({
+						general: {
+							activeExperiments: {
+								value: '"a,b"'
+							}
+						}
+					})
+				},
+				query: jest.fn()
+			};
+
+			await assignAllActiveExperiments(apollo);
+
+			expect(apollo.query).toHaveBeenCalledTimes(2);
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: 'a' }
+			});
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: 'b' }
+			});
 		});
 	});
 });
