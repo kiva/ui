@@ -12,11 +12,15 @@
 				tw-rounded
 			"
 			:disabled="isAdding"
-			@click="$emit('add-multiple')"
+			@click="$emit(showCheckout ? 'checkout' : 'add-multiple')"
 		>
 			${{ amount }}
 			<div
-				class="tw-ml-1.5 tw-bg-marigold"
+				class="tw-ml-1.5"
+				:class="{
+					'tw-bg-marigold': !showCheckout,
+					'tw-bg-white': showCheckout
+				}"
 				style="border-radius: 0 14px 14px 0; padding: 12px 18px; font-weight: 621;"
 			>
 				{{ buttonCopy }}
@@ -41,10 +45,15 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		showCheckout: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		buttonCopy() {
 			if (this.isAdding) return 'Adding to basket';
+			if (this.showCheckout) return 'Checkout now';
 			if (this.loansNumber > 2) return `Add all ${this.loansNumber} cart`;
 			return 'Add both to cart';
 		}
