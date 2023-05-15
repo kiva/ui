@@ -112,33 +112,34 @@
 						</div>
 
 						<template v-if="lendMenuButtonExp">
-							<!-- Explore -->
-							<router-link
-								to="/lend-by-category"
-								data-testid="header-explore"
-								class="header__button header__explore"
-								v-kv-track-event="['TopNav','click-Lend']"
-							>
-								<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
-								<span class="tw-inline-block lg:tw-hidden">Explore</span>
-							</router-link>
+							<div class="tw-flex tw-gap-2.5">
+								<!-- Explore -->
+								<router-link
+									to="/lend-by-category"
+									data-testid="header-explore"
+									class="header__button header__explore"
+									v-kv-track-event="['TopNav','click-Lend']"
+								>
+									<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
+								</router-link>
 
-							<!-- Categories -->
-							<div
-								data-testid="header-lend"
-								class="header__button header__lend !tw-hidden md:!tw-inline-flex"
-								@pointerenter.stop="onLendLinkPointerEnter"
-								@pointerleave.stop="onLendLinkPointerLeave"
-								@pointerup.stop="onLendLinkPointerEnter"
-								@click="onCategoriesClick"
-							>
-								<span class="tw-flex tw-items-center">Categories
-									<kv-material-icon
-										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
+								<!-- Categories -->
+								<div
+									data-testid="header-lend"
+									class="header__button header__lend"
+									@pointerenter.stop="onLendLinkPointerEnter"
+									@pointerleave.stop="onLendLinkPointerLeave"
+									@pointerup.stop="onLendLinkPointerEnter"
+									@click="onCategoriesClick"
+								>
+									<span class="tw-flex tw-items-center">Categories
+										<kv-material-icon
+											class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+											:icon="mdiChevronDown"
+											:class="{'tw-rotate-180' : isLendMenuVisible}"
+										/>
+									</span>
+								</div>
 							</div>
 						</template>
 
@@ -149,6 +150,10 @@
 								to="/lend-by-category"
 								data-testid="header-lend"
 								class="header__button header__lend"
+								:class="{
+									'tw-hidden': !isVisitor,
+									'header__button !tw-hidden md:!tw-flex': isVisitor
+								}"
 								v-kv-track-event="['TopNav','click-Lend']"
 								@pointerenter.native.stop="onLendLinkPointerEnter"
 								@pointerleave.native.stop="onLendLinkPointerLeave"
