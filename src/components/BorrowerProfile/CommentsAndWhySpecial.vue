@@ -8,7 +8,7 @@
 		</div>
 
 		<h2 class="tw-sr-only">
-			Loan Endorsements
+			Loan Comments
 		</h2>
 		<div v-if="!loading" class="tw-my-5 md:tw-my-6 lg:tw-my-8">
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false }">
@@ -38,7 +38,7 @@ import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
-	name: 'EndorsementsAndWhySpecial',
+	name: 'CommentsAndWhySpecial',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCarousel,
@@ -60,18 +60,17 @@ export default {
 	computed: {
 	},
 	apollo: {
-		query: gql`query endorsements($loanId: Int!) {
+		query: gql`query loanComments($loanId: Int!) {
 			lend {
 				loan(id: $loanId) {
 					id
 					comments {
 						values {
 							id
-							userId
+							authorName
 							body
-							date
 						}
-					}
+			}
 				}
 			}
 		}`,
@@ -112,7 +111,7 @@ export default {
 		},
 		loadData() {
 			this.apollo.query({
-				query: gql`query endorsements($loanId: Int!) {
+				query: gql`query loanComments($loanId: Int!) {
 					lend {
 						loan(id: $loanId) {
 							id

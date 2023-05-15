@@ -42,14 +42,28 @@
 					</div>
 				</template>
 				<template v-else>
-					<kv-pill v-if="totalComments > 0">
-						<template #icon>
-							<sparkle-base class="tw-h-2 tw-w-2 tw-mr-0.5" />
-						</template>
-						<template #text>
-							{{ totalComments }} Endorsement{{ totalComments > 1 ? 's' : '' }}
-						</template>
-					</kv-pill>
+					<a
+						href="#bp-comments-jump-link"
+						class="tw-text-black hover:tw-text-white kvpill-wrapper"
+						v-kv-track-event="[
+							'borrower-profile',
+							'click',
+							'jump-link',
+							'comments-pill'
+						]"
+					>
+						<kv-pill
+							v-if="totalComments > 0"
+							class="kvpill"
+						>
+							<template #icon>
+								<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+							</template>
+							<template #text>
+								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
+							</template>
+						</kv-pill>
+					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
 						class="tw-mb-2 tw-mt-1.5"
@@ -119,7 +133,7 @@
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
 import KvPill from '@/components/Kv/KvPill';
-import SparkleBase from '@/assets/icons/inline/sparkle-base.svg';
+import HeartComment from '@/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -210,7 +224,7 @@ export default {
 		JumpLinks,
 		KvLoadingPlaceholder,
 		KvPill,
-		SparkleBase,
+		HeartComment,
 	},
 	props: {
 		showUrgencyExp: {
@@ -310,3 +324,25 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang="scss">
+.heart-svg {
+	path {
+		fill: #0012B9;
+	}
+}
+
+.kvpill-wrapper .kvpill {
+	background-color: #E6ECF8;
+}
+
+.kvpill-wrapper:hover .kvpill {
+	background-color: #276cf6;
+
+	.heart-svg {
+		path {
+			fill: white;
+		}
+	}
+}
+</style>

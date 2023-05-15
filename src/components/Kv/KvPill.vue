@@ -1,7 +1,6 @@
 <template>
 	<div
 		class="
-			tw-bg-marigold-1
 			tw-rounded
 			tw-py-0.5
 			tw-px-1
