@@ -84,9 +84,9 @@
 					@hide-section="showUpdates = false"
 				/>
 			</content-container>
-			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8" id="bp-comments-jump-link">
 				<content-container>
-					<why-special data-testid="bp-why-special" :loan-id="loanId" />
+					<comments-and-why-special data-testid="bp-comments" :loan-id="loanId" />
 				</content-container>
 			</div>
 			<content-container>
@@ -158,7 +158,8 @@ import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
-import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import CommentsAndWhySpecial from '@/components/BorrowerProfile/CommentsAndWhySpecial';
+
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
@@ -298,9 +299,9 @@ export default {
 		MoreAboutLoan,
 		SidebarContainer,
 		ShareButton,
+		CommentsAndWhySpecial,
 		SummaryCard,
 		TopBannerPfp,
-		WhySpecial,
 		WwwPage,
 	},
 	metaInfo() {

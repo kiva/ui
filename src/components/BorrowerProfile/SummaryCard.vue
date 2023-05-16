@@ -31,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5"
 					:name="name"
 				/>
 				<template v-if="isLoading">
@@ -42,9 +42,26 @@
 					</div>
 				</template>
 				<template v-else>
+					<a
+						href="#bp-comments-jump-link"
+						class="tw-text-black hover:tw-text-white comments-tag-wrapper"
+						v-kv-track-event="[
+							'borrower-profile',
+							'click',
+							'jump-link',
+							'comments-pill'
+						]"
+					>
+						<summary-tag v-if="totalComments > 0" class="comments-tag">
+							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+							<span class="tw-flex-1">
+								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
+							</span>
+						</summary-tag>
+					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
-						class="tw-mb-2"
+						class="tw-mb-2 tw-mt-1.5"
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
@@ -110,6 +127,7 @@
 <script>
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
+import HeartComment from '@/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -179,6 +197,9 @@ const mountQuery = gql`
 				lenders {
 					totalCount
 				}
+				comments {
+					totalCount
+				}
 			}
 		}
 	}
@@ -196,6 +217,7 @@ export default {
 		LoanBookmark,
 		JumpLinks,
 		KvLoadingPlaceholder,
+		HeartComment,
 	},
 	props: {
 		showUrgencyExp: {
@@ -224,6 +246,7 @@ export default {
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
+			totalComments: 0,
 		};
 	},
 	computed: {
@@ -267,6 +290,7 @@ export default {
 		if (this.unreservedAmount === '0') {
 			this.fundraisingPercent = 1;
 		}
+		this.totalComments = loan?.comments?.totalCount ?? 0;
 		this.isLoading = false;
 	},
 	apollo: {
@@ -293,3 +317,25 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang="scss">
+.heart-svg {
+	path {
+		fill: #0012B9;
+	}
+}
+
+.comments-tag-wrapper .comments-tag {
+	background-color: #E6ECF8;
+}
+
+.comments-tag-wrapper:hover .comments-tag {
+	background-color: #276cf6;
+
+	.heart-svg {
+		path {
+			fill: white;
+		}
+	}
+}
+</style>
