@@ -4,6 +4,8 @@ import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { v4 as uuidv4 } from 'uuid';
+import logFormatter from '@/util/logFormatter';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import Alea from './Alea';
 
 /**
@@ -318,4 +320,26 @@ export const getLoginId = cookieStore => {
 	// Return hashed user ID from kvu ticket or visitor ID GUID or fallback GUID
 	// The fallback GUID shouldn't be needed but included in case there's an unknown edge case
 	return cookieStore.get('kvu')?.split('.')?.[3] || cookieStore.get('uiv') || uuidv4();
+};
+
+/**
+ * Assigns all of the active experiments for the current user
+ * Must be ran server-side due to the use of the HTTP only "kvu" cookie
+ *
+ * @param {ApolloClient} apollo The Apollo client
+ * @returns {Promise} Empty or assignment Promise
+ */
+export const assignAllActiveExperiments = async apollo => {
+	// Get active experiment IDs
+	let activeExperiments;
+	try {
+		activeExperiments = await getActiveExperiments(apollo.cache, apollo);
+	} catch (e) {
+		logFormatter(e, 'error');
+	}
+
+	// Run the assignment query for all active experiments
+	return Promise.all((activeExperiments ?? []).map(id => {
+		return apollo.query({ query: experimentAssignmentQuery, variables: { id } });
+	}));
 };
