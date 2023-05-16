@@ -1,3 +1,10 @@
+## [2.599.0](https://github.com/kiva/ui/compare/v2.598.0...v2.599.0) (2023-05-16)
+
+
+### Features
+
+* add endorsements to borrower profile ([#4830](https://github.com/kiva/ui/issues/4830)) ([e8c7adf](https://github.com/kiva/ui/commit/e8c7adf06897f15885170a008868a1a8f140bb9c))
+
 ## [2.598.0](https://github.com/kiva/ui/compare/v2.597.0...v2.598.0) (2023-05-16)
 
 
