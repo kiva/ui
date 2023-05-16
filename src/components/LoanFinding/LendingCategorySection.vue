@@ -17,7 +17,9 @@
 					:amount="multipleAmount"
 					:loans-number="totalLoans"
 					:is-adding="isAddingMultiple"
+					:show-checkout="hasMultipleBeenAdded"
 					@add-multiple="addMultipleLoans"
+					@checkout="checkout"
 				/>
 			</div>
 			<kv-carousel
@@ -114,7 +116,8 @@ export default {
 	},
 	data() {
 		return {
-			isAddingMultiple: false
+			isAddingMultiple: false,
+			hasMultipleBeenAdded: false,
 		};
 	},
 	computed: {
@@ -186,7 +189,7 @@ export default {
 					try {
 						// Ensure the reservations happen synchronously to prevent race conditions with the basket
 						// eslint-disable-next-line no-await-in-loop
-						this.$refs[key][0].addToBasket(amount);
+						await this.$refs[key][0].addToBasket(amount);
 					} catch {
 						// no-op
 					}
@@ -201,11 +204,17 @@ export default {
 				multipleAmount
 			);
 
+			this.isAddingMultiple = false;
+			this.hasMultipleBeenAdded = true;
+		},
+		checkout() {
+			this.$kvTrackEvent('loan-card', 'checkout', 'relending-lending-home-add-all');
+
 			this.$router.push({ path: '/checkout' });
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;
-		}
+		},
 	},
 };
 </script>
