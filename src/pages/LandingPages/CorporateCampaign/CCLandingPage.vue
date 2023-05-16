@@ -1424,7 +1424,8 @@ export default {
 			this.basketBalancing = true;
 			const LCALoanId = this.cookieStore.get('lcaid');
 			// Check if there is already a loan id that has unspent credit allocated to it
-			if (LCALoanId) {
+			// Also checks if the loan matches to the correct campaign
+			if ((LCALoanId) && (this.campaignPartnerName === this.promoFundDisplayName)) {
 				// Try getting that loan from the basket
 				const basketLCALoan = this.basketLoans.find(loan => String(loan?.id) === LCALoanId);
 				if (basketLCALoan?.price) {
