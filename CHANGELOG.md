@@ -1,3 +1,11 @@
+## [2.598.0](https://github.com/kiva/ui/compare/v2.597.0...v2.598.0) (2023-05-16)
+
+
+### Features
+
+* bring back synchronous add all to basket and checkout state to button ([401eed6](https://github.com/kiva/ui/commit/401eed606785db3582f977a9ca4d8a3751e87a9c))
+* run all active experiment assignment on global preFetch ([ea2f14f](https://github.com/kiva/ui/commit/ea2f14f94e457d2351fab698526762c9be2ca9ac))
+
 ## [2.597.0](https://github.com/kiva/ui/compare/v2.596.1...v2.597.0) (2023-05-12)
 
 
