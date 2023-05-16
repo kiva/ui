@@ -44,7 +44,7 @@
 				<template v-else>
 					<a
 						href="#bp-comments-jump-link"
-						class="tw-text-black hover:tw-text-white kvpill-wrapper"
+						class="tw-text-black hover:tw-text-white comments-tag-wrapper"
 						v-kv-track-event="[
 							'borrower-profile',
 							'click',
@@ -52,17 +52,12 @@
 							'comments-pill'
 						]"
 					>
-						<kv-pill
-							v-if="totalComments > 0"
-							class="kvpill"
-						>
-							<template #icon>
-								<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
-							</template>
-							<template #text>
+						<summary-tag v-if="totalComments > 0" class="comments-tag">
+							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+							<span class="tw-flex-1">
 								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
-							</template>
-						</kv-pill>
+							</span>
+						</summary-tag>
 					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
@@ -132,7 +127,6 @@
 <script>
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
-import KvPill from '@/components/Kv/KvPill';
 import HeartComment from '@/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
@@ -223,7 +217,6 @@ export default {
 		LoanBookmark,
 		JumpLinks,
 		KvLoadingPlaceholder,
-		KvPill,
 		HeartComment,
 	},
 	props: {
@@ -332,11 +325,11 @@ export default {
 	}
 }
 
-.kvpill-wrapper .kvpill {
+.comments-tag-wrapper .comments-tag {
 	background-color: #E6ECF8;
 }
 
-.kvpill-wrapper:hover .kvpill {
+.comments-tag-wrapper:hover .comments-tag {
 	background-color: #276cf6;
 
 	.heart-svg {
