@@ -1,3 +1,10 @@
+## [2.600.0](https://github.com/kiva/ui/compare/v2.599.0...v2.600.0) (2023-05-17)
+
+
+### Features
+
+* make the add all to basket event unique ([7c19f26](https://github.com/kiva/ui/commit/7c19f267ebfe1c6eb0cedbe14d7c3c72d1ef00d0))
+
 ## [2.599.0](https://github.com/kiva/ui/compare/v2.598.0...v2.599.0) (2023-05-16)
 
 
