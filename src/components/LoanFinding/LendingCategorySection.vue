@@ -198,7 +198,7 @@ export default {
 
 			this.$kvTrackEvent(
 				'loan-card',
-				'add-to-basket',
+				'add-all-to-basket',
 				'relending-lending-home-add-all',
 				this.userBalance,
 				multipleAmount
