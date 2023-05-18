@@ -1,3 +1,10 @@
+## [2.589.0-next.1](https://github.com/kiva/ui/compare/v2.588.0...v2.589.0-next.1) (2023-05-18)
+
+
+### Features
+
+* run all active experiment assignment on global preFetch ([4550c76](https://github.com/kiva/ui/commit/4550c7639b4c84b1fe91b70021a6c3efcb3b8226))
+
 ## [2.588.0](https://github.com/kiva/ui/compare/v2.587.3...v2.588.0) (2023-05-08)
 
 
