@@ -90,9 +90,10 @@
 				<template v-else>
 					<div
 						class="header
-							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
+							tw-grid lg:tw-gap-x-4 tw-items-center"
 						:class="{
-							'header-lend-menu-button-exp': lendMenuButtonExp,
+							'tw-gap-x-2.5 ': !lendMenuButtonExp,
+							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen,
 							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
@@ -112,33 +113,34 @@
 						</div>
 
 						<template v-if="lendMenuButtonExp">
-							<!-- Explore -->
-							<router-link
-								to="/lend-by-category"
-								data-testid="header-explore"
-								class="header__button header__explore"
-								v-kv-track-event="['TopNav','click-Lend']"
-							>
-								<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
-								<span class="tw-inline-block lg:tw-hidden">Explore</span>
-							</router-link>
+							<div class="tw-flex tw-gap-1.5">
+								<!-- Explore -->
+								<router-link
+									to="/lend-by-category"
+									data-testid="header-explore"
+									class="header__button header__explore"
+									v-kv-track-event="['TopNav','click-Lend']"
+								>
+									<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
+								</router-link>
 
-							<!-- Categories -->
-							<div
-								data-testid="header-lend"
-								class="header__button header__lend !tw-hidden md:!tw-inline-flex"
-								@pointerenter.stop="onLendLinkPointerEnter"
-								@pointerleave.stop="onLendLinkPointerLeave"
-								@pointerup.stop="onLendLinkPointerEnter"
-								@click="onCategoriesClick"
-							>
-								<span class="tw-flex tw-items-center">Categories
-									<kv-material-icon
-										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
+								<!-- Categories -->
+								<div
+									data-testid="header-lend"
+									class="header__button header__lend"
+									@pointerenter.stop="onLendLinkPointerEnter"
+									@pointerleave.stop="onLendLinkPointerLeave"
+									@pointerup.stop="onLendLinkPointerEnter"
+									@click="onCategoriesClick"
+								>
+									<span class="tw-flex tw-items-center">Categories
+										<kv-material-icon
+											class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+											:icon="mdiChevronDown"
+											:class="{'tw-rotate-180' : isLendMenuVisible}"
+										/>
+									</span>
+								</div>
 							</div>
 						</template>
 
@@ -192,7 +194,7 @@
 							class="
 								header__search
 								tw-py-1.5 md:py-0
-								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
+								tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
 								tw-border-t tw-border-tertiary md:tw-border-t-0
 							"
 							:class="{
@@ -206,7 +208,11 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4 align-middle"
+						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
+							:class="{
+								'tw-gap-2.5': !lendMenuButtonExp,
+								'tw-gap-1.5': lendMenuButtonExp,
+							}"
 						>
 							<!-- Borrow -->
 							<router-link
@@ -360,7 +366,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="isVisitor"
-								class="tw-bg-white"
+								class="tw-bg-white tw-whitespace-nowrap"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
