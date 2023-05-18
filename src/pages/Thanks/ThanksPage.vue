@@ -76,7 +76,7 @@
 				</template>
 			</thanks-layout-v2>
 		</div>
-		<thanks-page-share
+		<thanks-page-comment-and-share
 			v-if="receipt && showFocusedShareAsk"
 			:receipt="receipt"
 			:lender="lender"
@@ -84,6 +84,7 @@
 			:share-ask-copy-version="shareAskCopyVersion"
 			:is-guest="isGuest"
 			@guest-create-account="createGuestAccount"
+			:ask-for-comments="askForComments"
 		/>
 	</www-page>
 </template>
@@ -100,7 +101,7 @@ import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
-import ThanksPageShare from '@/components/Thanks/ThanksPageShare';
+import ThanksPageCommentAndShare from '@/components/Thanks/ThanksPageCommentAndShare';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
@@ -124,7 +125,7 @@ export default {
 		SocialShareV2,
 		ThanksLayoutV2,
 		WwwPage,
-		ThanksPageShare
+		ThanksPageCommentAndShare
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -171,9 +172,21 @@ export default {
 		}
 	},
 	computed: {
+		askForComments() {
+			// comments ask should be displayed for logged in users checking out with a PFP loan.
+			return this.hasPfpLoan && !this.isGuest;
+		},
 		selectedLoan() {
+			// The selected loan should be any PFP loans, or if there are no PFP loans,
+			// the first loan of loans sorted by unreservedAmount
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
+			if (this.hasPfpLoan) {
+				return orderedLoans.find(loan => loan.inPfp);
+			}
 			return orderedLoans[0] || {};
+		},
+		hasPfpLoan() {
+			return this.loans.some(loan => loan.inPfp);
 		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);

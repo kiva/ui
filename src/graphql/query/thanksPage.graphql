@@ -83,6 +83,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							}
 							distributionModel
 							unreservedAmount @client
+							inPfp
 						}
 					}
 				}
