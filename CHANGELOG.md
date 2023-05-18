@@ -1,3 +1,16 @@
+## [2.601.0](https://github.com/kiva/ui/compare/v2.600.0...v2.601.0) (2023-05-18)
+
+
+### Features
+
+* lend dropdown mobile update ([05d2b12](https://github.com/kiva/ui/commit/05d2b127dc7a7a316f9898cc3a6bf0c99e7caea7))
+
+
+### Bug Fixes
+
+* remove unnecessary code ([e8aaa37](https://github.com/kiva/ui/commit/e8aaa375bbd34003b4cf739d5e59ea2749f7342c))
+* spacing fix mobile ([eaa9a24](https://github.com/kiva/ui/commit/eaa9a24d445906611e7461918d0028d3363a223a))
+
 ## [2.600.0](https://github.com/kiva/ui/compare/v2.599.0...v2.600.0) (2023-05-17)
 
 
