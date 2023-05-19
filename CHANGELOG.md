@@ -1,3 +1,10 @@
+### [2.602.1](https://github.com/kiva/ui/compare/v2.602.0...v2.602.1) (2023-05-19)
+
+
+### Bug Fixes
+
+* add text to time left in pfp ([d811001](https://github.com/kiva/ui/commit/d8110018341e863aaf7631e41ede517567bbf9dd))
+
 ## [2.602.0](https://github.com/kiva/ui/compare/v2.601.0...v2.602.0) (2023-05-19)
 
 
