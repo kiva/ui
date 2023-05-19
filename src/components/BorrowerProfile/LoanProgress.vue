@@ -70,7 +70,7 @@
 			<template v-else-if="loanStatus === 'pfp'">
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
 					<span class="tw-text-h3 tw-block tw-m-0">
-						{{ timeLeft }}
+						{{ timeLeft }} left
 					</span>
 
 					<span class="tw-text-h4 tw-text-secondary tw-block">
