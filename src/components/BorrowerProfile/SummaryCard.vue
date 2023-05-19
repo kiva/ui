@@ -44,7 +44,7 @@
 				<template v-else>
 					<a
 						href="#bp-comments-jump-link"
-						class="tw-text-black hover:tw-text-white comments-tag-wrapper"
+						class="tw-text-black hover:tw-text-white comments-tag-wrapper tw-inline-block"
 						v-kv-track-event="[
 							'borrower-profile',
 							'click',

@@ -15,6 +15,7 @@
 				/>
 			</div>
 			<p
+				v-if="text"
 				class="tw-text-small tw-absolute tw-font-medium tw-mt-0.5 tw-text-center tw-uppercase"
 				:style="{ marginLeft: -0.25 * (step + 1) + 'rem' }"
 			>

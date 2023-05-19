@@ -4,11 +4,13 @@
 			:lender-name="lender.firstName"
 			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
 			:show-lender-name="!isGuest"
+			:comments-mode="askForComments"
 		/>
+		<!-- Image Section -->
 		<div class="row page-content">
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
-				<div class="thanks__header hide-for-print">
+				<div class="hide-for-print">
 					<template v-if="receipt">
 						<div v-if="!calculatePeopleQtyToGoal()">
 							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
@@ -66,17 +68,32 @@
 							</figure>
 						</div>
 					</template>
+				</div>
+			</div>
+		</div>
+		<!-- Comments Section -->
+		<CommentAsk
+			class="hide-for-print"
+			v-if="askForComments"
+			:loan-name="loan.name"
+			:loan-id="loan.id"
+		/>
+		<!-- Share Section -->
+		<div class="row page-content">
+			<div class="large-2"></div>
+			<div class="small-12 large-8 columns thanks">
+				<div class="tw-mb-4 hide-for-print">
 					<template v-if="shareAskCopyVersion === null || shareAskCopyVersion === 'a'">
-						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
+						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
 							Get a $25 lending credit by inspiring others.
 						</h1>
-						<p class="tw-text-h3 tw-m-0 thanks__base-text">
+						<p class="tw-m-0 tw-text-subhead">
 							<!-- eslint-disable-next-line max-len -->
 							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
 						</p>
 					</template>
 					<template v-else>
-						<h1	class="thanks__headline-h1 tw-mt-1 tw-mb-3 tw-text-left">
+						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
 							<!-- eslint-disable-next-line max-len -->
 							<template v-if="!calculatePeopleQtyToGoal()">
 								Can you share Kiva with one more person?
@@ -85,12 +102,12 @@
 								Can you share this loan with one more person?
 							</template>
 						</h1>
-						<p class="tw-text-h3 tw-m-0 thanks__base-text">
+						<p class="tw-m-0 tw-text-subhead">
 							{{ thanksPageBody }}
 						</p>
 					</template>
 					<template>
-						<div class="row btn-container">
+						<div class="row tw-mt-3">
 							<div class="large-2"></div>
 							<div class="small-12 large-8 columns">
 								<div class="share__social social">
@@ -180,6 +197,7 @@ import { mdiCheckAll, mdiLink } from '@mdi/js';
 import { getFullUrl } from '@/util/urlUtils';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import ShareStepper from '@/components/Thanks/ShareStepper';
+import CommentAsk from '@/components/Thanks/CommentAsk';
 import KvIcon from '@/components/Kv/KvIcon';
 import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -188,14 +206,15 @@ import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
 export default {
-	name: 'ThanksPageShare',
+	name: 'ThanksPageCommentAndShare',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvMaterialIcon,
 		BorrowerImage,
 		KvProgressBar,
 		KvIcon,
-		ShareStepper
+		ShareStepper,
+		CommentAsk,
 	},
 	props: {
 		receipt: {
@@ -215,6 +234,10 @@ export default {
 			default: 'a'
 		},
 		isGuest: {
+			type: Boolean,
+			default: false
+		},
+		askForComments: {
 			type: Boolean,
 			default: false
 		},
@@ -386,26 +409,6 @@ $loan-triangle-size: rem-calc(12);
 }
 
 .thanks {
-	&__header {
-		text-align: left;
-		margin-bottom: 2.5rem;
-
-		@include breakpoint(medium) {
-			text-align: center;
-		}
-	}
-
-	&__headline {
-		text-align: left;
-	}
-
-	&__base-text {
-		font-weight: 300;
-		font-size: 25px;
-		text-align: left;
-		line-height: 1.4;
-	}
-
 	&__social-share {
 		margin-bottom: 0.5rem;
 	}
@@ -421,10 +424,6 @@ $loan-triangle-size: rem-calc(12);
 			width: rem-calc(135);
 		}
 	}
-}
-
-.btn-container {
-	margin-top: 25px;
 }
 
 .social {
