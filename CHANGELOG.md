@@ -1,3 +1,10 @@
+## [2.602.0](https://github.com/kiva/ui/compare/v2.601.0...v2.602.0) (2023-05-19)
+
+
+### Features
+
+* request comments on thank you page ([#4840](https://github.com/kiva/ui/issues/4840)) ([5472b13](https://github.com/kiva/ui/commit/5472b13547f6cc501416fa01a6419cdeec51d159))
+
 ## [2.601.0](https://github.com/kiva/ui/compare/v2.600.0...v2.601.0) (2023-05-18)
 
 
