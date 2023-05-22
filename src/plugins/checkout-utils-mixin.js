@@ -115,7 +115,10 @@ export default {
 
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate({
-					mutation: shopCheckout
+					mutation: shopCheckout,
+					variables: {
+						visitorId: this.cookieStore.get('uiv') || null
+					}
 				}).then(data => {
 					const transactionId = _get(data, 'data.shop.checkout');
 					if (transactionId !== null) {

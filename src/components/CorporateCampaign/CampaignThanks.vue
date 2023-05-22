@@ -126,13 +126,13 @@ export default {
 			this.apollo.query({
 				query: thanksPageQuery,
 				variables: {
-					checkoutId: this.transactionId
+					checkoutId: this.transactionId,
+					visitorId: this.cookieStore.get('uiv') || null
 				}
 			}).then(async ({ data }) => {
-				debugger;
 				this.lender = {
-					...data.my.userAccount,
-					teams: data.my.teams.values.map(value => value.team)
+					...data?.my?.userAccount,
+					teams: data?.my?.teams.values.map(value => value.team)
 				};
 
 				// The default empty object and the v-if will prevent the
