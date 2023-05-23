@@ -8,7 +8,7 @@
 			<div class="large-2"></div>
 			<div class="small-12 large-8 columns thanks">
 				<div class="hide-for-print">
-					<h1 class="tw-text-h1 tw-text-center tw-mb-2">
+					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
 					<p class="tw-text-center tw-mb-2">
@@ -223,9 +223,9 @@ export default {
 @import 'settings';
 @import "foundation";
 
-$color-facebook: #3b5998;
-$color-twitter: #08a0e9;
-$color-linkedin: #0077b5;
+$color-facebook: #1877F2;
+$color-twitter: #1D9BF0;
+$color-linkedin: #0A66C2;
 $color-copy-link: #2B7C5F;
 $color-text: #212121;
 
