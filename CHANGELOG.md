@@ -1,3 +1,10 @@
+### [2.602.4](https://github.com/kiva/ui/compare/v2.602.3...v2.602.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* add success/error classes back ([3575537](https://github.com/kiva/ui/commit/3575537398e7642e4baecd399dcef5bbe7c4d221))
+
 ### [2.602.3](https://github.com/kiva/ui/compare/v2.602.2...v2.602.3) (2023-05-23)
 
 
