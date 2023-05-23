@@ -7,10 +7,9 @@
 			:comments-mode="askForComments"
 		/>
 		<!-- Image Section -->
-		<div class="row page-content">
-			<div class="large-2"></div>
-			<div class="small-12 large-8 columns thanks">
-				<div class="hide-for-print">
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<template v-if="receipt">
 						<div v-if="!calculatePeopleQtyToGoal()">
 							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
@@ -42,21 +41,17 @@
 							<figure>
 								<figcaption class="tw-flex progress">
 									<template>
-										<div class="tw-flex-auto tw-text-left">
-											<p
-												class="tw-text-h3 tw-m-0 progress__to-go"
-												data-testid="bp-summary-amount-to-go"
-											>
-												{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
-											</p>
-										</div>
 										<p
-											class="tw-flex-auto tw-text-right progress__days-remaining"
+											class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
+											data-testid="bp-summary-amount-to-go"
+										>
+											{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
+										</p>
+										<p
+											class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
 											data-testid="bp-summary-timeleft"
 										>
-											<span lass="tw-text-h3 tw-block tw-m-0">
-												{{ loan.fundraisingTimeLeft }} remaining
-											</span>
+											{{ loan.fundraisingTimeLeft }} remaining
 										</p>
 									</template>
 								</figcaption>
@@ -69,8 +64,8 @@
 						</div>
 					</template>
 				</div>
-			</div>
-		</div>
+			</kv-grid>
+		</kv-page-container>
 		<!-- Comments Section -->
 		<CommentAsk
 			class="hide-for-print"
@@ -79,10 +74,9 @@
 			:loan-id="loan.id"
 		/>
 		<!-- Share Section -->
-		<div class="row page-content">
-			<div class="large-2"></div>
-			<div class="small-12 large-8 columns thanks">
-				<div class="tw-mb-4 hide-for-print">
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<template v-if="shareAskCopyVersion === null || shareAskCopyVersion === 'a'">
 						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
 							Get a $25 lending credit by inspiring others.
@@ -107,69 +101,65 @@
 						</p>
 					</template>
 					<template>
-						<div class="row tw-mt-3">
-							<div class="large-2"></div>
-							<div class="small-12 large-8 columns">
-								<div class="share__social social">
-									<a
-										data-testid="share-facebook-button"
-										class="social__btn social__btn--facebook"
-										:href="facebookShareUrl({utmCampaign, utmContent})"
-										v-kv-track-event="
-											['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
-									>
-										<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-										<span>Share on Facebook</span>
-									</a>
-									<button
-										data-testid="share-copy-link-button"
-										class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
-										:class="copyStatus.class"
-										:disabled="copyStatus.disabled"
-										v-kv-track-event="
-											['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
-										@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
-									>
-										<kv-material-icon
-											name="clipboard"
-											class="social__icon"
-											:icon="mdiLink"
-										/>
-										<span>{{ copyStatus.text }}</span>
-									</button>
-									<a
-										data-testid="share-twitter-button"
-										class="social__btn social__btn--twitter"
-										:href="twitterShareUrl({utmCampaign, utmContent})"
-										target="_blank"
-										rel="noopener"
-										v-kv-track-event="
-											['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
-										@click="$showTipMsg('Thanks for tweeting!')"
-									>
-										<kv-icon name="twitter" title="Twitter" class="social__icon" />
-										<span>Tweet your followers</span>
-									</a>
-									<a
-										data-testid="share-linkedin-button"
-										class="social__btn social__btn--linkedin"
-										:href="linkedInShareUrl({utmCampaign, utmContent})"
-										target="_blank"
-										rel="noopener"
-										v-kv-track-event="
-											['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
-										@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
-									>
-										<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-										<span>Share on LinkedIn</span>
-									</a>
-								</div>
-							</div>
-							<div class="large-2"></div>
-						</div>
-						<div class="continue-link">
+						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
 							<button
-								class="tw-text-action tw-underline"
+								data-testid="share-facebook-button"
+								class="social__btn social__btn--facebook"
+								@click="showSharePopUp(
+									facebookShareUrl({utmCampaign, utmContent}),
+									'Thanks for sharing to Facebook!')"
+								v-kv-track-event="
+									['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
+							>
+								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+								<span>Share on Facebook</span>
+							</button>
+							<button
+								data-testid="share-copy-link-button"
+								class="social__btn social__btn--link
+									tw-border-action tw-border"
+								:class="copyStatus.class"
+								:disabled="copyStatus.disabled"
+								v-kv-track-event="
+									['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
+								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
+							>
+								<kv-material-icon
+									name="clipboard"
+									class="social__icon"
+									:icon="mdiLink"
+								/>
+								<span>{{ copyStatus.text }}</span>
+							</button>
+							<button
+								data-testid="share-twitter-button"
+								class="social__btn social__btn--twitter"
+								v-kv-track-event="
+									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
+								@click="showSharePopUp(
+									twitterShareUrl({utmCampaign, utmContent}),
+									'Thanks for tweeting!')"
+							>
+								<kv-icon name="twitter" title="Twitter" class="social__icon" />
+								<span>Tweet your followers</span>
+							</button>
+							<button
+								data-testid="share-linkedin-button"
+								class="social__btn social__btn--linkedin"
+								v-kv-track-event="
+									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
+								@click="showSharePopUp(
+									linkedInShareUrl({utmCampaign, utmContent}),
+									'Thanks for sharing to LinkedIn!')"
+							>
+								<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+								<span>Share on LinkedIn</span>
+							</button>
+						</div>
+						<div class="tw-text-center tw-mt-2">
+							<button
+								class="tw-block tw-mx-auto tw-text-action
+								tw-underline hover:tw-text-action-highlight"
 								@click="emitGuestCreateAccount"
 								v-if="isGuest"
 								v-kv-track-event="['Thanks','click-create-account','Create my account']"
@@ -177,6 +167,8 @@
 								Create my account
 							</button>
 							<router-link
+								class="tw-block tw-mx-auto tw-text-action
+								tw-underline hover:tw-text-action-highlight"
 								v-else
 								to="/portfolio"
 								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
@@ -186,9 +178,8 @@
 						</div>
 					</template>
 				</div>
-			</div>
-			<div class="large-2"></div>
-		</div>
+			</kv-grid>
+		</kv-page-container>
 	</div>
 </template>
 
@@ -202,6 +193,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
@@ -215,6 +208,8 @@ export default {
 		KvIcon,
 		ShareStepper,
 		CommentAsk,
+		KvGrid,
+		KvPageContainer,
 	},
 	props: {
 		receipt: {
@@ -341,6 +336,16 @@ export default {
 
 </script>
 
+<style lang="postcss" scoped>
+.social__btn {
+	@apply tw-w-full tw-rounded tw-flex tw-items-center tw-justify-center tw-mb-2 tw-p-1.5 tw-font-medium;
+}
+
+.social__icon {
+	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
+}
+</style>
+
 <style lang="scss" scoped>
 @import 'settings';
 @import "foundation";
@@ -349,133 +354,18 @@ $color-facebook: #3b5998;
 $color-twitter: #08a0e9;
 $color-linkedin: #0077b5;
 $color-copy-link: #2B7C5F;
-$color-text: #212121;
-
-$loan-circle-size: rem-calc(70);
-$loan-circle-margin: 1rem;
-$loan-triangle-size: rem-calc(12);
-
-.page-content {
-	padding: 0 10px;
-
-	@media print {
-		padding: 0;
-	}
-}
-
-.message-content {
-	background-color: #F4FBF7;
-	margin-bottom: 15px;
-
-	&__success {
-		color: #1B6E43;
-		float: right;
-		margin-right: 0;
-
-		@include breakpoint(medium) {
-			margin-right: 40px;
-		}
-	}
-
-	&__text {
-		font-size: 15px;
-		margin-top: 15px;
-		padding-left: 15px;
-
-		@include breakpoint(medium) {
-			margin-top: 22px;
-			padding-left: 0;
-		}
-	}
-}
-
-.progress {
-	&__to-go {
-		font-size: 14px;
-		margin-top: 15px;
-		margin-bottom: 5px;
-		color: #212121;
-		font-weight: bold;
-	}
-
-	&__days-remaining {
-		font-size: 14px;
-		margin-top: 15px;
-		margin-bottom: 5px;
-		color: $color-text;
-		text-transform: uppercase;
-		font-weight: bold;
-	}
-}
-
-.thanks {
-	&__social-share {
-		margin-bottom: 0.5rem;
-	}
-}
-
-.share {
-	width: 100%;
-	max-width: rem-calc(600);
-	margin: 0 auto;
-
-	&__social {
-		@include breakpoint(large) {
-			width: rem-calc(135);
-		}
-	}
-}
 
 .social {
-	width: 100%;
-	flex-wrap: wrap;
-	flex-shrink: 0;
-
-	@include breakpoint(large) {
-		flex-direction: column;
-	}
-
-	&__icon {
-		width: rem-calc(24);
-		height: rem-calc(24);
-		flex-shrink: 0;
-		margin-right: rem-calc(9);
-		fill: #fff;
-	}
-
 	&__btn {
-		align-items: center;
-		margin: 0 0 1rem 0;
-		padding: 1rem rem-calc(9) 1rem 1rem;
-		font-weight: $button-font-weight;
-		line-height: 1;
-		flex-shrink: 0;
+		&--facebook {
+			@include button-style($color-facebook, auto, #fff);
 
-		&:nth-child(2n) {
-			margin-right: 0;
-		}
-
-		@include breakpoint(large) {
-			width: 100%;
-			margin-right: 0;
-
-			&:last-child {
-				margin-bottom: 0;
+			.social__icon {
+				fill: #fff;
 			}
 		}
 
-		&--facebook {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			@include button-style($color-facebook, auto, #fff);
-		}
-
 		&--twitter {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-twitter;
 
 			.social__icon {
@@ -484,10 +374,6 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		&--linkedin {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-linkedin;
 
 			.social__icon {
@@ -496,59 +382,10 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		&--link {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
-			border: 1px solid $color-copy-link;
-			width: 100%;
-			transition:
-				background-color 0.25s ease-in,
-				border-color 0.25s ease-in,
-				color 0.25s ease-in;
-
 			.social__icon {
 				color: $color-copy-link;
-				transition: fill 0.25s ease-in;
-			}
-		}
-
-		&--success {
-			background-color: rgb(var(--bg-brand));
-			border-color: rgb(var(--bg-brand));
-		}
-
-		&--error {
-			background-color: rgb(var(--bg-danger));
-			border-color: rgb(var(--bg-danger));
-		}
-
-		&--success,
-		&--error {
-			color: #fff;
-			cursor: default;
-			transition:
-				background-color 0.25s ease-out,
-				border-color 0.25s ease-out,
-				color 0.25s ease-out;
-
-			&:hover {
-				color: #fff;
-				text-decoration: none;
-			}
-
-			.social__icon {
-				transition: fill 0.25s ease-out;
-				fill: #fff;
 			}
 		}
 	}
-}
-
-.continue-link {
-	margin-top: 25px;
-	text-align: center;
-	text-decoration: underline;
-	text-underline-offset: 3px;
 }
 </style>

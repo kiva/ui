@@ -9,10 +9,12 @@
 			</p>
 		</div>
 		<div class="share__social social">
-			<a
+			<button
 				data-testid="share-facebook-button"
 				class="social__btn social__btn--facebook"
-				:href="facebookShareUrl({utmCampaign, utmContent})"
+				@click="showSharePopUp(
+					facebookShareUrl({utmCampaign, utmContent}),
+					'Thanks for sharing to Facebook!')"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
@@ -22,41 +24,39 @@
 			>
 				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 				<span>Share</span>
-			</a>
-			<a
+			</button>
+			<button
 				data-testid="share-twitter-button"
 				class="social__btn social__btn--twitter"
-				:href="twitterShareUrl({utmCampaign, utmContent})"
-				target="_blank"
-				rel="noopener"
+				@click="showSharePopUp(
+					twitterShareUrl({utmCampaign, utmContent}),
+					'Thanks for tweeting!')"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
 					'twitter',
 					utmCampaign,
 					selectedLoanId]"
-				@click="$showTipMsg('Thanks for tweeting!')"
 			>
 				<kv-icon name="twitter" title="Twitter" class="social__icon" />
 				<span>Tweet</span>
-			</a>
-			<a
+			</button>
+			<button
 				data-testid="share-linkedin-button"
 				class="social__btn social__btn--linkedin"
-				:href="linkedInShareUrl({utmCampaign, utmContent})"
-				target="_blank"
-				rel="noopener"
+				@click="showSharePopUp(
+					linkedInShareUrl({utmCampaign, utmContent}),
+					'Thanks for sharing to LinkedIn!')"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
 					'linkedin',
 					utmCampaign,
 					selectedLoanId]"
-				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
 				<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
 				<span>Share</span>
-			</a>
+			</button>
 			<button
 				data-testid="share-copy-link-button"
 				class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
@@ -475,36 +475,6 @@ $loan-triangle-size: rem-calc(12);
 			.social__icon {
 				fill: $medium-gray;
 				transition: fill 0.25s ease-in;
-			}
-		}
-
-		&--success {
-			background-color: rgb(var(--bg-brand));
-			border-color: rgb(var(--bg-brand));
-		}
-
-		&--error {
-			background-color: rgb(var(--bg-danger));
-			border-color: rgb(var(--bg-danger));
-		}
-
-		&--success,
-		&--error {
-			color: #fff;
-			cursor: default;
-			transition:
-				background-color 0.25s ease-out,
-				border-color 0.25s ease-out,
-				color 0.25s ease-out;
-
-			&:hover {
-				color: #fff;
-				text-decoration: none;
-			}
-
-			.social__icon {
-				transition: fill 0.25s ease-out;
-				fill: #fff;
 			}
 		}
 	}
