@@ -2,12 +2,8 @@
 	<www-page data-testid="thanks-page">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
-				:name="lender.publicName"
-				:receipt="receipt"
-				:is-guest="isGuest"
+				:monthly-donation-amount="monthlyDonationAmount"
 				:share-ask-copy-version="shareAskCopyVersion"
-				@guest-create-account="createGuestAccount"
-				:is-banner-enabled="isMonthlyGoodSubscriber"
 			/>
 		</template>
 		<template v-else>
@@ -158,7 +154,7 @@ export default {
 			pageData: {},
 			shareAskCopyVersion: '',
 			jumpToGuestUpsell: false,
-			isOnlyDonation: false
+			monthlyDonationAmount: ''
 		};
 	},
 	apollo: {
@@ -187,6 +183,10 @@ export default {
 		}
 	},
 	computed: {
+		isOnlyDonation() {
+			return (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
+				|| this.monthlyDonationAmount?.length;
+		},
 		askForComments() {
 			// comments ask should be displayed for logged in users checking out with a PFP loan.
 			return this.hasPfpLoan && !this.isGuest;
@@ -246,6 +246,8 @@ export default {
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
+		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
+
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
@@ -273,7 +275,6 @@ export default {
 		// But it will not throw a server error.
 		this.receipt = data?.shop?.receipt ?? null;
 		this.isGuest = this.receipt && !data?.my?.userAccount;
-		this.isOnlyDonation = this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal;
 
 		const loansResponse = this.receipt?.items?.values ?? [];
 		this.loans = loansResponse

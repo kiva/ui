@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<generic-promo-banner
-			v-show="isBannerEnabled"
+			v-show="monthlyDonationAmount"
 			:promo-banner-content="promoBannerContent"
 		/>
 		<div class="row page-content">
@@ -19,7 +19,7 @@
 							class="tw-aspect-video tw-mx-auto tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
 							width="560"
 							height="315"
-							:src="`https://www.youtube.com/embed/Mpp2ZH7os4Q?rel=0`"
+							:src="`https://www.youtube.com/embed/${youtubeId}?rel=0`"
 							title="YouTube video player"
 							frameborder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share"
@@ -53,7 +53,7 @@
 									class="social__btn social__btn--facebook"
 									:href="facebookShareUrl({utmCampaign, utmContent})"
 									v-kv-track-event="
-										['post-checkout', 'share', 'facebook', utmCampaign, 'home']"
+										['post-checkout', 'share', 'facebook', utmCampaign]"
 								>
 									<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 									<span>Share on Facebook</span>
@@ -64,7 +64,7 @@
 									:class="copyStatus.class"
 									:disabled="copyStatus.disabled"
 									v-kv-track-event="
-										['post-checkout', 'share', 'copy-link', utmCampaign, 'home']"
+										['post-checkout', 'share', 'copy-link', utmCampaign]"
 									@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 								>
 									<kv-material-icon
@@ -81,7 +81,7 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="
-										['post-checkout', 'share', 'twitter', utmCampaign, 'home']"
+										['post-checkout', 'share', 'twitter', utmCampaign]"
 									@click="$showTipMsg('Thanks for tweeting!')"
 								>
 									<kv-icon name="twitter" title="Twitter" class="social__icon" />
@@ -94,7 +94,7 @@
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="
-										['post-checkout', 'share', 'linkedin', utmCampaign, 'home']"
+										['post-checkout', 'share', 'linkedin', utmCampaign]"
 									@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 								>
 									<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
@@ -104,17 +104,8 @@
 						</div>
 						<div class="large-2"></div>
 					</div>
-					<div class="continue-link">
-						<button
-							class="tw-text-action tw-underline"
-							@click="emitGuestCreateAccount"
-							v-if="isGuest"
-							v-kv-track-event="['Thanks','click-create-account','Create my account']"
-						>
-							Create my account
-						</button>
+					<div v-if="!isGuest" class="continue-link">
 						<router-link
-							v-else
 							to="/portfolio"
 							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 						>
@@ -133,53 +124,59 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
+const userQuery = gql`query userQuery {
+	my {
+		id
+		userAccount {
+			id
+			firstName
+			inviterName
+			public
+		}
+	}
+}`;
 
 export default {
 	name: 'ThanksPageDonationOnly',
+	inject: ['apollo'],
 	components: {
 		KvIcon,
 		KvMaterialIcon,
 		GenericPromoBanner,
 	},
 	props: {
-		name: {
+		shareAskCopyVersion: {
+			type: String,
+			default: 'a'
+		},
+		monthlyDonationAmount: {
 			type: String,
 			default: ''
-		},
-		isGuest: {
-			type: Boolean,
-			default: false
-		},
-		isBannerEnabled: {
-			type: Boolean,
-			default: false
-		},
-		receipt: {
-			type: Object,
-			default: () => {}
 		}
 	},
 	mixins: [socialSharingMixin],
 	data() {
 		return {
+			name: '',
 			mdiLink,
 			copyStatus: {
 				class: '',
 				disabled: false,
 				text: 'Copy Link'
 			},
+			youtubeId: 'Mpp2ZH7os4Q',
+			isGuest: false
 		};
 	},
 	computed: {
-		donationAmount() {
-			return this.receipt?.totals?.donationTotal ?? 0;
-		},
 		promoBannerContent() {
 			return {
 				link: 'https://www.kiva.org/settings/subscriptions',
 				// eslint-disable-next-line max-len
-				richText: `<p>Thanks! Every month you’ll get an email confirming your $${this.donationAmount} donation.View your <u>subscription settings</u> to review, make changes, or cancel</p>`,
+				richText: `<p>Thanks! Every month you’ll get an email confirming your $${this.monthlyDonationAmount} donation.View your <u>subscription settings</u> to review, make changes, or cancel</p>`,
 				iconKey: ''
 			};
 		},
@@ -207,9 +204,17 @@ export default {
 		},
 	},
 	methods: {
-		emitGuestCreateAccount() {
-			this.$emit('guest-create-account');
-		},
+		gatherCurrentUserData() {
+			this.apollo.query({
+				query: userQuery,
+			}).then(({ data }) => {
+				this.isGuest = !data?.my?.userAccount;
+				this.name = data?.my?.userAccount?.public ? data?.my?.userAccount?.firstName : '';
+			});
+		}
+	},
+	created() {
+		this.gatherCurrentUserData();
 	}
 };
 </script>
