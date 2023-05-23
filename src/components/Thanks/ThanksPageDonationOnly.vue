@@ -133,7 +133,6 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
@@ -142,7 +141,6 @@ export default {
 		KvIcon,
 		KvMaterialIcon,
 		GenericPromoBanner,
-		SocialShareV2
 	},
 	props: {
 		name: {
