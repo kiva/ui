@@ -104,7 +104,7 @@
 						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
 							<button
 								data-testid="share-facebook-button"
-								class="social__btn social__btn--facebook tw-w-full"
+								class="social__btn social__btn--facebook"
 								@click="showSharePopUp(
 									facebookShareUrl({utmCampaign, utmContent}),
 									'Thanks for sharing to Facebook!')"
@@ -117,7 +117,7 @@
 							<button
 								data-testid="share-copy-link-button"
 								class="social__btn social__btn--link
-								tw-text-link tw-border-tertiary tw-border tw-w-full"
+									tw-border-action tw-border"
 								:class="copyStatus.class"
 								:disabled="copyStatus.disabled"
 								v-kv-track-event="
@@ -133,7 +133,7 @@
 							</button>
 							<button
 								data-testid="share-twitter-button"
-								class="social__btn social__btn--twitter tw-w-full"
+								class="social__btn social__btn--twitter"
 								v-kv-track-event="
 									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
 								@click="showSharePopUp(
@@ -145,7 +145,7 @@
 							</button>
 							<button
 								data-testid="share-linkedin-button"
-								class="social__btn social__btn--linkedin tw-w-full"
+								class="social__btn social__btn--linkedin"
 								v-kv-track-event="
 									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
 								@click="showSharePopUp(
@@ -159,7 +159,7 @@
 						<div class="tw-text-center tw-mt-2">
 							<button
 								class="tw-block tw-mx-auto tw-text-action
-								tw-underline hover:tw-text-action-highlight "
+								tw-underline hover:tw-text-action-highlight"
 								@click="emitGuestCreateAccount"
 								v-if="isGuest"
 								v-kv-track-event="['Thanks','click-create-account','Create my account']"
@@ -336,6 +336,16 @@ export default {
 
 </script>
 
+<style lang="postcss" scoped>
+.social__btn {
+	@apply tw-w-full tw-rounded tw-flex tw-items-center tw-justify-center tw-mb-2 tw-p-1.5 tw-font-medium;
+}
+
+.social__icon {
+	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
+}
+</style>
+
 <style lang="scss" scoped>
 @import 'settings';
 @import "foundation";
@@ -344,50 +354,18 @@ $color-facebook: #3b5998;
 $color-twitter: #08a0e9;
 $color-linkedin: #0077b5;
 $color-copy-link: #2B7C5F;
-$color-text: #212121;
 
 .social {
-	&__icon {
-		width: rem-calc(24);
-		height: rem-calc(24);
-		flex-shrink: 0;
-		margin-right: rem-calc(9);
-		fill: #fff;
-	}
-
 	&__btn {
-		align-items: center;
-		margin: 0 0 1rem 0;
-		padding: 1rem rem-calc(9) 1rem 1rem;
-		font-weight: $button-font-weight;
-		line-height: 1;
-		flex-shrink: 0;
+		&--facebook {
+			@include button-style($color-facebook, auto, #fff);
 
-		&:nth-child(2n) {
-			margin-right: 0;
-		}
-
-		@include breakpoint(large) {
-			width: 100%;
-			margin-right: 0;
-
-			&:last-child {
-				margin-bottom: 0;
+			.social__icon {
+				fill: #fff;
 			}
 		}
 
-		&--facebook {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			@include button-style($color-facebook, auto, #fff);
-		}
-
 		&--twitter {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-twitter;
 
 			.social__icon {
@@ -396,10 +374,6 @@ $color-text: #212121;
 		}
 
 		&--linkedin {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-linkedin;
 
 			.social__icon {
@@ -408,50 +382,8 @@ $color-text: #212121;
 		}
 
 		&--link {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
-			border: 1px solid $color-copy-link;
-			width: 100%;
-			transition:
-				background-color 0.25s ease-in,
-				border-color 0.25s ease-in,
-				color 0.25s ease-in;
-
 			.social__icon {
 				color: $color-copy-link;
-				transition: fill 0.25s ease-in;
-			}
-		}
-
-		&--success {
-			background-color: rgb(var(--bg-brand));
-			border-color: rgb(var(--bg-brand));
-		}
-
-		&--error {
-			background-color: rgb(var(--bg-danger));
-			border-color: rgb(var(--bg-danger));
-		}
-
-		&--success,
-		&--error {
-			color: #fff;
-			cursor: default;
-			transition:
-				background-color 0.25s ease-out,
-				border-color 0.25s ease-out,
-				color 0.25s ease-out;
-
-			&:hover {
-				color: #fff;
-				text-decoration: none;
-			}
-
-			.social__icon {
-				transition: fill 0.25s ease-out;
-				fill: #fff;
 			}
 		}
 	}

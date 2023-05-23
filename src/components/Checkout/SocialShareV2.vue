@@ -477,36 +477,6 @@ $loan-triangle-size: rem-calc(12);
 				transition: fill 0.25s ease-in;
 			}
 		}
-
-		&--success {
-			background-color: rgb(var(--bg-brand));
-			border-color: rgb(var(--bg-brand));
-		}
-
-		&--error {
-			background-color: rgb(var(--bg-danger));
-			border-color: rgb(var(--bg-danger));
-		}
-
-		&--success,
-		&--error {
-			color: #fff;
-			cursor: default;
-			transition:
-				background-color 0.25s ease-out,
-				border-color 0.25s ease-out,
-				color 0.25s ease-out;
-
-			&:hover {
-				color: #fff;
-				text-decoration: none;
-			}
-
-			.social__icon {
-				transition: fill 0.25s ease-out;
-				fill: #fff;
-			}
-		}
 	}
 }
 
