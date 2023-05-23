@@ -30,10 +30,16 @@
 						How a Kiva loan helped Manal grow her business in Palestine
 					</p>
 					<p class="tw-mb-2">
-						As an entrepreneur, Manal faces the usual challenges - finding customers, stocking up on materials, and keeping up with the competition. But as a woman, Manal has also had to shut down those in her community that disapprove of her running a business.<br><br>
-						When she opened her own sewing workshop five years ago in a village just south of Jenin, Palestine, Manal was met with some tart criticism about her work.<br><br>
-						“It was the competitiveness, which was expected,” recalls the 49 year-old mother of seven. “Belittling my business, most people would say ‘how is your business even supposed to succeed across this town?”<br><br>
-						With the help of a Kiva loan, Manal has not only succeeded but expanded—showing the naysayers that she has a firm handle on her ventures and her livelihood.
+						As an entrepreneur, Manal faces the usual challenges - finding customers, stocking up on
+						materials, and keeping up with the competition. But as a woman, Manal has also had to shut
+						down those in her community that disapprove of her running a business.<br><br>
+						When she opened her own sewing workshop five years ago in a village just south of Jenin,
+						Palestine, Manal was met with some tart criticism about her work.<br><br>
+						“It was the competitiveness, which was expected,” recalls the 49 year-old mother of seven.
+						“Belittling my business, most people would say ‘how is your business even supposed to succeed
+						across this town?”<br><br>
+						With the help of a Kiva loan, Manal has not only succeeded but expanded—showing the naysayers
+						that she has a firm handle on her ventures and her livelihood.
 					</p>
 					<h3	class="tw-mt-1 tw-mb-3 tw-text-left">
 						Share this story and your impact
