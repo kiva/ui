@@ -1,3 +1,10 @@
+### [2.602.3](https://github.com/kiva/ui/compare/v2.602.2...v2.602.3) (2023-05-23)
+
+
+### Bug Fixes
+
+* add contentful based dynamic background colors to tailwind purge safelist ([9bd2582](https://github.com/kiva/ui/commit/9bd25828e34ec1ba822c77a472d5d3b5022a676a))
+
 ### [2.602.2](https://github.com/kiva/ui/compare/v2.602.1...v2.602.2) (2023-05-23)
 
 
