@@ -1,11 +1,7 @@
 <template>
 	<div>
-		<generic-promo-banner
-			v-show="monthlyDonationAmount"
-			:promo-banner-content="promoBannerContent"
-		/>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12">
+			<kv-grid class="tw-grid-cols-12 tw-my-10">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
@@ -175,14 +171,6 @@ export default {
 		};
 	},
 	computed: {
-		promoBannerContent() {
-			return {
-				link: `https://${this.$appConfig.host}/settings/subscriptions`,
-				// eslint-disable-next-line max-len
-				richText: `<p>Thanks! Every month you’ll get an email confirming your $${this.monthlyDonationAmount} donation.View your <u>subscription settings</u> to review, make changes, or cancel</p>`,
-				iconKey: ''
-			};
-		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
@@ -217,6 +205,9 @@ export default {
 		}
 	},
 	created() {
+		// eslint-disable-next-line max-len
+		const msg = `Thanks! Every month you'll get an email confirming your $${this.monthlyDonationAmount} donation. View your <a target="_blank" href="/settings/subscriptions">subscription settings</a> to review, make changes, or cancel.`;
+		this.$showTipMsg(msg, 'confirmation', true);
 		this.gatherCurrentUserData();
 	}
 };
