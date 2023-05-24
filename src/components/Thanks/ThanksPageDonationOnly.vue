@@ -4,10 +4,9 @@
 			v-show="monthlyDonationAmount"
 			:promo-banner-content="promoBannerContent"
 		/>
-		<div class="row page-content">
-			<div class="large-2"></div>
-			<div class="small-12 large-8 columns thanks">
-				<div class="hide-for-print">
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
@@ -44,77 +43,77 @@
 					<h3	class="tw-mt-1 tw-mb-3 tw-text-left">
 						Share this story and your impact
 					</h3>
-					<div class="row tw-mt-3">
-						<div class="large-2"></div>
-						<div class="small-12 large-8 columns">
-							<div class="share__social social">
-								<a
-									data-testid="share-facebook-button"
-									class="social__btn social__btn--facebook"
-									:href="facebookShareUrl({utmCampaign, utmContent})"
-									v-kv-track-event="
-										['post-checkout', 'share', 'facebook', utmCampaign]"
-								>
-									<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-									<span>Share on Facebook</span>
-								</a>
-								<button
-									data-testid="share-copy-link-button"
-									class="social__btn social__btn--link tw-text-link tw-border-tertiary tw-border"
-									:class="copyStatus.class"
-									:disabled="copyStatus.disabled"
-									v-kv-track-event="
-										['post-checkout', 'share', 'copy-link', utmCampaign]"
-									@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
-								>
-									<kv-material-icon
-										name="clipboard"
-										class="social__icon"
-										:icon="mdiLink"
-									/>
-									<span>{{ copyStatus.text }}</span>
-								</button>
-								<a
-									data-testid="share-twitter-button"
-									class="social__btn social__btn--twitter"
-									:href="twitterShareUrl({utmCampaign, utmContent})"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="
-										['post-checkout', 'share', 'twitter', utmCampaign]"
-									@click="$showTipMsg('Thanks for tweeting!')"
-								>
-									<kv-icon name="twitter" title="Twitter" class="social__icon" />
-									<span>Tweet your followers</span>
-								</a>
-								<a
-									data-testid="share-linkedin-button"
-									class="social__btn social__btn--linkedin"
-									:href="linkedInShareUrl({utmCampaign, utmContent})"
-									target="_blank"
-									rel="noopener"
-									v-kv-track-event="
-										['post-checkout', 'share', 'linkedin', utmCampaign]"
-									@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
-								>
-									<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-									<span>Share on LinkedIn</span>
-								</a>
-							</div>
+					<template>
+						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
+							<button
+								data-testid="share-facebook-button"
+								class="social__btn social__btn--facebook"
+								@click="showSharePopUp(
+									facebookShareUrl({utmCampaign, utmContent}),
+									'Thanks for sharing to Facebook!')"
+								v-kv-track-event="
+									['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
+							>
+								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+								<span>Share on Facebook</span>
+							</button>
+							<button
+								data-testid="share-copy-link-button"
+								class="social__btn social__btn--link
+										tw-border-action tw-border"
+								:class="copyStatus.class"
+								:disabled="copyStatus.disabled"
+								v-kv-track-event="
+									['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
+								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
+							>
+								<kv-material-icon
+									name="clipboard"
+									class="social__icon"
+									:icon="mdiLink"
+								/>
+								<span>{{ copyStatus.text }}</span>
+							</button>
+							<button
+								data-testid="share-twitter-button"
+								class="social__btn social__btn--twitter"
+								v-kv-track-event="
+									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
+								@click="showSharePopUp(
+									twitterShareUrl({utmCampaign, utmContent}),
+									'Thanks for tweeting!')"
+							>
+								<kv-icon name="twitter" title="Twitter" class="social__icon" />
+								<span>Tweet your followers</span>
+							</button>
+							<button
+								data-testid="share-linkedin-button"
+								class="social__btn social__btn--linkedin"
+								v-kv-track-event="
+									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
+								@click="showSharePopUp(
+									linkedInShareUrl({utmCampaign, utmContent}),
+									'Thanks for sharing to LinkedIn!')"
+							>
+								<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+								<span>Share on LinkedIn</span>
+							</button>
 						</div>
-						<div class="large-2"></div>
-					</div>
-					<div v-if="!isGuest" class="continue-link">
-						<router-link
-							to="/portfolio"
-							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
-						>
-							No, continue to my portfolio
-						</router-link>
-					</div>
+						<div class="tw-text-center tw-mt-2">
+							<router-link
+								class="tw-block tw-mx-auto tw-text-action
+									tw-underline hover:tw-text-action-highlight"
+								v-if="!isGuest"
+								to="/portfolio"
+								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
+							>
+								No, continue to my portfolio
+							</router-link>
+						</div>
+					</template>
 				</div>
-			</div>
-		</div>
+			</kv-grid>
+		</kv-page-container>
 	</div>
 </template>
 
@@ -126,6 +125,8 @@ import { getFullUrl } from '@/util/urlUtils';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 const userQuery = gql`query userQuery {
 	my {
@@ -146,6 +147,8 @@ export default {
 		KvIcon,
 		KvMaterialIcon,
 		GenericPromoBanner,
+		KvPageContainer,
+		KvGrid
 	},
 	props: {
 		shareAskCopyVersion: {
@@ -174,7 +177,7 @@ export default {
 	computed: {
 		promoBannerContent() {
 			return {
-				link: 'https://www.kiva.org/settings/subscriptions',
+				link: `https://${this.$appConfig.host}/settings/subscriptions`,
 				// eslint-disable-next-line max-len
 				richText: `<p>Thanks! Every month you’ll get an email confirming your $${this.monthlyDonationAmount} donation.View your <u>subscription settings</u> to review, make changes, or cancel</p>`,
 				iconKey: ''
@@ -219,96 +222,36 @@ export default {
 };
 </script>
 
+<style lang="postcss" scoped>
+.social__btn {
+	@apply tw-w-full tw-rounded tw-flex tw-items-center tw-justify-center tw-mb-2 tw-p-1.5 tw-font-medium;
+}
+
+.social__icon {
+	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
+}
+</style>
+
 <style lang="scss" scoped>
 @import 'settings';
 @import "foundation";
 
-$color-facebook: #1877F2;
-$color-twitter: #1D9BF0;
-$color-linkedin: #0A66C2;
+$color-facebook: #3b5998;
+$color-twitter: #08a0e9;
+$color-linkedin: #0077b5;
 $color-copy-link: #2B7C5F;
-$color-text: #212121;
-
-.page-content {
-	padding: 1.625rem 0 0 0;
-
-	@media print {
-		padding: 0;
-	}
-
-	&:last-child {
-		padding-bottom: 5rem;
-	}
-}
-
-.thanks {
-	&__social-share {
-		margin-bottom: 0.5rem;
-	}
-}
-
-.share {
-	width: 100%;
-	max-width: rem-calc(600);
-	margin: 0 auto;
-
-	&__social {
-		@include breakpoint(large) {
-			width: rem-calc(135);
-		}
-	}
-}
 
 .social {
-	width: 100%;
-	flex-wrap: wrap;
-	flex-shrink: 0;
-
-	@include breakpoint(large) {
-		flex-direction: column;
-	}
-
-	&__icon {
-		width: rem-calc(24);
-		height: rem-calc(24);
-		flex-shrink: 0;
-		margin-right: rem-calc(9);
-		fill: #fff;
-	}
-
 	&__btn {
-		align-items: center;
-		margin: 0 0 1rem 0;
-		padding: 1rem rem-calc(9) 1rem 1rem;
-		font-weight: $button-font-weight;
-		line-height: 1;
-		flex-shrink: 0;
+		&--facebook {
+			@include button-style($color-facebook, auto, #fff);
 
-		&:nth-child(2n) {
-			margin-right: 0;
-		}
-
-		@include breakpoint(large) {
-			width: 100%;
-			margin-right: 0;
-
-			&:last-child {
-				margin-bottom: 0;
+			.social__icon {
+				fill: #fff;
 			}
 		}
 
-		&--facebook {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			@include button-style($color-facebook, auto, #fff);
-		}
-
 		&--twitter {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-twitter;
 
 			.social__icon {
@@ -317,10 +260,6 @@ $color-text: #212121;
 		}
 
 		&--linkedin {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
 			border: 1px solid $color-linkedin;
 
 			.social__icon {
@@ -329,59 +268,10 @@ $color-text: #212121;
 		}
 
 		&--link {
-			display: flex;
-			justify-content: center;
-			border-radius: 15px;
-			color: $color-text;
-			border: 1px solid $color-copy-link;
-			width: 100%;
-			transition:
-				background-color 0.25s ease-in,
-				border-color 0.25s ease-in,
-				color 0.25s ease-in;
-
 			.social__icon {
 				color: $color-copy-link;
-				transition: fill 0.25s ease-in;
-			}
-		}
-
-		&--success {
-			background-color: rgb(var(--bg-brand));
-			border-color: rgb(var(--bg-brand));
-		}
-
-		&--error {
-			background-color: rgb(var(--bg-danger));
-			border-color: rgb(var(--bg-danger));
-		}
-
-		&--success,
-		&--error {
-			color: #fff;
-			cursor: default;
-			transition:
-				background-color 0.25s ease-out,
-				border-color 0.25s ease-out,
-				color 0.25s ease-out;
-
-			&:hover {
-				color: #fff;
-				text-decoration: none;
-			}
-
-			.social__icon {
-				transition: fill 0.25s ease-out;
-				fill: #fff;
 			}
 		}
 	}
-}
-
-.continue-link {
-	margin-top: 25px;
-	text-align: center;
-	text-decoration: underline;
-	text-underline-offset: 3px;
 }
 </style>
