@@ -118,7 +118,6 @@ import { mdiLink } from '@mdi/js';
 import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
-import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
