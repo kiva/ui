@@ -141,7 +141,6 @@ export default {
 	components: {
 		KvIcon,
 		KvMaterialIcon,
-		GenericPromoBanner,
 		KvPageContainer,
 		KvGrid
 	},
