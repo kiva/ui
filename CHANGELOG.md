@@ -1,3 +1,24 @@
+### [2.602.4](https://github.com/kiva/ui/compare/v2.602.3...v2.602.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* add success/error classes back ([3575537](https://github.com/kiva/ui/commit/3575537398e7642e4baecd399dcef5bbe7c4d221))
+
+### [2.602.3](https://github.com/kiva/ui/compare/v2.602.2...v2.602.3) (2023-05-23)
+
+
+### Bug Fixes
+
+* add contentful based dynamic background colors to tailwind purge safelist ([9bd2582](https://github.com/kiva/ui/commit/9bd25828e34ec1ba822c77a472d5d3b5022a676a))
+
+### [2.602.2](https://github.com/kiva/ui/compare/v2.602.1...v2.602.2) (2023-05-23)
+
+
+### Bug Fixes
+
+* zindex fix for qf ([ff84184](https://github.com/kiva/ui/commit/ff841841ff030e2c1ce47f9ada775b954dd7aa52))
+
 ### [2.602.1](https://github.com/kiva/ui/compare/v2.602.0...v2.602.1) (2023-05-19)
 
 

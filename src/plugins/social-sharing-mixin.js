@@ -107,7 +107,7 @@ export default {
 				await clipboardCopy(`${this.shareMessage} ${url}`);
 				if (this.copyStatus) {
 					this.copyStatus = {
-						class: 'social__btn--success',
+						class: 'tw-transition-colors tw-border-action-highlight tw-text-action-highlight',
 						disabled: true,
 						text: 'Copied!'
 					};
@@ -115,7 +115,7 @@ export default {
 			} catch (err) {
 				if (this.copyStatus) {
 					this.copyStatus = {
-						class: 'social__btn--error',
+						class: 'tw-transition-colors tw-border-danger-highlight tw-text-danger-highlight',
 						disabled: true,
 						text: 'Error'
 					};
