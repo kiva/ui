@@ -5,6 +5,7 @@ import logFormatter from '@/util/logFormatter';
 import basketCountQuery from '@/graphql/query/basketCount.graphql';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import basketLoansInfoQuery from '@/graphql/query/basketLoansInfo.graphql';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
@@ -75,13 +76,33 @@ export function setLendAmount({ amount, apollo, loanId }) {
 	});
 }
 
-export function setDonationAmount() {
-	// TODO
+export function setDonationAmount({ apollo, donationAmount }) {
+	const formatteDonationAmount = numeral(donationAmount).format('0.00');
+	return apollo.mutate({
+		mutation: updateDonation,
+		variables: {
+			price: formatteDonationAmount,
+			isTip: true
+		}
+	}).then(data => {
+		if (data?.errors) {
+			data?.errors.forEach(error => {
+				logFormatter(error, 'error');
+			});
+		}
+	}).catch(error => {
+		logFormatter(error, 'error');
+	});
 }
 
 export function handleInvalidBasket({ loan, cookieStore }) {
 	cookieStore.remove('kvbskt', { path: '/', secure: true });
 	cookieStore.set('kvatbid', JSON.stringify(loan));
+	window.location.reload();
+}
+export function handleInvalidBasketForDonation({ cookieStore, donationAmount, navigateToCheckout = false }) {
+	cookieStore.remove('kvbskt', { path: '/', secure: true });
+	cookieStore.set('kvatbamt', { donationAmount: JSON.stringify(donationAmount), navigateToCheckout });
 	window.location.reload();
 }
 
