@@ -57,7 +57,7 @@
 		<div
 			class="in-context-login"
 			:class="{ 'tw-text-right' : !isCorporateCampaign }"
-			v-if="!isActivelyLoggedIn"
+			v-if="!isActivelyLoggedIn && !promoGuestCheckoutEnabled"
 		>
 			<kv-button
 				v-if="!isActivelyLoggedIn"
@@ -71,19 +71,35 @@
 		</div>
 		<div class="in-context-payment-conttrols" v-else>
 			<kiva-credit-payment
-				v-if="showKivaCreditButton"
+				v-if="showKivaCreditButton && !promoGuestCheckoutEnabled"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refreshtotals')"
+				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
+			/>
+			<kiva-credit-guest-payment
+				v-if="showKivaCreditButton && promoGuestCheckoutEnabled"
+				:is-guest-checkout="true"
+				@complete-transaction="completeTransaction"
+				class="checkout-button"
+				id="kiva-credit-payment-button"
+				:promo-fund-id="String(promoFundId)"
+				:managed-account-id="managedAccountId"
+				@refreshtotals="$emit('refresh-totals')"
+				@updating-totals="setUpdatingTotals"
+				@checkout-failure="handleCheckoutFailure"
+				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 			/>
 
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
+				:is-guest-checkout="promoGuestCheckoutEnabled"
+				:promo-fund-id="String(promoFundId)"
+				:managed-account-id="managedAccountId"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -177,7 +193,11 @@ export default {
 		customCheckoutButtonText: {
 			type: String,
 			default: 'Continue'
-		}
+		},
+		promoGuestCheckoutEnabled:	{
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
