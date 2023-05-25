@@ -1,3 +1,10 @@
+### [2.603.1](https://github.com/kiva/ui/compare/v2.603.0...v2.603.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* summary card spacing ([7373d78](https://github.com/kiva/ui/commit/7373d786cdd29eb49f16bdf70628030cd90a7f6b))
+
 ## [2.603.0](https://github.com/kiva/ui/compare/v2.602.4...v2.603.0) (2023-05-25)
 
 
