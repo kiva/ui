@@ -43,6 +43,7 @@
 				</template>
 				<template v-else>
 					<a
+						v-if="totalComments > 0"
 						href="#bp-comments-jump-link"
 						class="tw-text-black hover:tw-text-white comments-tag-wrapper tw-inline-block"
 						v-kv-track-event="[
@@ -52,7 +53,7 @@
 							'comments-pill'
 						]"
 					>
-						<summary-tag v-if="totalComments > 0" class="comments-tag">
+						<summary-tag class="comments-tag">
 							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
 							<span class="tw-flex-1">
 								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
