@@ -77,11 +77,11 @@ export function setLendAmount({ amount, apollo, loanId }) {
 }
 
 export function setDonationAmount({ apollo, donationAmount }) {
-	const formatteDonationAmount = numeral(donationAmount).format('0.00');
+	const formattedDonationAmount = numeral(donationAmount).format('0.00');
 	return apollo.mutate({
 		mutation: updateDonation,
 		variables: {
-			price: formatteDonationAmount,
+			price: formattedDonationAmount,
 			isTip: true
 		}
 	}).then(data => {
