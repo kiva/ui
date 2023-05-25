@@ -16,7 +16,8 @@
 								<textarea
 									class="tw-w-full tw-border tw-border-secondary tw-rounded tw-h-7 tw-p-2"
 									style="height: 10rem;"
-									v-model="defaultComment"
+									v-model="userComment"
+									:placeholder="placeholderComment"
 								>
 									</textarea>
 								<kv-material-icon
@@ -135,14 +136,16 @@ export default {
 			showComments: true,
 			loading: false,
 			showLightbox: false,
+			userComment: '',
 		};
 	},
 	computed: {
-		defaultComment() {
-			return `This loan not only helps ${this.loanName}, but helps their community as well!`;
+		placeholderComment() {
+			return `Tell others why this loan to ${this.loanName} is great!`;
 		},
 		buttonState() {
 			if (this.loading) return 'loading';
+			if (!this.userComment) return 'disabled';
 			return '';
 		},
 	},
@@ -157,11 +160,15 @@ export default {
 				}`,
 				variables: {
 					id: this.loanId,
-					body: this.defaultComment
+					body: this.userComment
 				}
-			}).then(() => {
-				this.$showTipMsg(`Thank you for helping ${this.loanName}!`);
-				this.showComments = false;
+			}).then(({ data }) => {
+				// comment was added successfully
+				if (data.loan.addComment) {
+					this.$showTipMsg(`Thank you for helping ${this.loanName}!`);
+					this.showComments = false;
+				}
+				throw new Error('Comment not added');
 			}).catch(e => {
 				logFormatter(e, 'error');
 				this.$showTipMsg('There was a problem commenting on this loan', 'error');
