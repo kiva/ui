@@ -911,6 +911,7 @@ export default {
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		verificationRequired() {
+			debugger;
 			if (this.promoData?.managedAccount?.isEmployee
 				&& this.promoData?.managedAccount?.formId
 				// If promo guest checkout is enabled, we don't need formassembly verification
@@ -1257,10 +1258,6 @@ export default {
 			if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
 				console.log(simpleCheckoutRestrictedMessage);
 				// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
-			}
-
-			if (this.$route.hash === '#show-basket') {
-				this.checkoutVisible = true;
 			}
 
 			this.validateBasket()

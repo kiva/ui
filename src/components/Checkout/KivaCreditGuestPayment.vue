@@ -158,7 +158,7 @@ export default {
 				});
 		},
 		checkoutCreditBasket() {
-			this.checkoutBasket(promoGuestCheckoutEnabled)
+			this.checkoutBasket(this.promoGuestCheckoutEnabled)
 				.then(transactionResult => {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation

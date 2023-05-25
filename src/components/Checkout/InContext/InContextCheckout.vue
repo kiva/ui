@@ -120,6 +120,7 @@ import { isCCPage } from '@/util/urlUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
+import KivaCreditGuestPayment from '@/components/Checkout/KivaCreditGuestPayment';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -134,6 +135,7 @@ export default {
 		CheckoutDropInPaymentWrapper,
 		KvButton,
 		KivaCreditPayment,
+		KivaCreditGuestPayment,
 		KvLoadingOverlay,
 		OrderTotals,
 		KvIcon
@@ -193,6 +195,14 @@ export default {
 		customCheckoutButtonText: {
 			type: String,
 			default: 'Continue'
+		},
+		promoFundId: {
+			type: String,
+			default: ''
+		},
+		managedAccountId: {
+			type: String,
+			default: ''
 		},
 		promoGuestCheckoutEnabled:	{
 			type: Boolean,

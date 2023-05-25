@@ -137,6 +137,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		promoGuestCheckoutEnabled: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -181,7 +185,7 @@ export default {
 			// If promo guest checkout is enabled, use the promo guest checkout validation method.
 			// This method validates the lender email for promo first before running the guest checkout method
 			// in checkout utils.
-			if (promoGuestCheckoutEnabled) {
+			if (this.promoGuestCheckoutEnabled) {
 				validationMethod = this.validateGuestPromoBasket;
 				validationPayload.promoFundId = this.promoFundId;
 				validationPayload.managedAccountId = this.managedAccountId;
