@@ -29,7 +29,7 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="promoGuestCheckoutEnabled && validateCampaignEmail && $v.email.error">
+				<p v-if="isGuestCheckout && validateCampaignEmail && $v.email.error">
 					Valid campaign email required
 				</p>
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
@@ -136,10 +136,6 @@ export default {
 		isGuestCheckout: {
 			type: Boolean,
 			default: false,
-		},
-		promoGuestCheckoutEnabled: {
-			type: Boolean,
-			default: false,
 		}
 	},
 	data() {
@@ -185,7 +181,7 @@ export default {
 			// If promo guest checkout is enabled, use the promo guest checkout validation method.
 			// This method validates the lender email for promo first before running the guest checkout method
 			// in checkout utils.
-			if (this.promoGuestCheckoutEnabled) {
+			if (this.isGuestCheckout) {
 				validationMethod = this.validateGuestPromoBasket;
 				validationPayload.promoFundId = this.promoFundId;
 				validationPayload.managedAccountId = this.managedAccountId;
