@@ -13,8 +13,9 @@ export default {
 		const failedDonation = this.cookieStore.get('kvatbamt');
 
 		// Handle Failed Donation add to basket
-		if (failedDonation?.donationAmount) {
-			const donationAmount = JSON.parse(failedDonation?.donationAmount);
+		if (failedDonation) {
+			const failedDonationData = JSON.parse(failedDonation);
+			const donationAmount = failedDonationData?.donationAmount;
 
 			this.$kvTrackEvent(
 				'donation',
@@ -25,10 +26,10 @@ export default {
 			);
 			setDonationAmount({
 				apollo: this.apollo,
-				amount: donationAmount,
+				donationAmount,
 			}).then(() => {
 				this.$showTipMsg('Your donation has been added to the basket.');
-				if (failedDonation?.navigateToCheckout) {
+				if (failedDonationData?.navigateToCheckout) {
 					this.$router.push({
 						path: '/checkout',
 					});

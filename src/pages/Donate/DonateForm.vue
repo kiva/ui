@@ -190,15 +190,23 @@ export default {
 					isTip: true
 				}
 			}).then(data => {
-				console.log('donate submit response:', data);
-				let hasFailedAddToBasket = false;
 				if (data?.errors) {
+					let hasFailedAddToBasket = false;
+
 					data?.errors.forEach(error => {
 						this.$showTipMsg(error?.message, 'error');
 						if (hasBasketExpired(error?.extensions?.code)) {
 							hasFailedAddToBasket = true;
 						}
 					});
+
+					if (hasFailedAddToBasket) {
+						handleInvalidBasketForDonation({
+							cookieStore: this.cookieStore,
+							donationAmount,
+							navigateToCheckout: true
+						});
+					}
 				} else {
 					this.$kvTrackEvent(
 						'donation',
@@ -210,13 +218,6 @@ export default {
 					);
 					this.$router.push({
 						path: '/checkout',
-					});
-				}
-				if (hasFailedAddToBasket) {
-					return handleInvalidBasketForDonation({
-						cookieStore: this.cookieStore,
-						donationAmount,
-						navigateToCheckout: true
 					});
 				}
 			});

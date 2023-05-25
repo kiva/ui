@@ -90,6 +90,7 @@ export function setDonationAmount({ apollo, donationAmount }) {
 				logFormatter(error, 'error');
 			});
 		}
+		return data;
 	}).catch(error => {
 		logFormatter(error, 'error');
 	});
@@ -102,7 +103,7 @@ export function handleInvalidBasket({ loan, cookieStore }) {
 }
 export function handleInvalidBasketForDonation({ cookieStore, donationAmount, navigateToCheckout = false }) {
 	cookieStore.remove('kvbskt', { path: '/', secure: true });
-	cookieStore.set('kvatbamt', { donationAmount: JSON.stringify(donationAmount), navigateToCheckout });
+	cookieStore.set('kvatbamt', JSON.stringify({ donationAmount, navigateToCheckout }));
 	window.location.reload();
 }
 
