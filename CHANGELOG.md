@@ -1,3 +1,21 @@
+## [2.606.0](https://github.com/kiva/ui/compare/v2.605.0...v2.606.0) (2023-05-30)
+
+
+### Features
+
+* only donation thanks page ([d975367](https://github.com/kiva/ui/commit/d975367d4280432beab81e7af329afeae2e8dc9e))
+* use param to show banner ([b8a07e4](https://github.com/kiva/ui/commit/b8a07e45ff16a58a90301ee9703f45cfbe37a18c))
+
+
+### Bug Fixes
+
+* eslint max-length ([3b5623c](https://github.com/kiva/ui/commit/3b5623c601aeb5e38d55c18242be00ac960146b9))
+* remove component registration ([09cbeb3](https://github.com/kiva/ui/commit/09cbeb34f04b3d923a7450cb4ee8496544401639))
+* remove unused component ([90efb7e](https://github.com/kiva/ui/commit/90efb7e346099f9eab158d977b27e02ba5c23c86))
+* share msg and unused loanId ([bd609ea](https://github.com/kiva/ui/commit/bd609ea3bcfe57d9cb9d7cf847cfd531b320bbcc))
+* thanks message test id and social colors ([c6f9838](https://github.com/kiva/ui/commit/c6f9838827fe8d8b90650f9aa6adad7e72200ac2))
+* unused component ([944ae17](https://github.com/kiva/ui/commit/944ae1796fba479434998c6410aa30212fadd8e2))
+
 ## [2.605.0](https://github.com/kiva/ui/compare/v2.604.0...v2.605.0) (2023-05-30)
 
 
