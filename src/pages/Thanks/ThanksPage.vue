@@ -1,91 +1,99 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
-			<div class="small-12 columns thanks">
-				<div class="thanks__header hide-for-print">
-					<template v-if="receipt">
-						<h1
-							class="tw-mt-1 tw-mb-3"
-						>
-							Thank you!
-						</h1>
-						<p
-							v-if="loans.length > 0"
-							class="thanks__header-subhead tw-text-subhead tw-mb-2"
-							data-testid="thanks-message"
-						>
-							Thanks for supporting
-							<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
-						</p>
-						<p v-if="lender.email" class="hide-for-print">
-							We've emailed your order confirmation to
-							<strong class="data-hj-suppress ">{{ lender.email }}</strong>
-						</p>
-						<p v-else class="hide-for-print">
-							We've emailed your order confirmation to you.
-						</p>
-					</template>
+		<template v-if="isOnlyDonation">
+			<thanks-page-donation-only
+				:monthly-donation-amount="monthlyDonationAmount"
+				:share-ask-copy-version="shareAskCopyVersion"
+			/>
+		</template>
+		<template v-else>
+			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
+				<div class="small-12 columns thanks">
+					<div class="thanks__header hide-for-print">
+						<template v-if="receipt">
+							<h1
+								class="tw-mt-1 tw-mb-3"
+							>
+								Thank you!
+							</h1>
+							<p
+								v-if="loans.length > 0"
+								class="thanks__header-subhead tw-text-subhead tw-mb-2"
+								data-testid="thanks-message"
+							>
+								Thanks for supporting
+								<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
+							</p>
+							<p v-if="lender.email" class="hide-for-print">
+								We've emailed your order confirmation to
+								<strong class="data-hj-suppress ">{{ lender.email }}</strong>
+							</p>
+							<p v-else class="hide-for-print">
+								We've emailed your order confirmation to you.
+							</p>
+						</template>
 
-					<template v-else>
-						<h1 class="tw-mb-4">
-							Please log in to see your receipt.
-						</h1>
-						<kv-button
-							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
-						>
-							Log in to continue
-						</kv-button>
-					</template>
+						<template v-else>
+							<h1 class="tw-mb-4">
+								Please log in to see your receipt.
+							</h1>
+							<kv-button
+								:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+							>
+								Log in to continue
+							</kv-button>
+						</template>
+					</div>
 				</div>
+				<thanks-layout-v2
+					v-if="receipt"
+					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
+					:show-guest-upsell="isGuest"
+					:show-share="loans.length > 0"
+				>
+					<template #receipt>
+						<checkout-receipt
+							v-if="receipt"
+							:lender="lender"
+							:receipt="receipt"
+						/>
+					</template>
+					<template #ad>
+						<auto-deposit-c-t-a />
+					</template>
+					<template #mg>
+						<monthly-good-c-t-a
+							:headline="ctaHeadline"
+							:body-copy="ctaBodyCopy"
+							:button-text="ctaButtonText"
+						/>
+					</template>
+					<template #share>
+						<social-share-v2
+							v-if="receipt"
+							class="thanks__social-share"
+							:lender="lender"
+							:loans="loans"
+						/>
+					</template>
+					<template #guest>
+						<guest-upsell
+							:loans="loans"
+						/>
+					</template>
+				</thanks-layout-v2>
 			</div>
-			<thanks-layout-v2
-				v-if="receipt"
-				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
-				:show-guest-upsell="isGuest"
-				:show-share="loans.length > 0"
-			>
-				<template #receipt>
-					<checkout-receipt
-						v-if="receipt"
-						:lender="lender"
-						:receipt="receipt"
-					/>
-				</template>
-				<template #ad>
-					<auto-deposit-c-t-a />
-				</template>
-				<template #mg>
-					<monthly-good-c-t-a
-						:headline="ctaHeadline"
-						:body-copy="ctaBodyCopy"
-						:button-text="ctaButtonText"
-					/>
-				</template>
-				<template #share>
-					<social-share-v2
-						v-if="receipt"
-						class="thanks__social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
-				</template>
-				<template #guest>
-					<guest-upsell
-						:loans="loans"
-					/>
-				</template>
-			</thanks-layout-v2>
-		</div>
-		<thanks-page-comment-and-share
-			v-if="receipt && showFocusedShareAsk"
-			:receipt="receipt"
-			:lender="lender"
-			:loan="selectedLoan"
-			:share-ask-copy-version="shareAskCopyVersion"
-			:is-guest="isGuest"
-			@guest-create-account="createGuestAccount"
-			:ask-for-comments="askForComments"
-		/>
+			<thanks-page-comment-and-share
+				v-if="receipt && showFocusedShareAsk"
+				:receipt="receipt"
+				:lender="lender"
+				:loan="selectedLoan"
+				:share-ask-copy-version="shareAskCopyVersion"
+				:is-guest="isGuest"
+				@guest-create-account="createGuestAccount"
+				:ask-for-comments="askForComments"
+			/>
+		</template>
 	</www-page>
 </template>
 
@@ -102,6 +110,7 @@ import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
 import ThanksPageCommentAndShare from '@/components/Thanks/ThanksPageCommentAndShare';
+import ThanksPageDonationOnly from '@/components/Thanks/ThanksPageDonationOnly';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
@@ -125,7 +134,8 @@ export default {
 		SocialShareV2,
 		ThanksLayoutV2,
 		WwwPage,
-		ThanksPageCommentAndShare
+		ThanksPageCommentAndShare,
+		ThanksPageDonationOnly
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -144,6 +154,7 @@ export default {
 			pageData: {},
 			shareAskCopyVersion: '',
 			jumpToGuestUpsell: false,
+			monthlyDonationAmount: ''
 		};
 	},
 	apollo: {
@@ -172,6 +183,10 @@ export default {
 		}
 	},
 	computed: {
+		isOnlyDonation() {
+			return (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
+				|| this.monthlyDonationAmount?.length;
+		},
 		askForComments() {
 			// comments ask should be displayed for logged in users checking out with a PFP loan.
 			return this.hasPfpLoan && !this.isGuest;
@@ -231,6 +246,8 @@ export default {
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
+		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
+
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
