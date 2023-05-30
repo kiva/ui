@@ -1,3 +1,10 @@
+## [2.605.0](https://github.com/kiva/ui/compare/v2.604.0...v2.605.0) (2023-05-30)
+
+
+### Features
+
+* populate lending stats badges section from contentful ([c389a76](https://github.com/kiva/ui/commit/c389a76ebff79a0ce169fdc0f1faf413e4886f7d))
+
 ## [2.604.0](https://github.com/kiva/ui/compare/v2.603.1...v2.604.0) (2023-05-25)
 
 
