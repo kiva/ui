@@ -48,7 +48,7 @@
 									facebookShareUrl({utmCampaign, utmContent}),
 									'Thanks for sharing to Facebook!')"
 								v-kv-track-event="
-									['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
+									['post-checkout', 'share', 'facebook', utmCampaign]"
 							>
 								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 								<span>Share on Facebook</span>
@@ -60,7 +60,7 @@
 								:class="copyStatus.class"
 								:disabled="copyStatus.disabled"
 								v-kv-track-event="
-									['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
+									['post-checkout', 'share', 'copy-link', utmCampaign]"
 								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 							>
 								<kv-material-icon
@@ -74,7 +74,7 @@
 								data-testid="share-twitter-button"
 								class="social__btn social__btn--twitter"
 								v-kv-track-event="
-									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
+									['post-checkout', 'share', 'twitter', utmCampaign]"
 								@click="showSharePopUp(
 									twitterShareUrl({utmCampaign, utmContent}),
 									'Thanks for tweeting!')"
@@ -86,7 +86,7 @@
 								data-testid="share-linkedin-button"
 								class="social__btn social__btn--linkedin"
 								v-kv-track-event="
-									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
+									['post-checkout', 'share', 'linkedin', utmCampaign]"
 								@click="showSharePopUp(
 									linkedInShareUrl({utmCampaign, utmContent}),
 									'Thanks for sharing to LinkedIn!')"
@@ -165,10 +165,14 @@ export default {
 				text: 'Copy Link'
 			},
 			youtubeId: 'Mpp2ZH7os4Q',
-			isGuest: false
+			isGuest: false,
+			message: ''
 		};
 	},
 	computed: {
+		shareMessage() {
+			return this.message.trim();
+		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
