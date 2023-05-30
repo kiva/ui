@@ -1,5 +1,6 @@
 import achievementMilestonesQuery from '@/graphql/query/achievementMilestones.graphql';
 
+// !TODO remove this when badge rework is complete
 export const EARTHDAY_23_CHALLENGE_KEY = 'earthday-23-challenge';
 export const IWD_CHALLENGE_KEY = 'iwd-challenge';
 export const CLIMATE_CHALLENGE_KEY = 'climate-challenge';
