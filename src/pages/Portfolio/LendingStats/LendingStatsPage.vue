@@ -21,13 +21,11 @@
 						This is a snapshot of your lending activity on Kiva.
 						Use this page to collect loans and hit milestones along the way.
 					</p>
-					<template v-if="hasBadges">
-						<hr class="tw-border-tertiary tw-my-4">
-						<badges-section
-							:total-badges="allAchievements.length"
-							:completed-achievements="completedAchievements"
-						/>
-					</template>
+					<hr class="tw-border-tertiary tw-my-4">
+					<badges-section
+						:total-possible-badges="allAchievements.length"
+						:completed-achievements="completedAchievements"
+					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
 						title="Countries &amp; Territories*"
@@ -175,9 +173,6 @@ export default {
 				achievement => achievement.status === 'COMPLETE'
 			);
 		},
-		hasBadges() {
-			return this.completedAchievements.length > 0;
-		}
 	},
 	methods: {
 		iconForSector(sector) {

@@ -52,7 +52,7 @@
 						<h3 class="tw-text-primary-inverse tw-mr-1.5">
 							You've completed your {{ achievementNumberLanguage }} challenge.
 						</h3>
-						<earth-day-challenge-badge class="tw-h-6 tw-w-6 tw-flex-none tw-mx-auto" />
+						<!-- <earth-day-challenge-badge class="tw-h-6 tw-w-6 tw-flex-none tw-mx-auto" /> -->
 					</div>
 				</div>
 			</kv-grid>
@@ -141,7 +141,6 @@ import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.g
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
 
-import EarthDayChallengeBadge from '@/assets/icons/inline/achievements/earthday-badge.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -151,7 +150,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 export default {
 	name: 'ThanksPageEarthDayChallenge',
 	components: {
-		EarthDayChallengeBadge,
 		KvGrid,
 		KvMaterialIcon,
 		KvPageContainer,
