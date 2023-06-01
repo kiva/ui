@@ -350,7 +350,10 @@ import {
 	isMatchAtRisk,
 	isLessThan25,
 	isBetween25And50,
-	isBetween25And500
+	isBetween25And500,
+	getCookieDropdown,
+	isErlCookieActive,
+	enableCookie
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -427,7 +430,10 @@ export default {
 			slotMachineInterval: null,
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
-			inPfp: false
+			inPfp: false,
+			isERLCookieActive: false,
+			userBalance: 0,
+			activeCookie: '',
 		};
 	},
 	apollo: {
@@ -474,6 +480,7 @@ export default {
 					id
 					userAccount {
 						id
+						balance
 					}
 				}
 				general {
@@ -513,6 +520,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
+			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
@@ -625,6 +633,12 @@ export default {
 					this.matchingHighlightExpShown = version === 'b';
 				}
 			}
+		},
+		getDropdownERL() {
+			if (this.activeCookie !== '') {
+				return getCookieDropdown(this.activeCookie, this.userBalance, this.unreservedAmount);
+			}
+			return '25';
 		}
 	},
 	watch: {
@@ -635,6 +649,9 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			// set initial selected value for sub 25 loan if shown
+			if (this.enableFiveDollarsNotes && this.activeCookie !== '') {
+				this.selectedOption = this.getDropdownERL();
+			}
 			if (isBetween25And50(this.unreservedAmount)) {
 				this.selectedOption = Number(this.unreservedAmount).toFixed();
 			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
@@ -798,6 +815,29 @@ export default {
 	},
 	mounted() {
 		this.createWrapperObserver();
+		const erlCampaign = this.$route.query.utm_campaign;
+		const topCookie = 'erl-five-notes-top';
+		const baseCookie = 'erl-five-notes-base';
+		const sessionTimestamp = new Date();
+		sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
+
+		const topUpLenders = 'topup-vb-balance-MPV1';
+		const baseLenders = 'base-vb_balance_MPV1';
+		this.activeCookie = isErlCookieActive(this.cookieStore);
+
+		if (this.enableFiveDollarsNotes) {
+			if (this.activeCookie !== '') {
+				this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
+			} else if (erlCampaign) {
+				if (erlCampaign === topUpLenders) {
+					this.selectedOption = '5';
+					enableCookie(topCookie, this.cookieStore, sessionTimestamp);
+				} else if (erlCampaign === baseLenders) {
+					this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
+					enableCookie(baseCookie, this.cookieStore, sessionTimestamp);
+				}
+			}
+		}
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();

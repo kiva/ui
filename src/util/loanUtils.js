@@ -317,3 +317,50 @@ export function loanCallouts(loan, categoryPageName) {
 
 	return callouts;
 }
+
+/**
+ * Enables session cookie
+ *
+ * @param	{String}	cookieName	The cookie name
+ * @param	{Object}	cookieStore The cookie store
+ * @param	{String}	expDate
+ * @returns {void}
+ */
+export function enableCookie(cookieName, cookieStore, expDate) {
+	if (cookieStore.get(cookieName)) {
+		cookieStore.set(
+			cookieName,
+			true,
+			{ expires: expDate }
+		);
+	}
+}
+
+/**
+ * Checks if ERL cookie is active
+ * @param 	{Object} 		cookieStore The cookie store
+ * @returns {String}		Active cookie name
+ */
+export function isErlCookieActive(cookieStore) {
+	if (cookieStore.get('erl-five-notes-base')) {
+		return 'erl-five-notes-base';
+	}
+	if (cookieStore.get('erl-five-notes-top')) {
+		return 'erl-five-notes-top';
+	}
+	return '';
+}
+
+/**
+ * Get CTA dropdown default value based on cookie
+ * @param 	{String} 	cookieName
+ * @param	{Number}	balance
+ * @returns	{Number}	Default selected value
+ */
+export function getCookieDropdown(cookieName, balance, unreservedAmount) {
+	if (cookieName === 'erl-five-notes-base') {
+		const val = Math.floor(balance / 5) * 5;
+		return (unreservedAmount < balance || val === 0) ? 5 : val;
+	}
+	return 5;
+}
