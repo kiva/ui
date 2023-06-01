@@ -6,7 +6,7 @@
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
-					<p class="tw-text-center tw-mb-2">
+					<p class="tw-text-center tw-mb-2 tw-text-subhead">
 						As a donor, you help us bring more loans to people in need. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
@@ -21,9 +21,9 @@
 							allowfullscreen
 						></iframe>
 					</div>
-					<p class="tw-my-2">
+					<h2 class="tw-text-h2 tw-my-2">
 						How a Kiva loan helped Manal grow her business in Palestine
-					</p>
+					</h2>
 					<p class="tw-mb-2">
 						As an entrepreneur, Manal faces the usual challenges - finding customers, stocking up on
 						materials, and keeping up with the competition. But as a woman, Manal has also had to shut
@@ -157,7 +157,7 @@ export default {
 	mixins: [socialSharingMixin],
 	data() {
 		return {
-			name: '',
+			lender: null,
 			mdiLink,
 			copyStatus: {
 				class: '',
@@ -178,11 +178,19 @@ export default {
 			const args = {
 			};
 
+			if (!this.isGuest) {
+				if (this.lender?.public && this.lender?.firstName) {
+					args.lender = this.lender.firstName;
+				}
+
+				return getFullUrl(`${base}/invitedby/${this.lender?.inviterName}`, args);
+			}
+
 			return getFullUrl(base, args);
 		},
 		headerMsg() {
 			if (this.isGuest) return 'Thank you for supporting our mission';
-			return `${this.name}, thank you for supporting our mission`;
+			return `${this.lender?.firstName}, thank you for supporting our mission`;
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
@@ -202,7 +210,7 @@ export default {
 				query: userQuery,
 			}).then(({ data }) => {
 				this.isGuest = !data?.my?.userAccount;
-				this.name = data?.my?.userAccount?.public ? data?.my?.userAccount?.firstName : '';
+				this.lender = data?.my?.userAccount ?? {};
 			});
 		}
 	},
