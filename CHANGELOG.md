@@ -1,3 +1,10 @@
+### [2.606.1](https://github.com/kiva/ui/compare/v2.606.0...v2.606.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* styles and share link logic ([702cd17](https://github.com/kiva/ui/commit/702cd17ed84c253dfe49e8c1ce65c4e4f58fa11a))
+
 ## [2.606.0](https://github.com/kiva/ui/compare/v2.605.0...v2.606.0) (2023-05-30)
 
 
