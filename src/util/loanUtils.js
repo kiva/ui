@@ -323,11 +323,11 @@ export function loanCallouts(loan, categoryPageName) {
  *
  * @param	{String}	cookieName	The cookie name
  * @param	{Object}	cookieStore The cookie store
- * @param	{String}	expDate
+ * @param	{String}	expDate		The expiration
  * @returns {void}
  */
 export function enableCookie(cookieName, cookieStore, expDate) {
-	if (cookieStore.get(cookieName)) {
+	if (!cookieStore.get(cookieName)) {
 		cookieStore.set(
 			cookieName,
 			true,
