@@ -67,13 +67,13 @@
 					</p>
 					<ul class="tw-mb-3">
 						<li>
-							<router-link
-								to="/donate/supportus"
+							<a
+								href="/donate/supportus"
 								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 								class="tw-text-small"
 							>
 								Donate to Kiva
-							</router-link>
+							</a>
 						</li>
 					</ul>
 					<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
@@ -682,13 +682,13 @@
 							</p>
 							<ul class="print:tw-hidden">
 								<li>
-									<router-link
-										to="/donate/supportus"
+									<a
+										href="/donate/supportus"
 										v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 										class="tw-text-small"
 									>
 										Donate to Kiva
-									</router-link>
+									</a>
 								</li>
 							</ul>
 						</div>
