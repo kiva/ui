@@ -84,7 +84,7 @@
 							<kv-button
 								variant="secondary"
 								class="tw-w-full md:tw-w-auto"
-								to="/donate/supportus"
+								href="/donate/supportus"
 								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
 							>
 								Other

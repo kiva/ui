@@ -23,7 +23,7 @@
 				<kv-button
 					class="tw-pt-2 tw-block"
 					variant="secondary"
-					to="/donate/supportus"
+					href="/donate/supportus"
 					v-kv-track-event="['donation', 'click', 'low-supply-human-centric-cta']"
 				>
 					Donate to help Carolina and team

@@ -66,7 +66,7 @@
 					</p>
 					<template #controls>
 						<kv-button
-							to="/donate/supportus"
+							href="/donate/supportus"
 							v-kv-track-event="['portfolio', 'click', 'avg-donation-lightbox-donate']"
 						>
 							Donate
