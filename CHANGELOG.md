@@ -1,3 +1,10 @@
+## [2.607.0](https://github.com/kiva/ui/compare/v2.606.1...v2.607.0) (2023-06-02)
+
+
+### Features
+
+* donate/supportus redirect as anchor tag ([b093eea](https://github.com/kiva/ui/commit/b093eeacfa6122fb048737d260e38852aa38f5b0))
+
 ### [2.606.1](https://github.com/kiva/ui/compare/v2.606.0...v2.606.1) (2023-06-01)
 
 
