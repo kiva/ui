@@ -1,3 +1,90 @@
+## [2.607.0](https://github.com/kiva/ui/compare/v2.606.1...v2.607.0) (2023-06-02)
+
+
+### Features
+
+* donate/supportus redirect as anchor tag ([b093eea](https://github.com/kiva/ui/commit/b093eeacfa6122fb048737d260e38852aa38f5b0))
+
+### [2.606.1](https://github.com/kiva/ui/compare/v2.606.0...v2.606.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* styles and share link logic ([702cd17](https://github.com/kiva/ui/commit/702cd17ed84c253dfe49e8c1ce65c4e4f58fa11a))
+
+## [2.606.0](https://github.com/kiva/ui/compare/v2.605.0...v2.606.0) (2023-05-30)
+
+
+### Features
+
+* only donation thanks page ([d975367](https://github.com/kiva/ui/commit/d975367d4280432beab81e7af329afeae2e8dc9e))
+* use param to show banner ([b8a07e4](https://github.com/kiva/ui/commit/b8a07e45ff16a58a90301ee9703f45cfbe37a18c))
+
+
+### Bug Fixes
+
+* eslint max-length ([3b5623c](https://github.com/kiva/ui/commit/3b5623c601aeb5e38d55c18242be00ac960146b9))
+* remove component registration ([09cbeb3](https://github.com/kiva/ui/commit/09cbeb34f04b3d923a7450cb4ee8496544401639))
+* remove unused component ([90efb7e](https://github.com/kiva/ui/commit/90efb7e346099f9eab158d977b27e02ba5c23c86))
+* share msg and unused loanId ([bd609ea](https://github.com/kiva/ui/commit/bd609ea3bcfe57d9cb9d7cf847cfd531b320bbcc))
+* thanks message test id and social colors ([c6f9838](https://github.com/kiva/ui/commit/c6f9838827fe8d8b90650f9aa6adad7e72200ac2))
+* unused component ([944ae17](https://github.com/kiva/ui/commit/944ae1796fba479434998c6410aa30212fadd8e2))
+
+## [2.605.0](https://github.com/kiva/ui/compare/v2.604.0...v2.605.0) (2023-05-30)
+
+
+### Features
+
+* populate lending stats badges section from contentful ([c389a76](https://github.com/kiva/ui/commit/c389a76ebff79a0ce169fdc0f1faf413e4886f7d))
+
+## [2.604.0](https://github.com/kiva/ui/compare/v2.603.1...v2.604.0) (2023-05-25)
+
+
+### Features
+
+* make suggested loan comment a placeholder ([4d3ca4c](https://github.com/kiva/ui/commit/4d3ca4c2216be75fa543db5acdbd4cd182bc1690))
+
+### [2.603.1](https://github.com/kiva/ui/compare/v2.603.0...v2.603.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* summary card spacing ([7373d78](https://github.com/kiva/ui/commit/7373d786cdd29eb49f16bdf70628030cd90a7f6b))
+
+## [2.603.0](https://github.com/kiva/ui/compare/v2.602.4...v2.603.0) (2023-05-25)
+
+
+### Features
+
+* add failed add donation to basket recovery process ([941ce48](https://github.com/kiva/ui/commit/941ce4887cc9c9b3e5c710336df989984eb8368e))
+
+
+### Bug Fixes
+
+* ensure donation amount is passed to setDonationAmount method ([b820d2e](https://github.com/kiva/ui/commit/b820d2eacd92e3691066f1ff96aab20f88eb701e))
+* spelling fix ([934e5e3](https://github.com/kiva/ui/commit/934e5e3147e10b8afeeeb1be1f45268e6b950c1b))
+
+### [2.602.4](https://github.com/kiva/ui/compare/v2.602.3...v2.602.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* add success/error classes back ([3575537](https://github.com/kiva/ui/commit/3575537398e7642e4baecd399dcef5bbe7c4d221))
+
+### [2.602.3](https://github.com/kiva/ui/compare/v2.602.2...v2.602.3) (2023-05-23)
+
+
+### Bug Fixes
+
+* add contentful based dynamic background colors to tailwind purge safelist ([9bd2582](https://github.com/kiva/ui/commit/9bd25828e34ec1ba822c77a472d5d3b5022a676a))
+
+### [2.602.2](https://github.com/kiva/ui/compare/v2.602.1...v2.602.2) (2023-05-23)
+
+
+### Bug Fixes
+
+* zindex fix for qf ([ff84184](https://github.com/kiva/ui/commit/ff841841ff030e2c1ce47f9ada775b954dd7aa52))
+
 ### [2.602.1](https://github.com/kiva/ui/compare/v2.602.0...v2.602.1) (2023-05-19)
 
 

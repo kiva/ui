@@ -93,6 +93,15 @@ tw-text-base
 tw-text-small
 tw-text-link
 
+# Background Colors
+tw-bg-primary
+tw-bg-secondary
+tw-bg-tertiary
+tw-bg-stone-1
+tw-bg-marigold-1
+tw-bg-eco-green-1
+tw-bg-desert-rose-1
+
 # Whitespace Classes
 tw-whitespace-normal
 tw-whitespace-pre-wrap
