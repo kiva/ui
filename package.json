@@ -60,7 +60,7 @@
 		"auth0-js": "^9.19.2",
 		"body-parser": "^1.19.0",
 		"bowser": "^2.11.0",
-		"braintree-web-drop-in": "^1.30.0",
+		"braintree-web-drop-in": "^1.36.1",
 		"canvas": "^2.6.1",
 		"canvas-confetti": "^1.5.1",
 		"change-case": "^4.1.1",
