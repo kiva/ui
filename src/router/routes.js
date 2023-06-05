@@ -92,18 +92,21 @@ module.exports = [
 		}
 	},
 	{
+		path: '/checkout/thanks/:challengeId',
+		component: () => import('@/pages/Thanks/ThanksPageChallenge'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		},
+		props: route => ({
+			challengeId: route.params.challengeId,
+		})
+	},
+	{
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbouncePopUp: true,
-		}
-	},
-	{
-		path: '/checkout/earthday-challenge/thanks',
-		component: () => import('@/pages/Thanks/ThanksPageEarthDayChallenge'),
-		meta: {
-			excludeFromStaticSitemap: true,
 		}
 	},
 	{
