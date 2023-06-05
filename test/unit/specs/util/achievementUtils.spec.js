@@ -1,5 +1,5 @@
 import {
-	hasMadeAchievementsProgression, missingMilestones
+	achievementProgression, missingMilestones
 } from '@/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
@@ -61,26 +61,20 @@ const sampleAPIMilestoneProgress = [
 	}
 
 ];
-describe('achievementUtils.js hasMadeAchievementsProgression', () => {
+describe('achievementUtils.js achievementProgression', () => {
 	test('Should return true for achievement with 1 milestone in completeable status', () => {
-		expect(hasMadeAchievementsProgression(sampleAPIMilestoneProgress, 'climate-challenge')).toBe(true);
-	});
-
-	test('Should return false for missing achievement', () => {
-		expect(hasMadeAchievementsProgression(sampleAPIMilestoneProgress, 'test-challenge')).toBe(false);
+		expect(achievementProgression(sampleAPIMilestoneProgress)).toBe('climate-challenge');
 	});
 
 	test('Should return false if either param is missing or undefined', () => {
-		expect(hasMadeAchievementsProgression(sampleAPIMilestoneProgress, undefined)).toBe(false);
-		expect(hasMadeAchievementsProgression(sampleAPIMilestoneProgress, '')).toBe(false);
-		expect(hasMadeAchievementsProgression(undefined, 'climate-challenge')).toBe(false);
-		expect(hasMadeAchievementsProgression([], 'climate-challenge')).toBe(false);
+		expect(achievementProgression(undefined)).toBe(null);
+		expect(achievementProgression([])).toBe(null);
 	});
 
 	test('Should return true for achievement with 1 milestone in new_progress status', () => {
 		const newProgress = sampleAPIMilestoneProgress;
 		newProgress[0].status = 'NEW_PROGRESS';
-		expect(hasMadeAchievementsProgression(newProgress, 'climate-challenge')).toBe(true);
+		expect(achievementProgression(newProgress)).toBe('climate-challenge');
 	});
 });
 

@@ -1,10 +1,5 @@
 import achievementMilestonesQuery from '@/graphql/query/achievementMilestones.graphql';
 
-// !TODO remove this when badge rework is complete
-export const EARTHDAY_23_CHALLENGE_KEY = 'earthday-23-challenge';
-export const IWD_CHALLENGE_KEY = 'iwd-challenge';
-export const CLIMATE_CHALLENGE_KEY = 'climate-challenge';
-
 /**
  * achievementsQuery query
  * Checks for Challenge Achievement status
@@ -48,24 +43,24 @@ export function achievementsQueryFromCache(apollo, loanIdsArray) {
 }
 
 /**
- * hasMadeAchievementsProgression
- * Checks for Challenge Achievement status
+ * achievementProgression
+ * Check to see if the user has made progress towards an achievement,
+ * if they have -- return the key of the first achievement they have progressed
  *
  * @param {Array} achievementsQueryResult The array of milestones from the request result from the achievementsQuery
- * @param {Object} achievementName String of achievement name as stored in the achievement service
  *
- * @returns {Boolean} Does this query result represent progress towards this achievement?
+ * @returns {String} Achievement key
  */
-export function hasMadeAchievementsProgression(achievementsQueryResult = [], achievementName = '') {
-	// filter out all achievements by achievementName
-	const achievementMilestones = achievementsQueryResult
-		.filter(milestone => milestone.achievement === achievementName);
-
-	// If any of the achievementMilestones have the status
+export function achievementProgression(achievementsQueryResult = []) {
+	// filter out all milestones by status
+	// if any of the achievementMilestones have the status
 	// "COMPLETABLE", or "NEW_PROGRESS" then we have progress
 	// towards this achievement
-	return achievementMilestones
-		.some(milestone => milestone.status === 'COMPLETABLE' || milestone.status === 'NEW_PROGRESS');
+	const achievementMilestones = achievementsQueryResult
+		.filter(milestone => milestone.status === 'COMPLETABLE' || milestone.status === 'NEW_PROGRESS');
+
+	// return the first achievement key or null
+	return achievementMilestones.length > 0 ? achievementMilestones[0].achievement : null;
 }
 
 /**

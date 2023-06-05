@@ -35,9 +35,9 @@ export default {
 						// get tracking data from snowplow cookie
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
-						// If earthday23 challenge is true send to earthday thanks page
-						const successPath = route.query.earthday23Challenge === 'true'
-							? '/checkout/earthday-challenge/thanks' : '/thanks';
+						// If challenge query exists, then redirect to challenge thanks page
+						const successPath = route.query.challenge
+							? `/checkout/thanks/${route.query.challenge}` : '/thanks';
 
 						// build route for thanks page redirect
 						const successRoute = {
