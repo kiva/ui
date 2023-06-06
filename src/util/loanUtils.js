@@ -344,7 +344,7 @@ export function isErlCookieActive(cookieStore) {
 /**
  * Get the CTA dropdown value based on cookie
  */
-export function getDropdownERL(activeCookie, userBalance, unreservedAmount) {
+export function getDropdownErl(activeCookie, userBalance, unreservedAmount) {
 	console.log(activeCookie, userBalance, unreservedAmount);
 	if (activeCookie === BASE_LENDERS_COOKIE) {
 		const val = Math.floor(userBalance / 5) * 5;
@@ -365,11 +365,11 @@ export function getDropdownERL(activeCookie, userBalance, unreservedAmount) {
  *
  * @returns {Number}	Returns default dropdown value for ERL
  */
-export function enableCookie(campaign, cookieStore, activeCookie, userBalance, unreservedAmount) {
+export function enableErlCookie(campaign, cookieStore, activeCookie, userBalance, unreservedAmount) {
 	const sessionTimestamp = new Date();
 	sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
 	if (activeCookie !== '') {
-		return getDropdownERL(activeCookie, userBalance, unreservedAmount);
+		return getDropdownErl(activeCookie, userBalance, unreservedAmount);
 	}
 	if (campaign) {
 		if (campaign.toUpperCase() === TOP_UP_LENDERS.toUpperCase()) {
@@ -385,7 +385,7 @@ export function enableCookie(campaign, cookieStore, activeCookie, userBalance, u
 				true,
 				{ expires: sessionTimestamp }
 			);
-			return getDropdownERL(activeCookie, userBalance, unreservedAmount);
+			return getDropdownErl(activeCookie, userBalance, unreservedAmount);
 		}
 	}
 	return null;

@@ -105,9 +105,9 @@ import {
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500,
-	enableCookie,
+	enableErlCookie,
 	isErlCookieActive,
-	getDropdownERL
+	getDropdownErl
 } from '@/util/loanUtils';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -168,7 +168,7 @@ export default {
 		getSelectedOption(unreservedAmount) {
 			if (this.enableFiveDollarsNotes) {
 				if (this.activeCookie !== '') {
-					return getDropdownERL(
+					return getDropdownErl(
 						isErlCookieActive(this.cookieStore),
 						this.userBalance,
 						unreservedAmount
@@ -219,11 +219,11 @@ export default {
 		amountToLend() {
 			if (this.enableRelendingExp) {
 				if (this.enableFiveDollarsNotes) {
-					if (34 <= 5) {
+					if (this.unreservedAmount <= 5) {
 						return Number(this.unreservedAmount) > 5 ? '5' : this.unreservedAmount;
 					}
 					if (this.activeCookie !== '') {
-						return getDropdownERL(this.activeCookie, 34, this.unreservedAmount);
+						return getDropdownErl(this.activeCookie, 34, this.unreservedAmount);
 					}
 				}
 				return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount;
@@ -314,13 +314,11 @@ export default {
 	},
 	mounted() {
 		const campaign = this.$route.query.utm_campaign;
-		const sessionTimestamp = new Date();
-		sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
 
 		this.activeCookie = isErlCookieActive(this.cookieStore);
 
 		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
-			this.selectedOption = enableCookie(
+			this.selectedOption = enableErlCookie(
 				campaign,
 				this.cookieStore,
 				this.activeCookie,

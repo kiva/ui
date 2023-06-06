@@ -351,9 +351,9 @@ import {
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500,
-	getDropdownERL,
+	getDropdownErl,
 	isErlCookieActive,
-	enableCookie
+	enableErlCookie
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -433,7 +433,6 @@ export default {
 			inPfp: false,
 			userBalance: 0,
 			activeCookie: '',
-			queryParam: '',
 		};
 	},
 	apollo: {
@@ -520,7 +519,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
-			this.userBalance = result?.data?.my?.userAccount?.balance;
+			this.userBalance = result?.data?.my?.userAccount?.balance ?? 0;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
@@ -611,7 +610,7 @@ export default {
 				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
 			};
 
-			// Set inital stat
+			// Set initial stat
 			cycleSlotMachine();
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
@@ -645,7 +644,7 @@ export default {
 			if (newValue !== previousValue && previousValue === '') {
 				if (this.enableFiveDollarsNotes) {
 					if (this.activeCookie !== '') {
-						this.selectedOption = getDropdownERL(
+						this.selectedOption = getDropdownErl(
 							isErlCookieActive(this.cookieStore),
 							this.userBalance,
 							newValue
@@ -816,13 +815,11 @@ export default {
 	mounted() {
 		this.createWrapperObserver();
 		const campaign = this.$route.query.utm_campaign;
-		const sessionTimestamp = new Date();
-		sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
 
 		this.activeCookie = isErlCookieActive(this.cookieStore);
 
 		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
-			this.selectedOption = enableCookie(
+			this.selectedOption = enableErlCookie(
 				campaign,
 				this.cookieStore,
 				this.activeCookie,
