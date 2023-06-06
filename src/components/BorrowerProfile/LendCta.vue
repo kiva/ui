@@ -351,9 +351,13 @@ import {
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500,
-	getCookieDropdown,
+	getDropdownERL,
 	isErlCookieActive,
-	enableCookie
+	enableCookie,
+	BASE_LENDERS_COOKIE as baseCookie,
+	TOP_LENDERS_COOKIE as topCookie,
+	TOP_UP_LENDERS as topUpLenders,
+	BASE_LENDERS as baseLenders
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -431,9 +435,9 @@ export default {
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
 			inPfp: false,
-			isERLCookieActive: false,
 			userBalance: 0,
 			activeCookie: '',
+			queryParam: '',
 		};
 	},
 	apollo: {
@@ -634,12 +638,6 @@ export default {
 				}
 			}
 		},
-		getDropdownERL() {
-			if (this.activeCookie !== '') {
-				return getCookieDropdown(this.activeCookie, this.userBalance, this.unreservedAmount);
-			}
-			return '25';
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -648,14 +646,20 @@ export default {
 			}
 		},
 		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (this.enableFiveDollarsNotes && this.activeCookie !== '') {
-				this.selectedOption = this.getDropdownERL();
-			}
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
+			if (newValue !== previousValue && previousValue === '') {
+				if (this.enableFiveDollarsNotes) {
+					if (this.activeCookie !== '') {
+						this.selectedOption = getDropdownERL(
+							isErlCookieActive(this.cookieStore),
+							this.userBalance,
+							newValue
+						);
+					}
+				}
+				if (isBetween25And50(newValue) || isLessThan25(newValue)) {
+					this.selectedOption = Number(newValue).toFixed();
+				}
+				this.selectedOption = '25';
 			}
 		},
 		isCompleteLoanActive() {
@@ -815,28 +819,20 @@ export default {
 	},
 	mounted() {
 		this.createWrapperObserver();
-		const erlCampaign = this.$route.query.utm_campaign;
-		const topCookie = 'erl-five-notes-top';
-		const baseCookie = 'erl-five-notes-base';
+		const campaign = this.$route.query.utm_campaign;
 		const sessionTimestamp = new Date();
 		sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
 
-		const topUpLenders = 'topup-vb-balance-MPV1';
-		const baseLenders = 'base-vb_balance_MPV1';
 		this.activeCookie = isErlCookieActive(this.cookieStore);
 
-		if (this.enableFiveDollarsNotes) {
-			if (this.activeCookie !== '') {
-				this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
-			} else if (erlCampaign) {
-				if (erlCampaign === topUpLenders) {
-					this.selectedOption = '5';
-					enableCookie(topCookie, this.cookieStore, sessionTimestamp);
-				} else if (erlCampaign === baseLenders) {
-					this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
-					enableCookie(baseCookie, this.cookieStore, sessionTimestamp);
-				}
-			}
+		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
+			this.selectedOption = enableCookie(
+				campaign,
+				this.cookieStore,
+				this.activeCookie,
+				this.userBalance,
+				this.unreservedAmount
+			);
 		}
 	},
 	beforeDestroy() {

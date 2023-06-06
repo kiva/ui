@@ -107,7 +107,11 @@ import {
 	isBetween25And500,
 	enableCookie,
 	isErlCookieActive,
-	getCookieDropdown
+	getDropdownERL,
+	BASE_LENDERS_COOKIE as baseCookie,
+	TOP_LENDERS_COOKIE as topCookie,
+	TOP_UP_LENDERS as topUpLenders,
+	BASE_LENDERS as baseLenders
 } from '@/util/loanUtils';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -166,12 +170,19 @@ export default {
 			this.$emit('add-to-basket', this.amountToLend);
 		},
 		getSelectedOption(unreservedAmount) {
+			if (this.enableFiveDollarsNotes) {
+				if (this.activeCookie !== '') {
+					return getDropdownERL(
+						isErlCookieActive(this.cookieStore),
+						this.userBalance,
+						unreservedAmount
+					);
+				}
+			}
 			if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
 				return Number(unreservedAmount).toFixed();
 			}
-			return this.enableFiveDollarsNotes
-				? getCookieDropdown(isErlCookieActive(this.cookieStore), this.userBalance, this.unreservedAmount)
-				: '25';
+			return '25';
 		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.$kvTrackEvent(
@@ -180,12 +191,6 @@ export default {
 				selectedDollarAmount
 			);
 		},
-		getDropdownERL() {
-			if (this.activeCookie !== '') {
-				return getCookieDropdown(this.activeCookie, this.userBalance, this.unreservedAmount);
-			}
-			return '25';
-		}
 	},
 	watch: {
 		unreservedAmount(newValue, previousValue) {
@@ -218,18 +223,16 @@ export default {
 		amountToLend() {
 			if (this.enableRelendingExp) {
 				if (this.enableFiveDollarsNotes) {
-					if (this.userBalance <= 5) {
+					if (34 <= 5) {
 						return Number(this.unreservedAmount) > 5 ? '5' : this.unreservedAmount;
-					} if (this.activeCookie !== '') {
-						return this.getDropdownERL();
+					}
+					if (this.activeCookie !== '') {
+						return getDropdownERL(this.activeCookie, 34, this.unreservedAmount);
 					}
 				}
 				return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount;
 			}
-			if (this.enableFiveDollarsNotes && this.activeCookie !== '') {
-				return this.cookieDropdownValue;
-			}
-			return this.isLessThan25 ? this.unreservedAmount : this.selectedOption;
+			return (this.isLessThan25 && !this.enableFiveDollarsNotes) ? this.unreservedAmount : this.selectedOption;
 		},
 		isInBasket() {
 			return this.basketItems
@@ -314,28 +317,20 @@ export default {
 		},
 	},
 	mounted() {
-		const erlCampaign = this.$route.query.utm_campaign;
-		const topCookie = 'erl-five-notes-top';
-		const baseCookie = 'erl-five-notes-base';
+		const campaign = this.$route.query.utm_campaign;
 		const sessionTimestamp = new Date();
 		sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
 
-		const topUpLenders = 'topup-vb-balance-MPV1';
-		const baseLenders = 'base-vb_balance_MPV1';
 		this.activeCookie = isErlCookieActive(this.cookieStore);
 
-		if (this.enableFiveDollarsNotes) {
-			if (this.activeCookie !== '') {
-				this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
-			} else if (erlCampaign) {
-				if (erlCampaign === topUpLenders) {
-					this.selectedOption = '5';
-					enableCookie(topCookie, this.cookieStore, sessionTimestamp);
-				} else if (erlCampaign === baseLenders) {
-					this.selectedOption = this.getDropdownERL(this.userBalance, this.unreservedAmount);
-					enableCookie(baseCookie, this.cookieStore, sessionTimestamp);
-				}
-			}
+		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
+			this.selectedOption = enableCookie(
+				campaign,
+				this.cookieStore,
+				this.activeCookie,
+				this.userBalance,
+				this.unreservedAmount
+			);
 		}
 	}
 };

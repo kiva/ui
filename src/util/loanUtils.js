@@ -24,6 +24,14 @@ export const ALLOWED_LOAN_STATUSES = [
 ];
 
 /**
+ * Keys for for ERL Exp
+ */
+export const BASE_LENDERS_COOKIE = 'erl-five-notes-base';
+export const TOP_LENDERS_COOKIE = 'erl-five-notes-top';
+export const TOP_UP_LENDERS = 'topup-vb-balance-MPV1';
+export const BASE_LENDERS = 'base-vb_balance_MPV1';
+
+/**
  * Returns true if loan is fundraising / can be lent to
  *
  * @param {object} loan
@@ -319,48 +327,66 @@ export function loanCallouts(loan, categoryPageName) {
 }
 
 /**
- * Enables session cookie
- *
- * @param	{String}	cookieName	The cookie name
- * @param	{Object}	cookieStore The cookie store
- * @param	{String}	expDate		The expiration
- * @returns {void}
- */
-export function enableCookie(cookieName, cookieStore, expDate) {
-	if (!cookieStore.get(cookieName)) {
-		cookieStore.set(
-			cookieName,
-			true,
-			{ expires: expDate }
-		);
-	}
-}
-
-/**
  * Checks if ERL cookie is active
  * @param 	{Object} 		cookieStore The cookie store
  * @returns {String}		Active cookie name
  */
 export function isErlCookieActive(cookieStore) {
-	if (cookieStore.get('erl-five-notes-base')) {
-		return 'erl-five-notes-base';
+	if (cookieStore.get(BASE_LENDERS_COOKIE)) {
+		return BASE_LENDERS_COOKIE;
 	}
-	if (cookieStore.get('erl-five-notes-top')) {
-		return 'erl-five-notes-top';
+	if (cookieStore.get(TOP_LENDERS_COOKIE)) {
+		return TOP_LENDERS_COOKIE;
 	}
 	return '';
 }
 
 /**
- * Get CTA dropdown default value based on cookie
- * @param 	{String} 	cookieName
- * @param	{Number}	balance
- * @returns	{Number}	Default selected value
+ * Get the CTA dropdown value based on cookie
  */
-export function getCookieDropdown(cookieName, balance, unreservedAmount) {
-	if (cookieName === 'erl-five-notes-base') {
-		const val = Math.floor(balance / 5) * 5;
-		return (unreservedAmount < balance || val === 0) ? 5 : val;
+export function getDropdownERL(activeCookie, userBalance, unreservedAmount) {
+	console.log(activeCookie, userBalance, unreservedAmount);
+	if (activeCookie === BASE_LENDERS_COOKIE) {
+		const val = Math.floor(userBalance / 5) * 5;
+		return (unreservedAmount < userBalance || val <= 0) ? 5 : val;
 	}
-	return 5;
+	return unreservedAmount > 5 ? 5 : unreservedAmount;
+}
+
+/**
+ * Enables session cookie based on UTM parameter
+ *
+ * @param	{String}	utmParam			UTM parameters
+ * @param	{String}	cookieName			The cookie name
+ * @param	{Object}	cookieStore 		The cookie store
+ * @param	{String}	activeCookie		If a cookie is active, if yes its key
+ * @param	{Number}	userBalance			The user's balance
+ * @param	{Number}	unreservedAmount	Unreserved amount on loan
+ *
+ * @returns {Number}	Returns default dropdown value for ERL
+ */
+export function enableCookie(campaign, cookieStore, activeCookie, userBalance, unreservedAmount) {
+	const sessionTimestamp = new Date();
+	sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
+	if (activeCookie !== '') {
+		return getDropdownERL(activeCookie, userBalance, unreservedAmount);
+	}
+	if (campaign) {
+		if (campaign.toUpperCase() === TOP_UP_LENDERS.toUpperCase()) {
+			cookieStore.set(
+				TOP_LENDERS_COOKIE,
+				true,
+				{ expires: sessionTimestamp }
+			);
+			return this.unreservedAmount > 5 ? '5' : this.unreservedAmount;
+		} if (campaign.toUpperCase() === BASE_LENDERS.toUpperCase()) {
+			cookieStore.set(
+				BASE_LENDERS_COOKIE,
+				true,
+				{ expires: sessionTimestamp }
+			);
+			return getDropdownERL(activeCookie, userBalance, unreservedAmount);
+		}
+	}
+	return null;
 }
