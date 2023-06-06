@@ -24,7 +24,7 @@ async function fetchRecommendedLoans(type, id, cache) {
 		const expires = 10 * 60; // 10 minutes
 		memJsUtils.setToCache(`recommendations-by-${type}-id-${id}`, JSON.stringify(loanData), expires, cache)
 			.catch(err => {
-				error(`Error setting loan data to cache, ${err}`, { error: err });
+				error(`Error setting loan data to cache, ${err}`, { error: err, id, type });
 			});
 		// Return before setting to the cache completes to speed up response times
 		return loanData;
@@ -66,24 +66,30 @@ async function redirectToUrl(type, cache, req, res) {
 		}
 		res.redirect(302, redirect);
 	} catch (err) {
-		error(`Error redirecting to url, ${err}`, { error: err });
+		error(`Error redirecting to url, ${err}`, { error: err, params: req.params, type });
 		res.redirect(302, '/lend-by-category/');
 	}
 }
 
-async function serveImg(type, cache, req, res) {
+async function serveImg(type, style, cache, req, res) {
 	try {
 		const loan = await tracer.trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req));
 
 		let loanImg;
-		const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${loan.id}`, cache);
+		const cachedLoanImg = await memJsUtils.getFromCache(`loan-card-img-${style}-${loan.id}`, cache);
 		if (cachedLoanImg) {
 			loanImg = cachedLoanImg;
 		} else {
-			loanImg = await tracer.trace('drawLoanCard', { resource: loan.id }, async () => drawLoanCard(loan));
+			loanImg = await tracer.trace('drawLoanCard', { resource: loan.id }, async () => drawLoanCard(loan, style));
 			const expires = 10 * 60; // 10 minutes
-			memJsUtils.setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache).catch(err => {
-				error(`Error setting loan data to cache, ${err}`, { error: err });
+			memJsUtils.setToCache(`loan-card-img-${style}-${loan.id}`, loanImg, expires, cache).catch(err => {
+				error(`Error setting loan data to cache, ${err}`, {
+					error: err,
+					params: req.params,
+					loan,
+					style,
+					type,
+				});
 			});
 			// Continue before setting to the cache completes to speed up response times
 		}
@@ -95,7 +101,12 @@ async function serveImg(type, cache, req, res) {
 		]);
 		res.send(loanImg);
 	} catch (err) {
-		error(`Error serving image, ${err}`, { error: err });
+		error(`Error serving image, ${err}`, {
+			error: err,
+			params: req.params,
+			style,
+			type,
+		});
 		res.sendStatus(500);
 	}
 }
@@ -110,10 +121,17 @@ module.exports = function liveLoanRouter(cache) {
 		});
 	});
 
-	// User IMG Router
+	// User IMG Router (Legacy)
 	router.use('/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await tracer.trace('live-loan.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', cache, req, res);
+			await serveImg('user', 'legacy', cache, req, res);
+		});
+	});
+
+	// User IMG Router (Kiva Classic)
+	router.use('/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
+		await tracer.trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'classic', cache, req, res);
 		});
 	});
 
@@ -124,10 +142,17 @@ module.exports = function liveLoanRouter(cache) {
 		});
 	});
 
-	// Loan-to-loan IMG Router
+	// Loan-to-loan IMG Router (Legacy)
 	router.use('/l/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await tracer.trace('live-loan.loan.serveImg', { resource: req.path }, async () => {
-			await serveImg('loan', cache, req, res);
+			await serveImg('loan', 'legacy', cache, req, res);
+		});
+	});
+
+	// Loan-to-loan IMG Router (Kiva Classic)
+	router.use('/l/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
+		await tracer.trace('live-loan.loan.serveImg', { resource: req.path }, async () => {
+			await serveImg('loan', 'classic', cache, req, res);
 		});
 	});
 
@@ -146,10 +171,17 @@ module.exports = function liveLoanRouter(cache) {
 		});
 	});
 
-	// Filter IMG Router
+	// Filter IMG Router (Legacy)
 	router.use('/f/:id([a-zA-Z0-9.%,_-]{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await tracer.trace('live-loan.filter.serveImg', { resource: req.path }, async () => {
-			await serveImg('filter', cache, req, res);
+			await serveImg('filter', 'legacy', cache, req, res);
+		});
+	});
+
+	// Filter IMG Router (Kiva Classic)
+	router.use('/f/:id([a-zA-Z0-9.%,_-]{0,})/img2/:offset(\\d{0,})', async (req, res) => {
+		await tracer.trace('live-loan.filter.serveImg', { resource: req.path }, async () => {
+			await serveImg('filter', 'classic', cache, req, res);
 		});
 	});
 
