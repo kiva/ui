@@ -107,11 +107,7 @@ import {
 	isBetween25And500,
 	enableCookie,
 	isErlCookieActive,
-	getDropdownERL,
-	BASE_LENDERS_COOKIE as baseCookie,
-	TOP_LENDERS_COOKIE as topCookie,
-	TOP_UP_LENDERS as topUpLenders,
-	BASE_LENDERS as baseLenders
+	getDropdownERL
 } from '@/util/loanUtils';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';

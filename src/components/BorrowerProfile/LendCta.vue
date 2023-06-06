@@ -353,11 +353,7 @@ import {
 	isBetween25And500,
 	getDropdownERL,
 	isErlCookieActive,
-	enableCookie,
-	BASE_LENDERS_COOKIE as baseCookie,
-	TOP_LENDERS_COOKIE as topCookie,
-	TOP_UP_LENDERS as topUpLenders,
-	BASE_LENDERS as baseLenders
+	enableCookie
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
