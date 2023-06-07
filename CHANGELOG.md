@@ -1,3 +1,22 @@
+## [2.610.0](https://github.com/kiva/ui/compare/v2.609.1...v2.610.0) (2023-06-07)
+
+
+### Features
+
+* combined logic into single test function, ensured all pages have balance available ([2c02965](https://github.com/kiva/ui/commit/2c02965f4aa26920ca4b525e852150bcd478a8ad))
+* set default dropdown on new loan cards based on session cookie ([5a35439](https://github.com/kiva/ui/commit/5a35439b993211bd479cd64804bc7269e532a4ca))
+
+
+### Bug Fixes
+
+* check user balance for relending experiment ([f39e19c](https://github.com/kiva/ui/commit/f39e19cfa2297c77c8e8c981aafe904c115575df))
+* cover non-logged-in user ([7650f34](https://github.com/kiva/ui/commit/7650f340b13e2afccf6cc9f27ca9f1aee7bf1845))
+* merge aftermath removed ([f6b2419](https://github.com/kiva/ui/commit/f6b24197f3bc3eef1c860ad2ac22216f653eb386))
+* minor cleanup from PR comments ([2c175ca](https://github.com/kiva/ui/commit/2c175ca333fe8beb9460eaf6d025d4279d17c84e))
+* missed some things ([289a6e2](https://github.com/kiva/ui/commit/289a6e234bd5068dacea1b18592bea8d892bedad))
+* some PR fixes ([15f4ff2](https://github.com/kiva/ui/commit/15f4ff23210f5289912096023d21e6cabf28afbd))
+* unnecessary imports ([c172df9](https://github.com/kiva/ui/commit/c172df9d283a6f74f5a7e2b157bafb1767639f0b))
+
 ### [2.609.1](https://github.com/kiva/ui/compare/v2.609.0...v2.609.1) (2023-06-07)
 
 
