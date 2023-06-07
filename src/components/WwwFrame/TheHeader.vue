@@ -365,28 +365,17 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<template v-if="isVisitor">
-								<kv-button
-									variant="secondary"
-									v-if="isMobile"
-									class="tw-bg-white tw-whitespace-nowrap"
-									:to="loginUrl"
-									data-testid="header-log-in"
-									v-kv-track-event="['TopNav','click-Sign-in']"
-								>
-									Log in
-								</kv-button>
-
-								<a
-									v-else
-									class="header__button"
-									:href="loginUrl"
-									data-testid="header-log-in"
-									v-kv-track-event="['TopNav','click-Sign-in']"
-								>
-									Log in
-								</a>
-							</template>
+							<kv-button
+								:variant="isMobile ? 'secondary' : 'ghost'"
+								v-if="isVisitor"
+								class="tw-bg-white tw-whitespace-nowrap"
+								:class="{'header__button login-link': !isMobile}"
+								:to="loginUrl"
+								data-testid="header-log-in"
+								v-kv-track-event="['TopNav','click-Sign-in']"
+							>
+								Log in
+							</kv-button>
 
 							<!-- Logged in Profile -->
 							<router-link
@@ -786,18 +775,16 @@ export default {
 			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
 			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
-		window.addEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
+		window.addEventListener('resize', this.determineIfMobile());
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
+		window.removeEventListener('resize', this.determineIfMobile());
 	},
 	methods: {
 		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
+			return _throttle(() => {
+				this.isMobile = document.documentElement.clientWidth < 735;
+			}, 200);
 		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;
@@ -1034,4 +1021,14 @@ export default {
 		grid-template-columns: auto auto auto 1fr auto;
 	}
 }
+
+.login-link >>> span {
+	@apply tw-h-full tw-p-0 hover:tw-bg-white hover:tw-text-action-highlight;
+	@apply hover:tw-no-underline focus:tw-no-underline;
+}
+
+.login-link >>> span > span {
+	@apply tw-flex tw-items-center;
+}
+
 </style>
