@@ -1,3 +1,10 @@
+### [2.609.1](https://github.com/kiva/ui/compare/v2.609.0...v2.609.1) (2023-06-07)
+
+
+### Bug Fixes
+
+* mg page should show the already signed up box for modern subs ([03c1145](https://github.com/kiva/ui/commit/03c114565e2cbbb17108c1d997bab8d4a9792cc6))
+
 ## [2.609.0](https://github.com/kiva/ui/compare/v2.608.0...v2.609.0) (2023-06-07)
 
 
