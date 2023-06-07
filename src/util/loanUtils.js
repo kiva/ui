@@ -1,7 +1,9 @@
 import numeral from 'numeral';
 import _get from 'lodash/get';
 
-/** Utility functions for working with loan objects */
+export const ERL_COOKIE_NAME = 'kverlfivedollarnotes';
+export const TOP_UP_CAMPAIGN = 'TOPUP-VB-BALANCE-MPV1';
+export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
 
 /**
  * Loan Statuses Available on borrower profile
@@ -22,14 +24,6 @@ export const ALLOWED_LOAN_STATUSES = [
 	// 'refunded',
 	// 'reviewed'
 ];
-
-/**
- * Keys for for ERL Exp
- */
-export const BASE_LENDERS_COOKIE = 'erl-five-notes-base';
-export const TOP_LENDERS_COOKIE = 'erl-five-notes-top';
-export const TOP_UP_LENDERS = 'topup-vb-balance-MPV1';
-export const BASE_LENDERS = 'base-vb_balance_MPV1';
 
 /**
  * Returns true if loan is fundraising / can be lent to
@@ -327,66 +321,57 @@ export function loanCallouts(loan, categoryPageName) {
 }
 
 /**
- * Checks if ERL cookie is active
- * @param 	{Object} 		cookieStore The cookie store
- * @returns {String}		Active cookie name
- */
-export function isErlCookieActive(cookieStore) {
-	if (cookieStore.get(BASE_LENDERS_COOKIE)) {
-		return BASE_LENDERS_COOKIE;
-	}
-	if (cookieStore.get(TOP_LENDERS_COOKIE)) {
-		return TOP_LENDERS_COOKIE;
-	}
-	return '';
-}
-
-/**
- * Get the CTA dropdown value based on cookie
- */
-export function getDropdownErl(activeCookie, userBalance, unreservedAmount) {
-	console.log(activeCookie, userBalance, unreservedAmount);
-	if (activeCookie === BASE_LENDERS_COOKIE) {
-		const val = Math.floor(userBalance / 5) * 5;
-		return (unreservedAmount < userBalance || val <= 0) ? 5 : val;
-	}
-	return unreservedAmount > 5 ? 5 : unreservedAmount;
-}
-
-/**
- * Enables session cookie based on UTM parameter
+ * Gets the selected option for the Lend CTA component
  *
- * @param	{String}	utmParam			UTM parameters
- * @param	{String}	cookieName			The cookie name
- * @param	{Object}	cookieStore 		The cookie store
- * @param	{String}	activeCookie		If a cookie is active, if yes its key
- * @param	{Number}	userBalance			The user's balance
- * @param	{Number}	unreservedAmount	Unreserved amount on loan
- *
- * @returns {Number}	Returns default dropdown value for ERL
+ * @param {Object} cookieStore The cookie store object form the Vue component
+ * @param {boolean} enableFiveDollarsNotes Whether $5 notes experiment is assigned
+ * @param {string} campaign The "utm_campaign" query param sourced from the Vue component route
+ * @param {string} unreservedAmount The unreserved amount for the loan
+ * @param {string} userBalance The balance of the current user
+ * @returns {string} The option to be selected in the CTA dropdown
  */
-export function enableErlCookie(campaign, cookieStore, activeCookie, userBalance, unreservedAmount) {
-	const sessionTimestamp = new Date();
-	sessionTimestamp.setHours(sessionTimestamp.getHours() + 24);
-	if (activeCookie !== '') {
-		return getDropdownErl(activeCookie, userBalance, unreservedAmount);
-	}
-	if (campaign) {
-		if (campaign.toUpperCase() === TOP_UP_LENDERS.toUpperCase()) {
-			cookieStore.set(
-				TOP_LENDERS_COOKIE,
-				true,
-				{ expires: sessionTimestamp }
-			);
-			return this.unreservedAmount > 5 ? '5' : this.unreservedAmount;
-		} if (campaign.toUpperCase() === BASE_LENDERS.toUpperCase()) {
-			cookieStore.set(
-				BASE_LENDERS_COOKIE,
-				true,
-				{ expires: sessionTimestamp }
-			);
-			return getDropdownErl(activeCookie, userBalance, unreservedAmount);
+export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, campaign, unreservedAmount, userBalance) {
+	if (enableFiveDollarsNotes) {
+		let currentCampaign = cookieStore.get(ERL_COOKIE_NAME);
+
+		if (campaign && !currentCampaign) {
+			// Effects of the campaign lasts for 24 hours
+			const expires = new Date();
+			expires.setHours(expires.getHours() + 24);
+
+			const campaignToCheck = campaign.toUpperCase();
+
+			// eslint-disable-next-line no-nested-ternary
+			currentCampaign = campaignToCheck.includes(TOP_UP_CAMPAIGN)
+				? TOP_UP_CAMPAIGN
+				: (campaignToCheck.includes(BASE_CAMPAIGN) ? BASE_CAMPAIGN : '');
+
+			if (currentCampaign) {
+				cookieStore.set(ERL_COOKIE_NAME, currentCampaign, { expires });
+			}
+		}
+
+		if (currentCampaign) {
+			// Base campaign gets largest increment of $5 under the user's balance up to $25 or the unreserved amount
+			if (currentCampaign === BASE_CAMPAIGN) {
+				let val = Math.floor(userBalance / 5) * 5;
+
+				// eslint-disable-next-line no-nested-ternary
+				val = val === 0 ? 5 : (val > 25 ? 25 : val);
+
+				return Number(val <= unreservedAmount ? val : unreservedAmount).toFixed();
+			}
+
+			// Top up campaign defaults to $5
+			return Number(unreservedAmount > 5 ? 5 : unreservedAmount).toFixed();
 		}
 	}
-	return null;
+
+	// Handle when $5 notes isn't enabled
+	if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
+		return Number(unreservedAmount).toFixed();
+	}
+
+	// $25 is the fallback default selected option
+	return '25';
 }

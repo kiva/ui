@@ -110,9 +110,9 @@ export default {
 			default: false
 		},
 		userBalance: {
-			type: Number,
-			default: 0
-		}
+			type: String,
+			default: undefined
+		},
 	},
 	data() {
 		return {

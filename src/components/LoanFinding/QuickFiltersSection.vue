@@ -34,6 +34,7 @@
 						:use-full-width="true"
 						:show-tags="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 					/>
 					<kiva-classic-basic-loan-card
@@ -92,7 +93,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		userBalance: {
+			type: String,
+			default: undefined
+		},
 	},
 	data() {
 		return {

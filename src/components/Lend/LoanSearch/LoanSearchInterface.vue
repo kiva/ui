@@ -115,6 +115,7 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
 					/>
@@ -158,7 +159,6 @@
 <script>
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
@@ -177,11 +177,24 @@ import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilter
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '@/util/loanSearch/filterConfig';
 import DonationCTA from '@/components/Lend/DonationCTA';
+import { gql } from '@apollo/client';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const COOKIE_KEY = 'kv-search-result-count';
+
+const userInfoLendFilterQuery = gql`
+	query userInfoLendFilter {
+		my {
+			id
+			userAccount {
+				id
+				balance
+			}
+		}
+	}
+`;
 
 export default {
 	name: 'LoanSearchInterface',
@@ -236,6 +249,7 @@ export default {
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
 			userId: null,
+			userBalance: undefined,
 		};
 	},
 	apollo: {
@@ -247,7 +261,7 @@ export default {
 			}
 
 			return client.query({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			}).then(() => {
 				return client.query({
 					query: itemsInBasketQuery
@@ -260,11 +274,12 @@ export default {
 
 		try {
 			const userIdData = this.apollo.readQuery({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			});
 			this.userId = userIdData?.my?.userAccount?.id ?? null;
+			this.userBalance = userIdData?.my?.userAccount?.balance;
 		} catch (e) {
-			logReadQueryError(e, 'LoanSearchInterface userIdQuery');
+			logReadQueryError(e, 'LoanSearchInterface userInfoLendFilterQuery');
 		}
 
 		try {

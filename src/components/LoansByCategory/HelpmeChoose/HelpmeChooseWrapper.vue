@@ -51,6 +51,7 @@
 					:category-page-name="loanChannelName"
 					:use-full-width="true"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userData.balance"
 				/>
 				<loan-card-controller
 					v-else
@@ -115,7 +116,7 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	data() {
 		return {

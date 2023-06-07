@@ -349,11 +349,8 @@ import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
-	isBetween25And50,
 	isBetween25And500,
-	getDropdownErl,
-	isErlCookieActive,
-	enableErlCookie
+	getLendCtaSelectedOption,
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -431,8 +428,7 @@ export default {
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
 			inPfp: false,
-			userBalance: 0,
-			activeCookie: '',
+			userBalance: undefined,
 		};
 	},
 	apollo: {
@@ -519,7 +515,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
-			this.userBalance = result?.data?.my?.userAccount?.balance ?? 0;
+			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
@@ -642,19 +638,13 @@ export default {
 		},
 		unreservedAmount(newValue, previousValue) {
 			if (newValue !== previousValue && previousValue === '') {
-				if (this.enableFiveDollarsNotes) {
-					if (this.activeCookie !== '') {
-						this.selectedOption = getDropdownErl(
-							isErlCookieActive(this.cookieStore),
-							this.userBalance,
-							newValue
-						);
-					}
-				}
-				if (isBetween25And50(newValue) || isLessThan25(newValue)) {
-					this.selectedOption = Number(newValue).toFixed();
-				}
-				this.selectedOption = '25';
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {
@@ -814,19 +804,6 @@ export default {
 	},
 	mounted() {
 		this.createWrapperObserver();
-		const campaign = this.$route.query.utm_campaign;
-
-		this.activeCookie = isErlCookieActive(this.cookieStore);
-
-		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
-			this.selectedOption = enableErlCookie(
-				campaign,
-				this.cookieStore,
-				this.activeCookie,
-				this.userBalance,
-				this.unreservedAmount
-			);
-		}
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();

@@ -103,11 +103,8 @@
 import {
 	getDropdownPriceArray,
 	isLessThan25,
-	isBetween25And50,
 	isBetween25And500,
-	enableErlCookie,
-	isErlCookieActive,
-	getDropdownErl
+	getLendCtaSelectedOption
 } from '@/util/loanUtils';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -138,8 +135,8 @@ export default {
 			default: false
 		},
 		userBalance: {
-			type: Number,
-			default: 0
+			type: String,
+			default: undefined
 		},
 	},
 	components: {
@@ -150,8 +147,13 @@ export default {
 	data() {
 		return {
 			completeLoanView: true,
-			selectedOption: this.getSelectedOption(this.loan?.unreservedAmount),
-			activeCookie: '',
+			selectedOption: getLendCtaSelectedOption(
+				this.cookieStore,
+				this.enableFiveDollarsNotes,
+				this.$route.query.utm_campaign,
+				this.loan?.unreservedAmount,
+				this.userBalance,
+			),
 		};
 	},
 	methods: {
@@ -165,21 +167,6 @@ export default {
 			);
 			this.$emit('add-to-basket', this.amountToLend);
 		},
-		getSelectedOption(unreservedAmount) {
-			if (this.enableFiveDollarsNotes) {
-				if (this.activeCookie !== '') {
-					return getDropdownErl(
-						isErlCookieActive(this.cookieStore),
-						this.userBalance,
-						unreservedAmount
-					);
-				}
-			}
-			if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
-				return Number(unreservedAmount).toFixed();
-			}
-			return '25';
-		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.$kvTrackEvent(
 				'Lending',
@@ -191,7 +178,13 @@ export default {
 	watch: {
 		unreservedAmount(newValue, previousValue) {
 			if (newValue !== previousValue && previousValue === '') {
-				this.selectedOption = this.getSelectedOption(newValue);
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {
@@ -218,13 +211,8 @@ export default {
 		},
 		amountToLend() {
 			if (this.enableRelendingExp) {
-				if (this.enableFiveDollarsNotes) {
-					if (this.unreservedAmount <= 5) {
-						return Number(this.unreservedAmount) > 5 ? '5' : this.unreservedAmount;
-					}
-					if (this.activeCookie !== '') {
-						return getDropdownErl(this.activeCookie, 34, this.unreservedAmount);
-					}
+				if (this.enableFiveDollarsNotes && this.userBalance <= 20) {
+					return Number(this.unreservedAmount) > 5 ? '5' : this.unreservedAmount;
 				}
 				return Number(this.unreservedAmount) > 25 ? '25' : this.unreservedAmount;
 			}
@@ -312,21 +300,6 @@ export default {
 			return this.state === 'refunded' || this.state === 'expired';
 		},
 	},
-	mounted() {
-		const campaign = this.$route.query.utm_campaign;
-
-		this.activeCookie = isErlCookieActive(this.cookieStore);
-
-		if (this.enableFiveDollarsNotes && ((this.activeCookie !== '' || campaign))) {
-			this.selectedOption = enableErlCookie(
-				campaign,
-				this.cookieStore,
-				this.activeCookie,
-				this.userBalance,
-				this.unreservedAmount
-			);
-		}
-	}
 };
 
 </script>

@@ -8,6 +8,7 @@
 					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 				</h3>
 			</div>
+
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
 				:title="firstRowTitle"
@@ -31,6 +32,7 @@
 					:class="{ 'tw-order-last' : enableRelendingExp }"
 					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 				/>
 
@@ -46,6 +48,7 @@
 					:class="{ 'tw-order-first' : enableRelendingExp }"
 					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 				/>
 			</div>
@@ -56,6 +59,7 @@
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
 		</div>
@@ -134,7 +138,7 @@ export default {
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
 			enableRelendingExp: false,
-			userBalance: 0
+			userBalance: undefined,
 		};
 	},
 	apollo: {
@@ -320,9 +324,10 @@ export default {
 
 		this.initializeFiveDollarsNotes();
 
-		const userBalance = Number(this.userInfo?.balance ?? 0);
+		this.userBalance = this.userInfo?.balance;
+
 		// Relending test for users with balance
-		if (userBalance) {
+		if (this.userBalance) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -347,15 +352,14 @@ export default {
 
 		/* eslint-disable max-len */
 		if (this.enableFiveDollarsNotes) {
-			if ((userBalance > 0 && userBalance < 10) || (userBalance > 20 && userBalance < 50)) relendingArray = relendingArray.slice(0, 2);
-			if ((userBalance > 10 && userBalance < 15) || (userBalance > 50 && userBalance < 75)) relendingArray = relendingArray.slice(0, 3);
+			if ((this.userBalance > 0 && this.userBalance < 10) || (this.userBalance > 20 && this.userBalance < 50)) relendingArray = relendingArray.slice(0, 2);
+			if ((this.userBalance > 10 && this.userBalance < 15) || (this.userBalance > 50 && this.userBalance < 75)) relendingArray = relendingArray.slice(0, 3);
 		} else {
-			if (userBalance > 0 && userBalance < 50) relendingArray = relendingArray.slice(0, 2);
-			if (userBalance > 50 && userBalance < 75) relendingArray = relendingArray.slice(0, 3);
+			if (this.userBalance > 0 && this.userBalance < 50) relendingArray = relendingArray.slice(0, 2);
+			if (this.userBalance > 50 && this.userBalance < 75) relendingArray = relendingArray.slice(0, 3);
 		}
 		/* eslint-enable max-len */
 
-		this.userBalance = userBalance;
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
 	},
 	mounted() {

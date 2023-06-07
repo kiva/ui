@@ -73,6 +73,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userData.balance"
 							/>
 							<loan-card-controller
 								v-else
@@ -115,6 +116,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userData.balance"
 							/>
 							<loan-card-controller
 								v-else
@@ -150,6 +152,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userData.balance"
 							/>
 							<loan-card-controller
 								v-else
