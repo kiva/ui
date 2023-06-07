@@ -349,8 +349,8 @@ import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
-	isBetween25And50,
-	isBetween25And500
+	isBetween25And500,
+	getLendCtaSelectedOption,
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -427,7 +427,8 @@ export default {
 			slotMachineInterval: null,
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
-			inPfp: false
+			inPfp: false,
+			userBalance: undefined,
 		};
 	},
 	apollo: {
@@ -474,6 +475,7 @@ export default {
 					id
 					userAccount {
 						id
+						balance
 					}
 				}
 				general {
@@ -513,6 +515,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
+			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
@@ -603,7 +606,7 @@ export default {
 				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
 			};
 
-			// Set inital stat
+			// Set initial stat
 			cycleSlotMachine();
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
@@ -625,7 +628,7 @@ export default {
 					this.matchingHighlightExpShown = version === 'b';
 				}
 			}
-		}
+		},
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -634,11 +637,14 @@ export default {
 			}
 		},
 		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
+			if (newValue !== previousValue && previousValue === '') {
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {

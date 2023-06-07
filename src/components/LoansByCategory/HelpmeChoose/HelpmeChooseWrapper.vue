@@ -51,6 +51,7 @@
 					:category-page-name="loanChannelName"
 					:use-full-width="true"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userBalance"
 				/>
 				<loan-card-controller
 					v-else
@@ -115,7 +116,7 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	data() {
 		return {
@@ -134,7 +135,7 @@ export default {
 			if (!this.triggersVisible) {
 				return 'Borrowers we think you’ll like';
 			}
-			return this.isVisitor ? 'Need help choosing?' : `Need help choosing, ${this.userData.firstName}?`;
+			return this.isVisitor ? 'Need help choosing?' : `Need help choosing, ${this.userData?.firstName}?`;
 		},
 		subTitle() {
 			if (!this.triggersVisible) {
@@ -144,6 +145,9 @@ export default {
 		},
 		secondOption() {
 			return this.isVisitor ? 'popularityScore' : 'personalized';
+		},
+		userBalance() {
+			return this.userData?.balance;
 		},
 	},
 	methods: {

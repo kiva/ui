@@ -73,6 +73,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -115,6 +116,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -150,6 +152,7 @@
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
 								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -482,7 +485,10 @@ export default {
 		},
 		emptyState() {
 			return this.allLoans?.length <= 0;
-		}
+		},
+		userBalance() {
+			return this.userData?.balance;
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {

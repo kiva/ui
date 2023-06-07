@@ -1,7 +1,9 @@
 import numeral from 'numeral';
 import _get from 'lodash/get';
 
-/** Utility functions for working with loan objects */
+export const ERL_COOKIE_NAME = 'kverlfivedollarnotes';
+export const TOP_UP_CAMPAIGN = 'TOPUP-VB-BALANCE-MPV1';
+export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
 
 /**
  * Loan Statuses Available on borrower profile
@@ -249,4 +251,61 @@ export function isBetween25And50(unreservedAmount) {
 
 export function isBetween25And500(unreservedAmount) {
 	return unreservedAmount < 500 && unreservedAmount >= 25;
+}
+
+/**
+ * Gets the selected option for the Lend CTA component
+ *
+ * @param {Object} cookieStore The cookie store object form the Vue component
+ * @param {boolean} enableFiveDollarsNotes Whether $5 notes experiment is assigned
+ * @param {string} campaign The "utm_campaign" query param sourced from the Vue component route
+ * @param {string} unreservedAmount The unreserved amount for the loan
+ * @param {string} userBalance The balance of the current user
+ * @returns {string} The option to be selected in the CTA dropdown
+ */
+export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, campaign, unreservedAmount, userBalance) {
+	// Don't enable the campaign changes when the user balance is undefined (user not logged in)
+	if (enableFiveDollarsNotes && typeof userBalance !== 'undefined') {
+		let currentCampaign = cookieStore.get(ERL_COOKIE_NAME);
+
+		if (campaign && !currentCampaign) {
+			// Effects of the campaign lasts for 24 hours
+			const expires = new Date();
+			expires.setHours(expires.getHours() + 24);
+
+			const campaignToCheck = campaign.toUpperCase();
+
+			// eslint-disable-next-line no-nested-ternary
+			currentCampaign = campaignToCheck.includes(TOP_UP_CAMPAIGN)
+				? TOP_UP_CAMPAIGN
+				: (campaignToCheck.includes(BASE_CAMPAIGN) ? BASE_CAMPAIGN : '');
+
+			if (currentCampaign) {
+				cookieStore.set(ERL_COOKIE_NAME, currentCampaign, { expires });
+			}
+		}
+
+		if (currentCampaign) {
+			// Base campaign gets largest increment of $5 under the user's balance up to $25 or the unreserved amount
+			if (currentCampaign === BASE_CAMPAIGN) {
+				let val = Math.floor(userBalance / 5) * 5;
+
+				// eslint-disable-next-line no-nested-ternary
+				val = val === 0 ? 5 : (val > 25 ? 25 : val);
+
+				return Number(val <= unreservedAmount ? val : unreservedAmount).toFixed();
+			}
+
+			// Top up campaign defaults to $5
+			return Number(unreservedAmount > 5 ? 5 : unreservedAmount).toFixed();
+		}
+	}
+
+	// Handle when $5 notes isn't enabled
+	if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
+		return Number(unreservedAmount).toFixed();
+	}
+
+	// $25 is the fallback default selected option
+	return '25';
 }

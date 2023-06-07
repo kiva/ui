@@ -103,8 +103,8 @@
 import {
 	getDropdownPriceArray,
 	isLessThan25,
-	isBetween25And50,
-	isBetween25And500
+	isBetween25And500,
+	getLendCtaSelectedOption
 } from '@/util/loanUtils';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
@@ -112,6 +112,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LendCtaExp',
+	inject: ['cookieStore'],
 	props: {
 		loan: {
 			type: Object,
@@ -134,9 +135,9 @@ export default {
 			default: false
 		},
 		userBalance: {
-			type: Number,
-			default: 0
-		}
+			type: String,
+			default: undefined
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -146,7 +147,13 @@ export default {
 	data() {
 		return {
 			completeLoanView: true,
-			selectedOption: this.getSelectedOption(this.loan?.unreservedAmount),
+			selectedOption: getLendCtaSelectedOption(
+				this.cookieStore,
+				this.enableFiveDollarsNotes,
+				this.$route.query.utm_campaign,
+				this.loan?.unreservedAmount,
+				this.userBalance,
+			),
 		};
 	},
 	methods: {
@@ -160,12 +167,6 @@ export default {
 			);
 			this.$emit('add-to-basket', this.amountToLend);
 		},
-		getSelectedOption(unreservedAmount) {
-			if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
-				return Number(unreservedAmount).toFixed();
-			}
-			return '25';
-		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.$kvTrackEvent(
 				'Lending',
@@ -177,7 +178,13 @@ export default {
 	watch: {
 		unreservedAmount(newValue, previousValue) {
 			if (newValue !== previousValue && previousValue === '') {
-				this.selectedOption = this.getSelectedOption(newValue);
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {
