@@ -327,7 +327,7 @@ export default {
 		this.userBalance = this.userInfo?.balance;
 
 		// Relending test for users with balance
-		if (this.userBalance) {
+		if (Number(this.userBalance) > 0) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
