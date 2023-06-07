@@ -1,3 +1,17 @@
+## [2.609.0](https://github.com/kiva/ui/compare/v2.608.0...v2.609.0) (2023-06-07)
+
+
+### Features
+
+* live loan card image Kiva Classic styling option MARS-385 ([#4860](https://github.com/kiva/ui/issues/4860)) ([8cb3979](https://github.com/kiva/ui/commit/8cb39794218eb1fafe5e9337486165a398284e4d))
+
+## [2.608.0](https://github.com/kiva/ui/compare/v2.607.0...v2.608.0) (2023-06-05)
+
+
+### Features
+
+* added generic thank you page for challenges from contentful ([886e8b9](https://github.com/kiva/ui/commit/886e8b98b43012e2b80ebeae633589f185e37184))
+
 ## [2.607.0](https://github.com/kiva/ui/compare/v2.606.1...v2.607.0) (2023-06-02)
 
 

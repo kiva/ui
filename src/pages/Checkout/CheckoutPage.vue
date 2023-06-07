@@ -272,8 +272,7 @@ import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
 import {
 	achievementsQuery,
-	hasMadeAchievementsProgression,
-	EARTHDAY_23_CHALLENGE_KEY
+	achievementProgression,
 } from '@/util/achievementUtils';
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -305,16 +304,12 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
-import {
-	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const EARTHDAY_CHALLENGE_EXP = 'earthday_challenge';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 
@@ -400,7 +395,7 @@ export default {
 			teamJoinStatus: null,
 			myTeams: [],
 			continueButtonState: 'loading',
-			earthDayChallengeRedirectQueryParam: '',
+			challengeRedirectQueryParam: '',
 		};
 	},
 	apollo: {
@@ -434,7 +429,6 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: EARTHDAY_CHALLENGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
@@ -558,31 +552,16 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// EarthDay challenge code
-		const { version } = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			EARTHDAY_CHALLENGE_EXP,
-			'EXP-ACK-557-Apr2023'
-		);
-		if (version === 'b') {
-			// Fetch Challenge Game Status
-			// If user is in challenge and a loan in basket makes progress towards
-			// challenge, set query param
-			achievementsQuery(this.apollo, this.loanIdsInBasket)
-				.then(({ data }) => {
-					// eslint-disable-next-line max-len
-					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-					const showEarthDayThanksPage = hasMadeAchievementsProgression(
-						checkoutMilestoneProgresses,
-						EARTHDAY_23_CHALLENGE_KEY
-					);
-					// eslint-disable-next-line max-len
-					this.earthDayChallengeRedirectQueryParam = showEarthDayThanksPage ? '&earthday23Challenge=true' : '';
-				});
-			// end game code
-		}
+		// Fetch Challenge Status
+		// If a loan in basket makes progress towards an active challenge,
+		// set query param to redirect to special thank you page
+		achievementsQuery(this.apollo, this.loanIdsInBasket)
+			.then(({ data }) => {
+				const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+				const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
+				this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
+			});
+		// end challenge code
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -830,7 +809,7 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, this.earthDayChallengeRedirectQueryParam);
+						this.redirectToThanks(transactionId, this.challengeRedirectQueryParam);
 					},
 					800
 				);
