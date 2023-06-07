@@ -152,12 +152,12 @@ const pageQuery = gql`
 		contentful {
 			entries(contentType: "page", contentKey: "monthlygood")
 		}
-		# mySubscriptions(includeDisabled: false) {
-		# 	values {
-		# 		id
-		# 		enabled
-		# 	}
-		# }
+		mySubscriptions(includeDisabled: false) {
+			values {
+				id
+				enabled
+			}
+		}
 	}
 `;
 
@@ -266,9 +266,8 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-			// TODO! Add this back in when service supports non-logged in users
-			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			// this.hasModernSub = modernSubscriptions.length !== 0;
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// Check for contentful content
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
