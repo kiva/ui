@@ -8,7 +8,12 @@ const loanCount = 4;
 const loanValues = `values {
 	name
 	id
+	activity {
+		id
+		name
+	}
 	borrowerCount
+	distributionModel
 	geocode {
 		country {
 			name
@@ -16,12 +21,20 @@ const loanValues = `values {
 	}
 	use
 	loanAmount
+	sector {
+		id
+		name
+	}
 	status
+	tags
 	loanFundraisingInfo {
 		fundedAmount
 	}
 	image {
 		retina: url(customSize: "w960h720")
+	}
+	... on LoanPartner {
+		themes
 	}
 }`;
 
