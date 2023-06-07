@@ -264,7 +264,8 @@ export function isBetween25And500(unreservedAmount) {
  * @returns {string} The option to be selected in the CTA dropdown
  */
 export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, campaign, unreservedAmount, userBalance) {
-	if (enableFiveDollarsNotes) {
+	// Don't enable the campaign changes when the user balance is undefined (user not logged in)
+	if (enableFiveDollarsNotes && typeof userBalance !== 'undefined') {
 		let currentCampaign = cookieStore.get(ERL_COOKIE_NAME);
 
 		if (campaign && !currentCampaign) {

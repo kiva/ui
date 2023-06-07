@@ -236,5 +236,15 @@ describe('loanUtils.js', () => {
 				{ expires: mockTomorrow }
 			);
 		});
+
+		it('should handle $5 notes ERL campaign with undefined balance', () => {
+			mockCookieStoreGet.mockReturnValue(BASE_CAMPAIGN);
+
+			const result = getLendCtaSelectedOption(mockCookieStore, true, undefined, '100.00', undefined);
+
+			expect(result).toBe('25');
+			expect(mockCookieStoreGet).toHaveBeenCalledTimes(0);
+			expect(mockCookieStoreSet).toHaveBeenCalledTimes(0);
+		});
 	});
 });
