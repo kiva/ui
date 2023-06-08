@@ -38,7 +38,7 @@ export default {
 	props: {
 		controller: {
 			validator(value) {
-				if (value instanceof String) return true;
+				if (typeof value === 'string') return true;
 				if (typeof window !== 'undefined'
 					&& 'HTMLElement' in window
 					&& value instanceof HTMLElement) return true;

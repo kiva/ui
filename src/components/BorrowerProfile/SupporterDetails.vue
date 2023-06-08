@@ -97,7 +97,7 @@
 			:controller="toolTipId"
 			:data-testid="`tooltip-id-${toolTipId}`"
 			theme="dark"
-			v-if="teamTooltipData"
+			v-if="teamTooltipData && !this.isMobile"
 		>
 			{{ teamTooltipData.category }}<br>
 			{{ teamTooltipData.lendersForTeamMessage }}
