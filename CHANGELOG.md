@@ -1,3 +1,10 @@
+### [2.610.2](https://github.com/kiva/ui/compare/v2.610.1...v2.610.2) (2023-06-08)
+
+
+### Bug Fixes
+
+* disable tooltip for team links on mobile ([bf291c6](https://github.com/kiva/ui/commit/bf291c67442c71d91720da563fcfc0e6b00edbb0))
+
 ### [2.610.1](https://github.com/kiva/ui/compare/v2.610.0...v2.610.1) (2023-06-08)
 
 
