@@ -115,6 +115,7 @@
 
 <script>
 import { mdiLink } from '@mdi/js';
+import numeral from 'numeral';
 import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
@@ -215,9 +216,12 @@ export default {
 		}
 	},
 	created() {
-		// eslint-disable-next-line max-len
-		const msg = `Thanks! Every month you'll get an email confirming your $${this.monthlyDonationAmount} donation. View your <a target="_blank" href="/settings/subscriptions">subscription settings</a> to review, make changes, or cancel.`;
-		this.$showTipMsg(msg, 'confirmation', true);
+		const monthlyAmountNumeral = numeral(this.monthlyDonationAmount);
+		if ((monthlyAmountNumeral.value() ?? 0) > 0) {
+			// eslint-disable-next-line max-len
+			const msg = `Thanks! Every month you'll get an email confirming your ${monthlyAmountNumeral.format('$0,0[.]00')} donation. View your <a target="_blank" href="/settings/subscriptions">subscription settings</a> to review, make changes, or cancel.`;
+			this.$showTipMsg(msg, 'confirmation', true);
+		}
 		this.gatherCurrentUserData();
 	}
 };
