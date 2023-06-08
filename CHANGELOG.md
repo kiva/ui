@@ -1,3 +1,10 @@
+### [2.607.1-next.1](https://github.com/kiva/ui/compare/v2.607.0...v2.607.1-next.1) (2023-06-08)
+
+
+### Bug Fixes
+
+* only show monthly donation confirmation for monthly donations ([a32974d](https://github.com/kiva/ui/commit/a32974df7620fb18c1fb1e0c190ca462c49869c8))
+
 ## [2.607.0](https://github.com/kiva/ui/compare/v2.606.1...v2.607.0) (2023-06-02)
 
 
