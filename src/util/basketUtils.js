@@ -68,7 +68,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 				resolve();
 			}
 		}).catch(errors => {
-			errors.forEach(error => {
+			(Array.isArray(errors) ? errors : [errors]).forEach(error => {
 				logSetLendAmountError(loanId, error);
 			});
 			reject(errors);
