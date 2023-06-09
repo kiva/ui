@@ -1,3 +1,10 @@
+### [2.610.3](https://github.com/kiva/ui/compare/v2.610.2...v2.610.3) (2023-06-09)
+
+
+### Bug Fixes
+
+* the ATB error can be singular ([55ac4ea](https://github.com/kiva/ui/commit/55ac4eaf2bdb43d939603c7ac90b158a80699c40))
+
 ### [2.610.2](https://github.com/kiva/ui/compare/v2.610.1...v2.610.2) (2023-06-08)
 
 
