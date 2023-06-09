@@ -908,10 +908,10 @@ export default {
 			if (this.isMatchingCampaign) {
 				return this.pageSettingData?.matchingAccountName ?? null;
 			}
-			return this.promoData?.promoFund?.displayName ?? null;
+			const promoCampaignNameFallback = this.promoData?.promoFund?.displayName ?? null;
+			return this.prioritizedTargetCampaignCredit?.promoFund?.displayName ?? promoCampaignNameFallback;
 		},
 		verificationRequired() {
-			debugger;
 			if (this.promoData?.managedAccount?.isEmployee
 				&& this.promoData?.managedAccount?.formId
 				// If promo guest checkout is enabled, we don't need formassembly verification

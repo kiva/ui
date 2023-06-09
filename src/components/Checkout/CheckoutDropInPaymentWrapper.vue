@@ -12,9 +12,28 @@
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div v-if="isGuestCheckout" id="guest-checkout">
-				<label class="input-label tw-font-medium tw-block tw-my-2" for="email">
+				<label
+					class="input-label tw-font-medium tw-block tw-my-2"
+					for="email"
+					v-if="!promoGuestCheckoutEnabled"
+				>
 					Where should we email your receipt?
 				</label>
+				<label
+					class="input-label tw-font-medium tw-block tw-my-2"
+					for="email"
+					v-else
+				>
+					What is your email?
+				</label>
+				<div
+					class="input-label tw-text-small tw-text-secondary tw-block tw-my-2"
+					for="email"
+					v-if="promoGuestCheckoutEnabled"
+				>
+					Kiva will share your information with {{ promoName ? promoName : 'your company' }}
+					to let them know you’ve redeemed your credits
+				</div>
 				<kv-text-input
 					type="email"
 					name="email"
@@ -29,7 +48,7 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="isGuestCheckout && validateCampaignEmail && $v.email.error">
+				<p v-if="isGuestCheckout && isValidEmailFormat && $v.email.error">
 					Valid campaign email required
 				</p>
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
@@ -134,6 +153,10 @@ export default {
 			default: '',
 		},
 		isGuestCheckout: {
+			type: Boolean,
+			default: false,
+		},
+		promoGuestCheckoutEnabled: {
 			type: Boolean,
 			default: false,
 		}
@@ -343,8 +366,7 @@ export default {
 					return kivaBraintreeResponse;
 				});
 		},
-		validateCampaignEmail() {
-			debugger;
+		isValidEmailFormat() {
 			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${this.refs.email}`);
 			return emailRegex.test(this.$refs.email);
 		},

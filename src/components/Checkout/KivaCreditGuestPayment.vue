@@ -2,8 +2,12 @@
 	<div>
 		<div v-if="isGuestCheckout" id="guest-checkout">
 			<label class="input-label tw-font-medium tw-block tw-my-2" for="email">
-				Where should we email your receipt?
+				What is your email?
 			</label>
+			<div class="input-label tw-text-small tw-text-secondary tw-block tw-my-2" for="email">
+				Kiva will share your information with {{ promoName ? promoName : 'your company' }}
+				to let them know you’ve redeemed your credits
+			</div>
 			<kv-text-input
 				type="email"
 				name="email"
@@ -21,7 +25,7 @@
 			<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 				Valid email required.
 			</p>
-			<p v-else-if="validateCampaignEmail && $v.email.error">
+			<p v-else-if="$v.email.error">
 				Valid campaign email required
 			</p>
 			<kv-checkbox
@@ -85,16 +89,16 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate';
+import { required, email } from 'vuelidate/lib/validators';
+
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
-import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
-
 export default {
-	name: 'KivaCreditPayment',
+	name: 'KivaCreditGuestPayment',
 	components: {
 		KvButton,
 		KvCheckbox,
@@ -121,6 +125,10 @@ export default {
 		promoGuestCheckoutEnabled: {
 			type: Boolean,
 			default: false
+		},
+		promoName: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -176,10 +184,6 @@ export default {
 					this.$emit('updating-totals', false);
 					console.error(errorResponse);
 				});
-		},
-		validateCampaignEmail() {
-			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${promoFundEmail}`);
-			return emailRegex.test(this.$refs.email);
 		}
 	}
 };

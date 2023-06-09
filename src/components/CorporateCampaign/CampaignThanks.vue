@@ -127,7 +127,7 @@ export default {
 	},
 	methods: {
 		fetchReceipt() {
-			let queryObj = {
+			const queryObj = {
 				query: thanksPageQuery,
 				variables: {
 					checkoutId: this.transactionId

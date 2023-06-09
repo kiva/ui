@@ -85,7 +85,8 @@ export default {
 		},
 		/**
 		 * Call the shop validateCheckout graphql query, using a guest email, a promo fund id and managed account id
-		 * - This validates the current basket for a promo basket guest checkout, returning any errors that need to be addressed
+		 * - This validates the current basket for a promo basket guest checkout,
+		 * returning any errors that need to be addressed
 		 *
 		 * @returns {Promise}
 		 */
@@ -100,7 +101,7 @@ export default {
 						promoFundId: Number(promoFundId),
 						managedAccountId: Number(managedAccountId),
 					}
-				}).then(data => {
+				}).then(() => {
 					resolve(this.validateGuestBasket(guestEmail, emailUpdates));
 				}).catch(errorResponse => {
 					logFormatter(errorResponse, 'error');

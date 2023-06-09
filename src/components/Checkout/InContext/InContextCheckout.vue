@@ -69,7 +69,32 @@
 				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
-		<div class="in-context-payment-conttrols" v-else>
+		<div class="in-context-payment-controls" v-else>
+			<kv-grid v-if="!continueAsGuest" class="tw-grid-cols-6">
+				<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
+					<kv-button
+						class="smaller checkout-button tw-mb-1"
+						v-if="promoGuestCheckoutEnabled"
+						@click="continueAsGuest = true"
+					>
+						Continue as a guest
+					</kv-button>
+					<kv-button
+						class="smaller checkout-button tw-mb-1"
+						v-if="promoGuestCheckoutEnabled"
+						variant="secondary"
+						:href="registerOrLoginHref"
+					>
+						Continue as an existing user
+					</kv-button>
+				</div>
+				<div class="tw-col-start-4 tw-col-end-7">
+					<p class="tw-grid-row">
+						For existing users, we recommend you log in with your work email address.
+					</p>
+				</div>
+			</kv-grid>
+
 			<kiva-credit-payment
 				v-if="showKivaCreditButton && !promoGuestCheckoutEnabled"
 				@complete-transaction="completeTransaction"
@@ -80,26 +105,32 @@
 				@checkout-failure="handleCheckoutFailure"
 			/>
 			<kiva-credit-guest-payment
-				v-if="showKivaCreditButton && promoGuestCheckoutEnabled"
+				v-if="showKivaCreditButton
+					&& promoGuestCheckoutEnabled
+					&& continueAsGuest"
 				:is-guest-checkout="true"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
 				:promo-fund-id="String(promoFundId)"
 				:managed-account-id="managedAccountId"
+				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
+				:promo-name="promoName"
 				@refreshtotals="$emit('refresh-totals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
-				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 			/>
 
 			<checkout-drop-in-payment-wrapper
-				v-else
+				v-if="!showKivaCreditButton
+					&& continueAsGuest"
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
 				:is-guest-checkout="promoGuestCheckoutEnabled"
 				:promo-fund-id="String(promoFundId)"
 				:managed-account-id="managedAccountId"
+				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
+				:promo-name="promoName"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -126,6 +157,7 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'InContextCheckout',
@@ -138,7 +170,8 @@ export default {
 		KivaCreditGuestPayment,
 		KvLoadingOverlay,
 		OrderTotals,
-		KvIcon
+		KvIcon,
+		KvGrid
 	},
 	mixins: [
 		checkoutUtils
@@ -212,6 +245,8 @@ export default {
 	data() {
 		return {
 			updatingTotals: false,
+			continueAsGuest: false,
+			continueAsExistingUser: false
 		};
 	},
 	computed: {
