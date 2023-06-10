@@ -26,7 +26,7 @@
 				Valid email required.
 			</p>
 			<p v-else-if="$v.email.error">
-				Valid campaign email required
+				Valid campaign email required.
 			</p>
 			<kv-checkbox
 				data-testid="basket-guest-terms-agreement"
