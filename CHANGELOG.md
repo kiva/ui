@@ -1,3 +1,10 @@
+### [2.611.1](https://github.com/kiva/ui/compare/v2.611.0...v2.611.1) (2023-06-12)
+
+
+### Bug Fixes
+
+* actually comment itself no longer makes sense ([79e6c2b](https://github.com/kiva/ui/commit/79e6c2b2b841ae68343a6f3f630413e9a3c47888))
+
 ## [2.611.0](https://github.com/kiva/ui/compare/v2.610.3...v2.611.0) (2023-06-12)
 
 
