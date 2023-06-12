@@ -294,5 +294,13 @@ export default {
 			this.loans = loans;
 		}
 	},
+	watch: {
+		loans(data) {
+			this.$emit('data-loaded', {
+				data,
+				pageOffset: this.loanSearchState?.pageOffset ?? 0
+			});
+		},
+	},
 };
 </script>
