@@ -314,7 +314,7 @@ export default {
 		},
 		trackDisplayedLoans(sectionIdentifier, sectionPosition, loans, pageOffset = 0) {
 			const loansDisplayed = loans?.filter(l => !!l.id)?.map((l, i) => ({
-				// Expects 0-based page index
+				// Expects 1-based page index
 				position: i + pageOffset + 1,
 				loanId: l.id,
 			})) ?? [];
