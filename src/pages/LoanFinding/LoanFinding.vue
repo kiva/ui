@@ -34,6 +34,7 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
+					@data-loaded="trackQuickFiltersDisplayedLoans"
 				/>
 
 				<!-- Element to trigger spotlight observer -->
@@ -234,6 +235,8 @@ export default {
 				...this.firstRowLoans.slice(0, 4),
 				...remainingRecommendedLoans
 			];
+
+			this.trackFirstRowDisplayedLoans();
 		},
 		async getSecondCategoryData() {
 			let fallbackLoans = [];
@@ -243,6 +246,8 @@ export default {
 				fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
 			}
 			this.secondCategoryLoans = [...matchedLoans, ...fallbackLoans].slice(0, 9);
+
+			this.trackSecondCarouselDisplayedLoans();
 		},
 		async getExpiringSoonAlmostFundedCombo() {
 			const expiringSoonData = await runLoansQuery(
@@ -266,6 +271,9 @@ export default {
 			return loans ?? [];
 		},
 		async fetchSpotlightLoans() {
+			// Only query the spotlight loans once
+			if (this.spotlightLoans?.length) return;
+
 			const flssFilterCriteria = this.activeSpotlightData?.flssLoanSearch ?? {};
 			const { loans } = await runLoansQuery(
 				this.apollo,
@@ -274,6 +282,8 @@ export default {
 			);
 
 			this.spotlightLoans = loans ?? [];
+
+			this.trackSpotlightDisplayedLoans();
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -301,6 +311,46 @@ export default {
 			if (this.spotlightViewportObserver) {
 				this.spotlightViewportObserver.disconnect();
 			}
+		},
+		trackDisplayedLoans(sectionIdentifier, sectionPosition, loans, pageOffset = 0) {
+			const loansDisplayed = loans?.filter(l => !!l.id)?.map((l, i) => ({
+				// Expects 1-based page index
+				position: i + pageOffset + 1,
+				loanId: l.id,
+			})) ?? [];
+
+			if (loansDisplayed.length) {
+				const event = {
+					// eslint-disable-next-line max-len
+					schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_lend_by_category_loan_display_event_v3_schema_1_0_0.json#',
+					data: {
+						sectionIdentifier,
+						sectionPosition,
+						loansDisplayed,
+					},
+				};
+
+				this.$kvTrackSelfDescribingEvent(event);
+			}
+		},
+		trackFirstRowDisplayedLoans() {
+			this.trackDisplayedLoans(this.enableRelendingExp ? 'relending' : 'recommended', 1, this.firstRowLoans);
+		},
+		trackQuickFiltersDisplayedLoans({ data, pageOffset }) {
+			this.trackDisplayedLoans('quick-filters', this.enableRelendingExp ? 3 : 2, data, pageOffset);
+		},
+		trackSecondCarouselDisplayedLoans() {
+			this.trackDisplayedLoans(
+				// eslint-disable-next-line no-nested-ternary
+				this.enableRelendingExp
+					? 'recycle'
+					: (this.matchedLoansTotal < 3 ? 'ending-soon-almost-funded' : 'matched'),
+				this.enableRelendingExp ? 2 : 3,
+				this.secondCategoryLoans,
+			);
+		},
+		trackSpotlightDisplayedLoans() {
+			this.trackDisplayedLoans('spotlight', 4, this.spotlightLoans);
 		},
 	},
 	created() {
@@ -363,7 +413,12 @@ export default {
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
 	},
 	mounted() {
-		if (!this.enableRelendingExp) this.getRecommendedLoans();
+		if (!this.enableRelendingExp) {
+			this.getRecommendedLoans();
+		} else {
+			this.trackFirstRowDisplayedLoans();
+		}
+
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
 
