@@ -1,3 +1,15 @@
+## [2.611.0](https://github.com/kiva/ui/compare/v2.610.3...v2.611.0) (2023-06-12)
+
+
+### Features
+
+* add loan display events to lending home ([17020e0](https://github.com/kiva/ui/commit/17020e0da9d137296af5ef16b948751f012aea9a))
+
+
+### Bug Fixes
+
+* comment typo ([37605e2](https://github.com/kiva/ui/commit/37605e21209bc251c3706a9542b094196426fe43))
+
 ### [2.610.3](https://github.com/kiva/ui/compare/v2.610.2...v2.610.3) (2023-06-09)
 
 
