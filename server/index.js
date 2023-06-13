@@ -52,7 +52,7 @@ function setHeaders(res, path) {
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 }
 
-app.use(express.static('dist', {
+app.use('/static', express.static('dist/static', {
 	setHeaders,
 	maxAge: '1y'
 }));
