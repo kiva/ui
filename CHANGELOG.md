@@ -1,3 +1,16 @@
+## [2.612.0](https://github.com/kiva/ui/compare/v2.611.1...v2.612.0) (2023-06-13)
+
+
+### Features
+
+* only check filesystem for static files when the /static route is requested ([1581e11](https://github.com/kiva/ui/commit/1581e11b8c7b9f50cc638f7f96302031b927b9cd))
+* remove supportkiva page ([a71a9db](https://github.com/kiva/ui/commit/a71a9db34b8678620dabc8be261cdedfd268448b))
+
+
+### Bug Fixes
+
+* remove unused component ([d51676e](https://github.com/kiva/ui/commit/d51676e42d2157e3cf8c23db508c10a6419eeea0))
+
 ### [2.611.1](https://github.com/kiva/ui/compare/v2.611.0...v2.611.1) (2023-06-12)
 
 
