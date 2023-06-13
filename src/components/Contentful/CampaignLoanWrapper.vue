@@ -3,7 +3,6 @@
 		<div class="row">
 			<div class="columns">
 				<campaign-loan-filters
-					:promo-name="componentProps.promoName"
 					:applied-filters="componentProps.filters"
 					:initial-filters="componentProps.initialFilters"
 					:excluded-tags="componentProps.excludedTags"
