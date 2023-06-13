@@ -318,7 +318,7 @@
 										</li>
 										<li>
 											<router-link
-												to="/about/due-diligence"
+												to="/donate/supportus"
 												v-kv-track-event="['TopNav','click-Support-Kiva']"
 											>
 												Support Kiva
