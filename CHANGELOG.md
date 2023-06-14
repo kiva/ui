@@ -1,3 +1,10 @@
+### [2.610.4-next.1](https://github.com/kiva/ui/compare/v2.610.3...v2.610.4-next.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* remove duplicate loan query, use async await to control data and loan loading sequence ([e2a76b4](https://github.com/kiva/ui/commit/e2a76b44e936db48d806637d296fca3db0aeceb6))
+
 ### [2.610.3](https://github.com/kiva/ui/compare/v2.610.2...v2.610.3) (2023-06-09)
 
 
