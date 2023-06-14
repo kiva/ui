@@ -44,7 +44,6 @@
 				</div>
 			</div>
 			<div
-				v-if="hasCustomDonation"
 				class="tw-p-2 md:tw-px-3 md:tw-py-4
 					tw-border tw-border-tertiary tw-rounded-b
 					tw-border-t-0 md:tw-border-t md:tw-rounded"
@@ -114,10 +113,6 @@ export default {
 		setDonationAndClose: {
 			type: Function,
 			required: true,
-		},
-		hasCustomDonation: {
-			type: Boolean,
-			default: false,
 		},
 		currentDonationAmount: {
 			type: String,

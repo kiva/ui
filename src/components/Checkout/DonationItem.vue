@@ -756,12 +756,9 @@
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
-			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:visible="nudgeLightboxVisible"
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
-			:has-custom-donation="hasCustomDonation"
-			:description="donationNudgeDescription()"
-			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
 		/>
 
@@ -859,8 +856,6 @@ export default {
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
 			nudgeLightboxVisible: false,
-			hasCustomDonation: true,
-			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
 			donationDetailsLink: 'How Kiva uses donations',
 			dynamicDonationItem: '',
@@ -929,26 +924,6 @@ export default {
 			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 			coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
 			return coverOurCosts;
-		},
-		donationNudgePercentageRows() {
-			const basePercentageRows = [
-				{
-					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
-					appealIsHorizontallyPadded: false,
-				},
-				{
-					percentage: 20,
-					appeal: 'Reach more people around the world!',
-					appealIsHorizontallyPadded: false,
-				},
-			];
-			const lowPercentage = [{
-				percentage: 10,
-				appeal: 'Cover some of Kiva\'s costs',
-				appealIsHorizontallyPadded: true,
-			}];
-			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
 		},
 		basketDonateModulesExpDonationHeader() {
 			if (!this.hasLoans) {
@@ -1069,11 +1044,6 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.nudgeLightbox.expandNudgeLightbox();
 			});
-		},
-		donationNudgeDescription() {
-			/* eslint-disable max-len */
-			return 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
-			/* eslint-enable max-len */
 		},
 	}
 };
