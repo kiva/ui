@@ -698,8 +698,12 @@ export default {
 		// const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
-	mounted() {
+	async mounted() {
 		this.$root.$on('jumpToLoans', this.jumpToLoans);
+
+		// check for applied promo
+		await this.verifyOrApplyPromotion();
+
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
 			// check for default, if 'grid' swap update loan display. (rows is deafult)
@@ -711,9 +715,6 @@ export default {
 				this.showLoanDisplayToggle = false;
 			}
 		}
-
-		// check for applied promo
-		this.verifyOrApplyPromotion();
 
 		// Ensure browser clock is correct before using current time
 		syncDate().then(() => {
@@ -985,7 +986,7 @@ export default {
 		},
 	},
 	methods: {
-		verifyOrApplyPromotion() {
+		async verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
 			const targetParams = Object.keys(this.$route.query).filter(targetKey => {
@@ -993,27 +994,27 @@ export default {
 			});
 			if (targetParams.length) {
 				// apply promo
-				this.applyPromotion();
+				await this.applyPromotion();
 
 			// handle previously applied promo
 			// There may be some additional processing we can do on initialBasketCredits
 			// to further optimize and skip the first step
 			} else if (this.hasFreeCredits || this.lendingRewardOffered || this.isMatchingCampaign) {
-				this.getPromoInformationFromBasket();
+				await this.getPromoInformationFromBasket();
 
 			// handle no promo visit
 			} else {
 				this.promoApplied = false;
 				this.loadingPromotion = false;
 				// ensure updated basket state for promo-less visit
-				this.getPromoInformationFromBasket();
+				await this.getPromoInformationFromBasket();
 			}
 		},
-		applyPromotion() {
+		async applyPromotion() {
 			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
 			// handle applied promo state
-			applyPromo.then(result => {
+			await applyPromo.then(result => {
 				// failed to apply promotion
 				if (result.errors) {
 					// This error might arise if the promo is already applied
@@ -1031,7 +1032,7 @@ export default {
 				this.promoApplied = false;
 			});
 		},
-		getPromoInformationFromBasket() {
+		async getPromoInformationFromBasket() {
 			const basketItems = this.apollo.query({
 				fetchPolicy: 'no-cache',
 				query: basketItemsQuery,
@@ -1042,7 +1043,7 @@ export default {
 
 			// Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
-			basketItems.then(({ data }) => {
+			await basketItems.then(({ data }) => {
 				// console.log(data);
 				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
 				if (typeof data.shop === 'undefined') {
@@ -1331,7 +1332,6 @@ export default {
 			}).then(() => {
 				this.handleAddToBasket({ loanId, success: true });
 				this.leftoverCreditAllocationLoanId = loanId;
-				this.updateBasketState();
 				this.basketBalancing = false;
 			}).catch(e => {
 				logFormatter(`Failed to add loan with id ${loanId} to basket`, 'error');
