@@ -14,7 +14,8 @@ export default function createApolloClient({
 	kvAuth0,
 	types,
 	uri,
-	fetch
+	fetch,
+	route,
 }) {
 	const cache = new InMemoryCache({
 		possibleTypes: types,
@@ -28,17 +29,27 @@ export default function createApolloClient({
 		}
 	});
 
-	const { resolvers } = initState({ appConfig, cookieStore, kvAuth0 });
+	const { resolvers } = initState({
+		appConfig,
+		cookieStore,
+		kvAuth0,
+		route,
+	});
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
 			NetworkErrorLink(),
 			SnowplowSessionLink({ cookieStore }),
-			ExperimentIdLink({ cookieStore }),
+			ExperimentIdLink(),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
-			HttpLinkCreator({ kvAuth0, uri, fetch }),
+			HttpLinkCreator({
+				kvAuth0,
+				uri,
+				fetch,
+				apolloBatching: appConfig?.apolloBatching ?? true,
+			}),
 		]),
 		cache,
 		resolvers,

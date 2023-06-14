@@ -7,6 +7,7 @@
 			:logo-height="logoHeight"
 			:logo-classes="logoClasses"
 			class="tw-sticky tw-z-sticky tw-top-0"
+			@show-basket="$emit('show-basket')"
 		/>
 		<main>
 			<slot></slot>
@@ -25,14 +26,13 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
 import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
+import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
 
 export default {
 	name: 'WwwPageCorporate',
@@ -57,20 +57,17 @@ export default {
 			default: ''
 		},
 		logoHeight: {
-			type: Number,
-			default: 28
+			type: String,
+			default: '28'
 		}
 	},
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(_, client) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
-				fetchAllExpSettings(config, client, {
-					query: _get(args, 'route.query'),
-					path: _get(args, 'route.path')
-				}),
+				assignAllActiveExperiments(client)
 			]);
-		}
+		},
 	}
 };
 </script>

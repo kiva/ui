@@ -35,7 +35,9 @@ export default {
 						// get tracking data from snowplow cookie
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
-						const successPath = '/thanks';
+						// If challenge query exists, then redirect to challenge thanks page
+						const successPath = route.query.challenge
+							? `/checkout/thanks/${route.query.challenge}` : '/thanks';
 
 						// build route for thanks page redirect
 						const successRoute = {

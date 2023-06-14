@@ -1,7 +1,7 @@
 <template>
-	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full">
-		<div class="tw-flex tw-items-center tw-mb-2">
-			<div v-if="!withCategories" class="tw-flex tw-items-center">
+	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full tw-z-4">
+		<div v-if="!withCategories && !enableFilterPills" class="tw-flex tw-items-center tw-mb-2">
+			<div class="tw-flex tw-items-center">
 				<h3 class="tw-text-h3">
 					Quick filters
 				</h3>
@@ -15,8 +15,11 @@
 			</div>
 		</div>
 		<div
-			class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-w-full"
-			:class="{'tw-pr-0 md:tw-pr-1 lg:tw-pr-0' : !withCategories}"
+			class="tw-flex"
+			:class="{
+				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': enableFilterPills,
+				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': !enableFilterPills
+			}"
 		>
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
 				<label
@@ -40,7 +43,23 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="!removeGenderDropdown && enableFilterPills" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
+				<filter-pills
+					:filters-loaded="filtersLoaded"
+					:options="filterOptions.gender"
+					:selected-values="selectedGenders"
+					@update-values="updateGenders($event)"
+				/>
+				<div v-if="!filtersLoaded" class="tw-flex tw-gap-1 placeholder">
+					<kv-loading-placeholder
+						style="width: 100px;"
+						v-for="(index) in 3"
+						:key="index"
+					/>
+				</div>
+			</div>
+
+			<div v-if="!removeGenderDropdown && !enableFilterPills" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
 					for="gender"
@@ -64,19 +83,85 @@
 				</kv-select>
 			</div>
 
-			<location-selector
-				v-if="!removeLocationDropdown"
-				@click.native="trackDropdownClick('location')"
-				@handle-overlay="handleQuickFiltersOverlay"
-				:regions="filterOptions.location"
-				:total-loans="totalLoans"
-				:filters-loaded="filtersLoaded"
-				@update-location="updateLocation"
-				ref="locationSelector"
-				:tracking-category="trackingCategory"
-			/>
+			<div
+				:class="{
+					'tw-flex tw-gap-1 overflow-container': enableFilterPills,
+					'tw-w-full': !enableFilterPills}"
+			>
+				<location-selector
+					v-if="!removeLocationDropdown"
+					@click.native="trackDropdownClick('location')"
+					@handle-overlay="handleQuickFiltersOverlay"
+					:regions="filterOptions.location"
+					:total-loans="totalLoans"
+					:filters-loaded="filtersLoaded"
+					@update-location="updateLocation"
+					ref="locationSelector"
+					:tracking-category="trackingCategory"
+					:with-categories="withCategories"
+					:enable-filter-pills="enableFilterPills"
+				/>
 
-			<div v-if="!removeSortByDropdown && !withCategories" class="tw-flex tw-flex-col tw-grow">
+				<div
+					v-if="!removeSortByDropdown && enableFilterPills"
+					class="tw-pb-1 tw-shrink-0"
+					:class="{ 'tw-opacity-low': !filtersLoaded }"
+					@click="trackDropdownClick('sort')"
+				>
+					<label
+						class="tw-hidden"
+						for="sortBy"
+					>
+						Sort By
+					</label>
+					<div
+						class="
+							pill-container
+							tw-rounded
+							tw-transition
+							tw-bg-white
+							tw-h-full
+							md:tw-w-auto
+							tw-relative
+							tw-pointer-events-none
+						"
+					>
+						<kv-material-icon
+							:icon="mdiSort"
+							class="tw-w-3 tw-h-3 tw-mr-1 tw-absolute tw-pointer-events-auto"
+							style="left: 20px; top: 50%; transform: translateY(-50%);"
+						/>
+						<select
+							id="sortBy"
+							class="
+								tw-bg-transparent
+								tw-font-medium
+								tw-transition
+								tw-rounded
+								filter-pill
+								tw-w-full
+								tw-h-full
+								tw-pointer-events-auto
+								tw-cursor-pointer
+							"
+							:disabled="!filtersLoaded"
+							v-model="sortBy"
+						>
+							<option
+								v-for="sortType in filterOptions.sorting"
+								:key="sortType.key"
+								:value="sortType.key"
+							>
+								{{ sortType.title }}
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div
+				v-if="!removeSortByDropdown && !enableFilterPills && !withCategories"
+				class="tw-flex tw-flex-col tw-grow"
+			>
 				<label
 					class="tw-text-h4"
 					for="sortBy"
@@ -126,7 +211,8 @@
 			</div>
 			<div class="tw-flex md:tw-flex-row tw-items-start">
 				<span v-show="filtersLoaded" class="tw-text-base">
-					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans </span>
+					<span class="md:tw-inline tw-hidden">Showing</span> {{ totalLoans }} loans
+				</span>
 				<!-- eslint-disable-next-line max-len -->
 				<button v-show="filtersLoaded && !hideReset" class="tw-ml-2 tw-text-base tw-text-action" @click="resetFilters">
 					<span>Reset</span><span class="md:tw-inline tw-hidden"> filters</span>
@@ -137,11 +223,13 @@
 </template>
 
 <script>
-import { mdiFilterVariant } from '@mdi/js';
+import { mdiFilterVariant, mdiSort, mdiChevronDown } from '@mdi/js';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import FilterPills from './FilterPills';
 
 export default {
 	name: 'QuickFilters',
@@ -175,23 +263,32 @@ export default {
 			type: String,
 			default: 'personalized',
 		},
+		enableFilterPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		KvSelect,
 		LocationSelector,
-		KvMaterialIcon
+		KvMaterialIcon,
+		FilterPills,
+		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
 			mdiFilterVariant,
+			mdiSort,
+			mdiChevronDown,
 			selectedCategory: 0,
-			selectedGender: '',
+			selectedGender: 'all',
+			selectedGenders: ['all'],
 			sortBy: this.defaultSort,
 			presetFilterActive: {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
-			}
+			},
 		};
 	},
 	mixins: [
@@ -227,8 +324,8 @@ export default {
 				this.presetFilterActive.endingSoon = true;
 			} else {
 				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
-				// we don't currently have this option for these categories, also irrelevant since
-				// the user has a sort by dropdown available to them
+					// we don't currently have this option for these categories, also irrelevant since
+					// the user has a sort by dropdown available to them
 					delete categoryFilter.sortBy;
 				}
 				this.$emit('update-filters', categoryFilter);
@@ -246,13 +343,16 @@ export default {
 				this.resetCategory();
 				this.presetFilterActive.women = false;
 			}
-			this.$emit('update-filters', { gender });
+			this.$emit('update-filters', { gender: gender === 'all' ? '' : gender });
 			this.$kvTrackEvent(
 				this.trackingCategory,
 				'filter',
 				'quick-filters-option',
-				gender === '' ? 'all genders' : gender
+				gender === 'all' ? 'all genders' : gender
 			);
+		},
+		selectedGenders(genders) {
+			this.$emit('update-filters', { gender: genders.includes('all') ? '' : genders });
 		},
 		sortBy(sortBy) {
 			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
@@ -273,7 +373,8 @@ export default {
 			this.selectedCategory = 0;
 		},
 		resetGender() {
-			this.selectedGender = '';
+			this.selectedGender = 'all';
+			this.selectedGenders = ['all'];
 		},
 		resetLocation() {
 			this.updateLocation([]);
@@ -298,10 +399,20 @@ export default {
 				location
 			);
 		},
+		updateGenders({ values }) { // values: ['all'] | ['female'] | ['male', 'nonbinary']...
+			this.selectedGenders = values;
+			this.$kvTrackEvent(
+				this.trackingCategory,
+				'filter',
+				'quick-filters-option',
+				this.selectedGenders
+			);
+		},
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
 			this.selectedGender = '';
+			this.selectedGenders = ['all'];
 			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
 			this.$refs.locationSelector?.emptyCountries();
@@ -327,7 +438,8 @@ export default {
 	computed: {
 		hideReset() {
 			return this.selectedCategory === 0
-			&& this.selectedGender === ''
+			&& this.selectedGender === 'all'
+			&& this.selectedGenders === ['all']
 			&& this.sortBy === this.defaultSort
 			&& !(this.$refs.locationSelector?.selectedCountries?.length ?? 0);
 		},
@@ -345,6 +457,42 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+	.placeholder > div {
+		@apply tw-rounded !important;
+	}
+
+	.placeholder {
+		display: none;
+	}
+
+	@media screen and (min-width: 600px) {
+		.placeholder {
+			display: flex;
+		}
+	}
+
+	.overflow-container {
+		overflow-x: auto;
+	}
+
+	@media screen and (min-width: 734px) {
+		.overflow-container {
+			overflow-x: visible;
+		}
+	}
+
+	.pill-container:hover {
+		@apply tw-text-white tw-bg-black;
+	}
+
+	.filter-pill {
+		padding: 10px 0 10px 50px;
+		box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+		min-width: 160px;
+		border-right: 20px transparent solid;
+		@apply focus:tw-outline-none focus:tw-border-transparent;
+	}
+
 	#customizedSortBySelector >>> select {
 		border-style: none;
 		padding: 0 0 0 4px;

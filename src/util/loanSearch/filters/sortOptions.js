@@ -108,9 +108,9 @@ export default {
 	getSavedSearch: () => {},
 	getFlssFilter: () => ({}),
 	getValidatedSearchState: (loanSearchState, allFacets, queryType) => {
-		const validSorts = queryType === FLSS_QUERY_TYPE ? allFacets.flssSorts : allFacets.standardSorts;
+		const validSorts = queryType === FLSS_QUERY_TYPE ? allFacets?.flssSorts : allFacets?.standardSorts;
 		return {
-			sortBy: validSorts.some(s => s.name === loanSearchState.sortBy) ? loanSearchState.sortBy : null
+			sortBy: validSorts?.some(s => s.name === loanSearchState.sortBy) ? loanSearchState.sortBy : null
 		};
 	},
 	getFilterFromQuery: (query, _allFacets, _pageLimit, queryType) => ({

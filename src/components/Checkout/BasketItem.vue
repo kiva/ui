@@ -49,15 +49,51 @@
 			</div>
 		</div>
 		<div
+			v-if="leftoverCreditAllocationLoanId === String(loan.id) && isCorporateCampaign"
+			class="tw-w-full
+					md:tw-w-auto
+					md:tw-ml-3
+					lg:tw-ml-6
+					tw-mt-1.5
+					md:tw-mt-0"
+		>
+			<div
+				class="
+					tw-bg-brand-50
+					tw-rounded
+					tw-p-2
+			"
+			>
+				<span
+					class="tw-text-action
+							tw-block"
+				>
+					The remaining ${{ loan.price }} will be lent to this borrower.
+				</span>
+				<span
+					class="tw-text-primary
+							tw-block"
+				>
+					<u
+						class="tw-cursor-pointer"
+						@click="$emit('jump-to-loans')"
+					>
+						Choose another borrower
+					</u>
+				</span>
+			</div>
+		</div>
+		<div
+			v-else
 			class="
-			tw-flex-none
-			tw-w-full
-			md:tw-w-auto
-			md:tw-ml-3
-			lg:tw-ml-4.5
-			tw-mt-1.5
-			md:tw-mt-0
-			loan-res-price-wrapper"
+				tw-flex-none
+				tw-w-full
+				md:tw-w-auto
+				md:tw-ml-3
+				lg:tw-ml-4.5
+				tw-mt-1.5
+				md:tw-mt-0
+				loan-res-price-wrapper"
 		>
 			<loan-price
 				data-testid="basket-loan-price-selector"
@@ -69,6 +105,7 @@
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
@@ -77,6 +114,7 @@
 </template>
 
 <script>
+import { isCCPage } from '@/util/urlUtils';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanPromoCredits from '@/components/Checkout/LoanPromoCredits';
@@ -96,7 +134,7 @@ export default {
 		RemoveBasketItem,
 		TeamAttribution
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		disableRedirects: {
 			type: Boolean,
@@ -110,6 +148,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -118,6 +160,9 @@ export default {
 		};
 	},
 	computed: {
+		isCorporateCampaign() {
+			return isCCPage(this.$route);
+		},
 		creditsUsed() {
 			return this.loan?.creditsUsed ?? [];
 		},
@@ -129,7 +174,10 @@ export default {
 				return appliedCredits.length ? appliedCredits : [];
 			}
 			return [];
-		}
+		},
+		leftoverCreditAllocationLoanId() {
+			return this.cookieStore.get('lcaid');
+		},
 	},
 	methods: {
 		onLoanUpdate($event) {

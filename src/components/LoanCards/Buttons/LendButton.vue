@@ -1,6 +1,5 @@
 <template>
 	<kv-button
-		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, loanId]"
 		:state="buttonState"
 		@click="addToBasket"
 	>
@@ -15,6 +14,7 @@ import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
+import { handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -22,7 +22,7 @@ export default {
 	components: {
 		KvButton,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		loanId: {
 			type: Number,
@@ -40,6 +40,13 @@ export default {
 	},
 	methods: {
 		addToBasket() {
+			this.$kvTrackEvent(
+				'Lending',
+				'Add to basket',
+				'lend-button-click',
+				this.loanId,
+				this.price
+			);
 			this.setLoading(true);
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
@@ -56,7 +63,6 @@ export default {
 				if (errors) {
 					// Handle errors from adding to basket
 					errors.forEach(error => {
-						this.$showTipMsg(error.message, 'error');
 						try {
 							this.$kvTrackEvent(
 								'Lending',
@@ -64,6 +70,18 @@ export default {
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
 							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							if (hasBasketExpired(error?.extensions?.code)) {
+								// eslint-disable-next-line max-len
+								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+								return handleInvalidBasket({
+									cookieStore: this.cookieStore,
+									loan: {
+										id: this.loanId,
+										price: this.price
+									}
+								});
+							}
+							this.$showTipMsg(error.message, 'error');
 						} catch (e) {
 							// no-op
 						}

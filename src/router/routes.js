@@ -1,44 +1,26 @@
 module.exports = [
-	{
-		path: '/',
-		name: 'homepage',
-		component: () => import('@/pages/Homepage/Homepage'),
-		meta: {
-			contentfulPage: (route, apollo, experimentVersionFragment) => {
-				const exp = apollo?.readFragment({
-					id: 'Experiment:new_home_layout',
-					fragment: experimentVersionFragment,
-				}) || {};
+	// {
+	// 	path: '/',
+	// 	name: 'homepage',
+	// 	component: () => import('@/pages/Homepage/Homepage'),
+	// 	meta: {
+	// 		contentfulPage: (route, apollo, experimentVersionFragment) => {
+	// 			const exp = apollo?.readFragment({
+	// 				id: 'Experiment:new_home_layout',
+	// 				fragment: experimentVersionFragment,
+	// 			}) || {};
 
-				return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
-			},
-			unbounceEmailCapture: true,
-			unbouncePopUp: true,
-		},
-	},
+	// 			return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
+	// 		},
+	// 		unbounceEmailCapture: true,
+	// 		unbouncePopUp: true,
+	// 	},
+	// },
 	{
 		path: '/homepage-classic',
 		redirect: '/',
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
-	{
-		path: '/about/how',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/how-kiva-works',
-		},
-	},
-	{
-		path: '/lp/how-kiva-works',
-		redirect: '/about/how'
-	},
-	{
-		path: '/about/press-center',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/press',
-		},
-	},
 	{
 		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
@@ -110,18 +92,21 @@ module.exports = [
 		}
 	},
 	{
+		path: '/checkout/thanks/:challengeId',
+		component: () => import('@/pages/Thanks/ThanksPageChallenge'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		},
+		props: route => ({
+			challengeId: route.params.challengeId,
+		})
+	},
+	{
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbouncePopUp: true,
-		}
-	},
-	{
-		path: '/checkout/eco-challenge/thanks',
-		component: () => import('@/pages/Thanks/ThanksPageEcoChallenge'),
-		meta: {
-			excludeFromStaticSitemap: true,
 		}
 	},
 	{
@@ -139,30 +124,7 @@ module.exports = [
 		path: '/covid19response',
 		redirect: '/monthlygood'
 	},
-	{
-		path: '/design',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'design',
-		},
-	},
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
-	{
-		path: '/donate/supportus',
-		component: () => import('@/pages/Donate/DonateSupportUs'),
-		meta: {
-			contentfulPage: () => 'donate/supportus',
-			unbounceEmailCapture: true,
-		},
-	},
-	{
-		path: '/donate/supportkiva',
-		component: () => import('@/pages/Donate/DonateSupportUs'),
-		meta: {
-			contentfulPage: () => 'donate/supportkiva',
-			unbounceEmailCapture: true,
-		},
-	},
 	{
 		path: '/error',
 		component: () => import('@/pages/Error'),
@@ -171,22 +133,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/flss',
-		component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/funded/:id',
 		redirect: '/lend/:id'
-	},
-	{
-		path: '/gender-equality',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'gender-equality',
-		},
 	},
 	{
 		path: '/get-started',
@@ -408,7 +356,6 @@ module.exports = [
 		component: () => import('@/pages/LoanFinding/LoanFinding'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			authenticationRequired: true,
 		}
 	},
 	{
@@ -446,6 +393,8 @@ module.exports = [
 		path: '/lp/support-refugees',
 		redirect: '/refugees'
 	},
+	// Preserved for cms-page-server rollout, will remove after validation
+	/*
 	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -455,6 +404,7 @@ module.exports = [
 			unbouncePopUp: true,
 		},
 	},
+	*/
 	{
 		path: '/hp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
@@ -500,8 +450,16 @@ module.exports = [
 		}
 	},
 	{
+		path: '/portfolio/impact',
+		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio/lending-stats',
-		component: () => import('@/pages/LendingStats/LendingStatsPage'),
+		component: () => import('@/pages/Portfolio/LendingStats/LendingStatsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -542,13 +500,6 @@ module.exports = [
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
-	},
-	{
-		path: '/refugees',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'lp/support-refugees',
-		},
 	},
 	{
 		path: '/register/social',
@@ -717,16 +668,6 @@ module.exports = [
 		}
 	},
 	// These are Demo Pages
-	{
-		path: '/algolia-vue',
-		component: () => import('@/pages/AlgoliaPOC'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-		children: [
-			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
-		]
-	},
 	{
 		path: '/lend-vue',
 		component: () => import('@/pages/Lend/LendPage'),

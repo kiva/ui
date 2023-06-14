@@ -5,18 +5,19 @@
 	>
 		<div class="columns align-self-middle" v-if="isVisible && loans.length > 0">
 			<div class="loan-card-group row tw-gap-x-4">
-				<!-- GridLoanCard or LendHomepageLoanCard -->
 				<kiva-classic-basic-loan-card
 					class="tw-mb-4"
 					v-for="(loan, index) in loanIds"
 					:item-index="index"
 					:key="`loan-${loan}`"
 					:loan-id="loan"
-					:lend-now-button="true"
-					custom-checkout-route="#show-basket"
+					:show-action-button="true"
 					:custom-loan-details="true"
+					:custom-checkout-button-text="getCheckoutBtnText(loan)"
+					:checkout-route="checkoutRoute"
 					@show-loan-details="showLoanDetails(loans[index])"
 					@add-to-basket="addToBasket"
+					@custom-checkout-button-action="removeLoanFromBasket(loan)"
 				/>
 			</div>
 			<kv-pagination
@@ -61,6 +62,7 @@ import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import numeral from 'numeral';
 
 const loansPerPage = 9;
 
@@ -126,6 +128,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		basketLoans: {
+			type: Array,
+			default: () => []
+		},
 		promoOnly: {
 			type: Object,
 			default: null
@@ -133,6 +139,10 @@ export default {
 		sortBy: {
 			type: String,
 			default: 'popularity'
+		},
+		checkoutRoute: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -204,8 +214,18 @@ export default {
 		this.loanQueryFilters = this.filters;
 	},
 	methods: {
+		getCheckoutBtnText(loan) {
+			const amount = this.getAmountLended(loan);
+			if (amount > 0) {
+				return `Supported for ${numeral(amount).format('$0')}`;
+			}
+			return 'Supported';
+		},
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+		},
+		removeLoanFromBasket(loanId) {
+			this.$emit('remove-loan-from-basket', loanId);
 		},
 		showLoanDetails(loan) {
 			this.$emit('show-loan-details', loan);
@@ -215,11 +235,10 @@ export default {
 				this.loadingLoans = true;
 			}
 			this.zeroLoans = false;
-
 			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
-				// fetchPolicy: 'network-only'
+				fetchPolicy: 'network-only'
 			}).then(({ data }) => {
 				this.loans = data.lend?.loans?.values ?? [];
 				this.totalCount = data.lend?.loans?.totalCount ?? 0;
@@ -273,6 +292,11 @@ export default {
 		},
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
+		},
+		getAmountLended(loanId) {
+			if (this.basketLoans.length > 0) {
+				return this.basketLoans?.find(loan => String(loan.id) === String(loanId))?.price;
+			}
 		}
 	},
 };

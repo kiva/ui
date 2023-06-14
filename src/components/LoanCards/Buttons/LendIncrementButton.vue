@@ -4,6 +4,7 @@
 			<kv-select
 				id="lend-increment-amount"
 				v-model="selectedOption"
+				@update:modelValue="trackLendAmountSelection"
 			>
 				<option
 					v-for="price in prices"
@@ -22,7 +23,9 @@
 			:loan-id="loanId"
 			:loading.sync="loading"
 			@add-to-basket="$emit('add-to-basket', $event)"
-		/>
+		>
+			{{ buttonText }}
+		</lend-button>
 	</div>
 </template>
 
@@ -30,7 +33,7 @@
 /* eslint-disable vue/no-computed-properties-in-data */
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
 import {
-	buildPriceArray,
+	getDropdownPriceArray,
 	isLessThan25,
 	isBetween25And500
 } from '@/util/loanUtils';
@@ -60,6 +63,14 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		showNow: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		amountLeft() {
@@ -81,7 +92,7 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.amountLeft < 25 ? this.loan.minNoteSize : 25); // 25_hard_coded
 			// cap at 20 prices
-			const priceArray = buildPriceArray(parseFloat(this.amountLeft), minAmount).slice(0, 20);
+			const priceArray = getDropdownPriceArray(this.amountLeft, minAmount, this.enableFiveDollarsNotes);
 			const amountLeftFixed = Number(this.amountLeft).toFixed();
 			if (this.isCompleteLoanActive && !priceArray.includes(amountLeftFixed)) {
 				priceArray.push(amountLeftFixed);
@@ -92,6 +103,16 @@ export default {
 			// eslint-disable-next-line
 			return isLessThan25(this.amountLeft) || isBetween25And500(this.amountLeft);
 		},
+		buttonText() {
+			let str = '';
+
+			str = 'Lend';
+			if (this.showNow) {
+				str += ' now';
+			}
+
+			return str;
+		}
 	},
 	watch: {
 		loan: {
@@ -101,5 +122,14 @@ export default {
 			immediate: true,
 		}
 	},
+	methods: {
+		trackLendAmountSelection(selectedDollarAmount) {
+			this.$kvTrackEvent(
+				'Lending',
+				'Modify lend amount',
+				selectedDollarAmount
+			);
+		},
+	}
 };
 </script>

@@ -1,127 +1,159 @@
 <template>
-	<tertiary-menu class="large-3">
-		<ul>
-			<li>
-				<router-link
-					to="/portfolio"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Portfolio']"
-				>
-					Portfolio
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/lending-stats"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Lending-stats']"
-				>
-					Lending stats
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/loans"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-My-loans']"
-				>
-					My loans
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/estimated-repayments"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Estimated-repayments']"
-				>
-					Estimated repayments
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/credit/deposit"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Add-credit']"
-				>
-					Add credit
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/withdraw"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Withdraw']"
-				>
-					Withdraw
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					:to="donateCreditUrl"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Donate-credit']"
-				>
-					Donate credit
-				</router-link>
-			</li>
-			<li v-if="publicId">
-				<router-link
-					:to="publicLenderUrl"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Public-lender-profile']"
-				>
-					Public lender profile
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/transactions"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Transaction-history']"
-				>
-					Transaction history
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/donations"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-My-donations']"
-				>
-					My donations
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/kiva-cards"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Purchases-Kiva-Cards']"
-				>
-					Purchased Kiva Cards
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/invites"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Invite-friends']"
-				>
-					Invite friends
-				</router-link>
-			</li>
-			<li>
-				<router-link
-					to="/portfolio/credit/bonus-history"
-					v-kv-track-event="['TertiaryNav','click-MyKiva-Free-credit-history']"
-				>
-					Free credit history
-				</router-link>
-			</li>
-		</ul>
-	</tertiary-menu>
+	<ul class="tw-font-medium">
+		<li>
+			<router-link
+				v-if="showImpactDashboard"
+				to="/portfolio/impact"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"
+			>
+				My impact
+			</router-link>
+			<router-link
+				v-else
+				to="/portfolio"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Portfolio']"
+			>
+				Portfolio
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/lending-stats"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Lending-stats']"
+			>
+				Lending stats
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/loans"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-My-loans']"
+			>
+				My loans
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/estimated-repayments"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Estimated-repayments']"
+			>
+				Estimated repayments
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/credit/deposit"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Add-credit']"
+			>
+				Add credit
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/withdraw"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Withdraw']"
+			>
+				Withdraw
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				:to="donateCreditUrl"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Donate-credit']"
+			>
+				Donate credit
+			</router-link>
+		</li>
+		<li v-if="publicId">
+			<router-link
+				:to="publicLenderUrl"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Public-lender-profile']"
+			>
+				Public lender profile
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/transactions"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Transaction-history']"
+			>
+				Transaction history
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/donations"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-My-donations']"
+			>
+				My donations
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/kiva-cards"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Purchases-Kiva-Cards']"
+			>
+				Purchased Kiva Cards
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/invites"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Invite-friends']"
+			>
+				Invite friends
+			</router-link>
+		</li>
+		<li>
+			<router-link
+				to="/portfolio/credit/bonus-history"
+				class="portfolio-tertitary-menu-link"
+				exact-active-class="portfolio-tertitary-menu-active-link"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-Free-credit-history']"
+			>
+				Free credit history
+			</router-link>
+		</li>
+	</ul>
 </template>
 
 <script>
-import _get from 'lodash/get';
-import portfolioTertiaryMenuQuery from '@/graphql/query/portfolioTertiaryMenu.graphql';
-import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
+import { gql } from '@apollo/client';
 
 export default {
 	name: 'ThePortfolioTertiaryMenu',
-	components: { TertiaryMenu },
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			userBalance: 0,
 			publicId: '',
+			showImpactDashboard: false,
 		};
 	},
 	computed: {
@@ -140,12 +172,36 @@ export default {
 		}
 	},
 	apollo: {
-		query: portfolioTertiaryMenuQuery,
+		query: gql`query portfolioTertiaryMenu {
+			my {
+				id
+				userAccount {
+					id
+					publicId
+					balance
+				}
+			}
+			impactDashboard: experiment(id: "impact_dashboard") @client {
+				id
+				version
+			}
+		}`,
 		preFetch: true,
 		result({ data }) {
-			this.userBalance = _get(data, 'my.userAccount.balance');
-			this.publicId = _get(data, 'my.userAccount.publicId');
+			this.userBalance = data?.my?.userAccount?.balance ?? 0;
+			this.publicId = data?.my?.userAccount?.publicId ?? '';
+			this.showImpactDashboard = data?.impactDashboard?.version === 'b';
 		}
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.portfolio-tertitary-menu-link {
+	@apply tw-block tw-py-1 tw-w-full;
+}
+
+.portfolio-tertitary-menu-active-link {
+	@apply tw-text-tertiary hover:tw-text-tertiary hover:tw-no-underline;
+}
+</style>

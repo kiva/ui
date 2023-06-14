@@ -24,6 +24,12 @@ describe('partners.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = partners.getValidatedSearchState({ partnerId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ partnerId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = partners.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ partnerId: [] });
@@ -41,6 +47,19 @@ describe('partners.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { partner: '1,2' };
+
+				const result = partners.getFilterFromQuery(
+					query,
+					undefined,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ partnerId: [1, 2] });
+			});
+
 			it('it should get filter', () => {
 				const query = { partner: '1,2' };
 

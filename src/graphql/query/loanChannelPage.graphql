@@ -2,9 +2,11 @@
 # These 2 aliased calls in effect fetch the first 200 channels in production
 query loanChannelPage {
 	my {
+		id
 		userAccount {
 			id
 			firstName
+			balance
 		}
 	}
 	lend {

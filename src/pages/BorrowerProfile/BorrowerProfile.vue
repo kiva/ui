@@ -1,6 +1,7 @@
 <template>
 	<www-page
 		id="borrower-profile"
+		:data-testid="loanType"
 	>
 		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
@@ -30,7 +31,7 @@
 								class="tw-block md:tw-hidden tw-mt-3"
 								:loan="loan"
 								:lender="lender"
-								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:campaign="shareCampaign"
 								:in-pfp="inPfp"
 								:pfp-min-lenders="pfpMinLenders"
 								:num-lenders="numLenders"
@@ -49,6 +50,7 @@
 					<lend-cta
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -56,7 +58,7 @@
 								class="tw-hidden md:tw-block lg:tw-mb-1.5"
 								:loan="loan"
 								:lender="lender"
-								:campaign="inPfp ? 'social_share_bp_pfp' : 'social_share_bp'"
+								:campaign="shareCampaign"
 								:in-pfp="inPfp"
 								:pfp-min-lenders="pfpMinLenders"
 								:num-lenders="numLenders"
@@ -82,9 +84,9 @@
 					@hide-section="showUpdates = false"
 				/>
 			</content-container>
-			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8" id="bp-comments-jump-link">
 				<content-container>
-					<why-special data-testid="bp-why-special" :loan-id="loanId" />
+					<comments-and-why-special data-testid="bp-comments" :loan-id="loanId" />
 				</content-container>
 			</div>
 			<content-container>
@@ -139,7 +141,11 @@ import {
 } from 'date-fns';
 import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import {
+	trackExperimentVersion
+} from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '@/components/BorrowerProfile/SidebarContainer';
@@ -152,14 +158,17 @@ import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
-import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import CommentsAndWhySpecial from '@/components/BorrowerProfile/CommentsAndWhySpecial';
+
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
-
-import loanUseFilter from '@/plugins/loan-use-filter';
+import { fireHotJarEvent } from '@/util/hotJarUtils';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
+
+const LEND_URGENCY_EXP = 'lend_urgency';
+const SHARE_LANGUAGE_EXP = 'share_language_bp';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -175,7 +184,7 @@ const preFetchQuery = gql`
 				key
 				value
 			}
-			userContext: uiExperimentSetting(key: "new_users_context") {
+			uiExperimentSetting(key: "share_language_bp") {
 				key
 				value
 			}
@@ -190,6 +199,7 @@ const preFetchQuery = gql`
 				}
 				geocode {
 					city
+					state
 					country {
 						name
 						isoCode
@@ -209,6 +219,7 @@ const preFetchQuery = gql`
 				loanAmount
 				status
 				use
+				fullLoanUse @client
 				fundraisingPercent @client
 				loanFundraisingInfo {
 					fundedAmount
@@ -262,6 +273,7 @@ const mountedQuery = gql`
 			}
 		}
 		my {
+			id
 			userAccount {
 				id
 				inviterName
@@ -287,9 +299,9 @@ export default {
 		MoreAboutLoan,
 		SidebarContainer,
 		ShareButton,
+		CommentsAndWhySpecial,
 		SummaryCard,
 		TopBannerPfp,
-		WhySpecial,
 		WwwPage,
 	},
 	metaInfo() {
@@ -382,13 +394,11 @@ export default {
 			numLenders: 0,
 			name: '',
 			hash: '',
-			borrowerCount: 0,
 			anonymizationLevel: 'none',
 			loanAmount: '0',
 			status: '',
-			use: '',
+			fullLoanUse: '',
 			loanFundraisingInfo: {},
-			shareCardLanguageVersion: '',
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			inPfp: false,
@@ -400,8 +410,12 @@ export default {
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
+			shareLanguageExpVersion: 'a',
+			city: '',
+			state: ''
 		};
 	},
+	mixins: [fiveDollarsTest],
 	apollo: {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
@@ -438,6 +452,12 @@ export default {
 							query,
 						});
 					}
+
+					return Promise.all([
+						client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					]);
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -469,11 +489,10 @@ export default {
 			this.hash = loan?.image?.hash ?? '';
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.endDate = loan?.plannedExpirationDate ? format(parseISO(loan?.plannedExpirationDate), 'M/d') : '';
-			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
-			this.use = loan?.use ?? '';
+			this.fullLoanUse = loan?.fullLoanUse ?? '';
 			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
@@ -482,6 +501,8 @@ export default {
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
+			this.city = loan?.geocode?.city ?? '';
+			this.state = loan?.geocode?.state ?? '';
 		},
 	},
 	async mounted() {
@@ -503,8 +524,24 @@ export default {
 		this.partnerName = loan?.partnerName ?? '';
 		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		this.lender = data?.my?.userAccount ?? {};
+
+		// ACK-469 Experiment Tracking for generating the scle in utm_campaign
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'borrower-profile',
+			SHARE_LANGUAGE_EXP,
+			'EXP-ACK-469-Apr2023',
+		);
+		if (version) {
+			this.shareLanguageExpVersion = version;
+		}
 	},
 	computed: {
+		shareCampaign() {
+			// eslint-disable-next-line max-len
+			return this.inPfp ? `social_share_bp_pfp_scle_${this.shareLanguageExpVersion}` : `social_share_bp_scle_${this.shareLanguageExpVersion}`;
+		},
 		loanId() {
 			return Number(this.$route.params.id || 0);
 		},
@@ -538,33 +575,54 @@ export default {
 			return `Lend to ${this.name} in ${this.countryName}`;
 		},
 		pageDescription() {
-			return loanUseFilter(this.use, this.name, this.status, this.loanAmount, this.borrowerCount,
-				this.loanUseMaxLength, this.anonymizationLevel);
+			return this.fullLoanUse;
 		},
 		shareTitle() {
 			if (this.anonymizationLevel === 'full') {
 				return 'Can you help support this loan?';
 			}
+			if (this.shareLanguageExpVersion === 'a') {
+				// control scle
+				/** if inviterName is blank or share query param (used for sharing your own loan)
+				 * is set to true, then we don't want to use the inviter name in the share title
+				 */
+				if (this.inviterName === '' || this.$route.query.share === 'true') {
+					return `Can you help support ${this.name}?`;
+				}
+				return `Can you help ${this.inviterName} support ${this.name}?`;
+			}
+			// variant scle
 			/** if inviterName is blank or share query param (used for sharing your own loan)
 			 * is set to true, then we don't want to use the inviter name in the share title
 			 */
 			if (this.inviterName === '' || this.$route.query.share === 'true') {
-				return `Can you help support ${this.name}?`;
+				return `Can you help support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
 			}
-			return `Can you help ${this.inviterName} support ${this.name}?`;
+			// eslint-disable-next-line max-len
+			return `Can you help ${this.inviterName} support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
 		},
 		shareDescription() {
+			if (this.anonymizationLevel === 'full' || this.shareLanguageExpVersion === 'a') {
+				// eslint-disable-next-line max-len
+				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			}
 			// eslint-disable-next-line max-len
-			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
+			return `Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in ${this.city}${this.state ? `, ${this.state}` : ''}`;
 		},
 		showFundraising() {
 			return this.amountLeft && this.status === 'fundraising';
+		},
+		loanType() {
+			// eslint-disable-next-line no-underscore-dangle
+			if (this.loan?.__typename === 'LoanDirect') {
+				return 'direct-loan';
+			}
+			return 'partner-loan';
 		}
 	},
 	created() {
-		// this experiment is assigned in experimentPreFetch.js
 		const urgencyExperiment = this.apollo.readFragment({
-			id: 'Experiment:lend_urgency',
+			id: `Experiment:${LEND_URGENCY_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 
@@ -581,19 +639,15 @@ export default {
 			}
 		}
 
-		if (this.$route.query?.utm_campaign?.includes('scle')) {
-			// EXP-MARS-143-Jul2022
-			// Extract exp version from utm_campaign
-			this.shareCardLanguageVersion = this.$route.query?.utm_campaign?.split('_')?.pop()?.replace('-normal', '');
-			this.$kvTrackEvent(
-				'Thanks',
-				'EXP-MARS-143-Jul2022',
-				this.shareCardLanguageVersion.replace('-normal', '')
-			);
-		}
-
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
-	},
+
+		this.initializeFiveDollarsNotes();
+
+		// If loanType is direct fire hotjar event
+		if (this.loanType === 'direct-loan') {
+			fireHotJarEvent('us_borrower_profile');
+		}
+	}
 };
 </script>

@@ -129,7 +129,6 @@
 import { mdiMapMarker } from '@mdi/js';
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -191,7 +190,6 @@ export default {
 		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
-		LoanUse,
 		KvMaterialIcon,
 		SummaryTag,
 		KvProgressBar

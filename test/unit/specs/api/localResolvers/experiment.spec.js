@@ -1,177 +1,441 @@
-import CookieStore from '@/util/cookieStore';
-import * as expUtils from '@/util/experimentUtils';
+import * as expUtils from '@/util/experiment/experimentUtils';
 import expResolverFactory from '@/api/localResolvers/experiment';
-import clearDocumentCookies from '../../../setup/clearDocumentCookies';
+import Experiment from '@/api/fixtures/Experiment';
 
-function Experiment(id, version) {
-	return { id, version, __typename: 'Experiment' };
-}
+const EXP_ID = 'test_experiment';
+const HASH = 1234;
 
-function getExperimentContext(data = {}) {
-	// default hash-code is 1753809052
-	const exp = {
-		id: 'ab',
-		enabled: true,
-		startTime: Date.now() - 2000,
-		endTime: Date.now() + 5000,
-		distribution: {
-			control: 0.5,
-			variant: 0.5,
-		},
-		...data
-	};
-	const context = {
-		cache: {
-			readQuery: jest.fn().mockReturnValue({
-				general: {
-					uiExperimentSetting: {
-						key: exp.id,
-						value: JSON.stringify(JSON.stringify(exp))
-					}
-				}
-			}),
-		}
-	};
+const mockCookieAssignments = {
+	asd: {
+		name: 'asd',
+		version: 'y',
+	},
+	[EXP_ID]: {
+		name: EXP_ID,
+		version: 'q',
+	},
+};
 
-	return context;
-}
+const experiment = {
+	name: EXP_ID,
+	distribution: {
+		control: 0.5,
+		variant: 0.5,
+	},
+	population: 1
+};
 
 describe('experiment.js', () => {
 	describe('Query.experiment', () => {
-		let assignVersionSpy;
+		let consoleWarnSpy;
+		let getActiveExperimentsSpy;
+		let getExperimentSettingSpy;
+		let getForcedAssignmentSpy;
+		let calculateHashSpy;
+		let assignVersionForLoginIdSpy;
+		let getLoginIdSpy;
+		let getCookieAssignmentsSpy;
+		let setCookieAssignmentsSpy;
 
 		beforeEach(() => {
-			assignVersionSpy = jest.spyOn(expUtils, 'assignVersion');
+			consoleWarnSpy = jest.spyOn(global.console, 'warn').mockImplementation();
+			getActiveExperimentsSpy = jest.spyOn(expUtils, 'getActiveExperiments')
+				.mockImplementation(() => Promise.resolve([EXP_ID]));
+			getExperimentSettingSpy = jest.spyOn(expUtils, 'getExperimentSetting')
+				.mockImplementation(() => Promise.resolve(experiment));
+			getForcedAssignmentSpy = jest.spyOn(expUtils, 'getForcedAssignment').mockReturnValue(undefined);
+			calculateHashSpy = jest.spyOn(expUtils, 'calculateHash').mockReturnValue(HASH);
+			assignVersionForLoginIdSpy = jest.spyOn(expUtils, 'assignVersionForLoginId');
+			getLoginIdSpy = jest.spyOn(expUtils, 'getLoginId').mockReturnValue(1234);
+			getCookieAssignmentsSpy = jest.spyOn(expUtils, 'getCookieAssignments')
+				.mockReturnValue(mockCookieAssignments);
+			setCookieAssignmentsSpy = jest.spyOn(expUtils, 'setCookieAssignments').mockImplementation();
 		});
 
-		afterEach(() => {
-			assignVersionSpy.mockClear();
-			clearDocumentCookies();
+		afterEach(jest.restoreAllMocks);
+
+		it('should return undefined assignment when active experiments list is empty', async () => {
+			const { resolvers } = expResolverFactory({});
+			getActiveExperimentsSpy.mockImplementation(() => Promise.resolve([]));
+
+			const result = await resolvers.Query.experiment(null, { id: 'asd' }, {});
+
+			expect(result).toEqual(Experiment({ id: 'asd' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Active experiments list is empty"}');
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(0);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns a null assignment when experiment id is unknown', () => {
-			const cookieStore = new CookieStore();
-			const { resolvers } = expResolverFactory({ cookieStore });
+		it('should return undefined assignment when active experiments list is missing experiment', async () => {
+			const { resolvers } = expResolverFactory({});
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, {});
-			expect(result).toEqual(Experiment('ab', null));
+			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
+
+			expect(result).toEqual(Experiment({ id: 'x' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment is not in active experiments list: x"}');
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(0);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns a null assignment when experiment is not enabled', () => {
-			const cookieStore = new CookieStore();
-			const context = getExperimentContext({ enabled: false });
-			const { resolvers } = expResolverFactory({ cookieStore });
+		it('should return undefined assignment when active experiments has similarly named experiment', async () => {
+			const { resolvers } = expResolverFactory({});
+			getActiveExperimentsSpy.mockImplementation(() => Promise.resolve([`asd_${EXP_ID}`]));
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(result).toEqual(Experiment('ab', null));
+			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
+
+			expect(result).toEqual(Experiment({ id: 'x' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment is not in active experiments list: x"}');
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(0);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns the current assignment when it is already set', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052' });
-			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext();
+		it('should return undefined assignment when experiment settings are missing', async () => {
+			const { resolvers } = expResolverFactory({});
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({}));
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).not.toHaveBeenCalled();
-			expect(result).toEqual(Experiment('ab', 'variant'));
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			// eslint-disable-next-line max-len
+			expect(consoleWarnSpy).toHaveBeenCalledWith('{"meta":{},"level":"warn","message":"Experiment setting is missing: test_experiment"}');
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(0);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(0);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns a new assignment when no assigment is set', () => {
-			const cookieStore = new CookieStore();
-			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext();
+		it('should return current assignment when assignment is forced', async () => {
+			const { resolvers } = expResolverFactory({});
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', hash: HASH, population: 1
+			});
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).toHaveBeenCalled();
-			expect(result).toEqual(Experiment('ab', expect.any(String)));
-			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${result.version}`);
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns a new assignment when the distribution changes', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052' });
-			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext({
+		it('should return new assignment when assignment is forced and hash was unset', async () => {
+			const { resolvers } = expResolverFactory({});
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', population: 1
+			});
+			assignVersionForLoginIdSpy.mockReturnValue('b');
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return current assignment when assignment is forced and population was unset', async () => {
+			const { resolvers } = expResolverFactory({});
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', hash: HASH
+			});
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return new assignment when assignment is forced and hash changes', async () => {
+			const { resolvers } = expResolverFactory({});
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', hash: HASH, population: 1
+			});
+			calculateHashSpy.mockReturnValue(1);
+			assignVersionForLoginIdSpy.mockReturnValue('b');
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return current assignment when assignment is forced and population changes', async () => {
+			const { resolvers } = expResolverFactory({});
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({ ...experiment, population: 0.5 }));
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', hash: HASH, population: 1
+			});
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return new assignment when undefined assignment is forced and population changes', async () => {
+			const { resolvers } = expResolverFactory({});
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({ ...experiment, population: 0.5 }));
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: undefined, hash: HASH, population: 1
+			});
+			assignVersionForLoginIdSpy.mockReturnValue('b');
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return new assignment when unassigned assignment is forced and population changes', async () => {
+			const { resolvers } = expResolverFactory({});
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({ ...experiment, population: 0.5 }));
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'unassigned', hash: HASH, population: 1
+			});
+			assignVersionForLoginIdSpy.mockReturnValue('b');
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should return new assignment when assignment is forced and distribution changes', async () => {
+			const { resolvers } = expResolverFactory({});
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({
+				...experiment,
 				distribution: {
 					control: 0.75,
 					variant: 0.25,
-				},
+				}
+			}));
+			getForcedAssignmentSpy.mockReturnValue({
+				id: EXP_ID, version: 'z', hash: HASH, population: 1
 			});
+			calculateHashSpy.mockRestore();
+			assignVersionForLoginIdSpy.mockReturnValue('b');
 
-			const { version } = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).toHaveBeenCalled();
-			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${version}`);
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 
-		it('Returns a new assignment when currently "unassigned" and the population changes', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:unassigned:1753809052:0.5' });
+		it('should return existing assignment when assignment is query forced', async () => {
+			const cookieStore = {};
 			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext({
-				population: 0.75,
-			});
+			const mockAssignment = {
+				id: EXP_ID, version: 'z', hash: HASH, population: 1, queryForced: true
+			};
+			const expectedCookieAssignments = { ...mockCookieAssignments, [EXP_ID]: mockAssignment };
+			getForcedAssignmentSpy.mockReturnValue(mockAssignment);
 
-			const { version } = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).toHaveBeenCalled();
-			expect(cookieStore.getSetCookies()[0]).toMatch(`ab:${version}:1753809052:0.75`);
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(1);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledWith(cookieStore, expectedCookieAssignments);
 		});
 
-		it('Returns the current assignment if already assigned when the population changes', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052:0.5' });
+		it('should return existing assignment when assignment is query forced and population is 0', async () => {
+			const cookieStore = {};
 			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext({
-				population: 0.75,
-			});
+			const mockAssignment = {
+				id: EXP_ID, version: 'z', hash: HASH, population: 1, queryForced: true
+			};
+			const expectedCookieAssignments = {
+				...mockCookieAssignments,
+				[EXP_ID]: {
+					...mockAssignment,
+					population: 0,
+				}
+			};
+			getExperimentSettingSpy.mockImplementation(() => Promise.resolve({ ...experiment, population: 0 }));
+			getForcedAssignmentSpy.mockReturnValue(mockAssignment);
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).not.toHaveBeenCalled();
-			expect(result).toEqual(Experiment('ab', 'variant'));
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(1);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledWith(cookieStore, expectedCookieAssignments);
 		});
 
-		it('Returns a null assignment when assignVersion returns undefined', () => {
-			const cookieStore = new CookieStore();
+		it('should return existing assignment when assignment is query forced and hash changes', async () => {
+			const cookieStore = {};
 			const { resolvers } = expResolverFactory({ cookieStore });
-			const context = getExperimentContext({
-				endTime: Date.now() - 1000,
-			});
+			const mockAssignment = {
+				id: EXP_ID, version: 'z', hash: HASH, population: 1, queryForced: true
+			};
+			const expectedCookieAssignments = { ...mockCookieAssignments, [EXP_ID]: { ...mockAssignment, hash: 1 } };
+			getForcedAssignmentSpy.mockReturnValue(mockAssignment);
+			calculateHashSpy.mockReturnValue(1);
 
-			const result = resolvers.Query.experiment(null, { id: 'ab' }, context);
-			expect(assignVersionSpy).toHaveBeenCalled();
-			expect(result).toEqual(Experiment('ab', null));
-		});
-	});
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
 
-	describe('Mutation.updateExperimentVersion', () => {
-		it('Returns null when version is undefined', () => {
-			const cookieStore = new CookieStore();
-			const { resolvers } = expResolverFactory({ cookieStore });
-
-			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab' });
-			expect(result).toEqual(Experiment('ab', null));
-		});
-
-		it('Does not make updates to the version if already assigned to the requested version', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:variant' });
-			const { resolvers } = expResolverFactory({ cookieStore });
-
-			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'variant' });
-			expect(result).toEqual(Experiment('ab', 'variant'));
-			expect(cookieStore.getSetCookies()).toHaveLength(0);
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'z' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(0);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(1);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledWith(cookieStore, expectedCookieAssignments);
 		});
 
-		it('Updates the uiab cookie and returns the new version', () => {
-			const cookieStore = new CookieStore({ uiab: 'ab:variant' });
-			const { resolvers } = expResolverFactory({ cookieStore });
+		it('should return new assignment when no assignment is forced', async () => {
+			const { resolvers } = expResolverFactory({});
+			assignVersionForLoginIdSpy.mockReturnValue('b');
 
-			const result = resolvers.Mutation.updateExperimentVersion(null, { id: 'ab', version: 'control' });
-			expect(result).toEqual(Experiment('ab', 'control'));
-			expect(cookieStore.getSetCookies()[0]).toMatch('ab:control');
+			let result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+
+			jest.clearAllMocks();
+
+			result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: 'b' }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
-	});
 
-	describe('Mutation.cleanExperimentCookie', () => {
-		it('Always returns true', () => {
-			const cookieStore = new CookieStore();
-			const { resolvers } = expResolverFactory({ cookieStore });
-			expect(resolvers.Mutation.cleanExperimentCookie()).toBe(true);
+		it('should return undefined assignment when assignment returns undefined', async () => {
+			const { resolvers } = expResolverFactory({});
+			assignVersionForLoginIdSpy.mockReturnValue(undefined);
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: undefined }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledTimes(1);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+		});
+
+		it('should pass expected params to get forced assignment', async () => {
+			const cookieStore = { asd: 1 };
+			const route = { qwe: 2 };
+			const { resolvers } = expResolverFactory({ cookieStore, route });
+			assignVersionForLoginIdSpy.mockReturnValue(undefined);
+
+			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
+
+			expect(result).toEqual(Experiment({ id: EXP_ID, version: undefined }));
+			expect(getActiveExperimentsSpy).toHaveBeenCalledTimes(1);
+			expect(getExperimentSettingSpy).toHaveBeenCalledTimes(1);
+			expect(getForcedAssignmentSpy).toHaveBeenCalledWith(cookieStore, route, EXP_ID, experiment);
+			expect(calculateHashSpy).toHaveBeenCalledTimes(1);
+			expect(assignVersionForLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getLoginIdSpy).toHaveBeenCalledTimes(1);
+			expect(getCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
+			expect(setCookieAssignmentsSpy).toHaveBeenCalledTimes(0);
 		});
 	});
 });

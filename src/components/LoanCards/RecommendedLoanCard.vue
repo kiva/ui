@@ -91,7 +91,6 @@
 <script>
 import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
-import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
@@ -140,11 +139,13 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 				lentTo
 			}
 
-			# for loan-use-mixin
-			use
-			status
-			loanAmount
+			# for fullLoanUse
+			anonymizationLevel
 			borrowerCount
+			loanAmount
+			status
+			use
+			fullLoanUse(maxLength: 100) @client
 
 			# for percent-raised-mixin
 			loanFundraisingInfo {
@@ -167,7 +168,7 @@ export default {
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanUseMixin, percentRaisedMixin, timeLeftMixin],
+	mixins: [percentRaisedMixin, timeLeftMixin],
 	components: {
 		FundraisingStatusMeter,
 		KvFlag,
@@ -211,6 +212,9 @@ export default {
 		},
 		isLentTo() {
 			return this.loan?.userProperties?.lentTo;
+		},
+		loanUse() {
+			return this.loan?.fullLoanUse ?? '';
 		},
 		sectorName() {
 			return (this.loan?.sector?.name || '').toLowerCase();

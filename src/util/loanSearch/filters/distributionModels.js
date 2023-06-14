@@ -77,14 +77,14 @@ export default {
 		...(loanSearchState?.distributionModel && { distributionModel: { eq: loanSearchState.distributionModel } })
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
-		distributionModel: allFacets.distributionModels.includes(loanSearchState?.distributionModel?.toUpperCase())
+		distributionModel: allFacets?.distributionModels?.includes(loanSearchState?.distributionModel?.toUpperCase())
 			? loanSearchState.distributionModel
 			: null
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
 		distributionModel: getEnumNameFromQueryParam(
 			query.distributionModel,
-			allFacets.distributionModelFacets,
+			allFacets?.distributionModelFacets,
 			distributionModelQueryMap
 		) ?? null
 	}),

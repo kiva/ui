@@ -53,10 +53,11 @@
 </template>
 
 <script>
+import { handleInvalidBasketForDonation, hasBasketExpired } from '@/util/basketUtils';
 import numeral from 'numeral';
-import _forEach from 'lodash/forEach';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import DonateFormDropInPaymentWrapper from '@/pages/Donate/DonateFormDropInPaymentWrapper';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
@@ -71,7 +72,9 @@ export default {
 		KvButton,
 		MultiAmountSelector,
 	},
+	inject: ['apollo', 'cookieStore'],
 	mixins: [
+		retryAfterExpiredBasket,
 		validationMixin
 	],
 	validations() {
@@ -112,7 +115,6 @@ export default {
 			default: null
 		},
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			defaultDisclaimer: '<p>Thanks to PayPal, Kiva receives free payment processing.</p>',
@@ -179,17 +181,32 @@ export default {
 			// allow form submission only once
 			this.formSubmitted = true;
 
+			const donationAmount = numeral(this.selectedAmount).value();
+
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
-					price: numeral(this.selectedAmount).format('0.00'),
+					price: donationAmount,
 					isTip: true
 				}
 			}).then(data => {
-				if (data.errors) {
-					_forEach(data.errors, ({ message }) => {
-						this.$showTipMsg(message, 'error');
+				if (data?.errors) {
+					let hasFailedAddToBasket = false;
+
+					data?.errors.forEach(error => {
+						this.$showTipMsg(error?.message, 'error');
+						if (hasBasketExpired(error?.extensions?.code)) {
+							hasFailedAddToBasket = true;
+						}
 					});
+
+					if (hasFailedAddToBasket) {
+						handleInvalidBasketForDonation({
+							cookieStore: this.cookieStore,
+							donationAmount,
+							navigateToCheckout: true
+						});
+					}
 				} else {
 					this.$kvTrackEvent(
 						'donation',
@@ -203,8 +220,6 @@ export default {
 						path: '/checkout',
 					});
 				}
-			}).catch(error => {
-				console.error(error);
 			});
 		}
 	},

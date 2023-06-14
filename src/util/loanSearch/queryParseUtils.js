@@ -20,7 +20,7 @@ export function getEnumNameFromQueryParam(param, facets, queryMap) {
 			});
 		}
 
-		return facets.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
+		return facets?.find(f => f.name.toUpperCase() === param.toUpperCase())?.name;
 	}
 }
 
@@ -68,13 +68,13 @@ export function getIdsFromQueryParam(param, names, facets) {
 	if (param.includes(',') || isNumber(param)) {
 		return param.split(',').reduce((prev, current) => {
 			const name = current.toUpperCase();
-			if (names.includes(name)) {
-				const facet = facets.find(s => s.name.toUpperCase() === name);
+			if (names?.includes(name)) {
+				const facet = facets?.find(s => s.name.toUpperCase() === name);
 
 				if (facet) {
 					prev.push(facet.id);
 				}
-			} else if (current !== '') {
+			} else if (isNumber(current)) {
 				return [...prev, parseInt(current, 10)];
 			}
 
@@ -86,8 +86,8 @@ export function getIdsFromQueryParam(param, names, facets) {
 	return param.split('~').reduce((prev, current) => {
 		const name = current.toUpperCase();
 
-		if (names.includes(name)) {
-			const facet = facets.find(s => s.name.toUpperCase() === name);
+		if (names?.includes(name)) {
+			const facet = facets?.find(s => s.name.toUpperCase() === name);
 
 			if (facet) {
 				prev.push(facet.id);

@@ -53,6 +53,7 @@
 				:loan="loanData"
 				loan-card-type="ListLoanCard"
 				:rounded-corners="true"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				@add-to-basket="handleAddToBasket"
 			/>
 		</div>
@@ -105,6 +106,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

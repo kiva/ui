@@ -10,7 +10,7 @@
 			v-if="corporateLogoUrl"
 			:class="`campaign-logo-group__corporate ${logoClasses}`"
 			:contentful-src="corporateLogoUrl"
-			:height="logoHeight"
+			:height="Number(logoHeight)"
 			alt=""
 			fallback-format="png"
 		/>
@@ -38,8 +38,8 @@ export default {
 			required: false
 		},
 		logoHeight: {
-			type: Number,
-			default: 28,
+			type: String,
+			default: '28',
 			required: false
 		}
 	},

@@ -25,6 +25,7 @@
 				:loan-channel="loanChannel"
 				:position="1"
 				:row-number="0"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
 			/>
 			<kv-loading-overlay v-if="loading" id="updating-overlay" />
 		</div>
@@ -49,7 +50,7 @@ import {
 import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingAsync,
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 
 const initialLoanCount = 4;
 const categoryServiceExpKey = 'flss_category_service';
@@ -75,6 +76,10 @@ export default {
 			default: false,
 		},
 		useCategoryService: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

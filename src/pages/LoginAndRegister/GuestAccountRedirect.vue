@@ -16,6 +16,7 @@ export default {
 						nonTrivialItemCount
 					}
 					my {
+						id
 						userAccount {
 							id
 						}

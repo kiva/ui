@@ -76,10 +76,10 @@ export default {
 		...(loanSearchState?.tagId?.length && { tagId: { any: loanSearchState.tagId } })
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
-		tagId: loanSearchState?.tagId?.filter(t => allFacets.tagIds.includes(t)) ?? []
+		tagId: loanSearchState?.tagId?.filter(t => allFacets?.tagIds?.includes(t)) ?? []
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
-		tagId: getIdsFromQueryParam(query.tag || query.tags, allFacets.tagNames, allFacets.tagFacets) ?? []
+		tagId: getIdsFromQueryParam(query.tag || query.tags, allFacets?.tagNames, allFacets?.tagFacets) ?? []
 	}),
 	getQueryFromFilter: loanSearchState => ({
 		...(loanSearchState.tagId?.length && { tag: loanSearchState.tagId.join() })

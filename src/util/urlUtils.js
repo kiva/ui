@@ -48,10 +48,31 @@ export function isExcludedUrl(urlArray, route) {
  */
 export function getFullUrl(base, args) {
 	if (!args || Object.keys(args).length === 0) return base;
+
+	// remove hash portion of url if present
+	const baseUrlWithoutHash = base.split('#')[0];
+	const hashParams = base.split('#')[1] ? `#${base.split('#')[1]}` : '';
 	const querystring = Object.keys(args)
+		.filter(key => {
+			return !!args[key];
+		})
 		.map(key => {
 			return `${key}=${encodeURIComponent(args[key])}`;
 		})
 		.join('&');
-	return `${base}?${querystring}`;
+	return `${baseUrlWithoutHash}${querystring ? `?${querystring}` : ''}${hashParams}`;
+}
+
+/**
+ * checks and compares on if the page is a Corporate Campaign Page
+ *
+ * @param {Object}
+ * @returns {String}
+ */
+
+export function isCCPage(
+	route = {}
+) {
+	// Fetch route path
+	return route.path?.substring(0, 4) === '/cc/';
 }

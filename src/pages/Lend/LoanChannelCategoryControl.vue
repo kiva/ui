@@ -36,12 +36,14 @@
 
 		<div class="row">
 			<quick-filters
-				class="tw-m-1 md:tw-ml-2 lg:tw-mr-2 tw-z-2"
+				class="tw-z-2"
+				:class="{ 'tw-px-1 md:tw-px-2' : !enableFilterPills }"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				tracking-category="search"
+				:enable-filter-pills="enableFilterPills"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
@@ -49,10 +51,16 @@
 		</div>
 
 		<div class="row tw-relative">
+			<!-- emtpy state for no loans result -->
+			<empty-state
+				v-show="emptyState"
+				class="tw-mb-2 tw-mx-1 md:tw-mx-2"
+			/>
+
 			<!-- eslint-disable max-len -->
-			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-1"></div>
-			<div v-if="loans.length > 0" class="tw-w-full">
-				<div v-if="!displayLoanPromoCard">
+			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-3"></div>
+			<div v-if="loans && loans.length > 0" class="tw-w-full">
+				<div v-if="!displayLoanPromoCard || emptyState">
 					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
 						<template v-for="(loan, index) in loans">
 							<kiva-classic-basic-loan-card-exp
@@ -64,6 +72,8 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -73,6 +83,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 					</div>
@@ -89,6 +100,7 @@
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
 						:enable-loan-card-exp="enableLoanCardExp"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
 				<div v-else>
@@ -103,6 +115,8 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -112,6 +126,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 
@@ -136,6 +151,8 @@
 								:show-tags="enableLoanTags"
 								:category-page-name="loanChannelName"
 								:use-full-width="true"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
+								:user-balance="userBalance"
 							/>
 							<loan-card-controller
 								v-else
@@ -145,6 +162,7 @@
 								:loan="loan"
 								loan-card-type="GridLoanCard"
 								:show-tags="enableLoanTags"
+								:enable-five-dollars-notes="enableFiveDollarsNotes"
 							/>
 						</template>
 					</div>
@@ -161,6 +179,7 @@
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
 						:enable-loan-card-exp="enableLoanCardExp"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
 				<kv-pagination
@@ -190,8 +209,6 @@ import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
@@ -213,8 +230,13 @@ import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import EmptyState from '@/components/LoanFinding/EmptyState';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
+
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -252,26 +274,9 @@ function getPageOffset(query, limit) {
 	return pageNum > 0 ? limit * pageNum : 0;
 }
 
-const imageRequire = require.context('@/assets/images/category-share-experiment/', true);
-
 export default {
 	name: 'LoanChannelCategoryControl',
 	metaInfo() {
-		let image = '';
-		let title = null;
-		if (this.$route.query.category_share_version
-			&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
-			image = imageRequire(`./${this.$route.params.category}_share_card.png`);
-			title = this.$route.query.lender ? `Can you help ${this.$route.query.lender} ` : 'Can you help ';
-			if (this.$route.params.category === 'women') {
-				title += 'support women around the world?';
-			} else if (this.$route.params.category === 'education') {
-				title += 'expand access to education around the world?';
-			} else if (this.$route.params.category === 'agriculture') {
-				title += 'support smallholder farmers around the world?';
-			}
-		}
-
 		return {
 			title: this.metaTitle,
 			link: [
@@ -291,7 +296,7 @@ export default {
 				{
 					vmid: 'og:title',
 					property: 'og:title',
-					content: title ?? this.metaTitle
+					content: this.metaTitle
 				},
 				{
 					vmid: 'og:description',
@@ -302,25 +307,14 @@ export default {
 				{
 					vmid: 'twitter:title',
 					name: 'twitter:title',
-					content: title ?? this.metaTitle
+					content: this.metaTitle
 				},
 				{
 					name: 'twitter:description',
 					vmid: 'twitter:description',
 					content: this.metaDescription
 				}
-			]).concat(image ? [
-				{
-					property: 'og:image',
-					vmid: 'og:image',
-					content: image
-				},
-				{
-					name: 'twitter:image',
-					vmid: 'twitter:image',
-					content: image
-				}
-			] : [])
+			])
 		};
 	},
 	props: {
@@ -332,6 +326,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFilterPills: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		LoanCardController,
@@ -343,12 +345,10 @@ export default {
 		DonationCTA,
 		KivaClassicBasicLoanCardExp,
 		PromoGridLoanCardExp,
+		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [
-		lendFilterExpMixin,
-		loanChannelQueryMapMixin,
-	],
+	mixins: [loanChannelQueryMapMixin],
 	data() {
 		return {
 			offset: 0,
@@ -361,7 +361,6 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
-			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
 			selectedChannelLoanIds: [],
@@ -373,7 +372,7 @@ export default {
 			flssLoanSearch: {},
 			quickFiltersOptions: {
 				gender: [{
-					key: '',
+					key: 'all',
 					title: 'All genders'
 				}],
 				sorting: [{
@@ -422,11 +421,12 @@ export default {
 			if (this.showHelpMeChooseFeat) {
 				return _filter(this.allLoans, (loan, index) => index < 6);
 			}
+			if (this.emptyState) return this.backupLoans;
 			return this.allLoans;
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.allLoans[0] ? [this.allLoans[0]] : [];
+			return this.allLoans?.[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
 			if (this.showHelpMeChooseFeat) {
@@ -470,13 +470,6 @@ export default {
 			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
-			// MARS-310 Category Share on Thanks page
-			if (this.$route.query.category_share_version
-				&& ['women', 'education', 'agriculture'].includes(this.$route.params.category)) {
-				const params = this.$router.currentRoute.query;
-				const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-				url = `${url}?${queryString}`;
-			}
 			return url;
 		},
 		hasOnePageOfLoans() {
@@ -488,22 +481,33 @@ export default {
 
 			// Don't show help me choose if the category has sortBy
 			// Help me choose categories are just different sortBy options
-			return !hasSortBy && this.allLoans.length > 8;
-		}
+			return !hasSortBy && this.allLoans?.length > 8;
+		},
+		emptyState() {
+			return this.allLoans?.length <= 0;
+		},
+		userBalance() {
+			return this.userData?.balance;
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			return client.query({
-				query: loanChannelPageQuery
-			}).then(({ data }) => {
+			const loanChannelPageQueryPromise = client.query({ query: loanChannelPageQuery });
+
+			return Promise.all([
+				loanChannelPageQueryPromise,
+				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+			]).then(data => {
+				const loanChannelPageQueryData = data?.[0]?.data ?? {};
+
 				// combine both 'pages' of loan channels
 				const pageQueryData = {
-					...data,
+					...loanChannelPageQueryData,
 					lend: {
 						loanChannels: {
 							values: [
-								...(data?.lend?.firstLoanChannels?.values ?? []),
-								...(data?.lend?.secondLoanChannels?.values ?? [])
+								...(loanChannelPageQueryData?.lend?.firstLoanChannels?.values ?? []),
+								...(loanChannelPageQueryData?.lend?.secondLoanChannels?.values ?? [])
 							]
 						}
 					}
@@ -554,7 +558,7 @@ export default {
 			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
-		// combine both 'pages' of loan channels
+		// Combine both 'pages' of loan channels
 		const pageQueryData = {
 			...allChannelsData,
 			lend: {
@@ -597,18 +601,17 @@ export default {
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
 
-		/*
-		 * Experiment Initializations
-		*/
-
-		// Lend Filter Redirects
-		this.initializeLendFilterRedirects();
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
-
-		this.updateLendFilterExp();
 
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
@@ -622,6 +625,8 @@ export default {
 
 		// Load all available facets for specified sector
 		await this.fetchFacets();
+
+		this.backupLoans = this.loans?.slice(3) ?? [];
 	},
 	methods: {
 		handleQuickFiltersOverlay(showOverlay) {
@@ -747,16 +752,6 @@ export default {
 			// use default
 			return '/lend/filter';
 		},
-		initializeLendFilterRedirects() {
-			const lendFilterEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_filter_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.lendFilterExpVersion = lendFilterEXP.version;
-
-			// Update Lend Filter Exp CASH-545
-			this.getLendFilterExpVersion();
-		},
 		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
@@ -810,7 +805,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: '',
+					key: 'all',
 				},
 				{
 					title: 'Women',
@@ -819,6 +814,10 @@ export default {
 				{
 					title: 'Men',
 					key: 'male',
+				},
+				{
+					title: 'Non-binary',
+					key: 'nonbinary',
 				},
 			];
 

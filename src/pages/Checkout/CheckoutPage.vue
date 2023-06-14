@@ -33,6 +33,7 @@
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -269,7 +270,10 @@ import numeral from 'numeral';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
-
+import {
+	achievementsQuery,
+	achievementProgression,
+} from '@/util/achievementUtils';
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
@@ -300,13 +304,19 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
+const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
+const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
+
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
 	my {
+		id
 		lender {
 			id
 			teams(limit: 100) {
@@ -342,9 +352,7 @@ export default {
 		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [
-		checkoutUtils
-	],
+	mixins: [checkoutUtils, fiveDollarsTest],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -387,6 +395,7 @@ export default {
 			teamJoinStatus: null,
 			myTeams: [],
 			continueButtonState: 'loading',
+			challengeRedirectQueryParam: '',
 		};
 	},
 	apollo: {
@@ -420,6 +429,9 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
 				});
 		},
@@ -477,7 +489,7 @@ export default {
 
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({
-			id: 'Experiment:checkout_login_cta',
+			id: `Experiment:${CHECKOUT_LOGIN_CTA_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 
@@ -492,7 +504,7 @@ export default {
 
 		if (this.eligibleForGuestCheckout) {
 			const guestCheckoutCTAExperiment = this.apollo.readFragment({
-				id: 'Experiment:guest_checkout_cta',
+				id: `Experiment:${GUEST_CHECKOUT_CTA_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 
@@ -511,6 +523,8 @@ export default {
 			return hasCredits && isMatchedLoan;
 		});
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
+
+		this.initializeFiveDollarsNotes();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -537,6 +551,17 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
+
+		// Fetch Challenge Status
+		// If a loan in basket makes progress towards an active challenge,
+		// set query param to redirect to special thank you page
+		achievementsQuery(this.apollo, this.loanIdsInBasket)
+			.then(({ data }) => {
+				const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+				const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
+				this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
+			});
+		// end challenge code
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -784,7 +809,7 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId);
+						this.redirectToThanks(transactionId, this.challengeRedirectQueryParam);
 					},
 					800
 				);

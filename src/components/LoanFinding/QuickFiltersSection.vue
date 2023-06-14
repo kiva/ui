@@ -1,9 +1,9 @@
 <template>
-	<div class="tw-w-full tw-bg-secondary">
-		<div class="tw-mx-auto tw-pt-4 tw-pb-2 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+	<div ref="sectionTop" class="tw-w-full tw-bg-secondary">
+		<div class="tw-mx-auto tw-pt-2 tw-pb-1 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<div
 				v-show="showOverlay"
-				style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-1"
+				style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-3"
 			></div>
 			<h2 class="tw-text-h2 tw-mb-1 tw-text-primary">
 				Find a loan by category and location
@@ -21,25 +21,20 @@
 				@reset-filters="resetFilters"
 				@handle-overlay="handleQuickFiltersOverlay"
 			/>
-			<!-- eslint-disable max-len -->
-			<div
-				v-show="emptyState"
-				class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 tw-bg-white tw-px-2 tw-pb-2 lg:tw-py-4 lg:tw-px-8 tw-items-center"
-			>
-				<img class="tw-w-8 lg:tw-w-16" src="~@/assets/images/sad_cloud.svg">
-				<h2 class="tw-text-h2">
-					We couldn’t find any loans that match your current filters but here are other recommended loans for you.
-				</h2>
-			</div>
+			<!-- emtpy state for no loans result -->
+			<empty-state v-show="emptyState" />
+
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
 				<template v-for="(loan, index) in loans">
 					<kiva-classic-basic-loan-card-exp
 						v-if="enableLoanCardExp"
-						:key="`new-card-${index}`"
+						:key="`new-card-${loan.id}-${index}`"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:use-full-width="true"
 						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 					/>
 					<kiva-classic-basic-loan-card
@@ -50,6 +45,7 @@
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mr-2"
 						@add-to-basket="addToBasket"
 					/>
@@ -58,25 +54,12 @@
 			<div class="tw-w-full tw-my-4">
 				<kv-pagination
 					v-show="!emptyState"
-					:total="totalCount >= 12 ? 12 : totalCount"
+					:total="totalCount"
 					:limit="loanSearchState.pageLimit"
 					:offset="loanSearchState.pageOffset"
 					@page-changed="pageChange"
 					:scroll-to-top="false"
 				/>
-			</div>
-			<div v-show="showSeeMoreCta" class="tw-w-full tw-my-4 tw-text-center">
-				<kv-button
-					variant="secondary"
-					:href="filterPageUrl()"
-					v-kv-track-event="[
-						'lending-home',
-						'click',
-						'quick-filters-view-more-loans'
-					]"
-				>
-					See more loans
-				</kv-button>
 			</div>
 		</div>
 	</div>
@@ -90,7 +73,7 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import EmptyState from './EmptyState';
 
 export default {
 	name: 'QuickFiltersSection',
@@ -99,14 +82,22 @@ export default {
 		KivaClassicBasicLoanCardExp,
 		KivaClassicBasicLoanCard,
 		KvPagination,
-		KvButton
+		EmptyState
 	},
 	inject: ['apollo'],
 	props: {
 		enableLoanCardExp: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		userBalance: {
+			type: String,
+			default: undefined
+		},
 	},
 	data() {
 		return {
@@ -131,7 +122,7 @@ export default {
 					key: 0
 				}],
 				gender: [{
-					key: '',
+					key: 'all',
 					title: 'All genders'
 				}],
 				sorting: [{
@@ -156,29 +147,9 @@ export default {
 		this.totalCount = totalCount;
 		this.backupLoans = this.loans.slice(3);
 	},
-	computed: {
-		showSeeMoreCta() {
-			return this.loanSearchState.pageOffset !== 0 && !this.flssLoanSearch.activityId;
-		}
-	},
 	methods: {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		},
-		filterPageUrl() {
-			const location = this.flssLoanSearch.countryIsoCode?.toString();
-			// parse, stringify, and undefined are all needed to ensure
-			// we don't have a gender=undefined or gender= in our string
-			const paramStr = JSON.parse(JSON.stringify({
-				gender: this.flssLoanSearch.gender || undefined,
-				sortBy: this.flssLoanSearch.sortBy || undefined,
-				sector: this.flssLoanSearch.sectorId || undefined,
-				tag: this.flssLoanSearch.tagId || undefined,
-				attribute: this.flssLoanSearch.themeId || undefined,
-				location: location || undefined,
-			}));
-			const params = new URLSearchParams(paramStr);
-			return `/lend/filter?${params.toString()}`;
 		},
 		// TODO: Rearchitect this at some point.
 		// This won't work for categories that have
@@ -285,7 +256,7 @@ export default {
 			this.quickFiltersOptions.gender = [
 				{
 					title: 'All genders',
-					key: '',
+					key: 'all',
 				},
 				{
 					title: 'Women',
@@ -312,6 +283,7 @@ export default {
 			);
 			this.loanSearchState.pageOffset = pageOffset;
 			this.updateLoans();
+			this.$refs.sectionTop.scrollIntoView({ behavior: 'smooth' });
 		},
 		async updateLoans() {
 			const { loans } = await runLoansQuery(
@@ -321,6 +293,14 @@ export default {
 			);
 			this.loans = loans;
 		}
+	},
+	watch: {
+		loans(data) {
+			this.$emit('data-loaded', {
+				data,
+				pageOffset: this.loanSearchState?.pageOffset ?? 0
+			});
+		},
 	},
 };
 </script>

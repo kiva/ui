@@ -34,6 +34,8 @@
 				<loan-search-interface
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-new-loan-card="enableNewLoanCard"
 				/>
 			</kv-page-container>
 		</article>
@@ -44,24 +46,19 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
-import { gql } from '@apollo/client';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const pageQuery = gql`query loanSearchPage {
-	general {
-		extendFlssFilters: uiExperimentSetting(key: "extend_flss_filters") {
-			key
-			value
-		}
-		lendFilterFlssQuery: uiExperimentSetting(key: "EXP-FLSS-Lend-Filter") {
-			key
-			value
-		}
-	}
-}`;
+const LOAN_CARD_EXP_KEY = 'new_loan_card';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LoanSearchPage',
@@ -74,55 +71,83 @@ export default {
 	data() {
 		return {
 			extendFlssFilters: false,
-			enableFlssQueryExp: false,
 			enableSavedSearch: true,
 			mdiEarth,
 			mdiFilter,
 			mdiClose,
 			savedSearchName: '',
+			enableNewLoanCard: false
 		};
 	},
+	mixins: [fiveDollarsTest],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
-					client.query({ query: experimentQuery, variables: { id: 'EXP-FLSS-Lend-Filter' } }),
-				]);
-			});
+		preFetch(config, client, args) {
+			return client.query({ query: experimentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } })
+				.then(() => {
+					const query = args?.route?.query ?? {};
+
+					// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
+					const { version } = client.readFragment({
+						id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
+						fragment: experimentVersionFragment,
+					}) ?? {};
+
+					if (version === 'b' && getHasEverLoggedIn(client)) {
+						return Promise.reject({ path: '/lend-category-beta', query });
+					}
+
+					return Promise.all([
+						client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
+						client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+						client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
+					]);
+				});
 		},
-		result() {
-			// Extended FLSS Loan Filter Experiment
-			const showMoreFiltersExp = this.apollo.readFragment({
-				id: 'Experiment:extend_flss_filters',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.extendFlssFilters = showMoreFiltersExp.version === 'b';
-			if (showMoreFiltersExp.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-VUE-1323-Nov-2022',
-					showMoreFiltersExp.version
-				);
-			}
-			// Lend Filter Flss Query Experiment
-			const lendFilterFlssQuery = this.apollo.readFragment({
-				id: 'Experiment:EXP-FLSS-Lend-Filter',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.enableFlssQueryExp = lendFilterFlssQuery.version;
-			if (lendFilterFlssQuery.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-VUE-1346-Oct-2022',
-					lendFilterFlssQuery.version
-				);
-			}
+	},
+	created() {
+		this.initializeFiveDollarsNotes();
+
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			LOAN_CARD_EXP_KEY,
+			'EXP-CORE-941-Feb2023'
+		);
+		this.enableNewLoanCard = version === 'b';
+
+		// Extended FLSS Loan Filter Experiment
+		const showMoreFiltersExp = this.apollo.readFragment({
+			id: 'Experiment:extend_flss_filters',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.extendFlssFilters = showMoreFiltersExp.version === 'b';
+		if (showMoreFiltersExp.version) {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-VUE-1323-Nov-2022',
+				showMoreFiltersExp.version
+			);
 		}
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
+	},
+	mounted() {
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			CATEGORY_REDIRECT_EXP_KEY,
+			'EXP-CORE-1205-May2023'
+		);
 	},
 };
 </script>

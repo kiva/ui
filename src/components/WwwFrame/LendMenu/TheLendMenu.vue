@@ -11,7 +11,6 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -24,7 +23,6 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 	</div>
 </template>
@@ -39,12 +37,12 @@ import { gql } from '@apollo/client';
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
 const pageQuery = gql`query lendMenu {
 		my {
+			id
 			userAccount {
 				id
 			}
@@ -79,7 +77,6 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			newMgEntrypointExp: false,
 		};
 	},
 	apollo: {
@@ -167,28 +164,8 @@ export default {
 				this.savedSearches = data?.my?.savedSearches?.values ?? [];
 			}
 		},
-		initializeMGExp() {
-			// CORE-641 NEW MG ENTRYPOINT
-			const newMgEntrypointExperiment = this.apollo.readFragment({
-				id: 'Experiment:topnav_mg_entrypoint',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
-
-			// Fire Event for EXP-CORE-644-June-2022
-			if (newMgEntrypointExperiment.version) {
-				this.$kvTrackEvent(
-					'TopNav',
-					'EXP-CORE-644-June-2022',
-					newMgEntrypointExperiment.version
-				);
-			}
-		},
 	},
 	mounted() {
-		this.initializeMGExp();
-
 		this.$nextTick(() => {
 			this.showMGUpsellLink = true;
 		});

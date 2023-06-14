@@ -77,7 +77,10 @@
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap">
+					<div
+						class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap"
+						:class="{ 'lg:tw-pl-4' : enableNewLoanCard }"
+					>
 						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
 							{{ totalCount }} Loans
 						</p>
@@ -99,7 +102,25 @@
 						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 					</p>
 				</template>
-				<kv-grid class="tw-grid-rows-4">
+				<!-- eslint-disable max-len -->
+				<div
+					v-if="enableNewLoanCard"
+					class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4"
+				>
+					<kiva-classic-basic-loan-card-exp
+						v-for="(loan, index) in loans"
+						:key="`new-card-${index}`"
+						:loan-id="loan.id"
+						:show-action-button="true"
+						:show-tags="true"
+						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
+						@add-to-basket="addToBasket"
+						class="tw-h-full"
+					/>
+				</div>
+				<kv-grid v-else class="tw-grid-rows-4">
 					<loan-card-controller
 						v-for="loan in loans"
 						:items-in-basket="itemsInBasket"
@@ -109,6 +130,7 @@
 						:key="loan.id"
 						:loan="loan"
 						loan-card-type="ListLoanCard"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:rounded-corners="true"
 					/>
 				</kv-grid>
@@ -120,6 +142,7 @@
 						@page-changed="handlePageChange"
 					/>
 					<kv-results-per-page
+						:options="enableNewLoanCard ? [10, 20, 50] : [15, 25, 50]"
 						:selected="loanSearchState.pageLimit"
 						@updated="handleResultsPerPage"
 					/>
@@ -136,7 +159,6 @@
 <script>
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-import userIdQuery from '@/graphql/query/userId.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
@@ -148,17 +170,31 @@ import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
+import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '@/util/loanSearch/filterConfig';
 import DonationCTA from '@/components/Lend/DonationCTA';
+import { gql } from '@apollo/client';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const COOKIE_KEY = 'kv-search-result-count';
+
+const userInfoLendFilterQuery = gql`
+	query userInfoLendFilter {
+		my {
+			id
+			userAccount {
+				id
+				balance
+			}
+		}
+	}
+`;
 
 export default {
 	name: 'LoanSearchInterface',
@@ -174,7 +210,8 @@ export default {
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
-		LoanSearchSavedSearch
+		LoanSearchSavedSearch,
+		KivaClassicBasicLoanCardExp
 	},
 	props: {
 		extendFlssFilters: {
@@ -185,6 +222,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
+		},
+		enableNewLoanCard: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -196,11 +241,15 @@ export default {
 			totalCount: 0,
 			isLightboxVisible: false,
 			itemsInBasket: [],
-			loanSearchState: getDefaultLoanSearchState(),
+			loanSearchState: {
+				...getDefaultLoanSearchState(),
+				...(this.enableNewLoanCard && { pageLimit: 10 }),
+			},
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
 			userId: null,
+			userBalance: undefined,
 		};
 	},
 	apollo: {
@@ -212,7 +261,7 @@ export default {
 			}
 
 			return client.query({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			}).then(() => {
 				return client.query({
 					query: itemsInBasketQuery
@@ -225,11 +274,12 @@ export default {
 
 		try {
 			const userIdData = this.apollo.readQuery({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			});
 			this.userId = userIdData?.my?.userAccount?.id ?? null;
+			this.userBalance = userIdData?.my?.userAccount?.balance;
 		} catch (e) {
-			logReadQueryError(e, 'LoanSearchInterface userIdQuery');
+			logReadQueryError(e, 'LoanSearchInterface userInfoLendFilterQuery');
 		}
 
 		try {
@@ -383,6 +433,9 @@ export default {
 			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
 
 			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
+		},
+		addToBasket(payload) {
+			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
 		}
 	},
 	watch: {

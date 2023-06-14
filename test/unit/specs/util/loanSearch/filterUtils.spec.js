@@ -9,6 +9,10 @@ import { lenderRepaymentTermValueMap, EIGHT_MONTHS_KEY } from '@/util/loanSearch
 
 describe('filterUtils.js', () => {
 	describe('transformRadioGroupOptions', () => {
+		it('should handle undefined', () => {
+			expect(transformRadioGroupOptions(undefined, undefined, undefined)).toEqual([]);
+		});
+
 		it('should handle empty', () => {
 			expect(transformRadioGroupOptions([], [], [])).toEqual([]);
 		});

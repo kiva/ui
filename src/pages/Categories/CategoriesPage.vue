@@ -106,7 +106,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -114,7 +114,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 
 const categoriesExperimentsQuery = gql`
-	query experimentsQuery {		
+	query experimentsQuery {
 		general {
 			categoriesRedirect: uiExperimentSetting(key: "categories_redirect") {
 				key
@@ -263,7 +263,7 @@ export default {
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'categories_page',
+				CATEGORIES_REDIRECT_EXP_KEY,
 				'EXP-CORE-1057-Feb2023'
 			);
 		}

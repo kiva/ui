@@ -5,6 +5,7 @@ import logFormatter from '@/util/logFormatter';
 import basketCountQuery from '@/graphql/query/basketCount.graphql';
 import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import basketLoansInfoQuery from '@/graphql/query/basketLoansInfo.graphql';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
@@ -42,6 +43,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 			optimisticResponse: {
 				__typename: 'Mutation',
 				shop: {
+					id: '0',
 					__typename: 'ShopMutation',
 					updateLoanReservation: {
 						__typename: 'LoanReservation',
@@ -66,7 +68,7 @@ export function setLendAmount({ amount, apollo, loanId }) {
 				resolve();
 			}
 		}).catch(errors => {
-			errors.forEach(error => {
+			(Array.isArray(errors) ? errors : [errors]).forEach(error => {
 				logSetLendAmountError(loanId, error);
 			});
 			reject(errors);
@@ -74,6 +76,37 @@ export function setLendAmount({ amount, apollo, loanId }) {
 	});
 }
 
-export function setDonationAmount() {
-	// TODO
+export function setDonationAmount({ apollo, donationAmount }) {
+	const formattedDonationAmount = numeral(donationAmount).format('0.00');
+	return apollo.mutate({
+		mutation: updateDonation,
+		variables: {
+			price: formattedDonationAmount,
+			isTip: true
+		}
+	}).then(data => {
+		if (data?.errors) {
+			data?.errors.forEach(error => {
+				logFormatter(error, 'error');
+			});
+		}
+		return data;
+	}).catch(error => {
+		logFormatter(error, 'error');
+	});
+}
+
+export function handleInvalidBasket({ loan, cookieStore }) {
+	cookieStore.remove('kvbskt', { path: '/', secure: true });
+	cookieStore.set('kvatbid', JSON.stringify(loan));
+	window.location.reload();
+}
+export function handleInvalidBasketForDonation({ cookieStore, donationAmount, navigateToCheckout = false }) {
+	cookieStore.remove('kvbskt', { path: '/', secure: true });
+	cookieStore.set('kvatbamt', JSON.stringify({ donationAmount, navigateToCheckout }));
+	window.location.reload();
+}
+
+export function hasBasketExpired(errorCode) {
+	return ['shop.invalidBasketId', 'shop.basketRequired'].includes(errorCode);
 }

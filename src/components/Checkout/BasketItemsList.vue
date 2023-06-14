@@ -7,9 +7,11 @@
 					:disable-redirects="disableRedirects"
 					:loan="loan"
 					:teams="teams"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@jump-to-loans="$emit('jump-to-loans')"
 				/>
 			</li>
 			<li v-for="(kivaCard, index) in kivaCards" :key="kivaCard.id">
@@ -75,6 +77,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		BasketItem,

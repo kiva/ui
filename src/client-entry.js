@@ -66,6 +66,7 @@ const {
 	kvAuth0,
 	locale: getUserLocale(),
 	fetch,
+	url: window?.location?.href,
 });
 
 // Show a tip message when there is an unhandled auth0 error

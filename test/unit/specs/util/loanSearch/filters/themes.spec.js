@@ -26,6 +26,12 @@ describe('themes.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = themes.getValidatedSearchState({ themeId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ themeId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = themes.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ themeId: [] });
@@ -41,6 +47,14 @@ describe('themes.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { attributes: '1' };
+
+				const result = themes.getFilterFromQuery(query, undefined, mockState.pageLimit, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ themeId: [1] });
+			});
+
 			it('it should get filter', () => {
 				const query = { attributes: '1' };
 

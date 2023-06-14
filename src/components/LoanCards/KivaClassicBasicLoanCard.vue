@@ -99,20 +99,15 @@
 			v-if="isLoading"
 			class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
 		/>
-
-		<loan-use
-			v-if="!isLoading"
-			class="tw-mb-2.5 tw-flex-grow"
-			:loan-use-max-length="52"
-			:loan-id="`${allSharesReserved ? '' : loanId}`"
-			:use="loanUse"
-			:name="borrowerName"
-			:status="loanStatus"
-			:loan-amount="loanAmount"
-			:borrower-count="loanBorrowerCount"
-			:custom-loan-details="customLoanDetails"
-			@show-loan-details="showLoanDetails"
-		/>
+		<p v-if="!isLoading" class="tw-mb-2.5 tw-flex-grow">
+			{{ loanUse }}
+			<kv-text-link
+				v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
+				@click="showLoanDetails"
+			>
+				Learn more
+			</kv-text-link>
+		</p>
 
 		<!-- Matching text  -->
 		<kv-loading-placeholder
@@ -144,11 +139,12 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
+				:to="checkoutRoute"
+				@click="$emit('custom-checkout-button-action', loanId)"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
-						Checkout now
+						{{ customCheckoutButtonText }}
 						<kv-material-icon
 							class="tw-w-2.5 tw-h-2.5"
 							:icon="mdiCheckCircleOutline"
@@ -222,9 +218,10 @@
 						:is-lent-to="isLentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
-						:is-amount-lend-button="isLessThan25"
+						:is-amount-lend-button="isLessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@add-to-basket="addToBasket"
 					/>
 				</template>
@@ -240,7 +237,6 @@ import { gql } from '@apollo/client';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import LoanUse from '@/components/BorrowerProfile/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
@@ -249,13 +245,14 @@ import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
 import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
 import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
+import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}
@@ -300,9 +297,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		customCheckoutRoute: {
+		checkoutRoute: {
 			type: String,
-			default: ''
+			default: '/basket'
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Checkout now'
 		},
 		customLoanDetails: {
 			type: Boolean,
@@ -320,6 +321,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin, timeLeftMixin],
@@ -328,12 +333,12 @@ export default {
 		BorrowerName,
 		KvLoadingPlaceholder,
 		KvLoadingParagraph,
-		LoanUse,
 		LoanProgressGroup,
 		LoanMatchingText,
 		KvMaterialIcon,
 		SummaryTag,
 		KvUiButton,
+		KvTextLink,
 		ActionButton,
 		LoanTag,
 	},
@@ -447,7 +452,8 @@ export default {
 			return this.lendNowButton;
 		},
 		loanUse() {
-			return this.loan?.use ?? '';
+			const use = this.loan?.fullLoanUse ?? '';
+			return use.length > 75 ? `${use.slice(0, 75)}...` : use;
 		},
 		loanStatus() {
 			return this.loan?.status ?? '';
@@ -469,7 +475,7 @@ export default {
 		},
 		loanReservedAmount() {
 			return this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
-		},
+		}
 	},
 	methods: {
 		showLoanDetails(e) {
@@ -543,6 +549,17 @@ export default {
 			}).catch(e => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
+				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+					return handleInvalidBasket({
+						cookieStore: this.cookieStore,
+						loan: {
+							id: this.loanId,
+							price: this.lendAmount
+						}
+					});
+				}
 				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';

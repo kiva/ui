@@ -8,15 +8,15 @@
 				<!-- minimal header -->
 				<template v-if="minimal">
 					<div class="tw-flex tw-justify-center">
-						<router-link
+						<a
 							class="header__button"
-							to="/"
+							href="/"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
 							<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 							<span class="tw-sr-only">Kiva Home</span>
-						</router-link>
+						</a>
 					</div>
 				</template>
 
@@ -33,18 +33,18 @@
 							:logo-classes="logoClasses"
 						/>
 						<div class="tw-flex-1"></div>
-						<router-link
+						<span
 							v-show="hasBasket"
-							:to="addHashToRoute('show-basket')"
+							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket"
+							class="header__button header__basket tw-cursor-pointer"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								{{ basketCount }}
+								{{ basketCount - lcaLoanCount }}
 							</span>
 							Basket
-						</router-link>
+						</span>
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
@@ -90,9 +90,10 @@
 				<template v-else>
 					<div
 						class="header
-							tw-grid tw-gap-x-2.5 lg:tw-gap-x-4 tw-items-center"
+							tw-grid lg:tw-gap-x-4 tw-items-center"
 						:class="{
-							'header-lend-menu-button-exp': lendMenuButtonExp,
+							'tw-gap-x-2.5 ': !lendMenuButtonExp,
+							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen,
 							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
@@ -100,45 +101,46 @@
 					>
 						<!-- Logo -->
 						<div class="header__logo">
-							<router-link
+							<a
 								class="header__button"
-								to="/"
+								href="/"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
 								<kiva-logo class="tw-w-6 tw-text-brand" style="transform: translateY(-0.1875rem);" />
 								<span class="tw-sr-only">Kiva Home</span>
-							</router-link>
+							</a>
 						</div>
 
 						<template v-if="lendMenuButtonExp">
-							<!-- Explore -->
-							<router-link
-								to="/lend-by-category"
-								data-testid="header-explore"
-								class="header__button header__explore"
-								v-kv-track-event="['TopNav','click-Lend']"
-							>
-								<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
-								<span class="tw-inline-block lg:tw-hidden">Explore</span>
-							</router-link>
+							<div class="tw-flex tw-gap-1.5">
+								<!-- Explore -->
+								<router-link
+									to="/lend-by-category"
+									data-testid="header-explore"
+									class="header__button header__explore"
+									v-kv-track-event="['TopNav','click-Lend']"
+								>
+									<span class="tw-hidden lg:tw-inline-block">Explore loans</span>
+								</router-link>
 
-							<!-- Categories -->
-							<div
-								data-testid="header-lend"
-								class="header__button header__lend !tw-hidden md:!tw-inline-flex"
-								@pointerenter.stop="onLendLinkPointerEnter"
-								@pointerleave.stop="onLendLinkPointerLeave"
-								@pointerup.stop="onLendLinkPointerEnter"
-								@click="onCategoriesClick"
-							>
-								<span class="tw-flex tw-items-center">Categories
-									<kv-material-icon
-										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
+								<!-- Categories -->
+								<div
+									data-testid="header-lend"
+									class="header__button header__lend"
+									@pointerenter.stop="onLendLinkPointerEnter"
+									@pointerleave.stop="onLendLinkPointerLeave"
+									@pointerup.stop="onLendLinkPointerEnter"
+									@click="onCategoriesClick"
+								>
+									<span class="tw-flex tw-items-center">Categories
+										<kv-material-icon
+											class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+											:icon="mdiChevronDown"
+											:class="{'tw-rotate-180' : isLendMenuVisible}"
+										/>
+									</span>
+								</div>
 							</div>
 						</template>
 
@@ -192,7 +194,7 @@
 							class="
 								header__search
 								tw-py-1.5 md:py-0
-								tw--mx-2.5 tw-px-2.5 md:tw-mx-0 md:tw-px-0
+								tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
 								tw-border-t tw-border-tertiary md:tw-border-t-0
 							"
 							:class="{
@@ -206,7 +208,11 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end tw-gap-2.5 lg:tw-gap-4 align-middle"
+						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
+							:class="{
+								'tw-gap-2.5': !lendMenuButtonExp,
+								'tw-gap-1.5': lendMenuButtonExp,
+							}"
 						>
 							<!-- Borrow -->
 							<router-link
@@ -260,12 +266,12 @@
 											</router-link>
 										</li>
 										<li>
-											<router-link
-												to="/about/how"
+											<a
+												href="/about/how"
 												v-kv-track-event="['TopNav','click-About-How Kiva works']"
 											>
 												How Kiva works
-											</router-link>
+											</a>
 										</li>
 										<li>
 											<router-link
@@ -300,12 +306,12 @@
 											</router-link>
 										</li>
 										<li>
-											<router-link
-												to="/about/press-center"
+											<a
+												href="/about/press-center"
 												v-kv-track-event="['TopNav','click-About-Press']"
 											>
 												Press
-											</router-link>
+											</a>
 										</li>
 										<li>
 											<router-link
@@ -360,7 +366,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="isVisitor"
-								class="tw-bg-white"
+								class="tw-bg-white tw-whitespace-nowrap"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -521,7 +527,7 @@
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import setHotJarUserAttributes from '@/util/hotJarUserAttributes';
+import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import { gql } from '@apollo/client';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
@@ -529,6 +535,7 @@ import KvDropdown from '@/components/Kv/KvDropdown';
 import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -540,6 +547,7 @@ const hasDepositBeforeCookie = 'kvu_db';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
   	my {
+		id
     	loans(limit:1) {
       		totalCount
     	}
@@ -548,6 +556,8 @@ const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
    		}
 	}
 }`;
+
+const LEND_MENU_BUTTONS_EXP = 'lend_menu_buttons';
 
 export default {
 	name: 'TheHeader',
@@ -574,6 +584,7 @@ export default {
 			trusteeId: null,
 			isFreeTrial: false,
 			basketCount: 0,
+			lcaLoanCount: 0,
 			balance: 0,
 			profilePic: '',
 			profilePicId: null,
@@ -608,8 +619,8 @@ export default {
 			default: ''
 		},
 		logoHeight: {
-			type: Number,
-			default: 28,
+			type: String,
+			default: '28',
 			required: false
 		},
 		logoClasses: {
@@ -640,6 +651,9 @@ export default {
 			};
 		},
 		hasBasket() {
+			if (this.corporate) {
+				return this.basketCount - this.lcaLoanCount > 0 && !this.isFreeTrial;
+			}
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
 		hidePromoCreditBanner() {
@@ -667,8 +681,11 @@ export default {
 				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
 				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
 
-				return data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) // eslint-disable-line max-len
-					? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve();
+				return Promise.all([
+					// eslint-disable-next-line max-len
+					data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined) ? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve(),
+					client.query({ query: experimentAssignmentQuery, variables: { id: LEND_MENU_BUTTONS_EXP } }),
+				]);
 			});
 		},
 		result({ data }) {
@@ -846,7 +863,7 @@ export default {
 		},
 		initializeLendMenuButtonExp() {
 			const experiment = this.apollo.readFragment({
-				id: 'Experiment:lend_menu_buttons',
+				id: `Experiment:${LEND_MENU_BUTTONS_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 
@@ -879,6 +896,10 @@ export default {
 					document.removeEventListener('pointerup', this.withinBoundaryCheck);
 				}
 			});
+		},
+		basketCount() {
+			// update leftover credit allocation loan count when basket count is updated
+			this.lcaLoanCount = this.cookieStore.get('lcaid') ? 1 : 0;
 		}
 	}
 };

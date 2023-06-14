@@ -1,0 +1,72 @@
+fragment loanCardFieldsExtended on LoanBasic {
+	id
+	distributionModel
+	status
+	name
+	borrowerCount
+	geocode {
+		# city added for DetailedLoanCard Query Cache
+		city
+		# state is used for US loans on LoanChannelCategoryPage
+		state
+		country {
+			isoCode
+			name
+			region
+		}
+	}
+	use
+	activity {
+		id
+		name
+	}
+	sector {
+		id
+		name
+	}
+	tags
+	whySpecial
+	lenderRepaymentTerm
+	loanAmount
+	minNoteSize
+	loanFundraisingInfo {
+		fundedAmount
+		reservedAmount
+		isExpiringSoon
+	}
+	plannedExpirationDate
+	matchingText
+	matchRatio
+	isMatchable
+	userProperties {
+		favorited
+		lentTo
+	}
+
+	image {
+		id
+		hash
+	}
+
+	# for fullLoanUse, along with use, borrowerCount, status, name, loanAmount
+	anonymizationLevel
+	fullLoanUse @client
+
+	# lenders added for DetailedLoanCard Query Cache
+	lenders(limit: 0) {
+		totalCount
+	}
+
+	# for loan-progress and lend cta components
+	unreservedAmount @client
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
+	
+	... on LoanPartner {
+		partnerName
+		themes
+	}
+	...on LoanDirect {
+		trusteeName
+	}
+}

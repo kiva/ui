@@ -2,18 +2,6 @@
 	<www-page class="lend-by-category-page">
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
-		<!-- MFI Recommendations Section -->
-		<div v-if="mfiRecommendationsExp" class="tw-max-w-5xl tw-mx-auto lg:tw-px-6">
-			<m-f-i-hero />
-
-			<mfi-loans-wrapper
-				v-if="selectedChannelLoanIds.length > 0"
-				:selected-channel-loan-ids="selectedChannelLoanIds"
-				:selected-channel="selectedChannel"
-				class="tw-my-4"
-			/>
-		</div>
-
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
@@ -21,6 +9,7 @@
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
 			:use-category-service="categoryServiceExpActive"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			@loaded="trackFeaturedLoan"
 		/>
 
@@ -40,6 +29,7 @@
 					:is-logged-in="isLoggedIn"
 					:show-category-description="showCategoryDescription"
 					:show-expandable-loan-cards="false"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					ref="categoryRow"
 					@add-to-basket="handleAddToBasket"
 				/>
@@ -89,7 +79,7 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experimentUtils';
+} from '@/util/experiment/experimentUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -110,9 +100,18 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import MFIHero from '@/components/LoansByCategory/MFIRecommendations/MFIHero';
-import MfiLoansWrapper from '@/components/LoansByCategory/MFIRecommendations/MfiLoansWrapper';
-import mfiRecommendationsLoans from '@/graphql/query/lendByCategory/mfiRecommendationsLoans.graphql';
+import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+
+const CATEGORIES_REDIRECT_EXP = 'categories_redirect';
+const LOAN_FINDING_EXP_KEY = 'loan_finding_page';
+const ADD_TO_BASKET_V2_EXP = 'add_to_basket_v2';
+const BANDIT_EXP = 'EXP-ML-Service-Bandit-LendByCategory';
+const FLSS_CATEGORY_SERVICE_EXP = 'flss_category_service';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+
+const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 export default {
 	name: 'LendByCategoryPage',
@@ -126,9 +125,8 @@ export default {
 		FavoriteCountryLoans,
 		MGDigestLightbox,
 		MGLightbox,
-		MFIHero,
-		MfiLoansWrapper,
 	},
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	metaInfo() {
 		return {
@@ -157,7 +155,6 @@ export default {
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
-			lendFilterExpVersion: '',
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
 			showHoverLoanCards: true,
@@ -170,9 +167,6 @@ export default {
 			activatedWatchers: false,
 			showMGDigestLightbox: false,
 			rowTrackCounter: 0,
-			mfiRecommendationsExp: false,
-			mfiRecommendationsLoans: [],
-			selectedChannel: {},
 		};
 	},
 	computed: {
@@ -242,13 +236,10 @@ export default {
 			return _without(this.categoryIds, ...this.customCategoryIds);
 		},
 		leadHeaderFilterLink() {
-			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
+			return '/lend/filter';
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
-		},
-		selectedChannelLoanIds() {
-			return this.mfiRecommendationsLoans?.map(element => element.id) ?? [];
 		},
 	},
 	methods: {
@@ -303,12 +294,12 @@ export default {
 			const loansDisplayed = [];
 			// Add a tracking object for each loan in each category
 			categories.forEach((category, catIndex) => {
-				const loans = category?.loans?.values ?? category?.values ?? [];
+				const loans = category?.loans?.values ?? category?.values ?? category?.savedSearch?.loans?.values ?? [];
 				loans.forEach((loan, loanIndex) => {
 					loansDisplayed.push({
 						r: this.rowTrackCounter + catIndex + 1,
 						p: loanIndex + 1,
-						c: category.id,
+						c: category.loanChannelId ?? category.id,
 						l: loan.id
 					});
 				});
@@ -493,7 +484,7 @@ export default {
 		},
 		initializeCategoryServiceRowExp() {
 			const categoryServiceEXP = this.apollo.readFragment({
-				id: 'Experiment:flss_category_service',
+				id: `Experiment:${FLSS_CATEGORY_SERVICE_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.categoryServiceExpActive = categoryServiceEXP.version === 'b';
@@ -511,7 +502,7 @@ export default {
 			// get assignment
 			const mlServiceBandit = 0;
 			const mlServiceBanditEXP = this.apollo.readFragment({
-				id: 'Experiment:EXP-ML-Service-Bandit-LendByCategory',
+				id: `Experiment:${BANDIT_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.mlServiceBanditExpVersion = mlServiceBanditEXP.version;
@@ -519,7 +510,7 @@ export default {
 			if (this.mlServiceBanditExpVersion && this.mlServiceBanditExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-ML-Service-Bandit-LendByCategory',
+					BANDIT_EXP,
 					this.mlServiceBanditExpVersion,
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null,
 					this.mlServiceBanditExpVersion === 'b' ? mlServiceBandit : null
@@ -656,85 +647,42 @@ export default {
 				this.activateWatchers();
 			}
 		},
-		initializeMFIRecommendationsExperiment() {
-			const layoutEXP = this.apollo.readFragment({
-				id: 'Experiment:mfi_recommendations',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			if (layoutEXP.version) {
-				if (layoutEXP.version === 'b') {
-					this.mfiRecommendationsExp = true;
-				}
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-628-AUG-2022',
-					layoutEXP.version
-				);
-			}
-		},
-		fetchMFILoans() {
-			// Load mfi recommendations loans data
-			return this.apollo.query({
-				query: mfiRecommendationsLoans,
-			}).then(({ data }) => {
-				this.mfiRecommendationsLoans = data?.fundraisingLoans?.values ?? [];
-				const numberLoans = this.mfiRecommendationsLoans.length;
-				if (numberLoans > 0) {
-					this.$kvTrackEvent(
-						'Lending',
-						'view-MFI-feature',
-						'pro mujer',
-						'',
-						numberLoans
-					);
-				} else {
-					this.$kvTrackEvent(
-						'Lending',
-						'no-featured-loan-available'
-					);
-				}
-			});
-		},
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, args) {
 			return client.query({
 				query: lendByCategoryQuery
-			}).then(({ data }) => {
-				// check logged in user
-				const loggedIn = data?.my?.userAccount?.id ?? false;
-				// Get the array of channel objects from settings
-				return Promise.all([
-					// experiment: GROW-330 Machine Learning Category row
-					client.query({ query: experimentQuery, variables: { id: 'EXP-ML-Service-Bandit-LendByCategory' } }),
-					// experiment: CORE-698 MFI Recommendations
-					client.query({ query: experimentQuery, variables: { id: 'mfi_recommendations' } }),
-					// experiment: VUE- Category Service driven FLSS channels
-					client.query({ query: experimentQuery, variables: { id: 'flss_category_service' } }),
-					// experiment: CORE-854 Loan Finding Page
-					// eslint-disable-next-line max-len
-					loggedIn ? client.query({ query: experimentQuery, variables: { id: 'loan_finding_page' } }) : Promise.resolve()
-				]);
-			})
-				.then(expAssignments => {
-					const experimentSettings = expAssignments.filter(item => item?.data?.experiment);
-					// Initialize CORE-854 Loan Finding Page Experiment an redirect
-					const LoanFindingExp = experimentSettings
-						.find(item => item.data.experiment.id === 'loan_finding_page');
-					const enableLoanFindingPage = LoanFindingExp?.data?.experiment?.version === 'b' ?? false;
-					if (enableLoanFindingPage) {
-						return Promise.reject({
-							path: '/lending-home',
-						});
-					}
-					Promise.resolve();
-				})
-				.then(() => {
-					return client.query({
-						query: mlOrderedLoanChannels
+			}).then(() => {
+				return client.query({ query: experimentQuery, variables: { id: LOAN_FINDING_EXP_KEY } })
+					.then(() => {
+						const query = args?.route?.query ?? {};
+
+						// Redirect to /lending-home if user has previously signed in
+						if (getHasEverLoggedIn(client)) {
+							return Promise.reject({ path: '/lending-home', query });
+						}
+
+						// Redirect to /lending-home if user has not previously signed in and experiment is assigned
+						const { version } = client.readFragment({
+							id: `Experiment:${LOAN_FINDING_EXP_KEY}`,
+							fragment: experimentVersionFragment,
+						}) ?? {};
+
+						if (version === 'b') {
+							return Promise.reject({ path: '/lending-home', query });
+						}
+
+						return Promise.all([
+							client.query({ query: mlOrderedLoanChannels }),
+							client.query({ query: experimentQuery, variables: { id: CATEGORIES_REDIRECT_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: ADD_TO_BASKET_V2_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: BANDIT_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FLSS_CATEGORY_SERVICE_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+							client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+						]);
 					});
-				});
+			});
 		},
 	},
 	created() {
@@ -770,7 +718,7 @@ export default {
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_v2',
+			id: `Experiment:${ADD_TO_BASKET_V2_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
@@ -798,14 +746,7 @@ export default {
 			}
 		});
 
-		const lendFilterEXP = this.apollo.readFragment({
-			id: 'Experiment:lend_filter_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.lendFilterExpVersion = lendFilterEXP.version;
-
-		// Initialize CORE-698 MFI Recommendations Experiment
-		this.initializeMFIRecommendationsExperiment();
+		this.initializeFiveDollarsNotes();
 	},
 	mounted() {
 		this.fetchCategoryIds = [...this.categorySetting];
@@ -830,36 +771,36 @@ export default {
 			}
 		}
 
-		// Fetching MFI Recommendations Loans
-		if (this.mfiRecommendationsExp) {
-			this.fetchMFILoans();
-		}
-
-		// The lending-home experiment tracking should only be enabled for logged-in users
-		if (this.isLoggedIn) {
-			const { enabled } = getExperimentSettingCached(this.apollo, 'loan_finding_page');
-			if (enabled) {
-				trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'Lending',
-					'loan_finding_page',
-					'EXP-CORE-854-Dec2022'
-				);
-			}
+		// The /lending-home experiment should only be tracked for users who have not logged in
+		if (!getHasEverLoggedIn(this.apollo)) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LOAN_FINDING_EXP_KEY,
+				'EXP-CORE-1009-April2023'
+			);
 		}
 
 		// Tracking for EXP-CORE-1057-Feb-2023
-		const { enabled } = getExperimentSettingCached(this.apollo, 'categories_redirect');
+		const { enabled } = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP);
 		if (enabled) {
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
 				'Lending',
-				'categories_page',
+				CATEGORIES_REDIRECT_EXP,
 				'EXP-CORE-1057-Feb2023'
 			);
 		}
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();

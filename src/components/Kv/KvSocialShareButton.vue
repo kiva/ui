@@ -28,7 +28,9 @@
 					class="social-button"
 					data-testid="share-facebook-button"
 					v-kv-track-event="[trackingCategory, 'share', 'facebook', utmCampaign, loanId]"
-					@click="showSharePopUp(facebookShareUrl, 'Thanks for sharing to Facebook!')"
+					@click="showSharePopUp(
+						facebookShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing to Facebook!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--facebook"
@@ -41,7 +43,9 @@
 					class="social-button"
 					data-testid="share-twitter-button"
 					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
-					@click="showSharePopUp(twitterShareUrl, 'Thanks for tweeting!')"
+					@click="showSharePopUp(
+						twitterShareUrl({utmCampaign, utmContent}),
+						'Thanks for tweeting!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--twitter"
@@ -54,7 +58,9 @@
 					class="social-button"
 					data-testid="share-linkedin-button"
 					v-kv-track-event="[trackingCategory, 'share', 'linkedin', utmCampaign, loanId]"
-					@click="showSharePopUp(linkedInShareUrl, 'Thanks for sharing to LinkedIn!')"
+					@click="showSharePopUp(
+						linkedInShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing to LinkedIn!')"
 				>
 					<kv-material-icon
 						class="social-button__icon social-button__icon--linkedin"
@@ -64,11 +70,11 @@
 				</kv-button>
 				<kv-button
 					variant="ghost"
-					class="social-button "
+					class="social-button"
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
 					v-kv-track-event="[trackingCategory, 'share', 'copy-link', utmCampaign, loanId]"
-					@click="copyLink"
+					@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 				>
 					<kv-material-icon
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -82,18 +88,10 @@
 </template>
 
 <script>
-/**
- * TODO - refactor duplicate code
- * A lot of these computed properties and methods are duplicated in
- * other components that share to social media, for example:
- * SocialShareV2 and ThanksPageShare
- */
-
-import clipboardCopy from 'clipboard-copy';
 import {
 	mdiFacebook, mdiLinkedin, mdiTwitter, mdiLink
 } from '@mdi/js';
-import { getFullUrl } from '@/util/urlUtils';
+import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -182,114 +180,16 @@ export default {
 			mdiLink,
 		};
 	},
+	mixins: [socialSharingMixin],
 	inject: ['apollo'],
 	computed: {
-		utmCampaignQueryParam() {
-			return `&utm_campaign=${this.utmCampaign}`;
-		},
-		utmContentQueryParam() {
-			return this.utmContent ? `&utm_content=${this.utmContent}` : '';
-		},
-		hashParams() {
-			return this.shareUrl.split('#')[1] ? `#${this.shareUrl.split('#')[1]}` : '';
-		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			// Get query param string from shareUrl
-			const shareUrlSuffix = this.shareUrl.split('?')[1] ? `?${this.shareUrl.split('?')[1]}&` : '?';
-			const shareUrlWithoutHash = this.shareUrl.split('#')[0];
-			return `${base}${shareUrlWithoutHash}${shareUrlSuffix}`;
+			return `${base}${this.shareUrl}`;
 		},
-		facebookShareUrl() {
-			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
-			return getFullUrl('https://www.facebook.com/dialog/share', {
-				app_id: this.$appConfig.fbApplicationId,
-				display: 'page',
-				// eslint-disable-next-line max-len
-				href: `${this.shareLink}utm_source=facebook.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
-				redirect_uri: `${pageUrl}`,
-				quote: this.shareMessage,
-			});
-		},
-		linkedInShareUrl() {
-			return getFullUrl('https://www.linkedin.com/sharing/share-offsite/', {
-				url: `${this.shareLink}utm_source=linkedin.com&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}` // eslint-disable-line max-len
-			});
-		},
-		twitterShareUrl() {
-			return getFullUrl('https://twitter.com/intent/tweet', {
-				text: this.shareMessage,
-				// eslint-disable-next-line max-len
-				url: `${this.shareLink}utm_source=t.co&utm_medium=social${this.utmCampaignQueryParam}${this.utmContentQueryParam}${this.hashParams}`,
-				hashtags: 'microloan,kivalove',
-				via: 'Kiva',
-			});
-		},
-	},
-	methods: {
-		handleFacebookResponse() {
-			// Check for the route hash that facebook adds to the request
-			if (this.$route.hash === '#_=_') {
-				// Check for an error
-				const { error_code: code, error_message: message } = this.$route.query;
-				if (code) {
-					// The 4201 error code means the user pressed 'Cancel', so can be ignored
-					if (code !== '4201') {
-						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
-					}
-					this.$kvTrackEvent(this.trackingCategory, 'fail', 'share-facebook');
-				} else {
-					this.$showTipMsg('Thanks for sharing to Facebook!');
-				}
-			}
-		},
-		async copyLink() {
-			// eslint-disable-next-line max-len
-			const url = `${this.shareLink}utm_source=social_share_link&utm_medium=referral${this.utmCampaignQueryParam}${this.utmContentQueryParam}`;
-			try {
-				await clipboardCopy(`${this.shareMessage} ${url}`);
-				this.copyStatus = {
-					disabled: true,
-					text: 'Copied!'
-				};
-			} catch (err) {
-				this.copyStatus = {
-					disabled: true,
-					text: 'Error'
-				};
-			} finally {
-				setTimeout(() => {
-					this.copyStatus = {
-						disabled: false,
-						text: 'Copy'
-					};
-				}, 500);
-			}
-		},
-		/** displays the share pop up window for whatever service we are sharing on.  */
-		showSharePopUp(destinationUrl, thanksText) {
-			// This code taken from the twitter example in the docs
-			const width = 600;
-			const height = 420;
-			const winHeight = window.innerHeight;
-			const winWidth = window.innerWidth;
-			const left = Math.round((winWidth / 2) - (width / 2));
-			let top = 0;
-
-			if (winHeight > height) {
-				top = Math.round((winHeight / 2) - (height / 2));
-			}
-			window.open(
-				destinationUrl,
-				'intent',
-				// eslint-disable-next-line max-len
-				`scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=${width},height=${height},left=${left},top=${top}`
-			);
-			this.$showTipMsg(thanksText);
-		}
 	},
 	mounted() {
-		this.handleFacebookResponse();
+		this.handleFacebookResponse(this.trackingCategory);
 	},
 };
 </script>

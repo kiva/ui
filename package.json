@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.497.0",
+	"version": "2.612.1",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -39,7 +39,7 @@
 		"deploy-storybook": "storybook-to-ghpages"
 	},
 	"dependencies": {
-		"@apollo/client": "^3.6.9",
+		"@apollo/client": "^3.3.21",
 		"@babel/eslint-parser": "^7.18.2",
 		"@babel/polyfill": "^7.10.4",
 		"@babel/runtime": "^7.12.5",
@@ -49,8 +49,8 @@
 		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.12.1",
-		"@kiva/kv-components": "^3.12.0",
-		"@kiva/kv-tokens": "^2.4.0",
+		"@kiva/kv-components": "^3.16.0",
+		"@kiva/kv-tokens": "^2.7.0",
 		"@mdi/js": "^7",
 		"@sentry/tracing": "^6.19.6",
 		"@sentry/vue": "^6.19.6",
@@ -61,7 +61,7 @@
 		"body-parser": "^1.19.0",
 		"bowser": "^2.11.0",
 		"braintree-web-drop-in": "^1.30.0",
-		"canvas": "^2.6.1",
+		"canvas": "^2.11.2",
 		"canvas-confetti": "^1.5.1",
 		"change-case": "^4.1.1",
 		"clipboard-copy": "^3.1.0",
@@ -99,6 +99,7 @@
 		"numeral": "^2.0.6",
 		"passport": "^0.4.1",
 		"passport-auth0": "^1.3.1",
+		"path2d-polyfill": "^2.0.1",
 		"popper.js": "^1.16.1",
 		"qrcode": "^1.4.4",
 		"serialize-javascript": "^5.0.1",
@@ -106,6 +107,7 @@
 		"store2": "^2.12.0",
 		"timesync": "^1.0.8",
 		"title-case": "^3.0.2",
+		"treemap-squarify": "^1.0.1",
 		"uuid": "^8.3.0",
 		"vue": "^2.6.14",
 		"vue-docgen-loader": "^2.0.0",
@@ -210,7 +212,7 @@
 		"webpack-svgstore-plugin": "kiva/webpack-svgstore-plugin#develop"
 	},
 	"engines": {
-		"node": ">= 15",
+		"node": ">= 16.15.0",
 		"npm": ">= 6.0.0"
 	},
 	"browserslist": [

@@ -31,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5"
 					:name="name"
 				/>
 				<template v-if="isLoading">
@@ -42,9 +42,27 @@
 					</div>
 				</template>
 				<template v-else>
+					<a
+						v-if="totalComments > 0"
+						href="#bp-comments-jump-link"
+						class="tw-text-black hover:tw-text-white comments-tag-wrapper tw-inline-block"
+						v-kv-track-event="[
+							'borrower-profile',
+							'click',
+							'jump-link',
+							'comments-pill'
+						]"
+					>
+						<summary-tag class="comments-tag">
+							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+							<span class="tw-flex-1">
+								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
+							</span>
+						</summary-tag>
+					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
-						class="tw-mb-2"
+						class="tw-mb-2 tw-mt-1.5"
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
@@ -57,16 +75,9 @@
 				</template>
 			</div>
 		</div>
-		<loan-use
-			class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2"
-			data-testid="bp-summary-loan-use"
-			:borrower-count="borrowerCount"
-			:loan-amount="loanAmount"
-			:name="name"
-			:status="status"
-			:use="use"
-			:anonymization-level="anonymizationLevel"
-		/>
+		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-h2" data-testid="bp-summary-loan-use">
+			{{ use }}
+		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
 				<kv-loading-placeholder style="height: 1.9rem; width: 50%;" />
@@ -117,11 +128,11 @@
 <script>
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
+import HeartComment from '@/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
-import LoanUse from './LoanUse';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 import JumpLinks from './JumpLinks';
@@ -132,19 +143,22 @@ const preFetchQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
-				borrowerCount
 				image {
 					id
 					hash
 				}
-				loanAmount
 				name
 				status
 				use
+				# for fullLoanUse
 				anonymizationLevel
+				borrowerCount
+				loanAmount
+				fullLoanUse @client
 			}
 		}
 		my {
+			id
 			userAccount {
 				id
 			}
@@ -184,6 +198,9 @@ const mountQuery = gql`
 				lenders {
 					totalCount
 				}
+				comments {
+					totalCount
+				}
 			}
 		}
 	}
@@ -197,11 +214,11 @@ export default {
 		BorrowerName,
 		KvMaterialIcon,
 		LoanProgress,
-		LoanUse,
 		SummaryTag,
 		LoanBookmark,
 		JumpLinks,
 		KvLoadingPlaceholder,
+		HeartComment,
 	},
 	props: {
 		showUrgencyExp: {
@@ -214,11 +231,9 @@ export default {
 			isLoading: true,
 			isLoggedIn: false,
 			activityName: '',
-			borrowerCount: 0,
 			countryName: '',
 			fundraisingPercent: 0,
 			hash: '',
-			loanAmount: '0',
 			mdiMapMarker,
 			name: '',
 			status: '',
@@ -228,11 +243,11 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
-			anonymizationLevel: 'none',
 			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
+			totalComments: 0,
 		};
 	},
 	computed: {
@@ -276,6 +291,7 @@ export default {
 		if (this.unreservedAmount === '0') {
 			this.fundraisingPercent = 1;
 		}
+		this.totalComments = loan?.comments?.totalCount ?? 0;
 		this.isLoading = false;
 	},
 	apollo: {
@@ -294,14 +310,33 @@ export default {
 		result(result) {
 			const loan = result?.data?.lend?.loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.borrowerCount = loan?.borrowerCount ?? 0;
 			this.hash = loan?.image?.hash ?? '';
-			this.loanAmount = loan?.loanAmount ?? '0';
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
-			this.use = loan?.use ?? '';
-			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+			this.use = loan?.fullLoanUse ?? '';
 		},
 	},
 };
 </script>
+
+<style scoped lang="scss">
+.heart-svg {
+	path {
+		fill: #0012B9;
+	}
+}
+
+.comments-tag-wrapper .comments-tag {
+	background-color: #E6ECF8;
+}
+
+.comments-tag-wrapper:hover .comments-tag {
+	background-color: #276cf6;
+
+	.heart-svg {
+		path {
+			fill: white;
+		}
+	}
+}
+</style>

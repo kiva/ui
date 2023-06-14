@@ -36,11 +36,13 @@
 						:item-index="index"
 						:key="`loan-${loan}`"
 						:loan-id="loan"
-						:lend-now-button="true"
-						custom-checkout-route="#show-basket"
+						:show-action-button="true"
+						:checkout-route="checkoutRoute"
 						:custom-loan-details="true"
+						:custom-checkout-button-text="getCheckoutBtnText(loan)"
 						@show-loan-details="showLoanDetails(loans[index])"
 						@add-to-basket="addToBasket"
+						@custom-checkout-button-action="removeLoanFromBasket(loan)"
 					/>
 				</div>
 			</template>
@@ -69,6 +71,7 @@
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import numeral from 'numeral';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -87,6 +90,10 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
+		},
+		basketLoans: {
+			type: Array,
+			default: () => []
 		},
 		isLoggedIn: {
 			type: Boolean,
@@ -115,6 +122,10 @@ export default {
 		handleAddToBasket: {
 			type: Function,
 			default: () => {}
+		},
+		checkoutRoute: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -209,6 +220,13 @@ export default {
 		}
 	},
 	methods: {
+		getCheckoutBtnText(loan) {
+			const amount = this.getAmountLended(loan);
+			if (amount > 0) {
+				return `Supported for ${numeral(amount).format('$0')}`;
+			}
+			return 'Supported';
+		},
 		showLoanDetails(loan) {
 			this.$emit('show-loan-details', loan);
 		},
@@ -220,12 +238,14 @@ export default {
 			this.loanAdded = true;
 			this.$emit('add-to-basket', payload);
 		},
+		removeLoanFromBasket(loanId) {
+			this.$emit('remove-loan-from-basket', loanId);
+		},
 		fetchLoans() {
 			if (this.isVisible) {
 				this.loadingLoans = true;
 			}
 			this.zeroLoans = false;
-
 			this.apollo.query({
 				query: basicLoanQuery,
 				variables: this.loanQueryVars,
@@ -245,6 +265,7 @@ export default {
 				if (this.isVisible) {
 					this.totalCount = data.lend?.loans?.totalCount ?? 0;
 					this.$emit('update-total-count', this.totalCount);
+					this.$emit('update-available-loans', data.lend?.loans);
 					this.loadingLoans = false;
 				}
 
@@ -264,6 +285,11 @@ export default {
 		},
 		resetSearchFilters() {
 			this.$emit('reset-loan-filters');
+		},
+		getAmountLended(loanId) {
+			if (this.basketLoans.length > 0) {
+				return this.basketLoans?.find(loan => String(loan.id) === String(loanId))?.price;
+			}
 		}
 	},
 };
@@ -274,7 +300,7 @@ export default {
 @import 'foundation';
 
 .component-wrapper {
-	text-align: center;
+	text-align: left;
 	min-height: rem-calc(500); // prevents layout shift as loans load in
 	display: flex;
 	align-items: center;

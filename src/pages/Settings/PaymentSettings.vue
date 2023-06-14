@@ -187,6 +187,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
+	id
     paymentMethodVault: paymentMethodVault {
         paymentMethods {
           description

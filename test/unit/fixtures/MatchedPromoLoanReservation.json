@@ -1,0 +1,53 @@
+{
+	"basketItemType": "loan_reservation",
+	"creditsUsed": [{
+		"amount": "25.00",
+		"applied": null,
+		"available": null,
+		"creditType": "universal_code",
+		"id": 338,
+		"promoFund": {
+			"id": 338,
+			"amount": 25,
+			"displayName": "AppDynamics",
+			"displayDescription": "Unlike standard Kiva Cards, repayments from this promo card will go back to AppDynamics' account. ",
+			"__typename": "PromoFund"
+		},
+		"__typename": "Credit"
+	}],
+	"id": 2444883,
+	"price": "25.00",
+	"expiryTime":  "2050-09-19T19:02:10Z",
+	"isEndingSoon": false,
+	"donateRepayments": false,
+	"loan": {
+		"id": 2444883,
+		"name": "Twubakane Cb Group",
+		"use": "to buy more beans and sorghum with her loan.",
+		"status": "fundraising",
+		"matchingText": "Coca Cola Foundation",
+		"loanAmount": "8750.00",
+		"plannedExpirationDate": "2050-10-12T19:40:15Z",
+		"sector": {"id": 12, "name": "Food", "__typename": "Sector"},
+		"activity": {"id": 67, "name": "Food Production/Sales", "__typename": "Activity"},
+		"geocode": {
+			"country": {"name": "Rwanda", "isoCode": "RW", "__typename": "Country"},
+			"__typename": "Geocode"
+		},
+		"loanFundraisingInfo": {
+			"isExpiringSoon": false,
+			"fundedAmount": "5065.00",
+			"reservedAmount": "25.00",
+			"__typename": "LoanFundraisingInfo"
+		},
+		"image": {
+			"id": 4947325,
+			"url": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s150/aa895120425465e8437e08e69c72218b.jpg",
+			"url_2x": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s300/aa895120425465e8437e08e69c72218b.jpg",
+			"__typename": "Image"
+		},
+		"sponsor_name": "Urwego Bank",
+		"__typename": "LoanPartner"
+	},
+	"__typename": "LoanReservation"
+}

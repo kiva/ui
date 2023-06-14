@@ -46,7 +46,7 @@ export function getCountryIsoCodesFromQueryParam(param, allFacets) {
 	const decoded = decodeURI(param).toUpperCase();
 
 	// Handles FLSS and legacy query params, such as "do,ht"
-	if (decoded.includes(',') || allFacets.countryIsoCodes.includes(decoded)) {
+	if (decoded.includes(',') || allFacets?.countryIsoCodes?.includes(decoded)) {
 		return decoded.split(',').filter(s => s !== '');
 	}
 
@@ -54,7 +54,7 @@ export function getCountryIsoCodesFromQueryParam(param, allFacets) {
 	return decoded.split('~').reduce((prev, current) => {
 		const [region, country] = current.toUpperCase().split('>').map(s => s.trim());
 
-		if (allFacets.countryNames.includes(country)) {
+		if (allFacets?.countryNames?.includes(country)) {
 			const facet = allFacets.countryFacets.find(({ country: c }) => (
 				c.region.toUpperCase() === region && c.name.toUpperCase() === country
 			));
@@ -171,7 +171,7 @@ export default {
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
 		countryIsoCode: loanSearchState?.countryIsoCode
-			?.filter(c => allFacets.countryIsoCodes.includes(c.toUpperCase())) ?? []
+			?.filter(c => allFacets?.countryIsoCodes?.includes(c.toUpperCase())) ?? []
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
 		countryIsoCode: getCountryIsoCodesFromQueryParam(query.country || query.countries, allFacets) ?? []

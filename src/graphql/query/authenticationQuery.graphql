@@ -1,5 +1,6 @@
 query authenticationQuery {
 	my {
+		id
 		emailVerifiedRecently
 		lastLoginTimestamp @client
 	}

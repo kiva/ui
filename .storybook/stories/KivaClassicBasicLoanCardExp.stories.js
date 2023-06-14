@@ -40,11 +40,12 @@ const story = (args = {}, isLoading = false, extraLoanProps = {}, extraData = {}
 		template: `
 			<kiva-classic-basic-loan-card-exp
 				:loan-id="loanId"
-				:lend-now-button="lendNowButton"
-				:show-action-button="showActionButton"
 				:use-full-width="useFullWidth"
 				:show-tags="showTags"
-				:per-row="perRow"
+				:large-card="largeCard"
+				:enable-relending-exp="enableRelendingExp"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:user-balance="userBalance"
 			/>
 		`,
 	})
@@ -60,15 +61,9 @@ export const Loading = story({
 	loanId: loan.id,
 }, true);
 
-export const LendNowButton = story({
+export const PartialLoading = story({
 	loanId: loan.id,
-	lendNowButton: true
-});
-
-export const ShowActionButton = story({
-	loanId: loan.id,
-	showActionButton: true
-});
+}, false, { unreservedAmount: undefined, fundraisingPercent: undefined });
 
 export const UseFullWidth = story({
 	loanId: loan.id,
@@ -80,19 +75,110 @@ export const ShowTags = story({
 	showTags: true
 });
 
+export const Matched = story({
+	loanId: loan.id,
+	showTags: true,
+}, false, {
+	matchingText: 'Matched by Ebay', matchRatio: 1, loanFundraisingInfo: {
+		fundedAmount: '200.00',
+		isExpiringSoon: false,
+		reservedAmount: '0.00'
+	}
+});
+
 export const AllSharesReserved = story({
 	loanId: loan.id,
 }, false, { unreservedAmount: '0.00', fundraisingPercent: 1 });
-
-export const Matched = story({
-	loanId: loan.id,
-}, false, { matchingText: 'Matched by Ebay', matchRatio: 1 });
 
 export const InBasket = story({
 	loanId: loan.id,
 }, false, {}, { shop: { basket: { items: { values: [{ id: loan.id, __typename: 'LoanReservation' }] } } } });
 
-export const LargerImage = story({
+export const LargeCardLoading = story({
 	loanId: loan.id,
-	perRow: 2
+	showTags: true,
+	largeCard: true
+}, true);
+
+export const LargeCard = story({
+	loanId: loan.id,
+	showTags: true,
+	largeCard: true
 });
+
+export const LongCallouts = story({
+	loanId: loan.id,
+}, false, { activity: { id: 1, name: 'Longer activity name test that will be longer than 50% of the card' } });
+
+export const LendAgain = story({
+	loanId: loan.id,
+}, false, { userProperties: { lentTo: true } });
+
+export const LendAgainSmallAmount = story({
+	loanId: loan.id,
+}, false, {
+	userProperties: { lentTo: true },
+	unreservedAmount: '5.00'
+});
+
+export const Relending = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 50,
+});
+
+export const RelendingLendAgain = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 50,
+}, false, { userProperties: { lentTo: true } });
+
+export const RelendingSmallBalance = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 20,
+});
+
+export const RelendingSmallBalanceSmallAmount = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	userBalance: 20,
+}, false, { unreservedAmount: '5.00' });
+
+export const RelendingFiveDollarNotes = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 50,
+});
+
+export const RelendingFiveDollarNotesLendAgain = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 50,
+}, false, { userProperties: { lentTo: true } });
+
+export const RelendingFiveDollarNotesSmallBalance = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 20,
+});
+
+export const RelendingFiveDollarNotesSmallBalanceSmallAmount = story({
+	loanId: loan.id,
+	enableRelendingExp: true,
+	enableFiveDollarsNotes: true,
+	userBalance: 20,
+}, false, { unreservedAmount: '5.00' });
+
+export const FiveDollarNotes = story({
+	loanId: loan.id,
+	enableFiveDollarsNotes: true,
+});
+
+export const FiveDollarNotesSmallAmount = story({
+	loanId: loan.id,
+	enableFiveDollarsNotes: true,
+}, false, { unreservedAmount: '5.00' });

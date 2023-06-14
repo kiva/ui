@@ -32,6 +32,12 @@ describe('genders.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = genders.getValidatedSearchState({}, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ gender: null });
+			});
+
+			it('should handle empty', () => {
 				const result = genders.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ gender: null });
@@ -47,6 +53,19 @@ describe('genders.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { gender: 'female' };
+
+				const result = genders.getFilterFromQuery(
+					query,
+					undefined,
+					mockState.pageLimit,
+					FLSS_QUERY_TYPE
+				);
+
+				expect(result).toEqual({ gender: null });
+			});
+
 			it('it should get filter', () => {
 				const query = { gender: 'female' };
 
@@ -95,6 +114,10 @@ describe('genders.js', () => {
 	});
 
 	describe('transformGenderOptions', () => {
+		it('should handle undefined', () => {
+			expect(transformGenderOptions(undefined)).toEqual([]);
+		});
+
 		it('should handle empty', () => {
 			expect(transformGenderOptions([])).toEqual([]);
 		});

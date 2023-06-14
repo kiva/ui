@@ -20,15 +20,12 @@
 			<borrower-info
 				:loan-id="loan.id"
 				:name="loan.name"
-				:amount="loan.loanAmount"
-				:use="loan.use"
+				:use="loan.fullLoanUse"
 				:country="loan.geocode.country.name"
 				:iso-code="loan.geocode.country.isoCode"
 				:state="loan.geocode.state"
 				:city="loan.geocode.city"
 				:status="loan.status"
-				:borrower-count="loan.borrowerCount"
-				:loan-length="loan.lenderRepaymentTerm"
 
 				@track-loan-card-interaction="trackInteraction"
 			/>
@@ -48,9 +45,10 @@
 					:is-lent-to="loan.userProperties.lentTo"
 					:is-funded="isFunded"
 					:is-selected-by-another="isSelectedByAnother"
-					:is-amount-lend-button="lessThan25"
+					:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 					:amount-left="amountLeft"
-					:show-now="true"
+					:show-now="!enableFiveDollarsNotes"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
 					@click.native="trackInteraction({
@@ -147,6 +145,10 @@ export default {
 			default: ''
 		},
 		showTags: {
+			type: Boolean,
+			default: false
+		},
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
 		}

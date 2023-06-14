@@ -1,6 +1,6 @@
 <template>
 	<div class="loan-price-wrapper tw-flex">
-		<div v-if="price > 24" class="loan-price-select tw-flex-grow">
+		<div v-if="price > 24 || enableFiveDollarsNotes" class="loan-price-select tw-flex-grow">
 			<label for="loan-price" class="tw-sr-only">Loan Price</label>
 			<kv-select
 				v-model="selectedOption"
@@ -38,7 +38,7 @@ import _forEach from 'lodash/forEach';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
 import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
-import { buildPriceArray } from '@/util/loanUtils';
+import { getDropdownPriceArrayCheckout } from '@/util/loanUtils';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
@@ -85,6 +85,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -109,14 +113,12 @@ export default {
 				remainingAmount = Math.max(remainingAmount, parseFloat(this.price));
 
 				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
-				const pricesArray = buildPriceArray(remainingAmount, minAmount);
-				const reducedArray = pricesArray.filter(element => {
-					return element % 25 === 0;
-				});
-				if (!reducedArray.includes(Number(this.price).toFixed())) {
-					reducedArray.push(Number(this.price).toFixed());
+
+				const priceArray = getDropdownPriceArrayCheckout(remainingAmount, minAmount, this.enableFiveDollarsNotes); // eslint-disable-line max-len
+				if (!priceArray.includes(Number(this.price).toFixed())) {
+					priceArray.push(Number(this.price).toFixed());
 				}
-				return reducedArray;
+				return priceArray;
 			}
 			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element

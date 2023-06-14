@@ -32,6 +32,8 @@ fragment detailedLoanCard on LoanBasic {
 	plannedExpirationDate
 	matchingText
 	matchRatio
+	anonymizationLevel
+	fullLoanUse @client
 	userProperties {
 		favorited
 		lentTo

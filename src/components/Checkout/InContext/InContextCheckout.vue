@@ -3,6 +3,32 @@
 		class="in-context-checkout"
 		id="inContextCheckout"
 	>
+		<div
+			v-if="isCorporateCampaign && showLcaLoanMessage"
+			class="tw-pb-4"
+		>
+			<div
+				class="tw-bg-brand-50
+						tw-rounded
+						tw-p-2
+						row
+						align-center"
+			>
+				<kv-icon
+					class="tw-w-4"
+					name="piggy-bank"
+				/>
+				<span v-if="promoFund.displayName">
+					{{ promoName }} has given you ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span v-else>
+					You have been given ${{ promoFund.promoPrice | numeral }} in credit.
+				</span>
+				<span>
+					&nbsp;&nbsp;We've suggested a borrower to lend your remaining ${{ lcaLoanPrice }} credit to.
+				</span>
+			</div>
+		</div>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
 			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
@@ -12,8 +38,9 @@
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
+			@jump-to-loans="$emit('jump-to-loans')"
 		/>
 
 		<hr>
@@ -23,11 +50,15 @@
 			:totals="totals"
 			:promo-fund="derivedPromoFund"
 			@credit-removed="$emit('credit-removed')"
-			@refreshtotals="$emit('refresh-totals')"
+			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
 		/>
 
-		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+		<div
+			class="in-context-login"
+			:class="{ 'tw-text-right' : !isCorporateCampaign }"
+			v-if="!isActivelyLoggedIn"
+		>
 			<kv-button
 				v-if="!isActivelyLoggedIn"
 				class="smaller checkout-button"
@@ -35,7 +66,7 @@
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 				:href="registerOrLoginHref"
 			>
-				Continue
+				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
 
@@ -45,7 +76,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -53,7 +84,7 @@
 			<checkout-drop-in-payment-wrapper
 				v-else
 				:amount="creditNeeded"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@complete-transaction="completeTransaction"
 			/>
@@ -78,6 +109,7 @@
 <script>
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { isCCPage } from '@/util/urlUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -87,6 +119,7 @@ import OrderTotals from '@/components/Checkout/OrderTotals';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
@@ -100,7 +133,8 @@ export default {
 		KvCheckbox,
 		KivaCreditPayment,
 		KvLoadingOverlay,
-		OrderTotals
+		OrderTotals,
+		KvIcon
 	},
 	mixins: [
 		checkoutUtils
@@ -158,6 +192,18 @@ export default {
 			type: String,
 			default: null
 		},
+		promoName: {
+			type: String,
+			default: () => {},
+		},
+		lcaLoanPrice: {
+			type: Number,
+			default: 0,
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Continue'
+		}
 	},
 	data() {
 		return {
@@ -209,6 +255,15 @@ export default {
 		},
 		campaignNameText() {
 			return this.campaignName ? `the ${this.campaignName}` : 'this';
+		},
+		isCorporateCampaign() {
+			return isCCPage(this.$route);
+		},
+		showLcaLoanMessage() {
+			return this.isCorporateCampaignPage
+				&& this.cookieStore.get('lcaid')
+				&& this.promoFund?.promoPrice
+				&& this.lcaLoanPrice > 0;
 		}
 	},
 	mounted() {

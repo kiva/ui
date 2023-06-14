@@ -46,6 +46,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const userQuery = gql`query getUserEmail {
 	my {
+		id
 		userAccount {
 			id
 			email

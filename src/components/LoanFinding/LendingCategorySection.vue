@@ -1,14 +1,30 @@
 <template>
 	<div class="tw-w-full">
 		<div class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<h2 class="tw-text-h2 tw-text-primary tw-mb-1">
-				{{ title }}
-			</h2>
-			<p class="tw-text-subhead tw-text-primary">
-				{{ subtitle }}
-			</p>
+			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center">
+				<div class="tw-w-full lg:tw-w-auto">
+					<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
+					<p
+						v-if="subtitle"
+						class="tw-text-subhead tw-text-primary"
+						:class="{ 'tw-hidden lg:tw-block' : enableRelendingExp }"
+					>
+						{{ subtitle }}
+					</p>
+				</div>
+				<multiple-atc-button
+					v-if="enableRelendingExp"
+					:amount="multipleAmount"
+					:loans-number="totalLoans"
+					:is-adding="isAddingMultiple"
+					:show-checkout="hasMultipleBeenAdded"
+					@add-multiple="addMultipleLoans"
+					@checkout="checkout"
+				/>
+			</div>
 			<kv-carousel
-				class="tw-w-full tw-overflow-hidden tw-my-3"
+				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2"
+				:class="{ 'tw-px-1 tw-pt-1' : enableLoanCardExp }"
 				id="customizedCarousel"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
@@ -18,12 +34,17 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kiva-classic-basic-loan-card-exp
 						v-if="enableLoanCardExp"
-						:key="`new-card-${index}`"
+						:key="loanCardKey(index)"
 						:loan-id="loan.id"
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
-						:per-row="perStep"
+						:large-card="isLargeCard"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						class="tw-h-full"
+						:ref="loanCardKey(index)"
+						:enable-relending-exp="enableRelendingExp"
+						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 					/>
 					<kiva-classic-basic-loan-card
@@ -34,6 +55,7 @@
 						:show-action-button="true"
 						:show-tags="true"
 						:use-full-width="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						class="tw-mr-2"
 						@add-to-basket="addToBasket"
 					/>
@@ -46,6 +68,7 @@
 <script>
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
@@ -53,7 +76,8 @@ export default {
 	components: {
 		KvCarousel,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCard
+		KivaClassicBasicLoanCard,
+		MultipleAtcButton
 	},
 	props: {
 		title: {
@@ -76,9 +100,30 @@ export default {
 		enableLoanCardExp: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableRelendingExp: {
+			type: Boolean,
+			default: false
+		},
+		userBalance: {
+			type: String,
+			default: undefined
+		},
+	},
+	data() {
+		return {
+			isAddingMultiple: false,
+			hasMultipleBeenAdded: false,
+		};
 	},
 	computed: {
+		isLargeCard() {
+			return this.perStep === 2;
+		},
 		singleSlideWidth() {
 			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 			// handle tiny screens
@@ -86,15 +131,90 @@ export default {
 				return `${viewportWidth - 80}px`;
 			}
 			if (viewportWidth >= 414 && viewportWidth < 768) return '278px';
-			if (viewportWidth >= 768 && viewportWidth < 1024) return '336px';
-			if (viewportWidth >= 1024) { if (this.perStep === 2) return '520px'; return '336px'; }
+			if (viewportWidth >= 768 && viewportWidth < 1024) {
+				if (this.enableLoanCardExp) return '328px'; return '336px';
+			}
+			if (viewportWidth >= 1024) {
+				if (this.enableLoanCardExp) {
+					if (this.isLargeCard) return '512px'; return '328px';
+				}
+				if (this.isLargeCard) return '520px'; return '336px';
+			}
 			return '336px';
 		},
+		multipleAmount() {
+			let amount = 0;
+			for (let index = 0; index < this.totalLoans; index += 1) {
+				const loan = this.loans[index];
+				const { unreservedAmount } = loan;
+
+				if (this.enableFiveDollarsNotes) {
+					if (this.userBalance > 20) {
+						amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
+					} else {
+						amount += unreservedAmount > 5 ? 5 : Number(unreservedAmount);
+					}
+				} else {
+					amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
+				}
+			}
+			return amount;
+		},
+		totalLoans() {
+			return this.loans.length;
+		}
 	},
 	methods: {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		}
+		},
+		async addMultipleLoans() {
+			this.isAddingMultiple = true;
+
+			const { multipleAmount } = this;
+
+			for (let index = 0; index < this.totalLoans; index += 1) {
+				const { unreservedAmount } = this.loans[index];
+				const key = this.loanCardKey(index);
+
+				let amount = '';
+				if (this.enableFiveDollarsNotes && this.userBalance <= 20) {
+					amount = Number(unreservedAmount) > 5 ? '5' : unreservedAmount;
+				} else {
+					amount = Number(unreservedAmount) > 25 ? '25' : unreservedAmount;
+				}
+
+				// We occasionally get fully funded loans from dev FLSS
+				if (Number(amount) > 0) {
+					try {
+						// Ensure the reservations happen synchronously to prevent race conditions with the basket
+						// eslint-disable-next-line no-await-in-loop
+						await this.$refs[key][0].addToBasket(amount);
+					} catch {
+						// no-op
+					}
+				}
+			}
+
+			this.$kvTrackEvent(
+				'loan-card',
+				'add-all-to-basket',
+				'relending-lending-home-add-all',
+				this.userBalance,
+				multipleAmount
+			);
+
+			this.isAddingMultiple = false;
+			this.hasMultipleBeenAdded = true;
+		},
+		checkout() {
+			this.$kvTrackEvent('loan-card', 'checkout', 'relending-lending-home-add-all');
+
+			this.$router.push({ path: '/checkout' });
+		},
+		loanCardKey(index) {
+			return `loan-card-${index}`;
+		},
 	},
 };
 </script>

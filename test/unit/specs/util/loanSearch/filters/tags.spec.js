@@ -26,6 +26,12 @@ describe('tags.js', () => {
 
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
+				const result = tags.getValidatedSearchState({ tagId: [1] }, undefined, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ tagId: [] });
+			});
+
+			it('should handle empty', () => {
 				const result = tags.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ tagId: [] });
@@ -41,6 +47,14 @@ describe('tags.js', () => {
 		});
 
 		describe('getFilterFromQuery', () => {
+			it('it should handle undefined facets', () => {
+				const query = { tag: '1,2' };
+
+				const result = tags.getFilterFromQuery(query, undefined, mockState.pageLimit, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ tagId: [1, 2] });
+			});
+
 			it('it should get filter', () => {
 				const query = { tag: '1,2' };
 

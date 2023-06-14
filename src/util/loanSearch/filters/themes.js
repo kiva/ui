@@ -73,12 +73,12 @@ export default {
 		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } })
 	}),
 	getValidatedSearchState: (loanSearchState, allFacets) => ({
-		themeId: loanSearchState?.themeId?.filter(t => allFacets.themeIds.includes(t)) ?? []
+		themeId: loanSearchState?.themeId?.filter(t => allFacets?.themeIds?.includes(t)) ?? []
 	}),
 	getFilterFromQuery: (query, allFacets) => ({
 		themeId: getIdsFromQueryParam(
 			query.attribute || query.attributes || query.theme,
-			allFacets.themeNames, allFacets.themeFacets
+			allFacets?.themeNames, allFacets?.themeFacets
 		) ?? []
 	}),
 	getQueryFromFilter: loanSearchState => ({

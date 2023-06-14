@@ -2,22 +2,14 @@
 	<div class="loan-filters">
 		<div class="loan-filters__top-row">
 			<span class="tw-mb-2 md:tw-mb-0">
-				<kv-button
-					class="loan-filters__toggle tw-pr-2"
-					variant="secondary"
-					@click.native.prevent="showFilters()"
-				>
-					<span class="loan-filters__toggle-text">
-						Filter loans
-					</span>
-					<kv-material-icon
-						aria-hidden="true"
-						class="loan-filters__toggle-icon"
-						name="chevron-down"
-						:icon="mdiChevronDown"
-					/>
-				</kv-button>
-				<span class="tw-font-medium tw-whitespace-nowrap">{{ totalCount }} loans</span>
+				<div class="tw-inline-flex tw-items-center">
+					<h2 v-if="promoName" class="tw-text-center">
+						{{ promoName }} recommends these people
+					</h2>
+					<h2 v-else class="tw-text-center">
+						Support causes you care about.
+					</h2>
+				</div>
 			</span>
 
 			<div v-if="showLoanDisplayToggle" class="loan-filters__loan-display">
@@ -25,17 +17,26 @@
 					class="tw-flex tw-cursor-pointer tw-items-center"
 					id="view-toggle"
 				>
+					<span class=" tw-inline-block tw-border-r tw-border-tertiary tw-px-1.5">
+						{{ totalCount }} loans
+					</span>
+					<span
+						class="tw-inline-flex"
+						@click="showFilters()"
+					>
+						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-border-r tw-border-tertiary tw-px-1.5">
+							Filter loans
+						</h4>
+					</span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
-						:selected="activeLoanDisplay"
-						@click="$emit('set-loan-display', true)"
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="rowDisplay"
-							@click="setLoanDisplayMode('gridDisplay')"
+							v-show="activeLoanDisplay === 'grid'"
+							@click="setLoanDisplayMode('rows')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
 								Row View
 							</h4>
 							<kv-material-icon
@@ -46,18 +47,15 @@
 						</span>
 					</span>
 
-					<span class="divider"></span>
 					<span
 						class="tw-flex tw-items-center tw-flex-wrap"
-						:selected="activeLoanDisplay"
-						@click="$emit('set-loan-display', true)"
 					>
 						<span
 							class="tw-inline-flex"
-							v-show="gridDisplay"
-							@click="setLoanDisplayMode('rowDisplay')"
+							v-show="activeLoanDisplay === 'rows'"
+							@click="setLoanDisplayMode('grid')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-p-1">
+							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
 								Grid View
 							</h4>
 							<kv-material-icon
@@ -311,6 +309,10 @@ export default {
 			type: String,
 			default: 'popularity',
 		},
+		promoName: {
+			type: String,
+			default: null
+		},
 		showLoanDisplayToggle: {
 			type: Boolean,
 			default: true
@@ -334,9 +336,7 @@ export default {
 			isChipsCollapsed: true,
 			mdiChevronDown,
 			mdiGridLarge,
-			mdiLandRowsHorizontal,
-			rowDisplay: true,
-			gridDisplay: false
+			mdiLandRowsHorizontal
 		};
 	},
 	mounted() {
@@ -475,13 +475,11 @@ export default {
 	methods: {
 		setLoanDisplayMode(mode) {
 			switch (mode) {
-				case 'rowDisplay':
-					this.rowDisplay = true;
-					this.gridDisplay = false;
+				case 'rows':
+					this.$emit('set-loan-display', true);
 					break;
-				case 'gridDisplay':
-					this.rowDisplay = false;
-					this.gridDisplay = true;
+				case 'grid':
+					this.$emit('set-loan-display', false);
 					break;
 				default:
 					break;
