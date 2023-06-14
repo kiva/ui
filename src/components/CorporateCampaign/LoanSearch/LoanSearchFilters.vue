@@ -352,7 +352,6 @@ export default {
 				return !this.excludedTags.includes(tag.name);
 			});
 		});
-		this.setLoanDisplayMode(this.activeLoanDisplay);
 	},
 	computed: {
 		// Attributes are also known as LoanThemes
