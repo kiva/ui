@@ -12,13 +12,33 @@
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div v-if="isGuestCheckout" id="guest-checkout">
-				<label class="input-label tw-font-medium tw-block tw-my-2" for="email">
+				<label
+					class="input-label tw-font-medium tw-block tw-my-2"
+					for="email"
+					v-if="!promoGuestCheckoutEnabled"
+				>
 					Where should we email your receipt?
 				</label>
+				<label
+					class="input-label tw-font-medium tw-block tw-my-2"
+					for="email"
+					v-else
+				>
+					What is your email?
+				</label>
+				<div
+					class="input-label tw-text-small tw-text-secondary tw-block tw-my-2"
+					for="email"
+					v-if="promoGuestCheckoutEnabled"
+				>
+					Kiva will share your information with {{ promoName ? promoName : 'your company' }}
+					to let them know you’ve redeemed your credits
+				</div>
 				<kv-text-input
 					type="email"
 					name="email"
 					v-model="email"
+					ref="email"
 					data-testid="basket-guest-email-input"
 					id="email"
 					class="data-hj-suppress tw-mb-2 tw-w-full"
@@ -28,7 +48,10 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
+				<p v-if="promoGuestCheckoutEnabled && isValidEmailFormat && $v.email.error">
+					Valid campaign email required
+				</p>
+				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
 				<kv-checkbox
@@ -133,6 +156,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		promoGuestCheckoutEnabled: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -168,7 +195,22 @@ export default {
 		},
 		validateGuestBasketAndCheckout() {
 			this.$emit('updating-totals', true);
-			this.validateGuestBasket(this.email, this.emailUpdates)
+			// Set the default checkout validation method
+			let validationMethod = this.validateGuestBasket;
+			const validationPayload = {
+				email: this.email,
+				emailUpdates: this.emailUpdates,
+			};
+			// If promo guest checkout is enabled, use the promo guest checkout validation method.
+			// This method validates the lender email for promo first before running the guest checkout method
+			// in checkout utils.
+			if (this.promoGuestCheckoutEnabled) {
+				validationMethod = this.validateGuestPromoBasket;
+				validationPayload.promoFundId = this.promoFundId;
+				validationPayload.managedAccountId = this.managedAccountId;
+			}
+
+			validationMethod(this.email, this.emailUpdates)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();
@@ -323,6 +365,10 @@ export default {
 					}
 					return kivaBraintreeResponse;
 				});
+		},
+		isValidEmailFormat() {
+			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${this.refs.email}`);
+			return emailRegex.test(this.$refs.email);
 		},
 	},
 };

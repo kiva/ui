@@ -168,6 +168,9 @@
 					:promo-name="campaignPartnerName"
 					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
+					:promo-fund-id="String(promoFundId)"
+					:managed-account-id="String(managedAccountId)"
+					:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
 					@refreshtotals="refreshTotals"
@@ -205,6 +208,7 @@
 					v-if="transactionId"
 					:transaction-id="transactionId"
 					:partner-content="partnerThanksContent"
+					:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 				/>
 			</kv-lightbox>
 		</div>
@@ -674,7 +678,6 @@ export default {
 				basketId: this.cookieStore.get('kvbskt')
 			}
 		});
-
 		this.rawPageData = data;
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
@@ -907,16 +910,24 @@ export default {
 			if (this.isMatchingCampaign) {
 				return this.pageSettingData?.matchingAccountName ?? null;
 			}
-			return this.promoData?.promoFund?.displayName ?? null;
+			const promoCampaignNameFallback = this.promoData?.promoFund?.displayName ?? null;
+			return this.prioritizedTargetCampaignCredit?.promoFund?.displayName ?? promoCampaignNameFallback;
 		},
 		verificationRequired() {
-			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+			if (this.promoData?.managedAccount?.isEmployee
+				&& this.promoData?.managedAccount?.formId
+				// If promo guest checkout is enabled, we don't need formassembly verification
+				// because the promo guest checkout workflow will take care of email verification.
+				&& !this.promoGuestCheckoutEnabled) {
 				return true;
 			}
 			return false;
 		},
 		usesDynamicContentfulRendering() {
 			return this.pageSettingData?.dynamicRendering;
+		},
+		promoGuestCheckoutEnabled() {
+			return this.pageSettingData?.guestCheckoutEnabled ?? false;
 		},
 		isEmployee() {
 			return this.promoData?.managedAccount?.isEmployee ?? false;
@@ -1476,7 +1487,7 @@ export default {
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
-			this.checkoutVisible = false;
+			this.checkoutLightboxClosed();
 			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
 			this.apollo.mutate({

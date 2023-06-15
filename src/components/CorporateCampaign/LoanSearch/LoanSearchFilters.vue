@@ -3,10 +3,7 @@
 		<div class="loan-filters__top-row">
 			<span class="tw-mb-2 md:tw-mb-0">
 				<div class="tw-inline-flex tw-items-center">
-					<h2 v-if="promoName" class="tw-text-center">
-						{{ promoName }} recommends these people
-					</h2>
-					<h2 v-else class="tw-text-center">
+					<h2>
 						Support causes you care about.
 					</h2>
 				</div>
@@ -308,10 +305,6 @@ export default {
 		initialSortBy: {
 			type: String,
 			default: 'popularity',
-		},
-		promoName: {
-			type: String,
-			default: null
 		},
 		showLoanDisplayToggle: {
 			type: Boolean,
