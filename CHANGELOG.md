@@ -1,3 +1,11 @@
+### [2.614.1](https://github.com/kiva/ui/compare/v2.614.0...v2.614.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* left align text ([446e4ad](https://github.com/kiva/ui/commit/446e4adbb8561c027a7c797647e37dc82631949b))
+* remove string that states that the corp sponsor recommends loans ([3449a53](https://github.com/kiva/ui/commit/3449a530cee71d77cd912290126c368930ccd172))
+
 ## [2.614.0](https://github.com/kiva/ui/compare/v2.613.1...v2.614.0) (2023-06-15)
 
 
