@@ -98,6 +98,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		promoGuestCheckoutEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -123,15 +127,19 @@ export default {
 	},
 	methods: {
 		fetchReceipt() {
-			this.apollo.query({
+			const queryObj = {
 				query: thanksPageQuery,
 				variables: {
 					checkoutId: this.transactionId
 				}
-			}).then(async ({ data }) => {
+			};
+			if (this.promoGuestCheckoutEnabled) {
+				queryObj.variables.visitorId = this.cookieStore.get('uiv') || null;
+			}
+			this.apollo.query(queryObj).then(async ({ data }) => {
 				this.lender = {
-					...data.my.userAccount,
-					teams: data.my.teams.values.map(value => value.team)
+					...data?.my?.userAccount,
+					teams: data?.my?.teams?.values.map(value => value.team)
 				};
 
 				// The default empty object and the v-if will prevent the
