@@ -48,7 +48,7 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="isGuestCheckout && isValidEmailFormat && $v.email.error">
+				<p v-if="promoGuestCheckoutEnabled && isValidEmailFormat && $v.email.error">
 					Valid campaign email required
 				</p>
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
