@@ -1,3 +1,10 @@
+### [2.613.1](https://github.com/kiva/ui/compare/v2.613.0...v2.613.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* **DonationNudge:** lightbox should always have a title/label ([d627f0d](https://github.com/kiva/ui/commit/d627f0d75623e7f36cf04dda6d464ecfee7e0e8e))
+
 ## [2.613.0](https://github.com/kiva/ui/compare/v2.612.1...v2.613.0) (2023-06-15)
 
 
