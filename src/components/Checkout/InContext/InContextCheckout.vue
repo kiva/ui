@@ -69,7 +69,7 @@
 				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
-		<div class="in-context-payment-controls" v-else>
+		<div v-if="!isActivelyLoggedIn && promoGuestCheckoutEnabled" class="in-context-payment-controls">
 			<kv-grid v-if="!continueAsGuest" class="tw-grid-cols-6">
 				<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
 					<kv-button
@@ -122,8 +122,7 @@
 			/>
 
 			<checkout-drop-in-payment-wrapper
-				v-if="!showKivaCreditButton
-					&& continueAsGuest"
+				v-if="!showKivaCreditButton && (continueAsGuest || isActivelyLoggedIn)"
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
 				:is-guest-checkout="promoGuestCheckoutEnabled"
@@ -326,7 +325,7 @@ export default {
 		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
-		},
+		}
 	}
 };
 </script>
