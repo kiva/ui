@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2	v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
+			<h2 v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
 				{{ title }}
 			</h2>
 			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
@@ -110,6 +110,7 @@ export default {
 		return {
 			mdiInformation,
 			zeroUpsellVisible: false,
+			title: 'We rely on donations to reach the people who need it the most',
 		};
 	},
 	components: {
@@ -151,12 +152,6 @@ export default {
 		},
 	},
 	computed: {
-		title() {
-			if (this.zeroUpsellVisible) {
-				return '';
-			}
-			return 'We rely on donations to reach the people who need it the most';
-		},
 		percentageRows() {
 			return [
 				{
