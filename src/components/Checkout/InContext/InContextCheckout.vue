@@ -69,10 +69,7 @@
 				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
-<<<<<<< HEAD
 
-		<div class="in-context-payment-conttrols" v-else>
-=======
 		<div v-if="!isActivelyLoggedIn && promoGuestCheckoutEnabled" class="in-context-payment-controls">
 			<kv-grid v-if="!continueAsGuest" class="tw-grid-cols-6">
 				<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
@@ -99,7 +96,6 @@
 				</div>
 			</kv-grid>
 
->>>>>>> main
 			<kiva-credit-payment
 				v-if="showKivaCreditButton && !promoGuestCheckoutEnabled"
 				@complete-transaction="completeTransaction"
@@ -172,11 +168,8 @@ import joinTeam from '@/graphql/mutation/joinTeam.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-<<<<<<< HEAD
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-=======
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
->>>>>>> main
 
 export default {
 	name: 'InContextCheckout',
@@ -276,8 +269,6 @@ export default {
 	},
 	data() {
 		return {
-			updatingTotals: false,
-<<<<<<< HEAD
 			isMember: false,
 			loading: false,
 			joinStatus: null,
@@ -288,10 +279,9 @@ export default {
 			teamName: '',
 			myTeams: () => [],
 			isChecked: false,
-=======
 			continueAsGuest: false,
-			continueAsExistingUser: false
->>>>>>> main
+			continueAsExistingUser: false,
+			updatingTotals: false,
 		};
 	},
 	computed: {
@@ -383,7 +373,6 @@ export default {
 		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
-<<<<<<< HEAD
 		},
 		fetchTeamData() {
 			this.apollo.query({
@@ -467,9 +456,7 @@ export default {
 		},
 		handleLightboxClosed() {
 
-=======
->>>>>>> main
-		}
+		},
 	}
 };
 </script>
