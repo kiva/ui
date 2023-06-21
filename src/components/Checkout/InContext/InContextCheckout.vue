@@ -101,7 +101,9 @@
 			</kv-grid>
 
 			<kiva-credit-payment
-				v-if="showKivaCreditButton && !promoGuestCheckoutEnabled"
+				v-if="showKivaCreditButton
+					&& !promoGuestCheckoutEnabled
+					&& isActivelyLoggedIn"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
