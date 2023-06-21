@@ -86,7 +86,11 @@
 			</content-container>
 			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8" id="bp-comments-jump-link">
 				<content-container>
-					<comments-and-why-special data-testid="bp-comments" :loan-id="loanId" />
+					<comments-and-why-special
+						data-testid="bp-comments"
+						:loan-id="loanId"
+						:is-logged-in="lender.id ? true : false"
+					/>
 				</content-container>
 			</div>
 			<content-container>
