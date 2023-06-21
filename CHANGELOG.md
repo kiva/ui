@@ -1,3 +1,10 @@
+## [2.615.0](https://github.com/kiva/ui/compare/v2.614.1...v2.615.0) (2023-06-21)
+
+
+### Features
+
+* comment reporting ([fabc399](https://github.com/kiva/ui/commit/fabc39990b722402b271934bd0ae5bab3289e170))
+
 ### [2.614.1](https://github.com/kiva/ui/compare/v2.614.0...v2.614.1) (2023-06-15)
 
 
