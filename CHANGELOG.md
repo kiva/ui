@@ -1,3 +1,11 @@
+### [2.615.1](https://github.com/kiva/ui/compare/v2.615.0...v2.615.1) (2023-06-21)
+
+
+### Bug Fixes
+
+* changing cases for payment options ([1e124ec](https://github.com/kiva/ui/commit/1e124ecc2a0258ec7234f8dc77c6c6c1e97e2d8a))
+* guest checkout controls not visible when logged in ([e3ba24c](https://github.com/kiva/ui/commit/e3ba24caa7ea907a8cad73a1e0d4acc861fb098c))
+
 ## [2.615.0](https://github.com/kiva/ui/compare/v2.614.1...v2.615.0) (2023-06-21)
 
 
