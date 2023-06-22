@@ -12,8 +12,9 @@
 		</h2>
 		<div v-if="!loading" class="tw-mt-2 md:tw-mt-3 lg:tw-mt-5 tw-mb-4 md:tw-mb-5 lg:tw-mb-7">
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
-				<template v-for="(comment, index) in comments" #[`slide${index}`]>
+				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`]>
 					<div :key="index">
+						<!-- comment menu -->
 						<button
 							v-if="isLoggedIn"
 							@click.stop="openCommentMenu"
@@ -42,12 +43,66 @@
 								</li>
 							</ul>
 						</div>
+						<!-- comment -->
 						<h2>
 							<em>"{{ comment.body }}"</em>
 						</h2>
-						<h2 class="tw-text-right">
-							{{ comment.authorName }}
-						</h2>
+						<!-- author -->
+						<div class="tw-float-right tw-flex tw-align-center tw-mt-1.5">
+							<div
+								class="tw-mr-1"
+								:class="{'tw-w-4 tw-h-4': isMobile, 'tw-w-6 tw-h-6': !isMobile}"
+							>
+								<!-- image variations -->
+								<!-- user is not anonymous and has an image -->
+								<borrower-image
+									v-if="!comment.isAnonymous && !isDefaultProfilePic(comment.hash)"
+									class="tw-rounded-full tw-bg-black tw-w-full tw-h-full"
+									:alt="comment.authorName"
+									:default-image="{ width: isMobile ? 32 : 48 }"
+									:hash="comment.hash"
+								/>
+								<!-- user is not anonymous and does not have an image -->
+								<div
+									v-else-if="!comment.isAnonymous && isDefaultProfilePic(comment.hash)"
+									class="
+										tw-rounded-full
+										tw-text-h2
+										tw-w-full tw-h-full
+										tw-flex tw-align-center tw-justify-center"
+									:class="randomizedUserClass()"
+								>
+									<!-- First Letter of lender name -->
+									<span class="tw-self-center">
+										{{ comment.lenderNameFirstLetter }}
+									</span>
+								</div>
+								<!-- user is anonymous -->
+								<div
+									v-else
+									class="
+										tw-rounded-full
+										tw-bg-brand
+										tw-w-full tw-h-full
+										tw-flex tw-align-center tw-justify-center"
+								>
+									<!-- Kiva K logo -->
+									<img
+										src="@/assets/images/kiva_k.svg"
+									>
+								</div>
+							</div>
+
+							<!-- name and team info -->
+							<div>
+								<h3>
+									{{ comment.authorName }}
+								</h3>
+								<!-- TODO add team name <h4>
+									Team Name
+								</h4> -->
+							</div>
+						</div>
 					</div>
 				</template>
 				<why-special data-testid="bp-why-special" :loan-id="loanId" />
@@ -109,12 +164,16 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
+import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
+
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import logFormatter from '@/util/logFormatter';
 import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
 import clickOutside from '@/plugins/click-outside';
+import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
@@ -126,6 +185,7 @@ export default {
 	name: 'CommentsAndWhySpecial',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		BorrowerImage,
 		KvButton,
 		KvCarousel,
 		KvLightbox,
@@ -155,7 +215,19 @@ export default {
 			commentMenuShown: false,
 			isLightboxVisible: false,
 			selectedReason: '',
-			selectedCommentId: ''
+			selectedCommentId: '',
+			userCardStyleOptions: [
+				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
+				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
+				{ color: 'tw-text-action', bg: 'tw-bg-secondary' },
+				{ color: 'tw-text-white', bg: 'tw-bg-action' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
+				{ color: 'tw-text-brand-50', bg: 'tw-bg-black' },
+				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
+				{ color: 'tw-text-white', bg: 'tw-bg-black' },
+			],
+			isMobile: false,
+
 		};
 	},
 	computed: {
@@ -164,29 +236,18 @@ export default {
 			if (!this.selectedReason) return 'disabled';
 			return '';
 		},
-	},
-	apollo: {
-		query: gql`query loanComments($loanId: Int!) {
-			lend {
-				loan(id: $loanId) {
-					id
-					comments {
-						values {
-							id
-							authorName
-							body
-						}
-			}
-				}
-			}
-		}`,
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
+		enhancedComments() {
+			// adds quasi computed properties to comments.
+			// isAnonymous boolean, lender name first letter, and image hash from url
+			return this.comments.map(comment => {
+				const imageFileName = comment.authorImageUrl?.split('/').pop();
+				return {
+					...comment,
+					isAnonymous: comment.authorName === 'Anonymous',
+					lenderNameFirstLetter: comment.authorName?.substring(0, 1).toUpperCase(),
+					hash: imageFileName?.split('.')[0]
+				};
+			});
 		},
 	},
 	methods: {
@@ -225,6 +286,7 @@ export default {
 								values {
 									id
 									authorName
+									authorImageUrl
 									body
 								}
 							}
@@ -278,13 +340,29 @@ export default {
 				this.isLightboxVisible = false;
 				this.loading = false;
 			});
-		}
+		},
+		randomizedUserClass() {
+			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
+			return `${randomStyle.color} ${randomStyle.bg}`;
+		},
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
+		isDefaultProfilePic(commentHash) {
+			return isLegacyPlaceholderAvatar(commentHash);
+		},
+		throttledResize() {
+			return _throttle(this.determineIfMobile, 200);
+		},
 	},
 	mounted() {
 		this.createObserver();
+		window.addEventListener('resize', this.throttledResize);
+		this.determineIfMobile();
 	},
 	beforeDestroy() {
 		this.destroyObserver();
+		window.removeEventListener('resize', this.throttledResize);
 	},
 };
 </script>
