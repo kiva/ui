@@ -1,3 +1,18 @@
+## [2.616.0](https://github.com/kiva/ui/compare/v2.615.1...v2.616.0) (2023-06-22)
+
+
+### Features
+
+* support kiva button on header ([f2bfbe4](https://github.com/kiva/ui/commit/f2bfbe4b7709f09b4183d448f1c688b1294eef2c))
+
+
+### Bug Fixes
+
+* header test ([4732d80](https://github.com/kiva/ui/commit/4732d801c47f7ba218ce47c35d03cda519c6f2a7))
+* hide borrow btn for logged in users ([c12f15e](https://github.com/kiva/ui/commit/c12f15e86da2ac1719b2dd5237e54ff97c23cc02))
+* resize event and log in button ([26cf262](https://github.com/kiva/ui/commit/26cf262825b4c6cbbc46dbfe8de0486b8435fa59))
+* support kiva link ([c4cc154](https://github.com/kiva/ui/commit/c4cc154de3eb17382d20eb6c0606080713970737))
+
 ### [2.615.1](https://github.com/kiva/ui/compare/v2.615.0...v2.615.1) (2023-06-21)
 
 
