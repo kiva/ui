@@ -222,7 +222,11 @@
 								v-show="!isMobile"
 								to="/borrow"
 								data-testid="header-borrow"
-								class="header__borrow header__button tw-flex"
+								class="header__borrow"
+								:class="{
+									'tw-hidden': !isVisitor,
+									'header__button !tw-hidden md:!tw-flex': isVisitor
+								}"
 								v-kv-track-event="['TopNav','click-Borrow']"
 							>
 								Borrow
