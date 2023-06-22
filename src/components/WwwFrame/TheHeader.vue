@@ -551,6 +551,7 @@
 </template>
 
 <script>
+import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
@@ -662,11 +663,7 @@ export default {
 			return !!this.trusteeId;
 		},
 		isDefaultProfilePic() {
-			if (!this.profilePicId) {
-				return true;
-			}
-			const defaultProfileIds = [726677, 315726];
-			return defaultProfileIds.some(id => id === this.profilePicId);
+			return isLegacyPlaceholderAvatar(this.profilePicId);
 		},
 		trusteeLoansUrl() {
 			return {
