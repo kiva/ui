@@ -1,3 +1,10 @@
+## [2.617.0](https://github.com/kiva/ui/compare/v2.616.0...v2.617.0) (2023-06-22)
+
+
+### Features
+
+* add user avatar to comments ([bc92da0](https://github.com/kiva/ui/commit/bc92da09da503ad50cbd2569e67ab86e383b0135))
+
 ## [2.616.0](https://github.com/kiva/ui/compare/v2.615.1...v2.616.0) (2023-06-22)
 
 
