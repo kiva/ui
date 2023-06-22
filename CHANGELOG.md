@@ -1,3 +1,10 @@
+### [2.617.1](https://github.com/kiva/ui/compare/v2.617.0...v2.617.1) (2023-06-22)
+
+
+### Bug Fixes
+
+* remove regex validation of emails because vuelidate is already handling this. ([d8060e2](https://github.com/kiva/ui/commit/d8060e2b6227c3a311e5ef15aad051fb6803745c))
+
 ## [2.617.0](https://github.com/kiva/ui/compare/v2.616.0...v2.617.0) (2023-06-22)
 
 
