@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<kv-settings-card class="column large-8" title="Monthly Good">
+	<div>
+		<kv-settings-card title="Monthly Good">
 			<template #content>
 				<router-link
 					v-if="!isMonthlyGoodSubscriber"
@@ -10,6 +10,62 @@
 				</router-link>
 
 				<div v-if="isMonthlyGoodSubscriber">
+					<p>
+						<span class="tw-text-action">{{ firstName }},</span>
+						thank you for being a subscriber
+						<span :class="{'tw-text-action': subStartDate }">{{ subStartDate }}</span>
+					</p>
+					<div class="tw-flex tw-justify-between tw-my-5">
+						<div>
+							<p class="tw-text-subhead tw-text-primary">
+								{{ totalCombinedDeposit | numeral('$0,0.00') }}/month
+							</p>
+							<p class="tw-text-secondary">
+								Next contribution: {{ nextContributionDate }}
+							</p>
+						</div>
+						<kv-button
+							variant="secondary"
+							class="tw-bg-white tw-whitespace-nowrap"
+							@click="setStep('change_subscription')"
+						>
+							Edit
+						</kv-button>
+					</div>
+					<div class="tw-flex tw-justify-between tw-my-5">
+						<div>
+							<p class="tw-text-subhead tw-text-primary">
+								Payment Method
+							</p>
+							<p class="tw-text-secondary">
+								{{ cardDescription }}
+							</p>
+						</div>
+						<kv-button
+							variant="secondary"
+							class="tw-bg-white tw-whitespace-nowrap"
+							@click="setStep('update_payment_method')"
+						>
+							Update
+						</kv-button>
+					</div>
+					<div class="tw-flex tw-justify-between tw-my-5">
+						<div>
+							<p class="tw-text-subhead tw-text-primary">
+								Change subscription status
+							</p>
+							<p class="tw-text-secondary">
+								Pause or cancel your membership
+							</p>
+						</div>
+						<kv-button
+							variant="secondary"
+							class="tw-bg-white tw-whitespace-nowrap"
+							@click="setStep('cancel_subscription')"
+						>
+							Change
+						</kv-button>
+					</div>
 					<p class="tw-mb-2">
 						On the <button
 							class="tw-text-link tw-font-medium"
@@ -48,16 +104,13 @@
 					<kv-lightbox
 						class="mg-update-lightbox"
 						:visible="showEditLightbox"
-						:title="settingsOpen ? 'Change your monthly good' : 'Update payment method'"
+						:title="lightboxTitle"
 						@lightbox-closed="closeLightbox"
 					>
 						<div class="mg-update-lightbox__content">
 							<transition :name="slideTransition" mode="out-in">
-								<!-- Deposit Settings -->
-								<div
-									v-if="settingsOpen"
-									class="row column" key="depositSettings"
-								>
+								<div v-if="modalStep === 'change_subscription'">
+									<!-- Deposit Settings -->
 									<monthly-good-update-form
 										:donation="donation"
 										:day-of-month="dayOfMonth"
@@ -67,47 +120,15 @@
 										@form-update="formUpdated"
 										class="mg-update-lightbox__form"
 									/>
-									<div class="mg-update-lightbox__payment-method">
-										<p class="tw-mb-1">
-											<strong>Current payment method:</strong>
-										</p>
-										<div class="row">
-											<div class="column">
-												<template v-if="paymentMethod">
-													<img
-														class="mg-update-lightbox__cc-icon tw-inline-block"
-														:src="paymentMethod.imageUrl"
-														alt="credit card"
-													>
-													{{ paymentMethod.description }}
-												</template>
-												<template v-else>
-													<p>
-														<!-- eslint-disable-next-line max-len  -->
-														You are currently using a legacy payment method and will need to cancel the current auto deposit or subscription, followed by creating a new auto deposit or subscription in order to change or manage the payment method.
-													</p>
-												</template>
-											</div>
-											<div class="column tw-text-right" v-if="paymentMethod">
-												<button
-													class="tw-text-link tw-font-medium"
-													@click="toggleSections"
-												>
-													Update Payment Method
-													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
-												</button>
-											</div>
-										</div>
-									</div>
 								</div>
 								<!-- Payment Methods -->
 								<div
-									v-if="!settingsOpen"
-									class="row column" key="paymentSettings"
+									v-if="modalStep === 'update_payment_method'"
+									key="paymentSettings"
 								>
 									<button
 										class="tw-text-link tw-font-medium"
-										@click="toggleSections"
+										@click="setStep('change_subscription')"
 									>
 										<kv-icon
 											class="arrow back-arrow tw-stroke-current"
@@ -154,7 +175,7 @@
 								data-test="monthly-good-save-button"
 								@click="saveMonthlyGood"
 								:state="saveButtonState"
-								v-if="settingsOpen"
+								v-if="modalStep === 'change_subscription'"
 							>
 								Save Settings
 							</kv-button>
@@ -165,9 +186,11 @@
 					<subscriptions-monthly-good-cancellation-flow
 						:show-cancel-lightbox="showCancelLightbox"
 						:subscription-id="subscriptionId"
-						@confirm-cancel="$emit('cancel-subscription'); showCancelLightbox = false;"
-						@abort-cancel="showCancelLightbox = false"
-						@modify-cancel="showCancelLightbox = false; showEditLightbox = true"
+						:sub-months-count="subMonthCount"
+						:subs-loans="subscriptionsLoans"
+						@confirm-cancel="onConfirmCancel"
+						@abort-cancel="onAbortCancel"
+						@modify-cancel="onModifyCancel"
 					/>
 				</div>
 			</template>
@@ -189,6 +212,10 @@ import SubscriptionsMonthlyGoodCancellationFlow from
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
+const CHANGE_SUBSCRIPTION = 'change_subscription';
+const UPDATE_PAYMENT_METHOD = 'update_payment_method';
+const CANCEL_SUBSCRIPTION = 'cancel_subscription';
+
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		id
@@ -206,6 +233,21 @@ const pageQuery = gql`query monthlyGoodSubscription {
 			}
 		}
 		monthlyGoodCategory
+		userAccount {
+			id
+			firstName
+		}
+	}
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			history {
+				values {
+					id
+					timestamp
+				}
+			}
+		}
 	}
 }`;
 
@@ -236,7 +278,10 @@ export default {
 			isFormValid: true,
 			updateToCurrentPaymentMethod: false,
 			paymentMethod: {},
-			subscriptionId: ''
+			subscriptionId: '',
+			firstName: '',
+			modalStep: '',
+			subscriptionsLoans: 0
 		};
 	},
 	mixins: [
@@ -255,10 +300,37 @@ export default {
 				this.mgAmount = autoDepositAmount - this.donation;
 				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
 				this.subscriptionId = data?.my?.autoDeposit?.id;
+				this.firstName = data?.my?.userAccount?.firstName ?? '';
+				this.subscriptionsLoans = data?.mySubscriptions?.values?.length ?? 0;
+				const mySubscriptions = data?.mySubscriptions?.values?.history?.values ?? [];
+				this.subStartTimestamp = mySubscriptions?.[mySubscriptions.length - 1]?.timeStamp ?? null;
 			}
 		},
 	},
 	computed: {
+		subStartDate() {
+			if (!this.subStartTimestamp) return '';
+			const timestamp = new Date(this.subStartTimestamp); // Replace with your own timestamp
+			return `since ${timestamp.toLocaleString('en-US', { month: 'long' })} ${timestamp.getFullYear()}!`;
+		},
+		subMonthCount() {
+			if (!this.subStartTimestamp) return 0;
+			const currentDate = new Date();
+			const timestamp = new Date(this.subStartTimestamp);
+			let monthsDiff = (currentDate.getFullYear() - timestamp.getFullYear()) * 12;
+			monthsDiff -= timestamp.getMonth() + 1;
+			monthsDiff += currentDate.getMonth();
+			return monthsDiff;
+		},
+		lightboxTitle() {
+			if (this.modalStep === CHANGE_SUBSCRIPTION) {
+				return 'Change your subscription';
+			}
+			if (this.modalStep === UPDATE_PAYMENT_METHOD) {
+				return 'Update payment method';
+			}
+			return '';
+		},
 		selectedGroupDescriptor() {
 			const selectedCategory = this.lendingCategories.find(category => category.value === this.category);
 
@@ -269,7 +341,7 @@ export default {
 			return this.donation + this.mgAmount;
 		},
 		slideTransition() {
-			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
+			return this.modalStep === UPDATE_PAYMENT_METHOD ? 'kv-slide-right' : 'kv-slide-left';
 		},
 		saveButtonState() {
 			if (!this.isChanged || !this.isFormValid) {
@@ -279,7 +351,24 @@ export default {
 				return 'loading';
 			}
 			return '';
-		}
+		},
+		cardDescription() {
+			return `Card ${this.paymentMethod?.description?.toLowerCase() ?? ''}`;
+		},
+		nextContributionDate() {
+			const date = new Date();
+			const day = date.getDate();
+			let monthName = '';
+
+			if (this.dayOfMonth >= day) {
+				date.setMonth(date.getMonth() + 1);
+			}
+			monthName = date.toLocaleString('default', {
+				month: 'long'
+			});
+
+			return `${monthName} ${day}`;
+		},
 	},
 	methods: {
 		/** This method is triggered when the form is updated.
@@ -309,9 +398,10 @@ export default {
 			/** If form is changed, let parent component know so save button can be displayed
 			 * This method will not be executed when lightbox closes after saving.
 			*/
-			if (this.isChanged) {
+			if (this.isChanged && this.isFormValid) {
 				this.$emit('unsaved-changes', true);
 			}
+			this.modalStep = '';
 			this.showEditLightbox = false;
 		},
 		saveMonthlyGood() {
@@ -353,6 +443,7 @@ export default {
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			}).finally(() => {
 				this.isSaving = false;
+				this.modalStep = '';
 				this.$emit('unsaved-changes', false);
 				this.showEditLightbox = false;
 			});
@@ -370,7 +461,29 @@ export default {
 		noUpdate() {
 			this.updateToCurrentPaymentMethod = true;
 		},
-	},
+		onConfirmCancel() {
+			this.$emit('cancel-subscription');
+			this.showCancelLightbox = false;
+			this.modalStep = '';
+		},
+		onModifyCancel() {
+			this.modalStep = CHANGE_SUBSCRIPTION;
+			this.showEditLightbox = true;
+			this.showCancelLightbox = false;
+		},
+		onAbortCancel() {
+			this.showCancelLightbox = false;
+		},
+		setStep(step) {
+			console.log(step === CANCEL_SUBSCRIPTION);
+			if (step === CANCEL_SUBSCRIPTION) {
+				this.showCancelLightbox = true;
+				return;
+			}
+			this.showEditLightbox = true;
+			this.modalStep = step;
+		},
+	}
 };
 </script>
 

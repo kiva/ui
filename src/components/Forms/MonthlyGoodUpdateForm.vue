@@ -4,7 +4,7 @@
 		novalidate
 	>
 		<fieldset :disabled="this.disabled">
-			<div class="row column">
+			<div>
 				<strong>Each month on the</strong>
 				<label
 					class="tw-sr-only"
@@ -30,7 +30,11 @@
 					v-if="!isDayInputShown"
 				>
 					<strong>{{ form.dayOfMonth | numeral('Oo') }}</strong>
-					<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+					<kv-material-icon
+						class="tw-w-2.5 tw-h-2.5 tw-text-action"
+						:icon="mdiPencil"
+						:title="'Edit'"
+					/>
 				</button>
 				<strong>we'll process the following:</strong>
 				<ul class="validation-errors" v-if="$v.form.dayOfMonth.$invalid">
@@ -47,15 +51,15 @@
 					</small>
 				</div>
 			</div>
-			<div class="middle-wrapper">
-				<div class="row align-middle">
-					<div class="columns">
+			<div>
+				<div class="tw-flex tw-items-center tw-justify-between tw-mt-2">
+					<div>
 						<span>
 							Deposit for lending
 						</span>
 					</div>
 
-					<div class="small-6 medium-4 columns">
+					<div>
 						<label
 							class="tw-sr-only"
 							:class="{ 'error': $v.form.mgAmount.$invalid }"
@@ -65,11 +69,12 @@
 						</label>
 						<kv-currency-input
 							id="amount"
+							class="tw-w-15"
 							v-model="form.mgAmount"
 						/>
 					</div>
 				</div>
-				<div class="row columns align-middle">
+				<div>
 					<ul class="tw-text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
 						<li v-if="!$v.form.mgAmount.required">
 							Field is required
@@ -79,14 +84,14 @@
 						</li>
 					</ul>
 				</div>
-				<div class="row align-middle">
-					<div class="columns">
+				<div class="tw-flex tw-items-center tw-justify-between tw-mt-2">
+					<div>
 						<span>
 							Optional donation to support Kiva
 						</span>
 					</div>
 
-					<div class="small-6 medium-4 columns">
+					<div>
 						<label
 							class="tw-sr-only"
 							:class="{ 'error': $v.form.donation.$invalid }"
@@ -96,29 +101,30 @@
 						</label>
 						<kv-currency-input
 							id="donation"
+							class="tw-w-15"
 							v-model="form.donation"
 						/>
 					</div>
 				</div>
-				<div class="row column align-middle">
+				<div>
 					<ul class="tw-text-right validation-errors" v-if="$v.form.donation.$invalid">
 						<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
 							Enter an amount of $0-$10,000
 						</li>
 					</ul>
 				</div>
-				<div class="row">
-					<div class="columns">
+				<div class="tw-flex tw-items-center tw-justify-between tw-mt-2">
+					<div>
 						<strong>Total/month</strong>
 					</div>
 
-					<div class="small-6 medium-4 columns">
+					<div>
 						<strong
 							class="additional-left-pad-currency"
 						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
 					</div>
 				</div>
-				<div class="row column">
+				<div>
 					<ul
 						class="tw-text-center validation-errors"
 						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
@@ -130,14 +136,13 @@
 					</ul>
 				</div>
 			</div>
-			<div class="row align-middle">
-				<div class="column">
+			<div class="tw-flex tw-items-center tw-justify-between tw-mt-2">
+				<div>
 					<label class="tw-font-medium" for="monthly-good-categories-select">Your contribution will:</label>
 				</div>
-				<div class="column">
+				<div>
 					<kv-select
 						v-model="form.category"
-						class="group-dropdown"
 						id="monthly-good-categories-select"
 					>
 						<option
@@ -160,9 +165,10 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvIcon from '@/components/Kv/KvIcon';
+import { mdiPencil } from '@mdi/js';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 /**
  * This form contains all the fields and validation to modify a MG Subscription
@@ -173,7 +179,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 export default {
 	name: 'MonthlyGoodUpdateForm',
 	components: {
-		KvIcon,
+		KvMaterialIcon,
 		KvCurrencyInput,
 		KvSelect,
 		KvTextInput,
@@ -187,6 +193,7 @@ export default {
 				mgAmount: this.mgAmount,
 			},
 			isDayInputShown: false,
+			mdiPencil,
 		};
 	},
 	props: {

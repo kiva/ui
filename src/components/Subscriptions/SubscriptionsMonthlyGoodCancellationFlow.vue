@@ -89,7 +89,7 @@
 						variant="secondary"
 						@click="trackEvent({
 							label: `monthly good cancel ; These aren't causes I want to support`,
-							property: 'cancel reason ; category_alignment'}); goToStep('3-choose-a')"
+							property: 'cancel reason ; category_alignment'}); changeContribution()"
 					>
 						These aren't causes I want to support
 					</kv-button>
@@ -130,11 +130,47 @@
 					<kv-button
 						class="tw-w-full"
 						@click="trackEvent({
-							label: `monthly good cancel ; Complete cancellation`,
-							property: `cancel submit ; ${cancelReason}`}); completeCancellation()"
+							label: `monthly good cancel ; Continue cancellation`,
+							property: `cancel submit ; ${cancelReason}`}); goToStep('4-confirm')"
 					>
-						Complete cancellation
+						Continue cancellation
 					</kv-button>
+				</div>
+				<!-- Step 3 -->
+				<!-- eslint-disable-next-line max-len -->
+				<div v-if="currentStep === '4-confirm'" key="4">
+					<p class="tw-mb-3">
+						Are you sure?
+						<span>
+							<span v-if="subMonthsCount">
+								In the <span class="tw-bold">{{ subMonthsCount }}</span> months
+							</span>
+							<span v-else>
+								Since
+							</span>
+							you’ve been a subscriber, you’ve made
+							<span class="tw-bold">{{ subsLoans }}</span> loans and have changed lives!
+						</span>
+					</p>
+					<div class="tw-flex tw-justify-end tw-gap-2">
+						<kv-button
+							@click="trackEvent({
+								label: `monthly good cancel ; cancel`,
+								property: 'confirm cancellation'
+							}); closeLightbox()"
+							variant="secondary"
+						>
+							Cancel
+						</kv-button>
+						<kv-button
+							@click="trackEvent({
+								label: `monthly good cancel ; Complete cancellation`,
+								property: `cancel submit ; ${cancelReason}`
+							}); completeCancellation()"
+						>
+							Confirm
+						</kv-button>
+					</div>
 				</div>
 			</transition>
 		</div>
@@ -161,6 +197,14 @@ export default {
 			type: Number,
 			default: null
 		},
+		subMonthsCount: {
+			type: Number,
+			default: 0
+		},
+		subsLoans: {
+			type: Number,
+			default: 0
+		},
 	},
 	data() {
 		return {
@@ -178,6 +222,9 @@ export default {
 			}
 			if (this.currentStep.includes('reason')) {
 				return 'Sorry to see you go';
+			}
+			if (this.currentStep.includes('confirm')) {
+				return 'Confirm cancellation';
 			}
 			return 'We\'re sorry to see you go';
 		},
