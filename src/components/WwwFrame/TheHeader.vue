@@ -92,7 +92,8 @@
 						class="header
 							tw-grid lg:tw-gap-x-4 tw-items-center"
 						:class="{
-							'tw-gap-x-2.5 ': !lendMenuButtonExp,
+							'tw-gap-x-1 ': isMobile,
+							'tw-gap-x-2.5 ': !lendMenuButtonExp || !isMobile,
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen,
@@ -200,6 +201,7 @@
 							:class="{
 								'tw-hidden': !searchOpen || isVisitor,
 								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
+								'!tw-hidden lg:!tw-block': hasBasket,
 								'lg:tw-block': lendMenuButtonExp,
 							}"
 						>
@@ -210,12 +212,14 @@
 							class="header__right-side
 						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
 							:class="{
-								'tw-gap-2.5': !lendMenuButtonExp,
+								'tw-gap-0.5': isMobile,
+								'tw-gap-2.5': !lendMenuButtonExp && !isMobile,
 								'tw-gap-1.5': lendMenuButtonExp,
 							}"
 						>
 							<!-- Borrow -->
 							<router-link
+								v-show="!isMobile"
 								to="/borrow"
 								data-testid="header-borrow"
 								class="header__borrow"
@@ -229,16 +233,12 @@
 							</router-link>
 
 							<!-- About -->
-							<div class="tw-group">
+							<div class="tw-group" v-show="!hideAbout">
 								<router-link
 									:id="aboutMenuId"
 									to="/about"
 									data-testid="header-about"
-									class="header__about"
-									:class="{
-										'tw-hidden': !isVisitor,
-										'header__button': isVisitor
-									}"
+									class="header__about header__button"
 									v-kv-track-event="['TopNav','click-About']"
 								>
 									<span class="tw-flex">
@@ -252,7 +252,6 @@
 								</router-link>
 								<kv-dropdown
 									:controller="aboutMenuId"
-									v-show="isVisitor"
 									class="dropdown-list"
 									data-testid="header-about-dropdown-list"
 								>
@@ -321,18 +320,25 @@
 												Due diligence
 											</router-link>
 										</li>
+										<li>
+											<router-link
+												to="/donate/supportus"
+												v-kv-track-event="['TopNav','click-Support-Kiva']"
+											>
+												Support Kiva
+											</router-link>
+										</li>
 									</ul>
 								</kv-dropdown>
 							</div>
 
 							<!-- Mobile Search Toggle -->
 							<button
-								class="header__button header__search-icon"
+								class="header__button header__search-icon tw-inline-flex"
 								:class="{
 									'!tw-hidden': isVisitor,
-									'!tw-inline-flex': !isVisitor,
-									'md:!tw-inline-flex': isVisitor,
-									'md:!tw-hidden': !lendMenuButtonExp || !isVisitor,
+									'md:!tw-hidden': !lendMenuButtonExp || isVisitor || !hasBasket,
+									'md:!tw-inline-flex xl:!tw-hidden': !isVisitor || hasBasket,
 									'lg:!tw-hidden': lendMenuButtonExp && isVisitor,
 								}"
 								v-show="!hideSearchInHeader"
@@ -364,9 +370,10 @@
 
 							<!-- Log in Link -->
 							<kv-button
-								variant="secondary"
-								v-show="isVisitor"
+								:variant="isMobile ? 'secondary' : 'ghost'"
+								v-if="isVisitor"
 								class="tw-bg-white tw-whitespace-nowrap"
+								:class="{'header__button login-link': !isMobile}"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -376,7 +383,7 @@
 
 							<!-- Logged in Profile -->
 							<router-link
-								v-show="!isVisitor"
+								v-else
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
 								to="/portfolio"
@@ -504,6 +511,14 @@
 											Settings
 										</router-link>
 									</li>
+									<li v-show="isMobile">
+										<router-link
+											to="/donate/supportus"
+											v-kv-track-event="['TopNav','click-Support-Kiva']"
+										>
+											Support Kiva
+										</router-link>
+									</li>
 									<hr>
 									<li>
 										<router-link
@@ -515,6 +530,17 @@
 									</li>
 								</ul>
 							</kv-dropdown>
+
+							<kv-button
+								variant="secondary"
+								v-show="!isMobile"
+								class="tw-bg-white tw-whitespace-nowrap"
+								href="/donate/supportus"
+								data-testid="header-log-in"
+								v-kv-track-event="['TopNav', 'click-Support-Kiva']"
+							>
+								Support Kiva
+							</kv-button>
 						</div>
 					</div>
 				</template>
@@ -536,6 +562,7 @@ import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import _throttle from 'lodash/throttle';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -599,6 +626,7 @@ export default {
 			userId: null,
 			hasEverLoggedIn: false,
 			lendMenuButtonExp: false,
+			isMobile: false,
 		};
 	},
 	props: {
@@ -671,6 +699,9 @@ export default {
 			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
+		hideAbout() {
+			return this.isMobile && !this.isVisitor;
+		}
 	},
 	apollo: {
 		query: headerQuery,
@@ -748,8 +779,17 @@ export default {
 			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
 			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
+		window.addEventListener('resize', this.determineIfMobile());
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.determineIfMobile());
 	},
 	methods: {
+		determineIfMobile() {
+			return _throttle(() => {
+				this.isMobile = document.documentElement.clientWidth < 735;
+			}, 200);
+		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;
 
@@ -985,4 +1025,14 @@ export default {
 		grid-template-columns: auto auto auto 1fr auto;
 	}
 }
+
+.login-link >>> span {
+	@apply tw-h-full tw-p-0 hover:tw-bg-white hover:tw-text-action-highlight;
+	@apply hover:tw-no-underline focus:tw-no-underline;
+}
+
+.login-link >>> span > span {
+	@apply tw-flex tw-items-center;
+}
+
 </style>
