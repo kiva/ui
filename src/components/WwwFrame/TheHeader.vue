@@ -721,8 +721,8 @@ export default {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
 			this.trusteeId = data?.my?.trustee?.id ?? null;
-			this.basketCount = data?.shop?.nonTrivialItemCount ?? 20;
-			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 28);
+			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
+			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
