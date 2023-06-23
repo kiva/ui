@@ -66,39 +66,6 @@
 							Change
 						</kv-button>
 					</div>
-					<p class="tw-mb-2">
-						On the <button
-							class="tw-text-link tw-font-medium"
-							@click="showEditLightbox = true;"
-						>
-							{{ dayOfMonth | numeral('Oo') }}
-						</button> of each month <button
-							class="tw-text-link tw-font-medium"
-							@click="showEditLightbox = true;"
-						>
-							{{ totalCombinedDeposit | numeral('$0,0.00') }}
-						</button> will be
-						transferred <button
-							class="tw-text-link tw-font-medium"
-							@click="showEditLightbox = true;"
-							v-if="selectedGroupDescriptor"
-						>
-							to support
-							{{ selectedGroupDescriptor }}.
-						</button>
-					</p>
-
-					<button
-						class="tw-text-link tw-font-medium"
-						@click="showCancelLightbox = true"
-						v-kv-track-event="[
-							'monthlyGood',
-							'click-cancel-monthly-good',
-							'Cancel Monthly Good'
-						]"
-					>
-						Cancel Monthly Good
-					</button>
 
 					<!-- Edit MG Lightbox -->
 					<kv-lightbox
