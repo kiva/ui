@@ -1,3 +1,10 @@
+### [2.617.3](https://github.com/kiva/ui/compare/v2.617.2...v2.617.3) (2023-06-23)
+
+
+### Bug Fixes
+
+* resolve a couple sentry errors ([f4e7374](https://github.com/kiva/ui/commit/f4e73740a63e2eb2d57f30aa4e873c93fcade92e))
+
 ### [2.617.2](https://github.com/kiva/ui/compare/v2.617.1...v2.617.2) (2023-06-23)
 
 
