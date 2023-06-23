@@ -21,7 +21,7 @@
 			</div>
 
 			<!-- Already Subscribed Notice -->
-			<div class="row" v-if="hasAutoDeposits || hasLegacySubscription">
+			<div class="row" v-if="(hasAutoDeposits || hasLegacySubscription) && !isMonthlyGoodSubscriber">
 				<div class="small-12 columns">
 					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
 						<p class="tw-text-h3">
@@ -47,7 +47,7 @@
 			</div>
 
 			<!-- Modern Sub Notice -->
-			<div class="row" v-if="hasModernSub">
+			<div class="row" v-if="hasModernSub && !isMonthlyGoodSubscriber">
 				<div class="small-12 columns">
 					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
 						<p class="tw-text-h3">
@@ -131,12 +131,12 @@ const pageQuery = gql`query autoDepositLandingPage {
 			isSubscriber
 		}
 	}
-	# mySubscriptions(includeDisabled: false) {
-	# 	values {
-	# 		id
-	# 		enabled
-	# 	}
-	# }
+	mySubscriptions(includeDisabled: false) {
+		values {
+			id
+			enabled
+		}
+	}
 	contentful {
 		entries(contentType: "page", contentKey: "auto-deposit")
 	}
@@ -189,9 +189,8 @@ export default {
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
 			this.hasLegacySubscription = legacySubs.length > 0;
 
-			// TODO! Add this back in when service supports non-logged in users
-			// const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-			// this.hasModernSub = modernSubscriptions.length !== 0;
+			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+			this.hasModernSub = modernSubscriptions.length !== 0;
 		},
 	},
 	computed: {
