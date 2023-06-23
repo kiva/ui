@@ -93,7 +93,7 @@
 							tw-grid xl:tw-gap-x-4 tw-items-center"
 						:class="{
 							'tw-gap-x-1 ': isMobile,
-							'tw-gap-x-2.5 ': !lendMenuButtonExp || !isMobile,
+							'tw-gap-x-2': !lendMenuButtonExp || !isMobile,
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen || isVisitor,
@@ -202,12 +202,11 @@
 								lg:tw-block
 							"
 							:class="{
-								'tw-hidden': !searchOpen,
+								'tw-hidden': !searchOpen || isVisitor,
+								'md:tw-hidden': hasBasket && isVisitor && !searchOpen || hasBasket && balance,
 								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
-								'md:tw-hidden': isVisitor && hasBasket && !searchOpen,
-								'md:tw-hidden': isVisitor && hasBasket || !isVisitor && hasBasket && balance,
 								'md:!tw-block': searchOpen && hasBasket && balance,
-								'lg:tw-block': lendMenuButtonExp,
+								'lg:tw-block': lendMenuButtonExp || hasBasket,
 							}"
 						>
 							<search-bar ref="search" />
@@ -258,7 +257,7 @@
 							</router-link>
 
 							<!-- About -->
-							<div class="tw-group" v-show="!hideAbout">
+							<div class="tw-group" :class="{ 'tw-hidden md:tw-block': !isVisitor }">
 								<router-link
 									:id="aboutMenuId"
 									to="/about"
@@ -296,6 +295,14 @@
 											>
 												How Kiva works
 											</a>
+										</li>
+										<li>
+											<router-link
+												to="/donate/supportus"
+												v-kv-track-event="['TopNav', 'click-Support-Kiva']"
+											>
+												Support Kiva
+											</router-link>
 										</li>
 										<li>
 											<router-link
@@ -345,14 +352,6 @@
 												Due diligence
 											</router-link>
 										</li>
-										<li>
-											<router-link
-												to="/donate/supportus"
-												v-kv-track-event="['TopNav','click-Support-Kiva']"
-											>
-												Support Kiva
-											</router-link>
-										</li>
 									</ul>
 								</kv-dropdown>
 							</div>
@@ -374,17 +373,15 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<kv-button
-								variant="ghost"
+							<router-link
 								v-if="isVisitor"
-								class="tw-bg-white tw-whitespace-nowrap"
-								:class="{'header__button login-link': !isMobile}"
+								class="header__button tw-bg-white tw-whitespace-nowrap"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
-							</kv-button>
+							</router-link>
 
 							<!-- Logged in Profile -->
 							<router-link
@@ -701,9 +698,6 @@ export default {
 			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
-		hideAbout() {
-			return this.isMobile && !this.isVisitor;
-		}
 	},
 	apollo: {
 		query: headerQuery,
@@ -1032,15 +1026,6 @@ export default {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
-}
-
-.login-link >>> span {
-	@apply tw-h-full tw-p-0 hover:tw-bg-white hover:tw-text-action-highlight;
-	@apply hover:tw-no-underline focus:tw-no-underline;
-}
-
-.login-link >>> span > span {
-	@apply tw-flex tw-items-center;
 }
 
 </style>
