@@ -543,7 +543,7 @@ export default {
 				}
 			}).catch(e => {
 				this.isAdding = false;
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
