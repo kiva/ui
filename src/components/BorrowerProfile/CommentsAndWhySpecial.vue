@@ -98,9 +98,14 @@
 								<h3>
 									{{ comment.authorName }}
 								</h3>
-								<!-- TODO add team name <h4>
-									Team Name
-								</h4> -->
+								<h4 v-if="comment.lenderTeam && comment.lenderTeamPublicId">
+									<router-link
+										:to="`/team/${comment.lenderTeamPublicId}`"
+										class="tw-text-primary"
+									>
+										{{ comment.lenderTeam }}
+									</router-link>
+								</h4>
 							</div>
 						</div>
 					</div>
@@ -227,7 +232,6 @@ export default {
 				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			],
 			isMobile: false,
-
 		};
 	},
 	computed: {
@@ -241,10 +245,16 @@ export default {
 			// isAnonymous boolean, lender name first letter, and image hash from url
 			return this.comments.map(comment => {
 				const imageFileName = comment.authorImageUrl?.split('/').pop();
+				const teamNameForThisComment = comment.authorLendingAction?.teams?.[0];
+				const teamInfo = comment.authorLendingAction?.lender?.teams?.values.find(team => {
+					return team.name === comment.authorLendingAction?.teams?.[0];
+				});
 				return {
 					...comment,
 					isAnonymous: comment.authorName === 'Anonymous',
 					lenderNameFirstLetter: comment.authorName?.substring(0, 1).toUpperCase(),
+					lenderTeam: teamNameForThisComment,
+					lenderTeamPublicId: teamInfo?.teamPublicId ?? null,
 					hash: imageFileName?.split('.')[0]
 				};
 			});
@@ -287,6 +297,17 @@ export default {
 									id
 									authorName
 									authorImageUrl
+									authorLendingAction {
+										teams
+										lender {
+											teams {
+												values {
+													name
+													teamPublicId
+												}
+											}
+										}
+									}
 									body
 								}
 							}
