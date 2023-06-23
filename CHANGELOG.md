@@ -1,3 +1,10 @@
+### [2.617.2](https://github.com/kiva/ui/compare/v2.617.1...v2.617.2) (2023-06-23)
+
+
+### Bug Fixes
+
+* auto deposit landing page messaging ([b01b436](https://github.com/kiva/ui/commit/b01b436db58bd0d6c796c9a9a548cfd73b2baf8e))
+
 ### [2.617.1](https://github.com/kiva/ui/compare/v2.617.0...v2.617.1) (2023-06-22)
 
 
