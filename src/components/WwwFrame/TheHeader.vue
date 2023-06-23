@@ -90,13 +90,15 @@
 				<template v-else>
 					<div
 						class="header
-							tw-grid lg:tw-gap-x-4 tw-items-center"
+							tw-grid xl:tw-gap-x-4 tw-items-center"
 						:class="{
 							'tw-gap-x-1 ': isMobile,
 							'tw-gap-x-2.5 ': !lendMenuButtonExp || !isMobile,
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
-							'header--mobile-open': searchOpen,
+							'header--mobile-open': searchOpen || isVisitor,
+							'header--tablet-open': hasBasket && isVisitor,
+							'header--tablet-open': hasBasket && balance,
 							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
 						}"
 					>
@@ -197,11 +199,14 @@
 								tw-py-1.5 md:py-0
 								tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
 								tw-border-t tw-border-tertiary md:tw-border-t-0
+								lg:tw-block
 							"
 							:class="{
-								'tw-hidden': !searchOpen || isVisitor,
+								'tw-hidden': !searchOpen,
 								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
-								'!tw-hidden lg:!tw-block': hasBasket,
+								'md:tw-hidden': isVisitor && hasBasket && !searchOpen,
+								'md:tw-hidden': isVisitor && hasBasket || !isVisitor && hasBasket && balance,
+								'md:!tw-block': searchOpen && hasBasket && balance,
 								'lg:tw-block': lendMenuButtonExp,
 							}"
 						>
@@ -212,11 +217,31 @@
 							class="header__right-side
 						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
 							:class="{
-								'tw-gap-0.5': isMobile,
+								'tw-gap-1': isMobile,
 								'tw-gap-2.5': !lendMenuButtonExp && !isMobile,
 								'tw-gap-1.5': lendMenuButtonExp,
 							}"
 						>
+							<!-- Mobile Search Toggle -->
+							<button
+								class="header__button header__search-icon tw-inline-flex"
+								:class="{
+									'!tw-hidden': isVisitor,
+									'md:tw-hidden': !lendMenuButtonExp,
+									'md:!tw-inline-flex lg:!tw-hidden': isVisitor && hasBasket,
+									'lg:!tw-hidden': lendMenuButtonExp || !isVisitor,
+								}"
+								v-show="!hideSearchInHeader"
+								data-testid="header-mobile-search-toggle"
+								:aria-expanded="searchOpen ? 'true' : 'false'"
+								:aria-pressed="searchOpen ? 'true' : 'false'"
+								aria-controls="top-nav-search-area"
+								@click="toggleMobileSearch"
+								v-kv-track-event="['TopNav','click-search-toggle']"
+							>
+								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
+							</button>
+
 							<!-- Borrow -->
 							<router-link
 								v-show="!isMobile"
@@ -332,26 +357,6 @@
 								</kv-dropdown>
 							</div>
 
-							<!-- Mobile Search Toggle -->
-							<button
-								class="header__button header__search-icon tw-inline-flex"
-								:class="{
-									'!tw-hidden': isVisitor,
-									'md:!tw-hidden': !lendMenuButtonExp || isVisitor || !hasBasket,
-									'md:!tw-inline-flex xl:!tw-hidden': !isVisitor || hasBasket,
-									'lg:!tw-hidden': lendMenuButtonExp && isVisitor,
-								}"
-								v-show="!hideSearchInHeader"
-								data-testid="header-mobile-search-toggle"
-								:aria-expanded="searchOpen ? 'true' : 'false'"
-								:aria-pressed="searchOpen ? 'true' : 'false'"
-								aria-controls="top-nav-search-area"
-								@click="toggleMobileSearch"
-								v-kv-track-event="['TopNav','click-search-toggle']"
-							>
-								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
-							</button>
-
 							<!-- Basket -->
 							<router-link
 								to="/basket"
@@ -370,7 +375,7 @@
 
 							<!-- Log in Link -->
 							<kv-button
-								:variant="isMobile ? 'secondary' : 'ghost'"
+								variant="ghost"
 								v-if="isVisitor"
 								class="tw-bg-white tw-whitespace-nowrap"
 								:class="{'header__button login-link': !isMobile}"
@@ -722,8 +727,8 @@ export default {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
 			this.trusteeId = data?.my?.trustee?.id ?? null;
-			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
-			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
+			this.basketCount = data?.shop?.nonTrivialItemCount ?? 20;
+			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 28);
 			this.profilePic = data?.my?.lender?.image?.url ?? '';
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
@@ -998,6 +1003,12 @@ export default {
 		grid-template-columns: auto auto 1fr auto;
 	}
 
+	.header.header--tablet-open {
+		grid-template-areas:
+			"logo lend right-side"
+			"search search search";
+	}
+
 	.header.header-lend-menu-button-exp {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
@@ -1017,7 +1028,7 @@ export default {
 }
 
 @screen lg {
-	.header.header-lend-menu-button-exp-visitor {
+	.header.header-lend-menu-button-exp-visitor, .header.header--tablet-open {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
