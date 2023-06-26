@@ -1,3 +1,16 @@
+### [2.618.1](https://github.com/kiva/ui/compare/v2.618.0...v2.618.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* clean up dumb variables ([08ce17f](https://github.com/kiva/ui/commit/08ce17f143bd8716f3a65d1e9d52d3154bb5f18a))
+* eslint ([106c6e7](https://github.com/kiva/ui/commit/106c6e72b90530c62f52771502d760d5b1bea2e2))
+* hide about on logged in users on a mobile screen ([d7a5e5a](https://github.com/kiva/ui/commit/d7a5e5a653c77fa3789ef6df6617cfbdcbd0621f))
+* narrowed search bar for tablet and design fixes on header with balance ([08df551](https://github.com/kiva/ui/commit/08df551acbc174299e8629bae672edaa1b73938e))
+* search icon not showing with basket on tablet ([9fb8bd2](https://github.com/kiva/ui/commit/9fb8bd27f1f65c1846a063c25a41e4866a6d4fb6))
+* small search bar w basket ([46e84ea](https://github.com/kiva/ui/commit/46e84ea8ddd67f459b91eb710f1d056e1d26c414))
+* space size between header components ([c007259](https://github.com/kiva/ui/commit/c00725987c11067ec7306fc6eeb6b9c3ec84715f))
+
 ## [2.618.0](https://github.com/kiva/ui/compare/v2.617.3...v2.618.0) (2023-06-26)
 
 
