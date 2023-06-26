@@ -97,8 +97,7 @@
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen || isVisitor,
-							'header--tablet-open': hasBasket && isVisitor,
-							'header--tablet-open': hasBasket && balance,
+							'header--tablet-open': openTabletVariant,
 							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
 						}"
 					>
@@ -203,9 +202,9 @@
 							"
 							:class="{
 								'tw-hidden': !searchOpen || isVisitor,
-								'md:tw-hidden': hasBasket && isVisitor && !searchOpen || hasBasket && balance,
+								'md:tw-hidden': hasBasket && isVisitor && !searchOpen || !searchOpen,
 								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
-								'md:!tw-block': searchOpen && hasBasket && balance,
+								'md:!tw-block': searchOpen && hasBasket && balance || !hasBasket,
 								'lg:tw-block': lendMenuButtonExp || hasBasket,
 							}"
 						>
@@ -226,7 +225,7 @@
 								class="header__button header__search-icon tw-inline-flex"
 								:class="{
 									'!tw-hidden': isVisitor,
-									'md:tw-hidden': !lendMenuButtonExp,
+									'md:!tw-hidden': !lendMenuButtonExp || !hasBasket,
 									'md:!tw-inline-flex lg:!tw-hidden': isVisitor && hasBasket,
 									'lg:!tw-hidden': lendMenuButtonExp || !isVisitor,
 								}"
@@ -698,6 +697,9 @@ export default {
 			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
+		openTabletVariant() {
+			return (this.hasBasket && this.isVisitor) || (this.hasBasket || this.balance);
+		}
 	},
 	apollo: {
 		query: headerQuery,
@@ -1001,6 +1003,7 @@ export default {
 		grid-template-areas:
 			"logo lend right-side"
 			"search search search";
+		grid-template-columns: 1fr auto auto;
 	}
 
 	.header.header-lend-menu-button-exp {
