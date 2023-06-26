@@ -1,3 +1,10 @@
+## [2.618.0](https://github.com/kiva/ui/compare/v2.617.3...v2.618.0) (2023-06-26)
+
+
+### Features
+
+* add team name to comments on BP ([7f52878](https://github.com/kiva/ui/commit/7f52878323fbe4003dde1843889a0f25138e03a5))
+
 ### [2.617.3](https://github.com/kiva/ui/compare/v2.617.2...v2.617.3) (2023-06-23)
 
 
