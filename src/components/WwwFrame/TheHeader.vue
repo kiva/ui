@@ -93,7 +93,7 @@
 							tw-grid xl:tw-gap-x-4 tw-items-center"
 						:class="{
 							'tw-gap-x-1 ': isMobile,
-							'tw-gap-x-2': !lendMenuButtonExp || !isMobile,
+							'tw-gap-x-2.5': !lendMenuButtonExp || !isMobile,
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
 							'header--mobile-open': searchOpen || isVisitor,
@@ -213,7 +213,7 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
+						tw-flex tw-justify-end xl:tw-gap-4 align-middle"
 							:class="{
 								'tw-gap-1': isMobile,
 								'tw-gap-2.5': !lendMenuButtonExp && !isMobile,
