@@ -225,7 +225,7 @@
 								class="header__button header__search-icon tw-inline-flex"
 								:class="{
 									'!tw-hidden': isVisitor,
-									'md:!tw-hidden': !lendMenuButtonExp || !hasBasket,
+									'md:!tw-hidden': !lendMenuButtonExp && !hasBasket,
 									'md:!tw-inline-flex lg:!tw-hidden': isVisitor && hasBasket,
 									'lg:!tw-hidden': lendMenuButtonExp || !isVisitor,
 								}"
