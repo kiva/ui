@@ -11,7 +11,7 @@
 
 				<div v-if="isMonthlyGoodSubscriber">
 					<p>
-						<span class="tw-text-action">{{ firstName }},</span>
+						<span class="tw-text-action data-hj-suppress">{{ firstName }},</span>
 						thank you for being a subscriber
 						<span :class="{'tw-text-action': subStartDate }">{{ subStartDate }}</span>
 					</p>
@@ -176,6 +176,7 @@ import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import SubscriptionsMonthlyGoodCancellationFlow from
 	'@/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
+import getMonthsCount from '@/util/dateUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
@@ -208,6 +209,12 @@ const pageQuery = gql`query monthlyGoodSubscription {
 	mySubscriptions(includeDisabled: false) {
 		values {
 			id
+			amount
+			donation
+			category {
+				id
+				subscriptionType
+			}
 			history {
 				values {
 					id
@@ -248,7 +255,8 @@ export default {
 			subscriptionId: '',
 			firstName: '',
 			modalStep: '',
-			subscriptionsLoans: 0
+			subscriptionsLoans: 0,
+			subStartTimestamp: null
 		};
 	},
 	mixins: [
@@ -269,25 +277,20 @@ export default {
 				this.subscriptionId = data?.my?.autoDeposit?.id;
 				this.firstName = data?.my?.userAccount?.firstName ?? '';
 				this.subscriptionsLoans = data?.mySubscriptions?.values?.length ?? 0;
-				const mySubscriptions = data?.mySubscriptions?.values?.history?.values ?? [];
-				this.subStartTimestamp = mySubscriptions?.[mySubscriptions.length - 1]?.timeStamp ?? null;
+				// eslint-disable-next-line max-len
+				const mgSubs =	data?.mySubscriptions?.values?.[0]?.history?.values.filter(sub => sub?.category?.subscriptionType === 'MG') ?? [];
+				this.subStartTimestamp = mgSubs?.[mgSubs.length - 1]?.timestamp ?? null;
 			}
 		},
 	},
 	computed: {
 		subStartDate() {
 			if (!this.subStartTimestamp) return '';
-			const timestamp = new Date(this.subStartTimestamp); // Replace with your own timestamp
+			const timestamp = new Date(this.subStartTimestamp);
 			return `since ${timestamp.toLocaleString('en-US', { month: 'long' })} ${timestamp.getFullYear()}!`;
 		},
 		subMonthCount() {
-			if (!this.subStartTimestamp) return 0;
-			const currentDate = new Date();
-			const timestamp = new Date(this.subStartTimestamp);
-			let monthsDiff = (currentDate.getFullYear() - timestamp.getFullYear()) * 12;
-			monthsDiff -= timestamp.getMonth() + 1;
-			monthsDiff += currentDate.getMonth();
-			return monthsDiff;
+			return getMonthsCount(this.subStartTimestamp);
 		},
 		lightboxTitle() {
 			if (this.modalStep === CHANGE_SUBSCRIPTION) {
@@ -442,7 +445,6 @@ export default {
 			this.showCancelLightbox = false;
 		},
 		setStep(step) {
-			console.log(step === CANCEL_SUBSCRIPTION);
 			if (step === CANCEL_SUBSCRIPTION) {
 				this.showCancelLightbox = true;
 				return;
