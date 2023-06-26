@@ -1022,7 +1022,8 @@ export default {
 }
 
 @screen lg {
-	.header.header-lend-menu-button-exp-visitor, .header.header--tablet-open {
+	.header.header-lend-menu-button-exp-visitor,
+	.header.header--tablet-open {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
