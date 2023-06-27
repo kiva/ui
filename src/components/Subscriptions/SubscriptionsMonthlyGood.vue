@@ -27,7 +27,7 @@
 						<kv-button
 							variant="secondary"
 							class="tw-bg-white tw-whitespace-nowrap"
-							@click="setStep('change_subscription')"
+							@click="setStep(CHANGE_SUBSCRIPTION)"
 						>
 							Edit
 						</kv-button>
@@ -44,7 +44,7 @@
 						<kv-button
 							variant="secondary"
 							class="tw-bg-white tw-whitespace-nowrap"
-							@click="setStep('update_payment_method')"
+							@click="setStep(UPDATE_PAYMENT_METHOD)"
 						>
 							Update
 						</kv-button>
@@ -61,7 +61,7 @@
 						<kv-button
 							variant="secondary"
 							class="tw-bg-white tw-whitespace-nowrap"
-							@click="setStep('cancel_subscription')"
+							@click="setStep(CANCEL_SUBSCRIPTION)"
 						>
 							Change
 						</kv-button>
@@ -76,7 +76,7 @@
 					>
 						<div class="mg-update-lightbox__content">
 							<transition :name="slideTransition" mode="out-in">
-								<div v-if="modalStep === 'change_subscription'">
+								<div v-if="modalStep === CHANGE_SUBSCRIPTION">
 									<!-- Deposit Settings -->
 									<monthly-good-update-form
 										:donation="donation"
@@ -90,12 +90,12 @@
 								</div>
 								<!-- Payment Methods -->
 								<div
-									v-if="modalStep === 'update_payment_method'"
+									v-if="modalStep === UPDATE_PAYMENT_METHOD"
 									key="paymentSettings"
 								>
 									<button
 										class="tw-text-link tw-font-medium"
-										@click="setStep('change_subscription')"
+										@click="setStep(CHANGE_SUBSCRIPTION)"
 									>
 										<kv-icon
 											class="arrow back-arrow tw-stroke-current"
@@ -142,7 +142,7 @@
 								data-test="monthly-good-save-button"
 								@click="saveMonthlyGood"
 								:state="saveButtonState"
-								v-if="modalStep === 'change_subscription'"
+								v-if="modalStep === CHANGE_SUBSCRIPTION"
 							>
 								Save Settings
 							</kv-button>
@@ -254,7 +254,10 @@ export default {
 			firstName: '',
 			modalStep: '',
 			subscriptionsLoans: 0,
-			subStartTimestamp: null
+			subStartTimestamp: null,
+			CHANGE_SUBSCRIPTION,
+			UPDATE_PAYMENT_METHOD,
+			CANCEL_SUBSCRIPTION
 		};
 	},
 	mixins: [
@@ -442,7 +445,23 @@ export default {
 		onAbortCancel() {
 			this.showCancelLightbox = false;
 		},
+		trackStep(step) {
+			switch (step) {
+				case CHANGE_SUBSCRIPTION:
+					this.$kvTrackEvent('monthlyGood', 'click-edit-monthly-good', 'Edit');
+					break;
+				case UPDATE_PAYMENT_METHOD:
+					this.$kvTrackEvent('monthlyGood', 'click-update-payment-method', 'Update');
+					break;
+				case CANCEL_SUBSCRIPTION:
+					this.$kvTrackEvent('monthlyGood', 'click-change-subscription-status', 'Change');
+					break;
+				default:
+					break;
+			}
+		},
 		setStep(step) {
+			this.trackStep(step);
 			if (step === CANCEL_SUBSCRIPTION) {
 				this.showCancelLightbox = true;
 				return;
