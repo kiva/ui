@@ -1,4 +1,4 @@
-import { getKivaImageUrl } from '@/util/imageUtils';
+import { getKivaImageUrl, isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 
 describe('imageUtils.js', () => {
 	describe('getKivaImageUrl()', () => {
@@ -54,6 +54,25 @@ describe('imageUtils.js', () => {
 			expect(getKivaImageUrl({ faceZoom: 40 })).toBe('');
 			expect(getKivaImageUrl({ hash: '123abc' })).toBe('');
 			expect(getKivaImageUrl({})).toBe('');
+		});
+	});
+	describe('isLegacyPlaceholderAvatar()', () => {
+		it('Returns if not legacy placeholder avatar', () => {
+			expect(isLegacyPlaceholderAvatar('123abc.jpg')).toBe(false);
+			expect(isLegacyPlaceholderAvatar(null)).toBe(false);
+			expect(isLegacyPlaceholderAvatar(undefined)).toBe(false);
+			expect(isLegacyPlaceholderAvatar('123abc')).toBe(false);
+			expect(isLegacyPlaceholderAvatar(12344)).toBe(false);
+		});
+		it('Returns if legacy placeholder avatar', () => {
+			expect(isLegacyPlaceholderAvatar('726677.jpg')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('315726.jpg')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('726677.svg')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('315726.svg')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('726677')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('315726')).toBe(true);
+			expect(isLegacyPlaceholderAvatar(726677)).toBe(true);
+			expect(isLegacyPlaceholderAvatar(315726)).toBe(true);
 		});
 	});
 });

@@ -268,7 +268,7 @@ export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, ca
 	if (enableFiveDollarsNotes && typeof userBalance !== 'undefined') {
 		let currentCampaign = cookieStore.get(ERL_COOKIE_NAME);
 
-		if (campaign && !currentCampaign) {
+		if (campaign && typeof campaign === 'string' && !currentCampaign) {
 			// Effects of the campaign lasts for 24 hours
 			const expires = new Date();
 			expires.setHours(expires.getHours() + 24);

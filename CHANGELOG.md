@@ -1,3 +1,88 @@
+### [2.618.2](https://github.com/kiva/ui/compare/v2.618.1...v2.618.2) (2023-06-27)
+
+
+### Bug Fixes
+
+* hide support kiva button on mobile and adding required id on lender query ([83bd6b6](https://github.com/kiva/ui/commit/83bd6b62d38e2b8a0e8d83c204492857414c6553))
+
+### [2.618.1](https://github.com/kiva/ui/compare/v2.618.0...v2.618.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* clean up dumb variables ([08ce17f](https://github.com/kiva/ui/commit/08ce17f143bd8716f3a65d1e9d52d3154bb5f18a))
+* eslint ([106c6e7](https://github.com/kiva/ui/commit/106c6e72b90530c62f52771502d760d5b1bea2e2))
+* hide about on logged in users on a mobile screen ([d7a5e5a](https://github.com/kiva/ui/commit/d7a5e5a653c77fa3789ef6df6617cfbdcbd0621f))
+* narrowed search bar for tablet and design fixes on header with balance ([08df551](https://github.com/kiva/ui/commit/08df551acbc174299e8629bae672edaa1b73938e))
+* search icon not showing with basket on tablet ([9fb8bd2](https://github.com/kiva/ui/commit/9fb8bd27f1f65c1846a063c25a41e4866a6d4fb6))
+* small search bar w basket ([46e84ea](https://github.com/kiva/ui/commit/46e84ea8ddd67f459b91eb710f1d056e1d26c414))
+* space size between header components ([c007259](https://github.com/kiva/ui/commit/c00725987c11067ec7306fc6eeb6b9c3ec84715f))
+
+## [2.618.0](https://github.com/kiva/ui/compare/v2.617.3...v2.618.0) (2023-06-26)
+
+
+### Features
+
+* add team name to comments on BP ([7f52878](https://github.com/kiva/ui/commit/7f52878323fbe4003dde1843889a0f25138e03a5))
+
+### [2.617.3](https://github.com/kiva/ui/compare/v2.617.2...v2.617.3) (2023-06-23)
+
+
+### Bug Fixes
+
+* resolve a couple sentry errors ([f4e7374](https://github.com/kiva/ui/commit/f4e73740a63e2eb2d57f30aa4e873c93fcade92e))
+
+### [2.617.2](https://github.com/kiva/ui/compare/v2.617.1...v2.617.2) (2023-06-23)
+
+
+### Bug Fixes
+
+* auto deposit landing page messaging ([b01b436](https://github.com/kiva/ui/commit/b01b436db58bd0d6c796c9a9a548cfd73b2baf8e))
+
+### [2.617.1](https://github.com/kiva/ui/compare/v2.617.0...v2.617.1) (2023-06-22)
+
+
+### Bug Fixes
+
+* remove regex validation of emails because vuelidate is already handling this. ([d8060e2](https://github.com/kiva/ui/commit/d8060e2b6227c3a311e5ef15aad051fb6803745c))
+
+## [2.617.0](https://github.com/kiva/ui/compare/v2.616.0...v2.617.0) (2023-06-22)
+
+
+### Features
+
+* add user avatar to comments ([bc92da0](https://github.com/kiva/ui/commit/bc92da09da503ad50cbd2569e67ab86e383b0135))
+
+## [2.616.0](https://github.com/kiva/ui/compare/v2.615.1...v2.616.0) (2023-06-22)
+
+
+### Features
+
+* support kiva button on header ([f2bfbe4](https://github.com/kiva/ui/commit/f2bfbe4b7709f09b4183d448f1c688b1294eef2c))
+
+
+### Bug Fixes
+
+* header test ([4732d80](https://github.com/kiva/ui/commit/4732d801c47f7ba218ce47c35d03cda519c6f2a7))
+* hide borrow btn for logged in users ([c12f15e](https://github.com/kiva/ui/commit/c12f15e86da2ac1719b2dd5237e54ff97c23cc02))
+* resize event and log in button ([26cf262](https://github.com/kiva/ui/commit/26cf262825b4c6cbbc46dbfe8de0486b8435fa59))
+* support kiva link ([c4cc154](https://github.com/kiva/ui/commit/c4cc154de3eb17382d20eb6c0606080713970737))
+
+### [2.615.1](https://github.com/kiva/ui/compare/v2.615.0...v2.615.1) (2023-06-21)
+
+
+### Bug Fixes
+
+* changing cases for payment options ([1e124ec](https://github.com/kiva/ui/commit/1e124ecc2a0258ec7234f8dc77c6c6c1e97e2d8a))
+* guest checkout controls not visible when logged in ([e3ba24c](https://github.com/kiva/ui/commit/e3ba24caa7ea907a8cad73a1e0d4acc861fb098c))
+
+## [2.615.0](https://github.com/kiva/ui/compare/v2.614.1...v2.615.0) (2023-06-21)
+
+
+### Features
+
+* comment reporting ([fabc399](https://github.com/kiva/ui/commit/fabc39990b722402b271934bd0ae5bab3289e170))
+
 ### [2.614.1](https://github.com/kiva/ui/compare/v2.614.0...v2.614.1) (2023-06-15)
 
 

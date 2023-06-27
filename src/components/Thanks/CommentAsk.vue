@@ -167,8 +167,9 @@ export default {
 				if (data.loan.addComment) {
 					this.$showTipMsg(`Thank you for helping ${this.loanName}!`);
 					this.showComments = false;
+				} else {
+					throw new Error('Comment not added');
 				}
-				throw new Error('Comment not added');
 			}).catch(e => {
 				logFormatter(e, 'error');
 				this.$showTipMsg('There was a problem commenting on this loan', 'error');

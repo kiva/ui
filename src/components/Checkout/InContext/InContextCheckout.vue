@@ -69,8 +69,13 @@
 				{{ customCheckoutButtonText }}
 			</kv-button>
 		</div>
-		<div v-if="!isActivelyLoggedIn && promoGuestCheckoutEnabled" class="in-context-payment-controls">
-			<kv-grid v-if="!continueAsGuest" class="tw-grid-cols-6">
+		<div class="in-context-payment-controls">
+			<kv-grid
+				v-if="!isActivelyLoggedIn
+					&& promoGuestCheckoutEnabled
+					&& !continueAsGuest"
+				class="tw-grid-cols-6"
+			>
 				<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
 					<kv-button
 						class="smaller checkout-button tw-mb-1"
@@ -96,7 +101,9 @@
 			</kv-grid>
 
 			<kiva-credit-payment
-				v-if="showKivaCreditButton && !promoGuestCheckoutEnabled"
+				v-if="showKivaCreditButton
+					&& !promoGuestCheckoutEnabled
+					&& isActivelyLoggedIn"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
