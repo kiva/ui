@@ -535,7 +535,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="!isMobile"
-								class="tw-bg-white tw-whitespace-nowrap"
+								class="tw-hidden md:tw-block tw-bg-white tw-whitespace-nowrap"
 								href="/donate/supportus"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav', 'click-Support-Kiva']"

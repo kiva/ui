@@ -300,8 +300,10 @@ export default {
 									authorLendingAction {
 										teams
 										lender {
+											id
 											teams {
 												values {
+													id
 													name
 													teamPublicId
 												}
