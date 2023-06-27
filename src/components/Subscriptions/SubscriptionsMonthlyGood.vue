@@ -189,8 +189,6 @@ const pageQuery = gql`query monthlyGoodSubscription {
 		id
 		autoDeposit {
 			id
-			amount
-			donateAmount
 			dayOfMonth
 			isSubscriber
 			paymentMethod {
@@ -268,8 +266,8 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			if (this.isMonthlyGoodSubscriber) {
-				const autoDepositAmount = parseFloat(data?.my?.autoDeposit?.amount ?? 0);
-				this.donation = parseFloat(data?.my?.autoDeposit?.donateAmount ?? 0);
+				const autoDepositAmount = parseFloat(data?.mySubscriptions?.values?.[0]?.amount ?? 0);
+				this.donation = parseFloat(data?.mySubscriptions?.values?.[0]?.donation ?? 0);
 				this.dayOfMonth = data?.my?.autoDeposit?.dayOfMonth;
 				this.category = data?.my?.monthlyGoodCategory ?? '';
 				this.mgAmount = autoDepositAmount - this.donation;
@@ -278,7 +276,7 @@ export default {
 				this.firstName = data?.my?.userAccount?.firstName ?? '';
 				this.subscriptionsLoans = data?.mySubscriptions?.values?.length ?? 0;
 				// eslint-disable-next-line max-len
-				const mgSubs =	data?.mySubscriptions?.values?.[0]?.history?.values.filter(sub => sub?.category?.subscriptionType === 'MG') ?? [];
+				const mgSubs = data?.mySubscriptions?.values?.[0]?.history?.values.filter(sub => sub?.category?.subscriptionType === 'MG') ?? [];
 				this.subStartTimestamp = mgSubs?.[mgSubs.length - 1]?.timestamp ?? null;
 			}
 		},
