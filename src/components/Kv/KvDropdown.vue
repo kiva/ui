@@ -59,7 +59,11 @@ export default {
 		},
 	},
 	mounted() {
-		this.makeDropdown();
+		if (this.reference) {
+			this.makeDropdown();
+		} else {
+			console.error(`KvDropdown: Controller element with id ${this.controller} not found in document.`);
+		}
 	},
 	updated() {
 		if (this.popper) {
