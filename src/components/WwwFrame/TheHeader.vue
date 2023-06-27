@@ -382,9 +382,21 @@
 								Log in
 							</router-link>
 
+							<!-- Support Kiva -->
+							<kv-button
+								variant="secondary"
+								v-show="!isMobile"
+								class="tw-hidden md:tw-block tw-bg-white tw-whitespace-nowrap"
+								href="/donate/supportus"
+								data-testid="header-support-kiva"
+								v-kv-track-event="['TopNav', 'click-Support-Kiva']"
+							>
+								Support Kiva
+							</kv-button>
+
 							<!-- Logged in Profile -->
 							<router-link
-								v-else
+								v-if="!isVisitor"
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
 								to="/portfolio"
@@ -531,17 +543,6 @@
 									</li>
 								</ul>
 							</kv-dropdown>
-
-							<kv-button
-								variant="secondary"
-								v-show="!isMobile"
-								class="tw-hidden md:tw-block tw-bg-white tw-whitespace-nowrap"
-								href="/donate/supportus"
-								data-testid="header-log-in"
-								v-kv-track-event="['TopNav', 'click-Support-Kiva']"
-							>
-								Support Kiva
-							</kv-button>
 						</div>
 					</div>
 				</template>
