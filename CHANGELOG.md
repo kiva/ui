@@ -1,3 +1,10 @@
+### [2.618.2](https://github.com/kiva/ui/compare/v2.618.1...v2.618.2) (2023-06-27)
+
+
+### Bug Fixes
+
+* hide support kiva button on mobile and adding required id on lender query ([83bd6b6](https://github.com/kiva/ui/commit/83bd6b62d38e2b8a0e8d83c204492857414c6553))
+
 ### [2.618.1](https://github.com/kiva/ui/compare/v2.618.0...v2.618.1) (2023-06-26)
 
 
