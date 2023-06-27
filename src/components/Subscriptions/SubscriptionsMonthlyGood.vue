@@ -2,15 +2,20 @@
 	<div>
 		<kv-settings-card title="Monthly Good">
 			<template #content>
-				<router-link
+				<div
 					v-if="!isMonthlyGoodSubscriber"
-					to="/monthlygood"
+					class="tw-flex tw-flex-col tw-gap-2 md:tw-flex-row tw-justify-between md:tw-items-center"
 				>
-					Sign up for a Kiva Monthly Good subscription
-				</router-link>
+					<p class="tw-text-subhead">
+						Sign up for monthly lending
+					</p>
+					<kv-button href="/monthlygood">
+						Sign up
+					</kv-button>
+				</div>
 
 				<div v-if="isMonthlyGoodSubscriber">
-					<p>
+					<p class="tw-text-subhead">
 						<span class="tw-text-action data-hj-suppress">{{ firstName }},</span>
 						thank you for being a subscriber
 						<span :class="{'tw-text-action': subStartDate }">{{ subStartDate }}</span>
@@ -269,17 +274,18 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			if (this.isMonthlyGoodSubscriber) {
-				const autoDepositAmount = parseFloat(data?.mySubscriptions?.values?.[0]?.amount ?? 0);
-				this.donation = parseFloat(data?.mySubscriptions?.values?.[0]?.donation ?? 0);
+				const activeMonthlyGoodSubscription = data?.mySubscriptions?.values
+					.find(sub => sub?.category?.subscriptionType === 'MG');
+				this.donation = parseFloat(activeMonthlyGoodSubscription?.donation ?? 0);
 				this.dayOfMonth = data?.my?.autoDeposit?.dayOfMonth;
 				this.category = data?.my?.monthlyGoodCategory ?? '';
-				this.mgAmount = autoDepositAmount - this.donation;
+				this.mgAmount = parseFloat(activeMonthlyGoodSubscription?.amount ?? 0);
 				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
 				this.subscriptionId = data?.my?.autoDeposit?.id;
 				this.firstName = data?.my?.userAccount?.firstName ?? '';
 				this.subscriptionsLoans = data?.mySubscriptions?.values?.length ?? 0;
 				// eslint-disable-next-line max-len
-				const mgSubs = data?.mySubscriptions?.values?.[0]?.history?.values.filter(sub => sub?.category?.subscriptionType === 'MG') ?? [];
+				const mgSubs = activeMonthlyGoodSubscription?.history?.values ?? [];
 				this.subStartTimestamp = mgSubs?.[mgSubs.length - 1]?.timestamp ?? null;
 			}
 		},
@@ -413,6 +419,7 @@ export default {
 				console.error(e);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			}).finally(() => {
+				this.isChanged = false;
 				this.isSaving = false;
 				this.modalStep = '';
 				this.$emit('unsaved-changes', false);

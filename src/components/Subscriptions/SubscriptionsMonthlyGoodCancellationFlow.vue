@@ -143,13 +143,13 @@
 						Are you sure?
 						<span>
 							<span v-if="subMonthsCount">
-								In the <span class="tw-bold">{{ subMonthsCount }}</span> months
+								In the <span class="tw-font-medium">{{ numberOfMonths }}</span>
 							</span>
 							<span v-else>
 								Since
 							</span>
 							you’ve been a subscriber, you’ve made
-							<span class="tw-bold">{{ subsLoans }}</span> loans and have changed lives!
+							<span class="tw-font-medium"> {{ numberOfLoans }}</span> and have changed lives!
 						</span>
 					</p>
 					<div class="tw-flex tw-justify-end tw-gap-2">
@@ -213,6 +213,12 @@ export default {
 		};
 	},
 	computed: {
+		numberOfMonths() {
+			return `${this.subMonthsCount} month${this.subMonthsCount > 1 ? 's' : ''}`;
+		},
+		numberOfLoans() {
+			return `${this.subsLoans} loan${this.subsLoans > 1 ? 's' : ''}`;
+		},
 		lightboxTitle() {
 			if (this.currentStep.includes('expensive')) {
 				return 'It\'s too expensive';
