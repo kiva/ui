@@ -373,7 +373,7 @@
 
 							<!-- Log in Link -->
 							<router-link
-								v-if="isVisitor"
+								v-show="isVisitor"
 								class="header__button tw-bg-white tw-whitespace-nowrap"
 								:to="loginUrl"
 								data-testid="header-log-in"
@@ -396,7 +396,7 @@
 
 							<!-- Logged in Profile -->
 							<router-link
-								v-if="!isVisitor"
+								v-show="!isVisitor"
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
 								to="/portfolio"
