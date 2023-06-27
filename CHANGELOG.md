@@ -1,3 +1,10 @@
+### [2.618.3](https://github.com/kiva/ui/compare/v2.618.2...v2.618.3) (2023-06-27)
+
+
+### Bug Fixes
+
+* **KvDropdown:** skip dropdown init and log error when controller missing ([f4c64de](https://github.com/kiva/ui/commit/f4c64de15b3fe3bfa216c959eb732e94f87fb6ed))
+
 ### [2.618.2](https://github.com/kiva/ui/compare/v2.618.1...v2.618.2) (2023-06-27)
 
 
