@@ -4,7 +4,7 @@
 		:no-padding-sides="true"
 		:no-padding-bottom="true"
 		:no-padding-top="true"
-		@lightbox-closed="closeNudgeLightbox"
+		@lightbox-closed="closeZeroUpsell(0)"
 		:title="title"
 	>
 		<template #header>
