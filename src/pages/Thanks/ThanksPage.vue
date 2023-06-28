@@ -188,20 +188,32 @@ export default {
 				|| this.monthlyDonationAmount?.length;
 		},
 		askForComments() {
-			// comments ask should be displayed for logged in users checking out with a PFP loan.
-			return this.hasPfpLoan && !this.isGuest;
+			// comments ask should be displayed for logged in users
+			// checking out with a PFP loan or a loan that is attributed to a team.
+			return (this.hasPfpLoan || this.hasTeamAttributedPartnerLoan) && !this.isGuest;
 		},
 		selectedLoan() {
-			// The selected loan should be any PFP loans, or if there are no PFP loans,
-			// the first loan of loans sorted by unreservedAmount
+			/**  We should select a loan if we are going to ask for comments for it.
+			* The priority order is:
+			* 1. PFP loan
+			* 2. Partner loan With Team Attribution
+			* 3. Loan with the highest unreservedAmount
+			* loans should be sorted by unreservedAmount.
+			*/
 			const orderedLoans = orderBy(this.loans, ['unreservedAmount'], ['desc']);
 			if (this.hasPfpLoan) {
 				return orderedLoans.find(loan => loan.inPfp);
+			}
+			if (this.hasTeamAttributedPartnerLoan) {
+				return orderedLoans.find(loan => loan?.team?.name);
 			}
 			return orderedLoans[0] || {};
 		},
 		hasPfpLoan() {
 			return this.loans.some(loan => loan.inPfp);
+		},
+		hasTeamAttributedPartnerLoan() {
+			return this.loans.some(loan => loan?.distributionModel === 'fieldPartner' && loan?.team?.name);
 		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);
@@ -279,7 +291,12 @@ export default {
 		const loansResponse = this.receipt?.items?.values ?? [];
 		this.loans = loansResponse
 			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => item.loan);
+			.map(item => {
+				return {
+					...item.loan,
+					team: item.team,
+				};
+			});
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
