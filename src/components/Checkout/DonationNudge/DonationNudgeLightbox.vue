@@ -4,7 +4,7 @@
 		:no-padding-sides="true"
 		:no-padding-bottom="true"
 		:no-padding-top="true"
-		@lightbox-closed="closeZeroUpsell(0)"
+		@lightbox-closed="closeLightbox"
 		:title="title"
 	>
 		<template #header>
@@ -184,6 +184,12 @@ export default {
 		closeZeroUpsell(amount) {
 			this.setDonationAndClose(amount, 'Zero Donation Upsell');
 			this.zeroUpsellVisible = false;
+		},
+		closeLightbox() {
+			if (this.zeroUpsellVisible) {
+				return this.closeZeroUpsell(0);
+			}
+			return this.closeNudgeLightbox();
 		}
 	},
 };
