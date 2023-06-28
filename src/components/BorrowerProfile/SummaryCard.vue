@@ -45,7 +45,7 @@
 					<a
 						v-if="totalComments > 0"
 						href="#bp-comments-jump-link"
-						class="tw-text-black hover:tw-text-white comments-tag-wrapper tw-inline-block"
+						class="tw-inline-block tw-text-black hover:tw-text-black"
 						v-kv-track-event="[
 							'borrower-profile',
 							'click',
@@ -53,7 +53,7 @@
 							'comments-pill'
 						]"
 					>
-						<summary-tag class="comments-tag">
+						<summary-tag class="hover:tw-bg-brand-200 tw-mr-0" background-color="tw-bg-brand-100">
 							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
 							<span class="tw-flex-1">
 								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
@@ -318,25 +318,10 @@ export default {
 	},
 };
 </script>
+<style lang="postcss" scoped>
+.heart-svg path {
 
-<style scoped lang="scss">
-.heart-svg {
-	path {
-		fill: #0012B9;
-	}
+	@apply tw-fill-brand;
 }
 
-.comments-tag-wrapper .comments-tag {
-	background-color: #E6ECF8;
-}
-
-.comments-tag-wrapper:hover .comments-tag {
-	background-color: #276cf6;
-
-	.heart-svg {
-		path {
-			fill: white;
-		}
-	}
-}
 </style>

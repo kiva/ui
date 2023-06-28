@@ -72,3 +72,26 @@ export function getKivaImageUrl({
 
 	return `${base}${w}${h}${s}${fz}/${hash}.${format}`;
 }
+
+/**
+ * Determines if the users avatar is the default legacy placeholder image from the monolith.
+ * The legacy avatars are found exclusively at the following urls:
+ * <domain>/img/<size param>/726677.jpg
+ * <domain>/img/<size param>/315726.jpg
+ * @param {String|Number} filename or hash of avatar image
+ * @returns {Boolean} full url for the image
+ */
+export function isLegacyPlaceholderAvatar(filename) {
+	// if filename is empty or undefined, return false
+	if (!filename) {
+		return false;
+	}
+	// convert filename to string if it is a number
+	let filenameCleaned = filename.toString();
+	// remove file extension from filename if it exists
+	if (filenameCleaned.indexOf('.') > -1) {
+		[filenameCleaned] = filenameCleaned.split('.');
+	}
+	const defaultProfileIds = ['726677', '315726'];
+	return defaultProfileIds.some(id => id === filenameCleaned);
+}

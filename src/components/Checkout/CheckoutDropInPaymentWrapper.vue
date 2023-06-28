@@ -48,7 +48,7 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="promoGuestCheckoutEnabled && isValidEmailFormat && $v.email.error">
+				<p v-if="promoGuestCheckoutEnabled && $v.email.error">
 					Valid campaign email required
 				</p>
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
@@ -365,10 +365,6 @@ export default {
 					}
 					return kivaBraintreeResponse;
 				});
-		},
-		isValidEmailFormat() {
-			const emailRegex = new RegExp(`^[A-Za-z0-9._%+-]@${this.refs.email}`);
-			return emailRegex.test(this.$refs.email);
 		},
 	},
 };

@@ -62,8 +62,8 @@
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
-						title="Field Partners*"
-						noun="Field Partner"
+						title="Lending Partners*"
+						noun="Lending Partner"
 						:not-lent-to="partnersNotLentTo"
 						:lent-to="partnersLentTo"
 						:total="totalPartners"
@@ -75,7 +75,7 @@
 					<hr class="tw-border-tertiary tw-my-4">
 					<p>
 						* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
-						This means, you may end up supporting a loan in a country or through a Field Partner that
+						This means, you may end up supporting a loan in a country or through a Lending Partner that
 						is no longer active and therefore not included in the total number of countries or partners
 						noted on this page. For this reason, it is possible to see discrepancies between the number
 						you've supported and the number to go.

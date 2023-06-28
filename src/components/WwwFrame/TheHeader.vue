@@ -90,12 +90,14 @@
 				<template v-else>
 					<div
 						class="header
-							tw-grid lg:tw-gap-x-4 tw-items-center"
+							tw-grid xl:tw-gap-x-4 tw-items-center"
 						:class="{
-							'tw-gap-x-2.5 ': !lendMenuButtonExp,
+							'tw-gap-x-1 ': isMobile,
+							'tw-gap-x-2.5': !lendMenuButtonExp || !isMobile,
 							'header-lend-menu-button-exp tw-gap-x-1': lendMenuButtonExp,
 							'header-lend-menu-button-exp-visitor': lendMenuButtonExp && isVisitor,
-							'header--mobile-open': searchOpen,
+							'header--mobile-open': searchOpen || isVisitor,
+							'header--tablet-open': openTabletVariant,
 							'mobile-lend-menu-button-exp': searchOpen && lendMenuButtonExp,
 						}"
 					>
@@ -196,11 +198,14 @@
 								tw-py-1.5 md:py-0
 								tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
 								tw-border-t tw-border-tertiary md:tw-border-t-0
+								lg:tw-block
 							"
 							:class="{
 								'tw-hidden': !searchOpen || isVisitor,
+								'md:tw-hidden': hasBasket && isVisitor && !searchOpen || !searchOpen,
 								'md:tw-block': !lendMenuButtonExp || searchOpen || !isVisitor,
-								'lg:tw-block': lendMenuButtonExp,
+								'md:!tw-block': searchOpen && hasBasket && balance || !hasBasket,
+								'lg:tw-block': lendMenuButtonExp || hasBasket,
 							}"
 						>
 							<search-bar ref="search" />
@@ -208,14 +213,36 @@
 
 						<div
 							class="header__right-side
-						tw-flex tw-justify-end lg:tw-gap-4 align-middle"
+						tw-flex tw-justify-end xl:tw-gap-4 align-middle"
 							:class="{
-								'tw-gap-2.5': !lendMenuButtonExp,
+								'tw-gap-1': isMobile,
+								'tw-gap-2.5': !lendMenuButtonExp && !isMobile,
 								'tw-gap-1.5': lendMenuButtonExp,
 							}"
 						>
+							<!-- Mobile Search Toggle -->
+							<button
+								class="header__button header__search-icon tw-inline-flex"
+								:class="{
+									'!tw-hidden': isVisitor,
+									'md:!tw-hidden': !lendMenuButtonExp && !hasBasket,
+									'md:!tw-inline-flex lg:!tw-hidden': isVisitor && hasBasket,
+									'lg:!tw-hidden': lendMenuButtonExp || !isVisitor,
+								}"
+								v-show="!hideSearchInHeader"
+								data-testid="header-mobile-search-toggle"
+								:aria-expanded="searchOpen ? 'true' : 'false'"
+								:aria-pressed="searchOpen ? 'true' : 'false'"
+								aria-controls="top-nav-search-area"
+								@click="toggleMobileSearch"
+								v-kv-track-event="['TopNav','click-search-toggle']"
+							>
+								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
+							</button>
+
 							<!-- Borrow -->
 							<router-link
+								v-show="!isMobile"
 								to="/borrow"
 								data-testid="header-borrow"
 								class="header__borrow"
@@ -229,16 +256,12 @@
 							</router-link>
 
 							<!-- About -->
-							<div class="tw-group">
+							<div class="tw-group" :class="{ 'tw-hidden md:tw-block': !isVisitor }">
 								<router-link
 									:id="aboutMenuId"
 									to="/about"
 									data-testid="header-about"
-									class="header__about"
-									:class="{
-										'tw-hidden': !isVisitor,
-										'header__button': isVisitor
-									}"
+									class="header__about header__button"
 									v-kv-track-event="['TopNav','click-About']"
 								>
 									<span class="tw-flex">
@@ -252,7 +275,6 @@
 								</router-link>
 								<kv-dropdown
 									:controller="aboutMenuId"
-									v-show="isVisitor"
 									class="dropdown-list"
 									data-testid="header-about-dropdown-list"
 								>
@@ -272,6 +294,14 @@
 											>
 												How Kiva works
 											</a>
+										</li>
+										<li>
+											<router-link
+												to="/donate/supportus"
+												v-kv-track-event="['TopNav', 'click-Support-Kiva']"
+											>
+												Support Kiva
+											</router-link>
 										</li>
 										<li>
 											<router-link
@@ -325,27 +355,6 @@
 								</kv-dropdown>
 							</div>
 
-							<!-- Mobile Search Toggle -->
-							<button
-								class="header__button header__search-icon"
-								:class="{
-									'!tw-hidden': isVisitor,
-									'!tw-inline-flex': !isVisitor,
-									'md:!tw-inline-flex': isVisitor,
-									'md:!tw-hidden': !lendMenuButtonExp || !isVisitor,
-									'lg:!tw-hidden': lendMenuButtonExp && isVisitor,
-								}"
-								v-show="!hideSearchInHeader"
-								data-testid="header-mobile-search-toggle"
-								:aria-expanded="searchOpen ? 'true' : 'false'"
-								:aria-pressed="searchOpen ? 'true' : 'false'"
-								aria-controls="top-nav-search-area"
-								@click="toggleMobileSearch"
-								v-kv-track-event="['TopNav','click-search-toggle']"
-							>
-								<kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiMagnify" />
-							</button>
-
 							<!-- Basket -->
 							<router-link
 								to="/basket"
@@ -363,15 +372,26 @@
 							</router-link>
 
 							<!-- Log in Link -->
-							<kv-button
-								variant="secondary"
+							<router-link
 								v-show="isVisitor"
-								class="tw-bg-white tw-whitespace-nowrap"
+								class="header__button tw-bg-white tw-whitespace-nowrap"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
 							>
 								Log in
+							</router-link>
+
+							<!-- Support Kiva -->
+							<kv-button
+								variant="secondary"
+								v-show="!isMobile"
+								class="tw-hidden md:tw-block tw-bg-white tw-whitespace-nowrap"
+								href="/donate/supportus"
+								data-testid="header-support-kiva"
+								v-kv-track-event="['TopNav', 'click-Support-Kiva']"
+							>
+								Support Kiva
 							</kv-button>
 
 							<!-- Logged in Profile -->
@@ -504,6 +524,14 @@
 											Settings
 										</router-link>
 									</li>
+									<li v-show="isMobile">
+										<router-link
+											to="/donate/supportus"
+											v-kv-track-event="['TopNav','click-Support-Kiva']"
+										>
+											Support Kiva
+										</router-link>
+									</li>
 									<hr>
 									<li>
 										<router-link
@@ -525,6 +553,7 @@
 </template>
 
 <script>
+import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
@@ -536,6 +565,7 @@ import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import _throttle from 'lodash/throttle';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -599,6 +629,7 @@ export default {
 			userId: null,
 			hasEverLoggedIn: false,
 			lendMenuButtonExp: false,
+			isMobile: false,
 		};
 	},
 	props: {
@@ -634,11 +665,7 @@ export default {
 			return !!this.trusteeId;
 		},
 		isDefaultProfilePic() {
-			if (!this.profilePicId) {
-				return true;
-			}
-			const defaultProfileIds = [726677, 315726];
-			return defaultProfileIds.some(id => id === this.profilePicId);
+			return isLegacyPlaceholderAvatar(this.profilePicId);
 		},
 		trusteeLoansUrl() {
 			return {
@@ -671,6 +698,9 @@ export default {
 			}
 			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
+		openTabletVariant() {
+			return (this.hasBasket && this.isVisitor) || (this.hasBasket || this.balance);
+		}
 	},
 	apollo: {
 		query: headerQuery,
@@ -748,8 +778,17 @@ export default {
 			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
 			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
+		window.addEventListener('resize', this.determineIfMobile());
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.determineIfMobile());
 	},
 	methods: {
+		determineIfMobile() {
+			return _throttle(() => {
+				this.isMobile = document.documentElement.clientWidth < 735;
+			}, 200);
+		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;
 
@@ -961,6 +1000,13 @@ export default {
 		grid-template-columns: auto auto 1fr auto;
 	}
 
+	.header.header--tablet-open {
+		grid-template-areas:
+			"logo lend right-side"
+			"search search search";
+		grid-template-columns: 1fr auto auto;
+	}
+
 	.header.header-lend-menu-button-exp {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
@@ -980,9 +1026,11 @@ export default {
 }
 
 @screen lg {
-	.header.header-lend-menu-button-exp-visitor {
+	.header.header-lend-menu-button-exp-visitor,
+	.header.header--tablet-open {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
 }
+
 </style>

@@ -34,6 +34,11 @@ describe('TheHeader', () => {
 					PromoBannerSmall: { ...emptyComponent },
 					TheLendMenu: { ...emptyComponent },
 				},
+				data() {
+					return {
+						isVisitor: false
+					};
+				},
 			},
 			vue => {
 				vue.use(kvAnalytics);

@@ -64,13 +64,9 @@
 					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12"
 			>
 				<!-- Kiva K logo -->
-				<!-- eslint-disable max-len -->
-				<svg class="" width="25" height="37" viewBox="0 0 25 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M8.22861 0.875H0.857178V36.3125H8.22861V0.875Z" fill="white" />
-					<path d="M10.1143 23.2751C21.9428 23.2751 24.6857 13.2126 24.6857 11.4626H23.6571C11.8286 11.4626 9.08569 21.5251 9.08569 23.2751H10.1143Z" fill="white" />
-					<path d="M9.08569 24.2376C9.08569 26.0751 11.1428 36.3126 23.8285 36.3126H24.8571C24.8571 34.4751 22.8 24.2376 10.1143 24.2376H9.08569Z" fill="white" />
-				</svg>
-				<!-- eslint-enable max-len -->
+				<img
+					src="@/assets/images/kiva_k.svg"
+				>
 			</div>
 		</div>
 
