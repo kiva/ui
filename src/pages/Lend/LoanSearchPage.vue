@@ -141,13 +141,15 @@ export default {
 		);
 	},
 	mounted() {
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			CATEGORY_REDIRECT_EXP_KEY,
-			'EXP-CORE-1205-May2023'
-		);
+		if (getHasEverLoggedIn(this.apollo)) {
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				CATEGORY_REDIRECT_EXP_KEY,
+				'EXP-CORE-1205-May2023'
+			);
+		}
 	},
 };
 </script>
