@@ -148,8 +148,7 @@
 							<span v-else>
 								Since
 							</span>
-							you’ve been a subscriber, you’ve made
-							<span class="tw-font-medium"> {{ numberOfLoans }}</span> and have changed lives!
+							you’ve been a subscriber, you’ve changed lives!
 						</span>
 					</p>
 					<div class="tw-flex tw-justify-end tw-gap-2">
@@ -199,12 +198,8 @@ export default {
 		},
 		subMonthsCount: {
 			type: Number,
-			default: 0
-		},
-		subsLoans: {
-			type: Number,
-			default: 0
-		},
+			default: 0,
+		}
 	},
 	data() {
 		return {
@@ -215,9 +210,6 @@ export default {
 	computed: {
 		numberOfMonths() {
 			return `${this.subMonthsCount} month${this.subMonthsCount > 1 ? 's' : ''}`;
-		},
-		numberOfLoans() {
-			return `${this.subsLoans} loan${this.subsLoans > 1 ? 's' : ''}`;
 		},
 		lightboxTitle() {
 			if (this.currentStep.includes('expensive')) {

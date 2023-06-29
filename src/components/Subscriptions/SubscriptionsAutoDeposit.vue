@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<kv-settings-card class="column large-8" title="Auto Deposit">
+	<div>
+		<kv-settings-card title="Auto Deposit">
 			<template #content>
 				<router-link
 					v-if="!isAutoDepositSubscriber"

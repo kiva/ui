@@ -159,7 +159,6 @@
 						:show-cancel-lightbox="showCancelLightbox"
 						:subscription-id="subscriptionId"
 						:sub-months-count="subMonthCount"
-						:subs-loans="subscriptionsLoans"
 						@confirm-cancel="onConfirmCancel"
 						@abort-cancel="onAbortCancel"
 						@modify-cancel="onModifyCancel"
@@ -258,7 +257,6 @@ export default {
 			subscriptionId: '',
 			firstName: '',
 			modalStep: '',
-			subscriptionsLoans: 0,
 			subStartTimestamp: null,
 			CHANGE_SUBSCRIPTION,
 			UPDATE_PAYMENT_METHOD,
@@ -283,10 +281,9 @@ export default {
 				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
 				this.subscriptionId = data?.my?.autoDeposit?.id;
 				this.firstName = data?.my?.userAccount?.firstName ?? '';
-				this.subscriptionsLoans = data?.mySubscriptions?.values?.length ?? 0;
 				// eslint-disable-next-line max-len
 				const mgSubs = activeMonthlyGoodSubscription?.history?.values ?? [];
-				this.subStartTimestamp = mgSubs?.[mgSubs.length - 1]?.timestamp ?? null;
+				this.subStartTimestamp = mgSubs?.[0]?.timestamp ?? null;
 			}
 		},
 	},
@@ -455,13 +452,13 @@ export default {
 		trackStep(step) {
 			switch (step) {
 				case CHANGE_SUBSCRIPTION:
-					this.$kvTrackEvent('monthlyGood', 'click-edit-monthly-good', 'Edit');
+					this.$kvTrackEvent('subscription', 'click', 'edit-monthly-good');
 					break;
 				case UPDATE_PAYMENT_METHOD:
-					this.$kvTrackEvent('monthlyGood', 'click-update-payment-method', 'Update');
+					this.$kvTrackEvent('subscription', 'click', 'update-payment-method');
 					break;
 				case CANCEL_SUBSCRIPTION:
-					this.$kvTrackEvent('monthlyGood', 'click-change-subscription-status', 'Change');
+					this.$kvTrackEvent('subscription', 'click', 'change-subscription-status');
 					break;
 				default:
 					break;
