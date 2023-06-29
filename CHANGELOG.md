@@ -1,3 +1,11 @@
+### [2.619.2](https://github.com/kiva/ui/compare/v2.619.1...v2.619.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* only set tip to 0 when zero upsell is visible ([fefaba4](https://github.com/kiva/ui/commit/fefaba4948de2174782864047b6643416cb2a647))
+* set donation tip to 0 when just 1 dollar donation modal is closed ([6f26d80](https://github.com/kiva/ui/commit/6f26d806613725e3a2224f46c8ac5a35ce88d962))
+
 ### [2.619.1](https://github.com/kiva/ui/compare/v2.619.0...v2.619.1) (2023-06-28)
 
 
