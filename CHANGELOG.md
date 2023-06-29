@@ -1,3 +1,10 @@
+### [2.619.1-next.1](https://github.com/kiva/ui/compare/v2.619.0...v2.619.1-next.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* experiment event fired for existing users only ([f534fbb](https://github.com/kiva/ui/commit/f534fbb738c3d612837ae65777cc1377c243a759))
+
 ## [2.619.0](https://github.com/kiva/ui/compare/v2.618.3...v2.619.0) (2023-06-27)
 
 
