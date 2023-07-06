@@ -304,6 +304,7 @@ export default {
 					}
 				})
 				.catch(btSubmitError => {
+					this.$emit('updating-totals', false);
 					console.error(btSubmitError);
 					// Fire specific exception to Sentry/Raven
 					Sentry.withScope(scope => {
