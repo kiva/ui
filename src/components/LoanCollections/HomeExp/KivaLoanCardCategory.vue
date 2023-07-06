@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { getCategoryName } from '@/util/categoryUtils';
+import getCategoryName from '@/util/categoryUtils';
 import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';

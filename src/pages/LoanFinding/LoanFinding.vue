@@ -114,14 +114,6 @@ export default {
 						+ 'Each Kiva loan helps people build a better future for themselves and their families.'
 				},
 			],
-			link: [
-				// TODO: CORE-1281 - remove if experiment is successful
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: `${this.$appConfig.transport}://${this.$appConfig.host}/lend-by-category`
-				},
-			]
 		};
 	},
 	data() {
