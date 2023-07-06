@@ -1,3 +1,10 @@
+## [2.620.0](https://github.com/kiva/ui/compare/v2.619.3...v2.620.0) (2023-07-06)
+
+
+### Features
+
+* ensure loader is hidden on validation error ([f122ce7](https://github.com/kiva/ui/commit/f122ce71001f166c1885a318c47dd7fc33e3a9a2))
+
 ### [2.619.3](https://github.com/kiva/ui/compare/v2.619.2...v2.619.3) (2023-07-06)
 
 
