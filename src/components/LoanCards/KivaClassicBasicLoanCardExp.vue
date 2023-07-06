@@ -397,7 +397,6 @@ export default {
 				{ width: 416, viewSize: 480 },
 				{ width: 374, viewSize: 414 },
 				{ width: 335, viewSize: 375 },
-				{ width: 300 },
 			];
 		}
 	},
