@@ -1,3 +1,10 @@
+### [2.619.3](https://github.com/kiva/ui/compare/v2.619.2...v2.619.3) (2023-07-06)
+
+
+### Bug Fixes
+
+* avoid zooming bug removing smallest image size ([38d22c2](https://github.com/kiva/ui/commit/38d22c2dcd3dc35285f05d76fc8ea7994878fb4c))
+
 ### [2.619.2](https://github.com/kiva/ui/compare/v2.619.1...v2.619.2) (2023-06-29)
 
 
