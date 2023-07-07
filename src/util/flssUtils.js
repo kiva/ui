@@ -15,7 +15,6 @@ export const FLSS_ORIGIN_LEND_BY_CATEGORY = 'web:lend-by-category';
 export const FLSS_ORIGIN_LEND_FILTER = 'web:lend-filter';
 export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
 export const FLSS_ORIGIN_THANKS = 'web:thanks';
-export const FLSS_ORIGIN_LENDING_HOME = 'web:lending-home';
 export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';
 
 /**
