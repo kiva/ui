@@ -15,7 +15,6 @@
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
 				:per-step="2"
-				:enable-loan-card-exp="enableLoanCardExp"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
@@ -30,7 +29,6 @@
 				<quick-filters-section
 					class="tw-mt-3"
 					:class="{ 'tw-order-last' : enableRelendingExp }"
-					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
@@ -47,7 +45,6 @@
 					:loans="secondCategoryLoans"
 					class="tw-py-3"
 					:class="{ 'tw-order-first' : enableRelendingExp }"
-					:enable-loan-card-exp="enableLoanCardExp"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
@@ -56,7 +53,6 @@
 
 			<partner-spotlight-section
 				class="tw-pt-3"
-				:enable-loan-card-exp="enableLoanCardExp"
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
@@ -87,7 +83,6 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
 const EXP_KEY = 'loan_finding_page';
-const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
@@ -127,7 +122,6 @@ export default {
 			],
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
-			enableLoanCardExp: false,
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
 			enableRelendingExp: false,
@@ -139,7 +133,6 @@ export default {
 		preFetch(config, client) {
 			return Promise.all([
 				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
@@ -350,18 +343,6 @@ export default {
 			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
 		})?.fundraisingLoans?.values ?? [];
-
-		const loanCardExpData = getExperimentSettingCached(this.apollo, LOAN_CARD_EXP_KEY);
-		if (loanCardExpData.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				LOAN_CARD_EXP_KEY,
-				'EXP-CORE-1073-Feb2023'
-			);
-			this.enableLoanCardExp = version === 'b' ?? false;
-		}
 
 		this.initializeFiveDollarsNotes();
 

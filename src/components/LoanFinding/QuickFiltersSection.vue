@@ -25,31 +25,17 @@
 			<empty-state v-show="emptyState" />
 
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<template v-for="(loan, index) in loans">
-					<kiva-classic-basic-loan-card-exp
-						v-if="enableLoanCardExp"
-						:key="`new-card-${loan.id}-${index}`"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:use-full-width="true"
-						:show-tags="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:user-balance="userBalance"
-						@add-to-basket="addToBasket"
-					/>
-					<kiva-classic-basic-loan-card
-						v-else
-						:key="index"
-						:item-index="index"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:show-tags="true"
-						:use-full-width="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						class="tw-mr-2"
-						@add-to-basket="addToBasket"
-					/>
-				</template>
+				<kiva-classic-basic-loan-card-exp
+					v-for="(loan, index) in loans"
+					:key="`new-card-${loan.id}-${index}`"
+					:loan-id="loan.id"
+					:show-action-button="true"
+					:use-full-width="true"
+					:show-tags="true"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userBalance"
+					@add-to-basket="addToBasket"
+				/>
 			</div>
 			<div class="tw-w-full tw-my-4">
 				<kv-pagination
@@ -71,7 +57,6 @@ import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSea
 import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
 import EmptyState from './EmptyState';
 
@@ -80,16 +65,11 @@ export default {
 	components: {
 		QuickFilters,
 		KivaClassicBasicLoanCardExp,
-		KivaClassicBasicLoanCard,
 		KvPagination,
 		EmptyState
 	},
 	inject: ['apollo'],
 	props: {
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
