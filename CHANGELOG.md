@@ -1,3 +1,18 @@
+## [2.622.0](https://github.com/kiva/ui/compare/v2.621.0...v2.622.0) (2023-07-07)
+
+
+### Features
+
+* needed changes to replace lbc by lending home page ([d2fdbe7](https://github.com/kiva/ui/commit/d2fdbe7c1599ff548b8cba490ef11053f9d20ca7))
+
+
+### Bug Fixes
+
+* exclusion from static site map added to lending home redirect ([c8ab85b](https://github.com/kiva/ui/commit/c8ab85becda59796ba3481d7aee1e5f4f09279b2))
+* exclusion from static site map removed to lending home redirect ([1b9111a](https://github.com/kiva/ui/commit/1b9111a83ea328fac615ed6e57ad0833a00671d4))
+* flss origin updated ([c09941e](https://github.com/kiva/ui/commit/c09941e14c34a0432a6f6f0022528357cd771182))
+* more files removed from pr comments ([f7f9c24](https://github.com/kiva/ui/commit/f7f9c2429b02b46bf675193f09e940daa528c34f))
+
 ## [2.621.0](https://github.com/kiva/ui/compare/v2.620.0...v2.621.0) (2023-07-06)
 
 
