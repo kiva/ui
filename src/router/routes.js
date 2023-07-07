@@ -316,7 +316,7 @@ module.exports = [
 	},
 	{
 		path: '/lend-by-category',
-		component: () => import('@/pages/Lend/LendByCategoryPage'),
+		component: () => import('@/pages/LoanFinding/LoanFinding'),
 		meta: {
 			unbounceEmailCapture: true,
 		},
@@ -353,10 +353,7 @@ module.exports = [
 	},
 	{
 		path: '/lending-home',
-		component: () => import('@/pages/LoanFinding/LoanFinding'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
+		redirect: '/lend-by-category',
 	},
 	{
 		name: 'borrowerProfile',
