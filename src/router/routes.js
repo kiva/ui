@@ -354,9 +354,6 @@ module.exports = [
 	{
 		path: '/lending-home',
 		redirect: '/lend-by-category',
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
 	},
 	{
 		name: 'borrowerProfile',
