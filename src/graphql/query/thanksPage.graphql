@@ -85,6 +85,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							unreservedAmount @client
 							inPfp
 						}
+						team {
+							id
+							name
+						}
+
 					}
 				}
 			}

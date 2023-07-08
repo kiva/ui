@@ -75,7 +75,7 @@ import LendingCategorySection from '@/components/LoanFinding/LendingCategorySect
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { FLSS_ORIGIN_LENDING_HOME } from '@/util/flssUtils';
+import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
@@ -89,7 +89,7 @@ const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedI
 const EXP_KEY = 'loan_finding_page';
 const LOAN_CARD_EXP_KEY = 'lh_new_loan_card';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
-const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LENDING_HOME };
+const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RELENDING_EXP_KEY = 'lh_relending';
 
@@ -114,14 +114,6 @@ export default {
 						+ 'Each Kiva loan helps people build a better future for themselves and their families.'
 				},
 			],
-			link: [
-				// TODO: CORE-1281 - remove if experiment is successful
-				{
-					vmid: 'canonical',
-					rel: 'canonical',
-					href: `${this.$appConfig.transport}://${this.$appConfig.host}/lend-by-category`
-				},
-			]
 		};
 	},
 	data() {
@@ -223,7 +215,7 @@ export default {
 			const { loans } = await runLoansQuery(
 				this.apollo,
 				{ pageLimit: 12 },
-				FLSS_ORIGIN_LENDING_HOME
+				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 
 			// Ensure unique loans are pushed since recommendations can change quickly
@@ -253,12 +245,12 @@ export default {
 			const expiringSoonData = await runLoansQuery(
 				this.apollo,
 				{ sortBy: 'expiringSoon', pageLimit: 5 },
-				FLSS_ORIGIN_LENDING_HOME
+				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			const almostFundedData = await runLoansQuery(
 				this.apollo,
 				{ sortBy: 'amountLeft', pageLimit: 4 },
-				FLSS_ORIGIN_LENDING_HOME
+				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			return [...expiringSoonData.loans, ...almostFundedData.loans];
 		},
@@ -266,7 +258,7 @@ export default {
 			const { loans } = await runLoansQuery(
 				this.apollo,
 				{ isMatchable: true, pageLimit: 9 },
-				FLSS_ORIGIN_LENDING_HOME
+				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			return loans ?? [];
 		},
@@ -278,7 +270,7 @@ export default {
 			const { loans } = await runLoansQuery(
 				this.apollo,
 				{ ...flssFilterCriteria, pageLimit: 6 },
-				FLSS_ORIGIN_LENDING_HOME
+				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 
 			this.spotlightLoans = loans ?? [];

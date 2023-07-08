@@ -1,3 +1,54 @@
+## [2.622.0](https://github.com/kiva/ui/compare/v2.621.0...v2.622.0) (2023-07-07)
+
+
+### Features
+
+* needed changes to replace lbc by lending home page ([d2fdbe7](https://github.com/kiva/ui/commit/d2fdbe7c1599ff548b8cba490ef11053f9d20ca7))
+
+
+### Bug Fixes
+
+* exclusion from static site map added to lending home redirect ([c8ab85b](https://github.com/kiva/ui/commit/c8ab85becda59796ba3481d7aee1e5f4f09279b2))
+* exclusion from static site map removed to lending home redirect ([1b9111a](https://github.com/kiva/ui/commit/1b9111a83ea328fac615ed6e57ad0833a00671d4))
+* flss origin updated ([c09941e](https://github.com/kiva/ui/commit/c09941e14c34a0432a6f6f0022528357cd771182))
+* more files removed from pr comments ([f7f9c24](https://github.com/kiva/ui/commit/f7f9c2429b02b46bf675193f09e940daa528c34f))
+
+## [2.621.0](https://github.com/kiva/ui/compare/v2.620.0...v2.621.0) (2023-07-06)
+
+
+### Features
+
+* ask for comments for team members ([4b30be5](https://github.com/kiva/ui/commit/4b30be52b9ba28818cb072fb9d8141a05a6ee209))
+
+## [2.620.0](https://github.com/kiva/ui/compare/v2.619.3...v2.620.0) (2023-07-06)
+
+
+### Features
+
+* ensure loader is hidden on validation error ([f122ce7](https://github.com/kiva/ui/commit/f122ce71001f166c1885a318c47dd7fc33e3a9a2))
+
+### [2.619.3](https://github.com/kiva/ui/compare/v2.619.2...v2.619.3) (2023-07-06)
+
+
+### Bug Fixes
+
+* avoid zooming bug removing smallest image size ([38d22c2](https://github.com/kiva/ui/commit/38d22c2dcd3dc35285f05d76fc8ea7994878fb4c))
+
+### [2.619.2](https://github.com/kiva/ui/compare/v2.619.1...v2.619.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* only set tip to 0 when zero upsell is visible ([fefaba4](https://github.com/kiva/ui/commit/fefaba4948de2174782864047b6643416cb2a647))
+* set donation tip to 0 when just 1 dollar donation modal is closed ([6f26d80](https://github.com/kiva/ui/commit/6f26d806613725e3a2224f46c8ac5a35ce88d962))
+
+### [2.619.1](https://github.com/kiva/ui/compare/v2.619.0...v2.619.1) (2023-06-28)
+
+
+### Bug Fixes
+
+* experiment event fired for existing users only ([f5cf4dc](https://github.com/kiva/ui/commit/f5cf4dc8ac734d60c3ecd7375f5c8dfa050bbca0))
+
 ## [2.619.0](https://github.com/kiva/ui/compare/v2.618.3...v2.619.0) (2023-06-27)
 
 
