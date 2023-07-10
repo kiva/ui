@@ -1,3 +1,10 @@
+## [2.623.0](https://github.com/kiva/ui/compare/v2.622.0...v2.623.0) (2023-07-10)
+
+
+### Features
+
+* remove loan card exp from LH ([26eae65](https://github.com/kiva/ui/commit/26eae6577e8fb178698d1933e5d9f2d99433ee69))
+
 ## [2.622.0](https://github.com/kiva/ui/compare/v2.621.0...v2.622.0) (2023-07-07)
 
 
