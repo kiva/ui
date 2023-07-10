@@ -25,7 +25,7 @@
 			<empty-state v-show="emptyState" />
 
 			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<kiva-classic-basic-loan-card-exp
+				<shared-loan-card-controller
 					v-for="(loan, index) in loans"
 					:key="`new-card-${loan.id}-${index}`"
 					:loan-id="loan.id"
@@ -56,7 +56,7 @@ import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters
 import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import SharedLoanCardController from '@/components/LoanCards/SharedLoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import EmptyState from './EmptyState';
 
@@ -64,7 +64,7 @@ export default {
 	name: 'QuickFiltersSection',
 	components: {
 		QuickFilters,
-		KivaClassicBasicLoanCardExp,
+		SharedLoanCardController,
 		KvPagination,
 		EmptyState
 	},

@@ -31,7 +31,7 @@
 				:embla-options="{ loop: false }"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
-					<kiva-classic-basic-loan-card-exp
+					<shared-loan-card-controller
 						:key="loanCardKey(index)"
 						:loan-id="loan.id"
 						:show-action-button="true"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import SharedLoanCardController from '@/components/LoanCards/SharedLoanCardController';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -60,7 +60,7 @@ export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
-		KivaClassicBasicLoanCardExp,
+		SharedLoanCardController,
 		MultipleAtcButton
 	},
 	props: {
