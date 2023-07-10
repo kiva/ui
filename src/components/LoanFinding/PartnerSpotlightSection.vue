@@ -18,7 +18,6 @@
 			class="tw-mt-5"
 			:title="carouselTitle"
 			:loans="loans"
-			:enable-loan-card-exp="enableLoanCardExp"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
 			@add-to-basket="$emit('add-to-basket', $event)"
@@ -48,10 +47,6 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		spotlightData: {
 			type: Object,
 			default: () => {}
