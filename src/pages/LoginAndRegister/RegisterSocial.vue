@@ -65,7 +65,8 @@
 					I want to receive updates about my loans, Kiva news, and promotions in my inbox
 				</kv-base-input>
 				<p v-if="showSsoTerms" class="tw-text-tertiary tw-text-small tw-mb-4">
-					{{ ssoTerms }}
+					Kiva will share your name and email address with the organization you are
+					registering with to let them know you've redeemed your credits.
 				</p>
 				<kv-button
 					class="register-button tw-w-full tw-mb-2"
@@ -131,10 +132,6 @@ export default {
 			}
 			return parts.length ? `To finish creating your account, please ${parts.join(' and ')}.` : '';
 		},
-		ssoTerms() {
-			return 'Kiva will share your name and email address with the organization you are '
-				+ 'registering with to let them know you\'ve redeemed your credits.';
-		}
 	},
 	validations() {
 		const validations = {};
