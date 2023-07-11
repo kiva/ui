@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<kv-classic-loan-card
+			class="tw-h-full"
 			:loan-id="loanId"
 			:loan="loan"
 			:custom-loan-details="customLoanDetails"
@@ -168,6 +169,7 @@ export default {
 		},
 		processQueryResult(result) {
 			if (result.error) {
+				console.log('There was a problem loading the loan');
 				try {
 					Sentry.withScope(scope => {
 						scope.setTag('wizard_stage', 'results');
@@ -272,7 +274,6 @@ export default {
 		this.currentRoute = this.$route;
 	},
 	beforeDestroy() {
-		this.queryObserver.subscription.unsubscribe();
 		this.destroyViewportObserver();
 	},
 	created() {
