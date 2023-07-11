@@ -1,3 +1,10 @@
+### [2.623.1](https://github.com/kiva/ui/compare/v2.623.0...v2.623.1) (2023-07-11)
+
+
+### Bug Fixes
+
+* custom prefetch functions need to call error handlers manually ([933a664](https://github.com/kiva/ui/commit/933a664e2cc082476a9ff22600b7422b8c87141b))
+
 ## [2.623.0](https://github.com/kiva/ui/compare/v2.622.0...v2.623.0) (2023-07-10)
 
 
