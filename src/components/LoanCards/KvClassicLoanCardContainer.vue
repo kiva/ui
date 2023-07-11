@@ -169,7 +169,8 @@ export default {
 		},
 		processQueryResult(result) {
 			if (result.error) {
-				console.log('There was a problem loading the loan');
+				console.error(result.error);
+				this.$showTipMsg('There was a problem loading the loan', 'error');
 				try {
 					Sentry.withScope(scope => {
 						scope.setTag('wizard_stage', 'results');
