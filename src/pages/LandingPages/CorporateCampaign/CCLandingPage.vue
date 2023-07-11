@@ -80,13 +80,13 @@
 				</div>
 			</div>
 
-			<campaign-join-team-form
+			<!-- <campaign-join-team-form
 				v-if="this.showTeamForm"
 				:campaign-name="campaignPartnerName"
 				:team-id="this.teamId"
 				:promo-id="this.promoFundId"
 				@team-process-complete="handleTeamJoinProcess"
-			/>
+			/> -->
 
 			<campaign-verification-form
 				v-if="showVerification"
@@ -164,6 +164,7 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+					:team-id="teamId"
 					:promo-name="campaignPartnerName"
 					:lca-loan-price="lcaLoanPrice"
 					custom-checkout-button-text="Checkout"
@@ -593,7 +594,7 @@ export default {
 			showLoans: false,
 			checkoutVisible: false,
 			showVerification: false,
-			showTeamForm: false,
+			// showTeamForm: false,
 			showThanks: false,
 			sortBy: 'popularity',
 			teamJoinStatus: null,
@@ -1299,22 +1300,23 @@ export default {
 					'ManagedLendingCampaign',
 					'modal-campaign-verification-initialized'
 				);
-			} else if (
-				this.basketLoans.length
-				&& this.isActivelyLoggedIn
-				&& this.teamId
-				&& !this.teamJoinStatus
-			) {
-				// check for team join optionality
-				this.showTeamForm = true;
-				this.checkoutVisible = false;
-				this.$kvTrackEvent(
-					'ManagedLendingCampaign',
-					'modal-team-join-initialized'
-				);
 			} else {
 				this.checkoutVisible = true;
 			}
+			// else if (
+			// 	this.basketLoans.length
+			// 	&& this.isActivelyLoggedIn
+			// 	&& this.teamId
+			// 	&& !this.teamJoinStatus
+			// ) {
+			// 	// check for team join optionality
+			// 	this.showTeamForm = true;
+			// 	this.checkoutVisible = false;
+			// 	this.$kvTrackEvent(
+			// 		'ManagedLendingCampaign',
+			// 		'modal-team-join-initialized'
+			// 	);
+			// }
 		},
 		amountLeftOnLoan(loan) {
 			const loanFundraisingInfo = loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };

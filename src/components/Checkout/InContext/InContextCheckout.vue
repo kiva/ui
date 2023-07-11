@@ -45,102 +45,120 @@
 
 		<hr>
 
-		<order-totals
-			class="in-context-checkout__order-totals"
-			:totals="totals"
-			:promo-fund="derivedPromoFund"
-			@credit-removed="$emit('credit-removed')"
-			@refreshtotals="$emit('refreshtotals')"
-			@updating-totals="setUpdatingTotals"
-		/>
+		<section class="tw-grid tw-grid-cols-12 tw-gap-0 md:tw-gap-2">
+			<team-join-checkbox
+				class="tw-col-span-12 md:tw-col-span-6 tw-py-2 md:tw-pt-4"
+				v-if="teamId && isActivelyLoggedIn"
+				:is-actively-logged-in="isActivelyLoggedIn"
+				:promo-id="promoFundId"
+				:team-id="teamId"
+				@update-team-join-intent="joinTeamIntent = $event"
+			/>
 
-		<div
-			class="in-context-login"
-			:class="{ 'tw-text-right' : !isCorporateCampaign }"
-			v-if="!isActivelyLoggedIn && !promoGuestCheckoutEnabled"
-		>
-			<kv-button
-				v-if="!isActivelyLoggedIn"
-				class="smaller checkout-button"
-				id="Continue-to-legacy-button"
-				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-				:href="registerOrLoginHref"
+			<div
+				class="tw-col-span-12 tw-py-2 md:tw-pt-4"
+				:class="{'md:tw-col-span-6': isActivelyLoggedIn && teamId}"
 			>
-				{{ customCheckoutButtonText }}
-			</kv-button>
-		</div>
-		<div class="in-context-payment-controls">
-			<kv-grid
-				v-if="!isActivelyLoggedIn
-					&& promoGuestCheckoutEnabled
-					&& !continueAsGuest"
-				class="tw-grid-cols-6"
-			>
-				<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
+				<order-totals
+					class="in-context-checkout__order-totals"
+					:totals="totals"
+					:promo-fund="derivedPromoFund"
+					@credit-removed="$emit('credit-removed')"
+					@refreshtotals="$emit('refreshtotals')"
+					@updating-totals="setUpdatingTotals"
+				/>
+
+				<div
+					class="in-context-login"
+					:class="{ 'tw-text-right' : !isCorporateCampaign }"
+					v-if="!isActivelyLoggedIn && !promoGuestCheckoutEnabled"
+				>
 					<kv-button
-						class="smaller checkout-button tw-mb-1"
-						v-if="promoGuestCheckoutEnabled"
-						@click="continueAsGuest = true"
-					>
-						Continue as a guest
-					</kv-button>
-					<kv-button
-						class="smaller checkout-button tw-mb-1"
-						v-if="promoGuestCheckoutEnabled"
-						variant="secondary"
+						v-if="!isActivelyLoggedIn"
+						class="smaller checkout-button"
+						id="Continue-to-legacy-button"
+						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						:href="registerOrLoginHref"
 					>
-						Continue as an existing user
+						{{ customCheckoutButtonText }}
 					</kv-button>
 				</div>
-				<div class="tw-col-start-4 tw-col-end-7">
-					<p class="tw-grid-row">
-						For existing users, we recommend you log in with your work email address.
-					</p>
+
+				<div class="in-context-payment-controls tw-grid">
+					<kv-grid
+						v-if="!isActivelyLoggedIn
+							&& promoGuestCheckoutEnabled
+							&& !continueAsGuest"
+						class="tw-grid-cols-6"
+					>
+						<div class="tw-col-start-4 tw-col-end-7 tw-text-right">
+							<kv-button
+								class="smaller checkout-button tw-mb-1"
+								v-if="promoGuestCheckoutEnabled"
+								@click="continueAsGuest = true"
+							>
+								Continue as a guest
+							</kv-button>
+							<kv-button
+								class="smaller checkout-button tw-mb-1"
+								v-if="promoGuestCheckoutEnabled"
+								variant="secondary"
+								:href="registerOrLoginHref"
+							>
+								Continue as an existing user
+							</kv-button>
+						</div>
+						<div class="tw-col-start-4 tw-col-end-7">
+							<p class="tw-grid-row">
+								For existing users, we recommend you log in with your work email address.
+							</p>
+						</div>
+					</kv-grid>
+
+					<kiva-credit-payment
+						v-if="showKivaCreditButton
+							&& !continueAsGuest
+							&& isActivelyLoggedIn"
+						@complete-transaction="completeTransaction"
+						class="checkout-button tw-justify-self-end"
+						id="kiva-credit-payment-button"
+						:handle-team-join="processTeamJoin"
+						@refreshtotals="$emit('refresh-totals')"
+						@updating-totals="setUpdatingTotals"
+						@checkout-failure="handleCheckoutFailure"
+					/>
+					<kiva-credit-guest-payment
+						v-if="showKivaCreditButton
+							&& promoGuestCheckoutEnabled
+							&& continueAsGuest"
+						:is-guest-checkout="true"
+						@complete-transaction="completeTransaction"
+						class="checkout-button"
+						id="kiva-credit-payment-button"
+						:promo-fund-id="String(promoFundId)"
+						:managed-account-id="managedAccountId"
+						:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
+						:promo-name="promoName"
+						@refreshtotals="$emit('refresh-totals')"
+						@updating-totals="setUpdatingTotals"
+						@checkout-failure="handleCheckoutFailure"
+					/>
+
+					<checkout-drop-in-payment-wrapper
+						v-if="!showKivaCreditButton && (continueAsGuest || isActivelyLoggedIn)"
+						:amount="creditNeeded"
+						@refreshtotals="$emit('refreshtotals')"
+						:is-guest-checkout="promoGuestCheckoutEnabled"
+						:promo-fund-id="String(promoFundId)"
+						:managed-account-id="managedAccountId"
+						:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
+						:promo-name="promoName"
+						@updating-totals="setUpdatingTotals"
+						@complete-transaction="completeTransaction"
+					/>
 				</div>
-			</kv-grid>
-
-			<kiva-credit-payment
-				v-if="showKivaCreditButton
-					&& !promoGuestCheckoutEnabled
-					&& isActivelyLoggedIn"
-				@complete-transaction="completeTransaction"
-				class="checkout-button"
-				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
-				@updating-totals="setUpdatingTotals"
-				@checkout-failure="handleCheckoutFailure"
-			/>
-			<kiva-credit-guest-payment
-				v-if="showKivaCreditButton
-					&& promoGuestCheckoutEnabled
-					&& continueAsGuest"
-				:is-guest-checkout="true"
-				@complete-transaction="completeTransaction"
-				class="checkout-button"
-				id="kiva-credit-payment-button"
-				:promo-fund-id="String(promoFundId)"
-				:managed-account-id="managedAccountId"
-				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
-				:promo-name="promoName"
-				@refreshtotals="$emit('refresh-totals')"
-				@updating-totals="setUpdatingTotals"
-				@checkout-failure="handleCheckoutFailure"
-			/>
-
-			<checkout-drop-in-payment-wrapper
-				v-if="!showKivaCreditButton && (continueAsGuest || isActivelyLoggedIn)"
-				:amount="creditNeeded"
-				@refreshtotals="$emit('refreshtotals')"
-				:is-guest-checkout="promoGuestCheckoutEnabled"
-				:promo-fund-id="String(promoFundId)"
-				:managed-account-id="managedAccountId"
-				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
-				:promo-name="promoName"
-				@updating-totals="setUpdatingTotals"
-				@complete-transaction="completeTransaction"
-			/>
-		</div>
+			</div>
+		</section>
 
 		<kv-loading-overlay
 			v-if="updatingTotals"
@@ -153,6 +171,7 @@
 <script>
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { joinTeamAndReserveLoans } from '@/util/teamUtils';
 import { isCCPage } from '@/util/urlUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
@@ -161,6 +180,7 @@ import KivaCreditGuestPayment from '@/components/Checkout/KivaCreditGuestPayment
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import OrderTotals from '@/components/Checkout/OrderTotals';
+import TeamJoinCheckbox from '@/components/Checkout/InContext/TeamJoinCheckbox';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -176,6 +196,7 @@ export default {
 		KivaCreditGuestPayment,
 		KvLoadingOverlay,
 		OrderTotals,
+		TeamJoinCheckbox,
 		KvIcon,
 		KvGrid
 	},
@@ -223,6 +244,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		promoId: {
+			type: Number,
+			default: null
+		},
+		teamId: {
+			type: Number,
+			default: null
+		},
 		promoName: {
 			type: String,
 			default: () => {},
@@ -250,9 +279,17 @@ export default {
 	},
 	data() {
 		return {
-			updatingTotals: false,
+			isMember: false,
+			loading: false,
+			joinStatus: null,
+			joinTeamIntent: true,
+			showError: false,
+			showForm: true,
+			showSuccess: false,
+			isChecked: false,
 			continueAsGuest: false,
-			continueAsExistingUser: false
+			continueAsExistingUser: false,
+			updatingTotals: false,
 		};
 	},
 	computed: {
@@ -295,6 +332,12 @@ export default {
 				&& this.lcaLoanPrice > 0;
 		}
 	},
+	// mounted() {
+	// 	this.loading = true;
+	// 	if (this.teamId) {
+	// 		this.fetchTeamData();
+	// 	}
+	// },
 	methods: {
 		completeTransaction(transactionId) {
 			// compile transaction data
@@ -332,7 +375,15 @@ export default {
 		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
-		}
+		},
+		async processTeamJoin() {
+			if (!this.joinTeamIntent) {
+				return false;
+			}
+			console.log('proceeding to processTeamJoin');
+			console.log(this.apollo, this.teamId, this.promoFund?.id, this.loans?.map(loan => loan.id));
+			return joinTeamAndReserveLoans(this.apollo, this.teamId, this.promoFund?.id, this.loans?.filter(id => id));
+		},
 	}
 };
 </script>

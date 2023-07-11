@@ -13,6 +13,7 @@
 
 <script>
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import logFormatter from '@/util/logFormatter';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -24,28 +25,40 @@ export default {
 	mixins: [
 		checkoutUtils
 	],
+	props: {
+		handleTeamJoin: {
+			type: Function,
+			default: async () => {
+				return { success: true, message: 'handleTeamJoin not passed' };
+			}
+		},
+	},
 	methods: {
-		validateCreditBasket() {
+		async validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.$emit('updating-totals', true);
-			this.validateBasket()
-				.then(validationStatus => {
-					if (validationStatus === true) {
-						// succesful validation
-						this.checkoutCreditBasket();
-					} else {
-						// validation failed
-						this.$emit('updating-totals', false);
-						this.showCheckoutError(validationStatus);
-						this.$emit('refreshtotals');
-					}
-				}).catch(errorResponse => {
-					this.$emit('updating-totals', false);
-					console.error(errorResponse);
-				});
+
+			const validationStatus = await this.validateBasket();
+			if (!validationStatus === true) {
+				// validation failed
+				this.$emit('updating-totals', false);
+				this.showCheckoutError(validationStatus);
+				this.$emit('refreshtotals');
+				Promise.reject(validationStatus);
+			}
+
+			const handleTeamJoinResult = await this.handleTeamJoin;
+			if (handleTeamJoinResult.success === false) {
+				this.$emit('updating-totals', false);
+				this.showCheckoutError(handleTeamJoinResult.message);
+				this.$emit('refreshtotals');
+				Promise.reject(handleTeamJoinResult);
+			}
+
+			await this.checkoutCreditBasket();
 		},
 		checkoutCreditBasket() {
-			this.checkoutBasket()
+			return this.checkoutBasket()
 				.then(transactionResult => {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation
@@ -59,9 +72,11 @@ export default {
 						this.showCheckoutError(errorResult);
 						this.$emit('checkout-failure', errorResult);
 					}
+					Promise.resolve(transactionResult);
 				}).catch(errorResponse => {
 					this.$emit('updating-totals', false);
-					console.error(errorResponse);
+					logFormatter('KivaCreditPayment Checkout Failed', 'error', errorResponse);
+					Promise.reject(errorResponse);
 				});
 		},
 	}
