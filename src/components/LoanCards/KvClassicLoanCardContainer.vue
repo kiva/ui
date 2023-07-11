@@ -238,7 +238,7 @@ export default {
 			// Set bookmark optimistically
 			this.isBookmarked = !this.isBookmarked;
 
-			bookmarkLoan(this.loanId, this.isBookmarked)
+			bookmarkLoan(this.apollo, this.loanId, this.isBookmarked)
 				.then(() => {
 					this.$kvTrackEvent(
 						'Lending',
