@@ -36,7 +36,6 @@ import bookmarkLoan from '@/util/bookmarkUtil';
 import logFormatter from '@/util/logFormatter';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsExtended.graphql';
 import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
 
@@ -67,12 +66,13 @@ const loanQuery = gql`
 		id
 		userAccount {
 			id
+			balance
 		}
 	}
 }`;
 
 export default {
-	name: 'SharedLoanCardController',
+	name: 'KvClassicLoanCardContainer',
 	props: {
 		loanId: {
 			type: Number,
@@ -106,17 +106,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		userBalance: {
-			type: String,
-			default: undefined
-		},
 		showViewLoan: {
 			type: Boolean,
 			default: false
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [percentRaisedMixin, timeLeftMixin],
+	mixins: [percentRaisedMixin],
 	components: {
 		KvClassicLoanCard
 	},
@@ -124,7 +120,6 @@ export default {
 		return {
 			loan: null,
 			basketItems: null,
-			isLoading: true,
 			queryObserver: null,
 			viewportObserver: null,
 			isAdding: false,
@@ -132,6 +127,7 @@ export default {
 			isVisitor: true,
 			isBookmarked: false,
 			currentRoute: {},
+			userBalance: '',
 			PHOTO_PATH,
 		};
 	},
@@ -172,8 +168,6 @@ export default {
 		},
 		processQueryResult(result) {
 			if (result.error) {
-				console.error(result.error);
-				this.$showTipMsg('There was a problem loading your loan recommendations', 'error');
 				try {
 					Sentry.withScope(scope => {
 						scope.setTag('wizard_stage', 'results');
@@ -190,8 +184,8 @@ export default {
 			// Some pages initially show loading cards without loan IDs
 			if (result.data?.lend?.loan) {
 				this.loan = result.data.lend.loan;
-
-				this.isLoading = false;
+				this.isBookmarked = result.data.lend.loan?.userProperties?.favorited ?? false;
+				this.userBalance = result.data?.my?.userAccount?.balance;
 			}
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
@@ -278,6 +272,7 @@ export default {
 		this.currentRoute = this.$route;
 	},
 	beforeDestroy() {
+		this.queryObserver.subscription.unsubscribe();
 		this.destroyViewportObserver();
 	},
 	created() {
@@ -289,7 +284,6 @@ export default {
 		});
 		if (cachedLoan) {
 			this.loan = cachedLoan;
-			this.isLoading = false;
 		}
 	},
 	watch: {
