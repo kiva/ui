@@ -1,3 +1,20 @@
+## [2.625.0](https://github.com/kiva/ui/compare/v2.624.1...v2.625.0) (2023-07-12)
+
+
+### Features
+
+* kv components packaged updated ([15edad5](https://github.com/kiva/ui/commit/15edad5ca99f18290be0e6b9db8abbed29f81630))
+* new shared loan controller component created and added to lh components ([f5ba399](https://github.com/kiva/ui/commit/f5ba3997c863c4f31a69944f15bdef5e10d26a5f))
+
+
+### Bug Fixes
+
+* bookmark function error fixed ([c19abd0](https://github.com/kiva/ui/commit/c19abd0e166b66f4164b61320040c4f77f614268))
+* email campaigns now working with new loan card container ([c34f5cf](https://github.com/kiva/ui/commit/c34f5cf4cea091ede0db501a1213efb5d25607d7))
+* fixes from pr comments ([2559392](https://github.com/kiva/ui/commit/25593925f87498e1327eb641fe913c33da767931))
+* pr fixes ([dfc2856](https://github.com/kiva/ui/commit/dfc28567df44751513c68adbeac136fe5400915d))
+* tip message updated ([25a3034](https://github.com/kiva/ui/commit/25a303462b1276695603be696ff0ac09839c12b5))
+
 ### [2.624.1](https://github.com/kiva/ui/compare/v2.624.0...v2.624.1) (2023-07-12)
 
 
