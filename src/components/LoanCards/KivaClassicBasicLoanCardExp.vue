@@ -179,7 +179,6 @@ import { readLoanFragment, watchLoanData } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import LoanUse from '@/components/LoanCards/LoanUse';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
@@ -267,7 +266,7 @@ export default {
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [percentRaisedMixin, timeLeftMixin],
+	mixins: [percentRaisedMixin],
 	components: {
 		BorrowerImage,
 		KvLoadingPlaceholder,

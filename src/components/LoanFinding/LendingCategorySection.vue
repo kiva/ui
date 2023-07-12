@@ -31,19 +31,17 @@
 				:embla-options="{ loop: false }"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
-					<kiva-classic-basic-loan-card-exp
+					<kv-classic-loan-card-container
 						:key="loanCardKey(index)"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:show-tags="true"
-						:use-full-width="true"
-						:large-card="isLargeCard"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						class="tw-h-full"
 						:ref="loanCardKey(index)"
-						:enable-relending-exp="enableRelendingExp"
+						:loan-id="loan.id"
+						:use-full-width="true"
+						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:large-card="isLargeCard"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
+						class="tw-h-full"
 					/>
 				</template>
 			</kv-carousel>
@@ -52,7 +50,7 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -60,7 +58,7 @@ export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
-		KivaClassicBasicLoanCardExp,
+		KvClassicLoanCardContainer,
 		MultipleAtcButton
 	},
 	props: {
