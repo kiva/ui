@@ -1,3 +1,10 @@
+### [2.624.1](https://github.com/kiva/ui/compare/v2.624.0...v2.624.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* minor issues with comments on bp ([d714558](https://github.com/kiva/ui/commit/d71455896ceb58ae450ef3d691d286c557e06995))
+
 ## [2.624.0](https://github.com/kiva/ui/compare/v2.623.1...v2.624.0) (2023-07-11)
 
 
