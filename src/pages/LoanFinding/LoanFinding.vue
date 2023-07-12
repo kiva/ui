@@ -30,6 +30,7 @@
 					class="tw-mt-3"
 					:class="{ 'tw-order-last' : enableRelendingExp }"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
 				/>

@@ -18,7 +18,7 @@
 			:photo-path="PHOTO_PATH"
 			:show-view-loan="showViewLoan"
 			:external-links="true"
-			:route="currentRoute"
+			:route="$route"
 			:user-balance="userBalance"
 			:get-cookie="getCookie"
 			:set-cookie="setCookie"
@@ -67,7 +67,6 @@ const loanQuery = gql`
 		id
 		userAccount {
 			id
-			balance
 		}
 	}
 }`;
@@ -111,6 +110,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		userBalance: {
+			type: String,
+			default: undefined
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
@@ -127,8 +130,6 @@ export default {
 			loanCallouts: undefined,
 			isVisitor: true,
 			isBookmarked: false,
-			currentRoute: {},
-			userBalance: '',
 			PHOTO_PATH,
 		};
 	},
@@ -140,14 +141,14 @@ export default {
 				callback: entries => {
 					entries.forEach(entry => {
 						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is in the viewport, so load the data.
+							// This element is in the viewport, so load the data
 							this.loadData();
 						}
 					});
 				}
 			});
 			if (!this.viewportObserver) {
-				// Observer was not created, so call loadData right away as a fallback.
+				// Observer was not created, so call loadData right away as a fallback
 				this.loadData();
 			}
 		},
@@ -188,7 +189,6 @@ export default {
 			if (result.data?.lend?.loan) {
 				this.loan = result.data.lend.loan;
 				this.isBookmarked = result.data.lend.loan?.userProperties?.favorited ?? false;
-				this.userBalance = result.data?.my?.userAccount?.balance;
 			}
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
@@ -270,9 +270,6 @@ export default {
 			// Don't have a loan yet, so setup viewport observer to prepare async loading
 			this.createViewportObserver();
 		}
-
-		// get route object
-		this.currentRoute = this.$route;
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
@@ -289,7 +286,6 @@ export default {
 		}
 	},
 	watch: {
-		// When loan id changes, update watch query variables
 		loanId(loanId) {
 			if (this.queryObserver) {
 				this.queryObserver.setVariables({

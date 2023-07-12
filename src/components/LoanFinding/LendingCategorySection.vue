@@ -33,16 +33,15 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kv-classic-loan-card-container
 						:key="loanCardKey(index)"
-						:loan-id="loan.id"
-						:show-action-button="true"
-						:show-tags="true"
-						:use-full-width="true"
-						:large-card="isLargeCard"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						class="tw-h-full"
 						:ref="loanCardKey(index)"
-						:enable-relending-exp="enableRelendingExp"
+						:loan-id="loan.id"
+						:use-full-width="true"
+						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:large-card="isLargeCard"
+						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
+						class="tw-h-full"
 					/>
 				</template>
 			</kv-carousel>
