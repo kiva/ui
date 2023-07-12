@@ -190,7 +190,7 @@ export default {
 		askForComments() {
 			// comments ask should be displayed for logged in users
 			// checking out with a PFP loan or a loan that is attributed to a team.
-			return (this.hasPfpLoan || this.hasTeamAttributedPartnerLoan) && !this.isGuest;
+			return this.hasPfpLoan || this.hasTeamAttributedPartnerLoan;
 		},
 		selectedLoan() {
 			/**  We should select a loan if we are going to ask for comments for it.

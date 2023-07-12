@@ -147,6 +147,7 @@ import { gql } from '@apollo/client';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import guestComment from '@/plugins/guest-comment-mixin';
 import {
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
@@ -419,7 +420,7 @@ export default {
 			state: ''
 		};
 	},
-	mixins: [fiveDollarsTest],
+	mixins: [fiveDollarsTest, guestComment],
 	apollo: {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
