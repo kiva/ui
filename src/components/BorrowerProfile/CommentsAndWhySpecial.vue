@@ -45,7 +45,7 @@
 						</div>
 						<!-- comment -->
 						<h2>
-							<em>"{{ comment.body }}"</em>
+							<em class="tw-break-words">"{{ comment.body }}"</em>
 						</h2>
 						<!-- author -->
 						<div class="tw-float-right tw-flex tw-align-center tw-mt-1.5">
@@ -301,7 +301,7 @@ export default {
 										teams
 										lender {
 											id
-											teams {
+											teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
 												values {
 													id
 													name
