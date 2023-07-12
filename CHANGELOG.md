@@ -1,3 +1,24 @@
+### [2.624.1](https://github.com/kiva/ui/compare/v2.624.0...v2.624.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* minor issues with comments on bp ([d714558](https://github.com/kiva/ui/commit/d71455896ceb58ae450ef3d691d286c557e06995))
+
+## [2.624.0](https://github.com/kiva/ui/compare/v2.623.1...v2.624.0) (2023-07-11)
+
+
+### Features
+
+* support paragraphs in business description and purpose ([e0c2ec8](https://github.com/kiva/ui/commit/e0c2ec84f56246495efad315f90b6538ed2ce57a))
+
+### [2.623.1](https://github.com/kiva/ui/compare/v2.623.0...v2.623.1) (2023-07-11)
+
+
+### Bug Fixes
+
+* custom prefetch functions need to call error handlers manually ([933a664](https://github.com/kiva/ui/commit/933a664e2cc082476a9ff22600b7422b8c87141b))
+
 ## [2.623.0](https://github.com/kiva/ui/compare/v2.622.0...v2.623.0) (2023-07-10)
 
 

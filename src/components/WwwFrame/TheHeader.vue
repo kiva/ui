@@ -553,6 +553,7 @@
 </template>
 
 <script>
+import { handleApolloErrors } from '@/util/apolloPreFetch';
 import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
@@ -704,10 +705,16 @@ export default {
 	},
 	apollo: {
 		query: headerQuery,
-		preFetch(config, client, { cookieStore }) {
+		preFetch(config, client, args) {
 			return client.query({
 				query: headerQuery,
-			}).then(({ data }) => {
+			}).then(({ data, errors }) => {
+				if (errors) {
+					// Handle Apollo errors with custom code
+					return handleApolloErrors(config.errorHandlers, errors, args);
+				}
+
+				const { cookieStore } = args;
 				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
 				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
 
