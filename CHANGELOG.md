@@ -1,3 +1,10 @@
+## [2.626.0](https://github.com/kiva/ui/compare/v2.625.0...v2.626.0) (2023-07-13)
+
+
+### Features
+
+* requests comments from guests on thank you page ([a93b8db](https://github.com/kiva/ui/commit/a93b8db82022ee7541eedaeba9ca1987b6c45e24))
+
 ## [2.625.0](https://github.com/kiva/ui/compare/v2.624.1...v2.625.0) (2023-07-12)
 
 
