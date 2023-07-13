@@ -72,6 +72,7 @@
 			v-if="askForComments"
 			:loan-name="loan.name"
 			:loan-id="loan.id"
+			:is-guest="isGuest"
 		/>
 		<!-- Share Section -->
 		<kv-page-container>

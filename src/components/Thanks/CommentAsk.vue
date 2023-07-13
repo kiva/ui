@@ -3,9 +3,13 @@
 		<div class="tw-bg-secondary" v-if="showComments">
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12">
-					<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4">
+					<!-- comment form -->
+					<div
+						class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4"
+						v-if="!showAccountCreation"
+					>
 						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
-							Tell others why you love this loan to {{ loanName }}.
+							Tell others why you love this loan to {{ loanName }}
 						</h1>
 						<p class="tw-m-0 tw-text-subhead">
 							Your comments can really help {{ loanName }} fully fund their loan.
@@ -94,6 +98,23 @@
 							</div>
 						</kv-lightbox>
 					</div>
+					<!-- guest account creation -->
+					<div
+						class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4"
+						v-if="showAccountCreation"
+					>
+						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
+							Create your account
+						</h1>
+						<p class="tw-m-0 tw-text-subhead">
+							<!-- eslint-disable-next-line max-len -->
+							Only registered users can leave comments. Finish your account creation to leave your comment on this loan.
+						</p>
+
+						<div class="tw-mt-3 tw-max-w-sm tw-mx-auto">
+							<guest-account-creation />
+						</div>
+					</div>
 				</kv-grid>
 			</kv-page-container>
 		</div>
@@ -104,6 +125,8 @@
 import { gql } from '@apollo/client';
 import logFormatter from '@/util/logFormatter';
 import { mdiPencilOutline } from '@mdi/js';
+import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '@/plugins/guest-comment-mixin';
+import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -114,11 +137,12 @@ export default {
 	name: 'CommentAsk',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		GuestAccountCreation,
 		KvMaterialIcon,
 		KvButton,
 		KvLightbox,
 		KvGrid,
-		KvPageContainer,
+		KvPageContainer
 	},
 	props: {
 		loanName: {
@@ -129,6 +153,10 @@ export default {
 			type: Number,
 			default: null
 		},
+		isGuest: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -137,6 +165,7 @@ export default {
 			loading: false,
 			showLightbox: false,
 			userComment: '',
+			showAccountCreation: false,
 		};
 	},
 	computed: {
@@ -151,6 +180,21 @@ export default {
 	},
 	methods: {
 		submitComment() {
+			if (!this.isGuest) {
+				this.submitCommentAsUser();
+			} else {
+				this.submitCommentAsGuest();
+			}
+		},
+		submitCommentAsGuest() {
+			// save comment to cookie
+			this.cookieStore.set(GUEST_COMMENT_COMMENT, this.userComment, { path: '/' });
+			this.cookieStore.set(GUEST_COMMENT_LOANID, this.loanId, { path: '/' });
+
+			// show create account form
+			this.showAccountCreation = true;
+		},
+		submitCommentAsUser() {
 			this.loading = true;
 			this.apollo.mutate({
 				mutation: gql`mutation commentOnLoan($id: Int!, $body: String) {
