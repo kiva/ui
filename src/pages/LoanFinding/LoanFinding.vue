@@ -87,6 +87,7 @@ const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RELENDING_EXP_KEY = 'lh_relending';
+const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
 
 export default {
 	name: 'LoanFinding',
@@ -126,6 +127,7 @@ export default {
 			spotlightViewportObserver: null,
 			enableRelendingExp: false,
 			userBalance: undefined,
+			enableRecommendedReplacementExp: false,
 		};
 	},
 	apollo: {
@@ -137,6 +139,7 @@ export default {
 				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: RELENDING_EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY } }),
 			]).then(() => {
 				const userInfoPromise = client.query({
 					query: userInfoQuery,
@@ -427,6 +430,16 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+
+		// Recommended row replacement test
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			RECOMMENDED_REPLACEMENT_EXP_KEY,
+			'EXP-CORE-1341-May2023'
+		);
+		this.enableRecommendedReplacementExp = version === 'b';
 	},
 	beforeDestroy() {
 		this.destroySpotlightViewportObserver();
