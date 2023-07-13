@@ -1,3 +1,10 @@
+## [2.627.0](https://github.com/kiva/ui/compare/v2.626.0...v2.627.0) (2023-07-13)
+
+
+### Features
+
+* ab setup added to lending home page for recommended row replacement test ([7ce2342](https://github.com/kiva/ui/commit/7ce2342feae02d2009a55bcf1477bb458eae2f69))
+
 ## [2.626.0](https://github.com/kiva/ui/compare/v2.625.0...v2.626.0) (2023-07-13)
 
 
