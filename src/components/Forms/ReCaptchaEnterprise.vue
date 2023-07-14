@@ -1,7 +1,7 @@
 <template>
 	<div v-show="required">
 		<div
-			class="tw-flex tw-pb-3 tw-justify-center"
+			class="tw-flex tw-justify-center"
 			ref="captcha"
 			data-testid="captcha-container"
 		></div>
@@ -10,14 +10,6 @@
 </template>
 
 <script>
-if (typeof window !== 'undefined') {
-	window.recaptchaLoaded = new Promise(resolve => {
-		window.recaptchaOnloadCallback = () => {
-			resolve(true);
-		};
-	});
-}
-
 export default {
 	name: 'ReCaptchaEnterprise',
 	props: {

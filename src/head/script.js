@@ -91,6 +91,12 @@ export default (config, globalOneTrustEvent) => {
 		}());
 		/* eslint-enable */
 	}
+	// Google Recaptcha loaded indicator
+	window.recaptchaLoaded = new Promise(resolve => {
+		window.recaptchaOnloadCallback = () => {
+			resolve(true);
+		};
+	});
 
 	// One Trust Cookie Management
 	if (config.oneTrust && config.oneTrust.enable) {

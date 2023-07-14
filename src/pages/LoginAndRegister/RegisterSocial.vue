@@ -64,16 +64,18 @@
 				>
 					I want to receive updates about my loans, Kiva news, and promotions in my inbox
 				</kv-base-input>
-				<re-captcha-enterprise
-					:requried="needsCaptcha"
-					@update="captcha = $event"
-				/>
-				<p
-					class="tw-text-danger tw-text-small tw-font-medium tw-mt-1 tw-mb-2"
-					v-if="$v.captcha.$error"
-				>
-					Please complete the captcha.
-				</p>
+				<div class="tw-mb-4">
+					<re-captcha-enterprise
+						:required="needsCaptcha"
+						@update="captcha = $event"
+					/>
+					<p
+						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
+						v-if="needsCaptcha && $v.captcha.$error"
+					>
+						Please complete the captcha.
+					</p>
+				</div>
 				<p v-if="showSsoTerms" class="tw-text-tertiary tw-text-small tw-mb-4">
 					Kiva will share your name and email address with the organization you are
 					registering with to let them know you've redeemed your credits.
