@@ -9,8 +9,21 @@
 				</h3>
 			</div>
 
+			<!-- Featured Loan: Recommended row replacement experiment -->
+			<loan-finding-featured-loan
+				v-if="enableRecommendedReplacementExp"
+				class="tw-mb-2 tw-mt-6"
+				:title="featuredLoanTitle"
+				:subtitle="featuredLoanSubtitle"
+				:loan="featuredLoan"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, 'recommended')"
+			/>
+
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
+				v-else
 				:title="firstRowTitle"
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
@@ -67,6 +80,7 @@
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LoanFindingFeaturedLoan from '@/components/LoanFinding/LoanFindingFeaturedLoan';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
@@ -85,6 +99,7 @@ const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedI
 const EXP_KEY = 'loan_finding_page';
 const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
+const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RELENDING_EXP_KEY = 'lh_relending';
 const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
@@ -97,6 +112,7 @@ export default {
 		LendingCategorySection,
 		QuickFiltersSection,
 		PartnerSpotlightSection,
+		LoanFindingFeaturedLoan,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	metaInfo() {
@@ -128,6 +144,7 @@ export default {
 			enableRelendingExp: false,
 			userBalance: undefined,
 			enableRecommendedReplacementExp: false,
+			featuredLoan: {},
 		};
 	},
 	apollo: {
@@ -150,9 +167,15 @@ export default {
 					variables: prefetchedRecommendedLoansVariables
 				});
 
+				const endingSoonLoanPromise = client.query({
+					query: flssLoansQueryExtended,
+					variables: prefetchedEndingSoonLoanVariables
+				});
+
 				return Promise.all([
 					userInfoPromise,
 					recommendedLoansPromise,
+					endingSoonLoanPromise,
 				]);
 			});
 		},
@@ -201,6 +224,12 @@ export default {
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
 				: 'Support a featured borrower with a microloan.';
+		},
+		featuredLoanTitle() {
+			return 'A loan ending soon';
+		},
+		featuredLoanSubtitle() {
+			return 'Make a difference for these borrowers who only have a short time remaining.'; // eslint-disable-line max-len
 		},
 		showWelcomeMsg() {
 			return this.isLoggedIn && !this.enableRelendingExp;
@@ -363,6 +392,16 @@ export default {
 			this.enableRelendingExp = version === 'b';
 		}
 
+		// Recommended row replacement test
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			RECOMMENDED_REPLACEMENT_EXP_KEY,
+			'EXP-CORE-1341-May2023'
+		);
+		this.enableRecommendedReplacementExp = version === 'b';
+
 		const recommendedArray = [
 			...cachedRecommendedLoans,
 			{ id: 0 }, { id: 0 },
@@ -386,6 +425,13 @@ export default {
 		/* eslint-enable max-len */
 
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
+
+		const cachedEndingSoonLoan = this.apollo.readQuery({
+			query: flssLoansQueryExtended,
+			variables: prefetchedEndingSoonLoanVariables
+		})?.fundraisingLoans?.values[0] ?? { id: 0 };
+
+		this.featuredLoan = cachedEndingSoonLoan;
 	},
 	mounted() {
 		if (!this.enableRelendingExp) {
@@ -430,16 +476,6 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-
-		// Recommended row replacement test
-		const { version } = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			RECOMMENDED_REPLACEMENT_EXP_KEY,
-			'EXP-CORE-1341-May2023'
-		);
-		this.enableRecommendedReplacementExp = version === 'b';
 	},
 	beforeDestroy() {
 		this.destroySpotlightViewportObserver();
