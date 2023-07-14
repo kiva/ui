@@ -10,6 +10,7 @@
 			<form
 				id="registerSocialTermsForm"
 				class="promptForm tw-text-left"
+				method="post"
 				:action="`https://${$appConfig.auth0.domain}/continue?state=${$route.query.state}`"
 				@submit="postRegisterSocialForm"
 			>
