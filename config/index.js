@@ -15,6 +15,7 @@ module.exports = {
 		googleTagmanagerId: 'GTM-PX6FDG',
 		enableGA: true,
 		gaId: 'UA-175897-4',
+		grecaptchaSitekey: '6LfAq7UiAAAAAOaRj9Wvv2uDN0WEwlfbEPntrVLD',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
 		enableHotjar: true,
