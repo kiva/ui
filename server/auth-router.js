@@ -57,12 +57,22 @@ module.exports = function authRouter(config = {}) {
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
 		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
-		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
-			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
-			res.redirect(loginRedirectUrl);
-		} else {
-			next();
+		if (req.query.error_description) {
+			if (req.query.error_description.indexOf('OIDC-conformant') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+				return res.redirect(loginRedirectUrl);
+			}
+			if (req.query.error_description.indexOf('Registration captcha not valid') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[config.auth0.serverClientID];
+				const loginHint = encodeURIComponent(
+					`login|${JSON.stringify({
+						msg: 'invalid-reg-captcha',
+					})}`
+				);
+				return res.redirect(`${loginRedirectUrl}&loginHint=${loginHint}`);
+			}
 		}
+		next();
 	});
 
 	// Handle login request
