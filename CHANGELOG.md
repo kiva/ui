@@ -1,3 +1,10 @@
+## [2.629.0](https://github.com/kiva/ui/compare/v2.628.1...v2.629.0) (2023-07-14)
+
+
+### Features
+
+* update components library to get countdown timer on new loan cards ([dd042e7](https://github.com/kiva/ui/commit/dd042e7e85a93e3f988f0b666db508e6b1aef25a))
+
 ### [2.628.1](https://github.com/kiva/ui/compare/v2.628.0...v2.628.1) (2023-07-14)
 
 
