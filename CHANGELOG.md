@@ -1,3 +1,18 @@
+## [2.625.0-next.1](https://github.com/kiva/ui/compare/v2.624.0...v2.625.0-next.1) (2023-07-14)
+
+
+### Features
+
+* option for requiring captcha on /register/social page MARS-446 ([95e2ec0](https://github.com/kiva/ui/commit/95e2ec05846204fa3fa13e9d715d900f1d9b4e5b))
+* redirect to login with message when captcha not valid MARS-446 ([eb840cc](https://github.com/kiva/ui/commit/eb840cce922a4fb1a9d15b7101cd0dec8ca4aed8))
+
+
+### Bug Fixes
+
+* prop name typo and recaptcha loading order ([92104ad](https://github.com/kiva/ui/commit/92104ad8720b872a32b79c3f22ea03876b76238d))
+* register social form should use post method ([9767e6e](https://github.com/kiva/ui/commit/9767e6e504d1ebcf80d982c623369ca2c7931e96))
+* set captcha value on hidden input ([2e81a97](https://github.com/kiva/ui/commit/2e81a97a739a4c66865e6bc91edb3263dbaecee4))
+
 ## [2.624.0](https://github.com/kiva/ui/compare/v2.623.1...v2.624.0) (2023-07-11)
 
 
