@@ -1,3 +1,10 @@
+### [2.629.1](https://github.com/kiva/ui/compare/v2.629.0...v2.629.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* set captcha value on hidden input ([acfa277](https://github.com/kiva/ui/commit/acfa277717bbe76c8ab808912defde7f907e9b75))
+
 ## [2.629.0](https://github.com/kiva/ui/compare/v2.628.1...v2.629.0) (2023-07-14)
 
 
