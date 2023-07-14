@@ -1,3 +1,10 @@
+## [2.628.0](https://github.com/kiva/ui/compare/v2.627.0...v2.628.0) (2023-07-14)
+
+
+### Features
+
+* option for requiring captcha on /register/social page MARS-446 ([336c50f](https://github.com/kiva/ui/commit/336c50fa078c1e93d878d9c6f06857de4d770ea4))
+
 ## [2.627.0](https://github.com/kiva/ui/compare/v2.626.0...v2.627.0) (2023-07-13)
 
 
