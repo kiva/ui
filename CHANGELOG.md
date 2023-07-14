@@ -1,3 +1,10 @@
+## [2.630.0](https://github.com/kiva/ui/compare/v2.629.2...v2.630.0) (2023-07-14)
+
+
+### Features
+
+* redirect to login with message when captcha not valid MARS-446 ([ea9376e](https://github.com/kiva/ui/commit/ea9376e4b8993c0fcd4562ebc1804e81e59ed7a1))
+
 ### [2.629.2](https://github.com/kiva/ui/compare/v2.629.1...v2.629.2) (2023-07-14)
 
 
