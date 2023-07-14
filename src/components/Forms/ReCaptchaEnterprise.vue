@@ -5,7 +5,7 @@
 			ref="captcha"
 			data-testid="captcha-container"
 		></div>
-		<input type="hidden" name="captcha">
+		<input type="hidden" name="captcha" :value="captchaValue">
 	</div>
 </template>
 
