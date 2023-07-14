@@ -14,6 +14,7 @@ module.exports = merge(base, {
 		googleTagmanagerId: 'GTM-PXFRMT',
 		enableGA: true,
 		gaId: 'UA-11686022-3',
+		grecaptchaSitekey: '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
 		enableHotjar: true,
 		hotjarId: '3071239',
 		enableSnowplow: true,
