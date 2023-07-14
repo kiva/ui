@@ -1,3 +1,10 @@
+### [2.628.1](https://github.com/kiva/ui/compare/v2.628.0...v2.628.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* prop name typo and recaptcha loading order ([2117572](https://github.com/kiva/ui/commit/2117572a10e7683d6d5113be051e3846d6f60bf9))
+
 ## [2.628.0](https://github.com/kiva/ui/compare/v2.627.0...v2.628.0) (2023-07-14)
 
 
