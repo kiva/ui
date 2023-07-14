@@ -1,3 +1,10 @@
+### [2.629.2](https://github.com/kiva/ui/compare/v2.629.1...v2.629.2) (2023-07-14)
+
+
+### Bug Fixes
+
+* register social form should use post method ([787fe67](https://github.com/kiva/ui/commit/787fe6763f1d3c8fb607231f5a3ee8497e19889b))
+
 ### [2.629.1](https://github.com/kiva/ui/compare/v2.629.0...v2.629.1) (2023-07-14)
 
 
