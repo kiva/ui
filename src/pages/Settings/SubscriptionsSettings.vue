@@ -7,7 +7,7 @@
 			<the-my-kiva-secondary-menu />
 		</template>
 		<kv-default-wrapper>
-			<div class="row column">
+			<div>
 				<h1 class="tw-mb-4">
 					Subscription settings
 				</h1>
