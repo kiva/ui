@@ -1,3 +1,20 @@
+## [2.633.0](https://github.com/kiva/ui/compare/v2.632.0...v2.633.0) (2023-07-17)
+
+
+### Features
+
+* improve experience of editing or cancelling your subscription ([80bc7e9](https://github.com/kiva/ui/commit/80bc7e9014acd2e5a181e9304a2101f4d60572ea))
+
+
+### Bug Fixes
+
+* event tracking, cancellation copy and design ([3bd503f](https://github.com/kiva/ui/commit/3bd503fd14c7a9b6905e10393391c9d2470da1c1))
+* mg subscription data using new service and design changes ([fe39342](https://github.com/kiva/ui/commit/fe393420ffc9df22958c1bf41aa2d5e811e938e1))
+* remove old subscription management ([81290ab](https://github.com/kiva/ui/commit/81290ab4daa475435ae46b75bd769e8f8d6c0db7))
+* remove title margin ([a716740](https://github.com/kiva/ui/commit/a71674034407eeaabece76b0c06554281521f4cb))
+* subscriptions logic and add date utils used on monthly good ([08d8f47](https://github.com/kiva/ui/commit/08d8f47a7a04d334c4db907d6e7450be85eb5372))
+* using my subscriptions data and cleaning up unnecessary code ([e7c6afc](https://github.com/kiva/ui/commit/e7c6afc6ad32c5b30d093594668da1ebfe04b07a))
+
 ## [2.632.0](https://github.com/kiva/ui/compare/v2.631.1...v2.632.0) (2023-07-17)
 
 
