@@ -9,7 +9,7 @@
 				Featured borrower
 			</h4>
 			<h2 class="tw-text-h2 md:tw-text-h1 tw-text-primary tw-my-0.5">
-				{{ title }}
+				{{ title }} <span class="data-hj-suppress" v-if="firstName">{{ firstName }}</span>
 			</h2>
 			<p class="tw-text-base md:tw-text-subhead tw-text-primary">
 				{{ subtitle }}
@@ -60,6 +60,10 @@ export default {
 			type: String,
 			default: undefined
 		},
+		firstName: {
+			type: String,
+			default: ''
+		}
 	},
 	methods: {
 		addToBasket(payload) {

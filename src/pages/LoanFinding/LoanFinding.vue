@@ -18,6 +18,7 @@
 				:loan="featuredLoan"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
+				:first-name="firstName"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -237,13 +238,17 @@ export default {
 				: 'Support a featured borrower with a microloan.';
 		},
 		featuredLoanTitle() {
-			return 'A loan ending soon';
+			return this.isLoggedIn
+				? 'Recommended for you,'
+				: 'A loan ending soon';
 		},
 		featuredLoanSubtitle() {
-			return 'Make a difference for these borrowers who only have a short time remaining.'; // eslint-disable-line max-len
+			return this.isLoggedIn
+				? 'Make a difference for this borrower today.'
+				: 'Make a difference for these borrowers who only have a short time remaining.';
 		},
 		showWelcomeMsg() {
-			return this.isLoggedIn && !this.enableRelendingExp;
+			return this.isLoggedIn && !this.enableRelendingExp && !this.enableRecommendedReplacementExp;
 		}
 	},
 	methods: {
@@ -443,7 +448,9 @@ export default {
 				variables: prefetchedEndingSoonLoanVariables
 			})?.fundraisingLoans?.values[0] ?? { id: 0 };
 
-			this.featuredLoan = cachedEndingSoonLoan;
+			this.featuredLoan = this.isLoggedIn && this.firstRowLoans.length > 0
+				? this.firstRowLoans[0]
+				: cachedEndingSoonLoan;
 		}
 	},
 	mounted() {
