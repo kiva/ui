@@ -18,6 +18,7 @@
 				:loan="featuredLoan"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
+				:first-name="firstName"
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 
@@ -238,7 +239,7 @@ export default {
 		},
 		featuredLoanTitle() {
 			return this.isLoggedIn
-				? `Recommended for you, ${this.firstName}`
+				? 'Recommended for you,'
 				: 'A loan ending soon';
 		},
 		featuredLoanSubtitle() {
@@ -447,7 +448,9 @@ export default {
 				variables: prefetchedEndingSoonLoanVariables
 			})?.fundraisingLoans?.values[0] ?? { id: 0 };
 
-			this.featuredLoan = this.isLoggedIn ? this.firstRowLoans[0] : cachedEndingSoonLoan;
+			this.featuredLoan = this.isLoggedIn && this.firstRowLoans.length > 0
+				? this.firstRowLoans[0]
+				: cachedEndingSoonLoan;
 		}
 	},
 	mounted() {
