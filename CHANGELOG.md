@@ -1,3 +1,15 @@
+## [2.631.0](https://github.com/kiva/ui/compare/v2.630.0...v2.631.0) (2023-07-17)
+
+
+### Features
+
+* new component added for a featured loan in lending home page ([d599f14](https://github.com/kiva/ui/commit/d599f149b2495174e8eaf72b8086936da7bca707))
+
+
+### Bug Fixes
+
+* fixes from pr comments ([bc4779c](https://github.com/kiva/ui/commit/bc4779c0d04a9740bef581b024d2a509c80404d3))
+
 ## [2.630.0](https://github.com/kiva/ui/compare/v2.629.2...v2.630.0) (2023-07-14)
 
 
