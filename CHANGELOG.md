@@ -1,3 +1,10 @@
+### [2.633.1](https://github.com/kiva/ui/compare/v2.633.0...v2.633.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* provide default value for checkbox to override empty KvCheckbox default ([0d2eb51](https://github.com/kiva/ui/commit/0d2eb519331e2f24291d188fba2710e35c758791))
+
 ## [2.633.0](https://github.com/kiva/ui/compare/v2.632.0...v2.633.0) (2023-07-17)
 
 
