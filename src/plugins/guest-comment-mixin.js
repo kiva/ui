@@ -14,8 +14,8 @@ export default {
 	mounted() {
 		const guestCommentComment = this.cookieStore.get(GUEST_COMMENT_COMMENT);
 		const guestCommentLoanId = this.cookieStore.get(GUEST_COMMENT_LOANID);
-		const currentLoanId = this.$route?.params?.id;
-		const isTargetBorrowerProfile = currentLoanId.toString() === guestCommentLoanId.toString();
+		const currentLoanId = this.$route?.params?.id ?? 0;
+		const isTargetBorrowerProfile = currentLoanId.toString() === guestCommentLoanId;
 		if (isTargetBorrowerProfile && guestCommentComment) {
 			this.submitComment();
 		}
