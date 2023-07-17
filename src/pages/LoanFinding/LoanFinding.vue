@@ -244,11 +244,11 @@ export default {
 		},
 		featuredLoanSubtitle() {
 			return this.isLoggedIn
-				? 'Make a difference for borrowers who only have a small amount remaining.'
+				? 'Make a difference for this borrower today.'
 				: 'Make a difference for these borrowers who only have a short time remaining.';
 		},
 		showWelcomeMsg() {
-			return this.isLoggedIn && !this.enableRelendingExp;
+			return this.isLoggedIn && !this.enableRelendingExp && !this.enableRecommendedReplacementExp;
 		}
 	},
 	methods: {
