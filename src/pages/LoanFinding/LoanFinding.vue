@@ -79,6 +79,7 @@
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanFindingFeaturedLoan from '@/components/LoanFinding/LoanFindingFeaturedLoan';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
@@ -167,10 +168,20 @@ export default {
 					variables: prefetchedRecommendedLoansVariables
 				});
 
-				const endingSoonLoanPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedEndingSoonLoanVariables
-				});
+				// Recommended row replacement test
+				const { version } = client.readFragment({
+					id: `Experiment:${RECOMMENDED_REPLACEMENT_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) ?? {};
+
+				let endingSoonLoanPromise = Promise.resolve();
+
+				if (version === 'b') {
+					endingSoonLoanPromise = client.query({
+						query: flssLoansQueryExtended,
+						variables: prefetchedEndingSoonLoanVariables
+					});
+				}
 
 				return Promise.all([
 					userInfoPromise,
@@ -426,12 +437,14 @@ export default {
 
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
 
-		const cachedEndingSoonLoan = this.apollo.readQuery({
-			query: flssLoansQueryExtended,
-			variables: prefetchedEndingSoonLoanVariables
-		})?.fundraisingLoans?.values[0] ?? { id: 0 };
+		if (this.enableRecommendedReplacementExp) {
+			const cachedEndingSoonLoan = this.apollo.readQuery({
+				query: flssLoansQueryExtended,
+				variables: prefetchedEndingSoonLoanVariables
+			})?.fundraisingLoans?.values[0] ?? { id: 0 };
 
-		this.featuredLoan = cachedEndingSoonLoan;
+			this.featuredLoan = cachedEndingSoonLoan;
+		}
 	},
 	mounted() {
 		if (!this.enableRelendingExp) {
