@@ -5,6 +5,7 @@
 				:id="name"
 				:name="name"
 				:valid="!validation.$error"
+				:value="checkboxValue"
 				v-model="inputValue"
 				v-on="inputListeners"
 				v-bind="$attrs"
@@ -60,6 +61,10 @@ export default {
 		type: {
 			type: String,
 			default: 'text',
+		},
+		checkboxValue: {
+			type: String,
+			default: 'on',
 		},
 		// Validation object from Vuelidate for this input
 		validation: {
