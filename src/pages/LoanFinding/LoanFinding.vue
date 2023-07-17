@@ -237,10 +237,14 @@ export default {
 				: 'Support a featured borrower with a microloan.';
 		},
 		featuredLoanTitle() {
-			return 'A loan ending soon';
+			return this.isLoggedIn
+				? `Recommended for you, ${this.firstName}`
+				: 'A loan ending soon';
 		},
 		featuredLoanSubtitle() {
-			return 'Make a difference for these borrowers who only have a short time remaining.'; // eslint-disable-line max-len
+			return this.isLoggedIn
+				? 'Make a difference for borrowers who only have a small amount remaining.'
+				: 'Make a difference for these borrowers who only have a short time remaining.';
 		},
 		showWelcomeMsg() {
 			return this.isLoggedIn && !this.enableRelendingExp;
@@ -443,7 +447,7 @@ export default {
 				variables: prefetchedEndingSoonLoanVariables
 			})?.fundraisingLoans?.values[0] ?? { id: 0 };
 
-			this.featuredLoan = cachedEndingSoonLoan;
+			this.featuredLoan = this.isLoggedIn ? this.firstRowLoans[0] : cachedEndingSoonLoan;
 		}
 	},
 	mounted() {
