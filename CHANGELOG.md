@@ -1,3 +1,10 @@
+### [2.631.1](https://github.com/kiva/ui/compare/v2.631.0...v2.631.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* toString error in guest comment compare ([df0f94d](https://github.com/kiva/ui/commit/df0f94d0c246261c8ebc307f8accd0cefd718a5b))
+
 ## [2.631.0](https://github.com/kiva/ui/compare/v2.630.0...v2.631.0) (2023-07-17)
 
 
