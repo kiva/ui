@@ -1,3 +1,15 @@
+## [2.637.0](https://github.com/kiva/ui/compare/v2.636.0...v2.637.0) (2023-07-18)
+
+
+### Features
+
+* displayed loans event implemented for new featured loan test ([69f9daf](https://github.com/kiva/ui/commit/69f9dafe9c89cd53a0b02bbc263f36ca618d7c90))
+
+
+### Bug Fixes
+
+* tracking code simplified ([048d035](https://github.com/kiva/ui/commit/048d035a642cc44bb482cdc050104b52390c05c5))
+
 ## [2.636.0](https://github.com/kiva/ui/compare/v2.635.0...v2.636.0) (2023-07-18)
 
 
