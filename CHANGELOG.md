@@ -1,3 +1,16 @@
+## [2.634.0](https://github.com/kiva/ui/compare/v2.633.1...v2.634.0) (2023-07-18)
+
+
+### Features
+
+* copy updated and welcome message removed for logged in users ([7baae66](https://github.com/kiva/ui/commit/7baae669737c4c6e7c365ff6b2559e2a854c4de8))
+* featured loan test for logged in users in lending home ([e8b1e08](https://github.com/kiva/ui/commit/e8b1e08750d76d1cef5e03a510509044ffa38013))
+
+
+### Bug Fixes
+
+* fixes from pr comments ([e3f6e84](https://github.com/kiva/ui/commit/e3f6e84c270d4932b412c8707e7c772c0637df6f))
+
 ### [2.633.1](https://github.com/kiva/ui/compare/v2.633.0...v2.633.1) (2023-07-17)
 
 
