@@ -366,7 +366,7 @@ export default {
 			}
 		},
 		trackFirstRowDisplayedLoans() {
-			this.trackDisplayedLoans(this.enableRelendingExp && !this.enableRecommendedReplacementExp ? 'relending' : 'recommended', 1, this.enableRecommendedReplacementExp ? [this.featuredLoan] : this.firstRowLoans); // eslint-disable-line max-len
+			this.trackDisplayedLoans('recommended', 1, this.enableRecommendedReplacementExp ? [this.featuredLoan] : this.firstRowLoans); // eslint-disable-line max-len
 		},
 		trackQuickFiltersDisplayedLoans({ data, pageOffset }) {
 			this.trackDisplayedLoans('quick-filters', this.enableRelendingExp ? 3 : 2, data, pageOffset);
