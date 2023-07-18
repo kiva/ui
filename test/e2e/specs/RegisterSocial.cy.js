@@ -114,7 +114,7 @@ describe('RegisterSocial', () => {
 
 		it('displays news consent and requires terms agreement and names when all are needed', () => {
 			// Visit to RegisterSocial page requesting names, terms agreement, and news consent (terms=1&names=1&news=1)
-			cy.visit(`${registerSocialPath}?state=abc&terms=1&names=1&news=1`);
+			cy.visit(`${registerSocialPath}?state=abc&terms=1&names=1&news=1&captcha=1`);
 
 			// Expect all inputs to be displayed
 			cy.contains('First name').should('be.visible');
