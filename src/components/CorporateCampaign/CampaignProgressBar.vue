@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="promoAmount && promoAmount > 0"
+		v-if="(promoAmount && promoAmount > 0) && isMatchingCampaign"
 		class="
 			tw-rounded
 			tw-bg-brand-50
@@ -42,6 +42,32 @@
 			<kv-ui-button
 				v-show="basketLoans.length > 0"
 				@click="$emit('show-basket')"
+			>
+				Checkout now
+			</kv-ui-button>
+		</div>
+	</div>
+	<div
+		v-else
+		class="
+			tw-rounded
+			tw-bg-brand-50
+			tw-w-full
+			tw-py-2
+			tw-px-1
+			tw-mb-2
+			tw-flex-col
+			tw-flex
+			tw-justify-start
+			lg:tw-justify-between
+			lg:tw-align-center
+			"
+	>
+		<div class="lg:tw-mr-1 lg:tw-ml-0 tw-ml-1 lg:tw-pt-1">
+			<kv-ui-button
+				v-show="basketLoans.length > 0"
+				@click="$emit('show-basket')"
+				class="tw-w-full"
 			>
 				Checkout now
 			</kv-ui-button>
