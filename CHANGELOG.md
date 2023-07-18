@@ -1,3 +1,10 @@
+## [2.636.0](https://github.com/kiva/ui/compare/v2.635.0...v2.636.0) (2023-07-18)
+
+
+### Features
+
+* resolve minor sentry issues ([489829d](https://github.com/kiva/ui/commit/489829d792265a39cfd4375bf9134c8a10e5c7bd))
+
 ## [2.635.0](https://github.com/kiva/ui/compare/v2.634.0...v2.635.0) (2023-07-18)
 
 
