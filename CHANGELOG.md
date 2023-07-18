@@ -1,3 +1,10 @@
+## [2.635.0](https://github.com/kiva/ui/compare/v2.634.0...v2.635.0) (2023-07-18)
+
+
+### Features
+
+* resolve issues with register social e2e ([7acbdfd](https://github.com/kiva/ui/commit/7acbdfd220ae1a7eeb5fd7264487014316570189))
+
 ## [2.634.0](https://github.com/kiva/ui/compare/v2.633.1...v2.634.0) (2023-07-18)
 
 
