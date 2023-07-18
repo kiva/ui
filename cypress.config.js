@@ -19,4 +19,6 @@ module.exports = defineConfig({
 		specPattern: 'test/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
 		supportFile: 'test/e2e/support/index.js',
 	},
+	// Required to enable cross-domain iframe access
+	chromeWebSecurity: false
 });
