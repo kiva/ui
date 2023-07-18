@@ -193,7 +193,7 @@ export default {
 				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
 			};
 
-			const categories = fetchedCategories.lend?.loanChannels?.values;
+			const categories = fetchedCategories?.lend?.loanChannels?.values ?? [];
 			const sortedCategories = [...categories].sort(
 				// eslint-disable-next-line no-nested-ternary
 				(catA, catB) => {

@@ -335,7 +335,7 @@ export default {
 	},
 	computed: {
 		activeCountries() {
-			return this.regions[this.selectedRegion]?.countries ?? '';
+			return this.regions[this.selectedRegion]?.countries ?? [];
 		},
 		term() {
 			if (this.selectedCountries.length > 0) {
