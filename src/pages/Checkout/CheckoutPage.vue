@@ -312,6 +312,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
+const TIP_RATE_OPTIMIZATION_EXP = 'tip_rate_optimization';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -380,6 +381,7 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
+			tipRateOptimizationExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
@@ -499,6 +501,21 @@ export default {
 				'Basket',
 				'EXP-GROW-203-Aug2020',
 				this.loginButtonExperimentVersion,
+			);
+		}
+
+		// MARS-452 tip rate optimization experiment
+		const tipRateOptimizationExperiment = this.apollo.readFragment({
+			id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.tipRateOptimizationExperimentVersion = tipRateOptimizationExperiment.version;
+		if (this.tipRateOptimizationExperimentVersion && !this.checkingOutAsGuest) {
+			this.$kvTrackEvent(
+				'Checkout',
+				'EXP-MARS-452-JUL2023',
+				this.tipRateOptimizationExperimentVersion,
 			);
 		}
 
