@@ -434,6 +434,10 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({
+							query: experimentAssignmentQuery,
+							variables: { id: TIP_RATE_OPTIMIZATION_EXP }
+						}),
 					]);
 				});
 		},
@@ -505,18 +509,20 @@ export default {
 		}
 
 		// MARS-452 tip rate optimization experiment
-		const tipRateOptimizationExperiment = this.apollo.readFragment({
-			id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
+		if (!this.checkingOutAsGuest) {
+			const tipRateOptimizationExperiment = this.apollo.readFragment({
+				id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
+				fragment: experimentVersionFragment,
+			}) || {};
 
-		this.tipRateOptimizationExperimentVersion = tipRateOptimizationExperiment.version;
-		if (this.tipRateOptimizationExperimentVersion && !this.checkingOutAsGuest) {
-			this.$kvTrackEvent(
-				'Checkout',
-				'EXP-MARS-452-JUL2023',
-				this.tipRateOptimizationExperimentVersion,
-			);
+			this.tipRateOptimizationExperimentVersion = tipRateOptimizationExperiment.version;
+			if (this.tipRateOptimizationExperimentVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-MARS-452-JUL2023',
+					this.tipRateOptimizationExperimentVersion,
+				);
+			}
 		}
 
 		if (this.eligibleForGuestCheckout) {
