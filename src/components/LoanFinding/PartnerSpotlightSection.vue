@@ -99,7 +99,7 @@ export default {
 <style lang="postcss" scoped>
 
 #mfiCarousel >>> h2 {
-	@apply tw-text-h4 tw-mb-0 tw-text-action tw-ml-2;
+	@apply tw-text-h4 tw-mb-0 tw-text-action;
 }
 
 #mfiCarousel >>> section {
