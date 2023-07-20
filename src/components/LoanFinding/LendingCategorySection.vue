@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -98,6 +99,7 @@ export default {
 			isAddingMultiple: false,
 			hasMultipleBeenAdded: false,
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
+			handleResize: _throttle(this.isWindowWidth, 200)
 		};
 	},
 	computed: {
@@ -192,16 +194,24 @@ export default {
 		loanCardKey(index) {
 			return `loan-card-${index}`;
 		},
+		isWindowWidth() {
+			this.windowWidth = window.innerWidth;
+		}
 	},
 	mounted() {
-		window.addEventListener('resize', () => {
-			this.windowWidth = window.innerWidth;
-		});
+		window.addEventListener('resize', this.handleResize);
 	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	}
 };
 </script>
 
 <style lang="postcss" scoped>
+#customizedCarousel {
+	@apply tw-px-0;
+}
+
 #customizedCarousel >>> .kv-carousel__controls {
 	@apply tw-justify-center;
 	@apply tw-w-16;
@@ -246,6 +256,10 @@ export default {
 }
 
 @screen md {
+	#customizedCarousel {
+		@apply tw-px-1;
+	}
+
 	#customizedCarousel >>> .kv-carousel__controls {
 		@apply tw-w-full;
 		@apply tw-rounded-none;
