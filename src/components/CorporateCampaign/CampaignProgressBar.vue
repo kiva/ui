@@ -14,9 +14,9 @@
 			lg:tw-align-center
 			"
 	>
-		<!-- Progress bar appears when there is a corporate campaign with promo credit -->
+		<!-- Progress bar appears as long as there is promo credit -->
 		<div
-			v-if="(promoAmount && promoAmount > 0) && !isMatchingCampaign"
+			v-if="(promoAmount && promoAmount > 0) && (isMatchingCorporateCampaign || !isMatchingCorporateCampaign)"
 			class="
 			tw-rounded
 			tw-bg-brand-50
@@ -63,7 +63,7 @@
 				</kv-ui-button>
 			</div>
 		</div>
-		<!-- Only checkout button appears when there is a matching campaign with no promo credit -->
+		<!--  Progress bar is hidden as long as there is no promo credit   -->
 		<div
 			v-else
 			class="
@@ -122,8 +122,8 @@ export default {
 			}
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
-		isMatchingCampaign() {
-			return this.pageSettingData?.matcherAccountId !== undefined;
+		isMatchingCorporateCampaign() {
+			return this.isMatchingCampaign;
 		},
 		creditLeft() {
 			return this.upcCreditRemaining > 0 ? this.upcCreditRemaining : 0;
