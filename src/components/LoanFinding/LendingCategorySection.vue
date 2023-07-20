@@ -1,7 +1,8 @@
 <template>
 	<div class="tw-w-full">
-		<div class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center">
+		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<!-- eslint-disable-next-line max-len -->
+			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
 				<div class="tw-w-full lg:tw-w-auto">
 					<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
 					<p
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -96,6 +98,8 @@ export default {
 		return {
 			isAddingMultiple: false,
 			hasMultipleBeenAdded: false,
+			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
+			handleResize: _throttle(this.isWindowWidth, 200)
 		};
 	},
 	computed: {
@@ -103,18 +107,13 @@ export default {
 			return this.perStep === 2;
 		},
 		singleSlideWidth() {
-			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-			// handle tiny screens
-			if (viewportWidth < 414) {
-				return `${viewportWidth - 80}px`;
+			if (this.windowWidth <= 733) {
+				return '100%';
 			}
-			if (viewportWidth >= 414 && viewportWidth < 768) {
-				return '278px';
-			}
-			if (viewportWidth >= 768 && viewportWidth < 1024) {
+			if (this.windowWidth > 733 && this.windowWidth < 1024) {
 				return '328px';
 			}
-			if (viewportWidth >= 1024) {
+			if (this.windowWidth >= 1024) {
 				if (this.isLargeCard) {
 					return '512px';
 				}
@@ -195,16 +194,100 @@ export default {
 		loanCardKey(index) {
 			return `loan-card-${index}`;
 		},
+		isWindowWidth() {
+			this.windowWidth = window.innerWidth;
+		}
 	},
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	}
 };
 </script>
 
 <style lang="postcss" scoped>
+#customizedCarousel {
+	@apply tw-px-0;
+}
+
 #customizedCarousel >>> .kv-carousel__controls {
-	justify-content: center;
+	@apply tw-justify-center;
+	@apply tw-w-16;
+	@apply tw-mx-auto;
+	@apply tw-rounded-lg;
+
+	box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
+	-webkit-box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
+	-moz-box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
 }
 
 #customizedCarousel >>> .kv-carousel__controls div {
-	visibility: visible;
+	@apply tw-visible;
+}
+
+#customizedCarousel >>> .kv-carousel__controls button {
+	@apply tw-border-0;
+}
+
+#customizedCarousel >>> .kv-carousel__controls button span {
+	@apply tw-invisible;
+}
+
+#customizedCarousel >>> .kv-carousel__controls button:first-child span::after {
+	@apply tw-visible;
+	@apply tw-text-h3;
+	@apply tw-rotate-180;
+
+	content: '\2794';
+}
+
+#customizedCarousel >>> .kv-carousel__controls button:nth-child(3) span::before {
+	@apply tw-visible;
+	@apply tw-text-h3;
+
+	content: '\2794';
+}
+
+#customizedCarousel >>> div:first-child div div div,
+#customizedCarousel >>> div:first-child > div > div.loan-card-active-hover a picture {
+	@apply tw-rounded-none;
+}
+
+@screen md {
+	#customizedCarousel {
+		@apply tw-px-1;
+	}
+
+	#customizedCarousel >>> .kv-carousel__controls {
+		@apply tw-w-full;
+		@apply tw-rounded-none;
+
+		box-shadow: none;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+	}
+
+	#customizedCarousel >>> div:first-child div div div {
+		@apply tw-rounded;
+	}
+
+	#customizedCarousel >>> div:first-child > div > div.loan-card-active-hover a picture {
+		@apply tw-rounded-t;
+	}
+
+	#customizedCarousel >>> .kv-carousel__controls button {
+		@apply tw-border-2;
+	}
+
+	#customizedCarousel >>> .kv-carousel__controls button span {
+		@apply tw-visible;
+	}
+
+	#customizedCarousel >>> .kv-carousel__controls button:first-child span::after,
+	#customizedCarousel >>> .kv-carousel__controls button:nth-child(3) span::before {
+		content: '';
+	}
 }
 </style>
