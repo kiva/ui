@@ -1,3 +1,16 @@
+## [2.639.0](https://github.com/kiva/ui/compare/v2.638.0...v2.639.0) (2023-07-20)
+
+
+### Features
+
+* carousel updated for mobile version in lending home page ([ce763c4](https://github.com/kiva/ui/commit/ce763c47df526b85b6f47b5481c13eb00d360926))
+* size breakpoints for single slide updated ([7628728](https://github.com/kiva/ui/commit/7628728269bfd11de9095838787b5230327551e0))
+
+
+### Bug Fixes
+
+* fixes from pr comments ([d979ef6](https://github.com/kiva/ui/commit/d979ef604497c53f81c88ce4180d4264d5174439))
+
 ## [2.638.0](https://github.com/kiva/ui/compare/v2.637.0...v2.638.0) (2023-07-20)
 
 
