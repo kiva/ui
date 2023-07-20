@@ -1,3 +1,18 @@
+## [2.638.0](https://github.com/kiva/ui/compare/v2.637.0...v2.638.0) (2023-07-20)
+
+
+### Features
+
+* adding v-else for matchingCampaign type ([a8f543a](https://github.com/kiva/ui/commit/a8f543a6b8a14128d962f42a088b91b7c94c334d))
+* edited v-if statement, computed property ([8956ba0](https://github.com/kiva/ui/commit/8956ba06ce61b02dacee5d2472d85e2b61d1f109))
+
+
+### Bug Fixes
+
+* isMatchingCorporateCampaign -> isMatchingCampaign ([b5e4574](https://github.com/kiva/ui/commit/b5e45742712a5e6775673481ee955b1917094ab3))
+* removal of computed property, edited v-if and component inheritance ([9a7a80b](https://github.com/kiva/ui/commit/9a7a80b16bfe47c24e0407e1c8157a9857a52aaf))
+* updating based on prior commit's feedback ([6331c20](https://github.com/kiva/ui/commit/6331c200acefa5941371150185aaf6c902b7f684))
+
 ## [2.637.0](https://github.com/kiva/ui/compare/v2.636.0...v2.637.0) (2023-07-18)
 
 
