@@ -17,6 +17,7 @@
 				/>
 
 				<campaign-progress-bar
+					:is-matching-campaign="componentProps.isMatchingCampaign"
 					:promo-amount="componentProps.promoAmount"
 					:upc-credit-remaining="componentProps.upcCreditRemaining"
 					:basket-loans="componentProps.basketLoans"

@@ -790,7 +790,8 @@ export default {
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
 				removeLoanFromBasket: this.removeLoanFromBasket,
-				showBasket: this.showBasket
+				showBasket: this.showBasket,
+				isMatchingCampaign: this.isMatchingCampaign
 			};
 		},
 		pageSettingData() {

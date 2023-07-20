@@ -1,5 +1,54 @@
 <template>
 	<div
+		v-if="(promoAmount && promoAmount > 0) && !isMatchingCorporateCampaign"
+		class="
+			tw-rounded
+			tw-bg-brand-50
+			tw-w-full
+			tw-py-3
+			tw-px-1
+			tw-mb-2
+			tw-flex-col
+			tw-flex
+			lg:tw-flex-row
+			tw-justify-start
+			lg:tw-justify-between
+			lg:tw-align-center
+			"
+	>
+		<div class="tw-flex-grow">
+			<h4 v-if="creditLeft === promoAmount" class="tw-mb-1 tw-px-3">
+				Let's Get Started
+			</h4>
+			<h4 v-else-if="creditLeft > 0" class="tw-mb-1 tw-px-3">
+				Keep Going!
+			</h4>
+			<h4 v-else-if="creditLeft === 0" class="tw-mb-1 tw-px-3">
+				You Did It!
+			</h4>
+			<h3 class="tw-mb-2 tw-px-3">
+				You have ${{ creditLeft }} in credit left
+				<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
+			</h3>
+			<kv-grid class="tw-grid-cols-2">
+				<kv-progress-bar
+					:value="percentageLeft"
+					class="tw-mb-1.5 lg:tw-mb-1 tw-ml-3 tw-col-span-1"
+					:aria-label="`You have $${ creditLeft } in credit left`"
+				/>
+			</kv-grid>
+		</div>
+		<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
+			<kv-ui-button
+				v-show="basketLoans.length > 0"
+				@click="$emit('show-basket')"
+			>
+				Checkout now
+			</kv-ui-button>
+		</div>
+	</div>
+	<div
+		v-else-if="basketLoans.length > 0"
 		class="
 			tw-rounded
 			tw-bg-brand-50
@@ -14,58 +63,7 @@
 			lg:tw-align-center
 			"
 	>
-		<!-- Progress bar appears as long as there is promo credit -->
 		<div
-			v-if="(promoAmount && promoAmount > 0) && (isMatchingCorporateCampaign || !isMatchingCorporateCampaign)"
-			class="
-			tw-rounded
-			tw-bg-brand-50
-			tw-w-full
-			tw-py-3
-			tw-px-1
-			tw-mb-2
-			tw-flex-col
-			tw-flex
-			lg:tw-flex-row
-			tw-justify-start
-			lg:tw-justify-between
-			lg:tw-align-center
-			"
-		>
-			<div class="tw-flex-grow">
-				<h4 v-if="creditLeft === promoAmount" class="tw-mb-1 tw-px-3">
-					Let's Get Started
-				</h4>
-				<h4 v-else-if="creditLeft > 0" class="tw-mb-1 tw-px-3">
-					Keep Going!
-				</h4>
-				<h4 v-else-if="creditLeft === 0" class="tw-mb-1 tw-px-3">
-					You Did It!
-				</h4>
-				<h3 class="tw-mb-2 tw-px-3">
-					You have ${{ creditLeft }} in credit left
-					<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
-				</h3>
-				<kv-grid class="tw-grid-cols-2">
-					<kv-progress-bar
-						:value="percentageLeft"
-						class="tw-mb-1.5 lg:tw-mb-1 tw-ml-3 tw-col-span-1"
-						:aria-label="`You have $${ creditLeft } in credit left`"
-					/>
-				</kv-grid>
-			</div>
-			<div class="lg:tw-mr-3 lg:tw-ml-0 tw-ml-3 lg:tw-pt-3">
-				<kv-ui-button
-					v-show="basketLoans.length > 0"
-					@click="$emit('show-basket')"
-				>
-					Checkout now
-				</kv-ui-button>
-			</div>
-		</div>
-		<!--  Progress bar is hidden as long as there is no promo credit   -->
-		<div
-			v-else
 			class="
 				lg:tw-mr-1
 				lg:tw-ml-0 tw-ml-1
@@ -76,7 +74,6 @@
 				"
 		>
 			<kv-ui-button
-				v-show="basketLoans.length > 0"
 				@click="$emit('show-basket')"
 			>
 				Checkout now
@@ -114,6 +111,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		isMatchingCampaign: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		campaignPartnerName() {
@@ -121,9 +122,6 @@ export default {
 				return this.pageSettingData?.matchingAccountName ?? null;
 			}
 			return this.promoData?.promoFund?.displayName ?? null;
-		},
-		isMatchingCorporateCampaign() {
-			return this.isMatchingCampaign;
 		},
 		creditLeft() {
 			return this.upcCreditRemaining > 0 ? this.upcCreditRemaining : 0;
