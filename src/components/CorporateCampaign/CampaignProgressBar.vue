@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="(promoAmount && promoAmount > 0) && !isMatchingCorporateCampaign"
+		v-if="(promoAmount && promoAmount > 0) && !isMatchingCampaign"
 		class="
 			tw-rounded
 			tw-bg-brand-50
