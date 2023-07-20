@@ -97,6 +97,7 @@ export default {
 		return {
 			isAddingMultiple: false,
 			hasMultipleBeenAdded: false,
+			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
 		};
 	},
 	computed: {
@@ -104,18 +105,13 @@ export default {
 			return this.perStep === 2;
 		},
 		singleSlideWidth() {
-			const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-			// handle tiny screens
-			if (viewportWidth < 414) {
+			if (this.windowWidth <= 733) {
 				return '100%';
 			}
-			if (viewportWidth >= 414 && viewportWidth < 768) {
-				return '278px';
-			}
-			if (viewportWidth >= 768 && viewportWidth < 1024) {
+			if (this.windowWidth > 733 && this.windowWidth < 1024) {
 				return '328px';
 			}
-			if (viewportWidth >= 1024) {
+			if (this.windowWidth >= 1024) {
 				if (this.isLargeCard) {
 					return '512px';
 				}
@@ -196,6 +192,11 @@ export default {
 		loanCardKey(index) {
 			return `loan-card-${index}`;
 		},
+	},
+	mounted() {
+		window.addEventListener('resize', () => {
+			this.windowWidth = window.innerWidth;
+		});
 	},
 };
 </script>
