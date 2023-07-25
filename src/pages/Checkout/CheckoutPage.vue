@@ -509,7 +509,7 @@ export default {
 		}
 
 		// MARS-452 tip rate optimization experiment
-		if (!this.checkingOutAsGuest) {
+		if (this.myId !== null && this.myId !== undefined) {
 			const tipRateOptimizationExperiment = this.apollo.readFragment({
 				id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
 				fragment: experimentVersionFragment,
