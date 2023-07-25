@@ -312,6 +312,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
+const TIP_RATE_OPTIMIZATION_EXP = 'tip_rate_optimization';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -380,6 +381,7 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
+			tipRateOptimizationExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
@@ -432,6 +434,10 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({
+							query: experimentAssignmentQuery,
+							variables: { id: TIP_RATE_OPTIMIZATION_EXP }
+						}),
 					]);
 				});
 		},
@@ -500,6 +506,23 @@ export default {
 				'EXP-GROW-203-Aug2020',
 				this.loginButtonExperimentVersion,
 			);
+		}
+
+		// MARS-452 tip rate optimization experiment
+		if (this.myId !== null && this.myId !== undefined) {
+			const tipRateOptimizationExperiment = this.apollo.readFragment({
+				id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			this.tipRateOptimizationExperimentVersion = tipRateOptimizationExperiment.version;
+			if (this.tipRateOptimizationExperimentVersion) {
+				this.$kvTrackEvent(
+					'Checkout',
+					'EXP-MARS-452-JUL2023',
+					this.tipRateOptimizationExperimentVersion,
+				);
+			}
 		}
 
 		if (this.eligibleForGuestCheckout) {
