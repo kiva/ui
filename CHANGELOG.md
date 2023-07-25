@@ -1,3 +1,16 @@
+## [2.640.0](https://github.com/kiva/ui/compare/v2.639.0...v2.640.0) (2023-07-25)
+
+
+### Features
+
+* set up tip rate optimization experiment ([0864acf](https://github.com/kiva/ui/commit/0864acf843a89c0c21ea20e089d6327875c2c218))
+
+
+### Bug Fixes
+
+* avoid exp set up for guest checkout ([8be50b2](https://github.com/kiva/ui/commit/8be50b2454df3f30c55450ac7061eaa19dfb2bf9))
+* check if user is not logged in ([638e318](https://github.com/kiva/ui/commit/638e3187d685289055c409ef05cab295a010fd2a))
+
 ## [2.639.0](https://github.com/kiva/ui/compare/v2.638.0...v2.639.0) (2023-07-20)
 
 
