@@ -12,7 +12,7 @@
 					'tw-rounded-t tw-border-b-0 md:tw-border-b md:tw-rounded': index === 0,
 					'md:tw-rounded': index === 1
 				}"
-				@click="setDonationAndClose(getDonationByPercent(percentage))"
+				@click="setDonationAndClose(getDonationByPercent(percentage), formatSource(index))"
 			>
 				<div
 					class="tw-flex tw-flex-row tw-align-center tw-items-stretch
@@ -157,13 +157,16 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(numeral(this.customDonationAmount).value());
+			this.setDonationAndClose(numeral(this.customDonationAmount).value(), 'Custom amount');
 		},
 		setInputs(value) {
 			this.customDonationAmount = value;
 		},
 		validateInput() {
 			this.setInputs(numeral(this.customDonationAmount).format('$0,0.00'));
+		},
+		formatSource(index) {
+			return `${numeral(index + 1).format('0o')} preset`;
 		},
 	},
 };
