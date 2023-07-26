@@ -1,3 +1,10 @@
+## [2.641.0](https://github.com/kiva/ui/compare/v2.640.0...v2.641.0) (2023-07-26)
+
+
+### Features
+
+* update source for preset options ([4a03bd3](https://github.com/kiva/ui/commit/4a03bd3258b325cec61a06fbb200c62fb0a04314))
+
 ## [2.640.0](https://github.com/kiva/ui/compare/v2.639.0...v2.640.0) (2023-07-25)
 
 
