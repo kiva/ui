@@ -1,3 +1,10 @@
+## [2.642.0](https://github.com/kiva/ui/compare/v2.641.0...v2.642.0) (2023-07-26)
+
+
+### Features
+
+* UI App Login Handler Updates ([e36e660](https://github.com/kiva/ui/commit/e36e660a94721f83eedae0e58dae6e25bc79ec77))
+
 ## [2.641.0](https://github.com/kiva/ui/compare/v2.640.0...v2.641.0) (2023-07-26)
 
 
