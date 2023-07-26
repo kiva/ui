@@ -79,7 +79,6 @@
 
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanFindingFeaturedLoan from '@/components/LoanFinding/LoanFindingFeaturedLoan';
@@ -89,21 +88,16 @@ import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSe
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
-import { getExperimentSettingCached, trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
-const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
-
-const EXP_KEY = 'loan_finding_page';
-const CATEGORIES_REDIRECT_EXP_KEY = 'categories_redirect';
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
-const RELENDING_EXP_KEY = 'lh_relending';
 const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
 
 export default {
@@ -150,25 +144,12 @@ export default {
 		};
 	},
 	apollo: {
-		query: userInfoQuery,
 		preFetch(config, client) {
-			return Promise.all([
-				client.query({ query: experimentAssignmentQuery, variables: { id: EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORIES_REDIRECT_EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: RELENDING_EXP_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY } }),
-			]).then(() => {
-				const userInfoPromise = client.query({
-					query: userInfoQuery,
-				});
-
-				const recommendedLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedRecommendedLoansVariables
-				});
-
+			return client.query({
+				query: userInfoQuery
+			}).then(() => {
+				return client.query({ query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY } }); // eslint-disable-line max-len
+			}).then(() => {
 				// Recommended row replacement test
 				const { version } = client.readFragment({
 					id: `Experiment:${RECOMMENDED_REPLACEMENT_EXP_KEY}`,
@@ -184,16 +165,19 @@ export default {
 					});
 				}
 
+				const recommendedLoansPromise = client.query({
+					query: flssLoansQueryExtended,
+					variables: prefetchedRecommendedLoansVariables
+				});
+
 				return Promise.all([
-					userInfoPromise,
-					recommendedLoansPromise,
+					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 					endingSoonLoanPromise,
+					recommendedLoansPromise
 				]);
 			});
 		},
-		result({ data }) {
-			this.userInfo = data?.my?.userAccount ?? {};
-		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -386,7 +370,12 @@ export default {
 		},
 	},
 	created() {
-		// Ensure the first two recommended loan cards have server-cached images to reduce LCP
+		const cachedUserInfo = this.apollo.readQuery({
+			query: userInfoQuery,
+		});
+
+		this.userInfo = cachedUserInfo.my?.userAccount ?? {};
+
 		const cachedRecommendedLoans = this.apollo.readQuery({
 			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
@@ -395,18 +384,6 @@ export default {
 		this.initializeFiveDollarsNotes();
 
 		this.userBalance = this.userInfo?.balance;
-
-		// Relending test for users with balance
-		if (Number(this.userBalance) > 0) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				RELENDING_EXP_KEY,
-				'EXP-CORE-1276-April2023'
-			);
-			this.enableRelendingExp = version === 'b';
-		}
 
 		// Recommended row replacement test
 		const { version } = trackExperimentVersion(
@@ -465,29 +442,6 @@ export default {
 
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();
-
-		// The /lending-home experiment should only be tracked for users who have not logged in
-		if (!getHasEverLoggedIn(this.apollo)) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				EXP_KEY,
-				'EXP-CORE-1009-April2023'
-			);
-		}
-
-		// Tracking for EXP-CORE-1057-Feb-2023
-		const categoriesRedirectData = getExperimentSettingCached(this.apollo, CATEGORIES_REDIRECT_EXP_KEY);
-		if (categoriesRedirectData.enabled) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				CATEGORIES_REDIRECT_EXP_KEY,
-				'EXP-CORE-1057-Feb2023'
-			);
-		}
 
 		trackExperimentVersion(
 			this.apollo,

@@ -9,10 +9,4 @@ query userInfo {
 			balance
 		}
 	}
-	general {
-		loanFindingPage: uiExperimentSetting(key: "loan_finding_page") {
-			key
-			value
-		}
-	}
 }
