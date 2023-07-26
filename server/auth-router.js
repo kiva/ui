@@ -105,6 +105,10 @@ module.exports = function authRouter(config = {}) {
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
+		// Specify ssoRedirect url
+		if (req.query.ssoRedirect) {
+			options.sso_connection = req.query.ssoRedirect;
+		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
