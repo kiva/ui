@@ -146,9 +146,7 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: userInfoQuery
-			}).then(() => {
-				return client.query({ query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY } }); // eslint-disable-line max-len
+				query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY }
 			}).then(() => {
 				// Recommended row replacement test
 				const { version } = client.readFragment({
@@ -171,6 +169,7 @@ export default {
 				});
 
 				return Promise.all([
+					client.query({ query: userInfoQuery }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 					endingSoonLoanPromise,
