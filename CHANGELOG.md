@@ -1,3 +1,15 @@
+## [2.643.0](https://github.com/kiva/ui/compare/v2.642.0...v2.643.0) (2023-07-26)
+
+
+### Features
+
+* prefetch hook updated in lh page ([8207329](https://github.com/kiva/ui/commit/8207329ddea9c715f5af3e439889cd986ac6b570))
+
+
+### Bug Fixes
+
+* fixes from pr comments ([8ef0d93](https://github.com/kiva/ui/commit/8ef0d93cf9cb171788de8a808debc0f4f6d7b183))
+
 ## [2.642.0](https://github.com/kiva/ui/compare/v2.641.0...v2.642.0) (2023-07-26)
 
 
