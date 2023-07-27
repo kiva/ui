@@ -1,3 +1,10 @@
+### [2.643.1](https://github.com/kiva/ui/compare/v2.643.0...v2.643.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* auth0 repo requires camel case for these variables ([e00007e](https://github.com/kiva/ui/commit/e00007e71b48d7badcc8b3e5123b00d0004ef8f3))
+
 ## [2.643.0](https://github.com/kiva/ui/compare/v2.642.0...v2.643.0) (2023-07-26)
 
 
