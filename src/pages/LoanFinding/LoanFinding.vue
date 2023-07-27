@@ -39,6 +39,22 @@
 				}"
 			/>
 
+			<!-- Five dollars row -->
+			<lending-category-section
+				id="five-dollars-section"
+				v-if="enableFiveDollarsNotes"
+				:title="fiveDollarsRowTitle"
+				:subtitle="fiveDollarsRowSubtitle"
+				:loans="fiveDollarsRowLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-relending-exp="enableRelendingExp"
+				:user-balance="userBalance"
+				:five-dollars-selected="true"
+				:title-icon="HandOrangeIcon"
+				@add-to-basket="trackCategory($event, 'five-dollars')"
+				class="tw-pt-3 tw-mb-2"
+			/>
+
 			<div class="tw-flex tw-flex-col">
 				<quick-filters-section
 					class="tw-mt-3"
@@ -94,6 +110,7 @@ import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graph
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import HandOrangeIcon from '@/assets/images/hand_orange.svg';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
@@ -128,11 +145,8 @@ export default {
 		return {
 			userInfo: {},
 			firstRowLoans: [],
-			secondCategoryLoans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 },
-			],
+			secondCategoryLoans: new Array(9).fill({ id: 0 }),
+			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
 			spotlightIndex: 0,
@@ -141,6 +155,7 @@ export default {
 			userBalance: undefined,
 			enableRecommendedReplacementExp: false,
 			featuredLoan: {},
+			HandOrangeIcon,
 		};
 	},
 	apollo: {
@@ -230,6 +245,12 @@ export default {
 				? 'Make a difference for this borrower today.'
 				: 'Make a difference for these borrowers who only have a short time remaining.';
 		},
+		fiveDollarsRowTitle() {
+			return 'It takes just <span class="tw-text-action">$5 to change a life</span>';
+		},
+		fiveDollarsRowSubtitle() {
+			return 'Lend as little as $5 to fund a new dream.';
+		},
 		showWelcomeMsg() {
 			return this.isLoggedIn && !this.enableRelendingExp && !this.enableRecommendedReplacementExp;
 		}
@@ -285,6 +306,14 @@ export default {
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			return loans ?? [];
+		},
+		async getFiveDollarsLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLowToHigh', pageLimit: 30 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+			this.fiveDollarsRowLoans = loans ?? [];
 		},
 		async fetchSpotlightLoans() {
 			// Only query the spotlight loans once
@@ -438,6 +467,8 @@ export default {
 
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
+
+		if (this.enableFiveDollarsNotes) this.getFiveDollarsLoans();
 
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();

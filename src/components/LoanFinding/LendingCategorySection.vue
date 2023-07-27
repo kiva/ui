@@ -4,7 +4,10 @@
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
 				<div class="tw-w-full lg:tw-w-auto">
-					<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
+					<div class="tw-flex tw-items-center">
+						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
+						<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
+					</div>
 					<p
 						v-if="subtitle"
 						class="tw-text-subhead tw-text-primary"
@@ -41,6 +44,7 @@
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:large-card="isLargeCard"
 						:user-balance="userBalance"
+						:five-dollars-selected="fiveDollarsSelected"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
 					/>
@@ -93,6 +97,14 @@ export default {
 			type: String,
 			default: undefined
 		},
+		fiveDollarsSelected: {
+			type: Boolean,
+			default: false
+		},
+		titleIcon: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {

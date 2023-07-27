@@ -9,6 +9,7 @@
 			:show-tags="showTags"
 			:category-page-name="categoryPageName"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:five-dollars-selected="fiveDollarsSelected"
 			:large-card="largeCard"
 			:is-adding="isAdding"
 			:is-visitor="isVisitor"
@@ -113,6 +114,10 @@ export default {
 		userBalance: {
 			type: String,
 			default: undefined
+		},
+		fiveDollarsSelected: {
+			type: Boolean,
+			default: false
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
