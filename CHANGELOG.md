@@ -1,3 +1,15 @@
+## [2.644.0](https://github.com/kiva/ui/compare/v2.643.1...v2.644.0) (2023-07-27)
+
+
+### Features
+
+* new five dollars section added to lending home page ([064f019](https://github.com/kiva/ui/commit/064f019b777b7e21034833ad19631d308208e8a5))
+
+
+### Bug Fixes
+
+* fixes from pr comments ([a5c8048](https://github.com/kiva/ui/commit/a5c804882d5d6edeb76f457256dfc19961b0a2ce))
+
 ### [2.643.1](https://github.com/kiva/ui/compare/v2.643.0...v2.643.1) (2023-07-27)
 
 
