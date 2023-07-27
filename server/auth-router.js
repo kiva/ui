@@ -107,7 +107,7 @@ module.exports = function authRouter(config = {}) {
 		}
 		// Specify ssoRedirect url
 		if (req.query.ssoRedirect) {
-			options.sso_connection = req.query.ssoRedirect;
+			options.ssoRedirect = req.query.ssoRedirect;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
