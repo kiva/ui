@@ -1,3 +1,10 @@
+## [2.645.0](https://github.com/kiva/ui/compare/v2.644.0...v2.645.0) (2023-07-28)
+
+
+### Features
+
+* remove exp code for control version ([d368368](https://github.com/kiva/ui/commit/d368368949b8f4730f6b037e36a93559380cd035))
+
 ## [2.644.0](https://github.com/kiva/ui/compare/v2.643.1...v2.644.0) (2023-07-27)
 
 
