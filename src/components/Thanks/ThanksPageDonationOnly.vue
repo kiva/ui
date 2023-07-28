@@ -146,10 +146,6 @@ export default {
 		KvGrid
 	},
 	props: {
-		shareAskCopyVersion: {
-			type: String,
-			default: 'a'
-		},
 		monthlyDonationAmount: {
 			type: String,
 			default: ''
@@ -167,7 +163,8 @@ export default {
 			},
 			youtubeId: 'Mpp2ZH7os4Q',
 			isGuest: false,
-			message: ''
+			message: '',
+			utmCampaign: 'social_share_checkout',
 		};
 	},
 	computed: {
@@ -198,12 +195,7 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-		utmCampaign() {
-			if (this.shareAskCopyVersion === 'b') {
-				return 'social_share_checkout_variant';
-			}
-			return 'social_share_checkout_control';
-		},
+
 	},
 	methods: {
 		gatherCurrentUserData() {

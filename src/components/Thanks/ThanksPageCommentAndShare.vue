@@ -78,29 +78,18 @@
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<template v-if="shareAskCopyVersion === null || shareAskCopyVersion === 'a'">
-						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
-							Get a $25 lending credit by inspiring others.
-						</h1>
-						<p class="tw-m-0 tw-text-subhead">
-							<!-- eslint-disable-next-line max-len -->
-							Introduce someone new to Kiva and we'll give you $25 to support another borrower. Your Kiva Lending Credit will be applied automatically.
-						</p>
-					</template>
-					<template v-else>
-						<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
-							<!-- eslint-disable-next-line max-len -->
-							<template v-if="!calculatePeopleQtyToGoal()">
-								Can you share Kiva with one more person?
-							</template>
-							<template v-else>
-								Can you share this loan with one more person?
-							</template>
-						</h1>
-						<p class="tw-m-0 tw-text-subhead">
-							{{ thanksPageBody }}
-						</p>
-					</template>
+					<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
+						<!-- eslint-disable-next-line max-len -->
+						<template v-if="!calculatePeopleQtyToGoal()">
+							Can you share Kiva with one more person?
+						</template>
+						<template v-else>
+							Can you share this loan with one more person?
+						</template>
+					</h1>
+					<p class="tw-m-0 tw-text-subhead">
+						{{ thanksPageBody }}
+					</p>
 					<template>
 						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
 							<button
@@ -225,10 +214,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		shareAskCopyVersion: {
-			type: String,
-			default: 'a'
-		},
 		isGuest: {
 			type: Boolean,
 			default: false
@@ -255,6 +240,7 @@ export default {
 				disabled: false,
 				text: 'Copy Link'
 			},
+			utmCampaign: 'social_share_checkout',
 		};
 	},
 	computed: {
@@ -278,12 +264,6 @@ export default {
 			if (this.isGuest) return 'guest';
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
-		},
-		utmCampaign() {
-			if (this.shareAskCopyVersion === 'b') {
-				return 'social_share_checkout_variant';
-			}
-			return 'social_share_checkout_control';
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;

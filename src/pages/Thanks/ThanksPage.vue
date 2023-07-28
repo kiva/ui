@@ -3,7 +3,6 @@
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
-				:share-ask-copy-version="shareAskCopyVersion"
 			/>
 		</template>
 		<template v-else>
@@ -88,7 +87,6 @@
 				:receipt="receipt"
 				:lender="lender"
 				:loan="selectedLoan"
-				:share-ask-copy-version="shareAskCopyVersion"
 				:is-guest="isGuest"
 				@guest-create-account="createGuestAccount"
 				:ask-for-comments="askForComments"
@@ -101,7 +99,6 @@
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
@@ -152,7 +149,6 @@ export default {
 			hasModernSub: false,
 			isGuest: false,
 			pageData: {},
-			shareAskCopyVersion: '',
 			jumpToGuestUpsell: false,
 			monthlyDonationAmount: ''
 		};
@@ -343,23 +339,6 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-
-		if (this.showFocusedShareAsk) {
-			// MARS-202 Share copy ask experiment
-			const shareAskCopyResult = this.apollo.readFragment({
-				id: 'Experiment:share_ask_copy',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.shareAskCopyVersion = shareAskCopyResult.version;
-			if (this.shareAskCopyVersion) {
-				this.$kvTrackEvent(
-					'Thanks',
-					'EXP-MARS-202-Aug2022',
-					this.shareAskCopyVersion,
-				);
-			}
-		}
 	},
 	methods: {
 		createGuestAccount() {
