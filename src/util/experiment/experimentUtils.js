@@ -11,7 +11,7 @@ import Alea from './Alea';
 /**
  * The name of the cookie for storing assignments
  */
-const UIAB_COOKIE_NAME = 'uiab';
+export const UIAB_COOKIE_NAME = 'uiab';
 
 /**
  * Gets the current active experiments
