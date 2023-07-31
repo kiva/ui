@@ -1,6 +1,8 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<div class="tw-w-full">
+			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
+
 			<!-- eslint-disable-next-line max-len -->
 			<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 				<h3 class="tw-text-h3 tw-text-primary">
@@ -101,6 +103,7 @@ import LoanFindingFeaturedLoan from '@/components/LoanFinding/LoanFindingFeature
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
+import FiveDollarsBanner from '@/components/LoanFinding/FiveDollarsBanner';
 import { runLoansQuery } from '@/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
@@ -126,6 +129,7 @@ export default {
 		QuickFiltersSection,
 		PartnerSpotlightSection,
 		LoanFindingFeaturedLoan,
+		FiveDollarsBanner,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
 	metaInfo() {
@@ -155,6 +159,7 @@ export default {
 			userBalance: undefined,
 			enableRecommendedReplacementExp: false,
 			featuredLoan: {},
+			showFiveDollarsBanner: false,
 			HandOrangeIcon,
 		};
 	},
@@ -252,7 +257,8 @@ export default {
 			return 'Lend as little as $5 to fund a new dream.';
 		},
 		showWelcomeMsg() {
-			return this.isLoggedIn && !this.enableRelendingExp && !this.enableRecommendedReplacementExp;
+			return this.isLoggedIn && !this.enableRelendingExp
+				&& !this.enableRecommendedReplacementExp && !this.showFiveDollarsBanner;
 		}
 	},
 	methods: {
@@ -396,6 +402,19 @@ export default {
 		trackSpotlightDisplayedLoans() {
 			this.trackDisplayedLoans('spotlight', 4, this.spotlightLoans);
 		},
+		check5DollarsBannerCookie() {
+			const currentDate = new Date();
+			const dateCookie = this.cookieStore.get('kvfivedollarsbanner');
+			if (!dateCookie) {
+				this.cookieStore.set('kvfivedollarsbanner', currentDate);
+				this.showFiveDollarsBanner = true;
+			} else {
+				const cookieDate = new Date(dateCookie);
+				const timeDifference = currentDate.getTime() - cookieDate.getTime();
+				const daysDifference = timeDifference / (1000 * 3600 * 24);
+				if (daysDifference < 3) this.showFiveDollarsBanner = true;
+			}
+		}
 	},
 	created() {
 		const cachedUserInfo = this.apollo.readQuery({
@@ -439,6 +458,9 @@ export default {
 		if (this.enableFiveDollarsNotes) {
 			if ((this.userBalance > 0 && this.userBalance < 10) || (this.userBalance > 20 && this.userBalance < 50)) relendingArray = relendingArray.slice(0, 2);
 			if ((this.userBalance > 10 && this.userBalance < 15) || (this.userBalance > 50 && this.userBalance < 75)) relendingArray = relendingArray.slice(0, 3);
+
+			// check for $5 notes banner cookie
+			this.check5DollarsBannerCookie();
 		} else {
 			if (this.userBalance > 0 && this.userBalance < 50) relendingArray = relendingArray.slice(0, 2);
 			if (this.userBalance > 50 && this.userBalance < 75) relendingArray = relendingArray.slice(0, 3);
