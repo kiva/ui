@@ -119,6 +119,7 @@ const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_
 const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
+const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 
 export default {
 	name: 'LoanFinding',
@@ -404,9 +405,12 @@ export default {
 		},
 		check5DollarsBannerCookie() {
 			const currentDate = new Date();
-			const dateCookie = this.cookieStore.get('kvfivedollarsbanner');
+			const dateCookie = this.cookieStore.get(FIVE_DOLLARS_BANNER_KEY);
 			if (!dateCookie) {
-				this.cookieStore.set('kvfivedollarsbanner', currentDate);
+				// Set cookie with 6 months expiration
+				const expires = new Date();
+				expires.setMonth(expires.getMonth() + 6);
+				this.cookieStore.set(FIVE_DOLLARS_BANNER_KEY, currentDate, { path: '/', expires });
 				this.showFiveDollarsBanner = true;
 			} else {
 				const cookieDate = new Date(dateCookie);
