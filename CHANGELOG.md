@@ -1,3 +1,10 @@
+## [2.647.0](https://github.com/kiva/ui/compare/v2.646.0...v2.647.0) (2023-08-01)
+
+
+### Features
+
+* handle ui login kiva_corp_partner param ([a52b532](https://github.com/kiva/ui/commit/a52b53233ee42c18eaa9f2a6d98ea96ec1206ea1))
+
 ## [2.646.0](https://github.com/kiva/ui/compare/v2.645.0...v2.646.0) (2023-08-01)
 
 
