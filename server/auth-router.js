@@ -109,6 +109,10 @@ module.exports = function authRouter(config = {}) {
 		if (req.query.ssoRedirect) {
 			options.ssoRedirect = req.query.ssoRedirect;
 		}
+		// Enable Kiva Corp Partner version of the login UI
+		if (req.query.kivaCorpPartner) {
+			options.kiva_corp_partner = true;
+		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
