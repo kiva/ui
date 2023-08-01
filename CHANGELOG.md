@@ -1,3 +1,11 @@
+## [2.646.0](https://github.com/kiva/ui/compare/v2.645.0...v2.646.0) (2023-08-01)
+
+
+### Features
+
+* 5 dollars banner added to lending home page ([8cd2d73](https://github.com/kiva/ui/commit/8cd2d73d5f8a3908ccdd5164bcaa2643f003b3f7))
+* expiration time added to five dollars banner cookie ([8432b9e](https://github.com/kiva/ui/commit/8432b9e43bda561715078727a147e5d98759a628))
+
 ## [2.645.0](https://github.com/kiva/ui/compare/v2.644.0...v2.645.0) (2023-07-28)
 
 
