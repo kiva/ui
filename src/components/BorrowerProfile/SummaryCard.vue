@@ -120,7 +120,6 @@ import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
-import JumpLinks from './JumpLinks';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const preFetchQuery = gql`
@@ -201,7 +200,6 @@ export default {
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
-		JumpLinks,
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
