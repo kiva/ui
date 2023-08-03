@@ -1,3 +1,17 @@
+## [2.648.0](https://github.com/kiva/ui/compare/v2.647.0...v2.648.0) (2023-08-03)
+
+
+### Features
+
+* kv components version updated ([a9c70c1](https://github.com/kiva/ui/commit/a9c70c110241ef4f25d6cfd4bbd4e08ac37d1380))
+
+## [2.647.0](https://github.com/kiva/ui/compare/v2.646.0...v2.647.0) (2023-08-01)
+
+
+### Features
+
+* handle ui login kiva_corp_partner param ([a52b532](https://github.com/kiva/ui/commit/a52b53233ee42c18eaa9f2a6d98ea96ec1206ea1))
+
 ## [2.646.0](https://github.com/kiva/ui/compare/v2.645.0...v2.646.0) (2023-08-01)
 
 
