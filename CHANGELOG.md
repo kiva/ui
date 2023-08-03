@@ -1,3 +1,18 @@
+## [2.649.0](https://github.com/kiva/ui/compare/v2.648.0...v2.649.0) (2023-08-03)
+
+
+### Features
+
+* ensure Save for later btn appears on tablet and update loan progress bar to make it visible ([7476656](https://github.com/kiva/ui/commit/747665636f8a6720990209fa819e329307a0811e))
+* rearrange lend cta section to be at the top on mobile view ([b167267](https://github.com/kiva/ui/commit/b1672673466a7a1ed718d380ecea514fffad1f22))
+
+
+### Bug Fixes
+
+* remove isMobile flag from LendCta ([f31e60c](https://github.com/kiva/ui/commit/f31e60c285577d914600c4c769ba3ebdb311edbd))
+* remove unused jump-link ([9d9c067](https://github.com/kiva/ui/commit/9d9c0673c0edeaaf4534dc4425e88c48316abd95))
+* solve conflict ([60bced9](https://github.com/kiva/ui/commit/60bced997f9256584303167ad31eba7f1f62fb43))
+
 ## [2.648.0](https://github.com/kiva/ui/compare/v2.647.0...v2.648.0) (2023-08-03)
 
 
