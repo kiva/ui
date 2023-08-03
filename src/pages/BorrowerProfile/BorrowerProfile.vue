@@ -36,7 +36,6 @@
 				>
 					<lend-cta
 						class="tw-pointer-events-auto"
-						:is-mobile="isMobile"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					>

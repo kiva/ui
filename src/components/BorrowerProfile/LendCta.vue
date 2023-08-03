@@ -399,10 +399,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		isMobile: {
-			type: Boolean,
-			default: false
-		}
 	},
 	components: {
 		LendAmountButton,
