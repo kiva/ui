@@ -6,26 +6,29 @@
 	>
 		<div
 			:class="[
-				'tw-w-full tw-z-sticky',
+				'tw-w-full',
 				'tw-flex tw-flex-col',
-				'tw-fixed tw-left-0 tw-bottom-0',
+				'tw-left-0 tw-bottom-0',
 				{
 					'md:tw-static': !isSticky,
 				},
 				'lg:tw-static',
+				{
+					'tw-fixed tw-z-sticky': isSticky
+				}
 			]"
 		>
 			<kv-grid
 				:class="[
 					'tw-grid-cols-12',
-					'tw-px-2.5',
-					'tw-bg-primary',
-					'tw-border-t tw-border-tertiary',
 					{
 						'md:tw-rounded-b': !isSticky,
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
+						'tw-bg-transparent': !isSticky && isMobile,
+						'tw-bg-primary': !isMobile || isSticky,
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -184,7 +187,9 @@
 								'tw-justify-center',
 								'tw-w-4',
 								'tw-h-4',
-								'tw-absolute',
+								{
+									'tw-absolute': isSticky
+								},
 								'tw-left-0',
 								'tw-top-[0.15rem]',
 								'md:tw-top-auto',
@@ -222,20 +227,32 @@
 						All shares reserved
 					</p>
 					<hr
-						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						class="md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						:class="[
+							{
+								'tw-hidden': isSticky,
+								'tw-block': !isSticky,
+							}
+						]"
 					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full"
-						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+						class="md:tw-block tw-flex lg:tw-justify-center tw-w-full"
+						:class="[
+							{
+								'tw-justify-between': isLoggedIn,
+								'tw-justify-end': !isLoggedIn,
+								'tw-hidden': isSticky,
+							}
+						]"
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block lg:tw-hidden"
+							class="tw-inline-block md:tw-hidden"
 						/>
 						<jump-links
-							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
+							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
@@ -254,8 +271,6 @@
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-px-2.5',
-						'tw-absolute',
 						'tw-bottom-8',
 						'tw-w-full',
 						{
@@ -264,6 +279,7 @@
 							'md:tw-order-none': !isSticky,
 							'md:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
+							'tw-px-2.5 tw-absolute': isSticky
 						},
 						'lg:tw-px-0',
 						{
@@ -285,7 +301,7 @@
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{
-								'tw-relative': !isSticky,
+								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
@@ -383,6 +399,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		isMobile: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		LendAmountButton,
@@ -782,7 +802,7 @@ export default {
 			if (this.isSticky) {
 				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
 			}
-			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
+			return '';
 		},
 		isLessThan25() {
 			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
@@ -808,7 +828,6 @@ export default {
 	beforeDestroy() {
 		this.destroyWrapperObserver();
 	},
-
 };
 
 </script>

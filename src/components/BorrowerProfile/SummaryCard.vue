@@ -107,21 +107,6 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
-		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
-		<div
-			class="tw-flex tw-items-center tw-w-full"
-			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
-		>
-			<!-- only show option to bookmark loan if user is logged in -->
-			<loan-bookmark
-				v-if="isLoggedIn"
-				:loan-id="loanId"
-				class="md:tw-hidden tw-mt-1"
-				data-testid="bp-mobile-summary-bookmark"
-			/>
-
-			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
-		</div>
 	</section>
 </template>
 

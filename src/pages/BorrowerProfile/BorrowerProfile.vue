@@ -24,20 +24,7 @@
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
 						:show-urgency-exp="showUrgencyExp"
-					>
-						<template #sharebutton>
-							<!-- Share button -->
-							<share-button
-								class="tw-block md:tw-hidden tw-mt-3"
-								:loan="loan"
-								:lender="lender"
-								:campaign="shareCampaign"
-								:in-pfp="inPfp"
-								:pfp-min-lenders="pfpMinLenders"
-								:num-lenders="numLenders"
-							/>
-						</template>
-					</summary-card>
+					/>
 				</content-container>
 			</div>
 			<div
@@ -49,14 +36,16 @@
 				>
 					<lend-cta
 						class="tw-pointer-events-auto"
+						:is-mobile="isMobile"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
 							<share-button
-								class="tw-hidden md:tw-block lg:tw-mb-1.5"
+								class="tw-block lg:tw-mb-1.5"
 								:loan="loan"
+								:variant="shareBtnVariant"
 								:lender="lender"
 								:campaign="shareCampaign"
 								:in-pfp="inPfp"
@@ -169,6 +158,7 @@ import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '@/util/hotJarUtils';
+import _throttle from 'lodash/throttle';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
@@ -417,7 +407,8 @@ export default {
 			isoCode: '',
 			shareLanguageExpVersion: 'a',
 			city: '',
-			state: ''
+			state: '',
+			isMobile: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -541,6 +532,24 @@ export default {
 		if (version) {
 			this.shareLanguageExpVersion = version;
 		}
+
+		this.determineIfMobile();
+
+		window.addEventListener('resize', _throttle(() => {
+			this.initStickyBehavior();
+			this.determineIfMobile();
+		}, 200));
+	},
+	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
+	},
+	beforeDestroy() {
+		this.destroyWrapperObserver();
+		window.removeEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
 	},
 	computed: {
 		shareCampaign() {
@@ -623,6 +632,9 @@ export default {
 				return 'direct-loan';
 			}
 			return 'partner-loan';
+		},
+		shareBtnVariant() {
+			return this.isMobile ? 'secondary' : 'caution';
 		}
 	},
 	created() {
