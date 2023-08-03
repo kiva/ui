@@ -26,8 +26,8 @@
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
-						'tw-bg-transparent': !isSticky && isMobile,
-						'tw-bg-primary': !isMobile || isSticky,
+						'tw-bg-transparent md:tw-bg-primary': !isSticky,
+						'tw-bg-primary': isSticky,
 						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
 					},
 					'lg:tw-rounded-t',
@@ -227,7 +227,7 @@
 						All shares reserved
 					</p>
 					<hr
-						class="md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
 						:class="[
 							{
 								'tw-hidden': isSticky,
@@ -236,7 +236,7 @@
 						]"
 					>
 					<div
-						class="md:tw-block tw-flex lg:tw-justify-center tw-w-full"
+						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
 						:class="[
 							{
 								'tw-justify-between': isLoggedIn,
@@ -249,7 +249,7 @@
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-inline-block md:tw-hidden"
+							class="tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
 							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"

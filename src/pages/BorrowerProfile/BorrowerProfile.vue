@@ -42,7 +42,11 @@
 					>
 						<template #sharebutton>
 							<!-- Share button -->
+							<template v-if="isLoading">
+								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
+							</template>
 							<share-button
+								v-else
 								class="tw-block lg:tw-mb-1.5"
 								:loan="loan"
 								:variant="shareBtnVariant"
@@ -159,6 +163,7 @@ import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '@/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
@@ -286,6 +291,7 @@ export default {
 		ContentContainer,
 		DetailsTabs,
 		HeroBackground,
+		KvLoadingPlaceholder,
 		FundedBorrowerProfile,
 		LendCta,
 		LendersAndTeams,
@@ -409,6 +415,7 @@ export default {
 			city: '',
 			state: '',
 			isMobile: false,
+			isLoading: true,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -539,6 +546,8 @@ export default {
 			this.initStickyBehavior();
 			this.determineIfMobile();
 		}, 200));
+
+		this.isLoading = false;
 	},
 	methods: {
 		determineIfMobile() {
