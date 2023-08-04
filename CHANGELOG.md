@@ -1,3 +1,10 @@
+### [2.649.1](https://github.com/kiva/ui/compare/v2.649.0...v2.649.1) (2023-08-04)
+
+
+### Bug Fixes
+
+* update lighthouse url set ([b5ff754](https://github.com/kiva/ui/commit/b5ff754a748a94bbd682e3aad4966f4649bdcac8))
+
 ## [2.649.0](https://github.com/kiva/ui/compare/v2.648.0...v2.649.0) (2023-08-03)
 
 
