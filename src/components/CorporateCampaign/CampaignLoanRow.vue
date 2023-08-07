@@ -40,6 +40,7 @@
 						:checkout-route="checkoutRoute"
 						:custom-loan-details="true"
 						:custom-checkout-button-text="getCheckoutBtnText(loan)"
+						:use-emitted-add-to-basket="true"
 						@show-loan-details="showLoanDetails(loans[index])"
 						@add-to-basket="addToBasket"
 						@custom-checkout-button-action="removeLoanFromBasket(loan)"
