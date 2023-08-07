@@ -113,6 +113,7 @@ export default {
 			title: 'We rely on donations to reach the people who need it the most',
 		};
 	},
+	inject: ['cookieStore'],
 	components: {
 		KvButton,
 		KvLightbox,
@@ -169,9 +170,15 @@ export default {
 	},
 	methods: {
 		setDonationAndClose(amount, source) {
-			if (amount === 0 && !this.zeroUpsellVisible) {
+			const zeroUpsellCookie = this.cookieStore.get('zero_upsell_visible') || true;
+			if (amount === 0 && !this.zeroUpsellVisible && zeroUpsellCookie !== 'false') {
 				this.zeroUpsellVisible = true;
 			} else {
+				if (amount === 0) {
+					const expires = new Date();
+					expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
+					this.cookieStore.set('zero_upsell_visible', false, { expires });
+				}
 				const clickSource = source ? ` - ${source}` : '';
 				this.updateDonationTo(amount);
 				this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
