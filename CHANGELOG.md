@@ -1,3 +1,10 @@
+### [2.649.2](https://github.com/kiva/ui/compare/v2.649.1...v2.649.2) (2023-08-07)
+
+
+### Bug Fixes
+
+* skipping second addToBasket mutation ([cbd7cf6](https://github.com/kiva/ui/commit/cbd7cf651cd238bcb757446b6e887437439b3f52))
+
 ### [2.649.1](https://github.com/kiva/ui/compare/v2.649.0...v2.649.1) (2023-08-04)
 
 
