@@ -324,6 +324,10 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
+		},
+		useEmittedAddToBasket: {
+			type: Boolean,
+			default: false
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -537,7 +541,11 @@ export default {
 			if (this.loan) this.isLoading = false;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
-		addToBasket() {
+		addToBasket(payload) {
+			if (this.useEmittedAddToBasket) {
+				this.$emit('add-to-basket', payload);
+				return true;
+			}
 			this.isAdding = true;
 			setLendAmount({
 				amount: this.lendAmount,
