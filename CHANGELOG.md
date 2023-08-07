@@ -1,3 +1,10 @@
+## [2.650.0](https://github.com/kiva/ui/compare/v2.649.2...v2.650.0) (2023-08-07)
+
+
+### Features
+
+* show 'just 1 dollar' modal once per 24 hours ([8d44a7f](https://github.com/kiva/ui/commit/8d44a7fe162e4d8e5ca0a6b419963e5b42b646c1))
+
 ### [2.649.2](https://github.com/kiva/ui/compare/v2.649.1...v2.649.2) (2023-08-07)
 
 
