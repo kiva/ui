@@ -89,7 +89,7 @@
 						variant="secondary"
 						@click="trackEvent({
 							label: `monthly good cancel ; These aren't causes I want to support`,
-							property: 'cancel reason ; category_alignment'}); changeContribution()"
+							property: 'cancel reason ; category_alignment'}); goToStep('3-choose-a')"
 					>
 						These aren't causes I want to support
 					</kv-button>
