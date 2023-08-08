@@ -60,7 +60,7 @@
 								Change subscription status
 							</p>
 							<p class="tw-text-secondary">
-								Pause or cancel your membership
+								Cancel your membership
 							</p>
 						</div>
 						<kv-button
@@ -213,15 +213,10 @@ const pageQuery = gql`query monthlyGoodSubscription {
 			id
 			amount
 			donation
+			timestamp
 			category {
 				id
 				subscriptionType
-			}
-			history {
-				values {
-					id
-					timestamp
-				}
 			}
 		}
 	}
@@ -281,9 +276,7 @@ export default {
 				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
 				this.subscriptionId = data?.my?.autoDeposit?.id;
 				this.firstName = data?.my?.userAccount?.firstName ?? '';
-				// eslint-disable-next-line max-len
-				const mgSubs = activeMonthlyGoodSubscription?.history?.values ?? [];
-				this.subStartTimestamp = mgSubs?.[0]?.timestamp ?? null;
+				this.subStartTimestamp = activeMonthlyGoodSubscription?.timestamp ?? null;
 			}
 		},
 	},
