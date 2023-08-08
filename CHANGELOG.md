@@ -1,3 +1,10 @@
+### [2.650.1](https://github.com/kiva/ui/compare/v2.650.0...v2.650.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* small fix in cancellation flow and how to calculate the months you have been a subscriber ([68b05ff](https://github.com/kiva/ui/commit/68b05fff66fe249a6f7fc785a3e60fd3c2de29d9))
+
 ## [2.650.0](https://github.com/kiva/ui/compare/v2.649.2...v2.650.0) (2023-08-07)
 
 
