@@ -1,3 +1,10 @@
+### [2.650.2](https://github.com/kiva/ui/compare/v2.650.1...v2.650.2) (2023-08-10)
+
+
+### Bug Fixes
+
+* ensure we hit legacy lend, add drupal based about page ([bfc996b](https://github.com/kiva/ui/commit/bfc996b681e037976f0b0ffc03de2413e932a707))
+
 ### [2.650.1](https://github.com/kiva/ui/compare/v2.650.0...v2.650.1) (2023-08-08)
 
 
