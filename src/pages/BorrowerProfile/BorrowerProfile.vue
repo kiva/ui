@@ -542,7 +542,6 @@ export default {
 		this.determineIfMobile();
 
 		window.addEventListener('resize', _throttle(() => {
-			this.initStickyBehavior();
 			this.determineIfMobile();
 		}, 200));
 
@@ -554,7 +553,6 @@ export default {
 		},
 	},
 	beforeDestroy() {
-		this.destroyWrapperObserver();
 		window.removeEventListener('resize', _throttle(() => {
 			this.determineIfMobile();
 		}, 200));
