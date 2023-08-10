@@ -1,3 +1,10 @@
+### [2.650.3](https://github.com/kiva/ui/compare/v2.650.2...v2.650.3) (2023-08-10)
+
+
+### Bug Fixes
+
+* calling undefined func on borrower profile added by mistake ([f2d73fd](https://github.com/kiva/ui/commit/f2d73fdda77d359cde6963c458adcc7641c24202))
+
 ### [2.650.2](https://github.com/kiva/ui/compare/v2.650.1...v2.650.2) (2023-08-10)
 
 
