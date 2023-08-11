@@ -44,68 +44,89 @@
 							</ul>
 						</div>
 						<!-- comment -->
-						<h2>
-							<em class="tw-break-words">"{{ comment.body }}"</em>
-						</h2>
-						<!-- author -->
-						<div class="tw-float-right tw-flex tw-align-center tw-mt-1.5">
-							<div
-								class="tw-mr-1"
-								:class="{'tw-w-4 tw-h-4': isMobile, 'tw-w-6 tw-h-6': !isMobile}"
-							>
-								<!-- image variations -->
-								<!-- user is not anonymous and has an image -->
-								<borrower-image
-									v-if="!comment.isAnonymous && !isDefaultProfilePic(comment.hash)"
-									class="tw-rounded-full tw-bg-black tw-w-full tw-h-full"
-									:alt="comment.authorName"
-									:default-image="{ width: isMobile ? 32 : 48 }"
-									:hash="comment.hash"
-								/>
-								<!-- user is not anonymous and does not have an image -->
+						<div>
+							<h2>
+								<em class="tw-break-words">"{{ shortComment(comment.body) }}"</em>
+							</h2>
+						</div>
+						<div
+							class="tw-flex"
+							:class="isTruncatedComment(comment.body) ? 'tw-justify-between' : 'tw-justify-end'"
+						>
+							<!-- read more -->
+							<p class="tw-mt-1" v-if="isTruncatedComment(comment.body)">
+								<button
+									class="tw-text-link"
+									@click="showFullComment(comment.body)"
+									v-kv-track-event="['borrower-profile', 'click', 'comment-read-more']"
+								>
+									Read More
+								</button>
+							</p>
+							<div class="tw-self-end tw-flex tw-align-center tw-mt-1.5">
 								<div
-									v-else-if="!comment.isAnonymous && isDefaultProfilePic(comment.hash)"
-									class="
+									class="tw-mr-1"
+									:class="{'tw-w-4 tw-h-4': isMobile, 'tw-w-6 tw-h-6': !isMobile}"
+								>
+									<!-- image variations -->
+									<!-- user is not anonymous and has an image -->
+									<borrower-image
+										v-if="!comment.isAnonymous && !isDefaultProfilePic(comment.hash)"
+										class="tw-rounded-full tw-bg-black tw-w-full tw-h-full"
+										:alt="comment.authorName"
+										:default-image="{ width: isMobile ? 32 : 48 }"
+										:hash="comment.hash"
+									/>
+									<!-- user is not anonymous and does not have an image -->
+									<div
+										v-else-if="!comment.isAnonymous && isDefaultProfilePic(comment.hash)"
+										class="
 										tw-rounded-full
 										tw-text-h2
 										tw-w-full tw-h-full
 										tw-flex tw-align-center tw-justify-center"
-									:class="randomizedUserClass()"
-								>
-									<!-- First Letter of lender name -->
-									<span class="tw-self-center">
-										{{ comment.lenderNameFirstLetter }}
-									</span>
-								</div>
-								<!-- user is anonymous -->
-								<div
-									v-else
-									class="
+										:class="randomizedUserClass()"
+									>
+										<!-- First Letter of lender name -->
+										<span class="tw-self-center">
+											{{ comment.lenderNameFirstLetter }}
+										</span>
+									</div>
+									<!-- user is anonymous -->
+									<div
+										v-else
+										class="
 										tw-rounded-full
 										tw-bg-brand
 										tw-w-full tw-h-full
 										tw-flex tw-align-center tw-justify-center"
-								>
-									<!-- Kiva K logo -->
-									<img
-										src="@/assets/images/kiva_k.svg"
 									>
+										<!-- Kiva K logo -->
+										<img
+											src="@/assets/images/kiva_k.svg"
+										>
+									</div>
 								</div>
-							</div>
-
-							<!-- name and team info -->
-							<div>
-								<h3>
-									{{ comment.authorName }}
-								</h3>
-								<h4 v-if="comment.lenderTeam && comment.lenderTeamPublicId">
-									<router-link
-										:to="`/team/${comment.lenderTeamPublicId}`"
-										class="tw-text-primary"
-									>
-										{{ comment.lenderTeam }}
-									</router-link>
-								</h4>
+								<!-- name and team info -->
+								<div>
+									<h3>
+										{{ comment.authorName }}
+									</h3>
+									<h4 v-if="comment.lenderTeam && comment.lenderTeamPublicId">
+										<router-link
+											:to="`/team/${comment.lenderTeamPublicId}`"
+											class="tw-text-primary"
+											v-kv-track-event="[
+												'borrower-profile',
+												'click',
+												'comment-team-name',
+												comment.lenderTeamPublicId
+											]"
+										>
+											{{ comment.lenderTeam }}
+										</router-link>
+									</h4>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -114,9 +135,9 @@
 			</kv-carousel>
 		</div>
 		<kv-lightbox
-			:visible="isLightboxVisible"
+			:visible="isReportLightboxVisible"
 			title="Report comment"
-			@lightbox-closed="isLightboxVisible = false"
+			@lightbox-closed="isReportLightboxVisible = false"
 		>
 			<template #header>
 				<h2>
@@ -152,7 +173,7 @@
 			<template #controls>
 				<kv-button
 					variant="secondary"
-					@click="isLightboxVisible = false"
+					@click="isReportLightboxVisible = false"
 				>
 					Cancel
 				</kv-button>
@@ -164,6 +185,15 @@
 					Submit report
 				</kv-button>
 			</template>
+		</kv-lightbox>
+		<kv-lightbox
+			:visible="isCommentLightboxVisible"
+			title=""
+			@lightbox-closed="isCommentLightboxVisible = false"
+		>
+			<h2>
+				<em class="tw-break-words">"{{ selectedCommentBody }}"</em>
+			</h2>
 		</kv-lightbox>
 	</article>
 </template>
@@ -218,9 +248,11 @@ export default {
 			loading: true,
 			comments: [],
 			commentMenuShown: false,
-			isLightboxVisible: false,
+			isReportLightboxVisible: false,
+			isCommentLightboxVisible: false,
 			selectedReason: '',
 			selectedCommentId: '',
+			selectedCommentBody: '',
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
 				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
@@ -251,7 +283,7 @@ export default {
 				});
 				return {
 					...comment,
-					isAnonymous: comment.authorName === 'Anonymous',
+					isAnonymous: comment.authorName === 'Anonymous' || comment.authorName === null,
 					lenderNameFirstLetter: comment.authorName?.substring(0, 1).toUpperCase(),
 					lenderTeam: teamNameForThisComment,
 					lenderTeamPublicId: teamInfo?.teamPublicId ?? null,
@@ -332,7 +364,7 @@ export default {
 		},
 		openReportModal(commentId) {
 			this.selectedCommentId = commentId;
-			this.isLightboxVisible = true;
+			this.isReportLightboxVisible = true;
 		},
 		reportComment() {
 			this.loading = true;
@@ -360,7 +392,7 @@ export default {
 				logFormatter(e, 'error');
 				this.$showTipMsg('There was a problem reporting this comment', 'error');
 			}).finally(() => {
-				this.isLightboxVisible = false;
+				this.isReportLightboxVisible = false;
 				this.loading = false;
 			});
 		},
@@ -376,6 +408,20 @@ export default {
 		},
 		throttledResize() {
 			return _throttle(this.determineIfMobile, 200);
+		},
+		isTruncatedComment(commentBody) {
+			const commentLength = commentBody?.length ?? 0;
+			return commentLength > 255;
+		},
+		shortComment(commentBody) {
+			if (this.isTruncatedComment(commentBody)) {
+				return `${commentBody?.substring(0, 255)}... `;
+			}
+			return commentBody;
+		},
+		showFullComment(commentBody) {
+			this.isCommentLightboxVisible = true;
+			this.selectedCommentBody = commentBody;
 		},
 	},
 	mounted() {
