@@ -1,3 +1,10 @@
+### [2.650.4](https://github.com/kiva/ui/compare/v2.650.3...v2.650.4) (2023-08-14)
+
+
+### Bug Fixes
+
+* truncate comment heights to fix carousel ([88490cd](https://github.com/kiva/ui/commit/88490cd2c5b5a46a56a800dd35d209d0d660235d))
+
 ### [2.650.3](https://github.com/kiva/ui/compare/v2.650.2...v2.650.3) (2023-08-10)
 
 
