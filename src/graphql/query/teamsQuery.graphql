@@ -1,5 +1,3 @@
-#final query
-
 query teamsQuery(
    $sortOption: TeamSearchSortByEnum
    $category: TeamCategoryEnum

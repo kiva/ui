@@ -1,25 +1,24 @@
 <template>
 	<www-page>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-6
-			lg:tw-grid-cols-12"
+			<kv-grid
+				class="tw-grid-cols-6 lg:tw-grid-cols-12"
 			>
-				<div class="tw-col-span-12
-				md:tw-order-first
-				lg:tw-col-span-8"
+				<div
+					class="tw-col-span-12 md:tw-order-first lg:tw-col-span-8"
 				>
-					<h1 class="tw-text-h1
-					tw-mt-4 tw-mb-2"
+					<h1
+						class="tw-text-h1 tw-mt-4 tw-mb-2"
 					>
 						Lending Teams
 					</h1>
-					<h2 class="tw-text-h3
-					tw-mb-4"
+					<h2
+						class="tw-text-h3 tw-mb-4"
 					>
 						Connect with Kiva's Lender Community
 					</h2>
-					<h3 class="tw-text-base
-					tw-mb-4"
+					<h3
+						class="tw-text-base tw-mb-4"
 					>
 						Lending teams are self-organized groups built around common interests, school
 						affiliation or location. Join as many teams as you'd like, and rally around
@@ -27,43 +26,43 @@
 						team's impact. To get started, simply join an existing team or create a new
 						one and invite your friends!
 					</h3>
-					<div class="tw-flex-row
-					tw-gap-0.5
-					tw-mb-4"
+					<div
+						class="tw-flex-row tw-gap-0.5 tw-mb-4"
 					>
-						<kv-button variant="primary"
+						<kv-button
+							variant="primary"
 							to="/teams/create"
 							class="tw-w-full md:tw-w-auto"
 						>
 							Start Team
 						</kv-button>
-						<kv-button variant="secondary"
+						<kv-button
+							variant="secondary"
 							to="/teams/my-teams"
 							class="tw-w-full md:tw-w-auto "
 						>
 							My Teams
 						</kv-button>
-						<kv-button variant="secondary"
+						<kv-button
+							variant="secondary"
 							to="/teams/playbook"
 							class="tw-w-full md:tw-w-auto "
 						>
 							Team Playbook
 						</kv-button>
-						<kv-button variant="secondary"
-							to="/kiva-community-guidelines"
+						<kv-button
+							variant="secondary"
+							href="/kiva-community-guidelines"
 							class="tw-w-full md:tw-w-auto "
 						>
 							Community Guidelines
 						</kv-button>
 					</div>
 				</div>
-				<div class="tw-col-span-12
-				md:tw-col-start-7
-				md:tw-col-span-6
-				md:tw-row-start-1-row-divide-1/2
-				lg:tw-col-span-4
-				lg:tw-col-start-9
-				lg:tw-row-span-2"
+				<div
+					class="tw-col-span-12
+					md:tw-col-start-7 md:tw-col-span-6 md:tw-row-start-1-row-divide-1/2
+					lg:tw-col-span-4 lg:tw-col-start-9 lg:tw-row-span-2"
 				>
 					<div class="tw-text-h4 tw-mt-4">
 						TEAM LEADERBOARDS
@@ -71,10 +70,8 @@
 					<team-leaderboards board-type="overallLoanedAmount" />
 					<team-leaderboards board-type="memberCount" />
 				</div>
-				<div class="tw-col-span-12
-				md:tw-col-span-6
-				md:tw-row-start-1-row-divide-1/2
-				lg:tw-col-span-8"
+				<div
+					class="tw-col-span-12 md:tw-col-span-6 md:tw-row-start-1-row-divide-1/2 lg:tw-col-span-8"
 				>
 					<team-listing />
 				</div>

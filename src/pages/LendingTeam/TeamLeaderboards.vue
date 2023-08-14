@@ -1,11 +1,7 @@
 <template>
 	<div class="tw-bg-primary tw-mb-4 tw-rounded">
-		<h3 class="tw-text-h4
-			tw-bg-action
-			tw-text-primary-inverse
-			tw-w-full
-			tw-pl-1
-			tw-rounded-sm"
+		<h3
+			class="tw-text-h4 tw-bg-action tw-text-primary-inverse tw-w-full tw-pl-1 tw-rounded-sm"
 		>
 			<template v-if="!isNewMembers">
 				Amount Funded:
@@ -16,17 +12,20 @@
 		</h3>
 		<kv-tabs @tab-changed="handleTabChanged">
 			<template #tabNav>
-				<kv-tab for-panel="thisMonth"
+				<kv-tab
+					for-panel="thisMonth"
 					class="tw-text-small"
 				>
 					This Month
 				</kv-tab>
-				<kv-tab for-panel="lastMonth"
+				<kv-tab
+					for-panel="lastMonth"
 					class="tw-text-small"
 				>
 					Last Month
 				</kv-tab>
-				<kv-tab for-panel="allTime"
+				<kv-tab
+					for-panel="allTime"
 					class="tw-text-small"
 				>
 					All Time
@@ -39,54 +38,39 @@
 				<kv-tab-panel id="lastMonth">
 					<p>Coming Soon...!</p>
 				</kv-tab-panel>
-				<kv-tab-panel id="allTime"
+				<kv-tab-panel
+					id="allTime"
 					class="tw-border-primary"
 				>
-					<div v-for="team in teams.slice(0, 10)"
+					<div
+						v-for="team in teams.slice(0, 10)"
 						:key="team.id"
-						class="tw-text-small
-						tw-rounded-sm
-						tw-flex
-						tw-flex-row
-						tw-p-1"
+						class="tw-text-small tw-rounded-sm tw-flex tw-flex-row tw-p-1"
 					>
-						<img v-if="team.image && team.image.url"
-							class="tw-w-5
-							tw-h-5
-							tw-flex-none
-							tw-mb-1"
+						<img
+							v-if="team.image && team.image.url"
+							class="tw-w-5 tw-h-5 tw-flex-none tw-mb-1"
 							:src="team.image.url"
 						>
 
-						<img v-else class="tw-w-5
-							tw-h-5
-							tw-flex-none
-							tw-mb-1"
+						<img
+							v-else class="tw-w-5 tw-h-5 tw-flex-none tw-mb-1"
 							:src="teamNoImage"
 						>
 
-						<div class="tw-flex
-						tw-flex-row
-						tw-flex-wrap
-						tw-pl-1
-						tw-flex-grow
-						tw-overflow-hidden
-						tw-whitespace-nowrap"
+						<div
+							class="tw-flex tw-flex-row tw-flex-wrap tw-pl-1 tw-flex-grow
+							tw-overflow-hidden tw-whitespace-nowrap"
 						>
-							<div class="tw-flex
-							tw-flex-nowrap
-							tw-flex-none
-							tw-w-full"
+							<div
+								class="tw-flex tw-flex-nowrap tw-flex-none tw-w-full"
 							>
 								<div class="tw-flex-1 tw-overflow-hidden tw-text-ellipsis tw-text-base">
-									<router-link :to="`/team/${team.teamPublicId}`"
-										state=""
-										class=""
+									<router-link
+										:to="`/team/${team.teamPublicId}`"
 									>
-										<div class="tw-text-base
-										tw-text-primary
-										tw-overflow-hidden
-										tw-text-ellipsis"
+										<div
+											class="tw-text-base tw-text-primary tw-overflow-hidden tw-text-ellipsis"
 										>
 											{{ team.name }}
 										</div>
@@ -101,8 +85,8 @@
 									</template>
 								</div>
 							</div>
-							<div class="tw-flex-none
-							tw-w-full"
+							<div
+								class="tw-flex-none tw-w-full"
 							>
 								<template v-if="!isNewMembers">
 									<kv-progress-bar

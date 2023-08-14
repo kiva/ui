@@ -1,14 +1,13 @@
 <template>
-	<div class="tw-flex
-	tw-gap-0.5
-	tw-flex-row"
-	>
-		<kv-text-input id="team-search-bar"
+	<div class="tw-flex tw-gap-0.5 tw-flex-row">
+		<kv-text-input
+			id="team-search-bar"
 			placeholder="Search Lending Teams..."
 			v-model="queryString" class="tw-flex-1"
 		/>
 
-		<kv-button variant="secondary"
+		<kv-button
+			variant="secondary"
 			@click="handleSearchTeams"
 			class="tw-flex-none"
 		>

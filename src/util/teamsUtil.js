@@ -1,6 +1,6 @@
-/* eslint-disable import/prefer-default-export */
 import teamsQuery from '@/graphql/query/teamsQuery.graphql';
 import leaderboardsQuery from '@/graphql/query/leaderboardsQuery.graphql';
+
 /**
 * @param {Object} apollo
 */

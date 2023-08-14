@@ -1,9 +1,7 @@
 <template>
 	<div>
-		<div class="tw-flex
-		tw-justify-between
-		tw-items-baseline
-		tw-mb-4"
+		<div
+			class="tw-flex tw-justify-between tw-items-baseline tw-mb-4"
 		>
 			<h2 class="tw-text-h3">
 				Team Listing
@@ -12,19 +10,18 @@
 				{{ numeral(totalCount).format('0,0') }} lending teams in all categories
 			</p>
 		</div>
-		<team-search-bar @search="handleSearchQuery"
+		<team-search-bar
+			@search="handleSearchQuery"
 			id="team-list-search-bar"
 		/>
-		<div class="md:tw-flex
-		md:tw-flex-row
-		tw-items-baseline
-		tw-mb-4
-		md:tw-justify-between"
+		<div
+			class="md:tw-flex md:tw-flex-row tw-items-baseline tw-mb-4 md:tw-justify-between"
 		>
-			<div class="tw-w-full
-			md:tw-w-auto "
+			<div
+				class="tw-w-full md:tw-w-auto "
 			>
-				<kv-select class="tw-mt-2"
+				<kv-select
+					class="tw-mt-2"
 					id="category"
 					v-model="teamCategory"
 				>
@@ -97,10 +94,8 @@
 					</option>
 				</kv-select>
 			</div>
-			<div class="tw-text-small
-			tw-mt-4
-			tw-whitespace-nowrap
-			tw-w-full md:tw-w-auto"
+			<div
+				class="tw-text-small tw-mt-4 tw-whitespace-nowrap tw-w-full md:tw-w-auto"
 			>
 				Sort by:
 			</div>
@@ -124,41 +119,34 @@
 				</kv-select>
 			</div>
 		</div>
-		<div v-for="team in teams"
+		<div
+			v-for="team in teams"
 			:key="team.id"
 			class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2"
 			style="filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.25));"
 		>
 			<div class="tw-flex tw-flex-row">
-				<img v-if="team.image && team.image.url"
+				<img
+					v-if="team.image && team.image.url"
 					class="tw-w-12 tw-h-12 tw-flex-none"
 					:src="team.image.url"
 				>
-				<img v-else class="tw-w-12 tw-h-12 tw-flex-none"
+				<img
+					v-else class="tw-w-12 tw-h-12 tw-flex-none"
 					:src="teamNoImage"
 				>
 
-				<div class="tw-flex
-				tw-flex-row
-				tw-mt-1
-				tw-ml-1
-				tw-overflow-hidden
-				tw-text-ellipsis
-				tw-whitespace-nowrap"
+				<div
+					class="tw-flex tw-flex-row tw-mt-1 tw-ml-1 tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
 				>
-					<div class="tw-pt-1
-					tw-overflow-hidden
-					tw-text-ellipsis"
+					<div
+						class="tw-pt-1 tw-overflow-hidden tw-text-ellipsis"
 					>
-						<router-link :to="`/team/${team.teamPublicId}`"
-							state=""
-							class=""
+						<router-link
+							:to="`/team/${team.teamPublicId}`"
 						>
-							<h3 class="tw-font-medium
-							tw-text-h3
-							tw-text-primary
-							tw-overflow-hidden
-							tw-text-ellipsis"
+							<h3
+								class="tw-font-medium tw-text-h3 tw-text-primary tw-overflow-hidden tw-text-ellipsis"
 							>
 								{{ team.name }}
 							</h3>
@@ -177,27 +165,27 @@
 					</div>
 				</div>
 			</div>
-			<div class="tw-flex
-			tw-justify-between
-			tw-mt-1"
+			<div
+				class="tw-flex tw-justify-between tw-mt-1"
 			>
 				<div>
-					<p class="tw-text-small
-					tw-text-tertiary
-					tw-flex-1"
+					<p
+						class="tw-text-small tw-text-tertiary tw-flex-1"
 					>
 						We loan because: {{ team.loanBecause }}
 					</p>
 				</div>
 				<div class="tw-flex-none tw-ml-2 tw-self-end">
-					<kv-button v-if="team.membershipType != 'closed' "
+					<kv-button
+						v-if="team.membershipType != 'closed' "
 						variant="primary"
 						to="/teams/create"
 					>
 						Join Team
 					</kv-button>
 
-					<kv-button v-else variant="primary"
+					<kv-button
+						v-else variant="primary"
 						to="/teams/create"
 					>
 						Request to Join
@@ -205,7 +193,8 @@
 				</div>
 			</div>
 		</div>
-		<kv-pagination v-if="totalCount > 0"
+		<kv-pagination
+			v-if="totalCount > 0"
 			:total="totalCount"
 			:limit="limit"
 			@page-change="pageChange"
