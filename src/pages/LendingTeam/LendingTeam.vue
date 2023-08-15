@@ -2,10 +2,10 @@
 	<www-page>
 		<kv-page-container>
 			<kv-grid
-				class="tw-grid-cols-6 lg:tw-grid-cols-12"
+				class="tw-grid-cols-12"
 			>
 				<div
-					class="tw-col-span-12 md:tw-order-first lg:tw-col-span-8"
+					class="tw-col-span-12"
 				>
 					<h1
 						class="tw-text-h1 tw-mt-4 tw-mb-2"
@@ -27,53 +27,52 @@
 						one and invite your friends!
 					</h3>
 					<div
-						class="tw-flex-row tw-gap-0.5 tw-mb-4"
+						class="tw-flex tw-flex-wrap tw-mb-4 tw-gap-1"
 					>
 						<kv-button
 							variant="primary"
 							to="/teams/create"
-							class="tw-w-full md:tw-w-auto"
+							class="tw-w-full md:tw-w-fit"
 						>
 							Start Team
 						</kv-button>
 						<kv-button
 							variant="secondary"
 							to="/teams/my-teams"
-							class="tw-w-full md:tw-w-auto "
+							class="tw-w-full md:tw-w-fit"
 						>
 							My Teams
 						</kv-button>
 						<kv-button
 							variant="secondary"
 							to="/teams/playbook"
-							class="tw-w-full md:tw-w-auto "
+							class="tw-w-full md:tw-w-fit"
 						>
 							Team Playbook
 						</kv-button>
 						<kv-button
 							variant="secondary"
 							href="/kiva-community-guidelines"
-							class="tw-w-full md:tw-w-auto "
+							class="tw-w-full md:tw-w-fit"
 						>
 							Community Guidelines
 						</kv-button>
 					</div>
 				</div>
 				<div
+					class="tw-col-span-12 md:tw-col-span-8"
+				>
+					<team-listing />
+				</div>
+				<div
 					class="tw-col-span-12
-					md:tw-col-start-7 md:tw-col-span-6 md:tw-row-start-1-row-divide-1/2
-					lg:tw-col-span-4 lg:tw-col-start-9 lg:tw-row-span-2"
+					md:tw-col-span-4"
 				>
 					<div class="tw-text-h4 tw-mt-4">
 						TEAM LEADERBOARDS
 					</div>
 					<team-leaderboards board-type="overallLoanedAmount" />
 					<team-leaderboards board-type="memberCount" />
-				</div>
-				<div
-					class="tw-col-span-12 md:tw-col-span-6 md:tw-row-start-1-row-divide-1/2 lg:tw-col-span-8"
-				>
-					<team-listing />
 				</div>
 			</kv-grid>
 		</kv-page-container>

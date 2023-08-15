@@ -43,7 +43,7 @@
 					class="tw-border-primary"
 				>
 					<div
-						v-for="team in teams.slice(0, 10)"
+						v-for="team in teams.slice(0, numberOfShownTeams)"
 						:key="team.id"
 						class="tw-text-small tw-rounded-sm tw-flex tw-flex-row tw-p-1"
 					>
@@ -91,22 +91,29 @@
 								<template v-if="!isNewMembers">
 									<kv-progress-bar
 										aria-label="Total Amount the Team has lent"
-										:min="0"
+										min="0"
 										max="75000000"
-										:value="team.lentAmount"
+										:value="`${team.lentAmount}`"
 									/>
 								</template>
 								<template v-else>
 									<kv-progress-bar
 										aria-label="Total Amount of Members the Team has"
-										:min="0"
-										max="200000"
-										:value="team.lenderCount"
+										min="0"
+										max="100000"
+										:value="`${team.lenderCount}`"
 									/>
 								</template>
 							</div>
 						</div>
 					</div>
+					<button
+						v-if="numberOfShownTeams == 4"
+						@click="expandTeams = true"
+						class="tw-text-link tw-m-auto tw-block tw-text-small"
+					>
+						Show more teams
+					</button>
 				</kv-tab-panel>
 			</template>
 		</kv-tabs>
@@ -114,13 +121,13 @@
 </template>
 
 <script>
-import KvProgressBar from '@/components/Kv/KvProgressBar';
 import numeral from 'numeral';
 import teamNoImage from '@/assets/images/team_s135.png';
 import { fetchLeaderboard } from '../../util/teamsUtil';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'TeamLeaderboards',
@@ -133,9 +140,11 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			teams: ['10'],
+			teams: [],
 			numeral,
-			teamNoImage
+			teamNoImage,
+			isMobile: false,
+			expandTeams: false
 		};
 	},
 	props: {
@@ -147,67 +156,26 @@ export default {
 	computed: {
 		isNewMembers() {
 			return this.boardType === 'memberCount';
+		},
+		numberOfShownTeams() {
+			if (this.isMobile && !this.expandTeams) {
+				return 4;
+			} return 10;
 		}
-	},
-	options: {
-		limit: 10
 	},
 	methods: {
 		handleTabChanged(index) {
 			console.log(index);
 		},
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
 	},
 	mounted() {
+		this.determineIfMobile();
 		fetchLeaderboard(this.apollo, this.boardType).then(teams => {
 			this.teams = teams?.values ?? [];
 		});
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.kv-progress-bar {
-	$background-color: transparent;
-	$foreground-color: #19653E;
-
-	display: block;
-	width: 100%;
-	background-color: $background-color;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	height: rem-calc(4);
-
-	@include breakpoint(large) {
-		height: rem-calc(9);
-	}
-
-	/* firefox */
-	&::-moz-progress-bar {
-		background: $foreground-color;
-		background: var(--kv-progress-bar-foreground-color, $foreground-color);
-	}
-
-	/* webkit browsers */
-	&::-webkit-progress-bar {
-		background: $background-color;
-		background: var(--kv-progress-bar-background-color, $background-color);
-		box-shadow: 0;
-	}
-
-	&::-webkit-progress-value {
-		background: $foreground-color;
-		background: var(--kv-progress-bar-foreground-color, $foreground-color);
-	}
-
-	/* IE */
-	&::-ms-fill {
-		background: $foreground-color;
-		background: var(--kv-progress-bar-foreground-color, $foreground-color);
-		box-shadow: 0;
-	}
-}
-
-</style>

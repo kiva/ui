@@ -7,7 +7,8 @@
 				Team Listing
 			</h2>
 			<p class="tw-text-small">
-				{{ numeral(totalCount).format('0,0') }} lending teams in all categories
+				<!-- eslint-disable-next-line max-len -->
+				{{ numeral(totalCount).format('0,0') }} lending teams in {{ teamCategory ? teamCategory : 'all categories' }}
 			</p>
 		</div>
 		<team-search-bar
@@ -15,13 +16,10 @@
 			id="team-list-search-bar"
 		/>
 		<div
-			class="md:tw-flex md:tw-flex-row tw-items-baseline tw-mb-4 md:tw-justify-between"
+			class="tw-flex tw-flex-wrap tw-gap-1 tw-items-center tw-mt-2 tw-mb-4"
 		>
-			<div
-				class="tw-w-full md:tw-w-auto "
-			>
+			<div>
 				<kv-select
-					class="tw-mt-2"
 					id="category"
 					v-model="teamCategory"
 				>
@@ -81,8 +79,8 @@
 					</option>
 				</kv-select>
 			</div>
-			<div class="tw-w-full md:tw-w-auto ">
-				<kv-select class="tw-mt-2" id="categoryTeams" v-model="teamOption">
+			<div>
+				<kv-select id="categoryTeams" v-model="teamOption">
 					<option value="">
 						-- All Teams --
 					</option>
@@ -94,36 +92,37 @@
 					</option>
 				</kv-select>
 			</div>
-			<div
-				class="tw-text-small tw-mt-4 tw-whitespace-nowrap tw-w-full md:tw-w-auto"
-			>
-				Sort by:
-			</div>
-			<div class="tw-w-full md:tw-w-auto">
-				<kv-select class="tw-mt-2" id="categorySort" v-model="teamSort">
-					<option value="newest">
-						Newest
-					</option>
-					<option value="overallLoanedAmount">
-						Total Funded
-					</option>
-					<option value="memberCount">
-						Number of Members
-					</option>
-					<option value="overallLoanCount">
-						Number of Loans
-					</option>
-					<option value="oldest">
-						Oldest
-					</option>
-				</kv-select>
+			<div class="tw-flex tw-items-center">
+				<label
+					class="tw-text-small tw-w-fit tw-flex-none tw-mx-1"
+				>
+					Sort by:
+				</label>
+				<div>
+					<kv-select id="categorySort" v-model="teamSort">
+						<option value="newest">
+							Newest
+						</option>
+						<option value="overallLoanedAmount">
+							Total Funded
+						</option>
+						<option value="memberCount">
+							Number of Members
+						</option>
+						<option value="overallLoanCount">
+							Number of Loans
+						</option>
+						<option value="oldest">
+							Oldest
+						</option>
+					</kv-select>
+				</div>
 			</div>
 		</div>
 		<div
 			v-for="team in teams"
 			:key="team.id"
-			class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2"
-			style="filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.25));"
+			class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
 		>
 			<div class="tw-flex tw-flex-row">
 				<img
