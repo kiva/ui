@@ -32,7 +32,6 @@
 						noun="country"
 						:not-lent-to="countriesNotLentTo"
 						:lent-to="countriesLentTo"
-						:total="totalCountries"
 						item-key="isoCode"
 						unlent-url="/lend/countries-not-lent"
 						section-id="lend-stat-countries"
@@ -66,7 +65,6 @@
 						noun="Lending Partner"
 						:not-lent-to="partnersNotLentTo"
 						:lent-to="partnersLentTo"
-						:total="totalPartners"
 						query="partner"
 						section-id="lend-stat-fieldpartner"
 						show-more-id="show-more-fieldpartner"
@@ -118,14 +116,12 @@ export default {
 		return {
 			countriesLentTo: [],
 			countriesNotLentTo: [],
-			totalCountries: 0,
 			sectorsLentTo: [],
 			sectorsNotLentTo: [],
 			activitiesLentTo: [],
 			activitiesNotLentTo: [],
 			partnersLentTo: [],
 			partnersNotLentTo: [],
-			totalPartners: 0,
 			userId: null,
 			allAchievements: [],
 		};
@@ -143,7 +139,6 @@ export default {
 			const allCountries = _sortBy(filteredCountries, 'name');
 			this.countriesLentTo = _sortBy(data?.my?.lendingStats?.countriesLentTo ?? [], 'name');
 			this.countriesNotLentTo = _differenceBy(allCountries, this.countriesLentTo, 'isoCode');
-			this.totalCountries = allCountries.length;
 
 			const allSectors = _sortBy(data?.general?.kivaStats?.sectors ?? [], 'name');
 			this.sectorsLentTo = _sortBy(data?.my?.lendingStats?.sectorsLentTo ?? [], 'name');
@@ -156,7 +151,6 @@ export default {
 			const allPartners = _sortBy(data?.general?.partners?.values ?? [], 'name');
 			this.partnersLentTo = _sortBy(data?.my?.lendingStats?.partnersLentTo, 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
-			this.totalPartners = data?.general?.partners?.totalCount ?? 0;
 
 			this.userId = data?.my?.userAccount?.id;
 		},

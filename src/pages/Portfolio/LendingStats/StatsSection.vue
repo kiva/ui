@@ -78,7 +78,6 @@ export default {
 		noun: { type: String, required: true },
 		notLentTo: { type: Array, required: true },
 		lentTo: { type: Array, required: true },
-		total: { type: Number, default: 0 },
 		query: { type: String, default: null },
 		itemKey: { type: String, default: 'id' },
 		iconKey: { type: Function, default: () => 'leaf' },
@@ -108,7 +107,7 @@ export default {
 			return this.notLentTo.length > 0;
 		},
 		itemCount() {
-			return this.total ? this.total : this.lentTo.length + this.notLentTo.length;
+			return this.lentTo.length + this.notLentTo.length;
 		},
 		queryParam() {
 			return this.query ? this.query : this.noun;
