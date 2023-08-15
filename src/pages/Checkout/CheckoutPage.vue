@@ -89,6 +89,7 @@
 										class="checkout-button tw-w-full md:tw-w-auto"
 										id="kiva-credit-payment-button"
 										data-testid="kiva-credit-payment-button"
+										:use-async-checkout="asyncCheckoutExpVersion === 'b'"
 									/>
 								</form>
 
@@ -99,6 +100,7 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									@complete-transaction="completeTransaction"
+									:use-async-checkout="asyncCheckoutExpVersion === 'b'"
 								/>
 							</div>
 
@@ -310,6 +312,7 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
+const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const TIP_RATE_OPTIMIZATION_EXP = 'tip_rate_optimization';
@@ -398,6 +401,7 @@ export default {
 			myTeams: [],
 			continueButtonState: 'loading',
 			challengeRedirectQueryParam: '',
+			asyncCheckoutExpVersion: false,
 		};
 	},
 	apollo: {
@@ -431,6 +435,7 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: ASYNC_CHECKOUT_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
@@ -492,6 +497,21 @@ export default {
 
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
+
+		// VUE-1725 Async Checkout Mutation Rollout
+		const asyncCheckoutExp = this.apollo.readFragment({
+			id: `Experiment:${ASYNC_CHECKOUT_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.asyncCheckoutExpVersion = asyncCheckoutExp?.version;
+		if (this.asyncCheckoutExpVersion && !this.emptyBasket) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-VUE-1725-Aug2023',
+				this.asyncCheckoutExpVersion,
+			);
+		}
 
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({

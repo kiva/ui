@@ -132,6 +132,7 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
@@ -159,6 +160,10 @@ export default {
 		promoGuestCheckoutEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		useAsyncCheckout: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -324,7 +329,7 @@ export default {
 			// Apollo call to the query mutation
 			this.apollo
 				.mutate({
-					mutation: braintreeDepositAndCheckout,
+					mutation: this.useAsyncCheckout ? braintreeDepositAndCheckoutAsync : braintreeDepositAndCheckout,
 					variables: {
 						amount: numeral(this.amount).format('0.00'),
 						nonce,
