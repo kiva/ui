@@ -88,8 +88,6 @@
 
 <script>
 import _differenceBy from 'lodash/differenceBy';
-import _get from 'lodash/get';
-import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.graphql';
@@ -136,23 +134,29 @@ export default {
 		query: lendingStatsQuery,
 		preFetch: true,
 		result({ data }) {
-			const allCountries = _sortBy(_map(_get(data, 'lend.countryFacets'), 'country'), 'name');
-			this.countriesLentTo = _sortBy(_get(data, 'my.lendingStats.countriesLentTo'), 'name');
+			const countriesWhereKivaDoesntWork = data?.general?.excluded_countries?.value ?? '';
+			// reduce array of country objects to country property without using lodash
+			const countriesReduced = (data?.lend?.countryFacets ?? []).map(country => country.country);
+			// eslint-disable-next-line max-len
+			const filteredCountries = countriesReduced.filter(country => !countriesWhereKivaDoesntWork.includes(country.isoCode));
+
+			const allCountries = _sortBy(filteredCountries, 'name');
+			this.countriesLentTo = _sortBy(data?.my?.lendingStats?.countriesLentTo ?? [], 'name');
 			this.countriesNotLentTo = _differenceBy(allCountries, this.countriesLentTo, 'isoCode');
 			this.totalCountries = allCountries.length;
 
-			const allSectors = _sortBy(_get(data, 'general.kivaStats.sectors'), 'name');
-			this.sectorsLentTo = _sortBy(_get(data, 'my.lendingStats.sectorsLentTo'), 'name');
+			const allSectors = _sortBy(data?.general?.kivaStats?.sectors ?? [], 'name');
+			this.sectorsLentTo = _sortBy(data?.my?.lendingStats?.sectorsLentTo ?? [], 'name');
 			this.sectorsNotLentTo = _differenceBy(allSectors, this.sectorsLentTo, 'id');
 
-			const allActivities = _sortBy(_get(data, 'general.kivaStats.activities'), 'name');
-			this.activitiesLentTo = _sortBy(_get(data, 'my.lendingStats.activitiesLentTo'), 'name');
+			const allActivities = _sortBy(data?.general?.kivaStats?.activities ?? [], 'name');
+			this.activitiesLentTo = _sortBy(data?.my?.lendingStats?.activitiesLentTo, 'name');
 			this.activitiesNotLentTo = _differenceBy(allActivities, this.activitiesLentTo, 'id');
 
-			const allPartners = _sortBy(_get(data, 'general.partners.values'), 'name');
-			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
+			const allPartners = _sortBy(data?.general?.partners?.values ?? [], 'name');
+			this.partnersLentTo = _sortBy(data?.my?.lendingStats?.partnersLentTo, 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
-			this.totalPartners = _get(data, 'general.partners.totalCount');
+			this.totalPartners = data?.general?.partners?.totalCount ?? 0;
 
 			this.userId = data?.my?.userAccount?.id;
 		},
