@@ -505,7 +505,7 @@ export default {
 		}) || {};
 
 		this.asyncCheckoutActive = asyncCheckoutExp?.version === 'b';
-		if (asyncCheckoutExp?.version !== null) {
+		if (asyncCheckoutExp?.version) {
 			this.$kvTrackEvent(
 				'Basket',
 				'EXP-VUE-1725-Aug2023',
