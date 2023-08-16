@@ -1,3 +1,15 @@
+## [2.651.0](https://github.com/kiva/ui/compare/v2.650.4...v2.651.0) (2023-08-16)
+
+
+### Features
+
+* exclude countries from lending stats page based on an admin setting ([37e84f6](https://github.com/kiva/ui/commit/37e84f61e738106ede8600ee5f9ea1cffd045718))
+
+
+### Bug Fixes
+
+* refactor total prop ([d452836](https://github.com/kiva/ui/commit/d452836cc617997330769580cf92c02e5e58a5bd))
+
 ### [2.650.4](https://github.com/kiva/ui/compare/v2.650.3...v2.650.4) (2023-08-14)
 
 
