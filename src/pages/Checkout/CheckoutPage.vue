@@ -89,7 +89,7 @@
 										class="checkout-button tw-w-full md:tw-w-auto"
 										id="kiva-credit-payment-button"
 										data-testid="kiva-credit-payment-button"
-										:use-async-checkout="asyncCheckoutExpVersion === 'b'"
+										:use-async-checkout="asyncCheckoutActive"
 									/>
 								</form>
 
@@ -100,7 +100,7 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									@complete-transaction="completeTransaction"
-									:use-async-checkout="asyncCheckoutExpVersion === 'b'"
+									:use-async-checkout="asyncCheckoutActive"
 								/>
 							</div>
 
@@ -401,7 +401,7 @@ export default {
 			myTeams: [],
 			continueButtonState: 'loading',
 			challengeRedirectQueryParam: '',
-			asyncCheckoutExpVersion: false,
+			asyncCheckoutActive: false,
 		};
 	},
 	apollo: {
@@ -504,8 +504,8 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		this.asyncCheckoutExpVersion = asyncCheckoutExp?.version;
-		if (this.asyncCheckoutExpVersion && !this.emptyBasket) {
+		this.asyncCheckoutActive = asyncCheckoutExp?.version === 'b';
+		if (asyncCheckoutExp?.version !== null) {
 			this.$kvTrackEvent(
 				'Basket',
 				'EXP-VUE-1725-Aug2023',
