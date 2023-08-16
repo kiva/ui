@@ -1,4 +1,4 @@
-query checkoutStatus($transactionId: String!, $visitorId: String!) {
+query checkoutStatus($transactionId: String!, $visitorId: String) {
 	checkoutStatus(transactionId: $transactionId, visitorId: $visitorId) {
 		basketId
 		errorCode
