@@ -1,3 +1,15 @@
+## [2.652.0](https://github.com/kiva/ui/compare/v2.651.0...v2.652.0) (2023-08-17)
+
+
+### Features
+
+* new loan card added for empty basket state in checkout page ([3b1d07d](https://github.com/kiva/ui/commit/3b1d07d962c8b51c63cc11826ca7ce60bb2ca17a))
+
+
+### Bug Fixes
+
+* updating totals event restored in checkout empty status ([4130eb8](https://github.com/kiva/ui/commit/4130eb82ed24e7b7d2c46a945fb493aa66c20ab9))
+
 ## [2.651.0](https://github.com/kiva/ui/compare/v2.650.4...v2.651.0) (2023-08-16)
 
 
