@@ -31,6 +31,7 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							@updating-totals="$emit('updating-totals', $event)"
 							@add-to-basket="addToBasket(index)"
 							class="tw-h-full"
 						/>
