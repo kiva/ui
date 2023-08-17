@@ -199,6 +199,8 @@ export default {
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
 		addToBasket(lendAmount) {
+			// emitting updating tools for empty state in checkout page
+			this.$emit('updating-totals', true);
 			this.isAdding = true;
 			return setLendAmount({
 				amount: lendAmount,
