@@ -9,7 +9,6 @@
 				tw-border-t
 				tw-border-tertiary
 			"
-			style="min-height: 23rem;"
 		>
 			<div v-if="randomLoans.length" class="section-container tw-mx-auto tw-my-0">
 				<kv-carousel
@@ -22,18 +21,19 @@
 					ref="randomLoansCarousel"
 					:multiple-slides-visible="true"
 					slides-to-scroll="visible"
-					:slide-max-width="carouselCardWidth"
+					:slide-max-width="singleSlideWidth"
 					@interact-carousel="onInteractCarousel"
 				>
 					<template v-for="(loan, index) in randomLoans" #[`slide${index}`]>
-						<minimal-loan-card
-							:key="index"
-							:class="`minimal-loancard-${index}`"
-							:loan="loan"
-							category-set-id="random-loans"
-							:card-number="index"
-							@refreshtotals="$emit('refreshtotals')"
+						<kv-classic-loan-card-container
+							:key="`loan-card-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@updating-totals="$emit('updating-totals', $event)"
+							@add-to-basket="addToBasket(index)"
+							class="tw-h-full"
 						/>
 					</template>
 				</kv-carousel>
@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
+import _throttle from 'lodash/throttle';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import emptyBasketData from '@/graphql/query/checkout/emptyBasketData.graphql';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
@@ -51,13 +52,17 @@ export default {
 	name: 'RandomLoanSelector',
 	components: {
 		KvCarousel,
-		MinimalLoanCard,
+		KvClassicLoanCardContainer
 	},
 	props: {
 		loans: {
 			type: Array,
 			default: () => [],
-		}
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -65,14 +70,27 @@ export default {
 			randomLoans: [],
 			loading: false,
 			scrollPos: 0,
-			windowWidth: 0,
-			wrapperWidth: 0,
+			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
+			handleResize: _throttle(this.isWindowWidth, 200)
 		};
 	},
 	inject: ['apollo'],
-	mounted() {
-		// we're doing this all client side
-		this.loadLoans();
+	computed: {
+		singleSlideWidth() {
+			if (this.windowWidth <= 733) {
+				return '100%';
+			}
+			if (this.windowWidth > 733 && this.windowWidth < 1024) {
+				return '328px';
+			}
+			if (this.windowWidth >= 1024) {
+				if (this.isLargeCard) {
+					return '512px';
+				}
+				return '328px';
+			}
+			return '336px';
+		},
 	},
 	methods: {
 		loadLoans() {
@@ -87,6 +105,21 @@ export default {
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
 		},
+		addToBasket(index) {
+			this.$kvTrackEvent('basket', 'basket-loan-upsell', 'loan-type', index, index);
+			this.$emit('refreshtotals');
+		},
+		isWindowWidth() {
+			this.windowWidth = window.innerWidth;
+		}
 	},
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+		// we're doing this all client side
+		this.loadLoans();
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	}
 };
 </script>

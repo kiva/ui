@@ -248,6 +248,7 @@
 					style="min-height: 23rem;"
 				>
 					<random-loan-selector
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
