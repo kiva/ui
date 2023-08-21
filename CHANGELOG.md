@@ -1,3 +1,10 @@
+## [2.653.0](https://github.com/kiva/ui/compare/v2.652.0...v2.653.0) (2023-08-21)
+
+
+### Features
+
+* number of loans in lending home recommened row updated ([64cb258](https://github.com/kiva/ui/commit/64cb25860aea4c3d12f8652749390e52b4b696eb))
+
 ## [2.652.0](https://github.com/kiva/ui/compare/v2.651.0...v2.652.0) (2023-08-17)
 
 
