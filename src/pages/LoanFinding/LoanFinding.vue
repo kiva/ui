@@ -30,7 +30,6 @@
 				:title="firstRowTitle"
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
-				:per-step="2"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
