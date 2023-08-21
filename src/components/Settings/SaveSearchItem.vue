@@ -24,7 +24,7 @@
 				:href="savedSearch.url"
 				class="tw-mr-2 tw-mb-2 md:tw-mb-0"
 			>
-				{{ viewLoansText }}
+				View loans
 			</kv-button>
 			<kv-button
 				variant="secondary"
@@ -39,7 +39,6 @@
 <script>
 import { gql } from '@apollo/client';
 import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
-import { getInputRange } from '@/api/fixtures/MinMaxRange';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
@@ -69,12 +68,6 @@ export default {
 			const sortType = this.savedSearch?.loanSearchCriteria?.sortBy;
 			return sortByNameToDisplay?.[sortType] ?? sortType;
 		},
-		viewLoansText() {
-			return this.availableLoanCount > 0 ? `View ${this.availableLoanCount} loans` : 'View loans';
-		}
-	},
-	mounted() {
-		this.fetchAvailableLoanCount();
 	},
 	methods: {
 		deleteSavedSearch(id) {
@@ -109,58 +102,6 @@ export default {
 				}
 			});
 		},
-		fetchAvailableLoanCount() {
-			// extract our sortBy property
-			const sortType = this.savedSearch?.loanSearchCriteria?.sortBy ?? 'popularity';
-			// establish our new query filter object
-			const activeFilters = {};
-			// extract our saved search loan search criteria
-			const lscFilters = this.savedSearch?.loanSearchCriteria?.filters ?? {};
-			// TODO: Extend LoanSearchFilters.js methods getSearchableFilters + getInputFilters to handle a full LSC
-			// loop through each item from our saved search LSC
-			Object.keys(lscFilters).forEach(key => {
-				// exclude __typename from new filter object
-				if (key === '__typename') return false;
-				// establish our new filter value in a modifiable state
-				let filterValue = lscFilters[key];
-				// check for, + augment new filter value
-				if (filterValue !== null) {
-					// check for nested min max values
-					if (key === 'arrearsRate'
-						|| key === 'avgBorrowerCost'
-						|| key === 'defaultRate'
-						|| key === 'lenderTerm'
-						|| key === 'profitability'
-						|| key === 'riskRating'
-					) {
-						// define without including __typename
-						filterValue = getInputRange(filterValue);
-					}
-					// define final filter value
-					activeFilters[key] = filterValue;
-				}
-			});
-
-			// make our loan count query with newly formatted filter object
-			this.apollo.query({
-				query: gql`query savedSearchLoanCount(
-					$sortBy: LoanSearchSortByEnum!,
-					$filters: LoanSearchFiltersInput
-				) {
-					lend {
-						loans(sortBy: $sortBy, filters: $filters) {
-							totalCount
-						}
-					}
-				}`,
-				variables: {
-					sortBy: sortType,
-					filters: activeFilters
-				},
-			}).then(({ data }) => {
-				this.availableLoanCount = data?.lend?.loans?.totalCount ?? 0;
-			});
-		}
 	},
 	watch: {
 		showAlerts(next, prev) {
