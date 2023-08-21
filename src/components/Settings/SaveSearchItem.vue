@@ -59,7 +59,6 @@ export default {
 	},
 	data() {
 		return {
-			availableLoanCount: 0,
 			showAlerts: this.savedSearch?.isAlert,
 		};
 	},
