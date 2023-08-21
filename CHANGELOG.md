@@ -1,3 +1,10 @@
+## [2.654.0](https://github.com/kiva/ui/compare/v2.653.0...v2.654.0) (2023-08-21)
+
+
+### Features
+
+* remove number of loans in saved search page ([2591cd9](https://github.com/kiva/ui/commit/2591cd9d9e7ec60889d41d15f9d75a48d7b79653))
+
 ## [2.653.0](https://github.com/kiva/ui/compare/v2.652.0...v2.653.0) (2023-08-21)
 
 
