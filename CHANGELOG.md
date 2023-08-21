@@ -1,3 +1,10 @@
+### [2.654.1](https://github.com/kiva/ui/compare/v2.654.0...v2.654.1) (2023-08-21)
+
+
+### Bug Fixes
+
+* unused var removed in saved search component ([9fd5745](https://github.com/kiva/ui/commit/9fd5745c801a4159d2db72b2e501a9880bd1c4ff))
+
 ## [2.654.0](https://github.com/kiva/ui/compare/v2.653.0...v2.654.0) (2023-08-21)
 
 
