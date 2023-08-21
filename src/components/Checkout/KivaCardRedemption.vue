@@ -68,7 +68,7 @@
 						>
 							<p class="tw-mb-4">
 								Kiva issues two types of Kiva Cards:
-								print-it-yourself cards, and email delivery.
+								print-it-yourself cards and email delivery.
 							</p>
 							<p class="tw-mb-2">
 								Print-it-yourself:
