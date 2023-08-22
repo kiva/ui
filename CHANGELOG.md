@@ -1,3 +1,11 @@
+## [2.655.0](https://github.com/kiva/ui/compare/v2.654.1...v2.655.0) (2023-08-22)
+
+
+### Features
+
+* remove Kiva card postal delivery option redemption instructions ([5625641](https://github.com/kiva/ui/commit/5625641e2256e6a0de88bcb05f904fa6441675dd))
+* update Kiva card types to remove comma ([7078b7c](https://github.com/kiva/ui/commit/7078b7ced70f54d04d5851a8a7cbabda8ff7506f))
+
 ### [2.654.1](https://github.com/kiva/ui/compare/v2.654.0...v2.654.1) (2023-08-21)
 
 
