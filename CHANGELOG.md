@@ -1,3 +1,10 @@
+## [2.656.0](https://github.com/kiva/ui/compare/v2.655.0...v2.656.0) (2023-08-22)
+
+
+### Features
+
+* add most recent loan sort ([4dac97c](https://github.com/kiva/ui/commit/4dac97cc60ca8b9cb5c2dd01dbf8fc044fb11703))
+
 ## [2.655.0](https://github.com/kiva/ui/compare/v2.654.1...v2.655.0) (2023-08-22)
 
 
