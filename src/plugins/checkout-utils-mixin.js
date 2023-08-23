@@ -4,6 +4,7 @@ import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graph
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
 import validateLenderEmailForPromo from '@/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import shopCheckoutAsync from '@/graphql/mutation/shopCheckoutAsync.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '@/util/logFormatter';
 import checkInjections from '@/util/injectionCheck';
@@ -113,18 +114,19 @@ export default {
 		/**
 		 * Call the shop checkout graphql mutation
 		 * - This checks out the basket using Kiva credit
-		 *
+		 * @param {Boolean} promoGuestBasketEnabled
+		 * @param {Boolean} useAsync - This can become default after initial rollout
 		 * @returns {Promise}
 		 */
-		checkoutBasket(promoGuestBasketEnabled = false) {
+		checkoutBasket(promoGuestBasketEnabled = false, useAsync = false) {
 			checkInjections(this, injections);
 			let mutObj = {
-				mutation: shopCheckout
+				mutation: useAsync ? shopCheckoutAsync : shopCheckout
 			};
 			// Promo guest basket call to checkout graphql endpoint requires a visitor id.
 			if (promoGuestBasketEnabled) {
 				mutObj = {
-					mutation: shopCheckout,
+					mutation: useAsync ? shopCheckoutAsync : shopCheckout,
 					variables: {
 						visitorId: this.cookieStore.get('uiv') || null
 					}

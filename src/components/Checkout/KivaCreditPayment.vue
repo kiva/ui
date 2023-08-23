@@ -24,6 +24,12 @@ export default {
 	mixins: [
 		checkoutUtils
 	],
+	props: {
+		useAsyncCheckout: {
+			type: Boolean,
+			default: false
+		}
+	},
 	methods: {
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
@@ -45,7 +51,7 @@ export default {
 				});
 		},
 		checkoutCreditBasket() {
-			this.checkoutBasket()
+			this.checkoutBasket(false, this.useAsyncCheckout)
 				.then(transactionResult => {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation
