@@ -18,7 +18,8 @@ export const sortByNameToDisplay = {
 	amountHighToLow: 'Amount: High to Low',
 	amountLowToHigh: 'Amount: Low to High',
 	personalized: 'Recommended',
-	popularityScore: 'Trending now'
+	popularityScore: 'Trending now',
+	mostRecent: 'Most recent'
 };
 
 /**
@@ -31,14 +32,16 @@ const lendToFlssSort = new Map([
 	['loanAmountDesc', 'amountHighToLow'],
 	['loanAmount', 'amountLowToHigh'],
 	['amountLeft', 'amountLeft'],
-	['repaymentTerm', 'repaymentTerm']
+	['repaymentTerm', 'repaymentTerm'],
+	['newest', 'mostRecent']
 ]);
 
 export const visibleFLSSSortOptions = [
 	'expiringSoon',
 	'amountHighToLow',
 	'amountLowToHigh',
-	'personalized',
+	'mostRecent',
+	'personalized'
 ];
 
 const experimentVisibleFLSSSortOptions = [
@@ -49,6 +52,7 @@ const experimentVisibleFLSSSortOptions = [
 	'amountLeft',
 	'popularityScore',
 	'repaymentTerm',
+	'mostRecent'
 ];
 
 /**

@@ -800,6 +800,10 @@ export default {
 				{
 					title: 'Ending soon',
 					key: 'expiringSoon'
+				},
+				{
+					title: 'Most recent',
+					key: 'mostRecent'
 				}
 			];
 			this.quickFiltersOptions.gender = [
