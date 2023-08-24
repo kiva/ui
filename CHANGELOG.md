@@ -1,3 +1,10 @@
+## [2.658.0](https://github.com/kiva/ui/compare/v2.657.0...v2.658.0) (2023-08-24)
+
+
+### Features
+
+* change about impact path ([f3ab33a](https://github.com/kiva/ui/commit/f3ab33afde81286f80d1775f0002af21bbac80f7))
+
 ## [2.657.0](https://github.com/kiva/ui/compare/v2.656.0...v2.657.0) (2023-08-23)
 
 
