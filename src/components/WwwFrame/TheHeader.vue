@@ -321,7 +321,7 @@
 										</li>
 										<li>
 											<router-link
-												to="/about/impact"
+												to="/impact"
 												v-kv-track-event="['TopNav','click-About-Impact']"
 											>
 												Impact
