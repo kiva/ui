@@ -288,12 +288,12 @@
 											</router-link>
 										</li>
 										<li>
-											<router-link
-												to="/about/partner-with-us"
+											<a
+												href="/about/partner-with-us"
 												v-kv-track-event="['TopNav','click-About-Partner with us']"
 											>
 												Partner with us
-											</router-link>
+											</a>
 										</li>
 										<li>
 											<a
