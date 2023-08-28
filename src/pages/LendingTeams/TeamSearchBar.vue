@@ -36,9 +36,6 @@ export default {
 		handleSearchTeams() {
 			this.$emit('search', this.queryString);
 		},
-		handleSearchQuery(queryString) {
-			this.queryString = queryString;
-		}
 	}
 };
 </script>

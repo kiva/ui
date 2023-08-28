@@ -18,7 +18,6 @@ export async function fetchTeams(apollo, sortOption, category, membershipType, q
 			},
 
 		});
-		console.log(result);
 		return result.data?.community?.teams;
 	} catch (e) {
 		console.log('Fetching teams failed:', e.message);
@@ -36,7 +35,6 @@ export async function fetchLeaderboard(apollo, sortOption) {
 				limit: 10
 			}
 		});
-		console.log(result);
 		return result.data?.community?.teams;
 	} catch (e) {
 		console.log('Loading leaderboards failed:', e.message);

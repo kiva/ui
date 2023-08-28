@@ -91,17 +91,17 @@
 								<template v-if="!isNewMembers">
 									<kv-progress-bar
 										aria-label="Total Amount the Team has lent"
-										min="0"
-										max="75000000"
-										:value="`${team.lentAmount}`"
+										:min="0"
+										:max="75000000"
+										:value="parseInt(team.lentAmount)"
 									/>
 								</template>
 								<template v-else>
 									<kv-progress-bar
 										aria-label="Total Amount of Members the Team has"
-										min="0"
-										max="100000"
-										:value="`${team.lenderCount}`"
+										:min="0"
+										:max="100000"
+										:value="team.lenderCount"
 									/>
 								</template>
 							</div>
@@ -123,6 +123,7 @@
 <script>
 import numeral from 'numeral';
 import teamNoImage from '@/assets/images/team_s135.png';
+import _throttle from 'lodash/throttle';
 import { fetchLeaderboard } from '../../util/teamsUtil';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
@@ -176,6 +177,14 @@ export default {
 		fetchLeaderboard(this.apollo, this.boardType).then(teams => {
 			this.teams = teams?.values ?? [];
 		});
-	}
+		window.addEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
+	},
 };
 </script>

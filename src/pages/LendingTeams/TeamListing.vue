@@ -119,7 +119,35 @@
 				</div>
 			</div>
 		</div>
+		<template
+			v-if="loading"
+		>
+			<div
+				v-for="(n,index) in 3"
+				:key="index"
+				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
+			>
+				<div class="tw-flex tw-flex-row">
+					<kv-loading-placeholder class="tw-flex-none" :style="{height: '6rem', width: '6rem'}" />
+					<div class="tw-ml-1 tw-w-full">
+						<kv-loading-placeholder
+							class="tw-mb-1"
+							:style="{width: 70 + (Math.random() * 15) + '%', height: '2rem'}"
+						/>
+						<kv-loading-placeholder
+							class="tw-mb-1"
+							:style="{width: 60 + (Math.random() * 25) + '%', height: '1.25rem'}"
+						/>
+						<kv-loading-placeholder
+							class="tw-mb-1"
+							:style="{width: 70 + (Math.random() * 25) + '%', height: '1.25rem'}"
+						/>
+					</div>
+				</div>
+			</div>
+		</template>
 		<div
+			v-else
 			v-for="team in teams"
 			:key="team.id"
 			class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
@@ -194,9 +222,12 @@
 		</div>
 		<kv-pagination
 			v-if="totalCount > 0"
-			:total="totalCount"
 			:limit="limit"
-			@page-change="pageChange"
+			:total="totalCount / limit"
+			:offset="offset"
+			:kv-track-function="$kvTrackEvent"
+			track-event-category="teams"
+			@page-changed="pageChange"
 		/>
 	</div>
 </template>
@@ -205,14 +236,14 @@
 
 import { format } from 'date-fns';
 import numeral from 'numeral';
-import KvPagination from '@/components/Kv/KvPagination';
 import _mapValues from 'lodash/mapValues';
-import _isEqual from 'lodash/isEqual';
 import teamNoImage from '@/assets/images/team_s135.png';
+import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import { fetchTeams } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
 
@@ -233,13 +264,20 @@ function toUrlParams(variables) {
 	return _mapValues(urlParamTransform, ({ to }) => to(variables));
 }
 
+function getPageOffset(query, limit) {
+	const pageNum = numeral(query.page).value() - 1;
+
+	return pageNum > 0 ? limit * pageNum : 0;
+}
+
 export default {
 	name: 'TeamListing',
 	components: {
+		KvButton,
+		KvLoadingPlaceholder,
+		KvPagination,
 		KvSelect,
 		TeamSearchBar,
-		KvButton,
-		KvPagination,
 	},
 	inject: ['apollo'],
 	data() {
@@ -255,7 +293,8 @@ export default {
 			numeral,
 			offset: 0,
 			limit: teamsPerPage,
-			pageQuery: { page: '1' }
+			pageQuery: { page: '1' },
+			loading: true
 		};
 	},
 	computed: {
@@ -268,18 +307,42 @@ export default {
 	methods: {
 		handleSearchQuery(queryString) {
 			this.queryString = queryString;
-			console.log(this.queryString);
 		},
-		pageChange(number) {
-			const offset = teamsPerPage * (number - 1);
-			this.offset = offset;
+		pageChange({ pageOffset }) {
+			this.offset = pageOffset;
+			this.pageQuery = { page: this.offset / teamsPerPage };
 			this.pushChangesToUrl();
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route.query, this.urlParams)) {
-				this.$router.push({ query: this.urlParams, hash: 'team-list-search-bar' });
+			const { page } = this.$route?.query ?? { page: '0' };
+			if (page !== this.urlParams.page) {
+				this.$router.push({
+					query: {
+						...this.$route.query,
+						...this.urlParams
+					},
+				});
 			}
 		},
+		updateFromParams(query) {
+			this.offset = getPageOffset(query, this.limit);
+		},
+		async getTeams({
+			teamSort, teamCategory, teamOption, queryString, offset
+		}) {
+			this.loading = true;
+			await fetchTeams(this.apollo, teamSort, teamCategory, teamOption,
+				queryString, offset, this.limit).then(teams => {
+				this.teams = teams.values;
+				this.totalCount = teams.totalCount;
+			});
+			this.loading = false;
+		}
+	},
+	created() {
+		// extract query
+		this.pageQuery = this.$route.query;
+		this.updateFromParams(this.pageQuery);
 	},
 	mounted() {
 		this.$watch(() => ({
@@ -289,12 +352,17 @@ export default {
 			queryString: this.queryString,
 			offset: this.offset
 		}), vars => {
-			fetchTeams(this.apollo, vars.teamSort, vars.teamCategory, vars.teamOption,
-				vars.queryString, vars.offset, this.limit).then(teams => {
-				this.teams = teams.values;
-				this.totalCount = teams.totalCount;
-			});
+			this.getTeams(vars);
 		}, { immediate: true });
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.updateFromParams(to.query);
+		});
+	},
+	beforeRouteUpdate(to, from, next) {
+		this.updateFromParams(to.query);
+		next();
 	},
 };
 </script>

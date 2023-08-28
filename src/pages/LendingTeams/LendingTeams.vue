@@ -97,11 +97,5 @@ export default {
 		TeamListing,
 		TeamLeaderboards
 	},
-	methods: {
-		handleSearchQuery(queryString) {
-			this.queryString = queryString;
-			console.log(this.queryString);
-		}
-	},
 };
 </script>
