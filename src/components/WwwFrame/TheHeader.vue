@@ -288,6 +288,14 @@
 											</router-link>
 										</li>
 										<li>
+											<router-link
+												to="/about/partner-with-us"
+												v-kv-track-event="['TopNav','click-About-Partner with us']"
+											>
+												Partner with us
+											</router-link>
+										</li>
+										<li>
 											<a
 												href="/about/how"
 												v-kv-track-event="['TopNav','click-About-How Kiva works']"
