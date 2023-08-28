@@ -88,7 +88,7 @@ import TeamListing from './TeamListing';
 import TeamLeaderboards from './TeamLeaderboards';
 
 export default {
-	name: 'LendingTeam',
+	name: 'LendingTeams',
 	components: {
 		WwwPage,
 		KvPageContainer,

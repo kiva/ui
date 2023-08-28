@@ -2,7 +2,7 @@ import teamsQuery from '@/graphql/query/teamsQuery.graphql';
 import leaderboardsQuery from '@/graphql/query/leaderboardsQuery.graphql';
 
 /**
-* @param {Object} apollo
+* @param {Object} apollo, sortOption, category, membershipType, queryString, offset, limit
 */
 export async function fetchTeams(apollo, sortOption, category, membershipType, queryString, offset, limit) {
 	try {
