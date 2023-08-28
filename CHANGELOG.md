@@ -1,3 +1,10 @@
+## [2.659.0](https://github.com/kiva/ui/compare/v2.658.0...v2.659.0) (2023-08-28)
+
+
+### Features
+
+* test setup added to show three loans in recommended row for lending home page ([c78aa0e](https://github.com/kiva/ui/commit/c78aa0e2b4c52998b2038dc436c5d94143b5f03f))
+
 ## [2.658.0](https://github.com/kiva/ui/compare/v2.657.0...v2.658.0) (2023-08-24)
 
 
