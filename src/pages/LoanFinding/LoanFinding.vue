@@ -33,6 +33,7 @@
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-relending-exp="enableRelendingExp"
 				:user-balance="userBalance"
+				:per-step="perStepRecommendedRow"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				:class="{
 					'tw-pt-3 tw-pb-4 tw-bg-secondary' : enableRelendingExp,
@@ -118,6 +119,7 @@ const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_
 const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
 const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
+const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 
 export default {
@@ -160,13 +162,14 @@ export default {
 			enableRecommendedReplacementExp: false,
 			featuredLoan: {},
 			showFiveDollarsBanner: false,
+			enableThreeLoansRecommended: false,
 			HandOrangeIcon,
 		};
 	},
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: experimentAssignmentQuery, variables: { id: RECOMMENDED_REPLACEMENT_EXP_KEY }
+				query: experimentAssignmentQuery, variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
 			}).then(() => {
 				// Recommended row replacement test
 				const { version } = client.readFragment({
@@ -259,6 +262,9 @@ export default {
 		showWelcomeMsg() {
 			return this.isLoggedIn && !this.enableRelendingExp
 				&& !this.enableRecommendedReplacementExp && !this.showFiveDollarsBanner;
+		},
+		perStepRecommendedRow() {
+			return !this.enableThreeLoansRecommended ? 2 : 3;
 		}
 	},
 	methods: {
@@ -444,6 +450,16 @@ export default {
 			'EXP-CORE-1341-May2023'
 		);
 		this.enableRecommendedReplacementExp = version === 'b';
+
+		// Show 3 loans in recommended row test
+		const threeLoansTestResponse = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			THREE_LOANS_RECOMMENDED_ROW_EXP_KEY,
+			'EXP-CORE-1529-Aug2023'
+		);
+		this.enableThreeLoansRecommended = threeLoansTestResponse.version === 'b';
 
 		const recommendedArray = [
 			...cachedRecommendedLoans,
