@@ -289,6 +289,14 @@
 										</li>
 										<li>
 											<a
+												href="/about/partner-with-us"
+												v-kv-track-event="['TopNav','click-About-Partner with us']"
+											>
+												Partner with us
+											</a>
+										</li>
+										<li>
+											<a
 												href="/about/how"
 												v-kv-track-event="['TopNav','click-About-How Kiva works']"
 											>
