@@ -1,3 +1,10 @@
+## [2.655.0-next.2](https://github.com/kiva/ui/compare/v2.655.0-next.1...v2.655.0-next.2) (2023-08-28)
+
+
+### Features
+
+* change about impact path ([e9597d1](https://github.com/kiva/ui/commit/e9597d1213a4c01c1478be650f760712d8c0f4e8))
+
 ## [2.655.0-next.1](https://github.com/kiva/ui/compare/v2.654.1...v2.655.0-next.1) (2023-08-28)
 
 
