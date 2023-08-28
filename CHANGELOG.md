@@ -1,3 +1,15 @@
+## [2.660.0](https://github.com/kiva/ui/compare/v2.659.0...v2.660.0) (2023-08-28)
+
+
+### Features
+
+* add partner with us page to about dropdown ([8c794f0](https://github.com/kiva/ui/commit/8c794f0cfea7dd0a457c90779eaf163043b943d6))
+
+
+### Bug Fixes
+
+* use anchor ([29181dc](https://github.com/kiva/ui/commit/29181dca3778d2d569b453666817cdd66500a40d))
+
 ## [2.659.0](https://github.com/kiva/ui/compare/v2.658.0...v2.659.0) (2023-08-28)
 
 
