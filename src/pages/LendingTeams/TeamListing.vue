@@ -223,7 +223,7 @@
 		<kv-pagination
 			v-if="totalCount > 0"
 			:limit="limit"
-			:total="totalCount / limit"
+			:total="totalCount"
 			:offset="offset"
 			:kv-track-function="$kvTrackEvent"
 			track-event-category="teams"
@@ -303,14 +303,26 @@ export default {
 				offset: this.offset,
 			});
 		},
+		lastTeamPage() {
+			return Math.ceil(this.totalCount / this.limit);
+		},
 	},
 	methods: {
 		handleSearchQuery(queryString) {
 			this.queryString = queryString;
 		},
+		// Pagination Related methods
+		checkIfPageIsOutOfRange(teamArrayLength, pageQueryParam) {
+			// determines if the page query param is for a page that is out of bounds.
+			// if it is, changes page to the last page
+			const teamsOutOfRange = teamArrayLength === 0 && pageQueryParam;
+			if (teamsOutOfRange) {
+				this.pageChange({ pageOffset: this.limit * (this.lastTeamPage - 1) });
+			}
+		},
 		pageChange({ pageOffset }) {
 			this.offset = pageOffset;
-			this.pageQuery = { page: this.offset / teamsPerPage };
+			this.pageQuery = { page: this.offset / this.limit };
 			this.pushChangesToUrl();
 		},
 		pushChangesToUrl() {
@@ -335,6 +347,9 @@ export default {
 				queryString, offset, this.limit).then(teams => {
 				this.teams = teams.values;
 				this.totalCount = teams.totalCount;
+				if (this.teams.length === 0 && this.totalCount > 0) {
+					this.checkIfPageIsOutOfRange(this.teams.length, this.pageQuery.page);
+				}
 			});
 			this.loading = false;
 		}

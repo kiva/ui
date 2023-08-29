@@ -64,16 +64,7 @@
 				>
 					<team-listing />
 				</div>
-				<div
-					class="tw-col-span-12
-					md:tw-col-span-4"
-				>
-					<div class="tw-text-h4 tw-mt-4">
-						TEAM LEADERBOARDS
-					</div>
-					<team-leaderboards board-type="overallLoanedAmount" />
-					<team-leaderboards board-type="memberCount" />
-				</div>
+				<team-leaderboards />
 			</kv-grid>
 		</kv-page-container>
 	</www-page>

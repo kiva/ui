@@ -1,22 +1,87 @@
-query leaderboardQuery(
-	$sortOption: TeamSearchSortByEnum
-) {
-	community{
-		teams(
-			sortBy: $sortOption
-			filters: {
-				isActive: true
+query leaderboardsQuery {
+	community {
+		leaderboards {
+			amountFunded {
+				lastMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+
+				}
+				thisMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				allTime {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
 			}
-		){
-			values{
-				id
-				name
-				lentAmount
-				lenderCount
-				teamPublicId
-				image{
-					id
-					url
+			newUsers {
+				lastMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				thisMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				allTime {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
 				}
 			}
 		}

@@ -24,18 +24,13 @@ export async function fetchTeams(apollo, sortOption, category, membershipType, q
 	}
 }
 
-export async function fetchLeaderboard(apollo, sortOption) {
+export async function fetchLeaderboard(apollo) {
 	try {
 		const result = await apollo.query({
 			query: leaderboardsQuery,
-			variables: {
-				sortOption,
-			},
-			options: {
-				limit: 10
-			}
 		});
-		return result.data?.community?.teams;
+		console.log(result.data?.community?.leaderboards);
+		return result.data?.community?.leaderboards;
 	} catch (e) {
 		console.log('Loading leaderboards failed:', e.message);
 	}
