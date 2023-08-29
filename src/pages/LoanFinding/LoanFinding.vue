@@ -11,22 +11,8 @@
 				</h3>
 			</div>
 
-			<!-- Featured Loan: Recommended row replacement experiment -->
-			<loan-finding-featured-loan
-				v-if="enableRecommendedReplacementExp"
-				class="tw-mb-2 tw-mt-6"
-				:title="featuredLoanTitle"
-				:subtitle="featuredLoanSubtitle"
-				:loan="featuredLoan"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:user-balance="userBalance"
-				:first-name="firstName"
-				@add-to-basket="trackCategory($event, 'recommended')"
-			/>
-
 			<!-- First category row: Recommended loans section -->
 			<lending-category-section
-				v-else
 				:title="firstRowTitle"
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
@@ -97,9 +83,7 @@
 
 <script>
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import LoanFindingFeaturedLoan from '@/components/LoanFinding/LoanFindingFeaturedLoan';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
@@ -116,9 +100,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import HandOrangeIcon from '@/assets/images/hand_orange.svg';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
-const prefetchedEndingSoonLoanVariables = { pageLimit: 1, sortBy: 'expiringSoon', origin: FLSS_ORIGIN_LEND_BY_CATEGORY }; // eslint-disable-line max-len
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
-const RECOMMENDED_REPLACEMENT_EXP_KEY = 'lh_recommended_row_replacement';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 
@@ -130,7 +112,6 @@ export default {
 		LendingCategorySection,
 		QuickFiltersSection,
 		PartnerSpotlightSection,
-		LoanFindingFeaturedLoan,
 		FiveDollarsBanner,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
@@ -159,8 +140,6 @@ export default {
 			spotlightViewportObserver: null,
 			enableRelendingExp: false,
 			userBalance: undefined,
-			enableRecommendedReplacementExp: false,
-			featuredLoan: {},
 			showFiveDollarsBanner: false,
 			enableThreeLoansRecommended: false,
 			HandOrangeIcon,
@@ -171,21 +150,6 @@ export default {
 			return client.query({
 				query: experimentAssignmentQuery, variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
 			}).then(() => {
-				// Recommended row replacement test
-				const { version } = client.readFragment({
-					id: `Experiment:${RECOMMENDED_REPLACEMENT_EXP_KEY}`,
-					fragment: experimentVersionFragment,
-				}) ?? {};
-
-				let endingSoonLoanPromise = Promise.resolve();
-
-				if (version === 'b') {
-					endingSoonLoanPromise = client.query({
-						query: flssLoansQueryExtended,
-						variables: prefetchedEndingSoonLoanVariables
-					});
-				}
-
 				const recommendedLoansPromise = client.query({
 					query: flssLoansQueryExtended,
 					variables: prefetchedRecommendedLoansVariables
@@ -195,7 +159,6 @@ export default {
 					client.query({ query: userInfoQuery }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-					endingSoonLoanPromise,
 					recommendedLoansPromise
 				]);
 			});
@@ -243,16 +206,6 @@ export default {
 				? 'Loans handpicked for you based on your lending history'
 				: 'Support a featured borrower with a microloan.';
 		},
-		featuredLoanTitle() {
-			return this.isLoggedIn
-				? 'Recommended for you,'
-				: 'A loan ending soon';
-		},
-		featuredLoanSubtitle() {
-			return this.isLoggedIn
-				? 'Make a difference for this borrower today.'
-				: 'Make a difference for these borrowers who only have a short time remaining.';
-		},
 		fiveDollarsRowTitle() {
 			return 'It takes just <span class="tw-text-action">$5 to change a life</span>';
 		},
@@ -260,8 +213,7 @@ export default {
 			return 'Lend as little as $5 to fund a new dream.';
 		},
 		showWelcomeMsg() {
-			return this.isLoggedIn && !this.enableRelendingExp
-				&& !this.enableRecommendedReplacementExp && !this.showFiveDollarsBanner;
+			return this.isLoggedIn && !this.enableRelendingExp && !this.showFiveDollarsBanner;
 		},
 		perStepRecommendedRow() {
 			return !this.enableThreeLoansRecommended ? 2 : 3;
@@ -390,7 +342,7 @@ export default {
 			}
 		},
 		trackFirstRowDisplayedLoans() {
-			this.trackDisplayedLoans('recommended', 1, this.enableRecommendedReplacementExp ? [this.featuredLoan] : this.firstRowLoans); // eslint-disable-line max-len
+			this.trackDisplayedLoans('recommended', 1, this.firstRowLoans);
 		},
 		trackQuickFiltersDisplayedLoans({ data, pageOffset }) {
 			this.trackDisplayedLoans('quick-filters', this.enableRelendingExp ? 3 : 2, data, pageOffset);
@@ -441,25 +393,15 @@ export default {
 
 		this.userBalance = this.userInfo?.balance;
 
-		// Recommended row replacement test
-		const { version } = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			RECOMMENDED_REPLACEMENT_EXP_KEY,
-			'EXP-CORE-1341-May2023'
-		);
-		this.enableRecommendedReplacementExp = version === 'b';
-
 		// Show 3 loans in recommended row test
-		const threeLoansTestResponse = trackExperimentVersion(
+		const { version } = trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
 			'Lending',
 			THREE_LOANS_RECOMMENDED_ROW_EXP_KEY,
 			'EXP-CORE-1529-Aug2023'
 		);
-		this.enableThreeLoansRecommended = threeLoansTestResponse.version === 'b';
+		this.enableThreeLoansRecommended = version === 'b';
 
 		const recommendedArray = [
 			...cachedRecommendedLoans,
@@ -487,17 +429,6 @@ export default {
 		/* eslint-enable max-len */
 
 		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
-
-		if (this.enableRecommendedReplacementExp) {
-			const cachedEndingSoonLoan = this.apollo.readQuery({
-				query: flssLoansQueryExtended,
-				variables: prefetchedEndingSoonLoanVariables
-			})?.fundraisingLoans?.values[0] ?? { id: 0 };
-
-			this.featuredLoan = this.isLoggedIn && this.firstRowLoans.length > 0
-				? this.firstRowLoans[0]
-				: cachedEndingSoonLoan;
-		}
 	},
 	mounted() {
 		if (!this.enableRelendingExp) {
