@@ -1,3 +1,10 @@
+## [2.662.0](https://github.com/kiva/ui/compare/v2.661.0...v2.662.0) (2023-08-29)
+
+
+### Features
+
+* featured loan test code removed in lending home page ([0eac1a2](https://github.com/kiva/ui/commit/0eac1a2569a731bcd8b6042a10380619ede040ff))
+
 ## [2.661.0](https://github.com/kiva/ui/compare/v2.660.0...v2.661.0) (2023-08-29)
 
 
