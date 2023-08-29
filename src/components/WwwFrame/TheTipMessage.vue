@@ -71,7 +71,8 @@ export default {
 	},
 	created() {
 		this.initialPath = this.$route.path;
-
+	},
+	mounted() {
 		// query for flash messages
 		this.apollo.query({
 			query: flashMessageQuery,
