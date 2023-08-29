@@ -137,7 +137,7 @@
 							</li>
 							<li>
 								<router-link
-									to="/partner-with-us"
+									to="/about/partner-with-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 									class="tw-text-small"
 								>
@@ -611,7 +611,7 @@
 								</li>
 								<li>
 									<router-link
-										to="/partner-with-us"
+										to="/about/partner-with-us"
 										v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 										class="tw-text-small"
 									>
