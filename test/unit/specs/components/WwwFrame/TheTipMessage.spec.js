@@ -46,7 +46,7 @@ const defaultFlashMessages = {
 describe('TheTipMessage', () => {
 	// it displays the current tip message when there are no flash messages
 	it('displays the current tip message when there are no flash messages', async () => {
-		const tipMessage = { message: 'This is a tip message', type: TIP };
+		const tipMessage = { message: 'This is a tip message' };
 		const { findByText } = renderTipMessage(tipMessage);
 
 		// Expect the tip message to be displayed
