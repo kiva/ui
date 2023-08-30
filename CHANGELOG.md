@@ -1,3 +1,10 @@
+### [2.663.1](https://github.com/kiva/ui/compare/v2.663.0...v2.663.1) (2023-08-30)
+
+
+### Bug Fixes
+
+* **TheTipMessage:** tipMessage missing from currentMessage and incorrect persist logic ([ce843ab](https://github.com/kiva/ui/commit/ce843abdfbdde57310149ca995b68f14d0dc8b88))
+
 ## [2.663.0](https://github.com/kiva/ui/compare/v2.662.0...v2.663.0) (2023-08-30)
 
 
