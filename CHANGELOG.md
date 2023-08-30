@@ -1,3 +1,15 @@
+## [2.663.0](https://github.com/kiva/ui/compare/v2.662.0...v2.663.0) (2023-08-30)
+
+
+### Features
+
+* display flash messages for visitor in the tip message MARS-448 ([94d810e](https://github.com/kiva/ui/commit/94d810e4653e04cb48f2127a6e8d61fdc58a8904))
+
+
+### Bug Fixes
+
+* **TheTipMessage:** wait until mounted to query for flash messages ([2d5415a](https://github.com/kiva/ui/commit/2d5415a31d1441f478e1ce9fd64a4615c50ac623))
+
 ## [2.662.0](https://github.com/kiva/ui/compare/v2.661.0...v2.662.0) (2023-08-29)
 
 
