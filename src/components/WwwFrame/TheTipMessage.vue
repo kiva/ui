@@ -103,6 +103,10 @@ export default {
 	},
 	computed: {
 		currentMessage() {
+			// return tip message if there are no flash messages
+			if (!this.flashMessages?.length) {
+				return this.tipMessage;
+			}
 			// return tip message if it's level is higher than first flash message, otherwise return first flash message
 			return this.tipMessage?.type && compareLevels(this.tipMessage.type, this.flashMessages[0]?.messageType)
 				? this.tipMessage
@@ -110,7 +114,7 @@ export default {
 		},
 		persist() {
 			const type = this.currentMessage?.type ?? this.currentMessage?.messageType ?? '';
-			return !!this.currentMessage?.persist || type === TIP || type === WARNING;
+			return !!this.currentMessage?.persist || type === ERROR || type === WARNING;
 		},
 	},
 	methods: {
@@ -118,7 +122,7 @@ export default {
 			const message = this.currentMessage?.message ?? '';
 			const safeMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
 			const type = this.currentMessage?.type ?? this.currentMessage?.messageType ?? '';
-			this.$refs.tip?.show(safeMessage, type, this.persist);
+			this.$refs.tip?.show(safeMessage, type === TIP ? '' : type, this.persist);
 		},
 		closeCurrentMessage() {
 			if (this.currentMessage) {
