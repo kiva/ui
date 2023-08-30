@@ -22,6 +22,7 @@
 				<kv-select
 					id="category"
 					v-model="teamCategory"
+					v-kv-track-event="['teams', 'filter', 'teams-search', teamCategory]"
 				>
 					<option value="">
 						-- All Categories --
@@ -63,7 +64,7 @@
 						Memorials
 					</option>
 					<option value="ReligiousCongregations">
-						Religous Congregations
+						Religious Congregations
 					</option>
 					<option value="Schools">
 						Schools
@@ -80,7 +81,11 @@
 				</kv-select>
 			</div>
 			<div>
-				<kv-select id="categoryTeams" v-model="teamOption">
+				<kv-select
+					id="categoryTeams"
+					v-model="teamOption"
+					v-kv-track-event="['teams', 'filter', 'teams-search', teamOption]"
+				>
 					<option value="">
 						-- All Teams --
 					</option>
@@ -171,6 +176,12 @@
 					>
 						<router-link
 							:to="`/team/${team.teamPublicId}`"
+							v-kv-track-event="[
+								'teams',
+								'click',
+								'team-page',
+								team.teamPublicId
+							]"
 						>
 							<h3
 								class="tw-font-medium tw-text-h3 tw-text-primary tw-overflow-hidden tw-text-ellipsis"
@@ -207,6 +218,12 @@
 						v-if="team.membershipType != 'closed' "
 						variant="primary"
 						to="/teams/create"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-join',
+							team.teamPublicId
+						]"
 					>
 						Join Team
 					</kv-button>
@@ -214,6 +231,12 @@
 					<kv-button
 						v-else variant="primary"
 						to="/teams/create"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-request-join',
+							team.teamPublicId
+						]"
 					>
 						Request to Join
 					</kv-button>

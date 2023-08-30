@@ -1,8 +1,8 @@
 <template>
 	<div class="tw-col-span-12 md:tw-col-span-4">
-		<div class="tw-text-h4 tw-mt-4">
-			TEAM LEADERBOARDS
-		</div>
+		<h2 class="tw-text-h3">
+			Team Leaderboards
+		</h2>
 		<team-leaderboard board-type="overallLoanedAmount" :board-teams="funded" />
 		<team-leaderboard board-type="memberCount" :board-teams="members" />
 	</div>
@@ -27,7 +27,6 @@ export default {
 	},
 	mounted() {
 		fetchLeaderboard(this.apollo).then(leaderboards => {
-			console.log(leaderboards);
 			this.funded = leaderboards.amountFunded ?? {};
 			this.members = leaderboards.newUsers ?? {};
 		});

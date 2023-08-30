@@ -10,6 +10,12 @@
 			variant="secondary"
 			@click="handleSearchTeams"
 			class="tw-flex-none"
+			v-kv-track-event="[
+				'teams',
+				'filter',
+				'teams-search',
+				queryString
+			]"
 		>
 			Search
 		</kv-button>

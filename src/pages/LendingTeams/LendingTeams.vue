@@ -33,6 +33,12 @@
 							variant="primary"
 							to="/teams/create"
 							class="tw-w-full md:tw-w-fit"
+							v-kv-track-event="[
+								'teams',
+								'click',
+								'teams-menu',
+								'start-team'
+							]"
 						>
 							Start Team
 						</kv-button>
@@ -40,6 +46,12 @@
 							variant="secondary"
 							to="/teams/my-teams"
 							class="tw-w-full md:tw-w-fit"
+							v-kv-track-event="[
+								'teams',
+								'click',
+								'teams-menu',
+								'my-teams'
+							]"
 						>
 							My Teams
 						</kv-button>
@@ -47,6 +59,12 @@
 							variant="secondary"
 							to="/teams/playbook"
 							class="tw-w-full md:tw-w-fit"
+							v-kv-track-event="[
+								'teams',
+								'click',
+								'teams-menu',
+								'team-playbook'
+							]"
 						>
 							Team Playbook
 						</kv-button>
@@ -54,6 +72,12 @@
 							variant="secondary"
 							href="/kiva-community-guidelines"
 							class="tw-w-full md:tw-w-fit"
+							v-kv-track-event="[
+								'teams',
+								'click',
+								'teams-menu',
+								'community-guidelines'
+							]"
 						>
 							Community Guidelines
 						</kv-button>
