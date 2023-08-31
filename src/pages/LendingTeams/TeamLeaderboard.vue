@@ -1,7 +1,7 @@
 <template>
-	<div class="tw-bg-primary tw-mb-4 tw-rounded">
-		<h3
-			class="tw-text-h4 tw-bg-action tw-text-primary-inverse tw-w-full tw-pl-1 tw-rounded-sm"
+	<div class="tw-bg-primary tw-mb-4 tw-rounded tw-drop-shadow-lg tw-overflow-hidden">
+		<h4
+			class="tw-bg-action tw-text-primary-inverse tw-w-full tw-px-1 tw-py-1.5 tw-mb-1 tw-inline-block"
 		>
 			<template v-if="!isNewMembers">
 				Amount Funded:
@@ -9,24 +9,27 @@
 			<template v-else>
 				Member Count:
 			</template>
-		</h3>
-		<kv-tabs>
+		</h4>
+		<kv-tabs class="tw-px-1" @tab-changed="handleTabChanged">
 			<template #tabNav>
 				<kv-tab
 					for-panel="thisMonth"
-					class="tw-text-small"
+					class="tw-text-h4"
+					:class="{'tw-text-secondary' :selectedTabIndex !== 0}"
 				>
 					This Month
 				</kv-tab>
 				<kv-tab
 					for-panel="lastMonth"
-					class="tw-text-small"
+					class="tw-text-h4"
+					:class="{'tw-text-secondary' :selectedTabIndex !== 1}"
 				>
 					Last Month
 				</kv-tab>
 				<kv-tab
 					for-panel="allTime"
-					class="tw-text-small"
+					class="tw-text-h4"
+					:class="{'tw-text-secondary' :selectedTabIndex !== 2}"
 				>
 					All Time
 				</kv-tab>
@@ -128,7 +131,8 @@ export default {
 			numeral,
 			teamNoImage,
 			isMobile: false,
-			expandTeams: false
+			expandTeams: false,
+			selectedTabIndex: 0
 		};
 	},
 	props: {
@@ -170,7 +174,10 @@ export default {
 			const teams = this.boardTeams[timeFrame] ?? [];
 			const values = teams.map(team => parseInt(team.value, 10));
 			return Math.max(...values);
-		}
+		},
+		handleTabChanged(index) {
+			this.selectedTabIndex = index;
+		},
 	},
 	mounted() {
 		this.determineIfMobile();

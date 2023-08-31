@@ -1,8 +1,8 @@
 <template>
 	<div class="tw-col-span-12 md:tw-col-span-4">
-		<h2 class="tw-text-h3">
+		<h3 class="tw-mb-3">
 			Team Leaderboards
-		</h2>
+		</h3>
 		<team-leaderboard board-type="overallLoanedAmount" :board-teams="funded" />
 		<team-leaderboard board-type="memberCount" :board-teams="members" />
 	</div>

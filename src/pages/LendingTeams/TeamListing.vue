@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div
-			class="tw-flex tw-justify-between tw-items-baseline tw-mb-4"
+			class="tw-flex tw-justify-between tw-items-baseline tw-mb-3"
 		>
-			<h2 class="tw-text-h3">
+			<h3>
 				Team Listing
-			</h2>
+			</h3>
 			<p class="tw-text-small">
 				<!-- eslint-disable-next-line max-len -->
 				{{ numeral(totalCount).format('0,0') }} lending teams in {{ teamCategory ? teamCategory : 'all categories' }}
@@ -160,11 +160,11 @@
 			<div class="tw-flex tw-flex-row">
 				<img
 					v-if="team.image && team.image.url"
-					class="tw-w-12 tw-h-12 tw-flex-none"
+					class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-sm"
 					:src="team.image.url"
 				>
 				<img
-					v-else class="tw-w-12 tw-h-12 tw-flex-none"
+					v-else class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-sm"
 					:src="teamNoImage"
 				>
 
@@ -208,16 +208,17 @@
 			>
 				<div>
 					<p
-						class="tw-text-small tw-text-tertiary tw-flex-1"
+						class="tw-text-small tw-text-secondary tw-flex-1"
 					>
-						We loan because: {{ team.loanBecause }}
+						We loan because: {{ shortLoanBecause(team.loanBecause) }}
 					</p>
 				</div>
 				<div class="tw-flex-none tw-ml-2 tw-self-end">
+					<!-- !TODO add functionality to these buttons !
 					<kv-button
 						v-if="team.membershipType != 'closed' "
 						variant="primary"
-						to="/teams/create"
+						to=""
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -230,7 +231,7 @@
 
 					<kv-button
 						v-else variant="primary"
-						to="/teams/create"
+						to=""
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -239,7 +240,7 @@
 						]"
 					>
 						Request to Join
-					</kv-button>
+					</kv-button>-->
 				</div>
 			</div>
 		</div>
@@ -265,7 +266,7 @@ import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import { fetchTeams } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+// import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
@@ -296,7 +297,7 @@ function getPageOffset(query, limit) {
 export default {
 	name: 'TeamListing',
 	components: {
-		KvButton,
+		// KvButton,
 		KvLoadingPlaceholder,
 		KvPagination,
 		KvSelect,
@@ -375,7 +376,13 @@ export default {
 				}
 			});
 			this.loading = false;
-		}
+		},
+		shortLoanBecause(teamLoanBecause) {
+			if (teamLoanBecause?.length > 250) {
+				return `${teamLoanBecause?.substring(0, 250)}... `;
+			}
+			return teamLoanBecause;
+		},
 	},
 	created() {
 		// extract query
