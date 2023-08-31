@@ -178,17 +178,16 @@ export default {
 		handleTabChanged(index) {
 			this.selectedTabIndex = index;
 		},
+		throttledResize() {
+			return _throttle(this.determineIfMobile, 200);
+		},
 	},
 	mounted() {
 		this.determineIfMobile();
-		window.addEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
+		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
+		window.removeEventListener('resize', this.throttledResize);
 	},
 };
 </script>

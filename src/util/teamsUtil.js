@@ -29,7 +29,6 @@ export async function fetchLeaderboard(apollo) {
 		const result = await apollo.query({
 			query: leaderboardsQuery,
 		});
-		console.log(result.data?.community?.leaderboards);
 		return result.data?.community?.leaderboards;
 	} catch (e) {
 		console.log('Loading leaderboards failed:', e.message);
