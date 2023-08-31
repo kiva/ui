@@ -1,3 +1,10 @@
+## [2.665.0](https://github.com/kiva/ui/compare/v2.664.0...v2.665.0) (2023-08-31)
+
+
+### Features
+
+* code clean up for categories redirect test ([e3dc618](https://github.com/kiva/ui/commit/e3dc6181004d479a1defd089a4601a8ad40abe51))
+
 ## [2.664.0](https://github.com/kiva/ui/compare/v2.663.1...v2.664.0) (2023-08-31)
 
 
