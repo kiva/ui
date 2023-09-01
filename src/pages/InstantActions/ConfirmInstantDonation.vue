@@ -65,7 +65,7 @@
 						]"
 						class="tw-mb-1 tw-w-full"
 					>
-						Confirm donation
+						Donate
 					</kv-button>
 					<kv-button
 						v-else
