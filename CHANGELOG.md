@@ -1,3 +1,10 @@
+### [2.665.1](https://github.com/kiva/ui/compare/v2.665.0...v2.665.1) (2023-09-01)
+
+
+### Reverts
+
+* "fix: actual test didn't change CTA text MARS-492" ([84219b4](https://github.com/kiva/ui/commit/84219b4269270c2a22d77f1404e396f103deeab7))
+
 ## [2.665.0](https://github.com/kiva/ui/compare/v2.664.0...v2.665.0) (2023-08-31)
 
 
