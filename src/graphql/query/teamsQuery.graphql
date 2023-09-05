@@ -1,0 +1,40 @@
+query teamsQuery(
+   $sortOption: TeamSearchSortByEnum
+   $category: TeamCategoryEnum
+   $membershipType: TeamMembershipTypeEnum
+   $queryString: String
+   $offset: Int
+   $limit: Int
+) {
+    community{
+        teams(
+			offset: $offset
+			limit: $limit
+            sortBy: $sortOption
+			queryString: $queryString
+          	filters: {
+              category: $category
+			  membershipType: $membershipType
+			  isActive: true
+            }
+        ){
+            totalCount
+            values{
+                id
+                name
+				category
+				createdDate
+				loanBecause
+				lenderCount
+				lentAmount
+				whereabouts
+				membershipType
+				teamPublicId
+				image{
+					id
+					url
+				}
+            }
+        }
+    }
+}

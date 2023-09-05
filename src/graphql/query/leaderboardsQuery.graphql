@@ -1,0 +1,89 @@
+query leaderboardsQuery {
+	community {
+		leaderboards {
+			amountFunded {
+				lastMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+
+				}
+				thisMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				allTime {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+			}
+			newUsers {
+				lastMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				thisMonth {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+				allTime {
+					rank
+					value
+					team {
+						id
+						name
+						teamPublicId
+						image{
+							id
+							url
+						}
+					}
+				}
+			}
+		}
+	}
+}
