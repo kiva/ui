@@ -181,7 +181,7 @@ import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 
 // Routes to show monthly good promo
 const targetRoutes = [
