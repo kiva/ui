@@ -15,7 +15,7 @@ module.exports = {
 				'https://www.kiva.org/lend-by-category/women',
 				'https://www.kiva.org/lend-category-beta',
 				'https://www.kiva.org/lend-category-beta/agriculture',
-				'https://www.kiva.org/refugees',
+				'https://www.kiva.org/impact/refugees',
 				'https://www.kiva.org/about',
 				'https://www.kiva.org/about/how',
 				'https://www.kiva.org/design',
