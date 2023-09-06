@@ -1,3 +1,10 @@
+### [2.668.1](https://github.com/kiva/ui/compare/v2.668.0...v2.668.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* update lighthouserc-prod.js for new refugee url ([cb7f4ad](https://github.com/kiva/ui/commit/cb7f4ad5e9476bc1ed685571deffd2f71d3937c2))
+
 ## [2.668.0](https://github.com/kiva/ui/compare/v2.667.0...v2.668.0) (2023-09-06)
 
 
