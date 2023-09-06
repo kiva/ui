@@ -1,3 +1,24 @@
+## [2.666.0](https://github.com/kiva/ui/compare/v2.665.1...v2.666.0) (2023-09-05)
+
+
+### Features
+
+* add new leaderboard query and functionality ([77dd664](https://github.com/kiva/ui/commit/77dd664b82b7232b46409a0a3189c08648e80d77))
+* add tracking to filters and buttons ([34ed86a](https://github.com/kiva/ui/commit/34ed86a01d6bc3e42c2bc1469367d964e77781b7))
+* minor styling revisions ([bf29879](https://github.com/kiva/ui/commit/bf29879187284a00968f6d99162711a3b872ee1d))
+* remove unused methods, fix team paging, add loading state for loading teams ([5918ac1](https://github.com/kiva/ui/commit/5918ac1cf24a24431f291c4505216559669d77aa))
+* rename teams template and route ([2487904](https://github.com/kiva/ui/commit/2487904841845b8d6f8384d192d5e95786e2e122))
+* **teams:** Start of teams landing page migration ([c550c3b](https://github.com/kiva/ui/commit/c550c3b5663d6b287af884de08a1eb78f7233d01))
+
+
+### Bug Fixes
+
+* fix layouts, fix button link, use kv elements progress bar ([36a1a38](https://github.com/kiva/ui/commit/36a1a38028e86e28c8f97778431053aa867bfe65))
+* formatting issues and very minor fixes ([886efb2](https://github.com/kiva/ui/commit/886efb220579b0faf7d31633307f31d9d92ff97f))
+* leaderboards error neeed to be two words ([a6f5c11](https://github.com/kiva/ui/commit/a6f5c11eb8cc12b2dfdce005667dec5741cd9e9c))
+* lint clean up ([2a30592](https://github.com/kiva/ui/commit/2a305925efd0e7dc6cea73dce7cd8ef5ac373141))
+* throttle mobile resizing ([e6e49d7](https://github.com/kiva/ui/commit/e6e49d70d7c628e889c6f43c591b3b115bae5e8b))
+
 ### [2.665.1](https://github.com/kiva/ui/compare/v2.665.0...v2.665.1) (2023-09-01)
 
 
