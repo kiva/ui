@@ -61,31 +61,16 @@
 			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-3"></div>
 			<div v-if="loans && loans.length > 0" class="tw-w-full">
 				<div v-if="!displayLoanPromoCard || emptyState">
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
-						<template v-for="(loan, index) in loans">
-							<kiva-classic-basic-loan-card-exp
-								v-if="enableLoanCardExp"
-								:item-index="index"
-								:key="`classic-${loan.id}`"
-								:loan-id="loan.id"
-								:show-action-button="true"
-								:show-tags="enableLoanTags"
-								:category-page-name="loanChannelName"
-								:use-full-width="true"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-								:user-balance="userBalance"
-							/>
-							<loan-card-controller
-								v-else
-								:items-in-basket="itemsInBasket"
-								:is-visitor="isVisitor"
-								:key="`controller-${loan.id}`"
-								:loan="loan"
-								loan-card-type="GridLoanCard"
-								:show-tags="enableLoanTags"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-							/>
-						</template>
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-2 tw-px-1 md:tw-px-2">
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in loans"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:user-balance="userBalance"
+						/>
 					</div>
 
 					<helpme-choose-wrapper
@@ -99,72 +84,35 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
-						:enable-loan-card-exp="enableLoanCardExp"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
 				<div v-else>
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3" :class="{ 'tw-gap-2 tw-px-1 md:tw-px-2' : enableLoanCardExp }">
-						<template v-for="(loan, index) in firstLoan">
-							<kiva-classic-basic-loan-card-exp
-								v-if="enableLoanCardExp"
-								:item-index="index"
-								:key="`classic-${loan.id}`"
-								:loan-id="loan.id"
-								:show-action-button="true"
-								:show-tags="enableLoanTags"
-								:category-page-name="loanChannelName"
-								:use-full-width="true"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-								:user-balance="userBalance"
-							/>
-							<loan-card-controller
-								v-else
-								:items-in-basket="itemsInBasket"
-								:is-visitor="isVisitor"
-								:key="`controller-${loan.id}`"
-								:loan="loan"
-								loan-card-type="GridLoanCard"
-								:show-tags="enableLoanTags"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-							/>
-						</template>
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-2 tw-px-1 md:tw-px-2">
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in firstLoan"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:user-balance="userBalance"
+						/>
 
 						<promo-grid-loan-card-exp
-							v-if="enableLoanCardExp"
-							:category-url="mgTargetCategory.url"
-							:category-label="mgTargetCategory.label"
-						/>
-						<promo-grid-loan-card
-							v-else
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
 
-						<template v-for="(loan, index) in remainingLoans">
-							<kiva-classic-basic-loan-card-exp
-								v-if="enableLoanCardExp"
-								:item-index="index"
-								:key="`classic-${loan.id}`"
-								:loan-id="loan.id"
-								:show-action-button="true"
-								:show-tags="enableLoanTags"
-								:category-page-name="loanChannelName"
-								:use-full-width="true"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-								:user-balance="userBalance"
-							/>
-							<loan-card-controller
-								v-else
-								:items-in-basket="itemsInBasket"
-								:is-visitor="isVisitor"
-								:key="`controller-${loan.id}`"
-								:loan="loan"
-								loan-card-type="GridLoanCard"
-								:show-tags="enableLoanTags"
-								:enable-five-dollars-notes="enableFiveDollarsNotes"
-							/>
-						</template>
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in remainingLoans"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:user-balance="userBalance"
+						/>
 					</div>
 
 					<helpme-choose-wrapper
@@ -178,7 +126,6 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-loan-tags="enableLoanTags"
-						:enable-loan-card-exp="enableLoanCardExp"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
@@ -210,10 +157,8 @@ import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
 import DonationCTA from '@/components/Lend/DonationCTA';
 import KvPagination from '@/components/Kv/KvPagination';
-import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
@@ -229,14 +174,14 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
 import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
 import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -322,10 +267,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		enableFilterPills: {
 			type: Boolean,
 			default: false
@@ -336,15 +277,13 @@ export default {
 		}
 	},
 	components: {
-		LoanCardController,
 		KvPagination,
 		KvLoadingOverlay,
-		PromoGridLoanCard,
 		QuickFilters,
 		HelpmeChooseWrapper,
 		DonationCTA,
-		KivaClassicBasicLoanCardExp,
 		PromoGridLoanCardExp,
+		KvClassicLoanCardContainer,
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],

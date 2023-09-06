@@ -35,7 +35,6 @@
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:enable-new-loan-card="enableNewLoanCard"
 				/>
 			</kv-page-container>
 		</article>
@@ -54,8 +53,7 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
-const LOAN_CARD_EXP_KEY = 'new_loan_card';
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
@@ -75,8 +73,7 @@ export default {
 			mdiEarth,
 			mdiFilter,
 			mdiClose,
-			savedSearchName: '',
-			enableNewLoanCard: false
+			savedSearchName: ''
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -101,22 +98,12 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 						client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 						client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({ query: experimentQuery, variables: { id: LOAN_CARD_EXP_KEY } }),
 					]);
 				});
 		},
 	},
 	created() {
 		this.initializeFiveDollarsNotes();
-
-		const { version } = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			LOAN_CARD_EXP_KEY,
-			'EXP-CORE-941-Feb2023'
-		);
-		this.enableNewLoanCard = version === 'b';
 
 		// Extended FLSS Loan Filter Experiment
 		const showMoreFiltersExp = this.apollo.readFragment({

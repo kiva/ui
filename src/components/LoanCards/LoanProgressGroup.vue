@@ -1,6 +1,6 @@
 <template>
 	<figure>
-		<h4 class="tw-mb-0.5" :class="{ 'progress-group-amount-low': amountLow }">
+		<h4 class="tw-mb-0.5">
 			{{ fundingText }}
 		</h4>
 		<kv-progress-bar
@@ -33,18 +33,10 @@ export default {
 			type: String,
 			default: '',
 		},
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		}
 	},
 	computed: {
 		numeralLeft() {
 			return numeral(this.moneyLeft);
-		},
-		amountLow() {
-			// Changing UI state based on amount left is currently under experiment
-			return this.enableLoanCardExp && this.numeralLeft.value() < 100;
 		},
 		fundingText() {
 			const formattedMoneyLeft = this.numeralLeft.format('$0,0[.]00');
@@ -57,9 +49,3 @@ export default {
 	}
 };
 </script>
-
-<style scoped>
-.progress-group-amount-low {
-	color: #CE4A00;
-}
-</style>

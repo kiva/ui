@@ -18,12 +18,15 @@ import KvToast from '~/@kiva/kv-components/vue/KvToast';
 const flashMessageQuery = gql`
 	query flashMessage($visitorId: String!) {
 		tips: flashMessages(messageType: tip, visitorId: $visitorId) {
+			id
 			...flashMessage
 		}
 		warnings: flashMessages(messageType: warning, visitorId: $visitorId) {
+			id
 			...flashMessage
 		}
 		errors: flashMessages(messageType: error, visitorId: $visitorId) {
+			id
 			...flashMessage
 		}
 	}

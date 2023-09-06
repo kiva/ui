@@ -37,40 +37,22 @@
 			/>
 		</div>
 
-		<div
-			class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2"
-			:class="{ 'tw-gap-2 tw-px-2' : enableLoanCardExp }"
-		>
-			<template v-for="loan in remainingLoans">
-				<kiva-classic-basic-loan-card-exp
-					v-if="enableLoanCardExp"
-					:key="`classic-${loan.id}`"
-					:loan-id="loan.id"
-					:show-action-button="true"
-					:show-tags="enableLoanTags"
-					:category-page-name="loanChannelName"
-					:use-full-width="true"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:user-balance="userBalance"
-				/>
-				<loan-card-controller
-					v-else
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="`controller-${loan.id}`"
-					:loan="loan"
-					loan-card-type="GridLoanCard"
-					:show-tags="enableLoanTags"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-				/>
-			</template>
+		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2 tw-gap-2 tw-px-2">
+			<kv-classic-loan-card-container
+				v-for="(loan, index) in remainingLoans"
+				:key="`new-card-${loan.id}-${index}`"
+				:loan-id="loan.id"
+				:use-full-width="true"
+				:show-tags="true"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:user-balance="userBalance"
+			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
@@ -109,10 +91,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
@@ -125,10 +103,9 @@ export default {
 		};
 	},
 	components: {
-		LoanCardController,
 		HelpmeChooseTrigger,
 		HelpmeChooseRecommendations,
-		KivaClassicBasicLoanCardExp,
+		KvClassicLoanCardContainer,
 	},
 	computed: {
 		welcomeTitle() {
