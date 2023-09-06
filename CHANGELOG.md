@@ -1,3 +1,10 @@
+## [2.668.0](https://github.com/kiva/ui/compare/v2.667.0...v2.668.0) (2023-09-06)
+
+
+### Features
+
+* flss experiment key updated ([9e7e237](https://github.com/kiva/ui/commit/9e7e237d9e1cb854befb5bcf16e2341e7211694e))
+
 ## [2.667.0](https://github.com/kiva/ui/compare/v2.666.0...v2.667.0) (2023-09-06)
 
 
