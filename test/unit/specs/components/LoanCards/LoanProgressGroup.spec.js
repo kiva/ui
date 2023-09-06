@@ -29,55 +29,10 @@ describe('LoanProgressGroup', () => {
 		getByText('$12.34 to go. 1 day left.');
 	});
 
-	it('should display exclamation mark with experiment and low amount', () => {
-		const { getByText } = render(LoanProgressGroup, {
-			props: {
-				moneyLeft: '12.34',
-				enableLoanCardExp: true
-			},
-		});
-
-		getByText('$12.34 to go!');
-	});
-
-	it('should not display double exclamation mark with experiment and low amount', () => {
-		const { getByText } = render(LoanProgressGroup, {
-			props: {
-				moneyLeft: '12.34',
-				timeLeft: '1 day left!',
-				enableLoanCardExp: true
-			},
-		});
-
-		getByText('$12.34 to go. 1 day left!');
-	});
-
 	it('should not use orange color without experiment', () => {
 		const { container } = render(LoanProgressGroup, {
 			props: {
 				moneyLeft: '12.34',
-			},
-		});
-
-		expect(container.getElementsByClassName('progress-group-amount-low').length).toBe(0);
-	});
-
-	it('should use orange color with experiment and low amount', () => {
-		const { container } = render(LoanProgressGroup, {
-			props: {
-				moneyLeft: '12.34',
-				enableLoanCardExp: true
-			},
-		});
-
-		expect(container.getElementsByClassName('progress-group-amount-low').length).toBe(1);
-	});
-
-	it('should not use orange color with experiment and not low amount', () => {
-		const { container } = render(LoanProgressGroup, {
-			props: {
-				moneyLeft: '500',
-				enableLoanCardExp: true
 			},
 		});
 
