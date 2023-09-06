@@ -1,3 +1,15 @@
+## [2.667.0](https://github.com/kiva/ui/compare/v2.666.0...v2.667.0) (2023-09-06)
+
+
+### Features
+
+* new loan card components and logic experiment removed ([33246ec](https://github.com/kiva/ui/commit/33246ec2b1687a9d0fdc409cc3f5f9848f8092aa))
+
+
+### Bug Fixes
+
+* flashmessage query fixed to avoid a lint error about missed id ([0bc3084](https://github.com/kiva/ui/commit/0bc3084431721c10a602901a38a300a1795f3f07))
+
 ## [2.666.0](https://github.com/kiva/ui/compare/v2.665.1...v2.666.0) (2023-09-05)
 
 
