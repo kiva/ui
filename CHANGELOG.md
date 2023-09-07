@@ -1,3 +1,11 @@
+### [2.666.1-next.1](https://github.com/kiva/ui/compare/v2.666.0...v2.666.1-next.1) (2023-09-07)
+
+
+### Bug Fixes
+
+* flashmessage query fixed to avoid a lint error about missed id ([c5fdd9e](https://github.com/kiva/ui/commit/c5fdd9e6a60a63f374ebb44b8c73158bf3141709))
+* update lighthouserc-prod.js for new refugee url ([036df9a](https://github.com/kiva/ui/commit/036df9a1b04ed30649b9c7523e248febcc8bd049))
+
 ## [2.666.0](https://github.com/kiva/ui/compare/v2.665.1...v2.666.0) (2023-09-05)
 
 
