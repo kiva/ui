@@ -11,6 +11,7 @@
 				:width="344"
 				:contentful-src="imageUrl"
 				class="card-container-image"
+				:source-sizes="sourceSizes"
 				fallback-format="jpg"
 			/>
 		</a>
@@ -23,7 +24,7 @@
 			{{ headline }}
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
-		<p v-if="loading" class="tw-text-small text-overflow tw-line-clamp-3">
+		<p v-if="loading" class="tw-text-small text-overflow tw-line-clamp-4">
 			{{ summary }}
 		</p>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
@@ -54,13 +55,13 @@ export default {
 		return {
 			sourceSizes: [
 				{
-					width: 278,
-					height: 209,
+					width: 344,
+					height: 239,
 					media: 'min-width: 734px',
 				},
 				{
-					width: 344,
-					height: 239,
+					width: 278,
+					height: 209,
 					media: 'min-width: 0px',
 				},
 			]
