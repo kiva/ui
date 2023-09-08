@@ -13,6 +13,7 @@
 
 <script>
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import { pollForCheckoutStatus } from '@/util/checkoutUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -47,29 +48,48 @@ export default {
 					}
 				}).catch(errorResponse => {
 					this.$emit('updating-totals', false);
-					console.error(errorResponse);
+					this.showCheckoutError(errorResponse);
 				});
 		},
 		checkoutCreditBasket() {
 			this.checkoutBasket(false, this.useAsyncCheckout)
 				.then(transactionResult => {
-					if (typeof transactionResult !== 'object') {
-						// succesful validation
-						this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
-						// Complete transaction handles additional analytics + redirect
-						this.$emit('complete-transaction', transactionResult);
+					if (this.useAsyncCheckout && typeof transactionResult !== 'object') {
+						pollForCheckoutStatus(this.apollo, transactionResult)
+							.then(checkoutStatusResponse => {
+								this.handleSuccessfulCheckout(checkoutStatusResponse?.receipt?.checkoutId);
+							}).catch(errorResponse => {
+								this.handleFailedCheckout([
+									{
+										error: errorResponse.errorCode,
+										message: `${errorResponse?.errorMessage}, ${errorResponse?.status}`,
+									}
+								]);
+							});
+					} else if (typeof transactionResult !== 'object') {
+						this.handleSuccessfulCheckout(transactionResult);
 					} else {
 						// checkout failed
-						this.$emit('updating-totals', false);
 						const errorResult = transactionResult?.errors ?? [];
-						this.showCheckoutError(errorResult);
-						this.$emit('checkout-failure', errorResult);
+						this.handleFailedCheckout(errorResult);
 					}
 				}).catch(errorResponse => {
 					this.$emit('updating-totals', false);
-					console.error(errorResponse);
+					this.handleFailedCheckout(errorResponse);
 				});
 		},
+		handleSuccessfulCheckout(transactionResult) {
+			// succesful validation
+			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
+			// Complete transaction handles additional analytics + redirect
+			this.$emit('complete-transaction', transactionResult);
+		},
+		handleFailedCheckout(errorResult) {
+			// checkout failed
+			this.$emit('updating-totals', false);
+			this.showCheckoutError(errorResult);
+			this.$emit('checkout-failure', errorResult);
+		}
 	}
 };
 </script>

@@ -3,6 +3,9 @@ query checkoutStatus($transactionId: String!, $visitorId: String) {
 		basketId
 		errorCode
 		errorMessage
+		receipt {
+		checkoutId
+		}
 		requestedAt
 		status
 		transactionId
