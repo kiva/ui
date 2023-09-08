@@ -134,7 +134,7 @@ export default {
 			}
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate(mutObj).then(data => {
-					const transactionId = _get(data, 'data.shop.checkout');
+					const transactionId = useAsync ? data?.data?.shop?.checkoutAsync : data?.data?.shop?.checkout;
 					if (transactionId !== null) {
 						// succesful transaction;
 						resolve(transactionId);
