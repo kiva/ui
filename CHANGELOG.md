@@ -1,3 +1,10 @@
+## [2.669.0](https://github.com/kiva/ui/compare/v2.668.1...v2.669.0) (2023-09-11)
+
+
+### Features
+
+* compress static assets for production MARS-429 ([08896ee](https://github.com/kiva/ui/commit/08896ee96d5fbfbf80852435af210e5515cae9cb))
+
 ### [2.668.1](https://github.com/kiva/ui/compare/v2.668.0...v2.668.1) (2023-09-06)
 
 
