@@ -14,7 +14,7 @@
 				</p>
 			</div>
 			<div class="tw-col-span-12 lg:tw-col-span-6">
-				<education-post :post="post" :loading="!loadingPromise" />
+				<education-post :post="post" :loading="loading" />
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
@@ -60,8 +60,9 @@ export default {
 						customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
 					},
 				}).then(({ data }) => {
+					this.loading = false;
 					this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
-					this.$emit('hide-module', this.post !== null);
+					this.$emit('hide-module', this.post === null);
 				}).finally(() => {
 					this.loadingPromise = null;
 				});

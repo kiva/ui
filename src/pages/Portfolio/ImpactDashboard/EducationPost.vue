@@ -1,7 +1,7 @@
 <template>
 	<div class="card-container">
 		<a
-			v-if="loading"
+			v-if="!loading"
 			:href="url"
 			class="tw-block"
 			@click="trackEvent('blog-image')"
@@ -17,14 +17,14 @@
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '16rem' }" />
 		<a
-			v-if="loading"
+			v-if="!loading"
 			@click="trackEvent('blog-headline')"
 			class="tw-text-h3 text-overflow tw-line-clamp-2 tw-mb-0.5 tw-decoration-white tw-cursor-pointer"
 		>
 			{{ headline }}
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
-		<p v-if="loading" class="tw-text-small text-overflow tw-line-clamp-4">
+		<p v-if="!loading" class="tw-text-small text-overflow tw-line-clamp-4">
 			{{ summary }}
 		</p>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />

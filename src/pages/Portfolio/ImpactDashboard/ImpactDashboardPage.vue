@@ -77,7 +77,7 @@ export default {
 	},
 	methods: {
 		hideModule(payload) {
-			this.showEdModule = payload;
+			this.showEdModule = !payload;
 		}
 	},
 	mounted() {
