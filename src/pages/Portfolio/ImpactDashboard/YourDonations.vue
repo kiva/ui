@@ -186,7 +186,7 @@ export default {
 					if (this.totalDonations > this.limit) {
 						let offset = this.limit;
 						while (offset < this.totalDonations) {
-							this.getRemainDonations(transactionFilters, offset)
+							this.getRemainingDonations(transactionFilters, offset)
 								.then(donations => {
 									const remainDonations = donations?.data?.my?.transactions?.values ?? [];
 									this.currentYearDonations += this.filterAndSumDonations(
@@ -208,7 +208,7 @@ export default {
 		whenVisible() {
 			this.fetchAsyncData();
 		},
-		getRemainDonations(transactionFilters, offset) {
+		getRemainingDonations(transactionFilters, offset) {
 			return this.apollo.query({
 				query: gql`query yourDonations ($filters: TransactionSearchFilters, $limit: Int, $offset: Int) {
 						my {
