@@ -4,7 +4,7 @@
 			Your donations to Kiva
 		</h3>
 		<kv-grid class="tw-grid-cols-12 tw-p-3 tw-rounded tw-bg-marigold-1">
-			<div class="tw-col-span-12 md:tw-col-span-4 tw-text-center">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
 					{{ averageDonation }}
@@ -46,7 +46,7 @@
 					</template>
 				</kv-lightbox>
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-4 tw-text-center">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
 					{{ currentYearDonations | dollarFormat }}
@@ -65,7 +65,7 @@
 					/>
 				</a>
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-4 tw-text-center">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
 					{{ lastYearDonations | dollarFormat }}
