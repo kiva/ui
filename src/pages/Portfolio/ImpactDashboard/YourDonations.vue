@@ -127,7 +127,7 @@ export default {
 			currentYear: null,
 			taxReceiptUrl: '',
 			totalDonations: 0,
-			limit: 1,
+			limit: 100,
 			mdiArrowRight
 		};
 	},
