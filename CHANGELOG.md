@@ -1,3 +1,16 @@
+## [2.670.0](https://github.com/kiva/ui/compare/v2.669.0...v2.670.0) (2023-09-12)
+
+
+### Features
+
+* education module within impact dashboard ([883ceb8](https://github.com/kiva/ui/commit/883ceb8a95978e3ee22257e78f96c75b68b7bbb7))
+
+
+### Bug Fixes
+
+* loading logic ([62fdd0a](https://github.com/kiva/ui/commit/62fdd0a1e700d430e7a033b678cd1fcc63ea9d51))
+* small design changes ([3c74224](https://github.com/kiva/ui/commit/3c7422407ba1a1de96e751e915929d0238aff505))
+
 ## [2.669.0](https://github.com/kiva/ui/compare/v2.668.1...v2.669.0) (2023-09-11)
 
 
