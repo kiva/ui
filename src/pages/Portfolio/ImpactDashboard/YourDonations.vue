@@ -168,8 +168,7 @@ export default {
 						filters: transactionFilters,
 						limit: this.limit,
 					},
-				}).then(({ data }) => {
-					this.loading = false;
+				}).then(async ({ data }) => {
 					const currentYear = this.currentDate.getFullYear();
 					const transactions = data?.my?.transactions?.values ?? [];
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
@@ -185,21 +184,21 @@ export default {
 
 					if (this.totalDonations > this.limit) {
 						let offset = this.limit;
+						const requests = [];
 						while (offset < this.totalDonations) {
-							this.getRemainingDonations(transactionFilters, offset)
-								.then(donations => {
-									const remainDonations = donations?.data?.my?.transactions?.values ?? [];
-									this.currentYearDonations += this.filterAndSumDonations(
-										remainDonations, currentYear
-									);
-									this.lastYearDonations += this.filterAndSumDonations(
-										remainDonations, currentYear - 1
-									);
-								});
-
+							requests.push(this.getRemainingDonations(transactionFilters, offset));
 							offset += this.limit;
 						}
+
+						// Make all requests and sum remaining donations
+						const response = await Promise.all(requests);
+						response.forEach(result => {
+							const values = result?.data?.my?.transactions?.values ?? [];
+							this.currentYearDonations += this.filterAndSumDonations(values, currentYear);
+							this.lastYearDonations += this.filterAndSumDonations(values, currentYear - 1);
+						});
 					}
+					this.loading = false;
 				}).finally(() => {
 					this.loadingPromise = null;
 				});
