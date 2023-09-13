@@ -1,3 +1,10 @@
+### [2.671.1](https://github.com/kiva/ui/compare/v2.671.0...v2.671.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* bad isserver check ([d287a4f](https://github.com/kiva/ui/commit/d287a4f1104264d73cd6220ee42dca0d95b0973b))
+
 ## [2.671.0](https://github.com/kiva/ui/compare/v2.670.0...v2.671.0) (2023-09-13)
 
 
