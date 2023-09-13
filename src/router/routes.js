@@ -186,7 +186,7 @@ module.exports = [
 		component: () => import('@/pages/LoginAndRegister/JoinTeam'),
 		meta: {
 			excludeFromStaticSitemap: true,
-		}
+		},
 	},
 	{
 		path: '/legal',
@@ -501,6 +501,20 @@ module.exports = [
 			loanId: Number(route.params.loanId),
 			lendAmount: Number(route.params.lendAmount)
 		}),
+	},
+	{
+		path: '/process-join-team',
+		component: () => import('@/pages/ProcessJoinTeam'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			authenticationRequired: true,
+		},
+		props: route => ({
+			doneUrl: route.query.doneUrl,
+			teamRecruitmentId: Number(route.query.teamRecruitmentId),
+			teamPublicId: route.query.teamPublicId,
+			promoId: Number(route.query.promoId),
+		})
 	},
 	{
 		path: '/register/social',
