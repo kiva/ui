@@ -169,7 +169,7 @@ export default {
 					validatedUrl = new URL(validatedUrl);
 					return validatedUrl.href;
 				} catch (err) {
-					if (!this.$$isServer) {
+					if (!this.$isServer) {
 						Sentry.withScope(scope => {
 							scope.setTag('borrower_profile', 'social_link');
 							Sentry.captureMessage(`Invalid url ${value} for ${this.loanId}`);
