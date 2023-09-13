@@ -1,3 +1,10 @@
+## [2.671.0](https://github.com/kiva/ui/compare/v2.670.0...v2.671.0) (2023-09-13)
+
+
+### Features
+
+* new process join team page ([6fe49de](https://github.com/kiva/ui/commit/6fe49dea7b58a8592c7e5e4e9016a05c0a4f8da3))
+
 ## [2.670.0](https://github.com/kiva/ui/compare/v2.669.0...v2.670.0) (2023-09-12)
 
 
