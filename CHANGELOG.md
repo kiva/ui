@@ -1,3 +1,11 @@
+### [2.672.2](https://github.com/kiva/ui/compare/v2.672.1...v2.672.2) (2023-09-14)
+
+
+### Bug Fixes
+
+* check secondary string in google topics realated api failure ([d8337bd](https://github.com/kiva/ui/commit/d8337bd36d25509b5e5f0b2df4674baf17fdb15f))
+* filter out unhanded google ads code request errors from sentry ([ba925ac](https://github.com/kiva/ui/commit/ba925ace37f920359815f4e0a947505326278776))
+
 ### [2.672.1](https://github.com/kiva/ui/compare/v2.672.0...v2.672.1) (2023-09-14)
 
 
