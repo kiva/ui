@@ -1,3 +1,10 @@
+## [2.672.0](https://github.com/kiva/ui/compare/v2.671.1...v2.672.0) (2023-09-14)
+
+
+### Features
+
+* [CP-477] disabling batching so we can shift traffic to the EKS cluster ([#4963](https://github.com/kiva/ui/issues/4963)) ([7a069bc](https://github.com/kiva/ui/commit/7a069bc2dc3b3145e6c90a857cd1b0ef24ece8e0))
+
 ### [2.671.1](https://github.com/kiva/ui/compare/v2.671.0...v2.671.1) (2023-09-13)
 
 
