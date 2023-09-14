@@ -1,3 +1,10 @@
+### [2.672.1](https://github.com/kiva/ui/compare/v2.672.0...v2.672.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* ensure all assets get compressed before upload MARS-288 ([df1e65f](https://github.com/kiva/ui/commit/df1e65fd8bf3a58cd6aba1c443dc831ba4fa1b44))
+
 ## [2.672.0](https://github.com/kiva/ui/compare/v2.671.1...v2.672.0) (2023-09-14)
 
 
