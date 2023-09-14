@@ -334,11 +334,16 @@ module.exports = {
 		})]),
 		...(isProd ? [
 			// gzip compression
-			new CompressionPlugin(),
+			new CompressionPlugin({
+				// Compress all assets for upload
+				minRatio: Infinity,
+			}),
 			// brotli compression
 			new CompressionPlugin({
 				filename: "[path][base].br",
 				algorithm: "brotliCompress",
+				// Compress all assets for upload
+				minRatio: Infinity,
 			}),
 		] : []),
 	]
