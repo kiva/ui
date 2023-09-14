@@ -84,7 +84,8 @@ export default function createApp({
 				// Skip sending failed to fetch error caused by unhandled promise rejection in google ads
 				// Sentry Event Link: https://kiva.sentry.io/issues/4413252219/events/726c65f507684f43b748e913d4793518/
 				// This url is unreachable: https://pagead2.googlesyndication.com/pagead/buyside_topics/set/
-				if (eventAsString.indexOf('Failed to fetch') !== -1) {
+				if (eventAsString.indexOf('Failed to fetch') !== -1
+					&& eventAsString.indexOf('pagead') !== -1) {
 					return false;
 				}
 				// Skip sending failed loads of pX
