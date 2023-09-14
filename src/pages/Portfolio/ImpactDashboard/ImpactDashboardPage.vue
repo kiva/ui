@@ -10,6 +10,7 @@
 					<account-overview />
 					<lending-insights />
 					<recent-loans-list />
+					<your-donations />
 					<education-module v-if="showEdModule" @hide-module="hideModule" />
 					<kiva-credit-stats />
 					<account-updates />
@@ -37,6 +38,7 @@ import LendingInsights from './LendingInsights';
 import RecentLoansList from './RecentLoansList';
 import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
+import YourDonations from './YourDonations';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -55,6 +57,7 @@ export default {
 		ThePortfolioTertiaryMenu,
 		WwwPage,
 		YourTeams,
+		YourDonations
 	},
 	data() {
 		return {
