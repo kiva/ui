@@ -63,3 +63,5 @@ configmap:
     value: "dev"
   - key: NODE_OPTIONS
     value: "--max-old-space-size=460"
+  - key: APOLLO_BATCH
+    value: "false"
