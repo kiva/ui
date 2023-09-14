@@ -81,6 +81,12 @@ export default function createApp({
 				// make sentry colleted event easy to compare to
 				const eventAsString = JSON.stringify(event);
 				// match specific 3rd party events for exclusion
+				// Skip sending failed to fetch error caused by unhandled promise rejection in google ads
+				// Sentry Event Link: https://kiva.sentry.io/issues/4413252219/events/726c65f507684f43b748e913d4793518/
+				// This url is unreachable: https://pagead2.googlesyndication.com/pagead/buyside_topics/set/
+				if (eventAsString.indexOf('Failed to fetch') !== -1) {
+					return false;
+				}
 				// Skip sending failed loads of pX
 				// eslint-disable-next-line quotes
 				if (eventAsString.indexOf("Cannot set property 'PX1065' of undefined") !== -1) {
