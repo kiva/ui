@@ -1,3 +1,18 @@
+## [2.673.0](https://github.com/kiva/ui/compare/v2.672.2...v2.673.0) (2023-09-14)
+
+
+### Features
+
+* create donation module in impact dashboard ([d7744ec](https://github.com/kiva/ui/commit/d7744ec1da5e5bc7b8ef89ae33ea0be3cd25be66))
+
+
+### Bug Fixes
+
+* limit value ([c96c9c9](https://github.com/kiva/ui/commit/c96c9c9205599209a3f9ea34d94564edeebd8987))
+* method name type ([a287d76](https://github.com/kiva/ui/commit/a287d76c099d3f643d957bcd415e77aab0042047))
+* replace inline style for tw class ([8f65360](https://github.com/kiva/ui/commit/8f6536044656915330d21e7129802c3d771b54a9))
+* squeezed stats  in tablet view ([6b2cdb0](https://github.com/kiva/ui/commit/6b2cdb0f5fa290da31a9b5f731b6f8fdb3135612))
+
 ### [2.672.2](https://github.com/kiva/ui/compare/v2.672.1...v2.672.2) (2023-09-14)
 
 
