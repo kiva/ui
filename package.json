@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.668.1",
+	"version": "2.673.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -153,6 +153,7 @@
 		"babel-loader": "^8.1.0",
 		"chalk": "^4.0.0",
 		"chokidar": "^3.4.2",
+		"compression-webpack-plugin": "^6.1.1",
 		"coveralls": "^3.1.1",
 		"css-loader": "^5.2.6",
 		"cssnano": "^5.0.8",

@@ -1,3 +1,74 @@
+## [2.673.0](https://github.com/kiva/ui/compare/v2.672.2...v2.673.0) (2023-09-14)
+
+
+### Features
+
+* create donation module in impact dashboard ([d7744ec](https://github.com/kiva/ui/commit/d7744ec1da5e5bc7b8ef89ae33ea0be3cd25be66))
+
+
+### Bug Fixes
+
+* limit value ([c96c9c9](https://github.com/kiva/ui/commit/c96c9c9205599209a3f9ea34d94564edeebd8987))
+* method name type ([a287d76](https://github.com/kiva/ui/commit/a287d76c099d3f643d957bcd415e77aab0042047))
+* replace inline style for tw class ([8f65360](https://github.com/kiva/ui/commit/8f6536044656915330d21e7129802c3d771b54a9))
+* squeezed stats  in tablet view ([6b2cdb0](https://github.com/kiva/ui/commit/6b2cdb0f5fa290da31a9b5f731b6f8fdb3135612))
+
+### [2.672.2](https://github.com/kiva/ui/compare/v2.672.1...v2.672.2) (2023-09-14)
+
+
+### Bug Fixes
+
+* check secondary string in google topics realated api failure ([d8337bd](https://github.com/kiva/ui/commit/d8337bd36d25509b5e5f0b2df4674baf17fdb15f))
+* filter out unhanded google ads code request errors from sentry ([ba925ac](https://github.com/kiva/ui/commit/ba925ace37f920359815f4e0a947505326278776))
+
+### [2.672.1](https://github.com/kiva/ui/compare/v2.672.0...v2.672.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* ensure all assets get compressed before upload MARS-288 ([df1e65f](https://github.com/kiva/ui/commit/df1e65fd8bf3a58cd6aba1c443dc831ba4fa1b44))
+
+## [2.672.0](https://github.com/kiva/ui/compare/v2.671.1...v2.672.0) (2023-09-14)
+
+
+### Features
+
+* [CP-477] disabling batching so we can shift traffic to the EKS cluster ([#4963](https://github.com/kiva/ui/issues/4963)) ([7a069bc](https://github.com/kiva/ui/commit/7a069bc2dc3b3145e6c90a857cd1b0ef24ece8e0))
+
+### [2.671.1](https://github.com/kiva/ui/compare/v2.671.0...v2.671.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* bad isserver check ([d287a4f](https://github.com/kiva/ui/commit/d287a4f1104264d73cd6220ee42dca0d95b0973b))
+
+## [2.671.0](https://github.com/kiva/ui/compare/v2.670.0...v2.671.0) (2023-09-13)
+
+
+### Features
+
+* new process join team page ([6fe49de](https://github.com/kiva/ui/commit/6fe49dea7b58a8592c7e5e4e9016a05c0a4f8da3))
+
+## [2.670.0](https://github.com/kiva/ui/compare/v2.669.0...v2.670.0) (2023-09-12)
+
+
+### Features
+
+* education module within impact dashboard ([883ceb8](https://github.com/kiva/ui/commit/883ceb8a95978e3ee22257e78f96c75b68b7bbb7))
+
+
+### Bug Fixes
+
+* loading logic ([62fdd0a](https://github.com/kiva/ui/commit/62fdd0a1e700d430e7a033b678cd1fcc63ea9d51))
+* small design changes ([3c74224](https://github.com/kiva/ui/commit/3c7422407ba1a1de96e751e915929d0238aff505))
+
+## [2.669.0](https://github.com/kiva/ui/compare/v2.668.1...v2.669.0) (2023-09-11)
+
+
+### Features
+
+* compress static assets for production MARS-429 ([08896ee](https://github.com/kiva/ui/commit/08896ee96d5fbfbf80852435af210e5515cae9cb))
+
 ### [2.668.1](https://github.com/kiva/ui/compare/v2.668.0...v2.668.1) (2023-09-06)
 
 

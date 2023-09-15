@@ -8,11 +8,12 @@
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
 				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-3">
 					<account-overview />
+					<lending-insights />
 					<recent-loans-list />
-					<recommended-loans-list />
+					<your-donations />
+					<education-module v-if="showEdModule" @hide-module="hideModule" />
 					<kiva-credit-stats />
 					<account-updates />
-					<lending-insights />
 					<your-teams />
 					<distribution-graphs />
 				</div>
@@ -35,8 +36,9 @@ import DistributionGraphs from './DistributionGraphs';
 import KivaCreditStats from './KivaCreditStats';
 import LendingInsights from './LendingInsights';
 import RecentLoansList from './RecentLoansList';
-import RecommendedLoansList from './RecommendedLoansList';
 import YourTeams from './YourTeams';
+import EducationModule from './EducationModule';
+import YourDonations from './YourDonations';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -45,16 +47,22 @@ export default {
 		AccountOverview,
 		AccountUpdates,
 		DistributionGraphs,
+		EducationModule,
 		KivaCreditStats,
 		KvGrid,
 		KvPageContainer,
 		LendingInsights,
 		RecentLoansList,
-		RecommendedLoansList,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
 		YourTeams,
+		YourDonations
+	},
+	data() {
+		return {
+			showEdModule: true
+		};
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -69,6 +77,11 @@ export default {
 				}
 			});
 		},
+	},
+	methods: {
+		hideModule(payload) {
+			this.showEdModule = !payload;
+		}
 	},
 	mounted() {
 		// Impact Dashboard page redesign experiment MARS-344 MARS-348

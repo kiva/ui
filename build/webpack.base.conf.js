@@ -5,6 +5,7 @@ const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug');
 const gitRevisionPlugin = new GitRevisionPlugin({
@@ -331,5 +332,19 @@ module.exports = {
 				sizeThreshold: 500 * 1024 * 1024
 			}
 		})]),
+		...(isProd ? [
+			// gzip compression
+			new CompressionPlugin({
+				// Compress all assets for upload
+				minRatio: Infinity,
+			}),
+			// brotli compression
+			new CompressionPlugin({
+				filename: "[path][base].br",
+				algorithm: "brotliCompress",
+				// Compress all assets for upload
+				minRatio: Infinity,
+			}),
+		] : []),
 	]
 };
