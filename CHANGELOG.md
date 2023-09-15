@@ -1,3 +1,10 @@
+### [2.673.1](https://github.com/kiva/ui/compare/v2.673.0...v2.673.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* ensure icons are compressed and skip font compression MARS-288 ([158c677](https://github.com/kiva/ui/commit/158c677a86532880980c79ee398dab432e61c2b6))
+
 ## [2.673.0](https://github.com/kiva/ui/compare/v2.672.2...v2.673.0) (2023-09-14)
 
 
