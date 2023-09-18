@@ -1,3 +1,10 @@
+### [2.673.2](https://github.com/kiva/ui/compare/v2.673.1...v2.673.2) (2023-09-18)
+
+
+### Bug Fixes
+
+* missing url in education post within impact page ([4b42a70](https://github.com/kiva/ui/commit/4b42a7020b72dffd5e79e99798831428da3f516c))
+
 ### [2.673.1](https://github.com/kiva/ui/compare/v2.673.0...v2.673.1) (2023-09-15)
 
 
