@@ -10,7 +10,7 @@
 					{{ averageDonation }}
 				</dt>
 				<dd class="stat-def">
-					Average donation per $25 lent
+					Avg. donation per $25 lent
 				</dd>
 				<button
 					class="staf-link" @click="donationLightboxVisible = true"
@@ -23,6 +23,7 @@
 					/>
 				</button>
 				<kv-lightbox
+					class="tw-text-left"
 					:visible="donationLightboxVisible" title="Average donation per $25 lent"
 					@lightbox-closed="donationLightboxVisible = false"
 				>
@@ -74,12 +75,13 @@
 					{{ lastYear }} donations
 				</dd>
 				<a
+					v-if="lastYearDonations"
 					:href="taxReceiptUrl" class="staf-link"
 					target="_blank"
-					:v-kv-track-event="`[
+					v-kv-track-event="[
 						'portfolio',
 						'click',
-						${lastYear}-tax-receipt]`"
+						`${lastYear}-tax-receipt`]"
 				>
 					{{ lastYear }} tax receipt
 					<kv-material-icon
