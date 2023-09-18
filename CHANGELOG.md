@@ -1,3 +1,10 @@
+### [2.673.3](https://github.com/kiva/ui/compare/v2.673.2...v2.673.3) (2023-09-18)
+
+
+### Bug Fixes
+
+* event tracking, hide receipt if zero donations ([dedf217](https://github.com/kiva/ui/commit/dedf2171a78838f500ebe871db36b6ea49e7a61a))
+
 ### [2.673.2](https://github.com/kiva/ui/compare/v2.673.1...v2.673.2) (2023-09-18)
 
 
