@@ -18,6 +18,7 @@
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '16rem' }" />
 		<a
 			v-if="!loading"
+			:href="url"
 			@click="trackEvent('blog-headline')"
 			class="tw-text-h3 text-overflow tw-line-clamp-2 tw-mb-0.5 tw-decoration-white tw-cursor-pointer"
 		>
