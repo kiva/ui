@@ -1,8 +1,11 @@
 const { merge } = require('webpack-merge');
 var base = require('./index.js')
 
+const apolloBatching = process.env.APOLLO_BATCH !== 'false';
+
 module.exports = merge(base, {
 	app: {
+		apolloBatching,
 		host: 'www.dev.kiva.org',
 		publicPath: 'https://www.dev.kiva.org/',
 		photoPath: 'https://www-dev-kiva-org.freetls.fastly.net/img/',
