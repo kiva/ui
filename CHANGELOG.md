@@ -1,3 +1,28 @@
+## [2.667.0-next.1](https://github.com/kiva/ui/compare/v2.666.1-next.1...v2.667.0-next.1) (2023-09-19)
+
+
+### Features
+
+* [CP-477] disabling batching so we can shift traffic to the EKS cluster ([#4963](https://github.com/kiva/ui/issues/4963)) ([657b64f](https://github.com/kiva/ui/commit/657b64f94d105fff70b018e7eb09ce07d70fbf59))
+* [CP-477] disabling batching so we can shift traffic to the EKS cluster ([#4969](https://github.com/kiva/ui/issues/4969)) ([a9d8807](https://github.com/kiva/ui/commit/a9d8807dfba4ae7f9ed5d9b640c9f611da047aca))
+* compress static assets for production MARS-429 ([3bde6f9](https://github.com/kiva/ui/commit/3bde6f9359e5628b4b877a244af8804cc9d47ba3))
+* flss experiment key updated ([d9af3ac](https://github.com/kiva/ui/commit/d9af3aca261fdc2021e2c49a66491c223e64449d))
+* new loan card components and logic experiment removed ([265603f](https://github.com/kiva/ui/commit/265603f6747273c4f47f1651e2b4390e4ac2e479))
+* new process join team page ([db71ccd](https://github.com/kiva/ui/commit/db71ccd37b32ed491d0400d3f14d92a969d44e52))
+
+
+### Bug Fixes
+
+* bad isserver check ([c856625](https://github.com/kiva/ui/commit/c856625d0734074bdedcb5b9e68858978279fd10))
+* check secondary string in google topics realated api failure ([9bd843d](https://github.com/kiva/ui/commit/9bd843d261be06bf528468eddec41ca3f3e608bc))
+* ensure all assets get compressed before upload MARS-288 ([adb5fb7](https://github.com/kiva/ui/commit/adb5fb7ca56fc0b0b71cb421a0d2903bbf6fa0fd))
+* ensure icons are compressed and skip font compression MARS-288 ([40bfcf6](https://github.com/kiva/ui/commit/40bfcf6da98c878e5b9ee50b4904bdc656a59983))
+* filter out unhanded google ads code request errors from sentry ([db64300](https://github.com/kiva/ui/commit/db6430016ced64b48a38fe7fc9fdb4b3081c8057))
+* flashmessage query fixed to avoid a lint error about missed id ([dbb8d6f](https://github.com/kiva/ui/commit/dbb8d6fb843fae4a0f92a784facb53b4e9125d4f))
+* flashmessage query fixed to avoid a lint error about missed id ([8d99147](https://github.com/kiva/ui/commit/8d9914703e27ccbd3f665b6cedd50f5ad99dd99d))
+* update lighthouserc-prod.js for new refugee url ([48afd2c](https://github.com/kiva/ui/commit/48afd2c747a39261537064d3dfb79a5a1845c4ca))
+* update lighthouserc-prod.js for new refugee url ([2f74b2f](https://github.com/kiva/ui/commit/2f74b2f755571f261771b15e176eca73347406ab))
+
 ### [2.666.1-next.1](https://github.com/kiva/ui/compare/v2.666.0...v2.666.1-next.1) (2023-09-07)
 
 
