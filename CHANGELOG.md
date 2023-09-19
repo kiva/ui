@@ -1,3 +1,10 @@
+### [2.674.1](https://github.com/kiva/ui/compare/v2.674.0...v2.674.1) (2023-09-19)
+
+
+### Bug Fixes
+
+* missing component on guest upsell no comment ask ([44844ca](https://github.com/kiva/ui/commit/44844ca7816fa865034cbe397e580368e0c146dd))
+
 ## [2.674.0](https://github.com/kiva/ui/compare/v2.673.3...v2.674.0) (2023-09-18)
 
 
