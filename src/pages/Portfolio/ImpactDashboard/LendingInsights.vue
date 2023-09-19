@@ -3,7 +3,7 @@
 		<h2 class="tw-mb-3 md:tw-mb-2 tw-text-white">
 			Your lending insights
 		</h2>
-		<kv-grid as="dl" class="tw-grid-cols-12 tw-p-1.5 tw-rounded" :style="{backgroundColor: '#FFFFFF0D'}">
+		<kv-grid as="dl" class="tw-grid-cols-12 tw-p-1.5 tw-rounded tw-bg-white/5">
 			<div class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
@@ -160,9 +160,7 @@ export default {
 
 <style lang="postcss" scoped>
 .stat-placeholder {
-	margin: 0 auto;
-	margin-bottom: 6px;
-	@apply tw-mt-1 tw-h-4.5;
+	@apply tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5;
 }
 
 .stat-value {
