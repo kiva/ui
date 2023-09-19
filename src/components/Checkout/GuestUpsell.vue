@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 
 export default {
 	name: 'GuestUpsell',
@@ -19,6 +20,9 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+	},
+	components: {
+		GuestAccountCreation,
 	},
 	computed: {
 		borrowerName() {
