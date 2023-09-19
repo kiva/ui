@@ -514,6 +514,7 @@ module.exports = [
 			teamRecruitmentId: Number(route.query.teamRecruitmentId),
 			teamPublicId: route.query.teamPublicId,
 			promoId: Number(route.query.promoId),
+			inviter: route.query.inviter
 		})
 	},
 	{
