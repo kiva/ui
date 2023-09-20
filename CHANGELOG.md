@@ -1,3 +1,15 @@
+## [2.676.0](https://github.com/kiva/ui/compare/v2.675.0...v2.676.0) (2023-09-20)
+
+
+### Features
+
+* update lending insights module ([0ea5ce1](https://github.com/kiva/ui/commit/0ea5ce1c46d4cd25943e96587c664408d3e8bc02))
+
+
+### Bug Fixes
+
+* replace inline styles ([995e0ed](https://github.com/kiva/ui/commit/995e0edde1e9471813f3651d9f36c97b6a7564b1))
+
 ## [2.675.0](https://github.com/kiva/ui/compare/v2.674.1...v2.675.0) (2023-09-19)
 
 
