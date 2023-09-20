@@ -1,3 +1,15 @@
+## [2.677.0](https://github.com/kiva/ui/compare/v2.676.1...v2.677.0) (2023-09-20)
+
+
+### Features
+
+* support inviter param and recruitment on team process page ([424aa60](https://github.com/kiva/ui/commit/424aa60e9cf74467e1d2cf0dae38a877c2eb36ca))
+
+
+### Bug Fixes
+
+* make join team mutation variables conditional ([2518a2c](https://github.com/kiva/ui/commit/2518a2cf2497988f2d4382aef91f4b86d20b1aa5))
+
 ### [2.676.1](https://github.com/kiva/ui/compare/v2.676.0...v2.676.1) (2023-09-20)
 
 
