@@ -1,3 +1,10 @@
+## [2.678.0](https://github.com/kiva/ui/compare/v2.677.0...v2.678.0) (2023-09-20)
+
+
+### Features
+
+* add recruit/join/quit buttons to new teams page ([8fb3e2c](https://github.com/kiva/ui/commit/8fb3e2cab74fa6f930cad37fe65c4147e0a99c6c))
+
 ## [2.677.0](https://github.com/kiva/ui/compare/v2.676.1...v2.677.0) (2023-09-20)
 
 
