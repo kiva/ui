@@ -58,7 +58,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// Hide ALL banners on these pages
-			if (isExcludedUrl(globalBannerDenyList, this.$route.path)) return false;
+			if (isExcludedUrl(globalBannerDenyList, [], this.$route.path)) return false;
 
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
@@ -90,7 +90,8 @@ export default {
 				if (activePromoBanner) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = _get(activePromoBanner, 'fields.hiddenUrls', []);
-					if (isExcludedUrl(hiddenUrls, this.$route.path)) return false;
+					const visibleUrls = _get(activePromoBanner, 'fields.visibleUrls', []);
+					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
 
 					// check for visibility on promo session override
 					const showForPromo = _get(activePromoBanner, 'fields.showForPromo', false);
@@ -126,7 +127,7 @@ export default {
 	computed: {
 		showAppeal() {
 			// Check if Appeal Banner is active and the user is not on a denied page URL
-			if (this.appealEnabled && !isExcludedUrl(globalBannerDenyList, this.$route.path)) return true;
+			if (this.appealEnabled && !isExcludedUrl(globalBannerDenyList, [], this.$route.path)) return true;
 			return false;
 		},
 	},
