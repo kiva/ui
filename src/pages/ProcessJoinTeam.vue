@@ -162,8 +162,9 @@ export default {
 					mutation: joinTeam,
 					variables: {
 						team_id: this.teamId,
-						team_recruitment_id: this.recruitmentIdMutationVariable,
-						promo_id: this.promoId
+						...(this.recruitmentIdMutationVariable
+							&& { team_recruitment_id: this.recruitmentIdMutationVariable }),
+						...(this.promoId && { promo_id: this.promoId }),
 					}
 				});
 				// get updated team membership status to determine if joined or pending
