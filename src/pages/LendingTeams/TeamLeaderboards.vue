@@ -27,8 +27,8 @@ export default {
 	},
 	mounted() {
 		fetchLeaderboard(this.apollo).then(leaderboards => {
-			this.funded = leaderboards.amountFunded ?? {};
-			this.members = leaderboards.newUsers ?? {};
+			this.funded = leaderboards?.amountFunded ?? {};
+			this.members = leaderboards?.newUsers ?? {};
 		});
 	},
 };
