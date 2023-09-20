@@ -25,7 +25,7 @@
 			{{ headline }}
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
-		<p v-if="!loading" class="tw-text-small text-overflow tw-line-clamp-4">
+		<p v-if="!loading" class="text-overflow tw-line-clamp-4">
 			{{ summary }}
 		</p>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
@@ -57,12 +57,12 @@ export default {
 			sourceSizes: [
 				{
 					width: 344,
-					height: 239,
+					height: 219,
 					media: 'min-width: 734px',
 				},
 				{
 					width: 278,
-					height: 209,
+					height: 200,
 					media: 'min-width: 0px',
 				},
 			]
