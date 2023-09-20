@@ -169,10 +169,10 @@
 				>
 
 				<div
-					class="tw-flex tw-flex-row tw-mt-1 tw-ml-1 tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
+					class="tw-flex tw-flex-row tw-ml-2 tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
 				>
 					<div
-						class="tw-pt-1 tw-overflow-hidden tw-text-ellipsis"
+						class="tw-overflow-hidden tw-text-ellipsis"
 					>
 						<router-link
 							:to="`/team/${team.teamPublicId}`"
@@ -189,14 +189,14 @@
 								{{ team.name }}
 							</h3>
 						</router-link>
-						<p v-if="team.name && team.whereabouts" class="tw-text-small tw-text-tertiary">
+						<p v-if="team.name && team.whereabouts" class="tw-text-small tw-text-secondary">
 							{{ team.whereabouts }} | Category: {{ team.category }} |
 							{{ format(new Date(team.createdDate), 'MMM, yyyy') }}
 						</p>
-						<p v-else class="tw-text-small tw-text-tertiary">
+						<p v-else class="tw-text-small tw-text-secondary">
 							Category: {{ team.category }} | {{ format(new Date(team.createdDate), 'MMM, yyyy') }}
 						</p>
-						<p class="tw-text-small tw-text-tertiary">
+						<p class="tw-text-small tw-text-secondary">
 							{{ numeral(team.lenderCount).format('0,0') }} members have funded
 							{{ numeral(team.lentAmount).format('$0,0') }} in loans
 						</p>
@@ -204,21 +204,48 @@
 				</div>
 			</div>
 			<div
-				class="tw-flex tw-justify-between tw-mt-1"
+				class="tw-mt-2"
 			>
-				<div>
-					<p
-						class="tw-text-small tw-text-secondary tw-flex-1"
-					>
-						We loan because: {{ shortLoanBecause(team.loanBecause) }}
-					</p>
-				</div>
-				<div class="tw-flex-none tw-ml-2 tw-self-end">
-					<!-- !TODO add functionality to these buttons !
+				<p
+					class="tw-text-small tw-text-primary tw-flex-1"
+				>
+					We loan because: {{ shortLoanBecause(team.loanBecause) }}
+				</p>
+			</div>
+			<div class="tw-mt-2">
+				<div v-if="userIsTeamMember(team.id)" class="tw-flex tw-w-full tw-justify-end">
 					<kv-button
-						v-if="team.membershipType != 'closed' "
+						variant="secondary"
+						:href="`/team/${team.teamPublicId}/recruit`"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-recruit',
+							team.teamPublicId
+						]"
+					>
+						Recruit friends
+					</kv-button>
+					<kv-button
+						class="tw-ml-2"
+						variant="secondary"
+						:href="`/teams/quit/process?team_id=${team.id}`"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-quit',
+							team.teamPublicId
+						]"
+					>
+						Quit team
+					</kv-button>
+				</div>
+				<div v-else class="tw-flex tw-flex-col tw-w-full tw-items-end">
+					<!-- Join or request buttons -->
+					<kv-button
+						v-if="team.membershipType != 'closed'"
 						variant="primary"
-						to=""
+						:to="`/process-join-team?teamPublicId=${team.teamPublicId}`"
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -231,7 +258,7 @@
 
 					<kv-button
 						v-else variant="primary"
-						to=""
+						:to="`/process-join-team?teamPublicId=${team.teamPublicId}`"
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -240,7 +267,7 @@
 						]"
 					>
 						Request to Join
-					</kv-button>-->
+					</kv-button>
 				</div>
 			</div>
 		</div>
@@ -262,11 +289,12 @@ import { format } from 'date-fns';
 import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
 import teamNoImage from '@/assets/images/team_s135.png';
+import { gql } from '@apollo/client';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 import { fetchTeams } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
-// import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
@@ -294,16 +322,30 @@ function getPageOffset(query, limit) {
 	return pageNum > 0 ? limit * pageNum : 0;
 }
 
+const pageQuery = gql`query usersTeams {
+	my {
+		id
+		lender {
+			id
+			teams(limit: 100) {
+				values {
+					id
+				}
+			}
+		}
+	}
+}`;
+
 export default {
 	name: 'TeamListing',
 	components: {
-		// KvButton,
+		KvButton,
 		KvLoadingPlaceholder,
 		KvPagination,
 		KvSelect,
 		TeamSearchBar,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			teamCategory: '',
@@ -318,8 +360,16 @@ export default {
 			offset: 0,
 			limit: teamsPerPage,
 			pageQuery: { page: '1' },
-			loading: true
+			loading: true,
+			myTeams: [],
 		};
+	},
+	apollo: {
+		query: pageQuery,
+		preFetch: true,
+		result({ data }) {
+			this.myTeams = data.my?.lender?.teams?.values ?? [];
+		},
 	},
 	computed: {
 		urlParams() {
@@ -382,6 +432,9 @@ export default {
 				return `${teamLoanBecause?.substring(0, 250)}... `;
 			}
 			return teamLoanBecause;
+		},
+		userIsTeamMember(teamId) {
+			return this.myTeams.some(team => team.id === teamId);
 		},
 	},
 	created() {
