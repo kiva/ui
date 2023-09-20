@@ -1,4 +1,4 @@
-import { getFullUrl, isCCPage } from '@/util/urlUtils';
+import { getFullUrl, isCCPage, isExcludedUrl } from '@/util/urlUtils';
 
 describe('urlUtils.js', () => {
 	describe('getFullUrl', () => {
@@ -76,6 +76,28 @@ describe('urlUtils.js', () => {
 		});
 		it('does not return a true since it is not corporate campaign page', () => {
 			expect(isCCPage('http://kiva.org')).toBe(false);
+		});
+	});
+
+	describe('isExcludedUrl', () => {
+		it('should return true for excluded URL', () => {
+			expect(isExcludedUrl(['asd'], [], 'asd')).toBe(true);
+		});
+
+		it('should return false for URLs that are not excluded', () => {
+			expect(isExcludedUrl([], [], 'asd')).toBe(false);
+		});
+
+		it('should return false for included URL', () => {
+			expect(isExcludedUrl(['asd'], ['asd'], 'asd')).toBe(false);
+		});
+
+		it('should return true for URL that is not included', () => {
+			expect(isExcludedUrl([], ['asd'], 'fgh')).toBe(true);
+		});
+
+		it('should return false for URL that is included', () => {
+			expect(isExcludedUrl([''], ['fgh'], 'fgh')).toBe(false);
 		});
 	});
 });

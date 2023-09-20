@@ -58,9 +58,6 @@ export default {
 		query: disclaimerQuery,
 		preFetch: true,
 		result({ data }) {
-			// Hide ALL banners on these pages
-			if (isExcludedUrl(globalBannerDenyList, [], this.$route.path)) return false;
-
 			this.disclaimerContent = [];
 			// gather contentful content and the uiSetting key ui-global-promo
 			const contentfulContent = data?.contentful?.entries?.items ?? [];
@@ -100,11 +97,9 @@ export default {
 					const isGlobalPromo = promoContent?.sys?.contentType?.sys?.id === 'globalPromoBanner';
 					if (!isGlobalPromo) return false;
 					// check for visibility based on current route and hiddenUrls field
-					const hiddenUrls = promoContent?.fields?.hiddenUrls ?? [];
+					const hiddenUrls = globalBannerDenyList.concat(promoContent?.fields?.hiddenUrls ?? []);
 					const visibleUrls = promoContent?.fields?.visibleUrls ?? [];
-
-					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
-
+					if (!isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
 					if (promoContent.fields.active) {
 						return false;
 					}
@@ -117,7 +112,7 @@ export default {
 
 				if (activePromoBanner) {
 					// check for visibility based on current route and hiddenUrls field
-					const hiddenUrls = activePromoBanner?.fields?.hiddenUrls ?? [];
+					const hiddenUrls = globalBannerDenyList.concat(activePromoBanner?.fields?.hiddenUrls ?? []);
 					const visibleUrls = activePromoBanner?.fields?.visibleUrls ?? [];
 
 					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
