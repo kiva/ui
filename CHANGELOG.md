@@ -1,3 +1,10 @@
+### [2.676.1](https://github.com/kiva/ui/compare/v2.676.0...v2.676.1) (2023-09-20)
+
+
+### Bug Fixes
+
+* bg color ([f1d1e2b](https://github.com/kiva/ui/commit/f1d1e2b5662cebd46113ffd992f79b3488f69da2))
+
 ## [2.676.0](https://github.com/kiva/ui/compare/v2.675.0...v2.676.0) (2023-09-20)
 
 
