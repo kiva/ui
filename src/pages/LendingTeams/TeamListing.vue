@@ -6,13 +6,14 @@
 			<h3>
 				Team Listing
 			</h3>
-			<p class="tw-text-small">
+			<p class="tw-text-small" v-if="!loading">
 				<!-- eslint-disable-next-line max-len -->
 				{{ numeral(totalCount).format('0,0') }} lending teams in {{ teamCategory ? teamCategory : 'all categories' }}
 			</p>
 		</div>
 		<team-search-bar
 			@search="handleSearchQuery"
+			:initial-value="queryString"
 			id="team-list-search-bar"
 		/>
 		<div
@@ -22,6 +23,7 @@
 				<kv-select
 					id="category"
 					v-model="teamCategory"
+					@update:modelValue="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamCategory]"
 				>
 					<option value="">
@@ -84,6 +86,7 @@
 				<kv-select
 					id="categoryTeams"
 					v-model="teamOption"
+					@update:modelValue="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamOption]"
 				>
 					<option value="">
@@ -104,7 +107,10 @@
 					Sort by:
 				</label>
 				<div>
-					<kv-select id="categorySort" v-model="teamSort">
+					<kv-select
+						id="categorySort" v-model="teamSort"
+						@update:modelValue="pushChangesToUrl"
+					>
 						<option value="newest">
 							Newest
 						</option>
@@ -271,8 +277,13 @@
 				</div>
 			</div>
 		</div>
+		<div v-if="teams.length === 0 && !loading">
+			<h3 class="tw-text-h3 tw-mb-4 tw-text-secondary tw-text-center">
+				No teams found
+			</h3>
+		</div>
 		<kv-pagination
-			v-if="totalCount > 0"
+			v-if="totalCount > 0 && !loading"
 			:limit="limit"
 			:total="totalCount"
 			:offset="offset"
@@ -304,12 +315,29 @@ const urlParamTransform = {
 		to({ offset }) {
 			const page = Math.floor(offset / teamsPerPage) + 1;
 			return page > 1 ? String(page) : undefined;
-		},
-		from({ page }) {
-			const pagenum = numeral(page).value() - 1;
-			return { offset: pagenum > 0 ? teamsPerPage * pagenum : 0 };
 		}
 	},
+	teamCategory: {
+		to({ teamCategory }) {
+			return teamCategory;
+		}
+	},
+	teamOption: {
+		to({ teamOption }) {
+			return teamOption;
+		}
+	},
+	teamSort: {
+		to({ teamSort }) {
+			return teamSort;
+		}
+	},
+	queryString: {
+		to({ queryString }) {
+			return queryString;
+		}
+	},
+
 };
 
 function toUrlParams(variables) {
@@ -375,6 +403,10 @@ export default {
 		urlParams() {
 			return toUrlParams({
 				offset: this.offset,
+				teamCategory: this.teamCategory,
+				teamOption: this.teamOption,
+				teamSort: this.teamSort,
+				queryString: this.queryString,
 			});
 		},
 		lastTeamPage() {
@@ -384,6 +416,7 @@ export default {
 	methods: {
 		handleSearchQuery(queryString) {
 			this.queryString = queryString;
+			this.pushChangesToUrl();
 		},
 		// Pagination Related methods
 		checkIfPageIsOutOfRange(teamArrayLength, pageQueryParam) {
@@ -400,18 +433,37 @@ export default {
 			this.pushChangesToUrl();
 		},
 		pushChangesToUrl() {
-			const { page } = this.$route?.query ?? { page: '0' };
-			if (page !== this.urlParams.page) {
+			const pushToRouter = variable => {
 				this.$router.push({
 					query: {
 						...this.$route.query,
-						...this.urlParams
+						[variable]: this.urlParams[variable]
 					},
 				});
+			};
+			const { page } = this.$route?.query ?? { page: '0' };
+			if (page !== this.urlParams.page) {
+				pushToRouter('page');
+			}
+			if (this.teamCategory !== this.$route.query?.teamCategory) {
+				pushToRouter('teamCategory');
+			}
+			if (this.teamOption !== this.$route.query?.teamOption) {
+				pushToRouter('teamOption');
+			}
+			if (this.teamSort !== this.$route.query?.teamSort) {
+				pushToRouter('teamSort');
+			}
+			if (this.queryString !== this.$route.query?.queryString) {
+				pushToRouter('queryString');
 			}
 		},
 		updateFromParams(query) {
 			this.offset = getPageOffset(query, this.limit);
+			this.teamCategory = query.teamCategory ?? '';
+			this.teamOption = query.teamOption ?? '';
+			this.teamSort = query.teamSort ?? 'overallLoanedAmount';
+			this.queryString = query.queryString ?? '';
 		},
 		async getTeams({
 			teamSort, teamCategory, teamOption, queryString, offset
