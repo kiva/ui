@@ -1,3 +1,10 @@
+## [2.679.0](https://github.com/kiva/ui/compare/v2.678.1...v2.679.0) (2023-09-21)
+
+
+### Features
+
+* support all teams search params to/from url ([0348a81](https://github.com/kiva/ui/commit/0348a816b95985f42d24eff5b2618212d78c1401))
+
 ### [2.678.1](https://github.com/kiva/ui/compare/v2.678.0...v2.678.1) (2023-09-21)
 
 
