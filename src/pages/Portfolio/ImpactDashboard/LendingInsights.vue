@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-4">
-		<h2 class="tw-mb-3 md:tw-mb-2 tw-text-white">
+		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
 		<kv-grid as="dl" class="stats-container">
@@ -17,7 +17,7 @@
 					to="/portfolio/loans"
 					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 				>
-					Details
+					My loans
 					<kv-material-icon
 						class="tw-ml-0.5 tw-w-2 tw-h-2"
 						:icon="mdiArrowRight"
@@ -64,7 +64,7 @@
 					to="/portfolio/lending-stats"
 					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 				>
-					Details
+					Lending stats
 					<kv-material-icon
 						class="tw-ml-0.5 tw-w-2 tw-h-2"
 						:icon="mdiArrowRight"
@@ -161,7 +161,7 @@ export default {
 <style lang="postcss" scoped>
 .stats-container {
 	background-color: rgba(255, 255, 255, 0.05);
-	@apply tw-grid-cols-12 tw-p-1.5 tw-rounded tw-text-center;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
 }
 
 .stat-placeholder {
@@ -169,7 +169,7 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-brand;
+	@apply tw-text-h2 tw-text-eco-green-2;
 }
 
 .stat-def {
@@ -177,7 +177,7 @@ export default {
 }
 
 .stat-link {
-	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-brand tw-font-medium;
+	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
 }
 
 @screen md {

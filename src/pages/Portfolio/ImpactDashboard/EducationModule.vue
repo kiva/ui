@@ -1,7 +1,7 @@
 <template>
 	<async-portfolio-section @visible="whenVisible" data-testid="education-module">
 		<kv-grid class="tw-grid-cols-12 tw-items-center">
-			<div class="tw-col-span-12 lg:tw-col-span-6">
+			<div class="tw-col-span-12 lg:tw-col-span-6 tw-text-center md:tw-text-left">
 				<div class="tw-flex tw-rounded tw-h-12 tw-w-12 tw-bg-primary tw-p-1 tw-mr-2">
 					<img class="tw-w-10 tw-h-10" alt="Leaf heart" :src="imageRequire(`./leaf_heart.svg`)">
 				</div>

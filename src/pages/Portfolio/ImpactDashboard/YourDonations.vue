@@ -1,9 +1,9 @@
 <template>
 	<async-portfolio-section @visible="whenVisible" data-testid="your-donations">
-		<h3 class="tw-mb-3 md:tw-mb-2">
+		<h3 class="tw-mb-3 md:tw-mb-2 tw-text-center md:tw-text-left">
 			Your donations to Kiva
 		</h3>
-		<kv-grid class="tw-grid-cols-12 tw-p-3 tw-rounded tw-bg-marigold-1">
+		<kv-grid class="tw-grid-cols-12 tw-p-3 tw-rounded tw-bg-marigold-1 tw-gap-y-4">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
@@ -265,7 +265,7 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h1 tw-text-marigold-3;
+	@apply tw-text-h2 tw-text-marigold-3;
 }
 
 .stat-def {
