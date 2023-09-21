@@ -444,18 +444,22 @@ export default {
 			const { page } = this.$route?.query ?? { page: '0' };
 			if (page !== this.urlParams.page) {
 				pushToRouter('page');
+				return;
 			}
-			if (this.teamCategory !== this.$route.query?.teamCategory) {
+			if (this.teamCategory && this.teamCategory !== this.$route.query?.teamCategory) {
 				pushToRouter('teamCategory');
+				return;
 			}
-			if (this.teamOption !== this.$route.query?.teamOption) {
+			if (this.teamOption && this.teamOption !== this.$route.query?.teamOption) {
 				pushToRouter('teamOption');
+				return;
 			}
-			if (this.teamSort !== this.$route.query?.teamSort) {
-				pushToRouter('teamSort');
-			}
-			if (this.queryString !== this.$route.query?.queryString) {
+			if (this.queryString && this.queryString !== this.$route.query?.queryString) {
 				pushToRouter('queryString');
+				return;
+			}
+			if (this.teamSort && this.teamSort !== this.$route.query?.teamSort) {
+				pushToRouter('teamSort');
 			}
 		},
 		updateFromParams(query) {
