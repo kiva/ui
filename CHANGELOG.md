@@ -1,3 +1,11 @@
+### [2.678.1](https://github.com/kiva/ui/compare/v2.678.0...v2.678.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* revert header tag ([70e8efb](https://github.com/kiva/ui/commit/70e8efb200ffabc3264b833125a65cbe10976f3f))
+* small changes in design ([c5fd254](https://github.com/kiva/ui/commit/c5fd254fdc05853aaf8ebde8b97c00b4b8f4d034))
+
 ## [2.678.0](https://github.com/kiva/ui/compare/v2.677.0...v2.678.0) (2023-09-20)
 
 
