@@ -33,9 +33,15 @@ export default {
 		KvTextInput,
 	},
 	inject: ['apollo'],
+	props: {
+		initialValue: {
+			type: String,
+			default: ''
+		},
+	},
 	data() {
 		return {
-			queryString: '',
+			queryString: this.initialValue,
 		};
 	},
 	methods: {
