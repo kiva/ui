@@ -99,7 +99,7 @@ export default {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = globalBannerDenyList.concat(promoContent?.fields?.hiddenUrls ?? []);
 					const visibleUrls = promoContent?.fields?.visibleUrls ?? [];
-					if (!isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
+					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
 					if (promoContent.fields.active) {
 						return false;
 					}
