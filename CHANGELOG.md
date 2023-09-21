@@ -1,3 +1,10 @@
+### [2.679.1](https://github.com/kiva/ui/compare/v2.679.0...v2.679.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* fix calling router.push too much for the teams search ([d42e73d](https://github.com/kiva/ui/commit/d42e73d094f2488ae343c88476b212a7f40529ff))
+
 ## [2.679.0](https://github.com/kiva/ui/compare/v2.678.1...v2.679.0) (2023-09-21)
 
 
