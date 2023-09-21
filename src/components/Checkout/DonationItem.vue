@@ -890,6 +890,8 @@ export default {
 			}
 		}
 
+		const donationProperty = this.donation.isUserEdited ? 'user-set' : 'kiva-set';
+		this.$kvTrackEvent('basket', 'show', 'tip-donation-amount', donationProperty, this.donation.price);
 		this.setupContentfulContent();
 	},
 	watch: {
