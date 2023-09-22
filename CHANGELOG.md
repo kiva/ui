@@ -1,3 +1,16 @@
+## [2.680.0](https://github.com/kiva/ui/compare/v2.679.1...v2.680.0) (2023-09-22)
+
+
+### Features
+
+* add cps visibleUrls approach ([5456813](https://github.com/kiva/ui/commit/54568134369cdbf701e5a6ea063261b887757f28))
+* add tests and global deny list to hiddenUrls ([0676312](https://github.com/kiva/ui/commit/067631246201efd117130e2f327fff1847ca2b8d))
+
+
+### Bug Fixes
+
+* inactivePromo exclude url condition ([f78a61b](https://github.com/kiva/ui/commit/f78a61b26e650e89e8341aa83973d2ea2b87d3db))
+
 ### [2.679.1](https://github.com/kiva/ui/compare/v2.679.0...v2.679.1) (2023-09-21)
 
 
