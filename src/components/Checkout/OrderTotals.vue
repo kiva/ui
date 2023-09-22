@@ -446,8 +446,8 @@ export default {
 			const creditValue = !this.showApplyKivaCredit ? this.totals.kivaCreditAppliedTotal
 				: this.totals.creditAvailableTotal;
 			this.$kvTrackEvent('basket', 'show', 'kiva-credit', creditProperty, creditValue);
-			this.$kvTrackEvent('basket', 'show', 'loans', '', this.totals.loanReservationTotal);
-			this.$kvTrackEvent('basket', 'show', 'basket-size', '', this.totals.itemTotal);
+			this.$kvTrackEvent('basket', 'show', 'loans', null, this.totals.loanReservationTotal);
+			this.$kvTrackEvent('basket', 'show', 'basket-size', null, this.totals.itemTotal);
 		}
 	},
 	apollo: {
