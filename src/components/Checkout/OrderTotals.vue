@@ -440,6 +440,14 @@ export default {
 			this.$emit('refreshtotals');
 			this.$emit('credit-removed');
 			this.$router.push(this.$route.path); // remove promo query param from url
+		},
+		trackBasketInfoEvents() {
+			const creditProperty = !this.showApplyKivaCredit ? 'applied' : 'not-applied';
+			const creditValue = !this.showApplyKivaCredit ? this.totals.kivaCreditAppliedTotal
+				: this.totals.creditAvailableTotal;
+			this.$kvTrackEvent('basket', 'show', 'kiva-credit', creditProperty, creditValue);
+			this.$kvTrackEvent('basket', 'show', 'loans', null, this.totals.loanReservationTotal);
+			this.$kvTrackEvent('basket', 'show', 'basket-size', null, this.totals.itemTotal);
 		}
 	},
 	apollo: {
@@ -475,6 +483,7 @@ export default {
 				this.donateItemExperimentVersion = version;
 			}
 		}
+		this.trackBasketInfoEvents();
 	},
 };
 </script>
