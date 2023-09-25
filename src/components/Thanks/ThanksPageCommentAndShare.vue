@@ -5,6 +5,8 @@
 			:calculate-people-qty-to-goal="calculatePeopleQtyToGoal()"
 			:show-lender-name="!isGuest"
 			:comments-mode="askForComments"
+			:is-first-loan="isFirstLoan"
+			:loan-name="loan.name"
 		/>
 		<!-- Image Section -->
 		<kv-page-container>
@@ -65,6 +67,44 @@
 					</template>
 				</div>
 			</kv-grid>
+		</kv-page-container>
+		<!-- First Time Deposit Section -->
+		<kv-page-container v-if="isFirstLoan">
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-mb-4 hide-for-print">
+					<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
+						Here’s ${{ ftdCreditAmount }} on us <span class="tw-text-brand">toward your next loan</span>.
+					</h1>
+					<p class="tw-m-0 tw-text-subhead">
+						<!-- eslint-disable-next-line max-len -->
+						As a reward for joining the Kiva community we’d like to give you a leg up on your next loan in your inbox 🥇.
+					</p>
+				</div>
+			</kv-grid>
+			<div class="tw-flex tw-flex-col tw-gap-y-2 tw-mt-2 tw-mb-4 tw-max-w-sm tw-mx-auto">
+				<kv-button
+					variant="primary"
+					to="/portfolio"
+					v-kv-track-event="['post-checkout', 'click', 'ftd-portfolio', null, loanId]"
+				>
+					Continue to portfolio
+				</kv-button>
+				<kv-button
+					variant="secondary"
+					:href="shareLink"
+					v-kv-track-event="['post-checkout', 'share', 'ftd-sharing', null, loanId]"
+				>
+					Share this loan with others
+				</kv-button>
+				<kv-button
+					variant="ghost"
+					to="/lend-by-category"
+					v-kv-track-event="['post-checkout', 'click', 'ftd-lending-home', null, loanId]"
+				>
+					Go to lending home
+				</kv-button>
+			</div>
+			<hr>
 		</kv-page-container>
 		<!-- Comments Section -->
 		<CommentAsk
@@ -185,6 +225,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
 
@@ -200,6 +241,7 @@ export default {
 		CommentAsk,
 		KvGrid,
 		KvPageContainer,
+		KvButton
 	},
 	props: {
 		receipt: {
@@ -221,6 +263,14 @@ export default {
 		askForComments: {
 			type: Boolean,
 			default: false
+		},
+		isFirstLoan: {
+			type: Boolean,
+			default: false
+		},
+		ftdCreditAmount: {
+			type: String,
+			default: ''
 		},
 	},
 	mixins: [socialSharingMixin],
