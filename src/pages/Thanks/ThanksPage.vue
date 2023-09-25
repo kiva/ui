@@ -88,6 +88,8 @@
 				:lender="lender"
 				:loan="selectedLoan"
 				:is-guest="isGuest"
+				:is-first-loan="showFtdMessage"
+				:ftd-credit-amount="ftdCreditAmount"
 				@guest-create-account="createGuestAccount"
 				:ask-for-comments="askForComments"
 			/>
@@ -150,7 +152,10 @@ export default {
 			isGuest: false,
 			pageData: {},
 			jumpToGuestUpsell: false,
-			monthlyDonationAmount: ''
+			monthlyDonationAmount: '',
+			isFirstLoan: false,
+			isFtdMessageEnable: false,
+			ftdCreditAmount: ''
 		};
 	},
 	apollo: {
@@ -246,6 +251,9 @@ export default {
 			// Is a guest checking out only with US loans?
 			// eslint-disable-next-line no-underscore-dangle
 			return this.isGuest && this.loans.every(loan => loan?.__typename === 'LoanDirect');
+		},
+		showFtdMessage() {
+			return this.isFirstLoan && this.enableFtdMessage && this.ftdCreditAmount;
 		}
 	},
 	created() {
@@ -284,6 +292,13 @@ export default {
 		this.receipt = data?.shop?.receipt ?? null;
 		this.isGuest = this.receipt && !data?.my?.userAccount;
 
+		// Enable FTDs message from settings
+		const enableFtdMessageData = data?.general?.ftd_message_enable ?? null;
+		this.enableFtdMessage = enableFtdMessageData ? enableFtdMessageData.value : false;
+		// Credit amount for FTD message from settings
+		const ftdCreditAmountData = data?.general?.ftd_amount ?? null;
+		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
+
 		const loansResponse = this.receipt?.items?.values ?? [];
 		this.loans = loansResponse
 			.filter(item => item.basketItemType === 'loan_reservation')
@@ -307,6 +322,7 @@ export default {
 
 		const totalLoans = data?.my?.loans?.totalCount ?? 0;
 		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
+		this.isFirstLoan = isFirstLoan;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
 

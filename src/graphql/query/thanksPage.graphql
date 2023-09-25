@@ -132,6 +132,14 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
+		ftd_message_enable: uiConfigSetting(key: "thanks_page_ftd_message_enable") {
+			key
+			value
+		}
+		ftd_amount: uiConfigSetting(key: "thanks_page_ftd_amount") {
+			key
+			value
+		}
 	}
 	mySubscriptions(includeDisabled: false) {
 		values {
