@@ -203,7 +203,7 @@ module.exports = [
 		]
 	},
 	{
-		path: '/teams-beta',
+		path: '/teams',
 		component: () => import('@/pages/LendingTeams/LendingTeams'),
 	},
 	{
