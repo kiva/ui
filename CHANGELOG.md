@@ -1,3 +1,11 @@
+## [2.682.0](https://github.com/kiva/ui/compare/v2.681.0...v2.682.0) (2023-09-25)
+
+
+### Features
+
+* message for ftds added to thanks page ([8ecca1b](https://github.com/kiva/ui/commit/8ecca1b2cb1b29adf4b1b0afa4a307f066fef9e0))
+* tracking events added to ftd ctas ([47cf8f4](https://github.com/kiva/ui/commit/47cf8f46652c6a00826ccbd600544aa3ce656b1b))
+
 ## [2.681.0](https://github.com/kiva/ui/compare/v2.680.0...v2.681.0) (2023-09-22)
 
 
