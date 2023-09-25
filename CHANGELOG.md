@@ -1,3 +1,10 @@
+## [2.684.0](https://github.com/kiva/ui/compare/v2.683.0...v2.684.0) (2023-09-25)
+
+
+### Features
+
+* kv componets updated ([7f0cfdb](https://github.com/kiva/ui/commit/7f0cfdb2b520999c0991333f5e9f1d7e5b1be586))
+
 ## [2.683.0](https://github.com/kiva/ui/compare/v2.682.1...v2.683.0) (2023-09-25)
 
 
