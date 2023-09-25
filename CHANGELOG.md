@@ -1,3 +1,10 @@
+### [2.682.1](https://github.com/kiva/ui/compare/v2.682.0...v2.682.1) (2023-09-25)
+
+
+### Bug Fixes
+
+* team recruitment attribution fix ([3cd1e84](https://github.com/kiva/ui/commit/3cd1e84c4df8607de57b49438a16084930f7d2a5))
+
 ## [2.682.0](https://github.com/kiva/ui/compare/v2.681.0...v2.682.0) (2023-09-25)
 
 
