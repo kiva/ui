@@ -82,13 +82,25 @@
 				</div>
 			</kv-grid>
 			<div class="tw-flex tw-flex-col tw-gap-y-2 tw-mt-2 tw-mb-4 tw-max-w-sm tw-mx-auto">
-				<kv-button variant="primary" to="/portfolio">
+				<kv-button
+					variant="primary"
+					to="/portfolio"
+					v-kv-track-event="['post-checkout', 'click', 'ftd-portfolio', null, loanId]"
+				>
 					Continue to portfolio
 				</kv-button>
-				<kv-button variant="secondary" :href="shareLink">
+				<kv-button
+					variant="secondary"
+					:href="shareLink"
+					v-kv-track-event="['post-checkout', 'share', 'ftd-sharing', null, loanId]"
+				>
 					Share this loan with others
 				</kv-button>
-				<kv-button variant="ghost" to="/lend-by-category">
+				<kv-button
+					variant="ghost"
+					to="/lend-by-category"
+					v-kv-track-event="['post-checkout', 'click', 'ftd-lending-home', null, loanId]"
+				>
 					Go to lending home
 				</kv-button>
 			</div>
