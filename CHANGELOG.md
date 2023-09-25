@@ -1,3 +1,10 @@
+## [2.683.0](https://github.com/kiva/ui/compare/v2.682.1...v2.683.0) (2023-09-25)
+
+
+### Features
+
+* release teams-beta page as teams ([88c5d70](https://github.com/kiva/ui/commit/88c5d709749179fee78cae920c28bd2ea98131bd))
+
 ### [2.682.1](https://github.com/kiva/ui/compare/v2.682.0...v2.682.1) (2023-09-25)
 
 
