@@ -35,6 +35,7 @@
  * If join team is pending, display pending message
  */
 import { gql } from '@apollo/client';
+import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
@@ -116,7 +117,7 @@ export default {
 			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
 			this.teamName = data?.community?.team?.name ?? '';
 			this.teamId = data?.community?.team?.id ?? 0;
-			this.inviterRecruitmentId = data?.community?.lender?.id ?? null;
+			this.inviterId = data?.community?.lender?.id ?? null;
 		}
 	},
 	data() {
@@ -124,7 +125,9 @@ export default {
 			userMembershipStatus: 'none',
 			isLoading: true,
 			teamName: '',
-			inviterRecruitmentId: null
+			inviterId: null,
+			inviterRecruitmentId: null,
+			teamId: null,
 		};
 	},
 	computed: {
@@ -142,12 +145,7 @@ export default {
 		recruitmentIdMutationVariable() {
 			// if teamRecruitmentId in the route query, use that value,
 			// otherwise, use the value we got from the apollo query
-			if (this.teamRecruitmentId) {
-				return this.teamRecruitmentId;
-			} if (this.inviter) {
-				return this.inviterRecruitmentId;
-			}
-			return null;
+			return this.teamRecruitmentId || this.inviterRecruitmentId || null;
 		}
 	},
 	methods: {
@@ -158,6 +156,18 @@ export default {
 		},
 		async handleJoinTeam() {
 			try {
+				if (this.inviterId) {
+					// get the inviter's recruitment id
+					const createRecruitment = await this.apollo.mutate({
+						mutation: createTeamRecruitment,
+						variables: {
+							team_id: this.teamId,
+							recruiter_id: this.inviterId
+						}
+					});
+					this.inviterRecruitmentId = createRecruitment?.data?.my?.createTeamRecruitment?.id ?? null;
+				}
+
 				await this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
