@@ -183,13 +183,13 @@ export function watchLoanData({
 	});
 
 	// Subscribe to the observer to see each result
-	queryObserver.subscribe({
+	const subscription = queryObserver.subscribe({
 		next: result => callback(result),
 		error: error => callback({ error }),
 	});
 
 	// Return the observer to allow modification of variables
-	return queryObserver;
+	return { queryObserver, subscription };
 }
 
 export function watchLoanCardData({
