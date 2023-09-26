@@ -356,7 +356,8 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
-			isAdding: false
+			isAdding: false,
+			watchedQuery: {},
 		};
 	},
 	computed: {
@@ -513,13 +514,14 @@ export default {
 		},
 		loadData() {
 			if (!this.queryObserver) {
-				this.queryObserver = watchLoanData({
+				this.watchedQuery = watchLoanData({
 					apollo: this.apollo,
 					cookieStore: this.cookieStore,
 					loanId: this.loanId,
 					loanQuery,
 					callback: result => this.processQueryResult(result),
 				});
+				this.queryObserver = this.watchedQuery.queryObserver;
 			}
 		},
 		processQueryResult(result) {
@@ -587,6 +589,7 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
+		this.watchedQuery.subscription.unsubscribe();
 	},
 	created() {
 		// Use cached loan data if it exists
