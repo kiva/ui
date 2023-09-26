@@ -248,6 +248,7 @@ const supportedFilterLegacy = name => {
 		case 'sort':
 		case 'theme':
 		case 'tag':
+		case 'loanids':
 			return true;
 		default:
 			warn(`Unsupported legacy filter "${name}"`);
@@ -291,7 +292,9 @@ async function parseFilterStringLegacy(filterString) {
 			.filter(([name]) => supportedFilterLegacy(name))
 			// Add each filter to the filter object
 			.forEach(([name, value]) => {
-				if (name === 'country') {
+				if (name === 'loanids') {
+					addArrayFilterValue('loanIds', Number(value));
+				} else if (name === 'country') {
 					addArrayFilterValue(name, value);
 				} else if (name === 'gender') {
 					setFilterValue(name, value);
