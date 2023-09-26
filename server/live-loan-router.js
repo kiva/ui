@@ -185,6 +185,13 @@ module.exports = function liveLoanRouter(cache) {
 		});
 	});
 
+	// Loan Id IMG Router (Kiva Classic)
+	router.use('/lid/:id([a-zA-Z0-9.%,_-]{0,})/img2', async (req, res) => {
+		await tracer.trace('live-loan.loanid.serveImg', { resource: req.path }, async () => {
+			await serveImg('loanid', 'classic', cache, req, res);
+		});
+	});
+
 	// 404 any /live-loan/* routes that don't match above
 	router.use((req, res) => {
 		res.sendStatus(404);

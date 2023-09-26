@@ -5,7 +5,7 @@ const { warn, error } = require('../log');
 const loanCount = 4;
 
 // Which loan properties to fetch
-const loanValues = `values {
+const loanData = `
 	name
 	id
 	activity {
@@ -36,6 +36,10 @@ const loanValues = `values {
 	... on LoanPartner {
 		themes
 	}
+`;
+
+const loanValues = `values {
+	${loanData}
 }`;
 
 // Make a graphql query <request> and return the results found at <resultPath>
@@ -45,6 +49,9 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 		if (Array.isArray(data)) {
 			// Ensure no falsy values are included in the returned array
 			return data.filter(x => x);
+		}
+		if (typeof data === 'object' && data !== null) {
+			return [data];
 		}
 		return [];
 	} catch (err) {
@@ -248,7 +255,6 @@ const supportedFilterLegacy = name => {
 		case 'sort':
 		case 'theme':
 		case 'tag':
-		case 'loanids':
 			return true;
 		default:
 			warn(`Unsupported legacy filter "${name}"`);
@@ -292,9 +298,7 @@ async function parseFilterStringLegacy(filterString) {
 			.filter(([name]) => supportedFilterLegacy(name))
 			// Add each filter to the filter object
 			.forEach(([name, value]) => {
-				if (name === 'loanids') {
-					addArrayFilterValue('loanIds', Number(value));
-				} else if (name === 'country') {
+				if (name === 'country') {
 					addArrayFilterValue(name, value);
 				} else if (name === 'gender') {
 					setFilterValue(name, value);
@@ -372,6 +376,24 @@ async function fetchRecommendationsByLegacyFilter(filterString) {
 	);
 }
 
+// Get loans from legacy lend search matching a set of filters
+async function fetchLoanById(loanId) {
+	return fetchLoansFromGraphQL(
+		{
+			query: `query($loanId: Int!) {
+				lend {
+					loan(id: $loanId) {
+						${loanData}
+					}
+				}
+			}`,
+			variables: {
+				loanId: Number(loanId),
+			}
+		},
+		'data.lend.loan'
+	);
+}
 // Export a function that will fetch loans by live-loan type and id
 module.exports = async function fetchLoansByType(type, id) {
 	if (type === 'user') {
@@ -382,6 +404,9 @@ module.exports = async function fetchLoansByType(type, id) {
 		// Swap which line below is commented out to switch between FLSS and legacy (monolith) lend search
 		// return fetchRecommendationsByFilter(id);
 		return fetchRecommendationsByLegacyFilter(id);
+	}
+	if (type === 'loanid') {
+		return fetchLoanById(id);
 	}
 	throw new Error('Type must be user, loan, or filter');
 };
