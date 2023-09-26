@@ -1,3 +1,10 @@
+## [2.685.0](https://github.com/kiva/ui/compare/v2.684.0...v2.685.0) (2023-09-26)
+
+
+### Features
+
+* unsubscribe method added to loan card queries ([9102ede](https://github.com/kiva/ui/commit/9102edef4dff5e2dda01b4064f7820737956aef9))
+
 ## [2.684.0](https://github.com/kiva/ui/compare/v2.683.0...v2.684.0) (2023-09-25)
 
 
