@@ -1,3 +1,17 @@
+## [2.686.0](https://github.com/kiva/ui/compare/v2.685.0...v2.686.0) (2023-09-27)
+
+
+### Features
+
+* add loanId filter ([1db4450](https://github.com/kiva/ui/commit/1db44500eb5e85a21ec09238b0090c967c198b9b))
+* create new route to just fetch loan data ([a2057f5](https://github.com/kiva/ui/commit/a2057f5f7bb387cb317072490e2e49792c79e8d6))
+
+
+### Bug Fixes
+
+* format value to integer ([301e0a6](https://github.com/kiva/ui/commit/301e0a6aa6d4e7fc3accae64b9267e7519be2c23))
+* url regex and add url and img routes ([bd268a0](https://github.com/kiva/ui/commit/bd268a00c484c0a2df36debd21ca9f0dc64ef693))
+
 ## [2.685.0](https://github.com/kiva/ui/compare/v2.684.0...v2.685.0) (2023-09-26)
 
 
