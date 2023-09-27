@@ -1,3 +1,10 @@
+### [2.686.1](https://github.com/kiva/ui/compare/v2.686.0...v2.686.1) (2023-09-27)
+
+
+### Bug Fixes
+
+* event value should be loan count ([8742d7d](https://github.com/kiva/ui/commit/8742d7d7179cafd9c0ecfc24dfdcc41259c491f0))
+
 ## [2.686.0](https://github.com/kiva/ui/compare/v2.685.0...v2.686.0) (2023-09-27)
 
 
