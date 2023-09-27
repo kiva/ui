@@ -892,6 +892,7 @@ export default {
 
 		const donationProperty = this.donation.isUserEdited ? 'user-set' : 'kiva-set';
 		this.$kvTrackEvent('basket', 'show', 'tip-donation-amount', donationProperty, this.donation.price * 100);
+		this.$kvTrackEvent('basket', 'show', 'loans', null, this.loanCount);
 		this.setupContentfulContent();
 	},
 	watch: {
