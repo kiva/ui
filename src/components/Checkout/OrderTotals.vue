@@ -446,7 +446,6 @@ export default {
 			const creditValue = 100 * (!this.showApplyKivaCredit ? this.totals.kivaCreditAppliedTotal
 				: this.totals.creditAvailableTotal);
 			this.$kvTrackEvent('basket', 'show', 'kiva-credit', creditProperty, creditValue);
-			this.$kvTrackEvent('basket', 'show', 'loans', null, this.totals.loanReservationTotal * 100);
 			this.$kvTrackEvent('basket', 'show', 'basket-size', null, this.totals.itemTotal * 100);
 		}
 	},
