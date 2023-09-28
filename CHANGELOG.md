@@ -1,3 +1,17 @@
+## [2.667.0-next.2](https://github.com/kiva/ui/compare/v2.667.0-next.1...v2.667.0-next.2) (2023-09-28)
+
+
+### Features
+
+* add recruit/join/quit buttons to new teams page ([48073f3](https://github.com/kiva/ui/commit/48073f3e68f9a2583871edd89fc489fcf2d27bd3))
+* release teams-beta page as teams ([477f46b](https://github.com/kiva/ui/commit/477f46b8e78d6819edfbb4f583a1dcb19c90c98b))
+* support all teams search params to/from url ([4b8c00c](https://github.com/kiva/ui/commit/4b8c00cdd0ad674e89d9a56100fd7456a4ae0aba))
+
+
+### Bug Fixes
+
+* fix calling router.push too much for the teams search ([7ade731](https://github.com/kiva/ui/commit/7ade731dcb39f0f34f4a73d44083aedc6c84adc8))
+
 ## [2.667.0-next.1](https://github.com/kiva/ui/compare/v2.666.1-next.1...v2.667.0-next.1) (2023-09-19)
 
 
