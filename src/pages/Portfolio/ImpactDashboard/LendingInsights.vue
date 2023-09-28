@@ -4,7 +4,7 @@
 			Your lending insights
 		</h2>
 		<kv-grid as="dl" class="stats-container">
-			<div class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-3">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ amountLent }}
@@ -38,7 +38,7 @@
 					<loan-count-over-time-figure />
 				</kv-lightbox> -->
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-3">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
 					class="stat-placeholder"
@@ -51,7 +51,7 @@
 					Loans made
 				</dt>
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-3">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 4rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ countryCount }}
@@ -71,7 +71,7 @@
 					/>
 				</router-link>
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-6 xl:tw-col-span-3">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ percentile }}

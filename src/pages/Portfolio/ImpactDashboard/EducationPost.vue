@@ -3,12 +3,12 @@
 		<a
 			v-if="!loading"
 			:href="url"
-			class="tw-block"
+			class="card-container-link-image"
 			@click="trackEvent('blog-image')"
 		>
 			<kv-contentful-img
 				:alt="headline"
-				:width="344"
+				:width="312"
 				:contentful-src="imageUrl"
 				class="card-container-image"
 				:source-sizes="sourceSizes"
@@ -56,8 +56,13 @@ export default {
 		return {
 			sourceSizes: [
 				{
+					width: 312,
+					height: 217,
+					media: 'min-width: 1025px',
+				},
+				{
 					width: 344,
-					height: 219,
+					height: 217,
 					media: 'min-width: 734px',
 				},
 				{
@@ -93,10 +98,25 @@ export default {
 <style lang="postcss" scoped>
 .card-container {
 	height: 387px;
-	@apply tw-block tw-bg-eco-green-4 tw-rounded tw-p-2 tw-grid-rows-3 tw-decoration-white;
+	max-width: 344px;
+	@apply tw-block tw-bg-eco-green-4 tw-rounded tw-p-2 tw-grid-rows-3 tw-decoration-white tw-mx-auto;
 
 	@screen md {
-		height: 418px;
+		height: 447px;
+	}
+
+	@screen xl {
+		margin-left: auto;
+		width: 344px;
+	}
+}
+
+.card-container-link-image {
+	@apply tw-block tw-mb-1;
+
+	@screen xl {
+		width: 312px;
+		height: 217px;
 	}
 }
 
@@ -109,7 +129,7 @@ export default {
 	@apply tw-rounded;
 
 	@screen md {
-		max-height: 239px;
+		max-height: 217px;
 	}
 }
 
