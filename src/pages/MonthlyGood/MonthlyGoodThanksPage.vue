@@ -91,7 +91,6 @@ export default {
 			this.mgAmount = this.autoDepositAmount - this.donation;
 			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
 			this.category = _get(data, 'my.monthlyGoodCategory');
-			this.isOnetimePayment = _get(data, 'my.autoDeposit.isOnetime');
 			this.autoDepositId = _get(data, 'my.autoDeposit.id');
 		},
 	},

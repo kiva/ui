@@ -121,7 +121,6 @@ const eligibilityCheckQuery = gql`query autoDepositEligibilityQuery {
 		autoDeposit {
 			id
 			isSubscriber
-			isOnetime
 		}
 		subscriptions {
 			values {
