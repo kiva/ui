@@ -48,7 +48,7 @@
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
-							to="/portfolio/impact"
+							to="/portfolio"
 							data-testid="header-portfolio"
 							target="_blank"
 							class="header__button header__portfolio"
@@ -407,7 +407,7 @@
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
-								to="/portfolio/impact"
+								to="/portfolio"
 								class="header__button header__portfolio"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
@@ -502,7 +502,7 @@
 									</template>
 									<li>
 										<router-link
-											to="/portfolio/impact"
+											to="/portfolio"
 											v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
 										>
 											Portfolio

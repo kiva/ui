@@ -2,7 +2,7 @@
 	<ul class="tw-font-medium">
 		<li>
 			<router-link
-				to="/portfolio/impact"
+				to="/portfolio"
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"

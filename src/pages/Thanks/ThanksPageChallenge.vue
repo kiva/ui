@@ -157,7 +157,7 @@
 			</div>
 			<div class="tw-text-center tw-mt-1 tw-mb-4">
 				<router-link
-					to="/portfolio/impact"
+					to="/portfolio"
 					v-kv-track-event="['post-checkout', 'click', 'portfolio', challengeId]"
 				>
 					Continue to my portfolio

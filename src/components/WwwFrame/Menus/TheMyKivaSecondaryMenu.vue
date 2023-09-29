@@ -4,7 +4,7 @@
 			<ul>
 				<li class="tw-inline-block">
 					<router-link
-						to="/portfolio/impact"
+						to="/portfolio"
 						active-class="tw-underline"
 						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-My-impact']"
@@ -105,7 +105,7 @@
 					<ul class="tw-bg-secondary">
 						<li>
 							<router-link
-								to="/portfolio/impact"
+								to="/portfolio"
 								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
 							>

@@ -451,7 +451,7 @@ module.exports = [
 		}
 	},
 	{
-		path: '/portfolio/impact',
+		path: '/portfolio',
 		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
 			authenticationRequired: true,

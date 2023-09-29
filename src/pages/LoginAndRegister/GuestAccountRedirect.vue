@@ -36,7 +36,7 @@ export default {
 				} else if (cookieStore.get(GUEST_COMMENT_COMMENT) && cookieStore.get(GUEST_COMMENT_LOANID)) {
 					path = `/lend/${cookieStore.get(GUEST_COMMENT_LOANID)}`;
 				} else {
-					path = '/portfolio/impact';
+					path = '/portfolio';
 				}
 
 				const queryString = Object.keys(query)
