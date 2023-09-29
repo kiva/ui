@@ -100,7 +100,7 @@
 								class="tw-block tw-mx-auto tw-text-action
 									tw-underline hover:tw-text-action-highlight"
 								v-if="!isGuest"
-								to="/portfolio"
+								to="/portfolio/impact"
 								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 							>
 								No, continue to my portfolio
