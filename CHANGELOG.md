@@ -1,3 +1,10 @@
+## [2.688.0](https://github.com/kiva/ui/compare/v2.687.0...v2.688.0) (2023-09-29)
+
+
+### Features
+
+* remove lend_urgency exp code ([7ca99ae](https://github.com/kiva/ui/commit/7ca99ae1d61c2737e2cfab393d92a0b33cc4bd32))
+
 ## [2.687.0](https://github.com/kiva/ui/compare/v2.686.1...v2.687.0) (2023-09-28)
 
 
