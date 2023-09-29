@@ -66,7 +66,6 @@
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
-						:ms-left="timeLeftMs"
 						:loan-status="inPfp ? 'pfp' : 'fundraising'"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
@@ -219,7 +218,6 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
-			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
@@ -262,7 +260,6 @@ export default {
 		this.distributionModel = loan?.distributionModel ?? '';
 		this.city = loan?.geocode?.city ?? '';
 		this.state = loan?.geocode?.state ?? '';
-		this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
 		// If all shares are reserved in baskets, set the fundraising meter to 100%
 		if (this.unreservedAmount === '0') {
 			this.fundraisingPercent = 1;
