@@ -23,7 +23,6 @@
 					<summary-card
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
-						:show-urgency-exp="showUrgencyExp"
 					/>
 				</content-container>
 			</div>
@@ -136,7 +135,6 @@ import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
 import { gql } from '@apollo/client';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import guestComment from '@/plugins/guest-comment-mixin';
@@ -166,7 +164,6 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
-const LEND_URGENCY_EXP = 'lend_urgency';
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
 
 const preFetchQuery = gql`
@@ -179,10 +176,6 @@ const preFetchQuery = gql`
 		$imgRetinaSize: String = "w960h720"
 	) {
 		general {
-			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
 			uiExperimentSetting(key: "share_language_bp") {
 				key
 				value
@@ -387,7 +380,6 @@ export default {
 			showLenders: true,
 			showTeams: true,
 			showUpdates: true,
-			isUrgencyExpVersionShown: false,
 			hasThreeDaysOrLessLeft: false,
 			// meta fields
 			endDate: '',
@@ -456,7 +448,6 @@ export default {
 					}
 
 					return Promise.all([
-						client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
@@ -585,9 +576,6 @@ export default {
 			}
 			return `${name} - ${this.countryName}`;
 		},
-		showUrgencyExp() {
-			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
-		},
 		amountLeft() {
 			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
 		},
@@ -644,24 +632,6 @@ export default {
 		}
 	},
 	created() {
-		const urgencyExperiment = this.apollo.readFragment({
-			id: `Experiment:${LEND_URGENCY_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
-
-		if (this.hasThreeDaysOrLessLeft) {
-			// Fire Event for Exp ACK-291 Urgency Experiment
-			if (urgencyExperiment.version && urgencyExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ACK-291-May2022',
-					this.isUrgencyExpVersionShown ? 'b' : 'a'
-				);
-			}
-		}
-
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
