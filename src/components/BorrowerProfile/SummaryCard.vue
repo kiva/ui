@@ -66,7 +66,6 @@
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
-						:urgency="showUrgencyExp && timeLeftMs > 0"
 						:ms-left="timeLeftMs"
 						:loan-status="inPfp ? 'pfp' : 'fundraising'"
 						:number-of-lenders="numLenders"
@@ -202,12 +201,6 @@ export default {
 		LoanBookmark,
 		KvLoadingPlaceholder,
 		HeartComment,
-	},
-	props: {
-		showUrgencyExp: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	data() {
 		return {
