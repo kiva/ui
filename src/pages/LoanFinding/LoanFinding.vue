@@ -103,6 +103,7 @@ const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
+const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
 
 export default {
 	name: 'LoanFinding',
@@ -142,6 +143,7 @@ export default {
 			userBalance: undefined,
 			showFiveDollarsBanner: false,
 			enableThreeLoansRecommended: false,
+			enableQFMobileVersion: false,
 			HandOrangeIcon,
 		};
 	},
@@ -159,6 +161,7 @@ export default {
 					client.query({ query: userInfoQuery }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: QUICK_FILTERS_MOBILE_EXP_KEY } }),
 					recommendedLoansPromise
 				]);
 			});
@@ -402,6 +405,16 @@ export default {
 			'EXP-CORE-1529-Aug2023'
 		);
 		this.enableThreeLoansRecommended = version === 'b';
+
+		// Show QF mobile version test
+		const qfTestData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			QUICK_FILTERS_MOBILE_EXP_KEY,
+			'EXP-CORE-1563-Oct2023'
+		);
+		this.enableQFMobileVersion = qfTestData.version === 'b';
 
 		const recommendedArray = [
 			...cachedRecommendedLoans,
