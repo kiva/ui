@@ -1,3 +1,10 @@
+## [2.689.0](https://github.com/kiva/ui/compare/v2.688.0...v2.689.0) (2023-10-02)
+
+
+### Features
+
+* test setup added for mobile version in lending home quick filters section ([e4bd84a](https://github.com/kiva/ui/commit/e4bd84adfe59554cf140407e33eca36a93d5fe49))
+
 ## [2.688.0](https://github.com/kiva/ui/compare/v2.687.0...v2.688.0) (2023-09-29)
 
 
