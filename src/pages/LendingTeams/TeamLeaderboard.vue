@@ -41,7 +41,17 @@
 					:key="timeFrame"
 					class="tw-border-primary"
 				>
+					<!-- loader and no teams -->
+					<span
+						class="tw-text-center tw-text-secondary tw-mb-2"
+						v-if="!isLoading && teamsToShow(timeFrame).length === 0"
+					>No teams to show</span>
+					<kv-loading-placeholder
+						v-if="isLoading"
+						class="tw-mb-2" :style="{width: '100%', height: '1.6rem'}"
+					/>
 					<div
+						v-else
 						v-for="leaderboardTeam in teamsToShow(timeFrame)"
 						:key="leaderboardTeam.team.id"
 						class="tw-text-small tw-rounded-sm tw-flex tw-flex-row tw-p-1"
@@ -117,10 +127,12 @@ import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'TeamLeaderboard',
 	components: {
+		KvLoadingPlaceholder,
 		KvProgressBar,
 		KvTabs,
 		KvTab,
@@ -132,10 +144,14 @@ export default {
 			teamNoImage,
 			isMobile: false,
 			expandTeams: false,
-			selectedTabIndex: 0
+			selectedTabIndex: 0,
 		};
 	},
 	props: {
+		isLoading: {
+			type: Boolean,
+			default: false,
+		},
 		boardType: {
 			type: String,
 			validator: value => ['memberCount', 'overallLoanedAmount'].includes(value),

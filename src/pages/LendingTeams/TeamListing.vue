@@ -1,14 +1,12 @@
 <template>
 	<div>
-		<div
-			class="tw-flex tw-justify-between tw-items-baseline tw-mb-3"
-		>
-			<h3>
+		<div>
+			<h3 class="tw-mb-0">
 				Team Listing
 			</h3>
-			<p class="tw-text-small" v-if="!loading">
+			<p class="tw-text-small tw-mb-2">
 				<!-- eslint-disable-next-line max-len -->
-				{{ numeral(totalCount).format('0,0') }} lending teams in {{ teamCategory ? teamCategory : 'all categories' }}
+				<span v-if="!loading">{{ numeral(totalCount).format('0,0') }}</span> lending teams in {{ teamCategory ? teamCategoryFriendlyName(teamCategory) : 'all categories' }}
 			</p>
 		</div>
 		<team-search-bar
@@ -26,59 +24,8 @@
 					@update:modelValue="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamCategory]"
 				>
-					<option value="">
-						-- All Categories --
-					</option>
-					<option value="AlumniGroups">
-						Alumni Groups
-					</option>
-					<option value="Businesses">
-						Businesses
-					</option>
-					<option value="BusinessesInternalGroups">
-						Business - Internal Groups
-					</option>
-					<option value="Clubs">
-						Clubs
-					</option>
-					<option value="CollegesUniversities">
-						Colleges/Universities
-					</option>
-					<option value="CommonInterest">
-						Common Interest
-					</option>
-					<option value="Events">
-						Events
-					</option>
-					<option value="Families">
-						Families
-					</option>
-					<option value="FieldPartnerFans">
-						Field Partner Fans
-					</option>
-					<option value="Friends">
-						Friends
-					</option>
-					<option value="LocalArea">
-						Local Area
-					</option>
-					<option value="Memorials">
-						Memorials
-					</option>
-					<option value="ReligiousCongregations">
-						Religious Congregations
-					</option>
-					<option value="Schools">
-						Schools
-					</option>
-					<option value="SportsGroups">
-						Sports Groups
-					</option>
-					<option value="YouthGroups">
-						Youth Groups
-					</option>
-					<option value="Other">
-						Other
+					<option v-for="(category, index) in teamCategories" :key="index" :value="category.value">
+						{{ category.label }}
 					</option>
 				</kv-select>
 			</div>
@@ -303,7 +250,7 @@ import teamNoImage from '@/assets/images/team_s135.png';
 import { gql } from '@apollo/client';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import { fetchTeams } from '../../util/teamsUtil';
+import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
@@ -376,6 +323,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			teamCategories,
 			teamCategory: '',
 			teamOption: '',
 			teamSort: 'overallLoanedAmount',
@@ -403,15 +351,15 @@ export default {
 		urlParams() {
 			return toUrlParams({
 				offset: this.offset,
-				teamCategory: this.teamCategory,
-				teamOption: this.teamOption,
+				...(this.teamCategory !== '' && { teamCategory: this.teamCategory }),
+				...(this.teamOption !== '' && { teamOption: this.teamOption }),
 				teamSort: this.teamSort,
 				queryString: this.queryString,
 			});
 		},
 		lastTeamPage() {
 			return Math.ceil(this.totalCount / this.limit);
-		},
+		}
 	},
 	methods: {
 		handleSearchQuery(queryString) {
@@ -450,9 +398,19 @@ export default {
 				pushToRouter('teamCategory');
 				return;
 			}
+			if (this.teamCategory === '' && this.teamCategory !== this.$route.query?.teamCategory) {
+				const query = { ...this.$route.query };
+				delete query?.teamCategory;
+				this.$router.replace({ query });
+			}
 			if (this.teamOption && this.teamOption !== this.$route.query?.teamOption) {
 				pushToRouter('teamOption');
 				return;
+			}
+			if (this.teamOption === '' && this.teamOption !== this.$route.query?.teamOption) {
+				const query = { ...this.$route.query };
+				delete query?.teamCategory;
+				this.$router.replace({ query });
 			}
 			if (this.queryString && this.queryString !== this.$route.query?.queryString) {
 				pushToRouter('queryString');
@@ -492,6 +450,7 @@ export default {
 		userIsTeamMember(teamId) {
 			return this.myTeams.some(team => team.id === teamId);
 		},
+		teamCategoryFriendlyName
 	},
 	created() {
 		// extract query
