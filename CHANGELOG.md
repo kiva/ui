@@ -1,3 +1,10 @@
+## [2.690.0](https://github.com/kiva/ui/compare/v2.689.0...v2.690.0) (2023-10-03)
+
+
+### Features
+
+* teams page additional features ([d3d61ba](https://github.com/kiva/ui/commit/d3d61ba2dbe442e67857e69100b4220d27a3ac68))
+
 ## [2.689.0](https://github.com/kiva/ui/compare/v2.688.0...v2.689.0) (2023-10-02)
 
 
