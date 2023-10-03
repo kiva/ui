@@ -1,3 +1,10 @@
+## [2.691.0](https://github.com/kiva/ui/compare/v2.690.1...v2.691.0) (2023-10-03)
+
+
+### Features
+
+* quick filters pills test code removed ([494c21e](https://github.com/kiva/ui/commit/494c21e0a4682249373bc8d167654acf401184f3))
+
 ### [2.690.1](https://github.com/kiva/ui/compare/v2.690.0...v2.690.1) (2023-10-03)
 
 
