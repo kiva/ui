@@ -25,7 +25,7 @@
 			{{ headline }}
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
-		<p v-if="!loading" class="text-overflow tw-line-clamp-4">
+		<p v-if="!loading" class="text-overflow tw-line-clamp-3 md:tw-line-clamp-4">
 			{{ summary }}
 		</p>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
