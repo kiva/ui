@@ -5,15 +5,8 @@ const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 const memcachedServers = process.env.MEMCACHE_HOST || 'ui-memcached:11211';
 const baseUrl = process.env.BASE_URL || 'development.kiva.org';
 const env = process.env.SHORT_ENV || 'dev';
-let enableOptimizely = true;
-if (process.env.ENABLE_OPTIMIZELY !== undefined) {
-	enableOptimizely = process.env.ENABLE_OPTIMIZELY === "true" || process.env.ENABLE_OPTIMIZELY === true;
-}
-let enablePerimeterx = true;
-if (process.env.ENABLE_PERIMETERX !== undefined) {
-	enableOptimizely = process.env.ENABLE_PERIMETERX === "true" || process.env.ENABLE_PERIMETERX === true;
-}
-
+const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
+const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
 
 module.exports = merge(base, {
 	app: {
