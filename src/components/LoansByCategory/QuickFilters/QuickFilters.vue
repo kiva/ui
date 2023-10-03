@@ -267,6 +267,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableQfMobile: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		KvSelect,
