@@ -1,3 +1,10 @@
+## [2.692.0](https://github.com/kiva/ui/compare/v2.691.0...v2.692.0) (2023-10-03)
+
+
+### Features
+
+* do not truncate for promo headline and summary ([596efa1](https://github.com/kiva/ui/commit/596efa1cae203a3c06a7de63bb68a6dd4a33ffcf))
+
 ## [2.691.0](https://github.com/kiva/ui/compare/v2.690.1...v2.691.0) (2023-10-03)
 
 
