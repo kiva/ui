@@ -1,6 +1,6 @@
-query leaderboardsQuery {
+query leaderboardsQuery($category: TeamCategoryEnum) {
 	community {
-		leaderboards {
+		leaderboards(category: $category ) {
 			amountFunded {
 				lastMonth {
 					rank
