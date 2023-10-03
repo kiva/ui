@@ -1,3 +1,10 @@
+### [2.690.1](https://github.com/kiva/ui/compare/v2.690.0...v2.690.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* truncating to three lines in mobile ([3812c54](https://github.com/kiva/ui/commit/3812c5461b1a97f1ea845f2e296943f10d5d6dc9))
+
 ## [2.690.0](https://github.com/kiva/ui/compare/v2.689.0...v2.690.0) (2023-10-03)
 
 
