@@ -5,7 +5,6 @@
 	>
 		<loan-channel-category-control
 			:enable-loan-tags="enableLoanTags"
-			:enable-filter-pills="enableFilterPillsTest"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 		/>
 
@@ -46,7 +45,6 @@ export default {
 			},
 			pageLayout: 'control',
 			enableLoanTags: false,
-			enableFilterPillsTest: false,
 		};
 	},
 	apollo: {
@@ -69,7 +67,6 @@ export default {
 
 					return Promise.all([
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'filter_pills' } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
 				});
@@ -85,9 +82,6 @@ export default {
 
 		// Initialize Loan Tags Experiment
 		this.initializeLoanTags();
-
-		// Initialize Filter Pills Experimentx
-		this.initializeFilterPillsTest();
 
 		this.initializeFiveDollarsNotes();
 	},
@@ -114,20 +108,6 @@ export default {
 					'Lending',
 					'EXP-CORE-792-Oct2022',
 					loanTagsExperiment.version
-				);
-			}
-		},
-		initializeFilterPillsTest() {
-			const filterPilssExp = this.apollo.readFragment({
-				id: 'Experiment:filter_pills',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.enableFilterPillsTest = filterPilssExp.version === 'b';
-			if (filterPilssExp.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-1195-Mar2023',
-					filterPilssExp.version
 				);
 			}
 		},
