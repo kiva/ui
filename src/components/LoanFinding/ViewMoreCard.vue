@@ -5,7 +5,7 @@
 			<p class="tw-text-subhead tw-text-center">
 				View more loans that match your filters on our search page
 			</p>
-			<kv-button to="/lend/filter">
+			<kv-button :to="viewMoreLink">
 				<span class="tw-flex tw-items-center">
 					View more
 					<kv-material-icon class="tw-ml-1" :icon="mdiArrowRight" />
@@ -17,6 +17,8 @@
 
 <script>
 import { mdiArrowRight } from '@mdi/js';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -26,10 +28,27 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 	},
+	props: {
+		loanSearchState: {
+			type: Object,
+			default: () => {}
+		},
+	},
 	data() {
 		return {
 			mdiArrowRight
 		};
 	},
+	computed: {
+		viewMoreLink() {
+			const newParams = {
+				...filterConfig.keys.reduce((prev, key) => { // eslint-disable-next-line max-len
+					return { ...prev, ...filterConfig.config[key].getQueryFromFilter(this.loanSearchState, FLSS_QUERY_TYPE) };
+				}, {})
+			};
+			const queryString = new URLSearchParams(newParams).toString();
+			return `/lend/filter?${queryString}`;
+		}
+	}
 };
 </script>

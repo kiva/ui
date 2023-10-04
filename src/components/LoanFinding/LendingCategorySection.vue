@@ -49,8 +49,10 @@
 						class="tw-h-full"
 					/>
 				</template>
-				<template v-if="enableQfMobile">
-					<view-more-card />
+				<template v-if="enableQfMobile && !emptyState">
+					<view-more-card
+						:loan-search-state="loanSearchState"
+					/>
 				</template>
 			</kv-carousel>
 		</div>
@@ -114,6 +116,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		loanSearchState: {
+			type: Object,
+			default: () => {}
+		},
+		emptyState: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {

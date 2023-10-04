@@ -356,7 +356,7 @@ export default {
 		hideReset() {
 			return this.selectedCategory === 0
 			&& this.selectedGender === 'all'
-			&& this.selectedGenders === ['all']
+			&& this.selectedGenders.includes('all')
 			&& this.sortBy === this.defaultSort
 			&& !(this.$refs.locationSelector?.selectedCountries?.length ?? 0);
 		},

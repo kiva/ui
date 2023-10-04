@@ -51,13 +51,16 @@
 			</div>
 
 			<lending-category-section
+				title=""
 				v-if="enableQfMobile"
-				:key="totalCount"
+				:key="loans.length"
 				:loans="loans"
 				class="lg:tw-hidden tw-pb-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-qf-mobile="enableQfMobile"
+				:empty-state="emptyState"
 				:user-balance="userBalance"
+				:loan-search-state="flssLoanSearch"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
