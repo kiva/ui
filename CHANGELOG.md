@@ -1,3 +1,31 @@
+## [2.693.0](https://github.com/kiva/ui/compare/v2.692.0...v2.693.0) (2023-10-04)
+
+
+### Features
+
+* kv components package updated ([#5010](https://github.com/kiva/ui/issues/5010)) ([ce8a849](https://github.com/kiva/ui/commit/ce8a849a67bb2bd5b85945b903cdf661cc0abaa5))
+
+## [2.692.0](https://github.com/kiva/ui/compare/v2.691.0...v2.692.0) (2023-10-03)
+
+
+### Features
+
+* do not truncate for promo headline and summary ([596efa1](https://github.com/kiva/ui/commit/596efa1cae203a3c06a7de63bb68a6dd4a33ffcf))
+
+## [2.691.0](https://github.com/kiva/ui/compare/v2.690.1...v2.691.0) (2023-10-03)
+
+
+### Features
+
+* quick filters pills test code removed ([494c21e](https://github.com/kiva/ui/commit/494c21e0a4682249373bc8d167654acf401184f3))
+
+### [2.690.1](https://github.com/kiva/ui/compare/v2.690.0...v2.690.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* truncating to three lines in mobile ([3812c54](https://github.com/kiva/ui/commit/3812c5461b1a97f1ea845f2e296943f10d5d6dc9))
+
 ## [2.690.0](https://github.com/kiva/ui/compare/v2.689.0...v2.690.0) (2023-10-03)
 
 

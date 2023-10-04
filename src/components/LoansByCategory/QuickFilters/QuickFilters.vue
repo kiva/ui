@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full tw-z-4">
-		<div v-if="!withCategories && !enableFilterPills" class="tw-flex tw-items-center tw-mb-2">
+		<div v-if="!withCategories" class="tw-flex tw-items-center tw-mb-2">
 			<div class="tw-flex tw-items-center">
 				<h3 class="tw-text-h3">
 					Quick filters
@@ -14,13 +14,7 @@
 				</button>
 			</div>
 		</div>
-		<div
-			class="tw-flex"
-			:class="{
-				'tw-px-1 lg:tw-pr-0 tw-justify-start md:tw-gap-1 tw-flex-wrap lg:tw-flex-nowrap': enableFilterPills,
-				'tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full': !enableFilterPills
-			}"
-		>
+		<div class="tw-flex tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full">
 			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
@@ -43,23 +37,7 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown && enableFilterPills" class="tw-flex tw-gap-1 tw-overflow-x-auto tw-pb-1">
-				<filter-pills
-					:filters-loaded="filtersLoaded"
-					:options="filterOptions.gender"
-					:selected-values="selectedGenders"
-					@update-values="updateGenders($event)"
-				/>
-				<div v-if="!filtersLoaded" class="tw-flex tw-gap-1 placeholder">
-					<kv-loading-placeholder
-						style="width: 100px;"
-						v-for="(index) in 3"
-						:key="index"
-					/>
-				</div>
-			</div>
-
-			<div v-if="!removeGenderDropdown && !enableFilterPills" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
 				<label
 					class="tw-text-h4"
 					for="gender"
@@ -83,11 +61,7 @@
 				</kv-select>
 			</div>
 
-			<div
-				:class="{
-					'tw-flex tw-gap-1 overflow-container': enableFilterPills,
-					'tw-w-full': !enableFilterPills}"
-			>
+			<div class="tw-w-full">
 				<location-selector
 					v-if="!removeLocationDropdown"
 					@click.native="trackDropdownClick('location')"
@@ -99,67 +73,10 @@
 					ref="locationSelector"
 					:tracking-category="trackingCategory"
 					:with-categories="withCategories"
-					:enable-filter-pills="enableFilterPills"
 				/>
-
-				<div
-					v-if="!removeSortByDropdown && enableFilterPills"
-					class="tw-pb-1 tw-shrink-0"
-					:class="{ 'tw-opacity-low': !filtersLoaded }"
-					@click="trackDropdownClick('sort')"
-				>
-					<label
-						class="tw-hidden"
-						for="sortBy"
-					>
-						Sort By
-					</label>
-					<div
-						class="
-							pill-container
-							tw-rounded
-							tw-transition
-							tw-bg-white
-							tw-h-full
-							md:tw-w-auto
-							tw-relative
-							tw-pointer-events-none
-						"
-					>
-						<kv-material-icon
-							:icon="mdiSort"
-							class="tw-w-3 tw-h-3 tw-mr-1 tw-absolute tw-pointer-events-auto"
-							style="left: 20px; top: 50%; transform: translateY(-50%);"
-						/>
-						<select
-							id="sortBy"
-							class="
-								tw-bg-transparent
-								tw-font-medium
-								tw-transition
-								tw-rounded
-								filter-pill
-								tw-w-full
-								tw-h-full
-								tw-pointer-events-auto
-								tw-cursor-pointer
-							"
-							:disabled="!filtersLoaded"
-							v-model="sortBy"
-						>
-							<option
-								v-for="sortType in filterOptions.sorting"
-								:key="sortType.key"
-								:value="sortType.key"
-							>
-								{{ sortType.title }}
-							</option>
-						</select>
-					</div>
-				</div>
 			</div>
 			<div
-				v-if="!removeSortByDropdown && !enableFilterPills && !withCategories"
+				v-if="!removeSortByDropdown && !withCategories"
 				class="tw-flex tw-flex-col tw-grow"
 			>
 				<label
@@ -223,13 +140,11 @@
 </template>
 
 <script>
-import { mdiFilterVariant, mdiSort, mdiChevronDown } from '@mdi/js';
+import { mdiFilterVariant, mdiChevronDown } from '@mdi/js';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import LocationSelector from './LocationSelector';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import FilterPills from './FilterPills';
 
 export default {
 	name: 'QuickFilters',
@@ -263,10 +178,6 @@ export default {
 			type: String,
 			default: 'personalized',
 		},
-		enableFilterPills: {
-			type: Boolean,
-			default: false
-		},
 		enableQfMobile: {
 			type: Boolean,
 			default: false
@@ -276,13 +187,10 @@ export default {
 		KvSelect,
 		LocationSelector,
 		KvMaterialIcon,
-		FilterPills,
-		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
 			mdiFilterVariant,
-			mdiSort,
 			mdiChevronDown,
 			selectedCategory: 0,
 			selectedGender: 'all',

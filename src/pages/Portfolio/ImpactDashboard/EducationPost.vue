@@ -20,12 +20,16 @@
 			v-if="!loading"
 			:href="url"
 			@click="trackEvent('blog-headline')"
-			class="tw-text-h3 text-overflow tw-line-clamp-2 tw-mb-0.5 tw-decoration-white tw-cursor-pointer"
+			class="tw-text-h3 text-overflow tw-decoration-white tw-cursor-pointer"
+			:class="{ 'tw-line-clamp-2' : truncateHeadline }"
 		>
 			{{ headline }}
 		</a>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
-		<p v-if="!loading" class="text-overflow tw-line-clamp-4">
+		<p
+			v-if="!loading" class="text-overflow tw-mt-0.5"
+			:class="{ 'tw-line-clamp-3 md:tw-line-clamp-4' : truncateSummary }"
+		>
 			{{ summary }}
 		</p>
 		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
@@ -57,7 +61,7 @@ export default {
 			sourceSizes: [
 				{
 					width: 312,
-					height: 217,
+					height: 184,
 					media: 'min-width: 1025px',
 				},
 				{
@@ -67,7 +71,7 @@ export default {
 				},
 				{
 					width: 278,
-					height: 200,
+					height: 180,
 					media: 'min-width: 0px',
 				},
 			]
@@ -81,6 +85,12 @@ export default {
 	computed: {
 		imageUrl() {
 			return this.post?.image?.fields?.file?.url ?? '';
+		},
+		truncateHeadline() {
+			return !this.post?.promoHeadline;
+		},
+		truncateSummary() {
+			return !this.post?.promoSummary;
 		},
 		headline() {
 			return this.post?.promoHeadline ?? this.post?.title ?? '';
@@ -97,7 +107,7 @@ export default {
 
 <style lang="postcss" scoped>
 .card-container {
-	height: 387px;
+	height: 395px;
 	max-width: 344px;
 	@apply tw-block tw-bg-eco-green-4 tw-rounded tw-p-2 tw-grid-rows-3 tw-decoration-white tw-mx-auto;
 
@@ -116,16 +126,16 @@ export default {
 
 	@screen xl {
 		width: 312px;
-		height: 217px;
+		height: 184px;
 	}
 }
 
 .card-container-image {
-	@apply tw-w-full tw-h-full tw-mb-1;
+	@apply !tw-block tw-w-full tw-h-full tw-mb-1;
 }
 
 .card-container-image >>> img {
-	max-height: 209px;
+	max-height: 180px;
 	@apply tw-rounded;
 
 	@screen md {
