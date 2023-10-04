@@ -45,7 +45,7 @@ module.exports = merge(base, {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: `https://admin.${baseUrl}/admin/login?force=1`,
 				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: `https://partners.${baseUrl}/pa2/login/login?authLevel=recent`,
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: `https://www.${baseUrl}/authenticate?authLevel=recent`,
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `https://www.$baseUrl}/ui-login?force=true`,
+				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `https://www.${baseUrl}/ui-login?force=true`,
 				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: `https://www.${baseUrl}/ui-login?force=true`,
 			},
 			enable: true,
