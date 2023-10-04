@@ -17,36 +17,13 @@ const serverClientID = process.env.SERVER_CLIENT_ID || 'KIzjUBQjKZwMRgYSn6NvMxsU
 
 module.exports = merge(base, {
 	app: {
-		apolloBatching,
-		host: `www.${baseUrl}`,
-		publicPath: `https://www.${baseUrl}/`,
-		photoPath: process.env.PHOTO_PATH || 'https://www-dev-kiva-org.freetls.fastly.net/img/',
-		graphqlUri: `https://gateway.${baseUrl}/graphql`,
-		enablePerimeterx,
-		perimeterxAppId: process.env.PERIMETERX_APP_ID || 'PX5u4Lz98O',
-		enableAnalytics: true,
-		enableGTM: true,
-		googleTagmanagerId: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-PXFRMT',
-		enableGA: true,
-		gaId: process.env.GOOGLE_ANALYTICS_ID || 'UA-11686022-3',
-		grecaptchaSitekey: '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
-		enableHotjar: true,
-		hotjarId: process.env.HOTJAR_ID || '3071239',
-		enableSnowplow: true,
-		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
-		enableFB: true,
-		enableOptimizely,
-		fbApplicationId: process.env.FACEBOOK_APP_ID || '364044572460',
-		fbOgNameSpace: `${env}-kiva`,
-		enableSentry: true,
-		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
 		algoliaConfig: {
 			group: `${env}`,
 			appId: 'testingZ9YK0WNQ85',
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: `${env}_fundraising_popularity`,
 		},
-		btTokenKey: 'sandbox_q7kbtvzy_vynd473f79sfskz3',
+		apolloBatching,
 		auth0: {
 			loginRedirectUrls: {
 				[adminAuthId]: `https://admin.${baseUrl}/admin/login?force=1`,
@@ -65,21 +42,44 @@ module.exports = merge(base, {
 			serverCallbackUri: `https://www.${baseUrl}/process-ssr-auth`,
 			domain: `login.${env}.kiva.org`,
 		},
-		paypal : {
-			url: 'www.sandbox.paypal.com',
-			environment: 'sandbox'
-		},
+		btTokenKey: 'sandbox_q7kbtvzy_vynd473f79sfskz3',
+		enableAnalytics: true,
+		enableFB: true,
+		enableGA: true,
+		enableGTM: true,
+		enableHotjar: true,
+		enableOptimizely,
+		enablePerimeterx,
+		enableSentry: true,
+		enableSnowplow: true,
+		fbApplicationId: process.env.FACEBOOK_APP_ID || '364044572460',
+		fbOgNameSpace: `${env}-kiva`,
+		gaId: process.env.GOOGLE_ANALYTICS_ID || 'UA-11686022-3',
+		googleTagmanagerId: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-PXFRMT',
+		graphqlUri: `https://gateway.${baseUrl}/graphql`,
+		grecaptchaSitekey: '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
+		host: `www.${baseUrl}`,
+		hotjarId: process.env.HOTJAR_ID || '3071239',
 		oneTrust: {
 			enable: true,
 			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
 			domainSuffix: process.env.ONE_TRUST_DOMAIN_SUFFIX || '-test',
 		},
+		paypal : {
+			url: 'www.sandbox.paypal.com',
+			environment: 'sandbox'
+		},
+		perimeterxAppId: process.env.PERIMETERX_APP_ID || 'PX5u4Lz98O',
+		photoPath: process.env.PHOTO_PATH || 'https://www-dev-kiva-org.freetls.fastly.net/img/',
+		publicPath: `https://www.${baseUrl}/`,
+		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 	},
 	server: {
+		disableCluster: true,
 		graphqlUri: `https://gateway.${baseUrl}/graphql`,
-		sessionUri: `https://www.${baseUrl}/start-ui-session`,
 		memcachedEnabled: true,
 		memcachedServers,
-		disableCluster: true
+		sessionUri: `https://www.${baseUrl}/start-ui-session`,
 	}
 })
