@@ -72,7 +72,7 @@ module.exports = merge(base, {
 		oneTrust: {
 			enable: true,
 			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
-			domainSuffix: '-test',
+			domainSuffix: process.env.ONE_TRUST_DOMAIN_SUFFIX || '-test',
 		},
 	},
 	server: {
