@@ -1,3 +1,15 @@
+## [2.694.0](https://github.com/kiva/ui/compare/v2.693.0...v2.694.0) (2023-10-04)
+
+
+### Features
+
+* remove experiment tracking and conditions ([36d68aa](https://github.com/kiva/ui/commit/36d68aaf6704f2d8d56f44ab97c2c65075d51a02))
+
+
+### Bug Fixes
+
+* revert using portfolio/impact as portfolio link ([6a0810d](https://github.com/kiva/ui/commit/6a0810dcaa7cb7da31d640e2a1e4353b2794776f))
+
 ## [2.693.0](https://github.com/kiva/ui/compare/v2.692.0...v2.693.0) (2023-10-04)
 
 
