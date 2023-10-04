@@ -7,6 +7,7 @@ const env = process.env.SHORT_ENV || 'dev';
 const formattedUrlEnv = env === 'prod' ? '' : `${env}.`;
 const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
 const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
+const enableHotjar = process.env.ENABLE_HOTJAR !== 'false';
 
 // Auth0 app IDs
 const adminAuthId = process.env.ADMIN_AUTH_ID || 'cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5';
@@ -50,7 +51,7 @@ module.exports = {
 		enableFB: true,
 		enableGA: true,
 		enableGTM: true,
-		enableHotjar: true,
+		enableHotjar,
 		enableOptimizely,
 		enablePerimeterx,
 		enableSentry: true,
