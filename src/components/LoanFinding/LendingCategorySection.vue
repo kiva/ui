@@ -49,6 +49,9 @@
 						class="tw-h-full"
 					/>
 				</template>
+				<template v-if="enableQfMobile">
+					<view-more-card />
+				</template>
 			</kv-carousel>
 		</div>
 	</div>
@@ -59,13 +62,15 @@ import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import ViewMoreCard from './ViewMoreCard';
 
 export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
 		KvClassicLoanCardContainer,
-		MultipleAtcButton
+		MultipleAtcButton,
+		ViewMoreCard,
 	},
 	props: {
 		title: {
@@ -104,7 +109,11 @@ export default {
 		titleIcon: {
 			type: String,
 			default: ''
-		}
+		},
+		enableQfMobile: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {

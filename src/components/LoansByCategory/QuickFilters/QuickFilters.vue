@@ -37,43 +37,48 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
-				<label
-					class="tw-text-h4"
-					for="gender"
-				>
-					Gender
-				</label>
-				<kv-select
-					:disabled="!filtersLoaded"
-					v-model="selectedGender"
-					id="gender"
-					style="min-width: 140px;"
-					@click.native="trackDropdownClick('gender')"
-				>
-					<option
-						v-for="gender in filterOptions.gender"
-						:key="gender.key"
-						:value="gender.key"
+			<div
+				class="tw-flex tw-gap-2"
+				:class="{ 'tw-flex-col lg:tw-flex-row' : !enableQfMobile, 'tw-flex-row' : enableQfMobile }"
+			>
+				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
+					<label
+						class="tw-text-h4"
+						for="gender"
 					>
-						{{ gender.title }}
-					</option>
-				</kv-select>
-			</div>
+						Gender
+					</label>
+					<kv-select
+						:disabled="!filtersLoaded"
+						v-model="selectedGender"
+						id="gender"
+						style="min-width: 140px;"
+						@click.native="trackDropdownClick('gender')"
+					>
+						<option
+							v-for="gender in filterOptions.gender"
+							:key="gender.key"
+							:value="gender.key"
+						>
+							{{ gender.title }}
+						</option>
+					</kv-select>
+				</div>
 
-			<div class="tw-w-full">
-				<location-selector
-					v-if="!removeLocationDropdown"
-					@click.native="trackDropdownClick('location')"
-					@handle-overlay="handleQuickFiltersOverlay"
-					:regions="filterOptions.location"
-					:total-loans="totalLoans"
-					:filters-loaded="filtersLoaded"
-					@update-location="updateLocation"
-					ref="locationSelector"
-					:tracking-category="trackingCategory"
-					:with-categories="withCategories"
-				/>
+				<div class="tw-w-full">
+					<location-selector
+						v-if="!removeLocationDropdown"
+						@click.native="trackDropdownClick('location')"
+						@handle-overlay="handleQuickFiltersOverlay"
+						:regions="filterOptions.location"
+						:total-loans="totalLoans"
+						:filters-loaded="filtersLoaded"
+						@update-location="updateLocation"
+						ref="locationSelector"
+						:tracking-category="trackingCategory"
+						:with-categories="withCategories"
+					/>
+				</div>
 			</div>
 			<div
 				v-if="!removeSortByDropdown && !withCategories"

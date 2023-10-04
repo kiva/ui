@@ -2,7 +2,7 @@ var path = require('path')
 
 module.exports = {
 	app: {
-		apolloBatching: true,
+		apolloBatching: false,
 		host: 'www.kiva.org',
 		transport: 'https',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',

@@ -52,8 +52,7 @@
 
 			<lending-category-section
 				v-if="enableQfMobile"
-				title=""
-				subtitle=""
+				:key="totalCount"
 				:loans="loans"
 				class="lg:tw-hidden tw-pb-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
