@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.690.1",
+	"version": "2.690.2-next.1",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
