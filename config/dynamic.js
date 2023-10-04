@@ -8,6 +8,13 @@ const env = process.env.SHORT_ENV || 'dev';
 const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
 const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
 
+// Auth0 app IDs
+const adminAuthId = process.env.ADMIN_AUTH_ID || 'cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5';
+const partnerAuthId = process.env.PARTNER_AUTH_ID || 'e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk';
+const wwwAuthId = process.env.WWW_AUTH_ID || 'xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD';
+const browserClientID = process.env.BROWSER_CLIENT_ID || 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF';
+const serverClientID = process.env.SERVER_CLIENT_ID || 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH';
+
 module.exports = merge(base, {
 	app: {
 		apolloBatching,
@@ -42,18 +49,18 @@ module.exports = merge(base, {
 		btTokenKey: 'sandbox_q7kbtvzy_vynd473f79sfskz3',
 		auth0: {
 			loginRedirectUrls: {
-				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: `https://admin.${baseUrl}/admin/login?force=1`,
-				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: `https://partners.${baseUrl}/pa2/login/login?authLevel=recent`,
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: `https://www.${baseUrl}/authenticate?authLevel=recent`,
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `https://www.${baseUrl}/ui-login?force=true`,
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: `https://www.${baseUrl}/ui-login?force=true`,
+				[adminAuthId]: `https://admin.${baseUrl}/admin/login?force=1`,
+				[partnerAuthId]: `https://partners.${baseUrl}/pa2/login/login?authLevel=recent`,
+				[wwwAuthId]: `https://www.${baseUrl}/authenticate?authLevel=recent`,
+				[serverClientID]: `https://www.${baseUrl}/ui-login?force=true`,
+				[browserClientID]: `https://www.${baseUrl}/ui-login?force=true`,
 			},
 			enable: true,
 			checkFakeAuth: true,
 			apiAudience: `https://api.${env}.kivaws.org/graphql`,
 			mfaAudience: `https://kiva-${env}.auth0.com/mfa/`,
-			browserClientID: process.env.BROWSER_CLIENT_ID || 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
-			serverClientID: process.env.SERVER_CLIENT_ID || 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
+			browserClientID,
+			serverClientID,
 			browserCallbackUri: `https://www.${baseUrl}/process-browser-auth`,
 			serverCallbackUri: `https://www.${baseUrl}/process-ssr-auth`,
 			domain: `login.${env}.kiva.org`,
