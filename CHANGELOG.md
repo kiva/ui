@@ -1,3 +1,10 @@
+### [2.695.2](https://github.com/kiva/ui/compare/v2.695.1...v2.695.2) (2023-10-04)
+
+
+### Bug Fixes
+
+* subs bug fixed in old loan card ([#5014](https://github.com/kiva/ui/issues/5014)) ([12bc2a8](https://github.com/kiva/ui/commit/12bc2a8211ecce04f5d19d795d8c713d1bdd7791))
+
 ### [2.695.1](https://github.com/kiva/ui/compare/v2.695.0...v2.695.1) (2023-10-04)
 
 
