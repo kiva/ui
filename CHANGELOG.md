@@ -1,3 +1,10 @@
+## [2.693.0](https://github.com/kiva/ui/compare/v2.692.0...v2.693.0) (2023-10-04)
+
+
+### Features
+
+* kv components package updated ([#5010](https://github.com/kiva/ui/issues/5010)) ([ce8a849](https://github.com/kiva/ui/commit/ce8a849a67bb2bd5b85945b903cdf661cc0abaa5))
+
 ## [2.692.0](https://github.com/kiva/ui/compare/v2.691.0...v2.692.0) (2023-10-03)
 
 
