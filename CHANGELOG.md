@@ -1,3 +1,22 @@
+### [2.694.1](https://github.com/kiva/ui/compare/v2.694.0...v2.694.1) (2023-10-04)
+
+
+### Bug Fixes
+
+* optional chaining added to subscription in loan card container ([#5011](https://github.com/kiva/ui/issues/5011)) ([4a92ac6](https://github.com/kiva/ui/commit/4a92ac6f547a53c6a224ec7f1517280a2f102d68))
+
+## [2.694.0](https://github.com/kiva/ui/compare/v2.693.0...v2.694.0) (2023-10-04)
+
+
+### Features
+
+* remove experiment tracking and conditions ([36d68aa](https://github.com/kiva/ui/commit/36d68aaf6704f2d8d56f44ab97c2c65075d51a02))
+
+
+### Bug Fixes
+
+* revert using portfolio/impact as portfolio link ([6a0810d](https://github.com/kiva/ui/commit/6a0810dcaa7cb7da31d640e2a1e4353b2794776f))
+
 ## [2.693.0](https://github.com/kiva/ui/compare/v2.692.0...v2.693.0) (2023-10-04)
 
 
