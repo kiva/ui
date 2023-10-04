@@ -1,3 +1,10 @@
+### [2.695.1](https://github.com/kiva/ui/compare/v2.695.0...v2.695.1) (2023-10-04)
+
+
+### Bug Fixes
+
+* [CP-548] Make enableHotjar configurable ([1b6e52c](https://github.com/kiva/ui/commit/1b6e52c4ce2559a483efb4887c266761ecc78aef))
+
 ## [2.695.0](https://github.com/kiva/ui/compare/v2.694.1...v2.695.0) (2023-10-04)
 
 
