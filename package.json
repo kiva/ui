@@ -156,7 +156,7 @@
 		"coveralls": "^3.1.1",
 		"css-loader": "^5.2.6",
 		"cssnano": "^5.0.8",
-		"cypress": "^10.11.0",
+		"cypress": "^13.3.0",
 		"cypress-multi-reporters": "^1.5.0",
 		"eslint": "^7.5.0",
 		"eslint-config-airbnb-base": "^14.2.0",
