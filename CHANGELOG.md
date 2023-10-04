@@ -1,3 +1,27 @@
+### [2.695.1](https://github.com/kiva/ui/compare/v2.695.0...v2.695.1) (2023-10-04)
+
+
+### Bug Fixes
+
+* [CP-548] Make enableHotjar configurable ([1b6e52c](https://github.com/kiva/ui/commit/1b6e52c4ce2559a483efb4887c266761ecc78aef))
+
+## [2.695.0](https://github.com/kiva/ui/compare/v2.694.1...v2.695.0) (2023-10-04)
+
+
+### Features
+
+* [CP_548] Alphabetize ([04f6429](https://github.com/kiva/ui/commit/04f642946237ad6478738e64185bdf098d4e7d1a))
+* [CP-548 ([7a961f5](https://github.com/kiva/ui/commit/7a961f579a3a50df600806db2acc8fe719201452))
+* [CP-548] Adding config files for EKS stage and dev ([5c22586](https://github.com/kiva/ui/commit/5c22586e464af6fdb5dcf5b0f23a8d816f0d9474))
+* [CP-548] Generic config that can be overriden ([4e43da3](https://github.com/kiva/ui/commit/4e43da33c75281eb836b6720284d8b1c1424c71c))
+* [CP-548] Make auth0 app IDs configurable ([a19ca40](https://github.com/kiva/ui/commit/a19ca4007de5d827e9d126e11268b4886595fe93))
+* [CP-548] Make config support configuration for prod ([d22726d](https://github.com/kiva/ui/commit/d22726d31a77bb6d4c22511239e7e0eab5ada724))
+* [CP-548] Missing bracket ([f9a6f02](https://github.com/kiva/ui/commit/f9a6f025048818de6de99ad4ed904aecf751e2c1))
+* [CP-548] Rename new config file ([b42bece](https://github.com/kiva/ui/commit/b42beceaa54a4ed6e533d67c936d6050eae4e81b))
+* [CP-548] Set disableCluster to true ([de2789e](https://github.com/kiva/ui/commit/de2789e124c82142909afa02aeb26b0df360458b))
+* [CP-548] Set up dynamic config to work for prod ([342c914](https://github.com/kiva/ui/commit/342c9142cabf8bd0633a246405c5d2084e4fb051))
+* [CP-548] Simplify boolean vars ([3319d5d](https://github.com/kiva/ui/commit/3319d5da80e3846def18ad813ba3e4cdabc10c4c))
+
 ### [2.694.1](https://github.com/kiva/ui/compare/v2.694.0...v2.694.1) (2023-10-04)
 
 
