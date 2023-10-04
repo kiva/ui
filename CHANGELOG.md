@@ -1,3 +1,10 @@
+## [2.691.0-next.2](https://github.com/kiva/ui/compare/v2.691.0-next.1...v2.691.0-next.2) (2023-10-04)
+
+
+### Bug Fixes
+
+* optional chaining added to subscription in loan card container ([#5011](https://github.com/kiva/ui/issues/5011)) ([157edf7](https://github.com/kiva/ui/commit/157edf7116240eb3555928c00d1340f0f65c03d8))
+
 ## [2.691.0-next.1](https://github.com/kiva/ui/compare/v2.690.1...v2.691.0-next.1) (2023-10-04)
 
 
