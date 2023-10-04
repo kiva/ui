@@ -11,7 +11,7 @@
 					<lending-insights />
 					<recent-loans-list />
 					<your-donations />
-					<education-module v-if="showEdModule" @hide-module="hideModule" />
+					<education-module v-if="post" :post="post" />
 					<kiva-credit-stats />
 					<account-updates />
 					<your-teams />
@@ -26,6 +26,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import { gql } from '@apollo/client';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -40,7 +41,7 @@ import YourDonations from './YourDonations';
 
 export default {
 	name: 'ImpactDashboardPage',
-	inject: ['cookieStore'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AccountOverview,
 		AccountUpdates,
@@ -59,13 +60,31 @@ export default {
 	},
 	data() {
 		return {
-			showEdModule: true
+			post: null
 		};
 	},
 	methods: {
-		hideModule(payload) {
-			this.showEdModule = !payload;
+		loadEducationPost() {
+			// Donation Education Module Experiment MARS-497
+			this.apollo.query({
+				query: gql`query ContentfulBlogPosts (
+						$customFields: String,
+						$limit: Int
+					) {
+						contentful {
+							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
+						}
+					}`,
+				variables: {
+					customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
+				},
+			}).then(({ data }) => {
+				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
+			});
 		}
+	},
+	created() {
+		this.loadEducationPost();
 	}
 };
 </script>

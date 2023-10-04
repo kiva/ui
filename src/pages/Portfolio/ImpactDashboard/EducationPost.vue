@@ -1,7 +1,6 @@
 <template>
 	<div class="card-container">
 		<a
-			v-if="!loading"
 			:href="url"
 			class="card-container-link-image"
 			@click="trackEvent('blog-image')"
@@ -15,9 +14,7 @@
 				fallback-format="jpg"
 			/>
 		</a>
-		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '16rem' }" />
 		<a
-			v-if="!loading"
 			:href="url"
 			@click="trackEvent('blog-headline')"
 			class="tw-text-h3 text-overflow tw-decoration-white tw-cursor-pointer"
@@ -25,36 +22,28 @@
 		>
 			{{ headline }}
 		</a>
-		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
 		<p
-			v-if="!loading" class="text-overflow tw-mt-0.5"
+			class="text-overflow tw-mt-0.5"
 			:class="{ 'tw-line-clamp-3 md:tw-line-clamp-4' : truncateSummary }"
 		>
 			{{ summary }}
 		</p>
-		<kv-loading-placeholder v-else class="placeholder" :style="{ height: '2rem' }" />
 	</div>
 </template>
 
 <script>
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'EducationPost',
 	components: {
 		KvContentfulImg,
-		KvLoadingPlaceholder
 	},
 	props: {
 		post: {
 			type: Object,
 			default: () => {}
 		},
-		loading: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	data() {
 		return {
@@ -145,9 +134,5 @@ export default {
 
 .text-overflow {
 	@apply tw-text-white tw-overflow-hidden tw-text-ellipsis;
-}
-
-.placeholder {
-	@apply tw-w-full tw-mb-2;
 }
 </style>
