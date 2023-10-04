@@ -7,7 +7,6 @@ const env = process.env.SHORT_ENV || 'dev';
 const formattedUrlEnv = env === 'prod' ? '' : `${env}.`;
 const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
 const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
-const disableCluster = process.env.SERVER_DISABLE_CLUSTER === 'true';
 
 // Auth0 app IDs
 const adminAuthId = process.env.ADMIN_AUTH_ID || 'cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5';
@@ -93,7 +92,7 @@ module.exports = {
 		assetsSubDirectory: 'static',
 	},
 	server: {
-		disableCluster,
+		disableCluster: true,
 		graphqlUri: `https://gateway.${baseUrl}/graphql`,
 		gzipEnabled: false,
 		memcachedEnabled: true,
