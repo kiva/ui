@@ -282,7 +282,7 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
-		this.watchedQuery.subscription.unsubscribe();
+		this.watchedQuery.subscription?.unsubscribe();
 	},
 	created() {
 		// Use cached loan data if it exists
