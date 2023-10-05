@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full">
-			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="withCategories" class="tw-flex tw-flex-col">
 				<label
 					class="tw-text-h4"
 					for="category"
@@ -38,7 +38,7 @@
 				</kv-select>
 			</div>
 			<div
-				class="tw-flex tw-gap-2"
+				class="tw-flex tw-gap-2 tw-grow"
 				:class="{ 'tw-flex-col lg:tw-flex-row' : !enableQfMobile, 'tw-flex-row' : enableQfMobile }"
 			>
 				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
