@@ -48,6 +48,7 @@
 					class="tw-mt-3"
 					:class="{ 'tw-order-last' : enableRelendingExp }"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-qf-mobile="enableQFMobileVersion"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
@@ -161,7 +162,6 @@ export default {
 					client.query({ query: userInfoQuery }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: QUICK_FILTERS_MOBILE_EXP_KEY } }),
 					recommendedLoansPromise
 				]);
 			});

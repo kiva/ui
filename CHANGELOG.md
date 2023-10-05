@@ -1,3 +1,31 @@
+### [2.696.2](https://github.com/kiva/ui/compare/v2.696.1...v2.696.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* turn off apollo batching in stage ([8796566](https://github.com/kiva/ui/commit/8796566c1597a324093016fde60d90f9012c518d))
+
+### [2.696.1](https://github.com/kiva/ui/compare/v2.696.0...v2.696.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* chanfe lifecycle hook for loading a post in portfolio ([e766942](https://github.com/kiva/ui/commit/e766942f2bf21753f5247fce5d8abf469b3ec367))
+
+## [2.696.0](https://github.com/kiva/ui/compare/v2.695.2...v2.696.0) (2023-10-05)
+
+
+### Features
+
+* prevent loading state while waiting for the post ([fd57166](https://github.com/kiva/ui/commit/fd571660c77e8a7011b0a5f95a160d384ad04d2c))
+
+### [2.695.2](https://github.com/kiva/ui/compare/v2.695.1...v2.695.2) (2023-10-04)
+
+
+### Bug Fixes
+
+* subs bug fixed in old loan card ([#5014](https://github.com/kiva/ui/issues/5014)) ([12bc2a8](https://github.com/kiva/ui/commit/12bc2a8211ecce04f5d19d795d8c713d1bdd7791))
+
 ### [2.695.1](https://github.com/kiva/ui/compare/v2.695.0...v2.695.1) (2023-10-04)
 
 

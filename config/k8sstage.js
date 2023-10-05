@@ -3,6 +3,7 @@ var stage  = require('./stage.js')
 
 module.exports = merge(stage, {
 	app: {
+		apolloBatching: false,
 		publicPath: 'https://www-stage-kiva-org.freetls.fastly.net/',
 	},
 	server: {
