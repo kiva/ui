@@ -1,5 +1,6 @@
 <template>
 	<div
+		id="locationWrapper"
 		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
@@ -309,22 +310,16 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.filter-pill {
-	padding: 10px 20px;
-	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+#locationWrapper >>> input {
+	@apply tw-pl-2;
 }
 
-.filter-pill input {
-	min-width: 135px;
+#locationWrapper >>> input::placeholder {
+	@apply tw-text-black;
 }
 
-.filter-pill:hover input,
-.filter-pill.hover input,
-.filter-pill:hover {
-	@apply tw-bg-black tw-text-white tw-cursor-pointer;
-}
-
-.selector {
-	@apply focus:tw-outline-none focus:tw-ring-0 focus:tw-border-transparent;
+#locationWrapper >>> span {
+	@apply tw-left-auto;
+	@apply tw-right-1;
 }
 </style>
