@@ -311,15 +311,15 @@ export default {
 
 <style lang="postcss" scoped>
 #locationWrapper >>> input {
-	padding-left: 16px;
+	@apply tw-pl-2;
 }
 
 #locationWrapper >>> input::placeholder {
-	color: black;
+	@apply tw-text-black;
 }
 
 #locationWrapper >>> span {
-	left: auto;
-	right: 8px;
+	@apply tw-left-auto;
+	@apply tw-right-1;
 }
 </style>
