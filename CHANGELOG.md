@@ -1,3 +1,10 @@
+## [2.697.0](https://github.com/kiva/ui/compare/v2.696.2...v2.697.0) (2023-10-05)
+
+
+### Features
+
+* css code for location selector updated ([#5019](https://github.com/kiva/ui/issues/5019)) ([0041051](https://github.com/kiva/ui/commit/004105172a1b6103403f2c88ee42ee5ac83feb32))
+
 ### [2.696.2](https://github.com/kiva/ui/compare/v2.696.1...v2.696.2) (2023-10-05)
 
 
