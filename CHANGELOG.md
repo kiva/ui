@@ -1,3 +1,10 @@
+### [2.696.2](https://github.com/kiva/ui/compare/v2.696.1...v2.696.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* turn off apollo batching in stage ([8796566](https://github.com/kiva/ui/commit/8796566c1597a324093016fde60d90f9012c518d))
+
 ### [2.696.1](https://github.com/kiva/ui/compare/v2.696.0...v2.696.1) (2023-10-05)
 
 
