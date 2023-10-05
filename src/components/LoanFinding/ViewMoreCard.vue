@@ -41,12 +41,12 @@ export default {
 	},
 	computed: {
 		viewMoreLink() {
-			const newParams = {
+			const filterParams = {
 				...filterConfig.keys.reduce((prev, key) => { // eslint-disable-next-line max-len
 					return { ...prev, ...filterConfig.config[key].getQueryFromFilter(this.loanSearchState, FLSS_QUERY_TYPE) };
 				}, {})
 			};
-			const queryString = new URLSearchParams(newParams).toString();
+			const queryString = new URLSearchParams(filterParams).toString();
 			return `/lend/filter?${queryString}`;
 		}
 	}
