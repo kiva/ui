@@ -1,3 +1,10 @@
+## [2.696.0](https://github.com/kiva/ui/compare/v2.695.2...v2.696.0) (2023-10-05)
+
+
+### Features
+
+* prevent loading state while waiting for the post ([fd57166](https://github.com/kiva/ui/commit/fd571660c77e8a7011b0a5f95a160d384ad04d2c))
+
 ### [2.695.2](https://github.com/kiva/ui/compare/v2.695.1...v2.695.2) (2023-10-04)
 
 
