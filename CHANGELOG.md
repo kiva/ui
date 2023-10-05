@@ -1,3 +1,10 @@
+### [2.696.1](https://github.com/kiva/ui/compare/v2.696.0...v2.696.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* chanfe lifecycle hook for loading a post in portfolio ([e766942](https://github.com/kiva/ui/commit/e766942f2bf21753f5247fce5d8abf469b3ec367))
+
 ## [2.696.0](https://github.com/kiva/ui/compare/v2.695.2...v2.696.0) (2023-10-05)
 
 
