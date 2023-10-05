@@ -51,7 +51,6 @@
 			</div>
 
 			<lending-category-section
-				title=""
 				v-if="enableQfMobile"
 				:key="loans.length"
 				:loans="loans"
