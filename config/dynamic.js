@@ -37,7 +37,7 @@ module.exports = {
 			},
 			enable: true,
 			checkFakeAuth,
-			apiAudience: `https://api.${formattedUrlEnv}kivaws.org/graphql`,
+			apiAudience: `https://api.${baseUrl}/graphql`,
 			mfaAudience: `https://kiva-${env}.auth0.com/mfa/`,
 			browserClientID,
 			serverClientID,
