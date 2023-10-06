@@ -5,7 +5,10 @@
 			<p class="tw-text-subhead tw-text-center">
 				View more loans that match your filters on our search page
 			</p>
-			<kv-button :to="viewMoreLink">
+			<kv-button
+				:to="viewMoreLink"
+				v-kv-track-event="['event-tracking', 'click', 'qf-mobile-view-more']"
+			>
 				<span class="tw-flex tw-items-center">
 					View more
 					<kv-material-icon class="tw-ml-1" :icon="mdiArrowRight" />
