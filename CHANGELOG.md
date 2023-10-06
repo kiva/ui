@@ -1,3 +1,10 @@
+### [2.698.1](https://github.com/kiva/ui/compare/v2.698.0...v2.698.1) (2023-10-06)
+
+
+### Bug Fixes
+
+* [CP-548] Fixing API audience URL ([5c0527f](https://github.com/kiva/ui/commit/5c0527f8bc6bf70df9cb7f6487c1d15a709bcbc7))
+
 ## [2.698.0](https://github.com/kiva/ui/compare/v2.697.0...v2.698.0) (2023-10-06)
 
 
