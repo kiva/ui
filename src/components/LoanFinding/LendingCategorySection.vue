@@ -49,7 +49,7 @@
 						class="tw-h-full"
 					/>
 				</template>
-				<template v-if="enableQfMobile && !emptyState">
+				<template v-if="showViewMoreCard">
 					<view-more-card
 						:loan-search-state="loanSearchState"
 					/>
@@ -122,7 +122,11 @@ export default {
 		emptyState: {
 			type: Boolean,
 			default: false
-		}
+		},
+		pageLimit: {
+			type: Number,
+			default: 6
+		},
 	},
 	data() {
 		return {
@@ -171,6 +175,9 @@ export default {
 		},
 		totalLoans() {
 			return this.loans.length;
+		},
+		showViewMoreCard() {
+			return this.enableQfMobile && !this.emptyState && this.totalLoans === this.pageLimit;
 		}
 	},
 	methods: {

@@ -60,6 +60,7 @@
 				:empty-state="emptyState"
 				:user-balance="userBalance"
 				:loan-search-state="flssLoanSearch"
+				:page-limit="loanSearchState.pageLimit"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
