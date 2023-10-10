@@ -1,3 +1,10 @@
+## [2.701.0](https://github.com/kiva/ui/compare/v2.700.0...v2.701.0) (2023-10-10)
+
+
+### Features
+
+* omit view more card for loans length less than the page limit ([#5024](https://github.com/kiva/ui/issues/5024)) ([680e669](https://github.com/kiva/ui/commit/680e6692e79c18532de48556ff2fb261930042a7))
+
 ## [2.700.0](https://github.com/kiva/ui/compare/v2.699.0...v2.700.0) (2023-10-10)
 
 
