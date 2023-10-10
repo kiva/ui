@@ -1,3 +1,10 @@
+## [2.699.0](https://github.com/kiva/ui/compare/v2.698.1...v2.699.0) (2023-10-10)
+
+
+### Features
+
+* introspection queries passed to a new query file ([#5022](https://github.com/kiva/ui/issues/5022)) ([ed0cd56](https://github.com/kiva/ui/commit/ed0cd5688497f75d4ad8014ce44ba0bda64a62e8))
+
 ### [2.698.1](https://github.com/kiva/ui/compare/v2.698.0...v2.698.1) (2023-10-06)
 
 
