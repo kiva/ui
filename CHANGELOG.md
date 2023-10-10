@@ -1,3 +1,10 @@
+## [2.700.0](https://github.com/kiva/ui/compare/v2.699.0...v2.700.0) (2023-10-10)
+
+
+### Features
+
+* productize value prop experiment and removing old checkout module experiment ([7cb41b2](https://github.com/kiva/ui/commit/7cb41b26c3db5899c0ef243ad7bdd9b233656ce5))
+
 ## [2.699.0](https://github.com/kiva/ui/compare/v2.698.1...v2.699.0) (2023-10-10)
 
 
