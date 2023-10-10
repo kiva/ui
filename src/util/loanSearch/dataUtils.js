@@ -1,4 +1,5 @@
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
+import loanEnumsQuery from '@/graphql/query/loanEnumsQuery.graphql';
 import {
 	fetchFacets,
 	fetchLoans,
@@ -60,15 +61,18 @@ export async function runLoansQuery(apollo, loanSearchState, origin) {
  */
 export async function fetchLoanFacets(apollo) {
 	try {
-		const result = await apollo.query({ query: loanFacetsQuery, fetchPolicy: 'network-only' });
+		const [resultFacets, resultEnums] = await Promise.all([
+			apollo.query({ query: loanFacetsQuery, fetchPolicy: 'network-only' }),
+			apollo.query({ query: loanEnumsQuery, fetchPolicy: 'network-only' })
+		]);
 
-		const countryFacets = result.data?.lend?.countryFacets ?? [];
-		const sectorFacets = result.data?.lend?.sector ?? [];
-		const themeFacets = result.data?.lend?.loanThemeFilter ?? [];
-		const tagFacets = result.data?.lend?.tag ?? [];
-		const genderFacets = result.data?.genderOptions?.enumValues ?? [];
-		const distributionModelFacets = result.data?.distributionModelOptions?.enumValues ?? [];
-		const partnerFacets = result.data?.general?.partners?.values ?? [];
+		const countryFacets = resultFacets.data?.lend?.countryFacets ?? [];
+		const sectorFacets = resultFacets.data?.lend?.sector ?? [];
+		const themeFacets = resultFacets.data?.lend?.loanThemeFilter ?? [];
+		const tagFacets = resultFacets.data?.lend?.tag ?? [];
+		const genderFacets = resultEnums.data?.genderOptions?.enumValues ?? [];
+		const distributionModelFacets = resultEnums.data?.distributionModelOptions?.enumValues ?? [];
+		const partnerFacets = resultFacets.data?.general?.partners?.values ?? [];
 
 		return {
 			countryFacets,
@@ -85,8 +89,8 @@ export async function fetchLoanFacets(apollo) {
 			tagNames: tagFacets.map(t => t.name.toUpperCase()),
 			genderFacets,
 			genders: genderFacets.map(g => g.name.toUpperCase()),
-			flssSorts: result.data?.flssSorts?.enumValues ?? [],
-			standardSorts: result.data?.standardSorts?.enumValues ?? [],
+			flssSorts: resultEnums.data?.flssSorts?.enumValues ?? [],
+			standardSorts: resultEnums.data?.standardSorts?.enumValues ?? [],
 			distributionModelFacets,
 			distributionModels: distributionModelFacets.map(d => d.name.toUpperCase()),
 			partnerFacets,

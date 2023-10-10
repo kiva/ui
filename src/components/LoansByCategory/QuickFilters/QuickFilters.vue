@@ -328,7 +328,7 @@ export default {
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
-			this.selectedGender = '';
+			this.selectedGender = 'all';
 			this.selectedGenders = ['all'];
 			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
