@@ -20,10 +20,7 @@
 		</template>
 		<div v-if="!zeroUpsellVisible" id="nudge-donation-container" data-testid="nudge-donation-container">
 			<div id="nudge-donation-top">
-				<p>
-					<!-- eslint-disable-next-line max-len -->
-					Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.
-				</p>
+				<how-kiva-uses-donation />
 				<donation-nudge-boxes
 					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
@@ -100,6 +97,7 @@ import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudg
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
 import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
+import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -110,7 +108,7 @@ export default {
 		return {
 			mdiInformation,
 			zeroUpsellVisible: false,
-			title: 'We rely on donations to reach the people who need it the most',
+			title: 'Your donations allow us to do the work that makes lending possible.',
 		};
 	},
 	inject: ['cookieStore'],
@@ -121,6 +119,7 @@ export default {
 		KvCharityNavigator,
 		DonationNudgeBoxes,
 		HeartIcon,
+		HowKivaUsesDonation,
 	},
 	props: {
 		experimentalFooter: {
