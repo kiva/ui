@@ -542,15 +542,6 @@ export default {
 
 		// Sanitize and set initial form values.
 		// Initial group from prop
-		const hasLoggedInResult = this.apollo.readQuery({
-			query: hasEverLoggedInQuery
-		});
-		if (!hasLoggedInResult?.hasEverLoggedIn) {
-			this.lendingCategories = this.lendingCategories.filter(
-				category => category.marketingName !== 'COVID-19'
-			);
-		}
-
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
 		}
