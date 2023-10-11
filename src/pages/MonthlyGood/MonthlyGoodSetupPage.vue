@@ -133,7 +133,7 @@
 												v-model="donationCheckbox"
 											>
 												<span class="tw-font-medium">
-													Monthly donation to Kiva (optional)
+													Help cover the cost of your loans (optional donation to Kiva)
 												</span>
 												<div class="tw-text-small" v-if="isMGTaglineActive">
 													<!-- eslint-disable-next-line max-len -->
@@ -376,6 +376,8 @@ const startDay = nextmonth => {
 	return dayToStartMG.getDate();
 };
 
+const defaultDonationPercentage = 0.18;
+
 export default {
 	name: 'MonthlyGoodSetupPage',
 	props: {
@@ -385,7 +387,7 @@ export default {
 		},
 		initDonation: {
 			type: Number,
-			default: 25 * 0.15,
+			default: 25 * defaultDonationPercentage,
 		},
 		day: {
 			type: Number,
@@ -424,9 +426,9 @@ export default {
 			mgAmount: 25,
 			isDayInputShown: false,
 			dayOfMonth: startDay(this.nextmonth),
-			donation: 25 * 0.15,
+			donation: 25 * defaultDonationPercentage,
 			donationCheckbox: true,
-			donationOptionSelected: '15',
+			donationOptionSelected: '18',
 			isDonationOptionsDirty: false,
 			submitting: false,
 			legacySubs: [],
@@ -540,6 +542,15 @@ export default {
 
 		// Sanitize and set initial form values.
 		// Initial group from prop
+		const hasLoggedInResult = this.apollo.readQuery({
+			query: hasEverLoggedInQuery
+		});
+		if (!hasLoggedInResult?.hasEverLoggedIn) {
+			this.lendingCategories = this.lendingCategories.filter(
+				category => category.marketingName !== 'COVID-19'
+			);
+		}
+
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
 		}
@@ -555,7 +566,7 @@ export default {
 			this.donationOptionSelected = 'other';
 			this.donation = this.initDonation;
 		} else {
-			this.donation = this.amount * 0.15;
+			this.donation = this.amount * defaultDonationPercentage;
 		}
 
 		// Initial day from prop
@@ -724,9 +735,9 @@ export default {
 					monetaryValue: Math.round(amountToBasePercentageOn * 0.20 * 100) / 100
 				},
 				{
-					value: '15',
-					label: `${numeral(amountToBasePercentageOn * 0.15).format('$0,0.00')}`,
-					monetaryValue: Math.round(amountToBasePercentageOn * 0.15 * 100) / 100
+					value: '18',
+					label: `${numeral(amountToBasePercentageOn * defaultDonationPercentage).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * defaultDonationPercentage * 100) / 100
 
 				},
 				{
