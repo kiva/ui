@@ -345,6 +345,7 @@ export default {
 						? kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckoutAsync
 						: kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckout;
 
+					// Handle async checkout polling process + response
 					if (this.useAsyncCheckout && typeof transactionResult !== 'object') {
 						pollForCheckoutStatus(this.apollo, transactionResult)
 							.then(checkoutStatusResponse => {
@@ -361,15 +362,17 @@ export default {
 						return kivaBraintreeResponse;
 					}
 
-					// Check for errors in transaction
+					// Handle transaction errors for either checkout path
 					if (kivaBraintreeResponse.errors) {
 						this.handleFailedCheckout(kivaBraintreeResponse);
 						return kivaBraintreeResponse;
 					}
 
-					this.handleSuccessfulCheckout(transactionResult, paymentType);
-
-					return kivaBraintreeResponse;
+					// Handle success for sync checkout
+					if (!this.useAsyncCheckout) {
+						this.handleSuccessfulCheckout(transactionResult, paymentType);
+						return kivaBraintreeResponse;
+					}
 				});
 		},
 		handleSuccessfulCheckout(transactionId, paymentType) {
