@@ -203,7 +203,7 @@ module.exports = [
 		]
 	},
 	{
-		path: '/teams-beta',
+		path: '/teams',
 		component: () => import('@/pages/LendingTeams/LendingTeams'),
 	},
 	{
@@ -451,7 +451,7 @@ module.exports = [
 		}
 	},
 	{
-		path: '/portfolio/impact',
+		path: '/portfolio',
 		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
 			authenticationRequired: true,
@@ -514,6 +514,7 @@ module.exports = [
 			teamRecruitmentId: Number(route.query.teamRecruitmentId),
 			teamPublicId: route.query.teamPublicId,
 			promoId: Number(route.query.promoId),
+			inviter: route.query.inviter
 		})
 	},
 	{

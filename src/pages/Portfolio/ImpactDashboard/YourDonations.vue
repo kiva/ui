@@ -1,16 +1,16 @@
 <template>
 	<async-portfolio-section @visible="whenVisible" data-testid="your-donations">
-		<h3 class="tw-mb-3 md:tw-mb-2">
+		<h3 class="tw-mb-3 md:tw-mb-2 tw-text-center md:tw-text-left">
 			Your donations to Kiva
 		</h3>
-		<kv-grid class="tw-grid-cols-12 tw-p-3 tw-rounded tw-bg-marigold-1">
+		<kv-grid class="tw-grid-cols-12 tw-p-1.5 tw-rounded tw-bg-marigold-1 tw-gap-y-4">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
 					{{ averageDonation }}
 				</dt>
 				<dd class="stat-def">
-					Average donation per $25 lent
+					Avg. donation per $25 lent
 				</dd>
 				<button
 					class="staf-link" @click="donationLightboxVisible = true"
@@ -23,6 +23,7 @@
 					/>
 				</button>
 				<kv-lightbox
+					class="tw-text-left"
 					:visible="donationLightboxVisible" title="Average donation per $25 lent"
 					@lightbox-closed="donationLightboxVisible = false"
 				>
@@ -74,12 +75,13 @@
 					{{ lastYear }} donations
 				</dd>
 				<a
+					v-if="lastYearDonations"
 					:href="taxReceiptUrl" class="staf-link"
 					target="_blank"
-					:v-kv-track-event="`[
+					v-kv-track-event="[
 						'portfolio',
 						'click',
-						${lastYear}-tax-receipt]`"
+						`${lastYear}-tax-receipt`]"
 				>
 					{{ lastYear }} tax receipt
 					<kv-material-icon
@@ -263,7 +265,7 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h1 tw-text-marigold-3;
+	@apply tw-text-h2 tw-text-marigold-3;
 }
 
 .stat-def {

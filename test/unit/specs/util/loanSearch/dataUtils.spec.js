@@ -1,6 +1,7 @@
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import * as flssUtils from '@/util/flssUtils';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
+import loanEnumsQuery from '@/graphql/query/loanEnumsQuery.graphql';
 import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
 import { mockState } from '../../../fixtures/mockLoanSearchData';
 
@@ -144,6 +145,8 @@ describe('dataUtils.js', () => {
 			await fetchLoanFacets(apollo);
 			const apolloVariables = { query: loanFacetsQuery, fetchPolicy: 'network-only' };
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+			const apolloEnumsVariables = { query: loanEnumsQuery, fetchPolicy: 'network-only' };
+			expect(apollo.query).toHaveBeenCalledWith(apolloEnumsVariables);
 		});
 
 		it('should handle undefined', async () => {

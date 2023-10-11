@@ -15,6 +15,7 @@
 				:filters-loaded="filtersLoaded"
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				:with-categories="true"
+				:enable-qf-mobile="enableQfMobile"
 				default-sort="amountLeft"
 				tracking-category="lending-home"
 				@update-filters="updateQuickFilters"
@@ -24,28 +25,44 @@
 			<!-- emtpy state for no loans result -->
 			<empty-state v-show="emptyState" />
 
-			<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
-				<kv-classic-loan-card-container
-					v-for="(loan, index) in loans"
-					:key="`new-card-${loan.id}-${index}`"
-					:loan-id="loan.id"
-					:use-full-width="true"
-					:show-tags="true"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:user-balance="userBalance"
-					@add-to-basket="addToBasket"
-				/>
+			<div :class="{ 'tw-hidden lg:tw-block' : enableQfMobile }">
+				<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-mt-2">
+					<kv-classic-loan-card-container
+						v-for="(loan, index) in loans"
+						:key="`new-card-${loan.id}-${index}`"
+						:loan-id="loan.id"
+						:use-full-width="true"
+						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
+						@add-to-basket="addToBasket"
+					/>
+				</div>
+				<div class="tw-w-full tw-my-4">
+					<kv-pagination
+						v-show="!emptyState"
+						:total="totalCount"
+						:limit="loanSearchState.pageLimit"
+						:offset="loanSearchState.pageOffset"
+						@page-changed="pageChange"
+						:scroll-to-top="false"
+					/>
+				</div>
 			</div>
-			<div class="tw-w-full tw-my-4">
-				<kv-pagination
-					v-show="!emptyState"
-					:total="totalCount"
-					:limit="loanSearchState.pageLimit"
-					:offset="loanSearchState.pageOffset"
-					@page-changed="pageChange"
-					:scroll-to-top="false"
-				/>
-			</div>
+
+			<lending-category-section
+				v-if="enableQfMobile"
+				:key="loans.length"
+				:loans="loans"
+				class="lg:tw-hidden tw-pb-3"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-qf-mobile="enableQfMobile"
+				:empty-state="emptyState"
+				:user-balance="userBalance"
+				:loan-search-state="flssLoanSearch"
+				:page-limit="loanSearchState.pageLimit"
+				@add-to-basket="addToBasket"
+			/>
 		</div>
 	</div>
 </template>
@@ -57,6 +74,7 @@ import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils'
 import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import KvPagination from '@/components/Kv/KvPagination';
+import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
 import EmptyState from './EmptyState';
 
 export default {
@@ -65,7 +83,8 @@ export default {
 		QuickFilters,
 		KvClassicLoanCardContainer,
 		KvPagination,
-		EmptyState
+		EmptyState,
+		LendingCategorySection
 	},
 	inject: ['apollo'],
 	props: {
@@ -76,6 +95,10 @@ export default {
 		userBalance: {
 			type: String,
 			default: undefined
+		},
+		enableQfMobile: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
@@ -90,10 +113,7 @@ export default {
 				sortBy: 'amountLeft'
 			},
 			// Default loans for loading animations
-			loans: [
-				{ id: 0 }, { id: 0 }, { id: 0 },
-				{ id: 0 }, { id: 0 }, { id: 0 }
-			],
+			loans: new Array(6).fill({ id: 0 }),
 			backupLoans: [],
 			quickFiltersOptions: {
 				categories: [{
@@ -156,6 +176,7 @@ export default {
 				};
 			}
 			this.fetchFilterData(this.flssLoanSearch);
+			this.loans = new Array(6).fill({ id: 0 });
 			const { loans, totalCount } = await runLoansQuery(
 				this.apollo,
 				{ ...this.flssLoanSearch, ...this.loanSearchState },

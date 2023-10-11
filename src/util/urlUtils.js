@@ -16,27 +16,32 @@ export const globalBannerDenyList = [
 	'/process-instant-lending/*',
 ];
 
+function matchRoute(route, pattern) {
+	// Match specific urls
+	if (pattern === route) {
+		return true;
+	}
+	// Match wildcard urls
+	const fragment = pattern.replace('/*', '');
+	if (pattern.includes('/*') && route.includes(fragment)) {
+		return true;
+	}
+	return false;
+}
+
 /**
  * Check the current route against a list of restricted url fragments
  *
- * @param {array} urlArray - Array of Url path fragments
- * @param {string} route - target url to check against
- * @returns {boolean}
+ * @param denyUrls Array of Url path fragments to exclude
+ * @param allowUrls Array of Url path fragments to include
+ * @param route Target url to check against
+ * @returns Whether the URL is excluded
  */
-export function isExcludedUrl(urlArray, route) {
-	let excludeUrl = false;
-	urlArray.forEach(url => {
-		// match specific urls
-		if (url === route) {
-			excludeUrl = true;
-		}
-		const urlFragment = url.replace('/*', '');
-		// match wildcard urls
-		if (url.indexOf('/*') !== -1 && route.indexOf(urlFragment) !== -1) {
-			excludeUrl = true;
-		}
-	});
-	return excludeUrl;
+export function isExcludedUrl(denyUrls, allowUrls, route) {
+	if (allowUrls.length) {
+		return !allowUrls.some(url => matchRoute(route, url));
+	}
+	return denyUrls.some(url => matchRoute(route, url));
 }
 
 /**

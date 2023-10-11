@@ -90,12 +90,7 @@
 			</template>
 			<template v-else>
 				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
-					<countdown-timer
-						v-if="urgency"
-						:time="msLeft"
-						class="tw-text-brand tw-text-h3"
-					/>
-					<span v-else class="tw-text-h3 tw-block tw-m-0">
+					<span class="tw-text-h3 tw-block tw-m-0">
 						{{ timeLeft }}
 					</span>
 
@@ -118,14 +113,12 @@
 
 <script>
 import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
-import CountdownTimer from '@/components/BorrowerProfile/CountdownTimer';
 import numeral from 'numeral';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'LoanProgress',
 	components: {
-		CountdownTimer,
 		KvProgressBar,
 	},
 	props: {
@@ -140,14 +133,6 @@ export default {
 		timeLeft: {
 			type: String,
 			default: '',
-		},
-		urgency: {
-			type: Boolean,
-			default: false,
-		},
-		msLeft: {
-			type: Number,
-			default: 0,
 		},
 		loanStatus: {
 			type: String,

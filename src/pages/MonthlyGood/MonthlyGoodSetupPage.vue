@@ -659,7 +659,6 @@ export default {
 				mgDayOfMonth: this.dayOfMonth,
 				mgCategory: this.selectedGroup,
 				isFTD: false,
-				mgIsOneTime: false,
 			};
 
 			// check ftd status
@@ -699,9 +698,6 @@ export default {
 			redirectString += `?amount=${this.mgAmount}&category=${this.selectedGroup}&day=${this.dayOfMonth}&initDonation=${this.donation}`;
 			if (this.source) {
 				redirectString += `&source=${this.source}`;
-			}
-			if (this.onetime) {
-				redirectString += `&onetime=${this.onetime}`;
 			}
 			return encodeURIComponent(redirectString);
 		},

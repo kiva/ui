@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-my-2 tw-px-2">
-		<div style="width: 136px;" class="tw-mx-auto tw-px-1">
+		<div v-if="!isFirstLoan" style="width: 136px;" class="tw-mx-auto tw-px-1">
 			<div class="tw-flex tw-items-center">
 				<template v-for="step in steps">
 					<ShareStepperStep
@@ -16,6 +16,10 @@
 			<template v-if="showLenderName || !calculatePeopleQtyToGoal">
 				<span v-if="commentsMode">
 					<span class="data-hj-suppress">{{ lenderName }}</span>, go the extra mile
+				</span>
+				<span v-else-if="isFirstLoan">
+					<!-- eslint-disable-next-line max-len -->
+					<span class="data-hj-suppress">{{ lenderName }}</span>, You’re support means the world to <span class="data-hj-suppress">{{ loanName }}</span>. Let us help you change another life.
 				</span>
 				<span v-else>
 					<!-- eslint-disable-next-line max-len -->
@@ -51,7 +55,15 @@ export default {
 		calculatePeopleQtyToGoal: {
 			type: Number,
 			default: 0
-		}
+		},
+		isFirstLoan: {
+			type: Boolean,
+			default: false
+		},
+		loanName: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {

@@ -1,62 +1,25 @@
 <template>
 	<div
-		:id="wrapperClass"
+		id="locationWrapper"
 		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
-		<label
-			:class="{'tw-text-h4': !enableFilterPills, 'tw-hidden': enableFilterPills}"
-			for="location"
-		>
+		<label class="tw-text-h4" for="location">
 			Location
 		</label>
-		<div v-if="!enableFilterPills">
-			<kv-text-input
-				type="text"
-				id="location"
-				ref="input"
-				:model-value="term"
-				class="tw-w-full"
-				@click="toggleRegions()"
-				placeholder="All countries"
-				:disabled="!filtersLoaded"
-				autocomplete="off"
-				readonly
-				:icon="mdiChevronDown"
-			/>
-		</div>
-		<div v-else class="tw-pb-1">
-			<div
-				class="
-					tw-flex
-					filter-pill
-					tw-transition
-					tw-rounded
-					tw-justify-center
-					tw-text-black
-					tw-bg-white
-					"
-				:class="{ 'tw-opacity-low': !filtersLoaded }"
-				@click="toggleRegions()"
-			>
-				<kv-material-icon :icon="mdiMapMarker" class="tw-w-3 tw-h-3" />
-				<input
-					type="text"
-					class="selector tw-w-full tw-appearance-none tw-transition tw-border-none tw-pl-1"
-					:class="{ 'tw-pointer-events-none': !filtersLoaded}"
-					id="location"
-					ref="input"
-					:value="term"
-					placeholder="All countries"
-					:disabled="!filtersLoaded"
-					readonly
-				>
-				<kv-material-icon
-					:icon="mdiChevronDown"
-					class="tw-w-3"
-				/>
-			</div>
-		</div>
+		<kv-text-input
+			type="text"
+			id="location"
+			ref="input"
+			:model-value="term"
+			class="tw-w-full"
+			@click="toggleRegions()"
+			placeholder="All countries"
+			:disabled="!filtersLoaded"
+			autocomplete="off"
+			readonly
+			:icon="mdiChevronDown"
+		/>
 		<div
 			v-show="showRegions"
 			class="
@@ -186,9 +149,7 @@
 </template>
 
 <script>
-import {
-	mdiMagnify, mdiChevronDown, mdiClose, mdiMapMarker
-} from '@mdi/js';
+import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
 import clickOutside from '@/plugins/click-outside';
 import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -227,17 +188,12 @@ export default {
 			type: String,
 			required: true,
 		},
-		enableFilterPills: {
-			type: Boolean,
-			default: false
-		},
 	},
 	data() {
 		return {
 			mdiMagnify,
 			mdiChevronDown,
 			mdiClose,
-			mdiMapMarker,
 			hasFocus: false,
 			selectedRegion: null,
 			selectedCountries: [],
@@ -343,9 +299,6 @@ export default {
 			}
 			return 'All countries';
 		},
-		wrapperClass() {
-			return !this.enableFilterPills ? 'locationWrapper' : '';
-		}
 	},
 	watch: {
 		selectedCountries() {
@@ -357,35 +310,16 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.filter-pill {
-	padding: 10px 20px;
-	box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
-}
-
-.filter-pill input {
-	min-width: 135px;
-}
-
-.filter-pill:hover input,
-.filter-pill.hover input,
-.filter-pill:hover {
-	@apply tw-bg-black tw-text-white tw-cursor-pointer;
-}
-
-.selector {
-	@apply focus:tw-outline-none focus:tw-ring-0 focus:tw-border-transparent;
-}
-
 #locationWrapper >>> input {
-	padding-left: 16px;
+	@apply tw-pl-2;
 }
 
 #locationWrapper >>> input::placeholder {
-	color: black;
+	@apply tw-text-black;
 }
 
 #locationWrapper >>> span {
-	left: auto;
-	right: 8px;
+	@apply tw-left-auto;
+	@apply tw-right-1;
 }
 </style>

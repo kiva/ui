@@ -1,18 +1,17 @@
 <template>
 	<div>
-		<div
-			class="tw-flex tw-justify-between tw-items-baseline tw-mb-3"
-		>
-			<h3>
+		<div>
+			<h3 class="tw-mb-0">
 				Team Listing
 			</h3>
-			<p class="tw-text-small">
+			<p class="tw-text-small tw-mb-2">
 				<!-- eslint-disable-next-line max-len -->
-				{{ numeral(totalCount).format('0,0') }} lending teams in {{ teamCategory ? teamCategory : 'all categories' }}
+				<span v-if="!loading">{{ numeral(totalCount).format('0,0') }}</span> lending teams in {{ teamCategory ? teamCategoryFriendlyName(teamCategory) : 'all categories' }}
 			</p>
 		</div>
 		<team-search-bar
 			@search="handleSearchQuery"
+			:initial-value="queryString"
 			id="team-list-search-bar"
 		/>
 		<div
@@ -22,61 +21,11 @@
 				<kv-select
 					id="category"
 					v-model="teamCategory"
+					@update:modelValue="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamCategory]"
 				>
-					<option value="">
-						-- All Categories --
-					</option>
-					<option value="AlumniGroups">
-						Alumni Groups
-					</option>
-					<option value="Businesses">
-						Businesses
-					</option>
-					<option value="BusinessesInternalGroups">
-						Business - Internal Groups
-					</option>
-					<option value="Clubs">
-						Clubs
-					</option>
-					<option value="CollegesUniversities">
-						Colleges/Universities
-					</option>
-					<option value="CommonInterest">
-						Common Interest
-					</option>
-					<option value="Events">
-						Events
-					</option>
-					<option value="Families">
-						Families
-					</option>
-					<option value="FieldPartnerFans">
-						Field Partner Fans
-					</option>
-					<option value="Friends">
-						Friends
-					</option>
-					<option value="LocalArea">
-						Local Area
-					</option>
-					<option value="Memorials">
-						Memorials
-					</option>
-					<option value="ReligiousCongregations">
-						Religious Congregations
-					</option>
-					<option value="Schools">
-						Schools
-					</option>
-					<option value="SportsGroups">
-						Sports Groups
-					</option>
-					<option value="YouthGroups">
-						Youth Groups
-					</option>
-					<option value="Other">
-						Other
+					<option v-for="(category, index) in teamCategories" :key="index" :value="category.value">
+						{{ category.label }}
 					</option>
 				</kv-select>
 			</div>
@@ -84,6 +33,7 @@
 				<kv-select
 					id="categoryTeams"
 					v-model="teamOption"
+					@update:modelValue="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamOption]"
 				>
 					<option value="">
@@ -104,7 +54,10 @@
 					Sort by:
 				</label>
 				<div>
-					<kv-select id="categorySort" v-model="teamSort">
+					<kv-select
+						id="categorySort" v-model="teamSort"
+						@update:modelValue="pushChangesToUrl"
+					>
 						<option value="newest">
 							Newest
 						</option>
@@ -169,10 +122,10 @@
 				>
 
 				<div
-					class="tw-flex tw-flex-row tw-mt-1 tw-ml-1 tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
+					class="tw-flex tw-flex-row tw-ml-2 tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap"
 				>
 					<div
-						class="tw-pt-1 tw-overflow-hidden tw-text-ellipsis"
+						class="tw-overflow-hidden tw-text-ellipsis"
 					>
 						<router-link
 							:to="`/team/${team.teamPublicId}`"
@@ -189,14 +142,14 @@
 								{{ team.name }}
 							</h3>
 						</router-link>
-						<p v-if="team.name && team.whereabouts" class="tw-text-small tw-text-tertiary">
+						<p v-if="team.name && team.whereabouts" class="tw-text-small tw-text-secondary">
 							{{ team.whereabouts }} | Category: {{ team.category }} |
 							{{ format(new Date(team.createdDate), 'MMM, yyyy') }}
 						</p>
-						<p v-else class="tw-text-small tw-text-tertiary">
+						<p v-else class="tw-text-small tw-text-secondary">
 							Category: {{ team.category }} | {{ format(new Date(team.createdDate), 'MMM, yyyy') }}
 						</p>
-						<p class="tw-text-small tw-text-tertiary">
+						<p class="tw-text-small tw-text-secondary">
 							{{ numeral(team.lenderCount).format('0,0') }} members have funded
 							{{ numeral(team.lentAmount).format('$0,0') }} in loans
 						</p>
@@ -204,21 +157,48 @@
 				</div>
 			</div>
 			<div
-				class="tw-flex tw-justify-between tw-mt-1"
+				class="tw-mt-2"
 			>
-				<div>
-					<p
-						class="tw-text-small tw-text-secondary tw-flex-1"
-					>
-						We loan because: {{ shortLoanBecause(team.loanBecause) }}
-					</p>
-				</div>
-				<div class="tw-flex-none tw-ml-2 tw-self-end">
-					<!-- !TODO add functionality to these buttons !
+				<p
+					class="tw-text-small tw-text-primary tw-flex-1"
+				>
+					We loan because: {{ shortLoanBecause(team.loanBecause) }}
+				</p>
+			</div>
+			<div class="tw-mt-2">
+				<div v-if="userIsTeamMember(team.id)" class="tw-flex tw-w-full tw-justify-end">
 					<kv-button
-						v-if="team.membershipType != 'closed' "
+						variant="secondary"
+						:href="`/team/${team.teamPublicId}/recruit`"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-recruit',
+							team.teamPublicId
+						]"
+					>
+						Recruit friends
+					</kv-button>
+					<kv-button
+						class="tw-ml-2"
+						variant="secondary"
+						:href="`/teams/quit/process?team_id=${team.id}`"
+						v-kv-track-event="[
+							'teams',
+							'click',
+							'team-quit',
+							team.teamPublicId
+						]"
+					>
+						Quit team
+					</kv-button>
+				</div>
+				<div v-else class="tw-flex tw-flex-col tw-w-full tw-items-end">
+					<!-- Join or request buttons -->
+					<kv-button
+						v-if="team.membershipType != 'closed'"
 						variant="primary"
-						to=""
+						:to="`/process-join-team?teamPublicId=${team.teamPublicId}`"
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -231,7 +211,7 @@
 
 					<kv-button
 						v-else variant="primary"
-						to=""
+						:to="`/process-join-team?teamPublicId=${team.teamPublicId}`"
 						v-kv-track-event="[
 							'teams',
 							'click',
@@ -240,12 +220,17 @@
 						]"
 					>
 						Request to Join
-					</kv-button>-->
+					</kv-button>
 				</div>
 			</div>
 		</div>
+		<div v-if="teams.length === 0 && !loading">
+			<h3 class="tw-text-h3 tw-mb-4 tw-text-secondary tw-text-center">
+				No teams found
+			</h3>
+		</div>
 		<kv-pagination
-			v-if="totalCount > 0"
+			v-if="totalCount > 0 && !loading"
 			:limit="limit"
 			:total="totalCount"
 			:offset="offset"
@@ -262,11 +247,12 @@ import { format } from 'date-fns';
 import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
 import teamNoImage from '@/assets/images/team_s135.png';
+import { gql } from '@apollo/client';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import { fetchTeams } from '../../util/teamsUtil';
+import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
-// import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
@@ -276,12 +262,29 @@ const urlParamTransform = {
 		to({ offset }) {
 			const page = Math.floor(offset / teamsPerPage) + 1;
 			return page > 1 ? String(page) : undefined;
-		},
-		from({ page }) {
-			const pagenum = numeral(page).value() - 1;
-			return { offset: pagenum > 0 ? teamsPerPage * pagenum : 0 };
 		}
 	},
+	teamCategory: {
+		to({ teamCategory }) {
+			return teamCategory;
+		}
+	},
+	teamOption: {
+		to({ teamOption }) {
+			return teamOption;
+		}
+	},
+	teamSort: {
+		to({ teamSort }) {
+			return teamSort;
+		}
+	},
+	queryString: {
+		to({ queryString }) {
+			return queryString;
+		}
+	},
+
 };
 
 function toUrlParams(variables) {
@@ -294,18 +297,33 @@ function getPageOffset(query, limit) {
 	return pageNum > 0 ? limit * pageNum : 0;
 }
 
+const pageQuery = gql`query usersTeams {
+	my {
+		id
+		lender {
+			id
+			teams(limit: 100) {
+				values {
+					id
+				}
+			}
+		}
+	}
+}`;
+
 export default {
 	name: 'TeamListing',
 	components: {
-		// KvButton,
+		KvButton,
 		KvLoadingPlaceholder,
 		KvPagination,
 		KvSelect,
 		TeamSearchBar,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			teamCategories,
 			teamCategory: '',
 			teamOption: '',
 			teamSort: 'overallLoanedAmount',
@@ -318,22 +336,35 @@ export default {
 			offset: 0,
 			limit: teamsPerPage,
 			pageQuery: { page: '1' },
-			loading: true
+			loading: true,
+			myTeams: [],
 		};
+	},
+	apollo: {
+		query: pageQuery,
+		preFetch: true,
+		result({ data }) {
+			this.myTeams = data.my?.lender?.teams?.values ?? [];
+		},
 	},
 	computed: {
 		urlParams() {
 			return toUrlParams({
 				offset: this.offset,
+				...(this.teamCategory !== '' && { teamCategory: this.teamCategory }),
+				...(this.teamOption !== '' && { teamOption: this.teamOption }),
+				teamSort: this.teamSort,
+				queryString: this.queryString,
 			});
 		},
 		lastTeamPage() {
 			return Math.ceil(this.totalCount / this.limit);
-		},
+		}
 	},
 	methods: {
 		handleSearchQuery(queryString) {
 			this.queryString = queryString;
+			this.pushChangesToUrl();
 		},
 		// Pagination Related methods
 		checkIfPageIsOutOfRange(teamArrayLength, pageQueryParam) {
@@ -350,18 +381,51 @@ export default {
 			this.pushChangesToUrl();
 		},
 		pushChangesToUrl() {
-			const { page } = this.$route?.query ?? { page: '0' };
-			if (page !== this.urlParams.page) {
+			const pushToRouter = variable => {
 				this.$router.push({
 					query: {
 						...this.$route.query,
-						...this.urlParams
+						[variable]: this.urlParams[variable]
 					},
 				});
+			};
+			const { page } = this.$route?.query ?? { page: '0' };
+			if (page !== this.urlParams.page) {
+				pushToRouter('page');
+				return;
+			}
+			if (this.teamCategory && this.teamCategory !== this.$route.query?.teamCategory) {
+				pushToRouter('teamCategory');
+				return;
+			}
+			if (this.teamCategory === '' && this.teamCategory !== this.$route.query?.teamCategory) {
+				const query = { ...this.$route.query };
+				delete query?.teamCategory;
+				this.$router.replace({ query });
+			}
+			if (this.teamOption && this.teamOption !== this.$route.query?.teamOption) {
+				pushToRouter('teamOption');
+				return;
+			}
+			if (this.teamOption === '' && this.teamOption !== this.$route.query?.teamOption) {
+				const query = { ...this.$route.query };
+				delete query?.teamCategory;
+				this.$router.replace({ query });
+			}
+			if (this.queryString && this.queryString !== this.$route.query?.queryString) {
+				pushToRouter('queryString');
+				return;
+			}
+			if (this.teamSort && this.teamSort !== this.$route.query?.teamSort) {
+				pushToRouter('teamSort');
 			}
 		},
 		updateFromParams(query) {
 			this.offset = getPageOffset(query, this.limit);
+			this.teamCategory = query.teamCategory ?? '';
+			this.teamOption = query.teamOption ?? '';
+			this.teamSort = query.teamSort ?? 'overallLoanedAmount';
+			this.queryString = query.queryString ?? '';
 		},
 		async getTeams({
 			teamSort, teamCategory, teamOption, queryString, offset
@@ -383,6 +447,10 @@ export default {
 			}
 			return teamLoanBecause;
 		},
+		userIsTeamMember(teamId) {
+			return this.myTeams.some(team => team.id === teamId);
+		},
+		teamCategoryFriendlyName
 	},
 	created() {
 		// extract query

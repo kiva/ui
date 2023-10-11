@@ -11,7 +11,7 @@
 					<lending-insights />
 					<recent-loans-list />
 					<your-donations />
-					<education-module v-if="showEdModule" @hide-module="hideModule" />
+					<education-module v-if="post" :post="post" />
 					<kiva-credit-stats />
 					<account-updates />
 					<your-teams />
@@ -23,11 +23,10 @@
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import { gql } from '@apollo/client';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -61,37 +60,31 @@ export default {
 	},
 	data() {
 		return {
-			showEdModule: true
+			post: null
 		};
 	},
-	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: experimentAssignmentQuery,
+	methods: {
+		loadEducationPost() {
+			// Donation Education Module Experiment MARS-497
+			this.apollo.query({
+				query: gql`query ContentfulBlogPosts (
+						$customFields: String,
+						$limit: Int
+					) {
+						contentful {
+							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
+						}
+					}`,
 				variables: {
-					id: 'impact_dashboard',
+					customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
 				},
 			}).then(({ data }) => {
-				if (data?.experiment?.version !== 'b') {
-					return Promise.reject({ path: '/portfolio' });
-				}
+				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
 			});
-		},
-	},
-	methods: {
-		hideModule(payload) {
-			this.showEdModule = !payload;
 		}
 	},
 	mounted() {
-		// Impact Dashboard page redesign experiment MARS-344 MARS-348
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Portfolio',
-			'impact_dashboard',
-			'EXP-MARS-344-Mar2023'
-		);
+		this.loadEducationPost();
 	}
 };
 </script>

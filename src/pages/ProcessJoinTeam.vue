@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-pt-3 md:tw-pt-5 lg:tw-pt-7 tw-mb-4 md:tw-mb-6">
+			<kv-grid class="tw-grid-cols-12 tw-pt-5 md:tw-pt-7 lg:tw-pt-9 tw-mb-4 md:tw-mb-6">
 				<div
 					class="tw-col-span-12 md:tw-col-start-3 md:tw-col-span-8"
 				>
@@ -11,7 +11,7 @@
 							<kv-loading-spinner class="tw-mt-2" />
 						</div>
 					</div>
-					<div v-else>
+					<div v-else class="tw-text-center">
 						<h2 v-if="isPending">
 							Your request to join the {{ teamName }} team is pending. Please check back later.
 						</h2>
@@ -35,6 +35,7 @@
  * If join team is pending, display pending message
  */
 import { gql } from '@apollo/client';
+import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
@@ -42,11 +43,11 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
 
-const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!) {
+const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!, $publicId: String!) {
 	my {
 		id
 		userAccount {
-		id
+			id
 		}
 	}
 	community {
@@ -56,6 +57,11 @@ const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!)
 				membershipStatus
 			}
 			name
+		}
+		lender(publicId: $publicId) {
+			id
+			name
+			publicId
 		}
 	}
 }`;
@@ -79,6 +85,11 @@ export default {
 			type: Number,
 			default: null
 		},
+		// the public name of the inviter user in the route query
+		inviter: {
+			type: String,
+			default: ''
+		},
 	},
 	components: {
 		KvLoadingSpinner,
@@ -93,17 +104,20 @@ export default {
 		preFetchVariables({ route }) {
 			return {
 				teamPublicId: route.query.teamPublicId,
+				publicId: route.query.inviter ?? '',
 			};
 		},
 		variables() {
 			return {
 				teamPublicId: this.teamPublicId,
+				publicId: this.inviter ?? '',
 			};
 		},
 		result({ data }) {
 			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
 			this.teamName = data?.community?.team?.name ?? '';
 			this.teamId = data?.community?.team?.id ?? 0;
+			this.inviterId = data?.community?.lender?.id ?? null;
 		}
 	},
 	data() {
@@ -111,6 +125,9 @@ export default {
 			userMembershipStatus: 'none',
 			isLoading: true,
 			teamName: '',
+			inviterId: null,
+			inviterRecruitmentId: null,
+			teamId: null,
 		};
 	},
 	computed: {
@@ -125,6 +142,11 @@ export default {
 			|| this.userMembershipStatus === 'recruited'
 			|| this.userMembershipStatus === 'recruitedByPromo';
 		},
+		recruitmentIdMutationVariable() {
+			// if teamRecruitmentId in the route query, use that value,
+			// otherwise, use the value we got from the apollo query
+			return this.teamRecruitmentId || this.inviterRecruitmentId || null;
+		}
 	},
 	methods: {
 		memberRedirect() {
@@ -134,12 +156,25 @@ export default {
 		},
 		async handleJoinTeam() {
 			try {
+				if (this.inviterId) {
+					// get the inviter's recruitment id
+					const createRecruitment = await this.apollo.mutate({
+						mutation: createTeamRecruitment,
+						variables: {
+							team_id: this.teamId,
+							recruiter_id: this.inviterId
+						}
+					});
+					this.inviterRecruitmentId = createRecruitment?.data?.my?.createTeamRecruitment?.id ?? null;
+				}
+
 				await this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
 						team_id: this.teamId,
-						team_recruitment_id: this.teamRecruitmentId,
-						promo_id: this.promoId
+						...(this.recruitmentIdMutationVariable
+							&& { team_recruitment_id: this.recruitmentIdMutationVariable }),
+						...(this.promoId && { promo_id: this.promoId }),
 					}
 				});
 				// get updated team membership status to determine if joined or pending
@@ -147,6 +182,7 @@ export default {
 					query: userTeamMembership,
 					variables: {
 						teamPublicId: this.teamPublicId,
+						publicId: this.inviter ?? '',
 					},
 					fetchPolicy: 'network-only'
 				});
@@ -176,6 +212,7 @@ export default {
 			this.handleJoinTeam();
 		} else {
 			// is member, redirect to doneUrl or team page
+			this.$showTipMsg('You are already a member of this team');
 			this.memberRedirect();
 		}
 	}
