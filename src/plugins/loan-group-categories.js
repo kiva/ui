@@ -58,6 +58,14 @@ export default {
 					marketingName: 'US Borrowers',
 					marketingOrder: 2,
 					expLoansIds: [1084348, 2319451, 1079005]
+				},
+				{
+					value: 'disaster_relief_covid',
+					label: 'COVID-19 Coronavirus',
+					shortName: 'the global COVID—19 response',
+					marketingName: 'COVID-19',
+					marketingOrder: 7,
+					expLoansIds: [2319451, 2320833, 2320176]
 				}
 			],
 		};

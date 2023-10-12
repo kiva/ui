@@ -542,6 +542,8 @@ export default {
 
 		// Sanitize and set initial form values.
 		// Initial group from prop
+		// Removing covid-19 as a category option
+		this.lendingCategories = this.lendingCategories.filter(category => category.marketingName !== 'COVID-19');
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
 		}
