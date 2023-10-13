@@ -202,12 +202,15 @@
 
 		<!-- How kiva use's donations lightbox -->
 		<kv-lightbox
-			id="how-kiva-uses-donation-lightbox"
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
-			title="Loans change lives. Your donations make them possible."
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
+			<template #header>
+				<h2 class="tw-text-h1">
+					Loans change lives. Your donations make them possible.
+				</h2>
+			</template>
 			<how-kiva-uses-donation />
 		</kv-lightbox>
 	</div>
@@ -425,20 +428,4 @@ export default {
 	}
 }
 
-#how-kiva-uses-donation-lightbox >>> .tw-flex-grow h2 {
-	font-size: 2.5rem;
-	font-weight: 400;
-	letter-spacing: -0.0075em;
-	line-height: 1.25;
-
-	@include breakpoint(large) {
-		font-size: 3.375rem;
-		letter-spacing: -0.037037em;
-	}
-
-	@include breakpoint(medium) {
-		font-size: 3.125rem;
-		letter-spacing: -0.02em;
-	}
-}
 </style>
