@@ -1,3 +1,15 @@
+## [2.704.0](https://github.com/kiva/ui/compare/v2.703.0...v2.704.0) (2023-10-13)
+
+
+### Features
+
+* applying h1 styles for modal headline and other style changes ([7f83670](https://github.com/kiva/ui/commit/7f83670119eac0ed5feb9b3bb2ff6d57b720d90b))
+
+
+### Bug Fixes
+
+* removing unnecessary h1 style ([0169e6c](https://github.com/kiva/ui/commit/0169e6cc2f163ca614d2c0e0e7a44f13e1e78381))
+
 ## [2.703.0](https://github.com/kiva/ui/compare/v2.702.0...v2.703.0) (2023-10-13)
 
 
