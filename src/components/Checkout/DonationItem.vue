@@ -86,18 +86,18 @@
 
 						<div>
 							<div
-								class="donation-tagline tw-text-small tw-text-base tw-my-1 tw-max-w-2xl"
+								class="donation-tagline tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
 								<p
-									class="tw-text-small tw-text-base"
+									class="tw-text-base"
 								>
 									<!-- eslint-disable-next-line max-len -->
 									At Kiva, 100 % of your loan supports the borrower — we never take a fee.As a nonprofit, donations are crucial to advancing our mission of expanding financial access for underserved communities.
 								</p>
 							</div>
 							<button
-								class="tw-flex tw-items-center tw-text-small tw-text-link"
+								class="tw-flex tw-items-center tw-text-base tw-text-link"
 								data-testid="basket-donation-info-lightbox"
 								@click="triggerDefaultLightbox"
 								v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -204,9 +204,13 @@
 		<kv-lightbox
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
-			title="Your donations power sustainable solutions for financial access."
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
+			<template #header>
+				<h2 class="tw-text-h1">
+					Loans change lives. Your donations make them possible.
+				</h2>
+			</template>
 			<how-kiva-uses-donation />
 		</kv-lightbox>
 	</div>
