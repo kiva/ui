@@ -86,18 +86,18 @@
 
 						<div>
 							<div
-								class="donation-tagline tw-text-small tw-text-base tw-my-1 tw-max-w-2xl"
+								class="donation-tagline tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
 								<p
-									class="tw-text-small tw-text-base"
+									class="tw-text-base"
 								>
 									<!-- eslint-disable-next-line max-len -->
 									At Kiva, 100 % of your loan supports the borrower — we never take a fee.As a nonprofit, donations are crucial to advancing our mission of expanding financial access for underserved communities.
 								</p>
 							</div>
 							<button
-								class="tw-flex tw-items-center tw-text-small tw-text-link"
+								class="tw-flex tw-items-center tw-text-base tw-text-link"
 								data-testid="basket-donation-info-lightbox"
 								@click="triggerDefaultLightbox"
 								v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -202,9 +202,10 @@
 
 		<!-- How kiva use's donations lightbox -->
 		<kv-lightbox
+			id="how-kiva-uses-donation-lightbox"
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
-			title="Your donations power sustainable solutions for financial access."
+			title="Loans change lives. Your donations make them possible."
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
 			<how-kiva-uses-donation />
@@ -424,4 +425,20 @@ export default {
 	}
 }
 
+#how-kiva-uses-donation-lightbox >>> .tw-flex-grow h2 {
+	font-size: 2.5rem;
+	font-weight: 400;
+	letter-spacing: -0.0075em;
+	line-height: 1.25;
+
+	@include breakpoint(large) {
+		font-size: 3.375rem;
+		letter-spacing: -0.037037em;
+	}
+
+	@include breakpoint(medium) {
+		font-size: 3.125rem;
+		letter-spacing: -0.02em;
+	}
+}
 </style>

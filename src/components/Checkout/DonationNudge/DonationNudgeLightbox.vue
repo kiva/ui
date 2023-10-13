@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2 v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
+			<h2 v-if="!zeroUpsellVisible" class="tw-text-h1 tw-flex-1">
 				{{ title }}
 			</h2>
 			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
@@ -36,7 +36,6 @@
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
 						data-testid="nudge-donation-no-donoation-btn"
-						tabindex="12"
 					>
 						No donation to Kiva
 					</button>
@@ -108,7 +107,7 @@ export default {
 		return {
 			mdiInformation,
 			zeroUpsellVisible: false,
-			title: 'Your donations allow us to do the work that makes lending possible.',
+			title: 'Loans change lives. Your donations make them possible.',
 		};
 	},
 	inject: ['cookieStore'],
