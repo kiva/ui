@@ -1,3 +1,17 @@
+## [2.703.0](https://github.com/kiva/ui/compare/v2.702.0...v2.703.0) (2023-10-13)
+
+
+### Features
+
+* filtering covid 19 category in settings subscription page ([b483c4d](https://github.com/kiva/ui/commit/b483c4def4ea38301544b268da368d34eb70c392))
+* update default percentage to 0.18 and hide covid category to new users ([6f259c4](https://github.com/kiva/ui/commit/6f259c41eb1f3ae8df3412573a98ba50aa386604))
+
+
+### Bug Fixes
+
+* removing covid category in monthly good ([b200035](https://github.com/kiva/ui/commit/b2000350eba5cf3c3f53615838da1bba3a44583c))
+* revert removing covid category and just filter it on monthly good page ([77b61b4](https://github.com/kiva/ui/commit/77b61b42ff07402a06101e4f641eb9bd13b46eac))
+
 ## [2.702.0](https://github.com/kiva/ui/compare/v2.701.0...v2.702.0) (2023-10-12)
 
 
