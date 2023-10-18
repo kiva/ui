@@ -105,6 +105,7 @@ const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
+const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
 
 export default {
 	name: 'LoanFinding',
@@ -145,6 +146,7 @@ export default {
 			showFiveDollarsBanner: false,
 			enableThreeLoansRecommended: false,
 			enableQFMobileVersion: false,
+			enableAlmostFundedRow: false,
 			HandOrangeIcon,
 		};
 	},
@@ -415,6 +417,16 @@ export default {
 			'EXP-CORE-1563-Oct2023'
 		);
 		this.enableQFMobileVersion = qfTestData.version === 'b';
+
+		// Enable Almost Funded Row Test
+		const almostFundedRowTestData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			ALMOST_FUNDED_ROW_EXP_KEY,
+			'EXP-CORE-1564-Oct2023'
+		);
+		this.enableAlmostFundedRow = almostFundedRowTestData.version === 'b';
 
 		const recommendedArray = [
 			...cachedRecommendedLoans,
