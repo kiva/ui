@@ -1,3 +1,10 @@
+## [2.706.0](https://github.com/kiva/ui/compare/v2.705.0...v2.706.0) (2023-10-18)
+
+
+### Features
+
+* ab setup added for new almost funded loans row in lending home ([#5032](https://github.com/kiva/ui/issues/5032)) ([48153f8](https://github.com/kiva/ui/commit/48153f8839084d6fc78b6d3e84c2ec0068cf31e1))
+
 ## [2.705.0](https://github.com/kiva/ui/compare/v2.704.0...v2.705.0) (2023-10-18)
 
 
