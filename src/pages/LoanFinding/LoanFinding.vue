@@ -27,6 +27,20 @@
 				}"
 			/>
 
+			<!-- Almost Funded loans row -->
+			<lending-category-section
+				id="almost-funded-section"
+				v-if="enableAlmostFundedRow"
+				:title="almostFundedRowTitle"
+				:subtitle="almostFundedRowSubtitle"
+				:loans="almostFundedLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-relending-exp="enableRelendingExp"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, 'almost-funded')"
+				class="tw-pt-3 tw-mb-2"
+			/>
+
 			<!-- Five dollars row -->
 			<lending-category-section
 				id="five-dollars-section"
@@ -135,6 +149,7 @@ export default {
 		return {
 			userInfo: {},
 			firstRowLoans: [],
+			almostFundedLoans: new Array(9).fill({ id: 0 }),
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			matchedLoansTotal: 0,
@@ -222,7 +237,13 @@ export default {
 		},
 		perStepRecommendedRow() {
 			return !this.enableThreeLoansRecommended ? 2 : 3;
-		}
+		},
+		almostFundedRowTitle() {
+			return 'Loans that are <span class="tw-text-action">almost funded</span>';
+		},
+		almostFundedRowSubtitle() {
+			return 'Be the difference maker for these borrowers who only have a small amount remaining to be funded.';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
@@ -261,11 +282,8 @@ export default {
 				{ sortBy: 'expiringSoon', pageLimit: 5 },
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
-			const almostFundedData = await runLoansQuery(
-				this.apollo,
-				{ sortBy: 'amountLeft', pageLimit: 4 },
-				FLSS_ORIGIN_LEND_BY_CATEGORY
-			);
+			const almostFundedData = await this.almostFundedQuery(4);
+
 			return [...expiringSoonData.loans, ...almostFundedData.loans];
 		},
 		async getMatchedLoans() {
@@ -298,6 +316,17 @@ export default {
 			this.spotlightLoans = loans ?? [];
 
 			this.trackSpotlightDisplayedLoans();
+		},
+		async getAlmostFundedLoans() {
+			const { loans } = await this.almostFundedQuery(9);
+			this.almostFundedLoans = loans ?? [];
+		},
+		almostFundedQuery(pageLimit) {
+			return runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -466,6 +495,8 @@ export default {
 		this.verifySpotlightIndex();
 
 		if (this.enableFiveDollarsNotes) this.getFiveDollarsLoans();
+
+		if (this.enableAlmostFundedRow) this.getAlmostFundedLoans();
 
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();
