@@ -93,7 +93,7 @@
 									class="tw-text-base"
 								>
 									<!-- eslint-disable-next-line max-len -->
-									At Kiva, 100 % of your loan supports the borrower — we never take a fee.As a nonprofit, donations are crucial to advancing our mission of expanding financial access for underserved communities.
+									100% of your loan supports  borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access
 								</p>
 							</div>
 							<button
@@ -207,7 +207,7 @@
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
 			<template #header>
-				<h2 class="tw-text-h1">
+				<h2>
 					Loans change lives. Your donations make them possible.
 				</h2>
 			</template>
