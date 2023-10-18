@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2 v-if="!zeroUpsellVisible" class="tw-text-h1 tw-flex-1">
+			<h2 v-if="!zeroUpsellVisible" class="tw-flex-1">
 				{{ title }}
 			</h2>
 			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
