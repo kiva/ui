@@ -1,3 +1,10 @@
+## [2.707.0](https://github.com/kiva/ui/compare/v2.706.0...v2.707.0) (2023-10-18)
+
+
+### Features
+
+* almost funded row test added to lending home page ([#5034](https://github.com/kiva/ui/issues/5034)) ([702b54b](https://github.com/kiva/ui/commit/702b54b9613d7eec5f5c45b586e44fc4c2474fc8))
+
 ## [2.706.0](https://github.com/kiva/ui/compare/v2.705.0...v2.706.0) (2023-10-18)
 
 
