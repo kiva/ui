@@ -1,3 +1,10 @@
+### [2.705.1-next.1](https://github.com/kiva/ui/compare/v2.705.0...v2.705.1-next.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* revert donation value prop ([8797630](https://github.com/kiva/ui/commit/8797630c274749ad438bba0504bace9d8e525dd8))
+
 ## [2.705.0](https://github.com/kiva/ui/compare/v2.704.0...v2.705.0) (2023-10-18)
 
 
