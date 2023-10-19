@@ -1,3 +1,10 @@
+## [2.710.0](https://github.com/kiva/ui/compare/v2.709.0...v2.710.0) (2023-10-19)
+
+
+### Features
+
+* redirect to new filter page from borrower profile country finding cta ([#5038](https://github.com/kiva/ui/issues/5038)) ([918477b](https://github.com/kiva/ui/commit/918477b5af5e8c94dc447cef6dfb78f5c8efa71b))
+
 ## [2.709.0](https://github.com/kiva/ui/compare/v2.708.0...v2.709.0) (2023-10-19)
 
 
