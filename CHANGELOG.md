@@ -1,3 +1,10 @@
+## [2.711.0](https://github.com/kiva/ui/compare/v2.710.0...v2.711.0) (2023-10-19)
+
+
+### Features
+
+* loan tags test code removed ([#5039](https://github.com/kiva/ui/issues/5039)) ([e6c4c48](https://github.com/kiva/ui/commit/e6c4c4861f2f72e2b3384805e3abdd06aed039be))
+
 ## [2.710.0](https://github.com/kiva/ui/compare/v2.709.0...v2.710.0) (2023-10-19)
 
 
