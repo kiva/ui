@@ -1,0 +1,34 @@
+name: create-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Environment to release to (staging or production)'
+        options:
+          - staging
+          - production
+        required: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: checkout-actions
+        uses: actions/checkout@v4
+        with:
+          repository: kiva/github-actions
+          token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+          path: .github/
+      - name: create-release
+        uses: ./.github/actions/create-release
+        env:
+          GITHUB_PAT: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+        with:
+          environment: ${{ github.event.inputs.environment }}

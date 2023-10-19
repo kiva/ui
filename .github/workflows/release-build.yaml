@@ -1,0 +1,47 @@
+name: Docker Build Publish
+
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+
+env:
+  GITHUB_PAT: "${{ secrets.KIVA_ROBOT_GITHUB_PAT }}"
+  AWS_REGION: "us-west-2"
+  AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+  AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+  SLACK_BOT_TOKEN: "${{ secrets.SLACK_TOKEN }}"
+  SLACK_CHANNEL: "eng-build-failures"
+
+jobs:
+  # Build and push the image to ECR
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout actions
+        uses: actions/checkout@v3
+        with:
+          repository: kiva/github-actions
+          token: ${{ env.GITHUB_PAT }}
+          path: .github/
+      - uses: snow-actions/sparse-checkout@v1.2.0
+        with:
+          repository: kiva/marketplace-web-ui-ci
+          token: ${{ env.GITHUB_PAT }}
+          path: .docker
+          patterns: |
+            resources/org/kiva/marketplaceWebUiCi/ui
+      - name: move files
+        run: |
+          mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+          cp -aRv .docker/resources/org/kiva/marketplaceWebUiCi/ui/config .
+      - name: docker-push
+          uses: ./.github/actions/docker-build-push
+          with:
+            dockerfile_target: "release"
+            push: true
