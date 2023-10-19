@@ -1,3 +1,10 @@
+## [2.709.0](https://github.com/kiva/ui/compare/v2.708.0...v2.709.0) (2023-10-19)
+
+
+### Features
+
+* while funds last message added to thanks page for ftds ([#5037](https://github.com/kiva/ui/issues/5037)) ([992bdf8](https://github.com/kiva/ui/commit/992bdf8404f4ea7aee0495e5cbcb27f9375f1ce1))
+
 ## [2.708.0](https://github.com/kiva/ui/compare/v2.707.1...v2.708.0) (2023-10-19)
 
 
