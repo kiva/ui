@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ env.GITHUB_PAT }}
       - uses: actions/checkout@v3
         with:
           repository: kiva/github-actions
