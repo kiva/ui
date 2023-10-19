@@ -81,7 +81,6 @@
 						:loans="helpMeChooseLoans"
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
-						:enable-loan-tags="enableLoanTags"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
@@ -123,7 +122,6 @@
 						:loans="helpMeChooseLoans"
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
-						:enable-loan-tags="enableLoanTags"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 					/>
 				</div>
@@ -261,10 +259,6 @@ export default {
 		};
 	},
 	props: {
-		enableLoanTags: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false

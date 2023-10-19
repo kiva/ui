@@ -4,7 +4,6 @@
 		:gray-background="pageLayout === 'control'"
 	>
 		<loan-channel-category-control
-			:enable-loan-tags="enableLoanTags"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 		/>
 
@@ -65,10 +64,8 @@ export default {
 						return Promise.reject({ path: `/lend-category-beta/${category}`, query });
 					}
 
-					return Promise.all([
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'loan_tags' } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-					]);
+					// eslint-disable-next-line max-len
+					return client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } });
 				});
 		}
 	},
@@ -79,9 +76,6 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
-
-		// Initialize Loan Tags Experiment
-		this.initializeLoanTags();
 
 		this.initializeFiveDollarsNotes();
 	},
@@ -97,20 +91,6 @@ export default {
 		}
 	},
 	methods: {
-		initializeLoanTags() {
-			const loanTagsExperiment = this.apollo.readFragment({
-				id: 'Experiment:loan_tags',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.enableLoanTags = loanTagsExperiment.version === 'b';
-			if (loanTagsExperiment.version) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CORE-792-Oct2022',
-					loanTagsExperiment.version
-				);
-			}
-		},
 		initializeAddToBasketInterstitial() {
 			this.apollo.mutate({
 				mutation: updateAddToBasketInterstitial,
