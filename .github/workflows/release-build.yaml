@@ -41,7 +41,7 @@ jobs:
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
           cp -aRv .docker/resources/org/kiva/marketplaceWebUiCi/ui/config .
       - name: docker-push
-          uses: ./.github/actions/docker-build-push
-          with:
-            dockerfile_target: "release"
-            push: true
+        uses: ./.github/actions/docker-build-push
+        with:
+          dockerfile_target: "release"
+          push: true
