@@ -16,7 +16,7 @@
 				:targeted-loan-channel-url="targetedLoanChannelURL"
 				:with-categories="true"
 				:enable-qf-mobile="enableQfMobile"
-				default-sort="amountLeft"
+				:default-sort="defaultSort"
 				tracking-category="lending-home"
 				@update-filters="updateQuickFilters"
 				@reset-filters="resetFilters"
@@ -100,6 +100,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableAlmostFundedRow: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -110,7 +114,7 @@ export default {
 			loanSearchState: {
 				pageOffset: 0,
 				pageLimit: 6,
-				sortBy: 'amountLeft'
+				sortBy: this.enableAlmostFundedRow ? 'expiringSoon' : 'amountLeft'
 			},
 			// Default loans for loading animations
 			loans: new Array(6).fill({ id: 0 }),
@@ -133,6 +137,11 @@ export default {
 			emptyState: false,
 			showOverlay: false,
 		};
+	},
+	computed: {
+		defaultSort() {
+			return this.enableAlmostFundedRow ? 'expiringSoon' : 'amountLeft';
+		}
 	},
 	async mounted() {
 		this.allFacets = await fetchLoanFacets(this.apollo);
