@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2 v-if="!zeroUpsellVisible" class="tw-text-h1 tw-flex-1">
+			<h2 v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
 				{{ title }}
 			</h2>
 			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
@@ -20,7 +20,10 @@
 		</template>
 		<div v-if="!zeroUpsellVisible" id="nudge-donation-container" data-testid="nudge-donation-container">
 			<div id="nudge-donation-top">
-				<how-kiva-uses-donation />
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.
+				</p>
 				<donation-nudge-boxes
 					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
@@ -36,6 +39,7 @@
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
 						data-testid="nudge-donation-no-donoation-btn"
+						tabindex="12"
 					>
 						No donation to Kiva
 					</button>
@@ -96,7 +100,6 @@ import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudg
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
 import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
-import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -107,7 +110,7 @@ export default {
 		return {
 			mdiInformation,
 			zeroUpsellVisible: false,
-			title: 'Loans change lives. Your donations make them possible.',
+			title: 'We rely on donations to reach the people who need it the most',
 		};
 	},
 	inject: ['cookieStore'],
@@ -118,7 +121,6 @@ export default {
 		KvCharityNavigator,
 		DonationNudgeBoxes,
 		HeartIcon,
-		HowKivaUsesDonation,
 	},
 	props: {
 		experimentalFooter: {
