@@ -87,10 +87,6 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		enableLoanTags: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
