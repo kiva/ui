@@ -63,6 +63,7 @@
 					:class="{ 'tw-order-last' : enableRelendingExp }"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:enable-qf-mobile="enableQFMobileVersion"
+					:enable-almost-funded-row="enableAlmostFundedRow"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
