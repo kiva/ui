@@ -41,7 +41,6 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
-          cp -aRv .docker/resources/org/kiva/marketplaceWebUiCi/ui/config .
 
       - name: docker-build
         uses: ./.github/actions/docker-build-push
