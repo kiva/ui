@@ -1,3 +1,10 @@
+## [2.713.0](https://github.com/kiva/ui/compare/v2.712.0...v2.713.0) (2023-10-20)
+
+
+### Features
+
+* relending test code removed ([#5042](https://github.com/kiva/ui/issues/5042)) ([0627c07](https://github.com/kiva/ui/commit/0627c07379ce57d76dd9ae800349dc9d825e4aba))
+
 ## [2.712.0](https://github.com/kiva/ui/compare/v2.711.0...v2.712.0) (2023-10-20)
 
 
