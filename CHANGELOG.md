@@ -1,3 +1,10 @@
+## [2.712.0](https://github.com/kiva/ui/compare/v2.711.0...v2.712.0) (2023-10-20)
+
+
+### Features
+
+* rever donation value prop and fix lightbox error caused by no title prop ([5b1f0d8](https://github.com/kiva/ui/commit/5b1f0d8b670445abbfddaa4085c03b2145636813))
+
 ## [2.711.0](https://github.com/kiva/ui/compare/v2.710.0...v2.711.0) (2023-10-19)
 
 
