@@ -34,7 +34,7 @@ jobs:
           repository: kiva/marketplace-web-ui-ci
           token: ${{ env.GITHUB_PAT }}
           path: .docker
-          ref: ui-static
+          ref: main
           patterns: |
             resources/org/kiva/marketplaceWebUiCi/ui
 
