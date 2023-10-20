@@ -450,6 +450,9 @@ export default {
 			{ id: 0 }, { id: 0 },
 			{ id: 0 }, { id: 0 },
 		];
+
+		// check for $5 notes banner cookie
+		if (this.enableFiveDollarsNotes) this.check5DollarsBannerCookie();
 	},
 	mounted() {
 		this.getRecommendedLoans();
