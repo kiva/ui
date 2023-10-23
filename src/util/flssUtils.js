@@ -16,6 +16,7 @@ export const FLSS_ORIGIN_LEND_FILTER = 'web:lend-filter';
 export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
 export const FLSS_ORIGIN_THANKS = 'web:thanks';
 export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';
+export const FLSS_ORIGIN_CHECKOUT = 'web:empty-checkout';
 
 /**
  * Gets the filters for FLSS
