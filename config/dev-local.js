@@ -27,9 +27,7 @@ module.exports = merge(base, devVm, {
 	},
 	server: {
 		graphqlUri: 'https://gateway.development.kiva.org/graphql',
-		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
-		// Alternate session url
-		// sessionUri: 'https://www.development.kiva.org/start-ui-session',
+		sessionUri: 'https://www.development.kiva.org/start-ui-session',
 		memcachedEnabled: false,
 		disableCluster: true,
 	}
