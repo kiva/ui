@@ -1,3 +1,10 @@
+## [2.714.0](https://github.com/kiva/ui/compare/v2.713.0...v2.714.0) (2023-10-23)
+
+
+### Features
+
+* empty basket carousel powered by flss in checkout page ([#5043](https://github.com/kiva/ui/issues/5043)) ([d20e728](https://github.com/kiva/ui/commit/d20e728d1335af75b41ac536d32d74de90cdaf6a))
+
 ## [2.713.0](https://github.com/kiva/ui/compare/v2.712.0...v2.713.0) (2023-10-20)
 
 
