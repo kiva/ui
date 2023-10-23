@@ -29,17 +29,6 @@ jobs:
           repository: kiva/github-actions
           token: ${{ env.GITHUB_PAT }}
           path: .github/
-      - uses: snow-actions/sparse-checkout@v1.2.0
-        with:
-          repository: kiva/marketplace-web-ui-ci
-          token: ${{ env.GITHUB_PAT }}
-          path: .docker
-          patterns: |
-            resources/org/kiva/marketplaceWebUiCi/ui
-      - name: move files
-        run: |
-          mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
-          cp -aRv .docker/resources/org/kiva/marketplaceWebUiCi/ui/config .
       - name: docker-push
         uses: ./.github/actions/docker-build-push
         with:
