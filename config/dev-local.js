@@ -29,6 +29,8 @@ module.exports = merge(base, devVm, {
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		// Alternate graphql url (marketplace-api.dk1.kiva.org is redirected to this url)
+		// graphqlUri: 'https://gateway.development.kiva.org/graphql',
 		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
 		// Alternate session url
 		// sessionUri: 'https://www.development.kiva.org/start-ui-session',

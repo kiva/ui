@@ -247,7 +247,7 @@
 					data-testid="empty-basket-loans"
 					style="min-height: 23rem;"
 				>
-					<random-loan-selector
+					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
@@ -298,7 +298,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
+import EmptyBasketCarousel from '@/components/Checkout/EmptyBasketCarousel';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
@@ -349,7 +349,7 @@ export default {
 		CampaignVerificationForm,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
-		RandomLoanSelector,
+		EmptyBasketCarousel,
 		VerifyRemovePromoCredit,
 		UpsellModule,
 		MatchedLoansLightbox,
