@@ -8,9 +8,7 @@ module.exports = merge(base, devVm, {
 		host: 'localhost',
 		publicPath: '/',
 		photoPath: 'https://www-dev-kiva-org.freetls.fastly.net/img/',
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
-		// Alternate graphql url (marketplace-api.dk1.kiva.org is redirected to this url)
-		// graphqlUri: 'https://gateway.development.kiva.org/graphql',
+		graphqlUri: 'https://gateway.development.kiva.org/graphql',
 		enableAnalytics: false,
 		enableSnowplow: false,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
@@ -28,9 +26,7 @@ module.exports = merge(base, devVm, {
 		},
 	},
 	server: {
-		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
-		// Alternate graphql url (marketplace-api.dk1.kiva.org is redirected to this url)
-		// graphqlUri: 'https://gateway.development.kiva.org/graphql',
+		graphqlUri: 'https://gateway.development.kiva.org/graphql',
 		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
 		// Alternate session url
 		// sessionUri: 'https://www.development.kiva.org/start-ui-session',
