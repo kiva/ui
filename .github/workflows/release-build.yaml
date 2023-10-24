@@ -39,6 +39,7 @@ jobs:
         uses: ./.github/actions/docker-build-push
         if: github.event_name == 'pull_request'
         with:
+          dockerfile_target: "release"
           push: false
   # Build and push the image to ECR
   build:
