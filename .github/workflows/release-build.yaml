@@ -35,6 +35,17 @@ jobs:
           repository: kiva/github-actions
           token: ${{ env.GITHUB_PAT }}
           path: .github/
+      - uses: snow-actions/sparse-checkout@v1.2.0
+        with:
+          repository: kiva/marketplace-web-ui-ci
+          token: ${{ env.GITHUB_PAT }}
+          path: .docker
+          ref: main
+          patterns: |
+              resources/org/kiva/marketplaceWebUiCi/ui
+      - name: move files
+        run: |
+          mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
       - name: docker-build
         uses: ./.github/actions/docker-build-push
         if: github.event_name == 'pull_request'
@@ -55,6 +66,17 @@ jobs:
           repository: kiva/github-actions
           token: ${{ env.GITHUB_PAT }}
           path: .github/
+      - uses: snow-actions/sparse-checkout@v1.2.0
+        with:
+          repository: kiva/marketplace-web-ui-ci
+          token: ${{ env.GITHUB_PAT }}
+          path: .docker
+          ref: main
+          patterns: |
+            resources/org/kiva/marketplaceWebUiCi/ui
+      - name: move files
+        run: |
+          mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
       - name: docker-push
         uses: ./.github/actions/docker-build-push
         with:
