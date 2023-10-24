@@ -1,11 +1,13 @@
 name: Docker Build Publish
 
 on:
-  release:
-    types: [published]
+  pull_request:
   push:
     branches:
       - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc*'
 
 env:
   GITHUB_PAT: "${{ secrets.KIVA_ROBOT_GITHUB_PAT }}"
@@ -16,10 +18,37 @@ env:
   SLACK_CHANNEL: "eng-build-failures"
 
 jobs:
+  test-build:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    env:
+      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: kiva/github-actions
+          token: ${{ env.GITHUB_PAT }}
+          path: .github/
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.KIVA_ROBOT_SSH_PRIVATE_KEY }}
+      - name: docker-build
+        uses: ./.github/actions/docker-build-push
+        if: github.event_name == 'pull_request'
+        with:
+          push: false
+          ssh: "github=${{ env.SSH_AUTH_SOCK }}"
   # Build and push the image to ECR
   build:
     runs-on: ubuntu-latest
-
+    # Run on merges to development or tag pushes (done by create-release workflow)
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
