@@ -35,15 +35,11 @@ jobs:
           repository: kiva/github-actions
           token: ${{ env.GITHUB_PAT }}
           path: .github/
-      - uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.KIVA_ROBOT_SSH_PRIVATE_KEY }}
       - name: docker-build
         uses: ./.github/actions/docker-build-push
         if: github.event_name == 'pull_request'
         with:
           push: false
-          ssh: "github=${{ env.SSH_AUTH_SOCK }}"
   # Build and push the image to ECR
   build:
     runs-on: ubuntu-latest
