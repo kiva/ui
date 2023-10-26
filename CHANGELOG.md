@@ -1,3 +1,10 @@
+### [2.715.1](https://github.com/kiva/ui/compare/v2.715.0...v2.715.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* copy for donation description ([a4c38f9](https://github.com/kiva/ui/commit/a4c38f96a94f95b0dacac3836ac0f7a821b2e371))
+
 ## [2.715.0](https://github.com/kiva/ui/compare/v2.714.0...v2.715.0) (2023-10-23)
 
 
