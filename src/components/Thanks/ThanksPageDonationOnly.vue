@@ -1,9 +1,27 @@
 <template>
 	<div>
-		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-my-10">
+		<div v-if="doubleDonationEnabled" class="tw-py-5 tw-bg-marigold-1">
+			<kv-grid class="tw-grid-cols-12">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
+						{{ headerMsg }}
+					</h1>
+				</div>
+			</kv-grid>
+		</div>
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12 tw-my-8">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
+					<div v-if="doubleDonationEnabled" class="tw-mb-8">
+						<div id="dd-container">
+							<!--eslint-disable-next-line max-len-->
+							<a href="https://doublethedonation.com/matching-grant-resources/matching-gift-basics/">Matching Gift</a> and <a href="https://doublethedonation.com/matching-grant-resources/volunteer-grant-basics/">Volunteer Grant</a> information provided by <br><a href="https://doublethedonation.com"><img alt="Powered by Double the Donation" src="https://doublethedonation.com/api/img/powered-by.png"></a>
+						</div>
+					</div>
+					<h1
+						v-if="!doubleDonationEnabled"
+						class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message"
+					>
 						{{ headerMsg }}
 					</h1>
 					<p class="tw-text-center tw-mb-2 tw-text-subhead">
@@ -110,6 +128,17 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
+		<div v-if="doubleDonationEnabled" class="tw-pt-8 tw-bg-marigold-1">
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
+					<kv-frequently-asked-questions
+						class="tw-col-span-12 faq-container"
+						:headline="frequentlyAskedQuestionsHeadline"
+						:questions="frequentlyAskedQuestions"
+					/>
+				</div>
+			</kv-grid>
+		</div>
 	</div>
 </template>
 
@@ -120,6 +149,8 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
 import { gql } from '@apollo/client';
+import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
+import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -138,12 +169,34 @@ const userQuery = gql`query userQuery {
 
 export default {
 	name: 'ThanksPageDonationOnly',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`query OnlyDonationThanksPageContentful {
+				contentful {
+					entries(contentType: "contentGroup", contentKey: "thanks-page-only-donation")
+				}
+				general {
+					doubleDonationEnabled: featureSetting(key: "doubledonation.enabled") {
+						key
+						value
+						description
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		result({ data }) {
+			const contentfulData = data?.contentful?.entries?.items ?? null;
+			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
+			this.doubleDonationEnabled = data?.general?.doubleDonationEnabled?.value === 'true' ?? false;
+		}
+	},
 	components: {
 		KvIcon,
 		KvMaterialIcon,
 		KvPageContainer,
-		KvGrid
+		KvGrid,
+		KvFrequentlyAskedQuestions
 	},
 	props: {
 		monthlyDonationAmount: {
@@ -165,7 +218,22 @@ export default {
 			isGuest: false,
 			message: '',
 			utmCampaign: 'social_share_checkout',
+			contentfulContent: null,
+			doubleDonationEnabled: false,
 		};
+	},
+	mounted() {
+		if (this.doubleDonationEnabled) {
+			const doubleDonationScript = document.createElement('script');
+			doubleDonationScript.setAttribute('src', 'https://doublethedonation.com/api/js/ddplugin.js');
+			document.head.appendChild(doubleDonationScript);
+
+			window.DDCONF = { API_KEY: 'ODBlMWJiZGItZTY4' };
+			if (window.doublethedonation) {
+				// eslint-disable-next-line no-undef
+				doublethedonation.plugin.load_streamlined_input();
+			}
+		}
 	},
 	computed: {
 		shareMessage() {
@@ -195,7 +263,12 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-
+		frequentlyAskedQuestionsHeadline() {
+			return this.contentfulContent?.frequentlyAskedQuestions?.title ?? null;
+		},
+		frequentlyAskedQuestions() {
+			return this.contentfulContent?.frequentlyAskedQuestions?.contents ?? null;
+		},
 	},
 	methods: {
 		gatherCurrentUserData() {
@@ -220,12 +293,18 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+@import 'https://doublethedonation.com/api/css/ddplugin.css';
+
 .social__btn {
 	@apply tw-w-full tw-rounded tw-flex tw-items-center tw-justify-center tw-mb-2 tw-p-1.5 tw-font-medium;
 }
 
 .social__icon {
 	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
+}
+
+.faq-container >>> h2 {
+	@apply tw-text-center;
 }
 </style>
 
