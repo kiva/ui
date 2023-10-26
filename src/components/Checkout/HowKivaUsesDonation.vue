@@ -1,7 +1,8 @@
 <template>
 	<div ref="content" class="tw-prose tw-text-base">
 		<p>
-			At Kiva, 100% of every loan supports borrowers — we never take a fee.
+			<!-- eslint-disable-next-line max-len -->
+			At Kiva, 100% of every loan supports borrowers — we never take a fee. As a nonprofit, our work is dependent on donations from supporters like you. Every single dollar donated helps Kiva:
 		</p>
 		<div class="tw-flex tw-flex-col tw-gap-2">
 			<div class="item-container tw-not-prose">

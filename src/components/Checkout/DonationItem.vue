@@ -93,7 +93,7 @@
 									class="tw-text-base"
 								>
 									<!-- eslint-disable-next-line max-len -->
-									100% of your loan supports  borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access
+									100% of your loan supports  borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.
 								</p>
 							</div>
 							<button
