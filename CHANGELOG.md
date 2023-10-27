@@ -5,6 +5,24 @@
 
 * copy for donation description ([a4c38f9](https://github.com/kiva/ui/commit/a4c38f96a94f95b0dacac3836ac0f7a821b2e371))
 
+## [v2.715.2-rc.1] - 2023-10-27
+### :bug: Bug Fixes
+- [`e864172`](https://github.com/kiva/ui/commit/e86417277f2956e55258ec8c0a66b44aaf38bc23) - [CP-603] Pass kiva-robot token when checking out repo *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+
+### :wrench: Chores
+- [`fc2a7b5`](https://github.com/kiva/ui/commit/fc2a7b55537269ad3ad717401d196c294b6186e7) - [CP-603] First attempt at setting up release flow *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`c6f1e24`](https://github.com/kiva/ui/commit/c6f1e24f53bf13a0fcfe1ab1406b28e6051e3b36) - [CP-603] Indentation *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`0ced931`](https://github.com/kiva/ui/commit/0ced93180fe76263547ddac303296408a6ca0314) - [CP-603] pass token *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`24fb2ff`](https://github.com/kiva/ui/commit/24fb2ff3e3cc30b566c59322e42d7bbc801d8715) - [CP-603] Use main branch on marketplace ui repo *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`6a6afd2`](https://github.com/kiva/ui/commit/6a6afd283a057dabb5121a8227cb7fb6219052fc) - [CP-603] UI doesn't have config here *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`06e8409`](https://github.com/kiva/ui/commit/06e8409cdf3d9aac46acef3ba4fc5d5447fa3e25) - [CP-603] Consolidate to a single build file and copy over Dockerfile *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`c45c549`](https://github.com/kiva/ui/commit/c45c549851e31ddb59ac16b9a9104b4e521e66be) - [CP-603] add test build on PR back to workflow *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`d53c575`](https://github.com/kiva/ui/commit/d53c57507b578faad91d0f3ff41fd74a053edafa) - [CP-603] Remove unneeded step *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`39503c8`](https://github.com/kiva/ui/commit/39503c862318987d91c5702ba6d4b4a91fbd26d7) - [CP-603] add target for test build *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`03a1ab0`](https://github.com/kiva/ui/commit/03a1ab06389e09947ad28f5158505dd6cacb8fe0) - [CP-603] Remove dockerfile and copy from marketplace repo *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`7fa4da0`](https://github.com/kiva/ui/commit/7fa4da0dcd1168f2ad8038656d7789d7c95bc26c) - [CP-603] Write changelog and update package file *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+
+
 ## [2.715.0](https://github.com/kiva/ui/compare/v2.714.0...v2.715.0) (2023-10-23)
 
 
@@ -10933,3 +10951,5 @@
 
 -   update eslint import path to fix eslint error for package case ([ea7fcdf](https://github.com/kiva/ui/commit/ea7fcdf86370d5a4886b6f91b5f311f8f0e019c2))
 -   update promo amount presetntation for the loan level instead of cached global credit data ([7aac859](https://github.com/kiva/ui/commit/7aac8591f6e595e62a44a36ceaa5b87a48f6ab72))
+
+[v2.715.2-rc.1]: https://github.com/kiva/ui/compare/v2.715.1...v2.715.2-rc.1
