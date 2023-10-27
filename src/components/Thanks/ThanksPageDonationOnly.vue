@@ -6,23 +6,23 @@
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
-				</div>
-			</kv-grid>
-		</div>
-		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-my-8">
-				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<div v-if="doubleDonationEnabled" class="tw-mb-8 tw-text-center">
+					<div class="tw-mb-8 tw-text-center">
 						<div id="dd-container" class="tw-mb-2">
 							<!--eslint-disable-next-line max-len-->
 							<a href="https://doublethedonation.com/matching-grant-resources/matching-gift-basics/" target="_blank">Matching Gift</a> and <a href="https://doublethedonation.com/matching-grant-resources/volunteer-grant-basics/" target="_blank">Volunteer Grant</a> information provided by <br><a href="https://doublethedonation.com" target="_blank"><img alt="Powered by Double the Donation" src="https://doublethedonation.com/api/img/powered-by.png"></a>
 						</div>
 						<a
 							class="tw-text-marigold-3 tw-text-small tw-font-medium
-							tw-cursor-pointer hover:tw-no-underline hover:tw-text-marigold-3"
+								tw-cursor-pointer hover:tw-no-underline hover:tw-text-marigold-3"
 							@click="scrollToSection('#matching-gift-faq')"
 						>Matching Gift Program FAQs</a>
 					</div>
+				</div>
+			</kv-grid>
+		</div>
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12 tw-my-8">
+				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1
 						v-if="!doubleDonationEnabled"
 						class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message"
