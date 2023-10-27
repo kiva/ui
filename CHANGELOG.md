@@ -5,6 +5,18 @@
 
 * copy for donation description ([a4c38f9](https://github.com/kiva/ui/commit/a4c38f96a94f95b0dacac3836ac0f7a821b2e371))
 
+## [v2.716.0-rc.1] - 2023-10-27
+### :sparkles: New Features
+- [`fb4a783`](https://github.com/kiva/ui/commit/fb4a78376a1e932e443f60cfc366f6bd3a51634b) - integrate double the donation plugin and wrap it behind feature flag
+- [`679c598`](https://github.com/kiva/ui/commit/679c598cf3b342464885dfa54b6655f1940ff404) - add link to faq
+
+### :bug: Bug Fixes
+- [`faaa99f`](https://github.com/kiva/ui/commit/faaa99f8b3a4ff748f368d368d99f016076c1874) - adding blank target to double donation links
+- [`c1f04f1`](https://github.com/kiva/ui/commit/c1f04f174627b66c036000310b28754fd4cec930) - moving double donation container to header
+- [`92a257e`](https://github.com/kiva/ui/commit/92a257e69a11edc2558cbb45a73c4267ac0a1f1c) - [CP-603] We shouldn't need to pass the token in for this step *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
+- [`8edafa7`](https://github.com/kiva/ui/commit/8edafa7e60cd923cbe4c8e61a8b54e72fc808323) - headline design
+
+
 ## [v2.715.2-rc.1] - 2023-10-27
 ### :bug: Bug Fixes
 - [`e864172`](https://github.com/kiva/ui/commit/e86417277f2956e55258ec8c0a66b44aaf38bc23) - [CP-603] Pass kiva-robot token when checking out repo *(commit by [@kathrynlovett](https://github.com/kathrynlovett))*
@@ -10953,3 +10965,4 @@
 -   update promo amount presetntation for the loan level instead of cached global credit data ([7aac859](https://github.com/kiva/ui/commit/7aac8591f6e595e62a44a36ceaa5b87a48f6ab72))
 
 [v2.715.2-rc.1]: https://github.com/kiva/ui/compare/v2.715.1...v2.715.2-rc.1
+[v2.716.0-rc.1]: https://github.com/kiva/ui/compare/v2.715.2-rc.1...v2.716.0-rc.1
