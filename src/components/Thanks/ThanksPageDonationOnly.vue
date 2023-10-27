@@ -12,11 +12,16 @@
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12 tw-my-8">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<div v-if="doubleDonationEnabled" class="tw-mb-8">
-						<div id="dd-container">
+					<div v-if="doubleDonationEnabled" class="tw-mb-8 tw-text-center">
+						<div id="dd-container" class="tw-mb-2">
 							<!--eslint-disable-next-line max-len-->
 							<a href="https://doublethedonation.com/matching-grant-resources/matching-gift-basics/" target="_blank">Matching Gift</a> and <a href="https://doublethedonation.com/matching-grant-resources/volunteer-grant-basics/" target="_blank">Volunteer Grant</a> information provided by <br><a href="https://doublethedonation.com" target="_blank"><img alt="Powered by Double the Donation" src="https://doublethedonation.com/api/img/powered-by.png"></a>
 						</div>
+						<a
+							class="tw-text-marigold-3 tw-text-small tw-font-medium
+							tw-cursor-pointer hover:tw-no-underline hover:tw-text-marigold-3"
+							@click="scrollToSection('#matching-gift-faq')"
+						>Matching Gift Program FAQs</a>
 					</div>
 					<h1
 						v-if="!doubleDonationEnabled"
@@ -130,7 +135,10 @@
 		</kv-page-container>
 		<div v-if="doubleDonationEnabled" class="tw-pt-8 tw-bg-marigold-1">
 			<kv-grid class="tw-grid-cols-12">
-				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
+				<div
+					id="matching-gift-faq"
+					class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print"
+				>
 					<kv-frequently-asked-questions
 						class="tw-col-span-12 faq-container"
 						:headline="frequentlyAskedQuestionsHeadline"
@@ -151,6 +159,7 @@ import { getFullUrl } from '@/util/urlUtils';
 import { gql } from '@apollo/client';
 import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -204,7 +213,7 @@ export default {
 			default: ''
 		}
 	},
-	mixins: [socialSharingMixin],
+	mixins: [socialSharingMixin, smoothScrollMixin],
 	data() {
 		return {
 			lender: null,
@@ -278,6 +287,12 @@ export default {
 				this.isGuest = !data?.my?.userAccount;
 				this.lender = data?.my?.userAccount ?? {};
 			});
+		},
+		scrollToSection(sectionId) {
+			console.log('hello');
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},
 	created() {
