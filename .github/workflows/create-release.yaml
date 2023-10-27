@@ -37,7 +37,5 @@ jobs:
           write_to_file: "true"
       - name: update-package-file
         uses: ./.github/actions/semantic-package-json-update
-        env:
-          GITHUB_PAT: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
         with:
           new_version: ${{ steps.release.outputs.tag }}
