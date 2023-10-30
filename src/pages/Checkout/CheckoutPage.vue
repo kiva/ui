@@ -493,10 +493,10 @@ export default {
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 
-			this.lenderTotalLoans = _get(data, 'my.loans.totalCount') ?? 0;
-			this.isFtdMessageEnable = _get(data, 'general.ftd_message_enable')?.value ?? false;
-			this.ftdCreditAmount = _get(data, 'general.ftd_amount')?.value ?? '';
-			this.ftdValidDate = _get(data, 'general.ftd_date')?.value ?? '';
+			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
+			this.isFtdMessageEnable = data?.general?.ftd_message_enable?.value ?? false;
+			this.ftdCreditAmount = data?.general?.ftd_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
