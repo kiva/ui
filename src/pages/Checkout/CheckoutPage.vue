@@ -24,6 +24,12 @@
 						Your basket
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
+
+					<ftds-message
+						class="tw-mb-2"
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+					/>
 				</div>
 				<div class="tw-relative">
 					<div class="basket-container tw-mx-auto tw-my-0">
@@ -195,6 +201,12 @@
 						id="updating-overlay"
 						class="updating-totals-overlay tw-z-overlay tw-bg-white"
 					/>
+
+					<ftds-disclaimer
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+						:ftd-valid-date="ftdValidDate"
+					/>
 				</div>
 			</div>
 			<campaign-verification-form
@@ -309,6 +321,8 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import FtdsMessage from '@/components/Checkout/FtdsMessage';
+import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -354,7 +368,9 @@ export default {
 		UpsellModule,
 		MatchedLoansLightbox,
 		CampaignJoinTeamForm,
-		KvLoadingPlaceholder
+		KvLoadingPlaceholder,
+		FtdsMessage,
+		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -403,6 +419,10 @@ export default {
 			continueButtonState: 'loading',
 			challengeRedirectQueryParam: '',
 			asyncCheckoutActive: false,
+			lenderTotalLoans: 0,
+			isFtdMessageEnable: false,
+			ftdCreditAmount: '',
+			ftdValidDate: ''
 		};
 	},
 	apollo: {
@@ -472,6 +492,11 @@ export default {
 
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+
+			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
+			this.isFtdMessageEnable = data?.general?.ftd_message_enable?.value ?? false;
+			this.ftdCreditAmount = data?.general?.ftd_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -719,6 +744,9 @@ export default {
 		loanIdsInBasket() {
 			return this.loans.map(loan => loan.id);
 		},
+		showFtdMessage() {
+			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
+		}
 	},
 	methods: {
 		openMatchedLoansLightbox() {

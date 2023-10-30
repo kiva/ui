@@ -20,6 +20,9 @@ query initializeCheckout($basketId: String) {
 				}
 			}
 		}
+		loans {
+			totalCount
+		}
 	}
 	general {
 		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
@@ -30,6 +33,18 @@ query initializeCheckout($basketId: String) {
 			key
 			value
 			description
+		}
+		ftd_message_enable: uiConfigSetting(key: "ftd_message_enable") {
+			key
+			value
+		}
+		ftd_amount: uiConfigSetting(key: "ftd_message_amount") {
+			key
+			value
+		}
+		ftd_date_time: uiConfigSetting(key: "ftd_message_valid_date") {
+			key
+			value
 		}
 	}
 	shop (basketId: $basketId) {
