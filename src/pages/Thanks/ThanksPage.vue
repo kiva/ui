@@ -296,7 +296,7 @@ export default {
 		// Enable FTDs message from settings
 		this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 		// Credit amount for FTD message from settings
-		const ftdCreditAmountData = data?.general?.ftd_amount ?? null;
+		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
 		const loansResponse = this.receipt?.items?.values ?? [];

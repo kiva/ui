@@ -497,8 +497,8 @@ export default {
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// Enable FTDs message from settings
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
-			this.ftdCreditAmount = data?.general?.ftd_amount?.value ?? '';
-			this.ftdValidDate = data?.general?.ftd_date?.value ?? '';
+			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
