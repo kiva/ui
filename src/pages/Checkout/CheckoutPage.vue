@@ -282,6 +282,7 @@ import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
+import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
@@ -494,9 +495,10 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
-			this.isFtdMessageEnable = data?.general?.ftd_message_enable?.value ?? false;
-			this.ftdCreditAmount = data?.general?.ftd_amount?.value ?? '';
-			this.ftdValidDate = data?.general?.ftd_date?.value ?? '';
+			// Enable FTDs message from settings
+			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
+			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {

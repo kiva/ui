@@ -136,7 +136,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
-		ftd_amount: uiConfigSetting(key: "ftd_message_amount") {
+		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
 			key
 			value
 		}
