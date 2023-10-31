@@ -99,6 +99,7 @@
 
 <script>
 import numeral from 'numeral';
+import { readBoolSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
@@ -253,7 +254,7 @@ export default {
 			return this.isGuest && this.loans.every(loan => loan?.__typename === 'LoanDirect');
 		},
 		showFtdMessage() {
-			return this.isFirstLoan && this.enableFtdMessage && this.ftdCreditAmount;
+			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
 		}
 	},
 	created() {
@@ -293,10 +294,9 @@ export default {
 		this.isGuest = this.receipt && !data?.my?.userAccount;
 
 		// Enable FTDs message from settings
-		const enableFtdMessageData = data?.general?.ftd_message_enable ?? null;
-		this.enableFtdMessage = enableFtdMessageData ? enableFtdMessageData.value : false;
+		this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 		// Credit amount for FTD message from settings
-		const ftdCreditAmountData = data?.general?.ftd_amount ?? null;
+		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
 		const loansResponse = this.receipt?.items?.values ?? [];

@@ -38,11 +38,11 @@ query initializeCheckout($basketId: String) {
 			key
 			value
 		}
-		ftd_amount: uiConfigSetting(key: "ftd_message_amount") {
+		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
 			key
 			value
 		}
-		ftd_date_time: uiConfigSetting(key: "ftd_message_valid_date") {
+		ftd_message_valid_date: uiConfigSetting(key: "ftd_message_valid_date") {
 			key
 			value
 		}

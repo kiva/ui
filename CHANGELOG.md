@@ -5,6 +5,11 @@
 
 * copy for donation description ([a4c38f9](https://github.com/kiva/ui/commit/a4c38f96a94f95b0dacac3836ac0f7a821b2e371))
 
+## [v2.717.0-rc.1] - 2023-10-30
+### :sparkles: New Features
+- [`47e0159`](https://github.com/kiva/ui/commit/47e0159ccbef53f63fd46b91c50a8e707e78a0cd) - ftd message added to checkout page for first time lenders *(PR [#5052](https://github.com/kiva/ui/pull/5052) by [@roger-in-kiva](https://github.com/roger-in-kiva))*
+
+
 ## [v2.716.0-rc.1] - 2023-10-27
 ### :sparkles: New Features
 - [`fb4a783`](https://github.com/kiva/ui/commit/fb4a78376a1e932e443f60cfc366f6bd3a51634b) - integrate double the donation plugin and wrap it behind feature flag
@@ -10966,3 +10971,4 @@
 
 [v2.715.2-rc.1]: https://github.com/kiva/ui/compare/v2.715.1...v2.715.2-rc.1
 [v2.716.0-rc.1]: https://github.com/kiva/ui/compare/v2.715.2-rc.1...v2.716.0-rc.1
+[v2.717.0-rc.1]: https://github.com/kiva/ui/compare/v2.716.0...v2.717.0-rc.1
