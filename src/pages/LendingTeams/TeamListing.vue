@@ -161,7 +161,7 @@
 			>
 				<p
 					class="tw-text-small tw-text-primary tw-flex-1"
-					v-if="shortLoanBecause(team.loanBecause)"
+					v-if="team.loanBecause"
 				>
 					We loan because: {{ shortLoanBecause(team.loanBecause) }}
 				</p>
