@@ -1,0 +1,30 @@
+name: Semantic Release
+
+on:
+  push:
+    branches:
+      - staging
+      - production
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+      - name: checkout-actions
+        uses: actions/checkout@v4
+        with:
+          repository: kiva/github-actions
+          token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+          path: .github/
+      - name: semantic-release
+        uses: ./.github/actions/semantic-release
+        env:
+          GITHUB_PAT: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+        with:
+          config: "base"
