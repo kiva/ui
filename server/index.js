@@ -50,6 +50,7 @@ function setHeaders(res, path) {
 		res.header('Access-Control-Allow-Origin', `https://${config.app.host}`);
 	}
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.header('Surrogate-Key', 'ui-all ui-static all-assets');
 }
 
 app.use('/static', express.static('dist/static', {
