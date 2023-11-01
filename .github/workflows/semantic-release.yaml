@@ -27,4 +27,4 @@ jobs:
         env:
           GITHUB_PAT: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
         with:
-          config: "base"
+          config: "node"
