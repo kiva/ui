@@ -5,6 +5,18 @@
 
 * copy for donation description ([a4c38f9](https://github.com/kiva/ui/commit/a4c38f96a94f95b0dacac3836ac0f7a821b2e371))
 
+## [v2.718.0-rc.1] - 2023-11-02
+### :sparkles: New Features
+- [`c5a5bd5`](https://github.com/kiva/ui/commit/c5a5bd53b306accb873bd2ecd79f9ed00d2fc54c) - teams page tweaks *(PR [#5054](https://github.com/kiva/ui/pull/5054) by [@roger-in-kiva](https://github.com/roger-in-kiva))*
+
+### :bug: Bug Fixes
+- [`0ba3648`](https://github.com/kiva/ui/commit/0ba3648472658934e89882477aa44907b3110ced) - boolean settings bug fixed for ftds in checkout and thanks pages *(PR [#5053](https://github.com/kiva/ui/pull/5053) by [@roger-in-kiva](https://github.com/roger-in-kiva))*
+- [`310defa`](https://github.com/kiva/ui/commit/310defadd8060386b648ffcb02ca0c0c9187dae7) - add surrogate keys for ui assets *(commit by [@mcstover](https://github.com/mcstover))*
+
+### :wrench: Chores
+- [`ca8753d`](https://github.com/kiva/ui/commit/ca8753d109e47fe477a7ae738430bd472becb649) - [2.717.0-rc.1] update version in package.json for main [skip ci] *(commit by [@mcstover](https://github.com/mcstover))*
+
+
 ## [v2.717.0-rc.1] - 2023-10-30
 ### :sparkles: New Features
 - [`47e0159`](https://github.com/kiva/ui/commit/47e0159ccbef53f63fd46b91c50a8e707e78a0cd) - ftd message added to checkout page for first time lenders *(PR [#5052](https://github.com/kiva/ui/pull/5052) by [@roger-in-kiva](https://github.com/roger-in-kiva))*
@@ -10972,3 +10984,4 @@
 [v2.715.2-rc.1]: https://github.com/kiva/ui/compare/v2.715.1...v2.715.2-rc.1
 [v2.716.0-rc.1]: https://github.com/kiva/ui/compare/v2.715.2-rc.1...v2.716.0-rc.1
 [v2.717.0-rc.1]: https://github.com/kiva/ui/compare/v2.716.0...v2.717.0-rc.1
+[v2.718.0-rc.1]: https://github.com/kiva/ui/compare/v2.717.0...v2.718.0-rc.1
