@@ -4,7 +4,7 @@
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12">
 					<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-						<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
+						<h1 class="tw-text-h1 tw-text-center tw-mb-4" data-testid="thanks-message">
 							{{ headerMsg }}
 						</h1>
 						<div class="tw-text-center">
@@ -32,7 +32,8 @@
 						{{ headerMsg }}
 					</h1>
 					<p class="tw-text-center tw-mb-2 tw-text-subhead">
-						As a donor, you help us bring more loans to people in need. Watch Manal’s story:
+						<!--eslint-disable-next-line max-len-->
+						As a donor, you help Kiva provide loans to underserved communities and unlock financial access. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
 						<iframe
@@ -135,7 +136,7 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
-		<div v-if="doubleDonationEnabled" class="tw-pt-8 tw-bg-marigold-1">
+		<div v-if="doubleDonationEnabled" class="tw-py-8 tw-px-2.5 tw-bg-marigold-1">
 			<kv-grid class="tw-grid-cols-12">
 				<div
 					id="matching-gift-faq"
