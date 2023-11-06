@@ -7,7 +7,7 @@ module.exports = merge(base, devVm, {
 		apolloBatching: false,
 		host: 'localhost',
 		publicPath: '/',
-		photoPath: 'https://www-dev-kiva-org.freetls.fastly.net/img/',
+		photoPath: 'https://www.development.kiva.org/img/',
 		graphqlUri: 'https://gateway.development.kiva.org/graphql',
 		enableAnalytics: false,
 		enableSnowplow: false,
@@ -23,6 +23,7 @@ module.exports = merge(base, devVm, {
 			enable: true,
 			browserCallbackUri: 'http://localhost:8888/process-browser-auth',
 			serverCallbackUri: 'http://localhost:8888/process-ssr-auth',
+			apiAudience: 'https://api.development.kiva.org/graphql',
 		},
 	},
 	server: {
