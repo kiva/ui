@@ -523,6 +523,14 @@ export default {
 		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
 		this.showCheckoutError(validationErrors, true);
 
+		// Fire error for empty shop state
+		if (!this.isServer && !this.totals) {
+			Sentry.withScope(scope => {
+				scope.setTag('init_checkout', 'Missing baseline basket information');
+				Sentry.captureMessage(`Missing baseline basket information; totals value is ${this.totals}.`);
+			});
+		}
+
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
 
