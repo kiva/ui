@@ -265,9 +265,9 @@ const urlParamTransform = {
 			return page > 1 ? String(page) : undefined;
 		}
 	},
-	teamCategory: {
-		to({ teamCategory }) {
-			return teamCategory;
+	category: {
+		to({ category }) {
+			return category;
 		}
 	},
 	teamOption: {
@@ -352,7 +352,7 @@ export default {
 		urlParams() {
 			return toUrlParams({
 				offset: this.offset,
-				...(this.teamCategory !== '' && { teamCategory: this.teamCategory }),
+				...(this.teamCategory !== '' && { category: this.teamCategory }),
 				...(this.teamOption !== '' && { teamOption: this.teamOption }),
 				teamSort: this.teamSort,
 				queryString: this.queryString,
@@ -395,13 +395,13 @@ export default {
 				pushToRouter('page');
 				return;
 			}
-			if (this.teamCategory && this.teamCategory !== this.$route.query?.teamCategory) {
-				pushToRouter('teamCategory');
+			if (this.teamCategory && this.teamCategory !== this.$route.query?.category) {
+				pushToRouter('category');
 				return;
 			}
-			if (this.teamCategory === '' && this.teamCategory !== this.$route.query?.teamCategory) {
+			if (this.teamCategory === '' && this.teamCategory !== this.$route.query?.category) {
 				const query = { ...this.$route.query };
-				delete query?.teamCategory;
+				delete query?.category;
 				this.$router.replace({ query });
 			}
 			if (this.teamOption && this.teamOption !== this.$route.query?.teamOption) {
@@ -410,7 +410,7 @@ export default {
 			}
 			if (this.teamOption === '' && this.teamOption !== this.$route.query?.teamOption) {
 				const query = { ...this.$route.query };
-				delete query?.teamCategory;
+				delete query?.teamOption;
 				this.$router.replace({ query });
 			}
 			if (this.queryString && this.queryString !== this.$route.query?.queryString) {
@@ -423,7 +423,7 @@ export default {
 		},
 		updateFromParams(query) {
 			this.offset = getPageOffset(query, this.limit);
-			this.teamCategory = query.teamCategory ?? '';
+			this.teamCategory = query.category ?? '';
 			this.teamOption = query.teamOption ?? '';
 			this.teamSort = query.teamSort ?? 'overallLoanedAmount';
 			this.queryString = query.queryString ?? '';
