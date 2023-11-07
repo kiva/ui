@@ -1,0 +1,25 @@
+query portfolioQuery {
+	my {
+		id
+		teams {
+			values {
+				id
+				team {
+					id
+					name
+					teamPublicId
+				}
+			}
+		}
+	}
+	general {
+		team_challenge_enable: uiConfigSetting(key: "portfolio_team_challenge_enable") {
+			key
+			value
+		}
+		challenge_allowed_teams: uiConfigSetting(key: "portfolio_challenge_allowed_teams") {
+			key
+			value
+		}
+	}
+}
