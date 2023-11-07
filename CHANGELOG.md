@@ -1,3 +1,20 @@
+## [2.719.1](https://github.com/kiva/ui/compare/v2.719.0...v2.719.1) (2023-11-07)
+
+
+### 🐛 Bugfixes
+
+* remove unused component comment ([a802ba2](https://github.com/kiva/ui/commit/a802ba24badf8ce0fb946a0f79a58e21472719f5))
+
+
+### 💅 Code Style Changes
+
+* move cache setting arguments to separate line ([36ce485](https://github.com/kiva/ui/commit/36ce4852b8064d0973976de692755f773e80850b))
+
+
+### 🧹 Chores
+
+* **release:** 2.719.1-rc.1 ([29cfbbd](https://github.com/kiva/ui/commit/29cfbbd63ee3204b1f264ef669aa1aeaf5262801))
+
 ## [2.719.1-rc.1](https://github.com/kiva/ui/compare/v2.719.0...v2.719.1-rc.1) (2023-11-07)
 
 
