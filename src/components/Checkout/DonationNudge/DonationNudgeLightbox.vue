@@ -98,6 +98,7 @@ import { mdiInformation } from '@mdi/js';
 import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
 import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
 import { gql } from '@apollo/client';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -119,14 +120,13 @@ export default {
 					seasonalTipRateEnabled: featureSetting(key: "seasonal_tip_rate.enabled") {
 						key
 						value
-						description
 					}
 				}
 			}
 		`,
 		preFetch: true,
 		result({ data }) {
-			this.seasonalTipRateEnabled = data?.general?.seasonalTipRateEnabled?.value === 'true' ?? false;
+			this.seasonalTipRateEnabled = readBoolSetting(data, 'general.seasonalTipRateEnabled.value');
 		}
 	},
 	components: {
