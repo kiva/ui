@@ -15,12 +15,14 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
           token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
       - name: checkout-actions
         uses: actions/checkout@v4
         with:
           repository: kiva/github-actions
           token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
+          persist-credentials: false
           path: .github/
       - name: semantic-release
         uses: ./.github/actions/semantic-release
