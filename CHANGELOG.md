@@ -1,3 +1,10 @@
+## [2.719.0-rc.2](https://github.com/kiva/ui/compare/v2.719.0-rc.1...v2.719.0-rc.2) (2023-11-07)
+
+
+### 🐛 Bugfixes
+
+* remove ambiguous text color class ([619a2e2](https://github.com/kiva/ui/commit/619a2e232a5fa14a579fbe423b8f600abec16c99))
+
 ## [2.719.0-rc.1](https://github.com/kiva/ui/compare/v2.718.0...v2.719.0-rc.1) (2023-11-07)
 
 
