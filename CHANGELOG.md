@@ -1,3 +1,37 @@
+## [2.719.0](https://github.com/kiva/ui/compare/v2.718.0...v2.719.0) (2023-11-07)
+
+
+### 🎉 New Features
+
+* semantic-release actions ([243ce6f](https://github.com/kiva/ui/commit/243ce6f67db3a0f6e270ce2ab1fbcbfc2c4e926c))
+* use node.js config for semantic-release ([20a2b9f](https://github.com/kiva/ui/commit/20a2b9ff7d979f016cf64383ea34b6f34e69202f))
+
+
+### 🐛 Bugfixes
+
+* change query param on new teams page ([a1a47ac](https://github.com/kiva/ui/commit/a1a47aceecb05fa0d44c9fd1ed5fb655f1223d5c))
+* move ftd settings query to checkoutSettings file, add basic sentry log for missing data ([646915b](https://github.com/kiva/ui/commit/646915b6b1b1b710670bf14a4d151558a775dcc0))
+* remove ambiguous text color class ([619a2e2](https://github.com/kiva/ui/commit/619a2e232a5fa14a579fbe423b8f600abec16c99))
+* spacing between components ([0fc1f6e](https://github.com/kiva/ui/commit/0fc1f6e4772ef18d8aa35cb4d5d92465483932f7))
+
+
+### 🏗️ Build System
+
+* stop git credentials used for checkout from persisting to other actions ([dff4721](https://github.com/kiva/ui/commit/dff4721a8e9d71c2c6f456394b9a3136469fb5ca))
+
+
+### 📚 Documentation Changes
+
+* [2.718.0-rc.1] update CHANGELOG.md for main [skip ci] ([b7ec5ad](https://github.com/kiva/ui/commit/b7ec5add827b2f0958221de6d68a6d0cafeedae9))
+
+
+### 🧹 Chores
+
+* [2.718.0-rc.1] update version in package.json for main [skip ci] ([2255f9b](https://github.com/kiva/ui/commit/2255f9baf491082f768a91655380d4f27ddeeed4))
+* **release:** 2.719.0-rc.1 ([b675e95](https://github.com/kiva/ui/commit/b675e954665788adf67896426b7ed90a1b209bb1))
+* **release:** 2.719.0-rc.2 ([149afb3](https://github.com/kiva/ui/commit/149afb3369a929772c6321b4ead1a0e442779716))
+* update local dev endpoints ([92c3877](https://github.com/kiva/ui/commit/92c387781c449b6e6115da79ca647ece4131e504))
+
 ## [2.719.0-rc.2](https://github.com/kiva/ui/compare/v2.719.0-rc.1...v2.719.0-rc.2) (2023-11-07)
 
 
