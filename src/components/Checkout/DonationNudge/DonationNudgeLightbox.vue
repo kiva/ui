@@ -97,6 +97,7 @@ import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
 import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
 import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
+import { gql } from '@apollo/client';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -108,9 +109,26 @@ export default {
 			mdiInformation,
 			zeroUpsellVisible: false,
 			title: 'Loans change lives. Your donations make them possible.',
+			seasonalTipRateEnabled: false,
 		};
 	},
-	inject: ['cookieStore'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`query seasonalTipRateIncrease {
+				general {
+					seasonalTipRateEnabled: featureSetting(key: "seasonal_tip_rate.enabled") {
+						key
+						value
+						description
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		result({ data }) {
+			this.seasonalTipRateEnabled = data?.general?.seasonalTipRateEnabled?.value === 'true' ?? false;
+		}
+	},
 	components: {
 		KvButton,
 		KvLightbox,
@@ -154,12 +172,12 @@ export default {
 		percentageRows() {
 			return [
 				{
-					percentage: 15,
+					percentage: this.seasonalTipRateEnabled ? 18 : 15,
 					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
-					percentage: 20,
+					percentage: this.seasonalTipRateEnabled ? 24 : 20,
 					appeal: 'Reach more people around the world!',
 					appealIsHorizontallyPadded: false,
 				},
