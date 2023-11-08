@@ -16,7 +16,7 @@ module.exports = merge(base, devVm, {
 		gaId: 'UA-11686022-7', // dev-vm property
 		auth0: {
 			loginRedirectUrls: {
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.dev.kiva.org/authenticate?authLevel=recent',
+				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.development.kiva.org/authenticate?authLevel=recent',
 				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'http://localhost:8888/ui-login?force=true',
 				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'http://localhost:8888/ui-login?force=true',
 			},
