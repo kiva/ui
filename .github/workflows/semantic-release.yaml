@@ -55,10 +55,10 @@ jobs:
       SLACK_CHANNEL: "eng-build-failures"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.create-release.outputs.tag }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: kiva/github-actions
           token: ${{ env.GITHUB_PAT }}
@@ -70,13 +70,12 @@ jobs:
           path: .docker
           ref: main
           patterns: |
-              resources/org/kiva/marketplaceWebUiCi/ui
+            resources/org/kiva/marketplaceWebUiCi/ui
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
       - name: docker-build
         uses: ./.github/actions/docker-build-push
-        if: github.event_name == 'pull_request'
         with:
           dockerfile_target: "release"
-          push: false
+          push: true
