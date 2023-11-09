@@ -8,7 +8,7 @@ export default ({
 	fetch,
 	apolloBatching,
 }) => {
-	const onVm = uri.indexOf('vm') > -1;
+	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1;
 
 	const options = {
 		uri,

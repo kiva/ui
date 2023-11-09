@@ -84,7 +84,7 @@ module.exports = function getGqlPossibleTypes(url, cache) {
 	return tracer.trace('getGqlFragmentTypes', () => {
 		return tracer.trace('getGqlFragmentsFromCache', () => {
 			return getGqlPossibleTypesFromCache(cache).then(data => {
-				if (data.length) {
+				if (Object.keys(data).length) {
 					return data;
 				}
 				return tracer.trace('fetchGqlFragments', () => fetchGqlPossibleTypes(url, cache));
