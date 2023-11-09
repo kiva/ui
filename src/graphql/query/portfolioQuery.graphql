@@ -1,7 +1,9 @@
 query portfolioQuery {
 	my {
 		id
-		teams {
+		teams (
+			limit: 100
+		) {
 			values {
 				id
 				team {
