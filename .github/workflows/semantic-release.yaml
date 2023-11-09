@@ -10,6 +10,10 @@ on:
           - staging
           - production
         required: true
+  push:
+    branches:
+      - staging
+      - production
 
 jobs:
   # Create a release
