@@ -94,7 +94,7 @@ module.exports = {
 	},
 	server: {
 		disableCluster: true,
-		graphqlUri: `https://gateway.${baseUrl}/graphql`,
+		graphqlUri: process.env.API_HOSTNAME || `https://gateway.${baseUrl}/graphql`,
 		gzipEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers,
