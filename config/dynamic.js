@@ -63,7 +63,7 @@ module.exports = {
 			merchantId: '10620948091453922228'
 		},
 		googleTagmanagerId: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-PXFRMT',
-		graphqlUri: `https://gateway.${baseUrl}/graphql`,
+		graphqlUri: process.env.API_HOSTNAME || `https://gateway.${baseUrl}/graphql`,
 		grecaptchaSitekey: process.env.G_RECAPTCHA_SITE_KEY || '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
 		host: `www.${baseUrl}`,
 		hotjarId: process.env.HOTJAR_ID || '3071239',
