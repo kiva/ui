@@ -1,3 +1,10 @@
+## [2.720.0-rc.3](https://github.com/kiva/ui/compare/v2.720.0-rc.2...v2.720.0-rc.3) (2023-11-10)
+
+
+### 🐛 Bugfixes
+
+* allow passing in full api url ([fc183ad](https://github.com/kiva/ui/commit/fc183adb3c7fd63ed0c89abff3d02d071b685aba))
+
 ## [2.720.0-rc.2](https://github.com/kiva/ui/compare/v2.720.0-rc.1...v2.720.0-rc.2) (2023-11-10)
 
 
