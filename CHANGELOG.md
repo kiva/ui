@@ -1,3 +1,59 @@
+## [2.720.0-rc.5](https://github.com/kiva/ui/compare/v2.720.0-rc.4...v2.720.0-rc.5) (2023-11-13)
+
+
+### 🐛 Bugfixes
+
+* add option for alternate api audience ([f210f07](https://github.com/kiva/ui/commit/f210f072c79dc48a7650eda6ce1839a1a3ce0cef))
+
+## [2.720.0-rc.4](https://github.com/kiva/ui/compare/v2.720.0-rc.3...v2.720.0-rc.4) (2023-11-10)
+
+
+### 🐛 Bugfixes
+
+* ensure server api url uses passed env var too ([5fe7a95](https://github.com/kiva/ui/commit/5fe7a9528dce391a1e181ec40888fe404a0e60db))
+
+## [2.720.0-rc.3](https://github.com/kiva/ui/compare/v2.720.0-rc.2...v2.720.0-rc.3) (2023-11-10)
+
+
+### 🐛 Bugfixes
+
+* allow passing in full api url ([fc183ad](https://github.com/kiva/ui/commit/fc183adb3c7fd63ed0c89abff3d02d071b685aba))
+
+## [2.720.0-rc.2](https://github.com/kiva/ui/compare/v2.720.0-rc.1...v2.720.0-rc.2) (2023-11-10)
+
+
+### 🐛 Bugfixes
+
+* turn off apollo batching for ui in all evns including prod ([241639f](https://github.com/kiva/ui/commit/241639ff141f15f889b3e86892091d08d501cfba))
+
+## [2.720.0-rc.1](https://github.com/kiva/ui/compare/v2.719.1...v2.720.0-rc.1) (2023-11-09)
+
+
+### 🎉 New Features
+
+* increase edit donation amount from modal ([352531e](https://github.com/kiva/ui/commit/352531e85e46e4d93906d42483f8b9f29f18cd11))
+* run release and release build in same workflow ([7e4c927](https://github.com/kiva/ui/commit/7e4c92740c38140bc99c3b54663b15c697d55621))
+* team challenge section added to portfolio page ([#5064](https://github.com/kiva/ui/issues/5064)) ([a28266d](https://github.com/kiva/ui/commit/a28266db785fbbdcf0ca2ef04e3f2ed64e53138c))
+
+
+### 🐛 Bugfixes
+
+* ensure docker build push runs for successful semantic releases ([ed88f23](https://github.com/kiva/ui/commit/ed88f23bdc503b54440540c713389ac4accd4786))
+* ensure we use cached possible types, config updates for local login state ([c7bc015](https://github.com/kiva/ui/commit/c7bc015589d888fe64a6442a2ba995ef58d10cc2))
+* remove previous build process for tags ([d64c866](https://github.com/kiva/ui/commit/d64c86600e47cf0a9988264053cd6815a621072f))
+* use git tag source for docker image build ([5018170](https://github.com/kiva/ui/commit/5018170c9fbadd4dff3fc1368e13edd77ad20326))
+
+
+### 🏗️ Build System
+
+* also run semantic release on stage & production branch pushes ([c65a2f2](https://github.com/kiva/ui/commit/c65a2f2802a8fb679102bc773714a485f5cb4b0d))
+* persist credentials that use the kiva robot pat ([2f4f4e9](https://github.com/kiva/ui/commit/2f4f4e93b8174aa1772ff7653c8e35f68455b42e))
+
+
+### 🪚 Refactors
+
+* remove unused field and use util to get feature flag value ([94c3468](https://github.com/kiva/ui/commit/94c3468f1cd2a18645b27c281fb3ba28636e8516))
+
 ## [2.719.1](https://github.com/kiva/ui/compare/v2.719.0...v2.719.1) (2023-11-07)
 
 
