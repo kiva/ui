@@ -253,7 +253,6 @@ export default {
 				filterConfig.config.pageOffset.uiConfig.stateKey,
 				filterConfig.config.pageLimit.uiConfig.stateKey,
 				filterConfig.config.activities.uiConfig.stateKey,
-				filterConfig.config.isMatchable.uiConfig.stateKey,
 			].includes(filterConfig.config[key].uiConfig.stateKey);
 
 			return !hiddenFilters && (this.extendFlssFilters || !isExperimentFilter);
