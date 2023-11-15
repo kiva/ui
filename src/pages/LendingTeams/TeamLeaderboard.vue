@@ -12,7 +12,7 @@
 		</h4>
 		<kv-tabs
 			class="tw-px-1"
-			:class="{ 'members-tabs' : showMembersText, 'tw-pb-2' : showMembersText && isLoading }"
+			:class="{ 'members-tabs' : isNewMembers, 'tw-pb-2' : isNewMembers && isLoading }"
 			@tab-changed="handleTabChanged"
 		>
 			<template #tabNav>
@@ -39,7 +39,7 @@
 				</kv-tab>
 			</template>
 			<template #tabPanels>
-				<p v-if="showMembersText" class="tw-text-small tw-my-0.5">
+				<p v-if="isNewMembers" class="tw-text-small tw-my-0.5">
 					Only members who have lent at least once are counted
 				</p>
 				<kv-tab-panel
@@ -184,9 +184,6 @@ export default {
 				return 'Total Amount of Members the Team has';
 			} return 'Total Amount the Team has lent';
 		},
-		showMembersText() {
-			return this.isNewMembers && [0, 1].includes(this.selectedTabIndex);
-		}
 	},
 	methods: {
 		determineIfMobile() {
