@@ -7,7 +7,7 @@
 						variant="secondary"
 						@click="toggleLightbox(true)"
 					>
-						Filter & Sort
+						Filter <span class="tw-hidden md:tw-inline">& Sort</span>
 					</kv-button>
 					<kv-lightbox
 						:visible="isLightboxVisible"
