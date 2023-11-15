@@ -77,14 +77,13 @@ export default {
 
 <style scoped lang="postcss">
 	.team-challenge {
-		background-image: url('~@/assets/images/backgrounds/team_challenge_bg.png');
-		background-position-y: 80px;
+		background-image: url('~@/assets/images/backgrounds/team_challenge_bg.svg');
+		background-position-y: 0;
 		min-height: 50vh;
 	}
 
 	@screen md {
 		.team-challenge {
-			background-position-y: 80px;
 			min-height: 350px;
 		}
 
@@ -95,7 +94,7 @@ export default {
 
 	@screen lg {
 		.team-challenge {
-			background-position-y: 50px;
+			background-position-y: -24px;
 			min-height: 420px;
 		}
 
