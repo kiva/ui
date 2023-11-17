@@ -37,6 +37,9 @@
 		>
 			Save
 		</kv-button>
+		<p v-if="showError" class="tw-mt-1 tw-text-small tw-text-danger">
+			There was a problem commenting on this loan, try again please.
+		</p>
 	</kv-lightbox>
 </template>
 
@@ -67,6 +70,7 @@ export default {
 			mdiPencilOutline,
 			userComment: '',
 			loading: false,
+			showError: false,
 		};
 	},
 	computed: {
@@ -85,6 +89,7 @@ export default {
 	methods: {
 		submitComment() {
 			this.loading = true;
+			this.showError = false;
 			this.apollo.mutate({
 				mutation: loanAddComment,
 				variables: {
@@ -102,8 +107,8 @@ export default {
 					throw new Error('Comment not added');
 				}
 			}).catch(e => {
+				this.showError = true;
 				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem commenting on this loan', 'error');
 			}).finally(() => {
 				this.loading = false;
 			});
