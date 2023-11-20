@@ -135,8 +135,6 @@
 				<div v-if="totalCount > 0" class="loan-count tw-text-tertiary">
 					{{ totalCount }} loans
 				</div>
-				<!-- Donation CTA Experiment -->
-				<donation-c-t-a v-if="hasOnePageOfLoans" />
 			</div>
 		</div>
 
@@ -153,7 +151,6 @@ import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import DonationCTA from '@/components/Lend/DonationCTA';
 import KvPagination from '@/components/Kv/KvPagination';
 import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -269,7 +266,6 @@ export default {
 		KvLoadingOverlay,
 		QuickFilters,
 		HelpmeChooseWrapper,
-		DonationCTA,
 		PromoGridLoanCardExp,
 		KvClassicLoanCardContainer,
 		EmptyState,
@@ -398,9 +394,6 @@ export default {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
 			return url;
-		},
-		hasOnePageOfLoans() {
-			return this.totalCount <= this.limit;
 		},
 		showHelpMeChooseFeat() {
 			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
