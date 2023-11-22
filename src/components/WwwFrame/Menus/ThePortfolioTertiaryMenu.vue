@@ -1,5 +1,5 @@
 <template>
-	<ul class="tw-font-medium">
+	<ul class="tw-font-medium" data-testid="portfolio-tertiary-menu">
 		<li>
 			<router-link
 				to="/portfolio"
