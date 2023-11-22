@@ -111,28 +111,26 @@
 							</a>
 						</div>
 
-						<template>
-							<!-- Lend -->
-							<router-link
-								:id="lendMenuId"
-								to="/lend-by-category"
-								data-testid="header-lend"
-								class="header__button header__lend"
-								v-kv-track-event="['TopNav','click-Lend']"
-								@pointerenter.native.stop="onLendLinkPointerEnter"
-								@pointerleave.native.stop="onLendLinkPointerLeave"
-								@pointerup.native.stop="onLendLinkPointerUp"
-								@click.native.stop="onLendLinkClick"
-							>
-								<span class="tw-flex tw-items-center">Lend
-									<kv-material-icon
-										class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
-										:icon="mdiChevronDown"
-										:class="{'tw-rotate-180' : isLendMenuVisible}"
-									/>
-								</span>
-							</router-link>
-						</template>
+						<!-- Lend -->
+						<router-link
+							:id="lendMenuId"
+							to="/lend-by-category"
+							data-testid="header-lend"
+							class="header__button header__lend"
+							v-kv-track-event="['TopNav','click-Lend']"
+							@pointerenter.native.stop="onLendLinkPointerEnter"
+							@pointerleave.native.stop="onLendLinkPointerLeave"
+							@pointerup.native.stop="onLendLinkPointerUp"
+							@click.native.stop="onLendLinkClick"
+						>
+							<span class="tw-flex tw-items-center">Lend
+								<kv-material-icon
+									class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300"
+									:icon="mdiChevronDown"
+									:class="{'tw-rotate-180' : isLendMenuVisible}"
+								/>
+							</span>
+						</router-link>
 
 						<transition name="kvfastfade">
 							<div
