@@ -300,7 +300,10 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		basketDonationHeader() {
-			return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			if (this.hasLoans) {
+				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			}
+			return 'Donate to Kiva';
 		},
 	},
 	methods: {
