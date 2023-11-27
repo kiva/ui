@@ -44,7 +44,7 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="!upsellCookieActive" class="upsellContainer">
+						<div v-if="showUpsell" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="showUpsellModule && upsellLoan.name"
@@ -626,9 +626,13 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
-		// show upsell module only once per session
-		upsellCookieActive() {
-			return this.cookieStore.get('upsell-loan-added') === 'true';
+		showUpsell() {
+			// show upsell module only once per session
+			const upsellLoanAdded = this.cookieStore.get('upsell-loan-added') === 'true';
+			// hide upsell for donation-only baskets
+			const onlyDonations = this.loans.length === 0 && this.kivaCards.length === 0 && !this.emptyBasket;
+
+			return !upsellLoanAdded && !onlyDonations;
 		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
