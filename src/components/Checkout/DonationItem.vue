@@ -92,8 +92,7 @@
 								<p
 									class="tw-text-base"
 								>
-									<!-- eslint-disable-next-line max-len -->
-									100% of your loan supports  borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.
+									{{ basketDonationTagline }}
 								</p>
 							</div>
 							<button
@@ -300,8 +299,16 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		basketDonationHeader() {
-			return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			if (this.hasLoans) {
+				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			}
+			return 'Donate to Kiva';
 		},
+		basketDonationTagline() {
+			const loanSupport = this.hasLoans ? 'your loan supports' : 'loans support';
+			// eslint-disable-next-line max-len
+			return `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;
+		}
 	},
 	methods: {
 		updateDonationTo(amount) {
