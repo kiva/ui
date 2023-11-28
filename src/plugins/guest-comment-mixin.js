@@ -4,8 +4,8 @@
  * If the cookie values are present, and the user is logged in,
  * we can now leave the comment and remove the cookiies
  */
-import { gql } from '@apollo/client';
 import logFormatter from '@/util/logFormatter';
+import loanAddComment from '@/graphql/mutation/loanAddComment.graphql';
 
 export const GUEST_COMMENT_COMMENT = 'guestCommentComment';
 export const GUEST_COMMENT_LOANID = 'guestCommentLoanId';
@@ -23,11 +23,7 @@ export default {
 	methods: {
 		submitComment() {
 			this.apollo.mutate({
-				mutation: gql`mutation commentOnLoan($id: Int!, $body: String) {
-					loan(id: $id) {
-						addComment(body: $body)
-					}
-				}`,
+				mutation: loanAddComment,
 				variables: {
 					id: Number(this.$route?.params?.id ?? 0),
 					body: this.cookieStore.get(GUEST_COMMENT_COMMENT)

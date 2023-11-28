@@ -86,18 +86,17 @@
 
 						<div>
 							<div
-								class="donation-tagline tw-text-small tw-text-base tw-my-1 tw-max-w-2xl"
+								class="donation-tagline tw-my-1 tw-max-w-2xl"
 								data-testid="basket-donation-tagline"
 							>
 								<p
-									class="tw-text-small tw-text-base"
+									class="tw-text-base"
 								>
-									<!-- eslint-disable-next-line max-len -->
-									At Kiva, 100 % of your loan supports the borrower — we never take a fee.As a nonprofit, donations are crucial to advancing our mission of expanding financial access for underserved communities.
+									{{ basketDonationTagline }}
 								</p>
 							</div>
 							<button
-								class="tw-flex tw-items-center tw-text-small tw-text-link"
+								class="tw-flex tw-items-center tw-text-base tw-text-link"
 								data-testid="basket-donation-info-lightbox"
 								@click="triggerDefaultLightbox"
 								v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -202,11 +201,16 @@
 
 		<!-- How kiva use's donations lightbox -->
 		<kv-lightbox
+			:title="'Loans change lives.Your donations make them possible.'"
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
-			title="Your donations power sustainable solutions for financial access."
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
+			<template #header>
+				<h2>
+					Loans change lives. Your donations make them possible.
+				</h2>
+			</template>
 			<how-kiva-uses-donation />
 		</kv-lightbox>
 	</div>
@@ -295,8 +299,16 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		basketDonationHeader() {
-			return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			if (this.hasLoans) {
+				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+			}
+			return 'Donate to Kiva';
 		},
+		basketDonationTagline() {
+			const loanSupport = this.hasLoans ? 'your loan supports' : 'loans support';
+			// eslint-disable-next-line max-len
+			return `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;
+		}
 	},
 	methods: {
 		updateDonationTo(amount) {

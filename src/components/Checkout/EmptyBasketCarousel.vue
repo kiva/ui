@@ -45,20 +45,17 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import emptyBasketData from '@/graphql/query/checkout/emptyBasketData.graphql';
+import { runLoansQuery } from '@/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_CHECKOUT } from '@/util/flssUtils';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
 
 export default {
-	name: 'RandomLoanSelector',
+	name: 'EmptyBasketCarousel',
 	components: {
 		KvCarousel,
 		KvClassicLoanCardContainer
 	},
 	props: {
-		loans: {
-			type: Array,
-			default: () => [],
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
@@ -66,10 +63,8 @@ export default {
 	},
 	data() {
 		return {
-			carouselCardWidth: '240px',
 			randomLoans: [],
 			loading: false,
-			scrollPos: 0,
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
 			handleResize: _throttle(this.isWindowWidth, 200)
 		};
@@ -93,14 +88,15 @@ export default {
 		},
 	},
 	methods: {
-		loadLoans() {
+		async loadLoans() {
 			this.$emit('updating-totals', true);
-			this.apollo.query({
-				query: emptyBasketData,
-			}).then(({ data }) => {
-				this.randomLoans = data?.lend?.randomLoans?.values ?? [];
-				this.$emit('updating-totals', false);
-			});
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ pageLimit: 15 },
+				FLSS_ORIGIN_CHECKOUT
+			);
+			this.randomLoans = loans ?? [];
+			this.$emit('updating-totals', false);
 		},
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);

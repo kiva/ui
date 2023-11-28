@@ -8,6 +8,7 @@ const formattedUrlEnv = env === 'prod' ? '' : `${env}.`;
 const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
 const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
 const enableHotjar = process.env.ENABLE_HOTJAR !== 'false';
+const graphqlUri = process.env.API_HOSTNAME || `https://gateway.${baseUrl}/graphql`;
 
 // Auth0 app IDs
 const adminAuthId = process.env.ADMIN_AUTH_ID || 'cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5';
@@ -37,7 +38,7 @@ module.exports = {
 			},
 			enable: true,
 			checkFakeAuth,
-			apiAudience: `https://api.${baseUrl}/graphql`,
+			apiAudience: process.env.ALTERNATE_API_AUDIENCE || `https://api.${baseUrl}/graphql`,
 			mfaAudience: `https://kiva-${env}.auth0.com/mfa/`,
 			browserClientID,
 			serverClientID,
@@ -63,7 +64,7 @@ module.exports = {
 			merchantId: '10620948091453922228'
 		},
 		googleTagmanagerId: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-PXFRMT',
-		graphqlUri: `https://gateway.${baseUrl}/graphql`,
+		graphqlUri,
 		grecaptchaSitekey: process.env.G_RECAPTCHA_SITE_KEY || '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
 		host: `www.${baseUrl}`,
 		hotjarId: process.env.HOTJAR_ID || '3071239',
@@ -94,7 +95,7 @@ module.exports = {
 	},
 	server: {
 		disableCluster: true,
-		graphqlUri: `https://gateway.${baseUrl}/graphql`,
+		graphqlUri,
 		gzipEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers,

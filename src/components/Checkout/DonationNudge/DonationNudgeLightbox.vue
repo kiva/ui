@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2 v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
+			<h2 v-if="!zeroUpsellVisible" class="tw-flex-1">
 				{{ title }}
 			</h2>
 			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
@@ -36,7 +36,6 @@
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
 						data-testid="nudge-donation-no-donoation-btn"
-						tabindex="12"
 					>
 						No donation to Kiva
 					</button>
@@ -98,6 +97,8 @@ import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
 import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
 import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
+import { gql } from '@apollo/client';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -108,10 +109,26 @@ export default {
 		return {
 			mdiInformation,
 			zeroUpsellVisible: false,
-			title: 'Your donations allow us to do the work that makes lending possible.',
+			title: 'Loans change lives. Your donations make them possible.',
+			seasonalTipRateEnabled: false,
 		};
 	},
-	inject: ['cookieStore'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`query seasonalTipRateIncrease {
+				general {
+					seasonalTipRateEnabled: featureSetting(key: "seasonal_tip_rate.enabled") {
+						key
+						value
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		result({ data }) {
+			this.seasonalTipRateEnabled = readBoolSetting(data, 'general.seasonalTipRateEnabled.value');
+		}
+	},
 	components: {
 		KvButton,
 		KvLightbox,
@@ -155,12 +172,12 @@ export default {
 		percentageRows() {
 			return [
 				{
-					percentage: 15,
+					percentage: this.seasonalTipRateEnabled ? 18 : 15,
 					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
-					percentage: 20,
+					percentage: this.seasonalTipRateEnabled ? 24 : 20,
 					appeal: 'Reach more people around the world!',
 					appealIsHorizontallyPadded: false,
 				},

@@ -273,6 +273,10 @@ export default {
 				{ label: 'Preserve existing settings', value: '', shortName: '' }
 			);
 		}
+		// Removing Covid 19 category option if it is not active for the user
+		if (this.category?.marketingName !== 'COVID-19') {
+			this.lendingCategories = this.lendingCategories.filter(category => category.marketingName !== 'COVID-19');
+		}
 		/** After initial value is loaded, setup watch to make form dirty on value changes
 		 * and emit values on value changes. Setting this in mounted prevents the form
 		 * from being dirty on initial load

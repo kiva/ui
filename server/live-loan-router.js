@@ -22,10 +22,14 @@ async function fetchRecommendedLoans(type, id, cache) {
 	// Set the loan data in memcache, return the loan data
 	if (loanData && loanData.length) {
 		const expires = 10 * 60; // 10 minutes
-		memJsUtils.setToCache(`recommendations-by-${type}-id-${id}`, JSON.stringify(loanData), expires, cache)
-			.catch(err => {
-				error(`Error setting loan data to cache, ${err}`, { error: err, id, type });
-			});
+		memJsUtils.setToCache(
+			`recommendations-by-${type}-id-${id}`,
+			JSON.stringify(loanData),
+			expires,
+			cache
+		).catch(err => {
+			error(`Error setting loan data to cache, ${err}`, { error: err, id, type });
+		});
 		// Return before setting to the cache completes to speed up response times
 		return loanData;
 	}

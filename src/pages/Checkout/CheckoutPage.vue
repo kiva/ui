@@ -24,6 +24,12 @@
 						Your basket
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
+
+					<ftds-message
+						class="tw-mb-2"
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+					/>
 				</div>
 				<div class="tw-relative">
 					<div class="basket-container tw-mx-auto tw-my-0">
@@ -38,7 +44,7 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="!upsellCookieActive" class="upsellContainer">
+						<div v-if="showUpsell" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="showUpsellModule && upsellLoan.name"
@@ -195,6 +201,12 @@
 						id="updating-overlay"
 						class="updating-totals-overlay tw-z-overlay tw-bg-white"
 					/>
+
+					<ftds-disclaimer
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+						:ftd-valid-date="ftdValidDate"
+					/>
 				</div>
 			</div>
 			<campaign-verification-form
@@ -247,7 +259,7 @@
 					data-testid="empty-basket-loans"
 					style="min-height: 23rem;"
 				>
-					<random-loan-selector
+					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
@@ -270,6 +282,7 @@ import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
+import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
@@ -298,7 +311,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
+import EmptyBasketCarousel from '@/components/Checkout/EmptyBasketCarousel';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
@@ -309,6 +322,8 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import FtdsMessage from '@/components/Checkout/FtdsMessage';
+import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -316,7 +331,6 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
-const TIP_RATE_OPTIMIZATION_EXP = 'tip_rate_optimization';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -349,12 +363,14 @@ export default {
 		CampaignVerificationForm,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
-		RandomLoanSelector,
+		EmptyBasketCarousel,
 		VerifyRemovePromoCredit,
 		UpsellModule,
 		MatchedLoansLightbox,
 		CampaignJoinTeamForm,
-		KvLoadingPlaceholder
+		KvLoadingPlaceholder,
+		FtdsMessage,
+		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -385,7 +401,6 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loginButtonExperimentVersion: null,
-			tipRateOptimizationExperimentVersion: null,
 			isGuestCheckoutEnabled: false,
 			guestCheckoutCTAExpActive: false,
 			checkingOutAsGuest: false,
@@ -403,6 +418,10 @@ export default {
 			continueButtonState: 'loading',
 			challengeRedirectQueryParam: '',
 			asyncCheckoutActive: false,
+			lenderTotalLoans: 0,
+			isFtdMessageEnable: false,
+			ftdCreditAmount: '',
+			ftdValidDate: ''
 		};
 	},
 	apollo: {
@@ -440,10 +459,6 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({
-							query: experimentAssignmentQuery,
-							variables: { id: TIP_RATE_OPTIMIZATION_EXP }
-						}),
 					]);
 				});
 		},
@@ -472,6 +487,12 @@ export default {
 
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+
+			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
+			// Enable FTDs message from settings
+			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
+			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -495,6 +516,14 @@ export default {
 		});
 		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
 		this.showCheckoutError(validationErrors, true);
+
+		// Fire error for empty shop state
+		if (!this.isServer && !this.totals) {
+			Sentry.withScope(scope => {
+				scope.setTag('init_checkout', 'Missing baseline basket information');
+				Sentry.captureMessage(`Missing baseline basket information; totals value is ${this.totals}.`);
+			});
+		}
 
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
@@ -527,23 +556,6 @@ export default {
 				'EXP-GROW-203-Aug2020',
 				this.loginButtonExperimentVersion,
 			);
-		}
-
-		// MARS-452 tip rate optimization experiment
-		if (this.myId !== null && this.myId !== undefined) {
-			const tipRateOptimizationExperiment = this.apollo.readFragment({
-				id: `Experiment:${TIP_RATE_OPTIMIZATION_EXP}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			this.tipRateOptimizationExperimentVersion = tipRateOptimizationExperiment.version;
-			if (this.tipRateOptimizationExperimentVersion) {
-				this.$kvTrackEvent(
-					'Checkout',
-					'EXP-MARS-452-JUL2023',
-					this.tipRateOptimizationExperimentVersion,
-				);
-			}
 		}
 
 		if (this.eligibleForGuestCheckout) {
@@ -614,9 +626,13 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
-		// show upsell module only once per session
-		upsellCookieActive() {
-			return this.cookieStore.get('upsell-loan-added') === 'true';
+		showUpsell() {
+			// show upsell module only once per session
+			const upsellLoanAdded = this.cookieStore.get('upsell-loan-added') === 'true';
+			// hide upsell for donation-only baskets
+			const onlyDonations = this.loans.length === 0 && this.kivaCards.length === 0 && !this.emptyBasket;
+
+			return !upsellLoanAdded && !onlyDonations;
 		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
@@ -719,6 +735,9 @@ export default {
 		loanIdsInBasket() {
 			return this.loans.map(loan => loan.id);
 		},
+		showFtdMessage() {
+			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
+		}
 	},
 	methods: {
 		openMatchedLoansLightbox() {

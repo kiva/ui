@@ -73,11 +73,14 @@
 			<kv-grid class="tw-grid-cols-12">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-mb-4 hide-for-print">
 					<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
-						Here’s ${{ ftdCreditAmount }} on us <span class="tw-text-brand">toward your next loan</span>.
+						Here’s ${{ ftdCreditAmount }} on us<span class="tw-text-brand">* toward your next loan</span>.
 					</h1>
 					<p class="tw-m-0 tw-text-subhead">
 						<!-- eslint-disable-next-line max-len -->
 						As a reward for joining the Kiva community we’d like to give you a leg up on your next loan in your inbox 🥇.
+					</p>
+					<p class="tw-text-brand tw-text-h3 tw-mt-0.5">
+						* while funds last
 					</p>
 				</div>
 			</kv-grid>

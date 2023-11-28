@@ -66,7 +66,7 @@ export default {
 					marketingName: 'COVID-19',
 					marketingOrder: 7,
 					expLoansIds: [2319451, 2320833, 2320176]
-				},
+				}
 			],
 		};
 	}

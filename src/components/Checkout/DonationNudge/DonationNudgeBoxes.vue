@@ -1,7 +1,7 @@
 <template>
 	<div class="donation-nudge-boxes-container">
 		<div
-			class="md:visible tw-text-left tw-mt-4 md:tw-mt-6
+			class="md:visible tw-text-left tw-mt-2 md:tw-mt-3
 			md:tw-flex md:tw-flex-1 md:tw-flex-space-3 md:tw-gap-3"
 		>
 			<div

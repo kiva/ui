@@ -122,9 +122,9 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
 import logFormatter from '@/util/logFormatter';
 import { mdiPencilOutline } from '@mdi/js';
+import loanAddComment from '@/graphql/mutation/loanAddComment.graphql';
 import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '@/plugins/guest-comment-mixin';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -197,11 +197,7 @@ export default {
 		submitCommentAsUser() {
 			this.loading = true;
 			this.apollo.mutate({
-				mutation: gql`mutation commentOnLoan($id: Int!, $body: String) {
-					loan(id: $id) {
-						addComment(body: $body)
-					}
-				}`,
+				mutation: loanAddComment,
 				variables: {
 					id: this.loanId,
 					body: this.userComment

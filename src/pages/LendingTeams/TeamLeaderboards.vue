@@ -41,10 +41,10 @@ export default {
 		};
 	},
 	watch: {
-		'$route.query.teamCategory': {
-			handler(teamCategory) {
-				if (teamCategory !== '') {
-					this.teamCategory = teamCategory;
+		'$route.query.category': {
+			handler(category) {
+				if (category !== '') {
+					this.teamCategory = category;
 					this.getLeaderboards();
 				}
 			},
