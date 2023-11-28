@@ -1,3 +1,22 @@
+## [2.721.0](https://github.com/kiva/ui/compare/v2.720.0...v2.721.0) (2023-11-28)
+
+
+### 🎉 New Features
+
+* hide loan upsell for donation-only baskets ([ad6ca96](https://github.com/kiva/ui/commit/ad6ca962614982cbc4c0950c78d9afa634a1ef68))
+
+
+### 🐛 Bugfixes
+
+* generalize the donation tag line when no loans in basket ([36f812a](https://github.com/kiva/ui/commit/36f812adc39d8ffe0d40aa772a08df94aaf6bc9f))
+* only reference loans if there are loans in the basket ([3d40e5d](https://github.com/kiva/ui/commit/3d40e5d428c128de18d9c07408541129ebd17d6e))
+
+
+### 🧹 Chores
+
+* **release:** 2.720.1-rc.1 [skip ci] ([d8f794c](https://github.com/kiva/ui/commit/d8f794c96663aba0f3f9f43ea74985e74a1ac430))
+* **release:** 2.721.0-rc.1 [skip ci] ([a246576](https://github.com/kiva/ui/commit/a24657626fd7b0104d763f077c63d0f403229deb))
+
 ## [2.721.0-rc.1](https://github.com/kiva/ui/compare/v2.720.1-rc.1...v2.721.0-rc.1) (2023-11-28)
 
 
