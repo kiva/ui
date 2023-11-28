@@ -36,6 +36,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Estimated-repayments']"
+				data-testid="portfolio-estimated-payments"
 			>
 				Estimated repayments
 			</router-link>
@@ -46,6 +47,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Add-credit']"
+				data-testid="portfolio-add-credit"
 			>
 				Add credit
 			</router-link>
@@ -86,6 +88,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Transaction-history']"
+				data-testid="portfolio-transactions"
 			>
 				Transaction history
 			</router-link>
@@ -116,6 +119,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Invite-friends']"
+				data-testid="portfolio-invite-friends"
 			>
 				Invite friends
 			</router-link>
