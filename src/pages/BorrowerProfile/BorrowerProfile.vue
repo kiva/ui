@@ -562,7 +562,7 @@ export default {
 				EDUCATION_PLACEMENT_EXP,
 				'EXP-MARS-514-DEC2023 ',
 			);
-			if (educationExpData.version === 'a') {
+			if (educationExpData.version === 'b') {
 				this.showEducationPlacementExp = true;
 			}
 		}
