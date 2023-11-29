@@ -130,6 +130,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Free-credit-history']"
+				data-testid="portfolio-bonus-history"
 			>
 				Free credit history
 			</router-link>
