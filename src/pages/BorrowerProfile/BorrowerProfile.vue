@@ -418,7 +418,7 @@ export default {
 			isMobile: false,
 			isLoading: true,
 			regionBelongsToExp: false,
-			showEducationPlacementExp: true,
+			showEducationPlacementExp: false,
 			loanRegion: '',
 			expRegionList: [
 				'North America',
