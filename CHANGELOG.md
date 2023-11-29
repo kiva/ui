@@ -1,3 +1,15 @@
+## [2.721.1](https://github.com/kiva/ui/compare/v2.721.0...v2.721.1) (2023-11-29)
+
+
+### 🐛 Bugfixes
+
+* temporarily increase prod pod count and request capacity ([f41e1e1](https://github.com/kiva/ui/commit/f41e1e1acb4fbef716bca8b51833683109f62325))
+
+
+### 🧹 Chores
+
+* **release:** 2.721.1-rc.1 [skip ci] ([7d85f1a](https://github.com/kiva/ui/commit/7d85f1ac5a39e5c4a8fecd5ba81d0a2634d4877f))
+
 ## [2.721.1-rc.1](https://github.com/kiva/ui/compare/v2.721.0...v2.721.1-rc.1) (2023-11-29)
 
 
