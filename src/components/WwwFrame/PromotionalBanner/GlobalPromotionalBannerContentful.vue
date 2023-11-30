@@ -76,6 +76,17 @@ export default {
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
 				const activePromoBanner = uiGlobalPromoSetting.fields.content.find(promoContent => {
+					// guard against drafts
+					if (promoContent?.sys?.revision === 0) {
+						return false;
+					}
+					// guard against missing fields
+					if (!promoContent?.fields
+						|| !promoContent?.fields?.active
+						|| !promoContent?.fields?.startDate
+						|| !promoContent?.fields?.endDate) {
+						return false;
+					}
 					return settingEnabled(
 						promoContent.fields,
 						'active',
@@ -84,7 +95,8 @@ export default {
 					);
 				});
 
-				if (activePromoBanner) {
+				// check for activePromoBanner and ensure it has content fields
+				if (activePromoBanner && activePromoBanner?.fields) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = globalBannerDenyList.concat(activePromoBanner?.fields?.hiddenUrls ?? []);
 					const visibleUrls = [];
