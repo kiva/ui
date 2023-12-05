@@ -187,17 +187,20 @@ export default {
 	methods: {
 		setDonationAndClose(amount, source) {
 			const zeroUpsellCookie = this.cookieStore.get('zero_upsell_visible') || true;
+			if (amount === 0) {
+				const expires = new Date();
+				expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
+				this.cookieStore.set('zero_upsell_visible', false, { expires });
+				this.$kvTrackEvent('basket', 'click', `Update Nudge Donation - ${source}`, amount * 100);
+			}
 			if (amount === 0 && !this.zeroUpsellVisible && zeroUpsellCookie !== 'false') {
 				this.zeroUpsellVisible = true;
 			} else {
-				if (amount === 0) {
-					const expires = new Date();
-					expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
-					this.cookieStore.set('zero_upsell_visible', false, { expires });
+				if (amount > 0) {
+					const clickSource = source ? ` - ${source}` : '';
+					this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
 				}
-				const clickSource = source ? ` - ${source}` : '';
 				this.updateDonationTo(amount);
-				this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
 				this.closeNudgeLightbox();
 			}
 		},
