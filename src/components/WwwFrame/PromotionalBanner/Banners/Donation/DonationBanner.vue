@@ -3,6 +3,7 @@
 	<div>
 		<div class="tw-py-2 lg:tw-py-3 tw-bg-brand-100">
 			<kv-page-container>
+				<!-- eslint-disable max-len -->
 				<div
 					class="tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-justify-center tw-relative tw-gap-0 md:tw-gap-3"
 				>
