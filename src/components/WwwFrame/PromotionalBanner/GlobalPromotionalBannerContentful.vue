@@ -9,6 +9,10 @@
 			v-if="appealEnabled"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
+		<donation-banner-container
+			v-if="donationEnabled"
+			:donation-banner-content="donationBannerContent.fields"
+		/>
 	</div>
 </template>
 
@@ -22,6 +26,7 @@ import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -36,6 +41,7 @@ export default {
 	components: {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,
+		DonationBannerContainer,
 	},
 	props: {
 		hasPromoSession: {
@@ -48,7 +54,9 @@ export default {
 			isPromoEnabled: false,
 			promoBannerContent: {},
 			appealBannerContent: {},
+			donationBannerContent: {},
 			appealEnabled: false,
+			donationEnabled: false,
 			customAppealEnabled: false,
 		};
 	},
@@ -117,6 +125,10 @@ export default {
 						// Custom Banner
 						this.customAppealEnabled = true;
 						this.appealBannerContent = activePromoBanner;
+					} else if (activePromoBanner.fields.bannerType === 'Donation Banner') {
+						// Donation Banner
+						this.donationEnabled = true;
+						this.donationBannerContent = activePromoBanner;
 					} else {
 						// Promo Banner
 						// parse the contentful richText into an html string
