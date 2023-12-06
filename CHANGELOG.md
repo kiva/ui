@@ -1,3 +1,10 @@
+## [2.722.0-rc.1](https://github.com/kiva/ui/compare/v2.721.1...v2.722.0-rc.1) (2023-12-06)
+
+
+### 🎉 New Features
+
+* change portfolio cta art ([099f642](https://github.com/kiva/ui/commit/099f642c820efbe7749b3c06f7bb99f39d3ccdd4))
+
 ## [2.721.1](https://github.com/kiva/ui/compare/v2.721.0...v2.721.1) (2023-11-29)
 
 
