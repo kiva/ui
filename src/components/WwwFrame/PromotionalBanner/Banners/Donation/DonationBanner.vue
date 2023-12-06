@@ -21,17 +21,19 @@
 						</div>
 					</div>
 					<div class="tw-text-center md:tw-text-left">
-						<h3 class="tw-inline" v-html="headline"></h3>
-						<a
-							v-if="disclaimer"
-							v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
-							class="tw-text-primary"
-							@click="scrollToSection('#disclaimers')"
-						>
-							<sup>
-								1
-							</sup>
-						</a>
+						<div class="md:tw-max-w-lg tw-whitespace-prewrap">
+							<h3 class="tw-inline" v-html="headline"></h3>
+							<a
+								v-if="disclaimer"
+								v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+								class="tw-text-primary"
+								@click="scrollToSection('#disclaimers')"
+							>
+								<sup>
+									1
+								</sup>
+							</a>
+						</div>
 						<div
 							class="tw-mb-3 tw-mt-0.5 lg:tw-mb-2 tw-whitespace-pre-wrap md:tw-max-w-sm"
 							v-html="body"
