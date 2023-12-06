@@ -13,7 +13,7 @@
 								v-if="bannerImageUrl"
 								class="tw-absolute tw-h-full tw-w-full tw-z-1"
 								:contentful-src="bannerImageUrl"
-								alt=""
+								alt="Donation Banner image"
 								fallback-format="gif"
 								:height="128"
 								:width="128"
@@ -55,8 +55,7 @@
 								]"
 								variant="secondary"
 								class="tw-border-brand tw-text-brand"
-								:href="`/donate/supportus/?dfmode=${frequency}&
-									dfamt=${numeral(buttonAmount).format('0.00')}`"
+								:href="`/donate/supportus?dfmode=${frequency}&dfamt=${numeral(buttonAmount).format('0.00')}`"
 							>
 								Donate ${{ buttonAmount }}
 							</kv-button>
@@ -64,7 +63,7 @@
 								v-kv-track-event="['promo', 'click-other', 'DonationBanner', 0, 0]"
 								variant="secondary"
 								class="other-amount"
-								:href="`/donate/supportus??dfmode=${frequency}&dfmat=0.00`"
+								:href="`/donate/supportus?dfmode=${frequency}&dfmat=0.00`"
 							>
 								Other
 							</kv-button>
@@ -74,7 +73,8 @@
 								'promo',
 								'click-donation-banner-close',
 								'x',
-							]" class="`
+							]"
+							class="`
 								tw-flex
 								tw-items-center
 								tw-justify-center
@@ -85,7 +85,8 @@
 								tw-right-2
 								tw-rounded
 								hover:tw-bg-tertiary
-								focus:tw-bg-tertiary`" @click="onCloseBanner"
+								focus:tw-bg-tertiary`"
+							@click="onCloseBanner"
 						>
 							<kv-material-icon class="tw-h-2 tw-w-2" :icon="mdiClose" />
 						</button>
