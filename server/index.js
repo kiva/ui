@@ -19,6 +19,15 @@ const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
 const initializeTerminus = require('./util/terminusConfig');
+const metricsMiddleware = promBundle({
+    includeMethod: true,
+    includePath: true,
+    includeStatusCode: true,
+    includeUp: true,
+    promClient: {
+		collectDefaultMetrics: {}
+	}
+});
 
 // Initialize tracing
 require('./util/ddTrace');
@@ -28,6 +37,9 @@ const cache = initCache(config.server);
 
 const app = express();
 const port = argv.port || config.server.port;
+
+// load metrics middleware
+app.use(metricsMiddleware)
 
 // Use gzip on local server.
 // In higher environments it's handled elsewhere
