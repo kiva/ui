@@ -19,6 +19,7 @@ const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
 const initializeTerminus = require('./util/terminusConfig');
+const promBundle = require("express-prom-bundle");
 const metricsMiddleware = promBundle({
     includeMethod: true,
     includePath: true,
