@@ -25,7 +25,7 @@
 							<h3 class="tw-inline" v-html="headline"></h3>
 							<a
 								v-if="disclaimer"
-								v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
+								v-kv-track-event="['promo', 'click-disclaimer-superscript', 'donation-banner', '1']"
 								class="tw-text-primary"
 								@click="scrollToSection('#disclaimers')"
 							>
@@ -51,7 +51,7 @@
 								v-kv-track-event="[
 									'promo',
 									'click-amount-btn',
-									'DonationBanner',
+									'donation-banner',
 									buttonAmount,
 									buttonAmount
 								]"
@@ -62,7 +62,7 @@
 								Donate ${{ buttonAmount }}
 							</kv-button>
 							<kv-button
-								v-kv-track-event="['promo', 'click-other', 'DonationBanner', 0, 0]"
+								v-kv-track-event="['promo', 'click-other', 'donation-banner', 0, 0]"
 								variant="secondary"
 								class="other-amount"
 								:href="`/donate/supportus?dfmode=${frequency}&dfmat=0.00`"
@@ -73,8 +73,8 @@
 						<button
 							v-kv-track-event="[
 								'promo',
-								'click-donation-banner-close',
-								'x',
+								'click-close',
+								'donation-banner',
 							]"
 							class="`
 								tw-flex
