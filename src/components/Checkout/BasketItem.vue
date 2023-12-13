@@ -38,10 +38,10 @@
 				/>
 				<team-attribution
 					class="tw-mb-1 tw-mt-0.5"
-					v-if="teams.length"
-					:teams="teams"
+					v-if="combinedTeams.length"
+					:teams="combinedTeams"
 					:loan-id="loan.id"
-					:team-id="loan.team ? loan.team.id : 0"
+					:team-id="loanTeamAttributionId"
 				/>
 				<loan-promo-credits
 					:applied-promo-credits="appliedPromoCredits"
@@ -123,6 +123,8 @@ import LoanPrice from '@/components/Checkout/LoanPrice';
 import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
 
+const teamChallengeCookieName = 'kv-team-challenge';
+
 export default {
 	name: 'BasketItem',
 	components: {
@@ -157,6 +159,8 @@ export default {
 		return {
 			activateTimer: true,
 			loanVisible: true,
+			appendedTeams: [],
+			forceTeamId: null
 		};
 	},
 	computed: {
@@ -178,6 +182,15 @@ export default {
 		leftoverCreditAllocationLoanId() {
 			return this.cookieStore.get('lcaid');
 		},
+		combinedTeams() {
+			return [...this.teams, ...this.appendedTeams];
+		},
+		loanTeamAttributionId() {
+			if (this.forceTeamId) {
+				return this.forceTeamId;
+			}
+			return this.loan.team ? this.loan.team.id : 0;
+		}
 	},
 	methods: {
 		onLoanUpdate($event) {
@@ -193,5 +206,26 @@ export default {
 			this.$emit('validateprecheckout');
 		}
 	},
+	mounted() {
+		// Team Challenge MVP Code
+		// If team challenge cookie is present, the user has added a loan to basket from the challenge page
+		// In that case, append the team info to the list of teams and attribute this loan to that team
+		if (this.cookieStore.get(teamChallengeCookieName)) {
+			const teamChallengeLoanData = JSON.parse(this.cookieStore.get(teamChallengeCookieName));
+			teamChallengeLoanData.forEach(loan => {
+				if (loan.loanId === this.loan.id) {
+					// Loan has a different team attribution, we should override the default
+					// Is team not in the users list, append it
+					if (!this.combinedTeams.some(team => team.id === loan.teamId)) {
+						this.appendedTeams.push({
+							id: loan.teamId,
+							name: loan.teamName
+						});
+					}
+					this.forceTeamId = loan.teamId;
+				}
+			});
+		}
+	}
 };
 </script>
