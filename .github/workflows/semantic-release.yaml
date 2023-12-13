@@ -42,6 +42,7 @@ jobs:
           GITHUB_PAT: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
         with:
           config: "node"
+          environment: ${{ github.event.inputs.environment }}
 
   # Build and push the image to ECR if the release was published
   build-image:

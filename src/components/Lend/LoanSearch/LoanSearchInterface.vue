@@ -7,7 +7,7 @@
 						variant="secondary"
 						@click="toggleLightbox(true)"
 					>
-						Filter & Sort
+						Filter <span class="tw-hidden md:tw-inline">& Sort</span>
 					</kv-button>
 					<kv-lightbox
 						:visible="isLightboxVisible"
@@ -127,10 +127,6 @@
 				</template>
 			</div>
 		</div>
-		<template v-if="initialLoadComplete && totalCount > 0">
-			<!-- Donation CTA Experiment -->
-			<donation-c-t-a v-if="hasOnePageOfLoans" />
-		</template>
 	</div>
 </template>
 
@@ -153,7 +149,6 @@ import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '@/util/loanSearch/filterConfig';
-import DonationCTA from '@/components/Lend/DonationCTA';
 import { gql } from '@apollo/client';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
@@ -176,7 +171,6 @@ export default {
 	name: 'LoanSearchInterface',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		DonationCTA,
 		LoanSearchFilterChips,
 		KvButton,
 		LoanSearchFilter,
@@ -330,9 +324,6 @@ export default {
 				return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
 			}, false);
 		},
-		hasOnePageOfLoans() {
-			return this.totalCount <= this.loanSearchState.pageLimit;
-		}
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {

@@ -22,6 +22,7 @@
 				v-for="(id, index) in loanIds"
 				:key="index"
 				:loan-id="id"
+				@open-comment-modal="openCommentModal"
 				class="tw-col-span-6 lg:tw-col-span-4"
 			/>
 		</kv-grid>
@@ -35,6 +36,11 @@
 				View all loans
 			</router-link>
 		</p>
+		<!-- Loan Comment Component -->
+		<loan-comment-modal
+			:loan="commentLoanData"
+			@comment-modal-closed="commentLoanData.visible = false"
+		/>
 	</async-portfolio-section>
 </template>
 
@@ -46,6 +52,7 @@ import AsyncPortfolioSection from './AsyncPortfolioSection';
 import RecentLoanItem from './RecentLoanItem';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import LoanCommentModal from './LoanCommentModal';
 
 export default {
 	name: 'RecentLoansList',
@@ -56,6 +63,7 @@ export default {
 		KvGrid,
 		KvLoadingPlaceholder,
 		RecentLoanItem,
+		LoanCommentModal,
 	},
 	data() {
 		return {
@@ -64,6 +72,11 @@ export default {
 			lenderName: '',
 			totalLoans: 0,
 			loanIds: [0, 0, 0, 0, 0],
+			commentLoanData: {
+				loanId: 0,
+				borrowerName: '',
+				visible: false,
+			},
 		};
 	},
 	computed: {
@@ -102,6 +115,12 @@ export default {
 					this.loadingPromise = null;
 				});
 			}
+		},
+		openCommentModal(payload) {
+			this.commentLoanData = {
+				...payload,
+				visible: true
+			};
 		}
 	},
 };

@@ -1,3 +1,57 @@
+## [2.723.0-rc.2](https://github.com/kiva/ui/compare/v2.723.0-rc.1...v2.723.0-rc.2) (2023-12-13)
+
+
+### 🎉 New Features
+
+* add prometheus metrics ([adb7872](https://github.com/kiva/ui/commit/adb7872fe1794c7625009e9ae518aa0a7d1a5ad7))
+* **FakeAuthentication:** use headers for fake auth instead of url parameters CP-677 ([33fb71f](https://github.com/kiva/ui/commit/33fb71f35cb6e8e3fb8da74eae513ec89c3ddc14))
+* update events when user clicks No donation and enters /bin/zsh in the custom amount box ([1b9f6d9](https://github.com/kiva/ui/commit/1b9f6d9b4f27dca05fbd53d7bc69e180a9113c1a))
+
+
+### 🐛 Bugfixes
+
+* missing const for prometheus middleware ([3d5d5c9](https://github.com/kiva/ui/commit/3d5d5c918d1dbadfb9a19ea2ac07cce90c99fb3c))
+
+
+### 🪚 Refactors
+
+* more comprehensible zero_upsell expire calculation ([368c8d8](https://github.com/kiva/ui/commit/368c8d8abae48026a7b7b8806e9d3ad6a2c2ede9))
+
+## [2.723.0-rc.1](https://github.com/kiva/ui/compare/v2.722.0...v2.723.0-rc.1) (2023-12-07)
+
+
+### 🎉 New Features
+
+* add education placement in borrower profile based on region ([2c22a0e](https://github.com/kiva/ui/commit/2c22a0e21d40ccec67a37ac7c36e14dbf34de96a))
+* add some test ids to target in robot tests ([7096d88](https://github.com/kiva/ui/commit/7096d88b965f0d262f13d6c2d225eec74d46dd85))
+* add tests ids to portfolio elements ([2bcb7b5](https://github.com/kiva/ui/commit/2bcb7b562f49b73c334d17e2325277660a9299c0))
+* adding test id to bonus history ([9808860](https://github.com/kiva/ui/commit/9808860b9228e504691850e7a84f693005234aba))
+* change portfolio cta art ([3f8dbc5](https://github.com/kiva/ui/commit/3f8dbc599402e4b32c8ff90cc68901ac17e8766d))
+* hide loan upsell for donation-only baskets ([694c655](https://github.com/kiva/ui/commit/694c65586ad53fd3b78ddd9f1c5154385f7edc1b))
+* homepage file cleaned up ([#5079](https://github.com/kiva/ui/issues/5079)) ([c5c8261](https://github.com/kiva/ui/commit/c5c8261553d516cd1dd9b6897a107847bc6c2767))
+* lend menu buttons test code removed ([#5078](https://github.com/kiva/ui/issues/5078)) ([d37a627](https://github.com/kiva/ui/commit/d37a6271c73670a3eb6bbdfa28d2d0386ed83718))
+* loan comment modal added to portfolio page ([#5075](https://github.com/kiva/ui/issues/5075)) ([9a47cde](https://github.com/kiva/ui/commit/9a47cde0b6e527f55c20d6d165cdb9af9abdf149))
+* matched loans filter added to filter page ([#5073](https://github.com/kiva/ui/issues/5073)) ([cbc085b](https://github.com/kiva/ui/commit/cbc085b120e36e8143e1d8f84ebb5370e840cb33))
+* mobile filter cta copy updated in filter page ([#5071](https://github.com/kiva/ui/issues/5071)) ([c777c7b](https://github.com/kiva/ui/commit/c777c7b179e0ac1ecd895c59a860f7da9d09a2db))
+* supply donate cta test code removed ([#5076](https://github.com/kiva/ui/issues/5076)) ([249e2c6](https://github.com/kiva/ui/commit/249e2c611b2fcc8356a9602aec20ec54613ffef7))
+* tip rate optimization test code removed ([#5077](https://github.com/kiva/ui/issues/5077)) ([d609987](https://github.com/kiva/ui/commit/d6099870d3c4d48cbab8b0447083b470b4707ff5))
+
+
+### 🐛 Bugfixes
+
+* change variant variable ([af90786](https://github.com/kiva/ui/commit/af90786fd385c071f8b7cc20be8ad0aecc671662))
+* experiment flag default value ([863e505](https://github.com/kiva/ui/commit/863e505c78e012aa4fff934d37f56f47e70d017a))
+* generalize the donation tag line when no loans in basket ([8f42e60](https://github.com/kiva/ui/commit/8f42e60e8f1309e6e51c43b6eae846033cf41e15))
+* guard against missing fields and draft ui-global-promo banners ([dfa8c8e](https://github.com/kiva/ui/commit/dfa8c8e712650850354f4533803831b83a046eb4))
+* only reference loans if there are loans in the basket ([80ba549](https://github.com/kiva/ui/commit/80ba549ce7477eb92ac350118771ced09737f197))
+* temporarily increase prod pod count and request capacity ([0e11c9d](https://github.com/kiva/ui/commit/0e11c9dce33d5a9d0963c98d5eaa100b4335807b))
+* text should be shown for all time leaderboard ([2468c72](https://github.com/kiva/ui/commit/2468c72b70e0ee6526129b50df8fb3fe6a4a2ae8))
+
+
+### 🏗️ Build System
+
+* pass along release environment variable ([07a7cd8](https://github.com/kiva/ui/commit/07a7cd86d7fa718d558d36bade213a9b1fdb6932))
+
 ## [2.722.0](https://github.com/kiva/ui/compare/v2.721.1...v2.722.0) (2023-12-06)
 
 

@@ -14,6 +14,16 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const threadLoader = require('thread-loader');
+const promBundle = require("express-prom-bundle");
+const metricsMiddleware = promBundle({
+    includeMethod: true,
+    includePath: true,
+    includeStatusCode: true,
+    includeUp: true,
+    promClient: {
+		collectDefaultMetrics: {}
+	}
+});
 
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
@@ -163,6 +173,9 @@ app.use('/live-loan', liveLoanRouter(cache));
 // install dev/hot middleware
 app.use(devMiddleware);
 app.use(hotMiddleware);
+
+// load metrics middleware
+app.use(metricsMiddleware)
 
 // Configure session
 app.use('/', sessionRouter(config.server));
