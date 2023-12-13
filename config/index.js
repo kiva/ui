@@ -27,6 +27,7 @@ module.exports = {
 		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@o7540.ingest.sentry.io/1201288',
+		sentryTraceSampleRate: 0.1,
 		algoliaConfig: {
 			group: 'prod',
 			appId: 'H4ONVZQ2C6',
