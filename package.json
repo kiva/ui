@@ -51,7 +51,6 @@
 		"@kiva/kv-components": "^3.47.0",
 		"@kiva/kv-tokens": "^2.7.0",
 		"@mdi/js": "^7",
-		"@sentry/browser": "^7.87.0",
 		"@sentry/vue": "^7.87.0",
 		"@vue/composition-api": "^1.4.6",
 		"algoliasearch": "^3.34.0",
