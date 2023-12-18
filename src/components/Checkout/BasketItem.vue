@@ -225,6 +225,13 @@ export default {
 					this.forceTeamId = loan.teamId;
 				}
 			});
+			// Remove this loan from the cookie object after we've used it
+			teamChallengeLoanData.splice(
+				teamChallengeLoanData.findIndex(loan => loan.loanId === this.loan.id),
+				1
+			);
+			// overwrite the cookie with the new data
+			this.cookieStore.set(teamChallengeCookieName, JSON.stringify(teamChallengeLoanData));
 		}
 	}
 };
