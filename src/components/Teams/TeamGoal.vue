@@ -41,7 +41,7 @@
 				/>
 			</div>
 
-			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center">
+			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center tw-text-secondary">
 				<span>{{ membersParticipating }} members participating</span>
 				<kv-button :to="`/team/challenge/${teamPublicId}`" variant="caution">
 					View
