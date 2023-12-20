@@ -86,7 +86,7 @@ module.exports = {
 		photoPath: process.env.PHOTO_PATH || 'https://www-dev-kiva-org.freetls.fastly.net/img/',
 		publicPath: process.env.PUBLIC_PATH || `https://www.${baseUrl}/`,
 		sentryURI: process.env.SENTRY_URI || 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
-		sentryTraceSampleRate: process.env.SENTRY_TRACE_RATE || 0.1,
+		sentryTraceSampleRate: process.env.SENTRY_TRACE_RATE || 0.25,
 		snowplowUri: process.env.SNOWPLOW_URI || 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		transport: 'https',
 	},
