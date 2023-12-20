@@ -463,7 +463,7 @@ export default {
 					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
 					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
 					// Evaluate if lender should be redirected to lend classic MARS-358
-					const lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
+					const lentTo = loan?.userProperties?.lentTo ?? false;
 					if (lentTo && !redirectToLendClasic) {
 						const loanAmount = loan?.loanAmount ?? '0';
 						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
