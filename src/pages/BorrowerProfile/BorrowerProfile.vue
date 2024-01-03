@@ -470,7 +470,7 @@ export default {
 						const amountLeft = Number(loanAmount) - Number(fundedAmount);
 
 						const loanStatus = loan?.status !== 'fundraising';
-						redirectToLendClasic = !amountLeft && loanStatus;
+						redirectToLendClasic = !amountLeft || loanStatus;
 					}
 
 					if (redirectToLendClasic) {
