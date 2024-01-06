@@ -49,9 +49,15 @@ function fetchGqlPossibleTypes(url, cache) {
 				}
 			});
 
+			const typesJSON = JSON.stringify(possibleTypes);
+
+			// Cache the possible types in the local process
+			process.env.FETCHED_GQL_TYPES = typesJSON;
+
+			// Cache the possible types in memcached for other processes to use
 			cache.set(
 				'ui-gql-possible-types',
-				JSON.stringify(possibleTypes),
+				typesJSON,
 				{ expires: 24 * 60 * 60 },
 				(error, success) => {
 					if (error) {
@@ -69,6 +75,13 @@ function fetchGqlPossibleTypes(url, cache) {
 
 function getGqlPossibleTypesFromCache(cache) {
 	return new Promise(resolve => {
+		// If the possible types have already been fetched in this process, return them
+		if (process.env.FETCHED_GQL_TYPES) {
+			resolve(JSON.parse(process.env.FETCHED_GQL_TYPES));
+			return;
+		}
+
+		// Otherwise, check the cache
 		cache.get('ui-gql-possible-types', (error, data) => {
 			let parsedData = [];
 			if (error) {
