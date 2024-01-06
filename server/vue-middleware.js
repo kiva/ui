@@ -1,16 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const { Worker, SHARE_ENV } = require('worker_threads');
 const Bowser = require('bowser');
 const cookie = require('cookie');
-const { createBundleRenderer } = require('vue-server-renderer');
-const getGqlPossibleTypes = require('./util/getGqlPossibleTypes');
-const getSessionCookies = require('./util/getSessionCookies');
 const log = require('./util/log');
 const protectedRoutes = require('./util/protectedRoutes.js');
-const vueSsrCache = require('./util/vueSsrCache');
 const tracer = require('./util/ddTrace');
-
-const isProd = process.env.NODE_ENV === 'production';
 
 // vue-middleware specific error handling
 function handleError(err, req, res, next) {
@@ -34,7 +29,6 @@ module.exports = function createMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
-	cache
 }) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
@@ -46,20 +40,7 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used by all requests
-	const renderer = createBundleRenderer(serverBundle, {
-		cache: vueSsrCache(cache),
-		template,
-		clientManifest,
-		runInNewContext: false,
-		inject: false,
-		// don't prefetch anything
-		shouldPrefetch: () => false,
-	});
-
 	function middleware(req, res, next) {
-		const s = Date.now();
-
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
@@ -84,49 +65,42 @@ module.exports = function createMiddleware({
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 		}
 
-		// get graphql api possible types for the graphql client
-		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache)
-			.finally(() => {
-				if (!isProd) {
-					log.info(`fragment fetch: ${Date.now() - s}ms`);
-				}
-			});
+		// Create a worker thread to render the app
+		const worker = new Worker(path.resolve(__dirname, 'vue-worker.js'), {
+			workerData: {
+				clientManifest,
+				context,
+				serverBundle,
+				serverConfig: config.server,
+				template,
+			},
+			env: SHARE_ENV,
+		});
 
-		// fetch initial session cookies in case starting session with this request
-		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies)
-			.finally(() => {
-				if (!isProd) {
-					log.info(`session fetch: ${Date.now() - s}ms`);
-				}
-			});
+		// Send the rendered html back to the client
+		worker.on('message', ({ error, html, setCookies }) => {
+			// set any cookies created during the app render
+			setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 
-		Promise.all([typesPromise, cookiePromise])
-			.then(([types, cookieInfo]) => {
-				// add fetched types to rendering context
-				context.config.graphqlPossibleTypes = types;
-				// update cookies in the rendering context with any newly fetched session cookies
-				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-				// forward any newly fetched 'Set-Cookie' headers
-				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// render the app
-				return tracer.trace('renderer.renderToString', () => renderer.renderToString(context));
-			}).then(html => {
-				// set any cookies created during the app render
-				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+			if (error) {
+				handleError(error, req, res, next);
+			} else {
 				// send the final rendered html
 				res.send(html);
-				if (!isProd) {
-					log.info(`whole request: ${Date.now() - s}ms`);
-				}
-			}).catch(err => {
-				if (err.url) {
-					// since this error is a redirect, set any cookies created during the app render
-					if (context && context.setCookies) {
-						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-					}
-				}
-				handleError(err, req, res, next);
-			});
+			}
+		});
+
+		// Handle any errors that occur in the worker
+		worker.on('error', err => {
+			handleError(err, req, res, next);
+		});
+
+		// Handle the worker exiting
+		worker.on('exit', code => {
+			if (code !== 0) {
+				log.error(new Error(`Worker stopped with exit code ${code}`));
+			}
+		});
 	}
 
 	return tracer.wrap('vue-middleware', middleware);
