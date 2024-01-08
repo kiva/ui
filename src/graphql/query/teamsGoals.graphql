@@ -1,30 +1,35 @@
 query GetGoals {
-  getGoals(filters: { audienceType: TEAM, isActive: true}) {
-    totalCount
-    values {
-      id
-      description
-      name
-      participation {
-        totalCount
-        values {
-          lenderId
-        }
-      }
-      status
-      targets {
-        totalCount
-        values {
-          ... on LoanTarget {
-            loanId
-            status
-          }
-        }
-      }
-      endDate
-	  ... on TeamGoal {
-        teamId
-      }
-    }
-  }
+	getGoals(filters: { audienceType: TEAM, isActive: true}) {
+		totalCount
+		values {
+		id
+		description
+		name
+		participation {
+			totalCount
+			values {
+				lender {
+					id
+					image {
+						url
+					}
+				}
+			}
+		}
+		status
+		targets {
+			totalCount
+			values {
+				... on LoanTarget {
+					loanId
+					status
+				}
+			}
+		}
+		endDate
+		... on TeamGoal {
+			teamId
+		}
+		}
+	}
 }
