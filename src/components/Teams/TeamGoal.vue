@@ -37,12 +37,39 @@
 			<div class="tw-mt-1">
 				<kv-progress-bar
 					:value="percentageFunded"
+					aria-label="Completion of challenge"
 					class="tw-w-full"
 				/>
 			</div>
 
 			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center tw-text-secondary">
-				<span>{{ membersParticipating }} members participating</span>
+				<div class="tw-flex tw-items-center">
+					<div class="tw-shrink-0">
+						<img
+							v-for="(lender, i) in participationLendersDisplayed"
+							:key="lender.id"
+							:src="lender.image.url"
+							alt="Lender photo"
+							class="
+								data-hj-suppress
+								tw-inline-block
+								tw-w-4
+								tw-h-4
+								tw-rounded-full
+								tw-overflow-hidden
+								tw-border
+								tw-border-white
+								tw-object-fill
+								tw-relative
+							"
+							:class="{ 'tw--ml-2': i > 0, 'tw-border-gray-200': lender.isLegacyPlaceholder }"
+							:style="{ 'z-index': participationLendersDisplayed.length - i }"
+						>
+					</div>
+					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden tw-px-1">
+						{{ participationTotalCount }} members participating
+					</span>
+				</div>
 				<kv-button :to="`/team/challenge/${teamPublicId}`" variant="caution">
 					View
 				</kv-button>
@@ -58,6 +85,7 @@ import {
 	parseISO,
 	differenceInDays,
 } from 'date-fns';
+import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
@@ -115,8 +143,14 @@ export default {
 		percentageFunded() {
 			return (this.loansFunded / this.totalLoans) * 100;
 		},
-		membersParticipating() {
+		participationTotalCount() {
 			return this.goal?.participation?.totalCount ?? 0;
+		},
+		participationLendersDisplayed() {
+			return (this.goal?.participation?.values ?? []).map(p => ({
+				...p.lender,
+				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image.url.split('/').pop()),
+			})).slice(0, 4);
 		},
 	},
 	methods: {
