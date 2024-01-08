@@ -66,7 +66,7 @@
 							:style="{ 'z-index': participationLendersDisplayed.length - i }"
 						>
 					</div>
-					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden tw-px-1">
+					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden md:tw-px-1">
 						{{ participationTotalCount }} members participating
 					</span>
 				</div>
