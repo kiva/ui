@@ -324,6 +324,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
+import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -877,6 +878,8 @@ export default {
 					800
 				);
 			});
+
+			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
