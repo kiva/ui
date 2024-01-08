@@ -122,7 +122,7 @@ import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
 import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
-import { getForcedTeamId } from '@/util/teamChallengeUtils';
+import { getForcedTeamId, removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 
 export default {
 	name: 'BasketItem',
@@ -196,6 +196,7 @@ export default {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
 				this.loanVisible = false;
+				removeLoansFromChallengeCookie(this.cookieStore, [this.loan.id]);
 			}
 		},
 	},

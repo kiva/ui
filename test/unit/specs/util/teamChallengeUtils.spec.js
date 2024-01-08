@@ -77,7 +77,7 @@ describe('teamChallengeUtils.js', () => {
 	describe('removeLoansFromChallengeCookie', () => {
 		it('should use expected cookie name', () => {
 			const cookieStore = { get: jest.fn() };
-			removeLoansFromChallengeCookie(cookieStore, 1, [], []);
+			removeLoansFromChallengeCookie(cookieStore, 1);
 			expect(cookieStore.get).toBeCalledTimes(1);
 			expect(cookieStore.get).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME);
 		});
@@ -91,6 +91,14 @@ describe('teamChallengeUtils.js', () => {
 		it('should handle bad cookie value', () => {
 			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify({})), set: jest.fn() };
 			removeLoansFromChallengeCookie(cookieStore, [mockLoans[0].loanId]);
+			expect(cookieStore.set).toBeCalledTimes(0);
+		});
+
+		it('should handle bad array', () => {
+			const cookieStore = { get: jest.fn(), set: jest.fn() };
+			removeLoansFromChallengeCookie(cookieStore, 1);
+			removeLoansFromChallengeCookie(cookieStore, {});
+			removeLoansFromChallengeCookie(cookieStore, undefined);
 			expect(cookieStore.set).toBeCalledTimes(0);
 		});
 
