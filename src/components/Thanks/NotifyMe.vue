@@ -7,13 +7,13 @@
 						class="tw-flex tw-justify-between tw-w-full"
 					>
 						<p class="tw-text-left tw-font-medium">
-							5/12 loans funded
+							{{ loansFunded }}/{{ totalLoans }} loans funded
 						</p>
 						<div class="tw-flex tw-items-center tw-justify-center tw-relative">
 							<kv-progress-circle
 								class="tw-w-10 tw-z-2 tw-h-10"
 								:stroke-width="20"
-								:value="goalPercent"
+								:value="percentageFunded"
 								:arc-scale=".8"
 								:rotate="36"
 								:show-number="false"
@@ -23,11 +23,11 @@
 							</div>
 						</div>
 						<p class="tw-text-right tw-font-medium">
-							16 days remaining
+							{{ daysRemaining }} days remaining
 						</p>
 					</div>
 					<div class="tw-mt-2 tw-mb-6">
-						<h3>Challenge <span class="tw-text-eco-green-3">{{ goalPercent }}% complete</span></h3>
+						<h3>Challenge <span class="tw-text-eco-green-3">{{ percentageFunded }}% complete</span></h3>
 					</div>
 					<div class="tw-flex tw-flex-col tw-items-center">
 						<h2 class="tw-text-center tw-mb-2">
@@ -43,7 +43,6 @@
 							@click="notify"
 						>
 							<check-mark v-if="addedToIterable" class="tw-text-white tw-mr-1" />
-							<!-- <kv-icon class="tw-w-4 tw-h-4" name="checkmark" /> -->
 							<span>{{ buttonCta }}</span>
 						</kv-button>
 					</div>
@@ -55,8 +54,8 @@
 <script>
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import MailIcon from '@/assets/icons/inline/thanks-mail.svg';
-import KvIcon from '@/components/Kv/KvIcon';
 import CheckMark from '@/assets/icons/inline/check-circle.svg';
+import teamGoalInfo from '@/plugins/team-goal-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -64,10 +63,10 @@ import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 export default {
 	name: 'NotifyMe',
 	inject: ['apollo'],
+	mixins: [teamGoalInfo],
 	components: {
 		KvProgressCircle,
 		MailIcon,
-		KvIcon,
 		CheckMark,
 		KvButton,
 		KvPageContainer,
@@ -81,15 +80,14 @@ export default {
 	},
 	data() {
 		return {
-			goalPercent: 50,
-			iterableListIdString: 'testing',
+			iterableListIdString: '0daedc50-6b66-44de-898d-fc7365f64da5',
 			addedToIterable: false,
 			loading: false,
 		};
 	},
 	computed: {
 		buttonCta() {
-			return this.addedToIterable ? 'You\'re all set' : 'Yes, notify me';
+			return this.addedToIterable ? 'You\'re all set!' : 'Yes, notify me';
 		},
 		buttonState() {
 			if (this.loading) return 'loading';
@@ -104,7 +102,7 @@ export default {
 		async notify() {
 			this.loading = true;
 			// eslint-disable-next-line max-len
-			const response = await fetch(`//links.iterable.com/lists/publicAddGoalServiceForm?publicIdString=${this.iterableListIdString}`, {
+			const response = await fetch(`//links.iterable.com/lists/publicAddSubscriberForm?publicIdString=${this.iterableListIdString}`, {
 				method: 'POST',
 				body: new URLSearchParams({
 					email: this.email,
@@ -114,10 +112,9 @@ export default {
 				this.addedToIterable = true;
 				this.$showTipMsg(`We will notify ${this.email} when the challenge is announced!`);
 			} else {
-				this.addedToIterable = true;
-				this.loading = false;
 				this.$showTipMsg('There was a problem. Please try again.', 'error');
 			}
+			this.loading = false;
 		}
 	}
 };

@@ -6,6 +6,7 @@
 			/>
 		</template>
 		<template v-else>
+			<NotifyMe v-if="goal" :goal="goal" :email="lender.email" />
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -118,7 +119,9 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import NotifyMe from '@/components/Thanks/NotifyMe';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { fetchGoals } from '../../util/teamsUtil';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -135,7 +138,8 @@ export default {
 		ThanksLayoutV2,
 		WwwPage,
 		ThanksPageCommentAndShare,
-		ThanksPageDonationOnly
+		ThanksPageDonationOnly,
+		NotifyMe
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -156,7 +160,8 @@ export default {
 			monthlyDonationAmount: '',
 			isFirstLoan: false,
 			isFtdMessageEnable: false,
-			ftdCreditAmount: ''
+			ftdCreditAmount: '',
+			goal: null,
 		};
 	},
 	apollo: {
@@ -255,7 +260,21 @@ export default {
 		},
 		showFtdMessage() {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
-		}
+		},
+		defaultLoanTeamId() {
+			return this.loans[this.loans.length - 1]?.team?.id ?? null;
+		},
+		defaultLenderTeamId() {
+			const teamsIds = this.loans
+				.filter(loan => loan?.team?.id)
+				.map(loan => loan.team.id) ?? [];
+
+			// return this.lender?.teams?.find(team => teamsIds.includes(team.id)) ?? null;
+			return 94;
+		},
+		teamId() {
+			return this.defaultLenderTeamId ?? this.defaultLoanTeamId;
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -355,6 +374,16 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+	},
+	mounted() {
+		const filters = {
+			teamId: this.teamId,
+		};
+		const limit = 1;
+		fetchGoals(this.apollo, limit, filters)
+			.then(response => {
+				this.goal = response.values.length ? response.values[0] : null;
+			});
 	},
 	methods: {
 		createGuestAccount() {
