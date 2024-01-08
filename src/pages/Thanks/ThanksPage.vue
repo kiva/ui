@@ -261,19 +261,11 @@ export default {
 		showFtdMessage() {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
 		},
-		defaultLoanTeamId() {
-			return this.loans[this.loans.length - 1]?.team?.id ?? null;
-		},
-		defaultLenderTeamId() {
-			const teamsIds = this.loans
-				.filter(loan => loan?.team?.id)
-				.map(loan => loan.team.id) ?? [];
-
-			// return this.lender?.teams?.find(team => teamsIds.includes(team.id)) ?? null;
-			return 94;
-		},
 		teamId() {
-			return this.defaultLenderTeamId ?? this.defaultLoanTeamId;
+			const teamsIds = this.loans
+				.filter(loan => !!loan?.team?.id)
+				.map(loan => loan.team.id) ?? [];
+			return teamsIds?.[0] ?? null;
 		},
 	},
 	created() {
