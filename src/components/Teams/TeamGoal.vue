@@ -149,8 +149,8 @@ export default {
 		participationLendersDisplayed() {
 			return (this.goal?.participation?.values ?? []).map(p => ({
 				...p.lender,
-				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image.url.split('/').pop()),
-			})).slice(0, 4);
+				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
+			})).filter(l => l.image).slice(0, 4); // Ensure image is defined and take first 4
 		},
 	},
 	methods: {
