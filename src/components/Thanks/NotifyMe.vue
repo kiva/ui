@@ -42,7 +42,11 @@
 							:variant="variant"
 							@click="notify"
 						>
-							<check-mark v-if="addedToIterable" class="tw-text-white tw-mr-1" />
+							<kv-material-icon
+								v-if="addedToIterable"
+								class="tw-w-2.5 tw-h-2.5 tw-mr-1"
+								:icon="mdiCheckCircleOutline"
+							/>
 							<span>{{ buttonCta }}</span>
 						</kv-button>
 					</div>
@@ -54,11 +58,12 @@
 <script>
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import MailIcon from '@/assets/icons/inline/thanks-mail.svg';
-import CheckMark from '@/assets/icons/inline/check-circle.svg';
 import teamGoalInfo from '@/plugins/team-goal-mixin';
+import { mdiCheckCircleOutline } from '@mdi/js';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'NotifyMe',
@@ -66,8 +71,8 @@ export default {
 	mixins: [teamGoalInfo],
 	components: {
 		KvProgressCircle,
+		KvMaterialIcon,
 		MailIcon,
-		CheckMark,
 		KvButton,
 		KvPageContainer,
 		KvGrid
@@ -80,9 +85,9 @@ export default {
 	},
 	data() {
 		return {
-			iterableListIdString: '0daedc50-6b66-44de-898d-fc7365f64da5',
 			addedToIterable: false,
 			loading: false,
+			mdiCheckCircleOutline
 		};
 	},
 	computed: {
@@ -91,12 +96,15 @@ export default {
 		},
 		buttonState() {
 			if (this.loading) return 'loading';
-			if (this.addedToIterable) return 'success';
 			return '';
 		},
 		variant() {
 			return this.addedToIterable ? 'secondary' : 'primary';
 		},
+		iterableListIdString() {
+			const isProd = window.location.hostname === 'www.kiva.org';
+			return isProd ? '0daedc50-6b66-44de-898d-fc7365f64da5' : '84945c52-fd49-4ae8-9ab6-4daa11eb6052';
+		}
 	},
 	methods: {
 		async notify() {
@@ -110,7 +118,7 @@ export default {
 			});
 			if (response.status === 200) {
 				this.addedToIterable = true;
-				this.$showTipMsg(`We will notify ${this.email} when the challenge is announced!`);
+				this.$showTipMsg(`We will notify ${this.email} when the next challenge is announced!`);
 			} else {
 				this.$showTipMsg('There was a problem. Please try again.', 'error');
 			}
@@ -122,7 +130,7 @@ export default {
 
 <style lang="postcss" scoped>
 .notify-button >>> span {
-  @apply tw-flex;
+  @apply tw-flex tw-items-center;
 }
 
 .container {
