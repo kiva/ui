@@ -122,8 +122,7 @@ import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
 import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
-
-const teamChallengeCookieName = 'kv-team-challenge';
+import { getForcedTeamId, removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 
 export default {
 	name: 'BasketItem',
@@ -197,6 +196,7 @@ export default {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
 				this.loanVisible = false;
+				removeLoansFromChallengeCookie(this.cookieStore, [this.loan.id]);
 			}
 		},
 	},
@@ -207,32 +207,7 @@ export default {
 		}
 	},
 	mounted() {
-		// Team Challenge MVP Code
-		// If team challenge cookie is present, the user has added a loan to basket from the challenge page
-		// In that case, append the team info to the list of teams and attribute this loan to that team
-		if (this.cookieStore.get(teamChallengeCookieName)) {
-			const teamChallengeLoanData = JSON.parse(this.cookieStore.get(teamChallengeCookieName));
-			teamChallengeLoanData.forEach(loan => {
-				if (loan.loanId === this.loan.id) {
-					// Loan has a different team attribution, we should override the default
-					// Is team not in the users list, append it
-					if (!this.combinedTeams.some(team => team.id === loan.teamId)) {
-						this.appendedTeams.push({
-							id: loan.teamId,
-							name: loan.teamName
-						});
-					}
-					this.forceTeamId = loan.teamId;
-				}
-			});
-			// Remove this loan from the cookie object after we've used it
-			teamChallengeLoanData.splice(
-				teamChallengeLoanData.findIndex(loan => loan.loanId === this.loan.id),
-				1
-			);
-			// overwrite the cookie with the new data
-			this.cookieStore.set(teamChallengeCookieName, JSON.stringify(teamChallengeLoanData));
-		}
+		this.forceTeamId = getForcedTeamId(this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams);
 	}
 };
 </script>
