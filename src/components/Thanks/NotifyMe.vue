@@ -40,7 +40,7 @@
 								{'tw-pointer-events-none': addedToIterable }]"
 							:state="buttonState"
 							:variant="variant"
-							v-kv-track-event="['Thanks', 'click-notify-me-CTA', 'Notify me']"
+							v-kv-track-event="['Thanks', 'click-teams-reward-alert', 'Alert me']"
 							@click="notify"
 						>
 							<kv-material-icon
