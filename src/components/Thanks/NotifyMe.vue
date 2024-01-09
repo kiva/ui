@@ -1,7 +1,7 @@
 <template>
 	<kv-page-container>
 		<kv-grid class="tw-grid-cols-12">
-			<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
+			<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-6 tw-mb-4 hide-for-print">
 				<div class="container">
 					<div
 						class="tw-flex tw-justify-between tw-w-full"
@@ -40,6 +40,7 @@
 								{'tw-pointer-events-none': addedToIterable }]"
 							:state="buttonState"
 							:variant="variant"
+							v-kv-track-event="['Thanks', 'click-teams-reward-alert', 'Alert me']"
 							@click="notify"
 						>
 							<kv-material-icon

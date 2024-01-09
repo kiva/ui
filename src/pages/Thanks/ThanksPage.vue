@@ -6,7 +6,9 @@
 			/>
 		</template>
 		<template v-else>
-			<NotifyMe v-if="goal" :goal="goal" :email="lender.email" />
+			<div v-if="goal" class="tw-bg-secondary">
+				<NotifyMe :goal="goal" :email="lender.email" />
+			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -122,9 +124,30 @@ import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+
+const getLoans = receipt => {
+	const loansResponse = receipt?.items?.values ?? [];
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+				team: item.team,
+			};
+		});
+
+	return loans;
+};
+
+const getTeamId = loans => {
+	const teamsIds = loans.filter(loan => !!loan?.team?.id)
+		.map(loan => loan.team.id) ?? [];
+	return teamsIds?.[0] ?? null;
+};
 
 export default {
 	name: 'ThanksPage',
@@ -176,9 +199,21 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(() => {
+			}).then(({ data }) => {
+				// Get teamId from receipt
+				let teamId = null;
+				const receipt = data?.shop?.receipt ?? null;
+				const loans = getLoans(receipt);
+				teamId = getTeamId(loans);
+
+				const filters = {
+					teamId,
+				};
+				const limit = 1;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					teamId ? fetchGoals(client, limit, filters) : null
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -262,10 +297,7 @@ export default {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
 		},
 		teamId() {
-			const teamsIds = this.loans
-				.filter(loan => !!loan?.team?.id)
-				.map(loan => loan.team.id) ?? [];
-			return teamsIds?.[0] ?? null;
+			return getTeamId(this.loans);
 		},
 	},
 	created() {
@@ -310,15 +342,27 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => {
-				return {
-					...item.loan,
-					team: item.team,
+		this.loans = getLoans(this.receipt);
+
+		// Fetch Goal Information
+		try {
+			if (this.teamId) {
+				const filters = {
+					teamId: this.teamId,
 				};
-			});
+				const limit = 1;
+
+				const response = this.apollo.readQuery({
+					query: teamsGoalsQuery,
+					variables: { ...filters, limit },
+				});
+
+				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+			}
+		} catch (e) {
+			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
+		}
+
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
@@ -366,16 +410,6 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-	},
-	mounted() {
-		const filters = {
-			teamId: this.teamId,
-		};
-		const limit = 1;
-		fetchGoals(this.apollo, limit, filters)
-			.then(response => {
-				this.goal = response.values.length ? response.values[0] : null;
-			});
 	},
 	methods: {
 		createGuestAccount() {
