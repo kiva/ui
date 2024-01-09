@@ -129,6 +129,26 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 
+const getLoans = receipt => {
+	const loansResponse = receipt?.items?.values ?? [];
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+				team: item.team,
+			};
+		});
+
+	return loans;
+};
+
+const getTeamId = loans => {
+	const teamsIds = loans.filter(loan => !!loan?.team?.id)
+		.map(loan => loan.team.id) ?? [];
+	return teamsIds?.[0] ?? null;
+};
+
 export default {
 	name: 'ThanksPage',
 	components: {
@@ -181,21 +201,10 @@ export default {
 				}
 			}).then(({ data }) => {
 				// Get teamId from receipt
+				let teamId = null;
 				const receipt = data?.shop?.receipt ?? null;
-
-				const loansResponse = receipt?.items?.values ?? [];
-				const loans = loansResponse
-					.filter(item => item.basketItemType === 'loan_reservation')
-					.map(item => {
-						return {
-							...item.loan,
-							team: item.team,
-						};
-					});
-
-				const teamsIds = loans.filter(loan => !!loan?.team?.id)
-					.map(loan => loan.team.id) ?? [];
-				const teamId = teamsIds?.[0] ?? null;
+				const loans = getLoans(receipt);
+				teamId = getTeamId(loans);
 
 				const filters = {
 					teamId,
@@ -204,7 +213,7 @@ export default {
 
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					fetchGoals(client, limit, filters),
+					teamId ? fetchGoals(client, limit, filters) : null
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -288,10 +297,7 @@ export default {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
 		},
 		teamId() {
-			const teamsIds = this.loans
-				.filter(loan => !!loan?.team?.id)
-				.map(loan => loan.team.id) ?? [];
-			return teamsIds?.[0] ?? null;
+			return getTeamId(this.loans);
 		},
 	},
 	created() {
@@ -336,28 +342,23 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => {
-				return {
-					...item.loan,
-					team: item.team,
-				};
-			});
+		this.loans = getLoans(this.receipt);
 
 		// Fetch Goal Information
-		const filters = {
-			teamId: this.teamId,
-		};
-		const limit = 1;
 		try {
-			const response = this.apollo.readQuery({
-				query: teamsGoalsQuery,
-				variables: { ...filters, limit },
-			});
+			if (this.teamId) {
+				const filters = {
+					teamId: this.teamId,
+				};
+				const limit = 1;
 
-			this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+				const response = this.apollo.readQuery({
+					query: teamsGoalsQuery,
+					variables: { ...filters, limit },
+				});
+
+				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+			}
 		} catch (e) {
 			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
 		}
