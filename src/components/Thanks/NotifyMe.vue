@@ -130,11 +130,11 @@ export default {
 
 <style lang="postcss" scoped>
 .notify-button >>> span {
-  @apply tw-flex tw-items-center;
+	@apply tw-flex tw-items-center;
 }
 
 .container {
-  @apply tw-flex tw-flex-col tw-items-center tw-w-full tw-bg-white tw-rounded tw-px-1.5 tw-pt-1.5 tw-pb-2.5;
+	@apply tw-flex tw-flex-col tw-items-center tw-w-full tw-bg-white tw-rounded tw-px-1.5 tw-pt-1.5 tw-pb-2.5;
 }
 
 </style>

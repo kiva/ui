@@ -1,35 +1,35 @@
-query GetGoals ($teamId: Int, $limit: Int) {
-  getGoals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId}) {
-    totalCount
-    values {
-      id
-      description
-      name
-      participation {
-        totalCount
-        values {
-          lender {
-            id
-            image {
-              url
-            }
-          }
-        }
-      }
-      status
-      targets {
-        totalCount
-        values {
-          ... on LoanTarget {
-            loanId
-            status
-          }
-        }
-      }
-      endDate
-      ... on TeamGoal {
-        teamId
-      }
-    }
-  }
+query GetGoals($teamId: Int, $limit: Int) {
+	getGoals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId}) {
+		totalCount
+		values {
+			id
+			description
+			name
+			participation {
+				totalCount
+				values {
+					lender {
+						id
+						image {
+							url
+						}
+					}
+				}
+			}
+			status
+			targets {
+				totalCount
+				values {
+					... on LoanTarget {
+						loanId
+						status
+					}
+				}
+			}
+			endDate
+			... on TeamGoal {
+				teamId
+			}
+		}
+	}
 }
