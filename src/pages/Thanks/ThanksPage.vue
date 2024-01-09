@@ -6,7 +6,9 @@
 			/>
 		</template>
 		<template v-else>
-			<NotifyMe v-if="goal" :goal="goal" :email="lender.email" />
+			<div v-if="goal" class="tw-bg-secondary">
+				<NotifyMe :goal="goal" :email="lender.email" />
+			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -269,6 +271,15 @@ export default {
 		},
 	},
 	created() {
+		const filters = {
+			teamId: this.teamId,
+		};
+		const limit = 1;
+		fetchGoals(this.apollo, limit, filters)
+			.then(response => {
+				this.goal = response.values.length ? response.values[0] : null;
+			});
+
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
 		const transactionId = this.$route.query?.kiva_transaction_id
@@ -366,16 +377,6 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-	},
-	mounted() {
-		const filters = {
-			teamId: this.teamId,
-		};
-		const limit = 1;
-		fetchGoals(this.apollo, limit, filters)
-			.then(response => {
-				this.goal = response.values.length ? response.values[0] : null;
-			});
 	},
 	methods: {
 		createGuestAccount() {
