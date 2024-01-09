@@ -1,5 +1,5 @@
 <template>
-	<kv-page-container>
+	<kv-page-container class="tw-bg-secondary">
 		<kv-grid class="tw-grid-cols-12">
 			<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 				<div class="container">
@@ -40,6 +40,7 @@
 								{'tw-pointer-events-none': addedToIterable }]"
 							:state="buttonState"
 							:variant="variant"
+							v-kv-track-event="['Thanks', 'click-notify-me-CTA', 'Notify me']"
 							@click="notify"
 						>
 							<kv-material-icon
