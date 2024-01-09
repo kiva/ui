@@ -44,7 +44,7 @@
 
 			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center tw-text-secondary">
 				<div class="tw-flex tw-items-center">
-					<div class="tw-shrink-0">
+					<div class="tw-hidden lg:tw-flex tw-shrink-0">
 						<img
 							v-for="(lender, i) in participationLendersDisplayed"
 							:key="lender.id"
@@ -66,7 +66,7 @@
 							:style="{ 'z-index': participationLendersDisplayed.length - i }"
 						>
 					</div>
-					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden tw-px-1">
+					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden lg:tw-px-1">
 						{{ participationTotalCount }} members participating
 					</span>
 				</div>
@@ -149,8 +149,8 @@ export default {
 		participationLendersDisplayed() {
 			return (this.goal?.participation?.values ?? []).map(p => ({
 				...p.lender,
-				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image.url.split('/').pop()),
-			})).slice(0, 4);
+				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
+			})).filter(l => l.image).slice(0, 4); // Ensure image is defined and take first 4
 		},
 	},
 	methods: {
