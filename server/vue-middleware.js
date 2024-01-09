@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { Worker, SHARE_ENV } = require('worker_threads');
+const { SHARE_ENV } = require('worker_threads');
+const workerpool = require('workerpool');
 const Bowser = require('bowser');
 const cookie = require('cookie');
-const log = require('./util/log');
 const protectedRoutes = require('./util/protectedRoutes.js');
 const tracer = require('./util/ddTrace');
 
@@ -40,6 +40,20 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
+	// Create a worker pool to render the app
+	const pool = workerpool.pool(path.resolve(__dirname, 'vue-worker.js'), {
+		workerType: 'thread',
+		workerThreadOpts: {
+			workerData: {
+				clientManifest,
+				serverBundle,
+				serverConfig: config.server,
+				template,
+			},
+			env: SHARE_ENV,
+		},
+	});
+
 	function middleware(req, res, next) {
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const userAgent = req.get('user-agent');
@@ -65,42 +79,22 @@ module.exports = function createMiddleware({
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 		}
 
-		// Create a worker thread to render the app
-		const worker = new Worker(path.resolve(__dirname, 'vue-worker.js'), {
-			workerData: {
-				clientManifest,
-				context,
-				serverBundle,
-				serverConfig: config.server,
-				template,
-			},
-			env: SHARE_ENV,
-		});
+		// render the app using the worker pool
+		pool.exec('render', [context])
+			.then(({ error, html, setCookies }) => {
+				// set any cookies created during the app render
+				setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 
-		// Send the rendered html back to the client
-		worker.on('message', ({ error, html, setCookies }) => {
-			// set any cookies created during the app render
-			setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-
-			if (error) {
-				handleError(error, req, res, next);
-			} else {
-				// send the final rendered html
-				res.send(html);
-			}
-		});
-
-		// Handle any errors that occur in the worker
-		worker.on('error', err => {
-			handleError(err, req, res, next);
-		});
-
-		// Handle the worker exiting
-		worker.on('exit', code => {
-			if (code !== 0) {
-				log.error(new Error(`Worker stopped with exit code ${code}`));
-			}
-		});
+				if (error) {
+					handleError(error, req, res, next);
+				} else {
+					// send the final rendered html
+					res.send(html);
+				}
+			})
+			.catch(err => {
+				handleError(err, req, res, next);
+			});
 	}
 
 	return tracer.wrap('vue-middleware', middleware);
