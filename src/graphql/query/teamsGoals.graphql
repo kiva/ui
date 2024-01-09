@@ -10,9 +10,9 @@ query GetGoals ($teamId: Int, $limit: Int) {
         values {
           lender {
             id
-						image {
-							url
-						}
+            image {
+              url
+            }
           }
         }
       }
@@ -27,7 +27,7 @@ query GetGoals ($teamId: Int, $limit: Int) {
         }
       }
       endDate
-	  ... on TeamGoal {
+      ... on TeamGoal {
         teamId
       }
     }
