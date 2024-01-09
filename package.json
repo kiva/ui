@@ -132,7 +132,8 @@
 		"web-vitals": "^2.1.4",
 		"webpack-merge": "^5.8.0",
 		"whatwg-fetch": "^3.6.2",
-		"winston": "^3.3.3"
+		"winston": "^3.3.3",
+		"workerpool": "^9.0.4"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.15.5",
