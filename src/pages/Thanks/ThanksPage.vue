@@ -124,6 +124,7 @@ import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -178,9 +179,32 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(() => {
+			}).then(({ data }) => {
+				// Get teamId from receipt
+				const receipt = data?.shop?.receipt ?? null;
+
+				const loansResponse = receipt?.items?.values ?? [];
+				const loans = loansResponse
+					.filter(item => item.basketItemType === 'loan_reservation')
+					.map(item => {
+						return {
+							...item.loan,
+							team: item.team,
+						};
+					});
+
+				const teamsIds = loans.filter(loan => !!loan?.team?.id)
+					.map(loan => loan.team.id) ?? [];
+				const teamId = teamsIds?.[0] ?? null;
+
+				const filters = {
+					teamId,
+				};
+				const limit = 1;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					fetchGoals(client, limit, filters),
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -271,15 +295,6 @@ export default {
 		},
 	},
 	created() {
-		const filters = {
-			teamId: this.teamId,
-		};
-		const limit = 1;
-		fetchGoals(this.apollo, limit, filters)
-			.then(response => {
-				this.goal = response.values.length ? response.values[0] : null;
-			});
-
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
 		const transactionId = this.$route.query?.kiva_transaction_id
@@ -330,6 +345,23 @@ export default {
 					team: item.team,
 				};
 			});
+
+		// Fetch Goal Information
+		const filters = {
+			teamId: this.teamId,
+		};
+		const limit = 1;
+		try {
+			const response = this.apollo.readQuery({
+				query: teamsGoalsQuery,
+				variables: { ...filters, limit },
+			});
+
+			this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+		} catch (e) {
+			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
+		}
+
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
