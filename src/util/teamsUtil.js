@@ -118,10 +118,11 @@ export async function fetchLeaderboard(apollo, category) {
 	}
 }
 
-export async function fetchGoals(apollo) {
+export async function fetchGoals(apollo, limit = null, filters = null) {
 	try {
 		const result = await apollo.query({
 			query: teamsGoals,
+			variables: { ...filters, limit },
 		});
 		return result.data?.getGoals;
 	} catch (e) {

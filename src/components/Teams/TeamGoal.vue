@@ -81,10 +81,7 @@
 <script>
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import teamNoImage from '@/assets/images/team_s135.png';
-import {
-	parseISO,
-	differenceInDays,
-} from 'date-fns';
+import teamGoalInfo from '@/plugins/team-goal-mixin';
 import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -92,6 +89,7 @@ import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder
 
 export default {
 	name: 'TeamGoal',
+	mixins: [teamGoalInfo],
 	inject: ['apollo'],
 	components: {
 		KvButton,
@@ -107,41 +105,12 @@ export default {
 			teamPublicId: '',
 		};
 	},
-	props: {
-		goal: {
-			type: Object,
-			required: true,
-			default: () => ({}),
-		}
-	},
 	computed: {
-		challengeEndDate() {
-			return this.goal?.endDate ?? null;
-		},
-		// calculate days remaining between now and the challengeEndDate using the the datefns library
-		daysRemaining() {
-			// Get planned expiration time as Date
-			const plannedExpirationDate = parseISO(this.challengeEndDate);
-			const diffInDays = differenceInDays(plannedExpirationDate, new Date());
-			return diffInDays;
-		},
-		loansFunded() {
-			const loans = this.goal?.targets?.values ?? [];
-			// filter out loans where status is not complete
-			const completedLoans = loans.filter(loan => loan.status === 'COMPLETE');
-			return completedLoans.length ?? 0;
-		},
-		totalLoans() {
-			return this.goal?.targets?.totalCount ?? 0;
-		},
 		teamId() {
 			return this.goal?.teamId ?? null;
 		},
 		teamImage() {
 			return this.teamImageUrl || this.teamNoImage;
-		},
-		percentageFunded() {
-			return (this.loansFunded / this.totalLoans) * 100;
 		},
 		participationTotalCount() {
 			return this.goal?.participation?.totalCount ?? 0;

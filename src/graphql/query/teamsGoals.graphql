@@ -1,5 +1,5 @@
-query GetGoals {
-	getGoals(filters: { audienceType: TEAM, isActive: true}) {
+query GetGoals($teamId: Int, $limit: Int) {
+	getGoals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId}) {
 		totalCount
 		values {
 			id
