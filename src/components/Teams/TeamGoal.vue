@@ -70,7 +70,15 @@
 						{{ participationTotalCount }} members participating
 					</span>
 				</div>
-				<kv-button :to="`/team/challenge/${teamPublicId}`" variant="caution">
+				<kv-button
+					:v-kv-track-event="[
+						'teams',
+						'click',
+						'View',
+						teamName
+					]"
+					:to="`/team/challenge/${teamPublicId}`" variant="caution"
+				>
 					View
 				</kv-button>
 			</div>
@@ -103,6 +111,7 @@ export default {
 			teamNoImage,
 			teamImageUrl: '',
 			teamPublicId: '',
+			teamName: ''
 		};
 	},
 	computed: {
@@ -133,6 +142,7 @@ export default {
 				this.loanBecause = data.community?.team?.loanBecause ?? '';
 				this.teamImageUrl = data.community?.team?.image?.url ?? null;
 				this.teamPublicId = data.community?.team?.teamPublicId ?? '';
+				this.teamName = data.community?.team?.name ?? '';
 			}).finally(() => {
 				this.isLoading = false;
 			});
