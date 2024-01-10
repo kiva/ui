@@ -13,7 +13,7 @@
 							<h2>{{ activeGoals.length }} teams with active challenges!</h2>
 							<p>
 								Don’t see your team on this list? <a
-									:v-kv-track-event="[
+									v-kv-track-event="[
 										'teams',
 										'click',
 										'team waitlist'
