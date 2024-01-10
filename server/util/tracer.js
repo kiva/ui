@@ -13,7 +13,9 @@ const { Resource } = require('@opentelemetry/resources');
 const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
-const Exporter = (process.env.EXPORTER || '').toLowerCase().startsWith('c') ? ConsoleSpanExporter : OTLPTraceExporter;
+// Basic export switch to enable console or OTLP
+const Exporter = (process.env.OPENTELEMETRY_EXPORTER_TYPE || '').toLowerCase().startsWith('c')
+	? ConsoleSpanExporter : OTLPTraceExporter;
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 
