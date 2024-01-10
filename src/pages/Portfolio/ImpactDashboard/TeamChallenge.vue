@@ -69,7 +69,7 @@ export default {
 	methods: {
 		goToChallenge(team) {
 			this.$kvTrackEvent('portfolio', 'click', 'Join challenge', `${team.name}`);
-			window.location.href = `/team/${team.teamPublicId}/messages`;
+			window.location.href = `/team/challenge/${team.teamPublicId}`;
 		}
 	},
 };
