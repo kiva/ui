@@ -3,7 +3,7 @@ require('../build/check-versions')();
 
 const { setupTracing } = require('./util/tracer');
 
-setupTracing('ui');
+setupTracing();
 
 // dependencies
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });

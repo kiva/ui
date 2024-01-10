@@ -3,7 +3,7 @@ require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 // eslint-disable-next-line import/order
 const { setupTracing } = require('./util/tracer');
 
-setupTracing('ui');
+setupTracing();
 
 const cluster = require('cluster');
 const http = require('http');

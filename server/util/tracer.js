@@ -44,12 +44,13 @@ function ignoreTheseSpans(spanName, spanKind, attributes) {
 	return spanKind !== opentelemetry.SpanKind.SERVER;
 }
 
-function setupTracing(serviceName) {
+function setupTracing() {
+	const serviceName = process.env?.OTEL_SERVICE_NAME || 'ui';
 	if (!otlpDisabled) {
 		const provider = new NodeTracerProvider({
 			resource: new Resource({
 				[SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-				[SemanticResourceAttributes.SERVICE_NAMESPACE]: 'kiva',
+				[SemanticResourceAttributes.SERVICE_NAMESPACE]: process.env?.OTEL_SERVICE_NAMESPACE || 'kiva',
 			}),
 			sampler: filterSampler(ignoreTheseSpans, new AlwaysOnSampler()),
 		});
