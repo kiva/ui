@@ -11,7 +11,7 @@
 			<div class="tw-rounded">
 				<div class="tw-rounded-t tw-bg-cover tw-bg-center tw-bg-no-repeat tw-bg-white team-challenge">
 					<!-- eslint-disable-next-line max-len -->
-					<div class="tw-pt-3 tw-px-2 tw-pb-1 md:tw-bg-white tw-rounded-tl tw-rounded-br tw-grow-0 team-challenge-headline">
+					<div class="tw-pt-3 tw-px-2 tw-pb-1 tw-bg-white tw-rounded-t tw-rounded-br tw-grow-0 team-challenge-headline">
 						<span
 							class="tw-bg-desert-rose-3 tw-w-auto tw-rounded tw-text-white tw-italic tw-text-small"
 							style="padding: 4px 6px; font-weight: 700;"
@@ -77,29 +77,22 @@ export default {
 
 <style scoped lang="postcss">
 	.team-challenge {
-		background-image: url('~@/assets/images/backgrounds/team_challenge_bg.svg');
-		background-position-y: 0;
+		background-image: url('~@/assets/images/backgrounds/team_challenge_bg.png');
+		background-position-y: 110px;
 		min-height: 50vh;
 	}
 
 	@screen md {
 		.team-challenge {
 			min-height: 350px;
-		}
-
-		.team-challenge-headline {
-			max-width: 300px;
+			background-position-y: 120px;
 		}
 	}
 
 	@screen lg {
 		.team-challenge {
-			background-position-y: -24px;
+			background-position-y: 80px;
 			min-height: 420px;
-		}
-
-		.team-challenge-headline {
-			max-width: 350px;
 		}
 	}
 </style>
