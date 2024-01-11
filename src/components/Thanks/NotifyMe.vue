@@ -19,7 +19,7 @@
 								:show-number="false"
 							/>
 							<div class="tw-absolute">
-								<mail-icon class="tw-h-4.5 tw-w-4" />
+								<rewards-icon class="tw-h-4.5 tw-w-4" />
 							</div>
 						</div>
 						<p class="tw-text-right tw-font-medium">
@@ -63,7 +63,7 @@
 </template>
 <script>
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import MailIcon from '@/assets/icons/inline/thanks-mail.svg';
+import RewardsIcon from '@/assets/icons/inline/rewards.svg';
 import teamGoalInfo from '@/plugins/team-goal-mixin';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -77,7 +77,7 @@ export default {
 	components: {
 		KvProgressCircle,
 		KvMaterialIcon,
-		MailIcon,
+		RewardsIcon,
 		KvButton,
 		KvPageContainer,
 		KvGrid
