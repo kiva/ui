@@ -7,7 +7,7 @@
 		</template>
 		<template v-else>
 			<div v-if="goal" class="tw-bg-secondary">
-				<NotifyMe :goal="goal" :email="lender.email" />
+				<NotifyMe :goal="goal" :email="lender.email" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
@@ -298,6 +298,9 @@ export default {
 		},
 		teamId() {
 			return getTeamId(this.loans);
+		},
+		teamPublicId() {
+			return this.loans?.[0]?.team?.teamPublicId;
 		},
 	},
 	created() {
