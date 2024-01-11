@@ -19,7 +19,7 @@
 								:show-number="false"
 							/>
 							<div class="tw-absolute">
-								<rewards-icon class="tw-h-4.5 tw-w-4" />
+								<rewards-icon class="tw-h-7 tw-w-6" />
 							</div>
 						</div>
 						<p class="tw-text-right tw-font-medium">
