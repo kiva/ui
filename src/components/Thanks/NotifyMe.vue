@@ -27,7 +27,12 @@
 						</p>
 					</div>
 					<div class="tw-mt-2 tw-mb-6">
-						<h3>Challenge <span class="tw-text-eco-green-3">{{ percentageFunded }}% complete</span></h3>
+						<h3>
+							Challenge
+							<a :href="teamChallengePath" class="tw-text-eco-green-3">
+								{{ percentageFunded }}% complete
+							</a>
+						</h3>
 					</div>
 					<div class="tw-flex tw-flex-col tw-items-center">
 						<h2 class="tw-text-center tw-mb-2">
@@ -68,7 +73,6 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'NotifyMe',
-	inject: ['apollo'],
 	mixins: [teamGoalInfo],
 	components: {
 		KvProgressCircle,
@@ -82,7 +86,11 @@ export default {
 		email: {
 			type: String,
 			default: '',
-		}
+		},
+		teamPublicId: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
@@ -105,7 +113,10 @@ export default {
 		iterableListIdString() {
 			const isProd = window.location.hostname === 'www.kiva.org';
 			return isProd ? '0daedc50-6b66-44de-898d-fc7365f64da5' : '84945c52-fd49-4ae8-9ab6-4daa11eb6052';
-		}
+		},
+		teamChallengePath() {
+			return this.teamPublicId ? `/team/challenge/${this.teamPublicId}` : '/teams';
+		},
 	},
 	methods: {
 		async notify() {
