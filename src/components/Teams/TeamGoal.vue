@@ -71,12 +71,12 @@
 					</span>
 				</div>
 				<kv-button
-					v-kv-track-event="`[
+					v-kv-track-event="[
 						'teams',
 						'click',
 						'View',
-						${teamName}
-					]`"
+						teamName
+					]"
 					:to="`/team/challenge/${teamPublicId}`" variant="caution"
 				>
 					View
