@@ -71,7 +71,7 @@
 					</span>
 				</div>
 				<kv-button
-					:v-kv-track-event="[
+					v-kv-track-event="[
 						'teams',
 						'click',
 						'View',
