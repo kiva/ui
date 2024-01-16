@@ -1,4 +1,5 @@
 import NotifyMe from '@/components/Thanks/NotifyMe';
+import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {
 	title: 'Components/Notify Me',
@@ -9,8 +10,10 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { NotifyMe },
-		template: '<notify-me :goal="goal" email="test@test.com" :teamPublicId="teamPublicId" />',
-	})
+		mixins: [apolloStoryMixin()],
+		template:
+			'<notify-me :goal="goal" email="test@test.com" :teamPublicId="teamPublicId" />',
+	});
 	template.args = args;
 	return template;
 };
