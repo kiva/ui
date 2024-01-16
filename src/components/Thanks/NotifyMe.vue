@@ -73,6 +73,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'NotifyMe',
+	inject: ['apollo'],
 	mixins: [teamGoalInfo],
 	components: {
 		KvProgressCircle,
