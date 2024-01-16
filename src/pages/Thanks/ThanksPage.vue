@@ -6,7 +6,7 @@
 			/>
 		</template>
 		<template v-else>
-			<div v-if="goal" class="tw-bg-secondary">
+			<div v-if="showNotifyMe" class="tw-bg-secondary">
 				<NotifyMe :goal="goal" :email="lender.email" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
@@ -185,6 +185,7 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			goal: null,
+			showNotifyMe: false,
 		};
 	},
 	apollo: {
@@ -361,6 +362,8 @@ export default {
 				});
 
 				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+				this.showNotifyMe = this.goal?.targets?.values
+					.findIndex(target => target.loanId === this.selectedLoan.id) !== -1;
 			}
 		} catch (e) {
 			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);

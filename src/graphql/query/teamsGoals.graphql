@@ -11,6 +11,7 @@ query GetGoals($teamId: Int, $limit: Int) {
 					lender {
 						id
 						image {
+							id
 							url
 						}
 					}
