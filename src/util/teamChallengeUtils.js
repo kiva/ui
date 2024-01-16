@@ -30,8 +30,8 @@ export const getForcedTeamId = (cookieStore, loanId, combinedTeams, appendedTeam
 						id: loan.teamId,
 						name: loan.teamName
 					});
-					forcedTeamId = loan.teamId;
 				}
+				forcedTeamId = loan.teamId;
 			}
 		});
 		return forcedTeamId;
