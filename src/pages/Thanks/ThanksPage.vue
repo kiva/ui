@@ -363,11 +363,9 @@ export default {
 
 				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
 
-				const teamsIds = this.loans.filter(loan => !!loan?.team?.id)
-					.map(loan => loan.team.id) ?? [];
-
+				const loansIds = this.loans.map(loan => loan.id) ?? [];
 				this.showNotifyMe = this.goal && this.goal?.targets?.values
-					.findIndex(target => teamsIds.includes(target.loanId)) !== -1;
+					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
 			}
 		} catch (e) {
 			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
