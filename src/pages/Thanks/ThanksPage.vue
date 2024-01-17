@@ -362,7 +362,7 @@ export default {
 				});
 
 				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
-				this.showNotifyMe = this.goal?.targets?.values
+				this.showNotifyMe = this.goal && this.goal?.targets?.values
 					.findIndex(target => target.loanId === this.selectedLoan.id) !== -1;
 			}
 		} catch (e) {
