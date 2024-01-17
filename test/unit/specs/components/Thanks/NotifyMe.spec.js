@@ -3,10 +3,6 @@ import kvAnalytics from '@/plugins/kv-analytics-plugin';
 import { render } from '@testing-library/vue';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 
-// Test that the basket item renders the components it contains:
-// Checkout Item Img/Borrower Link, Remove Basket Item Button, Loan Reservation, Team Attribution, Loan Promo Credits,
-// Loan Price, Remove Basket Item, Matching Text
-
 describe('BasketItem loan', () => {
 	it('should contain these components and text', () => {
 		const goal = {
