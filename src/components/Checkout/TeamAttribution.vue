@@ -66,15 +66,18 @@ export default {
 	watch: {
 		// watch for updated changes to the teamId prop
 		// typically this is derived from the team assigned to the loan reservation
-		teamId(newId, prevId) {
-			if (newId !== prevId) {
-				this.selectedId = newId;
-			}
+		teamId: {
+			handler(newId, prevId) {
+				if (newId !== prevId) {
+					this.selectedId = newId;
+					this.updateLoanReservation();
+				}
+			},
+			immediate: true,
 		}
 	},
 	mounted() {
 		this.selectedId = this.teamId || 0;
-		this.updateLoanReservation();
 	},
 	methods: {
 		updateLoanReservation() {
