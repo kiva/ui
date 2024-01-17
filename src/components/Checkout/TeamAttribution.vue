@@ -74,41 +74,40 @@ export default {
 	},
 	mounted() {
 		this.selectedId = this.teamId || 0;
+		this.updateLoanReservation();
 	},
 	methods: {
 		updateLoanReservation() {
-			if (this.selectedId !== this.teamId) {
-				this.$emit('updating-totals', true);
-				const updatedTeamId = numeral(this.selectedId).value();
+			this.$emit('updating-totals', true);
+			const updatedTeamId = numeral(this.selectedId).value();
 
-				this.apollo.mutate({
-					mutation: updateLoanReservationTeam,
-					variables: {
-						teamId: updatedTeamId,
-						loanid: this.loanId
-					}
-				}).then(data => {
-					if (data.errors) {
-						_forEach(data.errors, ({ message }) => {
-							this.$showTipMsg(message, 'error');
-						});
-						this.$emit('updating-totals', false);
-						this.selectedId = this.cachedId;
-					} else {
-						this.$kvTrackEvent(
-							'basket',
-							'Update Team Loan Attribution',
-							this.selectedId === 0 ? 'Team Attribution Removed'
-								: 'Team Attribution Removal Success', numeral(this.selectedId).value()
-						);
-						this.$emit('refresh-totals', 'team-update');
-						this.cachedId = this.selectedId;
-					}
-				}).catch(error => {
-					console.error(error);
+			this.apollo.mutate({
+				mutation: updateLoanReservationTeam,
+				variables: {
+					teamId: updatedTeamId,
+					loanid: this.loanId
+				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
 					this.$emit('updating-totals', false);
-				});
-			}
+					this.selectedId = this.cachedId;
+				} else {
+					this.$kvTrackEvent(
+						'basket',
+						'Update Team Loan Attribution',
+						this.selectedId === 0 ? 'Team Attribution Removed'
+							: 'Team Attribution Removal Success', numeral(this.selectedId).value()
+					);
+					this.$emit('refresh-totals', 'team-update');
+					this.cachedId = this.selectedId;
+				}
+			}).catch(error => {
+				console.error(error);
+				this.$emit('updating-totals', false);
+			});
 		}
 	}
 };

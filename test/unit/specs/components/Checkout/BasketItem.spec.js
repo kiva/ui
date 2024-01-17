@@ -29,6 +29,7 @@ describe('BasketItem loan', () => {
 						readFragment: () => {},
 						query: () => Promise.resolve({}),
 						readQuery: () => {},
+						mutate: () => Promise.resolve({}),
 					},
 					cookieStore: new CookieStore(),
 				},
