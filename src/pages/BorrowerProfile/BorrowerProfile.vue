@@ -233,6 +233,9 @@ const preFetchQuery = gql`
 					id
 					name
 				}
+				userProperties {
+					lentTo
+				}
 			}
 		}
 		community @include(if: $getInviter) {
@@ -458,7 +461,19 @@ export default {
 					// Check for loan and loan status
 					const loan = data?.lend?.loan;
 					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
+					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
+					// Evaluate if lender should be redirected to lend classic MARS-358
+					const lentTo = loan?.userProperties?.lentTo ?? false;
+					if (lentTo && !redirectToLendClasic) {
+						const loanAmount = loan?.loanAmount ?? '0';
+						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
+						const amountLeft = Number(loanAmount) - Number(fundedAmount);
+
+						const loanStatus = loan?.status !== 'fundraising';
+						redirectToLendClasic = !amountLeft || loanStatus;
+					}
+
+					if (redirectToLendClasic) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;

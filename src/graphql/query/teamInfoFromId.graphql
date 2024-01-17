@@ -4,6 +4,12 @@ query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int])
 			id
 			name
 			membershipType
+			loanBecause
+			image{
+				id
+				url
+			}
+			teamPublicId
 		}
 	}
 	my {

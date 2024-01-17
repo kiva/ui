@@ -107,7 +107,6 @@ module.exports = [
 		path: '/covid19response',
 		redirect: '/monthlygood'
 	},
-	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{
 		path: '/error',
 		component: () => import('@/pages/Error'),

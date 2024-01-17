@@ -11,8 +11,8 @@
 			</template>
 		</h4>
 		<kv-tabs
-			class="tw-px-1"
-			:class="{ 'members-tabs' : isNewMembers, 'tw-pb-2' : isNewMembers && isLoading }"
+			class="tw-px-1 tw-pb-2 leaderboard-tabs"
+			:class="{ 'members-leaderboard' : isNewMembers}"
 			@tab-changed="handleTabChanged"
 		>
 			<template #tabNav>
@@ -216,7 +216,11 @@ export default {
 </script>
 
 <style scoped lang="postcss">
-	.members-tabs >>> div {
+	.leaderboard-tabs .members-leaderboard >>> div {
 		@apply tw-mb-0;
+	}
+
+	.leaderboard-tabs >>> div[role="tablist"] {
+		@apply tw-gap-x-1 md:tw-gap-x-2 lg:tw-gap-x-3 tw-mb-1;
 	}
 </style>

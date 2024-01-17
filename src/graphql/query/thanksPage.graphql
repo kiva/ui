@@ -87,9 +87,9 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 						}
 						team {
 							id
+							teamPublicId
 							name
 						}
-
 					}
 				}
 			}
