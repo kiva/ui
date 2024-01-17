@@ -1,4 +1,5 @@
 import teamsQuery from '@/graphql/query/teamsQuery.graphql';
+import teamsGoals from '@/graphql/query/teamsGoals.graphql';
 import leaderboardsQuery from '@/graphql/query/leaderboardsQuery.graphql';
 
 export const teamCategories = [
@@ -114,5 +115,17 @@ export async function fetchLeaderboard(apollo, category) {
 		return result.data?.community?.leaderboards;
 	} catch (e) {
 		console.log('Loading leaderboards failed:', e.message);
+	}
+}
+
+export async function fetchGoals(apollo, limit = null, filters = null) {
+	try {
+		const result = await apollo.query({
+			query: teamsGoals,
+			variables: { ...filters, limit },
+		});
+		return result.data?.getGoals;
+	} catch (e) {
+		console.log('Team Goals query failed:', e.message);
 	}
 }

@@ -5,6 +5,7 @@ const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
 const locale = require('locale');
+const promBundle = require('express-prom-bundle');
 const serverRoutes = require('./available-routes-middleware');
 const sitemapMiddleware = require('./sitemap/middleware');
 const authRouter = require('./auth-router');
@@ -19,13 +20,13 @@ const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
 const initializeTerminus = require('./util/terminusConfig');
-const promBundle = require("express-prom-bundle");
+
 const metricsMiddleware = promBundle({
-    includeMethod: true,
-    includePath: true,
-    includeStatusCode: true,
-    includeUp: true,
-    promClient: {
+	includeMethod: true,
+	includePath: true,
+	includeStatusCode: true,
+	includeUp: true,
+	promClient: {
 		collectDefaultMetrics: {}
 	}
 });
@@ -40,7 +41,7 @@ const app = express();
 const port = argv.port || config.server.port;
 
 // load metrics middleware
-app.use(metricsMiddleware)
+app.use(metricsMiddleware);
 
 // Use gzip on local server.
 // In higher environments it's handled elsewhere

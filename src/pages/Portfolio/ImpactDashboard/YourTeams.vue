@@ -69,7 +69,7 @@
 		<!-- all your teams link -->
 		<p v-if="totalTeams > 5" class="tw-text-center tw-mt-4">
 			<router-link
-				to="/blog/myloans"
+				to="/teams/my-teams"
 				class="tw-inline-block tw-p-1"
 				v-kv-track-event="['portfolio', 'click', 'your-teams-view-all-your-teams']"
 			>

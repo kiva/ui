@@ -3,7 +3,6 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import * as Sentry from '@sentry/vue';
-import { Integrations } from '@sentry/tracing';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 import Vue2TouchEvents from 'vue2-touch-events';
@@ -71,12 +70,16 @@ export default function createApp({
 			trackComponents: true,
 			dsn: appConfig.sentryURI,
 			integrations: [
-				new Integrations.BrowserTracing({
+				new Sentry.BrowserTracing({
 					routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-					tracingOrigins: ['localhost', appConfig.host, /^\//],
+					tracingOrigins: [appConfig.host],
 				}),
 			],
 			release: UI_TAG,
+			// Set tracesSampleRate to 1.0 to capture 100%
+			// of transactions for performance monitoring.
+			// We recommend adjusting this value in production
+			tracesSampleRate: appConfig?.sentryTraceSampleRate,
 			beforeSend(event) {
 				// make sentry colleted event easy to compare to
 				const eventAsString = JSON.stringify(event);

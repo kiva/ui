@@ -5,7 +5,7 @@ var devVm  = require('./dev-vm.js')
 module.exports = merge(base, devVm, {
 	app: {
 		apolloBatching: false,
-		host: 'localhost',
+		host: 'kiva-ui.local:8888',
 		publicPath: '/',
 		photoPath: 'https://www.development.kiva.org/img/',
 		graphqlUri: 'https://gateway.development.kiva.org/graphql',
@@ -19,12 +19,12 @@ module.exports = merge(base, devVm, {
 		auth0: {
 			loginRedirectUrls: {
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.development.kiva.org/authenticate?authLevel=recent',
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'http://localhost:8888/ui-login?force=true',
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'http://localhost:8888/ui-login?force=true',
+				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'http://kiva-ui.local:8888/ui-login?force=true',
+				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'http://kiva-ui.local:8888/ui-login?force=true',
 			},
 			enable: true,
-			browserCallbackUri: 'http://localhost:8888/process-browser-auth',
-			serverCallbackUri: 'http://localhost:8888/process-ssr-auth',
+			browserCallbackUri: 'http://kiva-ui.local:8888/process-browser-auth',
+			serverCallbackUri: 'http://kiva-ui.local:8888/process-ssr-auth',
 			apiAudience: 'https://gateway.development.kiva.org/graphql',
 		},
 	},
