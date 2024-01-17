@@ -1,3 +1,14 @@
+## [2.724.0-rc.2](https://github.com/kiva/ui/compare/v2.724.0-rc.1...v2.724.0-rc.2) (2024-01-17)
+
+
+### 🐛 Bugfixes
+
+* basketItem test ([fc0a19d](https://github.com/kiva/ui/commit/fc0a19d9744a3ec1034aee156f76e8933d72563a))
+* ensure forceTeamId is not overwritten by undefined value ([d530146](https://github.com/kiva/ui/commit/d530146cffeca61f1dbcebe08ac6d5d777ee1956))
+* mutate loan reservation on mounted ([a8c5334](https://github.com/kiva/ui/commit/a8c5334ff70225ffa59f69a01d0ebc23dc5a97be))
+* team attribution tests ([a15bc06](https://github.com/kiva/ui/commit/a15bc062463a6e68204d40be17c626fe55f33942))
+* test ([2a53a4e](https://github.com/kiva/ui/commit/2a53a4ecc2eb8277b890661cca7ee03198aef59c))
+
 ## [2.724.0-rc.1](https://github.com/kiva/ui/compare/v2.723.0...v2.724.0-rc.1) (2024-01-16)
 
 
