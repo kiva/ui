@@ -192,8 +192,11 @@ export default {
 		}
 	},
 	watch: {
-		teams() {
-			this.forceTeamId = getForcedTeamId(this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams);
+		teams: {
+			handler() {
+				this.forceTeamId = getForcedTeamId(this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams);
+			},
+			immediate: true
 		}
 	},
 	methods: {
