@@ -69,12 +69,12 @@ export default {
 		teamId(newId, prevId) {
 			if (newId !== prevId) {
 				this.selectedId = newId;
+				this.updateLoanReservation();
 			}
 		}
 	},
 	mounted() {
 		this.selectedId = this.teamId || 0;
-		this.updateLoanReservation();
 	},
 	methods: {
 		updateLoanReservation() {
