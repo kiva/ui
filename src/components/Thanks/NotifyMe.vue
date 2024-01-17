@@ -1,12 +1,12 @@
 <template>
-	<kv-page-container>
+	<kv-page-container data-testid="notify-me">
 		<kv-grid class="tw-grid-cols-12">
 			<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-6 tw-mb-4 hide-for-print">
 				<div class="container">
 					<div
 						class="tw-flex tw-justify-between tw-w-full"
 					>
-						<p class="tw-text-left tw-font-medium">
+						<p class="tw-text-left tw-font-medium" data-testid="loans-funded">
 							{{ loansFunded }}/{{ totalLoans }} loans funded
 						</p>
 						<div class="tw-flex tw-items-center tw-justify-center tw-relative">
@@ -29,7 +29,7 @@
 					<div class="tw-mt-2 tw-mb-6">
 						<h3>
 							Challenge
-							<a :href="teamChallengePath" class="tw-text-eco-green-3">
+							<a :href="teamChallengePath" data-testid="percentage-funded" class="tw-text-eco-green-3">
 								{{ percentageFunded }}% complete
 							</a>
 						</h3>
