@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-secondary tw-py-3" v-if="!isLoading && activeGoals.length > 0">
+	<div class="tw-bg-secondary tw-py-3" v-if="activeGoals.length > 0">
 		<kv-page-container>
 			<kv-grid
 				class="tw-grid-cols-12"
@@ -41,13 +41,13 @@
 
 import TwoHands from '@/assets/icons/inline/two-hands-heart.svg';
 import TeamGoal from '@/components/Teams/TeamGoal';
-import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoals from '@/graphql/query/teamsGoals.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'TeamGoalsList',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvPageContainer,
 		KvGrid,
@@ -57,17 +57,14 @@ export default {
 	data() {
 		return {
 			activeGoals: [],
-			isLoading: true,
 		};
 	},
-	mounted() {
-		fetchGoals(this.apollo)
-			.then(response => {
-				this.activeGoals = response.values;
-			})
-			.finally(() => {
-				this.isLoading = false;
-			});
+	apollo: {
+		query: teamsGoals,
+		preFetch: true,
+		result(result) {
+			this.activeGoals = result?.data?.getGoals?.values ?? [];
+		}
 	},
 };
 </script>
