@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { SHARE_ENV } = require('worker_threads');
-const workerpool = require('workerpool');
 const Bowser = require('bowser');
 const cookie = require('cookie');
+const vueWorkerPool = require('./vue-worker-pool.js');
 const protectedRoutes = require('./util/protectedRoutes.js');
 const tracer = require('./util/ddTrace');
 
@@ -41,17 +40,11 @@ module.exports = function createMiddleware({
 	clientManifest.publicPath = config.app.publicPath || '/';
 
 	// Create a worker pool to render the app
-	const pool = workerpool.pool(path.resolve(__dirname, 'vue-worker.js'), {
-		workerType: 'thread',
-		workerThreadOpts: {
-			workerData: {
-				clientManifest,
-				serverBundle,
-				serverConfig: config.server,
-				template,
-			},
-			env: SHARE_ENV,
-		},
+	const pool = vueWorkerPool({
+		clientManifest,
+		serverBundle,
+		serverConfig: config.server,
+		template,
 	});
 
 	function middleware(req, res, next) {
