@@ -15,6 +15,9 @@ on:
       - staging
       - production
 
+concurrency:
+  group: kiva-ui-semantic-release
+
 jobs:
   # Create a release
   create-release:
