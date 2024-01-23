@@ -68,7 +68,7 @@ export default {
 		result(result) {
 			const teams = _groupBy(result?.data?.getGoals?.values ?? [], 'teamId');
 			this.activeGoals = _map(teams, goals => {
-				return _orderBy(goals, 'startDate', 'desc')[0];
+				return _orderBy(goals, [g => new Date(g.startDate)], 'desc')[0];
 			});
 		}
 	},
