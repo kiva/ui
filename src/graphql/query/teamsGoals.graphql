@@ -27,6 +27,7 @@ query GetGoals($teamId: Int, $limit: Int) {
 					}
 				}
 			}
+			startDate
 			endDate
 			... on TeamGoal {
 				teamId
