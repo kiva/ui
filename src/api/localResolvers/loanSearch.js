@@ -21,6 +21,7 @@ export const getDefaultLoanSearchState = () => ({
 	partnerDefaultRate: null, // Expects a MinMaxRange
 	partnerAvgProfitability: null, // Expects a MinMaxRange
 	isMatchable: null, // Expects a boolean
+	flexibleFundraisingEnabled: null, // Expects a boolean
 });
 
 // export queries, resolvers and defaults for LoanSearchState
