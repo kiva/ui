@@ -84,6 +84,12 @@
 					/>
 				</content-container>
 			</div>
+			<content-container v-if="showEducationPlacementExp">
+				<borrower-education-placement
+					data-testid="bp-education"
+					:loan-region="loanRegion"
+				/>
+			</content-container>
 			<content-container>
 				<more-about-loan
 					data-testid="bp-more-about"
@@ -160,11 +166,13 @@ import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '@/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
+import BorrowerEducationPlacement from '@/components/BorrowerProfile/BorrowerEducationPlacement';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
 
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
+const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -195,6 +203,7 @@ const preFetchQuery = gql`
 					country {
 						name
 						isoCode
+						region
 					}
 				}
 				image {
@@ -223,6 +232,9 @@ const preFetchQuery = gql`
 				sector {
 					id
 					name
+				}
+				userProperties {
+					lentTo
 				}
 			}
 		}
@@ -296,6 +308,7 @@ export default {
 		SummaryCard,
 		TopBannerPfp,
 		WwwPage,
+		BorrowerEducationPlacement,
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -407,6 +420,17 @@ export default {
 			state: '',
 			isMobile: false,
 			isLoading: true,
+			regionBelongsToExp: false,
+			showEducationPlacementExp: false,
+			loanRegion: '',
+			expRegionList: [
+				'North America',
+				'Central America',
+				'South America',
+				'Africa',
+				'Asia',
+				'Europe'
+			],
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -437,7 +461,19 @@ export default {
 					// Check for loan and loan status
 					const loan = data?.lend?.loan;
 					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
+					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
+					// Evaluate if lender should be redirected to lend classic MARS-358
+					const lentTo = loan?.userProperties?.lentTo ?? false;
+					if (lentTo && !redirectToLendClasic) {
+						const loanAmount = loan?.loanAmount ?? '0';
+						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
+						const amountLeft = Number(loanAmount) - Number(fundedAmount);
+
+						const loanStatus = loan?.status !== 'fundraising';
+						redirectToLendClasic = !amountLeft || loanStatus;
+					}
+
+					if (redirectToLendClasic) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;
@@ -450,6 +486,7 @@ export default {
 					return Promise.all([
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
 					]);
 				});
 		},
@@ -496,6 +533,8 @@ export default {
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
+			this.loanRegion = loan?.geocode?.country?.region ?? '';
+			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
 		},
 	},
 	async mounted() {
@@ -528,6 +567,19 @@ export default {
 		);
 		if (version) {
 			this.shareLanguageExpVersion = version;
+		}
+
+		if (this.regionBelongsToExp) {
+			const educationExpData = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'borrower-profile',
+				EDUCATION_PLACEMENT_EXP,
+				'EXP-MARS-514-DEC2023 ',
+			);
+			if (educationExpData.version === 'b') {
+				this.showEducationPlacementExp = true;
+			}
 		}
 
 		this.determineIfMobile();

@@ -9,6 +9,10 @@
 			v-if="appealEnabled"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
+		<donation-banner-container
+			v-if="donationEnabled"
+			:donation-banner-content="donationBannerContent.fields"
+		/>
 	</div>
 </template>
 
@@ -22,6 +26,7 @@ import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -36,6 +41,7 @@ export default {
 	components: {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,
+		DonationBannerContainer,
 	},
 	props: {
 		hasPromoSession: {
@@ -48,7 +54,9 @@ export default {
 			isPromoEnabled: false,
 			promoBannerContent: {},
 			appealBannerContent: {},
+			donationBannerContent: {},
 			appealEnabled: false,
+			donationEnabled: false,
 			customAppealEnabled: false,
 		};
 	},
@@ -76,6 +84,17 @@ export default {
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
 				const activePromoBanner = uiGlobalPromoSetting.fields.content.find(promoContent => {
+					// guard against drafts
+					if (promoContent?.sys?.revision === 0) {
+						return false;
+					}
+					// guard against missing fields
+					if (!promoContent?.fields
+						|| !promoContent?.fields?.active
+						|| !promoContent?.fields?.startDate
+						|| !promoContent?.fields?.endDate) {
+						return false;
+					}
 					return settingEnabled(
 						promoContent.fields,
 						'active',
@@ -84,7 +103,8 @@ export default {
 					);
 				});
 
-				if (activePromoBanner) {
+				// check for activePromoBanner and ensure it has content fields
+				if (activePromoBanner && activePromoBanner?.fields) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = globalBannerDenyList.concat(activePromoBanner?.fields?.hiddenUrls ?? []);
 					const visibleUrls = [];
@@ -105,6 +125,10 @@ export default {
 						// Custom Banner
 						this.customAppealEnabled = true;
 						this.appealBannerContent = activePromoBanner;
+					} else if (activePromoBanner.fields.bannerType === 'Donation Banner') {
+						// Donation Banner
+						this.donationEnabled = true;
+						this.donationBannerContent = activePromoBanner;
 					} else {
 						// Promo Banner
 						// parse the contentful richText into an html string

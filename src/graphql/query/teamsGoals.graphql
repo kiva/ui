@@ -1,0 +1,37 @@
+query GetGoals($teamId: Int, $limit: Int) {
+	getGoals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId, status: [IN_PROGRESS, NONE]}) {
+		totalCount
+		values {
+			id
+			description
+			name
+			participation {
+				totalCount
+				values {
+					lender {
+						id
+						image {
+							id
+							url
+						}
+					}
+				}
+			}
+			status
+			targets {
+				totalCount
+				values {
+					... on LoanTarget {
+						loanId
+						status
+					}
+				}
+			}
+			startDate
+			endDate
+			... on TeamGoal {
+				teamId
+			}
+		}
+	}
+}

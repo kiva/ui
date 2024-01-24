@@ -6,6 +6,9 @@
 			/>
 		</template>
 		<template v-else>
+			<div v-if="showNotifyMe" class="tw-bg-secondary">
+				<NotifyMe :goal="goal" :email="lender.email" :team-public-id="teamPublicId" />
+			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -118,10 +121,33 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import NotifyMe from '@/components/Thanks/NotifyMe';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+
+const getLoans = receipt => {
+	const loansResponse = receipt?.items?.values ?? [];
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+				team: item.team,
+			};
+		});
+
+	return loans;
+};
+
+const getTeamId = loans => {
+	const teamsIds = loans.filter(loan => !!loan?.team?.id)
+		.map(loan => loan.team.id) ?? [];
+	return teamsIds?.[0] ?? null;
+};
 
 export default {
 	name: 'ThanksPage',
@@ -135,7 +161,8 @@ export default {
 		ThanksLayoutV2,
 		WwwPage,
 		ThanksPageCommentAndShare,
-		ThanksPageDonationOnly
+		ThanksPageDonationOnly,
+		NotifyMe
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -156,7 +183,9 @@ export default {
 			monthlyDonationAmount: '',
 			isFirstLoan: false,
 			isFtdMessageEnable: false,
-			ftdCreditAmount: ''
+			ftdCreditAmount: '',
+			goal: null,
+			showNotifyMe: false,
 		};
 	},
 	apollo: {
@@ -171,9 +200,21 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(() => {
+			}).then(({ data }) => {
+				// Get teamId from receipt
+				let teamId = null;
+				const receipt = data?.shop?.receipt ?? null;
+				const loans = getLoans(receipt);
+				teamId = getTeamId(loans);
+
+				const filters = {
+					teamId,
+				};
+				const limit = 1;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					teamId ? fetchGoals(client, limit, filters) : null
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -255,7 +296,13 @@ export default {
 		},
 		showFtdMessage() {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
-		}
+		},
+		teamId() {
+			return getTeamId(this.loans);
+		},
+		teamPublicId() {
+			return this.loans?.[0]?.team?.teamPublicId;
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -299,15 +346,31 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => {
-				return {
-					...item.loan,
-					team: item.team,
+		this.loans = getLoans(this.receipt);
+
+		// Fetch Goal Information
+		try {
+			if (this.teamId) {
+				const filters = {
+					teamId: this.teamId,
 				};
-			});
+				const limit = 1;
+
+				const response = this.apollo.readQuery({
+					query: teamsGoalsQuery,
+					variables: { ...filters, limit },
+				});
+
+				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+
+				const loansIds = this.loans.map(loan => loan.id) ?? [];
+				this.showNotifyMe = this.goal && this.goal?.targets?.values
+					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
+			}
+		} catch (e) {
+			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
+		}
+
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 

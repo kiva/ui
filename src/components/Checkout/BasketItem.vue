@@ -38,10 +38,10 @@
 				/>
 				<team-attribution
 					class="tw-mb-1 tw-mt-0.5"
-					v-if="teams.length"
-					:teams="teams"
+					v-if="combinedTeams.length"
+					:teams="combinedTeams"
 					:loan-id="loan.id"
-					:team-id="loan.team ? loan.team.id : 0"
+					:team-id="loanTeamAttributionId"
 				/>
 				<loan-promo-credits
 					:applied-promo-credits="appliedPromoCredits"
@@ -122,6 +122,7 @@ import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
 import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '@/components/Checkout/TeamAttribution';
+import { getForcedTeamId, removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 
 export default {
 	name: 'BasketItem',
@@ -157,6 +158,8 @@ export default {
 		return {
 			activateTimer: true,
 			loanVisible: true,
+			appendedTeams: [],
+			forceTeamId: null
 		};
 	},
 	computed: {
@@ -178,12 +181,32 @@ export default {
 		leftoverCreditAllocationLoanId() {
 			return this.cookieStore.get('lcaid');
 		},
+		combinedTeams() {
+			return [...this.teams, ...this.appendedTeams];
+		},
+		loanTeamAttributionId() {
+			if (this.forceTeamId) {
+				return this.forceTeamId;
+			}
+			return this.loan.team ? this.loan.team.id : 0;
+		}
+	},
+	watch: {
+		teams: {
+			handler() {
+				this.forceTeamId = getForcedTeamId(
+					this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams
+				);
+			},
+			immediate: true
+		}
 	},
 	methods: {
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
 				this.loanVisible = false;
+				removeLoansFromChallengeCookie(this.cookieStore, [this.loan.id]);
 			}
 		},
 	},

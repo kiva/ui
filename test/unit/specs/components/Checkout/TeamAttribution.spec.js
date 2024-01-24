@@ -11,8 +11,8 @@ describe('TeamDropDown', () => {
 			{
 				provide: {
 					apollo: {
-						readQuery: () => {
-						},
+						readQuery: () => {},
+						mutate: () => Promise.resolve({}),
 					},
 				},
 				props: {
@@ -54,8 +54,8 @@ describe('TeamDropDown', () => {
 			{
 				provide: {
 					apollo: {
-						readQuery: () => {
-						},
+						readQuery: () => {},
+						mutate: () => Promise.resolve({}),
 					},
 				},
 			}
