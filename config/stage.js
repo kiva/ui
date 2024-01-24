@@ -59,6 +59,10 @@ module.exports = merge(base, {
 			key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
 			domainSuffix: '-test',
 		},
+		getStream: {
+			apiKey: '',
+			appId: ''
+		}
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api-stage.dk1.kiva.org/graphql',

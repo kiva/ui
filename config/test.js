@@ -53,6 +53,10 @@ module.exports = merge(base, {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
 		},
+		getStream: {
+			apiKey: '',
+			appId: ''
+		}
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api-test.dk1.kiva.org/graphql',

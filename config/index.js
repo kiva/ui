@@ -70,6 +70,10 @@ module.exports = {
 			default: 'en',
 			supported: ['en', 'es', 'fr'],
 		},
+		getStream: {
+			apiKey: '',
+			appId: ''
+		}
 	},
 	server: {
 		port: 8888,
