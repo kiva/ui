@@ -13,6 +13,7 @@ export const mockState = {
 	keywordSearch: 'search',
 	partnerId: [1],
 	isMatchable: true,
+	flexibleFundraisingEnabled: false,
 };
 
 export const savedSearchParams = {
