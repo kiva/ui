@@ -41,10 +41,14 @@ module.exports = function createMiddleware({
 
 	// Create a worker pool to render the app
 	const pool = vueWorkerPool({
-		clientManifest,
-		serverBundle,
-		serverConfig: config.server,
-		template,
+		minWorkers: config.server.minVueWorkers,
+		maxWorkers: config.server.maxVueWorkers,
+		workerData: {
+			clientManifest,
+			serverBundle,
+			serverConfig: config.server,
+			template,
+		},
 	});
 
 	function middleware(req, res, next) {

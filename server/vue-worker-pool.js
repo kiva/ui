@@ -5,9 +5,11 @@ const { SHARE_ENV } = require('worker_threads');
 const workerpool = require('workerpool');
 const promClient = require('prom-client');
 
-module.exports = function createWorkerPool(workerData) {
+module.exports = function createWorkerPool({ minWorkers, maxWorkers, workerData } = {}) {
 	// Create pool of worker threads for Vue rendering
 	const pool = workerpool.pool(path.resolve(__dirname, 'vue-worker.js'), {
+		minWorkers,
+		maxWorkers,
 		workerType: 'thread',
 		workerThreadOpts: {
 			workerData,
