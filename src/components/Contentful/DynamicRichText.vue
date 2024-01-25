@@ -22,7 +22,8 @@ export default {
 				components: {
 					KvFrequentlyAskedQuestions: () => import('@/components/Kv/KvFrequentlyAskedQuestions'),
 					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
-					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper')
+					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper'),
+					CommentsContainer: () => import('@/components/Contentful/CommentsContainer')
 				},
 				props: {
 				},
