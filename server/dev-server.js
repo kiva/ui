@@ -175,7 +175,7 @@ app.use(devMiddleware);
 app.use(hotMiddleware);
 
 // load metrics middleware
-app.use(metricsMiddleware)
+app.use(metricsMiddleware);
 
 // Configure session
 app.use('/', sessionRouter(config.server));
