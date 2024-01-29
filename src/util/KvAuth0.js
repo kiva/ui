@@ -142,7 +142,7 @@ export default class KvAuth0 {
 	}
 
 	getFakeAuthCookieValue() {
-		if (!this.checkFakeAuth) return;
+		if (!this.fakeAuthAllowed()) return;
 
 		const cookieValue = this.cookieStore.get(FAKE_AUTH_NAME) ?? '';
 
