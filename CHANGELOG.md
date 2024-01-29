@@ -1,3 +1,30 @@
+## [2.728.0](https://github.com/kiva/ui/compare/v2.727.0...v2.728.0) (2024-01-29)
+
+
+### 🎉 New Features
+
+* add new flexibleFundraisingEnabled filter ([1fed20e](https://github.com/kiva/ui/commit/1fed20e54d9adeab3d8fc62d81182fefe09cca2e))
+* add placeholder for IWD 2024 category header ([2ac0803](https://github.com/kiva/ui/commit/2ac08036a704006d8033619afd678d752ba1a39b))
+* configure min/max vue worker count with env vars ([17c9138](https://github.com/kiva/ui/commit/17c9138184bd7885fe055c99ea53482562ef2e95))
+* contentful comments component base in cps ([93e008c](https://github.com/kiva/ui/commit/93e008c478fb018d42b27b505f5d92b5e7a47b77))
+* export worker pool metrics to monitor vue rendering ([12aebc2](https://github.com/kiva/ui/commit/12aebc2186f63b92ef7aefdffe1f425d22205234))
+* get activity feed token ([398568b](https://github.com/kiva/ui/commit/398568b801609556b8e103004b8633c002558e90))
+* use pool of worker threads for rendering ([45cad5e](https://github.com/kiva/ui/commit/45cad5e6bacff64f25566c95f6944aa3dc8f48ae))
+* use worker threads for vue app and sitemap rendering ([999b0d3](https://github.com/kiva/ui/commit/999b0d31fe707ee1721a316168580704a907126d))
+
+
+### 🐛 Bugfixes
+
+* handle pool reinitialization by dev server ([9cdeb7a](https://github.com/kiva/ui/commit/9cdeb7aff598c58d57f2609cafc1c4ef10cf9034))
+* revert new component usage ([9968551](https://github.com/kiva/ui/commit/9968551c64dee17e7c432b69391dee68a4dab53a))
+
+
+### 🧹 Chores
+
+* **deps:** install workerpool ([750f01d](https://github.com/kiva/ui/commit/750f01d4c0f7696196fd9a2862e152db345d34c8))
+* **release:** 2.728.0-rc.1 [skip ci] ([224ffe2](https://github.com/kiva/ui/commit/224ffe2c29ce085fc536e25ae24605f4ff1bfd2a))
+* updates for k8s-local config ([09004ef](https://github.com/kiva/ui/commit/09004ef910dbdf905f3322dcd5cb0846df312c07))
+
 ## [2.728.0-rc.1](https://github.com/kiva/ui/compare/v2.727.0...v2.728.0-rc.1) (2024-01-29)
 
 
