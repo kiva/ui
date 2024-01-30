@@ -12,9 +12,9 @@ const story = (args) => {
 		template: `
 			<div>
 				<kv-progress-campaign
-          :funded-loans="fundedLoans"
+					:funded-loans="fundedLoans"
 					:total-loans="totalLoans"
-          :days-left="daysLeft"
+					:days-left="daysLeft"
 					:raised-money="raisedMoney"
 				/>
 			</div>
