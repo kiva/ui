@@ -77,12 +77,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-  div {
-    @apply tw-flex tw-items-center tw-justify-between;
-  }
+	div {
+		@apply tw-flex tw-items-center tw-justify-between;
+	}
 
-  p {
-    font-weight: 600;
-    @apply tw-text-small;
-  }
+	p {
+		font-weight: 600;
+		@apply tw-text-small;
+	}
 </style>
