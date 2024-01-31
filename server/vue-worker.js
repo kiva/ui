@@ -62,7 +62,8 @@ async function render(context) {
 		})
 		.then(html => {
 			// collect any cookies created during the app render
-			setCookies = [...setCookies, ...context.setCookies];
+			const contextSetCookies = context?.setCookies ?? [];
+			setCookies = [...setCookies, ...contextSetCookies];
 			// send the final rendered html
 			return {
 				html,
@@ -71,7 +72,8 @@ async function render(context) {
 		})
 		.catch(err => {
 			// collect any cookies created during the app render
-			setCookies = [...setCookies, ...context.setCookies];
+			const contextSetCookies = context?.setCookies ?? [];
+			setCookies = [...setCookies, ...contextSetCookies];
 			// send the error
 			return {
 				error: err,
