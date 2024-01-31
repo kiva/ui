@@ -47,7 +47,7 @@ async function render(context) {
 			}
 		});
 
-	const setCookies = [];
+	let setCookies = [];
 
 	return Promise.all([typesPromise, cookiePromise])
 		.then(([types, cookieInfo]) => {
@@ -55,14 +55,14 @@ async function render(context) {
 			context.config.graphqlPossibleTypes = types;
 			// update cookies in the rendering context with any newly fetched session cookies
 			context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-			// forward any newly fetched 'Set-Cookie' headers
-			context.setCookies = [...cookieInfo.setCookies];
+			// collect any newly fetched 'Set-Cookie' headers to send after the render
+			setCookies = [...cookieInfo.setCookies];
 			// render the app
 			return renderer.renderToString(context);
 		})
 		.then(html => {
 			// collect any cookies created during the app render
-			setCookies.concat(context.setCookies);
+			setCookies = [...setCookies, ...context.setCookies];
 			// send the final rendered html
 			return {
 				html,
@@ -71,7 +71,7 @@ async function render(context) {
 		})
 		.catch(err => {
 			// collect any cookies created during the app render
-			setCookies.concat(context.setCookies);
+			setCookies = [...setCookies, ...context.setCookies];
 			// send the error
 			return {
 				error: err,
