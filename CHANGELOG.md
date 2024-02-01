@@ -1,3 +1,11 @@
+## [2.729.0-rc.2](https://github.com/kiva/ui/compare/v2.729.0-rc.1...v2.729.0-rc.2) (2024-02-01)
+
+
+### 🐛 Bugfixes
+
+* check and coerce setCookies from the context if missing ([2741ab0](https://github.com/kiva/ui/commit/2741ab066d04330dc88109c102179bbac1b1566d))
+* set cookie headers not being added to response ([6dea80d](https://github.com/kiva/ui/commit/6dea80d489f1b848f6c7e1aa96a6295232e88659))
+
 ## [2.729.0-rc.1](https://github.com/kiva/ui/compare/v2.728.0...v2.729.0-rc.1) (2024-01-31)
 
 
