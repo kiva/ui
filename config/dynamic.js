@@ -102,7 +102,7 @@ module.exports = {
 		memcachedServers,
 		port: 8888,
 		sessionUri: `https://www.${baseUrl}/start-ui-session`,
-		minVueWorkers: process.env.MIN_VUE_WORKERS || 1,
-		maxVueWorkers: process.env.MAX_VUE_WORKERS || 3,
+		minVueWorkers: parseInt(process.env.MIN_VUE_WORKERS) || 1,
+		maxVueWorkers: parseInt(process.env.MAX_VUE_WORKERS) || 3,
 	}
 }
