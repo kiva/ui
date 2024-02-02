@@ -5,7 +5,7 @@
 			:lender-name="lenderName"
 		/>
 		<p class="tw-text-base tw-whitespace-nowrap">
-			{{ lenderName }} contributed ${{ amountLent }}
+			<span class="data-hj-suppress">{{ lenderName }}</span> contributed ${{ amountLent }}
 		</p>
 	</div>
 </template>

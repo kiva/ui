@@ -40,12 +40,12 @@ export default {
 </script>
 
 <style scoped lang="postcss">
-.hide-scrollbar::-webkit-scrollbar {
-  @apply tw-hidden;
+.hide-scrollbar {
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
 }
 
-.hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+.hide-scrollbar::-webkit-scrollbar {
+	@apply tw-hidden;
 }
 </style>
