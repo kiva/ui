@@ -1,7 +1,12 @@
 <template>
 	<div class="tw-relative">
-		<div class="row">
-			<div class="small-12 columns heading-region">
+		<div :class="{ 'row': !iwdHeaderExpEnabled, 'tw-bg-white': iwdHeaderExpEnabled }">
+			<div
+				:class="{
+					'small-12 columns heading-region': !iwdHeaderExpEnabled,
+					'row !tw-block tw-pt-2.5 tw-px-1 md:tw-pb-1 md:tw-px-2': iwdHeaderExpEnabled
+				}"
+			>
 				<router-link
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
@@ -17,9 +22,30 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<template v-if="iwdHeaderExpEnabled">
-					<h1>Placeholder for IWD 2024 Header</h1>
-					<p>More content coming soon!</p>
-					<activity-feed />
+					<div class="tw-flex tw-flex-col tw-w-full">
+						<div class="tw-flex tw-pt-2 md:tw-gap-6 lg:tw-gap-12">
+							<div>
+								<h1 style="line-height: 1;" class="md:tw-pb-3">
+									Help us fund 4,000 women for Women’s Day!
+								</h1>
+								<div class="tw-flex md:tw-hidden tw-py-0.5">
+									<img :src="iWD2024Badge" alt="IWD Badge" style="width: 114px;">
+								</div>
+								<!-- eslint-disable max-len -->
+								<p class="tw-pb-3">
+									To celebrate International Women’s Day, we’re aiming to fund 4,000 women this week. That’s 4,000 more women who could have the resources they need to thrive — and invest in their communities.
+								</p>
+								<p>We need you to make it happen. Help us reach our goal and earn your exclusive International Women’s Day badge!</p>
+								<!-- eslint-enable max-len -->
+							</div>
+							<div class="tw-shrink-0 tw-hidden md:tw-block">
+								<img :src="iWD2024Badge" alt="IWD Badge">
+							</div>
+						</div>
+						<div class="tw-pt-2">
+							<activity-feed />
+						</div>
+					</div>
 				</template>
 				<template v-else>
 					<h1 class="tw-mb-2">
@@ -41,7 +67,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" :class="{ 'tw-pt-2.5': iwdHeaderExpEnabled }">
 			<quick-filters
 				class="tw-z-2 tw-px-1 md:tw-px-2"
 				:total-loans="totalCount"
@@ -180,6 +206,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import ActivityFeed from '@/components/Iwd/ActivityFeed';
+import iWD2024Badge from '@/assets/images/achievements/iwd_2024_badge.png';
 
 const defaultLoansPerPage = 12;
 
@@ -322,6 +349,7 @@ export default {
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
 			iwdHeaderExpEnabled: false,
+			iWD2024Badge,
 		};
 	},
 	computed: {
