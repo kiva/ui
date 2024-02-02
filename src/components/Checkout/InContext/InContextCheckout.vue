@@ -177,7 +177,7 @@ export default {
 		KvLoadingOverlay,
 		OrderTotals,
 		KvIcon,
-		KvGrid
+		KvGrid,
 	},
 	mixins: [
 		checkoutUtils
@@ -189,11 +189,11 @@ export default {
 		},
 		totals: {
 			type: Object,
-			default: () => {},
+			default: () => ({}),
 		},
 		loans: {
 			type: Array,
-			default: () => [],
+			default: () => ([]),
 		},
 		disableRedirects: {
 			type: Boolean,
@@ -201,11 +201,11 @@ export default {
 		},
 		donations: {
 			type: Array,
-			default: () => [],
+			default: () => ([]),
 		},
 		kivaCards: {
 			type: Array,
-			default: () => [],
+			default: () => ([]),
 		},
 		showDonation: {
 			type: Boolean,
@@ -213,7 +213,7 @@ export default {
 		},
 		teams: {
 			type: Array,
-			default: () => []
+			default: () => ([])
 		},
 		autoRedirectToThanks: {
 			type: Boolean,
@@ -221,11 +221,11 @@ export default {
 		},
 		promoFund: {
 			type: Object,
-			default: () => {},
+			default: () => ({}),
 		},
 		promoName: {
 			type: String,
-			default: () => {},
+			default: '',
 		},
 		lcaLoanPrice: {
 			type: Number,
@@ -293,7 +293,7 @@ export default {
 				&& this.cookieStore.get('lcaid')
 				&& this.promoFund?.promoPrice
 				&& this.lcaLoanPrice > 0;
-		}
+		},
 	},
 	methods: {
 		completeTransaction(transactionId) {
@@ -332,8 +332,8 @@ export default {
 		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
-		}
-	}
+		},
+	},
 };
 </script>
 
@@ -385,7 +385,6 @@ export default {
 
 		::v-deep .order-total strong,
 		::v-deep .kiva-credit strong {
-			// margin-right: 1.725rem;
 			margin-right: 2rem;
 		}
 	}
