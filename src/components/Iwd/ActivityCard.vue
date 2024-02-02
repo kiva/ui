@@ -4,7 +4,7 @@
 			:lender-image-url="lenderImageUrl"
 			:lender-name="lenderName"
 		/>
-		<p class="tw-text-base">
+		<p class="tw-text-base tw-whitespace-nowrap">
 			{{ lenderName }} contributed ${{ amountLent }}
 		</p>
 	</div>

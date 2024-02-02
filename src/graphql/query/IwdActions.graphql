@@ -1,0 +1,20 @@
+query IwdActions {
+  lend {
+    campaignActions(
+        campaignKey: "international_womens_day",
+        filters: {gender: female}
+    ) {
+      totalCount
+      values {
+        lender {
+          id
+          name
+          image {
+            url
+          }
+        }
+        shareAmount
+      }
+    }
+  }
+}

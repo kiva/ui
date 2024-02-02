@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!isDefaultProfilePic(imageFilename) && !isAnonymousUser && imageFilename">
+	<div class="tw-w-4 tw-h-4" v-if="!isDefaultProfilePic(imageFilename) && !isAnonymousUser && imageFilename">
 		<img
 			:src="lenderImageUrl"
 			alt="Image of lender"

@@ -19,6 +19,7 @@
 				<template v-if="iwdHeaderExpEnabled">
 					<h1>Placeholder for IWD 2024 Header</h1>
 					<p>More content coming soon!</p>
+					<activity-feed />
 				</template>
 				<template v-else>
 					<h1 class="tw-mb-2">
@@ -178,6 +179,7 @@ import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import ActivityFeed from '@/components/Iwd/ActivityFeed';
 
 const defaultLoansPerPage = 12;
 
@@ -277,6 +279,7 @@ export default {
 		PromoGridLoanCardExp,
 		KvClassicLoanCardContainer,
 		EmptyState,
+		ActivityFeed,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [loanChannelQueryMapMixin],
