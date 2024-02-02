@@ -3,7 +3,7 @@
 		<img
 			:src="lenderImageUrl"
 			alt="Image of lender"
-			class="tw-rounded-full tw-inline-block tw-w-4 tw-h-4"
+			class="tw-rounded-full tw-inline-block tw-w-4 tw-h-4 data-hj-suppress"
 		>
 	</div>
 	<div
