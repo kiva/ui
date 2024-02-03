@@ -46,6 +46,7 @@
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 
 				<campaign-loan-grid-display
@@ -65,6 +66,7 @@
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 			</div>
 		</div>
