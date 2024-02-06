@@ -122,6 +122,7 @@ import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -186,6 +187,7 @@ export default {
 			ftdCreditAmount: '',
 			goal: null,
 			showNotifyMe: false,
+			iwdHeaderExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -418,13 +420,28 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+		this.checkForIWD2024Experiment();
 	},
 	methods: {
 		createGuestAccount() {
 			// This is the only place this variable should be set.
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
-		}
+		},
+		checkForIWD2024Experiment() {
+			const iwdHeaderExp = this.apollo.readFragment({
+				id: 'Experiment:iwd_header_2024',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Only show IWD content and track experiment if: 1) experiment enabled, and 2) "women" loan checked out
+			const EXPERIMENT_ENABLED_VERSION = 'b';
+			const womenLoanIncluded = (this.loans?.filter(l => l.gender.toUpperCase() === 'FEMALE')?.length ?? 0) > 0;
+			this.iwdHeaderExpEnabled = iwdHeaderExp.version === EXPERIMENT_ENABLED_VERSION && womenLoanIncluded;
+			if (this.iwdHeaderExpEnabled) {
+				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
+			}
+		},
 	}
 };
 
