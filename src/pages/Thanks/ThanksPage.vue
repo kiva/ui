@@ -187,6 +187,7 @@ export default {
 			ftdCreditAmount: '',
 			goal: null,
 			showNotifyMe: false,
+			iwdHeaderExpEnabled: false,
 		};
 	},
 	apollo: {
