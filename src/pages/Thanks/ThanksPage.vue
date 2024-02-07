@@ -441,7 +441,8 @@ export default {
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
-		this.checkForIWD2024Experiment();
+		// TODO: resolve issues with this.
+		// this.checkForIWD2024Experiment();
 	},
 	methods: {
 		createGuestAccount() {
