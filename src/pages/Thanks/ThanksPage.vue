@@ -1,6 +1,13 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<template v-if="isOnlyDonation">
+		<template v-if="iwdHeaderExpEnabled">
+			<iwd-thanks-page-variations
+				:iwd-valet-inviter-id="iwdValetInviterId"
+				:iwd-valet-inviter="iwdValetInviter"
+				:iwd-loan="iwdLoan"
+			/>
+		</template>
+		<template v-else-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
@@ -105,6 +112,7 @@ import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
@@ -123,6 +131,7 @@ import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -163,7 +172,8 @@ export default {
 		WwwPage,
 		ThanksPageCommentAndShare,
 		ThanksPageDonationOnly,
-		NotifyMe
+		NotifyMe,
+		IwdThanksPageVariations,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -188,6 +198,8 @@ export default {
 			goal: null,
 			showNotifyMe: false,
 			iwdHeaderExpEnabled: false,
+			iwdValetInviterId: undefined,
+			iwdValetInviter: {},
 		};
 	},
 	apollo: {
@@ -214,9 +226,14 @@ export default {
 				};
 				const limit = 1;
 
+				const valetInviterId = route?.query?.valet_inviter;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					teamId ? fetchGoals(client, limit, filters) : null
+					teamId ? fetchGoals(client, limit, filters) : null,
+					!!valetInviterId && valetInviterId?.toUpperCase() !== KIVA_INVITER_ID
+						? client.query({ query: lenderPublicProfile, variables: { publicId: valetInviterId } })
+						: null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -304,6 +321,9 @@ export default {
 		},
 		teamPublicId() {
 			return this.loans?.[0]?.team?.teamPublicId;
+		},
+		iwdLoan() {
+			return (this.loans?.filter(l => l?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
 		},
 	},
 	created() {
@@ -429,6 +449,26 @@ export default {
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
 		},
+		getIwdInviter() {
+			this.iwdValetInviterId = this.$route?.query?.valet_inviter;
+			if (!!this.iwdValetInviterId && this.iwdValetInviterId?.toUpperCase() !== KIVA_INVITER_ID) {
+				try {
+					const data = this.apollo.readQuery({
+						query: lenderPublicProfile,
+						variables: {
+							checkoutId: lenderPublicProfile,
+							publicId: this.iwdValetInviterId,
+						}
+					});
+					this.iwdValetInviter = data?.community?.lender ?? {};
+				} catch (e) {
+					logReadQueryError(
+						e,
+						`Lender public profile readQuery failed: (publicId: ${this.iwdValetInviterId})`,
+					);
+				}
+			}
+		},
 		checkForIWD2024Experiment() {
 			const iwdHeaderExp = this.apollo.readFragment({
 				id: 'Experiment:iwd_header_2024',
@@ -436,9 +476,10 @@ export default {
 			}) || {};
 			// Only show IWD content and track experiment if: 1) experiment enabled, and 2) "women" loan checked out
 			const EXPERIMENT_ENABLED_VERSION = 'b';
-			const womenLoanIncluded = (this.loans?.filter(l => l.gender.toUpperCase() === 'FEMALE')?.length ?? 0) > 0;
+			const womenLoanIncluded = !!this.iwdLoan;
 			this.iwdHeaderExpEnabled = iwdHeaderExp.version === EXPERIMENT_ENABLED_VERSION && womenLoanIncluded;
 			if (this.iwdHeaderExpEnabled) {
+				this.getIwdInviter();
 				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
 			}
 		},
