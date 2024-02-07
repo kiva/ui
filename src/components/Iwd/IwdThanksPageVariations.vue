@@ -95,9 +95,6 @@
 					</div>
 				</div>
 			</template>
-			<template v-else>
-				<!-- TODO: content coming soon -->
-			</template>
 		</div>
 	</div>
 </template>
