@@ -209,7 +209,12 @@ export const femaleLoanData = {
 			},
 			"lender": {
 				"id": 123,
-				"name": "John"
+				"name": "John",
+				"image": {
+					"id": 123,
+					"url": "https://www-kiva-org-0.freetls.fastly.net/img/s100/4da4a17c4b35913d22114bf29bb1911b.jpg",
+				},
+				"publicId": "mary19806605",
 			},
 			"userAccount": {
 				"id": 123,
