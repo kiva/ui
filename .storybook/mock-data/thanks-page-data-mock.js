@@ -226,6 +226,25 @@ export const femaleLoanData = {
 	}
 };
 
+export const femaleLoanDataWithInviter = {
+	"data": {
+		...femaleLoanData.data,
+		"community": {
+			"lender": {
+				"id": 123,
+				"name": "Mary",
+				"image": {
+					"id": 123,
+					"url": "https://www-kiva-org-0.freetls.fastly.net/img/s100/4da4a17c4b35913d22114bf29bb1911b.jpg",
+					"width": 3264,
+					"height": 2448
+				},
+				"publicId": "mary19806605"
+			}
+		}
+	}
+}
+
 export const iwdExperiment = {
 	id: 'Experiment:iwd_header_2024',
 	version: 'b'
