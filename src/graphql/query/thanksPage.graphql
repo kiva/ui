@@ -115,6 +115,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		lender {
 			id
 			name
+			image {
+				id
+				url
+			}
+			publicId
 		}
 		userAccount {
 			id

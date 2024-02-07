@@ -41,6 +41,8 @@ export const Default = story(maleLoanData);
 
 export const IWDNoFemaleLoan = story(maleLoanData, iwdExperiment);
 
+export const IWDNoInviter = story(femaleLoanData, iwdExperiment);
+
 export const IWDInviterKiva = story(femaleLoanData, iwdExperiment, 'valet_inviter=kiva');
 
 export const IWDInviterLender = story(femaleLoanDataWithInviter, iwdExperiment, 'valet_inviter=mary19806605');

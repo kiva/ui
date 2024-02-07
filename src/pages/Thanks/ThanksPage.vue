@@ -5,6 +5,8 @@
 				:iwd-valet-inviter-id="iwdValetInviterId"
 				:iwd-valet-inviter="iwdValetInviter"
 				:iwd-loan="iwdLoan"
+				:lender="lender"
+				:is-guest="isGuest"
 			/>
 		</template>
 		<template v-else-if="isOnlyDonation">
@@ -352,6 +354,8 @@ export default {
 			...(data?.my?.userAccount ?? {}),
 			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+			imageUrl: data?.my?.lender?.image?.url ?? '',
+			publicId: data?.my?.lender?.publicId ?? '',
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
@@ -441,8 +445,7 @@ export default {
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
-		// TODO: resolve issues with this.
-		// this.checkForIWD2024Experiment();
+		this.checkForIWD2024Experiment();
 	},
 	methods: {
 		createGuestAccount() {
