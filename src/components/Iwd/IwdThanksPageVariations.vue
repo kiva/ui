@@ -305,10 +305,12 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
+		// Expected by social-sharing-mixin (used by all socials)
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			return getFullUrl(`${base}/iwd2024${this.lenderPublicId ? `/${this.lenderPublicId}` : ''}`);
 		},
+		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
 		shareMessage() {
 			return `Kiva is an easy way to make a real difference in someone's life.${
 				this.iwdBorrowerName && this.iwdBorrowerLocation
