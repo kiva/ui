@@ -54,10 +54,10 @@
 						<!-- eslint-disable-next-line max-len -->
 						<span class="tw-text-brand">{{ iwdBorrowerLocation }}</span><span>, the borrower</span><span class="tw-text-brand"> you just lent to</span><span>! This loan is special because...</span>
 					</div>
-					<div class="iwd-borrower-image tw-basis-auto md:tw-basis-1/2 tw-overflow-hidden">
+					<div class="iwd-borrower-image tw-basis-auto md:tw-basis-1/2">
 						<borrower-image
 							v-if="iwdLoan"
-							class="tw-w-full tw-bg-black data-hj-suppress"
+							class="tw-h-full tw-w-full tw-bg-black data-hj-suppress !tw-p-0 tw-rounded"
 							:alt="iwdBorrowerName"
 							:default-image="{ width: 548 }"
 							:hash="iwdLoanImageHash"
