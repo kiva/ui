@@ -10,7 +10,8 @@
 
 <script>
 import ActivityCard from '@/components/Iwd/ActivityCard';
-import IwdActionsQuery from '@/graphql/query/IwdActions.graphql';
+import iwdActionsQuery from '@/graphql/query/IwdActions.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	name: 'ActivityFeed',
@@ -24,17 +25,17 @@ export default {
 		};
 	},
 	methods: {
-		fetchActivities() {
-			// Fetch activities from API
-			this.apollo.query({
-				query: IwdActionsQuery,
-			}).then(({ data }) => {
-				this.activities = data?.lend?.campaignActions?.values ?? [];
-			});
+		async fetchActivities() {
+			try {
+				const response = await this.apollo.query({ query: iwdActionsQuery });
+				this.activities = response?.data?.lend?.campaignActions?.values ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'ActivityFeed iwdActionsQuery');
+			}
 		},
 	},
-	mounted() {
-		this.fetchActivities();
+	async mounted() {
+		await this.fetchActivities();
 	},
 };
 </script>
