@@ -4,17 +4,17 @@
 			<p>
 				{{ fundedBorrowers }} funded
 			</p>
-			<p>
+			<p v-if="!minimalStats">
 				{{ borrowersLeft }} to go
 			</p>
 		</div>
 		<kv-progress-bar
-			class="tw-my-1"
+			class="tw-my-0.5"
 			aria-label="Percent the loan has funded"
 			:value="progressPercentage"
 			:bg-variant="bgVariant"
 		/>
-		<div>
+		<div v-if="!minimalStats">
 			<p>
 				{{ daysLeft }} days left
 			</p>
@@ -42,6 +42,10 @@ export default {
 		daysLeft: {
 			type: Number,
 			required: true,
+		},
+		minimalStats: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

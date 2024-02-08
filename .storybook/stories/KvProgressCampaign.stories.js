@@ -15,6 +15,7 @@ const story = (args) => {
 					:funded-borrowers="fundedBorrowers"
 					:total-borrowers="totalBorrowers"
 					:days-left="daysLeft"
+					:minimal-stats="minimalStats"
 				/>
 			</div>
 		`,
@@ -25,4 +26,8 @@ const story = (args) => {
 
 export const Default = story({
 	daysLeft: 29, totalBorrowers: 4000, fundedBorrowers: 462,
+});
+
+export const MinimalStats = story({
+	daysLeft: 29, totalBorrowers: 4000, fundedBorrowers: 462, minimalStats: true
 });

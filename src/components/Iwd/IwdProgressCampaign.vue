@@ -4,6 +4,7 @@
 		:funded-borrowers="fundedBorrowers"
 		:total-borrowers="totalBorrowers"
 		:days-left="daysLeft"
+		:minimal-stats="minimalStats"
 	/>
 	<kv-loading-placeholder v-else class="tw-w-full tw-h-8" />
 </template>
@@ -22,6 +23,12 @@ export default {
 		KvLoadingPlaceholder,
 	},
 	inject: ['apollo', 'cookieStore'],
+	props: {
+		minimalStats: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	data() {
 		return {
 			fundedBorrowers: undefined,
