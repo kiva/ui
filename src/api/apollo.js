@@ -40,7 +40,7 @@ export default function createApolloClient({
 		link: ApolloLink.from([
 			NetworkErrorLink(),
 			SnowplowSessionLink({ cookieStore }),
-			ExperimentIdLink(),
+			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
