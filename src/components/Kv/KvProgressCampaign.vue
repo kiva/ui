@@ -1,32 +1,28 @@
 <template>
-	<figure>
+	<figure class="tw-grow">
 		<div class="tw-flex tw-items-center tw-justify-between">
 			<p>
-				{{ fundedLoans }} loans funded
+				{{ fundedBorrowers }} funded
 			</p>
-			<p>
-				{{ loansLeft }} to go!
+			<p v-if="!minimalStats">
+				{{ borrowersLeft }} to go
 			</p>
 		</div>
 		<kv-progress-bar
-			class="tw-my-1"
+			class="tw-my-0.5"
 			aria-label="Percent the loan has funded"
 			:value="progressPercentage"
 			:bg-variant="bgVariant"
 		/>
-		<div class="">
+		<div v-if="!minimalStats">
 			<p>
-				{{ numeralRaised }} raised
-			</p>
-			<p>
-				{{ daysRemaining }}
+				{{ daysLeft }} days left
 			</p>
 		</div>
 	</figure>
 </template>
 
 <script>
-import numeral from 'numeral';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
@@ -35,11 +31,11 @@ export default {
 		KvProgressBar
 	},
 	props: {
-		fundedLoans: {
+		fundedBorrowers: {
 			type: Number,
 			required: true,
 		},
-		totalLoans: {
+		totalBorrowers: {
 			type: Number,
 			required: true,
 		},
@@ -47,9 +43,9 @@ export default {
 			type: Number,
 			required: true,
 		},
-		raisedMoney: {
-			type: Number,
-			required: true,
+		minimalStats: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -58,19 +54,13 @@ export default {
 		};
 	},
 	computed: {
-		numeralRaised() {
-			return numeral(this.raisedMoney).format('$0,0');
-		},
-		daysRemaining() {
-			return `${this.daysLeft} days remaining`;
-		},
-		loansLeft() {
-			return this.totalLoans - this.fundedLoans > 0
-				? this.totalLoans - this.fundedLoans
+		borrowersLeft() {
+			return this.totalBorrowers - this.fundedBorrowers > 0
+				? this.totalBorrowers - this.fundedBorrowers
 				: 0;
 		},
 		progressPercentage() {
-			return (this.fundedLoans / this.totalLoans) * 100;
+			return (this.fundedBorrowers / this.totalBorrowers) * 100;
 		},
 	},
 };

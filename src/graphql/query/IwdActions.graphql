@@ -1,8 +1,8 @@
 query IwdActions {
   lend {
     campaignActions(
-        campaignKey: "international_womens_day",
-        filters: {gender: female}
+        campaignKey: "iwd2024",
+        filters: { gender: female }
     ) {
       totalCount
       values {

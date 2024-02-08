@@ -112,6 +112,9 @@ export const maleLoanData = {
 	}
 }
 
+const futureDate = new Date();
+futureDate.setDate(futureDate.getDate() + 20);
+
 export const femaleLoanData = {
 	"data": {
 		"shop": {
@@ -228,6 +231,15 @@ export const femaleLoanData = {
 				"totalCount": 1
 			}
 		},
+		"general": {
+			"kivaStats": {
+				"campaignStats": {
+					"currentBorrowerCount": 2298,
+					"targetBorrowerCount": 6000,
+					"targetEndDate": futureDate.toISOString(),
+				}
+			}
+		}
 	}
 };
 

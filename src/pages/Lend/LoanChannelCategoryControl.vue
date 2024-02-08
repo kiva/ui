@@ -22,30 +22,7 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<template v-if="iwdHeaderExpEnabled">
-					<div class="tw-flex tw-flex-col tw-w-full">
-						<div class="tw-flex tw-pt-2 md:tw-gap-6 lg:tw-gap-12">
-							<div>
-								<h1 style="line-height: 1;" class="md:tw-pb-3">
-									Help us fund 4,000 women for Women’s Day!
-								</h1>
-								<div class="tw-flex md:tw-hidden tw-py-0.5">
-									<img :src="iWD2024Badge" alt="IWD Badge" style="width: 114px;">
-								</div>
-								<!-- eslint-disable max-len -->
-								<p class="tw-pb-3">
-									To celebrate International Women’s Day, we’re aiming to fund 4,000 women this week. That’s 4,000 more women who could have the resources they need to thrive — and invest in their communities.
-								</p>
-								<p>We need you to make it happen. Help us reach our goal and earn your exclusive International Women’s Day badge!</p>
-								<!-- eslint-enable max-len -->
-							</div>
-							<div class="tw-shrink-0 tw-hidden md:tw-block">
-								<img :src="iWD2024Badge" alt="IWD Badge">
-							</div>
-						</div>
-						<div class="tw-pt-2">
-							<activity-feed />
-						</div>
-					</div>
+					<iwd-category-header />
 				</template>
 				<template v-else>
 					<h1 class="tw-mb-2">
@@ -205,8 +182,7 @@ import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import ActivityFeed from '@/components/Iwd/ActivityFeed';
-import iWD2024Badge from '@/assets/images/achievements/iwd_2024_badge.png';
+import IwdCategoryHeader from '@/components/Iwd/IwdCategoryHeader';
 
 const defaultLoansPerPage = 12;
 
@@ -306,7 +282,7 @@ export default {
 		PromoGridLoanCardExp,
 		KvClassicLoanCardContainer,
 		EmptyState,
-		ActivityFeed,
+		IwdCategoryHeader,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [loanChannelQueryMapMixin],
@@ -349,7 +325,6 @@ export default {
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
 			iwdHeaderExpEnabled: false,
-			iWD2024Badge,
 		};
 	},
 	computed: {
