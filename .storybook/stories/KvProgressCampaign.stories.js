@@ -12,10 +12,9 @@ const story = (args) => {
 		template: `
 			<div>
 				<kv-progress-campaign
-					:funded-loans="fundedLoans"
-					:total-loans="totalLoans"
+					:funded-borrowers="fundedBorrowers"
+					:total-borrowers="totalBorrowers"
 					:days-left="daysLeft"
-					:raised-money="raisedMoney"
 				/>
 			</div>
 		`,
@@ -25,5 +24,5 @@ const story = (args) => {
 };
 
 export const Default = story({
-	raisedMoney: 345900, daysLeft: 29, totalLoans: 4000, fundedLoans: 462,
+	daysLeft: 29, totalBorrowers: 4000, fundedBorrowers: 462,
 });
