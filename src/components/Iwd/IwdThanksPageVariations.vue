@@ -104,7 +104,7 @@
 			</template>
 			<template v-else>
 				<div class="tw-flex tw-flex-col tw-w-full tw-pb-2">
-					<div class="tw-text-center tw-pt-1.5 tw-pb-2 tw-mx-auto" style="max-width: 685px;">
+					<div class="tw-text-center tw-pt-1.5 tw-px-2 tw-pb-2 tw-mx-auto" style="max-width: 685px;">
 						<h2 class="tw-pb-1.5">
 							Spread the word. Multiply your impact.
 						</h2>
