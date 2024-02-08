@@ -11,6 +11,7 @@ query IwdActions {
           id
           name
           image {
+			id
             url
           }
         }
