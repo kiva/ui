@@ -134,6 +134,7 @@ import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
+import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -178,6 +179,7 @@ export default {
 		IwdThanksPageVariations,
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [iwdExperimentMixin],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -474,14 +476,8 @@ export default {
 			}
 		},
 		checkForIWD2024Experiment() {
-			const iwdHeaderExp = this.apollo.readFragment({
-				id: 'Experiment:iwd_header_2024',
-				fragment: experimentVersionFragment,
-			}) || {};
-			// Only show IWD content and track experiment if: 1) experiment enabled, and 2) "women" loan checked out
 			const EXPERIMENT_ENABLED_VERSION = 'b';
-			const womenLoanIncluded = !!this.iwdLoan;
-			this.iwdHeaderExpEnabled = iwdHeaderExp.version === EXPERIMENT_ENABLED_VERSION && womenLoanIncluded;
+			this.iwdHeaderExpEnabled = this.isIwdExperimentEnabled();
 			if (this.iwdHeaderExpEnabled) {
 				this.getIwdInviter();
 				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
