@@ -1,3 +1,37 @@
+## [2.730.0](https://github.com/kiva/ui/compare/v2.729.0...v2.730.0) (2024-02-09)
+
+
+### 🎉 New Features
+
+* add progress bar to campaign page ([c1b925b](https://github.com/kiva/ui/commit/c1b925b2029961266b9bb44c4618e87514fecdc0))
+* added flag for IWD to thanks page, created working stories ([1205eab](https://github.com/kiva/ui/commit/1205eab895413eec760ec462446e1c43373090ee))
+* added progress bar to thanks page variations ([e78f13f](https://github.com/kiva/ui/commit/e78f13fbc828653783a2bc7a13d8a7cd64a70840))
+* added some finalized content to IWD header ([fc29232](https://github.com/kiva/ui/commit/fc29232a1df8dfcca2d92702022734e20d3cae1d))
+* first IWD thanks page variation ([c5572b6](https://github.com/kiva/ui/commit/c5572b618c493422b547d74cd2b198604cac3c96))
+* iwd activity feed added ([#5152](https://github.com/kiva/ui/issues/5152)) ([0a9424f](https://github.com/kiva/ui/commit/0a9424f387434240ff4074ec75dd19788f1a2cd2))
+* remaining iwd thanks page variation ([b1a9600](https://github.com/kiva/ui/commit/b1a9600f96d7c142131b0f7cd40e909a60617494))
+* update thanks page header for challenges ([7b1147b](https://github.com/kiva/ui/commit/7b1147b706bfab91c4e983109c271b6bf92c6748))
+
+
+### 🐛 Bugfixes
+
+* added missing data prop ([9c92884](https://github.com/kiva/ui/commit/9c928840181fe9b9c6c6ea459c382e3805f5cc21))
+* added missing id in query ([fc7f447](https://github.com/kiva/ui/commit/fc7f44765df5663bc58a328c8d484993f492425a))
+* added some missing story mixins ([f853fb5](https://github.com/kiva/ui/commit/f853fb51151895f1a9a7874659cfdd9ca2734b73))
+* empty template was also creating a warning ([ffc591d](https://github.com/kiva/ui/commit/ffc591dfc659284444818ccc16db98aa1a13b405))
+* ensure we cover errors from new activities query ([e8cf21a](https://github.com/kiva/ui/commit/e8cf21a9671d83d8d31c05403fc233a2c6dd35ba))
+* lower activity feed items ([9b8eb53](https://github.com/kiva/ui/commit/9b8eb53cdaf36dc37e7cf7750cf11631bd993f62))
+* minor cleanup ([3a97d83](https://github.com/kiva/ui/commit/3a97d83266a841cfb8596145004ff9fbe26a6cd7))
+* quick resolution of server error ([85a2811](https://github.com/kiva/ui/commit/85a2811da02bfbd8854d3d7bfbc069c007e81a7d))
+* round the borrower image ([68a4d24](https://github.com/kiva/ui/commit/68a4d24f3d338c94f0c86dbad8fd4168ee288c9e))
+* show the checkout now button and emit to show basket on corporate landing loan cards ([d4b0819](https://github.com/kiva/ui/commit/d4b0819dbddba46d71f9747f3b594dd0844ec633))
+* some missing thanks padding ([be6b8f6](https://github.com/kiva/ui/commit/be6b8f6a330a3bdcda5ef9b3bd2c69e077b41263))
+
+
+### 🧹 Chores
+
+* **release:** 2.730.0-rc.1 [skip ci] ([75581df](https://github.com/kiva/ui/commit/75581df8bd6ad925db0397fd32c0ef397110b9e9)), closes [#5152](https://github.com/kiva/ui/issues/5152)
+
 ## [2.730.0-rc.1](https://github.com/kiva/ui/compare/v2.729.0...v2.730.0-rc.1) (2024-02-09)
 
 
