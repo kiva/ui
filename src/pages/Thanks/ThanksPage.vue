@@ -132,7 +132,6 @@ import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import NotifyMe from '@/components/Thanks/NotifyMe';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
 import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
