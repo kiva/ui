@@ -15,8 +15,8 @@
 			/>
 		</template>
 		<template v-else>
-			<div v-if="showNotifyMe" class="tw-bg-secondary">
-				<NotifyMe :goal="goal" :email="lender.email" :team-public-id="teamPublicId" />
+			<div v-if="showChallengeHeader" class="tw-bg-secondary">
+				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
@@ -131,7 +131,7 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
-import NotifyMe from '@/components/Thanks/NotifyMe';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -174,7 +174,7 @@ export default {
 		WwwPage,
 		ThanksPageCommentAndShare,
 		ThanksPageDonationOnly,
-		NotifyMe,
+		ChallengeHeader,
 		IwdThanksPageVariations,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -198,7 +198,7 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			goal: null,
-			showNotifyMe: false,
+			showChallengeHeader: false,
 			iwdHeaderExpEnabled: false,
 			iwdValetInviterId: undefined,
 			iwdValetInviter: {},
@@ -390,7 +390,7 @@ export default {
 				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
 
 				const loansIds = this.loans.map(loan => loan.id) ?? [];
-				this.showNotifyMe = this.goal && this.goal?.targets?.values
+				this.showChallengeHeader = this.goal && this.goal?.targets?.values
 					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
 			}
 		} catch (e) {

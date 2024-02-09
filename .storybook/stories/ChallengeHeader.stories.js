@@ -1,18 +1,17 @@
-import NotifyMe from '@/components/Thanks/NotifyMe';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {
-	title: 'Components/Notify Me',
-	component: NotifyMe,
+	title: 'Components/ChallengeHeader',
+	component: ChallengeHeader,
 };
 
 const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		components: { NotifyMe },
+		components: { ChallengeHeader },
 		mixins: [apolloStoryMixin()],
-		template:
-			'<notify-me :goal="goal" email="test@test.com" :teamPublicId="teamPublicId" />',
+		template: '<challenge-header :goal="goal" :teamPublicId="teamPublicId" />',
 	});
 	template.args = args;
 	return template;
