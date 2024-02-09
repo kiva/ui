@@ -110,6 +110,7 @@ query initializeCheckout($basketId: String) {
 							... on LoanPartner {
 								sponsor_name: partnerName
 							}
+							gender
 						}
 						team {
 							id
