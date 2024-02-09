@@ -1,4 +1,6 @@
 import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox.vue';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 const ecoChallengeMilestoneValues = {
 	'sustainable-agriculture': [
@@ -43,18 +45,19 @@ const ecoChallengeMilestoneValues = {
 function allCombinations(obj) {
 	let combos = [[]]
 	for (const [key, values] of Object.entries(obj)) {
-	  combos = combos.flatMap((combo) =>
-		values.map((value) => ([...combo, value ]))
-	  )
+		combos = combos.flatMap((combo) =>
+			values.map((value) => ([...combo, value]))
+		)
 	}
 	return combos
-  }
+}
 
 const allMilestoneCombinations = allCombinations(ecoChallengeMilestoneValues);
 
 export default {
 	title: 'Components/Eco Challenge Lightbox',
 	component: EcoChallengeLightbox,
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	args: {
 		progresses: [],
 		visible: true
@@ -64,6 +67,7 @@ export default {
 export const EcoChallengeLightboxCombo0 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -79,6 +83,7 @@ EcoChallengeLightboxCombo0.args = {
 export const EcoChallengeLightboxCombo1 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -94,6 +99,7 @@ EcoChallengeLightboxCombo1.args = {
 export const EcoChallengeLightboxCombo2 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -109,6 +115,7 @@ EcoChallengeLightboxCombo2.args = {
 export const EcoChallengeLightboxCombo3 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -125,6 +132,7 @@ EcoChallengeLightboxCombo3.args = {
 export const EcoChallengeLightboxCombo4 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -140,6 +148,7 @@ EcoChallengeLightboxCombo4.args = {
 export const EcoChallengeLightboxCombo5 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -155,6 +164,7 @@ EcoChallengeLightboxCombo5.args = {
 export const EcoChallengeLightboxCombo6 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -170,6 +180,7 @@ EcoChallengeLightboxCombo6.args = {
 export const EcoChallengeLightboxCombo7 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
+	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"

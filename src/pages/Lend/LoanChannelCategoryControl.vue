@@ -1,7 +1,12 @@
 <template>
 	<div class="tw-relative">
-		<div class="row">
-			<div class="small-12 columns heading-region">
+		<div :class="{ 'row': !iwdHeaderExpEnabled, 'tw-bg-white': iwdHeaderExpEnabled }">
+			<div
+				:class="{
+					'small-12 columns heading-region': !iwdHeaderExpEnabled,
+					'row !tw-block tw-pt-2.5 tw-px-1 md:tw-pb-1 md:tw-px-2': iwdHeaderExpEnabled
+				}"
+			>
 				<router-link
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
@@ -17,8 +22,7 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<template v-if="iwdHeaderExpEnabled">
-					<h1>Placeholder for IWD 2024 Header</h1>
-					<p>More content coming soon!</p>
+					<iwd-category-header />
 				</template>
 				<template v-else>
 					<h1 class="tw-mb-2">
@@ -40,7 +44,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" :class="{ 'tw-pt-2.5': iwdHeaderExpEnabled }">
 			<quick-filters
 				class="tw-z-2 tw-px-1 md:tw-px-2"
 				:total-loans="totalCount"
@@ -178,6 +182,7 @@ import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import IwdCategoryHeader from '@/components/Iwd/IwdCategoryHeader';
 
 const defaultLoansPerPage = 12;
 
@@ -277,6 +282,7 @@ export default {
 		PromoGridLoanCardExp,
 		KvClassicLoanCardContainer,
 		EmptyState,
+		IwdCategoryHeader,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [loanChannelQueryMapMixin],

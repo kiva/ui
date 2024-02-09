@@ -1,13 +1,22 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<template v-if="isOnlyDonation">
+		<template v-if="iwdHeaderExpEnabled">
+			<iwd-thanks-page-variations
+				:iwd-valet-inviter-id="iwdValetInviterId"
+				:iwd-valet-inviter="iwdValetInviter"
+				:iwd-loan="iwdLoan"
+				:lender="lender"
+				:is-guest="isGuest"
+			/>
+		</template>
+		<template v-else-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
 		<template v-else>
-			<div v-if="showNotifyMe" class="tw-bg-secondary">
-				<NotifyMe :goal="goal" :email="lender.email" :team-public-id="teamPublicId" />
+			<div v-if="showChallengeHeader" class="tw-bg-secondary">
+				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
@@ -105,6 +114,7 @@ import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
@@ -121,7 +131,9 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
-import NotifyMe from '@/components/Thanks/NotifyMe';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -162,7 +174,8 @@ export default {
 		WwwPage,
 		ThanksPageCommentAndShare,
 		ThanksPageDonationOnly,
-		NotifyMe
+		ChallengeHeader,
+		IwdThanksPageVariations,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -185,7 +198,10 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			goal: null,
-			showNotifyMe: false,
+			showChallengeHeader: false,
+			iwdHeaderExpEnabled: false,
+			iwdValetInviterId: undefined,
+			iwdValetInviter: {},
 		};
 	},
 	apollo: {
@@ -212,9 +228,14 @@ export default {
 				};
 				const limit = 1;
 
+				const valetInviterId = route?.query?.valet_inviter;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					teamId ? fetchGoals(client, limit, filters) : null
+					teamId ? fetchGoals(client, limit, filters) : null,
+					!!valetInviterId && valetInviterId?.toUpperCase() !== KIVA_INVITER_ID
+						? client.query({ query: lenderPublicProfile, variables: { publicId: valetInviterId } })
+						: null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -303,6 +324,9 @@ export default {
 		teamPublicId() {
 			return this.loans?.[0]?.team?.teamPublicId;
 		},
+		iwdLoan() {
+			return (this.loans?.filter(l => l?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -330,6 +354,8 @@ export default {
 			...(data?.my?.userAccount ?? {}),
 			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+			imageUrl: data?.my?.lender?.image?.url ?? '',
+			publicId: data?.my?.lender?.publicId ?? '',
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
@@ -364,7 +390,7 @@ export default {
 				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
 
 				const loansIds = this.loans.map(loan => loan.id) ?? [];
-				this.showNotifyMe = this.goal && this.goal?.targets?.values
+				this.showChallengeHeader = this.goal && this.goal?.targets?.values
 					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
 			}
 		} catch (e) {
@@ -418,13 +444,49 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+		this.checkForIWD2024Experiment();
 	},
 	methods: {
 		createGuestAccount() {
 			// This is the only place this variable should be set.
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
-		}
+		},
+		getIwdInviter() {
+			this.iwdValetInviterId = this.$route?.query?.valet_inviter;
+			if (!!this.iwdValetInviterId && this.iwdValetInviterId?.toUpperCase() !== KIVA_INVITER_ID) {
+				try {
+					const data = this.apollo.readQuery({
+						query: lenderPublicProfile,
+						variables: {
+							checkoutId: lenderPublicProfile,
+							publicId: this.iwdValetInviterId,
+						}
+					});
+					this.iwdValetInviter = data?.community?.lender ?? {};
+				} catch (e) {
+					logReadQueryError(
+						e,
+						`Lender public profile readQuery failed: (publicId: ${this.iwdValetInviterId})`,
+					);
+				}
+			}
+		},
+		checkForIWD2024Experiment() {
+			const iwdHeaderExp = this.apollo.readFragment({
+				id: 'Experiment:iwd_header_2024',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// Only show IWD content and track experiment if: 1) experiment enabled, and 2) "women" loan checked out
+			const EXPERIMENT_ENABLED_VERSION = 'b';
+			const womenLoanIncluded = !!this.iwdLoan;
+			this.iwdHeaderExpEnabled = iwdHeaderExp.version === EXPERIMENT_ENABLED_VERSION && womenLoanIncluded;
+			if (this.iwdHeaderExpEnabled) {
+				this.getIwdInviter();
+				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
+			}
+		},
 	}
 };
 
