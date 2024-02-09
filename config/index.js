@@ -78,6 +78,8 @@ module.exports = {
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',
 		gzipEnabled: false,
+		minVueWorkers: 1,
+		maxVueWorkers: 3,
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

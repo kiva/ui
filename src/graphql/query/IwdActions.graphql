@@ -1,0 +1,22 @@
+query IwdActions {
+  lend {
+    campaignActions(
+        campaignKey: "iwd2024",
+        filters: { gender: female },
+		limit: 6,
+    ) {
+      totalCount
+      values {
+        lender {
+          id
+          name
+          image {
+			id
+            url
+          }
+        }
+        shareAmount
+      }
+    }
+  }
+}

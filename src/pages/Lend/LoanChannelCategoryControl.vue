@@ -1,7 +1,12 @@
 <template>
 	<div class="tw-relative">
-		<div class="row">
-			<div class="small-12 columns heading-region">
+		<div :class="{ 'row': !iwdHeaderExpEnabled, 'tw-bg-white': iwdHeaderExpEnabled }">
+			<div
+				:class="{
+					'small-12 columns heading-region': !iwdHeaderExpEnabled,
+					'row !tw-block tw-pt-2.5 tw-px-1 md:tw-pb-1 md:tw-px-2': iwdHeaderExpEnabled
+				}"
+			>
 				<router-link
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
@@ -16,25 +21,30 @@
 					</router-link> >
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
-				<h1 class="tw-mb-2">
-					{{ pageHeadline }}
-				</h1>
-				<p
-					v-if="loanChannelDescription"
-					class="page-subhead tw-mb-4"
-				>
-					{{ loanChannelDescription }}
-				</p>
-				<p v-else>
-					We couldn't find any loans for this search.
-					<router-link to="/lend-by-category">
-						<span>Browse these loans</span>
-					</router-link>.
-				</p>
+				<template v-if="iwdHeaderExpEnabled">
+					<iwd-category-header />
+				</template>
+				<template v-else>
+					<h1 class="tw-mb-2">
+						{{ pageHeadline }}
+					</h1>
+					<p
+						v-if="loanChannelDescription"
+						class="page-subhead tw-mb-4"
+					>
+						{{ loanChannelDescription }}
+					</p>
+					<p v-else>
+						We couldn't find any loans for this search.
+						<router-link to="/lend-by-category">
+							<span>Browse these loans</span>
+						</router-link>.
+					</p>
+				</template>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" :class="{ 'tw-pt-2.5': iwdHeaderExpEnabled }">
 			<quick-filters
 				class="tw-z-2 tw-px-1 md:tw-px-2"
 				:total-loans="totalCount"
@@ -170,11 +180,14 @@ import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/Helpm
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import IwdCategoryHeader from '@/components/Iwd/IwdCategoryHeader';
 
 const defaultLoansPerPage = 12;
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const IWD_HEADER_EXP_KEY = 'iwd_header_2024';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -269,6 +282,7 @@ export default {
 		PromoGridLoanCardExp,
 		KvClassicLoanCardContainer,
 		EmptyState,
+		IwdCategoryHeader,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [loanChannelQueryMapMixin],
@@ -310,6 +324,7 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
+			iwdHeaderExpEnabled: false,
 		};
 	},
 	computed: {
@@ -528,6 +543,19 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+
+		// Experiment settings for IWD 2024 header
+		const iwdHeaderExp = this.apollo.readFragment({
+			id: `Experiment:${IWD_HEADER_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		// Only show IWD header and track experiment if: 1) experiment enabled, and 2) on "women" category page
+		const EXPERIMENT_ENABLED_VERSION = 'b';
+		this.iwdHeaderExpEnabled = iwdHeaderExp.version === EXPERIMENT_ENABLED_VERSION
+			&& this.targetedLoanChannelURL.toUpperCase() === 'WOMEN';
+		if (this.iwdHeaderExpEnabled) {
+			this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
+		}
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status

@@ -1,9 +1,9 @@
-import NotifyMe from '@/components/Thanks/NotifyMe';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
 import { render } from '@testing-library/vue';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 
-describe('BasketItem loan', () => {
+describe('ChallengeHeader', () => {
 	it('should contain these components and text', () => {
 		const goal = {
 			targets: {
@@ -26,7 +26,7 @@ describe('BasketItem loan', () => {
 			getByText,
 			getByTestId,
 		} = render(
-			NotifyMe,
+			ChallengeHeader,
 			{
 				components: KvProgressCircle,
 				provide: {
@@ -44,7 +44,7 @@ describe('BasketItem loan', () => {
 			}
 		);
 
-		getByTestId('notify-me');
+		getByTestId('challenge-header');
 
 		const LoansFunded = getByText('1/2 loans funded');
 		expect(getByTestId('loans-funded')).toBe(LoansFunded);
