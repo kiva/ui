@@ -2,7 +2,8 @@ query IwdActions {
   lend {
     campaignActions(
         campaignKey: "iwd2024",
-        filters: { gender: female }
+        filters: { gender: female },
+		limit: 6,
     ) {
       totalCount
       values {
@@ -10,6 +11,7 @@ query IwdActions {
           id
           name
           image {
+			id
             url
           }
         }
