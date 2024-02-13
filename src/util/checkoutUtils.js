@@ -1,6 +1,5 @@
 import numeral from 'numeral';
 import myFTD from '@/graphql/query/myFTD.graphql';
-import checkoutStatus from '@/graphql/query/checkout/checkoutStatus.graphql';
 import removeCreditByTypeMutation from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events
