@@ -130,11 +130,11 @@ import * as Sentry from '@sentry/vue';
 
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
-import { pollForCheckoutStatus } from '@/util/checkoutUtils';
 
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
+import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -339,7 +339,7 @@ export default {
 						visitorId: this.cookieStore.get('uiv') || null
 					},
 				})
-				.then(kivaBraintreeResponse => {
+				.then(async kivaBraintreeResponse => {
 					// extract transaction saga id or transaction id from response
 					const transactionResult = this.useAsyncCheckout
 						? kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckoutAsync
@@ -347,10 +347,19 @@ export default {
 
 					// Handle async checkout polling process + response
 					if (this.useAsyncCheckout && typeof transactionResult !== 'object') {
-						pollForCheckoutStatus(this.apollo, transactionResult)
+						await pollForFinishedCheckout({
+							apollo: this.apollo,
+							transactionSagaId: transactionResult,
+						})
 							.then(checkoutStatusResponse => {
 								this.handleSuccessfulCheckout(checkoutStatusResponse?.receipt?.checkoutId);
 							}).catch(errorResponse => {
+								// TOOD: These errors can have very different signatures
+								// console.log('pollForFinishedCheckout catch errorResponse', errorResponse);
+								// Standard error info
+								// error: errorResponse?.errors?.[0]?.path?.toString(),
+								// message: `${errorResponse?.errors?.[0]?.message}, ${errorResponse?.status}`,
+								// The CUSTOM error below is formatted specifically for the checkoutStatusResponse
 								this.handleFailedCheckout([
 									{
 										error: errorResponse.errorCode,

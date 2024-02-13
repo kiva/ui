@@ -13,7 +13,7 @@
 
 <script>
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { pollForCheckoutStatus } from '@/util/checkoutUtils';
+import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -53,12 +53,22 @@ export default {
 		},
 		checkoutCreditBasket() {
 			this.checkoutBasket(false, this.useAsyncCheckout)
-				.then(transactionResult => {
+				.then(async transactionResult => {
 					if (this.useAsyncCheckout && typeof transactionResult !== 'object') {
-						pollForCheckoutStatus(this.apollo, transactionResult)
+						await pollForFinishedCheckout({
+							apollo: this.apollo,
+							transactionSagaId: transactionResult,
+						})
 							.then(checkoutStatusResponse => {
-								this.handleSuccessfulCheckout(checkoutStatusResponse?.receipt?.checkoutId);
+								// eslint-disable-next-line max-len
+								this.handleSuccessfulCheckout(checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId);
 							}).catch(errorResponse => {
+								// TOOD: These errors can have very different signatures
+								// console.log('pollForFinishedCheckout catch errorResponse', errorResponse);
+								// Standard error info
+								// error: errorResponse?.errors?.[0]?.path?.toString(),
+								// message: `${errorResponse?.errors?.[0]?.message}, ${errorResponse?.status}`,
+								// The CUSTOM error below is formatted specifically for the checkoutStatusResponse
 								this.handleFailedCheckout([
 									{
 										error: errorResponse.errorCode,
