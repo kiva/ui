@@ -206,6 +206,17 @@ export default {
 			}
 		},
 
+		/* Format checkoutStatus Error into standard error message array
+		 * @param {Object} checkoutStatus contains errorCode and errorMessage fields on the object
+		 * @returns {Array} array of formatted error objects
+		 */
+		formatCheckoutStatusError(checkoutStatus = {}) {
+			return [{
+				error: checkoutStatus?.errorCode,
+				message: `${checkoutStatus?.errorMessage}, Status: ${checkoutStatus?.status}`,
+			}];
+		},
+
 		/* Redirect to the thanks
 		 * @param transactionId
 		 */
