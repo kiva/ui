@@ -63,18 +63,16 @@ export default {
 								// eslint-disable-next-line max-len
 								this.handleSuccessfulCheckout(checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId);
 							}).catch(errorResponse => {
-								// TOOD: These errors can have very different signatures
-								// console.log('pollForFinishedCheckout catch errorResponse', errorResponse);
-								// Standard error info
-								// error: errorResponse?.errors?.[0]?.path?.toString(),
-								// message: `${errorResponse?.errors?.[0]?.message}, ${errorResponse?.status}`,
-								// The CUSTOM error below is formatted specifically for the checkoutStatusResponse
-								this.handleFailedCheckout([
-									{
-										error: errorResponse.errorCode,
-										message: `${errorResponse?.errorMessage}, ${errorResponse?.status}`,
-									}
-								]);
+								// setup default graphql error response
+								let errors = errorResponse?.errors ?? null;
+								// check for checkoutStatus specific errors
+								if (
+									errorResponse?.data?.checkoutStatus?.errorCode
+									|| errorResponse?.data?.checkoutStatus?.errorMessage
+								) {
+									errors = this.formatCheckoutStatusError(errorResponse?.data?.checkoutStatus);
+								}
+								this.handleFailedCheckout(errors);
 							});
 					} else if (typeof transactionResult !== 'object') {
 						this.handleSuccessfulCheckout(transactionResult);
