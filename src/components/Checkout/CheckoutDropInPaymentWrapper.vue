@@ -352,7 +352,8 @@ export default {
 							transactionSagaId: transactionResult,
 						})
 							.then(checkoutStatusResponse => {
-								this.handleSuccessfulCheckout(checkoutStatusResponse?.receipt?.checkoutId);
+								// eslint-disable-next-line max-len
+								this.handleSuccessfulCheckout(checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId);
 							}).catch(errorResponse => {
 								// TOOD: These errors can have very different signatures
 								// console.log('pollForFinishedCheckout catch errorResponse', errorResponse);
