@@ -1,0 +1,7 @@
+{
+	http_port 8989
+}
+
+kiva-ui.local {
+	reverse_proxy localhost:8888
+}
