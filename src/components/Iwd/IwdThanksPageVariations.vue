@@ -259,7 +259,7 @@ export default {
 				disabled: false,
 				text: 'Copy link'
 			},
-			utmCampaign: 'social_share_checkout', // TODO: update with correct campaign
+			utmCampaign: 'iwd2024',
 			mdiLink,
 		};
 	},
@@ -315,7 +315,7 @@ export default {
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
-			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
+			if (this.lender?.public && this.lender?.publicId) return this.lender?.publicId;
 			return 'anonymous';
 		},
 		// Expected by social-sharing-mixin (used by all socials)
