@@ -84,7 +84,7 @@
 							<kv-button
 								v-if="iwdLoanId"
 								:href="`/lend/${iwdLoanId}`"
-								v-kv-track-event="['Thanks', 'click-read-borrower-story']"
+								v-kv-track-event="['intl-womens-day', 'click', 'read-story', iwdLoanId]"
 							>
 								<span>Read </span>
 								<span v-if="iwdBorrowerName" class="data-hj-suppress">
@@ -95,7 +95,7 @@
 							<kv-button
 								href="/about/how"
 								variant="secondary"
-								v-kv-track-event="['Thanks', 'click-more-about-kiva']"
+								v-kv-track-event="['intl-womens-day', 'click', 'more-about-kiva', iwdLoanId]"
 							>
 								More about Kiva
 							</kv-button>
