@@ -341,19 +341,34 @@ export default {
 				})
 				.then(async kivaBraintreeResponse => {
 					// extract transaction saga id or transaction id from response
-					const transactionResult = this.useAsyncCheckout
+					const transactionResponse = this.useAsyncCheckout
 						? kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckoutAsync
 						: kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckout;
 
 					// Handle async checkout polling process + response
-					if (this.useAsyncCheckout && typeof transactionResult !== 'object') {
+					if (this.useAsyncCheckout && typeof transactionResponse !== 'object') {
 						await pollForFinishedCheckout({
 							apollo: this.apollo,
-							transactionSagaId: transactionResult,
+							transactionSagaId: transactionResponse,
 						})
 							.then(checkoutStatusResponse => {
 								// eslint-disable-next-line max-len
-								this.handleSuccessfulCheckout(checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId);
+								const checkoutId = checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId ?? null;
+								if (!checkoutId) {
+									// setup default graphql error response
+									let errors = checkoutStatusResponse?.errors ?? null;
+									// check for checkoutStatus specific errors
+									if (
+										checkoutStatusResponse?.data?.checkoutStatus?.errorCode
+										|| checkoutStatusResponse?.data?.checkoutStatus?.errorMessage
+									) {
+										// eslint-disable-next-line max-len
+										errors = this.formatCheckoutStatusError(checkoutStatusResponse?.data?.checkoutStatus);
+									}
+									this.handleFailedCheckout(errors);
+								} else {
+									this.handleSuccessfulCheckout(checkoutId);
+								}
 							}).catch(errorResponse => {
 								// setup default graphql error response
 								let errors = errorResponse?.errors ?? null;
@@ -378,7 +393,7 @@ export default {
 
 					// Handle success for sync checkout
 					if (!this.useAsyncCheckout) {
-						this.handleSuccessfulCheckout(transactionResult, paymentType);
+						this.handleSuccessfulCheckout(transactionResponse, paymentType);
 						return kivaBraintreeResponse;
 					}
 				});
