@@ -1,5 +1,5 @@
 <template>
-	<div v-if="fundedBorrowers >= totalBorrowers">
+	<div v-if="fundedBorrowers < totalBorrowers">
 		<kv-progress-campaign
 			v-if="displayProgress"
 			:funded-borrowers="fundedBorrowers"
