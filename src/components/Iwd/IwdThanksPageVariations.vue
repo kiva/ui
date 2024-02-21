@@ -105,9 +105,9 @@
 			</template>
 			<template v-else>
 				<div class="tw-flex tw-flex-col tw-w-full tw-pb-2">
-					<div class="tw-text-center tw-pt-1.5 tw-px-2 tw-pb-2 tw-mx-auto" style="max-width: 685px;">
-						<h2 class="tw-pb-1.5">
-							Spread the word. Multiply your impact.
+					<div class="tw-text-center tw-pt-1.5 tw-px-2 tw-pb-2 tw-mx-auto" style="max-width: 885px;">
+						<h2 class="tw-pb-1.5 tw-text-h2">
+							Multiply your impact. <br> Spread the word about International Women’s Day.
 						</h2>
 						<!-- eslint-disable-next-line max-len -->
 						<p>We’re more powerful together. International Women’s Day is the perfect time to bring your community into ours.</p>
@@ -121,13 +121,11 @@
 							md:tw-p-4
 							tw-flex
 							tw-flex-col
-							md:tw-flex-row
-							tw-gap-1.5
-							md:tw-gap-8
+							tw-gap-3
 						"
 					>
-						<div class="tw-flex tw-flex-col tw-basis-auto md:tw-basis-1/2">
-							<div class="tw-flex tw-gap-1.5">
+						<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-w-full">
+							<div class="tw-flex tw-gap-1.5 tw-basis-auto md:tw-basis-1/2">
 								<div class="tw-shrink-0">
 									<img
 										v-if="lenderImage"
@@ -143,82 +141,84 @@
 										style="width: 64px;"
 									>
 								</div>
-								<!-- eslint-disable-next-line max-len -->
-								<h3><span class="tw-text-brand">Help <span>{{ lenderFirstName || 'Kiva' }}</span> support 4,000 women</span> this International Women’s Day!</h3>
+								<!-- eslint-disable max-len -->
+								<h3 class="tw-text-h3">
+									Help <span>{{ lenderFirstName || 'me' }}</span> <span class="tw-text-brand">support 4,000 women</span> this International Women’s Day!
+								</h3>
+								<!-- eslint-enable max-len -->
 							</div>
-							<div class="tw-flex tw-pt-3 tw-gap-1.5">
-								<button
-									class="tw-flex tw-items-center tw-gap-1"
-									@click="showSharePopUp(
-										facebookShareUrl({ utmCampaign, utmContent }),
-										'Thanks for sharing to Facebook!'
-									)"
-									v-kv-track-event="[
-										'post-checkout',
-										'share',
-										'facebook',
-										utmCampaign,
-										iwdLoanId
-									]"
+							<!-- eslint-disable-next-line max-len -->
+							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-my-3 md:tw-mt-0 tw-basis-auto md:tw-basis-1/3">
+								<iwd-progress-campaign class="tw-w-full" />
+								<img
+									id="badge-image"
+									:src="iWD2024Badge"
+									alt="IWD Badge"
+									class="tw-mx-0 md:tw-mx-auto"
 								>
-									<kv-icon
-										name="facebook-round"
-										title="Facebook"
-										style="width: 28px; fill: #1877F2;"
-									/>
-									<span>Facebook</span>
-								</button>
-								<button
-									class="tw-flex tw-items-center tw-gap-1"
-									v-kv-track-event="[
-										'post-checkout',
-										'share',
-										'linkedin',
-										utmCampaign,
-										iwdLoanId
-									]"
-									@click="showSharePopUp(
-										linkedInShareUrl({ utmCampaign, utmContent }),
-										'Thanks for sharing to LinkedIn!'
-									)"
-								>
-									<kv-icon name="linkedin" title="LinkedIn" style="width: 26px; fill: #0A66C2;" />
-									<span>LinkedIn</span>
-								</button>
-								<button
-									class="tw-flex tw-items-center tw-gap-1"
-									:class="copyStatus.class"
-									:disabled="copyStatus.disabled"
-									v-kv-track-event="[
-										'post-checkout',
-										'share',
-										'copy-link',
-										utmCampaign,
-										iwdLoanId
-									]"
-									@click="copyLink({ utmCampaign, utmContent }, copyStatus.text)"
-								>
-									<kv-material-icon
-										:icon="mdiLink"
-										style="width: 28px;"
-										class="tw-bg-secondary tw-p-0.5 tw-rounded"
-									/>
-									<span>{{ copyStatus.text }}</span>
-								</button>
 							</div>
 						</div>
-						<div
-							class="
-								tw-flex
-								md:tw-flex-col
-								tw-basis-auto
-								md:tw-basis-1/2
-								tw-items-center
-								md:tw-items-stretch
-							"
-						>
-							<img id="badge-image" :src="iWD2024Badge" alt="IWD Badge" class="tw-mx-0 md:tw-mx-auto">
-							<iwd-progress-campaign />
+						<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-gap-1">
+							<!-- eslint-disable max-len -->
+							<button
+								class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-border tw-border-gray-800 tw-rounded tw-py-1 tw-basis-1/3"
+								@click="showSharePopUp(
+									facebookShareUrl({ utmCampaign, utmContent }),
+									'Thanks for sharing to Facebook!'
+								)"
+								v-kv-track-event="[
+									'post-checkout',
+									'share',
+									'facebook',
+									utmCampaign,
+									iwdLoanId
+								]"
+							>
+								<kv-icon
+									name="facebook-round"
+									title="Facebook"
+									style="width: 28px; fill: #1877F2;"
+								/>
+								<span class="tw-font-medium">Facebook</span>
+							</button>
+							<button
+								class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-border tw-border-gray-800 tw-rounded tw-py-1 tw-basis-1/3"
+								v-kv-track-event="[
+									'post-checkout',
+									'share',
+									'linkedin',
+									utmCampaign,
+									iwdLoanId
+								]"
+								@click="showSharePopUp(
+									linkedInShareUrl({ utmCampaign, utmContent }),
+									'Thanks for sharing to LinkedIn!'
+								)"
+							>
+								<kv-icon name="linkedin" title="LinkedIn" style="width: 26px; fill: #0A66C2;" />
+								<span class="tw-font-medium">LinkedIn</span>
+							</button>
+							<button
+								class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-border tw-border-gray-800 tw-rounded tw-py-1 tw-basis-1/3"
+								:class="copyStatus.class"
+								:disabled="copyStatus.disabled"
+								v-kv-track-event="[
+									'post-checkout',
+									'share',
+									'copy-link',
+									utmCampaign,
+									iwdLoanId
+								]"
+								@click="copyLink({ utmCampaign, utmContent }, copyStatus.text)"
+							>
+								<kv-material-icon
+									:icon="mdiLink"
+									style="width: 28px;"
+									class="tw-bg-secondary tw-p-0.5 tw-rounded"
+								/>
+								<span class="tw-font-medium">{{ copyStatus.text }}</span>
+							</button>
+							<!-- eslint-enable max-len -->
 						</div>
 					</div>
 				</div>
@@ -360,7 +360,7 @@ export default {
 	width: 75px;
 
 	@include breakpoint(medium) {
-		width: 210px;
+		width: 48px;
 	}
 }
 </style>
