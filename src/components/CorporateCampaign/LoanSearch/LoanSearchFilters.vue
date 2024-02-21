@@ -679,10 +679,12 @@ export default {
 			text-align: right;
 		}
 	}
+
 	&__toggle {
 		font-size: $small-text-font-size;
 		white-space: nowrap;
 	}
+
 	&--collapsed {
 		overflow: hidden;
 		max-height: 7rem;
