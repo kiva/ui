@@ -134,7 +134,7 @@ export default {
 			}
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate(mutObj).then(data => {
-					const transactionId = _get(data, 'data.shop.checkout');
+					const transactionId = useAsync ? data?.data?.shop?.checkoutAsync : data?.data?.shop?.checkout;
 					if (transactionId !== null) {
 						// succesful transaction;
 						resolve(transactionId);
@@ -204,6 +204,17 @@ export default {
 				this.$showTipMsg(errorMessages, 'error');
 				this.$kvTrackEvent('basket', 'error-checkout-cta', errorMessages);
 			}
+		},
+
+		/* Format checkoutStatus Error into standard error message array
+		 * @param {Object} checkoutStatus contains errorCode and errorMessage fields on the object
+		 * @returns {Array} array of formatted error objects
+		 */
+		formatCheckoutStatusError(checkoutStatus = {}) {
+			return [{
+				error: checkoutStatus?.errorCode,
+				message: `${checkoutStatus?.errorMessage}, Status: ${checkoutStatus?.status}`,
+			}];
 		},
 
 		/* Redirect to the thanks
