@@ -19,7 +19,7 @@
 				<campaign-progress-bar
 					:is-matching-campaign="componentProps.isMatchingCampaign"
 					:promo-amount="componentProps.promoAmount"
-					:upc-credit-remaining="componentProps.upcCreditRemaining"
+					:remaining-credit="componentProps.remainingCredit"
 					:basket-loans="componentProps.basketLoans"
 					:promo-name="componentProps.promoName"
 					@show-basket="componentProps.showBasket"
