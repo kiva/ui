@@ -18,6 +18,7 @@ export default {
 					window.location = route.fullPath;
 				} else {
 					const transactionId = numeral(route.query.kiva_transaction_id).value();
+					const valetInviter = route.query.valet_inviter ?? '';
 					if (!transactionId) {
 						// redirect to thanks page if no transaction id was provided
 						// currently resolves to portfolio via ThanksView getCheckoutId method
@@ -44,6 +45,10 @@ export default {
 							path: successPath,
 							query: { kiva_transaction_id: transactionId },
 						};
+
+						if (valetInviter) {
+							successRoute.query.valet_inviter = valetInviter;
+						}
 
 						// track the transaction event
 						client.mutate({
