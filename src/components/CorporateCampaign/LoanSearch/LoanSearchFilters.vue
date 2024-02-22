@@ -67,22 +67,46 @@
 		</div>
 		<div
 			v-if="filterChips.length"
-			class="tw-flex tw-items-start tw-flex-col lg:tw-flex-row"
+			class="loan-filters__chips chips"
 		>
-			<div
-				class="chips__container tw-overflow-hidden"
-			>
+			<div class="row">
 				<div
-					class="tw-flex tw-flex-wrap tw-gap-1.5"
+					class="chips__container small-12 large-8 xxlarge-9 columns"
+					:class="{'chips--collapsed' : isChipsCollapsed}"
+					ref="chipsContainer"
 				>
-					<kv-chip-classic
-						v-for="(filter, index) in filterChips"
-						:key="`chip-${index}`"
-						:title="cleanChipName(filter.name)"
-						@click="handleRemoveFilter(filter)"
+					<div
+						ref="chipsInnerContainer"
 					>
-						{{ filter.name }}
-					</kv-chip-classic>
+						<kv-chip-classic
+							v-for="(filter, index) in filterChips"
+							:key="`chip-${index}`"
+							:title="cleanChipName(filter.name)"
+							@click="handleRemoveFilter(filter)"
+						>
+							{{ filter.name }}
+						</kv-chip-classic>
+					</div>
+				</div>
+				<div class="small-12 large-4 xxlarge-3 columns">
+					<div class="chips__toggle-container">
+						<kv-button
+							v-if="isChipsCollapsable"
+							variant="secondary"
+							class="chips__toggle tw-mb-2"
+							@click.native="isChipsCollapsed = !isChipsCollapsed"
+						>
+							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
+						</kv-button>
+						<span v-if="!isInitialFilters && isChipsCollapsable">|</span>
+						<kv-button
+							v-if="!isInitialFilters"
+							class="chips__toggle"
+							@click.native="handleResetFilters"
+						>
+							Reset all
+						</kv-button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -654,6 +678,11 @@ export default {
 			margin: 0 0 0 auto;
 			text-align: right;
 		}
+	}
+
+	&__toggle {
+		font-size: $small-text-font-size;
+		white-space: nowrap;
 	}
 
 	&--collapsed {
