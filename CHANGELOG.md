@@ -1,3 +1,45 @@
+## [2.731.0-rc.1](https://github.com/kiva/ui/compare/v2.730.0...v2.731.0-rc.1) (2024-02-22)
+
+
+### 🎉 New Features
+
+* add iwd events in thanks page ([8c40ea1](https://github.com/kiva/ui/commit/8c40ea15726e781f87ca533e34b89c9785a0d9ad))
+* fix issue with badge image stretch ([64c786c](https://github.com/kiva/ui/commit/64c786c9a0d36a9f6d4f58a5ae9b10416c01a2fd))
+* get iwd experiment data to evaluate whether redirect to the challenge ty page or the regular ([32099ca](https://github.com/kiva/ui/commit/32099ca2139d483cc50205b3237f8950ba568d32))
+* implement optional async checkout muatations and status check ([52f2d29](https://github.com/kiva/ui/commit/52f2d2955f7c4f849d885b31690200be40701b26))
+* iwd no inviter thanks page update ([#5170](https://github.com/kiva/ui/issues/5170)) ([86ba3a4](https://github.com/kiva/ui/commit/86ba3a446b73e5242bddc1cbe9e74fa3e3d6646b))
+* iwd progress bar hidden when goals reached ([#5168](https://github.com/kiva/ui/issues/5168)) ([f6eeae2](https://github.com/kiva/ui/commit/f6eeae2e9e5fae94e0286a12700f7057cb7e281e))
+* make filters list collapsible on cc pages ([10a1a9a](https://github.com/kiva/ui/commit/10a1a9a359de82585a26875b741cadd6cbe58eac))
+* override successPath if valetInviter is set ([b9bc4d1](https://github.com/kiva/ui/commit/b9bc4d128f4c2ecbf6906f442abd4049bd79d104))
+* update utm campaign values for iwd thanks page ([993990e](https://github.com/kiva/ui/commit/993990e3a114a2935bd7318a97be5e6e8e6dacc4))
+
+
+### 🐛 Bugfixes
+
+* change exp key ([3392584](https://github.com/kiva/ui/commit/339258411029a02187c63a513579929ded869f6f))
+* create reusable remainingCredit computed prop, update CampaignProgressBar to use it ([397ba10](https://github.com/kiva/ui/commit/397ba1090af3131227dee6c005cc4725f213c1a1))
+* handle missing checkoutId, fix indents ([0d4bacd](https://github.com/kiva/ui/commit/0d4bacd22849ccc1490447a5d9bff299c5d05531))
+* initiate success handler only once for the appropriate type of checkout ([c578ce0](https://github.com/kiva/ui/commit/c578ce04d2d0f43f983a32aab41e213a1de3f724))
+* lint errors ([e8cbdca](https://github.com/kiva/ui/commit/e8cbdcad9ea840cc0d35bd770c985b70decebc44))
+* logic was incorrect for showing IWD progress ([4d8442e](https://github.com/kiva/ui/commit/4d8442e56a2c457af25ffd0f6d57dd144c013753))
+* missing slash in redirect url ([db559ca](https://github.com/kiva/ui/commit/db559cacb2f77377eb405bf178ba9234f3f4704c))
+* new method to format checkoutStatus error, send braintree errors to sentry ([3dfab48](https://github.com/kiva/ui/commit/3dfab4874fceb72f999b6b0d50b1ba9b785d8283))
+* post-purchase was not handing over valet inviter query ([81c61ed](https://github.com/kiva/ui/commit/81c61ed8e5ba96e26389dad537564c9c13a6bcda))
+* remove unused query import ([c78bbcf](https://github.com/kiva/ui/commit/c78bbcf37b049dea13805ce1e1e85b49e60f3675))
+* solve conflict ([65d6f08](https://github.com/kiva/ui/commit/65d6f08747c7fdab659de8e07b464ed3ae16576a))
+* unused experimentVersionFragment on typage ([625e09e](https://github.com/kiva/ui/commit/625e09edc2011ff7cd7bd3795bea8f6b92b52dd6))
+* update async checkout error formatting to match expected format ([5fe7c76](https://github.com/kiva/ui/commit/5fe7c7607e0a8a8deeac2c719d6b3febd0b3e904))
+* update kv-shop, extract checkoutId string for new kv-shop method ([ab5cb8a](https://github.com/kiva/ui/commit/ab5cb8a17ecc46bb507b1b86aa3d019948893dc3))
+* use kv-shop version of pollForFinishedCheckout ([4887639](https://github.com/kiva/ui/commit/4887639d1845e9799e443621a3287b2f8f0c6fdb))
+* valet_inviter opt chaining ([212947d](https://github.com/kiva/ui/commit/212947d0e68eb3dec46450fa0c44218743af27ea))
+
+
+### 🧹 Chores
+
+* install kvShop library ([ed96f9d](https://github.com/kiva/ui/commit/ed96f9d0b0ae55da339eab3c0575c88e6cd3b232))
+* remove unused checkout status polling function ([fc5e75a](https://github.com/kiva/ui/commit/fc5e75a7c0d4abdf88482d2893598376ef5c3a3c))
+* update configs for custom domain and dev mode with caddy ([f0a87fd](https://github.com/kiva/ui/commit/f0a87fde74d2418b1dd5ade3151f82c9a8612d26))
+
 ## [2.730.0](https://github.com/kiva/ui/compare/v2.729.0...v2.730.0) (2024-02-09)
 
 
