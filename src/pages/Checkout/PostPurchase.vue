@@ -37,8 +37,10 @@ export default {
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
 						// If challenge query exists, then redirect to challenge thanks page
-						const successPath = route.query.challenge
+						let successPath = route.query.challenge
 							? `/checkout/thanks/${route.query.challenge}` : '/thanks';
+
+						successPath = valetInviter ? '/checkout/thanks' : successPath;
 
 						// build route for thanks page redirect
 						const successRoute = {
