@@ -187,7 +187,7 @@ import IwdCategoryHeader from '@/components/Iwd/IwdCategoryHeader';
 const defaultLoansPerPage = 12;
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
-const IWD_HEADER_EXP_KEY = 'iwd_header_2024';
+const IWD_HEADER_EXP_KEY = 'iwd_2024';
 
 // Routes to show monthly good promo
 const targetRoutes = [
