@@ -263,7 +263,7 @@ export const femaleLoanDataWithInviter = {
 }
 
 export const iwdExperiment = {
-	id: 'Experiment:iwd_header_2024',
+	id: 'Experiment:iwd_2024',
 	version: 'b'
 };
 

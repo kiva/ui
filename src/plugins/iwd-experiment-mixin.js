@@ -9,7 +9,7 @@ export default {
 			checkInjections(this, injections);
 
 			const iwdExperiment = this.apollo.readFragment({
-				id: 'Experiment:IWD2024',
+				id: 'Experiment:iwd_2024',
 				fragment: experimentVersionFragment,
 			}) || {};
 			// Only show IWD content and track experiment if: 1) experiment enabled, and 2) "women" loan checked out
