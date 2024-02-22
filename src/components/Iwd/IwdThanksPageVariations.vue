@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-secondary">
+	<div class="tw-bg-secondary tw-h-full">
 		<div v-if="!iwdValetInviterId" class="tw-bg-eco-green-1 tw-py-0.5">
 			<div class="row page-content">
 				<div class="tw-w-full tw-text-center">
