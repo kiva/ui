@@ -35,19 +35,20 @@
 			<p v-if="completedAchievements.length === 0">
 				You haven't earned any badges yet.
 			</p>
-			<template v-for="(challenge, index) in challengeDataContentful" v-else>
-				<div
-					:key="index" class="tw-flex tw-w-full"
-				>
-					<img :src="challenge.badgeSvg" class="tw-h-10 tw-w-12 tw-flex-none tw-mx-auto">
-					<div class="tw-w-full">
-						<span class="tw-font-medium">{{ challenge.challengeName }}</span>
-						<p class="tw-text-secondary tw-text-small">
-							{{ challenge.dateTagline }}
-						</p>
-					</div>
+			<div
+				v-else
+				v-for="(challenge, index) in challengeDataContentful"
+				:key="index"
+				class="tw-flex tw-w-full tw-gap-1"
+			>
+				<img :src="challenge.badgeSvg" class="tw-h-10 tw-flex-none tw-mx-auto">
+				<div class="tw-w-full">
+					<span class="tw-font-medium">{{ challenge.challengeName }}</span>
+					<p class="tw-text-secondary tw-text-small">
+						{{ challenge.dateTagline }}
+					</p>
 				</div>
-			</template>
+			</div>
 		</div>
 	</section>
 </template>

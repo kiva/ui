@@ -322,6 +322,7 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
@@ -374,7 +375,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest],
+	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -422,7 +423,8 @@ export default {
 			lenderTotalLoans: 0,
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
-			ftdValidDate: ''
+			ftdValidDate: '',
+			iwdExpEnabled: false
 		};
 	},
 	apollo: {
@@ -582,6 +584,8 @@ export default {
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
 		this.initializeFiveDollarsNotes();
+
+		this.iwdExpEnabled = this.isIwdExperimentEnabled();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -609,16 +613,21 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// Fetch Challenge Status
-		// If a loan in basket makes progress towards an active challenge,
-		// set query param to redirect to special thank you page
-		achievementsQuery(this.apollo, this.loanIdsInBasket)
-			.then(({ data }) => {
-				const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-				const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
-				this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
-			});
-		// end challenge code
+		// Don't fetch challenge status if IWD2024 experiment is enabled
+		// to avoid being redirected to the challenge thank you page
+		if (!this.iwdExpEnabled) {
+			// Fetch Challenge Status
+			// If a loan in basket makes progress towards an active challenge,
+			// set query param to redirect to special thank you page
+			achievementsQuery(this.apollo, this.loanIdsInBasket)
+				.then(({ data }) => {
+					// eslint-disable-next-line max-len
+					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+					const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
+					this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
+				});
+			// end challenge code
+		}
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -738,7 +747,10 @@ export default {
 		},
 		showFtdMessage() {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
-		}
+		},
+		iwdLoan() {
+			return (this.loans?.filter(l => l?.loan?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
+		},
 	},
 	methods: {
 		openMatchedLoansLightbox() {

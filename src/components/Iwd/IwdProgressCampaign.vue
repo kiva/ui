@@ -1,12 +1,14 @@
 <template>
-	<kv-progress-campaign
-		v-if="displayProgress"
-		:funded-borrowers="fundedBorrowers"
-		:total-borrowers="totalBorrowers"
-		:days-left="daysLeft"
-		:minimal-stats="minimalStats"
-	/>
-	<kv-loading-placeholder v-else class="tw-w-full tw-h-8" />
+	<div v-if="fundedBorrowers < totalBorrowers">
+		<kv-progress-campaign
+			v-if="displayProgress"
+			:funded-borrowers="fundedBorrowers"
+			:total-borrowers="totalBorrowers"
+			:days-left="daysLeft"
+			:minimal-stats="minimalStats"
+		/>
+		<kv-loading-placeholder v-else class="tw-w-full tw-h-8" />
+	</div>
 </template>
 
 <script>

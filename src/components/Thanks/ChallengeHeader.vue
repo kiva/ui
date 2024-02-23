@@ -52,7 +52,7 @@
 							<span>We’ll announce whether the team has won the challenge before the next challenge on the </span><span class="tw-text-brand">20th of March</span><span>. Until then, we’d love your feedback!</span>
 						</h2>
 						<kv-button
-							href="lp/challengefeedback"
+							href="/lp/challengefeedback"
 							v-kv-track-event="['Thanks', 'click-teams-give-quick-feedback']"
 						>
 							Give quick feedback
