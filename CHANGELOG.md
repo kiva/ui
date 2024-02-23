@@ -1,3 +1,10 @@
+## [2.731.0-rc.2](https://github.com/kiva/ui/compare/v2.731.0-rc.1...v2.731.0-rc.2) (2024-02-23)
+
+
+### 🐛 Bugfixes
+
+* iwd thanks page height fixed ([#5176](https://github.com/kiva/ui/issues/5176)) ([129cb8c](https://github.com/kiva/ui/commit/129cb8c7b5f1f12564bcb8924cbb5d522faf694b))
+
 ## [2.731.0-rc.1](https://github.com/kiva/ui/compare/v2.730.0...v2.731.0-rc.1) (2024-02-22)
 
 
