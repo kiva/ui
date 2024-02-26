@@ -242,15 +242,6 @@
 							</li>
 							<li>
 								<router-link
-									to="/live"
-									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-									class="tw-text-small"
-								>
-									Happening now
-								</router-link>
-							</li>
-							<li>
-								<router-link
 									to="/build"
 									v-kv-track-event="['Footer', 'click-Explore-Developer API']"
 									class="tw-text-small"
@@ -535,15 +526,6 @@
 										class="tw-text-small"
 									>
 										Gifts
-									</router-link>
-								</li>
-								<li>
-									<router-link
-										to="/live"
-										v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-										class="tw-text-small"
-									>
-										Happening now
 									</router-link>
 								</li>
 								<li>
