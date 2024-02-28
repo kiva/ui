@@ -7,7 +7,7 @@
 				</h1>
 				<div class="tw-flex md:tw-hidden tw-py-0.5 tw-items-center">
 					<img :src="iWD2024Badge" alt="IWD Badge" style="width: 114px;">
-					<iwd-progress-campaign class="tw-pr-2" />
+					<iwd-progress-campaign class="tw-pr-2 tw-grow" />
 				</div>
 				<!-- eslint-disable max-len -->
 				<p class="tw-pb-3">
