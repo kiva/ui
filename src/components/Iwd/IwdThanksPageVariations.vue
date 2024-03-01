@@ -3,7 +3,8 @@
 		<div v-if="!iwdValetInviterId" class="tw-bg-eco-green-1 tw-py-0.5">
 			<div class="row page-content">
 				<div class="tw-w-full tw-text-center">
-					confirmation
+					<!-- eslint-disable-next-line max-len -->
+					Thank you<strong class="data-hj-suppress">{{ lenderFirstName ? ` ${lenderFirstName}` : '' }}</strong>
 				</div>
 			</div>
 		</div>
@@ -36,7 +37,7 @@
 							{{ iwdValetInviterName }} &
 						</span>
 						<!-- eslint-disable-next-line max-len -->
-						<span>Kiva is invaluable to our mission and to our borrowers around the world. We’ve sent a receipt to your email.</span>
+						<span>Kiva is invaluable to our mission and to borrowers around the world. We’ve sent a receipt to your email.</span>
 					</div>
 				</div>
 				<div
@@ -106,11 +107,9 @@
 			<template v-else>
 				<div class="tw-flex tw-flex-col tw-w-full tw-pb-2">
 					<div class="tw-text-center tw-pt-1.5 tw-px-2 tw-pb-2 tw-mx-auto" style="max-width: 885px;">
-						<h2 class="tw-pb-1.5 tw-text-h2">
-							Multiply your impact. <br> Spread the word about International Women’s Day.
+						<h2 class="tw-text-h2">
+							Multiply your impact, spread the word!
 						</h2>
-						<!-- eslint-disable-next-line max-len -->
-						<p>We’re more powerful together. International Women’s Day is the perfect time to bring your community into ours.</p>
 					</div>
 					<div
 						class="
@@ -121,7 +120,8 @@
 							md:tw-p-4
 							tw-flex
 							tw-flex-col
-							tw-gap-3
+							tw-gap-2
+							md:tw-gap-3
 						"
 					>
 						<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-w-full">
@@ -146,16 +146,6 @@
 									Help <span>{{ lenderFirstName || 'me' }}</span> <span class="tw-text-brand">support 4,000 women</span> this International Women’s Day!
 								</h3>
 								<!-- eslint-enable max-len -->
-							</div>
-							<!-- eslint-disable-next-line max-len -->
-							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-my-3 md:tw-mt-0 tw-basis-auto md:tw-basis-1/3">
-								<iwd-progress-campaign class="tw-w-full" />
-								<img
-									id="badge-image"
-									:src="iWD2024Badge"
-									alt="IWD Badge"
-									class="tw-mx-0 md:tw-mx-auto"
-								>
 							</div>
 						</div>
 						<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-gap-1">
@@ -209,7 +199,7 @@
 									utmCampaign,
 									iwdLoanId
 								]"
-								@click="copyLink({ utmCampaign, utmContent }, copyStatus.text)"
+								@click="copyUrl({ utmCampaign, utmContent }, copyStatus.text)"
 							>
 								<kv-material-icon
 									:icon="mdiLink"
@@ -219,6 +209,16 @@
 								<span class="tw-font-medium">{{ copyStatus.text }}</span>
 							</button>
 							<!-- eslint-enable max-len -->
+						</div>
+						<!-- eslint-disable-next-line max-len -->
+						<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 md:tw-mt-1 tw-basis-auto md:tw-basis-1/3">
+							<iwd-progress-campaign class="tw-w-full" />
+							<img
+								id="badge-image"
+								:src="iWD2024Badge"
+								alt="IWD Badge"
+								class="tw-mx-0 md:tw-mx-auto"
+							>
 						</div>
 					</div>
 				</div>
@@ -235,6 +235,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import { mdiLink } from '@mdi/js';
 import { getFullUrl } from '@/util/urlUtils';
 import IwdProgressCampaign from '@/components/Iwd/IwdProgressCampaign';
+import clipboardCopy from 'clipboard-copy';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -313,6 +314,9 @@ export default {
 			}
 			return this.lender?.publicId ?? '';
 		},
+		lenderEmail() {
+			return this.lender?.email ?? '';
+		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
 			if (this.lender?.public && this.lender?.publicId) return this.lender?.publicId;
@@ -332,6 +336,45 @@ export default {
 					: ''}`;
 		}
 	},
+	methods: {
+		// Behavior mirrors social sharing mixin but excludes the share message
+		async copyUrl({ utmCampaign, utmContent }, text) {
+			const url = getFullUrl(this.shareLink, {
+				utm_source: 'social_share_link',
+				utm_medium: 'referral',
+				utm_campaign: utmCampaign,
+				utm_content: utmContent,
+			});
+			try {
+				await clipboardCopy(url);
+				if (this.copyStatus) {
+					this.copyStatus = {
+						class: 'tw-transition-colors tw-border-action-highlight tw-text-action-highlight',
+						disabled: true,
+						text: 'Copied!'
+					};
+				}
+			} catch (err) {
+				if (this.copyStatus) {
+					this.copyStatus = {
+						class: 'tw-transition-colors tw-border-danger-highlight tw-text-danger-highlight',
+						disabled: true,
+						text: 'Error'
+					};
+				}
+			} finally {
+				setTimeout(() => {
+					if (this.copyStatus) {
+						this.copyStatus = {
+							class: '',
+							disabled: false,
+							text
+						};
+					}
+				}, 500);
+			}
+		}
+	}
 };
 </script>
 
