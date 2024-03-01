@@ -1,3 +1,22 @@
+## [2.732.0](https://github.com/kiva/ui/compare/v2.731.0...v2.732.0) (2024-03-01)
+
+
+### 🎉 New Features
+
+* footer broken link removed ([#5177](https://github.com/kiva/ui/issues/5177)) ([5d897c5](https://github.com/kiva/ui/commit/5d897c561beb1823a809493362a522323b6a0cbb))
+
+
+### 🐛 Bugfixes
+
+* adjust thanks page for IWD ([42d19c9](https://github.com/kiva/ui/commit/42d19c9d7fb830862fd6ba4259ae9aa8cf3195da))
+* ensure progress bar grows in mobile ([536a24a](https://github.com/kiva/ui/commit/536a24a9a93bcc4373204d3726266963ddd65540))
+* patch in userid before pageview if available ([9140a94](https://github.com/kiva/ui/commit/9140a942fb7b8018b4af1ad714300a7c00305beb))
+
+
+### 🧹 Chores
+
+* **release:** 2.732.0-rc.1 [skip ci] ([c8f442d](https://github.com/kiva/ui/commit/c8f442d5955c4c460050dd7b9cad81a327b753ec)), closes [#5177](https://github.com/kiva/ui/issues/5177)
+
 ## [2.732.0-rc.1](https://github.com/kiva/ui/compare/v2.731.0...v2.732.0-rc.1) (2024-03-01)
 
 
