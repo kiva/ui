@@ -1117,6 +1117,13 @@ export default {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
+
+					// Default matched state
+					this.promoApplied = true;
+				} else if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+					=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+					this.promoApplied = true;
+					this.promoErrorMessage = null;
 				} else if (this.isMatchingCampaign) {
 					this.promoApplied = true;
 				} else {
