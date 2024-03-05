@@ -1,3 +1,10 @@
+## [2.732.1-rc.1](https://github.com/kiva/ui/compare/v2.732.0...v2.732.1-rc.1) (2024-03-05)
+
+
+### 🐛 Bugfixes
+
+* add fallback check for available promo from basket when promo id isn't known ([8e6db44](https://github.com/kiva/ui/commit/8e6db44aab2b89adde465f4115b8fea2784b4d37))
+
 ## [2.732.0](https://github.com/kiva/ui/compare/v2.731.0...v2.732.0) (2024-03-01)
 
 
