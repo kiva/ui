@@ -489,7 +489,6 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: ACTIVITY_FEED_EXP } }),
 					]);
 				});
 		},
