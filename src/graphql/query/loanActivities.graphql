@@ -1,0 +1,40 @@
+query LoanActivities (
+  $loanId: Int!
+) {
+  lend {
+    loan(id: $loanId) {
+      id
+      lendingActions {
+        values {
+          latestSharePurchaseDate
+          lender {
+            id
+            name
+            image {
+              id
+              url
+            }
+          }
+          shareAmount
+        }
+      }
+      comments {
+        values {
+          id
+          date
+          authorName
+          body
+          authorLendingAction {
+            lender {
+              id
+              image {
+                id
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
