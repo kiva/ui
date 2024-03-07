@@ -529,7 +529,6 @@ export default {
 			this.targetedLoanChannelURL,
 			this.loanQueryVars,
 		);
-		console.log(baseData);
 		if (baseData) this.loading = false;
 
 		// Assign our initial view data
