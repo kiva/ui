@@ -3,6 +3,7 @@ query IwdActions {
     campaignActions(
         campaignKey: "iwd2024",
         filters: { gender: female },
+		limit: 12,
     ) {
       totalCount
       values {
