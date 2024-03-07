@@ -274,7 +274,7 @@
 							:user-balance="userBalance"
 							:error-msg="errorMsg"
 							:is-adding="isAdding"
-							@addToBasket="addToBasket"
+							@add-to-basket="addToBasket"
 						/>
 					</div>
 				</div>
@@ -574,8 +574,9 @@ export default {
 		},
 	},
 	methods: {
-		async addToBasket() {
+		async addToBasket(lendAmount = 0) {
 			this.isAdding = true;
+			this.selectedOption = lendAmount || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
