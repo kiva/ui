@@ -37,6 +37,7 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-activity-feed="enableActivityFeed"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -432,7 +433,7 @@ export default {
 				'Asia',
 				'Europe'
 			],
-			showActivityFeed: false,
+			enableActivityFeed: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -592,7 +593,7 @@ export default {
 			'EXP-ACK-1037-MAR2024',
 		);
 		if (activityFeedExpData?.version === 'b') {
-			this.showActivityFeed = true;
+			this.enableActivityFeed = true;
 		}
 
 		this.determineIfMobile();

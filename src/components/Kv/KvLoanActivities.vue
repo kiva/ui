@@ -1,6 +1,6 @@
 <template>
 	<div v-if="combinedActivities.length > 0" class="loan-activity">
-		<div class="tw-relative tw-flex tw-flex-col tw-gap-1 tw-px-2 lg:tw-px-0">
+		<div class="tw-relative tw-flex tw-flex-col tw-gap-1 lg:tw-px-0">
 			<div class="tw-absolute top-0 tw-h-full tw-w-full loan-activity-overlay"></div>
 			<kv-activity-row
 				v-for="(activity, index) in shortActivity"
@@ -220,12 +220,12 @@ export default {
 
 <style scoped lang="postcss">
 .loan-activity-overlay {
-	background: linear-gradient(0deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+	background: linear-gradient(0deg, #f5f5f5 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 @screen lg {
 	.loan-activity-overlay {
-		background: linear-gradient(0deg, #f5f5f5 0%, rgba(245, 245, 245, 0) 60%);
+		background: linear-gradient(0deg, #fff 0%, rgba(245, 245, 245, 0) 60%);
 	}
 }
 
