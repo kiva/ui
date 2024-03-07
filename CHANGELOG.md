@@ -1,3 +1,24 @@
+## [2.733.0-rc.1](https://github.com/kiva/ui/compare/v2.732.1...v2.733.0-rc.1) (2024-03-07)
+
+
+### 🎉 New Features
+
+* activity feed components added ([#5186](https://github.com/kiva/ui/issues/5186)) ([35c0016](https://github.com/kiva/ui/commit/35c001674fcfbfa71c0099f5f90ad052baa20d2f))
+* add activity feed experiment to lend cta section ([d1e600a](https://github.com/kiva/ui/commit/d1e600ade47472ba0e62bd4055d1e197b406eda6))
+* add query file ([0e339e5](https://github.com/kiva/ui/commit/0e339e5b3fb39bd36c890303516157fc2aea3e47))
+* aggregate and filter the activity feed ([0f540c4](https://github.com/kiva/ui/commit/0f540c47aaf6b7f6609dc9040f08412136967384))
+* don't save new filter to saved search ([ee66794](https://github.com/kiva/ui/commit/ee6679496276bc795df356c2c5ca643288a1a495))
+* setup test for activity feed on borrower profile ([65c09b8](https://github.com/kiva/ui/commit/65c09b8c0800a23274b61acbee343d86e59a8258))
+* visible url array added to global promotional banner component ([#5182](https://github.com/kiva/ui/issues/5182)) ([3db3700](https://github.com/kiva/ui/commit/3db3700e8316010a580b03358382a30bc8674ae1))
+
+
+### 🐛 Bugfixes
+
+* ensure prefetched channel data is correctly pulled from apollo cache ([42d0f63](https://github.com/kiva/ui/commit/42d0f632073fa6441fec604532c605f09fe4ded9))
+* remove unnecessary exp assignment ([bfb214c](https://github.com/kiva/ui/commit/bfb214c2408a7299cf815ee050778400cecbc202))
+* trying a lower limit for now ([eeae719](https://github.com/kiva/ui/commit/eeae719db17dea9c0c8cc2fa7b18ea491858f743))
+* update tests ([d7d9668](https://github.com/kiva/ui/commit/d7d96687def56ec39d36b79ffc5f3c4e0b663232))
+
 ## [2.732.1](https://github.com/kiva/ui/compare/v2.732.0...v2.732.1) (2024-03-05)
 
 
