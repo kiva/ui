@@ -256,6 +256,22 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
+					<div v-if="enableActivityFeed">
+						<hr
+							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+							:class="[
+								{
+									'tw-hidden': isSticky,
+									'tw-block': !isSticky,
+								}
+							]"
+						>
+						<kv-loan-activities
+							class="tw-w-full"
+							:loan="loan"
+							:activities="activities"
+						/>
+					</div>
 				</div>
 			</kv-grid>
 
@@ -382,6 +398,8 @@ import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoanActivities from '@/components/Kv/KvLoanActivities';
+import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -399,6 +417,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		enableActivityFeed: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	components: {
 		LendAmountButton,
@@ -410,6 +432,7 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
+		KvLoanActivities
 	},
 	data() {
 		return {
@@ -445,6 +468,8 @@ export default {
 			matchingHighlightExpShown: false,
 			inPfp: false,
 			userBalance: undefined,
+			activities: null,
+			loan: null,
 		};
 	},
 	apollo: {
@@ -513,6 +538,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -818,7 +844,16 @@ export default {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
 		}
 	},
-	mounted() {
+	async mounted() {
+		if (this.enableActivityFeed) {
+			const response = await this.apollo.query({
+				query: loanActivitiesQuery,
+				variables: { loanId: this.loanId }
+			});
+
+			this.activities = response?.data ?? null;
+		}
+
 		this.createWrapperObserver();
 	},
 	beforeDestroy() {
