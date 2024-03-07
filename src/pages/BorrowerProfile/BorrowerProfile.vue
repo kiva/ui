@@ -37,7 +37,7 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-activity-feed="enableActivityFeed"
+						:activities="activities"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -168,6 +168,7 @@ import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '@/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
 import BorrowerEducationPlacement from '@/components/BorrowerProfile/BorrowerEducationPlacement';
+import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
@@ -434,6 +435,7 @@ export default {
 				'Europe'
 			],
 			enableActivityFeed: false,
+			activities: null,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -594,6 +596,12 @@ export default {
 		);
 		if (activityFeedExpData?.version === 'b') {
 			this.enableActivityFeed = true;
+			const response = await this.apollo.query({
+				query: loanActivitiesQuery,
+				variables: { loanId: this.loanId }
+			});
+
+			this.activities = response?.data ?? null;
 		}
 
 		this.determineIfMobile();
