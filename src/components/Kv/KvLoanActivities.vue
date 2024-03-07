@@ -220,44 +220,45 @@ export default {
 
 <style scoped lang="postcss">
 .loan-activity-overlay {
-  background: linear-gradient(0deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%);
+	background: linear-gradient(0deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 @screen lg {
-  .loan-activity-overlay {
-    background: linear-gradient(0deg, #F5F5F5 0%, rgba(245, 245, 245, 0.00) 60%);
-  }
+	.loan-activity-overlay {
+		background: linear-gradient(0deg, #f5f5f5 0%, rgba(245, 245, 245, 0) 60%);
+	}
 }
 
 .loan-activity >>> #kvLightboxBody {
-  @apply tw-flex tw-flex-col tw-px-0 tw-pb-0;
-}
-
-.loan-activity >>> #kvLightboxBody > div:first-child {
-  @apply tw-px-4;
+	@apply tw-flex tw-flex-col tw-px-0 tw-pb-0;
 }
 
 .loan-activity >>> div > div > div > div > div:first-child {
-  box-shadow: var(--kiva-box-shadow);
+	box-shadow: var(--kiva-box-shadow);
 }
 
-.loan-activity >>> #kvLightboxBody > div:nth-child(2) {
-  @apply tw-px-4;
-  box-shadow: var(--kiva-negative-box-shadow);
+.loan-activity >>> div > div > div > div > div:first-child > div,
+.loan-activity >>> #kvLightboxBody div {
+	box-shadow: none;
 }
 
-.loan-activity >>> #kvLightboxBody div,
-.loan-activity >>> div > div > div > div > div:first-child > div {
-  box-shadow: none;
+.loan-activity >>> #kvLightboxBody > div:first-child {
+	@apply tw-px-4;
 }
 
 .loan-activity >>> [role=dialog] {
-  min-width: 840px;
-  max-width: 840px !important;
+	min-width: 840px;
+	max-width: 840px !important;
 
-  @media (max-width: calc(840px + 2rem)) {
-    min-width: 100%;
-    max-width: 100% !important;
-  };
+	@media (max-width: calc(840px + 2rem)) {
+		min-width: 100%;
+		max-width: 100% !important;
+	}
+}
+
+.loan-activity >>> #kvLightboxBody > div:nth-child(2) {
+	@apply tw-px-4;
+
+	box-shadow: var(--kiva-negative-box-shadow);
 }
 </style>
