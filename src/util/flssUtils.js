@@ -135,7 +135,7 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
 	return {
 		ids: [...loanQueryVars.ids],
 		filterObject: getFlssFilters({ ...queryMapFLSS, ...loanQueryVars }),
-		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy,
+		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy || null,
 		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
 		pageLimit: loanQueryVars.limit,
 		basketId: loanQueryVars.basketId,
