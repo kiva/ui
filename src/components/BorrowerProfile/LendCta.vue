@@ -576,7 +576,8 @@ export default {
 	methods: {
 		async addToBasket(lendAmount = 0) {
 			this.isAdding = true;
-			this.selectedOption = lendAmount || this.selectedOption;
+			this.errorMsg = '';
+			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
