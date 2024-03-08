@@ -4,7 +4,8 @@ import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
 import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
-import NetworkErrorLink from './NetworkErrorLink';
+import GraphqlErrorLink from './GraphqlErrorLink';
+import NetworkErrorRetryLink from './NetworkErrorRetryLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
 import { initState, setLocalState } from './localState';
 
@@ -38,7 +39,8 @@ export default function createApolloClient({
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
-			NetworkErrorLink(),
+			NetworkErrorRetryLink(),
+			GraphqlErrorLink(),
 			SnowplowSessionLink({ cookieStore }),
 			ExperimentIdLink(),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
