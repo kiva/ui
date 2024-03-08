@@ -423,7 +423,7 @@ export default {
 		},
 		activities: {
 			type: Object,
-			default: () => ({}),
+			default: null,
 		}
 	},
 	components: {

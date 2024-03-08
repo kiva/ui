@@ -434,7 +434,6 @@ export default {
 				'Asia',
 				'Europe'
 			],
-			enableActivityFeed: false,
 			activities: null,
 		};
 	},
@@ -595,7 +594,6 @@ export default {
 			'EXP-ACK-1037-MAR2024',
 		);
 		if (activityFeedExpData?.version === 'b') {
-			this.enableActivityFeed = true;
 			const response = await this.apollo.query({
 				query: loanActivitiesQuery,
 				variables: { loanId: this.loanId }
