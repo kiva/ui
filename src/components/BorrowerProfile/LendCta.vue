@@ -575,6 +575,9 @@ export default {
 	},
 	methods: {
 		async addToBasket(lendAmount = 0) {
+			if (lendAmount) {
+				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
 			this.isAdding = true;
 			this.errorMsg = '';
 			this.selectedOption = Number(lendAmount) || this.selectedOption;
