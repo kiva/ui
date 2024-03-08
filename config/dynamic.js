@@ -1,6 +1,8 @@
 const path = require("path");
 
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
+const apolloNetworkErrorRetryActive = process.env.APOLLO_NETWORK_RETRY_ACTIVE !== 'false';
+const apolloNetworkErrorRetryAttempts = parseInt(process.env.APOLLO_NETWORK_RETRY_ATTEMPTS) || 1;
 const memcachedServers = process.env.MEMCACHE_HOST || 'ui-memcached:11211';
 const baseUrl = process.env.BASE_URL || 'development.kiva.org';
 const env = process.env.SHORT_ENV || 'dev';
@@ -28,6 +30,8 @@ module.exports = {
 			defaultIndex: `${env}_fundraising_popularity`,
 		},
 		apolloBatching,
+		apolloNetworkErrorRetryActive,
+		apolloNetworkErrorRetryAttempts,
 		auth0: {
 			loginRedirectUrls: {
 				[adminAuthId]: `https://admin.${baseUrl}/admin/login?force=1`,
