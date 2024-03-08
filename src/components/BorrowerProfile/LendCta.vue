@@ -381,7 +381,7 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
@@ -473,7 +473,7 @@ export default {
 			inPfp: false,
 			userBalance: undefined,
 			loan: null,
-			errorMsg: ''
+			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -578,6 +578,7 @@ export default {
 			if (lendAmount) {
 				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
 			}
+
 			this.isAdding = true;
 			this.errorMsg = '';
 			this.selectedOption = Number(lendAmount) || this.selectedOption;
@@ -593,6 +594,9 @@ export default {
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
 			}).catch(e => {
+				if (e?.message !== INVALID_BASKET_ERROR) {
+					this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				}
 				this.isAdding = false;
 				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
