@@ -37,6 +37,7 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-activity-feed="enableActivityFeed"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -173,6 +174,7 @@ const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? 
 
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
+const ACTIVITY_FEED_EXP = 'activity_feed_bp';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -431,6 +433,7 @@ export default {
 				'Asia',
 				'Europe'
 			],
+			enableActivityFeed: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -580,6 +583,17 @@ export default {
 			if (educationExpData.version === 'b') {
 				this.showEducationPlacementExp = true;
 			}
+		}
+
+		const activityFeedExpData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'borrower-profile',
+			ACTIVITY_FEED_EXP,
+			'EXP-ACK-1037-MAR2024',
+		);
+		if (activityFeedExpData?.version === 'b') {
+			this.enableActivityFeed = true;
 		}
 
 		this.determineIfMobile();
