@@ -1,7 +1,7 @@
 const path = require("path");
 
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
-const apolloNetworkErrorRetryActive = process.env.APOLLO_NETWORK_RETRY_ACTIVE !== 'false';
+const apolloNetworkErrorRetryActive = process.env.APOLLO_NETWORK_RETRY_ACTIVE === 'true';
 const apolloNetworkErrorRetryAttempts = parseInt(process.env.APOLLO_NETWORK_RETRY_ATTEMPTS) || 1;
 const memcachedServers = process.env.MEMCACHE_HOST || 'ui-memcached:11211';
 const baseUrl = process.env.BASE_URL || 'development.kiva.org';
