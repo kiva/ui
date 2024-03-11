@@ -5,6 +5,8 @@ var devVm  = require('./dev-vm.js')
 module.exports = merge(base, devVm, {
 	app: {
 		apolloBatching: false,
+		apolloNetworkErrorRetryActive: true,
+		apolloNetworkErrorRetryAttempts: 2,
 		host: 'kiva-ui.local',
 		publicPath: '/',
 		photoPath: 'https://www.development.kiva.org/img/',
