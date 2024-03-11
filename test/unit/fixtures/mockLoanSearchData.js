@@ -22,7 +22,8 @@ export const savedSearchParams = {
 	filters: {
 		gender: 'female',
 		country: ['PH']
-	}
+	},
+	isAlert: true,
 };
 
 export const mockAllFacets = {
