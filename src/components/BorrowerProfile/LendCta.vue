@@ -595,7 +595,7 @@ export default {
 				}
 			}).catch(e => {
 				if (e?.message !== INVALID_BASKET_ERROR) {
-					this.$kvTrackEvent('Lending', 'add-to-Basket', 'Failed to add loan. Please try again.');
+					this.$kvTrackEvent('borrower-profile', 'add-to-Basket', 'Failed to add loan. Please try again.');
 				}
 				this.isAdding = false;
 				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
