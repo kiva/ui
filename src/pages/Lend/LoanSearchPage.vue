@@ -55,6 +55,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -73,7 +74,8 @@ export default {
 			mdiEarth,
 			mdiFilter,
 			mdiClose,
-			savedSearchName: ''
+			savedSearchName: '',
+			enableChallengeHeader: false,
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -137,6 +139,15 @@ export default {
 				'EXP-CORE-1205-May2023'
 			);
 		}
+
+		const challengeHeaderExpData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			CHALLENGE_HEADER_EXP,
+			'EXP-ACK-1038-Mar2024',
+		);
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
 	},
 };
 </script>
