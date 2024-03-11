@@ -143,11 +143,11 @@ export default {
 		const challengeHeaderExpData = trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
-			'borrower-profile',
+			'Lending',
 			CHALLENGE_HEADER_EXP,
-			'EXP-ACK-1038-MAR2024',
+			'EXP-ACK-1038-Mar2024',
 		);
-		this.enableChallengeHeader = challengeHeaderExpData.version === 'b';
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
 	},
 };
 </script>
