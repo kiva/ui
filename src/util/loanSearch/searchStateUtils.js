@@ -49,16 +49,19 @@ export async function updateSearchState(apollo, loanQueryFilters, allFacets, que
  *
  * @param {Object} apollo The Apollo client instance
  * @param {Object} loanQueryFilters The filters for the saved search
+ * @param {string} queryString The query string associated with the saved search
  * @param {string} savedSearchName The name of the saved search
+ * @param {boolean} isAlert Whether to enable email notifications
  * @returns {Promise<Array>} Promise for the results of the mutation
  */
-export async function createSavedSearch(apollo, loanQueryFilters, queryString, savedSearchName) {
+export async function createSavedSearch(apollo, loanQueryFilters, queryString, savedSearchName, isAlert) {
 	return apollo.mutate({
 		mutation: createSavedSearchMutation,
 		variables: {
 			name: savedSearchName,
 			queryString,
-			filters: loanQueryFilters
+			filters: loanQueryFilters,
+			isAlert,
 		}
 	});
 }
