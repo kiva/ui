@@ -1,5 +1,27 @@
 <template>
 	<div>
+		<div class="tw-flex tw-justify-between tw-items-end tw-mb-2.5" v-if="showChallengeHeader">
+			<div>
+				<h2 class="tw-text-h2">
+					Find a loan, Support your team!
+				</h2>
+				<p class="tw-text-base">
+					Supporting any borrower, not just Team picks, counts toward this team challenge
+				</p>
+			</div>
+			<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap lg:tw-pl-4">
+				<p class="tw-hidden lg:tw-inline-block tw-mr-2">
+					{{ totalCount }} Loans
+				</p>
+				<loan-search-saved-search
+					class="tw-hidden lg:tw-inline-block"
+					v-if="enableSavedSearch && showSavedSearch"
+					:loan-search-state="loanSearchState"
+					:all-facets="allFacets"
+					:user-id="userId"
+				/>
+			</div>
+		</div>
 		<div class="tw-flex tw-flex-col lg:tw-flex-row">
 			<div class="tw-flex lg:tw-hidden">
 				<div class="tw-mb-3 tw-mr-2">
@@ -72,12 +94,13 @@
 				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
 				<div v-if="initialLoadComplete">
 					<loan-search-filter-chips
+						:class="{ 'tw-mb-2' : showChallengeHeader}"
 						:loan-search-state="loanSearchState"
 						:all-facets="allFacets"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap lg:tw-pl-4">
+					<div v-if="!showChallengeHeader" class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap lg:tw-pl-4">
 						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
 							{{ totalCount }} Loans
 						</p>
@@ -100,7 +123,10 @@
 					</p>
 				</template>
 				<!-- eslint-disable max-len -->
-				<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mt-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4">
+				<div
+					class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4"
+					:class="{ 'tw-mt-2' : !showChallengeHeader}"
+				>
 					<kv-classic-loan-card-container
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
@@ -191,6 +217,10 @@ export default {
 			default: false,
 		},
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
+		},
+		showChallengeHeader: {
 			type: Boolean,
 			default: false,
 		},

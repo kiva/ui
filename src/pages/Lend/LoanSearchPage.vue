@@ -2,7 +2,8 @@
 	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
-				<div class="tw-flex tw-items-start tw-pb-8">
+				<challenge-header v-if="showChallengeHeader" />
+				<div v-else class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
 						<h1 class="tw-mb-2">
 							Make a loan, change a life
@@ -35,6 +36,7 @@
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:show-challenge-header="showChallengeHeader"
 				/>
 			</kv-page-container>
 		</article>
@@ -44,6 +46,7 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
+import ChallengeHeader from '@/components/Lend/LoanSearch/ChallengeHeader';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -66,6 +69,7 @@ export default {
 		KvPageContainer,
 		KvMaterialIcon,
 		LoanSearchInterface,
+		ChallengeHeader,
 	},
 	data() {
 		return {
@@ -102,6 +106,12 @@ export default {
 						client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
 				});
+		},
+	},
+	computed: {
+		showChallengeHeader() {
+			// TODO: Verify if lender and team have a challenge to show
+			return this.enableChallengeHeader;
 		},
 	},
 	created() {
