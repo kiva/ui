@@ -266,6 +266,9 @@
 								}
 							]"
 						>
+						<powered-by-lenders
+							:participants="participants"
+						/>
 						<kv-loan-activities
 							class="tw-w-full"
 							:loan="loan"
@@ -404,6 +407,7 @@ import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrappe
 
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoanActivities from '@/components/Kv/KvLoanActivities';
+import PoweredByLenders from '@/components/BorrowerProfile/PoweredByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -436,7 +440,8 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		KvLoanActivities
+		KvLoanActivities,
+		PoweredByLenders,
 	},
 	data() {
 		return {
@@ -848,6 +853,9 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		participants() {
+			return this.activities?.lend?.loan?.lendingActions ?? {};
 		}
 	},
 	mounted() {
