@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import PoweredByLenders from '@/components/BorrowerProfile/PoweredByLenders';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 
 const participants = {
 	values: [
@@ -72,7 +72,7 @@ const participants = {
 	],
 };
 
-describe('PoweredByLenders', () => {
+describe('SupportedByLenders', () => {
 	it('should display 5 participants photos at maximum', async () => {
 		const props = {
 			participants,
@@ -80,13 +80,13 @@ describe('PoweredByLenders', () => {
 
 		const numberOfParticipants = props.participants.values.length;
 
-		const { getByText, findAllByText } = render(PoweredByLenders, {
+		const { getByText, findAllByText } = render(SupportedByLenders, {
 			props,
 		});
 
 		const images = await waitFor(() => findAllByText('J', { exact: false }));
 		expect(images.length).toEqual(numberOfParticipants > 5 ? 5 : numberOfParticipants);
 
-		getByText(`Powered by ${numberOfParticipants} lenders`);
+		getByText(`Supported by ${numberOfParticipants} people`);
 	});
 });

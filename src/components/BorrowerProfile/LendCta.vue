@@ -266,7 +266,7 @@
 								}
 							]"
 						>
-						<powered-by-lenders
+						<supported-by-lenders
 							:participants="participants"
 						/>
 						<kv-loan-activities
@@ -407,7 +407,7 @@ import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrappe
 
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoanActivities from '@/components/Kv/KvLoanActivities';
-import PoweredByLenders from '@/components/BorrowerProfile/PoweredByLenders';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -441,7 +441,7 @@ export default {
 		LoanBookmark,
 		CompleteLoanWrapper,
 		KvLoanActivities,
-		PoweredByLenders,
+		SupportedByLenders,
 	},
 	data() {
 		return {
