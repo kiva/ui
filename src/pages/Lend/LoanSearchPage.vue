@@ -114,7 +114,8 @@ export default {
 
 				const teamPublicId = query?.team ?? '';
 				let userPromise = Promise.resolve();
-				if (challengeHeaderExpData?.version === 'b' && !teamPublicId && getHasEverLoggedIn(client)) {
+				const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
+				if (activeChallengeHeaderExp && !teamPublicId && getHasEverLoggedIn(client)) {
 					userPromise = client.query({
 						query: myTeamsQuery,
 					});
@@ -125,14 +126,16 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
 					client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					teamPublicId,
-					userPromise
+					userPromise,
+					activeChallengeHeaderExp,
 				]);
 			}).then(response => {
 				const teamPublicId = response[3];
 				const userTeams = response[4]?.data?.my?.teams?.values ?? [];
+				const activeChallengeHeaderExp = response[5];
 
 				let maxAmountLentTeam = {};
-				if (!teamPublicId && userTeams.length > 0) {
+				if (!teamPublicId && userTeams.length > 0 && activeChallengeHeaderExp) {
 					maxAmountLentTeam = userTeams?.reduce((prev, current) => {
 						const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
 						const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
@@ -141,7 +144,7 @@ export default {
 				}
 
 				let teamDataPromise = Promise.resolve();
-				if (teamPublicId) {
+				if (teamPublicId && activeChallengeHeaderExp) {
 					teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
 				}
 				const userTeamId = maxAmountLentTeam?.team?.id ?? null;
@@ -149,13 +152,15 @@ export default {
 				return Promise.all([
 					teamDataPromise,
 					userTeamId,
+					activeChallengeHeaderExp,
 				]);
 			}).then(responseTeams => {
 				const queryTeamId = responseTeams[0]?.data?.community?.team?.id ?? null;
 				const userTeamId = responseTeams[1] ?? null;
+				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
-				if (teamId) {
+				if (teamId && activeChallengeHeaderExp) {
 					return client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
 				}
 			});
