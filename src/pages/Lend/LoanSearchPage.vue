@@ -65,6 +65,14 @@ const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
+const reduceAmountLentTeamArray = userTeams => {
+	return userTeams?.reduce((prev, current) => {
+		const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
+		const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
+		return (prev && prevAmountLent > currentAmountLent) ? prev : current;
+	});
+};
+
 export default {
 	name: 'LoanSearchPage',
 	components: {
@@ -137,11 +145,7 @@ export default {
 
 				let maxAmountLentTeam = {};
 				if (!teamPublicId && userTeams.length > 0 && activeChallengeHeaderExp) {
-					maxAmountLentTeam = userTeams?.reduce((prev, current) => {
-						const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
-						const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
-						return (prev && prevAmountLent > currentAmountLent) ? prev : current;
-					});
+					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
 				}
 
 				let teamDataPromise = Promise.resolve();
@@ -169,7 +173,6 @@ export default {
 	},
 	computed: {
 		showChallengeHeader() {
-			// TODO: Verify if lender and team have a challenge to show
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 	},
@@ -198,7 +201,6 @@ export default {
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
 
-		// Extended FLSS Loan Filter Experiment
 		const challengeHeaderExpData = this.apollo.readFragment({
 			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
 			fragment: experimentVersionFragment,
@@ -217,11 +219,7 @@ export default {
 
 				let maxAmountLentTeam = {};
 				if (userTeams.length > 0) {
-					maxAmountLentTeam = userTeams?.reduce((prev, current) => {
-						const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
-						const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
-						return (prev && prevAmountLent > currentAmountLent) ? prev : current;
-					});
+					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
 				}
 
 				teamId = maxAmountLentTeam?.team?.id ?? null;
