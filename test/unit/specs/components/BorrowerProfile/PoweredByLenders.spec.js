@@ -1,17 +1,17 @@
-import { render } from '@testing-library/vue';
+import { render, waitFor } from '@testing-library/vue';
 import PoweredByLenders from '@/components/BorrowerProfile/PoweredByLenders';
 
 const participants = {
 	values: [
 		{
-			latestSharePurchaseDate: '2023-11-13T10:51:10Z',
+			latestSharePurchaseDate: '2023-11-08T02:32:20Z',
 			lender: {
-				name: 'Erica',
+				name: 'Joy',
 				image: {
 					url: 'https://www.development.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
 				},
 			},
-			shareAmount: '5.00',
+			shareAmount: '25.00',
 			__typename: 'LendingAction',
 		},
 		{
@@ -73,18 +73,18 @@ const participants = {
 };
 
 describe('PoweredByLenders', () => {
-	it('should display 5 participants photos at maximum', () => {
+	it('should display 5 participants photos at maximum', async () => {
 		const props = {
 			participants,
 		};
 
 		const numberOfParticipants = props.participants.values.length;
 
-		const { getByText, getAllByAltText } = render(PoweredByLenders, {
+		const { getByText, findAllByText } = render(PoweredByLenders, {
 			props,
 		});
 
-		const images = getAllByAltText('Lender photo');
+		const images = await waitFor(() => findAllByText('J', { exact: false }));
 		expect(images.length).toEqual(numberOfParticipants > 5 ? 5 : numberOfParticipants);
 
 		getByText(`Powered by ${numberOfParticipants} lenders`);
