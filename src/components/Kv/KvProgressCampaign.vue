@@ -8,27 +8,29 @@
 				{{ borrowersLeft }} to go
 			</p>
 		</div>
-		<kv-progress-bar
-			class="tw-my-0.5"
-			aria-label="Percent the loan has funded"
-			:value="progressPercentage"
-			:bg-variant="bgVariant"
-		/>
-		<div v-if="!minimalStats">
-			<p>
-				{{ daysLeft }} days left
-			</p>
+		<div class="tw-relative tw-mt-1">
+			<kv-progress-bar
+				class="tw-my-0.5"
+				aria-label="Percent the loan has funded"
+				:value="progressPercentage"
+				:bg-variant="bgVariant"
+			/>
+			<div class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5">
+				<heart-out-from-box class="tw-w-3" />
+			</div>
 		</div>
 	</figure>
 </template>
 
 <script>
+import HeartOutFromBox from '@/assets/inline-svgs/challenge/heart-out-from-box.svg';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'KvProgressCampaign',
 	components: {
-		KvProgressBar
+		KvProgressBar,
+		HeartOutFromBox
 	},
 	props: {
 		fundedBorrowers: {
