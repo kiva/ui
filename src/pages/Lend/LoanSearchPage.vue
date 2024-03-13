@@ -95,6 +95,7 @@ export default {
 				client.query({ query: experimentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
 			]).then(() => {
 				const query = args?.route?.query ?? {};
+				const loggedInUser = getHasEverLoggedIn(client);
 
 				// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
 				const { version } = client.readFragment({
@@ -102,7 +103,7 @@ export default {
 					fragment: experimentVersionFragment,
 				}) ?? {};
 
-				if (version === 'b' && getHasEverLoggedIn(client)) {
+				if (version === 'b' && loggedInUser) {
 					return Promise.reject({ path: '/lend-category-beta', query });
 				}
 
@@ -115,7 +116,7 @@ export default {
 				const teamPublicId = query?.team ?? '';
 				let userPromise = Promise.resolve();
 				const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
-				if (activeChallengeHeaderExp && !teamPublicId && getHasEverLoggedIn(client)) {
+				if (activeChallengeHeaderExp && !teamPublicId && loggedInUser) {
 					userPromise = client.query({
 						query: myTeamsQuery,
 					});
