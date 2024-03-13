@@ -2,7 +2,10 @@
 	<www-page id="lend-filter">
 		<article class="tw-bg-secondary tw-relative tw-pt-6">
 			<kv-page-container>
-				<challenge-header v-if="showChallengeHeader" />
+				<challenge-header
+					v-if="showChallengeHeader"
+					:challenge-data="challengeData"
+				/>
 				<div v-else class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
 						<h1 class="tw-mb-2">
