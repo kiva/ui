@@ -12,7 +12,7 @@
 			/>
 		</div>
 		<p class="tw-px-1 tw-text-base">
-			Powered by {{ participantsText }}
+			Supported by {{ participantsText }}
 		</p>
 	</div>
 </template>
@@ -22,7 +22,7 @@ import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
-	name: 'PoweredByLenders',
+	name: 'SupportedByLenders',
 	components: {
 		KvUserAvatar
 	},
@@ -39,8 +39,8 @@ export default {
 		},
 		participantsText() {
 			return this.participantsNumber === 1
-				? `${this.participantsNumber} lender`
-				: `${this.participantsNumber} lenders`;
+				? `${this.participantsNumber} person`
+				: `${this.participantsNumber} people`;
 		},
 		participationLendersDisplayed() {
 			return (this.participants?.values ?? []).map(p => ({
