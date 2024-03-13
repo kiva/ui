@@ -52,6 +52,9 @@ import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
+import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
+import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -80,38 +83,88 @@ export default {
 			mdiClose,
 			savedSearchName: '',
 			enableChallengeHeader: false,
+			challengeData: {},
 		};
 	},
 	mixins: [fiveDollarsTest],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, args) {
-			return client.query({ query: experimentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } })
-				.then(() => {
-					const query = args?.route?.query ?? {};
+			return Promise.all([
+				client.query({ query: experimentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } }),
+				client.query({ query: experimentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
+			]).then(() => {
+				const query = args?.route?.query ?? {};
 
-					// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
-					const { version } = client.readFragment({
-						id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
-						fragment: experimentVersionFragment,
-					}) ?? {};
+				// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
+				const { version } = client.readFragment({
+					id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) ?? {};
 
-					if (version === 'b' && getHasEverLoggedIn(client)) {
-						return Promise.reject({ path: '/lend-category-beta', query });
-					}
+				if (version === 'b' && getHasEverLoggedIn(client)) {
+					return Promise.reject({ path: '/lend-category-beta', query });
+				}
 
-					return Promise.all([
-						client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
-						client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-						client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-					]);
-				});
+				// Fetch challenge header experiment data
+				const challengeHeaderExpData = client.readFragment({
+					id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+					fragment: experimentVersionFragment,
+				}) ?? {};
+
+				const teamPublicId = query?.team ?? '';
+				let userPromise = Promise.resolve();
+				if (challengeHeaderExpData?.version === 'b' && !teamPublicId && getHasEverLoggedIn(client)) {
+					userPromise = client.query({
+						query: myTeamsQuery,
+					});
+				}
+
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
+					client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+					client.query({ query: experimentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					teamPublicId,
+					userPromise
+				]);
+			}).then(response => {
+				const teamPublicId = response[3];
+				const userTeams = response[4]?.data?.my?.teams?.values ?? [];
+
+				let maxAmountLentTeam = {};
+				if (!teamPublicId && userTeams.length > 0) {
+					maxAmountLentTeam = userTeams?.reduce((prev, current) => {
+						const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
+						const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
+						return (prev && prevAmountLent > currentAmountLent) ? prev : current;
+					});
+				}
+
+				let teamDataPromise = Promise.resolve();
+				if (teamPublicId) {
+					teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+				}
+				const userTeamId = maxAmountLentTeam?.team?.id ?? null;
+
+				return Promise.all([
+					teamDataPromise,
+					userTeamId,
+				]);
+			}).then(responseTeams => {
+				const queryTeamId = responseTeams[0]?.data?.community?.team?.id ?? null;
+				const userTeamId = responseTeams[1] ?? null;
+				const teamId = queryTeamId || userTeamId;
+
+				if (teamId) {
+					return client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
+				}
+			});
 		},
 	},
 	computed: {
 		showChallengeHeader() {
 			// TODO: Verify if lender and team have a challenge to show
-			return this.enableChallengeHeader;
+			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 	},
 	created() {
@@ -138,6 +191,40 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+
+		// Extended FLSS Loan Filter Experiment
+		const challengeHeaderExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
+
+		if (this.enableChallengeHeader) {
+			const teamPublicId = this.$route?.query?.team ?? '';
+			let teamId = null;
+			if (teamPublicId) {
+				const teamInfo = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+				teamId = teamInfo?.community?.team?.id ?? null;
+			} else {
+				const userTeamsData = this.apollo.readQuery({ query: myTeamsQuery });
+				const userTeams = userTeamsData.my?.teams?.values ?? [];
+
+				let maxAmountLentTeam = {};
+				if (userTeams.length > 0) {
+					maxAmountLentTeam = userTeams?.reduce((prev, current) => {
+						const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
+						const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
+						return (prev && prevAmountLent > currentAmountLent) ? prev : current;
+					});
+				}
+
+				teamId = maxAmountLentTeam?.team?.id ?? null;
+			}
+			if (teamId) {
+				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }); // eslint-disable-line max-len
+				this.challengeData = goalsData?.getGoals?.values?.[0] || {};
+			}
+		}
 	},
 	mounted() {
 		if (getHasEverLoggedIn(this.apollo)) {
@@ -150,14 +237,14 @@ export default {
 			);
 		}
 
-		const challengeHeaderExpData = trackExperimentVersion(
+		// Track experiment version for challenge header
+		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
 			'Lending',
 			CHALLENGE_HEADER_EXP,
 			'EXP-ACK-1038-Mar2024',
 		);
-		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
 	},
 };
 </script>
