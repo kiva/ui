@@ -124,7 +124,7 @@ export async function fetchGoals(apollo, limit = null, filters = null) {
 			query: teamsGoals,
 			variables: { ...filters, limit },
 		});
-		return result.data?.getGoals;
+		return result.data?.goals;
 	} catch (e) {
 		console.log('Team Goals query failed:', e.message);
 	}
