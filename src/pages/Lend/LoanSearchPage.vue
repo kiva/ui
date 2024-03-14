@@ -187,7 +187,7 @@ export default {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 	},
-	async created() {
+	created() {
 		this.initializeFiveDollarsNotes();
 
 		// Extended FLSS Loan Filter Experiment
@@ -237,7 +237,7 @@ export default {
 			}
 			if (teamId) {
 				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
-				this.challengeData = goalsData?.getGoals?.values?.[0] || {};
+				this.challengeData = goalsData?.goals?.values?.[0] || {};
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
 			}
