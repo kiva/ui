@@ -40,6 +40,9 @@
 						<template #header>
 							{{ null }} <!-- Hide title text -->
 						</template>
+						<team-picks-switch
+							v-if="showChallengeHeader"
+						/>
 						<loan-search-filter
 							style="min-width: 285px;"
 							:extend-flss-filters="extendFlssFilters"
@@ -79,6 +82,10 @@
 			</div>
 			<div class="tw-flex tw-mr-4">
 				<div class="tw-hidden lg:tw-block" style="width: 285px;">
+					<team-picks-switch
+						v-if="showChallengeHeader"
+						class="tw-mb-2"
+					/>
 					<loan-search-filter
 						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
@@ -160,6 +167,7 @@
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
+import TeamPicksSwitch from '@/components/Lend/LoanSearch/TeamPicksSwitch';
 import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
 import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
@@ -205,7 +213,8 @@ export default {
 		KvPagination,
 		KvResultsPerPage,
 		LoanSearchSavedSearch,
-		KvClassicLoanCardContainer
+		KvClassicLoanCardContainer,
+		TeamPicksSwitch,
 	},
 	props: {
 		extendFlssFilters: {
