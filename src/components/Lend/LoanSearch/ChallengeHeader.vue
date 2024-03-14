@@ -25,10 +25,11 @@ export default {
 	},
 	computed: {
 		fundedAmount() {
+			// TODO: Change this when we have the correct data name
 			return this.challengeData?.amountGoal ?? 0;
 		},
 		totalAmount() {
-			return this.challengeData?.participatoin?.amountLent ?? 0;
+			return this.challengeData?.participation?.amountLent ?? 0;
 		},
 		daysLeft() {
 			return intervalToDuration({
