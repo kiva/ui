@@ -388,7 +388,7 @@ export default {
 					variables: { ...filters, limit },
 				});
 
-				this.goal = response.getGoals?.values.length ? response?.getGoals?.values[0] : null;
+				this.goal = response.goals?.values.length ? response?.goals?.values[0] : null;
 
 				const loansIds = this.loans.map(loan => loan.id) ?? [];
 				this.showChallengeHeader = this.goal && this.goal?.targets?.values
