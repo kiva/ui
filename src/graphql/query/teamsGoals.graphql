@@ -3,8 +3,16 @@ query GetGoals($teamId: Int, $limit: Int) {
 		totalCount
 		values {
 			id
-			description
 			name
+			description
+			descriptionAuthor {
+				id
+				name
+				image {
+				id
+				url
+				}
+			}
 			participation {
 				totalCount
 				values {

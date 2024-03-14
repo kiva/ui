@@ -1,10 +1,14 @@
 <template>
 	<www-page id="lend-filter">
-		<article class="tw-bg-secondary tw-relative tw-pt-6">
+		<article
+			class="tw-bg-secondary tw-relative"
+			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader }"
+		>
 			<kv-page-container>
 				<challenge-header
 					v-if="showChallengeHeader"
 					:challenge-data="challengeData"
+					:team-data="teamData"
 				/>
 				<div v-else class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
@@ -95,6 +99,7 @@ export default {
 			savedSearchName: '',
 			enableChallengeHeader: false,
 			challengeData: {},
+			teamData: {},
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -169,7 +174,10 @@ export default {
 				const teamId = queryTeamId || userTeamId;
 
 				if (teamId && activeChallengeHeaderExp) {
-					return client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
+					return Promise.all([
+						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
+						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } })
+					]);
 				}
 			});
 		},
@@ -179,7 +187,7 @@ export default {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 	},
-	created() {
+	async created() {
 		this.initializeFiveDollarsNotes();
 
 		// Extended FLSS Loan Filter Experiment
@@ -228,8 +236,10 @@ export default {
 				teamId = maxAmountLentTeam?.team?.id ?? null;
 			}
 			if (teamId) {
-				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }); // eslint-disable-line max-len
+				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
 				this.challengeData = goalsData?.getGoals?.values?.[0] || {};
+				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
+				this.teamData = teamData?.community?.team || {};
 			}
 		}
 	},
