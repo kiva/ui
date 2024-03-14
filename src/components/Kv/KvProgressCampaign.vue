@@ -11,11 +11,11 @@
 		<div class="tw-relative tw-mt-1">
 			<kv-progress-bar
 				class="tw-my-0.5"
-				aria-label="Percent the loan has funded"
+				aria-label="Percent the campaign has funded"
 				:value="progressPercentage"
 				:bg-variant="bgVariant"
 			/>
-			<div class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5">
+			<div class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow">
 				<heart-out-from-box class="tw-w-3" />
 			</div>
 		</div>

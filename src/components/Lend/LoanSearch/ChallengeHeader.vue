@@ -33,7 +33,7 @@ export default {
 		},
 		daysLeft() {
 			return intervalToDuration({
-				start: this.challengeData?.endDate ?? new Date(),
+				start: this.challengeData?.startDate ?? new Date(),
 				end: this.challengeData?.endDate ?? new Date(),
 			}).days;
 		},

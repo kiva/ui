@@ -7,7 +7,7 @@
 				</h1>
 				<div class="tw-flex md:tw-hidden tw-py-0.5 tw-items-center">
 					<img :src="iWD2024Badge" alt="IWD Badge" style="width: 114px;">
-					<iwd-progress-campaign class="tw-pr-2 tw-grow" />
+					<!-- <iwd-progress-campaign class="tw-pr-2 tw-grow" /> -->
 				</div>
 				<!-- eslint-disable max-len -->
 				<p class="tw-pb-3">
@@ -18,7 +18,7 @@
 			</div>
 			<div class="tw-shrink-0 tw-hidden md:tw-block">
 				<img :src="iWD2024Badge" alt="IWD Badge">
-				<iwd-progress-campaign />
+				<!-- <iwd-progress-campaign /> -->
 			</div>
 		</div>
 		<div class="tw-pt-2">
@@ -30,13 +30,11 @@
 <script>
 import ActivityFeed from '@/components/Iwd/ActivityFeed';
 import iWD2024Badge from '@/assets/images/achievements/iwd_2024_badge.png';
-import IwdProgressCampaign from '@/components/Iwd/IwdProgressCampaign';
 
 export default {
 	name: 'IwdCategoryHeader',
 	components: {
 		ActivityFeed,
-		IwdProgressCampaign,
 	},
 	data() {
 		return {
