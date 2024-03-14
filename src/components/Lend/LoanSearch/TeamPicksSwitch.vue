@@ -3,9 +3,10 @@
 		<div class="tw-flex tw-flex-col">
 			<kv-switch
 				v-model="showTeamPicks"
+				@update:modelValue="$emit('showTeamPicks', $event)"
 			>
 				<div class="tw-flex tw-items-center tw-gap-0.5">
-					<img v-if="HandOrangeIcon" :src="HandOrangeIcon" class="tw-w-4">
+					<img :src="HandOrangeIcon" class="tw-w-4">
 					<span>Team Picks</span>
 				</div>
 			</kv-switch>
@@ -32,10 +33,5 @@ export default {
 			HandOrangeIcon
 		};
 	},
-	watch: {
-		showTeamPicks(val) {
-			this.$emit('showTeamPicks', val);
-		}
-	}
 };
 </script>
