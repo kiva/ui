@@ -1,28 +1,30 @@
 import { render } from '@testing-library/vue';
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import numeral from 'numeral';
 
 describe('KvProgressCampaign', () => {
 	it('should display default values', () => {
 		const props = {
-			daysLeft: 29, totalBorrowers: 4000, fundedBorrowers: 462,
+			daysLeft: 29, totalAmount: 4000, fundedAmount: 462,
 		};
 		const { getByText } = render(KvProgressCampaign, {
 			props,
 		});
 
-		getByText(`${props.fundedBorrowers} funded`);
-		getByText(`${props.totalBorrowers - props.fundedBorrowers} to go`);
-		getByText(`${props.daysLeft} days left`);
+		const amountLeft = numeral(props.totalAmount - props.fundedAmount).format('$0,0');
+
+		getByText(`${amountLeft} to go`);
+		getByText(`${props.daysLeft} days remaining`);
 	});
 
 	it('should not display negative value on loans to go!', () => {
 		const props = {
-			daysLeft: 29, totalBorrowers: 4000, fundedBorrowers: 5000,
+			daysLeft: 29, totalAmount: 4000, fundedAmount: 5000,
 		};
 		const { getByText } = render(KvProgressCampaign, {
 			props,
 		});
 
-		getByText('0 to go');
+		getByText('$0 to go');
 	});
 });

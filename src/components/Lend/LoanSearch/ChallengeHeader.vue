@@ -45,18 +45,25 @@
 			</div>
 		</div>
 		<div>
-			<!-- Progress bar -->
+			<kv-progress-campaign
+				:funded-amount="fundedAmount"
+				:total-amount="totalAmount"
+				:days-left="daysLeft"
+			/>
 			<!-- Activity Feed -->
 		</div>
 	</div>
 </template>
 
 <script>
+import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import intervalToDuration from 'date-fns/intervalToDuration';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
 	name: 'ChallengeHeader',
 	components: {
+		KvProgressCampaign,
 		KvUserAvatar,
 	},
 	props: {
@@ -87,6 +94,19 @@ export default {
 		},
 		authorImageUrl() {
 			return this.challengeData?.descriptionAuthor?.image?.url ?? '';
+		},
+		fundedAmount() {
+			// TODO: Change this when we have the correct data name
+			return this.challengeData?.amountGoal ?? 0;
+		},
+		totalAmount() {
+			return this.challengeData?.participation?.amountLent ?? 0;
+		},
+		daysLeft() {
+			return intervalToDuration({
+				start: this.challengeData?.startDate ?? new Date(),
+				end: this.challengeData?.endDate ?? new Date(),
+			}).days;
 		},
 	},
 };

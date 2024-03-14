@@ -26,7 +26,7 @@
 				>
 					<div class="tw-shrink-0 tw-flex tw-flex-col md:tw-flex-row tw-gap-0.5 md:tw-gap-1 tw-items-center">
 						<img :src="iWD2024Badge" alt="IWD Badge" class="tw-w-10 md:tw-w-6">
-						<iwd-progress-campaign :minimal-stats="true" />
+						<!-- <iwd-progress-campaign :minimal-stats="true" /> -->
 					</div>
 					<div class="md:tw-font-medium">
 						<span>Thank you! Your support for </span>
@@ -212,7 +212,7 @@
 						</div>
 						<!-- eslint-disable-next-line max-len -->
 						<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 md:tw-mt-1 tw-basis-auto md:tw-basis-1/3">
-							<iwd-progress-campaign class="tw-w-full" />
+							<!-- <iwd-progress-campaign class="tw-w-full" /> -->
 							<img
 								id="badge-image"
 								:src="iWD2024Badge"
@@ -234,7 +234,6 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { mdiLink } from '@mdi/js';
 import { getFullUrl } from '@/util/urlUtils';
-import IwdProgressCampaign from '@/components/Iwd/IwdProgressCampaign';
 import clipboardCopy from 'clipboard-copy';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -248,7 +247,6 @@ export default {
 		KvButton,
 		KvIcon,
 		KvMaterialIcon,
-		IwdProgressCampaign,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [socialSharingMixin],
