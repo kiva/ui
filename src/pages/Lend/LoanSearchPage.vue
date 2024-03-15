@@ -241,7 +241,14 @@ export default {
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
-				setChallengeCookieData(this.cookieStore, teamId, this.teamData?.name);
+
+				const loanIds = this.challengeData?.targets?.values?.map(target => target?.loanId) ?? [];
+				const cookieData = loanIds.map(loanId => ({
+					teamId,
+					teamName: this.teamData?.name ?? '',
+					loanId,
+				}));
+				setChallengeCookieData(this.cookieStore, cookieData);
 			}
 		}
 	},
