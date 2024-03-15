@@ -1,3 +1,641 @@
+## [2.733.0](https://github.com/kiva/ui/compare/v2.732.1...v2.733.0) (2024-03-08)
+
+
+### 🎉 New Features
+
+* activity feed components added ([#5186](https://github.com/kiva/ui/issues/5186)) ([35c0016](https://github.com/kiva/ui/commit/35c001674fcfbfa71c0099f5f90ad052baa20d2f))
+* add activity feed experiment to lend cta section ([d1e600a](https://github.com/kiva/ui/commit/d1e600ade47472ba0e62bd4055d1e197b406eda6))
+* add query file ([0e339e5](https://github.com/kiva/ui/commit/0e339e5b3fb39bd36c890303516157fc2aea3e47))
+* aggregate and filter the activity feed ([0f540c4](https://github.com/kiva/ui/commit/0f540c47aaf6b7f6609dc9040f08412136967384))
+* don't save new filter to saved search ([ee66794](https://github.com/kiva/ui/commit/ee6679496276bc795df356c2c5ca643288a1a495))
+* setup test for activity feed on borrower profile ([65c09b8](https://github.com/kiva/ui/commit/65c09b8c0800a23274b61acbee343d86e59a8258))
+* visible url array added to global promotional banner component ([#5182](https://github.com/kiva/ui/issues/5182)) ([3db3700](https://github.com/kiva/ui/commit/3db3700e8316010a580b03358382a30bc8674ae1))
+
+
+### 🐛 Bugfixes
+
+* ensure prefetched channel data is correctly pulled from apollo cache ([42d0f63](https://github.com/kiva/ui/commit/42d0f632073fa6441fec604532c605f09fe4ded9))
+* remove unnecessary exp assignment ([bfb214c](https://github.com/kiva/ui/commit/bfb214c2408a7299cf815ee050778400cecbc202))
+* trying a lower limit for now ([eeae719](https://github.com/kiva/ui/commit/eeae719db17dea9c0c8cc2fa7b18ea491858f743))
+* update tests ([d7d9668](https://github.com/kiva/ui/commit/d7d96687def56ec39d36b79ffc5f3c4e0b663232))
+
+
+### 🧹 Chores
+
+* **release:** 2.733.0-rc.1 [skip ci] ([870dee6](https://github.com/kiva/ui/commit/870dee6fdc9b025b07c8f0c26cfb3385b8a2ff34)), closes [#5186](https://github.com/kiva/ui/issues/5186) [#5182](https://github.com/kiva/ui/issues/5182)
+
+## [2.733.0-rc.1](https://github.com/kiva/ui/compare/v2.732.1...v2.733.0-rc.1) (2024-03-07)
+
+
+### 🎉 New Features
+
+* activity feed components added ([#5186](https://github.com/kiva/ui/issues/5186)) ([35c0016](https://github.com/kiva/ui/commit/35c001674fcfbfa71c0099f5f90ad052baa20d2f))
+* add activity feed experiment to lend cta section ([d1e600a](https://github.com/kiva/ui/commit/d1e600ade47472ba0e62bd4055d1e197b406eda6))
+* add query file ([0e339e5](https://github.com/kiva/ui/commit/0e339e5b3fb39bd36c890303516157fc2aea3e47))
+* aggregate and filter the activity feed ([0f540c4](https://github.com/kiva/ui/commit/0f540c47aaf6b7f6609dc9040f08412136967384))
+* don't save new filter to saved search ([ee66794](https://github.com/kiva/ui/commit/ee6679496276bc795df356c2c5ca643288a1a495))
+* setup test for activity feed on borrower profile ([65c09b8](https://github.com/kiva/ui/commit/65c09b8c0800a23274b61acbee343d86e59a8258))
+* visible url array added to global promotional banner component ([#5182](https://github.com/kiva/ui/issues/5182)) ([3db3700](https://github.com/kiva/ui/commit/3db3700e8316010a580b03358382a30bc8674ae1))
+
+
+### 🐛 Bugfixes
+
+* ensure prefetched channel data is correctly pulled from apollo cache ([42d0f63](https://github.com/kiva/ui/commit/42d0f632073fa6441fec604532c605f09fe4ded9))
+* remove unnecessary exp assignment ([bfb214c](https://github.com/kiva/ui/commit/bfb214c2408a7299cf815ee050778400cecbc202))
+* trying a lower limit for now ([eeae719](https://github.com/kiva/ui/commit/eeae719db17dea9c0c8cc2fa7b18ea491858f743))
+* update tests ([d7d9668](https://github.com/kiva/ui/commit/d7d96687def56ec39d36b79ffc5f3c4e0b663232))
+
+## [2.732.1](https://github.com/kiva/ui/compare/v2.732.0...v2.732.1) (2024-03-05)
+
+
+### 🐛 Bugfixes
+
+* add fallback check for available promo from basket when promo id isn't known ([8e6db44](https://github.com/kiva/ui/commit/8e6db44aab2b89adde465f4115b8fea2784b4d37))
+
+
+### 🧹 Chores
+
+* **release:** 2.732.1-rc.1 [skip ci] ([cf12075](https://github.com/kiva/ui/commit/cf120750f60f478909fe33cad6335c7a9747c645))
+
+## [2.732.1-rc.1](https://github.com/kiva/ui/compare/v2.732.0...v2.732.1-rc.1) (2024-03-05)
+
+
+### 🐛 Bugfixes
+
+* add fallback check for available promo from basket when promo id isn't known ([8e6db44](https://github.com/kiva/ui/commit/8e6db44aab2b89adde465f4115b8fea2784b4d37))
+
+## [2.732.0](https://github.com/kiva/ui/compare/v2.731.0...v2.732.0) (2024-03-01)
+
+
+### 🎉 New Features
+
+* footer broken link removed ([#5177](https://github.com/kiva/ui/issues/5177)) ([5d897c5](https://github.com/kiva/ui/commit/5d897c561beb1823a809493362a522323b6a0cbb))
+
+
+### 🐛 Bugfixes
+
+* adjust thanks page for IWD ([42d19c9](https://github.com/kiva/ui/commit/42d19c9d7fb830862fd6ba4259ae9aa8cf3195da))
+* ensure progress bar grows in mobile ([536a24a](https://github.com/kiva/ui/commit/536a24a9a93bcc4373204d3726266963ddd65540))
+* patch in userid before pageview if available ([9140a94](https://github.com/kiva/ui/commit/9140a942fb7b8018b4af1ad714300a7c00305beb))
+
+
+### 🧹 Chores
+
+* **release:** 2.732.0-rc.1 [skip ci] ([c8f442d](https://github.com/kiva/ui/commit/c8f442d5955c4c460050dd7b9cad81a327b753ec)), closes [#5177](https://github.com/kiva/ui/issues/5177)
+
+## [2.732.0-rc.1](https://github.com/kiva/ui/compare/v2.731.0...v2.732.0-rc.1) (2024-03-01)
+
+
+### 🎉 New Features
+
+* footer broken link removed ([#5177](https://github.com/kiva/ui/issues/5177)) ([5d897c5](https://github.com/kiva/ui/commit/5d897c561beb1823a809493362a522323b6a0cbb))
+
+
+### 🐛 Bugfixes
+
+* adjust thanks page for IWD ([42d19c9](https://github.com/kiva/ui/commit/42d19c9d7fb830862fd6ba4259ae9aa8cf3195da))
+* ensure progress bar grows in mobile ([536a24a](https://github.com/kiva/ui/commit/536a24a9a93bcc4373204d3726266963ddd65540))
+* patch in userid before pageview if available ([9140a94](https://github.com/kiva/ui/commit/9140a942fb7b8018b4af1ad714300a7c00305beb))
+
+## [2.731.0](https://github.com/kiva/ui/compare/v2.730.0...v2.731.0) (2024-02-23)
+
+
+### 🎉 New Features
+
+* add iwd events in thanks page ([8c40ea1](https://github.com/kiva/ui/commit/8c40ea15726e781f87ca533e34b89c9785a0d9ad))
+* fix issue with badge image stretch ([64c786c](https://github.com/kiva/ui/commit/64c786c9a0d36a9f6d4f58a5ae9b10416c01a2fd))
+* get iwd experiment data to evaluate whether redirect to the challenge ty page or the regular ([32099ca](https://github.com/kiva/ui/commit/32099ca2139d483cc50205b3237f8950ba568d32))
+* implement optional async checkout muatations and status check ([52f2d29](https://github.com/kiva/ui/commit/52f2d2955f7c4f849d885b31690200be40701b26))
+* iwd no inviter thanks page update ([#5170](https://github.com/kiva/ui/issues/5170)) ([86ba3a4](https://github.com/kiva/ui/commit/86ba3a446b73e5242bddc1cbe9e74fa3e3d6646b))
+* iwd progress bar hidden when goals reached ([#5168](https://github.com/kiva/ui/issues/5168)) ([f6eeae2](https://github.com/kiva/ui/commit/f6eeae2e9e5fae94e0286a12700f7057cb7e281e))
+* make filters list collapsible on cc pages ([10a1a9a](https://github.com/kiva/ui/commit/10a1a9a359de82585a26875b741cadd6cbe58eac))
+* override successPath if valetInviter is set ([b9bc4d1](https://github.com/kiva/ui/commit/b9bc4d128f4c2ecbf6906f442abd4049bd79d104))
+* update utm campaign values for iwd thanks page ([993990e](https://github.com/kiva/ui/commit/993990e3a114a2935bd7318a97be5e6e8e6dacc4))
+
+
+### 🐛 Bugfixes
+
+* change exp key ([3392584](https://github.com/kiva/ui/commit/339258411029a02187c63a513579929ded869f6f))
+* create reusable remainingCredit computed prop, update CampaignProgressBar to use it ([397ba10](https://github.com/kiva/ui/commit/397ba1090af3131227dee6c005cc4725f213c1a1))
+* handle missing checkoutId, fix indents ([0d4bacd](https://github.com/kiva/ui/commit/0d4bacd22849ccc1490447a5d9bff299c5d05531))
+* initiate success handler only once for the appropriate type of checkout ([c578ce0](https://github.com/kiva/ui/commit/c578ce04d2d0f43f983a32aab41e213a1de3f724))
+* iwd thanks page height fixed ([#5176](https://github.com/kiva/ui/issues/5176)) ([129cb8c](https://github.com/kiva/ui/commit/129cb8c7b5f1f12564bcb8924cbb5d522faf694b))
+* lint errors ([e8cbdca](https://github.com/kiva/ui/commit/e8cbdcad9ea840cc0d35bd770c985b70decebc44))
+* logic was incorrect for showing IWD progress ([4d8442e](https://github.com/kiva/ui/commit/4d8442e56a2c457af25ffd0f6d57dd144c013753))
+* missing slash in redirect url ([db559ca](https://github.com/kiva/ui/commit/db559cacb2f77377eb405bf178ba9234f3f4704c))
+* new method to format checkoutStatus error, send braintree errors to sentry ([3dfab48](https://github.com/kiva/ui/commit/3dfab4874fceb72f999b6b0d50b1ba9b785d8283))
+* post-purchase was not handing over valet inviter query ([81c61ed](https://github.com/kiva/ui/commit/81c61ed8e5ba96e26389dad537564c9c13a6bcda))
+* remove unused query import ([c78bbcf](https://github.com/kiva/ui/commit/c78bbcf37b049dea13805ce1e1e85b49e60f3675))
+* solve conflict ([65d6f08](https://github.com/kiva/ui/commit/65d6f08747c7fdab659de8e07b464ed3ae16576a))
+* unused experimentVersionFragment on typage ([625e09e](https://github.com/kiva/ui/commit/625e09edc2011ff7cd7bd3795bea8f6b92b52dd6))
+* update async checkout error formatting to match expected format ([5fe7c76](https://github.com/kiva/ui/commit/5fe7c7607e0a8a8deeac2c719d6b3febd0b3e904))
+* update kv-shop, extract checkoutId string for new kv-shop method ([ab5cb8a](https://github.com/kiva/ui/commit/ab5cb8a17ecc46bb507b1b86aa3d019948893dc3))
+* use kv-shop version of pollForFinishedCheckout ([4887639](https://github.com/kiva/ui/commit/4887639d1845e9799e443621a3287b2f8f0c6fdb))
+* valet_inviter opt chaining ([212947d](https://github.com/kiva/ui/commit/212947d0e68eb3dec46450fa0c44218743af27ea))
+
+
+### 🧹 Chores
+
+* install kvShop library ([ed96f9d](https://github.com/kiva/ui/commit/ed96f9d0b0ae55da339eab3c0575c88e6cd3b232))
+* **release:** 2.731.0-rc.1 [skip ci] ([0f2331a](https://github.com/kiva/ui/commit/0f2331a3260e46d75a3630234bcd08dc4ade3c8d)), closes [#5170](https://github.com/kiva/ui/issues/5170) [#5168](https://github.com/kiva/ui/issues/5168)
+* **release:** 2.731.0-rc.2 [skip ci] ([eabd537](https://github.com/kiva/ui/commit/eabd537544b76a3176b5df22aed6b587defa2762)), closes [#5176](https://github.com/kiva/ui/issues/5176)
+* remove unused checkout status polling function ([fc5e75a](https://github.com/kiva/ui/commit/fc5e75a7c0d4abdf88482d2893598376ef5c3a3c))
+* update configs for custom domain and dev mode with caddy ([f0a87fd](https://github.com/kiva/ui/commit/f0a87fde74d2418b1dd5ade3151f82c9a8612d26))
+
+## [2.731.0-rc.2](https://github.com/kiva/ui/compare/v2.731.0-rc.1...v2.731.0-rc.2) (2024-02-23)
+
+
+### 🐛 Bugfixes
+
+* iwd thanks page height fixed ([#5176](https://github.com/kiva/ui/issues/5176)) ([129cb8c](https://github.com/kiva/ui/commit/129cb8c7b5f1f12564bcb8924cbb5d522faf694b))
+
+## [2.731.0-rc.1](https://github.com/kiva/ui/compare/v2.730.0...v2.731.0-rc.1) (2024-02-22)
+
+
+### 🎉 New Features
+
+* add iwd events in thanks page ([8c40ea1](https://github.com/kiva/ui/commit/8c40ea15726e781f87ca533e34b89c9785a0d9ad))
+* fix issue with badge image stretch ([64c786c](https://github.com/kiva/ui/commit/64c786c9a0d36a9f6d4f58a5ae9b10416c01a2fd))
+* get iwd experiment data to evaluate whether redirect to the challenge ty page or the regular ([32099ca](https://github.com/kiva/ui/commit/32099ca2139d483cc50205b3237f8950ba568d32))
+* implement optional async checkout muatations and status check ([52f2d29](https://github.com/kiva/ui/commit/52f2d2955f7c4f849d885b31690200be40701b26))
+* iwd no inviter thanks page update ([#5170](https://github.com/kiva/ui/issues/5170)) ([86ba3a4](https://github.com/kiva/ui/commit/86ba3a446b73e5242bddc1cbe9e74fa3e3d6646b))
+* iwd progress bar hidden when goals reached ([#5168](https://github.com/kiva/ui/issues/5168)) ([f6eeae2](https://github.com/kiva/ui/commit/f6eeae2e9e5fae94e0286a12700f7057cb7e281e))
+* make filters list collapsible on cc pages ([10a1a9a](https://github.com/kiva/ui/commit/10a1a9a359de82585a26875b741cadd6cbe58eac))
+* override successPath if valetInviter is set ([b9bc4d1](https://github.com/kiva/ui/commit/b9bc4d128f4c2ecbf6906f442abd4049bd79d104))
+* update utm campaign values for iwd thanks page ([993990e](https://github.com/kiva/ui/commit/993990e3a114a2935bd7318a97be5e6e8e6dacc4))
+
+
+### 🐛 Bugfixes
+
+* change exp key ([3392584](https://github.com/kiva/ui/commit/339258411029a02187c63a513579929ded869f6f))
+* create reusable remainingCredit computed prop, update CampaignProgressBar to use it ([397ba10](https://github.com/kiva/ui/commit/397ba1090af3131227dee6c005cc4725f213c1a1))
+* handle missing checkoutId, fix indents ([0d4bacd](https://github.com/kiva/ui/commit/0d4bacd22849ccc1490447a5d9bff299c5d05531))
+* initiate success handler only once for the appropriate type of checkout ([c578ce0](https://github.com/kiva/ui/commit/c578ce04d2d0f43f983a32aab41e213a1de3f724))
+* lint errors ([e8cbdca](https://github.com/kiva/ui/commit/e8cbdcad9ea840cc0d35bd770c985b70decebc44))
+* logic was incorrect for showing IWD progress ([4d8442e](https://github.com/kiva/ui/commit/4d8442e56a2c457af25ffd0f6d57dd144c013753))
+* missing slash in redirect url ([db559ca](https://github.com/kiva/ui/commit/db559cacb2f77377eb405bf178ba9234f3f4704c))
+* new method to format checkoutStatus error, send braintree errors to sentry ([3dfab48](https://github.com/kiva/ui/commit/3dfab4874fceb72f999b6b0d50b1ba9b785d8283))
+* post-purchase was not handing over valet inviter query ([81c61ed](https://github.com/kiva/ui/commit/81c61ed8e5ba96e26389dad537564c9c13a6bcda))
+* remove unused query import ([c78bbcf](https://github.com/kiva/ui/commit/c78bbcf37b049dea13805ce1e1e85b49e60f3675))
+* solve conflict ([65d6f08](https://github.com/kiva/ui/commit/65d6f08747c7fdab659de8e07b464ed3ae16576a))
+* unused experimentVersionFragment on typage ([625e09e](https://github.com/kiva/ui/commit/625e09edc2011ff7cd7bd3795bea8f6b92b52dd6))
+* update async checkout error formatting to match expected format ([5fe7c76](https://github.com/kiva/ui/commit/5fe7c7607e0a8a8deeac2c719d6b3febd0b3e904))
+* update kv-shop, extract checkoutId string for new kv-shop method ([ab5cb8a](https://github.com/kiva/ui/commit/ab5cb8a17ecc46bb507b1b86aa3d019948893dc3))
+* use kv-shop version of pollForFinishedCheckout ([4887639](https://github.com/kiva/ui/commit/4887639d1845e9799e443621a3287b2f8f0c6fdb))
+* valet_inviter opt chaining ([212947d](https://github.com/kiva/ui/commit/212947d0e68eb3dec46450fa0c44218743af27ea))
+
+
+### 🧹 Chores
+
+* install kvShop library ([ed96f9d](https://github.com/kiva/ui/commit/ed96f9d0b0ae55da339eab3c0575c88e6cd3b232))
+* remove unused checkout status polling function ([fc5e75a](https://github.com/kiva/ui/commit/fc5e75a7c0d4abdf88482d2893598376ef5c3a3c))
+* update configs for custom domain and dev mode with caddy ([f0a87fd](https://github.com/kiva/ui/commit/f0a87fde74d2418b1dd5ade3151f82c9a8612d26))
+
+## [2.730.0](https://github.com/kiva/ui/compare/v2.729.0...v2.730.0) (2024-02-09)
+
+
+### 🎉 New Features
+
+* add progress bar to campaign page ([c1b925b](https://github.com/kiva/ui/commit/c1b925b2029961266b9bb44c4618e87514fecdc0))
+* added flag for IWD to thanks page, created working stories ([1205eab](https://github.com/kiva/ui/commit/1205eab895413eec760ec462446e1c43373090ee))
+* added progress bar to thanks page variations ([e78f13f](https://github.com/kiva/ui/commit/e78f13fbc828653783a2bc7a13d8a7cd64a70840))
+* added some finalized content to IWD header ([fc29232](https://github.com/kiva/ui/commit/fc29232a1df8dfcca2d92702022734e20d3cae1d))
+* first IWD thanks page variation ([c5572b6](https://github.com/kiva/ui/commit/c5572b618c493422b547d74cd2b198604cac3c96))
+* iwd activity feed added ([#5152](https://github.com/kiva/ui/issues/5152)) ([0a9424f](https://github.com/kiva/ui/commit/0a9424f387434240ff4074ec75dd19788f1a2cd2))
+* remaining iwd thanks page variation ([b1a9600](https://github.com/kiva/ui/commit/b1a9600f96d7c142131b0f7cd40e909a60617494))
+* update thanks page header for challenges ([7b1147b](https://github.com/kiva/ui/commit/7b1147b706bfab91c4e983109c271b6bf92c6748))
+
+
+### 🐛 Bugfixes
+
+* added missing data prop ([9c92884](https://github.com/kiva/ui/commit/9c928840181fe9b9c6c6ea459c382e3805f5cc21))
+* added missing id in query ([fc7f447](https://github.com/kiva/ui/commit/fc7f44765df5663bc58a328c8d484993f492425a))
+* added some missing story mixins ([f853fb5](https://github.com/kiva/ui/commit/f853fb51151895f1a9a7874659cfdd9ca2734b73))
+* empty template was also creating a warning ([ffc591d](https://github.com/kiva/ui/commit/ffc591dfc659284444818ccc16db98aa1a13b405))
+* ensure we cover errors from new activities query ([e8cf21a](https://github.com/kiva/ui/commit/e8cf21a9671d83d8d31c05403fc233a2c6dd35ba))
+* lower activity feed items ([9b8eb53](https://github.com/kiva/ui/commit/9b8eb53cdaf36dc37e7cf7750cf11631bd993f62))
+* minor cleanup ([3a97d83](https://github.com/kiva/ui/commit/3a97d83266a841cfb8596145004ff9fbe26a6cd7))
+* quick resolution of server error ([85a2811](https://github.com/kiva/ui/commit/85a2811da02bfbd8854d3d7bfbc069c007e81a7d))
+* round the borrower image ([68a4d24](https://github.com/kiva/ui/commit/68a4d24f3d338c94f0c86dbad8fd4168ee288c9e))
+* show the checkout now button and emit to show basket on corporate landing loan cards ([d4b0819](https://github.com/kiva/ui/commit/d4b0819dbddba46d71f9747f3b594dd0844ec633))
+* some missing thanks padding ([be6b8f6](https://github.com/kiva/ui/commit/be6b8f6a330a3bdcda5ef9b3bd2c69e077b41263))
+
+
+### 🧹 Chores
+
+* **release:** 2.730.0-rc.1 [skip ci] ([75581df](https://github.com/kiva/ui/commit/75581df8bd6ad925db0397fd32c0ef397110b9e9)), closes [#5152](https://github.com/kiva/ui/issues/5152)
+
+## [2.730.0-rc.1](https://github.com/kiva/ui/compare/v2.729.0...v2.730.0-rc.1) (2024-02-09)
+
+
+### 🎉 New Features
+
+* add progress bar to campaign page ([c1b925b](https://github.com/kiva/ui/commit/c1b925b2029961266b9bb44c4618e87514fecdc0))
+* added flag for IWD to thanks page, created working stories ([1205eab](https://github.com/kiva/ui/commit/1205eab895413eec760ec462446e1c43373090ee))
+* added progress bar to thanks page variations ([e78f13f](https://github.com/kiva/ui/commit/e78f13fbc828653783a2bc7a13d8a7cd64a70840))
+* added some finalized content to IWD header ([fc29232](https://github.com/kiva/ui/commit/fc29232a1df8dfcca2d92702022734e20d3cae1d))
+* first IWD thanks page variation ([c5572b6](https://github.com/kiva/ui/commit/c5572b618c493422b547d74cd2b198604cac3c96))
+* iwd activity feed added ([#5152](https://github.com/kiva/ui/issues/5152)) ([0a9424f](https://github.com/kiva/ui/commit/0a9424f387434240ff4074ec75dd19788f1a2cd2))
+* remaining iwd thanks page variation ([b1a9600](https://github.com/kiva/ui/commit/b1a9600f96d7c142131b0f7cd40e909a60617494))
+* update thanks page header for challenges ([7b1147b](https://github.com/kiva/ui/commit/7b1147b706bfab91c4e983109c271b6bf92c6748))
+
+
+### 🐛 Bugfixes
+
+* added missing data prop ([9c92884](https://github.com/kiva/ui/commit/9c928840181fe9b9c6c6ea459c382e3805f5cc21))
+* added missing id in query ([fc7f447](https://github.com/kiva/ui/commit/fc7f44765df5663bc58a328c8d484993f492425a))
+* added some missing story mixins ([f853fb5](https://github.com/kiva/ui/commit/f853fb51151895f1a9a7874659cfdd9ca2734b73))
+* empty template was also creating a warning ([ffc591d](https://github.com/kiva/ui/commit/ffc591dfc659284444818ccc16db98aa1a13b405))
+* ensure we cover errors from new activities query ([e8cf21a](https://github.com/kiva/ui/commit/e8cf21a9671d83d8d31c05403fc233a2c6dd35ba))
+* lower activity feed items ([9b8eb53](https://github.com/kiva/ui/commit/9b8eb53cdaf36dc37e7cf7750cf11631bd993f62))
+* minor cleanup ([3a97d83](https://github.com/kiva/ui/commit/3a97d83266a841cfb8596145004ff9fbe26a6cd7))
+* quick resolution of server error ([85a2811](https://github.com/kiva/ui/commit/85a2811da02bfbd8854d3d7bfbc069c007e81a7d))
+* round the borrower image ([68a4d24](https://github.com/kiva/ui/commit/68a4d24f3d338c94f0c86dbad8fd4168ee288c9e))
+* show the checkout now button and emit to show basket on corporate landing loan cards ([d4b0819](https://github.com/kiva/ui/commit/d4b0819dbddba46d71f9747f3b594dd0844ec633))
+* some missing thanks padding ([be6b8f6](https://github.com/kiva/ui/commit/be6b8f6a330a3bdcda5ef9b3bd2c69e077b41263))
+
+## [2.729.0](https://github.com/kiva/ui/compare/v2.728.0...v2.729.0) (2024-02-01)
+
+
+### 🎉 New Features
+
+* campaign progresss bar ([4776f56](https://github.com/kiva/ui/commit/4776f5605e024030add31384ae45100d06d1c867))
+
+
+### 🐛 Bugfixes
+
+* check and coerce setCookies from the context if missing ([2741ab0](https://github.com/kiva/ui/commit/2741ab066d04330dc88109c102179bbac1b1566d))
+* indentation ([05c7368](https://github.com/kiva/ui/commit/05c73685f9f732347ab6b9c9f6230de74ee0ff7c))
+* indentation in component ([0caa7ff](https://github.com/kiva/ui/commit/0caa7ff6ddb8cec713bed6350efb7e578c5b0cdd))
+* parse worker count vars as integers ([6fef9d6](https://github.com/kiva/ui/commit/6fef9d6a6d466ba8ee3a48b48687ff63914b0e0a))
+* set cookie headers not being added to response ([6dea80d](https://github.com/kiva/ui/commit/6dea80d489f1b848f6c7e1aa96a6295232e88659))
+
+
+### 🧹 Chores
+
+* **release:** 2.729.0-rc.1 [skip ci] ([f265a0d](https://github.com/kiva/ui/commit/f265a0d1baa6d70f5b5cccf260ea74b56a735b4d))
+* **release:** 2.729.0-rc.2 [skip ci] ([08d4ded](https://github.com/kiva/ui/commit/08d4ded2551a39c901d86e84f5e36561f728d257))
+
+## [2.729.0-rc.2](https://github.com/kiva/ui/compare/v2.729.0-rc.1...v2.729.0-rc.2) (2024-02-01)
+
+
+### 🐛 Bugfixes
+
+* check and coerce setCookies from the context if missing ([2741ab0](https://github.com/kiva/ui/commit/2741ab066d04330dc88109c102179bbac1b1566d))
+* set cookie headers not being added to response ([6dea80d](https://github.com/kiva/ui/commit/6dea80d489f1b848f6c7e1aa96a6295232e88659))
+
+## [2.729.0-rc.1](https://github.com/kiva/ui/compare/v2.728.0...v2.729.0-rc.1) (2024-01-31)
+
+
+### 🎉 New Features
+
+* campaign progresss bar ([4776f56](https://github.com/kiva/ui/commit/4776f5605e024030add31384ae45100d06d1c867))
+
+
+### 🐛 Bugfixes
+
+* indentation ([05c7368](https://github.com/kiva/ui/commit/05c73685f9f732347ab6b9c9f6230de74ee0ff7c))
+* indentation in component ([0caa7ff](https://github.com/kiva/ui/commit/0caa7ff6ddb8cec713bed6350efb7e578c5b0cdd))
+* parse worker count vars as integers ([6fef9d6](https://github.com/kiva/ui/commit/6fef9d6a6d466ba8ee3a48b48687ff63914b0e0a))
+
+## [2.728.0](https://github.com/kiva/ui/compare/v2.727.0...v2.728.0) (2024-01-29)
+
+
+### 🎉 New Features
+
+* add new flexibleFundraisingEnabled filter ([1fed20e](https://github.com/kiva/ui/commit/1fed20e54d9adeab3d8fc62d81182fefe09cca2e))
+* add placeholder for IWD 2024 category header ([2ac0803](https://github.com/kiva/ui/commit/2ac08036a704006d8033619afd678d752ba1a39b))
+* configure min/max vue worker count with env vars ([17c9138](https://github.com/kiva/ui/commit/17c9138184bd7885fe055c99ea53482562ef2e95))
+* contentful comments component base in cps ([93e008c](https://github.com/kiva/ui/commit/93e008c478fb018d42b27b505f5d92b5e7a47b77))
+* export worker pool metrics to monitor vue rendering ([12aebc2](https://github.com/kiva/ui/commit/12aebc2186f63b92ef7aefdffe1f425d22205234))
+* get activity feed token ([398568b](https://github.com/kiva/ui/commit/398568b801609556b8e103004b8633c002558e90))
+* use pool of worker threads for rendering ([45cad5e](https://github.com/kiva/ui/commit/45cad5e6bacff64f25566c95f6944aa3dc8f48ae))
+* use worker threads for vue app and sitemap rendering ([999b0d3](https://github.com/kiva/ui/commit/999b0d31fe707ee1721a316168580704a907126d))
+
+
+### 🐛 Bugfixes
+
+* handle pool reinitialization by dev server ([9cdeb7a](https://github.com/kiva/ui/commit/9cdeb7aff598c58d57f2609cafc1c4ef10cf9034))
+* revert new component usage ([9968551](https://github.com/kiva/ui/commit/9968551c64dee17e7c432b69391dee68a4dab53a))
+
+
+### 🧹 Chores
+
+* **deps:** install workerpool ([750f01d](https://github.com/kiva/ui/commit/750f01d4c0f7696196fd9a2862e152db345d34c8))
+* **release:** 2.728.0-rc.1 [skip ci] ([224ffe2](https://github.com/kiva/ui/commit/224ffe2c29ce085fc536e25ae24605f4ff1bfd2a))
+* updates for k8s-local config ([09004ef](https://github.com/kiva/ui/commit/09004ef910dbdf905f3322dcd5cb0846df312c07))
+
+## [2.728.0-rc.1](https://github.com/kiva/ui/compare/v2.727.0...v2.728.0-rc.1) (2024-01-29)
+
+
+### 🎉 New Features
+
+* add new flexibleFundraisingEnabled filter ([1fed20e](https://github.com/kiva/ui/commit/1fed20e54d9adeab3d8fc62d81182fefe09cca2e))
+* add placeholder for IWD 2024 category header ([2ac0803](https://github.com/kiva/ui/commit/2ac08036a704006d8033619afd678d752ba1a39b))
+* configure min/max vue worker count with env vars ([17c9138](https://github.com/kiva/ui/commit/17c9138184bd7885fe055c99ea53482562ef2e95))
+* contentful comments component base in cps ([93e008c](https://github.com/kiva/ui/commit/93e008c478fb018d42b27b505f5d92b5e7a47b77))
+* export worker pool metrics to monitor vue rendering ([12aebc2](https://github.com/kiva/ui/commit/12aebc2186f63b92ef7aefdffe1f425d22205234))
+* get activity feed token ([398568b](https://github.com/kiva/ui/commit/398568b801609556b8e103004b8633c002558e90))
+* use pool of worker threads for rendering ([45cad5e](https://github.com/kiva/ui/commit/45cad5e6bacff64f25566c95f6944aa3dc8f48ae))
+* use worker threads for vue app and sitemap rendering ([999b0d3](https://github.com/kiva/ui/commit/999b0d31fe707ee1721a316168580704a907126d))
+
+
+### 🐛 Bugfixes
+
+* handle pool reinitialization by dev server ([9cdeb7a](https://github.com/kiva/ui/commit/9cdeb7aff598c58d57f2609cafc1c4ef10cf9034))
+* revert new component usage ([9968551](https://github.com/kiva/ui/commit/9968551c64dee17e7c432b69391dee68a4dab53a))
+
+
+### 🧹 Chores
+
+* **deps:** install workerpool ([750f01d](https://github.com/kiva/ui/commit/750f01d4c0f7696196fd9a2862e152db345d34c8))
+* updates for k8s-local config ([09004ef](https://github.com/kiva/ui/commit/09004ef910dbdf905f3322dcd5cb0846df312c07))
+
+## [2.727.0](https://github.com/kiva/ui/compare/v2.726.0...v2.727.0) (2024-01-23)
+
+
+### 🎉 New Features
+
+* show only the newest goal per team ([22830de](https://github.com/kiva/ui/commit/22830de4b36b6b83d6fdeb54e214c64f534c1991))
+
+
+### 🐛 Bugfixes
+
+* [ACK-959] filter goals that are not in progress for team query ([029d433](https://github.com/kiva/ui/commit/029d433dfc333d8cf5dfa38bdc307c30012b220a))
+* sort using date format instead of string ([9e98ff0](https://github.com/kiva/ui/commit/9e98ff080a0229112b069099fb3fad318b52145d))
+
+
+### 🏗️ Build System
+
+* ensure only one release is running at any time ([c5a09dc](https://github.com/kiva/ui/commit/c5a09dc06455f87b1368baa91c462d984251addb))
+
+
+### 🧹 Chores
+
+* **release:** 2.727.0-rc.1 [skip ci] ([c3d6749](https://github.com/kiva/ui/commit/c3d674970ba5ed214a6a342adccfcc73a66bc69e))
+
+## [2.727.0-rc.1](https://github.com/kiva/ui/compare/v2.726.0...v2.727.0-rc.1) (2024-01-23)
+
+
+### 🎉 New Features
+
+* show only the newest goal per team ([22830de](https://github.com/kiva/ui/commit/22830de4b36b6b83d6fdeb54e214c64f534c1991))
+
+
+### 🐛 Bugfixes
+
+* [ACK-959] filter goals that are not in progress for team query ([029d433](https://github.com/kiva/ui/commit/029d433dfc333d8cf5dfa38bdc307c30012b220a))
+* sort using date format instead of string ([9e98ff0](https://github.com/kiva/ui/commit/9e98ff080a0229112b069099fb3fad318b52145d))
+
+
+### 🏗️ Build System
+
+* ensure only one release is running at any time ([c5a09dc](https://github.com/kiva/ui/commit/c5a09dc06455f87b1368baa91c462d984251addb))
+
+## [2.726.0](https://github.com/kiva/ui/compare/v2.725.0...v2.726.0) (2024-01-19)
+
+
+### 🎉 New Features
+
+* prefetch the goals on the teams page ([84dcaf2](https://github.com/kiva/ui/commit/84dcaf2af3b3148daca2157362165510d30ec650))
+
+
+### 🐛 Bugfixes
+
+* check all loans instead of selected loan to show CTA on thanks page ([2fb81c9](https://github.com/kiva/ui/commit/2fb81c93e74e128577b014b6bf7a740c10acde03))
+* compare loans ids ([30a800b](https://github.com/kiva/ui/commit/30a800bf98b6756b733f301ef59db3da24c971df))
+
+
+### 🧹 Chores
+
+* **release:** 2.726.0-rc.1 [skip ci] ([a02ae5b](https://github.com/kiva/ui/commit/a02ae5b4b8c0beb6146e372edd6cae81c7693c2a))
+
+## [2.726.0-rc.1](https://github.com/kiva/ui/compare/v2.725.0...v2.726.0-rc.1) (2024-01-19)
+
+
+### 🎉 New Features
+
+* prefetch the goals on the teams page ([84dcaf2](https://github.com/kiva/ui/commit/84dcaf2af3b3148daca2157362165510d30ec650))
+
+
+### 🐛 Bugfixes
+
+* check all loans instead of selected loan to show CTA on thanks page ([2fb81c9](https://github.com/kiva/ui/commit/2fb81c93e74e128577b014b6bf7a740c10acde03))
+* compare loans ids ([30a800b](https://github.com/kiva/ui/commit/30a800bf98b6756b733f301ef59db3da24c971df))
+
+## [2.725.0](https://github.com/kiva/ui/compare/v2.724.0...v2.725.0) (2024-01-17)
+
+
+### 🎉 New Features
+
+* add immediate to force watcher execution ([d31c95c](https://github.com/kiva/ui/commit/d31c95c8a21c5010780e9116fd34c203ef5eb362))
+* adding simple test to notify me component ([5270ecf](https://github.com/kiva/ui/commit/5270ecf63ffa3f02373ff6f948a6a1888e0b1952))
+
+
+### 🐛 Bugfixes
+
+* calling updateLoanReservation when teamId changes ([295cf22](https://github.com/kiva/ui/commit/295cf22958436755ef2347eb4bdcd85ccef51845))
+* flag was returning true because comparison between null and -1 ([d69dcbd](https://github.com/kiva/ui/commit/d69dcbd1035373037f04ae1b83f6f6671a514aa0))
+* lint ([7dbb517](https://github.com/kiva/ui/commit/7dbb51703b842f0ac264cc23ef45020e8497f58a))
+* remove not related comment ([3ace3a1](https://github.com/kiva/ui/commit/3ace3a12b9513d1e045a07336819348a92df2110))
+* team attribution is not being assigned on not log in users ([5f9a84f](https://github.com/kiva/ui/commit/5f9a84f6ec35cdc855b54ab23ce7c686d9159209))
+
+
+### 🧹 Chores
+
+* **release:** 2.725.0-rc.1 [skip ci] ([23e4f0a](https://github.com/kiva/ui/commit/23e4f0a82634f1e3cf13e82014f19f9493f0df35))
+
+## [2.725.0-rc.1](https://github.com/kiva/ui/compare/v2.724.0...v2.725.0-rc.1) (2024-01-17)
+
+
+### 🎉 New Features
+
+* add immediate to force watcher execution ([d31c95c](https://github.com/kiva/ui/commit/d31c95c8a21c5010780e9116fd34c203ef5eb362))
+* adding simple test to notify me component ([5270ecf](https://github.com/kiva/ui/commit/5270ecf63ffa3f02373ff6f948a6a1888e0b1952))
+
+
+### 🐛 Bugfixes
+
+* calling updateLoanReservation when teamId changes ([295cf22](https://github.com/kiva/ui/commit/295cf22958436755ef2347eb4bdcd85ccef51845))
+* flag was returning true because comparison between null and -1 ([d69dcbd](https://github.com/kiva/ui/commit/d69dcbd1035373037f04ae1b83f6f6671a514aa0))
+* lint ([7dbb517](https://github.com/kiva/ui/commit/7dbb51703b842f0ac264cc23ef45020e8497f58a))
+* remove not related comment ([3ace3a1](https://github.com/kiva/ui/commit/3ace3a12b9513d1e045a07336819348a92df2110))
+* team attribution is not being assigned on not log in users ([5f9a84f](https://github.com/kiva/ui/commit/5f9a84f6ec35cdc855b54ab23ce7c686d9159209))
+
+## [2.724.0](https://github.com/kiva/ui/compare/v2.723.0...v2.724.0) (2024-01-17)
+
+
+### 🎉 New Features
+
+* ability to attribute a loan to a team from cookie value ([2812e72](https://github.com/kiva/ui/commit/2812e72ad39089fb90cbc2c1a68afb0dd85d84c5))
+* add baseline otel auto-instrumentation config ([644b15a](https://github.com/kiva/ui/commit/644b15ae874da0942482ee4092564b3df4d69f96))
+* add lender images to team activity ([d4f748a](https://github.com/kiva/ui/commit/d4f748a84c2549a3259241739383d1a87f0c1f44))
+* add link back to team challenge page ([28cca99](https://github.com/kiva/ui/commit/28cca99f8da7da81b24b0b233cac50345d24eaaa))
+* add tracking to teams page buttons ([7880334](https://github.com/kiva/ui/commit/78803340f0870b1f64ab17e577b18d82e2aad5b3))
+* challenge cta image replaced ([#5123](https://github.com/kiva/ui/issues/5123)) ([3bfcf3d](https://github.com/kiva/ui/commit/3bfcf3d664e70e5f4f831ae12eab8d543e11502b))
+* clean up cookie for team challenge in basket item after using ([a2548e2](https://github.com/kiva/ui/commit/a2548e2afe5c8ac89e66e97a70f4f87c60429f56))
+* clear challenge cookie after completed checkout, added unit testing ([e51bca9](https://github.com/kiva/ui/commit/e51bca9a4d9ff29e975eb8f96cc0e2e0543fb024))
+* create donation banner type ([672d921](https://github.com/kiva/ui/commit/672d921a5d7e859e7709ce49f9a81d056e47b94f))
+* get goal info within prefetch ([517964e](https://github.com/kiva/ui/commit/517964ea667f3c56a646ddb8878a5e9d2d6c7ad5))
+* notify component image replaced ([#5124](https://github.com/kiva/ui/issues/5124)) ([b0a0446](https://github.com/kiva/ui/commit/b0a0446a706636c614a40272febc696020202cb5))
+* notify me component ([a6ad481](https://github.com/kiva/ui/commit/a6ad4810842499e236c046f9452befa8c405c180))
+* redirect lender that has lent to the borrower to its legacy page when it is no longer in fundraising state ([95c7cd7](https://github.com/kiva/ui/commit/95c7cd77b4a2cde86ff4cba27a520e39be46fabb))
+* redirect portfolio CTA to new team challenge page ([42c9870](https://github.com/kiva/ui/commit/42c9870691bcc6f6c69782856857d7c3e8ec7905))
+* small styling revision on teams cta ([a960ea7](https://github.com/kiva/ui/commit/a960ea7287aaaddd6186a6c7dac3c90d5eecef71))
+* teams challenge cta on teams page ([c7009bd](https://github.com/kiva/ui/commit/c7009bd185663be671785ff5cf9f577d390108e8))
+
+
+### 🐛 Bugfixes
+
+* add config for custom host local dev ([c62f65c](https://github.com/kiva/ui/commit/c62f65c16b3dcc19e11a11eacf140fcfeba75c32))
+* add event to notify me cta and add secondary bg ([0e9e3b2](https://github.com/kiva/ui/commit/0e9e3b2583b654eb96e663dd955b3edf9b331eea))
+* add optional env var to disable otel sdk ([0e70ec0](https://github.com/kiva/ui/commit/0e70ec0fe422ea68e4da331618d00cbea35a8eb4))
+* add sentry trace rate config defaults ([13ac855](https://github.com/kiva/ui/commit/13ac8557eee2e8752653e9523fe9134c0d5519f4))
+* add trace + metric exporters ([0068f5b](https://github.com/kiva/ui/commit/0068f5b8b2cbf58627ec560996710ea682404ddb))
+* allow configuration for otel endpoint ([cdf1bf5](https://github.com/kiva/ui/commit/cdf1bf545431ab1b9b57fa862e46463061d28a32))
+* also clear cookie on removal from basket ([c76f76a](https://github.com/kiva/ui/commit/c76f76a0bdb9fa0b9012176d1f248923a4a6a6ee))
+* apollo error ([0206295](https://github.com/kiva/ui/commit/0206295a51c56313abb1647e03e6961648f1eb2a))
+* basketItem test ([fc0a19d](https://github.com/kiva/ui/commit/fc0a19d9744a3ec1034aee156f76e8933d72563a))
+* change tracking events values ([f774c0a](https://github.com/kiva/ui/commit/f774c0a69cdd504cb7d5bc279dd77619b6cee4bd))
+* check for name before operating on it, default to empty string ([da209ab](https://github.com/kiva/ui/commit/da209abaacc974b135ad6c3aa2218582fc7ea716))
+* cleanup linting errors ([0006eb9](https://github.com/kiva/ui/commit/0006eb9c5d312f3ec7c6657dd9a55e22b978791d))
+* conflicts ([4406f3c](https://github.com/kiva/ui/commit/4406f3c18b242b6b84809f15773a1b8be1a999bc))
+* convert indentation to spaces ([34ed9db](https://github.com/kiva/ui/commit/34ed9db46becb46b5eaf8c9cd82fa04a2b314270))
+* ensure forceTeamId is not overwritten by undefined value ([d530146](https://github.com/kiva/ui/commit/d530146cffeca61f1dbcebe08ac6d5d777ee1956))
+* eslint ([3eee557](https://github.com/kiva/ui/commit/3eee557e43bdb80a10342897352f280875e48350))
+* eslint and wrong formed urls ([9dc530b](https://github.com/kiva/ui/commit/9dc530b98c64dd39a5c408635711bc056d4e349e))
+* events values ([98e70a8](https://github.com/kiva/ui/commit/98e70a88c01d5605b57a0ad7c12c10f3cd4a0dd6))
+* get teamId ([815218c](https://github.com/kiva/ui/commit/815218cd8b17d4577a0ecc337c3b991da0781e6c))
+* gql whitespace ([ac0c4b4](https://github.com/kiva/ui/commit/ac0c4b47ab2b200f65641520a72839c21737454d))
+* hide lender avatars in mobile ([ffc3bc0](https://github.com/kiva/ui/commit/ffc3bc029b7a956020f2bbef25dd34b483a948ab))
+* hide notify me component when loan doesnt belong to a challenge ([c5b9956](https://github.com/kiva/ui/commit/c5b9956f58698109eca6638f8af2d3bbeab8b8e2))
+* iterable url ([48c919b](https://github.com/kiva/ui/commit/48c919b49a56f9bf452f1ac0f208ca65e9275006))
+* lint ([f786b5f](https://github.com/kiva/ui/commit/f786b5f66eca30739ea71ebeecccd7cef4e6629a))
+* mutate loan reservation on mounted ([a8c5334](https://github.com/kiva/ui/commit/a8c5334ff70225ffa59f69a01d0ebc23dc5a97be))
+* my teams link in portfolio ([76e8bb1](https://github.com/kiva/ui/commit/76e8bb15d53c0236ab49d5b756b15904cb87be85))
+* notify icon size updated ([#5125](https://github.com/kiva/ui/issues/5125)) ([d04575d](https://github.com/kiva/ui/commit/d04575d8837635550d233d766e1abcff5fb8f741))
+* only show avatars in desktop ([4adf0ff](https://github.com/kiva/ui/commit/4adf0ff7048a6b6c761d8b4d1b501320300571db))
+* remove text padding in mobile ([324bb89](https://github.com/kiva/ui/commit/324bb899cd4e6f08c9ff8afcb4fd3baaef46ab7a))
+* remove unnecesary prop reference ([3ccca2b](https://github.com/kiva/ui/commit/3ccca2b8d2ec3d45e2c61dc1cbaec7030137f09a))
+* remove unnecessary mark ([e1394f8](https://github.com/kiva/ui/commit/e1394f81a71112282ff908bae59d979838dc2c73))
+* remove unnecessary package, reduce origins to only our domain ([b973a6f](https://github.com/kiva/ui/commit/b973a6f9904b6d8f34de67ba8559d240a1fec4a7))
+* safe programming ([f1ce83f](https://github.com/kiva/ui/commit/f1ce83f1c7cae9bbbfc2587dec8a6f077fd3a694))
+* styling issues with photos ([4ad67cd](https://github.com/kiva/ui/commit/4ad67cd567bab5979fa4d8ca3c1ad3ac15e5b7ff))
+* team attribution tests ([a15bc06](https://github.com/kiva/ui/commit/a15bc062463a6e68204d40be17c626fe55f33942))
+* teamsGoals query by adding id for image ([e157896](https://github.com/kiva/ui/commit/e1578962fcb4a11070196ded841fbdcef9895ffc))
+* test ([2a53a4e](https://github.com/kiva/ui/commit/2a53a4ecc2eb8277b890661cca7ee03198aef59c))
+* tracking format in View challenge button ([8a3a20b](https://github.com/kiva/ui/commit/8a3a20b2973d8ed997cfbc544045c1a1d278a1f0))
+* upgrade sentry ([2247d42](https://github.com/kiva/ui/commit/2247d428709f89171426f97fb2ef1050465c6956))
+* use dev iterable list for testing and replace icon for materialUI ([b3e2fcd](https://github.com/kiva/ui/commit/b3e2fcdb4237e0a7538373a5737985998992e7c8))
+* user that has lent to a borrower was not being redirected due to amountLeft being not zero ([88d7b05](https://github.com/kiva/ui/commit/88d7b05d6359129ac52854090bb924f6fce5dddf))
+* wrapping donation banner headline ([9e57883](https://github.com/kiva/ui/commit/9e5788322daad0a0fd785b15505be5a79b68eba7))
+
+
+### 🪚 Refactors
+
+* methods to get loans and team id ([072bc57](https://github.com/kiva/ui/commit/072bc57ea0092d29def455f42c349d9d5d88e232))
+* remove old donate pages code since they are now handled by cps ([6ecca6b](https://github.com/kiva/ui/commit/6ecca6bf9131d186b85e852e298a5e3957e44f29))
+* use loan declaration for lentTo variable ([ca91daf](https://github.com/kiva/ui/commit/ca91dafe1266580bfedeb791f47b8e8b6cc1d94c))
+
+
+### 🔍 Tests
+
+* ensure teams are loaded on Checkout Page to get forceTeamId ([bd1ea4a](https://github.com/kiva/ui/commit/bd1ea4a82beac1b69f5f5950c0d49a56d381e097))
+* getting goal info before page loads ([90b5ca1](https://github.com/kiva/ui/commit/90b5ca1f7fb67453702f674e5c3fe22a8645ec94))
+
+
+### 🧹 Chores
+
+* **release:** 2.724.0-rc.1 [skip ci] ([52365e4](https://github.com/kiva/ui/commit/52365e45f23ae082dc3e79b259f362438cc991b0)), closes [#5123](https://github.com/kiva/ui/issues/5123) [#5124](https://github.com/kiva/ui/issues/5124) [#5125](https://github.com/kiva/ui/issues/5125)
+* **release:** 2.724.0-rc.2 [skip ci] ([d0577fc](https://github.com/kiva/ui/commit/d0577fcdcd822dc34b819b3f3999bcbebd8f32ef))
+
+## [2.724.0-rc.2](https://github.com/kiva/ui/compare/v2.724.0-rc.1...v2.724.0-rc.2) (2024-01-17)
+
+
+### 🐛 Bugfixes
+
+* basketItem test ([fc0a19d](https://github.com/kiva/ui/commit/fc0a19d9744a3ec1034aee156f76e8933d72563a))
+* ensure forceTeamId is not overwritten by undefined value ([d530146](https://github.com/kiva/ui/commit/d530146cffeca61f1dbcebe08ac6d5d777ee1956))
+* mutate loan reservation on mounted ([a8c5334](https://github.com/kiva/ui/commit/a8c5334ff70225ffa59f69a01d0ebc23dc5a97be))
+* team attribution tests ([a15bc06](https://github.com/kiva/ui/commit/a15bc062463a6e68204d40be17c626fe55f33942))
+* test ([2a53a4e](https://github.com/kiva/ui/commit/2a53a4ecc2eb8277b890661cca7ee03198aef59c))
+
+## [2.724.0-rc.1](https://github.com/kiva/ui/compare/v2.723.0...v2.724.0-rc.1) (2024-01-16)
+
+
+### 🎉 New Features
+
+* ability to attribute a loan to a team from cookie value ([2812e72](https://github.com/kiva/ui/commit/2812e72ad39089fb90cbc2c1a68afb0dd85d84c5))
+* add baseline otel auto-instrumentation config ([644b15a](https://github.com/kiva/ui/commit/644b15ae874da0942482ee4092564b3df4d69f96))
+* add lender images to team activity ([d4f748a](https://github.com/kiva/ui/commit/d4f748a84c2549a3259241739383d1a87f0c1f44))
+* add link back to team challenge page ([28cca99](https://github.com/kiva/ui/commit/28cca99f8da7da81b24b0b233cac50345d24eaaa))
+* add tracking to teams page buttons ([7880334](https://github.com/kiva/ui/commit/78803340f0870b1f64ab17e577b18d82e2aad5b3))
+* challenge cta image replaced ([#5123](https://github.com/kiva/ui/issues/5123)) ([3bfcf3d](https://github.com/kiva/ui/commit/3bfcf3d664e70e5f4f831ae12eab8d543e11502b))
+* clean up cookie for team challenge in basket item after using ([a2548e2](https://github.com/kiva/ui/commit/a2548e2afe5c8ac89e66e97a70f4f87c60429f56))
+* clear challenge cookie after completed checkout, added unit testing ([e51bca9](https://github.com/kiva/ui/commit/e51bca9a4d9ff29e975eb8f96cc0e2e0543fb024))
+* create donation banner type ([672d921](https://github.com/kiva/ui/commit/672d921a5d7e859e7709ce49f9a81d056e47b94f))
+* get goal info within prefetch ([517964e](https://github.com/kiva/ui/commit/517964ea667f3c56a646ddb8878a5e9d2d6c7ad5))
+* notify component image replaced ([#5124](https://github.com/kiva/ui/issues/5124)) ([b0a0446](https://github.com/kiva/ui/commit/b0a0446a706636c614a40272febc696020202cb5))
+* notify me component ([a6ad481](https://github.com/kiva/ui/commit/a6ad4810842499e236c046f9452befa8c405c180))
+* redirect lender that has lent to the borrower to its legacy page when it is no longer in fundraising state ([95c7cd7](https://github.com/kiva/ui/commit/95c7cd77b4a2cde86ff4cba27a520e39be46fabb))
+* redirect portfolio CTA to new team challenge page ([42c9870](https://github.com/kiva/ui/commit/42c9870691bcc6f6c69782856857d7c3e8ec7905))
+* small styling revision on teams cta ([a960ea7](https://github.com/kiva/ui/commit/a960ea7287aaaddd6186a6c7dac3c90d5eecef71))
+* teams challenge cta on teams page ([c7009bd](https://github.com/kiva/ui/commit/c7009bd185663be671785ff5cf9f577d390108e8))
+
+
+### 🐛 Bugfixes
+
+* add config for custom host local dev ([c62f65c](https://github.com/kiva/ui/commit/c62f65c16b3dcc19e11a11eacf140fcfeba75c32))
+* add event to notify me cta and add secondary bg ([0e9e3b2](https://github.com/kiva/ui/commit/0e9e3b2583b654eb96e663dd955b3edf9b331eea))
+* add optional env var to disable otel sdk ([0e70ec0](https://github.com/kiva/ui/commit/0e70ec0fe422ea68e4da331618d00cbea35a8eb4))
+* add sentry trace rate config defaults ([13ac855](https://github.com/kiva/ui/commit/13ac8557eee2e8752653e9523fe9134c0d5519f4))
+* add trace + metric exporters ([0068f5b](https://github.com/kiva/ui/commit/0068f5b8b2cbf58627ec560996710ea682404ddb))
+* allow configuration for otel endpoint ([cdf1bf5](https://github.com/kiva/ui/commit/cdf1bf545431ab1b9b57fa862e46463061d28a32))
+* also clear cookie on removal from basket ([c76f76a](https://github.com/kiva/ui/commit/c76f76a0bdb9fa0b9012176d1f248923a4a6a6ee))
+* apollo error ([0206295](https://github.com/kiva/ui/commit/0206295a51c56313abb1647e03e6961648f1eb2a))
+* change tracking events values ([f774c0a](https://github.com/kiva/ui/commit/f774c0a69cdd504cb7d5bc279dd77619b6cee4bd))
+* check for name before operating on it, default to empty string ([da209ab](https://github.com/kiva/ui/commit/da209abaacc974b135ad6c3aa2218582fc7ea716))
+* cleanup linting errors ([0006eb9](https://github.com/kiva/ui/commit/0006eb9c5d312f3ec7c6657dd9a55e22b978791d))
+* conflicts ([4406f3c](https://github.com/kiva/ui/commit/4406f3c18b242b6b84809f15773a1b8be1a999bc))
+* convert indentation to spaces ([34ed9db](https://github.com/kiva/ui/commit/34ed9db46becb46b5eaf8c9cd82fa04a2b314270))
+* eslint ([3eee557](https://github.com/kiva/ui/commit/3eee557e43bdb80a10342897352f280875e48350))
+* eslint and wrong formed urls ([9dc530b](https://github.com/kiva/ui/commit/9dc530b98c64dd39a5c408635711bc056d4e349e))
+* events values ([98e70a8](https://github.com/kiva/ui/commit/98e70a88c01d5605b57a0ad7c12c10f3cd4a0dd6))
+* get teamId ([815218c](https://github.com/kiva/ui/commit/815218cd8b17d4577a0ecc337c3b991da0781e6c))
+* gql whitespace ([ac0c4b4](https://github.com/kiva/ui/commit/ac0c4b47ab2b200f65641520a72839c21737454d))
+* hide lender avatars in mobile ([ffc3bc0](https://github.com/kiva/ui/commit/ffc3bc029b7a956020f2bbef25dd34b483a948ab))
+* hide notify me component when loan doesnt belong to a challenge ([c5b9956](https://github.com/kiva/ui/commit/c5b9956f58698109eca6638f8af2d3bbeab8b8e2))
+* iterable url ([48c919b](https://github.com/kiva/ui/commit/48c919b49a56f9bf452f1ac0f208ca65e9275006))
+* lint ([f786b5f](https://github.com/kiva/ui/commit/f786b5f66eca30739ea71ebeecccd7cef4e6629a))
+* my teams link in portfolio ([76e8bb1](https://github.com/kiva/ui/commit/76e8bb15d53c0236ab49d5b756b15904cb87be85))
+* notify icon size updated ([#5125](https://github.com/kiva/ui/issues/5125)) ([d04575d](https://github.com/kiva/ui/commit/d04575d8837635550d233d766e1abcff5fb8f741))
+* only show avatars in desktop ([4adf0ff](https://github.com/kiva/ui/commit/4adf0ff7048a6b6c761d8b4d1b501320300571db))
+* remove text padding in mobile ([324bb89](https://github.com/kiva/ui/commit/324bb899cd4e6f08c9ff8afcb4fd3baaef46ab7a))
+* remove unnecesary prop reference ([3ccca2b](https://github.com/kiva/ui/commit/3ccca2b8d2ec3d45e2c61dc1cbaec7030137f09a))
+* remove unnecessary mark ([e1394f8](https://github.com/kiva/ui/commit/e1394f81a71112282ff908bae59d979838dc2c73))
+* remove unnecessary package, reduce origins to only our domain ([b973a6f](https://github.com/kiva/ui/commit/b973a6f9904b6d8f34de67ba8559d240a1fec4a7))
+* safe programming ([f1ce83f](https://github.com/kiva/ui/commit/f1ce83f1c7cae9bbbfc2587dec8a6f077fd3a694))
+* styling issues with photos ([4ad67cd](https://github.com/kiva/ui/commit/4ad67cd567bab5979fa4d8ca3c1ad3ac15e5b7ff))
+* teamsGoals query by adding id for image ([e157896](https://github.com/kiva/ui/commit/e1578962fcb4a11070196ded841fbdcef9895ffc))
+* tracking format in View challenge button ([8a3a20b](https://github.com/kiva/ui/commit/8a3a20b2973d8ed997cfbc544045c1a1d278a1f0))
+* upgrade sentry ([2247d42](https://github.com/kiva/ui/commit/2247d428709f89171426f97fb2ef1050465c6956))
+* use dev iterable list for testing and replace icon for materialUI ([b3e2fcd](https://github.com/kiva/ui/commit/b3e2fcdb4237e0a7538373a5737985998992e7c8))
+* user that has lent to a borrower was not being redirected due to amountLeft being not zero ([88d7b05](https://github.com/kiva/ui/commit/88d7b05d6359129ac52854090bb924f6fce5dddf))
+* wrapping donation banner headline ([9e57883](https://github.com/kiva/ui/commit/9e5788322daad0a0fd785b15505be5a79b68eba7))
+
+
+### 🪚 Refactors
+
+* methods to get loans and team id ([072bc57](https://github.com/kiva/ui/commit/072bc57ea0092d29def455f42c349d9d5d88e232))
+* remove old donate pages code since they are now handled by cps ([6ecca6b](https://github.com/kiva/ui/commit/6ecca6bf9131d186b85e852e298a5e3957e44f29))
+* use loan declaration for lentTo variable ([ca91daf](https://github.com/kiva/ui/commit/ca91dafe1266580bfedeb791f47b8e8b6cc1d94c))
+
+
+### 🔍 Tests
+
+* ensure teams are loaded on Checkout Page to get forceTeamId ([bd1ea4a](https://github.com/kiva/ui/commit/bd1ea4a82beac1b69f5f5950c0d49a56d381e097))
+* getting goal info before page loads ([90b5ca1](https://github.com/kiva/ui/commit/90b5ca1f7fb67453702f674e5c3fe22a8645ec94))
+
 ## [2.723.0](https://github.com/kiva/ui/compare/v2.722.0...v2.723.0) (2023-12-13)
 
 

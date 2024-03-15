@@ -40,7 +40,7 @@ const metricsMiddleware = promBundle({
 // Initialize tracing
 require('./util/ddTrace');
 
-// Initialize a Cache instance, Should Only be called once!
+// Initialize a Cache instance
 const cache = initCache(config.server);
 
 const app = express();
@@ -89,7 +89,7 @@ app.use(locale(config.app.locale.supported, config.app.locale.default));
 app.use('/ui-routes', serverRoutes);
 
 // Apply sitemap middleware to expose routes we want search engine crawlers to see
-app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, cache));
+app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, config.server));
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
@@ -109,7 +109,6 @@ app.use(vueMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
-	cache,
 }));
 
 // Setup Request Error Logger

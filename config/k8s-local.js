@@ -12,9 +12,9 @@ module.exports = merge(base, devVm, {
 		apolloBatching,
 		host: `${monolithHostname}`,
 		transport: `${transport}`,
-		publicPath: `${transport}://${monolithHostname}/ui/`,
+		publicPath: `${transport}://${monolithHostname}/`,
 		photoPath: `${transport}://${monolithHostname}/img/`,
-		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
+		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		auth0: {
 			loginRedirectUrls: {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: `http://${monolithHostname}/login?force=1`,
@@ -28,7 +28,7 @@ module.exports = merge(base, devVm, {
 		},
 	},
 	server: {
-		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
+		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
 		// memcachedEnabled: false,
 		memcachedEnabled: true,

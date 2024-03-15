@@ -134,6 +134,7 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
+import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
@@ -338,39 +339,87 @@ export default {
 						visitorId: this.cookieStore.get('uiv') || null
 					},
 				})
-				.then(kivaBraintreeResponse => {
-					// Check for errors in transaction
-					if (kivaBraintreeResponse.errors) {
-						this.$emit('updating-totals', false);
-						this.processBraintreeDropInError('basket', kivaBraintreeResponse);
-						// Payment method failed, unselect attempted payment method
-						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-						// Initialize a refresh of basket state
-						this.$emit('refreshtotals');
-						// exit
+				.then(async kivaBraintreeResponse => {
+					// extract transaction saga id or transaction id from response
+					const transactionResponse = this.useAsyncCheckout
+						? kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckoutAsync
+						: kivaBraintreeResponse?.data?.shop?.doNoncePaymentDepositAndCheckout;
+
+					// Handle async checkout polling process + response
+					if (this.useAsyncCheckout && typeof transactionResponse !== 'object') {
+						await pollForFinishedCheckout({
+							apollo: this.apollo,
+							transactionSagaId: transactionResponse,
+						})
+							.then(checkoutStatusResponse => {
+								// eslint-disable-next-line max-len
+								const checkoutId = checkoutStatusResponse?.data?.checkoutStatus?.receipt?.checkoutId ?? null;
+								if (!checkoutId) {
+									// setup default graphql error response
+									let errors = checkoutStatusResponse?.errors ?? null;
+									// check for checkoutStatus specific errors
+									if (
+										checkoutStatusResponse?.data?.checkoutStatus?.errorCode
+										|| checkoutStatusResponse?.data?.checkoutStatus?.errorMessage
+									) {
+										// eslint-disable-next-line max-len
+										errors = this.formatCheckoutStatusError(checkoutStatusResponse?.data?.checkoutStatus);
+									}
+									this.handleFailedCheckout(errors);
+								} else {
+									this.handleSuccessfulCheckout(checkoutId);
+								}
+							}).catch(errorResponse => {
+								// setup default graphql error response
+								let errors = errorResponse?.errors ?? null;
+								// check for checkoutStatus specific errors
+								if (
+									errorResponse?.data?.checkoutStatus?.errorCode
+									|| errorResponse?.data?.checkoutStatus?.errorMessage
+								) {
+									errors = this.formatCheckoutStatusError(errorResponse?.data?.checkoutStatus);
+								}
+								this.handleFailedCheckout(errors);
+							});
+
 						return kivaBraintreeResponse;
 					}
 
-					// Transaction is complete
-					const transactionId = _get(
-						kivaBraintreeResponse,
-						'data.shop.doNoncePaymentDepositAndCheckout'
-					);
-					// redirect to thanks with KIVA transaction id
-					if (transactionId) {
-						// fire BT Success event
-						this.$kvTrackEvent(
-							'basket',
-							`${paymentType} Braintree DropIn Payment`,
-							'Success',
-							transactionId,
-							transactionId
-						);
-						// Complete transaction handles additional analytics + redirect
-						this.$emit('complete-transaction', transactionId);
+					// Handle transaction errors for either checkout path
+					if (kivaBraintreeResponse.errors) {
+						this.handleFailedCheckout(kivaBraintreeResponse);
+						return kivaBraintreeResponse;
 					}
-					return kivaBraintreeResponse;
+
+					// Handle success for sync checkout
+					if (!this.useAsyncCheckout) {
+						this.handleSuccessfulCheckout(transactionResponse, paymentType);
+						return kivaBraintreeResponse;
+					}
 				});
+		},
+		handleSuccessfulCheckout(transactionId, paymentType) {
+			// redirect to thanks with KIVA transaction id
+			if (transactionId) {
+				// fire BT Success event
+				this.$kvTrackEvent(
+					'basket',
+					`${paymentType} Braintree DropIn Payment`,
+					'Success',
+					transactionId,
+					transactionId
+				);
+				// Complete transaction handles additional analytics + redirect
+				this.$emit('complete-transaction', transactionId);
+			}
+		},
+		handleFailedCheckout(kivaBraintreeResponse) {
+			this.$emit('updating-totals', false);
+			this.processBraintreeDropInError('basket', kivaBraintreeResponse);
+			// Payment method failed, unselect attempted payment method
+			this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+			// Initialize a refresh of basket state
+			this.$emit('refreshtotals');
 		},
 	},
 };

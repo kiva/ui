@@ -787,6 +787,7 @@ export default {
 				handleUpdateAvailableLoans: this.handleUpdateAvailableLoans,
 				promoAmount: numeral(this.promoAmount).format('0.00'),
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
+				remainingCredit: this.remainingCredit,
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
 				removeLoanFromBasket: this.removeLoanFromBasket,
@@ -996,6 +997,28 @@ export default {
 			}
 			return null;
 		},
+		remainingCredit() {
+			let remainingCredit = 0;
+			// determine promo type and remaining credit by subtracting applied from available
+			if (this.basketTotals?.redemptionCodeAvailableTotal !== '0.00') {
+				const redemptionCodeAvailableTotal = numeral(this.basketTotals?.redemptionCodeAvailableTotal ?? 0);
+				const redemptionCodeAppliedTotal = numeral(this.basketTotals?.redemptionCodeAppliedTotal ?? 0);
+				remainingCredit = redemptionCodeAvailableTotal.difference(redemptionCodeAppliedTotal.value());
+			} else if (this.basketTotals?.universalCodeAvailableTotal !== '0.00') {
+				const universalCodeAvailableTotal = numeral(this.basketTotals?.universalCodeAvailableTotal ?? 0);
+				const universalCodeAppliedTotal = numeral(this.basketTotals?.universalCodeAppliedTotal ?? 0);
+				remainingCredit = universalCodeAvailableTotal.difference(universalCodeAppliedTotal.value());
+			} else if (this.basketTotals?.bonusAvailableTotal !== '0.00') {
+				const bonusAvailableTotal = numeral(this.basketTotals?.bonusAvailableTotal ?? 0);
+				const bonusAppliedTotal = numeral(this.basketTotals?.bonusAppliedTotal ?? 0);
+				remainingCredit = bonusAvailableTotal.difference(bonusAppliedTotal.value());
+			} else if (this.basketTotals?.creditAvailableTotal !== '0.00') {
+				const creditAvailableTotal = numeral(this.basketTotals?.creditAvailableTotal ?? 0);
+				const creditAppliedTotal = numeral(this.basketTotals?.creditAppliedTotal ?? 0);
+				remainingCredit = creditAvailableTotal.difference(creditAppliedTotal.value());
+			}
+			return remainingCredit;
+		},
 	},
 	methods: {
 		async verifyOrApplyPromotion() {
@@ -1094,6 +1117,13 @@ export default {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
+
+					// Default matched state
+					this.promoApplied = true;
+				} else if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+					=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+					this.promoApplied = true;
+					this.promoErrorMessage = null;
 				} else if (this.isMatchingCampaign) {
 					this.promoApplied = true;
 				} else {

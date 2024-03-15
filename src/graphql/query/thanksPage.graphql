@@ -84,12 +84,13 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							distributionModel
 							unreservedAmount @client
 							inPfp
+							gender
 						}
 						team {
 							id
+							teamPublicId
 							name
 						}
-
 					}
 				}
 			}
@@ -114,6 +115,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		lender {
 			id
 			name
+			image {
+				id
+				url
+			}
+			publicId
 		}
 		userAccount {
 			id

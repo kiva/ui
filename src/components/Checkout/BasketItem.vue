@@ -191,6 +191,16 @@ export default {
 			return this.loan.team ? this.loan.team.id : 0;
 		}
 	},
+	watch: {
+		teams: {
+			handler() {
+				this.forceTeamId = getForcedTeamId(
+					this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams
+				);
+			},
+			immediate: true
+		}
+	},
 	methods: {
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
@@ -206,8 +216,5 @@ export default {
 			this.$emit('validateprecheckout');
 		}
 	},
-	mounted() {
-		this.forceTeamId = getForcedTeamId(this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams);
-	}
 };
 </script>

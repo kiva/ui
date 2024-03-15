@@ -1,12 +1,23 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<template v-if="isOnlyDonation">
+		<template v-if="iwdHeaderExpEnabled">
+			<iwd-thanks-page-variations
+				:iwd-valet-inviter-id="iwdValetInviterId"
+				:iwd-valet-inviter="iwdValetInviter"
+				:iwd-loan="iwdLoan"
+				:lender="lender"
+				:is-guest="isGuest"
+			/>
+		</template>
+		<template v-else-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
 		<template v-else>
-			<NotifyMe v-if="goal" :goal="goal" :email="lender.email" />
+			<div v-if="showChallengeHeader" class="tw-bg-secondary">
+				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
+			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -103,6 +114,7 @@ import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
@@ -119,12 +131,35 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
-import NotifyMe from '@/components/Thanks/NotifyMe';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
+import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
+import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+
+const getLoans = receipt => {
+	const loansResponse = receipt?.items?.values ?? [];
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+				team: item.team,
+			};
+		});
+
+	return loans;
+};
+
+const getTeamId = loans => {
+	const teamsIds = loans.filter(loan => !!loan?.team?.id)
+		.map(loan => loan.team.id) ?? [];
+	return teamsIds?.[0] ?? null;
+};
 
 export default {
 	name: 'ThanksPage',
@@ -139,9 +174,11 @@ export default {
 		WwwPage,
 		ThanksPageCommentAndShare,
 		ThanksPageDonationOnly,
-		NotifyMe
+		ChallengeHeader,
+		IwdThanksPageVariations,
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [iwdExperimentMixin],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -162,6 +199,10 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			goal: null,
+			showChallengeHeader: false,
+			iwdHeaderExpEnabled: false,
+			iwdValetInviterId: undefined,
+			iwdValetInviter: {},
 		};
 	},
 	apollo: {
@@ -176,9 +217,26 @@ export default {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(() => {
+			}).then(({ data }) => {
+				// Get teamId from receipt
+				let teamId = null;
+				const receipt = data?.shop?.receipt ?? null;
+				const loans = getLoans(receipt);
+				teamId = getTeamId(loans);
+
+				const filters = {
+					teamId,
+				};
+				const limit = 1;
+
+				const valetInviterId = route?.query?.valet_inviter;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					teamId ? fetchGoals(client, limit, filters) : null,
+					!!valetInviterId && valetInviterId?.toUpperCase() !== KIVA_INVITER_ID
+						? client.query({ query: lenderPublicProfile, variables: { publicId: valetInviterId } })
+						: null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -262,10 +320,13 @@ export default {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
 		},
 		teamId() {
-			const teamsIds = this.loans
-				.filter(loan => !!loan?.team?.id)
-				.map(loan => loan.team.id) ?? [];
-			return teamsIds?.[0] ?? null;
+			return getTeamId(this.loans);
+		},
+		teamPublicId() {
+			return this.loans?.[0]?.team?.teamPublicId;
+		},
+		iwdLoan() {
+			return (this.loans?.filter(l => l?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
 		},
 	},
 	created() {
@@ -294,6 +355,8 @@ export default {
 			...(data?.my?.userAccount ?? {}),
 			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+			imageUrl: data?.my?.lender?.image?.url ?? '',
+			publicId: data?.my?.lender?.publicId ?? '',
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
@@ -310,15 +373,31 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => {
-				return {
-					...item.loan,
-					team: item.team,
+		this.loans = getLoans(this.receipt);
+
+		// Fetch Goal Information
+		try {
+			if (this.teamId) {
+				const filters = {
+					teamId: this.teamId,
 				};
-			});
+				const limit = 1;
+
+				const response = this.apollo.readQuery({
+					query: teamsGoalsQuery,
+					variables: { ...filters, limit },
+				});
+
+				this.goal = response.goals?.values.length ? response?.goals?.values[0] : null;
+
+				const loansIds = this.loans.map(loan => loan.id) ?? [];
+				this.showChallengeHeader = this.goal && this.goal?.targets?.values
+					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
+			}
+		} catch (e) {
+			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
+		}
+
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
@@ -366,23 +445,43 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-	},
-	mounted() {
-		const filters = {
-			teamId: this.teamId,
-		};
-		const limit = 1;
-		fetchGoals(this.apollo, limit, filters)
-			.then(response => {
-				this.goal = response.values.length ? response.values[0] : null;
-			});
+
+		this.checkForIWD2024Experiment();
 	},
 	methods: {
 		createGuestAccount() {
 			// This is the only place this variable should be set.
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
-		}
+		},
+		getIwdInviter() {
+			this.iwdValetInviterId = this.$route?.query?.valet_inviter;
+			if (!!this.iwdValetInviterId && this.iwdValetInviterId?.toUpperCase() !== KIVA_INVITER_ID) {
+				try {
+					const data = this.apollo.readQuery({
+						query: lenderPublicProfile,
+						variables: {
+							checkoutId: lenderPublicProfile,
+							publicId: this.iwdValetInviterId,
+						}
+					});
+					this.iwdValetInviter = data?.community?.lender ?? {};
+				} catch (e) {
+					logReadQueryError(
+						e,
+						`Lender public profile readQuery failed: (publicId: ${this.iwdValetInviterId})`,
+					);
+				}
+			}
+		},
+		checkForIWD2024Experiment() {
+			const EXPERIMENT_ENABLED_VERSION = 'b';
+			this.iwdHeaderExpEnabled = this.isIwdExperimentEnabled();
+			if (this.iwdHeaderExpEnabled) {
+				this.getIwdInviter();
+				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
+			}
+		},
 	}
 };
 

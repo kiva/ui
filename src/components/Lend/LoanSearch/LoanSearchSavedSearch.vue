@@ -36,6 +36,12 @@
 					placeholder="i.e. Women Owned Business"
 					v-model="savedSearchName"
 				/>
+				<kv-checkbox
+					v-model="showAlerts"
+					class="tw-mb-2.5"
+				>
+					Email me when new loans become available
+				</kv-checkbox>
 				<kv-button
 					@click.native="saveSavedSearch"
 					:state="savedSearchName.length === 0 ? 'disabled' : null"
@@ -55,6 +61,7 @@ import filterConfig from '@/util/loanSearch/filterConfig';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'LoanSearchSavedSearch',
@@ -62,7 +69,8 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvTextInput,
-		IconAdd
+		IconAdd,
+		KvCheckbox,
 	},
 	inject: ['apollo'],
 	props: {
@@ -94,7 +102,8 @@ export default {
 		return {
 			isLightboxVisible: false,
 			savedSearchName: '',
-			closedModal: false
+			closedModal: false,
+			showAlerts: false,
 		};
 	},
 	computed: {
@@ -147,7 +156,8 @@ export default {
 				this.apollo,
 				this.reformattedSearchState,
 				this.loanSearchState?.keywordSearch ?? '',
-				this.savedSearchName
+				this.savedSearchName,
+				this.showAlerts,
 			).then(() => {
 				this.$showTipMsg(`Success! You've added ${this.savedSearchName} to your saved searches.`);
 			}).catch(errorResponse => {

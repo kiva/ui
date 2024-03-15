@@ -50,7 +50,7 @@ describe('teamChallengeUtils.js', () => {
 			expect(appendedTeams).toEqual([{ id: mockLoans[0].teamId, name: mockLoans[0].teamName }]);
 		});
 
-		it('should skip when team ID already in combined', () => {
+		it('should use the cookie value as default', () => {
 			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
 			const appendedTeams = [];
 			const result = getForcedTeamId(
@@ -59,7 +59,7 @@ describe('teamChallengeUtils.js', () => {
 				[{ id: mockLoans[0].teamId }],
 				appendedTeams
 			);
-			expect(result).toEqual(undefined);
+			expect(result).toEqual(mockLoans[0].teamId);
 			expect(cookieStore.get).toBeCalledTimes(1);
 			expect(appendedTeams.length).toBe(0);
 		});

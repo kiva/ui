@@ -1,0 +1,14 @@
+query LenderPublicProfile ($publicId: String!) {
+	community {
+		lender(publicId: $publicId) {
+			id
+			name
+			image {
+				id
+				url
+				width
+				height
+			}
+		}
+	}
+}
