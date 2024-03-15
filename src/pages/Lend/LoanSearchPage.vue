@@ -65,6 +65,7 @@ import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
@@ -240,6 +241,7 @@ export default {
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
+				setChallengeCookieData(this.cookieStore, teamId, this.teamData?.name);
 			}
 		}
 	},
