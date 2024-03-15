@@ -1,6 +1,10 @@
 // verify npm/node/dependency versions
 require('../build/check-versions')();
 
+const { setupTracing } = require('./util/tracer');
+
+setupTracing();
+
 // dependencies
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 require('dotenv').config({ path: './.config.env' });
