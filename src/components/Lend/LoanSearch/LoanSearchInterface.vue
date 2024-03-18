@@ -435,7 +435,10 @@ export default {
 			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
 		},
 		addToBasket(payload) {
-			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
+			if (payload.success) {
+				this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
+				this.$emit('add-to-basket', payload.loanId);
+			}
 		}
 	},
 	watch: {

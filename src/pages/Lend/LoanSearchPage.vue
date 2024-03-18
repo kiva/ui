@@ -44,6 +44,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:show-challenge-header="showChallengeHeader"
+					@addToBasket="addLoanToChallengeCookie"
 				/>
 			</kv-page-container>
 		</article>
@@ -188,6 +189,18 @@ export default {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 	},
+	methods: {
+		addLoanToChallengeCookie(loanId) {
+			if (this.enableChallengeHeader) {
+				const challenge = {
+					teamId: this.teamData?.id,
+					teamName: this.teamData?.name ?? '',
+					loanId
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
+			}
+		},
+	},
 	created() {
 		this.initializeFiveDollarsNotes();
 
@@ -243,12 +256,10 @@ export default {
 				this.teamData = teamData?.community?.team || {};
 
 				const loanIds = this.challengeData?.targets?.values?.map(target => target?.loanId) ?? [];
-				const cookieData = loanIds.map(loanId => ({
-					teamId,
-					teamName: this.teamData?.name ?? '',
-					loanId,
-				}));
-				setChallengeCookieData(this.cookieStore, cookieData);
+
+				loanIds.forEach(loanId => {
+					this.addLoanToChallengeCookie(loanId);
+				});
 			}
 		}
 	},
