@@ -85,6 +85,7 @@
 					<team-picks-switch
 						v-if="showChallengeHeader"
 						class="tw-mb-2"
+						@handle-team-picks="handleTeamPicks"
 					/>
 					<loan-search-filter
 						:extend-flss-filters="extendFlssFilters"
@@ -142,6 +143,7 @@
 						:show-tags="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:user-balance="userBalance"
+						:is-team-pick="showTeamPicks"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -253,6 +255,7 @@ export default {
 			trackedHits: undefined,
 			userId: null,
 			userBalance: undefined,
+			showTeamPicks: false,
 		};
 	},
 	apollo: {
@@ -351,6 +354,11 @@ export default {
 				this.trackLoans();
 			}
 		});
+
+		// Verify challenge header and show team picks
+		if (this.showChallengeHeader) {
+			this.showTeamPicks = true;
+		}
 	},
 	computed: {
 		defaultPageLimit() {
@@ -436,6 +444,9 @@ export default {
 		},
 		addToBasket(payload) {
 			if (payload.success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
+		},
+		handleTeamPicks(payload) {
+			this.showTeamPicks = payload;
 		}
 	},
 	watch: {
