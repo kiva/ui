@@ -1,9 +1,13 @@
 <template>
 	<div class="tw-relative">
-		<div :class="{ 'row': !iwdHeaderExpEnabled, 'tw-bg-white': iwdHeaderExpEnabled }">
+		<div
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			:class="{ 'tw-bg-white': iwdHeaderExpEnabled }"
+			style="max-width: 1200px;"
+		>
 			<div
 				:class="{
-					'small-12 columns heading-region': !iwdHeaderExpEnabled,
+					'tw-px-1 heading-region': !iwdHeaderExpEnabled,
 					'row !tw-block tw-pt-2.5 tw-px-1 md:tw-pb-1 md:tw-px-2': iwdHeaderExpEnabled
 				}"
 			>
@@ -44,9 +48,13 @@
 			</div>
 		</div>
 
-		<div class="row" :class="{ 'tw-pt-2.5': iwdHeaderExpEnabled }">
+		<div
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			:class="{ 'tw-pt-2.5': iwdHeaderExpEnabled }"
+			style="max-width: 1200px;"
+		>
 			<quick-filters
-				class="tw-z-2 tw-px-1 md:tw-px-2"
+				class="tw-z-2 tw-px-1"
 				:total-loans="totalCount"
 				:filter-options="quickFiltersOptions"
 				:filters-loaded="filtersLoaded"
@@ -58,18 +66,21 @@
 			/>
 		</div>
 
-		<div class="row tw-relative">
+		<div
+			class="tw-relative tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			style="max-width: 1200px;"
+		>
 			<!-- emtpy state for no loans result -->
 			<empty-state
 				v-show="emptyState"
-				class="tw-mb-2 tw-mx-1 md:tw-mx-2"
+				class="tw-mb-2 tw-mx-1"
 			/>
 
 			<!-- eslint-disable max-len -->
-			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-3"></div>
+			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-3 lg:tw-mx-8"></div>
 			<div v-if="loans && loans.length > 0" class="tw-w-full">
 				<div v-if="!displayLoanPromoCard || emptyState">
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-2 tw-px-1 md:tw-px-2">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-px-1">
 						<kv-classic-loan-card-container
 							v-for="(loan, index) in loans"
 							:key="`new-card-${loan.id}-${index}`"
@@ -95,7 +106,7 @@
 					/>
 				</div>
 				<div v-else>
-					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-2 tw-px-1 md:tw-px-2">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-px-1">
 						<kv-classic-loan-card-container
 							v-for="(loan, index) in firstLoan"
 							:key="`new-card-${loan.id}-${index}`"
