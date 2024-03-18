@@ -103,9 +103,11 @@ export default {
 			return this.challengeData?.participation?.amountLent ?? 0;
 		},
 		daysLeft() {
+			const start = this.challengeData?.startDate ? new Date(this.challengeData?.startDate) : new Date();
+			const end = this.challengeData?.endDate ? new Date(this.challengeData?.endDate) : new Date();
 			return intervalToDuration({
-				start: this.challengeData?.startDate ?? new Date(),
-				end: this.challengeData?.endDate ?? new Date(),
+				start,
+				end,
 			}).days;
 		},
 	},
