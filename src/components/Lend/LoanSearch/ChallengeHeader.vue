@@ -44,7 +44,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="lg:tw-basis-2/5">
+		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
 			<div class="tw-bg-white tw-p-3 tw-rounded">
 				<kv-progress-campaign
 					:funded-amount="fundedAmount"
