@@ -15,7 +15,10 @@
 				:value="progressPercentage"
 				:bg-variant="bgVariant"
 			/>
-			<div class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow tw-w-4.5 tw-h-4.5">
+			<div
+				class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow
+					tw-w-4.5 tw-h-4.5 tw-flex tw-justify-center"
+			>
 				<heart-out-from-box class="tw-w-3" />
 			</div>
 		</div>
