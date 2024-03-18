@@ -68,7 +68,9 @@ export const removeLoansFromChallengeCookie = (cookieStore, loanIds) => {
  * @param {string} challengeData.teamName The name of the team
  */
 export const setChallengeCookieData = (cookieStore, challengeData) => {
-	const data = getChallengeCookieData(cookieStore) || [];
-	data.push(challengeData);
-	cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
+	if (challengeData.loanId && challengeData.teamId) {
+		const data = getChallengeCookieData(cookieStore) || [];
+		data.push(challengeData);
+		cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
+	}
 };

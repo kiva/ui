@@ -2,6 +2,7 @@ import {
 	getForcedTeamId,
 	removeLoansFromChallengeCookie,
 	TEAM_CHALLENGE_COOKIE_NAME,
+	setChallengeCookieData
 } from '@/util/teamChallengeUtils';
 
 describe('teamChallengeUtils.js', () => {
@@ -124,6 +125,31 @@ describe('teamChallengeUtils.js', () => {
 			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
 			removeLoansFromChallengeCookie(cookieStore, [mockLoans[0].loanId, mockLoans[1].loanId]);
 			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify([]));
+		});
+	});
+
+	describe('setChallengeCookie', () => {
+		it('should add data to challenge cookie', () => {
+			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify([])), set: jest.fn() };
+
+			const mockLoan = { loanId: 345, teamId: 678, teamName: 'Team Name 3' };
+
+			setChallengeCookieData(cookieStore, mockLoan);
+			expect(cookieStore.set).toBeCalledTimes(1);
+			expect(cookieStore.get).toBeCalledTimes(1);
+			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify([mockLoan]));
+		});
+
+		it('should not add data without loan id', () => {
+			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify([])), set: jest.fn() };
+
+			const mockLoan = { loanId: null, teamId: 678, teamName: 'Team Name 3' };
+
+			setChallengeCookieData(cookieStore, mockLoan);
+			expect(cookieStore.set).toBeCalledTimes(0);
+
+			setChallengeCookieData(cookieStore, { ...mockLoan, loanId: 123, teamId: null });
+			expect(cookieStore.set).toBeCalledTimes(0);
 		});
 	});
 });
