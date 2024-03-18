@@ -10,12 +10,15 @@
 		</div>
 		<div class="tw-relative tw-mt-1">
 			<kv-progress-bar
-				class="tw-my-0.5"
+				class="progress-bar"
 				aria-label="Percent the campaign has funded"
 				:value="progressPercentage"
 				:bg-variant="bgVariant"
 			/>
-			<div class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow">
+			<div
+				class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow
+					tw-w-4.5 tw-h-4.5 tw-flex tw-justify-center"
+			>
 				<heart-out-from-box class="tw-w-3" />
 			</div>
 		</div>
@@ -78,7 +81,11 @@ export default {
 	}
 
 	p {
-		font-weight: 600;
-		@apply tw-text-small;
+		@apply tw-font-medium;
+	}
+
+	.progress-bar {
+		height: 0.75rem !important;
+		@apply tw-my-0.5;
 	}
 </style>

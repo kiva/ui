@@ -19,7 +19,7 @@ const Exporter = (process.env.OPENTELEMETRY_EXPORTER_TYPE || '').toLowerCase().s
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 
-const otlpDisabled = process.env?.OTEL_SDK_DISABLED || false;
+const otlpDisabled = process.env?.OTEL_SDK_DISABLED === 'true' || false;
 const otlpEndpoint = process.env?.OTEL_EXPORTER_OTLP_ENDPOINT || null;
 
 // Filter Utility
@@ -47,6 +47,11 @@ function ignoreTheseSpans(spanName, spanKind, attributes) {
 function setupTracing() {
 	const serviceName = process.env?.OTEL_SERVICE_NAME || 'ui';
 	if (!otlpDisabled) {
+		console.log(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: 'OTLP Exporter Activated'
+		}));
 		const provider = new NodeTracerProvider({
 			resource: new Resource({
 				[SemanticResourceAttributes.SERVICE_NAME]: serviceName,

@@ -44,12 +44,14 @@
 				</p>
 			</div>
 		</div>
-		<div>
-			<kv-progress-campaign
-				:funded-amount="fundedAmount"
-				:total-amount="totalAmount"
-				:days-left="daysLeft"
-			/>
+		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
+			<div class="tw-bg-white tw-p-3 tw-rounded">
+				<kv-progress-campaign
+					:funded-amount="fundedAmount"
+					:total-amount="totalAmount"
+					:days-left="daysLeft"
+				/>
+			</div>
 			<!-- Activity Feed -->
 		</div>
 	</div>
@@ -103,9 +105,11 @@ export default {
 			return this.challengeData?.participation?.amountLent ?? 0;
 		},
 		daysLeft() {
+			const start = this.challengeData?.startDate ? new Date(this.challengeData?.startDate) : new Date();
+			const end = this.challengeData?.endDate ? new Date(this.challengeData?.endDate) : new Date();
 			return intervalToDuration({
-				start: this.challengeData?.startDate ?? new Date(),
-				end: this.challengeData?.endDate ?? new Date(),
+				start,
+				end,
 			}).days;
 		},
 	},

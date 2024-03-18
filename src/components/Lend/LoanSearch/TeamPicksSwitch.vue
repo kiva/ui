@@ -3,7 +3,7 @@
 		<div class="tw-flex tw-flex-col">
 			<kv-switch
 				v-model="showTeamPicks"
-				@update:modelValue="$emit('showTeamPicks', $event)"
+				@update:modelValue="$emit('handle-team-picks', $event)"
 			>
 				<div class="tw-flex tw-items-center tw-gap-0.5">
 					<img :src="HandOrangeIcon" class="tw-w-4">
