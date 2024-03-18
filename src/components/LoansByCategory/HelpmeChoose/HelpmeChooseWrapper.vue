@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="tw-w-full tw-py-2 tw-px-2">
+		<div class="tw-w-full tw-py-2 tw-px-1">
 			<h2 class="tw-text-h2 tw-text-primary">
 				{{ welcomeTitle }}
 			</h2>
@@ -9,7 +9,7 @@
 			</p>
 		</div>
 
-		<div class="tw-w-full tw-pb-4 tw-px-2">
+		<div class="tw-w-full tw-pb-4 tw-px-1">
 			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
@@ -37,7 +37,7 @@
 			/>
 		</div>
 
-		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2 tw-gap-2 tw-px-2">
+		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2 tw-gap-4 tw-px-1">
 			<kv-classic-loan-card-container
 				v-for="(loan, index) in remainingLoans"
 				:key="`new-card-${loan.id}-${index}`"
