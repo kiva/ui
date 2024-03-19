@@ -44,6 +44,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:show-challenge-header="showChallengeHeader"
+					@addToBasket="addLoanToChallengeCookie"
 				/>
 			</kv-page-container>
 		</article>
@@ -65,6 +66,7 @@ import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
@@ -185,6 +187,18 @@ export default {
 	computed: {
 		showChallengeHeader() {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
+		},
+	},
+	methods: {
+		addLoanToChallengeCookie(loanId) {
+			if (this.enableChallengeHeader) {
+				const challenge = {
+					teamId: this.teamData?.id,
+					teamName: this.teamData?.name ?? '',
+					loanId
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
+			}
 		},
 	},
 	created() {

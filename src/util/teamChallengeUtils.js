@@ -56,3 +56,21 @@ export const removeLoansFromChallengeCookie = (cookieStore, loanIds) => {
 		cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
 	}
 };
+
+/**
+ * Sets challenge cookie data.
+ * Used when challenge is active on lend/filter.
+ *
+ * @param cookieStore The object for affecting cookies
+ * @param {Object} challengeData Challenge information
+ * @param {number} challengeData.loanId The ID of the loan
+ * @param {number} challengeData.teamId The ID of the team
+ * @param {string} challengeData.teamName The name of the team
+ */
+export const setChallengeCookieData = (cookieStore, challengeData) => {
+	if (challengeData.loanId && challengeData.teamId) {
+		const data = getChallengeCookieData(cookieStore) || [];
+		data.push(challengeData);
+		cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
+	}
+};
