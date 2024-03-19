@@ -44,7 +44,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:show-challenge-header="showChallengeHeader"
-					@addToBasket="addLoanToChallengeCookie"
+					@add-to-basket="addLoanToChallengeCookie"
 				/>
 			</kv-page-container>
 		</article>
