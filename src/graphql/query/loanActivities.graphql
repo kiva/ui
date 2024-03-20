@@ -4,7 +4,7 @@ query LoanActivities (
   lend {
     loan(id: $loanId) {
       id
-      lendingActions {
+      lendingActions(isSelfDirected: true) {
         values {
           latestSharePurchaseDate
           lender {
