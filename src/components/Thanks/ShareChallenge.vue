@@ -164,9 +164,10 @@ export default {
 			return this.goal?.name ?? '';
 		},
 		teamChallengePath() {
-			return this.teamPublicId ? `/team/challenge/${this.teamPublicId}` : '/teams';
+			return this.teamPublicId ? `/lend/filter?team=${this.teamPublicId}` : '/teams';
 		},
 		percentageFunded() {
+			// TODO: Update once BE work is done
 			return (this.goal.fundedAmount / this.goal.totalAmount) * 100;
 		},
 		utmContent() {
@@ -178,7 +179,8 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
-				lender: this.lenderPublicId ? `${this.lenderPublicId}` : '',
+				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
+				lenderName: this.lender?.public && this.lender?.publicName ? `${this.lender.publicName}` : '',
 			};
 			let invitedBy = '';
 			if (this.loan.id && this.lender?.inviterName) {

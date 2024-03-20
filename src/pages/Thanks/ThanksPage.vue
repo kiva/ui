@@ -114,7 +114,6 @@ import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import GuestUpsell from '@/components/Checkout/GuestUpsell';
 import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
@@ -132,7 +131,6 @@ import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
-import { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -228,14 +226,9 @@ export default {
 				};
 				const limit = 1;
 
-				const valetInviterId = route?.query?.valet_inviter;
-
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					teamId ? fetchGoals(client, limit, filters) : null,
-					!!valetInviterId && valetInviterId?.toUpperCase() !== KIVA_INVITER_ID
-						? client.query({ query: lenderPublicProfile, variables: { publicId: valetInviterId } })
-						: null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
