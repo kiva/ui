@@ -21,23 +21,21 @@
 					</router-link> >
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
-				<template>
-					<h1 class="tw-mb-2">
-						{{ pageHeadline }}
-					</h1>
-					<p
-						v-if="loanChannelDescription"
-						class="page-subhead tw-mb-4"
-					>
-						{{ loanChannelDescription }}
-					</p>
-					<p v-else>
-						We couldn't find any loans for this search.
-						<router-link to="/lend-by-category">
-							<span>Browse these loans</span>
-						</router-link>.
-					</p>
-				</template>
+				<h1 class="tw-mb-2">
+					{{ pageHeadline }}
+				</h1>
+				<p
+					v-if="loanChannelDescription"
+					class="page-subhead tw-mb-4"
+				>
+					{{ loanChannelDescription }}
+				</p>
+				<p v-else>
+					We couldn't find any loans for this search.
+					<router-link to="/lend-by-category">
+						<span>Browse these loans</span>
+					</router-link>.
+				</p>
 			</div>
 		</div>
 

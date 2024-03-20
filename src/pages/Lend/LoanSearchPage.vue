@@ -254,11 +254,6 @@ export default {
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
-
-				const lenderName = this.$route?.query?.lenderName ?? '';
-				if (lenderName && teamId) {
-					this.$showTipMsg(`Support ${lenderName} and help ${this.teamData?.name} hit their goal.`);
-				}
 			}
 		}
 	},
