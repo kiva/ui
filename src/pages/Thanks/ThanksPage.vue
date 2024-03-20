@@ -1,10 +1,10 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<template v-if="iwdHeaderExpEnabled">
-			<iwd-thanks-page-variations
-				:iwd-valet-inviter-id="iwdValetInviterId"
-				:iwd-valet-inviter="iwdValetInviter"
-				:iwd-loan="iwdLoan"
+		<template v-if="enableShareChallenge">
+			<share-challenge
+				:goal="goal"
+				:loan="challengeLoan"
+				:team-public-id="teamPublicId"
 				:lender="lender"
 				:is-guest="isGuest"
 			/>
@@ -132,14 +132,16 @@ import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
-import IwdThanksPageVariations, { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
-import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
+import { KIVA_INVITER_ID } from '@/components/Iwd/IwdThanksPageVariations';
+import ShareChallenge from '@/components/Thanks/ShareChallenge';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -175,10 +177,9 @@ export default {
 		ThanksPageCommentAndShare,
 		ThanksPageDonationOnly,
 		ChallengeHeader,
-		IwdThanksPageVariations,
+		ShareChallenge,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [iwdExperimentMixin],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -200,9 +201,7 @@ export default {
 			ftdCreditAmount: '',
 			goal: null,
 			showChallengeHeader: false,
-			iwdHeaderExpEnabled: false,
-			iwdValetInviterId: undefined,
-			iwdValetInviter: {},
+			enableShareChallenge: false,
 		};
 	},
 	apollo: {
@@ -325,8 +324,8 @@ export default {
 		teamPublicId() {
 			return this.loans?.[0]?.team?.teamPublicId;
 		},
-		iwdLoan() {
-			return (this.loans?.filter(l => l?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
+		challengeLoan() {
+			return (this.loans?.filter(l => l?.team?.id === this.goal.teamId) ?? [])?.[0];
 		},
 	},
 	created() {
@@ -446,41 +445,17 @@ export default {
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
-		this.checkForIWD2024Experiment();
+		const shareChallengeExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableShareChallenge = shareChallengeExpData?.version === 'b';
 	},
 	methods: {
 		createGuestAccount() {
 			// This is the only place this variable should be set.
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
-		},
-		getIwdInviter() {
-			this.iwdValetInviterId = this.$route?.query?.valet_inviter;
-			if (!!this.iwdValetInviterId && this.iwdValetInviterId?.toUpperCase() !== KIVA_INVITER_ID) {
-				try {
-					const data = this.apollo.readQuery({
-						query: lenderPublicProfile,
-						variables: {
-							checkoutId: lenderPublicProfile,
-							publicId: this.iwdValetInviterId,
-						}
-					});
-					this.iwdValetInviter = data?.community?.lender ?? {};
-				} catch (e) {
-					logReadQueryError(
-						e,
-						`Lender public profile readQuery failed: (publicId: ${this.iwdValetInviterId})`,
-					);
-				}
-			}
-		},
-		checkForIWD2024Experiment() {
-			const EXPERIMENT_ENABLED_VERSION = 'b';
-			this.iwdHeaderExpEnabled = this.isIwdExperimentEnabled();
-			if (this.iwdHeaderExpEnabled) {
-				this.getIwdInviter();
-				this.$kvTrackEvent('Lending', 'EXP-IWDHeader2024', EXPERIMENT_ENABLED_VERSION);
-			}
 		},
 	}
 };
