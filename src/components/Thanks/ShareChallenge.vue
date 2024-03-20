@@ -240,7 +240,8 @@ export default {
 
 <style lang="postcss" scoped>
 .container {
-	@apply tw-flex tw-flex-col tw-items-center tw-w-full tw-bg-white tw-rounded tw-px-2.5 tw-py-3.5 md:tw-px-4 md:tw-pt-3 md:tw-pb-7;
+	@apply tw-flex tw-flex-col tw-items-center tw-w-full tw-bg-white
+		tw-rounded tw-px-2.5 tw-py-3.5 md:tw-px-4 md:tw-pt-3 md:tw-pb-7;
 }
 
 </style>
