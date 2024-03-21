@@ -2,7 +2,7 @@
 	<www-page id="lend-filter">
 		<challenge-callout
 			class="tw-bg-secondary md:tw-pt-4 md:tw-pb-1 tw-pb-4"
-			v-if="showChallengeHeader && lender"
+			v-if="showChallengeHeader && !!teamData"
 			:lender="lender"
 			:team-name="teamData.name"
 		/>

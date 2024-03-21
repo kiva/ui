@@ -1,23 +1,25 @@
 <template>
-	<kv-page-container class="container md:tw-my-4">
-		<kv-grid
-			class="tw-grid-cols-12"
-		>
-			<div class="tw-col-span-12 tw-w-full">
-				<div class="info tw-w-full">
-					<img
-						v-if="lenderImage"
-						:alt="`${lenderName} image`"
-						:src="lenderImage"
-						class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
-					>
-					<p class="tw-text-lg tw-py-1 data-hj-suppress">
-						{{ headerCallout }}
-					</p>
+	<div>
+		<kv-page-container class="container md:tw-my-4">
+			<kv-grid
+				class="tw-grid-cols-12"
+			>
+				<div class="tw-col-span-12 tw-w-full">
+					<div class="info tw-w-full">
+						<img
+							v-if="lenderImage"
+							:alt="`${lenderName} image`"
+							:src="lenderImage"
+							class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
+						>
+						<p class="tw-text-lg tw-py-1 data-hj-suppress">
+							{{ headerCallout }}
+						</p>
+					</div>
 				</div>
-			</div>
-		</kv-grid>
-	</kv-page-container>
+			</kv-grid>
+		</kv-page-container>
+	</div>
 </template>
 
 <script>
@@ -39,7 +41,7 @@ export default {
 			type: String,
 			default: 'Kiva',
 			required: true,
-		}
+		},
 	},
 	computed: {
 		lenderName() {
