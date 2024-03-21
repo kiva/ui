@@ -408,7 +408,7 @@
 									:src="profilePic"
 									alt="My portfolio"
 									class="data-hj-suppress tw-inline-block
-										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+										tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5
 										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
 							</router-link>
