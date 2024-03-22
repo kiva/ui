@@ -2,8 +2,10 @@ const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 const opentelemetry = require('@opentelemetry/api');
 
 // Not functionally required but gives some insight what happens behind the scenes
-const { diag, DiagConsoleLogger, DiagLogLevel } = opentelemetry;
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+if (process?.env?.OTEL_DEBUG === 'true') {
+	const { diag, DiagConsoleLogger, DiagLogLevel } = opentelemetry;
+	diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+}
 
 const { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { GraphQLInstrumentation } = require('@opentelemetry/instrumentation-graphql');
