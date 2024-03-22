@@ -33,6 +33,5 @@ const publicLendProfile = {
 };
 
 
-export const Default = story({});
-export const Lender = story({ lender: publicLendProfile.community.lender });
-export const Team = story({ lender: publicLendProfile.community.lender, teamName: 'A+' });
+export const Default = story({ teamName: 'A+' });
+export const Lender = story({ lender: publicLendProfile.community.lender, teamName: 'A+' });

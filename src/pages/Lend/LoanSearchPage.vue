@@ -151,9 +151,6 @@ export default {
 					});
 				}
 
-				const lenderName = query?.lenderName ?? '';
-				const lenderPublicId = query?.lender ?? '';
-
 				return Promise.all([
 					client.query({ query: experimentQuery, variables: { id: 'extend_flss_filters' } }),
 					client.query({ query: experimentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
@@ -161,9 +158,6 @@ export default {
 					teamPublicId,
 					userPromise,
 					activeChallengeHeaderExp,
-					lenderName && lenderPublicId
-						? client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } })
-						: null,
 				]);
 			}).then(response => {
 				const teamPublicId = response[3];
@@ -192,10 +186,16 @@ export default {
 				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
+				const lenderPublicId = args?.route?.query?.lender ?? '';
+				const shareChallengeFlag = args?.route?.query?.share_challenge ?? '';
+
 				if (teamId && activeChallengeHeaderExp) {
 					return Promise.all([
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
-						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } })
+						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+						shareChallengeFlag && lenderPublicId
+							? client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } })
+							: null,
 					]);
 				}
 			});

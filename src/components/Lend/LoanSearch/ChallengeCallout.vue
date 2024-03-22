@@ -39,7 +39,6 @@ export default {
 		},
 		teamName: {
 			type: String,
-			default: 'Kiva',
 			required: true,
 		},
 	},

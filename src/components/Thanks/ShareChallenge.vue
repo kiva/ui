@@ -167,8 +167,10 @@ export default {
 			return this.teamPublicId ? `/lend/filter?team=${this.teamPublicId}` : '/teams';
 		},
 		percentageFunded() {
-			// TODO: Update once BE work is done
-			return (this.goal.fundedAmount / this.goal.totalAmount) * 100;
+			// TODO: Update once BE work is done ACK-1099
+			return this.goal?.fundedAmount && this.goal?.totalAmount
+				? (this.goal.fundedAmount / this.goal.totalAmount) * 100
+				: 0;
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
@@ -180,7 +182,7 @@ export default {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
-				lenderName: this.lender?.public && this.lender?.publicName ? `${this.lender.publicName}` : '',
+				share_challenge: 1,
 			};
 			let invitedBy = '';
 			if (this.loan.id && this.lender?.inviterName) {
