@@ -182,7 +182,6 @@ export default {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
-				share_challenge: 1,
 			};
 			let invitedBy = '';
 			if (this.loan.id && this.lender?.inviterName) {

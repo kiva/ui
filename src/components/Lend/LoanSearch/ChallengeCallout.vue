@@ -66,8 +66,7 @@ export default {
 }
 
 .container {
-	padding-left: 0;
-	padding-right: 0;
+	@apply tw-px-0;
 }
 
 @screen md {
