@@ -9,7 +9,7 @@ if (process?.env?.OTEL_DEBUG === 'true') {
 
 const { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { GraphQLInstrumentation } = require('@opentelemetry/instrumentation-graphql');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-proto');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
 const { ConsoleSpanExporter, NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
 const { Resource } = require('@opentelemetry/resources');
 const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
