@@ -186,16 +186,15 @@ export default {
 				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
+				const lenderPublicId = args?.route?.query?.lender ?? '';
+
 				if (teamId && activeChallengeHeaderExp) {
-					const lenderPublicId = args?.route?.query?.lender ?? '';
-
-					if (lenderPublicId) {
-						client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } });
-					}
-
 					return Promise.all([
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
 						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+						lenderPublicId
+							? client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } })
+							: null,
 					]);
 				}
 			});

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<kv-page-container class="container md:tw-my-4">
+		<kv-page-container class="container">
 			<kv-grid
 				class="tw-grid-cols-12"
 			>
@@ -66,21 +66,6 @@ export default {
 }
 
 .container {
-	@apply tw-px-0;
+	@apply md:tw-my-4 tw-px-0 md:tw-px-4 lg:tw-px-8;
 }
-
-@screen md {
-	.container {
-		padding-left: 2rem;
-		padding-right: 2rem;
-	}
-}
-
-@screen lg {
-	.container {
-		padding-left: 4rem !important;
-		padding-right: 4rem !important;
-	}
-}
-
 </style>
