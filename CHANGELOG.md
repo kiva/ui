@@ -1,3 +1,77 @@
+## [2.734.0-rc.1](https://github.com/kiva/ui/compare/v2.733.0...v2.734.0-rc.1) (2024-03-22)
+
+
+### 🎉 New Features
+
+* ab setup added to filters page for new challenge header ([#5193](https://github.com/kiva/ui/issues/5193)) ([80f42fe](https://github.com/kiva/ui/commit/80f42fe3019cb46af69eb5e605eea29733b251bc))
+* activities were not shown due to lendCta being mounted before knowing if experiment was enabled ([83eefc8](https://github.com/kiva/ui/commit/83eefc8846885ec76e56efc93fe61c774dcbebb2))
+* add global tracing for express + graphql, include trace and span ids in winston logs ([d9293d0](https://github.com/kiva/ui/commit/d9293d0098203d608b7b262bc7aa7bdf98f27a2e))
+* add tracking event for failing add to basket ([fa38a03](https://github.com/kiva/ui/commit/fa38a03c2790112f3be0982c420cbe8c89300bb4))
+* add tracking events to missing loan activities cta ([65569b8](https://github.com/kiva/ui/commit/65569b8c99c1105f0f4f91ba5ef6b550b756fe07))
+* challenge header data fetch added ([#5197](https://github.com/kiva/ui/issues/5197)) ([d97d942](https://github.com/kiva/ui/commit/d97d9426fb93fcaff16713a1f36589cac86ab2bd))
+* challenge header placeholder added ([#5195](https://github.com/kiva/ui/issues/5195)) ([68f40a5](https://github.com/kiva/ui/commit/68f40a519ee1c7e11c162f4e3b7e26f0af2c35ac))
+* grid width fixed on category page ([#5204](https://github.com/kiva/ui/issues/5204)) ([cee0050](https://github.com/kiva/ui/commit/cee005024ba35af44e2208621352d34675d44b20))
+* header tweaks on mobile ([#5214](https://github.com/kiva/ui/issues/5214)) ([6b6dd98](https://github.com/kiva/ui/commit/6b6dd98f8688c16d8fb45dee3d977dc5179ba9b8))
+* mobile tweaks ([ebb4a6a](https://github.com/kiva/ui/commit/ebb4a6afb57a107089ac119b8e4aaac46af880cf))
+* modify default state and add icon at the end of progress bar in progressCampaign ([9e3aa99](https://github.com/kiva/ui/commit/9e3aa99e9769e6b1caa4c041d153e382f0c792bf))
+* powered by lenders in borrower profile ([4d57f84](https://github.com/kiva/ui/commit/4d57f847e3784629981bd21fcde490d2a2ae343c))
+* progress bar to challenge header ([d30996f](https://github.com/kiva/ui/commit/d30996f9eaa1e3c5355b8683d46703c7d40cb866))
+* redirect challenges to lend/filter ([e9fe578](https://github.com/kiva/ui/commit/e9fe578525664ebc96647c0f0622634144de5ee5))
+* remove checkout upsell white space ([#5210](https://github.com/kiva/ui/issues/5210)) ([d01d293](https://github.com/kiva/ui/commit/d01d2930be5c0f27d443851d658d2227d18ab129))
+* set challenge cookie data on lend filter ([4a9cb79](https://github.com/kiva/ui/commit/4a9cb79bfd09d13e9dc93449bfc5f471d5f8f02d))
+* setup of share challenge component ([0095638](https://github.com/kiva/ui/commit/009563880bfa1f27020fbdcb633ad155c0da12fe))
+* store challenge loanIds in cookie ([4b6e0bb](https://github.com/kiva/ui/commit/4b6e0bbb26b24bc2c4e9528d64e070bf06c679ad))
+* team challenge info added to challenge header ([#5199](https://github.com/kiva/ui/issues/5199)) ([7b0ac4d](https://github.com/kiva/ui/commit/7b0ac4dfdd7a62e5a3c899e67fb181bc3dfe752a))
+* team picks handled for challenge header ([#5206](https://github.com/kiva/ui/issues/5206)) ([c74af7b](https://github.com/kiva/ui/commit/c74af7bfc120b7745ff456d95839b39885e2de84))
+* team picks switch added for team challenges on filters page ([#5201](https://github.com/kiva/ui/issues/5201)) ([80782bf](https://github.com/kiva/ui/commit/80782bf5214c0ecc8ca116ca70f5ab2465dc34b1))
+* using kvAvatar component instead of img ([9fd3cf8](https://github.com/kiva/ui/commit/9fd3cf89c80ca50342cd5f4e5fc4f3ffc3773b2d))
+
+
+### 🐛 Bugfixes
+
+* add an apollo retry link to handle network errors ([7809a21](https://github.com/kiva/ui/commit/7809a21d543d6383749f9cb10f7b81f35c1b0063))
+* add email notification checkbox to saved search modal ([dc5718e](https://github.com/kiva/ui/commit/dc5718e425be8a64d5f461724b9f1f0b8f932ec1))
+* add new filter to remove corporate lenders from BP activity feed ([8910461](https://github.com/kiva/ui/commit/89104611703ac07cf3cb411134436344f52455f5))
+* add to basket from loanActivities component ([777e046](https://github.com/kiva/ui/commit/777e046f7487fd0bebda6ca6f90d590d698759ec))
+* add todo for amount goal ([c5d589f](https://github.com/kiva/ui/commit/c5d589f8c4266240da14a099f3cd269cbe1f86d9))
+* add white bg to progress bar on challenge header ([0888924](https://github.com/kiva/ui/commit/0888924310444f30e63b03a03cda5286ab843b18))
+* center progress bar icon ([439b612](https://github.com/kiva/ui/commit/439b612e408d4c0deccd7308fb60f44d9fc50aa1))
+* convert otel enabled switch to string instead of bool ([0f5b7f7](https://github.com/kiva/ui/commit/0f5b7f7615c0d776faaa611898156dd50e56d213))
+* copy and filename changes ([79e9741](https://github.com/kiva/ui/commit/79e9741f3262709874b2c0bc95bfa9eefbaa9da2))
+* correct size profile image on mobile ([#5215](https://github.com/kiva/ui/issues/5215)) ([d424bd3](https://github.com/kiva/ui/commit/d424bd3506baaef126b21987e379d6f54f4c7d68))
+* ensure loanAmount type is Number ([d1b361f](https://github.com/kiva/ui/commit/d1b361f976ff40e415f55a187f0ba53f513d118d))
+* event category ([42b578b](https://github.com/kiva/ui/commit/42b578b63ab8f71bef762babddd8cf8f98386fbd))
+* event name to kebab case ([bac2ade](https://github.com/kiva/ui/commit/bac2ade14aec9a34a70f6548a8e3eb528e495352))
+* invalid tracking name ([709123b](https://github.com/kiva/ui/commit/709123be6c45c5e25c1ed63d16fdb1d64b835d29))
+* lint ([5071805](https://github.com/kiva/ui/commit/50718054c486455745fa45684132b44916841bfd))
+* more direct check for active retry state ([c499ee1](https://github.com/kiva/ui/commit/c499ee1e1ab9658cccffd926e2d7931068a0b8bd))
+* progress bar bug fixed in challenge header ([#5205](https://github.com/kiva/ui/issues/5205)) ([c80f11e](https://github.com/kiva/ui/commit/c80f11ea26927f992c1e0320fabb0cbf110b2e43))
+* remove adding cookies on load lend/filter and add tests for setCookie method ([312c359](https://github.com/kiva/ui/commit/312c3597b97e12fb95745f65d965ec8f41ff2f6c))
+* remove unnecessary code ([8b9ead2](https://github.com/kiva/ui/commit/8b9ead2c483b7d18ba9f974d76f3366f3c068c30))
+* removing old campaign component references and shadow fix ([4fe955c](https://github.com/kiva/ui/commit/4fe955c1931b884f23988a4b14b8d86ae85960ac))
+* rename network error logging link ([3c607cb](https://github.com/kiva/ui/commit/3c607cb23f43555aed1422f90e18dbeaf0da9790))
+* setup config value with defaults to preserve current state ([76c3315](https://github.com/kiva/ui/commit/76c331574f4b7c9f2a8f9af591c36761cb8c6160))
+* small design fixes ([2c46e3a](https://github.com/kiva/ui/commit/2c46e3aa0c2f5fa23bd5b72b67e7e4937f31177d))
+* solve conflict ([71339ca](https://github.com/kiva/ui/commit/71339ca3622be4a64b1a20de5cb5b735e5ac7e62))
+* solve conflicts ([a699d56](https://github.com/kiva/ui/commit/a699d5620706f061774a5b801dcde5f60a1df4c0))
+* sync package-lock ([95d15bc](https://github.com/kiva/ui/commit/95d15bc81d21e3f7f2531ae4319c1068cc1c8cc0))
+* typo in action ([0f2a5bb](https://github.com/kiva/ui/commit/0f2a5bb0cf57866280a650b8d2b923736d1c5418))
+* update cookie when loan is added and challenge is active ([65442a0](https://github.com/kiva/ui/commit/65442a0ea2e8ebcfa56abf1345da949568f477e8))
+* update var names ([2af71b9](https://github.com/kiva/ui/commit/2af71b9040c12d24432eb0417bf0d22c273d4bae))
+* update with main, update package-lock ([766c7ab](https://github.com/kiva/ui/commit/766c7ab848bfa83eecbef93bcc12606438568543))
+* use OTEL env vars for service name and namespace ([21a27d2](https://github.com/kiva/ui/commit/21a27d2f3c6b238a6046dcbd2995a5e5f6e0424a))
+
+
+### 🪚 Refactors
+
+* clean some unused code ([27f24b6](https://github.com/kiva/ui/commit/27f24b611c24982734d7b4630b72099b9092b3e3))
+* cleaning up iwd components and small fixes ([1fa2966](https://github.com/kiva/ui/commit/1fa296610459185cee1de0171834457fcc7c7760))
+
+
+### 🧹 Chores
+
+* update developers assigned to dependency updates ([92fa03a](https://github.com/kiva/ui/commit/92fa03a77beb917d0e91cb30a0c47510a1e70899))
+
 ## [2.733.0](https://github.com/kiva/ui/compare/v2.732.1...v2.733.0) (2024-03-08)
 
 
