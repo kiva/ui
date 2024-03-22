@@ -1,5 +1,11 @@
 <template>
 	<www-page id="lend-filter">
+		<challenge-callout
+			class="tw-bg-secondary md:tw-pt-4 md:tw-pb-1 tw-pb-4"
+			v-if="showChallengeHeader && !!teamData"
+			:lender="lender"
+			:team-name="teamData.name"
+		/>
 		<article
 			class="tw-bg-secondary tw-relative"
 			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader }"
@@ -64,6 +70,9 @@ import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
@@ -90,6 +99,7 @@ export default {
 		KvMaterialIcon,
 		LoanSearchInterface,
 		ChallengeHeader,
+		ChallengeCallout,
 	},
 	data() {
 		return {
@@ -102,6 +112,7 @@ export default {
 			enableChallengeHeader: false,
 			challengeData: {},
 			teamData: {},
+			lender: null,
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -175,10 +186,15 @@ export default {
 				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
+				const lenderPublicId = args?.route?.query?.lender ?? '';
+
 				if (teamId && activeChallengeHeaderExp) {
 					return Promise.all([
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
-						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } })
+						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+						lenderPublicId
+							? client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } })
+							: null,
 					]);
 				}
 			});
@@ -254,6 +270,22 @@ export default {
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
+
+				try {
+					const publicId = this.$route.query.lender;
+					const data = this.apollo.readQuery({
+						query: lenderPublicProfile,
+						variables: {
+							publicId,
+						}
+					});
+					this.lender = data?.community?.lender ?? {};
+				} catch (e) {
+					logReadQueryError(
+						e,
+						`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
+					);
+				}
 			}
 		}
 	},
