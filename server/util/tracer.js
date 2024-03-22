@@ -2,8 +2,8 @@ const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 const opentelemetry = require('@opentelemetry/api');
 
 // Not functionally required but gives some insight what happens behind the scenes
-// const { diag, DiagConsoleLogger, DiagLogLevel } = opentelemetry;
-// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+const { diag, DiagConsoleLogger, DiagLogLevel } = opentelemetry;
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 
 const { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { GraphQLInstrumentation } = require('@opentelemetry/instrumentation-graphql');
@@ -14,7 +14,7 @@ const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winst
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
 // Basic export switch to enable console or OTLP
-const Exporter = (process.env.OPENTELEMETRY_EXPORTER_TYPE || '').toLowerCase().startsWith('c')
+const Exporter = (process?.env?.OPENTELEMETRY_EXPORTER_TYPE ?? 'export')?.toLowerCase().startsWith('c')
 	? ConsoleSpanExporter : OTLPTraceExporter;
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
