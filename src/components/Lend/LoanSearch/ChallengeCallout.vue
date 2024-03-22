@@ -66,6 +66,6 @@ export default {
 }
 
 .container {
-	@apply md:tw-my-4 tw-px-0 md:tw-px-4 lg:tw-px-8;
+	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
 }
 </style>
