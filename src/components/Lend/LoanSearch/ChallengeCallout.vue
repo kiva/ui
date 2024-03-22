@@ -61,27 +61,27 @@ export default {
 
 <style lang="postcss">
 .info {
-  @apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-0.5
-    md:tw-rounded-lg tw-rounded-b tw-px-4;
+	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-0.5
+		md:tw-rounded-lg tw-rounded-b tw-px-4;
 }
 
 .container {
-  padding-left: 0rem;
-  padding-right: 0rem;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 @screen md {
-  .container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+	.container {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
 }
 
 @screen lg {
-  .container {
-    padding-left: 4rem !important;
-    padding-right: 4rem !important;
-  }
+	.container {
+		padding-left: 4rem !important;
+		padding-right: 4rem !important;
+	}
 }
 
 </style>
