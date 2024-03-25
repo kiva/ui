@@ -45,11 +45,16 @@
 			</div>
 		</div>
 		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
-			<div class="tw-bg-white tw-p-3 tw-rounded tw-shadow-lg tw-mx-1">
+			<div class="tw-bg-white tw-px-3 tw-pt-2 tw-pb-1 tw-rounded tw-shadow-lg tw-mx-1">
 				<kv-progress-campaign
 					:funded-amount="fundedAmount"
 					:total-amount="totalAmount"
 					:days-left="daysLeft"
+				/>
+				<supported-by-lenders
+					class="tw-mt-1.5"
+					:participants="participants"
+					is-challenge
 				/>
 			</div>
 
@@ -64,6 +69,7 @@
 <script>
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 import KvInlineActivityFeed from '~/@kiva/kv-components/vue/KvInlineActivityFeed';
 
@@ -73,6 +79,7 @@ export default {
 		KvProgressCampaign,
 		KvUserAvatar,
 		KvInlineActivityFeed,
+		SupportedByLenders,
 	},
 	props: {
 		challengeData: {
@@ -138,6 +145,9 @@ export default {
 
 			return data;
 		},
+		participants() {
+			return this.challengeData?.participation ?? {};
+		}
 	},
 };
 </script>
