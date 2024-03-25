@@ -341,6 +341,26 @@
 								Basket
 							</router-link>
 
+							<!-- Mobile Basket -->
+							<router-link
+								to="/basket"
+								data-testid="header-basket"
+								:class="{
+									'tw-hidden': !hasBasket,
+									'tw-relative tw-pt-0.5 md:tw-hidden tw-text-eco-green-4': hasBasket
+								}"
+								v-kv-track-event="['TopNav','click-Basket']"
+							>
+								<!-- eslint-disable-next-line max-len -->
+								<span class="tw-absolute tw-w-4 tw-h-4 tw-top-1.5 tw-text-white tw-text-center tw-text-small tw-font-medium">
+									{{ basketCount }}
+								</span>
+								<kv-material-icon
+									:icon="mdiBriefcase"
+									class="tw-inline-block tw-w-4 tw-h-4"
+								/>
+							</router-link>
+
 							<!-- Log in Link -->
 							<router-link
 								v-show="isVisitor"
@@ -380,7 +400,7 @@
 									<span class="tw-sr-only">My Portfolio</span>
 									<kv-material-icon
 										:icon="mdiAccountCircle"
-										class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
+										class="tw-inline-block tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5"
 									/>
 								</template>
 								<img
@@ -388,7 +408,7 @@
 									:src="profilePic"
 									alt="My portfolio"
 									class="data-hj-suppress tw-inline-block
-										tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
+										tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5
 										tw-rounded-full tw-overflow-hidden tw-object-fill"
 								>
 							</router-link>
@@ -532,7 +552,12 @@ import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import { gql } from '@apollo/client';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '@/components/Kv/KvDropdown';
-import { mdiAccountCircle, mdiChevronDown, mdiMagnify } from '@mdi/js';
+import {
+	mdiAccountCircle,
+	mdiChevronDown,
+	mdiMagnify,
+	mdiBriefcase,
+} from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -593,6 +618,7 @@ export default {
 			mdiAccountCircle,
 			mdiChevronDown,
 			mdiMagnify,
+			mdiBriefcase,
 			userId: null,
 			hasEverLoggedIn: false,
 			isMobile: false,

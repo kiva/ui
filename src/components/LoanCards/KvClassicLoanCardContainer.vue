@@ -23,6 +23,7 @@
 			:user-balance="userBalance"
 			:get-cookie="getCookie"
 			:set-cookie="setCookie"
+			:is-team-pick="isTeamPick"
 			@toggle-bookmark="toggleBookmark"
 			@add-to-basket="addToBasket"
 		/>
@@ -118,6 +119,10 @@ export default {
 		fiveDollarsSelected: {
 			type: Boolean,
 			default: false
+		},
+		isTeamPick: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	inject: ['apollo', 'cookieStore'],

@@ -256,7 +256,7 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-					<div v-if="enableActivityFeed">
+					<div v-if="!!activities">
 						<hr
 							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
 							:class="[
@@ -266,10 +266,18 @@
 								}
 							]"
 						>
+						<supported-by-lenders
+							:participants="participants"
+						/>
 						<kv-loan-activities
 							class="tw-w-full"
 							:loan="loan"
 							:activities="activities"
+							:basket-items="basketItems"
+							:user-balance="userBalance"
+							:error-msg="errorMsg"
+							:is-adding="isAdding"
+							@add-to-basket="addToBasket"
 						/>
 					</div>
 				</div>
@@ -376,7 +384,7 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
@@ -399,7 +407,7 @@ import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrappe
 
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoanActivities from '@/components/Kv/KvLoanActivities';
-import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -417,9 +425,9 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		enableActivityFeed: {
-			type: Boolean,
-			default: false,
+		activities: {
+			type: Object,
+			default: null,
 		}
 	},
 	components: {
@@ -432,7 +440,8 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		KvLoanActivities
+		KvLoanActivities,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -468,8 +477,8 @@ export default {
 			matchingHighlightExpShown: false,
 			inPfp: false,
 			userBalance: undefined,
-			activities: null,
 			loan: null,
+			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -570,8 +579,14 @@ export default {
 		},
 	},
 	methods: {
-		async addToBasket() {
+		async addToBasket(lendAmount = 0) {
+			if (lendAmount) {
+				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
 			this.isAdding = true;
+			this.errorMsg = '';
+			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
@@ -584,12 +599,15 @@ export default {
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
 			}).catch(e => {
+				if (e?.message !== INVALID_BASKET_ERROR) {
+					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
+				}
 				this.isAdding = false;
-				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
+				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
-				this.$showTipMsg(msg, 'error');
+				this.$showTipMsg(this.errorMsg, 'error');
 			});
 		},
 		createWrapperObserver() {
@@ -842,18 +860,12 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		participants() {
+			return this.activities?.lend?.loan?.lendingActions ?? {};
 		}
 	},
-	async mounted() {
-		if (this.enableActivityFeed) {
-			const response = await this.apollo.query({
-				query: loanActivitiesQuery,
-				variables: { loanId: this.loanId }
-			});
-
-			this.activities = response?.data ?? null;
-		}
-
+	mounted() {
 		this.createWrapperObserver();
 	},
 	beforeDestroy() {

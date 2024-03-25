@@ -1,10 +1,18 @@
 query GetGoals($teamId: Int, $limit: Int) {
-	getGoals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId, status: [IN_PROGRESS, NONE]}) {
+	goals(limit: $limit, filters: { audienceType: TEAM, isActive: true, teamId: $teamId, status: [IN_PROGRESS, NONE]}) {
 		totalCount
 		values {
 			id
-			description
 			name
+			description
+			descriptionAuthor {
+				id
+				name
+				image {
+					id
+					url
+				}
+			}
 			participation {
 				totalCount
 				values {

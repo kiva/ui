@@ -1,6 +1,6 @@
-query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int]) {
+query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int], $team_public_id: String) {
 	community {
-		team(id: $team_id) {
+		team(id: $team_id, teamPublicId: $team_public_id) {
 			id
 			name
 			membershipType

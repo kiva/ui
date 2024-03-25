@@ -2,46 +2,54 @@
 	<figure class="tw-grow">
 		<div class="tw-flex tw-items-center tw-justify-between">
 			<p>
-				{{ fundedBorrowers }} funded
+				{{ daysLeft }} days remaining
 			</p>
 			<p v-if="!minimalStats">
-				{{ borrowersLeft }} to go
+				{{ numeral(amountLeft).format('$0,0') }} to go
 			</p>
 		</div>
-		<kv-progress-bar
-			class="tw-my-0.5"
-			aria-label="Percent the loan has funded"
-			:value="progressPercentage"
-			:bg-variant="bgVariant"
-		/>
-		<div v-if="!minimalStats">
-			<p>
-				{{ daysLeft }} days left
-			</p>
+		<div class="tw-relative tw-mt-1">
+			<kv-progress-bar
+				class="progress-bar"
+				aria-label="Percent the campaign has funded"
+				:value="progressPercentage"
+				:bg-variant="bgVariant"
+			/>
+			<div
+				class="tw-bg-white tw-rounded-full tw-absolute tw-right-0 tw-p-0.5 tw-shadow
+					tw-w-4.5 tw-h-4.5 tw-flex tw-justify-center"
+			>
+				<heart-out-from-box class="tw-w-3" />
+			</div>
 		</div>
 	</figure>
 </template>
 
 <script>
+import numeral from 'numeral';
+import HeartOutFromBox from '@/assets/inline-svgs/challenge/heart-out-from-box.svg';
 import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'KvProgressCampaign',
 	components: {
-		KvProgressBar
+		KvProgressBar,
+		HeartOutFromBox
 	},
 	props: {
-		fundedBorrowers: {
+		fundedAmount: {
 			type: Number,
+			default: 0,
 			required: true,
 		},
-		totalBorrowers: {
+		totalAmount: {
 			type: Number,
+			default: 0,
 			required: true,
 		},
 		daysLeft: {
 			type: Number,
-			required: true,
+			default: 0,
 		},
 		minimalStats: {
 			type: Boolean,
@@ -51,16 +59,17 @@ export default {
 	data() {
 		return {
 			bgVariant: 'tertiary',
+			numeral,
 		};
 	},
 	computed: {
-		borrowersLeft() {
-			return this.totalBorrowers - this.fundedBorrowers > 0
-				? this.totalBorrowers - this.fundedBorrowers
+		amountLeft() {
+			return this.totalAmount - this.fundedAmount > 0
+				? this.totalAmount - this.fundedAmount
 				: 0;
 		},
 		progressPercentage() {
-			return (this.fundedBorrowers / this.totalBorrowers) * 100;
+			return (this.fundedAmount / this.totalAmount) * 100;
 		},
 	},
 };
@@ -72,7 +81,11 @@ export default {
 	}
 
 	p {
-		font-weight: 600;
-		@apply tw-text-small;
+		@apply tw-font-medium;
+	}
+
+	.progress-bar {
+		height: 0.75rem !important;
+		@apply tw-my-0.5;
 	}
 </style>
