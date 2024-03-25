@@ -45,14 +45,18 @@
 			</div>
 		</div>
 		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
-			<div class="tw-bg-white tw-p-3 tw-rounded">
+			<div class="tw-bg-white tw-p-3 tw-rounded tw-shadow-lg tw-mx-1">
 				<kv-progress-campaign
 					:funded-amount="fundedAmount"
 					:total-amount="totalAmount"
 					:days-left="daysLeft"
 				/>
 			</div>
-			<!-- Activity Feed -->
+
+			<kv-inline-activity-feed
+				v-if="challengeActivity.length > 0"
+				:activities="challengeActivity"
+			/>
 		</div>
 	</div>
 </template>
@@ -61,12 +65,14 @@
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
 import intervalToDuration from 'date-fns/intervalToDuration';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvInlineActivityFeed from '~/@kiva/kv-components/vue/KvInlineActivityFeed';
 
 export default {
 	name: 'ChallengeHeader',
 	components: {
 		KvProgressCampaign,
 		KvUserAvatar,
+		KvInlineActivityFeed,
 	},
 	props: {
 		challengeData: {
@@ -111,6 +117,26 @@ export default {
 				start,
 				end,
 			}).days;
+		},
+		challengeActivity() {
+			const activities = this.challengeData?.participation?.values ?? [];
+			const data = [];
+
+			activities
+				// Show one activity item per lender with the amounts summed
+				.forEach(activity => {
+					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
+					if (existing) {
+						const existingAmount = parseFloat(existing?.amountLent ?? 0);
+						const activityAmount = parseFloat(activity?.amountLent ?? 0);
+						existing.amountLent = existingAmount + activityAmount;
+					} else {
+						// Shallow copy the read-only object so we can sum the amountLent
+						data.push({ ...activity });
+					}
+				});
+
+			return data;
 		},
 	},
 };
