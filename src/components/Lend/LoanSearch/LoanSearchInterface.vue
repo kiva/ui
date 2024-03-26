@@ -366,10 +366,33 @@ export default {
 
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
-		showSavedSearch() {
+		activeFilters() {
 			return filterConfig.keys.reduce((prev, key) => {
-				return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
-			}, false);
+				if (filterConfig.config[key].showSavedSearch(this.loanSearchState)) {
+					prev.push(key);
+				}
+				return prev;
+			}, []);
+		},
+		// MPL-56 - Temporarily hiding save search for new filters
+		unsupportedSaveFilters() {
+			return (
+				this.activeFilters.length === 1
+				&& (
+					this.activeFilters.includes('keywordSearch')
+					|| this.activeFilters.includes('flexibleFundraisingEnabled')
+				)
+			)
+			|| (
+				this.activeFilters.length === 2
+				&& this.activeFilters.includes('keywordSearch')
+				&& this.activeFilters.includes('flexibleFundraisingEnabled'));
+		},
+		showSavedSearch() {
+			return !this.unsupportedSaveFilters
+				&& filterConfig.keys.reduce((prev, key) => {
+					return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
+				}, false);
 		},
 	},
 	methods: {
