@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full tw-gap-1 lg:tw-gap-5 tw-mb-4 lg:tw-mb-6">
+	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full tw-gap-1 lg:tw-gap-5 tw-mb-4 lg:tw-mb-4">
 		<div class="lg:tw-basis-3/5 tw-flex tw-flex-col tw-gap-y-2">
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<img
@@ -44,7 +44,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
+		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0 tw-min-w-0">
 			<div class="tw-bg-white tw-px-3 tw-pt-2 tw-pb-1 tw-rounded tw-shadow-lg tw-mx-1">
 				<kv-progress-campaign
 					:funded-amount="fundedAmount"
