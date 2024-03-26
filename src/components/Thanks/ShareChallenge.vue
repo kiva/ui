@@ -167,10 +167,10 @@ export default {
 			return this.teamPublicId ? `/lend/filter?team=${this.teamPublicId}` : '/teams';
 		},
 		percentageFunded() {
-			// TODO: Update once BE work is done ACK-1099
-			return this.goal?.fundedAmount && this.goal?.totalAmount
-				? (this.goal.fundedAmount / this.goal.totalAmount) * 100
-				: 0;
+			const targetAmount = this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
+			const fundedAmount = this.goal?.participation?.lendAmount ?? 0;
+
+			return (fundedAmount / targetAmount) * 100 || 0;
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
