@@ -29,10 +29,17 @@ const story = (args = {}) => {
 	return template;
 };
 
-// TODO: WIP - needs to be updated once BE is done
 const goal = {
-  fundedAmount: 10,
-  totalAmount: 20,
+	participation: {
+		lendAmount: 10
+	},
+	targets: {
+		values: [
+			{
+				targetLendAmount: 20,
+			}
+		]
+	}
 }
 
 const loan = {
