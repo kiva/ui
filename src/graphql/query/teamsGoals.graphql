@@ -35,6 +35,9 @@ query GetGoals($teamId: Int, $limit: Int) {
 						loanId
 						status
 					}
+					... on AmountLentGoalTarget {
+						targetLendAmount
+					}
 				}
 			}
 			startDate
