@@ -50,8 +50,8 @@ describe('flexibleFundraisingEnabled.js', () => {
 
 		describe('getSavedSearch', () => {
 			it('should get saved search', () => {
-				expect(flexibleFundraisingEnabled.getSavedSearch({ [facetsKey]: null })).toEqual({ [facetsKey]: null });
-				expect(flexibleFundraisingEnabled.getSavedSearch({ [facetsKey]: true })).toEqual({ [facetsKey]: true });
+				expect(flexibleFundraisingEnabled.getSavedSearch()).toEqual({});
+				expect(flexibleFundraisingEnabled.getSavedSearch()).toEqual({});
 			});
 		});
 

@@ -66,7 +66,7 @@ export default {
 		query: teamsGoals,
 		preFetch: true,
 		result(result) {
-			const teams = _groupBy(result?.data?.getGoals?.values ?? [], 'teamId');
+			const teams = _groupBy(result?.data?.goals?.values ?? [], 'teamId');
 			this.activeGoals = _map(teams, goals => {
 				return _orderBy(goals, [g => new Date(g.startDate)], 'desc')[0];
 			});

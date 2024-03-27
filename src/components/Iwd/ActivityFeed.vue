@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-gap-x-0.5 tw-overflow-x-auto tw-py-2 tw-px-1 hide-scrollbar">
 		<activity-card
-			v-for="(activity, index) in activities"
+			v-for="(activity, index) in aggregatedActivities"
 			:key="index"
 			:activity="activity"
 		/>
@@ -33,6 +33,30 @@ export default {
 				logReadQueryError(e, 'ActivityFeed iwdActionsQuery');
 			}
 		},
+	},
+	computed: {
+		aggregatedActivities() {
+			const data = [];
+
+			this.activities
+				// Exclude some expected corporate lending accounts
+				// TODO: remove when corporate lending accounts get filtered in campaignActions endpoint
+				.filter(a => ![2716811, 6160978, 6160977, 6175667, 6175666].includes(a?.lender?.id))
+				// Show one activity item per lender with the amounts summed
+				.forEach(activity => {
+					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
+					if (existing) {
+						const existingAmount = parseFloat(existing?.shareAmount ?? 0);
+						const activityAmount = parseFloat(activity?.shareAmount ?? 0);
+						existing.shareAmount = existingAmount + activityAmount;
+					} else {
+						// Shallow copy the read-only object so we can sum the shareAmount
+						data.push({ ...activity });
+					}
+				});
+
+			return data;
+		}
 	},
 	async mounted() {
 		await this.fetchActivities();

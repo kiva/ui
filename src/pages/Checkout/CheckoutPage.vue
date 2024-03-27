@@ -44,10 +44,10 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="showUpsell" class="upsellContainer">
+						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
-								v-if="showUpsellModule && upsellLoan.name"
+								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"

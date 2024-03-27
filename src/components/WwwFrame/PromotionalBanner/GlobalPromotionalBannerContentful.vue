@@ -107,7 +107,7 @@ export default {
 				if (activePromoBanner && activePromoBanner?.fields) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = globalBannerDenyList.concat(activePromoBanner?.fields?.hiddenUrls ?? []);
-					const visibleUrls = [];
+					const visibleUrls = activePromoBanner?.fields?.visibleUrls ?? [];
 					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
 
 					// check for visibility on promo session override
