@@ -5,12 +5,6 @@ const lender = { id: 1, name: 'Lender' };
 const teamName = 'Team Test';
 
 describe('ChallengeCallout', () => {
-	it('should display default message', () => {
-		const { getByText } = render(ChallengeCallout, { props: { teamName } });
-
-		getByText(`Help ${teamName} hit their goal`);
-	});
-
 	it('should display lender in message', () => {
 		const { getByText } = render(ChallengeCallout, {
 			props: { lender, teamName }

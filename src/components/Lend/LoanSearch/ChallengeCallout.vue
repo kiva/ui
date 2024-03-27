@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="lenderName">
 		<kv-page-container class="container">
 			<kv-grid
 				class="tw-grid-cols-12"
