@@ -152,8 +152,8 @@ export default {
 			default: '',
 		},
 		loan: {
-			type: Number,
-			default: 0,
+			type: Object,
+			default: () => ({}),
 		},
 		lender: {
 			type: Object,
@@ -190,7 +190,9 @@ export default {
 		},
 		percentageFunded() {
 			const targetAmount = this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
-			const fundedAmount = this.goal?.participation?.lendAmount ?? 0;
+			const fundedAmount = this.goal?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
 
 			return (fundedAmount / targetAmount) * 100 || 0;
 		},
