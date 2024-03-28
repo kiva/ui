@@ -318,7 +318,7 @@ export default {
 			return this.loans?.[0]?.team?.teamPublicId;
 		},
 		challengeLoan() {
-			return (this.loans?.filter(l => l?.team?.id === this.goal.teamId) ?? [])?.[0];
+			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
 		},
 	},
 	created() {
