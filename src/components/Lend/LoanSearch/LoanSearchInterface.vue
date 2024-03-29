@@ -42,6 +42,8 @@
 						</template>
 						<team-picks-switch
 							v-if="showChallengeHeader"
+							:show-picks="showTeamPicks"
+							@handle-team-picks="handleTeamPicks"
 						/>
 						<loan-search-filter
 							style="min-width: 285px;"
@@ -85,6 +87,7 @@
 					<team-picks-switch
 						v-if="showChallengeHeader"
 						class="tw-mb-2"
+						:show-picks="showTeamPicks"
 						@handle-team-picks="handleTeamPicks"
 					/>
 					<loan-search-filter
@@ -122,13 +125,18 @@
 					</div>
 				</div>
 				<template v-if="initialLoadComplete && totalCount === 0">
-					<h3 class="tw-text-center">
-						All borrowers matching this search have been funded.
+					<div class="tw-mt-2" v-if="!showChallengeHeader">
+						<h3 class="tw-text-center">
+							All borrowers matching this search have been funded.
+						</h3>
+						<p class="tw-text-center tw-mt-2">
+							Please adjust your criteria or
+							<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
+						</p>
+					</div>
+					<h3 v-else class="tw-text-center tw-mt-2">
+						There are no team picks matching your filters.
 					</h3>
-					<p class="tw-text-center tw-mt-2">
-						Please adjust your criteria or
-						<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
-					</p>
 				</template>
 				<!-- eslint-disable max-len -->
 				<div
@@ -231,9 +239,9 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		showChallengeHeader: {
-			type: Boolean,
-			default: false,
+		challengeData: {
+			type: Object,
+			default: () => ({}),
 		},
 	},
 	data() {
@@ -256,6 +264,7 @@ export default {
 			userId: null,
 			userBalance: undefined,
 			showTeamPicks: false,
+			challengeFilters: {},
 		};
 	},
 	apollo: {
@@ -300,6 +309,9 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LoanSearchInterface itemsInBasketQuery');
 		}
+
+		// Get challenge filters and loans
+		this.getChallengeFilters();
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
@@ -394,6 +406,9 @@ export default {
 					return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
 				}, false);
 		},
+		showChallengeHeader() {
+			return Object.keys(this.challengeData).length !== 0;
+		},
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
@@ -473,7 +488,26 @@ export default {
 		},
 		handleTeamPicks(payload) {
 			this.showTeamPicks = payload;
-		}
+			if (this.showTeamPicks) {
+				this.getChallengeFilters();
+			} else {
+				updateQueryParams({}, this.$router, this.queryType);
+			}
+		},
+		getChallengeFilters() {
+			const challengeFilters = this.challengeData?.targets?.values?.[0].savedSearch?.filters?.[0] ?? {};
+			const challengeEntries = Object.entries(challengeFilters);
+			const challengeFiltersObject = {};
+
+			challengeEntries.forEach(([key, value]) => {
+				const filterEntry = Object.entries(value);
+				const valueEntry = filterEntry[0][1];
+				challengeFiltersObject[key] = valueEntry;
+			});
+
+			updateQueryParams(challengeFiltersObject, this.$router, this.queryType);
+			this.challengeFilters = challengeFiltersObject;
+		},
 	},
 	watch: {
 		$route(to) {
@@ -486,7 +520,22 @@ export default {
 				this.loanSearchState.pageLimit,
 				this.loanSearchState
 			);
-		}
+		},
+		loanSearchState() {
+			const challengeFiltersKeys = Object.keys(this.challengeFilters);
+
+			challengeFiltersKeys.forEach(key => {
+				if (Array.isArray(this.challengeFilters[key])) {
+					this.challengeFilters[key].forEach(value => {
+						if (!this.loanSearchState[key].includes(value)) {
+							this.showTeamPicks = false;
+						}
+					});
+				} else if (this.loanSearchState[key] !== this.challengeFilters[key]) {
+					this.showTeamPicks = false;
+				}
+			});
+		},
 	}
 };
 </script>
