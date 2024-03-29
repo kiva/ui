@@ -76,16 +76,20 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-	div {
-		@apply tw-flex tw-items-center tw-justify-between;
-	}
+div {
+	@apply tw-flex tw-items-center tw-justify-between;
+}
 
-	p {
-		@apply tw-font-medium;
-	}
+p {
+	@apply tw-font-medium;
+}
 
-	.progress-bar {
-		height: 0.75rem !important;
-		@apply tw-my-0.5;
-	}
+.progress-bar {
+	height: 0.75rem !important;
+	@apply tw-my-0.5;
+}
+
+.progress-bar >>> div {
+	height: 0.75rem;
+}
 </style>

@@ -1,21 +1,12 @@
 <template>
 	<www-page data-testid="thanks-page">
-		<template v-if="enableShareChallenge">
-			<share-challenge
-				:goal="goal"
-				:loan="challengeLoan"
-				:team-public-id="teamPublicId"
-				:lender="lender"
-				:is-guest="isGuest"
-			/>
-		</template>
-		<template v-else-if="isOnlyDonation">
+		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
 		<template v-else>
-			<div v-if="showChallengeHeader" class="tw-bg-secondary">
+			<div v-if="!showMayChallengeHeader && showChallengeHeader" class="tw-bg-secondary">
 				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
@@ -94,6 +85,36 @@
 					</template>
 				</thanks-layout-v2>
 			</div>
+			<template v-if="showMayChallengeHeader">
+				<div
+					v-if="loans.length > 0"
+					class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
+				>
+					<template v-if="receipt">
+						Thanks for supporting
+						<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
+						We've emailed your order confirmation to
+						<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
+						<span v-else>you.</span>
+					</template>
+					<template v-else>
+						Please log in to see your receipt.
+						<kv-button
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+							class="tw-ml-1"
+						>
+							Log in to continue
+						</kv-button>
+					</template>
+				</div>
+				<share-challenge
+					:goal="goal"
+					:loan="challengeLoan"
+					:team-public-id="teamPublicId"
+					:lender="lender"
+					:is-guest="isGuest"
+				/>
+			</template>
 			<thanks-page-comment-and-share
 				v-if="receipt && showFocusedShareAsk"
 				:receipt="receipt"
@@ -104,6 +125,7 @@
 				:ftd-credit-amount="ftdCreditAmount"
 				@guest-create-account="createGuestAccount"
 				:ask-for-comments="askForComments"
+				:hide-share-section="showMayChallengeHeader"
 			/>
 		</template>
 	</www-page>
@@ -199,7 +221,7 @@ export default {
 			ftdCreditAmount: '',
 			goal: null,
 			showChallengeHeader: false,
-			enableShareChallenge: false,
+			enableMayChallengeHeader: false,
 		};
 	},
 	apollo: {
@@ -318,7 +340,10 @@ export default {
 			return this.loans?.[0]?.team?.teamPublicId;
 		},
 		challengeLoan() {
-			return (this.loans?.filter(l => l?.team?.id === this.goal.teamId) ?? [])?.[0];
+			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
+		},
+		showMayChallengeHeader() {
+			return this.challengeLoan && this.enableMayChallengeHeader;
 		},
 	},
 	created() {
@@ -438,11 +463,12 @@ export default {
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
+		// Check for May challenge header experiment
 		const shareChallengeExpData = this.apollo.readFragment({
 			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
-		this.enableShareChallenge = shareChallengeExpData?.version === 'b';
+		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 	},
 	methods: {
 		createGuestAccount() {
