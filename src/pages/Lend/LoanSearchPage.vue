@@ -50,6 +50,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:show-challenge-header="showChallengeHeader"
+					:challenge-data="challengeData"
 					@add-to-basket="addLoanToChallengeCookie"
 				/>
 			</kv-page-container>

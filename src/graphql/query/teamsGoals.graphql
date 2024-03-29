@@ -37,6 +37,9 @@ query GetGoals($teamId: Int, $limit: Int) {
 					}
 					... on AmountLentGoalTarget {
 						targetLendAmount
+						savedSearch {
+							filters
+						}
 					}
 				}
 			}
