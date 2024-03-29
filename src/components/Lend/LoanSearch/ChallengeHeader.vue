@@ -111,11 +111,12 @@ export default {
 			return this.challengeData?.descriptionAuthor?.image?.url ?? '';
 		},
 		fundedAmount() {
-			// TODO: Change this when we have the correct data name
-			return this.challengeData?.amountGoal ?? 0;
+			return this.challengeData?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
 		},
 		totalAmount() {
-			return this.challengeData?.participation?.amountLent ?? 0;
+			return this.challengeData?.targets?.values?.[0]?.targetLendAmount ?? 0;
 		},
 		daysLeft() {
 			const start = this.challengeData?.startDate ? new Date(this.challengeData?.startDate) : new Date();
