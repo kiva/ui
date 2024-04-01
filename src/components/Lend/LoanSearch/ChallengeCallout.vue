@@ -5,27 +5,17 @@
 				<div class="tw-col-span-12 tw-w-full">
 					<div class="info tw-w-full">
 						<div class="tw-flex tw-gap-1 tw-items-center">
-							<div class="tw-shrink-0">
-								<img
+							<div class="tw-flex tw-shrink-0">
+								<kv-user-avatar
 									v-for="(p, i) in participants"
 									:key="p.id"
-									:src="p.image.url"
-									alt="Lender photo"
-									class="
-										data-hj-suppress
-										tw-inline-block
-										tw-w-4
-										tw-h-4
-										tw-rounded-full
-										tw-overflow-hidden
-										tw-border
-										tw-border-white
-										tw-object-fill
-										tw-relative
-									"
-									:class="{ 'tw--ml-2': i > 0, 'tw-border-gray-200': p.isLegacyPlaceholder }"
+									:lender-name="p.name"
+									:lender-image-url="p.image.url"
+									is-small
+									class="challenge-avatar md:tw-w-4 md:tw-h-4"
+									:class="{ 'tw--ml-1': i > 0 }"
 									:style="{ 'z-index': participants.length - i }"
-								>
+								/>
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
@@ -65,7 +55,7 @@
 							:src="shareLenderImage"
 							class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
 						>
-						<p class="tw-text-lg tw-py-1 data-hj-suppress">
+						<p class="tw-text-lg data-hj-suppress">
 							{{ headerCallout }}
 						</p>
 					</div>
@@ -76,11 +66,11 @@
 </template>
 
 <script>
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import { mdiArrowTopRight } from '@mdi/js';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
 	name: 'ChallengeCallout',
@@ -88,6 +78,7 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvMaterialIcon,
+		KvUserAvatar,
 	},
 	props: {
 		shareLender: {
@@ -134,12 +125,9 @@ export default {
 		},
 		participants() {
 			return (this.goalParticipationForLoan ?? [])
-				.filter(l => l?.lender?.id !== this.currentLender?.lender?.id && l?.lender?.image)
+				.filter(l => l?.lender?.id !== this.currentLender?.lender?.id)
 				.concat(this.currentLender)
-				.map(p => ({
-					...p?.lender,
-					isLegacyPlaceholder: isLegacyPlaceholderAvatar(p?.lender?.image?.url.split('/').pop()),
-				}))
+				.map(p => ({ ...p?.lender, image: { url: p?.lender?.image?.url ?? '' } }))
 				.slice(0, 3);
 		},
 		participantsMessage() {
@@ -152,13 +140,17 @@ export default {
 
 </script>
 
-<style lang="postcss">
+<style scoped lang="postcss">
 .info {
-	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-0.5
+	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-1
 		md:tw-rounded-lg tw-rounded-b tw-px-4;
 }
 
 .container {
 	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
+}
+
+.challenge-avatar >>> img {
+	@apply md:tw-w-4 md:tw-h-4;
 }
 </style>
