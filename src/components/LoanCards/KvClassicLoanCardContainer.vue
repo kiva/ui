@@ -215,7 +215,7 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
-				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
+				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',

@@ -239,6 +239,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		showChallengeHeader: {
+			type: Boolean,
+			default: false,
+		},
 		challengeData: {
 			type: Object,
 			default: () => ({}),
@@ -406,9 +410,6 @@ export default {
 					return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
 				}, false);
 		},
-		showChallengeHeader() {
-			return Object.keys(this.challengeData).length !== 0;
-		},
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
@@ -483,7 +484,7 @@ export default {
 		addToBasket(payload) {
 			if (payload.success) {
 				this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
-				this.$emit('add-to-basket', payload.loanId);
+				this.$emit('add-to-basket', payload);
 			}
 		},
 		handleTeamPicks(payload) {
