@@ -208,14 +208,12 @@ export default {
 				team: this.teamPublicId,
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
 			};
-			// eslint-disable-next-line max-len
 			return getFullUrl(`${base}/lend/filter`, args);
 		},
 		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
 		shareMessage() {
 			return `Kiva is an easy way to make a real difference in someone's life.${
 				this.borrowerName && this.borrowerLocation
-					// eslint-disable-next-line max-len
 					? ` Support ${this.borrowerName} and help ${this.teamName} hit their goal.`
 					: ''}`;
 		}
