@@ -239,10 +239,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		showChallengeHeader: {
-			type: Boolean,
-			default: false,
-		},
 		challengeData: {
 			type: Object,
 			default: () => ({}),
@@ -409,6 +405,9 @@ export default {
 				&& filterConfig.keys.reduce((prev, key) => {
 					return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
 				}, false);
+		},
+		showChallengeHeader() {
+			return Object.keys(this.challengeData).length !== 0;
 		},
 	},
 	methods: {
