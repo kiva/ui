@@ -1,10 +1,14 @@
 <template>
 	<www-page id="lend-filter">
 		<challenge-callout
-			class="tw-bg-secondary tw-pb-1.5"
 			v-if="showChallengeHeader && !!teamData"
-			:lender="lender"
+			class="tw-bg-secondary tw-pb-1.5"
+			:share-lender="shareLender"
+			:current-lender="currentLender"
 			:team-name="teamData.name"
+			:show-added-to-cart-message="showAddedToCartMessage"
+			:goal-participation-for-loan="goalParticipationForLoan"
+			:borrower-name="borrowerName"
 		/>
 		<article
 			class="tw-bg-secondary tw-relative"
@@ -50,7 +54,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:challenge-data="challengeData"
-					@add-to-basket="addLoanToChallengeCookie"
+					@add-to-basket="addToBasketCallback"
 				/>
 			</kv-page-container>
 		</article>
@@ -70,7 +74,9 @@ import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import lenderPublicProfile from '@/graphql/query/lenderPublicProfile.graphql';
+import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
+import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
+import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
 import logReadQueryError from '@/util/logReadQueryError';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -112,7 +118,11 @@ export default {
 			enableChallengeHeader: false,
 			challengeData: {},
 			teamData: {},
-			lender: null,
+			shareLender: null,
+			showAddedToCartMessage: false,
+			goalParticipationForLoan: null,
+			borrowerName: undefined,
+			currentLender: undefined,
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -193,7 +203,7 @@ export default {
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
 						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
 						lenderPublicId
-							? client.query({ query: lenderPublicProfile, variables: { publicId: lenderPublicId } })
+							? client.query({ query: lenderPublicProfileQuery, variables: { publicId: lenderPublicId } })
 							: null,
 					]);
 				}
@@ -206,14 +216,39 @@ export default {
 		},
 	},
 	methods: {
-		addLoanToChallengeCookie(loanId) {
-			if (this.enableChallengeHeader) {
+		async addToBasketCallback({ loanId, name }) {
+			if (this.showChallengeHeader) {
+				this.borrowerName = name;
+
+				// Add challenge override cookie for team attribution on checkout
 				const challenge = {
 					teamId: this.teamData?.id,
 					teamName: this.teamData?.name ?? '',
 					loanId
 				};
 				setChallengeCookieData(this.cookieStore, challenge);
+
+				// Trigger challenge header message about other lenders
+				try {
+					const goalParticipationPromise = this.apollo.query({
+						query: goalParticipationForLoanQuery,
+						variables: {
+							goalId: this.challengeData.id,
+							loanId: loanId.toString(),
+						}
+					});
+					const myPublicLenderInfoPromise = this.apollo.query({ query: myPublicLenderInfoQuery });
+					const [participationData, myData] = await Promise.all([
+						goalParticipationPromise,
+						myPublicLenderInfoPromise,
+					]);
+					this.goalParticipationForLoan = participationData?.data?.goalParticipationForLoan?.values ?? [];
+					this.currentLender = myData?.data?.my ?? {};
+				} catch (e) {
+					console.error(e);
+				}
+
+				this.showAddedToCartMessage = true;
 			}
 		},
 	},
@@ -268,23 +303,25 @@ export default {
 			if (teamId) {
 				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
-				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
-				this.teamData = teamData?.community?.team || {};
+				if (this.challengeData?.id) {
+					const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
+					this.teamData = teamData?.community?.team || {};
 
-				try {
-					const publicId = this.$route.query.lender;
-					const data = this.apollo.readQuery({
-						query: lenderPublicProfile,
-						variables: {
-							publicId,
-						}
-					});
-					this.lender = data?.community?.lender ?? {};
-				} catch (e) {
-					logReadQueryError(
-						e,
-						`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
-					);
+					try {
+						const publicId = this.$route.query.lender;
+						const data = this.apollo.readQuery({
+							query: lenderPublicProfileQuery,
+							variables: {
+								publicId,
+							}
+						});
+						this.shareLender = data?.community?.lender ?? {};
+					} catch (e) {
+						logReadQueryError(
+							e,
+							`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
+						);
+					}
 				}
 			}
 		}
