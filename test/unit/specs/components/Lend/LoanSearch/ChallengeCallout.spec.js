@@ -48,7 +48,7 @@ describe('ChallengeCallout', () => {
 			}
 		});
 
-		getByAltText('Lender photo');
+		getByAltText('Image of lender');
 		getByText('Added to cart!');
 	});
 });
