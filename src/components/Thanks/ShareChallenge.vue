@@ -205,14 +205,11 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			const args = {
+				team: this.teamPublicId,
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
 			};
-			let invitedBy = '';
-			if (this.loan.id && this.lender?.inviterName) {
-				invitedBy = `invitedby/${this.lender.inviterName}/for/${this.loan.id}`;
-			}
 			// eslint-disable-next-line max-len
-			return getFullUrl(`${base}/${invitedBy}`, args);
+			return getFullUrl(`${base}/lend/filter`, args);
 		},
 		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
 		shareMessage() {
