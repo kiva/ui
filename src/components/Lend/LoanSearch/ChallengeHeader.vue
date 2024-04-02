@@ -59,7 +59,7 @@
 			</div>
 
 			<div class="tw-relative tw-flex tw-items-center tw-px-0">
-				<div class="tw-absolute tw-right-0 tw-w-10 tw-h-4 loan-activity-overlay"></div>
+				<div class="tw-absolute tw-right-0 tw-w-10 tw-h-8 tw--mr-0.5 loan-activity-overlay"></div>
 				<kv-inline-activity-feed
 					v-if="challengeActivity.length > 0"
 					:activities="challengeActivity"
