@@ -6,7 +6,7 @@
 			/>
 		</template>
 		<template v-else>
-			<div v-if="!showMayChallengeHeader && showChallengeHeader" class="tw-bg-secondary">
+			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
 				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
