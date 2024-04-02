@@ -483,7 +483,7 @@ export default {
 		addToBasket(payload) {
 			if (payload.success) {
 				this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
-				this.$emit('add-to-basket', payload.loanId);
+				this.$emit('add-to-basket', payload);
 			}
 		},
 		handleTeamPicks(payload) {
