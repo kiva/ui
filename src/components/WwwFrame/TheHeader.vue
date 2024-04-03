@@ -76,7 +76,7 @@
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
-							class="tw-bg-white"
+							class="tw-bg-white tw-whitespace-nowrap"
 							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
@@ -326,40 +326,44 @@
 							</div>
 
 							<!-- Basket -->
-							<router-link
-								to="/basket"
-								data-testid="header-basket"
-								:class="{
-									'tw-hidden': !hasBasket,
-									'header__button header__basket !tw-hidden md:!tw-flex': hasBasket
-								}"
-								v-kv-track-event="['TopNav','click-Basket']"
-							>
-								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-									{{ basketCount }}
-								</span>
-								Basket
-							</router-link>
+							<div class="tw-flex">
+								<router-link
+									to="/basket"
+									data-testid="header-basket"
+									:class="{
+										'tw-hidden': !hasBasket,
+										'header__button header__basket md:tw-flex': hasBasket,
+										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
+								>
+									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+										{{ basketNumber }}
+									</span>
+									<span class="tw-hidden md:tw-flex">Basket</span>
+								</router-link>
 
-							<!-- Mobile Basket -->
-							<router-link
-								to="/basket"
-								data-testid="header-basket"
-								:class="{
-									'tw-hidden': !hasBasket,
-									'tw-relative tw-pt-0.5 md:tw-hidden tw-text-eco-green-4': hasBasket
-								}"
-								v-kv-track-event="['TopNav','click-Basket']"
-							>
-								<!-- eslint-disable-next-line max-len -->
-								<span class="tw-absolute tw-w-4 tw-h-4 tw-top-1.5 tw-text-white tw-text-center tw-text-small tw-font-medium">
-									{{ basketCount }}
-								</span>
-								<kv-material-icon
-									:icon="mdiBriefcase"
-									class="tw-inline-block tw-w-4 tw-h-4"
-								/>
-							</router-link>
+								<!-- Mobile Basket -->
+								<router-link
+									to="/basket"
+									data-testid="header-basket"
+									class="tw-flex tw-items-center"
+									:class="{
+										'tw-hidden': !hasBasket,
+										'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
+								>
+									<!-- eslint-disable-next-line max-len -->
+									<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
+										{{ basketCount }}
+									</span>
+									<kv-material-icon
+										:icon="mdiBriefcase"
+										class="tw-inline-block tw-w-4 tw-h-4"
+									/>
+								</router-link>
+							</div>
 
 							<!-- Log in Link -->
 							<router-link
@@ -560,6 +564,7 @@ import {
 } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
+import numeral from 'numeral';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -622,6 +627,7 @@ export default {
 			userId: null,
 			hasEverLoggedIn: false,
 			isMobile: false,
+			basketTotal: 0,
 		};
 	},
 	props: {
@@ -692,7 +698,17 @@ export default {
 		},
 		openTabletVariant() {
 			return (this.hasBasket && this.isVisitor) || (this.hasBasket || this.balance);
-		}
+		},
+		hasLargeBasket() {
+			return this.basketTotal > 500;
+		},
+		basketNumber() {
+			// Show basket $ total if basket is over $500 total
+			if (this.hasLargeBasket) {
+				return numeral(this.basketTotal).format('$0,0');
+			}
+			return this.basketCount;
+		},
 	},
 	apollo: {
 		query: headerQuery,
@@ -725,6 +741,9 @@ export default {
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
 			this.hasEverLoggedIn = data?.hasEverLoggedIn;
+			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
+				return sum + +(item?.price ?? 0);
+			}, 0) ?? 0;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
