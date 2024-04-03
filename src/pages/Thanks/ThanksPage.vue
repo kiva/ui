@@ -108,6 +108,7 @@
 					</template>
 				</div>
 				<share-challenge
+					v-if="teamPublicId"
 					:goal="goal"
 					:loan="challengeLoan"
 					:team-public-id="teamPublicId"
