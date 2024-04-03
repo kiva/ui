@@ -152,6 +152,7 @@
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:user-balance="userBalance"
 						:is-team-pick="showTeamPicks"
+						:show-loans-activity-feed="showLoansActivityFeed"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -242,6 +243,10 @@ export default {
 		challengeData: {
 			type: Object,
 			default: () => ({}),
+		},
+		showLoansActivityFeed: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

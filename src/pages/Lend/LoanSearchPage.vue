@@ -54,6 +54,7 @@
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:challenge-data="challengeData"
+					:show-loans-activity-feed="showLoansActivityFeed"
 					@add-to-basket="addToBasketCallback"
 				/>
 			</kv-page-container>
@@ -86,6 +87,7 @@ import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -123,6 +125,7 @@ export default {
 			goalParticipationForLoan: null,
 			borrowerName: undefined,
 			currentLender: undefined,
+			showLoansActivityFeed: false,
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -269,6 +272,13 @@ export default {
 			);
 		}
 
+		// Show loans activity feed experiment
+		const showLoansActivityFeedExp = this.apollo.readFragment({
+			id: `Experiment:${SHOW_LOANS_ACTIVITY_FEED_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.showLoansActivityFeed = showLoansActivityFeedExp.version === 'b';
+
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -344,6 +354,15 @@ export default {
 			'Lending',
 			CHALLENGE_HEADER_EXP,
 			'EXP-ACK-1038-Mar2024',
+		);
+
+		// Track experiment version for loans activity feed
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			SHOW_LOANS_ACTIVITY_FEED_EXP,
+			'EXP-ACK-1098-Apr2024',
 		);
 	},
 };
