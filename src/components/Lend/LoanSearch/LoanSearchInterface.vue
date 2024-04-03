@@ -309,9 +309,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LoanSearchInterface itemsInBasketQuery');
 		}
-
-		// Get challenge filters and loans
-		this.getChallengeFilters();
 	},
 	async mounted() {
 		// Fetch the facet options from the lend and FLSS APIs
@@ -366,11 +363,6 @@ export default {
 				this.trackLoans();
 			}
 		});
-
-		// Verify challenge header and show team picks
-		if (this.showChallengeHeader) {
-			this.showTeamPicks = true;
-		}
 	},
 	computed: {
 		defaultPageLimit() {
