@@ -56,8 +56,11 @@ export function getFullUrl(base, args) {
 
 	// remove hash portion of url if present
 	const baseUrlWithoutHash = base.split('#')[0];
+	// remove params portion of url if present
+	const baseUrl = baseUrlWithoutHash.split('?')[0];
 	const hashParams = base.split('#')[1] ? `#${base.split('#')[1]}` : '';
-	const querystring = Object.keys(args)
+	const baseParams = base.split('?')[1] ? base.split('?')[1] : '';
+	let querystring = Object.keys(args)
 		.filter(key => {
 			return !!args[key];
 		})
@@ -65,7 +68,12 @@ export function getFullUrl(base, args) {
 			return `${key}=${encodeURIComponent(args[key])}`;
 		})
 		.join('&');
-	return `${baseUrlWithoutHash}${querystring ? `?${querystring}` : ''}${hashParams}`;
+
+	// append base params if present
+	if (baseParams) {
+		querystring += `&${baseParams}`;
+	}
+	return `${baseUrl}${querystring ? `?${querystring}` : ''}${hashParams}`;
 }
 
 /**
