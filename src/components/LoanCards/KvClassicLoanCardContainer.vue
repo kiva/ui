@@ -344,6 +344,7 @@ export default {
 				// Sort combined lending and comment activities within each day
 				sortedActivities.forEach(d => d.data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())); // eslint-disable-line max-len
 
+				// Set combined activities
 				this.combinedActivities = sortedActivities;
 			}).catch(e => {
 				logFormatter(e, 'error');
