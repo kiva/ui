@@ -153,6 +153,11 @@ export default {
 			return this.challengeData?.participation ?? {};
 		}
 	},
+	mounted() {
+		this.$nextTick(() => {
+			this.$kvTrackEvent('teams', 'view challenge', this.teamData?.name ?? '');
+		});
+	}
 };
 </script>
 
