@@ -58,10 +58,13 @@
 				/>
 			</div>
 
-			<kv-inline-activity-feed
-				v-if="challengeActivity.length > 0"
-				:activities="challengeActivity"
-			/>
+			<div class="tw-relative tw-flex tw-items-center tw-px-0">
+				<div class="tw-absolute tw-right-0 tw-w-4 md:tw-w-10 tw-h-8 tw--mr-0.5 loan-activity-overlay"></div>
+				<kv-inline-activity-feed
+					v-if="challengeActivity.length > 0"
+					:activities="challengeActivity"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -154,6 +157,11 @@ export default {
 </script>
 
 <style scoped lang="postcss">
+
+.loan-activity-overlay {
+	background: linear-gradient(90deg, rgba(245, 245, 245, 0) 0%, rgba(245, 245, 245, 1) 70%);
+}
+
 .user-avatar {
 	@apply tw-w-4;
 }
