@@ -9,7 +9,7 @@
 				<template v-if="minimal">
 					<div class="tw-flex tw-justify-center">
 						<a
-							class="header__button"
+							class="header__button tw-inline-flex"
 							href="/"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
@@ -37,7 +37,7 @@
 							v-show="hasBasket"
 							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket tw-cursor-pointer"
+							class="header__button header__basket tw-cursor-pointer tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -51,7 +51,7 @@
 							to="/portfolio"
 							data-testid="header-portfolio"
 							target="_blank"
-							class="header__button header__portfolio"
+							class="header__button header__portfolio tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -101,7 +101,7 @@
 						<!-- Logo -->
 						<div class="header__logo">
 							<a
-								class="header__button"
+								class="header__button tw-inline-flex"
 								href="/"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
@@ -116,7 +116,7 @@
 							:id="lendMenuId"
 							to="/lend-by-category"
 							data-testid="header-lend"
-							class="header__button header__lend"
+							class="header__button header__lend tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Lend']"
 							@pointerenter.native.stop="onLendLinkPointerEnter"
 							@pointerleave.native.stop="onLendLinkPointerLeave"
@@ -223,7 +223,7 @@
 									:id="aboutMenuId"
 									to="/about"
 									data-testid="header-about"
-									class="header__about header__button"
+									class="header__about header__button tw-inline-flex"
 									v-kv-track-event="['TopNav','click-About']"
 								>
 									<span class="tw-flex">
@@ -326,12 +326,17 @@
 							</div>
 
 							<!-- Basket -->
-							<div class="tw-flex">
+							<div
+								:class="{
+									'tw-hidden': !hasBasket,
+									'tw-flex': hasBasket
+								}"
+							>
 								<router-link
 									to="/basket"
 									data-testid="header-basket"
+									class="tw-hidden"
 									:class="{
-										'tw-hidden': !hasBasket,
 										'header__button header__basket md:tw-flex': hasBasket,
 										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
 									}"
@@ -368,7 +373,7 @@
 							<!-- Log in Link -->
 							<router-link
 								v-show="isVisitor"
-								class="header__button tw-bg-white tw-whitespace-nowrap"
+								class="header__button tw-bg-white tw-whitespace-nowrap tw-inline-flex"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -394,7 +399,7 @@
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
 								to="/portfolio"
-								class="header__button header__portfolio"
+								class="header__button header__portfolio tw-inline-flex"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
 								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -937,7 +942,7 @@ export default {
 
 <style lang="postcss" scoped>
 .header__button {
-	@apply tw-inline-flex tw-items-center tw-flex-shrink-0;
+	@apply tw-items-center tw-flex-shrink-0;
 	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
