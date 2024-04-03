@@ -287,65 +287,69 @@ export default {
 			return this.cookieStore.set(name, value, options);
 		},
 		async fetchLoanActivity() {
-			const activities = [];
-
-			const activityResponse = await this.apollo.query({
+			await this.apollo.query({
 				query: loanActivitiesQuery,
 				variables: { loanId: this.loanId }
+			}).then(({ data }) => {
+				const activities = [];
+
+				const lendingActionsData = data.lend?.loan?.lendingActions?.values ?? [];
+				const commentsData = data.lend?.loan?.comments?.values ?? [];
+
+				lendingActionsData.forEach(action => {
+					const actionDate = new Date(action?.latestSharePurchaseDate).toDateString();
+					if (!activities.some(activity => activity.key === actionDate)) {
+						activities.push({
+							key: actionDate,
+							data: [],
+						});
+					}
+					if (action?.lender?.name) {
+						const dataObject = activities.find(activity => activity.key === actionDate);
+						dataObject?.data.push({
+							lenderName: action.lender.name,
+							lenderImage: action.lender?.image?.url,
+							text: `${action.lender.name} lent $${parseFloat(action.shareAmount).toFixed()}`,
+							date: action.latestSharePurchaseDate,
+							type: action.__typename, // eslint-disable-line no-underscore-dangle
+						});
+					}
+				});
+
+				commentsData.forEach(comment => {
+					const commentDate = new Date(comment?.date).toDateString();
+					if (!activities.some(activity => activity.key === commentDate)) {
+						activities.push({
+							key: commentDate,
+							data: [],
+						});
+					}
+					if (comment?.authorName) {
+						const dataObject = activities.find(activity => activity.key === commentDate);
+						dataObject?.data.push({
+							lenderName: comment.authorName,
+							lenderImage: comment.authorLendingAction?.lender?.image?.url,
+							text: comment.body
+								? `${comment.authorName} left comment <span class="tw-italic">"${comment.body}"</span>`
+								: '',
+							date: comment.date,
+							type: comment.__typename, // eslint-disable-line no-underscore-dangle
+						});
+					}
+				});
+
+				// Sort activities by day
+				const sortedActivities = activities.sort((a, b) => new Date(b.key).getTime() - new Date(a.key).getTime()); // eslint-disable-line max-len
+
+				// Sort combined lending and comment activities within each day
+				sortedActivities.forEach(d => d.data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())); // eslint-disable-line max-len
+
+				this.combinedActivities = sortedActivities;
+			}).catch(e => {
+				logFormatter(e, 'error');
+
+				this.$kvTrackEvent('Lending', 'loan-card', 'Failed to fetch loan activity data.');
 			});
-
-			const lendingActionsData = activityResponse.data?.lend?.loan?.lendingActions?.values ?? [];
-			const commentsData = activityResponse.data?.lend?.loan?.comments?.values ?? [];
-
-			lendingActionsData.forEach(action => {
-				const actionDate = new Date(action?.latestSharePurchaseDate).toDateString();
-				if (!activities.some(activity => activity.key === actionDate)) {
-					activities.push({
-						key: actionDate,
-						data: [],
-					});
-				}
-				if (action?.lender.name) {
-					const dataObject = activities.find(activity => activity.key === actionDate);
-					dataObject?.data.push({
-						lenderName: action.lender.name,
-						lenderImage: action.lender.image?.url,
-						text: `${action.lender.name} lent $${parseFloat(action.shareAmount).toFixed()}`,
-						date: action.latestSharePurchaseDate,
-						type: action.__typename, // eslint-disable-line no-underscore-dangle
-					});
-				}
-			});
-
-			commentsData.forEach(comment => {
-				const commentDate = new Date(comment?.date).toDateString();
-				if (!activities.some(activity => activity.key === commentDate)) {
-					activities.push({
-						key: commentDate,
-						data: [],
-					});
-				}
-				if (comment?.authorName) {
-					const dataObject = activities.find(activity => activity.key === commentDate);
-					dataObject?.data.push({
-						lenderName: comment.authorName,
-						lenderImage: comment.authorLendingAction?.lender.image?.url,
-						text: comment.body
-							? `${comment.authorName} left comment <span class="tw-italic">"${comment.body}"</span>`
-							: '',
-						date: comment.date,
-						type: comment.__typename, // eslint-disable-line no-underscore-dangle
-					});
-				}
-			});
-
-			// Sort activities by day
-			const sortedActivities = activities.sort((a, b) => new Date(b.key).getTime() - new Date(a.key).getTime());
-
-			// Sort combined lending and comment activities within each day
-			sortedActivities.forEach(d => d.data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())); // eslint-disable-line max-len
-
-			this.combinedActivities = sortedActivities;
 		},
 	},
 	mounted() {

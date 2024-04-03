@@ -144,7 +144,7 @@ export default {
 					const dataObject = activities.find(activity => activity.key === actionDate);
 					dataObject?.data.push({
 						lenderName: action.lender.name,
-						lenderImage: action.lender.image?.url,
+						lenderImage: action.lender?.image?.url,
 						text: `${action.lender.name} lent $${parseFloat(action.shareAmount).toFixed()}`,
 						date: action.latestSharePurchaseDate,
 					});
@@ -163,7 +163,7 @@ export default {
 					const dataObject = activities.find(activity => activity.key === commentDate);
 					dataObject?.data.push({
 						lenderName: comment.authorName,
-						lenderImage: comment.authorLendingAction?.lender.image?.url,
+						lenderImage: comment.authorLendingAction?.lender?.image?.url,
 						text: comment.body
 							? `${comment.authorName} left comment <span class="tw-italic">"${comment.body}"</span>`
 							: '',
