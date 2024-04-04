@@ -99,6 +99,23 @@ const sortAmountLentTeamArray = userTeams => {
 	});
 };
 
+const getUserChallengeTeam = (userTeams, activeGoals) => {
+	let sortedAmountLentTeams = [];
+	let userChallengeTeam = {};
+	if (userTeams.length > 0) {
+		sortedAmountLentTeams = sortAmountLentTeamArray(userTeams);
+		for (let index = 0; index < sortedAmountLentTeams.length; index += 1) {
+			const team = sortedAmountLentTeams[index];
+			const goal = activeGoals.find(g => g?.teamId === team?.team?.id);
+			if (goal && Object.keys(goal).length > 0) {
+				userChallengeTeam = team;
+				break;
+			}
+		}
+	}
+	return userChallengeTeam;
+};
+
 export default {
 	name: 'LoanSearchPage',
 	components: {
@@ -184,18 +201,9 @@ export default {
 				const activeChallengeHeaderExp = response[5];
 				const activeGoals = response[6]?.data?.goals?.values ?? [];
 
-				let sortedAmountLentTeams = [];
 				let userChallengeTeam = {};
 				if (!teamPublicId && userTeams.length > 0 && activeChallengeHeaderExp) {
-					sortedAmountLentTeams = sortAmountLentTeamArray(userTeams);
-					for (let index = 0; index < sortedAmountLentTeams.length; index += 1) {
-						const team = sortedAmountLentTeams[index];
-						const goal = activeGoals.find(g => g?.teamId === team?.team?.id);
-						if (Object.keys(goal).length > 0) {
-							userChallengeTeam = team;
-							break;
-						}
-					}
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
 				let teamDataPromise = Promise.resolve();
@@ -321,18 +329,9 @@ export default {
 				const userTeams = userTeamsData.my?.teams?.values ?? [];
 				const activeGoals = goalsData?.goals?.values ?? [];
 
-				let sortedAmountLentTeams = [];
 				let userChallengeTeam = {};
 				if (userTeams.length > 0) {
-					sortedAmountLentTeams = sortAmountLentTeamArray(userTeams);
-					for (let index = 0; index < sortedAmountLentTeams.length; index += 1) {
-						const team = sortedAmountLentTeams[index];
-						const goal = activeGoals.find(g => g?.teamId === team?.team?.id);
-						if (goal && Object.keys(goal).length > 0) {
-							userChallengeTeam = team;
-							break;
-						}
-					}
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
 				teamId = userChallengeTeam?.team?.id ?? null;
