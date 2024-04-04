@@ -194,7 +194,7 @@ export default {
 				return sum + (value?.amountLent ?? 0);
 			}, 0) ?? 0;
 
-			return Math.round((fundedAmount / targetAmount) * 100) || 0;
+			return Math.floor((fundedAmount / targetAmount) * 100) || 0;
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
