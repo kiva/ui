@@ -379,7 +379,7 @@ export default {
 			this.$kvTrackEvent,
 			'Lending',
 			CHALLENGE_HEADER_EXP,
-			'EXP-ACK-1038-Mar2024',
+			'EXP-ACK-1038-May2024',
 		);
 
 		// Track experiment version for loans activity feed
@@ -388,7 +388,7 @@ export default {
 			this.$kvTrackEvent,
 			'Lending',
 			SHOW_LOANS_ACTIVITY_FEED_EXP,
-			'EXP-ACK-1098-Apr2024',
+			'EXP-ACK-1098-May2024',
 		);
 	},
 };
