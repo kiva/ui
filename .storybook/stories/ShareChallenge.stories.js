@@ -31,7 +31,11 @@ const story = (args = {}) => {
 
 const goal = {
 	participation: {
-		lendAmount: 10
+		values: [
+			{
+				amountLent: 10
+			}
+		]
 	},
 	targets: {
 		values: [

@@ -194,7 +194,7 @@ export default {
 				return sum + (value?.amountLent ?? 0);
 			}, 0) ?? 0;
 
-			return (fundedAmount / targetAmount) * 100 || 0;
+			return Math.floor((fundedAmount / targetAmount) * 100) || 0;
 		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
@@ -256,6 +256,9 @@ export default {
 				}, 500);
 			}
 		}
+	},
+	mounted() {
+		this.$kvTrackEvent('post-checkout', 'view challenge complete', this.teamName);
 	}
 };
 </script>
