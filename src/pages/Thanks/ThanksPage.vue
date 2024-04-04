@@ -7,7 +7,7 @@
 		</template>
 		<template v-else>
 			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
-				<challenge-header :goal="goal" :team-public-id="teamPublicId" :team-name="teamName" />
+				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
@@ -339,9 +339,6 @@ export default {
 		},
 		teamPublicId() {
 			return this.loans?.[0]?.team?.teamPublicId;
-		},
-		teamName() {
-			return this.loans?.[0]?.team?.name ?? '';
 		},
 		challengeLoan() {
 			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
