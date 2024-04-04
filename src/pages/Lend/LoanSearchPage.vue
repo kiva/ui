@@ -91,12 +91,29 @@ const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
-const reduceAmountLentTeamArray = userTeams => {
-	return userTeams?.reduce((prev, current) => {
-		const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
-		const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
-		return (prev && prevAmountLent > currentAmountLent) ? prev : current;
+const sortAmountLentTeamArray = userTeams => {
+	return [...userTeams].sort((a, b) => {
+		const aAmountLent = parseFloat(a?.amountLent) ?? 0;
+		const bAmountLent = parseFloat(b?.amountLent) ?? 0;
+		return aAmountLent > bAmountLent ? -1 : 1;
 	});
+};
+
+const getUserChallengeTeam = (userTeams, activeGoals) => {
+	let sortedAmountLentTeams = [];
+	let userChallengeTeam = {};
+	if (userTeams.length > 0) {
+		sortedAmountLentTeams = sortAmountLentTeamArray(userTeams);
+		for (let index = 0; index < sortedAmountLentTeams.length; index += 1) {
+			const team = sortedAmountLentTeams[index];
+			const goal = activeGoals.find(g => g?.teamId === team?.team?.id);
+			if (goal && Object.keys(goal).length > 0) {
+				userChallengeTeam = team;
+				break;
+			}
+		}
+	}
+	return userChallengeTeam;
 };
 
 export default {
@@ -157,10 +174,15 @@ export default {
 
 				const teamPublicId = query?.team ?? '';
 				let userPromise = Promise.resolve();
+				let goalsPromise = Promise.resolve();
 				const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
 				if (activeChallengeHeaderExp && !teamPublicId && loggedInUser) {
 					userPromise = client.query({
 						query: myTeamsQuery,
+					});
+					goalsPromise = client.query({
+						query: teamsGoalsQuery,
+						variables: { isActive: true, status: 'IN_PROGRESS' }
 					});
 				}
 
@@ -171,22 +193,24 @@ export default {
 					teamPublicId,
 					userPromise,
 					activeChallengeHeaderExp,
+					goalsPromise,
 				]);
 			}).then(response => {
 				const teamPublicId = response[3];
 				const userTeams = response[4]?.data?.my?.teams?.values ?? [];
 				const activeChallengeHeaderExp = response[5];
+				const activeGoals = response[6]?.data?.goals?.values ?? [];
 
-				let maxAmountLentTeam = {};
+				let userChallengeTeam = {};
 				if (!teamPublicId && userTeams.length > 0 && activeChallengeHeaderExp) {
-					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
 				let teamDataPromise = Promise.resolve();
 				if (teamPublicId && activeChallengeHeaderExp) {
 					teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
 				}
-				const userTeamId = maxAmountLentTeam?.team?.id ?? null;
+				const userTeamId = userChallengeTeam?.team?.id ?? null;
 
 				return Promise.all([
 					teamDataPromise,
@@ -301,14 +325,16 @@ export default {
 				teamId = teamInfo?.community?.team?.id ?? null;
 			} else {
 				const userTeamsData = this.apollo.readQuery({ query: myTeamsQuery });
+				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { isActive: true, status: 'IN_PROGRESS' } }); // eslint-disable-line max-len
 				const userTeams = userTeamsData.my?.teams?.values ?? [];
+				const activeGoals = goalsData?.goals?.values ?? [];
 
-				let maxAmountLentTeam = {};
+				let userChallengeTeam = {};
 				if (userTeams.length > 0) {
-					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
-				teamId = maxAmountLentTeam?.team?.id ?? null;
+				teamId = userChallengeTeam?.team?.id ?? null;
 			}
 			if (teamId) {
 				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
