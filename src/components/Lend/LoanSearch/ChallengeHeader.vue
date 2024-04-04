@@ -154,9 +154,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.$nextTick(() => {
-			this.$kvTrackEvent('teams', 'view challenge', this.teamData?.name ?? '');
-		});
+		this.$kvTrackEvent('teams', 'view challenge', this.teamData?.name ?? '');
 	}
 };
 </script>

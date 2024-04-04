@@ -97,9 +97,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.$nextTick(() => {
-			this.$kvTrackEvent('post-checkout', 'view challenge complete', this.teamName);
-		});
+		this.$kvTrackEvent('post-checkout', 'view challenge complete', this.teamName);
 	}
 };
 </script>
