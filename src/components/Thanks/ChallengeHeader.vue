@@ -86,11 +86,20 @@ export default {
 			type: String,
 			default: '',
 		},
+		teamName: {
+			type: String,
+			default: '',
+		},
 	},
 	computed: {
 		teamChallengePath() {
 			return this.teamPublicId ? `/team/challenge/${this.teamPublicId}` : '/teams';
 		},
 	},
+	mounted() {
+		this.$nextTick(() => {
+			this.$kvTrackEvent('post-checkout', 'view challenge complete', this.teamName);
+		});
+	}
 };
 </script>
