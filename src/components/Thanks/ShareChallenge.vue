@@ -163,6 +163,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		teamName: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -181,9 +185,6 @@ export default {
 		},
 		borrowerName() {
 			return this.loan?.name ?? '';
-		},
-		teamName() {
-			return this.goal?.name ?? '';
 		},
 		teamChallengePath() {
 			return this.teamPublicId ? `/lend/filter?team=${this.teamPublicId}` : '/teams';
