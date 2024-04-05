@@ -248,6 +248,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		teamName: {
+			type: String,
+			default: () => '',
+		},
 	},
 	data() {
 		return {
@@ -486,6 +490,7 @@ export default {
 		handleTeamPicks(payload) {
 			this.showTeamPicks = payload;
 			if (this.showTeamPicks) {
+				this.$kvTrackEvent('Lending', 'click-teams-filter', this.teamName);
 				this.getChallengeFilters();
 			} else {
 				updateQueryParams({}, this.$router, this.queryType);
