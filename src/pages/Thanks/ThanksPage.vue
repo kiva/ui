@@ -114,6 +114,7 @@
 					:team-public-id="teamPublicId"
 					:lender="lender"
 					:is-guest="isGuest"
+					:team-name="teamName"
 				/>
 			</template>
 			<thanks-page-comment-and-share
@@ -346,6 +347,9 @@ export default {
 		showMayChallengeHeader() {
 			return this.challengeLoan && this.enableMayChallengeHeader;
 		},
+		teamName() {
+			return this.loans?.[0]?.team?.name ?? '';
+		}
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
