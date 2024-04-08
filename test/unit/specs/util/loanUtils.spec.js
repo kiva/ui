@@ -45,6 +45,18 @@ describe('loanUtils.js', () => {
 			const result = getDropdownPriceArray('230', minAmount, enableFiveDollarsNotes);
 			expect(result[0]).toEqual('25');
 		});
+
+		it('should return 1,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
+			const result = getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, false, true);
+			const lastOption = result.length - 1;
+			expect(result[lastOption]).toEqual('1,000');
+		});
+
+		it('should return 865 as last option if amount left is 865 and huge amount enabled', () => {
+			const result = getDropdownPriceArray('865', minAmount, enableFiveDollarsNotes, false, true);
+			const lastOption = result.length - 1;
+			expect(result[lastOption]).toEqual('865');
+		});
 	});
 
 	describe('getDropdownPriceArrayCheckout', () => {
@@ -78,6 +90,18 @@ describe('loanUtils.js', () => {
 		it('should work passing a string as unreserved amount', () => {
 			const result = getDropdownPriceArrayCheckout('230', minAmount, enableFiveDollarsNotes);
 			expect(result[0]).toEqual('25');
+		});
+
+		it('should return 1,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
+			const result = getDropdownPriceArrayCheckout(unreservedAmount, minAmount, enableFiveDollarsNotes, true);
+			const lastOption = result.length - 1;
+			expect(result[lastOption]).toEqual('1,000');
+		});
+
+		it('should return 865 as last option if amount left is 865 and huge amount enabled', () => {
+			const result = getDropdownPriceArrayCheckout('865', minAmount, enableFiveDollarsNotes, true);
+			const lastOption = result.length - 1;
+			expect(result[lastOption]).toEqual('865');
 		});
 	});
 

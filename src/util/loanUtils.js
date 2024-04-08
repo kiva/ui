@@ -138,12 +138,12 @@ export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enable
 	const pricesArray = buildPriceArray(remainingAmount, minAmount);
 	const reducedArray = pricesArray.filter(element => {
 		return element % 25 === 0;
-	}).slice(0, 20);
+	});
 
 	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
 	if (showHugeAmount) {
 		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
-		combinedPricesArray = reducedArray.concat(hugePriceArray);
+		combinedPricesArray = reducedArray.slice(0, 20).concat(hugePriceArray);
 	}
 
 	return showHugeAmount ? combinedPricesArray : reducedArray;

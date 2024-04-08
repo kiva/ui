@@ -102,4 +102,41 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPromoCredit).getByText('AppDynamics'));
 		expect(within(LoanPromoCredit).getByText('Sponsored by:'));
 	});
+
+	it('should show 1,000 for logged in user and huge amount enabled', () => {
+		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
+		render(
+			BasketItem,
+			{
+				provide: {
+					apollo: {
+						readFragment: () => {},
+						query: () => Promise.resolve({}),
+						readQuery: () => {},
+						mutate: () => Promise.resolve({}),
+					},
+					cookieStore: new CookieStore(),
+				},
+				routes: new VueRouter(),
+				props: {
+					disableMatching: false,
+					disableRedirects: false,
+					loan: loanReservation,
+					teams: basketLoanTeams,
+					enableHugeAmount: true,
+					isLoggedIn: true,
+				},
+				stubs: {
+					LoanReservation: { ...emptyComponent }
+				}
+			},
+			vue => {
+				vue.use(kvAnalytics);
+				vue.filter('numeral', numeralFilter);
+			}
+		);
+
+		const LoanPrice = document.getElementById('loan-price');
+		expect(within(LoanPrice).getByRole('option', { name: '$1,000' }));
+	});
 });
