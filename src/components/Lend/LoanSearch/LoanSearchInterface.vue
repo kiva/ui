@@ -252,6 +252,7 @@ export default {
 		enableHugeAmount: {
 			type: Boolean,
 			default: false,
+		},
 		teamName: {
 			type: String,
 			default: () => '',
