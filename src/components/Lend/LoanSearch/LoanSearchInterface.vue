@@ -153,6 +153,7 @@
 						:user-balance="userBalance"
 						:is-team-pick="showTeamPicks"
 						:show-loans-activity-feed="showLoansActivityFeed"
+						:enable-huge-amount="enableHugeAmount"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -245,6 +246,10 @@ export default {
 			default: () => ({}),
 		},
 		showLoansActivityFeed: {
+			type: Boolean,
+			default: false,
+		},
+		enableHugeAmount: {
 			type: Boolean,
 			default: false,
 		},

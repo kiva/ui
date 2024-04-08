@@ -36,6 +36,7 @@
 						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
+						:enable-huge-amount="enableHugeAmount"
 						loan-card-type="GridLoanCard"
 					/>
 				</div>
@@ -199,6 +200,12 @@ export default {
 				}
 			]
 		};
+	},
+	props: {
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {

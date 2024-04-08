@@ -106,7 +106,7 @@ export default {
 		subheads: {
 			type: Array,
 			default: () => []
-		}
+		},
 	},
 	data() {
 		return {

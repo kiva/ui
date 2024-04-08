@@ -40,6 +40,8 @@
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeLendAmount"
+							:is-logged-in="isLoggedIn"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -261,6 +263,7 @@
 				>
 					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeLendAmount"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
@@ -322,6 +325,7 @@ import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
 import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
@@ -375,7 +379,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin],
+	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -584,6 +588,9 @@ export default {
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
 		this.initializeFiveDollarsNotes();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
 
 		this.iwdExpEnabled = this.isIwdExperimentEnabled();
 	},
