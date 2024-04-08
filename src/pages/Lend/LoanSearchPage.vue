@@ -57,6 +57,7 @@
 					:show-loans-activity-feed="showLoansActivityFeed"
 					:enable-huge-amount="enableHugeLendAmount"
 					@add-to-basket="addToBasketCallback"
+					:team-name="teamName"
 				/>
 			</kv-page-container>
 		</article>
@@ -243,6 +244,9 @@ export default {
 		showChallengeHeader() {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
+		teamName() {
+			return this.teamData?.name ?? '';
+		}
 	},
 	methods: {
 		async addToBasketCallback({ loanId, name }) {
