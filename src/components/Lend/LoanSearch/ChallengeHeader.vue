@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full tw-gap-1 lg:tw-gap-5 tw-mb-4 lg:tw-mb-6">
+	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-w-full tw-gap-1 lg:tw-gap-5 tw-mb-4 lg:tw-mb-4">
 		<div class="lg:tw-basis-3/5 tw-flex tw-flex-col tw-gap-y-2">
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<img
@@ -44,15 +44,27 @@
 				</p>
 			</div>
 		</div>
-		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0">
-			<div class="tw-bg-white tw-p-3 tw-rounded">
+		<div class="lg:tw-basis-2/5 tw-mt-1 md:tw-mt-0 tw-min-w-0">
+			<div class="tw-bg-white tw-px-3 tw-pt-2 tw-pb-1 tw-rounded tw-shadow-lg tw-mx-1">
 				<kv-progress-campaign
 					:funded-amount="fundedAmount"
 					:total-amount="totalAmount"
 					:days-left="daysLeft"
 				/>
+				<supported-by-lenders
+					class="tw-mt-1.5"
+					:participants="participants"
+					is-challenge
+				/>
 			</div>
-			<!-- Activity Feed -->
+
+			<div class="tw-relative tw-flex tw-items-center tw-px-0">
+				<div class="tw-absolute tw-right-0 tw-w-4 md:tw-w-10 tw-h-8 tw--mr-0.5 loan-activity-overlay"></div>
+				<kv-inline-activity-feed
+					v-if="challengeActivity.length > 0"
+					:activities="challengeActivity"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -60,13 +72,17 @@
 <script>
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
 import intervalToDuration from 'date-fns/intervalToDuration';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvInlineActivityFeed from '~/@kiva/kv-components/vue/KvInlineActivityFeed';
 
 export default {
 	name: 'ChallengeHeader',
 	components: {
 		KvProgressCampaign,
 		KvUserAvatar,
+		KvInlineActivityFeed,
+		SupportedByLenders,
 	},
 	props: {
 		challengeData: {
@@ -98,11 +114,12 @@ export default {
 			return this.challengeData?.descriptionAuthor?.image?.url ?? '';
 		},
 		fundedAmount() {
-			// TODO: Change this when we have the correct data name
-			return this.challengeData?.amountGoal ?? 0;
+			return this.challengeData?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
 		},
 		totalAmount() {
-			return this.challengeData?.participation?.amountLent ?? 0;
+			return this.challengeData?.targets?.values?.[0]?.targetLendAmount ?? 0;
 		},
 		daysLeft() {
 			const start = this.challengeData?.startDate ? new Date(this.challengeData?.startDate) : new Date();
@@ -112,11 +129,42 @@ export default {
 				end,
 			}).days;
 		},
+		challengeActivity() {
+			const activities = this.challengeData?.participation?.values ?? [];
+			const data = [];
+
+			activities
+				// Show one activity item per lender with the amounts summed
+				.forEach(activity => {
+					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
+					if (existing) {
+						const existingAmount = parseFloat(existing?.amountLent ?? 0);
+						const activityAmount = parseFloat(activity?.amountLent ?? 0);
+						existing.amountLent = existingAmount + activityAmount;
+					} else {
+						// Shallow copy the read-only object so we can sum the amountLent
+						data.push({ ...activity });
+					}
+				});
+
+			return data;
+		},
+		participants() {
+			return this.challengeData?.participation ?? {};
+		}
 	},
+	mounted() {
+		this.$kvTrackEvent('teams', 'view challenge', this.teamData?.name ?? '');
+	}
 };
 </script>
 
 <style scoped lang="postcss">
+
+.loan-activity-overlay {
+	background: linear-gradient(90deg, rgba(245, 245, 245, 0) 0%, rgba(245, 245, 245, 1) 70%);
+}
+
 .user-avatar {
 	@apply tw-w-4;
 }

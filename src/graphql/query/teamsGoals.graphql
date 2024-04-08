@@ -16,8 +16,10 @@ query GetGoals($teamId: Int, $limit: Int) {
 			participation {
 				totalCount
 				values {
+					amountLent
 					lender {
 						id
+						name
 						image {
 							id
 							url
@@ -32,6 +34,12 @@ query GetGoals($teamId: Int, $limit: Int) {
 					... on LoanTarget {
 						loanId
 						status
+					}
+					... on AmountLentGoalTarget {
+						targetLendAmount
+						savedSearch {
+							filters
+						}
 					}
 				}
 			}

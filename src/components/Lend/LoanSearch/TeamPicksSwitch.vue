@@ -3,7 +3,6 @@
 		<div class="tw-flex tw-flex-col">
 			<kv-switch
 				v-model="showTeamPicks"
-				@update:modelValue="$emit('handle-team-picks', $event)"
 			>
 				<div class="tw-flex tw-items-center tw-gap-0.5">
 					<img :src="HandOrangeIcon" class="tw-w-4">
@@ -27,11 +26,26 @@ export default {
 	components: {
 		KvSwitch
 	},
+	props: {
+		showPicks: {
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
-			showTeamPicks: true,
 			HandOrangeIcon
 		};
 	},
+	computed: {
+		showTeamPicks: {
+			get() {
+				return this.showPicks;
+			},
+			set(value) {
+				this.$emit('handle-team-picks', value);
+			}
+		}
+	}
 };
 </script>

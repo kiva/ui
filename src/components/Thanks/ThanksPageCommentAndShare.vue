@@ -118,7 +118,7 @@
 			:is-guest="isGuest"
 		/>
 		<!-- Share Section -->
-		<kv-page-container>
+		<kv-page-container v-if="!hideShareSection">
 			<kv-grid class="tw-grid-cols-12">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1	class="tw-mt-1 tw-mb-3 tw-text-left">
@@ -274,6 +274,10 @@ export default {
 		ftdCreditAmount: {
 			type: String,
 			default: ''
+		},
+		hideShareSection: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	mixins: [socialSharingMixin],

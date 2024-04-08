@@ -31,13 +31,39 @@ const loggedIn = {
 
 const itemInCart = {
 	shop: {
-		nonTrivialItemCount: 1234,
+		nonTrivialItemCount: 123,
 	},
 };
 
 const loggedInUserItemInCart = {
 	...itemInCart,
 	...loggedIn,
+};
+
+const loggedInLargeCart = {
+	...loggedIn,
+	shop: {
+		nonTrivialItemCount: 3,
+		basket: {
+			id: 1,
+			items: {
+				values: [
+					{
+						id: 1,
+						price: '600',
+					},
+					{
+						id: 1,
+						price: '500',
+					},
+					{
+						id: 1,
+						price: '100',
+					},
+				],
+			},
+		}
+	}
 };
 
 const provideMockedApollo = (mockedResult) => {
@@ -53,7 +79,7 @@ const provideMockedApollo = (mockedResult) => {
 		},
 		watchQuery() {
 			return {
-				subscribe() {},
+				subscribe() { },
 			};
 		},
 	};
@@ -131,12 +157,26 @@ export const LoggedInItemInCart = (args, { argTypes }) => ({
 	`,
 });
 
+export const LoggedInLargeCart = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedInLargeCart),
+	},
+	template: `
+		<the-header />
+	`,
+});
+
 export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
 	},
-	mixins: [kvAuth0StoryMixin],
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
 	provide: {
 		apollo: provideMockedApollo(itemInCart),
 	},

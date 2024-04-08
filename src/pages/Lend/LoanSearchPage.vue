@@ -1,5 +1,15 @@
 <template>
 	<www-page id="lend-filter">
+		<challenge-callout
+			v-if="showChallengeHeader && !!teamData"
+			class="tw-bg-secondary tw-pb-1.5"
+			:share-lender="shareLender"
+			:current-lender="currentLender"
+			:team-name="teamData.name"
+			:show-added-to-cart-message="showAddedToCartMessage"
+			:goal-participation-for-loan="goalParticipationForLoan"
+			:borrower-name="borrowerName"
+		/>
 		<article
 			class="tw-bg-secondary tw-relative"
 			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader }"
@@ -43,8 +53,10 @@
 					:extend-flss-filters="extendFlssFilters"
 					:enable-saved-search="enableSavedSearch"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:show-challenge-header="showChallengeHeader"
-					@add-to-basket="addLoanToChallengeCookie"
+					:challenge-data="challengeData"
+					:show-loans-activity-feed="showLoansActivityFeed"
+					@add-to-basket="addToBasketCallback"
+					:team-name="teamName"
 				/>
 			</kv-page-container>
 		</article>
@@ -64,6 +76,11 @@ import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
+import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
+import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
@@ -71,15 +88,33 @@ import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
-const reduceAmountLentTeamArray = userTeams => {
-	return userTeams?.reduce((prev, current) => {
-		const prevAmountLent = parseFloat(prev?.amountLent) ?? 0;
-		const currentAmountLent = parseFloat(current?.amountLent) ?? 0;
-		return (prev && prevAmountLent > currentAmountLent) ? prev : current;
+const sortAmountLentTeamArray = userTeams => {
+	return [...userTeams].sort((a, b) => {
+		const aAmountLent = parseFloat(a?.amountLent) ?? 0;
+		const bAmountLent = parseFloat(b?.amountLent) ?? 0;
+		return aAmountLent > bAmountLent ? -1 : 1;
 	});
+};
+
+const getUserChallengeTeam = (userTeams, activeGoals) => {
+	let sortedAmountLentTeams = [];
+	let userChallengeTeam = {};
+	if (userTeams.length > 0) {
+		sortedAmountLentTeams = sortAmountLentTeamArray(userTeams);
+		for (let index = 0; index < sortedAmountLentTeams.length; index += 1) {
+			const team = sortedAmountLentTeams[index];
+			const goal = activeGoals.find(g => g?.teamId === team?.team?.id);
+			if (goal && Object.keys(goal).length > 0) {
+				userChallengeTeam = team;
+				break;
+			}
+		}
+	}
+	return userChallengeTeam;
 };
 
 export default {
@@ -90,6 +125,7 @@ export default {
 		KvMaterialIcon,
 		LoanSearchInterface,
 		ChallengeHeader,
+		ChallengeCallout,
 	},
 	data() {
 		return {
@@ -102,6 +138,12 @@ export default {
 			enableChallengeHeader: false,
 			challengeData: {},
 			teamData: {},
+			shareLender: null,
+			showAddedToCartMessage: false,
+			goalParticipationForLoan: null,
+			borrowerName: undefined,
+			currentLender: undefined,
+			showLoansActivityFeed: false,
 		};
 	},
 	mixins: [fiveDollarsTest],
@@ -133,10 +175,15 @@ export default {
 
 				const teamPublicId = query?.team ?? '';
 				let userPromise = Promise.resolve();
+				let goalsPromise = Promise.resolve();
 				const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
 				if (activeChallengeHeaderExp && !teamPublicId && loggedInUser) {
 					userPromise = client.query({
 						query: myTeamsQuery,
+					});
+					goalsPromise = client.query({
+						query: teamsGoalsQuery,
+						variables: { isActive: true, status: 'IN_PROGRESS' }
 					});
 				}
 
@@ -147,22 +194,24 @@ export default {
 					teamPublicId,
 					userPromise,
 					activeChallengeHeaderExp,
+					goalsPromise,
 				]);
 			}).then(response => {
 				const teamPublicId = response[3];
 				const userTeams = response[4]?.data?.my?.teams?.values ?? [];
 				const activeChallengeHeaderExp = response[5];
+				const activeGoals = response[6]?.data?.goals?.values ?? [];
 
-				let maxAmountLentTeam = {};
+				let userChallengeTeam = {};
 				if (!teamPublicId && userTeams.length > 0 && activeChallengeHeaderExp) {
-					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
 				let teamDataPromise = Promise.resolve();
 				if (teamPublicId && activeChallengeHeaderExp) {
 					teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
 				}
-				const userTeamId = maxAmountLentTeam?.team?.id ?? null;
+				const userTeamId = userChallengeTeam?.team?.id ?? null;
 
 				return Promise.all([
 					teamDataPromise,
@@ -175,10 +224,15 @@ export default {
 				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
+				const lenderPublicId = args?.route?.query?.lender ?? '';
+
 				if (teamId && activeChallengeHeaderExp) {
 					return Promise.all([
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
-						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } })
+						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+						lenderPublicId
+							? client.query({ query: lenderPublicProfileQuery, variables: { publicId: lenderPublicId } })
+							: null,
 					]);
 				}
 			});
@@ -188,16 +242,44 @@ export default {
 		showChallengeHeader() {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
+		teamName() {
+			return this.teamData?.name ?? '';
+		}
 	},
 	methods: {
-		addLoanToChallengeCookie(loanId) {
-			if (this.enableChallengeHeader) {
+		async addToBasketCallback({ loanId, name }) {
+			if (this.showChallengeHeader) {
+				this.borrowerName = name;
+
+				// Add challenge override cookie for team attribution on checkout
 				const challenge = {
 					teamId: this.teamData?.id,
 					teamName: this.teamData?.name ?? '',
 					loanId
 				};
 				setChallengeCookieData(this.cookieStore, challenge);
+
+				// Trigger challenge header message about other lenders
+				try {
+					const goalParticipationPromise = this.apollo.query({
+						query: goalParticipationForLoanQuery,
+						variables: {
+							goalId: this.challengeData.id,
+							loanId: loanId.toString(),
+						}
+					});
+					const myPublicLenderInfoPromise = this.apollo.query({ query: myPublicLenderInfoQuery });
+					const [participationData, myData] = await Promise.all([
+						goalParticipationPromise,
+						myPublicLenderInfoPromise,
+					]);
+					this.goalParticipationForLoan = participationData?.data?.goalParticipationForLoan?.values ?? [];
+					this.currentLender = myData?.data?.my ?? {};
+				} catch (e) {
+					console.error(e);
+				}
+
+				this.showAddedToCartMessage = true;
 			}
 		},
 	},
@@ -217,6 +299,13 @@ export default {
 				showMoreFiltersExp.version
 			);
 		}
+
+		// Show loans activity feed experiment
+		const showLoansActivityFeedExp = this.apollo.readFragment({
+			id: `Experiment:${SHOW_LOANS_ACTIVITY_FEED_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.showLoansActivityFeed = showLoansActivityFeedExp.version === 'b';
 
 		trackExperimentVersion(
 			this.apollo,
@@ -240,20 +329,40 @@ export default {
 				teamId = teamInfo?.community?.team?.id ?? null;
 			} else {
 				const userTeamsData = this.apollo.readQuery({ query: myTeamsQuery });
+				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { isActive: true, status: 'IN_PROGRESS' } }); // eslint-disable-line max-len
 				const userTeams = userTeamsData.my?.teams?.values ?? [];
+				const activeGoals = goalsData?.goals?.values ?? [];
 
-				let maxAmountLentTeam = {};
+				let userChallengeTeam = {};
 				if (userTeams.length > 0) {
-					maxAmountLentTeam = reduceAmountLentTeamArray(userTeams);
+					userChallengeTeam = getUserChallengeTeam(userTeams, activeGoals);
 				}
 
-				teamId = maxAmountLentTeam?.team?.id ?? null;
+				teamId = userChallengeTeam?.team?.id ?? null;
 			}
 			if (teamId) {
 				const goalsData = this.apollo.readQuery({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } });
 				this.challengeData = goalsData?.goals?.values?.[0] || {};
-				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
-				this.teamData = teamData?.community?.team || {};
+				if (this.challengeData?.id) {
+					const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
+					this.teamData = teamData?.community?.team || {};
+
+					try {
+						const publicId = this.$route.query.lender;
+						const data = this.apollo.readQuery({
+							query: lenderPublicProfileQuery,
+							variables: {
+								publicId,
+							}
+						});
+						this.shareLender = data?.community?.lender ?? {};
+					} catch (e) {
+						logReadQueryError(
+							e,
+							`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
+						);
+					}
+				}
 			}
 		}
 	},
@@ -274,7 +383,16 @@ export default {
 			this.$kvTrackEvent,
 			'Lending',
 			CHALLENGE_HEADER_EXP,
-			'EXP-ACK-1038-Mar2024',
+			'EXP-ACK-1038-May2024',
+		);
+
+		// Track experiment version for loans activity feed
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			SHOW_LOANS_ACTIVITY_FEED_EXP,
+			'EXP-ACK-1098-May2024',
 		);
 	},
 };

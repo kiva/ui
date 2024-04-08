@@ -9,7 +9,7 @@
 				<template v-if="minimal">
 					<div class="tw-flex tw-justify-center">
 						<a
-							class="header__button"
+							class="header__button tw-inline-flex"
 							href="/"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
@@ -37,7 +37,7 @@
 							v-show="hasBasket"
 							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket tw-cursor-pointer"
+							class="header__button header__basket tw-cursor-pointer tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Basket']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -51,7 +51,7 @@
 							to="/portfolio"
 							data-testid="header-portfolio"
 							target="_blank"
-							class="header__button header__portfolio"
+							class="header__button header__portfolio tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -76,7 +76,7 @@
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
-							class="tw-bg-white"
+							class="tw-bg-white tw-whitespace-nowrap"
 							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
@@ -101,7 +101,7 @@
 						<!-- Logo -->
 						<div class="header__logo">
 							<a
-								class="header__button"
+								class="header__button tw-inline-flex"
 								href="/"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
@@ -116,7 +116,7 @@
 							:id="lendMenuId"
 							to="/lend-by-category"
 							data-testid="header-lend"
-							class="header__button header__lend"
+							class="header__button header__lend tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Lend']"
 							@pointerenter.native.stop="onLendLinkPointerEnter"
 							@pointerleave.native.stop="onLendLinkPointerLeave"
@@ -223,7 +223,7 @@
 									:id="aboutMenuId"
 									to="/about"
 									data-testid="header-about"
-									class="header__about header__button"
+									class="header__about header__button tw-inline-flex"
 									v-kv-track-event="['TopNav','click-About']"
 								>
 									<span class="tw-flex">
@@ -326,45 +326,54 @@
 							</div>
 
 							<!-- Basket -->
-							<router-link
-								to="/basket"
-								data-testid="header-basket"
+							<div
 								:class="{
 									'tw-hidden': !hasBasket,
-									'header__button header__basket !tw-hidden md:!tw-flex': hasBasket
+									'tw-flex': hasBasket
 								}"
-								v-kv-track-event="['TopNav','click-Basket']"
 							>
-								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-									{{ basketCount }}
-								</span>
-								Basket
-							</router-link>
+								<router-link
+									to="/basket"
+									data-testid="header-basket"
+									class="tw-hidden"
+									:class="{
+										'header__button header__basket md:tw-flex': hasBasket,
+										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
+								>
+									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+										{{ basketNumber }}
+									</span>
+									<span class="tw-hidden md:tw-flex">Basket</span>
+								</router-link>
 
-							<!-- Mobile Basket -->
-							<router-link
-								to="/basket"
-								data-testid="header-basket"
-								:class="{
-									'tw-hidden': !hasBasket,
-									'tw-relative tw-pt-0.5 md:tw-hidden tw-text-eco-green-4': hasBasket
-								}"
-								v-kv-track-event="['TopNav','click-Basket']"
-							>
-								<!-- eslint-disable-next-line max-len -->
-								<span class="tw-absolute tw-w-4 tw-h-4 tw-top-1.5 tw-text-white tw-text-center tw-text-small tw-font-medium">
-									{{ basketCount }}
-								</span>
-								<kv-material-icon
-									:icon="mdiBriefcase"
-									class="tw-inline-block tw-w-4 tw-h-4"
-								/>
-							</router-link>
+								<!-- Mobile Basket -->
+								<router-link
+									to="/basket"
+									data-testid="header-basket"
+									class="tw-flex tw-items-center"
+									:class="{
+										'tw-hidden': !hasBasket,
+										'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
+								>
+									<!-- eslint-disable-next-line max-len -->
+									<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
+										{{ basketCount }}
+									</span>
+									<kv-material-icon
+										:icon="mdiBriefcase"
+										class="tw-inline-block tw-w-4 tw-h-4"
+									/>
+								</router-link>
+							</div>
 
 							<!-- Log in Link -->
 							<router-link
 								v-show="isVisitor"
-								class="header__button tw-bg-white tw-whitespace-nowrap"
+								class="header__button tw-bg-white tw-whitespace-nowrap tw-inline-flex"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -390,7 +399,7 @@
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
 								to="/portfolio"
-								class="header__button header__portfolio"
+								class="header__button header__portfolio tw-inline-flex"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
 								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
@@ -560,6 +569,7 @@ import {
 } from '@mdi/js';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
+import numeral from 'numeral';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -622,6 +632,7 @@ export default {
 			userId: null,
 			hasEverLoggedIn: false,
 			isMobile: false,
+			basketTotal: 0,
 		};
 	},
 	props: {
@@ -692,7 +703,17 @@ export default {
 		},
 		openTabletVariant() {
 			return (this.hasBasket && this.isVisitor) || (this.hasBasket || this.balance);
-		}
+		},
+		hasLargeBasket() {
+			return this.basketTotal > 500;
+		},
+		basketNumber() {
+			// Show basket $ total if basket is over $500 total
+			if (this.hasLargeBasket) {
+				return numeral(this.basketTotal).format('$0,0');
+			}
+			return this.basketCount;
+		},
 	},
 	apollo: {
 		query: headerQuery,
@@ -725,6 +746,9 @@ export default {
 			this.profilePicId = data?.my?.lender?.image?.id ?? null;
 			this.basketState = data || {};
 			this.hasEverLoggedIn = data?.hasEverLoggedIn;
+			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
+				return sum + +(item?.price ?? 0);
+			}, 0) ?? 0;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -918,7 +942,7 @@ export default {
 
 <style lang="postcss" scoped>
 .header__button {
-	@apply tw-inline-flex tw-items-center tw-flex-shrink-0;
+	@apply tw-items-center tw-flex-shrink-0;
 	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }

@@ -62,6 +62,13 @@ describe('urlUtils.js', () => {
 		it('return a valid url if missing args but present hash', () => {
 			expect(getFullUrl('https://www.twitter.com/#update')).toBe('https://www.twitter.com/#update');
 		});
+		it('return a valid url, rearranging base url params', () => {
+			const newParam = {
+				a: 'a'
+			};
+			expect(getFullUrl('https://www.kiva.org/lend/filter?b=b&c=c', newParam))
+				.toBe('https://www.kiva.org/lend/filter?a=a&b=b&c=c');
+		});
 	});
 
 	describe('isCCPage', () => {

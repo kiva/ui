@@ -6,13 +6,13 @@
 				v-for="(lender, i) in participationLendersDisplayed"
 				:lender-name="lender.name"
 				:lender-image-url="lender.image.url"
-				:is-small="true"
-				:class="{ 'tw--ml-1': i > 0 }"
+				is-small
+				:class="{ 'tw--ml-1': i > 0, 'challenge-avatar': isChallenge }"
 				:style="{ 'z-index': participationLendersDisplayed.length - i }"
 			/>
 		</div>
 		<p class="tw-px-1 tw-text-base">
-			Supported by {{ participantsText }}
+			{{ supportText }}
 		</p>
 	</div>
 </template>
@@ -31,16 +31,32 @@ export default {
 			type: Object,
 			required: true,
 			default: () => ({})
-		}
+		},
+		isChallenge: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		participantsNumber() {
-			return this.participants?.values?.length ?? 0;
+			return this.isChallenge
+				? this.participants?.totalCount ?? 0
+				: this.participants?.values?.length ?? 0;
 		},
 		participantsText() {
-			return this.participantsNumber === 1
-				? `${this.participantsNumber} person`
-				: `${this.participantsNumber} people`;
+			// eslint-disable-next-line no-nested-ternary
+			return this.isChallenge
+				? this.participantsNumber === 1
+					? `${this.participantsNumber} member`
+					: `${this.participantsNumber} members`
+				: this.participantsNumber === 1
+					? `${this.participantsNumber} person`
+					: `${this.participantsNumber} people`;
+		},
+		supportText() {
+			return this.isChallenge
+				? `${this.participantsText} participating`
+				: `Supported by ${this.participantsText}`;
 		},
 		participationLendersDisplayed() {
 			return (this.participants?.values ?? []).map(p => ({
@@ -51,3 +67,14 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang="postcss">
+.challenge-avatar {
+	@apply tw-w-4;
+}
+
+.challenge-avatar >>> div,
+.challenge-avatar >>> img {
+	@apply tw-w-4 tw-h-4;
+}
+</style>
