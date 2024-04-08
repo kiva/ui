@@ -10,7 +10,7 @@
 				</div>
 			</kv-switch>
 			<p class="tw-text-small">
-				Loans handpicked for your team, by your team. On by default for team challenges.
+				Loans handpicked for your team, by your team.
 			</p>
 		</div>
 		<hr class="tw-border-tertiary tw-mt-3 lg:tw-hidden">
