@@ -19,10 +19,7 @@
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
-								<template v-if="borrowerName">
-									<span class="tw-whitespace-nowrap">{{ participantsMessage }}</span>
-									<span class="data-hj-suppress tw-whitespace-nowrap">{{ borrowerName }}.</span>
-								</template>
+								<span>{{ participantsMessage }}</span>
 								<a
 									href="/basket"
 									class="tw-flex"
@@ -33,7 +30,7 @@
 									]"
 								>
 									<span class="tw-whitespace-nowrap">Head to checkout</span>
-									<kv-material-icon :icon="mdiArrowTopRight" />
+									<kv-material-icon class="tw-w-3" :icon="mdiArrowTopRight" />
 								</a>
 							</div>
 						</div>
@@ -109,6 +106,7 @@ export default {
 	data() {
 		return {
 			mdiArrowTopRight,
+			participantsMessage: 'You are on your way to supporting the team challenge!'
 		};
 	},
 	computed: {
@@ -130,11 +128,6 @@ export default {
 				.map(p => ({ ...p?.lender, image: { url: p?.lender?.image?.url ?? '' } }))
 				.slice(0, 3);
 		},
-		participantsMessage() {
-			return this.participants.length > 1
-				? `You & ${this.participants.length - 1} other members are supporting`
-				: 'You are supporting';
-		}
 	},
 };
 
