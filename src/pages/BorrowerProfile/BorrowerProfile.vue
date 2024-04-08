@@ -37,6 +37,7 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeLendAmount"
 						:activities="activities"
 					>
 						<template #sharebutton>
@@ -144,6 +145,7 @@ import {
 import { gql } from '@apollo/client';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
 import guestComment from '@/plugins/guest-comment-mixin';
 import {
 	trackExperimentVersion
@@ -437,7 +439,7 @@ export default {
 			activities: null,
 		};
 	},
-	mixins: [fiveDollarsTest, guestComment],
+	mixins: [fiveDollarsTest, guestComment, hugeLendAmount],
 	apollo: {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
@@ -708,6 +710,9 @@ export default {
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
 		this.initializeFiveDollarsNotes();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
 
 		// If loanType is direct fire hotjar event
 		if (this.loanType === 'direct-loan') {
