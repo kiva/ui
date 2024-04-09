@@ -21,7 +21,7 @@
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
 								<span :class="{'tw-whitespace-nowrap': borrowerName}">{{ participantsMessage }}</span>
 								<span
-									v-if="borrowerName"
+									v-if="participants.length > 1 && borrowerName"
 									class="data-hj-suppress tw-whitespace-nowrap"
 								>{{ borrowerName }}.</span>
 								<a
