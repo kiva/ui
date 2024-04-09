@@ -209,7 +209,11 @@ export default {
 				team: this.teamPublicId,
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
 			};
-			return getFullUrl(`${base}/lend/filter`, args);
+			let invitedBy = '';
+			if (this.loan.id && this.lender?.inviterName) {
+				invitedBy = `invitedby/${this.lender.inviterName}/for/${this.loan.id}`;
+			}
+			return getFullUrl(`${base}/${invitedBy}`, args);
 		},
 		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
 		shareMessage() {
