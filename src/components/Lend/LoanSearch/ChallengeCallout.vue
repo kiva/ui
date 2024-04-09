@@ -19,7 +19,9 @@
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
-								<span :class="{'tw-whitespace-nowrap': borrowerName}">{{ participantsMessage }}</span>
+								<span
+									:class="{'tw-whitespace-nowrap': participants.length > 1 && borrowerName}"
+								>{{ participantsMessage }}</span>
 								<span
 									v-if="participants.length > 1 && borrowerName"
 									class="data-hj-suppress tw-whitespace-nowrap"
