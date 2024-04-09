@@ -19,7 +19,11 @@
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
-								<span>{{ participantsMessage }}</span>
+								<span :class="{'tw-whitespace-nowrap': borrowerName}">{{ participantsMessage }}</span>
+								<span
+									v-if="borrowerName"
+									class="data-hj-suppress tw-whitespace-nowrap"
+								>{{ borrowerName }}.</span>
 								<a
 									href="/basket"
 									class="tw-flex"
@@ -106,7 +110,6 @@ export default {
 	data() {
 		return {
 			mdiArrowTopRight,
-			participantsMessage: 'You are on your way to supporting the team challenge!'
 		};
 	},
 	computed: {
@@ -127,6 +130,11 @@ export default {
 				.concat(this.currentLender)
 				.map(p => ({ ...p?.lender, image: { url: p?.lender?.image?.url ?? '' } }))
 				.slice(0, 3);
+		},
+		participantsMessage() {
+			return this.participants.length > 1
+				? `You & ${this.participants.length - 1} other members are supporting`
+				: 'You are on your way to supporting the team challenge!';
 		},
 	},
 };
