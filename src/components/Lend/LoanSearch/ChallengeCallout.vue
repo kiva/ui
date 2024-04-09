@@ -19,10 +19,11 @@
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
-								<template v-if="borrowerName">
-									<span class="tw-whitespace-nowrap">{{ participantsMessage }}</span>
-									<span class="data-hj-suppress tw-whitespace-nowrap">{{ borrowerName }}.</span>
-								</template>
+								<span :class="{'tw-whitespace-nowrap': borrowerName}">{{ participantsMessage }}</span>
+								<span
+									v-if="participants.length > 1 && borrowerName"
+									class="data-hj-suppress tw-whitespace-nowrap"
+								>{{ borrowerName }}.</span>
 								<a
 									href="/basket"
 									class="tw-flex"
@@ -33,7 +34,7 @@
 									]"
 								>
 									<span class="tw-whitespace-nowrap">Head to checkout</span>
-									<kv-material-icon :icon="mdiArrowTopRight" />
+									<kv-material-icon class="tw-w-3" :icon="mdiArrowTopRight" />
 								</a>
 							</div>
 						</div>
@@ -133,8 +134,8 @@ export default {
 		participantsMessage() {
 			return this.participants.length > 1
 				? `You & ${this.participants.length - 1} other members are supporting`
-				: 'You are supporting';
-		}
+				: 'You are on your way to supporting the team challenge!';
+		},
 	},
 };
 

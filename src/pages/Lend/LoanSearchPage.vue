@@ -1,8 +1,9 @@
 <template>
-	<www-page id="lend-filter">
+	<www-page id="lend-filter" class="tw-bg-secondary">
 		<challenge-callout
 			v-if="showChallengeHeader && !!teamData"
-			class="tw-bg-secondary tw-pb-1.5"
+			:class="{'tw-sticky tw-top-0 tw-z-sticky' : showAddedToCartMessage}"
+			class="tw-pb-1.5"
 			:share-lender="shareLender"
 			:current-lender="currentLender"
 			:team-name="teamData.name"
