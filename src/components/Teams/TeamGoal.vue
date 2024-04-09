@@ -28,17 +28,13 @@
 				<h3>{{ goal.name }}</h3>
 			</div>
 			<p class="tw-line-clamp-1 tw-mt-1">
-				{{ loanBecause }}
+				{{ challengeDescription }}
 			</p>
-			<div class="tw-mt-1 tw-flex tw-justify-between">
-				<strong>{{ daysRemaining }} days remaining</strong>
-				<strong>{{ loansFunded }}/{{ totalLoans }} loans funded</strong>
-			</div>
-			<div class="tw-mt-1">
-				<kv-progress-bar
-					:value="percentageFunded"
-					aria-label="Completion of challenge"
-					class="tw-w-full"
+			<div class="tw-mt-1 tw-mb-2">
+				<kv-progress-campaign
+					:funded-amount="fundedAmount"
+					:total-amount="totalAmount"
+					:days-left="daysLeft"
 				/>
 			</div>
 
@@ -77,7 +73,7 @@
 						'View',
 						teamName
 					]"
-					:to="`/team/challenge/${teamPublicId}`" variant="caution"
+					:to="`/lend/filter?team=${teamPublicId}`" variant="caution"
 				>
 					View
 				</kv-button>
@@ -88,10 +84,11 @@
 
 <script>
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
+import intervalToDuration from 'date-fns/intervalToDuration';
 import teamNoImage from '@/assets/images/team_s135.png';
 import teamGoalInfo from '@/plugins/team-goal-mixin';
 import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
@@ -102,7 +99,7 @@ export default {
 	components: {
 		KvButton,
 		KvLoadingPlaceholder,
-		KvProgressBar,
+		KvProgressCampaign,
 	},
 	data() {
 		return {
@@ -129,6 +126,25 @@ export default {
 				...p.lender,
 				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
 			})).filter(l => l.image).slice(0, 4); // Ensure image is defined and take first 4
+		},
+		fundedAmount() {
+			return this.goal?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
+		},
+		totalAmount() {
+			return this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
+		},
+		daysLeft() {
+			const start = this.goal?.startDate ? new Date(this.goal?.startDate) : new Date();
+			const end = this.goal?.endDate ? new Date(this.goal?.endDate) : new Date();
+			return intervalToDuration({
+				start,
+				end,
+			}).days;
+		},
+		challengeDescription() {
+			return this.goal?.description ?? '';
 		},
 	},
 	methods: {
