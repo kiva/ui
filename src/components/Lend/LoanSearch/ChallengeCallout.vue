@@ -19,7 +19,9 @@
 							</div>
 							<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 								<span class="tw-whitespace-nowrap">Added to cart!</span>
-								<span :class="{'tw-whitespace-nowrap': borrowerName}">{{ participantsMessage }}</span>
+								<span
+									:class="{'tw-whitespace-nowrap': participants.length > 1 && borrowerName}"
+								>{{ participantsMessage }}</span>
 								<span
 									v-if="participants.length > 1 && borrowerName"
 									class="data-hj-suppress tw-whitespace-nowrap"
@@ -144,7 +146,7 @@ export default {
 <style scoped lang="postcss">
 .info {
 	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-1
-		md:tw-rounded-lg tw-rounded-b tw-px-4;
+		md:tw-rounded-lg tw-rounded-b tw-px-2.5 md:tw-px-4;
 }
 
 .container {
