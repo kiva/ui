@@ -45,7 +45,7 @@
 			</kv-grid>
 		</kv-page-container>
 	</div>
-	<div v-else-if="shareLenderName">
+	<div v-else>
 		<kv-page-container class="container">
 			<kv-grid
 				class="tw-grid-cols-12"

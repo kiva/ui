@@ -762,7 +762,7 @@ export default {
 			return this.isMobile ? 'secondary' : 'caution';
 		},
 		showChallengeCallout() {
-			return this.enableChallengeHeader && !!this.shareLender && this.teamData;
+			return this.enableChallengeHeader && !!this.teamData;
 		}
 	},
 	created() {
