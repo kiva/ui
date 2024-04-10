@@ -1,9 +1,5 @@
 query checkoutSettings($basketId: String) {
 	general {
-		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
-			value
-			key
-		}
 		ftd_message_enable: uiConfigSetting(key: "ftd_message_enable") {
 			key
 			value
