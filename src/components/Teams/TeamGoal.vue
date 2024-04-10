@@ -39,32 +39,14 @@
 			</div>
 
 			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center tw-text-secondary">
-				<div class="tw-flex tw-items-center">
+				<div>
 					<div class="tw-hidden lg:tw-flex tw-shrink-0">
-						<img
-							v-for="(lender, i) in participationLendersDisplayed"
-							:key="lender.id"
-							:src="lender.image.url"
-							alt="Lender photo"
-							class="
-								data-hj-suppress
-								tw-inline-block
-								tw-w-4
-								tw-h-4
-								tw-rounded-full
-								tw-overflow-hidden
-								tw-border
-								tw-border-white
-								tw-object-fill
-								tw-relative
-							"
-							:class="{ 'tw--ml-2': i > 0, 'tw-border-gray-200': lender.isLegacyPlaceholder }"
-							:style="{ 'z-index': participationLendersDisplayed.length - i }"
-						>
+						<supported-by-lenders
+							class="tw-mt-1.5"
+							:participants="participants"
+							is-challenge
+						/>
 					</div>
-					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden lg:tw-px-1">
-						{{ participationTotalCount }} members participating
-					</span>
 				</div>
 				<kv-button
 					v-kv-track-event="[
@@ -84,11 +66,10 @@
 
 <script>
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import intervalToDuration from 'date-fns/intervalToDuration';
 import teamNoImage from '@/assets/images/team_s135.png';
 import teamGoalInfo from '@/plugins/team-goal-mixin';
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
@@ -100,6 +81,7 @@ export default {
 		KvButton,
 		KvLoadingPlaceholder,
 		KvProgressCampaign,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -117,34 +99,6 @@ export default {
 		},
 		teamImage() {
 			return this.teamImageUrl || this.teamNoImage;
-		},
-		participationTotalCount() {
-			return this.goal?.participation?.totalCount ?? 0;
-		},
-		participationLendersDisplayed() {
-			return (this.goal?.participation?.values ?? []).map(p => ({
-				...p.lender,
-				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
-			})).filter(l => l.image).slice(0, 4); // Ensure image is defined and take first 4
-		},
-		fundedAmount() {
-			return this.goal?.participation?.values?.reduce((sum, value) => {
-				return sum + (value?.amountLent ?? 0);
-			}, 0) ?? 0;
-		},
-		totalAmount() {
-			return this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
-		},
-		daysLeft() {
-			const start = this.goal?.startDate ? new Date(this.goal?.startDate) : new Date();
-			const end = this.goal?.endDate ? new Date(this.goal?.endDate) : new Date();
-			return intervalToDuration({
-				start,
-				end,
-			}).days;
-		},
-		challengeDescription() {
-			return this.goal?.description ?? '';
 		},
 	},
 	methods: {

@@ -70,14 +70,15 @@
 </template>
 
 <script>
+import teamGoalInfo from '@/plugins/team-goal-mixin';
 import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
-import intervalToDuration from 'date-fns/intervalToDuration';
 import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 import KvInlineActivityFeed from '~/@kiva/kv-components/vue/KvInlineActivityFeed';
 
 export default {
 	name: 'ChallengeHeader',
+	mixins: [teamGoalInfo],
 	components: {
 		KvProgressCampaign,
 		KvUserAvatar,
@@ -85,10 +86,6 @@ export default {
 		SupportedByLenders,
 	},
 	props: {
-		challengeData: {
-			type: Object,
-			default: () => ({}),
-		},
 		teamData: {
 			type: Object,
 			default: () => ({}),
@@ -101,57 +98,6 @@ export default {
 		teamImageUrl() {
 			return this.teamData?.image?.url ?? '';
 		},
-		challengeName() {
-			return this.challengeData?.name ?? '';
-		},
-		challengeDescription() {
-			return this.challengeData?.description ?? '';
-		},
-		authorName() {
-			return this.challengeData?.descriptionAuthor?.name ?? '';
-		},
-		authorImageUrl() {
-			return this.challengeData?.descriptionAuthor?.image?.url ?? '';
-		},
-		fundedAmount() {
-			return this.challengeData?.participation?.values?.reduce((sum, value) => {
-				return sum + (value?.amountLent ?? 0);
-			}, 0) ?? 0;
-		},
-		totalAmount() {
-			return this.challengeData?.targets?.values?.[0]?.targetLendAmount ?? 0;
-		},
-		daysLeft() {
-			const start = this.challengeData?.startDate ? new Date(this.challengeData?.startDate) : new Date();
-			const end = this.challengeData?.endDate ? new Date(this.challengeData?.endDate) : new Date();
-			return intervalToDuration({
-				start,
-				end,
-			}).days;
-		},
-		challengeActivity() {
-			const activities = this.challengeData?.participation?.values ?? [];
-			const data = [];
-
-			activities
-				// Show one activity item per lender with the amounts summed
-				.forEach(activity => {
-					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
-					if (existing) {
-						const existingAmount = parseFloat(existing?.amountLent ?? 0);
-						const activityAmount = parseFloat(activity?.amountLent ?? 0);
-						existing.amountLent = existingAmount + activityAmount;
-					} else {
-						// Shallow copy the read-only object so we can sum the amountLent
-						data.push({ ...activity });
-					}
-				});
-
-			return data;
-		},
-		participants() {
-			return this.challengeData?.participation ?? {};
-		}
 	},
 	mounted() {
 		this.$kvTrackEvent('teams', 'view challenge', this.teamData?.name ?? '');
