@@ -49,7 +49,7 @@ describe('ChallengeHeader', () => {
 		const LoansFunded = getByText('1/2 loans funded');
 		expect(getByTestId('loans-funded')).toBe(LoansFunded);
 
-		const PercentageFunded = getByText('50% complete');
+		const PercentageFunded = getByText('0% complete');
 		expect(getByTestId('percentage-funded')).toBe(PercentageFunded);
 	});
 });

@@ -18,7 +18,7 @@
 			<kv-page-container>
 				<challenge-header
 					v-if="showChallengeHeader"
-					:challenge-data="challengeData"
+					:goal="challengeData"
 					:team-data="teamData"
 				/>
 				<div v-else class="tw-flex tw-items-start tw-pb-8">
