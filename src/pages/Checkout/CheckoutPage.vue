@@ -113,7 +113,7 @@
 							</div>
 
 							<div
-								v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
+								v-else-if="!isLoggedIn && showLoginContinueButton"
 								class=""
 							>
 								<!-- Guest checkout button shown when the uiexp.guest_checkout and
@@ -180,7 +180,7 @@
 								</kv-button>
 							</div>
 							<div
-								v-if="!isActivelyLoggedIn
+								v-if="!isLoggedIn
 									&& showLoginContinueButton
 									&& eligibleForGuestCheckout
 									&& guestCheckoutCTAExpActive"
@@ -398,8 +398,6 @@ export default {
 			showLogin: false,
 			loginLoading: false,
 			isHovered: false,
-			activeLoginDuration: 3600,
-			lastActiveLogin: 0,
 			preCheckoutStep: '',
 			preValidationErrors: [],
 			teams: [],
@@ -476,8 +474,8 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
-			this.lastActiveLogin = _get(data, 'my.lastLoginTimestamp', 0);
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
+			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -492,10 +490,6 @@ export default {
 				this.disableGuestCheckout();
 			}
 
-			// general data
-			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-
-			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// Enable FTDs message from settings
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
@@ -603,10 +597,7 @@ export default {
 		this.$nextTick(() => {
 			// fire tracking event when the page loads
 			// - this event will be duplicated when the page reloads with a newly registered/logged in user
-			let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-			if (this.isActivelyLoggedIn) {
-				userStatus = 'Actively Logged-In';
-			}
+			const userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
 			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 		});
 
@@ -655,14 +646,7 @@ export default {
 			if (this.checkingOutAsGuest) {
 				return true;
 			}
-			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
-				return true;
-			}
-			return false;
-		},
-		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
+			if (this.myId !== null && this.myId !== undefined) {
 				return true;
 			}
 			return false;
@@ -686,7 +670,7 @@ export default {
 			// Checking if guest checkout is enabled
 			// and if Kiva has been logged into on user's current browser
 			if (this.isGuestCheckoutEnabled
-				&& !this.isActivelyLoggedIn
+				&& !this.isLoggedIn
 				&& !this.hasEverLoggedIn
 			) {
 				return true;
@@ -694,7 +678,7 @@ export default {
 			return false;
 		},
 		showLoginContinueButton() {
-			if (!this.myId || !this.isActivelyLoggedIn) {
+			if (!this.myId || !this.isLoggedIn) {
 				return true;
 			}
 			return false;
@@ -790,7 +774,7 @@ export default {
 				this.updatingTotals = true;
 				// we need to force show the login popup if not actively logged in
 				const authorizeOptions = {};
-				if (!this.isActivelyLoggedIn) {
+				if (!this.isLoggedIn) {
 					authorizeOptions.prompt = 'login';
 				}
 
@@ -932,7 +916,7 @@ export default {
 
 				this.$nextTick(() => {
 					if (
-						this.isActivelyLoggedIn
+						this.isLoggedIn
 						&& this.verificationRequired
 						&& this.externalFormId
 						&& !this.verificationSubmitted
@@ -967,7 +951,7 @@ export default {
 		handleCancelPromoOptOut() {
 			this.showVerifyRemovePromoCredit = false;
 			if (
-				this.isActivelyLoggedIn
+				this.isLoggedIn
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
@@ -1077,7 +1061,7 @@ export default {
 		handleTeamForm() {
 			if (
 				this.loans.length
-				&& this.isActivelyLoggedIn
+				&& this.isLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {
