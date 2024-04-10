@@ -123,9 +123,9 @@ export default {
 	methods: {
 		showCurrentMessage() {
 			const message = this.currentMessage?.message ?? '';
-			if (message) {
-				const safeMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
-				const type = this.currentMessage?.type ?? this.currentMessage?.messageType ?? '';
+			const safeMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
+			const type = this.currentMessage?.type ?? this.currentMessage?.messageType ?? '';
+			if (safeMessage) {
 				this.$refs.tip?.show(safeMessage, type === TIP ? '' : type, this.persist);
 			}
 		},
