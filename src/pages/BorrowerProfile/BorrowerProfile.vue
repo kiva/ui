@@ -197,7 +197,7 @@ import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql'
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
-const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? 'christian78848470';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
