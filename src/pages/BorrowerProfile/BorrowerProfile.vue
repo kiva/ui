@@ -9,6 +9,7 @@
 				class="tw-pb-1.5 tw-absolute tw-mx-auto tw-w-full tw-z-5"
 				:share-lender="shareLender"
 				:team-name="teamData.name"
+				:team-id="teamData.teamPublicId"
 			/>
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">

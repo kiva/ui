@@ -108,6 +108,10 @@ export default {
 			type: String,
 			default: undefined,
 		},
+		teamId: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -139,7 +143,7 @@ export default {
 				: 'You are on your way to supporting the team challenge!';
 		},
 		teamLink() {
-			return `/lend/filter?team=${this.$route?.query?.team ?? ''}`;
+			return `/lend/filter?team=${this.teamId ?? ''}`;
 		}
 	},
 };
