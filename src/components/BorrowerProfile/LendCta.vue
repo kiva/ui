@@ -613,7 +613,6 @@ export default {
 
 				this.$showTipMsg(this.errorMsg, 'error');
 			});
-			this.$emit('add-to-basket', { loanId: this.loanId, lendAmount: this.selectedOption });
 		},
 		createWrapperObserver() {
 			// Watch for the wrapper element moving in and out of the viewport

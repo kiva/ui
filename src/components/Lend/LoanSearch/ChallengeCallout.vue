@@ -139,7 +139,7 @@ export default {
 				: 'You are on your way to supporting the team challenge!';
 		},
 		teamLink() {
-			return `/lend/filter?team=${this.$route.query.team}`;
+			return `/lend/filter?team=${this.$route?.query?.team ?? ''}`;
 		}
 	},
 };
