@@ -803,7 +803,6 @@ export default {
 							publicId,
 						}
 					});
-					console.log(data);
 					this.shareLender = data?.community?.lender ?? {};
 				} catch (e) {
 					logReadQueryError(
