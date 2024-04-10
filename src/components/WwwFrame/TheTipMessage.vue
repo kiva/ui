@@ -125,7 +125,9 @@ export default {
 			const message = this.currentMessage?.message ?? '';
 			const safeMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'] });
 			const type = this.currentMessage?.type ?? this.currentMessage?.messageType ?? '';
-			this.$refs.tip?.show(safeMessage, type === TIP ? '' : type, this.persist);
+			if (safeMessage) {
+				this.$refs.tip?.show(safeMessage, type === TIP ? '' : type, this.persist);
+			}
 		},
 		closeCurrentMessage() {
 			if (this.currentMessage) {
