@@ -59,7 +59,7 @@
 							class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
 						>
 						<p class="tw-text-lg data-hj-suppress">
-							{{ headerCallout }}
+							{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
 						</p>
 					</div>
 				</div>
@@ -123,8 +123,8 @@ export default {
 		},
 		headerCallout() {
 			return this.shareLenderName
-				? `Support ${this.shareLenderName} and help ${this.teamName} hit their goal`
-				: `Help ${this.teamName} hit their goal`;
+				? `Support ${this.shareLenderName} and help `
+				: 'Help ';
 		},
 		participants() {
 			return (this.goalParticipationForLoan ?? [])
@@ -138,6 +138,9 @@ export default {
 				? `You & ${this.participants.length - 1} other members are supporting`
 				: 'You are on your way to supporting the team challenge!';
 		},
+		teamLink() {
+			return `/lend/filter?team=${this.$route.query.team}`;
+		}
 	},
 };
 
