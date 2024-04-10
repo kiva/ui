@@ -4,14 +4,22 @@ import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 
 const shareLender = { id: 1, name: 'Lender' };
 const teamName = 'Team Test';
+const mocks = {
+	$route: {
+		query: {
+			team: teamName
+		}
+	}
+};
 
 describe('ChallengeCallout', () => {
-	it('should display share lender in message', () => {
+	it('should display team name', () => {
 		const { getByText } = render(ChallengeCallout, {
-			props: { shareLender, teamName }
+			props: { shareLender, teamName },
+			mocks,
 		});
 
-		getByText(`Support ${shareLender.name} and help ${teamName} hit their goal`);
+		getByText(teamName);
 	});
 
 	it('should display lender image', () => {
@@ -24,7 +32,8 @@ describe('ChallengeCallout', () => {
 					},
 				},
 				teamName
-			}
+			},
+			mocks,
 		});
 
 		getByAltText(`${shareLender.name} image`);
@@ -45,7 +54,8 @@ describe('ChallengeCallout', () => {
 				teamName,
 				showAddedToCartMessage: true,
 				borrowerName: 'Borrower',
-			}
+			},
+			mocks,
 		});
 
 		getByAltText('Image of lender');
