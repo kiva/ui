@@ -45,7 +45,7 @@
 			</kv-grid>
 		</kv-page-container>
 	</div>
-	<div v-else-if="shareLenderName">
+	<div v-else>
 		<kv-page-container class="container">
 			<kv-grid
 				class="tw-grid-cols-12"
@@ -53,13 +53,13 @@
 				<div class="tw-col-span-12 tw-w-full">
 					<div class="info tw-w-full">
 						<img
-							v-if="shareLenderImage"
+							v-if="shareLenderImage && shareLenderName"
 							:alt="`${shareLenderName} image`"
 							:src="shareLenderImage"
 							class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
 						>
 						<p class="tw-text-lg data-hj-suppress">
-							{{ headerCallout }}
+							{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
 						</p>
 					</div>
 				</div>
@@ -108,6 +108,10 @@ export default {
 			type: String,
 			default: undefined,
 		},
+		teamId: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -123,8 +127,8 @@ export default {
 		},
 		headerCallout() {
 			return this.shareLenderName
-				? `Support ${this.shareLenderName} and help ${this.teamName} hit their goal`
-				: `Help ${this.teamName} hit their goal`;
+				? `Support ${this.shareLenderName} and help `
+				: 'Help ';
 		},
 		participants() {
 			return (this.goalParticipationForLoan ?? [])
@@ -138,6 +142,9 @@ export default {
 				? `You & ${this.participants.length - 1} other members are supporting`
 				: 'You are on your way to supporting the team challenge!';
 		},
+		teamLink() {
+			return `/lend/filter?team=${this.teamId ?? ''}`;
+		}
 	},
 };
 

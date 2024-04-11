@@ -4,6 +4,13 @@
 		:data-testid="loanType"
 	>
 		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
+			<challenge-callout
+				v-if="showChallengeCallout"
+				class="tw-pb-1.5 tw-absolute tw-mx-auto tw-w-full tw-z-5"
+				:share-lender="shareLender"
+				:team-name="teamData.name"
+				:team-id="teamData.teamPublicId"
+			/>
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -17,7 +24,8 @@
 					:days-left="diffInDays"
 				/>
 				<content-container
-					:class="inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8'"
+					:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8',
+						{'tw-pt-16 md:tw-pt-14 lg:tw-pt-14': showChallengeCallout}]"
 					class="md:tw-pt-6"
 				>
 					<summary-card
@@ -171,13 +179,18 @@ import { fireHotJarEvent } from '@/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
 import BorrowerEducationPlacement from '@/components/BorrowerProfile/BorrowerEducationPlacement';
 import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
+import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
+import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const ACTIVITY_FEED_EXP = 'activity_feed_bp';
+const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -314,6 +327,7 @@ export default {
 		TopBannerPfp,
 		WwwPage,
 		BorrowerEducationPlacement,
+		ChallengeCallout,
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -437,6 +451,9 @@ export default {
 				'Europe'
 			],
 			activities: null,
+			enableChallengeHeader: false,
+			teamData: {},
+			shareLender: undefined,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment, hugeLendAmount],
@@ -489,11 +506,38 @@ export default {
 						});
 					}
 
+					const teamPublicId = route?.query?.team ?? '';
+					const challengeHeaderExpData = client.readFragment({
+						id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+						fragment: experimentVersionFragment,
+					}) ?? {};
+					const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
+
 					return Promise.all([
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
+						activeChallengeHeaderExp,
+						teamPublicId && activeChallengeHeaderExp
+							? client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } })
+							: null,
 					]);
+				}).then(response => {
+					const teamId = response[4]?.data?.community?.team?.id ?? null;
+					const activeChallengeHeaderExp = response[3];
+					const lenderPublicId = route?.query?.lender ?? '';
+
+					if (teamId && activeChallengeHeaderExp) {
+						return Promise.all([
+							client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+							lenderPublicId
+								? client.query({
+									query: lenderPublicProfileQuery,
+									variables: { publicId: lenderPublicId }
+								})
+								: null,
+						]);
+					}
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -703,6 +747,9 @@ export default {
 		},
 		shareBtnVariant() {
 			return this.isMobile ? 'secondary' : 'caution';
+		},
+		showChallengeCallout() {
+			return this.enableChallengeHeader && Object.keys(this.teamData).length;
 		}
 	},
 	created() {
@@ -717,6 +764,33 @@ export default {
 		// If loanType is direct fire hotjar event
 		if (this.loanType === 'direct-loan') {
 			fireHotJarEvent('us_borrower_profile');
+		}
+
+		const challengeHeaderExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
+
+		if (this.enableChallengeHeader) {
+			const teamPublicId = this.$route?.query?.team ?? '';
+			let teamId = null;
+			if (teamPublicId) {
+				const teamInfo = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+				teamId = teamInfo?.community?.team?.id ?? null;
+			}
+			if (teamId) {
+				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
+				this.teamData = teamData?.community?.team || {};
+
+				const data = this.apollo.readQuery({
+					query: lenderPublicProfileQuery,
+					variables: {
+						publicId,
+					}
+				});
+				this.shareLender = data?.community?.lender ?? {};
+			}
 		}
 	}
 };
