@@ -462,97 +462,95 @@ export default {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
 			const publicId = getPublicId(route);
-			return Promise.all([
-				client
-					.query({
-						query: preFetchQuery,
-						variables: {
-							loanId: Number(route.params?.id ?? 0),
-							publicId,
-							getInviter: !!publicId,
-							basketId: cookieStore.get('kvbskt')
-						},
-					}),
-				client.query({ query: experimentAssignmentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
-			]).then(({ data }) => {
-				const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
-				if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
-					const { query } = route;
-					return Promise.reject({
-						path: `/lend-classic/${route.params.id}`,
-						query,
-					});
-				}
+			return client
+				.query({
+					query: preFetchQuery,
+					variables: {
+						loanId: Number(route.params?.id ?? 0),
+						publicId,
+						getInviter: !!publicId,
+						basketId: cookieStore.get('kvbskt')
+					},
+				})
+				.then(({ data }) => {
+					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
+					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
+						const { query } = route;
+						return Promise.reject({
+							path: `/lend-classic/${route.params.id}`,
+							query,
+						});
+					}
 
-				// Check for loan and loan status
-				const loan = data?.lend?.loan;
-				const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-				let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
-				// Evaluate if lender should be redirected to lend classic MARS-358
-				const lentTo = loan?.userProperties?.lentTo ?? false;
-				if (lentTo && !redirectToLendClasic) {
-					const loanAmount = loan?.loanAmount ?? '0';
-					const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
-					const amountLeft = Number(loanAmount) - Number(fundedAmount);
+					// Check for loan and loan status
+					const loan = data?.lend?.loan;
+					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
+					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
+					// Evaluate if lender should be redirected to lend classic MARS-358
+					const lentTo = loan?.userProperties?.lentTo ?? false;
+					if (lentTo && !redirectToLendClasic) {
+						const loanAmount = loan?.loanAmount ?? '0';
+						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
+						const amountLeft = Number(loanAmount) - Number(fundedAmount);
 
-					const loanStatus = loan?.status !== 'fundraising';
-					redirectToLendClasic = !amountLeft || loanStatus;
-				}
+						const loanStatus = loan?.status !== 'fundraising';
+						redirectToLendClasic = !amountLeft || loanStatus;
+					}
 
-				if (redirectToLendClasic) {
-					// redirect to legacy borrower profile
-					const { query = {} } = route;
-					query.minimal = false;
-					return Promise.reject({
-						path: `/lend-classic/${Number(route.params?.id ?? 0)}`,
-						query,
-					});
-				}
+					if (redirectToLendClasic) {
+						// redirect to legacy borrower profile
+						const { query = {} } = route;
+						query.minimal = false;
+						return Promise.reject({
+							path: `/lend-classic/${Number(route.params?.id ?? 0)}`,
+							query,
+						});
+					}
 
-				const teamPublicId = route?.query?.team ?? '';
-				const challengeHeaderExpData = client.readFragment({
-					id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-					fragment: experimentVersionFragment,
-				}) ?? {};
-				const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
+					const teamPublicId = route?.query?.team ?? '';
+					const challengeHeaderExpData = client.readFragment({
+						id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+						fragment: experimentVersionFragment,
+					}) ?? {};
+					const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
 
-				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
-					teamPublicId,
-					activeChallengeHeaderExp,
-				]);
-			}).then(response => {
-				const teamPublicId = response[3];
-				const activeChallengeHeaderExp = response[4];
-
-				let teamDataPromise = Promise.resolve();
-				if (teamPublicId && activeChallengeHeaderExp) {
-					teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
-				}
-
-				return Promise.all([
-					teamDataPromise,
-					activeChallengeHeaderExp,
-				]);
-			}).then(responseTeams => {
-				const teamId = responseTeams[0]?.data?.community?.team?.id ?? null;
-				const activeChallengeHeaderExp = responseTeams[1];
-				const lenderPublicId = route?.query?.lender ?? '';
-
-				if (teamId && activeChallengeHeaderExp) {
 					return Promise.all([
-						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
-						lenderPublicId
-							? client.query({
-								query: lenderPublicProfileQuery,
-								variables: { publicId: lenderPublicId }
-							})
-							: null,
+						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
+						teamPublicId,
+						activeChallengeHeaderExp,
 					]);
-				}
-			});
+				}).then(response => {
+					const teamPublicId = response[3];
+					const activeChallengeHeaderExp = response[4];
+
+					let teamDataPromise = Promise.resolve();
+					if (teamPublicId && activeChallengeHeaderExp) {
+						teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+					}
+
+					return Promise.all([
+						teamDataPromise,
+						activeChallengeHeaderExp,
+					]);
+				}).then(responseTeams => {
+					const teamId = responseTeams[0]?.data?.community?.team?.id ?? null;
+					const activeChallengeHeaderExp = responseTeams[1];
+					const lenderPublicId = route?.query?.lender ?? '';
+
+					if (teamId && activeChallengeHeaderExp) {
+						return Promise.all([
+							client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
+							lenderPublicId
+								? client.query({
+									query: lenderPublicProfileQuery,
+									variables: { publicId: lenderPublicId }
+								})
+								: null,
+						]);
+					}
+				});
 		},
 		preFetchVariables({ route, cookieStore }) {
 			const publicId = getPublicId(route);
@@ -763,7 +761,7 @@ export default {
 			return this.isMobile ? 'secondary' : 'caution';
 		},
 		showChallengeCallout() {
-			return this.enableChallengeHeader && !!this.teamData;
+			return this.enableChallengeHeader && Object.keys(this.teamData).length;
 		}
 	},
 	created() {

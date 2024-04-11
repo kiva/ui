@@ -53,7 +53,7 @@
 				<div class="tw-col-span-12 tw-w-full">
 					<div class="info tw-w-full">
 						<img
-							v-if="shareLenderImage"
+							v-if="shareLenderImage && shareLenderName"
 							:alt="`${shareLenderName} image`"
 							:src="shareLenderImage"
 							class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
