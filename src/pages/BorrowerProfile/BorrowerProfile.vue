@@ -182,7 +182,6 @@ import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
@@ -520,23 +519,13 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
 						teamPublicId,
 						activeChallengeHeaderExp,
+						teamPublicId && activeChallengeHeaderExp
+							? client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } })
+							: null,
 					]);
 				}).then(response => {
-					const teamPublicId = response[3];
+					const teamId = response[5]?.data?.community?.team?.id ?? null;
 					const activeChallengeHeaderExp = response[4];
-
-					let teamDataPromise = Promise.resolve();
-					if (teamPublicId && activeChallengeHeaderExp) {
-						teamDataPromise = client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
-					}
-
-					return Promise.all([
-						teamDataPromise,
-						activeChallengeHeaderExp,
-					]);
-				}).then(responseTeams => {
-					const teamId = responseTeams[0]?.data?.community?.team?.id ?? null;
-					const activeChallengeHeaderExp = responseTeams[1];
 					const lenderPublicId = route?.query?.lender ?? '';
 
 					if (teamId && activeChallengeHeaderExp) {
@@ -795,20 +784,13 @@ export default {
 				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 				this.teamData = teamData?.community?.team || {};
 
-				try {
-					const data = this.apollo.readQuery({
-						query: lenderPublicProfileQuery,
-						variables: {
-							publicId,
-						}
-					});
-					this.shareLender = data?.community?.lender ?? {};
-				} catch (e) {
-					logReadQueryError(
-						e,
-						`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
-					);
-				}
+				const data = this.apollo.readQuery({
+					query: lenderPublicProfileQuery,
+					variables: {
+						publicId,
+					}
+				});
+				this.shareLender = data?.community?.lender ?? {};
 			}
 		}
 	}
