@@ -517,15 +517,14 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
-						teamPublicId,
 						activeChallengeHeaderExp,
 						teamPublicId && activeChallengeHeaderExp
 							? client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } })
 							: null,
 					]);
 				}).then(response => {
-					const teamId = response[5]?.data?.community?.team?.id ?? null;
-					const activeChallengeHeaderExp = response[4];
+					const teamId = response[4]?.data?.community?.team?.id ?? null;
+					const activeChallengeHeaderExp = response[3];
 					const lenderPublicId = route?.query?.lender ?? '';
 
 					if (teamId && activeChallengeHeaderExp) {
