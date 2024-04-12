@@ -1,7 +1,7 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<challenge-callout
-			v-if="showChallengeHeader && !!teamData"
+			v-if="showChallengeCallout"
 			:class="{'tw-sticky tw-top-0 tw-z-sticky' : showAddedToCartMessage}"
 			class="tw-pb-1.5"
 			:share-lender="shareLender"
@@ -10,6 +10,7 @@
 			:show-added-to-cart-message="showAddedToCartMessage"
 			:goal-participation-for-loan="goalParticipationForLoan"
 			:borrower-name="borrowerName"
+			@hide="hideChallengeCallout = true"
 		/>
 		<article
 			class="tw-bg-secondary tw-relative"
@@ -147,6 +148,7 @@ export default {
 			borrowerName: undefined,
 			currentLender: undefined,
 			showLoansActivityFeed: false,
+			hideChallengeCallout: false,
 		};
 	},
 	mixins: [fiveDollarsTest, hugeLendAmount],
@@ -244,6 +246,9 @@ export default {
 	computed: {
 		showChallengeHeader() {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
+		},
+		showChallengeCallout() {
+			return this.enableChallengeHeader && !this.hideChallengeCallout;
 		},
 		teamName() {
 			return this.teamData?.name ?? '';

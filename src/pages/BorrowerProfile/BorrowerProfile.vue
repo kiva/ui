@@ -10,6 +10,7 @@
 				:share-lender="shareLender"
 				:team-name="teamData.name"
 				:team-id="teamData.teamPublicId"
+				@hide="hideChallengeCallout = true"
 			/>
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
@@ -454,6 +455,7 @@ export default {
 			enableChallengeHeader: false,
 			teamData: {},
 			shareLender: undefined,
+			hideChallengeCallout: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment, hugeLendAmount],
@@ -749,7 +751,7 @@ export default {
 			return this.isMobile ? 'secondary' : 'caution';
 		},
 		showChallengeCallout() {
-			return this.enableChallengeHeader && Object.keys(this.teamData).length;
+			return this.enableChallengeHeader && Object.keys(this.teamData).length && !this.hideChallengeCallout;
 		}
 	},
 	created() {

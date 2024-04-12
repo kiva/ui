@@ -39,6 +39,15 @@
 									<kv-material-icon class="tw-w-3" :icon="mdiArrowTopRight" />
 								</a>
 							</div>
+							<button
+								class="tw-flex"
+								@click="$emit('hide')"
+							>
+								<kv-material-icon
+									class="tw-h-3 tw-w-3"
+									:icon="mdiClose"
+								/>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -51,7 +60,7 @@
 				class="tw-grid-cols-12"
 			>
 				<div class="tw-col-span-12 tw-w-full">
-					<div class="info tw-w-full">
+					<div class="info tw-w-full tw-flex tw-items-center tw-justify-between">
 						<img
 							v-if="shareLenderImage && shareLenderName"
 							:alt="`${shareLenderName} image`"
@@ -61,6 +70,15 @@
 						<p class="tw-text-lg data-hj-suppress">
 							{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
 						</p>
+						<button
+							class="tw-flex"
+							@click="$emit('hide')"
+						>
+							<kv-material-icon
+								class="tw-h-3 tw-w-3"
+								:icon="mdiClose"
+							/>
+						</button>
 					</div>
 				</div>
 			</kv-grid>
@@ -69,7 +87,7 @@
 </template>
 
 <script>
-import { mdiArrowTopRight } from '@mdi/js';
+import { mdiArrowTopRight, mdiClose } from '@mdi/js';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -116,6 +134,7 @@ export default {
 	data() {
 		return {
 			mdiArrowTopRight,
+			mdiClose,
 		};
 	},
 	computed: {
