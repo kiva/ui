@@ -41,7 +41,7 @@
 							</div>
 							<button
 								class="tw-flex"
-								@click="$emit('hide')"
+								@click="$emit('close')"
 							>
 								<kv-material-icon
 									class="tw-h-3 tw-w-3"
@@ -54,7 +54,7 @@
 			</kv-grid>
 		</kv-page-container>
 	</div>
-	<div v-else>
+	<div v-else-if="!hideMsg">
 		<kv-page-container class="container">
 			<kv-grid
 				class="tw-grid-cols-12"
@@ -72,7 +72,7 @@
 						</p>
 						<button
 							class="tw-flex"
-							@click="$emit('hide')"
+							@click="$emit('close')"
 						>
 							<kv-material-icon
 								class="tw-h-3 tw-w-3"
@@ -129,6 +129,10 @@ export default {
 		teamId: {
 			type: String,
 			default: ''
+		},
+		hideMsg: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	data() {
@@ -163,7 +167,7 @@ export default {
 		},
 		teamLink() {
 			return `/lend/filter?team=${this.teamId ?? ''}`;
-		}
+		},
 	},
 };
 

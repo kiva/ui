@@ -10,7 +10,7 @@
 				:share-lender="shareLender"
 				:team-name="teamData.name"
 				:team-id="teamData.teamPublicId"
-				@hide="hideChallengeCallout = true"
+				@close="hideChallengeCallout = true"
 			/>
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">

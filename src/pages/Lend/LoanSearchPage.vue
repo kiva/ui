@@ -10,7 +10,8 @@
 			:show-added-to-cart-message="showAddedToCartMessage"
 			:goal-participation-for-loan="goalParticipationForLoan"
 			:borrower-name="borrowerName"
-			@hide="hideChallengeCallout = true"
+			@close="closeChallengeCallout"
+			hide-msg
 		/>
 		<article
 			class="tw-bg-secondary tw-relative"
@@ -248,7 +249,7 @@ export default {
 			return this.enableChallengeHeader && !!this.challengeData?.id;
 		},
 		showChallengeCallout() {
-			return this.enableChallengeHeader && !this.hideChallengeCallout;
+			return this.enableChallengeHeader && (!this.hideChallengeCallout || this.showAddedToCartMessage);
 		},
 		teamName() {
 			return this.teamData?.name ?? '';
@@ -289,6 +290,10 @@ export default {
 
 				this.showAddedToCartMessage = true;
 			}
+		},
+		closeChallengeCallout() {
+			this.showAddedToCartMessage = false;
+			this.hideChallengeCallout = true;
 		},
 	},
 	created() {
