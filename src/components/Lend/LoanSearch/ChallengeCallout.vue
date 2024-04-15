@@ -16,7 +16,7 @@
 								:lender-name="p.name"
 								:lender-image-url="p.image.url"
 								is-small
-								class="challenge-avatar md:tw-w-4 md:tw-h-4"
+								class="challenge-avatar md:tw-w-4 md:tw-h-4 tw-flex tw-items-center"
 								:class="{ 'tw--ml-1': i > 0 }"
 								:style="{ 'z-index': participants.length - i }"
 							/>
