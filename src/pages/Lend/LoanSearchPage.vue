@@ -2,8 +2,6 @@
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<challenge-callout
 			v-if="showChallengeCallout"
-			:class="{'tw-sticky tw-top-0 tw-z-sticky' : showAddedToCartMessage}"
-			class="tw-pb-1.5"
 			:share-lender="shareLender"
 			:current-lender="currentLender"
 			:team-name="teamData.name"
