@@ -202,7 +202,7 @@ export default {
 	background-color: white !important;
 }
 
-.toast-container >>> div[data-test="tip-message"]{
+.toast-container >>> div[data-test="tip-message"] {
 	@apply tw-mx-0;
 }
 

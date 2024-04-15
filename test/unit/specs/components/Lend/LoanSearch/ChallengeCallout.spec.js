@@ -42,6 +42,8 @@ describe('ChallengeCallout', () => {
 	it('should display add to cart message', () => {
 		Vue.directive('kv-track-event', () => ({}));
 
+		const show = jest.fn();
+
 		const { getByAltText, getByText } = render(ChallengeCallout, {
 			props: {
 				currentLender: {
@@ -56,9 +58,24 @@ describe('ChallengeCallout', () => {
 				borrowerName: 'Borrower',
 			},
 			mocks,
+			stubs: {
+				KvToast: {
+					template: `
+						<div ref="toastRef">
+							<img src="test.jpg" alt="Image of lender" />
+							<span class="tw-whitespace-nowrap">Added to cart!</span>
+						</div>
+					`,
+					methods: {
+						close: () => ({}),
+						show,
+					},
+				},
+			},
 		});
 
 		getByAltText('Image of lender');
 		getByText('Added to cart!');
+		expect(show).toHaveBeenCalled();
 	});
 });
