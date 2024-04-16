@@ -95,7 +95,7 @@ export default {
 	watch: {
 		showAddedToCartMessage(val) {
 			if (val) {
-				this.$refs.toastRef.show();
+				this.$refs.toastRef.show('', '', true);
 			}
 		}
 	},
@@ -106,7 +106,7 @@ export default {
 	},
 	mounted() {
 		if (this.showAddedToCartMessage) {
-			this.$refs.toastRef.show();
+			this.$refs.toastRef.show('', '', true);
 		}
 	}
 };
