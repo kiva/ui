@@ -1,8 +1,12 @@
 <template>
-	<kv-page-container class="container">
-		<kv-grid class="tw-grid-cols-12">
-			<div class="tw-col-span-12 tw-w-full">
-				<div class="info tw-w-full tw-flex tw-items-center tw-justify-between">
+	<kv-toast
+		ref="toastRef"
+		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner toast-container
+				tw-rounded-t-none md:tw-rounded-t"
+	>
+		<template #toastContent>
+			<div class=" tw-w-full">
+				<div class="tw-w-full tw-flex tw-gap-1 tw-items-center tw-justify-between">
 					<kv-user-avatar
 						:lender-name="shareLenderName"
 						:lender-image-url="shareLenderImage"
@@ -12,35 +16,22 @@
 					<p class="tw-text-lg data-hj-suppress">
 						{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
 					</p>
-					<button
-						class="tw-flex"
-						@click="$emit('close')"
-					>
-						<kv-material-icon
-							class="tw-h-3 tw-w-3"
-							:icon="mdiClose"
-						/>
-					</button>
 				</div>
 			</div>
-		</kv-grid>
-	</kv-page-container>
+		</template>
+	</kv-toast>
 </template>
 
 <script>
 import { mdiArrowTopRight, mdiClose } from '@mdi/js';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvToast from '~/@kiva/kv-components/vue/KvToast';
 
 export default {
 	name: 'ChallengeTeamInvite',
 	components: {
-		KvGrid,
-		KvPageContainer,
-		KvMaterialIcon,
 		KvUserAvatar,
+		KvToast,
 	},
 	props: {
 		shareLender: {
@@ -77,6 +68,9 @@ export default {
 		teamLink() {
 			return `/lend/filter?team=${this.teamId ?? ''}`;
 		},
+	},
+	mounted() {
+		this.$refs.toastRef.show('', '', true);
 	}
 };
 
@@ -94,6 +88,18 @@ export default {
 
 .challenge-avatar >>> img {
 	@apply md:tw-w-4 md:tw-h-4;
+}
+
+.toast-container >>> .tw-bg-secondary {
+	background-color: white !important;
+}
+
+.toast-container >>> div[data-test="tip-message"] {
+	@apply tw-mx-0;
+}
+
+.toast-container >>> div.tw-shadow > :first-child {
+	@apply tw-hidden;
 }
 
 </style>
