@@ -3,6 +3,7 @@
 		ref="toastRef"
 		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner toast-container
 				tw-rounded-t-none md:tw-rounded-t"
+		@close="closeCallback"
 	>
 		<template #toastContent>
 			<div class=" tw-w-full">
@@ -14,7 +15,14 @@
 						class="challenge-avatar md:tw-w-4 md:tw-h-4 tw-flex tw-items-center"
 					/>
 					<p class="tw-text-lg data-hj-suppress">
-						{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
+						{{ headerCallout }} <a
+							:href="teamLink"
+							v-kv-track-event="[
+								'borrower-profile',
+								'click-invite-link',
+								teamName
+							]"
+						>{{ teamName }}</a> hit their goal
 					</p>
 				</div>
 			</div>
@@ -67,6 +75,11 @@ export default {
 		},
 		teamLink() {
 			return `/lend/filter?team=${this.teamId ?? ''}`;
+		},
+	},
+	methods: {
+		closeCallback() {
+			this.$kvTrackEvent('borrower-profile', 'click', 'close-invite-link');
 		},
 	},
 	mounted() {
