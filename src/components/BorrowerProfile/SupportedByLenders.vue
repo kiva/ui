@@ -1,5 +1,8 @@
 <template>
-	<div class="tw-flex tw-items-center tw-mb-1.5">
+	<div
+		class="tw-flex tw-items-center"
+		:class="{'tw-mb-1.5': !minimal}"
+	>
 		<div class="tw-flex tw-shrink-0 tw-items-end" data-testid="participation-lenders">
 			<kv-user-avatar
 				:key="lender.id"

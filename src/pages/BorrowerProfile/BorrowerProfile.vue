@@ -4,14 +4,16 @@
 		:data-testid="loanType"
 	>
 		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
-			<challenge-callout
-				v-if="showChallengeCallout"
-				class="tw-pb-1.5 tw-absolute tw-mx-auto tw-w-full tw-z-5"
-				:share-lender="shareLender"
-				:team-name="teamData.name"
-				:team-id="teamData.teamPublicId"
-				@close="hideChallengeCallout = true"
-			/>
+			<div class="tw-w-full tw-mx-auto" style="max-width: 75rem;">
+				<challenge-team-invite
+					v-if="showChallengeCallout"
+					class="tw-absolute tw-mx-auto tw-w-full tw-z-5"
+					:share-lender="shareLender"
+					:team-name="teamData.name"
+					:team-id="teamData.teamPublicId"
+					@close="hideChallengeCallout = true"
+				/>
+			</div>
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
 					<hero-background />
@@ -26,7 +28,7 @@
 				/>
 				<content-container
 					:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8',
-						{'tw-pt-16 md:tw-pt-14 lg:tw-pt-14': showChallengeCallout}]"
+						{'tw-pt-16 md:tw-pt-14 lg:tw-pt-12': enableChallengeHeader}]"
 					class="md:tw-pt-6"
 				>
 					<summary-card
@@ -183,7 +185,7 @@ import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
+import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -328,7 +330,7 @@ export default {
 		TopBannerPfp,
 		WwwPage,
 		BorrowerEducationPlacement,
-		ChallengeCallout,
+		ChallengeTeamInvite,
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;

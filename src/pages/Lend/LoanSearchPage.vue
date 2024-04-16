@@ -2,14 +2,11 @@
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<challenge-callout
 			v-if="showChallengeCallout"
-			:share-lender="shareLender"
 			:current-lender="currentLender"
-			:team-name="teamData.name"
 			:show-added-to-cart-message="showAddedToCartMessage"
 			:goal-participation-for-loan="goalParticipationForLoan"
 			:borrower-name="borrowerName"
 			@close="closeChallengeCallout"
-			hide-msg
 		/>
 		<article
 			class="tw-bg-secondary tw-relative"
@@ -79,10 +76,8 @@ import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
 import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -141,7 +136,6 @@ export default {
 			enableChallengeHeader: false,
 			challengeData: {},
 			teamData: {},
-			shareLender: null,
 			showAddedToCartMessage: false,
 			goalParticipationForLoan: null,
 			borrowerName: undefined,
@@ -228,15 +222,10 @@ export default {
 				const activeChallengeHeaderExp = responseTeams[2];
 				const teamId = queryTeamId || userTeamId;
 
-				const lenderPublicId = args?.route?.query?.lender ?? '';
-
 				if (teamId && activeChallengeHeaderExp) {
 					return Promise.all([
 						client.query({ query: teamsGoalsQuery, variables: { teamId, limit: 1 } }),
 						client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
-						lenderPublicId
-							? client.query({ query: lenderPublicProfileQuery, variables: { publicId: lenderPublicId } })
-							: null,
 					]);
 				}
 			});
@@ -360,22 +349,6 @@ export default {
 				if (this.challengeData?.id) {
 					const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
 					this.teamData = teamData?.community?.team || {};
-
-					try {
-						const publicId = this.$route.query.lender;
-						const data = this.apollo.readQuery({
-							query: lenderPublicProfileQuery,
-							variables: {
-								publicId,
-							}
-						});
-						this.shareLender = data?.community?.lender ?? {};
-					} catch (e) {
-						logReadQueryError(
-							e,
-							`Lender public profile readQuery failed: (publicId: ${this.publicId})`,
-						);
-					}
 				}
 			}
 		}

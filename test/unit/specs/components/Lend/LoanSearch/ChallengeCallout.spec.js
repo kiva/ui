@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
 
-const shareLender = { id: 1, name: 'Lender' };
 const teamName = 'Team Test';
 const mocks = {
 	$route: {
@@ -13,32 +12,6 @@ const mocks = {
 };
 
 describe('ChallengeCallout', () => {
-	it('should display team name', () => {
-		const { getByText } = render(ChallengeCallout, {
-			props: { shareLender, teamName },
-			mocks,
-		});
-
-		getByText(teamName);
-	});
-
-	it('should display lender image', () => {
-		const { getByAltText } = render(ChallengeCallout, {
-			props: {
-				shareLender: {
-					...shareLender,
-					image: {
-						url: 'test.jpg',
-					},
-				},
-				teamName
-			},
-			mocks,
-		});
-
-		getByAltText('Image of lender');
-	});
-
 	it('should display add to cart message', () => {
 		Vue.directive('kv-track-event', () => ({}));
 
@@ -53,7 +26,6 @@ describe('ChallengeCallout', () => {
 						},
 					},
 				},
-				teamName,
 				showAddedToCartMessage: true,
 				borrowerName: 'Borrower',
 			},

@@ -1,8 +1,6 @@
 <template>
 	<kv-page-container class="container">
-		<kv-grid
-			class="tw-grid-cols-12"
-		>
+		<kv-grid class="tw-grid-cols-12">
 			<div class="tw-col-span-12 tw-w-full">
 				<div class="info tw-w-full tw-flex tw-items-center tw-justify-between">
 					<kv-user-avatar

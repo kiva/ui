@@ -1,58 +1,45 @@
 <template>
-	<div>
-		<div>
-			<kv-toast
-				ref="toastRef"
-				class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner toast-container
+	<kv-toast
+		ref="toastRef"
+		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner toast-container
 				tw-rounded-t-none md:tw-rounded-t"
-				@close="closeCallback"
-			>
-				<template #toastContent>
-					<div v-if="showAddedToCartMessage" class="tw-flex tw-gap-1 tw-items-center">
-						<supported-by-lenders
-							v-if="showAddedToCartMessage"
-							:participants="participants"
-							is-challenge
-							minimal
-						/>
-						<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
-							<span class="tw-whitespace-nowrap">Added to cart!</span>
-							<span>{{ participantsMessage }}</span>
-							<span
-								v-if="participants.length > 1 && borrowerName"
-								class="data-hj-suppress tw-whitespace-nowrap"
-							>{{ borrowerName }}.</span>
-							<a
-								href="/basket"
-								class="tw-flex"
-								v-kv-track-event="[
-									'basket',
-									'click',
-									'challenge-callout'
-								]"
-							>
-								<span class="tw-whitespace-nowrap">Head to checkout</span>
-								<kv-material-icon class="tw-w-3" :icon="mdiArrowTopRight" />
-							</a>
-						</div>
-					</div>
-				</template>
-			</kv-toast>
-		</div>
-		<div v-if="!hideMsg">
-			<challenge-team-invite
-				:share-lender="shareLender"
-				:team-name="teamName"
-				:team-id="teamId"
-			/>
-		</div>
-	</div>
+		@close="closeCallback"
+	>
+		<template #toastContent>
+			<div v-if="showAddedToCartMessage" class="tw-flex tw-gap-1 tw-items-center">
+				<supported-by-lenders
+					:participants="participants"
+					is-challenge
+					minimal
+				/>
+				<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
+					<span class="tw-whitespace-nowrap">Added to cart!</span>
+					<span>{{ participantsMessage }}</span>
+					<span
+						v-if="participants.length > 1 && borrowerName"
+						class="data-hj-suppress tw-whitespace-nowrap"
+					>{{ borrowerName }}.</span>
+					<a
+						href="/basket"
+						class="tw-flex"
+						v-kv-track-event="[
+							'basket',
+							'click',
+							'challenge-callout'
+						]"
+					>
+						<span class="tw-whitespace-nowrap">Head to checkout</span>
+						<kv-material-icon class="tw-w-3" :icon="mdiArrowTopRight" />
+					</a>
+				</div>
+			</div>
+		</template>
+	</kv-toast>
 </template>
 
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
 import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 
@@ -62,20 +49,11 @@ export default {
 		KvMaterialIcon,
 		KvToast,
 		SupportedByLenders,
-		ChallengeTeamInvite
 	},
 	props: {
-		shareLender: {
-			type: Object,
-			default: () => ({}),
-		},
 		currentLender: {
 			type: Object,
 			default: () => ({}),
-		},
-		teamName: {
-			type: String,
-			required: true,
 		},
 		showAddedToCartMessage: {
 			type: Boolean,
@@ -89,14 +67,6 @@ export default {
 			type: String,
 			default: undefined,
 		},
-		teamId: {
-			type: String,
-			default: ''
-		},
-		hideMsg: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	data() {
 		return {
