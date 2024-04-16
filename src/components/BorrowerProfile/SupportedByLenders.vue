@@ -11,7 +11,7 @@
 				:style="{ 'z-index': participationLendersDisplayed.length - i }"
 			/>
 		</div>
-		<p class="tw-px-1 tw-text-base">
+		<p v-if="!minimal" class="tw-px-1 tw-text-base">
 			{{ supportText }}
 		</p>
 	</div>
@@ -36,6 +36,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		minimal: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		participantsNumber() {
@@ -59,10 +63,13 @@ export default {
 				: `Supported by ${this.participantsText}`;
 		},
 		participationLendersDisplayed() {
-			return (this.participants?.values ?? []).map(p => ({
-				...p.lender,
-				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
-			})).filter(l => l.image).slice(0, 5);
+			return (this.participants?.values ?? []).map(p => {
+				const lender = p?.lender ?? p;
+				return ({
+					...lender,
+					isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.image?.url.split('/').pop()),
+				});
+			}).filter(l => l.image).slice(0, 5);
 		}
 	},
 };

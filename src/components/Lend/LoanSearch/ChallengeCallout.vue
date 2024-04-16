@@ -9,18 +9,12 @@
 			>
 				<template #toastContent>
 					<div v-if="showAddedToCartMessage" class="tw-flex tw-gap-1 tw-items-center">
-						<div class="tw-flex tw-shrink-0">
-							<kv-user-avatar
-								v-for="(p, i) in participants"
-								:key="p.id"
-								:lender-name="p.name"
-								:lender-image-url="p.image.url"
-								is-small
-								class="challenge-avatar md:tw-w-4 md:tw-h-4 tw-flex tw-items-center"
-								:class="{ 'tw--ml-1': i > 0 }"
-								:style="{ 'z-index': participants.length - i }"
-							/>
-						</div>
+						<supported-by-lenders
+							v-if="showAddedToCartMessage"
+							:participants="participants"
+							is-challenge
+							minimal
+						/>
 						<div class="tw-flex tw-gap-0.5 tw-flex-wrap">
 							<span class="tw-whitespace-nowrap">Added to cart!</span>
 							<span>{{ participantsMessage }}</span>
@@ -46,54 +40,29 @@
 			</kv-toast>
 		</div>
 		<div v-if="!hideMsg">
-			<kv-page-container class="container">
-				<kv-grid
-					class="tw-grid-cols-12"
-				>
-					<div class="tw-col-span-12 tw-w-full">
-						<div class="info tw-w-full tw-flex tw-items-center tw-justify-between">
-							<img
-								v-if="shareLenderImage && shareLenderName"
-								:alt="`${shareLenderName} image`"
-								:src="shareLenderImage"
-								class="md:tw-w-4 md:tw-h-4 tw-w-6 tw-h-6 tw-rounded-full data-hj-suppress"
-							>
-							<p class="tw-text-lg data-hj-suppress">
-								{{ headerCallout }} <a :href="teamLink">{{ teamName }}</a> hit their goal
-							</p>
-							<button
-								class="tw-flex"
-								@click="$emit('close')"
-							>
-								<kv-material-icon
-									class="tw-h-3 tw-w-3"
-									:icon="mdiClose"
-								/>
-							</button>
-						</div>
-					</div>
-				</kv-grid>
-			</kv-page-container>
+			<challenge-team-invite
+				:share-lender="shareLender"
+				:team-name="teamName"
+				:team-id="teamId"
+			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mdiArrowTopRight, mdiClose } from '@mdi/js';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { mdiArrowTopRight } from '@mdi/js';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
+import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 import KvToast from '~/@kiva/kv-components/vue/KvToast';
 
 export default {
 	name: 'ChallengeCallout',
 	components: {
-		KvGrid,
-		KvPageContainer,
 		KvMaterialIcon,
-		KvUserAvatar,
-		KvToast
+		KvToast,
+		SupportedByLenders,
+		ChallengeTeamInvite
 	},
 	props: {
 		shareLender: {
@@ -132,35 +101,25 @@ export default {
 	data() {
 		return {
 			mdiArrowTopRight,
-			mdiClose,
 		};
 	},
 	computed: {
-		shareLenderName() {
-			return this.shareLender?.name ?? '';
-		},
-		shareLenderImage() {
-			return this.shareLender?.image?.url ?? '';
-		},
-		headerCallout() {
-			return this.shareLenderName
-				? `Support ${this.shareLenderName} and help `
-				: 'Help ';
-		},
 		participants() {
-			return (this.goalParticipationForLoan ?? [])
+			const rawParticipants = (this.goalParticipationForLoan ?? [])
 				.filter(l => l?.lender?.id !== this.currentLender?.lender?.id)
 				.concat(this.currentLender)
 				.map(p => ({ ...p?.lender, image: { url: p?.lender?.image?.url ?? '' } }))
 				.slice(0, 3);
+
+			return {
+				totalCount: rawParticipants.length,
+				values: rawParticipants,
+			};
 		},
 		participantsMessage() {
 			return this.participants.length > 1
 				? `You & ${this.participants.length - 1} other members are supporting`
 				: 'You are on your way to supporting the team challenge!';
-		},
-		teamLink() {
-			return `/lend/filter?team=${this.teamId ?? ''}`;
 		},
 	},
 	watch: {
@@ -185,18 +144,6 @@ export default {
 </script>
 
 <style scoped lang="postcss">
-.info {
-	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-1
-		md:tw-rounded-lg tw-rounded-b tw-px-2.5 md:tw-px-4;
-}
-
-.container {
-	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
-}
-
-.challenge-avatar >>> img {
-	@apply md:tw-w-4 md:tw-h-4;
-}
 
 .toast-container >>> .tw-bg-secondary {
 	background-color: white !important;
