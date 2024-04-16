@@ -28,7 +28,7 @@
 				/>
 				<content-container
 					:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8',
-						{'tw-pt-16 md:tw-pt-14 lg:tw-pt-12': enableChallengeHeader}]"
+						{'tw-pt-16 md:tw-pt-14 lg:tw-pt-14': enableChallengeHeader}]"
 					class="md:tw-pt-6"
 				>
 					<summary-card
@@ -510,38 +510,11 @@ export default {
 						});
 					}
 
-					const teamPublicId = route?.query?.team ?? '';
-					const challengeHeaderExpData = client.readFragment({
-						id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-						fragment: experimentVersionFragment,
-					}) ?? {};
-					const activeChallengeHeaderExp = challengeHeaderExpData?.version === 'b';
-
 					return Promise.all([
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
-						activeChallengeHeaderExp,
-						teamPublicId && activeChallengeHeaderExp
-							? client.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } })
-							: null,
 					]);
-				}).then(response => {
-					const teamId = response[4]?.data?.community?.team?.id ?? null;
-					const activeChallengeHeaderExp = response[3];
-					const lenderPublicId = route?.query?.lender ?? '';
-
-					if (teamId && activeChallengeHeaderExp) {
-						return Promise.all([
-							client.query({ query: TeamInfoFromId, variables: { team_id: teamId } }),
-							lenderPublicId
-								? client.query({
-									query: lenderPublicProfileQuery,
-									variables: { publicId: lenderPublicId }
-								})
-								: null,
-						]);
-					}
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -650,6 +623,36 @@ export default {
 			});
 
 			this.activities = response?.data ?? null;
+		}
+
+		const challengeHeaderExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
+
+		if (this.enableChallengeHeader) {
+			const teamPublicId = this.$route?.query?.team ?? '';
+			let teamId = null;
+			if (teamPublicId) {
+				const teamInfo = await this.apollo.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+				teamId = teamInfo?.data?.community?.team?.id ?? null;
+			}
+
+			if (teamId) {
+				const teamData = await this.apollo.query({ query: TeamInfoFromId, variables: { team_id: teamId } });
+				this.teamData = teamData?.data?.community?.team || {};
+				const publicId = getPublicId(this.$route);
+
+				const lenderData = await this.apollo.query({
+					query: lenderPublicProfileQuery,
+					variables: {
+						publicId,
+					}
+				});
+				this.shareLender = lenderData?.data?.community?.lender ?? {};
+			}
 		}
 
 		this.determineIfMobile();
@@ -769,33 +772,6 @@ export default {
 		if (this.loanType === 'direct-loan') {
 			fireHotJarEvent('us_borrower_profile');
 		}
-
-		const challengeHeaderExpData = this.apollo.readFragment({
-			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
-
-		if (this.enableChallengeHeader) {
-			const teamPublicId = this.$route?.query?.team ?? '';
-			let teamId = null;
-			if (teamPublicId) {
-				const teamInfo = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
-				teamId = teamInfo?.community?.team?.id ?? null;
-			}
-			if (teamId) {
-				const teamData = this.apollo.readQuery({ query: TeamInfoFromId, variables: { team_id: teamId } });
-				this.teamData = teamData?.community?.team || {};
-
-				const data = this.apollo.readQuery({
-					query: lenderPublicProfileQuery,
-					variables: {
-						publicId,
-					}
-				});
-				this.shareLender = data?.community?.lender ?? {};
-			}
-		}
-	}
+	},
 };
 </script>
