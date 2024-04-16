@@ -36,7 +36,7 @@ describe('ChallengeCallout', () => {
 			mocks,
 		});
 
-		getByAltText(`${shareLender.name} image`);
+		getByAltText('Image of lender');
 	});
 
 	it('should display add to cart message', () => {
