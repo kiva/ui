@@ -101,6 +101,7 @@ export default {
 	},
 	methods: {
 		closeCallback() {
+			this.$kvTrackEvent('Lending', 'click', 'close-challenge-callout');
 			this.$emit('close');
 		}
 	},
