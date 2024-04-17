@@ -19,7 +19,8 @@
 							:href="teamLink"
 							v-kv-track-event="[
 								'borrower-profile',
-								'click-invite-link',
+								'click',
+								'invite-link',
 								teamName
 							]"
 						>{{ teamName }}</a> hit their goal
