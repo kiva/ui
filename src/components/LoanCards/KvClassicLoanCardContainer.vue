@@ -26,6 +26,7 @@
 			:is-team-pick="isTeamPick"
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
+			:enable-huge-amount="enableHugeAmount"
 			@toggle-bookmark="toggleBookmark"
 			@add-to-basket="addToBasket"
 		/>
@@ -128,6 +129,10 @@ export default {
 			default: false,
 		},
 		showLoansActivityFeed: {
+			type: Boolean,
+			default: false,
+		},
+		enableHugeAmount: {
 			type: Boolean,
 			default: false,
 		},

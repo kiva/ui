@@ -57,10 +57,10 @@
 		<div
 			class="in-context-login"
 			:class="{ 'tw-text-right' : !isCorporateCampaign }"
-			v-if="!isActivelyLoggedIn && !promoGuestCheckoutEnabled"
+			v-if="!isLoggedIn && !promoGuestCheckoutEnabled"
 		>
 			<kv-button
-				v-if="!isActivelyLoggedIn"
+				v-if="!isLoggedIn"
 				class="smaller checkout-button"
 				id="Continue-to-legacy-button"
 				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
@@ -71,7 +71,7 @@
 		</div>
 		<div class="in-context-payment-controls">
 			<kv-grid
-				v-if="!isActivelyLoggedIn
+				v-if="!isLoggedIn
 					&& promoGuestCheckoutEnabled
 					&& !continueAsGuest"
 				class="tw-grid-cols-6"
@@ -103,7 +103,7 @@
 			<kiva-credit-payment
 				v-if="showKivaCreditButton
 					&& !promoGuestCheckoutEnabled
-					&& isActivelyLoggedIn"
+					&& isLoggedIn"
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
@@ -129,7 +129,7 @@
 			/>
 
 			<checkout-drop-in-payment-wrapper
-				v-if="!showKivaCreditButton && (continueAsGuest || isActivelyLoggedIn)"
+				v-if="!showKivaCreditButton && (continueAsGuest || isLoggedIn)"
 				:amount="creditNeeded"
 				@refreshtotals="$emit('refreshtotals')"
 				:is-guest-checkout="promoGuestCheckoutEnabled"
@@ -183,7 +183,7 @@ export default {
 		checkoutUtils
 	],
 	props: {
-		isActivelyLoggedIn: {
+		isLoggedIn: {
 			type: Boolean,
 			default: false
 		},

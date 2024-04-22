@@ -1,4 +1,4 @@
-import { parseISO, differenceInDays } from 'date-fns';
+import { intervalToDuration } from 'date-fns';
 
 export default {
 	props: {
@@ -9,6 +9,9 @@ export default {
 		},
 	},
 	computed: {
+		challengeName() {
+			return this.goal?.name ?? '';
+		},
 		challengeEndDate() {
 			return this.goal?.endDate ?? null;
 		},
@@ -24,17 +27,63 @@ export default {
 			return this.goal?.targets?.totalCount ?? 0;
 		},
 		percentageFunded() {
-			return Math.round((this.loansFunded / this.totalLoans) * 100);
+			const targetAmount = this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
+			const fundedAmount = this.goal?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
+
+			return Math.floor((fundedAmount / targetAmount) * 100) || 0;
 		},
-		// calculate days remaining between now and the challengeEndDate using the the datefns library
-		daysRemaining() {
-			// Get planned expiration time as Date
-			const plannedExpirationDate = parseISO(this.challengeEndDate);
-			const diffInDays = differenceInDays(
-				plannedExpirationDate,
-				new Date()
-			);
-			return diffInDays;
+		participationTotalCount() {
+			return this.goal?.participation?.totalCount ?? 0;
+		},
+		fundedAmount() {
+			return this.goal?.participation?.values?.reduce((sum, value) => {
+				return sum + (value?.amountLent ?? 0);
+			}, 0) ?? 0;
+		},
+		totalAmount() {
+			return this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
+		},
+		daysLeft() {
+			const start = this.goal?.startDate ? new Date(this.goal?.startDate) : new Date();
+			const end = this.goal?.endDate ? new Date(this.goal?.endDate) : new Date();
+			return intervalToDuration({
+				start,
+				end,
+			}).days;
+		},
+		challengeDescription() {
+			return this.goal?.description ?? '';
+		},
+		authorName() {
+			return this.goal?.descriptionAuthor?.name ?? '';
+		},
+		authorImageUrl() {
+			return this.goal?.descriptionAuthor?.image?.url ?? '';
+		},
+		participants() {
+			return this.goal?.participation ?? {};
+		},
+		challengeActivity() {
+			const activities = this.goal?.participation?.values ?? [];
+			const data = [];
+
+			activities
+				// Show one activity item per lender with the amounts summed
+				.forEach(activity => {
+					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
+					if (existing) {
+						const existingAmount = parseFloat(existing?.amountLent ?? 0);
+						const activityAmount = parseFloat(activity?.amountLent ?? 0);
+						existing.amountLent = existingAmount + activityAmount;
+					} else {
+						// Shallow copy the read-only object so we can sum the amountLent
+						data.push({ ...activity });
+					}
+				});
+
+			return data;
 		},
 	},
 };

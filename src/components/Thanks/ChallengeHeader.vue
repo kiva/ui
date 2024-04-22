@@ -35,7 +35,7 @@
 							</div>
 						</div>
 						<p class="tw-text-right tw-font-medium">
-							{{ daysRemaining }} days remaining
+							{{ daysLeft }} days remaining
 						</p>
 					</div>
 					<div class="tw-mt-2 tw-mb-6">

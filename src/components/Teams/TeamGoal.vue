@@ -28,47 +28,25 @@
 				<h3>{{ goal.name }}</h3>
 			</div>
 			<p class="tw-line-clamp-1 tw-mt-1">
-				{{ loanBecause }}
+				{{ challengeDescription }}
 			</p>
-			<div class="tw-mt-1 tw-flex tw-justify-between">
-				<strong>{{ daysRemaining }} days remaining</strong>
-				<strong>{{ loansFunded }}/{{ totalLoans }} loans funded</strong>
-			</div>
-			<div class="tw-mt-1">
-				<kv-progress-bar
-					:value="percentageFunded"
-					aria-label="Completion of challenge"
-					class="tw-w-full"
+			<div class="tw-mt-1 tw-mb-2">
+				<kv-progress-campaign
+					:funded-amount="fundedAmount"
+					:total-amount="totalAmount"
+					:days-left="daysLeft"
 				/>
 			</div>
 
 			<div class="tw-flex tw-flex-row tw-justify-between tw-mt-1 tw-items-center tw-text-secondary">
-				<div class="tw-flex tw-items-center">
+				<div>
 					<div class="tw-hidden lg:tw-flex tw-shrink-0">
-						<img
-							v-for="(lender, i) in participationLendersDisplayed"
-							:key="lender.id"
-							:src="lender.image.url"
-							alt="Lender photo"
-							class="
-								data-hj-suppress
-								tw-inline-block
-								tw-w-4
-								tw-h-4
-								tw-rounded-full
-								tw-overflow-hidden
-								tw-border
-								tw-border-white
-								tw-object-fill
-								tw-relative
-							"
-							:class="{ 'tw--ml-2': i > 0, 'tw-border-gray-200': lender.isLegacyPlaceholder }"
-							:style="{ 'z-index': participationLendersDisplayed.length - i }"
-						>
+						<supported-by-lenders
+							class="tw-mt-1.5"
+							:participants="participants"
+							is-challenge
+						/>
 					</div>
-					<span class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden lg:tw-px-1">
-						{{ participationTotalCount }} members participating
-					</span>
 				</div>
 				<kv-button
 					v-kv-track-event="[
@@ -77,7 +55,7 @@
 						'View',
 						teamName
 					]"
-					:to="`/team/challenge/${teamPublicId}`" variant="caution"
+					:to="`/lend/filter?team=${teamPublicId}`" variant="caution"
 				>
 					View
 				</kv-button>
@@ -90,8 +68,8 @@
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import teamNoImage from '@/assets/images/team_s135.png';
 import teamGoalInfo from '@/plugins/team-goal-mixin';
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
@@ -102,7 +80,8 @@ export default {
 	components: {
 		KvButton,
 		KvLoadingPlaceholder,
-		KvProgressBar,
+		KvProgressCampaign,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -120,15 +99,6 @@ export default {
 		},
 		teamImage() {
 			return this.teamImageUrl || this.teamNoImage;
-		},
-		participationTotalCount() {
-			return this.goal?.participation?.totalCount ?? 0;
-		},
-		participationLendersDisplayed() {
-			return (this.goal?.participation?.values ?? []).map(p => ({
-				...p.lender,
-				isLegacyPlaceholder: isLegacyPlaceholderAvatar(p.lender.image?.url.split('/').pop()),
-			})).filter(l => l.image).slice(0, 4); // Ensure image is defined and take first 4
 		},
 	},
 	methods: {

@@ -119,6 +119,7 @@
 </template>
 
 <script>
+import teamGoalInfo from '@/plugins/team-goal-mixin';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import RewardsIcon from '@/assets/icons/inline/rewards.svg';
 import socialSharingMixin from '@/plugins/social-sharing-mixin';
@@ -133,7 +134,7 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 export default {
 	name: 'ShareChallenge',
 	inject: ['apollo'],
-	mixins: [socialSharingMixin],
+	mixins: [socialSharingMixin, teamGoalInfo],
 	components: {
 		KvProgressCircle,
 		KvMaterialIcon,
@@ -143,10 +144,6 @@ export default {
 		KvGrid
 	},
 	props: {
-		goal: {
-			type: Object,
-			default: () => ({}),
-		},
 		teamPublicId: {
 			type: String,
 			default: '',
@@ -189,14 +186,6 @@ export default {
 		teamChallengePath() {
 			return this.teamPublicId ? `/lend/filter?team=${this.teamPublicId}` : '/teams';
 		},
-		percentageFunded() {
-			const targetAmount = this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
-			const fundedAmount = this.goal?.participation?.values?.reduce((sum, value) => {
-				return sum + (value?.amountLent ?? 0);
-			}, 0) ?? 0;
-
-			return Math.floor((fundedAmount / targetAmount) * 100) || 0;
-		},
 		utmContent() {
 			if (this.isGuest) return 'guest';
 			if (this.lender?.public && this.lender?.publicId) return this.lender?.publicId;
@@ -209,7 +198,11 @@ export default {
 				team: this.teamPublicId,
 				lender: this.lender?.publicId ? `${this.lender.publicId}` : '',
 			};
-			return getFullUrl(`${base}/lend/filter`, args);
+			let invitedBy = '';
+			if (this.loan.id && this.lender?.inviterName) {
+				invitedBy = `invitedby/${this.lender.inviterName}/for/${this.loan.id}`;
+			}
+			return getFullUrl(`${base}/${invitedBy}`, args);
 		},
 		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
 		shareMessage() {

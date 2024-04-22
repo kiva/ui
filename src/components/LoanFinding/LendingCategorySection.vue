@@ -34,6 +34,7 @@
 						:large-card="isLargeCard"
 						:user-balance="userBalance"
 						:five-dollars-selected="fiveDollarsSelected"
+						:enable-huge-amount="enableHugeAmount"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
 					/>
@@ -113,6 +114,10 @@ export default {
 		pageLimit: {
 			type: Number,
 			default: 6
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

@@ -4,7 +4,6 @@ query initializeCheckout($basketId: String) {
 	hasEverLoggedIn @client
 	my {
 		id
-		lastLoginTimestamp @client
 		userAccount {
 			id
 			balance
@@ -25,10 +24,6 @@ query initializeCheckout($basketId: String) {
 		}
 	}
 	general {
-		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
-			value
-			key
-		}
 		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {
 			key
 			value

@@ -34,6 +34,7 @@
 						:use-full-width="true"
 						:show-tags="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
 					/>
@@ -61,6 +62,7 @@
 				:user-balance="userBalance"
 				:loan-search-state="flssLoanSearch"
 				:page-limit="loanSearchState.pageLimit"
+				:enable-huge-amount="enableHugeAmount"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
@@ -103,6 +105,10 @@ export default {
 		enableAlmostFundedRow: {
 			type: Boolean,
 			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
