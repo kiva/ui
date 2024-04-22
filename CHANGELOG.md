@@ -1,3 +1,64 @@
+## [2.736.0](https://github.com/kiva/ui/compare/v2.735.0...v2.736.0) (2024-04-22)
+
+
+### 🎉 New Features
+
+* add teamId as a prop in challenge bubble ([6cbf338](https://github.com/kiva/ui/commit/6cbf338c572d67c799601b6c1504a04643c1866d))
+* add tracking events to callout and invite ([f22dd1c](https://github.com/kiva/ui/commit/f22dd1cbca99d75b568b2b690965c349876f3d8f))
+* dropdown huge lend amount enabled for logged in users ([#5247](https://github.com/kiva/ui/issues/5247)) ([b7827a8](https://github.com/kiva/ui/commit/b7827a88769f357dd08dd533e742a95d91c85f25))
+* goal mixin updated ([#5253](https://github.com/kiva/ui/issues/5253)) ([244cc72](https://github.com/kiva/ui/commit/244cc72250bad6c078abad47f195c2baada1148e))
+* make challenge bubble dismissable ([8d33fd6](https://github.com/kiva/ui/commit/8d33fd6e007fc78d3b7bbef0e6a2aa390f806498))
+* move challenge data to mounted in bp ([3f495d5](https://github.com/kiva/ui/commit/3f495d5d8a1e70a4959ac829f190de8aae533836))
+* persist add to basket in challenge callout component ([dae98b1](https://github.com/kiva/ui/commit/dae98b17a85e04c6306f2356cc5f412aa6bbc2fb))
+* place callout on top of borrower profile ([e6fcec9](https://github.com/kiva/ui/commit/e6fcec91b40db3fd63b6b470058af360c70ecb98))
+* remove active login check at checkout MP-87 ([bb45bfa](https://github.com/kiva/ui/commit/bb45bfaecb17cb66f313fd9c080b00c6816e054b))
+* remove active login check from cc landing pages MP-87 ([57a9a69](https://github.com/kiva/ui/commit/57a9a69cf3a7db676e1a0a3425c2c942d265dbbb))
+* separate challenge lend filter and borrower profile components ([36c7588](https://github.com/kiva/ui/commit/36c7588c0819d3efdb5b0d68be429fab7f3964cb))
+* sticky tooltip on lend filter and copy change ([73f125f](https://github.com/kiva/ui/commit/73f125f243e46f2fd25fcd038c41ccc6a047fc78))
+* team picks panel copy updated ([#5248](https://github.com/kiva/ui/issues/5248)) ([e45302e](https://github.com/kiva/ui/commit/e45302e334ff933b3aef69b5b56c75ca6e8b9591))
+* teams challenge header updates ([#5252](https://github.com/kiva/ui/issues/5252)) ([4129ff0](https://github.com/kiva/ui/commit/4129ff03f88e6ca1a187adba13435e9a8091f8ba))
+* use default invite url ([136a6d1](https://github.com/kiva/ui/commit/136a6d1a9b3269a9849062adb20ce8672e56020b))
+* use toast for bp callout ([e25c8df](https://github.com/kiva/ui/commit/e25c8df5b8081c725b56c090c88e6087703ae29c))
+* using KvToast to handle adding to cart on lend filter ([08ab7ce](https://github.com/kiva/ui/commit/08ab7cec2f263a3278570612c446690d6c14a723))
+
+
+### 🐛 Bugfixes
+
+* add no wrap class only when there are goal participants and borrowerName exists ([6d840dc](https://github.com/kiva/ui/commit/6d840dce3e7d5971f0424ae32106ec09009785cb))
+* align avatars to center ([2c07dad](https://github.com/kiva/ui/commit/2c07dad171d0c64794a4a527d290ddebbb5a1808))
+* default message for no participants ([d06cd0c](https://github.com/kiva/ui/commit/d06cd0c828e410959c8e2240db8edc653acd8c94))
+* default publicId ([25cfe24](https://github.com/kiva/ui/commit/25cfe24b4162f7bf16d434ca548f7b585a1aa3c6))
+* event standard ([856c545](https://github.com/kiva/ui/commit/856c5453f2c4608c8246995eea812a39134cb4b1))
+* hiding borrower name when only 1 participant ([09e8980](https://github.com/kiva/ui/commit/09e8980827d0a1f701ac0763005e8c0604b0fbd1))
+* lint ([894bf72](https://github.com/kiva/ui/commit/894bf72d1acd5c34980396d4fc7907d35d9fdaab))
+* missing ID from previous work ([b5c15c3](https://github.com/kiva/ui/commit/b5c15c3c0cd6f8db7255f0aaf5dbc7556f60ef0f))
+* only show tip message if the message has content ([fd3f05b](https://github.com/kiva/ui/commit/fd3f05b12003c0c1b464799334b1b6447387002c))
+* padding within callout component ([5a9a330](https://github.com/kiva/ui/commit/5a9a3306ef4e7b0335845e846ae872c92ff9c021))
+* remove lender condition to make default callout message appear ([cc52758](https://github.com/kiva/ui/commit/cc5275809add06d2fd932fa7196c641cc9991cc8))
+* remove log ([be489c4](https://github.com/kiva/ui/commit/be489c4231593b54d75cae7ddd2b39f9d539af33))
+* remove promise.all and validate empty object for teamData ([d625752](https://github.com/kiva/ui/commit/d625752107259a86c07171e24934046c3ae67eb2))
+* remove readQuery trycatch and unnecessary then statement on preFetch ([164e3ae](https://github.com/kiva/ui/commit/164e3ae9f13326687c5cb6e655b338234ea0e194))
+* remove teamPublicId from promise ([c09057b](https://github.com/kiva/ui/commit/c09057b6d204453c0cfe4b4a75dd5ccb34154d43))
+* show add to cart bubble when loan is added to basket ([15cec8d](https://github.com/kiva/ui/commit/15cec8d8c4bfa92efc0650096fda8ab8e5451e84))
+* slightly safer solution ([60f079b](https://github.com/kiva/ui/commit/60f079b5491e7a4fac5326a72209f481c89cfac9))
+* team invite tests ([5e426bb](https://github.com/kiva/ui/commit/5e426bba306e600b2a1be489a3cfb2c79b7328a7))
+* teamLink and revert lendCta component ([bd6a07c](https://github.com/kiva/ui/commit/bd6a07c4d8e0d7344058b9eea3fe36c9f3e2038b))
+* tests ([e6f4aef](https://github.com/kiva/ui/commit/e6f4aefc2a00887b67e4f6c31c73749925eb06f1))
+* tests ([9057e66](https://github.com/kiva/ui/commit/9057e66dcb022a7df4b8395473c6d239aa9f681a))
+* toast design ([43903b7](https://github.com/kiva/ui/commit/43903b71f384fdcb5b5b17ad07ec56d0224676f9))
+* update test to handle toast ([7c10b44](https://github.com/kiva/ui/commit/7c10b4428633e3bcc2a15339d86e4978e94558ea))
+
+
+### 🪚 Refactors
+
+* keep code just for notification bubble ([3e2189e](https://github.com/kiva/ui/commit/3e2189e7fc275f830b26a352d8f649e6b7fca0af))
+* new component to handle bp callout ([3d243f9](https://github.com/kiva/ui/commit/3d243f94ba37dd29d07590da41231204b57f1bab))
+
+
+### 🧹 Chores
+
+* **release:** 2.736.0-rc.1 [skip ci] ([5fd78e6](https://github.com/kiva/ui/commit/5fd78e6fa6783da210cad266a74e7c50fb415b79)), closes [#5247](https://github.com/kiva/ui/issues/5247) [#5253](https://github.com/kiva/ui/issues/5253) [#5248](https://github.com/kiva/ui/issues/5248) [#5252](https://github.com/kiva/ui/issues/5252)
+
 ## [2.736.0-rc.1](https://github.com/kiva/ui/compare/v2.735.0...v2.736.0-rc.1) (2024-04-22)
 
 
