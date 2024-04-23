@@ -94,17 +94,29 @@ export function build5DollarsPriceArray(amountLeft) {
 }
 
 function buildHugePriceArray(amountLeft) {
-	const minAmount = 100;
-	const limitAmount = amountLeft > 1000 ? 1000 : amountLeft;
-	const N = limitAmount / minAmount;
-
 	const priceArray = [];
-	for (let i = 1; i <= N; i += 1) {
+
+	// Add $100 options up to $1,000
+	let minAmount = 100;
+	let limitAmount = amountLeft > 1000 ? 1000 : amountLeft;
+	let optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
 		const price = minAmount * i + 500;
 		if (price > limitAmount) break;
 		priceArray.push(numeral(price).format('0,0'));
 	}
 
+	// Add $1000 options up to $10,000
+	minAmount = 1000;
+	limitAmount = amountLeft > 10000 ? 10000 : amountLeft;
+	optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
+		const price = minAmount * i + 1000;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	// Ensure final option is added
 	if (!priceArray.includes(numeral(limitAmount).format('0,0'))) {
 		priceArray.push(numeral(limitAmount).format('0,0'));
 	}
@@ -112,8 +124,13 @@ function buildHugePriceArray(amountLeft) {
 	return priceArray;
 }
 
-// eslint-disable-next-line max-len
-export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = false, enableHugeAmount) {
+export function getDropdownPriceArray(
+	unreservedAmount,
+	minAmount,
+	enableFiveDollarsNotes,
+	inPfp = false,
+	enableHugeAmount,
+) {
 	const parsedAmountLeft = parseFloat(unreservedAmount);
 	let combinedPricesArray = [];
 
