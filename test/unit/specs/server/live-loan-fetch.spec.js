@@ -93,4 +93,20 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('1234', []);
 		});
 	});
+
+	describe('fetchRecommendationsByFLSS', () => {
+		it('have flss call defined with userId', async () => {
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => {} });
+
+			await fetchLoansByType('user', '1234', true);
+
+			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(fetch).toBeDefined();
+			expect(variables.userId).toEqual(1234);
+			expect(query).toBeDefined();
+			expect(query).toContain('fundraisingLoans');
+			expect(fetch.mock.results[0].value).toBeDefined();
+		});
+	});
 });
