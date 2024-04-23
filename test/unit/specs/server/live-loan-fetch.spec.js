@@ -74,6 +74,17 @@ describe('live-loan-fetch', () => {
 			await testSortParsing('1234', null);
 		});
 
+		it('have flss call defined with userId', async () => {
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => {} });
+
+			await fetchLoansByType('user', '1234', true);
+
+			expect(fetch).toBeDefined();
+			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(variables.userId).toEqual(1234);
+		});
+
 		// TODO: activate this test (by removing .skip) once FLSS is used for live loan searching
 		it.skip('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
 			await testFilterParsing('gender_male,sector_education', [
