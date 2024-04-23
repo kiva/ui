@@ -144,21 +144,21 @@ module.exports = function liveLoanRouter(cache) {
 
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
-		await tracer.trace('live-loan.user.redirectToUrl', { resource: req.path }, async () => {
+		await tracer.trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
 			await redirectToUrl('user', cache, req, res, true);
 		});
 	});
 
 	// User IMG Router FLSS (Legacy)
 	router.use('/flss/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
-		await tracer.trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+		await tracer.trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
 			await serveImg('user', 'legacy', cache, req, res, true);
 		});
 	});
 
 	// User IMG Router FLSS (Kiva Classic)
 	router.use('/flss/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
-		await tracer.trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+		await tracer.trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
 			await serveImg('user', 'classic', cache, req, res, true);
 		});
 	});

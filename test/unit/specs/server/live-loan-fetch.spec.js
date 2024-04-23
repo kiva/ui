@@ -105,6 +105,7 @@ describe('live-loan-fetch', () => {
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
+			expect(query).toContain('fundraisingLoans');
 			expect(fetch.mock.results[0].value).toBeDefined();
 		});
 	});
