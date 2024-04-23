@@ -153,6 +153,7 @@
 						:user-balance="userBalance"
 						:is-team-pick="showTeamPicks"
 						:show-loans-activity-feed="showLoansActivityFeed"
+						:enable-huge-amount="enableHugeAmount"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -247,6 +248,14 @@ export default {
 		showLoansActivityFeed: {
 			type: Boolean,
 			default: false,
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		teamName: {
+			type: String,
+			default: () => '',
 		},
 	},
 	data() {
@@ -486,6 +495,7 @@ export default {
 		handleTeamPicks(payload) {
 			this.showTeamPicks = payload;
 			if (this.showTeamPicks) {
+				this.$kvTrackEvent('Lending', 'click-teams-filter', this.teamName);
 				this.getChallengeFilters();
 			} else {
 				updateQueryParams({}, this.$router, this.queryType);

@@ -93,21 +93,60 @@ export function build5DollarsPriceArray(amountLeft) {
 	return priceArray;
 }
 
-export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = false) {
-	const parsedAmountLeft = parseFloat(unreservedAmount);
-	return (enableFiveDollarsNotes && !inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
+function buildHugePriceArray(amountLeft) {
+	const minAmount = 100;
+	const limitAmount = amountLeft > 1000 ? 1000 : amountLeft;
+	const N = limitAmount / minAmount;
+
+	const priceArray = [];
+	for (let i = 1; i <= N; i += 1) {
+		const price = minAmount * i + 500;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	if (!priceArray.includes(numeral(limitAmount).format('0,0'))) {
+		priceArray.push(numeral(limitAmount).format('0,0'));
+	}
+
+	return priceArray;
 }
 
-export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes) {
+// eslint-disable-next-line max-len
+export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = false, enableHugeAmount) {
+	const parsedAmountLeft = parseFloat(unreservedAmount);
+	let combinedPricesArray = [];
+
+	const priceArray = (enableFiveDollarsNotes && !inPfp)
+		? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28)
+		: buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20);
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = priceArray.concat(hugePriceArray);
+	}
+	return showHugeAmount ? combinedPricesArray : priceArray;
+}
+
+export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes, enableHugeAmount) {
+	const parsedAmountLeft = parseFloat(remainingAmount);
 	if (enableFiveDollarsNotes) {
-		const parsedAmountLeft = parseFloat(remainingAmount);
 		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
 	}
+	let combinedPricesArray = [];
 	const pricesArray = buildPriceArray(remainingAmount, minAmount);
 	const reducedArray = pricesArray.filter(element => {
 		return element % 25 === 0;
 	});
-	return reducedArray;
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = reducedArray.slice(0, 20).concat(hugePriceArray);
+	}
+
+	return showHugeAmount ? combinedPricesArray : reducedArray;
 }
 
 export function toParagraphs(text) {

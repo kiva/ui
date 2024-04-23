@@ -1,3 +1,249 @@
+## [2.736.0](https://github.com/kiva/ui/compare/v2.735.0...v2.736.0) (2024-04-22)
+
+
+### 🎉 New Features
+
+* add teamId as a prop in challenge bubble ([6cbf338](https://github.com/kiva/ui/commit/6cbf338c572d67c799601b6c1504a04643c1866d))
+* add tracking events to callout and invite ([f22dd1c](https://github.com/kiva/ui/commit/f22dd1cbca99d75b568b2b690965c349876f3d8f))
+* dropdown huge lend amount enabled for logged in users ([#5247](https://github.com/kiva/ui/issues/5247)) ([b7827a8](https://github.com/kiva/ui/commit/b7827a88769f357dd08dd533e742a95d91c85f25))
+* goal mixin updated ([#5253](https://github.com/kiva/ui/issues/5253)) ([244cc72](https://github.com/kiva/ui/commit/244cc72250bad6c078abad47f195c2baada1148e))
+* make challenge bubble dismissable ([8d33fd6](https://github.com/kiva/ui/commit/8d33fd6e007fc78d3b7bbef0e6a2aa390f806498))
+* move challenge data to mounted in bp ([3f495d5](https://github.com/kiva/ui/commit/3f495d5d8a1e70a4959ac829f190de8aae533836))
+* persist add to basket in challenge callout component ([dae98b1](https://github.com/kiva/ui/commit/dae98b17a85e04c6306f2356cc5f412aa6bbc2fb))
+* place callout on top of borrower profile ([e6fcec9](https://github.com/kiva/ui/commit/e6fcec91b40db3fd63b6b470058af360c70ecb98))
+* remove active login check at checkout MP-87 ([bb45bfa](https://github.com/kiva/ui/commit/bb45bfaecb17cb66f313fd9c080b00c6816e054b))
+* remove active login check from cc landing pages MP-87 ([57a9a69](https://github.com/kiva/ui/commit/57a9a69cf3a7db676e1a0a3425c2c942d265dbbb))
+* separate challenge lend filter and borrower profile components ([36c7588](https://github.com/kiva/ui/commit/36c7588c0819d3efdb5b0d68be429fab7f3964cb))
+* sticky tooltip on lend filter and copy change ([73f125f](https://github.com/kiva/ui/commit/73f125f243e46f2fd25fcd038c41ccc6a047fc78))
+* team picks panel copy updated ([#5248](https://github.com/kiva/ui/issues/5248)) ([e45302e](https://github.com/kiva/ui/commit/e45302e334ff933b3aef69b5b56c75ca6e8b9591))
+* teams challenge header updates ([#5252](https://github.com/kiva/ui/issues/5252)) ([4129ff0](https://github.com/kiva/ui/commit/4129ff03f88e6ca1a187adba13435e9a8091f8ba))
+* use default invite url ([136a6d1](https://github.com/kiva/ui/commit/136a6d1a9b3269a9849062adb20ce8672e56020b))
+* use toast for bp callout ([e25c8df](https://github.com/kiva/ui/commit/e25c8df5b8081c725b56c090c88e6087703ae29c))
+* using KvToast to handle adding to cart on lend filter ([08ab7ce](https://github.com/kiva/ui/commit/08ab7cec2f263a3278570612c446690d6c14a723))
+
+
+### 🐛 Bugfixes
+
+* add no wrap class only when there are goal participants and borrowerName exists ([6d840dc](https://github.com/kiva/ui/commit/6d840dce3e7d5971f0424ae32106ec09009785cb))
+* align avatars to center ([2c07dad](https://github.com/kiva/ui/commit/2c07dad171d0c64794a4a527d290ddebbb5a1808))
+* default message for no participants ([d06cd0c](https://github.com/kiva/ui/commit/d06cd0c828e410959c8e2240db8edc653acd8c94))
+* default publicId ([25cfe24](https://github.com/kiva/ui/commit/25cfe24b4162f7bf16d434ca548f7b585a1aa3c6))
+* event standard ([856c545](https://github.com/kiva/ui/commit/856c5453f2c4608c8246995eea812a39134cb4b1))
+* hiding borrower name when only 1 participant ([09e8980](https://github.com/kiva/ui/commit/09e8980827d0a1f701ac0763005e8c0604b0fbd1))
+* lint ([894bf72](https://github.com/kiva/ui/commit/894bf72d1acd5c34980396d4fc7907d35d9fdaab))
+* missing ID from previous work ([b5c15c3](https://github.com/kiva/ui/commit/b5c15c3c0cd6f8db7255f0aaf5dbc7556f60ef0f))
+* only show tip message if the message has content ([fd3f05b](https://github.com/kiva/ui/commit/fd3f05b12003c0c1b464799334b1b6447387002c))
+* padding within callout component ([5a9a330](https://github.com/kiva/ui/commit/5a9a3306ef4e7b0335845e846ae872c92ff9c021))
+* remove lender condition to make default callout message appear ([cc52758](https://github.com/kiva/ui/commit/cc5275809add06d2fd932fa7196c641cc9991cc8))
+* remove log ([be489c4](https://github.com/kiva/ui/commit/be489c4231593b54d75cae7ddd2b39f9d539af33))
+* remove promise.all and validate empty object for teamData ([d625752](https://github.com/kiva/ui/commit/d625752107259a86c07171e24934046c3ae67eb2))
+* remove readQuery trycatch and unnecessary then statement on preFetch ([164e3ae](https://github.com/kiva/ui/commit/164e3ae9f13326687c5cb6e655b338234ea0e194))
+* remove teamPublicId from promise ([c09057b](https://github.com/kiva/ui/commit/c09057b6d204453c0cfe4b4a75dd5ccb34154d43))
+* show add to cart bubble when loan is added to basket ([15cec8d](https://github.com/kiva/ui/commit/15cec8d8c4bfa92efc0650096fda8ab8e5451e84))
+* slightly safer solution ([60f079b](https://github.com/kiva/ui/commit/60f079b5491e7a4fac5326a72209f481c89cfac9))
+* team invite tests ([5e426bb](https://github.com/kiva/ui/commit/5e426bba306e600b2a1be489a3cfb2c79b7328a7))
+* teamLink and revert lendCta component ([bd6a07c](https://github.com/kiva/ui/commit/bd6a07c4d8e0d7344058b9eea3fe36c9f3e2038b))
+* tests ([e6f4aef](https://github.com/kiva/ui/commit/e6f4aefc2a00887b67e4f6c31c73749925eb06f1))
+* tests ([9057e66](https://github.com/kiva/ui/commit/9057e66dcb022a7df4b8395473c6d239aa9f681a))
+* toast design ([43903b7](https://github.com/kiva/ui/commit/43903b71f384fdcb5b5b17ad07ec56d0224676f9))
+* update test to handle toast ([7c10b44](https://github.com/kiva/ui/commit/7c10b4428633e3bcc2a15339d86e4978e94558ea))
+
+
+### 🪚 Refactors
+
+* keep code just for notification bubble ([3e2189e](https://github.com/kiva/ui/commit/3e2189e7fc275f830b26a352d8f649e6b7fca0af))
+* new component to handle bp callout ([3d243f9](https://github.com/kiva/ui/commit/3d243f94ba37dd29d07590da41231204b57f1bab))
+
+
+### 🧹 Chores
+
+* **release:** 2.736.0-rc.1 [skip ci] ([5fd78e6](https://github.com/kiva/ui/commit/5fd78e6fa6783da210cad266a74e7c50fb415b79)), closes [#5247](https://github.com/kiva/ui/issues/5247) [#5253](https://github.com/kiva/ui/issues/5253) [#5248](https://github.com/kiva/ui/issues/5248) [#5252](https://github.com/kiva/ui/issues/5252)
+
+## [2.736.0-rc.1](https://github.com/kiva/ui/compare/v2.735.0...v2.736.0-rc.1) (2024-04-22)
+
+
+### 🎉 New Features
+
+* add teamId as a prop in challenge bubble ([6cbf338](https://github.com/kiva/ui/commit/6cbf338c572d67c799601b6c1504a04643c1866d))
+* add tracking events to callout and invite ([f22dd1c](https://github.com/kiva/ui/commit/f22dd1cbca99d75b568b2b690965c349876f3d8f))
+* dropdown huge lend amount enabled for logged in users ([#5247](https://github.com/kiva/ui/issues/5247)) ([b7827a8](https://github.com/kiva/ui/commit/b7827a88769f357dd08dd533e742a95d91c85f25))
+* goal mixin updated ([#5253](https://github.com/kiva/ui/issues/5253)) ([244cc72](https://github.com/kiva/ui/commit/244cc72250bad6c078abad47f195c2baada1148e))
+* make challenge bubble dismissable ([8d33fd6](https://github.com/kiva/ui/commit/8d33fd6e007fc78d3b7bbef0e6a2aa390f806498))
+* move challenge data to mounted in bp ([3f495d5](https://github.com/kiva/ui/commit/3f495d5d8a1e70a4959ac829f190de8aae533836))
+* persist add to basket in challenge callout component ([dae98b1](https://github.com/kiva/ui/commit/dae98b17a85e04c6306f2356cc5f412aa6bbc2fb))
+* place callout on top of borrower profile ([e6fcec9](https://github.com/kiva/ui/commit/e6fcec91b40db3fd63b6b470058af360c70ecb98))
+* remove active login check at checkout MP-87 ([bb45bfa](https://github.com/kiva/ui/commit/bb45bfaecb17cb66f313fd9c080b00c6816e054b))
+* remove active login check from cc landing pages MP-87 ([57a9a69](https://github.com/kiva/ui/commit/57a9a69cf3a7db676e1a0a3425c2c942d265dbbb))
+* separate challenge lend filter and borrower profile components ([36c7588](https://github.com/kiva/ui/commit/36c7588c0819d3efdb5b0d68be429fab7f3964cb))
+* sticky tooltip on lend filter and copy change ([73f125f](https://github.com/kiva/ui/commit/73f125f243e46f2fd25fcd038c41ccc6a047fc78))
+* team picks panel copy updated ([#5248](https://github.com/kiva/ui/issues/5248)) ([e45302e](https://github.com/kiva/ui/commit/e45302e334ff933b3aef69b5b56c75ca6e8b9591))
+* teams challenge header updates ([#5252](https://github.com/kiva/ui/issues/5252)) ([4129ff0](https://github.com/kiva/ui/commit/4129ff03f88e6ca1a187adba13435e9a8091f8ba))
+* use default invite url ([136a6d1](https://github.com/kiva/ui/commit/136a6d1a9b3269a9849062adb20ce8672e56020b))
+* use toast for bp callout ([e25c8df](https://github.com/kiva/ui/commit/e25c8df5b8081c725b56c090c88e6087703ae29c))
+* using KvToast to handle adding to cart on lend filter ([08ab7ce](https://github.com/kiva/ui/commit/08ab7cec2f263a3278570612c446690d6c14a723))
+
+
+### 🐛 Bugfixes
+
+* add no wrap class only when there are goal participants and borrowerName exists ([6d840dc](https://github.com/kiva/ui/commit/6d840dce3e7d5971f0424ae32106ec09009785cb))
+* align avatars to center ([2c07dad](https://github.com/kiva/ui/commit/2c07dad171d0c64794a4a527d290ddebbb5a1808))
+* default message for no participants ([d06cd0c](https://github.com/kiva/ui/commit/d06cd0c828e410959c8e2240db8edc653acd8c94))
+* default publicId ([25cfe24](https://github.com/kiva/ui/commit/25cfe24b4162f7bf16d434ca548f7b585a1aa3c6))
+* event standard ([856c545](https://github.com/kiva/ui/commit/856c5453f2c4608c8246995eea812a39134cb4b1))
+* hiding borrower name when only 1 participant ([09e8980](https://github.com/kiva/ui/commit/09e8980827d0a1f701ac0763005e8c0604b0fbd1))
+* lint ([894bf72](https://github.com/kiva/ui/commit/894bf72d1acd5c34980396d4fc7907d35d9fdaab))
+* missing ID from previous work ([b5c15c3](https://github.com/kiva/ui/commit/b5c15c3c0cd6f8db7255f0aaf5dbc7556f60ef0f))
+* only show tip message if the message has content ([fd3f05b](https://github.com/kiva/ui/commit/fd3f05b12003c0c1b464799334b1b6447387002c))
+* padding within callout component ([5a9a330](https://github.com/kiva/ui/commit/5a9a3306ef4e7b0335845e846ae872c92ff9c021))
+* remove lender condition to make default callout message appear ([cc52758](https://github.com/kiva/ui/commit/cc5275809add06d2fd932fa7196c641cc9991cc8))
+* remove log ([be489c4](https://github.com/kiva/ui/commit/be489c4231593b54d75cae7ddd2b39f9d539af33))
+* remove promise.all and validate empty object for teamData ([d625752](https://github.com/kiva/ui/commit/d625752107259a86c07171e24934046c3ae67eb2))
+* remove readQuery trycatch and unnecessary then statement on preFetch ([164e3ae](https://github.com/kiva/ui/commit/164e3ae9f13326687c5cb6e655b338234ea0e194))
+* remove teamPublicId from promise ([c09057b](https://github.com/kiva/ui/commit/c09057b6d204453c0cfe4b4a75dd5ccb34154d43))
+* show add to cart bubble when loan is added to basket ([15cec8d](https://github.com/kiva/ui/commit/15cec8d8c4bfa92efc0650096fda8ab8e5451e84))
+* slightly safer solution ([60f079b](https://github.com/kiva/ui/commit/60f079b5491e7a4fac5326a72209f481c89cfac9))
+* team invite tests ([5e426bb](https://github.com/kiva/ui/commit/5e426bba306e600b2a1be489a3cfb2c79b7328a7))
+* teamLink and revert lendCta component ([bd6a07c](https://github.com/kiva/ui/commit/bd6a07c4d8e0d7344058b9eea3fe36c9f3e2038b))
+* tests ([e6f4aef](https://github.com/kiva/ui/commit/e6f4aefc2a00887b67e4f6c31c73749925eb06f1))
+* tests ([9057e66](https://github.com/kiva/ui/commit/9057e66dcb022a7df4b8395473c6d239aa9f681a))
+* toast design ([43903b7](https://github.com/kiva/ui/commit/43903b71f384fdcb5b5b17ad07ec56d0224676f9))
+* update test to handle toast ([7c10b44](https://github.com/kiva/ui/commit/7c10b4428633e3bcc2a15339d86e4978e94558ea))
+
+
+### 🪚 Refactors
+
+* keep code just for notification bubble ([3e2189e](https://github.com/kiva/ui/commit/3e2189e7fc275f830b26a352d8f649e6b7fca0af))
+* new component to handle bp callout ([3d243f9](https://github.com/kiva/ui/commit/3d243f94ba37dd29d07590da41231204b57f1bab))
+
+## [2.735.0](https://github.com/kiva/ui/compare/v2.734.0...v2.735.0) (2024-04-08)
+
+
+### 🎉 New Features
+
+* 1 dollar bet modal removed in checkout page ([#5178](https://github.com/kiva/ui/issues/5178)) ([79c0d8a](https://github.com/kiva/ui/commit/79c0d8aec03dded204ee9d7ada82c52370a953e6))
+* activity feed added to challenge header on filters page ([#5220](https://github.com/kiva/ui/issues/5220)) ([d42cf9b](https://github.com/kiva/ui/commit/d42cf9b441a3ae5fe8309ab30e4f78b1e9a91007))
+* activity feed showed in loan cards on team picks case ([8253211](https://github.com/kiva/ui/commit/8253211815076ebe47b21a9349f944e58bf4708b))
+* add basket total to header for large baskets ([2ca002c](https://github.com/kiva/ui/commit/2ca002ce0b858e5666d45937a505c5e0e7854865))
+* add fade out to activity feed on challenge header ([cad0fc2](https://github.com/kiva/ui/commit/cad0fc2ded3f41f2dcd11fc748ac81bf19500e15))
+* add track event to team toggle filter ([9d3824f](https://github.com/kiva/ui/commit/9d3824f6d8a81ca2b387f3c7068cbd6e06816a0f))
+* adjust may challenge thanks page ([98d1c44](https://github.com/kiva/ui/commit/98d1c44a332b2b25bf79a88c5842a471b6962e17))
+* challenge header participation avatars added ([#5221](https://github.com/kiva/ui/issues/5221)) ([e406f5e](https://github.com/kiva/ui/commit/e406f5e4147f52d5b65342b96089fdefa70e5ff3))
+* emit tracking event when progress bar shows ([0646fa0](https://github.com/kiva/ui/commit/0646fa02a91d702ea0a936dbcfbdf20f24e1b400))
+* experiment tracking events updated ([64823a9](https://github.com/kiva/ui/commit/64823a951c5ed80c590843276e62782e65f3e7af))
+* header showed for active user team challenge ([7d8ad19](https://github.com/kiva/ui/commit/7d8ad1918d147fe4202ef37fd7386ade6cf70014))
+* hiding save search for keyword and loan funding type filters ([c79bf0c](https://github.com/kiva/ui/commit/c79bf0c93eee87bbb2eaf0288c65c79232eb9385))
+* kv components updated ([#5216](https://github.com/kiva/ui/issues/5216)) ([a9188a6](https://github.com/kiva/ui/commit/a9188a677e07ac4af3e24ee7ae51faa2edc314c1))
+* loan search challenge header added to storybook ([#5223](https://github.com/kiva/ui/issues/5223)) ([b8cac4c](https://github.com/kiva/ui/commit/b8cac4ce8a5479959763559315d5ed50da2971e2))
+* set combined activities ([84d55ae](https://github.com/kiva/ui/commit/84d55aee4eb19b99bfff455157a26aa7b3a3f2e3))
+* setup challenge callout component ([52eb883](https://github.com/kiva/ui/commit/52eb883d9bb5d5fe60aca8cedb427ac60e6e6c71))
+* shared method added to get user challenge ([e3939cb](https://github.com/kiva/ui/commit/e3939cbeba6d57b617d2ba81f612f8b182e8d423))
+* show "added to cart" message for lend filter challenge ([5b98f53](https://github.com/kiva/ui/commit/5b98f53a975b7e2299345d0f0a8cbc42f1edb8e5))
+* show correct progress for new challenge type on filter and thanks pages ([4f49a4a](https://github.com/kiva/ui/commit/4f49a4ac19d356fd973b03026388e3d6b610e9e3))
+* team picks loans showed on filter page ([#5229](https://github.com/kiva/ui/issues/5229)) ([d460354](https://github.com/kiva/ui/commit/d460354845219810901356b5faae156133b4f557))
+* team picks unchecked by default on filter page ([43a6d52](https://github.com/kiva/ui/commit/43a6d52d506c43314253383a44280b3dc9dc6383))
+* team query params added to filtering query params ([c19f1a5](https://github.com/kiva/ui/commit/c19f1a5909fcba7e05ed4a8971344641ab2e4c35))
+* team query params added to filtering query params ([#5225](https://github.com/kiva/ui/issues/5225)) ([7f57621](https://github.com/kiva/ui/commit/7f57621d6c3f5bd10a62f0e2a68ffa3a314405f3))
+* track when challenge header appears on ty page ([d25dd04](https://github.com/kiva/ui/commit/d25dd048b8ae362acf666fb20e63bdd03bdf78e2))
+
+
+### 🐛 Bugfixes
+
+* adjust tests for shared avatar component ([45b27d0](https://github.com/kiva/ui/commit/45b27d04a9c50f44fff225d202413973bccb395c))
+* adjust visibility for different use cases ([46e8c2d](https://github.com/kiva/ui/commit/46e8c2d6b9b5e24e51af804f6238d3cd461f89b0))
+* component container bg ([9e0c97c](https://github.com/kiva/ui/commit/9e0c97c1cd735946f7941534189a1d7e83520db3))
+* copyUrl calling getFullUrl twice and mixing up different params ([b4e4a33](https://github.com/kiva/ui/commit/b4e4a33a377f543cd783f9c2e25f8831a2d764bf))
+* event sending goal name ([ed06d32](https://github.com/kiva/ui/commit/ed06d326fa4754351e2ad48c534b4c61db867b06))
+* hide share challenge if no attributed team ([490c3e0](https://github.com/kiva/ui/commit/490c3e08069b8664588afad7b63f9bf075ac321b))
+* lint ([73b6f18](https://github.com/kiva/ui/commit/73b6f1826d6490c112feeca8bca64b3adab05bff))
+* lint and remove unnecessary gradient def for lg screen ([8bb007f](https://github.com/kiva/ui/commit/8bb007f9d6c9455c1c2dbf334418a660482fc7f8))
+* missing optional chaining ([ebc1093](https://github.com/kiva/ui/commit/ebc1093f24e00413a49793966e30ebde18b67c01))
+* padding on callout container ([4ae63ce](https://github.com/kiva/ui/commit/4ae63ce66cf587a03e3e797fb011cfbe18a04920))
+* pr comments tweaks ([e01fd6c](https://github.com/kiva/ui/commit/e01fd6c546479b41858680b35b33df5bcf87abdd))
+* progress bar for new challenge not complete full height ([cd246a3](https://github.com/kiva/ui/commit/cd246a39802321bdfa81f11319eef31746ee9203))
+* remove nextTick ([13aa374](https://github.com/kiva/ui/commit/13aa37430afa82d66e28bf3c4f579b86bb6f04ed))
+* remove test that's no longer needed ([e79c6b6](https://github.com/kiva/ui/commit/e79c6b678dd8298899b00cc1e61f7b8e896d4656))
+* remove unnecessary comment ([e6f4a79](https://github.com/kiva/ui/commit/e6f4a79d17599d85171c8f045ded29e66cde5cb6))
+* remove unnecessary share flag ([36721be](https://github.com/kiva/ui/commit/36721be377d91b0b6c99d43f8eca61c73e085f90))
+* revert changes for challenge header and apply them in ShareChallenge component ([f7cfb46](https://github.com/kiva/ui/commit/f7cfb46e8d44f6bb36e86432bf60ddfe716e5f96))
+* revert query and use tw classes ([5dd482a](https://github.com/kiva/ui/commit/5dd482a6ce44dd9cbd44a52fed3a8dd82b93e747))
+* revert unneeded change ([dec58ce](https://github.com/kiva/ui/commit/dec58ce792f91117c543474e7f511743fd341105))
+* round down a percentage ([484eb87](https://github.com/kiva/ui/commit/484eb871ea247a9f9a82828dc287c7ce2af593e1))
+* share url args to target lend/filter and set team param ([3372f35](https://github.com/kiva/ui/commit/3372f35370e6624e3595eafc5d0001ce9b674950))
+* small fixes to new challenge filter page header ([00a5425](https://github.com/kiva/ui/commit/00a542563852c27068c345a68ac2c1d94b8b468f))
+* small spot between fade and activity feed ([a16f40e](https://github.com/kiva/ui/commit/a16f40ec29eb1b4939c635daac6e582d00c6460f))
+* tweaks on share challenge flag and defaut values in some components ([c336165](https://github.com/kiva/ui/commit/c336165ca3bf368dc539f0e14eda0212a2bb3a88))
+* update tests and stories ([232f844](https://github.com/kiva/ui/commit/232f844cd7e9d0987fd6e649099dc8f76ff5e321))
+* use correct data to calculate goal progress in share challenge component on ty page ([43e42b4](https://github.com/kiva/ui/commit/43e42b4198fe46dfb8d6d71846bcd0037d97417e))
+* use shared avatar component ([f0cf21f](https://github.com/kiva/ui/commit/f0cf21f1928b365d14d252dac6aeb547f6b69e81))
+* validate teamPublicId is valid to show challenge header ([bcf7443](https://github.com/kiva/ui/commit/bcf744313bf336f5d038af67f2bb42f870da9113))
+
+
+### 🧹 Chores
+
+* **release:** 2.735.0-rc.1 [skip ci] ([25d7fd9](https://github.com/kiva/ui/commit/25d7fd96c0d598761c6ed1dbf040141ce3fed211)), closes [#5178](https://github.com/kiva/ui/issues/5178) [#5220](https://github.com/kiva/ui/issues/5220) [#5221](https://github.com/kiva/ui/issues/5221) [#5216](https://github.com/kiva/ui/issues/5216) [#5223](https://github.com/kiva/ui/issues/5223) [#5229](https://github.com/kiva/ui/issues/5229) [#5225](https://github.com/kiva/ui/issues/5225)
+
+## [2.735.0-rc.1](https://github.com/kiva/ui/compare/v2.734.0...v2.735.0-rc.1) (2024-04-05)
+
+
+### 🎉 New Features
+
+* 1 dollar bet modal removed in checkout page ([#5178](https://github.com/kiva/ui/issues/5178)) ([79c0d8a](https://github.com/kiva/ui/commit/79c0d8aec03dded204ee9d7ada82c52370a953e6))
+* activity feed added to challenge header on filters page ([#5220](https://github.com/kiva/ui/issues/5220)) ([d42cf9b](https://github.com/kiva/ui/commit/d42cf9b441a3ae5fe8309ab30e4f78b1e9a91007))
+* activity feed showed in loan cards on team picks case ([8253211](https://github.com/kiva/ui/commit/8253211815076ebe47b21a9349f944e58bf4708b))
+* add basket total to header for large baskets ([2ca002c](https://github.com/kiva/ui/commit/2ca002ce0b858e5666d45937a505c5e0e7854865))
+* add fade out to activity feed on challenge header ([cad0fc2](https://github.com/kiva/ui/commit/cad0fc2ded3f41f2dcd11fc748ac81bf19500e15))
+* add track event to team toggle filter ([9d3824f](https://github.com/kiva/ui/commit/9d3824f6d8a81ca2b387f3c7068cbd6e06816a0f))
+* adjust may challenge thanks page ([98d1c44](https://github.com/kiva/ui/commit/98d1c44a332b2b25bf79a88c5842a471b6962e17))
+* challenge header participation avatars added ([#5221](https://github.com/kiva/ui/issues/5221)) ([e406f5e](https://github.com/kiva/ui/commit/e406f5e4147f52d5b65342b96089fdefa70e5ff3))
+* emit tracking event when progress bar shows ([0646fa0](https://github.com/kiva/ui/commit/0646fa02a91d702ea0a936dbcfbdf20f24e1b400))
+* experiment tracking events updated ([64823a9](https://github.com/kiva/ui/commit/64823a951c5ed80c590843276e62782e65f3e7af))
+* header showed for active user team challenge ([7d8ad19](https://github.com/kiva/ui/commit/7d8ad1918d147fe4202ef37fd7386ade6cf70014))
+* hiding save search for keyword and loan funding type filters ([c79bf0c](https://github.com/kiva/ui/commit/c79bf0c93eee87bbb2eaf0288c65c79232eb9385))
+* kv components updated ([#5216](https://github.com/kiva/ui/issues/5216)) ([a9188a6](https://github.com/kiva/ui/commit/a9188a677e07ac4af3e24ee7ae51faa2edc314c1))
+* loan search challenge header added to storybook ([#5223](https://github.com/kiva/ui/issues/5223)) ([b8cac4c](https://github.com/kiva/ui/commit/b8cac4ce8a5479959763559315d5ed50da2971e2))
+* set combined activities ([84d55ae](https://github.com/kiva/ui/commit/84d55aee4eb19b99bfff455157a26aa7b3a3f2e3))
+* setup challenge callout component ([52eb883](https://github.com/kiva/ui/commit/52eb883d9bb5d5fe60aca8cedb427ac60e6e6c71))
+* shared method added to get user challenge ([e3939cb](https://github.com/kiva/ui/commit/e3939cbeba6d57b617d2ba81f612f8b182e8d423))
+* show "added to cart" message for lend filter challenge ([5b98f53](https://github.com/kiva/ui/commit/5b98f53a975b7e2299345d0f0a8cbc42f1edb8e5))
+* show correct progress for new challenge type on filter and thanks pages ([4f49a4a](https://github.com/kiva/ui/commit/4f49a4ac19d356fd973b03026388e3d6b610e9e3))
+* team picks loans showed on filter page ([#5229](https://github.com/kiva/ui/issues/5229)) ([d460354](https://github.com/kiva/ui/commit/d460354845219810901356b5faae156133b4f557))
+* team picks unchecked by default on filter page ([43a6d52](https://github.com/kiva/ui/commit/43a6d52d506c43314253383a44280b3dc9dc6383))
+* team query params added to filtering query params ([c19f1a5](https://github.com/kiva/ui/commit/c19f1a5909fcba7e05ed4a8971344641ab2e4c35))
+* team query params added to filtering query params ([#5225](https://github.com/kiva/ui/issues/5225)) ([7f57621](https://github.com/kiva/ui/commit/7f57621d6c3f5bd10a62f0e2a68ffa3a314405f3))
+* track when challenge header appears on ty page ([d25dd04](https://github.com/kiva/ui/commit/d25dd048b8ae362acf666fb20e63bdd03bdf78e2))
+
+
+### 🐛 Bugfixes
+
+* adjust tests for shared avatar component ([45b27d0](https://github.com/kiva/ui/commit/45b27d04a9c50f44fff225d202413973bccb395c))
+* adjust visibility for different use cases ([46e8c2d](https://github.com/kiva/ui/commit/46e8c2d6b9b5e24e51af804f6238d3cd461f89b0))
+* component container bg ([9e0c97c](https://github.com/kiva/ui/commit/9e0c97c1cd735946f7941534189a1d7e83520db3))
+* copyUrl calling getFullUrl twice and mixing up different params ([b4e4a33](https://github.com/kiva/ui/commit/b4e4a33a377f543cd783f9c2e25f8831a2d764bf))
+* event sending goal name ([ed06d32](https://github.com/kiva/ui/commit/ed06d326fa4754351e2ad48c534b4c61db867b06))
+* hide share challenge if no attributed team ([490c3e0](https://github.com/kiva/ui/commit/490c3e08069b8664588afad7b63f9bf075ac321b))
+* lint ([73b6f18](https://github.com/kiva/ui/commit/73b6f1826d6490c112feeca8bca64b3adab05bff))
+* lint and remove unnecessary gradient def for lg screen ([8bb007f](https://github.com/kiva/ui/commit/8bb007f9d6c9455c1c2dbf334418a660482fc7f8))
+* missing optional chaining ([ebc1093](https://github.com/kiva/ui/commit/ebc1093f24e00413a49793966e30ebde18b67c01))
+* padding on callout container ([4ae63ce](https://github.com/kiva/ui/commit/4ae63ce66cf587a03e3e797fb011cfbe18a04920))
+* pr comments tweaks ([e01fd6c](https://github.com/kiva/ui/commit/e01fd6c546479b41858680b35b33df5bcf87abdd))
+* progress bar for new challenge not complete full height ([cd246a3](https://github.com/kiva/ui/commit/cd246a39802321bdfa81f11319eef31746ee9203))
+* remove nextTick ([13aa374](https://github.com/kiva/ui/commit/13aa37430afa82d66e28bf3c4f579b86bb6f04ed))
+* remove test that's no longer needed ([e79c6b6](https://github.com/kiva/ui/commit/e79c6b678dd8298899b00cc1e61f7b8e896d4656))
+* remove unnecessary comment ([e6f4a79](https://github.com/kiva/ui/commit/e6f4a79d17599d85171c8f045ded29e66cde5cb6))
+* remove unnecessary share flag ([36721be](https://github.com/kiva/ui/commit/36721be377d91b0b6c99d43f8eca61c73e085f90))
+* revert changes for challenge header and apply them in ShareChallenge component ([f7cfb46](https://github.com/kiva/ui/commit/f7cfb46e8d44f6bb36e86432bf60ddfe716e5f96))
+* revert query and use tw classes ([5dd482a](https://github.com/kiva/ui/commit/5dd482a6ce44dd9cbd44a52fed3a8dd82b93e747))
+* revert unneeded change ([dec58ce](https://github.com/kiva/ui/commit/dec58ce792f91117c543474e7f511743fd341105))
+* round down a percentage ([484eb87](https://github.com/kiva/ui/commit/484eb871ea247a9f9a82828dc287c7ce2af593e1))
+* share url args to target lend/filter and set team param ([3372f35](https://github.com/kiva/ui/commit/3372f35370e6624e3595eafc5d0001ce9b674950))
+* small fixes to new challenge filter page header ([00a5425](https://github.com/kiva/ui/commit/00a542563852c27068c345a68ac2c1d94b8b468f))
+* small spot between fade and activity feed ([a16f40e](https://github.com/kiva/ui/commit/a16f40ec29eb1b4939c635daac6e582d00c6460f))
+* tweaks on share challenge flag and defaut values in some components ([c336165](https://github.com/kiva/ui/commit/c336165ca3bf368dc539f0e14eda0212a2bb3a88))
+* update tests and stories ([232f844](https://github.com/kiva/ui/commit/232f844cd7e9d0987fd6e649099dc8f76ff5e321))
+* use correct data to calculate goal progress in share challenge component on ty page ([43e42b4](https://github.com/kiva/ui/commit/43e42b4198fe46dfb8d6d71846bcd0037d97417e))
+* use shared avatar component ([f0cf21f](https://github.com/kiva/ui/commit/f0cf21f1928b365d14d252dac6aeb547f6b69e81))
+* validate teamPublicId is valid to show challenge header ([bcf7443](https://github.com/kiva/ui/commit/bcf744313bf336f5d038af67f2bb42f870da9113))
+
 ## [2.734.0](https://github.com/kiva/ui/compare/v2.733.0...v2.734.0) (2024-03-25)
 
 

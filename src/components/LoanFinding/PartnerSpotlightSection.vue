@@ -19,6 +19,7 @@
 			:title="carouselTitle"
 			:loans="loans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:enable-huge-amount="enableHugeAmount"
 			:user-balance="userBalance"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
@@ -62,6 +63,10 @@ export default {
 		userBalance: {
 			type: String,
 			default: undefined
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	computed: {

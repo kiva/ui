@@ -78,6 +78,7 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 						/>
 					</div>
@@ -93,6 +94,7 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
 					/>
 				</div>
 				<div v-else>
@@ -104,6 +106,7 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 						/>
 
@@ -119,6 +122,7 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 						/>
 					</div>
@@ -134,6 +138,7 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
 					/>
 				</div>
 				<kv-pagination
@@ -270,7 +275,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		KvPagination,

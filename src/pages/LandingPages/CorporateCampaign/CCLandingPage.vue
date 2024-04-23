@@ -154,7 +154,7 @@
 				/>
 				<in-context-checkout
 					class="campaign-checkout"
-					:is-actively-logged-in="isActivelyLoggedIn"
+					:is-logged-in="!isVisitor"
 					:loans="basketLoans"
 					:disable-redirects="true"
 					:donations="donations"
@@ -745,7 +745,7 @@ export default {
 				this.$kvTrackEvent(
 					'ManagedLendingCampaign',
 					'modal-show-in-context-checkout',
-					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
+					this.isVisitor ? 'checkout-requires-login' : 'checkout-ready'
 				);
 			}
 		},
@@ -888,13 +888,6 @@ export default {
 		},
 		excludedTags() {
 			return this.pageSettingData?.excludedTags ?? []; // tags that we don't want to show in the filter lightbox
-		},
-		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
-				return true;
-			}
-			return false;
 		},
 		isMatchingCampaign() {
 			return this.pageSettingData?.matcherAccountId !== undefined;
@@ -1318,7 +1311,7 @@ export default {
 			this.$router.push(this.adjustRouteHash('#show-basket')).catch(() => {});
 			// check for verification form requirement
 			if (
-				this.isActivelyLoggedIn
+				!this.isVisitor
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
@@ -1332,7 +1325,7 @@ export default {
 				);
 			} else if (
 				this.basketLoans.length
-				&& this.isActivelyLoggedIn
+				&& !this.isVisitor
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {

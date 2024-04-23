@@ -106,6 +106,8 @@
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeAmount"
+				:is-logged-in="isLoggedIn"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
@@ -150,6 +152,14 @@ export default {
 			default: () => []
 		},
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		isLoggedIn: {
 			type: Boolean,
 			default: false
 		}

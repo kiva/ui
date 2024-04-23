@@ -428,7 +428,11 @@ export default {
 		activities: {
 			type: Object,
 			default: null,
-		}
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -737,7 +741,8 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit price options
-			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp); // eslint-disable-line max-len
+			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
