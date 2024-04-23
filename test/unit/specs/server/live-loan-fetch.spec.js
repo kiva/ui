@@ -74,17 +74,6 @@ describe('live-loan-fetch', () => {
 			await testSortParsing('1234', null);
 		});
 
-		it('have flss call defined with userId', async () => {
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => {} });
-
-			await fetchLoansByType('user', '1234', true);
-
-			expect(fetch).toBeDefined();
-			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
-			expect(variables.userId).toEqual(1234);
-		});
-
 		// TODO: activate this test (by removing .skip) once FLSS is used for live loan searching
 		it.skip('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
 			await testFilterParsing('gender_male,sector_education', [
@@ -102,6 +91,21 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('notafilter_value', []);
 			await testFilterParsing('', []);
 			await testFilterParsing('1234', []);
+		});
+	});
+
+	describe('fetchRecommendationsByFLSS', () => {
+		it('have flss call defined with userId', async () => {
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => {} });
+
+			await fetchLoansByType('user', '1234', true);
+
+			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(fetch).toBeDefined();
+			expect(variables.userId).toEqual(1234);
+			expect(query).toBeDefined();
+			expect(fetch.mock.results[0].value).toBeDefined();
 		});
 	});
 });
