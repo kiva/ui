@@ -1,18 +1,23 @@
 <template>
 	<div>
-		<generic-promo-banner
-			v-show="isPromoEnabled"
-			:icon-key="promoBannerContent.iconKey"
-			:promo-banner-content="promoBannerContent"
+		<deposit-incentive-banner
+			v-if="enableDepositExperiment"
 		/>
-		<appeal-banner-circular-container
-			v-if="appealEnabled"
-			:appeal-banner-content="appealBannerContent.fields"
-		/>
-		<donation-banner-container
-			v-if="donationEnabled"
-			:donation-banner-content="donationBannerContent.fields"
-		/>
+		<template v-else>
+			<generic-promo-banner
+				v-show="isPromoEnabled"
+				:icon-key="promoBannerContent.iconKey"
+				:promo-banner-content="promoBannerContent"
+			/>
+			<appeal-banner-circular-container
+				v-if="appealEnabled"
+				:appeal-banner-content="appealBannerContent.fields"
+			/>
+			<donation-banner-container
+				v-if="donationEnabled"
+				:donation-banner-content="donationBannerContent.fields"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -27,8 +32,12 @@ import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 
 const bannerQuery = gql`query bannerQuery {
 	contentful {
@@ -42,6 +51,7 @@ export default {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,
 		DonationBannerContainer,
+		DepositIncentiveBanner,
 	},
 	props: {
 		hasPromoSession: {
@@ -58,6 +68,7 @@ export default {
 			appealEnabled: false,
 			donationEnabled: false,
 			customAppealEnabled: false,
+			enableDepositExperiment: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -145,5 +156,15 @@ export default {
 			}
 		}
 	},
+	mounted() {
+		const { version } = this.apollo.readFragment({
+			id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		if (version === 'b') {
+			this.enableDepositExperiment = true;
+		}
+	}
 };
 </script>
