@@ -119,7 +119,7 @@ module.exports = function authRouter(config = {}) {
 			options.passwordless = true;
 		}
 
-		// Specify partnerContentfulPageId
+		// Specify partnerContentId
 		if (req.query.partnerContentId) {
 			options.partnerContentId = req.query.partnerContentId;
 		}
