@@ -34,7 +34,6 @@ import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/
 import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -43,6 +42,10 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const bannerQuery = gql`query bannerQuery {
 	contentful {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+	experiment(id: "deposit_incentive_banner") @client {
+		id
+		version
 	}
 }`;
 
@@ -154,11 +157,6 @@ export default {
 						this.isPromoEnabled = true;
 					}
 				}
-
-				return this.apollo.query({
-					query: experimentAssignmentQuery,
-					variables: { id: DEPOSIT_REWARD_EXP_KEY }
-				});
 			}
 		}
 	},
