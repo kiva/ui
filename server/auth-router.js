@@ -114,6 +114,11 @@ module.exports = function authRouter(config = {}) {
 			options.kiva_corp_partner = true;
 		}
 
+		// Specify if login is meant to be passwordless
+		if (req.query.passwordless) {
+			options.passwordless = true;
+		}
+
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
 	});
