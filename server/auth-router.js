@@ -119,6 +119,11 @@ module.exports = function authRouter(config = {}) {
 			options.passwordless = true;
 		}
 
+		// Specify partnerContentfulPageId
+		if (req.query.partnerContentfulPageId) {
+			options.partnerContentfulPageId = req.query.partnerContentfulPageId;
+		}
+
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
 	});
