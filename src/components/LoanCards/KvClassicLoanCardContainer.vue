@@ -232,8 +232,8 @@ export default {
 			const tagsData = tagList.filter(tag => {
 				return tags.includes(tag.name);
 			});
-			const themesData = themeList.filter(tag => {
-				return themes.includes(tag.name);
+			const themesData = themeList.filter(theme => {
+				return themes.includes(theme.name);
 			});
 			this.loan = {
 				...this.loan,
