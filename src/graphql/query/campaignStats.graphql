@@ -1,0 +1,11 @@
+query CampaignStats($campaignKey: String!, $filters: LoanSearchFiltersInput) {
+  general {
+    kivaStats {
+      campaignStats(campaignKey: $campaignKey, filters: $filters) {
+        currentBorrowerCount
+        targetBorrowerCount
+        targetEndDate
+      }
+    }
+  }
+}

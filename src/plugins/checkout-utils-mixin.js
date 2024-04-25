@@ -2,7 +2,9 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
+import validateLenderEmailForPromo from '@/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import shopCheckoutAsync from '@/graphql/mutation/shopCheckoutAsync.graphql';
 import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '@/util/logFormatter';
 import checkInjections from '@/util/injectionCheck';
@@ -82,21 +84,57 @@ export default {
 				});
 			});
 		},
-
 		/**
-		 * Call the shop checkout graphql mutation
-		 * - This checks out the basket using Kiva credit
+		 * Call the shop validateCheckout graphql query, using a guest email, a promo fund id and managed account id
+		 * - This validates the current basket for a promo basket guest checkout,
+		 * returning any errors that need to be addressed
 		 *
 		 * @returns {Promise}
 		 */
-		checkoutBasket() {
+		validateGuestPromoBasket(guestEmail, emailUpdates, promoFundId, managedAccountId) {
 			checkInjections(this, injections);
 
 			return new Promise((resolve, reject) => {
 				this.apollo.mutate({
-					mutation: shopCheckout
-				}).then(data => {
-					const transactionId = _get(data, 'data.shop.checkout');
+					mutation: validateLenderEmailForPromo,
+					variables: {
+						lenderEmailAddress: guestEmail,
+						promoFundId: Number(promoFundId),
+						managedAccountId: Number(managedAccountId),
+					}
+				}).then(() => {
+					resolve(this.validateGuestBasket(guestEmail, emailUpdates));
+				}).catch(errorResponse => {
+					logFormatter(errorResponse, 'error');
+					Sentry.captureException(errorResponse);
+					reject(errorResponse);
+				});
+			});
+		},
+		/**
+		 * Call the shop checkout graphql mutation
+		 * - This checks out the basket using Kiva credit
+		 * @param {Boolean} promoGuestBasketEnabled
+		 * @param {Boolean} useAsync - This can become default after initial rollout
+		 * @returns {Promise}
+		 */
+		checkoutBasket(promoGuestBasketEnabled = false, useAsync = false) {
+			checkInjections(this, injections);
+			let mutObj = {
+				mutation: useAsync ? shopCheckoutAsync : shopCheckout
+			};
+			// Promo guest basket call to checkout graphql endpoint requires a visitor id.
+			if (promoGuestBasketEnabled) {
+				mutObj = {
+					mutation: useAsync ? shopCheckoutAsync : shopCheckout,
+					variables: {
+						visitorId: this.cookieStore.get('uiv') || null
+					}
+				};
+			}
+			return new Promise((resolve, reject) => {
+				this.apollo.mutate(mutObj).then(data => {
+					const transactionId = useAsync ? data?.data?.shop?.checkoutAsync : data?.data?.shop?.checkout;
 					if (transactionId !== null) {
 						// succesful transaction;
 						resolve(transactionId);
@@ -166,6 +204,17 @@ export default {
 				this.$showTipMsg(errorMessages, 'error');
 				this.$kvTrackEvent('basket', 'error-checkout-cta', errorMessages);
 			}
+		},
+
+		/* Format checkoutStatus Error into standard error message array
+		 * @param {Object} checkoutStatus contains errorCode and errorMessage fields on the object
+		 * @returns {Array} array of formatted error objects
+		 */
+		formatCheckoutStatusError(checkoutStatus = {}) {
+			return [{
+				error: checkoutStatus?.errorCode,
+				message: `${checkoutStatus?.errorMessage}, Status: ${checkoutStatus?.status}`,
+			}];
 		},
 
 		/* Redirect to the thanks

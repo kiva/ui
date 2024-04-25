@@ -49,6 +49,8 @@
 					:amount-left="amountLeft"
 					:show-now="!enableFiveDollarsNotes"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-huge-amount="enableHugeAmount"
+					:is-visitor="isVisitor"
 					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
 					@click.native="trackInteraction({
@@ -151,7 +153,11 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		lessThan25() {

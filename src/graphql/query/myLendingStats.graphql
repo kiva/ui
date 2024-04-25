@@ -35,6 +35,10 @@ query myLendingStats {
 		}
 	}
 	general {
+		excluded_countries: uiConfigSetting(key: "excluded_countries") {
+			key
+			value
+		}
 		kivaStats {
 			sectors {
 				id

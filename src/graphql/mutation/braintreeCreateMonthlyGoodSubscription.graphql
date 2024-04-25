@@ -1,11 +1,10 @@
-mutation braintreeCreateMonthlyGoodSubscription($paymentMethodNonce: String!, $deviceData: String, $amount: Money!, $donateAmount: Money!, $dayOfMonth: Int!, $category: MonthlyGoodCategoryEnum, $isOnetime: Boolean) {
+mutation braintreeCreateMonthlyGoodSubscription($paymentMethodNonce: String!, $deviceData: String, $amount: Money!, $donateAmount: Money!, $dayOfMonth: Int!, $category: MonthlyGoodCategoryEnum) {
 	my {
 		createMonthlyGoodSubscription (
 			autoDeposit: {
 				amount: $amount,
 				donateAmount: $donateAmount,
 				dayOfMonth: $dayOfMonth,
-				isOnetime: $isOnetime
 			},
 			paymentMethodNonce: $paymentMethodNonce,
 			category: $category,

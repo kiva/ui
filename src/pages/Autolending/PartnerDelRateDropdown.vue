@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partner delinquency rates
+			Lending Partner delinquency rates
 		</h3>
 		<kv-select v-model="delinquencyRate">
 			<option value="0">

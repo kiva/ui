@@ -3,6 +3,7 @@
 		:corporate-logo-url="corporateLogoUrl"
 		:logo-height="logoHeight"
 		:logo-classes="logoClasses"
+		@show-basket="showBasket"
 	>
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
@@ -36,7 +37,6 @@
 				/>
 				<campaign-loan-wrapper
 					ref="mlLoanDisplay"
-					:promo-name="campaignPartnerName"
 					:component-props="campaignLoanWrapperProps"
 				/>
 				<template v-if="partnerAreaContent">
@@ -90,10 +90,10 @@
 
 			<campaign-verification-form
 				v-if="showVerification"
-				:form-id="externalFormId"
+				:form-id="String(externalFormId)"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
-				:user-id="this.myId"
+				:user-id="String(this.myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>
@@ -136,7 +136,7 @@
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutLightboxClosed"
-				title="Checkout"
+				title="You're almost there!"
 				style="z-index: 1199 !important;"
 			>
 				<campaign-status
@@ -154,7 +154,7 @@
 				/>
 				<in-context-checkout
 					class="campaign-checkout"
-					:is-actively-logged-in="isActivelyLoggedIn"
+					:is-logged-in="!isVisitor"
 					:loans="basketLoans"
 					:disable-redirects="true"
 					:donations="donations"
@@ -164,9 +164,16 @@
 					:show-donation="isMatchingCampaign || lendingRewardOffered"
 					:auto-redirect-to-thanks="false"
 					:promo-fund="promoFund"
+					:promo-name="campaignPartnerName"
+					:lca-loan-price="lcaLoanPrice"
+					custom-checkout-button-text="Checkout"
+					:promo-fund-id="String(promoFundId)"
+					:managed-account-id="String(managedAccountId)"
+					:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 					@credit-removed="handleCreditRemoved"
 					@transaction-complete="transactionComplete"
-					@refresh-totals="refreshTotals"
+					@refreshtotals="refreshTotals"
+					@jump-to-loans="jumpToLoans"
 					ref="inContextCheckoutRef"
 				/>
 			</kv-lightbox>
@@ -200,6 +207,7 @@
 					v-if="transactionId"
 					:transaction-id="transactionId"
 					:partner-content="partnerThanksContent"
+					:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 				/>
 			</kv-lightbox>
 		</div>
@@ -229,6 +237,7 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import { setLendAmount } from '@/util/basketUtils';
 
 // Error page
 const ErrorPage = () => import('@/pages/Error');
@@ -601,6 +610,12 @@ export default {
 			showVerifyRemovePromoCredit: false,
 			contentGroups: [],
 			pageFrame: WwwPageCorporate,
+			availableLoans: [],
+			leftoverCreditAllocationLoanId: null,
+			scrollToLoans: false,
+			basketUpdating: false,
+			basketBalancing: false,
+			lcaLoanPrice: 0
 		};
 	},
 	metaInfo() {
@@ -662,7 +677,6 @@ export default {
 				basketId: this.cookieStore.get('kvbskt')
 			}
 		});
-
 		this.rawPageData = data;
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
@@ -687,8 +701,12 @@ export default {
 		// const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
-	mounted() {
+	async mounted() {
 		this.$root.$on('jumpToLoans', this.jumpToLoans);
+
+		// check for applied promo
+		await this.verifyOrApplyPromotion();
+
 		// check for loan display settings from contentful
 		if (this.contentfulLoanDisplaySetting !== null) {
 			// check for default, if 'grid' swap update loan display. (rows is deafult)
@@ -699,15 +717,6 @@ export default {
 			if (this.contentfulLoanDisplaySetting.hideToggle) {
 				this.showLoanDisplayToggle = false;
 			}
-		}
-
-		// check for applied promo
-		this.verifyOrApplyPromotion();
-
-		// clean up show-basket process
-		// TODO: Revisit this control flow
-		if (this.$route.hash === '#show-basket') {
-			this.$router.push(this.adjustRouteHash('')).catch(() => {});
 		}
 
 		// Ensure browser clock is correct before using current time
@@ -736,15 +745,15 @@ export default {
 				this.$kvTrackEvent(
 					'ManagedLendingCampaign',
 					'modal-show-in-context-checkout',
-					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
+					this.isVisitor ? 'checkout-requires-login' : 'checkout-ready'
 				);
 			}
-
-			if (!next && this.$route.hash === '#show-basket') {
-				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash('')).catch(() => {});
-				});
-			}
+		},
+		basketBalancing() {
+			this.setCheckoutLoadingState();
+		},
+		basketUpdating() {
+			this.setCheckoutLoadingState();
 		}
 	},
 	computed: {
@@ -775,6 +784,15 @@ export default {
 				showLoanDetails: this.showLoanDetails,
 				checkoutVisible: this.checkoutVisible,
 				showThanks: this.showThanks,
+				handleUpdateAvailableLoans: this.handleUpdateAvailableLoans,
+				promoAmount: numeral(this.promoAmount).format('0.00'),
+				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
+				remainingCredit: this.remainingCredit,
+				basketLoans: this.basketLoans,
+				promoName: this.campaignPartnerName,
+				removeLoanFromBasket: this.removeLoanFromBasket,
+				showBasket: this.showBasket,
+				isMatchingCampaign: this.isMatchingCampaign
 			};
 		},
 		pageSettingData() {
@@ -871,13 +889,6 @@ export default {
 		excludedTags() {
 			return this.pageSettingData?.excludedTags ?? []; // tags that we don't want to show in the filter lightbox
 		},
-		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
-				return true;
-			}
-			return false;
-		},
 		isMatchingCampaign() {
 			return this.pageSettingData?.matcherAccountId !== undefined;
 		},
@@ -893,16 +904,24 @@ export default {
 			if (this.isMatchingCampaign) {
 				return this.pageSettingData?.matchingAccountName ?? null;
 			}
-			return this.promoData?.promoFund?.displayName ?? null;
+			const promoCampaignNameFallback = this.promoData?.promoFund?.displayName ?? null;
+			return this.prioritizedTargetCampaignCredit?.promoFund?.displayName ?? promoCampaignNameFallback;
 		},
 		verificationRequired() {
-			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+			if (this.promoData?.managedAccount?.isEmployee
+				&& this.promoData?.managedAccount?.formId
+				// If promo guest checkout is enabled, we don't need formassembly verification
+				// because the promo guest checkout workflow will take care of email verification.
+				&& !this.promoGuestCheckoutEnabled) {
 				return true;
 			}
 			return false;
 		},
 		usesDynamicContentfulRendering() {
 			return this.pageSettingData?.dynamicRendering;
+		},
+		promoGuestCheckoutEnabled() {
+			return this.pageSettingData?.guestCheckoutEnabled ?? false;
 		},
 		isEmployee() {
 			return this.promoData?.managedAccount?.isEmployee ?? false;
@@ -933,7 +952,7 @@ export default {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
 		},
 		logoHeight() {
-			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoHeight;
+			return String(this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoHeight);
 		},
 		logoClasses() {
 			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.contents?.[0]?.dataObject?.logoClasses;
@@ -949,6 +968,9 @@ export default {
 		},
 		hasUPCCode() {
 			return this.basketTotals?.universalCodeAppliedTotal !== '0.00';
+		},
+		upcCreditRemaining() {
+			return this.basketTotals.universalCodeAvailableTotal - this.basketTotals.itemTotal;
 		},
 		hasBonusCredit() {
 			return this.basketTotals?.bonusAppliedTotal !== '0.00';
@@ -968,9 +990,31 @@ export default {
 			}
 			return null;
 		},
+		remainingCredit() {
+			let remainingCredit = 0;
+			// determine promo type and remaining credit by subtracting applied from available
+			if (this.basketTotals?.redemptionCodeAvailableTotal !== '0.00') {
+				const redemptionCodeAvailableTotal = numeral(this.basketTotals?.redemptionCodeAvailableTotal ?? 0);
+				const redemptionCodeAppliedTotal = numeral(this.basketTotals?.redemptionCodeAppliedTotal ?? 0);
+				remainingCredit = redemptionCodeAvailableTotal.difference(redemptionCodeAppliedTotal.value());
+			} else if (this.basketTotals?.universalCodeAvailableTotal !== '0.00') {
+				const universalCodeAvailableTotal = numeral(this.basketTotals?.universalCodeAvailableTotal ?? 0);
+				const universalCodeAppliedTotal = numeral(this.basketTotals?.universalCodeAppliedTotal ?? 0);
+				remainingCredit = universalCodeAvailableTotal.difference(universalCodeAppliedTotal.value());
+			} else if (this.basketTotals?.bonusAvailableTotal !== '0.00') {
+				const bonusAvailableTotal = numeral(this.basketTotals?.bonusAvailableTotal ?? 0);
+				const bonusAppliedTotal = numeral(this.basketTotals?.bonusAppliedTotal ?? 0);
+				remainingCredit = bonusAvailableTotal.difference(bonusAppliedTotal.value());
+			} else if (this.basketTotals?.creditAvailableTotal !== '0.00') {
+				const creditAvailableTotal = numeral(this.basketTotals?.creditAvailableTotal ?? 0);
+				const creditAppliedTotal = numeral(this.basketTotals?.creditAppliedTotal ?? 0);
+				remainingCredit = creditAvailableTotal.difference(creditAppliedTotal.value());
+			}
+			return remainingCredit;
+		},
 	},
 	methods: {
-		verifyOrApplyPromotion() {
+		async verifyOrApplyPromotion() {
 			// Always apply a promo if activating query params exist
 			const promoQueryKeys = ['upc', 'promoCode', 'lendingReward'];
 			const targetParams = Object.keys(this.$route.query).filter(targetKey => {
@@ -978,27 +1022,27 @@ export default {
 			});
 			if (targetParams.length) {
 				// apply promo
-				this.applyPromotion();
+				await this.applyPromotion();
 
 			// handle previously applied promo
 			// There may be some additional processing we can do on initialBasketCredits
 			// to further optimize and skip the first step
 			} else if (this.hasFreeCredits || this.lendingRewardOffered || this.isMatchingCampaign) {
-				this.getPromoInformationFromBasket();
+				await this.getPromoInformationFromBasket();
 
 			// handle no promo visit
 			} else {
 				this.promoApplied = false;
 				this.loadingPromotion = false;
 				// ensure updated basket state for promo-less visit
-				this.getPromoInformationFromBasket();
+				await this.getPromoInformationFromBasket();
 			}
 		},
-		applyPromotion() {
+		async applyPromotion() {
 			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
 			// handle applied promo state
-			applyPromo.then(result => {
+			await applyPromo.then(result => {
 				// failed to apply promotion
 				if (result.errors) {
 					// This error might arise if the promo is already applied
@@ -1016,7 +1060,7 @@ export default {
 				this.promoApplied = false;
 			});
 		},
-		getPromoInformationFromBasket() {
+		async getPromoInformationFromBasket() {
 			const basketItems = this.apollo.query({
 				fetchPolicy: 'no-cache',
 				query: basketItemsQuery,
@@ -1027,7 +1071,7 @@ export default {
 
 			// Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
-			basketItems.then(({ data }) => {
+			await basketItems.then(({ data }) => {
 				// console.log(data);
 				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
 				if (typeof data.shop === 'undefined') {
@@ -1066,6 +1110,13 @@ export default {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
+
+					// Default matched state
+					this.promoApplied = true;
+				} else if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+					=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+					this.promoApplied = true;
+					this.promoErrorMessage = null;
 				} else if (this.isMatchingCampaign) {
 					this.promoApplied = true;
 				} else {
@@ -1117,7 +1168,6 @@ export default {
 		handleAddToBasket(payload) {
 			if (payload.eventSource === 'checkoutBtnClick') {
 				this.loanDetailsVisible = false;
-				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
 			}
@@ -1132,6 +1182,10 @@ export default {
 		refreshTotals() {
 			this.initializeBasketRefresh();
 		},
+		setCheckoutLoadingState() {
+			const loading = this.basketBalancing || this.basketUpdating;
+			this.$refs.inContextCheckoutRef?.setUpdatingTotals(loading);
+		},
 		initializeBasketRefresh() {
 			// TDOO: Consider extending loading state for basket updates
 			// Query to update basket state
@@ -1140,7 +1194,7 @@ export default {
 		updateBasketState() {
 			// Ensure basket state is loading
 			if (this.$refs.inContextCheckoutRef) {
-				this.$refs.inContextCheckoutRef.updatingTotals = true;
+				this.basketUpdating = true;
 			}
 
 			// get our basket id
@@ -1206,8 +1260,19 @@ export default {
 			}
 
 			const basketItems = basketState.shop?.basket?.items?.values ?? [];
+			// insert some kind of tag to indicate that creditAllocationLoans should have a different message on them.
+
 			// eslint-disable-next-line no-underscore-dangle
 			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
+			this.basketLoans.forEach(item => {
+				if (item.id === this.leftoverCreditAllocationLoanId) {
+					const prevLCALoanId = this.cookieStore.get('lcaid');
+					if (this.leftoverCreditAllocationLoanId !== prevLCALoanId) {
+						this.cookieStore.set('lcaid', this.leftoverCreditAllocationLoanId);
+					}
+				}
+			});
+
 			// eslint-disable-next-line no-underscore-dangle
 			this.donations = basketItems.filter(item => item.__typename === 'Donation');
 			// eslint-disable-next-line no-underscore-dangle
@@ -1230,35 +1295,37 @@ export default {
 
 					// Update user Auth state
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
-					if (this.$refs.inContextCheckoutRef) {
-						this.$refs.inContextCheckoutRef.updatingTotals = false;
-					}
-
-					// signify checkout is ready
-					this.handleBasketValidation();
+					this.basketBalancing = true;
+					this.basketUpdating = false;
+					this.balanceLeftoverCredits();
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 				}).finally(() => {
 					this.loadingPage = false;
+					if (this.$route.hash === '#show-basket') {
+						this.showBasket();
+					}
 				});
 		},
-		handleBasketValidation() {
+		showBasket() {
+			this.$router.push(this.adjustRouteHash('#show-basket')).catch(() => {});
 			// check for verification form requirement
 			if (
-				this.isActivelyLoggedIn
+				!this.isVisitor
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
 				&& this.basketLoans.length
 			) {
 				this.showVerification = true;
+				this.checkoutVisible = false;
 				this.$kvTrackEvent(
 					'ManagedLendingCampaign',
 					'modal-campaign-verification-initialized'
 				);
 			} else if (
 				this.basketLoans.length
-				&& this.isActivelyLoggedIn
+				&& !this.isVisitor
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {
@@ -1270,31 +1337,180 @@ export default {
 					'modal-team-join-initialized'
 				);
 			} else {
-				// Show checkout if:
-				// - Not actively logged in, with a "Continue" button that goes to login
-				// - Checkout is ready
-				this.showCheckout();
+				this.checkoutVisible = true;
 			}
 		},
-		showCheckout() {
-			if (this.basketLoans.length) {
-				this.checkoutVisible = true;
+		amountLeftOnLoan(loan) {
+			const loanFundraisingInfo = loan?.loanFundraisingInfo ?? { fundedAmount: 0, reservedAmount: 0 };
+			const { fundedAmount, reservedAmount } = loanFundraisingInfo;
+			return numeral(loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
+		},
+		allocateLeftoverCredits(payload) {
+			const newPayload = payload;
+			let loanIdx = newPayload.loanIdx ? newPayload.loanIdx : 0;
+			// Allocate leftover credits to a loan that isn't already in the basket
+			// and make sure it needs at least the leftover amount we want to allocate
+			while (
+				this.itemsInBasket.indexOf(this.availableLoans.values[loanIdx].id) > -1
+				|| newPayload.lendAmount > this.amountLeftOnLoan(this.availableLoans.values[loanIdx])
+			) {
+				loanIdx += 1;
+				if (loanIdx === this.availableLoans.length - 1) {
+					break;
+				}
+			}
+			const loanId = this.availableLoans.values[loanIdx].id;
+			setLendAmount({
+				amount: newPayload.lendAmount,
+				apollo: this.apollo,
+				loanId
+			}).then(() => {
+				this.handleAddToBasket({ loanId, success: true });
+				this.leftoverCreditAllocationLoanId = loanId;
+				this.basketBalancing = false;
+			}).catch(e => {
+				logFormatter(`Failed to add loan with id ${loanId} to basket`, 'error');
+				let msg = 'There was a problem adding the loan to your basket';
+				switch (e[0].extensions.code) {
+					case 'reached_anonymous_basket_limit':
+						msg = e[0].message;
+						this.$showTipMsg(msg, 'error');
+						break;
+					case 'no_shares_added_regular_xb' || 'not_all_shared_added':
+						msg = e[0].message;
+						loanIdx += 1;
+						newPayload.loanIdx = loanIdx;
+						this.allocateLeftoverCredits(newPayload);
+						break;
+					default:
+						this.$showTipMsg(msg, 'error');
+				}
+				this.basketBalancing = false;
+			});
+		},
+		updateBasketItem(payload) {
+			const { loanId } = payload;
+			setLendAmount({
+				amount: payload.lendAmount,
+				apollo: this.apollo,
+				loanId: payload.loanId,
+			}).then(() => {
+				this.updateBasketState();
+				if (payload.lendAmount === Number(0)) {
+					this.completeRemoveLeftoverCreditAllocationBasketItem();
+				} else {
+					this.handleAddToBasket({ loanId, success: true });
+					this.leftoverCreditAllocationLoanId = loanId;
+				}
+				this.basketBalancing = false;
+			}).catch(e => {
+				let notAllSharesAdded = false;
+				logFormatter(
+					`Failed to update loan price to $${payload.lendAmount} for loan with id ${loanId}`,
+					'error'
+				);
+				let msg = 'There was a problem updating a loan in your basket';
+				switch (e[0].extensions.code) {
+					case 'reached_anonymous_basket_limit':
+						msg = e[0].message;
+						this.$showTipMsg(msg, 'error');
+						break;
+					case 'no_shares_added_regular_xb':
+						msg = e[0].message;
+						break;
+					case 'not_all_shared_added':
+						notAllSharesAdded = true;
+						msg = e[0].message;
+						break;
+					default:
+						this.$showTipMsg(msg, 'error');
+				}
+				// for not all shares added, the loan amount is updated but not reported to the client
+				// - we need to refresh the page to get back into updated state
+				if (typeof window !== 'undefined' && notAllSharesAdded) {
+					window.setTimeout(window.location.reload(), 8000);
+				}
+				this.basketBalancing = false;
+			});
+		},
+		completeRemoveLeftoverCreditAllocationBasketItem() {
+			this.$closeTipMsg();
+			this.trackLeftoverCreditAllocationItemRemoved();
+			this.refreshTotals();
+			this.updateBasketState();
+			this.basketBalancing = false;
+		},
+		trackLeftoverCreditAllocationItemRemoved() {
+			const category = 'basket';
+			let action = 'Update Loan Amount';
+			let label = 'Loan Removed';
+			if (this.type === 'kivaCard') {
+				action = 'Update Kiva Card Amount';
+				label = 'Kiva Card Removed';
+			}
+
+			this.$kvTrackEvent(
+				category,
+				action,
+				label
+			);
+		},
+		async balanceLeftoverCredits() {
+			this.basketBalancing = true;
+			const LCALoanId = this.cookieStore.get('lcaid');
+			// Check if there is already a loan id that has unspent credit allocated to it
+			if (LCALoanId) {
+				// Try getting that loan from the basket
+				const basketLCALoan = this.basketLoans.find(loan => String(loan?.id) === LCALoanId);
+				if (basketLCALoan?.price) {
+					// If there's a delta between total checkout price and credit available
+					let lcaLoanPrice = parseFloat(basketLCALoan.price) + parseFloat(this.upcCreditRemaining);
+					if (this.upcCreditRemaining !== 0) {
+						if (lcaLoanPrice < 0) {
+							lcaLoanPrice = 0;
+						}
+						// Set the LCA loan price that balances the delta
+						this.updateBasketItem({
+							loanId: Number(LCALoanId),
+							lendAmount: lcaLoanPrice
+						});
+						if (this.lcaLoanPrice === 0) {
+							this.cookieStore.remove('lcaid');
+						}
+					}
+					this.lcaLoanPrice = Number(lcaLoanPrice);
+				} else {
+					this.cookieStore.remove('lcaid');
+				}
+				this.basketBalancing = false;
+			} else if (this.upcCreditRemaining > 0 && this.checkoutVisible) {
+				// If there's no existing loan that we've allocated the unspent credit to
+				// Then get a loan from the carousel and add it to the basket,
+				// and apply the unspent credits to that loan.
+				this.allocateLeftoverCredits({
+					lendAmount: this.upcCreditRemaining
+				});
 			} else {
-				this.checkoutVisible = false;
+				this.basketBalancing = false;
 			}
 		},
 		checkoutLightboxClosed() {
 			this.checkoutVisible = false;
-			if (this.$route.hash === '#show-basket') {
-				this.$nextTick(() => {
-					this.$router.push(this.adjustRouteHash('')).catch(() => {});
-				});
+			this.handleScrollPosition();
+			this.$router.push(this.adjustRouteHash('')).catch(() => {});
+		},
+		handleScrollPosition(y) {
+			if (this.scrollToLoans) {
+				this.scrollToLoans = false;
+				this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			} else if (y) {
+				window.scrollTo(0, y);
 			}
 		},
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
-			this.checkoutVisible = false;
+			this.checkoutLightboxClosed();
 			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
 			this.apollo.mutate({
@@ -1347,10 +1563,9 @@ export default {
 				this.myTeams = data.my?.lender?.teams?.values ?? [];
 				if (this.teamJoinStatus !== 'declined') {
 					this.addTeamToLoans();
-				} else {
-					this.showCheckout();
 				}
 			});
+			this.showBasket();
 		},
 		addTeamToLoans() {
 			if (this.basketLoans.length && this.teamId) {
@@ -1373,7 +1588,7 @@ export default {
 
 		verificationComplete() {
 			this.verificationSumbitted = true;
-			this.handleBasketValidation();
+			this.showBasket();
 			let verificationEventLabel = 'Verification should have completed';
 			if (!this.promoApplied) {
 				verificationEventLabel = 'Verification may have failed or lender opted out';
@@ -1390,7 +1605,7 @@ export default {
 		},
 		handleCancelPromoOptOut() {
 			this.showVerifyRemovePromoCredit = false;
-			this.handleBasketValidation();
+			this.showBasket();
 		},
 		verifyPromoMatchesPageId(pageId) {
 			const promoPageId = pageId || this.promoData?.managedAccount?.pageId;
@@ -1412,7 +1627,8 @@ export default {
 			}
 		},
 		jumpToLoans() {
-			this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
+			this.scrollToLoans = true;
+			this.checkoutLightboxClosed();
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
@@ -1440,16 +1656,22 @@ export default {
 				this.setInitialFilters();
 			}
 		},
+		handleUpdateAvailableLoans(loans) {
+			this.availableLoans = loans;
+		},
 		showLoanDetails(loan) {
 			this.detailedLoan = loan;
 			this.loanDetailsVisible = true;
-		}
+		},
+		removeLoanFromBasket(loanId) {
+			this.updateBasketItem({
+				loanId: Number(loanId),
+				lendAmount: 0
+			});
+		},
 	},
 	beforeRouteUpdate(to, from, next) {
-		if (to.hash === '#show-basket') {
-			this.checkoutVisible = true;
-		}
-
+		this.refreshTotals();
 		next();
 	},
 };

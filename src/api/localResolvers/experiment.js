@@ -83,7 +83,7 @@ export default ({ cookieStore, route }) => {
 							id,
 							version: currentAssignment.queryForced
 								? currentAssignment.version
-								: assignVersionForLoginId(experimentSetting, getLoginId(cookieStore)),
+								: assignVersionForLoginId(id, experimentSetting, getLoginId(cookieStore)),
 							hash,
 							population,
 							queryForced: currentAssignment.queryForced,

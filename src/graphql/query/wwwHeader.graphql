@@ -25,6 +25,12 @@ query wwwHeader($basketId: String) {
 				redemptionCodeAvailableTotal
 				universalCodeAvailableTotal
 			}
+			items {
+				values {
+					id
+					price
+				}
+			}
 		}
 	}
 	my {

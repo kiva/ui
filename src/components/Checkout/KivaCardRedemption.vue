@@ -67,9 +67,8 @@
 							title="Where can I find my Kiva Card code?"
 						>
 							<p class="tw-mb-4">
-								Kiva issues three types of Kiva Cards:
-								print-it-yourself cards, email delivery and
-								postal delivery.
+								Kiva issues two types of Kiva Cards:
+								print-it-yourself cards and email delivery.
 							</p>
 							<p class="tw-mb-2">
 								Print-it-yourself:
@@ -90,16 +89,6 @@
 								height="199"
 								src="~@/assets/images/checkout/emailcard_codelocation.jpg"
 								width="450"
-							>
-							<p class="tw-mb-2">
-								Postal delivery:
-							</p>
-							<img
-								alt="postal-kiva-card"
-								class="tw-mb-6 tw-border tw-border-secondary"
-								height="158"
-								src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
-								width="430"
 							>
 						</kv-lightbox>
 

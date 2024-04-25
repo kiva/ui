@@ -15,8 +15,8 @@ export const FLSS_ORIGIN_LEND_BY_CATEGORY = 'web:lend-by-category';
 export const FLSS_ORIGIN_LEND_FILTER = 'web:lend-filter';
 export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
 export const FLSS_ORIGIN_THANKS = 'web:thanks';
-export const FLSS_ORIGIN_LENDING_HOME = 'web:lending-home';
 export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';
+export const FLSS_ORIGIN_CHECKOUT = 'web:empty-checkout';
 
 /**
  * Gets the filters for FLSS
@@ -135,7 +135,7 @@ export function getLoanChannelVariables(queryMapFLSS, loanQueryVars) {
 	return {
 		ids: [...loanQueryVars.ids],
 		filterObject: getFlssFilters({ ...queryMapFLSS, ...loanQueryVars }),
-		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy,
+		sortBy: loanQueryVars.sortBy || queryMapFLSS.sortBy || null,
 		pageNumber: loanQueryVars.offset / loanQueryVars.limit,
 		pageLimit: loanQueryVars.limit,
 		basketId: loanQueryVars.basketId,

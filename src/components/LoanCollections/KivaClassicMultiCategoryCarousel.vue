@@ -19,10 +19,6 @@
 import { gql } from '@apollo/client';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-
-const LEND_URGENCY_EXP = 'lend_urgency';
 
 export default {
 	name: 'KivaClassicMultiCategoryCarousel',
@@ -55,25 +51,17 @@ export default {
 			loanChannelData: [],
 			selectedChannel: {},
 			showCarousel: false,
-			isUrgencyExpVersionShown: false
 		};
 	},
 	computed: {
-		loanChannelsWithUrgencyExperiment() {
-			if (this.isUrgencyExpVersionShown) {
-				// if urgency experiment, insert ending soon as first loan channel
-				return [{ id: 3, shortName: 'Ending Soon' }, ...this.contentfulLoanChannels];
-			}
-			return this.contentfulLoanChannels;
-		},
 		combinedLoanChannelData() {
-			return this.loanChannelsWithUrgencyExperiment.map(channel => {
+			return this.contentfulLoanChannels.map(channel => {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
 				return { ...matchedLoanChannel, ...channel };
 			});
 		},
 		loanChannelIds() {
-			return this.loanChannelsWithUrgencyExperiment.map(channelSetting => {
+			return this.contentfulLoanChannels.map(channelSetting => {
 				return channelSetting.id;
 			});
 		},
@@ -92,30 +80,6 @@ export default {
 	},
 	mounted() {
 		this.fetchLoanChannel();
-	},
-	apollo: {
-		preFetch(_, client) {
-			return client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } });
-		},
-	},
-	created() {
-		// run urgency experiment if we are on the homepage
-		if (this.$route.name === 'homepage') {
-			const urgencyExperiment = this.apollo.readFragment({
-				id: `Experiment:${LEND_URGENCY_EXP}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
-
-			// Fire Event for Exp ACK-291 Urgency Experiment
-			if (urgencyExperiment.version && urgencyExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ACK-291-May2022',
-					this.isUrgencyExpVersionShown ? 'b' : 'a'
-				);
-			}
-		}
 	},
 	methods: {
 		handleCategoryClick(payload) {

@@ -12,12 +12,14 @@ import {
 	setCookieAssignments,
 	getForcedAssignment,
 	getLoginId,
+	assignAllActiveExperiments,
 } from '@/util/experiment/experimentUtils';
 import * as Alea from '@/util/experiment/Alea';
 import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CookieStore from '@/util/cookieStore';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
@@ -506,9 +508,9 @@ describe('experimentUtils.js', () => {
 	});
 
 	describe('assignVersionForLoginId', () => {
+		const key = 'asd';
 		const loginId = 'ac4abedd-b9fd-487b-8d83-6fb73794e33e';
 		const experiment = {
-			name: 'asd',
 			distribution: {
 				control: 0.5,
 				variant: 0.5,
@@ -525,9 +527,9 @@ describe('experimentUtils.js', () => {
 			afterEach(jest.restoreAllMocks);
 
 			it('should return undefined when experiment props missing', () => {
-				expect(assignVersionForLoginId({}, loginId)).toBe(undefined);
-				expect(assignVersionForLoginId({ name: 'a', distribution: 'b' })).toBe(undefined);
-				expect(assignVersionForLoginId({ name: 'a', distribution: 'b' }, '')).toBe(undefined);
+				expect(assignVersionForLoginId(undefined, {}, loginId)).toBe(undefined);
+				expect(assignVersionForLoginId(key, { distribution: 'b' })).toBe(undefined);
+				expect(assignVersionForLoginId(key, { distribution: 'b' }, '')).toBe(undefined);
 			});
 
 			it('should return undefined when dice roll lands outside population level', () => {
@@ -535,45 +537,45 @@ describe('experimentUtils.js', () => {
 
 				spyAlea.mockReturnValueOnce(() => 0.5);
 				data.population = 0.5;
-				expect(assignVersionForLoginId(data, loginId)).toBe('variant');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('variant');
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 
 				spyAlea.mockReturnValueOnce(() => 0.51);
 				data.population = 0.5;
-				expect(assignVersionForLoginId(data, loginId)).toBe(undefined);
+				expect(assignVersionForLoginId(key, data, loginId)).toBe(undefined);
 				expect(spyAlea).toHaveBeenCalledTimes(2);
 
 				spyAlea.mockReturnValueOnce(() => 0.9);
 				data.population = 0.5;
-				expect(assignVersionForLoginId(data, loginId)).toBe(undefined);
+				expect(assignVersionForLoginId(key, data, loginId)).toBe(undefined);
 				expect(spyAlea).toHaveBeenCalledTimes(3);
 			});
 
 			it('should return "control" when dice roll lands in the control distribution', () => {
 				spyAlea.mockReturnValueOnce(() => 0);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('control');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('control');
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 
 				spyAlea.mockReturnValueOnce(() => 0.25);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('control');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('control');
 				expect(spyAlea).toHaveBeenCalledTimes(2);
 
 				spyAlea.mockReturnValueOnce(() => 0.5);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('control');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('control');
 				expect(spyAlea).toHaveBeenCalledTimes(3);
 			});
 
 			it('should return "variant" when dice roll lands in the variant distribution', () => {
 				spyAlea.mockReturnValueOnce(() => 0.51);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('variant');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('variant');
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 
 				spyAlea.mockReturnValueOnce(() => 0.75);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('variant');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('variant');
 				expect(spyAlea).toHaveBeenCalledTimes(2);
 
 				spyAlea.mockReturnValueOnce(() => 0.99);
-				expect(assignVersionForLoginId(experiment, loginId)).toBe('variant');
+				expect(assignVersionForLoginId(key, experiment, loginId)).toBe('variant');
 				expect(spyAlea).toHaveBeenCalledTimes(3);
 			});
 
@@ -581,41 +583,41 @@ describe('experimentUtils.js', () => {
 				const data = { ...experiment, distribution: { a: 0.5, b: 0.25, c: 0.25 } };
 
 				spyAlea.mockReturnValueOnce(() => 0);
-				expect(assignVersionForLoginId(data, loginId)).toBe('a');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('a');
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 
 				spyAlea.mockReturnValueOnce(() => 0.5);
-				expect(assignVersionForLoginId(data, loginId)).toBe('a');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('a');
 				expect(spyAlea).toHaveBeenCalledTimes(2);
 
 				spyAlea.mockReturnValueOnce(() => 0.51);
-				expect(assignVersionForLoginId(data, loginId)).toBe('b');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('b');
 				expect(spyAlea).toHaveBeenCalledTimes(3);
 
 				spyAlea.mockReturnValueOnce(() => 0.75);
-				expect(assignVersionForLoginId(data, loginId)).toBe('b');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('b');
 				expect(spyAlea).toHaveBeenCalledTimes(4);
 
 				spyAlea.mockReturnValueOnce(() => 0.76);
-				expect(assignVersionForLoginId(data, loginId)).toBe('c');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('c');
 				expect(spyAlea).toHaveBeenCalledTimes(5);
 
 				spyAlea.mockReturnValueOnce(() => 0.99);
-				expect(assignVersionForLoginId(data, loginId)).toBe('c');
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('c');
 				expect(spyAlea).toHaveBeenCalledTimes(6);
 			});
 
 			it('should return a version when the population is undefined', () => {
 				const data = { ...experiment };
 				delete data.population;
-				expect(['control', 'variant']).toContain(assignVersionForLoginId(data, loginId));
+				expect(['control', 'variant']).toContain(assignVersionForLoginId(key, data, loginId));
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 			});
 		});
 
 		describe('original pseudo random number generator', () => {
 			it('should return same variation over many runs', () => {
-				runManyTimesAndCompare(() => assignVersionForLoginId(experiment, loginId));
+				runManyTimesAndCompare(() => assignVersionForLoginId(key, experiment, loginId));
 			});
 		});
 	});
@@ -1006,6 +1008,47 @@ describe('experimentUtils.js', () => {
 			const result = getLoginId(cookieStore);
 
 			expect(result).toBe(mockVisitorId);
+		});
+	});
+
+	describe('assignAllActiveExperiments', () => {
+		it('should get active experiments', async () => {
+			const apollo = {
+				cache: {
+					readQuery: jest.fn()
+				}
+			};
+
+			await assignAllActiveExperiments(apollo);
+
+			expect(apollo.cache.readQuery).toHaveBeenCalledTimes(1);
+		});
+
+		it('should assign active experiments', async () => {
+			const apollo = {
+				cache: {
+					readQuery: jest.fn().mockReturnValue({
+						general: {
+							activeExperiments: {
+								value: '"a,b"'
+							}
+						}
+					})
+				},
+				query: jest.fn()
+			};
+
+			await assignAllActiveExperiments(apollo);
+
+			expect(apollo.query).toHaveBeenCalledTimes(2);
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: 'a' }
+			});
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: 'b' }
+			});
 		});
 	});
 });

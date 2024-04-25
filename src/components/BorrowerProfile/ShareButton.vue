@@ -3,7 +3,7 @@
 		:modal-title="modalTitle"
 		:share-message="modifiedShareMessage"
 		:share-url="shareLink"
-		variant="caution"
+		:variant="variant"
 		:utm-campaign="utmCampaign"
 		:utm-content="utmContent"
 		:open-lightbox="forceLightbox"
@@ -71,6 +71,10 @@ export default {
 			type: Number,
 			default: 0
 		},
+		variant: {
+			type: String,
+			default: 'caution'
+		}
 	},
 	created() {
 		// This query is part of the header query and should be in the cache.

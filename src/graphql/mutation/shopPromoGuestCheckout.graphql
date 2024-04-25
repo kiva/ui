@@ -1,0 +1,6 @@
+mutation checkout($basketId: String, , $visitorId: String) {
+	shop (basketId: $basketId) {
+		id
+		checkout(visitorId: $visitorId)
+	}
+}
