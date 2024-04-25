@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { getCategoryName } from '@/util/categoryUtils';
+import getCategoryName from '@/util/categoryUtils';
 import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';

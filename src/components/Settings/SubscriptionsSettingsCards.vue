@@ -1,16 +1,7 @@
 <template>
 	<div class="subscriptions-settings-page">
-		<!-- One Time Settings -->
-		<subscriptions-one-time
-			v-if="isOnetime"
-			@cancel-subscription="showConfirmationPrompt('Contribution')"
-			@unsaved-changes="setUnsavedChanges"
-			ref="subscriptionsOneTimeComponent"
-		/>
-
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
@@ -18,7 +9,7 @@
 
 		<!-- Auto Deposit Settings -->
 		<subscriptions-auto-deposit
-			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber && !hasModernSub"
+			v-if="!isMonthlyGoodSubscriber && !isLegacySubscriber && !hasModernSub"
 			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsAutoDepositComponent"
@@ -26,7 +17,7 @@
 
 		<!-- Legacy Subscriptions-->
 		<subscriptions-legacy
-			v-if="!isOnetime && !isMonthlyGoodSubscriber && isLegacySubscriber"
+			v-if="!isMonthlyGoodSubscriber && isLegacySubscriber"
 		/>
 
 		<!-- Are you sure? -->
@@ -79,7 +70,6 @@ import { gql } from '@apollo/client';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMonthlyGood';
-import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -91,7 +81,6 @@ const pageQuery = gql`query subscriptionSettingsPage {
 		autoDeposit {
 			id
 			isSubscriber
-			isOnetime
 		}
 		subscriptions {
 			values {
@@ -120,7 +109,6 @@ export default {
 		SubscriptionsAutoDeposit,
 		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,
-		SubscriptionsOneTime,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -129,7 +117,6 @@ export default {
 			isChanged: false,
 			isLegacySubscriber: false,
 			isMonthlyGoodSubscriber: false,
-			isOnetime: false,
 			isSaving: false,
 			showLightbox: false,
 			showLoadingOverlay: false,
@@ -141,7 +128,6 @@ export default {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isOnetime = data?.my?.autoDeposit?.isOnetime ?? false;
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
@@ -192,12 +178,6 @@ export default {
 		},
 		saveSubscription() {
 			this.isSaving = true;
-			// Calls the save method in the component if component isChanged is true.
-			if (this.$refs?.subscriptionsOneTimeComponent?.isChanged) {
-				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
-					this.isSaving = false;
-				});
-			}
 			if (this.$refs?.subscriptionsMonthlyGoodComponent?.isChanged) {
 				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
 					this.isSaving = false;

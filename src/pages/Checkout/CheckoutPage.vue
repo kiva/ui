@@ -24,6 +24,12 @@
 						Your basket
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
+
+					<ftds-message
+						class="tw-mb-2"
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+					/>
 				</div>
 				<div class="tw-relative">
 					<div class="basket-container tw-mx-auto tw-my-0">
@@ -34,14 +40,16 @@
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeLendAmount"
+							:is-logged-in="isLoggedIn"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="!upsellCookieActive" class="upsellContainer">
+						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
-								v-if="showUpsellModule && upsellLoan.name"
+								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
@@ -89,6 +97,7 @@
 										class="checkout-button tw-w-full md:tw-w-auto"
 										id="kiva-credit-payment-button"
 										data-testid="kiva-credit-payment-button"
+										:use-async-checkout="asyncCheckoutActive"
 									/>
 								</form>
 
@@ -99,11 +108,12 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									@complete-transaction="completeTransaction"
+									:use-async-checkout="asyncCheckoutActive"
 								/>
 							</div>
 
 							<div
-								v-else-if="!isActivelyLoggedIn && showLoginContinueButton"
+								v-else-if="!isLoggedIn && showLoginContinueButton"
 								class=""
 							>
 								<!-- Guest checkout button shown when the uiexp.guest_checkout and
@@ -170,7 +180,7 @@
 								</kv-button>
 							</div>
 							<div
-								v-if="!isActivelyLoggedIn
+								v-if="!isLoggedIn
 									&& showLoginContinueButton
 									&& eligibleForGuestCheckout
 									&& guestCheckoutCTAExpActive"
@@ -192,6 +202,12 @@
 						data-testid="updating-overlay"
 						id="updating-overlay"
 						class="updating-totals-overlay tw-z-overlay tw-bg-white"
+					/>
+
+					<ftds-disclaimer
+						v-if="showFtdMessage"
+						:ftd-credit-amount="ftdCreditAmount"
+						:ftd-valid-date="ftdValidDate"
 					/>
 				</div>
 			</div>
@@ -245,7 +261,9 @@
 					data-testid="empty-basket-loans"
 					style="min-height: 23rem;"
 				>
-					<random-loan-selector
+					<empty-basket-carousel
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeLendAmount"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
@@ -267,10 +285,14 @@ import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
+import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import syncDate from '@/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
-import { achievementsQuery, hasMadeAchievementsProgression } from '@/util/achievementUtils';
+import {
+	achievementsQuery,
+	achievementProgression,
+} from '@/util/achievementUtils';
 import { getPromoFromBasket } from '@/util/campaignUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
@@ -292,7 +314,7 @@ import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVer
 import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import RandomLoanSelector from '@/components/RandomLoanSelector/RandomLoanSelector';
+import EmptyBasketCarousel from '@/components/Checkout/EmptyBasketCarousel';
 import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
 import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
 import UpsellModule from '@/components/Checkout/UpsellModule';
@@ -301,17 +323,18 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import { isLoanFundraising } from '@/util/loanUtils';
 import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
-import {
-	getExperimentSettingCached,
-	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
+import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
+import FtdsMessage from '@/components/Checkout/FtdsMessage';
+import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
+import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
-const iwdChallengeExpKey = 'iwd_challenge';
+const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 
@@ -346,15 +369,17 @@ export default {
 		CampaignVerificationForm,
 		CheckoutHolidayPromo,
 		CheckoutDropInPaymentWrapper,
-		RandomLoanSelector,
+		EmptyBasketCarousel,
 		VerifyRemovePromoCredit,
 		UpsellModule,
 		MatchedLoansLightbox,
 		CampaignJoinTeamForm,
-		KvLoadingPlaceholder
+		KvLoadingPlaceholder,
+		FtdsMessage,
+		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest],
+	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -373,8 +398,6 @@ export default {
 			showLogin: false,
 			loginLoading: false,
 			isHovered: false,
-			activeLoginDuration: 3600,
-			lastActiveLogin: 0,
 			preCheckoutStep: '',
 			preValidationErrors: [],
 			teams: [],
@@ -397,7 +420,13 @@ export default {
 			teamJoinStatus: null,
 			myTeams: [],
 			continueButtonState: 'loading',
-			iwdChallengeRedirectQueryParam: '',
+			challengeRedirectQueryParam: '',
+			asyncCheckoutActive: false,
+			lenderTotalLoans: 0,
+			isFtdMessageEnable: false,
+			ftdCreditAmount: '',
+			ftdValidDate: '',
+			iwdExpEnabled: false
 		};
 	},
 	apollo: {
@@ -431,7 +460,7 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 						client.query({ query: upsellQuery }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: iwdChallengeExpKey } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: ASYNC_CHECKOUT_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
@@ -445,8 +474,8 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
-			this.lastActiveLogin = _get(data, 'my.lastLoginTimestamp', 0);
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
+			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -461,8 +490,10 @@ export default {
 				this.disableGuestCheckout();
 			}
 
-			// general data
-			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			// Enable FTDs message from settings
+			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
+			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
+			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -487,8 +518,31 @@ export default {
 		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
 		this.showCheckoutError(validationErrors, true);
 
+		// Fire error for empty shop state
+		if (!this.isServer && !this.totals) {
+			Sentry.withScope(scope => {
+				scope.setTag('init_checkout', 'Missing baseline basket information');
+				Sentry.captureMessage(`Missing baseline basket information; totals value is ${this.totals}.`);
+			});
+		}
+
 		// TODO: Implement check against contentful setting
 		// to signify if holiday mode is enabled
+
+		// VUE-1725 Async Checkout Mutation Rollout
+		const asyncCheckoutExp = this.apollo.readFragment({
+			id: `Experiment:${ASYNC_CHECKOUT_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.asyncCheckoutActive = asyncCheckoutExp?.version === 'b';
+		if (asyncCheckoutExp?.version) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-VUE-1725-Aug2023',
+				this.asyncCheckoutExpVersion,
+			);
+		}
 
 		// GROW-203 login/registration CTA experiment
 		const loginButtonExperiment = this.apollo.readFragment({
@@ -528,6 +582,11 @@ export default {
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
 		this.initializeFiveDollarsNotes();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
+
+		this.iwdExpEnabled = this.isIwdExperimentEnabled();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -538,10 +597,7 @@ export default {
 		this.$nextTick(() => {
 			// fire tracking event when the page loads
 			// - this event will be duplicated when the page reloads with a newly registered/logged in user
-			let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-			if (this.isActivelyLoggedIn) {
-				userStatus = 'Actively Logged-In';
-			}
+			const userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
 			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 		});
 
@@ -555,32 +611,20 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// IWD challenge code
-		const iwdChallengeExpData = getExperimentSettingCached(this.apollo, iwdChallengeExpKey);
-		if (iwdChallengeExpData?.enabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				iwdChallengeExpKey,
-				'EXP-ACK-543-Mar2023'
-			);
-			if (version === 'b') {
-				// Fetch IWD Challenge Game Status
-				// If user is in iwd challenge and a loan in basket makes progress towards
-				// iwd challenge, set iwdChallengeRedirectQueryParam
-				achievementsQuery(this.apollo, this.loanIdsInBasket)
-					.then(({ data }) => {
-						// eslint-disable-next-line max-len
-						const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-						const showIwdThanksPage = hasMadeAchievementsProgression(
-							checkoutMilestoneProgresses,
-							'iwd-challenge'
-						);
-						this.iwdChallengeRedirectQueryParam = showIwdThanksPage ? '&iwdChallenge=true' : '';
-					});
-				// end game code
-			}
+		// Don't fetch challenge status if IWD2024 experiment is enabled
+		// to avoid being redirected to the challenge thank you page
+		if (!this.iwdExpEnabled) {
+			// Fetch Challenge Status
+			// If a loan in basket makes progress towards an active challenge,
+			// set query param to redirect to special thank you page
+			achievementsQuery(this.apollo, this.loanIdsInBasket)
+				.then(({ data }) => {
+					// eslint-disable-next-line max-len
+					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
+					const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
+					this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
+				});
+			// end challenge code
 		}
 	},
 	computed: {
@@ -590,22 +634,19 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
-		// show upsell module only once per session
-		upsellCookieActive() {
-			return this.cookieStore.get('upsell-loan-added') === 'true';
+		showUpsell() {
+			// show upsell module only once per session
+			const upsellLoanAdded = this.cookieStore.get('upsell-loan-added') === 'true';
+			// hide upsell for donation-only baskets
+			const onlyDonations = this.loans.length === 0 && this.kivaCards.length === 0 && !this.emptyBasket;
+
+			return !upsellLoanAdded && !onlyDonations;
 		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
 				return true;
 			}
-			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
-				return true;
-			}
-			return false;
-		},
-		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
+			if (this.myId !== null && this.myId !== undefined) {
 				return true;
 			}
 			return false;
@@ -629,7 +670,7 @@ export default {
 			// Checking if guest checkout is enabled
 			// and if Kiva has been logged into on user's current browser
 			if (this.isGuestCheckoutEnabled
-				&& !this.isActivelyLoggedIn
+				&& !this.isLoggedIn
 				&& !this.hasEverLoggedIn
 			) {
 				return true;
@@ -637,7 +678,7 @@ export default {
 			return false;
 		},
 		showLoginContinueButton() {
-			if (!this.myId || !this.isActivelyLoggedIn) {
+			if (!this.myId || !this.isLoggedIn) {
 				return true;
 			}
 			return false;
@@ -695,6 +736,12 @@ export default {
 		loanIdsInBasket() {
 			return this.loans.map(loan => loan.id);
 		},
+		showFtdMessage() {
+			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
+		},
+		iwdLoan() {
+			return (this.loans?.filter(l => l?.loan?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
+		},
 	},
 	methods: {
 		openMatchedLoansLightbox() {
@@ -727,7 +774,7 @@ export default {
 				this.updatingTotals = true;
 				// we need to force show the login popup if not actively logged in
 				const authorizeOptions = {};
-				if (!this.isActivelyLoggedIn) {
+				if (!this.isLoggedIn) {
 					authorizeOptions.prompt = 'login';
 				}
 
@@ -829,11 +876,13 @@ export default {
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, this.iwdChallengeRedirectQueryParam);
+						this.redirectToThanks(transactionId, this.challengeRedirectQueryParam);
 					},
 					800
 				);
 			});
+
+			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
@@ -867,7 +916,7 @@ export default {
 
 				this.$nextTick(() => {
 					if (
-						this.isActivelyLoggedIn
+						this.isLoggedIn
 						&& this.verificationRequired
 						&& this.externalFormId
 						&& !this.verificationSubmitted
@@ -902,7 +951,7 @@ export default {
 		handleCancelPromoOptOut() {
 			this.showVerifyRemovePromoCredit = false;
 			if (
-				this.isActivelyLoggedIn
+				this.isLoggedIn
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
@@ -1012,7 +1061,7 @@ export default {
 		handleTeamForm() {
 			if (
 				this.loans.length
-				&& this.isActivelyLoggedIn
+				&& this.isLoggedIn
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {

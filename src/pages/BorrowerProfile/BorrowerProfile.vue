@@ -3,6 +3,14 @@
 		id="borrower-profile"
 		:data-testid="loanType"
 	>
+		<challenge-team-invite
+			v-if="showChallengeCallout"
+			class="tw-absolute tw-mx-auto tw-w-full tw-z-5"
+			:share-lender="shareLender"
+			:team-name="teamData.name"
+			:team-id="teamData.teamPublicId"
+			@close="hideChallengeCallout = true"
+		/>
 		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
 			<div class="tw-relative">
 				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
@@ -17,27 +25,13 @@
 					:days-left="diffInDays"
 				/>
 				<content-container
-					:class="inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8'"
+					:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8']"
 					class="md:tw-pt-6"
 				>
 					<summary-card
 						data-testid="bp-summary"
 						class="tw-relative lg:tw--mb-1.5"
-						:show-urgency-exp="showUrgencyExp"
-					>
-						<template #sharebutton>
-							<!-- Share button -->
-							<share-button
-								class="tw-block md:tw-hidden tw-mt-3"
-								:loan="loan"
-								:lender="lender"
-								:campaign="shareCampaign"
-								:in-pfp="inPfp"
-								:pfp-min-lenders="pfpMinLenders"
-								:num-lenders="numLenders"
-							/>
-						</template>
-					</summary-card>
+					/>
 				</content-container>
 			</div>
 			<div
@@ -51,12 +45,19 @@
 						class="tw-pointer-events-auto"
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeLendAmount"
+						:activities="activities"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
+							<template v-if="isLoading">
+								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
+							</template>
 							<share-button
-								class="tw-hidden md:tw-block lg:tw-mb-1.5"
+								v-else
+								class="tw-block lg:tw-mb-1.5"
 								:loan="loan"
+								:variant="shareBtnVariant"
 								:lender="lender"
 								:campaign="shareCampaign"
 								:in-pfp="inPfp"
@@ -84,11 +85,21 @@
 					@hide-section="showUpdates = false"
 				/>
 			</content-container>
-			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8">
+			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8" id="bp-comments-jump-link">
 				<content-container>
-					<why-special data-testid="bp-why-special" :loan-id="loanId" />
+					<comments-and-why-special
+						data-testid="bp-comments"
+						:loan-id="loanId"
+						:is-logged-in="lender.id ? true : false"
+					/>
 				</content-container>
 			</div>
+			<content-container v-if="showEducationPlacementExp">
+				<borrower-education-placement
+					data-testid="bp-education"
+					:loan-region="loanRegion"
+				/>
+			</content-container>
 			<content-container>
 				<more-about-loan
 					data-testid="bp-more-about"
@@ -140,9 +151,10 @@ import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
 import { gql } from '@apollo/client';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
+import guestComment from '@/plugins/guest-comment-mixin';
 import {
 	trackExperimentVersion
 } from '@/util/experiment/experimentUtils';
@@ -158,15 +170,27 @@ import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
 import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
-import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
+import CommentsAndWhySpecial from '@/components/BorrowerProfile/CommentsAndWhySpecial';
+
 import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
 import ShareButton from '@/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
+import { fireHotJarEvent } from '@/util/hotJarUtils';
+import _throttle from 'lodash/throttle';
+import BorrowerEducationPlacement from '@/components/BorrowerProfile/BorrowerEducationPlacement';
+import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
+import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
+import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? '';
+const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
-const LEND_URGENCY_EXP = 'lend_urgency';
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
+const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
+const ACTIVITY_FEED_EXP = 'activity_feed_bp';
+const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const preFetchQuery = gql`
 	query borrowerProfileMeta(
@@ -178,10 +202,6 @@ const preFetchQuery = gql`
 		$imgRetinaSize: String = "w960h720"
 	) {
 		general {
-			lendUrgency: uiExperimentSetting(key: "lend_urgency") {
-				key
-				value
-			}
 			uiExperimentSetting(key: "share_language_bp") {
 				key
 				value
@@ -201,6 +221,7 @@ const preFetchQuery = gql`
 					country {
 						name
 						isoCode
+						region
 					}
 				}
 				image {
@@ -229,6 +250,9 @@ const preFetchQuery = gql`
 				sector {
 					id
 					name
+				}
+				userProperties {
+					lentTo
 				}
 			}
 		}
@@ -289,6 +313,7 @@ export default {
 		ContentContainer,
 		DetailsTabs,
 		HeroBackground,
+		KvLoadingPlaceholder,
 		FundedBorrowerProfile,
 		LendCta,
 		LendersAndTeams,
@@ -297,10 +322,12 @@ export default {
 		MoreAboutLoan,
 		SidebarContainer,
 		ShareButton,
+		CommentsAndWhySpecial,
 		SummaryCard,
 		TopBannerPfp,
-		WhySpecial,
 		WwwPage,
+		BorrowerEducationPlacement,
+		ChallengeTeamInvite,
 	},
 	metaInfo() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -385,7 +412,6 @@ export default {
 			showLenders: true,
 			showTeams: true,
 			showUpdates: true,
-			isUrgencyExpVersionShown: false,
 			hasThreeDaysOrLessLeft: false,
 			// meta fields
 			endDate: '',
@@ -410,10 +436,28 @@ export default {
 			isoCode: '',
 			shareLanguageExpVersion: 'a',
 			city: '',
-			state: ''
+			state: '',
+			isMobile: false,
+			isLoading: true,
+			regionBelongsToExp: false,
+			showEducationPlacementExp: false,
+			loanRegion: '',
+			expRegionList: [
+				'North America',
+				'Central America',
+				'South America',
+				'Africa',
+				'Asia',
+				'Europe'
+			],
+			activities: null,
+			enableChallengeHeader: false,
+			teamData: {},
+			shareLender: undefined,
+			hideChallengeCallout: false,
 		};
 	},
-	mixins: [fiveDollarsTest],
+	mixins: [fiveDollarsTest, guestComment, hugeLendAmount],
 	apollo: {
 		query: preFetchQuery,
 		preFetch(config, client, { route, cookieStore }) {
@@ -441,7 +485,19 @@ export default {
 					// Check for loan and loan status
 					const loan = data?.lend?.loan;
 					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-					if (loan === null || loan === 'undefined' || !loanStatusAllowed) {
+					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
+					// Evaluate if lender should be redirected to lend classic MARS-358
+					const lentTo = loan?.userProperties?.lentTo ?? false;
+					if (lentTo && !redirectToLendClasic) {
+						const loanAmount = loan?.loanAmount ?? '0';
+						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
+						const amountLeft = Number(loanAmount) - Number(fundedAmount);
+
+						const loanStatus = loan?.status !== 'fundraising';
+						redirectToLendClasic = !amountLeft || loanStatus;
+					}
+
+					if (redirectToLendClasic) {
 						// redirect to legacy borrower profile
 						const { query = {} } = route;
 						query.minimal = false;
@@ -452,9 +508,9 @@ export default {
 					}
 
 					return Promise.all([
-						client.query({ query: experimentAssignmentQuery, variables: { id: LEND_URGENCY_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
 					]);
 				});
 		},
@@ -501,6 +557,8 @@ export default {
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
 			this.city = loan?.geocode?.city ?? '';
 			this.state = loan?.geocode?.state ?? '';
+			this.loanRegion = loan?.geocode?.country?.region ?? '';
+			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
 		},
 	},
 	async mounted() {
@@ -534,6 +592,83 @@ export default {
 		if (version) {
 			this.shareLanguageExpVersion = version;
 		}
+
+		if (this.regionBelongsToExp) {
+			const educationExpData = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'borrower-profile',
+				EDUCATION_PLACEMENT_EXP,
+				'EXP-MARS-514-DEC2023 ',
+			);
+			if (educationExpData.version === 'b') {
+				this.showEducationPlacementExp = true;
+			}
+		}
+
+		const activityFeedExpData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'borrower-profile',
+			ACTIVITY_FEED_EXP,
+			'EXP-ACK-1037-MAR2024',
+		);
+		if (activityFeedExpData?.version === 'b') {
+			const response = await this.apollo.query({
+				query: loanActivitiesQuery,
+				variables: { loanId: this.loanId }
+			});
+
+			this.activities = response?.data ?? null;
+		}
+
+		const challengeHeaderExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
+
+		if (this.enableChallengeHeader) {
+			const teamPublicId = this.$route?.query?.team ?? '';
+			let teamId = null;
+			if (teamPublicId) {
+				const teamInfo = await this.apollo.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
+				teamId = teamInfo?.data?.community?.team?.id ?? null;
+			}
+
+			if (teamId) {
+				const teamData = await this.apollo.query({ query: TeamInfoFromId, variables: { team_id: teamId } });
+				this.teamData = teamData?.data?.community?.team || {};
+				const publicId = getPublicId(this.$route);
+
+				const lenderData = await this.apollo.query({
+					query: lenderPublicProfileQuery,
+					variables: {
+						publicId,
+					}
+				});
+				this.shareLender = lenderData?.data?.community?.lender ?? {};
+			}
+		}
+
+		this.determineIfMobile();
+
+		window.addEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
+
+		this.isLoading = false;
+	},
+	methods: {
+		determineIfMobile() {
+			this.isMobile = document.documentElement.clientWidth < 735;
+		},
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', _throttle(() => {
+			this.determineIfMobile();
+		}, 200));
 	},
 	computed: {
 		shareCampaign() {
@@ -562,9 +697,6 @@ export default {
 				name = `${name}, ${this.businessName}`;
 			}
 			return `${name} - ${this.countryName}`;
-		},
-		showUrgencyExp() {
-			return this.hasThreeDaysOrLessLeft && this.isUrgencyExpVersionShown;
 		},
 		amountLeft() {
 			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
@@ -616,31 +748,27 @@ export default {
 				return 'direct-loan';
 			}
 			return 'partner-loan';
+		},
+		shareBtnVariant() {
+			return this.isMobile ? 'secondary' : 'caution';
+		},
+		showChallengeCallout() {
+			return this.enableChallengeHeader && Object.keys(this.teamData).length && !this.hideChallengeCallout;
 		}
 	},
 	created() {
-		const urgencyExperiment = this.apollo.readFragment({
-			id: `Experiment:${LEND_URGENCY_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
-
-		if (this.hasThreeDaysOrLessLeft) {
-			// Fire Event for Exp ACK-291 Urgency Experiment
-			if (urgencyExperiment.version && urgencyExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ACK-291-May2022',
-					this.isUrgencyExpVersionShown ? 'b' : 'a'
-				);
-			}
-		}
-
 		const publicId = getPublicId(this.$route);
 		this.inviterIsGuestOrAnonymous = publicId === 'anonymous' || publicId === 'guest';
 
 		this.initializeFiveDollarsNotes();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
+
+		// If loanType is direct fire hotjar event
+		if (this.loanType === 'direct-loan') {
+			fireHotJarEvent('us_borrower_profile');
+		}
 	},
 };
 </script>

@@ -18,7 +18,14 @@ const decodeCookieValue = value => {
 
 function getSessionCookies(url = '', requestCookies = {}) {
 	return new Promise((resolve, reject) => {
-		if (url.length && (!requestCookies.kv || !requestCookies.kvis || !requestCookies.kvbskt)) {
+		if (url.length
+			&& (
+				!requestCookies.kv
+				|| !requestCookies.kvis
+				|| !requestCookies.kvbskt
+				|| !requestCookies.kvborrowerapplicant
+			)
+		) {
 			fetch(url, {
 				headers: {
 					Cookie: getCookieString(requestCookies),

@@ -1,7 +1,7 @@
 <template>
 	<div class="donation-nudge-boxes-container">
 		<div
-			class="md:visible tw-text-left tw-mt-4 md:tw-mt-6
+			class="md:visible tw-text-left tw-mt-2 md:tw-mt-3
 			md:tw-flex md:tw-flex-1 md:tw-flex-space-3 md:tw-gap-3"
 		>
 			<div
@@ -12,7 +12,7 @@
 					'tw-rounded-t tw-border-b-0 md:tw-border-b md:tw-rounded': index === 0,
 					'md:tw-rounded': index === 1
 				}"
-				@click="setDonationAndClose(getDonationByPercent(percentage))"
+				@click="setDonationAndClose(getDonationByPercent(percentage), formatSource(index))"
 			>
 				<div
 					class="tw-flex tw-flex-row tw-align-center tw-items-stretch
@@ -44,7 +44,6 @@
 				</div>
 			</div>
 			<div
-				v-if="hasCustomDonation"
 				class="tw-p-2 md:tw-px-3 md:tw-py-4
 					tw-border tw-border-tertiary tw-rounded-b
 					tw-border-t-0 md:tw-border-t md:tw-rounded"
@@ -115,10 +114,6 @@ export default {
 			type: Function,
 			required: true,
 		},
-		hasCustomDonation: {
-			type: Boolean,
-			default: false,
-		},
 		currentDonationAmount: {
 			type: String,
 			default: ''
@@ -162,13 +157,16 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(numeral(this.customDonationAmount).value());
+			this.setDonationAndClose(numeral(this.customDonationAmount).value(), 'Custom amount');
 		},
 		setInputs(value) {
 			this.customDonationAmount = value;
 		},
 		validateInput() {
 			this.setInputs(numeral(this.customDonationAmount).format('$0,0.00'));
+		},
+		formatSource(index) {
+			return `${numeral(index + 1).format('0o')} preset`;
 		},
 	},
 };

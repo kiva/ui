@@ -88,6 +88,14 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -114,9 +122,10 @@ export default {
 
 				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
 
-				const priceArray = getDropdownPriceArrayCheckout(remainingAmount, minAmount, this.enableFiveDollarsNotes); // eslint-disable-line max-len
-				if (!priceArray.includes(Number(this.price).toFixed())) {
-					priceArray.push(Number(this.price).toFixed());
+				const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
+				const priceArray = getDropdownPriceArrayCheckout(remainingAmount, minAmount, this.enableFiveDollarsNotes, showHugeAmount); // eslint-disable-line max-len
+				if (!priceArray.includes(numeral(this.price).format('0,0'))) {
+					priceArray.push(numeral(this.price).format('0,0'));
 				}
 				return priceArray;
 			}

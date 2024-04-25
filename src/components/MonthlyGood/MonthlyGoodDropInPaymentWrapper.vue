@@ -67,10 +67,6 @@ export default {
 			type: String,
 			default: ''
 		},
-		isOneTime: {
-			type: Boolean,
-			default: false
-		},
 		currentNonce: {
 			type: String,
 			default: ''
@@ -171,7 +167,6 @@ export default {
 						donateAmount: numeral(this.donateAmount).format('0.00'),
 						dayOfMonth: numeral(this.dayOfMonth).value(),
 						category: this.category,
-						isOnetime: this.isOneTime,
 						deviceData,
 					}
 				}).then(kivaBraintreeResponse => {

@@ -111,6 +111,18 @@ try {
 
 // setup global analytics configuration + data
 app.$setKvAnalyticsData(userId).then(() => {
+	let latestUserId = userId;
+	// Use Apollo cached userid or check for user id from Auth0
+	latestUserId = userId || (kvAuth0?.user?.['https://www.kiva.org/kiva_id'] ?? '');
+	// Check for cookie next
+	if (latestUserId === '') {
+		const kvls = cookieStore.get('kvls');
+		latestUserId = kvls === 'o' || kvls === 'deleted' ? null : kvls;
+	}
+	// Update Snowplow user id
+	if (typeof snowplow !== 'undefined' && latestUserId && latestUserId !== '') {
+		window.snowplow('setUserId', latestUserId);
+	}
 	// fire server rendered pageview
 	app.$fireServerPageView();
 	app.$fireQueuedEvents();

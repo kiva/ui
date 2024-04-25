@@ -1,0 +1,5 @@
+mutation commentOnLoan($id: Int!, $body: String) {
+	loan(id: $id) {
+		addComment(body: $body)
+	}
+}

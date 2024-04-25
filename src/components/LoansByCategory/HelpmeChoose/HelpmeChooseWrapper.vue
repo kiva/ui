@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="tw-w-full tw-py-2 tw-px-2">
+		<div class="tw-w-full tw-py-2 tw-px-1">
 			<h2 class="tw-text-h2 tw-text-primary">
 				{{ welcomeTitle }}
 			</h2>
@@ -9,7 +9,7 @@
 			</p>
 		</div>
 
-		<div class="tw-w-full tw-pb-4 tw-px-2">
+		<div class="tw-w-full tw-pb-4 tw-px-1">
 			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
@@ -33,42 +33,28 @@
 				:is-visitor="isVisitor"
 				:user-data="userData"
 				:is-loading="isLoading"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeAmount"
 			/>
 		</div>
 
-		<div
-			class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2"
-			:class="{ 'tw-gap-2 tw-px-2' : enableLoanCardExp }"
-		>
-			<template v-for="loan in remainingLoans">
-				<kiva-classic-basic-loan-card-exp
-					v-if="enableLoanCardExp"
-					:key="`classic-${loan.id}`"
-					:loan-id="loan.id"
-					:show-action-button="true"
-					:show-tags="enableLoanTags"
-					:category-page-name="loanChannelName"
-					:use-full-width="true"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-				/>
-				<loan-card-controller
-					v-else
-					:items-in-basket="itemsInBasket"
-					:is-visitor="isVisitor"
-					:key="`controller-${loan.id}`"
-					:loan="loan"
-					loan-card-type="GridLoanCard"
-					:show-tags="enableLoanTags"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-				/>
-			</template>
+		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2 tw-gap-4 tw-px-1">
+			<kv-classic-loan-card-container
+				v-for="(loan, index) in remainingLoans"
+				:key="`new-card-${loan.id}-${index}`"
+				:loan-id="loan.id"
+				:use-full-width="true"
+				:show-tags="true"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeAmount"
+				:user-balance="userBalance"
+			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KivaClassicBasicLoanCardExp from '@/components/LoanCards/KivaClassicBasicLoanCardExp';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
@@ -103,18 +89,14 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		enableLoanTags: {
-			type: Boolean,
-			default: false
-		},
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -123,17 +105,16 @@ export default {
 		};
 	},
 	components: {
-		LoanCardController,
 		HelpmeChooseTrigger,
 		HelpmeChooseRecommendations,
-		KivaClassicBasicLoanCardExp,
+		KvClassicLoanCardContainer,
 	},
 	computed: {
 		welcomeTitle() {
 			if (!this.triggersVisible) {
 				return 'Borrowers we think you’ll like';
 			}
-			return this.isVisitor ? 'Need help choosing?' : `Need help choosing, ${this.userData.firstName}?`;
+			return this.isVisitor ? 'Need help choosing?' : `Need help choosing, ${this.userData?.firstName}?`;
 		},
 		subTitle() {
 			if (!this.triggersVisible) {
@@ -143,6 +124,9 @@ export default {
 		},
 		secondOption() {
 			return this.isVisitor ? 'popularityScore' : 'personalized';
+		},
+		userBalance() {
+			return this.userData?.balance;
 		},
 	},
 	methods: {

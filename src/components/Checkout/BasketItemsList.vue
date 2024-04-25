@@ -8,9 +8,12 @@
 					:loan="loan"
 					:teams="teams"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-huge-amount="enableHugeAmount"
+					:is-logged-in="isLoggedIn"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@jump-to-loans="$emit('jump-to-loans')"
 				/>
 			</li>
 			<li v-for="(kivaCard, index) in kivaCards" :key="kivaCard.id">
@@ -77,6 +80,14 @@ export default {
 			default: 0,
 		},
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		isLoggedIn: {
 			type: Boolean,
 			default: false
 		}
