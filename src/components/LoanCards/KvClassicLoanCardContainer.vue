@@ -68,6 +68,14 @@ const loanQuery = gql`
 			id
 			...loanCardFieldsExtended
 		}
+		loanThemeFilter {
+			id
+			name
+		}
+		tag {
+			id
+			name
+		}
 	}
 	my {
 		id
@@ -216,6 +224,22 @@ export default {
 				this.loan = result.data.lend.loan;
 				this.isBookmarked = result.data.lend.loan?.userProperties?.favorited ?? false;
 			}
+
+			// Getting tags and themes data
+			const { tags, themes } = this.loan || [];
+			const tagList = result.data?.lend?.tag || [];
+			const themeList = result.data?.lend?.loanThemeFilter || [];
+			const tagsData = tagList.filter(tag => {
+				return tags.includes(tag.name);
+			});
+			const themesData = themeList.filter(tag => {
+				return themes.includes(tag.name);
+			});
+			this.loan = {
+				...this.loan,
+				tagsData,
+				themesData
+			};
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
