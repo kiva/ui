@@ -27,7 +27,9 @@
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
 			:enable-huge-amount="enableHugeAmount"
+			:enable-clickable-tags="enableClickableTags"
 			@toggle-bookmark="toggleBookmark"
+			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
 	</div>
@@ -141,6 +143,10 @@ export default {
 			default: false,
 		},
 		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		enableClickableTags: {
 			type: Boolean,
 			default: false,
 		},
@@ -379,6 +385,15 @@ export default {
 				logFormatter(e, 'error');
 
 				this.$kvTrackEvent('Lending', 'loan-card', 'Failed to fetch loan activity data.');
+			});
+		},
+		jumpFilterPage(tag) {
+			this.$kvTrackEvent('Lending', 'loan-card', 'clicked-tag');
+			const query = {};
+			query[tag.type] = tag.id;
+			this.$router.push({
+				path: '/lend/filter',
+				query,
 			});
 		},
 	},
