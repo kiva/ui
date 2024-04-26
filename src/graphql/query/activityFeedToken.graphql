@@ -1,0 +1,5 @@
+query ActivityFeedToken($visitorId: String) {
+  activityFeedClientToken(visitorId: $visitorId) {
+    token
+  }
+}

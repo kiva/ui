@@ -7,9 +7,9 @@
 						to="/portfolio"
 						active-class="tw-underline"
 						class="desktop-link"
-						v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
+						v-kv-track-event="['SecondaryNav','click-MyKiva-My-impact']"
 					>
-						Portfolio
+						My impact
 					</router-link>
 				</li>
 				<li class="tw-inline-block">
@@ -47,6 +47,16 @@
 					>
 						<the-settings-tertiary-menu />
 					</kv-dropdown>
+				</li>
+				<li class="tw-inline-block" v-if="isBorrowerApplicant">
+					<router-link
+						to="/my/borrower/application"
+						active-class="tw-underline"
+						class="desktop-link"
+						v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-application']"
+					>
+						Borrower application
+					</router-link>
 				</li>
 				<li class="tw-inline-block" v-if="isBorrower">
 					<router-link
@@ -139,6 +149,15 @@
 								Settings
 							</router-link>
 						</li>
+						<li v-if="isBorrowerApplicant">
+							<router-link
+								to="/my/borrower/application"
+								class="mobile-link"
+								v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-application']"
+							>
+								Borrower application
+							</router-link>
+						</li>
 						<li v-if="isBorrower">
 							<router-link
 								to="/my/borrower"
@@ -178,6 +197,8 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
+const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
 
 export default {
 	name: 'TheMyKivaSecondaryMenu',
@@ -220,7 +241,10 @@ export default {
 	computed: {
 		myKivaCategory() {
 			return this.$route.path.split('/')[1];
-		}
+		},
+		isBorrowerApplicant() {
+			return !this.isBorrower && this.cookieStore.get(BORROWER_APPLICANT_COOKIE_NAME)?.toLowerCase() === 'true';
+		},
 	},
 	methods: {
 		toggle() {

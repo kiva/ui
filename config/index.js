@@ -2,6 +2,7 @@ var path = require('path')
 
 module.exports = {
 	app: {
+		apolloBatching: false,
 		host: 'www.kiva.org',
 		transport: 'https',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
@@ -14,6 +15,7 @@ module.exports = {
 		googleTagmanagerId: 'GTM-PX6FDG',
 		enableGA: true,
 		gaId: 'UA-175897-4',
+		grecaptchaSitekey: '6LfAq7UiAAAAAOaRj9Wvv2uDN0WEwlfbEPntrVLD',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
 		enableHotjar: true,
@@ -25,6 +27,7 @@ module.exports = {
 		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@o7540.ingest.sentry.io/1201288',
+		sentryTraceSampleRate: 0.25,
 		algoliaConfig: {
 			group: 'prod',
 			appId: 'H4ONVZQ2C6',
@@ -75,6 +78,8 @@ module.exports = {
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',
 		gzipEnabled: false,
+		minVueWorkers: 1,
+		maxVueWorkers: 3,
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

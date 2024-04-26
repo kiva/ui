@@ -6,12 +6,7 @@ query userInfo {
 			email
 			firstName
 			lastName
-		}
-	}
-	general {
-		loanFindingPage: uiExperimentSetting(key: "loan_finding_page") {
-			key
-			value
+			balance
 		}
 	}
 }

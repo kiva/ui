@@ -13,10 +13,6 @@ updates:
   - dependency-name: vue-svg-loader
     versions:
     - ">= 0.15.0"
-  # Version 2 of this package is for Vue3
-  - dependency-name: vue-countdown
-    versions:
-    - ">= 1.1.5"
   # clipboard-copy v4 drops IE11 support
   - dependency-name: clipboard-copy
     versions:

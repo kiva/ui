@@ -18,8 +18,9 @@
 			class="tw-mt-5"
 			:title="carouselTitle"
 			:loans="loans"
-			:enable-loan-card-exp="enableLoanCardExp"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:enable-huge-amount="enableHugeAmount"
+			:user-balance="userBalance"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 
@@ -47,10 +48,6 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
-		enableLoanCardExp: {
-			type: Boolean,
-			default: false
-		},
 		spotlightData: {
 			type: Object,
 			default: () => {}
@@ -62,7 +59,15 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		}
+		},
+		userBalance: {
+			type: String,
+			default: undefined
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		headline() {
@@ -99,7 +104,7 @@ export default {
 <style lang="postcss" scoped>
 
 #mfiCarousel >>> h2 {
-	@apply tw-text-h4 tw-mb-0 tw-text-action tw-ml-2;
+	@apply tw-text-h4 tw-mb-0 tw-text-action;
 }
 
 #mfiCarousel >>> section {

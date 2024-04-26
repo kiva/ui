@@ -2,15 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const Bowser = require('bowser');
 const cookie = require('cookie');
-const { createBundleRenderer } = require('vue-server-renderer');
-const getGqlPossibleTypes = require('./util/getGqlPossibleTypes');
-const getSessionCookies = require('./util/getSessionCookies');
-const log = require('./util/log');
+const vueWorkerPool = require('./vue-worker-pool.js');
 const protectedRoutes = require('./util/protectedRoutes.js');
-const vueSsrCache = require('./util/vueSsrCache');
 const tracer = require('./util/ddTrace');
-
-const isProd = process.env.NODE_ENV === 'production';
 
 // vue-middleware specific error handling
 function handleError(err, req, res, next) {
@@ -34,7 +28,6 @@ module.exports = function createMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
-	cache
 }) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
@@ -46,20 +39,19 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used by all requests
-	const renderer = createBundleRenderer(serverBundle, {
-		cache: vueSsrCache(cache),
-		template,
-		clientManifest,
-		runInNewContext: false,
-		inject: false,
-		// don't prefetch anything
-		shouldPrefetch: () => false,
+	// Create a worker pool to render the app
+	const pool = vueWorkerPool({
+		minWorkers: config.server.minVueWorkers,
+		maxWorkers: config.server.maxVueWorkers,
+		workerData: {
+			clientManifest,
+			serverBundle,
+			serverConfig: config.server,
+			template,
+		},
 	});
 
 	function middleware(req, res, next) {
-		const s = Date.now();
-
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
@@ -84,47 +76,20 @@ module.exports = function createMiddleware({
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 		}
 
-		// get graphql api possible types for the graphql client
-		const typesPromise = getGqlPossibleTypes(config.server.graphqlUri, cache)
-			.finally(() => {
-				if (!isProd) {
-					log.info(`fragment fetch: ${Date.now() - s}ms`);
-				}
-			});
-
-		// fetch initial session cookies in case starting session with this request
-		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies)
-			.finally(() => {
-				if (!isProd) {
-					log.info(`session fetch: ${Date.now() - s}ms`);
-				}
-			});
-
-		Promise.all([typesPromise, cookiePromise])
-			.then(([types, cookieInfo]) => {
-				// add fetched types to rendering context
-				context.config.graphqlPossibleTypes = types;
-				// update cookies in the rendering context with any newly fetched session cookies
-				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-				// forward any newly fetched 'Set-Cookie' headers
-				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// render the app
-				return tracer.trace('renderer.renderToString', () => renderer.renderToString(context));
-			}).then(html => {
+		// render the app using the worker pool
+		pool.exec('render', [context])
+			.then(({ error, html, setCookies }) => {
 				// set any cookies created during the app render
-				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// send the final rendered html
-				res.send(html);
-				if (!isProd) {
-					log.info(`whole request: ${Date.now() - s}ms`);
+				setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+
+				if (error) {
+					handleError(error, req, res, next);
+				} else {
+					// send the final rendered html
+					res.send(html);
 				}
-			}).catch(err => {
-				if (err.url) {
-					// since this error is a redirect, set any cookies created during the app render
-					if (context && context.setCookies) {
-						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-					}
-				}
+			})
+			.catch(err => {
 				handleError(err, req, res, next);
 			});
 	}

@@ -57,12 +57,22 @@ module.exports = function authRouter(config = {}) {
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
 		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
-		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
-			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
-			res.redirect(loginRedirectUrl);
-		} else {
-			next();
+		if (req.query.error_description) {
+			if (req.query.error_description.indexOf('OIDC-conformant') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+				return res.redirect(loginRedirectUrl);
+			}
+			if (req.query.error_description.indexOf('Registration captcha not valid') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[config.auth0.serverClientID];
+				const loginHint = encodeURIComponent(
+					`login|${JSON.stringify({
+						msg: 'invalid-reg-captcha',
+					})}`
+				);
+				return res.redirect(`${loginRedirectUrl}&loginHint=${loginHint}`);
+			}
 		}
+		next();
 	});
 
 	// Handle login request
@@ -94,6 +104,24 @@ module.exports = function authRouter(config = {}) {
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
+		}
+		// Specify ssoRedirect url
+		if (req.query.ssoRedirect) {
+			options.ssoRedirect = req.query.ssoRedirect;
+		}
+		// Enable Kiva Corp Partner version of the login UI
+		if (req.query.kivaCorpPartner) {
+			options.kiva_corp_partner = true;
+		}
+
+		// Specify if login is meant to be passwordless
+		if (req.query.passwordless) {
+			options.passwordless = true;
+		}
+
+		// Specify partnerContentId
+		if (req.query.partnerContentId) {
+			options.partnerContentId = req.query.partnerContentId;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len

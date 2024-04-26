@@ -1,6 +1,6 @@
-mutation checkout($basketId: String) {
+mutation checkout($basketId: String, $visitorId: String) {
 	shop (basketId: $basketId) {
 		id
-		checkout
+		checkout (visitorId: $visitorId)
 	}
 }

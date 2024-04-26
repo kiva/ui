@@ -67,13 +67,13 @@
 					</p>
 					<ul class="tw-mb-3">
 						<li>
-							<router-link
-								to="/donate/supportus"
+							<a
+								href="/donate/supportus"
 								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 								class="tw-text-small"
 							>
 								Donate to Kiva
-							</router-link>
+							</a>
 						</li>
 					</ul>
 					<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
@@ -137,7 +137,7 @@
 							</li>
 							<li>
 								<router-link
-									to="/partner-with-us"
+									to="/about/partner-with-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 									class="tw-text-small"
 								>
@@ -238,15 +238,6 @@
 									class="tw-text-small"
 								>
 									Gifts
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/live"
-									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-									class="tw-text-small"
-								>
-									Happening now
 								</router-link>
 							</li>
 							<li>
@@ -539,15 +530,6 @@
 								</li>
 								<li>
 									<router-link
-										to="/live"
-										v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-										class="tw-text-small"
-									>
-										Happening now
-									</router-link>
-								</li>
-								<li>
-									<router-link
 										to="/build"
 										v-kv-track-event="['Footer', 'click-Explore-Developer API']"
 										class="tw-text-small"
@@ -611,7 +593,7 @@
 								</li>
 								<li>
 									<router-link
-										to="/partner-with-us"
+										to="/about/partner-with-us"
 										v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 										class="tw-text-small"
 									>
@@ -682,13 +664,13 @@
 							</p>
 							<ul class="print:tw-hidden">
 								<li>
-									<router-link
-										to="/donate/supportus"
+									<a
+										href="/donate/supportus"
 										v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 										class="tw-text-small"
 									>
 										Donate to Kiva
-									</router-link>
+									</a>
 								</li>
 							</ul>
 						</div>

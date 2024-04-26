@@ -1,0 +1,22 @@
+query loanEnums {
+	genderOptions: __type(name: "GenderEnum") {
+		enumValues {
+			name
+		}
+	}
+	standardSorts: __type(name: "LoanSearchSortByEnum") {
+		enumValues {
+			name
+		}
+	}
+	flssSorts: __type(name: "SortEnum") {
+		enumValues {
+			name
+		}
+	}
+	distributionModelOptions: __type(name: "LoanDistributionModelEnum") {
+		enumValues {
+			name
+		}
+	}
+}

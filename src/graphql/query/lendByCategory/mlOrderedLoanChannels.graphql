@@ -1,8 +1,0 @@
-query orderedLoanChannels {
-	ml {
-		orderedLoanChannels(platform:marketplace) {
-			__typename
-			id
-		}
-	}
-}

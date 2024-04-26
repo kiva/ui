@@ -1,0 +1,6 @@
+mutation doNoncePaymentDepositAndCheckoutAsync($basketId: String, $amount: Money!, $nonce: String!, $savePaymentMethod: Boolean, $deviceData: String, $visitorId: String) {
+	shop (basketId: $basketId) {
+		id
+		doNoncePaymentDepositAndCheckoutAsync (amount: $amount, nonce: $nonce, savePaymentMethod: $savePaymentMethod, deviceData: $deviceData, visitorId: $visitorId)
+	}
+}

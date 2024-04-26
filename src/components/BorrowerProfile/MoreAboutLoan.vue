@@ -39,17 +39,16 @@
 					<h3>
 						Business description
 					</h3>
-					<div
-						data-testid="bp-more-about-direct-description"
-						key="businessDescription"
-						v-html="this.businessDescription"
-					>
+					<div data-testid="bp-more-about-direct-description">
+						<p
+							v-for="(paragraph, index) in businessDescriptionParagraphs"
+							:key="`businessDescription-${index}`"
+							v-html="paragraph"
+						>
+						</p>
 					</div>
 				</div>
-			</div>
-			<!-- "Follow" button for US loans links here from SummaryCard and LendCta -->
-			<a name="follow"></a>
-			<div v-if="!partnerName && !loading">
+
 				<borrower-business-details
 					class="tw-mb-2"
 					:borrower-business-name="borrowerBusinessName"
@@ -63,10 +62,13 @@
 					<h3>
 						What is the purpose of this loan?
 					</h3>
-					<div
-						key="purpose"
-						v-html="this.purpose"
-					>
+					<div data-testid="bp-more-about-purpose">
+						<p
+							v-for="(paragraph, index) in purposeParagraphs"
+							:key="`purpose-${index}`"
+							v-html="paragraph"
+						>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -100,6 +102,7 @@
 </template>
 
 <script>
+import { toParagraphs } from '@/util/loanUtils';
 import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
@@ -154,6 +157,12 @@ export default {
 			return this.partnerName.indexOf('N/A') > -1
 				|| this.partnerName.indexOf('N/a') > -1
 				|| this.partnerName.indexOf('n/a') > -1;
+		},
+		businessDescriptionParagraphs() {
+			return toParagraphs(this.businessDescription);
+		},
+		purposeParagraphs() {
+			return toParagraphs(this.purpose);
 		},
 	},
 	methods: {

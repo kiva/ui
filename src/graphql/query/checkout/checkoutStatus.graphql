@@ -1,0 +1,14 @@
+query checkoutStatus($transactionId: String!, $visitorId: String) {
+	checkoutStatus(transactionId: $transactionId, visitorId: $visitorId) {
+		basketId
+		errorCode
+		errorMessage
+		receipt {
+			checkoutId
+		}
+		requestedAt
+		status
+		transactionId
+		updatedAt
+	}
+}

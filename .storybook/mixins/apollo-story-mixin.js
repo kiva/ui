@@ -5,13 +5,13 @@ export default ({
 	loading = false,
 } = {}) => {
 	// Add to basket button expects basketAddInterstitial
-	const queryData = { ...queryResult, data: { ...queryResult.data, basketAddInterstitial: {} } };
+	const queryData = { ...queryResult.data, data: { ...queryResult.data, basketAddInterstitial: {} } };
 
 	return {
 		provide: {
 			apollo: {
 				mutate() {
-					return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
+					return loading ? new Promise(() => { }) : Promise.resolve(mutationResult);
 				},
 				readQuery() {
 					return queryData;
@@ -22,7 +22,7 @@ export default ({
 					};
 				},
 				query() {
-					return loading ? new Promise(() => {}) : Promise.resolve(queryData);
+					return loading ? new Promise(() => { }) : Promise.resolve(queryData);
 				},
 				readFragment() {
 					return fragmentResult;

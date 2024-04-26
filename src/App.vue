@@ -110,6 +110,11 @@ export default {
 				},
 			]),
 			link: [
+				// Install typekit Dovetail font
+				{
+					rel: 'stylesheet',
+					href: 'https://use.typekit.net/pmj7shs.css',
+				},
 				// Fonts in format woff2nt'
 				{
 					rel: 'preload',
