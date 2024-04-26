@@ -37,8 +37,8 @@ export default {
 	computed: {
 		promoBannerContent() {
 			const richText = this.amountToLend
-				? `Just for you! Lend ${numeral(this.amountToLend).format('$0,0')} and get a $25 lending credit!`
-				: 'Lend & get a free lending credit reward! Log in or sign up to get started →';
+				? `Just for you! Lend ${numeral(this.amountToLend).format('$0,0')} and get a $25 lending credit!¹`
+				: 'Lend & get a free lending credit reward!¹ Log in or sign up to get started →';
 
 			const link = this.amountToLend
 				? '/lend-by-category'
