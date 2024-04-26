@@ -16,27 +16,32 @@ export const globalBannerDenyList = [
 	'/process-instant-lending/*',
 ];
 
+function matchRoute(route, pattern) {
+	// Match specific urls
+	if (pattern === route) {
+		return true;
+	}
+	// Match wildcard urls
+	const fragment = pattern.replace('/*', '');
+	if (pattern.includes('/*') && route.includes(fragment)) {
+		return true;
+	}
+	return false;
+}
+
 /**
  * Check the current route against a list of restricted url fragments
  *
- * @param {array} urlArray - Array of Url path fragments
- * @param {string} route - target url to check against
- * @returns {boolean}
+ * @param denyUrls Array of Url path fragments to exclude
+ * @param allowUrls Array of Url path fragments to include
+ * @param route Target url to check against
+ * @returns Whether the URL is excluded
  */
-export function isExcludedUrl(urlArray, route) {
-	let excludeUrl = false;
-	urlArray.forEach(url => {
-		// match specific urls
-		if (url === route) {
-			excludeUrl = true;
-		}
-		const urlFragment = url.replace('/*', '');
-		// match wildcard urls
-		if (url.indexOf('/*') !== -1 && route.indexOf(urlFragment) !== -1) {
-			excludeUrl = true;
-		}
-	});
-	return excludeUrl;
+export function isExcludedUrl(denyUrls, allowUrls, route) {
+	if (allowUrls.length) {
+		return !allowUrls.some(url => matchRoute(route, url));
+	}
+	return denyUrls.some(url => matchRoute(route, url));
 }
 
 /**
@@ -48,10 +53,39 @@ export function isExcludedUrl(urlArray, route) {
  */
 export function getFullUrl(base, args) {
 	if (!args || Object.keys(args).length === 0) return base;
-	const querystring = Object.keys(args)
+
+	// remove hash portion of url if present
+	const baseUrlWithoutHash = base.split('#')[0];
+	// remove params portion of url if present
+	const baseUrl = baseUrlWithoutHash.split('?')[0];
+	const hashParams = base.split('#')[1] ? `#${base.split('#')[1]}` : '';
+	const baseParams = base.split('?')[1] ? base.split('?')[1] : '';
+	let querystring = Object.keys(args)
+		.filter(key => {
+			return !!args[key];
+		})
 		.map(key => {
 			return `${key}=${encodeURIComponent(args[key])}`;
 		})
 		.join('&');
-	return `${base}?${querystring}`;
+
+	// append base params if present
+	if (baseParams) {
+		querystring += `&${baseParams}`;
+	}
+	return `${baseUrl}${querystring ? `?${querystring}` : ''}${hashParams}`;
+}
+
+/**
+ * checks and compares on if the page is a Corporate Campaign Page
+ *
+ * @param {Object}
+ * @returns {String}
+ */
+
+export function isCCPage(
+	route = {}
+) {
+	// Fetch route path
+	return route.path?.substring(0, 4) === '/cc/';
 }

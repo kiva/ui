@@ -1,13 +1,13 @@
 <template>
-	<ul class="tw-font-medium">
+	<ul class="tw-font-medium" data-testid="portfolio-tertiary-menu">
 		<li>
 			<router-link
 				to="/portfolio"
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
-				v-kv-track-event="['TertiaryNav','click-MyKiva-Portfolio']"
+				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"
 			>
-				Portfolio
+				My impact
 			</router-link>
 		</li>
 		<li>
@@ -36,6 +36,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Estimated-repayments']"
+				data-testid="portfolio-estimated-payments"
 			>
 				Estimated repayments
 			</router-link>
@@ -46,6 +47,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Add-credit']"
+				data-testid="portfolio-add-credit"
 			>
 				Add credit
 			</router-link>
@@ -86,6 +88,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Transaction-history']"
+				data-testid="portfolio-transactions"
 			>
 				Transaction history
 			</router-link>
@@ -116,6 +119,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Invite-friends']"
+				data-testid="portfolio-invite-friends"
 			>
 				Invite friends
 			</router-link>
@@ -126,6 +130,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Free-credit-history']"
+				data-testid="portfolio-bonus-history"
 			>
 				Free credit history
 			</router-link>

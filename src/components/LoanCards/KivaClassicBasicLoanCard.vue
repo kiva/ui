@@ -139,11 +139,12 @@
 				variant="secondary"
 				v-if="isInBasket"
 				v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-				:to="customCheckoutRoute ? customCheckoutRoute : '/basket'"
+				:to="checkoutRoute"
+				@click="$emit('custom-checkout-button-action', loanId)"
 			>
 				<slot>
 					<div class="tw-inline-flex tw-items-center tw-gap-1">
-						Checkout now
+						{{ customCheckoutButtonText }}
 						<kv-material-icon
 							class="tw-w-2.5 tw-h-2.5"
 							:icon="mdiCheckCircleOutline"
@@ -296,9 +297,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		customCheckoutRoute: {
+		checkoutRoute: {
 			type: String,
-			default: ''
+			default: '/basket'
+		},
+		customCheckoutButtonText: {
+			type: String,
+			default: 'Checkout now'
 		},
 		customLoanDetails: {
 			type: Boolean,
@@ -317,6 +322,10 @@ export default {
 			default: false
 		},
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		useEmittedAddToBasket: {
 			type: Boolean,
 			default: false
 		}
@@ -347,7 +356,8 @@ export default {
 			mdiChevronRight,
 			mdiMapMarker,
 			viewportObserver: null,
-			isAdding: false
+			isAdding: false,
+			watchedQuery: {},
 		};
 	},
 	computed: {
@@ -470,7 +480,7 @@ export default {
 		},
 		loanReservedAmount() {
 			return this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
-		},
+		}
 	},
 	methods: {
 		showLoanDetails(e) {
@@ -504,13 +514,14 @@ export default {
 		},
 		loadData() {
 			if (!this.queryObserver) {
-				this.queryObserver = watchLoanData({
+				this.watchedQuery = watchLoanData({
 					apollo: this.apollo,
 					cookieStore: this.cookieStore,
 					loanId: this.loanId,
 					loanQuery,
 					callback: result => this.processQueryResult(result),
 				});
+				this.queryObserver = this.watchedQuery.queryObserver;
 			}
 		},
 		processQueryResult(result) {
@@ -532,7 +543,11 @@ export default {
 			if (this.loan) this.isLoading = false;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
-		addToBasket() {
+		addToBasket(payload) {
+			if (this.useEmittedAddToBasket) {
+				this.$emit('add-to-basket', payload);
+				return true;
+			}
 			this.isAdding = true;
 			setLendAmount({
 				amount: this.lendAmount,
@@ -555,7 +570,7 @@ export default {
 						}
 					});
 				}
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
@@ -574,6 +589,7 @@ export default {
 	},
 	beforeDestroy() {
 		this.destroyViewportObserver();
+		this.watchedQuery.subscription?.unsubscribe();
 	},
 	created() {
 		// Use cached loan data if it exists

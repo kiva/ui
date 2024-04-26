@@ -1,7 +1,9 @@
 import numeral from 'numeral';
 import _get from 'lodash/get';
 
-/** Utility functions for working with loan objects */
+export const ERL_COOKIE_NAME = 'kverlfivedollarnotes';
+export const TOP_UP_CAMPAIGN = 'TOPUP-VB-BALANCE-MPV1';
+export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
 
 /**
  * Loan Statuses Available on borrower profile
@@ -91,21 +93,77 @@ export function build5DollarsPriceArray(amountLeft) {
 	return priceArray;
 }
 
-export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = false) {
-	const parsedAmountLeft = parseFloat(unreservedAmount);
-	return (enableFiveDollarsNotes && !inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
+function buildHugePriceArray(amountLeft) {
+	const priceArray = [];
+
+	// Add $100 options up to $1,000
+	let minAmount = 100;
+	let limitAmount = amountLeft > 1000 ? 1000 : amountLeft;
+	let optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
+		const price = minAmount * i + 500;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	// Add $1000 options up to $10,000
+	minAmount = 1000;
+	limitAmount = amountLeft > 10000 ? 10000 : amountLeft;
+	optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
+		const price = minAmount * i + 1000;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	// Ensure final option is added
+	if (!priceArray.includes(numeral(limitAmount).format('0,0'))) {
+		priceArray.push(numeral(limitAmount).format('0,0'));
+	}
+
+	return priceArray;
 }
 
-export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes) {
+export function getDropdownPriceArray(
+	unreservedAmount,
+	minAmount,
+	enableFiveDollarsNotes,
+	inPfp = false,
+	enableHugeAmount,
+) {
+	const parsedAmountLeft = parseFloat(unreservedAmount);
+	let combinedPricesArray = [];
+
+	const priceArray = (enableFiveDollarsNotes && !inPfp)
+		? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28)
+		: buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20);
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = priceArray.concat(hugePriceArray);
+	}
+	return showHugeAmount ? combinedPricesArray : priceArray;
+}
+
+export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes, enableHugeAmount) {
+	const parsedAmountLeft = parseFloat(remainingAmount);
 	if (enableFiveDollarsNotes) {
-		const parsedAmountLeft = parseFloat(remainingAmount);
 		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
 	}
+	let combinedPricesArray = [];
 	const pricesArray = buildPriceArray(remainingAmount, minAmount);
 	const reducedArray = pricesArray.filter(element => {
 		return element % 25 === 0;
 	});
-	return reducedArray;
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = reducedArray.slice(0, 20).concat(hugePriceArray);
+	}
+
+	return showHugeAmount ? combinedPricesArray : reducedArray;
 }
 
 export function toParagraphs(text) {
@@ -181,13 +239,13 @@ export function watchLoanData({
 	});
 
 	// Subscribe to the observer to see each result
-	queryObserver.subscribe({
+	const subscription = queryObserver.subscribe({
 		next: result => callback(result),
 		error: error => callback({ error }),
 	});
 
 	// Return the observer to allow modification of variables
-	return queryObserver;
+	return { queryObserver, subscription };
 }
 
 export function watchLoanCardData({
@@ -252,68 +310,58 @@ export function isBetween25And500(unreservedAmount) {
 }
 
 /**
- * Returns an array of loan callouts following a hierarchy of importance
+ * Gets the selected option for the Lend CTA component
  *
- * @param {Object} loan The loan data object
- * @param {String} categoryPageName The optional name of the category
- * @returns An array of loan callout strings
+ * @param {Object} cookieStore The cookie store object form the Vue component
+ * @param {boolean} enableFiveDollarsNotes Whether $5 notes experiment is assigned
+ * @param {string} campaign The "utm_campaign" query param sourced from the Vue component route
+ * @param {string} unreservedAmount The unreserved amount for the loan
+ * @param {string} userBalance The balance of the current user
+ * @returns {string} The option to be selected in the CTA dropdown
  */
-export function loanCallouts(loan, categoryPageName) {
-	const callouts = [];
-	const activityName = loan?.activity?.name ?? '';
-	const sectorName = loan?.sector?.name ?? '';
-	const tags = loan?.tags?.filter(tag => tag.charAt(0) === '#')
-		.map(tag => tag.substring(1)) ?? [];
-	const themes = loan?.themes ?? [];
-	const categories = {
-		ecoFriendly: !!tags
-			.filter(t => t.toUpperCase() === 'ECO-FRIENDLY' || t.toUpperCase() === 'SUSTAINABLE AG').length,
-		refugeesIdps: !!themes.filter(t => t.toUpperCase() === 'REFUGEES/DISPLACED').length,
-		singleParents: !!tags.filter(t => t.toUpperCase() === 'SINGLE PARENT').length
-	};
+export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, campaign, unreservedAmount, userBalance) {
+	// Don't enable the campaign changes when the user balance is undefined (user not logged in)
+	if (enableFiveDollarsNotes && typeof userBalance !== 'undefined') {
+		let currentCampaign = cookieStore.get(ERL_COOKIE_NAME);
 
-	// P1 Category
-	// Exp limited to: Eco-friendly, Refugees and IDPs, Single Parents
-	if (!categoryPageName) {
-		if (categories.ecoFriendly) {
-			callouts.push('Eco-friendly');
-		} else if (categories.refugeesIdps) {
-			callouts.push('Refugees and IDPs');
-		} else if (categories.singleParents) {
-			callouts.push('Single Parent');
+		if (campaign && typeof campaign === 'string' && !currentCampaign) {
+			// Effects of the campaign lasts for 24 hours
+			const expires = new Date();
+			expires.setHours(expires.getHours() + 24);
+
+			const campaignToCheck = campaign.toUpperCase();
+
+			// eslint-disable-next-line no-nested-ternary
+			currentCampaign = campaignToCheck.includes(TOP_UP_CAMPAIGN)
+				? TOP_UP_CAMPAIGN
+				: (campaignToCheck.includes(BASE_CAMPAIGN) ? BASE_CAMPAIGN : '');
+
+			if (currentCampaign) {
+				cookieStore.set(ERL_COOKIE_NAME, currentCampaign, { expires });
+			}
+		}
+
+		if (currentCampaign) {
+			// Base campaign gets largest increment of $5 under the user's balance up to $25 or the unreserved amount
+			if (currentCampaign === BASE_CAMPAIGN) {
+				let val = Math.floor(userBalance / 5) * 5;
+
+				// eslint-disable-next-line no-nested-ternary
+				val = val === 0 ? 5 : (val > 25 ? 25 : val);
+
+				return Number(val <= unreservedAmount ? val : unreservedAmount).toFixed();
+			}
+
+			// Top up campaign defaults to $5
+			return Number(unreservedAmount > 5 ? 5 : unreservedAmount).toFixed();
 		}
 	}
 
-	// P2 Activity
-	if (activityName && categoryPageName?.toUpperCase() !== activityName.toUpperCase()) {
-		callouts.push(activityName);
+	// Handle when $5 notes isn't enabled
+	if (isBetween25And50(unreservedAmount) || isLessThan25(unreservedAmount)) {
+		return Number(unreservedAmount).toFixed();
 	}
 
-	// P3 Sector
-	if (sectorName
-		&& (activityName.toUpperCase() !== sectorName.toUpperCase())
-		&& (sectorName.toUpperCase() !== categoryPageName?.toUpperCase())
-		&& callouts.length < 2) {
-		callouts.push(sectorName);
-	}
-
-	// P4 Tag
-	if (!!tags.length && callouts.length < 2) {
-		const position = Math.floor(Math.random() * tags.length);
-		const tag = tags[position];
-		if (!callouts.filter(c => c.toUpperCase() === tag.toUpperCase()).length) {
-			callouts.push(tag);
-		}
-	}
-
-	// P5 Theme
-	if (!!themes.length && callouts.length < 2) {
-		const position = Math.floor(Math.random() * themes.length);
-		const theme = themes[position];
-		if (!callouts.filter(c => c.toUpperCase() === theme.toUpperCase()).length) {
-			callouts.push(theme);
-		}
-	}
-
-	return callouts;
+	// $25 is the fallback default selected option
+	return '25';
 }

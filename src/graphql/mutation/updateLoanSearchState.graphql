@@ -30,5 +30,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 			max
 		}
 		isMatchable
+		flexibleFundraisingEnabled
 	}
 }

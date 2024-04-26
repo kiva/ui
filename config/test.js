@@ -14,6 +14,7 @@ module.exports = merge(base, {
 		googleTagmanagerId: 'GTM-WKWZ7WZ',
 		enableGA: false,
 		gaId: 'UA-11686022-3',
+		grecaptchaSitekey: '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 		enableHotjar: false,

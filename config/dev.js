@@ -1,8 +1,11 @@
 const { merge } = require('webpack-merge');
 var base = require('./index.js')
 
+const apolloBatching = process.env.APOLLO_BATCH !== 'false';
+
 module.exports = merge(base, {
 	app: {
+		apolloBatching,
 		host: 'www.dev.kiva.org',
 		publicPath: 'https://www.dev.kiva.org/',
 		photoPath: 'https://www-dev-kiva-org.freetls.fastly.net/img/',
@@ -14,6 +17,7 @@ module.exports = merge(base, {
 		googleTagmanagerId: 'GTM-PXFRMT',
 		enableGA: true,
 		gaId: 'UA-11686022-3',
+		grecaptchaSitekey: '6LcXENcmAAAAAEC4ygspn1WTm4zP4gLexXDnWuXE',
 		enableHotjar: true,
 		hotjarId: '3071239',
 		enableSnowplow: true,

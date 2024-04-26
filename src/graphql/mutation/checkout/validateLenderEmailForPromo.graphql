@@ -1,0 +1,9 @@
+mutation validateLenderEmailForPromo($lenderEmailAddress: String!, $managedAccountId: Int!, $promoFundId: Int!) {
+    validateLenderEmailForPromo (
+      lenderEmailAddress: $lenderEmailAddress,
+      managedAccountId: $managedAccountId,
+      promoFundId: $promoFundId
+    ) {
+      status
+    }
+}

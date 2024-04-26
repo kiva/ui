@@ -5,10 +5,15 @@ const { warn, error } = require('../log');
 const loanCount = 4;
 
 // Which loan properties to fetch
-const loanValues = `values {
+const loanData = `
 	name
 	id
+	activity {
+		id
+		name
+	}
 	borrowerCount
+	distributionModel
 	geocode {
 		country {
 			name
@@ -16,13 +21,25 @@ const loanValues = `values {
 	}
 	use
 	loanAmount
+	sector {
+		id
+		name
+	}
 	status
+	tags
 	loanFundraisingInfo {
 		fundedAmount
 	}
 	image {
 		retina: url(customSize: "w960h720")
 	}
+	... on LoanPartner {
+		themes
+	}
+`;
+
+const loanValues = `values {
+	${loanData}
 }`;
 
 // Make a graphql query <request> and return the results found at <resultPath>
@@ -32,6 +49,9 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 		if (Array.isArray(data)) {
 			// Ensure no falsy values are included in the returned array
 			return data.filter(x => x);
+		}
+		if (typeof data === 'object' && data !== null) {
+			return [data];
 		}
 		return [];
 	} catch (err) {
@@ -210,15 +230,22 @@ const parseFilterStringFLSS = filterString => {
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
-async function fetchRecommendationsByFilter(filterString) {
+async function fetchRecommendationsByFilter(userId, filterString) {
 	return fetchLoansFromGraphQL(
 		{
-			query: `query($filters: [FundraisingLoanSearchFilterInput!]) {
-				fundraisingLoans(pageNumber:0, limit: ${loanCount}, filters: $filters) {
+			query: `query($userId: Int, $filters: [FundraisingLoanSearchFilterInput!]) {
+				fundraisingLoans(
+					pageNumber:0,
+					limit: ${loanCount},
+					filters: $filters,
+					userId: $userId,
+					origin: "email:live-loans"
+				) {
 					${loanValues}
 				}
 			}`,
 			variables: {
+				userId: Number(userId),
 				filters: parseFilterStringFLSS(filterString),
 			}
 		},
@@ -356,16 +383,37 @@ async function fetchRecommendationsByLegacyFilter(filterString) {
 	);
 }
 
+// Get loans from legacy lend search matching a set of filters
+async function fetchLoanById(loanId) {
+	return fetchLoansFromGraphQL(
+		{
+			query: `query($loanId: Int!) {
+				lend {
+					loan(id: $loanId) {
+						${loanData}
+					}
+				}
+			}`,
+			variables: {
+				loanId: Number(loanId),
+			}
+		},
+		'data.lend.loan'
+	);
+}
 // Export a function that will fetch loans by live-loan type and id
-module.exports = async function fetchLoansByType(type, id) {
+module.exports = async function fetchLoansByType(type, id, flss = false) {
 	if (type === 'user') {
-		return fetchRecommendationsByLoginId(id);
+		return flss ? fetchRecommendationsByFilter(id) : fetchRecommendationsByLoginId(id);
 	} if (type === 'loan') {
 		return fetchRecommendationsByLoanId(id);
 	} if (type === 'filter') {
 		// Swap which line below is commented out to switch between FLSS and legacy (monolith) lend search
 		// return fetchRecommendationsByFilter(id);
 		return fetchRecommendationsByLegacyFilter(id);
+	}
+	if (type === 'loanid') {
+		return fetchLoanById(id);
 	}
 	throw new Error('Type must be user, loan, or filter');
 };

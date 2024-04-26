@@ -6,26 +6,29 @@
 	>
 		<div
 			:class="[
-				'tw-w-full tw-z-sticky',
+				'tw-w-full',
 				'tw-flex tw-flex-col',
-				'tw-fixed tw-left-0 tw-bottom-0',
+				'tw-left-0 tw-bottom-0',
 				{
 					'md:tw-static': !isSticky,
 				},
 				'lg:tw-static',
+				{
+					'tw-fixed tw-z-sticky': isSticky
+				}
 			]"
 		>
 			<kv-grid
 				:class="[
 					'tw-grid-cols-12',
-					'tw-px-2.5',
-					'tw-bg-primary',
-					'tw-border-t tw-border-tertiary',
 					{
 						'md:tw-rounded-b': !isSticky,
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
+						'tw-bg-transparent md:tw-bg-primary': !isSticky,
+						'tw-bg-primary': isSticky,
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -47,7 +50,7 @@
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2">
+					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2 tw-relative">
 						<!-- Highlighted matching text mobile  -->
 						<!-- padding-left class makes room for the sparkle icon
 						and makes sure long match text isnt covered -->
@@ -56,7 +59,7 @@
 							v-if="matchingHighlightExpShown"
 						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
 						<!-- eslint-disable-next-line max-len -->
-						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex tw-relative">
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
 								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
@@ -144,25 +147,6 @@
 									</template>
 								</complete-loan-wrapper>
 							</fieldset>
-							<!-- Matching text bubble sparkle  -->
-							<span
-								:class="[
-									'tw-flex',
-									'tw-items-center',
-									'tw-justify-center',
-									'tw-w-4',
-									'tw-h-4',
-									'tw-absolute',
-									'tw-left-0',
-									'tw-top-[-1.5rem]',
-									'md:tw-top-auto',
-									'tw-bottom-auto',
-									'md:tw-bottom-[-1.5rem]']"
-								v-if="matchingHighlightExpShown"
-							>
-								<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
-								<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
-							</span>
 						</form>
 						<!-- Continue to checkout button -->
 						<kv-ui-button
@@ -195,6 +179,28 @@
 							{{ ctaButtonText }}
 						</kv-ui-button>
 
+						<!-- Matching text bubble sparkle  -->
+						<span
+							:class="[
+								'tw-flex',
+								'tw-items-center',
+								'tw-justify-center',
+								'tw-w-4',
+								'tw-h-4',
+								{
+									'tw-absolute': isSticky
+								},
+								'tw-left-0',
+								'tw-top-[0.15rem]',
+								'md:tw-top-auto',
+								'tw-bottom-auto',
+								'md:tw-bottom-2']"
+							v-if="matchingHighlightExpShown"
+						>
+							<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
+							<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
+						</span>
+
 						<!-- Highlighted matching text desktop  -->
 						<!-- padding-left class makes room for the sparkle icon
 						and makes sure long match text isnt covered -->
@@ -221,27 +227,57 @@
 						All shares reserved
 					</p>
 					<hr
-						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						:class="[
+							{
+								'tw-hidden': isSticky,
+								'tw-block': !isSticky,
+							}
+						]"
 					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full"
-						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
+						:class="[
+							{
+								'tw-justify-between': isLoggedIn,
+								'tw-justify-end': !isLoggedIn,
+								'tw-hidden': isSticky,
+							}
+						]"
 					>
 						<loan-bookmark
-							v-if="bookmarkVersion === 'bookmark'"
+							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block lg:tw-hidden"
+							class="tw-inline-block lg:tw-hidden"
 						/>
-						<loan-follow
-							v-if="bookmarkVersion === 'follow'"
-							data-testid="bp-lend-cta-loan-follow"
-							class="tw-hidden md:tw-inline-block lg:tw-hidden tw-mr-2"
-						/>
-
 						<jump-links
-							class="tw-hidden md:tw-block lg:tw-mb-1.5 md:tw-mb-3"
+							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
+						/>
+					</div>
+					<div v-if="!!activities">
+						<hr
+							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+							:class="[
+								{
+									'tw-hidden': isSticky,
+									'tw-block': !isSticky,
+								}
+							]"
+						>
+						<supported-by-lenders
+							:participants="participants"
+						/>
+						<kv-loan-activities
+							class="tw-w-full"
+							:loan="loan"
+							:activities="activities"
+							:basket-items="basketItems"
+							:user-balance="userBalance"
+							:error-msg="errorMsg"
+							:is-adding="isAdding"
+							@add-to-basket="addToBasket"
 						/>
 					</div>
 				</div>
@@ -259,8 +295,6 @@
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-px-2.5',
-						'tw-absolute',
 						'tw-bottom-8',
 						'tw-w-full',
 						{
@@ -269,6 +303,7 @@
 							'md:tw-order-none': !isSticky,
 							'md:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
+							'tw-px-2.5 tw-absolute': isSticky
 						},
 						'lg:tw-px-0',
 						{
@@ -290,7 +325,7 @@
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{
-								'tw-relative': !isSticky,
+								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
 								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
@@ -349,13 +384,13 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
-	isBetween25And50,
-	isBetween25And500
+	isBetween25And500,
+	getLendCtaSelectedOption,
 } from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import {
@@ -367,11 +402,12 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
-import LoanFollow from '@/components/BorrowerProfile/LoanFollow';
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoanActivities from '@/components/Kv/KvLoanActivities';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
@@ -389,6 +425,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		activities: {
+			type: Object,
+			default: null,
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -399,8 +443,9 @@ export default {
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
-		LoanFollow,
 		CompleteLoanWrapper,
+		KvLoanActivities,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -435,8 +480,9 @@ export default {
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
 			inPfp: false,
-			distributionModel: '',
-			followUsLoansEnabled: false,
+			userBalance: undefined,
+			loan: null,
+			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -446,7 +492,6 @@ export default {
 					loan(id: $loanId) {
 						id
 						status
-						distributionModel
 						name
 						minNoteSize
 						loanAmount
@@ -484,14 +529,11 @@ export default {
 					id
 					userAccount {
 						id
+						balance
 					}
 				}
 				general {
 					uiExperimentSetting(key: "matching_highlight") {
-						key
-						value
-					}
-					followUsLoans: uiConfigSetting(key: "follow_us_loans") {
 						key
 						value
 					}
@@ -509,6 +551,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -527,11 +570,10 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
+			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
-			this.distributionModel = loan?.distributionModel ?? '';
-			this.followUsLoansEnabled = result?.data?.general?.followUsLoans?.value === 'true' || false;
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
@@ -541,8 +583,14 @@ export default {
 		},
 	},
 	methods: {
-		async addToBasket() {
+		async addToBasket(lendAmount = 0) {
+			if (lendAmount) {
+				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
 			this.isAdding = true;
+			this.errorMsg = '';
+			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
@@ -555,12 +603,15 @@ export default {
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
 			}).catch(e => {
+				if (e?.message !== INVALID_BASKET_ERROR) {
+					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
+				}
 				this.isAdding = false;
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
-				this.$showTipMsg(msg, 'error');
+				this.$showTipMsg(this.errorMsg, 'error');
 			});
 		},
 		createWrapperObserver() {
@@ -619,7 +670,7 @@ export default {
 				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
 			};
 
-			// Set inital stat
+			// Set initial stat
 			cycleSlotMachine();
 			// Start cycling
 			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
@@ -641,7 +692,7 @@ export default {
 					this.matchingHighlightExpShown = version === 'b';
 				}
 			}
-		}
+		},
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -650,11 +701,14 @@ export default {
 			}
 		},
 		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (isBetween25And50(this.unreservedAmount)) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
+			if (newValue !== previousValue && previousValue === '') {
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {
@@ -687,7 +741,8 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit price options
-			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp); // eslint-disable-line max-len
+			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
@@ -792,7 +847,7 @@ export default {
 			if (this.isSticky) {
 				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
 			}
-			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
+			return '';
 		},
 		isLessThan25() {
 			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
@@ -811,16 +866,8 @@ export default {
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
 		},
-		bookmarkVersion() {
-			// Display follow for all US loans no matter login state
-			if (this.distributionModel === 'direct' && this.followUsLoansEnabled) {
-				return 'follow';
-			}
-			// Display bookmark for logged in users, non us loans or if follow setting is disabled
-			if (this.isLoggedIn) {
-				return 'bookmark';
-			}
-			return 'none';
+		participants() {
+			return this.activities?.lend?.loan?.lendingActions ?? {};
 		}
 	},
 	mounted() {
@@ -829,7 +876,6 @@ export default {
 	beforeDestroy() {
 		this.destroyWrapperObserver();
 	},
-
 };
 
 </script>

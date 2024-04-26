@@ -3,7 +3,6 @@
 		<div class="row">
 			<div class="columns">
 				<campaign-loan-filters
-					:promo-name="promoName"
 					:applied-filters="componentProps.filters"
 					:initial-filters="componentProps.initialFilters"
 					:excluded-tags="componentProps.excludedTags"
@@ -17,6 +16,15 @@
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 				/>
 
+				<campaign-progress-bar
+					:is-matching-campaign="componentProps.isMatchingCampaign"
+					:promo-amount="componentProps.promoAmount"
+					:remaining-credit="componentProps.remainingCredit"
+					:basket-loans="componentProps.basketLoans"
+					:promo-name="componentProps.promoName"
+					@show-basket="componentProps.showBasket"
+				/>
+
 				<campaign-loan-row
 					name="Loan Row"
 					v-show="componentProps.showLoanRows"
@@ -24,6 +32,7 @@
 					:filters="componentProps.filters"
 					:is-visitor="componentProps.isVisitor"
 					:items-in-basket="componentProps.itemsInBasket"
+					:basket-loans="componentProps.basketLoans"
 					:is-logged-in="!componentProps.isVisitor"
 					:is-visible="componentProps.showLoanRows"
 					:key="'one-category'"
@@ -32,9 +41,12 @@
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"
 					@add-to-basket="componentProps.handleAddToBasket"
+					@update-available-loans="componentProps.handleUpdateAvailableLoans"
 					@update-total-count="componentProps.setTotalCount"
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
+					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 
 				<campaign-loan-grid-display
@@ -45,6 +57,7 @@
 					:is-visible="!componentProps.showLoanRows"
 					:is-visitor="componentProps.isVisitor"
 					:items-in-basket="componentProps.itemsInBasket"
+					:basket-loans="componentProps.basketLoans"
 					:promo-only="componentProps.promoOnlyQuery"
 					:show-loans="componentProps.showLoans"
 					:sort-by="componentProps.sortBy"
@@ -52,6 +65,8 @@
 					@update-total-count="componentProps.setTotalCount"
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
+					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 			</div>
 		</div>
@@ -59,6 +74,7 @@
 </template>
 
 <script>
+import CampaignProgressBar from '@/components/CorporateCampaign/CampaignProgressBar';
 import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
@@ -68,7 +84,8 @@ export default {
 	components: {
 		CampaignLoanFilters,
 		CampaignLoanRow,
-		CampaignLoanGridDisplay
+		CampaignLoanGridDisplay,
+		CampaignProgressBar
 	},
 	props: {
 		content: {
@@ -78,11 +95,7 @@ export default {
 		componentProps: {
 			type: Object,
 			default: () => {}
-		},
-		promoName: {
-			type: String,
-			default: null
-		},
+		}
 	}
 };
 </script>

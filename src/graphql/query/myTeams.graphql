@@ -4,6 +4,7 @@ query myTeams($teamIds: [Int]) {
 		teams(teamIds:$teamIds) {
 			values {
 				id
+				amountLent
 				team {
 	  				id
 				}

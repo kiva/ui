@@ -1,3 +1,5 @@
+const { Path2D } = require('path2d-polyfill');
+
 module.exports = {
 	/**
 	 * Returns a single line of text. Adds ellipsis if text overflows the desired canvas width
@@ -74,5 +76,58 @@ module.exports = {
 			}
 		}
 		ctx.fillText(line, x, y);
-	}
+	},
+
+	/**
+	 * Draws a Material Design Icon at the given x,y position (top left corner).
+	 * Scales the icon to a square of side length `size`.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {String} icon Icon path string from `@mdi/js` export
+	 * @param {Number} x The top left x coordinate
+	 * @param {Number} y The top left y coordinate
+	 * @param {Number} size The size to scale the icon to
+	 */
+	drawMDIcon(ctx, icon, x, y, size) {
+		const iconScale = size / 24; // Material Design icons are defined in 24x24 view boxes
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.scale(iconScale, iconScale);
+		ctx.fill(new Path2D(icon));
+		ctx.restore();
+	},
+
+	/**
+	 * Draws a pill with text and an optional left-aligned icon.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {String} text The text of the pill
+	 * @param {Number} x The top left x coordinate
+	 * @param {Number} y The top left y coordinate
+	 * @param {Number} padding The inner padding of the pill
+	 * @param {String} color Fill style for the pill icon and text
+	 * @param {String} bgColor Fill style for the pill background
+	 * @param {String} icon Material Design Icon path string from `@mdi/js` export
+	 * @returns Rendered size of the pill { pillHeight, pillWidth }
+	 */
+	drawPill(ctx, text, x, y, padding, color, bgColor, icon) {
+		const metrics = ctx.measureText(text);
+		const textHeight = metrics.emHeightAscent + metrics.emHeightDescent;
+		const textWidth = metrics.width;
+		const iconSize = icon ? textHeight : 0;
+		const pillHeight = (2 * padding) + textHeight;
+		const pillWidth = (3 * padding) + iconSize + textWidth;
+		const radius = pillHeight / 2;
+		module.exports.roundRect(ctx, x, y, pillWidth, pillHeight, radius);
+		ctx.fillStyle = bgColor;
+		ctx.fill();
+		ctx.fillStyle = color;
+		if (icon) {
+			module.exports.drawMDIcon(ctx, icon, x + padding, y + padding, iconSize);
+		}
+		ctx.fillText(text, x + iconSize + (padding * 1.5), y + padding);
+
+		return {
+			pillHeight,
+			pillWidth,
+		};
+	},
 };

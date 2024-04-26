@@ -7,6 +7,7 @@
 			:logo-height="logoHeight"
 			:logo-classes="logoClasses"
 			class="tw-sticky tw-z-sticky tw-top-0"
+			@show-basket="$emit('show-basket')"
 		/>
 		<main>
 			<slot></slot>
@@ -31,6 +32,7 @@ import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
 import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
+import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
 
 export default {
 	name: 'WwwPageCorporate',
@@ -55,14 +57,17 @@ export default {
 			default: ''
 		},
 		logoHeight: {
-			type: Number,
-			default: 28
+			type: String,
+			default: '28'
 		}
 	},
 	apollo: {
 		preFetch(_, client) {
-			return client.query({ query: hasEverLoggedInQuery });
-		}
+			return Promise.all([
+				client.query({ query: hasEverLoggedInQuery }),
+				assignAllActiveExperiments(client)
+			]);
+		},
 	}
 };
 </script>

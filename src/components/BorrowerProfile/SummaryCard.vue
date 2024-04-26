@@ -31,7 +31,7 @@
 			<div class="tw-flex-auto">
 				<borrower-name
 					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5 md:tw-mb-1.5 lg:tw-mb-2"
+					class="tw-mb-0.5"
 					:name="name"
 				/>
 				<template v-if="isLoading">
@@ -42,14 +42,30 @@
 					</div>
 				</template>
 				<template v-else>
+					<a
+						v-if="totalComments > 0"
+						href="#bp-comments-jump-link"
+						class="tw-inline-block tw-text-black hover:tw-text-black"
+						v-kv-track-event="[
+							'borrower-profile',
+							'click',
+							'jump-link',
+							'comments-pill'
+						]"
+					>
+						<summary-tag class="hover:tw-bg-brand-200 tw-mr-0" background-color="tw-bg-brand-100">
+							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+							<span class="tw-flex-1">
+								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
+							</span>
+						</summary-tag>
+					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
-						class="tw-mb-2"
+						class="tw-mb-2 tw-mt-1.5"
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
-						:urgency="showUrgencyExp && timeLeftMs > 0"
-						:ms-left="timeLeftMs"
 						:loan-status="inPfp ? 'pfp' : 'fundraising'"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
@@ -80,53 +96,28 @@
 				</summary-tag>
 			</template>
 
+			<!-- only show option to bookmark loan if user is logged in -->
 			<loan-bookmark
-				v-if="bookmarkVersion === 'bookmark'"
+				v-if="isLoggedIn"
 				:loan-id="loanId"
 				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
 				data-testid="bp-summary-bookmark"
 			/>
-			<loan-follow
-				v-if="bookmarkVersion === 'follow'"
-				class="tw-hidden lg:tw-inline-flex tw-ml-auto tw-items-center"
-				data-testid="bp-summary-follow"
-			/>
 		</div>
 		<slot name="sharebutton"></slot>
-		<hr class="md:tw-hidden tw-border-tertiary tw-w-full tw-mt-2">
-		<div
-			class="tw-flex tw-items-center tw-w-full"
-			:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
-		>
-			<!-- only show option to bookmark loan if user is logged in -->
-			<loan-bookmark
-				v-if="bookmarkVersion === 'bookmark'"
-				:loan-id="loanId"
-				class="md:tw-hidden tw-mt-1"
-				data-testid="bp-mobile-summary-bookmark"
-			/>
-			<loan-follow
-				v-if="bookmarkVersion === 'follow'"
-				class="md:tw-hidden tw-mt-0.5 tw-mr-2"
-				data-testid="bp-mobile-summary-follow"
-			/>
-
-			<jump-links class="md:tw-hidden tw-my-2" data-testid="bp-summary-card-jump-links" />
-		</div>
 	</section>
 </template>
 
 <script>
 import { gql } from '@apollo/client';
 import { mdiMapMarker } from '@mdi/js';
+import HeartComment from '@/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
-import LoanFollow from './LoanFollow';
-import JumpLinks from './JumpLinks';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const preFetchQuery = gql`
@@ -152,12 +143,6 @@ const preFetchQuery = gql`
 			id
 			userAccount {
 				id
-			}
-		}
-		general {
-			followUsLoans: uiConfigSetting(key: "follow_us_loans") {
-				key
-				value
 			}
 		}
 	}
@@ -195,6 +180,9 @@ const mountQuery = gql`
 				lenders {
 					totalCount
 				}
+				comments {
+					totalCount
+				}
 			}
 		}
 	}
@@ -210,15 +198,8 @@ export default {
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
-		LoanFollow,
-		JumpLinks,
 		KvLoadingPlaceholder,
-	},
-	props: {
-		showUrgencyExp: {
-			type: Boolean,
-			default: false,
-		},
+		HeartComment,
 	},
 	data() {
 		return {
@@ -237,11 +218,10 @@ export default {
 			distributionModel: '',
 			city: '',
 			state: '',
-			timeLeftMs: 0,
 			inPfp: false,
 			pfpMinLenders: 0,
 			numLenders: 0,
-			followUsLoansEnabled: false,
+			totalComments: 0,
 		};
 	},
 	computed: {
@@ -258,17 +238,6 @@ export default {
 				return formattedString;
 			}
 			return this.countryName;
-		},
-		bookmarkVersion() {
-			// Display follow for all US loans no matter login state
-			if (this.distributionModel === 'direct' && this.followUsLoansEnabled) {
-				return 'follow';
-			}
-			// Display bookmark for logged in users, non us loans or if follow setting is disabled
-			if (this.isLoggedIn) {
-				return 'bookmark';
-			}
-			return 'none';
 		}
 	},
 	async mounted() {
@@ -291,11 +260,11 @@ export default {
 		this.distributionModel = loan?.distributionModel ?? '';
 		this.city = loan?.geocode?.city ?? '';
 		this.state = loan?.geocode?.state ?? '';
-		this.timeLeftMs = loan?.fundraisingTimeLeftMilliseconds > 0 ? loan?.fundraisingTimeLeftMilliseconds : 0;
 		// If all shares are reserved in baskets, set the fundraising meter to 100%
 		if (this.unreservedAmount === '0') {
 			this.fundraisingPercent = 1;
 		}
+		this.totalComments = loan?.comments?.totalCount ?? 0;
 		this.isLoading = false;
 	},
 	apollo: {
@@ -318,8 +287,14 @@ export default {
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
 			this.use = loan?.fullLoanUse ?? '';
-			this.followUsLoansEnabled = result?.data?.general?.followUsLoans?.value === 'true' || false;
 		},
 	},
 };
 </script>
+<style lang="postcss" scoped>
+.heart-svg path {
+
+	@apply tw-fill-brand;
+}
+
+</style>

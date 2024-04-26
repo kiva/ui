@@ -10,8 +10,9 @@
 			<form
 				id="registerSocialTermsForm"
 				class="promptForm tw-text-left"
-				action="."
-				@submit.prevent.stop="postRegisterSocialForm"
+				method="post"
+				:action="`https://${$appConfig.auth0.domain}/continue?state=${$route.query.state}`"
+				@submit="postRegisterSocialForm"
 			>
 				<kv-base-input
 					name="firstName"
@@ -64,6 +65,22 @@
 				>
 					I want to receive updates about my loans, Kiva news, and promotions in my inbox
 				</kv-base-input>
+				<div class="tw-mb-4">
+					<re-captcha-enterprise
+						:required="needsCaptcha"
+						@update="captcha = $event"
+					/>
+					<p
+						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
+						v-if="needsCaptcha && $v.captcha.$error"
+					>
+						Please complete the captcha.
+					</p>
+				</div>
+				<p v-if="showSsoTerms" class="tw-text-tertiary tw-text-small tw-mb-4">
+					Kiva will share your name and email address with the organization you are
+					registering with to let them know you've redeemed your credits.
+				</p>
 				<kv-button
 					class="register-button tw-w-full tw-mb-2"
 					type="submit"
@@ -87,6 +104,7 @@
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
+import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
@@ -100,6 +118,7 @@ export default {
 	components: {
 		KvBaseInput,
 		KvButton,
+		ReCaptchaEnterprise,
 		SystemPage,
 	},
 	mixins: [
@@ -107,29 +126,43 @@ export default {
 	],
 	data() {
 		return {
+			captcha: '',
 			firstName: '',
 			lastName: '',
+			needsCaptcha: false,
 			needsTerms: false,
 			needsNames: false,
 			needsNews: false,
 			newAcctTerms: false,
 			newsConsent: false,
+			showSsoTerms: false,
 		};
 	},
 	computed: {
 		registrationMessage() {
 			const parts = [];
 			if (this.needsNames) {
-				parts.push('enter your first and last name below');
+				parts.push('enter your first and last name');
 			}
 			if (this.needsTerms) {
 				parts.push('agree to the Terms of Use and Privacy Policy');
 			}
-			return parts.length ? `To finish creating your account, please ${parts.join(' and ')}.` : '';
+			if (this.needsCaptcha) {
+				parts.push('complete the captcha');
+			}
+			if (parts.length === 0) {
+				return '';
+			}
+			const last = parts.pop();
+			const inner = parts.length ? `${parts.join(', ')} and ${last}` : last;
+			return `To finish creating your account, please ${inner} below.`;
 		},
 	},
 	validations() {
 		const validations = {};
+		if (this.needsCaptcha) {
+			validations.captcha = { required };
+		}
 		if (this.needsNames) {
 			validations.firstName = { required };
 			validations.lastName = { required };
@@ -142,6 +175,9 @@ export default {
 		return validations;
 	},
 	created() {
+		if (this.$route.query.captcha) {
+			this.needsCaptcha = true;
+		}
 		if (this.$route.query.terms) {
 			this.needsTerms = true;
 		}
@@ -151,27 +187,29 @@ export default {
 		if (this.$route.query.news) {
 			this.needsNews = true;
 		}
+		if (this.$route.query.sso) {
+			this.showSsoTerms = true;
+		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
-		if (!this.$route.query.terms && !this.$route.query.names && !this.$route.query.news) {
+		if (!this.$route.query.terms
+			&& !this.$route.query.names
+			&& !this.$route.query.news
+			&& !this.$route.query.captcha
+		) {
 			this.needsTerms = true;
 			this.needsNews = true;
 		}
 	},
 	methods: {
-		postRegisterSocialForm() {
+		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
-				this.$kvTrackEvent('Register', 'register-social-success', undefined, undefined, undefined, () => {
-					window.location = `https://${this.$appConfig.auth0.domain}/continue`
-					+ '?agree=yes'
-					+ `&newsConsent=${this.newsConsent ? 'yes' : 'no'}`
-					+ `&firstName=${this.firstName}`
-					+ `&lastName=${this.lastName}`
-					+ `&state=${this.$route.query.state}`;
-				});
+				this.$kvTrackEvent('Register', 'register-social-success');
 			} else {
+				event.preventDefault();
+				event.stopPropagation();
 				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
 		},

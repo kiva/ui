@@ -19,7 +19,7 @@
 				</li>
 			</ul>
 			<fifteen-years-button
-				href="https://kiva.global/partner-with-us/"
+				href="/about/partner-with-us/"
 				v-kv-track-event="[
 					'Kiva15',
 					'click-strategic-partners-CTA',
