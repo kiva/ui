@@ -109,7 +109,7 @@ module.exports = function authRouter(config = {}) {
 		}
 
 		// Store url to redirect to after successful login
-		if (req.query.doneUrl && !req.query.partnerContentId) {
+		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
 		// Specify ssoRedirect url
