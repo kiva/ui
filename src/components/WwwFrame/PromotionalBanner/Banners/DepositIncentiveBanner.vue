@@ -30,8 +30,8 @@ export default {
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
-	preFetch() {
-		return this.apollo.query({ query: amountToLendQuery });
+	preFetch(config, client) {
+		return client.query({ query: amountToLendQuery });
 	},
 	computed: {
 		promoBannerContent() {
