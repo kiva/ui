@@ -101,6 +101,13 @@ module.exports = function authRouter(config = {}) {
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
 		}
+
+		// Specify partnerContentId & set default doneUrl in case one isn't set:
+		if (req.query.partnerContentId) {
+			options.partnerContentId = req.query.partnerContentId;
+			options.doneUrl = `impact-dashboard/${req.query.partnerContentId}`;
+		}
+
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl && !req.query.partnerContentId) {
 			req.session.doneUrl = req.query.doneUrl;
@@ -117,12 +124,6 @@ module.exports = function authRouter(config = {}) {
 		// Specify if login is meant to be passwordless
 		if (req.query.passwordless) {
 			options.passwordless = true;
-		}
-
-		// Specify partnerContentId
-		if (req.query.partnerContentId) {
-			options.partnerContentId = req.query.partnerContentId;
-			options.doneUrl = `impact-dashboard/${req.query.partnerContentId}`;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
