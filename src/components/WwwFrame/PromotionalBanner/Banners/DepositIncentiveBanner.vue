@@ -9,16 +9,14 @@ import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/
 import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
-const amountToLendQuery = {
-	query: gql`
-    query RewardBalanceQuery {
-      my {
-        id
-        depositIncentiveAmountToLend
-      }
-    }
-  `,
-};
+const amountToLendQuery = gql`
+	query RewardBalanceQuery {
+		my {
+			id
+			depositIncentiveAmountToLend
+		}
+	}
+`;
 
 export default {
 	name: 'DepositIncentiveBanner',
@@ -28,19 +26,20 @@ export default {
 	data() {
 		return {
 			amountToLend: 0,
+			isLoggedin: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
-	preFetch() {
-		return this.apollo.query({ query: amountToLendQuery });
+	preFetch(config, client) {
+		return client.query({ query: amountToLendQuery });
 	},
 	computed: {
 		promoBannerContent() {
-			const richText = this.amountToLend
-				? `Just for you! Lend ${numeral(this.amountToLend).format('$0,0')} and get a $25 lending credit!`
-				: 'Lend & get a free lending credit reward! Log in or sign up to get started →';
+			const richText = this.isLoggedin
+				? `Just for you! Lend ${numeral(this.amountToLend).format('$0,0')} and get a $25 lending credit!¹`
+				: 'Lend & get a free lending credit reward!¹ Log in or sign up to get started →';
 
-			const link = this.amountToLend
+			const link = this.isLoggedin
 				? '/lend-by-category'
 				: '/ui-login?force=true&doneUrl=/lend-by-category';
 
@@ -57,6 +56,7 @@ export default {
 		});
 
 		this.amountToLend = userInfo?.my?.depositIncentiveAmountToLend ?? 0;
+		this.isLoggedin = !!userInfo?.my?.id ?? false;
 	}
 };
 </script>
