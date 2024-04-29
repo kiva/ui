@@ -102,7 +102,7 @@ module.exports = function authRouter(config = {}) {
 			options.login_hint = req.query.loginHint;
 		}
 		// Store url to redirect to after successful login
-		if (req.query.doneUrl) {
+		if (req.query.doneUrl && !req.query.partnerContentId) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
 		// Specify ssoRedirect url
@@ -122,6 +122,7 @@ module.exports = function authRouter(config = {}) {
 		// Specify partnerContentId
 		if (req.query.partnerContentId) {
 			options.partnerContentId = req.query.partnerContentId;
+			options.doneUrl = `impact-dashboard/${req.query.partnerContentId}`;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
