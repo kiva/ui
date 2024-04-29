@@ -30,8 +30,13 @@ export default {
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
-	preFetch(config, client) {
-		return client.query({ query: amountToLendQuery });
+	apollo: {
+		query: amountToLendQuery,
+		preFetch: true,
+		result({ data }) {
+			this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
+			this.isLoggedin = !!data?.my?.id ?? false;
+		},
 	},
 	computed: {
 		promoBannerContent() {
@@ -50,13 +55,5 @@ export default {
 			};
 		}
 	},
-	mounted() {
-		const userInfo = this.apollo.readQuery({
-			query: amountToLendQuery,
-		});
-
-		this.amountToLend = userInfo?.my?.depositIncentiveAmountToLend ?? 0;
-		this.isLoggedin = !!userInfo?.my?.id ?? false;
-	}
 };
 </script>
