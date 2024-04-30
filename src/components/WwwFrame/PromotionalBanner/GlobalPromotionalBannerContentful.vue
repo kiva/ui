@@ -166,7 +166,7 @@ export default {
 			fragment: experimentVersionFragment,
 		}) ?? {};
 
-		if (version === 'b') {
+		if (version === 'b' && this.$route.path !== '/checkout') {
 			this.enableDepositExperiment = true;
 		}
 	}

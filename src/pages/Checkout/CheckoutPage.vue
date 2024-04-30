@@ -42,6 +42,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeLendAmount"
 							:is-logged-in="isLoggedIn"
+							:show-incentive-upsell="showIncentiveUpsell"
+							:incentive-goal="depositIncentiveAmountToLend"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -337,6 +339,7 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
+const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -426,7 +429,10 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			ftdValidDate: '',
-			iwdExpEnabled: false
+			iwdExpEnabled: false,
+			// Deposit incentive experiment MP-72
+			depositIncentiveAmountToLend: 0,
+			depositIncentiveExperimentEnabled: false,
 		};
 	},
 	apollo: {
@@ -459,7 +465,7 @@ export default {
 				.then(() => {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-						client.query({ query: upsellQuery }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: DEPOSIT_REWARD_EXP_KEY } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: ASYNC_CHECKOUT_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
@@ -494,6 +500,9 @@ export default {
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
+
+			// Deposit incentive experiment MP-72
+			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -587,6 +596,9 @@ export default {
 		this.initializeHugeLendAmount();
 
 		this.iwdExpEnabled = this.isIwdExperimentEnabled();
+
+		// Deposit incentive experiment MP-72
+		this.initializeDepositIncentiveExperiment();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -634,7 +646,16 @@ export default {
 			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
 			return amountLeft < 100;
 		},
+		showIncentiveUpsell() {
+			// only show the incentive upsell if the user has not reached the goal MP-72
+			return this.depositIncentiveExperimentEnabled
+				&& this.depositIncentiveAmountToLend > parseFloat(this.totals.loanReservationTotal);
+		},
 		showUpsell() {
+			// hide regular upsell if the incentive upsell is shown MP-72
+			if (this.showIncentiveUpsell) {
+				return false;
+			}
 			// show upsell module only once per session
 			const upsellLoanAdded = this.cookieStore.get('upsell-loan-added') === 'true';
 			// hide upsell for donation-only baskets
@@ -1068,7 +1089,24 @@ export default {
 				// check for team join optionality
 				this.showTeamForm = true;
 			}
-		}
+		},
+		initializeDepositIncentiveExperiment() {
+			// Deposit incentive experiment MP-72
+			const depositIncentiveExp = this.apollo.readFragment({
+				id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (depositIncentiveExp.version) {
+				this.$kvTrackEvent(
+					'basket',
+					'EXP-MP-72-Apr2024',
+					depositIncentiveExp.version
+				);
+			}
+
+			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
