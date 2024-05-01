@@ -168,6 +168,11 @@ export default {
 
 		if (version === 'b' && this.$route.path !== '/checkout') {
 			this.enableDepositExperiment = true;
+			this.$kvTrackEvent(
+				'promo',
+				'EXP-MP-72-Apr2024',
+				version,
+			);
 		}
 	}
 };
