@@ -1,6 +1,9 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <template>
-	<div class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 tw-pl-1.5 generic-banner">
+	<div
+		class="tw-flex tw-items-center tw-justify-center tw-bg-brand tw-py-1 tw-pl-1.5 generic-banner"
+		:class="{'tw-flex-col': enableDepositIncentiveExp}"
+	>
 		<kv-icon
 			v-if="iconKey"
 			:name="iconKey"
@@ -28,17 +31,27 @@
 				</sup>
 			</a>
 		</span>
+		<kv-progress-bar
+			v-if="enableDepositIncentiveExp"
+			style="max-width: 7rem;"
+			class="tw-w-full tw-max-w-sm tw-my-1 tw-absolute progress-bar-exp"
+			:aria-label="'Percent progress towards lending reward'"
+			:max="amountToLend"
+			:value="progressBarValue"
+		/>
 	</div>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'GenericPromoBanner',
 	components: {
-		KvIcon
+		KvIcon,
+		KvProgressBar,
 	},
 	mixins: [smoothScrollMixin],
 	props: {
@@ -57,6 +70,18 @@ export default {
 				};
 			}
 		},
+		enableDepositIncentiveExp: {
+			type: Boolean,
+			default: false
+		},
+		progressBarValue: {
+			type: Number,
+			default: 0
+		},
+		amountToLend: {
+			type: Number,
+			default: 0
+		}
 	},
 	methods: {
 		scrollToSection(sectionId) {
@@ -107,3 +132,11 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang="postcss">
+
+.progress-bar-exp >>> div {
+  @apply tw-bg-action-highlight;
+}
+
+</style>

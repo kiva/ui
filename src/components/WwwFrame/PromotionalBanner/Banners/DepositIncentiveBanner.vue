@@ -1,6 +1,10 @@
 <template>
 	<generic-promo-banner
+		class="tw-text-center"
 		:promo-banner-content="promoBannerContent"
+		:enable-deposit-incentive-exp="isLoggedin"
+		:progress-bar-value="basketTotal"
+		:amount-to-lend="amountToLend"
 	/>
 </template>
 
@@ -10,7 +14,19 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
 const amountToLendQuery = gql`
-	query RewardBalanceQuery {
+	query amountToLendQuery ($basketId: String) {
+		shop (basketId: $basketId) {
+			id
+			basket {
+				id
+				items {
+					values {
+						id
+						price
+					}
+				}
+			}
+		}
 		my {
 			id
 			depositIncentiveAmountToLend
@@ -27,15 +43,24 @@ export default {
 		return {
 			amountToLend: 0,
 			isLoggedin: false,
+			basketTotal: 0,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		query: amountToLendQuery,
 		preFetch: true,
+		variables() {
+			return {
+				basketId: this.cookieStore.get('kvbskt')
+			};
+		},
 		result({ data }) {
 			this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
+			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
+				return sum + +(item?.price ?? 0);
+			}, 0) ?? 0;
 		},
 	},
 	computed: {
@@ -55,5 +80,31 @@ export default {
 			};
 		}
 	},
+	methods: {
+		activateBasketWatchQuery() {
+			const basketId = this.cookieStore.get('kvbskt');
+
+			const observer = this.apollo.watchQuery({
+				query: amountToLendQuery,
+				variables: { basketId },
+			});
+			this.$watch(() => this.cookieStore.get('kvbskt'), vars => {
+				observer.setVariables(vars);
+			}, { deep: true });
+			// Subscribe to the observer to see each result
+			observer.subscribe({
+				next: ({ data }) => {
+					this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
+					this.isLoggedin = !!data?.my?.id ?? false;
+					this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
+						return sum + +(item?.price ?? 0);
+					}, 0) ?? 0;
+				}
+			});
+		},
+	},
+	mounted() {
+		this.activateBasketWatchQuery();
+	}
 };
 </script>
