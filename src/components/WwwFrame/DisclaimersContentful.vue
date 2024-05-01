@@ -17,11 +17,16 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
 import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 	contentful {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+	experiment(id: "deposit_incentive_banner") @client {
+		id
+		version
 	}
 	my {
 		id
@@ -51,6 +56,7 @@ export default {
 			lendingRewardOffered: false,
 			bonusBalance: 0,
 			hasFreeCredits: false,
+			depositIncentiveExperimentActive: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -153,9 +159,25 @@ export default {
 			}
 		}
 	},
+	created() {
+		const { version } = this.apollo.readFragment({
+			id: 'Experiment:deposit_incentive_banner',
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		if (version === 'b') {
+			this.depositIncentiveExperimentActive = true;
+		}
+	},
 	computed: {
 		// constructing the final form of the disclaimer text for display
 		fullyBuiltDisclaimerText() {
+			// if deposit incentive experiemt is active, show its disclaimer only
+			if (this.depositIncentiveExperimentActive) {
+				// eslint-disable-next-line max-len
+				return ['<p>Disclaimer: While funds last, 1 $25 free credit will be applied to your account after you lend at least $25 in newly-deposited funds between now and 5/01/2024 at 11:59 pm PST. Limit one per person. You will receive a notification email when your free credit has been applied to your account within 1 business day of a qualifying transaction. Free credits expire after 14 days. Free credits have no cash value and repayments will return to Kiva.</p>'];
+			}
+
+			// prepend 'Disclaimer: ' to each disclaimer text
 			const builtDisclaimertext = [];
 			this.disclaimerContent.forEach(disclaimer => {
 				const prependDisclaimer = disclaimer.replace('<p>', '<p>Disclaimer: ');
