@@ -1,3 +1,33 @@
+## [2.737.0](https://github.com/kiva/ui/compare/v2.736.0...v2.737.0) (2024-05-01)
+
+
+### 🎉 New Features
+
+* add disclaimer text for deposit incentive experiment MP-176 ([bcc18dd](https://github.com/kiva/ui/commit/bcc18dd9d65ee90385b4d57fc5ac1b1f63b06b7f))
+* deposit incentive banner component and story ([ee62c97](https://github.com/kiva/ui/commit/ee62c97d6a555e4064a939d91683c71ceb8cd941))
+* loan upsell in checkout for deposit incentive experiment MP-95 ([f439b99](https://github.com/kiva/ui/commit/f439b99d994cd59ce7a6e85ba27bc47b246c0c34))
+* move exp query to another hook ([3be1cf2](https://github.com/kiva/ui/commit/3be1cf2bd84520ff9dbe94b872ea9743d9ddf6c2))
+* send uiab experiment assignments in x-uiab header to graphql api ([1c3e046](https://github.com/kiva/ui/commit/1c3e0469ab51a18f371b4f11c6db3a51c349cf57))
+
+
+### 🐛 Bugfixes
+
+* add superscript for disclaimer to deposit incentive upsell MP-176 ([9ae4e1d](https://github.com/kiva/ui/commit/9ae4e1d45a79fe084690ef67e16fa59b9e5b1fe4))
+* apollo query format error ([d0cbf4d](https://github.com/kiva/ui/commit/d0cbf4dab0463a9595ec413c5ce93e8d58bcae92))
+* move mounted logic to prefetch to set query values ([a3a6e67](https://github.com/kiva/ui/commit/a3a6e67440c965699e3898389a5eedd74db2c55c))
+* prefetch query ([3841df6](https://github.com/kiva/ui/commit/3841df64c6ebc04bc93940279e08410f6b9becb7))
+* use number instead of string comparison for incentive upsell MP-95 ([cf810f5](https://github.com/kiva/ui/commit/cf810f5f531651b6ec2c4abdd4dcaa4b3533e51c))
+
+
+### 🪚 Refactors
+
+* add exp query to banner query ([50a817b](https://github.com/kiva/ui/commit/50a817ba3849d8e31cc878988fd7608ead75437b))
+
+
+### 🧹 Chores
+
+* **release:** 2.737.0-rc.1 [skip ci] ([84752a9](https://github.com/kiva/ui/commit/84752a982d6cfb0c3afe825fe79508dd5853adff))
+
 ## [2.737.0-rc.1](https://github.com/kiva/ui/compare/v2.736.0...v2.737.0-rc.1) (2024-05-01)
 
 
