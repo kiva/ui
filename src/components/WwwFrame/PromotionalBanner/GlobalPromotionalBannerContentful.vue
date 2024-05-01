@@ -166,13 +166,16 @@ export default {
 			fragment: experimentVersionFragment,
 		}) ?? {};
 
-		if (version === 'b' && this.$route.path !== '/checkout') {
-			this.enableDepositExperiment = true;
+		if (version) {
 			this.$kvTrackEvent(
 				'promo',
 				'EXP-MP-72-Apr2024',
 				version,
 			);
+		}
+
+		if (version === 'b' && this.$route.path !== '/checkout') {
+			this.enableDepositExperiment = true;
 		}
 	}
 };
