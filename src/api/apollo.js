@@ -45,7 +45,7 @@ export default function createApolloClient({
 			}),
 			NetworkErrorLoggingLink(),
 			SnowplowSessionLink({ cookieStore }),
-			ExperimentIdLink(),
+			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),

@@ -2,7 +2,7 @@
 	<li>
 		<!-- deposit incentive progress -->
 		<h3 class="tw-mb-1">
-			Earn your $25 Reward
+			Earn your $25 Reward¹
 		</h3>
 		<p class="tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center">
 			<kv-icon name="present" class="tw-h-2.5 tw-w-2.5 tw-fill-brand tw--rotate-12 tw-mr-0.5" />

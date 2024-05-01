@@ -154,6 +154,7 @@
 						:is-team-pick="showTeamPicks"
 						:show-loans-activity-feed="showLoansActivityFeed"
 						:enable-huge-amount="enableHugeAmount"
+						:enable-clickable-tags="enableClickableTags"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -256,6 +257,10 @@ export default {
 		teamName: {
 			type: String,
 			default: () => '',
+		},
+		enableClickableTags: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

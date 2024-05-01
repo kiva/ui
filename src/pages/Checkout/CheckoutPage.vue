@@ -43,7 +43,7 @@
 							:enable-huge-amount="enableHugeLendAmount"
 							:is-logged-in="isLoggedIn"
 							:show-incentive-upsell="showIncentiveUpsell"
-							:incentive-goal="parseInt(depositIncentiveAmountToLend)"
+							:incentive-goal="depositIncentiveAmountToLend"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -502,7 +502,7 @@ export default {
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
 
 			// Deposit incentive experiment MP-72
-			this.depositIncentiveAmountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
+			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -649,7 +649,7 @@ export default {
 		showIncentiveUpsell() {
 			// only show the incentive upsell if the user has not reached the goal MP-72
 			return this.depositIncentiveExperimentEnabled
-				&& this.depositIncentiveAmountToLend > this.totals.loanReservationTotal;
+				&& this.depositIncentiveAmountToLend > parseFloat(this.totals.loanReservationTotal);
 		},
 		showUpsell() {
 			// hide regular upsell if the incentive upsell is shown MP-72
