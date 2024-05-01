@@ -27,7 +27,9 @@
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
 			:enable-huge-amount="enableHugeAmount"
+			:enable-clickable-tags="enableClickableTags"
 			@toggle-bookmark="toggleBookmark"
+			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
 	</div>
@@ -44,6 +46,7 @@ import { createIntersectionObserver } from '@/util/observerUtils';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsExtended.graphql';
 import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import _isEqual from 'lodash/isEqual';
 import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -67,6 +70,14 @@ const loanQuery = gql`
 		loan(id: $loanId) {
 			id
 			...loanCardFieldsExtended
+		}
+		loanThemeFilter {
+			id
+			name
+		}
+		tag {
+			id
+			name
 		}
 	}
 	my {
@@ -133,6 +144,10 @@ export default {
 			default: false,
 		},
 		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		enableClickableTags: {
 			type: Boolean,
 			default: false,
 		},
@@ -216,6 +231,22 @@ export default {
 				this.loan = result.data.lend.loan;
 				this.isBookmarked = result.data.lend.loan?.userProperties?.favorited ?? false;
 			}
+
+			// Getting tags and themes data for clickable pills
+			const { tags, themes } = this.loan || {};
+			const tagList = result.data?.lend?.tag || [];
+			const themeList = result.data?.lend?.loanThemeFilter || [];
+			const tagsData = tagList.filter(tag => {
+				return tags?.includes(tag.name);
+			});
+			const themesData = themeList.filter(theme => {
+				return themes?.includes(theme.name);
+			});
+			this.loan = {
+				...this.loan,
+				tagsData,
+				themesData
+			};
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
@@ -356,6 +387,17 @@ export default {
 
 				this.$kvTrackEvent('Lending', 'loan-card', 'Failed to fetch loan activity data.');
 			});
+		},
+		jumpFilterPage(filter) {
+			this.$kvTrackEvent('Lending', 'loan-card', 'clicked-tag', filter.type, filter.id.toString());
+			const query = {};
+			query[filter.type] = filter.id.toString();
+			if (!_isEqual(this.$route.query, query)) {
+				this.$router.push({
+					path: '/lend/filter',
+					query,
+				});
+			}
 		},
 	},
 	mounted() {
