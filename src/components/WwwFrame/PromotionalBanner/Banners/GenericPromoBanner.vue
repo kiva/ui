@@ -136,7 +136,7 @@ export default {
 <style scoped lang="postcss">
 
 .progress-bar-exp >>> div {
-  @apply tw-bg-action-highlight;
+	@apply tw-bg-action-highlight;
 }
 
 </style>
