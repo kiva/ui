@@ -1,3 +1,15 @@
+## [2.737.1](https://github.com/kiva/ui/compare/v2.737.0...v2.737.1) (2024-05-01)
+
+
+### 🐛 Bugfixes
+
+* stop adding uiab header to api calls pending header approval ([62cb72f](https://github.com/kiva/ui/commit/62cb72f10699f157b9bce0d702a19029fd265bb0))
+
+
+### 🧹 Chores
+
+* **release:** 2.737.1-rc.1 [skip ci] ([34498aa](https://github.com/kiva/ui/commit/34498aac913f2e26091359d25bc20c19388bb0a2))
+
 ## [2.737.1-rc.1](https://github.com/kiva/ui/compare/v2.737.0...v2.737.1-rc.1) (2024-05-01)
 
 
