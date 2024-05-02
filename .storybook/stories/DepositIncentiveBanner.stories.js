@@ -36,14 +36,9 @@ const userInfo = {
 		id: 1,
 		basket: {
 			id: 1,
-			items: {
-				values: [
-					{
-						id: 1,
-						price: '15',
-					},
-				],
-			},
+			totals: {
+				loanReservationTotal: 15,
+			}
 		},
 		__typename: 'Shop',
 	}

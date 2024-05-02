@@ -19,11 +19,8 @@ const amountToLendQuery = gql`
 			id
 			basket {
 				id
-				items {
-					values {
-						id
-						price
-					}
+				totals {
+					loanReservationTotal
 				}
 			}
 		}
@@ -96,9 +93,7 @@ export default {
 				next: ({ data }) => {
 					this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
 					this.isLoggedin = !!data?.my?.id ?? false;
-					this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
-						return sum + +(item?.price ?? 0);
-					}, 0) ?? 0;
+					this.basketTotal = data.shop?.basket?.totals?.loanReservationTotal ?? 0;
 				}
 			});
 		},
