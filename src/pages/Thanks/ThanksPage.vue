@@ -127,7 +127,6 @@
 				:ftd-credit-amount="ftdCreditAmount"
 				@guest-create-account="createGuestAccount"
 				:ask-for-comments="askForComments"
-				:hide-share-section="showMayChallengeHeader"
 			/>
 		</template>
 	</www-page>
