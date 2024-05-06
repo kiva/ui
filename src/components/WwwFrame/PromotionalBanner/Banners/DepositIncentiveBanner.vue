@@ -48,7 +48,7 @@ export default {
 		query: amountToLendQuery,
 		preFetch: true,
 		result({ data }) {
-			this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
+			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
 			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
 		},
