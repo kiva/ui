@@ -47,17 +47,10 @@ export default {
 	apollo: {
 		query: amountToLendQuery,
 		preFetch: true,
-		variables() {
-			return {
-				basketId: this.cookieStore.get('kvbskt')
-			};
-		},
 		result({ data }) {
 			this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
-			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
-				return sum + +(item?.price ?? 0);
-			}, 0) ?? 0;
+			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
 		},
 	},
 	computed: {
@@ -77,29 +70,5 @@ export default {
 			};
 		}
 	},
-	methods: {
-		activateBasketWatchQuery() {
-			const basketId = this.cookieStore.get('kvbskt');
-
-			const observer = this.apollo.watchQuery({
-				query: amountToLendQuery,
-				variables: { basketId },
-			});
-			this.$watch(() => this.cookieStore.get('kvbskt'), vars => {
-				observer.setVariables(vars);
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data }) => {
-					this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
-					this.isLoggedin = !!data?.my?.id ?? false;
-					this.basketTotal = data.shop?.basket?.totals?.loanReservationTotal ?? 0;
-				}
-			});
-		},
-	},
-	mounted() {
-		this.activateBasketWatchQuery();
-	}
 };
 </script>
