@@ -1,3 +1,10 @@
+## [2.738.0-rc.2](https://github.com/kiva/ui/compare/v2.738.0-rc.1...v2.738.0-rc.2) (2024-05-07)
+
+
+### 🐛 Bugfixes
+
+* hold off on checking for new applicant cookie ([79b6406](https://github.com/kiva/ui/commit/79b6406867d1a07bb3a82772e01bce5ced9df9f1))
+
 ## [2.738.0-rc.1](https://github.com/kiva/ui/compare/v2.737.1...v2.738.0-rc.1) (2024-05-06)
 
 
