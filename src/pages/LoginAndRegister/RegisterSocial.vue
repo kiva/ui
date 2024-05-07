@@ -145,9 +145,6 @@ export default {
 	},
 	computed: {
 		registrationMessage() {
-			if (this.passwordless) {
-				return '';
-			}
 			const parts = [];
 			if (this.needsNames) {
 				parts.push('enter your first and last name');
