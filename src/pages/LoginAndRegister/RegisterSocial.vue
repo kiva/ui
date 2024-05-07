@@ -1,11 +1,8 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
-			<h1 v-if="!passwordless" class="tw-text-h2 tw-mb-2">
-				One last thing!
-			</h1>
-			<h1 v-else class="tw-text-h2 tw-mb-2">
-				Almost there!
+			<h1 class="tw-text-h2 tw-mb-2">
+				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
