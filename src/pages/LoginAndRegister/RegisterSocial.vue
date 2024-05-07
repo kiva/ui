@@ -1,8 +1,11 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
-			<h1 class="tw-text-h2 tw-mb-2">
+			<h1 v-if="!passwordless" class="tw-text-h2 tw-mb-2">
 				One last thing!
+			</h1>
+			<h1 v-else class="tw-text-h2 tw-mb-2">
+				Almost there!
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
@@ -48,10 +51,10 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the Kiva
+					I have read and agree to the {{ !passwordless ? 'Kiva' : '' }}
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
-					<a href="/legal/privacy" target="_blank">Privacy Policy</a>
+					<a href="/legal/privacy" target="_blank">Privacy Policy</a> {{ !passwordless ? '' : '(required)' }}
 					<template #checked>
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
@@ -63,7 +66,11 @@
 					v-show="needsNews"
 					v-model="newsConsent"
 				>
-					I want to receive updates about my loans, Kiva news, and promotions in my inbox
+					{{ !passwordless
+						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
+						: `Receive email updates from Kiva (including borrower updates and promos).
+							You can unsubscribe anytime. (optional)`
+					}}
 				</kv-base-input>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
@@ -136,10 +143,14 @@ export default {
 			newAcctTerms: false,
 			newsConsent: false,
 			showSsoTerms: false,
+			passwordless: false,
 		};
 	},
 	computed: {
 		registrationMessage() {
+			if (this.passwordless) {
+				return '';
+			}
 			const parts = [];
 			if (this.needsNames) {
 				parts.push('enter your first and last name');
@@ -190,6 +201,9 @@ export default {
 		if (this.$route.query.sso) {
 			this.showSsoTerms = true;
 		}
+		if (this.$route.query.passwordless) {
+			this.passwordless = true;
+		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
 			&& !this.$route.query.names
@@ -198,6 +212,8 @@ export default {
 		) {
 			this.needsTerms = true;
 			this.needsNews = true;
+			this.passwordless = true;
+			this.needsNames = true;
 		}
 	},
 	methods: {
