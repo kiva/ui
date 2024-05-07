@@ -1,6 +1,10 @@
 <template>
 	<generic-promo-banner
+		class="tw-text-center"
 		:promo-banner-content="promoBannerContent"
+		:enable-deposit-incentive-exp="isLoggedin"
+		:progress-bar-value="basketTotal"
+		:amount-to-lend="amountToLend"
 	/>
 </template>
 
@@ -10,7 +14,16 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
 const amountToLendQuery = gql`
-	query RewardBalanceQuery {
+	query amountToLendQuery ($basketId: String) {
+		shop (basketId: $basketId) {
+			id
+			basket {
+				id
+				totals {
+					loanReservationTotal
+				}
+			}
+		}
 		my {
 			id
 			depositIncentiveAmountToLend
@@ -27,6 +40,7 @@ export default {
 		return {
 			amountToLend: 0,
 			isLoggedin: false,
+			basketTotal: 0,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -34,8 +48,9 @@ export default {
 		query: amountToLendQuery,
 		preFetch: true,
 		result({ data }) {
-			this.amountToLend = data?.my?.depositIncentiveAmountToLend ?? 0;
+			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
+			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
 		},
 	},
 	computed: {

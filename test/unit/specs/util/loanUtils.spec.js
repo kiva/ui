@@ -46,16 +46,113 @@ describe('loanUtils.js', () => {
 			expect(result[0]).toEqual('25');
 		});
 
-		it('should return 1,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
+		it('should return 2,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
 			const result = getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, false, true);
 			const lastOption = result.length - 1;
-			expect(result[lastOption]).toEqual('1,000');
+			expect(result[lastOption]).toEqual('2,000');
 		});
 
 		it('should return 865 as last option if amount left is 865 and huge amount enabled', () => {
 			const result = getDropdownPriceArray('865', minAmount, enableFiveDollarsNotes, false, true);
 			const lastOption = result.length - 1;
 			expect(result[lastOption]).toEqual('865');
+		});
+
+		it('should return huge dropdown values between 500 and 1000', () => {
+			const result = getDropdownPriceArray('650.00', 25, false, false, true);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+				'600',
+				'650',
+			]);
+		});
+
+		it('should return huge dropdown values up to 10,000', () => {
+			const result = getDropdownPriceArray('11000.00', 25, false, false, true);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+				'1,000',
+				'2,000',
+				'3,000',
+				'4,000',
+				'5,000',
+				'6,000',
+				'7,000',
+				'8,000',
+				'9,000',
+				'10,000',
+			]);
+		});
+
+		it('should return not huge dropdown values when huge amounts disabled', () => {
+			const result = getDropdownPriceArray('650.00', 25, false, false, false);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+			]);
 		});
 	});
 
@@ -92,16 +189,113 @@ describe('loanUtils.js', () => {
 			expect(result[0]).toEqual('25');
 		});
 
-		it('should return 1,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
+		it('should return 2,000 as last option if amount left is greater than 1000 and huge amount enabled', () => {
 			const result = getDropdownPriceArrayCheckout(unreservedAmount, minAmount, enableFiveDollarsNotes, true);
 			const lastOption = result.length - 1;
-			expect(result[lastOption]).toEqual('1,000');
+			expect(result[lastOption]).toEqual('2,000');
 		});
 
 		it('should return 865 as last option if amount left is 865 and huge amount enabled', () => {
 			const result = getDropdownPriceArrayCheckout('865', minAmount, enableFiveDollarsNotes, true);
 			const lastOption = result.length - 1;
 			expect(result[lastOption]).toEqual('865');
+		});
+
+		it('should return huge dropdown values between 500 and 1000', () => {
+			const result = getDropdownPriceArray('650.00', 25, false, false, true);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+				'600',
+				'650',
+			]);
+		});
+
+		it('should return huge dropdown values up to 10,000', () => {
+			const result = getDropdownPriceArray('11000.00', 25, false, false, true);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+				'1,000',
+				'2,000',
+				'3,000',
+				'4,000',
+				'5,000',
+				'6,000',
+				'7,000',
+				'8,000',
+				'9,000',
+				'10,000',
+			]);
+		});
+
+		it('should return not huge dropdown values when huge amounts disabled', () => {
+			const result = getDropdownPriceArray('650.00', 25, false, false, false);
+
+			expect(result).toEqual([
+				'25',
+				'50',
+				'75',
+				'100',
+				'125',
+				'150',
+				'175',
+				'200',
+				'225',
+				'250',
+				'275',
+				'300',
+				'325',
+				'350',
+				'375',
+				'400',
+				'425',
+				'450',
+				'475',
+				'500',
+			]);
 		});
 	});
 

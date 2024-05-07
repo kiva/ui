@@ -26,9 +26,9 @@ describe('BasketItem loan', () => {
 			{
 				provide: {
 					apollo: {
-						readFragment: () => {},
+						readFragment: () => { },
 						query: () => Promise.resolve({}),
-						readQuery: () => {},
+						readQuery: () => { },
 						mutate: () => Promise.resolve({}),
 					},
 					cookieStore: new CookieStore(),
@@ -103,16 +103,16 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPromoCredit).getByText('Sponsored by:'));
 	});
 
-	it('should show 1,000 for logged in user and huge amount enabled', () => {
+	it('should show amounts 1,000 and over for logged in user and huge amount enabled', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
 		render(
 			BasketItem,
 			{
 				provide: {
 					apollo: {
-						readFragment: () => {},
+						readFragment: () => { },
 						query: () => Promise.resolve({}),
-						readQuery: () => {},
+						readQuery: () => { },
 						mutate: () => Promise.resolve({}),
 					},
 					cookieStore: new CookieStore(),
@@ -138,5 +138,7 @@ describe('BasketItem loan', () => {
 
 		const LoanPrice = document.getElementById('loan-price');
 		expect(within(LoanPrice).getByRole('option', { name: '$1,000' }));
+		expect(within(LoanPrice).getByRole('option', { name: '$2,000' }));
+		expect(within(LoanPrice).getByRole('option', { name: '$3,685' }));
 	});
 });

@@ -18,7 +18,15 @@ const decodeCookieValue = value => {
 
 function getSessionCookies(url = '', requestCookies = {}) {
 	return new Promise((resolve, reject) => {
-		if (url.length && (!requestCookies.kv || !requestCookies.kvis || !requestCookies.kvbskt)) {
+		if (url.length
+			&& (
+				!requestCookies.kv
+				|| !requestCookies.kvis
+				|| !requestCookies.kvbskt
+				// TODO: always return the new cookie from the monolith start session endpoint
+				// || !requestCookies.kvborrowerapplicant
+			)
+		) {
 			fetch(url, {
 				headers: {
 					Cookie: getCookieString(requestCookies),

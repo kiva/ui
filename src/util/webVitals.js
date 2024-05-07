@@ -1,9 +1,9 @@
 import {
-	getCLS,
-	getFCP,
-	getFID,
-	getLCP,
-	getTTFB,
+	onCLS,
+	onFCP,
+	onINP,
+	onLCP,
+	onTTFB,
 } from 'web-vitals';
 
 const trackingCategory = 'web vitals';
@@ -11,7 +11,7 @@ const trackingAction = 'report';
 
 export default function collectWebVitals(trackEvent) {
 	const handleReport = ({ name, id, delta }) => {
-		// The name of the metric in acronym form ('CLS', 'FCP', 'FID', 'LCP', 'TTFB').
+		// The name of the metric in acronym form ('CLS', 'FCP', 'INP', 'LCP', 'TTFB').
 		const label = name;
 
 		// A unique ID representing this particular metric that's specific to the
@@ -29,9 +29,9 @@ export default function collectWebVitals(trackEvent) {
 		// Send metric value as an event
 		trackEvent(trackingCategory, trackingAction, label, property, value);
 	};
-	getCLS(handleReport);
-	getFCP(handleReport);
-	getFID(handleReport);
-	getLCP(handleReport);
-	getTTFB(handleReport);
+	onCLS(handleReport);
+	onFCP(handleReport);
+	onINP(handleReport);
+	onLCP(handleReport);
+	onTTFB(handleReport);
 }
