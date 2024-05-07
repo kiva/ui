@@ -48,10 +48,10 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the {{ !passwordless ? 'Kiva' : '' }}
+					I have read and agree to the
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
-					<a href="/legal/privacy" target="_blank">Privacy Policy</a> {{ !passwordless ? '' : '(required)' }}
+					<a href="/legal/privacy" target="_blank">Privacy Policy</a> (required)
 					<template #checked>
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
