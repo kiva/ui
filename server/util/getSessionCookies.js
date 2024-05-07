@@ -23,7 +23,8 @@ function getSessionCookies(url = '', requestCookies = {}) {
 				!requestCookies.kv
 				|| !requestCookies.kvis
 				|| !requestCookies.kvbskt
-				|| !requestCookies.kvborrowerapplicant
+				// TODO: always return the new cookie from the monolith start session endpoint
+				// || !requestCookies.kvborrowerapplicant
 			)
 		) {
 			fetch(url, {
