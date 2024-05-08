@@ -97,6 +97,7 @@ type LoanSearchState {
 	partnerAvgProfitability: MinMaxRange
 	isMatchable: Boolean
 	flexibleFundraisingEnabled: Boolean
+	activityId: [Int]
 }
 
 type TipMessage {
