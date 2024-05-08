@@ -167,7 +167,7 @@ export default {
 			newsConsent: false,
 			showSsoTerms: false,
 			passwordless: false,
-			strategicPartnerLogo: null,
+			fetchedLogo: null,
 		};
 	},
 	computed: {
@@ -189,6 +189,9 @@ export default {
 			const inner = parts.length ? `${parts.join(', ')} and ${last}` : last;
 			return `To finish creating your account, please ${inner} below.`;
 		},
+		strategicPartnerLogo() {
+			return this.fetchedLogo;
+		}
 	},
 	validations() {
 		const validations = {};
@@ -263,11 +266,12 @@ export default {
 			this.apollo.query({
 				query: StrategicPartnerLoginInfoByPageId,
 				variables: { pageId: this.partnerContentId }
-			}).then(response => {
-				const { logo } = response.data.strategicPartnerLoginInfoByPageId;
-				this.strategicPartnerLogo = {
-					url: logo.url,
-					alt: logo.alt
+			}).then(res => {
+				const spLoginInfo = res?.data?.strategicPartnerLoginInfoByPageId;
+				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+				this.fetchedLogo = {
+					url: logo?.fields?.file?.url || '',
+					alt: logo?.fields.title || '',
 				};
 			}).catch(error => {
 				console.error('Error fetching strategic partner info:', error);
