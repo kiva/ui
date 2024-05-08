@@ -9,13 +9,20 @@
 							tw-border-white tw-border-4 logo"
 					>
 						<img
-							v-if="strategicPartnerLogo.url"
-							:src="strategicPartnerLogo.url" :alt="strategicPartnerLogo.alt"
+							v-if="strategicPartnerLogo"
+							:src="strategicPartnerLogo.url"
+							:alt="strategicPartnerLogo.alt"
 							class="tw-w-full tw-h-full tw-object-contain"
 						>
 					</div>
-					<div class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white tw-border-4 logo">
-						<img src="../../assets/images/kiva_k_cutout_new.jpg" alt="Kiva Logo" class="tw-w-full tw-h-full tw-object-contain">
+					<div
+						class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white
+					tw-border-4 tw-overflow-hidden logo"
+					>
+						<img
+							src="../../assets/images/kiva_k_cutout_new.jpg"
+							alt="Kiva Logo" class="tw-w-full tw-h-full tw-object-cover"
+						>
 					</div>
 				</div>
 			</div>
