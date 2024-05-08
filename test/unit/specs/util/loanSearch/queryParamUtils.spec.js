@@ -24,7 +24,6 @@ describe('queryParamUtils.js', () => {
 
 	describe('hasExcludedQueryParams', () => {
 		it('should return true', () => {
-			expect(hasExcludedQueryParams({ activity: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ city_state: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ loanTags: [] })).toBe(true);
 			expect(hasExcludedQueryParams({ state: [] })).toBe(true);
@@ -80,6 +79,18 @@ describe('queryParamUtils.js', () => {
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
 				query: { a: 'a', b: 'b', utm_test: 'test' },
+				params: { noScroll: true, noAnalytics: true }
+			});
+		});
+
+		it('should preserve team params', () => {
+			const router = getRouter({ team: 'test' });
+
+			updateQueryParams({}, router, FLSS_QUERY_TYPE);
+
+			expect(router.push).toHaveBeenCalledWith({
+				name: 'name',
+				query: { a: 'a', b: 'b', team: 'test' },
 				params: { noScroll: true, noAnalytics: true }
 			});
 		});
