@@ -237,7 +237,6 @@ export default {
 			this.needsTerms = true;
 			this.needsNews = true;
 		}
-		debugger;
 	},
 	mounted() {
 		if (this.passwordless && this.partnerContentId) {
