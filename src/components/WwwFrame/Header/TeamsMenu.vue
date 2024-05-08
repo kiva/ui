@@ -24,7 +24,11 @@
 			<ul v-if="totalTeams === 1">
 				<li>
 					<a
-						v-kv-track-event="['TopNav','click-Teams-My Team\'s activity']"
+						v-kv-track-event="[
+							'TopNav',
+							'click-Teams-My Team\'s activity',
+							`${teamsData[0].team.teamPublicId}`
+						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}`"
 					>
 						My Team's activity
@@ -32,7 +36,11 @@
 				</li>
 				<li>
 					<a
-						v-kv-track-event="['TopNav','click-Teams-My Team\'s impact']"
+						v-kv-track-event="[
+							'TopNav',
+							'click-Teams-My Team\'s impact',
+							`${teamsData[0].team.teamPublicId}`
+						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}/impact`"
 					>
 						My Team's impact
