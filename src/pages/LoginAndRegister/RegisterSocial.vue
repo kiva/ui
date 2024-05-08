@@ -281,6 +281,6 @@ export default {
 
 <style scoped>
 .logo {
-  box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
 }
 </style>
