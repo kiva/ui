@@ -135,7 +135,7 @@ import { required } from 'vuelidate/lib/validators';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
-import StrategicPartnerLoginInfoByPageId from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
+import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -154,6 +154,7 @@ export default {
 	mixins: [
 		validationMixin,
 	],
+	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
 			captcha: '',
@@ -246,9 +247,23 @@ export default {
 			this.fetchStrategicPartnerLoginInfoByPageId();
 		}
 	},
-	inject: [
-		'apollo'
-	],
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: { pageId: this.partnerContentId }
+			}).then(res => {
+				const spLoginInfo = res?.data?.strategicPartnerLoginInfoByPageId;
+				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+				this.fetchedLogo = {
+					url: logo?.fields?.file?.url || '',
+					alt: logo?.fields.title || '',
+				};
+			}).catch(error => {
+				console.error('Error fetching strategic partner info:', error);
+			});
+		}
+	},
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
@@ -264,7 +279,7 @@ export default {
 		},
 		fetchStrategicPartnerLoginInfoByPageId() {
 			this.apollo.query({
-				query: StrategicPartnerLoginInfoByPageId,
+				query: strategicPartnerLoginInfoByPageIdQuery,
 				variables: { pageId: this.partnerContentId }
 			}).then(res => {
 				const spLoginInfo = res?.data?.strategicPartnerLoginInfoByPageId;
