@@ -2,7 +2,7 @@
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
 			<h1 class="tw-text-h2 tw-mb-2">
-				One last thing!
+				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
@@ -48,10 +48,10 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the Kiva
+					I have read and agree to the
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
-					<a href="/legal/privacy" target="_blank">Privacy Policy</a>
+					<a href="/legal/privacy" target="_blank">Privacy Policy</a> (required)
 					<template #checked>
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
@@ -63,7 +63,11 @@
 					v-show="needsNews"
 					v-model="newsConsent"
 				>
-					I want to receive updates about my loans, Kiva news, and promotions in my inbox
+					{{ !passwordless
+						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
+						: `Receive email updates from Kiva (including borrower updates and promos).
+							You can unsubscribe anytime. (optional)`
+					}}
 				</kv-base-input>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
@@ -136,6 +140,7 @@ export default {
 			newAcctTerms: false,
 			newsConsent: false,
 			showSsoTerms: false,
+			passwordless: false,
 		};
 	},
 	computed: {
@@ -189,6 +194,9 @@ export default {
 		}
 		if (this.$route.query.sso) {
 			this.showSsoTerms = true;
+		}
+		if (this.$route.query.passwordless) {
+			this.passwordless = true;
 		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
