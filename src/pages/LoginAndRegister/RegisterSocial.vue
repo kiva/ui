@@ -1,7 +1,7 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
-			<div v-if="passwordless && strategicPartnerLogo">
+			<div v-if="passwordless">
 				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
 					<div
 						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
@@ -257,7 +257,7 @@ export default {
 				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
 				this.fetchedLogo = {
 					url: logo?.fields?.file?.url || '',
-					alt: logo?.fields.title || '',
+					alt: logo?.fields?.title || '',
 				};
 			}).catch(error => {
 				console.error('Error fetching strategic partner info:', error);
