@@ -1,6 +1,24 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
+			<div v-if="passwordless && strategicPartnerLogo">
+				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
+					<div
+						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
+							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
+							tw-border-white tw-border-4 logo"
+					>
+						<img
+							v-if="strategicPartnerLogo.url"
+							:src="strategicPartnerLogo.url" :alt="strategicPartnerLogo.alt"
+							class="tw-w-full tw-h-full tw-object-contain"
+						>
+					</div>
+					<div class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white tw-border-4 logo">
+						<img src="../../assets/images/kiva_k_cutout_new.jpg" alt="Kiva Logo" class="tw-w-full tw-h-full tw-object-contain">
+					</div>
+				</div>
+			</div>
 			<h1 class="tw-text-h2 tw-mb-2">
 				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
 			</h1>
@@ -66,7 +84,7 @@
 					{{ !passwordless
 						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
 						: `Receive email updates from Kiva (including borrower updates and promos).
-							You can unsubscribe anytime. (optional)`
+								You can unsubscribe anytime. (optional)`
 					}}
 				</kv-base-input>
 				<div class="tw-mb-4">
@@ -110,6 +128,7 @@ import { required } from 'vuelidate/lib/validators';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
+import StrategicPartnerLoginInfoByPageId from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -141,6 +160,7 @@ export default {
 			newsConsent: false,
 			showSsoTerms: false,
 			passwordless: false,
+			strategicPartnerLogo: null,
 		};
 	},
 	computed: {
@@ -198,6 +218,9 @@ export default {
 		if (this.$route.query.passwordless) {
 			this.passwordless = true;
 		}
+		if (this.$route.query.partnerContentId) {
+			this.partnerContentId = this.$route.query.partnerContentId;
+		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
 			&& !this.$route.query.names
@@ -207,7 +230,16 @@ export default {
 			this.needsTerms = true;
 			this.needsNews = true;
 		}
+		debugger;
 	},
+	mounted() {
+		if (this.passwordless && this.partnerContentId) {
+			this.fetchStrategicPartnerLoginInfoByPageId();
+		}
+	},
+	inject: [
+		'apollo'
+	],
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
@@ -221,7 +253,27 @@ export default {
 				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
 		},
+		fetchStrategicPartnerLoginInfoByPageId() {
+			this.apollo.query({
+				query: StrategicPartnerLoginInfoByPageId,
+				variables: { pageId: this.partnerContentId }
+			}).then(response => {
+				const { logo } = response.data.strategicPartnerLoginInfoByPageId;
+				this.strategicPartnerLogo = {
+					url: logo.url,
+					alt: logo.alt
+				};
+			}).catch(error => {
+				console.error('Error fetching strategic partner info:', error);
+			});
+		}
 	}
 
 };
 </script>
+
+<style scoped>
+.logo {
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+}
+</style>
