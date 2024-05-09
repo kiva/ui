@@ -169,6 +169,7 @@ export default {
 			showSsoTerms: false,
 			passwordless: false,
 			fetchedLogo: null,
+			partnerContentId: this.$route.query.partnerContentId || ''
 		};
 	},
 	computed: {
@@ -249,7 +250,7 @@ export default {
 			return { pageId: route.query.partnerContentId ?? '' };
 		},
 		variables() {
-			return { pageId: this.$route.query.partnerContentId ?? '' };
+			return { pageId: this.partnerContentId };
 		},
 		result(result) {
 			const spLoginInfo = result?.strategicPartnerLoginInfoByPageId;
