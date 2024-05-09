@@ -246,8 +246,7 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: this.variables,
+				query: strategicPartnerLoginInfoByPageIdQuery
 			}).catch(errorResponse => {
 				console.error(errorResponse);
 			});
