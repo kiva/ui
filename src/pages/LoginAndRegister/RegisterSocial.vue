@@ -244,8 +244,14 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch: true,
-		query: strategicPartnerLoginInfoByPageIdQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: this.variables,
+			}).catch(errorResponse => {
+				console.error(errorResponse);
+			});
+		},
 		preFetchVariables({ route }) {
 			return { pageId: route.query.partnerContentId ?? '' };
 		},
