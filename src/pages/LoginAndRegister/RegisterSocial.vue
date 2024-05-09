@@ -240,9 +240,6 @@ export default {
 		) {
 			this.needsTerms = true;
 			this.needsNews = true;
-			this.passwordless = true;
-			this.partnerContentId = 'hitachi';
-			this.needsNames = true;
 		}
 	},
 	apollo: {
