@@ -54,5 +54,16 @@ query wwwHeader($basketId: String) {
 		trustee {
 			id
 		}
+		teams (limit: 5) {
+			totalCount
+			values {
+				id
+				team {
+					id
+					name
+					teamPublicId
+				}
+			}
+		}
 	}
 }
