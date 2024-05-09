@@ -240,28 +240,27 @@ export default {
 		) {
 			this.needsTerms = true;
 			this.needsNews = true;
-		}
-	},
-	mounted() {
-		if (this.passwordless && this.partnerContentId) {
-			this.fetchStrategicPartnerLoginInfoByPageId();
+			this.passwordless = true;
+			this.partnerContentId = 'hitachi';
+			this.needsNames = true;
 		}
 	},
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: { pageId: this.partnerContentId }
-			}).then(res => {
-				const spLoginInfo = res?.data?.strategicPartnerLoginInfoByPageId;
-				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
-				this.fetchedLogo = {
-					url: logo?.fields?.file?.url || '',
-					alt: logo?.fields?.title || '',
-				};
-			}).catch(error => {
-				console.error('Error fetching strategic partner info:', error);
-			});
+		preFetch: true,
+		query: strategicPartnerLoginInfoByPageIdQuery,
+		preFetchVariables({ route }) {
+			return { pageId: route.query.partnerContentId ?? '' };
+		},
+		variables() {
+			return { pageId: this.$route.query.partnerContentId ?? '' };
+		},
+		result(result) {
+			const spLoginInfo = result?.strategicPartnerLoginInfoByPageId;
+			const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+			this.fetchedLogo = {
+				url: logo?.fields?.file?.url || '',
+				alt: logo?.fields?.title || '',
+			};
 		}
 	},
 	methods: {
@@ -276,21 +275,6 @@ export default {
 				event.stopPropagation();
 				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
-		},
-		fetchStrategicPartnerLoginInfoByPageId() {
-			this.apollo.query({
-				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: { pageId: this.partnerContentId }
-			}).then(res => {
-				const spLoginInfo = res?.data?.strategicPartnerLoginInfoByPageId;
-				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
-				this.fetchedLogo = {
-					url: logo?.fields?.file?.url || '',
-					alt: logo?.fields.title || '',
-				};
-			}).catch(error => {
-				console.error('Error fetching strategic partner info:', error);
-			});
 		}
 	}
 
