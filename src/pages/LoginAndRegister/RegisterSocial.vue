@@ -4,14 +4,14 @@
 			<div v-if="passwordless">
 				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
 					<div
+						v-if="fetchedLogoUrl"
 						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
 							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
 							tw-border-white tw-border-4 logo"
 					>
 						<img
-							v-if="strategicPartnerLogo"
-							:src="strategicPartnerLogo.url"
-							:alt="strategicPartnerLogo.alt"
+							:src="fetchedLogoUrl"
+							:alt="fetchedLogoAltText"
 							class="tw-w-full tw-h-full tw-object-contain"
 						>
 					</div>
@@ -132,6 +132,7 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
@@ -155,6 +156,12 @@ export default {
 		validationMixin,
 	],
 	inject: ['apollo', 'cookieStore'],
+	props: {
+		partnerContentId: {
+			type: String,
+			default: null,
+		},
+	},
 	data() {
 		return {
 			captcha: '',
@@ -168,8 +175,8 @@ export default {
 			newsConsent: false,
 			showSsoTerms: false,
 			passwordless: false,
-			fetchedLogo: null,
-			partnerContentId: this.$route.query.partnerContentId || ''
+			fetchedLogoAltText: null,
+			fetchedLogoUrl: null,
 		};
 	},
 	computed: {
@@ -191,9 +198,6 @@ export default {
 			const inner = parts.length ? `${parts.join(', ')} and ${last}` : last;
 			return `To finish creating your account, please ${inner} below.`;
 		},
-		strategicPartnerLogo() {
-			return this.fetchedLogo;
-		}
 	},
 	validations() {
 		const validations = {};
@@ -212,6 +216,21 @@ export default {
 		return validations;
 	},
 	created() {
+		if (this.partnerContentId) {
+			try {
+				const partnerContentData = this.apollo.readQuery({
+					query: strategicPartnerLoginInfoByPageIdQuery,
+					variables: { pageId: this.$route.query.partnerContentId ?? '' }
+				});
+				const spLoginInfo = partnerContentData?.strategicPartnerLoginInfoByPageId;
+				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+				this.fetchedLogoUrl = logo?.fields?.file?.url || '';
+				this.fetchedLogoAltText = logo?.fields?.title || '';
+			} catch (e) {
+				logReadQueryError(e, 'RegisterSocial strategicPartnerLoginInfoByPageIdQuery');
+			}
+		}
+
 		if (this.$route.query.captcha) {
 			this.needsCaptcha = true;
 		}
@@ -230,9 +249,6 @@ export default {
 		if (this.$route.query.passwordless) {
 			this.passwordless = true;
 		}
-		if (this.$route.query.partnerContentId) {
-			this.partnerContentId = this.$route.query.partnerContentId;
-		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
 			&& !this.$route.query.names
@@ -244,27 +260,16 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
+			const pageId = route?.query?.partnerContentId;
+			if (!pageId) {
+				return Promise.resolve();
+			}
 			return client.query({
-				query: strategicPartnerLoginInfoByPageIdQuery
-			}).catch(errorResponse => {
-				console.error(errorResponse);
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: { pageId: route.query.partnerContentId ?? '' }
 			});
 		},
-		preFetchVariables({ route }) {
-			return { pageId: route.query.partnerContentId ?? '' };
-		},
-		variables() {
-			return { pageId: this.partnerContentId };
-		},
-		result(result) {
-			const spLoginInfo = result?.strategicPartnerLoginInfoByPageId;
-			const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
-			this.fetchedLogo = {
-				url: logo?.fields?.file?.url || '',
-				alt: logo?.fields?.title || '',
-			};
-		}
 	},
 	methods: {
 		postRegisterSocialForm(event) {
