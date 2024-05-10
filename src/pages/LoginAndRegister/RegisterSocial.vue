@@ -1,6 +1,31 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
+			<div v-if="passwordless">
+				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
+					<div
+						v-if="fetchedLogoUrl"
+						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
+							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
+							tw-border-white tw-border-4 logo"
+					>
+						<img
+							:src="fetchedLogoUrl"
+							:alt="fetchedLogoAltText"
+							class="tw-w-full tw-h-full tw-object-contain"
+						>
+					</div>
+					<div
+						class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white
+					tw-border-4 tw-overflow-hidden logo"
+					>
+						<img
+							src="../../assets/images/kiva_k_cutout_new.jpg"
+							alt="Kiva Logo" class="tw-w-full tw-h-full tw-object-cover"
+						>
+					</div>
+				</div>
+			</div>
 			<h1 class="tw-text-h2 tw-mb-2">
 				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
 			</h1>
@@ -66,7 +91,7 @@
 					{{ !passwordless
 						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
 						: `Receive email updates from Kiva (including borrower updates and promos).
-							You can unsubscribe anytime. (optional)`
+								You can unsubscribe anytime. (optional)`
 					}}
 				</kv-base-input>
 				<div class="tw-mb-4">
@@ -107,9 +132,11 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
+import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -128,6 +155,13 @@ export default {
 	mixins: [
 		validationMixin,
 	],
+	inject: ['apollo', 'cookieStore'],
+	props: {
+		partnerContentId: {
+			type: String,
+			default: null,
+		},
+	},
 	data() {
 		return {
 			captcha: '',
@@ -141,6 +175,8 @@ export default {
 			newsConsent: false,
 			showSsoTerms: false,
 			passwordless: false,
+			fetchedLogoAltText: null,
+			fetchedLogoUrl: null,
 		};
 	},
 	computed: {
@@ -180,6 +216,21 @@ export default {
 		return validations;
 	},
 	created() {
+		if (this.partnerContentId) {
+			try {
+				const partnerContentData = this.apollo.readQuery({
+					query: strategicPartnerLoginInfoByPageIdQuery,
+					variables: { pageId: this.$route.query.partnerContentId ?? '' }
+				});
+				const spLoginInfo = partnerContentData?.strategicPartnerLoginInfoByPageId;
+				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+				this.fetchedLogoUrl = logo?.fields?.file?.url || '';
+				this.fetchedLogoAltText = logo?.fields?.title || '';
+			} catch (e) {
+				logReadQueryError(e, 'RegisterSocial strategicPartnerLoginInfoByPageIdQuery');
+			}
+		}
+
 		if (this.$route.query.captcha) {
 			this.needsCaptcha = true;
 		}
@@ -208,6 +259,18 @@ export default {
 			this.needsNews = true;
 		}
 	},
+	apollo: {
+		preFetch(config, client, { route }) {
+			const pageId = route?.query?.partnerContentId;
+			if (!pageId) {
+				return Promise.resolve();
+			}
+			return client.query({
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: { pageId: route.query.partnerContentId ?? '' }
+			});
+		},
+	},
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
@@ -220,8 +283,14 @@ export default {
 				event.stopPropagation();
 				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
-		},
+		}
 	}
 
 };
 </script>
+
+<style scoped>
+.logo {
+	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+}
+</style>
