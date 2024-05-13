@@ -81,4 +81,4 @@ jobs:
         with:
           dockerfile_target: "release"
           push: true
-          # upload_source_dir: "ui/dist/static"
+          upload_source_dir: "ui/dist"
