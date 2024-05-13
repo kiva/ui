@@ -162,21 +162,23 @@ export default {
 		}
 	},
 	created() {
-		const { version } = this.apollo.readFragment({
-			id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
+		if (!isExcludedUrl(globalBannerDenyList, [], this.$route.path)) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
 
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'promo',
-			DEPOSIT_REWARD_EXP_KEY,
-			'EXP-MP-72-Apr2024'
-		);
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'promo',
+				DEPOSIT_REWARD_EXP_KEY,
+				'EXP-MP-72-Apr2024'
+			);
 
-		if (version === 'b' && this.$route.path !== '/checkout') {
-			this.enableDepositExperiment = true;
+			if (version === 'b' && this.$route.path !== '/checkout') {
+				this.enableDepositExperiment = true;
+			}
 		}
 	}
 };
