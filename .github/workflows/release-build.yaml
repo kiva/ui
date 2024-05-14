@@ -82,4 +82,4 @@ jobs:
           dockerfile_target: "release"
           push: true
           upload_source_dir: "ui/dist"
-          upload_file_glob: "**/!(vue-ssr-client-manifest.json|vue-ssr-server-bundle.json)"
+          # upload_file_glob: "**/!(vue-ssr-client-manifest.json|vue-ssr-server-bundle.json)"
