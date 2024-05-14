@@ -68,6 +68,12 @@ const loggedInLargeCart = {
 };
 
 const loggedInWithOneTeam = {
+	general: {
+		teamsMenuEnabled: {
+			key: 'teams_in_navbar',
+			value: true,
+		}
+	},
 	my: {
 		...loggedIn.my,
 		teams: {
@@ -87,6 +93,12 @@ const loggedInWithOneTeam = {
 };
 
 const loggedInWithMultipleTeams = {
+	general: {
+		teamsMenuEnabled: {
+			key: 'teams_in_navbar',
+			value: true,
+		}
+	},
 	my: {
 		...loggedIn.my,
 		teams: {
