@@ -17,6 +17,7 @@
 			</span>
 		</router-link>
 		<kv-dropdown
+			v-if="totalTeams"
 			:controller="teamMenuId"
 			class="dropdown-list"
 			data-testid="header-teams-dropdown-list"
