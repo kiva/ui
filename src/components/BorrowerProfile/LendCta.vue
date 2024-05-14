@@ -412,6 +412,7 @@ import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 export default {
 	name: 'LendCta',
@@ -432,6 +433,10 @@ export default {
 		enableHugeAmount: {
 			type: Boolean,
 			default: false,
+		},
+		teamData: {
+			type: Object,
+			default: null,
 		},
 	},
 	components: {
@@ -586,6 +591,15 @@ export default {
 		async addToBasket(lendAmount = 0) {
 			if (lendAmount) {
 				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
+			if (this.teamData?.id) {
+				const challenge = {
+					teamId: this.teamData.id,
+					teamName: this.teamData?.name ?? '',
+					loanId: this.loanId,
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
 			}
 
 			this.isAdding = true;
