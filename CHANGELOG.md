@@ -1,3 +1,15 @@
+## [2.739.0](https://github.com/kiva/ui/compare/v2.738.0...v2.739.0) (2024-05-14)
+
+
+### 🎉 New Features
+
+* assign team to loan in bp ([6866316](https://github.com/kiva/ui/commit/6866316d03e6fad8caebc73943c8f05f24d498a3))
+
+
+### 🧹 Chores
+
+* **release:** 2.739.0-rc.1 [skip ci] ([50bbd3c](https://github.com/kiva/ui/commit/50bbd3ca85cc0a461039652e4840261b2c4a38df))
+
 ## [2.739.0-rc.1](https://github.com/kiva/ui/compare/v2.738.0...v2.739.0-rc.1) (2024-05-14)
 
 
