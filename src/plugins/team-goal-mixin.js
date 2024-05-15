@@ -1,4 +1,4 @@
-import { differenceInCalendarDays } from 'date-fns';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 export default {
 	props: {
@@ -46,11 +46,13 @@ export default {
 			return this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
 		},
 		daysLeft() {
-			const start = this.goal?.startDate ? new Date(this.goal?.startDate) : new Date();
 			const end = this.goal?.endDate ? new Date(this.goal?.endDate) : new Date();
-			return differenceInCalendarDays(
+			return formatDistanceToNowStrict(
 				end,
-				start,
+				{
+					unit: 'day',
+					roundingMethod: 'ceil'
+				}
 			);
 		},
 		challengeDescription() {
