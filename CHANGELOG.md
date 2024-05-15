@@ -1,3 +1,22 @@
+## [2.739.1](https://github.com/kiva/ui/compare/v2.739.0...v2.739.1) (2024-05-15)
+
+
+### 🐛 Bugfixes
+
+* count month days for teams challenge days left ([ff2ce8b](https://github.com/kiva/ui/commit/ff2ce8b119c07aa0c4f2abc46881e4bdf4fc8b2b))
+* differenceInDays doesn't count fractional days ([6acff95](https://github.com/kiva/ui/commit/6acff95788d17329697385403951ed8e9d43b91e))
+
+
+### 🪚 Refactors
+
+* using difference in days ([ee36d54](https://github.com/kiva/ui/commit/ee36d54582cebf8cf0b59735c261f071e36cfffd))
+* using formatDistanceToNowStrict to get days left ([c98bf16](https://github.com/kiva/ui/commit/c98bf16ebbe68c935c79221558c96e5407b92847))
+
+
+### 🧹 Chores
+
+* **release:** 2.739.1-rc.1 [skip ci] ([5918666](https://github.com/kiva/ui/commit/5918666eb82a762434ea52258f6e0f370fa9cc58))
+
 ## [2.739.1-rc.1](https://github.com/kiva/ui/compare/v2.739.0...v2.739.1-rc.1) (2024-05-15)
 
 
