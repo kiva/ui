@@ -1,4 +1,4 @@
-import { differenceInDays } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 
 export default {
 	props: {
@@ -48,7 +48,7 @@ export default {
 		daysLeft() {
 			const start = this.goal?.startDate ? new Date(this.goal?.startDate) : new Date();
 			const end = this.goal?.endDate ? new Date(this.goal?.endDate) : new Date();
-			return differenceInDays(
+			return differenceInCalendarDays(
 				end,
 				start,
 			);
