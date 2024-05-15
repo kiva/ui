@@ -44,6 +44,10 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+      - name: build static assets
+        uses: ./.github/actions/npm-run
+        with:
+          command: "build"
       - name: docker-build
         uses: ./.github/actions/docker-build-push
         if: github.event_name == 'pull_request'
@@ -76,10 +80,18 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+      - name: build static assets
+        uses: ./.github/actions/npm-run
+        with:
+          command: "build"
+      - name: upload static assets
+        uses: ./.github/actions/upload-static-assets
+        with:
+          source_dir: "ui/dist"
+          include: "static/*"
+          cache_control: "public,max-age=31536000"
       - name: docker-push
         uses: ./.github/actions/docker-build-push
         with:
           dockerfile_target: "release"
           push: true
-          upload_source_dir: "ui/dist"
-          upload_include: "static/*"
