@@ -219,7 +219,7 @@
 
 							<!-- Teams -->
 							<teams-menu
-								v-if="!isVisitor"
+								v-if="!isVisitor && teamsMenuEnabled"
 								class="tw-hidden lg:tw-block"
 								:teams="teams"
 							/>
@@ -578,6 +578,7 @@ import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup'
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -643,6 +644,7 @@ export default {
 			isMobile: false,
 			basketTotal: 0,
 			teams: null,
+			teamsMenuEnabled: false,
 		};
 	},
 	props: {
@@ -760,6 +762,7 @@ export default {
 				return sum + +(item?.price ?? 0);
 			}, 0) ?? 0;
 			this.teams = data?.my?.teams ?? {};
+			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
