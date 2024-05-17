@@ -1,3 +1,11 @@
+## [2.739.2-rc.1](https://github.com/kiva/ui/compare/v2.739.1...v2.739.2-rc.1) (2024-05-17)
+
+
+### 🐛 Bugfixes
+
+* amount lent value ([f19b462](https://github.com/kiva/ui/commit/f19b462121f2a8b681d44f95918aface834fdc36))
+* convert amountLent to number ([754b762](https://github.com/kiva/ui/commit/754b76259ba799e824597a4f8ea62bb103ed7f47))
+
 ## [2.739.1](https://github.com/kiva/ui/compare/v2.739.0...v2.739.1) (2024-05-15)
 
 
