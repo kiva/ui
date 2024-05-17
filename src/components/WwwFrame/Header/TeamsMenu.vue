@@ -29,7 +29,7 @@
 							'topnav',
 							'click',
 							'lending-teams',
-							'my-team\'s-activity',
+							'my-teams-activity',
 							`${teamsData[0].team.teamPublicId}`
 						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}`"
@@ -43,7 +43,7 @@
 							'topnav',
 							'click',
 							'lending-teams',
-							'my-team\'s-impact',
+							'my-teams-impact',
 							`${teamsData[0].team.teamPublicId}`
 						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}/impact`"
