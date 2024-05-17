@@ -28,9 +28,7 @@ export default {
 		},
 		percentageFunded() {
 			const targetAmount = this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
-			const fundedAmount = this.goal?.participation?.values?.reduce((sum, value) => {
-				return sum + (value?.amountLent ?? 0);
-			}, 0) ?? 0;
+			const fundedAmount = this.goal?.participation?.amountLent ?? 0;
 
 			return Math.floor((fundedAmount / targetAmount) * 100) || 0;
 		},
@@ -38,9 +36,7 @@ export default {
 			return this.goal?.participation?.totalCount ?? 0;
 		},
 		fundedAmount() {
-			return this.goal?.participation?.values?.reduce((sum, value) => {
-				return sum + (value?.amountLent ?? 0);
-			}, 0) ?? 0;
+			return this.goal?.participation?.amountLent ?? 0;
 		},
 		totalAmount() {
 			return this.goal?.targets?.values?.[0]?.targetLendAmount ?? 0;
