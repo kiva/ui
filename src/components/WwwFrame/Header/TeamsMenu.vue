@@ -3,12 +3,12 @@
 		<router-link
 			:id="teamMenuId"
 			to="/teams"
-			data-testid="header-teams"
+			data-testid="header-lending-teams"
 			class="header__button tw-inline-flex"
-			v-kv-track-event="['TopNav','click-Teams']"
+			v-kv-track-event="['topnav','click', 'lending-teams']"
 		>
 			<span class="tw-flex">
-				Teams
+				Lending Teams
 				<kv-material-icon
 					v-if="totalTeams"
 					class="tw-w-3 tw-h-3 tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
@@ -20,14 +20,16 @@
 			v-if="totalTeams"
 			:controller="teamMenuId"
 			class="dropdown-list"
-			data-testid="header-teams-dropdown-list"
+			data-testid="header-lending-teams-dropdown-list"
 		>
 			<ul v-if="totalTeams === 1">
 				<li>
 					<a
 						v-kv-track-event="[
-							'TopNav',
-							'click-Teams-My Team\'s activity',
+							'topnav',
+							'click',
+							'lending-teams',
+							'my-team\'s-activity',
 							`${teamsData[0].team.teamPublicId}`
 						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}`"
@@ -38,8 +40,10 @@
 				<li>
 					<a
 						v-kv-track-event="[
-							'TopNav',
-							'click-Teams-My Team\'s impact',
+							'topnav',
+							'click',
+							'lending-teams',
+							'my-team\'s-impact',
 							`${teamsData[0].team.teamPublicId}`
 						]"
 						:href="`/team/${teamsData[0].team.teamPublicId}/impact`"
@@ -47,16 +51,11 @@
 						My Team's impact
 					</a>
 				</li>
-				<li>
-					<a v-kv-track-event="['TopNav','click-Teams-Join another team']" href="/teams">
-						Join another team
-					</a>
-				</li>
 			</ul>
 			<ul v-else style="width: 9rem;">
 				<li v-for="{ team } in teamsData" :key="team.id">
 					<a
-						v-kv-track-event="['TopNav',`click-Teams-${team.name}`]"
+						v-kv-track-event="['topnav', 'click', 'lending-teams', team.name]"
 						:href="`/team/${team.teamPublicId}`"
 						class="tw-whitespace-nowrap tw-text-ellipsis tw-overflow-hidden"
 					>
@@ -64,7 +63,15 @@
 					</a>
 				</li>
 				<li v-if="totalTeams > teamsData.length">
-					<a v-kv-track-event="['TopNav','click-Teams-Join another team']" href="/teams/my-teams">
+					<a
+						v-kv-track-event="[
+							'topnav',
+							'click',
+							'lending-teams',
+							'view-all-my-teams'
+						]"
+						href="/teams/my-teams"
+					>
 						View all my teams
 					</a>
 				</li>

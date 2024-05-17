@@ -114,7 +114,7 @@ describe('TeamsMenu', () => {
 		};
 		const { queryByTestId } = renderTeamsMenu(props);
 
-		const anchor = queryByTestId('header-teams');
+		const anchor = queryByTestId('header-lending-teams');
 		expect(anchor.getAttribute('to')).toBe('/teams');
 	});
 
@@ -126,13 +126,11 @@ describe('TeamsMenu', () => {
 
 		const activity = queryByText("My Team's activity");
 		const impact = queryByText("My Team's impact");
-		const join = queryByText('Join another team');
 
 		const { teamPublicId } = props.teams.values[0].team;
 
 		expect(activity.getAttribute('href')).toBe(`/team/${teamPublicId}`);
 		expect(impact.getAttribute('href')).toBe(`/team/${teamPublicId}/impact`);
-		expect(join.getAttribute('href')).toBe('/teams');
 	});
 
 	it('should show 3 teams', async () => {
