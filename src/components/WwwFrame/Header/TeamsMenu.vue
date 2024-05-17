@@ -32,7 +32,7 @@
 							'my-teams-activity',
 							onlyTeamId
 						]"
-						:href="`/team/${onlyTeamId}`"
+						:href="`/team/${onlyTeamPublicId}`"
 					>
 						My Team's activity
 					</a>
@@ -46,7 +46,7 @@
 							'my-teams-impact',
 							onlyTeamId
 						]"
-						:href="`/team/${onlyTeamId}/impact`"
+						:href="`/team/${onlyTeamPublicId}/impact`"
 					>
 						My Team's impact
 					</a>
@@ -114,6 +114,9 @@ export default {
 		},
 		onlyTeamId() {
 			return this.teamsData?.[0]?.team?.id ?? null;
+		},
+		onlyTeamPublicId() {
+			return this.teamsData?.[0]?.team?.teamPublicId ?? null;
 		}
 	},
 };
