@@ -217,6 +217,13 @@
 								Borrow
 							</router-link>
 
+							<!-- Teams -->
+							<teams-menu
+								v-if="!isVisitor && teamsMenuEnabled"
+								class="tw-hidden lg:tw-block"
+								:teams="teams"
+							/>
+
 							<!-- About -->
 							<div class="tw-group" :class="{ 'tw-hidden md:tw-block': !isVisitor }">
 								<router-link
@@ -570,6 +577,8 @@ import {
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
+import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -603,6 +612,7 @@ export default {
 		SearchBar,
 		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
+		TeamsMenu,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -633,6 +643,8 @@ export default {
 			hasEverLoggedIn: false,
 			isMobile: false,
 			basketTotal: 0,
+			teams: null,
+			teamsMenuEnabled: false,
 		};
 	},
 	props: {
@@ -749,6 +761,8 @@ export default {
 			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
 				return sum + +(item?.price ?? 0);
 			}, 0) ?? 0;
+			this.teams = data?.my?.teams ?? {};
+			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {

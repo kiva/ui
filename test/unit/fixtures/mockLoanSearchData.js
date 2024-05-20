@@ -14,6 +14,7 @@ export const mockState = {
 	partnerId: [1],
 	isMatchable: true,
 	flexibleFundraisingEnabled: false,
+	activityId: [9],
 };
 
 export const savedSearchParams = {
@@ -111,6 +112,10 @@ export const mockAllFacets = {
 	],
 	partnerIds: [1, 2, 3],
 	partnerNames: ['AAA', 'BBB', 'CCC'],
+	activityFacets: [
+		{ id: 1, name: 'Activity 1', __typename: 'Activity' },
+		{ id: 2, name: 'Activity 2', __typename: 'Activity' }
+	],
 };
 
 export const mockTransformedMiddleEast = (numLoansFundraising = 44) => ({

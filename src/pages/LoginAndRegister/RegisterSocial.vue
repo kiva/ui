@@ -1,8 +1,33 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
+			<div v-if="passwordless">
+				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
+					<div
+						v-if="fetchedLogoUrl"
+						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
+							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
+							tw-border-white tw-border-4 logo"
+					>
+						<img
+							:src="fetchedLogoUrl"
+							:alt="fetchedLogoAltText"
+							class="tw-w-full tw-h-full tw-object-contain"
+						>
+					</div>
+					<div
+						class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white
+					tw-border-4 tw-overflow-hidden logo"
+					>
+						<img
+							src="../../assets/images/kiva_k_cutout_new.jpg"
+							alt="Kiva Logo" class="tw-w-full tw-h-full tw-object-cover"
+						>
+					</div>
+				</div>
+			</div>
 			<h1 class="tw-text-h2 tw-mb-2">
-				One last thing!
+				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
@@ -48,10 +73,10 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the Kiva
+					I have read and agree to the
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
-					<a href="/legal/privacy" target="_blank">Privacy Policy</a>
+					<a href="/legal/privacy" target="_blank">Privacy Policy</a> (required)
 					<template #checked>
 						You must agree to the Kiva Terms of Use and Privacy Policy.
 					</template>
@@ -63,7 +88,11 @@
 					v-show="needsNews"
 					v-model="newsConsent"
 				>
-					I want to receive updates about my loans, Kiva news, and promotions in my inbox
+					{{ !passwordless
+						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
+						: `Receive email updates from Kiva (including borrower updates and promos).
+								You can unsubscribe anytime. (optional)`
+					}}
 				</kv-base-input>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
@@ -103,9 +132,11 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
+import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
@@ -124,6 +155,13 @@ export default {
 	mixins: [
 		validationMixin,
 	],
+	inject: ['apollo', 'cookieStore'],
+	props: {
+		partnerContentId: {
+			type: String,
+			default: null,
+		},
+	},
 	data() {
 		return {
 			captcha: '',
@@ -136,6 +174,9 @@ export default {
 			newAcctTerms: false,
 			newsConsent: false,
 			showSsoTerms: false,
+			passwordless: false,
+			fetchedLogoAltText: null,
+			fetchedLogoUrl: null,
 		};
 	},
 	computed: {
@@ -175,6 +216,21 @@ export default {
 		return validations;
 	},
 	created() {
+		if (this.partnerContentId) {
+			try {
+				const partnerContentData = this.apollo.readQuery({
+					query: strategicPartnerLoginInfoByPageIdQuery,
+					variables: { pageId: this.$route.query.partnerContentId ?? '' }
+				});
+				const spLoginInfo = partnerContentData?.strategicPartnerLoginInfoByPageId;
+				const logo = spLoginInfo?.contentful?.entry?.fields?.primaryLogo;
+				this.fetchedLogoUrl = logo?.fields?.file?.url || '';
+				this.fetchedLogoAltText = logo?.fields?.title || '';
+			} catch (e) {
+				logReadQueryError(e, 'RegisterSocial strategicPartnerLoginInfoByPageIdQuery');
+			}
+		}
+
 		if (this.$route.query.captcha) {
 			this.needsCaptcha = true;
 		}
@@ -190,6 +246,9 @@ export default {
 		if (this.$route.query.sso) {
 			this.showSsoTerms = true;
 		}
+		if (this.$route.query.passwordless) {
+			this.passwordless = true;
+		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
 			&& !this.$route.query.names
@@ -199,6 +258,18 @@ export default {
 			this.needsTerms = true;
 			this.needsNews = true;
 		}
+	},
+	apollo: {
+		preFetch(config, client, { route }) {
+			const pageId = route?.query?.partnerContentId;
+			if (!pageId) {
+				return Promise.resolve();
+			}
+			return client.query({
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: { pageId: route.query.partnerContentId ?? '' }
+			});
+		},
 	},
 	methods: {
 		postRegisterSocialForm(event) {
@@ -212,8 +283,14 @@ export default {
 				event.stopPropagation();
 				this.$kvTrackEvent('Register', 'error-register-social-form-invalid-input');
 			}
-		},
+		}
 	}
 
 };
 </script>
+
+<style scoped>
+.logo {
+	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+}
+</style>

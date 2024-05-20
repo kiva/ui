@@ -31,5 +31,6 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		}
 		isMatchable
 		flexibleFundraisingEnabled
+		activityId
 	}
 }

@@ -23,6 +23,7 @@ module.exports = merge(base, devVm, {
 				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `${transport}://${monolithHostname}/ui-login?force=true`,
 				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: `${transport}://${monolithHostname}/ui-login?force=true`,
 			},
+			apiAudience: `${transport}://${apiHostname}/graphql`,
 			browserCallbackUri: `${transport}://${monolithHostname}/process-browser-auth`,
 			serverCallbackUri: `${transport}://${monolithHostname}/process-ssr-auth`,
 		},

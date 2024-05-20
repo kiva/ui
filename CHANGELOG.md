@@ -1,3 +1,80 @@
+## [2.740.0-rc.1](https://github.com/kiva/ui/compare/v2.739.2...v2.740.0-rc.1) (2024-05-20)
+
+
+### 🎉 New Features
+
+* activity support on filter page ([#5302](https://github.com/kiva/ui/issues/5302)) ([01b1fdb](https://github.com/kiva/ui/commit/01b1fdbdabec73c49c6478ee7086d9295dc223d0))
+* add feature flag to teams navbar ([adb36cc](https://github.com/kiva/ui/commit/adb36cc514615c8f2a8a2988a83d41ab74347fb0))
+* add teams to navbar on desktop ([fd85813](https://github.com/kiva/ui/commit/fd858138629f566630761997e49ca3f7a116fe9d))
+* added prefetch ([6fb95fb](https://github.com/kiva/ui/commit/6fb95fb76db330d020fad4259a4148a74c1b619e))
+* assign team to loan in bp ([ff22bc9](https://github.com/kiva/ui/commit/ff22bc9315a3448f50d10ed729e8d91c0e852cce))
+* build & upload static assets before docker image ([d143a80](https://github.com/kiva/ui/commit/d143a801e792ad56d325e450ed09de16a0a1f5e6))
+* content changes to registration form for passwordless case ([aa4f387](https://github.com/kiva/ui/commit/aa4f387bbd5ac619297ef996386f73e09760d845))
+* edits to get logo data in right ([996020d](https://github.com/kiva/ui/commit/996020d68fd53c29d44fa4d99fcc413245fa0fc6))
+* kv components package updated ([#5303](https://github.com/kiva/ui/issues/5303)) ([903d3bd](https://github.com/kiva/ui/commit/903d3bdd21b6b36cc9ab3cad341b27a0b7ef998d))
+* logo rendering ([418aa3f](https://github.com/kiva/ui/commit/418aa3f2bd3700947e6d2a3dcbc9cd2eaca646e7))
+* logo rendering on register form for passwordless ([b7571ea](https://github.com/kiva/ui/commit/b7571eabdafa7c6885659101c5438a5b837605d7))
+* Navbar copy and event changes in teams ([07f6e44](https://github.com/kiva/ui/commit/07f6e441f87f29121adf7226d56b254ea9cb8d4f))
+* remove border on reg form ([1c3922a](https://github.com/kiva/ui/commit/1c3922a8043f1b0ef0db3adc516ccc8f4386dd1f))
+* restart upload process with new action changes MP-226 ([7bdff13](https://github.com/kiva/ui/commit/7bdff13398f5fc8d3717596e31a8ea218952230f))
+* try new upload to s3 optional functionality ([f2805b6](https://github.com/kiva/ui/commit/f2805b6296297616afdf1db14684694e3feb2e02))
+
+
+### 🐛 Bugfixes
+
+* add team id to event ([7122a92](https://github.com/kiva/ui/commit/7122a92c7131f28cc562d1036ec86cba3a219440))
+* altered prefetch ([de11d68](https://github.com/kiva/ui/commit/de11d6870697d36d1df363f14166e975f34c63dd))
+* amount lent value ([d99ae7c](https://github.com/kiva/ui/commit/d99ae7c9a300e32b8ec000e67fa55825765b1160))
+* change to one line header ([999ca7b](https://github.com/kiva/ui/commit/999ca7b32c1523dc1f394cffa383236d6d188063))
+* comment out upload file glob pattern for now ([0eef181](https://github.com/kiva/ui/commit/0eef1817305da4d605571b787a45059a70d47368))
+* convert amountLent to number ([250fff8](https://github.com/kiva/ui/commit/250fff84bd94c702835ffe330e7c9dcbc0b74953))
+* count month days for teams challenge days left ([f073f37](https://github.com/kiva/ui/commit/f073f37fdb5a73502ac9e2e02b8c7137a347c45e))
+* debugger ([0c004b3](https://github.com/kiva/ui/commit/0c004b32b65bab44cd7bd142b8ab9a188c6de0cf))
+* differenceInDays doesn't count fractional days ([f932f62](https://github.com/kiva/ui/commit/f932f62c1701ff58b4b59ba4a825df7f2e23977b))
+* disable file compression MP-212 ([b69ef8a](https://github.com/kiva/ui/commit/b69ef8ac386c8967b01602338e9ea62b12a9d31d))
+* disable new upload step ([6c193c8](https://github.com/kiva/ui/commit/6c193c86fb9c577ac12ee07bceae580eb1c27bd8))
+* edit to prefetch ([cd9723d](https://github.com/kiva/ui/commit/cd9723dd1781fcc5ff317160bc3be81b119628ab))
+* edits to address pr comments ([ececeb2](https://github.com/kiva/ui/commit/ececeb23014f4249e7f379a545ad1f6092a6f669))
+* following exclusion rules to show banner ([d4c232e](https://github.com/kiva/ui/commit/d4c232e527e9b6d3aa1a451f91fcd2dcd2baf239))
+* get borrower applicant cookie again ([3dfe864](https://github.com/kiva/ui/commit/3dfe864f9e14cca68ce407d0bca31ed534a9ea9c))
+* ignore server bundle and client manifest when uploading static files MP-212 ([350155b](https://github.com/kiva/ui/commit/350155b015c9356a770099b633b66c53a6fb7aa9))
+* lint ([20ee074](https://github.com/kiva/ui/commit/20ee0743ceb167f939b5c3ce9fc3a09366b9dc98))
+* make change to terms checkboxes global ([59378a7](https://github.com/kiva/ui/commit/59378a77d2f477bbc3513234c5f59e16cfd3acc2))
+* moved fetch to prefetch query ([0b717c2](https://github.com/kiva/ui/commit/0b717c25b6a78039caca9b8509bfe640f2c6f366))
+* prefetch edit ([c635376](https://github.com/kiva/ui/commit/c6353768b2020ba48f3280acd91ddf0876a5d4f6))
+* prefetch edit ([0f14d70](https://github.com/kiva/ui/commit/0f14d7087ff0f7ca30b6bc1301500938c51f8a5d))
+* really small dropdown being shown in no teams scenario ([36c3900](https://github.com/kiva/ui/commit/36c3900d97c15421e1e7f495fe3e1889569a415d))
+* reinstate registration message for passwordless ([1d5760b](https://github.com/kiva/ui/commit/1d5760b1ddd789ac4541293e6cc664b20ed79881))
+* remove extra slash from input ([afc7e31](https://github.com/kiva/ui/commit/afc7e31d307efe50b2b69f1b7640eaee8ce31f26))
+* remove lines that were added for local testing ([7d55e6a](https://github.com/kiva/ui/commit/7d55e6a19461c132f7f5f7ac44c81cbda034a36c))
+* remove punctuation from event ([2e47f96](https://github.com/kiva/ui/commit/2e47f96ba966bcf00eaa559805236efbf1ac8db0))
+* revert checking for kvborrowerapplicant ([a678f5e](https://github.com/kiva/ui/commit/a678f5e21cbf3725e76431dd5817e637c7dee545))
+* set api audience for tilt ([cff8f54](https://github.com/kiva/ui/commit/cff8f544a12702d02d072ecc1599fcebc7428d46))
+* solidify prefetch method and data access, guard for missing partnerContentId, add route prop ([dc343d3](https://github.com/kiva/ui/commit/dc343d37bf91d07ab0db7ce2ad756a35aed04091))
+* team public id for links ([0abb803](https://github.com/kiva/ui/commit/0abb803527356c1b96682aeb9af67de10f2ce85b))
+* teamId should be a number ([97b9563](https://github.com/kiva/ui/commit/97b9563260e31b7f820642ab184bd9643cb9d215))
+* use docker file from feature branch ([fc9ef01](https://github.com/kiva/ui/commit/fc9ef01df43dad5a630557f1a6c97311ef4914d8))
+* use upload_include to select static assets for upload MP-212 ([f4d0a14](https://github.com/kiva/ui/commit/f4d0a140d643d340be48988bd8b71e642644e025))
+
+
+### 🏗️ Build System
+
+* correct output directory for uploading MP-212 ([3da55e5](https://github.com/kiva/ui/commit/3da55e5f4794eec281315830d33fcbeaf39125ea))
+* switch to use-existing-assets branch for docker image until release ([833f879](https://github.com/kiva/ui/commit/833f879af96df5a3cbdc0bf12c809050c48e36db))
+* use main dockerfile ([388b14b](https://github.com/kiva/ui/commit/388b14b5722f638639bb8af980b86918ad3dabf9))
+
+
+### 🪚 Refactors
+
+* using difference in days ([f398fd0](https://github.com/kiva/ui/commit/f398fd0ba710a6c4324e2ad51d7d3254d9416383))
+* using formatDistanceToNowStrict to get days left ([ebca918](https://github.com/kiva/ui/commit/ebca91833e3708b19002a22a181ceb1c43156677))
+
+
+### 🧹 Chores
+
+* add README for Graphql to help understand our preFetch mechansims ([ef6d6d7](https://github.com/kiva/ui/commit/ef6d6d73a6bc6cd2ee5459e5d74360bd7e4d9774))
+* update kv-components ([9f1ff27](https://github.com/kiva/ui/commit/9f1ff2746b6081bf893a1b171ccd349717793490))
+
 ## [2.739.2](https://github.com/kiva/ui/compare/v2.739.1...v2.739.2) (2024-05-17)
 
 
