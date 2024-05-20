@@ -30,9 +30,9 @@
 							'click',
 							'lending-teams',
 							'my-teams-activity',
-							`${teamsData[0].team.teamPublicId}`
+							onlyTeamId
 						]"
-						:href="`/team/${teamsData[0].team.teamPublicId}`"
+						:href="`/team/${onlyTeamPublicId}`"
 					>
 						My Team's activity
 					</a>
@@ -44,9 +44,9 @@
 							'click',
 							'lending-teams',
 							'my-teams-impact',
-							`${teamsData[0].team.teamPublicId}`
+							onlyTeamId
 						]"
-						:href="`/team/${teamsData[0].team.teamPublicId}/impact`"
+						:href="`/team/${onlyTeamPublicId}/impact`"
 					>
 						My Team's impact
 					</a>
@@ -112,6 +112,12 @@ export default {
 		totalTeams() {
 			return this.teams?.totalCount ?? 0;
 		},
+		onlyTeamId() {
+			return this.teamsData?.[0]?.team?.id ?? null;
+		},
+		onlyTeamPublicId() {
+			return this.teamsData?.[0]?.team?.teamPublicId ?? null;
+		}
 	},
 };
 </script>
