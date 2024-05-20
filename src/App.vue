@@ -11,10 +11,16 @@
 </template>
 
 <script>
-import '@/assets/scss/tailwind/tailwind.css';
-import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
-import webmanifest from '@/manifest.webmanifest';
-import unbounceEventMixin from '@/plugins/unbounce-event-mixin';
+import '#src/assets/scss/tailwind/tailwind.css';
+import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
+import webmanifest from '#src/manifest.webmanifest';
+import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
+import { metaGlobReader } from '#src/util/importHelpers';
+
+const faviconsGlob = import.meta.glob('#src/assets/images/favicons/*.*', { eager: true });
+const favicons = metaGlobReader(faviconsGlob, '#src/assets/images/favicons/');
+const fontsGlob = import.meta.glob('#src/assets/fonts/*.*', { eager: true, query: '?url' });
+const fonts = metaGlobReader(fontsGlob, '#src/assets/fonts/');
 
 export default {
 	name: 'App',
@@ -27,11 +33,10 @@ export default {
 		TheTipMessage,
 	},
 	mixins: [unbounceEventMixin],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Loans that change lives',
 			titleTemplate: '%s | Kiva',
-			/* eslint-disable global-require */
 			meta: [
 				// Referrer policy
 				{
@@ -82,15 +87,15 @@ export default {
 				{ name: 'msapplication-TileColor', content: '#4faf4e' },
 				{
 					name: 'msapplication-TileImage',
-					content: require('@/assets/images/favicons/mstile-144x144.png')
+					content: favicons('mstile-144x144.png'),
 				},
 				{
 					name: 'msapplication-square70x70logo',
-					content: require('@/assets/images/favicons/mstile-70x70.png')
+					content: favicons('mstile-70x70.png'),
 				},
 				{
 					name: 'msapplication-square150x150logo',
-					content: require('@/assets/images/favicons/mstile-150x150.png')
+					content: favicons('mstile-150x150.png'),
 				},
 			]).concat([
 				// Twitter Tags
@@ -118,37 +123,37 @@ export default {
 				// Fonts in format woff2nt'
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
+					href: fonts('PostGrotesk-Medium.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-MediumItalic.woff2'),
+					href: fonts('PostGrotesk-MediumItalic.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-Book.woff2'),
+					href: fonts('PostGrotesk-Book.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-BookItalic.woff2'),
+					href: fonts('PostGrotesk-BookItalic.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				// apple icons
 				{
 					rel: 'apple-touch-icon',
-					href: require('@/assets/images/favicons/apple-touch-icon-120x120.png')
+					href: favicons('apple-touch-icon-120x120.png'),
 				},
 				{
 					rel: 'apple-touch-icon',
 					sizes: '152x152',
-					href: require('@/assets/images/favicons/apple-touch-icon-152x152.png')
+					href: favicons('apple-touch-icon-152x152.png'),
 				},
 				{
 					vmid: 'canonical',
@@ -177,36 +182,36 @@ export default {
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon.ico'),
+					href: favicons('favicon.ico'),
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon-16x16.png'),
+					href: favicons('favicon-16x16.png'),
 					sizes: '16x16'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon-32x32.png'),
+					href: favicons('favicon-32x32.png'),
 					sizes: '32x32'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon-96x96.png'),
+					href: favicons('favicon-96x96.png'),
 					sizes: '96x96'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon-128.png'),
+					href: favicons('favicon-128.png'),
 					sizes: '128x128'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					href: require('@/assets/images/favicons/favicon-196x196.png'),
+					href: favicons('favicon-196x196.png'),
 					sizes: '196x196'
 				}
 			].concat([
@@ -225,5 +230,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'app.scss';
+@import 'assets/scss/app';
 </style>

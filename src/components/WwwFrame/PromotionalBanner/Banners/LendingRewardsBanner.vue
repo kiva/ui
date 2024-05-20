@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div
 		class="content lending-rewards-banner"
 		v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
@@ -8,7 +8,7 @@
 </template>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lending-rewards-banner {
 	background-color: $kiva-green;

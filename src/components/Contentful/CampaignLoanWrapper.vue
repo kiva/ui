@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import CampaignProgressBar from '@/components/CorporateCampaign/CampaignProgressBar';
-import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
-import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
-import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
+import CampaignProgressBar from '#src/components/CorporateCampaign/CampaignProgressBar';
+import CampaignLoanFilters from '#src/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
+import CampaignLoanRow from '#src/components/CorporateCampaign/CampaignLoanRow';
+import CampaignLoanGridDisplay from '#src/components/CorporateCampaign/CampaignLoanGridDisplay';
 
 export default {
 	name: 'CampaignLoanWrapper',

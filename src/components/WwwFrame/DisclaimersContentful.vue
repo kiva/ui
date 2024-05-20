@@ -14,11 +14,11 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { gql } from '@apollo/client';
-import { settingEnabled, settingWithinDateRange } from '@/util/settingsUtils';
-import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { gql } from '@apollo/client/index';
+import { settingEnabled, settingWithinDateRange } from '#src/util/settingsUtils';
+import { globalBannerDenyList, isExcludedUrl } from '#src/util/urlUtils';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 const disclaimerQuery = gql`query disclaimerQuery($basketId: String) {
 	contentful {

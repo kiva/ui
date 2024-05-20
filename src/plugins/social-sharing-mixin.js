@@ -1,4 +1,4 @@
-import { getFullUrl } from '@/util/urlUtils';
+import { getFullUrl } from '#src/util/urlUtils';
 import clipboardCopy from 'clipboard-copy';
 
 /* This mixin depends on the component using it having the

@@ -1,4 +1,4 @@
-import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
+import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {

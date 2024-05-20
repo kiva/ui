@@ -36,10 +36,12 @@
 </template>
 
 <script>
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const monthlyGoodImagesRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
+const monthlyGoodImagesGlob = import.meta.glob('#src/assets/images/mg-hero-slideshow/*.*', { eager: true });
+const monthlyGoodImagesRequire = metaGlobReader(monthlyGoodImagesGlob, '#src/assets/images/mg-hero-slideshow/');
 
 export default {
 	name: 'MonthlyGoodModule',
@@ -50,16 +52,16 @@ export default {
 	data() {
 		return {
 			monthlyGoodImages: [
-				['small', monthlyGoodImagesRequire('./mg-hppromo-1-sm-std.jpg')],
-				['small retina', monthlyGoodImagesRequire('./mg-hppromo-1-sm-retina.jpg')],
-				['medium', monthlyGoodImagesRequire('./mg-hppromo-1-med-std.jpg')],
-				['medium retina', monthlyGoodImagesRequire('./mg-hppromo-1-med-retina.jpg')],
-				['large', monthlyGoodImagesRequire('./mg-hppromo-1-lg-std.jpg')],
-				['large retina', monthlyGoodImagesRequire('./mg-hppromo-1-lg-retina.jpg')],
-				['xga', monthlyGoodImagesRequire('./mg-hppromo-1-xga-std.jpg')],
-				['xga retina', monthlyGoodImagesRequire('./mg-hppromo-1-xga-retina.jpg')],
-				['wxga', monthlyGoodImagesRequire('./mg-hppromo-1-wxga-std.jpg')],
-				['wxga retina', monthlyGoodImagesRequire('./mg-hppromo-1-wxga-retina.jpg')]
+				['small', monthlyGoodImagesRequire('mg-hppromo-1-sm-std.jpg')],
+				['small retina', monthlyGoodImagesRequire('mg-hppromo-1-sm-retina.jpg')],
+				['medium', monthlyGoodImagesRequire('mg-hppromo-1-med-std.jpg')],
+				['medium retina', monthlyGoodImagesRequire('mg-hppromo-1-med-retina.jpg')],
+				['large', monthlyGoodImagesRequire('mg-hppromo-1-lg-std.jpg')],
+				['large retina', monthlyGoodImagesRequire('mg-hppromo-1-lg-retina.jpg')],
+				['xga', monthlyGoodImagesRequire('mg-hppromo-1-xga-std.jpg')],
+				['xga retina', monthlyGoodImagesRequire('mg-hppromo-1-xga-retina.jpg')],
+				['wxga', monthlyGoodImagesRequire('mg-hppromo-1-wxga-std.jpg')],
+				['wxga retina', monthlyGoodImagesRequire('mg-hppromo-1-wxga-retina.jpg')]
 			],
 		};
 	},
@@ -69,7 +71,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.image-sizing >>> img {
+.image-sizing :deep(img) {
 	@apply tw-w-full tw-object-cover tw-object-top;
 }
 
@@ -78,19 +80,15 @@ export default {
 <style lang="scss" scoped>
 
 .image-sizing__height {
-	::v-deep {
-		img {
-			max-height: 311px;
-		}
+	:deep(img) {
+		max-height: 311px;
 	}
 }
 
-@media (min-width: 734px) {
+@media (width >= 734px) {
 	.image-sizing__height {
-		::v-deep {
-			img {
-				max-height: 500px;
-			}
+		:deep(img) {
+			max-height: 500px;
 		}
 	}
 }

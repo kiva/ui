@@ -25,8 +25,8 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvSelect from '@/components/Kv/KvSelect';
+import { gql } from '@apollo/client/index';
+import KvSelect from '#src/components/Kv/KvSelect';
 
 export default {
 	name: 'RiskRatingDropdown',

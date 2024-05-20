@@ -12,7 +12,7 @@
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
 					@click.native="trackAdvancedFilters"
 				>
-					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
+					<img class="tw-w-2 tw-mr-1" src="#src/assets/images/tune.svg?url">
 					Advanced filters
 				</router-link>
 				<p class="tw-text-small">
@@ -164,29 +164,29 @@ import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import logReadQueryError from '@/util/logReadQueryError';
-import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import KvPagination from '@/components/Kv/KvPagination';
-import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import loanChannelPageQuery from '#src/graphql/query/loanChannelPage.graphql';
+import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
+import KvPagination from '#src/components/Kv/KvPagination';
+import PromoGridLoanCardExp from '#src/components/LoanCards/PromoGridLoanCardExp';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import {
 	preFetchChannel,
 	getCachedChannel,
 	watchChannelQuery,
 	getLoanChannel,
 	getFLSSQueryMap,
-} from '@/util/loanChannelUtils';
-import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
-import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
-import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
-import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import EmptyState from '@/components/LoanFinding/EmptyState';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+} from '#src/util/loanChannelUtils';
+import { runFacetsQueries, fetchLoanFacets } from '#src/util/loanSearch/dataUtils';
+import { transformIsoCodes } from '#src/util/loanSearch/filters/regions';
+import { FLSS_ORIGIN_CATEGORY } from '#src/util/flssUtils';
+import QuickFilters from '#src/components/LoansByCategory/QuickFilters/QuickFilters';
+import HelpmeChooseWrapper from '#src/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import EmptyState from '#src/components/LoanFinding/EmptyState';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
 
@@ -230,7 +230,7 @@ function getPageOffset(query, limit) {
 
 export default {
 	name: 'LoanChannelCategoryControl',
-	metaInfo() {
+	head() {
 		return {
 			title: this.metaTitle,
 			link: [
@@ -846,7 +846,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-count {
 	text-align: center;

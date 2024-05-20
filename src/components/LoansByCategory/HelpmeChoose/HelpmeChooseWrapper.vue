@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 

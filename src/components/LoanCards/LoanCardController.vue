@@ -69,19 +69,22 @@ import {
 	parseISO
 } from 'date-fns';
 import _forEach from 'lodash/forEach';
-import { isMatchAtRisk } from '@/util/loanUtils';
-import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
+import { defineAsyncComponent } from 'vue';
+import { isMatchAtRisk } from '#src/util/loanUtils';
+import loanFavoriteMutation from '#src/graphql/mutation/updateLoanFavorite.graphql';
 
-const AdaptiveMicroLoanCard = () => import('@/components/LoanCards/AdaptiveMicroLoanCard');
-const DetailedLoanCard = () => import('@/components/LoanCards/HoverLoanCard/DetailedLoanCard');
-const ExpandableLoanCard = () => import('@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard');
-const ExpandableLoanCardCollapsed = () => {
-	return import('@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed');
-};
-const FeaturedHeroLoan = () => import('@/components/LoansByCategory/FeaturedHeroLoan');
-const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
-const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
-const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
+const AdaptiveMicroLoanCard = defineAsyncComponent(() => import('#src/components/LoanCards/AdaptiveMicroLoanCard'));
+const DetailedLoanCard = defineAsyncComponent(() => import('#src/components/LoanCards/HoverLoanCard/DetailedLoanCard'));
+const ExpandableLoanCard = defineAsyncComponent(() => import(
+	'#src/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard'
+));
+const ExpandableLoanCardCollapsed = defineAsyncComponent(() => import(
+	'#src/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed'
+));
+const FeaturedHeroLoan = defineAsyncComponent(() => import('#src/components/LoansByCategory/FeaturedHeroLoan'));
+const GridLoanCard = defineAsyncComponent(() => import('#src/components/LoanCards/GridLoanCard'));
+const HoverLoanCard = defineAsyncComponent(() => import('#src/components/LoanCards/HoverLoanCard/HoverLoanCard'));
+const ListLoanCard = defineAsyncComponent(() => import('#src/components/LoanCards/ListLoanCard'));
 
 export default {
 	name: 'LoanCardController',
@@ -331,7 +334,8 @@ export default {
 						'Lending',
 						'Loan Favorite Toggled',
 						this.isFavorite === true ? 'Favorite Loan Added'
-							: 'Loan Favorite Removed', this.isFavorite
+							: 'Loan Favorite Removed',
+						this.isFavorite
 					);
 					if (this.isFavorite === true) {
 						// eslint-disable-next-line max-len
@@ -380,7 +384,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-card-controller {
 	&.column.is-in-category-row {

@@ -1,8 +1,8 @@
 <script>
 import numeral from 'numeral';
-import trackTransactionMutation from '@/graphql/mutation/shop/trackTransaction.graphql';
-import parseGACookie from '@/util/parseGACookie';
-import parseSPCookie from '@/util/parseSPCookie';
+import trackTransactionMutation from '#src/graphql/mutation/shop/trackTransaction.graphql';
+import parseGACookie from '#src/util/parseGACookie';
+import parseSPCookie from '#src/util/parseSPCookie';
 
 export default {
 	name: 'PostPurchase',

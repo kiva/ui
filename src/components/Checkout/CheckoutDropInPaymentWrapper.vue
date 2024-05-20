@@ -127,23 +127,26 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/vue';
+import { defineAsyncComponent } from 'vue';
 
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import braintreeDropInError from '#src/plugins/braintree-dropin-error-mixin';
 
-import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
+import braintreeDepositAndCheckout from '#src/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import braintreeDepositAndCheckoutAsync from '#src/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
-import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import { pollForFinishedCheckout } from '@kiva/kv-shop';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'CheckoutDropInPaymentWrapper',
 	components: {
 		KvButton,
-		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
+		BraintreeDropInInterface: defineAsyncComponent(() => import(
+			'#src/components/Payment/BraintreeDropInInterface'
+		)),
 		KvCheckbox,
 		KvTextInput,
 	},

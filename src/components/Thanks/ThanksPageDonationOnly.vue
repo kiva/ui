@@ -156,16 +156,16 @@
 <script>
 import { mdiLink } from '@mdi/js';
 import numeral from 'numeral';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
-import KvIcon from '@/components/Kv/KvIcon';
-import { getFullUrl } from '@/util/urlUtils';
-import { gql } from '@apollo/client';
-import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import KvIcon from '#src/components/Kv/KvIcon';
+import { getFullUrl } from '#src/util/urlUtils';
+import { gql } from '@apollo/client/index';
+import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const userQuery = gql`query userQuery {
 	my {
@@ -320,14 +320,14 @@ export default {
 	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
 }
 
-.faq-container >>> h2 {
+.faq-container :deep(h2) {
 	@apply tw-text-center;
 }
 </style>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import "foundation";
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
 $color-twitter: #08a0e9;

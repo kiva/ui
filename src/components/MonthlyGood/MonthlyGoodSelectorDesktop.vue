@@ -35,7 +35,7 @@
 						>
 							<img
 								class="monthly-selector__causes-icon"
-								:src="getImage(`./mg-${option.value}.svg`)"
+								:src="getImage(`mg-${option.value}.svg`)"
 							>
 							{{ option.marketingName }}
 						</button>
@@ -104,12 +104,17 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import clickOutside from '@/plugins/click-outside';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import clickOutside from '#src/plugins/click-outside';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
-const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
+const mgSelectorImgRequire = import.meta.glob('#src/assets/images/mg-selector-icons/*.*', {
+	eager: true,
+	query: '?url',
+});
+const mgSelectorImages = metaGlobReader(mgSelectorImgRequire, '#src/assets/images/mg-selector-icons/');
 
 export default {
 	name: 'MonthlyGoodSelectorDesktop',
@@ -189,7 +194,7 @@ export default {
 			}
 		},
 		getImage(image) {
-			return mgSelectorImgRequire(image);
+			return mgSelectorImages(image);
 		},
 		navigateToMG() {
 			// If mgAmount is other, just default to 25 value
@@ -280,7 +285,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $offwhite: #F8F8F8;
 $kivaaction: #2B7C5F;
@@ -355,7 +360,7 @@ $kivaaction: #2B7C5F;
 	&__amounts {
 		background-color: $white;
 		position: absolute;
-		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 -5px 80px rgb(0 0 0 / 10%);
 		border-radius: rem-calc(20);
 		display: flex;
 		flex-flow: wrap;

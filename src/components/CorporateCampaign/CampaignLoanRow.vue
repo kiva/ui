@@ -30,8 +30,8 @@
 				align: 'start'
 			}"
 		>
-			<template v-for="(loan, index) in loanIds" #[`slide${index}`]>
-				<div :key="`loan-${loan}-${index}`">
+			<template v-for="(loan, index) in loanIds" #[`slide${index}`] :key="`loan-${loan}-${index}`">
+				<div>
 					<kiva-classic-basic-loan-card
 						:item-index="index"
 						:key="`loan-${loan}`"
@@ -68,11 +68,11 @@
 </template>
 
 <script>
-import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import basicLoanQuery from '#src/graphql/query/basicLoanData.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import numeral from 'numeral';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'CampaignLoanRow',
@@ -300,8 +300,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'foundation';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 .component-wrapper {
 	text-align: left;
@@ -318,18 +318,18 @@ export default {
 
 $card-width: rem-calc(297);
 $card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
+$card-half-space: rem-calc(7);
 
 .cards-loan-card,
 .see-all-card {
 	border-radius: 0.65rem;
-	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153 153 153 / 10%);
 	width: $card-width;
 	max-width: calc(100vw - 4rem); // ensure some extra card is shown on mobile
 }
 
 @media (hover: none) {
-	::v-deep .kv-carousel__arrows-btn {
+	:deep(.kv-carousel__arrows-btn) {
 		display: none;
 	}
 }
@@ -339,7 +339,7 @@ $card-half-space: rem-calc(14/2);
 	display: block;
 
 	&:hover {
-		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
+		box-shadow: 0 0 $card-half-space rgb(0 0 0 / 20%);
 	}
 
 	&__link {

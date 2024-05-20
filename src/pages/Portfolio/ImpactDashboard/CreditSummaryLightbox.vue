@@ -37,10 +37,9 @@
 							<span v-else>{{ formatCash(depositSubTotal) }}</span>
 						</td>
 					</tr>
-					<template v-for="deposit in deposits">
+					<template v-for="deposit in deposits" :key="deposit.label">
 						<tr
 							v-if="!deposit.hideWhenZero || deposit.value !== 0"
-							:key="deposit.label"
 							class="amount-table-row"
 						>
 							<td>{{ deposit.label }}</td>
@@ -72,10 +71,9 @@
 							<span v-else>{{ formatCash(deductionSubTotal) }}</span>
 						</td>
 					</tr>
-					<template v-for="deduction in deductions">
+					<template v-for="deduction in deductions" :key="deduction.label">
 						<tr
 							v-if="!deduction.hideWhenZero || deduction.value !== 0"
-							:key="deduction.label"
 							class="amount-table-row"
 						>
 							<td>{{ deduction.label }}</td>
@@ -133,12 +131,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { mdiFileDocumentOutline } from '@mdi/js';
 import numeral from 'numeral';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 
 const asNumber = value => numeral(value ?? 0).value();
 
@@ -326,14 +324,14 @@ export default {
 
 @screen md {
 	/* lightbox body */
-	.credit-summary >>> [role=dialog] {
+	.credit-summary :deep([role=dialog]) {
 		min-width: 32rem;
 	}
 }
 
 @screen lg {
 	/* lightbox body */
-	.credit-summary >>> [role=dialog] {
+	.credit-summary :deep([role=dialog]) {
 		min-width: 40rem;
 	}
 

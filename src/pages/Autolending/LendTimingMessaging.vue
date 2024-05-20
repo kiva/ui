@@ -15,7 +15,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { differenceInCalendarDays } from 'date-fns';
 import numeral from 'numeral';
 
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lend-timing-messaging > div {
 	margin-top: 1.5rem;

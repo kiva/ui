@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
+import inputWrapperMixin from '#src/plugins/input-wrapper-mixin';
 
 export default {
 	name: 'KvSelect',
@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .dropdown-wrapper {
 	white-space: nowrap;
@@ -34,7 +34,7 @@ export default {
 		border-radius: $button-radius;
 		line-height: 1.125;
 		background-color: #fff;
-		background-image: url('~@/assets/images/customDropdown.png');
+		background-image: url('#src/assets/images/customDropdown.png');
 		background-size: rem-calc(23) rem-calc(20);
 		background-repeat: no-repeat;
 		background-position: right -1.9rem center;

@@ -19,7 +19,7 @@
 
 <script>
 import { getCodes, getNameByCode } from 'flag-icon-css';
-import getCacheKey from '@/util/getCacheKey';
+import getCacheKey from '#src/util/getCacheKey';
 
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
@@ -62,7 +62,7 @@ export default {
 			// registerd by Vue, and so any changes to the country are not picked up, which leads to
 			// the flag not being rendered when the country isn't provided until after the first render.
 			const { aspectRatio, country } = this;
-			return () => import(`~/flag-icon-css/flags/${aspectRatio}/${country.toLowerCase()}.svg`);
+			return () => import(`flag-icon-css/flags/${aspectRatio}/${country.toLowerCase()}.svg`);
 		},
 		spriteYPosition() {
 			if (!this.inlineSvg) {
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-flag {
 	border: 1px solid $kiva-bg-darkgray;
@@ -110,10 +110,10 @@ export default {
 		}
 
 		.kv-flag__img-sprite {
-			background-image: url('~flag-icon-css/flags/sprite/4x3/flag-sprite-32.png');
+			background-image: url('flag-icon-css/flags/sprite/4x3/flag-sprite-32.png');
 
 			@include breakpoint(retina) {
-				background-image: url('~flag-icon-css/flags/sprite/4x3/flag-sprite-32_2x.png');
+				background-image: url('flag-icon-css/flags/sprite/4x3/flag-sprite-32_2x.png');
 			}
 		}
 	}
@@ -124,10 +124,10 @@ export default {
 		}
 
 		.kv-flag__img-sprite {
-			background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32.png');
+			background-image: url('flag-icon-css/flags/sprite/1x1/flag-sprite-32.png');
 
 			@include breakpoint(retina) {
-				background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
+				background-image: url('flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
 			}
 		}
 	}

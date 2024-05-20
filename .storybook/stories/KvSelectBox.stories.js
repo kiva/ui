@@ -1,4 +1,4 @@
-import KvSelectBox from '@/components/Kv/KvSelectBox';
+import KvSelectBox from '#src/components/Kv/KvSelectBox';
 
 export default {
 	title: 'Kv/Form Elements/KvSelectBox',

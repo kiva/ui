@@ -18,7 +18,7 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import { isHighDensity, isRetina } from '@/util/checkScreenDensity';
+import { isHighDensity, isRetina } from '#src/util/checkScreenDensity';
 
 // Responsive Image Reading:
 // https://developers.google.com/web/fundamentals/design-and-ux/responsive/images

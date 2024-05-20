@@ -34,14 +34,14 @@
  * If team join is unsuccessful, display error message
  * If join team is pending, display pending message
  */
-import { gql } from '@apollo/client';
-import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
+import { gql } from '@apollo/client/index';
+import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import joinTeam from '@/graphql/mutation/joinTeam.graphql';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
 
 const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!, $publicId: String!) {
 	my {

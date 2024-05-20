@@ -153,8 +153,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .kv-swashie {
 	&__wrapper {
@@ -180,10 +180,7 @@ export default {
 
 	&__liquid {
 		position: absolute;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
+		inset: 0;
 		transform: translateY(100%);
 		transition: transform 1s ease-out;
 		z-index: 1;

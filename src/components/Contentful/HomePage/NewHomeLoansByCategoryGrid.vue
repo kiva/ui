@@ -19,13 +19,13 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import logReadQueryError from '@/util/logReadQueryError';
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import KivaMultiCategoryGrid from '@/components/Homepage/HomeExp/KivaMultiCategoryGrid';
-import { loanFieldsFragment } from '@/components/LoanCards/NewHomePageLoanCard';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { gql } from '@apollo/client/index';
+import logReadQueryError from '#src/util/logReadQueryError';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import KivaMultiCategoryGrid from '#src/components/Homepage/HomeExp/KivaMultiCategoryGrid';
+import { loanFieldsFragment } from '#src/components/LoanCards/NewHomePageLoanCard';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 /**
  * Extract Loan Channel settings from Contentful Ui Setting dataObject

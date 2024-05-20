@@ -24,9 +24,8 @@
 				:slide-max-width="singleSlideWidth"
 				:embla-options="{ loop: false }"
 			>
-				<template v-for="(loan, index) in loans" #[`slide${index}`]>
+				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
-						:key="loanCardKey(index)"
 						:loan-id="loan.id"
 						:use-full-width="true"
 						:show-tags="true"
@@ -51,8 +50,8 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
@@ -177,30 +176,28 @@ export default {
 	@apply tw-px-0;
 }
 
-#customizedCarousel >>> .kv-carousel__controls {
+#customizedCarousel :deep(.kv-carousel__controls) {
 	@apply tw-justify-center;
 	@apply tw-w-16;
 	@apply tw-mx-auto;
 	@apply tw-rounded-lg;
 
-	box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
-	-webkit-box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
-	-moz-box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 2px 5px 2px rgb(0 0 0 / 18%);
 }
 
-#customizedCarousel >>> .kv-carousel__controls div {
+#customizedCarousel :deep(.kv-carousel__controls) div {
 	@apply tw-visible;
 }
 
-#customizedCarousel >>> .kv-carousel__controls button {
+#customizedCarousel :deep(.kv-carousel__controls) button {
 	@apply tw-border-0;
 }
 
-#customizedCarousel >>> .kv-carousel__controls button span {
+#customizedCarousel :deep(.kv-carousel__controls) button span {
 	@apply tw-invisible;
 }
 
-#customizedCarousel >>> .kv-carousel__controls button:first-child span::after {
+#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after {
 	@apply tw-visible;
 	@apply tw-text-h3;
 	@apply tw-rotate-180;
@@ -208,15 +205,15 @@ export default {
 	content: '\2794';
 }
 
-#customizedCarousel >>> .kv-carousel__controls button:nth-child(3) span::before {
+#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
 	@apply tw-visible;
 	@apply tw-text-h3;
 
 	content: '\2794';
 }
 
-#customizedCarousel >>> div:first-child div div div,
-#customizedCarousel >>> div:first-child > div > div.loan-card-active-hover a picture {
+#customizedCarousel :deep(div:first-child) div div div,
+#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
 	@apply tw-rounded-none;
 }
 
@@ -225,33 +222,31 @@ export default {
 		@apply tw-px-1;
 	}
 
-	#customizedCarousel >>> .kv-carousel__controls {
+	#customizedCarousel :deep(.kv-carousel__controls) {
 		@apply tw-w-full;
 		@apply tw-rounded-none;
 
 		box-shadow: none;
-		-webkit-box-shadow: none;
-		-moz-box-shadow: none;
 	}
 
-	#customizedCarousel >>> div:first-child div div div {
+	#customizedCarousel :deep(div:first-child) div div div {
 		@apply tw-rounded;
 	}
 
-	#customizedCarousel >>> div:first-child > div > div.loan-card-active-hover a picture {
+	#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
 		@apply tw-rounded-t;
 	}
 
-	#customizedCarousel >>> .kv-carousel__controls button {
+	#customizedCarousel :deep(.kv-carousel__controls) button {
 		@apply tw-border-2;
 	}
 
-	#customizedCarousel >>> .kv-carousel__controls button span {
+	#customizedCarousel :deep(.kv-carousel__controls) button span {
 		@apply tw-visible;
 	}
 
-	#customizedCarousel >>> .kv-carousel__controls button:first-child span::after,
-	#customizedCarousel >>> .kv-carousel__controls button:nth-child(3) span::before {
+	#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after,
+	#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
 		content: '';
 	}
 }

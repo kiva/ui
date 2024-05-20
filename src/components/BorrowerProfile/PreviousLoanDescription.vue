@@ -48,11 +48,11 @@
 
 <script>
 import { mdiChevronDown } from '@mdi/js';
-import { toParagraphs } from '@/util/loanUtils';
-import { gql } from '@apollo/client';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { toParagraphs } from '#src/util/loanUtils';
+import { gql } from '@apollo/client/index';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
 	lend {

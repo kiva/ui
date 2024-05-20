@@ -89,9 +89,9 @@
 </template>
 
 <script>
-import { toParagraphs } from '@/util/loanUtils';
-import previousLoanDescription from '@/components/BorrowerProfile/PreviousLoanDescription';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import { toParagraphs } from '#src/util/loanUtils';
+import previousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'LoanDescription',

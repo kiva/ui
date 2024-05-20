@@ -4,11 +4,14 @@ const fs = require('fs');
 
 const isProd = process.env.NODE_ENV === 'production';
 
+// resolve path
+const resolve = dir => path.resolve(__dirname, dir);
+
 let schema;
 
 // Use build/schema.graphql as the schema definition. That file only exists after running node build/fetch-schema.js
 try {
-	schema = fs.readFileSync(path.join(__dirname, 'build/schema.graphql')).toString();
+	schema = fs.readFileSync(resolve('build/schema.graphql')).toString();
 } catch (e) {
 	console.warn(e);
 	schema = 'type Query { hello: String }';
@@ -21,12 +24,15 @@ const graphqlOptions = {
 
 module.exports = {
 	root: true,
+	reportUnusedDisableDirectives: true,
 	parserOptions: {
-		parser: '@babel/eslint-parser',
-		sourceType: 'module'
+		ecmaVersion: 2022,
+		sourceType: 'module',
 	},
 	env: {
+		node: true,
 		browser: true,
+		es2022: true,
 	},
 	extends: ['plugin:vue/strongly-recommended', 'airbnb-base', 'plugin:storybook/recommended'],
 	// required to lint *.vue files
@@ -38,12 +44,15 @@ module.exports = {
 	// check if imports actually resolve
 	settings: {
 		'import/resolver': {
-			webpack: {
-				config: './build/webpack.base.conf.js'
-			},
 			node: {
 				extensions: ['.js', '.mjs']
-			}
+			},
+			alias: {
+				map: [
+					['#src', resolve('src')],
+				],
+				extensions: ['.js', '.mjs', '.vue'],
+			},
 		}
 	},
 	// add your custom rules here
@@ -64,6 +73,8 @@ module.exports = {
 		'import/no-extraneous-dependencies': ['error', {
 			optionalDependencies: ['test/unit/index.js']
 		}],
+		// allow files with only one named export
+		'import/prefer-default-export': 'off',
 		// allow debugger during development
 		'no-debugger': isProd ? 'error' : 'off',
 		// allow console during development
@@ -93,13 +104,17 @@ module.exports = {
 		'graphql/required-fields': ['error', { ...graphqlOptions, requiredFields: ['id', 'key'] }],
 
 		// require component names that match the file name
-		"vue/require-name-property": "error",
-		"vue/match-component-file-name": [
-			"error",
+		'vue/require-name-property': 'error',
+		'vue/match-component-file-name': [
+			'error',
 			{
-				extensions: ["vue"],
+				extensions: ['vue'],
 				shouldMatchCase: true,
 			},
 		],
+
+		// require v-for keys on template root
+		'vue/no-v-for-template-key': 'off',
+		'vue/no-v-for-template-key-on-child': 'error',
 	}
 };

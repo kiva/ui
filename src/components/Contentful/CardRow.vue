@@ -38,11 +38,11 @@
 
 <script>
 
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import StoryCard from '@/components/Contentful/StoryCard';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import StoryCard from '#src/components/Contentful/StoryCard';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 /**
 * Card Row Component

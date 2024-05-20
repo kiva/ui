@@ -896,7 +896,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 // This CSS came from original terms page.
 ul.light li {

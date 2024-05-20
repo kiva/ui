@@ -1,4 +1,4 @@
-import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+import LoanSearchRadioGroupFilter from '#src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 
 export default {
 	title: 'Loan Search/Loan Search Radio Group Filter',

@@ -1,4 +1,4 @@
-import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
+import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
 import { mockState, mockAllFacets } from '../../test/unit/fixtures/mockLoanSearchData';
 
 export default {

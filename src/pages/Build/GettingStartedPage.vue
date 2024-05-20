@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
+import DeveloperSecondaryMenu from '#src/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
 
 export default {
 	name: 'GettingStartedPage',

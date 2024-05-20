@@ -102,12 +102,12 @@
 </template>
 
 <script>
-import { toParagraphs } from '@/util/loanUtils';
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
+import { toParagraphs } from '#src/util/loanUtils';
+import { gql } from '@apollo/client/index';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import BorrowerBusinessDetails from '#src/components/BorrowerProfile/BorrowerBusinessDetails';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'MoreAboutLoan',

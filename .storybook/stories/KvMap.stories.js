@@ -1,4 +1,4 @@
-import KvMap from '@/components/Kv/KvMap';
+import KvMap from '#src/components/Kv/KvMap';
 
 export default {
 	title: 'Kv/KvMap',

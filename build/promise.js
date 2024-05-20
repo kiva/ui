@@ -1,2 +1,1 @@
-// Export native Promise
-module.exports = typeof window !== 'undefined' && window.Promise || Promise;
+export default (typeof window !== 'undefined' && window.Promise) ?? Promise;

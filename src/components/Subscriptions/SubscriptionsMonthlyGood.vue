@@ -23,7 +23,7 @@
 					<div class="tw-flex tw-justify-between tw-my-5">
 						<div>
 							<p class="tw-text-subhead tw-text-primary">
-								{{ totalCombinedDeposit | numeral('$0,0.00') }}/month
+								{{ $filters.numeral(totalCombinedDeposit, '$0,0.00') }}/month
 							</p>
 							<p class="tw-text-secondary">
 								Next contribution: {{ nextContributionDate }}
@@ -170,19 +170,19 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
-import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import MonthlyGoodUpdateForm from '#src/components/Forms/MonthlyGoodUpdateForm';
+import MonthlyGoodDropInPaymentWrapper from '#src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import SubscriptionsMonthlyGoodCancellationFlow from
-	'@/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
-import getMonthsCount from '@/util/dateUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+	'#src/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
+import getMonthsCount from '#src/util/dateUtils';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 const CHANGE_SUBSCRIPTION = 'change_subscription';
 const UPDATE_PAYMENT_METHOD = 'update_payment_method';
@@ -471,7 +471,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .mg-update-lightbox {
 	&__content {

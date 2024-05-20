@@ -13,9 +13,9 @@ import {
 	fifteenYearFooterTheme,
 	blueHeader,
 	blueFooter
-} from '@/util/siteThemes';
+} from '#src/util/siteThemes';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	title: 'WwwFrame/WwwPage',

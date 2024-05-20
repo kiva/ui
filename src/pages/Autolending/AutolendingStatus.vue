@@ -82,17 +82,17 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import {
 	format, addDays, parseISO, formatISO
 } from 'date-fns';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvSelect from '@/components/Kv/KvSelect';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvRadio from '@/components/Kv/KvRadio';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '#src/components/Kv/KvButton';
+import KvSelect from '#src/components/Kv/KvSelect';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvRadio from '#src/components/Kv/KvRadio';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'AutolendingStatus',
@@ -245,7 +245,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .autolending-status-lightbox {
 	.status-radio-wrapper {

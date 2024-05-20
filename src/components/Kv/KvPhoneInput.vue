@@ -69,8 +69,8 @@ import {
 	parsePhoneNumberFromString,
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
-import KvFlag from '@/components/Kv/KvFlag';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvFlag from '#src/components/Kv/KvFlag';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes
@@ -197,7 +197,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .kv-phone-input {
 	&__wrapper {

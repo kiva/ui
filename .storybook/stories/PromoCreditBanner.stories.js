@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import PromoCreditBanner from '@/components/WwwFrame/PromotionalBanner/Banners/PromoCreditBanner.vue';
+import PromoCreditBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/PromoCreditBanner.vue';
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins);
 
 export default {

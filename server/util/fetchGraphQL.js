@@ -1,21 +1,22 @@
-const get = require('lodash/get');
-const argv = require('./argv');
-const config = require('../../config/selectConfig')(argv.config);
-const fetch = require('./fetch');
-const tracer = require('./ddTrace');
+import get from 'lodash/get.js';
+import argv from './argv.js';
+import selectConfig from '../../config/selectConfig.js';
+import fetch from './fetch.js';
+import { trace } from './ddTrace.js';
 
 // Make a graphql query <request> and return the results found at <resultPath>
-module.exports = async function fetchGraphQL(request, resultPath) {
-	return tracer.trace('fetchGraphQL', async () => {
+export default (async function fetchGraphQL(request, resultPath) {
+	return trace('fetchGraphQL', async () => {
+		const config = await selectConfig(argv.config);
 		const endpoint = config.app.graphqlUri;
-		const response = await tracer.trace('fetch', async () => {
+		const response = await trace('fetch', async () => {
 			return fetch(endpoint, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(request),
 			});
 		});
-		const result = await tracer.trace('response.json', async () => response.json());
-		return tracer.trace('lodash.get', () => get(result, resultPath));
+		const result = await trace('response.json', async () => response.json());
+		return trace('lodash.get', () => get(result, resultPath));
 	});
-};
+});

@@ -25,8 +25,8 @@
 			slides-to-scroll="visible"
 			:embla-options="{ loop: false }"
 		>
-			<template v-for="(loan, index) in displayLoans" #[`slide${index+1}`]>
-				<div :key="loan.id || index">
+			<template v-for="(loan, index) in displayLoans" #[`slide${index+1}`] :key="loan.id || index">
+				<div>
 					<!-- loan image -->
 					<div
 						class="loan-slide-image tw-overflow-hidden tw-rounded tw-bg-secondary tw-mb-1"
@@ -74,14 +74,14 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 const upsellLoansQuery = gql`query upsellLoansQuery(
 	$maxLoans: Int!

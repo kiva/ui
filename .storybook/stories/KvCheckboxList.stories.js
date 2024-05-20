@@ -1,4 +1,4 @@
-import KvCheckboxList from '@/components/Kv/KvCheckboxList';
+import KvCheckboxList from '#src/components/Kv/KvCheckboxList';
 
 export default {
 	title: 'Kv/Form Elements/KvCheckboxList',

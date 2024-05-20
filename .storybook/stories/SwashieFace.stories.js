@@ -1,5 +1,5 @@
-import SwashieFace from '@/components/15Years/SwashieFace';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle'
+import SwashieFace from '#src/components/15Years/SwashieFace';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle'
 
 export default {
 	title: 'components/SwashieFace',

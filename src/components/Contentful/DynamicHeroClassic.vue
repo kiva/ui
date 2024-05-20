@@ -139,15 +139,16 @@
 </template>
 
 <script>
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
-import { responsiveImageSetSourceSets } from '@/util/contentfulUtils';
-import { richTextRenderer, addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { defineAsyncComponent } from 'vue';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import DynamicRichText from '#src/components/Contentful/DynamicRichText';
+import ButtonWrapper from '#src/components/Contentful/ButtonWrapper';
+import { responsiveImageSetSourceSets } from '#src/util/contentfulUtils';
+import { richTextRenderer, addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 /**
 * Dynamic Hero Component
@@ -160,8 +161,8 @@ export default {
 	name: 'DynamicHeroClassic',
 	components: {
 		ButtonWrapper,
-		KvCarousel: () => import('@/components/Kv/KvCarousel'),
-		KvCarouselSlide: () => import('@/components/Kv/KvCarouselSlide'),
+		KvCarousel: defineAsyncComponent(() => import('#src/components/Kv/KvCarousel')),
+		KvCarouselSlide: defineAsyncComponent(() => import('#src/components/Kv/KvCarouselSlide')),
 		DynamicRichText,
 		KvContentfulImg,
 		KvGrid,
@@ -201,7 +202,7 @@ export default {
 			return this.buttonContent?.webLink ?? '';
 		},
 		secondaryButtonContent() {
-			const contents = [...this.content?.contents].reverse();
+			const contents = [...(this.content?.contents ?? [])].reverse();
 			return contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'button' : false;
 			});
@@ -280,9 +281,9 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-	.dynamic-hero-classic::v-deep i,
-	.dynamic-hero-classic::v-deep b,
-	.dynamic-hero-classic::v-deep u {
+	.dynamic-hero-classic:deep(i),
+	.dynamic-hero-classic:deep(b),
+	.dynamic-hero-classic:deep(u) {
 		color: rgb(var(--text-action));
 	}
 </style>

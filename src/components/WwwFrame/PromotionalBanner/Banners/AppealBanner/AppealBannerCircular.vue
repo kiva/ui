@@ -155,14 +155,14 @@
 <script>
 // import numeral from 'numeral';
 import smoothReflow from 'vue-smooth-reflow';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { mdiClose } from '@mdi/js';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'AppealBannerCircular',

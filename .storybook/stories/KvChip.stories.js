@@ -1,4 +1,4 @@
-import KvChip from '@/components/Kv/KvChip';
+import KvChip from '#src/components/Kv/KvChip';
 
 export default {
 	title: 'Kv/KvChip',

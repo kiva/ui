@@ -1,4 +1,4 @@
-import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
+import LoanSearchCheckboxListFilter from '#src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 
 export default {
 	title: 'Loan Search/Loan Search Checkbox List Filter',

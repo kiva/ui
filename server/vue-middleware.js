@@ -1,10 +1,15 @@
-const fs = require('fs');
-const path = require('path');
-const Bowser = require('bowser');
-const cookie = require('cookie');
-const vueWorkerPool = require('./vue-worker-pool.js');
-const protectedRoutes = require('./util/protectedRoutes.js');
-const tracer = require('./util/ddTrace');
+import fs from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import Bowser from 'bowser';
+import cookie from 'cookie';
+import vueWorkerPool from './vue-worker-pool.js';
+import vueRender from './vue-render.js';
+import protectedRoutes from './util/protectedRoutes.js';
+import { wrap } from './util/ddTrace.js';
+
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // vue-middleware specific error handling
 function handleError(err, req, res, next) {
@@ -24,34 +29,51 @@ function handleError(err, req, res, next) {
 	}
 }
 
-module.exports = function createMiddleware({
-	serverBundle,
-	clientManifest,
-	config,
-}) {
-	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
-
+export default function createMiddleware({ config, vite }) {
 	if (typeof config === 'undefined' || typeof config.app === 'undefined') {
 		throw new TypeError('Missing configuration');
 	}
 
+	let ssrManifest = {};
+	let template = '';
+	if (!vite) {
+		ssrManifest = JSON.parse(fs.readFileSync(resolve(__dirname, '../dist/client/.vite/ssr-manifest.json')));
+		template = fs.readFileSync(resolve(__dirname, '../dist/client/index.html'), 'utf-8');
+	} else {
+		template = fs.readFileSync(resolve(__dirname, '../index.html'), 'utf-8');
+	}
+
 	// Set webpack public asset path based on configuration
-	// eslint-disable-next-line no-param-reassign
-	clientManifest.publicPath = config.app.publicPath || '/';
+	// clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create a worker pool to render the app
-	const pool = vueWorkerPool({
-		minWorkers: config.server.minVueWorkers,
-		maxWorkers: config.server.maxVueWorkers,
-		workerData: {
-			clientManifest,
-			serverBundle,
-			serverConfig: config.server,
-			template,
-		},
-	});
+	let render;
+	if (!vite) {
+		// Create a worker pool to render the app for production
+		const pool = vueWorkerPool({
+			minWorkers: config.server.minVueWorkers,
+			maxWorkers: config.server.maxVueWorkers,
+			workerData: {
+				ssrManifest,
+				serverConfig: config.server,
+				template,
+			},
+		});
+		render = context => pool.run(context);
+	} else {
+		// Create dev server render function
+		render = async context => {
+			const t = await vite.transformIndexHtml(context.url, template);
+			const { default: serverEntry } = await vite.ssrLoadModule('#src/server-entry.js');
+			return vueRender({
+				context,
+				serverConfig: config.server,
+				serverEntry,
+				template: t,
+			});
+		};
+	}
 
-	function middleware(req, res, next) {
+	async function middleware(req, res, next) {
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
@@ -75,24 +97,21 @@ module.exports = function createMiddleware({
 		} else {
 			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 		}
-
-		// render the app using the worker pool
-		pool.exec('render', [context])
-			.then(({ error, html, setCookies }) => {
-				// set any cookies created during the app render
-				setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-
-				if (error) {
-					handleError(error, req, res, next);
-				} else {
-					// send the final rendered html
-					res.send(html);
-				}
-			})
-			.catch(err => {
-				handleError(err, req, res, next);
-			});
+		try {
+			// render the app
+			const { error, html, setCookies } = await render(context);
+			// set any cookies created during the app render
+			setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+			if (error) {
+				handleError(error, req, res, next);
+			} else {
+				// send the final rendered html
+				res.send(html);
+			}
+		} catch (err) {
+			handleError(err, req, res, next);
+		}
 	}
 
-	return tracer.wrap('vue-middleware', middleware);
-};
+	return wrap('vue-middleware', middleware);
+}

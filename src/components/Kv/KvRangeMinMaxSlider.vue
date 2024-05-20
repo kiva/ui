@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import { isNumber } from '@/util/numberUtils';
-import { getDisplayedNumber } from '@/util/loanSearch/filterUtils';
+import { isNumber } from '#src/util/numberUtils';
+import { getDisplayedNumber } from '#src/util/loanSearch/filterUtils';
 
 export default {
 	name: 'KvRangeMinMaxSlider',
@@ -175,7 +175,7 @@ export default {
 
 input[type=range] {
 	position: absolute;
-	-webkit-appearance: none;
+	appearance: none;
 	margin: 0;
 	padding: 0;
 	width: 100%;
@@ -273,7 +273,7 @@ input[type=range]::-webkit-slider-thumb {
 	pointer-events: all;
 
 	/** Webkit-specific CSS */
-	-webkit-appearance: none;
+	appearance: none;
 	margin-top: calc(0.5 * (var(--track-height) - var(--thumb-diameter)));
 }
 

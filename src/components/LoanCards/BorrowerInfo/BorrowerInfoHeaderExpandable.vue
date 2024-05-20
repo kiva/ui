@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div class="borrower-info-header-expandable" :class="{'expanded': props.expanded}">
 		<div class="name" v-if="props.name">
 			{{ props.name }}
@@ -12,7 +12,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .borrower-info-header-expandable {
 	white-space: nowrap;

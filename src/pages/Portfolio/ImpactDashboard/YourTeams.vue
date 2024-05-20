@@ -80,12 +80,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
-import getCacheKey from '@/util/getCacheKey';
+import getCacheKey from '#src/util/getCacheKey';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'YourTeams',

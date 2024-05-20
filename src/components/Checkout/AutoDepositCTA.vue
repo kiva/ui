@@ -3,7 +3,7 @@
 		<div class="tw-m-3">
 			<img
 				class="tw-mx-auto"
-				:src="imageRequire(`./loan-re-cycle.svg`)"
+				src="#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url"
 				alt="loan to loan relending graphic"
 			>
 		</div>
@@ -41,7 +41,7 @@
 							v-if="!isDayInputShown"
 							v-kv-track-event="['Thanks', 'click-Edit-auto-deposit-date', 'auto-deposit-edit-date']"
 						>
-							<strong>{{ dayOfMonth | numeral('Oo') }}</strong> of each month:
+							<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong> of each month:
 						</button>
 					</p>
 					<!-- Errors and Messaging -->
@@ -115,7 +115,7 @@
 			</div>
 
 			<h3 class="tw-text-right tw-mb-4">
-				Total: {{ adAmount | numeral('$0.00') }}
+				Total: {{ $filters.numeral(adAmount, '$0.00') }}
 			</h3>
 
 			<div v-if="isClientReady">
@@ -142,14 +142,12 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import { mdiClose } from '@mdi/js';
 
-import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 // arbitrary number below 10k
 const maxAmount = 10000;
@@ -244,7 +242,6 @@ export default {
 			],
 			dayOfMonth: parseInt(new Date().getDate(), 10),
 			donation: 0,
-			imageRequire,
 			isClientReady: false,
 			isDayInputShown: false,
 			mdiClose,
@@ -296,7 +293,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .auto-deposit-cta {
 	padding: 1.5rem;

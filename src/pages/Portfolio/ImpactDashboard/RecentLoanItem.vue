@@ -72,10 +72,10 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
 import { paramCase, sentenceCase } from 'change-case';
-import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
+import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 import {
 	DEFAULTED,
 	ENDED,
@@ -85,9 +85,9 @@ import {
 	PAYING_BACK,
 	RAISED,
 	REFUNDED,
-} from '@/api/fixtures/LoanStatusEnum';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+} from '#src/api/fixtures/LoanStatusEnum';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 const DELINQUENT = 'payingBackDelinquent';
 

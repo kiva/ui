@@ -5,7 +5,7 @@
 				<div v-for="(sub, index) in legacySubscriptions" :key="index">
 					<p>
 						<!-- eslint-disable-next-line max-len -->
-						Each month <strong>{{ sub.amount | numeral('$0,0.00') }}</strong> will be transferred from PayPal. This includes a <strong>{{ sub.amount - sub.autoDonate | numeral('$0,0.00') }}</strong> deposit for lending and a <strong>{{ sub.autoDonate | numeral('$0,0.00') }}</strong> optional donation to support Kiva.
+						Each month <strong>{{ $filters.numeral(sub.amount, '$0,0.00') }}</strong> will be transferred from PayPal. This includes a <strong>{{ $filters.numeral(sub.amount - sub.autoDonate, '$0,0.00') }}</strong> deposit for lending and a <strong>{{ $filters.numeral(sub.autoDonate, '$0,0.00') }}</strong> optional donation to support Kiva.
 					</p>
 					<p class="legacy_notice">
 						<!-- eslint-disable-next-line max-len -->
@@ -19,9 +19,9 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query legacySubscription {
 	my {
@@ -70,7 +70,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .legacy_notice {
 	background-color: $vivid-yellow;

@@ -1,5 +1,5 @@
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvButton from '#src/components/Kv/KvButton';
 
 const loremIpsum = `
 	<p>

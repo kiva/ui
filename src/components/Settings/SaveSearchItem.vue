@@ -37,11 +37,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import { gql } from '@apollo/client/index';
+import { sortByNameToDisplay } from '#src/util/loanSearch/filters/sortOptions';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'SaveSearchItem',

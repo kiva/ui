@@ -1,4 +1,4 @@
-import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
 
 export default {
 	title: 'Kv/KvProgressCampaign',

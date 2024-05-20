@@ -111,12 +111,17 @@
 
 <script>
 import gsap from 'gsap';
+import { metaGlobReader } from '#src/util/importHelpers';
 
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 import FifteenYearsSupportingPartners from './15YearsSupportingPartners';
 
-const imgRequire = require.context('@/assets/images/15-years/partners/', true);
+const imgRequire = import.meta.glob('#src/assets/images/15-years/partners/*.*', {
+	eager: true,
+	query: '?url',
+});
+const partnerImages = metaGlobReader(imgRequire, '#src/assets/images/15-years/partners/');
 
 export default {
 	name: '15YearsPartners',
@@ -135,7 +140,7 @@ export default {
 					key: 'paypal',
 					showStats: true,
 					alt: 'PayPal',
-					logo: imgRequire('./Partner-paypal.svg'),
+					logo: partnerImages('Partner-paypal.svg'),
 					stats: [
 						['15', 'Years of partnership'],
 						['$1.45B', 'Loans Through kiva.org'],
@@ -148,7 +153,7 @@ export default {
 					key: 'mastercard',
 					showStats: true,
 					alt: 'Mastercard Foundation',
-					logo: imgRequire('./Partner-mastercard.svg'),
+					logo: partnerImages('Partner-mastercard.svg'),
 					stats: [
 						['4', 'Years of partnership'],
 						['52', 'New loan products'],
@@ -161,7 +166,7 @@ export default {
 					key: 'ebay',
 					showStats: true,
 					alt: 'Ebay',
-					logo: imgRequire('./Partner-ebay.svg'),
+					logo: partnerImages('Partner-ebay.svg'),
 					stats: [
 						['3', 'Years of partnership'],
 						['1k+', 'Employees engaged'],
@@ -174,7 +179,7 @@ export default {
 					key: 'visa',
 					showStats: true,
 					alt: 'Visa',
-					logo: imgRequire('./Partner-visa.svg'),
+					logo: partnerImages('Partner-visa.svg'),
 					stats: [
 						['1', 'Year of partnership'],
 						['67%', 'of global employees are lenders'],
@@ -187,7 +192,7 @@ export default {
 					key: 'skoll',
 					showStats: true,
 					alt: 'Skoll + DFC',
-					logo: imgRequire('./Partner-skoll.svg'),
+					logo: partnerImages('Partner-skoll.svg'),
 					stats: [
 						['99k', 'Loans'],
 						['211k+', 'Borrowers (81% women)'],
@@ -252,8 +257,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
-@import "components/15-years/15-years";
+@import '#src/assets/scss/settings';
+@import "#src/assets/scss/components/15-years/15-years";
 
 .partners {
 	background-color: $offwhite;

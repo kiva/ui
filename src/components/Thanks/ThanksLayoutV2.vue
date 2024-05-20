@@ -323,9 +323,9 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvIconButton from '@/components/Kv/KvIconButton';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvExpandable from '@/components/Kv/KvExpandable';
+import KvIconButton from '#src/components/Kv/KvIconButton';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvExpandable from '#src/components/Kv/KvExpandable';
 
 export default {
 	name: 'ThanksLayoutV2',
@@ -401,7 +401,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
 
 // We use v-deep to overwrite slot item styles for this context without
 // modifying the thanks page v1 styles or the slotted in components
@@ -415,7 +416,7 @@ export default {
 }
 
 .thanks-page {
-	margin: 0 1rem 2rem 1rem;
+	margin: 0 1rem 2rem;
 	width: 100%;
 
 	&__content-area {
@@ -424,9 +425,9 @@ export default {
 		width: 100%;
 		display: inline-block;
 
-		::v-deep .monthly-good-cta,
-		::v-deep .checkout-receipt,
-		::v-deep .share {
+		:deep(&) .monthly-good-cta,
+		:deep(&) .checkout-receipt,
+		:deep(&) .share {
 			text-align: left;
 
 			&__headline {
@@ -442,19 +443,18 @@ export default {
 	}
 
 	&__content-area--share {
-		::v-deep {
+		:deep(&) {
 			$loan-circle-size: rem-calc(70);
 			$loan-circle-margin: 1rem;
 			$loan-triangle-size: rem-calc(12);
 
 			// layout of blocks
 			.share {
-				padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+				padding: 1.5rem 1.5rem 0.5rem;
 
 				&__wrapper {
 					@include breakpoint(large) {
-						flex-direction: column;
-						flex-wrap: nowrap;
+						flex-flow: column nowrap;
 					}
 				}
 
@@ -498,7 +498,7 @@ export default {
 							top: $loan-triangle-size * -2 + rem-calc(1);
 							left: $loan-triangle-size;
 							border-width: $loan-triangle-size;
-							border-color: transparent transparent #fff transparent;
+							border-color: transparent transparent #fff;
 						}
 
 						// triangle border
@@ -506,18 +506,19 @@ export default {
 							top: $loan-triangle-size * -2 - rem-calc(1);
 							left: $loan-triangle-size - rem-calc(1);
 							border-width: $loan-triangle-size + rem-calc(1);
-							border-color: transparent transparent $subtle-gray transparent;
+							border-color: transparent transparent $subtle-gray;
 						}
 					}
 
 					@function circleoffset($index) {
 						@return calc(
 							#{$loan-circle-size * $index} +
-							#{$loan-circle-size / 2} -
+							#{math.div($loan-circle-size, 2)} -
 							#{$loan-triangle-size * 2} +
 							#{$index * $loan-circle-margin}
 						);
 					}
+
 					$offset: rem-calc(1);
 
 					&--loan1 {
@@ -564,7 +565,7 @@ export default {
 	}
 
 	&__content-area--receipt {
-		::v-deep {
+		:deep(&) {
 			.checkout-receipt {
 				padding: 1.5rem;
 			}

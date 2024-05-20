@@ -1,4 +1,4 @@
-import ChallengeHeader from '@/components/Lend/LoanSearch/ChallengeHeader';
+import ChallengeHeader from '#src/components/Lend/LoanSearch/ChallengeHeader';
 
 export default {
 	title: 'Loan Search/Challenge Header',
@@ -12,7 +12,7 @@ const story = (args = {}) => {
 		template: 	`<div style="max-width: 1200px;">
 						<challenge-header :challengeData="challengeData" :teamData="teamData" />
 					</div>`,
-	
+
 	});
 	template.args = args;
 	return template;

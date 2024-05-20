@@ -54,11 +54,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import { gql } from '@apollo/client/index';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 import UpdateDetails from './UpdateDetails';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const updatesQuery = gql`query updatesQuery($loanId: Int!, $limit: Int, $offset: Int) {
 	lend {

@@ -1,4 +1,4 @@
-import DepositIncentiveUpsell from '@/components/Checkout/DepositIncentiveUpsell.vue';
+import DepositIncentiveUpsell from '#src/components/Checkout/DepositIncentiveUpsell.vue';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import { mockLoansArray } from '../utils';
 

@@ -1,4 +1,4 @@
-import KvAlert from '@/components/Kv/KvAlert';
+import KvAlert from '#src/components/Kv/KvAlert';
 
 export default {
 	title: 'Kv/KvAlert',

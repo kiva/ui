@@ -128,12 +128,12 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 import AttributeFilter from './AttributeFilter';
 import AttributeRadios from './AttributeRadios';
@@ -235,7 +235,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .autolending-who-lightbox {
 	.who-inputs-wrapper {
@@ -248,7 +248,7 @@ export default {
 		}
 	}
 
-	::v-deep .kv-lightbox {
+	:deep(.kv-lightbox) {
 		.who-inputs-wrapper {
 			max-width: 100%;
 
@@ -263,7 +263,7 @@ export default {
 
 		.filter-title {
 			font-size: 1rem;
-			margin: 1rem auto 0.5rem auto;
+			margin: 1rem auto 0.5rem;
 			font-weight: $global-weight-highlight;
 		}
 	}

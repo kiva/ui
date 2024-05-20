@@ -26,11 +26,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import parseSPCookie from '@/util/parseSPCookie';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import { gql } from '@apollo/client/index';
+import logFormatter from '#src/util/logFormatter';
+import parseSPCookie from '#src/util/parseSPCookie';
+import KvButton from '#src/components/Kv/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
 
 export default {
 	name: 'CampaignVerificationForm',
@@ -189,6 +189,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 </style>

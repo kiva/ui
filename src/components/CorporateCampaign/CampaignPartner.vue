@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 export default {
 	name: 'CampaignPartner',

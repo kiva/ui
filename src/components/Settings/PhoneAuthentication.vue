@@ -142,19 +142,19 @@ import {
 	required, minLength, maxLength, numeric
 } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/vue';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvPhoneInput from '@/components/Kv/KvPhoneInput';
-import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
-import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
-import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvPhoneInput from '#src/components/Kv/KvPhoneInput';
+import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
+import FirstMFASetup from '#src/pages/Settings/FirstMFASetup';
+import RecoveryCodeConfirm from '#src/pages/Settings/RecoveryCodeConfirm';
 
-import enrollSMSAuthenticatorMutation from '@/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
-import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
-import confirmSMSAuthenticatorEnrollmentMutation from '@/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
+import enrollSMSAuthenticatorMutation from '#src/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
+import enrollVoiceAuthenticatorMutation from '#src/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
+import confirmSMSAuthenticatorEnrollmentMutation from '#src/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
 import confirmVoiceAuthenticatorEnrollmentMutation from
-	'@/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+	'#src/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'PhoneAuthentication',
@@ -360,7 +360,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .phone-authentication {
 	&__body {

@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import KvRangeMinMaxSlider from '@/components/Kv/KvRangeMinMaxSlider';
+import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
 
 describe('KvRangeMinMaxSlider', () => {
 	it('should render defaults', () => {
@@ -18,7 +18,8 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should render props', () => {
-		const { getAllByRole } = render(KvRangeMinMaxSlider,
+		const { getAllByRole } = render(
+			KvRangeMinMaxSlider,
 			{
 				props: {
 					rangeMin: 10,
@@ -27,7 +28,8 @@ describe('KvRangeMinMaxSlider', () => {
 					min: 15,
 					max: 20
 				}
-			});
+			}
+		);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -70,13 +72,15 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should move other slide when pushed beyond current setting', async () => {
-		const { getAllByRole } = render(KvRangeMinMaxSlider,
+		const { getAllByRole } = render(
+			KvRangeMinMaxSlider,
 			{
 				props: {
 					min: 10,
 					max: 25
 				}
-			});
+			}
+		);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -113,13 +117,15 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle initial numbers below the range', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider,
+		const { getAllByRole, updateProps } = render(
+			KvRangeMinMaxSlider,
 			{
 				props: {
 					min: -1,
 					max: -1
 				}
-			});
+			}
+		);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -145,13 +151,15 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle initial numbers above the range', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider,
+		const { getAllByRole, updateProps } = render(
+			KvRangeMinMaxSlider,
 			{
 				props: {
 					min: 110,
 					max: 110
 				}
-			});
+			}
+		);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -177,13 +185,15 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle prop numbers outside the range', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider,
+		const { getAllByRole, updateProps } = render(
+			KvRangeMinMaxSlider,
 			{
 				props: {
 					min: 10,
 					max: 25
 				}
-			});
+			}
+		);
 
 		const rangeInputs = getAllByRole('slider');
 

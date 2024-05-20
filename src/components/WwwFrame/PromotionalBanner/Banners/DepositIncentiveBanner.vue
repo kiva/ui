@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import GenericPromoBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import numeral from 'numeral';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
 const amountToLendQuery = gql`
 	query amountToLendQuery ($basketId: String) {

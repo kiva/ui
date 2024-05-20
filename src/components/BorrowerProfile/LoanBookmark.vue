@@ -18,11 +18,11 @@
 	</div>
 </template>
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
-import bookmarkLoan from '@/util/bookmarkUtil';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import bookmarkLoan from '#src/util/bookmarkUtil';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LoanBookmark',
@@ -94,7 +94,8 @@ export default {
 							'Lending',
 							'Loan Favorite Toggled',
 							this.isBookmarked === true ? 'Favorite Loan Added'
-								: 'Loan Favorite Removed', this.isBookmarked
+								: 'Loan Favorite Removed',
+							this.isBookmarked
 						);
 						if (this.isBookmarked === true) {
 							// eslint-disable-next-line max-len

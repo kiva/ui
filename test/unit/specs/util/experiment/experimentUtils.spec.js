@@ -13,13 +13,13 @@ import {
 	getForcedAssignment,
 	getLoginId,
 	assignAllActiveExperiments,
-} from '@/util/experiment/experimentUtils';
-import * as Alea from '@/util/experiment/Alea';
-import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
-import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import CookieStore from '@/util/cookieStore';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+} from '#src/util/experiment/experimentUtils';
+import * as Alea from '#src/util/experiment/Alea';
+import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
+import experimentSettingQuery from '#src/graphql/query/experimentSetting.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import CookieStore from '#src/util/cookieStore';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 

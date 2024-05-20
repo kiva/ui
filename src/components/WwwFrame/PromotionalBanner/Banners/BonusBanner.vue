@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div class="bonus-banner-holder">
 		<a
 			v-if="props.promoData && !props.promoData.pageId"
@@ -9,7 +9,7 @@
 			<div class="content">
 				<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
 				<span class="call-to-action-text">
-					lend your {{ props.promoData.bonusBalance | numeral('$0.00') }} free credit
+					lend your {{ $filters.numeral(props.promoData.bonusBalance, '$0.00') }} free credit
 				</span>
 			</div>
 		</a>
@@ -20,7 +20,9 @@
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
 			<div class="content">
-				<span class="call-to-action-text">You have {{ props.promoData.available | numeral('$0.00') }}</span>
+				<span class="call-to-action-text">
+					You have {{ $filters.numeral(props.promoData.available, '$0.00') }}
+				</span>
 				<br class="so xxlu">
 				<span class="call-to-action-text">
 					from {{ props.promoData.displayName }} to lend!
@@ -31,7 +33,7 @@
 </template>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 a.bonus-banner:hover {
 	text-decoration: none;

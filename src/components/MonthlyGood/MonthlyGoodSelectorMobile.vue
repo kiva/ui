@@ -32,7 +32,7 @@
 				>
 					<img
 						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
-						:src="getImage(`./mg-${selectedGroup.value}.svg`)"
+						:src="getImage(`mg-${selectedGroup.value}.svg`)"
 					>
 					{{ selectedGroup.marketingName }}
 				</button>
@@ -55,7 +55,7 @@
 				>
 					<img
 						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
-						:src="getImage(`./mg-${option.value}.svg`)"
+						:src="getImage(`mg-${option.value}.svg`)"
 					>
 					{{ option.marketingName }}
 				</button>
@@ -95,15 +95,20 @@ import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import { mdiChevronRight } from '@mdi/js';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import { metaGlobReader } from '#src/util/importHelpers';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvUiSelect from '@kiva/kv-components/vue/KvSelect';
 
-const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
+const mgSelectorImgRequire = import.meta.glob('#src/assets/images/mg-selector-icons/*.*', {
+	eager: true,
+	query: '?url',
+});
+const mgSelectorImages = metaGlobReader(mgSelectorImgRequire, '#src/assets/images/mg-selector-icons/');
 
 export default {
 	name: 'MonthlyGoodSelectorMobile',
@@ -202,7 +207,7 @@ export default {
 			this.lightboxVisible = false;
 		},
 		getImage(image) {
-			return mgSelectorImgRequire(image);
+			return mgSelectorImages(image);
 		},
 		goBackToCauses() {
 			this.lightboxStep = 'cause';

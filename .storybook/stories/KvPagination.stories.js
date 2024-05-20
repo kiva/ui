@@ -1,4 +1,4 @@
-import KvPagination from '@/components/Kv/KvPagination';
+import KvPagination from '#src/components/Kv/KvPagination';
 
 export default {
 	title: 'Kv/KvPagination',

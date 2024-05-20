@@ -139,7 +139,7 @@
 			</div>
 		</div>
 		<p class="edit-preferences__outro tw-text-subhead">
-			Want to dive even deeper? There are {{ totalCount | numeral(0,0) }} borrowers on Kiva,
+			Want to dive even deeper? There are {{ $filters.numeral(totalCount, 0,0) }} borrowers on Kiva,
 			<router-link
 				to="/lend/filter"
 				v-kv-track-event="['Lending', 'click-dive-deeper', 'Start exploring today']"
@@ -151,9 +151,9 @@
 </template>
 
 <script>
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
-import KvFlag from '@/components/Kv/KvFlag';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
+import KvFlag from '#src/components/Kv/KvFlag';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'EditPreferences',
@@ -249,9 +249,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
-$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
+$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgb(0 0 0 / 15%);
 
 .edit-preferences {
 	&__card {
@@ -316,7 +316,7 @@ $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 	}
 
 	&__list-item {
-		::v-deep .kv-cause-selector__circle {
+		:deep(.kv-cause-selector__circle) {
 			margin-bottom: 0;
 		}
 	}

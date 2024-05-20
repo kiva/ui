@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
-import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 const shareLender = { id: 1, name: 'Lender' };
 const teamName = 'Team Test';

@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var dev  = require('./dev.js')
+import { merge } from 'webpack-merge';
+import dev from './dev.js';
 
-module.exports = merge(dev, {
+export default merge(dev, {
 	app: {
 		publicPath: 'https://www.dev.kiva.org/',
 	},
@@ -10,4 +10,4 @@ module.exports = merge(dev, {
 		enableDDTrace: true,
 		disableCluster: true,
 	}
-})
+});

@@ -34,7 +34,7 @@
 						<div class="columns">
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ globekitCountrySelected.total | numeral('0,0') }}</h3>
+									<h3>{{ $filters.numeral(globekitCountrySelected.total, '0,0') }}</h3>
 								</div>
 								<div class="loan-label">
 									<h5>total <br>loans</h5>
@@ -42,7 +42,7 @@
 							</div>
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ globekitCountrySelected.active | numeral('0,0') }}</h3>
+									<h3>{{ $filters.numeral(globekitCountrySelected.active, '0,0') }}</h3>
 								</div>
 								<div class="loan-label">
 									<h5>active <br>loans</h5>
@@ -133,12 +133,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
-import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
-import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvProgressBar from '@/components/Kv/KvProgressBar';
+import { gql } from '@apollo/client/index';
+import ThirtyEightMillion from '#src/assets/images/15-years/stickers/38MMBorrowers-1.png';
+import TShirt from '#src/assets/images/15-years/stickers/T-shirt.png';
+import DreamTeam from '#src/assets/images/15-years/stickers/DTeam2.png';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvProgressBar from '#src/components/Kv/KvProgressBar';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
@@ -334,8 +334,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .header {
 	background: $offwhite;
@@ -457,7 +457,8 @@ export default {
 			margin-top: rem-calc(48);
 			padding-left: rem-calc(32);
 			padding-bottom: rem-calc(16);
-			background-color: rgba(248, 248, 248, 0.5);
+			background-color: rgb(248 248 248 / 50%);
+
 			// max-width: 40vw;
 		}
 
@@ -506,7 +507,7 @@ export default {
 			transition: background 0.3s ease-out;
 
 			&:hover {
-				background: rgba(248, 248, 248, 0.8);
+				background: rgb(248 248 248 / 80%);
 			}
 		}
 

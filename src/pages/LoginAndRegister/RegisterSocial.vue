@@ -107,14 +107,14 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
-import SystemPage from '@/components/SystemFrame/SystemPage';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'RegisterSocial',
-	metaInfo() {
+	head() {
 		return {
 			title: 'Complete registration'
 		};

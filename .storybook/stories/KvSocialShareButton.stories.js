@@ -1,4 +1,4 @@
-import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {

@@ -7,13 +7,15 @@ module.exports = {
 	moduleNameMapper: {
 		'^~/(.*)$': '<rootDir>/node_modules/$1',
 		'^@/(.*)$': '<rootDir>/src/$1',
+		'^/src/(.*)$': '<rootDir>/src/$1',
+		'^#src/(.*)$': '<rootDir>/src/$1',
 		foundation: '<rootDir>/build/no-op.js',
 	},
 	transform: {
 		'^.+\\.(gql|graphql)$': 'jest-transform-graphql',
-		'^.+\\.vue$': 'vue-jest',
+		'^.+\\.vue$': '@vue/vue3-jest',
 		'^.+\\.js$': 'babel-jest',
-		'^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.js',
+		// '^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.cjs',
 	},
 	transformIgnorePatterns: ['/node_modules/(?!@kiva/)'],
 	snapshotSerializers: ['jest-serializer-vue'],
@@ -36,7 +38,10 @@ module.exports = {
 		'<rootDir>/src/util/animation',
 		'<rootDir>/node_modules/'
 	],
-	testURL: 'http://localhost',
 	testEnvironment: 'jsdom',
-	setupFiles: ['<rootDir>/test/unit/setupJestMocks.js']
+	testEnvironmentOptions: {
+		url: 'http://localhost',
+		customExportConditions: ['node', 'node-addons'],
+	},
+	// setupFiles: ['<rootDir>/test/unit/setupJestMocks.js']
 };

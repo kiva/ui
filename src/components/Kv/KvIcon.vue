@@ -55,7 +55,7 @@ export default {
 	},
 	computed: {
 		iconFile() {
-			return () => import(`@/assets/icons/inline/${this.name}.svg`);
+			return () => import(`../../assets/icons/inline/${this.name}.svg`);
 		}
 	}
 };

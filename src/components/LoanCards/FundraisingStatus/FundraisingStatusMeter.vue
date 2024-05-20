@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div class="fundraising-status-meter tw-bg-tertiary" :class="{short: props.shortMeter}">
 		<span
 			v-if="props.isFunded"
@@ -16,7 +16,8 @@
 </template>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
+
 $loan-card-meter-height-short: rem-calc(4);
 $loan-card-meter-height-medium: rem-calc(6);
 $loan-card-meter-height: rem-calc(8);

@@ -215,52 +215,61 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
-import { indexIn } from '@/util/comparators';
-import logFormatter from '@/util/logFormatter';
-import { processPageContentFlat, processPageContent } from '@/util/contentfulUtils';
-import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
-import LoanSearchFilters, { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
-import syncDate from '@/util/syncDate';
-import trackTransactionEvent from '@/util/trackTransactionEvent';
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
-import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
-import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
-import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
-import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
-import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import { preFetchAll } from '@/util/apolloPreFetch';
-import { setLendAmount } from '@/util/basketUtils';
+import { defineAsyncComponent } from 'vue';
+import { indexIn } from '#src/util/comparators';
+import logFormatter from '#src/util/logFormatter';
+import { processPageContentFlat, processPageContent } from '#src/util/contentfulUtils';
+import { validateQueryParams, getPromoFromBasket } from '#src/util/campaignUtils';
+import LoanSearchFilters, { getSearchableFilters } from '#src/api/fixtures/LoanSearchFilters';
+import syncDate from '#src/util/syncDate';
+import trackTransactionEvent from '#src/util/trackTransactionEvent';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
+import CampaignHowKivaWorks from '#src/components/CorporateCampaign/CampaignHowKivaWorks';
+import CampaignJoinTeamForm from '#src/components/CorporateCampaign/CampaignJoinTeamForm';
+import CampaignStatus from '#src/components/CorporateCampaign/CampaignStatus';
+import CampaignVerificationForm from '#src/components/CorporateCampaign/CampaignVerificationForm';
+import InContextCheckout from '#src/components/Checkout/InContext/InContextCheckout';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
+import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
+import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
+import { preFetchAll } from '#src/util/apolloPreFetch';
+import { setLendAmount } from '#src/util/basketUtils';
 
 // Error page
-const ErrorPage = () => import('@/pages/Error');
+const ErrorPage = defineAsyncComponent(() => import('#src/pages/Error'));
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
-const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
-const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignLogoGroup');
-const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
-const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
-const CampaignLoanWrapper = () => import('@/components/Contentful/CampaignLoanWrapper');
+const CampaignHero = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignHero'));
+const CampaignLogoGroup = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignLogoGroup'));
+const CampaignPartner = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignPartner'));
+const CampaignThanks = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignThanks'));
+const CampaignLoanWrapper = defineAsyncComponent(() => import('#src/components/Contentful/CampaignLoanWrapper'));
 
-const CardRow = () => import('@/components/Contentful/CardRow');
-const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
-const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
-const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
-const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
-const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
-const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
-const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
-const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
-const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
+const CardRow = defineAsyncComponent(() => import('#src/components/Contentful/CardRow'));
+const CenteredRichText = defineAsyncComponent(() => import('#src/components/Contentful/CenteredRichText'));
+const DynamicHeroClassic = defineAsyncComponent(() => import('#src/components/Contentful/DynamicHeroClassic'));
+const HeroWithCarousel = defineAsyncComponent(() => import('#src/components/Contentful/HeroWithCarousel'));
+const LoansByCategoryCarousel = defineAsyncComponent(() => import(
+	'#src/components/Contentful/LoansByCategoryCarousel'
+));
+const LoansByCategoryGrid = defineAsyncComponent(() => import(
+	'#src/components/Contentful/HomePage/NewHomeLoansByCategoryGrid'
+));
+const MonthlyGoodSelectorWrapper = defineAsyncComponent(() => import(
+	'#src/components/MonthlyGood/MonthlyGoodSelectorWrapper'
+));
+const FrequentlyAskedQuestions = defineAsyncComponent(() => import(
+	'#src/components/Contentful/FrequentlyAskedQuestions'
+));
+const RichTextItemsCentered = defineAsyncComponent(() => import('#src/components/Contentful/RichTextItemsCentered'));
+const MediaItemsCentered = defineAsyncComponent(() => import('#src/components/Contentful/MediaItemsCentered'));
+const StoryCardCarousel = defineAsyncComponent(() => import('#src/components/Contentful/StoryCardCarousel'));
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -618,7 +627,7 @@ export default {
 			lcaLoanPrice: 0
 		};
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: `${this.pageTitle}`,
 			meta: [
@@ -798,7 +807,7 @@ export default {
 		pageSettingData() {
 			const settings = this.pageData?.page?.settings ?? [];
 			const jsonDataArray = settings.map(setting => setting.dataObject || {});
-			/* eslint-disable-next-line no-unused-vars, no-empty-pattern */
+
 			const allJsonData = jsonDataArray.reduce((accumulator, settingDataObject) => {
 				return { ...accumulator, ...settingDataObject };
 			}, {});
@@ -1678,7 +1687,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .corporate-campaign-landing {
 	&__status--incontext {
@@ -1718,7 +1727,7 @@ export default {
 }
 
 .loan-details-lightbox {
-	::v-deep .kv-lightbox__header {
+	:deep(.kv-lightbox__header) {
 		button.kv-lightbox__close-btn {
 			background: $white;
 			border-radius: 1.25rem;
@@ -1739,7 +1748,7 @@ export default {
 			width: 58.75rem;
 		}
 
-		::v-deep {
+		:deep(&) {
 			.full-details-link,
 			.close-button-wrapper,
 			.info-panel a,

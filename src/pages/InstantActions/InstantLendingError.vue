@@ -53,14 +53,14 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { gql } from '@apollo/client/index';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const instantLendingErrorContent = gql`query instantLendingContent {
 	contentful {
@@ -71,7 +71,7 @@ const instantLendingErrorContent = gql`query instantLendingContent {
 export default {
 	name: 'InstantLendingError',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Instant Lending Error'
 		};

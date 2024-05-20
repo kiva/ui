@@ -1,4 +1,4 @@
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
 
 import causeList from '../mock-data/cause-selector-data-mock';
 

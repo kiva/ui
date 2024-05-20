@@ -4,7 +4,7 @@
  * validating authentication tokens or displaying the time remaining on a loan reservation) import
  * and call this function like so:
  *
- *   import syncDate from '@/util/syncDate';
+ *   import syncDate from '#src/util/syncDate';
  *   syncDate().then(() => {
  *     // time is synchronized
  *   });
@@ -12,7 +12,7 @@
 
 import store2 from 'store2';
 import { create } from 'timesync';
-import logFormatter from '@/util/logFormatter';
+import logFormatter from '#src/util/logFormatter';
 
 // Grab Date.now before the Date prototype is replaced
 const systemNow = Date.now;

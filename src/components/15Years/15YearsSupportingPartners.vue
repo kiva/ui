@@ -33,9 +33,14 @@
 </template>
 
 <script>
+import { metaGlobReader } from '#src/util/importHelpers';
 import FifteenYearsButton from './15YearsButton';
 
-const imgRequire = require.context('@/assets/images/15-years/partners/', true);
+const imgRequire = import.meta.glob('#src/assets/images/15-years/partners/*.*', {
+	eager: true,
+	query: '?url',
+});
+const partnerImages = metaGlobReader(imgRequire, '#src/assets/images/15-years/partners/');
 
 export default {
 	name: '15YearsSupportingPartners',
@@ -47,27 +52,27 @@ export default {
 			supportingPartners: [
 				{
 					key: 'chess',
-					logo: imgRequire('./Partner-chess24.svg'),
+					logo: partnerImages('Partner-chess24.svg'),
 					alt: 'Chess24'
 				},
 				{
 					key: 'cisco',
-					logo: imgRequire('./Partner-cisco.svg'),
+					logo: partnerImages('Partner-cisco.svg'),
 					alt: 'Cisco'
 				},
 				{
 					key: 'paypal',
-					logo: imgRequire('./Partner-paypal-bw.svg'),
+					logo: partnerImages('Partner-paypal-bw.svg'),
 					alt: 'PayPal'
 				},
 				{
 					key: 'farfetch',
-					logo: imgRequire('./Partner-farfetch.svg'),
+					logo: partnerImages('Partner-farfetch.svg'),
 					alt: 'Positively Farfetch'
 				},
 				{
 					key: 'women',
-					logo: imgRequire('./Partner-women.svg'),
+					logo: partnerImages('Partner-women.svg'),
 					alt: 'Women and Girls Empowered'
 				}
 			],
@@ -77,7 +82,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .supporting-partners {
 	padding-top: 7rem;
@@ -89,14 +94,14 @@ export default {
 
 	&__list {
 		list-style: none;
-		margin: 5rem 0 3.5rem 0;
+		margin: 5rem 0 3.5rem;
 	}
 
 	&__li {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0 1rem 3rem 1rem;
+		padding: 0 1rem 3rem;
 	}
 
 	&__logo {

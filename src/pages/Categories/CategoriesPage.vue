@@ -95,16 +95,16 @@
 </template>
 
 <script>
-import { processPageContent } from '@/util/contentfulUtils';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import MainCategoryTile from '@/components/Categories/MainCategoryTile';
-import LoanSpotlight from '@/components/Categories/LoanSpotlight';
-import MonthlyGoodModule from '@/components/Categories/MonthlyGoodModule';
-import FrequentlyAskedQuestions from '@/components/Contentful/FrequentlyAskedQuestions';
-import { gql } from '@apollo/client';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { processPageContent } from '#src/util/contentfulUtils';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
+import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
+import MonthlyGoodModule from '#src/components/Categories/MonthlyGoodModule';
+import FrequentlyAskedQuestions from '#src/components/Contentful/FrequentlyAskedQuestions';
+import { gql } from '@apollo/client/index';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
@@ -147,7 +147,7 @@ export default {
 		MonthlyGoodModule,
 		FrequentlyAskedQuestions
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: 'Choose a category and fund a loan',
 			meta: [

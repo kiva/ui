@@ -1,4 +1,4 @@
-import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import PromoGridLoanCard from '#src/components/LoanCards/PromoGridLoanCard';
 
 const promoCategories = {
 	Women: { url: '/monthlygood?category=women', label: 'women' },

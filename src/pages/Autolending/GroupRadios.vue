@@ -29,8 +29,8 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvRadio from '@/components/Kv/KvRadio';
+import { gql } from '@apollo/client/index';
+import KvRadio from '#src/components/Kv/KvRadio';
 
 export default {
 	name: 'GroupRadios',

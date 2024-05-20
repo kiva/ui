@@ -1,4 +1,4 @@
-import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchLocationFilter from '#src/components/Lend/LoanSearch/LoanSearchLocationFilter';
 
 export default {
 	title: 'Loan Search/Loan Search Location Filter',

@@ -9,8 +9,7 @@ async function deepAdd(components, set) {
 		let def = definition;
 		// import dynamic component
 		if (typeof definition === 'function') {
-			const imported = await definition();
-			def = imported.default;
+			def = await definition();
 		}
 		// add the component definition and its children if the definition hasn't been added yet
 		if (!set.has(def)) {

@@ -36,11 +36,13 @@
 
 <script>
 import { paramCase } from 'change-case';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import getCacheKey from '@/util/getCacheKey';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import getCacheKey from '#src/util/getCacheKey';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
+const promoLoanImageGlob = import.meta.glob('#src/assets/images/mg-promo-loan-card/*.*', { eager: true });
+const promoLoanImageRequire = metaGlobReader(promoLoanImageGlob, '#src/assets/images/mg-promo-loan-card/');
 
 export default {
 	name: 'PromoGridLoanCard',
@@ -67,13 +69,13 @@ export default {
 		backgroundImage() {
 			if (this.categoryLabel) {
 				return [
-					['small', promoLoanImageRequire(`./mg-promo-${paramCase(this.categoryLabel)}-std.jpg`)],
-					['small retina', promoLoanImageRequire(`./mg-promo-${paramCase(this.categoryLabel)}-retina.jpg`)],
+					['small', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-std.jpg`)],
+					['small retina', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-retina.jpg`)],
 				];
 			}
 			return [
-				['small', promoLoanImageRequire('./mg-promo-default-std.jpg')],
-				['small retina', promoLoanImageRequire('./mg-promo-default-retina.jpg')],
+				['small', promoLoanImageRequire('mg-promo-default-std.jpg')],
+				['small retina', promoLoanImageRequire('mg-promo-default-retina.jpg')],
 			];
 		}
 	},
@@ -81,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .promo-grid-card-container {
 	padding-left: 0.625rem;
@@ -89,7 +91,7 @@ export default {
 	padding-bottom: 1.25rem;
 }
 
-@media (min-width: 30.0625em) {
+@media (width >= 30.0625em) {
 	.promo-grid-card-container {
 		padding-left: 0.9375rem;
 		padding-right: 0.9375rem;
@@ -104,7 +106,7 @@ export default {
 	position: relative;
 
 	&:hover {
-		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgb(0 0 0 / 10%);
 	}
 }
 
@@ -113,24 +115,19 @@ export default {
 	width: 100%;
 	height: 100%;
 
-	::v-deep {
-		img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			object-position: top;
-		}
+	:deep(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
 	}
 
 	&::after {
 		display: block;
 		content: '';
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		background: linear-gradient(transparent 25%, rgb(61, 61, 61) 80%);
+		inset: 0;
+		background: linear-gradient(transparent 25%, rgb(61 61 61) 80%);
 	}
 }
 

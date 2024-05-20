@@ -36,10 +36,15 @@
 <script>
 import { differenceInYears } from 'date-fns';
 import numeral from 'numeral';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import homepageStatistics from '@/graphql/query/whyKivaData.graphql';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import homepageStatistics from '#src/graphql/query/whyKivaData.graphql';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
+const billionImpactImagesGlob = import.meta.glob('#src/assets/images/10-years-billion-impact/*.*', { eager: true });
+const billionImpactImagesRequire = metaGlobReader(
+	billionImpactImagesGlob,
+	'#src/assets/images/10-years-billion-impact/'
+);
 const million = 1000000;
 const billion = 1000000000;
 
@@ -51,8 +56,8 @@ export default {
 	data() {
 		return {
 			billionImpactImages: [
-				['small', billionImpactImagesRequire('./10-years-billion-impact_ghost.jpg')],
-				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x_ghost.jpg')],
+				['small', billionImpactImagesRequire('10-years-billion-impact_ghost.jpg')],
+				['small retina', billionImpactImagesRequire('10-years-billion-impact_2x_ghost.jpg')],
 			],
 			// sensible defaults in the format returned by endpoint
 			amountFunded: 1.5 * billion,
@@ -94,7 +99,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kiva-as-expert-section-wrapper {
 	.community-image {

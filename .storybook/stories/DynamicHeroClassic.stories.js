@@ -1,4 +1,4 @@
-import DynamicHeroClassic from '@/components/Contentful/DynamicHeroClassic';
+import DynamicHeroClassic from '#src/components/Contentful/DynamicHeroClassic';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {

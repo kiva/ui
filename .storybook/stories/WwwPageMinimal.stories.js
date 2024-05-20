@@ -12,9 +12,9 @@ import {
 	fifteenYearFooterTheme,
 	blueHeader,
 	blueFooter
-} from '@/util/siteThemes';
+} from '#src/util/siteThemes';
 
-import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
+import WwwPageMinimal from '#src/components/WwwFrame/WwwPageMinimal';
 
 export default {
 	title: 'WwwFrame/WwwPageMinimal',

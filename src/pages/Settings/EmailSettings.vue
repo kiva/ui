@@ -189,14 +189,12 @@
 									{{ teamsShown ? "Hide" : "Show" }} per-team preferences
 								</button>
 								<div v-if="teamsShown">
-									<template v-for="(team, index) in form.teamMessageFrequencies">
+									<template v-for="(team, index) in form.teamMessageFrequencies" :key="index">
 										<label
 											for="single-team-digest-input"
-											:key="`team${index}-label`"
 											class="tw-block tw-mb-1"
 										>{{ team.name }}</label>
 										<kv-select
-											:key="`team${index}-select`"
 											id="single-team-digest-input"
 											v-model="team.frequency"
 										>
@@ -330,18 +328,18 @@
 
 <script>
 // import * as Sentry from "@sentry/vue";
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
+import { gql } from '@apollo/client/index';
+import logFormatter from '#src/util/logFormatter';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvSelect from '@/components/Kv/KvSelect';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import PushRepaymentUpdates from '@/components/Settings/PushRepaymentUpdates';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import KvButton from '#src/components/Kv/KvButton';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import KvSelect from '#src/components/Kv/KvSelect';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import PushRepaymentUpdates from '#src/components/Settings/PushRepaymentUpdates';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 
 const pageQuery = gql`
 	query communicationPreferences {
@@ -714,7 +712,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .email-settings {
 	form .row:last-child {
@@ -736,7 +734,7 @@ export default {
 		margin-left: 2rem;
 	}
 
-	::v-deep .text-link.button {
+	:deep(.text-link.button) {
 		margin-bottom: 0.5rem;
 	}
 
@@ -750,13 +748,13 @@ export default {
 	}
 
 	// style in button loading spinner
-	::v-deep .loading-spinner {
+	:deep(.loading-spinner) {
 		vertical-align: middle;
 		width: 1rem;
 		height: 1rem;
 	}
 
-	::v-deep .loading-spinner .line {
+	:deep(.loading-spinner) .line {
 		background-color: $white;
 	}
 }

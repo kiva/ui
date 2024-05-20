@@ -1,8 +1,8 @@
-import KvHero from '@/components/Kv/KvHero';
-import KvButton from '@/components/Kv/KvButton';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvHero from '#src/components/Kv/KvHero';
+import KvButton from '#src/components/Kv/KvButton';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 
-const imagesRequire = require.context('@/assets/images/mg-hero-slideshow', true);
+const imagesRequire = require.context('#src/assets/images/mg-hero-slideshow', true);
 const sampleResponsiveImageSet = [
 	['small', imagesRequire('./mg-hppromo-1-sm-std.jpg')],
 	['small retina', imagesRequire('./mg-hppromo-1-sm-retina.jpg')],

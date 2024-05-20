@@ -151,14 +151,14 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
+import { gql } from '@apollo/client/index';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {

@@ -184,19 +184,19 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { mdiChevronDown } from '@mdi/js';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
-} from '@/util/touchEvents';
-import KvDropdown from '@/components/Kv/KvDropdown';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+} from '#src/util/touchEvents';
+import KvDropdown from '#src/components/Kv/KvDropdown';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import TheSettingsTertiaryMenu from '#src/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
 

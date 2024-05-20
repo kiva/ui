@@ -175,11 +175,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`query settingsQuery {
 	my {

@@ -1,11 +1,10 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import VueRouter from 'vue-router';
-import TheHeader from '@/components/WwwFrame/TheHeader';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
-import CookieStore from '@/util/cookieStore';
-import { MockKvAuth0 } from '@/util/KvAuth0';
-import numeralFilter from '@/plugins/numeral-filter';
+import TheHeader from '#src/components/WwwFrame/TheHeader';
+import kvAnalytics from '#src/plugins/kv-analytics-plugin';
+import CookieStore from '#src/util/cookieStore';
+import { MockKvAuth0 } from '#src/util/KvAuth0';
+import numeralFilter from '#src/plugins/numeral-filter';
 
 const emptyComponent = {
 	template: '<div></div>',
@@ -26,7 +25,7 @@ describe('TheHeader', () => {
 					cookieStore: new CookieStore(),
 					kvAuth0: MockKvAuth0,
 				},
-				routes: new VueRouter(),
+				routes: [],
 				// Stubbing out child components not used in this test
 				stubs: {
 					MonthlyGoodExpMenuWrapper: { ...emptyComponent },

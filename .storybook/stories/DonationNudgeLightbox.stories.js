@@ -1,4 +1,4 @@
-import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox.vue';
+import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 

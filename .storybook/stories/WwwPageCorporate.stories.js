@@ -8,15 +8,15 @@ import {
 	wrdFooterTheme,
 	fifteenYearFooterTheme,
 	blueFooter
-} from '@/util/siteThemes';
-import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
+} from '#src/util/siteThemes';
+import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
 
 export default {
 	title: 'WwwFrame/WwwPageCorporate',
 	component: WwwPageCorporate,
 	args: {
 		footerTheme: null,
-		corporateLogoUrl: require('@/assets/images/logos/visa.svg')
+		corporateLogoUrl: require('#src/assets/images/logos/visa.svg')
 	},
 	argTypes: {
 		footerTheme: {

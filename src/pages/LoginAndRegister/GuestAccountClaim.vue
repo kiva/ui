@@ -46,13 +46,13 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
-import SystemPage from '@/components/SystemFrame/SystemPage';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'GuestAccountClaim',
-	metaInfo() {
+	head() {
 		return {
 			title: 'Claim account'
 		};

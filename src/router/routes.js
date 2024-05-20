@@ -1,16 +1,18 @@
-module.exports = [
+import { defineAsyncComponent } from 'vue';
+
+export default [
 	{
 		path: '/homepage-classic',
 		redirect: '/',
 	},
-	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
+	{ path: '/15', component: defineAsyncComponent(() => import('#src/pages/15Years/15Years')) },
 	{
 		path: '/auto-deposit',
-		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
+		component: defineAsyncComponent(() => import('#src/pages/AutoDeposit/AutoDepositLandingPage')),
 	},
 	{
 		path: '/auto-deposit/thanks',
-		component: () => import('@/pages/AutoDeposit/AutoDepositThanksPage'),
+		component: defineAsyncComponent(() => import('#src/pages/AutoDeposit/AutoDepositThanksPage')),
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
@@ -18,28 +20,51 @@ module.exports = [
 	},
 	{
 		path: '/borrow/pre-application',
-		component: () => import('@/pages/Borrow/BorrowIndex'),
+		component: defineAsyncComponent(() => import('#src/pages/Borrow/BorrowIndex')),
 		children: [
 			{
 				path: 'community',
-				component: () => import('@/pages/Borrow/BorrowCommunity')
+				component: defineAsyncComponent(() => import('#src/pages/Borrow/BorrowCommunity')),
 			},
 			{
 				path: 'how-long',
-				component: () => import('@/pages/Borrow/BorrowHowLong')
+				component: defineAsyncComponent(() => import('#src/pages/Borrow/BorrowHowLong')),
 			},
 		]
 	},
-	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
-	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
-	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },
-	{ path: '/build/docs', component: () => import('@/pages/Build/DocsPage') },
-	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
-	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
-	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
+	{
+		path: '/build',
+		component: defineAsyncComponent(() => import('#src/pages/Build/BuildPage')),
+		children: [
+			{
+				path: 'code-of-conduct',
+				component: defineAsyncComponent(() => import('#src/pages/Build/CodeOfConductPage')),
+			},
+			{
+				path: 'data-snapshots',
+				component: defineAsyncComponent(() => import('#src/pages/Build/DataPage'))
+			},
+			{
+				path: 'docs',
+				component: defineAsyncComponent(() => import('#src/pages/Build/DocsPage'))
+			},
+			{
+				path: 'getting-started',
+				component: defineAsyncComponent(() => import('#src/pages/Build/GettingStartedPage')),
+			},
+			{
+				path: 'research',
+				component: defineAsyncComponent(() => import('#src/pages/Build/Research'))
+			},
+			{
+				path: 'terms-of-service',
+				component: defineAsyncComponent(() => import('#src/pages/Build/TermsOfService')),
+			},
+		],
+	},
 	{
 		path: '/categories',
-		component: () => import('@/pages/Categories/CategoriesPage')
+		component: defineAsyncComponent(() => import('#src/pages/Categories/CategoriesPage'))
 	},
 	{
 		path: '/categories-beta',
@@ -47,7 +72,7 @@ module.exports = [
 	},
 	{
 		path: '/cc/:dynamicRoute',
-		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
+		component: defineAsyncComponent(() => import('#src/pages/LandingPages/CorporateCampaign/CCLandingPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbouncePopUp: true,
@@ -62,21 +87,21 @@ module.exports = [
 	},
 	{
 		path: '/checkout',
-		component: () => import('@/pages/Checkout/CheckoutPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Checkout/CheckoutPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/checkout/post-purchase',
-		component: () => import('@/pages/Checkout/PostPurchase'),
+		component: defineAsyncComponent(() => import('#src/pages/Checkout/PostPurchase')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/checkout/thanks/:challengeId',
-		component: () => import('@/pages/Thanks/ThanksPageChallenge'),
+		component: defineAsyncComponent(() => import('#src/pages/Thanks/ThanksPageChallenge')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -86,7 +111,7 @@ module.exports = [
 	},
 	{
 		path: '/checkout/thanks',
-		component: () => import('@/pages/Thanks/ThanksPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Thanks/ThanksPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbouncePopUp: true,
@@ -94,7 +119,7 @@ module.exports = [
 	},
 	{
 		path: '/confirm-instant-donation/:token/:amount',
-		component: () => import('@/pages/InstantActions/ConfirmInstantDonation'),
+		component: defineAsyncComponent(() => import('#src/pages/InstantActions/ConfirmInstantDonation')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -109,7 +134,7 @@ module.exports = [
 	},
 	{
 		path: '/error',
-		component: () => import('@/pages/Error'),
+		component: defineAsyncComponent(() => import('#src/pages/Error')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
@@ -120,25 +145,25 @@ module.exports = [
 	},
 	{
 		path: '/get-started',
-		component: () => import('@/pages/GetStarted/GetStarted'),
+		component: defineAsyncComponent(() => import('#src/pages/GetStarted/GetStarted')),
 		children: [
 			{
 				path: '',
-				component: () => import('@/pages/GetStarted/GetStartedCauses'),
+				component: defineAsyncComponent(() => import('#src/pages/GetStarted/GetStartedCauses')),
 				meta: {
 					excludeFromStaticSitemap: true,
 				}
 			},
 			{
 				path: 'places',
-				component: () => import('@/pages/GetStarted/GetStartedPlaces'),
+				component: defineAsyncComponent(() => import('#src/pages/GetStarted/GetStartedPlaces')),
 				meta: {
 					excludeFromStaticSitemap: true,
 				}
 			},
 			{
 				path: 'results',
-				component: () => import('@/pages/GetStarted/GetStartedResults'),
+				component: defineAsyncComponent(() => import('#src/pages/GetStarted/GetStartedResults')),
 				meta: {
 					excludeFromStaticSitemap: true,
 				}
@@ -148,7 +173,7 @@ module.exports = [
 	{
 
 		path: '/instant-donation-thanks/:result',
-		component: () => import('@/pages/InstantActions/InstantDonationThanks'),
+		component: defineAsyncComponent(() => import('#src/pages/InstantActions/InstantDonationThanks')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -158,35 +183,35 @@ module.exports = [
 	},
 	{
 		path: '/instant-lending-error',
-		component: () => import('@/pages/InstantActions/InstantLendingError'),
+		component: defineAsyncComponent(() => import('#src/pages/InstantActions/InstantLendingError')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/join-team',
-		component: () => import('@/pages/LoginAndRegister/JoinTeam'),
+		component: defineAsyncComponent(() => import('#src/pages/LoginAndRegister/JoinTeam')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
 	},
 	{
 		path: '/legal',
-		component: () => import('@/pages/Legal/Legal'),
+		component: defineAsyncComponent(() => import('#src/pages/Legal/Legal')),
 		children: [
 			{
 				path: 'promo-terms',
-				component: () => import('@/pages/Legal/PromoTermsOfUse')
+				component: defineAsyncComponent(() => import('#src/pages/Legal/PromoTermsOfUse'))
 			},
 			{
 				path: 'terms',
-				component: () => import('@/pages/Legal/TermsOfUse')
+				component: defineAsyncComponent(() => import('#src/pages/Legal/TermsOfUse'))
 			},
 		]
 	},
 	{
 		path: '/teams',
-		component: () => import('@/pages/LendingTeams/LendingTeams'),
+		component: defineAsyncComponent(() => import('#src/pages/LendingTeams/LendingTeams'))
 	},
 	{
 		path: '/lend-by-category/loans-to-women',
@@ -302,14 +327,14 @@ module.exports = [
 	},
 	{
 		path: '/lend-by-category',
-		component: () => import('@/pages/LoanFinding/LoanFinding'),
+		component: defineAsyncComponent(() => import('#src/pages/LoanFinding/LoanFinding')),
 		meta: {
 			unbounceEmailCapture: true,
 		},
 	},
 	{
 		path: '/lend-by-category/recommended-by-lenders',
-		component: () => import('@/pages/Lend/LoanChannelCategoryPageRecommendedByLenders'),
+		component: defineAsyncComponent(() => import('#src/pages/Lend/LoanChannelCategoryPageRecommendedByLenders')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbounceEmailCapture: true,
@@ -318,7 +343,7 @@ module.exports = [
 	},
 	{
 		path: '/lend-by-category/:category',
-		component: () => import('@/pages/Lend/LoanChannelCategoryPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Lend/LoanChannelCategoryPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbounceEmailCapture: true,
@@ -331,7 +356,7 @@ module.exports = [
 	},
 	{
 		path: '/lend/saved-search',
-		component: () => import('@/pages/Settings/SavedSearch'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/SavedSearch')),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -344,7 +369,7 @@ module.exports = [
 	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
-		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
+		component: defineAsyncComponent(() => import('#src/pages/BorrowerProfile/BorrowerProfile')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbounceEmailCapture: true,
@@ -354,7 +379,7 @@ module.exports = [
 	{
 		name: 'lend-filter',
 		path: '/lend/filter',
-		component: () => import('@/pages/Lend/LoanSearchPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Lend/LoanSearchPage')),
 		meta: {
 			unbounceEmailCapture: true,
 		},
@@ -380,7 +405,7 @@ module.exports = [
 	/*
 	{
 		path: '/lp/:dynamicRoute',
-		component: () => import('@/pages/ContentfulPage'),
+		component: defineAsyncComponent(() => import('#src/pages/ContentfulPage')),
 		meta: {
 			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
 			excludeFromStaticSitemap: true,
@@ -390,7 +415,7 @@ module.exports = [
 	*/
 	{
 		path: '/hp/:dynamicRoute',
-		component: () => import('@/pages/ContentfulPage'),
+		component: defineAsyncComponent(() => import('#src/pages/ContentfulPage')),
 		meta: {
 			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
 			excludeFromStaticSitemap: true,
@@ -399,7 +424,7 @@ module.exports = [
 	},
 	{
 		path: '/monthlygood',
-		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
+		component: defineAsyncComponent(() => import('#src/pages/MonthlyGood/MonthlyGoodLandingPage')),
 		props: route => ({ category: route.query.category }),
 		meta: {
 			unbounceEmailCapture: true,
@@ -407,7 +432,7 @@ module.exports = [
 	},
 	{
 		path: '/monthlygood/setup',
-		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
+		component: defineAsyncComponent(() => import('#src/pages/MonthlyGood/MonthlyGoodSetupPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -422,7 +447,7 @@ module.exports = [
 	},
 	{
 		path: '/monthlygood/thanks',
-		component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage'),
+		component: defineAsyncComponent(() => import('#src/pages/MonthlyGood/MonthlyGoodThanksPage')),
 		props: route => ({
 			source: route.query.source,
 			paymentType: route.query.paymentType,
@@ -434,7 +459,7 @@ module.exports = [
 	},
 	{
 		path: '/portfolio',
-		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Portfolio/ImpactDashboard/ImpactDashboardPage')),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -442,7 +467,7 @@ module.exports = [
 	},
 	{
 		path: '/portfolio/lending-stats',
-		component: () => import('@/pages/Portfolio/LendingStats/LendingStatsPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Portfolio/LendingStats/LendingStatsPage')),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -450,32 +475,32 @@ module.exports = [
 	},
 	{
 		path: '/possibility',
-		component: () => import('@/pages/Possibility/Possibility'),
+		component: defineAsyncComponent(() => import('#src/pages/Possibility/Possibility')),
 		children: [
 			{
 				path: 'giving-tuesday',
-				component: () => import('@/pages/Possibility/GivingTuesday')
+				component: defineAsyncComponent(() => import('#src/pages/Possibility/GivingTuesday'))
 			},
 			{
 				path: '12-days-of-lending',
-				component: () => import('@/pages/Possibility/12DaysOfLending')
+				component: defineAsyncComponent(() => import('#src/pages/Possibility/12DaysOfLending'))
 			},
 			{
 				path: 'year-end',
-				component: () => import('@/pages/Possibility/YearEnd')
+				component: defineAsyncComponent(() => import('#src/pages/Possibility/YearEnd'))
 			},
 		]
 	},
 	{
 		path: '/process-browser-auth',
-		component: () => import('@/pages/ProcessBrowserAuth'),
+		component: defineAsyncComponent(() => import('#src/pages/ProcessBrowserAuth')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/process-instant-lending/:loanId/:lendAmount',
-		component: () => import('@/pages/InstantActions/ProcessInstantLending'),
+		component: defineAsyncComponent(() => import('#src/pages/InstantActions/ProcessInstantLending')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -486,7 +511,7 @@ module.exports = [
 	},
 	{
 		path: '/process-join-team',
-		component: () => import('@/pages/ProcessJoinTeam'),
+		component: defineAsyncComponent(() => import('#src/pages/ProcessJoinTeam')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			authenticationRequired: true,
@@ -501,7 +526,7 @@ module.exports = [
 	},
 	{
 		path: '/register/social',
-		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
+		component: defineAsyncComponent(() => import('#src/pages/LoginAndRegister/RegisterSocial')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
@@ -517,21 +542,21 @@ module.exports = [
 	},
 	{
 		path: '/register/guest',
-		component: () => import('@/pages/LoginAndRegister/GuestAccountClaim'),
+		component: defineAsyncComponent(() => import('#src/pages/LoginAndRegister/GuestAccountClaim')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/register/guest-redirect',
-		component: () => import('@/pages/LoginAndRegister/GuestAccountRedirect'),
+		component: defineAsyncComponent(() => import('#src/pages/LoginAndRegister/GuestAccountRedirect')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/settings',
-		component: () => import('@/pages/Settings/SettingsPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/SettingsPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			authenticationRequired: true,
@@ -539,21 +564,21 @@ module.exports = [
 	},
 	{
 		path: '/settings/autolending',
-		component: () => import('@/pages/Autolending/AutolendingPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Autolending/AutolendingPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
 		children: [
 			{
 				path: '',
-				component: () => import('@/pages/Autolending/AutolendingSettingsPage'),
+				component: defineAsyncComponent(() => import('#src/pages/Autolending/AutolendingSettingsPage')),
 				meta: {
 					activeLoginRequired: true,
 				}
 			},
 			{
 				path: ':action',
-				component: () => import('@/pages/Autolending/AutolendingMessagingPage'),
+				component: defineAsyncComponent(() => import('#src/pages/Autolending/AutolendingMessagingPage')),
 				props: route => ({
 					success: route.query.success === 'true',
 					action: route.params.action,
@@ -565,7 +590,7 @@ module.exports = [
 	},
 	{
 		path: '/settings/email',
-		component: () => import('@/pages/Settings/EmailSettings'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/EmailSettings')),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -573,7 +598,7 @@ module.exports = [
 	},
 	{
 		path: '/settings/payments',
-		component: () => import('@/pages/Settings/PaymentSettings'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/PaymentSettings')),
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
@@ -583,7 +608,7 @@ module.exports = [
 	},
 	{
 		path: '/settings/security',
-		component: () => import('@/pages/Settings/SecuritySettings'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/SecuritySettings')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			recentLoginRequired: true,
@@ -593,7 +618,7 @@ module.exports = [
 	},
 	{
 		path: '/settings/security/mfa',
-		component: () => import('@/pages/Settings/TwoStepVerificationPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/TwoStepVerificationPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 			recentLoginRequired: true,
@@ -606,20 +631,20 @@ module.exports = [
 				props: route => ({
 					first: route.query.first === 'true'
 				}),
-				component: () => import('@/components/Settings/AppAuthentication'),
+				component: defineAsyncComponent(() => import('#src/components/Settings/AppAuthentication')),
 			},
 			{
 				path: 'phone',
 				props: route => ({
 					first: route.query.first === 'true'
 				}),
-				component: () => import('@/components/Settings/PhoneAuthentication'),
+				component: defineAsyncComponent(() => import('#src/components/Settings/PhoneAuthentication')),
 			},
 		],
 	},
 	{
 		path: '/settings/subscriptions',
-		component: () => import('@/pages/Settings/SubscriptionsSettings'),
+		component: defineAsyncComponent(() => import('#src/pages/Settings/SubscriptionsSettings')),
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
@@ -627,7 +652,7 @@ module.exports = [
 	},
 	{
 		path: '/start-verification',
-		component: () => import('@/pages/StartVerification'),
+		component: defineAsyncComponent(() => import('#src/pages/StartVerification')),
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
@@ -635,7 +660,7 @@ module.exports = [
 	},
 	{
 		path: '/styleguide',
-		component: () => import('@/pages/StyleGuide'),
+		component: defineAsyncComponent(() => import('#src/pages/StyleGuide')),
 	},
 	{
 		path: '/styleguide/*',
@@ -643,21 +668,21 @@ module.exports = [
 	},
 	{
 		path: '/ui-site-map',
-		component: () => import('@/pages/UiSiteMap/UiSiteMapPage'),
+		component: defineAsyncComponent(() => import('#src/pages/UiSiteMap/UiSiteMapPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/UI_REVISION',
-		component: () => import('@/pages/UiRevision'),
+		component: defineAsyncComponent(() => import('#src/pages/UiRevision')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}
 	},
 	{
 		path: '/ub/:unbouncePath',
-		component: () => import('@/pages/LandingPages/Unbounce/IFrameEmbed'),
+		component: defineAsyncComponent(() => import('#src/pages/LandingPages/Unbounce/IFrameEmbed')),
 		props: route => ({
 			unbouncePath: route.params.unbouncePath,
 		}),
@@ -668,7 +693,7 @@ module.exports = [
 	// These are Demo Pages
 	{
 		path: '/lend-vue',
-		component: () => import('@/pages/Lend/LendPage'),
+		component: defineAsyncComponent(() => import('#src/pages/Lend/LendPage')),
 		meta: {
 			excludeFromStaticSitemap: true,
 		}

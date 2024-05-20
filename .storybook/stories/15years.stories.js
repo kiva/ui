@@ -1,17 +1,17 @@
 import Vue from 'vue';
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins);
 
-import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
-import FifteenYears from '@/pages/15Years/15Years';
-import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
-import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
-import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
+import AppealBanner15 from '#src/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
+import FifteenYears from '#src/pages/15Years/15Years';
+import FifteenYearsHeader from '#src/components/15Years/15YearsHeader';
+import FifteenYearsHowKivaWorks from '#src/components/15Years/15YearsHowKivaWorks';
+import FifteenYearsIndividuals from '#src/components/15Years/15YearsIndividuals';
+import FifteenYearsPartners from '#src/components/15Years/15YearsPartners';
+import FifteenYearsStyles from '#src/components/15Years/15YearsStyles';
+import FifteenYearsTimeline from '#src/components/15Years/15YearsTimeline';
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';

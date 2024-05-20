@@ -1,4 +1,4 @@
-import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
 
 export default {
 	title: 'Kv/KvSectionModalLoader',

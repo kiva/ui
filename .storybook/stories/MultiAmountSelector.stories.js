@@ -1,4 +1,4 @@
-import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
+import MultiAmountSelector from '#src/components/Forms/MultiAmountSelector';
 
 export default {
 	title: 'Forms/MultiAmountSelector',

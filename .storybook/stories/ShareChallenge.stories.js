@@ -1,4 +1,4 @@
-import ShareChallenge from '@/components/Thanks/ShareChallenge';
+import ShareChallenge from '#src/components/Thanks/ShareChallenge';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {

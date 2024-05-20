@@ -1,4 +1,4 @@
-import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
+import KvResultsPerPage from '#src/components/Kv/KvResultsPerPage';
 
 export default {
 	title: 'Kv/KvResultsPerPage',

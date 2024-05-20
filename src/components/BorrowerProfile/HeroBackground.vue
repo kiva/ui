@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import { gql } from '@apollo/client/index';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'HeroBackground',

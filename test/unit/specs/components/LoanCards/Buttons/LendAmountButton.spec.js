@@ -1,10 +1,11 @@
 import { render } from '@testing-library/vue';
-import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
+import kvAnalytics from '#src/plugins/kv-analytics-plugin';
 
 describe('LendAmountButton', () => {
 	it('should display amount with a number input', async () => {
-		const { getByText } = render(LendAmountButton,
+		const { getByText } = render(
+			LendAmountButton,
 			{
 				provide: {
 					apollo: {
@@ -15,7 +16,8 @@ describe('LendAmountButton', () => {
 			},
 			vue => {
 				vue.use(kvAnalytics);
-			});
+			}
+		);
 
 		// Expect the button to exist and have correct amount
 		const buttonElement = getByText('Lend $20');
@@ -23,7 +25,8 @@ describe('LendAmountButton', () => {
 	});
 
 	it('should display amount with a string input', async () => {
-		const { getByText } = render(LendAmountButton,
+		const { getByText } = render(
+			LendAmountButton,
 			{
 				provide: {
 					apollo: {
@@ -34,7 +37,8 @@ describe('LendAmountButton', () => {
 			},
 			vue => {
 				vue.use(kvAnalytics);
-			});
+			}
+		);
 
 		// Expect the button to exist and have correct amount
 		const buttonElement = getByText('Lend $20');

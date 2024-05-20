@@ -1,13 +1,9 @@
-import { addParameters } from '@storybook/vue';
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
-import Vue from 'vue';
-import Meta from 'vue-meta';
+// import Vue from 'vue';
+// import Meta from 'vue-meta'; // vue-meta has been replaced with unhead (@unhead/vue)
 import VueRouter from 'vue-router'
-import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
-import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors';
-
-//load all the svg icon sprites
-import '@/assets/iconLoader';
+import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider.vue';
+import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
@@ -20,21 +16,21 @@ import './tailwind.css';
 import './storybookStyles.scss';
 
 // import config file for storybook environment
-import config from '../config/local';
+// import config from '../config/local';
 
 // initialize vue-meta
-Vue.use(Meta);
+// Vue.use(Meta);
 
 // Mock the analytics Vue plugin
-Vue.use({ install: Vue => {
-	Vue.directive('kv-track-event', () => {});
-	Vue.prototype.$kvTrackEvent = () => {};
-}});
+// Vue.use({ install: Vue => {
+// 	Vue.directive('kv-track-event', () => {});
+// 	Vue.prototype.$kvTrackEvent = () => {};
+// }});
 
-Vue.use(VueRouter)
+// Vue.use(VueRouter)
 
 // provide global application config
-Vue.prototype.$appConfig = config.app;
+// Vue.prototype.$appConfig = config.app;
 
 // add custom viewports
 const customViewports = {
@@ -62,10 +58,10 @@ const customViewports = {
 };
 
 
-addParameters({
+export const parameters = {
 	options: {
 		storySort: (a, b) => { // sort the categories alphabetically.
-			return a[1].kind === b[1].kind ? 0 : a[1].id.localeCompare(b[1].id, undefined, { numeric: true });
+			return a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true });
 		},
 		showRoots: true,
 		enableShortcuts: false,
@@ -96,7 +92,7 @@ addParameters({
 			...customViewports,
     },
   },
-});
+};
 
 // Wrap all stories with the kv-theme-provider component
 export const decorators = [(story) => ({

@@ -8,7 +8,10 @@
 	>
 		<div class="tw-flex tw-mb-4">
 			<div class="tw-hidden md:tw-block tw-mr-3">
-				<img :src="imageRequire(`./loan-re-cycle.svg`)" alt="loan to loan relending graphic">
+				<img
+					src="#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url"
+					alt="loan to loan relending graphic"
+				>
 			</div>
 			<div class="tw-prose">
 				<h3>Want to help even more people?</h3>
@@ -37,7 +40,7 @@
 			<template #header class="tw-w-full">
 				<div class="tw-hidden md:tw-block tw-mr-3 tw-ml-2.5">
 					<img
-						:src="imageRequire(`./loan-re-cycle.svg`)"
+						src="#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url"
 						class="tw-mx-auto"
 						alt="loan to loan relending graphic"
 					>
@@ -52,7 +55,7 @@
 			<div class="tw-flex tw-flex-col md:tw-flex-row md:tw-flex-nowrap md:tw-flex-1">
 				<div class="tw-flex tw-mx-auto md:tw-mx-4 tw-mb-3.5 md:tw-mb-2 md:tw-flex-1" style="max-width: 295px;">
 					<img
-						:src="imageRequire(`./emphasized-arrow.svg`)"
+						src="#src/assets/images/kiva-classic-illustrations/emphasized-arrow.svg?url"
 						class="tw-w-5 tw-h-5 tw-mr-1.5"
 						alt="Arrow pointer icon"
 					>
@@ -65,7 +68,7 @@
 				</div>
 				<div class="tw-flex tw-mx-auto md:tw-mx-4 tw-mb-3.5 md:tw-mb-2 md:tw-flex-1" style="max-width: 295px;">
 					<img
-						:src="imageRequire(`./clock-illustration.svg`)"
+						src="#src/assets/images/kiva-classic-illustrations/clock-illustration.svg?url"
 						class="tw-w-5 tw-h-5 tw-mr-1.5"
 						alt="Clock icon"
 					>
@@ -78,7 +81,7 @@
 				</div>
 				<div class="tw-flex tw-mx-auto md:tw-mx-4 tw-mb-3.5 md:tw-mb-2 md:tw-flex-1" style="max-width: 295px;">
 					<img
-						:src="imageRequire(`./heart-icon-encircled.svg`)"
+						src="#src/assets/images/kiva-classic-illustrations/heart-icon-encircled.svg?url"
 						class="tw-w-5 tw-h-5 tw-mr-1.5"
 						alt="Arrow around a heart icon"
 					>
@@ -95,14 +98,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import logReadQueryError from '@/util/logReadQueryError';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvSwitch from '~/@kiva/kv-components/vue/KvSwitch';
-
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+import { gql } from '@apollo/client/index';
+import logReadQueryError from '#src/util/logReadQueryError';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvSwitch from '@kiva/kv-components/vue/KvSwitch';
 
 const cookieName = 'kv-show-ad-signup';
 
@@ -157,7 +158,6 @@ export default {
 		return {
 			autoDepositUpsellExpVersion: null,
 			adOptIn: false,
-			imageRequire,
 			lightboxVisible: false,
 			userAccountId: null,
 		};
@@ -280,14 +280,14 @@ export default {
 
 <style lang="scss">
 /* Hack to force centered content of header area */
-#auto-deposit-upsell-lightbox div[data-test="kv-lightbox"] > div > div {
+#auto-deposit-upsell-lightbox div[data-test=kv-lightbox] > div > div {
 	width: 100%;
 }
 </style>
 
 <style lang="postcss" scoped>
 /* Hack to remove spacing from empty div where a label might reside... */
-.kv-switch >>> label {
+.kv-switch :deep(label) {
 	@apply tw-gap-0;
 }
 </style>

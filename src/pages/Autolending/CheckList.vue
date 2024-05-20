@@ -14,7 +14,7 @@
 				class="tw-mb-0.5"
 			>
 				<kv-checkbox
-					:id="`${name}-${id}` | changeCase('paramCase')"
+					:id="$filters.changeCase(`${name}-${id}`, 'paramCase')"
 					:checked="selected"
 					@change="$emit('change', $event, id);"
 				>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
 
 export default {
 	name: 'CheckList',
@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .check-list {
 	&.use-columns {

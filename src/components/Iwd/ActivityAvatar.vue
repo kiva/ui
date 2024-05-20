@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
-import kivaIcon from '@/assets/images/helpmechoose/kiva_mark.svg';
+import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import kivaIcon from '#src/assets/images/helpmechoose/kiva_mark.svg';
 
 export default {
 	name: 'ActivityAvatar',

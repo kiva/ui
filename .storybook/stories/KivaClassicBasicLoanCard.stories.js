@@ -1,4 +1,4 @@
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 

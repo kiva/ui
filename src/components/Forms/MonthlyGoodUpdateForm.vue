@@ -29,7 +29,7 @@
 					@click="isDayInputShown = true"
 					v-if="!isDayInputShown"
 				>
-					<strong>{{ form.dayOfMonth | numeral('Oo') }}</strong>
+					<strong>{{ $filters.numeral(form.dayOfMonth, 'Oo') }}</strong>
 					<kv-material-icon
 						class="tw-w-2.5 tw-h-2.5 tw-text-action"
 						:icon="mdiPencil"
@@ -121,7 +121,7 @@
 					<div>
 						<strong
 							class="additional-left-pad-currency"
-						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+						>{{ $filters.numeral(totalCombinedDeposit, '$0,0.00') }}</strong>
 					</div>
 				</div>
 				<div>
@@ -163,12 +163,12 @@
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import { mdiPencil } from '@mdi/js';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 /**
  * This form contains all the fields and validation to modify a MG Subscription
@@ -310,7 +310,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 form {
 	.row {
@@ -343,17 +343,17 @@ form {
 		}
 	}
 
-	::v-deep .loading-spinner {
+	:deep(.loading-spinner) {
 		vertical-align: middle;
 		width: 1rem;
 		height: 1rem;
 	}
 
-	::v-deep .loading-spinner .line {
+	:deep(.loading-spinner) .line {
 		background-color: $white;
 	}
 
-	::v-deep .dropdown-wrapper.group-dropdown .dropdown {
+	:deep(.dropdown-wrapper.group-dropdown) .dropdown {
 		margin-top: 0.65rem;
 		margin-bottom: 0;
 	}

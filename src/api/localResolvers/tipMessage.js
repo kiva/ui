@@ -1,4 +1,4 @@
-import tipMessageDataQuery from '@/graphql/query/tipMessage/tipMessageData.graphql';
+import tipMessageDataQuery from '#src/graphql/query/tipMessage/tipMessageData.graphql';
 
 /*
  * TipMessage resolvers

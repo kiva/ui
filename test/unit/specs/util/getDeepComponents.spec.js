@@ -1,4 +1,4 @@
-import getDeepComponents from '@/util/getDeepComponents';
+import getDeepComponents from '#src/util/getDeepComponents';
 
 const ComponentA = { name: 'ComponentA' };
 

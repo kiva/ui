@@ -60,10 +60,10 @@
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LandingForm',

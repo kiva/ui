@@ -40,7 +40,7 @@
 				@click="isDayInputShown = true"
 				v-if="!isDayInputShown"
 			>
-				<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+				<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 				<kv-material-icon
 					class="tw-w-2.5 tw-h-2.5"
 					:icon="mdiPencil"
@@ -166,17 +166,17 @@ import _get from 'lodash/get';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 
-import userIdQuery from '@/graphql/query/userId.graphql';
+import userIdQuery from '#src/graphql/query/userId.graphql';
 import { mdiPencil } from '@mdi/js';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 let frozenDropdownOptions;
 
@@ -375,7 +375,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .ad-sign-up-form {
 	margin-top: 1rem;
@@ -388,7 +388,7 @@ export default {
 		margin-bottom: 0;
 	}
 
-	::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
+	:deep(.dropdown-wrapper.donation-dropdown) .dropdown {
 		width: rem-calc(130);
 		margin-bottom: 0;
 	}
@@ -402,11 +402,8 @@ export default {
 
 .payment-dropin-invalid-cover {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(255, 255, 255, 0.8);
+	inset: 0;
+	background: rgb(255 255 255 / 80%);
 	z-index: 10000;
 }
 

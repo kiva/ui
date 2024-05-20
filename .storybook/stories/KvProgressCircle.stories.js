@@ -1,4 +1,4 @@
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 
 export default {
 	title: 'Kv/KvProgressCircle',

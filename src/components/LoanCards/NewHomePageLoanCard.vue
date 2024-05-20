@@ -108,7 +108,7 @@
 								data-testid="bp-summary-timeleft"
 							>
 								<span lass="tw-text-h3 tw-block tw-m-0">
-									{{ loanAmount | numeral('$0,0[.]00') }}
+									{{ $filters.numeral(loanAmount, '$0,0[.]00') }}
 								</span>
 							</p>
 						</template>
@@ -127,19 +127,19 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import * as Sentry from '@sentry/vue';
-import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import { readLoanFragment, watchLoanCardData } from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerName from '#src/components/BorrowerProfile/BorrowerName';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import { readLoanFragment, watchLoanCardData } from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export const loanFieldsFragment = gql`
 	fragment loanFields on LoanBasic {
@@ -227,7 +227,7 @@ export default {
 		},
 		fundraisingPercent() {
 			if (this.loan?.distributionModel) {
-				return this.loan?.fundraisingPercent * 100;
+				return (this.loan?.fundraisingPercent ?? 0) * 100;
 			}
 			return 0;
 		},
@@ -359,7 +359,7 @@ export default {
 }
 
 .selected-card:hover {
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	box-shadow: 0 4px 10px rgb(0 0 0 / 5%);
 }
 
 .progress-text {

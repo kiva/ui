@@ -32,8 +32,9 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'foundation';
+@use 'sass:color';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 @mixin secondary-styles() {
 	background-color: $button-secondary-background;
@@ -79,7 +80,7 @@ export default {
 	&.alert {
 		@include button-style($kiva-accent-red, auto, $white);
 
-		box-shadow: $button-secondary-shadow darken($kiva-accent-red, 10%);
+		box-shadow: $button-secondary-shadow color.adjust($kiva-accent-red, $lightness: -10%);
 	}
 
 	&.classic {
@@ -91,8 +92,8 @@ export default {
 
 		&:hover,
 		&:focus {
-			border-color: darken($kiva-green, 10%);
-			background-color: darken($kiva-green, 10%);
+			border-color: color.adjust($kiva-green, $lightness: -10%);
+			background-color: color.adjust($kiva-green, $lightness: -10%);
 			box-shadow: none;
 		}
 	}
@@ -107,8 +108,8 @@ export default {
 		&:focus {
 			background-color: $button-secondary-background;
 			box-shadow: none;
-			border-color: darken($kiva-green, 10%);
-			color: darken($kiva-green, 10%);
+			border-color: color.adjust($kiva-green, $lightness: -10%);
+			color: color.adjust($kiva-green, $lightness: -10%);
 		}
 
 		&[disabled] {

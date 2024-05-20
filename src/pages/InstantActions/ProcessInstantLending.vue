@@ -95,22 +95,22 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import logFormatter from '@/util/logFormatter';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import logFormatter from '#src/util/logFormatter';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 const processInstantLendingContent = gql`query instantLendingContent($loanId: Int!) {
 	contentful {
@@ -145,7 +145,7 @@ const processInstantLendingContent = gql`query instantLendingContent($loanId: In
 export default {
 	name: 'ProcessInstantLending',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Instant Lending: Adding loan to basket.'
 		};

@@ -31,13 +31,13 @@
 
 <script>
 /* eslint-disable vue/no-computed-properties-in-data */
-import LendButton from '@/components/LoanCards/Buttons/LendButton';
+import LendButton from '#src/components/LoanCards/Buttons/LendButton';
 import {
 	getDropdownPriceArray,
 	isLessThan25,
 	isBetween25And500
-} from '@/util/loanUtils';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+} from '#src/util/loanUtils';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'LendIncrementButton',
@@ -109,7 +109,6 @@ export default {
 			return priceArray;
 		},
 		isCompleteLoanActive() {
-			// eslint-disable-next-line
 			return isLessThan25(this.amountLeft) || isBetween25And500(this.amountLeft);
 		},
 		buttonText() {

@@ -43,9 +43,9 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvIcon from '#src/components/Kv/KvIcon';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'GenericPromoBanner',
@@ -135,7 +135,7 @@ export default {
 
 <style scoped lang="postcss">
 
-.progress-bar-exp >>> div {
+.progress-bar-exp :deep(div) {
 	@apply tw-bg-action-highlight;
 }
 

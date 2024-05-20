@@ -1,6 +1,6 @@
-import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import updateLoanSearchMutation from '#src/graphql/mutation/updateLoanSearchState.graphql';
+import createSavedSearchMutation from '#src/graphql/mutation/createSavedSearch.graphql';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 
 /**
  * Returns loan search state that has been validated against the available facets

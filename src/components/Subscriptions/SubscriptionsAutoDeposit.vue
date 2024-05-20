@@ -15,21 +15,21 @@
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ dayOfMonth | numeral('Oo') }}
+							{{ $filters.numeral(dayOfMonth, 'Oo') }}
 						</button>
 						of each month
 						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ mgAmount | numeral('$0,0.00') }}
+							{{ $filters.numeral(mgAmount, '$0,0.00') }}
 						</button>
 						will be transferred to your lending balance and
 						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ donation | numeral('$0,0.00') }}
+							{{ $filters.numeral(donation, '$0,0.00') }}
 						</button>
 						will be donated to Kiva.
 					</p>
@@ -91,7 +91,7 @@
 															@click="isDayInputShown = true"
 															v-if="!isDayInputShown"
 														>
-															<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+															<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 															<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 														</button>
 														<strong>we'll process the following:</strong>
@@ -194,7 +194,7 @@
 															<div class="small-6 medium-4 columns">
 																<strong
 																	class="additional-left-pad-currency"
-																>{{ totalCombinedDeposit | numeral('$0,0.00') }}
+																>{{ $filters.numeral(totalCombinedDeposit, '$0,0.00') }}
 																</strong>
 															</div>
 														</div>
@@ -311,17 +311,17 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
@@ -505,7 +505,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 form {
 	.row {

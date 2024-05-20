@@ -27,13 +27,13 @@
 
 <script>
 
-import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
-import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
-import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import FifteenYearsHeader from '#src/components/15Years/15YearsHeader';
+import FifteenYearsHowKivaWorks from '#src/components/15Years/15YearsHowKivaWorks';
+import FifteenYearsIndividuals from '#src/components/15Years/15YearsIndividuals';
+import FifteenYearsPartners from '#src/components/15Years/15YearsPartners';
+import FifteenYearsStyles from '#src/components/15Years/15YearsStyles';
+import FifteenYearsTimeline from '#src/components/15Years/15YearsTimeline';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	name: '15Years',
@@ -53,8 +53,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .fifteen-years-page {
 	.row {
@@ -64,7 +64,7 @@ export default {
 
 	.footer {
 		height: 11rem;
-		background-image: url('~@/assets/images/15-years/footer-background.svg');
+		background-image: url('#src/assets/images/15-years/footer-background.svg');
 		background-size: 100%;
 		background-position: bottom;
 		background-repeat: no-repeat;

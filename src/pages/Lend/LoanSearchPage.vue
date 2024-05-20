@@ -64,25 +64,25 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import LoanSearchInterface from '@/components/Lend/LoanSearch/LoanSearchInterface';
-import ChallengeHeader from '@/components/Lend/LoanSearch/ChallengeHeader';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import LoanSearchInterface from '#src/components/Lend/LoanSearch/LoanSearchInterface';
+import ChallengeHeader from '#src/components/Lend/LoanSearch/ChallengeHeader';
 import { mdiEarth, mdiFilter, mdiClose } from '@mdi/js';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
-import myTeamsQuery from '@/graphql/query/myTeams.graphql';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import clickableTags from '@/plugins/clickable-tags-mixin';
-import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
-import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
-import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
+import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
+import clickableTags from '#src/plugins/clickable-tags-mixin';
+import goalParticipationForLoanQuery from '#src/graphql/query/goalParticipationForLoan.graphql';
+import myPublicLenderInfoQuery from '#src/graphql/query/myPublicLenderInfo.graphql';
+import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';

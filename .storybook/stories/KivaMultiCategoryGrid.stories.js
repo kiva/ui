@@ -1,8 +1,8 @@
-import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
+import KivaLoanCardCategory from '#src/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import LoanCategorySelectorHomeExp from '#src/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	title: 'New Home Page/Kiva Multi Category Grid',

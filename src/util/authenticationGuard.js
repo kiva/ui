@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
-import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
+import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
 
 const isServer = typeof window === 'undefined';
 
@@ -66,7 +66,7 @@ const processErrors = (error, route) => {
 // The two possible meta properties are activeLoginRequired, and authenticationRequired
 // activeLoginRequired takes priority over authenticationRequired since it implies authenticationRequired
 // and recentLoginRequired takes priority over activeLoginRequired since it implies activeLoginRequired
-// eslint-disable-next-line import/prefer-default-export
+
 export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 	// Skip authentication checks if Auth0 usage is not enabled
 	if (!kvAuth0.enabled) {
@@ -80,7 +80,7 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 
 		// Route requires some sort of authentication
 		if (activeRequired || authRequired || mfaRequired || recentRequired) {
-			return apolloClient.query({
+			apolloClient.query({
 				query: authenticationQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
@@ -103,8 +103,9 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 			}).catch(e => {
 				reject(processErrors(e, route));
 			});
+		} else {
+			// Route does not require any authentication
+			resolve();
 		}
-		// Route does not require any authentication
-		resolve();
 	});
 }

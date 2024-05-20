@@ -1,5 +1,5 @@
-const fetchGraphQL = require('../fetchGraphQL');
-const { warn, error } = require('../log');
+import fetchGraphQL from '../fetchGraphQL.js';
+import { warn, error } from '../log.js';
 
 // Number of loans to fetch
 const loanCount = 4;
@@ -61,9 +61,8 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 
 // Get per-user recommended loans from the ML service
 async function fetchRecommendationsByLoginId(id) {
-	return fetchLoansFromGraphQL(
-		{
-			query: `{
+	return fetchLoansFromGraphQL({
+		query: `{
 				ml {
 					recommendationsByLoginId(
 						segment: all
@@ -75,16 +74,13 @@ async function fetchRecommendationsByLoginId(id) {
 					}
 				}
 			}`,
-		},
-		'data.ml.recommendationsByLoginId.values'
-	);
+	}, 'data.ml.recommendationsByLoginId.values');
 }
 
 // Get loan-to-loan recommended loans from the ML service
 async function fetchRecommendationsByLoanId(id) {
-	return fetchLoansFromGraphQL(
-		{
-			query: `{
+	return fetchLoansFromGraphQL({
+		query: `{
 				ml {
 					relatedLoansByTopics(
 						loanId: ${id},
@@ -96,9 +92,7 @@ async function fetchRecommendationsByLoanId(id) {
 					}
 				}
 			}`,
-		},
-		'data.ml.relatedLoansByTopics[0].values'
-	);
+	}, 'data.ml.relatedLoansByTopics[0].values');
 }
 
 // Get mapping of sector name to id
@@ -231,9 +225,8 @@ const parseFilterStringFLSS = filterString => {
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
 async function fetchRecommendationsByFilter(userId, filterString) {
-	return fetchLoansFromGraphQL(
-		{
-			query: `query($userId: Int, $filters: [FundraisingLoanSearchFilterInput!]) {
+	return fetchLoansFromGraphQL({
+		query: `query($userId: Int, $filters: [FundraisingLoanSearchFilterInput!]) {
 				fundraisingLoans(
 					pageNumber:0,
 					limit: ${loanCount},
@@ -244,13 +237,11 @@ async function fetchRecommendationsByFilter(userId, filterString) {
 					${loanValues}
 				}
 			}`,
-			variables: {
-				userId: Number(userId),
-				filters: parseFilterStringFLSS(filterString),
-			}
-		},
-		'data.fundraisingLoans.values'
-	);
+		variables: {
+			userId: Number(userId),
+			filters: parseFilterStringFLSS(filterString),
+		}
+	}, 'data.fundraisingLoans.values');
 }
 
 // Only returns true for supported legacy loan search filters
@@ -365,49 +356,45 @@ async function fetchRecommendationsByLegacyFilter(filterString) {
 		parseFilterStringLegacy(filterString),
 		parseSortStringLegacy(filterString)
 	]);
-	return fetchLoansFromGraphQL(
-		{
-			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
+	return fetchLoansFromGraphQL({
+		query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
 				lend {
 					loans(limit: ${loanCount}, offset: 0, filters: $filters, sortBy: $sort) {
 						${loanValues}
 					}
 				}
 			}`,
-			variables: {
-				filters,
-				sort,
-			},
+		variables: {
+			filters,
+			sort,
 		},
-		'data.lend.loans.values'
-	);
+	}, 'data.lend.loans.values');
 }
 
 // Get loans from legacy lend search matching a set of filters
 async function fetchLoanById(loanId) {
-	return fetchLoansFromGraphQL(
-		{
-			query: `query($loanId: Int!) {
+	return fetchLoansFromGraphQL({
+		query: `query($loanId: Int!) {
 				lend {
 					loan(id: $loanId) {
 						${loanData}
 					}
 				}
 			}`,
-			variables: {
-				loanId: Number(loanId),
-			}
-		},
-		'data.lend.loan'
-	);
+		variables: {
+			loanId: Number(loanId),
+		}
+	}, 'data.lend.loan');
 }
-// Export a function that will fetch loans by live-loan type and id
-module.exports = async function fetchLoansByType(type, id, flss = false) {
+
+export default async function fetchLoansByType(type, id, flss = false) {
 	if (type === 'user') {
 		return flss ? fetchRecommendationsByFilter(id) : fetchRecommendationsByLoginId(id);
-	} if (type === 'loan') {
+	}
+	if (type === 'loan') {
 		return fetchRecommendationsByLoanId(id);
-	} if (type === 'filter') {
+	}
+	if (type === 'filter') {
 		// Swap which line below is commented out to switch between FLSS and legacy (monolith) lend search
 		// return fetchRecommendationsByFilter(id);
 		return fetchRecommendationsByLegacyFilter(id);
@@ -416,4 +403,4 @@ module.exports = async function fetchLoansByType(type, id, flss = false) {
 		return fetchLoanById(id);
 	}
 	throw new Error('Type must be user, loan, or filter');
-};
+}

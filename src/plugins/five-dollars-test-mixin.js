@@ -1,4 +1,4 @@
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 export const FIVE_DOLLARS_NOTES_EXP = 'five_dollars_notes';
 

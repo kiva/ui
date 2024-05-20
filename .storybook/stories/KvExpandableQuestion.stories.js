@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
+import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins)
 
 export default {
@@ -24,7 +24,7 @@ export const Default = (args, { argTypes }) => ({
 			<kv-expandable-question
 				:title="title"
 				:content="content"
-				:id="title | changeCase('paramCase')"
+				:id="$filters.changeCase(title, 'paramCase')"
 				class="small-12 columns"
 			/>
 		</div>

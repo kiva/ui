@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
 export default {
 	name: 'ThePortfolioTertiaryMenu',

@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import JoinTeamForm from '@/components/Forms/JoinTeamForm';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import JoinTeamForm from '#src/components/Forms/JoinTeamForm';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 
 export default {
 	name: 'JoinTeam',

@@ -1,5 +1,5 @@
-import VueRouter from 'vue-router';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { isNavigationFailure, NavigationFailureType } from 'vue-router';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 
 /**
  * Check for excluded query params
@@ -79,8 +79,6 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 	if (!doParamsMatch) {
 		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } })
 			.catch(e => {
-				const { isNavigationFailure, NavigationFailureType } = VueRouter;
-
 				// Ignore "navigation canceled" errors from clicking filter options quickly
 				if (!isNavigationFailure(e, NavigationFailureType.cancelled)) {
 					throw e;

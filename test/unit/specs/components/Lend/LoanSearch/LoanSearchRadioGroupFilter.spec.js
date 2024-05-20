@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchRadioGroupFilter, { ALL_LOANS_TITLE } from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+import LoanSearchRadioGroupFilter, { ALL_LOANS_TITLE }
+	from '#src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 
 const getOptions = (isObject = false, isBoolean = false) => [...Array(4)].map((_c, i) => ({
 	title: `Option ${i}`,

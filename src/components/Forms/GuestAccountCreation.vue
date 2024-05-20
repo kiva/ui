@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import * as Sentry from '@sentry/vue';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'GuestAccountCreation',

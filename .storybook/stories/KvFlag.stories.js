@@ -1,4 +1,4 @@
-import KvFlag from '@/components/Kv/KvFlag';
+import KvFlag from '#src/components/Kv/KvFlag';
 
 import { getCountryList } from 'flag-icon-css';
 

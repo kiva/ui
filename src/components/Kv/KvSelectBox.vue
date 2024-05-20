@@ -49,7 +49,7 @@
 
 <script>
 import _orderBy from 'lodash/orderBy';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export const NO_RESULTS = 'No results found';
 

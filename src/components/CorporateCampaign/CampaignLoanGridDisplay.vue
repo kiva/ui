@@ -58,10 +58,10 @@ import _invokeMap from 'lodash/invokeMap';
 import _mapValues from 'lodash/mapValues';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
-import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvPagination from '@/components/Kv/KvPagination';
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
+import basicLoanQuery from '#src/graphql/query/basicLoanData.graphql';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import KvPagination from '#src/components/Kv/KvPagination';
+import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import numeral from 'numeral';
 
 const loansPerPage = 9;
@@ -306,12 +306,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $card-width: rem-calc(290);
 $max-card-width: rem-calc(330);
 $card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
+$card-half-space: rem-calc(7);
 
 .campaign-loans {
 	.loan-card-group {
@@ -335,13 +335,10 @@ $card-half-space: rem-calc(14/2);
 			z-index: 1000;
 			width: auto;
 			height: auto;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			top: 0;
+			inset: 0;
 			background-color: rgba($white, 0.7);
 
-			::v-deep .spinner-wrapper {
+			:deep(.spinner-wrapper) {
 				display: flex;
 				align-items: center;
 				justify-content: center;

@@ -92,10 +92,10 @@
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'KivaCreditGuestPayment',

@@ -66,8 +66,8 @@
 * client side filtering of loans that are not monthly.
 */
 
-import { gql } from '@apollo/client';
-import loanCardFields from '@/graphql/fragments/loanCardFields.graphql';
+import { gql } from '@apollo/client/index';
+import loanCardFields from '#src/graphql/fragments/loanCardFields.graphql';
 
 import _get from 'lodash/get';
 import _invokeMap from 'lodash/invokeMap';
@@ -77,13 +77,13 @@ import _filter from 'lodash/filter';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
-import logReadQueryError from '@/util/logReadQueryError';
-import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KvPagination from '@/components/Kv/KvPagination';
-import ViewToggle from '@/components/LoansByCategory/ViewToggle';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import loanChannelPageQuery from '#src/graphql/query/loanChannelPage.graphql';
+import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
+import KvPagination from '#src/components/Kv/KvPagination';
+import ViewToggle from '#src/components/LoansByCategory/ViewToggle';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 
 const loansPerPage = 20;
 const routePath = 'recommended-by-lenders';
@@ -190,7 +190,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [loanChannelQueryMapMixin],
-	metaInfo() {
+	head() {
 		return {
 			link: [
 				{
@@ -491,7 +491,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-card-group {
 	position: relative;
@@ -523,16 +523,16 @@ export default {
 }
 
 @include breakpoint(xxlarge) {
-	#carousel_exp >>> section > div:nth-child(2) {
+	#carousel_exp :deep(section) > div:nth-child(2) {
 		display: none;
 	}
 }
 
-#carousel_exp >>> section > div:nth-child(1) {
+#carousel_exp :deep(section) > div:nth-child(1) {
 	column-gap: 1rem !important;
 }
 
-#carousel_exp >>> section > div:nth-child(1) > div {
+#carousel_exp :deep(section) > div:nth-child(1) > div {
 	max-width: 185px !important;
 }
 </style>

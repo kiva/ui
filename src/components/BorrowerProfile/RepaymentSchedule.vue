@@ -159,12 +159,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {

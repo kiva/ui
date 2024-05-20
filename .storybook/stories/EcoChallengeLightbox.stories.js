@@ -1,4 +1,4 @@
-import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox.vue';
+import EcoChallengeLightbox from '#src/components/Lightboxes/EcoChallengeLightbox.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 

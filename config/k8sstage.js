@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var stage  = require('./stage.js')
+import { merge } from 'webpack-merge';
+import stage from './stage.js';
 
-module.exports = merge(stage, {
+export default merge(stage, {
 	app: {
 		apolloBatching: false,
 		publicPath: 'https://www-stage-kiva-org.freetls.fastly.net/',
@@ -11,4 +11,4 @@ module.exports = merge(stage, {
 		enableDDTrace: true,
 		disableCluster: true,
 	}
-})
+});

@@ -1,7 +1,7 @@
-import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
+import kvAnalytics from '#src/plugins/kv-analytics-plugin';
 import { render } from '@testing-library/vue';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 
 describe('ChallengeHeader', () => {
 	it('should contain these components and text', () => {

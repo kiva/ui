@@ -1,23 +1,18 @@
-const { mdiMapMarker } = require('@mdi/js');
-const path = require('path');
-const {
-	createCanvas,
-	CanvasRenderingContext2D,
-	registerFont,
-	loadImage,
-} = require('canvas');
-const deePool = require('deepool');
-const numeral = require('numeral');
-const { polyfillPath2D } = require('path2d-polyfill');
-const {
-	ellipsisLine,
-	drawPill,
-	wrapText,
-	roundRect,
-} = require('./canvas-utils');
-const getLoanCallouts = require('../../../src/util/loanCallouts');
-const getLoanUse = require('../../../src/util/loanUse');
-const tracer = require('../ddTrace');
+import { mdiMapMarker } from '@mdi/js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import {
+	createCanvas, CanvasRenderingContext2D, registerFont, loadImage
+} from 'canvas';
+import deePool from 'deepool';
+import numeral from 'numeral';
+import { polyfillPath2D } from 'path2d-polyfill';
+import {
+	ellipsisLine, drawPill, wrapText, roundRect
+} from './canvas-utils.js';
+import getLoanCallouts from '../../../src/util/loanCallouts.js';
+import getLoanUse from '../../../src/util/loanUse.js';
+import { trace } from '../ddTrace.js';
 
 // Polyfill Path2D for material design icon support
 global.CanvasRenderingContext2D = CanvasRenderingContext2D;
@@ -34,10 +29,10 @@ const classicCardWidth = 440 * classicResizeFactor;
 const classicCardHeight = 510 * classicResizeFactor;
 
 function fontFile(name) {
-	return path.join(__dirname, './fonts', name);
+	return join(dirname(fileURLToPath(import.meta.url)), './fonts', name);
 }
 
-tracer.trace('registerFonts', () => {
+trace('registerFonts', () => {
 	/* eslint-disable max-len */
 	registerFont(fontFile('PostGrotesk-Light.ttf'), { family: 'Kiva Post Grot', weight: '300' });
 	// registerFont(fontFile('PostGrotesk-LightItalic.ttf'), { family: 'Kiva Post Grot', weight: '300', style: 'italic' });
@@ -53,20 +48,20 @@ tracer.trace('registerFonts', () => {
 // Use pool of canvas objects instead to avoid creating a new canvas for each request
 // eslint-disable-next-line prefer-arrow-callback
 const legacyCanvasPool = deePool.create(function makeCanvas() {
-	return tracer.trace('createLegacyCanvas', () => createCanvas(cardWidth, cardHeight));
+	return trace('createLegacyCanvas', () => createCanvas(cardWidth, cardHeight));
 });
+
 // eslint-disable-next-line prefer-arrow-callback
 const classicCanvasPool = deePool.create(function makeCanvas() {
-	return tracer.trace('createClassicCanvas', () => createCanvas(classicCardWidth, classicCardHeight));
+	return trace('createClassicCanvas', () => createCanvas(classicCardWidth, classicCardHeight));
 });
 legacyCanvasPool.grow(2);
 classicCanvasPool.grow(2);
 
 async function drawLegacy(loanData) {
 	// Get canvas & context
-	const canvas = tracer.trace('legacyCanvasPool.use', () => legacyCanvasPool.use());
-	const ctx = tracer.trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
-
+	const canvas = trace('legacyCanvasPool.use', () => legacyCanvasPool.use());
+	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 	const borderThickness = 2 * resizeFactor;
 	const bodyWidth = cardWidth * 0.85;
 	const borrowerImgAspectRatio = 0.75;
@@ -82,7 +77,7 @@ async function drawLegacy(loanData) {
 
 	try {
 		// Canvas prep
-		tracer.trace('canvas-prep', () => {
+		trace('canvas-prep', () => {
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'top';
 			ctx.fillStyle = '#fff';
@@ -90,7 +85,7 @@ async function drawLegacy(loanData) {
 		});
 
 		// Borrower name
-		tracer.trace('borrower-name', () => {
+		trace('borrower-name', () => {
 			const nameXPos = cardWidth / 2;
 			const nameYPos = 242 * resizeFactor;
 			ctx.fillStyle = kivaColors.action;
@@ -99,7 +94,7 @@ async function drawLegacy(loanData) {
 		});
 
 		// Borrower country
-		tracer.trace('borrower-country', () => {
+		trace('borrower-country', () => {
 			const countryXPos = cardWidth / 2;
 			const countryYPos = 275 * resizeFactor;
 			ctx.fillStyle = kivaColors.textLight;
@@ -108,7 +103,7 @@ async function drawLegacy(loanData) {
 		});
 
 		// Borrower use
-		tracer.trace('borrower-use', () => {
+		trace('borrower-use', () => {
 			const useXPos = cardWidth / 2;
 			const useYPos = 315 * resizeFactor;
 			const useMaxLines = 3;
@@ -120,7 +115,7 @@ async function drawLegacy(loanData) {
 		});
 
 		// Fundraising info
-		tracer.trace('fundraising-info', () => {
+		trace('fundraising-info', () => {
 			const fundingXPos = (cardWidth - bodyWidth) / 2;
 			const fundingYPos = 400 * resizeFactor;
 			const fundingHeight = 8 * resizeFactor;
@@ -142,7 +137,7 @@ async function drawLegacy(loanData) {
 		});
 
 		// Button
-		tracer.trace('button', () => {
+		trace('button', () => {
 			const btnXPos = (cardWidth - bodyWidth) / 2;
 			const btnYPos = 450 * resizeFactor;
 			const btnHeight = 50 * resizeFactor;
@@ -165,13 +160,13 @@ async function drawLegacy(loanData) {
 		});
 
 		// Borrower Image
-		await tracer.trace('borrower-image', async () => {
-			const borrowerImg = await tracer.trace('loadImage', async () => loadImage(loanData.image.retina));
+		await trace('borrower-image', async () => {
+			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
 			ctx.drawImage(borrowerImg, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
 		});
 
 		// Add a border around everything
-		tracer.trace('border', () => {
+		trace('border', () => {
 			ctx.strokeStyle = kivaColors.strokeGrey;
 			ctx.lineWidth = borderThickness;
 			ctx.strokeRect(
@@ -183,16 +178,16 @@ async function drawLegacy(loanData) {
 		});
 
 		// Export to jpeg
-		const buffer = tracer.trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
+		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
 
 		// Recycle canvas for use in other requests
-		tracer.trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+		trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
 
 		return buffer;
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
-			tracer.trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+			trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
 		}
 		throw e;
 	}
@@ -200,9 +195,8 @@ async function drawLegacy(loanData) {
 
 async function drawClassic(loanData) {
 	// Get canvas & context
-	const canvas = tracer.trace('classicCanvasPool.use', () => classicCanvasPool.use());
-	const ctx = tracer.trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
-
+	const canvas = trace('classicCanvasPool.use', () => classicCanvasPool.use());
+	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 	const borrowerImgMargin = 8 * classicResizeFactor;
 	const borrowerImgAspectRatio = 0.75;
 	const borrowerImgWidth = classicCardWidth - (2 * borrowerImgMargin);
@@ -219,7 +213,7 @@ async function drawClassic(loanData) {
 
 	try {
 		// Canvas prep
-		tracer.trace('canvas-prep', () => {
+		trace('canvas-prep', () => {
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'top';
 			ctx.fillStyle = kivaColors.white;
@@ -227,8 +221,8 @@ async function drawClassic(loanData) {
 		});
 
 		// Borrower Image
-		await tracer.trace('borrower-image', async () => {
-			const borrowerImg = await tracer.trace('loadImage', async () => loadImage(loanData.image.retina));
+		await trace('borrower-image', async () => {
+			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
 			ctx.save();
 			// eslint-disable-next-line max-len
 			roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
@@ -238,7 +232,7 @@ async function drawClassic(loanData) {
 		});
 
 		// Borrower country
-		tracer.trace('borrower-country', () => {
+		trace('borrower-country', () => {
 			const countryXPos = 16 * classicResizeFactor;
 			const countryYPos = borrowerImgHeight - (22 * classicResizeFactor);
 			ctx.font = `500 ${14 * classicResizeFactor}px "Kiva Post Grot"`;
@@ -250,12 +244,12 @@ async function drawClassic(loanData) {
 				4 * classicResizeFactor,
 				kivaColors.textPrimary,
 				kivaColors.white,
-				mdiMapMarker,
+				mdiMapMarker
 			);
 		});
 
 		// Borrower use
-		tracer.trace('borrower-use', () => {
+		trace('borrower-use', () => {
 			const useXPos = 12 * classicResizeFactor;
 			const useYPos = (28 * classicResizeFactor) + borrowerImgHeight;
 			const useWidth = borrowerImgWidth - (8 * classicResizeFactor);
@@ -268,7 +262,7 @@ async function drawClassic(loanData) {
 		});
 
 		// Loan callouts
-		tracer.trace('loan-callouts', () => {
+		trace('loan-callouts', () => {
 			const tagYPos = 404 * classicResizeFactor;
 			const callouts = getLoanCallouts(loanData);
 			let lastTagRight = 8 * classicResizeFactor;
@@ -282,14 +276,14 @@ async function drawClassic(loanData) {
 					tagYPos,
 					8 * classicResizeFactor,
 					kivaColors.textPrimary,
-					kivaColors.bgSecondary,
+					kivaColors.bgSecondary
 				);
 				lastTagRight = xPos + pillWidth;
 			}
 		});
 
 		// Fundraising info
-		tracer.trace('fundraising-info', () => {
+		trace('fundraising-info', () => {
 			const fundingXPos = 12 * classicResizeFactor;
 			const fundingYPos = 462 * classicResizeFactor;
 			const fundingHeight = 8 * classicResizeFactor;
@@ -317,7 +311,7 @@ async function drawClassic(loanData) {
 		});
 
 		// Button
-		tracer.trace('button', () => {
+		trace('button', () => {
 			const btnXPos = 252 * classicResizeFactor;
 			const btnYPos = 454 * classicResizeFactor;
 			const btnHeight = 48 * classicResizeFactor;
@@ -339,22 +333,22 @@ async function drawClassic(loanData) {
 		});
 
 		// Export to jpeg
-		const buffer = tracer.trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.25 }));
+		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.25 }));
 
 		// Recycle canvas for use in other requests
-		tracer.trace('classicCanvasPool.recycle', () => classicCanvasPool.recycle(canvas));
+		trace('classicCanvasPool.recycle', () => classicCanvasPool.recycle(canvas));
 
 		return buffer;
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
-			tracer.trace('classicCanvasPool.recycle', () => classicCanvasPool.recycle(canvas));
+			trace('classicCanvasPool.recycle', () => classicCanvasPool.recycle(canvas));
 		}
 		throw e;
 	}
 }
 
-module.exports = async function draw(loanData, style) {
+export default async function draw(loanData, style) {
 	switch (style) {
 		case 'classic':
 			return drawClassic(loanData);
@@ -362,4 +356,4 @@ module.exports = async function draw(loanData, style) {
 		default:
 			return drawLegacy(loanData);
 	}
-};
+}

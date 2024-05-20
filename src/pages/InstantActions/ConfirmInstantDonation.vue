@@ -30,7 +30,7 @@
 							Donation to Kiva
 						</dt>
 						<dd>
-							{{ amount | numeral('$0.00') }}
+							{{ $filters.numeral(amount, '$0.00') }}
 						</dd>
 					</div>
 
@@ -39,7 +39,7 @@
 							Kiva credit used
 						</dt>
 						<dd class="">
-							- {{ amount | numeral('$0.00') }}
+							- {{ $filters.numeral(amount, '$0.00') }}
 						</dd>
 					</div>
 				</dl>
@@ -99,14 +99,14 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const contentfulContentQuery = gql`query confirmDonationContent {
 	contentful {
@@ -117,7 +117,7 @@ const contentfulContentQuery = gql`query confirmDonationContent {
 export default {
 	name: 'ConfirmInstantDonation',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Complete your donation'
 		};

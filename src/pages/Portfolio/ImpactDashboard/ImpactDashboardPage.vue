@@ -30,14 +30,14 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { gql } from '@apollo/client';
-import { readBoolSetting } from '@/util/settingsUtils';
-import portfolioQuery from '@/graphql/query/portfolioQuery.graphql';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import { gql } from '@apollo/client/index';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';

@@ -1,6 +1,6 @@
-var path = require('path');
-var config = require('../config');
+import path from 'path';
+import { build } from '../config/index.js';
 
-module.exports = function (_path) {
-	return path.posix.join(config.build.assetsSubDirectory, _path)
-};
+export default function assetsPath(_path) {
+	return path.posix.join(build.assetsSubDirectory, _path);
+}

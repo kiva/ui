@@ -1,8 +1,8 @@
 import Vue from "vue";
-import DonationBanner from "@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner.vue";
+import DonationBanner from "#src/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner.vue";
 
 // import plugins
-import kivaPlugins from "@/plugins";
+import kivaPlugins from "#src/plugins";
 Vue.use(kivaPlugins);
 
 export default {

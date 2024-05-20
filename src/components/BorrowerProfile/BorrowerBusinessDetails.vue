@@ -57,14 +57,15 @@
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
 import * as Sentry from '@sentry/vue';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import { defineAsyncComponent } from 'vue';
 
-const TwitterLogo = () => import('@/assets/inline-svgs/logos/twitter-logo.svg');
-const YelpLogo = () => import('@/assets/inline-svgs/logos/yelp-logo.svg');
-const EtsyLogo = () => import('@/assets/inline-svgs/logos/etsy-logo.svg');
-const FacebookLogo = () => import('@/assets/inline-svgs/logos/facebook-logo.svg');
-const InstagramLogo = () => import('@/assets/inline-svgs/logos/instagram-logo.svg');
-const LinkedinLogo = () => import('@/assets/inline-svgs/logos/linkedin-logo.svg');
+const TwitterLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/twitter-logo.svg'));
+const YelpLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/yelp-logo.svg'));
+const EtsyLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/etsy-logo.svg'));
+const FacebookLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/facebook-logo.svg'));
+const InstagramLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/instagram-logo.svg'));
+const LinkedinLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/linkedin-logo.svg'));
 
 export default {
 	name: 'BorrowerBusinessDetails',

@@ -77,21 +77,21 @@
 </template>
 
 <script>
-import Number1 from '@/assets/inline-svgs/12-days-of-lending/1.svg';
-import Number2 from '@/assets/inline-svgs/12-days-of-lending/2.svg';
-import Number3 from '@/assets/inline-svgs/12-days-of-lending/3.svg';
-import Number4 from '@/assets/inline-svgs/12-days-of-lending/4.svg';
-import Number5 from '@/assets/inline-svgs/12-days-of-lending/5.svg';
-import Number6 from '@/assets/inline-svgs/12-days-of-lending/6.svg';
-import Number7 from '@/assets/inline-svgs/12-days-of-lending/7.svg';
-import Number8 from '@/assets/inline-svgs/12-days-of-lending/8.svg';
-import Number9 from '@/assets/inline-svgs/12-days-of-lending/9.svg';
-import Number10 from '@/assets/inline-svgs/12-days-of-lending/10.svg';
-import Number11 from '@/assets/inline-svgs/12-days-of-lending/11.svg';
-import Number12 from '@/assets/inline-svgs/12-days-of-lending/12.svg';
-import SquigglyLine from '@/assets/inline-svgs/12-days-of-lending/squiggly_line.svg';
-import StarBig from '@/assets/inline-svgs/12-days-of-lending/star_big.svg';
-import StarLittle from '@/assets/inline-svgs/12-days-of-lending/star_little.svg';
+import Number1 from '#src/assets/inline-svgs/12-days-of-lending/1.svg';
+import Number2 from '#src/assets/inline-svgs/12-days-of-lending/2.svg';
+import Number3 from '#src/assets/inline-svgs/12-days-of-lending/3.svg';
+import Number4 from '#src/assets/inline-svgs/12-days-of-lending/4.svg';
+import Number5 from '#src/assets/inline-svgs/12-days-of-lending/5.svg';
+import Number6 from '#src/assets/inline-svgs/12-days-of-lending/6.svg';
+import Number7 from '#src/assets/inline-svgs/12-days-of-lending/7.svg';
+import Number8 from '#src/assets/inline-svgs/12-days-of-lending/8.svg';
+import Number9 from '#src/assets/inline-svgs/12-days-of-lending/9.svg';
+import Number10 from '#src/assets/inline-svgs/12-days-of-lending/10.svg';
+import Number11 from '#src/assets/inline-svgs/12-days-of-lending/11.svg';
+import Number12 from '#src/assets/inline-svgs/12-days-of-lending/12.svg';
+import SquigglyLine from '#src/assets/inline-svgs/12-days-of-lending/squiggly_line.svg';
+import StarBig from '#src/assets/inline-svgs/12-days-of-lending/star_big.svg';
+import StarLittle from '#src/assets/inline-svgs/12-days-of-lending/star_little.svg';
 
 export default {
 	name: 'TwelveDaysCalendar',
@@ -235,11 +235,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 $green: #02582e;
 $dark_green: #0b2a0d;
-$red:#611b15;
+$red: #611b15;
 $dark_red: #2e0004;
 $blue: #015a76;
 $dark_blue: #00244e;

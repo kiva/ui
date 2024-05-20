@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<span
 		class="tw-text-small tw-text-tertiary matching-text"
 		:class="{
@@ -12,7 +12,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .matching-text {
 	display: block;

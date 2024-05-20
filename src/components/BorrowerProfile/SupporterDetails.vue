@@ -65,7 +65,7 @@
 			>
 				<!-- Kiva K logo -->
 				<img
-					src="@/assets/images/kiva_k.svg"
+					src="#src/assets/images/kiva_k.svg?url"
 				>
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvTooltip from '@/components/Kv/KvTooltip';
+import KvTooltip from '#src/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
 
 export default {

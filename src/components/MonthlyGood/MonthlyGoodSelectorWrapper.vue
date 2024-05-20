@@ -55,9 +55,9 @@
 <script>
 import _throttle from 'lodash/throttle';
 
-import MonthlyGoodSelectorDesktop from '@/components/MonthlyGood/MonthlyGoodSelectorDesktop';
-import MonthlyGoodSelectorMobile from '@/components/MonthlyGood/MonthlyGoodSelectorMobile';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import MonthlyGoodSelectorDesktop from '#src/components/MonthlyGood/MonthlyGoodSelectorDesktop';
+import MonthlyGoodSelectorMobile from '#src/components/MonthlyGood/MonthlyGoodSelectorMobile';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
 export default {
 	name: 'MonthlyGoodSelectorWrapper',
@@ -192,7 +192,8 @@ export default {
 };
 </script>
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
+
 // Hack to allow the entire footer to still be visible when the MG sticky is active
 footer.www-footer {
 	padding-bottom: 17rem;
@@ -211,12 +212,13 @@ footer.www-footer {
 </style>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .monthly-good-selector {
 	&.sticky {
 		// probably doable with tw, will revisit later
-		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 -5px 80px rgb(0 0 0 / 10%);
+
 		// Temporary scss override to ensure layering over header in mobile
 		z-index: 1000;
 	}

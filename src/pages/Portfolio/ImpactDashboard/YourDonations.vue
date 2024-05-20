@@ -50,7 +50,7 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
-					{{ currentYearDonations | dollarFormat }}
+					{{ $filters.numeral(currentYearDonations, '$0,0[.]00') }}
 				</dt>
 				<dd class="stat-def">
 					{{ currentYear }} donations
@@ -69,7 +69,7 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 tw-text-center">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" />
 				<dt v-show="!loading" class="stat-value">
-					{{ lastYearDonations | dollarFormat }}
+					{{ $filters.numeral(lastYearDonations, '$0,0[.]00') }}
 				</dt>
 				<dd class="stat-def">
 					{{ lastYear }} donations
@@ -95,15 +95,15 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
 import { mdiArrowRight } from '@mdi/js';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'YourDonations',
@@ -238,11 +238,6 @@ export default {
 			}, 0);
 		}
 	},
-	filters: {
-		dollarFormat(value) {
-			return numeral(value).format('$0,0[.]00');
-		}
-	}
 };
 </script>
 

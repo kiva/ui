@@ -1,8 +1,8 @@
-import LoanSpotlight from '@/components/Categories/LoanSpotlight';
+import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const loanHorizontal = {
 	id: 2389631,

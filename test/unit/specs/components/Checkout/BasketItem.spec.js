@@ -1,8 +1,7 @@
-import BasketItem from '@/components/Checkout/BasketItem';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
-import VueRouter from 'vue-router';
-import numeralFilter from '@/plugins/numeral-filter';
-import CookieStore from '@/util/cookieStore';
+import BasketItem from '#src/components/Checkout/BasketItem';
+import kvAnalytics from '#src/plugins/kv-analytics-plugin';
+import numeralFilter from '#src/plugins/numeral-filter';
+import CookieStore from '#src/util/cookieStore';
 import { render, within } from '@testing-library/vue';
 import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
@@ -33,7 +32,7 @@ describe('BasketItem loan', () => {
 					},
 					cookieStore: new CookieStore(),
 				},
-				routes: new VueRouter(),
+				routes: [],
 				props: {
 					disableMatching: false,
 					disableRedirects: false,
@@ -117,7 +116,7 @@ describe('BasketItem loan', () => {
 					},
 					cookieStore: new CookieStore(),
 				},
-				routes: new VueRouter(),
+				routes: [],
 				props: {
 					disableMatching: false,
 					disableRedirects: false,

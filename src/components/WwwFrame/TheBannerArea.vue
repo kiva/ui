@@ -9,7 +9,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
+import appealBannerQuery from '#src/graphql/query/appealBanner.graphql';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 
 export default {

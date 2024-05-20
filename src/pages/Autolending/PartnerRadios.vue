@@ -33,12 +33,10 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-
-import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvRadio from '@/components/Kv/KvRadio';
-import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
+import partnerListQuery from '#src/graphql/query/autolending/partnerList.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvRadio from '#src/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '#src/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	name: 'PartnerRadios',
@@ -60,10 +58,8 @@ export default {
 		query: partnerListQuery,
 		preFetch: true,
 		result({ data }) {
-			this.allPartners = _get(data, 'general.partners.values') || [];
-			this.currentFilterValues = _get(
-				data, 'autolending.currentProfile.loanSearchCriteria.filters.partner'
-			) || [];
+			this.allPartners = data?.general?.partners?.values ?? [];
+			this.currentFilterValues = data?.autolending?.currentProfile?.loanSearchCriteria?.filters?.partner ?? [];
 
 			if (this.currentFilterValues.length) {
 				this.radio = 'some';

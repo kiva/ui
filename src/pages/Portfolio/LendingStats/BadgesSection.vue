@@ -54,9 +54,9 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { formatMediaAssetArray } from '@/util/contentfulUtils';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import { gql } from '@apollo/client/index';
+import { formatMediaAssetArray } from '#src/util/contentfulUtils';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'BadgesSection',

@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 import RouteListing from './RouteListing';
 
 export default {

@@ -1,9 +1,9 @@
-import { convertQueryToFilters, updateQueryParams, hasExcludedQueryParams } from '@/util/loanSearch/queryParamUtils';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { convertQueryToFilters, updateQueryParams, hasExcludedQueryParams } from '#src/util/loanSearch/queryParamUtils';
+import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
 		config: {
 			a: {

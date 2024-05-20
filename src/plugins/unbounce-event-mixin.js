@@ -1,5 +1,5 @@
-import logReadQueryError from '@/util/logReadQueryError';
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 
 export default {
 	inject: ['apollo', 'cookieStore'],

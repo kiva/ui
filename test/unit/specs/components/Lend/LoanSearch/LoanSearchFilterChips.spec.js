@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
 		config: {
 			a: {

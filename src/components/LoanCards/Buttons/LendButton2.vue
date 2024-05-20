@@ -32,13 +32,13 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import basketItemsQuery from '@/graphql/query/basketItems.graphql';
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
+import KvButton from '#src/components/Kv/KvButton';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 export default {
 	name: 'LendButton2',
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lend-button__adding {
 	.loading-spinner {
@@ -175,7 +175,7 @@ export default {
 		margin-right: 3px;
 	}
 
-	.loading-spinner ::v-deep .line {
+	.loading-spinner :deep(.line) {
 		background-color: $white;
 	}
 }

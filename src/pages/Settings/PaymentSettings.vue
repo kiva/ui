@@ -171,19 +171,20 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import { defineAsyncComponent } from 'vue';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvRadio from '@/components/Kv/KvRadio';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvButton from '#src/components/Kv/KvButton';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvRadio from '#src/components/Kv/KvRadio';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`query paymentMethodVault {
   my {
@@ -206,7 +207,9 @@ export default {
 	name: 'PaymentSettings',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
+		BraintreeDropInInterface: defineAsyncComponent(() => import(
+			'#src/components/Payment/BraintreeDropInInterface'
+		)),
 		KvButton,
 		KvDefaultWrapper,
 		KvIcon,
@@ -430,7 +433,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .payments {
 	.payment-settings-default-form {
@@ -445,7 +448,7 @@ export default {
 				width: 1rem;
 				height: 1rem;
 
-				::v-deep .icon {
+				:deep(.icon) {
 					fill: white;
 				}
 			}
@@ -476,17 +479,17 @@ export default {
 	}
 
 	// style in button loading spinner
-	::v-deep .loading-spinner {
+	:deep(.loading-spinner) {
 		vertical-align: middle;
 		width: 1rem;
 		height: 1rem;
 	}
 
-	::v-deep .loading-spinner .line {
+	:deep(.loading-spinner) .line {
 		background-color: $white;
 	}
 
-	::v-deep .kv-lightbox__title {
+	:deep(.kv-lightbox__title) {
 		max-width: rem-calc(495);
 	}
 
@@ -504,7 +507,7 @@ export default {
 	}
 
 	// specific styles to this braintree dropin UI
-	::v-deep .drop-in-wrapper {
+	:deep(.drop-in-wrapper) {
 		max-width: rem-calc(375);
 		margin-top: 1rem;
 
@@ -518,7 +521,7 @@ export default {
 		}
 
 		// remove payment toggle
-		[data-braintree-id="toggle"] {
+		[data-braintree-id=toggle] {
 			display: none;
 		}
 	}

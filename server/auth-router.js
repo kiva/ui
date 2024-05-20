@@ -1,11 +1,11 @@
-const cookie = require('cookie');
-const express = require('express');
-const passport = require('passport');
-const Auth0Strategy = require('passport-auth0');
-const { usingFakeAuth } = require('./util/fakeAuthentication');
-const { isExpired } = require('./util/jwt');
-const { info, warn } = require('./util/log');
-const {
+import cookie from 'cookie';
+import express from 'express';
+import passport from 'passport';
+import Auth0Strategy from 'passport-auth0';
+import { usingFakeAuth } from './util/fakeAuthentication.js';
+import { isExpired } from './util/jwt.js';
+import { info, warn } from './util/log.js';
+import {
 	clearNotedLoginState,
 	getSyncCookie,
 	isNotedLoggedIn,
@@ -13,9 +13,9 @@ const {
 	isNotedUserRequestUser,
 	noteLoggedIn,
 	noteLoggedOut,
-} = require('./util/syncCookie');
+} from './util/syncCookie.js';
 
-module.exports = function authRouter(config = {}) {
+export default function authRouter(config = {}) {
 	const router = express.Router();
 
 	// Helper function to start slient authentication process
@@ -260,4 +260,4 @@ module.exports = function authRouter(config = {}) {
 	});
 
 	return router;
-};
+}

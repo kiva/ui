@@ -55,12 +55,12 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import getVerificationState from '@/graphql/query/checkout/basketVerificationState.graphql';
-import startBasketVerificationMutation from '@/graphql/mutation/checkout/startBasketVerification.graphql';
-import closeVerificationLightboxMutation from '@/graphql/mutation/checkout/closeVerificationLightbox.graphql';
+import KvButton from '#src/components/Kv/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import getVerificationState from '#src/graphql/query/checkout/basketVerificationState.graphql';
+import startBasketVerificationMutation from '#src/graphql/mutation/checkout/startBasketVerification.graphql';
+import closeVerificationLightboxMutation from '#src/graphql/mutation/checkout/closeVerificationLightbox.graphql';
 
 export default {
 	name: 'BasketVerification',

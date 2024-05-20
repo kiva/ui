@@ -1,4 +1,4 @@
-import KvLoanActivities from '@/components/Kv/KvLoanActivities.vue';
+import KvLoanActivities from '#src/components/Kv/KvLoanActivities.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import activities from '../mock-data/activity-feed-data-mock';
 

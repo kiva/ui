@@ -65,15 +65,15 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 
-import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMonthlyGood';
-import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
-import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import SubscriptionsMonthlyGood from '#src/components/Subscriptions/SubscriptionsMonthlyGood';
+import SubscriptionsAutoDeposit from '#src/components/Subscriptions/SubscriptionsAutoDeposit';
+import SubscriptionsLegacy from '#src/components/Subscriptions/SubscriptionsLegacy';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {

@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var test  = require('./test.js')
+import { merge } from 'webpack-merge';
+import test from './test.js';
 
-module.exports = merge(test, {
+export default merge(test, {
 	app: {
 		publicPath: 'https://www-test-kiva-org.freetls.fastly.net/',
 	},
@@ -10,4 +10,4 @@ module.exports = merge(test, {
 		enableDDTrace: true,
 		disableCluster: true,
 	}
-})
+});

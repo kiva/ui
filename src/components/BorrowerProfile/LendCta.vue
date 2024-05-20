@@ -383,35 +383,35 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client';
-import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
+import { gql } from '@apollo/client/index';
+import { setLendAmount, INVALID_BASKET_ERROR } from '#src/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
 	isBetween25And500,
 	getLendCtaSelectedOption,
-} from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
+} from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
+} from '#src/util/experiment/experimentUtils';
 
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 
-import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
-import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
-import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
+import JumpLinks from '#src/components/BorrowerProfile/JumpLinks';
+import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
+import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
+import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoanActivities from '@/components/Kv/KvLoanActivities';
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLoanActivities from '#src/components/Kv/KvLoanActivities';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import KvUiSelect from '@kiva/kv-components/vue/KvSelect';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'LendCta',
@@ -743,7 +743,7 @@ export default {
 			// limit price options
 			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
 			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
-			// eslint-disable-next-line
+
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
@@ -857,7 +857,6 @@ export default {
 			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
-			// eslint-disable-next-line
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {

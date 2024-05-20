@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
+import inputWrapperMixin from '#src/plugins/input-wrapper-mixin';
 
 export default {
 	name: 'KvRadio',
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-radio {
 	display: block;
@@ -65,7 +65,7 @@ export default {
 		background-color: #fff;
 		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
-		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
+		box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
 		position: relative;
 		transition: background-color 200ms ease-in-out, border-color 100ms ease-in-out, box-shadow 300ms ease-in-out;
 

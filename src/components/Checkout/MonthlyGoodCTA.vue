@@ -102,11 +102,11 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 /**
  * This CTA goes to the MG setup form
@@ -221,7 +221,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .monthly-good-cta {
 	padding: 1.5rem;

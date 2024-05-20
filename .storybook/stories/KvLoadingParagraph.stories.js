@@ -1,4 +1,4 @@
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 
 export default {
 	title: 'Kv/KvLoadingParagraph',

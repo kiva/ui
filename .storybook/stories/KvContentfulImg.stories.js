@@ -1,4 +1,4 @@
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
 
 export default {
 	title: 'Kv/KvContentfulImg',

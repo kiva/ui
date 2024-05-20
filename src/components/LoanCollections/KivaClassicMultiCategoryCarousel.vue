@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
-import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
+import { gql } from '@apollo/client/index';
+import KivaClassicLoanCarousel from '#src/components/LoanCollections/KivaClassicLoanCarousel';
+import KivaClassicLoanCategorySelector from '#src/components/LoanCollections/KivaClassicLoanCategorySelector';
 
 export default {
 	name: 'KivaClassicMultiCategoryCarousel',

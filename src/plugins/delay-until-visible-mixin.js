@@ -1,4 +1,4 @@
-import { createIntersectionObserver } from '@/util/observerUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
 export default {
 	data() {

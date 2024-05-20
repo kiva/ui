@@ -28,47 +28,58 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 {
 	path: '/',
 	name: 'homepage',
-	component: () => import('@/pages/ContentfulPage'),
+	component: defineAsyncComponent(() => import('#src/pages/ContentfulPage'))
 	meta: {
 		contentfulPage: () => 'home',
 	},
 },
 */
 
-import { preFetchAll } from '@/util/apolloPreFetch';
-import { processPageContent } from '@/util/contentfulUtils';
-import logFormatter from '@/util/logFormatter';
-import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { defineAsyncComponent } from 'vue';
+import { preFetchAll } from '#src/util/apolloPreFetch';
+import { processPageContent } from '#src/util/contentfulUtils';
+import logFormatter from '#src/util/logFormatter';
+import contentfulEntries from '#src/graphql/query/contentfulEntries.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 
 // Page frames
-const WwwPage = () => import('@/components/WwwFrame/WwwPage');
-const WwwPageCorporate = () => import('@/components/WwwFrame/WwwPageCorporate');
-const WwwPageDesign = () => import('@/components/WwwFrame/WwwPageDesign');
+const WwwPage = defineAsyncComponent(() => import('#src/components/WwwFrame/WwwPage'));
+const WwwPageCorporate = defineAsyncComponent(() => import('#src/components/WwwFrame/WwwPageCorporate'));
+const WwwPageDesign = defineAsyncComponent(() => import('#src/components/WwwFrame/WwwPageDesign'));
 
 // Error page
-const ErrorPage = () => import('@/pages/Error');
+const ErrorPage = defineAsyncComponent(() => import('#src/pages/Error'));
 
 // Content Group Types
 // TODO: update the campaign components to accept "content" prop
-const CampaignHero = () => import('@/components/CorporateCampaign/CampaignHero');
-const CampaignLogoGroup = () => import('@/components/CorporateCampaign/CampaignLogoGroup');
-const CampaignPartner = () => import('@/components/CorporateCampaign/CampaignPartner');
-const CampaignThanks = () => import('@/components/CorporateCampaign/CampaignThanks');
+const CampaignHero = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignHero'));
+const CampaignLogoGroup = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignLogoGroup'));
+const CampaignPartner = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignPartner'));
+const CampaignThanks = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignThanks'));
 
-const CardRow = () => import('@/components/Contentful/CardRow');
-const CenteredRichText = () => import('@/components/Contentful/CenteredRichText');
-const DynamicHeroClassic = () => import('@/components/Contentful/DynamicHeroClassic');
-const HeroWithCarousel = () => import('@/components/Contentful/HeroWithCarousel');
-const LoansByCategoryCarousel = () => import('@/components/Contentful/LoansByCategoryCarousel');
-const LoansByCategoryGrid = () => import('@/components/Contentful/HomePage/NewHomeLoansByCategoryGrid');
-const NewHomeLoansCardsCarousel = () => import('@/components/Contentful/HomePage/NewHomeLoansCardCarousel');
-const MonthlyGoodSelectorWrapper = () => import('@/components/MonthlyGood/MonthlyGoodSelectorWrapper');
-const FrequentlyAskedQuestions = () => import('@/components/Contentful/FrequentlyAskedQuestions');
-const TestimonialCards = () => import('@/components/Contentful/TestimonialCards');
-const RichTextItemsCentered = () => import('@/components/Contentful/RichTextItemsCentered');
-const MediaItemsCentered = () => import('@/components/Contentful/MediaItemsCentered');
-const StoryCardCarousel = () => import('@/components/Contentful/StoryCardCarousel');
+const CardRow = defineAsyncComponent(() => import('#src/components/Contentful/CardRow'));
+const CenteredRichText = defineAsyncComponent(() => import('#src/components/Contentful/CenteredRichText'));
+const DynamicHeroClassic = defineAsyncComponent(() => import('#src/components/Contentful/DynamicHeroClassic'));
+const HeroWithCarousel = defineAsyncComponent(() => import('#src/components/Contentful/HeroWithCarousel'));
+const LoansByCategoryCarousel = defineAsyncComponent(() => import(
+	'#src/components/Contentful/LoansByCategoryCarousel'
+));
+const LoansByCategoryGrid = defineAsyncComponent(() => import(
+	'#src/components/Contentful/HomePage/NewHomeLoansByCategoryGrid'
+));
+const NewHomeLoansCardsCarousel = defineAsyncComponent(() => import(
+	'#src/components/Contentful/HomePage/NewHomeLoansCardCarousel'
+));
+const MonthlyGoodSelectorWrapper = defineAsyncComponent(() => import(
+	'#src/components/MonthlyGood/MonthlyGoodSelectorWrapper'
+));
+const FrequentlyAskedQuestions = defineAsyncComponent(() => import(
+	'#src/components/Contentful/FrequentlyAskedQuestions'
+));
+const TestimonialCards = defineAsyncComponent(() => import('#src/components/Contentful/TestimonialCards'));
+const RichTextItemsCentered = defineAsyncComponent(() => import('#src/components/Contentful/RichTextItemsCentered'));
+const MediaItemsCentered = defineAsyncComponent(() => import('#src/components/Contentful/MediaItemsCentered'));
+const StoryCardCarousel = defineAsyncComponent(() => import('#src/components/Contentful/StoryCardCarousel'));
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
@@ -161,7 +172,7 @@ export default {
 			canonicalUrl: undefined,
 		};
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: this.title ? this.title?.replace('| Kiva', '') : 'Make a loan, change a life',
 			meta: [].concat(this.title ? [
@@ -213,7 +224,9 @@ export default {
 			return {
 				contentType: 'page',
 				contentKey: this.$route?.meta?.contentfulPage(
-					this.$route, this.apollo, experimentVersionFragment
+					this.$route,
+					this.apollo,
+					experimentVersionFragment
 				)?.trim(),
 			};
 		},
@@ -223,7 +236,9 @@ export default {
 				variables: {
 					contentType: 'page',
 					contentKey: args?.route?.meta?.contentfulPage(
-						args?.route, client, experimentVersionFragment
+						args?.route,
+						client,
+						experimentVersionFragment
 					)?.trim(),
 				}
 			});

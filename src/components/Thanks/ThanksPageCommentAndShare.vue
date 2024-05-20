@@ -14,7 +14,7 @@
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<template v-if="receipt">
 						<div v-if="!calculatePeopleQtyToGoal()">
-							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
+							<img :alt="`Fully funded image`" src="#src/assets/images/thanks-page/kiva-share.png">
 						</div>
 						<borrower-image
 							v-else
@@ -47,7 +47,7 @@
 											class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
 											data-testid="bp-summary-amount-to-go"
 										>
-											{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
+											{{ $filters.numeral(loan.unreservedAmount, '$0,0[.]00') }} TO GO
 										</p>
 										<p
 											class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
@@ -218,19 +218,17 @@
 
 <script>
 import { mdiCheckAll, mdiLink } from '@mdi/js';
-import { getFullUrl } from '@/util/urlUtils';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import ShareStepper from '@/components/Thanks/ShareStepper';
-import CommentAsk from '@/components/Thanks/CommentAsk';
-import KvIcon from '@/components/Kv/KvIcon';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
-const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
+import { getFullUrl } from '#src/util/urlUtils';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import ShareStepper from '#src/components/Thanks/ShareStepper';
+import CommentAsk from '#src/components/Thanks/CommentAsk';
+import KvIcon from '#src/components/Kv/KvIcon';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'ThanksPageCommentAndShare',
@@ -281,14 +279,13 @@ export default {
 		},
 	},
 	mixins: [socialSharingMixin],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thank you!'
 		};
 	},
 	data() {
 		return {
-			thanksImgRequire,
 			mdiCheckAll,
 			mdiLink,
 			message: '',
@@ -385,8 +382,8 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import "foundation";
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
 $color-twitter: #08a0e9;

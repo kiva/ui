@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
+import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
 
 export default {
 	data() {

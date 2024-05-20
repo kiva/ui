@@ -26,8 +26,8 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvSelect from '@/components/Kv/KvSelect';
+import { gql } from '@apollo/client/index';
+import KvSelect from '#src/components/Kv/KvSelect';
 
 export default {
 	name: 'LendTimingDropdown',
@@ -132,7 +132,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lend-timing-dropdown {
 	margin-bottom: 1rem;

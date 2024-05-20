@@ -18,11 +18,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import KivaLoanCardCarousel from '@/components/LoanCollections/HomeExp/KivaLoanCardCarousel';
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { gql } from '@apollo/client/index';
+import KivaLoanCardCarousel from '#src/components/LoanCollections/HomeExp/KivaLoanCardCarousel';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'NewHomeLoansCardCarousel',

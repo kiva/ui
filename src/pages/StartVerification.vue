@@ -42,12 +42,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import * as Sentry from '@sentry/vue';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {

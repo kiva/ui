@@ -1,4 +1,4 @@
-import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
+import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {

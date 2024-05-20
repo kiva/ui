@@ -1,4 +1,4 @@
-import ThanksPage from '@/pages/Thanks/ThanksPage';
+import ThanksPage from '#src/pages/Thanks/ThanksPage';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';

@@ -1,5 +1,5 @@
-import { filterUiType, transformRadioGroupOptions } from '@/util/loanSearch/filterUtils';
-import { getEnumNameFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { filterUiType, transformRadioGroupOptions } from '#src/util/loanSearch/filterUtils';
+import { getEnumNameFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 // Gender enum keys
 export const FEMALE_KEY = 'FEMALE';

@@ -4,10 +4,10 @@ import {
 	wrdFooterTheme,
 	fifteenYearFooterTheme,
 	blueFooter
-} from '@/util/siteThemes';
+} from '#src/util/siteThemes';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import TheFooter from '@/components/WwwFrame/TheFooter';
+import TheFooter from '#src/components/WwwFrame/TheFooter';
 
 export default {
 	title: 'WwwFrame/TheFooter',

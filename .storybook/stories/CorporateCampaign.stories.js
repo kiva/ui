@@ -1,13 +1,13 @@
 import Vue from 'vue';
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins);
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import CorporateCampaignLanding from '@/pages/LandingPages/CorporateCampaign/CCLandingPage';
-import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
-import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
+import CorporateCampaignLanding from '#src/pages/LandingPages/CorporateCampaign/CCLandingPage';
+import CampaignHero from '#src/components/CorporateCampaign/CampaignHero';
+import CampaignStatus from '#src/components/CorporateCampaign/CampaignStatus';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
 export default {

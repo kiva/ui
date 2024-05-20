@@ -1,10 +1,10 @@
-const { merge } = require('webpack-merge');
-var base = require('./index.js')
-var devLocal  = require('./dev-local.js')
+import { merge } from 'webpack-merge';
+import base from './index.js';
+import devLocal from './dev-local.js';
 
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 
-module.exports = merge(base, devLocal, {
+export default merge(base, devLocal, {
 	app: {
 		apolloBatching,
 		host: 'localhost',
@@ -33,4 +33,4 @@ module.exports = merge(base, devLocal, {
 		memcachedEnabled: false,
 		disableCluster: true,
 	}
-})
+});

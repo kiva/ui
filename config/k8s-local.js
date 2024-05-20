@@ -1,13 +1,13 @@
-const { merge } = require('webpack-merge');
-var base = require('./index.js')
-var devVm  = require('./dev-vm.js')
+import { merge } from 'webpack-merge';
+import base from './index.js';
+import devVm from './dev-vm.js';
 
-const transport = process.env.TRANSPORT || "https"
-const monolithHostname = process.env.MONOLITH_HOSTNAME || "monolith.kiva.local"
-const apiHostname = process.env.API_HOSTNAME || "api.kiva.local"
+const transport = process.env.TRANSPORT || 'https';
+const monolithHostname = process.env.MONOLITH_HOSTNAME || 'monolith.kiva.local';
+const apiHostname = process.env.API_HOSTNAME || 'api.kiva.local';
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 
-module.exports = merge(base, devVm, {
+export default merge(base, devVm, {
 	app: {
 		apolloBatching,
 		host: `${monolithHostname}`,
@@ -35,4 +35,4 @@ module.exports = merge(base, devVm, {
 		memcachedServers: 'localhost:11211',
 		disableCluster: true,
 	}
-})
+});

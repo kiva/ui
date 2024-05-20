@@ -1,5 +1,5 @@
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import ListLoanCard from '@/components/LoanCards/ListLoanCard';
+import ListLoanCard from '#src/components/LoanCards/ListLoanCard';
 import { mockLoansArray } from '../utils';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 

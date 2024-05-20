@@ -43,11 +43,11 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {

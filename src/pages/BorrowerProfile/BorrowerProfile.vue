@@ -145,45 +145,45 @@
 </template>
 
 <script>
-import { getKivaImageUrl } from '@/util/imageUtils';
-import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
+import { getKivaImageUrl } from '#src/util/imageUtils';
+import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import { gql } from '@apollo/client';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import guestComment from '@/plugins/guest-comment-mixin';
+import { gql } from '@apollo/client/index';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
+import guestComment from '#src/plugins/guest-comment-mixin';
 import {
 	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import ContentContainer from '@/components/BorrowerProfile/ContentContainer';
-import SidebarContainer from '@/components/BorrowerProfile/SidebarContainer';
-import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
-import SummaryCard from '@/components/BorrowerProfile/SummaryCard';
-import LendCta from '@/components/BorrowerProfile/LendCta';
-import LoanStory from '@/components/BorrowerProfile/LoanStory';
-import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile';
-import DetailsTabs from '@/components/BorrowerProfile/DetailsTabs';
-import BorrowerCountry from '@/components/BorrowerProfile/BorrowerCountry';
-import LendersAndTeams from '@/components/BorrowerProfile/LendersAndTeams';
-import MoreAboutLoan from '@/components/BorrowerProfile/MoreAboutLoan';
-import CommentsAndWhySpecial from '@/components/BorrowerProfile/CommentsAndWhySpecial';
+} from '#src/util/experiment/experimentUtils';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
+import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
+import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
+import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
+import LendCta from '#src/components/BorrowerProfile/LendCta';
+import LoanStory from '#src/components/BorrowerProfile/LoanStory';
+import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
+import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
+import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
+import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
+import CommentsAndWhySpecial from '#src/components/BorrowerProfile/CommentsAndWhySpecial';
 
-import TopBannerPfp from '@/components/BorrowerProfile/TopBannerPfp';
-import ShareButton from '@/components/BorrowerProfile/ShareButton';
-import JournalUpdates from '@/components/BorrowerProfile/JournalUpdates';
-import { fireHotJarEvent } from '@/util/hotJarUtils';
+import TopBannerPfp from '#src/components/BorrowerProfile/TopBannerPfp';
+import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
+import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
-import BorrowerEducationPlacement from '@/components/BorrowerProfile/BorrowerEducationPlacement';
-import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
-import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import ChallengeTeamInvite from '@/components/BorrowerProfile/ChallengeTeamInvite';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
+import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
+import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
@@ -329,7 +329,7 @@ export default {
 		BorrowerEducationPlacement,
 		ChallengeTeamInvite,
 	},
-	metaInfo() {
+	head() {
 		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
 		const isSclePresent = this.$route.query?.utm_campaign?.includes('scle');

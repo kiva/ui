@@ -1,4 +1,4 @@
-import ActivityCard from '@/components/Iwd/ActivityCard';
+import ActivityCard from '#src/components/Iwd/ActivityCard';
 
 export default {
 	title: 'IWD/ActivityCard',

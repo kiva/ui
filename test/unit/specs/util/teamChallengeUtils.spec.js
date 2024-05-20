@@ -3,7 +3,7 @@ import {
 	removeLoansFromChallengeCookie,
 	TEAM_CHALLENGE_COOKIE_NAME,
 	setChallengeCookieData
-} from '@/util/teamChallengeUtils';
+} from '#src/util/teamChallengeUtils';
 
 describe('teamChallengeUtils.js', () => {
 	const mockLoans = [

@@ -29,11 +29,11 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
-import { getUpdatedRegions } from '@/util/loanSearch/filters/regions';
-import { getIsoCodes, mapIsoCodesToCountryNames } from '@/util/loanSearch/countryUtils';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvCheckboxList from '#src/components/Kv/KvCheckboxList';
+import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
+import { getUpdatedRegions } from '#src/util/loanSearch/filters/regions';
+import { getIsoCodes, mapIsoCodesToCountryNames } from '#src/util/loanSearch/countryUtils';
 
 export default {
 	name: 'LoanSearchLocationFilter',

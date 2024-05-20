@@ -3,10 +3,10 @@ import apolloStoryMixin from "../mixins/apollo-story-mixin";
 import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
 import kvAuth0StoryMixin from "../mixins/kv-auth0-story-mixin";
 
-import TheHeader from "@/components/WwwFrame/TheHeader";
+import TheHeader from "#src/components/WwwFrame/TheHeader";
 
 // import plugins
-import kivaPlugins from "@/plugins";
+import kivaPlugins from "#src/plugins";
 Vue.use(kivaPlugins);
 
 const loggedIn = {
@@ -95,7 +95,7 @@ export default {
 		hideSearchInHeader: false,
 		minimal: false,
 		corporate: false,
-		corporateLogoUrl: require("@/assets/images/logos/visa.svg"),
+		corporateLogoUrl: require("#src/assets/images/logos/visa.svg"),
 	},
 };
 

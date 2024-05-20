@@ -48,7 +48,7 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
 export default {
 	name: 'MultiAmountSelector',
@@ -167,14 +167,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .custom-amount-holder {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset: 0;
 	margin: 0;
 
 	.custom-input-element {

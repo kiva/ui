@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { render } from '@testing-library/vue';
-import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
+import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 
 const teamName = 'Team Test';
 const mocks = {

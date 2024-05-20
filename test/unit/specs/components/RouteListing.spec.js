@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
-import RouteListing from '@/pages/UiSiteMap/RouteListing';
-import routes from '@/router/routes';
+import RouteListing from '#src/pages/UiSiteMap/RouteListing';
+import routes from '#src/router/routes';
 import byTextContent from '../../helpers/byTextContent';
 
 // Async components in route causes some issues with components that use

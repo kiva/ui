@@ -129,8 +129,8 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { format, parseISO } from 'date-fns';
-import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import loanDetailsQuery from '#src/graphql/query/loanDetails.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import InfoPanel from './InfoPanel';
 
 export default {
@@ -260,7 +260,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .panel-title {
 	margin-bottom: rem-calc(10);

@@ -1,4 +1,4 @@
-import KvPhoneInput from '@/components/Kv/KvPhoneInput';
+import KvPhoneInput from '#src/components/Kv/KvPhoneInput';
 
 export default {
 	title: 'Kv/Form Elements/KvPhoneInput',

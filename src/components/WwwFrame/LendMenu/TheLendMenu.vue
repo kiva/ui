@@ -32,11 +32,11 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 
-import { indexIn } from '@/util/comparators';
-import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
-import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
+import { indexIn } from '#src/util/comparators';
+import publicLendMenuQuery from '#src/graphql/query/lendMenuData.graphql';
+import privateLendMenuQuery from '#src/graphql/query/lendMenuPrivateData.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 

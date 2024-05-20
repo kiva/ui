@@ -1,4 +1,4 @@
-import KvRangeMinMaxSlider from '@/components/Kv/KvRangeMinMaxSlider';
+import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
 
 export default {
 	title: 'Kv/Form Elements/KvRangeMinMaxSlider',

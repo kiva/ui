@@ -22,7 +22,7 @@
 				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
 			</p>
 			<kv-loading-overlay
-				style="background-color: rgba(var(--bg-primary), 0.7);"
+				style="background-color: rgb(var(--bg-primary) 0.7);"
 				v-if="loading"
 			/>
 		</div>
@@ -48,12 +48,12 @@
 
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import joinTeam from '@/graphql/mutation/joinTeam.graphql';
-import myTeamsQuery from '@/graphql/query/myTeams.graphql';
-import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
+import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
+import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'JoinTeamForm',

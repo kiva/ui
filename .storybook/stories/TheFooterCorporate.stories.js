@@ -4,15 +4,15 @@ import {
 	wrdFooterTheme,
 	fifteenYearFooterTheme,
 	blueFooter
-} from '@/util/siteThemes';
-import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
+} from '#src/util/siteThemes';
+import TheFooterCorporate from '#src/components/WwwFrame/TheFooterCorporate';
 
 export default {
 	title: 'WwwFrame/TheFooterCorporate',
 	component: TheFooterCorporate,
 	args: {
 		theme: null,
-		corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
+		corporateLogoUrl: require('#src/assets/images/logos/visa.svg'),
 	},
 	argTypes: {
 		theme: {

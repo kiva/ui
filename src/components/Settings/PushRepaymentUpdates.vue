@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import { registerServiceWorker, isSubscribed, unsubscribe } from '@/util/pushNotificationsManager';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import { registerServiceWorker, isSubscribed, unsubscribe } from '#src/util/pushNotificationsManager';
 
 export default {
 	name: 'PushRepaymentUpdates',

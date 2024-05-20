@@ -21,14 +21,14 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import numeral from 'numeral';
 import { mdiCheckCircle } from '@mdi/js';
 
 import { addMonths, formatDistanceToNow } from 'date-fns';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 const pageQuery = gql`query monthlyGoodThanksPage {
 	my {

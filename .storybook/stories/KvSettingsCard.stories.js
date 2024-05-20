@@ -1,4 +1,4 @@
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 
 export default {
 	title: 'Kv/KvSettingsCard',

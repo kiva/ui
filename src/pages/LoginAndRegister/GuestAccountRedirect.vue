@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '@/plugins/guest-comment-mixin';
+import { gql } from '@apollo/client/index';
+import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
 
 export default {
 	name: 'GuestAccountRedirect',

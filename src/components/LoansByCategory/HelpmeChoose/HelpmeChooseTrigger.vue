@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import progressIcon from '@/assets/images/helpmechoose/progress.svg';
-import kivaIcon from '@/assets/images/helpmechoose/kiva_mark.svg';
-import appleIcon from '@/assets/images/helpmechoose/apple.svg';
+import progressIcon from '#src/assets/images/helpmechoose/progress.svg';
+import kivaIcon from '#src/assets/images/helpmechoose/kiva_mark.svg';
+import appleIcon from '#src/assets/images/helpmechoose/apple.svg';
 
 export default {
 	name: 'HelpmeChooseTrigger',

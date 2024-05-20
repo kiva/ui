@@ -1,4 +1,4 @@
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 function getFilenames(r) {
 	return r.keys().map((filename) => {
@@ -31,7 +31,7 @@ export const inlined = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/icons/inline/', true, /\.svg$/))
+			iconNames: getFilenames(require.context('#src/assets/icons/inline/', true, /\.svg$/))
 		}
 	},
 	template: `
@@ -65,7 +65,7 @@ export const fromSprite = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/icons/sprite/', true, /\.svg$/))
+			iconNames: getFilenames(require.context('#src/assets/icons/sprite/', true, /\.svg$/))
 		}
 	},
 	template: `

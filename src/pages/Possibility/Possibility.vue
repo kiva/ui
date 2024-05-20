@@ -6,7 +6,7 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	name: 'Possibility',

@@ -66,16 +66,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
-import getCacheKey from '@/util/getCacheKey';
-import AsyncPortfolioSection from './AsyncPortfolioSection';
-import DistributionGraphFigure from './DistributionGraphFigure';
+import { gql } from '@apollo/client/index';
+import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
+import getCacheKey from '#src/util/getCacheKey';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 import DistributionTable from './DistributionTable';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
+import DistributionGraphFigure from './DistributionGraphFigure';
+import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
 	name: 'DistributionGraphs',

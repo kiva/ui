@@ -34,9 +34,9 @@
 	</div>
 </template>
 <script>
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import hoverLoanCardMixin from '#src/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 
 export default {
 	name: 'HoverLoanCardSmall',
@@ -62,8 +62,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "settings";
-@import "components/loan-cards/hover-loan-card";
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/loan-cards/hover-loan-card';
 
 .hover-loan-card-small {
 	@extend .base-portrait-hover-loan-card;
@@ -111,6 +111,7 @@ export default {
 	&.expanded {
 		pointer-events: none;
 		transform: scale($width-ratio-large-to-small, $height-ratio-large-to-small);
+
 		// Re-enable to add card opacity transition
 		// opacity: 0;
 		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;

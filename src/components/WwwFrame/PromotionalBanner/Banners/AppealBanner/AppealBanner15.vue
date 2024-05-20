@@ -18,7 +18,7 @@
 					</div> -->
 					<video
 						class="swashie"
-						src="@/assets/media/15-years/swashie-party.mp4"
+						src="#src/assets/media/15-years/swashie-party.mp4"
 						autoplay
 						loop
 						muted
@@ -61,14 +61,14 @@
 
 <script>
 // import gsap from 'gsap';
-// import { gql } from '@apollo/client';
-import { expand, collapse } from '@/util/expander';
+// import { gql } from '@apollo/client/index';
+import { expand, collapse } from '#src/util/expander';
 
-import FifteenYearsButton from '@/components/15Years/15YearsButton';
-// import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-// import SwashieFace from '@/components/15Years/SwashieFace';
+import FifteenYearsButton from '#src/components/15Years/15YearsButton';
+// import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+// import SwashieFace from '#src/components/15Years/SwashieFace';
 
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 // const recentFundedLoans = gql`query recentFundedLoans($start: Date!) {
 // 	general {
@@ -188,10 +188,10 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap';
 
 h4 {
 	@include h4();
@@ -287,7 +287,7 @@ a {
 		}
 	}
 
-	::v-deep p {
+	:deep(p) {
 		margin-bottom: 1.5rem;
 	}
 }

@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular.vue';
+import AppealBannerCircular from '#src/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular.vue';
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins)
 
 export default {

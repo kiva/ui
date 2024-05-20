@@ -109,16 +109,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client/index';
 import { mdiMapMarker } from '@mdi/js';
-import HeartComment from '@/assets/icons/inline/heart-comment.svg';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const preFetchQuery = gql`
 	query summaryCard($loanId: Int!) {
