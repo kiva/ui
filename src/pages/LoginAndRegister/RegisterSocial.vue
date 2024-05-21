@@ -73,14 +73,14 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the
+					I have read and agree to the Kiva
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
 					<a href="/legal/privacy" target="_blank">
 						Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
 					</a> (required)
 					<template #checked>
-						You must agree to the Terms of Use and Privacy
+						You must agree to the Kiva Terms of Use and Privacy
 						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 					</template>
 				</kv-base-input>
