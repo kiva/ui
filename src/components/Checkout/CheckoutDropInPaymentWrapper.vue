@@ -63,8 +63,7 @@
 					@update:modelValue="$kvTrackEvent(
 						'basket',
 						'click-terms-of-use',
-						`I have read and agree to the Terms of Use and Privacy
-						${enableCommsExperiment ? 'Notice' : 'Policy' }.`,
+						'I have read and agree to the Terms of Use and Privacy Policy',
 						$event ? 1 : 0
 					)"
 				>
