@@ -165,8 +165,8 @@ module.exports = function authRouter(config = {}) {
 
 			// Handle errors
 			if (req.query.error && !silentAuth) {
-				// Re-attempt login with the login form forced to display if unauthorized error happened
-				if (req.query.error === 'unauthorized') {
+				// Re-attempt login with the login form forced to display if unauthorized/access_denied error happened
+				if (req.query.error === 'unauthorized' || req.query.error === 'access_denied') {
 					req.query = {}; // Remove query params from previous auth attempt
 					return passport.authenticate('auth0', {
 						audience: config.auth0.apiAudience,
