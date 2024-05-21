@@ -37,7 +37,7 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import bookmarkLoan from '#src/util/bookmarkUtil';

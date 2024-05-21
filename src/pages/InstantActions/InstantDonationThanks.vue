@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';

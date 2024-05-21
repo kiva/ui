@@ -69,7 +69,7 @@ describe('LoanSearchLocationFilter', () => {
 
 		const regions = getRegions();
 
-		const { getByText, getByLabelText, updateProps } = render(LoanSearchLocationFilter, { props: { regions } });
+		const { getByText, getByLabelText, rerender } = render(LoanSearchLocationFilter, { props: { regions } });
 
 		// Open first region
 		const region = getByText(getCheckboxLabel(regions[0]));
@@ -77,14 +77,14 @@ describe('LoanSearchLocationFilter', () => {
 
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
 
-		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode] });
+		await rerender({ activeIsoCodes: [regions[0].countries[0].isoCode] });
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
 
-		await updateProps({ activeIsoCodes: [regions[0].countries[0].isoCode, regions[0].countries[1].isoCode] });
+		await rerender({ activeIsoCodes: [regions[0].countries[0].isoCode, regions[0].countries[1].isoCode] });
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeTruthy();
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeTruthy();
 
-		await updateProps({ activeIsoCodes: [] });
+		await rerender({ activeIsoCodes: [] });
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[0])).checked).toBeFalsy();
 		expect(getByLabelText(getCheckboxLabel(regions[0].countries[1])).checked).toBeFalsy();
 	});
@@ -108,12 +108,12 @@ describe('LoanSearchLocationFilter', () => {
 
 	it('should disable checkboxes when no fundraising loans', async () => {
 		const user = userEvent.setup();
-		const { getByText, getByLabelText, updateProps } = render(LoanSearchLocationFilter, {
+		const { getByText, getByLabelText, rerender } = render(LoanSearchLocationFilter, {
 			props: { regions: getRegions() }
 		});
 
 		const regions = getRegions(true);
-		await updateProps({ regions });
+		await rerender({ regions });
 
 		await user.click(getByText(getCheckboxLabel(regions[0])));
 		regions[0].countries.forEach(c => expect(getByLabelText(getCheckboxLabel(c)).disabled).toBeTruthy());

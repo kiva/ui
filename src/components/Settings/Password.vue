@@ -39,7 +39,7 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvAlert from '#src/components/Kv/KvAlert';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 import KvButton from '@kiva/kv-components/vue/KvButton';

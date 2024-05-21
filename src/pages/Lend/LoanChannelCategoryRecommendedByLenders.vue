@@ -66,7 +66,7 @@
 * client side filtering of loans that are not monthly.
 */
 
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import loanCardFields from '#src/graphql/fragments/loanCardFields.graphql';
 
 import _get from 'lodash/get';

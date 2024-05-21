@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import logFormatter from '#src/util/logFormatter';
 import basketCountQuery from '#src/graphql/query/basketCount.graphql';

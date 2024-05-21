@@ -559,7 +559,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
 import headerQuery from '#src/graphql/query/wwwHeader.graphql';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '#src/components/Kv/KvDropdown';
 import {

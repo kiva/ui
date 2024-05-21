@@ -159,7 +159,7 @@ import numeral from 'numeral';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { getFullUrl } from '#src/util/urlUtils';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';

@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';

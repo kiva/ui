@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { defineAsyncComponent } from 'vue';
 import getCacheKey from '#src/util/getCacheKey';

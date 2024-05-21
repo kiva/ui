@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import FrequentlyAskedQuestions from '#src/components/GetStarted/FrequentlyAskedQuestions';
 import EditPreferences from '#src/components/GetStarted/EditPreferences';

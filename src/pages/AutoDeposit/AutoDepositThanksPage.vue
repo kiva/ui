@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';

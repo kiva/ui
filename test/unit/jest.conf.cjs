@@ -12,10 +12,10 @@ module.exports = {
 		foundation: '<rootDir>/build/no-op.js',
 	},
 	transform: {
-		'^.+\\.(gql|graphql)$': 'jest-transform-graphql',
+		'\\.(gql|graphql)$': '@graphql-tools/jest-transform',
 		'^.+\\.vue$': '@vue/vue3-jest',
 		'^.+\\.js$': 'babel-jest',
-		// '^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.cjs',
+		'^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.cjs',
 	},
 	transformIgnorePatterns: ['/node_modules/(?!@kiva/)'],
 	snapshotSerializers: ['jest-serializer-vue'],

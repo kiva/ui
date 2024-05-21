@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';

@@ -74,7 +74,7 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import KvIcon from '#src/components/Kv/KvIcon';

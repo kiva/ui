@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import mySavedSearches from '#src/graphql/query/mySavedSearches.graphql';
 import SaveSearchItem from '#src/components/Settings/SaveSearchItem';
 import WwwPage from '#src/components/WwwFrame/WwwPage';

@@ -34,7 +34,7 @@
  * If team join is unsuccessful, display error message
  * If join team is pending, display pending message
  */
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
 
 import WwwPage from '#src/components/WwwFrame/WwwPage';

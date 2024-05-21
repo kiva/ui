@@ -61,7 +61,7 @@
 
 <script>
 // import gsap from 'gsap';
-// import { gql } from '@apollo/client/index';
+// import { gql } from 'graphql-tag';
 import { expand, collapse } from '#src/util/expander';
 
 import FifteenYearsButton from '#src/components/15Years/15YearsButton';

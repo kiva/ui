@@ -283,7 +283,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';

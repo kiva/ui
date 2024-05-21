@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';

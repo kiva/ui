@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight } from '@mdi/js';

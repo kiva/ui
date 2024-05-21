@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
 

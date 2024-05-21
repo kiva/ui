@@ -64,7 +64,7 @@
 
 <script>
 import numeral from 'numeral';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { indexIn } from '#src/util/comparators';
 
 const promoCampaignInfo = gql`

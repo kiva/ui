@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 
 import KvButton from '#src/components/Kv/KvButton';
 import KvCauseSelector from '#src/components/Kv/KvCauseSelector';

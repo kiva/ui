@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import promoCampaign from '#src/graphql/query/promoCampaign.graphql';
 
 /**

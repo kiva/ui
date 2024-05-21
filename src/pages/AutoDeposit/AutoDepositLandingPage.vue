@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { processPageContent } from '#src/util/contentfulUtils';
 
 import WwwPage from '#src/components/WwwFrame/WwwPage';

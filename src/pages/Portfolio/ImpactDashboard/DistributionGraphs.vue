@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 import getCacheKey from '#src/util/getCacheKey';
 import KvButton from '@kiva/kv-components/vue/KvButton';

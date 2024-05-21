@@ -127,7 +127,7 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '#src/plugins/loan/time-left-mixin';

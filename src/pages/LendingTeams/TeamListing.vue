@@ -248,7 +248,7 @@ import { format } from 'date-fns';
 import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
 import teamNoImage from '#src/assets/images/team_s135.png';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvPagination from '@kiva/kv-components/vue/KvPagination';
 import KvSelect from '@kiva/kv-components/vue/KvSelect';
 import KvButton from '@kiva/kv-components/vue/KvButton';

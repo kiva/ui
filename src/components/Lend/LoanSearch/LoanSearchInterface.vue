@@ -196,7 +196,7 @@ import { isNumber } from '#src/util//numberUtils';
 import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
 import LoanSearchSavedSearch from '#src/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '#src/util/loanSearch/filterConfig';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 

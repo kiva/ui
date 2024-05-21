@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KivaClassicLoanCarousel from '#src/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '#src/components/LoanCollections/KivaClassicLoanCategorySelector';
 

@@ -34,6 +34,7 @@ module.exports = {
 				'@babel/preset-env'
 			],
 			plugins: [
+				'babel-plugin-transform-import-meta',
 				'@babel/plugin-transform-modules-commonjs',
 				'@babel/plugin-syntax-dynamic-import',
 				'@babel/plugin-syntax-import-meta',

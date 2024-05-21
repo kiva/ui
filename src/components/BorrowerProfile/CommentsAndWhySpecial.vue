@@ -203,7 +203,7 @@ import _throttle from 'lodash/throttle';
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
 
 import { mdiDotsHorizontalCircle } from '@mdi/js';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import logFormatter from '#src/util/logFormatter';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';

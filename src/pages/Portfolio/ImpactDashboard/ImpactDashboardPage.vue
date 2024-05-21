@@ -33,7 +33,7 @@
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';

@@ -20,7 +20,7 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import themeListQuery from '#src/graphql/query/autolending/themeList.graphql';
 import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from './CheckList';

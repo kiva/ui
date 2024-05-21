@@ -71,7 +71,7 @@ import DonationNudgeBoxes from '#src/components/Checkout/DonationNudge/DonationN
 import KvCharityNavigator from '#src/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';

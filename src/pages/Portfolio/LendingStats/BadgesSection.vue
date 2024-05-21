@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { formatMediaAssetArray } from '#src/util/contentfulUtils';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 

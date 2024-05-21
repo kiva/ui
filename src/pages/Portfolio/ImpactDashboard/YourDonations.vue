@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { mdiArrowRight } from '@mdi/js';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';

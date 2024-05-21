@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
 import KivaMultiCategoryGrid from '#src/components/Homepage/HomeExp/KivaMultiCategoryGrid';

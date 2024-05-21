@@ -26,7 +26,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvSelect from '#src/components/Kv/KvSelect';
 
 export default {

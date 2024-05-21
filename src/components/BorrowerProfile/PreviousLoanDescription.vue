@@ -49,7 +49,7 @@
 <script>
 import { mdiChevronDown } from '@mdi/js';
 import { toParagraphs } from '#src/util/loanUtils';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';

@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import getCacheKey from '#src/util/getCacheKey';

@@ -248,7 +248,7 @@
 <script>
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiChevronDown, mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
 import AttributeFilter from '#src/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '#src/components/CorporateCampaign/LoanSearch/GenderFilter';

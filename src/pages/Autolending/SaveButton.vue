@@ -38,7 +38,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import KvButton from '#src/components/Kv/KvButton';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';

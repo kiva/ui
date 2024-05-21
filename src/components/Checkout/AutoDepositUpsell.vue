@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';

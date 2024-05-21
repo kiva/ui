@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiPencilOutline } from '@mdi/js';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';

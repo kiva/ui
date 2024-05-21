@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
 import parseSPCookie from '#src/util/parseSPCookie';
 import KvButton from '#src/components/Kv/KvButton';

@@ -233,7 +233,7 @@
 <script>
 import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import { isMatchAtRisk, readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';

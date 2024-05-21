@@ -150,7 +150,7 @@ import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import {
 	format, parseISO, differenceInCalendarDays
 } from 'date-fns';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';

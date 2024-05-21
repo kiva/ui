@@ -298,7 +298,7 @@
 
 <script>
 import numeral from 'numeral';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import { subDays } from 'date-fns';

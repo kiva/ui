@@ -19,7 +19,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import initAutolending from '#src/graphql/mutation/autolending/initAutolending.graphql';
 import logFormatter from '#src/util/logFormatter';
 import SaveButton from './SaveButton';

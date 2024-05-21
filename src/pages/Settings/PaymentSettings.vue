@@ -171,7 +171,7 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 import { defineAsyncComponent } from 'vue';

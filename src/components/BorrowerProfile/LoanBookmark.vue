@@ -18,7 +18,7 @@
 	</div>
 </template>
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
 import bookmarkLoan from '#src/util/bookmarkUtil';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';

@@ -8,7 +8,7 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import DOMPurify from 'dompurify';
 import { TIP, WARNING, ERROR } from '#src/api/fixtures/FlashMessageTypeEnum';
 import tipMessageData from '#src/graphql/query/tipMessage/tipMessageData.graphql';

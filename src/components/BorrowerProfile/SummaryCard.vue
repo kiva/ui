@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';

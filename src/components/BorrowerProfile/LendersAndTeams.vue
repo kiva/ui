@@ -151,7 +151,7 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';

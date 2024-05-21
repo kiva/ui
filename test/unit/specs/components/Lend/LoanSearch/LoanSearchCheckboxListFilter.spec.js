@@ -44,18 +44,18 @@ describe('LoanSearchCheckboxListFilter', () => {
 	it('should select based on prop', async () => {
 		const options = getOptions();
 
-		const { getByLabelText, updateProps } = render(LoanSearchCheckboxListFilter, {
+		const { getByLabelText, rerender } = render(LoanSearchCheckboxListFilter, {
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
-		await updateProps({ ids: [0] });
+		await rerender({ ids: [0] });
 		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
 
-		await updateProps({ ids: [0, 1] });
+		await rerender({ ids: [0, 1] });
 		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
 		expect(getByLabelText(getCheckboxLabel(options[1])).checked).toBeTruthy();
 
-		await updateProps({ ids: [] });
+		await rerender({ ids: [] });
 		options.forEach(item => expect(getByLabelText(getCheckboxLabel(item)).checked).toBeFalsy());
 	});
 
@@ -76,7 +76,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 	it('should disable checkboxes when no fundraising loans', async () => {
 		const initialOptions = getOptions();
 
-		const { getByLabelText, updateProps } = render(
+		const { getByLabelText, rerender } = render(
 			LoanSearchCheckboxListFilter,
 			{ props: { options: initialOptions, filterKey: 'key', eventAction: 'action' } }
 		);
@@ -84,7 +84,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 		initialOptions.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeFalsy());
 
 		const options = getOptions(true);
-		await updateProps({ options });
+		await rerender({ options });
 
 		options.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeTruthy());
 	});

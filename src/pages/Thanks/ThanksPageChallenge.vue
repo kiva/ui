@@ -168,7 +168,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiCheckAll } from '@mdi/js';
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';

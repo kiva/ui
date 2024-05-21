@@ -41,7 +41,7 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import countryListQuery from '#src/graphql/query/autolending/countryList.graphql';
 import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from './CheckList';

@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 
 export default {
 	name: 'TheSettingsTertiaryMenu',

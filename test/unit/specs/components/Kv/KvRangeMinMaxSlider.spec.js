@@ -117,7 +117,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle initial numbers below the range', async () => {
-		const { getAllByRole, updateProps } = render(
+		const { getAllByRole, rerender } = render(
 			KvRangeMinMaxSlider,
 			{
 				props: {
@@ -138,7 +138,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('0');
 		expect(rangeInputs[1].step).toBe('1');
 
-		await updateProps({ min: -1, max: -1 });
+		await rerender({ min: -1, max: -1 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');
@@ -151,7 +151,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle initial numbers above the range', async () => {
-		const { getAllByRole, updateProps } = render(
+		const { getAllByRole, rerender } = render(
 			KvRangeMinMaxSlider,
 			{
 				props: {
@@ -172,7 +172,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('100');
 		expect(rangeInputs[1].step).toBe('1');
 
-		await updateProps({ min: 110, max: 110 });
+		await rerender({ min: 110, max: 110 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');
@@ -185,7 +185,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle prop numbers outside the range', async () => {
-		const { getAllByRole, updateProps } = render(
+		const { getAllByRole, rerender } = render(
 			KvRangeMinMaxSlider,
 			{
 				props: {
@@ -206,7 +206,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('25');
 		expect(rangeInputs[1].step).toBe('1');
 
-		await updateProps({ min: -10, max: 110 });
+		await rerender({ min: -10, max: 110 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');
@@ -219,7 +219,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle prop change', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider);
+		const { getAllByRole, rerender } = render(KvRangeMinMaxSlider);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -232,7 +232,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('100');
 		expect(rangeInputs[1].step).toBe('1');
 
-		await updateProps({ min: 5, max: 8 });
+		await rerender({ min: 5, max: 8 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');
@@ -259,7 +259,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle decimal step', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider, { props: { step: 0.5 } });
+		const { getAllByRole, rerender } = render(KvRangeMinMaxSlider, { props: { step: 0.5 } });
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -272,7 +272,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('100');
 		expect(rangeInputs[1].step).toBe('0.5');
 
-		await updateProps({ min: 0.5, max: 8.5 });
+		await rerender({ min: 0.5, max: 8.5 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');
@@ -285,7 +285,7 @@ describe('KvRangeMinMaxSlider', () => {
 	});
 
 	it('should handle max of 0', async () => {
-		const { getAllByRole, updateProps } = render(KvRangeMinMaxSlider);
+		const { getAllByRole, rerender } = render(KvRangeMinMaxSlider);
 
 		const rangeInputs = getAllByRole('slider');
 
@@ -298,7 +298,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].value).toBe('100');
 		expect(rangeInputs[1].step).toBe('1');
 
-		await updateProps({ min: 0, max: 0 });
+		await rerender({ min: 0, max: 0 });
 
 		expect(rangeInputs[0].min).toBe('0');
 		expect(rangeInputs[0].max).toBe('100');

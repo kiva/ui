@@ -103,7 +103,7 @@
 
 <script>
 import { toParagraphs } from '#src/util/loanUtils';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import BorrowerBusinessDetails from '#src/components/BorrowerProfile/BorrowerBusinessDetails';
 

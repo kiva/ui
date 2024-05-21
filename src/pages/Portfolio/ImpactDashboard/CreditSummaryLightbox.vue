@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { mdiFileDocumentOutline } from '@mdi/js';
 import numeral from 'numeral';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';

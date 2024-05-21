@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';

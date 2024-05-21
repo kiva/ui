@@ -328,7 +328,7 @@
 
 <script>
 // import * as Sentry from "@sentry/vue";
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
 
 import KvButton from '#src/components/Kv/KvButton';

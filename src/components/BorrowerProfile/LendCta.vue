@@ -383,7 +383,7 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 import { setLendAmount, INVALID_BASKET_ERROR } from '#src/util/basketUtils';
 import {
 	getDropdownPriceArray,

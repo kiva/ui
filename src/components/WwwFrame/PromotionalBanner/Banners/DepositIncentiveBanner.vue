@@ -11,7 +11,7 @@
 <script>
 import GenericPromoBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import numeral from 'numeral';
-import { gql } from '@apollo/client/index';
+import { gql } from 'graphql-tag';
 
 const amountToLendQuery = gql`
 	query amountToLendQuery ($basketId: String) {
