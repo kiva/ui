@@ -31,7 +31,7 @@ function getMockApollo() {
 // Render the search bar, optionally taking an ApolloClient instance to provide to the component
 function renderSearchBar(apollo = getMockApollo()) {
 	return render(SearchBar, {
-		provide: { apollo }
+		global: { provide: { apollo } }
 	});
 }
 

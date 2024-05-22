@@ -1,19 +1,23 @@
 import BasketItem from '#src/components/Checkout/BasketItem';
-import kvAnalytics from '#src/plugins/kv-analytics-plugin';
-import numeralFilter from '#src/plugins/numeral-filter';
-import CookieStore from '#src/util/cookieStore';
 import { render, within } from '@testing-library/vue';
+import { createRouter, createWebHistory } from 'vue-router';
 import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
+import { emptyComponent, globalOptions } from '../../../specUtils';
+
+const router = createRouter({
+	history: createWebHistory(),
+	routes: [
+		{ path: '/', name: 'home', component: emptyComponent },
+		{
+			path: '/lend/2444883', name: 'loan', params: { id: '2444883' }, component: emptyComponent
+		},
+	],
+});
 
 // Test that the basket item renders the components it contains:
 // Checkout Item Img/Borrower Link, Remove Basket Item Button, Loan Reservation, Team Attribution, Loan Promo Credits,
 // Loan Price, Remove Basket Item, Matching Text
-
-const emptyComponent = {
-	template: '<div></div>',
-};
-
 describe('BasketItem loan', () => {
 	it('should contain these components and text', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
@@ -23,29 +27,19 @@ describe('BasketItem loan', () => {
 		} = render(
 			BasketItem,
 			{
-				provide: {
-					apollo: {
-						readFragment: () => { },
-						query: () => Promise.resolve({}),
-						readQuery: () => { },
-						mutate: () => Promise.resolve({}),
+				global: {
+					...globalOptions,
+					stubs: {
+						LoanReservation: { ...emptyComponent },
 					},
-					cookieStore: new CookieStore(),
+					plugins: [router],
 				},
-				routes: [],
 				props: {
 					disableMatching: false,
 					disableRedirects: false,
 					loan: loanReservation,
 					teams: basketLoanTeams,
 				},
-				stubs: {
-					LoanReservation: { ...emptyComponent }
-				}
-			},
-			vue => {
-				vue.use(kvAnalytics);
-				vue.filter('numeral', numeralFilter);
 			}
 		);
 
@@ -64,7 +58,7 @@ describe('BasketItem loan', () => {
 		const CheckoutItemImg = getByTestId('basket-loan-image');
 		const BorrowerLink = getByRole('link');
 		expect(BorrowerLink).toBe(CheckoutItemImg);
-		expect(BorrowerLink.href).toBe('http://localhost/#/lend/2444883');
+		expect(BorrowerLink.href).toBe('http://localhost/lend/2444883');
 
 		const LoanPrice = document.getElementById('loan-price');
 		const LoanPriceSelected = LoanPrice.options[LoanPrice.selectedIndex].getAttribute('value');
@@ -107,16 +101,13 @@ describe('BasketItem loan', () => {
 		render(
 			BasketItem,
 			{
-				provide: {
-					apollo: {
-						readFragment: () => { },
-						query: () => Promise.resolve({}),
-						readQuery: () => { },
-						mutate: () => Promise.resolve({}),
+				global: {
+					...globalOptions,
+					stubs: {
+						LoanReservation: { ...emptyComponent },
 					},
-					cookieStore: new CookieStore(),
+					plugins: [router],
 				},
-				routes: [],
 				props: {
 					disableMatching: false,
 					disableRedirects: false,
@@ -125,14 +116,7 @@ describe('BasketItem loan', () => {
 					enableHugeAmount: true,
 					isLoggedIn: true,
 				},
-				stubs: {
-					LoanReservation: { ...emptyComponent }
-				}
 			},
-			vue => {
-				vue.use(kvAnalytics);
-				vue.filter('numeral', numeralFilter);
-			}
 		);
 
 		const LoanPrice = document.getElementById('loan-price');

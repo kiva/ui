@@ -1,14 +1,8 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import TheHeader from '#src/components/WwwFrame/TheHeader';
-import kvAnalytics from '#src/plugins/kv-analytics-plugin';
-import CookieStore from '#src/util/cookieStore';
-import { MockKvAuth0 } from '#src/util/KvAuth0';
-import numeralFilter from '#src/plugins/numeral-filter';
 
-const emptyComponent = {
-	template: '<div></div>',
-};
+import { emptyComponent, globalOptions } from '../../../specUtils';
 
 describe('TheHeader', () => {
 	it('should display a search area', async () => {
@@ -16,32 +10,27 @@ describe('TheHeader', () => {
 		const { queryByPlaceholderText } = render(
 			TheHeader,
 			{
-				provide: {
-					apollo: {
-						readFragment: () => {},
-						query: () => Promise.resolve({}),
-						readQuery: () => {},
+				global: {
+					...globalOptions,
+					// Stubbing out child components not used in this test
+					stubs: {
+						MonthlyGoodExpMenuWrapper: { ...emptyComponent },
+						PromoBannerLarge: { ...emptyComponent },
+						PromoBannerSmall: { ...emptyComponent },
+						TheLendMenu: { ...emptyComponent },
+						RouterLink: { ...emptyComponent },
 					},
-					cookieStore: new CookieStore(),
-					kvAuth0: MockKvAuth0,
-				},
-				routes: [],
-				// Stubbing out child components not used in this test
-				stubs: {
-					MonthlyGoodExpMenuWrapper: { ...emptyComponent },
-					PromoBannerLarge: { ...emptyComponent },
-					PromoBannerSmall: { ...emptyComponent },
-					TheLendMenu: { ...emptyComponent },
+					mocks: {
+						$route: {
+							path: '/'
+						},
+					}
 				},
 				data() {
 					return {
 						isVisitor: false
 					};
 				},
-			},
-			vue => {
-				vue.use(kvAnalytics);
-				vue.filter('numeral', numeralFilter);
 			},
 		);
 

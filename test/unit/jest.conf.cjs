@@ -43,5 +43,4 @@ module.exports = {
 		url: 'http://localhost',
 		customExportConditions: ['node', 'node-addons'],
 	},
-	// setupFiles: ['<rootDir>/test/unit/setupJestMocks.js']
 };
