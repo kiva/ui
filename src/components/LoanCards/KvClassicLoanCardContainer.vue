@@ -390,9 +390,16 @@ export default {
 		},
 		jumpFilterPage(filter) {
 			this.$kvTrackEvent('Lending', 'loan-card', 'clicked-tag', filter.type, filter.id.toString());
-			const query = {};
-			query[filter.type] = filter.id.toString();
-			if (!_isEqual(this.$route.query, query)) {
+			const { query: currentQuery } = this.$route;
+			const query = { ...currentQuery };
+
+			if (filter.type in query && query[filter.type] !== filter.id.toString()) {
+				query[filter.type] += `,${filter.id.toString()}`;
+			} else {
+				query[filter.type] = filter.id.toString();
+			}
+
+			if (!_isEqual(currentQuery, query)) {
 				this.$router.push({
 					path: '/lend/filter',
 					query,
