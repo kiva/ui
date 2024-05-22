@@ -136,7 +136,6 @@ import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -278,21 +277,22 @@ export default {
 			this.needsNews = true;
 		}
 
-		const { version } = this.apollo.readFragment({
-			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
+		if (!this.passwordless) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
 
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'basket',
-			COMMS_OPT_IN_EXP_KEY,
-			'EXP-MP-271-May2024'
-		);
-
-		if (version === 'b') {
-			this.enableCommsExperiment = true;
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'basket',
+				COMMS_OPT_IN_EXP_KEY,
+				'EXP-MP-271-May2024'
+			);
+			if (version === 'b') {
+				this.enableCommsExperiment = true;
+			}
 		}
 	},
 	apollo: {
@@ -301,16 +301,10 @@ export default {
 			if (!pageId) {
 				return Promise.resolve();
 			}
-			return Promise.all([
-				client.query({
-					query: strategicPartnerLoginInfoByPageIdQuery,
-					variables: { pageId: route.query.partnerContentId ?? '' }
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { experimentKey: COMMS_OPT_IN_EXP_KEY }
-				})
-			]);
+			return client.query({
+				query: strategicPartnerLoginInfoByPageIdQuery,
+				variables: { pageId: route.query.partnerContentId ?? '' }
+			});
 		}
 	},
 	methods: {

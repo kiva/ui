@@ -81,7 +81,7 @@
 					>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
 					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
 						You must agree to the Kiva Terms of service & Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						{{ enableCommsExperiment ? 'notice' : 'policy' }}.
 					</p>
 				</kv-checkbox>
 				<kv-checkbox
@@ -133,7 +133,6 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
@@ -152,11 +151,6 @@ export default {
 		KvTextInput,
 	},
 	inject: ['apollo', 'cookieStore'],
-	apollo: {
-		preFetch(config, client) {
-			return client.query({ query: experimentAssignmentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
-		}
-	},
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
 	props: {
 		amount: {
