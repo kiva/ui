@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
+import { globalOptions } from '../../../../specUtils';
 
 const teamName = 'Team Test';
 const mocks = {
@@ -13,11 +13,27 @@ const mocks = {
 
 describe('ChallengeCallout', () => {
 	it('should display add to cart message', () => {
-		Vue.directive('kv-track-event', () => ({}));
-
 		const show = jest.fn();
 
 		const { getByAltText, getByText } = render(ChallengeCallout, {
+			global: {
+				...globalOptions,
+				stubs: {
+					KvToast: {
+						template: `
+							<div ref="toastRef">
+								<img src="test.jpg" alt="Image of lender" />
+								<span class="tw-whitespace-nowrap">Added to cart!</span>
+							</div>
+						`,
+						methods: {
+							close: () => ({}),
+							show,
+						},
+					},
+				},
+				mocks,
+			},
 			props: {
 				currentLender: {
 					lender: {
@@ -29,21 +45,7 @@ describe('ChallengeCallout', () => {
 				showAddedToCartMessage: true,
 				borrowerName: 'Borrower',
 			},
-			mocks,
-			stubs: {
-				KvToast: {
-					template: `
-						<div ref="toastRef">
-							<img src="test.jpg" alt="Image of lender" />
-							<span class="tw-whitespace-nowrap">Added to cart!</span>
-						</div>
-					`,
-					methods: {
-						close: () => ({}),
-						show,
-					},
-				},
-			},
+
 		});
 
 		getByAltText('Image of lender');

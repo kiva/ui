@@ -162,7 +162,7 @@ export default {
 			this.popper = new Popper(this.$refs.input.$el, this.$refs.dropdown, { placement: 'bottom-start' });
 		},
 		clickDocument(e) {
-			if (!this.$refs.input.$el.contains(e.target) && !this.$refs.dropdown.contains(e.target)) {
+			if (!this.$refs?.input?.$el?.contains(e.target) && !this.$refs?.dropdown?.contains(e.target)) {
 				this.close();
 			}
 		},

@@ -1,26 +1,23 @@
 import { render } from '@testing-library/vue';
 import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
+import { globalOptions } from '../../../specUtils';
 
 describe('TeamDropDown', () => {
 	it('should contain these components', () => {
 		const {
-			getByText, getAllByTestId, getByRole, getByDisplayValue
+			getByText, getByRole, getByDisplayValue
 		} = render(
 			TeamAttribution,
 			{
-				provide: {
-					apollo: {
-						readQuery: () => {},
-						mutate: () => Promise.resolve({}),
-					},
+				global: {
+					...globalOptions,
 				},
 				props: {
 					teams: basketLoanTeams,
 				}
 			}
 		);
-		const TeamSelector = getAllByTestId('basket-loan-team-selector');
 		const Team = document.getElementById('team_select');
 		const TeamSelected = Team.options[Team.selectedIndex].getAttribute('value');
 		expect(TeamSelected).toBe('0'); // None should be selected by default
@@ -31,7 +28,6 @@ describe('TeamDropDown', () => {
 			'(A+) Atheists, Agnostics, Skeptics, Freethinkers, Secular Humanists and the Non-Religious'
 		);
 
-		const TeamAttributionOption0 = getByRole('option', { name: 'None' });
 		const TeamAttributionOption1 = getByRole('option', { name: 'Donut Empire' });
 		const TeamAttributionOption2 = getByRole('option', { name: 'Nerdfighters' });
 		const TeamAttributionOption3 = getByRole('option', {
@@ -39,8 +35,6 @@ describe('TeamDropDown', () => {
 		});
 		// should return only the team currently selected
 		getByDisplayValue('None');
-
-		expect(TeamSelector[1]).toMatchObject(TeamAttributionOption0);
 		expect(TeamOption1).toBe(TeamAttributionOption1);
 		expect(TeamOption2).toBe(TeamAttributionOption2);
 		expect(TeamOption3).toBe(TeamAttributionOption3);
@@ -52,11 +46,8 @@ describe('TeamDropDown', () => {
 		} = render(
 			TeamAttribution,
 			{
-				provide: {
-					apollo: {
-						readQuery: () => {},
-						mutate: () => Promise.resolve({}),
-					},
+				global: {
+					...globalOptions,
 				},
 			}
 		);

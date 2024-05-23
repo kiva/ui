@@ -15,18 +15,18 @@ describe('LoanProgressGroup', () => {
 			},
 		});
 
-		getByText('$12.34 to go');
+		getByText('$12.34 to go!');
 	});
 
 	it('should display time left', () => {
 		const { getByText } = render(LoanProgressGroup, {
 			props: {
 				moneyLeft: '12.34',
-				timeLeft: '1 day left.'
+				timeLeft: '1 day left'
 			},
 		});
 
-		getByText('$12.34 to go. 1 day left.');
+		getByText('$12.34 to go. 1 day left!');
 	});
 
 	it('should not use orange color without experiment', () => {

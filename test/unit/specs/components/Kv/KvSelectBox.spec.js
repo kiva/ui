@@ -20,12 +20,12 @@ describe('KvSelectBox', () => {
 	it('should render with full width', async () => {
 		const { getByText, getByRole, rerender } = render(KvSelectBox, { props: { id: 'id', placeholder: 'test' } });
 
-		expect(getByRole('textbox').parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
+		expect(getByRole('textbox').parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
 		expect(getByText(NO_RESULTS).parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
 
 		await rerender({ isFullWidth: true });
 
-		expect(getByRole('textbox').parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
+		expect(getByRole('textbox').parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
 		expect(getByText(NO_RESULTS).parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
 	});
 

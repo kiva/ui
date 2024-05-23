@@ -92,7 +92,7 @@ export default {
 			}
 		},
 		updateRegion(region, { values, changed, wasSelectAll }) {
-			this.$set(this.selectedCountries, region, values);
+			this.selectedCountries[region] = values;
 
 			this.$emit('updated', { countryIsoCode: getIsoCodes(this.displayedRegions, this.selectedCountries) });
 

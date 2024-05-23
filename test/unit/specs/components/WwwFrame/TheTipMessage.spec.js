@@ -48,9 +48,9 @@ const defaultFlashMessages = {
 
 describe('TheTipMessage', () => {
 	// it displays the current tip message when there are no flash messages
-	// !TODO this test is disabled. I could not get it to work with Vue3. It seems that
+	// !TODO this test is skipped. I could not get it to work with Vue3. It seems that
 	// When the component is rendered here, this.$refs is undefined inside of TheTipMessage.
-	xit('displays the current tip message when there are no flash messages', async () => {
+	it.skip('displays the current tip message when there are no flash messages', async () => {
 		const tipMessage = { message: 'This is a tip message' };
 		const { findByText } = renderTipMessage(tipMessage);
 

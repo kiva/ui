@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import { globalOptions } from '../../../specUtils';
 
 const shareLender = { id: 1, name: 'Lender' };
 const teamName = 'Team Test';
@@ -16,21 +17,24 @@ const show = jest.fn();
 describe('ChallengeCallout', () => {
 	it('should display team name', () => {
 		const { getByText } = render(ChallengeTeamInvite, {
-			props: { shareLender, teamName },
-			mocks,
-			stubs: {
-				KvToast: {
-					template: `
-						<div ref="toastRef">
-							<span>${teamName}</span>
-						</div>
-					`,
-					methods: {
-						close: () => ({}),
-						show,
+			global: {
+				...globalOptions,
+				mocks,
+				stubs: {
+					KvToast: {
+						template: `
+							<div ref="toastRef">
+								<span>${teamName}</span>
+							</div>
+						`,
+						methods: {
+							close: () => ({}),
+							show,
+						},
 					},
 				},
 			},
+			props: { shareLender, teamName },
 		});
 
 		getByText(teamName);
@@ -38,6 +42,26 @@ describe('ChallengeCallout', () => {
 
 	it('should display lender image', () => {
 		const { getByAltText } = render(ChallengeTeamInvite, {
+			global: {
+				...globalOptions,
+				mocks,
+				stubs: {
+					KvToast: {
+						template: `
+							<div ref="toastRef">
+								<kv-user-avatar lender-name="name" lender-image-url="url.jpg" />
+							</div>
+						`,
+						components: {
+							KvUserAvatar
+						},
+						methods: {
+							close: () => ({}),
+							show,
+						},
+					},
+				},
+			},
 			props: {
 				shareLender: {
 					...shareLender,
@@ -46,23 +70,6 @@ describe('ChallengeCallout', () => {
 					},
 				},
 				teamName
-			},
-			mocks,
-			stubs: {
-				KvToast: {
-					template: `
-						<div ref="toastRef">
-							<kv-user-avatar lender-name="name" lender-image-url="url.jpg" />
-						</div>
-					`,
-					components: {
-						KvUserAvatar
-					},
-					methods: {
-						close: () => ({}),
-						show,
-					},
-				},
 			},
 		});
 
