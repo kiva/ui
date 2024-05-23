@@ -63,7 +63,7 @@
 					@update:modelValue="$kvTrackEvent(
 						'basket',
 						'click-terms-of-use',
-						'I have read and agree to the Terms of Use and Privacy Policy.',
+						'I have read and agree to the Terms of Use and Privacy Policy',
 						$event ? 1 : 0
 					)"
 				>
@@ -77,11 +77,11 @@
 					<a
 						:href="`https://${this.$appConfig.host}/legal/privacy`"
 						target="_blank"
-						title="Open Privacy Policy in a new window"
-					>Privacy Policy</a>.
+						:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
+					>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
 					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
 						You must agree to the Kiva Terms of service & Privacy
-						policy.
+						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 					</p>
 				</kv-checkbox>
 				<kv-checkbox
@@ -93,12 +93,11 @@
 					@update:modelValue="$kvTrackEvent(
 						'basket',
 						'click-marketing-updates',
-						'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.', // eslint-disable-line
+						emailUpdatesCopy,
 						$event ? 1 : 0
 					)"
 				>
-					Receive email updates from Kiva (including borrower updates
-					and promos). You can unsubscribe anytime.
+					{{ emailUpdatesCopy }}
 				</kv-checkbox>
 			</div>
 			<div id="dropin-button">
@@ -134,10 +133,14 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+
+const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 export default {
 	name: 'CheckoutDropInPaymentWrapper',
@@ -175,6 +178,7 @@ export default {
 			enableCheckoutButton: false,
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
+			enableCommsExperiment: false,
 		};
 	},
 	validations: {
@@ -422,5 +426,33 @@ export default {
 			this.$emit('refreshtotals');
 		},
 	},
+	computed: {
+		emailUpdatesCopy() {
+			return this.enableCommsExperiment
+				? 'Send me updates about my borrower(s), my impact, and other ways I can help.'
+				// eslint-disable-next-line max-len
+				: 'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.';
+		}
+	},
+	created() {
+		if (this.isGuestCheckout) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'basket',
+				COMMS_OPT_IN_EXP_KEY,
+				'EXP-MP-271-May2024'
+			);
+
+			if (version === 'b') {
+				this.enableCommsExperiment = true;
+			}
+		}
+	}
 };
 </script>
