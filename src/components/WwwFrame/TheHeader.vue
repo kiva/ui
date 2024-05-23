@@ -805,7 +805,9 @@ export default {
 			fragment: experimentVersionFragment,
 		}) ?? {};
 
-		this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
+		if (version) {
+			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
+		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
