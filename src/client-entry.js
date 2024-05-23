@@ -180,14 +180,7 @@ function setupClientRouting({
 
 	router.beforeEach((to, from, next) => {
 		app.config.globalProperties.$Progress.start(6500);
-
-		// if no routes match our path, force a page refresh to that path
-		const { matched } = to;
-		if (!matched.length) {
-			window.location = to.fullPath;
-		} else {
-			next();
-		}
+		next();
 	});
 
 	router.afterEach((to, from) => {
