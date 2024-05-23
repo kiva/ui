@@ -800,15 +800,13 @@ export default {
 			}
 		}
 
-		if (this.cookieStore.get(COMMS_OPT_IN_EXP_KEY) !== 'true') {
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
-				fragment: experimentVersionFragment,
-			}) ?? {};
+		const { version } = this.apollo.readFragment({
+			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
 
-			if (version === 'b') {
-				this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, true, { path: '/' });
-			}
+		if (version === 'b') {
+			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, true, { path: '/' });
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');

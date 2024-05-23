@@ -81,7 +81,7 @@
 					>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
 					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
 						You must agree to the Kiva Terms of service & Privacy
-						{{ enableCommsExperiment ? 'notice' : 'policy' }}.
+						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 					</p>
 				</kv-checkbox>
 				<kv-checkbox

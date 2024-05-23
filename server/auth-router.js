@@ -126,7 +126,7 @@ module.exports = function authRouter(config = {}) {
 
 		// Opt-In Communication Exp MP-271
 		if (cookies.opt_in_comms) {
-			options.optInComms = 'b';
+			options.optInComms = true;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
