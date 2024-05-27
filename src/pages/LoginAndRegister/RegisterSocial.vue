@@ -65,34 +65,69 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<kv-base-input
-					name="newAcctTerms"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsTerms"
-					v-model="newAcctTerms"
-					:validation="$v.newAcctTerms"
-				>
-					I have read and agree to the Kiva
-					<a href="/legal/terms" target="_blank">Terms of Use</a>
-					and
-					<a href="/legal/privacy" target="_blank">
-						Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
-					</a> (required)
-					<template #checked>
-						You must agree to the Kiva Terms of Use and Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="newsConsent"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsNews"
-					v-model="newsConsent"
-				>
-					{{ updateEmailsCopy }}
-				</kv-base-input>
+				<template v-if="enableCommsExperiment">
+					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
+						<kv-radio
+							value="1"
+							name="reportComms"
+							v-model="selectedTerms"
+							:class="{'radio-error': $v.selectedTerms.$error}"
+						>
+							Send me updates from people I’ve funded, my impact, and other ways I can help.
+						</kv-radio>
+						<kv-radio
+							value="0"
+							name="reportComms"
+							v-model="selectedComms"
+							:class="{'radio-error': $v.selectedComms.$error}"
+						>
+							No, I don’t want updates about my borrower(s) progress or other relevant loans.
+						</kv-radio>
+					</fieldset>
+					<p
+						v-if="$v.selectedComms.$error"
+						class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
+					>
+						Choose your communication preferences.
+					</p>
+					<p
+						v-if="selectedComms === '0'"
+						class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1.5 tw-rounded tw-text-small"
+					>
+						Can we ask you to reconsider? This borrower and others like them will need your
+						help to change their lives. You can unsubscribe at any time.
+					</p>
+				</template>
+				<template v-else>
+					<kv-base-input
+						name="newAcctTerms"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsTerms"
+						v-model="newAcctTerms"
+						:validation="$v.newAcctTerms"
+					>
+						I have read and agree to the Kiva
+						<a href="/legal/terms" target="_blank">Terms of Use</a>
+						and
+						<a href="/legal/privacy" target="_blank">
+							Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
+						</a> (required)
+						<template #checked>
+							You must agree to the Kiva Terms of Use and Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</template>
+					</kv-base-input>
+					<kv-base-input
+						name="newsConsent"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsNews"
+						v-model="newsConsent"
+					>
+						{{ updateEmailsCopy }}
+					</kv-base-input>
+				</template>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
 						:required="needsCaptcha"
@@ -139,6 +174,7 @@ import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPar
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
@@ -154,6 +190,7 @@ export default {
 		KvButton,
 		ReCaptchaEnterprise,
 		SystemPage,
+		KvRadio,
 	},
 	mixins: [
 		validationMixin,
@@ -181,6 +218,7 @@ export default {
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
+			selectedComms: '',
 		};
 	},
 	computed: {
@@ -229,6 +267,12 @@ export default {
 		if (this.needsTerms) {
 			validations.newAcctTerms = {
 				checked: val => val,
+			};
+		}
+		if (this.enableCommsExperiment) {
+			validations.selectedComms = {
+				required,
+				checked: val => val !== '',
 			};
 		}
 		return validations;
@@ -310,6 +354,8 @@ export default {
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
+			this.$kvTrackEvent?.('basket', 'click', 'opt-in-communication', Boolean(this.selectedComms));
+
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
@@ -325,8 +371,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .logo {
 	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
 }
+
+.radio-error >>> label > div {
+	@apply tw-border-danger-highlight;
+}
+
 </style>

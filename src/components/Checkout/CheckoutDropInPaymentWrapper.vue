@@ -54,51 +54,86 @@
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<kv-checkbox
-					data-testid="basket-guest-terms-agreement"
-					id="termsAgreement"
-					name="termsAgreement"
-					class="checkbox tw-text-small tw-mb-2"
-					v-model="termsAgreement"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-terms-of-use',
-						'I have read and agree to the Terms of Use and Privacy Policy',
-						$event ? 1 : 0
-					)"
-				>
-					I have read and agree to the
-					<a
-						:href="`https://${this.$appConfig.host}/legal/terms`"
-						target="_blank"
-						title="Open Terms of Use in a new window"
-					>Terms of Use</a>
-					and
-					<a
-						:href="`https://${this.$appConfig.host}/legal/privacy`"
-						target="_blank"
-						:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
-					>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
-					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
-						You must agree to the Kiva Terms of service & Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+				<template v-if="enableCommsExperiment">
+					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
+						<kv-radio
+							value="1"
+							name="reportComms"
+							v-model="selectedComms"
+							:class="{'radio-error': $v.selectedComms.$error}"
+						>
+							Send me updates from people I’ve funded, my impact, and other ways I can help.
+						</kv-radio>
+						<kv-radio
+							value="0"
+							name="reportComms"
+							v-model="selectedComms"
+							:class="{'radio-error': $v.selectedComms.$error}"
+						>
+							No, I don’t want updates about my borrower(s) progress or other relevant loans.
+						</kv-radio>
+					</fieldset>
+					<p
+						v-if="$v.selectedComms.$error"
+						class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
+					>
+						Choose your communication preferences.
 					</p>
-				</kv-checkbox>
-				<kv-checkbox
-					data-testid="basket-guest-email-updates"
-					id="emailUpdates"
-					class="checkbox tw-text-small tw-mb-2"
-					name="emailUpdates"
-					v-model="emailUpdates"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-marketing-updates',
-						emailUpdatesCopy,
-						$event ? 1 : 0
-					)"
-				>
-					{{ emailUpdatesCopy }}
-				</kv-checkbox>
+					<p
+						v-if="selectedComms === '0'"
+						class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1.5 tw-rounded tw-text-small"
+					>
+						Can we ask you to reconsider? This borrower and others like them will need your
+						help to change their lives. You can unsubscribe at any time.
+					</p>
+				</template>
+				<template v-else>
+					<kv-checkbox
+						data-testid="basket-guest-terms-agreement"
+						id="termsAgreement"
+						name="termsAgreement"
+						class="checkbox tw-text-small tw-mb-2"
+						v-model="termsAgreement"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click-terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
+					>
+						I have read and agree to the
+						<a
+							:href="`https://${this.$appConfig.host}/legal/terms`"
+							target="_blank"
+							title="Open Terms of Use in a new window"
+						>Terms of Use</a>
+						and
+						<a
+							:href="`https://${this.$appConfig.host}/legal/privacy`"
+							target="_blank"
+							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
+						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
+						<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
+							You must agree to the Kiva Terms of service & Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</p>
+					</kv-checkbox>
+					<kv-checkbox
+						data-testid="basket-guest-email-updates"
+						id="emailUpdates"
+						class="checkbox tw-text-small tw-mb-2"
+						name="emailUpdates"
+						v-model="emailUpdates"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click-marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
+					>
+						{{ emailUpdatesCopy }}
+					</kv-checkbox>
+				</template>
 			</div>
 			<div id="dropin-button">
 				<kv-button
@@ -139,6 +174,7 @@ import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
@@ -149,6 +185,7 @@ export default {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 		KvTextInput,
+		KvRadio,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
@@ -178,7 +215,8 @@ export default {
 			enableCheckoutButton: false,
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
-			enableCommsExperiment: false,
+			enableCommsExperiment: true,
+			selectedComms: '',
 		};
 	},
 	validations: {
@@ -187,6 +225,7 @@ export default {
 			email,
 		},
 		termsAgreement: { required: value => value === true },
+		selectedComms: { required: value => value !== '' },
 	},
 	mounted() {
 		this.isClientReady = !this.$isServer;
@@ -406,6 +445,8 @@ export default {
 			// redirect to thanks with KIVA transaction id
 			if (transactionId) {
 				// fire BT Success event
+				this.$kvTrackEvent?.('basket', 'click', 'opt-in-communication', Boolean(this.selectedComms));
+
 				this.$kvTrackEvent(
 					'basket',
 					`${paymentType} Braintree DropIn Payment`,
@@ -456,3 +497,11 @@ export default {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.radio-error >>> label > div {
+ @apply tw-border-danger-highlight;
+}
+
+</style>
