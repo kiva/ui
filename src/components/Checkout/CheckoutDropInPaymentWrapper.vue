@@ -54,7 +54,7 @@
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<template v-if="enableCommsExperiment">
+				<template v-if="enableRadioBtnExperiment">
 					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
 						<kv-radio
 							value="1"
@@ -62,7 +62,8 @@
 							v-model="selectedComms"
 							v-kv-track-event="[
 								'basket',
-								'click-marketing-updates',
+								'click',
+								'marketing-updates',
 								// eslint-disable-next-line max-len
 								'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
 							]"
@@ -78,7 +79,8 @@
 							:class="{'radio-error': $v.selectedComms.$error}"
 							v-kv-track-event="[
 								'basket',
-								'click-marketing-updates',
+								'click',
+								'marketing-updates',
 								// eslint-disable-next-line max-len
 								'Dont receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
 							]"
@@ -110,7 +112,8 @@
 						v-model="termsAgreement"
 						@update:modelValue="$kvTrackEvent(
 							'basket',
-							'click-terms-of-use',
+							'click',
+							'terms-of-use',
 							'I have read and agree to the Terms of Use and Privacy Policy',
 							$event ? 1 : 0
 						)"
@@ -140,7 +143,8 @@
 						v-model="emailUpdates"
 						@update:modelValue="$kvTrackEvent(
 							'basket',
-							'click-marketing-updates',
+							'click',
+							'marketing-updates',
 							emailUpdatesCopy,
 							$event ? 1 : 0
 						)"
@@ -231,6 +235,7 @@ export default {
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 			enableCommsExperiment: true,
 			selectedComms: '',
+			enableRadioBtnExperiment: true,
 		};
 	},
 	validations: {
@@ -459,8 +464,6 @@ export default {
 			// redirect to thanks with KIVA transaction id
 			if (transactionId) {
 				// fire BT Success event
-				this.$kvTrackEvent?.('basket', 'click', 'opt-in-communication', Boolean(this.selectedComms));
-
 				this.$kvTrackEvent(
 					'basket',
 					`${paymentType} Braintree DropIn Payment`,
@@ -506,6 +509,9 @@ export default {
 
 			if (version === 'b') {
 				this.enableCommsExperiment = true;
+			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
 			}
 		}
 	}

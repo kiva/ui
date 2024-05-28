@@ -65,13 +65,20 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<template v-if="enableCommsExperiment">
+				<template v-if="enableRadioBtnExperiment">
 					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
 						<kv-radio
 							value="1"
 							name="reportComms"
 							v-model="selectedTerms"
 							:class="{'radio-error': $v.selectedTerms.$error}"
+							v-kv-track-event="[
+								'authentication',
+								'click',
+								'marketing-updates',
+								// eslint-disable-next-line max-len
+								'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
+							]"
 						>
 							<!-- eslint-disable-next-line max-len -->
 							Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
@@ -82,8 +89,9 @@
 							v-model="selectedComms"
 							:class="{'radio-error': $v.selectedComms.$error}"
 							v-kv-track-event="[
-								'basket',
-								'click-marketing-updates',
+								'authentication',
+								'click',
+								'marketing-updates',
 								// eslint-disable-next-line max-len
 								'Dont receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
 							]"
@@ -114,6 +122,13 @@
 						v-show="needsTerms"
 						v-model="newAcctTerms"
 						:validation="$v.newAcctTerms"
+						@update:modelValue="$kvTrackEvent(
+							'authentication',
+							'click',
+							'terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
 					>
 						I have read and agree to the Kiva
 						<a href="/legal/terms" target="_blank">Terms of Use</a>
@@ -133,13 +148,14 @@
 						v-show="needsNews"
 						v-model="newsConsent"
 						@update:modelValue="$kvTrackEvent(
-							'Login',
-							'click-marketing-updates',
+							'authentication',
+							'click',
+							'marketing-updates',
 							emailUpdatesCopy,
 							$event ? 1 : 0
 						)"
 					>
-						{{ updateEmailsCopy }}
+						{{ emailUpdatesCopy }}
 					</kv-base-input>
 				</template>
 				<div class="tw-mb-4">
@@ -233,6 +249,7 @@ export default {
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
 			selectedComms: '',
+			enableRadioBtnExperiment: false,
 		};
 	},
 	computed: {
@@ -283,7 +300,7 @@ export default {
 				checked: val => val,
 			};
 		}
-		if (this.enableCommsExperiment) {
+		if (this.enableRadioBtnExperiment) {
 			validations.selectedComms = {
 				required,
 				checked: val => val !== '',
@@ -351,6 +368,9 @@ export default {
 			if (version === 'b') {
 				this.enableCommsExperiment = true;
 			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
+			}
 		}
 	},
 	apollo: {
@@ -368,7 +388,6 @@ export default {
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
-			this.$kvTrackEvent?.('basket', 'click', 'opt-in-communication', Boolean(this.selectedComms));
 
 			this.$v.$touch();
 
