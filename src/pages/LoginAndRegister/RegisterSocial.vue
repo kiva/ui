@@ -132,6 +132,12 @@
 						type="checkbox"
 						v-show="needsNews"
 						v-model="newsConsent"
+						@update:modelValue="$kvTrackEvent(
+							'Login',
+							'click-marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
 					>
 						{{ updateEmailsCopy }}
 					</kv-base-input>
