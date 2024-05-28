@@ -1,3 +1,29 @@
+## [2.741.0-rc.1](https://github.com/kiva/ui/compare/v2.740.0...v2.741.0-rc.1) (2024-05-28)
+
+
+### 🎉 New Features
+
+* footer disclaimer date update ([#5331](https://github.com/kiva/ui/issues/5331)) ([6e57053](https://github.com/kiva/ui/commit/6e5705350f1395c79f990fcd9ff7a67f3ff409c1))
+* multiple clickable pills ([#5327](https://github.com/kiva/ui/issues/5327)) ([4085cf1](https://github.com/kiva/ui/commit/4085cf13460d40fc9771fd793128d222847b246a))
+* opt-in copy experiment in guest checkout ([ca8d892](https://github.com/kiva/ui/commit/ca8d8923c185f11e8ecbed09e3a97ccd1359403a))
+* opt-in copy experiment in register social ([07e0726](https://github.com/kiva/ui/commit/07e07265bcfd29f129d85fa0efcc517b9e31d331))
+* send exp version to track in auth0 interface ([3f4c89d](https://github.com/kiva/ui/commit/3f4c89d722a6d13e858f609f8d790641e025a96f))
+* set experiment version in cookie to be read on server ([262a861](https://github.com/kiva/ui/commit/262a8616a5fd0ccd1cdb99d194e7138b7adf39de))
+
+
+### 🐛 Bugfixes
+
+* add check for new access_denied error ([05576eb](https://github.com/kiva/ui/commit/05576ebb80214891257790bfa794369f280dbe14))
+* category ([188f874](https://github.com/kiva/ui/commit/188f874ad8a7fb75d62c78cdc4dff83dcaea8a17))
+* prevent saving cookie if version is not defined ([4a17817](https://github.com/kiva/ui/commit/4a17817b47735cb16f3d7cec65387674e8f20c95))
+* resolve comments ([5c6d250](https://github.com/kiva/ui/commit/5c6d2509c8782c72675b85968ff040cb21f92bb6))
+* revert tracking event in policy link ([930d788](https://github.com/kiva/ui/commit/930d7888853f3935c2c1841f6b62ff72e3276a7e))
+* skip exp when passwordless is active and remove exp query ([5aa73f5](https://github.com/kiva/ui/commit/5aa73f5d83380fa713195521cd97dbf49422ceaa))
+* specify Kiva in terms of use ([df275d4](https://github.com/kiva/ui/commit/df275d440ffa8161968eaefbb250d20fc43bd26c))
+* updates copy and tracking ([5fd0aa9](https://github.com/kiva/ui/commit/5fd0aa9639bb35f9e5987e42fc7e8ab7c92ec247))
+* upload static assets for staging and production releases MP-289 ([3452fac](https://github.com/kiva/ui/commit/3452facec3ac995d95d7048d189288702a6fd125))
+* use desc instead ([5573ca6](https://github.com/kiva/ui/commit/5573ca64e2151665abacf2b1421e4b174ae1411e))
+
 ## [2.740.0](https://github.com/kiva/ui/compare/v2.739.2...v2.740.0) (2024-05-20)
 
 
