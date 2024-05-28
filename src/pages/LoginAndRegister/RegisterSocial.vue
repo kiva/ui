@@ -91,7 +91,7 @@
 					v-show="needsNews"
 					v-model="newsConsent"
 					@update:modelValue="$kvTrackEvent(
-						'login',
+						'Login',
 						'click-marketing-updates',
 						emailUpdatesCopy,
 						$event ? 1 : 0
