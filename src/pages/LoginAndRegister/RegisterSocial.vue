@@ -73,12 +73,15 @@
 					v-model="newAcctTerms"
 					:validation="$v.newAcctTerms"
 				>
-					I have read and agree to the
+					I have read and agree to the Kiva
 					<a href="/legal/terms" target="_blank">Terms of Use</a>
 					and
-					<a href="/legal/privacy" target="_blank">Privacy Policy</a> (required)
+					<a href="/legal/privacy" target="_blank">
+						Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
+					</a> (required)
 					<template #checked>
-						You must agree to the Kiva Terms of Use and Privacy Policy.
+						You must agree to the Kiva Terms of Use and Privacy
+						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 					</template>
 				</kv-base-input>
 				<kv-base-input
@@ -87,12 +90,14 @@
 					type="checkbox"
 					v-show="needsNews"
 					v-model="newsConsent"
+					@update:modelValue="$kvTrackEvent(
+						'Login',
+						'click-marketing-updates',
+						emailUpdatesCopy,
+						$event ? 1 : 0
+					)"
 				>
-					{{ !passwordless
-						? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
-						: `Receive email updates from Kiva (including borrower updates and promos).
-								You can unsubscribe anytime. (optional)`
-					}}
+					{{ emailUpdatesCopy }}
 				</kv-base-input>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
@@ -137,7 +142,11 @@ import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '@/components/SystemFrame/SystemPage';
 import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+
+const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 export default {
 	name: 'RegisterSocial',
@@ -177,6 +186,7 @@ export default {
 			passwordless: false,
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
+			enableCommsExperiment: false,
 		};
 	},
 	computed: {
@@ -186,7 +196,11 @@ export default {
 				parts.push('enter your first and last name');
 			}
 			if (this.needsTerms) {
-				parts.push('agree to the Terms of Use and Privacy Policy');
+				if (this.enableCommsExperiment) {
+					parts.push('agree to the Terms of Use and Privacy Notice');
+				} else {
+					parts.push('agree to the Terms of Use and Privacy Policy');
+				}
 			}
 			if (this.needsCaptcha) {
 				parts.push('complete the captcha');
@@ -198,6 +212,16 @@ export default {
 			const inner = parts.length ? `${parts.join(', ')} and ${last}` : last;
 			return `To finish creating your account, please ${inner} below.`;
 		},
+		emailUpdatesCopy() {
+			if (this.enableCommsExperiment) {
+				return 'Send me updates about my borrower(s), my impact, and other ways I can help.';
+			}
+
+			return !this.passwordless
+				? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
+				: `Receive email updates from Kiva (including borrower updates and promos).
+								You can unsubscribe anytime. (optional)`;
+		}
 	},
 	validations() {
 		const validations = {};
@@ -258,6 +282,24 @@ export default {
 			this.needsTerms = true;
 			this.needsNews = true;
 		}
+
+		if (!this.passwordless) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'basket',
+				COMMS_OPT_IN_EXP_KEY,
+				'EXP-MP-271-May2024'
+			);
+			if (version === 'b') {
+				this.enableCommsExperiment = true;
+			}
+		}
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
@@ -269,7 +311,7 @@ export default {
 				query: strategicPartnerLoginInfoByPageIdQuery,
 				variables: { pageId: route.query.partnerContentId ?? '' }
 			});
-		},
+		}
 	},
 	methods: {
 		postRegisterSocialForm(event) {

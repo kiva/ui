@@ -579,6 +579,7 @@ import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '@/util/settingsUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -587,6 +588,7 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
   	my {
@@ -796,6 +798,15 @@ export default {
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
+		}
+
+		const { version } = this.apollo.readFragment({
+			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		if (version) {
+			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
