@@ -1,6 +1,3 @@
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-
 export const app = {
 	apolloBatching: false,
 	host: 'www.kiva.org',
@@ -83,13 +80,7 @@ export const server = {
 	maxVueWorkers: 3,
 };
 
-export const build = {
-	assetsRoot: resolve(dirname(fileURLToPath(import.meta.url)), '../dist'),
-	assetsSubDirectory: 'static',
-};
-
 export default {
 	app,
 	server,
-	build
 };

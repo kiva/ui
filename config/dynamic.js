@@ -1,6 +1,3 @@
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 const apolloNetworkErrorRetryActive = process.env.APOLLO_NETWORK_RETRY_ACTIVE === 'true';
 const apolloNetworkErrorRetryAttempts = parseInt(process.env.APOLLO_NETWORK_RETRY_ATTEMPTS, 10) || 1;
@@ -95,11 +92,6 @@ export const app = {
 	transport: 'https',
 };
 
-export const build = {
-	assetsRoot: resolve(dirname(fileURLToPath(import.meta.url)), '../dist'),
-	assetsSubDirectory: 'static',
-};
-
 export const server = {
 	disableCluster: true,
 	graphqlUri,
@@ -114,6 +106,5 @@ export const server = {
 
 export default {
 	app,
-	build,
 	server
 };
