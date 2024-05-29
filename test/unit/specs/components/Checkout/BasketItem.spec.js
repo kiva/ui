@@ -1,18 +1,14 @@
 import BasketItem from '#src/components/Checkout/BasketItem';
 import { render, within } from '@testing-library/vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import routes from '#src/router/routes';
 import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 import { emptyComponent, globalOptions } from '../../../specUtils';
 
 const router = createRouter({
 	history: createWebHistory(),
-	routes: [
-		{ path: '/', name: 'home', component: emptyComponent },
-		{
-			path: '/lend/2444883', name: 'loan', params: { id: '2444883' }, component: emptyComponent
-		},
-	],
+	routes
 });
 
 // Test that the basket item renders the components it contains:

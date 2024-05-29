@@ -1,9 +1,9 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
+import { globalOptions } from '../../../../specUtils';
 
 jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
@@ -23,18 +23,21 @@ jest.mock('#src/util/loanSearch/filterConfig', () => {
 
 describe('LoanSearchFilterChips', () => {
 	let spyTrackEvent;
-
 	beforeEach(() => {
-		spyTrackEvent = jest.spyOn(Vue.prototype, '$kvTrackEvent');
-
+		spyTrackEvent = jest.fn();
 		jest.clearAllMocks();
 	});
 
-	afterEach(jest.restoreAllMocks);
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
 
 	it('should handle missing props', () => {
-		render(LoanSearchFilterChips);
-		render(LoanSearchFilterChips, { props: { allFacets: mockAllFacets } });
+		render(LoanSearchFilterChips, {
+		});
+		render(LoanSearchFilterChips, {
+			props: { allFacets: mockAllFacets }
+		});
 	});
 
 	it('should handle render state with missing state', () => {
@@ -75,6 +78,9 @@ describe('LoanSearchFilterChips', () => {
 		const user = userEvent.setup();
 
 		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			global: {
+				...globalOptions,
+			},
 			props: {
 				loanSearchState: { name: 'a' },
 				allFacets: mockAllFacets
@@ -83,7 +89,7 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('a'));
 
-		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(1);
+		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(2);
 		expect(filterConfig.config.a.getRemovedFacet)
 			.toHaveBeenCalledWith({ name: 'a' }, { name: 'a', key: 'a', __typename: 'TypeA' });
 		expect(emitted().updated[0]).toEqual([{ a: null }]);
@@ -93,6 +99,12 @@ describe('LoanSearchFilterChips', () => {
 		const user = userEvent.setup();
 
 		const { getByText } = render(LoanSearchFilterChips, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: {
 				loanSearchState: mockState,
 				allFacets: mockAllFacets
@@ -101,7 +113,7 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('a'));
 
-		expect(spyTrackEvent).toHaveBeenCalledTimes(1);
+		expect(spyTrackEvent).toHaveBeenCalledTimes(2);
 		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'click-remove-filter-chip', 'TypeA-a');
 	});
 });

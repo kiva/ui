@@ -1,8 +1,8 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchCheckboxListFilter from '#src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
 import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
+import { globalOptions } from '../../../../specUtils';
 
 const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 	id: i,
@@ -12,9 +12,9 @@ const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 
 describe('LoanSearchCheckboxListFilter', () => {
 	let spyTrackEvent;
-
 	beforeEach(() => {
-		spyTrackEvent = jest.spyOn(Vue.prototype, '$kvTrackEvent');
+		spyTrackEvent = jest.fn();
+		jest.clearAllMocks();
 	});
 
 	afterEach(jest.restoreAllMocks);
@@ -64,6 +64,12 @@ describe('LoanSearchCheckboxListFilter', () => {
 
 		const user = userEvent.setup();
 		const { getByText, emitted } = render(LoanSearchCheckboxListFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
@@ -94,6 +100,12 @@ describe('LoanSearchCheckboxListFilter', () => {
 
 		const user = userEvent.setup();
 		const { getByText } = render(LoanSearchCheckboxListFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 

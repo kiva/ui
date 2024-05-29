@@ -1,8 +1,8 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchRadioGroupFilter, { ALL_LOANS_TITLE }
 	from '#src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+import { globalOptions } from '../../../../specUtils';
 
 const getOptions = (isObject = false, isBoolean = false) => [...Array(4)].map((_c, i) => ({
 	title: `Option ${i}`,
@@ -18,7 +18,6 @@ describe('LoanSearchRadioGroupFilter', () => {
 	const mockTrackEvent = jest.fn();
 
 	beforeEach(() => {
-		Vue.prototype.$kvTrackEvent = mockTrackEvent;
 		jest.resetAllMocks();
 	});
 
@@ -63,6 +62,7 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const user = userEvent.setup();
 
 		const { getByLabelText } = render(LoanSearchRadioGroupFilter, {
+			global: { ...globalOptions },
 			props: { options, filterKey: 'option', eventAction: 'action' }
 		});
 
@@ -101,6 +101,12 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const user = userEvent.setup();
 
 		const { getByLabelText, emitted } = render(LoanSearchRadioGroupFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: mockTrackEvent
+				},
+			},
 			props: { options, filterKey: 'option', eventAction: 'action' }
 		});
 
@@ -124,6 +130,12 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const map = getValueMap(options);
 
 		const { getByLabelText, emitted } = render(LoanSearchRadioGroupFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: mockTrackEvent
+				},
+			},
 			props: {
 				options, filterKey: 'option', eventAction: 'action', valueMap: map
 			}
@@ -149,6 +161,7 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const map = getValueMap(options);
 
 		const { getByLabelText, rerender, emitted } = render(LoanSearchRadioGroupFilter, {
+			global: { ...globalOptions },
 			props: {
 				options, selected: '2', filterKey: 'option', eventAction: 'action', valueMap: map
 			}
@@ -178,6 +191,7 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const map = getValueMap(options);
 
 		const { getByLabelText, rerender, emitted } = render(LoanSearchRadioGroupFilter, {
+			global: { ...globalOptions },
 			props: {
 				options, filterKey: 'option', eventAction: 'action', valueMap: map
 			}
@@ -204,6 +218,7 @@ describe('LoanSearchRadioGroupFilter', () => {
 		const map = getValueMap(options);
 
 		const { getByLabelText, rerender, emitted } = render(LoanSearchRadioGroupFilter, {
+			global: { ...globalOptions },
 			props: {
 				options, filterKey: 'option', selected: false, eventAction: 'action', valueMap: map
 			}

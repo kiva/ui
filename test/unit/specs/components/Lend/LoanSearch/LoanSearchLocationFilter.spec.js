@@ -2,6 +2,7 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
 import LoanSearchLocationFilter from '#src/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import { globalOptions } from '../../../../specUtils';
 
 const NUM_ITEMS = 4;
 
@@ -18,7 +19,12 @@ const getRegions = (disabled = false) => [...Array(NUM_ITEMS)].map((_r, i) => ({
 describe('LoanSearchLocationFilter', () => {
 	it('should display regions', () => {
 		const regions = getRegions();
-		const { getByText } = render(LoanSearchLocationFilter, { props: { regions } });
+		const { getByText } = render(LoanSearchLocationFilter, {
+			global: {
+				...globalOptions,
+			},
+			props: { regions }
+		});
 		regions.forEach(async region => {
 			getByText(getCheckboxLabel(region));
 		});
@@ -27,7 +33,12 @@ describe('LoanSearchLocationFilter', () => {
 	it('should toggle regions', async () => {
 		const user = userEvent.setup();
 		const regions = getRegions();
-		const { getByText, queryAllByText } = render(LoanSearchLocationFilter, { props: { regions } });
+		const { getByText, queryAllByText } = render(LoanSearchLocationFilter, {
+			global: {
+				...globalOptions,
+			},
+			props: { regions }
+		});
 
 		// Open all regions
 		await Promise.all(regions.map(async region => {
