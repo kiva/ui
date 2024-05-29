@@ -175,6 +175,21 @@
 										Send a weekly digest
 									</option>
 								</kv-select>
+								<label for="borrower-fully-funded-digests-input" class="tw-block tw-mb-1 tw-mt-4">Borrower fully funded digests</label>
+								<kv-select
+									id="borrower-fully-funded-digests-input"
+									v-model="form.borrowerFullyFunded"
+								>
+									<option value="none">
+										Do not send
+									</option>
+									<option value="weekly">
+										Send a weekly digest
+									</option>
+									<option value="monthly">
+										Send a monthly digest
+									</option>
+								</kv-select>
 							</fieldset>
 
 							<!-- User per team preferences -->
@@ -382,6 +397,7 @@ const pageQuery = gql`
 				repaymentUpdates
 				teamDigests
 				trusteeNews
+				borrowerFullyFunded
 			}
 		}
 	}
@@ -445,7 +461,8 @@ export default {
 				networkTransactions: false,
 				networkDigest: false,
 				trusteeNews: false,
-				teamMessageFrequencies: []
+				teamMessageFrequencies: [],
+				borrowerFullyFunded: 'weekly'
 			},
 			// Component Data
 			initialValues: {},
@@ -492,6 +509,7 @@ export default {
 			this.form.loanUpdates =	data?.my?.communicationSettings?.loanUpdates ?? false;
 			this.form.commentsMessages = data?.my?.communicationSettings?.commentsMessages ?? false;
 			this.form.teamDigests = data?.my?.communicationSettings?.teamDigests ?? 'weekly';
+			this.form.borrowerFullyFunded = data?.my?.communicationSettings?.borrowerFullyFunded ?? 'weekly';
 			// Lending select toggle
 			if (this.form.loanUpdates && this.form.commentsMessages && this.form.teamDigests === 'weekly') {
 				this.lendingAllSelected = true;
@@ -559,10 +577,12 @@ export default {
 				this.form.loanUpdates = true;
 				this.form.commentsMessages = true;
 				this.form.teamDigests = 'weekly';
+				this.form.borrowerFullyFunded = 'weekly';
 			} else {
 				this.form.loanUpdates = false;
 				this.form.commentsMessages = false;
 				this.form.teamDigests = 'no';
+				this.form.borrowerFullyFunded = 'none';
 			}
 		},
 		borrowerToggleAll() {
@@ -640,6 +660,7 @@ export default {
 								$loanUpdates: Boolean
 								$commentsMessages: Boolean
 								$teamDigests: TeamMessageFrequencyEnum,
+								$borrowerFullyFunded: SendBorrowerFullyFundedEnumType,
 								$leadNurturing: Boolean,
 								$onboardingSupport: Boolean,
 								$borrowerNews: Boolean,
@@ -660,6 +681,7 @@ export default {
 											loanUpdates: $loanUpdates
 											commentsMessages: $commentsMessages
 											teamDigests: $teamDigests,
+											borrowerFullyFunded: $borrowerFullyFunded
 											leadNurturing: $leadNurturing,
 											onboardingSupport: $onboardingSupport,
 											borrowerNews: $borrowerNews,
@@ -682,6 +704,7 @@ export default {
 							loanUpdates: this.form.loanUpdates,
 							commentsMessages: this.form.commentsMessages,
 							teamDigests: this.form.teamDigests,
+							borrowerFullyFunded: this.form.borrowerFullyFunded,
 							leadNurturing: this.form.leadNurturing,
 							onboardingSupport: this.form.onboardingSupport,
 							borrowerNews: this.form.borrowerNews,
