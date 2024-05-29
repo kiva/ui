@@ -20,9 +20,13 @@
 <script>
 import { getCodes, getNameByCode } from 'flag-icon-css';
 import getCacheKey from '#src/util/getCacheKey';
+import { metaGlobReader } from '#src/util/importHelpers';
 
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
+
+const flagGlob = import.meta.glob('#node_modules/flag-icon-css/flags/**/*');
+const flags = metaGlobReader(flagGlob, 'flag-icon-css/flags/');
 
 export default {
 	name: 'KvFlag',
@@ -62,7 +66,7 @@ export default {
 			// registerd by Vue, and so any changes to the country are not picked up, which leads to
 			// the flag not being rendered when the country isn't provided until after the first render.
 			const { aspectRatio, country } = this;
-			return () => import(`flag-icon-css/flags/${aspectRatio}/${country.toLowerCase()}.svg`);
+			return flags[`${aspectRatio}/${country.toLowerCase()}.svg`];
 		},
 		spriteYPosition() {
 			if (!this.inlineSvg) {
