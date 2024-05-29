@@ -660,7 +660,7 @@ export default {
 								$loanUpdates: Boolean
 								$commentsMessages: Boolean
 								$teamDigests: TeamMessageFrequencyEnum,
-								$borrowerFullyFunded: SendBorrowerFullyFundedEnumType,
+								$borrowerFullyFunded: SendBorrowerFullyFundedEnum,
 								$leadNurturing: Boolean,
 								$onboardingSupport: Boolean,
 								$borrowerNews: Boolean,
