@@ -54,51 +54,60 @@
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<kv-checkbox
-					data-testid="basket-guest-terms-agreement"
-					id="termsAgreement"
-					name="termsAgreement"
-					class="checkbox tw-text-small tw-mb-2"
-					v-model="termsAgreement"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-terms-of-use',
-						'I have read and agree to the Terms of Use and Privacy Policy',
-						$event ? 1 : 0
-					)"
-				>
-					I have read and agree to the
-					<a
-						:href="`https://${this.$appConfig.host}/legal/terms`"
-						target="_blank"
-						title="Open Terms of Use in a new window"
-					>Terms of Use</a>
-					and
-					<a
-						:href="`https://${this.$appConfig.host}/legal/privacy`"
-						target="_blank"
-						:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
-					>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
-					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
-						You must agree to the Kiva Terms of service & Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
-					</p>
-				</kv-checkbox>
-				<kv-checkbox
-					data-testid="basket-guest-email-updates"
-					id="emailUpdates"
-					class="checkbox tw-text-small tw-mb-2"
-					name="emailUpdates"
-					v-model="emailUpdates"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-marketing-updates',
-						emailUpdatesCopy,
-						$event ? 1 : 0
-					)"
-				>
-					{{ emailUpdatesCopy }}
-				</kv-checkbox>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					tracking-category="basket"
+					@update:modelValue="selectedComms = $event"
+				/>
+				<template v-else>
+					<kv-checkbox
+						data-testid="basket-guest-terms-agreement"
+						id="termsAgreement"
+						name="termsAgreement"
+						class="checkbox tw-text-small tw-mb-2"
+						v-model="termsAgreement"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click',
+							'terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
+					>
+						I have read and agree to the
+						<a
+							:href="`https://${this.$appConfig.host}/legal/terms`"
+							target="_blank"
+							title="Open Terms of Use in a new window"
+						>Terms of Use</a>
+						and
+						<a
+							:href="`https://${this.$appConfig.host}/legal/privacy`"
+							target="_blank"
+							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
+						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
+						<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
+							You must agree to the Kiva Terms of service & Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</p>
+					</kv-checkbox>
+					<kv-checkbox
+						data-testid="basket-guest-email-updates"
+						id="emailUpdates"
+						class="checkbox tw-text-small tw-mb-2"
+						name="emailUpdates"
+						v-model="emailUpdates"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click',
+							'marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
+					>
+						{{ emailUpdatesCopy }}
+					</kv-checkbox>
+				</template>
 			</div>
 			<div id="dropin-button">
 				<kv-button
@@ -135,6 +144,7 @@ import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDeposi
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
 import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
@@ -149,6 +159,12 @@ export default {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 		KvTextInput,
+		UserUpdatesPreference,
+	},
+	provide() {
+		return {
+			$v: this.$v
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
@@ -179,6 +195,8 @@ export default {
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 			enableCommsExperiment: false,
+			selectedComms: '',
+			enableRadioBtnExperiment: false,
 		};
 	},
 	validations: {
@@ -187,6 +205,7 @@ export default {
 			email,
 		},
 		termsAgreement: { required: value => value === true },
+		selectedComms: { required: value => value !== '' },
 	},
 	mounted() {
 		this.isClientReady = !this.$isServer;
@@ -452,7 +471,18 @@ export default {
 			if (version === 'b') {
 				this.enableCommsExperiment = true;
 			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
+			}
 		}
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.radio-error >>> label > div {
+	@apply tw-border-danger-highlight;
+}
+
+</style>

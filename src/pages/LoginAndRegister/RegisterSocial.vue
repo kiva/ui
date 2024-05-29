@@ -65,40 +65,55 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<kv-base-input
-					name="newAcctTerms"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsTerms"
-					v-model="newAcctTerms"
-					:validation="$v.newAcctTerms"
-				>
-					I have read and agree to the Kiva
-					<a href="/legal/terms" target="_blank">Terms of Use</a>
-					and
-					<a href="/legal/privacy" target="_blank">
-						Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
-					</a> (required)
-					<template #checked>
-						You must agree to the Kiva Terms of Use and Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="newsConsent"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsNews"
-					v-model="newsConsent"
-					@update:modelValue="$kvTrackEvent(
-						'Login',
-						'click-marketing-updates',
-						emailUpdatesCopy,
-						$event ? 1 : 0
-					)"
-				>
-					{{ emailUpdatesCopy }}
-				</kv-base-input>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					tracking-category="authentication"
+					@update:modelValue="selectedComms = $event"
+				/>
+				<template v-else>
+					<kv-base-input
+						name="newAcctTerms"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsTerms"
+						v-model="newAcctTerms"
+						:validation="$v.newAcctTerms"
+						@update:modelValue="$kvTrackEvent(
+							'authentication',
+							'click',
+							'terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
+					>
+						I have read and agree to the Kiva
+						<a href="/legal/terms" target="_blank">Terms of Use</a>
+						and
+						<a href="/legal/privacy" target="_blank">
+							Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
+						</a> (required)
+						<template #checked>
+							You must agree to the Kiva Terms of Use and Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</template>
+					</kv-base-input>
+					<kv-base-input
+						name="newsConsent"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsNews"
+						v-model="newsConsent"
+						@update:modelValue="$kvTrackEvent(
+							'authentication',
+							'click',
+							'marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
+					>
+						{{ emailUpdatesCopy }}
+					</kv-base-input>
+				</template>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
 						:required="needsCaptcha"
@@ -164,6 +179,11 @@ export default {
 	mixins: [
 		validationMixin,
 	],
+	provide() {
+		return {
+			$v: this.$v
+		};
+	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		partnerContentId: {
@@ -187,6 +207,8 @@ export default {
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
+			selectedComms: '',
+			enableRadioBtnExperiment: false,
 		};
 	},
 	computed: {
@@ -235,6 +257,12 @@ export default {
 		if (this.needsTerms) {
 			validations.newAcctTerms = {
 				checked: val => val,
+			};
+		}
+		if (this.enableRadioBtnExperiment) {
+			validations.selectedComms = {
+				required,
+				checked: val => val !== '',
 			};
 		}
 		return validations;
@@ -299,6 +327,9 @@ export default {
 			if (version === 'b') {
 				this.enableCommsExperiment = true;
 			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
+			}
 		}
 	},
 	apollo: {
@@ -316,6 +347,7 @@ export default {
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
+
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
@@ -331,8 +363,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .logo {
 	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
 }
+
+.radio-error >>> label > div {
+	@apply tw-border-danger-highlight;
+}
+
 </style>
