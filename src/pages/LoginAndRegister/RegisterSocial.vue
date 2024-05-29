@@ -159,7 +159,6 @@ import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPar
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
@@ -175,7 +174,6 @@ export default {
 		KvButton,
 		ReCaptchaEnterprise,
 		SystemPage,
-		KvRadio,
 	},
 	mixins: [
 		validationMixin,
