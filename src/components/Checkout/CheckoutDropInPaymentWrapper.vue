@@ -194,9 +194,9 @@ export default {
 			enableCheckoutButton: false,
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
-			enableCommsExperiment: true,
+			enableCommsExperiment: false,
 			selectedComms: '',
-			enableRadioBtnExperiment: true,
+			enableRadioBtnExperiment: false,
 		};
 	},
 	validations: {
