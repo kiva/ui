@@ -24,22 +24,15 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 const resolve = dir => path.resolve(path.dirname(fileURLToPath(import.meta.url)), dir);
 
 // asset regular expressions
-const binaryRegex = /binary\/.+\.bin/;
 const fontsRegex = /fonts\/.+\.(woff2?|eot|ttf|otf|svg)/;
-const iconsRegex = /icons\/(sprite\/.+|app-store|play-store)\.svg/;
 const imagesRegex = /images\/.+\.(png|jpe?g|gif|webp|avif|svg|ico)/;
 const mediaRegex = /media\/.+\.(mp4|webm|ogg|mp3|wav|flac|aac)/;
-const wasmRegex = /wasm\/.+\.wasm/;
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	assetsInclude: [
-		binaryRegex,
-		fontsRegex,
-		iconsRegex,
-		imagesRegex,
-		mediaRegex,
-		wasmRegex,
+		'**/*.bin',
+		'**/*.wasm',
 	],
 	base: '/static/',
 	build: {
@@ -115,6 +108,8 @@ export default defineConfig({
 		alias: {
 			// alias src directory
 			'#src': resolve('src'),
+			// alias node_modules directory
+			'#node_modules': resolve('node_modules'),
 			// alias promise module to handle timesync calling require('promise')
 			promise: resolve('build/promise.js'),
 			// required for src/components/Contentful/DynamicRichText.vue

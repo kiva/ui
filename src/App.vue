@@ -17,10 +17,10 @@ import webmanifest from '#src/manifest.webmanifest';
 import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const faviconsGlob = import.meta.glob('#src/assets/images/favicons/*.*', { eager: true });
-const favicons = metaGlobReader(faviconsGlob, '#src/assets/images/favicons/');
-const fontsGlob = import.meta.glob('#src/assets/fonts/*.*', { eager: true, query: '?url' });
-const fonts = metaGlobReader(fontsGlob, '#src/assets/fonts/');
+const faviconsGlob = import.meta.glob('./assets/images/favicons/*.*', { eager: true });
+const favicons = metaGlobReader(faviconsGlob, './assets/images/favicons/');
+const fontsGlob = import.meta.glob('./assets/fonts/*.*', { eager: true, query: '?url' });
+const fonts = metaGlobReader(fontsGlob, './assets/fonts/');
 
 export default {
 	name: 'App',

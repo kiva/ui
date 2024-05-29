@@ -73,6 +73,8 @@ module.exports = {
 		'import/no-extraneous-dependencies': ['error', {
 			optionalDependencies: ['test/unit/index.js']
 		}],
+		// allow unresolved imports for svg files with a ?url suffix
+		'import/no-unresolved': ['error', { ignore: ['\\.svg\\?url$'] }],
 		// allow files with only one named export
 		'import/prefer-default-export': 'off',
 		// allow debugger during development

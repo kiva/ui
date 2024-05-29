@@ -329,7 +329,7 @@
 								<img
 									class="tw-h-5 tw-mr-1"
 									style="width: 7.5rem;"
-									src="#src/assets/icons/app-store.svg?url"
+									:src="appStoreLogoUrl"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
 								>
@@ -345,7 +345,7 @@
 								<img
 									class="tw-h-5"
 									style="width: 8.4375rem;"
-									src="#src/assets/icons/play-store.svg?url"
+									:src="playStoreLogoUrl"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
 								>
@@ -686,7 +686,7 @@
 									>
 										<img
 											class="download-app-ios tw-h-5 tw-mr-1"
-											src="#src/assets/icons/app-store.svg?url"
+											:src="appStoreLogoUrl"
 											loading="lazy"
 											alt="Check out our new app on the App Store"
 										>
@@ -702,7 +702,7 @@
 									>
 										<img
 											class="download-app-android tw-h-5"
-											src="#src/assets/icons/play-store.svg?url"
+											:src="playStoreLogoUrl"
 											loading="lazy"
 											alt="Check out our new app on the Play Store"
 										>
@@ -842,6 +842,8 @@ import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import appStoreLogoUrl from '#src/assets/icons/app-store.svg?url';
+import playStoreLogoUrl from '#src/assets/icons/play-store.svg?url';
 
 export default {
 	name: 'TheFooter',
@@ -873,7 +875,9 @@ export default {
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms',
 			appStoreUrl: 'https://apps.apple.com/app/id1453093374',
+			appStoreLogoUrl,
 			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending',
+			playStoreLogoUrl,
 			mdiFacebook,
 			mdiInstagram,
 			mdiTwitter
