@@ -65,55 +65,10 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<template v-if="enableRadioBtnExperiment">
-					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
-						<kv-radio
-							value="1"
-							name="reportComms"
-							v-model="selectedTerms"
-							:class="{'radio-error': $v.selectedTerms.$error}"
-							v-kv-track-event="[
-								'authentication',
-								'click',
-								'marketing-updates',
-								// eslint-disable-next-line max-len
-								'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
-							]"
-						>
-							<!-- eslint-disable-next-line max-len -->
-							Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
-						</kv-radio>
-						<kv-radio
-							value="0"
-							name="reportComms"
-							v-model="selectedComms"
-							:class="{'radio-error': $v.selectedComms.$error}"
-							v-kv-track-event="[
-								'authentication',
-								'click',
-								'marketing-updates',
-								// eslint-disable-next-line max-len
-								'Dont receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
-							]"
-						>
-							<!-- eslint-disable-next-line max-len -->
-							Don't receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
-						</kv-radio>
-					</fieldset>
-					<p
-						v-if="$v.selectedComms.$error"
-						class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
-					>
-						Choose your communication preferences.
-					</p>
-					<p
-						v-if="selectedComms === '0'"
-						class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1.5 tw-rounded tw-text-small"
-					>
-						Can we ask you to reconsider? This borrower and others like them will need your
-						help to change their lives. You can unsubscribe at any time.
-					</p>
-				</template>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					@update:modelValue="selectedComms = $event"
+				/>
 				<template v-else>
 					<kv-base-input
 						name="newAcctTerms"
@@ -225,6 +180,11 @@ export default {
 	mixins: [
 		validationMixin,
 	],
+	provide() {
+		return {
+			$v: this.$v
+		};
+	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		partnerContentId: {

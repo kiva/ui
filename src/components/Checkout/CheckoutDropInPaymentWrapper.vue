@@ -54,55 +54,10 @@
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<template v-if="enableRadioBtnExperiment">
-					<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small">
-						<kv-radio
-							value="1"
-							name="reportComms"
-							v-model="selectedComms"
-							v-kv-track-event="[
-								'basket',
-								'click',
-								'marketing-updates',
-								// eslint-disable-next-line max-len
-								'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
-							]"
-							:class="{'radio-error': $v.selectedComms.$error}"
-						>
-							<!-- eslint-disable-next-line max-len -->
-							Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
-						</kv-radio>
-						<kv-radio
-							value="0"
-							name="reportComms"
-							v-model="selectedComms"
-							:class="{'radio-error': $v.selectedComms.$error}"
-							v-kv-track-event="[
-								'basket',
-								'click',
-								'marketing-updates',
-								// eslint-disable-next-line max-len
-								'Dont receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
-							]"
-						>
-							<!-- eslint-disable-next-line max-len -->
-							Don't receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
-						</kv-radio>
-					</fieldset>
-					<p
-						v-if="$v.selectedComms.$error"
-						class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
-					>
-						Choose your communication preferences.
-					</p>
-					<p
-						v-if="selectedComms === '0'"
-						class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1.5 tw-rounded tw-text-small"
-					>
-						Can we ask you to reconsider? This borrower and others like them will need your
-						help to change their lives. You can unsubscribe at any time.
-					</p>
-				</template>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					@update:modelValue="selectedComms = $event"
+				/>
 				<template v-else>
 					<kv-checkbox
 						data-testid="basket-guest-terms-agreement"
@@ -188,11 +143,11 @@ import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDeposi
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
 import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
@@ -203,7 +158,12 @@ export default {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 		KvTextInput,
-		KvRadio,
+		UserUpdatesPreference,
+	},
+	provide() {
+		return {
+			$v: this.$v
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
@@ -521,7 +481,7 @@ export default {
 <style lang="postcss" scoped>
 
 .radio-error >>> label > div {
- @apply tw-border-danger-highlight;
+	@apply tw-border-danger-highlight;
 }
 
 </style>
