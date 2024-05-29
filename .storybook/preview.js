@@ -1,7 +1,7 @@
 import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 // import Vue from 'vue';
 // import Meta from 'vue-meta'; // vue-meta has been replaced with unhead (@unhead/vue)
-import VueRouter from 'vue-router'
+// import VueRouter from 'vue-router'
 import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider.vue';
 import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 
@@ -99,6 +99,6 @@ export const decorators = [(story) => ({
 	components: { story, KvThemeProvider },
 	template: '<kv-theme-provider :theme="theme"><story /></kv-theme-provider>',
 	data() { return { theme: defaultTheme } },
-	router: new VueRouter(),
+	// router: new VueRouter(),
 })];
 
