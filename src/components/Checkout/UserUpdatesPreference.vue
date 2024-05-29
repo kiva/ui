@@ -9,7 +9,7 @@
 				v-model="selectedComms"
 				name="reportComms"
 				v-kv-track-event="[
-					'basket',
+					trackingCategory,
 					'click',
 					'marketing-updates',
 					// eslint-disable-next-line max-len
@@ -26,7 +26,7 @@
 				v-model="selectedComms"
 				:class="{'radio-error': $v.selectedComms.$error}"
 				v-kv-track-event="[
-					'basket',
+					trackingCategory,
 					'click',
 					'marketing-updates',
 					// eslint-disable-next-line max-len
@@ -60,6 +60,12 @@ export default {
 	name: 'UserUpdatesPreference',
 	components: {
 		KvRadio,
+	},
+	props: {
+		trackingCategory: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {

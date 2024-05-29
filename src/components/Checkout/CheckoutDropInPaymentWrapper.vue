@@ -56,6 +56,7 @@
 				</p>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
+					tracking-category="basket"
 					@update:modelValue="selectedComms = $event"
 				/>
 				<template v-else>

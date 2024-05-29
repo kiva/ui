@@ -67,6 +67,7 @@
 				</kv-base-input>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
+					tracking-category="authentication"
 					@update:modelValue="selectedComms = $event"
 				/>
 				<template v-else>
