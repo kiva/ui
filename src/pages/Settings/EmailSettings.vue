@@ -175,9 +175,10 @@
 										Send a weekly digest
 									</option>
 								</kv-select>
-								<label for="borrower-fully-funded-digests-input" class="tw-block tw-mb-1 tw-mt-4">Borrower fully funded digests</label>
+								<label for="borrower-funded-input" class="tw-block tw-mb-1 tw-mt-4">Borrower
+									fully funded digests</label>
 								<kv-select
-									id="borrower-fully-funded-digests-input"
+									id="borrower-funded-input"
 									v-model="form.borrowerFullyFunded"
 								>
 									<option value="none">
