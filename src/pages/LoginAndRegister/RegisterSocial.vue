@@ -160,6 +160,7 @@ import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPar
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
@@ -339,7 +340,7 @@ export default {
 		preFetch(config, client, { route }) {
 			const pageId = route?.query?.partnerContentId;
 			if (!pageId) {
-				return Promise.resolve();
+				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
 			}
 			return client.query({
 				query: strategicPartnerLoginInfoByPageIdQuery,
