@@ -329,6 +329,7 @@ export default {
 			}
 			if (version === 'c') {
 				this.enableRadioBtnExperiment = true;
+				this.newAcctTerms = true;
 			}
 		}
 	},
