@@ -4,7 +4,7 @@
 			<img
 				class="tw-w-4 tw-h-4 tw-mx-auto"
 				alt="View More Glass"
-				src="#src/assets/images/view_more_glass.svg?url"
+				:src="viewMoreGlassUrl"
 			>
 			<p class="tw-text-subhead tw-text-center">
 				View more loans that match your filters on our search page
@@ -28,6 +28,7 @@ import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import viewMoreGlassUrl from '#src/assets/images/view_more_glass.svg?url';
 
 export default {
 	name: 'ViewMoreCard',
@@ -43,7 +44,8 @@ export default {
 	},
 	data() {
 		return {
-			mdiArrowRight
+			mdiArrowRight,
+			viewMoreGlassUrl,
 		};
 	},
 	computed: {

@@ -102,9 +102,7 @@
 										tw-flex tw-align-center tw-justify-center"
 									>
 										<!-- Kiva K logo -->
-										<img
-											src="#src/assets/images/kiva_k.svg?url"
-										>
+										<img :src="kivaKUrl">
 									</div>
 								</div>
 								<!-- name and team info -->
@@ -215,6 +213,7 @@ import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 import KvRadio from '@kiva/kv-components/vue/KvRadio';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {
 	name: 'CommentsAndWhySpecial',
@@ -244,6 +243,7 @@ export default {
 	],
 	data() {
 		return {
+			kivaKUrl,
 			mdiDotsHorizontalCircle,
 			loading: true,
 			comments: [],

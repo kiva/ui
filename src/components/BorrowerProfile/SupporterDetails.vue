@@ -64,9 +64,7 @@
 					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12"
 			>
 				<!-- Kiva K logo -->
-				<img
-					src="#src/assets/images/kiva_k.svg?url"
-				>
+				<img :src="kivaKUrl">
 			</div>
 		</div>
 
@@ -105,6 +103,7 @@
 import _throttle from 'lodash/throttle';
 import KvTooltip from '#src/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
+import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {
 	name: 'SupporterDetails',
@@ -144,6 +143,7 @@ export default {
 	},
 	data() {
 		return {
+			kivaKUrl,
 			anonymousSupporterCard: false,
 			isMobile: false,
 			userCardStyleOptions: [

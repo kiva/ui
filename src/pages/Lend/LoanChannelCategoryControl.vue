@@ -12,7 +12,7 @@
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
 					@click.native="trackAdvancedFilters"
 				>
-					<img class="tw-w-2 tw-mr-1" src="#src/assets/images/tune.svg?url">
+					<img class="tw-w-2 tw-mr-1" :src="tuneUrl">
 					Advanced filters
 				</router-link>
 				<p class="tw-text-small">
@@ -187,6 +187,7 @@ import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanC
 import EmptyState from '#src/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import tuneUrl from '#src/assets/images/tune.svg?url';
 
 const defaultLoansPerPage = 12;
 
@@ -330,6 +331,7 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
+			tuneUrl,
 		};
 	},
 	computed: {

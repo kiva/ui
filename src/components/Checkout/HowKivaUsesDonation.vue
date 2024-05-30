@@ -6,23 +6,29 @@
 		</p>
 		<div class="tw-flex tw-flex-col tw-gap-2">
 			<div class="item-container tw-not-prose">
-				<img src="#src/assets/images/support.svg?url" alt="donation support">
+				<img :src="supportUrl" alt="donation support">
 				<!-- eslint-disable-next-line max-len -->
 				<p>Ensure fair and responsible lending practices that deliver real impact for underserved individuals</p>
 			</div>
 			<div class="item-container tw-not-prose">
-				<img src="#src/assets/images/globe.svg?url" alt="global real impact icon">
+				<img :src="globeUrl" alt="global real impact icon">
 				<!-- eslint-disable-next-line max-len -->
 				<p>Sustain the infrastructure needed to distribute $1M in loans each week to borrowers around the world</p>
 			</div>
 			<div class="item-container tw-not-prose">
-				<img src="#src/assets/images/puzzle.svg?url" alt="donation partners">
+				<img :src="puzzleUrl" alt="donation partners">
 				<!-- eslint-disable-next-line max-len -->
 				<p>Partner with impact-first organizations operating directly in the communities Kiva serves</p>
 			</div>
 		</div>
 	</div>
 </template>
+
+<script setup>
+import supportUrl from '#src/assets/images/support.svg?url';
+import globeUrl from '#src/assets/images/globe.svg?url';
+import puzzleUrl from '#src/assets/images/puzzle.svg?url';
+</script>
 
 <style lang="postcss" scoped>
 .item-container {

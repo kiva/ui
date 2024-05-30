@@ -7,7 +7,7 @@
 				<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 					<img
 						class="tw-bg-brand-100 tw-border tw-border-gray-300 tw-w-12 tw-h-12 tw-p-1 tw-rounded"
-						src="#src/assets/images/leaf_heart.svg?url"
+						:src="leafHeartUrl"
 						alt="donation line item image"
 						data-testid="basket-donation-image"
 					>
@@ -77,7 +77,7 @@
 							<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 								<img
 									class="tw-w-7 tw-h-7 tw-rounded"
-									src="#src/assets/images/leaf_heart.svg?url"
+									:src="leafHeartUrl"
 									alt="donation line item image"
 									data-testid="basket-donation-image"
 								>
@@ -227,6 +227,7 @@ import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
 export default {
 	name: 'DonationItem',
@@ -268,7 +269,8 @@ export default {
 			loanHistoryCount: null,
 			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
-			mdiArrowRight
+			mdiArrowRight,
+			leafHeartUrl,
 		};
 	},
 	created() {

@@ -2,7 +2,7 @@
 	<div class="tw-w-full tw-mb-2">
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-1 lg:tw-px-2">
 			<!-- eslint-disable max-len -->
-			<img src="#src/assets/images/mfi_recommendations/megaphone.svg?url" alt="mfi_recommendations">
+			<img :src="images('megaphone.svg')" alt="mfi_recommendations">
 			<h3 class="tw-text-h4 tw-text-primary tw-whitespace-nowrap">
 				{{ sectionTitle }}
 			</h3>
@@ -18,10 +18,10 @@
 				<div class="tw-relative">
 					<!-- eslint-disable max-len -->
 					<div class="tw-rounded tw-p-2 tw-bg-white tw-border" style="border-color: #C4C4C4;">
-						<img class="tw-rounded tw-w-full" :src="partnerImageSrc" alt="Spotlight Recommendation">
+						<img class="tw-rounded tw-w-full" :src="images(partnerImage)" alt="Spotlight Recommendation">
 
 						<div class="tw-flex tw-items-center tw-mt-3 tw-mb-1 tw-gap-2">
-							<img src="#src/assets/images/mfi_recommendations/leaf.svg?url" alt="MFI Recommendations">
+							<img :src="images('leaf.svg')" alt="MFI Recommendations">
 							<p class="tw-text-small">
 								{{ partnerImageFooter }}
 							</p>
@@ -37,21 +37,21 @@
 				<ul class="tw-mt-3 tw-px-2">
 					<li v-if="getSubhead(0)" class="tw-flex tw-items-center tw-gap-1">
 						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="#src/assets/images/mfi_recommendations/heart.svg?url" alt="Anti-poverty focus">
+						<img class="tw-w-4" :src="images('heart.svg')" alt="Anti-poverty focus">
 						<h4 class="tw-uppercase tw-text-h4">
 							{{ getSubhead(0) }}
 						</h4>
 					</li>
 					<li v-if="getSubhead(1)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="#src/assets/images/mfi_recommendations/savings.svg?url" alt="Facilitation of savings">
+						<img class="tw-w-4" :src="images('savings.svg')" alt="Facilitation of savings">
 						<h4 class="tw-uppercase tw-text-h4">
 							{{ getSubhead(1) }}
 						</h4>
 					</li>
 					<li v-if="getSubhead(2)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
-						<img class="tw-w-4" src="#src/assets/images/mfi_recommendations/empowerment.svg?url" alt="Family & Community Empowerment">
+						<img class="tw-w-4" :src="images('empowerment.svg')" alt="Family & Community Empowerment">
 						<h4 class="tw-uppercase tw-text-h4">
 							{{ getSubhead(2) }}
 						</h4>
@@ -71,7 +71,7 @@
 import { mdiMapMarker } from '@mdi/js';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = import.meta.glob('#src/assets/images/mfi_recommendations/*.*', { eager: true });
+const imageRequire = import.meta.glob('#src/assets/images/mfi_recommendations/*.*', { eager: true, query: '?url' });
 const images = metaGlobReader(imageRequire, '#src/assets/images/mfi_recommendations/');
 
 export default {
@@ -112,13 +112,9 @@ export default {
 	},
 	data() {
 		return {
+			images,
 			mdiMapMarker,
 		};
-	},
-	computed: {
-		partnerImageSrc() {
-			return images(this.partnerImage);
-		},
 	},
 	methods: {
 		getSubhead(index) {

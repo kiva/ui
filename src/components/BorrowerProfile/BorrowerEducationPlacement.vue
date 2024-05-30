@@ -41,7 +41,7 @@
 		>
 			<img
 				class="tw-w-7 tw-h-7"
-				src="#src/assets/images/leaf_heart.svg?url"
+				:src="leafHeartUrl"
 				alt="donation line item image"
 			>
 			<!-- eslint-disable-next-line max-len -->
@@ -52,6 +52,7 @@
 
 <script>
 import { metaGlobReader } from '#src/util/importHelpers';
+import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
 const imageRequire = import.meta.glob('#src/assets/images/borrower-profile/education-placement/*.*', {
 	eager: true,
@@ -61,6 +62,11 @@ const images = metaGlobReader(imageRequire, '#src/assets/images/borrower-profile
 
 export default {
 	name: 'BorrowerEducationPlacement',
+	data() {
+		return {
+			leafHeartUrl,
+		};
+	},
 	props: {
 		loanRegion: {
 			type: String,

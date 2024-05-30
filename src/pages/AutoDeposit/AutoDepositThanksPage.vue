@@ -12,7 +12,7 @@
 					<div class="tw-my-3">
 						<img
 							class="tw-mx-auto"
-							src="#src/assets/images/kiva-classic-illustrations/thumbs-up.svg?url"
+							:src="thumbsUpUrl"
 							alt="loan to loan relending graphic"
 						>
 					</div>
@@ -34,7 +34,7 @@
 					<div class="tw-mb-3">
 						<img
 							class="tw-mx-auto"
-							src="#src/assets/images/kiva-classic-illustrations/email-opening.svg?url"
+							:src="emailOpeningUrl"
 							alt="loan to loan relending graphic"
 						>
 					</div>
@@ -70,6 +70,8 @@ import numeral from 'numeral';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import emailOpeningUrl from '#src/assets/images/kiva-classic-illustrations/email-opening.svg?url';
+import thumbsUpUrl from '#src/assets/images/kiva-classic-illustrations/thumbs-up.svg?url';
 
 const pageQuery = gql`query autoDepositThanksPage {
 	my {
@@ -95,6 +97,8 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
+			emailOpeningUrl,
+			thumbsUpUrl,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],

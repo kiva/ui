@@ -3,7 +3,7 @@
 		<div class="tw-m-3">
 			<img
 				class="tw-mx-auto"
-				src="#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url"
+				:src="loanRecylceUrl"
 				alt="loan to loan relending graphic"
 			>
 		</div>
@@ -148,6 +148,7 @@ import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvSelect from '@kiva/kv-components/vue/KvSelect';
 import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import loanRecylceUrl from '#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url';
 
 // arbitrary number below 10k
 const maxAmount = 10000;
@@ -244,6 +245,7 @@ export default {
 			donation: 0,
 			isClientReady: false,
 			isDayInputShown: false,
+			loanRecylceUrl,
 			mdiClose,
 			showLoadingOverlay: false
 		};
