@@ -151,7 +151,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { requiredIf } from 'vuelidate/lib/validators';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
@@ -209,7 +209,7 @@ export default {
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
-			needsComms: true,
+			needsComms: false,
 			selectedComms: '',
 			enableRadioBtnExperiment: false,
 		};
@@ -262,12 +262,10 @@ export default {
 				checked: val => val,
 			};
 		}
-		if (this.needsComms) {
-			validations.selectedComms = {
-				required,
-				checked: val => val !== '',
-			};
-		}
+		validations.selectedComms = {
+			required: requiredIf(() => this.needsComms),
+		};
+
 		return validations;
 	},
 	created() {
@@ -303,7 +301,6 @@ export default {
 		}
 		if (this.$route.query.passwordless) {
 			this.passwordless = true;
-			this.needsComms = false;
 		}
 		// Support legacy behavior of this page, which was to show the terms checkbox only
 		if (!this.$route.query.terms
@@ -334,10 +331,7 @@ export default {
 			if (version === 'c') {
 				this.enableRadioBtnExperiment = true;
 				this.newAcctTerms = true;
-			}
-
-			if (version !== 'c') {
-				this.needsComms = false;
+				this.needsComms = true;
 			}
 		}
 	},
