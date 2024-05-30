@@ -45,10 +45,25 @@
 		</p>
 		<p
 			v-if="selectedComms === '0'"
-			class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1 tw-rounded tw-text-small"
+			class="tw-border-brand-200 tw-border tw-bg-brand-100 tw-p-1 tw-rounded tw-text-small tw-mb-2"
 		>
 			Can we ask you to reconsider? This borrower and others like them will need your
 			help to change their lives. You can unsubscribe at any time.
+		</p>
+		<p class="tw-text-small">
+			By completing your loan, you agree to Kiva’s <a
+				:href="`https://${this.$appConfig.host}/legal/terms`"
+				target="_blank"
+				class="tw-underline"
+				title="Open Terms of Use in a new window"
+			>Terms of Use</a>
+			and
+			<a
+				:href="`https://${this.$appConfig.host}/legal/privacy`"
+				target="_blank"
+				class="tw-underline"
+				title="Open Privacy Policy in a new window"
+			>Privacy Policy</a>.
 		</p>
 	</div>
 </template>

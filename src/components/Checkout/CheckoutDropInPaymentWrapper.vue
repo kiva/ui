@@ -133,7 +133,7 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
+import { required, email, requiredIf } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/vue';
 
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -195,7 +195,7 @@ export default {
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
 			enableCommsExperiment: false,
-			selectedComms: '',
+			selectedComms: false,
 			enableRadioBtnExperiment: false,
 		};
 	},
@@ -204,8 +204,12 @@ export default {
 			required,
 			email,
 		},
-		termsAgreement: { required: value => value === true },
-		selectedComms: { required: value => value !== '' },
+		termsAgreement: {
+			required: value => value === true,
+		},
+		selectedComms: {
+			required: requiredIf(enableRadioBtnExperiment => enableRadioBtnExperiment),
+		},
 	},
 	mounted() {
 		this.isClientReady = !this.$isServer;
@@ -473,6 +477,10 @@ export default {
 			}
 			if (version === 'c') {
 				this.enableRadioBtnExperiment = true;
+
+				// Workaround to validate input within this experiment
+				this.selectedComms = '';
+				this.termsAgreement = true;
 			}
 		}
 	}
