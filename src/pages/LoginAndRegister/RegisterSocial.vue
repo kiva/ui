@@ -151,7 +151,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
@@ -159,6 +159,7 @@ import SystemPage from '@/components/SystemFrame/SystemPage';
 import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
@@ -175,6 +176,7 @@ export default {
 		KvButton,
 		ReCaptchaEnterprise,
 		SystemPage,
+		UserUpdatesPreference,
 	},
 	mixins: [
 		validationMixin,
@@ -207,6 +209,7 @@ export default {
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
+			needsComms: false,
 			selectedComms: '',
 			enableRadioBtnExperiment: false,
 		};
@@ -259,12 +262,10 @@ export default {
 				checked: val => val,
 			};
 		}
-		if (this.enableRadioBtnExperiment) {
-			validations.selectedComms = {
-				required,
-				checked: val => val !== '',
-			};
-		}
+		validations.selectedComms = {
+			required: requiredIf(() => this.needsComms),
+		};
+
 		return validations;
 	},
 	created() {
@@ -330,6 +331,7 @@ export default {
 			if (version === 'c') {
 				this.enableRadioBtnExperiment = true;
 				this.newAcctTerms = true;
+				this.needsComms = true;
 			}
 		}
 	},
