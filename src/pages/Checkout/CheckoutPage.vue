@@ -106,6 +106,7 @@
 								<checkout-drop-in-payment-wrapper
 									v-if="!showKivaCreditButton"
 									:amount="creditNeeded"
+									:loans-in-basket="loanIdsInBasket.length"
 									:is-guest-checkout="checkingOutAsGuest"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"

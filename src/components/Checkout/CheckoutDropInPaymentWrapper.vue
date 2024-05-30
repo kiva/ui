@@ -184,6 +184,10 @@ export default {
 		useAsyncCheckout: {
 			type: Boolean,
 			default: false
+		},
+		loansInBasket: {
+			type: Number,
+			default: 0,
 		}
 	},
 	data() {
@@ -458,7 +462,7 @@ export default {
 		}
 	},
 	created() {
-		if (this.isGuestCheckout) {
+		if (this.isGuestCheckout && this.loansInBasket) {
 			const { version } = this.apollo.readFragment({
 				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 				fragment: experimentVersionFragment,
