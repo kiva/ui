@@ -151,7 +151,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { requiredIf } from 'vuelidate/lib/validators';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
