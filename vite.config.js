@@ -34,7 +34,6 @@ export default defineConfig({
 		'**/*.bin',
 		'**/*.wasm',
 	],
-	base: '/static/',
 	build: {
 		assetsDir: 'static',
 		assetsInlineLimit: (filePath, content) => {
