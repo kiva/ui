@@ -80,7 +80,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Data Snapshots'
 	},
 	data() {

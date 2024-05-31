@@ -164,7 +164,7 @@ export default {
 			countriesValues: []
 		};
 	},
-	metaInfo: {
+	head: {
 		title: 'Results - Get Started'
 	},
 	computed: {

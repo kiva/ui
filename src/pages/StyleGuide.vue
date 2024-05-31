@@ -66,7 +66,7 @@ export default {
 		KvMaterialIcon,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Styleguide'
 	},
 	data() {

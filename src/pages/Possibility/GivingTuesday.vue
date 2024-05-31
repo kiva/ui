@@ -66,7 +66,7 @@ export default {
 		KvResponsiveImage,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: 'Giving Tuesday'
 	},
 	data() {

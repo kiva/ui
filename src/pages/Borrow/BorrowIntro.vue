@@ -121,7 +121,7 @@ export default {
 		KvGrid,
 		KvMaterialIcon,
 	},
-	metaInfo: {
+	head: {
 		title: 'Borrow Pre-application',
 	},
 	data() {

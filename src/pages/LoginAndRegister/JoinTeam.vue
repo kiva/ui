@@ -18,7 +18,7 @@ export default {
 		WwwPage,
 		JoinTeamForm
 	},
-	metaInfo: {
+	head: {
 		title: 'Join Team',
 	}
 };

@@ -22,7 +22,7 @@
 export default {
 	name: 'LendingNoLoanId',
 	inject: ['locale'],
-	metaInfo: {
+	head: {
 		title: 'Error'
 	},
 	props: {

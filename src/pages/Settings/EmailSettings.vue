@@ -421,7 +421,7 @@ export default {
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		title: 'Email settings',
 	},
 	data() {

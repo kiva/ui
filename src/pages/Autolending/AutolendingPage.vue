@@ -33,7 +33,7 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Auto-lending settings',
 	},
 };

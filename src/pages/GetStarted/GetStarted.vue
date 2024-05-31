@@ -14,7 +14,7 @@ export default {
 	components: {
 		WwwPageMinimal,
 	},
-	metaInfo: {
+	head: {
 		title: 'Get Started'
 	},
 };

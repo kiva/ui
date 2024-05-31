@@ -31,7 +31,7 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage
 	},
-	metaInfo: {
+	head: {
 		title: 'Subscription settings',
 	},
 };

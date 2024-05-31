@@ -80,7 +80,7 @@ const startEmailVerification = gql`
 
 export default {
 	name: 'StartVerification',
-	metaInfo: {
+	head: {
 		title: 'Email Verification'
 	},
 	components: {

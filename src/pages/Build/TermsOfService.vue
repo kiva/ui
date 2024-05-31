@@ -179,7 +179,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Terms Of Service'
 	},
 };

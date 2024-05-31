@@ -52,7 +52,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Research'
 	},
 	data() {

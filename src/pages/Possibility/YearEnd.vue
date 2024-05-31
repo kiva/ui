@@ -86,7 +86,7 @@ export default {
 		SketchyArrow,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: 'Year End'
 	},
 	data() {

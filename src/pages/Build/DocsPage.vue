@@ -64,7 +64,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Developer Docs'
 	},
 	data() {

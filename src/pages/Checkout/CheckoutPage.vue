@@ -383,7 +383,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
-	metaInfo: {
+	head: {
 		title: 'Checkout'
 	},
 	data() {

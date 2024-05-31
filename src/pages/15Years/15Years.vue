@@ -46,7 +46,7 @@ export default {
 		FifteenYearsTimeline,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: '15 Years'
 	},
 };

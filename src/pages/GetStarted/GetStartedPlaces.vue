@@ -206,7 +206,7 @@ export default {
 		KvProgressBar,
 		KvLoadingSpinner,
 	},
-	metaInfo: {
+	head: {
 		title: 'Places - Get Started'
 	},
 	inject: ['apollo', 'cookieStore'],

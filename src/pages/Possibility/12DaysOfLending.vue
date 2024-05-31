@@ -55,7 +55,7 @@ export default {
 		TwelveDaysCalendar,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: '12 Days of Lending'
 	},
 	data() {

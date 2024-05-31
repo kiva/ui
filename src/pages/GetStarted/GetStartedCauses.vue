@@ -78,7 +78,7 @@ export default {
 		KvCauseSelector,
 		KvProgressBar,
 	},
-	metaInfo: {
+	head: {
 		title: 'Get Started'
 	},
 	inject: ['apollo', 'cookieStore'],

@@ -10,7 +10,7 @@
 export default {
 	name: 'AddLoanToBasket',
 	inject: ['locale'],
-	metaInfo: {
+	head: {
 		title: 'Error'
 	},
 	props: {

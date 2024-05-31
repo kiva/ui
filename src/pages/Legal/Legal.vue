@@ -40,7 +40,7 @@ export default {
 		TertiaryMenu,
 		CustomSecondaryMenu
 	},
-	metaInfo: {
+	head: {
 		title: 'Terms Of Use'
 	},
 	data() {

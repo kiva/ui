@@ -46,7 +46,7 @@ const pageQuery = gql`query monthlyGoodThanksPage {
 
 export default {
 	name: 'MonthlyGoodThanksPage',
-	metaInfo: {
+	head: {
 		title: 'Joined successfully'
 	},
 	components: {

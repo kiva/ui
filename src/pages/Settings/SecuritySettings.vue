@@ -43,7 +43,7 @@ export default {
 		TwoStepVerification,
 		TwoStepFaq,
 	},
-	metaInfo: {
+	head: {
 		title: 'Security and login',
 	},
 };

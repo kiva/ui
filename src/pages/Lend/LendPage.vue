@@ -86,7 +86,7 @@ export default {
 		KvLoadingOverlay,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		title: 'Fundraising loans'
 	},
 	data() {

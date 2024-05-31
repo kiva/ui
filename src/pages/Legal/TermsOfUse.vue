@@ -889,7 +889,7 @@
 
 export default {
 	name: 'TermsOfUse',
-	metaInfo: {
+	head: {
 		title: 'Terms Of Use'
 	},
 };

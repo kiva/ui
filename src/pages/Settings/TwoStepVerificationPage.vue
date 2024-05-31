@@ -168,7 +168,7 @@ export default {
 		WwwPage,
 		KvLoadingPlaceholder,
 	},
-	metaInfo: {
+	head: {
 		title: '2-step verification',
 	},
 	mounted() {

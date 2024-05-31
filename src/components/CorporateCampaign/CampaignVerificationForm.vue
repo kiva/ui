@@ -35,7 +35,7 @@ import KvLightbox from '#src/components/Kv/KvLightbox';
 export default {
 	name: 'CampaignVerificationForm',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		// script: [
 		// 	{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
 		// ],

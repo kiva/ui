@@ -109,7 +109,7 @@ export default {
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		title: 'Lending Stats'
 	},
 	data() {

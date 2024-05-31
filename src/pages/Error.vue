@@ -40,7 +40,7 @@ export default {
 		WwwPage,
 		KvDefaultWrapper,
 	},
-	metaInfo: {
+	head: {
 		title: 'Error'
 	},
 	data() {
