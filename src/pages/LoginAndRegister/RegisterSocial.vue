@@ -313,7 +313,7 @@ export default {
 			this.needsNews = true;
 		}
 
-		if (!this.passwordless) {
+		if (!this.passwordless && this.needsNews) {
 			const { version } = this.apollo.readFragment({
 				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 				fragment: experimentVersionFragment,
