@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
 // import htmlPurge from 'vite-plugin-html-purgecss';
-import legacy from '@vitejs/plugin-legacy';
 import svgLoader from 'vite-svg-loader';
 import svgStore from 'vite-plugin-svg-store';
 import autoprefixer from 'autoprefixer';
@@ -84,8 +83,6 @@ export default defineConfig({
 		graphQLLoader(),
 		// this is supposed to be equivalent to mini-css-extract-plugin, not sure if that's true
 		// htmlPurge(),
-		// polyfill for older browsers. requires terser
-		legacy(),
 		// load svg files as vue components
 		svgLoader({
 			svgoConfig: {
