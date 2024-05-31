@@ -44,8 +44,8 @@ import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
 import { metaGlobReader } from '#src/util/importHelpers';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
 
-const possibilitiesImageGlob = import.meta.glob('#src/assets/images/possibilities-banners/*.*', { eager: true });
-const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '#src/assets/images/possibilities-banners/');
+const possibilitiesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: '12DaysOfLending',

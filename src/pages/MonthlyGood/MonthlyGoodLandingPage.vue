@@ -139,8 +139,8 @@ import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 
-const mgLandingPageImageGlob = import.meta.glob('#src/assets/images/mg-landing-page/*.*', { eager: true });
-const mgLandingPageImageRequire = metaGlobReader(mgLandingPageImageGlob, '#src/assets/images/mg-landing-page/');
+const mgLandingPageImageGlob = import.meta.glob('/src/assets/images/mg-landing-page/*.*', { eager: true });
+const mgLandingPageImageRequire = metaGlobReader(mgLandingPageImageGlob, '/src/assets/images/mg-landing-page/');
 
 const pageQuery = gql`
 	query monthlyGoodLandingPage {

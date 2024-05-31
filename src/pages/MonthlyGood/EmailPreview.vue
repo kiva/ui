@@ -26,8 +26,8 @@
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const emailPreviewImageGlob = import.meta.glob('#src/assets/images/mg-email-preview/*.*', { eager: true });
-const emailPreviewimageRequire = metaGlobReader(emailPreviewImageGlob, '#src/assets/images/mg-email-preview/');
+const emailPreviewImageGlob = import.meta.glob('/src/assets/images/mg-email-preview/*.*', { eager: true });
+const emailPreviewimageRequire = metaGlobReader(emailPreviewImageGlob, '/src/assets/images/mg-email-preview/');
 
 export default {
 	name: 'EmailPreview',

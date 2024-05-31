@@ -40,8 +40,8 @@ import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const monthlyGoodImagesGlob = import.meta.glob('#src/assets/images/mg-hero-slideshow/*.*', { eager: true });
-const monthlyGoodImagesRequire = metaGlobReader(monthlyGoodImagesGlob, '#src/assets/images/mg-hero-slideshow/');
+const monthlyGoodImagesGlob = import.meta.glob('/src/assets/images/mg-hero-slideshow/*.*', { eager: true });
+const monthlyGoodImagesRequire = metaGlobReader(monthlyGoodImagesGlob, '/src/assets/images/mg-hero-slideshow/');
 
 export default {
 	name: 'MonthlyGoodModule',

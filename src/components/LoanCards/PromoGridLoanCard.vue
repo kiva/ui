@@ -41,8 +41,8 @@ import getCacheKey from '#src/util/getCacheKey';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const promoLoanImageGlob = import.meta.glob('#src/assets/images/mg-promo-loan-card/*.*', { eager: true });
-const promoLoanImageRequire = metaGlobReader(promoLoanImageGlob, '#src/assets/images/mg-promo-loan-card/');
+const promoLoanImageGlob = import.meta.glob('/src/assets/images/mg-promo-loan-card/*.*', { eager: true });
+const promoLoanImageRequire = metaGlobReader(promoLoanImageGlob, '/src/assets/images/mg-promo-loan-card/');
 
 export default {
 	name: 'PromoGridLoanCard',

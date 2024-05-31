@@ -127,8 +127,8 @@ import { metaGlobReader } from '#src/util/importHelpers';
 import * as MorphSVGPlugin from '../../util/animation/MorphSVGPlugin';
 import FifteenYearsButton from './15YearsButton';
 
-const imageRequire = import.meta.glob('#src/assets/images/15-years/profiles/*.*', { eager: true });
-const profileImages = metaGlobReader(imageRequire, '#src/assets/images/15-years/profiles/');
+const imageRequire = import.meta.glob('/src/assets/images/15-years/profiles/*.*', { eager: true });
+const profileImages = metaGlobReader(imageRequire, '/src/assets/images/15-years/profiles/');
 
 const getRandomInt = (minimum, maximum) => {
 	const min = Math.ceil(minimum);

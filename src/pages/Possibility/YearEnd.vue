@@ -73,8 +73,8 @@ import SketchyArrow from '#src/assets/inline-svgs/sketchy-arrow.svg';
 import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const yearEndImagesGlob = import.meta.glob('#src/assets/images/possibilities-banners/*.*', { eager: true });
-const yearEndImagesRequire = metaGlobReader(yearEndImagesGlob, '#src/assets/images/possibilities-banners/');
+const yearEndImagesGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const yearEndImagesRequire = metaGlobReader(yearEndImagesGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: 'YearEnd',

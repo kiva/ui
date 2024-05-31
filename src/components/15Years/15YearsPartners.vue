@@ -117,11 +117,11 @@ import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 import FifteenYearsSupportingPartners from './15YearsSupportingPartners';
 
-const imgRequire = import.meta.glob('#src/assets/images/15-years/partners/*.*', {
+const imgRequire = import.meta.glob('/src/assets/images/15-years/partners/*.*', {
 	eager: true,
 	query: '?url',
 });
-const partnerImages = metaGlobReader(imgRequire, '#src/assets/images/15-years/partners/');
+const partnerImages = metaGlobReader(imgRequire, '/src/assets/images/15-years/partners/');
 
 export default {
 	name: '15YearsPartners',

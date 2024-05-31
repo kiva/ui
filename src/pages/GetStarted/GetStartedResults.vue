@@ -121,8 +121,8 @@ import RecommendedLoanCard from '#src/components/LoanCards/RecommendedLoanCard';
 import logFormatter from '#src/util/logFormatter';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const imgGlob = import.meta.glob('#src/assets/images/lend-by-category-homepage/*.*', { eager: true });
-const imgRequire = metaGlobReader(imgGlob, '#src/assets/images/lend-by-category-homepage/');
+const imgGlob = import.meta.glob('/src/assets/images/lend-by-category-homepage/*.*', { eager: true });
+const imgRequire = metaGlobReader(imgGlob, '/src/assets/images/lend-by-category-homepage/');
 
 export default {
 	name: 'GetStartedResults',

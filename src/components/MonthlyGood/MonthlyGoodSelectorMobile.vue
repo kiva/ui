@@ -104,11 +104,11 @@ import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvUiSelect from '@kiva/kv-components/vue/KvSelect';
 
-const mgSelectorImgRequire = import.meta.glob('#src/assets/images/mg-selector-icons/*.*', {
+const mgSelectorImgRequire = import.meta.glob('/src/assets/images/mg-selector-icons/*.*', {
 	eager: true,
 	query: '?url',
 });
-const mgSelectorImages = metaGlobReader(mgSelectorImgRequire, '#src/assets/images/mg-selector-icons/');
+const mgSelectorImages = metaGlobReader(mgSelectorImgRequire, '/src/assets/images/mg-selector-icons/');
 
 export default {
 	name: 'MonthlyGoodSelectorMobile',

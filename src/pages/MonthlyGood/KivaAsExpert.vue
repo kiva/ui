@@ -40,10 +40,10 @@ import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import homepageStatistics from '#src/graphql/query/whyKivaData.graphql';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const billionImpactImagesGlob = import.meta.glob('#src/assets/images/10-years-billion-impact/*.*', { eager: true });
+const billionImpactImagesGlob = import.meta.glob('/src/assets/images/10-years-billion-impact/*.*', { eager: true });
 const billionImpactImagesRequire = metaGlobReader(
 	billionImpactImagesGlob,
-	'#src/assets/images/10-years-billion-impact/'
+	'/src/assets/images/10-years-billion-impact/'
 );
 const million = 1000000;
 const billion = 1000000000;

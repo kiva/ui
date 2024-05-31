@@ -55,8 +55,8 @@ import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const possibilitiesImageGlob = import.meta.glob('#src/assets/images/possibilities-banners/*.*', { eager: true });
-const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '#src/assets/images/possibilities-banners/');
+const possibilitiesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: 'GivingTuesday',

@@ -25,8 +25,8 @@ import { metaGlobReader } from '#src/util/importHelpers';
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
 
-const flagGlob = import.meta.glob('#node_modules/flag-icon-css/flags/**/*');
-const flags = metaGlobReader(flagGlob, 'flag-icon-css/flags/');
+const flagGlob = import.meta.glob('/node_modules/flag-icon-css/flags/**/*');
+const flags = metaGlobReader(flagGlob, '/node_modules/flag-icon-css/flags/');
 
 export default {
 	name: 'KvFlag',

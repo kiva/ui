@@ -104,8 +104,6 @@ export default defineConfig({
 		alias: {
 			// alias src directory
 			'#src': resolve('src'),
-			// alias node_modules directory
-			'#node_modules': resolve('node_modules'),
 			// alias promise module to handle timesync calling require('promise')
 			promise: resolve('build/promise.js'),
 			// required for src/components/Contentful/DynamicRichText.vue

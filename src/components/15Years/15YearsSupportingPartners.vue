@@ -36,11 +36,11 @@
 import { metaGlobReader } from '#src/util/importHelpers';
 import FifteenYearsButton from './15YearsButton';
 
-const imgRequire = import.meta.glob('#src/assets/images/15-years/partners/*.*', {
+const imgRequire = import.meta.glob('/src/assets/images/15-years/partners/*.*', {
 	eager: true,
 	query: '?url',
 });
-const partnerImages = metaGlobReader(imgRequire, '#src/assets/images/15-years/partners/');
+const partnerImages = metaGlobReader(imgRequire, '/src/assets/images/15-years/partners/');
 
 export default {
 	name: '15YearsSupportingPartners',

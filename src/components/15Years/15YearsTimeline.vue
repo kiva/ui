@@ -168,11 +168,11 @@ import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 import slideData from './15YearsTimelineData';
 
-const stickerImagesRequire = import.meta.glob('#src/assets/images/15-years/stickers/*.*', {
+const stickerImagesRequire = import.meta.glob('/src/assets/images/15-years/stickers/*.*', {
 	eager: true,
 	query: '?url',
 });
-const stickers = metaGlobReader(stickerImagesRequire, '#src/assets/images/15-years/stickers/');
+const stickers = metaGlobReader(stickerImagesRequire, '/src/assets/images/15-years/stickers/');
 
 export default {
 	name: '15YearsTimeline',

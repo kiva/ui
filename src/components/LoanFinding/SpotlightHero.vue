@@ -71,8 +71,8 @@
 import { mdiMapMarker } from '@mdi/js';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = import.meta.glob('#src/assets/images/mfi_recommendations/*.*', { eager: true, query: '?url' });
-const images = metaGlobReader(imageRequire, '#src/assets/images/mfi_recommendations/');
+const imageRequire = import.meta.glob('/src/assets/images/mfi_recommendations/*.*', { eager: true, query: '?url' });
+const images = metaGlobReader(imageRequire, '/src/assets/images/mfi_recommendations/');
 
 export default {
 	name: 'SpotlightHero',

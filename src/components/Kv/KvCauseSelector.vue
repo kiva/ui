@@ -56,8 +56,8 @@ import { paramCase } from 'change-case';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = import.meta.glob('#src/assets/images/cause-selector/*.*', { eager: true });
-const images = metaGlobReader(imageRequire, '#src/assets/images/cause-selector/');
+const imageRequire = import.meta.glob('/src/assets/images/cause-selector/*.*', { eager: true });
+const images = metaGlobReader(imageRequire, '/src/assets/images/cause-selector/');
 
 export default {
 	name: 'KvCauseSelector',
