@@ -12,8 +12,7 @@ export default async function render({
 	context,
 	serverConfig,
 	serverEntry,
-	// TODO: use ssrManifest to determine which modules to preload
-	// ssrManifest,
+	ssrManifest,
 	template
 }) {
 	const s = Date.now();
@@ -50,10 +49,10 @@ export default async function render({
 		setCookies = [...cookieInfo.setCookies];
 		// render the app
 		context.template = template;
+		context.ssrManifest = ssrManifest;
 		const { html, setCookies: appSetCookies } = await serverEntry(context);
 		// collect any cookies created during the app render
 		setCookies = [...setCookies, ...appSetCookies];
-		info('modules', context.modules);
 		// send the final rendered html
 		return {
 			html,

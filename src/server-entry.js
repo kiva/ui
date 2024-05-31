@@ -70,6 +70,36 @@ function renderExtraHtml(config) {
 	}
 }
 
+// This function renders a <link> tag for a given file
+function renderPreloadLink(file) {
+	if (file.endsWith('.js')) {
+		return `<link rel="modulepreload" crossorigin href="${file}">`;
+	}
+	if (file.endsWith('.css')) {
+		return `<link rel="stylesheet" href="${file}">`;
+	}
+	// TODO: handle other file types if needed
+	return '';
+}
+
+// This function renders <link> tags for all files in the manifest for the given modules
+function renderPreloadLinks(modules, manifest = {}) {
+	let links = '';
+	const seen = new Set();
+	modules.forEach(id => {
+		const files = manifest[id];
+		if (files) {
+			files.forEach(file => {
+				if (!seen.has(file)) {
+					seen.add(file);
+					links += renderPreloadLink(file);
+				}
+			});
+		}
+	});
+	return links;
+}
+
 // This exported function will be called by `bundleRenderer`.
 // This is where we perform data-prefetching to determine the
 // state of our application before actually rendering it.
@@ -84,6 +114,7 @@ export default async context => {
 		user,
 		locale,
 		device,
+		ssrManifest,
 		template,
 	} = context;
 	const { accessToken, ...profile } = user;
@@ -201,11 +232,16 @@ export default async context => {
 		// inline the state in the HTML response. This allows the client-side
 		// store to pick-up the server-side state without having to duplicate
 		// the initial data fetching on the client.
-		const payload = await renderSSRHead(head);
 		const appState = renderGlobals({
 			__APOLLO_STATE__: apolloClient.cache.extract(),
 			pageData: buildUserDataGlobal(router, cookieStore, apolloClient)
 		});
+
+		// render head tags
+		const payload = await renderSSRHead(head);
+
+		// render preload links
+		const preloadLinks = renderPreloadLinks(context.modules, ssrManifest);
 
 		// check for 3rd party script opt-out
 		const hasOptOut = cookies?.kvgdpr?.indexOf('opted_out=true') > -1;
@@ -217,6 +253,7 @@ export default async context => {
 			appConfig: renderedConfig,
 			externals: hasOptOut ? renderedExternals : renderedExternalsOptIn,
 			googleTagmanagerId: config.googleTagmanagerId,
+			preloadLinks,
 		};
 
 		return {
