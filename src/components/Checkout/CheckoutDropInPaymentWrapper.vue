@@ -234,9 +234,16 @@ export default {
 			this.$emit('updating-totals', true);
 			// Set the default checkout validation method
 			let validationMethod = this.validateGuestBasket;
+
+			// Set email updates based on comms preference MP-271
+			let { emailUpdates } = this;
+			if (this.enableRadioBtnExperiment) {
+				emailUpdates = this.selectedComms === '1';
+			}
+
 			const validationPayload = {
 				email: this.email,
-				emailUpdates: this.emailUpdates,
+				emailUpdates,
 			};
 			// If promo guest checkout is enabled, use the promo guest checkout validation method.
 			// This method validates the lender email for promo first before running the guest checkout method
@@ -247,7 +254,7 @@ export default {
 				validationPayload.managedAccountId = this.managedAccountId;
 			}
 
-			validationMethod(this.email, this.emailUpdates)
+			validationMethod(this.email, emailUpdates)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();

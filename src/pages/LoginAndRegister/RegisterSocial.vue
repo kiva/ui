@@ -355,6 +355,11 @@ export default {
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
+				// Set news consent based on comms preference MP-271
+				if (this.enableRadioBtnExperiment) {
+					this.newsConsent = this.selectedComms === '1';
+				}
+
 				this.$kvTrackEvent('Register', 'register-social-success');
 			} else {
 				event.preventDefault();
