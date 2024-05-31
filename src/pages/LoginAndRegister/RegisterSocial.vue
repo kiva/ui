@@ -240,7 +240,7 @@ export default {
 		},
 		emailUpdatesCopy() {
 			if (this.enableCommsExperiment) {
-				return 'Send me updates about my borrower(s), my impact, and other ways I can help.';
+				return 'Send me updates from people I\'ve funded, my impact, and other ways I can help.';
 			}
 
 			return !this.passwordless
