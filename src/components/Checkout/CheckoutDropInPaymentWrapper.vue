@@ -463,7 +463,7 @@ export default {
 	computed: {
 		emailUpdatesCopy() {
 			return this.enableCommsExperiment
-				? 'Send me updates about my borrower(s), my impact, and other ways I can help.'
+				? 'Send me updates from people I\'ve funded, my impact, and other ways I can help.'
 				// eslint-disable-next-line max-len
 				: 'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.';
 		}

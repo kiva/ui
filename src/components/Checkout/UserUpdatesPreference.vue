@@ -13,12 +13,12 @@
 					'click',
 					'marketing-updates',
 					// eslint-disable-next-line max-len
-					'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.',
+					'Send me updates from people I\'ve funded, my impact, and other ways I can help.',
 				]"
 				:class="{'radio-error': $v.selectedComms.$error}"
 			>
 				<!-- eslint-disable-next-line max-len -->
-				Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.
+				Send me updates from people I've funded, my impact, and other ways I can help.
 			</kv-radio>
 			<kv-radio
 				value="0"
@@ -30,11 +30,11 @@
 					'click',
 					'marketing-updates',
 					// eslint-disable-next-line max-len
-					'Dont receive email updates from Kiva (including borrower updates and promos).',
+					'No, I don\'t want updates about my borrower(s) progress or other relevant loans.',
 				]"
 			>
 				<!-- eslint-disable-next-line max-len -->
-				Don't receive email updates from Kiva (including borrower updates and promos).
+				No, I don't want updates about my borrower(s) progress or other relevant loans.
 			</kv-radio>
 		</fieldset>
 		<p
