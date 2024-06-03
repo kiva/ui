@@ -1,3 +1,44 @@
+## [2.742.0](https://github.com/kiva/ui/compare/v2.741.0...v2.742.0) (2024-06-03)
+
+
+### 🎉 New Features
+
+* [MP-136] borrower funded email lend ui ([61d3e92](https://github.com/kiva/ui/commit/61d3e92e14de2c0f342a68ae3e41ae9c5faf65f9))
+* [MP-136] borrower funded email lend ui ([0cd2b10](https://github.com/kiva/ui/commit/0cd2b10fd5f8af44a42588643690589b8d733794))
+* [MP-136] borrower funded email lend ui ([95f0729](https://github.com/kiva/ui/commit/95f072906981a6283b21e376a46c77d369d91212))
+* add tracking events ([b87edb2](https://github.com/kiva/ui/commit/b87edb2c80a06be25675e0ca75f1450549ed7b90))
+* copy changes ([fc4de3d](https://github.com/kiva/ui/commit/fc4de3d0c08e6fa136b82034f98b30648804a84c))
+* lent amount removed in activity feed ([#5341](https://github.com/kiva/ui/issues/5341)) ([9e03e6e](https://github.com/kiva/ui/commit/9e03e6e670746477aa84f631912c403f1d9b7bb3))
+* opt-in comms with radio button ([e319449](https://github.com/kiva/ui/commit/e319449debfa1b3f7c571ad89e1bf0684af3fb72))
+* run experiment only when loans in basket ([59e4528](https://github.com/kiva/ui/commit/59e4528ade374ad31658639ca544a359d4ed9e7c))
+
+
+### 🐛 Bugfixes
+
+* conflict ([33ac6b6](https://github.com/kiva/ui/commit/33ac6b60735656f3674185a37e73c567edd081ce))
+* conflict between invalid inputs because of the variants and adding missing TOS copy ([52efb35](https://github.com/kiva/ui/commit/52efb35b60d48e59c15d7f6ea41f8249c7179876))
+* enable experiment only if news consent is needed ([f8d95e5](https://github.com/kiva/ui/commit/f8d95e595772bf979098da9b15f8d933953d068a))
+* fetch experiment data ([872ce4d](https://github.com/kiva/ui/commit/872ce4de63c9b881e568feb64c15419dab3733b6))
+* lint ([98988bf](https://github.com/kiva/ui/commit/98988bf5ada071916065a1f1438a4b5059aa305d))
+* radio button was not displayed and validation issues ([b8bb684](https://github.com/kiva/ui/commit/b8bb68438b7f6f2d78728e9eca1ff6db19cd92e1))
+* removed required rule by mistake ([f583527](https://github.com/kiva/ui/commit/f583527399b59a86fe86e1ae6bc6343111b3c11e))
+* set exp flag to false ([afa2b8b](https://github.com/kiva/ui/commit/afa2b8be4011b6c3d5d9e79501285fe69be3435d))
+* set tao to true for second variant in RegisterSocial comp ([5e69622](https://github.com/kiva/ui/commit/5e69622b6fda38abff8c6712d4611ec6eeb15d47))
+* set tracking category as a prop for user updates preference ([839da67](https://github.com/kiva/ui/commit/839da670ceb827cf692e62b890eb87f39b8963cb))
+* tracking ([a1774bc](https://github.com/kiva/ui/commit/a1774bca9cc301128efdbc57224d9d82fe0eed3b))
+* update emailUpdates and newsConsent values in radio btn experiment ([ba35294](https://github.com/kiva/ui/commit/ba35294d51c9e13f44eba8563486b7009ee4e85b))
+
+
+### 🪚 Refactors
+
+* user preference component ([7a60576](https://github.com/kiva/ui/commit/7a60576cbe5fc504dca1be54865e22a9cb7167b0))
+* using requiredIf to validate radio input ([470fb58](https://github.com/kiva/ui/commit/470fb581a7bc60ef4da99e6c958e7cee931c1fe5))
+
+
+### 🧹 Chores
+
+* **release:** 2.742.0-rc.1 [skip ci] ([0fc7fcb](https://github.com/kiva/ui/commit/0fc7fcb3c6c8a9a4d707392b50ad0ed3439e809e)), closes [#5341](https://github.com/kiva/ui/issues/5341)
+
 ## [2.742.0-rc.1](https://github.com/kiva/ui/compare/v2.741.0...v2.742.0-rc.1) (2024-06-03)
 
 
