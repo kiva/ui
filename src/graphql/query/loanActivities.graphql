@@ -15,7 +15,6 @@ query LoanActivities (
               url
             }
           }
-          shareAmount
         }
       }
       comments {
