@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // recursive function to add child components to a set
 async function deepAdd(components, set) {
 	if (!components) return;
@@ -10,6 +11,14 @@ async function deepAdd(components, set) {
 		// import dynamic component
 		if (typeof definition === 'function') {
 			def = await definition();
+		}
+		// import vue 3 async component
+		if (definition.__asyncLoader) {
+			def = await definition.__asyncLoader();
+		}
+		// normalize imported component
+		if (def.default) {
+			def = def.default;
 		}
 		// add the component definition and its children if the definition hasn't been added yet
 		if (!set.has(def)) {

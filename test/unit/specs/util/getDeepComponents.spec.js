@@ -1,9 +1,10 @@
+import { defineAsyncComponent } from 'vue';
 import getDeepComponents from '#src/util/getDeepComponents';
 
 const ComponentA = { name: 'ComponentA' };
 
 const asyncDefinitionA = { name: 'AsyncComponentA' };
-const AsyncComponentA = () => Promise.resolve({ default: asyncDefinitionA });
+const AsyncComponentA = defineAsyncComponent(() => Promise.resolve({ default: asyncDefinitionA }));
 
 const ComponentB = { name: 'ComponentB' };
 
@@ -13,7 +14,7 @@ const asyncDefinitionB = {
 		ComponentB
 	}
 };
-const AsyncComponentB = () => Promise.resolve({ default: asyncDefinitionB });
+const AsyncComponentB = defineAsyncComponent(() => Promise.resolve({ default: asyncDefinitionB }));
 
 const ComponentC = {
 	name: 'ComponentC',

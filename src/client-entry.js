@@ -169,7 +169,7 @@ function setupClientRouting({
 		contentfulPreviewCookie({ route: to, cookieStore });
 		authenticationGuard({ route: to, apolloClient, kvAuth0 })
 			.then(() => {
-			// Pre-fetch graphql queries from activated components
+				// Pre-fetch graphql queries from activated components
 				return preFetchAll(activated, apolloClient, {
 					cookieStore,
 					kvAuth0,
