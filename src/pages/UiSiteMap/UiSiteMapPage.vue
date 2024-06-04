@@ -21,7 +21,7 @@ export default {
 		RouteListing,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Sitemap'
 	},
 };
