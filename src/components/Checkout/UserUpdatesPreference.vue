@@ -51,7 +51,7 @@
 			help to change their lives. You can unsubscribe at any time.
 		</p>
 		<p class="tw-text-small">
-			By completing your loan, you agree to Kiva’s <a
+			By completing your {{ isCheckout ? 'loan' : 'account' }}, you agree to Kiva’s <a
 				:href="`https://${this.$appConfig.host}/legal/terms`"
 				target="_blank"
 				class="tw-underline"
@@ -81,6 +81,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		isCheckout: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		return {

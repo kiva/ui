@@ -58,6 +58,7 @@
 					v-if="enableRadioBtnExperiment"
 					tracking-category="basket"
 					@update:modelValue="selectedComms = $event"
+					is-checkout
 				/>
 				<template v-else>
 					<kv-checkbox
