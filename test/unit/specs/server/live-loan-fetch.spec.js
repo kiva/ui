@@ -10,12 +10,16 @@ jest.mock('../../../../server/util/argv', () => {
 });
 
 describe('live-loan-fetch', () => {
+	beforeAll(() => jest.spyOn(global.console, 'warn').mockImplementation(() => ({})));
+
+	afterAll(jest.restoreAllMocks);
+
 	describe('fetchRecommendationsByLegacyFilter', () => {
 		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
 		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
 			fetch.default.mockClear();
-			fetch.default.mockResolvedValue({ json: () => {} });
+			fetch.default.mockResolvedValue({ json: () => { } });
 			// Run the filter parsing
 			await fetchLoansByType.default('filter', inputString);
 
@@ -91,7 +95,7 @@ describe('live-loan-fetch', () => {
 	describe('fetchRecommendationsByFLSS', () => {
 		it('have flss call defined with userId', async () => {
 			fetch.default.mockClear();
-			fetch.default.mockResolvedValue({ json: () => {} });
+			fetch.default.mockResolvedValue({ json: () => { } });
 
 			await fetchLoansByType.default('user', '1234', true);
 
