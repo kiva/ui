@@ -48,40 +48,24 @@ export default {
 
 <style lang="postcss" scoped>
 .steps-container {
-  display: flex;
-  flex-direction: column;
+  @apply tw-flex tw-flex-col;
 }
 
 .steps-list {
-  list-style: none;
-  padding: 0;
-  position: relative;
+  @apply tw-list-none tw-p-0 tw-relative;
 }
 
 .step-item {
-  display: flex;
-  align-items: center;
-  position: relative;
+  @apply tw-flex tw-items-center tw-relative;
 }
 
 .step {
-  width: 20px;
-  height: 20px;
-  margin-top: 20px;
-  border-radius: 50%;
-  background-color: #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  position: relative;
-  z-index: 1;
+  @apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-bg-tertiary
+    tw-flex tw-items-center tw-justify-center tw-font-medium tw-relative tw-z-1;
 }
 
 .step-text {
-  margin-left: 10px;
-  margin-top: 20px;
-  @apply tw-text-small;
+  @apply tw-ml-1 tw-mt-2.5 tw-text-small;
 }
 
 @screen md {
@@ -91,13 +75,7 @@ export default {
 }
 
 .line {
-  position: absolute;
-  width: 5px;
-  height: 40px;
-  background-color: #ccc;
-  top: 40px;
-  left: 8px;
-  z-index: 0;
+  @apply tw-absolute tw-w-0.5 tw-h-5 tw-bg-tertiary tw-top-5 tw-left-1;
 }
 
 .completed .step {
