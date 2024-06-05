@@ -89,7 +89,8 @@
 						>
 							<div class="tw-py-2">
 								<h2>Before you go!</h2>
-								<p>Finish setting up your account to track and relend your money as you are paid back.</p>
+								<!-- eslint-disable-next-line max-len -->
+								<p>Finish setting up your account to track and relend your money as you are paid back.</p>
 								<guest-account-creation class="tw-pt-3 account-creation" />
 							</div>
 						</kv-expandable>
