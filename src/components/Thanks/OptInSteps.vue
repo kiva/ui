@@ -3,11 +3,8 @@
 		<ul class="steps-list">
 			<li v-for="(step, index) in steps" :key="index" class="step-item" :class="{ 'completed': index < currentStep }">
 				<div class="step">
-					<span v-if="index < currentStep" class="check">
-						<svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M4.58105 6.85986C4.58105 6.85986 7.31613 3.59315 9.06864 1.5" stroke="white" stroke-width="1.8141" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M1.6665 3.49158C1.6665 3.49158 3.40477 5.49801 4.51858 6.78364" stroke="white" stroke-width="1.8141" stroke-linecap="round" stroke-linejoin="round" />
-						</svg>
+					<span v-if="index < currentStep" class="tw-flex">
+						<kv-material-icon class="tw-text-white tw-w-1.5 tw-h-1.5" :icon="mdiCheckBold" />
 					</span>
 				</div>
 				<div class="step-text">
@@ -20,16 +17,29 @@
 </template>
 
 <script>
+import { mdiCheckBold } from '@mdi/js';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
 export default {
 	name: 'OptInSteps',
+	components: {
+		KvMaterialIcon
+	},
+	props: {
+		weeksToRepay: {
+			type: Number,
+			default: 0
+		}
+	},
 	data() {
 		return {
+			mdiCheckBold,
 			currentStep: 1,
 			steps: [
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is fully funded' },
 				{ text: 'They use the money to improve their life' },
-				{ text: 'They start repaying you in 00 weeks' }
+				{ text: `They start repaying you in ${this.weeksToRepay} weeks` }
 			]
 		};
 	},
@@ -68,10 +78,6 @@ export default {
   z-index: 1;
 }
 
-.check svg {
-  @apply tw-w-1 tw-h-1;
-}
-
 .step-text {
   margin-left: 10px;
   margin-top: 20px;
@@ -96,10 +102,6 @@ export default {
 
 .completed .step {
   @apply tw-bg-brand;
-}
-
-.completed .check svg path {
-  fill: white;
 }
 
 .completed .line {
