@@ -11,10 +11,7 @@
 					</p>
 					<div class="tw-relative tw-mx-auto" style="width: 200px;">
 						<div class="tw-absolute tw-w-full tw-h-full tw-z-1" style="width: 240px;">
-							<img
-								class="tw-w-full tw-h-full"
-								src="@/assets/images/thanks-page/sparkles.svg"
-							>
+							<animated-sparkles />
 						</div>
 						<borrower-image
 							class="borrower-image"
@@ -213,6 +210,7 @@ import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
+import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -233,6 +231,7 @@ const getLoans = receipt => {
 export default {
 	name: 'ThanksPageOptIn',
 	components: {
+		AnimatedSparkles,
 		WwwPage,
 		KvButton,
 		OptInSteps,
