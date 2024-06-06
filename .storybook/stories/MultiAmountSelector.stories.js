@@ -9,7 +9,7 @@ export default {
 	},
 };
 
-export const multiAmountSelector = (args, { argTypes }) => ({
+export const Default = (args, { argTypes }) => ({
 	components: {
 		MultiAmountSelector
 	},

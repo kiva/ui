@@ -19,6 +19,7 @@ export default {
 const Template = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { KvMap },
+	setup() { return args; },
 	template: `<kv-map
 		class="tw-rounded tw-overflow-hidden"
 		:auto-zoom-delay="autoZoomDelay"

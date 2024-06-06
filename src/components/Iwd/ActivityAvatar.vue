@@ -18,16 +18,18 @@
 	</div>
 	<div
 		v-else
-		class="tw-rounded-full tw-bg-brand tw-inline-flex tw-align-center tw-justify-center tw-w-4 tw-h-4"
+		class="tw-rounded-full tw-bg-brand tw-inline-flex tw-items-center tw-justify-center tw-w-4 tw-h-4"
 	>
 		<!-- Kiva K logo -->
-		<img :src="kivaIcon" alt="Kiva Icon">
+		<component :is="KivaIcon" alt="Kiva Icon" />
 	</div>
 </template>
 
 <script>
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-import kivaIcon from '#src/assets/images/helpmechoose/kiva_mark.svg';
+import { defineAsyncComponent, shallowRef } from 'vue';
+
+const KivaIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/kiva_mark.svg')));
 
 export default {
 	name: 'ActivityAvatar',
@@ -43,7 +45,7 @@ export default {
 	},
 	data() {
 		return {
-			kivaIcon,
+			KivaIcon,
 		};
 	},
 	computed: {

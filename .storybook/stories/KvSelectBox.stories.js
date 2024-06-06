@@ -14,6 +14,7 @@ const story = (args) => {
 		data: () => ({
 			myCoolModel: '',
 		}),
+		setup() { return args; },
 		template: `<kv-select-box id="select-box" :items="items" header-key="header" :selected-ids="selectedIds">
 			<option value="test">Test</option>
 			<option value="test2">Test2</option>

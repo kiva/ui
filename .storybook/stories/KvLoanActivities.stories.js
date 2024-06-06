@@ -3,8 +3,8 @@ import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import activities from '../mock-data/activity-feed-data-mock';
 
 export default {
-    title: 'Kv/KvLoanActivities',
-    component: KvLoanActivities,
+	title: 'Kv/KvLoanActivities',
+	component: KvLoanActivities,
 };
 
 const loan = {
@@ -52,12 +52,13 @@ const story = (args) => {
 		mixins: [cookieStoreStoryMixin()],
 		props: Object.keys(argTypes),
 		components: { KvLoanActivities },
+		setup() { return args; },
 		template: `
-		<div style="max-width: 400px;">
-			<kv-loan-activities
-				:loan="loan"
-				:activities="activities" />
-		</div>`,
+			<div style="max-width: 400px;">
+				<kv-loan-activities
+					:loan="loan"
+					:activities="activities" />
+			</div>`,
 	})
 	template.args = args;
 	return template;

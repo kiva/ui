@@ -1,12 +1,14 @@
 import KvProgressBar from '#src/components/Kv/KvProgressBar';
 
+const args = {
+	value: '20',
+	max: '100',
+};
+
 export default {
 	title: 'Kv/KvProgressBar',
 	component: KvProgressBar,
-	args: {
-		value: '20',
-		max: '100',
-	},
+	args,
 	argTypes: {
 		value: {
 			control: 'range',
@@ -19,11 +21,12 @@ export default {
 	}
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvProgressBar
 	},
+	setup() { return args; },
 	template: `
 		<kv-progress-bar
 			:value="value"
@@ -32,11 +35,12 @@ export const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const Styled = (args, { argTypes }) => ({
+export const Styled = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvProgressBar
 	},
+	setup() { return args; },
 	template: `
 		<kv-progress-bar
 			:value="value"

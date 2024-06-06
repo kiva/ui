@@ -3,15 +3,17 @@ import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 
 // import plugins
 import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins)
+Vue.use(kivaPlugins);
+
+const args = {
+	title: 'Can I cancel anytime?',
+	content: '<p>Yes. Auto deposits can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a>.</p>'
+};
 
 export default {
 	title: 'Kv/KvExpandableQuestion',
 	component: KvExpandableQuestion,
-	args: {
-		title: 'Can I cancel anytime?',
-		content: '<p>Yes. Auto deposits can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a>.</p>'
-	},
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
@@ -19,6 +21,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		KvExpandableQuestion
 	},
+	setup() { return args; },
 	template: `
 		<div class="row collapse">
 			<kv-expandable-question

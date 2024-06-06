@@ -7,14 +7,14 @@ export default {
 };
 
 const socialSharingMixin = () => ({
-  methods: {
-    handleFacebookResponse: () => {},
-    showSharePopUp: () => {},
-    twitterShareUrl: () => {},
-    facebookShareUrl: () => {},
-    linkedInShareUrl: () => {},
-    copyLink: () => {}
-  }
+	methods: {
+		handleFacebookResponse: () => { },
+		showSharePopUp: () => { },
+		twitterShareUrl: () => { },
+		facebookShareUrl: () => { },
+		linkedInShareUrl: () => { },
+		copyLink: () => { }
+	}
 });
 
 const story = (args = {}) => {
@@ -22,10 +22,10 @@ const story = (args = {}) => {
 		props: Object.keys(argTypes),
 		components: { ShareChallenge },
 		mixins: [apolloStoryMixin(), socialSharingMixin()],
+		setup() { return args; },
 		template:
 			'<share-challenge :goal="goal" :loan="loan" :lender="lender" :team-public-id="teamPublicId" />',
 	});
-	template.args = args;
 	return template;
 };
 

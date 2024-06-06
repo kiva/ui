@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ActivityAvatar },
+		setup() { return args; },
 		template: `
 			<div>
 				<activity-avatar

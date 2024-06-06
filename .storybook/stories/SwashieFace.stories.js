@@ -25,6 +25,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		SwashieFace
 	},
+	setup() { return args; },
 	template: `
 		<swashie-face
 			:percent-full="percentFull"

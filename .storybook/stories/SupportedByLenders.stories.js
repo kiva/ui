@@ -11,13 +11,13 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { SupportedByLenders, KvUserAvatar },
+		setup() { return args; },
 		template: `
-      <supported-by-lenders
-        :participants="participants"
-      />
+			<supported-by-lenders
+				:participants="participants"
+			/>
 		`,
 	});
-	template.args = args;
 	return template;
 };
 

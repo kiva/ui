@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { KvRangeMinMaxSlider },
+		setup() { return args; },
 		template: `
 			<kv-range-min-max-slider
 				:range-min="rangeMin"

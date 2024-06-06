@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { KvPagination },
+		setup() { return args; },
 		template: `<kv-pagination
 			:limit="limit"
 			:total="total"
