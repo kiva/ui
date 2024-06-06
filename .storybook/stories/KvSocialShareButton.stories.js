@@ -1,17 +1,19 @@
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
+const args = {
+	modalTitle: 'This is the share modal title',
+	shareMessage: `Kiva is an easy way to make a real difference in someone's life.`,
+	shareUrl: '/test',
+	variant: 'caution',
+	utmCampaign: 'social_share_campaign',
+	utmContent: 'testuser123',
+};
+
 export default {
 	title: 'Kv/KvSocialShareButton',
 	component: KvSocialShareButton,
-	args: {
-		modalTitle: 'This is the share modal title',
-		shareMessage: `Kiva is an easy way to make a real difference in someone's life.`,
-		shareUrl: '/test',
-		variant: 'caution',
-		utmCampaign: 'social_share_campaign',
-		utmContent: 'testuser123',
-	},
+	args,
 	argTypes: {
 		variant: {
 			control: {
@@ -23,12 +25,13 @@ export default {
 };
 
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvSocialShareButton,
 	},
 	mixins: [apolloStoryMixin()],
+	setup() { return args; },
 	template: `
 		<kv-social-share-button
 			:modal-title="modalTitle"

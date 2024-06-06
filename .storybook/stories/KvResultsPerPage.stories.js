@@ -9,9 +9,9 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { KvResultsPerPage },
+		setup() { return args; },
 		template: `<kv-results-per-page :options="options" :selected="selected" />`,
 	})
-	template.args = args;
 	return template;
 };
 

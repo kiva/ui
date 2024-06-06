@@ -5,45 +5,48 @@ const promoCategories = {
 	Education: { url: '/monthlygood?category=education', label: 'students' },
 	Refugees: { url: '/monthlygood?category=refugees', label: 'refugees' },
 	EcoFriendly: { url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
-	Agriculture: { url: '/monthlygood?category=agriculture' , label: 'farmers'},
-	KivaUS: { url: '/monthlygood?category=us_borrowers' , label: 'U.S. borrowers'},
+	Agriculture: { url: '/monthlygood?category=agriculture', label: 'farmers' },
+	KivaUS: { url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
 	Covid19: { url: '/covid19response', label: 'COVID-19-affected businesses' },
+};
+
+const args = {
+	loanCardStyle: {
+		border: '1px solid #d8d8d8',
+		height: '36rem',
+		backgroundColor: '#3d3d3d',
+	},
+	compact: true,
+	categoryLabel: 'women',
+	categoryUrl: '/monthlygood?category=women',
 };
 
 export default {
 	title: 'Loan Cards/MG Grid Loan Card',
 	component: PromoGridLoanCard,
 	argTypes: {
-		categoryLabel:{
+		categoryLabel: {
 			control: {
 				type: "select",
-				options: Object.values(promoCategories).map(value => value.label)
-			}
+			},
+			options: Object.values(promoCategories).map(value => value.label),
 		},
-		categoryUrl:{
+		categoryUrl: {
 			control: {
 				type: "select",
-				options: Object.values(promoCategories).map(value => value.url),
-			}
+			},
+			options: Object.values(promoCategories).map(value => value.url),
 		}
 	},
-	args: {
-		loanCardStyle: {
-			border: '1px solid #d8d8d8',
-			height: '36rem',
-			backgroundColor: '#3d3d3d',
-		},
-		compact: true,
-		categoryLabel: 'women',
-		categoryUrl: '/monthlygood?category=women',
-	}
+	args,
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (_, { argTypes }) => ({
 	components: {
 		PromoGridLoanCard,
 	},
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div class="row small-up-1 large-up-2 xxlarge-up-3 align-center">
 			<div class="column column-block" style="height: 36rem;">
@@ -56,11 +59,12 @@ export const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const Compact = (args, { argTypes }) => ({
+export const Compact = (_, { argTypes }) => ({
 	components: {
 		PromoGridLoanCard,
 	},
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div class="row small-up-1 large-up-2 xxlarge-up-3 align-center">
 			<div class="column column-block" style="height: 25rem;">
@@ -74,11 +78,12 @@ export const Compact = (args, { argTypes }) => ({
 	`,
 });
 
-export const GridView = (args, { argTypes }) => ({
+export const GridView = (_, { argTypes }) => ({
 	components: {
 		PromoGridLoanCard,
 	},
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div class="row small-up-1 large-up-2 xxlarge-up-3">
 			<div class="column column-block">

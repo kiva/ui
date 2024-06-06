@@ -9,9 +9,9 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchRadioGroupFilter },
+		setup() { return args; },
 		template: '<loan-search-radio-group-filter :options="options" :selected="selected" filterKey="option" eventAction="click-option-filter" />',
 	})
-	template.args = args;
 	return template;
 };
 

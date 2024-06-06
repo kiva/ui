@@ -25,9 +25,9 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchSortBy },
+		setup() { return args; },
 		template: '<loan-search-sort-by :all-sort-options="allSortOptions" :sort="sort" />',
 	})
-	template.args = args;
 	return template;
 };
 

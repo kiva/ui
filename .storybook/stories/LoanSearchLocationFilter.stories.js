@@ -9,9 +9,9 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchLocationFilter },
+		setup() { return args; },
 		template: '<loan-search-location-filter :regions="regions" :active-iso-codes="activeIsoCodes" />',
 	})
-	template.args = args;
 	return template;
 };
 

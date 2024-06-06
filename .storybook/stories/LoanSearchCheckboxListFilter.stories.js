@@ -9,9 +9,9 @@ const story = (args = {}) => {
 	const template = (_, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchCheckboxListFilter },
+		setup() { return args; },
 		template: '<loan-search-checkbox-list-filter :options="options" :ids="ids" :filter-key="filterKey" :event-action="eventAction" />',
 	})
-	template.args = args;
 	return template;
 };
 

@@ -10,9 +10,9 @@ const story = (args = {}) => {
 	const template = (_, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchFilterChips },
+		setup() { return args; },
 		template: '<div style="width: 400px"><loan-search-filter-chips :loan-search-state="loanSearchState" :all-facets="allFacets" /></div>',
 	})
-	template.args = args;
 	return template;
 };
 
