@@ -677,7 +677,7 @@ module.exports = [
 		}
 	},
 	{
-		path: '/thanks/not-opt-in',
+		path: '/thanks/opt-in',
 		component: () => import('@/pages/Thanks/ThanksPageOptIn'),
 		meta: {
 			excludeFromStaticSitemap: true,

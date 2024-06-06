@@ -32,22 +32,27 @@ export default {
 	},
 	props: {
 		weeksToRepay: {
-			type: Number,
-			default: 0
+			type: String,
+			default: ''
 		}
 	},
 	data() {
 		return {
 			mdiCheckBold,
-			currentStep: 1,
+			currentStep: 0,
 			steps: [
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is fully funded' },
 				{ text: 'They use the money to improve their life' },
-				{ text: `They start repaying you in ${this.weeksToRepay} weeks` }
+				{ text: `They start repaying you in ${this.weeksToRepay}` }
 			]
 		};
 	},
+	mounted() {
+		setTimeout(() => {
+			this.currentStep = 1;
+		}, 1000);
+	}
 };
 </script>
 
@@ -67,6 +72,7 @@ export default {
 .step {
 	@apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-bg-tertiary
 		tw-flex tw-items-center tw-justify-center tw-font-medium tw-relative tw-z-1;
+	transition: background-color 0.5s ease;
 }
 
 .step-text {
@@ -81,6 +87,7 @@ export default {
 
 .line {
 	@apply tw-absolute tw-w-0.5 tw-h-5 tw-bg-tertiary tw-top-5 tw-left-1;
+	transition: background-color 0.8s ease;
 }
 
 .completed .step {

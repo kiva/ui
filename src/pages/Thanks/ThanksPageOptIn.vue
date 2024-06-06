@@ -21,10 +21,10 @@
 							:style="{ boxShadow: '0px 4.42px 22.1px 0px #D1DCD6' }"
 							:alt="borrowerName"
 							:aspect-ratio="1"
-							:default-image="{ width: 400, faceZoom: 40 }"
+							:default-image="{ width: 400, faceZoom: 30 }"
 							:hash="hash"
 							:images="[
-								{ width: 400, faceZoom: 40 },
+								{ width: 400, faceZoom: 30 },
 							]"
 						/>
 					</div>
@@ -47,10 +47,24 @@
 									<!-- eslint-disable-next-line max-len -->
 									Want to hear how you’re impacting {{ borrowerName }}’s life and more ways to help people like them?
 								</h3>
-								<kv-button>
+								<kv-button
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'accept-opt-in-request',
+									]"
+								>
 									Yes, keep me updated
 								</kv-button>
-								<kv-button variant="ghost" class="ghost-button">
+								<kv-button
+									variant="ghost"
+									class="ghost-button"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'reject-opt-in-request',
+									]"
+								>
 									No, I don’t want to receive updates
 								</kv-button>
 							</template>
@@ -73,6 +87,11 @@
 								tw-py-2 tw-px-3
 							"
 							@click="openCreateAccount = !openCreateAccount"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'open-account-creation-drawer',
+							]"
 						>
 							<p>
 								Create your account
@@ -91,7 +110,11 @@
 								<h2>Before you go!</h2>
 								<!-- eslint-disable-next-line max-len -->
 								<p>Finish setting up your account to track and relend your money as you are paid back.</p>
-								<guest-account-creation class="tw-pt-3 account-creation" />
+								<guest-account-creation
+									class="tw-pt-3 account-creation"
+									event-category="thanks"
+									event-label="open-account-creation-drawer"
+								/>
 							</div>
 						</kv-expandable>
 					</div>
@@ -104,6 +127,11 @@
 								tw-py-2 tw-px-3
 							"
 							@click="openOrderConfirmation = !openOrderConfirmation"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'open-order-confirmation-drawer',
+							]"
 						>
 							<p>
 								Show previous loan details
@@ -135,6 +163,11 @@
 								tw-py-2 tw-px-3
 							"
 							@click="openShareModule = !openShareModule"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'open-share-drawer',
+							]"
 						>
 							<p>
 								Share
@@ -178,7 +211,7 @@ import confetti from 'canvas-confetti';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { addMonths, differenceInWeeks } from 'date-fns';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -275,16 +308,19 @@ export default {
 			return this.selectedLoan.image?.hash ?? '';
 		},
 		weeksToRepay() {
-			const date = Date.parse(this.selectedLoan?.disbursalDate) ?? new Date();
-			const days = formatDistanceToNowStrict(
-				date,
-				{
-					unit: 'day',
-					roundingMethod: 'ceil'
-				}
-			)?.split(' ')?.[0] ?? 0;
+			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
+			const today = new Date();
+			if (date) {
+				// Get the number of weeks between the first repayment date (in the future) and now
+				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
+			}
 
-			return Math.floor(days / 7);
+			// Calculating a possible range of weeks between the planned expiration date and a month after
+			const expDate = Date.parse(this.selectedLoan?.plannedExpirationDate);
+			const minDate = differenceInWeeks(expDate, today);
+			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
+
+			return `${minDate} - ${maxDate} weeks`;
 		}
 	},
 	created() {
@@ -318,6 +354,8 @@ export default {
 			imageUrl: data?.my?.lender?.image?.url ?? '',
 			publicId: data?.my?.lender?.publicId ?? '',
 		};
+
+		this.$kvTrackEvent('thanks', 'view', 'opt-in-request', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
 		confetti({
@@ -326,7 +364,7 @@ export default {
 			},
 			particleCount: 150,
 			spread: 200,
-			colors: ['#6AC395', '##223829'],
+			colors: ['#6AC395', '#223829'],
 			disableForReducedMotion: true,
 		});
 	},
