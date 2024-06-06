@@ -29,7 +29,7 @@ export default {
 				type: 'select',
 				options: {
 					'none': null,
-					'lightHeader':lightHeader,
+					'lightHeader': lightHeader,
 					'iwdHeaderTheme': iwdHeaderTheme,
 					'wrdHeaderTheme': wrdHeaderTheme,
 					'fifteenYearHeaderTheme': fifteenYearHeaderTheme,
@@ -42,7 +42,7 @@ export default {
 				type: 'select',
 				options: {
 					'none': null,
-					'lightFooter':lightFooter,
+					'lightFooter': lightFooter,
 					'iwdFooterTheme': iwdFooterTheme,
 					'wrdFooterTheme': wrdFooterTheme,
 					'fifteenYearFooterTheme': fifteenYearFooterTheme,
@@ -59,6 +59,7 @@ export const Default = (args, { argTypes }) => ({
 		WwwPageMinimal
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<www-page-minimal
 			:header-theme="headerTheme"

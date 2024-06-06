@@ -19,15 +19,15 @@ export default {
 		theme: {
 			control: {
 				type: 'select',
-				options: {
-					'none': null,
-					'lightFooter':lightFooter,
-					'iwdFooterTheme': iwdFooterTheme,
-					'wrdFooterTheme': wrdFooterTheme,
-					'fifteenYearFooterTheme': fifteenYearFooterTheme,
-					'blueFooter': blueFooter,
-				},
-			}
+			},
+			options: {
+				'none': null,
+				'lightFooter': lightFooter,
+				'iwdFooterTheme': iwdFooterTheme,
+				'wrdFooterTheme': wrdFooterTheme,
+				'fifteenYearFooterTheme': fifteenYearFooterTheme,
+				'blueFooter': blueFooter,
+			},
 		},
 	}
 };
@@ -38,6 +38,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		TheFooter
 	},
+	setup() { return args; },
 	template: `
 		<the-footer
 			:theme="theme"

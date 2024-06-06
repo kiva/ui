@@ -11,20 +11,22 @@ import {
 } from '#src/util/siteThemes';
 import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
 
+const args = {
+	footerTheme: null,
+	corporateLogoUrl: require('#src/assets/images/logos/visa.svg')
+};
+
 export default {
 	title: 'WwwFrame/WwwPageCorporate',
 	component: WwwPageCorporate,
-	args: {
-		footerTheme: null,
-		corporateLogoUrl: require('#src/assets/images/logos/visa.svg')
-	},
+	args,
 	argTypes: {
 		footerTheme: {
 			control: {
 				type: 'select',
 				options: {
 					'none': null,
-					'lightFooter':lightFooter,
+					'lightFooter': lightFooter,
 					'iwdFooterTheme': iwdFooterTheme,
 					'wrdFooterTheme': wrdFooterTheme,
 					'fifteenYearFooterTheme': fifteenYearFooterTheme,
@@ -35,12 +37,13 @@ export default {
 	},
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (otherArgs, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		WwwPageCorporate
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return { ...args, ...otherArgs } },
 	template: `
 		<www-page-corporate
 			:footer-theme="footerTheme"
