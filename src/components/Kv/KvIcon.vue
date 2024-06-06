@@ -20,6 +20,8 @@
 	</span>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
+
 /* eslint-disable max-len */
 /**
  * Use KvIcon to display an inlined-svg from /assets/icons/inline on the page, or from the sprite at /assets/icons/sprite.
@@ -55,7 +57,7 @@ export default {
 	},
 	computed: {
 		iconFile() {
-			return () => import(`../../assets/icons/inline/${this.name}.svg`);
+			return defineAsyncComponent(() => import(`#src/assets/icons/inline/${this.name}.svg`));
 		}
 	}
 };

@@ -5,7 +5,7 @@
 			Earn your $25 Reward¹
 		</h3>
 		<p class="tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center">
-			<kv-icon name="present" class="tw-h-2.5 tw-w-2.5 tw-fill-brand tw--rotate-12 tw-mr-0.5" />
+			<kv-icon name="present" id="present-icon" class="tw-h-2.5 tw-w-2.5 tw--rotate-12 tw-mr-0.5" />
 			<span v-if="!loadingProgress">
 				{{ amountLeftFormatted }} away! Don't miss out on your free lending credit.
 			</span>
@@ -301,5 +301,9 @@ export default {
 	.loan-info {
 		max-width: 244px;
 	}
+}
+
+#present-icon :deep(g) {
+	@apply tw-fill-brand;
 }
 </style>
