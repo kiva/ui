@@ -38,7 +38,7 @@ jobs:
           repository: kiva/marketplace-web-ui-ci
           token: ${{ env.GITHUB_PAT }}
           path: .docker
-          ref: use-existing-assets
+          ref: main
           patterns: |
               resources/org/kiva/marketplaceWebUiCi/ui
       - name: move files
@@ -74,7 +74,7 @@ jobs:
           repository: kiva/marketplace-web-ui-ci
           token: ${{ env.GITHUB_PAT }}
           path: .docker
-          ref: use-existing-assets
+          ref: main
           patterns: |
             resources/org/kiva/marketplaceWebUiCi/ui
       - name: move files
