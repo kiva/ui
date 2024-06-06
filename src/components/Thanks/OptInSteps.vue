@@ -6,6 +6,7 @@
 				:key="index"
 				class="step-item"
 				:class="{ 'completed': index < currentStep }"
+				:style="getDelayStyle(index)"
 			>
 				<div class="step">
 					<span v-if="index < currentStep" class="tw-flex">
@@ -15,7 +16,7 @@
 				<div class="step-text">
 					{{ step.text }}
 				</div>
-				<div v-if="index < steps.length - 1" class="line"></div>
+				<div v-if="index > 0 && index < steps.length" class="line"></div>
 			</li>
 		</ul>
 	</div>
@@ -39,7 +40,7 @@ export default {
 	data() {
 		return {
 			mdiCheckBold,
-			currentStep: 0,
+			currentStep: 1,
 			steps: [
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is fully funded' },
@@ -47,6 +48,13 @@ export default {
 				{ text: `They start repaying you in ${this.weeksToRepay}` }
 			]
 		};
+	},
+	methods: {
+		getDelayStyle(index) {
+			return {
+				animationDelay: `${index * 1}s`
+			};
+		}
 	},
 	mounted() {
 		setTimeout(() => {
@@ -66,11 +74,12 @@ export default {
 }
 
 .step-item {
-	@apply tw-flex tw-items-center tw-relative;
+	animation: fadeIn 1s forwards;
+	@apply tw-flex tw-items-center tw-relative tw-opacity-0 tw-h-6;
 }
 
 .step {
-	transition: background-color 0.5s ease;
+	transition: background-color 1s ease;
 	@apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-bg-tertiary
 		tw-flex tw-items-center tw-justify-center tw-font-medium tw-relative tw-z-1;
 }
@@ -86,8 +95,9 @@ export default {
 }
 
 .line {
-	transition: background-color 0.8s ease;
-	@apply tw-absolute tw-w-0.5 tw-h-5 tw-bg-tertiary tw-top-5 tw-left-1;
+	transition: background-color 1s ease;
+	@apply tw-absolute tw-w-0.5 tw-h-3.5 tw-bottom-3 tw-bg-tertiary tw-left-1 tw-opacity-0;
+	animation: fadeIn 1s forwards;
 }
 
 .completed .step {
@@ -100,5 +110,11 @@ export default {
 
 .buttons button {
 	margin: 10px;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 </style>

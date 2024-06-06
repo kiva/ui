@@ -10,7 +10,7 @@
 						You and {{ borrowerName }} are in this together now.
 					</p>
 					<div class="tw-relative tw-mx-auto" style="width: 200px;">
-						<div class="tw-absolute tw-w-full tw-h-full tw-z-1" style="width: 240px;">
+						<div class="tw-absolute tw-w-full tw-h-full tw-z-3" style="width: 240px;">
 							<animated-sparkles />
 						</div>
 						<borrower-image
