@@ -1,3 +1,20 @@
+## [2.743.0-rc.1](https://github.com/kiva/ui/compare/v2.742.0...v2.743.0-rc.1) (2024-06-06)
+
+
+### 🎉 New Features
+
+* email repayment settings update ([#5342](https://github.com/kiva/ui/issues/5342)) ([122dc99](https://github.com/kiva/ui/commit/122dc998e822ba5c209e58ca6e88869c8d7abc26))
+
+
+### 🐛 Bugfixes
+
+* terms and conditions copy on exp v2 ([9ec9684](https://github.com/kiva/ui/commit/9ec9684f6db20b1bda1e127b59c0da4384bb9852))
+
+
+### 🏗️ Build System
+
+* use main branch of marketplace-web-ui-ci ([4fe17ca](https://github.com/kiva/ui/commit/4fe17ca1dc3b595e7baea833252bd5a70caf73bb))
+
 ## [2.742.0](https://github.com/kiva/ui/compare/v2.741.0...v2.742.0) (2024-06-03)
 
 
