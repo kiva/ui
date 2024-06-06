@@ -70,9 +70,9 @@ export default {
 }
 
 .step {
+	transition: background-color 0.5s ease;
 	@apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-bg-tertiary
 		tw-flex tw-items-center tw-justify-center tw-font-medium tw-relative tw-z-1;
-	transition: background-color 0.5s ease;
 }
 
 .step-text {
@@ -86,8 +86,8 @@ export default {
 }
 
 .line {
-	@apply tw-absolute tw-w-0.5 tw-h-5 tw-bg-tertiary tw-top-5 tw-left-1;
 	transition: background-color 0.8s ease;
+	@apply tw-absolute tw-w-0.5 tw-h-5 tw-bg-tertiary tw-top-5 tw-left-1;
 }
 
 .completed .step {
