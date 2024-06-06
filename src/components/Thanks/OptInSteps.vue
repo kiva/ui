@@ -96,8 +96,8 @@ export default {
 
 .line {
 	transition: background-color 1s ease;
-	@apply tw-absolute tw-w-0.5 tw-h-3.5 tw-bottom-3 tw-bg-tertiary tw-left-1 tw-opacity-0;
 	animation: fadeIn 1s forwards;
+	@apply tw-absolute tw-w-0.5 tw-h-3.5 tw-bottom-3 tw-bg-tertiary tw-left-1 tw-opacity-0;
 }
 
 .completed .step {
@@ -113,8 +113,8 @@ export default {
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+	to {
+		opacity: 1;
+	}
 }
 </style>

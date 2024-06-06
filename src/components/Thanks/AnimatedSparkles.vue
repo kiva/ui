@@ -40,15 +40,19 @@
 	animation: fadein 2s ease-in infinite, jump 10s step-start infinite;
 	opacity: 0;
 }
+
 .spark-1 {
 	animation-delay: 0.5s;
 }
+
 .spark-2 {
 	animation-delay: 1s;
 }
+
 .spark-3 {
 	animation-delay: 1.5s;
 }
+
 .spark-4 {
 	animation-delay: 2s;
 }
@@ -57,18 +61,23 @@
 	0% {
 		transform: translate(0);
 	}
+
 	20% {
 		transform: translate(-3%, 3%);
 	}
+
 	40% {
 		transform: translate(-3%, -3%);
 	}
+
 	60% {
 		transform: translate(3%, 3%);
 	}
+
 	80% {
 		transform: translate(3%, -3%);
 	}
+
 	100% {
 		transform: translate(0);
 	}
@@ -78,9 +87,11 @@
 	0% {
 		opacity: 0;
 	}
+
 	30% {
 		opacity: 1;
 	}
+
 	60% {
 		opacity: 0;
 	}
