@@ -317,8 +317,12 @@ export default {
 
 			// Calculating a possible range of weeks between the planned expiration date and a month after
 			const expDate = Date.parse(this.selectedLoan?.plannedExpirationDate);
-			const minDate = differenceInWeeks(expDate, today);
+			const minDate = differenceInWeeks(addMonths(today, 1), today);
 			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
+
+			if (minDate === maxDate) {
+				return `${minDate} weeks`;
+			}
 
 			return `${minDate} - ${maxDate} weeks`;
 		}
