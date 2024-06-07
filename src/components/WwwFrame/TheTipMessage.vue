@@ -148,11 +148,14 @@ export default {
 		// open and close the toast when the current message changes
 		currentMessage: {
 			handler(message) {
-				if (message) {
-					this.showCurrentMessage();
-				} else {
-					this.$refs.tip?.close();
-				}
+				// Ensure that $refs are defined for the initial component render
+				this.$nextTick(() => {
+					if (message) {
+						this.showCurrentMessage();
+					} else {
+						this.$refs.tip?.close();
+					}
+				});
 			},
 			immediate: true,
 		},
