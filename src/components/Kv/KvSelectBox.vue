@@ -12,7 +12,7 @@
 		/>
 		<div
 			ref="dropdown"
-			:class="{ 'tw-hidden': !this.show }"
+			:class="{ 'tw-hidden': !show }"
 			class="
 				tw-border
 				tw-border-tertiary

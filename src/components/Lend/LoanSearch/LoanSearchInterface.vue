@@ -287,9 +287,9 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(_, client, { route }) {
 			// Handle temporary query param exclusions
-			if (Object.keys(route?.query).length && hasExcludedQueryParams(route?.query)) {
+			if (Object.keys(route?.value?.query ?? {}).length && hasExcludedQueryParams(route?.query)) {
 				// fallback to legacy lend with original query params
 				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
 			}

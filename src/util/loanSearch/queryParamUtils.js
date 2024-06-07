@@ -46,17 +46,17 @@ export function convertQueryToFilters(query, allFacets, queryType, pageLimit) {
  * @param {string} queryType The current query type (lend vs FLSS)
  */
 export function updateQueryParams(loanSearchState, router, queryType) {
-	const oldParamKeys = Object.keys(router.currentRoute.query);
+	const oldParamKeys = Object.keys(router.currentRoute.value.query);
 
 	// Preserve UTM params and team query params
 	const utmParams = {};
 	const teamParams = {};
 	oldParamKeys.forEach(key => {
 		if (key.includes('utm_')) {
-			utmParams[key] = router.currentRoute.query[key];
+			utmParams[key] = router.currentRoute.value.query[key];
 		}
 		if (key.includes('team')) {
-			teamParams[key] = router.currentRoute.query[key];
+			teamParams[key] = router.currentRoute.value.query[key];
 		}
 	});
 
@@ -73,11 +73,11 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 
 	// Check if the query params differ from current route query params
 	const doParamsMatch = [...newParamKeys, ...oldParamKeys]
-		.reduce((prev, key) => prev && router.currentRoute.query[key] === newParams[key], true);
+		.reduce((prev, key) => prev && router.currentRoute.value.query[key] === newParams[key], true);
 
 	// Vue throws duplicate navigation exception when identical paths are pushed to the router
 	if (!doParamsMatch) {
-		router.push({ ...router.currentRoute, query: newParams, params: { noScroll: true, noAnalytics: true } })
+		router.push({ ...router.currentRoute.value, query: newParams, params: { noScroll: true, noAnalytics: true } })
 			.catch(e => {
 				// Ignore "navigation canceled" errors from clicking filter options quickly
 				if (!isNavigationFailure(e, NavigationFailureType.cancelled)) {

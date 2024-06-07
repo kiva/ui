@@ -10,7 +10,7 @@
 		<template v-for="key in filterConfig.keys" :key="key">
 			<template v-if="shouldDisplayFilter(key)">
 				<component
-					:is="filterConfig.config[key].uiConfig.hasAccordion ? KvAccordionItem : 'div'"
+					:is="filterConfig.config[key].uiConfig.hasAccordion ? AsyncKvAccordionItem : 'div'"
 					:id="`${key}-filter-container`"
 					class="tw-mb-0.5"
 				>
@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent, shallowRef } from 'vue';
 import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
 import LoanSearchLocationFilter from '#src/components/Lend/LoanSearch/LoanSearchLocationFilter';
@@ -146,6 +147,8 @@ import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
 import { createMinMaxRange, getMinMaxRangeQueryParam } from '#src/util/loanSearch/minMaxRange';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+
+const AsyncKvAccordionItem = shallowRef(defineAsyncComponent(() => import('#src/components/Kv/KvAccordionItem')));
 
 export default {
 	name: 'LoanSearchFilter',
@@ -196,7 +199,7 @@ export default {
 			debouncedHandleUpdateKeywordSearch: _debounce(this.handleUpdateKeywordSearch, 750),
 			filterConfig,
 			filterUiType,
-			KvAccordionItem,
+			AsyncKvAccordionItem,
 			debouncedHandleRangeSlider: _debounce(this.handleRangeSlider, 500),
 		};
 	},
