@@ -1,11 +1,11 @@
 <template>
-	<www-page data-testid="thanks-page">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': !showOldThanksPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
-		<template v-else>
+		<template v-else-if="showOldThanksPage">
 			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
 				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
@@ -129,6 +129,17 @@
 				:ask-for-comments="askForComments"
 			/>
 		</template>
+		<template v-else>
+			<opt-in-exp-variation
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:borrower-name="borrowerName"
+				:hash="hash"
+				:lender="lender"
+				:is-guest="isGuest"
+			/>
+		</template>
 	</www-page>
 </template>
 
@@ -156,6 +167,7 @@ import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import OptInExpVariation from '@/components/Thanks/OptInExpVariation';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -199,6 +211,7 @@ export default {
 		ThanksPageDonationOnly,
 		ChallengeHeader,
 		ShareChallenge,
+		OptInExpVariation,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -223,6 +236,7 @@ export default {
 			goal: null,
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
+			showOldThanksPage: false,
 		};
 	},
 	apollo: {
@@ -473,6 +487,13 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
+
+		const landedLoanId = this.cookieStore.get('optin-landed-bp');
+		const landedLoan = this.loans.find(loan => loan.id === landedLoanId);
+
+		if (landedLoan?.geocode?.country?.isoCode === 'US') {
+			this.showOldThanksPage = true;
+		}
 	},
 	methods: {
 		createGuestAccount() {

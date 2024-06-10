@@ -1,0 +1,417 @@
+<template>
+	<div class="md:tw-py-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative" :style="{maxWidth: '620px'}">
+		<div class="tw-bg-marigold-1 md:tw-rounded-b">
+			<div class="tw-bg-eco-green-3 tw-text-center tw-pt-4 md:tw-rounded-t">
+				<h1 class="tw-text-white">
+					Success!
+				</h1>
+				<p class="tw-text-subhead tw-text-white tw-mb-2 tw-px-3">
+					{{ headerCopy }}
+				</p>
+
+				<div class="borrower-container">
+					<div class="tw-absolute tw-w-full tw-h-full tw-z-docked" style="width: 240px;">
+						<animated-sparkles />
+					</div>
+
+					<div
+						class="tw-flex tw-justify-center tw-items-center tw-z-1"
+						:style="{height: '200px'}"
+					>
+						<borrower-image
+							v-for="loan, index in filteredLoans"
+							:key="loan.id"
+							class="borrower-image"
+							:class="{'main-loan' : index === 1 && loans.length === 3}"
+							:style="{
+								marginLeft: `${loans.length === 2 && index === 1
+									? (index * marginLeftWeight)
+									: (index - 1) * marginLeftWeight}rem`,
+								zIndex: `${index + 1}`,
+							}"
+							:alt="loan.name"
+							:aspect-ratio="1"
+							:default-image="{ width: 200, faceZoom: 30 }"
+							:hash="hash(loan)"
+							:images="[
+								{ width: 200, faceZoom: 30 },
+							]"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="tw-relative tw-flex tw-justify-center">
+				<div class="tw-bg-marigold-1 tw-absolute oval"></div>
+				<div
+					class="tw-bg-marigold-1 tw-w-full tw-px-3 tw-border-b tw-border-b-secondary tw-z-1"
+				>
+					<h4 class="tw-text-center tw-pt-1">
+						What to expect next:
+					</h4>
+					<opt-in-steps
+						class="tw-mb-5"
+						:weeks-to-repay="weeksToRepay"
+					/>
+					<div class="tw-flex tw-flex-col tw-gap-2 tw-pb-3">
+						<template v-if="userOptedOut && isGuest">
+							<h3 class="tw-text-center">
+								<!-- eslint-disable-next-line max-len -->
+								Want to hear how you’re impacting {{ borrowerName }}’s life and more ways to help people like them?
+							</h3>
+							<kv-button
+								v-kv-track-event="[
+									'thanks',
+									'click',
+									'accept-opt-in-request',
+								]"
+							>
+								Yes, keep me updated
+							</kv-button>
+							<kv-button
+								variant="ghost"
+								class="ghost-button"
+								v-kv-track-event="[
+									'thanks',
+									'click',
+									'reject-opt-in-request',
+								]"
+							>
+								No, I don’t want to receive updates
+							</kv-button>
+						</template>
+						<template v-else>
+							<kv-button
+								to="/portfolio"
+								v-kv-track-event="[
+									'thanks',
+									'click',
+									'go-to-my-kiva',
+								]"
+							>
+								Go to my kiva
+							</kv-button>
+						</template>
+					</div>
+				</div>
+			</div>
+			<div class="tw-py-5 tw-px-3">
+				<div class="tw-mb-2">
+					<!-- eslint-disable-next-line max-len -->
+					<div
+						v-if="userOptedOut && isGuest"
+						class="
+								tw-w-full tw-border tw-rounded
+								tw-flex tw-justify-between tw-cursor-pointer
+								tw-py-2 tw-px-3
+							"
+						@click="openCreateAccount = !openCreateAccount"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'open-account-creation-drawer',
+						]"
+					>
+						<p>
+							Create your account
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openCreateAccount}"
+						/>
+					</div>
+					<kv-expandable
+						v-show="openCreateAccount"
+						easing="ease-in-out"
+					>
+						<div class="tw-py-2">
+							<h2>Before you go!</h2>
+							<!-- eslint-disable-next-line max-len -->
+							<p>Finish setting up your account to track and relend your money as you are paid back.</p>
+							<guest-account-creation
+								class="tw-pt-3 account-creation"
+								event-category="thanks"
+								event-label="open-account-creation-drawer"
+							/>
+						</div>
+					</kv-expandable>
+				</div>
+				<div class="tw-mb-2">
+					<!-- eslint-disable-next-line max-len -->
+					<div
+						class="
+								tw-w-full tw-border tw-rounded
+								tw-flex tw-justify-between tw-cursor-pointer
+								tw-py-2 tw-px-3
+							"
+						@click="openOrderConfirmation = !openOrderConfirmation"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'open-order-confirmation-drawer',
+						]"
+					>
+						<p>
+							Show previous loan details
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openOrderConfirmation}"
+						/>
+					</div>
+					<kv-expandable
+						v-show="openOrderConfirmation"
+						easing="ease-in-out"
+					>
+						<div class="tw-py-2">
+							<checkout-receipt
+								v-if="receipt"
+								:lender="lender"
+								:receipt="receipt"
+							/>
+						</div>
+					</kv-expandable>
+				</div>
+				<div>
+					<div
+						class="
+								tw-w-full tw-border tw-rounded
+								tw-flex tw-justify-between tw-cursor-pointer
+								tw-py-2 tw-px-3
+							"
+						@click="openShareModule = !openShareModule"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'open-share-drawer',
+						]"
+					>
+						<p>
+							Share
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openShareModule}"
+						/>
+					</div>
+					<kv-expandable
+						v-show="openShareModule"
+						easing="ease-in-out"
+					>
+						<div class="tw-py-2">
+							<social-share-v2
+								v-if="receipt"
+								class="social-share"
+								:lender="lender"
+								:loans="loans"
+							/>
+						</div>
+					</kv-expandable>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+import { addMonths, differenceInWeeks } from 'date-fns';
+import OptInSteps from '@/components/Thanks/OptInSteps';
+import KvExpandable from '@/components/Kv/KvExpandable';
+import { mdiChevronDown } from '@mdi/js';
+import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
+import SocialShareV2 from '@/components/Checkout/SocialShareV2';
+import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
+import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
+import confetti from 'canvas-confetti';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+
+export default {
+	name: 'OptInExpVariation',
+	components: {
+		OptInSteps,
+		KvExpandable,
+		CheckoutReceipt,
+		SocialShareV2,
+		BorrowerImage,
+		GuestAccountCreation,
+		AnimatedSparkles,
+		KvButton,
+		KvMaterialIcon
+	},
+	inject: ['apollo', 'cookieStore'],
+	props: {
+		selectedLoan: {
+			type: Object,
+			default: () => ({})
+		},
+		borrowerName: {
+			type: String,
+			default: ''
+		},
+		isGuest: {
+			type: Boolean,
+			default: false
+		},
+		lender: {
+			type: Object,
+			default: () => ({})
+		},
+		loans: {
+			type: Array,
+			default: () => []
+		},
+		receipt: {
+			type: Object,
+			default: () => ({})
+		},
+	},
+	data() {
+		return {
+			openCreateAccount: false,
+			openOrderConfirmation: false,
+			openShareModule: false,
+			mdiChevronDown,
+			userOptedOut: false,
+		};
+	},
+	computed: {
+		filteredLoans() {
+			const filteredLoans = [...this.loans];
+			if (this.loans.length === 3) {
+				const indexToRemove = filteredLoans.indexOf(loan => loan.id === this.selectedLoan.id);
+				const removedLoan = filteredLoans.splice(indexToRemove, 1)[0];
+				filteredLoans.splice(1, 0, removedLoan);
+			}
+			return filteredLoans.slice(0, 3);
+		},
+		weeksToRepay() {
+			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
+			const today = new Date();
+			if (date) {
+				// Get the number of weeks between the first repayment date (in the future) and now
+				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
+			}
+
+			// Calculating a possible range of weeks between the planned expiration date and a month after
+			const expDate = Date.parse(this.selectedLoan?.plannedExpirationDate);
+			const minDate = differenceInWeeks(addMonths(today, 1), today);
+			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
+
+			if (minDate === maxDate) {
+				return `${minDate} weeks`;
+			}
+
+			return `${minDate} - ${maxDate} weeks`;
+		},
+		marginLeftWeight() {
+			if (this.filteredLoans.length === 1) {
+				return 0;
+			}
+			if (this.filteredLoans.length === 2) {
+				return 6;
+			}
+
+			return 10;
+		},
+		headerCopy() {
+			if (this.loans.length === 1) {
+				return `You and ${this.borrowerName} are in this together now`;
+			}
+			if (this.loans.length === 2) {
+				const names = this.loans.map(loan => loan.name).join(' and ');
+				return `You are part of ${names}'s journey now'`;
+			}
+			const beginning = `You are part of ${this.loans[0].name}, ${this.loans[1].name}, and `;
+
+			if (this.loans.length === 3) {
+				return `${beginning} ${this.loans[2].name}'s journey now`;
+			}
+			return `${beginning} ${this.loans.length - 2} others journey now`;
+		}
+	},
+	methods: {
+		hash(loan) {
+			return loan?.image?.hash ?? '';
+		}
+	},
+	created() {
+		this.userOptedOut = this.$route.query.optOut === '1';
+		this.$kvTrackEvent('thanks', 'view', 'opt-in-request', this.isGuest ? 'guest' : 'signed-in');
+	},
+	mounted() {
+		confetti({
+			origin: {
+				y: 0.2
+			},
+			particleCount: 150,
+			spread: 200,
+			colors: ['#6AC395', '#223829', '#95D4B3'],
+			disableForReducedMotion: true,
+		});
+	},
+};
+</script>
+
+<style lang="postcss" scoped>
+
+.oval {
+	width: 653px;
+	height: 181px;
+	border-radius: 50%;
+	margin-top: -90px;
+}
+
+.expandable-button {
+	@apply tw-w-3 tw-h-3 tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500;
+}
+
+.borrower-container {
+  @apply tw-block tw-relative tw-mx-auto tw-z-4;
+  animation: fadein ease-in 1s;
+  width: 150px;
+}
+
+.borrower-image {
+  width: 150px;
+  position: absolute;
+  box-shadow: '0px 4.42px 22.1px 0px #D1DCD6';
+	@apply tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
+}
+
+.borrower-image >>> img.tw-object-contain {
+	@apply tw-object-fill;
+}
+
+.main-loan {
+  width: 180px !important;
+  height: 180px !important;
+  @apply !tw-z-5;
+}
+
+.social-share >>> .share__social.social {
+	@apply tw-w-full;
+}
+
+.ghost-button >>> span {
+	@apply tw-bg-transparent;
+}
+
+.account-creation >>> input {
+	@apply tw-bg-marigold-1;
+}
+
+@keyframes fadein {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+</style>

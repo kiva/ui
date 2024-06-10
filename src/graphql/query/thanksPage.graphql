@@ -74,6 +74,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								city
 								country {
 									name
+									isoCode
 								}
 							}
 							loanAmount
