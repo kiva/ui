@@ -370,15 +370,15 @@ export default {
 }
 
 .borrower-container {
-  @apply tw-block tw-relative tw-mx-auto tw-z-4;
-  animation: fadein ease-in 1s;
-  width: 150px;
+	animation: fadein ease-in 1s;
+	width: 150px;
+	@apply tw-block tw-relative tw-mx-auto tw-z-4;
 }
 
 .borrower-image {
-  width: 150px;
-  position: absolute;
-  box-shadow: '0px 4.42px 22.1px 0px #D1DCD6';
+	width: 150px;
+	position: absolute;
+	box-shadow: '0px 4.42px 22.1px 0px #D1DCD6';
 	@apply tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
 }
 
@@ -387,9 +387,9 @@ export default {
 }
 
 .main-loan {
-  width: 180px !important;
-  height: 180px !important;
-  @apply !tw-z-5;
+	width: 180px !important;
+	height: 180px !important;
+	@apply !tw-z-5;
 }
 
 .social-share >>> .share__social.social {
