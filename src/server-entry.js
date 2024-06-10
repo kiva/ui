@@ -183,7 +183,7 @@ export default async context => {
 	renderExtraHtml(config);
 
 	// set router's location, ignoring any errors about redirection
-	router.push(url).catch(() => {});
+	router.push(url).catch(() => { });
 
 	// wait until router has resolved possible async hooks
 	await router.isReady();
@@ -248,7 +248,9 @@ export default async context => {
 
 		const templateData = {
 			...payload,
-			appHtml,
+			// Turn off SSR for local development to prevent component FOUC (Flash of Unstyled Content)
+			// https://github.com/vitejs/vite/issues/6887#issuecomment-1038664078
+			appHtml: isDev ? '' : appHtml,
 			appState,
 			appConfig: renderedConfig,
 			externals: hasOptOut ? renderedExternals : renderedExternalsOptIn,
