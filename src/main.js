@@ -39,7 +39,7 @@ export default function createApp({
 	app.use(kivaPlugins);
 	app.use(kvAnalytics);
 	app.use(Vue3TouchEvents);
-	// Vue progress bar exports an opbject with a 'default' property on the server
+	// Vue progress bar exports an object with a 'default' property on the server
 	app.use(VueProgressBar.default ?? VueProgressBar, {
 		color: '#26b6e8',
 		failedColor: '#9c021a',
