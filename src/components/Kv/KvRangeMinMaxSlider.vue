@@ -146,7 +146,7 @@ export default {
 			return value;
 		},
 		onInput() {
-			this.$emit('change', { min: this.minSelected, max: this.maxSelected });
+			this.$emit('updated', { min: this.minSelected, max: this.maxSelected });
 		},
 	},
 	watch: {

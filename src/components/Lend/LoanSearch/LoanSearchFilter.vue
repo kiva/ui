@@ -93,7 +93,7 @@
 						:is-percentage="filterConfig.config[key].uiConfig.isPercentage"
 						:displayed-unit="filterConfig.config[key].uiConfig.displayedUnit"
 						class="tw-mt-0.5"
-						@change="payload => debouncedHandleRangeSlider(
+						@updated="(payload) => debouncedHandleRangeSlider(
 							filterConfig.config[key].uiConfig.stateKey,
 							payload,
 							filterConfig.config[key].uiConfig.eventAction
