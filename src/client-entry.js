@@ -150,18 +150,13 @@ function setupClientRouting({
 	// Doing it after initial route is resolved so that we don't double-fetch
 	// the data that we already have. Using router.beforeResolve() so that all
 	// async components are resolved.
-	router.beforeResolve(async (to, from, next) => {
+	router.beforeResolve(async (to, from) => {
 		const [{ contentfulPreviewCookie }, { authenticationGuard }, { preFetchAll }] = await Promise.all([
 			import('#src/util/contentfulPreviewCookie'),
 			import('#src/util/authenticationGuard'),
 			import('#src/util/apolloPreFetch'),
 		]);
 
-		// get newly activated components
-		console.log('to', to);
-		console.log('from', from);
-		// const matched = router.getMatchedComponents(to);
-		// const prevMatched = router.getMatchedComponents(from);
 		const { matched } = to;
 		const prevMatched = from.matched;
 		const activated = matched.filter((c, i) => prevMatched[i] !== c);
@@ -175,7 +170,7 @@ function setupClientRouting({
 					kvAuth0,
 					route: to,
 				});
-			}).then(next).catch(next);
+			}).then().catch();
 	});
 
 	router.beforeEach((to, from, next) => {
@@ -187,7 +182,7 @@ function setupClientRouting({
 		// finish loading
 		app.config.globalProperties.$Progress.finish();
 
-		if (!to?.params?.noAnalytics) {
+		if (to?.query?.noAnalytics?.toLowerCase() !== 'true') {
 			// fire pageview
 			app.$fireAsyncPageView(to, from);
 		}

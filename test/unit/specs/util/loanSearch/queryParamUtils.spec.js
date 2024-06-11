@@ -51,7 +51,7 @@ describe('queryParamUtils.js', () => {
 
 	describe('updateQueryParams', () => {
 		const getRouter = (query = {}) => ({
-			currentRoute: { name: 'name', query },
+			currentRoute: { value: { name: 'name', query } },
 			push: jest.fn().mockReturnValue({ catch: jest.fn() }),
 		});
 
@@ -66,8 +66,12 @@ describe('queryParamUtils.js', () => {
 			expect(filterConfig.config.b.getQueryFromFilter).toHaveBeenCalledWith({}, FLSS_QUERY_TYPE);
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
-				query: { a: 'a', b: 'b' },
-				params: { noScroll: true, noAnalytics: true }
+				query: {
+					a: 'a',
+					b: 'b',
+					noScroll: true,
+					noAnalytics: true
+				},
 			});
 		});
 
@@ -78,8 +82,13 @@ describe('queryParamUtils.js', () => {
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
-				query: { a: 'a', b: 'b', utm_test: 'test' },
-				params: { noScroll: true, noAnalytics: true }
+				query: {
+					a: 'a',
+					b: 'b',
+					utm_test: 'test',
+					noScroll: true,
+					noAnalytics: true
+				},
 			});
 		});
 
@@ -90,8 +99,13 @@ describe('queryParamUtils.js', () => {
 
 			expect(router.push).toHaveBeenCalledWith({
 				name: 'name',
-				query: { a: 'a', b: 'b', team: 'test' },
-				params: { noScroll: true, noAnalytics: true }
+				query: {
+					a: 'a',
+					b: 'b',
+					team: 'test',
+					noScroll: true,
+					noAnalytics: true
+				},
 			});
 		});
 

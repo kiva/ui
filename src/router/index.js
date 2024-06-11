@@ -15,7 +15,7 @@ export default ({ isServer }) => createRouter({
 		}
 		// Enables the ability to disable scroll on navigation, such as when changing the query string for
 		// filtering. Pushed route requires the name property for the Vue Router to pass along the params.
-		if (to?.params?.noScroll) {
+		if (to?.query?.noScroll?.toLowerCase() === 'true') {
 			return;
 		}
 		return { left: 0, top: 0 };
