@@ -3,6 +3,10 @@
 import '#src/assets/scss/tailwind/tailwind.css';
 import '#src/assets/scss/app.scss';
 
+// Facilitate using sprite icon SVGs in KvIcon
+// eslint-disable-next-line import/no-unresolved
+import 'virtual:svg-store';
+
 const config = window.__KV_CONFIG__ || {};
 
 // Set webpack public asset path based on configuration
