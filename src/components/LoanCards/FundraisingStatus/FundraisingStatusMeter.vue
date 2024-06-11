@@ -1,7 +1,7 @@
 <template>
-	<div class="fundraising-status-meter tw-bg-tertiary" :class="{short: props.shortMeter}">
+	<div class="fundraising-status-meter tw-bg-tertiary" :class="{ short: shortMeter }">
 		<span
-			v-if="props.isFunded"
+			v-if="isFunded"
 			class="meter tw-bg-brand"
 			style="width: 100%;"
 		>
@@ -9,11 +9,31 @@
 		<span
 			v-else
 			class="meter tw-bg-brand"
-			:style="`width: ${(props.percentRaised * 100)}%;`"
+			:style="`width: ${(percentRaised * 100)}%;`"
 		>
 		</span>
 	</div>
 </template>
+
+<script>
+export default {
+	name: 'FundraisingStatusMeter',
+	props: {
+		shortMeter: {
+			type: Boolean,
+			default: false,
+		},
+		isFunded: {
+			type: Boolean,
+			default: false,
+		},
+		percentRaised: {
+			type: Number,
+			default: 0,
+		},
+	},
+};
+</script>
 
 <style lang="scss" scoped>
 @import '#src/assets/scss/settings';
