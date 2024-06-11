@@ -60,7 +60,7 @@
 			class="tw-relative tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
 			style="max-width: 1200px;"
 		>
-			<!-- emtpy state for no loans result -->
+			<!-- empty state for no loans result -->
 			<empty-state
 				v-show="emptyState"
 				class="tw-mb-2 tw-mx-1"
