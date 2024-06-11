@@ -455,7 +455,7 @@ export default {
 					}
 				};
 				const { route } = args;
-				const { query, params, path } = route;
+				const { query, params, path } = (route?.value ?? {});
 
 				// Filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = params.category;

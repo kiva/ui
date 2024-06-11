@@ -58,7 +58,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="kv-lightbox__controls" v-if="this.$slots.controls">
+					<div class="kv-lightbox__controls" v-if="$slots.controls">
 						<slot name="controls"></slot>
 					</div>
 				</div>
