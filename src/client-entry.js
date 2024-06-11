@@ -188,7 +188,7 @@ function setupClientRouting({
 
 		if (to?.query?.noAnalytics?.toLowerCase() !== 'true') {
 			// fire pageview
-			app.$fireAsyncPageView(to, from);
+			app.config.globalProperties.$fireAsyncPageView(to, from);
 		}
 	});
 
