@@ -130,7 +130,7 @@
 			/>
 		</template>
 		<template v-else>
-			<opt-in-exp-variation
+			<what-is-next-template
 				:selected-loan="selectedLoan"
 				:loans="loans"
 				:receipt="receipt"
@@ -138,6 +138,8 @@
 				:hash="hash"
 				:lender="lender"
 				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 	</www-page>
@@ -167,7 +169,8 @@ import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import OptInExpVariation from '@/components/Thanks/OptInExpVariation';
+import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -175,6 +178,7 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const NEW_THANKS_PAGE_EXP = 'new_ty_page_minimal';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -211,7 +215,7 @@ export default {
 		ThanksPageDonationOnly,
 		ChallengeHeader,
 		ShareChallenge,
-		OptInExpVariation,
+		WhatIsNextTemplate,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -237,6 +241,8 @@ export default {
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
 			showOldThanksPage: false,
+			optedIn: false,
+			enableShortVersion: false,
 		};
 	},
 	apollo: {
@@ -493,6 +499,21 @@ export default {
 
 		if (landedLoan?.geocode?.country?.isoCode === 'US') {
 			this.showOldThanksPage = true;
+		}
+
+		// New Thanks Page Experiment
+		const isUsaLoan = false;
+		if (!isUsaLoan) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'thanks',
+				NEW_THANKS_PAGE_EXP,
+				'EXP-MP-267-Jun2024',
+			);
+			if (version === 'b') {
+				this.enableShortVersion = true;
+			}
 		}
 	},
 	methods: {

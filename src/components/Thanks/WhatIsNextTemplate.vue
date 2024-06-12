@@ -5,7 +5,7 @@
 				<h1 class="tw-text-white">
 					Success!
 				</h1>
-				<p class="tw-text-subhead tw-text-white tw-mb-2 tw-px-3">
+				<p class="tw-text-subhead tw-text-white tw-mb-2 tw-px-3 md:tw-px-8">
 					{{ headerCopy }}
 				</p>
 
@@ -43,67 +43,108 @@
 			<div class="tw-relative tw-flex tw-justify-center">
 				<div class="tw-bg-marigold-1 tw-absolute oval"></div>
 				<div
-					class="tw-bg-marigold-1 tw-w-full tw-px-3 tw-border-b tw-border-b-secondary tw-z-1"
+					class="secondary-container"
 				>
-					<h4 class="tw-text-center tw-pt-1">
-						What to expect next:
-					</h4>
-					<opt-in-steps
-						class="tw-mb-5"
-						:weeks-to-repay="weeksToRepay"
-					/>
-					<div class="tw-flex tw-flex-col tw-gap-2 tw-pb-3">
-						<template v-if="userOptedOut && isGuest">
-							<h3 class="tw-text-center">
-								<!-- eslint-disable-next-line max-len -->
-								Want to hear how you’re impacting {{ borrowerName }}’s life and more ways to help people like them?
+					<template v-if="!selectOption">
+						<template v-if="!shortVersionEnabled">
+							<h4 class="tw-text-center tw-pt-1">
+								What to expect next:
+							</h4>
+							<opt-in-steps
+								class="tw-mb-5"
+								:weeks-to-repay="weeksToRepay"
+							/>
+						</template>
+						<div class="tw-flex tw-flex-col tw-gap-2 tw-pb-3">
+							<h3 class="tw-text-center" v-if="ctaCopy">
+								{{ ctaCopy }}
 							</h3>
-							<kv-button
-								v-kv-track-event="[
-									'thanks',
-									'click',
-									'accept-opt-in-request',
-								]"
-							>
-								Yes, keep me updated
-							</kv-button>
-							<kv-button
-								variant="ghost"
-								class="ghost-button"
-								v-kv-track-event="[
-									'thanks',
-									'click',
-									'reject-opt-in-request',
-								]"
-							>
-								No, I don’t want to receive updates
-							</kv-button>
-						</template>
-						<template v-else>
-							<kv-button
-								to="/portfolio"
-								v-kv-track-event="[
-									'thanks',
-									'click',
-									'go-to-my-kiva',
-								]"
-							>
-								Go to my kiva
-							</kv-button>
-						</template>
-					</div>
+							<template v-if="isGuest && optedIn">
+								<kv-button
+									to="/portfolio"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'complete-account',
+									]"
+								>
+									Complete account
+								</kv-button>
+							</template>
+							<template v-else-if="!optedIn">
+								<kv-button
+									@click="updateOptIn(true)"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'accept-opt-in-request',
+									]"
+								>
+									Yes, keep me updated
+								</kv-button>
+								<kv-button
+									@click="updateOptIn(false)"
+									variant="ghost"
+									class="ghost-button"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'reject-opt-in-request',
+									]"
+								>
+									No, I don’t want to receive updates
+								</kv-button>
+							</template>
+							<template v-else>
+								<kv-button
+									to="/portfolio"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'go-to-my-kiva',
+									]"
+								>
+									Go to my kiva
+								</kv-button>
+							</template>
+						</div>
+					</template>
+					<template v-else>
+						<div class="tw-z-5 tw-flex tw-flex-col tw-items-center tw-mt-2.5">
+							<template v-if="confirmOptedOut">
+								<img
+									:src="imageRequire(`./hi-five.svg`)"
+									class="tw-w-7 tw-h-7 tw-mb-1"
+									alt="Hi five icon"
+								>
+								<h3 class="tw-text-center">
+									We will keep you updated!
+								</h3>
+							</template>
+							<template v-else>
+								<img
+									:src="imageRequire(`./paper-plane.svg`)"
+									class="tw-w-7 tw-h-7 tw-mb-1"
+									alt="Paper plane icon"
+								>
+								<h3 class="tw-text-center">
+									You will not receive updates
+								</h3>
+							</template>
+						</div>
+					</template>
 				</div>
 			</div>
-			<div class="tw-py-5 tw-px-3">
+			<div class="tw-py-5 tw-px-3 md:tw-px-8">
 				<div class="tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					<div
-						v-if="userOptedOut && isGuest"
+						v-if="!optedIn && isGuest"
 						class="
-								tw-w-full tw-border tw-rounded
-								tw-flex tw-justify-between tw-cursor-pointer
-								tw-py-2 tw-px-3
-							"
+							tw-w-full tw-border tw-rounded
+							tw-flex tw-justify-between tw-cursor-pointer
+							tw-py-2 tw-px-3
+						"
 						@click="openCreateAccount = !openCreateAccount"
 						v-kv-track-event="[
 							'thanks',
@@ -111,7 +152,7 @@
 							'open-account-creation-drawer',
 						]"
 					>
-						<p>
+						<p class="tw-font-medium">
 							Create your account
 						</p>
 						<kv-material-icon
@@ -140,10 +181,10 @@
 					<!-- eslint-disable-next-line max-len -->
 					<div
 						class="
-								tw-w-full tw-border tw-rounded
-								tw-flex tw-justify-between tw-cursor-pointer
-								tw-py-2 tw-px-3
-							"
+							tw-w-full tw-border tw-rounded
+							tw-flex tw-justify-between tw-cursor-pointer
+							tw-py-2 tw-px-3
+						"
 						@click="openOrderConfirmation = !openOrderConfirmation"
 						v-kv-track-event="[
 							'thanks',
@@ -151,7 +192,7 @@
 							'open-order-confirmation-drawer',
 						]"
 					>
-						<p>
+						<p class="tw-font-medium">
 							Show previous loan details
 						</p>
 						<kv-material-icon
@@ -176,10 +217,10 @@
 				<div>
 					<div
 						class="
-								tw-w-full tw-border tw-rounded
-								tw-flex tw-justify-between tw-cursor-pointer
-								tw-py-2 tw-px-3
-							"
+							tw-w-full tw-border tw-rounded
+							tw-flex tw-justify-between tw-cursor-pointer
+							tw-py-2 tw-px-3
+						"
 						@click="openShareModule = !openShareModule"
 						v-kv-track-event="[
 							'thanks',
@@ -187,7 +228,7 @@
 							'open-share-drawer',
 						]"
 					>
-						<p>
+						<p class="tw-font-medium">
 							Share
 						</p>
 						<kv-material-icon
@@ -229,8 +270,10 @@ import confetti from 'canvas-confetti';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
+const imageRequire = require.context('@/assets/images/thanks-page/', true);
+
 export default {
-	name: 'OptInExpVariation',
+	name: 'WhatIsNextTemplate',
 	components: {
 		OptInSteps,
 		KvExpandable,
@@ -240,7 +283,7 @@ export default {
 		GuestAccountCreation,
 		AnimatedSparkles,
 		KvButton,
-		KvMaterialIcon
+		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -268,6 +311,14 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
+		optedIn: {
+			type: Boolean,
+			default: false
+		},
+		shortVersionEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -275,7 +326,9 @@ export default {
 			openOrderConfirmation: false,
 			openShareModule: false,
 			mdiChevronDown,
-			userOptedOut: false,
+			confirmOptedOut: false,
+			selectOption: false,
+			imageRequire,
 		};
 	},
 	computed: {
@@ -331,15 +384,29 @@ export default {
 				return `${beginning} ${this.loans[2].name}'s journey now`;
 			}
 			return `${beginning} ${this.loans.length - 2} others journey now`;
+		},
+		ctaCopy() {
+			if (this.optedIn && this.isGuest) {
+				return 'Complete your account to track your impact and manage repayments.';
+			}
+			if (!this.optedIn) {
+				return `Want to hear how you\’re impacting ${this.borrowerName}\’s life and more ways to help people like them?`;
+			}
+
+			return '';
 		}
 	},
 	methods: {
 		hash(loan) {
 			return loan?.image?.hash ?? '';
+		},
+		updateOptIn(value) {
+			this.selectOption = true;
+			this.openCreateAccount = true;
+			this.confirmOptedOut = !value;
 		}
 	},
 	created() {
-		this.userOptedOut = this.$route.query.optOut === '1';
 		this.$kvTrackEvent('thanks', 'view', 'opt-in-request', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
@@ -402,6 +469,11 @@ export default {
 
 .account-creation >>> input {
 	@apply tw-bg-marigold-1;
+}
+
+.secondary-container {
+	border-bottom-color: #ECE4D5;
+	@apply tw-bg-marigold-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5;
 }
 
 @keyframes fadein {

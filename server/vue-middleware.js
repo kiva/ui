@@ -65,6 +65,11 @@ module.exports = function createMiddleware({
 			device
 		};
 
+		// Set the first user visit to the web
+		if (!req.session?.firstVisit) {
+			req.session.firstVisit = req.url;
+		}
+
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 		// Set strict cache-control headers for protected pages
