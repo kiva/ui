@@ -13,9 +13,10 @@
 			data-testid="impact-dashboard-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 		>
-			<span class="tw-underline">
-				Go back to the other tab to make your selection!
-			</span>
+
+			Please go back to your first Kiva tab or <span class="tw-underline">
+				click here</span> to use your {{ promoData.bonusBalance | numeral('$0.00') }} promo credit.
+
 		</a>
 	</div>
 	<div
