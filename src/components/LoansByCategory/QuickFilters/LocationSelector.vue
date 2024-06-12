@@ -301,11 +301,13 @@ export default {
 		},
 	},
 	watch: {
-		selectedCountries() {
-			this.$emit('update-location', [...this.selectedCountries]);
-		}
-	}
-
+		selectedCountries: {
+			handler() {
+				this.$emit('update-location', [...this.selectedCountries]);
+			},
+			deep: true,
+		},
+	},
 };
 </script>
 

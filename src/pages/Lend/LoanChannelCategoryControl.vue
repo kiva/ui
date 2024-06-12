@@ -338,7 +338,7 @@ export default {
 		urlParams() {
 			const page = Math.floor(this.offset / this.limit) + 1;
 
-			return { page: page > 1 ? String(page) : undefined };
+			return { ...(page > 1 && { page: String(page) }) };
 		},
 		lastLoanPage() {
 			return Math.ceil(this.totalCount / this.limit);
