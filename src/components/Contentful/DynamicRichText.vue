@@ -1,9 +1,9 @@
 <script>
-import { defineAsyncComponent } from 'vue';
-/**
-* This component takes an html string and renders it with vue
-* */
+import { defineAsyncComponent, h } from 'vue';
 
+/**
+ * This component takes an html string and renders it with vue
+ */
 export default {
 	name: 'DynamicRichText',
 	props: {
@@ -51,11 +51,11 @@ export default {
 			return classes;
 		}
 	},
-	render(createElement) {
-		return createElement(
+	render() {
+		return h(
 			'div', /* Wrap output in a div since Vue templates must have 1 root element */
 			[
-				createElement(this.dynamicComponent, {
+				h(this.dynamicComponent, {
 					class: this.elementClasses,
 					props: {
 					},

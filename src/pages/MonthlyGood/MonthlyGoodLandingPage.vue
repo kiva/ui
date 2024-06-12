@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-model-argument -->
 <template>
 	<www-page>
 		<kv-hero
@@ -26,8 +27,8 @@
 						></h1>
 						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
-							:amount.sync="monthlyGoodAmount"
-							:selected-group.sync="selectedGroup"
+							v-model:amount="monthlyGoodAmount"
+							v-model:selected-group="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && !hasModernSub"
@@ -53,8 +54,8 @@
 			></h1>
 			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
 			<landing-form
-				:amount.sync="monthlyGoodAmount"
-				:selected-group.sync="selectedGroup"
+				v-model:amount="monthlyGoodAmount"
+				v-model:selected-group="selectedGroup"
 				key="top"
 				:button-text="heroPrimaryCtaText"
 				v-if="!isMonthlyGoodSubscriber && !hasModernSub"
@@ -85,8 +86,8 @@
 		<kiva-as-expert>
 			<template #form>
 				<landing-form
-					:amount.sync="monthlyGoodAmount"
-					:selected-group.sync="selectedGroup"
+					v-model:amount="monthlyGoodAmount"
+					v-model:selected-group="selectedGroup"
 					key="bottom"
 					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 					:button-text="heroPrimaryCtaText"

@@ -19,7 +19,7 @@
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<fieldset class="tw-basis-2/6">
 					<label
-						class="tw-sr-only" :class="{ 'tw-text-danger': $v.$invalid }"
+						class="tw-sr-only" :class="{ 'tw-text-danger': v$.$invalid }"
 						:for="'amount-' + componentKey"
 					>
 						Amount
@@ -29,11 +29,11 @@
 						:value="amount"
 						@input="updateAmount"
 					/>
-					<ul class="validation-errors tw-text-danger" v-if="$v.$invalid">
-						<li v-if="!$v.amount.required">
+					<ul class="validation-errors tw-text-danger" v-if="v$.$invalid">
+						<li v-if="!v$.amount.required">
 							Field is required
 						</li>
-						<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
+						<li v-if="!v$.amount.minValue.$invalid || !v$.amount.maxValue.$invalid">
 							Enter an amount of $5-$8,500
 						</li>
 					</ul>
@@ -42,7 +42,7 @@
 					class="tw-basis-4/6"
 					style="margin-top: 0;"
 					type="submit"
-					:disabled="$v.$invalid"
+					:disabled="v$.$invalid"
 					v-kv-track-event="[
 						'MonthlyGood',
 						`click-start-form-${componentKey}`,
@@ -57,8 +57,9 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { getCurrentInstance } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
@@ -68,7 +69,6 @@ import KvButton from '@kiva/kv-components/vue/KvButton';
 export default {
 	name: 'LandingForm',
 	mixins: [
-		validationMixin,
 		loanGroupCategoriesMixin
 	],
 	components: {
@@ -76,12 +76,14 @@ export default {
 		KvCurrencyInput,
 		KvSelect,
 	},
-	validations: {
-		amount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(8500)
-		},
+	validations() {
+		return {
+			amount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(8500)
+			}
+		};
 	},
 	props: {
 		amount: {
@@ -97,12 +99,13 @@ export default {
 			default: 'Contribute monthly'
 		},
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		componentKey() {
 			// This component can exist multiple times on the page or can be iterated over.
 			// If it has a key attribute, then it will be used in the input id to avoid
 			// duplicate inputs with the same id.
-			return this.$vnode.key || '';
+			return getCurrentInstance().vnode.key || '';
 		}
 	},
 	methods: {
