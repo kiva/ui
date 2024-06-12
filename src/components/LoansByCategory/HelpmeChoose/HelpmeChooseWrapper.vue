@@ -13,15 +13,15 @@
 			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 				<helpme-choose-trigger
 					:variant="secondOption"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 				<helpme-choose-trigger
 					variant="researchScore"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 			</div>
 

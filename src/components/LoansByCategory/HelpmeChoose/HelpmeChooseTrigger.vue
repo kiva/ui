@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-w-full tw-flex tw-flex-col tw-bg-primary-inverse tw-rounded tw-p-1 lg:tw-p-2 tw-cursor-pointer"
-		@click="$emit('click', variant)"
+		@click="$emit('update', variant)"
 	>
 		<component v-if="imgSource" :is="imgSource" class="tw-hidden lg:tw-block tw-w-3" />
 		<!-- eslint-disable-next-line max-len -->
