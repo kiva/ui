@@ -84,16 +84,11 @@
 								</kv-button>
 							</template>
 							<template v-else-if="isGuest && optedIn && shortVersionEnabled">
-								<kv-button
-									to="/portfolio"
-									v-kv-track-event="[
-										'thanks',
-										'click',
-										'complete-account',
-									]"
-								>
-									Complete account
-								</kv-button>
+								<guest-account-creation
+									class="tw-pt-3 account-creation"
+									event-category="thanks"
+									event-label="open-account-creation-drawer"
+								/>
 							</template>
 							<template v-else>
 								<kv-button
@@ -111,7 +106,7 @@
 					</template>
 					<template v-else>
 						<div class="tw-z-5 tw-flex tw-flex-col tw-items-center tw-mt-2.5">
-							<template v-if="confirmOptedOut">
+							<template v-if="confirmOptInChoice">
 								<img
 									:src="imageRequire(`./hi-five.svg`)"
 									class="tw-w-7 tw-h-7 tw-mb-1"
@@ -152,11 +147,8 @@
 					</div>
 					<div
 						v-if="!optedIn && isGuest"
-						class="
-							tw-w-full tw-border tw-rounded
-							tw-flex tw-justify-between tw-cursor-pointer
-							tw-py-2 tw-px-3
-						"
+						class="option-box"
+						:class="{'open' : openCreateAccount}"
 						@click="() => openCreateAccount = !openCreateAccount"
 						v-kv-track-event="[
 							'thanks',
@@ -193,11 +185,8 @@
 				<div class="tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					<div
-						class="
-							tw-w-full tw-border tw-rounded
-							tw-flex tw-justify-between tw-cursor-pointer
-							tw-py-2 tw-px-3
-						"
+						class="option-box"
+						:class="{'open' : openOrderConfirmation}"
 						@click="() => openOrderConfirmation = !openOrderConfirmation"
 						v-kv-track-event="[
 							'thanks',
@@ -229,11 +218,8 @@
 				</div>
 				<div>
 					<div
-						class="
-							tw-w-full tw-border tw-rounded
-							tw-flex tw-justify-between tw-cursor-pointer
-							tw-py-2 tw-px-3
-						"
+						class="option-box"
+						:class="{'open' : openShareModule}"
 						@click="() => openShareModule = !openShareModule"
 						v-kv-track-event="[
 							'thanks',
@@ -280,6 +266,8 @@ import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
 import confetti from 'canvas-confetti';
+import { gql } from '@apollo/client';
+import logFormatter from '@/util/logFormatter';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -339,7 +327,7 @@ export default {
 			openOrderConfirmation: false,
 			openShareModule: false,
 			mdiChevronDown,
-			confirmOptedOut: false,
+			confirmOptInChoice: false,
 			selectOption: false,
 			imageRequire,
 		};
@@ -417,7 +405,32 @@ export default {
 		updateOptIn(value) {
 			this.selectOption = true;
 			this.openCreateAccount = true;
-			this.confirmOptedOut = value;
+			if (value) {
+				try {
+					this.apollo.mutate({
+						mutation: gql`
+									mutation updateCommunicationSettings(
+										$lenderNews: Boolean
+									) {
+										my {
+											updateCommunicationSettings(
+												communicationSettings: {
+													lenderNews: $lenderNews
+												}
+											)
+										}
+									}
+								`,
+						variables: {
+							lenderNews: value,
+						},
+					});
+				} catch (error) {
+					logFormatter(error, 'error');
+				}
+			}
+
+			this.confirmOptInChoice = value;
 		}
 	},
 	created() {
@@ -489,14 +502,13 @@ export default {
 	@apply tw-bg-marigold-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5 tw-pt-3;
 }
 
-@keyframes fadein {
-	0% {
-		opacity: 0;
-	}
+.option-box {
+	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
+	transition: border-top 0.05s, border-bottom 0.05s, border-left 0.05s, border-radius 0.2s;
+}
 
-	100% {
-		opacity: 1;
-	}
+.option-box.open {
+	@apply tw-border-t-0 tw-border-l-0 tw-border-r-0 tw-rounded-none;
 }
 
 </style>
