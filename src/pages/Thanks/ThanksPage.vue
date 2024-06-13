@@ -494,16 +494,17 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		const landedLoanId = this.cookieStore.get('optin-landed-bp');
-		const landedLoan = this.loans.find(loan => loan.id === landedLoanId);
+		// Only show the old page if the first page is a borrower page
+		if (this.$appConfig?.firstPage?.indexOf('/lend/') !== -1) {
+			const url = this.$appConfig.firstPage?.split('/')[2];
+			const firstVisitloanId = url?.[2] ?? null;
 
-		if (landedLoan?.geocode?.country?.isoCode === 'US') {
-			this.showOldThanksPage = true;
+			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
+			this.showOldPage = landedLoan?.geocode?.country?.isoCode === 'US';
 		}
 
 		// New Thanks Page Experiment
-		const isUsaLoan = false;
-		if (!isUsaLoan) {
+		if (!this.showOldPage) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,

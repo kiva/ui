@@ -59,19 +59,7 @@
 							<h3 class="tw-text-center" v-if="ctaCopy">
 								{{ ctaCopy }}
 							</h3>
-							<template v-if="isGuest && optedIn">
-								<kv-button
-									to="/portfolio"
-									v-kv-track-event="[
-										'thanks',
-										'click',
-										'complete-account',
-									]"
-								>
-									Complete account
-								</kv-button>
-							</template>
-							<template v-else-if="!optedIn">
+							<template v-if="!optedIn || (optedIn && isGuest && !shortVersionEnabled)">
 								<kv-button
 									@click="updateOptIn(true)"
 									v-kv-track-event="[
@@ -93,6 +81,18 @@
 									]"
 								>
 									No, I don’t want to receive updates
+								</kv-button>
+							</template>
+							<template v-else-if="isGuest && optedIn && shortVersionEnabled">
+								<kv-button
+									to="/portfolio"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'complete-account',
+									]"
+								>
+									Complete account
 								</kv-button>
 							</template>
 							<template v-else>
@@ -137,6 +137,19 @@
 			</div>
 			<div class="tw-py-5 tw-px-3 md:tw-px-8">
 				<div class="tw-mb-2">
+					<div v-if="selectOption && !isGuest">
+						<kv-button
+							class="tw-w-full"
+							to="/portfolio"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'go-to-my-kiva',
+							]"
+						>
+							Go to my kiva
+						</kv-button>
+					</div>
 					<!-- eslint-disable-next-line max-len -->
 					<div
 						v-if="!optedIn && isGuest"
@@ -162,6 +175,7 @@
 						/>
 					</div>
 					<kv-expandable
+						v-if="!optedIn && isGuest"
 						v-show="openCreateAccount"
 						easing="ease-in-out"
 					>
@@ -386,11 +400,12 @@ export default {
 			return `${beginning} ${this.loans.length - 2} others journey now`;
 		},
 		ctaCopy() {
-			if (this.optedIn && this.isGuest) {
+			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
 				return 'Complete your account to track your impact and manage repayments.';
 			}
-			if (!this.optedIn) {
-				return `Want to hear how you\’re impacting ${this.borrowerName}\’s life and more ways to help people like them?`;
+			if (this.isGuest || (!this.isGuest && !this.optedIn)) {
+				// eslint-disable-next-line max-len
+				return `Want to hear how you're impacting ${this.borrowerName}'s life and more ways to help people like them?`;
 			}
 
 			return '';
@@ -403,7 +418,7 @@ export default {
 		updateOptIn(value) {
 			this.selectOption = true;
 			this.openCreateAccount = true;
-			this.confirmOptedOut = !value;
+			this.confirmOptedOut = value;
 		}
 	},
 	created() {
@@ -473,7 +488,7 @@ export default {
 
 .secondary-container {
 	border-bottom-color: #ECE4D5;
-	@apply tw-bg-marigold-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5;
+	@apply tw-bg-marigold-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5 tw-pt-3;
 }
 
 @keyframes fadein {

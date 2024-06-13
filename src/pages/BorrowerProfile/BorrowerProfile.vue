@@ -653,12 +653,6 @@ export default {
 			}
 		}
 
-		// MP-267	Landed Borrower Profile
-		const landedBp = this.cookieStore.get('optin-landed-bp');
-		if (!landedBp) {
-			this.cookieStore.set('optin-landed-bp', this.loanId);
-		}
-
 		this.determineIfMobile();
 
 		window.addEventListener('resize', _throttle(() => {

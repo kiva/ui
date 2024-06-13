@@ -56,19 +56,17 @@ module.exports = function createMiddleware({
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
+		// Set the first user visit to the web
+		req.session.firstPage = !req.session?.firstPage ? req.url : req.session.firstPage;
+
 		const context = {
 			url: req.url,
-			config: config.app,
+			config: { ...config.app, firstPage: req.session?.firstPage },
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
-			device
+			device,
 		};
-
-		// Set the first user visit to the web
-		if (!req.session?.firstVisit) {
-			req.session.firstVisit = req.url;
-		}
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
