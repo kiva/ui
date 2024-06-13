@@ -111,4 +111,11 @@ export default defineConfig({
 		},
 		extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.vue'],
 	},
+	server: {
+		hmr: {
+			// Use a different client port to allow Caddy to reverse proxy with SSL cert
+			clientPort: 24679,
+			port: 24678,
+		},
+	},
 });
