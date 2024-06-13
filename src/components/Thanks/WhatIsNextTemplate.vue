@@ -150,7 +150,6 @@
 							Go to my kiva
 						</kv-button>
 					</div>
-					<!-- eslint-disable-next-line max-len -->
 					<div
 						v-if="!optedIn && isGuest"
 						class="
@@ -158,7 +157,7 @@
 							tw-flex tw-justify-between tw-cursor-pointer
 							tw-py-2 tw-px-3
 						"
-						@click="openCreateAccount = !openCreateAccount"
+						@click="() => openCreateAccount = !openCreateAccount"
 						v-kv-track-event="[
 							'thanks',
 							'click',
@@ -199,7 +198,7 @@
 							tw-flex tw-justify-between tw-cursor-pointer
 							tw-py-2 tw-px-3
 						"
-						@click="openOrderConfirmation = !openOrderConfirmation"
+						@click="() => openOrderConfirmation = !openOrderConfirmation"
 						v-kv-track-event="[
 							'thanks',
 							'click',
@@ -235,7 +234,7 @@
 							tw-flex tw-justify-between tw-cursor-pointer
 							tw-py-2 tw-px-3
 						"
-						@click="openShareModule = !openShareModule"
+						@click="() => openShareModule = !openShareModule"
 						v-kv-track-event="[
 							'thanks',
 							'click',
@@ -319,7 +318,7 @@ export default {
 		},
 		loans: {
 			type: Array,
-			default: () => []
+			default: () => ([])
 		},
 		receipt: {
 			type: Object,
@@ -459,9 +458,8 @@ export default {
 
 .borrower-image {
 	width: 150px;
-	position: absolute;
 	box-shadow: '0px 4.42px 22.1px 0px #D1DCD6';
-	@apply tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
+	@apply tw-absolute tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
 }
 
 .borrower-image >>> img.tw-object-contain {
