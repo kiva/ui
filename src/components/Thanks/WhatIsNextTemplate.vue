@@ -61,7 +61,7 @@
 							</h3>
 							<template v-if="!optedIn || (optedIn && isGuest && !shortVersionEnabled)">
 								<kv-button
-									@click="updateOptIn(true)"
+									@click="() => updateOptIn(true)"
 									v-kv-track-event="[
 										'thanks',
 										'click',
@@ -71,7 +71,7 @@
 									Yes, keep me updated
 								</kv-button>
 								<kv-button
-									@click="updateOptIn(false)"
+									@click="() => updateOptIn(false)"
 									variant="ghost"
 									class="ghost-button"
 									v-kv-track-event="[
