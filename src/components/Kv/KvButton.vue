@@ -1,8 +1,10 @@
 <script>
+import { h } from 'vue';
+
 /* eslint-disable vue/require-prop-types */
 export default {
 	name: 'KvButton',
-	render(createElement) {
+	render() {
 		const options = {
 			class: { button: true },
 			props: {},
@@ -14,7 +16,7 @@ export default {
 		if (this.href) {
 			options.attrs.href = this.href;
 		}
-		return createElement(this.tag, options, this.$slots.default);
+		return h(this.tag, options, this.$slots.default);
 	},
 	props: {
 		to: { default: null },
