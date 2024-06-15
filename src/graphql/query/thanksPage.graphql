@@ -147,6 +147,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
+		newThanksPageEnabled: featureSetting(key: "new_thanks_page.enabled") {
+			key
+			value
+		}
 	}
 	mySubscriptions(includeDisabled: false) {
 		values {

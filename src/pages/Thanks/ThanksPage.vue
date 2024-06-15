@@ -494,10 +494,12 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		// Only show the old page if the first page is a borrower page
-		if (this.$appConfig?.firstPage?.indexOf('/lend/') !== -1) {
-			const url = this.$appConfig.firstPage?.split('/')[2];
-			const firstVisitloanId = url?.[2] ?? null;
+		// Only show the old page if the first page is a borrower page and feature flag is enabled
+		const newThanksPageEnabled = data?.general?.newThanksPageEnabled?.value === 'true';
+
+		if (newThanksPageEnabled && this.$appConfig?.firstPage?.indexOf('/lend/') !== -1) {
+			const url = this.$appConfig.firstPage?.split('/');
+			const firstVisitloanId = url?.[1] === 'lend' ? url?.[2] : null;
 
 			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
 			this.showOldPage = landedLoan?.geocode?.country?.isoCode === 'US';
