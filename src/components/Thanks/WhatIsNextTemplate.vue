@@ -503,8 +503,8 @@ export default {
 }
 
 .option-box {
-	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
 	transition: border-top 0.05s, border-bottom 0.05s, border-left 0.05s, border-radius 0.2s;
+	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
 }
 
 .option-box.open {
