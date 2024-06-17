@@ -502,7 +502,7 @@ export default {
 			const firstVisitloanId = url?.[1] === 'lend' ? url?.[2] : null;
 
 			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
-			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode === 'US';
+			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US';
 		}
 
 		// New Thanks Page Experiment
