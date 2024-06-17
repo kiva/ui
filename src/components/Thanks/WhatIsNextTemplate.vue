@@ -50,7 +50,7 @@
 							<h4 class="tw-text-center tw-pt-1">
 								What to expect next:
 							</h4>
-							<opt-in-steps
+							<loan-next-steps
 								class="tw-mb-5"
 								:weeks-to-repay="weeksToRepay"
 							/>
@@ -257,7 +257,7 @@
 
 <script>
 import { addMonths, differenceInWeeks } from 'date-fns';
-import OptInSteps from '@/components/Thanks/OptInSteps';
+import LoanNextSteps from '@/components/Thanks/LoanNextSteps';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
@@ -276,7 +276,7 @@ const imageRequire = require.context('@/assets/images/thanks-page/', true);
 export default {
 	name: 'WhatIsNextTemplate',
 	components: {
-		OptInSteps,
+		LoanNextSteps,
 		KvExpandable,
 		CheckoutReceipt,
 		SocialShareV2,
@@ -409,18 +409,18 @@ export default {
 				try {
 					this.apollo.mutate({
 						mutation: gql`
-									mutation updateCommunicationSettings(
-										$lenderNews: Boolean
-									) {
-										my {
-											updateCommunicationSettings(
-												communicationSettings: {
-													lenderNews: $lenderNews
-												}
-											)
+							mutation updateCommunicationSettings(
+								$lenderNews: Boolean
+							) {
+								my {
+									updateCommunicationSettings(
+										communicationSettings: {
+											lenderNews: $lenderNews
 										}
-									}
-								`,
+									)
+								}
+							}
+						`,
 						variables: {
 							lenderNews: value,
 						},
@@ -503,7 +503,7 @@ export default {
 }
 
 .option-box {
-	transition: border-top 0.05s, border-bottom 0.05s, border-left 0.05s, border-radius 0.2s;
+	transition: border 0.2s ease, border-radius 0.5s ease;
 	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
 }
 

@@ -496,10 +496,11 @@ export default {
 
 		// Only show the old page if the first page is a borrower page and feature flag is enabled
 		const newThanksPageEnabled = data?.general?.newThanksPageEnabled?.value === 'true';
+		const bpPattern = /^\/lend\/(\d+)\/$/;
 
-		if (newThanksPageEnabled && this.$appConfig?.firstPage?.indexOf('/lend/') !== -1) {
+		if (newThanksPageEnabled && bpPattern.test(this.$appConfig.firstPage)) {
 			const url = this.$appConfig.firstPage?.split('/');
-			const firstVisitloanId = url?.[1] === 'lend' ? url?.[2] : null;
+			const firstVisitloanId = url?.[2] ?? null;
 
 			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
 			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US';
