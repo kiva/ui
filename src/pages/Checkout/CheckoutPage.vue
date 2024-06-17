@@ -341,6 +341,7 @@ const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
+const CHECKOUT_STICKY_EXP_KEY = 'checkout_sticky';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -434,6 +435,7 @@ export default {
 			// Deposit incentive experiment MP-72
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
+			checkoutStickyExperimentEnabled: false,
 		};
 	},
 	apollo: {
@@ -600,6 +602,8 @@ export default {
 
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
+
+		this.initializeCheckoutStickyExperiment();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -1107,6 +1111,22 @@ export default {
 			}
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
+		},
+		initializeCheckoutStickyExperiment() {
+			const checkoutStickyExperiment = this.apollo.readFragment({
+				id: `Experiment:${CHECKOUT_STICKY_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (checkoutStickyExperiment.version) {
+				this.$kvTrackEvent(
+					'basket',
+					'EXP-MP-360-Jun2024',
+					checkoutStickyExperiment.version,
+				);
+			}
+
+			this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
 		},
 	},
 	destroyed() {
