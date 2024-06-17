@@ -1,5 +1,5 @@
 <template>
-	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': !showOldThanksPage && !isOnlyDonation}">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
@@ -10,8 +10,6 @@
 				:selected-loan="selectedLoan"
 				:loans="loans"
 				:receipt="receipt"
-				:borrower-name="borrowerName"
-				:hash="hash"
 				:lender="lender"
 				:is-guest="isGuest"
 				:opted-in="optedIn"
@@ -368,7 +366,7 @@ export default {
 		},
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
-		}
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -494,16 +492,17 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		// Only show the old page if the first page is a borrower page and feature flag is enabled
-		const newThanksPageEnabled = data?.general?.newThanksPageEnabled?.value === 'true';
-		const bpPattern = /^\/lend\/(\d+)\/$/;
+		this.optedIn = data?.my?.communicationSettings?.lenderNews ?? false;
+		const bpPattern = /^\/lend\/(\d+)/;
 
-		if (newThanksPageEnabled && bpPattern.test(this.$appConfig.firstPage)) {
+		if (bpPattern.test(this.$appConfig.firstPage)) {
 			const url = this.$appConfig.firstPage?.split('/');
 			const firstVisitloanId = url?.[2] ?? null;
 
-			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
-			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US';
+			const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
+			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US'
+				&& isFirstLoan
+				&& !this.optedIn;
 		}
 
 		// New Thanks Page Experiment

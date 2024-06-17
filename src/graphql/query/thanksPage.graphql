@@ -133,6 +133,9 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		loans {
 			totalCount
 		}
+		communicationSettings {
+			lenderNews
+		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {

@@ -292,10 +292,6 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		borrowerName: {
-			type: String,
-			default: ''
-		},
 		isGuest: {
 			type: Boolean,
 			default: false
@@ -333,6 +329,9 @@ export default {
 		};
 	},
 	computed: {
+		borrowerName() {
+			return this.selectedLoan?.name ?? '';
+		},
 		filteredLoans() {
 			const filteredLoans = [...this.loans];
 			if (this.loans.length === 3) {
