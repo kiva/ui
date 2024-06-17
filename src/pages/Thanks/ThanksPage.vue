@@ -5,7 +5,20 @@
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
-		<template v-else-if="showOldThanksPage">
+		<template v-else-if="showNewTYPage">
+			<what-is-next-template
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:borrower-name="borrowerName"
+				:hash="hash"
+				:lender="lender"
+				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
+			/>
+		</template>
+		<template v-else>
 			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
 				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 			</div>
@@ -129,19 +142,6 @@
 				:ask-for-comments="askForComments"
 			/>
 		</template>
-		<template v-else>
-			<what-is-next-template
-				:selected-loan="selectedLoan"
-				:loans="loans"
-				:receipt="receipt"
-				:borrower-name="borrowerName"
-				:hash="hash"
-				:lender="lender"
-				:is-guest="isGuest"
-				:opted-in="optedIn"
-				:short-version-enabled="enableShortVersion"
-			/>
-		</template>
 	</www-page>
 </template>
 
@@ -240,7 +240,7 @@ export default {
 			goal: null,
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
-			showOldThanksPage: false,
+			showNewTYPage: false,
 			optedIn: false,
 			enableShortVersion: false,
 		};
@@ -502,11 +502,11 @@ export default {
 			const firstVisitloanId = url?.[1] === 'lend' ? url?.[2] : null;
 
 			const landedLoan = this.loans.find(loan => loan.id === firstVisitloanId);
-			this.showOldPage = landedLoan?.geocode?.country?.isoCode === 'US';
+			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode === 'US';
 		}
 
 		// New Thanks Page Experiment
-		if (!this.showOldPage) {
+		if (this.showNewTYPage) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
