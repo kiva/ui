@@ -19,11 +19,20 @@
 				class="basket-wrap tw-relative tw-mb-1"
 				:class="{'pre-login': !preCheckoutStep}"
 			>
-				<div class="checkout-header tw-pb-3 hide-for-print">
+				<div
+					class="checkout-header hide-for-print"
+					:class="{
+						'tw-pb-3': !checkoutStickyExperimentEnabled,
+						'tw-pb-0 md:tw-pb-1 lg:tw-pb-3': checkoutStickyExperimentEnabled
+					}"
+				>
 					<h1 class="tw-text-h2 tw-mb-3">
 						Your basket
 					</h1>
-					<hr class="tw-border-tertiary tw-my-3">
+					<hr
+						class="tw-border-tertiary tw-my-3"
+						:class="{ 'tw-hidden lg:tw-block': checkoutStickyExperimentEnabled }"
+					>
 
 					<ftds-message
 						class="tw-mb-2"
