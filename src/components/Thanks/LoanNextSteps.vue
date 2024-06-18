@@ -58,7 +58,6 @@ export default {
 	},
 	async mounted() {
 		await this.$nextTick();
-		this.currentStep = 1;
 	}
 };
 </script>
