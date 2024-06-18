@@ -34,7 +34,7 @@
 				<div class="tw-relative">
 					<div
 						class="basket-container tw-mx-auto tw-my-0"
-						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
 					>
 						<basket-items-list
 							:loans="loans"
@@ -63,7 +63,7 @@
 					</div>
 					<div
 						v-if="showKivaCardForm"
-						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
 					>
 						<hr class="tw-border-tertiary tw-my-3">
 						<div class="basket-container tw-mx-auto tw-my-0">
@@ -75,13 +75,13 @@
 							/>
 						</div>
 					</div>
-					<div :class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }">
+					<div :class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }">
 						<hr class="tw-border-tertiary tw-my-3">
 					</div>
 
 					<div
 						class="basket-container tw-mx-auto tw-my-0"
-						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
 					>
 						<checkout-holiday-promo
 							v-if="holidayModeEnabled"
@@ -460,6 +460,7 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
+			checkoutStickyExperimentBasketClasses: 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3',
 			isDesktop: false,
 			setIsDesktopThrottled: _throttle(this.setIsDesktop, 200),
 		};
