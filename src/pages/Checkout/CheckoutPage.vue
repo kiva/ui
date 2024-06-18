@@ -41,10 +41,7 @@
 					/>
 				</div>
 				<div class="tw-relative">
-					<div
-						class="basket-container tw-mx-auto tw-my-0"
-						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
-					>
+					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -59,6 +56,7 @@
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
+							:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
 						/>
 						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
@@ -70,10 +68,7 @@
 							/>
 						</div>
 					</div>
-					<div
-						v-if="showKivaCardForm"
-						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
-					>
+					<div v-if="showKivaCardForm">
 						<hr class="tw-border-tertiary tw-my-3">
 						<div class="basket-container tw-mx-auto tw-my-0">
 							<kiva-card-redemption
@@ -84,14 +79,9 @@
 							/>
 						</div>
 					</div>
-					<div :class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }">
-						<hr class="tw-border-tertiary tw-my-3">
-					</div>
+					<hr class="tw-border-tertiary tw-my-3">
 
-					<div
-						class="basket-container tw-mx-auto tw-my-0"
-						:class="{ [checkoutStickyExperimentBasketClasses]: showCheckoutStickyExperiment }"
-					>
+					<div class="basket-container tw-mx-auto tw-my-0">
 						<checkout-holiday-promo
 							v-if="holidayModeEnabled"
 							@updating-totals="setUpdatingTotals"
@@ -469,7 +459,6 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
-			checkoutStickyExperimentBasketClasses: 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3',
 			isDesktop: false,
 			setIsDesktopThrottled: _throttle(this.setIsDesktop, 200),
 		};
