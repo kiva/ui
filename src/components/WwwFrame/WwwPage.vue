@@ -11,7 +11,7 @@
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
-		<the-footer	/>
+		<the-footer	:style="footerStyle" />
 		<the-basket-bar />
 		<cookie-banner />
 	</div>
@@ -55,6 +55,10 @@ export default {
 			default: false,
 		},
 		mainClass: {
+			type: [Object, String],
+			default: '',
+		},
+		footerStyle: {
 			type: [Object, String],
 			default: '',
 		},

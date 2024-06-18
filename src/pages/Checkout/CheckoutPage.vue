@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<www-page :footer-style="{ ...(showCheckoutStickyExperiment && { 'padding-bottom': '125px' }) }">
 		<kv-page-container
 			id="checkout-slim"
 			data-testid="checkout"
