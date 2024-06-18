@@ -114,9 +114,9 @@
 							:class="{
 								'tw-my-6': !showCheckoutStickyExperiment,
 								'tw-fixed tw-bottom-0 tw-left-0 tw-bg-white tw-p-2 tw-w-full tw-border-t \
-								tw-border-tertiary tw-z-1': showMobileCheckoutStickyExperiment,
-								'lg:tw-absolute lg:tw-top-0 lg:tw-p-0 lg:tw-my-0 lg:tw-left-auto lg:tw-right-0 \
-								lg:tw-w-1/4 lg:tw-border-0 lg:tw-h-min': showCheckoutStickyExperiment,
+								tw-border-tertiary tw-z-1 lg:tw-absolute lg:tw-top-0 lg:tw-p-0 lg:tw-my-0 \
+								lg:tw-left-auto lg:tw-right-0 lg:tw-w-1/4 lg:tw-border-0 \
+								lg:tw-h-min': showCheckoutStickyExperiment,
 							}"
 						>
 							<div v-if="isLoggedIn">
@@ -690,10 +690,10 @@ export default {
 	},
 	computed: {
 		showCheckoutStickyExperiment() {
-			return this.checkoutStickyExperimentEnabled && !this.checkingOutAsGuest && !this.showKivaCreditButton;
-		},
-		showMobileCheckoutStickyExperiment() {
-			return this.showCheckoutStickyExperiment && !this.isLoggedIn;
+			return this.checkoutStickyExperimentEnabled
+				&& !this.checkingOutAsGuest
+				&& !this.showKivaCreditButton
+				&& !this.isLoggedIn;
 		},
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
@@ -844,7 +844,7 @@ export default {
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
 
-			if (this.checkoutStickyExperimentEnabled) {
+			if (this.showCheckoutStickyExperiment) {
 				this.$nextTick(() => this.scrollToSection('#checkout-actions'));
 			}
 		},
