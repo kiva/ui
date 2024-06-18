@@ -817,9 +817,12 @@ export default {
 			this.showUpsellModule = false;
 		},
 		guestCheckout() {
+			// Cache value to know whether to trigger nextTick
+			const wasCheckoutStickyExperimentShown = this.showCheckoutStickyExperiment;
+
 			this.checkingOutAsGuest = true;
 
-			if (this.showCheckoutStickyExperiment) {
+			if (wasCheckoutStickyExperimentShown) {
 				this.$nextTick(() => this.scrollToSection('#checkout-actions'));
 			}
 		},
