@@ -1,7 +1,7 @@
 <template>
 	<div class="md:tw-py-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative" :style="{maxWidth: '620px'}">
 		<div class="tw-bg-marigold-1 md:tw-rounded-b">
-			<div class="tw-bg-eco-green-3 tw-text-center tw-pt-4 md:tw-rounded-t">
+			<div class="tw-bg-eco-green-3 tw-text-center tw-pt-4 md:tw-rounded-t hide-for-print">
 				<h1 class="tw-text-white">
 					Success!
 				</h1>
@@ -40,7 +40,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tw-relative tw-flex tw-justify-center">
+			<div class="tw-relative tw-flex tw-justify-center hide-for-print">
 				<div class="tw-bg-marigold-1 tw-absolute oval"></div>
 				<div
 					class="secondary-container"
@@ -131,7 +131,7 @@
 				</div>
 			</div>
 			<div class="tw-py-5 tw-px-3 md:tw-px-8">
-				<div class="tw-mb-2">
+				<div class="tw-mb-2 hide-for-print">
 					<div v-if="selectOption && !isGuest">
 						<kv-button
 							class="tw-w-full"
@@ -185,7 +185,7 @@
 				<div class="tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					<div
-						class="option-box"
+						class="option-box hide-for-print"
 						:class="{'open' : openOrderConfirmation}"
 						@click="() => openOrderConfirmation = !openOrderConfirmation"
 						v-kv-track-event="[
@@ -216,7 +216,7 @@
 						</div>
 					</kv-expandable>
 				</div>
-				<div>
+				<div class="hide-for-print">
 					<div
 						class="option-box"
 						:class="{'open' : openShareModule}"
@@ -508,6 +508,10 @@ export default {
 
 .option-box.open {
 	@apply tw-border-t-0 tw-border-l-0 tw-border-r-0 tw-rounded-none;
+}
+
+.hide-for-print {
+	@apply print:tw-hidden;
 }
 
 </style>
