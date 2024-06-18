@@ -109,7 +109,6 @@
 								'lg:tw-absolute lg:tw-top-0 lg:tw-p-0 lg:tw-my-0 lg:tw-left-auto lg:tw-right-0 \
 								lg:tw-w-1/4 lg:tw-border-0 lg:tw-h-min': showCheckoutStickyExperiment,
 							}"
-
 						>
 							<div v-if="isLoggedIn">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
@@ -357,10 +356,10 @@ import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
