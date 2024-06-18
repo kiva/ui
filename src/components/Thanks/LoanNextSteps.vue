@@ -55,9 +55,6 @@ export default {
 				animationDelay: `${index * 1}s`
 			};
 		}
-	},
-	async mounted() {
-		await this.$nextTick();
 	}
 };
 </script>
