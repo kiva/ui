@@ -1,8 +1,19 @@
 <template>
-	<www-page data-testid="thanks-page">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
+			/>
+		</template>
+		<template v-else-if="showNewTYPage">
+			<what-is-next-template
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:lender="lender"
+				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 		<template v-else>
@@ -156,6 +167,8 @@ import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -163,6 +176,7 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const NEW_THANKS_PAGE_EXP = 'new_ty_page_minimal';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -199,6 +213,7 @@ export default {
 		ThanksPageDonationOnly,
 		ChallengeHeader,
 		ShareChallenge,
+		WhatIsNextTemplate,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -223,6 +238,9 @@ export default {
 			goal: null,
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
+			showNewTYPage: false,
+			optedIn: false,
+			enableShortVersion: false,
 		};
 	},
 	apollo: {
@@ -348,7 +366,7 @@ export default {
 		},
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
-		}
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -473,6 +491,33 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
+
+		this.optedIn = data?.my?.communicationSettings?.lenderNews ?? false;
+		const bpPattern = /^\/lend\/(\d+)/;
+
+		if (bpPattern.test(this.$appConfig.firstPage)) {
+			const url = this.$appConfig.firstPage?.split('/');
+			const firstVisitloanId = url?.[2] ?? null;
+
+			const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
+			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US'
+				&& isFirstLoan
+				&& !this.optedIn;
+		}
+
+		// New Thanks Page Experiment
+		if (this.showNewTYPage) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'thanks',
+				NEW_THANKS_PAGE_EXP,
+				'EXP-MP-267-Jun2024',
+			);
+			if (version === 'b') {
+				this.enableShortVersion = true;
+			}
+		}
 	},
 	methods: {
 		createGuestAccount() {
