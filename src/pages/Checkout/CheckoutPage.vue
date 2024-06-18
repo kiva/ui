@@ -308,7 +308,6 @@
 import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -459,8 +458,6 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
-			isDesktop: false,
-			setIsDesktopThrottled: _throttle(this.setIsDesktop, 200),
 		};
 	},
 	apollo: {
@@ -630,12 +627,7 @@ export default {
 
 		this.initializeCheckoutStickyExperiment();
 	},
-	beforeMount() {
-		this.setIsDesktop();
-	},
 	mounted() {
-		window.addEventListener('resize', this.setIsDesktopThrottled);
-
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
 			this.currentTime = Date.now();
@@ -673,9 +665,6 @@ export default {
 				});
 			// end challenge code
 		}
-	},
-	beforeDestroy() {
-		window.removeEventListener('resize', this.setIsDesktopThrottled);
 	},
 	computed: {
 		showCheckoutStickyExperiment() {
@@ -809,9 +798,6 @@ export default {
 		},
 	},
 	methods: {
-		setIsDesktop() {
-			this.isDesktop = document.documentElement.clientWidth > 1023;
-		},
 		openMatchedLoansLightbox() {
 			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
