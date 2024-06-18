@@ -31,15 +31,11 @@
 						:ftd-credit-amount="ftdCreditAmount"
 					/>
 				</div>
-				<div
-					class="tw-relative"
-					:style="{
-						...(showDesktopCheckoutStickyExperiment && {
-							width: 'calc(100% - 350px)',
-						}),
-					}"
-				>
-					<div class="basket-container tw-mx-auto tw-my-0">
+				<div class="tw-relative">
+					<div
+						class="basket-container tw-mx-auto tw-my-0"
+						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+					>
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -65,7 +61,10 @@
 							/>
 						</div>
 					</div>
-					<div v-if="showKivaCardForm">
+					<div
+						v-if="showKivaCardForm"
+						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+					>
 						<hr class="tw-border-tertiary tw-my-3">
 						<div class="basket-container tw-mx-auto tw-my-0">
 							<kiva-card-redemption
@@ -76,9 +75,14 @@
 							/>
 						</div>
 					</div>
-					<hr class="tw-border-tertiary tw-my-3">
+					<div :class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }">
+						<hr class="tw-border-tertiary tw-my-3">
+					</div>
 
-					<div class="basket-container tw-mx-auto tw-my-0">
+					<div
+						class="basket-container tw-mx-auto tw-my-0"
+						:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
+					>
 						<checkout-holiday-promo
 							v-if="holidayModeEnabled"
 							@updating-totals="setUpdatingTotals"
@@ -96,17 +100,18 @@
 						<basket-verification />
 
 						<div
-							class="checkout-actions md:tw-text-right tw-my-6"
-							:class="{ 'lg:tw-absolute lg:tw-top-0 lg:tw-my-0': showDesktopCheckoutStickyExperiment }"
-							:style="{
-								...(showDesktopCheckoutStickyExperiment && {
-									width: '320px',
-									right: '-350px',
-								}),
+							id="checkout-actions"
+							class="checkout-actions md:tw-text-right"
+							:class="{
+								'tw-my-6': !showCheckoutStickyExperiment,
+								'tw-fixed tw-bottom-0 tw-left-0 tw-bg-white tw-p-2 tw-w-full tw-border-t \
+								tw-border-tertiary tw-z-1': showMobileCheckoutStickyExperiment,
+								'lg:tw-absolute lg:tw-top-0 lg:tw-p-0 lg:tw-my-0 lg:tw-left-auto lg:tw-right-0 \
+								lg:tw-w-1/4 lg:tw-border-0 lg:tw-h-min': showCheckoutStickyExperiment,
 							}"
 
 						>
-							<div v-if="isLoggedIn" class="">
+							<div v-if="isLoggedIn">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -134,7 +139,7 @@
 
 							<div
 								v-else-if="!isLoggedIn && showLoginContinueButton"
-								class=""
+								:class="{ 'lg:tw-flex lg:tw-flex-col lg:tw-gap-2': showCheckoutStickyExperiment }"
 							>
 								<!-- Guest checkout button shown when the uiexp.guest_checkout and
 									feature.guest_checkout are enabled to users in the test group
@@ -144,6 +149,7 @@
 									v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
 									class="guest-checkout-button checkout-button
 										tw-w-full md:tw-w-auto md:tw-mr-2 tw-mb-2 md:tw-mb-0"
+									:class="{ 'lg:tw-mr-0': showCheckoutStickyExperiment }"
 									variant="secondary"
 									id="guest-checkout-button"
 									data-testid="guest-checkout-button"
@@ -354,6 +360,7 @@ import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -402,7 +409,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
+	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount, smoothScrollMixin],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -454,7 +461,7 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
-			isDesktop: true,
+			isDesktop: false,
 			setIsDesktopThrottled: _throttle(this.setIsDesktop, 200),
 		};
 	},
@@ -673,8 +680,11 @@ export default {
 		window.removeEventListener('resize', this.setIsDesktopThrottled);
 	},
 	computed: {
-		showDesktopCheckoutStickyExperiment() {
-			return this.checkoutStickyExperimentEnabled && this.isDesktop;
+		showCheckoutStickyExperiment() {
+			return this.checkoutStickyExperimentEnabled && !this.checkingOutAsGuest && !this.showKivaCreditButton;
+		},
+		showMobileCheckoutStickyExperiment() {
+			return this.showCheckoutStickyExperiment && !this.isLoggedIn;
 		},
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
@@ -824,6 +834,10 @@ export default {
 		},
 		guestCheckout() {
 			this.checkingOutAsGuest = true;
+
+			if (this.checkoutStickyExperimentEnabled) {
+				this.$nextTick(() => this.scrollToSection('#checkout-actions'));
+			}
 		},
 		disableGuestCheckout() {
 			this.checkingOutAsGuest = false;
