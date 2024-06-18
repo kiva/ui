@@ -40,6 +40,7 @@
 					<kv-button
 						variant="link"
 						class="tw-w-full md:tw-w-44 tw-mt-2 md:tw-mt-7"
+						style="min-width: 140px;"
 						@click="addToBasket(loanId, amountLeft)"
 					>
 						Add loan to basket
@@ -120,12 +121,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-@media screen and (min-width: 1160px) {
-	.upsellLoanDetails {
-		min-width: 600px;
-	}
-}
 
 @media screen and (min-width: 734px) {
 	.upsellModule {

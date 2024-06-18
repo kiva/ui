@@ -31,7 +31,14 @@
 						:ftd-credit-amount="ftdCreditAmount"
 					/>
 				</div>
-				<div class="tw-relative">
+				<div
+					class="tw-relative"
+					:style="{
+						...(showDesktopCheckoutStickyExperiment && {
+							width: 'calc(100% - 350px)',
+						}),
+					}"
+				>
 					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
@@ -88,7 +95,17 @@
 
 						<basket-verification />
 
-						<div class="checkout-actions md:tw-text-right tw-my-6">
+						<div
+							class="checkout-actions md:tw-text-right tw-my-6"
+							:class="{ 'lg:tw-absolute lg:tw-top-0 lg:tw-my-0': showDesktopCheckoutStickyExperiment }"
+							:style="{
+								...(showDesktopCheckoutStickyExperiment && {
+									width: '320px',
+									right: '-350px',
+								}),
+							}"
+
+						>
 							<div v-if="isLoggedIn" class="">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
@@ -287,6 +304,7 @@
 import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -436,6 +454,8 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
+			isDesktop: true,
+			setIsDesktopThrottled: _throttle(this.setIsDesktop, 200),
 		};
 	},
 	apollo: {
@@ -605,7 +625,12 @@ export default {
 
 		this.initializeCheckoutStickyExperiment();
 	},
+	beforeMount() {
+		this.setIsDesktop();
+	},
 	mounted() {
+		window.addEventListener('resize', this.setIsDesktopThrottled);
+
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
 			this.currentTime = Date.now();
@@ -644,7 +669,13 @@ export default {
 			// end challenge code
 		}
 	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.setIsDesktopThrottled);
+	},
 	computed: {
+		showDesktopCheckoutStickyExperiment() {
+			return this.checkoutStickyExperimentEnabled && this.isDesktop;
+		},
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
 			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
@@ -770,6 +801,9 @@ export default {
 		},
 	},
 	methods: {
+		setIsDesktop() {
+			this.isDesktop = document.documentElement.clientWidth > 1023;
+		},
 		openMatchedLoansLightbox() {
 			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
