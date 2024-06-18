@@ -1148,20 +1148,22 @@ export default {
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
 		initializeCheckoutStickyExperiment() {
-			const checkoutStickyExperiment = this.apollo.readFragment({
-				id: `Experiment:${CHECKOUT_STICKY_EXP_KEY}`,
-				fragment: experimentVersionFragment,
-			}) || {};
+			if (!this.isLoggedIn) {
+				const checkoutStickyExperiment = this.apollo.readFragment({
+					id: `Experiment:${CHECKOUT_STICKY_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) || {};
 
-			if (checkoutStickyExperiment.version) {
-				this.$kvTrackEvent(
-					'basket',
-					'EXP-MP-360-Jun2024',
-					checkoutStickyExperiment.version,
-				);
+				if (checkoutStickyExperiment.version) {
+					this.$kvTrackEvent(
+						'basket',
+						'EXP-MP-360-Jun2024',
+						checkoutStickyExperiment.version,
+					);
+				}
+
+				this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
 			}
-
-			this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
 		},
 	},
 	destroyed() {
