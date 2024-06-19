@@ -492,7 +492,7 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		this.optedIn = data?.my?.communicationSettings?.lenderNews ?? false;
+		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 		const bpPattern = /^\/lend\/(\d+)/;
 
 		if (bpPattern.test(this.$appConfig.firstPage)) {

@@ -112,6 +112,7 @@
 									@updating-totals="setUpdatingTotals"
 									@complete-transaction="completeTransaction"
 									:use-async-checkout="asyncCheckoutActive"
+									@opt-in="($event) => userOptedIn = $event"
 								/>
 							</div>
 
@@ -436,6 +437,7 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
+			userOptedIn: false,
 		};
 	},
 	apollo: {
@@ -899,10 +901,15 @@ export default {
 				// fire transaction events
 				this.$kvTrackTransaction(transactionData);
 
+				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
+				if (this.checkingOutAsGuest) {
+					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
+				}
+
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, this.challengeRedirectQueryParam);
+						this.redirectToThanks(transactionId, checkoutAdditionalQueryParams);
 					},
 					800
 				);
