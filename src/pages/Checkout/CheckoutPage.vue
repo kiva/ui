@@ -1,5 +1,5 @@
 <template>
-	<www-page :footer-style="{ ...(showCheckoutStickyExperiment && { 'padding-bottom': '125px' }) }">
+	<www-page>
 		<kv-page-container
 			id="checkout-slim"
 			data-testid="checkout"
@@ -97,6 +97,8 @@
 						/>
 
 						<basket-verification />
+
+						<div ref="checkoutActionsThreshold"></div>
 
 						<div
 							id="checkout-actions"
@@ -308,6 +310,7 @@
 import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -458,6 +461,8 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			checkoutStickyExperimentEnabled: false,
+			isAboveCheckoutActions: false,
+			checkIsAboveCheckoutActionsThrottled: _throttle(this.checkIsAboveCheckoutActions, 100),
 		};
 	},
 	apollo: {
@@ -665,13 +670,20 @@ export default {
 				});
 			// end challenge code
 		}
+
+		this.checkIsAboveCheckoutActions();
+		window.addEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
+	},
+	beforeDestroy() {
+		window.removeEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
 	},
 	computed: {
 		showCheckoutStickyExperiment() {
 			return this.checkoutStickyExperimentEnabled
 				&& !this.checkingOutAsGuest
 				&& !this.showKivaCreditButton
-				&& !this.isLoggedIn;
+				&& !this.isLoggedIn
+				&& this.isAboveCheckoutActions;
 		},
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
@@ -798,6 +810,10 @@ export default {
 		},
 	},
 	methods: {
+		checkIsAboveCheckoutActions() {
+			const thresholdClientRectTop = this.$refs?.checkoutActionsThreshold?.getBoundingClientRect()?.top;
+			this.isAboveCheckoutActions = thresholdClientRectTop > window?.innerHeight;
+		},
 		openMatchedLoansLightbox() {
 			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
