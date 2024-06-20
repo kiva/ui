@@ -1,11 +1,13 @@
-<template v-if="!isLoggedin || !hasPromoBalance">
-	<generic-promo-banner
-		class="tw-text-center"
-		:promo-banner-content="promoBannerContent"
-		:enable-deposit-incentive-exp="isLoggedin"
-		:progress-bar-value="basketTotal"
-		:amount-to-lend="amountToLend"
-	/>
+<template>
+	<div v-if="!isLoggedin || !hasPromoBalance">
+		<generic-promo-banner
+			class="tw-text-center"
+			:promo-banner-content="promoBannerContent"
+			:enable-deposit-incentive-exp="isLoggedin"
+			:progress-bar-value="basketTotal"
+			:amount-to-lend="amountToLend"
+		/>
+	</div>
 </template>
 
 <script>
