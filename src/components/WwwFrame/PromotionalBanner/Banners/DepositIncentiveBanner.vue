@@ -1,4 +1,4 @@
-<template>
+<template v-if="!isLoggedin || !hasPromoBalance">
 	<generic-promo-banner
 		class="tw-text-center"
 		:promo-banner-content="promoBannerContent"
@@ -27,6 +27,9 @@ const amountToLendQuery = gql`
 		my {
 			id
 			depositIncentiveAmountToLend
+			userAccount {
+				promoBalance
+			}
 		}
 	}
 `;
@@ -38,6 +41,7 @@ export default {
 	},
 	data() {
 		return {
+			hasPromoBalance: false,
 			amountToLend: 0,
 			isLoggedin: false,
 			basketTotal: 0,
@@ -51,6 +55,7 @@ export default {
 			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
 			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
+			this.hasPromoBalance = numeral(data?.my?.userAccount?.promoBalance ?? 0).value() > 0;
 		},
 	},
 	computed: {
