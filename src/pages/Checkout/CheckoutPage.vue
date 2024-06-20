@@ -140,7 +140,10 @@
 
 							<div
 								v-else-if="!isLoggedIn && showLoginContinueButton"
-								:class="{ 'lg:tw-flex lg:tw-flex-col lg:tw-gap-2': showCheckoutStickyExperiment }"
+								:class="{
+									'lg:tw-flex lg:tw-flex-col lg:tw-gap-2 lg:tw-p-1.5 \
+									lg:tw-bg-secondary': showCheckoutStickyExperiment
+								}"
 							>
 								<!-- Guest checkout button shown when the uiexp.guest_checkout and
 									feature.guest_checkout are enabled to users in the test group
@@ -150,7 +153,7 @@
 									v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
 									class="guest-checkout-button checkout-button
 										tw-w-full md:tw-w-auto md:tw-mr-2 tw-mb-2 md:tw-mb-0"
-									:class="{ 'lg:tw-mr-0': showCheckoutStickyExperiment }"
+									:class="{ 'lg:tw-mr-0 guest-checkout-button-sticky': showCheckoutStickyExperiment }"
 									variant="secondary"
 									id="guest-checkout-button"
 									data-testid="guest-checkout-button"
@@ -359,6 +362,7 @@ import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import { fireHotJarEvent } from '@/util/hotJarUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -675,6 +679,10 @@ export default {
 
 		this.checkIsAboveCheckoutActions();
 		window.addEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
+
+		if (this.showCheckoutStickyExperiment) {
+			fireHotJarEvent('checkout_sticky_experiment');
+		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
@@ -1219,6 +1227,12 @@ export default {
 	#loading-overlay,
 	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
+	}
+}
+
+.guest-checkout-button-sticky > span {
+	@media screen and (min-width: 1024px) {
+		background-color: white;
 	}
 }
 </style>
