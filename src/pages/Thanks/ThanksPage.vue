@@ -450,7 +450,7 @@ export default {
 		userHasDepositBefore(hasDepositBefore);
 
 		const totalLoans = data?.my?.loans?.totalCount ?? 0;
-		const isFirstLoan = this.loans.length && (totalLoans === this.loans.length || this.isGuest);
+		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
 		this.isFirstLoan = isFirstLoan;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
@@ -501,7 +501,7 @@ export default {
 
 			const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
 			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US'
-				&& isFirstLoan
+				&& (isFirstLoan || this.isGuest)
 				&& !this.optedIn;
 		}
 
