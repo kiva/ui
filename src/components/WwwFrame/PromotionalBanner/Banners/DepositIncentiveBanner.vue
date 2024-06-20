@@ -28,6 +28,7 @@ const amountToLendQuery = gql`
 			id
 			depositIncentiveAmountToLend
 			userAccount {
+				id
 				promoBalance
 			}
 		}
