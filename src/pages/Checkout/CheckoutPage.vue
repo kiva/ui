@@ -816,6 +816,11 @@ export default {
 			const thresholdClientRectTop = this.$refs?.checkoutActionsThreshold?.getBoundingClientRect()?.top;
 			this.isAboveCheckoutActions = thresholdClientRectTop > window?.innerHeight;
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		},
 		openMatchedLoansLightbox() {
 			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
