@@ -501,7 +501,7 @@ export default {
 
 			const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
 			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US'
-				&& isFirstLoan
+				&& (isFirstLoan || this.isGuest)
 				&& !this.optedIn;
 		}
 
