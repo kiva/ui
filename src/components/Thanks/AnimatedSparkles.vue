@@ -1,6 +1,6 @@
 <!-- eslint-disable max-len -->
 <template>
-	<svg width="199" height="164" viewBox="0 0 199 164" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<svg viewBox="0 0 199 164" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 		<path class="spark spark-1" d="M38.3281 50.8176C33.2656 50.8176 32 46.4392 32 44.25C32 46.4392 30.7344 50.8176 25.6719 50.8176C30.7344 50.8176 32 55.4392 32 57.75C32 55.4392 33.2656 50.8176 38.3281 50.8176Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 		<g class="spark spark-2" clip-path="url(#clip0_8313_593)">
 			<rect x="172.358" y="0.118286" width="24.5106" height="27" fill="url(#pattern0_8313_593)" />

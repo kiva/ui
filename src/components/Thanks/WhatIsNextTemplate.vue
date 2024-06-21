@@ -10,8 +10,8 @@
 				</p>
 
 				<div class="borrower-container">
-					<div class="tw-absolute tw-w-full tw-h-full tw-z-docked" style="width: 240px;">
-						<animated-sparkles />
+					<div class="tw-absolute tw-h-full tw-z-docked tw-left-1/2 -tw-translate-x-1/2">
+						<animated-sparkles class="tw-h-full" />
 					</div>
 
 					<div
