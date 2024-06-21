@@ -238,7 +238,6 @@ export default {
 			goal: null,
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
-			showNewTYPage: false,
 			optedIn: false,
 			enableShortVersion: false,
 		};
@@ -367,6 +366,20 @@ export default {
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
 		},
+		landedOnUSLoan() {
+			const bpPattern = /^\/lend\/(\d+)/;
+
+			if (bpPattern.test(this.$appConfig.firstPage)) {
+				const url = this.$appConfig.firstPage?.split('/');
+				const firstVisitloanId = url?.[2] ?? null;
+				const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
+				return landedLoan?.geocode?.country?.isoCode === 'US';
+			}
+			return false;
+		},
+		showNewTYPage() {
+			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -493,17 +506,6 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
-		const bpPattern = /^\/lend\/(\d+)/;
-
-		if (bpPattern.test(this.$appConfig.firstPage)) {
-			const url = this.$appConfig.firstPage?.split('/');
-			const firstVisitloanId = url?.[2] ?? null;
-
-			const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
-			this.showNewTYPage = landedLoan?.geocode?.country?.isoCode !== 'US'
-				&& (isFirstLoan || this.isGuest)
-				&& !this.optedIn;
-		}
 
 		// New Thanks Page Experiment
 		if (this.showNewTYPage) {
