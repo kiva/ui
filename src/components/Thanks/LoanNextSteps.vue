@@ -43,7 +43,7 @@ export default {
 			currentStep: 1,
 			steps: [
 				{ text: 'Your contribution is received ' },
-				{ text: 'Their loan is fully funded' },
+				{ text: 'Their is funded' },
 				{ text: 'They use the money to improve their life' },
 				{ text: `They start repaying you in ${this.weeksToRepay}` }
 			]
