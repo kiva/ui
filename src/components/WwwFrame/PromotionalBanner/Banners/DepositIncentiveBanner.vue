@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!isLoggedin || !hasPromoBalance">
+	<div v-if="!isLoggedin || !hasDepositIncentive">
 		<generic-promo-banner
 			class="tw-text-center"
 			:promo-banner-content="promoBannerContent"
@@ -31,7 +31,7 @@ const amountToLendQuery = gql`
 			depositIncentiveAmountToLend
 			userAccount {
 				id
-				promoBalance
+				hasDepositIncentive
 			}
 		}
 	}
@@ -44,7 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			hasPromoBalance: false,
+			hasDepositIncentive: false,
 			amountToLend: 0,
 			isLoggedin: false,
 			basketTotal: 0,
@@ -58,7 +58,7 @@ export default {
 			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
 			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
-			this.hasPromoBalance = numeral(data?.my?.userAccount?.promoBalance ?? 0).value() > 0;
+			this.hasDepositIncentive = !!data?.my?.userAccount?.hasDepositIncentive ?? false;
 		},
 	},
 	computed: {
