@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!isLoggedin || !hasDepositIncentive">
+	<div v-if="!isLoggedin || !hasCampaignReward">
 		<generic-promo-banner
 			class="tw-text-center"
 			:promo-banner-content="promoBannerContent"
@@ -16,7 +16,7 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
 const amountToLendQuery = gql`
-	query amountToLendQuery ($basketId: String) {
+	query amountToLendQuery ($basketId: String, $campaignId String) {
 		shop (basketId: $basketId) {
 			id
 			basket {
@@ -31,7 +31,7 @@ const amountToLendQuery = gql`
 			depositIncentiveAmountToLend
 			userAccount {
 				id
-				hasDepositIncentive
+				hasCampaignReward (campaignId: $campaignId)
 			}
 		}
 	}
@@ -44,7 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			hasDepositIncentive: false,
+			hasCampaignReward: false,
 			amountToLend: 0,
 			isLoggedin: false,
 			basketTotal: 0,
@@ -54,11 +54,14 @@ export default {
 	apollo: {
 		query: amountToLendQuery,
 		preFetch: true,
+		variables: {
+			campaignId: '04786358-043c-4c09-af50-2d5e79ceeacd'
+		},
 		result({ data }) {
 			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
 			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
-			this.hasDepositIncentive = !!data?.my?.userAccount?.hasDepositIncentive ?? false;
+			this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
 		},
 	},
 	computed: {
