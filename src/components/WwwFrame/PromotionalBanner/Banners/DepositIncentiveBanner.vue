@@ -16,7 +16,7 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
 const amountToLendQuery = gql`
-	query amountToLendQuery ($basketId: String, $campaignId String) {
+	query amountToLendQuery ($basketId: String, $campaignId: String) {
 		shop (basketId: $basketId) {
 			id
 			basket {
