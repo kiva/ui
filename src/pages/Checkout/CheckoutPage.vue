@@ -363,6 +363,7 @@ import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import { fireHotJarEvent } from '@/util/hotJarUtils';
+import logFormatter from '@/util/logFormatter';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -469,6 +470,7 @@ export default {
 			isAboveCheckoutActions: false,
 			checkIsAboveCheckoutActionsThrottled: _throttle(this.checkIsAboveCheckoutActions, 100),
 			userOptedIn: false,
+			isMobile: false,
 		};
 	},
 	apollo: {
@@ -635,8 +637,6 @@ export default {
 
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
-
-		this.initializeCheckoutStickyExperiment();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -683,9 +683,15 @@ export default {
 		if (this.showCheckoutStickyExperiment) {
 			fireHotJarEvent('checkout_sticky_experiment');
 		}
+
+		// MP-445:
+		this.determineIfMobile();
+		window.addEventListener('resize', this.throttledResize);
+		this.initializeCheckoutStickyExperiment();
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
+		window.addEventListener('resize', this.throttledResize);
 	},
 	computed: {
 		showCheckoutStickyExperiment() {
@@ -1190,6 +1196,11 @@ export default {
 					fragment: experimentVersionFragment,
 				}) || {};
 
+				if (!this.isMobile) {
+					// eslint-disable-next-line max-len
+					return logFormatter(`Experiment:${CHECKOUT_STICKY_EXP_KEY} - Version: ${checkoutStickyExperiment.version}`);
+				}
+
 				if (checkoutStickyExperiment.version) {
 					this.$kvTrackEvent(
 						'basket',
@@ -1200,6 +1211,13 @@ export default {
 
 				this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
 			}
+		},
+		// MP-445: Following two methods are defined to avoid sticky checkout experiment to be enabled in desktop
+		determineIfMobile() {
+			this.isMobile = window?.innerWidth < 735;
+		},
+		throttledResize() {
+			return _throttle(this.determineIfMobile, 200);
 		},
 	},
 	destroyed() {
