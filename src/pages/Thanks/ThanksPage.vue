@@ -45,17 +45,6 @@
 								We've emailed your order confirmation to you.
 							</p>
 						</template>
-
-						<template v-else>
-							<h1 class="tw-mb-4">
-								Please log in to see your receipt.
-							</h1>
-							<kv-button
-								:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
-							>
-								Log in to continue
-							</kv-button>
-						</template>
 					</div>
 				</div>
 				<thanks-layout-v2
@@ -96,6 +85,22 @@
 					</template>
 				</thanks-layout-v2>
 			</div>
+			<template v-else>
+				<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
+					<h2 class="tw-m-4">
+						Please log in to see your receipt.
+					</h2>
+					<kv-button
+						:href="`/ui-login?force=true&doneUrl=${
+							(this.$route.query.kiva_transaction_id && this.$route.query.kiva_transaction_id !== null)
+								? encodeURIComponent(this.$route.fullPath)
+								: encodeURIComponent('/portfolio')
+						}`"
+					>
+						Log in to continue
+					</kv-button>
+				</div>
+			</template>
 			<template v-if="showMayChallengeHeader">
 				<div
 					v-if="loans.length > 0"
@@ -248,6 +253,11 @@ export default {
 				? numeral(route.query?.kiva_transaction_id).value()
 				: null;
 
+			// Check if transactionId is null, resolve the promise if missing
+			if (!transactionId) {
+				return Promise.resolve();
+			}
+
 			return client.query({
 				query: thanksPageQuery,
 				variables: {
@@ -387,6 +397,12 @@ export default {
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
+
+		// Check if transactionId is null, exit if missing
+		if (!transactionId) {
+			return false;
+		}
+
 		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 
 		try {
