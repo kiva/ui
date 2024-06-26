@@ -469,7 +469,6 @@ export default {
 			isAboveCheckoutActions: false,
 			checkIsAboveCheckoutActionsThrottled: _throttle(this.checkIsAboveCheckoutActions, 100),
 			userOptedIn: false,
-			isMobile: false,
 		};
 	},
 	apollo: {
@@ -683,15 +682,12 @@ export default {
 			fireHotJarEvent('checkout_sticky_experiment');
 		}
 
-		this.determineIfMobile();
-		window.addEventListener('resize', this.throttledResize);
-		if (this.isMobile) {
+		if (window?.innerWidth < 735) {
 			this.initializeCheckoutStickyExperiment();
 		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
-		window.removeEventListener('resize', this.throttledResize);
 	},
 	computed: {
 		showCheckoutStickyExperiment() {
@@ -1206,12 +1202,6 @@ export default {
 
 				this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
 			}
-		},
-		determineIfMobile() {
-			this.isMobile = window?.innerWidth < 735;
-		},
-		throttledResize() {
-			return _throttle(this.determineIfMobile, 200);
 		},
 	},
 	destroyed() {
