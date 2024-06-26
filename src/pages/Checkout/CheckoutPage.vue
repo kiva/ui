@@ -635,8 +635,6 @@ export default {
 
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
-
-		this.initializeCheckoutStickyExperiment();
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -682,6 +680,10 @@ export default {
 
 		if (this.showCheckoutStickyExperiment) {
 			fireHotJarEvent('checkout_sticky_experiment');
+		}
+
+		if (window?.innerWidth < 735) {
+			this.initializeCheckoutStickyExperiment();
 		}
 	},
 	beforeDestroy() {
