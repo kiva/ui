@@ -5,7 +5,6 @@
 	>
 		<!-- pie chart -->
 		<div class="tw-relative tw-h-full">
-			<!-- eslint-disable-next-line max-len -->
 			<div v-if="loading" class="pie-placeholder tw-h-full tw-p-2.5">
 				<div class="tw-overflow-hidden tw-rounded-full tw-h-full">
 					<kv-loading-placeholder />
@@ -92,7 +91,7 @@ import numeral from 'numeral';
 import Alea from '@/util/experiment/Alea';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-// convenience function to get point on circumfrence of a given circle (from https://codepen.io/grieve/pen/xwGMJp)
+// convenience function to get point on circumference of a given circle (from https://codepen.io/grieve/pen/xwGMJp)
 function circumPointFromAngle(cx, cy, r, a) {
 	return [
 		cx + r * Math.cos(a),
@@ -109,7 +108,7 @@ export default {
 		},
 		values: {
 			type: Array,
-			default: () => [],
+			default: () => ([]),
 		},
 	},
 	components: {
@@ -152,8 +151,6 @@ export default {
 				const largeArc = value.percent > 0.5 ? 1 : 0;
 				// Draw just the outer arc of the slice
 				const path = `M ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY}`;
-				// Draw the entire slice
-				// const path = `M ${cX} ${cY} L ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY} Z`;
 				slices.push({
 					...value,
 					path,
