@@ -255,6 +255,10 @@ export default {
 
 			// Check if transactionId is null, resolve the promise if missing
 			if (!transactionId) {
+				logFormatter(
+					'Thanks page preFetch skipped due to missing transaction_id.',
+					'warning',
+				);
 				return Promise.resolve();
 			}
 
@@ -400,6 +404,10 @@ export default {
 
 		// Check if transactionId is null, exit if missing
 		if (!transactionId) {
+			logFormatter(
+				'Thanks page readQuery skipped due to missing transaction_id.',
+				'warning',
+			);
 			return false;
 		}
 
