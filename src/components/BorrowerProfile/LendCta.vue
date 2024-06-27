@@ -289,8 +289,11 @@
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-bottom-8',
 						'tw-w-full',
+						{
+							'tw-bottom-14': freeCreditWarning || allSharesReserved,
+							'tw-bottom-8': !freeCreditWarning && !allSharesReserved,
+						},
 						{
 							'md:tw-relative': !isSticky,
 							'md:tw-bottom-0': !isSticky,
