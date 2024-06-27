@@ -60,8 +60,8 @@ export default {
 				: 'Lend & get a free lending credit reward!¹ Log in or sign up to get started →';
 
 			const link = this.isLoggedin
-				? '/lend-by-category'
-				: '/ui-login?force=true&doneUrl=/lend-by-category';
+				? '/lend/filter'
+				: '/ui-login?force=true&doneUrl=/lend/filter';
 
 			return {
 				richText,
