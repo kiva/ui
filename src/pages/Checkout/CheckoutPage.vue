@@ -678,12 +678,12 @@ export default {
 		this.checkIsAboveCheckoutActions();
 		window.addEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
 
-		if (this.showCheckoutStickyExperiment) {
-			fireHotJarEvent('checkout_sticky_experiment');
-		}
-
 		if (window?.innerWidth < 735) {
 			this.initializeCheckoutStickyExperiment();
+		}
+
+		if (this.showCheckoutStickyExperiment) {
+			fireHotJarEvent('checkout_sticky_experiment');
 		}
 	},
 	beforeDestroy() {
