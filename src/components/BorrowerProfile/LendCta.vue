@@ -256,15 +256,9 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-					<div v-if="!!activities">
+					<div v-if="!!activities && !isSticky">
 						<hr
-							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
-							:class="[
-								{
-									'tw-hidden': isSticky,
-									'tw-block': !isSticky,
-								}
-							]"
+							class="tw-block tw-border-tertiary tw-w-full tw-my-2"
 						>
 						<supported-by-lenders
 							:participants="participants"
