@@ -104,7 +104,7 @@ export default {
 	@apply tw-bg-brand tw-border-none;
 }
 
-.line.completed  {
+.line.completed {
 	background: linear-gradient(180deg, #2AA967, #ECE4D5);
 }
 
