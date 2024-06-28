@@ -298,7 +298,7 @@
 							'md:tw-relative': !isSticky,
 							'md:tw-bottom-0': !isSticky,
 							'md:tw-order-none': !isSticky,
-							'md:tw-px-3': !isSticky,
+							'lg:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
 							'tw-px-2.5 tw-absolute': isSticky
 						},
@@ -324,7 +324,6 @@
 							{
 								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
-								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
 								'md:tw-hidden': isSticky,
 							},
