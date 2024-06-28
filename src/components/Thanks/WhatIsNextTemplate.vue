@@ -1,6 +1,9 @@
 <template>
-	<div class="md:tw-py-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative" :style="{maxWidth: '620px'}">
-		<div class="tw-bg-marigold-1 md:tw-rounded-b">
+	<div
+		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative"
+		:style="{maxWidth: '620px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
+	>
+		<div class="tw-bg-stone-1 md:tw-rounded-b">
 			<div class="tw-bg-eco-green-3 tw-text-center tw-pt-4 md:tw-rounded-t hide-for-print">
 				<h1 class="tw-text-white">
 					Success!
@@ -28,6 +31,7 @@
 									? (index * marginLeftWeight)
 									: (index - 1) * marginLeftWeight}rem`,
 								zIndex: `${index + 1}`,
+								boxShadow: '0px 5.5px 27.49px 0px #D1DCD6',
 							}"
 							:alt="loan.name"
 							:aspect-ratio="1"
@@ -40,8 +44,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="tw-relative tw-flex tw-justify-center hide-for-print">
-				<div class="tw-bg-marigold-1 tw-absolute oval"></div>
+			<div class="tw-relative tw-flex tw-justify-center hide-for-print" id="loan-info">
+				<div class="tw-bg-stone-1 tw-absolute oval"></div>
 				<div
 					class="secondary-container"
 				>
@@ -268,6 +272,7 @@ import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
 import confetti from 'canvas-confetti';
 import { gql } from '@apollo/client';
 import logFormatter from '@/util/logFormatter';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -287,6 +292,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [smoothScrollMixin],
 	props: {
 		selectedLoan: {
 			type: Object,
@@ -428,7 +434,9 @@ export default {
 					logFormatter(error, 'error');
 				}
 			}
-
+			const elementToScrollTo = document.querySelector('#loan-info');
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 			this.confirmOptInChoice = value;
 		}
 	},
@@ -452,10 +460,17 @@ export default {
 <style lang="postcss" scoped>
 
 .oval {
-	width: 653px;
-	height: 181px;
+	width: 751px;
+	height: 171px;
 	border-radius: 50%;
 	margin-top: -90px;
+}
+
+@screen md {
+	.oval {
+		width: 1037px;
+		height: 237px;
+	}
 }
 
 .expandable-button {
@@ -493,12 +508,12 @@ export default {
 }
 
 .account-creation >>> input {
-	@apply tw-bg-marigold-1;
+	@apply tw-bg-stone-1;
 }
 
 .secondary-container {
 	border-bottom-color: #ECE4D5;
-	@apply tw-bg-marigold-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5 tw-pt-3;
+	@apply tw-bg-stone-1 tw-w-full tw-px-3 md:tw-px-8 tw-border-b tw-z-1 tw-pb-5 tw-pt-3;
 }
 
 .option-box {

@@ -1,5 +1,5 @@
 <template>
-	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': showNewTYPage && !isOnlyDonation}">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"

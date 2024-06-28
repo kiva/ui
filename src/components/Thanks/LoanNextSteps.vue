@@ -16,7 +16,10 @@
 				<div class="step-text">
 					{{ step.text }}
 				</div>
-				<div v-if="index > 0 && index < steps.length" class="line"></div>
+				<div
+					v-if="index > 0 && index < steps.length" class="line"
+					:class="{ 'completed': index === currentStep }"
+				></div>
 			</li>
 		</ul>
 	</div>
@@ -75,7 +78,8 @@ export default {
 
 .step {
 	transition: background-color 1s ease;
-	@apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-bg-tertiary
+	background-color: #ECE4D5;
+	@apply tw-w-2.5 tw-h-2.5 tw-mt-2.5 tw-rounded-full tw-border-stone tw-border
 		tw-flex tw-items-center tw-justify-center tw-font-medium tw-relative tw-z-1;
 }
 
@@ -92,15 +96,16 @@ export default {
 .line {
 	transition: background-color 1s ease;
 	animation: fadeIn 1s forwards;
-	@apply tw-absolute tw-w-0.5 tw-h-3.5 tw-bottom-3 tw-bg-tertiary tw-left-1 tw-opacity-0;
+	background-color: #ECE4D5;
+	@apply tw-absolute tw-w-0.5 tw-h-3.5 tw-bottom-3 tw-left-1 tw-opacity-0;
 }
 
 .completed .step {
-	@apply tw-bg-brand;
+	@apply tw-bg-brand tw-border-none;
 }
 
-.completed .line {
-	@apply tw-bg-brand;
+.line.completed {
+	background: linear-gradient(180deg, #2AA967, #ECE4D5);
 }
 
 .buttons button {
