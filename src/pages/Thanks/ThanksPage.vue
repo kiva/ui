@@ -1,5 +1,5 @@
 <template>
-	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1': showNewTYPage && !isOnlyDonation}">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 auto-height': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
@@ -584,5 +584,9 @@ export default {
 	&__social-share {
 		margin-bottom: 0.5rem;
 	}
+}
+
+.auto-height {
+	height: auto !important;
 }
 </style>
