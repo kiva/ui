@@ -241,6 +241,7 @@ export default {
 			if (this.enableRadioBtnExperiment) {
 				emailUpdates = this.selectedComms === '1';
 			}
+			this.$emit('opt-in', emailUpdates);
 
 			const validationPayload = {
 				email: this.email,

@@ -1,8 +1,19 @@
 <template>
-	<www-page data-testid="thanks-page">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
+			/>
+		</template>
+		<template v-else-if="showNewTYPage">
+			<what-is-next-template
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:lender="lender"
+				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 		<template v-else>
@@ -33,17 +44,6 @@
 							<p v-else class="hide-for-print">
 								We've emailed your order confirmation to you.
 							</p>
-						</template>
-
-						<template v-else>
-							<h1 class="tw-mb-4">
-								Please log in to see your receipt.
-							</h1>
-							<kv-button
-								:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
-							>
-								Log in to continue
-							</kv-button>
 						</template>
 					</div>
 				</div>
@@ -85,6 +85,22 @@
 					</template>
 				</thanks-layout-v2>
 			</div>
+			<template v-else>
+				<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
+					<h2 class="tw-m-4">
+						Please log in to see your receipt.
+					</h2>
+					<kv-button
+						:href="`/ui-login?force=true&doneUrl=${
+							(this.$route.query.kiva_transaction_id && this.$route.query.kiva_transaction_id !== null)
+								? encodeURIComponent(this.$route.fullPath)
+								: encodeURIComponent('/portfolio')
+						}`"
+					>
+						Log in to continue
+					</kv-button>
+				</div>
+			</template>
 			<template v-if="showMayChallengeHeader">
 				<div
 					v-if="loans.length > 0"
@@ -156,6 +172,8 @@ import { joinArray } from '@/util/joinArray';
 import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -163,6 +181,7 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const NEW_THANKS_PAGE_EXP = 'new_ty_page_minimal';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -199,6 +218,7 @@ export default {
 		ThanksPageDonationOnly,
 		ChallengeHeader,
 		ShareChallenge,
+		WhatIsNextTemplate,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -223,6 +243,8 @@ export default {
 			goal: null,
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
+			optedIn: false,
+			enableShortVersion: false,
 		};
 	},
 	apollo: {
@@ -230,6 +252,15 @@ export default {
 			const transactionId = route.query?.kiva_transaction_id
 				? numeral(route.query?.kiva_transaction_id).value()
 				: null;
+
+			// Check if transactionId is null, resolve the promise if missing
+			if (!transactionId) {
+				logFormatter(
+					'Thanks page preFetch skipped due to missing transaction_id.',
+					'warning',
+				);
+				return Promise.resolve();
+			}
 
 			return client.query({
 				query: thanksPageQuery,
@@ -348,7 +379,21 @@ export default {
 		},
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
-		}
+		},
+		landedOnUSLoan() {
+			const bpPattern = /^\/lend\/(\d+)/;
+
+			if (bpPattern.test(this.$appConfig.firstPage)) {
+				const url = this.$appConfig.firstPage?.split('/');
+				const firstVisitloanId = url?.[2] ?? null;
+				const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
+				return landedLoan?.geocode?.country?.isoCode === 'US';
+			}
+			return false;
+		},
+		showNewTYPage() {
+			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -356,6 +401,16 @@ export default {
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
+
+		// Check if transactionId is null, exit if missing
+		if (!transactionId) {
+			logFormatter(
+				'Thanks page readQuery skipped due to missing transaction_id.',
+				'warning',
+			);
+			return false;
+		}
+
 		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 
 		try {
@@ -473,6 +528,22 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
+
+		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+
+		// New Thanks Page Experiment
+		if (this.showNewTYPage) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'thanks',
+				NEW_THANKS_PAGE_EXP,
+				'EXP-MP-267-Jun2024',
+			);
+			if (version === 'b') {
+				this.enableShortVersion = true;
+			}
+		}
 	},
 	methods: {
 		createGuestAccount() {
