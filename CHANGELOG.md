@@ -1,3 +1,90 @@
+## [2.745.0](https://github.com/kiva/ui/compare/v2.744.0...v2.745.0) (2024-07-01)
+
+
+### 🎉 New Features
+
+* [MP-310] hide incentive banner ([e6ce3f6](https://github.com/kiva/ui/commit/e6ce3f6ceb17efc4e7344d1c86d9892327979a55))
+* [MP-310] hide incentive banner ([c50a8fb](https://github.com/kiva/ui/commit/c50a8fb8cf9405074e02c4e7050d14dd30b4d5a3))
+* [MP-310] hide incentive banner ([cdf251d](https://github.com/kiva/ui/commit/cdf251d80e1f1286a2d1d6ff1dc568e9ba2e38b7))
+* [MP-362] update lending credit link ([99ae8de](https://github.com/kiva/ui/commit/99ae8de960df1f86846a1aa45a7807ad746a5547))
+* added experiment setting for checkout sticky exp ([b41101e](https://github.com/kiva/ui/commit/b41101e7ba8f3a3f94548e137f27e38061c66ab3))
+* animate sparkles for thanks page ([33afe52](https://github.com/kiva/ui/commit/33afe5251cbf6814bd88399c76faa73966312757))
+* bp activity feed hidden for sticky cta ([#5362](https://github.com/kiva/ui/issues/5362)) ([d7618c4](https://github.com/kiva/ui/commit/d7618c4d65521a04a3a827b0986059fc0baf6ff9))
+* bp matching component size fixed for tablets ([#5365](https://github.com/kiva/ui/issues/5365)) ([898bdcf](https://github.com/kiva/ui/commit/898bdcffa1b3e09d05cdbe8118651ad72c04298e))
+* desktop checkout actions experiment ([3349900](https://github.com/kiva/ui/commit/3349900f50050e68e5cb51cf61fbb635178b7b5b))
+* disable sticky checkout and log experiment assignment in desktop ([5802cc9](https://github.com/kiva/ui/commit/5802cc913c6c979f8be938b7e987ca9559d44d04))
+* hide non receipt elements for print ([44c6ce7](https://github.com/kiva/ui/commit/44c6ce71563eb98faa1bf3937d21ac262b350405))
+* initial mocks ([f52ba35](https://github.com/kiva/ui/commit/f52ba350b9d6e670c324d475f596e0956a826914))
+* missing animation and update email opt in choice ([43a434a](https://github.com/kiva/ui/commit/43a434a28ac53bfc56e891b1a9cd0dddfe62f4e7))
+* new thanks page for opt-in experiment ([27d64dc](https://github.com/kiva/ui/commit/27d64dc7a466c8ad1baec1c0d41c98515b68a7c9))
+* overall checkout button experiment ready ([35e41e9](https://github.com/kiva/ui/commit/35e41e9d9bb39f418a9de972cabbb2b124694cba))
+* pie chart design for distribution tables MP-434 ([5a7ea34](https://github.com/kiva/ui/commit/5a7ea34b34e1e1ecf123c910d233d1d8c978a3fe))
+* refactor new ty page and different variants depending on number of loans ([e8e87d4](https://github.com/kiva/ui/commit/e8e87d404ae58bf5d684c71957da4b8131b8692c))
+* shorter version and exp tracking ([bda7120](https://github.com/kiva/ui/commit/bda7120884bd1cf5c72a93dc525e6093c3f00682))
+* thank you page behind feature flag ([37d197a](https://github.com/kiva/ui/commit/37d197af99510f5b6ac652aa67f201769c85b109))
+* tracking events and fixes ([899be8f](https://github.com/kiva/ui/commit/899be8f23113e9dccfadfa39ffc176ef7c214e99))
+
+
+### 🐛 Bugfixes
+
+* add parenthesis to arrow function inline return value ([be88548](https://github.com/kiva/ui/commit/be8854811c180209c20b506cf470b8c215d3e31f))
+* always evaluate if user landed on a us loan ([d7676a4](https://github.com/kiva/ui/commit/d7676a498f25a4382e8f93c265d76251857f57a5))
+* bottom position fixed ([#5363](https://github.com/kiva/ui/issues/5363)) ([a56900e](https://github.com/kiva/ui/commit/a56900e9527827c79c399b0c534d8f02b2e64e72))
+* cache value to ensure scroll works ([791403c](https://github.com/kiva/ui/commit/791403cac67f8e53de8cdd3bef59d28d847aa70e))
+* cleanup basket classes application ([a7f5b6e](https://github.com/kiva/ui/commit/a7f5b6e9af379229aa6e6ed8be2bbbc7936f8045))
+* copy ([6f599c8](https://github.com/kiva/ui/commit/6f599c87852d12a54d0a6643b1dab7cccbc51d6f))
+* copy change ([e6704af](https://github.com/kiva/ui/commit/e6704af693d3068bf99c08a46a560db75b7f4a0d))
+* design tweaks ([032d86d](https://github.com/kiva/ui/commit/032d86d7955f3b835c632df98436fb6052fd1650))
+* enable new ty page when guest checkout happens ([11c206a](https://github.com/kiva/ui/commit/11c206a90305d69a41cc50317072ad602f4c76e1))
+* fire hotjar event if the user sees the check sticky experiment, gray bg for desktop ([641fd26](https://github.com/kiva/ui/commit/641fd263ff60c4c3ae584b14c1a67d920630e121))
+* firstLoan condition was false in guest checkout ([9482147](https://github.com/kiva/ui/commit/9482147fec8724877b0d5526644db9963753614b))
+* hide new ty page if usa loan ([3405e9d](https://github.com/kiva/ui/commit/3405e9dfc26573b2fb5669f11e5f39aa16de8ea1))
+* hide top horizontal rule for mobile ([e9dfcb7](https://github.com/kiva/ui/commit/e9dfcb715b30dd20edd4598c5f6aaec19a15044e))
+* initilize experiment above firing hotjar event condition ([ebacf3b](https://github.com/kiva/ui/commit/ebacf3b238038738df892e6930d6fc0eba97b161))
+* isDesktop no longer needed with logged-out only version ([251c6ae](https://github.com/kiva/ui/commit/251c6ae3b9e32f3e6d0bfabdfea296a32f252d3f))
+* lint ([dbc95e2](https://github.com/kiva/ui/commit/dbc95e2b7d3dffcdeb3c81b4af4f6db1a30efda3))
+* lint ([0912049](https://github.com/kiva/ui/commit/0912049bf819a892c6f81f9505af54328af826de))
+* lint ([edfa50a](https://github.com/kiva/ui/commit/edfa50ae07a25c4a0d7dc68f694e4b311ea9e34f))
+* lint ([092fb7f](https://github.com/kiva/ui/commit/092fb7f5b5cbeb66f5d50bf5c3d0935eef6707b1))
+* lint ([0142986](https://github.com/kiva/ui/commit/014298641e3e0d15cf8cfc9e72ad87cb3814f33c))
+* lint and auto height using tw ([f0c1247](https://github.com/kiva/ui/commit/f0c1247997a0ecdd8efd224cdc8258e59b4ddbce))
+* linting fixes ([ca3000b](https://github.com/kiva/ui/commit/ca3000b983099bd239bc110861e5dea53c312e7c))
+* log warning when prefetch or readQuery are skipped due to missing transaction id ([e344ec7](https://github.com/kiva/ui/commit/e344ec75b6f2359c860d879c64f1b89c3076e1a0))
+* logic between different paths ([32d0f75](https://github.com/kiva/ui/commit/32d0f75c15d0435352b82c233a9b2c3d71c55cca))
+* method handler with onlick ([119b3b8](https://github.com/kiva/ui/commit/119b3b824e7b159779ed8ff9fdb7f7e09212e598))
+* missing component ([8533482](https://github.com/kiva/ui/commit/8533482abea886f2e6bcf0e4a496b50bcbccdcef))
+* move scroll method to component to not break other smooth scroll usages ([b75bd1a](https://github.com/kiva/ui/commit/b75bd1a435ce613ff3e04142a3eb22eb06c16b99))
+* moving firstLoan condition change to new ty page ([cd2dd70](https://github.com/kiva/ui/commit/cd2dd70db95cb20641d251ffd4111e5efd92dc1f))
+* only basket items need to be adjusted for logged out version of experiment ([e72f408](https://github.com/kiva/ui/commit/e72f4080c0a070a7079e8f1b83bac4c822ca2b43))
+* only log experiment assignment if the user is not logged in ([159c2d5](https://github.com/kiva/ui/commit/159c2d53aabf44af9a406fefa3e9f6a3d116d8f7))
+* only sticky actions when logged out ([fe6e5ef](https://github.com/kiva/ui/commit/fe6e5ef4badedbf4282453ae6c07bbe8948056a7))
+* prevent massive error logs due to failed receipt query when no transactionId is present ([4f0091e](https://github.com/kiva/ui/commit/4f0091ecc859640a329100c348b9a1c7af849f0b))
+* remove currentStep assignation ([b11f7de](https://github.com/kiva/ui/commit/b11f7de34dcb6d76659218dab8b599de7a2291f0))
+* remove unnecessary comments and log ([43b86a9](https://github.com/kiva/ui/commit/43b86a95ffdb72721b4b7f4036055c22f7deefdd))
+* remove unneeded mounted on loan next steps ([3748c49](https://github.com/kiva/ui/commit/3748c493e4f327963c6038d3b8bf5e8c8febc325))
+* reposition animated sparkles around borrower image MP-376 ([8a5819d](https://github.com/kiva/ui/commit/8a5819de39e9116a701b0d3d3b749caa3c04a31b))
+* resolve comments ([71b9349](https://github.com/kiva/ui/commit/71b93496872f75c92f2911a15069f2d1ba503b9e))
+* revert upsell changes for logged-out only version ([0a1de4a](https://github.com/kiva/ui/commit/0a1de4a84f8de43505f5b0b777d60cabb127a767))
+* show new page logic ([ef25786](https://github.com/kiva/ui/commit/ef2578641e4b89126bdd9eebbed35956004268e2))
+* show new thank you page to users who made first transaction and do not opted in ([1b516cb](https://github.com/kiva/ui/commit/1b516cb0b0063979222603356b56bb1c28b90a5c))
+* solve comments and change steps component name ([92cda34](https://github.com/kiva/ui/commit/92cda34c846199d15119be3aae4b1654196b5f2a))
+* steps animation ([4a0a5b1](https://github.com/kiva/ui/commit/4a0a5b12691c5f3fd1e26d409c310e42fe25f7c7))
+* sticky buttons on scroll for better user experience ([67c3ea8](https://github.com/kiva/ui/commit/67c3ea8e555861322cd877fb4a413c62a8e9f082))
+* temp workaround for sticky buttons covering part of footer ([fe23ae0](https://github.com/kiva/ui/commit/fe23ae01993ee760e798655f93ac47618f5ebcd1))
+* weeks to repay logic ([fe7fd20](https://github.com/kiva/ui/commit/fe7fd20f492c421cc7a256c6b2dad44b6da5d0c1))
+
+
+### 🪚 Refactors
+
+* simplify logic ([8798f3e](https://github.com/kiva/ui/commit/8798f3ed1ac5067be9bb621eba77f7e90d53359a))
+* tailwind classses ([270a50f](https://github.com/kiva/ui/commit/270a50f58fb4471b91a88d8e696bcb2281c8c703))
+
+
+### 🧹 Chores
+
+* **release:** 2.745.0-rc.1 [skip ci] ([2b6eba6](https://github.com/kiva/ui/commit/2b6eba6ba7a83c3b6ad3a29eb308ef7e124e2f16)), closes [#5362](https://github.com/kiva/ui/issues/5362) [#5365](https://github.com/kiva/ui/issues/5365) [#5363](https://github.com/kiva/ui/issues/5363)
+* update local dev with caddy docs ([f19bcda](https://github.com/kiva/ui/commit/f19bcda7f7c7d4290c86e6146d7849021c8a91f6))
+
 ## [2.745.0-rc.1](https://github.com/kiva/ui/compare/v2.744.0...v2.745.0-rc.1) (2024-07-01)
 
 
