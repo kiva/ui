@@ -1,11 +1,13 @@
 <template>
-	<generic-promo-banner
-		class="tw-text-center"
-		:promo-banner-content="promoBannerContent"
-		:enable-deposit-incentive-exp="isLoggedin"
-		:progress-bar-value="basketTotal"
-		:amount-to-lend="amountToLend"
-	/>
+	<div v-if="!isLoggedin || !hasCampaignReward">
+		<generic-promo-banner
+			class="tw-text-center"
+			:promo-banner-content="promoBannerContent"
+			:enable-deposit-incentive-exp="isLoggedin"
+			:progress-bar-value="basketTotal"
+			:amount-to-lend="amountToLend"
+		/>
+	</div>
 </template>
 
 <script>
@@ -14,7 +16,7 @@ import numeral from 'numeral';
 import { gql } from '@apollo/client';
 
 const amountToLendQuery = gql`
-	query amountToLendQuery ($basketId: String) {
+	query amountToLendQuery ($basketId: String, $campaignId: String) {
 		shop (basketId: $basketId) {
 			id
 			basket {
@@ -27,6 +29,10 @@ const amountToLendQuery = gql`
 		my {
 			id
 			depositIncentiveAmountToLend
+			userAccount {
+				id
+				hasCampaignReward (campaignId: $campaignId)
+			}
 		}
 	}
 `;
@@ -38,6 +44,7 @@ export default {
 	},
 	data() {
 		return {
+			hasCampaignReward: false,
 			amountToLend: 0,
 			isLoggedin: false,
 			basketTotal: 0,
@@ -47,10 +54,14 @@ export default {
 	apollo: {
 		query: amountToLendQuery,
 		preFetch: true,
+		variables: {
+			campaignId: '04786358-043c-4c09-af50-2d5e79ceeacd'
+		},
 		result({ data }) {
 			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
 			this.isLoggedin = !!data?.my?.id ?? false;
 			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
+			this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
 		},
 	},
 	computed: {
