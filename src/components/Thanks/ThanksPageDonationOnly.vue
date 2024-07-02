@@ -1,34 +1,9 @@
 <template>
 	<div>
-		<div v-if="doubleDonationEnabled" class="tw-py-5 tw-bg-marigold-1">
-			<kv-page-container>
-				<kv-grid class="tw-grid-cols-12">
-					<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-						<h1 class="tw-text-h1 tw-text-center tw-mb-4" data-testid="thanks-message">
-							{{ headerMsg }}
-						</h1>
-						<div class="tw-text-center">
-							<div id="dd-container" class="tw-mb-2">
-								<!--eslint-disable-next-line max-len-->
-								<a href="https://doublethedonation.com/matching-grant-resources/matching-gift-basics/" target="_blank">Matching Gift</a> and <a href="https://doublethedonation.com/matching-grant-resources/volunteer-grant-basics/" target="_blank">Volunteer Grant</a> information provided by <br><a href="https://doublethedonation.com" target="_blank"><img alt="Powered by Double the Donation" src="https://doublethedonation.com/api/img/powered-by.png"></a>
-							</div>
-							<a
-								class="tw-text-marigold-3 tw-text-small tw-font-medium
-								tw-cursor-pointer hover:tw-no-underline hover:tw-text-marigold-3"
-								@click="scrollToSection('#matching-gift-faq')"
-							>Matching Gift Program FAQs</a>
-						</div>
-					</div>
-				</kv-grid>
-			</kv-page-container>
-		</div>
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12 tw-my-8">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<h1
-						v-if="!doubleDonationEnabled"
-						class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message"
-					>
+					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
 					<p class="tw-text-center tw-mb-2 tw-text-subhead">
@@ -136,20 +111,6 @@
 				</div>
 			</kv-grid>
 		</kv-page-container>
-		<div v-if="doubleDonationEnabled" class="tw-py-8 tw-px-2.5 tw-bg-marigold-1">
-			<kv-grid class="tw-grid-cols-12">
-				<div
-					id="matching-gift-faq"
-					class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print"
-				>
-					<kv-frequently-asked-questions
-						class="tw-col-span-12 faq-container"
-						:headline="frequentlyAskedQuestionsHeadline"
-						:questions="frequentlyAskedQuestions"
-					/>
-				</div>
-			</kv-grid>
-		</div>
 	</div>
 </template>
 
@@ -160,7 +121,6 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
 import { gql } from '@apollo/client';
-import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -187,20 +147,12 @@ export default {
 				contentful {
 					entries(contentType: "contentGroup", contentKey: "thanks-page-only-donation")
 				}
-				general {
-					doubleDonationEnabled: featureSetting(key: "doubledonation.enabled") {
-						key
-						value
-						description
-					}
-				}
 			}
 		`,
 		preFetch: true,
 		result({ data }) {
 			const contentfulData = data?.contentful?.entries?.items ?? null;
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
-			this.doubleDonationEnabled = data?.general?.doubleDonationEnabled?.value === 'true' ?? false;
 		}
 	},
 	components: {
@@ -208,7 +160,6 @@ export default {
 		KvMaterialIcon,
 		KvPageContainer,
 		KvGrid,
-		KvFrequentlyAskedQuestions
 	},
 	props: {
 		monthlyDonationAmount: {
@@ -231,21 +182,7 @@ export default {
 			message: '',
 			utmCampaign: 'social_share_checkout',
 			contentfulContent: null,
-			doubleDonationEnabled: false,
 		};
-	},
-	mounted() {
-		if (this.doubleDonationEnabled) {
-			const doubleDonationScript = document.createElement('script');
-			doubleDonationScript.setAttribute('src', 'https://doublethedonation.com/api/js/ddplugin.js');
-			document.head.appendChild(doubleDonationScript);
-
-			window.DDCONF = { API_KEY: 'ODBlMWJiZGItZTY4' };
-			if (window.doublethedonation) {
-				// eslint-disable-next-line no-undef
-				doublethedonation.plugin.load_streamlined_input();
-			}
-		}
 	},
 	computed: {
 		shareMessage() {
@@ -275,12 +212,6 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-		frequentlyAskedQuestionsHeadline() {
-			return this.contentfulContent?.frequentlyAskedQuestions?.title ?? null;
-		},
-		frequentlyAskedQuestions() {
-			return this.contentfulContent?.frequentlyAskedQuestions?.contents ?? null;
-		},
 	},
 	methods: {
 		gatherCurrentUserData() {
@@ -291,11 +222,6 @@ export default {
 				this.lender = data?.my?.userAccount ?? {};
 			});
 		},
-		scrollToSection(sectionId) {
-			const elementToScrollTo = document.querySelector(sectionId);
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-		}
 	},
 	created() {
 		const monthlyAmountNumeral = numeral(this.monthlyDonationAmount);
@@ -310,18 +236,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@import 'https://doublethedonation.com/api/css/ddplugin.css';
-
 .social__btn {
 	@apply tw-w-full tw-rounded tw-flex tw-items-center tw-justify-center tw-mb-2 tw-p-1.5 tw-font-medium;
 }
 
 .social__icon {
 	@apply tw-h-3 tw-w-3 tw-mr-1 tw-shrink-0;
-}
-
-.faq-container >>> h2 {
-	@apply tw-text-center;
 }
 </style>
 
