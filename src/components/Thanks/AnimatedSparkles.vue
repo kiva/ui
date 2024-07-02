@@ -96,14 +96,17 @@
 		-webkit-transform: scale(0.3) rotate(0deg);
 		opacity: 0;
 	}
+
 	25% {
 		-webkit-transform: scale(1) rotate(360deg);
 		opacity: 1;
 	}
+
 	50% {
 		-webkit-transform: scale(0.3) rotate(720deg);
 		opacity: 0;
 	}
+
 	100% {
 		-webkit-transform: scale(0.3) rotate(0deg);
 		opacity: 0;
