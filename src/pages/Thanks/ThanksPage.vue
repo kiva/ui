@@ -85,7 +85,7 @@
 					</template>
 				</thanks-layout-v2>
 			</div>
-			<template v-else>
+			<template v-else-if="!receipt">
 				<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
 					<h2 class="tw-m-4">
 						Please log in to see your receipt.
