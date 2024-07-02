@@ -1,3 +1,17 @@
+## [2.746.0-rc.1](https://github.com/kiva/ui/compare/v2.745.0...v2.746.0-rc.1) (2024-07-02)
+
+
+### 🎉 New Features
+
+* remove double donation feature from donation-only thanks page ([4708b3c](https://github.com/kiva/ui/commit/4708b3cd7435c727f46bce40ea4bf26a773f2942))
+* replace BE FLSS key ([991d78f](https://github.com/kiva/ui/commit/991d78f3b06d6593becc0b90c86fb500eab6bd84))
+* update footer link to new page ([ea9fd3d](https://github.com/kiva/ui/commit/ea9fd3d97c03017b79d835d1d294d94ab7d56936))
+
+
+### 🐛 Bugfixes
+
+* ensure the login section isn't shown when a receipt is present ([66592e0](https://github.com/kiva/ui/commit/66592e02d88dc518c4f25df305bc2f71912e1071))
+
 ## [2.745.0](https://github.com/kiva/ui/compare/v2.744.0...v2.745.0) (2024-07-01)
 
 
