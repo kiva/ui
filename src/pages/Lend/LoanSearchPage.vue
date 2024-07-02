@@ -85,7 +85,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
