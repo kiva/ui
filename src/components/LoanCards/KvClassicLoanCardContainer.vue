@@ -345,7 +345,7 @@ export default {
 						dataObject?.data.push({
 							lenderName: action.lender.name,
 							lenderImage: action.lender?.image?.url,
-							text: `${action.lender.name} lent $${parseFloat(action.shareAmount).toFixed()}`,
+							text: `${action.lender.name} lent`,
 							date: action.latestSharePurchaseDate,
 							type: action.__typename, // eslint-disable-line no-underscore-dangle
 						});

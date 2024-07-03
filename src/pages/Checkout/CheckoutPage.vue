@@ -19,11 +19,20 @@
 				class="basket-wrap tw-relative tw-mb-1"
 				:class="{'pre-login': !preCheckoutStep}"
 			>
-				<div class="checkout-header tw-pb-3 hide-for-print">
+				<div
+					class="checkout-header hide-for-print"
+					:class="{
+						'tw-pb-3': !checkoutStickyExperimentEnabled,
+						'tw-pb-0 md:tw-pb-1 lg:tw-pb-3': checkoutStickyExperimentEnabled
+					}"
+				>
 					<h1 class="tw-text-h2 tw-mb-3">
 						Your basket
 					</h1>
-					<hr class="tw-border-tertiary tw-my-3">
+					<hr
+						class="tw-border-tertiary tw-my-3"
+						:class="{ 'tw-hidden lg:tw-block': checkoutStickyExperimentEnabled }"
+					>
 
 					<ftds-message
 						class="tw-mb-2"
@@ -47,6 +56,7 @@
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
+							:class="{ 'lg:tw-w-3/4 lg:tw-mx-0 lg:tw-pr-3': showCheckoutStickyExperiment }"
 						/>
 						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
@@ -88,8 +98,20 @@
 
 						<basket-verification />
 
-						<div class="checkout-actions md:tw-text-right tw-my-6">
-							<div v-if="isLoggedIn" class="">
+						<div ref="checkoutActionsThreshold"></div>
+
+						<div
+							id="checkout-actions"
+							class="checkout-actions md:tw-text-right"
+							:class="{
+								'tw-my-6': !showCheckoutStickyExperiment,
+								'tw-fixed tw-bottom-0 tw-left-0 tw-bg-white tw-p-2 tw-w-full tw-border-t \
+								tw-border-tertiary tw-z-1 lg:tw-absolute lg:tw-top-0 lg:tw-p-0 lg:tw-my-0 \
+								lg:tw-left-auto lg:tw-right-0 lg:tw-w-1/4 lg:tw-border-0 \
+								lg:tw-h-min': showCheckoutStickyExperiment,
+							}"
+						>
+							<div v-if="isLoggedIn">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -106,17 +128,22 @@
 								<checkout-drop-in-payment-wrapper
 									v-if="!showKivaCreditButton"
 									:amount="creditNeeded"
+									:loans-in-basket="loanIdsInBasket.length"
 									:is-guest-checkout="checkingOutAsGuest"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									@complete-transaction="completeTransaction"
 									:use-async-checkout="asyncCheckoutActive"
+									@opt-in="($event) => userOptedIn = $event"
 								/>
 							</div>
 
 							<div
 								v-else-if="!isLoggedIn && showLoginContinueButton"
-								class=""
+								:class="{
+									'lg:tw-flex lg:tw-flex-col lg:tw-gap-2 lg:tw-p-1.5 \
+									lg:tw-bg-secondary': showCheckoutStickyExperiment
+								}"
 							>
 								<!-- Guest checkout button shown when the uiexp.guest_checkout and
 									feature.guest_checkout are enabled to users in the test group
@@ -126,6 +153,7 @@
 									v-if="eligibleForGuestCheckout && !guestCheckoutCTAExpActive"
 									class="guest-checkout-button checkout-button
 										tw-w-full md:tw-w-auto md:tw-mr-2 tw-mb-2 md:tw-mb-0"
+									:class="{ 'lg:tw-mr-0 guest-checkout-button-sticky': showCheckoutStickyExperiment }"
 									variant="secondary"
 									id="guest-checkout-button"
 									data-testid="guest-checkout-button"
@@ -286,6 +314,7 @@
 import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import { readBoolSetting } from '@/util/settingsUtils';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -332,6 +361,8 @@ import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
 import FtdsMessage from '@/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import { fireHotJarEvent } from '@/util/hotJarUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -340,6 +371,7 @@ const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
+const CHECKOUT_STICKY_EXP_KEY = 'checkout_sticky';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -382,7 +414,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
+	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount, smoothScrollMixin],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -433,6 +465,10 @@ export default {
 			// Deposit incentive experiment MP-72
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
+			checkoutStickyExperimentEnabled: false,
+			isAboveCheckoutActions: false,
+			checkIsAboveCheckoutActionsThrottled: _throttle(this.checkIsAboveCheckoutActions, 100),
+			userOptedIn: false,
 		};
 	},
 	apollo: {
@@ -638,8 +674,29 @@ export default {
 				});
 			// end challenge code
 		}
+
+		this.checkIsAboveCheckoutActions();
+		window.addEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
+
+		if (window?.innerWidth < 735) {
+			this.initializeCheckoutStickyExperiment();
+		}
+
+		if (this.showCheckoutStickyExperiment) {
+			fireHotJarEvent('checkout_sticky_experiment');
+		}
+	},
+	beforeDestroy() {
+		window.removeEventListener('scroll', this.checkIsAboveCheckoutActionsThrottled);
 	},
 	computed: {
+		showCheckoutStickyExperiment() {
+			return this.checkoutStickyExperimentEnabled
+				&& !this.checkingOutAsGuest
+				&& !this.showKivaCreditButton
+				&& !this.isLoggedIn
+				&& this.isAboveCheckoutActions;
+		},
 		isUpsellUnder100() {
 			const amountLeft = this.upsellLoan?.loanAmount
 			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
@@ -765,6 +822,15 @@ export default {
 		},
 	},
 	methods: {
+		checkIsAboveCheckoutActions() {
+			const thresholdClientRectTop = this.$refs?.checkoutActionsThreshold?.getBoundingClientRect()?.top;
+			this.isAboveCheckoutActions = thresholdClientRectTop > window?.innerHeight;
+		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		},
 		openMatchedLoansLightbox() {
 			this.$kvTrackEvent('Basket', 'click-must-deposit-message-cta', 'Learn more');
 			this.showMatchedLoansLightbox = true;
@@ -784,7 +850,14 @@ export default {
 			this.showUpsellModule = false;
 		},
 		guestCheckout() {
+			// Cache value to know whether to trigger nextTick
+			const wasCheckoutStickyExperimentShown = this.showCheckoutStickyExperiment;
+
 			this.checkingOutAsGuest = true;
+
+			if (wasCheckoutStickyExperimentShown) {
+				this.$nextTick(() => this.scrollToSection('#checkout-actions'));
+			}
 		},
 		disableGuestCheckout() {
 			this.checkingOutAsGuest = false;
@@ -894,10 +967,15 @@ export default {
 				// fire transaction events
 				this.$kvTrackTransaction(transactionData);
 
+				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
+				if (this.checkingOutAsGuest) {
+					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
+				}
+
 				// redirect to thanks
 				window.setTimeout(
 					() => {
-						this.redirectToThanks(transactionId, this.challengeRedirectQueryParam);
+						this.redirectToThanks(transactionId, checkoutAdditionalQueryParams);
 					},
 					800
 				);
@@ -1107,6 +1185,24 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
+		initializeCheckoutStickyExperiment() {
+			if (!this.isLoggedIn) {
+				const checkoutStickyExperiment = this.apollo.readFragment({
+					id: `Experiment:${CHECKOUT_STICKY_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				if (checkoutStickyExperiment.version) {
+					this.$kvTrackEvent(
+						'basket',
+						'EXP-MP-360-Jun2024',
+						checkoutStickyExperiment.version,
+					);
+				}
+
+				this.checkoutStickyExperimentEnabled = checkoutStickyExperiment.version === 'b';
+			}
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
@@ -1133,6 +1229,12 @@ export default {
 	#loading-overlay,
 	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
+	}
+}
+
+.guest-checkout-button-sticky > span {
+	@media screen and (min-width: 1024px) {
+		background-color: white;
 	}
 }
 </style>

@@ -65,40 +65,55 @@
 						Enter last name.
 					</template>
 				</kv-base-input>
-				<kv-base-input
-					name="newAcctTerms"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsTerms"
-					v-model="newAcctTerms"
-					:validation="$v.newAcctTerms"
-				>
-					I have read and agree to the Kiva
-					<a href="/legal/terms" target="_blank">Terms of Use</a>
-					and
-					<a href="/legal/privacy" target="_blank">
-						Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
-					</a> (required)
-					<template #checked>
-						You must agree to the Kiva Terms of Use and Privacy
-						{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="newsConsent"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="checkbox"
-					v-show="needsNews"
-					v-model="newsConsent"
-					@update:modelValue="$kvTrackEvent(
-						'Login',
-						'click-marketing-updates',
-						emailUpdatesCopy,
-						$event ? 1 : 0
-					)"
-				>
-					{{ emailUpdatesCopy }}
-				</kv-base-input>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					tracking-category="authentication"
+					@update:modelValue="selectedComms = $event"
+				/>
+				<template v-else>
+					<kv-base-input
+						name="newAcctTerms"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsTerms"
+						v-model="newAcctTerms"
+						:validation="$v.newAcctTerms"
+						@update:modelValue="$kvTrackEvent(
+							'authentication',
+							'click',
+							'terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
+					>
+						I have read and agree to the Kiva
+						<a href="/legal/terms" target="_blank">Terms of Use</a>
+						and
+						<a href="/legal/privacy" target="_blank">
+							Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
+						</a> (required)
+						<template #checked>
+							You must agree to the Kiva Terms of Use and Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</template>
+					</kv-base-input>
+					<kv-base-input
+						name="newsConsent"
+						class="data-hj-suppress tw-w-full tw-mb-4"
+						type="checkbox"
+						v-show="needsNews"
+						v-model="newsConsent"
+						@update:modelValue="$kvTrackEvent(
+							'authentication',
+							'click',
+							'marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
+					>
+						{{ emailUpdatesCopy }}
+					</kv-base-input>
+				</template>
 				<div class="tw-mb-4">
 					<re-captcha-enterprise
 						:required="needsCaptcha"
@@ -136,7 +151,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvBaseInput from '@/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
@@ -144,6 +159,8 @@ import SystemPage from '@/components/SystemFrame/SystemPage';
 import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
@@ -160,10 +177,16 @@ export default {
 		KvButton,
 		ReCaptchaEnterprise,
 		SystemPage,
+		UserUpdatesPreference,
 	},
 	mixins: [
 		validationMixin,
 	],
+	provide() {
+		return {
+			$v: this.$v
+		};
+	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
 		partnerContentId: {
@@ -187,6 +210,9 @@ export default {
 			fetchedLogoAltText: null,
 			fetchedLogoUrl: null,
 			enableCommsExperiment: false,
+			needsComms: false,
+			selectedComms: '',
+			enableRadioBtnExperiment: false,
 		};
 	},
 	computed: {
@@ -214,7 +240,7 @@ export default {
 		},
 		emailUpdatesCopy() {
 			if (this.enableCommsExperiment) {
-				return 'Send me updates about my borrower(s), my impact, and other ways I can help.';
+				return 'Send me updates from people I\'ve funded, my impact, and other ways I can help.';
 			}
 
 			return !this.passwordless
@@ -237,6 +263,10 @@ export default {
 				checked: val => val,
 			};
 		}
+		validations.selectedComms = {
+			required: requiredIf(() => this.needsComms),
+		};
+
 		return validations;
 	},
 	created() {
@@ -283,7 +313,7 @@ export default {
 			this.needsNews = true;
 		}
 
-		if (!this.passwordless) {
+		if (!this.passwordless && this.needsNews) {
 			const { version } = this.apollo.readFragment({
 				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 				fragment: experimentVersionFragment,
@@ -299,13 +329,18 @@ export default {
 			if (version === 'b') {
 				this.enableCommsExperiment = true;
 			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
+				this.newAcctTerms = true;
+				this.needsComms = true;
+			}
 		}
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
 			const pageId = route?.query?.partnerContentId;
 			if (!pageId) {
-				return Promise.resolve();
+				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
 			}
 			return client.query({
 				query: strategicPartnerLoginInfoByPageIdQuery,
@@ -316,9 +351,15 @@ export default {
 	methods: {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
+
 			this.$v.$touch();
 
 			if (!this.$v.$invalid) {
+				// Set news consent based on comms preference MP-271
+				if (this.enableRadioBtnExperiment) {
+					this.newsConsent = this.selectedComms === '1';
+				}
+
 				this.$kvTrackEvent('Register', 'register-social-success');
 			} else {
 				event.preventDefault();
@@ -331,8 +372,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .logo {
 	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
 }
+
+.radio-error >>> label > div {
+	@apply tw-border-danger-highlight;
+}
+
 </style>

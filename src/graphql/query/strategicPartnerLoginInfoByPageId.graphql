@@ -10,4 +10,8 @@ query StrategicPartnerLoginInfoByPageId($pageId: String!) {
 		partnerName
 		validDomains
 	}
+	experiment(id: "opt_in_comms") @client {
+		id
+		version
+	}
 }

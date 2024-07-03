@@ -37,7 +37,7 @@
 			</template>
 			<template #tabPanels>
 				<kv-tab-panel id="location-stat-panel" ref="locationPanel">
-					<distribution-graph-figure class="tw-mb-4" :loading="locationLoading" :values="locationStats" />
+					<component :is="chartType" class="tw-mb-4" :loading="locationLoading" :values="locationStats" />
 					<distribution-table :values="locationStats" measure-name="Location" />
 					<kv-button
 						v-if="!locationLoading"
@@ -49,15 +49,15 @@
 					</kv-button>
 				</kv-tab-panel>
 				<kv-tab-panel id="gender-stat-panel" ref="genderPanel">
-					<distribution-graph-figure class="tw-mb-4" :loading="genderLoading" :values="genderStats" />
+					<component :is="chartType" class="tw-mb-4" :loading="genderLoading" :values="genderStats" />
 					<distribution-table :values="genderStats" measure-name="Gender" />
 				</kv-tab-panel>
 				<kv-tab-panel id="sector-stat-panel" ref="sectorPanel">
-					<distribution-graph-figure class="tw-mb-4" :loading="sectorLoading" :values="sectorStats" />
+					<component :is="chartType" class="tw-mb-4" :loading="sectorLoading" :values="sectorStats" />
 					<distribution-table :values="sectorStats" measure-name="Sector" />
 				</kv-tab-panel>
 				<kv-tab-panel id="partner-stat-panel" ref="partnerPanel">
-					<distribution-graph-figure class="tw-mb-4" :loading="partnerLoading" :values="partnerStats" />
+					<component :is="chartType" class="tw-mb-4" :loading="partnerLoading" :values="partnerStats" />
 					<distribution-table :values="partnerStats" measure-name="Lending partner" />
 				</kv-tab-panel>
 			</template>
@@ -69,8 +69,9 @@
 import { gql } from '@apollo/client';
 import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
 import getCacheKey from '@/util/getCacheKey';
+import PieChartFigure from '@/components/Charts/PieChartFigure';
+import TreeMapFigure from '@/components/Charts/TreeMapFigure';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import DistributionGraphFigure from './DistributionGraphFigure';
 import DistributionTable from './DistributionTable';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
@@ -84,12 +85,20 @@ export default {
 	mixins: [delayUntilVisibleMixin],
 	components: {
 		AsyncPortfolioSection,
-		DistributionGraphFigure,
 		DistributionTable,
 		KvButton,
 		KvTab,
 		KvTabs,
 		KvTabPanel,
+		PieChartFigure,
+		TreeMapFigure,
+	},
+	props: {
+		chart: {
+			type: String,
+			default: 'treemap',
+			validator: value => ['pie', 'treemap'].includes(value),
+		}
 	},
 	data() {
 		return {
@@ -109,6 +118,17 @@ export default {
 			partnerLoadingPromise: null,
 			partnerStats: [],
 		};
+	},
+	computed: {
+		chartType() {
+			switch (this.chart) {
+				case 'pie':
+					return PieChartFigure;
+				case 'treemap':
+				default:
+					return TreeMapFigure;
+			}
+		},
 	},
 	mounted() {
 		// Fetch data for each panel as it becomes visible.
