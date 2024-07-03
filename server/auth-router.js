@@ -124,6 +124,11 @@ module.exports = function authRouter(config = {}) {
 			options.partnerContentId = req.query.partnerContentId;
 		}
 
+		// Opt-In Communication Exp MP-271
+		if (cookies.opt_in_comms) {
+			options.optInComms = cookies.opt_in_comms;
+		}
+
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
 	});
@@ -166,7 +171,9 @@ module.exports = function authRouter(config = {}) {
 			// Handle errors
 			if (req.query.error && !silentAuth) {
 				// Re-attempt login with the login form forced to display if unauthorized error happened
-				if (req.query.error === 'unauthorized') {
+				if (req.query.error === 'unauthorized'
+					|| req.query.error_description?.toLowerCase() === 'session too old, login required'
+				) {
 					req.query = {}; // Remove query params from previous auth attempt
 					return passport.authenticate('auth0', {
 						audience: config.auth0.apiAudience,

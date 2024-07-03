@@ -34,6 +34,7 @@ import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/
 import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -161,13 +162,23 @@ export default {
 		}
 	},
 	created() {
-		const { version } = this.apollo.readFragment({
-			id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
+		if (!isExcludedUrl(globalBannerDenyList, [], this.$route.path)) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
 
-		if (version === 'b' && this.$route.path !== '/checkout') {
-			this.enableDepositExperiment = true;
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'promo',
+				DEPOSIT_REWARD_EXP_KEY,
+				'EXP-MP-72-Apr2024'
+			);
+
+			if (version === 'b' && this.$route.path !== '/checkout') {
+				this.enableDepositExperiment = true;
+			}
 		}
 	}
 };

@@ -54,52 +54,61 @@
 				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
-				<kv-checkbox
-					data-testid="basket-guest-terms-agreement"
-					id="termsAgreement"
-					name="termsAgreement"
-					class="checkbox tw-text-small tw-mb-2"
-					v-model="termsAgreement"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-terms-of-use',
-						'I have read and agree to the Terms of Use and Privacy Policy.',
-						$event ? 1 : 0
-					)"
-				>
-					I have read and agree to the
-					<a
-						:href="`https://${this.$appConfig.host}/legal/terms`"
-						target="_blank"
-						title="Open Terms of Use in a new window"
-					>Terms of Use</a>
-					and
-					<a
-						:href="`https://${this.$appConfig.host}/legal/privacy`"
-						target="_blank"
-						title="Open Privacy Policy in a new window"
-					>Privacy Policy</a>.
-					<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
-						You must agree to the Kiva Terms of service & Privacy
-						policy.
-					</p>
-				</kv-checkbox>
-				<kv-checkbox
-					data-testid="basket-guest-email-updates"
-					id="emailUpdates"
-					class="checkbox tw-text-small tw-mb-2"
-					name="emailUpdates"
-					v-model="emailUpdates"
-					@update:modelValue="$kvTrackEvent(
-						'basket',
-						'click-marketing-updates',
-						'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.', // eslint-disable-line
-						$event ? 1 : 0
-					)"
-				>
-					Receive email updates from Kiva (including borrower updates
-					and promos). You can unsubscribe anytime.
-				</kv-checkbox>
+				<user-updates-preference
+					v-if="enableRadioBtnExperiment"
+					tracking-category="basket"
+					@update:modelValue="selectedComms = $event"
+					is-checkout
+				/>
+				<template v-else>
+					<kv-checkbox
+						data-testid="basket-guest-terms-agreement"
+						id="termsAgreement"
+						name="termsAgreement"
+						class="checkbox tw-text-small tw-mb-2"
+						v-model="termsAgreement"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click',
+							'terms-of-use',
+							'I have read and agree to the Terms of Use and Privacy Policy',
+							$event ? 1 : 0
+						)"
+					>
+						I have read and agree to the
+						<a
+							:href="`https://${this.$appConfig.host}/legal/terms`"
+							target="_blank"
+							title="Open Terms of Use in a new window"
+						>Terms of Use</a>
+						and
+						<a
+							:href="`https://${this.$appConfig.host}/legal/privacy`"
+							target="_blank"
+							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
+						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
+						<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
+							You must agree to the Kiva Terms of service & Privacy
+							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
+						</p>
+					</kv-checkbox>
+					<kv-checkbox
+						data-testid="basket-guest-email-updates"
+						id="emailUpdates"
+						class="checkbox tw-text-small tw-mb-2"
+						name="emailUpdates"
+						v-model="emailUpdates"
+						@update:modelValue="$kvTrackEvent(
+							'basket',
+							'click',
+							'marketing-updates',
+							emailUpdatesCopy,
+							$event ? 1 : 0
+						)"
+					>
+						{{ emailUpdatesCopy }}
+					</kv-checkbox>
+				</template>
 			</div>
 			<div id="dropin-button">
 				<kv-button
@@ -125,7 +134,7 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
+import { required, email, requiredIf } from 'vuelidate/lib/validators';
 import * as Sentry from '@sentry/vue';
 
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -134,10 +143,15 @@ import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
 import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+
+const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 export default {
 	name: 'CheckoutDropInPaymentWrapper',
@@ -146,6 +160,12 @@ export default {
 		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
 		KvCheckbox,
 		KvTextInput,
+		UserUpdatesPreference,
+	},
+	provide() {
+		return {
+			$v: this.$v
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
@@ -165,6 +185,10 @@ export default {
 		useAsyncCheckout: {
 			type: Boolean,
 			default: false
+		},
+		loansInBasket: {
+			type: Number,
+			default: 0,
 		}
 	},
 	data() {
@@ -175,6 +199,9 @@ export default {
 			enableCheckoutButton: false,
 			isClientReady: false,
 			paymentTypes: ['paypal', 'card', 'applePay', 'googlePay'],
+			enableCommsExperiment: false,
+			selectedComms: false,
+			enableRadioBtnExperiment: false,
 		};
 	},
 	validations: {
@@ -182,7 +209,12 @@ export default {
 			required,
 			email,
 		},
-		termsAgreement: { required: value => value === true },
+		termsAgreement: {
+			required: value => value === true,
+		},
+		selectedComms: {
+			required: requiredIf(enableRadioBtnExperiment => enableRadioBtnExperiment),
+		},
 	},
 	mounted() {
 		this.isClientReady = !this.$isServer;
@@ -203,9 +235,17 @@ export default {
 			this.$emit('updating-totals', true);
 			// Set the default checkout validation method
 			let validationMethod = this.validateGuestBasket;
+
+			// Set email updates based on comms preference MP-271
+			let { emailUpdates } = this;
+			if (this.enableRadioBtnExperiment) {
+				emailUpdates = this.selectedComms === '1';
+			}
+			this.$emit('opt-in', emailUpdates);
+
 			const validationPayload = {
 				email: this.email,
-				emailUpdates: this.emailUpdates,
+				emailUpdates,
 			};
 			// If promo guest checkout is enabled, use the promo guest checkout validation method.
 			// This method validates the lender email for promo first before running the guest checkout method
@@ -216,7 +256,7 @@ export default {
 				validationPayload.managedAccountId = this.managedAccountId;
 			}
 
-			validationMethod(this.email, this.emailUpdates)
+			validationMethod(this.email, emailUpdates)
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						this.submitDropInPayment();
@@ -422,5 +462,48 @@ export default {
 			this.$emit('refreshtotals');
 		},
 	},
+	computed: {
+		emailUpdatesCopy() {
+			return this.enableCommsExperiment
+				? 'Send me updates from people I\'ve funded, my impact, and other ways I can help.'
+				// eslint-disable-next-line max-len
+				: 'Receive email updates from Kiva (including borrower updates and promos). You can unsubscribe anytime.';
+		}
+	},
+	created() {
+		if (this.isGuestCheckout && this.loansInBasket) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'basket',
+				COMMS_OPT_IN_EXP_KEY,
+				'EXP-MP-271-May2024'
+			);
+
+			if (version === 'b') {
+				this.enableCommsExperiment = true;
+			}
+			if (version === 'c') {
+				this.enableRadioBtnExperiment = true;
+
+				// Workaround to validate input within this experiment
+				this.selectedComms = '';
+				this.termsAgreement = true;
+			}
+		}
+	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.radio-error >>> label > div {
+	@apply tw-border-danger-highlight;
+}
+
+</style>

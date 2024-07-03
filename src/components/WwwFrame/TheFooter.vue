@@ -303,7 +303,7 @@
 							</li>
 							<li>
 								<a
-									href="https://www.kivaushub.org/hubs"
+									href="/us-hubs"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
@@ -761,7 +761,7 @@
 								</li>
 								<li class="tw-inline-block tw--translate-x-2">
 									<a
-										href="https://www.kivaushub.org/hubs"
+										href="/us-hubs"
 										target="_blank"
 										rel="noopener"
 										v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
