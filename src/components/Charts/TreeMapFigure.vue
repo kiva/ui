@@ -1,5 +1,5 @@
 <template>
-	<figure class="distribution-figure tw-relative">
+	<figure class="treemap-figure tw-relative">
 		<!-- treemap -->
 		<div
 			v-for="(block, index) in blocks"
@@ -49,8 +49,7 @@ import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
 const { breakpoints } = kvTokensPrimitives;
 
 export default {
-	name: 'DistributionGraphFigure',
-	inject: ['apollo'],
+	name: 'TreeMapFigure',
 	components: {
 		KvLoadingPlaceholder,
 		KvTooltip,
@@ -69,6 +68,7 @@ export default {
 		return {
 			screenWidth: 0,
 			activeBlock: { data: {} },
+			tooltipControllerElement: null,
 		};
 	},
 	computed: {
@@ -133,10 +133,6 @@ export default {
 				};
 			});
 		},
-		// Used by KvTooltip/KvPopper to position the tooltip
-		tooltipControllerElement() {
-			return this.$refs?.tooltipController;
-		}
 	},
 	methods: {
 		// Used by the p elements in the main v-for loop to determine background and text color
@@ -204,12 +200,17 @@ export default {
 		window.addEventListener('resize', _throttle(() => {
 			this.screenWidth = window.innerWidth;
 		}, 200));
+
+		// Used by KvTooltip/KvPopper to position the tooltip
+		if (this.$refs?.tooltipController) {
+			this.tooltipControllerElement = this.$refs.tooltipController;
+		}
 	},
 };
 </script>
 
 <style lang="postcss" scoped>
-.distribution-figure {
+.treemap-figure {
 	height: 30rem;
 
 	/* account for every block having a 0.25rem right margin */
@@ -218,7 +219,7 @@ export default {
 }
 
 @screen md {
-	.distribution-figure {
+	.treemap-figure {
 		height: 20rem;
 	}
 }
