@@ -4,26 +4,17 @@
 		:no-padding-sides="true"
 		:no-padding-bottom="true"
 		:no-padding-top="true"
-		@lightbox-closed="closeLightbox"
+		@lightbox-closed="closeNudgeLightbox"
 		:title="title"
 	>
 		<template #header>
-			<h2 v-if="!zeroUpsellVisible" class="tw-text-h3 tw-flex-1">
+			<h2 class="tw-flex-1">
 				{{ title }}
 			</h2>
-			<div v-if="zeroUpsellVisible" class="tw-pl-4 tw-flex tw-flex-col tw-items-center">
-				<heart-icon class="tw-w-10 tw-h-10 tw-mb-2" />
-				<h2 class="tw-text-h4 tw-text-brand">
-					Make this moment matter
-				</h2>
-			</div>
 		</template>
-		<div v-if="!zeroUpsellVisible" id="nudge-donation-container" data-testid="nudge-donation-container">
+		<div id="nudge-donation-container" data-testid="nudge-donation-container">
 			<div id="nudge-donation-top">
-				<p>
-					<!-- eslint-disable-next-line max-len -->
-					Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.
-				</p>
+				<how-kiva-uses-donation />
 				<donation-nudge-boxes
 					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
@@ -39,7 +30,6 @@
 						id="no-donation-link"
 						@click="setDonationAndClose(0, 'No Donation Link')"
 						data-testid="nudge-donation-no-donoation-btn"
-						tabindex="12"
 					>
 						No donation to Kiva
 					</button>
@@ -73,25 +63,6 @@
 				<!-- eslint-enable max-len -->
 			</div>
 		</div>
-		<div
-			v-if="zeroUpsellVisible"
-			data-testid="zero-donation-upsell"
-			style="max-width: 454px;"
-			class="tw-flex tw-flex-col tw-items-center tw-mx-auto"
-		>
-			<!-- upsell body -->
-			<p class="tw-text-h2 tw-mb-3 tw-text-center">
-				<!-- eslint-disable-next-line max-len -->
-				Every bit counts. Can you spare <em class="tw-text-brand tw-not-italic">$1</em> to cover a portion of the cost of your loan?
-			</p>
-			<!-- CTAs -->
-			<kv-button @click="closeZeroUpsell(1)" class="tw-w-full tw-mb-2">
-				Yes, donate $1
-			</kv-button>
-			<kv-button @click="closeZeroUpsell(0)" variant="secondary" class="tw-w-full">
-				No, thank you
-			</kv-button>
-		</div>
 	</kv-lightbox>
 </template>
 
@@ -99,8 +70,9 @@
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
-import HeartIcon from '@/assets/icons/inline/heart-icon.svg';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
+import { gql } from '@apollo/client';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -109,18 +81,32 @@ export default {
 	data() {
 		return {
 			mdiInformation,
-			zeroUpsellVisible: false,
-			title: 'We rely on donations to reach the people who need it the most',
+			title: 'Loans change lives. Your donations make them possible.',
+			seasonalTipRateEnabled: false,
 		};
 	},
-	inject: ['cookieStore'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`query seasonalTipRateIncrease {
+				general {
+					seasonalTipRateEnabled: featureSetting(key: "seasonal_tip_rate.enabled") {
+						key
+						value
+					}
+				}
+			}
+		`,
+		preFetch: true,
+		result({ data }) {
+			this.seasonalTipRateEnabled = readBoolSetting(data, 'general.seasonalTipRateEnabled.value');
+		}
+	},
 	components: {
-		KvButton,
 		KvLightbox,
 		KvMaterialIcon,
 		KvCharityNavigator,
 		DonationNudgeBoxes,
-		HeartIcon,
+		HowKivaUsesDonation,
 	},
 	props: {
 		experimentalFooter: {
@@ -156,12 +142,12 @@ export default {
 		percentageRows() {
 			return [
 				{
-					percentage: 15,
+					percentage: this.seasonalTipRateEnabled ? 18 : 15,
 					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
-					percentage: 20,
+					percentage: this.seasonalTipRateEnabled ? 24 : 20,
 					appeal: 'Reach more people around the world!',
 					appealIsHorizontallyPadded: false,
 				},
@@ -170,34 +156,18 @@ export default {
 	},
 	methods: {
 		setDonationAndClose(amount, source) {
-			const zeroUpsellCookie = this.cookieStore.get('zero_upsell_visible') || true;
-			if (amount === 0 && !this.zeroUpsellVisible && zeroUpsellCookie !== 'false') {
-				this.zeroUpsellVisible = true;
-			} else {
-				if (amount === 0) {
-					const expires = new Date();
-					expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
-					this.cookieStore.set('zero_upsell_visible', false, { expires });
-				}
+			if (amount > 0) {
 				const clickSource = source ? ` - ${source}` : '';
-				this.updateDonationTo(amount);
 				this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
-				this.closeNudgeLightbox();
+			} else {
+				this.$kvTrackEvent('basket', 'click', `Update Nudge Donation - ${source}`, amount * 100);
 			}
+			this.updateDonationTo(amount);
+			this.closeNudgeLightbox();
 		},
 		expandNudgeLightbox() {
 			this.$refs.nudgeBoxes.afterLightboxOpens();
 		},
-		closeZeroUpsell(amount) {
-			this.setDonationAndClose(amount, 'Zero Donation Upsell');
-			this.zeroUpsellVisible = false;
-		},
-		closeLightbox() {
-			if (this.zeroUpsellVisible) {
-				return this.closeZeroUpsell(0);
-			}
-			return this.closeNudgeLightbox();
-		}
 	},
 };
 </script>

@@ -142,7 +142,7 @@ export default class KvAuth0 {
 	}
 
 	getFakeAuthCookieValue() {
-		if (!this.checkFakeAuth) return;
+		if (!this.fakeAuthAllowed()) return;
 
 		const cookieValue = this.cookieStore.get(FAKE_AUTH_NAME) ?? '';
 
@@ -288,7 +288,10 @@ export default class KvAuth0 {
 				this.webAuth.checkSession({}, (err, result) => {
 					if (err) {
 						this[setAuthData]();
-						if (err.error === 'login_required' || err.error === 'unauthorized') {
+						if (err.error === 'login_required'
+							|| err.error === 'unauthorized'
+							|| err.error === 'access_denied'
+						) {
 							// User is not logged in, so continue without authentication
 							this[noteLoggedOut]();
 							resolve();
@@ -364,5 +367,5 @@ export const MockKvAuth0 = {
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),
-	onError: () => {},
+	onError: () => { },
 };

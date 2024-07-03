@@ -1,5 +1,6 @@
 <template>
 	<www-page>
+		<team-goals-list />
 		<kv-page-container>
 			<kv-grid
 				class="tw-grid-cols-12"
@@ -96,6 +97,7 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import TeamGoalsList from '@/components/Teams/TeamGoalsList';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
@@ -109,8 +111,9 @@ export default {
 		KvPageContainer,
 		KvButton,
 		KvGrid,
-		TeamListing,
-		TeamLeaderboards
+		TeamGoalsList,
+		TeamLeaderboards,
+		TeamListing
 	},
 };
 </script>

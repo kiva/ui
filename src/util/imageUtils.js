@@ -78,6 +78,7 @@ export function getKivaImageUrl({
  * The legacy avatars are found exclusively at the following urls:
  * <domain>/img/<size param>/726677.jpg
  * <domain>/img/<size param>/315726.jpg
+ * for images from Fastly, urls, like: <domain>/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg
  * @param {String|Number} filename or hash of avatar image
  * @returns {Boolean} full url for the image
  */
@@ -92,6 +93,6 @@ export function isLegacyPlaceholderAvatar(filename) {
 	if (filenameCleaned.indexOf('.') > -1) {
 		[filenameCleaned] = filenameCleaned.split('.');
 	}
-	const defaultProfileIds = ['726677', '315726'];
+	const defaultProfileIds = ['726677', '315726', '4d844ac2c0b77a8a522741b908ea5c32'];
 	return defaultProfileIds.some(id => id === filenameCleaned);
 }

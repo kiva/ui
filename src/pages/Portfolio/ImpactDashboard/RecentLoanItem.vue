@@ -53,12 +53,21 @@
 		<!-- status -->
 		<kv-loading-placeholder
 			v-if="loadingProgress"
-			class="tw-mb-0.5 tw-mx-auto"
+			class="tw-mb-1 tw-mx-auto"
 			style="height: 20px; width: 5rem;"
 		/>
-		<p v-else class="tw-mb-0.5 tw-text-secondary">
+		<p v-else class="tw-mb-1 tw-text-secondary">
 			{{ statusDescription }}
 		</p>
+		<!-- comment -->
+		<kv-loading-placeholder
+			v-if="loadingProgress"
+			class="tw-mb-0.5 tw-mx-auto"
+			style="height: 20px; width: 7rem;"
+		/>
+		<button v-else @click="openCommentModal" class="tw-mb-0.5 tw-text-action hover:tw-underline">
+			Leave a comment
+		</button>
 	</li>
 </template>
 
@@ -247,6 +256,9 @@ export default {
 				});
 			}
 		},
+		openCommentModal() {
+			this.$emit('open-comment-modal', { loanId: this.loanId, borrowerName: this.borrowerName });
+		}
 	},
 	watch: {
 		// Once loan id is not 0, wait for the component to be visible to start loading the loan info

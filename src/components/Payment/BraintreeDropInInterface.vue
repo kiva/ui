@@ -438,7 +438,7 @@ $border-width: 1px;
 	#dropin-container [data-braintree-id="choose-a-way-to-pay"],
 	#dropin-container [data-braintree-id="methods-label"],
 	#dropin-container [data-braintree-id="other-ways-to-pay"] {
-		@apply tw-text-small tw-text-primary tw-text-tertiary tw-w-full;
+		@apply tw-text-small tw-text-tertiary tw-w-full;
 	}
 
 	/* Payment method container */

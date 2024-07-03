@@ -1,0 +1,17 @@
+query StrategicPartnerLoginInfoByPageId($pageId: String!) {
+	strategicPartnerLoginInfoByPageId(pageId: $pageId) {
+		audience
+		contentful {
+		contentKey
+		contentType
+		entry
+		}
+		id
+		partnerName
+		validDomains
+	}
+	experiment(id: "opt_in_comms") @client {
+		id
+		version
+	}
+}

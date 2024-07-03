@@ -20,6 +20,10 @@ query loanFacets {
 			name
 			vocabularyId
 		}
+		activity {
+			id
+			name
+		}
 	}
 	general {
 		partners (filters: { status: active }, limit: null) {
@@ -30,26 +34,6 @@ query loanFacets {
 					region
 				}
 			}
-		}
-	}
-	genderOptions: __type(name: "GenderEnum") {
-		enumValues {
-			name
-		}
-	}
-	standardSorts: __type(name: "LoanSearchSortByEnum") {
-		enumValues {
-			name
-		}
-	}
-	flssSorts: __type(name: "SortEnum") {
-		enumValues {
-			name
-		}
-	}
-	distributionModelOptions: __type(name: "LoanDistributionModelEnum") {
-		enumValues {
-			name
 		}
 	}
 }

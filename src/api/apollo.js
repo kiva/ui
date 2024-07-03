@@ -4,7 +4,8 @@ import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';
 import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
-import NetworkErrorLink from './NetworkErrorLink';
+import NetworkErrorLoggingLink from './NetworkErrorLoggingLink';
+import NetworkErrorRetryLink from './NetworkErrorRetryLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
 import { initState, setLocalState } from './localState';
 
@@ -38,14 +39,17 @@ export default function createApolloClient({
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
-			NetworkErrorLink(),
+			NetworkErrorRetryLink({
+				activateRetry: appConfig?.apolloNetworkErrorRetryActive,
+				attemptsMax: appConfig?.apolloNetworkErrorRetryAttempts,
+			}),
+			NetworkErrorLoggingLink(),
 			SnowplowSessionLink({ cookieStore }),
-			ExperimentIdLink(),
+			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
 			HttpLinkCreator({
-				kvAuth0,
 				uri,
 				fetch,
 				apolloBatching: appConfig?.apolloBatching ?? true,

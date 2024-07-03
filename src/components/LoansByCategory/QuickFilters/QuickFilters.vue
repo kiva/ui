@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full">
-			<div v-if="withCategories" class="tw-flex tw-flex-col tw-grow">
+			<div v-if="withCategories" class="tw-flex tw-flex-col">
 				<label
 					class="tw-text-h4"
 					for="category"
@@ -37,43 +37,48 @@
 					</option>
 				</kv-select>
 			</div>
-			<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
-				<label
-					class="tw-text-h4"
-					for="gender"
-				>
-					Gender
-				</label>
-				<kv-select
-					:disabled="!filtersLoaded"
-					v-model="selectedGender"
-					id="gender"
-					style="min-width: 140px;"
-					@click.native="trackDropdownClick('gender')"
-				>
-					<option
-						v-for="gender in filterOptions.gender"
-						:key="gender.key"
-						:value="gender.key"
+			<div
+				class="tw-flex tw-gap-2 tw-grow"
+				:class="{ 'tw-flex-col lg:tw-flex-row' : !enableQfMobile, 'tw-flex-row' : enableQfMobile }"
+			>
+				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
+					<label
+						class="tw-text-h4"
+						for="gender"
 					>
-						{{ gender.title }}
-					</option>
-				</kv-select>
-			</div>
+						Gender
+					</label>
+					<kv-select
+						:disabled="!filtersLoaded"
+						v-model="selectedGender"
+						id="gender"
+						style="min-width: 140px;"
+						@click.native="trackDropdownClick('gender')"
+					>
+						<option
+							v-for="gender in filterOptions.gender"
+							:key="gender.key"
+							:value="gender.key"
+						>
+							{{ gender.title }}
+						</option>
+					</kv-select>
+				</div>
 
-			<div class="tw-w-full">
-				<location-selector
-					v-if="!removeLocationDropdown"
-					@click.native="trackDropdownClick('location')"
-					@handle-overlay="handleQuickFiltersOverlay"
-					:regions="filterOptions.location"
-					:total-loans="totalLoans"
-					:filters-loaded="filtersLoaded"
-					@update-location="updateLocation"
-					ref="locationSelector"
-					:tracking-category="trackingCategory"
-					:with-categories="withCategories"
-				/>
+				<div class="tw-w-full">
+					<location-selector
+						v-if="!removeLocationDropdown"
+						@click.native="trackDropdownClick('location')"
+						@handle-overlay="handleQuickFiltersOverlay"
+						:regions="filterOptions.location"
+						:total-loans="totalLoans"
+						:filters-loaded="filtersLoaded"
+						@update-location="updateLocation"
+						ref="locationSelector"
+						:tracking-category="trackingCategory"
+						:with-categories="withCategories"
+					/>
+				</div>
 			</div>
 			<div
 				v-if="!removeSortByDropdown && !withCategories"
@@ -178,6 +183,10 @@ export default {
 			type: String,
 			default: 'personalized',
 		},
+		enableQfMobile: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		KvSelect,
@@ -196,6 +205,7 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
+				amountLeft: false,
 			},
 		};
 	},
@@ -217,6 +227,9 @@ export default {
 			} else if (this.presetFilterActive.endingSoon) {
 				this.resetSortBy();
 				this.presetFilterActive.endingSoon = false;
+			} else if (this.presetFilterActive.amountLeft) {
+				this.resetSortBy();
+				this.presetFilterActive.amountLeft = false;
 			}
 
 			// These categories use location/gender/sort by for FLSS and need
@@ -230,6 +243,9 @@ export default {
 			} else if (catId === 3) { // ending-soon
 				this.sortBy = 'expiringSoon';
 				this.presetFilterActive.endingSoon = true;
+			} else if (catId === 171 || catId === 172) { // featured-projects and basic-needs
+				this.sortBy = 'amountLeft';
+				this.presetFilterActive.amountLeft = true;
 			} else {
 				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
 					// we don't currently have this option for these categories, also irrelevant since
@@ -266,6 +282,9 @@ export default {
 			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
 				this.resetCategory();
 				this.presetFilterActive.endingSoon = false;
+			} else if (this.presetFilterActive.amountLeft && sortBy !== 'amountLeft') {
+				this.resetCategory();
+				this.presetFilterActive.amountLeft = false;
 			}
 			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
@@ -319,7 +338,7 @@ export default {
 		resetFilters() {
 			this.$emit('reset-filters');
 			this.selectedCategory = 0;
-			this.selectedGender = '';
+			this.selectedGender = 'all';
 			this.selectedGenders = ['all'];
 			this.sortBy = this.defaultSort;
 			this.updateLocation([]);
@@ -347,7 +366,7 @@ export default {
 		hideReset() {
 			return this.selectedCategory === 0
 			&& this.selectedGender === 'all'
-			&& this.selectedGenders === ['all']
+			&& this.selectedGenders.includes('all')
 			&& this.sortBy === this.defaultSort
 			&& !(this.$refs.locationSelector?.selectedCountries?.length ?? 0);
 		},
@@ -358,7 +377,9 @@ export default {
 			return this.targetedLoanChannelUrl === 'kiva-u-s';
 		},
 		removeSortByDropdown() {
-			return this.targetedLoanChannelUrl === 'ending-soon';
+			return this.targetedLoanChannelUrl === 'ending-soon'
+				|| this.targetedLoanChannelUrl === 'featured-projects'
+				|| this.targetedLoanChannelUrl === 'basic-needs';
 		}
 	},
 };

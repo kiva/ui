@@ -11,20 +11,10 @@
 					<p
 						v-if="subtitle"
 						class="tw-text-subhead tw-text-primary"
-						:class="{ 'tw-hidden lg:tw-block' : enableRelendingExp }"
 					>
 						{{ subtitle }}
 					</p>
 				</div>
-				<multiple-atc-button
-					v-if="enableRelendingExp"
-					:amount="multipleAmount"
-					:loans-number="totalLoans"
-					:is-adding="isAddingMultiple"
-					:show-checkout="hasMultipleBeenAdded"
-					@add-multiple="addMultipleLoans"
-					@checkout="checkout"
-				/>
 			</div>
 			<kv-carousel
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
@@ -37,7 +27,6 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`]>
 					<kv-classic-loan-card-container
 						:key="loanCardKey(index)"
-						:ref="loanCardKey(index)"
 						:loan-id="loan.id"
 						:use-full-width="true"
 						:show-tags="true"
@@ -45,8 +34,14 @@
 						:large-card="isLargeCard"
 						:user-balance="userBalance"
 						:five-dollars-selected="fiveDollarsSelected"
+						:enable-huge-amount="enableHugeAmount"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
+					/>
+				</template>
+				<template v-if="showViewMoreCard">
+					<view-more-card
+						:loan-search-state="loanSearchState"
 					/>
 				</template>
 			</kv-carousel>
@@ -57,21 +52,20 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import MultipleAtcButton from '@/components/LoanCards/Buttons/MultipleAtcButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import ViewMoreCard from './ViewMoreCard';
 
 export default {
 	name: 'LendingCategorySection',
 	components: {
 		KvCarousel,
 		KvClassicLoanCardContainer,
-		MultipleAtcButton
+		ViewMoreCard,
 	},
 	props: {
 		title: {
 			type: String,
 			default: '',
-			required: true
 		},
 		subtitle: {
 			type: String,
@@ -104,12 +98,30 @@ export default {
 		titleIcon: {
 			type: String,
 			default: ''
-		}
+		},
+		enableQfMobile: {
+			type: Boolean,
+			default: false
+		},
+		loanSearchState: {
+			type: Object,
+			default: () => {}
+		},
+		emptyState: {
+			type: Boolean,
+			default: false
+		},
+		pageLimit: {
+			type: Number,
+			default: 6
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
-			isAddingMultiple: false,
-			hasMultipleBeenAdded: false,
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
 			handleResize: _throttle(this.isWindowWidth, 200)
 		};
@@ -133,75 +145,16 @@ export default {
 			}
 			return '336px';
 		},
-		multipleAmount() {
-			let amount = 0;
-			for (let index = 0; index < this.totalLoans; index += 1) {
-				const loan = this.loans[index];
-				const { unreservedAmount } = loan;
-
-				if (this.enableFiveDollarsNotes) {
-					if (this.userBalance > 20) {
-						amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
-					} else {
-						amount += unreservedAmount > 5 ? 5 : Number(unreservedAmount);
-					}
-				} else {
-					amount += unreservedAmount > 25 ? 25 : Number(unreservedAmount);
-				}
-			}
-			return amount;
-		},
 		totalLoans() {
 			return this.loans.length;
+		},
+		showViewMoreCard() {
+			return this.enableQfMobile && !this.emptyState && this.totalLoans === this.pageLimit;
 		}
 	},
 	methods: {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		},
-		async addMultipleLoans() {
-			this.isAddingMultiple = true;
-
-			const { multipleAmount } = this;
-
-			for (let index = 0; index < this.totalLoans; index += 1) {
-				const { unreservedAmount } = this.loans[index];
-				const key = this.loanCardKey(index);
-
-				let amount = '';
-				if (this.enableFiveDollarsNotes && this.userBalance <= 20) {
-					amount = Number(unreservedAmount) > 5 ? '5' : unreservedAmount;
-				} else {
-					amount = Number(unreservedAmount) > 25 ? '25' : unreservedAmount;
-				}
-
-				// We occasionally get fully funded loans from dev FLSS
-				if (Number(amount) > 0) {
-					try {
-						// Ensure the reservations happen synchronously to prevent race conditions with the basket
-						// eslint-disable-next-line no-await-in-loop
-						await this.$refs[key][0].addToBasket(amount);
-					} catch {
-						// no-op
-					}
-				}
-			}
-
-			this.$kvTrackEvent(
-				'loan-card',
-				'add-all-to-basket',
-				'relending-lending-home-add-all',
-				this.userBalance,
-				multipleAmount
-			);
-
-			this.isAddingMultiple = false;
-			this.hasMultipleBeenAdded = true;
-		},
-		checkout() {
-			this.$kvTrackEvent('loan-card', 'checkout', 'relending-lending-home-add-all');
-
-			this.$router.push({ path: '/checkout' });
 		},
 		loanCardKey(index) {
 			return `loan-card-${index}`;

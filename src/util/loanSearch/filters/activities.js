@@ -1,3 +1,5 @@
+import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+
 export default {
 	uiConfig: {
 		type: undefined,
@@ -17,13 +19,30 @@ export default {
 	},
 	getOptions: () => ([]),
 	showSavedSearch: () => (false),
-	getFilterChips: () => ([]),
-	getRemovedFacet: () => ({}),
+	getFilterChips: (loanSearchState, allFacets) => {
+		if (loanSearchState.activityId?.length) {
+			return loanSearchState.activityId.map(activityId => {
+				return allFacets.activityFacets?.find(facet => {
+					return facet.id === activityId;
+				});
+			});
+		}
+		return [];
+	},
+	getRemovedFacet: (loanSearchState, facet) => ({
+		activityId: [...loanSearchState.activityId?.filter(id => facet.id !== id)]
+	}),
 	getSavedSearch: () => ({}),
 	getFlssFilter: loanSearchState => ({
-		...(loanSearchState?.activityId && { activityId: { any: loanSearchState.activityId } })
+		...(loanSearchState?.activityId?.length && { activityId: { any: loanSearchState.activityId } })
 	}),
-	getValidatedSearchState: () => ({}),
-	getFilterFromQuery: () => ({}),
-	getQueryFromFilter: () => ({}),
+	getValidatedSearchState: (loanSearchState, allFacets) => ({
+		activityId: loanSearchState?.activityId?.filter(a => allFacets?.activityIds?.includes(a)) ?? []
+	}),
+	getFilterFromQuery: (query, allFacets) => ({
+		activityId: getIdsFromQueryParam(query.activity, allFacets?.activityNames, allFacets?.activityFacets) ?? []
+	}),
+	getQueryFromFilter: loanSearchState => ({
+		...(loanSearchState.activityId?.length && { activity: loanSearchState.activityId.join() })
+	}),
 };

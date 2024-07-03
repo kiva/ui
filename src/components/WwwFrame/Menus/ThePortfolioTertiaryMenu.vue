@@ -1,23 +1,13 @@
 <template>
-	<ul class="tw-font-medium">
+	<ul class="tw-font-medium" data-testid="portfolio-tertiary-menu">
 		<li>
 			<router-link
-				v-if="showImpactDashboard"
-				to="/portfolio/impact"
+				to="/portfolio"
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"
 			>
 				My impact
-			</router-link>
-			<router-link
-				v-else
-				to="/portfolio"
-				class="portfolio-tertitary-menu-link"
-				exact-active-class="portfolio-tertitary-menu-active-link"
-				v-kv-track-event="['TertiaryNav','click-MyKiva-Portfolio']"
-			>
-				Portfolio
 			</router-link>
 		</li>
 		<li>
@@ -46,6 +36,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Estimated-repayments']"
+				data-testid="portfolio-estimated-payments"
 			>
 				Estimated repayments
 			</router-link>
@@ -56,6 +47,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Add-credit']"
+				data-testid="portfolio-add-credit"
 			>
 				Add credit
 			</router-link>
@@ -96,6 +88,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Transaction-history']"
+				data-testid="portfolio-transactions"
 			>
 				Transaction history
 			</router-link>
@@ -126,6 +119,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Invite-friends']"
+				data-testid="portfolio-invite-friends"
 			>
 				Invite friends
 			</router-link>
@@ -136,6 +130,7 @@
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Free-credit-history']"
+				data-testid="portfolio-bonus-history"
 			>
 				Free credit history
 			</router-link>
@@ -153,7 +148,6 @@ export default {
 		return {
 			userBalance: 0,
 			publicId: '',
-			showImpactDashboard: false,
 		};
 	},
 	computed: {
@@ -181,16 +175,11 @@ export default {
 					balance
 				}
 			}
-			impactDashboard: experiment(id: "impact_dashboard") @client {
-				id
-				version
-			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.userBalance = data?.my?.userAccount?.balance ?? 0;
 			this.publicId = data?.my?.userAccount?.publicId ?? '';
-			this.showImpactDashboard = data?.impactDashboard?.version === 'b';
 		}
 	},
 };

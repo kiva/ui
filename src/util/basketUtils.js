@@ -7,6 +7,8 @@ import basketItemsQuery from '@/graphql/query/basketItems.graphql';
 import basketLoansInfoQuery from '@/graphql/query/basketLoansInfo.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
+export const INVALID_BASKET_ERROR = 'invalidBasket';
+
 function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
 	try {

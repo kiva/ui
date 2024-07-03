@@ -24,7 +24,7 @@
 				</p>
 				<p class="tw-mb-4">
 					Need help getting started?
-					<a href="https://www.kivaushub.org/borrower">Check out this useful guide</a>.
+					<a href="/lp/faqs-kiva-us">Check out this useful guide</a>.
 				</p>
 				<kv-button :href="`/my/borrower/application?refid=${trusteeId}`">
 					I understand, let’s create an account

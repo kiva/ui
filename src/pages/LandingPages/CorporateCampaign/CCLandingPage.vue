@@ -154,7 +154,7 @@
 				/>
 				<in-context-checkout
 					class="campaign-checkout"
-					:is-actively-logged-in="isActivelyLoggedIn"
+					:is-logged-in="!isVisitor"
 					:loans="basketLoans"
 					:disable-redirects="true"
 					:donations="donations"
@@ -745,7 +745,7 @@ export default {
 				this.$kvTrackEvent(
 					'ManagedLendingCampaign',
 					'modal-show-in-context-checkout',
-					this.isActivelyLoggedIn ? 'checkout-ready' : 'checkout-requires-login'
+					this.isVisitor ? 'checkout-requires-login' : 'checkout-ready'
 				);
 			}
 		},
@@ -787,6 +787,7 @@ export default {
 				handleUpdateAvailableLoans: this.handleUpdateAvailableLoans,
 				promoAmount: numeral(this.promoAmount).format('0.00'),
 				upcCreditRemaining: numeral(this.upcCreditRemaining).format('0.00'),
+				remainingCredit: this.remainingCredit,
 				basketLoans: this.basketLoans,
 				promoName: this.campaignPartnerName,
 				removeLoanFromBasket: this.removeLoanFromBasket,
@@ -887,13 +888,6 @@ export default {
 		},
 		excludedTags() {
 			return this.pageSettingData?.excludedTags ?? []; // tags that we don't want to show in the filter lightbox
-		},
-		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
-				return true;
-			}
-			return false;
 		},
 		isMatchingCampaign() {
 			return this.pageSettingData?.matcherAccountId !== undefined;
@@ -996,6 +990,28 @@ export default {
 			}
 			return null;
 		},
+		remainingCredit() {
+			let remainingCredit = 0;
+			// determine promo type and remaining credit by subtracting applied from available
+			if (this.basketTotals?.redemptionCodeAvailableTotal !== '0.00') {
+				const redemptionCodeAvailableTotal = numeral(this.basketTotals?.redemptionCodeAvailableTotal ?? 0);
+				const redemptionCodeAppliedTotal = numeral(this.basketTotals?.redemptionCodeAppliedTotal ?? 0);
+				remainingCredit = redemptionCodeAvailableTotal.difference(redemptionCodeAppliedTotal.value());
+			} else if (this.basketTotals?.universalCodeAvailableTotal !== '0.00') {
+				const universalCodeAvailableTotal = numeral(this.basketTotals?.universalCodeAvailableTotal ?? 0);
+				const universalCodeAppliedTotal = numeral(this.basketTotals?.universalCodeAppliedTotal ?? 0);
+				remainingCredit = universalCodeAvailableTotal.difference(universalCodeAppliedTotal.value());
+			} else if (this.basketTotals?.bonusAvailableTotal !== '0.00') {
+				const bonusAvailableTotal = numeral(this.basketTotals?.bonusAvailableTotal ?? 0);
+				const bonusAppliedTotal = numeral(this.basketTotals?.bonusAppliedTotal ?? 0);
+				remainingCredit = bonusAvailableTotal.difference(bonusAppliedTotal.value());
+			} else if (this.basketTotals?.creditAvailableTotal !== '0.00') {
+				const creditAvailableTotal = numeral(this.basketTotals?.creditAvailableTotal ?? 0);
+				const creditAppliedTotal = numeral(this.basketTotals?.creditAppliedTotal ?? 0);
+				remainingCredit = creditAvailableTotal.difference(creditAppliedTotal.value());
+			}
+			return remainingCredit;
+		},
 	},
 	methods: {
 		async verifyOrApplyPromotion() {
@@ -1094,6 +1110,13 @@ export default {
 						this.promoApplied = true;
 						this.promoErrorMessage = null;
 					}
+
+					// Default matched state
+					this.promoApplied = true;
+				} else if (this.prioritizedTargetCampaignCredit?.promoFund?.id
+					=== response.data?.shop?.promoCampaign?.promoFund?.id) {
+					this.promoApplied = true;
+					this.promoErrorMessage = null;
 				} else if (this.isMatchingCampaign) {
 					this.promoApplied = true;
 				} else {
@@ -1288,7 +1311,7 @@ export default {
 			this.$router.push(this.adjustRouteHash('#show-basket')).catch(() => {});
 			// check for verification form requirement
 			if (
-				this.isActivelyLoggedIn
+				!this.isVisitor
 				&& this.verificationRequired
 				&& this.externalFormId
 				&& !this.verificationSumbitted
@@ -1302,7 +1325,7 @@ export default {
 				);
 			} else if (
 				this.basketLoans.length
-				&& this.isActivelyLoggedIn
+				&& !this.isVisitor
 				&& this.teamId
 				&& !this.teamJoinStatus
 			) {

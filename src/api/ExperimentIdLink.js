@@ -1,11 +1,11 @@
 import { setContext } from '@apollo/client/link/context';
-import _set from 'lodash/set';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+// import { UIAB_COOKIE_NAME } from '@/util/experiment/experimentUtils';
 
 // Experiment assignments that will be passed in the X-Experiment Header
 const targetIds = [
 	'EXP-ML-Service-Bandit-LendByCategory',
-	'EXP-FLSS-Ongoing-Sitewide-2'
+	'EXP-FLSS-Ongoing-Sitewide-3'
 ];
 
 function buildExpHeaders(cache) {
@@ -27,15 +27,23 @@ function buildExpHeaders(cache) {
 
 export default () => {
 	return setContext((operation, previousContext) => {
-		// Fetch experiment header value
+		// Initialize new context
+		const newContext = { ...previousContext };
+		newContext.headers = newContext.headers ?? {};
+
+		// Fetch experiment header values
 		const experimentHeader = buildExpHeaders(previousContext?.cache);
+		// TODO: Uncomment once X-UIAB header is allowed by the API
+		// const uiabValue = cookieStore.get(UIAB_COOKIE_NAME) ?? '';
 
-		// Pass along existing context if no experiment assignments exists
-		if (experimentHeader === '') {
-			return previousContext;
+		// Add headers to context and pass along
+		if (experimentHeader) {
+			newContext.headers['X-Experiments'] = experimentHeader;
 		}
+		// if (uiabValue) {
+		// 	newContext.headers['X-UIAB'] = uiabValue;
+		// }
 
-		// Add header to existing context and pass along
-		return _set(previousContext, 'headers.X-Experiments', experimentHeader);
+		return newContext;
 	});
 };

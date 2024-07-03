@@ -4,7 +4,6 @@ query initializeCheckout($basketId: String) {
 	hasEverLoggedIn @client
 	my {
 		id
-		lastLoginTimestamp @client
 		userAccount {
 			id
 			balance
@@ -20,12 +19,12 @@ query initializeCheckout($basketId: String) {
 				}
 			}
 		}
+		loans {
+			totalCount
+		}
+		depositIncentiveAmountToLend
 	}
 	general {
-		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
-			value
-			key
-		}
 		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {
 			key
 			value
@@ -107,6 +106,7 @@ query initializeCheckout($basketId: String) {
 							... on LoanPartner {
 								sponsor_name: partnerName
 							}
+							gender
 						}
 						team {
 							id

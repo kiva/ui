@@ -1,4 +1,5 @@
 import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
 	title: 'Kv/KvSocialShareButton',
@@ -22,11 +23,12 @@ export default {
 };
 
 
-export const Default= (args, { argTypes }) => ({
+export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvSocialShareButton,
 	},
+	mixins: [apolloStoryMixin()],
 	template: `
 		<kv-social-share-button
 			:modal-title="modalTitle"

@@ -4,14 +4,21 @@
 			<the-my-kiva-secondary-menu />
 		</template>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0">
+			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0" data-testid="portfolio">
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
-				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-3">
-					<account-overview />
+				<div
+					class="tw-col-span-12 md:tw-col-span-9"
+					:class="{ 'tw-pt-3' : !showTeamChallenge }"
+				>
+					<team-challenge
+						v-if="showTeamChallenge"
+						:allowed-teams="allowedTeams"
+					/>
+					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 					<lending-insights />
 					<recent-loans-list />
 					<your-donations />
-					<education-module v-if="showEdModule" @hide-module="hideModule" />
+					<education-module v-if="post" :post="post" />
 					<kiva-credit-stats />
 					<account-updates />
 					<your-teams />
@@ -23,11 +30,12 @@
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import { gql } from '@apollo/client';
+import { readBoolSetting } from '@/util/settingsUtils';
+import portfolioQuery from '@/graphql/query/portfolioQuery.graphql';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -39,6 +47,7 @@ import RecentLoansList from './RecentLoansList';
 import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
+import TeamChallenge from './TeamChallenge';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -57,41 +66,56 @@ export default {
 		ThePortfolioTertiaryMenu,
 		WwwPage,
 		YourTeams,
-		YourDonations
+		YourDonations,
+		TeamChallenge,
 	},
 	data() {
 		return {
-			showEdModule: true
+			post: null,
+			showTeamChallenge: false,
+			teamsChallengeEnable: false,
+			allowedTeams: [],
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: experimentAssignmentQuery,
-				variables: {
-					id: 'impact_dashboard',
-				},
-			}).then(({ data }) => {
-				if (data?.experiment?.version !== 'b') {
-					return Promise.reject({ path: '/portfolio' });
-				}
-			});
+		async preFetch(config, client) {
+			return client.query({ query: portfolioQuery });
 		},
 	},
 	methods: {
-		hideModule(payload) {
-			this.showEdModule = !payload;
+		loadEducationPost() {
+			// Donation Education Module Experiment MARS-497
+			this.apollo.query({
+				query: gql`query ContentfulBlogPosts (
+						$customFields: String,
+						$limit: Int
+					) {
+						contentful {
+							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
+						}
+					}`,
+				variables: {
+					customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
+				},
+			}).then(({ data }) => {
+				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
+			});
 		}
 	},
+	created() {
+		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
+		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
+		const userTeams = portfolioQueryData.my?.teams?.values ?? [];
+		let allowedTeamsSettings = portfolioQueryData.general?.challenge_allowed_teams?.value ?? '';
+		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
+		this.allowedTeams = userTeams.filter(t => {
+			return allowedTeamsSettings.includes(t.team.teamPublicId);
+		});
+
+		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+	},
 	mounted() {
-		// Impact Dashboard page redesign experiment MARS-344 MARS-348
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Portfolio',
-			'impact_dashboard',
-			'EXP-MARS-344-Mar2023'
-		);
+		this.loadEducationPost();
 	}
 };
 </script>

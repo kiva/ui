@@ -1,0 +1,14 @@
+query MyPublicLenderInfo {
+  my {
+    id
+    lender {
+      id
+      publicId
+      name
+      image {
+        id
+        url
+      }
+    }
+  }
+}
