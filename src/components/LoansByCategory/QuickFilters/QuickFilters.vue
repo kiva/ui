@@ -367,7 +367,9 @@ export default {
 			return this.targetedLoanChannelUrl === 'kiva-u-s';
 		},
 		removeSortByDropdown() {
-			return this.targetedLoanChannelUrl === 'ending-soon';
+			return this.targetedLoanChannelUrl === 'ending-soon'
+				|| this.targetedLoanChannelUrl === 'featured-projects'
+				|| this.targetedLoanChannelUrl === 'basic-needs';
 		}
 	},
 };
