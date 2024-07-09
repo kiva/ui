@@ -1,14 +1,23 @@
 <template>
 	<div>
-		<generic-promo-banner
-			v-show="isPromoEnabled"
-			:icon-key="promoBannerContent.iconKey"
-			:promo-banner-content="promoBannerContent"
+		<deposit-incentive-banner
+			v-if="enableDepositExperiment"
 		/>
-		<appeal-banner-circular-container
-			v-if="appealEnabled"
-			:appeal-banner-content="appealBannerContent.fields"
-		/>
+		<template v-else>
+			<generic-promo-banner
+				v-show="isPromoEnabled"
+				:icon-key="promoBannerContent.iconKey"
+				:promo-banner-content="promoBannerContent"
+			/>
+			<appeal-banner-circular-container
+				v-if="appealEnabled"
+				:appeal-banner-content="appealBannerContent.fields"
+			/>
+			<donation-banner-container
+				v-if="donationEnabled"
+				:donation-banner-content="donationBannerContent.fields"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -22,12 +31,22 @@ import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
 import AppealBannerCircularContainer
 	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 
 const bannerQuery = gql`query bannerQuery {
 	contentful {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+	experiment(id: "deposit_incentive_banner") @client {
+		id
+		version
 	}
 }`;
 
@@ -36,6 +55,8 @@ export default {
 	components: {
 		AppealBannerCircularContainer,
 		GenericPromoBanner,
+		DonationBannerContainer,
+		DepositIncentiveBanner,
 	},
 	props: {
 		hasPromoSession: {
@@ -48,8 +69,11 @@ export default {
 			isPromoEnabled: false,
 			promoBannerContent: {},
 			appealBannerContent: {},
+			donationBannerContent: {},
 			appealEnabled: false,
+			donationEnabled: false,
 			customAppealEnabled: false,
+			enableDepositExperiment: false,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -99,7 +123,7 @@ export default {
 				if (activePromoBanner && activePromoBanner?.fields) {
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = globalBannerDenyList.concat(activePromoBanner?.fields?.hiddenUrls ?? []);
-					const visibleUrls = [];
+					const visibleUrls = activePromoBanner?.fields?.visibleUrls ?? [];
 					if (isExcludedUrl(hiddenUrls, visibleUrls, this.$route.path)) return false;
 
 					// check for visibility on promo session override
@@ -117,6 +141,10 @@ export default {
 						// Custom Banner
 						this.customAppealEnabled = true;
 						this.appealBannerContent = activePromoBanner;
+					} else if (activePromoBanner.fields.bannerType === 'Donation Banner') {
+						// Donation Banner
+						this.donationEnabled = true;
+						this.donationBannerContent = activePromoBanner;
 					} else {
 						// Promo Banner
 						// parse the contentful richText into an html string
@@ -133,5 +161,25 @@ export default {
 			}
 		}
 	},
+	created() {
+		if (!isExcludedUrl(globalBannerDenyList, [], this.$route.path)) {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${DEPOSIT_REWARD_EXP_KEY}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'promo',
+				DEPOSIT_REWARD_EXP_KEY,
+				'EXP-MP-72-Apr2024'
+			);
+
+			if (version === 'b' && this.$route.path !== '/checkout') {
+				this.enableDepositExperiment = true;
+			}
+		}
+	}
 };
 </script>

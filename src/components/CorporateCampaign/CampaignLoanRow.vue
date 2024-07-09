@@ -39,11 +39,10 @@
 						:show-action-button="true"
 						:checkout-route="checkoutRoute"
 						:custom-loan-details="true"
-						:custom-checkout-button-text="getCheckoutBtnText(loan)"
 						:use-emitted-add-to-basket="true"
 						@show-loan-details="showLoanDetails(loans[index])"
 						@add-to-basket="addToBasket"
-						@custom-checkout-button-action="removeLoanFromBasket(loan)"
+						@custom-checkout-button-action="$emit('show-basket')"
 					/>
 				</div>
 			</template>
@@ -221,6 +220,7 @@ export default {
 		}
 	},
 	methods: {
+		// Currently Unused
 		getCheckoutBtnText(loan) {
 			const amount = this.getAmountLended(loan);
 			if (amount > 0) {
@@ -241,6 +241,9 @@ export default {
 		},
 		removeLoanFromBasket(loanId) {
 			this.$emit('remove-loan-from-basket', loanId);
+		},
+		showBasket() {
+			this.$emit('show-basket');
 		},
 		fetchLoans() {
 			if (this.isVisible) {

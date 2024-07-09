@@ -1,0 +1,13 @@
+query GoalParticipationForLoan($goalId: String!, $loanId: String!) {
+	goalParticipationForLoan(filters: { goalId: $goalId, loanId: $loanId} ) {
+		values {
+			lender {
+				id
+				image {
+					id
+					url
+				}
+			}
+		}
+	}
+}

@@ -19,7 +19,7 @@
 				<campaign-progress-bar
 					:is-matching-campaign="componentProps.isMatchingCampaign"
 					:promo-amount="componentProps.promoAmount"
-					:upc-credit-remaining="componentProps.upcCreditRemaining"
+					:remaining-credit="componentProps.remainingCredit"
 					:basket-loans="componentProps.basketLoans"
 					:promo-name="componentProps.promoName"
 					@show-basket="componentProps.showBasket"
@@ -46,6 +46,7 @@
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 
 				<campaign-loan-grid-display
@@ -65,6 +66,7 @@
 					@show-loan-details="componentProps.showLoanDetails"
 					@reset-loan-filters="componentProps.handleResetLoanFilters"
 					@remove-loan-from-basket="componentProps.removeLoanFromBasket"
+					@show-basket="componentProps.showBasket"
 				/>
 			</div>
 		</div>

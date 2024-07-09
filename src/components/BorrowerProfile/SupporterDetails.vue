@@ -174,7 +174,7 @@ export default {
 			return ['Borrower profile', 'click-team-image', this.name];
 		},
 		lenderNameFirstLetter() {
-			return this.name.substring(0, 1).toUpperCase();
+			return this.name?.substring(0, 1)?.toUpperCase() ?? '';
 		},
 		linkPath() {
 			// clear out link if none provided

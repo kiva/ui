@@ -73,7 +73,8 @@ describe('searchStateUtils.js', () => {
 				apollo,
 				savedSearchParams.filters,
 				savedSearchParams.queryString,
-				savedSearchParams.name
+				savedSearchParams.name,
+				savedSearchParams.isAlert,
 			);
 			expect(apollo.mutate).toHaveBeenCalledWith(params);
 			expect(result).toHaveProperty('name', 'test saved search');

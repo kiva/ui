@@ -23,7 +23,13 @@
 			:user-balance="userBalance"
 			:get-cookie="getCookie"
 			:set-cookie="setCookie"
+			:is-team-pick="isTeamPick"
+			:combined-activities="combinedActivities"
+			:error-msg="errorMsg"
+			:enable-huge-amount="enableHugeAmount"
+			:enable-clickable-tags="enableClickableTags"
 			@toggle-bookmark="toggleBookmark"
+			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
 	</div>
@@ -39,6 +45,8 @@ import logFormatter from '@/util/logFormatter';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsExtended.graphql';
+import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import _isEqual from 'lodash/isEqual';
 import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -62,6 +70,14 @@ const loanQuery = gql`
 		loan(id: $loanId) {
 			id
 			...loanCardFieldsExtended
+		}
+		loanThemeFilter {
+			id
+			name
+		}
+		tag {
+			id
+			name
 		}
 	}
 	my {
@@ -119,6 +135,22 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isTeamPick: {
+			type: Boolean,
+			default: false,
+		},
+		showLoansActivityFeed: {
+			type: Boolean,
+			default: false,
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		enableClickableTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
@@ -137,6 +169,8 @@ export default {
 			isBookmarked: false,
 			watchedQuery: {},
 			PHOTO_PATH,
+			combinedActivities: [],
+			errorMsg: '',
 		};
 	},
 	methods: {
@@ -198,19 +232,36 @@ export default {
 				this.isBookmarked = result.data.lend.loan?.userProperties?.favorited ?? false;
 			}
 
+			// Getting tags and themes data for clickable pills
+			const { tags, themes } = this.loan || {};
+			const tagList = result.data?.lend?.tag || [];
+			const themeList = result.data?.lend?.loanThemeFilter || [];
+			const tagsData = tagList.filter(tag => {
+				return tags?.includes(tag.name);
+			});
+			const themesData = themeList.filter(theme => {
+				return themes?.includes(theme.name);
+			});
+			this.loan = {
+				...this.loan,
+				tagsData,
+				themesData
+			};
+
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 		},
 		addToBasket(lendAmount) {
 			// emitting updating tools for empty state in checkout page
 			this.$emit('updating-totals', true);
 			this.isAdding = true;
+			this.errorMsg = '';
 			return setLendAmount({
 				amount: lendAmount,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
-				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
+				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',
@@ -223,6 +274,7 @@ export default {
 				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
 					? e?.[0]?.message
 					: 'There was a problem adding the loan to your basket';
+				this.errorMsg = msg;
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(e);
 				// Handle errors from adding to basket
@@ -269,7 +321,91 @@ export default {
 		},
 		setCookie(name, value, options) {
 			return this.cookieStore.set(name, value, options);
-		}
+		},
+		async fetchLoanActivity() {
+			await this.apollo.query({
+				query: loanActivitiesQuery,
+				variables: { loanId: this.loanId }
+			}).then(({ data }) => {
+				const activities = [];
+
+				const lendingActionsData = data.lend?.loan?.lendingActions?.values ?? [];
+				const commentsData = data.lend?.loan?.comments?.values ?? [];
+
+				lendingActionsData.forEach(action => {
+					const actionDate = new Date(action?.latestSharePurchaseDate).toDateString();
+					if (!activities.some(activity => activity.key === actionDate)) {
+						activities.push({
+							key: actionDate,
+							data: [],
+						});
+					}
+					if (action?.lender?.name) {
+						const dataObject = activities.find(activity => activity.key === actionDate);
+						dataObject?.data.push({
+							lenderName: action.lender.name,
+							lenderImage: action.lender?.image?.url,
+							text: `${action.lender.name} lent`,
+							date: action.latestSharePurchaseDate,
+							type: action.__typename, // eslint-disable-line no-underscore-dangle
+						});
+					}
+				});
+
+				commentsData.forEach(comment => {
+					const commentDate = new Date(comment?.date).toDateString();
+					if (!activities.some(activity => activity.key === commentDate)) {
+						activities.push({
+							key: commentDate,
+							data: [],
+						});
+					}
+					if (comment?.authorName) {
+						const dataObject = activities.find(activity => activity.key === commentDate);
+						dataObject?.data.push({
+							lenderName: comment.authorName,
+							lenderImage: comment.authorLendingAction?.lender?.image?.url,
+							text: comment.body
+								? `${comment.authorName} left comment <span class="tw-italic">"${comment.body}"</span>`
+								: '',
+							date: comment.date,
+							type: comment.__typename, // eslint-disable-line no-underscore-dangle
+						});
+					}
+				});
+
+				// Sort activities by day
+				const sortedActivities = activities.sort((a, b) => new Date(b.key).getTime() - new Date(a.key).getTime()); // eslint-disable-line max-len
+
+				// Sort combined lending and comment activities within each day
+				sortedActivities.forEach(d => d.data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())); // eslint-disable-line max-len
+
+				// Set combined activities
+				this.combinedActivities = sortedActivities;
+			}).catch(e => {
+				logFormatter(e, 'error');
+
+				this.$kvTrackEvent('Lending', 'loan-card', 'Failed to fetch loan activity data.');
+			});
+		},
+		jumpFilterPage(filter) {
+			this.$kvTrackEvent('Lending', 'loan-card', 'clicked-tag', filter.type, filter.id.toString());
+			const { query: currentQuery } = this.$route;
+			const query = { ...currentQuery };
+
+			if (filter.type in query && query[filter.type] !== filter.id.toString()) {
+				query[filter.type] += `,${filter.id.toString()}`;
+			} else {
+				query[filter.type] = filter.id.toString();
+			}
+
+			if (!_isEqual(currentQuery, query)) {
+				this.$router.push({
+					path: '/lend/filter',
+					query,
+				});
+			}
+		},
 	},
 	mounted() {
 		if (this.loan) {
@@ -278,6 +414,11 @@ export default {
 		} else {
 			// Don't have a loan yet, so setup viewport observer to prepare async loading
 			this.createViewportObserver();
+		}
+
+		// fetch loan activity
+		if (this.showLoansActivityFeed && this.isTeamPick) {
+			this.fetchLoanActivity();
 		}
 	},
 	beforeDestroy() {

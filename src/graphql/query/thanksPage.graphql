@@ -74,6 +74,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								city
 								country {
 									name
+									isoCode
 								}
 							}
 							loanAmount
@@ -84,12 +85,13 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							distributionModel
 							unreservedAmount @client
 							inPfp
+							gender
 						}
 						team {
 							id
+							teamPublicId
 							name
 						}
-
 					}
 				}
 			}
@@ -114,6 +116,11 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		lender {
 			id
 			name
+			image {
+				id
+				url
+			}
+			publicId
 		}
 		userAccount {
 			id
@@ -126,6 +133,9 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		loans {
 			totalCount
 		}
+		communicationSettings {
+			lenderNews
+		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
@@ -137,6 +147,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
+			key
+			value
+		}
+		newThanksPageEnabled: featureSetting(key: "new_thanks_page.enabled") {
 			key
 			value
 		}

@@ -15,6 +15,9 @@ on:
       - staging
       - production
 
+concurrency:
+  group: kiva-ui-semantic-release
+
 jobs:
   # Create a release
   create-release:
@@ -77,6 +80,16 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+      - name: build static assets
+        uses: ./.github/actions/npm-run
+        with:
+          command: "build"
+      - name: upload static assets
+        uses: ./.github/actions/upload-static-assets
+        with:
+          source_dir: "dist"
+          include: "static/*"
+          cache_control: "public,max-age=31536000"
       - name: docker-build
         uses: ./.github/actions/docker-build-push
         with:

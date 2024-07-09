@@ -12,9 +12,9 @@ module.exports = merge(base, devVm, {
 		apolloBatching,
 		host: `${monolithHostname}`,
 		transport: `${transport}`,
-		publicPath: `${transport}://${monolithHostname}/ui/`,
+		publicPath: `${transport}://${monolithHostname}/`,
 		photoPath: `${transport}://${monolithHostname}/img/`,
-		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
+		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		auth0: {
 			loginRedirectUrls: {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: `http://${monolithHostname}/login?force=1`,
@@ -23,12 +23,13 @@ module.exports = merge(base, devVm, {
 				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `${transport}://${monolithHostname}/ui-login?force=true`,
 				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: `${transport}://${monolithHostname}/ui-login?force=true`,
 			},
+			apiAudience: `${transport}://${apiHostname}/graphql`,
 			browserCallbackUri: `${transport}://${monolithHostname}/process-browser-auth`,
 			serverCallbackUri: `${transport}://${monolithHostname}/process-ssr-auth`,
 		},
 	},
 	server: {
-		graphqlUri: `${transport}://${apiHostname}/fed/graphql`,
+		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
 		// memcachedEnabled: false,
 		memcachedEnabled: true,

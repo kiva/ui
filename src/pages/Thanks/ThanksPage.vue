@@ -1,11 +1,25 @@
 <template>
-	<www-page data-testid="thanks-page">
+	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation}">
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
+		<template v-else-if="showNewTYPage">
+			<what-is-next-template
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:lender="lender"
+				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
+			/>
+		</template>
 		<template v-else>
+			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
+				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
+			</div>
 			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
 				<div class="small-12 columns thanks">
 					<div class="thanks__header hide-for-print">
@@ -30,17 +44,6 @@
 							<p v-else class="hide-for-print">
 								We've emailed your order confirmation to you.
 							</p>
-						</template>
-
-						<template v-else>
-							<h1 class="tw-mb-4">
-								Please log in to see your receipt.
-							</h1>
-							<kv-button
-								:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
-							>
-								Log in to continue
-							</kv-button>
 						</template>
 					</div>
 				</div>
@@ -82,6 +85,54 @@
 					</template>
 				</thanks-layout-v2>
 			</div>
+			<template v-else-if="!receipt">
+				<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
+					<h2 class="tw-m-4">
+						Please log in to see your receipt.
+					</h2>
+					<kv-button
+						:href="`/ui-login?force=true&doneUrl=${
+							(this.$route.query.kiva_transaction_id && this.$route.query.kiva_transaction_id !== null)
+								? encodeURIComponent(this.$route.fullPath)
+								: encodeURIComponent('/portfolio')
+						}`"
+					>
+						Log in to continue
+					</kv-button>
+				</div>
+			</template>
+			<template v-if="showMayChallengeHeader">
+				<div
+					v-if="loans.length > 0"
+					class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
+				>
+					<template v-if="receipt">
+						Thanks for supporting
+						<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
+						We've emailed your order confirmation to
+						<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
+						<span v-else>you.</span>
+					</template>
+					<template v-else>
+						Please log in to see your receipt.
+						<kv-button
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+							class="tw-ml-1"
+						>
+							Log in to continue
+						</kv-button>
+					</template>
+				</div>
+				<share-challenge
+					v-if="teamPublicId"
+					:goal="goal"
+					:loan="challengeLoan"
+					:team-public-id="teamPublicId"
+					:lender="lender"
+					:is-guest="isGuest"
+					:team-name="teamName"
+				/>
+			</template>
 			<thanks-page-comment-and-share
 				v-if="receipt && showFocusedShareAsk"
 				:receipt="receipt"
@@ -118,10 +169,39 @@ import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMe
 import { setHotJarUserAttributes } from '@/util/hotJarUtils';
 import logFormatter from '@/util/logFormatter';
 import { joinArray } from '@/util/joinArray';
+import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
+import ShareChallenge from '@/components/Thanks/ShareChallenge';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { fetchGoals } from '../../util/teamsUtil';
+import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const NEW_THANKS_PAGE_EXP = 'new_ty_page_minimal';
+
+const getLoans = receipt => {
+	const loansResponse = receipt?.items?.values ?? [];
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+				team: item.team,
+			};
+		});
+
+	return loans;
+};
+
+const getTeamId = loans => {
+	const teamsIds = loans.filter(loan => !!loan?.team?.id)
+		.map(loan => loan.team.id) ?? [];
+	return teamsIds?.[0] ?? null;
+};
 
 export default {
 	name: 'ThanksPage',
@@ -135,7 +215,10 @@ export default {
 		ThanksLayoutV2,
 		WwwPage,
 		ThanksPageCommentAndShare,
-		ThanksPageDonationOnly
+		ThanksPageDonationOnly,
+		ChallengeHeader,
+		ShareChallenge,
+		WhatIsNextTemplate,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -156,7 +239,12 @@ export default {
 			monthlyDonationAmount: '',
 			isFirstLoan: false,
 			isFtdMessageEnable: false,
-			ftdCreditAmount: ''
+			ftdCreditAmount: '',
+			goal: null,
+			showChallengeHeader: false,
+			enableMayChallengeHeader: false,
+			optedIn: false,
+			enableShortVersion: false,
 		};
 	},
 	apollo: {
@@ -165,15 +253,36 @@ export default {
 				? numeral(route.query?.kiva_transaction_id).value()
 				: null;
 
+			// Check if transactionId is null, resolve the promise if missing
+			if (!transactionId) {
+				logFormatter(
+					'Thanks page preFetch skipped due to missing transaction_id.',
+					'warning',
+				);
+				return Promise.resolve();
+			}
+
 			return client.query({
 				query: thanksPageQuery,
 				variables: {
 					checkoutId: transactionId,
 					visitorId: cookieStore.get('uiv') || null,
 				}
-			}).then(() => {
+			}).then(({ data }) => {
+				// Get teamId from receipt
+				let teamId = null;
+				const receipt = data?.shop?.receipt ?? null;
+				const loans = getLoans(receipt);
+				teamId = getTeamId(loans);
+
+				const filters = {
+					teamId,
+				};
+				const limit = 1;
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+					teamId ? fetchGoals(client, limit, filters) : null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -255,7 +364,36 @@ export default {
 		},
 		showFtdMessage() {
 			return this.isFirstLoan && this.isFtdMessageEnable && this.ftdCreditAmount;
-		}
+		},
+		teamId() {
+			return getTeamId(this.loans);
+		},
+		teamPublicId() {
+			return this.loans?.[0]?.team?.teamPublicId;
+		},
+		challengeLoan() {
+			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
+		},
+		showMayChallengeHeader() {
+			return this.challengeLoan && this.enableMayChallengeHeader;
+		},
+		teamName() {
+			return this.loans?.[0]?.team?.name ?? '';
+		},
+		landedOnUSLoan() {
+			const bpPattern = /^\/lend\/(\d+)/;
+
+			if (bpPattern.test(this.$appConfig.firstPage)) {
+				const url = this.$appConfig.firstPage?.split('/');
+				const firstVisitloanId = url?.[2] ?? null;
+				const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
+				return landedLoan?.geocode?.country?.isoCode === 'US';
+			}
+			return false;
+		},
+		showNewTYPage() {
+			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -263,6 +401,16 @@ export default {
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
+
+		// Check if transactionId is null, exit if missing
+		if (!transactionId) {
+			logFormatter(
+				'Thanks page readQuery skipped due to missing transaction_id.',
+				'warning',
+			);
+			return false;
+		}
+
 		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 
 		try {
@@ -283,6 +431,8 @@ export default {
 			...(data?.my?.userAccount ?? {}),
 			publicName: data?.my?.lender?.name ?? '',
 			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+			imageUrl: data?.my?.lender?.image?.url ?? '',
+			publicId: data?.my?.lender?.publicId ?? '',
 		};
 
 		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
@@ -299,15 +449,31 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
-		const loansResponse = this.receipt?.items?.values ?? [];
-		this.loans = loansResponse
-			.filter(item => item.basketItemType === 'loan_reservation')
-			.map(item => {
-				return {
-					...item.loan,
-					team: item.team,
+		this.loans = getLoans(this.receipt);
+
+		// Fetch Goal Information
+		try {
+			if (this.teamId) {
+				const filters = {
+					teamId: this.teamId,
 				};
-			});
+				const limit = 1;
+
+				const response = this.apollo.readQuery({
+					query: teamsGoalsQuery,
+					variables: { ...filters, limit },
+				});
+
+				this.goal = response.goals?.values.length ? response?.goals?.values[0] : null;
+
+				const loansIds = this.loans.map(loan => loan.id) ?? [];
+				this.showChallengeHeader = this.goal && this.goal?.targets?.values
+					.findIndex(target => loansIds.includes(target.loanId)) !== -1;
+			}
+		} catch (e) {
+			logReadQueryError(e, `Teams Goal readQuery failed: (team_id: ${this.teamId})`);
+		}
+
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
@@ -355,13 +521,36 @@ export default {
 		// Check for contentful content
 		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+		// Check for May challenge header experiment
+		const shareChallengeExpData = this.apollo.readFragment({
+			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
+
+		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+
+		// New Thanks Page Experiment
+		if (this.showNewTYPage) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'thanks',
+				NEW_THANKS_PAGE_EXP,
+				'EXP-MP-267-Jun2024',
+			);
+			if (version === 'b') {
+				this.enableShortVersion = true;
+			}
+		}
 	},
 	methods: {
 		createGuestAccount() {
 			// This is the only place this variable should be set.
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
-		}
+		},
 	}
 };
 

@@ -10,7 +10,6 @@ import filterConfig from '@/util/loanSearch/filterConfig';
 export function hasExcludedQueryParams(query) {
 	// Handle temporary query param exclusions
 	const excludedParams = [
-		'activity',
 		'city_state',
 		'loanTags',
 		'state',
@@ -49,11 +48,15 @@ export function convertQueryToFilters(query, allFacets, queryType, pageLimit) {
 export function updateQueryParams(loanSearchState, router, queryType) {
 	const oldParamKeys = Object.keys(router.currentRoute.query);
 
-	// Preserve UTM params
+	// Preserve UTM params and team query params
 	const utmParams = {};
+	const teamParams = {};
 	oldParamKeys.forEach(key => {
 		if (key.includes('utm_')) {
 			utmParams[key] = router.currentRoute.query[key];
+		}
+		if (key.includes('team')) {
+			teamParams[key] = router.currentRoute.query[key];
 		}
 	});
 
@@ -63,6 +66,7 @@ export function updateQueryParams(loanSearchState, router, queryType) {
 			return { ...prev, ...filterConfig.config[key].getQueryFromFilter(loanSearchState, queryType) };
 		}, {}),
 		...utmParams,
+		...teamParams,
 	};
 
 	const newParamKeys = Object.keys(newParams);

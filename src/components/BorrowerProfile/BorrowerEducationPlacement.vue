@@ -23,15 +23,17 @@
 		<p class="tw-mb-4 tw-text-subhead">
 			{{ associateQuote }}
 		</p>
-		<div id="education-photos" class="tw-flex tw-items-center tw-w-full tw-overflow-auto tw-mb-2 tw-gap-2.5">
-			<img
-				:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_1.jpg`)"
-				:alt="`Borrower photo from ${loanRegion}`"
-			>
-			<img
-				:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_2.jpg`)"
-				:alt="`Borrower photo from ${loanRegion}`"
-			>
+		<div id="education-photos" class="tw-mb-2">
+			<div class="tw-flex tw-items-center tw-w-full tw-overflow-auto tw-gap-2.5">
+				<img
+					:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_1.jpg`)"
+					:alt="`Borrower photo from ${loanRegion}`"
+				>
+				<img
+					:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_2.jpg`)"
+					:alt="`Borrower photo from ${loanRegion}`"
+				>
+			</div>
 		</div>
 		<div
 			class="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-gap-2
@@ -96,13 +98,13 @@ export default {
 			const region = this.loanRegion.toLowerCase();
 			if (region === 'africa') {
 				// eslint-disable-next-line max-len
-				return "“Being able to visit to the communities we serve is invaluable.It not only allows us to witness Kiva's real-world impact in people's lives, but it also deepens our relationships with our partners and helps us to better understand the realities that borrowers face so that we can better serve them.“";
+				return "“Being able to visit to the communities we serve is invaluable. It not only allows us to witness Kiva's real-world impact in people's lives, but it also deepens our relationships with our partners and helps us to better understand the realities that borrowers face so that we can better serve them.“";
 			} if (region === 'north america') {
 				// eslint-disable-next-line max-len
 				return '“Kiva’s impact in the U.S. is built on the strong relationships we cultivate with community partners who champion borrowers and their businesses. The work we do on the Kiva US team to empower and support these partners forms the very foundation of our mission, enabling us to expand our reach and transform lives within these communities.”';
 			} if (['europe', 'asia'].includes(region)) {
 				// eslint-disable-next-line max-len
-				return "“Part of my team's focus is evaluating and monitoring the client protection practices that our Lending Partners have in place to ensure that borrowers’ rights are prioritized.We make sure borrowers only receive loans that they have the capacity to repay and are not subject to predatory lending practices, so that the only experience they have with their loan is a positive one.”";
+				return "“Part of my team's focus is evaluating and monitoring the client protection practices that our Lending Partners have in place to ensure that borrowers’ rights are prioritized. We make sure borrowers only receive loans that they have the capacity to repay and are not subject to predatory lending practices, so that the only experience they have with their loan is a positive one.”";
 			}
 
 			// eslint-disable-next-line max-len
@@ -115,7 +117,16 @@ export default {
 
 <style lang="postcss" scoped>
 
-	#education-photos > img {
+	#education-photos {
+		@apply tw-relative tw-w-full tw-h-full;
+	}
+
+	#education-photos::before {
+		content: '';
+		@apply tw-absolute tw-top-0 tw-right-0 tw-w-2 tw-h-full tw-bg-gradient-to-r tw-from-transparent tw-to-secondary;
+	}
+
+	#education-photos img {
 		@apply tw-rounded;
 
 		width: 264px;
@@ -124,14 +135,6 @@ export default {
 		@screen md {
 			width: 363px;
 			height: 220px;
-		}
-	}
-
-	#education-photos > img:nth-child(2) {
-		width: 192px;
-
-		@screen md {
-			width: 264px;
 		}
 	}
 
