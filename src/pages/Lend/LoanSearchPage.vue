@@ -54,6 +54,7 @@
 					:challenge-data="challengeData"
 					:show-loans-activity-feed="showLoansActivityFeed"
 					:enable-huge-amount="enableHugeLendAmount"
+					:enable-clickable-tags="enableClickableTags"
 					@add-to-basket="addToBasketCallback"
 					:team-name="teamName"
 				/>
@@ -76,6 +77,7 @@ import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
+import clickableTags from '@/plugins/clickable-tags-mixin';
 import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
@@ -83,7 +85,7 @@ import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
@@ -144,7 +146,7 @@ export default {
 			hideChallengeCallout: false,
 		};
 	},
-	mixins: [fiveDollarsTest, hugeLendAmount],
+	mixins: [fiveDollarsTest, hugeLendAmount, clickableTags],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, args) {
@@ -381,6 +383,9 @@ export default {
 			SHOW_LOANS_ACTIVITY_FEED_EXP,
 			'EXP-ACK-1098-May2024',
 		);
+
+		// Enable clickable tags test
+		this.initializeLoanCardClickableTags();
 	},
 };
 </script>

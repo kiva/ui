@@ -10,7 +10,6 @@ import filterConfig from '@/util/loanSearch/filterConfig';
 export function hasExcludedQueryParams(query) {
 	// Handle temporary query param exclusions
 	const excludedParams = [
-		'activity',
 		'city_state',
 		'loanTags',
 		'state',

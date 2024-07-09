@@ -1,7 +1,26 @@
-<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
 	<div
-		v-if="lendingRewardOffered"
+		v-if="isFromImpactDashboard"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		data-testid="lending-reward-banner-impact-dashboard"
+	>
+		<a
+			:href="impactDashboardLink"
+			class="
+					tw-text-white
+					hover:tw-no-underline hover:tw-text-white
+					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+			data-testid="impact-dashboard-promo-banner"
+			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
+		>
+
+			Please go back to your first Kiva tab or <span class="tw-underline">
+				click here</span> to use your {{ promoData.bonusBalance | numeral('$0.00') }} promo credit.
+
+		</a>
+	</div>
+	<div
+		v-else-if="lendingRewardOffered"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner"
 	>
@@ -22,7 +41,6 @@
 		</template>
 		<template
 			v-else
-			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 		>
 			Make a Kiva loan <br class="sm:tw-inline md:tw-hidden">and receive a $25 free credit to lend again.
 		</template>
@@ -136,6 +154,17 @@ export default {
 		this.fetchManagedAccountCampaign();
 	},
 	computed: {
+		impactDashboardLink() {
+			// return the impact dashboard link
+			// get all query params and remove the fromContext
+			const queryParams = { ...this.$route.query };
+			delete queryParams.fromContext;
+			// return the impact dashboard link with additional query params
+			return `${this.$route.query?.fromContext}?${new URLSearchParams(queryParams).toString()}`;
+		},
+		isFromImpactDashboard() {
+			return this.$route.query?.fromContext?.startsWith('/impact-dashboard') ?? false;
+		},
 		priorityBasketCredit() {
 			// get credits list
 			const basketCredits = this.basketState?.shop?.basket?.credits?.values ?? [];

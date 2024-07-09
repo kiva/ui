@@ -139,6 +139,7 @@ describe('dataUtils.js', () => {
 		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
 		const partners = [{ id: 1, name: 'Asd', region: 'Africa' }];
 		const general = { partners: { values: partners } };
+		const activity = [{ id: 1, name: 'Test Activity' }];
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
@@ -176,6 +177,9 @@ describe('dataUtils.js', () => {
 				partnerFacets: [],
 				partnerIds: [],
 				partnerNames: [],
+				activityFacets: [],
+				activityIds: [],
+				activityNames: [],
 			});
 		});
 
@@ -187,6 +191,7 @@ describe('dataUtils.js', () => {
 						sector,
 						loanThemeFilter,
 						tag,
+						activity,
 					},
 					general,
 					genderOptions,
@@ -221,6 +226,9 @@ describe('dataUtils.js', () => {
 				partnerFacets: partners,
 				partnerIds: [1],
 				partnerNames: ['ASD'],
+				activityFacets: activity,
+				activityIds: [1],
+				activityNames: ['TEST ACTIVITY'],
 			});
 		});
 	});

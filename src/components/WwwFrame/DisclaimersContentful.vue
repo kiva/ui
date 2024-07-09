@@ -174,7 +174,7 @@ export default {
 			// if deposit incentive experiemt is active, show its disclaimer only
 			if (this.depositIncentiveExperimentActive) {
 				// eslint-disable-next-line max-len
-				return ['<p>Disclaimer: While funds last, 1 $25 free credit will be applied to your account after you lend at least $25 in newly-deposited funds between now and 5/01/2024 at 11:59 pm PST. Limit one per person. You will receive a notification email when your free credit has been applied to your account within 1 business day of a qualifying transaction. Free credits expire after 14 days. Free credits have no cash value and repayments will return to Kiva.</p>'];
+				return ['<p>Disclaimer: While funds last, 1 $25 free credit will be applied to your account after you lend at least $25 in newly-deposited funds between now and 5/31/2024 at 11:59 pm PST. Limit one per person. You will receive a notification email when your free credit has been applied to your account within 1 business day of a qualifying transaction. Free credits expire after 14 days. Free credits have no cash value and repayments will return to Kiva.</p>'];
 			}
 
 			// prepend 'Disclaimer: ' to each disclaimer text
