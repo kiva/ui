@@ -4,6 +4,7 @@
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
+			@new-basket-exp="enableBasketExperiment = true"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
@@ -61,7 +62,8 @@ export default {
 	},
 	data() {
 		return {
-			isKivaAppReferral: false
+			isKivaAppReferral: false,
+			enableBasketExperiment: false,
 		};
 	},
 	apollo: {
@@ -90,6 +92,7 @@ export default {
 			return [
 				this.mainClass,
 				{ 'tw-bg-secondary': this.grayBackground },
+				{ 'md:tw-mt-9 tw-mt-8': this.enableBasketExperiment }
 			];
 		},
 	}

@@ -124,6 +124,7 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="addToBasketExpEnabled"
 						/>
 					</div>
 
@@ -187,10 +188,12 @@ import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCard
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 const defaultLoansPerPage = 12;
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
+const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -330,6 +333,7 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
+			newAddToBasketExpVersion: 'a',
 		};
 	},
 	computed: {
@@ -428,6 +432,9 @@ export default {
 		},
 		userBalance() {
 			return this.userData?.balance;
+		},
+		addToBasketExpEnabled() {
+			return this.newAddToBasketExpVersion === 'b';
 		},
 	},
 	apollo: {
@@ -547,6 +554,22 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+
+		// MP-346 New Add To Basket
+		const newAddToBasketExpData = this.apollo.readFragment({
+			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.newAddToBasketExpVersion = newAddToBasketExpData.version;
+
+		if (this.newAddToBasketExpVersion) {
+			this.$kvTrackEvent(
+				'Lending',
+				NEW_ADD_TO_BASKET_EXP,
+				this.newAddToBasketExpVersion,
+			);
+		}
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status

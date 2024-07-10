@@ -46,6 +46,7 @@ fragment loanCardFieldsExtended on LoanBasic {
 	image {
 		id
 		hash
+		url
 	}
 
 	# for fullLoanUse, along with use, borrowerCount, status, name, loanAmount

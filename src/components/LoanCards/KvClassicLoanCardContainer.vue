@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-relative">
 		<kv-classic-loan-card
 			class="tw-h-full"
 			:loan-id="loanId"
@@ -32,6 +32,16 @@
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
+		<div class="tw-absolute tw-right-3">
+			<kv-user-avatar
+				v-if="addToBasketExpEnabled && showBubble"
+				class="loan-image tw-rounded-full"
+				:lender-name="lenderName"
+				:lender-image-url="lenderImageUrl"
+				:class="{'animate': isAnimating}"
+				@animationend="resetBubble"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -48,6 +58,7 @@ import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsEx
 import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
 import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
+import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -151,11 +162,16 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		addToBasketExpEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
 	components: {
-		KvClassicLoanCard
+		KvClassicLoanCard,
+		KvUserAvatar,
 	},
 	data() {
 		return {
@@ -171,6 +187,8 @@ export default {
 			PHOTO_PATH,
 			combinedActivities: [],
 			errorMsg: '',
+			showBubble: false,
+			isAnimating: false,
 		};
 	},
 	methods: {
@@ -262,6 +280,7 @@ export default {
 			}).then(() => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
+				this.animateBubble();
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',
@@ -406,6 +425,16 @@ export default {
 				});
 			}
 		},
+		animateBubble() {
+			this.showBubble = true;
+			this.$nextTick(() => {
+				this.isAnimating = true;
+			});
+		},
+		resetBubble() {
+			this.showBubble = false;
+			this.isAnimating = false;
+		}
 	},
 	mounted() {
 		if (this.loan) {
@@ -446,5 +475,31 @@ export default {
 			}
 		},
 	},
+	computed: {
+		lenderName() {
+			return this.loan?.name ?? '';
+		},
+		lenderImageUrl() {
+			return this.loan?.image?.url ?? '';
+		},
+	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.loan-image.animate {
+  animation: popToTop 3s forwards;
+}
+
+@keyframes popToTop {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+</style>
