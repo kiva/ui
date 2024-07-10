@@ -32,10 +32,11 @@
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
-		<div class="tw-absolute tw-right-3">
+		<div ref="bubble" class="tw-absolute tw-right-3">
 			<kv-user-avatar
-				v-if="addToBasketExpEnabled && showBubble"
+				v-show="addToBasketExpEnabled && showBubble"
 				class="loan-image tw-rounded-full"
+				:style="bubbleStyle"
 				:lender-name="lenderName"
 				:lender-image-url="lenderImageUrl"
 				:class="{'animate': isAnimating}"
@@ -189,6 +190,10 @@ export default {
 			errorMsg: '',
 			showBubble: false,
 			isAnimating: false,
+			targetPosition: {
+				top: 0, left: 0, width: 0, height: 0
+			},
+			bubbleStyle: {},
 		};
 	},
 	methods: {
@@ -278,9 +283,11 @@ export default {
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
+				if (this.addToBasketExpEnabled) {
+					this.animateBubble();
+				}
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
-				this.animateBubble();
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',
@@ -425,10 +432,32 @@ export default {
 				});
 			}
 		},
+		getTargetPosition() {
+			const target = document.getElementById('basket-exp');
+			return target.getBoundingClientRect();
+		},
 		animateBubble() {
+			const position = this.getTargetPosition();
+			this.targetPosition = {
+				top: position.top,
+				left: position.left,
+				width: position.width,
+				height: position.height
+			};
+
 			this.showBubble = true;
 			this.$nextTick(() => {
+				const { bubble } = this.$refs;
+				const bubbleRect = bubble.getBoundingClientRect();
+				const targetX = this.targetPosition.left - bubbleRect.left
+					+ this.targetPosition.width / 2 - bubbleRect.width / 2;
+				const targetY = this.targetPosition.top - bubbleRect.top
+					+ this.targetPosition.height / 2 - bubbleRect.height / 2;
 				this.isAnimating = true;
+				this.bubbleStyle = {
+					transform: `translate(${targetX}px, ${targetY}px)`,
+					opacity: 0
+				};
 			});
 		},
 		resetBubble() {
@@ -488,18 +517,11 @@ export default {
 
 <style lang="postcss" scoped>
 
+.loan-image {
+	transition: transform 1s, opacity 1s;
+}
+
 .loan-image.animate {
-  animation: popToTop 3s forwards;
+  opacity: 0;
 }
-
-@keyframes popToTop {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-100vh);
-    opacity: 0;
-  }
-}
-
 </style>

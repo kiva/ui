@@ -339,7 +339,11 @@
 									'tw-flex': hasBasket
 								}"
 							>
-								<div v-if="enableBasketExperiment" class="tw-flex tw-justify-center tw-items-center">
+								<div
+									v-if="enableBasketExperiment"
+									id="basket-exp"
+									class="tw-flex tw-justify-center tw-items-center"
+								>
 									<div class="tw-relative tw-flex tw-items-center">
 										<kv-user-avatar
 											:key="lender.id"
@@ -863,7 +867,6 @@ export default {
 			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
 		});
 		window.addEventListener('resize', this.determineIfMobile());
-		this.$emit('new-basket-exp', this.enableBasketExperiment);
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.determineIfMobile());
@@ -982,6 +985,9 @@ export default {
 		},
 	},
 	watch: {
+		hasBasket() {
+			this.$emit('new-basket-exp', this.enableBasketExperiment);
+		},
 		isVisitor(newVal, oldVal) {
 			if (newVal !== oldVal && !newVal && this.$refs.userDropdown) {
 				this.$nextTick(() => {
