@@ -1047,6 +1047,23 @@ export default {
 						isMatchable: true
 					},
 				},
+				{
+					id: 171,
+					url: 'featured-projects',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 8),
+						sortBy: 'amountLeft',
+					},
+				},
+				{
+					id: 172,
+					url: 'basic-needs',
+					flssLoanSearch: {
+						sectorId: [10],
+						themeId: [8],
+						sortBy: 'amountLeft',
+					},
+				},
 			]
 
 		};

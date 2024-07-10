@@ -217,6 +217,13 @@
 								Borrow
 							</router-link>
 
+							<!-- Teams -->
+							<teams-menu
+								v-if="!isVisitor && teamsMenuEnabled"
+								class="tw-hidden lg:tw-block"
+								:teams="teams"
+							/>
+
 							<!-- About -->
 							<div class="tw-group" :class="{ 'tw-hidden md:tw-block': !isVisitor }">
 								<router-link
@@ -570,6 +577,9 @@ import {
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
+import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
+import { readBoolSetting } from '@/util/settingsUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -578,6 +588,7 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
+const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
   	my {
@@ -603,6 +614,7 @@ export default {
 		SearchBar,
 		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
+		TeamsMenu,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -633,6 +645,8 @@ export default {
 			hasEverLoggedIn: false,
 			isMobile: false,
 			basketTotal: 0,
+			teams: null,
+			teamsMenuEnabled: false,
 		};
 	},
 	props: {
@@ -749,6 +763,8 @@ export default {
 			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
 				return sum + +(item?.price ?? 0);
 			}, 0) ?? 0;
+			this.teams = data?.my?.teams ?? {};
+			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -782,6 +798,15 @@ export default {
 			} catch (e) {
 				logReadQueryError(e, 'User Data For Optimizely Metrics');
 			}
+		}
+
+		const { version } = this.apollo.readFragment({
+			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		if (version) {
+			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');

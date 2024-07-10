@@ -31,5 +31,6 @@ query loanSearchStateQuery {
 		}
 		isMatchable
 		flexibleFundraisingEnabled
+		activityId
 	}
 }

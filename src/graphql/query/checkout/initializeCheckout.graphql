@@ -22,6 +22,7 @@ query initializeCheckout($basketId: String) {
 		loans {
 			totalCount
 		}
+		depositIncentiveAmountToLend
 	}
 	general {
 		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {

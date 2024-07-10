@@ -19,14 +19,29 @@ const provideMockedApollo = (mockedResult) => {
 		query() {
 			return Promise.resolve(mockedResult);
 		},
+		watchQuery() {
+			return {
+				subscribe() { },
+			};
+		},
 	};
 };
 
 const userInfo = {
   my: {
 		id: 1017469,
-		depositIncentiveAmountToLend: 20,
-  }
+		depositIncentiveAmountToLend: 25,
+  },
+	 shop: {
+		id: 1,
+		basket: {
+			id: 1,
+			totals: {
+				loanReservationTotal: 15,
+			}
+		},
+		__typename: 'Shop',
+	}
 }
 
 export const Default = (args, { argTypes }) => ({
