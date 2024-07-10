@@ -4,7 +4,7 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const { usingFakeAuth } = require('./util/fakeAuthentication');
 const { isExpired } = require('./util/jwt');
-const { info, warn } = require('./util/log');
+const { error, info, warn } = require('./util/log');
 const {
 	clearNotedLoginState,
 	getSyncCookie,
@@ -139,9 +139,14 @@ module.exports = function authRouter(config = {}) {
 		info(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
-		req.logout(); // removes req.user
-		noteLoggedOut(res);
-		res.redirect(logoutUrl);
+		// removes req.user
+		req.logout(err => {
+			if (err) {
+				error('LoginUI: logout callback error:', err);
+			}
+			noteLoggedOut(res);
+			res.redirect(logoutUrl);
+		});
 	});
 
 	// Callback redirected to after Auth0 authentication
@@ -240,13 +245,23 @@ module.exports = function authRouter(config = {}) {
 			attemptSilentAuth(req, res, next);
 		} else if (isNotedLoggedIn(req) && !isNotedUserRequestUser(req)) {
 			info(`LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}`); // eslint-disable-line max-len
-			req.logout(); // removes req.user
-			attemptSilentAuth(req, res, next);
+			// removes req.user
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				attemptSilentAuth(req, res, next);
+			});
+		} else if (isNotedLoggedOut(req) && req.user) {
+			info(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
+			// removes req.user
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				next();
+			});
 		} else {
-			if (isNotedLoggedOut(req) && req.user) {
-				info(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
-				req.logout(); // removes req.user
-			}
 			next();
 		}
 	});
@@ -259,8 +274,13 @@ module.exports = function authRouter(config = {}) {
 			next();
 		} else if (req.user && isExpired(req.user.accessToken)) {
 			info(`LoginUI: access token expired, attempting silent authentication to renew, session id:${req.sessionID}`); // eslint-disable-line max-len
-			req.logout(); // Remove expired token from session
-			attemptSilentAuth(req, res, next);
+			// removes req.user + expired token from session
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				attemptSilentAuth(req, res, next);
+			});
 		} else {
 			next();
 		}
