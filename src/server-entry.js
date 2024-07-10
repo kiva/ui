@@ -14,6 +14,7 @@ import { authenticationGuard } from '@/util/authenticationGuard';
 import { contentfulPreviewCookie } from '@/util/contentfulPreviewCookie';
 
 import logFormatter from '@/util/logFormatter';
+import { buildUserDataGlobal } from '@/util/optimizelyUserMetrics';
 
 const fetch = require('make-fetch-happen');
 
@@ -22,6 +23,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 let renderedConfig = '';
 let renderedNoscript = '';
 let renderedExternals = '';
+let renderedExternalsOptIn = '';
 
 // This adds non-vue-rendered html strings to the request context.
 // These strings are added to the final html response using server/index.template.html
@@ -49,11 +51,26 @@ function addRenderedHtml(context, config) {
 		// eslint-disable-next-line max-len
 		renderedExternals += `<script>(${renderedHeadScript})(window.__KV_CONFIG__, ${renderedOneTrustEvent});</script>`;
 	}
+	// render externals for users that are not opted out of 3rd party cookies
+	if (!renderedExternalsOptIn) {
+		// setup Optimizely loader
+		if (config?.enableOptimizely && config?.optimizelyProjectId) {
+			// eslint-disable-next-line max-len
+			renderedExternalsOptIn += '<script type="text/javascript">window["optimizely"]=window["optimizely"]||[];window["optimizely"].push({"type":"holdEvents"});</script>';
+			const optimizelySrc = `https://cdn.optimizely.com/js/${config?.optimizelyProjectId}.js`;
+			renderedExternalsOptIn += `<script type="text/javascript" src="${optimizelySrc}"></script>`;
+		}
+		// append regular externals
+		renderedExternalsOptIn += renderedExternals;
+	}
+
+	// check for 3rd party script opt-out
+	const hasOptOut = context?.cookies?.kvgdpr?.indexOf('opted_out=true') > -1;
 
 	// add rendered strings to request render context
 	context.renderedConfig = renderedConfig;
 	context.renderedNoscript = renderedNoscript;
-	context.renderedExternals = renderedExternals;
+	context.renderedExternals = hasOptOut ? renderedExternals : renderedExternalsOptIn;
 }
 
 // This exported function will be called by `bundleRenderer`.
@@ -115,19 +132,21 @@ export default context => {
 			appConfig: config,
 			apollo: {
 				uri: config.graphqlUri,
-				types: config.graphqlFragmentTypes
+				types: config.graphqlPossibleTypes
 			},
 			cookieStore,
 			device,
 			kvAuth0,
 			locale,
-			fetch
+			fetch,
+			url,
 		});
 
 		// redirect to the resolved url if it does not match the requested url
 		const { fullPath } = router.resolve(url).route;
 		if (fullPath !== url) {
-			return reject({ url: fullPath });
+			// redirects defined in routes.js use a permanent (301) redirect
+			return reject({ url: fullPath, code: 301 });
 		}
 
 		// render content for template
@@ -159,6 +178,7 @@ export default context => {
 					cookieStore,
 					kvAuth0,
 					route: router.currentRoute,
+					device
 				});
 			}).then(() => {
 				let sp; // Vue serverPrefetch timing start
@@ -166,6 +186,7 @@ export default context => {
 					logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
 					sp = new Date();
 				}
+
 				// This `rendered` hook is called when the app has finished rendering
 				context.rendered = () => {
 					if (isDev) logFormatter(`vue serverPrefetch: ${Date.now() - sp}ms`);
@@ -179,6 +200,7 @@ export default context => {
 					context.meta = app.$meta();
 					context.renderedState = renderGlobals({
 						__APOLLO_STATE__: apolloClient.cache.extract(),
+						pageData: buildUserDataGlobal(router, cookieStore, apolloClient)
 					});
 					context.setCookies = cookieStore.getSetCookies();
 				};

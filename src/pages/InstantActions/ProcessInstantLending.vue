@@ -95,7 +95,7 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import logFormatter from '@/util/logFormatter';

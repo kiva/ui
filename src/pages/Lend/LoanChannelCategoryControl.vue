@@ -1,8 +1,20 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="small-12 columns heading-region">
-				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
+	<div class="tw-relative">
+		<div
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			style="max-width: 1200px;"
+		>
+			<div
+				class="tw-px-1 heading-region"
+			>
+				<router-link
+					:to="filterUrl"
+					class="tw-text-action tw-flex tw-items-center tw-float-right"
+					@click.native="trackAdvancedFilters"
+				>
+					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
+					Advanced filters
+				</router-link>
 				<p class="tw-text-small">
 					<router-link to="/lend-by-category">
 						All Loans
@@ -10,11 +22,11 @@
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1 class="tw-mb-2">
-					{{ loanChannelName }}
+					{{ pageHeadline }}
 				</h1>
 				<p
 					v-if="loanChannelDescription"
-					class="page-subhead show-for-large tw-mb-4"
+					class="page-subhead tw-mb-4"
 				>
 					{{ loanChannelDescription }}
 				</p>
@@ -26,117 +38,108 @@
 				</p>
 			</div>
 		</div>
-		<div class="tw-bg-brand-100 tw-w-full tw-mb-8 lg:tw-mb-12 lg:tw-mt-2 tw-px-2 tw-py-2" v-if="addBundlesExp">
-			<div class="row">
-				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-w-full">
-					<div class="tw-w-full lg:tw-w-2/5">
-						<h1 class="tw-text-h1">
-							Bundle your support
-						</h1>
 
-						<p class="tw-text-subhead tw-my-2 tw-pr-2">
-							{{ bundleText }}
-						</p>
-
-						<div class="tw-hidden lg:tw-block tw-mt-1">
-							<kv-button
-								type="button"
-								@click="addBundleToBasket"
-								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
-									'Lend to all three now - ' + pageTitle]"
-							>
-								Lend to all three now
-							</kv-button>
-
-							<p class="tw-text-small tw-mt-1">
-								As little as $75
-							</p>
-						</div>
-					</div>
-					<div class="tw-w-full lg:tw-w-3/5">
-						<kiva-classic-loan-carousel-exp
-							:is-visible="showCarousel"
-							:loan-ids="selectedChannelLoanIds"
-							:selected-channel="selectedChannel"
-							:show-view-more-card="showViewMoreCard"
-							:is-bundle="true"
-							id="carousel_exp"
-							@get-detailed-loan="getDetailedLoan"
-						/>
-
-						<div class="lg:tw-hidden tw-flex tw-flex-col tw-items-center tw-mt-3">
-							<kv-button
-								type="button"
-								@click="addBundleToBasket"
-								v-kv-track-event="['Lending', 'click-loan-bundle-cta',
-									'Lend to all three now - ' + pageTitle]"
-								class="tw-w-full"
-							>
-								Lend to all three now
-							</kv-button>
-
-							<p class="tw-text-small tw-mt-1">
-								As little as $75
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<kv-expandable :delay="150" easing="linear">
-					<div ref="detailedLoanCardContainer" class="tw-w-full tw-mt-2">
-						<loan-card-controller
-							v-if="detailedLoan"
-							loan-card-type="DetailedLoanCard"
-							:loan="detailedLoan"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							:disable-redirects="true"
-							:is-visitor="isVisitor"
-							:hide-lend-cta="true"
-							@close-detailed-loan-card="handleCloseLoanCard"
-						/>
-					</div>
-				</kv-expandable>
-			</div>
+		<div
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			style="max-width: 1200px;"
+		>
+			<quick-filters
+				class="tw-z-2 tw-px-1"
+				:total-loans="totalCount"
+				:filter-options="quickFiltersOptions"
+				:filters-loaded="filtersLoaded"
+				:targeted-loan-channel-url="targetedLoanChannelURL"
+				tracking-category="search"
+				@update-filters="updateQuickFilters"
+				@reset-filters="resetFilters"
+				@handle-overlay="handleQuickFiltersOverlay"
+			/>
 		</div>
 
-		<div class="row">
-			<div class="columns small-12" v-if="loans.length > 0">
-				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<loan-card-controller
-						v-for="loan in loans"
+		<div
+			class="tw-relative tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+			style="max-width: 1200px;"
+		>
+			<!-- emtpy state for no loans result -->
+			<empty-state
+				v-show="emptyState"
+				class="tw-mb-2 tw-mx-1"
+			/>
+
+			<!-- eslint-disable max-len -->
+			<div v-show="showQuickFiltersOverlay" style="opacity: 0.5;" class="tw-absolute tw-inset-0 tw-bg-white tw-z-3 lg:tw-mx-8"></div>
+			<div v-if="loans && loans.length > 0" class="tw-w-full">
+				<div v-if="!displayLoanPromoCard || emptyState">
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-px-1">
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in loans"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
+							:user-balance="userBalance"
+						/>
+					</div>
+
+					<helpme-choose-wrapper
+						v-if="showHelpMeChooseFeat"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
+						:user-data="userData"
+						:loan-channel-name="loanChannelName"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
+						:is-loading="isLoadingHC"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
 					/>
 				</div>
-				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<loan-card-controller
-						v-for="loan in firstLoan"
-						:items-in-basket="itemsInBasket"
-						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
-					/>
-					<div class="column column-block">
-						<promo-grid-loan-card
+				<div v-else>
+					<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-px-1">
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in firstLoan"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
+							:user-balance="userBalance"
+						/>
+
+						<promo-grid-loan-card-exp
 							:category-url="mgTargetCategory.url"
 							:category-label="mgTargetCategory.label"
 						/>
+
+						<kv-classic-loan-card-container
+							v-for="(loan, index) in remainingLoans"
+							:key="`new-card-${loan.id}-${index}`"
+							:loan-id="loan.id"
+							:use-full-width="true"
+							:show-tags="true"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-huge-amount="enableHugeAmount"
+							:user-balance="userBalance"
+						/>
 					</div>
-					<loan-card-controller
-						v-for="loan in remainingLoans"
+
+					<helpme-choose-wrapper
+						v-if="showHelpMeChooseFeat"
+						:remaining-loans="helpMeChooseRemainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
+						:user-data="userData"
+						:loan-channel-name="loanChannelName"
+						:loans="helpMeChooseLoans"
+						@update="getHelpMeChooseLoans($event)"
+						:is-loading="isLoadingHC"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
 					/>
-					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination
 					v-if="totalCount > 0"
@@ -150,6 +153,8 @@
 				</div>
 			</div>
 		</div>
+
+		<kv-loading-overlay v-if="loading" class="tw-z-2" />
 	</div>
 </template>
 
@@ -161,28 +166,31 @@ import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import getRelatedLoans from '@/graphql/query/getRelatedLoans.graphql';
-import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
-import ViewToggle from '@/components/LoansByCategory/ViewToggle';
-import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KivaClassicLoanCarouselExp from '@/components/LoanCollections/KivaClassicLoanCarouselExp';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import { isLoanFundraising } from '@/util/loanUtils';
-import KvExpandable from '@/components/Kv/KvExpandable';
 import {
 	preFetchChannel,
 	getCachedChannel,
-	trackChannelExperiment,
 	watchChannelQuery,
+	getLoanChannel,
+	getFLSSQueryMap,
 } from '@/util/loanChannelUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
+import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
+import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
+import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
+import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
+import EmptyState from '@/components/LoanFinding/EmptyState';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 
 const defaultLoansPerPage = 12;
+
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -222,38 +230,68 @@ function getPageOffset(query, limit) {
 
 export default {
 	name: 'LoanChannelCategoryControl',
-	components: {
-		LoanCardController,
-		KvPagination,
-		KvLoadingOverlay,
-		ViewToggle,
-		PromoGridLoanCard,
-		KvButton,
-		KivaClassicLoanCarouselExp,
-		KvExpandable
-	},
-	inject: ['apollo', 'cookieStore'],
-	mixins: [
-		lendFilterExpMixin,
-		loanChannelQueryMapMixin,
-	],
 	metaInfo() {
 		return {
+			title: this.metaTitle,
 			link: [
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `${this.handleCanonicalUrl}`
+					href: this.canonicalUrl
 				}
-			]
+			],
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: this.metaDescription
+				}
+			].concat([
+				{
+					vmid: 'og:title',
+					property: 'og:title',
+					content: this.metaTitle
+				},
+				{
+					vmid: 'og:description',
+					property: 'og:description',
+					content: this.metaDescription
+				},
+			]).concat([
+				{
+					vmid: 'twitter:title',
+					name: 'twitter:title',
+					content: this.metaTitle
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.metaDescription
+				}
+			])
 		};
 	},
 	props: {
-		addBundlesExp: {
+		enableFiveDollarsNotes: {
 			type: Boolean,
-			required: false
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
 		},
 	},
+	components: {
+		KvPagination,
+		KvLoadingOverlay,
+		QuickFilters,
+		HelpmeChooseWrapper,
+		PromoGridLoanCardExp,
+		KvClassicLoanCardContainer,
+		EmptyState,
+	},
+	inject: ['apollo', 'cookieStore'],
+	mixins: [loanChannelQueryMapMixin],
 	data() {
 		return {
 			offset: 0,
@@ -261,20 +299,37 @@ export default {
 			filters: { },
 			targetedLoanChannelURL: null,
 			targetedLoanChannelID: null,
-			loanChannel: () => {},
+			loanChannel: {},
 			isVisitor: true,
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
-			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
-			bundleLoans: [],
 			selectedChannelLoanIds: [],
 			selectedChannel: {},
 			showCarousel: true,
 			showViewMoreCard: false,
 			detailedLoan: null,
+			allFacets: [],
+			flssLoanSearch: {},
+			quickFiltersOptions: {
+				gender: [{
+					key: 'all',
+					title: 'All genders'
+				}],
+				sorting: [{
+					key: 'personalized',
+					title: 'Recommended'
+				}]
+			},
+			filtersLoaded: false,
+			selectedQuickFilters: {},
+			userData: {},
+			showQuickFiltersOverlay: false,
+			helpMeChooseSort: null,
+			helpMeChooseLoans: [],
+			isLoadingHC: true,
 		};
 	},
 	computed: {
@@ -287,23 +342,49 @@ export default {
 			return Math.ceil(this.totalCount / this.limit);
 		},
 		loanChannelName() {
-			return _get(this.loanChannel, 'name') || 'No loans found';
+			return this.loanChannel?.name ?? 'No loans found';
 		},
 		loanChannelDescription() {
-			return _get(this.loanChannel, 'description') || null;
+			return this.loanChannel?.description;
+		},
+		pageHeadline() {
+			return this.loanChannel?.headline ?? this.loanChannelName;
+		},
+		metaTitle() {
+			const name = this.loanChannel?.metaTitle ?? this.loanChannelName;
+			return `${name} | Invest & Support`;
+		},
+		metaDescription() {
+			return this.loanChannel?.metaDescription ?? this.loanChannelDescription ?? '';
+		},
+		allLoans() {
+			return (this.loanChannel?.loans?.values ?? []).filter(loan => loan !== null);
 		},
 		loans() {
-			return _get(this.loanChannel, 'loans.values') || [];
+			if (this.showHelpMeChooseFeat) {
+				return _filter(this.allLoans, (loan, index) => index < 6);
+			}
+			if (this.emptyState) return this.backupLoans;
+			return this.allLoans;
 		},
 		firstLoan() {
 			// Handle an edge case where a backend error could lead to a null loan
-			return this.loans[0] ? [this.loans[0]] : [];
+			return this.allLoans?.[0] ? [this.allLoans[0]] : [];
 		},
 		remainingLoans() {
-			return _filter(this.loans, (loan, index) => index > 0);
+			if (this.showHelpMeChooseFeat) {
+				return _filter(this.allLoans, (loan, index) => index > 0 && index < 5);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 0);
+		},
+		helpMeChooseRemainingLoans() {
+			if (this.displayLoanPromoCard) {
+				return _filter(this.allLoans, (loan, index) => index > 4);
+			}
+			return _filter(this.allLoans, (loan, index) => index > 5);
 		},
 		loanIds() {
-			return _map(this.loans, 'id');
+			return _map(this.allLoans, 'id');
 		},
 		totalCount() {
 			return _get(this.loanChannel, 'loans.totalCount') || 0;
@@ -314,40 +395,63 @@ export default {
 				limit: this.limit,
 				offset: this.offset,
 				basketId: this.cookieStore.get('kvbskt'),
+				origin: FLSS_ORIGIN_CATEGORY,
+				// Only add quick filters if they are defined so that channel filters aren't incorrectly overridden
+				...(this.selectedQuickFilters.gender && { gender: this.selectedQuickFilters.gender }),
+				...(this.selectedQuickFilters.sortBy && { sortBy: this.selectedQuickFilters.sortBy }),
+				...(!!this.selectedQuickFilters.countryIsoCode?.length && {
+					countryIsoCode: this.selectedQuickFilters.countryIsoCode
+				}),
 			};
 		},
 		filterUrl() {
 			// process eligible filter url
 			return this.getFilterUrl();
 		},
-		pageTitle() {
-			let title = 'Fundraising loans';
-			if (this.loanChannel && this.loanChannel.name) {
-				title = `${this.loanChannel.name}`;
-			}
-			return title;
-		},
-		bundleText() {
-			let text = 'Support these three loans with just one click.';
-			if (this.bundleLoans[0] && this.bundleLoans[1] && this.bundleLoans[2]) {
-				text = `Support ${this.bundleLoans[0].name}, ${this.bundleLoans[1].name}
-							and ${this.bundleLoans[2].name} with just one click.`;
-			}
-			return text;
-		},
-		handleCanonicalUrl() {
+		canonicalUrl() {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
 			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
 			return url;
-		}
+		},
+		showHelpMeChooseFeat() {
+			const queryMapFLSS = getFLSSQueryMap(this.loanChannelQueryMap, this.targetedLoanChannelURL);
+			const hasSortBy = !!queryMapFLSS?.sortBy;
+
+			// Don't show help me choose if the category has sortBy
+			// Help me choose categories are just different sortBy options
+			return !hasSortBy && this.allLoans?.length > 8;
+		},
+		emptyState() {
+			return this.allLoans?.length <= 0;
+		},
+		userBalance() {
+			return this.userData?.balance;
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			return client.query({
-				query: loanChannelPageQuery
-			}).then(({ data }) => {
+			const loanChannelPageQueryPromise = client.query({ query: loanChannelPageQuery });
+
+			return Promise.all([
+				loanChannelPageQueryPromise,
+				client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+			]).then(data => {
+				const loanChannelPageQueryData = data?.[0]?.data ?? {};
+
+				// combine both 'pages' of loan channels
+				const pageQueryData = {
+					...loanChannelPageQueryData,
+					lend: {
+						loanChannels: {
+							values: [
+								...(loanChannelPageQueryData?.lend?.firstLoanChannels?.values ?? []),
+								...(loanChannelPageQueryData?.lend?.secondLoanChannels?.values ?? [])
+							]
+						}
+					}
+				};
 				const { route } = args;
 				const { query, params, path } = route;
 
@@ -355,7 +459,7 @@ export default {
 				const targetedLoanChannelURL = params.category;
 
 				// Isolate targeted loan channel id
-				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
+				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 
 				// Get page limit and offset
 				const currentRoute = path.replace('/lend-by-category/', '');
@@ -369,12 +473,18 @@ export default {
 					loanChannelQueryMapMixin.data().loanChannelQueryMap,
 					targetedLoanChannelURL,
 					// Build loanQueryVars since SSR doesn't have same context
-					{ ids: [targetedLoanChannelID], limit, offset }
+					{
+						ids: [targetedLoanChannelID],
+						limit,
+						offset,
+						origin: FLSS_ORIGIN_CATEGORY
+					}
 				);
 			});
 		}
 	},
 	created() {
+		this.loading = true;
 		let allChannelsData = {};
 
 		this.initializeMonthlyGoodPromo();
@@ -388,14 +498,28 @@ export default {
 			logReadQueryError(e, 'LoanChannelCategoryControl created loanChannelPageQuery');
 		}
 
+		// Combine both 'pages' of loan channels
+		const pageQueryData = {
+			...allChannelsData,
+			lend: {
+				loanChannels: {
+					values: [
+						...(allChannelsData?.lend?.firstLoanChannels?.values ?? []),
+						...(allChannelsData?.lend?.secondLoanChannels?.values ?? [])
+					]
+				}
+			}
+		};
+
 		// Set user status
-		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
+		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
+		this.userData = _get(pageQueryData, 'my.userAccount');
 
 		// Filter routes on param.category to get current path
 		this.targetedLoanChannelURL = _get(this.$route, 'params.category');
 
 		// Isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(this.targetedLoanChannelURL, pageQueryData);
 
 		// Extract query
 		this.pageQuery = _get(this.$route, 'query');
@@ -408,25 +532,26 @@ export default {
 			this.apollo,
 			this.loanChannelQueryMap,
 			this.targetedLoanChannelURL,
-			this.loanQueryVars
+			this.loanQueryVars,
 		);
+		if (baseData) this.loading = false;
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
 
-		/*
-		 * Experiment Initializations
-		*/
-
-		// Lend Filter Redirects
-		this.initializeLendFilterRedirects();
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
 	},
-	mounted() {
+	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
 
-		this.updateLendFilterExp();
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
@@ -434,38 +559,46 @@ export default {
 			this.$router.push(this.getFilterUrl());
 		}
 
-		if (this.addBundlesExp) {
-			this.getRelatedLoansExp();
-		}
+		// Fetch the facet options from the lend and FLSS APIs
+		this.allFacets = await fetchLoanFacets(this.apollo);
 
-		trackChannelExperiment(this.apollo, this.loanChannelQueryMap, this.targetedLoanChannelURL, this.$kvTrackEvent);
+		// Load all available facets for specified sector
+		await this.fetchFacets();
+
+		this.backupLoans = this.loans?.slice(3) ?? [];
 	},
 	methods: {
-		async addBundleToBasket() {
-			try {
-				await this.updateLoanReservation(0).then(async () => {
-					await this.updateLoanReservation(1).then(async () => {
-						await this.updateLoanReservation(2);
-					});
-				});
+		handleQuickFiltersOverlay(showOverlay) {
+			this.showQuickFiltersOverlay = showOverlay;
+		},
+		trackAdvancedFilters() {
+			this.$kvTrackEvent(
+				'search',
+				'click',
+				'category-advanced-filters'
+			);
+		},
+		resetFilters() {
+			this.selectedQuickFilters = {};
+		},
+		updateQuickFilters(filter) {
+			// Create new filter object so the watch query is triggered by reference change
+			const newFilters = JSON.parse(JSON.stringify(this.selectedQuickFilters));
 
-				this.$kvTrackEvent(
-					'basket',
-					'bundle-add-to-basket-funded-loan',
-				);
-
-				this.$kvTrackEvent(
-					'Lending',
-					'click-loan-bundle-cta',
-					`Lend to all three now - ${this.loanChannelName}`,
-					null,
-					this.selectedChannelLoanIds.join(', ')
-				);
-
-				this.$router.push({ path: '/checkout' });
-			} catch (e) {
-				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+			if (filter.gender !== undefined) {
+				newFilters.gender = filter.gender;
+				this.flssLoanSearch.gender = filter.gender;
+				this.fetchFacets();
+			} else if (filter.sortBy) {
+				newFilters.sortBy = filter.sortBy;
+			} else {
+				newFilters.countryIsoCode = [...filter.country];
 			}
+
+			this.selectedQuickFilters = newFilters;
+
+			this.resetPagination();
+			this.getHelpMeChooseLoans();
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
@@ -541,6 +674,10 @@ export default {
 					return channel.url === this.$route.params.category;
 				}
 			);
+
+			// FLSS Parameters for Quick Filters Experiment
+			this.quickFiltersFlssParameters(matchedUrls);
+
 			// check for fallback url
 			const fallback = _get(matchedUrls, '[0]fallbackUrl');
 			if (typeof fallback !== 'undefined') {
@@ -554,16 +691,6 @@ export default {
 			// use default
 			return '/lend/filter';
 		},
-		initializeLendFilterRedirects() {
-			const lendFilterEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_filter_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.lendFilterExpVersion = lendFilterEXP.version;
-
-			// Update Lend Filter Exp CASH-545
-			this.getLendFilterExpVersion();
-		},
 		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
@@ -575,42 +702,106 @@ export default {
 				this.limit = defaultLoansPerPage;
 			}
 		},
-		async getRelatedLoansExp() {
-			const loan = this.loans[0];
-			try {
-				const baseData = await this.apollo.query({
-					query: getRelatedLoans,
-					variables: {
-						limit: this.limit,
-						loanId: loan.id,
-						offset: 0,
-						topics: ['story']
-					},
-				});
-				const relatedArray = baseData?.data?.ml?.relatedLoansByTopics?.[0]?.values ?? [];
-				let loans = _filter(relatedArray, loanIn => {
-					return isLoanFundraising(loanIn);
-				});
-				loans = loans.slice(0, 3);
-				this.bundleLoans = loans;
-				this.selectedChannelLoanIds = loans.map(element => element.id);
-
-				this.$kvTrackEvent(
-					'Lending',
-					'view-loan-bundle',
-					this.loanChannelName,
-					null,
-					this.selectedChannelLoanIds.join(', ')
-				);
-			} catch (e) {
-				logReadQueryError(e, 'LoanChannelCategoryControl getRelatedLoansExp getRelatedLoans');
-			}
-		},
 		getDetailedLoan(loanDetails) {
 			this.detailedLoan = loanDetails;
 		},
 		handleCloseLoanCard() {
 			this.detailedLoan = null;
+		},
+		async fetchFacets() {
+			// TODO: Prevent this from running on every query (not needed for sorting and paging)
+			const { isoCodes } = await runFacetsQueries(this.apollo, this.flssLoanSearch, FLSS_ORIGIN_CATEGORY);
+
+			// Merge all facet options with filtered options
+			const facets = {
+				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
+			};
+
+			this.quickFiltersOptions.location = facets.regions;
+
+			this.quickFiltersOptions.sorting = [
+				{
+					title: 'Recommended',
+					key: 'personalized',
+				},
+				{
+					title: 'Almost funded',
+					key: 'amountLeft',
+				},
+				{
+					title: 'Amount high to low',
+					key: 'amountHighToLow'
+				},
+				{
+					title: 'Amount low to high',
+					key: 'amountLowToHigh'
+				},
+				{
+					title: 'Ending soon',
+					key: 'expiringSoon'
+				},
+				{
+					title: 'Most recent',
+					key: 'mostRecent'
+				}
+			];
+			this.quickFiltersOptions.gender = [
+				{
+					title: 'All genders',
+					key: 'all',
+				},
+				{
+					title: 'Women',
+					key: 'female',
+				},
+				{
+					title: 'Men',
+					key: 'male',
+				},
+				{
+					title: 'Non-binary',
+					key: 'nonbinary',
+				},
+			];
+
+			this.filtersLoaded = true;
+		},
+		quickFiltersFlssParameters(matchedUrls = []) {
+			if (this.targetedLoanChannelURL === 'single-parents') {
+				this.flssLoanSearch = { tagId: [17] };
+			} else if (this.targetedLoanChannelURL === 'livestock') {
+				this.flssLoanSearch = { activityId: [73] };
+			} else {
+				this.flssLoanSearch = matchedUrls[0]?.flssLoanSearch ?? {};
+			}
+		},
+		async getHelpMeChooseLoans(sortBy) {
+			this.isLoadingHC = true;
+
+			if (sortBy) {
+				this.helpMeChooseSort = sortBy;
+			}
+
+			const loansData = await getLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				this.targetedLoanChannelURL,
+				{
+					ids: [this.targetedLoanChannelID],
+					limit: 3,
+					basketId: this.cookieStore.get('kvbskt'),
+					origin: FLSS_ORIGIN_CATEGORY
+				},
+				// Apply quick filters to help me choose
+				{ ...this.selectedQuickFilters, sortBy: this.helpMeChooseSort }
+			);
+
+			const loans = loansData?.lend?.loanChannelsById[0]?.loans?.values ?? [];
+			this.helpMeChooseLoans = loans;
+			this.isLoadingHC = false;
+		},
+		resetPagination() {
+			this.pageChange({ pageOffset: 0 });
 		}
 	},
 	watch: {
@@ -657,10 +848,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.loan-card-group {
-	position: relative;
-}
-
 .loan-count {
 	text-align: center;
 	margin: 0 0 2rem;
@@ -669,34 +856,10 @@ export default {
 .heading-region {
 	margin: 1.25rem 0;
 
-	.view-toggle {
-		margin: 0.125rem 0 0 0.375rem;
-		float: right;
-		display: flex;
-
-		@include breakpoint(large) {
-			margin: 0.375rem 0 0.375rem 0.375rem;
-		}
-	}
-
 	@include breakpoint(large) {
 		p {
 			max-width: 75%;
 		}
 	}
-}
-
-@include breakpoint(xxlarge) {
-	#carousel_exp >>> section > div:nth-child(2) {
-		display: none;
-	}
-}
-
-#carousel_exp >>> section > div:nth-child(1) {
-	column-gap: 1rem !important;
-}
-
-#carousel_exp >>> section > div:nth-child(1) > div {
-	max-width: 185px !important;
 }
 </style>

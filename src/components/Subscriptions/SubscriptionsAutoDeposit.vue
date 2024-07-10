@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<kv-settings-card class="column large-8" title="Auto Deposit">
+	<div>
+		<kv-settings-card title="Auto Deposit">
 			<template #content>
 				<router-link
 					v-if="!isAutoDepositSubscriber"
@@ -10,18 +10,28 @@
 				</router-link>
 				<div v-if="isAutoDepositSubscriber">
 					<p>
-						On the <button
+						On the
+						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
-						</button> of each month <button
+						</button>
+						of each month
+						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ totalCombinedDeposit | numeral('$0,0.00') }}
-						</button> will be
-						transferred.
+							{{ mgAmount | numeral('$0,0.00') }}
+						</button>
+						will be transferred to your lending balance and
+						<button
+							class="tw-text-link tw-font-medium"
+							@click="showEditLightbox = true;"
+						>
+							{{ donation | numeral('$0,0.00') }}
+						</button>
+						will be donated to Kiva.
 					</p>
 					<p>
 						<button
@@ -301,7 +311,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
@@ -315,6 +325,7 @@ import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
+		id
 		autoDeposit {
 			id
 			amount

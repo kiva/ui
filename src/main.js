@@ -3,7 +3,6 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api';
 import * as Sentry from '@sentry/vue';
-import { Integrations } from '@sentry/tracing';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 import Vue2TouchEvents from 'vue2-touch-events';
@@ -28,7 +27,8 @@ export default function createApp({
 	device,
 	kvAuth0,
 	locale,
-	fetch
+	fetch,
+	url = '',
 } = {}) {
 	if (!pluginsInstalled) {
 		pluginsInstalled = true;
@@ -51,15 +51,18 @@ export default function createApp({
 		});
 	}
 
+	const router = createRouter();
+	const { route } = router.resolve(url);
+
 	const apolloClient = createApolloClient({
 		...apollo,
 		appConfig,
 		cookieStore,
 		kvAuth0,
-		fetch
+		fetch,
+		route,
 	});
 
-	const router = createRouter();
 	// Checking that sentry is enabled & is not server side
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
 		Sentry.init({
@@ -67,23 +70,30 @@ export default function createApp({
 			trackComponents: true,
 			dsn: appConfig.sentryURI,
 			integrations: [
-				new Integrations.BrowserTracing({
+				new Sentry.BrowserTracing({
 					routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-					tracingOrigins: ['localhost', appConfig.host, /^\//],
+					tracingOrigins: [appConfig.host],
 				}),
 			],
 			release: UI_TAG,
+			// Set tracesSampleRate to 1.0 to capture 100%
+			// of transactions for performance monitoring.
+			// We recommend adjusting this value in production
+			tracesSampleRate: appConfig?.sentryTraceSampleRate,
 			beforeSend(event) {
 				// make sentry colleted event easy to compare to
 				const eventAsString = JSON.stringify(event);
 				// match specific 3rd party events for exclusion
+				// Skip sending failed to fetch error caused by unhandled promise rejection in google ads
+				// Sentry Event Link: https://kiva.sentry.io/issues/4413252219/events/726c65f507684f43b748e913d4793518/
+				// This url is unreachable: https://pagead2.googlesyndication.com/pagead/buyside_topics/set/
+				if (eventAsString.indexOf('Failed to fetch') !== -1
+					&& eventAsString.indexOf('pagead') !== -1) {
+					return false;
+				}
 				// Skip sending failed loads of pX
 				// eslint-disable-next-line quotes
 				if (eventAsString.indexOf("Cannot set property 'PX1065' of undefined") !== -1) {
-					return false;
-				}
-				// Skip sending failed Algolia analtyics related errors
-				if (eventAsString.indexOf('Before calling any methods on the analytics') !== -1) {
 					return false;
 				}
 				// Skip sending errors from CefSharp

@@ -38,10 +38,10 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SaveButton',
@@ -86,6 +86,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileChanged {
 			autolending @client {
+				id
 				currentLoanCount
 				profileChanged
 				savingProfile
@@ -121,6 +122,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

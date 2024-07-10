@@ -82,17 +82,17 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import {
 	format, addDays, parseISO, formatISO
 } from 'date-fns';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvSelect from '@/components/Kv/KvSelect';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'AutolendingStatus',
@@ -119,6 +119,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileStatus {
 			autolending @client {
+				id
 				profileChanged
 				currentProfile {
 					id
@@ -159,6 +160,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation pauseAutolending($pauseUntilDate: Date) {
 							autolending @client {
+								id
 								editProfile(profile: {
 									isEnabled: true,
 									pauseUntil: $pauseUntilDate
@@ -175,6 +177,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation enableAutolending {
 							autolending @client {
+								id
 								editProfile(profile: { isEnabled: true, pauseUntil: null })
 							}
 						}`,
@@ -185,6 +188,7 @@ export default {
 					this.apollo.mutate({
 						mutation: gql`mutation disableAutolending {
 							autolending @client {
+								id
 								editProfile(profile: { isEnabled: false, pauseUntil: null })
 							}
 						}`,
@@ -221,6 +225,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveAutolendProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

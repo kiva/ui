@@ -1,7 +1,6 @@
 import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
-import { isNumber } from '@/util/numberUtils';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
+import filterConfig from '@/util/loanSearch/filterConfig';
 
 /**
  * Returns loan search state that has been validated against the available facets
@@ -12,39 +11,9 @@ import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
  * @returns {Object} Validated search state, including default enum null values expected by GraphQL
  */
 export function getValidatedSearchState(loanSearchState, allFacets, queryType) {
-	const validSorts = queryType === FLSS_QUERY_TYPE ? allFacets.flssSorts : allFacets.standardSorts;
-
-	const defaultLoanSearchState = getDefaultLoanSearchState();
-
-	const validatedGender = allFacets.genders.includes(loanSearchState?.gender?.toUpperCase())
-		? loanSearchState.gender : null;
-
-	const validatedIsoCodes = loanSearchState?.countryIsoCode
-		?.filter(c => allFacets.countryIsoCodes.includes(c.toUpperCase())) ?? [];
-
-	const validatedSectorIds = loanSearchState?.sectorId?.filter(s => allFacets.sectorIds.includes(s)) ?? [];
-
-	const validatedSortBy = validSorts.some(s => s.name === loanSearchState.sortBy) ? loanSearchState.sortBy : null;
-
-	const validatedThemeIds = loanSearchState?.themeId?.filter(t => allFacets.themeIds.includes(t)) ?? [];
-
-	const validatedPageOffset = isNumber(loanSearchState?.pageOffset)
-		? loanSearchState.pageOffset
-		: defaultLoanSearchState.pageOffset;
-
-	const validatedPageLimit = isNumber(loanSearchState?.pageLimit)
-		? loanSearchState.pageLimit
-		: defaultLoanSearchState.pageLimit;
-
-	return {
-		gender: validatedGender,
-		countryIsoCode: validatedIsoCodes,
-		sectorId: validatedSectorIds,
-		sortBy: validatedSortBy,
-		themeId: validatedThemeIds,
-		pageOffset: validatedPageOffset,
-		pageLimit: validatedPageLimit,
-	};
+	return filterConfig.keys.reduce((prev, key) => {
+		return { ...prev, ...filterConfig.config[key].getValidatedSearchState(loanSearchState, allFacets, queryType) };
+	}, {});
 }
 
 /**
@@ -70,6 +39,29 @@ export async function updateSearchState(apollo, loanQueryFilters, allFacets, que
 			searchParams: {
 				...validatedFilters
 			}
+		}
+	});
+}
+
+/**
+ * Creates a saved search with a name and set of filters
+ * TODO: Move to own file if we move forward with Saved Search exp
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Object} loanQueryFilters The filters for the saved search
+ * @param {string} queryString The query string associated with the saved search
+ * @param {string} savedSearchName The name of the saved search
+ * @param {boolean} isAlert Whether to enable email notifications
+ * @returns {Promise<Array>} Promise for the results of the mutation
+ */
+export async function createSavedSearch(apollo, loanQueryFilters, queryString, savedSearchName, isAlert) {
+	return apollo.mutate({
+		mutation: createSavedSearchMutation,
+		variables: {
+			name: savedSearchName,
+			queryString,
+			filters: loanQueryFilters,
+			isAlert,
 		}
 	});
 }

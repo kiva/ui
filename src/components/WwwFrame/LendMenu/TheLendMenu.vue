@@ -11,7 +11,6 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -24,7 +23,6 @@
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
-			:new-mg-entrypoint="newMgEntrypointExp"
 		/>
 	</div>
 </template>
@@ -34,17 +32,17 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
 const pageQuery = gql`query lendMenu {
 		my {
+			id
 			userAccount {
 				id
 			}
@@ -79,7 +77,6 @@ export default {
 			isRegionsLoading: true,
 			isChannelsLoading: true,
 			showMGUpsellLink: false,
-			newMgEntrypointExp: false,
 		};
 	},
 	apollo: {
@@ -121,14 +118,11 @@ export default {
 		},
 	},
 	methods: {
-		onOpen() {
-			this.$refs?.mega?.onOpen?.();
-		},
 		onClose() {
 			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
 		},
-		onLoad() {
+		async onLoad() {
 			this.apollo.watchQuery({
 				query: gql`query countryFacets {
 					lend {
@@ -149,52 +143,29 @@ export default {
 					this.isRegionsLoading = false;
 				}
 			});
+
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
 					this.categories = _get(data, 'lend.loanChannels.values');
 					this.isChannelsLoading = false;
 				}
 			});
+
+			if (this.hasUserId) {
+				const { data } = await this.apollo.query({
+					query: privateLendMenuQuery,
+					variables: {
+						userId: this.userId,
+					},
+					fetchPolicy: 'network-only',
+				});
+
+				this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
+				this.savedSearches = data?.my?.savedSearches?.values ?? [];
+			}
 		},
 	},
 	mounted() {
-		if (this.hasUserId) {
-			this.apollo.query({
-				query: privateLendMenuQuery,
-				variables: {
-					userId: this.userId,
-				}
-			}).then(({ data, errors }) => {
-				if (!errors) {
-					this.favoritesCount = _get(data, 'lend.loans.totalCount');
-					this.savedSearches = _get(data, 'my.savedSearches.values');
-				} else {
-					this.favoritesCount = 0;
-					this.savedSearches = [];
-				}
-			}).finally(() => {
-				// data might have changed since the initial render, so trigger any needed updates
-				this.onOpen();
-			});
-		}
-
-		// CORE-641 NEW MG ENTRYPOINT
-		// this experiment is assigned in experimentPreFetch.js
-		const newMgEntrypointExperiment = this.apollo.readFragment({
-			id: 'Experiment:topnav_mg_entrypoint',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.newMgEntrypointExp = newMgEntrypointExperiment.version === 'b';
-
-		// Fire Event for EXP-CORE-644-June-2022
-		if (newMgEntrypointExperiment.version) {
-			this.$kvTrackEvent(
-				'TopNav',
-				'EXP-CORE-644-June-2022',
-				newMgEntrypointExperiment.version
-			);
-		}
-
 		this.$nextTick(() => {
 			this.showMGUpsellLink = true;
 		});

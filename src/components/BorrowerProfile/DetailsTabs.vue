@@ -26,7 +26,7 @@
 					data-testid="bp-detail-field-partner-tab"
 					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
 				>
-					Field Partner
+					Lending Partner
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"
@@ -109,10 +109,10 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';

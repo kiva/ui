@@ -1,32 +1,15 @@
 <template>
 	<div class="subscriptions-settings-page">
-		<!-- One Time Settings -->
-		<subscriptions-one-time
-			v-if="isOnetime"
-			@cancel-subscription="showConfirmationPrompt('Contribution')"
-			@unsaved-changes="setUnsavedChanges"
-			ref="subscriptionsOneTimeComponent"
-		/>
-
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
-			v-if="!isOnetime && !hasActiveCauseSubscription"
 			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
 		/>
 
-		<!-- Causes Settings -->
-		<subscriptions-causes
-			v-if="hasActiveCauseSubscription"
-			@cancel-subscription="cancelCause"
-			@unsaved-changes="setUnsavedChanges"
-			ref="subscriptionsCausesComponent"
-		/>
-
 		<!-- Auto Deposit Settings -->
 		<subscriptions-auto-deposit
-			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber && !hasModernSub"
+			v-if="!isMonthlyGoodSubscriber && !isLegacySubscriber && !hasModernSub"
 			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsAutoDepositComponent"
@@ -34,7 +17,7 @@
 
 		<!-- Legacy Subscriptions-->
 		<subscriptions-legacy
-			v-if="!isOnetime && !isMonthlyGoodSubscriber && isLegacySubscriber"
+			v-if="!isMonthlyGoodSubscriber && isLegacySubscriber"
 		/>
 
 		<!-- Are you sure? -->
@@ -82,24 +65,22 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import SubscriptionsMonthlyGood from '@/components/Subscriptions/SubscriptionsMonthlyGood';
-import SubscriptionsOneTime from '@/components/Subscriptions/SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from '@/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '@/components/Subscriptions/SubscriptionsLegacy';
-import SubscriptionsCauses from '@/components/Subscriptions/SubscriptionsCauses';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
+		id
 		autoDeposit {
 			id
 			isSubscriber
-			isOnetime
 		}
 		subscriptions {
 			values {
@@ -126,10 +107,8 @@ export default {
 		KvLightbox,
 		KvLoadingOverlay,
 		SubscriptionsAutoDeposit,
-		SubscriptionsCauses,
 		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,
-		SubscriptionsOneTime,
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
@@ -138,11 +117,9 @@ export default {
 			isChanged: false,
 			isLegacySubscriber: false,
 			isMonthlyGoodSubscriber: false,
-			isOnetime: false,
 			isSaving: false,
 			showLightbox: false,
 			showLoadingOverlay: false,
-			hasActiveCauseSubscription: false,
 			hasModernSub: false,
 
 		};
@@ -151,7 +128,6 @@ export default {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isOnetime = data?.my?.autoDeposit?.isOnetime ?? false;
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
 			const legacySubs = data?.my?.subscriptions?.values ?? [];
@@ -159,10 +135,6 @@ export default {
 
 			const modernSubscriptions = data?.mySubscriptions?.values ?? [];
 			this.hasModernSub = modernSubscriptions.length !== 0;
-			const causesSubscriptions = modernSubscriptions.filter(
-				subscription => subscription.category.subscriptionType === 'CAUSES'
-			);
-			this.hasActiveCauseSubscription = causesSubscriptions.length !== 0;
 		},
 	},
 	mounted() {
@@ -174,31 +146,6 @@ export default {
 	methods: {
 		setUnsavedChanges(state) {
 			this.isChanged = state;
-		},
-		cancelCause(subscriptionId) {
-			this.showLoadingOverlay = true;
-			this.apollo.mutate({
-				mutation: gql`mutation cancelCause($subscriptionId: ID!) {
-					cancelSubscription(subscriptionId: $subscriptionId) {
-						id
-					}
-				}`,
-				variables: {
-					subscriptionId,
-				},
-				awaitRefetchQueries: true,
-				refetchQueries: [
-					{ query: pageQuery }
-				]
-			}).then(() => {
-				this.$showTipMsg('Your subscription has been cancelled');
-				this.isChanged = false;
-			}).catch(e => {
-				console.error(e);
-				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
-			}).finally(() => {
-				this.showLoadingOverlay = false;
-			});
 		},
 		cancelSubscription() {
 			this.showLoadingOverlay = true;
@@ -231,12 +178,6 @@ export default {
 		},
 		saveSubscription() {
 			this.isSaving = true;
-			// Calls the save method in the component if component isChanged is true.
-			if (this.$refs?.subscriptionsOneTimeComponent?.isChanged) {
-				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
-					this.isSaving = false;
-				});
-			}
 			if (this.$refs?.subscriptionsMonthlyGoodComponent?.isChanged) {
 				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
 					this.isSaving = false;
@@ -247,14 +188,7 @@ export default {
 					this.isSaving = false;
 				});
 			}
-
-			if (this.$refs?.subscriptionsCausesComponent?.isChanged) {
-				this.$refs.subscriptionsCausesComponent.saveCausesSubscription().finally(() => {
-					this.isSaving = false;
-				});
-			}
 		}
-
 	},
 };
 </script>

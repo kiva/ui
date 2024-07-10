@@ -6,26 +6,29 @@
 	>
 		<div
 			:class="[
-				'tw-w-full tw-z-sticky',
+				'tw-w-full',
 				'tw-flex tw-flex-col',
-				'tw-fixed tw-left-0 tw-bottom-0',
+				'tw-left-0 tw-bottom-0',
 				{
 					'md:tw-static': !isSticky,
 				},
 				'lg:tw-static',
+				{
+					'tw-fixed tw-z-sticky': isSticky
+				}
 			]"
 		>
 			<kv-grid
 				:class="[
 					'tw-grid-cols-12',
-					'tw-px-2.5',
-					'tw-bg-primary',
-					'tw-border-t tw-border-tertiary',
 					{
 						'md:tw-rounded-b': !isSticky,
 						'md:tw-border-none': !isSticky,
 						'md:tw-px-3': !isSticky,
 						'md:tw-px-4': isSticky,
+						'tw-bg-transparent md:tw-bg-primary': !isSticky,
+						'tw-bg-primary': isSticky,
+						'tw-border-t tw-border-tertiary tw-px-2.5': isSticky
 					},
 					'lg:tw-rounded-t',
 					'lg:tw-px-4',
@@ -41,16 +44,20 @@
 							'md:tw-col-start-2 md:tw-col-span-10': isSticky,
 						},
 						'lg:tw-col-span-12',
-						{
-							'lg:tw-pt-1 lg:tw-pb-1': !socialExpEnabled,
-							'lg:tw-pt-1 lg:tw-pb-0': socialExpEnabled,
-						},
+						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
 					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
-					<span class="tw-flex tw-pb-1 lg:tw-pb-2.5">
+					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2 tw-relative">
+						<!-- Highlighted matching text mobile  -->
+						<!-- padding-left class makes room for the sparkle icon
+						and makes sure long match text isnt covered -->
+						<span
+							class="tw-line-clamp-1 match-text tw-mb-0.5 md:tw-hidden tw-pl-3"
+							v-if="matchingHighlightExpShown"
+						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
 						<!-- eslint-disable-next-line max-len -->
 						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
 							<fieldset
@@ -67,7 +74,7 @@
 								<kv-ui-select
 									v-if="hideShowLendDropdown && !isLessThan25"
 									id="LoanAmountDropdown"
-									class="tw-pr-2.5 tw--mb-2"
+									class="tw-mr-2.5 tw-min-w-12"
 									data-testid="bp-lend-cta-amount-dropdown"
 									v-model="selectedOption"
 									v-kv-track-event="[
@@ -87,84 +94,60 @@
 								</kv-ui-select>
 
 								<!-- Sparkles wrapper -->
-								<div
-									class="tw-relative tw-inline-flex tw-flex-1"
-									:class="{'tw-w-full':isLendAmountButton}"
-								>
-									<!-- Lend button -->
-									<kv-ui-button
-										key="lendButton"
-										v-if="lendButtonVisibility && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-button"
-										type="submit"
-									>
-										{{ ctaButtonText }}
-									</kv-ui-button>
+								<complete-loan-wrapper :is-complete-loan-active="showSparkles">
+									<template #button>
 
-									<!-- Lend again/lent previously button -->
-									<kv-ui-button
-										key="lendAgainButton"
-										v-if="this.state === 'lent-to' && !isLessThan25"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-lend-again-button"
-										type="submit"
-										v-kv-track-event="[
-											'Lending',
-											'Add to basket',
-											'Lend again'
-										]"
-									>
-										Lend again
-									</kv-ui-button>
+										<!-- Lend button -->
+										<kv-ui-button
+											key="lendButton"
+											v-if="lendButtonVisibility && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-button"
+											type="submit"
+										>
+											{{ ctaButtonText }}
+										</kv-ui-button>
 
-									<!-- Stranded loans -->
-									<lend-amount-button
-										class="tw-w-full"
-										:loan-id="loanId"
-										:show-now="true"
-										:amount-left="unreservedAmount"
-										@add-to-basket="addToBasket"
-										:complete-loan="completeLoan"
-										v-if="isLendAmountButton"
-									/>
+										<!-- Lend again/lent previously button -->
+										<kv-ui-button
+											key="lendAgainButton"
+											v-if="isLentTo && !isLessThan25"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-lend-again-button"
+											type="submit"
+											v-kv-track-event="[
+												'Lending',
+												'Add to basket',
+												'Lend again'
+											]"
+										>
+											Lend again
+										</kv-ui-button>
 
-									<!-- Adding to basket button -->
-									<kv-ui-button
-										v-if="isAdding"
-										class="tw-inline-flex tw-flex-1"
-										data-testid="bp-lend-cta-adding-to-basket-button"
-									>
-										Adding to basket...
-									</kv-ui-button>
+										<!-- Stranded loans -->
+										<lend-amount-button
+											class="tw-w-full"
+											:loan-id="loanId"
+											:show-now="true"
+											:amount-left="unreservedAmount"
+											@add-to-basket="addToBasket"
+											:complete-loan="isCompleteLoanActive"
+											v-if="isLendAmountButton && !enableFiveDollarsNotes"
+										/>
 
-									<!-- Sparkles section -->
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--bottom-1 tw--left-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-2 tw-right-1.5 tw-animate-pulse tw-scale-50"
-										style="animation-delay: 300ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw--top-1 tw--right-1 tw-animate-pulse"
-										src="@/assets/images/sparkle.svg"
-									>
-									<img
-										v-show="isCompleteLoanActive"
-										class="tw-absolute tw-top-2 tw--right-1.5 tw-animate-pulse tw-scale-75"
-										style="animation-delay: 800ms;"
-										src="@/assets/images/sparkle.svg"
-									>
-								</div>
+										<!-- Adding to basket button -->
+										<kv-ui-button
+											v-if="isAdding"
+											class="tw-inline-flex tw-flex-1"
+											data-testid="bp-lend-cta-adding-to-basket-button"
+										>
+											Adding to basket...
+										</kv-ui-button>
+
+									</template>
+								</complete-loan-wrapper>
 							</fieldset>
 						</form>
-
 						<!-- Continue to checkout button -->
 						<kv-ui-button
 							v-if="this.state === 'basketed'"
@@ -195,7 +178,39 @@
 						>
 							{{ ctaButtonText }}
 						</kv-ui-button>
+
+						<!-- Matching text bubble sparkle  -->
+						<span
+							:class="[
+								'tw-flex',
+								'tw-items-center',
+								'tw-justify-center',
+								'tw-w-4',
+								'tw-h-4',
+								{
+									'tw-absolute': isSticky
+								},
+								'tw-left-0',
+								'tw-top-[0.15rem]',
+								'md:tw-top-auto',
+								'tw-bottom-auto',
+								'md:tw-bottom-2']"
+							v-if="matchingHighlightExpShown"
+						>
+							<span class="match-text tw-z-1 tw-mr-0.5">{{ matchRatio + 1 }}x </span>
+							<kv-icon name="sparkle-icon" class="tw-absolute tw-h-full tw-w-full" />
+						</span>
+
+						<!-- Highlighted matching text desktop  -->
+						<!-- padding-left class makes room for the sparkle icon
+						and makes sure long match text isnt covered -->
+						<span
+							class="md:tw-line-clamp-1 match-text tw-mt-0.5 tw-hidden md:tw-block tw-pl-3"
+							v-if="matchingHighlightExpShown"
+						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
+
 					</span>
+
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
@@ -212,52 +227,53 @@
 						All shares reserved
 					</p>
 					<hr
-						class="tw-hidden md:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
+						:class="[
+							{
+								'tw-hidden': isSticky,
+								'tw-block': !isSticky,
+							}
+						]"
 					>
 					<div
-						class="tw-flex lg:tw-justify-center tw-w-full"
-						:class="isLoggedIn ? 'tw-justify-between' : 'tw-justify-end'"
+						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
+						:class="[
+							{
+								'tw-justify-between': isLoggedIn,
+								'tw-justify-end': !isLoggedIn,
+								'tw-hidden': isSticky,
+							}
+						]"
 					>
 						<loan-bookmark
 							v-if="isLoggedIn"
 							data-testid="bp-lend-cta-loan-bookmark"
 							:loan-id="loanId"
-							class="tw-hidden md:tw-inline-block lg:tw-hidden"
+							class="tw-inline-block lg:tw-hidden"
 						/>
 						<jump-links
-							:class="[
-								'tw-hidden md:tw-block lg:tw-mb-1.5',
-								{
-									'md:tw-mb-3': isSticky || !socialExpEnabled,
-								}
-							]"
+							class="tw-block lg:tw-mb-1.5 md:tw-mb-3"
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-				</div>
-				<div
-					v-if="socialExpEnabled"
-					:class="[
-						'tw-hidden',
-						{
-							'md:tw-block': !isSticky,
-						},
-						'tw-col-span-12',
-						'md:tw-col-start-7 md:tw-col-span-6',
-						'lg:tw-col-span-12',
-					]"
-				>
-					<hr
-						v-if="socialExpEnabled && lenders.length"
-						class="tw-hidden lg:tw-block tw-border-tertiary tw-w-full tw-mb-3"
-					>
-					<lenders-list
-						v-if="socialExpEnabled && lenders.length"
-						:num-lenders="numLenders"
-						:lenders="lenders"
-						key="lenderList"
-						@togglelightbox="toggleLightbox"
-					/>
+					<div v-if="!!activities && !isSticky">
+						<hr
+							class="tw-block tw-border-tertiary tw-w-full tw-my-2"
+						>
+						<supported-by-lenders
+							:participants="participants"
+						/>
+						<kv-loan-activities
+							class="tw-w-full"
+							:loan="loan"
+							:activities="activities"
+							:basket-items="basketItems"
+							:user-balance="userBalance"
+							:error-msg="errorMsg"
+							:is-adding="isAdding"
+							@add-to-basket="addToBasket"
+						/>
+					</div>
 				</div>
 			</kv-grid>
 
@@ -266,24 +282,31 @@
 				:enter-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
+				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
 				<kv-grid
 					v-show="lenderCountVisibility || matchingTextVisibility"
 					key="grid"
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-px-2.5',
-						'tw-absolute',
-						'tw-bottom-8',
 						'tw-w-full',
+						{
+							'tw-bottom-14': freeCreditWarning || allSharesReserved,
+							'tw-bottom-8': !freeCreditWarning && !allSharesReserved,
+						},
 						{
 							'md:tw-relative': !isSticky,
 							'md:tw-bottom-0': !isSticky,
 							'md:tw-order-none': !isSticky,
-							'md:tw-px-3': !isSticky,
+							'lg:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
+							'tw-px-2.5 tw-absolute': isSticky
 						},
 						'lg:tw-px-0',
+						{
+							'tw-hidden': matchingHighlightExpShown,
+							'md:tw-grid': matchingHighlightExpShown
+						}
 					]"
 				>
 					<div
@@ -299,9 +322,8 @@
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{
-								'tw-relative': !isSticky,
+								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
-								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
 								'md:tw-hidden': isSticky,
 							},
@@ -321,10 +343,10 @@
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
+								v-if="currentSlotStat === 'lenderCount'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
-								v-if="statScrollAnimation"
 							>
 								<kv-material-icon
 									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -334,10 +356,10 @@
 							</span>
 
 							<span
+								v-if="currentSlotStat === 'matchingText'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
-								v-if="!statScrollAnimation && !isMatchAtRisk"
 							>
 								<span
 									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
@@ -345,8 +367,7 @@
 									🎉
 								</span>
 								{{ matchRatio + 1 }}X
-								<span v-if="requireDepositsMatchedLoans"> MATCHED NEW DEPOSITS</span>
-								<span v-else> MATCHED LOAN</span>
+								<span> MATCHED LOAN</span>
 							</span>
 						</transition>
 					</div>
@@ -358,19 +379,36 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import gql from 'graphql-tag';
-import { setLendAmount } from '@/util/basketUtils';
-import { buildPriceArray, isMatchAtRisk } from '@/util/loanUtils';
+import { gql } from '@apollo/client';
+import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
+import {
+	getDropdownPriceArray,
+	isMatchAtRisk,
+	isLessThan25,
+	isBetween25And500,
+	getLendCtaSelectedOption,
+} from '@/util/loanUtils';
 import { createIntersectionObserver } from '@/util/observerUtils';
+import {
+	getExperimentSettingCached,
+	trackExperimentVersion
+} from '@/util/experiment/experimentUtils';
+
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
-
 import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import LendersList from '@/components/BorrowerProfile/LendersList';
+import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
+
+import KvIcon from '@/components/Kv/KvIcon';
+import KvLoanActivities from '@/components/Kv/KvLoanActivities';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 export default {
 	name: 'LendCta',
@@ -380,32 +418,35 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		completeLoan: {
+		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false,
 		},
-		lenders: {
-			type: Array,
-			default: () => []
+		activities: {
+			type: Object,
+			default: null,
 		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
-		requireDepositsMatchedLoans: {
+		enableHugeAmount: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		teamData: {
+			type: Object,
+			default: null,
+		},
 	},
 	components: {
-		LendersList,
 		LendAmountButton,
 		KvGrid,
+		KvIcon,
 		KvMaterialIcon,
 		KvUiButton,
 		KvUiSelect,
 		JumpLinks,
 		LoanBookmark,
+		CompleteLoanWrapper,
+		KvLoanActivities,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -425,7 +466,6 @@ export default {
 			numLenders: 0,
 			lenderCountVisibility: false,
 			matchingTextVisibility: false,
-			statScrollAnimation: false,
 			matchingText: '',
 			matchRatio: 0,
 			basketItems: [],
@@ -437,6 +477,13 @@ export default {
 			wrapperObserver: null,
 			name: '',
 			completeLoanView: true,
+			slotMachineInterval: null,
+			currentSlotStat: '',
+			matchingHighlightExpShown: false,
+			inPfp: false,
+			userBalance: undefined,
+			loan: null,
+			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -449,6 +496,7 @@ export default {
 						name
 						minNoteSize
 						loanAmount
+						inPfp
 						matchingText
 						matchRatio
 						unreservedAmount @client
@@ -479,8 +527,16 @@ export default {
 					}
 				}
 				my {
+					id
 					userAccount {
 						id
+						balance
+					}
+				}
+				general {
+					uiExperimentSetting(key: "matching_highlight") {
+						key
+						value
 					}
 				}
 			}
@@ -496,6 +552,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -513,18 +570,39 @@ export default {
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
-
+			this.inPfp = loan?.inPfp ?? false;
+			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = !this.socialExpEnabled;
-				this.statScrollAnimation = !this.socialExpEnabled;
+				this.lenderCountVisibility = true;
 			}
+
+			// Start cycling the stats slot now that loan data is available
+			this.cycleStatsSlot();
+
+			// Load matching experiment when data is available
+			this.initializeMatchingHighlightExp();
 		},
 	},
 	methods: {
-		addToBasket() {
+		async addToBasket(lendAmount = 0) {
+			if (lendAmount) {
+				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
+			if (this.teamData?.id) {
+				const challenge = {
+					teamId: this.teamData.id,
+					teamName: this.teamData?.name ?? '',
+					loanId: this.loanId,
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
+			}
+
 			this.isAdding = true;
+			this.errorMsg = '';
+			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
-				amount: this.isLessThan25 ? this.unreservedAmount : this.selectedOption,
+				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -535,12 +613,15 @@ export default {
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
 			}).catch(e => {
+				if (e?.message !== INVALID_BASKET_ERROR) {
+					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
+				}
 				this.isAdding = false;
-				const msg = e[0].extensions.code === 'reached_anonymous_basket_limit'
+				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
-				this.$showTipMsg(msg, 'error');
+				this.$showTipMsg(this.errorMsg, 'error');
 			});
 		},
 		createWrapperObserver() {
@@ -576,24 +657,52 @@ export default {
 			);
 		},
 		cycleStatsSlot() {
-			if (this.matchingText.length) {
-				const cycleSlotMachine = () => {
-					if (!this.isMatchAtRisk) {
-						if (this.socialExpEnabled) {
-							this.statScrollAnimation = false;
-						} else {
-							this.statScrollAnimation = !this.statScrollAnimation;
-						}
-					} else {
-						this.statScrollAnimation = true;
-					}
-				};
-				setInterval(cycleSlotMachine, 5000);
+			// Function can be skipped if slot machine interval is already set
+			if (this.slotMachineInterval) {
+				return;
+			}
+
+			// Change which stat is displayed in the stats slot
+			const cycleSlotMachine = () => {
+				const possibleStats = [];
+				// Add lender count
+				if (this.status === 'fundraising' && this.numLenders > 0) {
+					possibleStats.push('lenderCount');
+				}
+				// Add matching text
+				if (this.status === 'fundraising' && this.matchingText.length && !this.isMatchAtRisk) {
+					possibleStats.push('matchingText');
+				}
+				// Cycle through the possible stats in the order they were added.
+				// If current slot stat is no longer in the possible stat list, this will cycle back to the first stat.
+				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
+				nextStatIndex = nextStatIndex >= possibleStats.length ? 0 : nextStatIndex;
+				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
+			};
+
+			// Set initial stat
+			cycleSlotMachine();
+			// Start cycling
+			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
+		},
+		async initializeMatchingHighlightExp() {
+			await this.apollo.query({ query: experimentAssignmentQuery, variables: { id: 'matching_highlight' } });
+			const matchingHighlightExpData = getExperimentSettingCached(this.apollo, 'matching_highlight');
+			// Tracking for EXP-ACK-538-Mar2023
+			if (matchingHighlightExpData?.enabled && this.matchingTextVisibility) {
+				const { version } = trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'borrower-profile',
+					'matching_highlight',
+					'EXP-ACK-538-Mar2023',
+					`${this.matchRatio + 1}x`
+				);
+				if (version) {
+					this.matchingHighlightExpShown = version === 'b';
+				}
 			}
 		},
-		toggleLightbox() {
-			this.$emit('togglelightbox');
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -602,11 +711,14 @@ export default {
 			}
 		},
 		unreservedAmount(newValue, previousValue) {
-			// set initial selected value for sub 25 loan if shown
-			if (this.completeLoan && this.isBetween25And50) {
-				this.selectedOption = Number(this.unreservedAmount).toFixed();
-			} else if (newValue !== previousValue && previousValue === '' && newValue < 25) {
-				this.selectedOption = parseInt(newValue, 10);
+			if (newValue !== previousValue && previousValue === '') {
+				this.selectedOption = getLendCtaSelectedOption(
+					this.cookieStore,
+					this.enableFiveDollarsNotes,
+					this.$route.query.utm_campaign,
+					newValue,
+					this.userBalance,
+				);
 			}
 		},
 		isCompleteLoanActive() {
@@ -638,16 +750,17 @@ export default {
 			// We don't want to open up $5 loan shares for loans with more than $25 at this time
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
-			// limit at 20 price options
-			const priceArray = buildPriceArray(parseFloat(this.unreservedAmount), minAmount).slice(0, 20);
+			// limit price options
+			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
 			// eslint-disable-next-line
-			if (this.completeLoan && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
+			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
 			return priceArray;
 		},
 		lgScreenheadline() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return `${this.name}'s loan is almost funded!`;
 			}
 			switch (this.state) {
@@ -664,7 +777,7 @@ export default {
 			}
 		},
 		ctaButtonText() {
-			if (this.isCompleteLoanActive) {
+			if (this.showSparkles) {
 				return 'Lend now';
 			}
 			switch (this.state) {
@@ -744,31 +857,31 @@ export default {
 			if (this.isSticky) {
 				return 'tw-transform tw-translate-y-7 md:tw-translate-y-7 lg:tw--translate-y-7';
 			}
-			return 'tw-transform tw-translate-y-7 md:tw--translate-y-7 lg:tw--translate-y-7';
+			return '';
 		},
 		isLessThan25() {
-			return this.unreservedAmount < 25 && this.unreservedAmount > 0;
+			if (this.enableFiveDollarsNotes) return false; // NOTE: for $5 dollars notes we need to show the dropdown
+			return isLessThan25(this.unreservedAmount);
 		},
-		isBetween25And50() {
-			return this.unreservedAmount <= 50 && this.unreservedAmount > 25;
-		},
-		isBetween25And500() {
-			return this.unreservedAmount < 500 && this.unreservedAmount >= 25;
+		isLentTo() {
+			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
-			if (this.completeLoan) {
-				// eslint-disable-next-line
-				return (this.isLessThan25) || (this.isBetween25And500 && Number(this.unreservedAmount).toFixed() === this.selectedOption);
-			}
-			return false;
+			// eslint-disable-next-line
+			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
+		},
+		showSparkles() {
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === Number(this.selectedOption).toFixed(); // eslint-disable-line max-len
 		},
 		isLendAmountButton() {
-			return (this.lendButtonVisibility || this.state === 'lent-to') && this.isLessThan25;
+			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		participants() {
+			return this.activities?.lend?.loan?.lendingActions ?? {};
 		}
 	},
 	mounted() {
 		this.createWrapperObserver();
-		this.cycleStatsSlot();
 	},
 	beforeDestroy() {
 		this.destroyWrapperObserver();
@@ -776,3 +889,11 @@ export default {
 };
 
 </script>
+
+<style lang="postcss" scoped>
+.match-text {
+	/* TODO make this color a variable */
+	color: #CE4A00;
+	@apply tw-w-full tw-text-small tw-text-center tw-font-medium;
+}
+</style>

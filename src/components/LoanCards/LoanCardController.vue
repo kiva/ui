@@ -46,6 +46,10 @@
 		@update-hover-loan-index="updateHoverLoanIndex"
 		@close-detailed-loan-card="handleCloseDetailedLoanCard"
 		@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
+
+		:show-tags="showTags"
+		:enable-five-dollars-notes="enableFiveDollarsNotes"
+		:enable-huge-amount="enableHugeAmount"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -77,7 +81,6 @@ const ExpandableLoanCardCollapsed = () => {
 const FeaturedHeroLoan = () => import('@/components/LoansByCategory/FeaturedHeroLoan');
 const GridLoanCard = () => import('@/components/LoanCards/GridLoanCard');
 const HoverLoanCard = () => import('@/components/LoanCards/HoverLoanCard/HoverLoanCard');
-const LendHomepageLoanCard = () => import('@/components/LoanCards/LendHomepageLoanCard');
 const ListLoanCard = () => import('@/components/LoanCards/ListLoanCard');
 
 export default {
@@ -179,7 +182,19 @@ export default {
 		hideLendCta: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo'],
 	computed: {
@@ -199,8 +214,6 @@ export default {
 					return GridLoanCard;
 				case 'HoverLoanCard':
 					return HoverLoanCard;
-				case 'LendHomepageLoanCard':
-					return LendHomepageLoanCard;
 				case 'ListLoanCard':
 					return ListLoanCard;
 				default:

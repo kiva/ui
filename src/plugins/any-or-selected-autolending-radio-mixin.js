@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export default {
 	props: {
@@ -19,6 +19,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveAny($filters: LoanSearchFiltersInput!) {
 							autolending @client {
+								id
 								editProfile(profile: {
 									loanSearchCriteria: {
 										filters: $filters

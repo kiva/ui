@@ -1,0 +1,12 @@
+query achievementMilestonesForCheckout($loanIds: [String!]!) {
+	achievementMilestonesForCheckout(loanIds: $loanIds){
+		checkoutMilestoneProgresses {
+			achievement
+			milestoneName
+			postCheckoutProgress
+			progress
+			status
+			target
+		}
+	}
+}

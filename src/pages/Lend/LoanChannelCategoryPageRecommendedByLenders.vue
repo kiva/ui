@@ -3,7 +3,9 @@
 		class="loan-channel-page category-page"
 		:gray-background="true"
 	>
-		<loan-channel-category-recommended-by-lenders />
+		<loan-channel-category-recommended-by-lenders
+			:enable-huge-amount="enableHugeLendAmount"
+		/>
 
 		<add-to-basket-interstitial />
 	</www-page>
@@ -14,6 +16,7 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryRecommendedByLenders from '@/pages/Lend/LoanChannelCategoryRecommendedByLenders';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
 
 export default {
 	name: 'LoanChannelCategoryPageRecommendedByLenders',
@@ -56,6 +59,7 @@ export default {
 		LoanChannelCategoryRecommendedByLenders,
 		WwwPage,
 	},
+	mixins: [hugeLendAmount],
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
@@ -73,6 +77,9 @@ export default {
 
 		// Add to Basket Interstitial
 		this.initializeAddToBasketInterstitial();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {

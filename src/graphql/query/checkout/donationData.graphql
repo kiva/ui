@@ -1,17 +1,17 @@
 query donationData {
-	general {
-		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "charity_overhead") {
-			key
-			value
-		}
-		specificDonationUseTextExperiment: uiExperimentSetting(key: "checkout_donation_tag_line") {
-			key
-			value
-		}
-	}
 	my {
+		id
 		loans {
 			totalCount
+		}
+	}
+	contentful {
+		entries (contentType: "page", contentKey: "checkout")
+	}
+	general {
+		basket_donate_modules: uiExperimentSetting(key: "basket_donate_modules") {
+			key
+			value
 		}
 	}
 }

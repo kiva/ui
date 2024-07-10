@@ -21,7 +21,7 @@
 			</template>
 			<p>
 				{{ messages.contact }}
-				<a class="fs-exclude" :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
+				<a class="data-hj-suppress" :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
 			</p>
 		</kv-default-wrapper>
 	</www-page>

@@ -5,7 +5,7 @@ import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
 import BorrowerProfile from '@/pages/BorrowerProfile/BorrowerProfile'
-import FundedBorrowerProfile from '@/pages/BorrowerProfile/FundedBorrowerProfile'
+import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile'
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';

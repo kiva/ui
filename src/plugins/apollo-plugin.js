@@ -34,13 +34,17 @@ export default Vue => {
 									...preFetchVariables({
 										cookieStore: this.cookieStore,
 										route: this.$route,
+										client: this.apollo,
 									}),
 									/* Adds `preview: true` variable if the query is a contentful query
 									and the preview cookie value exists */
 									...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
 								}
 							});
-							result.call(this, { data });
+
+							if (data !== null) {
+								result.call(this, { data });
+							}
 						} catch (e) {
 							// if there's an error, skip reading from the cache and just wait for the watch query
 							logReadQueryError(e, `ApolloMixin ${query?.definitions?.[0]?.name?.value}`);

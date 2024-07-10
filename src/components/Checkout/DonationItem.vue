@@ -1,98 +1,119 @@
 <template>
 	<!-- DO NOT REMOVE basket-donation-item class -->
-	<div class="basket-donation-item tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
-		<!-- donation image -->
-		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-			<img
-				class="donation-img tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-				:src="imageRequire(`./peace-sign-holding-money.svg`)"
-				alt="donation line item image"
-				data-testid="basket-donation-image"
-			>
-		</div>
-
-		<!-- donation text -->
-		<div class="tw-flex-auto">
-			<div class="tw-mb-0.5">
-				<div class="tw-w-full tw-flex">
-					<h2
-						class="tw-flex-1 md:tw-flex-grow tw-text-h3"
-						data-testid="basket-donation-title"
+	<div class="basket-donation-item">
+		<template>
+			<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+				<!-- donation image -->
+				<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+					<img
+						class="tw-bg-brand-100 tw-border tw-border-gray-300 tw-w-12 tw-h-12 tw-p-1 tw-rounded"
+						:src="imageRequire(`./leaf_heart.svg`)"
+						alt="donation line item image"
+						data-testid="basket-donation-image"
 					>
-						{{ donationTitle }}
-					</h2>
-					<button
-						class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
-						data-testid="basket-donation-edit-button-mobile-pencil"
-						v-kv-track-event="['basket', 'Edit Donation']"
-						@click="enterEditDonation"
-						title="Edit Donation"
-					>
-						<kv-material-icon
-							role="img"
-							aria-label="Edit Donation"
-							title="Edit Donation"
-							class="edit-donation tw-text-action
-								tw-w-3.5
-								tw-h-3.5
-								tw-py-0.5
-								md:tw-hidden"
-							name="pencil"
-							:icon="mdiPencil"
-						/>
-					</button>
 				</div>
 
-				<div
-					v-show="!editDonation"
-					class="md:tw-hidden"
-				>
-					<button
-						class="donation-amount"
-						data-testid="basket-donation-edit-button-mobile-amount"
-						v-kv-track-event="['basket', 'Edit Donation']"
-						@click="enterEditDonation"
-						title="Edit Donation"
-					>
-						{{ formattedAmount }}
-						<kv-material-icon
-							role="img"
-							aria-label="Edit Donation"
-							title="Edit Donation"
-							class="edit-donation tw-text-action
-								tw-w-3.5
-								tw-h-3.5
-								tw-py-0.5
-								tw-hidden md:tw-inline-block
-								"
-							name="pencil"
-							:icon="mdiPencil"
-						/>
-					</button>
-				</div>
+				<!-- donation text -->
+				<div class="tw-flex-auto">
+					<div class="tw-mb-0.5">
+						<div class="tw-flex tw-items-center tw-justify-between">
+							<div>
+								<div class="tw-w-full tw-flex">
+									<h2
+										class="tw-flex-1 md:tw-flex-grow tw-text-h3"
+										data-testid="basket-donation-title"
+									>
+										{{ basketDonationHeader }}
+									</h2>
+								</div>
+								<div
+									v-show="!editDonation"
+									class="md:tw-hidden"
+								>
+									<button
+										class="donation-amount"
+										data-testid="basket-donation-edit-button-mobile-amount"
+										v-kv-track-event="['basket', 'Edit Donation']"
+										@click="enterEditDonation"
+										title="Edit Donation"
+									>
+										{{ formattedAmount }}
+										<kv-material-icon
+											role="img"
+											aria-label="Edit Donation"
+											title="Edit Donation"
+											class="edit-donation tw-text-action
+											tw-w-3.5
+											tw-h-3.5
+											tw-py-0.5
+											tw-hidden md:tw-inline-block
+											"
+											name="pencil"
+											:icon="mdiPencil"
+										/>
+									</button>
+									<button
+										class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
+										data-testid="basket-donation-edit-button-mobile-pencil"
+										v-kv-track-event="['basket', 'Edit Donation']"
+										@click="enterEditDonation"
+										title="Edit Donation"
+									>
+										<kv-material-icon
+											role="img"
+											aria-label="Edit Donation"
+											title="Edit Donation"
+											class="edit-donation tw-text-action
+										tw-w-3.5
+										tw-h-3.5
+										tw-py-0.5
+										md:tw-hidden"
+											name="pencil"
+											:icon="mdiPencil"
+										/>
+									</button>
+								</div>
+							</div>
+							<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+								<img
+									class="tw-w-7 tw-h-7 tw-rounded"
+									:src="imageRequire(`./leaf_heart.svg`)"
+									alt="donation line item image"
+									data-testid="basket-donation-image"
+								>
+							</div>
+						</div>
 
-				<div v-if="hasLoans">
-					<div
-						class="donation-tagline tw-text-small tw-text-secondary tw-my-1"
-						data-testid="basket-donation-tagline"
-						v-html="donationTagLine"
-					>
+						<div>
+							<div
+								class="donation-tagline tw-my-1 tw-max-w-2xl"
+								data-testid="basket-donation-tagline"
+							>
+								<p
+									class="tw-text-base"
+								>
+									{{ basketDonationTagline }}
+								</p>
+							</div>
+							<button
+								class="tw-flex tw-items-center tw-text-base tw-text-link"
+								data-testid="basket-donation-info-lightbox"
+								@click="triggerDefaultLightbox"
+								v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+							>
+								{{ donationDetailsLink }}
+								<kv-material-icon
+									class="tw-ml-0.5 tw-w-2 tw-h-2"
+									:icon="mdiArrowRight"
+								/>
+							</button>
+						</div>
 					</div>
-					<button
-						class="tw-text-small tw-text-link"
-						data-testid="basket-donation-info-lightbox"
-						@click="triggerDefaultLightbox"
-						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
-					>
-						{{ donationDetailsLink }}
-					</button>
 				</div>
-			</div>
-		</div>
 
-		<!-- donation total -->
-		<div
-			class="
+				<!-- donation total -->
+				<div
+					class="
 				tw-flex-none
 				tw-w-full
 				md:tw-w-auto
@@ -100,145 +121,114 @@
 				lg:tw-ml-4.5
 				tw-mt-1.5
 				md:tw-mt-0"
-		>
-			<div
-				v-show="!editDonation"
-				class="tw-hidden md:tw-block tw-text-right"
-			>
-				<button
-					class="donation-amount"
-					data-testid="basket-donation-edit-button-combined"
-					v-kv-track-event="['basket', 'Edit Donation']"
-					@click="enterEditDonation"
-					title="Edit Donation"
 				>
-					{{ formattedAmount }}
-					<kv-material-icon
-						role="img"
-						aria-label="Edit Donation"
-						title="Edit Donation"
-						class="edit-donation tw-text-action
+					<div
+						v-show="!editDonation"
+						class="tw-hidden md:tw-block tw-text-right"
+					>
+						<button
+							class="donation-amount"
+							data-testid="basket-donation-edit-button-combined"
+							v-kv-track-event="['basket', 'Edit Donation']"
+							@click="enterEditDonation"
+							title="Edit Donation"
+						>
+							{{ formattedAmount }}
+							<kv-material-icon
+								role="img"
+								aria-label="Edit Donation"
+								title="Edit Donation"
+								class="edit-donation tw-text-action
 								tw-w-3.5
 								tw-h-3.5
 								tw-py-0.5
 								tw-align-bottom
 								"
-						name="pencil"
-						:icon="mdiPencil"
+								name="pencil"
+								:icon="mdiPencil"
+							/>
+						</button>
+					</div>
+					<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+						<kv-text-input
+							class="donation-amount-input"
+							data-testid="basket-donation-edit-input"
+							name="donation"
+							id="donation"
+							v-model="amount"
+							@blur="validateInput"
+							@keyup.enter.prevent="updateDonation()"
+						/>
+						<kv-button
+							variant="secondary"
+							class="update-donation-inline-button"
+							data-testid="basket-donation-edit-submit"
+							@click="updateDonation()"
+						>
+							Update
+						</kv-button>
+						<button
+							class="show-for-medium remove-wrapper"
+							@click="updateLoanAmount('remove')"
+							data-testid="basket-donation-remove"
+						>
+							<kv-material-icon
+								class="remove-x tw-text-tertiary"
+								name="small-x"
+								:from-sprite="true"
+								title="Remove donation"
+							/>
+						</button>
+					</div>
+					<donate-repayments
+						v-if="hasLoans"
+						@updating-totals="$emit('updating-totals', $event)"
+						@refreshtotals="$emit('refreshtotals')"
 					/>
-				</button>
+				</div>
 			</div>
-			<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
-				<kv-text-input
-					class="donation-amount-input"
-					data-testid="basket-donation-edit-input"
-					name="donation"
-					id="donation"
-					v-model="amount"
-					@blur="validateInput"
-					@keyup.enter.prevent="updateDonation()"
-				/>
-				<kv-button
-					variant="secondary"
-					class="update-donation-inline-button"
-					data-testid="basket-donation-edit-submit"
-					@click="updateDonation()"
-				>
-					Update
-				</kv-button>
-				<button
-					class="show-for-medium remove-wrapper"
-					@click="updateLoanAmount('remove')"
-					data-testid="basket-donation-remove"
-				>
-					<kv-material-icon
-						class="remove-x tw-text-tertiary"
-						name="small-x"
-						:from-sprite="true"
-						title="Remove donation"
-					/>
-				</button>
-			</div>
-			<donate-repayments
-				v-if="hasLoans"
-				@updating-totals="$emit('updating-totals', $event)"
-				@refreshtotals="$emit('refreshtotals')"
-			/>
-		</div>
-
+		</template>
 		<!-- Donation nudge lightbox -->
 		<donation-nudge-lightbox
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
-			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:visible="nudgeLightboxVisible"
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
-			:has-custom-donation="hasCustomDonation"
-			:experimental-footer="showCharityOverheadFooter"
-			:description="donationNudgeDescription()"
-			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
 		/>
 
 		<!-- How kiva use's donations lightbox -->
 		<kv-lightbox
+			:title="'Loans change lives.Your donations make them possible.'"
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
-			title="How does Kiva use donations?"
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
-			<div class="tw-prose">
-				<p>
-					100% of money lent on Kiva goes to funding loans,
-					so we rely on donations to continue this important work.
-					Each dollar helps us invest in systemic change and spread financial inclusion around the world.
-				</p>
-				<p>
-					We’re investing in lasting solutions for a more inclusive world through your donations.
-					Projects like...
-				</p>
-				<ul>
-					<li>
-						Kiva Capital, scaling our model for institutional investors.
-					</li>
-					<li>
-						Kiva Labs, supporting small and growing social enterprises around the world.
-					</li>
-				</ul>
-				<p>
-					Your donations also help over 100 Kiva employees and more than 400 volunteers
-					make your loans happen!
-				</p>
-			</div>
+			<template #header>
+				<h2>
+					Loans change lives. Your donations make them possible.
+				</h2>
+			</template>
+			<how-kiva-uses-donation />
 		</kv-lightbox>
 	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
-import gql from 'graphql-tag';
-import _forEach from 'lodash/forEach';
-import { processPageContentFlat } from '@/util/contentfulUtils';
-import { mdiPencil } from '@mdi/js';
-
-import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
-import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
+import { mdiPencil, mdiArrowRight } from '@mdi/js';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
-
-const donationItemQuery = gql`query donationItemQuery {
-	contentful {
-		entries (contentType: "page", contentKey: "checkout")
-	}
-}`;
+const imageRequire = require.context('@/assets/images/', true);
 
 export default {
 	name: 'DonationItem',
@@ -249,6 +239,7 @@ export default {
 		KvTextInput,
 		DonateRepayments,
 		DonationNudgeLightbox,
+		HowKivaUsesDonation,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -264,6 +255,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		orderTotalVariant: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -272,36 +267,17 @@ export default {
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
 			nudgeLightboxVisible: false,
-			isCash80Running: true,
-			donationTagLineExperiment: false,
-			hasCustomDonation: true,
-			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
-			donationNudgeBorrowerImageExperiment: false,
-			donationDetailsLink: 'How Kiva uses donations',
-			showCharityOverheadFooter: false,
-			dynamicDonationItem: '',
+			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			imageRequire,
+			mdiArrowRight
 		};
 	},
-	apollo: {
-		preFetch(config, client) {
-			return new Promise((resolve, reject) => {
-				// Get the experiment object from settings
-				client.query({
-					query: donationDataQuery
-				}).then(() => {
-					Promise.all([
-						// Get contentful dynamic content
-						client.query({ query: donationItemQuery })
-					]).then(resolve).catch(reject);
-				}).catch(reject);
-			});
-		}
-	},
 	created() {
-		this.setupContentfulContent();
+		const donationProperty = this.donation.isUserEdited ? 'user-set' : 'kiva-set';
+		this.$kvTrackEvent('basket', 'show', 'tip-donation-amount', donationProperty, this.donation.price * 100);
+		this.$kvTrackEvent('basket', 'show', 'loans', null, this.loanCount);
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -322,44 +298,17 @@ export default {
 		formattedAmount() {
 			return numeral(this.amount).format('$0,0.00');
 		},
-		donationTagLine() {
-			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.12)).format('$0,0');
-			// if there is dynamic donation tagline from contentful, use that.
-			if (this.dynamicDonationItem) {
-				// process contentful content as rich text
-				const contentfulHTML = documentToHtmlString(this.dynamicDonationItem);
-				// replace magic variable ###loan_costs###
-				return contentfulHTML.replace(/###loan_costs###/g, loanCost);
+		basketDonationHeader() {
+			if (this.hasLoans) {
+				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
 			}
-
-			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
-			if (this.donationTagLineExperiment) {
-				coverOurCosts = 'During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.'; // eslint-disable-line max-len
-			} else {
-				coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
-			}
-			return coverOurCosts;
+			return 'Donate to Kiva';
 		},
-		donationNudgePercentageRows() {
-			const basePercentageRows = [
-				{
-					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
-					appealIsHorizontallyPadded: false,
-				},
-				{
-					percentage: 20,
-					appeal: 'Reach more people around the world!',
-					appealIsHorizontallyPadded: false,
-				},
-			];
-			const lowPercentage = [{
-				percentage: 10,
-				appeal: 'Cover some of Kiva\'s costs',
-				appealIsHorizontallyPadded: true,
-			}];
-			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
-		},
+		basketDonationTagline() {
+			const loanSupport = this.hasLoans ? 'your loan supports' : 'loans support';
+			// eslint-disable-next-line max-len
+			return `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;
+		}
 	},
 	methods: {
 		updateDonationTo(amount) {
@@ -370,7 +319,7 @@ export default {
 			this.updateDonation();
 		},
 		enterEditDonation() {
-			if (this.hasLoans && this.isCash80Running) {
+			if (this.hasLoans) {
 				this.openNudgeLightbox();
 			} else {
 				this.editDonation = true;
@@ -381,17 +330,6 @@ export default {
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
-		},
-		setupContentfulContent() {
-			if (this.hasLoans) {
-				const contentfulContentRaw = this.apollo.readQuery({
-					query: donationItemQuery,
-				});
-				const pageEntry = contentfulContentRaw?.contentful?.entries?.items?.[0] ?? null;
-				const pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-				// eslint-disable-next-line max-len
-				this.dynamicDonationItem = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
-			}
 		},
 		updateDonation() {
 			this.editDonation = false;
@@ -404,7 +342,7 @@ export default {
 				}
 			}).then(data => {
 				if (data.errors) {
-					_forEach(data.errors, ({ message }) => {
+					data.errors.forEach(({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
 					this.amount = this.cachedAmount;
@@ -448,11 +386,6 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.nudgeLightbox.expandNudgeLightbox();
 			});
-		},
-		donationNudgeDescription() {
-			/* eslint-disable max-len */
-			return 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
-			/* eslint-enable max-len */
 		},
 	}
 };

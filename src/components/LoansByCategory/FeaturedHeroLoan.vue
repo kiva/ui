@@ -61,9 +61,10 @@
 									:is-lent-to="loan.userProperties.lentTo"
 									:is-funded="isFunded"
 									:is-selected-by-another="isSelectedByAnother"
-									:is-amount-lend-button="lessThan25"
+									:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 									:amount-left="amountLeft"
-									:show-now="true"
+									:show-now="!enableFiveDollarsNotes"
+									:enable-five-dollars-notes="enableFiveDollarsNotes"
 									@click.native="trackInteraction({
 										interactionType: 'addToBasket',
 										interactionElement: 'Lend25'
@@ -153,6 +154,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -162,12 +167,8 @@ export default {
 	},
 	computed: {
 		loanUse() {
-			return this.$options.filters.loanUse(this.loan.use,
-				this.loan.name,
-				this.loan.status,
-				this.loan.loanAmount,
-				this.loan.borrowerCount,
-				this.loanUseMaxLength);
+			const use = this.loan?.fullLoanUse ?? '';
+			return use.length > this.loanUseMaxLength ? `${use.slice(0, this.loanUseMaxLength)}...` : use;
 		},
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);

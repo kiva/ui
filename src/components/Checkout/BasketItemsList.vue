@@ -7,12 +7,25 @@
 					:disable-redirects="disableRedirects"
 					:loan="loan"
 					:teams="teams"
-					:disable-matching="disableMatching"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-huge-amount="enableHugeAmount"
+					:is-logged-in="isLoggedIn"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@jump-to-loans="$emit('jump-to-loans')"
 				/>
 			</li>
+			<deposit-incentive-upsell
+				v-if="showIncentiveUpsell"
+				class="tw-mb-4"
+				data-testid="basket-deposit-incentive-upsell"
+				:goal="incentiveGoal"
+				:progress="loanReservationTotal"
+				:exclude-loan-ids="loans.map(loan => loan.id)"
+				@adding-loan="$emit('updating-totals', true)"
+				@done-adding="$emit('refreshtotals')"
+			/>
 			<li v-for="(kivaCard, index) in kivaCards" :key="kivaCard.id">
 				<kiva-card-item
 					:data-testid="`basket-kiva-card-${index}`"
@@ -39,6 +52,8 @@
 import BasketItem from '@/components/Checkout/BasketItem';
 import DonationItem from '@/components/Checkout/DonationItem';
 import KivaCardItem from '@/components/Checkout/KivaCardItem';
+import DepositIncentiveUpsell from '@/components/Checkout/DepositIncentiveUpsell';
+import { userUsLoanCheckout } from '@/util/optimizelyUserMetrics';
 
 export default {
 	name: 'BasketItemsList',
@@ -75,15 +90,39 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		disableMatching: {
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
+		showIncentiveUpsell: {
+			type: Boolean,
+			default: false
+		},
+		incentiveGoal: {
+			type: Number,
+			default: 0
+		},
 	},
 	components: {
 		BasketItem,
 		DonationItem,
-		KivaCardItem
-	}
+		KivaCardItem,
+		DepositIncentiveUpsell,
+	},
+	watch: {
+		loans(loansInBasket) {
+			// eslint-disable-next-line no-underscore-dangle
+			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
+			userUsLoanCheckout(hasUsLoan);
+		}
+	},
 };
 </script>

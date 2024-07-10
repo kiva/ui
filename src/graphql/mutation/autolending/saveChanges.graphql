@@ -1,5 +1,6 @@
 mutation saveAutolendingChanges {
 	autolending @client {
+		id
 		saveProfile
 	}
 }

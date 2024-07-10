@@ -1,6 +1,7 @@
 import {
 	fetchFacets,
 	fetchLoans,
+	fetchCategories,
 	getFlssFilters,
 	getLoanChannelVariables,
 	fetchLoanChannel,
@@ -10,41 +11,31 @@ import {
 import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
+import filterConfig from '@/util/loanSearch/filterConfig';
+
+jest.mock('@/util/loanSearch/filterConfig', () => {
+	return {
+		config: {
+			a: { getFlssFilter: jest.fn().mockReturnValue({ a: 'a' }) },
+			b: { getFlssFilter: jest.fn().mockReturnValue({ b: 'b' }) },
+		},
+		keys: ['a', 'b'],
+	};
+});
 
 describe('flssUtils.js', () => {
+	beforeEach(jest.clearAllMocks);
+
 	describe('getFlssFilters', () => {
-		it('should handle missing', () => {
-			expect(getFlssFilters({})).toEqual({});
-		});
+		it('should call filterConfig', () => {
+			const result = getFlssFilters({ test: 'test' });
 
-		it('should handle empty', () => {
-			const state = {
-				gender: '',
-				countryIsoCode: [],
-				themeId: [],
-				sectorId: [],
-				distributionModel: null,
-			};
-
-			expect(getFlssFilters(state)).toEqual({});
-		});
-
-		it('should return filters', () => {
-			const state = {
-				gender: 'female',
-				countryIsoCode: ['US'],
-				themeId: [1],
-				sectorId: [1],
-				distributionModel: 'DIRECT',
-			};
-
-			expect(getFlssFilters(state)).toEqual({
-				gender: { any: 'female' },
-				countryIsoCode: { any: ['US'] },
-				themeId: { any: [1] },
-				sectorId: { any: [1] },
-				distributionModel: { eq: 'DIRECT' },
-			});
+			expect(result).toEqual({ a: 'a', b: 'b' });
+			expect(filterConfig.config.a.getFlssFilter).toHaveBeenCalledTimes(1);
+			expect(filterConfig.config.a.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
+			expect(filterConfig.config.b.getFlssFilter).toHaveBeenCalledTimes(1);
+			expect(filterConfig.config.b.getFlssFilter).toHaveBeenCalledWith({ test: 'test' });
 		});
 	});
 
@@ -53,16 +44,39 @@ describe('flssUtils.js', () => {
 		const dataObj = { data: result };
 		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
 		const filters = { gender: { any: ['FEMALE'] } };
-		const variables = { isoCodeFilters: filters, themeFilters: filters, sectorFilters: filters };
+		const variables = {
+			isoCodeFilters: filters,
+			themeFilters: filters,
+			sectorFilters: filters,
+			tagFilters: filters,
+			origin: 'web:test-context'
+		};
 		const apolloVariables = { query: flssLoanFacetsQuery, variables, fetchPolicy: 'network-only' };
 
 		it('should pass the correct query variables to apollo', async () => {
-			await fetchFacets(apollo, filters, filters, filters);
+			await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
 		});
 
 		it('should return the fundraising facets data', async () => {
-			const data = await fetchFacets(apollo, filters, filters, filters);
+			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
+			expect(data).toBe(result);
+		});
+	});
+
+	describe('fetchCategories', () => {
+		const result = {};
+		const dataObj = { data: result };
+		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apolloVariables = { query: categoryListFlssQuery, fetchPolicy: 'network-only' };
+
+		it('should pass the correct query variables to apollo', async () => {
+			await fetchCategories(apollo);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+		});
+
+		it('should return the categories data', async () => {
+			const data = await fetchCategories(apollo);
 			expect(data).toBe(result);
 		});
 	});
@@ -82,6 +96,7 @@ describe('flssUtils.js', () => {
 				sortBy: 'personalized',
 				pageNumber: 3,
 				pageLimit,
+				origin: 'web:no-context'
 			},
 			fetchPolicy: 'network-only',
 		};
@@ -111,6 +126,48 @@ describe('flssUtils.js', () => {
 
 			expect(result.ids).toEqual(loanQueryVars.ids);
 			expect(result.filterObject).toEqual(getFlssFilters(queryMap));
+			expect(result.sortBy).toEqual(queryMap.sortBy);
+			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
+			expect(result.pageLimit).toBe(loanQueryVars.limit);
+			expect(result.basketId).toBe(loanQueryVars.basketId);
+		});
+
+		it('should use loanQueryVars as override', () => {
+			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
+			const loanQueryVars = {
+				ids: [3],
+				offset: 10,
+				limit: 5,
+				basketId: 'asd',
+				sector: [1],
+				sortBy: 'personalized'
+			};
+
+			const result = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(result.ids).toEqual(loanQueryVars.ids);
+			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
+			expect(result.sortBy).toEqual(loanQueryVars.sortBy);
+			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
+			expect(result.pageLimit).toBe(loanQueryVars.limit);
+			expect(result.basketId).toBe(loanQueryVars.basketId);
+		});
+
+		it('should use correct sortBy fallback', () => {
+			const queryMap = { sector: [1, 2, 3], sortBy: 'expiringSoon' };
+			const loanQueryVars = {
+				ids: [3],
+				offset: 10,
+				limit: 5,
+				basketId: 'asd',
+				sector: [1],
+				sortBy: null
+			};
+
+			const result = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(result.ids).toEqual(loanQueryVars.ids);
+			expect(result.filterObject).toEqual(getFlssFilters(queryMap, loanQueryVars));
 			expect(result.sortBy).toEqual(queryMap.sortBy);
 			expect(result.pageNumber).toBe(loanQueryVars.offset / loanQueryVars.limit);
 			expect(result.pageLimit).toBe(loanQueryVars.limit);

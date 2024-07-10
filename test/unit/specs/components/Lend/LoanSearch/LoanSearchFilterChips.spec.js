@@ -2,55 +2,32 @@ import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
+import filterConfig from '@/util/loanSearch/filterConfig';
+import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 
-const mockState = {
-	gender: 'female',
-	countryIsoCode: ['US'],
-	sectorId: [1],
-	themeId: [1],
-};
-
-const mockAllFacets = {
-	countryFacets: [
-		{
-			country: {
-				isoCode: 'US',
-				name: 'United States',
-				region: 'North America',
-				__typename: 'Country'
-			}
+jest.mock('@/util/loanSearch/filterConfig', () => {
+	return {
+		config: {
+			a: {
+				getFilterChips: jest.fn().mockReturnValue([{ name: 'a', __typename: 'TypeA' }]),
+				getRemovedFacet: jest.fn().mockReturnValue({ a: null }),
+			},
+			b: {
+				getFilterChips: jest.fn().mockReturnValue([{ name: 'b', __typename: 'TypeB' }]),
+				getRemovedFacet: jest.fn().mockReturnValue({ b: null })
+			},
 		},
-		{
-			country: {
-				isoCode: 'CA',
-				name: 'Canada',
-				region: 'North America',
-				__typename: 'Country'
-			}
-		}
-	],
-	countryIsoCodes: ['US', 'CA'],
-	countryNames: ['UNITED STATES', 'CANADA'],
-	sectorFacets: [
-		{ id: 1, name: 'Sector 1', __typename: 'Sector' },
-		{ id: 2, name: 'Sector 2', __typename: 'Sector' }
-	],
-	sectorIds: [1],
-	sectorNames: ['SECTOR 1', 'SECTOR 2'],
-	themeFacets: [
-		{ id: 1, name: 'Theme 1', __typename: 'LoanThemeFilter' },
-		{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
-	],
-	themeNames: ['THEME 1', 'THEME 2'],
-	genderFacets: [{ name: 'female', __typename: 'Gender' }, { name: 'male', __typename: 'Gender' }],
-	genders: ['FEMALE', 'MALE'],
-};
+		keys: ['a', 'b'],
+	};
+});
 
 describe('LoanSearchFilterChips', () => {
 	let spyTrackEvent;
 
 	beforeEach(() => {
 		spyTrackEvent = jest.spyOn(Vue.prototype, '$kvTrackEvent');
+
+		jest.clearAllMocks();
 	});
 
 	afterEach(jest.restoreAllMocks);
@@ -69,7 +46,7 @@ describe('LoanSearchFilterChips', () => {
 		});
 	});
 
-	it('should handle render state', () => {
+	it('should call filterConfig and render state', () => {
 		const { getByText } = render(LoanSearchFilterChips, {
 			props: {
 				loanSearchState: mockState,
@@ -77,10 +54,12 @@ describe('LoanSearchFilterChips', () => {
 			}
 		});
 
-		getByText('United States');
-		getByText('Sector 1');
-		getByText('Theme 1');
-		getByText('Women');
+		getByText('a');
+		getByText('b');
+		expect(filterConfig.config.a.getFilterChips).toHaveBeenCalledTimes(1);
+		expect(filterConfig.config.a.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
+		expect(filterConfig.config.b.getFilterChips).toHaveBeenCalledTimes(1);
+		expect(filterConfig.config.b.getFilterChips).toHaveBeenCalledWith(mockState, mockAllFacets);
 	});
 
 	it('should handle render state with missing state', () => {
@@ -92,64 +71,22 @@ describe('LoanSearchFilterChips', () => {
 		});
 	});
 
-	it('should handle country chip click', async () => {
+	it('should call filterConfig and remove chip', async () => {
 		const user = userEvent.setup();
 
 		const { getByText, emitted } = render(LoanSearchFilterChips, {
 			props: {
-				loanSearchState: mockState,
+				loanSearchState: { name: 'a' },
 				allFacets: mockAllFacets
 			}
 		});
 
-		await user.click(getByText('United States'));
+		await user.click(getByText('a'));
 
-		expect(emitted().updated[0]).toEqual([{ countryIsoCode: [] }]);
-	});
-
-	it('should handle sector chip click', async () => {
-		const user = userEvent.setup();
-
-		const { getByText, emitted } = render(LoanSearchFilterChips, {
-			props: {
-				loanSearchState: mockState,
-				allFacets: mockAllFacets
-			}
-		});
-
-		await user.click(getByText('Sector 1'));
-
-		expect(emitted().updated[0]).toEqual([{ sectorId: [] }]);
-	});
-
-	it('should handle theme chip click', async () => {
-		const user = userEvent.setup();
-
-		const { getByText, emitted } = render(LoanSearchFilterChips, {
-			props: {
-				loanSearchState: mockState,
-				allFacets: mockAllFacets
-			}
-		});
-
-		await user.click(getByText('Theme 1'));
-
-		expect(emitted().updated[0]).toEqual([{ themeId: [] }]);
-	});
-
-	it('should handle gender chip click', async () => {
-		const user = userEvent.setup();
-
-		const { getByText, emitted } = render(LoanSearchFilterChips, {
-			props: {
-				loanSearchState: mockState,
-				allFacets: mockAllFacets
-			}
-		});
-
-		await user.click(getByText('Women'));
-
-		expect(emitted().updated[0]).toEqual([{ gender: null }]);
+		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(1);
+		expect(filterConfig.config.a.getRemovedFacet)
+			.toHaveBeenCalledWith({ name: 'a' }, { name: 'a', key: 'a', __typename: 'TypeA' });
+		expect(emitted().updated[0]).toEqual([{ a: null }]);
 	});
 
 	it('should track event', async () => {
@@ -162,9 +99,9 @@ describe('LoanSearchFilterChips', () => {
 			}
 		});
 
-		await user.click(getByText('Women'));
+		await user.click(getByText('a'));
 
 		expect(spyTrackEvent).toHaveBeenCalledTimes(1);
-		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'click-remove-filter-chip', 'Gender-Women');
+		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'click-remove-filter-chip', 'TypeA-a');
 	});
 });

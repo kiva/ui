@@ -7,6 +7,7 @@ type Experiment {
 }
 
 type Autolending {
+	id: Int
 	currentLoanCount: Int
 	currentProfile: AutolendProfile
 	profileChanged: Boolean
@@ -18,6 +19,7 @@ type Autolending {
 }
 
 type AutolendingMutation {
+	id: Int
 	initAutolending: Boolean
 	editProfile(profile: AutolendProfileUpdateInput): Boolean
 	saveProfile: Boolean
@@ -28,8 +30,6 @@ extend type Mutation {
 	showTipMessage(message: String, persist: Boolean, type: String): Boolean
 	updateUsingTouch(usingTouch: Boolean): Boolean
 	updateAddToBasketInterstitial(active: Boolean, visible: Boolean, loanId: Int): Boolean
-	updateExperimentVersion(id: String, version: String): Experiment
-	cleanExperimentCookie: Boolean
 	updateActiveLoan(xCoordinate: Int, yCoordinate: Int, hoverLoanId: Int, loan: String, tracking: String): ActiveLoan
 	autolending: AutolendingMutation
 	showVerificationLightbox: Boolean
@@ -54,6 +54,7 @@ extend type My {
 }
 
 extend interface LoanBasic {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
@@ -61,6 +62,7 @@ extend interface LoanBasic {
 }
 
 extend type LoanPartner {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
@@ -68,6 +70,7 @@ extend type LoanPartner {
 }
 
 extend type LoanDirect {
+	fullLoanUse(maxLength: Int): String!
 	fundraisingPercent: Float!
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
@@ -81,11 +84,24 @@ type LoanSearchState {
 	sectorId: [Int]
 	sortBy: String
 	themeId: [Int]
+	tagId: [Int]
 	pageOffset: [Int]
 	pageLimit: [Int]
+	distributionModel: String
+	isIndividual: Boolean
+	lenderRepaymentTerm: MinMaxRange
+	keywordSearch: String
+	partnerId: [Int]
+	partnerRiskRating: MinMaxRange
+	partnerDefaultRate: MinMaxRange
+	partnerAvgProfitability: MinMaxRange
+	isMatchable: Boolean
+	flexibleFundraisingEnabled: Boolean
+	activityId: [Int]
 }
 
 type TipMessage {
+	id: Int
 	message: String
 	persist: Boolean
 	type: String
@@ -93,12 +109,14 @@ type TipMessage {
 }
 
 type BasketAddInterstitial {
+	id: Int
 	active: Boolean
 	visible: Boolean
 	loanId: Int
 }
 
 type ActiveLoan {
+	id: Int
 	hoverLoanId: Int
 	xCoordinate: Int
 	yCoordinate: Int
@@ -107,5 +125,6 @@ type ActiveLoan {
  }
 
 type VerificationLightbox {
+	id: Int
 	visible: Boolean
 }

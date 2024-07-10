@@ -1,106 +1,177 @@
 <template>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row">
-		<div class="tw-flex lg:tw-hidden">
-			<div class="tw-mb-3 tw-mr-2">
-				<kv-button
-					variant="secondary"
-					@click="toggleLightbox(true)"
-				>
-					Filter & Sort
-				</kv-button>
-				<kv-lightbox
-					:visible="isLightboxVisible"
-					variant="lightbox"
-					title="Loan filter controls"
-					@lightbox-closed="toggleLightbox(false)"
-				>
-					<template #header>
-						{{ null }} <!-- Hide title text -->
-					</template>
+	<div>
+		<div class="tw-flex tw-justify-between tw-items-end tw-mb-2.5" v-if="showChallengeHeader">
+			<div>
+				<h2 class="tw-text-h2">
+					Find a loan, Support your team!
+				</h2>
+				<p class="tw-text-base">
+					Supporting any borrower, not just Team picks, counts toward this team challenge
+				</p>
+			</div>
+			<div class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap lg:tw-pl-4">
+				<p class="tw-hidden lg:tw-inline-block tw-mr-2">
+					{{ totalCount }} Loans
+				</p>
+				<loan-search-saved-search
+					class="tw-hidden lg:tw-inline-block"
+					v-if="enableSavedSearch && showSavedSearch"
+					:loan-search-state="loanSearchState"
+					:all-facets="allFacets"
+					:user-id="userId"
+				/>
+			</div>
+		</div>
+		<div class="tw-flex tw-flex-col lg:tw-flex-row">
+			<div class="tw-flex lg:tw-hidden">
+				<div class="tw-mb-3 tw-mr-2">
+					<kv-button
+						variant="secondary"
+						@click="toggleLightbox(true)"
+					>
+						Filter <span class="tw-hidden md:tw-inline">& Sort</span>
+					</kv-button>
+					<kv-lightbox
+						:visible="isLightboxVisible"
+						variant="lightbox"
+						title="Loan filter controls"
+						@lightbox-closed="toggleLightbox(false)"
+					>
+						<template #header>
+							{{ null }} <!-- Hide title text -->
+						</template>
+						<team-picks-switch
+							v-if="showChallengeHeader"
+							:show-picks="showTeamPicks"
+							@handle-team-picks="handleTeamPicks"
+						/>
+						<loan-search-filter
+							style="min-width: 285px;"
+							:extend-flss-filters="extendFlssFilters"
+							:loading="!initialLoadComplete"
+							:is-logged-in="userId !== null"
+							:facets="facets"
+							:loan-search-state="loanSearchState"
+							@updated="handleUpdatedFilters"
+							@reset="handleResetFilters"
+						/>
+						<template #controls>
+							<kv-button
+								v-if="totalCount > 0"
+								class="tw-mt-2 tw-w-full lg:tw-hidden"
+								@click="toggleLightbox(false)"
+								ref="showLoansButton"
+							>
+								Show {{ totalCount }} Loans
+							</kv-button>
+						</template>
+					</kv-lightbox>
+				</div>
+				<div v-if="initialLoadComplete" class="tw-pt-1.5">
+					<div class="tw-flex tw-items-center tw-flex-wrap">
+						<p class="tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="tw-flex tw-mr-4">
+				<div class="tw-hidden lg:tw-block" style="width: 285px;">
+					<team-picks-switch
+						v-if="showChallengeHeader"
+						class="tw-mb-2"
+						:show-picks="showTeamPicks"
+						@handle-team-picks="handleTeamPicks"
+					/>
 					<loan-search-filter
-						style="min-width: 285px;"
+						:extend-flss-filters="extendFlssFilters"
 						:loading="!initialLoadComplete"
-						:is-logged-in="userId !== null"
 						:facets="facets"
+						:is-logged-in="userId !== null"
 						:loan-search-state="loanSearchState"
 						@updated="handleUpdatedFilters"
 						@reset="handleResetFilters"
 					/>
-					<template #controls>
-						<kv-button
-							v-if="totalCount > 0"
-							class="tw-mt-2 tw-w-full lg:tw-hidden"
-							@click="toggleLightbox(false)"
-							ref="showLoansButton"
-						>
-							Show {{ totalCount }} Loans
-						</kv-button>
-					</template>
-				</kv-lightbox>
+				</div>
 			</div>
-			<div v-if="initialLoadComplete" class="tw-pt-1.5">
-				<p>{{ totalCount }} Loans</p>
+			<div class="tw-col-span-2 tw-relative tw-grow">
+				<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
+				<div v-if="initialLoadComplete">
+					<loan-search-filter-chips
+						:class="{ 'tw-mb-2' : showChallengeHeader}"
+						:loan-search-state="loanSearchState"
+						:all-facets="allFacets"
+						@updated="handleUpdatedFilters"
+						@reset="handleResetFilters"
+					/>
+					<div v-if="!showChallengeHeader" class="tw-flex tw-mt-1 tw-items-center tw-flex-wrap lg:tw-pl-4">
+						<p class="tw-hidden lg:tw-inline-block tw-mr-2">
+							{{ totalCount }} Loans
+						</p>
+						<loan-search-saved-search
+							class="tw-hidden lg:tw-inline-block"
+							v-if="enableSavedSearch && showSavedSearch"
+							:loan-search-state="loanSearchState"
+							:all-facets="allFacets"
+							:user-id="userId"
+						/>
+					</div>
+				</div>
+				<template v-if="initialLoadComplete && totalCount === 0">
+					<div class="tw-mt-2" v-if="!showChallengeHeader">
+						<h3 class="tw-text-center">
+							All borrowers matching this search have been funded.
+						</h3>
+						<p class="tw-text-center tw-mt-2">
+							Please adjust your criteria or
+							<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
+						</p>
+					</div>
+					<h3 v-else class="tw-text-center tw-mt-2">
+						There are no team picks matching your filters.
+					</h3>
+				</template>
+				<!-- eslint-disable max-len -->
+				<div
+					class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mb-4 lg:tw-ml-1.5 lg:tw-px-2.5 tw-gap-x-6 tw-gap-y-4"
+					:class="{ 'tw-mt-2' : !showChallengeHeader}"
+				>
+					<kv-classic-loan-card-container
+						v-for="(loan, index) in loans"
+						:key="`new-card-${loan.id}-${index}`"
+						:loan-id="loan.id"
+						:use-full-width="true"
+						:show-tags="true"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:user-balance="userBalance"
+						:is-team-pick="showTeamPicks"
+						:show-loans-activity-feed="showLoansActivityFeed"
+						:enable-huge-amount="enableHugeAmount"
+						:enable-clickable-tags="enableClickableTags"
+						@add-to-basket="addToBasket"
+					/>
+				</div>
+				<template v-if="initialLoadComplete && totalCount > 0">
+					<kv-pagination
+						:limit="loanSearchState.pageLimit"
+						:total="totalCount"
+						:offset="loanSearchState.pageOffset"
+						@page-changed="handlePageChange"
+					/>
+					<kv-results-per-page
+						:options="[10, 20, 50]"
+						:selected="loanSearchState.pageLimit"
+						@updated="handleResultsPerPage"
+					/>
+				</template>
 			</div>
-		</div>
-		<div class="tw-flex tw-mr-4">
-			<div class="tw-hidden lg:tw-block" style="width: 285px;">
-				<loan-search-filter
-					:loading="!initialLoadComplete"
-					:facets="facets"
-					:is-logged-in="userId !== null"
-					:loan-search-state="loanSearchState"
-					@updated="handleUpdatedFilters"
-					@reset="handleResetFilters"
-				/>
-			</div>
-		</div>
-		<div class="tw-col-span-2 tw-relative tw-grow">
-			<kv-section-modal-loader :loading="loading" bg-color="secondary" size="large" />
-			<div v-if="initialLoadComplete">
-				<loan-search-filter-chips
-					:loan-search-state="loanSearchState"
-					:all-facets="allFacets"
-					@updated="handleUpdatedFilters"
-					@reset="handleResetFilters"
-				/>
-				<p class="tw-hidden lg:tw-block tw-mt-1">
-					{{ totalCount }} Loans
-				</p>
-			</div>
-			<template v-if="initialLoadComplete && totalCount === 0">
-				<h3 class="tw-text-center">
-					All borrowers matching this search have been funded.
-				</h3>
-				<p class="tw-text-center tw-mt-2">
-					Please adjust your criteria or
-					<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
-				</p>
-			</template>
-			<kv-grid class="tw-grid-rows-4">
-				<loan-card-controller
-					v-for="loan in loans"
-					:items-in-basket="itemsInBasket"
-					:is-visitor="userId === null"
-					:is-logged-in="userId !== null"
-					:user-id="userId !== null ? userId.toString() : null"
-					:key="loan.id"
-					:loan="loan"
-					loan-card-type="ListLoanCard"
-					:rounded-corners="true"
-				/>
-			</kv-grid>
-			<template v-if="initialLoadComplete && totalCount > 0">
-				<kv-pagination
-					:limit="loanSearchState.pageLimit"
-					:total="totalCount"
-					:offset="loanSearchState.pageOffset"
-					@page-changed="handlePageChange"
-				/>
-				<kv-results-per-page
-					:selected="loanSearchState.pageLimit"
-					@updated="handleResultsPerPage"
-				/>
-			</template>
 		</div>
 	</div>
 </template>
@@ -108,118 +179,111 @@
 <script>
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-import userIdQuery from '@/graphql/query/userId.graphql';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
-import {
-	FLSS_QUERY_TYPE,
-	formatSortOptions,
-	transformIsoCodes,
-	transformThemes,
-	transformSectors,
-} from '@/util/loanSearch/filterUtils';
+import TeamPicksSwitch from '@/components/Lend/LoanSearch/TeamPicksSwitch';
+import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { applyQueryParams, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
+import { convertQueryToFilters, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
 import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
 import logReadQueryError from '@/util/logReadQueryError';
 import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
 import KvPagination from '@/components/Kv/KvPagination';
 import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
+import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
 import { isNumber } from '@/util//numberUtils';
 import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
+import filterConfig from '@/util/loanSearch/filterConfig';
+import { gql } from '@apollo/client';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 const COOKIE_KEY = 'kv-search-result-count';
 
+const userInfoLendFilterQuery = gql`
+	query userInfoLendFilter {
+		my {
+			id
+			userAccount {
+				id
+				balance
+			}
+		}
+	}
+`;
+
 export default {
 	name: 'LoanSearchInterface',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		LoanCardController,
 		LoanSearchFilterChips,
-		KvGrid,
 		KvButton,
 		LoanSearchFilter,
 		KvLightbox,
 		KvSectionModalLoader,
 		KvPagination,
 		KvResultsPerPage,
+		LoanSearchSavedSearch,
+		KvClassicLoanCardContainer,
+		TeamPicksSwitch,
+	},
+	props: {
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
+		},
+		enableSavedSearch: {
+			type: Boolean,
+			default: false,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
+		},
+		challengeData: {
+			type: Object,
+			default: () => ({}),
+		},
+		showLoansActivityFeed: {
+			type: Boolean,
+			default: false,
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		teamName: {
+			type: String,
+			default: () => '',
+		},
+		enableClickableTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
 			initialLoadComplete: false,
 			loading: true,
-			/**
-			 * All available facet options from lend API. Format:
-			 * {
-			 *   countryFacets: [
-			 *     {
-			 *       name: '',
-			 *       isoCode: '',
-			 *       region: '',
-			 *     }
-			 *   ],
-			 *   sectorFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 *   themeFacets: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *     }
-			 *   ],
-			 * }
-			 */
 			allFacets: undefined,
-			/**
-			 * Facet options based on the loans available. Format:
-			 * {
-			 *   regions: [
-			 *     {
-			 *       region: '',
-			 *       numLoansFundraising: 1,
-			 *       countries: [
-			 *         {
-			 *           name: '',
-			 *           region: '',
-			 *           isoCode: '',
-			 *           numLoansFundraising: 1,
-			 *         }
-			 *       ]
-			 *     }
-			 *   ],
-			 *   sectors: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 *   themes: [
-			 *     {
-			 *       id: 1,
-			 *       name: '',
-			 *       numLoansFundraising: 1,
-			 *     }
-			 *   ],
-			 * }
-			 */
 			facets: {},
 			loans: [],
 			totalCount: 0,
 			isLightboxVisible: false,
 			itemsInBasket: [],
-			loanSearchState: getDefaultLoanSearchState(),
+			loanSearchState: {
+				...getDefaultLoanSearchState(),
+				...{ pageLimit: 10 },
+			},
 			queryType: FLSS_QUERY_TYPE,
 			// Holds comma-separated list of loan IDs from the query results
 			trackedHits: undefined,
 			userId: null,
+			userBalance: undefined,
+			showTeamPicks: false,
+			challengeFilters: {},
 		};
 	},
 	apollo: {
@@ -231,7 +295,7 @@ export default {
 			}
 
 			return client.query({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			}).then(() => {
 				return client.query({
 					query: itemsInBasketQuery
@@ -244,11 +308,12 @@ export default {
 
 		try {
 			const userIdData = this.apollo.readQuery({
-				query: userIdQuery
+				query: userInfoLendFilterQuery
 			});
 			this.userId = userIdData?.my?.userAccount?.id ?? null;
+			this.userBalance = userIdData?.my?.userAccount?.balance;
 		} catch (e) {
-			logReadQueryError(e, 'LoanSearchInterface userIdQuery');
+			logReadQueryError(e, 'LoanSearchInterface userInfoLendFilterQuery');
 		}
 
 		try {
@@ -272,7 +337,7 @@ export default {
 		await this.fetchFacets();
 
 		// Initialize the search filters with the query string params
-		await applyQueryParams(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
+		await this.applyQuery(this.apollo, this.$route.query, this.allFacets, this.queryType, this.defaultPageLimit);
 
 		// Here we subscribe to the loanSearchState and run the loan query when it updates
 		// TODO: work some guards to prevent duplicate queries and throttling to more carefully control # of queries
@@ -286,7 +351,7 @@ export default {
 
 				const [{ loans, totalCount }] = await Promise.all([
 					// Get filtered loans from FLSS
-					await runLoansQuery(this.apollo, this.loanSearchState),
+					await runLoansQuery(this.apollo, this.loanSearchState, FLSS_ORIGIN_LEND_FILTER),
 					// Get filtered facet options from FLSS
 					await this.fetchFacets(this.loanSearchState)
 				]);
@@ -324,19 +389,53 @@ export default {
 
 			return isNumber(storedPageLimit) ? +storedPageLimit : this.loanSearchState.pageLimit;
 		},
+		activeFilters() {
+			return filterConfig.keys.reduce((prev, key) => {
+				if (filterConfig.config[key].showSavedSearch(this.loanSearchState)) {
+					prev.push(key);
+				}
+				return prev;
+			}, []);
+		},
+		// MPL-56 - Temporarily hiding save search for new filters
+		unsupportedSaveFilters() {
+			return (
+				this.activeFilters.length === 1
+				&& (
+					this.activeFilters.includes('keywordSearch')
+					|| this.activeFilters.includes('flexibleFundraisingEnabled')
+				)
+			)
+			|| (
+				this.activeFilters.length === 2
+				&& this.activeFilters.includes('keywordSearch')
+				&& this.activeFilters.includes('flexibleFundraisingEnabled'));
+		},
+		showSavedSearch() {
+			return !this.unsupportedSaveFilters
+				&& filterConfig.keys.reduce((prev, key) => {
+					return prev || filterConfig.config[key].showSavedSearch(this.loanSearchState);
+				}, false);
+		},
+		showChallengeHeader() {
+			return Object.keys(this.challengeData).length !== 0;
+		},
 	},
 	methods: {
 		async fetchFacets(loanSearchState = {}) {
 			// TODO: Prevent this from running on every query (not needed for sorting and paging)
-			const { isoCodes, themes, sectors } = await runFacetsQueries(this.apollo, loanSearchState);
+			const filteredFacets = await runFacetsQueries(this.apollo, loanSearchState, FLSS_ORIGIN_LEND_FILTER);
 
 			// Merge all facet options with filtered options
-			this.facets = {
-				regions: transformIsoCodes(isoCodes, this.allFacets?.countryFacets),
-				sectors: transformSectors(sectors, this.allFacets?.sectorFacets),
-				themes: transformThemes(themes, this.allFacets?.themeFacets),
-				sortOptions: formatSortOptions(this.allFacets?.standardSorts ?? [], this.allFacets?.flssSorts ?? [])
-			};
+			this.facets = filterConfig.keys.reduce((prev, next) => {
+				// eslint-disable-next-line no-param-reassign
+				prev[next] = filterConfig.config[next].getOptions(
+					this.allFacets,
+					filteredFacets,
+					this.extendFlssFilters
+				);
+				return prev;
+			}, {});
 		},
 		trackLoans() {
 			this.$kvSetCustomUrl();
@@ -387,11 +486,45 @@ export default {
 
 			this.$kvTrackEvent?.('Lending', 'click-zero-loans-reset');
 		},
+		applyQuery: async (apollo, query, allFacets, queryType, pageLimit, loanSearchState = {}) => {
+			const filters = convertQueryToFilters(query, allFacets, queryType, pageLimit);
+
+			await updateSearchState(apollo, filters, allFacets, queryType, loanSearchState);
+		},
+		addToBasket(payload) {
+			if (payload.success) {
+				this.$kvTrackEvent('loan-card', 'add-to-basket', 'filter-page-new-card');
+				this.$emit('add-to-basket', payload);
+			}
+		},
+		handleTeamPicks(payload) {
+			this.showTeamPicks = payload;
+			if (this.showTeamPicks) {
+				this.$kvTrackEvent('Lending', 'click-teams-filter', this.teamName);
+				this.getChallengeFilters();
+			} else {
+				updateQueryParams({}, this.$router, this.queryType);
+			}
+		},
+		getChallengeFilters() {
+			const challengeFilters = this.challengeData?.targets?.values?.[0].savedSearch?.filters?.[0] ?? {};
+			const challengeEntries = Object.entries(challengeFilters);
+			const challengeFiltersObject = {};
+
+			challengeEntries.forEach(([key, value]) => {
+				const filterEntry = Object.entries(value);
+				const valueEntry = filterEntry[0][1];
+				challengeFiltersObject[key] = valueEntry;
+			});
+
+			updateQueryParams(challengeFiltersObject, this.$router, this.queryType);
+			this.challengeFilters = challengeFiltersObject;
+		},
 	},
 	watch: {
 		$route(to) {
 			// Update the loan search state when the user clicks back/forward in the browser
-			applyQueryParams(
+			this.applyQuery(
 				this.apollo,
 				to.query,
 				this.allFacets,
@@ -399,7 +532,22 @@ export default {
 				this.loanSearchState.pageLimit,
 				this.loanSearchState
 			);
-		}
+		},
+		loanSearchState() {
+			const challengeFiltersKeys = Object.keys(this.challengeFilters);
+
+			challengeFiltersKeys.forEach(key => {
+				if (Array.isArray(this.challengeFilters[key])) {
+					this.challengeFilters[key].forEach(value => {
+						if (!this.loanSearchState[key].includes(value)) {
+							this.showTeamPicks = false;
+						}
+					});
+				} else if (this.loanSearchState[key] !== this.challengeFilters[key]) {
+					this.showTeamPicks = false;
+				}
+			});
+		},
 	}
 };
 </script>

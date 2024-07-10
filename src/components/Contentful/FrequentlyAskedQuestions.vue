@@ -1,6 +1,7 @@
 <template>
 	<section-with-background-classic
 		:background-content="background"
+		:theme-name="themeName"
 		:vertical-padding="verticalPadding"
 	>
 		<template #content>
@@ -42,7 +43,9 @@ export default {
 			return this.content?.title ?? null;
 		},
 		frequentlyAskedQuestions() {
-			return this.content?.contents ?? null;
+			return this.content?.contents?.filter(({ contentType }) => {
+				return contentType ? contentType === 'richTextContent' : false;
+			});
 		},
 		background() {
 			return this.content?.contents?.find(({ contentType }) => {

@@ -11,7 +11,7 @@
 <script>
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import LoanCountSpan from './LoanCountSpan';
 
@@ -40,6 +40,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileLoanCount {
 			autolending @client {
+				id
 				currentLoanCount
 				countingLoans
 				warningThreshold

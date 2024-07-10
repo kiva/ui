@@ -3,7 +3,7 @@
 		<transition name="kvfade">
 			<div
 				v-if="isLoading"
-				class="spinner"
+				class="spinner tw-text-center"
 			>
 				<kv-loading-spinner />
 			</div>
@@ -11,7 +11,7 @@
 
 		<kv-carousel
 			v-if="augmentedLoanIds.length > 0 && isVisible"
-			class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
+			:class="['tw-w-full tw-overflow-visible md:tw-overflow-hidden', { 'md:tw-hidden' : newHomeExp }]"
 			:embla-options="{
 				loop: false,
 			}"
@@ -22,34 +22,33 @@
 			@interact-carousel="onInteractCarousel"
 		>
 			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
-				<!-- Show View more Card -->
-				<router-link
-					v-if="loanId === 3"
-					:key="`view-more-card-${loanId}`"
-					class="tw-flex tw-items-center tw-h-full tw-w-full
-						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
-					:to="cleanUrl"
-					v-kv-track-event="[
-						'Homepage',
-						'click-carousel-view-all-category-loans',
-						`${viewAllLoansCategoryTitle}`]"
-				>
-					<div class="tw-w-full tw-text-center">
-						<h3>{{ viewAllLoansCategoryTitle }}</h3>
-					</div>
-				</router-link>
-
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<kiva-classic-basic-loan-card
-					v-else
 					:item-index="index"
 					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 					:exp-label="expLabel"
 					:lend-now-button="lendNowButton"
+					:show-tags="showTags"
 				/>
 			</template>
+			<!-- Show View more Card -->
+			<router-link
+				v-if="showViewMoreCard"
+				:key="`view-more-card`"
+				class="tw-flex tw-items-center tw-h-full tw-w-full
+						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
+				:to="cleanUrl"
+				v-kv-track-event="[
+					'Lending',
+					'click-carousel-view-all-category-loans',
+					`${viewAllLoansCategoryTitle}`]"
+			>
+				<div class="tw-w-full tw-text-center">
+					<h3>{{ viewAllLoansCategoryTitle }}</h3>
+				</div>
+			</router-link>
 			<div
 				v-if="showCheckBackMessage" class="tw-flex tw-items-center tw-h-full tw-w-full
 					tw-border-action-highlight tw-rounded"
@@ -59,6 +58,38 @@
 				</div>
 			</div>
 		</kv-carousel>
+		<template v-if="newHomeExp">
+			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
+				<template v-for="(loanId, index) in augmentedLoanIds">
+					<!-- show loan card -->
+					<!-- TODO Re-implement card position analytics -->
+					<kiva-classic-basic-loan-card
+						:item-index="index"
+						:key="`loan-${loanId}`"
+						:loan-id="loanId"
+						:exp-label="expLabel"
+						:lend-now-button="lendNowButton"
+						:show-tags="showTags"
+					/>
+				</template>
+			</div>
+			<div class="tw-mt-4 tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-w-auto tw-mx-auto">
+				<kv-button
+					class="tw-mx-1 tw-mb-3 tw-whitespace-nowrap"
+					:variant="categoryButtonStyle"
+					:to="cleanUrl"
+				>
+					{{ viewAllLoansCategoryTitle }}
+				</kv-button>
+				<kv-button
+					class="tw-block md:tw-hidden tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
+					:to="`/lend-by-category`"
+					:variant="browseButtonStyle"
+				>
+					Browse all
+				</kv-button>
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -66,6 +97,7 @@
 import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'KivaClassicLoanCarousel',
@@ -73,6 +105,7 @@ export default {
 		KvCarousel,
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCard,
+		KvButton
 	},
 	props: {
 		isLoggedIn: {
@@ -115,13 +148,24 @@ export default {
 		lendNowButton: {
 			type: Boolean,
 			default: false
-		}
+		},
+		newHomeExp: {
+			type: Boolean,
+			default: false
+		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
 			name: '',
 			id: 0,
 			url: '',
+			browseButtonStyle: 'primary',
+			categoryButtonStyle: 'secondary',
+			lendByCategoryUrl: 'lend-by-category'
 		};
 	},
 	computed: {
@@ -132,7 +176,6 @@ export default {
 			const clonedLoanIds = [...this.loanIds];
 			// const promoCardId = 1;
 			// const loadMoreCardId = 2;
-			const viewMoreCardId = 3;
 			// TODO: splice if promoCard if active on row
 			// if (this.showPromoCard) {
 			// 	clonedLoanIds.splice(1, 0, promoCardId);
@@ -142,11 +185,6 @@ export default {
 			// 	clonedLoanIds.push(loadMoreCardId);
 			// 	return clonedLoanIds;
 			// }
-			// append viewMoreCard if active
-			if (this.showViewMoreCard) {
-				clonedLoanIds.push(viewMoreCardId);
-				return clonedLoanIds;
-			}
 			return clonedLoanIds;
 		},
 		cleanUrl() {

@@ -2,7 +2,9 @@ var path = require('path')
 
 module.exports = {
 	app: {
+		apolloBatching: false,
 		host: 'www.kiva.org',
+		transport: 'https',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
 		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
@@ -13,20 +15,20 @@ module.exports = {
 		googleTagmanagerId: 'GTM-PX6FDG',
 		enableGA: true,
 		gaId: 'UA-175897-4',
+		grecaptchaSitekey: '6LfAq7UiAAAAAOaRj9Wvv2uDN0WEwlfbEPntrVLD',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
+		enableHotjar: true,
+		hotjarId: '3071239',
 		enableOptimizely: true,
 		optimizelyProjectId: '21625780072',
 		enableFB: true,
 		fbApplicationId: '123230061223',
-		fbPixelId: '1531213600467139',
 		fbOgNameSpace: 'kivadotorg',
-		enableFullStory: true,
-		quantcastId: 'p-UvyXGCbGgb8xA',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@o7540.ingest.sentry.io/1201288',
+		sentryTraceSampleRate: 0.25,
 		algoliaConfig: {
-			enableAA: true,
 			group: 'prod',
 			appId: 'H4ONVZQ2C6',
 			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
@@ -76,6 +78,8 @@ module.exports = {
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',
 		gzipEnabled: false,
+		minVueWorkers: 1,
+		maxVueWorkers: 3,
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

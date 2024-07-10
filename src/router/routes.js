@@ -1,19 +1,7 @@
 module.exports = [
 	{
-		path: '/',
-		name: 'homepage',
-		component: () => import('@/pages/Homepage/Homepage'),
-		meta: {
-			contentfulPage: () => 'home',
-			unbounce: true,
-		},
-	},
-	{
 		path: '/homepage-classic',
 		redirect: '/',
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
 	},
 	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
@@ -49,17 +37,20 @@ module.exports = [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
-
+	{
+		path: '/categories',
+		component: () => import('@/pages/Categories/CategoriesPage')
+	},
 	{
 		path: '/categories-beta',
-		component: () => import('@/pages/Categories/CategoriesBeta')
+		redirect: '/categories'
 	},
-
 	{
 		path: '/cc/:dynamicRoute',
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		},
 		props: route => ({
 			dynamicRoute: route.params.dynamicRoute,
@@ -84,10 +75,21 @@ module.exports = [
 		}
 	},
 	{
+		path: '/checkout/thanks/:challengeId',
+		component: () => import('@/pages/Thanks/ThanksPageChallenge'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		},
+		props: route => ({
+			challengeId: route.params.challengeId,
+		})
+	},
+	{
 		path: '/checkout/thanks',
 		component: () => import('@/pages/Thanks/ThanksPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		}
 	},
 	{
@@ -101,21 +103,9 @@ module.exports = [
 			amount: route.params.amount
 		})
 	},
-	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{
-		path: '/design',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'design',
-		},
-	},
-	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
-	{
-		path: '/donate/supportus',
-		component: () => import('@/pages/Donate/DonateSupportUs'),
-		meta: {
-			unbounce: true,
-		},
+		path: '/covid19response',
+		redirect: '/monthlygood'
 	},
 	{
 		path: '/error',
@@ -125,25 +115,8 @@ module.exports = [
 		}
 	},
 	{
-		path: '/flss',
-		component: () => import('@/pages/FlssPrototypes/SampleLoanDisplay'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/funded/:id',
-		component: () => import('@/pages/BorrowerProfile/FundedBorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
-		path: '/gender-equality',
-		component: () => import('@/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: () => 'gender-equality',
-		},
+		redirect: '/lend/:id'
 	},
 	{
 		path: '/get-started',
@@ -195,7 +168,7 @@ module.exports = [
 		component: () => import('@/pages/LoginAndRegister/JoinTeam'),
 		meta: {
 			excludeFromStaticSitemap: true,
-		}
+		},
 	},
 	{
 		path: '/legal',
@@ -212,6 +185,10 @@ module.exports = [
 		]
 	},
 	{
+		path: '/teams',
+		component: () => import('@/pages/LendingTeams/LendingTeams'),
+	},
+	{
 		path: '/lend-by-category/loans-to-women',
 		redirect: '/lend-by-category/women'
 	},
@@ -220,10 +197,114 @@ module.exports = [
 		redirect: '/lend-by-category/education'
 	},
 	{
+		path: '/lend-by-category/1-billion-in-change',
+		redirect: '/lend-by-category'
+	},
+	{
+		path: '/lend-by-category/arts-loans',
+		redirect: '/lend-by-category/arts',
+	},
+	{
+		path: '/lend-by-category/choose-a-woman-borrower',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/eco-friendly-loans',
+		redirect: '/lend-by-category/eco-friendly',
+	},
+	{
+		path: '/lend-by-category/ecofriendly-loans',
+		redirect: '/lend-by-category/eco-friendly',
+	},
+	{
+		path: '/lend-by-category/flash-match',
+		redirect: '/lend-by-category',
+	},
+	{
+		path: '/lend-by-category/food-loans',
+		redirect: '/lend-by-category/food',
+	},
+	{
+		path: '/lend-by-category/group-loans',
+		redirect: '/lend-by-category/groups',
+	},
+	{
+		path: '/lend-by-category/hitachi-employees-helping-c-o-v-i-d-impacted-businesses',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/hitachi-employees-helping-to-ignite-a-dream',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/hitachis-c-o-v-i-d-19-response',
+		redirect: '/cc/hitachi',
+	},
+	{
+		path: '/lend-by-category/human-flow-fund-support-refugees-and-i-d-ps',
+		redirect: '/lend-by-category/refugees-and-i-d-ps',
+	},
+	{
+		path: '/lend-by-category/i-t-cosmetics-confidence',
+		redirect: '/itcosmetics',
+	},
+	{
+		path: '/lend-by-category/international-womens-day',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/loans-for-healthcare',
+		redirect: '/lend-by-category/health',
+	},
+	{
+		path: '/lend-by-category/loans-for-livestock',
+		redirect: '/lend-by-category/livestock',
+	},
+	{
+		path: '/lend-by-category/loans-for-retail-businesses',
+		redirect: '/lend-by-category/retail-businesses',
+	},
+	{
+		path: '/lend-by-category/loans-for-shelter',
+		redirect: '/lend-by-category/shelter',
+	},
+	{
+		path: '/lend-by-category/loans-that-are-ending-soon',
+		redirect: '/lend-by-category/ending-soon',
+	},
+	{
+		path: '/lend-by-category/loans-to-artisans',
+		redirect: '/lend-by-category/arts',
+	},
+	{
+		path: '/lend-by-category/loans-to-single-parents',
+		redirect: '/lend-by-category/single-parents',
+	},
+	{
+		path: '/lend-by-category/recommended-by-lend-by-categoryers',
+		redirect: '/lend-by-category/recommended-by-lenders',
+	},
+	{
+		path: '/lend-by-category/retail-loans',
+		redirect: '/lend-by-category/retail-businesses',
+	},
+	{
+		path: '/lend-by-category/super-power-a-woman-on-kiva',
+		redirect: '/lend-by-category/women',
+	},
+	{
+		path: '/lend-by-category/world-refugee-day',
+		redirect: '/lend-by-category/refugees-and-i-d-ps',
+	},
+	{
+		path: '/lend-by-category/blackrock',
+		redirect: '/lend-by-category',
+	},
+	{
 		path: '/lend-by-category',
-		component: () => import('@/pages/Lend/LendByCategoryPage'),
+		component: () => import('@/pages/LoanFinding/LoanFinding'),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -231,7 +312,8 @@ module.exports = [
 		component: () => import('@/pages/Lend/LoanChannelCategoryPageRecommendedByLenders'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -239,15 +321,42 @@ module.exports = [
 		component: () => import('@/pages/Lend/LoanChannelCategoryPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
-			unbounce: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
 		},
+	},
+	{
+		path: '/lend-beta/:id',
+		redirect: '/lend/:id'
+	},
+	{
+		path: '/lend/saved-search',
+		component: () => import('@/pages/Settings/SavedSearch'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/lending-home',
+		redirect: '/lend-by-category',
+	},
+	{
+		name: 'borrowerProfile',
+		path: '/lend/:id(\\d+)',
+		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
+		}
 	},
 	{
 		name: 'lend-filter',
 		path: '/lend/filter',
 		component: () => import('@/pages/Lend/LoanSearchPage'),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -256,24 +365,36 @@ module.exports = [
 		redirect: '/lend/filter'
 	},
 	{
-		name: 'borrowerProfile',
-		path: '/lend-beta/:id',
-		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounce: true,
-		},
+		path: '/lend/:category',
+		redirect: '/lend-by-category/:category'
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',
 		redirect: '/gender-equality'
 	},
 	{
+		path: '/lp/support-refugees',
+		redirect: '/refugees'
+	},
+	// Preserved for cms-page-server rollout, will remove after validation
+	/*
+	{
 		path: '/lp/:dynamicRoute',
 		component: () => import('@/pages/ContentfulPage'),
 		meta: {
 			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
 			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
+		},
+	},
+	*/
+	{
+		path: '/hp/:dynamicRoute',
+		component: () => import('@/pages/ContentfulPage'),
+		meta: {
+			contentfulPage: route => `hp/${route.params.dynamicRoute}`,
+			excludeFromStaticSitemap: true,
+			unbouncePopUp: true,
 		},
 	},
 	{
@@ -281,7 +402,7 @@ module.exports = [
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category }),
 		meta: {
-			unbounce: true,
+			unbounceEmailCapture: true,
 		},
 	},
 	{
@@ -293,7 +414,6 @@ module.exports = [
 		props: route => ({
 			amount: Number(route.query.amount),
 			category: route.query.category,
-			onetime: route.query.onetime,
 			source: route.query.source,
 			nextmonth: route.query.nextmonth === 'true',
 			initDonation: Number(route.query.initDonation),
@@ -304,7 +424,6 @@ module.exports = [
 		path: '/monthlygood/thanks',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage'),
 		props: route => ({
-			onetime: String(route.query.onetime),
 			source: route.query.source,
 			paymentType: route.query.paymentType,
 		}),
@@ -314,8 +433,16 @@ module.exports = [
 		}
 	},
 	{
+		path: '/portfolio',
+		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio/lending-stats',
-		component: () => import('@/pages/LendingStats/LendingStatsPage'),
+		component: () => import('@/pages/Portfolio/LendingStats/LendingStatsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
@@ -358,11 +485,29 @@ module.exports = [
 		}),
 	},
 	{
+		path: '/process-join-team',
+		component: () => import('@/pages/ProcessJoinTeam'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			authenticationRequired: true,
+		},
+		props: route => ({
+			doneUrl: route.query.doneUrl,
+			teamRecruitmentId: Number(route.query.teamRecruitmentId),
+			teamPublicId: route.query.teamPublicId,
+			promoId: Number(route.query.promoId),
+			inviter: route.query.inviter
+		})
+	},
+	{
 		path: '/register/social',
 		component: () => import('@/pages/LoginAndRegister/RegisterSocial'),
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
+		props: route => ({
+			partnerContentId: route.query.partnerContentId,
+		}),
 		beforeEnter(to, from, next) {
 			// Redirect to error page if state parameter is missing
 			const { state } = to.query ?? {};
@@ -435,6 +580,8 @@ module.exports = [
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
+			mfaRequired: true,
+			recentLoginRequired: true,
 		},
 	},
 	{
@@ -496,17 +643,6 @@ module.exports = [
 	{
 		path: '/styleguide/*',
 		redirect: '/styleguide',
-		meta: {
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
-		path: '/lend/saved-search-beta',
-		component: () => import('@/pages/Settings/SavedSearchBeta'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		}
 	},
 	{
 		path: '/ui-site-map',
@@ -533,16 +669,6 @@ module.exports = [
 		}
 	},
 	// These are Demo Pages
-	{
-		path: '/algolia-vue',
-		component: () => import('@/pages/AlgoliaPOC'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-		children: [
-			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
-		]
-	},
 	{
 		path: '/lend-vue',
 		component: () => import('@/pages/Lend/LendPage'),

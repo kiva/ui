@@ -151,10 +151,10 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
@@ -212,6 +212,7 @@ const lendersQuery = gql`query lendersQuery($loanId: Int!, $limit: Int, $offset:
 
 const userQuery = gql`query userQuery {
 	my {
+		id
 		lender {
 			id
 			publicId
@@ -250,14 +251,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		socialExpEnabled: {
-			type: Boolean,
-			default: false
-		},
-		showLightBoxModal: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {

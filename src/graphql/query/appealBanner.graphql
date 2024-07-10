@@ -1,5 +1,6 @@
 query appealBanner($basketId: String) {
 	my {
+		id
 		userAccount {
 			id
 			promoBalance

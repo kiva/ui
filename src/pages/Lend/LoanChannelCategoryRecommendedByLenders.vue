@@ -14,7 +14,7 @@
 				</h1>
 				<p
 					v-if="loanChannelDescription"
-					class="page-subhead show-for-large tw-mb-4"
+					class="page-subhead tw-mb-4"
 				>
 					{{ loanChannelDescription }}
 				</p>
@@ -36,6 +36,7 @@
 						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
+						:enable-huge-amount="enableHugeAmount"
 						loan-card-type="GridLoanCard"
 					/>
 				</div>
@@ -65,7 +66,7 @@
 * client side filtering of loans that are not monthly.
 */
 
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import loanCardFields from '@/graphql/fragments/loanCardFields.graphql';
 
 import _get from 'lodash/get';
@@ -78,8 +79,6 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -190,10 +189,7 @@ export default {
 		ViewToggle,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [
-		lendFilterExpMixin,
-		loanChannelQueryMapMixin,
-	],
+	mixins: [loanChannelQueryMapMixin],
 	metaInfo() {
 		return {
 			link: [
@@ -205,6 +201,12 @@ export default {
 			]
 		};
 	},
+	props: {
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	data() {
 		return {
 			offset: 0,
@@ -215,7 +217,6 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
-			lendFilterExpVersion: '',
 			selectedChannelLoanIds: [],
 		};
 	},
@@ -269,10 +270,23 @@ export default {
 			return client.query({
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
+				// combine both 'pages' of loan channels
+				const pageQueryData = {
+					...data,
+					lend: {
+						loanChannels: {
+							values: [
+								...(data?.lend?.firstLoanChannels?.values ?? []),
+								...(data?.lend?.secondLoanChannels?.values ?? [])
+							]
+						}
+					}
+				};
+
 				// filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = routePath;
 				// isolate targeted loan channel id
-				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
+				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 				// extract query
 				const pageQuery = _get(args, 'route.query');
 
@@ -301,13 +315,25 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelPageQuery');
 		}
+		// combine both 'pages' of loan channels
+		const pageQueryData = {
+			...allChannelsData,
+			lend: {
+				loanChannels: {
+					values: [
+						...(allChannelsData?.lend?.firstLoanChannels?.values ?? []),
+						...(allChannelsData?.lend?.secondLoanChannels?.values ?? [])
+					]
+				}
+			}
+		};
 
 		// set user status
-		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
+		this.isVisitor = !_get(pageQueryData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
 		const targetedLoanChannelURL = routePath;
 		// isolate targeted loan channel id
-		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, pageQueryData);
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
 
@@ -331,19 +357,11 @@ export default {
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
-
-		/*
-		 * Experiment Initializations
-		*/
-
-		// Lend Filter Redirects
-		this.initializeLendFilterRedirects();
 	},
 	mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
 		this.activateLoanChannelWatchQuery();
 
-		this.updateLendFilterExp();
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = this.cookieStore.get('redirectFromUi') || '';
 		if (redirectFromUiCookie === 'true') {
@@ -429,16 +447,6 @@ export default {
 			}
 			// use default
 			return '/lend/filter';
-		},
-		initializeLendFilterRedirects() {
-			const lendFilterEXP = this.apollo.readFragment({
-				id: 'Experiment:lend_filter_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.lendFilterExpVersion = lendFilterEXP.version;
-
-			// Update Lend Filter Exp CASH-545
-			this.getLendFilterExpVersion();
 		},
 	},
 	watch: {

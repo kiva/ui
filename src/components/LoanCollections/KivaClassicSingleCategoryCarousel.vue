@@ -1,25 +1,34 @@
 <template>
-	<div v-if="loanChannelId && selectedChannelLoanIds.length > 0">
-		<h2 class="tw-mb-2">
-			{{ selectedChannel.name }}
-		</h2>
-		<p class="tw-mb-2">
-			{{ selectedChannel.description }}
+	<div>
+		<div>
+			<h2 class="tw-mb-2 tw-block md:tw-inline">
+				{{ name }}
+			</h2>
+		</div>
+		<p class="tw-text-subhead">
+			{{ description }}
 		</p>
-		<kiva-classic-loan-carousel
-			:is-visible="showCarousel"
-			:loan-ids="selectedChannelLoanIds"
-			:selected-channel="selectedChannel"
-			:show-view-more-card="showViewMoreCard"
-			:lend-now-button="lendNowButton"
-			:show-check-back-message="showCheckBackMessage"
-		/>
+		<div>
+			<kiva-classic-loan-carousel
+				:is-visible="true"
+				:loan-ids="selectedChannelLoanIds"
+				:selected-channel="channelData"
+				:show-view-more-card="showViewMoreCard"
+				:lend-now-button="lendNowButton"
+				:show-check-back-message="showCheckBackMessage"
+			/>
+		</div>
 	</div>
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
+import { FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
+
+import {
+	getLoanChannel,
+} from '@/util/loanChannelUtils';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 
 export default {
 	name: 'KivaClassicSingleCategoryCarousel',
@@ -28,12 +37,36 @@ export default {
 		KivaClassicLoanCarousel,
 	},
 	props: {
+		/** prefetched selected channel
+		 * if this data is passed in, it will be used instead of fetching the channel data
+		 * */
+		prefetchedSelectedChannel: {
+			type: Object,
+			default: null
+		},
 		/**
 		 * Loan channel id
 		* */
 		loanChannelId: {
 			type: Number,
 			default: null,
+		},
+		/**
+		 * Loan channel description
+		 * is overwritten by api call but allows prop to display instantly
+		* */
+		loanChannelDescription: {
+			type: String,
+			default: '',
+		},
+		/**
+		 * Loan channel name
+		 * is overwritten by api call but allows prop to display instantly
+		 *
+		* */
+		loanChannelName: {
+			type: String,
+			default: '',
 		},
 		/**
 		 * Additional display settings
@@ -49,21 +82,29 @@ export default {
 		lendNowButton: {
 			type: Boolean,
 			default: false
+		},
+		queryContext: {
+			type: String,
+			default: FLSS_ORIGIN_NOT_SPECIFIED,
 		}
 	},
 	data() {
 		return {
 			selectedChannel: {},
-			showCarousel: false,
-			isUrgencyExpVersionShown: false
 		};
 	},
+	mixins: [
+		loanChannelQueryMapMixin,
+	],
 	computed: {
 		loanQueryLimit() {
 			return this.loanDisplaySettings?.loanLimit ?? 1;
 		},
 		showViewMoreCard() {
-			return this.loanDisplaySettings?.showViewMoreCard ?? false;
+			if (this.loanDisplaySettings?.showViewMoreCard) {
+				return this.loanQueryLimit === this.selectedChannelLoanIds.length;
+			}
+			return false;
 		},
 		showCheckBackMessage() {
 			if (this.loanDisplaySettings?.showCheckBackMessage) {
@@ -72,42 +113,49 @@ export default {
 			return false;
 		},
 		selectedChannelLoanIds() {
-			return this.selectedChannel?.loans?.values?.map(loan => loan.id) ?? [];
+			return this.channelData?.loans?.values?.map(loan => loan.id) ?? [];
 		},
+		name() {
+			// return optional prop value or value from api
+			return this.loanChannelName || this.channelData?.name;
+		},
+		description() {
+			// return optional prop value or value from api
+			return this.loanChannelDescription || this.channelData?.description;
+		},
+		channelData() {
+			if (!this.prefetchedSelectedChannel) {
+				return this.selectedChannel;
+			}
+			return this.prefetchedSelectedChannel;
+		}
 	},
 	mounted() {
-		this.fetchLoanChannel();
+		// if channel data is not passed in, fetch it
+		if (!this.prefetchedSelectedChannel) {
+			this.fetchLoanChannelFLSS();
+		}
 	},
 	methods: {
-		fetchLoanChannel() {
-			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
-					lend {
-						loanChannelsById(ids: $loanChannelIds){
-							id
-							name
-							url
-							description
-							loans(limit: $loanLimit) {
-								values {
-									id
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanChannelIds: this.loanChannelId,
-					loanLimit: this.loanQueryLimit
-				},
-			}).then(result => {
-				const loanChannelData = result?.data?.lend?.loanChannelsById ?? [];
-				// eslint-disable-next-line prefer-destructuring
-				this.selectedChannel = loanChannelData?.[0] ?? {};
-				// Make the carousel visible
-				this.showCarousel = true;
-			});
+		async fetchLoanChannelFLSS() {
+			const channelUrl = this.loanChannelQueryMap.find(c => c.id === this.loanChannelId)?.url;
+			const loanQueryVars = {
+				ids: [this.loanChannelId],
+				offset: 0,
+				limit: this.loanDisplaySettings?.loanLimit ?? 1,
+				basketId: this.cookieStore.get('kvbskt'),
+				origin: this.queryContext
+			};
+			const channelData = await getLoanChannel(
+				this.apollo,
+				this.loanChannelQueryMap,
+				channelUrl,
+				loanQueryVars,
+			);
+			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
+			this.selectedChannel = loanChannelData?.[0];
 		},
-	}
+	},
+
 };
 </script>

@@ -1,0 +1,18 @@
+#import '../fragments/loanSearchCriteriaFields.graphql'
+
+query savedSearches($offset: Int, $limit: Int) {
+	my {
+		id
+		savedSearches(offset: $offset, limit: $limit){
+			values {
+				id
+				name
+				isAlert
+				url
+				loanSearchCriteria {
+					...loanSearchCriteriaFields
+				}
+			}
+		}
+	}
+}

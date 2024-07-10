@@ -63,12 +63,8 @@
 				</div>
 				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-xlarge">
 					<borrower-info-body
-						:amount="loan.loanAmount"
-						:borrower-count="loan.borrowerCount"
-						:name="loan.name"
-						:status="loan.status"
 						:max-use-length="200"
-						:use="loan.use"
+						:use="loan.fullLoanUse"
 						:loan-id="loan.id"
 						:disable-link="disableRedirects"
 						read-more-link-text="Read full details"
@@ -98,9 +94,10 @@
 							:is-selected-by-another="isSelectedByAnother"
 							:is-simple-lend-button="false"
 							:disable-redirects="disableRedirects"
-							:is-amount-lend-button="lessThan25"
+							:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 							:amount-left="amountLeft"
-							:show-now="true"
+							:show-now="!enableFiveDollarsNotes"
+							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							@click.native="trackInteraction({
 								interactionType: 'addToBasket',
 								interactionElement: 'Lend25'
@@ -133,12 +130,7 @@
 					Overview
 				</template>
 				<borrower-info-body
-					:amount="loan.loanAmount"
-					:borrower-count="loan.borrowerCount"
-					:name="loan.name"
-					:status="loan.status"
-					:use="loan.use"
-					:max-use-length="1000"
+					:use="loan.fullLoanUse"
 					:loan-id="loan.id"
 					:disable-link="true"
 					read-more-link-text=""
@@ -246,6 +238,10 @@ export default {
 		hideLendCta: {
 			type: Boolean,
 			default: false,
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {

@@ -1,5 +1,6 @@
 query tipMessageData {
 	tip @client {
+		id
 		message
 		persist
 		type

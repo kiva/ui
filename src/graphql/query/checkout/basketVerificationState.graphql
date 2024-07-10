@@ -4,12 +4,14 @@ query basketVerificationState($basketId: String) {
 		basketVerificationState
 	}
 	my {
+		id
 		userAccount {
 			id
 			email
 		}
 	}
 	verificationLightbox @client {
+		id
 		visible
 	}
 }

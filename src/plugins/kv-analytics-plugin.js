@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import logFormatter from '@/util/logFormatter';
 import SimpleQueue from '@/util/simpleQueue';
 
@@ -8,6 +9,7 @@ export default {
 		let snowplowLoaded;
 		let gtagLoaded;
 		let fbLoaded;
+		let optimizelyLoaded;
 		const queue = new SimpleQueue();
 
 		const kvActions = {
@@ -15,6 +17,7 @@ export default {
 				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 				fbLoaded = inBrowser && typeof window.fbq === 'function';
+				optimizelyLoaded = inBrowser && typeof window.optimizely === 'object';
 
 				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
 					return true;
@@ -224,7 +227,9 @@ export default {
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}
-				kvActions.trackQuantcast(transactionData);
+				if (optimizelyLoaded) {
+					kvActions.trackOPTransaction(transactionData);
+				}
 			},
 			trackFBTransaction: transactionData => {
 				const itemTotal = transactionData.itemTotal || '';
@@ -235,26 +240,6 @@ export default {
 						content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
 					});
 				}
-
-				// send transaction data
-				kvActions.trackFBCustomEvent(
-					'TransactionInfo',
-					{
-						depositTotal: transactionData.depositTotal,
-						donationTotal: transactionData.donationTotal,
-						isFtd: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender',
-						isTip: transactionData.isTip,
-						isUserEdited: transactionData.isUserEdited,
-						itemTotal: transactionData.itemTotal,
-						loanCount: transactionData.loanCount,
-						loanTotal: transactionData.loanTotal,
-						kivaCardCount: transactionData.kivaCardCount,
-						kivaCardTotal: transactionData.kivaCardTotal,
-						kivaCreditUsed: transactionData.kivaCreditAppliedTotal,
-						paymentType: transactionData.paymentType,
-						transactionId: transactionData.transactionId,
-					}
-				);
 
 				// signify transaction has kiva cards
 				if (transactionData.kivaCards && transactionData.kivaCards.length) {
@@ -306,31 +291,40 @@ export default {
 					non_interaction: true
 				});
 			},
-			trackQuantcast: transactionData => {
-				// exit if script is not loaded due to blocking or user choice
-				// eslint-disable-next-line no-underscore-dangle
-				if (typeof window._qevents === 'undefined') return false;
-
-				let qacct = null;
-				/* eslint-disable no-underscore-dangle */
-				if (window.__KV_CONFIG__ && window.__KV_CONFIG__.quantcastId) {
-					qacct = window.__KV_CONFIG__.quantcastId;
+			trackOPTransaction: transactionData => {
+				if (transactionData.depositTotal > 0) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'deposit',
+						tags: {
+							revenue: transactionData.depositTotal * 100,
+							deposit_amount: transactionData.depositTotal
+						}
+					});
 				}
 
-				const customerType = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
-				const donationAmountNormalized = transactionData.donationTotal ? transactionData.donationTotal.replace('.', '') : null;
+				if (transactionData.loanTotal > 0) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'loan_share_purchase',
+						tags: {
+							revenue: transactionData.loanTotal * 100,
+							loan_share_purchase_amount: transactionData.loanTotal
+						}
+					});
+				}
 
-				// format data for quantcast event
-				// eslint-disable-next-line no-underscore-dangle
-				window._qevents.push({
-					qacct,
-					uid: 'null',
-					labels: `_fp.event.Checkout,_fp.customer.${customerType},_fp.donation.${donationAmountNormalized}`,
-					orderid: String(transactionData.transactionId),
-					revenue: String(transactionData.itemTotal),
-					event: 'refresh'
-				});
-			},
+				if (transactionData.donationTotal > 0) {
+					window.optimizely.push({
+						type: 'event',
+						eventName: 'donation',
+						tags: {
+							revenue: transactionData.donationTotal * 100,
+							donation_amount: transactionData.donationTotal
+						}
+					});
+				}
+			}
 		};
 
 		Vue.directive('kv-track-event', {

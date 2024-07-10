@@ -94,9 +94,9 @@
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">
 									<li>
-										<router-link to="/">
+										<a href="/">
 											Logo
-										</router-link>
+										</a>
 									</li>
 									<li>
 										<a
@@ -115,9 +115,9 @@
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">
 									<li>
-										<router-link to="/">
+										<a href="/">
 											kiva.org
-										</router-link>
+										</a>
 									</li>
 									<li>
 										<a href="https://kiva.global">

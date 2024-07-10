@@ -25,6 +25,7 @@ describe('numberUtils.js', () => {
 			expect(isNumber(undefined)).toBe(false);
 			expect(isNumber(true)).toBe(false);
 			expect(isNumber(false)).toBe(false);
+			expect(isNumber('')).toBe(false);
 			expect(isNumber('.')).toBe(false);
 			expect(isNumber('1asd')).toBe(false);
 			expect(isNumber('1.asd')).toBe(false);

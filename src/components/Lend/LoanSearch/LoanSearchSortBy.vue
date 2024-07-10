@@ -22,7 +22,8 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE, sortByNameToDisplay } from '@/util/loanSearch/filterUtils';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
 
@@ -45,6 +46,10 @@ export default {
 		allSortOptions: {
 			type: Array,
 			default: undefined
+		},
+		extendFlssFilters: {
+			type: Boolean,
+			default: false,
 		},
 		isLoggedIn: {
 			type: Boolean,

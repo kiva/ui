@@ -1,4 +1,5 @@
 query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
+	hasEverLoggedIn @client
 	shop {
 		id
 		receipt(checkoutId: $checkoutId, visitorId: $visitorId) {
@@ -73,6 +74,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								city
 								country {
 									name
+									isoCode
 								}
 							}
 							loanAmount
@@ -80,7 +82,15 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								fundedAmount
 								reservedAmount
 							}
+							distributionModel
 							unreservedAmount @client
+							inPfp
+							gender
+						}
+						team {
+							id
+							teamPublicId
+							name
 						}
 					}
 				}
@@ -88,6 +98,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 	}
 	my {
+		id
 		autoDeposit {
 			id
 			isSubscriber
@@ -102,6 +113,15 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 				}
 			}
 		}
+		lender {
+			id
+			name
+			image {
+				id
+				url
+			}
+			publicId
+		}
 		userAccount {
 			id
 			firstName
@@ -110,32 +130,27 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			inviterName
 			public
 		}
-		subscriptions {
-			values {
-				id
-			}
+		loans {
+			totalCount
 		}
-	}
-	general {
-		autoDepositUpsellSetting: uiExperimentSetting(key: "thanks_ad_upsell") {
-			key
-			value
-		}
-	}
-	general {
-		thanksShareModule: uiExperimentSetting(key: "thanks_share_module") {
-			key
-			value
-		}
-	}
-	general {
-		shareCardLanguage: uiExperimentSetting(key: "share_card_language") {
-			key
-			value
+		communicationSettings {
+			lenderNews
 		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
+			key
+			value
+		}
+		ftd_message_enable: uiConfigSetting(key: "ftd_message_enable") {
+			key
+			value
+		}
+		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
+			key
+			value
+		}
+		newThanksPageEnabled: featureSetting(key: "new_thanks_page.enabled") {
 			key
 			value
 		}

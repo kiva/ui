@@ -28,6 +28,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvChipClassic from '@/components/Kv/KvChipClassic';
+import filterConfig from '@/util/loanSearch/filterConfig';
 import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
 
 export default {
@@ -39,11 +40,11 @@ export default {
 	props: {
 		loanSearchState: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 		allFacets: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		}
 	},
 	data() {
@@ -66,83 +67,28 @@ export default {
 			return typeof this.isCollapsable !== 'undefined' && this.isCollapsable;
 		},
 		items() {
-			return this.getLabelsFromState(this.loanSearchState, this.allFacets);
+			return this.getLabelsFromState();
 		},
 		containerMaxHeight() {
 			return !this.isCollapsed ? { 'max-height': 'none' } : undefined;
 		}
 	},
 	methods: {
-		formatRemovedFacet(facetType, facet) {
-			switch (facetType) {
-				case 'Gender':
-					return {
-						gender: null
-					};
-				case 'Sector':
-					return { sectorId: [...this.loanSearchState.sectorId?.filter(id => facet.id !== id)] };
-				case 'Country':
-					return {
-						countryIsoCode: [...this.loanSearchState.countryIsoCode?.filter(iso => {
-							return facet.isoCode !== iso;
-						})]
-					};
-				case 'LoanThemeFilter':
-					return { themeId: [...this.loanSearchState.themeId?.filter(id => facet.id !== id)] };
-				default:
-					return {};
-			}
+		formatRemovedFacet(facet) {
+			return filterConfig.config[facet.key].getRemovedFacet(this.loanSearchState, facet);
 		},
-		getLabelsFromState(loanSearchState = {}, allFacets) {
-			let itemList = [];
-			// Check for each section of loanSearchState
-			// Countries
-			if (loanSearchState.countryIsoCode?.length) {
-				const countryFacets = loanSearchState.countryIsoCode?.map(iso => {
-					return allFacets.countryFacets?.find(facet => {
-						return facet.country.isoCode === iso;
-					})?.country;
-				});
-				itemList = [...countryFacets];
-			}
-			// Sectors
-			if (loanSearchState.sectorId?.length) {
-				const sectorFacets = loanSearchState.sectorId?.map(sectorId => {
-					return allFacets.sectorFacets?.find(facet => {
-						return facet.id === sectorId;
-					});
-				});
-				itemList = [...itemList, ...sectorFacets];
-			}
-			// Themes/Attributes
-			if (loanSearchState.themeId?.length) {
-				const themeFacets = loanSearchState.themeId?.map(id => {
-					return allFacets.themeFacets?.find(facet => facet.id === id);
-				});
-				itemList = [...itemList, ...themeFacets];
-			}
-			// Gender
-			if (loanSearchState.gender) {
-				const genderFacet = loanSearchState.gender === 'female'
-					? {
-						value: 'female',
-						name: 'Women',
-						__typename: 'Gender'
-					}
-					: {
-						value: 'male',
-						name: 'Men',
-						__typename: 'Gender'
-					};
-				itemList.push(genderFacet);
-			}
-			return itemList;
+		getLabelsFromState() {
+			return filterConfig.keys.reduce((prev, key) => {
+				const chips = filterConfig.config[key].getFilterChips(this.loanSearchState, this.allFacets);
+				prev.push(...chips.map(f => ({ ...f, key })));
+				return prev;
+			}, []);
 		},
 		handleChipClick(facet) {
 			// Convert our removed facet back into a compatible facet structure
 			// eslint-disable-next-line no-underscore-dangle
 			const facetType = facet.__typename;
-			const formattedFacet = this.formatRemovedFacet(facetType, facet);
+			const formattedFacet = this.formatRemovedFacet(facet);
 			this.$emit('updated', formattedFacet);
 
 			this.$kvTrackEvent('Lending', 'click-remove-filter-chip', `${facetType}-${facet.name}`);

@@ -93,15 +93,15 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvSelect from '@/components/Kv/KvSelect';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
 
 import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';
@@ -134,6 +134,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileWhen {
 			autolending @client {
+				id
 				profileChanged
 				currentProfile {
 					id
@@ -143,6 +144,7 @@ export default {
 				}
 			}
 			my {
+				id
 				autoDeposit {
 					id
 					donateAmount
@@ -170,6 +172,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation editDonation($donation: Int) {
 						autolending @client {
+							id
 							editProfile(profile: { donationPercentage: $donation })
 						}
 					}`,
@@ -199,6 +202,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation saveProfile {
 					autolending @client {
+						id
 						saveProfile
 					}
 				}`

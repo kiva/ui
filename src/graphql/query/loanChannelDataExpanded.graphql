@@ -14,7 +14,10 @@ query loanChannelDataExpanded (
 		loanChannelsById(ids: $ids) {
 			id
 			name
+			headline
+			metaTitle
 			description
+			metaDescription
 			url
 			loans(
 				limit: $limit,

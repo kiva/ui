@@ -1,18 +1,14 @@
 query checkoutSettings($basketId: String) {
 	general {
-		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
-			value
-			key
-		}
-		upsellsEnabled: uiExperimentSetting(key: "upsells_checkout") {
+		ftd_message_enable: uiConfigSetting(key: "ftd_message_enable") {
 			key
 			value
 		}
-		requireDepositsMatchedLoans: uiExperimentSetting(key: "require_deposits_matched_loans") {
+		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
 			key
 			value
 		}
-		upsellsCopy: uiExperimentSetting(key: "upsells_copy") {
+		ftd_message_valid_date: uiConfigSetting(key: "ftd_message_valid_date") {
 			key
 			value
 		}

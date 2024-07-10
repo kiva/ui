@@ -1,0 +1,497 @@
+<template>
+	<www-page main-class="tw-bg-white" style="height: auto;">
+		<div class="tw-w-full">
+			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
+
+			<!-- eslint-disable-next-line max-len -->
+			<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+				<h3 class="tw-text-h3 tw-text-primary">
+					Welcome back{{ firstName ? ', ' : '' }}
+					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+				</h3>
+			</div>
+
+			<!-- First category row: Recommended loans section -->
+			<lending-category-section
+				:title="firstRowTitle"
+				:subtitle="firstRowSubtitle"
+				:loans="firstRowLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
+				:user-balance="userBalance"
+				:per-step="perStepRecommendedRow"
+				@add-to-basket="trackCategory($event, 'recommended')"
+				:class="{ 'tw-pt-3' : !isLoggedIn }"
+			/>
+
+			<!-- Almost Funded loans row -->
+			<lending-category-section
+				id="almost-funded-section"
+				v-if="enableAlmostFundedRow"
+				:title="almostFundedRowTitle"
+				:subtitle="almostFundedRowSubtitle"
+				:loans="almostFundedLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, 'almost-funded')"
+				class="tw-pt-3 tw-mb-2"
+			/>
+
+			<!-- Five dollars row -->
+			<lending-category-section
+				id="five-dollars-section"
+				v-if="enableFiveDollarsNotes"
+				:title="fiveDollarsRowTitle"
+				:subtitle="fiveDollarsRowSubtitle"
+				:loans="fiveDollarsRowLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
+				:user-balance="userBalance"
+				:five-dollars-selected="true"
+				:title-icon="HandOrangeIcon"
+				@add-to-basket="trackCategory($event, 'five-dollars')"
+				class="tw-pt-3 tw-mb-2"
+			/>
+
+			<div class="tw-flex tw-flex-col">
+				<quick-filters-section
+					class="tw-mt-3"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-qf-mobile="enableQFMobileVersion"
+					:enable-almost-funded-row="enableAlmostFundedRow"
+					:enable-huge-amount="enableHugeLendAmount"
+					:user-balance="userBalance"
+					@add-to-basket="trackCategory($event, 'quick-filters')"
+					@data-loaded="trackQuickFiltersDisplayedLoans"
+				/>
+
+				<!-- Element to trigger spotlight observer -->
+				<div ref="spotlightObserver"></div>
+
+				<!-- Second category row: Matched loans section -->
+				<lending-category-section
+					:title="secondCategoryTitle"
+					:subtitle="secondCategorySubtitle"
+					:loans="secondCategoryLoans"
+					class="tw-py-3"
+					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-huge-amount="enableHugeLendAmount"
+					:user-balance="userBalance"
+					@add-to-basket="trackCategory($event, 'matched-lending')"
+				/>
+			</div>
+
+			<partner-spotlight-section
+				class="tw-pt-3"
+				:spotlight-data="activeSpotlightData"
+				:loans="spotlightLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
+			/>
+		</div>
+	</www-page>
+</template>
+
+<script>
+import userInfoQuery from '@/graphql/query/userInfo.graphql';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
+import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
+import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
+import FiveDollarsBanner from '@/components/LoanFinding/FiveDollarsBanner';
+import { runLoansQuery } from '@/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
+import { createIntersectionObserver } from '@/util/observerUtils';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
+import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graphql';
+import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import HandOrangeIcon from '@/assets/images/hand_orange.svg';
+
+const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
+const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
+const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
+const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
+const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
+
+export default {
+	name: 'LoanFinding',
+	inject: ['apollo', 'cookieStore'],
+	components: {
+		WwwPage,
+		LendingCategorySection,
+		QuickFiltersSection,
+		PartnerSpotlightSection,
+		FiveDollarsBanner,
+	},
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount],
+	metaInfo() {
+		return {
+			title: 'Make a loan, change a life | Loans by category',
+			meta: [
+				{
+					vmid: 'description',
+					name: 'description',
+					content: 'Choose a category, lend to borrowers, and make an impact. '
+						+ 'Each Kiva loan helps people build a better future for themselves and their families.'
+				},
+			],
+		};
+	},
+	data() {
+		return {
+			userInfo: {},
+			firstRowLoans: [],
+			almostFundedLoans: new Array(9).fill({ id: 0 }),
+			secondCategoryLoans: new Array(9).fill({ id: 0 }),
+			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
+			matchedLoansTotal: 0,
+			spotlightLoans: [],
+			spotlightIndex: 0,
+			spotlightViewportObserver: null,
+			userBalance: undefined,
+			showFiveDollarsBanner: false,
+			enableThreeLoansRecommended: false,
+			enableQFMobileVersion: false,
+			enableAlmostFundedRow: false,
+			HandOrangeIcon,
+		};
+	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: experimentAssignmentQuery, variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
+			}).then(() => {
+				const recommendedLoansPromise = client.query({
+					query: flssLoansQueryExtended,
+					variables: prefetchedRecommendedLoansVariables
+				});
+
+				return Promise.all([
+					client.query({ query: userInfoQuery }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
+					recommendedLoansPromise
+				]);
+			});
+		},
+	},
+	computed: {
+		isLoggedIn() {
+			return !!this.userInfo?.id;
+		},
+		firstName() {
+			return this.userInfo?.firstName ?? '';
+		},
+		userBalanceString() {
+			const balance = this.userInfo?.balance ?? '';
+			if (balance % 1 === 0) return Number(balance).toFixed();
+			return balance;
+		},
+		secondCategoryTitle() {
+			if (this.matchedLoansTotal > 0) {
+				if (this.matchedLoansTotal < 3) return 'Help these borrowers cross the finish line';
+				return 'Matched lending';
+			}
+			return 'Borrowers at the finish line';
+		},
+		secondCategorySubtitle() {
+			if (this.matchedLoansTotal > 0) {
+				if (this.matchedLoansTotal < 3) return 'Loans that are ending soon, almost funded, and matched';
+				return 'Stretch your funds further with the help of our partners and Kivans just like you';
+			}
+			return 'Loans that are ending soon or almost funded';
+		},
+		activeSpotlightData() {
+			return spotlightData[this.spotlightIndex] ?? {};
+		},
+		firstRowTitle() {
+			return this.isLoggedIn
+				? 'Recommended for you'
+				: 'Make a difference <span class="tw-text-action">today</span>';
+		},
+		firstRowSubtitle() {
+			return this.isLoggedIn
+				? 'Loans handpicked for you based on your lending history'
+				: 'Support a featured borrower with a microloan.';
+		},
+		fiveDollarsRowTitle() {
+			return 'It takes just <span class="tw-text-action">$5 to change a life</span>';
+		},
+		fiveDollarsRowSubtitle() {
+			return 'Lend as little as $5 to fund a new dream.';
+		},
+		showWelcomeMsg() {
+			return this.isLoggedIn && !this.showFiveDollarsBanner;
+		},
+		perStepRecommendedRow() {
+			return !this.enableThreeLoansRecommended ? 2 : 3;
+		},
+		almostFundedRowTitle() {
+			return 'Loans that are <span class="tw-text-action">almost funded</span>';
+		},
+		almostFundedRowSubtitle() {
+			return 'Be the difference maker for these borrowers who only have a small amount remaining to be funded.';
+		},
+	},
+	methods: {
+		async getRecommendedLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ pageLimit: 12 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+
+			// Ensure unique loans are pushed since recommendations can change quickly
+			const remainingRecommendedLoans = loans
+				.filter(l => !this.firstRowLoans.filter(r => r.id === l.id).length)
+				.slice(0, 8);
+
+			this.firstRowLoans = [
+				...this.firstRowLoans.slice(0, 4),
+				...remainingRecommendedLoans
+			];
+
+			this.trackFirstRowDisplayedLoans();
+		},
+		async getSecondCategoryData() {
+			let fallbackLoans = [];
+			const matchedLoans = await this.getMatchedLoans();
+			this.matchedLoansTotal = matchedLoans.length;
+			if (this.matchedLoansTotal < 3) {
+				fallbackLoans = await this.getExpiringSoonAlmostFundedCombo();
+			}
+			this.secondCategoryLoans = [...matchedLoans, ...fallbackLoans].slice(0, 9);
+
+			this.trackSecondCarouselDisplayedLoans();
+		},
+		async getExpiringSoonAlmostFundedCombo() {
+			const expiringSoonData = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'expiringSoon', pageLimit: 5 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+			const almostFundedData = await this.almostFundedQuery(4);
+
+			return [...expiringSoonData.loans, ...almostFundedData.loans];
+		},
+		async getMatchedLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ isMatchable: true, pageLimit: 9 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+			return loans ?? [];
+		},
+		async getFiveDollarsLoans() {
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLowToHigh', pageLimit: 30 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+			this.fiveDollarsRowLoans = loans ?? [];
+		},
+		async fetchSpotlightLoans() {
+			// Only query the spotlight loans once
+			if (this.spotlightLoans?.length) return;
+
+			const flssFilterCriteria = this.activeSpotlightData?.flssLoanSearch ?? {};
+			const { loans } = await runLoansQuery(
+				this.apollo,
+				{ ...flssFilterCriteria, pageLimit: 6 },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+
+			this.spotlightLoans = loans ?? [];
+
+			this.trackSpotlightDisplayedLoans();
+		},
+		async getAlmostFundedLoans() {
+			const { loans } = await this.almostFundedQuery(9);
+			this.almostFundedLoans = loans ?? [];
+		},
+		almostFundedQuery(pageLimit) {
+			return runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
+		},
+		trackCategory({ success }, category) {
+			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
+		},
+		verifySpotlightIndex() {
+			const spotlightCookie = this.cookieStore.get('lh_spotlight') || null;
+			const cookieIndexNumber = Number(spotlightCookie);
+			if (spotlightCookie) this.spotlightIndex = spotlightData.length - 1 <= cookieIndexNumber ? 0 : cookieIndexNumber + 1; // eslint-disable-line max-len
+			this.cookieStore.set('lh_spotlight', this.spotlightIndex);
+			this.$kvTrackEvent('event-tracking', 'show', `lending-home-spotlight-${this.activeSpotlightData.keyword}`);
+		},
+		createSpotlightViewportObserver() {
+			this.spotlightViewportObserver = createIntersectionObserver({
+				targets: [this.$refs.spotlightObserver],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							this.fetchSpotlightLoans();
+						}
+					});
+				}
+			});
+		},
+		destroySpotlightViewportObserver() {
+			if (this.spotlightViewportObserver) {
+				this.spotlightViewportObserver.disconnect();
+			}
+		},
+		trackDisplayedLoans(sectionIdentifier, sectionPosition, loans, pageOffset = 0) {
+			const loansDisplayed = loans?.filter(l => !!l.id)?.map((l, i) => ({
+				position: i + pageOffset + 1,
+				loanId: l.id,
+			})) ?? [];
+
+			if (loansDisplayed.length) {
+				const event = {
+					// eslint-disable-next-line max-len
+					schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_lend_by_category_loan_display_event_v3_schema_1_0_0.json#',
+					data: {
+						sectionIdentifier,
+						sectionPosition,
+						loansDisplayed,
+					},
+				};
+
+				this.$kvTrackSelfDescribingEvent(event);
+			}
+		},
+		trackFirstRowDisplayedLoans() {
+			this.trackDisplayedLoans('recommended', 1, this.firstRowLoans);
+		},
+		trackQuickFiltersDisplayedLoans({ data, pageOffset }) {
+			this.trackDisplayedLoans('quick-filters', 2, data, pageOffset);
+		},
+		trackSecondCarouselDisplayedLoans() {
+			this.trackDisplayedLoans(
+				this.matchedLoansTotal < 3 ? 'ending-soon-almost-funded' : 'matched',
+				3,
+				this.secondCategoryLoans,
+			);
+		},
+		trackSpotlightDisplayedLoans() {
+			this.trackDisplayedLoans('spotlight', 4, this.spotlightLoans);
+		},
+		check5DollarsBannerCookie() {
+			const currentDate = new Date();
+			const dateCookie = this.cookieStore.get(FIVE_DOLLARS_BANNER_KEY);
+			if (!dateCookie) {
+				// Set cookie with 6 months expiration
+				const expires = new Date();
+				expires.setMonth(expires.getMonth() + 6);
+				this.cookieStore.set(FIVE_DOLLARS_BANNER_KEY, currentDate, { path: '/', expires });
+				this.showFiveDollarsBanner = true;
+			} else {
+				const cookieDate = new Date(dateCookie);
+				const timeDifference = currentDate.getTime() - cookieDate.getTime();
+				const daysDifference = timeDifference / (1000 * 3600 * 24);
+				if (daysDifference < 3) this.showFiveDollarsBanner = true;
+			}
+		}
+	},
+	created() {
+		const cachedUserInfo = this.apollo.readQuery({
+			query: userInfoQuery,
+		});
+
+		this.userInfo = cachedUserInfo.my?.userAccount ?? {};
+
+		const cachedRecommendedLoans = this.apollo.readQuery({
+			query: flssLoansQueryExtended,
+			variables: prefetchedRecommendedLoansVariables
+		})?.fundraisingLoans?.values ?? [];
+
+		this.initializeFiveDollarsNotes();
+
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
+
+		this.userBalance = this.userInfo?.balance;
+
+		// Show 3 loans in recommended row test
+		const { version } = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			THREE_LOANS_RECOMMENDED_ROW_EXP_KEY,
+			'EXP-CORE-1529-Aug2023'
+		);
+		this.enableThreeLoansRecommended = version === 'b';
+
+		// Show QF mobile version test
+		const qfTestData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			QUICK_FILTERS_MOBILE_EXP_KEY,
+			'EXP-CORE-1563-Oct2023'
+		);
+		this.enableQFMobileVersion = qfTestData.version === 'b';
+
+		// Enable Almost Funded Row Test
+		const almostFundedRowTestData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			ALMOST_FUNDED_ROW_EXP_KEY,
+			'EXP-CORE-1564-Oct2023'
+		);
+		this.enableAlmostFundedRow = almostFundedRowTestData.version === 'b';
+
+		this.firstRowLoans = [
+			...cachedRecommendedLoans,
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+			{ id: 0 }, { id: 0 },
+		];
+
+		// check for $5 notes banner cookie
+		if (this.enableFiveDollarsNotes) this.check5DollarsBannerCookie();
+	},
+	mounted() {
+		this.getRecommendedLoans();
+		this.getSecondCategoryData();
+		this.verifySpotlightIndex();
+
+		if (this.enableFiveDollarsNotes) this.getFiveDollarsLoans();
+
+		if (this.enableAlmostFundedRow) this.getAlmostFundedLoans();
+
+		// create observer for spotlight loans
+		this.createSpotlightViewportObserver();
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			FLSS_ONGOING_EXP_KEY,
+			'EXP-VUE-FLSS-Ongoing-Sitewide'
+		);
+	},
+	beforeDestroy() {
+		this.destroySpotlightViewportObserver();
+	},
+};
+</script>
+
+<style lang="postcss" scoped>
+>>> [role=progressbar] {
+	@apply tw-bg-tertiary;
+}
+</style>

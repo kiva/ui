@@ -1,5 +1,6 @@
 query mfaQuery($mfa_token: String!) {
 	my {
+		id
 		lastLoginTimestamp @client
 		authenticatorEnrollments(mfa_token: $mfa_token) {
 			id

@@ -1,0 +1,17 @@
+[
+	{
+		"__typename": "Team",
+		"id": 23770,
+		"name": "Donut Empire"
+	},
+	{
+		"__typename": "Team",
+		"id": 94,
+		"name": "(A+) Atheists, Agnostics, Skeptics, Freethinkers, Secular Humanists and the Non-Religious"
+	},
+	{
+		"__typename": "Team",
+		"id": 394,
+		"name": "Nerdfighters"
+	}
+]

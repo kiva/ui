@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _uniqBy from 'lodash/uniqBy';

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partner risk ratings
+			Lending Partner risk ratings
 		</h3>
 		<kv-select v-model="riskRating">
 			<option value="0">
@@ -25,7 +25,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
@@ -42,6 +42,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileRiskRating {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					loanSearchCriteria {
@@ -69,6 +70,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateRiskRating($min: Float) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {

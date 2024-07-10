@@ -7,7 +7,7 @@
 			<p
 				class="tw-text-small tw-mb-2"
 			>
-				Sorted by {{ savedSearch.loanSearchCriteria.sortBy }}
+				Sorted by {{ sortByText }}
 			</p>
 			<span>
 				<kv-checkbox
@@ -24,7 +24,7 @@
 				:href="savedSearch.url"
 				class="tw-mr-2 tw-mb-2 md:tw-mb-0"
 			>
-				View Loans
+				View loans
 			</kv-button>
 			<kv-button
 				variant="secondary"
@@ -37,18 +37,14 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'SaveSearchItem',
-	data() {
-		return {
-			showAlerts: this.savedSearch?.isAlert,
-		};
-	},
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvSettingsCard,
@@ -61,12 +57,23 @@ export default {
 			default: () => {},
 		}
 	},
+	data() {
+		return {
+			showAlerts: this.savedSearch?.isAlert,
+		};
+	},
+	computed: {
+		sortByText() {
+			const sortType = this.savedSearch?.loanSearchCriteria?.sortBy;
+			return sortByNameToDisplay?.[sortType] ?? sortType;
+		},
+	},
 	methods: {
 		deleteSavedSearch(id) {
 			this.apollo.mutate({
 				mutation: gql`mutation deleteSearch($id: Int!) {
 				my {
-					deleteSavedSearch(id: $id) 
+					deleteSavedSearch(id: $id)
 				}
 			}`,
 				variables: {
@@ -92,9 +99,6 @@ export default {
 					id: this.savedSearch?.id,
 					savedSearch: { isAlert }
 				}
-			}).then(result => {
-				const emailAlertData = result?.data?.my?.updateSaveSearch;
-				console.log(emailAlertData);
 			});
 		},
 	},
@@ -104,7 +108,6 @@ export default {
 				this.emailAlert(next);
 			}
 		}
-	},
+	}
 };
-
 </script>

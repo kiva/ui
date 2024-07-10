@@ -1,5 +1,6 @@
 query partnerList {
 	autolending @client {
+		id
 		currentProfile {
 			id
 			loanSearchCriteria {

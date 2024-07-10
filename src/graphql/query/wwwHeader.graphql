@@ -1,4 +1,5 @@
 query wwwHeader($basketId: String) {
+	hasEverLoggedIn @client
 	shop (basketId: $basketId) {
 		id
 		nonTrivialItemCount
@@ -24,9 +25,16 @@ query wwwHeader($basketId: String) {
 				redemptionCodeAvailableTotal
 				universalCodeAvailableTotal
 			}
+			items {
+				values {
+					id
+					price
+				}
+			}
 		}
 	}
 	my {
+		id
 		userAccount {
 			id
 			balance
@@ -45,6 +53,23 @@ query wwwHeader($basketId: String) {
 		}
 		trustee {
 			id
+		}
+		teams (limit: 5) {
+			totalCount
+			values {
+				id
+				team {
+					id
+					name
+					teamPublicId
+				}
+			}
+		}
+	}
+	general {
+		teamsMenuEnabled: featureSetting(key: "teams_in_navbar.enabled") {
+			key
+			value
 		}
 	}
 }

@@ -12,22 +12,61 @@ The Kiva UI project is bound by a [Code of Conduct](code_of_conduct.md).
 
 Kiva welcomes outside contributions to our UI repository. If you have any ideas for a feature or improvement, create an issue and we can discuss whether it makes sense to create a pull request. Thanks for the help!
 
-## Build Setup for localhost (outside of a Kiva VM or Server)
+# Local Development Setup with Caddy
+
+> IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting alot of the Monolith TiltVM setup so this just bypasses it all.
+
+### Required Dependencies
+
+1. Add `127.0.0.1 kiva-ui.local` to your `/etc/hosts` file on your mac
+	- Auth0 configs are already in place to support this domain in the dev tenant
+
+2. Install Caddy
+
+	 `brew install caddy`
+
+3. Start Caddy from the root of the ui repo
+
+	`caddy start` to run in the background or `caddy run` keep the terminal live for additional monitoring
+
+4. In a separate terminal at the root of the ui repo
+``` bash
+# Set you node version using nvm
+$ nvm use
+
+# install dependencies
+$ npm ci
+
+# install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
+$ npx husky install
+
+$ npm run dev -- --config=dev-custom-host
+
+# The local dev URL is now: https://kiva-ui.local/, but make sure to access a page actually run by UI, for example https://kiva-ui.local/lend-by-category/women
+
+```
+
+5. To stop Caddy when you're done
+
+	`caddy stop`
+
+
+## Build Setup for localhost develoment (outside of a Tilt or Server environments)
 
 ``` bash
 # DEV MODE
 
 # install dependencies
-$ npm install
+$ npm ci
 
-# optionally install husky git hooks
+# install husky git hooks (powers pre-commit linting)
 $ npx husky install
 
 # serve with hot reload at localhost:8888
 $ npm run dev -- --config=local
 # visit localhost:8888 for the home page
 # visit localhost:8888/ui-site-map to explore our page index
-# /styleguide, /lend-by-category, + /lend/filter are of great to explore
+# /styleguide, /lend-by-category, + /lend/filter are great to explore
 
 # COMPILED/PROD MODE
 
@@ -69,6 +108,10 @@ $ npx husky install
 $ npm run dev
 $ npm run dev -- --config=local (any context outside of kiva vm)
 # visit localhost:8888/ui-site-map to explore some pages (/styleguide or /lend-by-category may be of interest)
+
+# Alternate configs:
+# use `dev-local` to run localhost mode against development Environments
+# use `dev-vm-mac` to run ui on your mac against the kiva vm
 
 # COMPILED/PROD MODE
 

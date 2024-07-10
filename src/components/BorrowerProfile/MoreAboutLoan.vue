@@ -1,105 +1,113 @@
 <template>
 	<section>
-		<div class="tw-prose tw-break-words">
-			<h2 data-testid="bp-more-about-header">
-				More about this loan
-			</h2>
-			<div v-if="partnerName && !loading">
-				<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
-					This loan is facilitated by our Field Partner, {{ partnerName }}.
-					Field Partners are local organizations working in communities to vet
-					borrowers, provide services, and administer loans on the ground.
-				</p>
-
-				<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
-				</div>
-
-				<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
-					<h3>
-						About {{ partnerName }}:
-					</h3>
-					<p
-						key="storyDescription"
-						v-html="this.loanAlertText"
-					>
+		<h2 data-testid="bp-more-about-header">
+			More about this loan
+		</h2>
+		<div ref="body">
+			<div class="tw-prose tw-break-words">
+				<div v-if="partnerName && !loading">
+					<p v-if="!partnerNameNA" data-testid="bp-more_about-facilitated">
+						This loan is facilitated by our Lending Partner, {{ partnerName }}.
+						Lending Partners are local organizations working in communities to vet
+						borrowers, provide services, and administer loans on the ground.
 					</p>
-				</div>
-				<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
-					<h3>
-						Important Note About This Loan
-					</h3>
-					<div v-html="dualStatementNote">
+
+					<div v-html="moreInfoAboutLoan" data-testid="bp-more-about-info">
+					</div>
+
+					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
+						<h3>
+							About {{ partnerName }}:
+						</h3>
+						<p
+							key="storyDescription"
+							v-html="this.loanAlertText"
+						>
+						</p>
+					</div>
+					<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
+						<h3>
+							Important Note About This Loan
+						</h3>
+						<div v-html="dualStatementNote">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div v-if="!partnerName && !loading">
-			<div class="tw-prose tw-mb-2">
-				<h3>
-					Business description
-				</h3>
-				<div
-					data-testid="bp-more-about-direct-description"
-					key="businessDescription"
-					v-html="this.businessDescription"
-				>
+			<div v-if="!partnerName && !loading">
+				<div class="tw-prose tw-mb-2">
+					<h3>
+						Business description
+					</h3>
+					<div data-testid="bp-more-about-direct-description">
+						<p
+							v-for="(paragraph, index) in businessDescriptionParagraphs"
+							:key="`businessDescription-${index}`"
+							v-html="paragraph"
+						>
+						</p>
+					</div>
+				</div>
+
+				<borrower-business-details
+					class="tw-mb-2"
+					:borrower-business-name="borrowerBusinessName"
+					:sector="sector"
+					:social-links="socialLinks"
+					:years-in-business="yearsInBusiness"
+					:loan-id="loanId"
+				/>
+
+				<div class="tw-prose" data-testid="bp-direct-loan-purpose">
+					<h3>
+						What is the purpose of this loan?
+					</h3>
+					<div data-testid="bp-more-about-purpose">
+						<p
+							v-for="(paragraph, index) in purposeParagraphs"
+							:key="`purpose-${index}`"
+							v-html="paragraph"
+						>
+						</p>
+					</div>
 				</div>
 			</div>
 
-			<borrower-business-details
-				class="tw-mb-2"
-				:borrower-business-name="borrowerBusinessName"
-				:sector="sector"
-				:social-links="socialLinks"
-				:years-in-business="yearsInBusiness"
-				:loan-id="loanId"
-			/>
-
-			<div class="tw-prose" data-testid="bp-direct-loan-purpose">
-				<h3>
-					What is the purpose of this loan?
-				</h3>
-				<div
-					key="purpose"
-					v-html="this.purpose"
-				>
+			<div
+				v-if="loading"
+			>
+				<kv-loading-placeholder
+					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
+				/>
+				<div v-for="i in 5" :key="`${i}pl1`">
+					<kv-loading-placeholder
+						class="tw-w-full tw-mb-1"
+						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+					/>
 				</div>
-			</div>
-		</div>
-
-		<div
-			v-if="loading"
-		>
-			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-			/>
-			<div v-for="i in 5" :key="`${i}pl1`">
+				<br>
 				<kv-loading-placeholder
-					class="tw-w-full tw-mb-1"
-					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+					class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
 				/>
+				<div v-for="i in 5" :key="`${i}pl2`">
+					<kv-loading-placeholder
+						class="tw-w-full tw-mb-1"
+						:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
+					/>
+				</div>
+				<br>
 			</div>
-			<br>
-			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
-			/>
-			<div v-for="i in 5" :key="`${i}pl2`">
-				<kv-loading-placeholder
-					class="tw-w-full tw-mb-1"
-					:style="{width: 80 + (Math.random() * 15) + '%', height: '1rem'}"
-				/>
-			</div>
-			<br>
 		</div>
 	</section>
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { toParagraphs } from '@/util/loanUtils';
+import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import BorrowerBusinessDetails from '@/components/BorrowerProfile/BorrowerBusinessDetails';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'MoreAboutLoan',
@@ -149,7 +157,13 @@ export default {
 			return this.partnerName.indexOf('N/A') > -1
 				|| this.partnerName.indexOf('N/a') > -1
 				|| this.partnerName.indexOf('n/a') > -1;
-		}
+		},
+		businessDescriptionParagraphs() {
+			return toParagraphs(this.businessDescription);
+		},
+		purposeParagraphs() {
+			return toParagraphs(this.purpose);
+		},
 	},
 	methods: {
 		createObserver() {

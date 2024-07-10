@@ -1,18 +1,23 @@
+import query from '@/graphql/query/shared/usingTouchClient.graphql';
 /*
  * UsingTouch resolvers
  */
 export default () => {
 	return {
-		defaults: {
-			usingTouch: false,
+		defaults(cache) {
+			cache.writeQuery({
+				query,
+				data: { usingTouch: false },
+			});
 		},
 		resolvers: {
 			Mutation: {
-				updateUsingTouch(_, { usingTouch }, context) {
-					context.cache.writeData({
+				updateUsingTouch(_, { usingTouch = false }, context) {
+					context.cache.writeQuery({
+						query,
 						data: { usingTouch }
 					});
-					return null;
+					return true;
 				},
 			},
 		},

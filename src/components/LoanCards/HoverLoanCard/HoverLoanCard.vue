@@ -110,6 +110,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		showTags: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	computed: {
 		expanded() {

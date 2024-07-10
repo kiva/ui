@@ -1,6 +1,6 @@
 <template>
 	<article>
-		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
+		<div v-if="loading" class="tw-w-full">
 			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '1.6rem'}" />
 			<kv-loading-placeholder
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
@@ -10,18 +10,18 @@
 		<h2 class="tw-sr-only">
 			Why this loan is special
 		</h2>
-		<p v-if="!loading" class="tw-text-h2 tw-my-5 md:tw-my-6 lg:tw-my-8">
+		<p v-if="!loading" class="tw-text-h2">
 			{{ fullWhySpecial }}
 		</p>
 	</article>
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { createIntersectionObserver } from '@/util/observerUtils';
 import { formatWhySpecial } from '@/util/loanUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'WhySpecial',

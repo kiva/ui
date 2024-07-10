@@ -1,6 +1,10 @@
 // verify npm/node/dependency versions
 require('../build/check-versions')();
 
+const { setupTracing } = require('./util/tracer');
+
+setupTracing();
+
 // dependencies
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 require('dotenv').config({ path: './.config.env' });
@@ -14,6 +18,17 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const threadLoader = require('thread-loader');
+const promBundle = require('express-prom-bundle');
+
+const metricsMiddleware = promBundle({
+	includeMethod: true,
+	includePath: true,
+	includeStatusCode: true,
+	includeUp: true,
+	promClient: {
+		collectDefaultMetrics: {}
+	}
+});
 
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
@@ -30,7 +45,7 @@ const config = require('../config/selectConfig')(argv.config || 'local');
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
 
-// Initialize a Cache instance, Should Only be called once!
+// Initialize a Cache instance
 const cache = initCache(config.server);
 
 // app init
@@ -60,20 +75,20 @@ threadLoader.warmup({
 ]);
 
 // webpack setup
-const clientCompiler = webpack(clientConfig);
+const clientCompiler = webpack({
+	...clientConfig,
+	devServer: {
+		hot: false, // Ensures that HMR works as expected
+	},
+});
 const serverCompiler = webpack(serverConfig);
 const devMiddleware = webpackDevMiddleware(clientCompiler, {
-	logLevel: 'silent',
-	stats: false,
+	stats: 'none', // Hides compilation logs
 	publicPath: clientConfig.output.publicPath,
-	watchOptions: {
-		poll: 1000
-	}
-	// serverSideRender: true,
 });
 const hotMiddleware = webpackHotMiddleware(clientCompiler, {
 	path: '/__ui_hmr',
-	log: () => {}
+	log: () => { }
 });
 
 // file reader helper
@@ -102,7 +117,6 @@ const updateHandler = () => {
 			clientManifest,
 			serverBundle,
 			config,
-			cache,
 		});
 		resolveHandlerReady();
 	}
@@ -121,11 +135,11 @@ chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () =
 // update when the client manifest changes
 clientCompiler.hooks.done.tap('done', rawStats => {
 	// abort if there were errors
-	const stats = rawStats.toJson();
-	if (stats.errors.length) return;
+	const stats = rawStats?.toJson();
+	if (stats?.errors?.length) return;
 
 	// read client manifest from dev-middleware filesystem
-	clientManifest = JSON.parse(readFile(devMiddleware.fileSystem, 'vue-ssr-client-manifest.json'));
+	clientManifest = JSON.parse(readFile(devMiddleware.context.outputFileSystem, 'vue-ssr-client-manifest.json'));
 	updateHandler();
 });
 
@@ -152,7 +166,7 @@ app.use(locale(config.app.locale.supported, config.app.locale.default));
 app.use('/ui-routes', serverRoutes);
 
 // Apply sitemap middleware to expose routes we want search engine crawlers to see
-app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, cache));
+app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, config.server));
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
@@ -163,6 +177,9 @@ app.use('/live-loan', liveLoanRouter(cache));
 // install dev/hot middleware
 app.use(devMiddleware);
 app.use(hotMiddleware);
+
+// load metrics middleware
+app.use(metricsMiddleware);
 
 // Configure session
 app.use('/', sessionRouter(config.server));
@@ -181,7 +198,7 @@ app.use(logger.errorLogger);
 app.use(logger.fallbackErrorHandler);
 
 // start server
-app.listen(port, () => 	console.info(JSON.stringify({
+app.listen(port, () => console.info(JSON.stringify({
 	meta: {},
 	level: 'log',
 	message: `dev-server started at localhost:${port}`

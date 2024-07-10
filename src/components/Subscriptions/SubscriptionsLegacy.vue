@@ -19,12 +19,13 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query legacySubscription {
 	my {
+		id
 		subscriptions {
 			values {
 				id

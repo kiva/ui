@@ -42,7 +42,7 @@
 				v-if="showFindMoreLoansInCountryButton"
 				class="tw-inline-flex tw-flex-1"
 				data-testid="bp-country-find-loans-country"
-				:href="`/lend?country=${countryIsoCode}`"
+				:href="`/lend/filter?country=${countryIsoCode}`"
 				target="_blank"
 			>
 				Find more borrowers in {{ countryName }}
@@ -61,11 +61,11 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import numeral from 'numeral';
 import { createIntersectionObserver } from '@/util/observerUtils';
-// TODO: replace the loading placeholder with component from kv-components when available.
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {

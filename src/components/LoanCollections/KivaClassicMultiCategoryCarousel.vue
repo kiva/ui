@@ -16,10 +16,9 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
 import KivaClassicLoanCategorySelector from '@/components/LoanCollections/KivaClassicLoanCategorySelector';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 export default {
 	name: 'KivaClassicMultiCategoryCarousel',
@@ -52,25 +51,17 @@ export default {
 			loanChannelData: [],
 			selectedChannel: {},
 			showCarousel: false,
-			isUrgencyExpVersionShown: false
 		};
 	},
 	computed: {
-		loanChannelsWithUrgencyExperiment() {
-			if (this.isUrgencyExpVersionShown) {
-				// if urgency experiment, insert ending soon as first loan channel
-				return [{ id: 3, shortName: 'Ending Soon' }, ...this.contentfulLoanChannels];
-			}
-			return this.contentfulLoanChannels;
-		},
 		combinedLoanChannelData() {
-			return this.loanChannelsWithUrgencyExperiment.map(channel => {
+			return this.contentfulLoanChannels.map(channel => {
 				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
 				return { ...matchedLoanChannel, ...channel };
 			});
 		},
 		loanChannelIds() {
-			return this.loanChannelsWithUrgencyExperiment.map(channelSetting => {
+			return this.contentfulLoanChannels.map(channelSetting => {
 				return channelSetting.id;
 			});
 		},
@@ -89,26 +80,6 @@ export default {
 	},
 	mounted() {
 		this.fetchLoanChannel();
-	},
-	created() {
-		// run urgency experiment if we are on the homepage
-		if (this.$route.name === 'homepage') {
-			// this experiment is assigned in experimentPreFetch.js
-			const urgencyExperiment = this.apollo.readFragment({
-				id: 'Experiment:lend_urgency',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.isUrgencyExpVersionShown = urgencyExperiment.version === 'shown';
-
-			// Fire Event for Exp ACK-291 Urgency Experiment
-			if (urgencyExperiment.version && urgencyExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-ACK-291-May2022',
-					this.isUrgencyExpVersionShown ? 'b' : 'a'
-				);
-			}
-		}
 	},
 	methods: {
 		handleCategoryClick(payload) {

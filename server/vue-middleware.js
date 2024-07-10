@@ -2,20 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const Bowser = require('bowser');
 const cookie = require('cookie');
-const { createBundleRenderer } = require('vue-server-renderer');
-const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
-const getSessionCookies = require('./util/getSessionCookies');
-const vueSsrCache = require('./util/vueSsrCache');
+const vueWorkerPool = require('./vue-worker-pool.js');
+const protectedRoutes = require('./util/protectedRoutes.js');
 const tracer = require('./util/ddTrace');
-
-const isProd = process.env.NODE_ENV === 'production';
 
 // vue-middleware specific error handling
 function handleError(err, req, res, next) {
 	// redirect to url if provided in the error
 	// -> this is how we handle vue-router links to external kiva pages
 	if (err.url) {
-		res.redirect(err.url);
+		res.redirect(err.code ?? 302, err.url);
 	// respond with 404 specifically set
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
@@ -32,7 +28,6 @@ module.exports = function createMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
-	cache
 }) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
@@ -44,85 +39,60 @@ module.exports = function createMiddleware({
 	// eslint-disable-next-line no-param-reassign
 	clientManifest.publicPath = config.app.publicPath || '/';
 
-	// Create single renderer to be used by all requests
-	const renderer = createBundleRenderer(serverBundle, {
-		cache: vueSsrCache(cache),
-		template,
-		clientManifest,
-		runInNewContext: false,
-		inject: false,
-		// don't prefetch anything
-		shouldPrefetch: () => false,
+	// Create a worker pool to render the app
+	const pool = vueWorkerPool({
+		minWorkers: config.server.minVueWorkers,
+		maxWorkers: config.server.maxVueWorkers,
+		workerData: {
+			clientManifest,
+			serverBundle,
+			serverConfig: config.server,
+			template,
+		},
 	});
 
 	function middleware(req, res, next) {
-		const s = Date.now();
-
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
+		// Set the first user visit to the web
+		req.session.firstPage = !req.session?.firstPage ? req.url : req.session.firstPage;
+
 		const context = {
 			url: req.url,
-			config: config.app,
+			config: { ...config.app, firstPage: req.session?.firstPage },
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
-			device
+			device,
 		};
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
-		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-		// get graphql api fragment types for the graphql client
-		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
-
-		// fetch initial session cookies in case starting session with this request
-		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
-
-		if (!isProd) {
-			typesPromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `fragment fetch: ${Date.now() - s}ms`
-			})));
-			cookiePromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `session fetch: ${Date.now() - s}ms`
-			})));
+		// Set strict cache-control headers for protected pages
+		if (req?.url && protectedRoutes.filter(route => {
+			return req?.url?.indexOf(route) !== -1;
+		}).length) {
+			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
+		} else {
+			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 		}
 
-		Promise.all([typesPromise, cookiePromise])
-			.then(([types, cookieInfo]) => {
-				// add fetched types to rendering context
-				context.config.graphqlFragmentTypes = types;
-				// update cookies in the rendering context with any newly fetched session cookies
-				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-				// forward any newly fetched 'Set-Cookie' headers
-				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// render the app
-				return tracer.trace('renderer.renderToString', () => renderer.renderToString(context));
-			}).then(html => {
+		// render the app using the worker pool
+		pool.exec('render', [context])
+			.then(({ error, html, setCookies }) => {
 				// set any cookies created during the app render
-				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-				// send the final rendered html
-				res.send(html);
-				if (!isProd) {
-					console.info(JSON.stringify({
-						meta: {},
-						level: 'info',
-						message: `whole request: ${Date.now() - s}ms`
-					}));
+				setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+
+				if (error) {
+					handleError(error, req, res, next);
+				} else {
+					// send the final rendered html
+					res.send(html);
 				}
-			}).catch(err => {
-				if (err.url) {
-					// since this error is a redirect, set any cookies created during the app render
-					if (context && context.setCookies) {
-						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
-					}
-				}
+			})
+			.catch(err => {
 				handleError(err, req, res, next);
 			});
 	}

@@ -67,13 +67,13 @@
 					</p>
 					<ul class="tw-mb-3">
 						<li>
-							<router-link
-								to="/donate/supportus"
+							<a
+								href="/donate/supportus"
 								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 								class="tw-text-small"
 							>
 								Donate to Kiva
-							</router-link>
+							</a>
 						</li>
 					</ul>
 					<hr class="tw-border-tertiary tw-mt-2 tw-mb-0">
@@ -100,22 +100,22 @@
 								</router-link>
 							</li>
 							<li>
-								<router-link
-									to="/about/how"
+								<a
+									href="/about/how"
 									v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
 									class="tw-text-small"
 								>
 									How Kiva works
-								</router-link>
+								</a>
 							</li>
 							<li>
-								<router-link
-									to="/about/how#faq-hkw-section"
+								<a
+									href="/about/how#faq-hkw-section"
 									v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
 									class="tw-text-small"
 								>
 									FAQs
-								</router-link>
+								</a>
 							</li>
 							<li>
 								<router-link
@@ -137,12 +137,21 @@
 							</li>
 							<li>
 								<router-link
-									to="/partner-with-us"
+									to="/about/partner-with-us"
 									v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 									class="tw-text-small"
 								>
 									Partner with us
 								</router-link>
+							</li>
+							<li>
+								<a
+									:href="employeeEngagementUrl"
+									v-kv-track-event="['Footer', 'click-Get to know us-Employee engagement']"
+									class="tw-text-small"
+								>
+									Employee engagement
+								</a>
 							</li>
 							<li>
 								<router-link
@@ -206,6 +215,15 @@
 						<ul class="tw-mb-2">
 							<li>
 								<router-link
+									to="/kiva-capital"
+									v-kv-track-event="['Footer', 'click-Explore-Kiva Capital']"
+									class="tw-text-small"
+								>
+									Kiva Capital
+								</router-link>
+							</li>
+							<li>
+								<router-link
 									to="/protocol"
 									v-kv-track-event="['Footer', 'click-Explore-Protocol']"
 									class="tw-text-small"
@@ -220,15 +238,6 @@
 									class="tw-text-small"
 								>
 									Gifts
-								</router-link>
-							</li>
-							<li>
-								<router-link
-									to="/live"
-									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-									class="tw-text-small"
-								>
-									Happening now
 								</router-link>
 							</li>
 							<li>
@@ -294,7 +303,7 @@
 							</li>
 							<li>
 								<a
-									href="https://www.kivaushub.org/hubs"
+									href="/us-hubs"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
@@ -494,6 +503,15 @@
 							<ul>
 								<li>
 									<router-link
+										to="/kiva-capital"
+										v-kv-track-event="['Footer', 'click-Explore-Kiva Capital']"
+										class="tw-text-small"
+									>
+										Kiva Capital
+									</router-link>
+								</li>
+								<li>
+									<router-link
 										to="/protocol"
 										v-kv-track-event="['Footer', 'click-Explore-Protocol']"
 										class="tw-text-small"
@@ -508,15 +526,6 @@
 										class="tw-text-small"
 									>
 										Gifts
-									</router-link>
-								</li>
-								<li>
-									<router-link
-										to="/live"
-										v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-										class="tw-text-small"
-									>
-										Happening now
 									</router-link>
 								</li>
 								<li>
@@ -547,22 +556,22 @@
 									</router-link>
 								</li>
 								<li>
-									<router-link
-										to="/about/how"
+									<a
+										href="/about/how"
 										v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
 										class="tw-text-small"
 									>
 										How Kiva works
-									</router-link>
+									</a>
 								</li>
 								<li>
-									<router-link
-										to="/about/how#faq-hkw-section"
+									<a
+										href="/about/how#faq-hkw-section"
 										v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
 										class="tw-text-small"
 									>
 										FAQs
-									</router-link>
+									</a>
 								</li>
 								<li>
 									<router-link
@@ -584,12 +593,21 @@
 								</li>
 								<li>
 									<router-link
-										to="/partner-with-us"
+										to="/about/partner-with-us"
 										v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
 										class="tw-text-small"
 									>
 										Partner with us
 									</router-link>
+								</li>
+								<li>
+									<a
+										:href="employeeEngagementUrl"
+										v-kv-track-event="['Footer', 'click-Get to know us-Employee engagement']"
+										class="tw-text-small"
+									>
+										Employee engagement
+									</a>
 								</li>
 								<li>
 									<router-link
@@ -646,13 +664,13 @@
 							</p>
 							<ul class="print:tw-hidden">
 								<li>
-									<router-link
-										to="/donate/supportus"
+									<a
+										href="/donate/supportus"
 										v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
 										class="tw-text-small"
 									>
 										Donate to Kiva
-									</router-link>
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -743,7 +761,7 @@
 								</li>
 								<li class="tw-inline-block tw--translate-x-2">
 									<a
-										href="https://www.kivaushub.org/hubs"
+										href="/us-hubs"
 										target="_blank"
 										rel="noopener"
 										v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
@@ -849,6 +867,7 @@ export default {
 			lendByCategoryUrl: '/lend-by-category',
 			helpUrl: '/help',
 			careersUrl: 'https://www.careers.kiva.org/',
+			employeeEngagementUrl: '/lp/employee-engagement',
 			cookiesUrl: '/legal/cookies#manage-settings',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',

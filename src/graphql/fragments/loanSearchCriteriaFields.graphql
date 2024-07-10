@@ -1,0 +1,52 @@
+fragment loanSearchCriteriaFields on LoanSearchCriteria {
+	filters {
+		activity
+		arrearsRate {
+			min
+			max
+		}
+		avgBorrowerCost {
+			min
+			max
+		}
+		cityState
+		country
+		currencyLossPossible
+		dafEligible
+		defaultRate {
+			min
+			max
+		}
+		distributionModel
+		excludeNonRated
+		expiringSoon
+		gender
+		hasResearchScore
+		isGroup
+		isMatched
+		lenderFavorite
+		lenderTerm {
+			min
+			max
+		}
+		loanIds
+		loanLimit
+		loanTags
+		matcherAccountId
+		partner
+		profitability {
+			min
+			max
+		}
+		riskRating {
+			min
+			max
+		}
+		sector
+		status
+		theme
+		trustee
+	}
+	queryString
+	sortBy
+}

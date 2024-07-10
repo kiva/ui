@@ -1,7 +1,5 @@
-import { sub } from 'date-fns';
-import _get from 'lodash/get';
-import _over from 'lodash/over';
-import * as Sentry from '@sentry/vue';
+import sub from 'date-fns/sub';
+import * as Sentry from '@sentry/vue'; // could be async import
 import syncDate from './syncDate';
 import logFormatter from './logFormatter';
 
@@ -120,24 +118,23 @@ export default class KvAuth0 {
 		}
 	}
 
+	/* eslint-disable no-underscore-dangle */
+
 	// Return the kiva id for the current user (or undefined)
 	getKivaId() {
-		return _get(this, `user["${KIVA_ID_KEY}"]`)
-			|| _get(this, `user._json["${KIVA_ID_KEY}"]`);
+		return this.user?.[KIVA_ID_KEY] || this.user?._json?.[KIVA_ID_KEY];
 	}
 
 	// Return the last login timestamp for the current user (or 0)
 	getLastLogin() {
-		return _get(this, `user["${LAST_LOGIN_KEY}"]`)
-			|| _get(this, `user._json["${LAST_LOGIN_KEY}"]`)
-			|| 0;
+		return this.user?.[LAST_LOGIN_KEY] || this.user?._json?.[LAST_LOGIN_KEY] || 0;
 	}
 
 	isMfaAuthenticated() {
-		return _get(this, `user["${USED_MFA_KEY}"]`)
-			|| _get(this, `user._json["${USED_MFA_KEY}"]`)
-			|| false;
+		return this.user?.[USED_MFA_KEY] || this.user?._json?.[USED_MFA_KEY] || false;
 	}
+
+	/* eslint-enable no-underscore-dangle */
 
 	// Return true iff fake auth should be checked and fake auth is allowed for the current domain
 	fakeAuthAllowed() {
@@ -145,7 +142,7 @@ export default class KvAuth0 {
 	}
 
 	getFakeAuthCookieValue() {
-		if (!this.checkFakeAuth) return;
+		if (!this.fakeAuthAllowed()) return;
 
 		const cookieValue = this.cookieStore.get(FAKE_AUTH_NAME) ?? '';
 
@@ -291,7 +288,10 @@ export default class KvAuth0 {
 				this.webAuth.checkSession({}, (err, result) => {
 					if (err) {
 						this[setAuthData]();
-						if (err.error === 'login_required' || err.error === 'unauthorized') {
+						if (err.error === 'login_required'
+							|| err.error === 'unauthorized'
+							|| err.error === 'access_denied'
+						) {
 							// User is not logged in, so continue without authentication
 							this[noteLoggedOut]();
 							resolve();
@@ -340,12 +340,12 @@ export default class KvAuth0 {
 	// Call error callbacks with error information
 	[handleUnknownError](error) {
 		logFormatter(error, 'error');
-		_over(this[errorCallbacks])({
+		this[errorCallbacks].map(callback => callback({
 			error,
 			errorString: getErrorString(error),
 			eventId: Sentry.lastEventId(),
 			user: this.user,
-		});
+		}));
 	}
 }
 
@@ -367,5 +367,5 @@ export const MockKvAuth0 = {
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),
-	onError: () => {},
+	onError: () => { },
 };

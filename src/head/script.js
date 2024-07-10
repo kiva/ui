@@ -3,7 +3,7 @@ export default (config, globalOneTrustEvent) => {
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
+		if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
 			optout = true;
 		}
 	}
@@ -49,36 +49,9 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// FullStory snippet
-	const insertFullStory = () => {
-		/* eslint-disable */
-		window['_fs_debug'] = false;
-		window['_fs_host'] = 'fullstory.com';
-		window['_fs_script'] = 'edge.fullstory.com/s/fs.js';
-		window['_fs_org'] = '10F8DP';
-		window['_fs_namespace'] = 'FS';
-		try {
-			(function(m,n,e,t,l,o,g,y){
-				if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
-				g=m[e]=function(a,b,s){g.q?g.q.push([a,b,s]):g._api(a,b,s);};g.q=[];
-				o=n.createElement(t);o.async=1;o.crossOrigin='anonymous';o.src='https://'+_fs_script;
-				y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
-				g.identify=function(i,v,s){g(l,{uid:i},s);if(v)g(l,v,s)};g.setUserVars=function(v,s){g(l,v,s)};g.event=function(i,v,s){g('event',{n:i,p:v},s)};
-				g.anonymize=function(){g.identify(!!0)};
-				g.shutdown=function(){g("rec",!1)};g.restart=function(){g("rec",!0)};
-				g.log = function(a,b){g("log",[a,b])};
-				g.consent=function(a){g("consent",!arguments.length||a)};
-				g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
-				g.clearUserCookie=function(){};
-				g.setVars=function(n, p){g('setVars',[n,p]);};
-				g._w={};y='XMLHttpRequest';g._w[y]=m[y];y='fetch';g._w[y]=m[y];
-				if(m[y])m[y]=function(){return g._w[y].apply(this,arguments)};
-				g._v="1.3.0";
-			})(window,document,window['_fs_namespace'],'script','user');
-		} catch (e) {
-			// noop
-		}
-		/* eslint-enable */
+	const activateOptimizely = () => {
+		// eslint-disable-next-line dot-notation
+		window['optimizely'].push({ type: 'sendEvents' });
 	};
 
 	// Google Tag Manager snippet
@@ -92,40 +65,18 @@ export default (config, globalOneTrustEvent) => {
 		/* eslint-enable */
 	};
 
-	// Facebook Pixel Code
-	const insertFB = () => {
+	// Hotjar Snippet
+	const insertHotjar = () => {
 		/* eslint-disable */
-		!function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-			n.queue=[];t=b.createElement(e);t.async=!0;
-			t.src=v;s=b.getElementsByTagName(e)[0];
-			s.parentNode.insertBefore(t,s)}(window, document,'script',
-			'https://connect.facebook.net/en_US/fbevents.js');
-		fbq('init', config.fbPixelId);
-		/* eslint-enable */
+		(function(h,o,t,j,a,r){
+			h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+			h._hjSettings={hjid:config.hotjarId,hjsv:6};
+			a=o.getElementsByTagName('head')[0];
+			r=o.createElement('script');r.async=1;
+			r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+			a.appendChild(r);
+		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 	};
-
-	// Algolia Analytics
-	const insertAlgoliaAnalytics = () => {
-		/* eslint-disable */
-		if (typeof String.prototype.startsWith === 'function') {
-			(function(e,a,t,n,s,i,c){e.AlgoliaAnalyticsObject=s,e.aa=e.aa||function(){
-				(e.aa.queue=e.aa.queue||[]).push(arguments)},i=a.createElement(t),c=a.getElementsByTagName(t)
-				[0],i.async=1,i.src="https://cdn.jsdelivr.net/npm/search-insights@1.2.0",
-				c.parentNode.insertBefore(i,c)})(window,document,"script",0,"aa");
-		}
-		/* eslint-enable */
-	};
-
-	// Optimizely experiment loader
-	const insertOptimizely = () => {
-		const p = document.getElementsByTagName('script')[0];
-		const s = document.createElement('script');
-		s.src = `https://cdn.optimizely.com/js/${config.optimizelyProjectId}.js`;
-		p.parentNode.insertBefore(s, p);
-	};
-
 	// Always load
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
@@ -140,6 +91,12 @@ export default (config, globalOneTrustEvent) => {
 		}());
 		/* eslint-enable */
 	}
+	// Google Recaptcha loaded indicator
+	window.recaptchaLoaded = new Promise(resolve => {
+		window.recaptchaOnloadCallback = () => {
+			resolve(true);
+		};
+	});
 
 	// One Trust Cookie Management
 	if (config.oneTrust && config.oneTrust.enable) {
@@ -171,7 +128,8 @@ export default (config, globalOneTrustEvent) => {
 			* */
 			if (config.enableAnalytics) {
 				if (config.enableOptimizely && !optout) {
-					OneTrust.InsertHtml('', 'head', insertOptimizely, null, 'C0002');
+					// reactivate optimizely events
+					OneTrust.InsertHtml('', 'head', activateOptimizely, null, 'C0002');
 				}
 				if (config.enableGA && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
@@ -179,11 +137,8 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
-				if (config.algoliaConfig.enableAA && !optout) {
-					OneTrust.InsertHtml('', 'head', insertAlgoliaAnalytics, null, 'C0002');
-				}
-				if (config.enableFullStory && !optout) {
-					OneTrust.InsertHtml('', 'head', insertFullStory, null, 'C0002');
+				if (config.enableHotjar && !optout) {
+					OneTrust.InsertHtml('', 'head', insertHotjar, null, 'C0002');
 				}
 			}
 
@@ -205,9 +160,6 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableAnalytics) {
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
-				}
-				if (config.enableFB && !optout) {
-					OneTrust.InsertHtml('', 'head', insertFB, null, 'C0004');
 				}
 			}
 
@@ -231,7 +183,9 @@ export default (config, globalOneTrustEvent) => {
 	if (!config.oneTrust || !config.oneTrust.enable) {
 		if (config.enableAnalytics) {
 			if (config.enableOptimizely && !optout) {
-				insertOptimizely();
+				// reactivate optimizely events
+				// eslint-disable-next-line dot-notation
+				window['optimizely'].push({ type: 'sendEvents' });
 			}
 			if (config.enableGA && !optout) {
 				insertGoogleAnalytics();
@@ -239,19 +193,12 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableSnowplow) {
 				insertSnowplow();
 			}
-			if (config.enableFullStory && !optout) {
-				insertFullStory();
-			}
 			if (config.enableGTM && !optout) {
 				insertGTM();
 			}
-			if (config.algoliaConfig.enableAA && !optout) {
-				insertAlgoliaAnalytics();
+			if (config.enableHotjar && !optout) {
+				insertHotjar();
 			}
-		}
-
-		if (config.enableFB && !optout) {
-			insertFB();
 		}
 	}
 };

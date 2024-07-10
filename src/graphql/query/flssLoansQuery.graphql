@@ -7,12 +7,14 @@ query flssLoanData(
 	$pageLimit: Int = 0
 	$imgDefaultSize: String = "w480h360"
 	$imgRetinaSize: String = "w960h720"
+	$origin: String
 ) {
 	fundraisingLoans(
 		filters: $filterObject,
 		limit: $pageLimit,
 		pageNumber: $pageNumber,
-		sortBy: $sortBy
+		sortBy: $sortBy,
+		origin: $origin
 	) {
 		totalCount
 		values {

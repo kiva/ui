@@ -1,6 +1,6 @@
 <template>
 	<div class="drop-in-wrapper">
-		<div id="dropin-container" class="fs-exclude"></div>
+		<div id="dropin-container" class="data-hj-suppress"></div>
 		<kv-loading-spinner v-if="updatingPaymentWrapper" />
 	</div>
 </template>
@@ -9,7 +9,6 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
@@ -147,8 +146,6 @@ export default {
 					} else {
 						this.clientToken = _get(response, 'data.shop.getClientToken');
 						this.initializeDropIn(this.clientToken);
-						// Replace our loader with the dropIn loader after a small delay
-						setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 					}
 				}).catch(error => {
 					console.error(error);
@@ -159,7 +156,10 @@ export default {
 				this.initializeDropIn(this.$appConfig.btTokenKey);
 			}
 		},
-		initializeDropIn(authToken) {
+		async initializeDropIn(authToken) {
+			const { default: Dropin } = await import('braintree-web-drop-in');
+			// Replace our loader with the dropIn loader after a small delay
+			setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 			Dropin.create({
 				authorization: authToken,
 				container: '#dropin-container',
@@ -438,7 +438,7 @@ $border-width: 1px;
 	#dropin-container [data-braintree-id="choose-a-way-to-pay"],
 	#dropin-container [data-braintree-id="methods-label"],
 	#dropin-container [data-braintree-id="other-ways-to-pay"] {
-		@apply tw-text-small tw-text-primary tw-text-tertiary tw-w-full;
+		@apply tw-text-small tw-text-tertiary tw-w-full;
 	}
 
 	/* Payment method container */

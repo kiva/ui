@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
 	rootDir: path.resolve(__dirname, '../../'),
 	testMatch: ['**/unit/specs/**/*.spec.js'],
-	moduleFileExtensions: ['js', 'json', 'vue'],
+	moduleFileExtensions: ['js', 'cjs', 'mjs', 'json', 'vue'],
 	moduleNameMapper: {
 		'^~/(.*)$': '<rootDir>/node_modules/$1',
 		'^@/(.*)$': '<rootDir>/src/$1',

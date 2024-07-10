@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
+import _mergeWith from 'lodash/mergeWith';
 import logFormatter from '@/util/logFormatter';
 import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
@@ -16,11 +17,12 @@ import LoanSearchCriteria, {
 } from '@/api/fixtures/LoanSearchCriteria';
 
 // Helper function for writing autolending data to the cache
-function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
+function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }) {
 	// Set base typename
 	const autolending = {
+		id: 0,
 		__typename: 'Autolending',
-		...data,
+		...fields,
 	};
 	// Set autolend profile typenames
 	if (currentProfile) {
@@ -29,8 +31,13 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) 
 	if (savedProfile) {
 		autolending.savedProfile = getCacheableProfile(savedProfile);
 	}
-	// Write autolending object to cache
-	cache.writeData({ data: { autolending } });
+	// Create copy of cached object to remove readonly from props since lodash doesn't merge readonly props
+	const cached = JSON.parse(JSON.stringify(cache.readQuery({ query: bothProfilesQuery })?.autolending ?? {}));
+	// Use customizer to overwrite array props instead of merging
+	const customizer = (_a, b) => (Array.isArray(b) ? b : undefined);
+	const data = _mergeWith(cached, autolending, customizer);
+	// Update autolending object in the cache
+	cache.writeQuery({ query: bothProfilesQuery, data: { autolending: data } });
 }
 
 let loanCountObservable;
@@ -41,7 +48,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters } = getSearchableCriteria(currentProfile.loanSearchCriteria);
+	const { filters } = getSearchableCriteria(currentProfile?.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();
@@ -140,18 +147,27 @@ function convertLegacyProfile(profile) {
 }
 
 // export resolvers and defaults for Autolending and AutolendingMutation
+
 export default () => {
 	return {
-		defaults: {
-			autolending: {
-				__typename: 'Autolending',
-				currentLoanCount: 0, // updates when search filters are changed
-				profileChanged: false, // true when the current profile is different than the profile on the server
-				loadingProfile: false, // true when first loading the profile from the server
-				countingLoans: false, // true when loan count is updating
-				savingProfile: false, // true when profile is being saved o the server
-				warningThreshold: 25, // minimum loan count to avoid getting a warning message
-			},
+		defaults(cache) {
+			cache.writeQuery({
+				query: bothProfilesQuery,
+				data: {
+					autolending: {
+						id: 0,
+						__typename: 'Autolending',
+						currentProfile: null,
+						savedProfile: null,
+						currentLoanCount: 0, // updates when search filters are changed
+						profileChanged: false, // true when currentProfile is different than savedProfile
+						loadingProfile: false, // true when first loading the profile from the server
+						countingLoans: false, // true when loan count is updating
+						savingProfile: false, // true when profile is being saved o the server
+						warningThreshold: 25, // minimum loan count to avoid getting a warning message
+					}
+				}
+			});
 		},
 		resolvers: {
 			AutolendingMutation: {
@@ -185,7 +201,7 @@ export default () => {
 								const profile = _get(result, 'data.my.autolendProfile') || AutolendProfile();
 								return {
 									...profile,
-									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
+									loanSearchCriteria: profile?.loanSearchCriteria || LoanSearchCriteria(),
 								};
 							})
 							// Replace any legacy filter values
@@ -245,7 +261,7 @@ export default () => {
 					});
 
 					// If the search filters haven't changed, return immediately instead of getting a new loan count
-					if (criteriaAreEqual(profileBeforeChange.loanSearchCriteria, currentProfile.loanSearchCriteria)) {
+					if (criteriaAreEqual(profileBeforeChange?.loanSearchCriteria, currentProfile?.loanSearchCriteria)) {
 						return true;
 					}
 
@@ -322,7 +338,7 @@ export default () => {
 			Mutation: {
 				autolending() {
 					// Return typename so apollo will use that type to resolve the fields
-					return { __typename: 'AutolendingMutation' };
+					return { id: 0, __typename: 'AutolendingMutation' };
 				}
 			}
 		}

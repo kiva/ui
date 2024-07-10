@@ -21,6 +21,7 @@ describe('TheHeader', () => {
 					apollo: {
 						readFragment: () => {},
 						query: () => Promise.resolve({}),
+						readQuery: () => {},
 					},
 					cookieStore: new CookieStore(),
 					kvAuth0: MockKvAuth0,
@@ -32,6 +33,11 @@ describe('TheHeader', () => {
 					PromoBannerLarge: { ...emptyComponent },
 					PromoBannerSmall: { ...emptyComponent },
 					TheLendMenu: { ...emptyComponent },
+				},
+				data() {
+					return {
+						isVisitor: false
+					};
 				},
 			},
 			vue => {

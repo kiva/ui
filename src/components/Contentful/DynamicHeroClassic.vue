@@ -1,6 +1,7 @@
 <template>
 	<section-with-background-classic
 		:background-content="background"
+		:theme-name="themeName"
 		:vertical-padding="verticalPadding"
 	>
 		<template #content>
@@ -105,13 +106,31 @@
 							v-html="heroSubHeadline"
 							class="tw-mb-2 md:tw-mb-3"
 						></h2>
-						<div v-if="heroBody" class="tw-prose tw-mb-2 md:tw-mb-3">
-							<dynamic-rich-text :html="heroBody" />
+						<div v-if="heroBody" class="tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
+							<dynamic-rich-text
+								class="dynamic-hero-classic"
+								:body-columns="bodyColumns"
+								:html="heroBody"
+							/>
 						</div>
-						<button-wrapper
-							class="tw-w-full md:tw-w-auto"
-							:content="buttonContent"
-						/>
+						<template v-if="secondBtnExist">
+							<div class="tw-flex tw-flex-wrap tw-gap-2">
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="buttonContent"
+								/>
+								<button-wrapper
+									class="tw-w-full md:tw-w-auto"
+									:content="secondaryButtonContent"
+								/>
+							</div>
+						</template>
+						<template v-else>
+							<button-wrapper
+								class="tw-w-full md:tw-w-auto"
+								:content="buttonContent"
+							/>
+						</template>
 					</div>
 				</kv-grid>
 			</kv-page-container>
@@ -122,13 +141,14 @@
 <script>
 import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import DynamicRichText from '@/components/Contentful/DynamicRichText';
 import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
 import { responsiveImageSetSourceSets } from '@/util/contentfulUtils';
+import { richTextRenderer, addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
 import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+
 /**
 * Dynamic Hero Component
 * This component will display a Hero driven by a Contentful Content Group
@@ -157,6 +177,14 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		pageSettingData: {
+			type: Object,
+			default: () => {},
+		},
+	},
+	async mounted() {
+		await this.$nextTick();
+		addBlankTargetToExternalLinks(this.$refs.heroBodyCopy, this.pageSettingData);
 	},
 	computed: {
 		background() {
@@ -171,6 +199,15 @@ export default {
 		},
 		buttonTo() {
 			return this.buttonContent?.webLink ?? '';
+		},
+		secondaryButtonContent() {
+			const contents = [...this.content?.contents].reverse();
+			return contents?.find(({ contentType }) => {
+				return contentType ? contentType === 'button' : false;
+			});
+		},
+		secondBtnExist() {
+			return this.buttonContent?.label !== this.secondaryButtonContent?.label;
 		},
 		genericContentBlock() {
 			const gcb = this.content?.contents?.find(({ contentType }) => {
@@ -241,3 +278,11 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+	.dynamic-hero-classic::v-deep i,
+	.dynamic-hero-classic::v-deep b,
+	.dynamic-hero-classic::v-deep u {
+		color: rgb(var(--text-action));
+	}
+</style>

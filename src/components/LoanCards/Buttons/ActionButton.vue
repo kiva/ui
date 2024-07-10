@@ -8,6 +8,9 @@
 		@add-to-basket="handleAddToBasketEvent"
 		:show-now="showNow"
 		:amount-left="amountLeft"
+		:enable-five-dollars-notes="enableFiveDollarsNotes"
+		:enable-huge-amount="enableHugeAmount"
+		:is-visitor="isVisitor"
 	/>
 </template>
 
@@ -81,7 +84,19 @@ export default {
 		amountLeft: {
 			type: Number,
 			default: 0,
-		}
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		isVisitor: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {};

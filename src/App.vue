@@ -2,6 +2,7 @@
 	<div
 		id="app"
 		class="tw-h-full tw-bg-primary"
+		:data-hydrated="dataHydrated"
 	>
 		<router-view />
 		<vue-progress-bar />
@@ -17,6 +18,11 @@ import unbounceEventMixin from '@/plugins/unbounce-event-mixin';
 
 export default {
 	name: 'App',
+	data() {
+		return {
+			dataHydrated: false
+		};
+	},
 	components: {
 		TheTipMessage,
 	},
@@ -104,10 +110,21 @@ export default {
 				},
 			]),
 			link: [
+				// Install typekit Dovetail font
+				{
+					rel: 'stylesheet',
+					href: 'https://use.typekit.net/pmj7shs.css',
+				},
 				// Fonts in format woff2nt'
 				{
 					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-BoldItalic.woff2'),
+					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
+					crossorigin: 'anonymous',
+					as: 'font'
+				},
+				{
+					rel: 'preload',
+					href: require('@/assets/fonts/PostGrotesk-MediumItalic.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
@@ -120,12 +137,6 @@ export default {
 				{
 					rel: 'preload',
 					href: require('@/assets/fonts/PostGrotesk-BookItalic.woff2'),
-					crossorigin: 'anonymous',
-					as: 'font'
-				},
-				{
-					rel: 'preload',
-					href: require('@/assets/fonts/PostGrotesk-Medium.woff2'),
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
@@ -142,7 +153,7 @@ export default {
 				{
 					vmid: 'canonical',
 					rel: 'canonical',
-					href: `https://${this.$appConfig.host}${this.$route.path}`
+					href: `${this.$appConfig.transport}://${this.$appConfig.host}${this.$route.path}`
 				}
 			].concat(/^[a-z]+:\/\//i.test(this.$appConfig?.publicPath) ? [
 				{
@@ -207,6 +218,9 @@ export default {
 			]))
 		};
 	},
+	mounted() {
+		this.dataHydrated = true;
+	}
 };
 </script>
 

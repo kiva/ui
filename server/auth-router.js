@@ -4,7 +4,7 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const { usingFakeAuth } = require('./util/fakeAuthentication');
 const { isExpired } = require('./util/jwt');
-const { info, warn } = require('./util/log');
+const { error, info, warn } = require('./util/log');
 const {
 	clearNotedLoginState,
 	getSyncCookie,
@@ -20,6 +20,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Helper function to start slient authentication process
 	function attemptSilentAuth(req, res, next) {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		// Store current url to redirect to after auth
 		req.session.doneUrl = req.originalUrl;
 		req.session.silentAuth = true;
@@ -55,16 +56,28 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
-		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
-			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
-			res.redirect(loginRedirectUrl);
-		} else {
-			next();
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
+		if (req.query.error_description) {
+			if (req.query.error_description.indexOf('OIDC-conformant') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+				return res.redirect(loginRedirectUrl);
+			}
+			if (req.query.error_description.indexOf('Registration captcha not valid') > -1) {
+				const loginRedirectUrl = config.auth0.loginRedirectUrls[config.auth0.serverClientID];
+				const loginHint = encodeURIComponent(
+					`login|${JSON.stringify({
+						msg: 'invalid-reg-captcha',
+					})}`
+				);
+				return res.redirect(`${loginRedirectUrl}&loginHint=${loginHint}`);
+			}
 		}
+		next();
 	});
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		const cookies = cookie.parse(req.headers.cookie || '');
 		const options = {
 			audience: config.auth0.apiAudience,
@@ -74,22 +87,46 @@ module.exports = function authRouter(config = {}) {
 			options.prompt = 'login';
 		}
 		// Go to register instead of login if the user has not logged in before
-		if (!cookies.kvu) {
+		if (req.query.autoPage === 'true' && !cookies.kvu) {
 			options.login_hint = 'signUp';
 		}
+		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
 			})}`;
 		}
-
+		// Override the login hint with whatever hint is set in the request
 		if (req.query.loginHint) {
 			options.login_hint = req.query.loginHint;
 		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
+		}
+		// Specify ssoRedirect url
+		if (req.query.ssoRedirect) {
+			options.ssoRedirect = req.query.ssoRedirect;
+		}
+		// Enable Kiva Corp Partner version of the login UI
+		if (req.query.kivaCorpPartner) {
+			options.kiva_corp_partner = true;
+		}
+
+		// Specify if login is meant to be passwordless
+		if (req.query.passwordless) {
+			options.passwordless = true;
+		}
+
+		// Specify partnerContentId
+		if (req.query.partnerContentId) {
+			options.partnerContentId = req.query.partnerContentId;
+		}
+
+		// Opt-In Communication Exp MP-271
+		if (cookies.opt_in_comms) {
+			options.optInComms = cookies.opt_in_comms;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
@@ -98,17 +135,24 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
+		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 		info(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
-		req.logout(); // removes req.user
-		noteLoggedOut(res);
-		res.redirect(logoutUrl);
+		// removes req.user
+		req.logout(err => {
+			if (err) {
+				error('LoginUI: logout callback error:', err);
+			}
+			noteLoggedOut(res);
+			res.redirect(logoutUrl);
+		});
 	});
 
 	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
 		passport.authenticate('auth0', (authErr, user, authInfo) => {
+			res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 			if (authErr) {
 				info(`LoginUI: auth error, session id:${req.sessionID}, error: ${authErr}`, { error: authErr });
 
@@ -132,7 +176,9 @@ module.exports = function authRouter(config = {}) {
 			// Handle errors
 			if (req.query.error && !silentAuth) {
 				// Re-attempt login with the login form forced to display if unauthorized error happened
-				if (req.query.error === 'unauthorized') {
+				if (req.query.error === 'unauthorized'
+					|| req.query.error_description?.toLowerCase() === 'session too old, login required'
+				) {
 					req.query = {}; // Remove query params from previous auth attempt
 					return passport.authenticate('auth0', {
 						audience: config.auth0.apiAudience,
@@ -199,13 +245,23 @@ module.exports = function authRouter(config = {}) {
 			attemptSilentAuth(req, res, next);
 		} else if (isNotedLoggedIn(req) && !isNotedUserRequestUser(req)) {
 			info(`LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}`); // eslint-disable-line max-len
-			req.logout(); // removes req.user
-			attemptSilentAuth(req, res, next);
+			// removes req.user
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				attemptSilentAuth(req, res, next);
+			});
+		} else if (isNotedLoggedOut(req) && req.user) {
+			info(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
+			// removes req.user
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				next();
+			});
 		} else {
-			if (isNotedLoggedOut(req) && req.user) {
-				info(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
-				req.logout(); // removes req.user
-			}
 			next();
 		}
 	});
@@ -218,8 +274,13 @@ module.exports = function authRouter(config = {}) {
 			next();
 		} else if (req.user && isExpired(req.user.accessToken)) {
 			info(`LoginUI: access token expired, attempting silent authentication to renew, session id:${req.sessionID}`); // eslint-disable-line max-len
-			req.logout(); // Remove expired token from session
-			attemptSilentAuth(req, res, next);
+			// removes req.user + expired token from session
+			req.logout(err => {
+				if (err) {
+					error('LoginUI: logout callback error:', err);
+				}
+				attemptSilentAuth(req, res, next);
+			});
 		} else {
 			next();
 		}

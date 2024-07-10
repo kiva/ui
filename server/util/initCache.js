@@ -31,18 +31,27 @@ function FakeMemcached(options) {
 	return lru;
 }
 
+let cache;
+
 module.exports = function initCache(config) {
+	// Return existing cache if already initialized
+	if (cache) {
+		return cache;
+	}
+
 	if (config.memcachedEnabled && config.memcachedServers.length) {
 		// Create a memcached connection
 		// eslint-disable-next-line new-cap
-		return new memjs.Client.create(config.memcachedServers, {
+		cache = new memjs.Client.create(config.memcachedServers, {
 			failover: true,
 			timeout: 1,
 			keepAlive: true,
 		});
+		return cache;
 	}
 	// Create a simple local-memory cache
-	return FakeMemcached({
+	cache = FakeMemcached({
 		max: 1000
 	});
+	return cache;
 };

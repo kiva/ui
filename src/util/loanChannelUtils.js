@@ -4,12 +4,9 @@ import {
 	getLoanChannelVariables,
 	watchLoanChannel
 } from '@/util/flssUtils';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import { getExperimentSettingAsync, getExperimentSettingCached, trackExperimentVersion } from '@/util/experimentUtils';
 import logReadQueryError from '@/util/logReadQueryError';
-
-export const loanChannelFLSSQueryEXP = 'loan_channel_flss_query_v1';
+import logFormatter from '@/util/logFormatter';
 
 /**
  * Returns the FLSS loan search state object based on the map and category
@@ -19,7 +16,13 @@ export const loanChannelFLSSQueryEXP = 'loan_channel_flss_query_v1';
  * @returns {Object} The loan search state object
  */
 export function getFLSSQueryMap(queryMap, category) {
-	return queryMap.find(c => c.url === category)?.flssLoanSearch;
+	const result = queryMap.find(c => c.url === category)?.flssLoanSearch;
+
+	if (!result) {
+		logFormatter(`The following category was not found in the FLSS query map: ${category}`, 'info');
+	}
+
+	return result;
 }
 
 /**
@@ -47,22 +50,8 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
-		await getExperimentSettingAsync(apollo, loanChannelFLSSQueryEXP);
-
-		let experimentActive;
-
-		try {
-			experimentActive = (await apollo.query({
-				query: experimentAssignmentQuery,
-				variables: { id: loanChannelFLSSQueryEXP }
-			})).data.experiment?.version === 'b';
-		} catch (e) {
-			logReadQueryError(e, 'loanChannelUtils preFetchChannel experimentAssignmentQuery');
-		}
-
-		if (experimentActive) {
-			return fetchLoanChannel(apollo, queryMapFLSS, loanQueryVars);
-		}
+		const filterObj = { ...queryMapFLSS };
+		return fetchLoanChannel(apollo, filterObj, loanQueryVars);
 	}
 
 	try {
@@ -72,24 +61,6 @@ export async function preFetchChannel(apollo, queryMap, channelUrl, loanQueryVar
 		});
 	} catch (e) {
 		logReadQueryError(e, 'loanChannelUtils preFetchChannel loanChannelQuery');
-	}
-}
-
-/**
- * Checks the cached experiment for a matching version
- *
- * @param {Object} apollo The Apollo client instance
- * @param {string} version The version of the experiment
- * @returns {boolean} Whether the cached experiment matches
- */
-export function checkCachedChannelExperiment(apollo, version = 'b') {
-	try {
-		return apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: loanChannelFLSSQueryEXP }
-		}).experiment?.version === version;
-	} catch (e) {
-		logReadQueryError(e, 'loanChannelUtils checkCachedChannelExperiment experimentAssignmentQuery');
 	}
 }
 
@@ -106,17 +77,38 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
 
 	if (queryMapFLSS) {
-		const experimentActive = checkCachedChannelExperiment(apollo);
-
-		if (experimentActive) {
-			return transformFLSSData(getCachedLoanChannel(apollo, queryMapFLSS, loanQueryVars));
-		}
+		return transformFLSSData(getCachedLoanChannel(apollo, queryMapFLSS, loanQueryVars));
 	}
 
 	try {
 		return apollo.readQuery({ query: loanChannelQuery, variables: loanQueryVars });
 	} catch (e) {
 		logReadQueryError(e, 'loanChannelUtils getCachedChannel loanChannelQuery');
+	}
+}
+
+/**
+ * Gets the loan channel data from the API
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Array} queryMap The map mixin from loan-channel-query-map.js
+ * @param {string} channelUrl The URL of the loan channel
+ * @param {Object} loanQueryVars The loan channel query variables
+ * @param {Object} filterOverrides Filters that override or extend the query map filters (only for FLSS)
+ * @returns {Object} The loan channel data, transformed if FLSS
+ */
+export async function getLoanChannel(apollo, queryMap, channelUrl, loanQueryVars, filterOverrides = {}) {
+	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
+
+	if (queryMapFLSS) {
+		const data = await fetchLoanChannel(apollo, { ...queryMapFLSS, ...filterOverrides }, loanQueryVars);
+		return transformFLSSData(data);
+	}
+
+	try {
+		return apollo.query({ query: loanChannelQuery, variables: loanQueryVars });
+	} catch (e) {
+		logReadQueryError(e, 'loanChannelUtils getLoanChannel loanChannelQuery');
 	}
 }
 
@@ -132,53 +124,24 @@ export function getCachedChannel(apollo, queryMap, channelUrl, loanQueryVars) {
  * @returns {Object} The Apollo watch observer
  */
 export function watchChannelQuery(apollo, queryMap, channelUrl, loanQueryVars, next, watch) {
-	let observer;
-
 	const queryMapFLSS = getFLSSQueryMap(queryMap, channelUrl);
-
-	let experimentActive = false;
-
 	// Check if current user should see the FLSS experiment
-	if (queryMapFLSS) {
-		experimentActive = checkCachedChannelExperiment(apollo);
-
-		if (experimentActive) {
-			observer = watchLoanChannel(apollo, queryMapFLSS, loanQueryVars);
-		}
-	}
-
-	// Fallback to lend API
-	if (!experimentActive) {
-		observer = apollo.watchQuery({ query: loanChannelQuery, variables: loanQueryVars });
-	}
+	const observer = queryMapFLSS
+		? watchLoanChannel(apollo, queryMapFLSS, loanQueryVars)
+		: apollo.watchQuery({ query: loanChannelQuery, variables: loanQueryVars });
 
 	if (observer) {
 		observer.subscribe({
 			next: ({ data, loading }) => {
-				next(experimentActive ? transformFLSSData(data) : data, loading);
+				next(queryMapFLSS ? transformFLSSData(data) : data, loading);
 			}
 		});
 
-		watch(vars => observer.setVariables(experimentActive ? getLoanChannelVariables(queryMapFLSS, vars) : vars));
+		watch(vars => {
+			// eslint-disable-next-line max-len
+			observer.setVariables(queryMapFLSS ? getLoanChannelVariables(queryMapFLSS, vars) : vars);
+		});
 
 		return observer;
-	}
-}
-
-/**
- * Tracks the loan channel FLSS experiment for the current user if the experiment is enabled
- *
- * @param {Object} apollo The Apollo client instance
- * @param {Array} queryMap The map mixin from loan-channel-query-map.js
- * @param {string} channelUrl The URL of the loan channel
- * @param {function} trackEvent The method for tracking analytics events
- */
-export function trackChannelExperiment(apollo, queryMap, channelUrl, trackEvent) {
-	if (getFLSSQueryMap(queryMap, channelUrl)) {
-		const { enabled } = getExperimentSettingCached(apollo, loanChannelFLSSQueryEXP);
-
-		if (enabled) {
-			trackExperimentVersion(apollo, trackEvent, 'Lending', loanChannelFLSSQueryEXP, 'EXP-VUE-1114-July2022');
-		}
 	}
 }

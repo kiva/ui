@@ -1,6 +1,0 @@
-mutation updateExperimentVersion($id: String!, $version: String! ) {
-	updateExperimentVersion (id: $id, version: $version) @client {
-		id
-		version
-	}
-}

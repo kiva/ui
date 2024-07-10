@@ -6,7 +6,31 @@ mutation updateLoanSearch($searchParams: JSONObject) {
 		sectorId
 		sortBy
 		themeId
+		tagId
 		pageOffset
 		pageLimit
+		distributionModel
+		isIndividual
+		lenderRepaymentTerm {
+			min
+			max
+		}
+		keywordSearch
+		partnerId
+		partnerRiskRating {
+			min
+			max
+		}
+		partnerDefaultRate {
+			min
+			max
+		}
+		partnerAvgProfitability {
+			min
+			max
+		}
+		isMatchable
+		flexibleFundraisingEnabled
+		activityId
 	}
 }

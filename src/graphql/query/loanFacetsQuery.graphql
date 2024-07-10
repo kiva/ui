@@ -15,20 +15,25 @@ query loanFacets {
 			id
 			name
 		}
-	}
-	genderOptions: __type(name: "GenderEnum") {
-		enumValues {
+		tag {
+			id
+			name
+			vocabularyId
+		}
+		activity {
+			id
 			name
 		}
 	}
-	standardSorts: __type(name: "LoanSearchSortByEnum") {
-		enumValues {
-			name
-		}
-	}
-	flssSorts: __type(name: "SortEnum") {
-		enumValues {
-			name
+	general {
+		partners (filters: { status: active }, limit: null) {
+			values {
+				id
+				name
+				countries {
+					region
+				}
+			}
 		}
 	}
 }

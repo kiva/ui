@@ -1,0 +1,20 @@
+mutation createSavedSearch(
+	$name: String!,
+	$queryString: String!,
+	$filters: LoanSearchFiltersInput,
+	$isAlert: Boolean = false
+) {
+  my {
+    createSavedSearch (savedSearch :{
+      filters: $filters,
+      name: $name,
+      isAlert: $isAlert,
+      queryString: $queryString,
+      sortBy: popularity
+    })
+    {
+		id
+    	name
+	}
+  }
+}

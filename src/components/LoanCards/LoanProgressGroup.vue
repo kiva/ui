@@ -33,18 +33,18 @@ export default {
 			type: String,
 			default: '',
 		},
-		allSharesReserved: {
-			type: Boolean,
-			default: false,
-		}
 	},
 	computed: {
+		numeralLeft() {
+			return numeral(this.moneyLeft);
+		},
 		fundingText() {
-			const formattedMoneyLeft = numeral(this.moneyLeft).format('$0,0[.]00');
+			const formattedMoneyLeft = this.numeralLeft.format('$0,0[.]00');
 			const formattedTimeLeft = `${this.timeLeft !== '' ? `. ${this.timeLeft}` : ''}`;
-
-			const formatttedFundingText = `${formattedMoneyLeft} to go${formattedTimeLeft}`;
-			return 	formatttedFundingText;
+			// Some time left strings already include an exclamation mark
+			const exclamationMark = this.amountLow && !formattedTimeLeft.includes('!') ? '!' : '';
+			if (!this.numeralLeft.value()) return 'Funded!';
+			return `${formattedMoneyLeft} to go${formattedTimeLeft}${exclamationMark}`;
 		}
 	}
 };

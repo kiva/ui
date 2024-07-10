@@ -1,7 +1,0 @@
-query favoriteCountry {
-	my {
-    	recommendations {
-      		topCountry
-    	}
-	}
-}

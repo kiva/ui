@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
 
 export default {
 	data() {
@@ -47,15 +48,18 @@ export default {
 					id: 18,
 					url: 'eco-friendly',
 					queryParams: 'status=fundRaising&loanTags=9,8',
-					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag'
+					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag',
+					flssLoanSearch: {
+						tagId: [9, 8]
+					}
 				},
 				{
 					id: 28,
 					url: 'kiva-u-s',
-					queryParams: 'status=fundRaising&country=US&distributionModel=direct',
+					queryParams: 'status=fundRaising&country=US,GU,VI,PR&distributionModel=direct',
 					algoliaParams: 'countries=North%20America%20%3E%20United%20States',
 					flssLoanSearch: {
-						countryIsoCode: ['US'],
+						countryIsoCode: ['US', 'GU', 'VI', 'PR'],
 						distributionModel: 'DIRECT'
 					},
 				},
@@ -64,7 +68,10 @@ export default {
 					url: 'livestock',
 					queryParams: 'status=fundRaising&activity=73',
 					// algoliaParams: '', // not supported pass exclude link
-					fallbackUrl: '/lend?status=fundRaising&activity=73'
+					fallbackUrl: '/lend?status=fundRaising&activity=73',
+					flssLoanSearch: {
+						activityId: [73]
+					}
 				},
 				{
 					id: 29,
@@ -78,7 +85,7 @@ export default {
 				{
 					id: 3,
 					url: 'ending-soon',
-					queryParams: 'status=fundRaising&sortBy=expiringSoon',
+					queryParams: 'status=fundRaising&expiringSoon=1&sortBy=expiringSoon',
 					algoliaParams: 'sortBy=expiringSoon',
 					flssLoanSearch: {
 						sortBy: 'expiringSoon'
@@ -88,7 +95,10 @@ export default {
 					id: 26,
 					url: 'single-parents',
 					queryParams: 'status=fundRaising&loanTags=17',
-					algoliaParams: 'tags=%23Single%20Parent'
+					algoliaParams: 'tags=%23Single%20Parent',
+					flssLoanSearch: {
+						tagId: [17]
+					}
 				},
 				{
 					id: 25,
@@ -130,7 +140,10 @@ export default {
 					id: 11,
 					url: 'short-term-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,16',
-					algoliaParams: 'repayment=%3A16'
+					algoliaParams: 'repayment=%3A16',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16)
+					},
 				},
 				{
 					id: 6,
@@ -144,14 +157,19 @@ export default {
 				{
 					id: 33,
 					url: 'mission-driven-orgs',
-					queryParams: 'partner=510,503,131,186,173,249,200,228,350,485,482,498,525,547,523,532,539,540,542,552,565,568,570,575,586,495,530,546,589,497,501,511,516,518,492,587,545,531,566,585,508,513,573,580,581,555,536,486,594,592,345,491,505,500,502,509,512,520,526,529,591,494,524,506,496,517,489,490,515,535,548,556,577,583,315,558,593,514,553,560,569,571,534,543,557,563,258,418,574,538,567,561,408,218,544,281,466,305,397,437,225,390,493,521,356,198,480,369,469,295,311,417,301,379,274,317,285,62,175,40,358,578,361,477,392,528,576,365,211,479,483,330,389,292,415,403,412,263,431,275,376,342,468,446,461,451,445,449,452,465,458,459&status=fundRaising&sortBy=popularity',
-					fallbackUrl: '/lend?partner=510,503,131,186,173,249,200,228,350,485,482,498,525,547,523,532,539,540,542,552,565,568,570,575,586,495,530,546,589,497,501,511,516,518,492,587,545,531,566,585,508,513,573,580,581,555,536,486,594,592,345,491,505,500,502,509,512,520,526,529,591,494,524,506,496,517,489,490,515,535,548,556,577,583,315,558,593,514,553,560,569,571,534,543,557,563,258,418,574,538,567,561,408,218,544,281,466,305,397,437,225,390,493,521,356,198,480,369,469,295,311,417,301,379,274,317,285,62,175,40,358,578,361,477,392,528,576,365,211,479,483,330,389,292,415,403,412,263,431,275,376,342,468,446,461,451,445,449,452,465,458,459&status=fundRaising&sortBy=popularity',
+					queryParams: 'partner=62,630,198,225,229,229,263,274,275,285,292,295,301,311,317,342,358,361,369,376,389,390,412,415,417,431,441,446,449,451,452,458,459,461,466,468,472,482,483,486,489,490,491,492,493,494,496,497,498,500,501,502,503,505,506,508,509,510,511,512,513,514,515,516,517,520,521,523,524,525,529,530,531,532,534,535,536,538,539,540,542,543,544,545,546,548,552,553,555,556,557,558,560,561,563,565,566,567,568,569,570,571,573,575,577,578,579,580,581,583,584,585,586,587,591,592,593,595,597,598,599,600,601,602,603,604,608,610,612,613,614,656,617,618&status=fundRaising&sortBy=popularity',
+					fallbackUrl: '/lend?partner=62,630,198,225,229,229,263,274,275,285,292,295,301,311,317,342,358,361,369,376,389,390,412,415,417,431,441,446,449,451,452,458,459,461,466,468,472,482,483,486,489,490,491,492,493,494,496,497,498,500,501,502,503,505,506,508,509,510,511,512,513,514,515,516,517,520,521,523,524,525,529,530,531,532,534,535,536,538,539,540,542,543,544,545,546,548,552,553,555,556,557,558,560,561,563,565,566,567,568,569,570,571,573,575,577,578,579,580,581,583,584,585,586,587,591,592,593,595,597,598,599,600,601,602,603,604,608,610,612,613,614,656,617,618&status=fundRaising&sortBy=popularity',
+					flssLoanSearch: {
+						partnerId: [62, 630, 198, 225, 229, 263, 274, 275, 285, 292, 295, 301, 311, 317, 342, 358, 361, 369, 376, 389, 390, 412, 415, 417, 431, 441, 446, 449, 451, 452, 458, 459, 461, 466, 468, 472, 482, 483, 486, 489, 490, 491, 492, 493, 494, 496, 497, 498, 500, 501, 502, 503, 505, 506, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 520, 521, 523, 524, 525, 529, 530, 531, 532, 534, 535, 536, 538, 539, 540, 542, 543, 544, 545, 546, 548, 552, 553, 555, 556, 557, 558, 560, 561, 563, 565, 566, 567, 568, 569, 570, 571, 573, 575, 577, 578, 579, 580, 581, 583, 584, 585, 586, 587, 591, 592, 593, 595, 597, 598, 599, 600, 601, 602, 603, 604, 608, 610, 612, 613, 614, 656, 617, 618],
+						sortBy: 'popularityScore',
+					},
 				},
 				{
 					// id: 33,
 					// This used to be Loan Channel id 33 but was changed. However, lenders still have this page
 					// book marked and get redirected here so we have to map the url.
 					// If the attribute/themeFilter is removed we'll need to update this redirect
+					id: 158,
 					url: 'social-enterprises',
 					queryParams: 'status=fundRaising&theme=Social Enterprise',
 					algoliaParams: 'attributes=Social%20Enterprise',
@@ -199,7 +217,10 @@ export default {
 					id: 14,
 					url: 'groups',
 					queryParams: 'status=fundRaising&isGroup=1',
-					algoliaParams: '' // not support show exit link
+					algoliaParams: '', // not support show exit link
+					flssLoanSearch: {
+						isIndividual: false
+					},
 				},
 				{
 					id: 1,
@@ -217,13 +238,16 @@ export default {
 				{
 					id: 67,
 					url: 'loans-to-single-parents',
-					queryParams: 'status=fundRaising&loanTags=17&distributionModel=both',
-					algoliaParams: 'tags=%23Single%20Parent'
+					queryParams: 'status=fundRaising&loanTags=17',
+					algoliaParams: 'tags=%23Single%20Parent',
+					flssLoanSearch: {
+						tagId: [17]
+					}
 				},
 				{
 					id: 52,
 					url: 'loans-to-women',
-					queryParams: 'gender=female',
+					queryParams: 'status=fundRaising&gender=female',
 					algoliaParams: 'gender=female',
 					flssLoanSearch: {
 						gender: 'female'
@@ -232,7 +256,7 @@ export default {
 				{
 					id: 53,
 					url: 'loans-for-education',
-					queryParams: 'status=fundRaising&sector=15&distributionModel=both',
+					queryParams: 'status=fundRaising&sector=15',
 					algoliaParams: 'sector=Education',
 					flssLoanSearch: {
 						sectorId: [15]
@@ -241,7 +265,7 @@ export default {
 				{
 					id: 54,
 					url: 'trending-now',
-					queryParams: 'status=fundRaising&distributionModel=both&sortBy=popularity',
+					queryParams: 'status=fundRaising',
 					algoliaParams: '',
 				},
 				{
@@ -272,12 +296,15 @@ export default {
 					id: 58,
 					url: 'eco-friendly-loans',
 					queryParams: 'status=fundRaising&loanTags=9',
-					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag'
+					algoliaParams: 'tags=%23Eco-friendly~%23Sustainable%20Ag',
+					flssLoanSearch: {
+						tagId: [9]
+					}
 				},
 				{
 					id: 59,
 					url: 'loans-that-are-ending-soon',
-					queryParams: 'sortBy=expiringSoon',
+					queryParams: 'status=fundRaising&sortBy=expiringSoon',
 					algoliaParams: 'sortBy=expiringSoon',
 					flssLoanSearch: {
 						sortBy: 'expiringSoon'
@@ -310,16 +337,21 @@ export default {
 				{
 					id: 68,
 					url: 'loans-to-mission-driven-enterprises',
-					queryParams: 'partner=510,503,131,186,173,249,200,228,350,485,482,498,525,547,523,532,539,540,542,552,565,568,570,575,586,495,530,546,589,497,501,511,516,518,492,587,545,531,566,585,508,513,573,580,581,555,536,486,594,592,345,491,505,500,502,509,512,520,526,529,591,494,524,506,496,517,489,490,515,535,548,556,577,583,315,558,593,514,553,560,569,571,534,543,557,563,258,418,574,538,567,561,408,218,544,281,466,305,397,437,225,390,493,521,356,198,480,369,469,295,311,417,301,379,274,317,285,62,175,40,358,578,361,477,392,528,576,365,211,479,483,330,389,292,415,403,412,263,431,275,376,342,468,446,461,451,445,449,452,465,458,459&status=fundRaising&sortBy=popularity',
-					fallbackUrl: '/lend?partner=510,503,131,186,173,249,200,228,350,485,482,498,525,547,523,532,539,540,542,552,565,568,570,575,586,495,530,546,589,497,501,511,516,518,492,587,545,531,566,585,508,513,573,580,581,555,536,486,594,592,345,491,505,500,502,509,512,520,526,529,591,494,524,506,496,517,489,490,515,535,548,556,577,583,315,558,593,514,553,560,569,571,534,543,557,563,258,418,574,538,567,561,408,218,544,281,466,305,397,437,225,390,493,521,356,198,480,369,469,295,311,417,301,379,274,317,285,62,175,40,358,578,361,477,392,528,576,365,211,479,483,330,389,292,415,403,412,263,431,275,376,342,468,446,461,451,445,449,452,465,458,459&status=fundRaising&sortBy=popularity'
+					queryParams: 'status=fundRaising&partner=62,630,198,225,229,263,274,275,285,292,295,301,311,317,342,358,361,369,376,389,390,412,415,417,431,441,446,449,451,452,458,459,461,466,468,472,482,483,486,489,490,491,492,493,494,496,497,498,500,501,502,503,505,506,508,509,510,511,512,513,514,515,516,517,520,521,523,524,525,529,530,531,532,534,535,536,538,539,540,542,543,544,545,546,548,552,553,555,556,557,558,560,561,563,565,566,567,568,569,570,571,573,575,577,578,579,580,581,583,584,585,586,587,591,592,593,595,597,598,599,600,601,602,603,604,608,610,612,613,614,656,617,618&sortBy=popularity',
+					fallbackUrl: '/lend?partner=62,630,198,225,229,263,274,275,285,292,295,301,311,317,342,358,361,369,376,389,390,412,415,417,431,441,446,449,451,452,458,459,461,466,468,472,482,483,486,489,490,491,492,493,494,496,497,498,500,501,502,503,505,506,508,509,510,511,512,513,514,515,516,517,520,521,523,524,525,529,530,531,532,534,535,536,538,539,540,542,543,544,545,546,548,552,553,555,556,557,558,560,561,563,565,566,567,568,569,570,571,573,575,577,578,579,580,581,583,584,585,586,587,591,592,593,595,597,598,599,600,601,602,603,604,608,610,612,613,614,656,617,618&status=fundRaising&sortBy=popularity',
+					flssLoanSearch: {
+						partnerId: [62, 630, 198, 225, 229, 263, 274, 275, 285, 292, 295, 301, 311, 317, 342, 358, 361, 369, 376, 389, 390, 412, 415, 417, 431, 441, 446, 449, 451, 452, 458, 459, 461, 466, 468, 472, 482, 483, 486, 489, 490, 491, 492, 493, 494, 496, 497, 498, 500, 501, 502, 503, 505, 506, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 520, 521, 523, 524, 525, 529, 530, 531, 532, 534, 535, 536, 538, 539, 540, 542, 543, 544, 545, 546, 548, 552, 553, 555, 556, 557, 558, 560, 561, 563, 565, 566, 567, 568, 569, 570, 571, 573, 575, 577, 578, 579, 580, 581, 583, 584, 585, 586, 587, 591, 592, 593, 595, 597, 598, 599, 600, 601, 602, 603, 604, 608, 610, 612, 613, 614, 656, 617, 618],
+						sortBy: 'popularityScore',
+					},
 				},
 				{
 					id: 69,
 					url: 'world-refugee-day',
-					queryParams: 'status=fundRaising&theme=Refugees/Displaced',
+					queryParams: 'status=fundRaising&theme=Refugees/Displaced&distributionModel=field_partner',
 					algoliaParams: 'attributes=Refugees%2FDisplaced',
 					flssLoanSearch: {
-						themeId: [28]
+						themeId: [28],
+						distributionModel: 'FIELDPARTNER'
 					},
 				},
 				{
@@ -333,7 +365,10 @@ export default {
 				{
 					id: 71,
 					url: 'loans-for-livestock',
-					queryParams: 'status=fundRaising&activity=73&distributionModel=both',
+					queryParams: 'status=fundRaising&activity=73',
+					flssLoanSearch: {
+						activityId: [73],
+					},
 				},
 				{
 					id: 72,
@@ -362,7 +397,7 @@ export default {
 				{
 					id: 75,
 					url: 'loans-to-underbanked-areas',
-					queryParams: 'theme=Underfunded Areas',
+					queryParams: 'status=fundRaising&theme=Underfunded Areas',
 					flssLoanSearch: {
 						themeId: [13]
 					},
@@ -394,7 +429,46 @@ export default {
 				{
 					id: 79,
 					url: 'group-loans',
-					queryParams: 'status=fundRaising&isGroup=1&distributionModel=both',
+					queryParams: 'status=fundRaising&isGroup=1',
+					flssLoanSearch: {
+						isIndividual: false
+					},
+				},
+
+				// Lend By Category Carousel Layout Sub Channels
+				// 	ACK-357 Experiment
+				{
+					id: 116,
+					url: 'solar-energy',
+					queryParams: 'status=fundRaising&loanTags=9',
+					flssLoanSearch: {
+						tagId: [9]
+					},
+				},
+				{
+					id: 117,
+					url: 'sustainable-agriculture',
+					queryParams: 'status=fundRaising&sector=1&loanTags=8&sortBy=amountLeft',
+					flssLoanSearch: {
+						sectorId: [1],
+						tagId: [8]
+					},
+				},
+				{
+					id: 118,
+					url: 'recycle-and-re-use',
+					queryParams: 'status=fundRaising&loanTags=9',
+					flssLoanSearch: {
+						tagId: [9],
+					},
+				},
+				{
+					id: 119,
+					url: 'other-eco-friendly-loans',
+					queryParams: 'status=fundRaising&loanTags=9,8',
+					flssLoanSearch: {
+						tagId: [8, 9]
+					},
 				},
 
 				// IWD 2020 Loan Channels
@@ -427,7 +501,8 @@ export default {
 					flssLoanSearch: {
 						countryIsoCode: ['KH', 'TJ', 'TH', 'VN', 'PH', 'KG', 'ID', 'PK'],
 						gender: 'female',
-						distributionModel: 'FIELDPARTNER'
+						distributionModel: 'FIELDPARTNER',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -438,7 +513,8 @@ export default {
 					flssLoanSearch: {
 						countryIsoCode: ['BO', 'GT', 'PY', 'NI', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'MX', 'BR'],
 						gender: 'female',
-						distributionModel: 'FIELDPARTNER'
+						distributionModel: 'FIELDPARTNER',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -450,6 +526,7 @@ export default {
 						countryIsoCode: ['US', 'GU', 'VI', 'PR'],
 						gender: 'female',
 						distributionModel: 'DIRECT',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -460,6 +537,7 @@ export default {
 					flssLoanSearch: {
 						sectorId: [1],
 						gender: 'female',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -470,6 +548,7 @@ export default {
 					flssLoanSearch: {
 						sectorId: [15],
 						gender: 'female',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -480,51 +559,62 @@ export default {
 					flssLoanSearch: {
 						sectorId: [9],
 						gender: 'female',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
 					id: 90,
 					url: 'ecofriendly-loans',
-					queryParams: 'status=fundRaising&gender=female&loanTags=9&distributionModel=both',
-					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
+					queryParams: 'status=fundRaising&gender=female&loanTags=9',
+					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity',
+					flssLoanSearch: {
+						gender: 'female',
+						tagId: [9],
+						sortBy: 'popularityScore',
+					}
 				},
 				{
 					id: 91,
 					url: 'ecofriendlyloans',
-					queryParams: 'status=fundRaising&gender=female&loanTags=9&distributionModel=both',
-					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
+					queryParams: 'status=fundRaising&gender=female&loanTags=9',
+					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity',
+					flssLoanSearch: {
+						gender: 'female',
+						tagId: [9],
+						sortBy: 'popularityScore',
+					}
 				},
 				{
 					id: 92,
 					url: 'food-loans',
-					queryParams: 'distributionModel=field_partner&gender=female&sector=12&status=fundRaising&sortBy=popularity',
+					queryParams: 'status=fundRaising&gender=female&sector=12&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Food&sortBy=popularity',
 					flssLoanSearch: {
 						sectorId: [12],
 						gender: 'female',
-						distributionModel: 'FIELDPARTNER'
+						sortBy: 'popularityScore',
 					},
 				},
 				{
 					id: 93,
 					url: 'shelter-loans',
-					queryParams: 'distributionModel=field_partner&gender=female&sector=10&status=fundRaising&sortBy=popularity',
+					queryParams: 'status=fundRaising&gender=female&sector=10&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Housing&sortBy=popularity',
 					flssLoanSearch: {
 						sectorId: [10],
 						gender: 'female',
-						distributionModel: 'FIELDPARTNER'
+						sortBy: 'popularityScore',
 					},
 				},
 				{
 					id: 94,
 					url: 'retail-loans',
-					queryParams: 'distributionModel=field_partner&gender=female&sector=7&status=fundRaising&sortBy=popularity',
+					queryParams: 'status=fundRaising&gender=female&sector=7&sortBy=popularity',
 					algoliaParams: 'gender=female&sector=Retail&sortBy=popularity',
 					flssLoanSearch: {
 						sectorId: [7],
 						gender: 'female',
-						distributionModel: 'FIELDPARTNER'
+						sortBy: 'popularityScore',
 					},
 				},
 
@@ -541,7 +631,7 @@ export default {
 				{
 					id: 131,
 					url: 'agriculture-loans-in-oceania',
-					queryParams: 'country=WS,TL,SB,TO,FJ,PG,VU,GU&sector=1',
+					queryParams: 'status=fundRaising&country=WS,TL,SB,TO,FJ,PG,VU,GU&sector=1',
 					flssLoanSearch: {
 						sectorId: [1],
 						countryIsoCode: ['WS', 'TL', 'SB', 'TO', 'FJ', 'PG', 'VU', 'GU'],
@@ -550,138 +640,177 @@ export default {
 				{
 					id: 132,
 					url: 'conflict-zone-loans-ending-soon',
-					queryParams: 'theme=Conflict Zones&sortBy=expiringSoon',
+					queryParams: 'status=fundRaising&expiringSoon=1&theme=Conflict Zones&sortBy=expiringSoon',
 					flssLoanSearch: {
-						attributeId: [14],
+						themeId: [14],
 						sortBy: 'expiringSoon'
 					},
 				},
 				{
 					id: 133,
 					url: 'conflict-zone-loans-that-are-almost-funded',
-					queryParams: 'theme=Conflict Zones&sortBy=amountLeft',
+					queryParams: 'status=fundRaising&theme=Conflict Zones&sortBy=amountLeft',
 					flssLoanSearch: {
-						attributeId: [14],
+						themeId: [14],
 						sortBy: 'amountLeft'
 					},
 				},
 				{
 					id: 134,
 					url: 'african-conflict-zones',
-					queryParams: 'country=MZ,UG,TZ,SN,RW,KE,CD,LR,SL,BF,CM,GH,TG,MG,MW,ZM,ML,EG,LS,ZA,BI,SS,ZW,NA&theme=Conflict Zones',
+					queryParams: 'status=fundRaising&country=MZ,UG,TZ,SN,RW,KE,CD,LR,SL,BF,CM,GH,TG,MG,MW,ZM,ML,EG,LS,ZA,BI,SS,ZW,NA&theme=Conflict Zones',
 					flssLoanSearch: {
-						attributeId: [14],
+						themeId: [14],
 						countryIsoCode: ['MZ', 'UG', 'TZ', 'SN', 'RW', 'KE', 'CD', 'LR', 'SL', 'BF', 'CM', 'GH', 'TG', 'MG', 'MW', 'ZM', 'ML', 'EG', 'LS', 'ZA', 'BI', 'SS', 'ZW', 'NA'],
 					},
 				},
 				{
 					id: 135,
 					url: 'latin-american-conflict-zones',
-					queryParams: 'country=DO,BO,GT,PY,HN,PE,CR,PA,EC,CO,SV,NI,MX,BR,CL,HT,BZ,PR,VI&theme=Conflict Zones',
+					queryParams: 'status=fundRaising&country=DO,BO,GT,PY,HN,PE,CR,PA,EC,CO,SV,NI,MX,BR,CL,HT,BZ,PR,VI&theme=Conflict Zones',
 					flssLoanSearch: {
-						attributeId: [14],
+						themeId: [14],
 						countryIsoCode: ['DO', 'BO', 'GT', 'PY', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'NI', 'MX', 'BR', 'CL', 'HT', 'BZ', 'PR', 'VI'],
 					},
 				},
 				{
 					id: 136,
 					url: 'middle-eastern-conflict-zones',
-					queryParams: 'country=JO,PS,IL,TR&theme=Conflict Zones',
+					queryParams: 'status=fundRaising&country=JO,PS,IL,TR&theme=Conflict Zones',
 					flssLoanSearch: {
-						attributeId: [14],
+						themeId: [14],
 						countryIsoCode: ['JO', 'PS', 'IL', 'TR'],
 					},
 				},
 				{
 					id: 137,
 					url: 'refugee-and-i-d-p-loans-ending-soon',
-					queryParams: 'theme=Refugees/Displaced&sortBy=expiringSoon',
+					queryParams: 'status=fundRaising&expiringSoon=1&theme=Refugees/Displaced&sortBy=expiringSoon',
 					flssLoanSearch: {
-						attributeId: [28],
+						themeId: [28],
 						sortBy: 'expiringSoon'
 					},
 				},
 				{
 					id: 138,
 					url: 'refugee-and-i-d-p-loans-that-are-almost-funded',
-					queryParams: 'theme=Refugees/Displaced&sortBy=amountLeft',
+					queryParams: 'status=fundRaising&theme=Refugees/Displaced&sortBy=amountLeft',
 					flssLoanSearch: {
-						attributeId: [28],
+						themeId: [28],
 						sortBy: 'amountLeft'
 					},
 				},
 				{
 					id: 139,
 					url: 'refugee-and-i-d-ps-in-latin-america',
-					queryParams: 'country=DO,BO,GT,PY,HN,PE,CR,PA,EC,CO,SV,NI,MX,BR,CL,HT,BZ,PR,VI&theme=Refugees/Displaced',
+					queryParams: 'status=fundRaising&country=DO,BO,GT,PY,HN,PE,CR,PA,EC,CO,SV,NI,MX,BR,CL,HT,BZ,PR,VI&theme=Refugees/Displaced',
 					flssLoanSearch: {
-						attributeId: [28],
+						themeId: [28],
 						countryIsoCode: ['DO', 'BO', 'GT', 'PY', 'HN', 'PE', 'CR', 'PA', 'EC', 'CO', 'SV', 'NI', 'MX', 'BR', 'CL', 'HT', 'BZ', 'PR', 'VI'],
 					},
 				},
 				{
 					id: 140,
 					url: 'refugee-and-i-d-ps-in-the-middle-east',
-					queryParams: 'country=JO,PS,IL,TR&theme=Refugees/Displaced',
+					queryParams: 'status=fundRaising&country=JO,PS,IL,TR&theme=Refugees/Displaced',
 					flssLoanSearch: {
-						attributeId: [28],
+						themeId: [28],
 						countryIsoCode: ['JO', 'PS', 'IL', 'TR'],
 					},
 				},
 				{
 					id: 141,
 					url: 'responsible-water-collection-and-storage',
-					queryParams: 'status=fundRaising&loanTags=9,8&distributionModel=field_partner',
+					queryParams: 'status=fundRaising&distributionModel=field_partner',
+					flssLoanSearch: {
+						distributionModel: 'FIELDPARTNER'
+					}
 				},
 				{
 					id: 142,
 					url: '6-month-loans',
 					queryParams: 'status=fundRaising&lenderTerm=0,6&defaultRate=,0.01&distributionModel=field_partner',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 6)
+					}
 				},
 				{
 					id: 143,
 					url: 'short-term-loans-ending-soon',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&expiringSoon=1&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&expiringSoon=1',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 6)
+					}
 				},
 				{
 					id: 144,
 					url: 'short-term-loans-almost-funded',
-					queryParams: 'lenderTerm=0,16&sortBy=amountLeft',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&distributionModel=field_partner&sortBy=amountLeft',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						sortBy: 'amountLeft',
+						distributionModel: 'FIELDPARTNER'
+					},
 				},
 				{
 					id: 145,
 					url: 'africa-short-term-loans',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&country=MZ,UG,TZ,SN,RW,KE,CD,LR,SL,BF,CM,GH,NG,TG,MG,MW,ZM,ML,EG,LS,ZA,BI,SS,ZW,NA&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&country=MZ,UG,TZ,SN,RW,KE,CD,LR,SL,BF,CM,GH,NG,TG,MG,MW,ZM,ML,EG,LS,ZA,BI,SS,ZW,NA',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['MZ', 'UG', 'TZ', 'SN', 'RW', 'KE', 'CD', 'LR', 'SL', 'BF', 'CM', 'GH', 'NG', 'TG', 'MG', 'MW', 'ZM', 'ML', 'EG', 'LS', 'ZA', 'BI', 'SS', 'ZW', 'NA'],
+					},
 				},
 				{
 					id: 146,
 					url: 'asia-short-term-loans',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&country=KH,NP,TJ,TH,VN,PH,KG,IN,ID,PK,MM,LA,BT,BD&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&country=KH,NP,TJ,TH,VN,PH,KG,IN,ID,PK,MM,LA,BT,BD',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['KH', 'NP', 'TJ', 'TH', 'VN', 'PH', 'KG', 'IN', 'ID', 'PK', 'MM', 'LA', 'BT', 'BD'],
+					},
 				},
 				{
 					id: 148,
 					url: 'eastern-europe-short-term-loans',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&country=GE,AL,XK,MD&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&country=GE,AL,XK,MD',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['GE', 'AL', 'XK', 'MD'],
+					},
 				},
 				{
 					id: 149,
 					url: 'middle-east-short-term-loans',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&country=JO,PS,IL,TR&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&country=JO,PS,IL,TR',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['JO', 'PS', 'IL', 'TR'],
+					},
 				},
 				{
 					id: 150,
 					url: 'oceania-short-term-loans',
-					queryParams: 'status=fundRaising&lenderTerm=0,16&country=WS,TL,SB,TO,FJ,PG,VU,GU&distributionModel=both',
+					queryParams: 'status=fundRaising&lenderTerm=0,16&country=WS,TL,SB,TO,FJ,PG,VU,GU',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 16),
+						countryIsoCode: ['WS', 'TL', 'SB', 'TO', 'FJ', 'PG', 'VU', 'GU'],
+					},
 				},
 				{
 					id: 151,
 					url: 'b-i-p-o-c-business',
 					queryParams: 'status=fundRaising&country=US&loanTags=51&distributionModel=direct',
+					flssLoanSearch: {
+						countryIsoCode: ['US'],
+						tagId: [51],
+						distributionModel: 'DIRECT'
+					}
 				},
 				{
 					id: 152,
 					url: 'adapt-to-climate-change-already-here',
-					queryParams: 'sector=1',
+					queryParams: 'status=fundRaising&sector=1',
 					flssLoanSearch: {
 						sectorId: [1],
 					}
@@ -689,9 +818,9 @@ export default {
 				{
 					id: 153,
 					url: 'protect-against-loss',
-					queryParams: 'theme=Crop Insurance',
+					queryParams: 'status=fundRaising&theme=Crop Insurance',
 					flssLoanSearch: {
-						attributeId: [37],
+						themeId: [37],
 					}
 				},
 
@@ -701,12 +830,12 @@ export default {
 					id: 96,
 					url: 'covid-19',
 					// queryParams are from initial Loan Channel setup on 4.27.2020 around 3pm
-					queryParams: 'distributionModel=both&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
+					queryParams: 'status=fundRaising&sector=1,9,5,14,17,12,6,8,7,4,3,13&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/covid-19?filter=bypass',
 					flssLoanSearch: {
 						sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13],
-						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29]
+						sortBy: 'popularityScore',
 					},
 				},
 				{
@@ -715,7 +844,13 @@ export default {
 					// queryParams are from initial Loan Channel setup on 5.3.2020
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&theme=Islamic Finance,Youth,Start-Up,Water and Sanitation,Vulnerable Groups,Fair Trade,Rural Exclusion,Mobile Technology,Underfunded Areas,Conflict Zones,Job Creation,Growing Businesses,Disaster recovery,Innovative Loans,Refugees/Displaced,Social Enterprise,Crisis Support Loans&distributionModel=field_partner',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
-					fallbackUrl: '/lend/hitachi-employees-helping-c-o-v-i-d-impacted-businesses?filter=bypass'
+					fallbackUrl: '/lend/hitachi-employees-helping-c-o-v-i-d-impacted-businesses?filter=bypass',
+					flssLoanSearch: {
+						partnerRiskRating: createMinMaxRange(3, 5),
+						distributionModel: 'FIELDPARTNER',
+						sectorId: [1, 9, 5, 14, 17, 12, 8, 7, 4, 3, 13],
+						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36]
+					}
 				},
 				{
 					id: 98,
@@ -727,24 +862,34 @@ export default {
 					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity',
 					flssLoanSearch: {
 						themeId: [36],
-						distributionModel: 'FIELDPARTNER'
+						distributionModel: 'FIELDPARTNER',
+						sortBy: 'popularityScore',
 					},
 				},
 				{
 					id: 108,
 					url: 'recommended-by-lenders',
 					queryParams: 'status=fundRaising&riskRating=1,5&lenderTerm=0,10&partner=33,465,265,269,116,271,409,438,34,282,444,310,159,210,268,104,445,32,155,108,158,127,43,106,2,3,4,5,128,36,40,109,355,46,105,37,270,287,356,421,346,107,281,286,153,607,41,47,605,111,110,354,280,288,424,447,347,6,472,112,186,437,162,360,164,184,278,313,267,45,365,478,433,96,290,42,1,8,49,353,7,10,219,53,224,188,427,350,227,9,54,50,55,56,370,11,152,52,212,307,136,51,57,364,291,189,369,481,61,168,220,293,113,165,63,299,384,225,533,131,132,476,480,380,135,304,528,172,170,397,521,66,130,295,306,468,67,144,385,141,228,388,393,137,279,396,559,171,344,377,454,289,245,302,341,455,382,403,477,316,395,441,450,300,71,138,142,392,296,70,13,574,262,567,416,229,214,60,64,247,230,248,244,484,312,321,401,143,198,391,238,241,242,305,213,323,72,200,73,16,82,237,485,249,84,324,487,572,415,254,258,462,407,202,327,332,79,204&defaultRate=,0.01&distributionModel=field_partner',
+					flssLoanSearch: {
+						partnerRiskRating: createMinMaxRange(1, 5),
+						lenderRepaymentTerm: createMinMaxRange(0, 10),
+						partnerId: [33, 465, 265, 269, 116, 271, 409, 438, 34, 282, 444, 310, 159, 210, 268, 104, 445, 32, 155, 108, 158, 127, 43, 106, 2, 3, 4, 5, 128, 36, 40, 109, 355, 46, 105, 37, 270, 287, 356, 421, 346, 107, 281, 286, 153, 607, 41, 47, 605, 111, 110, 354, 280, 288, 424, 447, 347, 6, 472, 112, 186, 437, 162, 360, 164, 184, 278, 313, 267, 45, 365, 478, 433, 96, 290, 42, 1, 8, 49, 353, 7, 10, 219, 53, 224, 188, 427, 350, 227, 9, 54, 50, 55, 56, 370, 11, 152, 52, 212, 307, 136, 51, 57, 364, 291, 189, 369, 481, 61, 168, 220, 293, 113, 165, 63, 299, 384, 225, 533, 131, 132, 476, 480, 380, 135, 304, 528, 172, 170, 397, 521, 66, 130, 295, 306, 468, 67, 144, 385, 141, 228, 388, 393, 137, 279, 396, 559, 171, 344, 377, 454, 289, 245, 302, 341, 455, 382, 403, 477, 316, 395, 441, 450, 300, 71, 138, 142, 392, 296, 70, 13, 574, 262, 567, 416, 229, 214, 60, 64, 247, 230, 248, 244, 484, 312, 321, 401, 143, 198, 391, 238, 241, 242, 305, 213, 323, 72, 200, 73, 16, 82, 237, 485, 249, 84, 324, 487, 572, 415, 254, 258, 462, 407, 202, 327, 332, 79, 204],
+						distributionModel: 'FIELDPARTNER',
+					}
 				},
 				{
 					id: 65,
 					url: 'new-countries-for-you',
 					queryParams: 'status=fundRaising&distributionModel=field_partner',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearch: {
+						distributionModel: 'FIELDPARTNER',
+					}
 				},
 				{
 					id: 34,
 					url: 'international-womens-day',
-					queryParams: 'gender=female',
+					queryParams: 'status=fundRaising&gender=female',
 					flssLoanSearch: {
 						gender: 'female'
 					},
@@ -752,7 +897,7 @@ export default {
 				{
 					id: 48,
 					url: 'human-flow-fund-support-refugees-and-i-d-ps',
-					queryParams: 'sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
+					queryParams: 'status=fundRaising&sector=1,9,5,14,12,8,7,4,3,13&theme=Conflict Zones,Refugees/Displaced&distributionModel=field_partner',
 					flssLoanSearch: {
 						sectorId: [1, 9, 5, 14, 12, 8, 7, 4, 3, 13],
 						themeId: [14, 28],
@@ -763,7 +908,10 @@ export default {
 					id: 51,
 					url: 'blackrock',
 					queryParams: 'status=fundRaising&excludeNonRated=1&distributionModel=field_partner',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearch: {
+						distributionModel: 'FIELDPARTNER'
+					}
 				},
 				{
 					id: 61,
@@ -782,63 +930,139 @@ export default {
 				{
 					id: 35,
 					url: 'choose-a-borrower',
-					queryParams: 'status=fundRaising&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner'
+					queryParams: 'status=fundRaising&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner',
+					flssLoanSearch: {
+						partnerId: [246, 77, 123, 120, 171, 65, 458, 379, 105, 144, 125, 301, 93, 127, 143, 55, 137, 154, 136, 163, 63, 404, 231, 100, 243, 245, 9, 406, 294, 363, 176, 428, 201, 167, 126, 118, 138, 15, 121, 87, 222, 247, 199, 188, 159, 181, 106, 185, 146, 169, 204, 115, 58, 145],
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 37,
 					url: 'choose-a-woman-borrower',
-					queryParams: 'status=fundRaising&gender=female&lenderTerm=0,18&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner'
+					queryParams: 'status=fundRaising&gender=female&lenderTerm=0,18&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner',
+					flssLoanSearch: {
+						gender: 'female',
+						lenderRepaymentTerm: createMinMaxRange(0, 18),
+						partnerId: [246, 77, 123, 120, 171, 65, 458, 379, 105, 144, 125, 301, 93, 127, 143, 55, 137, 154, 136, 163, 63, 404, 231, 100, 243, 245, 9, 406, 294, 363, 176, 428, 201, 167, 126, 118, 138, 15, 121, 87, 222, 247, 199, 188, 159, 181, 106, 185, 146, 169, 204, 115, 58, 145],
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 38,
 					url: 'choose-a-farmer',
-					queryParams: 'status=fundRaising&lenderTerm=0,18&sector=1&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner'
+					queryParams: 'status=fundRaising&lenderTerm=0,18&sector=1&partner=246,77,123,120,171,65,458,379,105,144,125,301,93,127,143,55,137,154,136,163,63,404,231,100,243,245,9,406,294,363,176,428,201,167,126,118,138,15,121,87,222,247,199,188,159,181,106,185,146,169,204,115,58,145&distributionModel=field_partner',
+					flssLoanSearch: {
+						sectorId: [1],
+						lenderRepaymentTerm: createMinMaxRange(0, 18),
+						partnerId: [246, 77, 123, 120, 171, 65, 458, 379, 105, 144, 125, 301, 93, 127, 143, 55, 137, 154, 136, 163, 63, 404, 231, 100, 243, 245, 9, 406, 294, 363, 176, 428, 201, 167, 126, 118, 138, 15, 121, 87, 222, 247, 199, 188, 159, 181, 106, 185, 146, 169, 204, 115, 58, 145],
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 40,
 					url: 'foster-city',
 					queryParams: 'status=fundRaising&state=CA&city_state=San Jose,CA&distributionModel=direct',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearch: {
+						distributionModel: 'DIRECT',
+					},
 				},
 				{
 					id: 43,
 					url: 'super-power-a-woman-on-kiva',
 					queryParams: 'status=fundRaising&gender=female&distributionModel=field_partner',
 					algoliaParams: 'gender=female',
+					flssLoanSearch: {
+						gender: 'female',
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 44,
 					url: 'hitachi-employees-helping-to-ignite-a-dream',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&theme=Islamic Finance,Youth,Start-Up,Water and Sanitation,Vulnerable Groups,Fair Trade,Rural Exclusion,Mobile Technology,Underfunded Areas,Conflict Zones,Job Creation,Growing Businesses,Disaster recovery,Innovative Loans,Refugees/Displaced,Social Enterprise,Crisis Support Loans&distributionModel=field_partner',
 					algoliaParams: '',
-					// FLSS Not yet supported due to addition of Risk Rating
-					// flssLoanSearch: {
-					// 	sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13],
-					// 	themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36]
-					// },
+					flssLoanSearch: {
+						partnerRiskRating: createMinMaxRange(3, 5),
+						sectorId: [1, 9, 5, 14, 17, 12, 6, 8, 7, 4, 3, 13],
+						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36],
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 45,
 					url: 's-j-peninsula',
-					queryParams: 'status=fundRaising&country=US&state=CA&city_state=San Jose,CA,Belmont,CA,Atherton,CA,Brisbane,CA,Burlingame,CA,Campbell,CA,Castro Valley,CA,Colma,CA,Cupertino,CA,Daly City,CA,East Palo Alto,CA,Foster City,CA,Fremont,CA,Gilroy,CA,Half Moon Bay,CA,Hayward,CA,Hillsborough,CA,La Honda,CA,Ladera,CA,Loma Mar,CA,Los Altos,CA,Los Altos Hills,CA,Los Gatos,CA,Menlo Park,CA,Millbrae,CA,Milpitas,CA,Monte Sereno,CA,Morgan Hill,CA,Mountain View,CA,Pacifica,CA,Palo Alto,CA,Pescadero,CA,Portola Valley,CA,Redwood City,CA,San Bruno,CA,San Carlos,CA,San Gregorio,CA,San Mateo,CA,Santa Clara,CA,Saratoga,CA,South San Francisco,CA,Sunnyvale,CA,Woodside,CA&distributionModel=direct'
+					queryParams: 'status=fundRaising&country=US&state=CA&city_state=San Jose,CA,Belmont,CA,Atherton,CA,Brisbane,CA,Burlingame,CA,Campbell,CA,Castro Valley,CA,Colma,CA,Cupertino,CA,Daly City,CA,East Palo Alto,CA,Foster City,CA,Fremont,CA,Gilroy,CA,Half Moon Bay,CA,Hayward,CA,Hillsborough,CA,La Honda,CA,Ladera,CA,Loma Mar,CA,Los Altos,CA,Los Altos Hills,CA,Los Gatos,CA,Menlo Park,CA,Millbrae,CA,Milpitas,CA,Monte Sereno,CA,Morgan Hill,CA,Mountain View,CA,Pacifica,CA,Palo Alto,CA,Pescadero,CA,Portola Valley,CA,Redwood City,CA,San Bruno,CA,San Carlos,CA,San Gregorio,CA,San Mateo,CA,Santa Clara,CA,Saratoga,CA,South San Francisco,CA,Sunnyvale,CA,Woodside,CA&distributionModel=direct',
+					flssLoanSearch: {
+						countryIsoCode: ['US'],
+						distributionModel: 'DIRECT',
+					},
 				},
 				{
 					id: 49,
 					url: 'choose-for-me',
 					queryParams: 'status=fundRaising&riskRating=1,5&distributionModel=field_partner',
-					algoliaParams: ''
+					algoliaParams: '',
+					flssLoanSearch: {
+						partnerRiskRating: createMinMaxRange(1, 5),
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 99,
 					url: 'i-t-cosmetics-confidence',
 					queryParams: 'status=fundRaising&gender=female&riskRating=3,5&sector=1,9,5,14,15,17,12,6,10,8,16,7,4,3,13&distributionModel=field_partner',
 					algoliaParams: '',
+					flssLoanSearch: {
+						gender: 'female',
+						partnerRiskRating: createMinMaxRange(3, 5),
+						sectorId: [1, 9, 5, 14, 15, 17, 12, 6, 10, 8, 16, 7, 4, 3, 13],
+						distributionModel: 'FIELDPARTNER',
+					},
 				},
 				{
 					id: 100,
 					url: 'hitachis-c-o-v-i-d-19-response',
 					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&theme=Islamic Finance,Youth,Start-Up,Water and Sanitation,Vulnerable Groups,Fair Trade,Rural Exclusion,Mobile Technology,Underfunded Areas,Conflict Zones,Job Creation,Growing Businesses,Disaster recovery,Innovative Loans,Refugees/Displaced,Social Enterprise,Crisis Support Loans&distributionModel=field_partner',
 					algoliaParams: '',
+					flssLoanSearch: {
+						partnerRiskRating: createMinMaxRange(3, 5),
+						themeId: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20, 24, 28, 29, 36],
+						sectorId: [1, 9, 5, 14, 17, 12, 8, 7, 4, 3, 13],
+						distributionModel: 'FIELDPARTNER',
+					},
+				},
+				{
+					id: 157,
+					url: 'l-g-b-t-q',
+					queryParams: 'status=fundRaising&loanTags=73',
+					flssLoanSearch: {
+						tagId: [73]
+					},
+				},
+				{
+					id: 155,
+					url: 'matched-loans',
+					flssLoanSearch: {
+						isMatchable: true
+					},
+				},
+				{
+					id: 171,
+					url: 'featured-projects',
+					flssLoanSearch: {
+						lenderRepaymentTerm: createMinMaxRange(0, 8),
+						sortBy: 'amountLeft',
+					},
+				},
+				{
+					id: 172,
+					url: 'basic-needs',
+					flssLoanSearch: {
+						sectorId: [10],
+						themeId: [8],
+						sortBy: 'amountLeft',
+					},
 				},
 			]
 

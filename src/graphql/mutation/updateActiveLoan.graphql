@@ -1,5 +1,6 @@
 mutation updateActiveLoan($xCoordinate: Int, $yCoordinate: Int, $hoverLoanId: Int, $loan: String, $tracking: String) {
 	updateActiveLoan(xCoordinate: $xCoordinate, yCoordinate: $yCoordinate, hoverLoanId: $hoverLoanId, loan: $loan, tracking: $tracking ) @client {
+		id
 		hoverLoanId
 	}
 }

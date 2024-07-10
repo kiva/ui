@@ -4,12 +4,9 @@
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
 			@click.native="trackMgLinkClick"
-			:class="{ 'hover:tw-no-underline': newMgEntrypoint}"
 		>
-			<!-- NEW MG ENTRYPOINT CORE-641 -->
-			<monthly-good-entrypoint v-if="newMgEntrypoint" />
 			<!-- eslint-disable-next-line max-len -->
-			<span v-else class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
+			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
 				Lend monthly
 				<kv-material-icon :icon="mdiArrowRight" class="tw-w-3 tw-h-3" />
 			</span>
@@ -161,13 +158,13 @@
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
 						<li>
-							<router-link
-								to="/lend/countries-not-lent"
+							<a
+								href="/lend/countries-not-lent"
 								class="lend-link"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
-							</router-link>
+							</a>
 						</li>
 					</ul>
 				</kv-tab-panel>
@@ -179,14 +176,13 @@
 <script>
 import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
-import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import SearchList from './SearchList';
 import CountryList from './CountryList';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import MonthlyGoodEntrypoint from './MonthlyGoodEntrypoint';
 
 export default {
 	name: 'LendListMenu',
@@ -200,7 +196,6 @@ export default {
 		KvTabs,
 		KvLoadingPlaceholder,
 		SearchList,
-		MonthlyGoodEntrypoint
 	},
 	props: {
 		categories: {
@@ -232,10 +227,6 @@ export default {
 			default: true,
 		},
 		showMGUpsellLink: {
-			type: Boolean,
-			default: false,
-		},
-		newMgEntrypoint: {
 			type: Boolean,
 			default: false,
 		},
@@ -271,8 +262,7 @@ export default {
 			}
 		},
 		trackMgLinkClick() {
-			const trackerLA = this.newMgEntrypoint ? 'Become-a-member' : 'Lend-monthly';
-			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', trackerLA);
+			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend-monthly');
 		}
 	},
 };

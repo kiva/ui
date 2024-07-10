@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<button
-			class="tw-w-full tw-py-2 tw-flex tw-justify-between"
+			class="tw-w-full tw-py-2 tw-flex tw-justify-between tw-not-prose"
 			@click="toggleFaq"
 		>
 			<h3 class="tw-text-subhead tw-text-left">
@@ -14,11 +14,12 @@
 			/>
 		</button>
 		<kv-expandable easing="ease-in-out">
-			<div
-				v-show="open"
-				class="tw-prose tw-pb-4 tw-pt-2"
-				v-html="content"
-			>
+			<div v-show="open">
+				<div
+					class="tw-prose tw-pb-4 tw-pt-2"
+					v-html="content"
+				>
+				</div>
 			</div>
 		</kv-expandable>
 	</div>
@@ -61,11 +62,20 @@ export default {
 		analyticsCategory: {
 			type: String,
 			default: 'Faq'
+		},
+		active: {
+			type: Boolean,
+			default: false,
+		}
+	},
+	watch: {
+		active(val) {
+			this.open = val;
 		}
 	},
 	data() {
 		return {
-			open: false,
+			open: this.active || false,
 			mdiChevronDown,
 			mdiChevronUp
 		};
@@ -88,6 +98,7 @@ export default {
 				this.$kvTrackEvent(this.analyticsCategory, 'click-faq-expand', this.title);
 			}
 			this.open = !this.open;
+			this.$emit('toggle', { title: this.title });
 		}
 	}
 };

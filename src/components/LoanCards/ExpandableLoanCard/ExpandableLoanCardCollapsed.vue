@@ -21,6 +21,7 @@
 			:category-set-id="categorySetId"
 			:row-number="rowNumber"
 			:card-number="cardNumber"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
 
 			@track-loan-card-interaction="trackInteraction"
 			@favorite-toggled="toggleFavorite"
@@ -35,6 +36,12 @@ import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/e
 
 export default {
 	name: 'ExpandableLoanCardCollapsed',
+	props: {
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		}
+	},
 	components: {
 		ExpandableLoanCard,
 	},

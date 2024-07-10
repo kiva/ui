@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="tw-mb-2">
-			Field Partner delinquency rates
+			Lending Partner delinquency rates
 		</h3>
 		<kv-select v-model="delinquencyRate">
 			<option value="0">
@@ -28,7 +28,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import KvSelect from '@/components/Kv/KvSelect';
 
 export default {
@@ -45,6 +45,7 @@ export default {
 	apollo: {
 		query: gql`query autolendProfileArrearsRate {
 			autolending @client {
+				id
 				currentProfile {
 					id
 					loanSearchCriteria {
@@ -69,6 +70,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation updateArrearsRate($max: Float) {
 						autolending @client {
+							id
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {

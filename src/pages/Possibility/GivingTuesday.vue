@@ -10,7 +10,7 @@
 			<template #action>
 				<kv-button
 					class="cta-button"
-					to="/donate/supportus"
+					href="/donate/supportus"
 					v-kv-track-event="['possibility', 'click-hero-link', 'giving-tuesday']"
 				>
 					Donate now
@@ -18,7 +18,7 @@
 			</template>
 		</kv-hero>
 		<div class="row intro">
-			<div class="tw-text-center featured-text columns large-10 large-offset-1">
+			<div class="tw-text-center columns large-10 large-offset-1">
 				<p>
 					100% of money lent on Kiva goes to the field, so we rely on donations
 					to continue this important work. More than two-thirds of our donations
@@ -34,15 +34,15 @@
 			</div>
 		</div>
 		<div class="row donate-cta">
-			<div class="tw-text-center featured-text columns small-12">
+			<div class="tw-text-center columns small-12">
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
-				<router-link
-					to="/donate/supportus"
+				<a
+					href="/donate/supportus"
 					class="cta-link"
 					v-kv-track-event="['possibility', 'click-footer-cta', 'giving-tuesday']"
 				>
 					Donate Today
-				</router-link>
+				</a>
 			</div>
 		</div>
 	</div>

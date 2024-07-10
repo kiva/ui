@@ -75,9 +75,12 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						:is-amount-lend-button="lessThan25"
+						:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
+						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -99,11 +102,7 @@
 			</div>
 			<div class="list-loan-card-body-info row">
 				<borrower-info-body
-					:amount="loan.loanAmount"
-					:borrower-count="loan.borrowerCount"
-					:name="loan.name"
-					:status="loan.status"
-					:use="loan.use"
+					:use="loan.fullLoanUse"
 					:loan-id="loan.id"
 					class="small-12 columns"
 					@track-loan-card-interaction="trackInteraction"
@@ -132,9 +131,12 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-expired="isExpired"
-						:is-amount-lend-button="lessThan25"
+						:is-amount-lend-button="lessThan25 && !enableFiveDollarsNotes"
 						:amount-left="amountLeft"
-						:show-now="true"
+						:show-now="!enableFiveDollarsNotes"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
+						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 
 						@click.native="trackInteraction({
@@ -238,7 +240,15 @@ export default {
 		roundedCorners: {
 			type: Boolean,
 			default: false
-		}
+		},
+		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		lessThan25() {

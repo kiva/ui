@@ -1,5 +1,6 @@
 query themeList {
 	autolending @client {
+		id
 		currentProfile {
 			id
 			loanSearchCriteria {

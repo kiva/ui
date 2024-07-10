@@ -33,7 +33,11 @@
 						v-html="headline"
 					></h1>
 					<h3 v-if="subHeadline" class="tw-pb-2 tw-text-center" v-html="subHeadline"></h3>
-					<div v-if="userConfirmation" class="fs-exclude tw-pb-2 tw-prose" v-html="userConfirmation"></div>
+					<div
+						v-if="userConfirmation"
+						class="data-hj-suppress tw-pb-2 tw-prose"
+						v-html="userConfirmation"
+					></div>
 					<div v-if="bodyCopy" class="tw-pb-8 tw-prose" v-html="bodyCopy"></div>
 					<div v-if="contentfulCta && contentfulCta.linkText" class="tw-text-right">
 						<kv-button
@@ -51,7 +55,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { formatContentGroupsFlat } from '@/util/contentfulUtils';
 import { richTextRenderer } from '@/util/contentful/richTextRenderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';

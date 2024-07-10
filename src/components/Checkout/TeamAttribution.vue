@@ -6,7 +6,7 @@
 				id="team_select"
 				data-testid="basket-loan-team-selector"
 				v-model="selectedId"
-				class="team-select-dd fs-mask tw-float-left"
+				class="team-select-dd data-hj-suppress tw-float-left"
 				style="max-width: rem-calc(250);"
 				@update:modelValue="updateLoanReservation()"
 			>
@@ -66,10 +66,14 @@ export default {
 	watch: {
 		// watch for updated changes to the teamId prop
 		// typically this is derived from the team assigned to the loan reservation
-		teamId(newId, prevId) {
-			if (newId !== prevId) {
-				this.selectedId = newId;
-			}
+		teamId: {
+			handler(newId, prevId) {
+				if (newId !== prevId) {
+					this.selectedId = newId;
+					this.updateLoanReservation();
+				}
+			},
+			immediate: true,
 		}
 	},
 	mounted() {
@@ -77,38 +81,36 @@ export default {
 	},
 	methods: {
 		updateLoanReservation() {
-			if (this.selectedId !== this.teamId) {
-				this.$emit('updating-totals', true);
-				const updatedTeamId = numeral(this.selectedId).value();
+			this.$emit('updating-totals', true);
+			const updatedTeamId = numeral(this.selectedId).value();
 
-				this.apollo.mutate({
-					mutation: updateLoanReservationTeam,
-					variables: {
-						teamId: updatedTeamId,
-						loanid: this.loanId
-					}
-				}).then(data => {
-					if (data.errors) {
-						_forEach(data.errors, ({ message }) => {
-							this.$showTipMsg(message, 'error');
-						});
-						this.$emit('updating-totals', false);
-						this.selectedId = this.cachedId;
-					} else {
-						this.$kvTrackEvent(
-							'basket',
-							'Update Team Loan Attribution',
-							this.selectedId === 0 ? 'Team Attribution Removed'
-								: 'Team Attribution Removal Success', numeral(this.selectedId).value()
-						);
-						this.$emit('refresh-totals', 'team-update');
-						this.cachedId = this.selectedId;
-					}
-				}).catch(error => {
-					console.error(error);
+			this.apollo.mutate({
+				mutation: updateLoanReservationTeam,
+				variables: {
+					teamId: updatedTeamId,
+					loanid: this.loanId
+				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
 					this.$emit('updating-totals', false);
-				});
-			}
+					this.selectedId = this.cachedId;
+				} else {
+					this.$kvTrackEvent(
+						'basket',
+						'Update Team Loan Attribution',
+						this.selectedId === 0 ? 'Team Attribution Removed'
+							: 'Team Attribution Removal Success', numeral(this.selectedId).value()
+					);
+					this.$emit('refresh-totals', 'team-update');
+					this.cachedId = this.selectedId;
+				}
+			}).catch(error => {
+				console.error(error);
+				this.$emit('updating-totals', false);
+			});
 		}
 	}
 };

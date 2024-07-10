@@ -6,7 +6,7 @@
 			</template>
 		</kv-hero>
 		<div class="row intro">
-			<div class="tw-text-center featured-text columns large-10 large-offset-1">
+			<div class="tw-text-center columns large-10 large-offset-1">
 				<p>
 					Join us in a series of daily challenges to amplify your impact! Check back every morning
 					to see what surprises we have up our sleeves. Can't wait? Click below to support

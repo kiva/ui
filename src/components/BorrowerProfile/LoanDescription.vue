@@ -143,7 +143,7 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
-		}
+		},
 	},
 	data() {
 		return {
@@ -184,7 +184,7 @@ export default {
 		},
 		showReviewersName() {
 			return this.reviewer?.showName;
-		}
+		},
 	},
 	methods: {
 		openLightbox() {

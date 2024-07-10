@@ -162,6 +162,63 @@ describe('loan.js', () => {
 				testConsoleError('loanFundraisingInfo.reservedAmount');
 			});
 		});
+
+		describe('Returns the correct amount, and no errors if required fields are null', () => {
+			function testConsoleError() {
+				expect(console.error.mock.calls.length).toBe(0);
+			}
+
+			const originalError = console.error;
+			beforeEach(() => {
+				console.error = jest.fn();
+			});
+
+			afterEach(() => {
+				console.error = originalError;
+			});
+
+			it('loanAmount is null', () => {
+				testFundraisingPercent({
+					loan: {
+						loanFundraisingInfo: {
+							fundedAmount: '25.00',
+							reservedAmount: '25.00',
+						},
+						loanAmount: null,
+					},
+					expected: 1,
+				});
+				testConsoleError('loanAmount');
+			});
+
+			it('fundedAmount is null', () => {
+				testFundraisingPercent({
+					loan: {
+						loanAmount: '100.00',
+						loanFundraisingInfo: {
+							reservedAmount: '25.00',
+							fundedAmount: null,
+						},
+					},
+					expected: 0.25,
+				});
+				testConsoleError('loanFundraisingInfo.fundedAmount');
+			});
+
+			it('reservedAmount is null', () => {
+				testFundraisingPercent({
+					loan: {
+						loanAmount: '100.00',
+						loanFundraisingInfo: {
+							fundedAmount: '25.00',
+							reservedAmount: null,
+						},
+					},
+					expected: 0.25,
+				});
+				testConsoleError('loanFundraisingInfo.reservedAmount');
+			});
+		});
 	});
 
 	describe('LoanBasic.fundraisingTimeLeft', () => {
@@ -237,11 +294,11 @@ describe('loan.js', () => {
 				.toBe(resolvers.LoanPartner.fundraisingTimeLeftMilliseconds);
 		});
 
-		it('Returns the time remaining before expiration in words', () => {
+		it('Returns the time remaining before expiration in milliseconds', () => {
 			const now = new Date();
 			const tenMinutes = add(now, { minutes: 10 });
 			const twoHours = add(now, { hours: 2 });
-			const fiveDays = add(now, { days: 5 });
+			const fiveDays = add(now, { hours: 120 });
 
 			testFundraisingTimeLeftMilliseconds({
 				loan: { plannedExpirationDate: formatISO(tenMinutes) },
