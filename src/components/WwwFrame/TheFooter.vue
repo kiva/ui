@@ -242,15 +242,6 @@
 							</li>
 							<li>
 								<router-link
-									to="/live"
-									v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-									class="tw-text-small"
-								>
-									Happening now
-								</router-link>
-							</li>
-							<li>
-								<router-link
 									to="/build"
 									v-kv-track-event="['Footer', 'click-Explore-Developer API']"
 									class="tw-text-small"
@@ -312,7 +303,7 @@
 							</li>
 							<li>
 								<a
-									href="https://www.kivaushub.org/hubs"
+									href="/us-hubs"
 									target="_blank"
 									rel="noopener"
 									v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
@@ -535,15 +526,6 @@
 										class="tw-text-small"
 									>
 										Gifts
-									</router-link>
-								</li>
-								<li>
-									<router-link
-										to="/live"
-										v-kv-track-event="['Footer', 'click-Explore-Happening now']"
-										class="tw-text-small"
-									>
-										Happening now
 									</router-link>
 								</li>
 								<li>
@@ -779,7 +761,7 @@
 								</li>
 								<li class="tw-inline-block tw--translate-x-2">
 									<a
-										href="https://www.kivaushub.org/hubs"
+										href="/us-hubs"
 										target="_blank"
 										rel="noopener"
 										v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"

@@ -103,9 +103,9 @@ export default {
 			type: String,
 			default: ''
 		},
-		upcCreditRemaining: {
-			type: String,
-			default: '0.00'
+		remainingCredit: {
+			type: Number,
+			default: 0
 		},
 		basketLoans: {
 			type: Array,
@@ -124,10 +124,10 @@ export default {
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		creditLeft() {
-			return this.upcCreditRemaining > 0 ? this.upcCreditRemaining : 0;
+			return this.remainingCredit > 0 ? this.remainingCredit : 0;
 		},
 		percentageLeft() {
-			const pLeft = 100 - ((this.upcCreditRemaining / this.promoAmount) * 100);
+			const pLeft = 100 - ((this.remainingCredit / this.promoAmount) * 100);
 			return pLeft <= 0 ? 1 : pLeft;
 		}
 	},

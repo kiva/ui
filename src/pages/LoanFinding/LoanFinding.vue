@@ -17,14 +17,25 @@
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-relending-exp="enableRelendingExp"
+				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				:per-step="perStepRecommendedRow"
 				@add-to-basket="trackCategory($event, 'recommended')"
-				:class="{
-					'tw-pt-3 tw-pb-4 tw-bg-secondary' : enableRelendingExp,
-					'tw-pt-3' : !isLoggedIn,
-				}"
+				:class="{ 'tw-pt-3' : !isLoggedIn }"
+			/>
+
+			<!-- Almost Funded loans row -->
+			<lending-category-section
+				id="almost-funded-section"
+				v-if="enableAlmostFundedRow"
+				:title="almostFundedRowTitle"
+				:subtitle="almostFundedRowSubtitle"
+				:loans="almostFundedLoans"
+				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, 'almost-funded')"
+				class="tw-pt-3 tw-mb-2"
 			/>
 
 			<!-- Five dollars row -->
@@ -35,7 +46,7 @@
 				:subtitle="fiveDollarsRowSubtitle"
 				:loans="fiveDollarsRowLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-relending-exp="enableRelendingExp"
+				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				:five-dollars-selected="true"
 				:title-icon="HandOrangeIcon"
@@ -46,8 +57,10 @@
 			<div class="tw-flex tw-flex-col">
 				<quick-filters-section
 					class="tw-mt-3"
-					:class="{ 'tw-order-last' : enableRelendingExp }"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-qf-mobile="enableQFMobileVersion"
+					:enable-almost-funded-row="enableAlmostFundedRow"
+					:enable-huge-amount="enableHugeLendAmount"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
@@ -62,8 +75,8 @@
 					:subtitle="secondCategorySubtitle"
 					:loans="secondCategoryLoans"
 					class="tw-py-3"
-					:class="{ 'tw-order-first' : enableRelendingExp }"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:enable-huge-amount="enableHugeLendAmount"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 				/>
@@ -74,6 +87,7 @@
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			/>
@@ -96,14 +110,16 @@ import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightDat
 import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graphql';
 import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '@/assets/images/hand_orange.svg';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
+const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
 
 export default {
 	name: 'LoanFinding',
@@ -115,7 +131,7 @@ export default {
 		PartnerSpotlightSection,
 		FiveDollarsBanner,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount],
 	metaInfo() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -133,17 +149,18 @@ export default {
 		return {
 			userInfo: {},
 			firstRowLoans: [],
+			almostFundedLoans: new Array(9).fill({ id: 0 }),
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			matchedLoansTotal: 0,
 			spotlightLoans: [],
 			spotlightIndex: 0,
 			spotlightViewportObserver: null,
-			enableRelendingExp: false,
 			userBalance: undefined,
 			showFiveDollarsBanner: false,
 			enableThreeLoansRecommended: false,
 			enableQFMobileVersion: false,
+			enableAlmostFundedRow: false,
 			HandOrangeIcon,
 		};
 	},
@@ -161,7 +178,6 @@ export default {
 					client.query({ query: userInfoQuery }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: QUICK_FILTERS_MOBILE_EXP_KEY } }),
 					recommendedLoansPromise
 				]);
 			});
@@ -180,7 +196,6 @@ export default {
 			return balance;
 		},
 		secondCategoryTitle() {
-			if (this.enableRelendingExp) return '<span class="tw-text-action">Recycle your balance</span> and get these borrowers funded '; // eslint-disable-line max-len
 			if (this.matchedLoansTotal > 0) {
 				if (this.matchedLoansTotal < 3) return 'Help these borrowers cross the finish line';
 				return 'Matched lending';
@@ -198,13 +213,11 @@ export default {
 			return spotlightData[this.spotlightIndex] ?? {};
 		},
 		firstRowTitle() {
-			if (this.enableRelendingExp) return `${this.firstName}, let's put your <span class="tw-text-action">$${this.userBalanceString}</span> to good use`; // eslint-disable-line max-len
 			return this.isLoggedIn
 				? 'Recommended for you'
 				: 'Make a difference <span class="tw-text-action">today</span>';
 		},
 		firstRowSubtitle() {
-			if (this.enableRelendingExp) return 'Loans we think you\'ll love based on your lending history';
 			return this.isLoggedIn
 				? 'Loans handpicked for you based on your lending history'
 				: 'Support a featured borrower with a microloan.';
@@ -216,11 +229,17 @@ export default {
 			return 'Lend as little as $5 to fund a new dream.';
 		},
 		showWelcomeMsg() {
-			return this.isLoggedIn && !this.enableRelendingExp && !this.showFiveDollarsBanner;
+			return this.isLoggedIn && !this.showFiveDollarsBanner;
 		},
 		perStepRecommendedRow() {
 			return !this.enableThreeLoansRecommended ? 2 : 3;
-		}
+		},
+		almostFundedRowTitle() {
+			return 'Loans that are <span class="tw-text-action">almost funded</span>';
+		},
+		almostFundedRowSubtitle() {
+			return 'Be the difference maker for these borrowers who only have a small amount remaining to be funded.';
+		},
 	},
 	methods: {
 		async getRecommendedLoans() {
@@ -259,11 +278,8 @@ export default {
 				{ sortBy: 'expiringSoon', pageLimit: 5 },
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
-			const almostFundedData = await runLoansQuery(
-				this.apollo,
-				{ sortBy: 'amountLeft', pageLimit: 4 },
-				FLSS_ORIGIN_LEND_BY_CATEGORY
-			);
+			const almostFundedData = await this.almostFundedQuery(4);
+
 			return [...expiringSoonData.loans, ...almostFundedData.loans];
 		},
 		async getMatchedLoans() {
@@ -296,6 +312,17 @@ export default {
 			this.spotlightLoans = loans ?? [];
 
 			this.trackSpotlightDisplayedLoans();
+		},
+		async getAlmostFundedLoans() {
+			const { loans } = await this.almostFundedQuery(9);
+			this.almostFundedLoans = loans ?? [];
+		},
+		almostFundedQuery(pageLimit) {
+			return runLoansQuery(
+				this.apollo,
+				{ sortBy: 'amountLeft', pageLimit },
+				FLSS_ORIGIN_LEND_BY_CATEGORY
+			);
 		},
 		trackCategory({ success }, category) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', `${category}-lending-home`);
@@ -348,15 +375,12 @@ export default {
 			this.trackDisplayedLoans('recommended', 1, this.firstRowLoans);
 		},
 		trackQuickFiltersDisplayedLoans({ data, pageOffset }) {
-			this.trackDisplayedLoans('quick-filters', this.enableRelendingExp ? 3 : 2, data, pageOffset);
+			this.trackDisplayedLoans('quick-filters', 2, data, pageOffset);
 		},
 		trackSecondCarouselDisplayedLoans() {
 			this.trackDisplayedLoans(
-				// eslint-disable-next-line no-nested-ternary
-				this.enableRelendingExp
-					? 'recycle'
-					: (this.matchedLoansTotal < 3 ? 'ending-soon-almost-funded' : 'matched'),
-				this.enableRelendingExp ? 2 : 3,
+				this.matchedLoansTotal < 3 ? 'ending-soon-almost-funded' : 'matched',
+				3,
 				this.secondCategoryLoans,
 			);
 		},
@@ -394,6 +418,9 @@ export default {
 
 		this.initializeFiveDollarsNotes();
 
+		// Enable huge lend amount
+		this.initializeHugeLendAmount();
+
 		this.userBalance = this.userInfo?.balance;
 
 		// Show 3 loans in recommended row test
@@ -416,7 +443,17 @@ export default {
 		);
 		this.enableQFMobileVersion = qfTestData.version === 'b';
 
-		const recommendedArray = [
+		// Enable Almost Funded Row Test
+		const almostFundedRowTestData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			ALMOST_FUNDED_ROW_EXP_KEY,
+			'EXP-CORE-1564-Oct2023'
+		);
+		this.enableAlmostFundedRow = almostFundedRowTestData.version === 'b';
+
+		this.firstRowLoans = [
 			...cachedRecommendedLoans,
 			{ id: 0 }, { id: 0 },
 			{ id: 0 }, { id: 0 },
@@ -424,36 +461,17 @@ export default {
 			{ id: 0 }, { id: 0 },
 		];
 
-		let relendingArray = [
-			...cachedRecommendedLoans,
-		];
-
-		/* eslint-disable max-len */
-		if (this.enableFiveDollarsNotes) {
-			if ((this.userBalance > 0 && this.userBalance < 10) || (this.userBalance > 20 && this.userBalance < 50)) relendingArray = relendingArray.slice(0, 2);
-			if ((this.userBalance > 10 && this.userBalance < 15) || (this.userBalance > 50 && this.userBalance < 75)) relendingArray = relendingArray.slice(0, 3);
-
-			// check for $5 notes banner cookie
-			this.check5DollarsBannerCookie();
-		} else {
-			if (this.userBalance > 0 && this.userBalance < 50) relendingArray = relendingArray.slice(0, 2);
-			if (this.userBalance > 50 && this.userBalance < 75) relendingArray = relendingArray.slice(0, 3);
-		}
-		/* eslint-enable max-len */
-
-		this.firstRowLoans = this.enableRelendingExp ? relendingArray : recommendedArray;
+		// check for $5 notes banner cookie
+		if (this.enableFiveDollarsNotes) this.check5DollarsBannerCookie();
 	},
 	mounted() {
-		if (!this.enableRelendingExp) {
-			this.getRecommendedLoans();
-		} else {
-			this.trackFirstRowDisplayedLoans();
-		}
-
+		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
 
 		if (this.enableFiveDollarsNotes) this.getFiveDollarsLoans();
+
+		if (this.enableAlmostFundedRow) this.getAlmostFundedLoans();
 
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();

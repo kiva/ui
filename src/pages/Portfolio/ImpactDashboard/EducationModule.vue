@@ -1,5 +1,5 @@
 <template>
-	<async-portfolio-section @visible="whenVisible" data-testid="education-module">
+	<async-portfolio-section data-testid="education-module">
 		<kv-grid class="tw-grid-cols-12 tw-items-center">
 			<div
 				class="tw-col-span-12 lg:tw-col-span-5 xl:tw-col-span-6 md:tw-items-start
@@ -17,14 +17,13 @@
 				</p>
 			</div>
 			<div class="tw-col-span-12 lg:tw-col-span-7 xl:tw-col-span-6">
-				<education-post :post="post" :loading="loading" />
+				<education-post :post="post" />
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
 </template>
 
 <script>
-import { gql } from '@apollo/client';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import EducationPost from './EducationPost';
@@ -33,7 +32,12 @@ const imageRequire = require.context('@/assets/images/', true);
 
 export default {
 	name: 'EducationModule',
-	inject: ['apollo'],
+	props: {
+		post: {
+			type: Object,
+			default: null,
+		},
+	},
 	components: {
 		AsyncPortfolioSection,
 		EducationPost,
@@ -41,39 +45,8 @@ export default {
 	},
 	data() {
 		return {
-			loading: true,
-			loadingPromise: null,
-			post: null,
 			imageRequire,
 		};
-	},
-	methods: {
-		fetchAsyncData() {
-			if (this.loading && !this.loadingPromise) {
-				this.loadingPromise = this.apollo.query({
-					query: gql`query ContentfulBlogPosts (
-						$customFields: String,
-						$limit: Int
-					) {
-						contentful {
-							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
-						}
-					}`,
-					variables: {
-						customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
-					},
-				}).then(({ data }) => {
-					this.loading = false;
-					this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
-					this.$emit('hide-module', this.post === null);
-				}).finally(() => {
-					this.loadingPromise = null;
-				});
-			}
-		},
-		whenVisible() {
-			this.fetchAsyncData();
-		}
 	},
 };
 </script>

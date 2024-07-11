@@ -1,13 +1,14 @@
 <template>
 	<div>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-my-10">
+			<kv-grid class="tw-grid-cols-12 tw-my-8">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
 					<p class="tw-text-center tw-mb-2 tw-text-subhead">
-						As a donor, you help us bring more loans to people in need. Watch Manal’s story:
+						<!--eslint-disable-next-line max-len-->
+						As a donor, you help Kiva provide loans to underserved communities and unlock financial access. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
 						<iframe
@@ -120,6 +121,8 @@ import socialSharingMixin from '@/plugins/social-sharing-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 import { getFullUrl } from '@/util/urlUtils';
 import { gql } from '@apollo/client';
+import { formatContentGroupsFlat } from '@/util/contentfulUtils';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -138,12 +141,25 @@ const userQuery = gql`query userQuery {
 
 export default {
 	name: 'ThanksPageDonationOnly',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`query OnlyDonationThanksPageContentful {
+				contentful {
+					entries(contentType: "contentGroup", contentKey: "thanks-page-only-donation")
+				}
+			}
+		`,
+		preFetch: true,
+		result({ data }) {
+			const contentfulData = data?.contentful?.entries?.items ?? null;
+			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
+		}
+	},
 	components: {
 		KvIcon,
 		KvMaterialIcon,
 		KvPageContainer,
-		KvGrid
+		KvGrid,
 	},
 	props: {
 		monthlyDonationAmount: {
@@ -151,7 +167,7 @@ export default {
 			default: ''
 		}
 	},
-	mixins: [socialSharingMixin],
+	mixins: [socialSharingMixin, smoothScrollMixin],
 	data() {
 		return {
 			lender: null,
@@ -165,6 +181,7 @@ export default {
 			isGuest: false,
 			message: '',
 			utmCampaign: 'social_share_checkout',
+			contentfulContent: null,
 		};
 	},
 	computed: {
@@ -195,7 +212,6 @@ export default {
 			if (this.lender?.public && this.lender?.inviterName) return this.lender?.inviterName;
 			return 'anonymous';
 		},
-
 	},
 	methods: {
 		gatherCurrentUserData() {
@@ -205,7 +221,7 @@ export default {
 				this.isGuest = !data?.my?.userAccount;
 				this.lender = data?.my?.userAccount ?? {};
 			});
-		}
+		},
 	},
 	created() {
 		const monthlyAmountNumeral = numeral(this.monthlyDonationAmount);

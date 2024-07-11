@@ -1,6 +1,7 @@
 import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
 import * as flssUtils from '@/util/flssUtils';
 import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
+import loanEnumsQuery from '@/graphql/query/loanEnumsQuery.graphql';
 import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
 import { mockState } from '../../../fixtures/mockLoanSearchData';
 
@@ -138,12 +139,15 @@ describe('dataUtils.js', () => {
 		const distributionModelOptions = { enumValues: [{ name: 'direct' }] };
 		const partners = [{ id: 1, name: 'Asd', region: 'Africa' }];
 		const general = { partners: { values: partners } };
+		const activity = [{ id: 1, name: 'Test Activity' }];
 
 		it('should pass the correct query variables to apollo', async () => {
 			const apollo = { query: jest.fn(() => Promise.resolve({})) };
 			await fetchLoanFacets(apollo);
 			const apolloVariables = { query: loanFacetsQuery, fetchPolicy: 'network-only' };
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+			const apolloEnumsVariables = { query: loanEnumsQuery, fetchPolicy: 'network-only' };
+			expect(apollo.query).toHaveBeenCalledWith(apolloEnumsVariables);
 		});
 
 		it('should handle undefined', async () => {
@@ -173,6 +177,9 @@ describe('dataUtils.js', () => {
 				partnerFacets: [],
 				partnerIds: [],
 				partnerNames: [],
+				activityFacets: [],
+				activityIds: [],
+				activityNames: [],
 			});
 		});
 
@@ -184,6 +191,7 @@ describe('dataUtils.js', () => {
 						sector,
 						loanThemeFilter,
 						tag,
+						activity,
 					},
 					general,
 					genderOptions,
@@ -218,6 +226,9 @@ describe('dataUtils.js', () => {
 				partnerFacets: partners,
 				partnerIds: [1],
 				partnerNames: ['ASD'],
+				activityFacets: activity,
+				activityIds: [1],
+				activityNames: ['TEST ACTIVITY'],
 			});
 		});
 	});

@@ -256,6 +256,24 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
+					<div v-if="!!activities && !isSticky">
+						<hr
+							class="tw-block tw-border-tertiary tw-w-full tw-my-2"
+						>
+						<supported-by-lenders
+							:participants="participants"
+						/>
+						<kv-loan-activities
+							class="tw-w-full"
+							:loan="loan"
+							:activities="activities"
+							:basket-items="basketItems"
+							:user-balance="userBalance"
+							:error-msg="errorMsg"
+							:is-adding="isAdding"
+							@add-to-basket="addToBasket"
+						/>
+					</div>
 				</div>
 			</kv-grid>
 
@@ -271,13 +289,16 @@
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-bottom-8',
 						'tw-w-full',
+						{
+							'tw-bottom-14': freeCreditWarning || allSharesReserved,
+							'tw-bottom-8': !freeCreditWarning && !allSharesReserved,
+						},
 						{
 							'md:tw-relative': !isSticky,
 							'md:tw-bottom-0': !isSticky,
 							'md:tw-order-none': !isSticky,
-							'md:tw-px-3': !isSticky,
+							'lg:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
 							'tw-px-2.5 tw-absolute': isSticky
 						},
@@ -303,7 +324,6 @@
 							{
 								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
-								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
 								'md:tw-hidden': isSticky,
 							},
@@ -360,7 +380,7 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from '@apollo/client';
-import { setLendAmount } from '@/util/basketUtils';
+import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
@@ -382,10 +402,13 @@ import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoanActivities from '@/components/Kv/KvLoanActivities';
+import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 export default {
 	name: 'LendCta',
@@ -399,6 +422,18 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		activities: {
+			type: Object,
+			default: null,
+		},
+		enableHugeAmount: {
+			type: Boolean,
+			default: false,
+		},
+		teamData: {
+			type: Object,
+			default: null,
+		},
 	},
 	components: {
 		LendAmountButton,
@@ -410,6 +445,8 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
+		KvLoanActivities,
+		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -445,6 +482,8 @@ export default {
 			matchingHighlightExpShown: false,
 			inPfp: false,
 			userBalance: undefined,
+			loan: null,
+			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -513,6 +552,7 @@ export default {
 			const loan = result?.data?.lend?.loan;
 			const basket = result?.data?.shop?.basket;
 
+			this.loan = loan;
 			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
 			this.loanAmount = loan?.loanAmount ?? '0';
 			this.status = loan?.status ?? '';
@@ -544,8 +584,23 @@ export default {
 		},
 	},
 	methods: {
-		async addToBasket() {
+		async addToBasket(lendAmount = 0) {
+			if (lendAmount) {
+				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
+			if (this.teamData?.id) {
+				const challenge = {
+					teamId: this.teamData.id,
+					teamName: this.teamData?.name ?? '',
+					loanId: this.loanId,
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
+			}
+
 			this.isAdding = true;
+			this.errorMsg = '';
+			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
@@ -558,12 +613,15 @@ export default {
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
 			}).catch(e => {
+				if (e?.message !== INVALID_BASKET_ERROR) {
+					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
+				}
 				this.isAdding = false;
-				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
+				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 
-				this.$showTipMsg(msg, 'error');
+				this.$showTipMsg(this.errorMsg, 'error');
 			});
 		},
 		createWrapperObserver() {
@@ -693,7 +751,8 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.unreservedAmount < 25 ? this.minNoteSize : 25); // 25_hard_coded
 			// limit price options
-			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp); // eslint-disable-line max-len
+			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
+			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
 			// eslint-disable-next-line
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
@@ -816,6 +875,9 @@ export default {
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		participants() {
+			return this.activities?.lend?.loan?.lendingActions ?? {};
 		}
 	},
 	mounted() {

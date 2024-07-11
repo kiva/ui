@@ -91,3 +91,5 @@ configmap:
     value: "kiva-ui"
   - key: DD_PROFILING_ENABLED
     value: true
+  - key: APOLLO_BATCH
+    value: "false"

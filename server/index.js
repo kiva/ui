@@ -1,10 +1,17 @@
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
+
+// eslint-disable-next-line import/order
+const { setupTracing } = require('./util/tracer');
+
+setupTracing();
+
 const cluster = require('cluster');
 const http = require('http');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
 const locale = require('locale');
+const promBundle = require('express-prom-bundle');
 const serverRoutes = require('./available-routes-middleware');
 const sitemapMiddleware = require('./sitemap/middleware');
 const authRouter = require('./auth-router');
@@ -20,14 +27,27 @@ const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
 const initializeTerminus = require('./util/terminusConfig');
 
+const metricsMiddleware = promBundle({
+	includeMethod: true,
+	includePath: true,
+	includeStatusCode: true,
+	includeUp: true,
+	promClient: {
+		collectDefaultMetrics: {}
+	}
+});
+
 // Initialize tracing
 require('./util/ddTrace');
 
-// Initialize a Cache instance, Should Only be called once!
+// Initialize a Cache instance
 const cache = initCache(config.server);
 
 const app = express();
 const port = argv.port || config.server.port;
+
+// load metrics middleware
+app.use(metricsMiddleware);
 
 // Use gzip on local server.
 // In higher environments it's handled elsewhere
@@ -50,6 +70,7 @@ function setHeaders(res, path) {
 		res.header('Access-Control-Allow-Origin', `https://${config.app.host}`);
 	}
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.header('Surrogate-Key', 'ui-all ui-static all-assets');
 }
 
 app.use('/static', express.static('dist/static', {
@@ -68,7 +89,7 @@ app.use(locale(config.app.locale.supported, config.app.locale.default));
 app.use('/ui-routes', serverRoutes);
 
 // Apply sitemap middleware to expose routes we want search engine crawlers to see
-app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, cache));
+app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, config.server));
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
@@ -88,7 +109,6 @@ app.use(vueMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
-	cache,
 }));
 
 // Setup Request Error Logger

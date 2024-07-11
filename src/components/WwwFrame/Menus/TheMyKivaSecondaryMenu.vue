@@ -4,22 +4,12 @@
 			<ul>
 				<li class="tw-inline-block">
 					<router-link
-						v-if="showImpactDashboard"
-						to="/portfolio/impact"
+						to="/portfolio"
 						active-class="tw-underline"
 						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-My-impact']"
 					>
 						My impact
-					</router-link>
-					<router-link
-						v-else
-						to="/portfolio"
-						active-class="tw-underline"
-						class="desktop-link"
-						v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
-					>
-						Portfolio
 					</router-link>
 				</li>
 				<li class="tw-inline-block">
@@ -57,6 +47,16 @@
 					>
 						<the-settings-tertiary-menu />
 					</kv-dropdown>
+				</li>
+				<li class="tw-inline-block" v-if="isBorrowerApplicant">
+					<router-link
+						to="/my/borrower/application"
+						active-class="tw-underline"
+						class="desktop-link"
+						v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-application']"
+					>
+						Borrower application
+					</router-link>
 				</li>
 				<li class="tw-inline-block" v-if="isBorrower">
 					<router-link
@@ -149,6 +149,15 @@
 								Settings
 							</router-link>
 						</li>
+						<li v-if="isBorrowerApplicant">
+							<router-link
+								to="/my/borrower/application"
+								class="mobile-link"
+								v-kv-track-event="['SecondaryNav','click-MyKiva-Borrower-application']"
+							>
+								Borrower application
+							</router-link>
+						</li>
 						<li v-if="isBorrower">
 							<router-link
 								to="/my/borrower"
@@ -189,6 +198,8 @@ import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTert
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
+const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
+
 export default {
 	name: 'TheMyKivaSecondaryMenu',
 	components: {
@@ -207,7 +218,6 @@ export default {
 			isTrustee: false,
 			usingTouch: false,
 			mdiChevronDown,
-			showImpactDashboard: false,
 		};
 	},
 	apollo: {
@@ -220,23 +230,21 @@ export default {
 				}
 			}
 			usingTouch @client
-			impactDashboard: experiment(id: "impact_dashboard") @client {
-				id
-				version
-			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.isBorrower = data?.my?.isBorrower ?? false;
 			this.isTrustee = !!data?.my?.trustee?.id;
 			this.usingTouch = data?.usingTouch ?? false;
-			this.showImpactDashboard = data?.impactDashboard?.version === 'b';
 		},
 	},
 	computed: {
 		myKivaCategory() {
 			return this.$route.path.split('/')[1];
-		}
+		},
+		isBorrowerApplicant() {
+			return !this.isBorrower && this.cookieStore.get(BORROWER_APPLICANT_COOKIE_NAME)?.toLowerCase() === 'true';
+		},
 	},
 	methods: {
 		toggle() {

@@ -93,21 +93,77 @@ export function build5DollarsPriceArray(amountLeft) {
 	return priceArray;
 }
 
-export function getDropdownPriceArray(unreservedAmount, minAmount, enableFiveDollarsNotes, inPfp = false) {
-	const parsedAmountLeft = parseFloat(unreservedAmount);
-	return (enableFiveDollarsNotes && !inPfp) ? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28) : buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20); // eslint-disable-line max-len
+function buildHugePriceArray(amountLeft) {
+	const priceArray = [];
+
+	// Add $100 options up to $1,000
+	let minAmount = 100;
+	let limitAmount = amountLeft > 1000 ? 1000 : amountLeft;
+	let optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
+		const price = minAmount * i + 500;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	// Add $1000 options up to $10,000
+	minAmount = 1000;
+	limitAmount = amountLeft > 10000 ? 10000 : amountLeft;
+	optionCount = limitAmount / minAmount;
+	for (let i = 1; i <= optionCount; i += 1) {
+		const price = minAmount * i + 1000;
+		if (price > limitAmount) break;
+		priceArray.push(numeral(price).format('0,0'));
+	}
+
+	// Ensure final option is added
+	if (!priceArray.includes(numeral(limitAmount).format('0,0'))) {
+		priceArray.push(numeral(limitAmount).format('0,0'));
+	}
+
+	return priceArray;
 }
 
-export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes) {
+export function getDropdownPriceArray(
+	unreservedAmount,
+	minAmount,
+	enableFiveDollarsNotes,
+	inPfp = false,
+	enableHugeAmount,
+) {
+	const parsedAmountLeft = parseFloat(unreservedAmount);
+	let combinedPricesArray = [];
+
+	const priceArray = (enableFiveDollarsNotes && !inPfp)
+		? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28)
+		: buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20);
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = priceArray.concat(hugePriceArray);
+	}
+	return showHugeAmount ? combinedPricesArray : priceArray;
+}
+
+export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes, enableHugeAmount) {
+	const parsedAmountLeft = parseFloat(remainingAmount);
 	if (enableFiveDollarsNotes) {
-		const parsedAmountLeft = parseFloat(remainingAmount);
 		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
 	}
+	let combinedPricesArray = [];
 	const pricesArray = buildPriceArray(remainingAmount, minAmount);
 	const reducedArray = pricesArray.filter(element => {
 		return element % 25 === 0;
 	});
-	return reducedArray;
+
+	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	if (showHugeAmount) {
+		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
+		combinedPricesArray = reducedArray.slice(0, 20).concat(hugePriceArray);
+	}
+
+	return showHugeAmount ? combinedPricesArray : reducedArray;
 }
 
 export function toParagraphs(text) {

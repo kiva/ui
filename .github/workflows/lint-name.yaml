@@ -1,0 +1,27 @@
+name: Lint PR (semantic title)
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - edited
+
+env:
+  GITHUB_PAT: "${{ secrets.KIVA_ROBOT_GITHUB_PAT || github.token }}"
+
+jobs:
+  lint-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: kiva/github-actions
+          ref: main
+          token: ${{ env.GITHUB_PAT }}
+          path: .github/
+      - name: lint-pr
+        uses: ./.github/actions/lint-pr
+        env:
+          GITHUB_PAT: ${{ env.GITHUB_PAT }}

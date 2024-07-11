@@ -10,7 +10,11 @@
 				Member Count:
 			</template>
 		</h4>
-		<kv-tabs class="tw-px-1" @tab-changed="handleTabChanged">
+		<kv-tabs
+			class="tw-px-1 tw-pb-2 leaderboard-tabs"
+			:class="{ 'members-leaderboard' : isNewMembers}"
+			@tab-changed="handleTabChanged"
+		>
 			<template #tabNav>
 				<kv-tab
 					for-panel="thisMonth"
@@ -35,6 +39,9 @@
 				</kv-tab>
 			</template>
 			<template #tabPanels>
+				<p v-if="isNewMembers" class="tw-text-small tw-my-0.5">
+					Only members who have lent at least once are counted
+				</p>
 				<kv-tab-panel
 					v-for="timeFrame in ['thisMonth', 'lastMonth', 'allTime']"
 					:id="timeFrame"
@@ -72,7 +79,7 @@
 							tw-overflow-hidden tw-whitespace-nowrap"
 						>
 							<div
-								class="tw-flex tw-flex-nowrap tw-flex-none tw-w-full"
+								class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-none tw-w-full"
 							>
 								<div class="tw-flex-1 tw-overflow-hidden tw-text-ellipsis tw-text-base">
 									<router-link
@@ -87,10 +94,10 @@
 								</div>
 								<div class="tw-flex-none tw-ml-1">
 									<template v-if="!isNewMembers">
-										{{ numeral(leaderboardTeam.value).format('$0,0a') }}
+										{{ numeral(leaderboardTeam.value).format('$0,0') }}
 									</template>
 									<template v-else>
-										{{ numeral(leaderboardTeam.value).format('0,0a') }}
+										{{ numeral(leaderboardTeam.value).format('0,0') }}
 									</template>
 								</div>
 							</div>
@@ -176,7 +183,7 @@ export default {
 			if (this.isNewMembers) {
 				return 'Total Amount of Members the Team has';
 			} return 'Total Amount the Team has lent';
-		}
+		},
 	},
 	methods: {
 		determineIfMobile() {
@@ -207,3 +214,13 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang="postcss">
+	.leaderboard-tabs .members-leaderboard >>> div {
+		@apply tw-mb-0;
+	}
+
+	.leaderboard-tabs >>> div[role="tablist"] {
+		@apply tw-gap-x-1 md:tw-gap-x-2 lg:tw-gap-x-3 tw-mb-1;
+	}
+</style>

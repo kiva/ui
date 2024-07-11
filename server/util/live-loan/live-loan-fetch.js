@@ -230,15 +230,22 @@ const parseFilterStringFLSS = filterString => {
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
-async function fetchRecommendationsByFilter(filterString) {
+async function fetchRecommendationsByFilter(userId, filterString) {
 	return fetchLoansFromGraphQL(
 		{
-			query: `query($filters: [FundraisingLoanSearchFilterInput!]) {
-				fundraisingLoans(pageNumber:0, limit: ${loanCount}, filters: $filters) {
+			query: `query($userId: Int, $filters: [FundraisingLoanSearchFilterInput!]) {
+				fundraisingLoans(
+					pageNumber:0,
+					limit: ${loanCount},
+					filters: $filters,
+					userId: $userId,
+					origin: "email:live-loans"
+				) {
 					${loanValues}
 				}
 			}`,
 			variables: {
+				userId: Number(userId),
 				filters: parseFilterStringFLSS(filterString),
 			}
 		},
@@ -395,9 +402,9 @@ async function fetchLoanById(loanId) {
 	);
 }
 // Export a function that will fetch loans by live-loan type and id
-module.exports = async function fetchLoansByType(type, id) {
+module.exports = async function fetchLoansByType(type, id, flss = false) {
 	if (type === 'user') {
-		return fetchRecommendationsByLoginId(id);
+		return flss ? fetchRecommendationsByFilter(id) : fetchRecommendationsByLoginId(id);
 	} if (type === 'loan') {
 		return fetchRecommendationsByLoanId(id);
 	} if (type === 'filter') {

@@ -1,21 +1,4 @@
 module.exports = [
-	// {
-	// 	path: '/',
-	// 	name: 'homepage',
-	// 	component: () => import('@/pages/Homepage/Homepage'),
-	// 	meta: {
-	// 		contentfulPage: (route, apollo, experimentVersionFragment) => {
-	// 			const exp = apollo?.readFragment({
-	// 				id: 'Experiment:new_home_layout',
-	// 				fragment: experimentVersionFragment,
-	// 			}) || {};
-
-	// 			return exp?.version === 'b' ? 'hp/crowdfund-for-good' : 'home';
-	// 		},
-	// 		unbounceEmailCapture: true,
-	// 		unbouncePopUp: true,
-	// 	},
-	// },
 	{
 		path: '/homepage-classic',
 		redirect: '/',
@@ -124,7 +107,6 @@ module.exports = [
 		path: '/covid19response',
 		redirect: '/monthlygood'
 	},
-	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{
 		path: '/error',
 		component: () => import('@/pages/Error'),
@@ -451,7 +433,7 @@ module.exports = [
 		}
 	},
 	{
-		path: '/portfolio/impact',
+		path: '/portfolio',
 		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
 			authenticationRequired: true,
@@ -523,6 +505,9 @@ module.exports = [
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
+		props: route => ({
+			partnerContentId: route.query.partnerContentId,
+		}),
 		beforeEnter(to, from, next) {
 			// Redirect to error page if state parameter is missing
 			const { state } = to.query ?? {};

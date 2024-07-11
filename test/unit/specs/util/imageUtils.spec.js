@@ -64,6 +64,7 @@ describe('imageUtils.js', () => {
 			expect(isLegacyPlaceholderAvatar('123abc')).toBe(false);
 			expect(isLegacyPlaceholderAvatar(12344)).toBe(false);
 		});
+
 		it('Returns if legacy placeholder avatar', () => {
 			expect(isLegacyPlaceholderAvatar('726677.jpg')).toBe(true);
 			expect(isLegacyPlaceholderAvatar('315726.jpg')).toBe(true);
@@ -73,6 +74,8 @@ describe('imageUtils.js', () => {
 			expect(isLegacyPlaceholderAvatar('315726')).toBe(true);
 			expect(isLegacyPlaceholderAvatar(726677)).toBe(true);
 			expect(isLegacyPlaceholderAvatar(315726)).toBe(true);
+			expect(isLegacyPlaceholderAvatar('4d844ac2c0b77a8a522741b908ea5c32')).toBe(true);
+			expect(isLegacyPlaceholderAvatar('4d844ac2c0b77a8a522741b908ea5c32.jpg')).toBe(true);
 		});
 	});
 });
