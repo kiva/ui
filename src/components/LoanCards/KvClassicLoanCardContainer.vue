@@ -522,6 +522,6 @@ export default {
 }
 
 .loan-image.animate {
-  opacity: 0;
+	opacity: 0;
 }
 </style>

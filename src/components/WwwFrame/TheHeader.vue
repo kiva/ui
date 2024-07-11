@@ -615,14 +615,14 @@ const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-  	my {
+		my {
 		id
-    	loans(limit:1) {
-      		totalCount
-    	}
-    	transactions(limit:1, filter:{category:deposit}) {
-      		totalCount
-   		}
+			loans(limit:1) {
+					totalCount
+			}
+			transactions(limit:1, filter:{category:deposit}) {
+					totalCount
+	 		}
 	}
 }`;
 
@@ -1070,11 +1070,12 @@ export default {
 }
 
 .bubble-count {
-	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5
-	tw-text-white tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-1;
+	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-white
+		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-1;
 }
 
-.user-avatar >>> img, .user-avatar >>> .tw-bg-brand {
+.user-avatar >>> img,
+.user-avatar >>> .tw-bg-brand {
 	@apply tw-w-5 tw-h-5;
 }
 
