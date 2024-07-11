@@ -5,9 +5,9 @@
 			class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small"
 		>
 			<kv-radio
-				value="1"
+				value="on"
 				v-model="selectedComms"
-				name="reportComms"
+				name="newsConsent"
 				v-kv-track-event="[
 					trackingCategory,
 					'click',
@@ -21,8 +21,8 @@
 				Send me updates from people I've funded, my impact, and other ways I can help.
 			</kv-radio>
 			<kv-radio
-				value="0"
-				name="reportComms"
+				value="off"
+				name="newsConsent"
 				v-model="selectedComms"
 				:class="{'radio-error': $v.selectedComms.$error}"
 				v-kv-track-event="[
