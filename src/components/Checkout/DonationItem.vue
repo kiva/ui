@@ -353,8 +353,9 @@ export default {
 						'basket',
 						'Update Donation',
 						'Update Success',
-						// pass donation amount as whole number
-						numeral(this.amount).value() * 100,
+						// pass raw donation amount to property field
+						numeral(this.amount).format('0,0.00'),
+						// pass donation amount as whole number in value field
 						numeral(this.amount).value() * 100
 					);
 					this.amount = numeral(this.amount).format('$0,0.00');
