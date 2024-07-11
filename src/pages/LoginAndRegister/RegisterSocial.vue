@@ -27,7 +27,7 @@
 				</div>
 			</div>
 			<h1 class="tw-text-h2 tw-mb-2">
-				{{ !this.partnerContentId ? 'One last thing!' : 'Almost there!' }}
+				{{ !partnerContentId ? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
