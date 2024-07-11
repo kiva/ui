@@ -104,17 +104,26 @@ export default {
 		}
 	},
 	watch: {
-		amount(next, prev) {
-			if (next !== prev) {
-				this.btDropinInstance?.updateConfiguration?.('paypal', 'amount', this.formattedAmount);
-				this.btDropinInstance?.updateConfiguration?.(
-					'googlePay',
-					'transactionInfo',
-					this.googleTransactionInfo
-				);
-				this.btDropinInstance?.updateConfiguration?.('applePay', 'paymentRequest', this.applePaymentRequest);
-			}
-		}
+		// Watch the amount property for changes and update each payment method configuration to ensure correct amount.
+		amount: {
+			handler(next, prev) {
+				if (next !== prev) {
+					this.btDropinInstance?.updateConfiguration?.('paypal', 'amount', this.formattedAmount);
+					this.btDropinInstance?.updateConfiguration?.('paypalCredit', 'amount', this.formattedAmount);
+					this.btDropinInstance?.updateConfiguration?.(
+						'googlePay',
+						'transactionInfo',
+						this.googleTransactionInfo
+					);
+					this.btDropinInstance?.updateConfiguration?.(
+						'applePay',
+						'paymentRequest',
+						this.applePaymentRequest
+					);
+				}
+			},
+			immediate: true,
+		},
 	},
 	methods: {
 		setUpdatingPaymentWrapper(state) {
