@@ -1,3 +1,16 @@
+## [2.747.0-rc.2](https://github.com/kiva/ui/compare/v2.747.0-rc.1...v2.747.0-rc.2) (2024-07-11)
+
+
+### 🐛 Bugfixes
+
+* missing newAcctTerms and newsConsent form values for opt-in-comms exp ([b86b01c](https://github.com/kiva/ui/commit/b86b01c2a94dbb1bdbc851298414bb7d7ec07eb5))
+
+
+### 🏗️ Build System
+
+* **deps:** bump libphonenumber-js from 1.10.7 to 1.11.4 ([32e2277](https://github.com/kiva/ui/commit/32e227725de78ead3e7642c3c79a7bc9fa71ee8f))
+* **deps:** bump vue-router from 3.5.1 to 3.6.5 ([cb7e8c2](https://github.com/kiva/ui/commit/cb7e8c23bb7623919672f14fdd0692c83b03690f))
+
 ## [2.747.0-rc.1](https://github.com/kiva/ui/compare/v2.746.0...v2.747.0-rc.1) (2024-07-11)
 
 
