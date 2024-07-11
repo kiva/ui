@@ -940,7 +940,10 @@ export default {
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
 				}
-				this.setUpdatingTotals(false);
+				const overlayTimeout = setTimeout(() => {
+					this.setUpdatingTotals(false);
+					clearTimeout(overlayTimeout);
+				}, 2500);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
 				this.setUpdatingTotals(false);
