@@ -4,7 +4,7 @@
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
-			@new-basket-exp="enableBasketExperiment = true"
+			@new-basket-exp="enableBasketExperiment = $event"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
