@@ -505,6 +505,9 @@ module.exports = [
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
+		props: route => ({
+			partnerContentId: route.query.partnerContentId,
+		}),
 		beforeEnter(to, from, next) {
 			// Redirect to error page if state parameter is missing
 			const { state } = to.query ?? {};

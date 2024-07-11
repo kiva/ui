@@ -256,15 +256,9 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-					<div v-if="!!activities">
+					<div v-if="!!activities && !isSticky">
 						<hr
-							class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
-							:class="[
-								{
-									'tw-hidden': isSticky,
-									'tw-block': !isSticky,
-								}
-							]"
+							class="tw-block tw-border-tertiary tw-w-full tw-my-2"
 						>
 						<supported-by-lenders
 							:participants="participants"
@@ -295,13 +289,16 @@
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
-						'tw-bottom-8',
 						'tw-w-full',
+						{
+							'tw-bottom-14': freeCreditWarning || allSharesReserved,
+							'tw-bottom-8': !freeCreditWarning && !allSharesReserved,
+						},
 						{
 							'md:tw-relative': !isSticky,
 							'md:tw-bottom-0': !isSticky,
 							'md:tw-order-none': !isSticky,
-							'md:tw-px-3': !isSticky,
+							'lg:tw-px-3': !isSticky,
 							'md:tw-px-4': isSticky,
 							'tw-px-2.5 tw-absolute': isSticky
 						},
@@ -327,7 +324,6 @@
 							{
 								'tw-relative': isSticky,
 								'md:tw-mb-0': !isSticky,
-								'md:tw-col-start-6 md:tw-col-span-7': !isSticky,
 								'md:tw-col-start-5 md:tw-col-span-6': isSticky,
 								'md:tw-hidden': isSticky,
 							},
@@ -412,6 +408,7 @@ import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 export default {
 	name: 'LendCta',
@@ -432,6 +429,10 @@ export default {
 		enableHugeAmount: {
 			type: Boolean,
 			default: false,
+		},
+		teamData: {
+			type: Object,
+			default: null,
 		},
 	},
 	components: {
@@ -586,6 +587,15 @@ export default {
 		async addToBasket(lendAmount = 0) {
 			if (lendAmount) {
 				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
+			}
+
+			if (this.teamData?.id) {
+				const challenge = {
+					teamId: this.teamData.id,
+					teamName: this.teamData?.name ?? '',
+					loanId: this.loanId,
+				};
+				setChallengeCookieData(this.cookieStore, challenge);
 			}
 
 			this.isAdding = true;

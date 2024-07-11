@@ -75,20 +75,20 @@ threadLoader.warmup({
 ]);
 
 // webpack setup
-const clientCompiler = webpack(clientConfig);
+const clientCompiler = webpack({
+	...clientConfig,
+	devServer: {
+		hot: false, // Ensures that HMR works as expected
+	},
+});
 const serverCompiler = webpack(serverConfig);
 const devMiddleware = webpackDevMiddleware(clientCompiler, {
-	logLevel: 'silent',
-	stats: false,
+	stats: 'none', // Hides compilation logs
 	publicPath: clientConfig.output.publicPath,
-	watchOptions: {
-		poll: 1000
-	}
-	// serverSideRender: true,
 });
 const hotMiddleware = webpackHotMiddleware(clientCompiler, {
 	path: '/__ui_hmr',
-	log: () => {}
+	log: () => { }
 });
 
 // file reader helper
@@ -135,11 +135,11 @@ chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () =
 // update when the client manifest changes
 clientCompiler.hooks.done.tap('done', rawStats => {
 	// abort if there were errors
-	const stats = rawStats.toJson();
-	if (stats.errors.length) return;
+	const stats = rawStats?.toJson();
+	if (stats?.errors?.length) return;
 
 	// read client manifest from dev-middleware filesystem
-	clientManifest = JSON.parse(readFile(devMiddleware.fileSystem, 'vue-ssr-client-manifest.json'));
+	clientManifest = JSON.parse(readFile(devMiddleware.context.outputFileSystem, 'vue-ssr-client-manifest.json'));
 	updateHandler();
 });
 
@@ -198,7 +198,7 @@ app.use(logger.errorLogger);
 app.use(logger.fallbackErrorHandler);
 
 // start server
-app.listen(port, () => 	console.info(JSON.stringify({
+app.listen(port, () => console.info(JSON.stringify({
 	meta: {},
 	level: 'log',
 	message: `dev-server started at localhost:${port}`

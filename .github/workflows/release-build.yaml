@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  GITHUB_PAT: "${{ secrets.KIVA_ROBOT_GITHUB_PAT }}"
+  GITHUB_PAT: "${{ secrets.KIVA_ROBOT_GITHUB_PAT || github.token }}"
   AWS_REGION: "us-west-2"
   AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
   AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
@@ -30,6 +30,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: kiva/github-actions
+          ref: main
           token: ${{ env.GITHUB_PAT }}
           path: .github/
       - uses: snow-actions/sparse-checkout@v1.2.0
@@ -43,6 +44,10 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+      - name: build static assets
+        uses: ./.github/actions/npm-run
+        with:
+          command: "build"
       - name: docker-build
         uses: ./.github/actions/docker-build-push
         if: github.event_name == 'pull_request'
@@ -61,6 +66,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: kiva/github-actions
+          ref: main
           token: ${{ env.GITHUB_PAT }}
           path: .github/
       - uses: snow-actions/sparse-checkout@v1.2.0
@@ -74,6 +80,16 @@ jobs:
       - name: move files
         run: |
           mv .docker/resources/org/kiva/marketplaceWebUiCi/ui/Dockerfile .
+      - name: build static assets
+        uses: ./.github/actions/npm-run
+        with:
+          command: "build"
+      - name: upload static assets
+        uses: ./.github/actions/upload-static-assets
+        with:
+          source_dir: "dist"
+          include: "static/*"
+          cache_control: "public,max-age=31536000"
       - name: docker-push
         uses: ./.github/actions/docker-build-push
         with:
