@@ -1,7 +1,7 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
-			<div v-if="passwordless">
+			<div v-if="partnerContentId">
 				<div class="tw-flex tw-justify-center tw-items-center tw-relative tw-mb-2">
 					<div
 						v-if="fetchedLogoUrl"
@@ -27,7 +27,7 @@
 				</div>
 			</div>
 			<h1 class="tw-text-h2 tw-mb-2">
-				{{ !passwordless? 'One last thing!' : 'Almost there!' }}
+				{{ !partnerContentId ? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
 				{{ registrationMessage }}
@@ -243,7 +243,7 @@ export default {
 				return 'Send me updates from people I\'ve funded, my impact, and other ways I can help.';
 			}
 
-			return !this.passwordless
+			return !this.partnerContentId
 				? 'I want to receive updates about my loans, Kiva news, and promotions in my inbox'
 				: `Receive email updates from Kiva (including borrower updates and promos).
 								You can unsubscribe anytime. (optional)`;
@@ -313,7 +313,7 @@ export default {
 			this.needsNews = true;
 		}
 
-		if (!this.passwordless && this.needsNews) {
+		if (!this.partnerContentId && this.needsNews) {
 			const { version } = this.apollo.readFragment({
 				id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 				fragment: experimentVersionFragment,
