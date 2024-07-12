@@ -99,7 +99,7 @@
 		"fuse.js": "^5.2.3",
 		"get-user-locale": "^1.4.0",
 		"graphql": "^15.4.0",
-		"gsap": "^3.5.1",
+		"gsap": "^3.12.5",
 		"helmet": "^4.6.0",
 		"instantsearch.js": "^3.6.0",
 		"js-cookie": "^3.0.1",
