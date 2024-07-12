@@ -339,26 +339,28 @@
 									'tw-flex': hasBasket
 								}"
 							>
-								<div
+								<router-link
 									v-if="enableBasketExperiment"
 									id="basket-exp"
+									to="/basket"
+									v-kv-track-event="['TopNav','click-Basket']"
 									class="tw-flex tw-justify-center tw-items-center"
 								>
 									<div class="tw-relative tw-flex tw-items-center">
 										<kv-user-avatar
-											:key="lender.id"
-											v-for="(lender, i) in participationLendersDisplayed"
-											:lender-name="lender.name"
-											:lender-image-url="lender.image"
-											class="user-avatar"
+											:key="loan.id"
+											v-for="(loan, i) in loansInBasket"
+											:lender-name="loan.name"
+											:lender-image-url="loan.image"
+											class="user-avatar !tw-w-5"
 											:class="{ 'tw--ml-4': i > 0}"
-											:style="{ 'z-index': participationLendersDisplayed.length - i }"
+											:style="{ 'z-index': loansInBasket.length - i }"
 										/>
 										<span class="bubble-count">
 											{{ basketCount }}
 										</span>
 									</div>
-								</div>
+								</router-link>
 								<template v-else>
 									<router-link
 										to="/basket"
@@ -673,7 +675,7 @@ export default {
 			teams: null,
 			teamsMenuEnabled: false,
 			newAddToBasketExpVersion: 'a',
-			participationLendersDisplayed: [],
+			loansInBasket: [],
 		};
 	},
 	props: {
@@ -798,10 +800,10 @@ export default {
 
 			// Add To Basket Experiment MP-346
 			const limit = this.basketCount < 3 ? this.basketCount : 3;
-			this.participationLendersDisplayed = data?.shop?.basket?.items?.values?.slice(0, limit).map(item => {
+			this.loansInBasket = data?.shop?.basket?.items?.values?.slice(0, limit).map(item => {
 				return {
 					id: item.id,
-					name: item?.loan?.lenderName ?? '',
+					name: item?.loan?.name ?? '',
 					image: item?.loan?.image?.url ?? '',
 				};
 			}) ?? [];
@@ -1071,12 +1073,12 @@ export default {
 
 .bubble-count {
 	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-white
-		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-1;
+		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-0.5 md:tw-mr-1;
 }
 
 .user-avatar >>> img,
 .user-avatar >>> .tw-bg-brand {
-	@apply tw-w-5 tw-h-5;
+	@apply tw-w-4 tw-h-4 md:tw-w-5 md:tw-h-5;
 }
 
 </style>

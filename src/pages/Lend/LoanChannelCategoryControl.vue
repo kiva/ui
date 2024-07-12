@@ -125,6 +125,7 @@
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 							:add-to-basket-exp-enabled="addToBasketExpEnabled"
+							@show-cart-modal="showCartModal"
 						/>
 					</div>
 
@@ -825,7 +826,10 @@ export default {
 		},
 		resetPagination() {
 			this.pageChange({ pageOffset: 0 });
-		}
+		},
+		showCartModal(payload) {
+			this.$emit('show-cart-modal', payload);
+		},
 	},
 	watch: {
 		loanIds(newVal, oldVal) {

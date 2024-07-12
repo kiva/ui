@@ -3,9 +3,18 @@
 		class="loan-channel-page category-page"
 		:gray-background="pageLayout === 'control'"
 	>
+		<kv-cart-modal
+			v-if="addedLoan"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<loan-channel-category-control
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:enable-huge-amount="enableHugeLendAmount"
+			@show-cart-modal="showCartModal"
 		/>
 
 		<add-to-basket-interstitial />
@@ -24,8 +33,10 @@ import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin'
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import KvCartModal from '~/@kiva/kv-components/vue/KvCartModal';
 
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
 const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
 
@@ -35,6 +46,7 @@ export default {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
 		WwwPage,
+		KvCartModal,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount],
 	inject: ['apollo', 'cookieStore'],
@@ -46,6 +58,9 @@ export default {
 			},
 			pageLayout: 'control',
 			enableLoanTags: false,
+			addedLoan: null,
+			PHOTO_PATH,
+			cartModalVisible: false,
 		};
 	},
 	apollo: {
@@ -95,6 +110,11 @@ export default {
 			);
 		}
 	},
+	computed: {
+		basketCount() {
+			return this.addedLoan?.basketSize ?? 0;
+		}
+	},
 	methods: {
 		initializeAddToBasketInterstitial() {
 			this.apollo.mutate({
@@ -104,6 +124,24 @@ export default {
 				}
 			});
 		},
+		showCartModal(payload) {
+			this.addedLoan = { ...payload };
+			this.cartModalVisible = true;
+		},
+		closeCartModal(closedBy) {
+			this.cartModalVisible = false;
+			this.addedLoan = null;
+			const { type } = closedBy;
+			if (type) {
+				this.$kvTrackEvent('basket', 'dismiss', 'basket-modal', type);
+				this.handleRedirect(type);
+			}
+		},
+		handleRedirect(type) {
+			if (type === 'view-basket') {
+				this.$router.push({ path: '/basket' });
+			}
+		}
 	},
 };
 </script>

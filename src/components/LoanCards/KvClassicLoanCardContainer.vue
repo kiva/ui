@@ -68,6 +68,7 @@ const loanQuery = gql`
 	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
+		nonTrivialItemCount
 		basket {
 			id
 			# for isInBasket
@@ -194,6 +195,7 @@ export default {
 				top: 0, left: 0, width: 0, height: 0
 			},
 			bubbleStyle: {},
+			basketCount: 0,
 		};
 	},
 	methods: {
@@ -272,6 +274,7 @@ export default {
 			};
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+			this.basketCount = result.data?.shop?.nonTrivialItemCount || 0;
 		},
 		addToBasket(lendAmount) {
 			// emitting updating tools for empty state in checkout page
@@ -285,6 +288,10 @@ export default {
 			}).then(() => {
 				if (this.addToBasketExpEnabled) {
 					this.animateBubble();
+					// Show modal after 1s (Defined in CSS)
+					setTimeout(() => {
+						this.formatAddedLoan(lendAmount);
+					}, 1000);
 				}
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
@@ -463,6 +470,18 @@ export default {
 		resetBubble() {
 			this.showBubble = false;
 			this.isAnimating = false;
+		},
+		formatAddedLoan(amount) {
+			const addedLoan = {
+				id: this.loan.id,
+				name: this.loan?.name ?? '',
+				image: this.loan?.image?.url ?? '',
+				country: this.loan?.geocode?.country?.name ?? '',
+				imageHash: this.loan?.image?.hash ?? '',
+				amount,
+				basketSize: this.basketCount,
+			};
+			this.$emit('show-cart-modal', addedLoan);
 		}
 	},
 	mounted() {
