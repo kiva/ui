@@ -164,7 +164,7 @@
 		"@storybook/vue": "^6.5.9",
 		"@testing-library/cypress": "^10.0.2",
 		"@testing-library/user-event": "^14.2.0",
-		"@testing-library/vue": "^5.8.2",
+		"@testing-library/vue": "^5.9.0",
 		"app-manifest-loader": "^2.4.1",
 		"autoprefixer": "^10.4.2",
 		"babel-jest": "^27.5.1",
