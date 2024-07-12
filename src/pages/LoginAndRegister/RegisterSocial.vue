@@ -70,6 +70,12 @@
 					tracking-category="authentication"
 					@update:modelValue="selectedComms = $event"
 				/>
+				<input
+					v-if="enableRadioBtnExperiment"
+					type="hidden"
+					name="newAcctTerms"
+					value="on"
+				>
 				<template v-else>
 					<kv-base-input
 						name="newAcctTerms"
