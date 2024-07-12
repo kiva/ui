@@ -1,3 +1,105 @@
+## [2.747.0](https://github.com/kiva/ui/compare/v2.746.0...v2.747.0) (2024-07-11)
+
+
+### 🎉 New Features
+
+* animated sparkles component updated ([#5370](https://github.com/kiva/ui/issues/5370)) ([946c485](https://github.com/kiva/ui/commit/946c4851a2078ea9b98dfaeb3133a5c63dfe8938))
+
+
+### 🐛 Bugfixes
+
+* apply updateConfiguration for paypalCredit, update watcher to be immediate ([bef01f3](https://github.com/kiva/ui/commit/bef01f3b3ad694088a1bd52589f64eed206e02cb))
+* callback needed for logout ([2fe20b8](https://github.com/kiva/ui/commit/2fe20b8fc0dfe6ce4b43621635f289d6a7bbe0f0))
+* convert passwordless checks to use partnerContentId to detect corporate partners ([23c2180](https://github.com/kiva/ui/commit/23c2180ada43a12492c26a97e188124f3347d830))
+* delay overlay removal while nested components update ([be52f57](https://github.com/kiva/ui/commit/be52f5777a822996d0f4a8b6b24c097f2d2a7ac7))
+* exclude corporate partners using sso from radio button experiment ([c1f6694](https://github.com/kiva/ui/commit/c1f66942aa83824dd4b0be2b2efa81769bd6d880))
+* hide sort by quick filter for new loan channels ([eef0e9c](https://github.com/kiva/ui/commit/eef0e9c761c4c0fdcaefa6f0835026600296cee0))
+* missing newAcctTerms and newsConsent form values for opt-in-comms exp ([b86b01c](https://github.com/kiva/ui/commit/b86b01c2a94dbb1bdbc851298414bb7d7ec07eb5))
+* more special casing for sort in new channels ([8022724](https://github.com/kiva/ui/commit/80227244aa54abef39c69880bcc07ea415ad80a7))
+* remove this in template variable ([69eda8f](https://github.com/kiva/ui/commit/69eda8f4cedf4ebb59b73e76a1918f0b65a86ce4))
+* simplify setTimeout usage ([6c34ba0](https://github.com/kiva/ui/commit/6c34ba01dd778ad090ced1a1f50cd4bf9e2c23e9))
+* update cypress library to resolve peer dependency error ([5469517](https://github.com/kiva/ui/commit/546951770382c3bafd1effc854c9f39cb5765ec3))
+* update dev server to work with v4+ of webpack-dev-middleware ([fc2ca76](https://github.com/kiva/ui/commit/fc2ca761bfaef89a1424badeb20fae8524896be9))
+
+
+### 🏗️ Build System
+
+* **deps-dev:** bump babel-loader from 8.2.2 to 8.3.0 ([03bc34a](https://github.com/kiva/ui/commit/03bc34a3208519dc64f23816f121247ffec10d20))
+* **deps:** bump @grpc/grpc-js from 1.9.13 to 1.10.9 ([ba464f5](https://github.com/kiva/ui/commit/ba464f5fe81228e8c9d032483eba5a1a7b8ef161))
+* **deps:** bump @kiva/kv-shop from 1.8.1 to 1.12.8 ([68797d8](https://github.com/kiva/ui/commit/68797d8b6cb550658d5d9cefae8a84e60dcb6657))
+* **deps:** bump libphonenumber-js from 1.10.7 to 1.11.4 ([32e2277](https://github.com/kiva/ui/commit/32e227725de78ead3e7642c3c79a7bc9fa71ee8f))
+* **deps:** bump passport from 0.4.1 to 0.7.0 ([7285313](https://github.com/kiva/ui/commit/72853138090dfa2ce1fd13cf9a69c924e908eebf))
+* **deps:** bump pug from 3.0.2 to 3.0.3 ([c0f068d](https://github.com/kiva/ui/commit/c0f068df81eb51c7454ce6efc23a7e41076ad765))
+* **deps:** bump vue-router from 3.5.1 to 3.6.5 ([cb7e8c2](https://github.com/kiva/ui/commit/cb7e8c23bb7623919672f14fdd0692c83b03690f))
+
+
+### 🧹 Chores
+
+* **deps-dev:** bump webpack-dev-middleware from 3.7.3 to 5.3.4 ([171f8f1](https://github.com/kiva/ui/commit/171f8f16dcae4e01084c4ca000849a7329f1888d))
+* **deps:** bump @cypress/request and cypress ([5391b1c](https://github.com/kiva/ui/commit/5391b1c16c5c6e6bfd67c9ccd73826f9fc2efc17))
+* **deps:** bump express from 4.18.2 to 4.19.2 ([cb668a6](https://github.com/kiva/ui/commit/cb668a648c7d4e1ae5f0e81d81ed3e4423e47a8b))
+* **deps:** bump jsonwebtoken from 8.5.1 to 9.0.2 ([805ef48](https://github.com/kiva/ui/commit/805ef4835ca90d3e29512e8ed3a623ae8acc9d6a))
+* **deps:** bump serialize-javascript from 5.0.1 to 6.0.2 ([07e5072](https://github.com/kiva/ui/commit/07e5072b44fe1a7b48617ec0db9bb73766df83bf))
+* **deps:** bump vue-focus-lock from 1.4.1 to 2.0.6 ([287306d](https://github.com/kiva/ui/commit/287306d9215e9db03b0fa996b1dde47206fb8be0))
+* **deps:** bump vue-observe-visibility from 0.4.6 to 1.0.0 ([22dcec4](https://github.com/kiva/ui/commit/22dcec4815d573f2bcaa470d577281df552882a8))
+* **release:** 2.747.0-rc.1 [skip ci] ([0845021](https://github.com/kiva/ui/commit/084502151ca76d2311b9f3b9d835b12f54ae68a9)), closes [#5370](https://github.com/kiva/ui/issues/5370)
+* **release:** 2.747.0-rc.2 [skip ci] ([8c0e845](https://github.com/kiva/ui/commit/8c0e845c1180c2de22ea0f88d1b0ac896c7aa00a))
+
+## [2.747.0-rc.2](https://github.com/kiva/ui/compare/v2.747.0-rc.1...v2.747.0-rc.2) (2024-07-11)
+
+
+### 🐛 Bugfixes
+
+* missing newAcctTerms and newsConsent form values for opt-in-comms exp ([b86b01c](https://github.com/kiva/ui/commit/b86b01c2a94dbb1bdbc851298414bb7d7ec07eb5))
+
+
+### 🏗️ Build System
+
+* **deps:** bump libphonenumber-js from 1.10.7 to 1.11.4 ([32e2277](https://github.com/kiva/ui/commit/32e227725de78ead3e7642c3c79a7bc9fa71ee8f))
+* **deps:** bump vue-router from 3.5.1 to 3.6.5 ([cb7e8c2](https://github.com/kiva/ui/commit/cb7e8c23bb7623919672f14fdd0692c83b03690f))
+
+## [2.747.0-rc.1](https://github.com/kiva/ui/compare/v2.746.0...v2.747.0-rc.1) (2024-07-11)
+
+
+### 🎉 New Features
+
+* animated sparkles component updated ([#5370](https://github.com/kiva/ui/issues/5370)) ([946c485](https://github.com/kiva/ui/commit/946c4851a2078ea9b98dfaeb3133a5c63dfe8938))
+
+
+### 🐛 Bugfixes
+
+* apply updateConfiguration for paypalCredit, update watcher to be immediate ([bef01f3](https://github.com/kiva/ui/commit/bef01f3b3ad694088a1bd52589f64eed206e02cb))
+* callback needed for logout ([2fe20b8](https://github.com/kiva/ui/commit/2fe20b8fc0dfe6ce4b43621635f289d6a7bbe0f0))
+* convert passwordless checks to use partnerContentId to detect corporate partners ([23c2180](https://github.com/kiva/ui/commit/23c2180ada43a12492c26a97e188124f3347d830))
+* delay overlay removal while nested components update ([be52f57](https://github.com/kiva/ui/commit/be52f5777a822996d0f4a8b6b24c097f2d2a7ac7))
+* exclude corporate partners using sso from radio button experiment ([c1f6694](https://github.com/kiva/ui/commit/c1f66942aa83824dd4b0be2b2efa81769bd6d880))
+* hide sort by quick filter for new loan channels ([eef0e9c](https://github.com/kiva/ui/commit/eef0e9c761c4c0fdcaefa6f0835026600296cee0))
+* more special casing for sort in new channels ([8022724](https://github.com/kiva/ui/commit/80227244aa54abef39c69880bcc07ea415ad80a7))
+* remove this in template variable ([69eda8f](https://github.com/kiva/ui/commit/69eda8f4cedf4ebb59b73e76a1918f0b65a86ce4))
+* simplify setTimeout usage ([6c34ba0](https://github.com/kiva/ui/commit/6c34ba01dd778ad090ced1a1f50cd4bf9e2c23e9))
+* update cypress library to resolve peer dependency error ([5469517](https://github.com/kiva/ui/commit/546951770382c3bafd1effc854c9f39cb5765ec3))
+* update dev server to work with v4+ of webpack-dev-middleware ([fc2ca76](https://github.com/kiva/ui/commit/fc2ca761bfaef89a1424badeb20fae8524896be9))
+
+
+### 🏗️ Build System
+
+* **deps-dev:** bump babel-loader from 8.2.2 to 8.3.0 ([03bc34a](https://github.com/kiva/ui/commit/03bc34a3208519dc64f23816f121247ffec10d20))
+* **deps:** bump @grpc/grpc-js from 1.9.13 to 1.10.9 ([ba464f5](https://github.com/kiva/ui/commit/ba464f5fe81228e8c9d032483eba5a1a7b8ef161))
+* **deps:** bump @kiva/kv-shop from 1.8.1 to 1.12.8 ([68797d8](https://github.com/kiva/ui/commit/68797d8b6cb550658d5d9cefae8a84e60dcb6657))
+* **deps:** bump passport from 0.4.1 to 0.7.0 ([7285313](https://github.com/kiva/ui/commit/72853138090dfa2ce1fd13cf9a69c924e908eebf))
+* **deps:** bump pug from 3.0.2 to 3.0.3 ([c0f068d](https://github.com/kiva/ui/commit/c0f068df81eb51c7454ce6efc23a7e41076ad765))
+
+
+### 🧹 Chores
+
+* **deps-dev:** bump webpack-dev-middleware from 3.7.3 to 5.3.4 ([171f8f1](https://github.com/kiva/ui/commit/171f8f16dcae4e01084c4ca000849a7329f1888d))
+* **deps:** bump @cypress/request and cypress ([5391b1c](https://github.com/kiva/ui/commit/5391b1c16c5c6e6bfd67c9ccd73826f9fc2efc17))
+* **deps:** bump express from 4.18.2 to 4.19.2 ([cb668a6](https://github.com/kiva/ui/commit/cb668a648c7d4e1ae5f0e81d81ed3e4423e47a8b))
+* **deps:** bump jsonwebtoken from 8.5.1 to 9.0.2 ([805ef48](https://github.com/kiva/ui/commit/805ef4835ca90d3e29512e8ed3a623ae8acc9d6a))
+* **deps:** bump serialize-javascript from 5.0.1 to 6.0.2 ([07e5072](https://github.com/kiva/ui/commit/07e5072b44fe1a7b48617ec0db9bb73766df83bf))
+* **deps:** bump vue-focus-lock from 1.4.1 to 2.0.6 ([287306d](https://github.com/kiva/ui/commit/287306d9215e9db03b0fa996b1dde47206fb8be0))
+* **deps:** bump vue-observe-visibility from 0.4.6 to 1.0.0 ([22dcec4](https://github.com/kiva/ui/commit/22dcec4815d573f2bcaa470d577281df552882a8))
+
 ## [2.746.0](https://github.com/kiva/ui/compare/v2.745.0...v2.746.0) (2024-07-02)
 
 
