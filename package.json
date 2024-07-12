@@ -166,7 +166,7 @@
 		"@testing-library/user-event": "^14.2.0",
 		"@testing-library/vue": "^5.9.0",
 		"app-manifest-loader": "^2.4.1",
-		"autoprefixer": "^10.4.2",
+		"autoprefixer": "^10.4.19",
 		"babel-jest": "^27.5.1",
 		"babel-loader": "^8.3.0",
 		"chalk": "^4.0.0",
