@@ -37,7 +37,7 @@ $ nvm use
 # Install dependencies
 $ npm ci
 
-# install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
+# Install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
 $ npx husky install
 
 $ npm run dev -- --config=dev-custom-host
