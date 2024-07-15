@@ -857,7 +857,15 @@ export default {
 			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
 			fragment: experimentVersionFragment,
 		}) ?? {};
-		this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
+
+		if (newAddToBasketExpData?.version) {
+			this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
+			this.$kvTrackEvent(
+				'basket',
+				NEW_ADD_TO_BASKET_EXP,
+				newAddToBasketExpData?.version,
+			);
+		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');

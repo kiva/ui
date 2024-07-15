@@ -561,18 +561,7 @@ export default {
 			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
 			fragment: experimentVersionFragment,
 		}) || {};
-
-		const version = newAddToBasketExpData?.version ?? '';
-
-		if (version) {
-			this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
-
-			this.$kvTrackEvent(
-				'Lending',
-				NEW_ADD_TO_BASKET_EXP,
-				version,
-			);
-		}
+		this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
