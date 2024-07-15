@@ -37,8 +37,8 @@
 				v-show="addToBasketExpEnabled && showBubble"
 				class="loan-image tw-rounded-full"
 				:style="bubbleStyle"
-				:lender-name="lenderName"
-				:lender-image-url="lenderImageUrl"
+				:lender-name="borrowerName"
+				:lender-image-url="borrowerImageUrl"
 				:class="{'animate': isAnimating}"
 				@animationend="resetBubble"
 			/>
@@ -524,10 +524,10 @@ export default {
 		},
 	},
 	computed: {
-		lenderName() {
+		borrowerName() {
 			return this.loan?.name ?? '';
 		},
-		lenderImageUrl() {
+		borrowerImageUrl() {
 			return this.loan?.image?.url ?? '';
 		},
 	}

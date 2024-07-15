@@ -1,5 +1,5 @@
 <template>
-	<header :class="{ 'tw-fixed tw-w-full tw-z-1 tw-mb-9': enableBasketExperiment }">
+	<header :class="{ 'tw-fixed tw-w-full tw-z-1': enableBasketExperiment }">
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
@@ -344,6 +344,7 @@
 									id="basket-exp"
 									to="/basket"
 									v-kv-track-event="['TopNav','click-Basket']"
+									data-testid="header-basket"
 									class="tw-flex tw-justify-center tw-items-center"
 								>
 									<div class="tw-relative tw-flex tw-items-center">
@@ -617,14 +618,14 @@ const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-		my {
+	my {
 		id
-			loans(limit:1) {
-					totalCount
-			}
-			transactions(limit:1, filter:{category:deposit}) {
-					totalCount
-	 		}
+		loans(limit:1) {
+				totalCount
+		}
+		transactions(limit:1, filter:{category:deposit}) {
+				totalCount
+		}
 	}
 }`;
 
@@ -674,7 +675,7 @@ export default {
 			basketTotal: 0,
 			teams: null,
 			teamsMenuEnabled: false,
-			newAddToBasketExpVersion: 'a',
+			enableAddToBasketExp: false,
 			loansInBasket: [],
 		};
 	},
@@ -758,8 +759,8 @@ export default {
 			return this.basketCount;
 		},
 		enableBasketExperiment() {
-			return this.newAddToBasketExpVersion === 'b' && this.hasBasket;
-		}
+			return this.enableAddToBasketExp && this.hasBasket;
+		},
 	},
 	apollo: {
 		query: headerQuery,
@@ -799,8 +800,8 @@ export default {
 			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 
 			// Add To Basket Experiment MP-346
-			const limit = this.basketCount < 3 ? this.basketCount : 3;
-			this.loansInBasket = data?.shop?.basket?.items?.values?.slice(0, limit).map(item => {
+			const loans = data?.shop?.basket?.items?.values?.filter(loan => loan?.__typename === 'LoanReservation');
+			this.loansInBasket = loans?.slice(0, 3).map(item => {
 				return {
 					id: item.id,
 					name: item?.loan?.name ?? '',
@@ -855,7 +856,7 @@ export default {
 			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
 			fragment: experimentVersionFragment,
 		}) ?? {};
-		this.newAddToBasketExpVersion = newAddToBasketExpData.version;
+		this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
 		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
@@ -987,9 +988,6 @@ export default {
 		},
 	},
 	watch: {
-		hasBasket() {
-			this.$emit('new-basket-exp', this.enableBasketExperiment);
-		},
 		isVisitor(newVal, oldVal) {
 			if (newVal !== oldVal && !newVal && this.$refs.userDropdown) {
 				this.$nextTick(() => {

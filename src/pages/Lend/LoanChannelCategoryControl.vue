@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-relative">
+	<div class="tw-relative" :class="{'sticky-header': enableAddToBasketExp && hasBasket}">
 		<div
 			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
 			style="max-width: 1200px;"
@@ -124,7 +124,7 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
-							:add-to-basket-exp-enabled="addToBasketExpEnabled"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
 						/>
 					</div>
@@ -334,7 +334,7 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
-			newAddToBasketExpVersion: 'a',
+			enableAddToBasketExp: false,
 		};
 	},
 	computed: {
@@ -434,9 +434,9 @@ export default {
 		userBalance() {
 			return this.userData?.balance;
 		},
-		addToBasketExpEnabled() {
-			return this.newAddToBasketExpVersion === 'b';
-		},
+		hasBasket() {
+			return this.itemsInBasket.length > 0;
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -562,13 +562,15 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 
-		this.newAddToBasketExpVersion = newAddToBasketExpData.version;
+		const version = newAddToBasketExpData?.version ?? '';
 
-		if (this.newAddToBasketExpVersion) {
+		if (version) {
+			this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
+
 			this.$kvTrackEvent(
 				'Lending',
 				NEW_ADD_TO_BASKET_EXP,
-				this.newAddToBasketExpVersion,
+				version,
 			);
 		}
 	},
@@ -887,6 +889,14 @@ export default {
 		p {
 			max-width: 75%;
 		}
+	}
+}
+
+.sticky-header {
+	margin-top: 5.25rem;
+
+	@include breakpoint(medium) {
+		margin-top: 5.75rem;
 	}
 }
 </style>
