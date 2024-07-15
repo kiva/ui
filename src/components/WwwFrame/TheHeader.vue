@@ -800,7 +800,8 @@ export default {
 			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 
 			// Add To Basket Experiment MP-346
-			const loans = data?.shop?.basket?.items?.values?.filter(loan => loan?.__typename === 'LoanReservation');
+			const loans = data?.shop?.basket?.items?.values
+				?.filter(loan => loan?.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle
 			this.loansInBasket = loans?.slice(0, 3).map(item => {
 				return {
 					id: item.id,
