@@ -32,7 +32,7 @@
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
-		<div ref="bubble" class="tw-absolute tw-right-3">
+		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
 				v-show="addToBasketExpEnabled && showBubble"
 				class="loan-image tw-rounded-full"
