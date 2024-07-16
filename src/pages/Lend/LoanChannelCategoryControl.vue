@@ -189,12 +189,11 @@ import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCard
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 
 const defaultLoansPerPage = 12;
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
-const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 // Routes to show monthly good promo
 const targetRoutes = [
@@ -295,7 +294,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin],
+	mixins: [loanChannelQueryMapMixin, addToBasketExpMixin],
 	data() {
 		return {
 			offset: 0,
@@ -334,7 +333,6 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
-			enableAddToBasketExp: false,
 		};
 	},
 	computed: {
@@ -436,7 +434,7 @@ export default {
 		},
 		hasBasket() {
 			return this.itemsInBasket.length > 0;
-		}
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -555,13 +553,6 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-
-		// MP-346 New Add To Basket
-		const newAddToBasketExpData = this.apollo.readFragment({
-			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
 	},
 	async mounted() {
 		// Setup Reactivity for Loan Data + Basket Status
@@ -817,9 +808,6 @@ export default {
 		},
 		resetPagination() {
 			this.pageChange({ pageOffset: 0 });
-		},
-		showCartModal(payload) {
-			this.$emit('show-cart-modal', payload);
 		},
 	},
 	watch: {
