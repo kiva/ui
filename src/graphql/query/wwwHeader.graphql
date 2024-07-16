@@ -29,6 +29,16 @@ query wwwHeader($basketId: String) {
 				values {
 					id
 					price
+					... on LoanReservation {
+						loan {
+							id
+							name
+							image {
+								id
+								url
+							}
+						}
+					}
 				}
 			}
 		}

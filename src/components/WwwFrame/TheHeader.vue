@@ -1,5 +1,11 @@
 <template>
-	<header>
+	<header
+		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
+		:class="{
+			'tw-absolute tw-z-1 tw-w-full' : enableAddToBasketExp ,
+			'sticky-header !tw-fixed tw-w-full tw-z-1': enableAddToBasketExp && hasBasket
+		}"
+	>
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
@@ -340,41 +346,66 @@
 								}"
 							>
 								<router-link
+									v-if="enableBasketExperiment"
+									id="basket-exp"
 									to="/basket"
-									data-testid="header-basket"
-									class="tw-hidden"
-									:class="{
-										'header__button header__basket md:tw-flex': hasBasket,
-										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
-									}"
 									v-kv-track-event="['TopNav','click-Basket']"
+									data-testid="header-basket"
+									class="tw-flex tw-justify-center tw-items-center"
 								>
-									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-										{{ basketNumber }}
-									</span>
-									<span class="tw-hidden md:tw-flex">Basket</span>
+									<div class="tw-relative tw-flex tw-items-center">
+										<kv-user-avatar
+											:key="loan.id"
+											v-for="(loan, i) in loansInBasket"
+											:lender-name="loan.name"
+											:lender-image-url="loan.image"
+											class="user-avatar !tw-w-5"
+											:class="{ 'tw--ml-4': i > 0}"
+											:style="{ 'z-index': loansInBasket.length - i }"
+										/>
+										<span class="bubble-count">
+											{{ basketCount }}
+										</span>
+									</div>
 								</router-link>
+								<template v-else>
+									<router-link
+										to="/basket"
+										data-testid="header-basket"
+										class="tw-hidden"
+										:class="{
+											'header__button header__basket md:tw-flex': hasBasket,
+											'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
+										}"
+										v-kv-track-event="['TopNav','click-Basket']"
+									>
+										<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+											{{ basketNumber }}
+										</span>
+										<span class="tw-hidden md:tw-flex">Basket</span>
+									</router-link>
 
-								<!-- Mobile Basket -->
-								<router-link
-									to="/basket"
-									data-testid="header-basket"
-									class="tw-flex tw-items-center"
-									:class="{
-										'tw-hidden': !hasBasket,
-										'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
-									}"
-									v-kv-track-event="['TopNav','click-Basket']"
-								>
-									<!-- eslint-disable-next-line max-len -->
-									<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
-										{{ basketCount }}
-									</span>
-									<kv-material-icon
-										:icon="mdiBriefcase"
-										class="tw-inline-block tw-w-4 tw-h-4"
-									/>
-								</router-link>
+									<!-- Mobile Basket -->
+									<router-link
+										to="/basket"
+										data-testid="header-basket"
+										class="tw-flex tw-items-center"
+										:class="{
+											'tw-hidden': !hasBasket,
+											'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
+										}"
+										v-kv-track-event="['TopNav','click-Basket']"
+									>
+										<!-- eslint-disable-next-line max-len -->
+										<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
+											{{ basketCount }}
+										</span>
+										<kv-material-icon
+											:icon="mdiBriefcase"
+											class="tw-inline-block tw-w-4 tw-h-4"
+										/>
+									</router-link>
+								</template>
 							</div>
 
 							<!-- Log in Link -->
@@ -580,6 +611,7 @@ import numeral from 'numeral';
 import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '@/util/settingsUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -589,16 +621,17 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
+const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-  	my {
+	my {
 		id
-    	loans(limit:1) {
-      		totalCount
-    	}
-    	transactions(limit:1, filter:{category:deposit}) {
-      		totalCount
-   		}
+		loans(limit:1) {
+				totalCount
+		}
+		transactions(limit:1, filter:{category:deposit}) {
+				totalCount
+		}
 	}
 }`;
 
@@ -615,6 +648,7 @@ export default {
 		KvButton,
 		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
 		TeamsMenu,
+		KvUserAvatar,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	data() {
@@ -647,6 +681,8 @@ export default {
 			basketTotal: 0,
 			teams: null,
 			teamsMenuEnabled: false,
+			enableAddToBasketExp: false,
+			loansInBasket: [],
 		};
 	},
 	props: {
@@ -675,7 +711,7 @@ export default {
 			type: String,
 			default: '',
 			required: false
-		}
+		},
 	},
 	computed: {
 		isTrustee() {
@@ -728,6 +764,9 @@ export default {
 			}
 			return this.basketCount;
 		},
+		enableBasketExperiment() {
+			return this.enableAddToBasketExp && this.hasBasket;
+		},
 	},
 	apollo: {
 		query: headerQuery,
@@ -765,6 +804,17 @@ export default {
 			}, 0) ?? 0;
 			this.teams = data?.my?.teams ?? {};
 			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
+
+			// Add To Basket Experiment MP-346
+			const loans = data?.shop?.basket?.items?.values
+				?.filter(loan => loan?.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle
+			this.loansInBasket = loans?.slice(0, 3).map(item => {
+				return {
+					id: item.id,
+					name: item?.loan?.name ?? '',
+					image: item?.loan?.image?.url ?? '',
+				};
+			}) ?? [];
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ cookieStore, route }) => {
@@ -807,6 +857,20 @@ export default {
 
 		if (version) {
 			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
+		}
+
+		const newAddToBasketExpData = this.apollo.readFragment({
+			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		if (newAddToBasketExpData?.version) {
+			this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
+			this.$kvTrackEvent(
+				'basket',
+				NEW_ADD_TO_BASKET_EXP,
+				newAddToBasketExpData?.version,
+			);
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
@@ -1018,6 +1082,16 @@ export default {
 		grid-template-areas: "logo explore lend search right-side";
 		grid-template-columns: auto auto auto 1fr auto;
 	}
+}
+
+.bubble-count {
+	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-white
+		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-0.5 md:tw-mr-1;
+}
+
+.user-avatar >>> img,
+.user-avatar >>> .tw-bg-brand {
+	@apply tw-w-4 tw-h-4 md:tw-w-5 md:tw-h-5;
 }
 
 </style>

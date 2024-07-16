@@ -61,7 +61,7 @@ export default {
 	},
 	data() {
 		return {
-			isKivaAppReferral: false
+			isKivaAppReferral: false,
 		};
 	},
 	apollo: {

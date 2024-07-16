@@ -1,5 +1,8 @@
 <template>
-	<div class="tw-relative">
+	<div
+		class="tw-relative"
+		:class="{'sticky-header': enableAddToBasketExp }"
+	>
 		<div
 			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
 			style="max-width: 1200px;"
@@ -124,6 +127,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 					</div>
 
@@ -187,6 +192,7 @@ import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCard
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 
 const defaultLoansPerPage = 12;
 
@@ -291,7 +297,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin],
+	mixins: [loanChannelQueryMapMixin, addToBasketExpMixin],
 	data() {
 		return {
 			offset: 0,
@@ -428,6 +434,9 @@ export default {
 		},
 		userBalance() {
 			return this.userData?.balance;
+		},
+		hasBasket() {
+			return this.itemsInBasket.length > 0;
 		},
 	},
 	apollo: {
@@ -802,7 +811,7 @@ export default {
 		},
 		resetPagination() {
 			this.pageChange({ pageOffset: 0 });
-		}
+		},
 	},
 	watch: {
 		loanIds(newVal, oldVal) {
@@ -860,6 +869,14 @@ export default {
 		p {
 			max-width: 75%;
 		}
+	}
+}
+
+.sticky-header {
+	margin-top: 5.25rem;
+
+	@include breakpoint(medium) {
+		margin-top: 5.75rem;
 	}
 }
 </style>

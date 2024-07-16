@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tw-relative">
 		<kv-classic-loan-card
 			class="tw-h-full"
 			:loan-id="loanId"
@@ -32,6 +32,17 @@
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
+		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
+			<kv-user-avatar
+				v-show="addToBasketExpEnabled && showBubble"
+				class="loan-image tw-rounded-full"
+				:style="bubbleStyle"
+				:lender-name="borrowerName"
+				:lender-image-url="borrowerImageUrl"
+				:class="{'animate': isAnimating}"
+				@animationend="resetBubble"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -48,6 +59,7 @@ import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsEx
 import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
 import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
+import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -56,6 +68,7 @@ const loanQuery = gql`
 	query kcBasicLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
 		id
+		nonTrivialItemCount
 		basket {
 			id
 			# for isInBasket
@@ -151,11 +164,16 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		addToBasketExpEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
 	components: {
-		KvClassicLoanCard
+		KvClassicLoanCard,
+		KvUserAvatar,
 	},
 	data() {
 		return {
@@ -171,6 +189,13 @@ export default {
 			PHOTO_PATH,
 			combinedActivities: [],
 			errorMsg: '',
+			showBubble: false,
+			isAnimating: false,
+			targetPosition: {
+				top: 0, left: 0, width: 0, height: 0
+			},
+			bubbleStyle: {},
+			basketCount: 0,
 		};
 	},
 	methods: {
@@ -249,6 +274,7 @@ export default {
 			};
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+			this.basketCount = result.data?.shop?.nonTrivialItemCount || 0;
 		},
 		addToBasket(lendAmount) {
 			// emitting updating tools for empty state in checkout page
@@ -260,6 +286,13 @@ export default {
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
+				if (this.addToBasketExpEnabled) {
+					this.animateBubble();
+					// Show modal after 1s (Defined in CSS)
+					setTimeout(() => {
+						this.formatAddedLoan(lendAmount);
+					}, 1000);
+				}
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(
@@ -406,6 +439,50 @@ export default {
 				});
 			}
 		},
+		getTargetPosition() {
+			const target = document.getElementById('basket-exp');
+			return target.getBoundingClientRect();
+		},
+		animateBubble() {
+			const position = this.getTargetPosition();
+			this.targetPosition = {
+				top: position.top,
+				left: position.left,
+				width: position.width,
+				height: position.height
+			};
+
+			this.showBubble = true;
+			this.$nextTick(() => {
+				const { bubble } = this.$refs;
+				const bubbleRect = bubble.getBoundingClientRect();
+				const targetX = this.targetPosition.left - bubbleRect.left
+					+ this.targetPosition.width / 2 - bubbleRect.width / 2;
+				const targetY = this.targetPosition.top - bubbleRect.top
+					+ this.targetPosition.height / 2 - bubbleRect.height / 2;
+				this.isAnimating = true;
+				this.bubbleStyle = {
+					transform: `translate(${targetX}px, ${targetY}px)`,
+					opacity: 0
+				};
+			});
+		},
+		resetBubble() {
+			this.showBubble = false;
+			this.isAnimating = false;
+		},
+		formatAddedLoan(amount) {
+			const addedLoan = {
+				id: this.loan.id,
+				name: this.loan?.name ?? '',
+				image: this.loan?.image?.url ?? '',
+				country: this.loan?.geocode?.country?.name ?? '',
+				imageHash: this.loan?.image?.hash ?? '',
+				amount,
+				basketSize: this.basketCount,
+			};
+			this.$emit('show-cart-modal', addedLoan);
+		}
 	},
 	mounted() {
 		if (this.loan) {
@@ -446,5 +523,24 @@ export default {
 			}
 		},
 	},
+	computed: {
+		borrowerName() {
+			return this.loan?.name ?? '';
+		},
+		borrowerImageUrl() {
+			return this.loan?.image?.url ?? '';
+		},
+	}
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.loan-image {
+	transition: transform 1s, opacity 1s;
+}
+
+.loan-image.animate {
+	opacity: 0;
+}
+</style>
