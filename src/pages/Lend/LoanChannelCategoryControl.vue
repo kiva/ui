@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="tw-relative tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="{'sticky-header': enableAddToBasketExp && hasBasket}"
+		class="tw-relative"
+		:class="{'sticky-header': enableAddToBasketExp }"
 	>
 		<div
 			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"

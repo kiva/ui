@@ -1,5 +1,11 @@
 <template>
-	<header :class="{ 'tw-fixed tw-w-full tw-z-1': enableBasketExperiment }">
+	<header
+		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
+		:class="{
+			'tw-absolute tw-z-1 tw-w-full' : enableAddToBasketExp ,
+			'sticky-header !tw-fixed tw-w-full tw-z-1': enableAddToBasketExp && hasBasket
+		}"
+	>
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
