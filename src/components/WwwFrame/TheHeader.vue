@@ -2,8 +2,8 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'tw-absolute tw-z-1 tw-w-full' : enableAddToBasketExp ,
-			'sticky-header !tw-fixed tw-w-full tw-z-1': enableAddToBasketExp && hasBasket
+			'tw-absolute tw-z-1 tw-w-full' : enableAddToBasketExp && isInExperimentPages,
+			'sticky-header !tw-fixed tw-w-full tw-z-1': enableBasketExperiment
 		}"
 	>
 		<nav
@@ -764,8 +764,11 @@ export default {
 			}
 			return this.basketCount;
 		},
+		isInExperimentPages() {
+			return this.$route.path.includes('lend-by-category') || this.$route.path.includes('lend/filter');
+		},
 		enableBasketExperiment() {
-			return this.enableAddToBasketExp && this.hasBasket;
+			return this.enableAddToBasketExp && this.hasBasket && this.isInExperimentPages;
 		},
 	},
 	apollo: {
