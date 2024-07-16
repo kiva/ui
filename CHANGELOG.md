@@ -1,3 +1,23 @@
+## [2.747.1](https://github.com/kiva/ui/compare/v2.747.0...v2.747.1) (2024-07-16)
+
+
+### 🐛 Bugfixes
+
+* minor change to re-trigger actions with permissions ([6ad5cdd](https://github.com/kiva/ui/commit/6ad5cdd0b738a94e026a068023e92eb470efdede))
+* minor change to restart actions with correct permissions ([1ca5ec6](https://github.com/kiva/ui/commit/1ca5ec6673dcf3ab4b151d6ae5db1785d518ee92))
+
+
+### 🧹 Chores
+
+* **deps-dev:** bump @babel/plugin-transform-modules-commonjs ([bbbb722](https://github.com/kiva/ui/commit/bbbb7227f38439834761247a0448516fa8471d76))
+* **deps-dev:** bump @testing-library/vue from 5.8.2 to 5.9.0 ([597875b](https://github.com/kiva/ui/commit/597875bd9c6daae109a350b865ceb0975943c3aa))
+* **deps-dev:** bump autoprefixer from 10.4.2 to 10.4.19 ([6454733](https://github.com/kiva/ui/commit/645473300e7e7b3883cc5461bb5e925d82c5f5ce))
+* **deps-dev:** bump semver from 7.6.0 to 7.6.2 ([701e412](https://github.com/kiva/ui/commit/701e412ee7aa7b415b840c357d1533fe98e1c541))
+* **deps-dev:** bump stylelint-config-standard from 20.0.0 to 21.0.0 ([4034aeb](https://github.com/kiva/ui/commit/4034aebe274c71cad94c6894827a31c438870834))
+* **deps:** bump gsap from 3.6.0 to 3.12.5 ([dbeceaf](https://github.com/kiva/ui/commit/dbeceaf6f8e3fe8a7a52434c0d0e13c286425c54))
+* **deps:** bump undici and @graphql-tools/url-loader ([3d5d3ad](https://github.com/kiva/ui/commit/3d5d3ad3edca12414cb8130174c15bf9257ec286))
+* **release:** 2.747.1-rc.1 [skip ci] ([d24e8b0](https://github.com/kiva/ui/commit/d24e8b095e797618ada3609ffd9e6e4d008706a0))
+
 ## [2.747.1-rc.1](https://github.com/kiva/ui/compare/v2.747.0...v2.747.1-rc.1) (2024-07-15)
 
 
