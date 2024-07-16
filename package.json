@@ -118,7 +118,6 @@
 		"path2d-polyfill": "^2.0.1",
 		"popper.js": "^1.16.1",
 		"prom-client": "^15.0.0",
-		"qrcode": "^1.4.4",
 		"qrcode.vue": "^1.7.0",
 		"serialize-javascript": "^6.0.2",
 		"set-cookie-parser": "^2.4.6",
