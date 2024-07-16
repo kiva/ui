@@ -16,6 +16,7 @@ export default {
 	},
 	methods: {
 		handleCartModal(payload) {
+			this.hasBasket = payload?.basketSize > 0;
 			this.addedLoan = { ...payload };
 			this.cartModalVisible = true;
 		},

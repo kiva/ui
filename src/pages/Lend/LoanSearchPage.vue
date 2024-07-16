@@ -17,7 +17,7 @@
 			@close="closeChallengeCallout"
 		/>
 		<article
-			class="tw-bg-secondary tw-relative"
+			class="tw-bg-secondary tw-relative tw-transition-all tw-duration-1000 tw-ease-in-out"
 			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader,
 				'sticky-header': enableAddToBasketExp && hasBasket
 			}"
