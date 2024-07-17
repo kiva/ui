@@ -1,5 +1,5 @@
 const { log } = require('./log');
-const tracer = require('./ddTrace');
+const tracer = require('./mockTrace');
 
 // The Vue ServerSideRenderer requires a cache instance that implements this interface:
 // type RenderCache = {

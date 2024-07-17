@@ -2,7 +2,7 @@ const get = require('lodash/get');
 const argv = require('./argv');
 const config = require('../../config/selectConfig')(argv.config);
 const fetch = require('./fetch');
-const tracer = require('./ddTrace');
+const tracer = require('./mockTrace');
 
 // Make a graphql query <request> and return the results found at <resultPath>
 module.exports = async function fetchGraphQL(request, resultPath) {

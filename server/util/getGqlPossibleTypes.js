@@ -1,6 +1,6 @@
 const fetch = require('./fetch');
 const { log } = require('./log');
-const tracer = require('./ddTrace');
+const tracer = require('./mockTrace');
 
 const GQL_BUILT_IN_TYPES = [
 	'__Schema',

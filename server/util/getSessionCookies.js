@@ -1,6 +1,6 @@
 const setCookieParser = require('set-cookie-parser');
 const fetch = require('./fetch');
-const tracer = require('./ddTrace');
+const tracer = require('./mockTrace');
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)

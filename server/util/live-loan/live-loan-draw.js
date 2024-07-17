@@ -17,7 +17,7 @@ const {
 } = require('./canvas-utils');
 const getLoanCallouts = require('../../../src/util/loanCallouts');
 const getLoanUse = require('../../../src/util/loanUse');
-const tracer = require('../ddTrace');
+const tracer = require('../mockTrace');
 
 // Polyfill Path2D for material design icon support
 global.CanvasRenderingContext2D = CanvasRenderingContext2D;
