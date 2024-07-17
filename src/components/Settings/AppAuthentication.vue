@@ -296,7 +296,8 @@ export default {
 	}
 
 	&__barcode {
-		display: block;
+		display: flex;
+		justify-content: center;
 		margin: 1rem auto 1.5rem;
 	}
 
