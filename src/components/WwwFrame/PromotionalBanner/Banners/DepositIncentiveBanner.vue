@@ -15,6 +15,7 @@ import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/
 import numeral from 'numeral';
 import { gql } from '@apollo/client';
 import configSettingQuery from '@/graphql/query/configSetting.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
 
 const key = 'deposit_incentive_active_campaign_id';
 
@@ -63,16 +64,29 @@ export default {
 		},
 	},
 	created() {
-		const campaignId = JSON.parse(this.apollo.readQuery({ query: configSettingQuery, variables: { key } })
-			?.general?.configSetting?.value ?? '""');
-		const data = this.apollo.readQuery({
-			query: amountToLendQuery,
-			variables: { campaignId, basketId: this.cookieStore.get('kvbskt') }
-		});
-		this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend ?? 0);
-		this.isLoggedIn = !!data?.my?.id ?? false;
-		this.basketTotal = parseFloat(data?.shop?.basket?.totals?.loanReservationTotal ?? 0);
-		this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
+		let campaignId;
+
+		try {
+			campaignId = JSON.parse(this.apollo.readQuery({ query: configSettingQuery, variables: { key } })
+				?.general?.configSetting?.value ?? '""');
+		} catch (e) {
+			logReadQueryError(e, 'DepositIncentiveBanner configSettingQuery');
+		}
+
+		if (campaignId) {
+			try {
+				const data = this.apollo.readQuery({
+					query: amountToLendQuery,
+					variables: { campaignId, basketId: this.cookieStore.get('kvbskt') }
+				});
+				this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend ?? 0);
+				this.isLoggedIn = !!data?.my?.id ?? false;
+				this.basketTotal = parseFloat(data?.shop?.basket?.totals?.loanReservationTotal ?? 0);
+				this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
+			} catch (e) {
+				logReadQueryError(e, 'DepositIncentiveBanner amountToLendQuery');
+			}
+		}
 	},
 	computed: {
 		promoBannerContent() {
