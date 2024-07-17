@@ -1,0 +1,8 @@
+query configSetting($key: String!) {
+	general {
+		configSetting(key: $key) {
+			key
+			value
+		}
+	}
+}
