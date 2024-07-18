@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
@@ -79,10 +80,15 @@ export default {
 	},
 	created() {
 		const publicId = this.$route?.params?.publicId ?? '';
-		const cachedLenderInfo = this.apollo.readQuery({
-			query: lenderPublicProfileQuery,
-			variables: { publicId }
-		});
+		let cachedLenderInfo = {};
+		try {
+			cachedLenderInfo = this.apollo.readQuery({
+				query: lenderPublicProfileQuery,
+				variables: { publicId }
+			});
+		} catch (e) {
+			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
+		}
 		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
 	}
 };
