@@ -1,3 +1,45 @@
+## [2.748.0-rc.1](https://github.com/kiva/ui/compare/v2.747.1...v2.748.0-rc.1) (2024-07-19)
+
+
+### 🎉 New Features
+
+* add experiment to lend/filter page ([aab69c8](https://github.com/kiva/ui/commit/aab69c8bae7350caf72d1c9434cd69b6df0e128f))
+* get deposit incentive banner campaign ID from settings manager ([0de7ae1](https://github.com/kiva/ui/commit/0de7ae14209e083370451c81fce4222ea7095b34))
+* mobile new add to basket experiment bubble and header change ([5007707](https://github.com/kiva/ui/commit/5007707ccdbcf2e13d54c9a83b3b02b8dfcc4540))
+* move lender bubble to the basket ([abc3992](https://github.com/kiva/ui/commit/abc3992e24fe1dd8639e7539a49f9c5baaebc1e1))
+* new lender profile page added ([#5403](https://github.com/kiva/ui/issues/5403)) ([65ad2d5](https://github.com/kiva/ui/commit/65ad2d5586358318bd82013690b2e07bc5d1efb6))
+* show modal after bubble animation and tracking events ([62e5a5e](https://github.com/kiva/ui/commit/62e5a5eed5a4f5de4c8fa204dfa114703dbe14bd))
+* use different qr code that's vue 2 compatible ([2372ada](https://github.com/kiva/ui/commit/2372adad9ed482f29a8ded95955f0861ea86f4fd))
+
+
+### 🐛 Bugfixes
+
+* bubble hiding behind loan image ([9108398](https://github.com/kiva/ui/commit/910839837998acc66679759544f73ddb8467c08a))
+* cart modal in tablet and margin on lend filter when header is sticky ([9dce178](https://github.com/kiva/ui/commit/9dce17804943495097b1be10d97ba8594362efc0))
+* change from running npm install locally ([e5d4703](https://github.com/kiva/ui/commit/e5d470315acb158db5cfbf15e8dad0022f62f2e7))
+* cleanup QR code location ([6def469](https://github.com/kiva/ui/commit/6def469eaedff1b17b4e049d73668bc8675be60c))
+* handle errors ([7b7db37](https://github.com/kiva/ui/commit/7b7db375a1ea5e6e0d5052bc4e32b961b64b63b5))
+* lint ([421f4e7](https://github.com/kiva/ui/commit/421f4e75aec2fe2c89954023d6402667e6e7358c))
+* lint ([b72139d](https://github.com/kiva/ui/commit/b72139dfa7d619dca1f38608cc399c2da14580cb))
+* load margin problem in lend by category page and remove saving exp variant ([6bfb101](https://github.com/kiva/ui/commit/6bfb1014a00cf69963bcbbd0832e0996c8c1f61a))
+* package version ([45ce53b](https://github.com/kiva/ui/commit/45ce53bcc59ceb7f4f77eb500d74a73dc6960d57))
+* removed unused qrcode package ([8628880](https://github.com/kiva/ui/commit/86288803e903c59f400a2aa51f6b8b6a4672dbed))
+* run experiment in lend-by-category and lend/filter pages ([6f4ee00](https://github.com/kiva/ui/commit/6f4ee006894f9987fa6536ee3052008efb4324bb))
+* set value of exp for sticky header ([19a354c](https://github.com/kiva/ui/commit/19a354c2d53d6e137c930144d1edf794af55d7aa))
+* solve conflicts ([27cdb2c](https://github.com/kiva/ui/commit/27cdb2ca04cfc9ed307e46ca806eb97f25157ade))
+* sudden jump when loan is added to the basket ([85d211b](https://github.com/kiva/ui/commit/85d211b461e0d35b7d81611512addc38b45b869c))
+* update deposit incentive experiment ([18c2fbf](https://github.com/kiva/ui/commit/18c2fbffdc5f21dd51e8420cafa433d9b011cbc5))
+
+
+### 🪚 Refactors
+
+* move exp tracking to header ([a067e1c](https://github.com/kiva/ui/commit/a067e1c9275b01437166dbebc79a9d1108d0b6c7))
+
+
+### 🧹 Chores
+
+* remove ddTrace converting that tracer implementation to a pass through for now ([a3c5dfa](https://github.com/kiva/ui/commit/a3c5dfa12e323e637595ce17f5f2cae7881cbc8b))
+
 ## [2.747.1](https://github.com/kiva/ui/compare/v2.747.0...v2.747.1) (2024-07-16)
 
 
