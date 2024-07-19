@@ -342,6 +342,16 @@ module.exports = [
 		redirect: '/lend-by-category',
 	},
 	{
+		name: 'lenderProfile',
+		path: '/lender-vue/:publicId',
+		component: () => import('@/pages/LenderProfile/LenderProfile'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
+		}
+	},
+	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
 		component: () => import('@/pages/BorrowerProfile/BorrowerProfile'),

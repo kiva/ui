@@ -3,11 +3,15 @@ query LenderPublicProfile ($publicId: String!) {
 		lender(publicId: $publicId) {
 			id
 			name
+			loanCount
 			image {
 				id
 				url
 				width
 				height
+			}
+			lenderPage {
+				whereabouts
 			}
 		}
 	}
