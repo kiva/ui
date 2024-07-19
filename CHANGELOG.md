@@ -1,10 +1,3 @@
-## [2.747.2-rc.1](https://github.com/kiva/ui/compare/v2.747.1...v2.747.2-rc.1) (2024-07-19)
-
-
-### 🐛 Bugfixes
-
-* update deposit incentive experiment ([8485caa](https://github.com/kiva/ui/commit/8485caadc8dca25f1e71f67e4bb080ca55fd0765))
-
 ## [2.747.1](https://github.com/kiva/ui/compare/v2.747.0...v2.747.1) (2024-07-16)
 
 
