@@ -380,7 +380,7 @@ export default {
 
 <style lang="postcss" scoped>
 .logo {
-	box-shadow: 0 0 18px rgba(0 0 0 / 0.2);
+	box-shadow: 0 0 18px rgba(0 0 0 / 20%);
 }
 
 .radio-error >>> label > div {
