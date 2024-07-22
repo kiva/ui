@@ -1,6 +1,6 @@
 import fetch from './fetch.js';
 import { log } from './log.js';
-import { trace } from './ddTrace.js';
+import { trace } from './mockTrace';
 
 const GQL_BUILT_IN_TYPES = [
 	'__Schema',
@@ -22,7 +22,7 @@ function fetchGqlPossibleTypes(url, cache) {
 		}),
 	})
 		.then(result => result.json())
-	// eslint-disable-next-line no-underscore-dangle
+		// eslint-disable-next-line no-underscore-dangle
 		.then(result => result?.data?.__schema ?? {})
 		.then(({
 			types, queryType, mutationType, subscriptionType
@@ -31,9 +31,9 @@ function fetchGqlPossibleTypes(url, cache) {
 			types?.forEach(type => {
 				// Skip adding possible types for built-in GraphQL types and root types
 				if (GQL_BUILT_IN_TYPES.includes(type.name)
-                || type.name === queryType?.name
-                || type.name === mutationType?.name
-                || type.name === subscriptionType?.name) {
+					|| type.name === queryType?.name
+					|| type.name === mutationType?.name
+					|| type.name === subscriptionType?.name) {
 					return;
 				}
 				// If this type has possible types, include them in the possibleTypes

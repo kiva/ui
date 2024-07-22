@@ -29,6 +29,16 @@ query wwwHeader($basketId: String) {
 				values {
 					id
 					price
+					... on LoanReservation {
+						loan {
+							id
+							name
+							image {
+								id
+								url
+							}
+						}
+					}
 				}
 			}
 		}
@@ -53,6 +63,23 @@ query wwwHeader($basketId: String) {
 		}
 		trustee {
 			id
+		}
+		teams (limit: 5) {
+			totalCount
+			values {
+				id
+				team {
+					id
+					name
+					teamPublicId
+				}
+			}
+		}
+	}
+	general {
+		teamsMenuEnabled: featureSetting(key: "teams_in_navbar.enabled") {
+			key
+			value
 		}
 	}
 }

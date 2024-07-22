@@ -12,7 +12,7 @@ import {
 } from './canvas-utils.js';
 import getLoanCallouts from '../../../src/util/loanCallouts.js';
 import getLoanUse from '../../../src/util/loanUse.js';
-import { trace } from '../ddTrace.js';
+import { trace } from '../mockTrace';
 
 // Polyfill Path2D for material design icon support
 global.CanvasRenderingContext2D = CanvasRenderingContext2D;

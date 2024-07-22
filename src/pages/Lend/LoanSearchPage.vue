@@ -1,5 +1,13 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
+		<kv-cart-modal
+			v-if="addedLoan"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<challenge-callout
 			v-if="showChallengeCallout"
 			:current-lender="currentLender"
@@ -9,8 +17,10 @@
 			@close="closeChallengeCallout"
 		/>
 		<article
-			class="tw-bg-secondary tw-relative"
-			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader }"
+			class="tw-bg-secondary"
+			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader,
+				'sticky-header': enableAddToBasketExp
+			}"
 		>
 			<kv-page-container>
 				<challenge-header
@@ -57,6 +67,7 @@
 					:enable-clickable-tags="enableClickableTags"
 					@add-to-basket="addToBasketCallback"
 					:team-name="teamName"
+					@show-cart-modal="handleCartModal"
 				/>
 			</kv-page-container>
 		</article>
@@ -81,11 +92,15 @@ import clickableTags from '#src/plugins/clickable-tags-mixin';
 import goalParticipationForLoanQuery from '#src/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '#src/graphql/query/myPublicLenderInfo.graphql';
 import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import basketCountQuery from '#src/graphql/query/basketCount.graphql';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
+import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
@@ -126,6 +141,7 @@ export default {
 		LoanSearchInterface,
 		ChallengeHeader,
 		ChallengeCallout,
+		KvCartModal,
 	},
 	data() {
 		return {
@@ -144,9 +160,10 @@ export default {
 			currentLender: undefined,
 			showLoansActivityFeed: false,
 			hideChallengeCallout: false,
+			hasBasket: false,
 		};
 	},
-	mixins: [fiveDollarsTest, hugeLendAmount, clickableTags],
+	mixins: [fiveDollarsTest, hugeLendAmount, clickableTags, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, args) {
@@ -354,6 +371,14 @@ export default {
 				}
 			}
 		}
+
+		const data = this.apollo.readQuery({
+			query: basketCountQuery,
+			variables: {
+				basketId: this.cookieStore.get('kvbskt'),
+			},
+		});
+		this.hasBasket = data?.shop?.nonTrivialItemCount > 0;
 	},
 	mounted() {
 		if (getHasEverLoggedIn(this.apollo)) {
@@ -389,3 +414,17 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.sticky-header {
+	margin-top: 4rem;
+}
+
+@screen md {
+	.sticky-header {
+		margin-top: 4.5rem;
+	}
+}
+
+</style>

@@ -2,7 +2,7 @@
 	<figure class="tw-grow">
 		<div class="tw-flex tw-items-center tw-justify-between">
 			<p>
-				{{ daysLeft }} days remaining
+				{{ daysLeft }} remaining
 			</p>
 			<p v-if="!minimalStats">
 				{{ numeral(amountLeft).format('$0,0') }} to go
@@ -48,8 +48,8 @@ export default {
 			required: true,
 		},
 		daysLeft: {
-			type: Number,
-			default: 0,
+			type: String,
+			default: '',
 		},
 		minimalStats: {
 			type: Boolean,

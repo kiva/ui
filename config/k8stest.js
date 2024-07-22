@@ -7,7 +7,6 @@ export default merge(test, {
 	},
 	server: {
 		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211',
-		enableDDTrace: true,
 		disableCluster: true,
 	}
 });

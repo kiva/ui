@@ -23,6 +23,7 @@ const loggedIn = {
 					"https://www-dev-kiva-org.freetls.fastly.net/img/s140/726677.jpg",
 			},
 		},
+		team: null,
 		isBorrower: false,
 		mostRecentBorrowedLoan: null,
 		trustee: null,
@@ -64,6 +65,96 @@ const loggedInLargeCart = {
 			},
 		}
 	}
+};
+
+const loggedInWithOneTeam = {
+	general: {
+		teamsMenuEnabled: {
+			key: 'teams_in_navbar',
+			value: true,
+		}
+	},
+	my: {
+		...loggedIn.my,
+		teams: {
+			totalCount: 1,
+			values: [
+				{
+					id: 1,
+					team: {
+						id: 1,
+						name: 'Team 1',
+						teamPublicId: 'team1',
+					}
+				},
+			],
+		},
+	},
+};
+
+const loggedInWithMultipleTeams = {
+	general: {
+		teamsMenuEnabled: {
+			key: 'teams_in_navbar',
+			value: true,
+		}
+	},
+	my: {
+		...loggedIn.my,
+		teams: {
+			totalCount: 6,
+			values: [
+				{
+					id: 1,
+					team: {
+						id: 1,
+						name: '(A+) Atheists, Agnostics, Skeptics, Freethinkers, Secular Humanists and the Non-Religious',
+						teamPublicId: 'aplus',
+					}
+				},
+				{
+					id: 2,
+					team: {
+						id: 2,
+						name: 'Team 2',
+						teamPublicId: 'team2',
+					}
+				},
+				{
+					id: 3,
+					team: {
+						id: 3,
+						name: 'Team 3',
+						teamPublicId: 'team3',
+					}
+				},
+				{
+					id: 4,
+					team: {
+						id: 4,
+						name: 'Team 4',
+						teamPublicId: 'team4',
+					}
+				},
+				{
+					id: 5,
+					team: {
+						id: 5,
+						name: 'Team 5',
+						teamPublicId: 'team5',
+					}
+				},
+				{
+					id: 6,
+					team: {
+						id: 6,
+						name: 'Team 6',
+						teamPublicId: 'team6',
+					}
+				},
+			],
+		},
+	},
 };
 
 const provideMockedApollo = (mockedResult) => {
@@ -234,5 +325,33 @@ Minimal.args = {
 	...args,
 	minimal: true,
 };
+
+export const LoggedInWithOneTeam = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedInWithOneTeam),
+	},
+	template: `
+		<the-header />
+	`,
+});
+
+export const LoggedInWithMultipleTeams = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader,
+	},
+	mixins: [cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	provide: {
+		apollo: provideMockedApollo(loggedInWithMultipleTeams),
+	},
+	template: `
+		<the-header />
+	`,
+});
 
 // TODO: trustee

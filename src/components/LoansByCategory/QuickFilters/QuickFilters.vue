@@ -205,6 +205,7 @@ export default {
 				women: false,
 				kivaUs: false,
 				endingSoon: false,
+				amountLeft: false,
 			},
 		};
 	},
@@ -226,6 +227,9 @@ export default {
 			} else if (this.presetFilterActive.endingSoon) {
 				this.resetSortBy();
 				this.presetFilterActive.endingSoon = false;
+			} else if (this.presetFilterActive.amountLeft) {
+				this.resetSortBy();
+				this.presetFilterActive.amountLeft = false;
 			}
 
 			// These categories use location/gender/sort by for FLSS and need
@@ -239,6 +243,9 @@ export default {
 			} else if (catId === 3) { // ending-soon
 				this.sortBy = 'expiringSoon';
 				this.presetFilterActive.endingSoon = true;
+			} else if (catId === 171 || catId === 172) { // featured-projects and basic-needs
+				this.sortBy = 'amountLeft';
+				this.presetFilterActive.amountLeft = true;
 			} else {
 				if (catId === 33 || catId === 96) { // mission-driven-orgs, covid-19
 					// we don't currently have this option for these categories, also irrelevant since
@@ -275,6 +282,9 @@ export default {
 			if (this.presetFilterActive.endingSoon && sortBy !== 'expiringSoon') {
 				this.resetCategory();
 				this.presetFilterActive.endingSoon = false;
+			} else if (this.presetFilterActive.amountLeft && sortBy !== 'amountLeft') {
+				this.resetCategory();
+				this.presetFilterActive.amountLeft = false;
 			}
 			this.$emit('update-filters', { sortBy });
 			this.$kvTrackEvent(
@@ -367,7 +377,9 @@ export default {
 			return this.targetedLoanChannelUrl === 'kiva-u-s';
 		},
 		removeSortByDropdown() {
-			return this.targetedLoanChannelUrl === 'ending-soon';
+			return this.targetedLoanChannelUrl === 'ending-soon'
+				|| this.targetedLoanChannelUrl === 'featured-projects'
+				|| this.targetedLoanChannelUrl === 'basic-needs';
 		}
 	},
 };

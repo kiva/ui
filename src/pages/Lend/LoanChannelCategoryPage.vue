@@ -3,9 +3,18 @@
 		class="loan-channel-page category-page"
 		:gray-background="pageLayout === 'control'"
 	>
+		<kv-cart-modal
+			v-if="addedLoan"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<loan-channel-category-control
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:enable-huge-amount="enableHugeLendAmount"
+			@show-cart-modal="handleCartModal"
 		/>
 
 		<add-to-basket-interstitial />
@@ -24,6 +33,8 @@ import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mix
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
 
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 
@@ -35,8 +46,9 @@ export default {
 		AddToBasketInterstitial,
 		LoanChannelCategoryControl,
 		WwwPage,
+		KvCartModal,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {

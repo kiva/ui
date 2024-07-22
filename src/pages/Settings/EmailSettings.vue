@@ -81,30 +81,6 @@
 								</kv-checkbox>
 
 								<label
-									class="tw-block tw-mt-4 tw-mb-1"
-									for="repayment-updates-input"
-								>Repayment notifications</label>
-								<kv-select
-									id="repayment-updates-input"
-									v-model="form.repaymentUpdates"
-								>
-									<option value="none">
-										Do not send
-									</option>
-									<option value="nightly">
-										Send a nightly digest
-									</option>
-									<option value="monthly">
-										Send a monthly digest
-									</option>
-								</kv-select>
-
-								<push-repayment-updates
-									class="email-settings__notifications tw-mt-2"
-									v-show="form.repaymentUpdates !== 'none'"
-								/>
-
-								<label
 									for="autolend-updates-input"
 									class=" tw-block tw-mt-4 tw-mb-1"
 								>Autolending notifications</label>
@@ -175,6 +151,22 @@
 										Send a weekly digest
 									</option>
 								</kv-select>
+								<label for="borrower-funded-input" class="tw-block tw-mb-1 tw-mt-4">Borrower
+									fully funded digests</label>
+								<kv-select
+									id="borrower-funded-input"
+									v-model="form.borrowerFullyFunded"
+								>
+									<option value="none">
+										Do not send
+									</option>
+									<option value="weekly">
+										Send a weekly digest
+									</option>
+									<option value="monthly">
+										Send a monthly digest
+									</option>
+								</kv-select>
 							</fieldset>
 
 							<!-- User per team preferences -->
@@ -216,6 +208,38 @@
 										</kv-select>
 									</template>
 								</div>
+							</fieldset>
+						</template>
+					</kv-settings-card>
+				</div>
+
+				<div class="row">
+					<!-- General Settings -->
+					<kv-settings-card
+						class="columns small-12 large-8"
+						title="Repayment updates"
+					>
+						<template #content>
+							<fieldset>
+								<label
+									class="tw-block tw-mb-1"
+									for="repayment-updates-input"
+								>Repayment notifications</label>
+								<kv-select
+									id="repayment-updates-input"
+									v-model="form.repaymentUpdates"
+								>
+									<option value="nightly">
+										Send a nightly digest
+									</option>
+									<option value="monthly">
+										Send a monthly digest
+									</option>
+								</kv-select>
+
+								<push-repayment-updates
+									class="email-settings__notifications tw-mt-2"
+								/>
 							</fieldset>
 						</template>
 					</kv-settings-card>
@@ -380,7 +404,54 @@ const pageQuery = gql`
 				repaymentUpdates
 				teamDigests
 				trusteeNews
+				borrowerFullyFunded
 			}
+		}
+	}
+`;
+
+const communicationSettingsMutation = gql`
+	mutation updateCommunicationSettings(
+		$globalUnsubscribed: Boolean
+		$lenderNews: Boolean
+		$accountUpdates: Boolean
+		$monthlyGood: Boolean
+		$repaymentUpdates: MessageFrequencyEnum
+		$autolendUpdates: MessageFrequencyEnum
+		$loanUpdates: Boolean
+		$commentsMessages: Boolean
+		$teamDigests: TeamMessageFrequencyEnum,
+		$borrowerFullyFunded: SendBorrowerFullyFundedEnum,
+		$leadNurturing: Boolean,
+		$onboardingSupport: Boolean,
+		$borrowerNews: Boolean,
+		$networkTransactions: Boolean,
+		$networkDigest: Boolean,
+		$trusteeNews: Boolean,
+		$teamMessageFrequencies: [TeamMessageFrequencyInput]
+	) {
+		my {
+			updateCommunicationSettings(
+				communicationSettings: {
+					globalUnsubscribed: $globalUnsubscribed
+					lenderNews: $lenderNews
+					accountUpdates: $accountUpdates
+					monthlyGood: $monthlyGood
+					repaymentUpdates: $repaymentUpdates
+					autolendUpdates: $autolendUpdates
+					loanUpdates: $loanUpdates
+					commentsMessages: $commentsMessages
+					teamDigests: $teamDigests,
+					borrowerFullyFunded: $borrowerFullyFunded
+					leadNurturing: $leadNurturing,
+					onboardingSupport: $onboardingSupport,
+					borrowerNews: $borrowerNews,
+					networkTransactions: $networkTransactions,
+					networkDigest: $networkDigest,
+					trusteeNews: $trusteeNews
+				}
+			)
+			updateTeamMessageFrequencies (frequencies: $teamMessageFrequencies)
 		}
 	}
 `;
@@ -443,7 +514,8 @@ export default {
 				networkTransactions: false,
 				networkDigest: false,
 				trusteeNews: false,
-				teamMessageFrequencies: []
+				teamMessageFrequencies: [],
+				borrowerFullyFunded: 'weekly'
 			},
 			// Component Data
 			initialValues: {},
@@ -490,6 +562,7 @@ export default {
 			this.form.loanUpdates =	data?.my?.communicationSettings?.loanUpdates ?? false;
 			this.form.commentsMessages = data?.my?.communicationSettings?.commentsMessages ?? false;
 			this.form.teamDigests = data?.my?.communicationSettings?.teamDigests ?? 'weekly';
+			this.form.borrowerFullyFunded = data?.my?.communicationSettings?.borrowerFullyFunded ?? 'weekly';
 			// Lending select toggle
 			if (this.form.loanUpdates && this.form.commentsMessages && this.form.teamDigests === 'weekly') {
 				this.lendingAllSelected = true;
@@ -539,13 +612,11 @@ export default {
 				this.form.accountUpdates = true;
 				this.form.monthlyGood = true;
 				this.form.lenderNews = true;
-				this.form.repaymentUpdates = 'monthly';
 				this.form.autolendUpdates = 'monthly';
 			} else {
 				this.form.accountUpdates = false;
 				this.form.monthlyGood = false;
 				this.form.lenderNews = false;
-				this.form.repaymentUpdates = 'none';
 				this.form.autolendUpdates = 'none';
 			}
 		},
@@ -557,10 +628,12 @@ export default {
 				this.form.loanUpdates = true;
 				this.form.commentsMessages = true;
 				this.form.teamDigests = 'weekly';
+				this.form.borrowerFullyFunded = 'weekly';
 			} else {
 				this.form.loanUpdates = false;
 				this.form.commentsMessages = false;
 				this.form.teamDigests = 'no';
+				this.form.borrowerFullyFunded = 'none';
 			}
 		},
 		borrowerToggleAll() {
@@ -604,14 +677,28 @@ export default {
 								}
 							}
 						`,
-						awaitRefetchQueries: true,
-						refetchQueries: [{ query: pageQuery }],
 					});
 					const unsubscribeResponse = await unsubscribeFromAllCommunications;
 					if (unsubscribeResponse.errors) {
 						throw new Error(
 							unsubscribeResponse.errors[0].extensions.code
 								|| unsubscribeResponse.errors[0].message
+						);
+					}
+
+					const updateCommunicationSettings = this.apollo.mutate({
+						mutation: communicationSettingsMutation,
+						variables: {
+							repaymentUpdates: this.form.repaymentUpdates,
+						},
+						awaitRefetchQueries: true,
+						refetchQueries: [{ query: pageQuery }],
+					});
+					const subscribeResponse = await updateCommunicationSettings;
+					if (subscribeResponse.errors) {
+						throw new Error(
+							subscribeResponse.errors[0].extensions.code
+								|| subscribeResponse.errors[0].message
 						);
 					}
 				}
@@ -627,49 +714,7 @@ export default {
 					});
 
 					const updateCommunicationSettings = this.apollo.mutate({
-						mutation: gql`
-							mutation updateCommunicationSettings(
-								$globalUnsubscribed: Boolean
-								$lenderNews: Boolean
-								$accountUpdates: Boolean
-								$monthlyGood: Boolean
-								$repaymentUpdates: MessageFrequencyEnum
-								$autolendUpdates: MessageFrequencyEnum
-								$loanUpdates: Boolean
-								$commentsMessages: Boolean
-								$teamDigests: TeamMessageFrequencyEnum,
-								$leadNurturing: Boolean,
-								$onboardingSupport: Boolean,
-								$borrowerNews: Boolean,
-								$networkTransactions: Boolean,
-								$networkDigest: Boolean,
-								$trusteeNews: Boolean,
-								$teamMessageFrequencies: [TeamMessageFrequencyInput]
-							) {
-								my {
-									updateCommunicationSettings(
-										communicationSettings: {
-											globalUnsubscribed: $globalUnsubscribed
-											lenderNews: $lenderNews
-											accountUpdates: $accountUpdates
-											monthlyGood: $monthlyGood
-											repaymentUpdates: $repaymentUpdates
-											autolendUpdates: $autolendUpdates
-											loanUpdates: $loanUpdates
-											commentsMessages: $commentsMessages
-											teamDigests: $teamDigests,
-											leadNurturing: $leadNurturing,
-											onboardingSupport: $onboardingSupport,
-											borrowerNews: $borrowerNews,
-											networkTransactions: $networkTransactions,
-											networkDigest: $networkDigest,
-											trusteeNews: $trusteeNews
-										}
-									)
-									updateTeamMessageFrequencies (frequencies: $teamMessageFrequencies)
-								}
-							}
-						`,
+						mutation: communicationSettingsMutation,
 						variables: {
 							globalUnsubscribed: this.form.globalUnsubscribed,
 							lenderNews: this.form.lenderNews,
@@ -680,6 +725,7 @@ export default {
 							loanUpdates: this.form.loanUpdates,
 							commentsMessages: this.form.commentsMessages,
 							teamDigests: this.form.teamDigests,
+							borrowerFullyFunded: this.form.borrowerFullyFunded,
 							leadNurturing: this.form.leadNurturing,
 							onboardingSupport: this.form.onboardingSupport,
 							borrowerNews: this.form.borrowerNews,

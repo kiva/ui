@@ -5,7 +5,7 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 // Experiment assignments that will be passed in the X-Experiment Header
 const targetIds = [
 	'EXP-ML-Service-Bandit-LendByCategory',
-	'EXP-FLSS-Ongoing-Sitewide-2'
+	'EXP-FLSS-Ongoing-Sitewide-3'
 ];
 
 function buildExpHeaders(cache) {

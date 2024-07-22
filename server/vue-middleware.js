@@ -6,7 +6,7 @@ import cookie from 'cookie';
 import vueWorkerPool from './vue-worker-pool.js';
 import vueRender from './vue-render.js';
 import protectedRoutes from './util/protectedRoutes.js';
-import { wrap } from './util/ddTrace.js';
+import { wrap } from './util/mockTrace.js';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,7 @@ function handleError(err, req, res, next) {
 	// -> this is how we handle vue-router links to external kiva pages
 	if (err.url) {
 		res.redirect(err.code ?? 302, err.url);
-	// respond with 404 specifically set
+		// respond with 404 specifically set
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
 
@@ -78,13 +78,16 @@ export default function createMiddleware({ config, vite }) {
 		const userAgent = req.get('user-agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
+		// Set the first user visit to the web
+		req.session.firstPage = !req.session?.firstPage ? req.url : req.session.firstPage;
+
 		const context = {
 			url: req.url,
-			config: config.app,
+			config: { ...config.app, firstPage: req.session?.firstPage },
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
-			device
+			device,
 		};
 
 		// set html response headers

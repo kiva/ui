@@ -70,6 +70,14 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		eventCategory: {
+			type: String,
+			default: 'post-checkout'
+		},
+		eventLabel: {
+			type: String,
+			default: 'create-guest-account'
+		},
 	},
 	data() {
 		return {
@@ -83,7 +91,7 @@ export default {
 			this.serverError = false;
 			this.$v.$touch();
 			if (!this.$v.$invalid) {
-				this.$kvTrackEvent('post-checkout', 'click', 'create-guest-account');
+				this.$kvTrackEvent(this.eventCategory, 'click', this.eventLabel);
 
 				// will end up redirecting to password reset page.
 				this.apollo.mutate({

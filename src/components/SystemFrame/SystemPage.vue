@@ -5,7 +5,7 @@
 		</header>
 		<div class="system-page__content-wrapper tw-bg-secondary">
 			<div
-				class="system-page__content tw-bg-primary tw-border-tertiary tw-border tw-rounded-sm"
+				class="system-page__content tw-bg-primary tw-rounded"
 				:data-year="year"
 			>
 				<slot></slot>

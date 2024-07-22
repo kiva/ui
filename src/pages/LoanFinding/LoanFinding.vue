@@ -115,7 +115,7 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-2';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';

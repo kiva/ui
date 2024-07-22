@@ -155,6 +155,8 @@
 						:show-loans-activity-feed="showLoansActivityFeed"
 						:enable-huge-amount="enableHugeAmount"
 						:enable-clickable-tags="enableClickableTags"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						@show-cart-modal="showCartModal"
 						@add-to-basket="addToBasket"
 					/>
 				</div>
@@ -197,6 +199,7 @@ import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFil
 import LoanSearchSavedSearch from '#src/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { gql } from 'graphql-tag';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
@@ -229,6 +232,7 @@ export default {
 		KvClassicLoanCardContainer,
 		TeamPicksSwitch,
 	},
+	mixins: [addToBasketExpMixin],
 	props: {
 		extendFlssFilters: {
 			type: Boolean,
@@ -519,6 +523,9 @@ export default {
 
 			updateQueryParams(challengeFiltersObject, this.$router, this.queryType);
 			this.challengeFilters = challengeFiltersObject;
+		},
+		showCartModal(payload) {
+			this.$emit('show-cart-modal', payload);
 		},
 	},
 	watch: {

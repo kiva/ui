@@ -47,6 +47,7 @@
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeLendAmount"
 						:activities="activities"
+						:team-data="teamData"
 					>
 						<template #sharebutton>
 							<!-- Share button -->

@@ -5,7 +5,7 @@ import numeral from 'numeral';
 describe('KvProgressCampaign', () => {
 	it('should display default values', () => {
 		const props = {
-			daysLeft: 29, totalAmount: 4000, fundedAmount: 462,
+			daysLeft: '29 days', totalAmount: 4000, fundedAmount: 462,
 		};
 		const { getByText } = render(KvProgressCampaign, {
 			props,
@@ -14,12 +14,12 @@ describe('KvProgressCampaign', () => {
 		const amountLeft = numeral(props.totalAmount - props.fundedAmount).format('$0,0');
 
 		getByText(`${amountLeft} to go`);
-		getByText(`${props.daysLeft} days remaining`);
+		getByText(`${props.daysLeft} remaining`);
 	});
 
 	it('should not display negative value on loans to go!', () => {
 		const props = {
-			daysLeft: 29, totalAmount: 4000, fundedAmount: 5000,
+			daysLeft: '29 days', totalAmount: 4000, fundedAmount: 5000,
 		};
 		const { getByText } = render(KvProgressCampaign, {
 			props,

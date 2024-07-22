@@ -365,6 +365,16 @@ export default [
 		redirect: '/lend-by-category',
 	},
 	{
+		name: 'lenderProfile',
+		path: '/lender-vue/:publicId',
+		component: () => import('@/pages/LenderProfile/LenderProfile'),
+		meta: {
+			excludeFromStaticSitemap: true,
+			unbounceEmailCapture: true,
+			unbouncePopUp: true,
+		}
+	},
+	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
 		component: () => import('#src/pages/BorrowerProfile/BorrowerProfile'),
@@ -528,6 +538,9 @@ export default [
 		meta: {
 			excludeFromStaticSitemap: true,
 		},
+		props: route => ({
+			partnerContentId: route.query.partnerContentId,
+		}),
 		beforeEnter(to, from, next) {
 			// Redirect to error page if state parameter is missing
 			const { state } = to.query ?? {};
