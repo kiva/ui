@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<!-- minimal banner -->
-			<div class="appeal-15-row appeal-15-row--closed row align-middle" v-if="!open" key="closedBanner">
+			<div class="appeal-15-row appeal-15-row--closed row align-middle" v-else key="closedBanner">
 				<div class="columns">
 					<h4 class="appeal-15-header__title appeal-15-header__title--closed" v-html="bannerHeadline">
 					</h4>
