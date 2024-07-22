@@ -60,7 +60,6 @@ export default {
 			},
 			pageLayout: 'control',
 			enableLoanTags: false,
-			modalPosition: {},
 		};
 	},
 	apollo: {
