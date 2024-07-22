@@ -1,6 +1,6 @@
 import fetch from './fetch.js';
 import { log } from './log.js';
-import { trace } from './mockTrace';
+import { trace } from './mockTrace.js';
 
 const GQL_BUILT_IN_TYPES = [
 	'__Schema',

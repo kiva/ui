@@ -1,5 +1,5 @@
 import { log } from './log.js';
-import { trace } from './mockTrace';
+import { trace } from './mockTrace.js';
 
 export default (function wrapper(cache) {
 	return {

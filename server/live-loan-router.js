@@ -3,7 +3,7 @@ import { error } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType from './util/live-loan/live-loan-fetch.js';
-import { trace } from './util/mockTrace';
+import { trace } from './util/mockTrace.js';
 
 async function fetchRecommendedLoans(type, id, cache, flss = false) {
 	const loanCachedName = flss ? `recommendations-by-${type}-id-${id}-flss` : `recommendations-by-${type}-id-${id}`;

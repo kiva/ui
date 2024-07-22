@@ -1,6 +1,6 @@
 import setCookieParser from 'set-cookie-parser';
 import fetch from './fetch.js';
-import { wrap } from './mockTrace';
+import { wrap } from './mockTrace.js';
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)

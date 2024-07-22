@@ -97,8 +97,8 @@ import basketCountQuery from '#src/graphql/query/basketCount.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
+import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';

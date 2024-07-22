@@ -192,8 +192,8 @@ import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanC
 import EmptyState from '#src/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import tuneUrl from '#src/assets/images/tune.svg?url';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import tuneUrl from '#src/assets/images/tune.svg?url';
 
 const defaultLoansPerPage = 12;
 

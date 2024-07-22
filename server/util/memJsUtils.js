@@ -1,5 +1,5 @@
 import { log } from './log.js';
-import { trace } from './mockTrace';
+import { trace } from './mockTrace.js';
 
 export const getFromCache = (key, cache) => {
 	return trace('getFromCache', { resource: key }, () => {

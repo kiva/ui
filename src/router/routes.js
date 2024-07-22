@@ -367,7 +367,7 @@ export default [
 	{
 		name: 'lenderProfile',
 		path: '/lender-vue/:publicId',
-		component: () => import('@/pages/LenderProfile/LenderProfile'),
+		component: () => import('#src/pages/LenderProfile/LenderProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
 			unbounceEmailCapture: true,
