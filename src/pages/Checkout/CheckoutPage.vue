@@ -1236,7 +1236,7 @@ export default {
 }
 
 .guest-checkout-button-sticky > span {
-	@media screen and (min-width: 1024px) {
+	@media (min-width: 1024px) {
 		background-color: white;
 	}
 }
