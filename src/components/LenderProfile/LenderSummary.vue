@@ -20,7 +20,7 @@
 						<dt class="tw-font-medium tw-capitalize tw-basis-1/3 md:tw-basis-1/4">
 							{{ key }}:
 						</dt>
-						<dd class="tw-basis-2/3 lg:tw-basis-3/4">
+						<dd class="tw-basis-2/3 lg:tw-basis-3/4 data-hj-suppress">
 							<template v-if="key=='checkout'">
 								<a
 									:href="value"
