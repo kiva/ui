@@ -4,6 +4,7 @@ query LenderPublicProfile ($publicId: String!) {
 			id
 			name
 			loanCount
+			memberSince
 			image {
 				id
 				url
@@ -12,6 +13,10 @@ query LenderPublicProfile ($publicId: String!) {
 			}
 			lenderPage {
 				whereabouts
+				occupation
+				loanBecause
+				otherInfo
+				url
 			}
 		}
 	}
