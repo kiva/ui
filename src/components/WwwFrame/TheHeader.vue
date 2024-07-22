@@ -1093,8 +1093,8 @@ export default {
 		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-0.5 md:tw-mr-1;
 }
 
-.user-avatar >>> img,
-.user-avatar >>> .tw-bg-brand {
+.user-avatar :deep(img),
+.user-avatar :deep(.tw-bg-brand) {
 	@apply tw-w-4 tw-h-4 md:tw-w-5 md:tw-h-5;
 }
 

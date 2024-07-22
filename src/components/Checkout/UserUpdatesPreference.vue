@@ -98,7 +98,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.radio-error >>> label > div {
+.radio-error :deep(label > div) {
 	@apply tw-border-danger-highlight;
 }
 

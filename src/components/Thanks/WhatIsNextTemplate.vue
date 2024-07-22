@@ -489,7 +489,7 @@ export default {
 	@apply tw-absolute tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
 }
 
-.borrower-image >>> img.tw-object-contain {
+.borrower-image :deep(img.tw-object-contain) {
 	@apply tw-object-fill;
 }
 
@@ -499,15 +499,15 @@ export default {
 	@apply !tw-z-5;
 }
 
-.social-share >>> .share__social.social {
+.social-share :deep(.share__social.social) {
 	@apply tw-w-full;
 }
 
-.ghost-button >>> span {
+.ghost-button :deep(span) {
 	@apply tw-bg-transparent;
 }
 
-.account-creation >>> input {
+.account-creation :deep(input) {
 	@apply tw-bg-stone-1;
 }
 
