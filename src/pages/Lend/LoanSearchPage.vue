@@ -2,6 +2,8 @@
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<kv-cart-modal
 			v-if="addedLoan"
+			:style="{'--modal-right': `${modalPosition.right}px`}"
+			class="cart-modal"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
 			:photo-path="PHOTO_PATH"
@@ -427,4 +429,9 @@ export default {
 	}
 }
 
+@screen md {
+	.cart-modal >>> div.container {
+		right: var(--modal-right) !important;
+	}
+}
 </style>

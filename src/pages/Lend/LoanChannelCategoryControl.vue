@@ -83,6 +83,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 					</div>
 
@@ -98,6 +100,7 @@
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
+						@show-cart-modal="showCartModal"
 					/>
 				</div>
 				<div v-else>
@@ -111,6 +114,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 
 						<promo-grid-loan-card-exp
@@ -144,6 +149,7 @@
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
+						@show-cart-modal="showCartModal"
 					/>
 				</div>
 				<kv-pagination
