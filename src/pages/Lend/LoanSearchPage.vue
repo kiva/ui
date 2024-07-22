@@ -430,7 +430,7 @@ export default {
 }
 
 @screen md {
-	.cart-modal >>> div.container {
+	.cart-modal :deep(div.container) {
 		right: var(--modal-right) !important;
 	}
 }
