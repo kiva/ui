@@ -33,6 +33,16 @@
 						</dd>
 					</div>
 				</dl>
+
+				<div class="tw-mt-2.5">
+					<kv-button
+						class="tw-w-full lg:tw-w-auto"
+						variant="secondary"
+						:href="`/gifts/kiva-cards?handle=${publicId}#/lender`"
+					>
+						Send a Kiva Card
+					</kv-button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -42,13 +52,19 @@
 import { format, parseISO } from 'date-fns';
 import { mdiAccountCircle } from '@mdi/js';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LenderSummary',
 	components: {
 		KvMaterialIcon,
+		KvButton,
 	},
 	props: {
+		publicId: {
+			type: String,
+			required: true,
+		},
 		lenderInfo: {
 			type: Object,
 			required: true,
@@ -61,6 +77,7 @@ export default {
 	},
 	computed: {
 		lenderName() {
+			console.log(this.lenderInfo);
 			return this.lenderInfo?.name ?? '';
 		},
 		memberSince() {
