@@ -1,6 +1,5 @@
 import { render } from '@testing-library/vue';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
-import Vue from 'vue';
 import CookieStore from '#src/util/cookieStore';
 import { MockKvAuth0 } from '#src/util/KvAuth0';
 
@@ -90,8 +89,6 @@ const userWithMultipleTeams = {
 };
 
 function renderTeamsMenu(props) {
-	Vue.directive('kv-track-event', () => ({}));
-
 	return render(TeamsMenu, {
 		props,
 		provide: {

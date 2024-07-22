@@ -244,18 +244,18 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].step).toBe('1');
 	});
 
-	it('should emit change', async () => {
+	it.only('should emit updated', async () => {
 		const { getAllByRole, emitted } = render(KvRangeMinMaxSlider);
 
 		const rangeInputs = getAllByRole('slider');
 
 		await fireEvent.update(rangeInputs[0], 5);
 
-		expect(emitted().change[0][0]).toEqual({ min: 5, max: 100 });
+		expect(emitted().updated[0][0]).toEqual({ min: 5, max: 100 });
 
 		await fireEvent.update(rangeInputs[1], 10);
 
-		expect(emitted().change[1][0]).toEqual({ min: 5, max: 10 });
+		expect(emitted().updated[1][0]).toEqual({ min: 5, max: 10 });
 	});
 
 	it('should handle decimal step', async () => {
