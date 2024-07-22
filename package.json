@@ -26,7 +26,7 @@
 		"unit-watch": "jest --config test/unit/jest.conf.js --watch",
 		"test": "npm run lint && npm run unit && npm run build && npm run test:e2e",
 		"test:e2e": "npm start -- --config=dev-vm-mac && wait-on tcp:8888 && npm run e2e:headless",
-		"coverage:merge": "node test/mergeCoverage.js",
+		"coverage:merge": "node test/mergeCoverage.cjs",
 		"lint": "npm run fetchSchema && npm run lint:js && npm run lint:css && npm run lint:graphql",
 		"lint:js": "eslint --ext .js,.vue --ignore-pattern 'src/graphql' build config server src test/unit/specs",
 		"lint:css": "stylelint \"src/**/*.{vue,scss}\"",
