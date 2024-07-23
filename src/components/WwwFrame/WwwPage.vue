@@ -43,7 +43,7 @@ export default {
 		TheHeader,
 	},
 	mixins: [
-		appInstallMixin,
+		appInstallMixin
 	],
 	props: {
 		grayBackground: {
