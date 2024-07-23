@@ -38,7 +38,6 @@ export const Default = (args, { argTypes }) => ({
 				}
 			],
 			amountSelected: '25',
-			customAmount: 5,
 		};
 	},
 	props: Object.keys(argTypes),
@@ -47,19 +46,18 @@ export const Default = (args, { argTypes }) => ({
 			id="amount-selector"
 			:options="amountOptions"
 			:selected="amountSelected"
-			@pill-toggled="pillToggled"
+			@pill-toggled="handlePillToggled"
 			:min-custom-amount="minCustomAmount"
 			:max-custom-amount="maxCustomAmount"
-			@custom-amount-updated="customAmountUpdated"
+			@custom-amount-updated="handleCustomAmountUpdated"
 			:split-pills="true"
+			:custom-amount="25"
 		/>
 	`,
 	methods: {
 		// Implementation Required in Parent Component
 		// Enables tracking of selected option/key
-		pillToggled(value) {
-			console.log('select-amount');
-			console.log(value);
+		handlePillToggled(value) {
 			if (value === 'custom') {
 				this.amountSelected = 'custom';
 			} else {
@@ -68,10 +66,7 @@ export const Default = (args, { argTypes }) => ({
 		},
 		// Implementation Required in Parent Component
 		// Enables tracking of selected option/key associated value
-		customAmountUpdated(value) {
-			console.log('custom-amount-updated');
-			console.log(value);
-		}
+		handleCustomAmountUpdated(value) { }
 	}
 });
 
