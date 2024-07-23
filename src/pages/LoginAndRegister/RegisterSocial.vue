@@ -45,7 +45,7 @@
 					type="text"
 					v-show="needsNames"
 					v-model.trim="firstName"
-					:validation="$v.firstName"
+					:validation="v$.firstName"
 				>
 					First name
 					<template #required>
@@ -58,7 +58,7 @@
 					type="text"
 					v-show="needsNames"
 					v-model.trim="lastName"
-					:validation="$v.lastName"
+					:validation="v$.lastName"
 				>
 					Last name
 					<template #required>
@@ -83,7 +83,7 @@
 						type="checkbox"
 						v-show="needsTerms"
 						v-model="newAcctTerms"
-						:validation="$v.newAcctTerms"
+						:validation="v$.newAcctTerms"
 						@update:modelValue="$kvTrackEvent(
 							'authentication',
 							'click',
@@ -127,7 +127,7 @@
 					/>
 					<p
 						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
-						v-if="needsCaptcha && $v.captcha.$error"
+						v-if="needsCaptcha && v$.captcha.$invalid"
 					>
 						Please complete the captcha.
 					</p>
@@ -156,8 +156,8 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, requiredIf } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, requiredIf } from '@vuelidate/validators';
 import logReadQueryError from '#src/util/logReadQueryError';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
 import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
@@ -185,12 +185,9 @@ export default {
 		SystemPage,
 		UserUpdatesPreference,
 	},
-	mixins: [
-		validationMixin,
-	],
 	provide() {
 		return {
-			$v: this.$v
+			v$: this.v$
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -221,6 +218,7 @@ export default {
 			enableRadioBtnExperiment: false,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		registrationMessage() {
 			const parts = [];
@@ -358,9 +356,9 @@ export default {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
 
-			this.$v.$touch();
+			this.v$.$touch();
 
-			if (!this.$v.$invalid) {
+			if (!this.v$.$invalid) {
 				// Set news consent based on comms preference MP-271
 				if (this.enableRadioBtnExperiment) {
 					this.newsConsent = this.selectedComms === '1';

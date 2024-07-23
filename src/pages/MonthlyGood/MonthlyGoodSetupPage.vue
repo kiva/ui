@@ -51,7 +51,7 @@
 										<strong>Each month on the</strong>
 										<label
 											class="tw-sr-only"
-											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
+											:class="{ 'tw-text-danger': v$.dayOfMonth.$invalid }"
 											:for="dayOfMonth"
 										>
 											Day of the Month
@@ -76,11 +76,11 @@
 											<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 											<kv-icon class="tw-w-2 tw-h-2" name="pencil" title="Edit" />
 										</button>
-										<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-											<li v-if="!$v.dayOfMonth.required">
+										<ul class="validation-errors" v-if="v$.dayOfMonth.$invalid">
+											<li v-if="v$.dayOfMonth.required.$invalid">
 												Field is required
 											</li>
-											<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+											<li v-if="v$.dayOfMonth.minValue.$invalid || v$.dayOfMonth.maxValue.$invalid">
 												Enter day of month - 1 to 31
 											</li>
 										</ul>
@@ -101,7 +101,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': $v.mgAmount.$invalid }"
+												:class="{ 'tw-text-danger': v$.mgAmount.$invalid }"
 												for="amount"
 											>
 												Amount
@@ -114,11 +114,11 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="$v.mgAmount.$invalid">
-												<li v-if="!$v.mgAmount.required">
+											<ul class="tw-text-right validation-errors" v-if="v$.mgAmount.$invalid">
+												<li v-if="v$.mgAmount.required.$invalid">
 													Field is required
 												</li>
-												<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+												<li v-if="v$.mgAmount.minValue.$invalid || v$.mgAmount.maxValue.$invalid">
 													Enter an amount of $5-$10,000
 												</li>
 											</ul>
@@ -145,7 +145,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': $v.donation.$invalid }"
+												:class="{ 'tw-text-danger': v$.donation.$invalid }"
 												:for="`
 													${donationOptionSelected !== 'other'
 													? 'donation' : 'donation_other'
@@ -176,8 +176,8 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="$v.donation.$invalid">
-												<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+											<ul class="tw-text-right validation-errors" v-if="v$.donation.$invalid">
+												<li v-if="v$.donation.minValue.$invalid || v$.donation.maxValue.$invalid">
 													Enter an amount of $0-$10,000
 												</li>
 											</ul>
@@ -198,7 +198,7 @@
 										<div class="small-12 columns">
 											<ul
 												class="tw-text-center validation-errors"
-												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+												v-if="v$.mgAmount.maxTotal.$invalid || v$.donation.maxTotal.$invalid"
 											>
 												<li>
 													The maximum Monthly Good total is $10,000.<br>
@@ -253,7 +253,7 @@
 								</p>
 
 								<div class="payment-dropin-wrapper" v-if="hasActiveLogin">
-									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+									<div class="payment-dropin-invalid-cover" v-if="v$.$invalid"></div>
 									<monthly-good-drop-in-payment-wrapper
 										:amount="totalCombinedDeposit"
 										:donate-amount="donation"
@@ -299,8 +299,8 @@
 <script>
 import numeral from 'numeral';
 import { gql } from 'graphql-tag';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 import { subDays } from 'date-fns';
 
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -445,32 +445,33 @@ export default {
 			autoDepositNoticeThreshold: 150
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mixins: [
-		validationMixin,
 		loanGroupCategoriesMixin
 	],
-	validations: {
-		mgAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.donation < 10000;
-			}
-		},
-		donation: {
-			minValue: minValue(0),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.mgAmount < 10000;
-			}
-		},
-		dayOfMonth: {
-			required,
-			minValue: minValue(1),
-			maxValue: maxValue(31)
-		},
-
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.donation < 10000;
+				}
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.mgAmount < 10000;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
@@ -648,7 +649,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.$v.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -720,7 +721,7 @@ export default {
 		},
 		calculatedDonationOptions() {
 			// If mgAmount isn't valid, just set these values on the amount prop.
-			const amountToBasePercentageOn = this.$v.mgAmount.$invalid ? this.amount : this.mgAmount;
+			const amountToBasePercentageOn = this.v$.mgAmount.$invalid ? this.amount : this.mgAmount;
 			return [
 				{
 					value: '20',

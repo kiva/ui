@@ -13,7 +13,7 @@
 					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-model.trim="firstName"
-					:validation="$v.firstName"
+					:validation="v$.firstName"
 				>
 					First name
 					<template #required>
@@ -25,7 +25,7 @@
 					class="data-hj-suppress tw-w-full tw-mb-4"
 					type="text"
 					v-model.trim="lastName"
-					:validation="$v.lastName"
+					:validation="v$.lastName"
 				>
 					Last name
 					<template #required>
@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import SystemPage from '#src/components/SystemFrame/SystemPage';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -63,16 +63,15 @@ export default {
 		KvBaseInput,
 	},
 	inject: ['apollo'],
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		firstName: {
-			required,
-		},
-		lastName: {
-			required,
-		},
+	validations() {
+		return {
+			firstName: {
+				required,
+			},
+			lastName: {
+				required,
+			},
+		};
 	},
 	data() {
 		return {
@@ -80,12 +79,13 @@ export default {
 			lastName: '',
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	methods: {
 		claimGuestAccount() {
 			this.$kvTrackEvent('Login', 'click-guest-enter-name-cta', 'Done');
-			this.$v.$touch();
+			this.v$.$touch();
 
-			if (!this.$v.$invalid) {
+			if (!this.v$.$invalid) {
 				const params = [
 					`firstName=${encodeURIComponent(this.firstName)}`,
 					`lastName=${encodeURIComponent(this.lastName)}`,
@@ -96,7 +96,7 @@ export default {
 					window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
 				});
 			} else {
-				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.firstName, this.$v.lastName]);
+				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.v$.firstName, this.v$.lastName]);
 			}
 		}
 	},

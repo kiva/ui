@@ -15,7 +15,7 @@
 					// eslint-disable-next-line max-len
 					'Send me updates from people I\'ve funded, my impact, and other ways I can help.',
 				]"
-				:class="{'radio-error': $v.selectedComms.$error}"
+				:class="{'radio-error': v$.selectedComms.$invalid}"
 			>
 				<!-- eslint-disable-next-line max-len -->
 				Send me updates from people I've funded, my impact, and other ways I can help.
@@ -24,7 +24,7 @@
 				value="off"
 				name="newsConsent"
 				v-model="selectedComms"
-				:class="{'radio-error': $v.selectedComms.$error}"
+				:class="{'radio-error': v$.selectedComms.$invalid}"
 				v-kv-track-event="[
 					trackingCategory,
 					'click',
@@ -38,7 +38,7 @@
 			</kv-radio>
 		</fieldset>
 		<p
-			v-if="$v.selectedComms.$error"
+			v-if="v$.selectedComms.$invalid"
 			class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
 		>
 			Choose your communication preferences.
@@ -92,7 +92,7 @@ export default {
 		};
 	},
 	emits: ['update:modelValue'],
-	inject: ['$v'],
+	inject: ['v$'],
 };
 </script>
 

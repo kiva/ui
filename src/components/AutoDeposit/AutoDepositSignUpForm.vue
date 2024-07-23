@@ -11,7 +11,7 @@
 			</span>
 			<label
 				class="tw-sr-only"
-				:class="{ 'error': $v.adAmount.$invalid }"
+				:class="{ 'error': v$.adAmount.$invalid }"
 				for="amount"
 			>
 				Amount
@@ -20,7 +20,7 @@
 			<span>
 				each month on the
 			</span>
-			<label class="tw-sr-only" :class="{ 'error': $v.dayOfMonth.$invalid }" :for="dayOfMonth">
+			<label class="tw-sr-only" :class="{ 'error': v$.dayOfMonth.$invalid }" :for="dayOfMonth">
 				Day of the Month
 			</label>
 			<kv-text-input
@@ -50,19 +50,19 @@
 
 		<!-- Errors and Messaging -->
 		<div class="row column tw-text-center">
-			<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-				<li v-if="!$v.dayOfMonth.required">
+			<ul class="validation-errors" v-if="v$.dayOfMonth.$invalid">
+				<li v-if="v$.dayOfMonth.required.$invalid">
 					Day field is required
 				</li>
-				<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+				<li v-if="v$.dayOfMonth.minValue.$invalid || v$.dayOfMonth.maxValue.$invalid">
 					Enter day of month - 1 to 31
 				</li>
 			</ul>
-			<ul class="validation-errors" v-if="$v.adAmount.$invalid">
-				<li v-if="!$v.adAmount.required">
+			<ul class="validation-errors" v-if="v$.adAmount.$invalid">
+				<li v-if="v$.adAmount.required.$invalid">
 					Amount field is required
 				</li>
-				<li v-if="!$v.adAmount.minValue || !$v.adAmount.maxValue">
+				<li v-if="v$.adAmount.minValue.$invalid || v$.adAmount.maxValue.$invalid">
 					Enter an amount of $0-$10,000
 				</li>
 			</ul>
@@ -82,7 +82,7 @@
 
 					<label
 						class="tw-sr-only"
-						:class="{ 'error': $v.donation.$invalid }"
+						:class="{ 'error': v$.donation.$invalid }"
 						for="donation"
 					>
 						Donation
@@ -116,8 +116,8 @@
 
 		<div class="row column tw-text-center">
 			<!-- Donation Errors -->
-			<ul class="validation-errors" v-if="$v.donation.$invalid">
-				<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+			<ul class="validation-errors" v-if="v$.donation.$invalid">
+				<li v-if="v$.donation.minValue.$invalid || v$.donation.maxValue.$invalid">
 					Enter a donation amount of $0-$10,000
 				</li>
 			</ul>
@@ -125,7 +125,7 @@
 			<!-- General Errors & Messaging-->
 			<ul
 				class="validation-errors"
-				v-if="!$v.adAmount.combinedTotal || !$v.donation.combinedTotal"
+				v-if="v$.adAmount.combinedTotal.$invalid || v$.donation.combinedTotal.$invalid"
 			>
 				<li>
 					To set up an Auto Deposit, please enter a total amount between $0 and $10,000.
@@ -138,7 +138,7 @@
 		<!-- Payment Wrapper-->
 		<div class="row column">
 			<div class="tw-text-center tw-relative" v-if="isLoggedIn">
-				<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+				<div class="payment-dropin-invalid-cover" v-if="v$.$invalid"></div>
 				<auto-deposit-drop-in-payment-wrapper
 					:amount="totalCombinedDeposit"
 					:donate-amount="donation"
@@ -163,8 +163,8 @@
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
 import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
@@ -206,31 +206,30 @@ export default {
 			showLoadingOverlay: false,
 		};
 	},
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		adAmount: {
-			required,
-			minValue: minValue(0),
-			maxValue: maxValue(10000),
-			combinedTotal(value) {
-				return value + this.donation < 10000 && value + this.donation > 0;
-			}
-		},
-		donation: {
-			minValue: minValue(0),
-			maxValue: maxValue(10000),
-			combinedTotal(value) {
-				return value + this.adAmount < 10000 && value + this.adAmount > 0;
-			}
-		},
-		dayOfMonth: {
-			required,
-			minValue: minValue(1),
-			maxValue: maxValue(31)
-		},
-
+	setup() { return { v$: useVuelidate() }; },
+	validations() {
+		return {
+			adAmount: {
+				required,
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				combinedTotal(value) {
+					return value + this.donation < 10000 && value + this.donation > 0;
+				}
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				combinedTotal(value) {
+					return value + this.adAmount < 10000 && value + this.adAmount > 0;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
@@ -308,7 +307,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.$v.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -339,7 +338,7 @@ export default {
 		},
 		calculatedDonationOptions() {
 			// If adAmount isn't valid, just set these values to default
-			const amountToBasePercentageOn = this.$v.adAmount.$invalid ? 25 : this.adAmount;
+			const amountToBasePercentageOn = this.v$.adAmount.$invalid ? 25 : this.adAmount;
 			return [
 				{
 					value: '20',

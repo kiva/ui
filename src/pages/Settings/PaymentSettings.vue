@@ -82,7 +82,7 @@
 										class="smaller payment-settings-default-form__save-button"
 										v-if="!isProcessing"
 										@click.native="savePaymentSettings"
-										:disabled="!isChanged || $v.$invalid"
+										:disabled="!isChanged || v$.$invalid"
 									>
 										Save Settings
 									</kv-button>
@@ -172,8 +172,8 @@
 <script>
 import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { defineAsyncComponent } from 'vue';
 
 import KvButton from '#src/components/Kv/KvButton';
@@ -237,13 +237,13 @@ export default {
 			dropInComponentKey: new Date().getTime(),
 		};
 	},
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		selectedDefaultCardNonce: {
-			required,
-		},
+	setup() { return { v$: useVuelidate() }; },
+	validations() {
+		return {
+			selectedDefaultCardNonce: {
+				required,
+			},
+		};
 	},
 	apollo: {
 		query: pageQuery,
@@ -258,7 +258,7 @@ export default {
 		this.isClientReady = !this.$isServer;
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('selectedDefaultCardNonce', () => {
-			this.$v.$touch();
+			this.v$.$touch();
 		});
 	},
 	computed: {
@@ -268,7 +268,7 @@ export default {
 				.filter(paymentMethod => paymentMethod.default)?.[0]?.nonce ?? '';
 		},
 		isChanged() {
-			return this.$v.$dirty && this.selectedDefaultCardNonce !== this.defaultCardNonce;
+			return this.v$.$dirty && this.selectedDefaultCardNonce !== this.defaultCardNonce;
 		},
 		hasSavedPaymentMethods() {
 			return this.savedPaymentMethods.length > 0;

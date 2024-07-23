@@ -89,8 +89,8 @@
 						'click-mgpromo-cta',
 						'Take action'
 					]"
-					:state="($v.mgAmount.$invalid || $v.groupValue.$invalid) ? 'disabled' : ''"
-					:disabled="$v.mgAmount.$invalid || $v.groupValue.$invalid"
+					:state="(v$.mgAmount.$invalid || v$.groupValue.$invalid) ? 'disabled' : ''"
+					:disabled="v$.mgAmount.$invalid || v$.groupValue.$invalid"
 				>
 					Subscribe
 				</kv-button>
@@ -101,8 +101,8 @@
 
 <script>
 import numeral from 'numeral';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 import clickOutside from '#src/plugins/click-outside';
@@ -132,18 +132,19 @@ export default {
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
-		validationMixin,
 		clickOutside,
 	],
-	validations: {
-		mgAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(100),
-		},
-		groupValue: {
-			required
-		}
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(100),
+			},
+			groupValue: {
+				required
+			}
+		};
 	},
 	data() {
 		return {
@@ -179,6 +180,7 @@ export default {
 			],
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mounted() {
 		document.addEventListener('keyup', this.onKeyUp);
 		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);

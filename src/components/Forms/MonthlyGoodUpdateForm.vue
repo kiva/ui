@@ -8,7 +8,7 @@
 				<strong>Each month on the</strong>
 				<label
 					class="tw-sr-only"
-					:class="{ 'error': $v.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
+					:class="{ 'error': v$.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
 				>
 					Day of the Month
 				</label>
@@ -37,11 +37,11 @@
 					/>
 				</button>
 				<strong>we'll process the following:</strong>
-				<ul class="validation-errors" v-if="$v.form.dayOfMonth.$invalid">
-					<li v-if="!$v.form.dayOfMonth.required">
+				<ul class="validation-errors" v-if="v$.form.dayOfMonth.$invalid">
+					<li v-if="v$.form.dayOfMonth.required.$invalid">
 						Field is required
 					</li>
-					<li v-if="!$v.form.dayOfMonth.minValue || !$v.form.dayOfMonth.maxValue">
+					<li v-if="v$.form.dayOfMonth.minValue.$invalid || v$.form.dayOfMonth.maxValue.$invalid">
 						Enter day of month between 1 and 31
 					</li>
 				</ul>
@@ -62,7 +62,7 @@
 					<div>
 						<label
 							class="tw-sr-only"
-							:class="{ 'error': $v.form.mgAmount.$invalid }"
+							:class="{ 'error': v$.form.mgAmount.$invalid }"
 							for="amount"
 						>
 							Amount
@@ -75,11 +75,11 @@
 					</div>
 				</div>
 				<div>
-					<ul class="tw-text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
-						<li v-if="!$v.form.mgAmount.required">
+					<ul class="tw-text-right validation-errors" v-if="v$.form.mgAmount.$invalid">
+						<li v-if="v$.form.mgAmount.required.$invalid">
 							Field is required
 						</li>
-						<li v-if="!$v.form.mgAmount.minValue || !$v.form.mgAmount.maxValue">
+						<li v-if="v$.form.mgAmount.minValue.$invalid || v$.form.mgAmount.maxValue.$invalid">
 							Enter an amount of $5-$10,000
 						</li>
 					</ul>
@@ -94,7 +94,7 @@
 					<div>
 						<label
 							class="tw-sr-only"
-							:class="{ 'error': $v.form.donation.$invalid }"
+							:class="{ 'error': v$.form.donation.$invalid }"
 							for="donation"
 						>
 							Donation
@@ -107,8 +107,8 @@
 					</div>
 				</div>
 				<div>
-					<ul class="tw-text-right validation-errors" v-if="$v.form.donation.$invalid">
-						<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
+					<ul class="tw-text-right validation-errors" v-if="v$.form.donation.$invalid">
+						<li v-if="v$.form.donation.minValue.$invalid || v$.form.donation.maxValue.$invalid">
 							Enter an amount of $0-$10,000
 						</li>
 					</ul>
@@ -127,7 +127,7 @@
 				<div>
 					<ul
 						class="tw-text-center validation-errors"
-						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
+						v-if="v$.form.mgAmount.maxTotal.$invalid || v$.form.donation.maxTotal.$invalid"
 					>
 						<li>
 							The maximum Monthly Good total is $10,000.<br>
@@ -160,8 +160,8 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
@@ -196,6 +196,7 @@ export default {
 			mdiPencil,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	props: {
 		/**
 		 * Should all inputs on the form be disabled
@@ -235,35 +236,36 @@ export default {
 		},
 	},
 	mixins: [
-		validationMixin,
 		loanGroupCategoriesMixin
 	],
-	validations: {
-		form: {
-			mgAmount: {
-				required,
-				minValue: minValue(5),
-				maxValue: maxValue(10000),
-				maxTotal(value) {
-					return value + this.donation < 10000;
+	validations() {
+		return {
+			form: {
+				mgAmount: {
+					required,
+					minValue: minValue(5),
+					maxValue: maxValue(10000),
+					maxTotal(value) {
+						return value + this.donation < 10000;
+					}
+				},
+				donation: {
+					minValue: minValue(0),
+					maxValue: maxValue(10000),
+					maxTotal(value) {
+						return value + this.mgAmount < 10000;
+					}
+				},
+				dayOfMonth: {
+					required,
+					minValue: minValue(1),
+					maxValue: maxValue(31)
+				},
+				category: {
+					required,
 				}
-			},
-			donation: {
-				minValue: minValue(0),
-				maxValue: maxValue(10000),
-				maxTotal(value) {
-					return value + this.mgAmount < 10000;
-				}
-			},
-			dayOfMonth: {
-				required,
-				minValue: minValue(1),
-				maxValue: maxValue(31)
-			},
-			category: {
-				required,
 			}
-		}
+		};
 	},
 	mounted() {
 		/** Accommodate for special cases where MG category might be legacy or null.
@@ -282,15 +284,15 @@ export default {
 		 * from being dirty on initial load
 		 */
 		this.$watch('form', () => {
-			this.$v.$touch();
+			this.v$.$touch();
 			/**
 			 * Event emitted whenever a form value changes.
 			 * @type {Event}
 			 */
 			this.$emit('form-update', {
 				...this.form,
-				isChanged: this.$v.$dirty,
-				isFormValid: !this.$v.$invalid,
+				isChanged: this.v$.$dirty,
+				isFormValid: !this.v$.$invalid,
 			});
 		}, { deep: true });
 	},
@@ -301,7 +303,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.$v.form.dayOfMonth.$invalid) {
+			if (!this.v$.form.dayOfMonth.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},

@@ -22,11 +22,8 @@
 					'Where should we email your receipt?'
 				)"
 			/>
-			<p v-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
+			<p v-if="v$.email.$invalid" class="input-error tw-text-danger tw-text-base tw-mb-2">
 				Valid email required.
-			</p>
-			<p v-else-if="$v.email.error">
-				Valid campaign email required.
 			</p>
 			<kv-checkbox
 				data-testid="basket-guest-terms-agreement"
@@ -53,7 +50,7 @@
 					target="_blank"
 					title="Open Privacy Policy in a new window"
 				>Privacy Policy</a>.
-				<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
+				<p v-if="v$.termsAgreement.$invalid" class="input-error tw-text-danger tw-text-base">
 					You must agree to the Kiva Terms of service & Privacy
 					policy.
 				</p>
@@ -89,8 +86,8 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
 
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -107,7 +104,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		checkoutUtils,
-		validationMixin
 	],
 	props: {
 		managedAccountId: {
@@ -138,12 +134,15 @@ export default {
 			emailUpdates: false,
 		};
 	},
-	validations: {
-		email: {
-			required,
-			email,
-		},
-		termsAgreement: { required: value => value === true },
+	setup() { return { v$: useVuelidate() }; },
+	validations() {
+		return {
+			email: {
+				required,
+				email,
+			},
+			termsAgreement: { required: value => value === true },
+		};
 	},
 	methods: {
 		validateCreditBasket() {

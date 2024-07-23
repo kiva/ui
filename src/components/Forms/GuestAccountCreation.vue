@@ -8,7 +8,7 @@
 			class="data-hj-suppress tw-mb-2"
 			type="text"
 			v-model.trim="firstName"
-			:validation="$v.firstName"
+			:validation="v$.firstName"
 		>
 			First name
 			<template #required>
@@ -20,7 +20,7 @@
 			class="data-hj-suppress tw-mb-2"
 			type="text"
 			v-model.trim="lastName"
-			:validation="$v.lastName"
+			:validation="v$.lastName"
 		>
 			Last name
 			<template #required>
@@ -42,8 +42,8 @@
 <script>
 import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 
@@ -54,16 +54,15 @@ export default {
 		KvBaseInput,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		firstName: {
-			required,
-		},
-		lastName: {
-			required,
-		},
+	validations() {
+		return {
+			firstName: {
+				required,
+			},
+			lastName: {
+				required,
+			},
+		};
 	},
 	props: {
 		loans: {
@@ -86,11 +85,12 @@ export default {
 			serverError: false,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	methods: {
 		submit() {
 			this.serverError = false;
-			this.$v.$touch();
-			if (!this.$v.$invalid) {
+			this.v$.$touch();
+			if (!this.v$.$invalid) {
 				this.$kvTrackEvent(this.eventCategory, 'click', this.eventLabel);
 
 				// will end up redirecting to password reset page.

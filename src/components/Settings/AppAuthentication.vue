@@ -80,7 +80,7 @@
 					<kv-button
 						class="tw-w-full"
 						type="submit"
-						:state="$v.userVerificationCode.$invalid ? 'disabled' : ''"
+						:state="v$.userVerificationCode.$invalid ? 'disabled' : ''"
 						v-if="!verificationPending"
 					>
 						Done
@@ -102,10 +102,10 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { validationMixin } from 'vuelidate';
+import { useVuelidate } from '@vuelidate/core';
 import {
 	required, minLength, maxLength, numeric
-} from 'vuelidate/lib/validators';
+} from '@vuelidate/validators';
 import VueQrcode from 'qrcode.vue';
 import KvLightbox from '#src/components/Kv/KvLightbox';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
@@ -119,7 +119,6 @@ import KvButton from '@kiva/kv-components/vue/KvButton';
 export default {
 	name: 'AppAuthentication',
 	inject: ['apollo', 'kvAuth0'],
-	mixins: [validationMixin],
 	props: {
 		first: {
 			type: Boolean,
@@ -135,13 +134,15 @@ export default {
 		RecoveryCodeConfirm,
 		VueQrcode,
 	},
-	validations: {
-		userVerificationCode: {
-			required,
-			minLength: minLength(6),
-			maxLength: maxLength(6),
-			numeric
-		}
+	validations() {
+		return {
+			userVerificationCode: {
+				required,
+				minLength: minLength(6),
+				maxLength: maxLength(6),
+				numeric
+			}
+		};
 	},
 	data() {
 		return {
@@ -157,6 +158,7 @@ export default {
 			verificationError: '',
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mounted() {
 		this.startEnrollment();
 	},
