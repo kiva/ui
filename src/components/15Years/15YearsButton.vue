@@ -1,7 +1,9 @@
 <script>
+import { h } from 'vue';
+
 export default {
 	name: '15YearsButton',
-	render(createElement) {
+	render() {
 		const options = {
 			class: ['fifteen-yr-button', this.variant ? `fifteen-yr-button--${this.variant}` : ''],
 			props: {},
@@ -14,7 +16,7 @@ export default {
 		if (this.href) {
 			options.attrs.href = this.href;
 		}
-		return createElement(this.tag, options, this.$slots.default);
+		return h(this.tag, options, this.$slots.default);
 	},
 	props: {
 		to: {

@@ -1,15 +1,39 @@
 <template>
-	<div class="borrower-info-header-expandable" :class="{'expanded': props.expanded}">
-		<div class="name" v-if="props.name">
-			{{ props.name }}
+	<div class="borrower-info-header-expandable" :class="{'expanded': expanded}">
+		<div class="name" v-if="name">
+			{{ name }}
 		</div>
-		<div class="details" v-if="props.country || props.activity">
-			{{ props.country ? `${props.country}` : '' }}
-			{{ props.country && props.activity ? '|' : '' }}
-			{{ props.activity ? `${props.activity}` : '' }}
+		<div class="details" v-if="country || activity">
+			{{ country ? `${country}` : '' }}
+			{{ country && activity ? '|' : '' }}
+			{{ activity ? `${activity}` : '' }}
 		</div>
 	</div>
 </template>
+
+<script>
+export default {
+	name: 'BorrowerInfoHeaderExpandable',
+	props: {
+		expanded: {
+			type: Boolean,
+			default: false,
+		},
+		name: {
+			type: String,
+			default: '',
+		},
+		country: {
+			type: String,
+			default: '',
+		},
+		activity: {
+			type: String,
+			default: '',
+		},
+	},
+};
+</script>
 
 <style lang="scss" scoped>
 @import '#src/assets/scss/settings';
