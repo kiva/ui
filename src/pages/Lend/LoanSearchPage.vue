@@ -20,9 +20,7 @@
 		/>
 		<article
 			class="tw-bg-secondary"
-			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader,
-				'sticky-header': enableAddToBasketExp
-			}"
+			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader}"
 		>
 			<kv-page-container>
 				<challenge-header
@@ -418,16 +416,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
-.sticky-header {
-	margin-top: 4rem;
-}
-
-@screen md {
-	.sticky-header {
-		margin-top: 4.5rem;
-	}
-}
 
 @screen md {
 	.cart-modal >>> div.container {

@@ -1,8 +1,5 @@
 <template>
-	<div
-		class="tw-relative"
-		:class="{'sticky-header': enableAddToBasketExp }"
-	>
+	<div class="tw-relative">
 		<div
 			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
 			style="max-width: 1200px;"
@@ -878,11 +875,4 @@ export default {
 	}
 }
 
-.sticky-header {
-	margin-top: 5.25rem;
-
-	@include breakpoint(medium) {
-		margin-top: 5.75rem;
-	}
-}
 </style>
