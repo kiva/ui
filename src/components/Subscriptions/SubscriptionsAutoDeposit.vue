@@ -201,7 +201,8 @@
 														<div class="row column">
 															<ul
 																class="tw-text-center validation-errors"
-																v-if="v$.mgAmount.maxTotal.$invalid || v$.donation.maxTotal.$invalid"
+																v-if="v$.mgAmount.maxTotal.$invalid
+																	|| v$.donation.maxTotal.$invalid"
 															>
 																<li>
 																	The maximum Auto Deposit total is $10,000.<br>
