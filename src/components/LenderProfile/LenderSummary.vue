@@ -4,11 +4,17 @@
 			Kiva Lender {{ lenderName }}
 		</h3>
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-gap-y-2 md:tw-gap-x-8 tw-pt-2">
-			<div class="tw-mx-auto lg:tw-mx-0 lg:tw-w-full md:tw-basis-1/4 tw-pt-1.5">
+			<div class="tw-w-full md:tw-basis-1/4 tw-pt-1.5">
 				<kv-material-icon
+					v-if="!lenderImageUrl"
 					:icon="mdiAccountCircle"
 					class="!tw-block tw-mx-auto tw-w-14 tw-h-14"
 				/>
+				<img
+					v-else
+					:src="lenderImageUrl"
+					class="tw-mx-auto tw-w-2/3 md:tw-w-full"
+				>
 			</div>
 			<div class="tw-w-full">
 				<dl class="tw-divide-y tw-divide-gray-100">
@@ -64,6 +70,9 @@ export default {
 	computed: {
 		lenderName() {
 			return this.lenderInfo?.name ?? '';
+		},
+		lenderImageUrl() {
+			return this.lenderInfo?.image?.url ?? '';
 		},
 		memberSince() {
 			return format(parseISO(this.lenderInfo?.memberSince ?? new Date()), 'MMM dd, yyyy');
