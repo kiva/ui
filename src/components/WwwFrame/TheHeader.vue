@@ -2,8 +2,7 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'tw-absolute tw-z-1 tw-w-full' : enableAddToBasketExp && isInExperimentPages,
-			'sticky-header !tw-fixed tw-w-full tw-z-1': enableBasketExperiment
+			'tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment && isInExperimentPages,
 		}"
 	>
 		<nav
@@ -612,6 +611,7 @@ import numeral from 'numeral';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
@@ -652,6 +652,7 @@ export default {
 		KvUserAvatar,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	mixins: [addToBasketExpMixin],
 	data() {
 		return {
 			isVisitor: true,
@@ -764,9 +765,6 @@ export default {
 				return numeral(this.basketTotal).format('$0,0');
 			}
 			return this.basketCount;
-		},
-		isInExperimentPages() {
-			return this.$route.path.includes('lend-by-category') || this.$route.path.includes('lend/filter');
 		},
 		enableBasketExperiment() {
 			return this.enableAddToBasketExp && this.hasBasket && this.isInExperimentPages;

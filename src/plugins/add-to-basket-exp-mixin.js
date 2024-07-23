@@ -21,4 +21,9 @@ export default {
 			this.$emit('show-cart-modal', payload);
 		},
 	},
+	computed: {
+		isInExperimentPages() {
+			return this.$route.path.includes('lend-by-category') || this.$route.path.includes('lend/filter');
+		},
+	}
 };

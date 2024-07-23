@@ -1,7 +1,17 @@
 <template>
 	<www-page>
-		<kv-page-container>
-			<!-- Page Content -->
+		<kv-page-container
+			class="tw-py-2"
+		>
+			<lender-summary
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-loans-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -9,7 +19,9 @@
 <script>
 import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
+import LenderSummary from '#src/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
+import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -18,6 +30,8 @@ export default {
 	components: {
 		WwwPage,
 		KvPageContainer,
+		LenderSummary,
+		LenderLoansList
 	},
 	metaInfo() {
 		return {
@@ -49,6 +63,7 @@ export default {
 	data() {
 		return {
 			lenderInfo: {},
+			publicId: '',
 		};
 	},
 	apollo: {
@@ -79,12 +94,12 @@ export default {
 		},
 	},
 	created() {
-		const publicId = this.$route?.params?.publicId ?? '';
+		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
 			cachedLenderInfo = this.apollo.readQuery({
 				query: lenderPublicProfileQuery,
-				variables: { publicId }
+				variables: { publicId: this.publicId }
 			});
 		} catch (e) {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');

@@ -4,14 +4,19 @@ query LenderPublicProfile ($publicId: String!) {
 			id
 			name
 			loanCount
+			memberSince
 			image {
 				id
-				url
+				url(customSize: "w200h200")
 				width
 				height
 			}
 			lenderPage {
 				whereabouts
+				occupation
+				loanBecause
+				otherInfo
+				url
 			}
 		}
 	}

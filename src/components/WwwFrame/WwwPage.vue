@@ -100,9 +100,9 @@ export default {
 @import '#src/assets/scss/settings';
 
 .www-page {
-	height: 100%;
 	display: flex;
 	flex-flow: column nowrap;
+	min-height: 100vh;
 
 	@media print {
 		display: block;
