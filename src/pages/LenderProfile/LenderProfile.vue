@@ -1,7 +1,11 @@
 <template>
 	<www-page>
-		<kv-page-container>
-			<!-- Page Content -->
+		<kv-page-container
+			class="tw-py-2"
+		>
+			<lender-summary
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -9,6 +13,7 @@
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LenderSummary from '@/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -18,6 +23,7 @@ export default {
 	components: {
 		WwwPage,
 		KvPageContainer,
+		LenderSummary,
 	},
 	metaInfo() {
 		return {
