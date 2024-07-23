@@ -2,6 +2,8 @@
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<kv-cart-modal
 			v-if="addedLoan"
+			:style="{'--modal-right': `${modalPosition.right}px`}"
+			class="cart-modal"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
 			:photo-path="PHOTO_PATH"
@@ -18,9 +20,7 @@
 		/>
 		<article
 			class="tw-bg-secondary"
-			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader,
-				'sticky-header': enableAddToBasketExp
-			}"
+			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader}"
 		>
 			<kv-page-container>
 				<challenge-header
@@ -417,14 +417,9 @@ export default {
 
 <style lang="postcss" scoped>
 
-.sticky-header {
-	margin-top: 4rem;
-}
-
 @screen md {
-	.sticky-header {
-		margin-top: 4.5rem;
+	.cart-modal >>> div.container {
+		right: var(--modal-right) !important;
 	}
 }
-
 </style>

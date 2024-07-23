@@ -48,6 +48,8 @@
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:enable-huge-amount="enableHugeAmount"
 				:user-balance="userBalance"
+				:add-to-basket-exp-enabled="enableAddToBasketExp"
+				@show-cart-modal="showCartModal"
 			/>
 		</div>
 	</div>
@@ -55,6 +57,7 @@
 
 <script>
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
@@ -98,6 +101,8 @@ export default {
 			default: false,
 		},
 	},
+	inject: ['apollo', 'cookieStore'],
+	mixins: [addToBasketExpMixin],
 	data() {
 		return {
 			triggersVisible: true,
