@@ -1,5 +1,5 @@
 <template>
-	<div class="www-page" :class="{'!tw-h-auto': enableAddToBasketExp}">
+	<div class="www-page">
 		<the-banner-area v-show="!isKivaAppReferral" />
 		<the-header
 			v-show="!isKivaAppReferral"
@@ -24,7 +24,6 @@ import logReadQueryError from '@/util/logReadQueryError';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -45,7 +44,6 @@ export default {
 	},
 	mixins: [
 		appInstallMixin,
-		addToBasketExpMixin
 	],
 	props: {
 		grayBackground: {
@@ -105,6 +103,7 @@ export default {
 	height: 100%;
 	display: flex;
 	flex-flow: column nowrap;
+	min-height: 100vh;
 
 	@media print {
 		display: block;
