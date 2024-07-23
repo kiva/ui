@@ -4,6 +4,7 @@
 			class="tw-py-2"
 		>
 			<lender-summary
+				:public-id="publicId"
 				:lender-info="lenderInfo"
 			/>
 		</kv-page-container>
@@ -55,6 +56,7 @@ export default {
 	data() {
 		return {
 			lenderInfo: {},
+			publicId: '',
 		};
 	},
 	apollo: {
@@ -85,12 +87,12 @@ export default {
 		},
 	},
 	created() {
-		const publicId = this.$route?.params?.publicId ?? '';
+		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
 			cachedLenderInfo = this.apollo.readQuery({
 				query: lenderPublicProfileQuery,
-				variables: { publicId }
+				variables: { publicId: this.publicId }
 			});
 		} catch (e) {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
