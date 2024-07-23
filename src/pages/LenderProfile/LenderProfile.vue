@@ -7,6 +7,11 @@
 				:public-id="publicId"
 				:lender-info="lenderInfo"
 			/>
+
+			<lender-loans-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -16,6 +21,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LenderSummary from '@/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
+import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -25,6 +31,7 @@ export default {
 		WwwPage,
 		KvPageContainer,
 		LenderSummary,
+		LenderLoansList
 	},
 	metaInfo() {
 		return {

@@ -1,0 +1,12 @@
+query LenderLoans ($publicId: String!, $offset: Int, $limit: Int) {
+	community {
+		lender(publicId: $publicId) {
+			loans(offset: $offset, limit: $limit) {
+				totalCount
+				values {
+					id
+				}
+			}
+		}
+	}
+}
