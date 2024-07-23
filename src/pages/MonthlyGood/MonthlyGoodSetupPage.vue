@@ -80,8 +80,10 @@
 											<li v-if="v$.dayOfMonth.required.$invalid">
 												Field is required
 											</li>
-											<li v-if="v$.dayOfMonth.minValue.$invalid
-												|| v$.dayOfMonth.maxValue.$invalid">
+											<li
+												v-if="v$.dayOfMonth.minValue.$invalid
+													|| v$.dayOfMonth.maxValue.$invalid"
+											>
 												Enter day of month - 1 to 31
 											</li>
 										</ul>
@@ -119,8 +121,10 @@
 												<li v-if="v$.mgAmount.required.$invalid">
 													Field is required
 												</li>
-												<li v-if="v$.mgAmount.minValue.$invalid
-													|| v$.mgAmount.maxValue.$invalid">
+												<li
+													v-if="v$.mgAmount.minValue.$invalid
+														|| v$.mgAmount.maxValue.$invalid"
+												>
 													Enter an amount of $5-$10,000
 												</li>
 											</ul>
@@ -179,8 +183,10 @@
 
 										<div class="small-12 columns">
 											<ul class="tw-text-right validation-errors" v-if="v$.donation.$invalid">
-												<li v-if="v$.donation.minValue.$invalid
-													|| v$.donation.maxValue.$invalid">
+												<li
+													v-if="v$.donation.minValue.$invalid
+														|| v$.donation.maxValue.$invalid"
+												>
 													Enter an amount of $0-$10,000
 												</li>
 											</ul>
