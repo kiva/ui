@@ -91,8 +91,8 @@
 
 <script>
 import numeral from 'numeral';
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { mdiChevronRight } from '@mdi/js';
 
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
@@ -136,19 +136,20 @@ export default {
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
-		validationMixin,
 	],
-	validations: {
-		mgAmount: {
-			required,
-			valid(value) {
-				const possibleValues = this.mgAmountOptions.map(option => option.value);
-				return possibleValues.includes(value);
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				valid(value) {
+					const possibleValues = this.mgAmountOptions.map(option => option.value);
+					return possibleValues.includes(value);
+				}
+			},
+			groupValue: {
+				required
 			}
-		},
-		groupValue: {
-			required
-		}
+		};
 	},
 	data() {
 		return {
@@ -185,6 +186,7 @@ export default {
 			mdiChevronRight,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mounted() {
 		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);
 	},
