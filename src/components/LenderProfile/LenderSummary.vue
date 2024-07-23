@@ -85,7 +85,6 @@ export default {
 	},
 	computed: {
 		lenderName() {
-			console.log(this.lenderInfo);
 			return this.lenderInfo?.name ?? '';
 		},
 		lenderImageUrl() {

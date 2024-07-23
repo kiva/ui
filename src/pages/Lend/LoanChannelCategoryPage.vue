@@ -5,6 +5,8 @@
 	>
 		<kv-cart-modal
 			v-if="addedLoan"
+			:style="{'--modal-right': `${modalPosition.right}px`}"
+			class="cart-modal"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
 			:photo-path="PHOTO_PATH"
@@ -119,3 +121,11 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+@screen md {
+	.cart-modal >>> div.container {
+		right: var(--modal-right) !important;
+	}
+}
+</style>

@@ -7,7 +7,7 @@ query LenderPublicProfile ($publicId: String!) {
 			memberSince
 			image {
 				id
-				url
+				url(customSize: "w200h200")
 				width
 				height
 			}
