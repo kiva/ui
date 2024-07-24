@@ -19,8 +19,8 @@ export default {
 		handleCartModal(payload) {
 			const { basketPosition, headerPosition } = this.getTargetsPosition();
 			this.modalPosition = {
-				top: `${headerPosition.bottom}`, // 50 to be below the basket
-				right: `${window.innerWidth - basketPosition.right - 200}`, // Value to be in the middle of the basket
+				top: `${headerPosition.bottom}`,
+				right: `${window.innerWidth - basketPosition.right - 200}`, // 200 to be in the middle of the basket
 			};
 			this.hasBasket = payload?.basketSize > 0;
 			this.addedLoan = { ...payload };
