@@ -461,13 +461,14 @@ export default {
 	mixins: [fiveDollarsTest, guestComment, hugeLendAmount],
 	apollo: {
 		query: preFetchQuery,
-		preFetch(config, client, { route, cookieStore }) {
-			const publicId = getPublicId(route);
+		preFetch(_config, client, { route, cookieStore }) {
+			const currentRoute = route.value ?? {};
+			const publicId = getPublicId(currentRoute);
 			return client
 				.query({
 					query: preFetchQuery,
 					variables: {
-						loanId: Number(route.params?.id ?? 0),
+						loanId: Number(currentRoute.params?.id ?? 0),
 						publicId,
 						getInviter: !!publicId,
 						basketId: cookieStore.get('kvbskt')
@@ -476,9 +477,9 @@ export default {
 				.then(({ data }) => {
 					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
 					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
-						const { query } = route;
+						const { query = {} } = currentRoute;
 						return Promise.reject({
-							path: `/lend-classic/${route.params.id}`,
+							path: `/lend-classic/${currentRoute.params?.id}`,
 							query,
 						});
 					}
@@ -486,24 +487,24 @@ export default {
 					// Check for loan and loan status
 					const loan = data?.lend?.loan;
 					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-					let redirectToLendClasic = loan === null || loan === 'undefined' || !loanStatusAllowed;
+					let redirectToLendClassic = loan === null || loan === 'undefined' || !loanStatusAllowed;
 					// Evaluate if lender should be redirected to lend classic MARS-358
 					const lentTo = loan?.userProperties?.lentTo ?? false;
-					if (lentTo && !redirectToLendClasic) {
+					if (lentTo && !redirectToLendClassic) {
 						const loanAmount = loan?.loanAmount ?? '0';
 						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
 						const amountLeft = Number(loanAmount) - Number(fundedAmount);
 
 						const loanStatus = loan?.status !== 'fundraising';
-						redirectToLendClasic = !amountLeft || loanStatus;
+						redirectToLendClassic = !amountLeft || loanStatus;
 					}
 
-					if (redirectToLendClasic) {
+					if (redirectToLendClassic) {
 						// redirect to legacy borrower profile
-						const { query = {} } = route;
+						const { query = {} } = currentRoute;
 						query.minimal = false;
 						return Promise.reject({
-							path: `/lend-classic/${Number(route.params?.id ?? 0)}`,
+							path: `/lend-classic/${Number(currentRoute.params?.id ?? 0)}`,
 							query,
 						});
 					}
