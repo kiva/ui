@@ -22,6 +22,7 @@
 			:enable-huge-amount="enableHugeAmount"
 			:user-balance="userBalance"
 			@add-to-basket="$emit('add-to-basket', $event)"
+			@show-cart-modal="showCartModal"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
@@ -38,6 +39,7 @@
 
 <script>
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 import SpotlightHero from './SpotlightHero';
 
 export default {
@@ -47,6 +49,7 @@ export default {
 		LendingCategorySection
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [addToBasketExpMixin],
 	props: {
 		spotlightData: {
 			type: Object,
