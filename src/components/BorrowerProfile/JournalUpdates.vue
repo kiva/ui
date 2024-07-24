@@ -1,5 +1,5 @@
+<!-- this id is used to link directly to the section via a hash '#updates' in the url -->
 <template>
-	<!-- this id is used to link directly to the section via a hash '#updates' in the url -->
 	<section id="updates">
 		<!-- Display Content -->
 		<h2 class="tw-text-h2 tw-mb-3" :data-testid="`bp-updates-header`">

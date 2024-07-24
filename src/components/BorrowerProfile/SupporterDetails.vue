@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue';
 import _throttle from 'lodash/throttle';
 import KvTooltip from '#src/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
@@ -203,7 +204,7 @@ export default {
 		},
 		toolTipId() {
 			const lenderElementId = this.publicId || '';
-			const teamElementId = `team_${this.teamId}_${this.$vnode.key}`;
+			const teamElementId = `team_${this.teamId}_${getCurrentInstance().vnode.key}`;
 			return this.displayType === 'teams' ? teamElementId : lenderElementId;
 		}
 	},

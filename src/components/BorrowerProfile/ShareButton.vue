@@ -155,7 +155,7 @@ export default {
 					: `I'm crowdfunding a loan on Kiva — Help me hit ${this.progressPercent + 10}% today!`;
 			}
 			// Not the borrower of this loan
-			const borrowerName = this.$options.filters.changeCase(this.name, 'titleCase');
+			const borrowerName = this.$filters.changeCase(this.name, 'titleCase');
 			if (this.inPfp) {
 				return this.progressPfpPercent >= 50
 					? `Help ${borrowerName} reach their goal – only ${remainingLenders} ${lenderText} to go!`

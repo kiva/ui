@@ -229,6 +229,7 @@ export default {
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
 			partnerName: '',
+			disbursalDate: '',
 		};
 	},
 	methods: {
@@ -251,6 +252,7 @@ export default {
 				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
 				this.firstRepaymentDate = this.repaymentSchedule[0]?.dueToKivaDate || '';
+				this.disbursalDate = data?.lend?.loan?.terms?.disbursalDate || '';
 			});
 		},
 	},
@@ -287,7 +289,7 @@ export default {
 			const monthlyTotalRepayments = [];
 			let repaid = false;
 			let delinquent = false;
-			if (this.repaymentSchedule !== []) {
+			if (this.repaymentSchedule.length !== 0) {
 				const repaymentScheduleByDueDate = this.repaymentSchedule.reduce((acc, repaymentItem) => {
 					if (!acc[repaymentItem.dueToKivaDate]) acc[repaymentItem.dueToKivaDate] = [];
 					acc[repaymentItem.dueToKivaDate].push(repaymentItem);
