@@ -36,6 +36,8 @@
 						:enable-huge-amount="enableHugeAmount"
 						@add-to-basket="addToBasket"
 						class="tw-h-full"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						@show-cart-modal="showCartModal"
 					/>
 				</template>
 				<template v-if="showViewMoreCard">
@@ -51,6 +53,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import ViewMoreCard from './ViewMoreCard';
 
@@ -119,6 +122,8 @@ export default {
 			default: false,
 		},
 	},
+	inject: ['apollo', 'cookieStore'],
+	mixins: [addToBasketExpMixin],
 	data() {
 		return {
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,

@@ -1,5 +1,15 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
+		<kv-cart-modal
+			v-if="addedLoan"
+			:style="{'--modal-right': `${modalPosition.right}px`}"
+			class="cart-modal"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<div class="tw-w-full">
 			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
 
@@ -22,6 +32,7 @@
 				:per-step="perStepRecommendedRow"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				:class="{ 'tw-pt-3' : !isLoggedIn }"
+				@show-cart-modal="handleCartModal"
 			/>
 
 			<!-- Almost Funded loans row -->
@@ -36,6 +47,7 @@
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'almost-funded')"
 				class="tw-pt-3 tw-mb-2"
+				@show-cart-modal="handleCartModal"
 			/>
 
 			<!-- Five dollars row -->
@@ -52,6 +64,7 @@
 				:title-icon="HandOrangeIcon"
 				@add-to-basket="trackCategory($event, 'five-dollars')"
 				class="tw-pt-3 tw-mb-2"
+				@show-cart-modal="handleCartModal"
 			/>
 
 			<div class="tw-flex tw-flex-col">
@@ -64,6 +77,7 @@
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
+					@show-cart-modal="handleCartModal"
 				/>
 
 				<!-- Element to trigger spotlight observer -->
@@ -79,6 +93,7 @@
 					:enable-huge-amount="enableHugeLendAmount"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
+					@show-cart-modal="handleCartModal"
 				/>
 			</div>
 
@@ -90,6 +105,7 @@
 				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
+				@show-cart-modal="handleCartModal"
 			/>
 		</div>
 	</www-page>
@@ -113,6 +129,8 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dolla
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
@@ -130,8 +148,9 @@ export default {
 		QuickFiltersSection,
 		PartnerSpotlightSection,
 		FiveDollarsBanner,
+		KvCartModal,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -493,5 +512,11 @@ export default {
 <style lang="postcss" scoped>
 :deep([role=progressbar]) {
 	@apply tw-bg-tertiary;
+}
+
+@screen md {
+	.cart-modal >>> div.container {
+		right: var(--modal-right) !important;
+	}
 }
 </style>

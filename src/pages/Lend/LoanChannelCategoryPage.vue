@@ -5,7 +5,10 @@
 	>
 		<kv-cart-modal
 			v-if="addedLoan"
-			:style="{'--modal-right': `${modalPosition.right}px`}"
+			:style="{
+				'--modal-right': `${modalPosition.right}px`,
+				'--modal-top': `${modalPosition.top}px`
+			}"
 			class="cart-modal"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
@@ -123,8 +126,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@screen md {
-	.cart-modal :deep(div.container) {
+.cart-modal :deep(div.container) {
+	top: var(--modal-top) !important;
+
+	@media screen(md) {
 		right: var(--modal-right) !important;
 	}
 }

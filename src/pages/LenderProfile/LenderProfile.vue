@@ -12,6 +12,11 @@
 				:public-id="publicId"
 				:lender-info="lenderInfo"
 			/>
+
+			<lender-teams-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -22,6 +27,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import LenderSummary from '#src/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
+import LenderTeamsList from '#src/components/LenderProfile/LenderTeamsList';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -31,7 +37,8 @@ export default {
 		WwwPage,
 		KvPageContainer,
 		LenderSummary,
-		LenderLoansList
+		LenderLoansList,
+		LenderTeamsList,
 	},
 	metaInfo() {
 		return {
