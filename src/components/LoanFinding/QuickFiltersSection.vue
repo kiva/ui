@@ -37,6 +37,8 @@
 						:enable-huge-amount="enableHugeAmount"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						@show-cart-modal="showCartModal"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -77,6 +79,7 @@ import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
 import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
 import KvPagination from '@/components/Kv/KvPagination';
 import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 import EmptyState from './EmptyState';
 
 export default {
@@ -89,6 +92,7 @@ export default {
 		LendingCategorySection
 	},
 	inject: ['apollo'],
+	mixins: [addToBasketExpMixin],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
