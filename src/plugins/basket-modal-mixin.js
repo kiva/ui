@@ -7,7 +7,7 @@ export default {
 			PHOTO_PATH,
 			cartModalVisible: false,
 			hasBasket: false,
-			modalPosition: { right: '0' },
+			modalPosition: { top: '0', right: '0' },
 		};
 	},
 	computed: {
@@ -17,9 +17,10 @@ export default {
 	},
 	methods: {
 		handleCartModal(payload) {
-			const position = this.getTargetPosition();
+			const { basketPosition, headerPosition } = this.getTargetsPosition();
 			this.modalPosition = {
-				right: `${window.innerWidth - position.right - 200}`, // 200 to be almost in the middle of the basket
+				top: `${headerPosition.bottom}`, // 50 to be below the basket
+				right: `${window.innerWidth - basketPosition.right - 200}`, // Value to be in the middle of the basket
 			};
 			this.hasBasket = payload?.basketSize > 0;
 			this.addedLoan = { ...payload };
@@ -39,9 +40,13 @@ export default {
 				this.$router.push({ path: '/basket' });
 			}
 		},
-		getTargetPosition() {
+		getTargetsPosition() {
 			const target = document.getElementById('basket-exp');
-			return target.getBoundingClientRect();
+			const header = document.getElementsByTagName('header')[0];
+			return {
+				basketPosition: target.getBoundingClientRect(),
+				headerPosition: header.getBoundingClientRect(),
+			};
 		},
 	},
 };
