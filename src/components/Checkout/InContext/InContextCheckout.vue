@@ -31,7 +31,7 @@
 		</div>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
-			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
+			:class="{ 'in-context-checkout__basket-items--hide-donation' : !showDonation}"
 			:disable-redirects="disableRedirects"
 			:loans="loans"
 			:donations="donations"

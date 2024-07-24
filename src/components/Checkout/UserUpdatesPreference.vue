@@ -52,14 +52,14 @@
 		</p>
 		<p class="tw-text-small">
 			By completing your {{ isCheckout ? 'loan' : 'account' }}, you agree to Kiva’s <a
-				:href="`https://${this.$appConfig.host}/legal/terms`"
+				:href="`https://${$appConfig.host}/legal/terms`"
 				target="_blank"
 				class="tw-underline"
 				title="Open Terms of Use in a new window"
 			>Terms of Use</a>
 			and
 			<a
-				:href="`https://${this.$appConfig.host}/legal/privacy`"
+				:href="`https://${$appConfig.host}/legal/privacy`"
 				target="_blank"
 				class="tw-underline"
 				title="Open Privacy Policy in a new window"

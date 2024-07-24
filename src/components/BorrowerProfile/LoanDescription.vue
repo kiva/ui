@@ -46,7 +46,7 @@
 								data-testid="bp-story-translate-volunteer-link"
 								href="/work-with-us/reviewers"
 								title="Learn more about volunteering at Kiva"
-								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', this.loanId]"
+								v-kv-track-event="['Borrower profile', 'click-Kiva review volunteer', 'Kiva volunteer', loanId]"
 							>
 								Kiva volunteer<span v-if="!showReviewersName">.</span>
 							</a>
@@ -62,7 +62,7 @@
 							data-testid="bp-story-translate-view-original-language-link"
 							@click="openLightbox"
 							v-if="descriptionInOriginalLanguage !== '' "
-							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', this.loanId]"
+							v-kv-track-event="['Borrower profile', 'click-Original language lightbox', 'View original language description', loanId]"
 						>
 							<!-- eslint-enable max-len -->
 							View original language description.

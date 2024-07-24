@@ -150,7 +150,7 @@
 						</form>
 						<!-- Continue to checkout button -->
 						<kv-ui-button
-							v-if="this.state === 'basketed'"
+							v-if="state === 'basketed'"
 							class="tw-inline-flex tw-flex-1"
 							data-testid="bp-lend-cta-checkout-button"
 							to="/basket"
@@ -173,7 +173,7 @@
 								'Lending',
 								'Non actionable loan',
 								ctaButtonText,
-								this.status
+								status
 							]"
 						>
 							{{ ctaButtonText }}
@@ -356,7 +356,7 @@
 							</span>
 
 							<span
-								v-if="currentSlotStat === 'matchingText'"
+								v-else-if="currentSlotStat === 'matchingText'"
 								class="tw-inline-block tw-align-middle"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"

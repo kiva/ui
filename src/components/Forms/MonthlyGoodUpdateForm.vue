@@ -3,7 +3,7 @@
 		@submit.prevent
 		novalidate
 	>
-		<fieldset :disabled="this.disabled">
+		<fieldset :disabled="disabled">
 			<div>
 				<strong>Each month on the</strong>
 				<label

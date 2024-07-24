@@ -21,7 +21,7 @@
 						</h3>
 						<p
 							key="storyDescription"
-							v-html="this.loanAlertText"
+							v-html="loanAlertText"
 						>
 						</p>
 					</div>

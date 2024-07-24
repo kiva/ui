@@ -48,13 +48,13 @@
 				:data-testid="`bp-${displayType}-grid`"
 			>
 				<supporter-details
-					v-if="this.supporterOfLoan"
+					v-if="supporterOfLoan"
 					:data-testid="`bp-${displayType}-support-details-supporter`"
 					display-type="lenders"
-					:hash="this.userImageHash"
-					:name="this.userName"
-					:whereabouts="this.userWhereabouts"
-					:supporter-page-url="this.lenderPageUrl"
+					:hash="userImageHash"
+					:name="userName"
+					:whereabouts="userWhereabouts"
+					:supporter-page-url="lenderPageUrl"
 				/>
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
@@ -67,11 +67,11 @@
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
-					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					v-if="hasAnonymousSupporters && displayType === 'lenders'"
 					:data-testid="`bp-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
-					:has-anonymous-supporters="this.hasAnonymousSupporters"
+					:has-anonymous-supporters="hasAnonymousSupporters"
 				/>
 			</div>
 
@@ -108,13 +108,13 @@
 				:data-testid="`bp-lightbox-${displayType}-grid`"
 			>
 				<supporter-details
-					v-if="this.supporterOfLoan"
+					v-if="supporterOfLoan"
 					:data-testid="`bp-lightbox-${displayType}-support-details-supporter`"
 					display-type="lenders"
-					:hash="this.userImageHash"
-					:name="this.userName"
-					:whereabouts="this.userWhereabouts"
-					:supporter-page-url="this.lenderPageUrl"
+					:hash="userImageHash"
+					:name="userName"
+					:whereabouts="userWhereabouts"
+					:supporter-page-url="lenderPageUrl"
 				/>
 				<supporter-details
 					v-for="(item, index) in filteredItemList" :key="`lb_item_${index}`"
@@ -127,11 +127,11 @@
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
-					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					v-if="hasAnonymousSupporters && displayType === 'lenders'"
 					:data-testid="`bp-lightbox-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
-					:has-anonymous-supporters="this.hasAnonymousSupporters"
+					:has-anonymous-supporters="hasAnonymousSupporters"
 				/>
 			</div>
 

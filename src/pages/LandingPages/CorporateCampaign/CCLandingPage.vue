@@ -81,10 +81,10 @@
 			</div>
 
 			<campaign-join-team-form
-				v-if="this.showTeamForm"
+				v-if="showTeamForm"
 				:campaign-name="campaignPartnerName"
-				:team-id="this.teamId"
-				:promo-id="this.promoFundId"
+				:team-id="teamId"
+				:promo-id="promoFundId"
 				@team-process-complete="handleTeamJoinProcess"
 			/>
 
@@ -93,7 +93,7 @@
 				:form-id="String(externalFormId)"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
-				:user-id="String(this.myId)"
+				:user-id="String(myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>

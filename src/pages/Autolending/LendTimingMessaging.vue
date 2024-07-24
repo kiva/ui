@@ -6,7 +6,7 @@
 		<div
 			data-test="timing-explanation"
 			class="autolend-explanation-text tw-text-brand"
-			v-if="isEnabled && this.cIdleStartTime !== null"
+			v-if="isEnabled && cIdleStartTime !== null"
 		>
 			{{ autolendExplanationText }}
 		</div>

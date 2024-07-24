@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-relative tw-block tw-w-full" :style="mapDimensions">
 		<div
-			:id="`kv-map-holder-${this.mapId}`"
+			:id="`kv-map-holder-${mapId}`"
 			:ref="refString"
 			class="tw-w-full tw-h-full tw-bg-black"
 			:style="{ position: 'absolute' }"

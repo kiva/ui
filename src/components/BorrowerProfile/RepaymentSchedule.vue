@@ -20,7 +20,7 @@
 				<p class="tw-inline-block tw-font-medium ">
 					{{ formattedFirstRepaymentDate }}
 				</p>
-				<span v-if="this.status === 'payingBack'">
+				<span v-if="status === 'payingBack'">
 					<p class="tw-inline-block">
 						and are
 					</p>

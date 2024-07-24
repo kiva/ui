@@ -246,7 +246,7 @@
 				:form-id="externalFormId"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
-				:user-id="String(this.myId)"
+				:user-id="String(myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>

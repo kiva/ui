@@ -20,7 +20,7 @@
 			style="line-height: 0; /* global property affects images within anchors - override required */"
 		>
 			<borrower-image
-				v-if="!this.anonymousSupporterCard && this.hash"
+				v-if="!anonymousSupporterCard && hash"
 				class="tw-w-full tw-rounded tw-bg-black"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
@@ -36,7 +36,7 @@
 				]"
 			/>
 			<div
-				v-else-if="!this.anonymousSupporterCard && !this.hash"
+				v-else-if="!anonymousSupporterCard && !hash"
 				class="
 					tw-w-full
 					tw-rounded
@@ -91,7 +91,7 @@
 			:controller="toolTipId"
 			:data-testid="`tooltip-id-${toolTipId}`"
 			theme="dark"
-			v-if="teamTooltipData && !this.isMobile"
+			v-if="teamTooltipData && !isMobile"
 		>
 			{{ teamTooltipData.category }}<br>
 			{{ teamTooltipData.lendersForTeamMessage }}

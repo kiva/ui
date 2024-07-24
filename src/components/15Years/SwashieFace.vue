@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="kv-swashie"
-		:class="`kv-swashie--${this.excitementLevel}`"
+		:class="`kv-swashie--${excitementLevel}`"
 	>
 		<div class="kv-swashie__wrapper">
 			<div class="kv-swashie__circle">

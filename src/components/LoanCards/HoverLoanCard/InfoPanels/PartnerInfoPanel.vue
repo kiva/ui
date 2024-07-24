@@ -18,25 +18,25 @@
 		</div>
 		<div v-else>
 			<dl>
-				<div v-if="this.timeOnKiva">
+				<div v-if="timeOnKiva">
 					<dt>Time on Kiva:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ timeOnKivaFormatted }} months
 					</dd>
 				</div>
-				<div v-if="this.numOfBorrowers">
+				<div v-if="numOfBorrowers">
 					<dt>Kiva borrowers:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ numOfBorrowersFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.totalAmountRaised">
+				<div v-if="totalAmountRaised">
 					<dt>Total loans:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ totalAmountRaisedFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.avgCostToBorrower">
+				<div v-if="avgCostToBorrower">
 					<dt>Average cost to borrower:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgCostToBorrower }}% {{ avgCostToBorrowerType }}
@@ -48,38 +48,38 @@
 						{{}}
 					</dd>
 				</div> -->
-				<div v-if="this.avgLoanSize">
+				<div v-if="avgLoanSize">
 					<dt>Average loan size (% per capita income):</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgLoanSize }}%
 					</dd>
 				</div>
-				<div v-if="this.deliquencyRate">
+				<div v-if="deliquencyRate">
 					<dt>Deliquency rate:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ deliquencyRate }}%
 					</dd>
 				</div>
-				<div v-if="this.riskRate">
+				<div v-if="riskRate">
 					<dt>Loans at risk rate:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ riskRateFormatted }}%
 					</dd>
 				</div>
-				<div v-if="this.defaultRate">
+				<div v-if="defaultRate">
 					<dt>Default rate:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ defaultRateFormatted }}%
 					</dd>
 				</div>
-				<div v-if="this.currencyExchangeLossRate">
+				<div v-if="currencyExchangeLossRate">
 					<dt>Currency exchange loss rate:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ currencyExchangeLossRateFormatted }}%
 					</dd>
 				</div>
 			</dl>
-			<div v-if="this.loanAlertText && this.loanAlertText != ''">
+			<div v-if="loanAlertText && loanAlertText != ''">
 				<h3 class="tw-mb-1 tw-mt-4">
 					Why Kiva works with this partner:
 				</h3>

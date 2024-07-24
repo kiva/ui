@@ -8,7 +8,7 @@
 			class="tooltip-pane tw-absolute tw-bg-primary tw-rounded tw-z-popover"
 		>
 			<div class="tw-p-2.5" style="max-width: 250px;">
-				<div class="tw-text-primary tw-font-medium tw-mb-1.5" v-if="this.$slots.title">
+				<div class="tw-text-primary tw-font-medium tw-mb-1.5" v-if="$slots.title">
 					<slot name="title"></slot>
 				</div>
 				<div class="tw-text-primary">

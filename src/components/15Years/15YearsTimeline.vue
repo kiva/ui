@@ -118,7 +118,7 @@
 
 				<!-- NAV -->
 				<div class="bottom-nav">
-					<ul class="bottom-nav__list" :style="{ transform: `translateX(${-50 * this.currentIndex}%`}">
+					<ul class="bottom-nav__list" :style="{ transform: `translateX(${-50 * currentIndex}%`}">
 						<li
 							v-for="(navSlide, navIndex) in slides"
 							:key="`bottom-nav-${navSlide.year}`"
