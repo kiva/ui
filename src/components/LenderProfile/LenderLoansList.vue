@@ -14,6 +14,7 @@
 				:item-index="index"
 				:key="`loan-${loan.id}`"
 				:loan-id="loan.id"
+				:lender-public-id="publicId"
 			/>
 		</div>
 		<kv-pagination
