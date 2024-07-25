@@ -4,10 +4,10 @@ import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
 import _sortBy from 'lodash/sortBy';
 
 /**
- * Queries both the available and selected partner IDs
+ * Queries the available partner IDs
  *
  * @param apollo The Apollo Client to use
- * @returns The available and selected partner IDs
+ * @returns The IDs of the available partners
  */
 export const queryAllPartners = async apollo => {
 	let allPartners = [];
@@ -17,7 +17,7 @@ export const queryAllPartners = async apollo => {
 	};
 
 	const addFilteredPartners = partners => {
-		// Filter out the "N/A direct to ..." non-partners and sort by name
+		// Filter out the "N/A direct to ..." non-partners
 		const nonDirectPartners = partners.filter(p => p?.name?.toLowerCase()?.indexOf('direct to') === -1);
 		allPartners.push(...nonDirectPartners);
 	};
