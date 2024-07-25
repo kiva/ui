@@ -1,17 +1,7 @@
-query partnerList {
-	autolending @client {
-		id
-		currentProfile {
-			id
-			loanSearchCriteria {
-				filters {
-					partner
-				}
-			}
-		}
-	}
+query partnerList($offset: Int = 0) {
 	general {
-		partners(limit:1000, filters:{status:active}) {
+		partners(offset: $offset, limit: 100, filters: { status: active }) {
+			totalCount
 			values {
 				id
 				name
