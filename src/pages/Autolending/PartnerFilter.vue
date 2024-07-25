@@ -17,12 +17,11 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import _map from 'lodash/map';
-import _sortBy from 'lodash/sortBy';
 import { gql } from '@apollo/client';
-import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import autoLendingSelectedQuery from '@/graphql/query/autolending/autoLendingSelected.graphql';
+import { queryAllPartners } from '@/util/autoLendingUtils';
 import CheckList from './CheckList';
 
 export default {
@@ -41,16 +40,14 @@ export default {
 		};
 	},
 	apollo: {
-		query: partnerListQuery,
+		query: autoLendingSelectedQuery,
 		preFetch: true,
 		result({ data }) {
-			// Filter out the "N/A direct to ..." non-partners and sort by name
-			const allPartners = _get(data, 'general.partners.values') || [];
-			const nonDirectPartners = allPartners.filter(partner => partner.name.indexOf('direct to') === -1);
-
-			this.partnersToDisplay = _sortBy(nonDirectPartners, 'name');
-			this.currentPartnerIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.partner') || [];
+			this.currentPartnerIds = data?.autolending?.currentProfile?.loanSearchCriteria?.filters?.partner ?? [];
 		},
+	},
+	async mounted() {
+		this.partnersToDisplay = await queryAllPartners(this.apollo);
 	},
 	computed: {
 		partnersWithSelected() {
