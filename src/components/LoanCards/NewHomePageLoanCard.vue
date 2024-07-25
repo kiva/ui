@@ -126,7 +126,7 @@
 			💚
 			<router-link
 				:to="`/dedication/${loanId}`"
-				class="data-hj-suppress"
+				class="data-hj-suppress tw-capitalize"
 			>
 				{{ dedicationsCopy }}
 			</router-link>
