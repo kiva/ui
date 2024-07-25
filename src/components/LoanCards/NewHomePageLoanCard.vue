@@ -122,6 +122,15 @@
 				</figure>
 			</div>
 		</router-link>
+		<div v-if="dedications.length > 0">
+			💚
+			<router-link
+				:to="`/dedication/${loanId}`"
+				class="data-hj-suppress"
+			>
+				{{ dedicationsCopy }}
+			</router-link>
+		</div>
 	</div>
 </template>
 
@@ -162,11 +171,18 @@ export const loanFieldsFragment = gql`
 			reservedAmount
 		}
 		fundraisingPercent @client
+		dedicationToKiva(publicId: $publicId)
+		dedications(publicId: $publicId) {
+			values {
+				id
+				recipientName
+			}
+		}
 	}`;
 
 const loanCardQuery = gql`
 	${loanFieldsFragment}
-	query welcomeLoanCard($loanId: Int!) {
+	query welcomeLoanCard($loanId: Int!, $publicId: String!) {
 		lend {
 			loan(id: $loanId) {
 				id
@@ -181,6 +197,10 @@ export default {
 		loanId: {
 			type: Number,
 			required: true,
+		},
+		lenderPublicId: {
+			type: String,
+			default: '',
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -249,6 +269,21 @@ export default {
 		loanAmount() {
 			return this.loan?.loanAmount;
 		},
+		dedications() {
+			const dedications = this.loan?.dedications?.values ?? [];
+			const dedicationToKiva = this.loan?.dedicationToKiva ?? false;
+			if (dedicationToKiva) {
+				dedications.push({
+					recipientName: 'Kiva',
+				});
+			}
+			return dedications;
+		},
+		dedicationsCopy() {
+			return this.dedications.length > 1
+				? 'Multiple recipients'
+				: this.dedications[0].recipientName;
+		},
 	},
 	methods: {
 		createViewportObserver() {
@@ -279,6 +314,7 @@ export default {
 				this.queryObserver = watchLoanCardData({
 					apollo: this.apollo,
 					loanId: this.loanId,
+					publicId: this.lenderPublicId,
 					loanCardQuery,
 					callback: result => this.processQueryResult(result),
 				});
@@ -309,6 +345,7 @@ export default {
 		const cachedLoan = readLoanFragment({
 			apollo: this.apollo,
 			loanId: this.loanId,
+			publicId: this.lenderPublicId,
 			fragment: loanFieldsFragment,
 		});
 		if (cachedLoan) {
@@ -334,6 +371,7 @@ export default {
 			if (this.queryObserver) {
 				this.queryObserver.setVariables({
 					loanId,
+					publicId: this.lenderPublicId,
 				});
 			}
 		},
