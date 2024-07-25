@@ -1,4 +1,5 @@
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
+const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 
 export default {
 	data() {
@@ -17,14 +18,16 @@ export default {
 	},
 	methods: {
 		handleCartModal(payload) {
-			const { basketPosition, headerPosition } = this.getTargetsPosition();
-			this.modalPosition = {
-				top: `${headerPosition.bottom}`,
-				right: `${window.innerWidth - basketPosition.right - 200}`, // 200 to be in the middle of the basket
-			};
-			this.hasBasket = payload?.basketSize > 0;
-			this.addedLoan = { ...payload };
-			this.cartModalVisible = true;
+			if (payload?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+				const { basketPosition, headerPosition } = this.getTargetsPosition();
+				this.modalPosition = {
+					top: `${headerPosition.bottom}`,
+					right: `${window.innerWidth - basketPosition.right - 200}`, // 200 to be in the middle of the basket
+				};
+				this.hasBasket = payload?.basketSize > 0;
+				this.addedLoan = { ...payload };
+				this.cartModalVisible = true;
+			}
 		},
 		closeCartModal(closedBy) {
 			this.cartModalVisible = false;
