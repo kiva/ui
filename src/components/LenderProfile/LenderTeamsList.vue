@@ -17,13 +17,13 @@
 					:href="`/team/${team.teamPublicId}`"
 				>
 					<kv-material-icon
-						v-if="!team.image.url"
+						v-if="!team.image?.url"
 						:icon="mdiAccountCircle"
 						class="!tw-block tw-mx-auto tw-w-3/4"
 					/>
 					<img
 						v-else
-						:src="team.image.url"
+						:src="team.image?.url"
 						style="width: 200px;"
 						class="tw-object-cover tw-aspect-square"
 					>
@@ -130,7 +130,7 @@ export default {
 			this.teamsOffset = pageNum > 0 ? this.teamsLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route.query, this.urlParams)) {
+			if (!_isEqual(this.$route?.query, this.urlParams)) {
 				this.$router.push({ query: this.urlParams });
 			}
 		},

@@ -109,7 +109,7 @@ export default {
 			this.loansOffset = pageNum > 0 ? this.loansLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route.query, this.urlParams)) {
+			if (!_isEqual(this.$route?.query, this.urlParams)) {
 				this.$router.push({ query: this.urlParams });
 			}
 		},
