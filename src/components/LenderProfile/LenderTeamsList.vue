@@ -17,13 +17,13 @@
 					:href="`/team/${team.teamPublicId}`"
 				>
 					<kv-material-icon
-						v-if="!team.image?.url"
+						v-if="!getImageUrl(team)"
 						:icon="mdiAccountCircle"
 						class="!tw-block tw-mx-auto tw-w-3/4"
 					/>
 					<img
 						v-else
-						:src="team.image?.url"
+						:src="getImageUrl(team)"
 						style="width: 200px;"
 						class="tw-object-cover tw-aspect-square"
 					>
@@ -133,6 +133,9 @@ export default {
 			if (!_isEqual(this.$route?.query, this.urlParams)) {
 				this.$router.push({ query: this.urlParams });
 			}
+		},
+		getImageUrl(team) {
+			return team.image?.url ?? '';
 		},
 	},
 	mounted() {
