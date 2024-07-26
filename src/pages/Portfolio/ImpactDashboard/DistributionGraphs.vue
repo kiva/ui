@@ -4,64 +4,17 @@
 			Portfolio distribution
 		</h2>
 		<!-- tabs -->
-		<kv-tabs>
-			<template #tabNav>
-				<kv-tab
-					for-panel="location-stat-panel"
-					data-testid="location-stat-panel-tab"
-					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-location']"
-				>
-					Location
-				</kv-tab>
-				<kv-tab
-					for-panel="gender-stat-panel"
-					data-testid="gender-stat-panel-tab"
-					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-gender']"
-				>
-					Gender
-				</kv-tab>
-				<kv-tab
-					for-panel="sector-stat-panel"
-					data-testid="sector-stat-panel-tab"
-					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-sector']"
-				>
-					Sector
-				</kv-tab>
-				<kv-tab
-					for-panel="partner-stat-panel"
-					data-testid="partner-stat-panel-tab"
-					v-kv-track-event="['portfolio', 'click', 'distribution-graph-tab-lending-partner']"
-				>
-					Lending partner
-				</kv-tab>
-			</template>
-			<template #tabPanels>
-				<kv-tab-panel id="location-stat-panel" ref="locationPanel">
-					<component :is="chartType" class="tw-mb-4" :loading="locationLoading" :values="locationStats" />
-					<distribution-table :values="locationStats" measure-name="Location" />
-					<kv-button
-						v-if="!locationLoading"
-						to="/portfolio/lending-stats"
-						variant="secondary"
-						v-kv-track-event="['portfolio', 'click', 'location-distribution-graph-more-details']"
-					>
-						More details
-					</kv-button>
-				</kv-tab-panel>
-				<kv-tab-panel id="gender-stat-panel" ref="genderPanel">
-					<component :is="chartType" class="tw-mb-4" :loading="genderLoading" :values="genderStats" />
-					<distribution-table :values="genderStats" measure-name="Gender" />
-				</kv-tab-panel>
-				<kv-tab-panel id="sector-stat-panel" ref="sectorPanel">
-					<component :is="chartType" class="tw-mb-4" :loading="sectorLoading" :values="sectorStats" />
-					<distribution-table :values="sectorStats" measure-name="Sector" />
-				</kv-tab-panel>
-				<kv-tab-panel id="partner-stat-panel" ref="partnerPanel">
-					<component :is="chartType" class="tw-mb-4" :loading="partnerLoading" :values="partnerStats" />
-					<distribution-table :values="partnerStats" measure-name="Lending partner" />
-				</kv-tab-panel>
-			</template>
-		</kv-tabs>
+		<stats-table
+			ref="table"
+			:location-stats="locationStats"
+			:location-loading="locationLoading"
+			:gender-stats="genderStats"
+			:gender-loading="genderLoading"
+			:sector-stats="sectorStats"
+			:sector-loading="sectorLoading"
+			:partner-stats="partnerStats"
+			:partner-loading="partnerLoading"
+		/>
 	</async-portfolio-section>
 </template>
 
@@ -71,12 +24,8 @@ import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
 import getCacheKey from '@/util/getCacheKey';
 import PieChartFigure from '@/components/Charts/PieChartFigure';
 import TreeMapFigure from '@/components/Charts/TreeMapFigure';
+import StatsTable from '@/components/Stats/StatsTable';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import DistributionTable from './DistributionTable';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
 
 export default {
 	name: 'DistributionGraphs',
@@ -85,13 +34,7 @@ export default {
 	mixins: [delayUntilVisibleMixin],
 	components: {
 		AsyncPortfolioSection,
-		DistributionTable,
-		KvButton,
-		KvTab,
-		KvTabs,
-		KvTabPanel,
-		PieChartFigure,
-		TreeMapFigure,
+		StatsTable,
 	},
 	props: {
 		chart: {
@@ -133,16 +76,17 @@ export default {
 	mounted() {
 		// Fetch data for each panel as it becomes visible.
 		this.$nextTick(() => {
-			const targets = Object.values(this.$refs).map(ref => ref.$el);
+			const tableRefs = this.$refs.table.$refs;
+			const targets = Object.values(tableRefs).map(ref => ref.$el);
 			this.delayUntilVisible(entry => {
 				switch (entry.target) {
-					case this.$refs.locationPanel.$el:
+					case tableRefs.locationPanel.$el:
 						return this.fetchLocationStats();
-					case this.$refs.genderPanel.$el:
+					case tableRefs.genderPanel.$el:
 						return this.fetchGenderStats();
-					case this.$refs.sectorPanel.$el:
+					case tableRefs.sectorPanel.$el:
 						return this.fetchSectorStats();
-					case this.$refs.partnerPanel.$el:
+					case tableRefs.partnerPanel.$el:
 						return this.fetchPartnerStats();
 					default:
 						break;
