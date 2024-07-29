@@ -19,34 +19,42 @@ export default {
 	},
 };
 
-export const Default = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
-	components: {
-		AppealBannerCircular,
-	},
-	template: `
-		<div>
-			<appeal-banner-circular
-				:target-amount="targetAmount"
-				:amount-raised="amountRaised"
-				:button-amounts="buttonAmounts"
-				:headline="headline"
-				:body="body"
-				:is-open="isOpen"
-				:image-url="imageUrl"
-				@toggle-banner="onToggleBanner"
-				@amount-selected="onAmountSelected"
-			/>
-		</div>
-	`,
-	methods: {
-		onAmountSelected(amount) {
-			console.log(amount)
-			// update apollo and redirect to cart here
+const story = (args = {}) => {
+	const template = (_args, { argTypes }) => ({
+		props: Object.keys(argTypes),
+		components: {
+			AppealBannerCircular,
 		},
-		onToggleBanner(bannerState) {
-			console.log(bannerState);
-			// set cookies here and isOpen state here
-		}
-	},
-});
+		template: `
+			<div>
+				<appeal-banner-circular
+					:target-amount="targetAmount"
+					:amount-raised="amountRaised"
+					:button-amounts="buttonAmounts"
+					:headline="headline"
+					:body="body"
+					:is-open="isOpen"
+					:image-url="imageUrl"
+					@toggle-banner="onToggleBanner"
+					@amount-selected="onAmountSelected"
+				/>
+			</div>
+		`,
+		methods: {
+			onAmountSelected(amount) {
+				console.log(amount)
+				// update apollo and redirect to cart here
+			},
+			onToggleBanner(bannerState) {
+				console.log(bannerState);
+				// set cookies here and isOpen state here
+			}
+		},
+	});
+	template.args = args;
+	return template;
+};
+
+export const Default = story();
+
+export const MillionGoal = story({ targetAmount: 4550000 });

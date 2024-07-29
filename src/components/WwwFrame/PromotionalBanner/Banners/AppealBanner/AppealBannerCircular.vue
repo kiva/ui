@@ -234,7 +234,15 @@ export default {
 			}
 			const nearestThousand = parseFloat(Number((this.targetAmount - this.amountRaised) / 1000).toPrecision(3));
 			// const nearestThousand = numeral((this.targetAmount - this.amountRaised) / 1000).format('0.[00]');
-			return `$${nearestThousand}k <br />to goal`;
+			let numberFormat = `${nearestThousand}k`;
+
+			const numberDigits = Math.floor(Math.log10(nearestThousand)) + 1;
+			if (numberDigits > 3) {
+				const kToMillion = nearestThousand / 1000;
+				numberFormat = `${kToMillion}M`;
+			}
+
+			return `$${numberFormat} <br />to goal`;
 		}
 	},
 	methods: {
