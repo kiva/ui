@@ -1,9 +1,9 @@
 <template>
-	<div v-if="!isLoggedin || !hasCampaignReward">
+	<div v-if="!isLoggedIn || !hasCampaignReward">
 		<generic-promo-banner
 			class="tw-text-center"
 			:promo-banner-content="promoBannerContent"
-			:enable-deposit-incentive-exp="isLoggedin"
+			:enable-deposit-incentive-exp="isLoggedIn"
 			:progress-bar-value="basketTotal"
 			:amount-to-lend="amountToLend"
 		/>
@@ -14,10 +14,14 @@
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import numeral from 'numeral';
 import { gql } from '@apollo/client';
+import configSettingQuery from '@/graphql/query/configSetting.graphql';
+import logReadQueryError from '@/util/logReadQueryError';
+
+const key = 'deposit_incentive_active_campaign_id';
 
 const amountToLendQuery = gql`
 	query amountToLendQuery ($basketId: String, $campaignId: String) {
-		shop (basketId: $basketId) {
+		shop(basketId: $basketId) {
 			id
 			basket {
 				id
@@ -31,7 +35,7 @@ const amountToLendQuery = gql`
 			depositIncentiveAmountToLend
 			userAccount {
 				id
-				hasCampaignReward (campaignId: $campaignId)
+				hasCampaignReward(campaignId: $campaignId)
 			}
 		}
 	}
@@ -46,31 +50,51 @@ export default {
 		return {
 			hasCampaignReward: false,
 			amountToLend: 0,
-			isLoggedin: false,
+			isLoggedIn: false,
 			basketTotal: 0,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		query: amountToLendQuery,
-		preFetch: true,
-		variables: {
-			campaignId: '04786358-043c-4c09-af50-2d5e79ceeacd'
+		preFetch(_config, client) {
+			return client.query({ query: configSettingQuery, variables: { key } }).then(result => {
+				const campaignId = JSON.parse(result?.data?.general?.configSetting?.value ?? '""');
+				return campaignId ? client.query({ query: amountToLendQuery, variables: { campaignId } }) : null;
+			});
 		},
-		result({ data }) {
-			this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend) ?? 0;
-			this.isLoggedin = !!data?.my?.id ?? false;
-			this.basketTotal = parseFloat(data.shop?.basket?.totals?.loanReservationTotal ?? 0);
-			this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
-		},
+	},
+	created() {
+		let campaignId;
+
+		try {
+			campaignId = JSON.parse(this.apollo.readQuery({ query: configSettingQuery, variables: { key } })
+				?.general?.configSetting?.value ?? '""');
+		} catch (e) {
+			logReadQueryError(e, 'DepositIncentiveBanner configSettingQuery');
+		}
+
+		if (campaignId) {
+			try {
+				const data = this.apollo.readQuery({
+					query: amountToLendQuery,
+					variables: { campaignId, basketId: this.cookieStore.get('kvbskt') }
+				});
+				this.amountToLend = parseFloat(data?.my?.depositIncentiveAmountToLend ?? 0);
+				this.isLoggedIn = !!data?.my?.id ?? false;
+				this.basketTotal = parseFloat(data?.shop?.basket?.totals?.loanReservationTotal ?? 0);
+				this.hasCampaignReward = !!data?.my?.userAccount?.hasCampaignReward ?? false;
+			} catch (e) {
+				logReadQueryError(e, 'DepositIncentiveBanner amountToLendQuery');
+			}
+		}
 	},
 	computed: {
 		promoBannerContent() {
-			const richText = this.isLoggedin
+			const richText = this.isLoggedIn
 				? `Just for you! Lend ${numeral(this.amountToLend).format('$0,0')} and get a $25 lending credit!¹`
 				: 'Lend & get a free lending credit reward!¹ Log in or sign up to get started →';
 
-			const link = this.isLoggedin
+			const link = this.isLoggedIn
 				? '/lend/filter'
 				: '/ui-login?force=true&doneUrl=/lend/filter';
 

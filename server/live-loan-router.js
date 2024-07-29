@@ -3,7 +3,7 @@ const { error } = require('./util/log');
 const memJsUtils = require('./util/memJsUtils');
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 const fetchLoansByType = require('./util/live-loan/live-loan-fetch');
-const tracer = require('./util/ddTrace');
+const tracer = require('./util/mockTrace');
 
 async function fetchRecommendedLoans(type, id, cache, flss = false) {
 	const loanCachedName = flss ? `recommendations-by-${type}-id-${id}-flss` : `recommendations-by-${type}-id-${id}`;

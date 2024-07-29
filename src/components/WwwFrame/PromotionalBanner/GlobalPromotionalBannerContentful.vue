@@ -173,7 +173,7 @@ export default {
 				this.$kvTrackEvent,
 				'promo',
 				DEPOSIT_REWARD_EXP_KEY,
-				'EXP-MP-72-Apr2024'
+				'EXP-MP-500-Jul2024'
 			);
 
 			if (version === 'b' && this.$route.path !== '/checkout') {

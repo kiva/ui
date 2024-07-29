@@ -38,7 +38,7 @@ const metricsMiddleware = promBundle({
 });
 
 // Initialize tracing
-require('./util/ddTrace');
+require('./util/mockTrace');
 
 // Initialize a Cache instance
 const cache = initCache(config.server);

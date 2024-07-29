@@ -1180,7 +1180,7 @@ export default {
 			if (depositIncentiveExp.version) {
 				this.$kvTrackEvent(
 					'basket',
-					'EXP-MP-72-Apr2024',
+					'EXP-MP-500-Jul2024',
 					depositIncentiveExp.version
 				);
 			}

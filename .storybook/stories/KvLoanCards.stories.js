@@ -52,3 +52,49 @@ export const Loading = () => ({
 		</div>
 	`,
 });
+
+const kivaDedicationQueryResult = JSON.parse(JSON.stringify(queryResult));
+kivaDedicationQueryResult.data.lend.loan.dedicationToKiva = true;
+
+export const KivaDedication = () => ({
+	mixins: [apolloStoryMixin({ queryResult: kivaDedicationQueryResult }), cookieStoreStoryMixin()],
+	components: { NewHomePageLoanCard },
+	template: `
+		<div class="kv-tailwind">
+			<new-home-page-loan-card :loan-id="1998250" />
+		</div>
+	`,
+});
+
+const oneReceiptDedicationQueryResult = JSON.parse(JSON.stringify(queryResult));
+oneReceiptDedicationQueryResult.data.lend.loan.dedications = {
+    values: [
+        {
+            id: "2",
+            recipientName: "Mom"
+        }
+    ]
+};
+
+export const OneRecipientDedication = () => ({
+	mixins: [apolloStoryMixin({ queryResult: oneReceiptDedicationQueryResult }), cookieStoreStoryMixin()],
+	components: { NewHomePageLoanCard },
+	template: `
+		<div class="kv-tailwind">
+			<new-home-page-loan-card :loan-id="1998250" />
+		</div>
+	`,
+});
+
+const multipleRecipientsDedicationQueryResult = JSON.parse(JSON.stringify(oneReceiptDedicationQueryResult));
+multipleRecipientsDedicationQueryResult.data.lend.loan.dedicationToKiva = true;
+
+export const MultipleRecipientsDedication = () => ({
+	mixins: [apolloStoryMixin({ queryResult: multipleRecipientsDedicationQueryResult }), cookieStoreStoryMixin()],
+	components: { NewHomePageLoanCard },
+	template: `
+		<div class="kv-tailwind">
+			<new-home-page-loan-card :loan-id="1998250" />
+		</div>
+	`,
+});

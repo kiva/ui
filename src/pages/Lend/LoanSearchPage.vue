@@ -1,5 +1,18 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
+		<kv-cart-modal
+			v-if="addedLoan"
+			:style="{
+				'--modal-right': `${modalPosition.right}px`,
+				'--modal-top': `${modalPosition.top}px`
+			}"
+			class="cart-modal"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<challenge-callout
 			v-if="showChallengeCallout"
 			:current-lender="currentLender"
@@ -9,8 +22,8 @@
 			@close="closeChallengeCallout"
 		/>
 		<article
-			class="tw-bg-secondary tw-relative"
-			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader }"
+			class="tw-bg-secondary"
+			:class="{'tw-pt-6': !showChallengeHeader, 'tw-pt-3 lg:tw-pt-5': showChallengeHeader}"
 		>
 			<kv-page-container>
 				<challenge-header
@@ -54,9 +67,9 @@
 					:challenge-data="challengeData"
 					:show-loans-activity-feed="showLoansActivityFeed"
 					:enable-huge-amount="enableHugeLendAmount"
-					:enable-clickable-tags="enableClickableTags"
 					@add-to-basket="addToBasketCallback"
 					:team-name="teamName"
+					@show-cart-modal="handleCartModal"
 				/>
 			</kv-page-container>
 		</article>
@@ -77,13 +90,16 @@ import teamsGoalsQuery from '@/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import clickableTags from '@/plugins/clickable-tags-mixin';
 import goalParticipationForLoanQuery from '@/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '@/graphql/query/myPublicLenderInfo.graphql';
 import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
+import basketModalMixin from '@/plugins/basket-modal-mixin';
+import basketCountQuery from '@/graphql/query/basketCount.graphql';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
+import KvCartModal from '~/@kiva/kv-components/vue/KvCartModal';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
@@ -126,6 +142,7 @@ export default {
 		LoanSearchInterface,
 		ChallengeHeader,
 		ChallengeCallout,
+		KvCartModal,
 	},
 	data() {
 		return {
@@ -144,9 +161,10 @@ export default {
 			currentLender: undefined,
 			showLoansActivityFeed: false,
 			hideChallengeCallout: false,
+			hasBasket: false,
 		};
 	},
-	mixins: [fiveDollarsTest, hugeLendAmount, clickableTags],
+	mixins: [fiveDollarsTest, hugeLendAmount, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, args) {
@@ -354,6 +372,14 @@ export default {
 				}
 			}
 		}
+
+		const data = this.apollo.readQuery({
+			query: basketCountQuery,
+			variables: {
+				basketId: this.cookieStore.get('kvbskt'),
+			},
+		});
+		this.hasBasket = data?.shop?.nonTrivialItemCount > 0;
 	},
 	mounted() {
 		if (getHasEverLoggedIn(this.apollo)) {
@@ -383,9 +409,17 @@ export default {
 			SHOW_LOANS_ACTIVITY_FEED_EXP,
 			'EXP-ACK-1098-May2024',
 		);
-
-		// Enable clickable tags test
-		this.initializeLoanCardClickableTags();
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+
+.cart-modal >>> div.container {
+	top: var(--modal-top) !important;
+
+	@media screen(md) {
+		right: var(--modal-right) !important;
+	}
+}
+</style>

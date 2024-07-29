@@ -4,7 +4,7 @@ const Bowser = require('bowser');
 const cookie = require('cookie');
 const vueWorkerPool = require('./vue-worker-pool.js');
 const protectedRoutes = require('./util/protectedRoutes.js');
-const tracer = require('./util/ddTrace');
+const tracer = require('./util/mockTrace.js');
 
 // vue-middleware specific error handling
 function handleError(err, req, res, next) {

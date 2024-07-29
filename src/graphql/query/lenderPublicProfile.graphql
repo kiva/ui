@@ -3,11 +3,56 @@ query LenderPublicProfile ($publicId: String!) {
 		lender(publicId: $publicId) {
 			id
 			name
+			loanCount
+			memberSince
 			image {
 				id
-				url
+				url(customSize: "w200h200")
 				width
 				height
+			}
+			lenderPage {
+				whereabouts
+				occupation
+				loanBecause
+				otherInfo
+				url
+			}
+			statsPerCountry {
+				values {
+					id
+					loanCount
+					country {
+						name
+					}
+				}
+			}
+			statsPerGender {
+				values {
+					id
+					loanCount
+					gender
+				}
+			}
+			statsPerPartner {
+				values {
+					id
+					loanCount
+					partner {
+						id
+						name
+					}
+				}
+			}
+			statsPerSector {
+				values {
+					id
+					loanCount
+					sector {
+						id
+						name
+					}
+				}
 			}
 		}
 	}

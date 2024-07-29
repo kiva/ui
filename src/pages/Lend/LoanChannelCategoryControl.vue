@@ -80,6 +80,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 					</div>
 
@@ -95,6 +97,7 @@
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
+						@show-cart-modal="showCartModal"
 					/>
 				</div>
 				<div v-else>
@@ -108,6 +111,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 
 						<promo-grid-loan-card-exp
@@ -124,6 +129,8 @@
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
+							:add-to-basket-exp-enabled="enableAddToBasketExp"
+							@show-cart-modal="showCartModal"
 						/>
 					</div>
 
@@ -139,6 +146,7 @@
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
+						@show-cart-modal="showCartModal"
 					/>
 				</div>
 				<kv-pagination
@@ -187,6 +195,7 @@ import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCard
 import EmptyState from '@/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
 
 const defaultLoansPerPage = 12;
 
@@ -291,7 +300,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin],
+	mixins: [loanChannelQueryMapMixin, addToBasketExpMixin],
 	data() {
 		return {
 			offset: 0,
@@ -428,6 +437,9 @@ export default {
 		},
 		userBalance() {
 			return this.userData?.balance;
+		},
+		hasBasket() {
+			return this.itemsInBasket.length > 0;
 		},
 	},
 	apollo: {
@@ -802,7 +814,7 @@ export default {
 		},
 		resetPagination() {
 			this.pageChange({ pageOffset: 0 });
-		}
+		},
 	},
 	watch: {
 		loanIds(newVal, oldVal) {
@@ -862,4 +874,5 @@ export default {
 		}
 	}
 }
+
 </style>

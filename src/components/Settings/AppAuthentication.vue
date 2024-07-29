@@ -26,8 +26,8 @@
 					<vue-qrcode
 						class="app-authentication__barcode"
 						:value="barcodeURI"
-						:scale="3"
-						error-correction-level="low"
+						size="150"
+						level="L"
 						v-if="barcodeURI"
 					/>
 					<kv-button class="tw-w-full tw-mb-2" @click="afterScan">
@@ -106,7 +106,7 @@ import { validationMixin } from 'vuelidate';
 import {
 	required, minLength, maxLength, numeric
 } from 'vuelidate/lib/validators';
-import VueQrcode from 'vue-qrcode';
+import VueQrcode from 'qrcode.vue';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
@@ -296,7 +296,8 @@ export default {
 	}
 
 	&__barcode {
-		display: block;
+		display: flex;
+		justify-content: center;
 		margin: 1rem auto 1.5rem;
 	}
 

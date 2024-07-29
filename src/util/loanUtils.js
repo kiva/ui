@@ -249,13 +249,14 @@ export function watchLoanData({
 }
 
 export function watchLoanCardData({
-	apollo, loanId, loanCardQuery, callback
+	apollo, loanId, loanCardQuery, callback, publicId
 }) {
 	// Setup query observer to watch for changes to the loan data (async)
 	const queryObserver = apollo.watchQuery({
 		query: loanCardQuery,
 		variables: {
 			loanId,
+			publicId,
 		},
 	});
 
@@ -270,7 +271,7 @@ export function watchLoanCardData({
 }
 
 export function readLoanFragment({
-	apollo, loanId, fragment
+	apollo, loanId, fragment, publicId
 }) {
 	let partnerFragment;
 	let directFragment;
@@ -279,6 +280,7 @@ export function readLoanFragment({
 		// If cache is missing fragment fields, this will throw an invariant error
 		partnerFragment = apollo.readFragment({
 			id: `LoanPartner:${loanId}`,
+			publicId,
 			fragment,
 		}) || null;
 	} catch (e) {

@@ -1,0 +1,20 @@
+query LenderTeams ($publicId: String!, $offset: Int, $limit: Int) {
+	community {
+		lender(publicId: $publicId) {
+			id
+			teams(offset: $offset, limit: $limit) {
+				totalCount
+				values {
+					id
+					name
+					category
+					teamPublicId
+					image {
+						id
+						url(customSize: "w200h200")
+					}
+				}
+			}
+		}
+	}
+}

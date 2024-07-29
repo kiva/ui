@@ -1,5 +1,5 @@
 const { log } = require('./log');
-const tracer = require('./ddTrace');
+const tracer = require('./mockTrace');
 
 module.exports = {
 	getFromCache: (key, cache) => {
