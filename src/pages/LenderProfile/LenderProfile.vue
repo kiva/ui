@@ -21,6 +21,12 @@
 			<lender-stats
 				:lender-info="lenderInfo"
 			/>
+
+			<lender-badges
+				:total-possible-badges="allAchievements.length"
+				:completed-achievements="completedAchievements"
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -33,6 +39,7 @@ import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphq
 import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
 import LenderStats from '@/components/LenderProfile/LenderStats';
 import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
+import LenderBadges from '@/components/LenderProfile/LenderBadges';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -45,6 +52,7 @@ export default {
 		LenderLoansList,
 		LenderStats,
 		LenderTeamsList,
+		LenderBadges,
 	},
 	metaInfo() {
 		return {
@@ -77,6 +85,7 @@ export default {
 		return {
 			lenderInfo: {},
 			publicId: '',
+			allAchievements: [],
 		};
 	},
 	apollo: {
@@ -105,6 +114,9 @@ export default {
 		pageDescription() {
 			return `${this.lenderName} from ${this.lenderWhereAbouts} has made ${this.loanCount} loans on Kiva.`;
 		},
+		completedAchievements() {
+			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
+		},
 	},
 	created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -118,6 +130,7 @@ export default {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
 		}
 		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
+		this.allAchievements = cachedLenderInfo.userAchievementProgress?.achievementProgress ?? [];
 	}
 };
 </script>

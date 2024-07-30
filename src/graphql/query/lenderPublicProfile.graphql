@@ -56,4 +56,10 @@ query LenderPublicProfile ($publicId: String!) {
 			}
 		}
 	}
+	userAchievementProgress(publicId: $publicId) {
+		achievementProgress {
+			achievementId
+			status
+		}
+	}
 }
