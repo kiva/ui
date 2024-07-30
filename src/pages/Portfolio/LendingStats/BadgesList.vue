@@ -52,7 +52,7 @@ export default {
 	props: {
 		completedAchievements: {
 			type: Array,
-			default: () => []
+			default: () => ([])
 		},
 		totalPossibleBadges: {
 			type: Number,
@@ -111,6 +111,9 @@ export default {
 							};
 						});
 					}
+				}).catch(err => {
+					console.error(err);
+					this.$showTipMsg('There was a problem loading badges', 'error');
 				});
 			}
 		}

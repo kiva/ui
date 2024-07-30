@@ -42,6 +42,7 @@
 			:limit="teamsLimit"
 			:total="totalCount"
 			:offset="teamsOffset"
+			:scroll-to-top="false"
 			@page-changed="pageChange"
 		/>
 	</section>

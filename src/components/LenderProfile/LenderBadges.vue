@@ -21,7 +21,7 @@ export default {
 	props: {
 		completedAchievements: {
 			type: Array,
-			default: () => []
+			default: () => ([])
 		},
 		totalPossibleBadges: {
 			type: Number,
