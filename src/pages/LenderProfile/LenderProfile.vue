@@ -13,18 +13,18 @@
 				:lender-info="lenderInfo"
 			/>
 
+			<lender-badges
+				:total-possible-badges="allAchievements.length"
+				:completed-achievements="completedAchievements"
+				:lender-info="lenderInfo"
+			/>
+
 			<lender-teams-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
 			/>
 
 			<lender-stats
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-badges
-				:total-possible-badges="allAchievements.length"
-				:completed-achievements="completedAchievements"
 				:lender-info="lenderInfo"
 			/>
 		</kv-page-container>

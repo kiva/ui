@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h4>{{ lenderName }}'s Badges</h4>
+		<h4>{{ badgesTitle }}</h4>
 		<badges-list
 			class="tw-my-4"
 			:completed-achievements="completedAchievements"
@@ -38,6 +38,11 @@ export default {
 		},
 		lenderName() {
 			return this.lenderInfo?.name ?? '';
+		},
+		badgesTitle() {
+			return this.lenderInfo?.name
+				? `${this.lenderInfo.name}'s badges`
+				: 'Badges';
 		}
 	}
 };
