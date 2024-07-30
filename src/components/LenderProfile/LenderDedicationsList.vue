@@ -32,6 +32,7 @@
 			:limit="dedicationsLimit"
 			:total="totalCount"
 			:offset="dedicationsOffset"
+			:scroll-to-top="false"
 			@page-changed="pageChange"
 		/>
 	</section>

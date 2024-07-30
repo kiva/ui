@@ -23,6 +23,11 @@
 				:lender-info="lenderInfo"
 			/>
 
+			<lender-invitees-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
 			<lender-stats
 				:lender-info="lenderInfo"
 			/>
@@ -38,6 +43,7 @@ import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphq
 import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
 import LenderStats from '@/components/LenderProfile/LenderStats';
 import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
+import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
 import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
@@ -51,6 +57,7 @@ export default {
 		LenderLoansList,
 		LenderStats,
 		LenderTeamsList,
+		LenderInviteesList,
 		LenderDedicationsList,
 	},
 	metaInfo() {
