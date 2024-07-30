@@ -1,0 +1,22 @@
+query LenderInvitees ($publicId: String!, $offset: Int, $limit: Int) {
+	community {
+		lender(publicId: $publicId) {
+			id
+			invitees(offset: $offset, limit: $limit) {
+				totalCount
+				values {
+					id
+					name
+					publicId
+					image {
+						id
+						url(customSize: "w200h200")
+					}
+					lenderPage {
+						whereabouts
+					}
+				}
+			}
+		}
+	}
+}
