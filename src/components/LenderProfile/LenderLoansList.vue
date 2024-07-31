@@ -119,7 +119,7 @@ export default {
 		},
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 50 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},
