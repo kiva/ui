@@ -1,47 +1,37 @@
 <template>
-	<section v-if="lenderTeams.length > 0" class="tw-my-8" id="lender-teams">
+	<section v-if="lenderDedications.length > 0" class="tw-my-8" id="lender-dedications">
 		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderTeamsTitle }}
+			{{ lenderDedicationsTitle }}
 		</h4>
 		<p class="tw-mb-2">
-			{{ showedTeams }}
+			{{ showedDedications }}
 		</p>
 
 		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
 			<div
-				v-for="team in lenderTeams"
-				:key="`team-${team.id}`"
+				v-for="dedication in lenderDedications"
+				:key="`dedication-${dedication.id}`"
 				class="tw-flex tw-flex-col tw-gap-0.5"
 			>
 				<a
-					:href="`/team/${team.teamPublicId}`"
+					:href="`/dedication/${dedication.loanId}`"
 				>
-					<kv-material-icon
-						v-if="!getImageUrl(team)"
-						:icon="mdiAccountCircle"
-						class="!tw-block tw-mx-auto tw-w-3/4"
-					/>
-					<img
-						v-else
-						:src="getImageUrl(team)"
-						style="width: 200px;"
-						class="tw-object-cover tw-aspect-square"
-					>
+					<dedicate-heart class="tw-w-full tw-px-4 tw-fill-brand" />
 				</a>
 				<a
-					:href="`/team/${team.teamPublicId}`"
+					:href="`/dedication/${dedication.loanId}`"
+					class="data-hj-suppress"
 				>
-					{{ team.name }}
+					Dedicated by {{ dedication.senderName }}
 				</a>
-				<p>{{ team.category }}</p>
 			</div>
 		</div>
 		<kv-pagination
 			class="tw-mt-4"
-			v-if="totalCount > teamsLimit"
-			:limit="teamsLimit"
+			v-if="totalCount > dedicationsLimit"
+			:limit="dedicationsLimit"
 			:total="totalCount"
-			:offset="teamsOffset"
+			:offset="dedicationsOffset"
 			:scroll-to-top="false"
 			@page-changed="pageChange"
 		/>
@@ -55,17 +45,17 @@ import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '#src/util/logReadQueryError';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import lenderTeamsQuery from '#src/graphql/query/lenderTeams.graphql';
+import lenderDedicationsQuery from '#src/graphql/query/lenderDedications.graphql';
+import DedicateHeart from '#src/assets/icons/inline/dedicate-heart.svg';
 import KvPagination from '@kiva/kv-components/vue/KvPagination';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
-	name: 'LenderTeamsList',
+	name: 'LenderDedicationsList',
 	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvPagination,
-		KvMaterialIcon,
+		DedicateHeart,
 	},
 	props: {
 		publicId: {
@@ -79,68 +69,65 @@ export default {
 	},
 	data() {
 		return {
-			lenderTeams: [],
-			teamsLimit: 12,
-			teamsOffset: 0,
+			lenderDedications: [],
+			dedicationsLimit: 12,
+			dedicationsOffset: 0,
 			totalCount: 0,
-			pageQuery: { teams: '1' },
+			pageQuery: { dedications: '1' },
 			mdiAccountCircle,
 		};
 	},
 	computed: {
-		lenderTeamsTitle() {
+		lenderDedicationsTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s teams`
-				: 'Teams';
+				? `${this.lenderInfo.name}'s loan dedications`
+				: 'Loan dedications';
 		},
-		showedTeams() {
+		showedDedications() {
 			return this.totalCount > 1
-				? `${this.totalCount} teams`
-				: `${this.totalCount} team`;
+				? `${this.totalCount} dedications`
+				: `${this.totalCount} dedication`;
 		},
 		urlParams() {
-			const teamsPage = Math.floor(this.teamsOffset / this.teamsLimit) + 1;
+			const dedicationsPage = Math.floor(this.dedicationsOffset / this.dedicationsLimit) + 1;
 
-			return { teams: teamsPage > 1 ? String(teamsPage) : undefined };
+			return { dedications: dedicationsPage > 1 ? String(dedicationsPage) : undefined };
 		},
 	},
 	methods: {
-		async fetchLenderTeams() {
+		async fetchLenderDedications() {
 			try {
 				const { data } = await this.apollo.query({
-					query: lenderTeamsQuery,
+					query: lenderDedicationsQuery,
 					variables: {
 						publicId: this.publicId,
-						limit: this.teamsLimit,
-						offset: this.teamsOffset
+						limit: this.dedicationsLimit,
+						offset: this.dedicationsOffset
 					},
 				});
 
-				this.lenderTeams = data.community?.lender?.teams?.values ?? [];
-				this.totalCount = data.community?.lender?.teams?.totalCount ?? 0;
+				this.lenderDedications = data.community?.lender?.dedicationsReceived?.values ?? [];
+				this.totalCount = data.community?.lender?.dedicationsReceived?.totalCount ?? 0;
 			} catch (e) {
-				logReadQueryError(e, 'LenderTeamsList lenderTeamsQuery');
+				logReadQueryError(e, 'LenderDedicationsList lenderDedicationsQuery');
 			}
 		},
 		pageChange({ pageOffset }) {
-			this.teamsOffset = pageOffset;
+			this.dedicationsOffset = pageOffset;
 			this.pushChangesToUrl();
-			this.fetchLenderTeams();
-			this.scrollToSection('#lender-teams');
+			this.fetchLenderDedications();
+			this.scrollToSection('#lender-dedications');
 		},
 		updateFromParams(query) {
-			const pageNum = numeral(query.teams).value() - 1;
+			const pageNum = numeral(query.dedications).value() - 1;
 
-			this.teamsOffset = pageNum > 0 ? this.teamsLimit * pageNum : 0;
+			this.dedicationsOffset = pageNum > 0 ? this.dedicationsLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
 			const currentQuery = this.$route?.query;
 			if (!_isEqual(currentQuery, this.urlParams)) {
 				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
-		},
-		getImageUrl(team) {
-			return team.image?.url ?? '';
 		},
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
@@ -149,7 +136,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchLenderTeams();
+		this.fetchLenderDedications();
 	},
 	created() {
 		this.pageQuery = _get(this.$route, 'query');

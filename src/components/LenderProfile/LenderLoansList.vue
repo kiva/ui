@@ -1,5 +1,5 @@
 <template>
-	<section v-if="lenderLoans.length > 0" class="tw-my-8">
+	<section v-if="lenderLoans.length > 0" class="tw-my-8" id="lender-loans">
 		<h4 class="data-hj-suppress tw-mb-1">
 			{{ lenderLoansTitle }}
 		</h4>
@@ -9,11 +9,12 @@
 
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-3">
 			<new-home-page-loan-card
-				class="!tw-max-w-full"
+				class="!tw-max-w-full lender-card"
 				v-for="(loan, index) in lenderLoans"
 				:item-index="index"
 				:key="`loan-${loan.id}`"
 				:loan-id="loan.id"
+				:lender-public-id="publicId"
 			/>
 		</div>
 		<kv-pagination
@@ -32,12 +33,14 @@ import _isEqual from 'lodash/isEqual';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import logReadQueryError from '#src/util/logReadQueryError';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderLoansQuery from '#src/graphql/query/lenderLoans.graphql';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
 import KvPagination from '@kiva/kv-components/vue/KvPagination';
 
 export default {
 	name: 'LenderLoansList',
+	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		NewHomePageLoanCard,
@@ -101,6 +104,7 @@ export default {
 			this.loansOffset = pageOffset;
 			this.pushChangesToUrl();
 			this.fetchLenderLoans();
+			this.scrollToSection('#lender-loans');
 		},
 		updateFromParams(query) {
 			const pageNum = numeral(query.loans).value() - 1;
@@ -108,10 +112,16 @@ export default {
 			this.loansOffset = pageNum > 0 ? this.loansLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route.query, this.urlParams)) {
-				this.$router.push({ query: this.urlParams });
+			const currentQuery = this.$route?.query;
+			if (!_isEqual(currentQuery, this.urlParams)) {
+				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.fetchLenderLoans();
@@ -122,3 +132,10 @@ export default {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+:deep(.lender-card .loading-placeholder),
+:deep(.lender-card .loading-paragraph) {
+	@apply !tw-w-full !tw-max-w-full;
+}
+</style>

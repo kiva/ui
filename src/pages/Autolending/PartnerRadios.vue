@@ -33,10 +33,11 @@
 </template>
 
 <script>
-import partnerListQuery from '#src/graphql/query/autolending/partnerList.graphql';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvRadio from '#src/components/Kv/KvRadio';
 import anyOrSelectedAutolendingRadio from '#src/plugins/any-or-selected-autolending-radio-mixin';
+import autoLendingSelectedQuery from '#src/graphql/query/autolending/autoLendingSelected.graphql';
+import { queryAllPartners } from '#src/util/autoLendingUtils';
 
 export default {
 	name: 'PartnerRadios',
@@ -55,10 +56,9 @@ export default {
 		};
 	},
 	apollo: {
-		query: partnerListQuery,
+		query: autoLendingSelectedQuery,
 		preFetch: true,
 		result({ data }) {
-			this.allPartners = data?.general?.partners?.values ?? [];
 			this.currentFilterValues = data?.autolending?.currentProfile?.loanSearchCriteria?.filters?.partner ?? [];
 
 			if (this.currentFilterValues.length) {
@@ -67,6 +67,9 @@ export default {
 				this.radio = 'all';
 			}
 		},
+	},
+	async mounted() {
+		this.allPartners = await queryAllPartners(this.apollo);
 	},
 	computed: {
 		selectedPartners() {

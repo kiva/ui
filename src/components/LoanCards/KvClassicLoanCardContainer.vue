@@ -27,7 +27,6 @@
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
 			:enable-huge-amount="enableHugeAmount"
-			:enable-clickable-tags="enableClickableTags"
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
@@ -157,10 +156,6 @@ export default {
 			default: false,
 		},
 		enableHugeAmount: {
-			type: Boolean,
-			default: false,
-		},
-		enableClickableTags: {
 			type: Boolean,
 			default: false,
 		},

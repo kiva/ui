@@ -1,0 +1,13 @@
+query autoLendingSelected {
+	autolending @client {
+		id
+		currentProfile {
+			id
+			loanSearchCriteria {
+				filters {
+					partner
+				}
+			}
+		}
+	}
+}

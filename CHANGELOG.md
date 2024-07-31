@@ -1,3 +1,140 @@
+## [2.748.0](https://github.com/kiva/ui/compare/v2.747.1...v2.748.0) (2024-07-29)
+
+
+### 🎉 New Features
+
+* add experiment to lend/filter page ([aab69c8](https://github.com/kiva/ui/commit/aab69c8bae7350caf72d1c9434cd69b6df0e128f))
+* adding addToBasket exp to lend-by-category page ([cb19ac3](https://github.com/kiva/ui/commit/cb19ac3b2a37288032ef9b592cf103dda92284c0))
+* dedications added to lender loans list ([#5413](https://github.com/kiva/ui/issues/5413)) ([816289f](https://github.com/kiva/ui/commit/816289f2b31e2ad7d85d1d79538c2491f26d9252))
+* get deposit incentive banner campaign ID from settings manager ([0de7ae1](https://github.com/kiva/ui/commit/0de7ae14209e083370451c81fce4222ea7095b34))
+* get updated loan card from kv-components ([7e94654](https://github.com/kiva/ui/commit/7e9465473bfe00fd1ce24a8a5dc155f9890d621a))
+* hide cart modal after second loan ([0263a4f](https://github.com/kiva/ui/commit/0263a4fe232322978e0103922b41ad7cc51959f1))
+* lender profile kiva card cta ([#5408](https://github.com/kiva/ui/issues/5408)) ([a092d69](https://github.com/kiva/ui/commit/a092d6954a536c614fc7538a5a3051e362507122))
+* lender profile loan list added ([#5409](https://github.com/kiva/ui/issues/5409)) ([916c348](https://github.com/kiva/ui/commit/916c348c0190757a68c55bfbdbf2d7f31ac3cc9b))
+* lender profile summary component added ([#5405](https://github.com/kiva/ui/issues/5405)) ([c77c2f8](https://github.com/kiva/ui/commit/c77c2f8ff33c9771c245b2a633497a88731f365b))
+* million goal added to appeal banner component ([#5420](https://github.com/kiva/ui/issues/5420)) ([ee822b1](https://github.com/kiva/ui/commit/ee822b1e5f8459a8dfefa068c11ea5dc77751bc7))
+* mobile new add to basket experiment bubble and header change ([5007707](https://github.com/kiva/ui/commit/5007707ccdbcf2e13d54c9a83b3b02b8dfcc4540))
+* move lender bubble to the basket ([abc3992](https://github.com/kiva/ui/commit/abc3992e24fe1dd8639e7539a49f9c5baaebc1e1))
+* new lender profile page added ([#5403](https://github.com/kiva/ui/issues/5403)) ([65ad2d5](https://github.com/kiva/ui/commit/65ad2d5586358318bd82013690b2e07bc5d1efb6))
+* remove clickable tags exp ([eb60056](https://github.com/kiva/ui/commit/eb60056a0fd125056930c60b48dd7be8efaa388f))
+* show modal after bubble animation and tracking events ([62e5a5e](https://github.com/kiva/ui/commit/62e5a5eed5a4f5de4c8fa204dfa114703dbe14bd))
+* stats in lender profile ([453ae73](https://github.com/kiva/ui/commit/453ae73b6ed93f88b35f73ee78502a02be2fde04))
+* teams section added to lender profile page ([#5410](https://github.com/kiva/ui/issues/5410)) ([56711c7](https://github.com/kiva/ui/commit/56711c7aedcec04d0b3573181e14d36d6350f4b2))
+* update kv-components ([8a6fa77](https://github.com/kiva/ui/commit/8a6fa77d6f2235ebb601bc3a0ee449e01d3e0ce6))
+* use different qr code that's vue 2 compatible ([2372ada](https://github.com/kiva/ui/commit/2372adad9ed482f29a8ded95955f0861ea86f4fd))
+
+
+### 🐛 Bugfixes
+
+* bubble hiding behind loan image ([9108398](https://github.com/kiva/ui/commit/910839837998acc66679759544f73ddb8467c08a))
+* cart modal in tablet and margin on lend filter when header is sticky ([9dce178](https://github.com/kiva/ui/commit/9dce17804943495097b1be10d97ba8594362efc0))
+* change from running npm install locally ([e5d4703](https://github.com/kiva/ui/commit/e5d470315acb158db5cfbf15e8dad0022f62f2e7))
+* cleanup QR code location ([6def469](https://github.com/kiva/ui/commit/6def469eaedff1b17b4e049d73668bc8675be60c))
+* conflicts ([f6b9871](https://github.com/kiva/ui/commit/f6b9871eba6dfa6c0e25a6ec787f85a00a04cba1))
+* handle errors ([7b7db37](https://github.com/kiva/ui/commit/7b7db375a1ea5e6e0d5052bc4e32b961b64b63b5))
+* lender profile components fix ([#5418](https://github.com/kiva/ui/issues/5418)) ([05198b7](https://github.com/kiva/ui/commit/05198b7473844a0a6ce97ffc0d0b8cb951f814af))
+* lint ([421f4e7](https://github.com/kiva/ui/commit/421f4e75aec2fe2c89954023d6402667e6e7358c))
+* lint ([b72139d](https://github.com/kiva/ui/commit/b72139dfa7d619dca1f38608cc399c2da14580cb))
+* load margin problem in lend by category page and remove saving exp variant ([6bfb101](https://github.com/kiva/ui/commit/6bfb1014a00cf69963bcbbd0832e0996c8c1f61a))
+* make header sticky in add to basket exp ([4c4c1f5](https://github.com/kiva/ui/commit/4c4c1f5e2130573a1e823d19508bad90b5d93a63))
+* missing props and emits for components and design tweaks ([20bf789](https://github.com/kiva/ui/commit/20bf7894f0183f36989e9f0e3fdaa643330fe497))
+* package version ([45ce53b](https://github.com/kiva/ui/commit/45ce53bcc59ceb7f4f77eb500d74a73dc6960d57))
+* partner list in autolending settings now show all active partners ([a4886ff](https://github.com/kiva/ui/commit/a4886ff783dc506af771927dcc8773cfeced56d2))
+* remove comment ([73d48c4](https://github.com/kiva/ui/commit/73d48c4cdf0a14cb185eff21f99c8d13d08b7635))
+* remove full height ([3ec20ec](https://github.com/kiva/ui/commit/3ec20ecb4e0b9eb328e2cdfef0f98c87ff50bf9b))
+* remove tw-h-auto ([999f079](https://github.com/kiva/ui/commit/999f079eb114a89a2a56ba2998b15bd439ce2626))
+* removed unused qrcode package ([8628880](https://github.com/kiva/ui/commit/86288803e903c59f400a2aa51f6b8b6a4672dbed))
+* revert file ([cfd3a46](https://github.com/kiva/ui/commit/cfd3a46abf9286a093106998678aa47f33bbac5c))
+* run experiment in lend-by-category and lend/filter pages ([6f4ee00](https://github.com/kiva/ui/commit/6f4ee006894f9987fa6536ee3052008efb4324bb))
+* set cart modal position to be bellow header ([a9d1e17](https://github.com/kiva/ui/commit/a9d1e174ac96e15d4703b203498df08316d7f25d))
+* set value of exp for sticky header ([19a354c](https://github.com/kiva/ui/commit/19a354c2d53d6e137c930144d1edf794af55d7aa))
+* solve conflicts ([27cdb2c](https://github.com/kiva/ui/commit/27cdb2ca04cfc9ed307e46ca806eb97f25157ade))
+* sudden jump when loan is added to the basket ([85d211b](https://github.com/kiva/ui/commit/85d211b461e0d35b7d81611512addc38b45b869c))
+* update deposit incentive experiment ([8485caa](https://github.com/kiva/ui/commit/8485caadc8dca25f1e71f67e4bb080ca55fd0765))
+* update deposit incentive experiment ([18c2fbf](https://github.com/kiva/ui/commit/18c2fbffdc5f21dd51e8420cafa433d9b011cbc5))
+* updated comments ([c363ce0](https://github.com/kiva/ui/commit/c363ce0a4cc09bf1b38b873898de341b11f664de))
+
+
+### 🪚 Refactors
+
+* move exp tracking to header ([a067e1c](https://github.com/kiva/ui/commit/a067e1c9275b01437166dbebc79a9d1108d0b6c7))
+
+
+### 🧹 Chores
+
+* **release:** 2.747.2-rc.1 [skip ci] ([e107682](https://github.com/kiva/ui/commit/e1076823eb523befaab55521c8aedc689a0604b5))
+* **release:** 2.748.0-rc.1 [skip ci] ([8cb37d3](https://github.com/kiva/ui/commit/8cb37d3aedf05fdb7e57abdabac2b60bfe84b9f0)), closes [#5413](https://github.com/kiva/ui/issues/5413) [#5408](https://github.com/kiva/ui/issues/5408) [#5409](https://github.com/kiva/ui/issues/5409) [#5405](https://github.com/kiva/ui/issues/5405) [#5420](https://github.com/kiva/ui/issues/5420) [#5403](https://github.com/kiva/ui/issues/5403) [#5410](https://github.com/kiva/ui/issues/5410) [#5418](https://github.com/kiva/ui/issues/5418) [#5403](https://github.com/kiva/ui/issues/5403)
+* **release:** 2.748.0-rc.1 [skip ci] ([4354d3f](https://github.com/kiva/ui/commit/4354d3f0dc2c0a8b70df8db97bdead3b9c4f29a1)), closes [#5403](https://github.com/kiva/ui/issues/5403)
+* remove ddTrace converting that tracer implementation to a pass through for now ([a3c5dfa](https://github.com/kiva/ui/commit/a3c5dfa12e323e637595ce17f5f2cae7881cbc8b))
+
+## [2.748.0-rc.1](https://github.com/kiva/ui/compare/v2.747.1...v2.748.0-rc.1) (2024-07-29)
+
+
+### 🎉 New Features
+
+* add experiment to lend/filter page ([aab69c8](https://github.com/kiva/ui/commit/aab69c8bae7350caf72d1c9434cd69b6df0e128f))
+* adding addToBasket exp to lend-by-category page ([cb19ac3](https://github.com/kiva/ui/commit/cb19ac3b2a37288032ef9b592cf103dda92284c0))
+* dedications added to lender loans list ([#5413](https://github.com/kiva/ui/issues/5413)) ([816289f](https://github.com/kiva/ui/commit/816289f2b31e2ad7d85d1d79538c2491f26d9252))
+* get deposit incentive banner campaign ID from settings manager ([0de7ae1](https://github.com/kiva/ui/commit/0de7ae14209e083370451c81fce4222ea7095b34))
+* get updated loan card from kv-components ([7e94654](https://github.com/kiva/ui/commit/7e9465473bfe00fd1ce24a8a5dc155f9890d621a))
+* hide cart modal after second loan ([0263a4f](https://github.com/kiva/ui/commit/0263a4fe232322978e0103922b41ad7cc51959f1))
+* lender profile kiva card cta ([#5408](https://github.com/kiva/ui/issues/5408)) ([a092d69](https://github.com/kiva/ui/commit/a092d6954a536c614fc7538a5a3051e362507122))
+* lender profile loan list added ([#5409](https://github.com/kiva/ui/issues/5409)) ([916c348](https://github.com/kiva/ui/commit/916c348c0190757a68c55bfbdbf2d7f31ac3cc9b))
+* lender profile summary component added ([#5405](https://github.com/kiva/ui/issues/5405)) ([c77c2f8](https://github.com/kiva/ui/commit/c77c2f8ff33c9771c245b2a633497a88731f365b))
+* million goal added to appeal banner component ([#5420](https://github.com/kiva/ui/issues/5420)) ([ee822b1](https://github.com/kiva/ui/commit/ee822b1e5f8459a8dfefa068c11ea5dc77751bc7))
+* mobile new add to basket experiment bubble and header change ([5007707](https://github.com/kiva/ui/commit/5007707ccdbcf2e13d54c9a83b3b02b8dfcc4540))
+* move lender bubble to the basket ([abc3992](https://github.com/kiva/ui/commit/abc3992e24fe1dd8639e7539a49f9c5baaebc1e1))
+* new lender profile page added ([#5403](https://github.com/kiva/ui/issues/5403)) ([65ad2d5](https://github.com/kiva/ui/commit/65ad2d5586358318bd82013690b2e07bc5d1efb6))
+* remove clickable tags exp ([eb60056](https://github.com/kiva/ui/commit/eb60056a0fd125056930c60b48dd7be8efaa388f))
+* show modal after bubble animation and tracking events ([62e5a5e](https://github.com/kiva/ui/commit/62e5a5eed5a4f5de4c8fa204dfa114703dbe14bd))
+* stats in lender profile ([453ae73](https://github.com/kiva/ui/commit/453ae73b6ed93f88b35f73ee78502a02be2fde04))
+* teams section added to lender profile page ([#5410](https://github.com/kiva/ui/issues/5410)) ([56711c7](https://github.com/kiva/ui/commit/56711c7aedcec04d0b3573181e14d36d6350f4b2))
+* update kv-components ([8a6fa77](https://github.com/kiva/ui/commit/8a6fa77d6f2235ebb601bc3a0ee449e01d3e0ce6))
+* use different qr code that's vue 2 compatible ([2372ada](https://github.com/kiva/ui/commit/2372adad9ed482f29a8ded95955f0861ea86f4fd))
+
+
+### 🐛 Bugfixes
+
+* bubble hiding behind loan image ([9108398](https://github.com/kiva/ui/commit/910839837998acc66679759544f73ddb8467c08a))
+* cart modal in tablet and margin on lend filter when header is sticky ([9dce178](https://github.com/kiva/ui/commit/9dce17804943495097b1be10d97ba8594362efc0))
+* change from running npm install locally ([e5d4703](https://github.com/kiva/ui/commit/e5d470315acb158db5cfbf15e8dad0022f62f2e7))
+* cleanup QR code location ([6def469](https://github.com/kiva/ui/commit/6def469eaedff1b17b4e049d73668bc8675be60c))
+* conflicts ([f6b9871](https://github.com/kiva/ui/commit/f6b9871eba6dfa6c0e25a6ec787f85a00a04cba1))
+* handle errors ([7b7db37](https://github.com/kiva/ui/commit/7b7db375a1ea5e6e0d5052bc4e32b961b64b63b5))
+* lender profile components fix ([#5418](https://github.com/kiva/ui/issues/5418)) ([05198b7](https://github.com/kiva/ui/commit/05198b7473844a0a6ce97ffc0d0b8cb951f814af))
+* lint ([421f4e7](https://github.com/kiva/ui/commit/421f4e75aec2fe2c89954023d6402667e6e7358c))
+* lint ([b72139d](https://github.com/kiva/ui/commit/b72139dfa7d619dca1f38608cc399c2da14580cb))
+* load margin problem in lend by category page and remove saving exp variant ([6bfb101](https://github.com/kiva/ui/commit/6bfb1014a00cf69963bcbbd0832e0996c8c1f61a))
+* make header sticky in add to basket exp ([4c4c1f5](https://github.com/kiva/ui/commit/4c4c1f5e2130573a1e823d19508bad90b5d93a63))
+* missing props and emits for components and design tweaks ([20bf789](https://github.com/kiva/ui/commit/20bf7894f0183f36989e9f0e3fdaa643330fe497))
+* package version ([45ce53b](https://github.com/kiva/ui/commit/45ce53bcc59ceb7f4f77eb500d74a73dc6960d57))
+* partner list in autolending settings now show all active partners ([a4886ff](https://github.com/kiva/ui/commit/a4886ff783dc506af771927dcc8773cfeced56d2))
+* remove comment ([73d48c4](https://github.com/kiva/ui/commit/73d48c4cdf0a14cb185eff21f99c8d13d08b7635))
+* remove full height ([3ec20ec](https://github.com/kiva/ui/commit/3ec20ecb4e0b9eb328e2cdfef0f98c87ff50bf9b))
+* remove tw-h-auto ([999f079](https://github.com/kiva/ui/commit/999f079eb114a89a2a56ba2998b15bd439ce2626))
+* removed unused qrcode package ([8628880](https://github.com/kiva/ui/commit/86288803e903c59f400a2aa51f6b8b6a4672dbed))
+* revert file ([cfd3a46](https://github.com/kiva/ui/commit/cfd3a46abf9286a093106998678aa47f33bbac5c))
+* run experiment in lend-by-category and lend/filter pages ([6f4ee00](https://github.com/kiva/ui/commit/6f4ee006894f9987fa6536ee3052008efb4324bb))
+* set cart modal position to be bellow header ([a9d1e17](https://github.com/kiva/ui/commit/a9d1e174ac96e15d4703b203498df08316d7f25d))
+* set value of exp for sticky header ([19a354c](https://github.com/kiva/ui/commit/19a354c2d53d6e137c930144d1edf794af55d7aa))
+* solve conflicts ([27cdb2c](https://github.com/kiva/ui/commit/27cdb2ca04cfc9ed307e46ca806eb97f25157ade))
+* sudden jump when loan is added to the basket ([85d211b](https://github.com/kiva/ui/commit/85d211b461e0d35b7d81611512addc38b45b869c))
+* update deposit incentive experiment ([8485caa](https://github.com/kiva/ui/commit/8485caadc8dca25f1e71f67e4bb080ca55fd0765))
+* update deposit incentive experiment ([18c2fbf](https://github.com/kiva/ui/commit/18c2fbffdc5f21dd51e8420cafa433d9b011cbc5))
+* updated comments ([c363ce0](https://github.com/kiva/ui/commit/c363ce0a4cc09bf1b38b873898de341b11f664de))
+
+
+### 🪚 Refactors
+
+* move exp tracking to header ([a067e1c](https://github.com/kiva/ui/commit/a067e1c9275b01437166dbebc79a9d1108d0b6c7))
+
+
+### 🧹 Chores
+
+* **release:** 2.747.2-rc.1 [skip ci] ([e107682](https://github.com/kiva/ui/commit/e1076823eb523befaab55521c8aedc689a0604b5))
+* **release:** 2.748.0-rc.1 [skip ci] ([4354d3f](https://github.com/kiva/ui/commit/4354d3f0dc2c0a8b70df8db97bdead3b9c4f29a1)), closes [#5403](https://github.com/kiva/ui/issues/5403)
+* remove ddTrace converting that tracer implementation to a pass through for now ([a3c5dfa](https://github.com/kiva/ui/commit/a3c5dfa12e323e637595ce17f5f2cae7881cbc8b))
+
 ## [2.747.1](https://github.com/kiva/ui/compare/v2.747.0...v2.747.1) (2024-07-16)
 
 

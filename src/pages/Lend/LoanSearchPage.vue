@@ -67,7 +67,6 @@
 					:challenge-data="challengeData"
 					:show-loans-activity-feed="showLoansActivityFeed"
 					:enable-huge-amount="enableHugeLendAmount"
-					:enable-clickable-tags="enableClickableTags"
 					@add-to-basket="addToBasketCallback"
 					:team-name="teamName"
 					@show-cart-modal="handleCartModal"
@@ -91,7 +90,6 @@ import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
-import clickableTags from '#src/plugins/clickable-tags-mixin';
 import goalParticipationForLoanQuery from '#src/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '#src/graphql/query/myPublicLenderInfo.graphql';
 import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
@@ -166,7 +164,7 @@ export default {
 			hasBasket: false,
 		};
 	},
-	mixins: [fiveDollarsTest, hugeLendAmount, clickableTags, basketModalMixin, addToBasketExpMixin],
+	mixins: [fiveDollarsTest, hugeLendAmount, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, args) {
@@ -411,9 +409,6 @@ export default {
 			SHOW_LOANS_ACTIVITY_FEED_EXP,
 			'EXP-ACK-1098-May2024',
 		);
-
-		// Enable clickable tags test
-		this.initializeLoanCardClickableTags();
 	},
 };
 </script>

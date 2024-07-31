@@ -13,8 +13,28 @@
 				:lender-info="lenderInfo"
 			/>
 
+			<lender-badges
+				:total-possible-badges="allAchievements.length"
+				:completed-achievements="completedAchievements"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-dedications-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
 			<lender-teams-list
 				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-invitees-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-stats
 				:lender-info="lenderInfo"
 			/>
 		</kv-page-container>
@@ -27,7 +47,11 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import LenderSummary from '#src/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
+import LenderStats from '#src/components/LenderProfile/LenderStats';
 import LenderTeamsList from '#src/components/LenderProfile/LenderTeamsList';
+import LenderBadges from '#src/components/LenderProfile/LenderBadges';
+import LenderInviteesList from '#src/components/LenderProfile/LenderInviteesList';
+import LenderDedicationsList from '#src/components/LenderProfile/LenderDedicationsList';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -38,7 +62,11 @@ export default {
 		KvPageContainer,
 		LenderSummary,
 		LenderLoansList,
+		LenderStats,
 		LenderTeamsList,
+		LenderBadges,
+		LenderInviteesList,
+		LenderDedicationsList,
 	},
 	metaInfo() {
 		return {
@@ -71,6 +99,7 @@ export default {
 		return {
 			lenderInfo: {},
 			publicId: '',
+			allAchievements: [],
 		};
 	},
 	apollo: {
@@ -99,6 +128,9 @@ export default {
 		pageDescription() {
 			return `${this.lenderName} from ${this.lenderWhereAbouts} has made ${this.loanCount} loans on Kiva.`;
 		},
+		completedAchievements() {
+			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
+		},
 	},
 	created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -112,6 +144,7 @@ export default {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
 		}
 		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
+		this.allAchievements = cachedLenderInfo.userAchievementProgress?.achievementProgress ?? [];
 	}
 };
 </script>
