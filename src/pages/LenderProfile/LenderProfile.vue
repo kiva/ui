@@ -104,7 +104,8 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const publicId = route.params?.publicId ?? '';
+			const currentRoute = route.value ?? {};
+			const publicId = currentRoute.params?.publicId ?? '';
 
 			return client.query({
 				query: lenderPublicProfileQuery,

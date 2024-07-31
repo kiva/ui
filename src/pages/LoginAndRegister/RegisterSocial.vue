@@ -342,13 +342,14 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const pageId = route?.query?.partnerContentId;
+			const currentRoute = route.value ?? {};
+			const pageId = currentRoute.query?.partnerContentId;
 			if (!pageId) {
 				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
 			}
 			return client.query({
 				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: { pageId: route.query.partnerContentId ?? '' }
+				variables: { pageId: currentRoute.query.partnerContentId ?? '' }
 			});
 		}
 	},

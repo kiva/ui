@@ -234,14 +234,15 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const transactionId = route.query?.kiva_transaction_id
-				? numeral(route.query?.kiva_transaction_id).value()
+			const currentRoute = route.value ?? {};
+			const transactionId = currentRoute.query?.kiva_transaction_id
+				? numeral(currentRoute.query.kiva_transaction_id).value()
 				: null;
 
 			return client.query({
 				query: pageQuery,
 				variables: {
-					challengeId: route.params?.challengeId,
+					challengeId: currentRoute.params?.challengeId,
 				}
 			}).then(({ data }) => {
 				return client.query({

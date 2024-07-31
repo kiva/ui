@@ -64,12 +64,13 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
+			const currentRoute = route.value ?? {};
 			return client.query({
 				query: TeamInfoFromId,
 				variables: {
-					team_id: numeral(route.query.team_id).value(),
-					team_recruitment_id: numeral(route.query.id).value(),
-					team_ids: [numeral(route.query.team_id).value()],
+					team_id: numeral(currentRoute.query?.team_id).value(),
+					team_recruitment_id: numeral(currentRoute.query?.id).value(),
+					team_ids: [numeral(currentRoute.query?.team_id).value()],
 				}
 			}).then(({ data }) => {
 				const isMember = _get(data, 'my.teams.values', []).length;
@@ -79,8 +80,8 @@ export default {
 					return Promise.reject({
 						path: '/authenticate/redirect',
 						query: {
-							team_id: numeral(route.query.team_id).value(),
-							promo_id: numeral(route.query.promo_id).value(),
+							team_id: numeral(currentRoute.query?.team_id).value(),
+							promo_id: numeral(currentRoute.query?.promo_id).value(),
 						}
 					});
 				}

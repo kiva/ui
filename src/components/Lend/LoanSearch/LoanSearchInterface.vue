@@ -287,10 +287,11 @@ export default {
 	},
 	apollo: {
 		preFetch(_, client, { route }) {
+			const currentRoute = route.value ?? {};
 			// Handle temporary query param exclusions
-			if (Object.keys(route?.value?.query ?? {}).length && hasExcludedQueryParams(route?.value?.query ?? {})) {
+			if (Object.keys(currentRoute.query ?? {}).length && hasExcludedQueryParams(currentRoute.query ?? {})) {
 				// fallback to legacy lend with original query params
-				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
+				return Promise.reject({ path: currentRoute.fullPath?.replace('/filter', '') });
 			}
 
 			return client.query({
