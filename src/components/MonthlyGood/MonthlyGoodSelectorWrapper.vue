@@ -22,7 +22,7 @@
 		<!-- MG Selector Mobile show-for-small-only, show only after scrolling initially  -->
 		<transition
 			enter-active-class="tw-transition-all tw-duration-1000 tw-delay-300 tw-ease-in-out"
-			enter-class="tw-translate-y-full tw-opacity-0"
+			enter-from-class="tw-translate-y-full tw-opacity-0"
 			enter-to-class="tw-translate-y-0 tw-opacity-100"
 		>
 			<section

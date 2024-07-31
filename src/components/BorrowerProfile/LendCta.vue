@@ -279,7 +279,7 @@
 
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
-				:enter-class="transitionEnterClasses"
+				:enter-from-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
 				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
@@ -334,40 +334,31 @@
 						<transition
 							mode="out-in"
 							key="transition"
-							class="tw-flex tw-flex-col"
 							enter-active-class="tw-transition-all tw-duration-1000"
-							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
+							enter-from-class="tw-transform tw--translate-y-2 tw-opacity-0"
 							enter-to-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-active-class="tw-transition-all tw-duration-1000"
-							leave-class="tw-transform tw-translate-y-0 tw-opacity-full"
+							leave-from-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
 								v-if="currentSlotStat === 'lenderCount'"
-								class="tw-inline-block tw-align-middle"
+								class="tw-inline-block"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
 							>
-								<kv-material-icon
-									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-									:icon="mdiLightningBolt"
-								/>
-								powered by {{ numLenders }} lenders
+								<!-- eslint-disable-next-line max-len -->
+								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" /><span class="tw-align-middle">powered by {{ numLenders }} lenders</span>
 							</span>
 
 							<span
 								v-else-if="currentSlotStat === 'matchingText'"
-								class="tw-inline-block tw-align-middle"
+								class="tw-inline-block"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
 							>
-								<span
-									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
-								>
-									🎉
-								</span>
-								{{ matchRatio + 1 }}X
-								<span> MATCHED LOAN</span>
+								<!-- eslint-disable-next-line max-len -->
+								<span class="tw-text-h3 tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
 						</transition>
 					</div>
