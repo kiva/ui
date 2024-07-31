@@ -92,8 +92,8 @@
 					</h2>
 					<kv-button
 						:href="`/ui-login?force=true&doneUrl=${
-							(this.$route.query.kiva_transaction_id && this.$route.query.kiva_transaction_id !== null)
-								? encodeURIComponent(this.$route.fullPath)
+							($route.query.kiva_transaction_id && $route.query.kiva_transaction_id !== null)
+								? encodeURIComponent($route.fullPath)
 								: encodeURIComponent('/portfolio')
 						}`"
 					>
@@ -116,7 +116,7 @@
 					<template v-else>
 						Please log in to see your receipt.
 						<kv-button
-							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
 							class="tw-ml-1"
 						>
 							Log in to continue
