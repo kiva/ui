@@ -1,13 +1,18 @@
 <template>
-	<stats-table
-		class="tw-my-4"
-		:location-stats="locationStats"
-		:gender-stats="genderStats"
-		:sector-stats="sectorStats"
-		:partner-stats="partnerStats"
-		track-category="lender"
-		chart="pie"
-	/>
+	<section class="tw-my-8">
+		<h4 class="tw-mb-2">
+			Portfolio distribution
+		</h4>
+		<stats-table
+			class="lender-stats"
+			:location-stats="locationStats"
+			:gender-stats="genderStats"
+			:sector-stats="sectorStats"
+			:partner-stats="partnerStats"
+			track-category="lender"
+			chart="pie"
+		/>
+	</section>
 </template>
 
 <script>
@@ -65,3 +70,9 @@ export default {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+::v-deep .lender-stats > div button {
+	@apply tw-text-h5;
+}
+</style>
