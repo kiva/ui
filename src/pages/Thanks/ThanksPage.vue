@@ -5,6 +5,17 @@
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
+		<template v-else-if="showBadgeCustomizationPage">
+			<badges-customization
+				:selected-loan="selectedLoan"
+				:loans="loans"
+				:receipt="receipt"
+				:lender="lender"
+				:is-guest="isGuest"
+				:opted-in="optedIn"
+				:short-version-enabled="enableShortVersion"
+			/>
+		</template>
 		<template v-else-if="showNewTYPage">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
@@ -174,6 +185,7 @@ import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import BadgesCustomization from '@/components/Thanks/BadgesCustomization.vue';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -219,6 +231,7 @@ export default {
 		ChallengeHeader,
 		ShareChallenge,
 		WhatIsNextTemplate,
+		BadgesCustomization,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -394,6 +407,9 @@ export default {
 		showNewTYPage() {
 			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
 		},
+		showBadgeCustomizationPage() {
+			return this.optedIn;
+		}
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
