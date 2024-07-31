@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<section v-if="completedAchievements.length > 0">
 		<h4>{{ badgesTitle }}</h4>
 		<badges-list
 			class="tw-my-4"
@@ -7,7 +7,7 @@
 			:total-possible-badges="totalPossibleBadges"
 			:is-loading="isLoading"
 		/>
-	</div>
+	</section>
 </template>
 
 <script>

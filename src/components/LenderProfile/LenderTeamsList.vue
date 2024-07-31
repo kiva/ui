@@ -1,5 +1,5 @@
 <template>
-	<section v-if="lenderTeams.length > 0" class="tw-my-8">
+	<section v-if="lenderTeams.length > 0" class="tw-my-8" id="lender-teams">
 		<h4 class="data-hj-suppress tw-mb-1">
 			{{ lenderTeamsTitle }}
 		</h4>
@@ -54,12 +54,14 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '@/util/logReadQueryError';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderTeamsQuery from '@/graphql/query/lenderTeams.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'LenderTeamsList',
+	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvPagination,
@@ -124,6 +126,7 @@ export default {
 			this.teamsOffset = pageOffset;
 			this.pushChangesToUrl();
 			this.fetchLenderTeams();
+			this.scrollToSection('#lender-teams');
 		},
 		updateFromParams(query) {
 			const pageNum = numeral(query.teams).value() - 1;
@@ -131,13 +134,19 @@ export default {
 			this.teamsOffset = pageNum > 0 ? this.teamsLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route?.query, this.urlParams)) {
-				this.$router.push({ query: this.urlParams });
+			const currentQuery = this.$route?.query;
+			if (!_isEqual(currentQuery, this.urlParams)) {
+				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
 		},
 		getImageUrl(team) {
 			return team.image?.url ?? '';
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.fetchLenderTeams();

@@ -1,5 +1,5 @@
 <template>
-	<section v-if="lenderDedications.length > 0" class="tw-my-8">
+	<section v-if="lenderDedications.length > 0" class="tw-my-8" id="lender-dedications">
 		<h4 class="data-hj-suppress tw-mb-1">
 			{{ lenderDedicationsTitle }}
 		</h4>
@@ -44,12 +44,14 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '@/util/logReadQueryError';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderDedicationsQuery from '@/graphql/query/lenderDedications.graphql';
 import DedicateHeart from '@/assets/icons/inline/dedicate-heart.svg';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 
 export default {
 	name: 'LenderDedicationsList',
+	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvPagination,
@@ -114,6 +116,7 @@ export default {
 			this.dedicationsOffset = pageOffset;
 			this.pushChangesToUrl();
 			this.fetchLenderDedications();
+			this.scrollToSection('#lender-dedications');
 		},
 		updateFromParams(query) {
 			const pageNum = numeral(query.dedications).value() - 1;
@@ -121,10 +124,16 @@ export default {
 			this.dedicationsOffset = pageNum > 0 ? this.dedicationsLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route?.query, this.urlParams)) {
-				this.$router.push({ query: this.urlParams });
+			const currentQuery = this.$route?.query;
+			if (!_isEqual(currentQuery, this.urlParams)) {
+				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.fetchLenderDedications();

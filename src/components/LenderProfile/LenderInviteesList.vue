@@ -1,5 +1,5 @@
 <template>
-	<section v-if="lenderInvitees.length > 0" class="tw-my-8">
+	<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
 		<h4 class="data-hj-suppress tw-mb-1">
 			{{ lenderInviteesTitle }}
 		</h4>
@@ -59,12 +59,14 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '@/util/logReadQueryError';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderInviteesQuery from '@/graphql/query/lenderInvitees.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'LenderInviteesList',
+	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvPagination,
@@ -129,6 +131,7 @@ export default {
 			this.inviteesOffset = pageOffset;
 			this.pushChangesToUrl();
 			this.fetchLenderInvitees();
+			this.scrollToSection('#lender-invitees');
 		},
 		updateFromParams(query) {
 			const pageNum = numeral(query.invitees).value() - 1;
@@ -136,8 +139,9 @@ export default {
 			this.inviteesOffset = pageNum > 0 ? this.inviteesLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
-			if (!_isEqual(this.$route?.query, this.urlParams)) {
-				this.$router.push({ query: this.urlParams });
+			const currentQuery = this.$route?.query;
+			if (!_isEqual(currentQuery, this.urlParams)) {
+				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
 		},
 		getImageUrl(invitee) {
@@ -146,6 +150,11 @@ export default {
 		whereabouts(invitee) {
 			return invitee.lenderPage?.whereabouts ?? '';
 		},
+		scrollToSection(sectionId) {
+			const elementToScrollTo = document.querySelector(sectionId);
+			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 	},
 	mounted() {
 		this.fetchLenderInvitees();
