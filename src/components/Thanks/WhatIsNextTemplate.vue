@@ -112,7 +112,7 @@
 						<div class="tw-z-5 tw-flex tw-flex-col tw-items-center tw-mt-2.5">
 							<template v-if="confirmOptInChoice">
 								<img
-									:src="imageRequire(`./hi-five.svg`)"
+									:src="images(`./hi-five.svg`)"
 									class="tw-w-7 tw-h-7 tw-mb-1"
 									alt="Hi five icon"
 								>
@@ -122,7 +122,7 @@
 							</template>
 							<template v-else>
 								<img
-									:src="imageRequire(`./paper-plane.svg`)"
+									:src="images(`./paper-plane.svg`)"
 									class="tw-w-7 tw-h-7 tw-mb-1"
 									alt="Paper plane icon"
 								>
@@ -275,8 +275,10 @@ import logFormatter from '#src/util/logFormatter';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('#src/assets/images/thanks-page/', true);
+const imagesGlob = import.meta.glob('../../assets/images/thanks-page/*.*', { eager: true });
+const images = metaGlobReader(imagesGlob, '../../assets/images/thanks-page/');
 
 export default {
 	name: 'WhatIsNextTemplate',
@@ -331,7 +333,7 @@ export default {
 			mdiChevronDown,
 			confirmOptInChoice: false,
 			selectOption: false,
-			imageRequire,
+			images,
 		};
 	},
 	computed: {
