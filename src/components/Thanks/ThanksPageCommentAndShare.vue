@@ -42,20 +42,18 @@
 						<div v-if="calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
-									<template>
-										<p
-											class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
-											data-testid="bp-summary-amount-to-go"
-										>
-											{{ $filters.numeral(loan.unreservedAmount, '$0,0[.]00') }} TO GO
-										</p>
-										<p
-											class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
-											data-testid="bp-summary-timeleft"
-										>
-											{{ loan.fundraisingTimeLeft }} remaining
-										</p>
-									</template>
+									<p
+										class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
+										data-testid="bp-summary-amount-to-go"
+									>
+										{{ $filters.numeral(loan.unreservedAmount, '$0,0[.]00') }} TO GO
+									</p>
+									<p
+										class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
+										data-testid="bp-summary-timeleft"
+									>
+										{{ loan.fundraisingTimeLeft }} remaining
+									</p>
 								</figcaption>
 								<kv-progress-bar
 									class="tw-mb-1.5 lg:tw-mb-1 tw-bg-tertiary"
@@ -133,83 +131,81 @@
 					<p class="tw-m-0 tw-text-subhead">
 						{{ thanksPageBody }}
 					</p>
-					<template>
-						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
-							<button
-								data-testid="share-facebook-button"
-								class="social__btn social__btn--facebook"
-								@click="showSharePopUp(
-									facebookShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to Facebook!')"
-								v-kv-track-event="
-									['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
-							>
-								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-								<span>Share on Facebook</span>
-							</button>
-							<button
-								data-testid="share-copy-link-button"
-								class="social__btn social__btn--link
+					<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
+						<button
+							data-testid="share-facebook-button"
+							class="social__btn social__btn--facebook"
+							@click="showSharePopUp(
+								facebookShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to Facebook!')"
+							v-kv-track-event="
+								['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
+						>
+							<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+							<span>Share on Facebook</span>
+						</button>
+						<button
+							data-testid="share-copy-link-button"
+							class="social__btn social__btn--link
 									tw-border-action tw-border"
-								:class="copyStatus.class"
-								:disabled="copyStatus.disabled"
-								v-kv-track-event="
-									['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
-								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
-							>
-								<kv-material-icon
-									name="clipboard"
-									class="social__icon"
-									:icon="mdiLink"
-								/>
-								<span>{{ copyStatus.text }}</span>
-							</button>
-							<button
-								data-testid="share-twitter-button"
-								class="social__btn social__btn--twitter"
-								v-kv-track-event="
-									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
-								@click="showSharePopUp(
-									twitterShareUrl({utmCampaign, utmContent}),
-									'Thanks for tweeting!')"
-							>
-								<kv-icon name="twitter" title="Twitter" class="social__icon" />
-								<span>Tweet your followers</span>
-							</button>
-							<button
-								data-testid="share-linkedin-button"
-								class="social__btn social__btn--linkedin"
-								v-kv-track-event="
-									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
-								@click="showSharePopUp(
-									linkedInShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to LinkedIn!')"
-							>
-								<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-								<span>Share on LinkedIn</span>
-							</button>
-						</div>
-						<div class="tw-text-center tw-mt-2">
-							<button
-								class="tw-block tw-mx-auto tw-text-action
+							:class="copyStatus.class"
+							:disabled="copyStatus.disabled"
+							v-kv-track-event="
+								['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
+							@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
+						>
+							<kv-material-icon
+								name="clipboard"
+								class="social__icon"
+								:icon="mdiLink"
+							/>
+							<span>{{ copyStatus.text }}</span>
+						</button>
+						<button
+							data-testid="share-twitter-button"
+							class="social__btn social__btn--twitter"
+							v-kv-track-event="
+								['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
+							@click="showSharePopUp(
+								twitterShareUrl({utmCampaign, utmContent}),
+								'Thanks for tweeting!')"
+						>
+							<kv-icon name="twitter" title="Twitter" class="social__icon" />
+							<span>Tweet your followers</span>
+						</button>
+						<button
+							data-testid="share-linkedin-button"
+							class="social__btn social__btn--linkedin"
+							v-kv-track-event="
+								['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
+							@click="showSharePopUp(
+								linkedInShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to LinkedIn!')"
+						>
+							<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+							<span>Share on LinkedIn</span>
+						</button>
+					</div>
+					<div class="tw-text-center tw-mt-2">
+						<button
+							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
-								@click="emitGuestCreateAccount"
-								v-if="isGuest"
-								v-kv-track-event="['Thanks','click-create-account','Create my account']"
-							>
-								Create my account
-							</button>
-							<router-link
-								class="tw-block tw-mx-auto tw-text-action
+							@click="emitGuestCreateAccount"
+							v-if="isGuest"
+							v-kv-track-event="['Thanks','click-create-account','Create my account']"
+						>
+							Create my account
+						</button>
+						<router-link
+							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
-								v-else
-								to="/portfolio"
-								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
-							>
-								No, continue to my portfolio
-							</router-link>
-						</div>
-					</template>
+							v-else
+							to="/portfolio"
+							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
+						>
+							No, continue to my portfolio
+						</router-link>
+					</div>
 				</div>
 			</kv-grid>
 		</kv-page-container>
