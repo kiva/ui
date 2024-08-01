@@ -8,5 +8,8 @@ query userInfo {
 			lastName
 			balance
 		}
+		userStats {
+			number_of_loans
+		}
 	}
 }
