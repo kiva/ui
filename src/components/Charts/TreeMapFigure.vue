@@ -41,7 +41,7 @@
 <script>
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
-import { getTreemap } from 'treemap-squarify';
+import treemap from 'treemap-squarify';
 import KvTooltip from '#src/components/Kv/KvTooltip';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
@@ -97,7 +97,7 @@ export default {
 			}
 
 			// Calculate treemap blocks using canvas size 100x100 to easily translate to percentages
-			const blocks = getTreemap({
+			const blocks = treemap.getTreemap({
 				data: this.values,
 				width: 100,
 				height: 100,
