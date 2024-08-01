@@ -1,0 +1,5 @@
+mutation sendLenderMessage($lenderPublicId: ID!, $message: String!) {
+    my {
+        sendMessage(lenderPublicId: $lenderPublicId, message: $message)
+    }
+}
