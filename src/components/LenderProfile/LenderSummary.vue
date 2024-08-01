@@ -72,7 +72,7 @@
 				</p>
 			</template>
 
-			<template v-if="isLoggedIn && loansNumber == 0">
+			<template v-else-if="isLoggedIn && loansNumber == 0">
 				<p>In order to send a message, you will need to make a loan using your own funds first. This helps us prevent spam and unwanted messages.</p>
 				<p class="tw-mt-2">
 					Please
@@ -83,7 +83,7 @@
 				</p>
 			</template>
 
-			<template v-if="isLoggedIn && loansNumber > 0">
+			<template v-else>
 				<div>
 					<p
 						v-if="errorMessage"
