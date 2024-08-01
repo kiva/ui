@@ -1,5 +1,5 @@
 <template>
-	<picture>
+	<picture v-bind="$attrs">
 		<!-- browser uses the first <source> tag matching media query even if later <source> tags also match -->
 		<!-- So start with the largest window sizes first -->
 		<source
