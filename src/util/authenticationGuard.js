@@ -73,10 +73,11 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 		return Promise.resolve();
 	}
 	return new Promise((resolve, reject) => {
-		const activeRequired = route.value.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
-		const authRequired = route.value.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
-		const mfaRequired = route.value.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
-		const recentRequired = route.value.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
+		const currentRoute = route.value ?? route ?? {};
+		const activeRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
+		const authRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
+		const mfaRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
+		const recentRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
 
 		// Route requires some sort of authentication
 		if (activeRequired || authRequired || mfaRequired || recentRequired) {

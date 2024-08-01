@@ -78,7 +78,7 @@ export default {
 		};
 	},
 	apollo: {
-		async preFetch(config, client) {
+		preFetch(config, client) {
 			return client.query({ query: portfolioQuery });
 		},
 	},
@@ -105,8 +105,8 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
-		const userTeams = portfolioQueryData.my?.teams?.values ?? [];
-		let allowedTeamsSettings = portfolioQueryData.general?.challenge_allowed_teams?.value ?? '';
+		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
+		let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
 		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
 		this.allowedTeams = userTeams.filter(t => {
 			return allowedTeamsSettings.includes(t.team.teamPublicId);
