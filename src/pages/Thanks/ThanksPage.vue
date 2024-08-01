@@ -567,7 +567,7 @@ export default {
 				this.$kvTrackEvent,
 				'thanks',
 				THANKS_BADGES_EXP,
-				'EXP-MP-608-Aug2024', // Update with exp tracking ticket number
+				'EXP-MP-608-Aug2024',
 			);
 			if (version === 'b') {
 				this.badgesCustomExpEnabled = true;
