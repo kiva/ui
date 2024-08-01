@@ -40,7 +40,7 @@
 						@show-cart-modal="showCartModal"
 					/>
 				</template>
-				<template v-if="showViewMoreCard">
+				<template v-if="showViewMoreCard" #[`slide${loans.length}`]>
 					<view-more-card
 						:loan-search-state="loanSearchState"
 					/>
@@ -75,7 +75,7 @@ export default {
 		},
 		loans: {
 			type: Array,
-			default: () => []
+			default: () => ([])
 		},
 		perStep: {
 			type: Number,
