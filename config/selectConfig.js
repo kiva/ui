@@ -1,11 +1,11 @@
-/* eslint-disable import/no-dynamic-require, global-require */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = function selectConfig(env = 'index') {
-	const configPath = path.resolve(__dirname, `./${env}.js`);
+export default async function selectConfig(env = 'index') {
+	const configPath = resolve(dirname(fileURLToPath(import.meta.url)), `./${env}.js`);
 	if (fs.existsSync(configPath)) {
-		return require(configPath);
+		return (await import(configPath)).default;
 	}
 	throw new Error(`Unknown environment '${env}'`);
-};
+}

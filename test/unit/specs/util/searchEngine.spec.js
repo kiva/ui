@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import SearchEngine from '@/util/searchEngine';
+import SearchEngine from '#src/util/searchEngine';
 
 describe('SearchEngine', () => {
 	let engine;

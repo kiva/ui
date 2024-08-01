@@ -44,7 +44,9 @@ export function transformRadioGroupOptions(options, order, displayMap, valueMap 
 			value: valueMap[key] ?? o.name,
 		};
 	}).sort((a, b) => {
-		return capitalizedOrder?.indexOf(a.name.toUpperCase()) - capitalizedOrder?.indexOf(b.name.toUpperCase());
+		const indexA = capitalizedOrder?.indexOf(a.name.toUpperCase()) ?? 0;
+		const indexB = capitalizedOrder?.indexOf(b.name.toUpperCase()) ?? 0;
+		return indexA - indexB;
 	});
 
 	return transformed ?? [];

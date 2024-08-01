@@ -1,4 +1,4 @@
-import loanBookmarkMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
+import loanBookmarkMutation from '#src/graphql/mutation/updateLoanFavorite.graphql';
 
 /**
  * bookmarkLoan mutation

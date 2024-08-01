@@ -35,11 +35,11 @@
 </template>
 
 <script>
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'MediaItemsCentered',

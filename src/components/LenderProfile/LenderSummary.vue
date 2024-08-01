@@ -59,8 +59,8 @@
 <script>
 import { format, parseISO } from 'date-fns';
 import { mdiAccountCircle } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LenderSummary',

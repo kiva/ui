@@ -6,7 +6,7 @@
 					tw-flex tw-flex-col tw-items-center"
 			>
 				<div class="tw-mr-0 md:tw-mr-2 tw-bg-primary tw-h-12 tw-p-1 tw-rounded tw-w-12">
-					<img class="tw-w-10 tw-h-10" alt="Leaf heart" :src="imageRequire(`./leaf_heart.svg`)">
+					<img class="tw-w-10 tw-h-10" alt="Leaf heart" :src="leafHeartUrl">
 				</div>
 				<h2 class="tw-mb-0.5 md:tw-text-left tw-text-center">
 					Donations power progress
@@ -24,11 +24,10 @@
 </template>
 
 <script>
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import EducationPost from './EducationPost';
-
-const imageRequire = require.context('@/assets/images/', true);
+import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
 export default {
 	name: 'EducationModule',
@@ -38,15 +37,15 @@ export default {
 			default: null,
 		},
 	},
+	data() {
+		return {
+			leafHeartUrl,
+		};
+	},
 	components: {
 		AsyncPortfolioSection,
 		EducationPost,
 		KvGrid,
-	},
-	data() {
-		return {
-			imageRequire,
-		};
 	},
 };
 </script>

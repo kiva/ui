@@ -1,8 +1,9 @@
 <script>
-/**
-* This component takes an html string and renders it with vue
-* */
+import { defineAsyncComponent, h } from 'vue';
 
+/**
+ * This component takes an html string and renders it with vue
+ */
 export default {
 	name: 'DynamicRichText',
 	props: {
@@ -20,9 +21,11 @@ export default {
 			return {
 				template: `<div>${this.html}</div>`,
 				components: {
-					KvFrequentlyAskedQuestions: () => import('@/components/Kv/KvFrequentlyAskedQuestions'),
-					KvContentfulImg: () => import('~/@kiva/kv-components/vue/KvContentfulImg'),
-					ButtonWrapper: () => import('@/components/Contentful/ButtonWrapper')
+					KvFrequentlyAskedQuestions: defineAsyncComponent(() => import(
+						'#src/components/Kv/KvFrequentlyAskedQuestions'
+					)),
+					KvContentfulImg: defineAsyncComponent(() => import('@kiva/kv-components/vue/KvContentfulImg')),
+					ButtonWrapper: defineAsyncComponent(() => import('#src/components/Contentful/ButtonWrapper')),
 				},
 				props: {
 				},
@@ -48,11 +51,11 @@ export default {
 			return classes;
 		}
 	},
-	render(createElement) {
-		return createElement(
+	render() {
+		return h(
 			'div', /* Wrap output in a div since Vue templates must have 1 root element */
 			[
-				createElement(this.dynamicComponent, {
+				h(this.dynamicComponent, {
 					class: this.elementClasses,
 					props: {
 					},

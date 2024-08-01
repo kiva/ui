@@ -1,7 +1,7 @@
 import _get from 'lodash/get';
-import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import checkInjections from '@/util/injectionCheck';
+import basketAddInterstitial from '#src/graphql/query/basketAddInterstitialClient.graphql';
+import updateAddToBasketInterstitial from '#src/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['apollo'];
 

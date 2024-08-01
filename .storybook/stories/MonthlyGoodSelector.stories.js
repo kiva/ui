@@ -1,6 +1,6 @@
-import MonthlyGoodSelectorDesktop from '@/components/MonthlyGood/MonthlyGoodSelectorDesktop';
-import MonthlyGoodSelectorMobile from '@/components/MonthlyGood/MonthlyGoodSelectorMobile';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import MonthlyGoodSelectorDesktop from '#src/components/MonthlyGood/MonthlyGoodSelectorDesktop';
+import MonthlyGoodSelectorMobile from '#src/components/MonthlyGood/MonthlyGoodSelectorMobile';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
 const lendingCategories = loanGroupCategoriesMixin.data().lendingCategories;
 

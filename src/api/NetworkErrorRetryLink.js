@@ -1,4 +1,4 @@
-import { RetryLink } from '@apollo/client/link/retry';
+import { RetryLink } from '@apollo/client/link/retry/index';
 
 export default ({
 	activateRetry = false,

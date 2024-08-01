@@ -6,7 +6,7 @@
 		<div
 			data-test="timing-explanation"
 			class="autolend-explanation-text tw-text-brand"
-			v-if="isEnabled && this.cIdleStartTime !== null"
+			v-if="isEnabled && cIdleStartTime !== null"
 		>
 			{{ autolendExplanationText }}
 		</div>
@@ -15,7 +15,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { differenceInCalendarDays } from 'date-fns';
 import numeral from 'numeral';
 
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lend-timing-messaging > div {
 	margin-top: 1.5rem;

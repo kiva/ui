@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'MonthlyGoodPromoBanner',

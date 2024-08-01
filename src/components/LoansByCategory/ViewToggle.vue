@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import getCacheKey from '@/util/getCacheKey';
-import { hashCode } from '@/util/settingsUtils';
+import KvIcon from '#src/components/Kv/KvIcon';
+import getCacheKey from '#src/util/getCacheKey';
+import { hashCode } from '#src/util/settingsUtils';
 
 export default {
 	name: 'ViewToggle',
@@ -54,7 +54,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 @mixin toggle-hover($type) {
 	:hover {
@@ -97,6 +97,7 @@ export default {
 
 		@include breakpoint(xlarge) {
 			height: 88%;
+
 			// slightly larger to account for text
 			padding-left: 1.25rem;
 		}

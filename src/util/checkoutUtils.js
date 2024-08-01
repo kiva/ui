@@ -1,6 +1,6 @@
 import numeral from 'numeral';
-import myFTD from '@/graphql/query/myFTD.graphql';
-import removeCreditByTypeMutation from '@/graphql/mutation/shopRemoveCreditByType.graphql';
+import myFTD from '#src/graphql/query/myFTD.graphql';
+import removeCreditByTypeMutation from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events
 * @param {Number} transactionId

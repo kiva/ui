@@ -6,7 +6,7 @@
  * @param {string} Conjunction to use when joining array
  * @returns {string}
  */
-// eslint-disable-next-line import/prefer-default-export
+
 export function joinArray(arr, last = 'and') {
 	// Default last conjunction is 'and'
 	if (!Array.isArray(arr)) {

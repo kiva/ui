@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import BadgesList from '@/pages/Portfolio/LendingStats/BadgesList';
+import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
 
 export default {
 	name: 'LenderBadges',

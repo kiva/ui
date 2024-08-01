@@ -22,10 +22,11 @@
 						style="width: 6rem;"
 					/>
 					<dd v-else class="tw-text-h2 tw-text-brand">
-						{{ availableBalance | numeral('$0,0.00') }}
+						{{ $filters.numeral(availableBalance, '$0,0.00') }}
 					</dd>
 					<dd v-if="promoBalance > 0" class="tw-text-small tw-text-secondary">
-						{{ balance | numeral('$0,0.00') }} + {{ promoBalance | numeral('$0,0[.]00') }} free Kiva credit
+						<!-- eslint-disable-next-line max-len -->
+						{{ $filters.numeral(balance, '$0,0.00') }} + {{ $filters.numeral(promoBalance, '$0,0[.]00') }} free Kiva credit
 					</dd>
 				</div>
 				<div class="tw-col-span-6">
@@ -38,7 +39,7 @@
 						style="width: 6rem;"
 					/>
 					<dd v-else class="tw-text-h2 tw-text-secondary">
-						{{ amountOutstanding | numeral('$0,0.00') }}
+						{{ $filters.numeral(amountOutstanding, '$0,0.00') }}
 					</dd>
 				</div>
 			</dl>
@@ -54,12 +55,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import getCacheKey from '@/util/getCacheKey';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import getCacheKey from '#src/util/getCacheKey';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'AccountOverview',

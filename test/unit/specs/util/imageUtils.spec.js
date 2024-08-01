@@ -1,4 +1,4 @@
-import { getKivaImageUrl, isLegacyPlaceholderAvatar } from '@/util/imageUtils';
+import { getKivaImageUrl, isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
 
 describe('imageUtils.js', () => {
 	describe('getKivaImageUrl()', () => {

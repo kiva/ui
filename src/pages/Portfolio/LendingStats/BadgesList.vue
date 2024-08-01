@@ -39,9 +39,9 @@
 </template>
 
 <script>
-import { formatMediaAssetArray } from '@/util/contentfulUtils';
-import { gql } from '@apollo/client';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import { formatMediaAssetArray } from '#src/util/contentfulUtils';
+import { gql } from 'graphql-tag';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'BadgesList',

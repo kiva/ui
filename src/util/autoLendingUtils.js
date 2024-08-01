@@ -1,6 +1,5 @@
-/* eslint-disable import/prefer-default-export */
-import logReadQueryError from '@/util/logReadQueryError';
-import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import partnerListQuery from '#src/graphql/query/autolending/partnerList.graphql';
 import _sortBy from 'lodash/sortBy';
 
 /**

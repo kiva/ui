@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import StatsTable from '@/components/Stats/StatsTable';
+import StatsTable from '#src/components/Stats/StatsTable';
 
 export default {
 	name: 'LenderStats',
@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-::v-deep .lender-stats > div button {
+:deep(.lender-stats > div button) {
 	@apply tw-text-h5;
 }
 </style>

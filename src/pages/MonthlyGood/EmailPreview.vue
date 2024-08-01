@@ -23,9 +23,11 @@
 </template>
 
 <script>
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const emailPreviewImageRequire = require.context('@/assets/images/mg-email-preview', true);
+const emailPreviewImageGlob = import.meta.glob('/src/assets/images/mg-email-preview/*.*', { eager: true });
+const emailPreviewimageRequire = metaGlobReader(emailPreviewImageGlob, '/src/assets/images/mg-email-preview/');
 
 export default {
 	name: 'EmailPreview',
@@ -35,10 +37,10 @@ export default {
 	data() {
 		return {
 			images: [
-				['small', emailPreviewImageRequire('./email-preview-mobile-std.jpg')],
-				['small retina', emailPreviewImageRequire('./email-preview-mobile-retina.jpg')],
-				['xga', emailPreviewImageRequire('./email-preview-desktop-std.jpg')],
-				['xga retina', emailPreviewImageRequire('./email-preview-desktop-retina.jpg')],
+				['small', emailPreviewimageRequire('email-preview-mobile-std.jpg')],
+				['small retina', emailPreviewimageRequire('email-preview-mobile-retina.jpg')],
+				['xga', emailPreviewimageRequire('email-preview-desktop-std.jpg')],
+				['xga retina', emailPreviewimageRequire('email-preview-desktop-retina.jpg')],
 			]
 		};
 	},

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import KvAlert from '@/components/Kv/KvAlert';
+import KvAlert from '#src/components/Kv/KvAlert';
 
 export default {
 	name: 'TheBrowserCheck',

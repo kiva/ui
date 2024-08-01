@@ -1,4 +1,4 @@
-import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { getIdsFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 export default {
 	uiConfig: {
@@ -30,7 +30,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		activityId: [...loanSearchState.activityId?.filter(id => facet.id !== id)]
+		activityId: [...(loanSearchState?.activityId ?? []).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: () => ({}),
 	getFlssFilter: loanSearchState => ({

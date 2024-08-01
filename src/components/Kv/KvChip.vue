@@ -11,7 +11,7 @@
 	</div>
 </template>
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'KvChip',
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $calm-blue: #cadcea;
 $light-calm-blue: #e7f3fd;
@@ -50,10 +50,7 @@ $light-calm-blue: #e7f3fd;
 		height: rem-calc(32);
 		margin-bottom: rem-calc(6);
 		margin-right: rem-calc(6);
-		padding-bottom: rem-calc(8);
-		padding-left: rem-calc(12);
-		padding-top: rem-calc(9);
-		padding-right: rem-calc(11.6);
+		padding: rem-calc(9) rem-calc(11.6) rem-calc(8) rem-calc(12);
 		transition: background-color 0.15s linear;
 		user-select: none;
 		white-space: nowrap;

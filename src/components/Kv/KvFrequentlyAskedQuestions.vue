@@ -11,7 +11,7 @@
 				:key="index"
 				:title="question.name"
 				:content="convertFromRichTextToHtml(question.richText)"
-				:id="question.name | changeCase('paramCase')"
+				:id="$filters.changeCase(question.name, 'paramCase')"
 				:active="isActive(question.name)"
 				@toggle="setActiveAccordion"
 			/>
@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'KvFrequentlyAskedQuestions',

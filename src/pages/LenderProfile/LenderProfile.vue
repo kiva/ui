@@ -42,17 +42,17 @@
 </template>
 
 <script>
-import logReadQueryError from '@/util/logReadQueryError';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import LenderSummary from '@/components/LenderProfile/LenderSummary';
-import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
-import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
-import LenderStats from '@/components/LenderProfile/LenderStats';
-import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
-import LenderBadges from '@/components/LenderProfile/LenderBadges';
-import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
-import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import logReadQueryError from '#src/util/logReadQueryError';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import LenderSummary from '#src/components/LenderProfile/LenderSummary';
+import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
+import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
+import LenderStats from '#src/components/LenderProfile/LenderStats';
+import LenderTeamsList from '#src/components/LenderProfile/LenderTeamsList';
+import LenderBadges from '#src/components/LenderProfile/LenderBadges';
+import LenderInviteesList from '#src/components/LenderProfile/LenderInviteesList';
+import LenderDedicationsList from '#src/components/LenderProfile/LenderDedicationsList';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'LenderProfile',
@@ -104,7 +104,8 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const publicId = route.params?.publicId ?? '';
+			const currentRoute = route.value ?? {};
+			const publicId = currentRoute.params?.publicId ?? '';
 
 			return client.query({
 				query: lenderPublicProfileQuery,

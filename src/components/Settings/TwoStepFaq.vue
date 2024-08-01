@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLightbox from '#src/components/Kv/KvLightbox';
 
 export default {
 	name: 'TwoStepFaq',

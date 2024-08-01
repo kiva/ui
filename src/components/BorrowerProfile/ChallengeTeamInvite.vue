@@ -33,8 +33,8 @@
 
 <script>
 import { mdiArrowTopRight, mdiClose } from '@mdi/js';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
-import KvToast from '~/@kiva/kv-components/vue/KvToast';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvToast from '@kiva/kv-components/vue/KvToast';
 
 export default {
 	name: 'ChallengeTeamInvite',
@@ -100,19 +100,19 @@ export default {
 	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
 }
 
-.challenge-avatar >>> img {
+.challenge-avatar :deep(img) {
 	@apply md:tw-w-4 md:tw-h-4;
 }
 
-.toast-container >>> .tw-bg-secondary {
+.toast-container :deep(.tw-bg-secondary) {
 	background-color: white !important;
 }
 
-.toast-container >>> div[data-test="tip-message"] {
+.toast-container :deep(div[data-test=tip-message]) {
 	@apply tw-mx-0;
 }
 
-.toast-container >>> div.tw-shadow > :first-child {
+.toast-container :deep(div.tw-shadow) > :first-child {
 	@apply tw-hidden;
 }
 

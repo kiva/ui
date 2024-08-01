@@ -3,11 +3,13 @@
  * Based on https://github.com/bradbenvenuti/template-string-loader
  * TODO: switch to using html-loader once v1 is released
  */
-var htmlMinifier = require('html-minifier');
+import * as htmlMinifier from 'html-minifier';
 
-module.exports = function(content) {
-	this.cacheable && this.cacheable();
-	content = htmlMinifier.minify(content, {
+export default function templateStringLoader(content) {
+	if (typeof this.cacheable === 'function') {
+		this.cacheable();
+	}
+	const minifiedContent = htmlMinifier.minify(content, {
 		removeComments: true,
 		removeCommentsFromCDATA: true,
 		removeCDATASectionsFromCDATA: true,
@@ -18,5 +20,5 @@ module.exports = function(content) {
 		removeScriptTypeAttributes: true,
 		removeStyleTypeAttributes: true,
 	});
-	return 'module.exports = function (context) { with(context) { return `' + content + '`; } };';
+	return `module.exports = function (context) { with(context) { return \`${minifiedContent}\`; } };`;
 }

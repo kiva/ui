@@ -1,4 +1,4 @@
-import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
+import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
 
 export default {
 	title: 'Kv/KvProgressCampaign',
@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { KvProgressCampaign },
+		setup() { return args; },
 		template: `
 			<div>
 				<kv-progress-campaign

@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var dev  = require('./dev.js')
+import { merge } from 'webpack-merge';
+import dev from './dev.js';
 
-module.exports = merge(dev, {
+export default merge(dev, {
 	app: {
 		publicPath: 'https://www.dev.kiva.org/',
 	},
@@ -9,4 +9,4 @@ module.exports = merge(dev, {
 		memcachedServers: 'marketplace-k8s-ui-dev.knmtma.cfg.usw2.cache.amazonaws.com:11211',
 		disableCluster: true,
 	}
-})
+});

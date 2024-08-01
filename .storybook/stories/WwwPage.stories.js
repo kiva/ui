@@ -13,26 +13,28 @@ import {
 	fifteenYearFooterTheme,
 	blueHeader,
 	blueFooter
-} from '@/util/siteThemes';
+} from '#src/util/siteThemes';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+
+const args = {
+	grayBackground: false,
+	hideSearchInHeader: false,
+	headerTheme: null,
+	footerTheme: null
+};
 
 export default {
 	title: 'WwwFrame/WwwPage',
 	component: WwwPage,
-	args: {
-		grayBackground: false,
-		hideSearchInHeader: false,
-		headerTheme: null,
-		footerTheme: null
-	},
+	args,
 	argTypes: {
 		headerTheme: {
 			control: {
 				type: 'select',
 				options: {
 					'none': null,
-					'lightHeader':lightHeader,
+					'lightHeader': lightHeader,
 					'iwdHeaderTheme': iwdHeaderTheme,
 					'wrdHeaderTheme': wrdHeaderTheme,
 					'fifteenYearHeaderTheme': fifteenYearHeaderTheme,
@@ -45,7 +47,7 @@ export default {
 				type: 'select',
 				options: {
 					'none': null,
-					'lightFooter':lightFooter,
+					'lightFooter': lightFooter,
 					'iwdFooterTheme': iwdFooterTheme,
 					'wrdFooterTheme': wrdFooterTheme,
 					'fifteenYearFooterTheme': fifteenYearFooterTheme,
@@ -57,12 +59,13 @@ export default {
 	},
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (otherArgs, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin ],
+	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return { ...args, ...otherArgs }; },
 	template: `
 		<www-page
 			:gray-background="grayBackground"

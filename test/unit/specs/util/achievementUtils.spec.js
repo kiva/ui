@@ -1,6 +1,6 @@
 import {
 	achievementProgression, missingMilestones
-} from '@/util/achievementUtils';
+} from '#src/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
 	{

@@ -29,8 +29,8 @@
 
 <script>
 import { mdiAccount, mdiFormatListBulleted } from '@mdi/js';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'JumpLinks',

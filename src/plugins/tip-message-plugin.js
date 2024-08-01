@@ -5,14 +5,14 @@
 	- Call from component javascript using this.$showTipMsg or template using $showTipMsg
 	- See TheTipMessage.vue for internal implementation
 */
-import closeTipMessage from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
-import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
-import checkInjections from '@/util/injectionCheck';
+import closeTipMessage from '#src/graphql/mutation/tipMessage/closeTipMessage.graphql';
+import showTipMessage from '#src/graphql/mutation/tipMessage/showTipMessage.graphql';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['apollo'];
 
-export default Vue => {
-	Vue.mixin({
+export default app => {
+	app.mixin({
 		methods: {
 			/*
 				Show global tip message

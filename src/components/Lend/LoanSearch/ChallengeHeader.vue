@@ -70,11 +70,11 @@
 </template>
 
 <script>
-import teamGoalInfo from '@/plugins/team-goal-mixin';
-import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
-import KvInlineActivityFeed from '~/@kiva/kv-components/vue/KvInlineActivityFeed';
+import teamGoalInfo from '#src/plugins/team-goal-mixin';
+import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvInlineActivityFeed from '@kiva/kv-components/vue/KvInlineActivityFeed';
 
 export default {
 	name: 'ChallengeHeader',
@@ -108,14 +108,14 @@ export default {
 <style scoped lang="postcss">
 
 .loan-activity-overlay {
-	background: linear-gradient(90deg, rgba(245, 245, 245, 0) 0%, rgba(245, 245, 245, 1) 70%);
+	background: linear-gradient(90deg, rgb(245 245 245 / 0%) 0%, rgb(245 245 245 / 100%) 70%);
 }
 
 .user-avatar {
 	@apply tw-w-4;
 }
 
-.user-avatar >>> img {
+.user-avatar :deep(img) {
 	@apply tw-w-4 tw-h-4;
 }
 </style>

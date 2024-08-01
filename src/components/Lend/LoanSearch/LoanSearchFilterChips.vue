@@ -27,9 +27,9 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvChipClassic from '@/components/Kv/KvChipClassic';
-import filterConfig from '@/util/loanSearch/filterConfig';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvChipClassic from '#src/components/Kv/KvChipClassic';
+import filterConfig from '#src/util/loanSearch/filterConfig';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'LoanSearchFilterChips',

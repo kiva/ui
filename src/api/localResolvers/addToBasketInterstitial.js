@@ -1,4 +1,4 @@
-import query from '@/graphql/query/basketAddInterstitialClient.graphql';
+import query from '#src/graphql/query/basketAddInterstitialClient.graphql';
 /*
  * Add to Basket Interstitial resolvers
  */

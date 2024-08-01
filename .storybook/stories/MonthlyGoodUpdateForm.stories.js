@@ -1,4 +1,4 @@
-import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
+import MonthlyGoodUpdateForm from '#src/components/Forms/MonthlyGoodUpdateForm';
 
 export default {
 	title: 'Forms/MonthlyGoodUpdateForm',

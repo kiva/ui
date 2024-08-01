@@ -1,9 +1,16 @@
-const { join } = require('path');
-const { readFile, writeFile } = require('fs');
-const { extendSchema, parse, printSchema } = require('graphql');
-const getRemoteGqlSchema = require('../server/util/getRemoteGqlSchema');
-const argv = require('minimist')(process.argv.slice(2));
-const config = require('../config/selectConfig')(argv.config);
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { readFile, writeFile } from 'fs';
+import { extendSchema, parse, printSchema } from 'graphql';
+import minimist from 'minimist';
+import getRemoteGqlSchema from '../server/util/getRemoteGqlSchema.js';
+import selectConfig from '../config/selectConfig.js';
+
+const argv = minimist(process.argv.slice(2));
+const config = await selectConfig(argv.config);
+
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Return an AST made from local schema
 function getLocalAST(schemaPath) {

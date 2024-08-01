@@ -1,6 +1,6 @@
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
-import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { getIdsFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 /**
  * Transforms filtered sectors into a form usable by the filters
@@ -54,7 +54,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		sectorId: [...loanSearchState.sectorId?.filter(id => facet.id !== id)]
+		sectorId: [...(loanSearchState?.sectorId ?? []).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: loanSearchState => ({ sector: loanSearchState?.sectorId }),
 	getFlssFilter: loanSearchState => ({

@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
 	name: 'SupportedByLenders',
@@ -83,8 +83,8 @@ export default {
 	@apply tw-w-4;
 }
 
-.challenge-avatar >>> div,
-.challenge-avatar >>> img {
+.challenge-avatar :deep(div,)
+.challenge-avatar :deep(img) {
 	@apply tw-w-4 tw-h-4;
 }
 </style>

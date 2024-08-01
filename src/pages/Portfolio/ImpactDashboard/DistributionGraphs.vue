@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
-import getCacheKey from '@/util/getCacheKey';
-import PieChartFigure from '@/components/Charts/PieChartFigure';
-import TreeMapFigure from '@/components/Charts/TreeMapFigure';
-import StatsTable from '@/components/Stats/StatsTable';
+import { gql } from 'graphql-tag';
+import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
+import getCacheKey from '#src/util/getCacheKey';
+import PieChartFigure from '#src/components/Charts/PieChartFigure';
+import TreeMapFigure from '#src/components/Charts/TreeMapFigure';
+import StatsTable from '#src/components/Stats/StatsTable';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {

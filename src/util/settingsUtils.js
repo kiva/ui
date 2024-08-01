@@ -100,7 +100,7 @@ export function hashCode(source) {
 		// original approach left shift
 		hash = ((hash << 5) - hash) + character;
 		// Convert to 32bit integer
-		hash &= hash; // eslint-disable-line no-bitwise
+		hash &= hash;
 	}
 	return Math.abs(hash);
 }

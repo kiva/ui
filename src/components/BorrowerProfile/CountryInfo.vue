@@ -61,12 +61,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import { createIntersectionObserver } from '@/util/observerUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'CountryInfo',

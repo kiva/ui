@@ -39,14 +39,14 @@
 
 <script>
 
-import TwoHands from '@/assets/icons/inline/two-hands-heart.svg';
-import TeamGoal from '@/components/Teams/TeamGoal';
-import teamsGoals from '@/graphql/query/teamsGoals.graphql';
+import TwoHands from '#src/assets/icons/inline/two-hands-heart.svg';
+import TeamGoal from '#src/components/Teams/TeamGoal';
+import teamsGoals from '#src/graphql/query/teamsGoals.graphql';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _orderBy from 'lodash/orderBy';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'TeamGoalsList',

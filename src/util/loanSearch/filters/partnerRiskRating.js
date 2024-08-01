@@ -1,6 +1,6 @@
-import { getMinMaxRangeFilter, getMinMaxRangeQueryParam, createMinMaxRange } from '@/util/loanSearch/minMaxRange';
-import { getMinMaxRangeFromQueryParam } from '@/util/loanSearch/queryParseUtils';
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { getMinMaxRangeFilter, getMinMaxRangeQueryParam, createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
+import { getMinMaxRangeFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 
 /**
  * The min risk rating value

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import HandOrangeIcon from '@/assets/images/hand_orange.svg';
-import KvSwitch from '~/@kiva/kv-components/vue/KvSwitch';
+import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
+import KvSwitch from '@kiva/kv-components/vue/KvSwitch';
 
 export default {
 	name: 'TeamPicksSwitch',

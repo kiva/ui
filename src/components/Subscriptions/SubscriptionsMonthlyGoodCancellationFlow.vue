@@ -177,8 +177,8 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SubscriptionsMonthlyGoodCancellationFlow',
@@ -285,7 +285,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .mg-cancel-lightbox {
 	&__content {

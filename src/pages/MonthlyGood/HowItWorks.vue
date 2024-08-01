@@ -14,11 +14,11 @@
 </template>
 
 <script>
-import CenteredRichText from '@/components/Contentful/CenteredRichText';
-import RichTextItemsCentered from '@/components/Contentful/RichTextItemsCentered';
-import { darkGreenTheme } from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
+import CenteredRichText from '#src/components/Contentful/CenteredRichText';
+import RichTextItemsCentered from '#src/components/Contentful/RichTextItemsCentered';
+import { darkGreenTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 
-import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
+import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider';
 
 export default {
 	name: 'HowItWorks',
@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
 
-#rteContent >>> figure {
+#rteContent :deep(figure) {
 	margin-bottom: 0;
 }
 

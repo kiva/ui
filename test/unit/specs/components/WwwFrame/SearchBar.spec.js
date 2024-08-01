@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import SearchBar from '@/components/WwwFrame/SearchBar';
-import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
+import SearchBar from '#src/components/WwwFrame/SearchBar';
+import suggestionsQuery from '#src/graphql/query/loanSearchSuggestions.graphql';
 import byTextContent from '../../../helpers/byTextContent';
 
 const suggestions = [
@@ -31,7 +31,7 @@ function getMockApollo() {
 // Render the search bar, optionally taking an ApolloClient instance to provide to the component
 function renderSearchBar(apollo = getMockApollo()) {
 	return render(SearchBar, {
-		provide: { apollo }
+		global: { provide: { apollo } }
 	});
 }
 

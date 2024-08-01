@@ -1,5 +1,5 @@
-import { isNumber } from '@/util/numberUtils';
-import { createMinMaxRange } from '@/util/loanSearch/minMaxRange';
+import { isNumber } from '#src/util/numberUtils';
+import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
 
 /**
  * Returns the enum name property based on the query param

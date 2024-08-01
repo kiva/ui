@@ -1,5 +1,5 @@
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvButton from '#src/components/Kv/KvButton';
 
 const loremIpsum = `
 	<p>
@@ -16,18 +16,20 @@ const loremIpsum = `
 	</p>
 `;
 
+const args = {
+	visible: true,
+	preventClose: false,
+	title: 'Test Title',
+	inverted: false,
+	noPaddingTop: false,
+	noPaddingBottom: false,
+	noPaddingSides: false,
+};
+
 export default {
 	title: 'Kv/KvLightbox',
 	component: KvLightbox,
-	args: {
-		visible: true,
-		preventClose: false,
-		title: 'Test Title',
-		inverted: false,
-		noPaddingTop: false,
-		noPaddingBottom: false,
-		noPaddingSides: false,
-	},
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
@@ -44,6 +46,7 @@ export const Default = (args, { argTypes }) => ({
 			this.lightboxVisible = false;
 		}
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-lightbox
@@ -64,24 +67,28 @@ export const Default = (args, { argTypes }) => ({
 
 export const Inverted = Default.bind({});
 Inverted.args = {
+	...args,
 	inverted: true,
 };
 
 export const PreventClose = Default.bind({});
 PreventClose.args = {
+	...args,
 	preventClose: true,
 };
 
 export const Padding = Default.bind({});
 Padding.args = {
+	...args,
 	noPaddingTop: true,
 	noPaddingBottom: true,
 	noPaddingSides: true,
 };
 
-export const SmallContent = (args, { argTypes }) => ({
+export const SmallContent = (_, { argTypes }) => ({
 	components: { KvLightbox, KvButton },
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-lightbox
@@ -103,9 +110,10 @@ export const SmallContent = (args, { argTypes }) => ({
 	`,
 });
 
-export const WithControls = (args, { argTypes }) => ({
+export const WithControls = (_, { argTypes }) => ({
 	components: { KvLightbox, KvButton },
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-lightbox
@@ -127,9 +135,10 @@ export const WithControls = (args, { argTypes }) => ({
 	`,
 });
 
-export const WithFoundationGrid = (args, { argTypes }) => ({
+export const WithFoundationGrid = (_, { argTypes }) => ({
 	components: { KvLightbox, KvButton },
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-lightbox
@@ -169,9 +178,10 @@ export const WithFoundationGrid = (args, { argTypes }) => ({
 	`,
 });
 
-export const CustomTitleColor = (args, { argTypes }) => ({
+export const CustomTitleColor = (_, { argTypes }) => ({
 	components: { KvLightbox },
 	props: Object.keys(argTypes),
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-lightbox

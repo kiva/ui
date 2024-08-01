@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import activeLoanMixin from '@/plugins/active-loan-mixin';
-import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
-import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
+import activeLoanMixin from '#src/plugins/active-loan-mixin';
+import ExpandableLoanCard from '#src/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
+import expandableLoanCardMixin from '#src/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
 
 export default {
 	name: 'ExpandableLoanCardCollapsed',

@@ -79,8 +79,8 @@
 
 <script>
 import orderBy from 'lodash/orderBy';
-import KvIcon from '@/components/Kv/KvIcon';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
+import KvIcon from '#src/components/Kv/KvIcon';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 
 export default {
 	name: 'SocialShareV2',
@@ -152,7 +152,7 @@ export default {
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoanId}`; // eslint-disable-line max-len
 			}
 
-			return base; // eslint-disable-line max-len
+			return base;
 		},
 		shareSubtitle() {
 			return `You can make change happen faster for ${this.selectedLoan.name} by getting the word out. Share their loan with others and have an even bigger impact.`; // eslint-disable-line max-len
@@ -182,13 +182,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import "foundation";
+@use 'sass:math';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
 $color-twitter: #08a0e9;
 $color-linkedin: #0077b5;
-
 $loan-circle-size: rem-calc(70);
 $loan-circle-margin: 1rem;
 $loan-triangle-size: rem-calc(12);
@@ -204,8 +204,7 @@ $loan-triangle-size: rem-calc(12);
 		flex-direction: column;
 
 		@include breakpoint(large) {
-			flex-direction: row;
-			flex-wrap: wrap;
+			flex-flow: row wrap;
 		}
 	}
 
@@ -220,7 +219,7 @@ $loan-triangle-size: rem-calc(12);
 		margin: 1rem 0;
 
 		@include breakpoint(large) {
-			margin: 0 1rem 1rem 1rem;
+			margin: 0 1rem 1rem;
 		}
 	}
 
@@ -274,7 +273,7 @@ $loan-triangle-size: rem-calc(12);
 		}
 
 		@include breakpoint(large) {
-			margin: 0 0 $loan-circle-margin 0;
+			margin: 0 0 $loan-circle-margin;
 		}
 
 		&:last-child {
@@ -301,7 +300,7 @@ $loan-triangle-size: rem-calc(12);
 		height: rem-calc(274);
 		font-style: italic;
 		margin: 0;
-		padding: 1rem 1rem 3rem 1rem;
+		padding: 1rem 1rem 3rem;
 	}
 
 	&__charcount,
@@ -345,7 +344,7 @@ $loan-triangle-size: rem-calc(12);
 			top: $loan-triangle-size * -2 + rem-calc(1);
 			left: $loan-triangle-size;
 			border-width: $loan-triangle-size;
-			border-color: transparent transparent rgb(var(--bg-primary)) transparent;
+			border-color: transparent transparent rgb(var(--bg-primary));
 		}
 
 		// triangle border
@@ -353,7 +352,7 @@ $loan-triangle-size: rem-calc(12);
 			top: $loan-triangle-size * -2 - rem-calc(1);
 			left: $loan-triangle-size - rem-calc(1);
 			border-width: $loan-triangle-size + rem-calc(1);
-			border-color: transparent transparent $subtle-gray transparent;
+			border-color: transparent transparent $subtle-gray;
 		}
 
 		@include breakpoint(large) {
@@ -375,11 +374,12 @@ $loan-triangle-size: rem-calc(12);
 		@function circleoffset($index) {
 			@return calc(
 				#{$loan-circle-size * $index} +
-				#{$loan-circle-size / 2} -
+				#{math.div($loan-circle-size, 2)} -
 				#{$loan-triangle-size * 2} +
 				#{$index * $loan-circle-margin}
 			);
 		}
+
 		$offset: rem-calc(1);
 
 		&--loan1 {
@@ -427,7 +427,7 @@ $loan-triangle-size: rem-calc(12);
 	&__btn {
 		align-items: center;
 		width: 100% !important;
-		margin: 0 0 1rem 0;
+		margin: 0 0 1rem;
 		padding: 1rem rem-calc(9) 1rem 1rem;
 		font-weight: $button-font-weight;
 		line-height: 1;

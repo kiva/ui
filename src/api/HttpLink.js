@@ -1,5 +1,5 @@
-import { BatchHttpLink } from '@apollo/client/link/batch-http';
-import { HttpLink } from '@apollo/client/link/http';
+import { BatchHttpLink } from '@apollo/client/link/batch-http/index';
+import { HttpLink } from '@apollo/client/link/http/index';
 
 export default ({
 	uri = '',

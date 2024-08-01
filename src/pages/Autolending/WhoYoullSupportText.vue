@@ -56,7 +56,7 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
 export default {
 	name: 'WhoYoullSupportText',
@@ -112,7 +112,7 @@ export default {
 			this.currentIsoCodes = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.country') || [];
 			this.currentSectorIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.sector') || [];
 			// AdvancedFilters
-			/* eslint-disable max-len */
+
 			const loanIncrement = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.loanLimit');
 			const attributeIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.theme');
 			const loanTerm = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
@@ -120,7 +120,7 @@ export default {
 			const delinquencyRate = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
 			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
 			const defaultRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.defaultRate.max');
-			/* eslint-enable max-len */
+
 			// filter != null filters out both null and undefined values
 			this.activatedAdvancedFilters = [
 				loanIncrement === 25 ? null : loanIncrement, // default value is 25

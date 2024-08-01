@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
+import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import SpotlightHero from './SpotlightHero';
 
 export default {
@@ -106,11 +106,11 @@ export default {
 
 <style lang="postcss" scoped>
 
-#mfiCarousel >>> h2 {
+#mfiCarousel :deep(h2) {
 	@apply tw-text-h4 tw-mb-0 tw-text-action;
 }
 
-#mfiCarousel >>> section {
+#mfiCarousel :deep(section) {
 	@apply tw-mt-1;
 }
 </style>

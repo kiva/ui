@@ -1,5 +1,5 @@
-import KvIcon from '@/components/Kv/KvIcon';
-import KvIconButton from '@/components/Kv/KvIconButton';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvIconButton from '#src/components/Kv/KvIconButton';
 
 export default {
 	title: 'KV/KvIconButton',

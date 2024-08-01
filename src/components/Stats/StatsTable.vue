@@ -60,13 +60,13 @@
 </template>
 
 <script>
-import PieChartFigure from '@/components/Charts/PieChartFigure';
-import TreeMapFigure from '@/components/Charts/TreeMapFigure';
-import DistributionTable from '@/pages/Portfolio/ImpactDashboard/DistributionTable';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
+import PieChartFigure from '#src/components/Charts/PieChartFigure';
+import TreeMapFigure from '#src/components/Charts/TreeMapFigure';
+import DistributionTable from '#src/pages/Portfolio/ImpactDashboard/DistributionTable';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 
 export default {
 	name: 'StatsTable',

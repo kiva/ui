@@ -47,18 +47,18 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
-import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
-import { readLoanFragment, watchLoanData } from '@/util/loanUtils';
-import bookmarkLoan from '@/util/bookmarkUtil';
-import logFormatter from '@/util/logFormatter';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import loanCardFieldsExtendedFragment from '@/graphql/fragments/loanCardFieldsExtended.graphql';
-import loanActivitiesQuery from '@/graphql/query/loanActivities.graphql';
+import { gql } from 'graphql-tag';
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
+import bookmarkLoan from '#src/util/bookmarkUtil';
+import logFormatter from '#src/util/logFormatter';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import loanCardFieldsExtendedFragment from '#src/graphql/fragments/loanCardFieldsExtended.graphql';
+import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
-import KvClassicLoanCard from '~/@kiva/kv-components/vue/KvClassicLoanCard';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvClassicLoanCard from '@kiva/kv-components/vue/KvClassicLoanCard';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 

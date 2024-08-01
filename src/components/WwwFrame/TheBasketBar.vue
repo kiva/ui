@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import countQuery from '@/graphql/query/basketCount.graphql';
+import countQuery from '#src/graphql/query/basketCount.graphql';
 import { mdiCart } from '@mdi/js';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'TheBasketBar',

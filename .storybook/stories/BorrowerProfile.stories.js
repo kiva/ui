@@ -1,11 +1,11 @@
 import Vue from 'vue'
 
 // import plugins
-import kivaPlugins from '@/plugins';
+import kivaPlugins from '#src/plugins';
 Vue.use(kivaPlugins)
 
-import BorrowerProfile from '@/pages/BorrowerProfile/BorrowerProfile'
-import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile'
+import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile'
+import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile'
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';

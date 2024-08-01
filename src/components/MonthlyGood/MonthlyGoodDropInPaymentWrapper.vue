@@ -3,7 +3,7 @@
 		<braintree-drop-in-interface
 			v-if="isClientReady"
 			ref="braintreeDropInInterface"
-			:amount="amount | numeral('0.00')"
+			:amount="$filters.numeral(amount, '0.00')"
 			flow="vault"
 			:payment-types="['paypal', 'card']"
 			:preselect-vaulted-payment-method="action === 'Registration'"
@@ -29,20 +29,24 @@
 <script>
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
+import { defineAsyncComponent } from 'vue';
 
-import braintreeDropinError from '@/plugins/braintree-dropin-error-mixin';
+import braintreeDropinError from '#src/plugins/braintree-dropin-error-mixin';
 
-import braintreeCreateMonthlyGoodSubscription from '@/graphql/mutation/braintreeCreateMonthlyGoodSubscription.graphql';
+import braintreeCreateMonthlyGoodSubscription from
+	'#src/graphql/mutation/braintreeCreateMonthlyGoodSubscription.graphql';
 import braintreeUpdateSubscriptionPaymentMethod from
-	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
+	'#src/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'MonthlyGoodDropInPaymentWrapper',
 	components: {
-		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
+		BraintreeDropInInterface: defineAsyncComponent(() => import(
+			'#src/components/Payment/BraintreeDropInInterface'
+		)),
 		KvButton,
 		KvIcon,
 	},

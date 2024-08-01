@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import KvCodeBlock from '@/components/Kv/KvCodeBlock';
+import KvCodeBlock from '#src/components/Kv/KvCodeBlock';
 import KvHamburgerIcon from './KvHamburgerIcon';
 
 export default {
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .tab-container {
 	display: flex;
@@ -118,11 +118,11 @@ export default {
 		.tab {
 			text-align: center;
 			display: block;
-			border-bottom: 1px solid rgba(17, 138, 238, 0);
+			border-bottom: 1px solid rgb(17 138 238 / 0%);
 			transition: color 0.16s linear, border-bottom 0.16s linear, text-shadow 0.16s linear;
 
 			&.active {
-				border-bottom: 1px solid rgba(17, 138, 238, 1);
+				border-bottom: 1px solid rgb(17 138 238 / 100%);
 				text-shadow: 0.5px 0 $blue;
 			}
 		}

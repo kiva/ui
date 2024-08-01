@@ -17,8 +17,8 @@
 
 <script>
 import { mdiCheckboxMarkedCircleOutline } from '@mdi/js';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'CheckoutNowButton',
@@ -60,7 +60,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 a.secondary.button {
 	padding: rem-calc(13) 0;

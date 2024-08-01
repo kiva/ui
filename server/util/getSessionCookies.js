@@ -1,6 +1,6 @@
-const setCookieParser = require('set-cookie-parser');
-const fetch = require('./fetch');
-const tracer = require('./mockTrace');
+import setCookieParser from 'set-cookie-parser';
+import fetch from './fetch.js';
+import { wrap } from './mockTrace.js';
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)
@@ -44,4 +44,4 @@ function getSessionCookies(url = '', requestCookies = {}) {
 	});
 }
 
-module.exports = tracer.wrap('getSessionCookies', getSessionCookies);
+export default wrap('getSessionCookies', getSessionCookies);

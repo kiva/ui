@@ -5,21 +5,23 @@ export default {
 		 * outside element and fires a callback function
 		 * Sample Use:
 		 * <div v-click-outside="nameOfCustomEventToCall">Some content</div>
-		 * TODO Register directive globally?
+		 * mixins: [
+		 *   clickOutside,
+		 * ],
 		*/
 		clickOutside: {
-			bind(el, binding, vnode) {
+			beforeMount(el, binding) {
 				// eslint-disable-next-line no-param-reassign
 				el.clickOutsideEvent = event => {
 					// here I check that click was outside the el and his children
 					if (!(el === event.target || el.contains(event.target))) {
 						// and if it did, call method provided in attribute value
-						vnode.context[binding.expression](event);
+						binding.value(event, el);
 					}
 				};
 				document.body.addEventListener('click', el.clickOutsideEvent);
 			},
-			unbind(el) {
+			unmounted(el) {
 				document.body.removeEventListener('click', el.clickOutsideEvent);
 			},
 		}

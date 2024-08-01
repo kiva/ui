@@ -1,7 +1,6 @@
-import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
 import { render } from '@testing-library/vue';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import { globalOptions } from '../../../specUtils';
 
 describe('ChallengeHeader', () => {
 	it('should contain these components and text', () => {
@@ -25,24 +24,15 @@ describe('ChallengeHeader', () => {
 		const {
 			getByText,
 			getByTestId,
-		} = render(
-			ChallengeHeader,
-			{
-				components: KvProgressCircle,
-				provide: {
-					apollo: {
-					},
-				},
-				props: {
-					email: 'test@test.com',
-					teamPublicId: '1',
-					goal,
-				},
+		} = render(ChallengeHeader, {
+			global: {
+				...globalOptions,
 			},
-			vue => {
-				vue.use(kvAnalytics);
-			}
-		);
+			props: {
+				teamPublicId: '1',
+				goal,
+			},
+		});
 
 		getByTestId('challenge-header');
 

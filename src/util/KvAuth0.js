@@ -1,4 +1,4 @@
-import sub from 'date-fns/sub';
+import { sub } from 'date-fns';
 import * as Sentry from '@sentry/vue'; // could be async import
 import syncDate from './syncDate';
 import logFormatter from './logFormatter';

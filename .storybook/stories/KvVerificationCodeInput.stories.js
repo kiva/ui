@@ -1,4 +1,4 @@
-import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
+import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
 
 export default {
 	title: 'Kv/Form Elements/KvVerificationCodeInput',

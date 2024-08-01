@@ -32,7 +32,7 @@
 									<img
 										class="carousel__body-img"
 										:class="stickerClasses(slide)"
-										:src="getImage(`./stickers/${slide.sticker}`)"
+										:src="getStickerSrc(slide.sticker)"
 										alt=""
 										loading="lazy"
 									>
@@ -118,7 +118,7 @@
 
 				<!-- NAV -->
 				<div class="bottom-nav">
-					<ul class="bottom-nav__list" :style="{ transform: `translateX(${-50 * this.currentIndex}%`}">
+					<ul class="bottom-nav__list" :style="{ transform: `translateX(${-50 * currentIndex}%`}">
 						<li
 							v-for="(navSlide, navIndex) in slides"
 							:key="`bottom-nav-${navSlide.year}`"
@@ -139,7 +139,7 @@
 								<span class="bottom-nav__btn-img-wrap">
 									<img
 										class="bottom-nav__img"
-										:src="getImage(`./stickers/${navSlide.sticker}`)"
+										:src="getStickerSrc(navSlide.sticker)"
 										alt=""
 										loading="lazy"
 									>
@@ -160,14 +160,19 @@
 </template>
 
 <script>
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import KvIcon from '#src/components/Kv/KvIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 import slideData from './15YearsTimelineData';
 
-const fifteenYearsImagesRequire = require.context('@/assets/images/15-years/', true);
+const stickerImagesRequire = import.meta.glob('/src/assets/images/15-years/stickers/*.*', {
+	eager: true,
+	query: '?url',
+});
+const stickers = metaGlobReader(stickerImagesRequire, '/src/assets/images/15-years/stickers/');
 
 export default {
 	name: '15YearsTimeline',
@@ -181,7 +186,7 @@ export default {
 		return {
 			slides: slideData,
 			currentIndex: 0,
-		}; /* eslint-enable max-len */
+		};
 	},
 	computed: {
 		nextIndex() {
@@ -204,8 +209,8 @@ export default {
 			this.$refs.carousel_component.goToSlide(slideIndex);
 			this.currentIndex = slideIndex;
 		},
-		getImage(image) {
-			return fifteenYearsImagesRequire(image);
+		getStickerSrc(sticker) {
+			return stickers(sticker);
 		},
 		onCarouselChange(e) {
 			this.currentIndex = e;
@@ -235,8 +240,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 @mixin timeline-link() {
 	@include link();
@@ -276,7 +282,7 @@ export default {
 
 		@include breakpoint(large) {
 			position: absolute;
-			top: calc(50% - #{$prev-next-size / 2});
+			top: calc(50% - #{math.div($prev-next-size, 2)});
 			width: 100%;
 		}
 	}
@@ -377,7 +383,7 @@ export default {
 		}
 
 		// carousel hack to make the viewport match design
-		&::v-deep {
+		:deep(&) {
 			.kv-carousel__viewport {
 				overflow: visible; // TODO: this seems to cause a bug when tabbing through the carousel
 			}

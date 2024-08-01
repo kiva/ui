@@ -4,6 +4,6 @@
 */
 import VueObserveVisibility from 'vue-observe-visibility';
 
-export default Vue => {
-	Vue.use(VueObserveVisibility);
+export default app => {
+	app.use(VueObserveVisibility);
 };

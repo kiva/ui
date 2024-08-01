@@ -61,7 +61,7 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			Select a borrower to <span class="tw-underline">
-				lend your {{ promoData.bonusBalance | numeral('$0.00') }} free credit</span>
+				lend your {{ $filters.numeral(promoData.bonusBalance, '$0.00') }} free credit</span>
 		</a>
 		<router-link
 			v-if="promoData && promoData.pageId"
@@ -74,7 +74,7 @@
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
 			<span class="tw-underline">
-				You have {{ promoData.available | numeral('$0.00') }} from {{ promoData.displayName }} to lend!
+				You have {{ $filters.numeral(promoData.available, '$0.00') }} from {{ promoData.displayName }} to lend!
 			</span>
 		</router-link>
 	</div>
@@ -82,8 +82,8 @@
 
 <script>
 import numeral from 'numeral';
-import { gql } from '@apollo/client';
-import { indexIn } from '@/util/comparators';
+import { gql } from 'graphql-tag';
+import { indexIn } from '#src/util/comparators';
 
 const promoCampaignInfo = gql`
 	query promoCampaign($basketId: String, $promoFundId: String) {

@@ -87,15 +87,15 @@
 <script>
 import _differenceBy from 'lodash/differenceBy';
 import _sortBy from 'lodash/sortBy';
-import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
-import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import userAchievementsProgress from '#src/graphql/query/userAchievementsProgress.graphql';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import BadgesSection from './BadgesSection';
 import StatsSection from './StatsSection';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'LendingStatsPage',
@@ -109,7 +109,7 @@ export default {
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		title: 'Lending Stats'
 	},
 	data() {

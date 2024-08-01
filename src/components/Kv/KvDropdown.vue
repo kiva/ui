@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import dropdownQuery from '@/graphql/query/dropdown.graphql';
+import dropdownQuery from '#src/graphql/query/dropdown.graphql';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
-} from '@/util/touchEvents';
+} from '#src/util/touchEvents';
 
 export default {
 	name: 'KvDropdown',
@@ -181,9 +181,9 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'foundation';
-@include foundation-dropdown;
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
+@include foundation-dropdown ();
 </style>
 
 <style lang="postcss" scoped>

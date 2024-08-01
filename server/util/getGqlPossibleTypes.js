@@ -1,6 +1,6 @@
-const fetch = require('./fetch');
-const { log } = require('./log');
-const tracer = require('./mockTrace');
+import fetch from './fetch.js';
+import { log } from './log.js';
+import { trace } from './mockTrace.js';
 
 const GQL_BUILT_IN_TYPES = [
 	'__Schema',
@@ -33,8 +33,7 @@ function fetchGqlPossibleTypes(url, cache) {
 				if (GQL_BUILT_IN_TYPES.includes(type.name)
 					|| type.name === queryType?.name
 					|| type.name === mutationType?.name
-					|| type.name === subscriptionType?.name
-				) {
+					|| type.name === subscriptionType?.name) {
 					return;
 				}
 				// If this type has possible types, include them in the possibleTypes
@@ -55,20 +54,14 @@ function fetchGqlPossibleTypes(url, cache) {
 			process.env.FETCHED_GQL_TYPES = typesJSON;
 
 			// Cache the possible types in memcached for other processes to use
-			cache.set(
-				'ui-gql-possible-types',
-				typesJSON,
-				{ expires: 24 * 60 * 60 },
-				(error, success) => {
-					if (error) {
-						log(`MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`, 'error');
-					}
-					if (success) {
-						log(`MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`);
-					}
+			cache.set('ui-gql-possible-types', typesJSON, { expires: 24 * 60 * 60 }, (error, success) => {
+				if (error) {
+					log(`MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`, 'error');
 				}
-			);
-
+				if (success) {
+					log(`MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`);
+				}
+			});
 			return possibleTypes;
 		});
 }
@@ -93,15 +86,15 @@ function getGqlPossibleTypesFromCache(cache) {
 	});
 }
 
-module.exports = function getGqlPossibleTypes(url, cache) {
-	return tracer.trace('getGqlFragmentTypes', () => {
-		return tracer.trace('getGqlFragmentsFromCache', () => {
+export default (function getGqlPossibleTypes(url, cache) {
+	return trace('getGqlFragmentTypes', () => {
+		return trace('getGqlFragmentsFromCache', () => {
 			return getGqlPossibleTypesFromCache(cache).then(data => {
 				if (Object.keys(data).length) {
 					return data;
 				}
-				return tracer.trace('fetchGqlFragments', () => fetchGqlPossibleTypes(url, cache));
+				return trace('fetchGqlFragments', () => fetchGqlPossibleTypes(url, cache));
 			});
 		});
 	});
-};
+});

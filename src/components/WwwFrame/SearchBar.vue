@@ -82,14 +82,14 @@ import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _zip from 'lodash/zip';
-import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
-import SearchEngine from '@/util/searchEngine';
-import { indexIn } from '@/util/comparators';
+import suggestionsQuery from '#src/graphql/query/loanSearchSuggestions.graphql';
+import SearchEngine from '#src/util/searchEngine';
+import { indexIn } from '#src/util/comparators';
 import { mdiMagnify } from '@mdi/js';
-import lockScrollUtils from '@/plugins/lock-scroll';
-import getCacheKey from '@/util/getCacheKey';
-import { hasExcludedQueryParams } from '@/util/loanSearch/queryParamUtils';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import lockScrollUtils from '#src/plugins/lock-scroll';
+import getCacheKey from '#src/util/getCacheKey';
+import { hasExcludedQueryParams } from '#src/util/loanSearch/queryParamUtils';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const engine = new SearchEngine();
 

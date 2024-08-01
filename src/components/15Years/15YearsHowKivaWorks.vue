@@ -24,13 +24,13 @@
 </template>
 
 <script>
-import FifteenYearsSectionHeader from './15YearsSectionHeader';
-import FifteenYearsHowKivaWorksCarousel from './15YearsHowKivaWorksCarousel';
 
-const step1Video = require('@/assets/media/15-years/step1.mp4');
-const step2Video = require('@/assets/media/15-years/step2.mp4');
-const step3Video = require('@/assets/media/15-years/step3.mp4');
-const step4Video = require('@/assets/media/15-years/step4.mp4');
+import step1Video from '#src/assets/media/15-years/step1.mp4';
+import step2Video from '#src/assets/media/15-years/step2.mp4';
+import step3Video from '#src/assets/media/15-years/step3.mp4';
+import step4Video from '#src/assets/media/15-years/step4.mp4';
+import FifteenYearsHowKivaWorksCarousel from './15YearsHowKivaWorksCarousel';
+import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 export default {
 	name: '15YearsHowKivaWorks',
@@ -72,8 +72,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 @mixin timeline-link() {
 	@include link();

@@ -87,9 +87,9 @@
 </template>
 
 <script>
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: '15YearsHowKivaWorksCarousel',
@@ -139,8 +139,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 /* themable properties
 --fifteen-years-font-family-monospace
@@ -168,7 +169,7 @@ export default {
 
 		@include breakpoint(large) {
 			position: absolute;
-			top: calc(50% - #{$prev-next-size / 2});
+			top: calc(50% - #{math.div($prev-next-size, 2)});
 			width: 100%;
 			margin-top: 0;
 		}
@@ -271,7 +272,7 @@ export default {
 	&__body { // this is kv-carousel
 		overflow: visible;
 
-		&::v-deep {
+		:deep(&) {
 			// carousel hack to make the viewport match design
 			.kv-carousel__viewport {
 				overflow: visible; // TODO: this seems to cause a bug when tabbing through the carousel
@@ -286,7 +287,7 @@ export default {
 			width: calc(90% - #{$prev-next-size * 2});
 			margin: 0 auto;
 
-			&::v-deep {
+			:deep(&) {
 				.kv-carousel__indicator {
 					margin-top: 0;
 				}

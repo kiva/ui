@@ -5,10 +5,10 @@
 </template>
 
 <style lang="scss">
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap';
 
 .fifteen-year-styled {
 	--fifteen-years-font-family-monospace: 'Roboto Mono', monospace;

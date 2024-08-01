@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import Password from '@/components/Settings/Password';
-import TwoStepVerification from '@/components/Settings/TwoStepVerification';
-import TwoStepFaq from '@/components/Settings/TwoStepFaq';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import Password from '#src/components/Settings/Password';
+import TwoStepVerification from '#src/components/Settings/TwoStepVerification';
+import TwoStepFaq from '#src/components/Settings/TwoStepFaq';
 
 export default {
 	name: 'SecuritySettings',
@@ -43,7 +43,7 @@ export default {
 		TwoStepVerification,
 		TwoStepFaq,
 	},
-	metaInfo: {
+	head: {
 		title: 'Security and login',
 	},
 };

@@ -1,19 +1,22 @@
-import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox.vue';
+import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
+
+const args = {
+	visible: true
+};
 
 export default {
 	title: 'Components/Donation Nudge Lightbox',
 	component: DonationNudgeLightbox,
-	args: {
-		visible: true
-	}
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { DonationNudgeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() { return args; },
 	template: `
 		<donation-nudge-lightbox
 			:loan-count="1"

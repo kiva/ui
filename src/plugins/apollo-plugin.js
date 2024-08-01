@@ -1,13 +1,13 @@
-import checkInjections from '@/util/injectionCheck';
-import logReadQueryError from '@/util/logReadQueryError';
-import { isContentfulQuery } from '@/util/contentful/isContentfulQuery';
+import checkInjections from '#src/util/injectionCheck';
+import logReadQueryError from '#src/util/logReadQueryError';
+import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
 
 const injections = ['apollo', 'cookieStore'];
 
 // install method for plugin
-export default Vue => {
+export default app => {
 // export default {
-	Vue.mixin({
+	app.mixin({
 		created() {
 			if (this.$options.apollo) {
 				checkInjections(this, injections);

@@ -42,9 +42,9 @@
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
 import { getTreemap } from 'treemap-squarify';
-import KvTooltip from '@/components/Kv/KvTooltip';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
+import KvTooltip from '#src/components/Kv/KvTooltip';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
 
 const { breakpoints } = kvTokensPrimitives;
 

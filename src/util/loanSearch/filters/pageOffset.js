@@ -1,5 +1,5 @@
-import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
-import { isNumber } from '@/util/numberUtils';
+import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
+import { isNumber } from '#src/util/numberUtils';
 
 export default {
 	uiConfig: {

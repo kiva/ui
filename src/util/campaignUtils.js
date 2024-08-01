@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import promoCampaign from '@/graphql/query/promoCampaign.graphql';
+import { gql } from 'graphql-tag';
+import promoCampaign from '#src/graphql/query/promoCampaign.graphql';
 
 /**
  * addCreditByType mutation
@@ -115,7 +115,7 @@ export function validateQueryParams(query, apollo) {
  * @param {Object} apollo Apollo Client instance
  * @returns {Promise}
  */
-export function getPromoFromBasket(promoFundId = null, apollo) {
+export function getPromoFromBasket(promoFundId = null, apollo = {}) {
 	return apollo.query({
 		query: promoCampaign,
 		variables: {

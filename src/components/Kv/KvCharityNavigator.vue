@@ -4,8 +4,8 @@
 			{{ title }}
 		</div>
 		<div id="image" :class="`${wideIcon ? 'wide-icon' : ''}`">
-			<img v-if="!wideIcon" src="~@/assets/images/charity-navigator.png">
-			<img v-else src="~@/assets/images/charity-navigator-wide.png">
+			<img v-if="!wideIcon" src="#src/assets/images/charity-navigator.png">
+			<img v-else src="#src/assets/images/charity-navigator-wide.png">
 		</div>
 		<div id="subtitle" v-if="subtitle">
 			{{ subtitle }}
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 #container {
 	display: flex;
@@ -57,11 +57,11 @@ export default {
 }
 
 #image {
-	margin: rem-calc(10) 0 rem-calc(5) 0;
+	margin: rem-calc(10) 0 rem-calc(5);
 	max-width: 75%;
 
 	&.wide-icon {
-		margin: rem-calc(18) 0 rem-calc(10) 0;
+		margin: rem-calc(18) 0 rem-calc(10);
 		max-width: 40%;
 	}
 }

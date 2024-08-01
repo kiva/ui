@@ -1,9 +1,9 @@
-const { loadSchema } = require('@graphql-tools/load');
-const { UrlLoader } = require('@graphql-tools/url-loader');
-const fetch = require('./fetch');
+import { loadSchema } from '@graphql-tools/load';
+import { UrlLoader } from '@graphql-tools/url-loader';
+import fetch from './fetch.js';
 
 // Return a GraphQLSchema made from introspecting a remote api
-module.exports = function getRemoteGqlSchema(uri) {
+export default function getRemoteGqlSchema(uri) {
 	// Load schema from endpoint
 	// https://www.graphql-tools.com/docs/schema-loading
 	return loadSchema(uri, {
@@ -12,4 +12,4 @@ module.exports = function getRemoteGqlSchema(uri) {
 		],
 		customFetch: fetch,
 	});
-};
+}

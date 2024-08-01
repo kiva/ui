@@ -13,12 +13,11 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
+			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`] :key="`loan-${loanId||index}`">
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<new-home-page-loan-card
 					:item-index="index"
-					:key="`loan-${loanId||index}`"
 					:loan-id="loanId"
 				/>
 			</template>
@@ -49,12 +48,11 @@
 		</kv-carousel>
 		<template v-if="newHomeExp">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-2 md:tw-gap-4 lg:tw-grid-cols-3">
-				<template v-for="(loanId, index) in augmentedLoanIds">
+				<template v-for="(loanId, index) in augmentedLoanIds" :key="`loan-${loanId||index}`">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
 					<new-home-page-loan-card
 						:item-index="index"
-						:key="`loan-${loanId||index}`"
 						:loan-id="loanId"
 					/>
 				</template>
@@ -80,10 +78,10 @@
 </template>
 
 <script>
-import getCategoryName from '@/util/categoryUtils';
-import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import getCategoryName from '#src/util/categoryUtils';
+import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'KivaLoanCardCategory',

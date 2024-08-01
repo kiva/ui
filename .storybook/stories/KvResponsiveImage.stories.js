@@ -1,4 +1,4 @@
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 
 export default {
 	title: 'Kv/KvResponsiveImage',

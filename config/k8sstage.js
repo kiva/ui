@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var stage  = require('./stage.js')
+import { merge } from 'webpack-merge';
+import stage from './stage.js';
 
-module.exports = merge(stage, {
+export default merge(stage, {
 	app: {
 		apolloBatching: false,
 		publicPath: 'https://www-stage-kiva-org.freetls.fastly.net/',
@@ -10,4 +10,4 @@ module.exports = merge(stage, {
 		memcachedServers: 'marketplace-k8s-ui-stage.knmtma.cfg.usw2.cache.amazonaws.com:11211',
 		disableCluster: true,
 	}
-})
+});

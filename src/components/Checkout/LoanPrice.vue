@@ -35,11 +35,11 @@
 <script>
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
-import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
-import { getDropdownPriceArrayCheckout } from '@/util/loanUtils';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
+import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
+import { getDropdownPriceArrayCheckout } from '#src/util/loanUtils';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'LoanPrice',

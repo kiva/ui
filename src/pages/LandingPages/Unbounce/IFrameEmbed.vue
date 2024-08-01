@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import oneTrustGlobalEvent from '@/head/oneTrustEvent';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import oneTrustGlobalEvent from '#src/head/oneTrustEvent';
 import _throttle from 'lodash/throttle';
 
 export default {

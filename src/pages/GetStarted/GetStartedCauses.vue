@@ -52,11 +52,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
-import KvProgressBar from '@/components/Kv/KvProgressBar';
+import KvButton from '#src/components/Kv/KvButton';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
+import KvProgressBar from '#src/components/Kv/KvProgressBar';
 
 const lendingPreferencesCauses = gql`query lendingPreferences($visitorId: String) {
 	general {
@@ -78,7 +78,7 @@ export default {
 		KvCauseSelector,
 		KvProgressBar,
 	},
-	metaInfo: {
+	head: {
 		title: 'Get Started'
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -241,7 +241,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .get-started {
 	&__form {
@@ -251,7 +251,7 @@ export default {
 		max-width: rem-calc(1088);
 
 		@include breakpoint(medium) {
-			box-shadow: 0 2px 100px 0 rgba(0, 0, 0, 0.1);
+			box-shadow: 0 2px 100px 0 rgb(0 0 0 / 10%);
 		}
 
 		@include breakpoint(large) {
@@ -316,7 +316,7 @@ export default {
 		max-width: 30.5rem;
 		margin: 0 0 2.5rem auto;
 
-		::v-deep b {
+		:deep(b) {
 			text-transform: capitalize;
 		}
 	}

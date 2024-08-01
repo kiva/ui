@@ -1,4 +1,4 @@
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
+import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import mockedReceiptData from '../mock-data/receipt-data-mock';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 

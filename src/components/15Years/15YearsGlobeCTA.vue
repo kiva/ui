@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import usingTouchQuery from '@/graphql/query/shared/usingTouchClient.graphql';
-import RadialIcon from '@/components/15Years/RadialIcon';
+import usingTouchQuery from '#src/graphql/query/shared/usingTouchClient.graphql';
+import RadialIcon from '#src/components/15Years/RadialIcon';
 
 export default {
 	name: '15YearsGlobeCTA',
@@ -36,8 +36,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .globe-cta {
 	position: absolute;
@@ -65,7 +65,7 @@ export default {
 		left: 69.5%;
 	}
 
-	::v-deep .radial-icon {
+	:deep(.radial-icon) {
 		margin: 0 0.5rem;
 	}
 }

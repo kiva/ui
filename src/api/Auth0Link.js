@@ -1,4 +1,4 @@
-import { setContext } from '@apollo/client/link/context';
+import { setContext } from '@apollo/client/link/context/index';
 
 // Add the user info to the context and add the access token to the authorization header
 function getAuthContext(context, user, token) {

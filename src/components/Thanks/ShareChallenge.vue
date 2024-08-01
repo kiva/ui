@@ -119,17 +119,17 @@
 </template>
 
 <script>
-import teamGoalInfo from '@/plugins/team-goal-mixin';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import RewardsIcon from '@/assets/icons/inline/rewards.svg';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
+import teamGoalInfo from '#src/plugins/team-goal-mixin';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import RewardsIcon from '#src/assets/icons/inline/rewards.svg';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import { mdiLink } from '@mdi/js';
-import { getFullUrl } from '@/util/urlUtils';
+import { getFullUrl } from '#src/util/urlUtils';
 import clipboardCopy from 'clipboard-copy';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'ShareChallenge',

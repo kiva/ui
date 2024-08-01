@@ -12,15 +12,15 @@
 </template>
 
 <script>
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoanChannelCategoryRecommendedByLenders from '@/pages/Lend/LoanChannelCategoryRecommendedByLenders';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
+import updateAddToBasketInterstitial from '#src/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInterstitial';
+import LoanChannelCategoryRecommendedByLenders from '#src/pages/Lend/LoanChannelCategoryRecommendedByLenders';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 
 export default {
 	name: 'LoanChannelCategoryPageRecommendedByLenders',
-	metaInfo() {
+	head() {
 		return {
 			title: this.meta.title,
 			meta: [

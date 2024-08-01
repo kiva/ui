@@ -65,13 +65,13 @@
 </template>
 
 <script>
-import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import teamNoImage from '@/assets/images/team_s135.png';
-import teamGoalInfo from '@/plugins/team-goal-mixin';
-import KvProgressCampaign from '@/components/Kv/KvProgressCampaign';
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import teamNoImage from '#src/assets/images/team_s135.png';
+import teamGoalInfo from '#src/plugins/team-goal-mixin';
+import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'TeamGoal',

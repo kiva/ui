@@ -1,5 +1,5 @@
-import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { getIdsFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 
 /**
  * Transforms partners into a form usable by the select box
@@ -77,7 +77,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		partnerId: [...loanSearchState.partnerId?.filter(id => facet.id !== id)]
+		partnerId: [...(loanSearchState?.partnerId ?? []).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: loanSearchState => ({ partner: loanSearchState?.partnerId }),
 	getFlssFilter: loanSearchState => ({

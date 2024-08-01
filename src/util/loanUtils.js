@@ -129,7 +129,7 @@ export function getDropdownPriceArray(
 	minAmount,
 	enableFiveDollarsNotes,
 	inPfp = false,
-	enableHugeAmount,
+	enableHugeAmount = false,
 ) {
 	const parsedAmountLeft = parseFloat(unreservedAmount);
 	let combinedPricesArray = [];

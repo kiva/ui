@@ -21,12 +21,11 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
+			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`] :key="`loan-${loanId}`">
 				<!-- show loan card -->
 				<!-- TODO Re-implement card position analytics -->
 				<kiva-classic-basic-loan-card
 					:item-index="index"
-					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 					:exp-label="expLabel"
 					:lend-now-button="lendNowButton"
@@ -60,12 +59,11 @@
 		</kv-carousel>
 		<template v-if="newHomeExp">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
-				<template v-for="(loanId, index) in augmentedLoanIds">
+				<template v-for="(loanId, index) in augmentedLoanIds" :key="`loan-${loanId}`">
 					<!-- show loan card -->
 					<!-- TODO Re-implement card position analytics -->
 					<kiva-classic-basic-loan-card
 						:item-index="index"
-						:key="`loan-${loanId}`"
 						:loan-id="loanId"
 						:exp-label="expLabel"
 						:lend-now-button="lendNowButton"
@@ -94,10 +92,10 @@
 </template>
 
 <script>
-import KivaClassicBasicLoanCard from '@/components/LoanCards/KivaClassicBasicLoanCard';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'KivaClassicLoanCarousel',

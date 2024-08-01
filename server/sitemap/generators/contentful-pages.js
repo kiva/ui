@@ -1,7 +1,8 @@
-const fetchGraphQL = require('../../util/fetchGraphQL');
-const { info } = require('../../util/log');
+import fetchGraphQL from '../../util/fetchGraphQL.js';
+import { info } from '../../util/log.js';
 
 // Fetch all pages from contentful
+// eslint-disable-next-line no-unused-vars
 async function fetchContentfulPages() {
 	const result = await fetchGraphQL({
 		query: `{
@@ -19,9 +20,7 @@ async function fetchContentfulPages() {
 	});
 }
 
-// This sitemap generator fetches all the pages in contentful and
-// adds a sitemap url for every route that is a landing page (/lp/*).
-module.exports = async function contentfulRouteGenerator() {
+export function contentfulRouteGenerator() {
 	info('Sitemap: contentfulRouteGenerator: fetching contentful pages');
 	// const pages = await fetchContentfulPages();
 
@@ -42,4 +41,4 @@ module.exports = async function contentfulRouteGenerator() {
 
 	info('Sitemap: contentfulRouteGenerator: found pages', { landingPages });
 	return landingPages;
-};
+}

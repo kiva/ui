@@ -62,12 +62,12 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
-import joinTeam from '@/graphql/mutation/joinTeam.graphql';
-import myTeamsQuery from '@/graphql/query/myTeams.graphql';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '#src/components/Kv/KvButton';
+import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
+import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import KvLightbox from '#src/components/Kv/KvLightbox';
 
 export default {
 	name: 'CampaignJoinTeamForm',
@@ -207,7 +207,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .join-team-lightbox {
 	&__content {

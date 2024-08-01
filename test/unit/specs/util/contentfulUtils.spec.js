@@ -8,7 +8,7 @@ import {
 	processPageContent,
 	processPageContentFlat,
 	responsiveImageSetSourceSets
-} from '@/util/contentfulUtils';
+} from '#src/util/contentfulUtils';
 
 import inactiveUiSetting from '../../fixtures/UiSettingTypeInactiveRaw.json';
 import ccPageRaw from '../../fixtures/CorporateCampaignContentfulPageRaw.json';

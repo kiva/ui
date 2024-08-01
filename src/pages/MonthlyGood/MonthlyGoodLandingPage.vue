@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-model-argument -->
 <template>
 	<www-page>
 		<kv-hero
@@ -26,8 +27,8 @@
 						></h1>
 						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
-							:amount.sync="monthlyGoodAmount"
-							:selected-group.sync="selectedGroup"
+							v-model:amount="monthlyGoodAmount"
+							v-model:selected-group="selectedGroup"
 							key="top"
 							:button-text="heroPrimaryCtaText"
 							v-if="!isMonthlyGoodSubscriber && !hasModernSub"
@@ -53,8 +54,8 @@
 			></h1>
 			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
 			<landing-form
-				:amount.sync="monthlyGoodAmount"
-				:selected-group.sync="selectedGroup"
+				v-model:amount="monthlyGoodAmount"
+				v-model:selected-group="selectedGroup"
 				key="top"
 				:button-text="heroPrimaryCtaText"
 				v-if="!isMonthlyGoodSubscriber && !hasModernSub"
@@ -85,8 +86,8 @@
 		<kiva-as-expert>
 			<template #form>
 				<landing-form
-					:amount.sync="monthlyGoodAmount"
-					:selected-group.sync="selectedGroup"
+					v-model:amount="monthlyGoodAmount"
+					v-model:selected-group="selectedGroup"
 					key="bottom"
 					v-if="!isMonthlyGoodSubscriber && !hasModernSub"
 					:button-text="heroPrimaryCtaText"
@@ -118,19 +119,20 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
-import { processPageContent } from '@/util/contentfulUtils';
+import { processPageContent } from '#src/util/contentfulUtils';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
-import KvHero from '@/components/Kv/KvHero';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import AutomaticallySupportNotice from '@/components/MonthlyGood/AutomaticallySupportNotice';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import KvHero from '#src/components/Kv/KvHero';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
+import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
+import AutomaticallySupportNotice from '#src/components/MonthlyGood/AutomaticallySupportNotice';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { metaGlobReader } from '#src/util/importHelpers';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
 import HowItWorks from './HowItWorks';
@@ -138,7 +140,8 @@ import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 
-const mgLandingPageImageRequire = require.context('@/assets/images/mg-landing-page', true);
+const mgLandingPageImageGlob = import.meta.glob('/src/assets/images/mg-landing-page/*.*', { eager: true });
+const mgLandingPageImageRequire = metaGlobReader(mgLandingPageImageGlob, '/src/assets/images/mg-landing-page/');
 
 const pageQuery = gql`
 	query monthlyGoodLandingPage {
@@ -163,7 +166,7 @@ const pageQuery = gql`
 
 export default {
 	name: 'MonthlyGoodLandingPage',
-	metaInfo() {
+	head() {
 		return	{
 			title: 'Make an impact with Monthly Good',
 			meta: [
@@ -231,8 +234,8 @@ export default {
 				},
 			],
 			landingPageImages: [
-				['small', mgLandingPageImageRequire('./mg-chooseloan-mobile.png')],
-				['xga', mgLandingPageImageRequire('./mg-chooseloan-desktop.png')],
+				['small', mgLandingPageImageRequire('mg-chooseloan-mobile.png')],
+				['xga', mgLandingPageImageRequire('mg-chooseloan-desktop.png')],
 			],
 			hasModernSub: false,
 			selectedChannelLoanIds: [],
@@ -376,15 +379,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 @include breakpoint(xxlarge) {
-	#carousel_exp >>> section > div:nth-child(2) {
+	#carousel_exp :deep(section) > div:nth-child(2) {
 		display: none;
 	}
 }
 
-#carousel_exp >>> section > div:nth-child(1) > div {
+#carousel_exp :deep(section) > div:nth-child(1) > div {
 	max-width: 310px !important;
 }
 </style>

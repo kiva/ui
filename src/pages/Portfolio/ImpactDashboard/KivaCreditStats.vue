@@ -14,7 +14,7 @@
 					</dt>
 					<kv-loading-placeholder v-if="loading" style="width: 40px; height: 16px;" />
 					<dd v-if="!loading" class="tw-text-action tw-text-h4">
-						{{ depositAmount | numeral('$0,0.00') }}
+						{{ $filters.numeral(depositAmount, '$0,0.00') }}
 					</dd>
 					<dd class="tw-basis-full tw-text-secondary tw-text-small tw-mt-0.5 tw-mb-3 tw-pr-8">
 						The total amount of funds you've deposited into your Kiva account.
@@ -24,7 +24,7 @@
 					</dt>
 					<kv-loading-placeholder v-if="loading" style="width: 56px; height: 16px;" />
 					<dd v-if="!loading" class="tw-text-brand tw-text-h4">
-						{{ lendAmount | numeral('$0,0.00') }}
+						{{ $filters.numeral(lendAmount, '$0,0.00') }}
 					</dd>
 					<dd class="tw-basis-full tw-text-secondary tw-text-small tw-mt-0.5 tw-mb-3 tw-pr-8">
 						The total amount of funds you've lent to borrowers.
@@ -38,15 +38,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import getCacheKey from '@/util/getCacheKey';
+import { defineAsyncComponent } from 'vue';
+import getCacheKey from '#src/util/getCacheKey';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KivaEffectFigure from './KivaEffectFigure';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-const CreditSummaryLightbox = () => import('./CreditSummaryLightbox');
+const CreditSummaryLightbox = defineAsyncComponent(() => import('./CreditSummaryLightbox'));
 
 export default {
 	name: 'KivaCreditStats',

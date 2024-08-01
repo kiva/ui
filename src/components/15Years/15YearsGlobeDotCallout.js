@@ -1,6 +1,6 @@
 import {
 	Callout
-} from '@/lib/globekit/globekit.esm';
+} from '#src/lib/globekit/globekit.esm';
 
 class DotCallout extends Callout {
 	createElement() {

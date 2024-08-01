@@ -1,10 +1,10 @@
-<template functional>
+<template>
 	<div class="radial-icon"></div>
 </template>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .radial-icon {
 	position: relative;

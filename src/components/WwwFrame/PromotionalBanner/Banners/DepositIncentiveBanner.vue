@@ -11,11 +11,11 @@
 </template>
 
 <script>
-import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import GenericPromoBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 import numeral from 'numeral';
-import { gql } from '@apollo/client';
-import configSettingQuery from '@/graphql/query/configSetting.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
+import { gql } from 'graphql-tag';
+import configSettingQuery from '#src/graphql/query/configSetting.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 const key = 'deposit_incentive_active_campaign_id';
 

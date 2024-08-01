@@ -1,4 +1,4 @@
-import query from '@/graphql/query/activeLoanClient.graphql';
+import query from '#src/graphql/query/activeLoanClient.graphql';
 
 /*
  * Active loan resolvers

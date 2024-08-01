@@ -1,4 +1,4 @@
-const { createTerminus } = require('@godaddy/terminus');
+import { createTerminus } from '@godaddy/terminus';
 
 let cache = null;
 function disconnectCache() {
@@ -59,7 +59,7 @@ const options = {
 	onShutdown, // [optional] called right before exiting
 };
 
-module.exports = function initializeTerminus(server, cacheInstance) {
+export default (function initializeTerminus(server, cacheInstance) {
 	createTerminus(server, options);
 	cache = cacheInstance;
-};
+});

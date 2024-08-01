@@ -1,5 +1,5 @@
 <template>
-	<picture>
+	<picture v-bind="$attrs">
 		<!-- browser uses the first <source> tag matching media query even if later <source> tags also match -->
 		<!-- So start with the largest window sizes first -->
 		<source
@@ -18,7 +18,7 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import { isHighDensity, isRetina } from '@/util/checkScreenDensity';
+import { isHighDensity, isRetina } from '#src/util/checkScreenDensity';
 
 // Responsive Image Reading:
 // https://developers.google.com/web/fundamentals/design-and-ux/responsive/images

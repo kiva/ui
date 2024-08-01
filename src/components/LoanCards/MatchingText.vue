@@ -1,18 +1,54 @@
-<template functional>
+<template>
 	<span
 		class="tw-text-small tw-text-tertiary matching-text"
 		:class="{
-			'has-match': props.matchingText && !props.isMatchAtRisk,
-			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
-			'wrap': props.wrap,
+			'has-match': matchingText && !isMatchAtRisk,
+			'hide-match': isFunded || isSelectedByAnother || isExpired,
+			'wrap': wrap,
 		}"
 	>
-		{{ props.matchRatio + 1 }}x matching by {{ props.matchingText }}
+		{{ matchRatio + 1 }}x matching by {{ matchingText }}
 	</span>
 </template>
 
+<script>
+export default {
+	name: 'MatchingText',
+	props: {
+		matchingText: {
+			type: String,
+			default: '',
+		},
+		isMatchAtRisk: {
+			type: Boolean,
+			default: false,
+		},
+		isFunded: {
+			type: Boolean,
+			default: false,
+		},
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false,
+		},
+		isExpired: {
+			type: Boolean,
+			default: false,
+		},
+		wrap: {
+			type: Boolean,
+			default: false,
+		},
+		matchRatio: {
+			type: Number,
+			default: 0
+		},
+	},
+};
+</script>
+
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .matching-text {
 	display: block;

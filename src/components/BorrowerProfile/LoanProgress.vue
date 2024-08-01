@@ -84,7 +84,7 @@
 						{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
 					</p>
 					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
-						{{ moneyLeft | numeral('$0,0[.]00') }} to go
+						{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 					</p>
 				</div>
 			</template>
@@ -100,7 +100,7 @@
 				</p>
 				<div class="tw-flex-auto tw-text-right">
 					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-						{{ moneyLeft | numeral('$0,0[.]00') }} to go
+						{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 					</p>
 					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
@@ -112,9 +112,9 @@
 </template>
 
 <script>
-import { ALLOWED_LOAN_STATUSES } from '@/util/loanUtils';
+import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import numeral from 'numeral';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'LoanProgress',

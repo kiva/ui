@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
 	name: 'KvActivityRow',

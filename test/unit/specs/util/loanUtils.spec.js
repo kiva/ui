@@ -5,7 +5,7 @@ import {
 	ERL_COOKIE_NAME,
 	TOP_UP_CAMPAIGN,
 	BASE_CAMPAIGN,
-} from '@/util/loanUtils';
+} from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
 	describe('getDropdownPriceArray', () => {

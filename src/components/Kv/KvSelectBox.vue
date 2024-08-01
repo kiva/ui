@@ -12,7 +12,7 @@
 		/>
 		<div
 			ref="dropdown"
-			:class="{ 'tw-hidden': !this.show }"
+			:class="{ 'tw-hidden': !show }"
 			class="
 				tw-border
 				tw-border-tertiary
@@ -49,7 +49,7 @@
 
 <script>
 import _orderBy from 'lodash/orderBy';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export const NO_RESULTS = 'No results found';
 
@@ -162,7 +162,7 @@ export default {
 			this.popper = new Popper(this.$refs.input.$el, this.$refs.dropdown, { placement: 'bottom-start' });
 		},
 		clickDocument(e) {
-			if (!this.$refs.input.$el.contains(e.target) && !this.$refs.dropdown.contains(e.target)) {
+			if (!this.$refs?.input?.$el?.contains(e.target) && !this.$refs?.dropdown?.contains(e.target)) {
 				this.close();
 			}
 		},

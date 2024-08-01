@@ -1,60 +1,63 @@
-import KivaLoanCardCategory from '@/components/LoanCollections/HomeExp/KivaLoanCardCategory';
+import KivaLoanCardCategory from '#src/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import LoanCategorySelectorHomeExp from '@/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import LoanCategorySelectorHomeExp from '#src/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+
+const args = {
+	showAllButton: true,
+	combinedLoanChannelData: [{
+		"id": 32,
+		"name": "Refugees and IDPs",
+		"url": "https://www.dev.kiva.org/lend/refugees-and-i-d-ps",
+		"shortName": "Refugees and IDPs",
+		"__typename": "LoanChannel"
+	},
+	{
+		"id": 5,
+		"name": "Women",
+		"url": "https://www.dev.kiva.org/lend/women",
+		"shortName": "Women",
+		"__typename": "LoanChannel"
+	},
+	{
+		"id": 6,
+		"name": "Health",
+		"url": "https://www.dev.kiva.org/lend/women",
+		"shortName": "Health",
+		"__typename": "LoanChannel"
+	}],
+	selectedChannel: {
+		id: 5,
+		url: 'women'
+	},
+	showCarousel: true,
+	showViewMoreCard: false,
+	selectedChannelLoanIds: [
+		2414972, 2411407, 2428657, 2422009, 2421968, 2422012
+	],
+	newHomeExp: true,
+	loanLimit: 6,
+};
 
 export default {
 	title: 'New Home Page/Kiva Multi Category Grid',
-	components: {LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid},
-	args: {
-		showAllButton: true,
-		combinedLoanChannelData: [{
-			"id":32,
-			"name":"Refugees and IDPs",
-			"url":"https://www.dev.kiva.org/lend/refugees-and-i-d-ps",
-			"shortName": "Refugees and IDPs",
-			"__typename":"LoanChannel"
-		},
-		{
-			"id":5,
-			"name":"Women",
-			"url":"https://www.dev.kiva.org/lend/women",
-			"shortName": "Women",
-			"__typename":"LoanChannel"
-		},
-		{
-			"id":6,
-			"name":"Health",
-			"url":"https://www.dev.kiva.org/lend/women",
-			"shortName": "Health",
-			"__typename":"LoanChannel"
-		}],
-		selectedChannel: {
-			id: 5,
-			url: 'women'
-		},
-		showCarousel: true,
-		showViewMoreCard: false,
-		selectedChannelLoanIds: [
-			2414972, 2411407, 2428657, 2422009, 2421968, 2422012
-		],
-		newHomeExp: true,
-		loanLimit: 6,
-	}
+	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid },
+	args,
 };
 
-export const DefaultGrid = (args, { argTypes }) => ({
+export const DefaultGrid = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid },
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 	methods: {
-		handleCategoryClick (payload) {
+		handleCategoryClick(payload) {
 			this.selectedChannel = this.combinedLoanChannelData.find(
 				loanChannel => loanChannel.id === payload.categoryId
 			);
 		}
 	},
+	setup() { return args; },
 	template: `
 		<kv-grid class="tw-grid-cols-12" style="max-width: 1200px;">
 			<div class="tw-col-span-12 md:tw-col-span-3">

@@ -42,12 +42,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {
@@ -80,7 +80,7 @@ const startEmailVerification = gql`
 
 export default {
 	name: 'StartVerification',
-	metaInfo: {
+	head: {
 		title: 'Email Verification'
 	},
 	components: {
@@ -101,12 +101,13 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route, kvAuth0 }) {
+			const currentRoute = route.value ?? {};
 			return client.query({ query: getVerificationState, fetchPolicy: 'network-only' })
 				.then(result => {
 					// Redirect to doneUrl if email has already been verified recently
 					if (kvAuth0.isMfaAuthenticated() || result?.data?.my?.emailVerifiedRecently) {
 						return Promise.reject({
-							path: getFullPath(route.query.doneUrl || '/')
+							path: getFullPath(currentRoute.query?.doneUrl || '/')
 						});
 					}
 					return result;

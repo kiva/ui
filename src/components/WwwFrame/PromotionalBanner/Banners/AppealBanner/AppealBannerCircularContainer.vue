@@ -15,10 +15,10 @@
 
 <script>
 import numeral from 'numeral';
-import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
-import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import appealBannerQuery from '#src/graphql/query/appealBanner.graphql';
+import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import AppealBannerCircular from '#src/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 export default {
 	name: 'AppealBannerCircularContainer',
@@ -30,8 +30,8 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.amountRaised = data?.general?.kivaStats?.latestDonationCampaign?.amount_raised; // eslint-disable-line
-			this.targetAmount = data?.general?.kivaStats?.latestDonationCampaign?.target_amount; // eslint-disable-line
+			this.amountRaised = data?.general?.kivaStats?.latestDonationCampaign?.amount_raised;
+			this.targetAmount = data?.general?.kivaStats?.latestDonationCampaign?.target_amount;
 		},
 	},
 	props: {

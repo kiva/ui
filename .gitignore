@@ -1,7 +1,8 @@
 .DS_Store
 node_modules/
+
+# Temporary files
 dist/
-npm-debug.log*
 coverage/
 test/e2e/screenshots
 test/e2e/results
@@ -10,6 +11,11 @@ build/schema.graphql
 .nyc_output/
 .lighthouseci/
 lhci/
+vite.config.js.*
+
+# Logs
+npm-debug.log*
+*storybook.log
 
 # Editor directories and files
 .idea

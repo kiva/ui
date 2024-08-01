@@ -65,9 +65,9 @@
 
 <script>
 import { format } from 'date-fns';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLendCta from '@kiva/kv-components/vue/KvLendCta';
 import KvActivityRow from './KvActivityRow';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvLendCta from '~/@kiva/kv-components/vue/KvLendCta';
 
 export default {
 	name: 'KvLoanActivities',
@@ -220,45 +220,48 @@ export default {
 
 <style scoped lang="postcss">
 .loan-activity-overlay {
-	background: linear-gradient(0deg, #f5f5f5 0%, rgba(255, 255, 255, 0) 100%);
+	background: linear-gradient(0deg, #f5f5f5 0%, rgb(255 255 255 / 0%) 100%);
 }
 
 @screen lg {
 	.loan-activity-overlay {
-		background: linear-gradient(0deg, #fff 0%, rgba(245, 245, 245, 0) 60%);
+		background: linear-gradient(0deg, #fff 0%, rgb(245 245 245 / 0%) 60%);
 	}
 }
 
-.loan-activity >>> #kvLightboxBody {
+.loan-activity :deep(#kvLightboxBody) {
 	@apply tw-flex tw-flex-col tw-px-0 tw-pb-0;
 }
 
-.loan-activity >>> div > div > div > div > div:first-child {
-	box-shadow: var(--kiva-box-shadow);
-}
-
-.loan-activity >>> div > div > div > div > div:first-child > div,
-.loan-activity >>> #kvLightboxBody div {
+.loan-activity :deep(#kvLightboxBody) div {
 	box-shadow: none;
 }
 
-.loan-activity >>> #kvLightboxBody > div:first-child {
+.loan-activity :deep(#kvLightboxBody) > div:first-child {
 	@apply tw-px-4;
 }
 
-.loan-activity >>> [role=dialog] {
+.loan-activity :deep([role=dialog]) {
 	min-width: 840px;
 	max-width: 840px !important;
 
-	@media (max-width: calc(840px + 2rem)) {
+	@media (width <= calc(840px + 2rem)) {
 		min-width: 100%;
 		max-width: 100% !important;
 	}
 }
 
-.loan-activity >>> #kvLightboxBody > div:nth-child(2) {
+.loan-activity :deep(#kvLightboxBody) > div:nth-child(2) {
 	@apply tw-px-4;
 
 	box-shadow: var(--kiva-negative-box-shadow);
+}
+
+.loan-activity :deep(div) > div > div > div > div:first-child {
+	box-shadow: var(--kiva-box-shadow);
+}
+
+.loan-activity :deep(div) > div > div > div > div:first-child > div {
+	box-shadow: none;
 }
 </style>

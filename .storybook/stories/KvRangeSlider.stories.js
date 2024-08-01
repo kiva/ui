@@ -1,4 +1,4 @@
-import KvRangeSlider from '@/components/Kv/KvRangeSlider';
+import KvRangeSlider from '#src/components/Kv/KvRangeSlider';
 
 export default {
 	title: 'Kv/Form Elements/KvRangeSlider',

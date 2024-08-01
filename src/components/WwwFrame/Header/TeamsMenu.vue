@@ -81,11 +81,11 @@
 </template>
 
 <script>
-import KvDropdown from '@/components/Kv/KvDropdown';
+import KvDropdown from '#src/components/Kv/KvDropdown';
 import {
 	mdiChevronDown,
 } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'TeamsMenu',

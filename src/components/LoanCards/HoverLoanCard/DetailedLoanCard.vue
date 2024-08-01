@@ -171,15 +171,15 @@
 
 <script>
 import _get from 'lodash/get';
-import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
-import KvFlag from '@/components/Kv/KvFlag';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import FundraisingStatusLarge from '@/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';
+import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvIcon from '#src/components/Kv/KvIcon';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import BorrowerInfoName from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import KvFlag from '#src/components/Kv/KvFlag';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import FundraisingStatusLarge from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';
 import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
 import InfoPanel from './InfoPanels/InfoPanel';
 import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
@@ -368,7 +368,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $parent-row-max-width: 63.75rem;
 $row-arrow-width: 2.5rem;
@@ -387,7 +387,7 @@ $row-arrow-width: 2.5rem;
 			margin-bottom: 1rem;
 
 			.title-button {
-				margin: 0.5rem 0 0.4rem 0;
+				margin: 0.5rem 0 0.4rem;
 			}
 		}
 
@@ -529,7 +529,7 @@ $row-arrow-width: 2.5rem;
 	}
 
 	.close-button-wrapper {
-		background-image: linear-gradient(45deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.15));
+		background-image: linear-gradient(45deg, rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 0%) 50%, rgb(0 0 0 / 15%));
 		position: absolute;
 		top: 0;
 		right: 0;

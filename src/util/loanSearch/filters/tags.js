@@ -1,6 +1,6 @@
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
-import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { getIdsFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 /**
  * Transforms tag names for display
@@ -69,7 +69,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		tagId: [...loanSearchState.tagId?.filter(id => facet.id !== id)]
+		tagId: [...(loanSearchState?.tagId ?? 0).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: loanSearchState => ({ loanTags: loanSearchState?.tagId }),
 	getFlssFilter: loanSearchState => ({

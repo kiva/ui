@@ -1,4 +1,4 @@
-import SystemPage from '@/components/SystemFrame/SystemPage';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
 
 export default {
 	title: 'SystemFrame/SystemPage',

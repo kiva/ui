@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var qa  = require('./qa.js')
+import { merge } from 'webpack-merge';
+import qa from './qa.js';
 
-module.exports = merge(qa, {
+export default merge(qa, {
 	app: {
 		publicPath: 'https://www-qa-kiva-org.freetls.fastly.net/',
 	},
@@ -9,4 +9,4 @@ module.exports = merge(qa, {
 		memcachedServers: 'marketplace-k8s-ui-qa.knmtma.cfg.usw2.cache.amazonaws.com:11211',
 		disableCluster: true,
 	}
-})
+});

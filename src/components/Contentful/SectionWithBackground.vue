@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
 
 /**
 * Section Background
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .section-with-background {
 	padding: 0;
@@ -116,7 +116,7 @@ export default {
 		padding: 2rem 0;
 
 		@include breakpoint(large) {
-			padding: 4rem 0 4rem;
+			padding: 4rem 0;
 		}
 
 		width: 100%;
@@ -140,7 +140,7 @@ export default {
 		height: 100%;
 
 		// over ride kvContentfulImg nested img styling
-		::v-deep img {
+		:deep(img) {
 			object-fit: cover;
 			width: 100%;
 			height: 100%;

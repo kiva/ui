@@ -1,8 +1,8 @@
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 
 import causeList from '../mock-data/cause-selector-data-mock';
 
@@ -316,7 +316,7 @@ export const loanCardExample = () => ({
 	}
 });
 
-const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
+const slidesImageRequire = require.context('#src/assets/images/possibilities-banners/kivan-slider', true);
 export const KivanSlider = () => ({
 	components: {
 		KvCarousel,
@@ -386,7 +386,7 @@ export const KivanSlider = () => ({
 	`,
 });
 
-const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
+const imageRequire = require.context('#src/assets/images/hero-slideshow/', true);
 export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 	components: {
 		KvCarousel,

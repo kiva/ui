@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 export default {
 	name: 'FiveDollarsBanner',

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import kivaLogoMg from '@/assets/inline-svgs/logos/kivalogo_credibility_mg.svg';
+import kivaLogoMg from '#src/assets/inline-svgs/logos/kivalogo_credibility_mg.svg';
 
 export default {
 	name: 'MoreAboutKiva',

@@ -65,4 +65,4 @@ function loanCallouts(loan, categoryPageName) {
 	return callouts;
 }
 
-module.exports = loanCallouts;
+export default loanCallouts;

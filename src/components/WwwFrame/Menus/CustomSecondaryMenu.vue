@@ -52,11 +52,11 @@ import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
-} from '@/util/touchEvents';
-import usingTouchClient from '@/graphql/query/shared/usingTouchClient.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
-import KvExpandable from '@/components/Kv/KvExpandable';
+} from '#src/util/touchEvents';
+import usingTouchClient from '#src/graphql/query/shared/usingTouchClient.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import SecondaryMenu from '#src/components/WwwFrame/SecondaryMenu';
+import KvExpandable from '#src/components/Kv/KvExpandable';
 
 export default {
 	name: 'CustomSecondaryMenu',
@@ -124,7 +124,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .mobile-nav {
 	background-color: $kiva-bg-lightgray;
@@ -194,7 +194,7 @@ export default {
 		outline: none;
 	}
 
-	button[aria-expanded="true"] {
+	button[aria-expanded=true] {
 		.chevron {
 			transform: rotate(-180deg);
 		}
@@ -202,7 +202,7 @@ export default {
 }
 
 .basic-secondary-menu-active-mobile {
-	padding: rem-calc(20) 1rem rem-calc(20) 1rem;
+	padding: rem-calc(20) 1rem;
 	font-weight: normal;
 	line-height: 1rem;
 	display: inline-block;

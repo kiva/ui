@@ -79,7 +79,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
 
 .hero {
 	position: relative;
@@ -99,32 +100,29 @@ export default {
 
 .images-container {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset: 0;
 }
 
 // required to generate the height for the carousel images
 .images-placeholder {
 	background-color: $kiva-bg-lightgray;
 	width: 100%;
-	padding-bottom: 600/480 * 100%;
+	padding-bottom: math.div(600, 480) * 100%;
 
 	@include breakpoint(medium) {
-		padding-bottom: 675/680 * 100%;
+		padding-bottom: math.div(675, 680) * 100%;
 	}
 
 	@include breakpoint(large) {
-		padding-bottom: 545/1024 * 100%;
+		padding-bottom: math.div(545, 1024) * 100%;
 	}
 
 	@include breakpoint(xga) {
-		padding-bottom: 768/1440 * 100%;
+		padding-bottom: math.div(768, 1440) * 100%;
 	}
 
 	@include breakpoint(wxga) {
-		padding-bottom: 820/1920 * 100%;
+		padding-bottom: math.div(820, 1920) * 100%;
 	}
 }
 
@@ -158,10 +156,7 @@ export default {
 
 .headline-background {
 	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
+	inset: 0;
 	background-color: $kiva-green;
 	opacity: 0.9;
 }

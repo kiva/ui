@@ -1,4 +1,4 @@
-import KvPillToggle from '@/components/Kv/KvPillToggle';
+import KvPillToggle from '#src/components/Kv/KvPillToggle';
 
 export default {
 	title: 'Kv/Form Elements/KvPillToggle',

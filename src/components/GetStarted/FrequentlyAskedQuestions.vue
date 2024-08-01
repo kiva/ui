@@ -13,7 +13,7 @@
 					:title="question.title"
 					:content="question.content"
 					class="small-12 columns"
-					:id="question.title | changeCase('paramCase')"
+					:id="$filters.changeCase(question.title, 'paramCase')"
 					:analytics-category="`Lending`"
 				/>
 			</div>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
+import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 
 export default {
 	name: 'FrequentlyAskedQuestions',
@@ -98,7 +98,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .frequently-asked-questions-section-wrapper {
 	margin-bottom: 4rem;
@@ -118,7 +118,7 @@ export default {
 }
 
 // The FAQ headers are bold on the other FAQ components
-::v-deep h4 {
+:deep(h4) {
 	font-weight: $global-weight-normal;
 }
 </style>

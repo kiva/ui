@@ -1,7 +1,6 @@
 @media print {
 	* {
 		// Remove all css transitions
-		-webkit-transition: none !important;
 		transition: none !important;
 	}
 

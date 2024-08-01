@@ -138,15 +138,15 @@
 <script>
 import _uniqBy from 'lodash/uniqBy';
 import * as Sentry from '@sentry/vue';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
-import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
-import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import mfaQuery from '#src/graphql/query/mfa/mfaQuery.graphql';
+import removeMfa from '#src/graphql/mutation/mfa/removeMfa.graphql';
+import removeOneMfaMethod from '#src/graphql/mutation/mfa/removeOneMfaMethod.graphql';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'TwoStepVerificationPage',
@@ -168,7 +168,7 @@ export default {
 		WwwPage,
 		KvLoadingPlaceholder,
 	},
-	metaInfo: {
+	head: {
 		title: '2-step verification',
 	},
 	mounted() {
@@ -327,7 +327,7 @@ export default {
 		},
 		formatMfaMethods(authEnrollments) {
 			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
-			// eslint-disable-next-line max-len
+
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active);
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
@@ -345,7 +345,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .two-step-verification {
 	&__settings-card-area {

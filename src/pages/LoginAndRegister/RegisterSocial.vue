@@ -45,7 +45,7 @@
 					type="text"
 					v-show="needsNames"
 					v-model.trim="firstName"
-					:validation="$v.firstName"
+					:validation="v$.firstName"
 				>
 					First name
 					<template #required>
@@ -58,7 +58,7 @@
 					type="text"
 					v-show="needsNames"
 					v-model.trim="lastName"
-					:validation="$v.lastName"
+					:validation="v$.lastName"
 				>
 					Last name
 					<template #required>
@@ -83,7 +83,7 @@
 						type="checkbox"
 						v-show="needsTerms"
 						v-model="newAcctTerms"
-						:validation="$v.newAcctTerms"
+						:validation="v$.newAcctTerms"
 						@update:modelValue="$kvTrackEvent(
 							'authentication',
 							'click',
@@ -127,7 +127,7 @@
 					/>
 					<p
 						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
-						v-if="needsCaptcha && $v.captcha.$error"
+						v-if="needsCaptcha && v$.captcha.$invalid"
 					>
 						Please complete the captcha.
 					</p>
@@ -156,24 +156,24 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, requiredIf } from 'vuelidate/lib/validators';
-import logReadQueryError from '@/util/logReadQueryError';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
-import SystemPage from '@/components/SystemFrame/SystemPage';
-import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { useVuelidate } from '@vuelidate/core';
+import { required, requiredIf } from '@vuelidate/validators';
+import logReadQueryError from '#src/util/logReadQueryError';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import strategicPartnerLoginInfoByPageIdQuery from '#src/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import UserUpdatesPreference from '#src/components/Checkout/UserUpdatesPreference';
+import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 export default {
 	name: 'RegisterSocial',
-	metaInfo() {
+	head() {
 		return {
 			title: 'Complete registration'
 		};
@@ -185,12 +185,9 @@ export default {
 		SystemPage,
 		UserUpdatesPreference,
 	},
-	mixins: [
-		validationMixin,
-	],
 	provide() {
 		return {
-			$v: this.$v
+			v$: this.v$
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -221,6 +218,7 @@ export default {
 			enableRadioBtnExperiment: false,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		registrationMessage() {
 			const parts = [];
@@ -344,13 +342,14 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const pageId = route?.query?.partnerContentId;
+			const currentRoute = route.value ?? {};
+			const pageId = currentRoute.query?.partnerContentId;
 			if (!pageId) {
 				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
 			}
 			return client.query({
 				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: { pageId: route.query.partnerContentId ?? '' }
+				variables: { pageId: currentRoute.query.partnerContentId ?? '' }
 			});
 		}
 	},
@@ -358,9 +357,9 @@ export default {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
 
-			this.$v.$touch();
+			this.v$.$touch();
 
-			if (!this.$v.$invalid) {
+			if (!this.v$.$invalid) {
 				// Set news consent based on comms preference MP-271
 				if (this.enableRadioBtnExperiment) {
 					this.newsConsent = this.selectedComms === '1';
@@ -380,10 +379,10 @@ export default {
 
 <style lang="postcss" scoped>
 .logo {
-	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 18px rgba(0 0 0 / 20%);
 }
 
-.radio-error >>> label > div {
+.radio-error :deep(label > div) {
 	@apply tw-border-danger-highlight;
 }
 

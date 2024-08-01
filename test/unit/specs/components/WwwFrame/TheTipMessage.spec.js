@@ -1,39 +1,42 @@
 import { render } from '@testing-library/vue';
-import { TIP, WARNING, ERROR } from '@/api/fixtures/FlashMessageTypeEnum';
-import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
-import CookieStore from '@/util/cookieStore';
+import { TIP, WARNING, ERROR } from '#src/api/fixtures/FlashMessageTypeEnum';
+import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
+import CookieStore from '#src/util/cookieStore';
 
 function renderTipMessage(tipMessage, flashMessages) {
 	return render(TheTipMessage, {
-		provide: {
-			apollo: {
-				query: () => Promise.resolve({ data: { ...flashMessages } || {} }),
-				mutate: () => Promise.resolve({}),
-			},
-			cookieStore: new CookieStore(),
-		},
-		mocks: {
-			$route: { path: '/' }
-		},
-		stubs: {
-			KvToast: {
-				template: '<div v-html="message"></div>',
-				data() {
-					return { message: '' };
+		global: {
+			provide: {
+				apollo: {
+					query: () => Promise.resolve({ data: { ...flashMessages } || {} }),
+					mutate: () => Promise.resolve({}),
 				},
-				methods: {
-					close: () => {},
-					show(message) {
-						this.message = message;
+				cookieStore: new CookieStore(),
+			},
+			mocks: {
+				$route: { path: '/' },
+			},
+			stubs: {
+				KvToast: {
+					template: '<div v-html="message"></div>',
+					data() {
+						return { message: '' };
 					},
+					methods: {
+						close: () => { },
+						show(message) {
+							this.message = message;
+						},
+					}
 				}
-			}
+			},
 		},
 		data: tipMessage ? () => {
 			return {
 				tipMessage: { ...tipMessage }
 			};
 		} : undefined,
+
 	});
 }
 

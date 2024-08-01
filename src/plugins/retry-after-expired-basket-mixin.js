@@ -1,6 +1,6 @@
-import { setDonationAmount, setLendAmount } from '@/util/basketUtils';
-import checkInjections from '@/util/injectionCheck';
-import logFormatter from '@/util/logFormatter';
+import { setDonationAmount, setLendAmount } from '#src/util/basketUtils';
+import checkInjections from '#src/util/injectionCheck';
+import logFormatter from '#src/util/logFormatter';
 
 const injections = ['apollo', 'cookieStore'];
 

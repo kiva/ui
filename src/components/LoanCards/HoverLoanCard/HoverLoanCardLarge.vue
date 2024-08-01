@@ -82,13 +82,13 @@
 	</div>
 </template>
 <script>
-import KvFlag from '@/components/Kv/KvFlag';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import KvFlag from '#src/components/Kv/KvFlag';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
+import hoverLoanCardMixin from '#src/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import BorrowerInfoName from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 
 export default {
@@ -164,14 +164,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "settings";
-@import "components/loan-cards/hover-loan-card";
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/loan-cards/hover-loan-card';
 
 .hover-loan-card-large {
 	@extend .base-portrait-hover-loan-card;
 
 	width: $large-hover-card-width;
 	height: $large-hover-card-height;
+
 	// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 	transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 	position: absolute;
@@ -218,6 +219,7 @@ export default {
 		opacity: 0;
 		pointer-events: none;
 		transform: scale($width-ratio-small-to-large, $height-ratio-small-to-large);
+
 		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
 		transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
 

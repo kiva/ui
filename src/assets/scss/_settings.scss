@@ -61,7 +61,9 @@
 //  56. Xy Grid
 //  57. Navbar
 
-@import 'node_modules/foundation-sites/scss/util/util.scss';
+@use 'sass:color';
+@use 'sass:math';
+@import 'node_modules/foundation-sites/scss/util/util';
 
 // 1. Global
 // ---------
@@ -134,14 +136,13 @@ $kiva-glyph-grey-primary: $magnemite;
 $kiva-glyph-primary-black: $umbreon;
 
 // social media icon colors
-$facebook-hover-color:	#3b5998;
-$pinterest-hover-color:	#bd081c;
-$twitter-hover-color:	#55acee;
-$yelp-hover-color:		#bd081c;
-$youtube-hover-color:	#cd201f;
-$linkedin-hover-color:	#0077b5;
-$instagram-hover-color:	#0a0b09;
-
+$facebook-hover-color: #3b5998;
+$pinterest-hover-color: #bd081c;
+$twitter-hover-color: #55acee;
+$yelp-hover-color: #bd081c;
+$youtube-hover-color: #cd201f;
+$linkedin-hover-color: #0077b5;
+$instagram-hover-color: #0a0b09;
 $foundation-palette: (
 	primary: $blue,
 	secondary: $white,
@@ -149,9 +150,9 @@ $foundation-palette: (
 	warning: $vivid-yellow,
 	alert: $red,
 );
-@include add-foundation-colors;
-$print-hrefs: true;
+@include add-foundation-colors ();
 
+$print-hrefs: true;
 $body-background: $white;
 $body-font-color: $kiva-text-dark;
 $body-font-family: 'PostGrotesk', 'Arial', 'Helvetica', sans-serif;
@@ -211,30 +212,30 @@ $header-lineheight: 1.4;
 $header-margin-bottom: 0.5rem;
 $header-styles: (
 	small: (
-		'h1': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28)),
-		'h2': ('font-size': rem-calc(22), 'line-height': rem-calc(30) / rem-calc(22)),
+		'h1': ('font-size': rem-calc(28), 'line-height': math.div(rem-calc(36), rem-calc(28))),
+		'h2': ('font-size': rem-calc(22), 'line-height': math.div(rem-calc(30), rem-calc(22))),
 		'h3': ('font-size': rem-calc(18)),
 		'h4': ('font-size': rem-calc(16)),
 	),
 	medium: (
-		'h1': ('font-size': rem-calc(30), 'line-height': rem-calc(38) / rem-calc(30)),
-		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28)),
+		'h1': ('font-size': rem-calc(30), 'line-height': math.div(rem-calc(38), rem-calc(30))),
+		'h2': ('font-size': rem-calc(28), 'line-height': math.div(rem-calc(36), rem-calc(28))),
 		'h3': ('font-size': rem-calc(18)),
 		'h4': ('font-size': rem-calc(16)),
 	),
 	large: (
-		'h1': ('font-size': rem-calc(36), 'line-height': rem-calc(44) / rem-calc(36)),
-		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28)),
+		'h1': ('font-size': rem-calc(36), 'line-height': math.div(rem-calc(44), rem-calc(36))),
+		'h2': ('font-size': rem-calc(28), 'line-height': math.div(rem-calc(36), rem-calc(28))),
 		'h3': ('font-size': rem-calc(18)),
 		'h4': ('font-size': rem-calc(16)),
 	),
 );
-$header-text-rendering: optimizeLegibility;
+$header-text-rendering: optimizelegibility;
 $small-font-size: 80%;
 $header-small-font-color: $medium-gray;
 $paragraph-lineheight: 1.75; // 1.75rem;
 $paragraph-margin-bottom: 1rem;
-$paragraph-text-rendering: optimizeLegibility;
+$paragraph-text-rendering: optimizelegibility;
 $anchor-color: $kiva-textlink;
 $anchor-color-hover: $kiva-textlink-hover;
 $anchor-text-decoration: none;
@@ -259,24 +260,18 @@ $normal-text-font-size: 1rem;  // because the global "100% isn't useful for all 
 
 $small-text-font-size: 0.875rem;
 $small-text-line-height: 1.357rem;
-
 $medium-text-font-size: 1.25rem;
 $medium-text-line-height: 1.35;
-
 $featured-text-font-size: 1.5rem;
 $featured-text-line-height: 2.25rem;
-
 $large-text-font-size: 2.25rem;
 $large-text-line-height: 1.222222;
-
 $big-text-font-size: rem-calc(28);
 $big-text-line-height: rem-calc(36);
-
 $impact-text-font-size: rem-calc(32);
 $impact-text-line-height: rem-calc(40);
 $impact-text-font-size-medium: rem-calc(44);
 $impact-text-line-height-medium: rem-calc(50);
-
 $huge-headline-font-size: rem-calc(52);
 $huge-headline-line-height: rem-calc(58);
 $huge-headline-font-size-medium: rem-calc(64);
@@ -445,6 +440,7 @@ $breadcrumbs-item-uppercase: true;
 $breadcrumbs-item-separator: true;
 $breadcrumbs-item-separator-item: '\002F';
 $breadcrumbs-item-separator-item-rtl: '\005C';
+
 // The following values are from the 6.5.1 release of foundation-sites we may want a different divider...
 // $breadcrumbs-item-separator-item: '/';
 // $breadcrumbs-item-separator-item-rtl: '\\';
@@ -699,7 +695,7 @@ $input-background-focus: $white;
 $input-background-disabled: $light-gray;
 $input-border: 1px solid $light-gray;
 $input-border-focus: 1px solid $gray;
-$input-padding: $form-spacing / 2;
+$input-padding: math.div($form-spacing, 2);
 $input-shadow: inset 0 1px 2px rgba($black, 0.1);
 $input-shadow-focus: 0 0 5px $medium-gray;
 $input-cursor-disabled: not-allowed;
@@ -927,8 +923,8 @@ $prototype-separator-margin-top: $global-margin;
 // --------------------
 
 $prototype-shadow-breakpoints: $global-prototype-breakpoints;
-$prototype-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),
-	0 2px 10px 0 rgba(0, 0, 0, 0.12);
+$prototype-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%),
+	0 2px 10px 0 rgb(0 0 0 / 12%);
 
 // 41. Prototype Sizing
 // --------------------
@@ -1036,15 +1032,15 @@ $table-color-scale: 5%;
 $table-border: 1px solid smart-scale($table-background, $table-color-scale);
 $table-padding: rem-calc(8 10 10);
 $table-hover-scale: 2%;
-$table-row-hover: darken($table-background, $table-hover-scale);
-$table-row-stripe-hover: darken($table-background, $table-color-scale + $table-hover-scale);
+$table-row-hover: color.adjust($table-background, $lightness: -$table-hover-scale);
+$table-row-stripe-hover: color.adjust($table-background, $lightness: -($table-color-scale + $table-hover-scale));
 $table-is-striped: true;
 $table-striped-background: smart-scale($table-background, $table-color-scale);
 $table-stripe: even;
-$table-head-background: smart-scale($table-background, $table-color-scale / 2);
-$table-head-row-hover: darken($table-head-background, $table-hover-scale);
+$table-head-background: smart-scale($table-background, math.div($table-color-scale, 2));
+$table-head-row-hover: color.adjust($table-head-background,  $lightness: -$table-hover-scale);
 $table-foot-background: smart-scale($table-background, $table-color-scale);
-$table-foot-row-hover: darken($table-foot-background, $table-hover-scale);
+$table-foot-row-hover: color.adjust($table-foot-background,  $lightness: -$table-hover-scale);
 $table-head-font-color: $body-font-color;
 $table-foot-font-color: $body-font-color;
 $show-header-for-stacked: false;
@@ -1131,4 +1127,4 @@ $xy-block-grid-max: 8;
 // 57. Xy Grid
 // -----------
 
-$navbar-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+$navbar-shadow: 0 0 0.5rem 0 rgb(0 0 0 / 15%);

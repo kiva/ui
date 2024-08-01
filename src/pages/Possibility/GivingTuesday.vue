@@ -49,12 +49,14 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
+import KvButton from '#src/components/Kv/KvButton';
+import KvHero from '#src/components/Kv/KvHero';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
+const possibilitiesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: 'GivingTuesday',
@@ -64,22 +66,22 @@ export default {
 		KvResponsiveImage,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: 'Giving Tuesday'
 	},
 	data() {
 		return {
 			givingTuesdayImages: [
-				['small', possibilitiesImageRequire('./Phase1-sm-std.jpg')],
-				['small retina', possibilitiesImageRequire('./Phase1-sm-retina.jpg')],
-				['medium', possibilitiesImageRequire('./Phase1-med-std.jpg')],
-				['medium retina', possibilitiesImageRequire('./Phase1-med-retina.jpg')],
-				['large', possibilitiesImageRequire('./Phase1-lg-std.jpg')],
-				['large retina', possibilitiesImageRequire('./Phase1-lg-retina.jpg')],
-				['xga', possibilitiesImageRequire('./Phase1-xl-std.jpg')],
-				['xga retina', possibilitiesImageRequire('./Phase1-xl-retina.jpg')],
-				['wxga', possibilitiesImageRequire('./Phase1-xxl-std.jpg')],
-				['wxga retina', possibilitiesImageRequire('./Phase1-xxl-retina.jpg')]
+				['small', possibilitiesImageRequire('Phase1-sm-std.jpg')],
+				['small retina', possibilitiesImageRequire('Phase1-sm-retina.jpg')],
+				['medium', possibilitiesImageRequire('Phase1-med-std.jpg')],
+				['medium retina', possibilitiesImageRequire('Phase1-med-retina.jpg')],
+				['large', possibilitiesImageRequire('Phase1-lg-std.jpg')],
+				['large retina', possibilitiesImageRequire('Phase1-lg-retina.jpg')],
+				['xga', possibilitiesImageRequire('Phase1-xl-std.jpg')],
+				['xga retina', possibilitiesImageRequire('Phase1-xl-retina.jpg')],
+				['wxga', possibilitiesImageRequire('Phase1-xxl-std.jpg')],
+				['wxga retina', possibilitiesImageRequire('Phase1-xxl-retina.jpg')]
 			],
 		};
 	}
@@ -87,8 +89,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
-@import 'foundation';
+@use 'sass:color';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $cta-color: #02582e;
 
@@ -109,8 +112,9 @@ $cta-color: #02582e;
 
 .cta-button {
 	@include button-style($cta-color, auto, #fff);
+
 	// Include in order to override the default box-shadow of this button
-	box-shadow: 0 2px darken($cta-color, 10%);
+	box-shadow: 0 2px color.adjust($cta-color, $lightness: -10%);
 }
 
 .cta-link {

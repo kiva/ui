@@ -3,7 +3,7 @@ import {
 	isoToCountryName,
 	mapIsoCodesToCountryNames,
 	sortRegions
-} from '@/util/loanSearch/countryUtils';
+} from '#src/util/loanSearch/countryUtils';
 import {
 	mockTransformedMiddleEast,
 	mockTransformedChile,

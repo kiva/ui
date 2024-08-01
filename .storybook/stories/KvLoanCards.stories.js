@@ -1,4 +1,4 @@
-import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
+import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 

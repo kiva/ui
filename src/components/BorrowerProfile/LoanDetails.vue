@@ -71,7 +71,7 @@
 
 <script>
 import { format, parseISO } from 'date-fns';
-import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
+import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
 
 export default {
 	name: 'LoanDetails',

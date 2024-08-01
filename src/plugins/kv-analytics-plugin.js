@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
-import logFormatter from '@/util/logFormatter';
-import SimpleQueue from '@/util/simpleQueue';
+import logFormatter from '#src/util/logFormatter';
+import SimpleQueue from '#src/util/simpleQueue';
 
 // install method for plugin
 export default {
-	install: Vue => {
+	install: app => {
 		const inBrowser = typeof window !== 'undefined';
 		let snowplowLoaded;
 		let gtagLoaded;
@@ -276,7 +276,7 @@ export default {
 				const purchasedItems = allItems.map(item => {
 					return {
 						id: item.id,
-						name: item.__typename, // eslint-disable-line
+						name: item.__typename,
 						price: item.price,
 						quantity: 1
 					};
@@ -327,7 +327,7 @@ export default {
 			}
 		};
 
-		Vue.directive('kv-track-event', {
+		app.directive('kv-track-event', {
 			bind: (el, binding) => {
 				// TODO: add arg for once, submit + change events
 				if (typeof el === 'object' && binding.value) {
@@ -343,7 +343,7 @@ export default {
 		});
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$setKvAnalyticsData = (userId = null) => {
+		app.config.globalProperties.$setKvAnalyticsData = (userId = null) => {
 			return new Promise(resolve => {
 				let readyStateTimeout;
 				const readyStateInterval = window.setInterval(() => {
@@ -384,12 +384,12 @@ export default {
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$fireAsyncPageView = (to, from) => {
+		app.config.globalProperties.$fireAsyncPageView = (to, from) => {
 			kvActions.pageview(to, from);
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$fireServerPageView = () => {
+		app.config.globalProperties.$fireServerPageView = () => {
 			const to = { path: window.location.pathname };
 			const from = { path: document.referrer };
 			// delay pageview call to ensure window.performance.timing is fully populated
@@ -411,32 +411,32 @@ export default {
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$fireQueuedEvents = () => {
+		app.config.globalProperties.$fireQueuedEvents = () => {
 			kvActions.fireQueuedEvents();
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$kvSetCustomUrl = (url = window.location.href) => {
+		app.config.globalProperties.$kvSetCustomUrl = (url = window.location.href) => {
 			kvActions.setCustomUrl(url);
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$kvTrackEvent = (category, action, label, property, value, callback) => {
+		app.config.globalProperties.$kvTrackEvent = (category, action, label, property, value, callback) => {
 			kvActions.trackEvent(category, action, label, property, value, callback);
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$kvTrackSelfDescribingEvent = data => {
+		app.config.globalProperties.$kvTrackSelfDescribingEvent = data => {
 			kvActions.trackSelfDescribingEvent(data);
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$kvTrackTransaction = transactionData => {
+		app.config.globalProperties.$kvTrackTransaction = transactionData => {
 			kvActions.trackTransaction(transactionData);
 		};
 
 		// eslint-disable-next-line no-param-reassign
-		Vue.prototype.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
+		app.config.globalProperties.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
 			kvActions.trackFBCustomEvent(eventName, eventData);
 		};
 	}

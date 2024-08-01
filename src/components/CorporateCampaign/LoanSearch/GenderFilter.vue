@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import KvRadio from '@kiva/kv-components/vue/KvRadio';
 
 export default {
 	name: 'GenderFilter',

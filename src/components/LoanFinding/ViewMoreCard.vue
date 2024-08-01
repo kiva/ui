@@ -1,7 +1,11 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-full">
 		<div class="tw-flex tw-flex-col tw-gap-y-2" style="max-width: 186px;">
-			<img class="tw-w-4 tw-h-4 tw-mx-auto" alt="View More Glass" src="@/assets/images/view_more_glass.svg">
+			<img
+				class="tw-w-4 tw-h-4 tw-mx-auto"
+				alt="View More Glass"
+				:src="viewMoreGlassUrl"
+			>
 			<p class="tw-text-subhead tw-text-center">
 				View more loans that match your filters on our search page
 			</p>
@@ -20,10 +24,11 @@
 
 <script>
 import { mdiArrowRight } from '@mdi/js';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import filterConfig from '@/util/loanSearch/filterConfig';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import filterConfig from '#src/util/loanSearch/filterConfig';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import viewMoreGlassUrl from '#src/assets/images/view_more_glass.svg?url';
 
 export default {
 	name: 'ViewMoreCard',
@@ -34,12 +39,13 @@ export default {
 	props: {
 		loanSearchState: {
 			type: Object,
-			default: () => {}
+			default: () => ({})
 		},
 	},
 	data() {
 		return {
-			mdiArrowRight
+			mdiArrowRight,
+			viewMoreGlassUrl,
 		};
 	},
 	computed: {

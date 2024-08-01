@@ -1,5 +1,5 @@
-import { onError } from '@apollo/client/link/error';
-import logFormatter from '@/util/logFormatter';
+import { onError } from '@apollo/client/link/error/index';
+import logFormatter from '#src/util/logFormatter';
 
 export default () => {
 	return onError(({

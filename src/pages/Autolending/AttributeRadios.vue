@@ -35,10 +35,10 @@
 <script>
 import _get from 'lodash/get';
 
-import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvRadio from '@/components/Kv/KvRadio';
-import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
+import themeListQuery from '#src/graphql/query/autolending/themeList.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvRadio from '#src/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '#src/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	name: 'AttributeRadios',

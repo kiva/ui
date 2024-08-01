@@ -156,9 +156,10 @@
 </template>
 
 <script>
-import { checkWebpSupport, checkAvifSupport, preloadImage } from '@/util/imageUtils';
+import { checkWebpSupport, checkAvifSupport, preloadImage } from '#src/util/imageUtils';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 import FifteenYearsIndividualsProfile from './15YearsIndividualsProfile';
 import FifteenYearsLightbox from './15YearsLightbox';
 import FifteenYearsPopcorn from './15YearsPopcorn';
@@ -166,7 +167,8 @@ import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 import peopleData from './15YearsIndividualsData';
 
-const imageRequire = require.context('@/assets/images/15-years/profiles', true);
+const imageRequire = import.meta.glob('/src/assets/images/15-years/profiles/*.*', { eager: true });
+const profileImages = metaGlobReader(imageRequire, '/src/assets/images/15-years/profiles/');
 
 export default {
 	name: '15YearsIndividuals',
@@ -227,11 +229,11 @@ export default {
 			const personImg = this.people[personIndex].img;
 
 			if (this.browserSupportsAvif) {
-				preloadImage(imageRequire(`./${personImg}.avif`));
+				preloadImage(profileImages(`${personImg}.avif`));
 			} else if (this.browserSupportsWebp) {
-				preloadImage(imageRequire(`./${personImg}.webp`));
+				preloadImage(profileImages(`${personImg}.webp`));
 			} else {
-				preloadImage(imageRequire(`./${personImg}.png`));
+				preloadImage(profileImages(`${personImg}.png`));
 			}
 		}
 	},
@@ -249,8 +251,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .individuals {
 	background: $tomato;
@@ -426,7 +428,7 @@ export default {
 	list-style: none;
 
 	&__li {
-		margin: 0 0 0.675rem 0;
+		margin: 0 0 0.675rem;
 
 		&:last-child {
 			margin: 0;

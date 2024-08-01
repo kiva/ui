@@ -1,4 +1,4 @@
-import ActivityFeed from '@/components/Iwd/ActivityFeed';
+import ActivityFeed from '#src/components/Iwd/ActivityFeed';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 const queryResult = {

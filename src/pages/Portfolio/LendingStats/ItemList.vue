@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvFlag from '@/components/Kv/KvFlag';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvFlag from '#src/components/Kv/KvFlag';
 
 export default {
 	name: 'ItemList',

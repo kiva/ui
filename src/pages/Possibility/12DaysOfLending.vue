@@ -37,13 +37,15 @@
 
 <script>
 import _get from 'lodash/get';
-import contentfulEntries from '@/graphql/query/contentfulEntries.graphql';
-import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
+import contentfulEntries from '#src/graphql/query/contentfulEntries.graphql';
+import KvHero from '#src/components/Kv/KvHero';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
+import { metaGlobReader } from '#src/util/importHelpers';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
 
-const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
+const possibilitiesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const possibilitiesImageRequire = metaGlobReader(possibilitiesImageGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: '12DaysOfLending',
@@ -53,23 +55,23 @@ export default {
 		TwelveDaysCalendar,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: '12 Days of Lending'
 	},
 	data() {
 		return {
 			promoEnabled: true,
 			twelveDaysImages: [
-				['small', possibilitiesImageRequire('./Phase2-sm-std.jpg')],
-				['small retina', possibilitiesImageRequire('./Phase2-sm-retina.jpg')],
-				['medium', possibilitiesImageRequire('./Phase2-med-std.jpg')],
-				['medium retina', possibilitiesImageRequire('./Phase2-med-retina.jpg')],
-				['large', possibilitiesImageRequire('./Phase2-lg-std.jpg')],
-				['large retina', possibilitiesImageRequire('./Phase2-lg-retina.jpg')],
-				['xga', possibilitiesImageRequire('./Phase2-xl-std.jpg')],
-				['xga retina', possibilitiesImageRequire('./Phase2-xl-retina.jpg')],
-				['wxga', possibilitiesImageRequire('./Phase2-xxl-std.jpg')],
-				['wxga retina', possibilitiesImageRequire('./Phase2-xxl-retina.jpg')]
+				['small', possibilitiesImageRequire('Phase2-sm-std.jpg')],
+				['small retina', possibilitiesImageRequire('Phase2-sm-retina.jpg')],
+				['medium', possibilitiesImageRequire('Phase2-med-std.jpg')],
+				['medium retina', possibilitiesImageRequire('Phase2-med-retina.jpg')],
+				['large', possibilitiesImageRequire('Phase2-lg-std.jpg')],
+				['large retina', possibilitiesImageRequire('Phase2-lg-retina.jpg')],
+				['xga', possibilitiesImageRequire('Phase2-xl-std.jpg')],
+				['xga retina', possibilitiesImageRequire('Phase2-xl-retina.jpg')],
+				['wxga', possibilitiesImageRequire('Phase2-xxl-std.jpg')],
+				['wxga retina', possibilitiesImageRequire('Phase2-xxl-retina.jpg')]
 			],
 		};
 	},
@@ -123,7 +125,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $cta-color: #02582e;
 

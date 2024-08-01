@@ -30,13 +30,13 @@
 				{{ expiringSoonMessage }}
 			</span>
 			<span v-if="isFunded" class="tw-font-book">Funded</span>
-			<span v-else>${{ amountLeft | numeral('0,0') }} to go</span>
+			<span v-else>${{ $filters.numeral(amountLeft, '0,0') }} to go</span>
 		</div>
 	</div>
 </template>
 
 <script>
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 
 export default {
 	name: 'FundraisingStatus',
@@ -82,7 +82,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .fundraising-status {
 	display: flex;

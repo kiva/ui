@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div
 		id="donation-nudge-intro"
 		class="tw-mb-5"

@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import appInstallMixin from '@/plugins/app-install-mixin';
-import CookieBanner from '@/components/WwwFrame/CookieBanner';
-import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import appInstallMixin from '#src/plugins/app-install-mixin';
+import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .www-page {
 	height: 100%;

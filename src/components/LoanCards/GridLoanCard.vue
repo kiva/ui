@@ -74,12 +74,12 @@
 </template>
 
 <script>
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import BorrowerInfo from '#src/components/LoanCards/BorrowerInfo/BorrowerInfo';
+import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import LoanTag from '#src/components/LoanCards/LoanTags/LoanTag';
 
 export default {
 	name: 'GridLoanCard',
@@ -185,7 +185,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .grid-loan-card {
 	display: flex;
@@ -196,7 +196,7 @@ export default {
 	margin: auto;
 
 	&:hover {
-		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgb(0 0 0 / 10%);
 	}
 }
 

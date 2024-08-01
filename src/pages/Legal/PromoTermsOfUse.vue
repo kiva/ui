@@ -56,7 +56,7 @@
 
 export default {
 	name: 'PromoTermsOfUse',
-	metaInfo: {
+	head: {
 		title: 'Promotional Lending Terms and Conditions'
 	},
 };

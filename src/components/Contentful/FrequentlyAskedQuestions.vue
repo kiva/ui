@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'FrequentlyAskedQuestions',

@@ -1,4 +1,4 @@
-import KvFlag from '@/components/Kv/KvFlag';
+import KvFlag from '#src/components/Kv/KvFlag';
 
 import { getCountryList } from 'flag-icon-css';
 
@@ -14,14 +14,14 @@ export default {
 		country: {
 			control: {
 				type: 'select',
-				options: getCountryList().map(country => country.code)
-			}
+			},
+			options: getCountryList().map(country => country.code),
 		},
 		aspectRatio: {
 			control: {
 				type: 'radio',
-				options: ['4x3', '1x1'],
 			},
+			options: ['4x3', '1x1'],
 		}
 	},
 };
@@ -31,6 +31,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		KvFlag
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<div style="width: 32px">

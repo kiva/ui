@@ -63,7 +63,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-checkbox {
 	display: block;
@@ -87,7 +87,7 @@ export default {
 		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
 		position: relative;
-		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
+		box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
 		transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
 
 		&::after {

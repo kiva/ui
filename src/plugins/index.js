@@ -5,11 +5,14 @@ import tipMessage from './tip-message-plugin';
 import observeVisibility from './observe-visibility-plugin';
 
 export default {
-	install: Vue => {
-		apolloMixin(Vue);
-		Vue.filter('changeCase', changeCaseFilter);
-		Vue.filter('numeral', numeralFilter);
-		tipMessage(Vue);
-		observeVisibility(Vue);
+	install: app => {
+		apolloMixin(app);
+		// eslint-disable-next-line no-param-reassign
+		app.config.globalProperties.$filters = {
+			changeCase: changeCaseFilter,
+			numeral: numeralFilter,
+		};
+		tipMessage(app);
+		observeVisibility(app);
 	}
 };

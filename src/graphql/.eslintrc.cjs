@@ -28,4 +28,4 @@ module.exports = {
 		'graphql/named-operations': ['error', graphqlOptions],
 		'graphql/required-fields': ['error', { ...graphqlOptions, requiredFields: ['id', 'key'] }],
 	}
-}
+};

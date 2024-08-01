@@ -22,9 +22,9 @@
 </template>
 
 <script>
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	name: 'AutolendingPage',
@@ -33,7 +33,7 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Auto-lending settings',
 	},
 };

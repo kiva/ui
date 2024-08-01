@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { expand, collapse } from '@/util/expander';
+import { expand, collapse } from '#src/util/expander';
 
 export default {
 	name: 'KvExpandable',

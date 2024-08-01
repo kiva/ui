@@ -29,9 +29,9 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import logFormatter from '@/util/logFormatter';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import logFormatter from '#src/util/logFormatter';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 
 export default {
 	name: 'Error',
@@ -40,7 +40,7 @@ export default {
 		WwwPage,
 		KvDefaultWrapper,
 	},
-	metaInfo: {
+	head: {
 		title: 'Error'
 	},
 	data() {

@@ -1,5 +1,5 @@
-import KvTooltip from '@/components/Kv/KvTooltip';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvTooltip from '#src/components/Kv/KvTooltip';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	title: 'Kv/KvTooltip',

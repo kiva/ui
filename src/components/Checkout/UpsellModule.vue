@@ -20,7 +20,7 @@
 				</h4>
 				<h3 class="tw-text-h3 tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
-					{{ loan.name }} is missing just {{ amountLeft | numeral('$0,0[.]00') }}! Be the person to complete their loan.
+					{{ loan.name }} is missing just {{ $filters.numeral(amountLeft, '$0,0[.]00') }}! Be the person to complete their loan.
 				</h3>
 				<div>
 					<fundraising-status-meter
@@ -31,7 +31,7 @@
 						class="tw-mb-1"
 					/>
 					<p class="tw-text-h4 tw-m-0">
-						{{ amountLeft | numeral('$0,0[.]00') }} to go
+						{{ $filters.numeral(amountLeft, '$0,0[.]00') }} to go
 					</p>
 				</div>
 			</div>
@@ -54,9 +54,9 @@
 import {
 	mdiClose
 } from '@mdi/js';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'UpsellModule',
@@ -100,14 +100,17 @@ export default {
 		imageUrl() {
 			return this.loan?.image?.url;
 		},
+		loanAmount() {
+			return this.loan?.loanAmount ?? 0;
+		},
 		amountLeft() {
-			const amountLeft = this.loan?.loanAmount
-			- this.loan?.loanFundraisingInfo?.fundedAmount
-			- this.loan?.loanFundraisingInfo?.reservedAmount;
+			const fundedAmount = this.loan?.loanFundraisingInfo?.fundedAmount ?? 0;
+			const reservedAmount = this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
+			const amountLeft = this.loanAmount - fundedAmount - reservedAmount;
 			return amountLeft < 0 ? 0 : amountLeft;
 		},
 		percentRaised() {
-			return (this.loan?.loanAmount - this.amountLeft) / this.loan?.loanAmount;
+			return (this.loanAmount - this.amountLeft) / this.loanAmount;
 		},
 		pronouns() {
 			if (this.loan?.gender === 'male') return ['him', 'his'];
@@ -119,15 +122,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
-@media screen and (min-width: 1160px) {
+@media screen and (width >= 1160px) {
 	.upsellLoanDetails {
 		min-width: 600px;
 	}
 }
 
-@media screen and (min-width: 734px) {
+@media screen and (width >= 734px) {
 	.upsellModule {
 		gap: 32px;
 
@@ -137,7 +140,7 @@ export default {
 	}
 }
 
-@media screen and (max-width: 733px) {
+@media screen and (width <= 733px) {
 	.upsellModule {
 		gap: 8px;
 

@@ -1,4 +1,4 @@
-import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
+import RecommendedLoanCard from '#src/components/LoanCards/RecommendedLoanCard';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 

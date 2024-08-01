@@ -1,20 +1,19 @@
-/* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
 import _mergeWith from 'lodash/mergeWith';
-import logFormatter from '@/util/logFormatter';
-import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
-import loanCountQuery from '@/graphql/query/loanCount.graphql';
-import serverProfileQuery from '@/graphql/query/autolending/profileFromServer.graphql';
-import updateServerProfile from '@/graphql/mutation/autolending/updateServerProfile.graphql';
+import logFormatter from '#src/util/logFormatter';
+import bothProfilesQuery from '#src/graphql/query/autolending/bothProfiles.graphql';
+import loanCountQuery from '#src/graphql/query/loanCount.graphql';
+import serverProfileQuery from '#src/graphql/query/autolending/profileFromServer.graphql';
+import updateServerProfile from '#src/graphql/mutation/autolending/updateServerProfile.graphql';
 import AutolendProfile, {
 	getCacheableProfile,
 	getInputProfile,
 	profilesAreEqual,
-} from '@/api/fixtures/AutolendProfile';
+} from '#src/api/fixtures/AutolendProfile';
 import LoanSearchCriteria, {
 	criteriaAreEqual,
 	getSearchableCriteria,
-} from '@/api/fixtures/LoanSearchCriteria';
+} from '#src/api/fixtures/LoanSearchCriteria';
 
 // Helper function for writing autolending data to the cache
 function writeAutolendingData(cache, { currentProfile, savedProfile, ...fields }) {

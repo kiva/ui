@@ -1,7 +1,7 @@
-<template functional>
+<template>
 	<div class="bonus-banner-holder">
 		<a
-			v-if="props.promoData && !props.promoData.pageId"
+			v-if="promoData && !promoData.pageId"
 			href="/lend/freeCreditEligible"
 			class="bonus-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
@@ -9,29 +9,43 @@
 			<div class="content">
 				<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
 				<span class="call-to-action-text">
-					lend your {{ props.promoData.bonusBalance | numeral('$0.00') }} free credit
+					lend your {{ $filters.numeral(promoData.bonusBalance, '$0.00') }} free credit
 				</span>
 			</div>
 		</a>
 		<router-link
-			v-if="props.promoData && props.promoData.pageId"
-			:to="`/cc/${props.promoData.pageId}`"
+			v-if="promoData && promoData.pageId"
+			:to="`/cc/${promoData.pageId}`"
 			class="bonus-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
 			<div class="content">
-				<span class="call-to-action-text">You have {{ props.promoData.available | numeral('$0.00') }}</span>
+				<span class="call-to-action-text">
+					You have {{ $filters.numeral(promoData.available, '$0.00') }}
+				</span>
 				<br class="so xxlu">
 				<span class="call-to-action-text">
-					from {{ props.promoData.displayName }} to lend!
+					from {{ promoData.displayName }} to lend!
 				</span>
 			</div>
 		</router-link>
 	</div>
 </template>
 
+<script>
+export default {
+	name: 'BonusBanner',
+	props: {
+		promoData: {
+			type: Object,
+			default: () => ({}),
+		},
+	},
+};
+</script>
+
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 a.bonus-banner:hover {
 	text-decoration: none;

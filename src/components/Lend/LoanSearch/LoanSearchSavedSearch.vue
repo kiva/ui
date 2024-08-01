@@ -54,14 +54,14 @@
 </template>
 
 <script>
-import IconAdd from '@/assets/icons/inline/add.svg';
-import { createSavedSearch } from '@/util/loanSearch/searchStateUtils';
-import logFormatter from '@/util/logFormatter';
-import filterConfig from '@/util/loanSearch/filterConfig';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import IconAdd from '#src/assets/icons/inline/add.svg';
+import { createSavedSearch } from '#src/util/loanSearch/searchStateUtils';
+import logFormatter from '#src/util/logFormatter';
+import filterConfig from '#src/util/loanSearch/filterConfig';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'LoanSearchSavedSearch',

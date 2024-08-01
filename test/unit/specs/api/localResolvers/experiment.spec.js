@@ -1,6 +1,6 @@
-import * as expUtils from '@/util/experiment/experimentUtils';
-import expResolverFactory from '@/api/localResolvers/experiment';
-import Experiment from '@/api/fixtures/Experiment';
+import * as expUtils from '#src/util/experiment/experimentUtils';
+import expResolverFactory from '#src/api/localResolvers/experiment';
+import Experiment from '#src/api/fixtures/Experiment';
 
 const EXP_ID = 'test_experiment';
 const HASH = 1234;

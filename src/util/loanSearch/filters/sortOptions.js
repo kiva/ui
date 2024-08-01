@@ -1,4 +1,4 @@
-import { filterUiType, STANDARD_QUERY_TYPE, FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import { filterUiType, STANDARD_QUERY_TYPE, FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 
 /**
  * Used to map the sort value to display value
@@ -103,7 +103,8 @@ export default {
 		isPercentage: false,
 		displayedUnit: undefined,
 	},
-	getOptions: (allFacets = {}, _filteredFacets, extend = false) => {
+	// eslint-disable-next-line no-unused-vars
+	getOptions: (allFacets = {}, _filteredFacets = {}, extend = false) => {
 		return formatSortOptions(allFacets.standardSorts ?? [], allFacets.flssSorts ?? [], extend);
 	},
 	showSavedSearch: () => false,

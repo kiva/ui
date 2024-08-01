@@ -1,4 +1,4 @@
-import KvBaseInput from '@/components/Kv/KvBaseInput';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
 
 const commonData = {
 	vuelidateObject: {

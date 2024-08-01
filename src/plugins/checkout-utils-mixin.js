@@ -1,13 +1,13 @@
 import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
-import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
-import shopValidateGuestBasket from '@/graphql/mutation/shopValidateGuestPreCheckout.graphql';
-import validateLenderEmailForPromo from '@/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
-import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
-import shopCheckoutAsync from '@/graphql/mutation/shopCheckoutAsync.graphql';
-import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import logFormatter from '@/util/logFormatter';
-import checkInjections from '@/util/injectionCheck';
+import shopValidateBasket from '#src/graphql/mutation/shopValidatePreCheckout.graphql';
+import shopValidateGuestBasket from '#src/graphql/mutation/shopValidateGuestPreCheckout.graphql';
+import validateLenderEmailForPromo from '#src/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
+import shopCheckout from '#src/graphql/mutation/shopCheckout.graphql';
+import shopCheckoutAsync from '#src/graphql/mutation/shopCheckoutAsync.graphql';
+import showVerificationLightbox from '#src/graphql/mutation/checkout/showVerificationLightbox.graphql';
+import logFormatter from '#src/util/logFormatter';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['apollo', 'cookieStore'];
 
@@ -67,14 +67,10 @@ export default {
 				}).then(data => {
 					const validationResult = _get(data, 'data.shop.validatePreCheckout');
 					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
-						this.$kvTrackEvent(
-							'basket', 'Validate Guest Basket', 'Validation Success'
-						);
+						this.$kvTrackEvent('basket', 'Validate Guest Basket', 'Validation Success');
 						resolve(true);
 					} else {
-						this.$kvTrackEvent(
-							'basket', 'Validate Guest Basket', 'Validation Failure'
-						);
+						this.$kvTrackEvent('basket', 'Validate Guest Basket', 'Validation Failure');
 						resolve(validationResult);
 					}
 				}).catch(errorResponse => {

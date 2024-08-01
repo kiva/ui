@@ -63,7 +63,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const formatAmount = value => numeral(value).format('$0,0[.]00a');
 

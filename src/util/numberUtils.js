@@ -1,5 +1,4 @@
 // TODO: remove eslint-disable when more exports are added
-/* eslint-disable import/prefer-default-export */
 
 /**
  * Returns whether the provided value is a number

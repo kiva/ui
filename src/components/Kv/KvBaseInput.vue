@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import inputWrapperMixin from '#src/plugins/input-wrapper-mixin';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'KvBaseInput',

@@ -1,4 +1,4 @@
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 
 export default {
 	uiConfig: {

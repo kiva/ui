@@ -60,7 +60,7 @@
 							v-kv-track-event="['TopNav','click-Portfolio']"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								{{ balance | numeral('$0') }}
+								{{ $filters.numeral(balance, '$0') }}
 							</span>
 							<template v-if="isDefaultProfilePic">
 								<span class="tw-sr-only">My Portfolio</span>
@@ -440,7 +440,7 @@
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
 								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-									{{ balance | numeral('$0') }}
+									{{ $filters.numeral(balance, '$0') }}
 								</span>
 								<template v-if="isDefaultProfilePic">
 									<span class="tw-sr-only">My Portfolio</span>
@@ -589,32 +589,33 @@
 </template>
 
 <script>
-import { handleApolloErrors } from '@/util/apolloPreFetch';
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
-import logReadQueryError from '@/util/logReadQueryError';
-import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import { setHotJarUserAttributes } from '@/util/hotJarUtils';
-import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import { gql } from '@apollo/client';
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
-import KvDropdown from '@/components/Kv/KvDropdown';
+import { defineAsyncComponent } from 'vue';
+import { handleApolloErrors } from '#src/util/apolloPreFetch';
+import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
+import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
+import headerQuery from '#src/graphql/query/wwwHeader.graphql';
+import { gql } from 'graphql-tag';
+import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
+import KvDropdown from '#src/components/Kv/KvDropdown';
 import {
 	mdiAccountCircle,
 	mdiChevronDown,
 	mdiMagnify,
 	mdiBriefcase,
 } from '@mdi/js';
-import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import CampaignLogoGroup from '#src/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
-import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
-import { readBoolSetting } from '@/util/settingsUtils';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -646,7 +647,7 @@ export default {
 		PromoCreditBanner,
 		SearchBar,
 		KvButton,
-		TheLendMenu: () => import('@/components/WwwFrame/LendMenu/TheLendMenu'),
+		TheLendMenu: defineAsyncComponent(() => import('#src/components/WwwFrame/LendMenu/TheLendMenu')),
 		TeamsMenu,
 		KvUserAvatar,
 	},
@@ -1090,8 +1091,8 @@ export default {
 		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-0.5 md:tw-mr-1;
 }
 
-.user-avatar >>> img,
-.user-avatar >>> .tw-bg-brand {
+.user-avatar :deep(img),
+.user-avatar :deep(.tw-bg-brand) {
 	@apply tw-w-4 tw-h-4 md:tw-w-5 md:tw-h-5;
 }
 

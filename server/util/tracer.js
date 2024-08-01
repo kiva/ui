@@ -1,23 +1,22 @@
-const { registerInstrumentations } = require('@opentelemetry/instrumentation');
-const opentelemetry = require('@opentelemetry/api');
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { trace, SpanKind } from '@opentelemetry/api';
+import { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+import { ConsoleSpanExporter, NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { Resource } from '@opentelemetry/resources';
+import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 
 // Not functionally required but gives some insight what happens behind the scenes
 // const { diag, DiagConsoleLogger, DiagLogLevel } = opentelemetry;
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 
-const { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
-const { GraphQLInstrumentation } = require('@opentelemetry/instrumentation-graphql');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-proto');
-const { ConsoleSpanExporter, NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { Resource } = require('@opentelemetry/resources');
-const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-
 // Basic export switch to enable console or OTLP
 const Exporter = (process.env.OPENTELEMETRY_EXPORTER_TYPE || '').toLowerCase().startsWith('c')
 	? ConsoleSpanExporter : OTLPTraceExporter;
-const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
-const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 
 const otlpDisabled = process.env?.OTEL_SDK_DISABLED === 'true' || false;
 const otlpEndpoint = process.env?.OTEL_EXPORTER_OTLP_ENDPOINT || null;
@@ -41,7 +40,7 @@ function filterSampler(filterFn, parent) {
 // attributes are helpful if we want to inspect and omit requests such as health checks or timesync
 // eslint-disable-next-line no-unused-vars
 function ignoreTheseSpans(spanName, spanKind, attributes) {
-	return spanKind !== opentelemetry.SpanKind.SERVER;
+	return spanKind !== SpanKind.SERVER;
 }
 
 function setupTracing() {
@@ -81,11 +80,12 @@ function setupTracing() {
 		// Initialize the OpenTelemetry APIs to use the NodeTracerProvider bindings
 		provider.register();
 
-		return opentelemetry.trace.getTracer(serviceName);
+		return trace.getTracer(serviceName);
 	}
 	return false;
 }
 
-module.exports = {
+export { setupTracing };
+export default {
 	setupTracing
 };

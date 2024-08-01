@@ -1,5 +1,5 @@
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import checkInjections from '@/util/injectionCheck';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['apollo'];
 

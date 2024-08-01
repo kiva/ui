@@ -1,4 +1,4 @@
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
+import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
 
 export default {
 	title: 'IWD/ActivityAvatar',
@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ActivityAvatar },
+		setup() { return args; },
 		template: `
 			<div>
 				<activity-avatar

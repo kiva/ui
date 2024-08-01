@@ -1,4 +1,4 @@
-import TwelveDaysCalendar from '@/pages/Possibility/TwelveDaysCalendar';
+import TwelveDaysCalendar from '#src/pages/Possibility/TwelveDaysCalendar';
 
 export default {
 	title: 'Page/12Days',

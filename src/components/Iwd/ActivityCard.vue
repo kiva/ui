@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
+import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
 
 export default {
 	name: 'ActivityCard',

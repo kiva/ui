@@ -72,14 +72,14 @@
 </template>
 
 <script>
-import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
-import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
-import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import KvPagination from '@/components/Kv/KvPagination';
-import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
+import QuickFilters from '#src/components/LoansByCategory/QuickFilters/QuickFilters';
+import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
+import { transformIsoCodes } from '#src/util/loanSearch/filters/regions';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import KvPagination from '#src/components/Kv/KvPagination';
+import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import EmptyState from './EmptyState';
 
 export default {
@@ -235,7 +235,7 @@ export default {
 
 			const categories = fetchedCategories?.lend?.loanChannels?.values ?? [];
 			const sortedCategories = [...categories].sort(
-				// eslint-disable-next-line no-nested-ternary
+
 				(catA, catB) => {
 					if (catA.title < catB.title) return -1;
 					if (catA.title > catB.title) return 1;

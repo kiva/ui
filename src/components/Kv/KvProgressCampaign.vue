@@ -27,8 +27,8 @@
 
 <script>
 import numeral from 'numeral';
-import HeartOutFromBox from '@/assets/inline-svgs/challenge/heart-out-from-box.svg';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import HeartOutFromBox from '#src/assets/inline-svgs/challenge/heart-out-from-box.svg';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'KvProgressCampaign',
@@ -89,7 +89,7 @@ p {
 	@apply tw-my-0.5;
 }
 
-.progress-bar >>> div {
+.progress-bar :deep(div) {
 	height: 0.75rem;
 }
 </style>

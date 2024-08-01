@@ -1,4 +1,4 @@
-import { isNumber } from '@/util/numberUtils';
+import { isNumber } from '#src/util/numberUtils';
 
 /**
  * Creates the min max range object

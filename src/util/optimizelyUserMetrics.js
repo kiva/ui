@@ -1,6 +1,6 @@
 import numeral from 'numeral';
-import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
+import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 function setUserAttribute(key, value) {
 	if (typeof window === 'undefined') {

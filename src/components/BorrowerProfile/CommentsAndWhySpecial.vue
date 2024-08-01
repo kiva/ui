@@ -12,8 +12,8 @@
 		</h2>
 		<div v-if="!loading" class="tw-mt-2 md:tw-mt-3 lg:tw-mt-5 tw-mb-4 md:tw-mb-5 lg:tw-mb-7">
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
-				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`]>
-					<div :key="index">
+				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`] :key="index">
+					<div>
 						<!-- comment menu -->
 						<button
 							v-if="isLoggedIn"
@@ -30,7 +30,7 @@
 							v-if="commentMenuShown"
 							v-click-outside="hideCommentsMenu"
 							class="tw-bg-white tw-rounded tw-p-1.5 tw-absolute tw-right-1 tw-top-0"
-							style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); width: 15rem;"
+							style="box-shadow: 0 4px 12px rgb(0 0 0 / 8%); width: 15rem;"
 						>
 							<h4 class="tw-text-h4 tw-text-secondary tw-mb-1">
 								More options
@@ -102,9 +102,7 @@
 										tw-flex tw-align-center tw-justify-center"
 									>
 										<!-- Kiva K logo -->
-										<img
-											src="@/assets/images/kiva_k.svg"
-										>
+										<img :src="kivaKUrl">
 									</div>
 								</div>
 								<!-- name and team info -->
@@ -200,21 +198,22 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import { isLegacyPlaceholderAvatar } from '@/util/imageUtils';
+import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
 
 import { mdiDotsHorizontalCircle } from '@mdi/js';
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import logFormatter from '@/util/logFormatter';
-import WhySpecial from '@/components/BorrowerProfile/WhySpecial';
-import clickOutside from '@/plugins/click-outside';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import logFormatter from '#src/util/logFormatter';
+import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
+import clickOutside from '#src/plugins/click-outside';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvRadio from '@kiva/kv-components/vue/KvRadio';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {
 	name: 'CommentsAndWhySpecial',
@@ -244,6 +243,7 @@ export default {
 	],
 	data() {
 		return {
+			kivaKUrl,
 			mdiDotsHorizontalCircle,
 			loading: true,
 			comments: [],

@@ -1,8 +1,8 @@
-const minimist = require('minimist');
+import minimist from 'minimist';
 
 const processArgv = process.argv.slice(2);
 
-module.exports = minimist(processArgv, {
+export default minimist(processArgv, {
 	string: ['config'],
 	boolean: ['mock'],
 	alias: {

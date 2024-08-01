@@ -1,6 +1,6 @@
-import { setContext } from '@apollo/client/link/context';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-// import { UIAB_COOKIE_NAME } from '@/util/experiment/experimentUtils';
+import { setContext } from '@apollo/client/link/context/index';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+// import { UIAB_COOKIE_NAME } from '#src/util/experiment/experimentUtils';
 
 // Experiment assignments that will be passed in the X-Experiment Header
 const targetIds = [

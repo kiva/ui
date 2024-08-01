@@ -4,7 +4,7 @@
  * @param {('info'|'warning'|'error')} level
  * @param {object} meta
  */
-function log(message, level = 'info', meta = {}) {
+export function log(message, level = 'info', meta = {}) {
 	const payload = JSON.stringify({
 		meta,
 		level,
@@ -24,7 +24,7 @@ function log(message, level = 'info', meta = {}) {
  * @param {String} message
  * @param {object} meta
  */
-function info(message, meta) {
+export function info(message, meta) {
 	log(message, 'info', meta);
 }
 
@@ -33,23 +33,24 @@ function info(message, meta) {
  * @param {String} message
  * @param {object} meta
  */
-function warn(message, meta) {
+export function warn(message, meta) {
 	log(message, 'warn', meta);
 }
+export { warn as warning };
 
 /**
  * Logs an error message to the console
  * @param {String} message
  * @param {object} meta
  */
-function error(message, meta) {
+export function error(message, meta) {
 	log(message, 'error', meta);
 }
 
-module.exports = {
+export default {
 	log,
 	info,
 	warn,
 	warning: warn,
-	error,
+	error
 };

@@ -32,9 +32,9 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvDropdown from '@/components/Kv/KvDropdown';
-import TheLendMenu from '@/components/WwwFrame/LendMenu/TheLendMenu';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvDropdown from '#src/components/Kv/KvDropdown';
+import TheLendMenu from '#src/components/WwwFrame/LendMenu/TheLendMenu';
 
 export default {
 	name: 'MonthlyGoodExpMenuWrapper',
@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .the-mg-exp-menu {
 	&__desktop {
@@ -94,12 +94,10 @@ export default {
 			fill: rgb(var(--text-action));
 		}
 
-		::v-deep {
-			div.dropdown-pane.is-open {
-				// hack to move the secondary dropdown left
-				left: -255px !important;
-				width: rem-calc(509);
-			}
+		:deep(div.dropdown-pane.is-open) {
+			// hack to move the secondary dropdown left
+			left: -255px !important;
+			width: rem-calc(509);
 		}
 	}
 }

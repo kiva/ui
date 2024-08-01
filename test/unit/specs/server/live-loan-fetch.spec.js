@@ -10,18 +10,21 @@ jest.mock('../../../../server/util/argv', () => {
 });
 
 describe('live-loan-fetch', () => {
+	beforeAll(() => jest.spyOn(global.console, 'warn').mockImplementation(() => ({})));
+
+	afterAll(jest.restoreAllMocks);
+
 	describe('fetchRecommendationsByLegacyFilter', () => {
 		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
 		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => {} });
-
+			fetch.default.mockClear();
+			fetch.default.mockResolvedValue({ json: () => { } });
 			// Run the filter parsing
-			await fetchLoansByType('filter', inputString);
+			await fetchLoansByType.default('filter', inputString);
 
 			// Extract the grahpql query variables
-			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
+			const { variables } = JSON.parse(fetch.default.mock.calls[0][1].body);
 			return variables;
 		}
 
@@ -53,10 +56,14 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('theme_start-up', { theme: ['Start-Up'] });
 			await testFilterParsing('theme_youth,theme_green', { theme: ['Youth', 'Green'] });
 			await testFilterParsing('tag_u.s. black-owned businesses', { loanTags: [43] });
-			await testFilterParsing('tag_u.s. black-owned businesses,theme_green',
-				{ loanTags: [43], theme: ['Green'] });
-			await testFilterParsing('tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
-				{ loanTags: [45, 43] });
+			await testFilterParsing(
+				'tag_u.s. black-owned businesses,theme_green',
+				{ loanTags: [43], theme: ['Green'] }
+			);
+			await testFilterParsing(
+				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
+				{ loanTags: [45, 43] }
+			);
 			await testFilterParsing('notafilter_value', {});
 			await testFilterParsing('sector_notasector', {});
 			await testFilterParsing('theme_notatheme', {});
@@ -74,39 +81,30 @@ describe('live-loan-fetch', () => {
 			await testSortParsing('1234', null);
 		});
 
-		// TODO: activate this test (by removing .skip) once FLSS is used for live loan searching
-		it.skip('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
-			await testFilterParsing('gender_male,sector_education', [
-				{ gender: { eq: 'male' } },
-				{ sector: { eq: 'education' } }
-			]);
-			await testFilterParsing('sector_retail', [
-				{ sector: { eq: 'retail' } }
-			]);
-			await testFilterParsing('country_us,country_pr', [
-				{ countryIsoCode: { eq: 'us' } },
-				{ countryIsoCode: { eq: 'pr' } }
-			]);
+		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
+			await testFilterParsing('gender_male,sector_education', { gender: 'male', sector: [15] });
+			await testFilterParsing('sector_retail', { sector: [7] });
+			await testFilterParsing('country_us,country_pr', { country: ['us', 'pr'] });
 
-			await testFilterParsing('notafilter_value', []);
-			await testFilterParsing('', []);
-			await testFilterParsing('1234', []);
+			await testFilterParsing('notafilter_value', {});
+			await testFilterParsing('', {});
+			await testFilterParsing('1234', {});
 		});
 	});
 
 	describe('fetchRecommendationsByFLSS', () => {
 		it('have flss call defined with userId', async () => {
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => {} });
+			fetch.default.mockClear();
+			fetch.default.mockResolvedValue({ json: () => { } });
 
-			await fetchLoansByType('user', '1234', true);
+			await fetchLoansByType.default('user', '1234', true);
 
-			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
+			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
 			expect(query).toContain('fundraisingLoans');
-			expect(fetch.mock.results[0].value).toBeDefined();
+			expect(fetch.default.mock.results[0].value).toBeDefined();
 		});
 	});
 });

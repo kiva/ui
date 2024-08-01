@@ -1,5 +1,5 @@
-import { filterUiType } from '@/util/loanSearch/filterUtils';
-import { sortRegions } from '@/util/loanSearch/countryUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
+import { sortRegions } from '#src/util/loanSearch/countryUtils';
 
 /**
  * Transforms ISO codes into regions usable by the filters
@@ -161,9 +161,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		countryIsoCode: [...loanSearchState.countryIsoCode?.filter(iso => {
-			return facet.isoCode !== iso;
-		})]
+		countryIsoCode: [...(loanSearchState?.countryIsoCode ?? []).filter(iso => facet?.isoCode !== iso)]
 	}),
 	getSavedSearch: loanSearchState => ({ country: loanSearchState?.countryIsoCode }),
 	getFlssFilter: loanSearchState => ({

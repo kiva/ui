@@ -80,8 +80,8 @@
 <script>
 import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
-import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'TrusteeDetails',

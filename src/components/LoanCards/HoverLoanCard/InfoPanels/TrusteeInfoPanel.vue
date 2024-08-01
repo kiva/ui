@@ -10,7 +10,7 @@
 		</template>
 		<div
 			id="loading-overlay"
-			v-if="!this.trusteeName"
+			v-if="!trusteeName"
 		>
 			<div class="spinner-wrapper">
 				<kv-loading-spinner />
@@ -18,74 +18,74 @@
 		</div>
 		<div v-else>
 			<dl>
-				<div v-if="this.trusteeName">
+				<div v-if="trusteeName">
 					<dt>Trustee Name:</dt>
 					<span class="data">
 						{{ trusteeName }}
 					</span>
 				</div>
-				<div v-if="this.trusteeLocation">
+				<div v-if="trusteeLocation">
 					<dt>Location:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ trusteeLocation }}
 					</dd>
 				</div>
-				<div v-if="this.timeOnKiva">
+				<div v-if="timeOnKiva">
 					<dt>Time on Kiva:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ timeOnKivaFormatted }} months
 					</dd>
 				</div>
-				<div v-if="this.numBorrowers">
+				<div v-if="numBorrowers">
 					<dt>Kiva borrowers:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ numBorrowers }}
 					</dd>
 				</div>
-				<div v-if="this.totalLoanDollarValue">
+				<div v-if="totalLoanDollarValue">
 					<dt>Total loans:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ totalDollarValueFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.loansFundraisingRaised">
+				<div v-if="loansFundraisingRaised">
 					<dt>Fundraising/raised:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansFundraisingRaised }}
 					</dd>
 				</div>
-				<div v-if="this.loansPayingBackOnTime">
+				<div v-if="loansPayingBackOnTime">
 					<dt>Paying back on time:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansPayingBackOnTime }}
 					</dd>
 				</div>
-				<div v-if="this.loansPayingBackLate">
+				<div v-if="loansPayingBackLate">
 					<dt>Paying back late:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansPayingBackLate }}
 					</dd>
 				</div>
-				<div v-if="this.loansRepaidInFull">
+				<div v-if="loansRepaidInFull">
 					<dt>Repaid in full:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansRepaidInFull }}
 					</dd>
 				</div>
-				<div v-if="this.loansDefaulted">
+				<div v-if="loansDefaulted">
 					<dt>Defaulted:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansDefaulted }}
 					</dd>
 				</div>
-				<div v-if="this.repaymentRate">
+				<div v-if="repaymentRate">
 					<dt>Repayment rate:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ repaymentRateFormatted }}
 					</dd>
 				</div>
 			</dl>
-			<div v-if="this.endorsement && this.endorsement != ''">
+			<div v-if="endorsement && endorsement != ''">
 				<h3 class="tw-mb-1 tw-mt-4">
 					Why are you endorsing this borrower?
 				</h3>
@@ -101,8 +101,8 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { differenceInCalendarMonths, parseISO } from 'date-fns';
-import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import loanPartnerQuery from '#src/graphql/query/loanPartner.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import InfoPanel from './InfoPanel';
 
 export default {

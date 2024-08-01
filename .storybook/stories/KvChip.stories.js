@@ -1,11 +1,13 @@
-import KvChip from '@/components/Kv/KvChip';
+import KvChip from '#src/components/Kv/KvChip';
+
+const args = {
+	title: 'Chip Title',
+};
 
 export default {
 	title: 'Kv/KvChip',
 	component: KvChip,
-	args: {
-		title: 'Chip Title',
-	},
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
@@ -18,6 +20,7 @@ export const Default = (args, { argTypes }) => ({
 			console.log('click chip');
 		}
 	},
+	setup() { return args; },
 	template: `
 		<kv-chip
 			:title="title"

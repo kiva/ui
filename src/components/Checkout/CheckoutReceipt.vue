@@ -290,9 +290,9 @@
 
 <script>
 import { format } from 'date-fns';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvTooltip from '@/components/Kv/KvTooltip';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvTooltip from '#src/components/Kv/KvTooltip';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 // Ensures the date renders the same on client or SSR in any timezone.
 // Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
@@ -364,7 +364,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .section {
 	border-bottom: solid rem-calc(1) rgb(var(--border-tertiary));

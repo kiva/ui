@@ -1,9 +1,8 @@
-const { merge } = require('webpack-merge');
-var base = require('./index.js')
+import { merge } from 'webpack-merge';
+import base from './index.js';
 
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
-
-module.exports = merge(base, {
+export default merge(base, {
 	app: {
 		apolloBatching,
 		host: 'www.dev.kiva.org',
@@ -52,7 +51,7 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.dev.kiva.org/process-ssr-auth',
 			domain: 'login.dev.kiva.org',
 		},
-		paypal : {
+		paypal: {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
 		},
@@ -69,4 +68,4 @@ module.exports = merge(base, {
 		memcachedServers: 'dev-memcached-01:11211,dev-memcached-02:11211',
 		disableCluster: true
 	}
-})
+});
