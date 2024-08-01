@@ -408,12 +408,12 @@ export default {
 }
 
 .badge-container {
-	@apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
-	box-shadow: 0px 4px 12px 0px #00000014;
+	box-shadow: 0 4px 12px 0 #00000014;
 	transition: filter 0.3s ease;
 	width: 228px;
 	height: 233px;
 	background-color: #F3F1EF33;
+	@apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
 }
 
 .badge {
@@ -429,9 +429,9 @@ export default {
 	@apply tw-absolute tw-bottom-3;
 }
 
-.reveal-button  >>> span {
-	@apply tw-border-black;
+.reveal-button >>> span {
 	opacity: 90%;
+	@apply tw-border-black;
 }
 
 </style>
