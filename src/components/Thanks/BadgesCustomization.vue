@@ -8,7 +8,7 @@
 				class="tw-text-center tw-pt-4 tw-pb-5 md:tw-rounded-t hide-for-print"
 				style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
 			>
-				<h1 class="tw-text-white">
+				<h1 class="tw-text-white tw-mb-1">
 					Success!
 				</h1>
 				<p class="tw-text-subhead tw-text-white tw-px-3 md:tw-px-8">
@@ -16,6 +16,8 @@
 				</p>
 				<div class="tw-relative tw-mt-3">
 					<div class="badge-container">
+						<!-- eslint-disable-next-line max-len -->
+						<!-- TODO: Update with the selected svg -->
 						<svg :class="{ 'blurred': isBlurred }" width="180" height="185" viewBox="0 0 180 185" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M151.071 0H28.9286C12.9518 0 0 12.9518 0 28.9286V108.083C0 116.96 4.07577 125.345 11.0559 130.83L72.1273 178.814C77.3722 182.935 83.6862 184.996 90 184.996C96.3138 184.996 102.628 182.935 107.873 178.814L168.944 130.83C175.924 125.345 180 116.96 180 108.083V28.9286C180 12.9518 167.048 0 151.071 0Z" fill="#F8F2E6" />
 							<path d="M164.786 116.763L121.5 119.852L83.3858 124.729L56.7352 134.392H26.3335L47.1964 152.673L84.6445 144.976H106.438L153.631 134.392L164.786 116.763ZM168.093 111.535L168.093 111.537L168.093 111.535Z" fill="#FDF0D2" />
@@ -69,39 +71,41 @@
 					class="tw-mb-5"
 					:weeks-to-repay="weeksToRepay"
 				/>
-				<div v-if="!isGuest">
-					<kv-button
-						class="tw-w-full ghost-button"
-						to="/portfolio"
-						variant="secondary"
+				<div class="tw-mb-2 hide-for-print">
+					<div v-if="!isGuest">
+						<kv-button
+							class="tw-w-full ghost-button"
+							to="/portfolio"
+							variant="secondary"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'go-to-my-kiva',
+							]"
+						>
+							Go to my kiva
+						</kv-button>
+					</div>
+					<div
+						v-else
+						class="option-box"
+						:class="{'open' : openCreateAccount}"
+						@click="() => openCreateAccount = !openCreateAccount"
 						v-kv-track-event="[
 							'thanks',
 							'click',
-							'go-to-my-kiva',
+							'open-account-creation-drawer',
 						]"
 					>
-						Go to my kiva
-					</kv-button>
-				</div>
-				<div
-					v-else
-					class="option-box"
-					:class="{'open' : openCreateAccount}"
-					@click="() => openCreateAccount = !openCreateAccount"
-					v-kv-track-event="[
-						'thanks',
-						'click',
-						'open-account-creation-drawer',
-					]"
-				>
-					<p class="tw-font-medium">
-						Create your account
-					</p>
-					<kv-material-icon
-						:icon="mdiChevronDown"
-						class="expandable-button"
-						:class="{'tw-rotate-180' : openCreateAccount}"
-					/>
+						<p class="tw-font-medium">
+							Create your account
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openCreateAccount}"
+						/>
+					</div>
 					<kv-expandable
 						v-show="openCreateAccount"
 						easing="ease-in-out"
@@ -119,6 +123,76 @@
 					</kv-expandable>
 				</div>
 			</div>
+			<div class="tw-pt-2 tw-pb-5 tw-border-t tw-px-3 md:tw-px-8" style="border-top-color: #ECE4D5;">
+				<div class="tw-mb-2">
+					<!-- eslint-disable-next-line max-len -->
+					<div
+						class="option-box hide-for-print"
+						:class="{'open' : openOrderConfirmation}"
+						@click="() => openOrderConfirmation = !openOrderConfirmation"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'open-order-confirmation-drawer',
+						]"
+					>
+						<p class="tw-font-medium">
+							Show previous loan details
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openOrderConfirmation}"
+						/>
+					</div>
+					<kv-expandable
+						v-show="openOrderConfirmation"
+						easing="ease-in-out"
+					>
+						<div class="tw-py-2">
+							<checkout-receipt
+								v-if="receipt"
+								:lender="lender"
+								:receipt="receipt"
+							/>
+						</div>
+					</kv-expandable>
+				</div>
+				<div class="hide-for-print">
+					<div
+						class="option-box"
+						:class="{'open' : openShareModule}"
+						@click="() => openShareModule = !openShareModule"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'open-share-drawer',
+						]"
+					>
+						<p class="tw-font-medium">
+							Share
+						</p>
+						<kv-material-icon
+							:icon="mdiChevronDown"
+							class="expandable-button"
+							:class="{'tw-rotate-180' : openShareModule}"
+						/>
+					</div>
+					<kv-expandable
+						v-show="openShareModule"
+						easing="ease-in-out"
+					>
+						<div class="tw-py-2">
+							<social-share-v2
+								v-if="receipt"
+								class="social-share"
+								:lender="lender"
+								:loans="loans"
+							/>
+						</div>
+					</kv-expandable>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -130,9 +204,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
-import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
 import confetti from 'canvas-confetti';
 import { gql } from '@apollo/client';
 import logFormatter from '@/util/logFormatter';
@@ -143,15 +215,13 @@ import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 const imageRequire = require.context('@/assets/images/thanks-page/', true);
 
 export default {
-	name: 'WhatIsNextTemplate',
+	name: 'BadgesCustomization',
 	components: {
 		LoanNextSteps,
 		KvExpandable,
 		CheckoutReceipt,
 		SocialShareV2,
-		BorrowerImage,
 		GuestAccountCreation,
-		AnimatedSparkles,
 		KvButton,
 		KvMaterialIcon,
 	},
@@ -304,7 +374,7 @@ export default {
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
-		this.isMobileLayout = window.innerWidth < 735;
+		this.isMobileLayout = window.innerWidth < 1024;
 
 		confetti({
 			origin: {
@@ -334,12 +404,16 @@ export default {
 }
 
 .secondary-container {
-	@apply tw-bg-stone-1 tw-w-full tw-px-3 md:tw-px-8 tw-z-1 tw-pb-5 tw-pt-3;
+	@apply tw-bg-stone-1 tw-w-full tw-px-3 md:tw-px-8 tw-z-1 tw-pt-3;
 }
 
 .option-box {
 	transition: border 0.2s ease, border-radius 0.5s ease;
 	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
+}
+
+.social-share >>> .share__social.social {
+	@apply tw-w-full;
 }
 
 .option-box.open {
@@ -351,19 +425,20 @@ export default {
 }
 
 .badge-container {
-  @apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
-  box-shadow: 0px 4px 12px 0px #00000014;
-  transition: filter 0.3s ease;
-  width: 228px;
-  height: 233px;
+	@apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
+	box-shadow: 0px 4px 12px 0px #00000014;
+	transition: filter 0.3s ease;
+	width: 228px;
+	height: 233px;
+	background-color: #F3F1EF33;
 }
 
 .blurred {
-  filter: blur(8px);
+	filter: blur(8px);
 }
 
 .reveal-button {
-  @apply tw-absolute tw-bottom-3;
+	@apply tw-absolute tw-bottom-3;
 }
 
 .reveal-button  >>> span {
