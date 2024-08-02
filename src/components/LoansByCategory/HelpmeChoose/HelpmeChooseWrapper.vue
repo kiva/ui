@@ -41,7 +41,6 @@
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-mb-2 tw-gap-4 tw-px-1">
 			<kv-classic-loan-card-container
 				v-for="(loan, index) in remainingLoans"
-				class="loan-card-container"
 				:key="`new-card-${loan.id}-${index}`"
 				:loan-id="loan.id"
 				:use-full-width="true"
