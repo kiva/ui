@@ -17,7 +17,7 @@
 				<div class="tw-relative tw-mt-3">
 					<div class="badge-container">
 						<img
-							:class="{ 'blurred': isBlurred }"
+							:class="{ 'blurred': isBlurred, 'wiggle': wiggle }"
 							:src="imageRequire(`./equity-badge.svg`)"
 							class="badge"
 							alt="Gift icon"
@@ -29,7 +29,7 @@
 							v-kv-track-event="[
 								'thanks',
 								'click',
-								'reveal',
+								'reveal-badge',
 							]"
 						>
 							<span class="tw-flex tw-items-center tw-gap-1">
@@ -251,6 +251,7 @@ export default {
 			imageRequire,
 			isBlurred: true,
 			isMobileLayout: false,
+			wiggle: false,
 		};
 	},
 	computed: {
@@ -359,6 +360,11 @@ export default {
 	mounted() {
 		this.isMobileLayout = window.innerWidth < 1024;
 
+		this.wiggle = true;
+		setTimeout(() => {
+			this.wiggle = false;
+		}, 1000);
+
 		confetti({
 			origin: {
 				y: 0.2
@@ -432,6 +438,35 @@ export default {
 .reveal-button >>> span {
 	opacity: 90%;
 	@apply tw-border-black;
+}
+
+@keyframes wiggle {
+	0% {
+		transform: rotate(0deg);
+		filter: blur(8px);
+	}
+
+	25% {
+		transform: rotate(-10deg);
+	}
+
+	50% {
+		transform: rotate(10deg);
+		filter: blur(2px);
+	}
+
+	75% {
+		transform: rotate(-10deg);
+	}
+
+	100% {
+		transform: rotate(0deg);
+		filter: blur(8px);
+	}
+}
+
+.wiggle {
+	animation: wiggle 1s ease-in-out;
 }
 
 </style>
