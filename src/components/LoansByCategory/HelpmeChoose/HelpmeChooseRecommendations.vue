@@ -45,6 +45,7 @@
 			/>
 			<loan-card-controller
 				v-else
+				class="loan-card-container"
 				style="margin-top: 0 !important; min-height: 283px;"
 				:items-in-basket="itemsInBasket"
 				:is-visitor="isVisitor"
