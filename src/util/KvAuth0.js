@@ -18,18 +18,41 @@ const COOKIE_OPTIONS = { path: '/', secure: true };
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
 const initWebAuth = Symbol('initWebAuth');
-const initMfaWebAuth = Symbol('initMfaWebAuth');
 const errorCallbacks = Symbol('errorCallbacks');
 const handleUnknownError = Symbol('handleUnknownError');
 const mfaTokenPromise = Symbol('mfaTokenPromise');
 const sessionPromise = Symbol('sessionPromise');
 const setAuthData = Symbol('setAuthData');
+const setMfaAuthData = Symbol('setMfaAuthData');
+const parseMfaHash = Symbol('parseMfaHash');
 const noteLoggedIn = Symbol('noteLoggedIn');
 const noteLoggedOut = Symbol('noteLoggedOut');
 const clearNotedLoginState = Symbol('clearNotedLoginState');
 
 function getErrorString(err) {
 	return `${err.error || err.code || err.name}: ${err.error_description || err.description}`;
+}
+
+function isAuth0Hash(hash) {
+	if (hash.indexOf('error') === -1
+		&& hash.indexOf('access_token') === -1
+		&& hash.indexOf('id_token') === -1
+		&& hash.indexOf('refresh_token') === -1) {
+		return false;
+	}
+	return true;
+}
+
+async function storeRedirectState() {
+	const { default: store2 } = await import('store2');
+
+	const { pathname, search } = window.location;
+	store2.session('auth0.redirect', `${pathname}${search}`);
+
+	const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+	store2.session('auth0.state', state);
+
+	return state;
 }
 
 // Class to handle interacting with auth0 in the browser
@@ -79,29 +102,9 @@ export default class KvAuth0 {
 		}
 		return import('auth0-js').then(({ default: auth0js }) => {
 			this.webAuth = new auth0js.WebAuth({
-				audience: this.audience,
 				clientID: this.clientID,
 				domain: this.domain,
 				redirectUri: this.redirectUri,
-				responseType: 'token id_token',
-				scope: this.scope,
-			});
-		});
-	}
-
-	// Setup Auth0 WebAuth client for MFA management
-	[initMfaWebAuth]() {
-		if (this.mfaWebAuth || this.isServer) {
-			return Promise.resolve();
-		}
-		return import('auth0-js').then(({ default: auth0js }) => {
-			this.mfaWebAuth = new auth0js.WebAuth({
-				audience: this.mfaAudience,
-				clientID: this.clientID,
-				domain: this.domain,
-				redirectUri: this.redirectUri,
-				responseType: 'token',
-				scope: 'enroll read:authenticators remove:authenticators',
 			});
 		});
 	}
@@ -114,6 +117,17 @@ export default class KvAuth0 {
 			setTimeout(() => {
 				// set null auth data to remove expired token
 				this[setAuthData]();
+			}, Number(expiresIn) * 1000);
+		}
+	}
+
+	[setMfaAuthData]({ accessToken, expiresIn } = {}) {
+		// save access token as this.mfaManagementToken
+		this.mfaManagementToken = accessToken;
+		// mfa management token expiration handling
+		if (expiresIn > 0) {
+			setTimeout(() => {
+				this.mfaManagementToken = '';
 			}, Number(expiresIn) * 1000);
 		}
 	}
@@ -216,6 +230,28 @@ export default class KvAuth0 {
 		this.cookieStore.remove(SYNC_NAME, COOKIE_OPTIONS);
 	}
 
+	// Parse the hash from the URL to get the MFA management token
+	[parseMfaHash]() {
+		return new Promise((resolve, reject) => {
+			const { hash } = window.location;
+			if (isAuth0Hash(hash)) {
+				this.webAuth.parseHash({
+					hash,
+					responseType: 'token',
+				}, (err, result) => {
+					if (err) {
+						reject(err);
+					} else {
+						this[setMfaAuthData](result);
+						resolve();
+					}
+				});
+			} else {
+				resolve();
+			}
+		});
+	}
+
 	// Silently fetch an access token for the MFA api to manage MFA factors
 	getMfaManagementToken() {
 		// only try this if in the browser
@@ -236,27 +272,31 @@ export default class KvAuth0 {
 			return Promise.resolve(this.mfaManagementToken);
 		}
 
+		// Fetch a new mfa management token
 		this[mfaTokenPromise] = new Promise((resolve, reject) => {
-			// Ensure browser clock is correct before fetching the token
-			syncDate().then(() => this[initMfaWebAuth]()).then(() => {
-				this.mfaWebAuth.checkSession({}, (err, result) => {
-					if (err) {
-						reject(err);
-					} else {
-						const { accessToken, expiresIn } = result;
-						// save access token as this.mfaEnrollToken
-						this.mfaManagementToken = accessToken;
-						// mfa management token expiration handling
-						if (expiresIn > 0) {
-							setTimeout(() => {
-								this.mfaManagementToken = '';
-							}, Number(expiresIn) * 1000);
-						}
-						// resolve with the mfa management token
+			// Initialize the web auth client
+			this[initWebAuth]()
+				// Parse the hash if it exists
+				.then(() => this[parseMfaHash]())
+				.then(() => {
+					if (this.mfaManagementToken) {
 						resolve(this.mfaManagementToken);
+					} else {
+						// If we still don't have a token, try to get one
+						// Ensure browser clock is correct before fetching the token
+						syncDate().then(() => {
+							// Store the current URL in session storage to redirect back to it after MFA
+							const state = storeRedirectState();
+							this.webAuth.authorize({
+								state,
+								audience: this.mfaAudience,
+								responseType: 'token',
+								scope: 'enroll read:authenticators remove:authenticators',
+							});
+						});
 					}
-				});
-			});
+				})
+				.catch(reject);
 		});
 
 		// Once the promise completes, stop tracking it
@@ -285,7 +325,11 @@ export default class KvAuth0 {
 		this[sessionPromise] = new Promise(resolve => {
 			// Ensure browser clock is correct before checking session
 			syncDate().then(() => this[initWebAuth]()).then(() => {
-				this.webAuth.checkSession({}, (err, result) => {
+				this.webAuth.checkSession({
+					audience: this.audience,
+					responseType: 'token id_token',
+					scope: this.scope,
+				}, (err, result) => {
 					if (err) {
 						this[setAuthData]();
 						if (err.error === 'login_required'
