@@ -286,7 +286,8 @@ export default class KvAuth0 {
 						// Ensure browser clock is correct before fetching the token
 						syncDate().then(() => {
 							// Store the current URL in session storage to redirect back to it after MFA
-							const state = storeRedirectState();
+							return storeRedirectState();
+						}).then(state => {
 							this.webAuth.authorize({
 								state,
 								audience: this.mfaAudience,
