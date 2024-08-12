@@ -19,7 +19,7 @@
 			:allow-dragging="true"
 			:show-labels="false"
 			:countries-data="countriesData"
-            :show-fundraising-loans="showFundraisingLoans"
+			:show-fundraising-loans="showFundraisingLoans"
 		/>
 		<div>
 			<p class="tw-mb-1 tw-font-medium">
@@ -194,6 +194,6 @@ export default {
 
 <style lang="postcss" scoped>
 .custom-checkbox ::v-deep label > div:first-of-type {
-    @apply tw-w-2 tw-h-2;
+	@apply tw-w-2 tw-h-2;
 }
 </style>
