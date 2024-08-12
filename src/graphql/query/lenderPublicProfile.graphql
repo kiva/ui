@@ -24,6 +24,12 @@ query LenderPublicProfile ($publicId: String!) {
 					loanCount
 					country {
 						name
+						numLoansFundraising
+						geocode {
+							latitude
+							longitude
+						}
+						isoCode
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-page-container
-			class="tw-py-2"
+			class="tw-pt-4 tw-pb-8"
 		>
 			<lender-summary
 				:public-id="publicId"
@@ -37,6 +37,10 @@
 			<lender-stats
 				:lender-info="lenderInfo"
 			/>
+
+			<lender-map
+				:lender-info="lenderInfo"
+			/>
 		</kv-page-container>
 	</www-page>
 </template>
@@ -52,6 +56,7 @@ import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
 import LenderBadges from '@/components/LenderProfile/LenderBadges';
 import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
 import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
+import LenderMap from '@/components/LenderProfile/LenderMap';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -67,6 +72,7 @@ export default {
 		LenderBadges,
 		LenderInviteesList,
 		LenderDedicationsList,
+		LenderMap,
 	},
 	metaInfo() {
 		return {
