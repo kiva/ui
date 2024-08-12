@@ -1,3 +1,10 @@
+## [2.749.0-rc.2](https://github.com/kiva/ui/compare/v2.749.0-rc.1...v2.749.0-rc.2) (2024-08-12)
+
+
+### 🎉 New Features
+
+* teams page sort option updated ([#5439](https://github.com/kiva/ui/issues/5439)) ([38823c0](https://github.com/kiva/ui/commit/38823c00617d9d2ea21e175c28d177aa081e166a))
+
 ## [2.749.0-rc.1](https://github.com/kiva/ui/compare/v2.748.0...v2.749.0-rc.1) (2024-08-08)
 
 
