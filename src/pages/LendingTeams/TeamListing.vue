@@ -59,7 +59,7 @@
 						@update:modelValue="pushChangesToUrl"
 					>
 						<option value="recentActivityScore">
-							Recent Activity Score
+							Recent Activity
 						</option>
 						<option value="newest">
 							Newest
