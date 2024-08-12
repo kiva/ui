@@ -1,47 +1,52 @@
 <template>
-	<section v-if="lenderTeams.length > 0" class="tw-my-8" id="lender-teams">
+	<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
 		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderTeamsTitle }}
+			{{ lenderInviteesTitle }}
 		</h4>
 		<p class="tw-mb-2">
-			{{ showedTeams }}
+			{{ showedInvitees }}
 		</p>
 
 		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
 			<div
-				v-for="team in lenderTeams"
-				:key="`team-${team.id}`"
+				v-for="invitee in lenderInvitees"
+				:key="`invitee-${invitee.id}`"
 				class="tw-flex tw-flex-col tw-gap-0.5"
 			>
-				<a
-					:href="`/team/${team.teamPublicId}`"
+				<component
+					:is="!invitee.publicId ? 'span' : 'a'"
+					:href="`/lender/${invitee.publicId}`"
 				>
 					<kv-material-icon
-						v-if="!getImageUrl(team)"
+						v-if="!getImageUrl(invitee)"
 						:icon="mdiAccountCircle"
 						class="!tw-block tw-mx-auto tw-w-3/4"
 					/>
 					<img
 						v-else
-						:src="getImageUrl(team)"
+						:src="getImageUrl(invitee)"
 						style="width: 200px;"
 						class="tw-object-cover tw-aspect-square"
 					>
-				</a>
-				<a
-					:href="`/team/${team.teamPublicId}`"
+				</component>
+				<component
+					class="data-hj-suppress"
+					:is="!invitee.publicId ? 'span' : 'a'"
+					:href="`/lender/${invitee.publicId}`"
 				>
-					{{ team.name }}
-				</a>
-				<p>{{ team.category }}</p>
+					{{ invitee.name }}
+				</component>
+				<p v-if="whereabouts(invitee)">
+					{{ whereabouts(invitee) }}
+				</p>
 			</div>
 		</div>
 		<kv-pagination
 			class="tw-mt-4"
-			v-if="totalCount > teamsLimit"
-			:limit="teamsLimit"
+			v-if="totalCount > inviteesLimit"
+			:limit="inviteesLimit"
 			:total="totalCount"
-			:offset="teamsOffset"
+			:offset="inviteesOffset"
 			:scroll-to-top="false"
 			@page-changed="pageChange"
 		/>
@@ -55,12 +60,12 @@ import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '@/util/logReadQueryError';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import lenderTeamsQuery from '@/graphql/query/lenderTeams.graphql';
+import lenderInviteesQuery from '@/graphql/query/lenderInvitees.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
-	name: 'LenderTeamsList',
+	name: 'LenderInviteesList',
 	mixins: [smoothScrollMixin],
 	inject: ['apollo', 'cookieStore'],
 	components: {
@@ -79,59 +84,59 @@ export default {
 	},
 	data() {
 		return {
-			lenderTeams: [],
-			teamsLimit: 12,
-			teamsOffset: 0,
+			lenderInvitees: [],
+			inviteesLimit: 12,
+			inviteesOffset: 0,
 			totalCount: 0,
-			pageQuery: { teams: '1' },
+			pageQuery: { invitees: '1' },
 			mdiAccountCircle,
 		};
 	},
 	computed: {
-		lenderTeamsTitle() {
+		lenderInviteesTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s teams`
-				: 'Teams';
+				? `${this.lenderInfo.name}'s invites`
+				: 'Invites';
 		},
-		showedTeams() {
+		showedInvitees() {
 			return this.totalCount > 1
-				? `${this.totalCount} teams`
-				: `${this.totalCount} team`;
+				? `Showing ${this.totalCount} accepted invitations`
+				: `Showing ${this.totalCount} accepted invitation`;
 		},
 		urlParams() {
-			const teamsPage = Math.floor(this.teamsOffset / this.teamsLimit) + 1;
+			const inviteesPage = Math.floor(this.inviteesOffset / this.inviteesLimit) + 1;
 
-			return { teams: teamsPage > 1 ? String(teamsPage) : undefined };
+			return { invitees: inviteesPage > 1 ? String(inviteesPage) : undefined };
 		},
 	},
 	methods: {
-		async fetchLenderTeams() {
+		async fetchLenderInvitees() {
 			try {
 				const { data } = await this.apollo.query({
-					query: lenderTeamsQuery,
+					query: lenderInviteesQuery,
 					variables: {
 						publicId: this.publicId,
-						limit: this.teamsLimit,
-						offset: this.teamsOffset
+						limit: this.inviteesLimit,
+						offset: this.inviteesOffset
 					},
 				});
 
-				this.lenderTeams = data.community?.lender?.teams?.values ?? [];
-				this.totalCount = data.community?.lender?.teams?.totalCount ?? 0;
+				this.lenderInvitees = data.community?.lender?.invitees?.values ?? [];
+				this.totalCount = data.community?.lender?.invitees?.totalCount ?? 0;
 			} catch (e) {
-				logReadQueryError(e, 'LenderTeamsList lenderTeamsQuery');
+				logReadQueryError(e, 'LenderInviteesList lenderInviteesQuery');
 			}
 		},
 		pageChange({ pageOffset }) {
-			this.teamsOffset = pageOffset;
+			this.inviteesOffset = pageOffset;
 			this.pushChangesToUrl();
-			this.fetchLenderTeams();
-			this.scrollToSection('#lender-teams');
+			this.fetchLenderInvitees();
+			this.scrollToSection('#lender-invitees');
 		},
 		updateFromParams(query) {
-			const pageNum = numeral(query.teams).value() - 1;
+			const pageNum = numeral(query.invitees).value() - 1;
 
-			this.teamsOffset = pageNum > 0 ? this.teamsLimit * pageNum : 0;
+			this.inviteesOffset = pageNum > 0 ? this.inviteesLimit * pageNum : 0;
 		},
 		pushChangesToUrl() {
 			const currentQuery = this.$route?.query;
@@ -139,8 +144,11 @@ export default {
 				this.$router.push({ query: { ...currentQuery, ...this.urlParams } });
 			}
 		},
-		getImageUrl(team) {
-			return team.image?.url ?? '';
+		getImageUrl(invitee) {
+			return invitee.image?.url ?? '';
+		},
+		whereabouts(invitee) {
+			return invitee.lenderPage?.whereabouts ?? '';
 		},
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
@@ -149,7 +157,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchLenderTeams();
+		this.fetchLenderInvitees();
 	},
 	created() {
 		this.pageQuery = _get(this.$route, 'query');

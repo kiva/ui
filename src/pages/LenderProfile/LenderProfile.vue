@@ -13,7 +13,23 @@
 				:lender-info="lenderInfo"
 			/>
 
+			<lender-badges
+				:total-possible-badges="allAchievements.length"
+				:completed-achievements="completedAchievements"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-dedications-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
 			<lender-teams-list
+				:public-id="publicId"
+				:lender-info="lenderInfo"
+			/>
+
+			<lender-invitees-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
 			/>
@@ -33,6 +49,9 @@ import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphq
 import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
 import LenderStats from '@/components/LenderProfile/LenderStats';
 import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
+import LenderBadges from '@/components/LenderProfile/LenderBadges';
+import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
+import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -45,6 +64,9 @@ export default {
 		LenderLoansList,
 		LenderStats,
 		LenderTeamsList,
+		LenderBadges,
+		LenderInviteesList,
+		LenderDedicationsList,
 	},
 	metaInfo() {
 		return {
@@ -77,6 +99,7 @@ export default {
 		return {
 			lenderInfo: {},
 			publicId: '',
+			allAchievements: [],
 		};
 	},
 	apollo: {
@@ -105,6 +128,9 @@ export default {
 		pageDescription() {
 			return `${this.lenderName} from ${this.lenderWhereAbouts} has made ${this.loanCount} loans on Kiva.`;
 		},
+		completedAchievements() {
+			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
+		},
 	},
 	created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -118,6 +144,7 @@ export default {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
 		}
 		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
+		this.allAchievements = cachedLenderInfo.userAchievementProgress?.achievementProgress ?? [];
 	}
 };
 </script>

@@ -1,0 +1,15 @@
+query LenderDedications ($publicId: String!, $offset: Int, $limit: Int) {
+	community {
+		lender(publicId: $publicId) {
+			id
+			dedicationsReceived(offset: $offset, limit: $limit) {
+				totalCount
+				values {
+					id
+					senderName
+					loanId
+				}
+			}
+		}
+	}
+}
