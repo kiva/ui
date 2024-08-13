@@ -128,6 +128,7 @@
 				>
 					Cancel
 				</kv-button>
+				&nbsp;
 				<kv-button
 					class="smallest alert"
 					v-if="!isProcessing"
