@@ -16,7 +16,7 @@ export default {
 		if (this.href) {
 			options.attrs.href = this.href;
 		}
-		return h(this.tag, options, this.$slots.default);
+		return h(this.tag, options, this.$slots.default());
 	},
 	props: {
 		to: { default: null },
