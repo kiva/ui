@@ -40,7 +40,7 @@ export default {
 	},
 	data() {
 		return {
-			inputValue: this.radioValue,
+			inputValue: null,
 		};
 	},
 	computed: {
