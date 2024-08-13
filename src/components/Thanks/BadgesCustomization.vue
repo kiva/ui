@@ -93,6 +93,7 @@
 								'thanks',
 								'click',
 								'go-to-my-kiva',
+								'Button seen after badge reveal'
 							]"
 						>
 							Go to my kiva
