@@ -1,3 +1,10 @@
+## [2.749.1-rc.1](https://github.com/kiva/ui/compare/v2.749.0...v2.749.1-rc.1) (2024-08-13)
+
+
+### 🐛 Bugfixes
+
+* revert recent activity score while backend is fixed MP-674 ([b8ed5e6](https://github.com/kiva/ui/commit/b8ed5e6557064e0528f14b0400f06aa5dc2e95dd))
+
 ## [2.749.0](https://github.com/kiva/ui/compare/v2.748.0...v2.749.0) (2024-08-12)
 
 
