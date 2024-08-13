@@ -3,7 +3,6 @@
 		<select
 			class="dropdown"
 			v-model="inputValue"
-			v-on="inputListeners"
 			v-bind="$attrs"
 		>
 			<slot></slot>
@@ -12,11 +11,19 @@
 </template>
 
 <script>
-import inputWrapperMixin from '#src/plugins/input-wrapper-mixin';
-
 export default {
 	name: 'KvSelect',
-	mixins: [inputWrapperMixin]
+	props: {
+		modelValue: {
+			type: [String, Boolean],
+			required: true,
+		},
+	},
+	data() {
+		return {
+			inputValue: this.modelValue,
+		};
+	},
 };
 </script>
 
