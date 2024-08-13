@@ -14,7 +14,7 @@
 					</span>
 				</div>
 				<div class="step-text">
-					{{ step.text }}
+					<span v-html="step.text"></span>
 				</div>
 				<div
 					v-if="index > 0 && index < steps.length" class="line"
@@ -48,7 +48,7 @@ export default {
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is funded' },
 				{ text: 'They use the money to improve their life' },
-				{ text: `They start repaying you in ${this.weeksToRepay}` }
+				{ text: `They start repaying you in <span class="tw-text-action"> ${this.weeksToRepay} </span>` }
 			]
 		};
 	},

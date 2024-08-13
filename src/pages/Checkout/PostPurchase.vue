@@ -42,7 +42,7 @@ export default {
 						let successPath = currentRoute.query?.challenge
 							? `/checkout/thanks/${currentRoute.query.challenge}` : '/thanks';
 
-						successPath = valetInviter ? '/checkout/thanks' : successPath;
+						successPath = valetInviter || optedIn ? '/checkout/thanks' : successPath;
 
 						// build route for thanks page redirect
 						const successRoute = {
