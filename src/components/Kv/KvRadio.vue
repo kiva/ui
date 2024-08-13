@@ -5,8 +5,8 @@
 			type="radio"
 			:id="id"
 			:value="radioValue"
+			:checked="isChecked"
 			v-model="inputValue"
-			v-on="inputListeners"
 			v-bind="$attrs"
 		>
 		<label
@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import inputWrapperMixin from '#src/plugins/input-wrapper-mixin';
-
 export default {
 	name: 'KvRadio',
 	props: {
@@ -35,8 +33,21 @@ export default {
 			type: String,
 			required: true
 		},
+		modelValue: {
+			type: String,
+			required: true,
+		},
 	},
-	mixins: [inputWrapperMixin]
+	data() {
+		return {
+			inputValue: this.radioValue,
+		};
+	},
+	computed: {
+		isChecked() {
+			return this.radioValue === this.modelValue;
+		}
+	}
 };
 
 </script>
