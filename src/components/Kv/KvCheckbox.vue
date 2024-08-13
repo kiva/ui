@@ -9,6 +9,8 @@
 			:id="id"
 			:disabled="disabled"
 			:checked="checked"
+			v-model="inputValue"
+			v-bind="$attrs"
 			@change="onChange($event)"
 		>
 		<label
@@ -47,7 +49,16 @@ export default {
 		checkboxRight: {
 			type: Boolean,
 			default: false
-		}
+		},
+		modelValue: {
+			type: Boolean,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			inputValue: null,
+		};
 	},
 	methods: {
 		onChange(event) {
@@ -58,7 +69,15 @@ export default {
 			 */
 			this.$emit('change', event.target.checked);
 		},
-	}
+	},
+	watch: {
+		modelValue: {
+			handler(newValue) {
+				this.inputValue = newValue;
+			},
+			immediate: true,
+		},
+	},
 };
 </script>
 
