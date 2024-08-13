@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
 	<div>
 		<svg
@@ -65,19 +66,21 @@
 }
 
 .second-svg {
-  animation-delay: 0.5s;
+	animation-delay: 0.5s;
 	@apply tw-bottom-0 tw-left-0;
 }
 
 @keyframes fadeTransition {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+	0% {
+		opacity: 0;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
 }
 </style>
