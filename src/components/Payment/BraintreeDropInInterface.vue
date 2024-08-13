@@ -281,7 +281,7 @@ $border-width: 1px;
 // Use [data-braintree-id=""] selectors whenever possible as
 // Braintree guarantees that these will not be easily changed.
 #dropin-container {
-	:deep(&) {
+	:deep {
 		// Main DropIn
 		.braintree-dropin {
 			font-family: inherit;
