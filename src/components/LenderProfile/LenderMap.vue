@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<section v-if="countriesData.length > 0">
 		<h4 class="data-hj-suppress tw-mb-2">
 			{{ lenderMapTitle }}
 		</h4>
@@ -20,6 +20,7 @@
 			:show-labels="false"
 			:countries-data="countriesData"
 			:show-fundraising-loans="showFundraisingLoans"
+			@country-lend-filter="countryFilterClicked"
 		/>
 		<div>
 			<p class="tw-mb-1 tw-font-medium">
@@ -69,41 +70,11 @@
 
 <script>
 import numeral from 'numeral';
-import KvMap from '@/components/Kv/KvMap';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvMap from '~/@kiva/kv-components/vue/KvMap';
+import { getLoansIntervals } from '~/@kiva/kv-components/utils/mapUtils';
 
-export const getIntervals = (min, max, nbIntervals) => {
-	const size = Math.floor((max - min) / nbIntervals);
-	const result = [];
-
-	if (size <= 0) return [[min, max]];
-
-	for (let i = 0; i < nbIntervals; i += 1) {
-		let inf = min + (i * size);
-		let sup = ((inf + size) < max) ? inf + size : max;
-
-		if (i > 0) {
-			inf += (1 * i);
-			sup += (1 * i);
-		}
-
-		if (i > 0 && sup > max) {
-			sup = max;
-		}
-
-		if (i === (nbIntervals - 1)) {
-			if (sup < max || sup > max) sup = max;
-		}
-
-		result.push([inf, sup]);
-
-		if (sup >= max) break;
-	}
-
-	return result;
-};
-
-export const mapColors = [
+const mapColors = [
 	100,
 	300,
 	500,
@@ -153,7 +124,7 @@ export default {
 			});
 
 			const maxNumLoansToOneCountry = Math.max(...loanCountsArray);
-			const intervals = getIntervals(1, maxNumLoansToOneCountry, 6);
+			const intervals = getLoansIntervals(1, maxNumLoansToOneCountry, 6);
 
 			if (intervals.length === 1) {
 				const [inf, sup] = intervals[0]; // eslint-disable-line no-unused-vars
@@ -188,7 +159,17 @@ export default {
 			return legendLabels;
 		},
 
-	}
+	},
+	methods: {
+		countryFilterClicked(countryIso) {
+			this.$router.push({
+				path: '/lend/filter',
+				query: {
+					country: countryIso,
+				},
+			});
+		},
+	},
 };
 </script>
 

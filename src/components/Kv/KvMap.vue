@@ -12,9 +12,6 @@
 <script>
 import { createIntersectionObserver } from '@/util/observerUtils';
 import testDelayedGlobalLibrary from '@/util/timeoutUtils';
-import countriesBorders from '@/assets/data/components/LenderProfile/countries-borders.json';
-import { getIntervals, mapColors } from '@/components/LenderProfile/LenderMap';
-import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
 
 export default {
 	name: 'KvMap',
@@ -127,44 +124,6 @@ export default {
 			type: Number,
 			default: 4
 		},
-		/**
-		 * Show the zoom control
-		 */
-		showZoomControl: {
-			type: Boolean,
-			default: false
-		},
-		/**
-		 * Allow dragging of the map
-		 */
-		allowDragging: {
-			type: Boolean,
-			default: false
-		},
-		/**
-		 * Show labels on the map
-		 * Working for leaflet only
-		 */
-		showLabels: {
-			type: Boolean,
-			default: true
-		},
-		/**
-		 * Lender data for the map
-		 * Working for leaflet only
-		 */
-		countriesData: {
-			type: Array,
-			default: () => ([]),
-		},
-		/**
-		 * Show fundraising loans
-		 * Working for leaflet only
-		 */
-		showFundraisingLoans: {
-			type: Boolean,
-			default: false
-		},
 	},
 	data() {
 		return {
@@ -203,13 +162,7 @@ export default {
 			if (prev === null && this.lat && !this.mapLibreReady && !this.leafletReady) {
 				this.initializeMap();
 			}
-		},
-		showFundraisingLoans() {
-			if (this.mapInstance) {
-				this.mapInstance.remove();
-				this.initializeLeaflet();
-			}
-		},
+		}
 	},
 	mounted() {
 		if (!this.mapLibreReady && !this.leafletReady) {
@@ -307,8 +260,8 @@ export default {
 				center: [this.lat, this.long],
 				zoom: this.initialZoom || this.zoomLevel,
 				// todo make props for the following options
-				dragging: this.allowDragging,
-				zoomControl: this.showZoomControl,
+				dragging: false,
+				zoomControl: false,
 				animate: true,
 				scrollWheelZoom: false,
 				doubleClickZoom: false,
@@ -316,55 +269,12 @@ export default {
 			});
 			/* eslint-disable quotes */
 			// Add our tileset to the mapInstance
-			let tileLayer = 'https://api.maptiler.com/maps/landscape/{z}/{x}/{y}.png?key=n1Mz5ziX3k6JfdjFe7mx';
-			if (this.showLabels) {
-				tileLayer = 'https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=n1Mz5ziX3k6JfdjFe7mx';
-			}
-			L.tileLayer(tileLayer, {
+			L.tileLayer('https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=n1Mz5ziX3k6JfdjFe7mx', {
 				tileSize: 512,
 				zoomOffset: -1,
 				minZoom: 1,
-				crossOrigin: true,
+				crossOrigin: true
 			}).addTo(this.mapInstance);
-
-			if (this.countriesData.length > 0) {
-				const countriesFeatures = countriesBorders.features ?? [];
-
-				countriesFeatures.forEach((country, index) => {
-					const countryData = this.countriesData.find(data => data.isoCode === country.properties.ISO_A2);
-					if (countryData) {
-						countriesFeatures[index].lenderLoans = countryData.value;
-						countriesFeatures[index].numLoansFundraising = countryData.numLoansFundraising;
-					}
-				});
-
-				L.geoJson(
-					countriesBorders,
-					{
-						style: this.countryStyle,
-						onEachFeature: this.onEachCountryFeature
-					}
-				).addTo(this.mapInstance);
-
-				this.countriesData.forEach(country => {
-					if (country.numLoansFundraising > 0 && this.showFundraisingLoans) {
-						const circle = L.circle([country.lat, country.long], {
-							color: kvTokensPrimitives.colors.black,
-							weight: 1,
-							fillColor: kvTokensPrimitives.colors.brand[900],
-							fillOpacity: 1,
-							radius: 130000,
-						}).addTo(this.mapInstance);
-
-						const tooltipText = `Click to see ${country.numLoansFundraising} fundraising loans in ${country.label}`;
-						circle.bindTooltip(tooltipText);
-
-						circle.on('click', () => {
-							this.circleMapClicked(country.isoCode);
-						});
-					}
-				});
-			}
 			/* eslint-enable quotes */
 			/* eslint-enable no-undef, max-len */
 
@@ -384,7 +294,7 @@ export default {
 				center: [this.long, this.lat],
 				zoom: this.initialZoom || this.zoomLevel,
 				attributionControl: false,
-				dragPan: this.allowDragging,
+				dragPan: false,
 				scrollZoom: false,
 				doubleClickZoom: false,
 				dragRotate: false,
@@ -397,82 +307,6 @@ export default {
 			if (this.initialZoom !== null) {
 				this.createWrapperObserver();
 			}
-		},
-		countryStyle(feature) {
-			return {
-				color: kvTokensPrimitives.colors.white,
-				fillColor: this.getCountryColor(feature.lenderLoans),
-				weight: 1,
-				fillOpacity: 1,
-			};
-		},
-		getCountryColor(lenderLoans) {
-			const loanCountsArray = [];
-			this.countriesData.forEach(country => {
-				loanCountsArray.push(country.value);
-			});
-
-			const maxNumLoansToOneCountry = Math.max(...loanCountsArray);
-			const intervals = getIntervals(1, maxNumLoansToOneCountry, 6);
-
-			if (intervals.length === 1) {
-				const [inf, sup] = intervals[0]; // eslint-disable-line no-unused-vars
-
-				for (let i = 0; i < sup; i += 1) {
-					const loansNumber = i + 1;
-
-					if (lenderLoans && lenderLoans >= loansNumber && lenderLoans < loansNumber + 1) {
-						return kvTokensPrimitives.colors.brand[mapColors[i]];
-					}
-				}
-			} else {
-				for (let i = 0; i < intervals.length; i += 1) {
-					const [inf, sup] = intervals[i];
-					if (lenderLoans && lenderLoans >= inf && lenderLoans <= sup) {
-						return kvTokensPrimitives.colors.brand[mapColors[i]];
-					}
-				}
-			}
-
-			return kvTokensPrimitives.colors.gray[300];
-		},
-		onEachCountryFeature(feature, layer) {
-			const loansString = feature.lenderLoans
-				? `${feature.lenderLoans} loan${feature.lenderLoans > 1 ? 's' : ''}`
-				: '0 loans';
-			const countryString = `${feature.properties.ADMIN} <br/> ${loansString}`;
-
-			layer.bindTooltip(countryString, {
-				sticky: true,
-			});
-
-			layer.on({
-				mouseover: this.highlightFeature,
-				mouseout: this.resetHighlight,
-			});
-		},
-		highlightFeature(e) {
-			const layer = e.target;
-
-			layer.setStyle({
-				fillColor: kvTokensPrimitives.colors.gray[500],
-			});
-		},
-		resetHighlight(e) {
-			const layer = e.target;
-			const { feature } = layer;
-
-			layer.setStyle({
-				fillColor: this.getCountryColor(feature.lenderLoans),
-			});
-		},
-		circleMapClicked(countryIso) {
-			this.$router.push({
-				path: '/lend/filter',
-				query: {
-					country: countryIso,
-				},
-			});
 		},
 	},
 	beforeDestroy() {
