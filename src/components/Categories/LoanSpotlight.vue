@@ -165,7 +165,7 @@ export default {
 		return {
 			spotlightPlaceholderImageCTF: '',
 			spotlightLoan: {},
-			allChannelsData: {},
+			allChannelsData: [],
 			isLoading: true,
 			targetedLoanChannelID: null
 		};
