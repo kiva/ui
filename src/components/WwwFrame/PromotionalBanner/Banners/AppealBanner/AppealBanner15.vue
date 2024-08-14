@@ -18,7 +18,7 @@
 					</div> -->
 					<video
 						class="swashie"
-						src="#src/assets/media/15-years/swashie-party.mp4"
+						:src="swashieParty"
 						autoplay
 						loop
 						muted
@@ -69,6 +69,7 @@ import FifteenYearsButton from '#src/components/15Years/15YearsButton';
 // import SwashieFace from '#src/components/15Years/SwashieFace';
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import swashieParty from '#src/assets/media/15-years/swashie-party.mp4';
 
 // const recentFundedLoans = gql`query recentFundedLoans($start: Date!) {
 // 	general {
@@ -99,7 +100,8 @@ export default {
 	data() {
 		return {
 			open: true,
-			fifteenYearGoalPercent: 0
+			fifteenYearGoalPercent: 0,
+			swashieParty,
 		};
 	},
 	computed: {
