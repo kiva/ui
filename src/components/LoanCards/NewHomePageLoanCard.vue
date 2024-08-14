@@ -94,24 +94,22 @@
 			<div v-if="!isLoading" class="tw-flex-auto tw-mb-2">
 				<figure>
 					<figcaption class="tw-flex">
-						<template>
-							<div class="tw-flex-auto tw-text-left">
-								<p
-									class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
-									data-testid="bp-summary-amount-to-go"
-								>
-									{{ Math.floor(fundraisingPercent) }}% FUNDED
-								</p>
-							</div>
+						<div class="tw-flex-auto tw-text-left">
 							<p
-								class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
-								data-testid="bp-summary-timeleft"
+								class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
+								data-testid="bp-summary-amount-to-go"
 							>
-								<span lass="tw-text-h3 tw-block tw-m-0">
-									{{ $filters.numeral(loanAmount, '$0,0[.]00') }}
-								</span>
+								{{ Math.floor(fundraisingPercent) }}% FUNDED
 							</p>
-						</template>
+						</div>
+						<p
+							class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
+							data-testid="bp-summary-timeleft"
+						>
+							<span lass="tw-text-h3 tw-block tw-m-0">
+								{{ $filters.numeral(loanAmount, '$0,0[.]00') }}
+							</span>
+						</p>
 					</figcaption>
 					<kv-progress-bar
 						v-if="!isLoading"

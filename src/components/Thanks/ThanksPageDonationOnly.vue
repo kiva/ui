@@ -40,74 +40,72 @@
 					<h3	class="tw-mt-1 tw-mb-3 tw-text-left">
 						Share this story and your impact
 					</h3>
-					<template>
-						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
-							<button
-								data-testid="share-facebook-button"
-								class="social__btn social__btn--facebook"
-								@click="showSharePopUp(
-									facebookShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to Facebook!')"
-								v-kv-track-event="
-									['post-checkout', 'share', 'facebook', utmCampaign]"
-							>
-								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-								<span>Share on Facebook</span>
-							</button>
-							<button
-								data-testid="share-copy-link-button"
-								class="social__btn social__btn--link
+					<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
+						<button
+							data-testid="share-facebook-button"
+							class="social__btn social__btn--facebook"
+							@click="showSharePopUp(
+								facebookShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to Facebook!')"
+							v-kv-track-event="
+								['post-checkout', 'share', 'facebook', utmCampaign]"
+						>
+							<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+							<span>Share on Facebook</span>
+						</button>
+						<button
+							data-testid="share-copy-link-button"
+							class="social__btn social__btn--link
 										tw-border-action tw-border"
-								:class="copyStatus.class"
-								:disabled="copyStatus.disabled"
-								v-kv-track-event="
-									['post-checkout', 'share', 'copy-link', utmCampaign]"
-								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
-							>
-								<kv-material-icon
-									name="clipboard"
-									class="social__icon"
-									:icon="mdiLink"
-								/>
-								<span>{{ copyStatus.text }}</span>
-							</button>
-							<button
-								data-testid="share-twitter-button"
-								class="social__btn social__btn--twitter"
-								v-kv-track-event="
-									['post-checkout', 'share', 'twitter', utmCampaign]"
-								@click="showSharePopUp(
-									twitterShareUrl({utmCampaign, utmContent}),
-									'Thanks for tweeting!')"
-							>
-								<kv-icon name="twitter" title="Twitter" class="social__icon" />
-								<span>Tweet your followers</span>
-							</button>
-							<button
-								data-testid="share-linkedin-button"
-								class="social__btn social__btn--linkedin"
-								v-kv-track-event="
-									['post-checkout', 'share', 'linkedin', utmCampaign]"
-								@click="showSharePopUp(
-									linkedInShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to LinkedIn!')"
-							>
-								<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-								<span>Share on LinkedIn</span>
-							</button>
-						</div>
-						<div class="tw-text-center tw-mt-2">
-							<router-link
-								class="tw-block tw-mx-auto tw-text-action
+							:class="copyStatus.class"
+							:disabled="copyStatus.disabled"
+							v-kv-track-event="
+								['post-checkout', 'share', 'copy-link', utmCampaign]"
+							@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
+						>
+							<kv-material-icon
+								name="clipboard"
+								class="social__icon"
+								:icon="mdiLink"
+							/>
+							<span>{{ copyStatus.text }}</span>
+						</button>
+						<button
+							data-testid="share-twitter-button"
+							class="social__btn social__btn--twitter"
+							v-kv-track-event="
+								['post-checkout', 'share', 'twitter', utmCampaign]"
+							@click="showSharePopUp(
+								twitterShareUrl({utmCampaign, utmContent}),
+								'Thanks for tweeting!')"
+						>
+							<kv-icon name="twitter" title="Twitter" class="social__icon" />
+							<span>Tweet your followers</span>
+						</button>
+						<button
+							data-testid="share-linkedin-button"
+							class="social__btn social__btn--linkedin"
+							v-kv-track-event="
+								['post-checkout', 'share', 'linkedin', utmCampaign]"
+							@click="showSharePopUp(
+								linkedInShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to LinkedIn!')"
+						>
+							<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+							<span>Share on LinkedIn</span>
+						</button>
+					</div>
+					<div class="tw-text-center tw-mt-2">
+						<router-link
+							class="tw-block tw-mx-auto tw-text-action
 									tw-underline hover:tw-text-action-highlight"
-								v-if="!isGuest"
-								to="/portfolio"
-								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
-							>
-								No, continue to my portfolio
-							</router-link>
-						</div>
-					</template>
+							v-if="!isGuest"
+							to="/portfolio"
+							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
+						>
+							No, continue to my portfolio
+						</router-link>
+					</div>
 				</div>
 			</kv-grid>
 		</kv-page-container>

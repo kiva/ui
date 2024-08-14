@@ -186,9 +186,7 @@
 					v-if="isCorporateCampaign"
 					class="tw-w-auto tw-text-right tw-flex-1"
 				>
-					<template>
-						You'll pay:
-					</template>
+					You'll pay:
 				</div>
 				<div
 					class="tw-pl-2"
