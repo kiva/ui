@@ -333,32 +333,32 @@ export const KivanSlider = () => ({
 				return [
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-1a-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-1a-retina.jpg')]
+							['small', slidesImageRequire('kivan-1a-std.jpg')],
+							['small retina', slidesImageRequire('kivan-1a-retina.jpg')]
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-1b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-1b-retina.jpg')],
+							['small', slidesImageRequire('kivan-1b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-1b-retina.jpg')],
 						]
 					},
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-2a-std.jpg')],
+							['small', slidesImageRequire('kivan-2a-std.jpg')],
 							['small retina', slidesImageRequire('./kivan-2a-retina.jpg')],
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-2b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-2b-retina.jpg')],
+							['small', slidesImageRequire('kivan-2b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-2b-retina.jpg')],
 						]
 					},
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-3a-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-3a-retina.jpg')],
+							['small', slidesImageRequire('kivan-3a-std.jpg')],
+							['small retina', slidesImageRequire('kivan-3a-retina.jpg')],
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-3b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
+							['small', slidesImageRequire('kivan-3b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-3b-retina.jpg')]
 						]
 					}
 				]
@@ -413,16 +413,16 @@ export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 		},
 		heroImages(number) {
 			return [
-				['small', imageRequire(`./hero-${number}-sm-std.jpg`)],
-				['small retina', imageRequire(`./hero-${number}-sm-retina.jpg`)],
-				['medium', imageRequire(`./hero-${number}-med-std.jpg`)],
-				['medium retina', imageRequire(`./hero-${number}-med-retina.jpg`)],
-				['large', imageRequire(`./hero-${number}-lg-std.jpg`)],
-				['large retina', imageRequire(`./hero-${number}-lg-retina.jpg`)],
-				['xga', imageRequire(`./hero-${number}-xga-std.jpg`)],
-				['xga retina', imageRequire(`./hero-${number}-xga-retina.jpg`)],
-				['wxga', imageRequire(`./hero-${number}-wxga-std.jpg`)],
-				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
+				['small', imageRequire(`hero-${number}-sm-std.jpg`)],
+				['small retina', imageRequire(`hero-${number}-sm-retina.jpg`)],
+				['medium', imageRequire(`hero-${number}-med-std.jpg`)],
+				['medium retina', imageRequire(`hero-${number}-med-retina.jpg`)],
+				['large', imageRequire(`hero-${number}-lg-std.jpg`)],
+				['large retina', imageRequire(`hero-${number}-lg-retina.jpg`)],
+				['xga', imageRequire(`hero-${number}-xga-std.jpg`)],
+				['xga retina', imageRequire(`hero-${number}-xga-retina.jpg`)],
+				['wxga', imageRequire(`hero-${number}-wxga-std.jpg`)],
+				['wxga retina', imageRequire(`hero-${number}-wxga-retina.jpg`)],
 			];
 		},
 	},

@@ -67,6 +67,7 @@ export const Circular = (args, { argTypes }) => ({
 	components: {
 		KvFlag
 	},
+	setup() { return args; },
 	template: `
 		<div style="width: 32px;">
 			<component is="style">
