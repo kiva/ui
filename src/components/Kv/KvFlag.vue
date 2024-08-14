@@ -25,7 +25,7 @@ import { metaGlobReader } from '#src/util/importHelpers';
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
 
-const flagGlob = import.meta.glob('/node_modules/flag-icon-css/flags/**/*');
+const flagGlob = import.meta.glob('/node_modules/flag-icon-css/flags/**/*', { eager: true });
 const flags = metaGlobReader(flagGlob, '/node_modules/flag-icon-css/flags/');
 
 export default {
@@ -63,10 +63,10 @@ export default {
 		flagSVG() {
 			// Pulling these out here so that Vue registers them as reactive.
 			// Because the import() call happens in an arrow function, the usage of 'this' is not
-			// registerd by Vue, and so any changes to the country are not picked up, which leads to
+			// registered by Vue, and so any changes to the country are not picked up, which leads to
 			// the flag not being rendered when the country isn't provided until after the first render.
 			const { aspectRatio, country } = this;
-			return flags[`${aspectRatio}/${country.toLowerCase()}.svg`];
+			return flags(`${aspectRatio}/${country.toLowerCase()}.svg`);
 		},
 		spriteYPosition() {
 			if (!this.inlineSvg) {
