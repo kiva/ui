@@ -1,3 +1,4 @@
+<!-- eslint-disable graphql/template-strings -->
 <template>
 	<div
 		class="tw-flex tw-flex-col card-container selected-card tw-rounded-sm"

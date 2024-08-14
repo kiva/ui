@@ -438,7 +438,7 @@ export default {
 }
 
 .reveal-button >>> span {
-	opacity: 90%;
+	opacity: 0.9;
 	@apply tw-border-black;
 }
 
