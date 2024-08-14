@@ -711,8 +711,6 @@ export default {
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
 	},
 	async mounted() {
-		this.$root.$on('jumpToLoans', this.jumpToLoans);
-
 		// check for applied promo
 		await this.verifyOrApplyPromotion();
 
@@ -739,7 +737,6 @@ export default {
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
 	beforeDestroy() {
-		this.$root.$off('jumpToLoans', this.jumpToLoans);
 		clearInterval(this.currentTimeInterval);
 	},
 	watch: {

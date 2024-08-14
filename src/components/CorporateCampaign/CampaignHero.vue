@@ -4,8 +4,8 @@
 			<div class="small-12 medium-10 large-6 xlarge-5 columns">
 				<img
 					class="tw-block tw-mx-auto tw-mb-4 md:tw-mt-0"
-					src="#src/assets/images/loan-card-stack.jpg"
-					srcset="#src/assets/images/loan-card-stack_2x.jpg 2x"
+					:src="loanCardStack"
+					:srcset="`${loanCardStack} 2x`"
 					alt=""
 					width="383"
 					height="455"
@@ -63,6 +63,7 @@
 import { addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
 import KvUiButton from '@kiva/kv-components/vue/KvButton';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import loanCardStack from '#src/assets/images/loan-card-stack.jpg';
 
 export default {
 	name: 'CampaignHero',
@@ -80,7 +81,9 @@ export default {
 		},
 	},
 	data() {
-		return {};
+		return {
+			loanCardStack,
+		};
 	},
 	computed: {
 		headline() {
