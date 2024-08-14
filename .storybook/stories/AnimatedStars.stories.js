@@ -12,8 +12,3 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const Default = Template.bind({});
-Default.args = {
-  // Define your default args here. For example:
-  // color: 'blue',
-  // size: 'large',
-};
