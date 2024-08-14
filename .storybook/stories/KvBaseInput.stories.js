@@ -22,6 +22,7 @@ export const Default = () => ({
 	data() {
 		return {
 			...commonData,
+			value: '',
 		};
 	},
 	template: `
@@ -31,6 +32,7 @@ export const Default = () => ({
 				type="text"
 				name="baseInput"
 				:validation="{}"
+				v-model="value"
 			>
 				Base input
 			</kv-base-input>
@@ -38,6 +40,7 @@ export const Default = () => ({
 				type="text"
 				name="baseInputError"
 				:validation="vuelidateObject"
+				v-model="value"
 			>
 				Base input with error
 

@@ -82,7 +82,8 @@ export const KitchenSink = () => ({
 			kvToggle1: true,
 			kvToggle2: false,
 			kvToggle3: true,
-			KvVerificationCodeInput: 123456
+			KvVerificationCodeInput: 123456,
+			kvBaseInputValue: '',
 		}
 	},
 	template: `
@@ -285,6 +286,7 @@ export const KitchenSink = () => ({
 						type="text"
 						name="baseInput"
 						:validation="{}"
+						v-model="kvBaseInputValue"
 					>
 						Base input
 					</kv-base-input>
@@ -292,6 +294,7 @@ export const KitchenSink = () => ({
 						type="text"
 						name="baseInputError"
 						:validation="kvBaseInputError"
+						v-model="kvBaseInputValue"
 					>
 						Base input with error
 

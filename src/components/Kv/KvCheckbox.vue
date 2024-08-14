@@ -8,7 +8,6 @@
 			type="checkbox"
 			:id="id"
 			:disabled="disabled"
-			:checked="checked"
 			v-model="inputValue"
 			v-bind="$attrs"
 			@change="onChange($event)"
@@ -52,12 +51,12 @@ export default {
 		},
 		modelValue: {
 			type: Boolean,
-			required: true,
+			default: null,
 		},
 	},
 	data() {
 		return {
-			inputValue: null,
+			inputValue: this.checked,
 		};
 	},
 	methods: {
@@ -73,7 +72,9 @@ export default {
 	watch: {
 		modelValue: {
 			handler(newValue) {
-				this.inputValue = newValue;
+				if (newValue !== null) {
+					this.inputValue = newValue;
+				}
 			},
 			immediate: true,
 		},
