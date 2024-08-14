@@ -1,4 +1,3 @@
-<!-- eslint-disable graphql/no-deprecated-fields -->
 <template>
 	<article>
 		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
