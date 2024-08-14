@@ -11,9 +11,11 @@ import {
 } from '#src/util/siteThemes';
 import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
 
+const imageGlob = import.meta.glob('/src/assets/images/logos/*.*', { eager: true });
+
 const args = {
 	footerTheme: null,
-	corporateLogoUrl: require('#src/assets/images/logos/visa.svg')
+	corporateLogoUrl: Object.keys(imageGlob)[0],
 };
 
 export default {

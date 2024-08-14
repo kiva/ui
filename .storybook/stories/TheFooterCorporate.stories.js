@@ -7,9 +7,11 @@ import {
 } from '#src/util/siteThemes';
 import TheFooterCorporate from '#src/components/WwwFrame/TheFooterCorporate';
 
+const imageGlob = import.meta.glob('/src/assets/images/logos/*.*', { eager: true });
+
 const args = {
 	theme: null,
-	corporateLogoUrl: require('#src/assets/images/logos/visa.svg'),
+	corporateLogoUrl: Object.keys(imageGlob)[0],
 };
 
 export default {
@@ -42,7 +44,6 @@ export const Default = (args, { argTypes }) => ({
 	template: `
 		<the-footer-corporate
 			:theme="theme"
-			:corporate="corporate"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
 	`,

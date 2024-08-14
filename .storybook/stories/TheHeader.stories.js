@@ -171,11 +171,13 @@ const provideMockedApollo = (mockedResult) => {
 	};
 };
 
+const imageGlob = import.meta.glob('/src/assets/images/logos/*.*', { eager: true });
+
 const args = {
 	hideSearchInHeader: false,
 	minimal: false,
 	corporate: false,
-	corporateLogoUrl: require("#src/assets/images/logos/visa.svg"),
+	corporateLogoUrl: Object.keys(imageGlob)[0],
 };
 
 export default {
