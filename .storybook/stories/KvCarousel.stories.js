@@ -3,6 +3,7 @@ import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
 import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import { metaGlobReader } from '#src/util/importHelpers';
 
 import causeList from '../mock-data/cause-selector-data-mock';
 
@@ -26,7 +27,7 @@ const defaultCarouselSlides = `
 export default {
 	title: 'Kv/KvCarousel',
 	component: KvCarousel,
- };
+};
 
 export const Default = () => ({
 	components: {
@@ -316,7 +317,9 @@ export const loanCardExample = () => ({
 	}
 });
 
-const slidesImageRequire = require.context('#src/assets/images/possibilities-banners/kivan-slider', true);
+const slidesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/kivan-slider/*.*', { eager: true });
+const slidesImageRequire = metaGlobReader(slidesImageGlob, '/src/assets/images/possibilities-banners/kivan-slider/');
+
 export const KivanSlider = () => ({
 	components: {
 		KvCarousel,
@@ -386,7 +389,9 @@ export const KivanSlider = () => ({
 	`,
 });
 
-const imageRequire = require.context('#src/assets/images/hero-slideshow/', true);
+const imageGlob = import.meta.glob('/src/assets/images/hero-slideshow/*.*', { eager: true });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/hero-slideshow/');
+
 export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 	components: {
 		KvCarousel,

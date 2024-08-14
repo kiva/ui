@@ -1,9 +1,4 @@
-import Vue from 'vue'
 import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins);
 
 const args = {
 	title: 'Can I cancel anytime?',
