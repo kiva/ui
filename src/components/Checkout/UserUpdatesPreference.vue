@@ -4,41 +4,43 @@
 			@input="event => $emit('update:modelValue', event.target.value)"
 			class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small"
 		>
-			<kv-radio
-				value="on"
-				v-model="selectedComms"
-				name="newsConsent"
-				v-kv-track-event="[
-					trackingCategory,
-					'click',
-					'marketing-updates',
-					// eslint-disable-next-line max-len
-					'Send me updates from people I\'ve funded, my impact, and other ways I can help.',
-				]"
-				:class="{'radio-error': v$.selectedComms.$invalid}"
-			>
-				<!-- eslint-disable-next-line max-len -->
-				Send me updates from people I've funded, my impact, and other ways I can help.
-			</kv-radio>
-			<kv-radio
-				value="off"
-				name="newsConsent"
-				v-model="selectedComms"
-				:class="{'radio-error': v$.selectedComms.$invalid}"
-				v-kv-track-event="[
-					trackingCategory,
-					'click',
-					'marketing-updates',
-					// eslint-disable-next-line max-len
-					'No, I don\'t want updates about my borrower(s) progress or other relevant loans.',
-				]"
-			>
-				<!-- eslint-disable-next-line max-len -->
-				No, I don't want updates about my borrower(s) progress or other relevant loans.
-			</kv-radio>
+			<div :class="{'radio-error': v$.selectedComms?.$invalid}">
+				<kv-radio
+					value="on"
+					v-model="selectedComms"
+					name="newsConsent"
+					v-kv-track-event="[
+						trackingCategory,
+						'click',
+						'marketing-updates',
+						// eslint-disable-next-line max-len
+						'Send me updates from people I\'ve funded, my impact, and other ways I can help.',
+					]"
+				>
+					<!-- eslint-disable-next-line max-len -->
+					Send me updates from people I've funded, my impact, and other ways I can help.
+				</kv-radio>
+			</div>
+			<div :class="{'radio-error': v$.selectedComms?.$invalid}">
+				<kv-radio
+					value="off"
+					name="newsConsent"
+					v-model="selectedComms"
+					v-kv-track-event="[
+						trackingCategory,
+						'click',
+						'marketing-updates',
+						// eslint-disable-next-line max-len
+						'No, I don\'t want updates about my borrower(s) progress or other relevant loans.',
+					]"
+				>
+					<!-- eslint-disable-next-line max-len -->
+					No, I don't want updates about my borrower(s) progress or other relevant loans.
+				</kv-radio>
+			</div>
 		</fieldset>
 		<p
-			v-if="v$.selectedComms.$invalid"
+			v-if="v$.selectedComms?.$invalid"
 			class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
 		>
 			Choose your communication preferences.

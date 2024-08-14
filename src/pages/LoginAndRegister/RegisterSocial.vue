@@ -6,7 +6,7 @@
 					<div
 						v-if="fetchedLogoUrl"
 						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
-							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
+							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2
 							tw-border-white tw-border-4 logo"
 					>
 						<img
@@ -16,8 +16,8 @@
 						>
 					</div>
 					<div
-						class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white
-					tw-border-4 tw-overflow-hidden logo"
+						class="tw-w-14 tw-h-14 tw-rounded-full tw-border-white
+							tw-border-4 tw-overflow-hidden logo"
 					>
 						<img
 							src="../../assets/images/kiva_k_cutout_new.jpg"
@@ -39,32 +39,34 @@
 				:action="`https://${$appConfig.auth0.domain}/continue?state=${$route.query.state}`"
 				@submit="postRegisterSocialForm"
 			>
-				<kv-base-input
-					name="firstName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-show="needsNames"
-					v-model.trim="firstName"
-					:validation="v$.firstName"
-				>
-					First name
-					<template #required>
-						Enter first name.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="lastName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-show="needsNames"
-					v-model.trim="lastName"
-					:validation="v$.lastName"
-				>
-					Last name
-					<template #required>
-						Enter last name.
-					</template>
-				</kv-base-input>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="firstName"
+						type="text"
+						v-show="true"
+						v-model.trim="firstName"
+						:validation="v$.firstName"
+					>
+						First name
+						<template #required>
+							Enter first name.
+						</template>
+					</kv-base-input>
+				</div>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="lastName"
+						type="text"
+						v-show="needsNames"
+						v-model.trim="lastName"
+						:validation="v$.lastName"
+					>
+						Last name
+						<template #required>
+							Enter last name.
+						</template>
+					</kv-base-input>
+				</div>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="authentication"
@@ -156,6 +158,7 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, requiredIf } from '@vuelidate/validators';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -187,7 +190,7 @@ export default {
 	},
 	provide() {
 		return {
-			v$: this.v$
+			v$: computed(() => this.v$),
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -385,5 +388,4 @@ export default {
 .radio-error :deep(label > div) {
 	@apply tw-border-danger-highlight;
 }
-
 </style>
