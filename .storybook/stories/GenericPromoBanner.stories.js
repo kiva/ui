@@ -6,17 +6,19 @@ const decodeHTML = function (html) {
 	return txt.value;
 }
 
+const args = {
+	iconKey: 'present',
+	promoBannerContent: {
+		kvTrackEvent: [],
+		link: 'http://kiva.org',
+		richText: decodeHTML('Amazing! Thanks to you, we funded <u>ALL U.S. loans</u> today! Click here to support others who need your help.'),
+	}
+};
+
 export default {
 	title: 'WwwFrame/Banners/GenericPromoBanner',
 	component: GenericPromoBanner,
-	args: {
-		iconKey: 'present',
-		promoBannerContent: {
-			kvTrackEvent: [],
-			link: 'http://kiva.org',
-			richText: decodeHTML('Amazing! Thanks to you, we funded <u>ALL U.S. loans</u> today! Click here to support others who need your help.'),
-		}
-	},
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
@@ -24,6 +26,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		GenericPromoBanner,
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<generic-promo-banner
@@ -36,7 +39,7 @@ export const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const AllIcons = (args, { argTypes }) => ({
+export const AllIcons = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		GenericPromoBanner,
@@ -54,6 +57,7 @@ export const AllIcons = (args, { argTypes }) => ({
 			]
 		}
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<generic-promo-banner

@@ -16,13 +16,13 @@ export default {
 	args,
 };
 
-const story = (args = {}) => {
+const story = (storyArgs = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: {
 			AppealBannerCircular,
 		},
-		setup() { return args; },
+		setup() { return { ...args, ...storyArgs }; },
 		template: `
 			<div>
 				<appeal-banner-circular
