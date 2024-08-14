@@ -8,9 +8,9 @@ import {
 	femaleLoanDataWithInviter,
 	iwdExperiment,
 } from '../mock-data/thanks-page-data-mock';
-import VueRouter from 'vue-router';
+import * as VueRouter from 'vue-router';
 
-const routes = new VueRouter();
+const routes = VueRouter.createRouter({ routes: [], history: VueRouter.createWebHistory() });
 
 export default {
 	title: 'Page/ThanksPage',
