@@ -11,8 +11,8 @@
 				<h1
 					class="tw-mb-1 tw-transition-all tw-duration-1000 tw-ease-in-out"
 					:class="{
-						'tw-relative tw-z-2 tw-text-black': newBgMounted,
-						'tw-text-white': !newBgMounted
+						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+						'tw-text-white': !badgeBlurRevealCompleted
 					}"
 				>
 					{{ headerTitle }}
@@ -20,26 +20,26 @@
 				<p
 					class="tw-text-subhead tw-px-3 md:tw-px-8 tw-transition-all tw-duration-1000 tw-ease-in-out"
 					:class="{
-						'tw-relative tw-z-2 tw-text-black': newBgMounted,
-						'tw-text-white': !newBgMounted
+						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+						'tw-text-white': !badgeBlurRevealCompleted
 					}"
 				>
 					{{ headerCopy }}
 				</p>
-				<div class="tw-mt-3" :class="{'tw-relative': !badgeRevealed}">
-					<div class="badge-container" :class="{'tw-flex-col': badgeRevealed}">
-						<div class="new-background" :class="{ 'grow': badgeRevealed }"></div>
+				<div class="tw-mt-3" :class="{'tw-relative': !badgeBlurRevealing}">
+					<div class="badge-container" :class="{'tw-flex-col': badgeBlurRevealing}">
+						<div class="new-background" :class="{ 'grow': badgeBlurRevealing }"></div>
 
-						<div class="tw-relative" :class="{'tw-z-1': badgeRevealed}">
+						<div class="tw-relative" :class="{'tw-z-1': badgeBlurRevealing}">
 							<div
-								v-if="newBgMounted"
+								v-if="badgeBlurRevealCompleted"
 								class="tw-absolute tw-h-full tw-z-docked tw-left-1/2 -tw-translate-x-1/2"
 							>
 								<animated-stars :style="{ minWidth: '14rem'}" class="tw-h-full" />
 							</div>
 
 							<img
-								:class="{ 'blurred': isBlurred, 'wiggle': wiggle, 'tw-z-2': badgeRevealed }"
+								:class="{ 'blurred': isBlurred, 'wiggle': wiggle, 'tw-z-2': badgeBlurRevealing }"
 								:src="imageRequire(`./equity-badge.svg`)"
 								class="badge"
 								alt="Gift icon"
@@ -50,7 +50,7 @@
 							@click="toggleBlur"
 							variant="secondary"
 							class="reveal-button"
-							:class="{'tw-hidden': badgeRevealed}"
+							:class="{'tw-hidden': badgeBlurRevealing}"
 							v-kv-track-event="[
 								'thanks',
 								'click',
@@ -68,7 +68,7 @@
 						</kv-button>
 					</div>
 				</div>
-				<div v-if="newBgMounted" class="tw-absolute tw-z-2 tw-px-3">
+				<div v-if="badgeBlurRevealCompleted" class="tw-absolute tw-z-2 tw-px-3">
 					<p class="tw-pb-4">
 						<!-- eslint-disable-next-line max-len -->
 						You are a hero! Thanks to your loan, we are one step closer to a more financially inclusive world.
@@ -346,8 +346,8 @@ export default {
 			isBlurred: true,
 			isMobileLayout: false,
 			wiggle: false,
-			badgeRevealed: false,
-			newBgMounted: false,
+			badgeBlurRevealing: false,
+			badgeBlurRevealCompleted: false,
 		};
 	},
 	computed: {
@@ -393,10 +393,10 @@ export default {
 			return 10;
 		},
 		headerTitle() {
-			return this.newBgMounted ? 'Congrats!' : 'Success!';
+			return this.badgeBlurRevealCompleted ? 'Congrats!' : 'Success!';
 		},
 		headerCopy() {
-			return this.newBgMounted
+			return this.badgeBlurRevealCompleted
 				? 'You earned your first badge'
 				: 'Celebrate your first loan with a special gift. 🙌';
 		},
@@ -454,13 +454,13 @@ export default {
 		toggleBlur() {
 			this.isBlurred = !this.isBlurred;
 			if (!this.isBlurred) {
-				this.badgeRevealed = true;
+				this.badgeBlurRevealing = true;
 			} else {
-				this.badgeRevealed = false;
+				this.badgeBlurRevealing = false;
 			}
 
 			setTimeout(() => {
-				this.newBgMounted = true;
+				this.badgeBlurRevealCompleted = true;
 			}, 1000);
 		}
 	},
