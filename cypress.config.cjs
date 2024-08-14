@@ -14,7 +14,7 @@ module.exports = defineConfig({
 		// We've imported your old cypress plugins here.
 		// You may want to clean this up later by importing these.
 		setupNodeEvents(on, config) {
-			return require('./test/e2e/plugins')(on, config);
+			return require('./test/e2e/plugins/index.cjs')(on, config);
 		},
 		specPattern: 'test/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
 		supportFile: 'test/e2e/support/index.js',
