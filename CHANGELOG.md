@@ -1,3 +1,96 @@
+## [2.749.1](https://github.com/kiva/ui/compare/v2.749.0...v2.749.1) (2024-08-13)
+
+
+### 🐛 Bugfixes
+
+* revert recent activity score while backend is fixed MP-674 ([b8ed5e6](https://github.com/kiva/ui/commit/b8ed5e6557064e0528f14b0400f06aa5dc2e95dd))
+
+
+### 🧹 Chores
+
+* **release:** 2.749.1-rc.1 [skip ci] ([69091d0](https://github.com/kiva/ui/commit/69091d07343141b7f0a6ba37ca30a5dab59f9e92))
+
+## [2.749.1-rc.1](https://github.com/kiva/ui/compare/v2.749.0...v2.749.1-rc.1) (2024-08-13)
+
+
+### 🐛 Bugfixes
+
+* revert recent activity score while backend is fixed MP-674 ([b8ed5e6](https://github.com/kiva/ui/commit/b8ed5e6557064e0528f14b0400f06aa5dc2e95dd))
+
+## [2.749.0](https://github.com/kiva/ui/compare/v2.748.0...v2.749.0) (2024-08-12)
+
+
+### 🎉 New Features
+
+* badge wiggle animation ([81642a3](https://github.com/kiva/ui/commit/81642a35eff9519452f3353924fa758f2efb6c0c))
+* badges section for lender page ([0fa4979](https://github.com/kiva/ui/commit/0fa49796409273d201cebcc7748c3966092b561e))
+* create badge customization page ([8ded7e0](https://github.com/kiva/ui/commit/8ded7e0de0624454135fde2028afc38c354790fd))
+* lender dedications list added to lender profile ([#5422](https://github.com/kiva/ui/issues/5422)) ([92da400](https://github.com/kiva/ui/commit/92da400463e6111ad7bb1ac0a349c8b100a3ba61))
+* lender invitees added to lender profile ([#5423](https://github.com/kiva/ui/issues/5423)) ([0d5bf7b](https://github.com/kiva/ui/commit/0d5bf7ba307a528a7c94956dc3a24869867d104e))
+* lender profile tweaks ([#5425](https://github.com/kiva/ui/issues/5425)) ([ea2e103](https://github.com/kiva/ui/commit/ea2e1033ed78863cfeec6b88aec20581f6abf808))
+* message lightbox added to lender profile ([#5427](https://github.com/kiva/ui/issues/5427)) ([cf3c05b](https://github.com/kiva/ui/commit/cf3c05b03e55b080ef8910c41580f61a4d97ab80))
+* teams page sort option updated ([#5439](https://github.com/kiva/ui/issues/5439)) ([38823c0](https://github.com/kiva/ui/commit/38823c00617d9d2ea21e175c28d177aa081e166a))
+* teams page sort updated ([#5421](https://github.com/kiva/ui/issues/5421)) ([e63921b](https://github.com/kiva/ui/commit/e63921bd2f4c8a353411c588b3c76e998052fe13))
+
+
+### 🐛 Bugfixes
+
+* conflicts and comments ([3cb598a](https://github.com/kiva/ui/commit/3cb598a86226bf70cf47fde2bc20c7ff143a3cb4))
+* fallback to UNKNOWN_ERROR_CODE and stringified response for unparsabled errors ([7fc0686](https://github.com/kiva/ui/commit/7fc0686c661b78afd53e4014fea5d127e63a556b))
+* lint ([a22085d](https://github.com/kiva/ui/commit/a22085dfb4bec4fcd98b4499422fa4bc580743d5))
+* lint and tracking ticket number ([f850590](https://github.com/kiva/ui/commit/f850590243a926a0d9bb8cb573214c4185a829ce))
+* missing default badge ([b21c71b](https://github.com/kiva/ui/commit/b21c71b09872c3997e2314041ed1be8d2db87c75))
+* redirect to /checkout/thanks if optedIn is set ([d0380c8](https://github.com/kiva/ui/commit/d0380c833f76128814984880d6bcbfd989474bbc))
+* remove exp comment ([ebebeab](https://github.com/kiva/ui/commit/ebebeab613e05aabf186a5e63bce6867997f81c1))
+* show default badge ([9d83c2c](https://github.com/kiva/ui/commit/9d83c2c889d4c2ddd806844c057ce7f815d358c6))
+* title and order of the component ([da2bcb9](https://github.com/kiva/ui/commit/da2bcb96b4bb14febded0a7f17af0c7831237c6c))
+
+
+### 🧹 Chores
+
+* **release:** 2.749.0-rc.1 [skip ci] ([ce15cdf](https://github.com/kiva/ui/commit/ce15cdf1b998ce9a9d460a3c6bff471b0ae69b88)), closes [#5422](https://github.com/kiva/ui/issues/5422) [#5423](https://github.com/kiva/ui/issues/5423) [#5425](https://github.com/kiva/ui/issues/5425) [#5427](https://github.com/kiva/ui/issues/5427) [#5421](https://github.com/kiva/ui/issues/5421)
+* **release:** 2.749.0-rc.2 [skip ci] ([845136d](https://github.com/kiva/ui/commit/845136ddbb3fc93bb60613f354f15bb6d9e3d774)), closes [#5439](https://github.com/kiva/ui/issues/5439)
+* revert prior test class additions, update kv-components with new global loan-card class ([82f5d2c](https://github.com/kiva/ui/commit/82f5d2c82f393a6fb717ac46e864ef30232ae0db))
+
+## [2.749.0-rc.2](https://github.com/kiva/ui/compare/v2.749.0-rc.1...v2.749.0-rc.2) (2024-08-12)
+
+
+### 🎉 New Features
+
+* teams page sort option updated ([#5439](https://github.com/kiva/ui/issues/5439)) ([38823c0](https://github.com/kiva/ui/commit/38823c00617d9d2ea21e175c28d177aa081e166a))
+
+## [2.749.0-rc.1](https://github.com/kiva/ui/compare/v2.748.0...v2.749.0-rc.1) (2024-08-08)
+
+
+### 🎉 New Features
+
+* badge wiggle animation ([81642a3](https://github.com/kiva/ui/commit/81642a35eff9519452f3353924fa758f2efb6c0c))
+* badges section for lender page ([0fa4979](https://github.com/kiva/ui/commit/0fa49796409273d201cebcc7748c3966092b561e))
+* create badge customization page ([8ded7e0](https://github.com/kiva/ui/commit/8ded7e0de0624454135fde2028afc38c354790fd))
+* lender dedications list added to lender profile ([#5422](https://github.com/kiva/ui/issues/5422)) ([92da400](https://github.com/kiva/ui/commit/92da400463e6111ad7bb1ac0a349c8b100a3ba61))
+* lender invitees added to lender profile ([#5423](https://github.com/kiva/ui/issues/5423)) ([0d5bf7b](https://github.com/kiva/ui/commit/0d5bf7ba307a528a7c94956dc3a24869867d104e))
+* lender profile tweaks ([#5425](https://github.com/kiva/ui/issues/5425)) ([ea2e103](https://github.com/kiva/ui/commit/ea2e1033ed78863cfeec6b88aec20581f6abf808))
+* message lightbox added to lender profile ([#5427](https://github.com/kiva/ui/issues/5427)) ([cf3c05b](https://github.com/kiva/ui/commit/cf3c05b03e55b080ef8910c41580f61a4d97ab80))
+* teams page sort updated ([#5421](https://github.com/kiva/ui/issues/5421)) ([e63921b](https://github.com/kiva/ui/commit/e63921bd2f4c8a353411c588b3c76e998052fe13))
+
+
+### 🐛 Bugfixes
+
+* conflicts and comments ([3cb598a](https://github.com/kiva/ui/commit/3cb598a86226bf70cf47fde2bc20c7ff143a3cb4))
+* fallback to UNKNOWN_ERROR_CODE and stringified response for unparsabled errors ([7fc0686](https://github.com/kiva/ui/commit/7fc0686c661b78afd53e4014fea5d127e63a556b))
+* lint ([a22085d](https://github.com/kiva/ui/commit/a22085dfb4bec4fcd98b4499422fa4bc580743d5))
+* lint and tracking ticket number ([f850590](https://github.com/kiva/ui/commit/f850590243a926a0d9bb8cb573214c4185a829ce))
+* missing default badge ([b21c71b](https://github.com/kiva/ui/commit/b21c71b09872c3997e2314041ed1be8d2db87c75))
+* redirect to /checkout/thanks if optedIn is set ([d0380c8](https://github.com/kiva/ui/commit/d0380c833f76128814984880d6bcbfd989474bbc))
+* remove exp comment ([ebebeab](https://github.com/kiva/ui/commit/ebebeab613e05aabf186a5e63bce6867997f81c1))
+* show default badge ([9d83c2c](https://github.com/kiva/ui/commit/9d83c2c889d4c2ddd806844c057ce7f815d358c6))
+* title and order of the component ([da2bcb9](https://github.com/kiva/ui/commit/da2bcb96b4bb14febded0a7f17af0c7831237c6c))
+
+
+### 🧹 Chores
+
+* revert prior test class additions, update kv-components with new global loan-card class ([82f5d2c](https://github.com/kiva/ui/commit/82f5d2c82f393a6fb717ac46e864ef30232ae0db))
+
 ## [2.748.0](https://github.com/kiva/ui/compare/v2.747.1...v2.748.0) (2024-07-29)
 
 

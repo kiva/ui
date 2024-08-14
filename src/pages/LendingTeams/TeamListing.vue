@@ -58,9 +58,9 @@
 						id="categorySort" v-model="teamSort"
 						@update:modelValue="pushChangesToUrl"
 					>
-						<option value="recentActivityScore">
-							Recent Activity Score
-						</option>
+						<!-- <option value="recentActivityScore">
+							Recent Activity
+						</option> -->
 						<option value="newest">
 							Newest
 						</option>
@@ -330,7 +330,7 @@ export default {
 			teamCategories,
 			teamCategory: '',
 			teamOption: '',
-			teamSort: 'recentActivityScore',
+			teamSort: 'overallLoanedAmount', // 'recentActivityScore',
 			teams: [],
 			totalCount: 0,
 			queryString: '',
@@ -428,7 +428,7 @@ export default {
 			this.offset = getPageOffset(query, this.limit);
 			this.teamCategory = query.category ?? '';
 			this.teamOption = query.teamOption ?? '';
-			this.teamSort = query.teamSort ?? 'recentActivityScore';
+			this.teamSort = query.teamSort ?? 'overallLoanedAmount'; // 'recentActivityScore';
 			this.queryString = query.queryString ?? '';
 		},
 		async getTeams({

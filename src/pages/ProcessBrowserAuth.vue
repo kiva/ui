@@ -5,43 +5,39 @@
 <script>
 import store2 from 'store2';
 
-function checkHashSuccess(hash) {
-	if (hash.indexOf('error') > -1) {
-		return false;
-	}
-	if (hash.indexOf('access_token') === -1
-		&& hash.indexOf('id_token') === -1
-		&& hash.indexOf('refresh_token') === -1) {
-		return false;
-	}
-	return true;
-}
-
 export default {
 	name: 'ProcessBrowserAuth',
 	inject: ['kvAuth0'],
 	mounted() {
-		const hashKey = 'auth0.browser_hash';
+		const { hash } = window.location;
+		const state = new URLSearchParams(hash?.substring(1) ?? '').get('state');
 
-		if (window.location.hash) {
-			const { hash } = window.location;
+		if (state) {
+			const auth0State = store2.session('auth0.state');
+			if (auth0State === state) {
+				const redirect = store2.session('auth0.redirect');
 
-			if (checkHashSuccess(hash)) {
-				// store hash for after post-auth redirect
-				store2.session(hashKey, hash);
-				// post-auth redirect
-				window.location = '/authenticate/ui?doneUrl=/process-browser-auth';
+				store2.session.remove('auth0.state');
+				store2.session.remove('auth0.redirect');
+
+				this.$router.push(`${redirect}${hash}`);
 			} else {
-				// some problem occured, so close the window and let normal error handling take over
-				this.kvAuth0.popupCallback({ hash });
+				this.goToErrorPage('state_mismatch');
 			}
 		} else {
-			// fetch & erase stored hash
-			const hash = store2.session(hashKey);
-			store2.session.remove(hashKey);
-			// final callback
-			this.kvAuth0.popupCallback({ hash });
+			this.goToErrorPage('missing_state');
 		}
+	},
+	methods: {
+		goToErrorPage(error) {
+			this.$router.push({
+				path: '/error',
+				query: {
+					error,
+					error_description: 'You may have clicked on an old or invalid link. Please try again.',
+				},
+			});
+		},
 	},
 };
 </script>
