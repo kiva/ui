@@ -183,11 +183,9 @@ export default {
 	setup() { return { v$: useVuelidate() }; },
 	mounted() {
 		document.addEventListener('keyup', this.onKeyUp);
-		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	beforeDestroy() {
 		document.removeEventListener('keyup', this.onKeyUp);
-		this.$root.$off('openMonthlyGoodSelector', this.onCtaClick);
 	},
 	methods: {
 		onKeyUp(e) {

@@ -187,12 +187,6 @@ export default {
 		};
 	},
 	setup() { return { v$: useVuelidate() }; },
-	mounted() {
-		this.$root.$on('openMonthlyGoodSelector', this.onCtaClick);
-	},
-	beforeDestroy() {
-		this.$root.$off('openMonthlyGoodSelector', this.onCtaClick);
-	},
 	methods: {
 		showLightbox() {
 			// if preSelectedCategory is present, open amounts.

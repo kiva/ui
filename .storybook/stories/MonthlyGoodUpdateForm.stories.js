@@ -27,6 +27,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		MonthlyGoodUpdateForm
 	},
+	setup() { return args; },
 	template: `
 		<monthly-good-update-form
 			:donation="donation"
