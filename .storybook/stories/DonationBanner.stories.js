@@ -1,9 +1,4 @@
-import Vue from "vue";
 import DonationBanner from "#src/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner.vue";
-
-// import plugins
-import kivaPlugins from "#src/plugins";
-Vue.use(kivaPlugins);
 
 const args = {
 	isOpen: true,

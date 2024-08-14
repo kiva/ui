@@ -1,9 +1,3 @@
-import Vue from 'vue'
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins)
-
 import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile'
 import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile'
 
@@ -55,7 +49,7 @@ export const Default = () => ({
 });
 
 export const Funded = () => ({
-	components: { FundedBorrowerProfile	},
+	components: { FundedBorrowerProfile },
 	parameters: {
 		layout: 'fullscreen',
 	},
@@ -64,7 +58,7 @@ export const Funded = () => ({
 });
 
 export const PrivateFundraisingPeriod = () => ({
-	components: { BorrowerProfile},
+	components: { BorrowerProfile },
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -26,9 +26,9 @@ const story = (args) => {
 };
 
 export const Default = story({
-	daysLeft: 29, totalAmount: 4000, fundedAmount: 462,
+	daysLeft: '29', totalAmount: 4000, fundedAmount: 462,
 });
 
 export const MinimalStats = story({
-	daysLeft: 29, totalAmount: 4000, fundedAmount: 462, minimalStats: true
+	daysLeft: '29', totalAmount: 4000, fundedAmount: 462, minimalStats: true
 });

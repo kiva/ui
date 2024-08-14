@@ -1,10 +1,5 @@
-import Vue from 'vue'
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import GridLoanCard from '#src/components/LoanCards/GridLoanCard';
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins);
 
 const args = {
 	amountLeft: 250,

@@ -1,9 +1,4 @@
-import Vue from 'vue'
 import PromoCreditBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/PromoCreditBanner.vue';
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins);
 
 const args = {
 	basketState: {

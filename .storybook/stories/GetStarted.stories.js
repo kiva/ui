@@ -1,9 +1,3 @@
-import Vue from 'vue'
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins)
-
 import GetStartedCauses from '#src/pages/GetStarted/GetStartedCauses';
 import GetStartedPlaces from '#src/pages/GetStarted/GetStartedPlaces';
 import GetStartedResults from '#src/pages/GetStarted/GetStartedResults';

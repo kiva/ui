@@ -9,16 +9,6 @@ export default {
 	title: 'Kv/KvProgressBar',
 	component: KvProgressBar,
 	args,
-	argTypes: {
-		value: {
-			control: 'range',
-			options: {
-				min: 0,
-				max: 100,
-				step: 1,
-			}
-		}
-	}
 };
 
 export const Default = (_, { argTypes }) => ({

@@ -1,10 +1,5 @@
-import Vue from 'vue'
 import DepositIncentiveBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins);
 
 export default {
 	title: 'WwwFrame/Banners/DepositIncentiveBanner',

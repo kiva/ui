@@ -1,9 +1,3 @@
-import Vue from 'vue'
-
-// import plugins
-import kivaPlugins from '#src/plugins';
-Vue.use(kivaPlugins)
-
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
