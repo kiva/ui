@@ -26,17 +26,22 @@ export const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const UsingEventsAndValue = (args, { argTypes }) => ({
+export const UsingEvents = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvPhoneInput
+	},
+	data() {
+		return {
+			myCoolPhoneNumber: '828-479-5482'
+		}
 	},
 	template: `
 		<div>
 			<label for="events_input">Enter your phone number</label>
 			<kv-phone-input
 				id="events_input"
-				value="828-479-5482"
+				v-model="myCoolPhoneNumber"
 				@input="onInput"
 			/>
 		</div>
@@ -139,12 +144,13 @@ export const CheckingValidity = (args, { argTypes }) => ({
 			</component>
 
 			<label for="invalid_number">Enter your phone number</label>
-			<kv-phone-input
-				id="invalid_number"
-				v-model="myCoolPhoneNumber"
-				@validity-changed="onValidityChanged"
-				:class="{ valid: isValid, invalid: !isValid }"
-			/>
+			<div :class="{ valid: isValid, invalid: !isValid }">
+				<kv-phone-input
+					id="invalid_number"
+					v-model="myCoolPhoneNumber"
+					@validity-changed="onValidityChanged"
+				/>
+			</div>
 		</div>
 	`,
 	methods: {

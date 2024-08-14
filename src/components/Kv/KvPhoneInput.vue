@@ -48,11 +48,10 @@
 				class="kv-phone-input__input"
 				:id="id"
 				:placeholder="placeholderNumber"
-				:value="displayNumber"
 				:disabled="disabled"
 				:valid="valid"
+				v-model="displayNumber"
 				v-bind="$attrs"
-				v-on="inputListeners"
 				@input="onInputPhoneNumber"
 			/>
 		</div>
@@ -83,18 +82,10 @@ export default {
 		KvFlag,
 		KvTextInput
 	},
-	model: {
-		prop: 'value',
-		event: 'input'
-	},
 	props: {
 		id: {
 			type: String,
 			required: true
-		},
-		value: {
-			type: String,
-			default: ''
 		},
 		disabled: {
 			type: Boolean,
@@ -104,11 +95,15 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		modelValue: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
 			countryList,
-			displayNumber: this.formatPhoneNumber(this.value), // pretty display of the phone number
+			displayNumber: this.formatPhoneNumber(this.modelValue), // pretty display of the phone number
 			selectedCountryCode: 'US',
 		};
 	},
@@ -129,15 +124,6 @@ export default {
 		},
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
-		},
-		inputListeners() {
-			return {
-				// Pass through any listeners from the parent to the input element, like blur, focus, etc. ...
-				// https://vuejs.org/v2/guide/components-custom-events.html#Binding-Native-Events-to-Components
-				...this.$listeners,
-				// ...except for the listener to the 'input' event which is emitted by this component
-				input: () => {},
-			};
 		},
 	},
 	watch: {
