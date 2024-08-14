@@ -1,9 +1,11 @@
 import { setup } from '@storybook/vue3';
-import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
+import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { VueHeadMixin, createHead } from '@unhead/vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider.vue';
 import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
+import changeCaseFilter from '../src/plugins/change-case-filter';
+import numeralFilter from '../src/plugins/numeral-filter';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
@@ -27,11 +29,17 @@ setup((app) => {
 	app.use(router);
 
 	// Mock the analytics Vue plugin
-	app.directive('kv-track-event', () => {});
-	app.config.globalProperties.$kvTrackEvent = () => {};
+	app.directive('kv-track-event', () => { });
+	app.config.globalProperties.$kvTrackEvent = () => { };
 
 	// provide global application config
 	app.config.globalProperties.$appConfig = config.app;
+
+	// Provide $filters
+	app.config.globalProperties.$filters = {
+		changeCase: changeCaseFilter,
+		numeral: numeralFilter,
+	};
 
 	// initialize unhead
 	const head = createHead();
@@ -106,11 +114,11 @@ export const parameters = {
 		],
 	},
 	viewport: {
-    viewports: {
+		viewports: {
 			...MINIMAL_VIEWPORTS,
 			...customViewports,
-    },
-  },
+		},
+	},
 };
 
 // Wrap all stories with the kv-theme-provider component
