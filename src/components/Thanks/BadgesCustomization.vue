@@ -539,6 +539,7 @@ export default {
 .badge {
 	width: 180px;
 	height: 185px;
+	transition: filter 2s ease;
 }
 
 .blurred {
