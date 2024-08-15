@@ -26,7 +26,7 @@
 					<vue-qrcode
 						class="app-authentication__barcode"
 						:value="barcodeURI"
-						size="150"
+						:size="150"
 						level="L"
 						v-if="barcodeURI"
 					/>
