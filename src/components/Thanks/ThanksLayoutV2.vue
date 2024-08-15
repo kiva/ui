@@ -425,9 +425,9 @@ export default {
 		width: 100%;
 		display: inline-block;
 
-		:deep(&) .monthly-good-cta,
-		:deep(&) .checkout-receipt,
-		:deep(&) .share {
+		:deep(.monthly-good-cta),
+		:deep(.checkout-receipt),
+		:deep(.share) {
 			text-align: left;
 
 			&__headline {
@@ -443,7 +443,7 @@ export default {
 	}
 
 	&__content-area--share {
-		:deep(&) {
+		:deep(*) {
 			$loan-circle-size: rem-calc(70);
 			$loan-circle-margin: 1rem;
 			$loan-triangle-size: rem-calc(12);
@@ -565,7 +565,7 @@ export default {
 	}
 
 	&__content-area--receipt {
-		:deep(&) {
+		:deep(*) {
 			.checkout-receipt {
 				padding: 1.5rem;
 			}

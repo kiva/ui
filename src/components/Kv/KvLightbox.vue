@@ -194,7 +194,7 @@ export default {
 		overflow: hidden;
 
 		// dynamically added div from vue-focus-lock
-		:deep(& > [data-lock]) {
+		:deep(> [data-lock]) {
 			width: 100%;
 		}
 	}

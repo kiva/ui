@@ -1745,7 +1745,7 @@ export default {
 			width: 58.75rem;
 		}
 
-		:deep(&) {
+		:deep(*) {
 			.full-details-link,
 			.close-button-wrapper,
 			.info-panel a,
