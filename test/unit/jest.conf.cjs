@@ -8,6 +8,7 @@ module.exports = {
 		'^~/(.*)$': '<rootDir>/node_modules/$1',
 		'^@/(.*)$': '<rootDir>/src/$1',
 		'^/src/(.*)$': '<rootDir>/src/$1',
+		'^#src/(.*)?url$': '<rootDir>/test/unit/transforms/svgTransform.cjs',
 		'^#src/(.*)$': '<rootDir>/src/$1',
 		foundation: '<rootDir>/build/no-op.js',
 	},

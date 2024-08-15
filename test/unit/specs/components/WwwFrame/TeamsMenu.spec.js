@@ -91,6 +91,7 @@ const userWithMultipleTeams = {
 function renderTeamsMenu(props) {
 	return render(TeamsMenu, {
 		props,
+		directives: { kvTrackEvent: () => { } },
 		provide: {
 			apollo: {
 				readFragment: () => { },
@@ -100,7 +101,9 @@ function renderTeamsMenu(props) {
 			cookieStore: new CookieStore(),
 			kvAuth0: MockKvAuth0,
 		},
-		stubs: ['router-link']
+		global: {
+			stubs: ['router-link']
+		},
 	});
 }
 
