@@ -78,19 +78,53 @@ export default {
 		return {
 			title: this.pageTitle,
 			meta: [
-				{ property: 'og:title', vmid: 'og:title', content: this.pageTitle },
-				{ property: 'og:description', vmid: 'og:description', content: this.pageDescription },
-				{ property: 'og:site_name', vmid: 'og:site_name', content: 'Kiva' },
 				{
 					vmid: 'description',
 					name: 'description',
 					content: this.pageDescription,
-				}
+				},
+				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: this.pageTitle,
+				},
+				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: this.pageDescription,
+				},
+				{
+					property: 'og:site_name',
+					vmid: 'og:site_name',
+					content: 'Kiva',
+				},
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: this.seoImageUrl,
+				},
 			].concat([
 				{
 					vmid: 'facebook_label',
 					name: 'facebook_label',
-					content: `Kiva - Lender > ${this.lenderName} from ${this.lenderWhereAbouts}`
+					content: this.pageTitle,
+				},
+			]).concat([
+				// Twitter Tags
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: this.pageTitle,
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: this.seoImageUrl,
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.pageDescription,
 				},
 			]).concat([
 				{
@@ -129,10 +163,18 @@ export default {
 			return this.lenderInfo?.loanCount ?? 0;
 		},
 		pageTitle() {
-			return `Lender > ${this.lenderName} from ${this.lenderWhereAbouts}`;
+			let title = `Lender > ${this.lenderName}`;
+			if (this.lenderWhereAbouts) title += ` from ${this.lenderWhereAbouts}`;
+			return title;
 		},
 		pageDescription() {
-			return `${this.lenderName} from ${this.lenderWhereAbouts} has made ${this.loanCount} loans on Kiva.`;
+			let description = `${this.lenderName}`;
+			if (this.lenderWhereAbouts) description += ` from ${this.lenderWhereAbouts}`;
+			description += ` has made ${this.loanCount} loan${this.loanCount === 1 ? '' : 's'} on Kiva.`;
+			return description;
+		},
+		seoImageUrl() {
+			return this.lenderInfo?.seoImage?.url ?? '';
 		},
 		completedAchievements() {
 			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');

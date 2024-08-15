@@ -11,6 +11,12 @@ query LenderPublicProfile ($publicId: String!) {
 				width
 				height
 			}
+			seoImage: image {
+				id
+				url(customSize: "w90h360")
+				width
+				height
+			}
 			lenderPage {
 				whereabouts
 				occupation
