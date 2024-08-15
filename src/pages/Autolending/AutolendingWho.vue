@@ -15,7 +15,7 @@
 						<span v-if="!showSelectedFilterOptions"></span>
 						<button
 							class="tw-text-link back-to-options"
-							v-if="showSelectedFilterOptions"
+							v-else
 							@click="backToAllOptions"
 						>
 							<kv-icon

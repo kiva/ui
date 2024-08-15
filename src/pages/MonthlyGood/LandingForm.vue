@@ -30,10 +30,10 @@
 						@input="updateAmount"
 					/>
 					<ul class="validation-errors tw-text-danger" v-if="v$.$invalid">
-						<li v-if="v$.amount.required.$invalid">
+						<li v-if="v$.amount?.required?.$invalid">
 							Field is required
 						</li>
-						<li v-if="v$.amount.minValue.$invalid || v$.amount.maxValue.$invalid">
+						<li v-if="v$.amount?.minValue?.$invalid || v$.amount?.maxValue?.$invalid">
 							Enter an amount of $5-$8,500
 						</li>
 					</ul>

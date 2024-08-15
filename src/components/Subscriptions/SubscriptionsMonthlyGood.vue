@@ -95,7 +95,7 @@
 								</div>
 								<!-- Payment Methods -->
 								<div
-									v-if="modalStep === UPDATE_PAYMENT_METHOD"
+									v-else-if="modalStep === UPDATE_PAYMENT_METHOD"
 									key="paymentSettings"
 								>
 									<button

@@ -80,7 +80,7 @@
 					<kv-button
 						class="tw-w-full"
 						type="submit"
-						:state="v$.userVerificationCode.$invalid ? 'disabled' : ''"
+						:state="v$.userVerificationCode?.$invalid ? 'disabled' : ''"
 						v-if="!verificationPending"
 					>
 						Done

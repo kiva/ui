@@ -45,22 +45,22 @@
 						</button>
 					</p>
 					<!-- Errors and Messaging -->
-					<ul class="validation-errors tw-mb-1" v-if="v$.dayOfMonth.$invalid">
-						<li v-if="v$.dayOfMonth.required.$invalid">
+					<ul class="validation-errors tw-mb-1" v-if="v$.dayOfMonth?.$invalid">
+						<li v-if="v$.dayOfMonth?.required?.$invalid">
 							Day field is required
 						</li>
-						<li v-if="v$.dayOfMonth.minValue.$invalid || v$.dayOfMonth.maxValue.$invalid">
+						<li v-if="v$.dayOfMonth?.minValue?.$invalid || v$.dayOfMonth?.maxValue?.$invalid">
 							Enter day of month - 1 to 31
 						</li>
 					</ul>
-					<small v-if="v$.dayOfMonth.$invalid && dayOfMonth > 28" class="tw-mb-1">
+					<small v-if="v$.dayOfMonth?.$invalid && dayOfMonth > 28" class="tw-mb-1">
 						(note - deposit may be processed on the last day of the month)
 					</small>
 				</div>
 				<div class="tw-mb-2.5 tw-flex">
 					<label
 						class="tw-sr-only"
-						:class="{ 'error': v$.adAmount.$invalid }"
+						:class="{ 'error': v$.adAmount?.$invalid }"
 						for="amount"
 					>
 						Amount
@@ -81,7 +81,7 @@
 					</kv-select>
 					<kv-currency-input
 						class="text-input tw-flex-1"
-						:class="{ 'error': v$.adAmount.$invalid }"
+						:class="{ 'error': v$.adAmount?.$invalid }"
 						id="amount"
 						v-model="adAmount"
 						v-if="adOptionSelected === 'other'"
@@ -104,11 +104,11 @@
 					</button>
 				</div>
 				<!-- Errors and Messaging -->
-				<ul class="validation-errors tw-text-danger tw-mb-2" v-if="v$.adAmount.$invalid">
-					<li v-if="v$.adAmount.required.$invalid">
+				<ul class="validation-errors tw-text-danger tw-mb-2" v-if="v$.adAmount?.$invalid">
+					<li v-if="v$.adAmount?.required?.$invalid">
 						Amount field is required
 					</li>
-					<li v-if="v$.adAmount.minValue.$invalid || v$.adAmount.maxValue.$invalid">
+					<li v-if="v$.adAmount?.minValue?.$invalid || v$.adAmount?.maxValue?.$invalid">
 						Enter an amount of $5-$10,000
 					</li>
 				</ul>
@@ -283,7 +283,7 @@ export default {
 			});
 		},
 		hideDayInput() {
-			if (!this.v$.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},

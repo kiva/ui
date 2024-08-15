@@ -51,7 +51,7 @@
 										<strong>Each month on the</strong>
 										<label
 											class="tw-sr-only"
-											:class="{ 'tw-text-danger': v$.dayOfMonth.$invalid }"
+											:class="{ 'tw-text-danger': v$.dayOfMonth?.$invalid }"
 											:for="dayOfMonth"
 										>
 											Day of the Month
@@ -76,13 +76,13 @@
 											<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 											<kv-icon class="tw-w-2 tw-h-2" name="pencil" title="Edit" />
 										</button>
-										<ul class="validation-errors" v-if="v$.dayOfMonth.$invalid">
-											<li v-if="v$.dayOfMonth.required.$invalid">
+										<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
+											<li v-if="v$.dayOfMonth?.required?.$invalid">
 												Field is required
 											</li>
 											<li
-												v-if="v$.dayOfMonth.minValue.$invalid
-													|| v$.dayOfMonth.maxValue.$invalid"
+												v-if="v$.dayOfMonth?.minValue?.$invalid
+													|| v$.dayOfMonth?.maxValue?.$invalid"
 											>
 												Enter day of month - 1 to 31
 											</li>
@@ -104,7 +104,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': v$.mgAmount.$invalid }"
+												:class="{ 'tw-text-danger': v$.mgAmount?.$invalid }"
 												for="amount"
 											>
 												Amount
@@ -117,13 +117,13 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="v$.mgAmount.$invalid">
-												<li v-if="v$.mgAmount.required.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="v$.mgAmount?.$invalid">
+												<li v-if="v$.mgAmount?.required?.$invalid">
 													Field is required
 												</li>
 												<li
-													v-if="v$.mgAmount.minValue.$invalid
-														|| v$.mgAmount.maxValue.$invalid"
+													v-if="v$.mgAmount?.minValue?.$invalid
+														|| v$.mgAmount?.maxValue?.$invalid"
 												>
 													Enter an amount of $5-$10,000
 												</li>
@@ -151,7 +151,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': v$.donation.$invalid }"
+												:class="{ 'tw-text-danger': v$.donation?.$invalid }"
 												:for="`
 													${donationOptionSelected !== 'other'
 													? 'donation' : 'donation_other'
@@ -182,10 +182,10 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="v$.donation.$invalid">
+											<ul class="tw-text-right validation-errors" v-if="v$.donation?.$invalid">
 												<li
-													v-if="v$.donation.minValue.$invalid
-														|| v$.donation.maxValue.$invalid"
+													v-if="v$.donation?.minValue?.$invalid
+														|| v$.donation?.maxValue?.$invalid"
 												>
 													Enter an amount of $0-$10,000
 												</li>
@@ -207,7 +207,8 @@
 										<div class="small-12 columns">
 											<ul
 												class="tw-text-center validation-errors"
-												v-if="v$.mgAmount.maxTotal.$invalid || v$.donation.maxTotal.$invalid"
+												v-if="v$.mgAmount?.maxTotal?.$invalid
+													|| v$.donation?.maxTotal?.$invalid"
 											>
 												<li>
 													The maximum Monthly Good total is $10,000.<br>
@@ -659,7 +660,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.v$.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -731,7 +732,7 @@ export default {
 		},
 		calculatedDonationOptions() {
 			// If mgAmount isn't valid, just set these values on the amount prop.
-			const amountToBasePercentageOn = this.v$.mgAmount.$invalid ? this.amount : this.mgAmount;
+			const amountToBasePercentageOn = this.v$.mgAmount?.$invalid ? this.amount : this.mgAmount;
 			return [
 				{
 					value: '20',

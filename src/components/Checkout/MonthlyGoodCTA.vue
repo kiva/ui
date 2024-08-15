@@ -11,7 +11,7 @@
 				<div class="small-12 large-4 column">
 					<label
 						class="tw-font-medium"
-						:class="{ 'error': v$.mgAmount.$invalid }"
+						:class="{ 'error': v$.mgAmount?.$invalid }"
 						for="amount"
 					>
 						Amount
@@ -33,7 +33,7 @@
 					</kv-select>
 					<kv-currency-input
 						class="text-input"
-						:class="{ 'error': v$.mgAmount.$invalid }"
+						:class="{ 'error': v$.mgAmount?.$invalid }"
 						id="amount"
 						v-model="mgAmount"
 						v-if="mgOptionSelected === 'other'"
@@ -65,11 +65,11 @@
 			</div>
 			<!-- Errors and Messaging -->
 			<div class="row column tw-text-center">
-				<ul class="validation-errors tw-text-danger" v-if="v$.mgAmount.$invalid">
-					<li v-if="v$.mgAmount.required.$invalid">
+				<ul class="validation-errors tw-text-danger" v-if="v$.mgAmount?.$invalid">
+					<li v-if="v$.mgAmount?.required?.$invalid">
 						Amount field is required
 					</li>
-					<li v-if="v$.mgAmount.minValue.$invalid || v$.mgAmount.maxValue.$invalid">
+					<li v-if="v$.mgAmount?.minValue?.$invalid || v$.mgAmount?.maxValue?.$invalid">
 						Enter an amount of $5-$8,500
 					</li>
 				</ul>
@@ -87,7 +87,7 @@
 						}"
 						v-kv-track-event="['Thanks', 'EXP-SUBS-526-Oct2020', 'click-monthly-good-signup']"
 						class="monthly-good-cta__button"
-						:state="v$.mgAmount.$invalid ? 'disabled' : ''"
+						:state="v$.mgAmount?.$invalid ? 'disabled' : ''"
 					>
 						{{ buttonText }}
 					</kv-button>

@@ -38,7 +38,7 @@
 			</transition>
 		</div>
 		<ul class="validation-errors" v-if="v$.$invalid">
-			<li v-if="v$.customAmountModel.minValue.$invalid || v$.customAmountModel.maxValue.$invalid">
+			<li v-if="v$.customAmountModel?.minValue?.$invalid || v$.customAmountModel?.maxValue?.$invalid">
 				Enter an amount of ${{ minCustomAmount }}&ndash;${{ maxCustomAmount }}
 			</li>
 		</ul>

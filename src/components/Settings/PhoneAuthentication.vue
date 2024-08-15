@@ -24,15 +24,15 @@
 						<kv-phone-input
 							class="phone-authentication__phone-input tw-mb-1 data-hj-suppress"
 							:disabled="enrollmentPending"
-							:valid="!v$.phoneNumber.$invalid"
+							:valid="!v$.phoneNumber?.$invalid"
 							id="phone_input"
 							ref="phoneInput"
 							v-model="phoneNumber"
 							@blur="v$.phoneNumber.$touch"
 							@validity-changed="onValidityChanged"
 						/>
-						<ul class="validation-errors" v-if="v$.phoneNumber.$invalid">
-							<li v-if="v$.phoneNumber.required.$invalid">
+						<ul class="validation-errors" v-if="v$.phoneNumber?.$invalid">
+							<li v-if="v$.phoneNumber?.required?.$invalid">
 								Field is required
 							</li>
 							<li v-else>
@@ -54,7 +54,7 @@
 						<kv-button
 							class="tw-w-full tw-mb-2"
 							type="button"
-							:state="v$.phoneNumber.$invalid ? 'disabled' : ''"
+							:state="v$.phoneNumber?.$invalid ? 'disabled' : ''"
 							@click="startEnrollment('SMS')"
 						>
 							Text message
@@ -62,7 +62,7 @@
 						<kv-button
 							class="tw-w-full"
 							type="button"
-							:state="v$.phoneNumber.$invalid ? 'disabled' : ''"
+							:state="v$.phoneNumber?.$invalid ? 'disabled' : ''"
 							@click="startEnrollment('voice')"
 						>
 							Phone call
@@ -107,7 +107,7 @@
 						<kv-button
 							class="tw-w-full tw-mb-2"
 							type="submit"
-							:state="v$.userVerificationCode.$invalid ? 'disabled' : ''"
+							:state="v$.userVerificationCode?.$invalid ? 'disabled' : ''"
 						>
 							Done
 						</kv-button>

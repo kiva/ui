@@ -89,8 +89,8 @@
 						'click-mgpromo-cta',
 						'Take action'
 					]"
-					:state="(v$.mgAmount.$invalid || v$.groupValue.$invalid) ? 'disabled' : ''"
-					:disabled="v$.mgAmount.$invalid || v$.groupValue.$invalid"
+					:state="(v$.mgAmount?.$invalid || v$.groupValue?.$invalid) ? 'disabled' : ''"
+					:disabled="v$.mgAmount?.$invalid || v$.groupValue?.$invalid"
 				>
 					Subscribe
 				</kv-button>

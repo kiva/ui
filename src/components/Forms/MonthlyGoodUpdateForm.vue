@@ -8,7 +8,7 @@
 				<strong>Each month on the</strong>
 				<label
 					class="tw-sr-only"
-					:class="{ 'error': v$.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
+					:class="{ 'error': v$.form?.dayOfMonth?.$invalid }" :for="form.dayOfMonth"
 				>
 					Day of the Month
 				</label>
@@ -37,11 +37,11 @@
 					/>
 				</button>
 				<strong>we'll process the following:</strong>
-				<ul class="validation-errors" v-if="v$.form.dayOfMonth.$invalid">
-					<li v-if="v$.form.dayOfMonth.required.$invalid">
+				<ul class="validation-errors" v-if="v$.form?.dayOfMonth?.$invalid">
+					<li v-if="v$.form?.dayOfMonth?.required?.$invalid">
 						Field is required
 					</li>
-					<li v-if="v$.form.dayOfMonth.minValue.$invalid || v$.form.dayOfMonth.maxValue.$invalid">
+					<li v-if="v$.form?.dayOfMonth?.minValue?.$invalid || v$.form?.dayOfMonth?.maxValue?.$invalid">
 						Enter day of month between 1 and 31
 					</li>
 				</ul>
@@ -62,7 +62,7 @@
 					<div>
 						<label
 							class="tw-sr-only"
-							:class="{ 'error': v$.form.mgAmount.$invalid }"
+							:class="{ 'error': v$.form?.mgAmount?.$invalid }"
 							for="amount"
 						>
 							Amount
@@ -75,11 +75,11 @@
 					</div>
 				</div>
 				<div>
-					<ul class="tw-text-right validation-errors" v-if="v$.form.mgAmount.$invalid">
-						<li v-if="v$.form.mgAmount.required.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="v$.form?.mgAmount?.$invalid">
+						<li v-if="v$.form?.mgAmount?.required?.$invalid">
 							Field is required
 						</li>
-						<li v-if="v$.form.mgAmount.minValue.$invalid || v$.form.mgAmount.maxValue.$invalid">
+						<li v-if="v$.form?.mgAmount?.minValue?.$invalid || v$.form?.mgAmount?.maxValue?.$invalid">
 							Enter an amount of $5-$10,000
 						</li>
 					</ul>
@@ -94,7 +94,7 @@
 					<div>
 						<label
 							class="tw-sr-only"
-							:class="{ 'error': v$.form.donation.$invalid }"
+							:class="{ 'error': v$.form?.donation?.$invalid }"
 							for="donation"
 						>
 							Donation
@@ -107,8 +107,8 @@
 					</div>
 				</div>
 				<div>
-					<ul class="tw-text-right validation-errors" v-if="v$.form.donation.$invalid">
-						<li v-if="v$.form.donation.minValue.$invalid || v$.form.donation.maxValue.$invalid">
+					<ul class="tw-text-right validation-errors" v-if="v$.form?.donation?.$invalid">
+						<li v-if="v$.form?.donation?.minValue?.$invalid || v$.form?.donation?.maxValue?.$invalid">
 							Enter an amount of $0-$10,000
 						</li>
 					</ul>
@@ -127,7 +127,7 @@
 				<div>
 					<ul
 						class="tw-text-center validation-errors"
-						v-if="v$.form.mgAmount.maxTotal.$invalid || v$.form.donation.maxTotal.$invalid"
+						v-if="v$.form?.mgAmount?.maxTotal?.$invalid || v$.form?.donation?.maxTotal?.$invalid"
 					>
 						<li>
 							The maximum Monthly Good total is $10,000.<br>
@@ -303,7 +303,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.v$.form.dayOfMonth.$invalid) {
+			if (!this.v$.form?.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},

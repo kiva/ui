@@ -69,7 +69,7 @@
 														<strong>Each month on the</strong>
 														<label
 															class="tw-sr-only"
-															:class="{ 'error': v$.dayOfMonth.$invalid }"
+															:class="{ 'error': v$.dayOfMonth?.$invalid }"
 															for="dayOfMonth"
 														>
 															Day of the Month
@@ -95,13 +95,13 @@
 															<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 														</button>
 														<strong>we'll process the following:</strong>
-														<ul class="validation-errors" v-if="v$.dayOfMonth.$invalid">
-															<li v-if="v$.dayOfMonth.required.$invalid">
+														<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
+															<li v-if="v$.dayOfMonth?.required?.$invalid">
 																Field is required
 															</li>
 															<li
-																v-if="v$.dayOfMonth.minValue.$invalid
-																	|| v$.dayOfMonth.maxValue.$invalid"
+																v-if="v$.dayOfMonth?.minValue?.$invalid
+																	|| v$.dayOfMonth?.maxValue?.$invalid"
 															>
 																Enter day of month between 1 and 31
 															</li>
@@ -123,7 +123,7 @@
 															<div class="small-6 medium-4 columns">
 																<label
 																	class="tw-sr-only"
-																	:class="{ 'error': v$.mgAmount.$invalid }"
+																	:class="{ 'error': v$.mgAmount?.$invalid }"
 																	for="amount"
 																>
 																	Amount
@@ -137,14 +137,14 @@
 														<div class="row columns align-middle">
 															<ul
 																class="tw-text-right validation-errors"
-																v-if="v$.mgAmount.$invalid"
+																v-if="v$.mgAmount?.$invalid"
 															>
-																<li v-if="v$.mgAmount.required.$invalid">
+																<li v-if="v$.mgAmount?.required?.$invalid">
 																	Field is required
 																</li>
 																<li
-																	v-if="v$.mgAmount.minValue.$invalid
-																		|| v$.mgAmount.maxValue.$invalid"
+																	v-if="v$.mgAmount?.minValue?.$invalid
+																		|| v$.mgAmount?.maxValue?.$invalid"
 																>
 																	Enter an amount of $5-$10,000
 																</li>
@@ -161,7 +161,7 @@
 															<div class="small-6 medium-4 columns">
 																<label
 																	class="tw-sr-only"
-																	:class="{ 'error': v$.donation.$invalid }"
+																	:class="{ 'error': v$.donation?.$invalid }"
 																	for="amount"
 																>
 																	Donation
@@ -175,11 +175,11 @@
 														<div class="row column align-middle">
 															<ul
 																class="tw-text-right validation-errors"
-																v-if="v$.donation.$invalid"
+																v-if="v$.donation?.$invalid"
 															>
 																<li
-																	v-if="v$.donation.minValue.$invalid
-																		|| v$.donation.maxValue.$invalid"
+																	v-if="v$.donation?.minValue?.$invalid
+																		|| v$.donation?.maxValue?.$invalid"
 																>
 																	Enter an amount of $0-$10,000
 																</li>
@@ -201,8 +201,8 @@
 														<div class="row column">
 															<ul
 																class="tw-text-center validation-errors"
-																v-if="v$.mgAmount.maxTotal.$invalid
-																	|| v$.donation.maxTotal.$invalid"
+																v-if="v$.mgAmount?.maxTotal?.$invalid
+																	|| v$.donation?.maxTotal?.$invalid"
 															>
 																<li>
 																	The maximum Auto Deposit total is $10,000.<br>
@@ -250,7 +250,7 @@
 								</div>
 								<!-- Payment Methods -->
 								<div
-									v-if="!settingsOpen"
+									v-else
 									class="row column" key="paymentSettings"
 								>
 									<button
@@ -455,7 +455,7 @@ export default {
 			this.showEditLightbox = false;
 		},
 		hideDayInput() {
-			if (!this.v$.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},

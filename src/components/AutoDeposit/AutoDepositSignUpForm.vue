@@ -11,7 +11,7 @@
 			</span>
 			<label
 				class="tw-sr-only"
-				:class="{ 'error': v$.adAmount.$invalid }"
+				:class="{ 'error': v$.adAmount?.$invalid }"
 				for="amount"
 			>
 				Amount
@@ -20,7 +20,7 @@
 			<span>
 				each month on the
 			</span>
-			<label class="tw-sr-only" :class="{ 'error': v$.dayOfMonth.$invalid }" :for="dayOfMonth">
+			<label class="tw-sr-only" :class="{ 'error': v$.dayOfMonth?.$invalid }" :for="dayOfMonth">
 				Day of the Month
 			</label>
 			<kv-text-input
@@ -50,19 +50,19 @@
 
 		<!-- Errors and Messaging -->
 		<div class="row column tw-text-center">
-			<ul class="validation-errors" v-if="v$.dayOfMonth.$invalid">
-				<li v-if="v$.dayOfMonth.required.$invalid">
+			<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
+				<li v-if="v$.dayOfMonth?.required?.$invalid">
 					Day field is required
 				</li>
-				<li v-if="v$.dayOfMonth.minValue.$invalid || v$.dayOfMonth.maxValue.$invalid">
+				<li v-if="v$.dayOfMonth?.minValue?.$invalid || v$.dayOfMonth?.maxValue?.$invalid">
 					Enter day of month - 1 to 31
 				</li>
 			</ul>
-			<ul class="validation-errors" v-if="v$.adAmount.$invalid">
-				<li v-if="v$.adAmount.required.$invalid">
+			<ul class="validation-errors" v-if="v$.adAmount?.$invalid">
+				<li v-if="v$.adAmount?.required?.$invalid">
 					Amount field is required
 				</li>
-				<li v-if="v$.adAmount.minValue.$invalid || v$.adAmount.maxValue.$invalid">
+				<li v-if="v$.adAmount?.minValue?.$invalid || v$.adAmount?.maxValue?.$invalid">
 					Enter an amount of $0-$10,000
 				</li>
 			</ul>
@@ -82,7 +82,7 @@
 
 					<label
 						class="tw-sr-only"
-						:class="{ 'error': v$.donation.$invalid }"
+						:class="{ 'error': v$.donation?.$invalid }"
 						for="donation"
 					>
 						Donation
@@ -116,8 +116,8 @@
 
 		<div class="row column tw-text-center">
 			<!-- Donation Errors -->
-			<ul class="validation-errors" v-if="v$.donation.$invalid">
-				<li v-if="v$.donation.minValue.$invalid || v$.donation.maxValue.$invalid">
+			<ul class="validation-errors" v-if="v$.donation?.$invalid">
+				<li v-if="v$.donation?.minValue?.$invalid || v$.donation?.maxValue?.$invalid">
 					Enter a donation amount of $0-$10,000
 				</li>
 			</ul>
@@ -125,7 +125,7 @@
 			<!-- General Errors & Messaging-->
 			<ul
 				class="validation-errors"
-				v-if="v$.adAmount.combinedTotal.$invalid || v$.donation.combinedTotal.$invalid"
+				v-if="v$.adAmount?.combinedTotal?.$invalid || v$.donation?.combinedTotal?.$invalid"
 			>
 				<li>
 					To set up an Auto Deposit, please enter a total amount between $0 and $10,000.
@@ -214,7 +214,7 @@ export default {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				combinedTotal(value) {
-					return value + this.donation < 10000 && value + this.donation > 0;
+					return +value + this.donation < 10000 && +value + this.donation > 0;
 				}
 			},
 			donation: {
@@ -307,7 +307,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.v$.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -324,7 +324,7 @@ export default {
 	},
 	computed: {
 		totalCombinedDeposit() {
-			return this.donation + this.adAmount;
+			return this.donation + +this.adAmount;
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
@@ -338,7 +338,7 @@ export default {
 		},
 		calculatedDonationOptions() {
 			// If adAmount isn't valid, just set these values to default
-			const amountToBasePercentageOn = this.v$.adAmount.$invalid ? 25 : this.adAmount;
+			const amountToBasePercentageOn = this.v$.adAmount?.$invalid ? 25 : this.adAmount;
 			return [
 				{
 					value: '20',

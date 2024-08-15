@@ -52,8 +52,8 @@ export const WithValidation = () => ({
 			</label>
 			<kv-currency-input id="amount" v-model="amount"/>
 			<ul class="validation-errors">
-				<li v-if="v$.amount.required.$invalid">Field is required</li>
-				<li v-if="v$.amount.minValue.$invalid || v$.amount.maxValue.$invalid">
+				<li v-if="v$.amount?.required?.$invalid">Field is required</li>
+				<li v-if="v$.amount?.minValue?.$invalid || v$.amount?.maxValue?.$invalid">
 					Enter an amount of $5-$10,000
 				</li>
 			</ul>

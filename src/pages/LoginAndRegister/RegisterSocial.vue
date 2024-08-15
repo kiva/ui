@@ -129,7 +129,7 @@
 					/>
 					<p
 						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
-						v-if="needsCaptcha && v$.captcha.$invalid"
+						v-if="needsCaptcha && v$.captcha?.$invalid"
 					>
 						Please complete the captcha.
 					</p>
