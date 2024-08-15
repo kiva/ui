@@ -717,4 +717,12 @@ export default [
 			excludeFromStaticSitemap: true,
 		}
 	},
+	// Catch all route
+	{
+		path: '/:pathMatch(.*)*',
+		component: () => import('#src/pages/NotFound'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
 ];

@@ -8,24 +8,48 @@
 				class="tw-text-center tw-pt-4 tw-pb-5 md:tw-rounded-t hide-for-print"
 				style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
 			>
-				<h1 class="tw-text-white tw-mb-1">
-					Success!
+				<h1
+					class="tw-mb-1 tw-transition-all tw-duration-1000 tw-ease-in-out"
+					:class="{
+						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+						'tw-text-white': !badgeBlurRevealCompleted
+					}"
+				>
+					{{ headerTitle }}
 				</h1>
-				<p class="tw-text-subhead tw-text-white tw-px-3 md:tw-px-8">
+				<p
+					class="tw-text-subhead tw-px-3 md:tw-px-8 tw-transition-all tw-duration-1000 tw-ease-in-out"
+					:class="{
+						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+						'tw-text-white': !badgeBlurRevealCompleted
+					}"
+				>
 					{{ headerCopy }}
 				</p>
-				<div class="tw-relative tw-mt-3">
-					<div class="badge-container">
-						<img
-							:class="{ 'blurred': isBlurred, 'wiggle': wiggle }"
-							:src="images('equity-badge.svg')"
-							class="badge"
-							alt="Gift icon"
-						>
+				<div class="tw-mt-3" :class="{'tw-relative': !badgeBlurRevealing}">
+					<div class="badge-container" :class="{'tw-flex-col': badgeBlurRevealing}">
+						<div class="new-background" :class="{ 'grow': badgeBlurRevealing }"></div>
+
+						<div class="tw-relative" :class="{'tw-z-1': badgeBlurRevealing}">
+							<div
+								v-if="badgeBlurRevealCompleted"
+								class="tw-absolute tw-h-full tw-z-docked tw-left-1/2 -tw-translate-x-1/2"
+							>
+								<animated-stars :style="{ minWidth: '14rem'}" class="tw-h-full" />
+							</div>
+
+							<img
+								:class="{ 'blurred': isBlurred, 'wiggle': wiggle, 'tw-z-2': badgeBlurRevealing }"
+								:src="images('equity-badge.svg')"
+								class="badge"
+								alt="Gift icon"
+							>
+						</div>
 						<kv-button
-							@click="() => toggleBlur"
+							@click="toggleBlur"
 							variant="secondary"
 							class="reveal-button"
+							:class="{'tw-hidden': badgeBlurRevealing}"
 							v-kv-track-event="[
 								'thanks',
 								'click',
@@ -41,6 +65,73 @@
 								{{ revealBtnCta }}
 							</span>
 						</kv-button>
+					</div>
+				</div>
+				<div v-if="badgeBlurRevealCompleted" class="tw-absolute tw-z-2 tw-px-3">
+					<p class="tw-pb-4">
+						<!-- eslint-disable-next-line max-len -->
+						You are a hero! Thanks to your loan, we are one step closer to a more financially inclusive world.
+					</p>
+					<kv-button
+						class="tw-w-full tw-mb-2"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'discover-more-badges',
+						]"
+					>
+						Discover more badges
+					</kv-button>
+					<div>
+						<kv-button
+							v-if="!isGuest"
+							class="tw-w-full no-border"
+							to="/portfolio"
+							variant="secondary"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'go-to-my-kiva',
+								'Button seen after badge reveal'
+							]"
+						>
+							Go to my kiva
+						</kv-button>
+						<div
+							v-else
+							class="option-box"
+							:class="{'open' : openCreateAccount}"
+							@click="() => openCreateAccount = !openCreateAccount"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'open-account-creation-drawer',
+							]"
+						>
+							<p class="tw-font-medium">
+								Create your account
+							</p>
+							<kv-material-icon
+								:icon="mdiChevronDown"
+								class="expandable-button"
+								:class="{'tw-rotate-180' : openCreateAccount}"
+							/>
+						</div>
+						<kv-expandable
+							v-show="openCreateAccount"
+							easing="ease-in-out"
+						>
+							<div class="tw-py-2">
+								<h2>Before you go!</h2>
+								<!-- eslint-disable-next-line max-len -->
+								<p>Finish setting up your account to track and relend your money as you are paid back.</p>
+								<guest-account-creation
+									class="tw-pt-3 account-creation"
+									event-category="thanks"
+									event-label="open-account-creation-drawer"
+								/>
+							</div>
+						</kv-expandable>
 					</div>
 				</div>
 			</div>
@@ -192,6 +283,7 @@ import confetti from 'canvas-confetti';
 import { gql } from '@apollo/client';
 import logFormatter from '#src/util/logFormatter';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import AnimatedStars from '#src/components/Thanks/AnimatedStars';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
@@ -209,6 +301,7 @@ export default {
 		GuestAccountCreation,
 		KvButton,
 		KvMaterialIcon,
+		AnimatedStars,
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [smoothScrollMixin],
@@ -254,6 +347,8 @@ export default {
 			isBlurred: true,
 			isMobileLayout: false,
 			wiggle: false,
+			badgeBlurRevealing: false,
+			badgeBlurRevealCompleted: false,
 		};
 	},
 	computed: {
@@ -298,8 +393,13 @@ export default {
 
 			return 10;
 		},
+		headerTitle() {
+			return this.badgeBlurRevealCompleted ? 'Congrats!' : 'Success!';
+		},
 		headerCopy() {
-			return 'Celebrate your first loan with a special gift. 🙌';
+			return this.badgeBlurRevealCompleted
+				? 'You earned your first badge'
+				: 'Celebrate your first loan with a special gift. 🙌';
 		},
 		ctaCopy() {
 			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
@@ -354,6 +454,15 @@ export default {
 		},
 		toggleBlur() {
 			this.isBlurred = !this.isBlurred;
+			if (!this.isBlurred) {
+				this.badgeBlurRevealing = true;
+			} else {
+				this.badgeBlurRevealing = false;
+			}
+
+			setTimeout(() => {
+				this.badgeBlurRevealCompleted = true;
+			}, 1000);
 		}
 	},
 	created() {
@@ -388,6 +497,10 @@ export default {
 
 .ghost-button >>> span {
 	@apply tw-bg-transparent tw-border-black;
+}
+
+.no-border >>> span {
+	@apply tw-bg-transparent tw-border-0;
 }
 
 .account-creation >>> input {
@@ -427,6 +540,7 @@ export default {
 .badge {
 	width: 180px;
 	height: 185px;
+	transition: filter 2s ease;
 }
 
 .blurred {
@@ -469,6 +583,15 @@ export default {
 
 .wiggle {
 	animation: wiggle 1s ease-in-out;
+}
+
+.new-background {
+	transition: all 1s ease-in-out;
+	@apply tw-bg-stone-1 tw-absolute tw-top-1/2 tw-left-1/2 tw-w-0 tw-h-0 tw-z-1;
+}
+
+.grow {
+	@apply tw-w-full tw-h-full tw-top-0 tw-left-0 tw-transform-none;
 }
 
 </style>
