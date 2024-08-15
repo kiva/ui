@@ -1,6 +1,5 @@
 import { workerData } from 'worker_threads';
 import vueRender from './vue-render.js';
-// eslint-disable-next-line import/no-unresolved
 import serverEntry from '../dist/server/server-entry.js';
 
 const {
