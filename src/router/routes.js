@@ -686,4 +686,12 @@ module.exports = [
 			excludeFromStaticSitemap: true,
 		}
 	},
+	// Catch all route
+	{
+		path: '/:pathMatch(.*)*',
+		component: () => import('@/pages/NotFound'),
+		meta: {
+			excludeFromStaticSitemap: true,
+		}
+	},
 ];
