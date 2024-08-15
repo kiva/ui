@@ -425,19 +425,21 @@ export default {
 		width: 100%;
 		display: inline-block;
 
-		:deep(.monthly-good-cta),
-		:deep(.checkout-receipt),
-		:deep(.share) {
-			text-align: left;
-
-			&__headline {
+		:deep(*) {
+			.monthly-good-cta,
+			.checkout-receipt,
+			.share {
 				text-align: left;
-				margin-top: 0;
-				margin-bottom: 1.5rem;
-			}
 
-			&__subhead {
-				margin-bottom: 1rem;
+				&__headline {
+					text-align: left;
+					margin-top: 0;
+					margin-bottom: 1.5rem;
+				}
+
+				&__subhead {
+					margin-bottom: 1rem;
+				}
 			}
 		}
 	}
