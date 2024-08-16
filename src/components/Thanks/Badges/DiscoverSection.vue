@@ -12,7 +12,12 @@
 		<p class="tw-text-secondary tw-pb-2">
 			Tap to learn how:
 		</p>
-		<div class="tw-gap-2 md:tw-gap-4 tw-grid tw-grid-cols-2 tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4">
+		<div
+			class="
+				tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2 md:tw-gap-4
+				tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
+			"
+		>
 			<div
 				v-for="badge in randomSortedBadges"
 				:key="badge.id"
