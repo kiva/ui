@@ -13,7 +13,6 @@
 <script>
 import '#src/assets/scss/tailwind/tailwind.css';
 import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
-import webmanifest from '#src/manifest.webmanifest';
 import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -214,13 +213,7 @@ export default {
 					href: favicons('favicon-196x196.png'),
 					sizes: '196x196'
 				}
-			].concat([
-				{
-					// Web Manifest. Required for promoting the Android App on our site with smart-banners.
-					rel: 'manifest',
-					href: webmanifest
-				}
-			]))
+			])
 		};
 	},
 	mounted() {
