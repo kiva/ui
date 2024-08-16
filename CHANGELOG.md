@@ -1,3 +1,15 @@
+## [2.750.0](https://github.com/kiva/ui/compare/v2.749.1...v2.750.0) (2024-08-16)
+
+
+### 🎉 New Features
+
+* set new deposit incentive end date MP-692 ([2305a4f](https://github.com/kiva/ui/commit/2305a4f0fc40b8e3bf5f7c192a133e5872aed9a5))
+
+
+### 🧹 Chores
+
+* **release:** 2.750.0-rc.1 [skip ci] ([ec93e5a](https://github.com/kiva/ui/commit/ec93e5a4d794c81bbf0c452d515177f699c38984))
+
 ## [2.750.0-rc.1](https://github.com/kiva/ui/compare/v2.749.1...v2.750.0-rc.1) (2024-08-16)
 
 
