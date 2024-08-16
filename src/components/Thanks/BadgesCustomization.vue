@@ -552,11 +552,11 @@ export default {
 }
 
 .fade-enter-active {
-    transition: opacity 1s
+	transition: opacity 1s;
 }
 
 .fade-enter {
-    opacity: 0
+	opacity: 0;
 }
 
 </style>

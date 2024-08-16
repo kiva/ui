@@ -17,7 +17,6 @@
 				v-for="badge in randomSortedBadges"
 				:key="badge.id"
 				class="badge-card"
-				style="box-shadow: 0px 4px 12px 0px #00000014; width: 156px; height: 148px"
 				v-kv-track-event="[
 					'thanks',
 					'click',
@@ -138,6 +137,9 @@ export default {
 <style lang="postcss" scoped>
 
 .badge-card {
+	width: 156px;
+	height: 148px;
+	box-shadow: 0 4px 12px 0 #00000014;
 	@apply tw-cursor-pointer tw-border tw-flex tw-flex-col tw-rounded tw-gap-2 tw-border-none tw-justify-center;
 }
 
