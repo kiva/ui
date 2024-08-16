@@ -306,9 +306,6 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import confetti from 'canvas-confetti';
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import AnimatedStars from '@/components/Thanks/AnimatedStars';
 import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
@@ -330,7 +327,6 @@ export default {
 		DiscoverSection,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [smoothScrollMixin],
 	props: {
 		selectedLoan: {
 			type: Object,
@@ -352,14 +348,6 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		optedIn: {
-			type: Boolean,
-			default: false
-		},
-		shortVersionEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -367,8 +355,6 @@ export default {
 			openOrderConfirmation: false,
 			openShareModule: false,
 			mdiChevronDown,
-			confirmOptInChoice: false,
-			selectOption: false,
 			imageRequire,
 			isBlurred: true,
 			isMobileLayout: false,
@@ -381,15 +367,6 @@ export default {
 	computed: {
 		borrowerName() {
 			return this.selectedLoan?.name ?? '';
-		},
-		filteredLoans() {
-			const filteredLoans = [...this.loans];
-			if (this.loans.length === 3) {
-				const indexToRemove = filteredLoans.indexOf(loan => loan.id === this.selectedLoan.id);
-				const removedLoan = filteredLoans.splice(indexToRemove, 1)[0];
-				filteredLoans.splice(1, 0, removedLoan);
-			}
-			return filteredLoans.slice(0, 3);
 		},
 		weeksToRepay() {
 			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
@@ -410,16 +387,6 @@ export default {
 
 			return `${minDate} - ${maxDate} weeks`;
 		},
-		marginLeftWeight() {
-			if (this.filteredLoans.length === 1) {
-				return 0;
-			}
-			if (this.filteredLoans.length === 2) {
-				return 6;
-			}
-
-			return 10;
-		},
 		headerTitle() {
 			return this.badgeBlurRevealCompleted ? 'Congrats!' : 'Success!';
 		},
@@ -427,17 +394,6 @@ export default {
 			return this.badgeBlurRevealCompleted
 				? 'You earned your first badge'
 				: 'Celebrate your first loan with a special gift. 🙌';
-		},
-		ctaCopy() {
-			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
-				return 'Complete your account to track your impact and manage repayments.';
-			}
-			if (this.isGuest || (!this.isGuest && !this.optedIn)) {
-				// eslint-disable-next-line max-len
-				return `Want to hear how you're impacting ${this.borrowerName}'s life and more ways to help people like them?`;
-			}
-
-			return '';
 		},
 		revealBtnCta() {
 			return `${this.isMobileLayout ? 'Tap' : 'Click'} to reveal`;
@@ -449,38 +405,6 @@ export default {
 	methods: {
 		hash(loan) {
 			return loan?.image?.hash ?? '';
-		},
-		updateOptIn(value) {
-			this.selectOption = true;
-			this.openCreateAccount = true;
-			if (value) {
-				try {
-					this.apollo.mutate({
-						mutation: gql`
-							mutation updateCommunicationSettings(
-								$lenderNews: Boolean
-							) {
-								my {
-									updateCommunicationSettings(
-										communicationSettings: {
-											lenderNews: $lenderNews
-										}
-									)
-								}
-							}
-						`,
-						variables: {
-							lenderNews: value,
-						},
-					});
-				} catch (error) {
-					logFormatter(error, 'error');
-				}
-			}
-			const elementToScrollTo = document.querySelector('#loan-info');
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-			this.confirmOptInChoice = value;
 		},
 		toggleBlur() {
 			this.isBlurred = !this.isBlurred;

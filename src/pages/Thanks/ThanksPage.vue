@@ -12,8 +12,6 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
-				:opted-in="optedIn"
-				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 		<template v-else-if="showNewTYPage">

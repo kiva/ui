@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-w-full tw-px-2 tw-absolute tw-z-2 tw-text-center">
-		<div class="tw-flex tw-pt-2 tw-pb-4 tw-justify-center" @click="backToEarnedBadge">
+		<div class="tw-flex tw-pt-2 tw-pb-4 tw-justify-center tw-cursor-pointer" @click="backToEarnedBadge">
 			<kv-material-icon :icon="mdiChevronLeft" class="tw-w-3 tw-h-3" />
 			<p class="tw-text-center tw-w-full">
 				YOUR BADGES
