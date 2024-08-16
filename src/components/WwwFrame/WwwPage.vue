@@ -24,10 +24,13 @@ import logReadQueryError from '@/util/logReadQueryError';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import TheBannerArea from './TheBannerArea';
+
+const THANKS_BADGES_EXP = 'thanks_badges';
 
 export default {
 	name: 'WwwPage',
@@ -62,6 +65,7 @@ export default {
 	data() {
 		return {
 			isKivaAppReferral: false,
+			enableTYBadgesExp: false,
 		};
 	},
 	apollo: {
@@ -84,15 +88,31 @@ export default {
 		}
 
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
+
+		const tyBadgeExpData = this.apollo.readFragment({
+			id: `Experiment:${THANKS_BADGES_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		if (tyBadgeExpData?.version) {
+			this.enableTYBadgesExp = tyBadgeExpData?.version === 'b';
+		}
 	},
 	computed: {
 		mainClasses() {
 			return [
 				this.mainClass,
 				{ 'tw-bg-secondary': this.grayBackground },
+				{ 'tw-relative': this.badgesExperimentEnabled }
 			];
 		},
-	}
+		isInTYPage() {
+			return this.$route.path.includes('checkout/thanks');
+		},
+		badgesExperimentEnabled() {
+			return this.enableTYBadgesExp && this.isInTYPage;
+		}
+	},
 };
 </script>
 

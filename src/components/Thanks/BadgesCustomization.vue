@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative tw-h-full tw-bg-stone-1"
+		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-h-full tw-bg-stone-1"
 		:style="{maxWidth: '620px', minHeight: '1012px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
 	>
 		<div>
@@ -8,7 +8,7 @@
 				class="tw-text-center md:tw-rounded-t hide-for-print"
 			>
 				<div class="new-background tw-h-full tw-w-full" :class="{ 'grow': badgeBlurRevealing }"></div>
-				<div>
+				<div class="tw-relative">
 					<div
 						:class="{'tw-hidden': discoverBadges}"
 						style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
