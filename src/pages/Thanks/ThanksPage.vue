@@ -618,9 +618,12 @@ export default {
 		margin-bottom: 0.5rem;
 	}
 }
+</style>
+
+<style lang="postcss" scoped>
 
 .relative-container >>> main {
-	position: relative;
+	@apply tw-relative;
 }
 
 </style>
