@@ -1,5 +1,11 @@
 <template>
-	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation}">
+	<www-page
+		data-testid="thanks-page"
+		:class="{
+			'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation,
+			'relative-container': badgesCustomExpEnabled
+		}"
+	>
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
@@ -612,4 +618,9 @@ export default {
 		margin-bottom: 0.5rem;
 	}
 }
+
+.relative-container >>> main {
+	position: relative;
+}
+
 </style>

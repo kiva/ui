@@ -291,7 +291,7 @@
 				v-if="discoverBadges"
 				:selected-loan-region="selectedLoanRegion"
 				:is-guest="isGuest"
-				@back-to-earned-badge="discoverBadges = false"
+				@back-to-earned-badge="() => discoverBadges = false"
 			/>
 		</transition>
 	</div>
@@ -556,7 +556,7 @@ export default {
 }
 
 .fade-enter {
-	opacity: 0;
+	@apply tw-opacity-0;
 }
 
 </style>
