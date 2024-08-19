@@ -1,274 +1,299 @@
 <template>
 	<div
-		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative"
-		:style="{maxWidth: '620px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
+		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-h-full tw-bg-stone-1"
+		:style="{maxWidth: '620px', minHeight: '1012px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
 	>
-		<div class="tw-bg-stone-1 md:tw-rounded-b">
+		<div>
 			<div
-				class="tw-text-center tw-pt-4 tw-pb-5 md:tw-rounded-t hide-for-print"
-				style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
+				class="tw-text-center md:tw-rounded-t hide-for-print"
 			>
-				<h1
-					class="tw-mb-1 tw-transition-all tw-duration-1000 tw-ease-in-out"
-					:class="{
-						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
-						'tw-text-white': !badgeBlurRevealCompleted
-					}"
-				>
-					{{ headerTitle }}
-				</h1>
-				<p
-					class="tw-text-subhead tw-px-3 md:tw-px-8 tw-transition-all tw-duration-1000 tw-ease-in-out"
-					:class="{
-						'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
-						'tw-text-white': !badgeBlurRevealCompleted
-					}"
-				>
-					{{ headerCopy }}
-				</p>
-				<div class="tw-mt-3" :class="{'tw-relative': !badgeBlurRevealing}">
-					<div class="badge-container" :class="{'tw-flex-col': badgeBlurRevealing}">
-						<div class="new-background" :class="{ 'grow': badgeBlurRevealing }"></div>
-
-						<div class="tw-relative" :class="{'tw-z-1': badgeBlurRevealing}">
-							<div
-								v-if="badgeBlurRevealCompleted"
-								class="tw-absolute tw-h-full tw-z-docked tw-left-1/2 -tw-translate-x-1/2"
-							>
-								<animated-stars :style="{ minWidth: '14rem'}" class="tw-h-full" />
-							</div>
-
-							<img
-								:class="{ 'blurred': isBlurred, 'wiggle': wiggle, 'tw-z-2': badgeBlurRevealing }"
-								:src="imageRequire(`./equity-badge.svg`)"
-								class="badge"
-								alt="Gift icon"
-							>
-						</div>
-
-						<kv-button
-							@click="toggleBlur"
-							variant="secondary"
-							class="reveal-button"
-							:class="{'tw-hidden': badgeBlurRevealing}"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'reveal-badge',
-							]"
-						>
-							<span class="tw-flex tw-items-center tw-gap-1">
-								<img
-									:src="imageRequire(`./gift.svg`)"
-									class="tw-w-3 tw-h-3"
-									alt="Gift icon"
-								>
-								{{ revealBtnCta }}
-							</span>
-						</kv-button>
-					</div>
-				</div>
-				<div v-if="badgeBlurRevealCompleted" class="tw-absolute tw-z-2 tw-px-3">
-					<p class="tw-pb-4">
-						<!-- eslint-disable-next-line max-len -->
-						You are a hero! Thanks to your loan, we are one step closer to a more financially inclusive world.
-					</p>
-					<kv-button
-						class="tw-w-full tw-mb-2"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'discover-more-badges',
-						]"
+				<div class="new-background tw-h-full tw-w-full" :class="{ 'grow': badgeBlurRevealing }"></div>
+				<div class="tw-relative">
+					<div
+						:class="{'tw-hidden': discoverBadges}"
+						style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
+						class="tw-pt-4 tw-pb-5"
 					>
-						Discover more badges
-					</kv-button>
-					<div>
-						<kv-button
-							v-if="!isGuest"
-							class="tw-w-full no-border"
-							to="/portfolio"
-							variant="secondary"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'go-to-my-kiva',
-								'Button seen after badge reveal'
-							]"
+						<h1
+							class="tw-mb-1 tw-transition-all tw-duration-1000 tw-ease-in-out"
+							:class="{
+								'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+								'tw-text-white': !badgeBlurRevealCompleted
+							}"
 						>
-							Go to my kiva
-						</kv-button>
-						<div
-							v-else
-							class="option-box"
-							:class="{'open' : openCreateAccount}"
-							@click="() => openCreateAccount = !openCreateAccount"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'open-account-creation-drawer',
-							]"
+							{{ headerTitle }}
+						</h1>
+						<p
+							class="tw-text-subhead tw-px-3 md:tw-px-8
+									tw-transition-all tw-duration-1000 tw-ease-in-out"
+							:class="{
+								'tw-relative tw-z-2 tw-text-black': badgeBlurRevealCompleted,
+								'tw-text-white': !badgeBlurRevealCompleted
+							}"
 						>
-							<p class="tw-font-medium">
-								Create your account
-							</p>
-							<kv-material-icon
-								:icon="mdiChevronDown"
-								class="expandable-button"
-								:class="{'tw-rotate-180' : openCreateAccount}"
-							/>
+							{{ headerCopy }}
+						</p>
+						<div class="tw-mt-3" :class="{'tw-relative': !badgeBlurRevealing}">
+							<div class="badge-container" :class="{'tw-flex-col': badgeBlurRevealing}">
+								<div class="tw-relative" :class="{'tw-z-1': badgeBlurRevealing}">
+									<div
+										v-if="badgeBlurRevealCompleted"
+										class="tw-absolute tw-h-full tw-z-docked tw-left-1/2 -tw-translate-x-1/2"
+									>
+										<animated-stars :style="{ minWidth: '14rem'}" class="tw-h-full" />
+									</div>
+
+									<img
+										:class="{
+											'blurred': isBlurred,
+											'wiggle': wiggle,
+											'tw-z-2': badgeBlurRevealing
+										}"
+										:src="imageRequire(`./equity-badge.svg`)"
+										class="badge"
+										alt="Gift icon"
+									>
+								</div>
+
+								<kv-button
+									@click="toggleBlur"
+									variant="secondary"
+									class="reveal-button"
+									:class="{'tw-hidden': badgeBlurRevealing}"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'reveal-badge',
+									]"
+								>
+									<span class="tw-flex tw-items-center tw-gap-1">
+										<img
+											:src="imageRequire(`./gift.svg`)"
+											class="tw-w-3 tw-h-3"
+											alt="Gift icon"
+										>
+										{{ revealBtnCta }}
+									</span>
+								</kv-button>
+							</div>
 						</div>
-						<kv-expandable
-							v-show="openCreateAccount"
-							easing="ease-in-out"
+					</div>
+					<div
+						v-if="badgeBlurRevealCompleted" class="tw-absolute tw-z-2 tw-px-3"
+						:class="{'tw-hidden': discoverBadges}"
+					>
+						<p class="tw-pb-4">
+							<!-- eslint-disable-next-line max-len -->
+							You are a hero! Thanks to your loan, we are one step closer to a more financially inclusive world.
+						</p>
+						<kv-button
+							class="tw-w-full tw-mb-2"
+							@click="showAllBadges"
+							v-kv-track-event="[
+								'thanks',
+								'click',
+								'discover-more-badges',
+							]"
 						>
-							<div class="tw-py-2">
-								<h2>Before you go!</h2>
-								<!-- eslint-disable-next-line max-len -->
-								<p>Finish setting up your account to track and relend your money as you are paid back.</p>
-								<guest-account-creation
-									class="tw-pt-3 account-creation"
-									event-category="thanks"
-									event-label="open-account-creation-drawer"
+							Discover more badges
+						</kv-button>
+						<div>
+							<kv-button
+								v-if="!isGuest"
+								class="tw-w-full no-border"
+								to="/portfolio"
+								variant="secondary"
+								v-kv-track-event="[
+									'thanks',
+									'click',
+									'go-to-my-kiva',
+									'Button seen after badge reveal'
+								]"
+							>
+								Go to my kiva
+							</kv-button>
+							<div
+								v-else
+								class="option-box"
+								:class="{'open' : openCreateAccount}"
+								@click="() => openCreateAccount = !openCreateAccount"
+								v-kv-track-event="[
+									'thanks',
+									'click',
+									'open-account-creation-drawer',
+								]"
+							>
+								<p class="tw-font-medium">
+									Create your account
+								</p>
+								<kv-material-icon
+									:icon="mdiChevronDown"
+									class="expandable-button"
+									:class="{'tw-rotate-180' : openCreateAccount}"
 								/>
 							</div>
-						</kv-expandable>
+							<kv-expandable
+								v-show="openCreateAccount"
+								easing="ease-in-out"
+							>
+								<div class="tw-py-2">
+									<h2>Before you go!</h2>
+									<!-- eslint-disable-next-line max-len -->
+									<p>Finish setting up your account to track and relend your money as you are paid back.</p>
+									<guest-account-creation
+										class="tw-pt-3 account-creation"
+										event-category="thanks"
+										event-label="open-account-creation-drawer"
+									/>
+								</div>
+							</kv-expandable>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div
-				class="secondary-container"
-			>
-				<h3 class="tw-text-center tw-pt-1">
-					You are now part of {{ borrowerName }}'s journey! Here's what's next:
-				</h3>
-				<loan-next-steps
-					class="tw-mb-5"
-					:weeks-to-repay="weeksToRepay"
-				/>
-				<div class="tw-mb-2 hide-for-print">
-					<div v-if="!isGuest">
-						<kv-button
-							class="tw-w-full ghost-button"
-							to="/portfolio"
-							variant="secondary"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'go-to-my-kiva',
-							]"
+					<div v-else>
+						<div
+							class="secondary-container"
 						>
-							Go to my kiva
-						</kv-button>
-					</div>
-					<div
-						v-else
-						class="option-box"
-						:class="{'open' : openCreateAccount}"
-						@click="() => openCreateAccount = !openCreateAccount"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-account-creation-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Create your account
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openCreateAccount}"
-						/>
-					</div>
-					<kv-expandable
-						v-show="openCreateAccount"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<h2>Before you go!</h2>
-							<!-- eslint-disable-next-line max-len -->
-							<p>Finish setting up your account to track and relend your money as you are paid back.</p>
-							<guest-account-creation
-								class="tw-pt-3 account-creation"
-								event-category="thanks"
-								event-label="open-account-creation-drawer"
+							<h3 class="tw-text-center tw-pt-1">
+								You are now part of {{ borrowerName }}'s journey! Here's what's next:
+							</h3>
+							<loan-next-steps
+								class="tw-mb-5"
+								:weeks-to-repay="weeksToRepay"
 							/>
+							<div class="tw-mb-2 hide-for-print">
+								<div v-if="!isGuest">
+									<kv-button
+										class="tw-w-full ghost-button"
+										to="/portfolio"
+										variant="secondary"
+										v-kv-track-event="[
+											'thanks',
+											'click',
+											'go-to-my-kiva',
+										]"
+									>
+										Go to my kiva
+									</kv-button>
+								</div>
+								<div
+									v-else
+									class="option-box"
+									:class="{'open' : openCreateAccount}"
+									@click="() => openCreateAccount = !openCreateAccount"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'open-account-creation-drawer',
+									]"
+								>
+									<p class="tw-font-medium">
+										Create your account
+									</p>
+									<kv-material-icon
+										:icon="mdiChevronDown"
+										class="expandable-button"
+										:class="{'tw-rotate-180' : openCreateAccount}"
+									/>
+								</div>
+								<kv-expandable
+									v-show="openCreateAccount"
+									easing="ease-in-out"
+								>
+									<div class="tw-py-2">
+										<h2>Before you go!</h2>
+										<!-- eslint-disable-next-line max-len -->
+										<p>Finish setting up your account to track and relend your money as you are paid back.</p>
+										<guest-account-creation
+											class="tw-pt-3 account-creation"
+											event-category="thanks"
+											event-label="open-account-creation-drawer"
+										/>
+									</div>
+								</kv-expandable>
+							</div>
 						</div>
-					</kv-expandable>
-				</div>
-			</div>
-			<div class="tw-pt-2 tw-pb-5 tw-border-t tw-px-3 md:tw-px-8" style="border-top-color: #ECE4D5;">
-				<div class="tw-mb-2">
-					<!-- eslint-disable-next-line max-len -->
-					<div
-						class="option-box hide-for-print"
-						:class="{'open' : openOrderConfirmation}"
-						@click="() => openOrderConfirmation = !openOrderConfirmation"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-order-confirmation-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Show previous loan details
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openOrderConfirmation}"
-						/>
+						<div class="tw-pt-2 tw-pb-5 tw-border-t tw-px-3 md:tw-px-8" style="border-top-color: #ECE4D5;">
+							<div class="tw-mb-2">
+								<!-- eslint-disable-next-line max-len -->
+								<div
+									class="option-box hide-for-print"
+									:class="{'open' : openOrderConfirmation}"
+									@click="() => openOrderConfirmation = !openOrderConfirmation"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'open-order-confirmation-drawer',
+									]"
+								>
+									<p class="tw-font-medium">
+										Show previous loan details
+									</p>
+									<kv-material-icon
+										:icon="mdiChevronDown"
+										class="expandable-button"
+										:class="{'tw-rotate-180' : openOrderConfirmation}"
+									/>
+								</div>
+								<kv-expandable
+									v-show="openOrderConfirmation"
+									easing="ease-in-out"
+								>
+									<div class="tw-py-2">
+										<checkout-receipt
+											v-if="receipt"
+											:lender="lender"
+											:receipt="receipt"
+										/>
+									</div>
+								</kv-expandable>
+							</div>
+							<div class="hide-for-print">
+								<div
+									class="option-box"
+									:class="{'open' : openShareModule}"
+									@click="() => openShareModule = !openShareModule"
+									v-kv-track-event="[
+										'thanks',
+										'click',
+										'open-share-drawer',
+									]"
+								>
+									<p class="tw-font-medium">
+										Share
+									</p>
+									<kv-material-icon
+										:icon="mdiChevronDown"
+										class="expandable-button"
+										:class="{'tw-rotate-180' : openShareModule}"
+									/>
+								</div>
+								<kv-expandable
+									v-show="openShareModule"
+									easing="ease-in-out"
+								>
+									<div class="tw-py-2">
+										<social-share-v2
+											v-if="receipt"
+											class="social-share"
+											:lender="lender"
+											:loans="loans"
+										/>
+									</div>
+								</kv-expandable>
+							</div>
+						</div>
 					</div>
-					<kv-expandable
-						v-show="openOrderConfirmation"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<checkout-receipt
-								v-if="receipt"
-								:lender="lender"
-								:receipt="receipt"
-							/>
-						</div>
-					</kv-expandable>
-				</div>
-				<div class="hide-for-print">
-					<div
-						class="option-box"
-						:class="{'open' : openShareModule}"
-						@click="() => openShareModule = !openShareModule"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-share-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Share
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openShareModule}"
-						/>
-					</div>
-					<kv-expandable
-						v-show="openShareModule"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<social-share-v2
-								v-if="receipt"
-								class="social-share"
-								:lender="lender"
-								:loans="loans"
-							/>
-						</div>
-					</kv-expandable>
 				</div>
 			</div>
 		</div>
+		<transition name="fade">
+			<DiscoverSection
+				v-if="discoverBadges"
+				:selected-loan-region="selectedLoanRegion"
+				:is-guest="isGuest"
+				@back-to-earned-badge="() => discoverBadges = false"
+			/>
+		</transition>
 	</div>
 </template>
 
@@ -281,10 +306,8 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '@/components/Checkout/SocialShareV2';
 import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import confetti from 'canvas-confetti';
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import AnimatedStars from '@/components/Thanks/AnimatedStars';
+import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
@@ -301,9 +324,9 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 		AnimatedStars,
+		DiscoverSection,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [smoothScrollMixin],
 	props: {
 		selectedLoan: {
 			type: Object,
@@ -325,14 +348,6 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		optedIn: {
-			type: Boolean,
-			default: false
-		},
-		shortVersionEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -340,28 +355,18 @@ export default {
 			openOrderConfirmation: false,
 			openShareModule: false,
 			mdiChevronDown,
-			confirmOptInChoice: false,
-			selectOption: false,
 			imageRequire,
 			isBlurred: true,
 			isMobileLayout: false,
 			wiggle: false,
 			badgeBlurRevealing: false,
 			badgeBlurRevealCompleted: false,
+			discoverBadges: false,
 		};
 	},
 	computed: {
 		borrowerName() {
 			return this.selectedLoan?.name ?? '';
-		},
-		filteredLoans() {
-			const filteredLoans = [...this.loans];
-			if (this.loans.length === 3) {
-				const indexToRemove = filteredLoans.indexOf(loan => loan.id === this.selectedLoan.id);
-				const removedLoan = filteredLoans.splice(indexToRemove, 1)[0];
-				filteredLoans.splice(1, 0, removedLoan);
-			}
-			return filteredLoans.slice(0, 3);
 		},
 		weeksToRepay() {
 			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
@@ -382,16 +387,6 @@ export default {
 
 			return `${minDate} - ${maxDate} weeks`;
 		},
-		marginLeftWeight() {
-			if (this.filteredLoans.length === 1) {
-				return 0;
-			}
-			if (this.filteredLoans.length === 2) {
-				return 6;
-			}
-
-			return 10;
-		},
 		headerTitle() {
 			return this.badgeBlurRevealCompleted ? 'Congrats!' : 'Success!';
 		},
@@ -400,56 +395,16 @@ export default {
 				? 'You earned your first badge'
 				: 'Celebrate your first loan with a special gift. 🙌';
 		},
-		ctaCopy() {
-			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
-				return 'Complete your account to track your impact and manage repayments.';
-			}
-			if (this.isGuest || (!this.isGuest && !this.optedIn)) {
-				// eslint-disable-next-line max-len
-				return `Want to hear how you're impacting ${this.borrowerName}'s life and more ways to help people like them?`;
-			}
-
-			return '';
-		},
 		revealBtnCta() {
 			return `${this.isMobileLayout ? 'Tap' : 'Click'} to reveal`;
-		}
+		},
+		selectedLoanRegion() {
+			return this.selectedLoan?.geocode?.country?.region ?? '';
+		},
 	},
 	methods: {
 		hash(loan) {
 			return loan?.image?.hash ?? '';
-		},
-		updateOptIn(value) {
-			this.selectOption = true;
-			this.openCreateAccount = true;
-			if (value) {
-				try {
-					this.apollo.mutate({
-						mutation: gql`
-							mutation updateCommunicationSettings(
-								$lenderNews: Boolean
-							) {
-								my {
-									updateCommunicationSettings(
-										communicationSettings: {
-											lenderNews: $lenderNews
-										}
-									)
-								}
-							}
-						`,
-						variables: {
-							lenderNews: value,
-						},
-					});
-				} catch (error) {
-					logFormatter(error, 'error');
-				}
-			}
-			const elementToScrollTo = document.querySelector('#loan-info');
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-			this.confirmOptInChoice = value;
 		},
 		toggleBlur() {
 			this.isBlurred = !this.isBlurred;
@@ -462,7 +417,10 @@ export default {
 			setTimeout(() => {
 				this.badgeBlurRevealCompleted = true;
 			}, 1000);
-		}
+		},
+		showAllBadges() {
+			this.discoverBadges = true;
+		},
 	},
 	created() {
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
@@ -591,6 +549,14 @@ export default {
 
 .grow {
 	@apply tw-w-full tw-h-full tw-top-0 tw-left-0 tw-transform-none;
+}
+
+.fade-enter-active {
+	transition: opacity 1s;
+}
+
+.fade-enter {
+	@apply tw-opacity-0;
 }
 
 </style>
