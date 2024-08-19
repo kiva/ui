@@ -181,14 +181,15 @@ export default {
 			loan: () => {},
 			loanAdded: false,
 			mdiMapMarker,
-			showError: false
+			showError: false,
+			contentfulContent: null,
 		};
 	},
 	apollo: {
 		query: processInstantLendingContent,
 		preFetch: true,
 		preFetchVariables({ route }) {
-			return { loanId: parseInt(route.params.loanId, 10) };
+			return { loanId: parseInt(route?.value?.params?.loanId, 10) };
 		},
 		variables() {
 			return { loanId: parseInt(this.$route.params.loanId, 10) };
