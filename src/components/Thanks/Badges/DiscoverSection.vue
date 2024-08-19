@@ -104,8 +104,8 @@ export default {
 				},
 				{
 					id: 5,
-					name: 'Refugee',
-					img: 'refugee'
+					name: 'Refugees',
+					img: 'refugees'
 				},
 				{
 					id: 6,
