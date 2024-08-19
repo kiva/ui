@@ -11,35 +11,42 @@
 			<lender-loans-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
+				@loans-loaded="isLoading = false"
 			/>
 
 			<lender-badges
 				:total-possible-badges="allAchievements.length"
 				:completed-achievements="completedAchievements"
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 
 			<lender-dedications-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 
 			<lender-teams-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 
 			<lender-invitees-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 
 			<lender-stats
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 
 			<lender-map
 				:lender-info="lenderInfo"
+				:is-loading="isLoading"
 			/>
 		</kv-page-container>
 	</www-page>
@@ -140,6 +147,7 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			allAchievements: [],
+			isLoading: true,
 		};
 	},
 	apollo: {

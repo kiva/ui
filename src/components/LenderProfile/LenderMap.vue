@@ -1,69 +1,80 @@
 <template>
 	<section v-if="countriesData.length > 0">
-		<h4 class="data-hj-suppress tw-mb-2">
-			{{ lenderMapTitle }}
-		</h4>
-		<kv-map
-			class="
-				tw-rounded
-				tw-overflow-hidden
-				tw-mb-3
-			"
-			:auto-zoom-delay="500"
-			:aspect-ratio="1.8"
-			:lat="30"
-			:long="1"
-			:zoom-level="2"
-			:use-leaflet="true"
-			:show-zoom-control="true"
-			:allow-dragging="true"
-			:show-labels="false"
-			:countries-data="countriesData"
-			:show-fundraising-loans="showFundraisingLoans"
-			@country-lend-filter="countryFilterClicked"
-		/>
-		<div>
-			<p class="tw-mb-1 tw-font-medium">
-				Legend:
-			</p>
-			<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2">
-				<div
-					v-for="legend in legendData"
-					:key="legend.color"
-					class="tw-flex tw-items-start tw-gap-1"
-				>
+		<div v-if="isLoading">
+			<kv-loading-placeholder
+				class="tw-mb-2"
+				style="height: 30px; width: 250px;"
+			/>
+			<kv-loading-placeholder
+				class="tw-w-full tw-aspect-video"
+			/>
+		</div>
+		<div v-else>
+			<h4 class="data-hj-suppress tw-mb-2">
+				{{ lenderMapTitle }}
+			</h4>
+			<kv-map
+				class="
+					tw-rounded
+					tw-overflow-hidden
+					tw-mb-3
+				"
+				:auto-zoom-delay="500"
+				:aspect-ratio="1.8"
+				:lat="30"
+				:long="1"
+				:zoom-level="2"
+				:use-leaflet="true"
+				:show-zoom-control="true"
+				:allow-dragging="true"
+				:show-labels="false"
+				:countries-data="countriesData"
+				:show-fundraising-loans="showFundraisingLoans"
+				@country-lend-filter="countryFilterClicked"
+			/>
+			<div>
+				<p class="tw-mb-1 tw-font-medium">
+					Legend:
+				</p>
+				<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2">
+					<div
+						v-for="legend in legendData"
+						:key="legend.color"
+						class="tw-flex tw-items-start tw-gap-1"
+					>
+						<span
+							:class="[
+								'tw-w-4',
+								'tw-h-2',
+								'tw-border',
+								legend.color,
+							]"
+						></span>
+						<p class="tw-text-small tw-font-medium">
+							{{ legend.label }}
+						</p>
+					</div>
+				</div>
+				<div class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 					<span
-						:class="[
-							'tw-w-4',
-							'tw-h-2',
-							'tw-border',
-							legend.color,
-						]"
+						class="tw-w-1 tw-h-1 tw-border tw-rounded-full tw-bg-brand-900"
 					></span>
 					<p class="tw-text-small tw-font-medium">
-						{{ legend.label }}
+						Fundraising loans
 					</p>
 				</div>
 			</div>
-			<div class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
-				<span
-					class="tw-w-1 tw-h-1 tw-border tw-rounded-full tw-bg-brand-900"
-				></span>
-				<p class="tw-text-small tw-font-medium">
-					Fundraising loans
+			<div class="tw-mt-3">
+				<p class="tw-mb-1 tw-font-medium">
+					Options:
 				</p>
+				<kv-checkbox
+					class="tw-text-small tw-font-medium custom-checkbox"
+					v-model="showFundraisingLoans"
+				>
+					Show fundraising loans
+				</kv-checkbox>
 			</div>
-		</div>
-		<div class="tw-mt-3">
-			<p class="tw-mb-1 tw-font-medium">
-				Options:
-			</p>
-			<kv-checkbox
-				class="tw-text-small tw-font-medium custom-checkbox"
-				v-model="showFundraisingLoans"
-			>
-				Show fundraising loans
-			</kv-checkbox>
 		</div>
 	</section>
 </template>
@@ -73,6 +84,7 @@ import numeral from 'numeral';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMap from '~/@kiva/kv-components/vue/KvMap';
 import { getLoansIntervals } from '~/@kiva/kv-components/utils/mapUtils';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const mapColors = [
 	100,
@@ -88,11 +100,16 @@ export default {
 	components: {
 		KvMap,
 		KvCheckbox,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		lenderInfo: {
 			type: Object,
 			required: true,
+		},
+		isLoading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

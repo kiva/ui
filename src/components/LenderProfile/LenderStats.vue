@@ -1,22 +1,34 @@
 <template>
 	<section class="tw-my-8">
-		<h4 class="tw-mb-2">
-			Portfolio distribution
-		</h4>
-		<stats-table
-			class="lender-stats"
-			:location-stats="locationStats"
-			:gender-stats="genderStats"
-			:sector-stats="sectorStats"
-			:partner-stats="partnerStats"
-			track-category="lender"
-			chart="pie"
-		/>
+		<div v-if="isLoading">
+			<kv-loading-placeholder
+				class="tw-mb-2"
+				style="height: 30px; width: 250px;"
+			/>
+			<kv-loading-placeholder
+				class="tw-w-full tw-aspect-video"
+			/>
+		</div>
+		<div v-else>
+			<h4 class="tw-mb-2">
+				Portfolio distribution
+			</h4>
+			<stats-table
+				class="lender-stats"
+				:location-stats="locationStats"
+				:gender-stats="genderStats"
+				:sector-stats="sectorStats"
+				:partner-stats="partnerStats"
+				track-category="lender"
+				chart="pie"
+			/>
+		</div>
 	</section>
 </template>
 
 <script>
 import StatsTable from '@/components/Stats/StatsTable';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderStats',
@@ -26,10 +38,15 @@ export default {
 			type: Object,
 			default: () => ({}),
 			required: true,
-		}
+		},
+		isLoading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		StatsTable,
+		KvLoadingPlaceholder,
 	},
 	methods: {
 		statsWithPercent(stats) {

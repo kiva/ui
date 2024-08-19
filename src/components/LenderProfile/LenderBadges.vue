@@ -1,6 +1,15 @@
 <template>
 	<section v-if="completedAchievements.length > 0">
-		<h4>{{ badgesTitle }}</h4>
+		<h4
+			v-if="!isLoading"
+			class="data-hj-suppress"
+		>
+			{{ badgesTitle }}
+		</h4>
+		<kv-loading-placeholder
+			v-else
+			style="height: 30px; width: 250px;"
+		/>
 		<badges-list
 			class="tw-my-4"
 			:completed-achievements="completedAchievements"
@@ -12,11 +21,13 @@
 
 <script>
 import BadgesList from '@/pages/Portfolio/LendingStats/BadgesList';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderBadges',
 	components: {
-		BadgesList
+		BadgesList,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		completedAchievements: {
@@ -30,12 +41,13 @@ export default {
 		lenderInfo: {
 			type: Object,
 			default: () => ({})
+		},
+		isLoading: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
-		isLoading() {
-			return this.totalPossibleBadges === 0;
-		},
 		lenderName() {
 			return this.lenderInfo?.name ?? '';
 		},

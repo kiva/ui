@@ -1,44 +1,55 @@
 <template>
 	<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
-		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderInviteesTitle }}
-		</h4>
-		<p class="tw-mb-2">
-			{{ showedInvitees }}
-		</p>
-
+		<div v-if="!isLoading">
+			<h4 class="data-hj-suppress tw-mb-1">
+				{{ lenderInviteesTitle }}
+			</h4>
+			<p class="tw-mb-2">
+				{{ showedInvitees }}
+			</p>
+		</div>
+		<kv-loading-placeholder
+			v-else
+			class="tw-mb-2"
+			style="height: 55px; width: 250px;"
+		/>
 		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
 			<div
-				v-for="invitee in lenderInvitees"
-				:key="`invitee-${invitee.id}`"
+				v-for="(invitee, index) in lenderInvitees"
+				:key="`invitee-${invitee.id}-${index}`"
 				class="tw-flex tw-flex-col tw-gap-0.5"
 			>
-				<component
-					:is="!invitee.publicId ? 'span' : 'a'"
-					:href="`/lender/${invitee.publicId}`"
-				>
-					<kv-material-icon
-						v-if="!getImageUrl(invitee)"
-						:icon="mdiAccountCircle"
-						class="!tw-block tw-mx-auto tw-w-3/4"
-					/>
-					<img
-						v-else
-						:src="getImageUrl(invitee)"
-						style="width: 200px;"
-						class="tw-object-cover tw-aspect-square"
+				<div v-if="!invitee.id">
+					<kv-loading-placeholder class="tw-w-full tw-aspect-square" />
+				</div>
+				<div v-else>
+					<component
+						:is="!invitee.publicId ? 'span' : 'a'"
+						:href="`/lender/${invitee.publicId}`"
 					>
-				</component>
-				<component
-					class="data-hj-suppress"
-					:is="!invitee.publicId ? 'span' : 'a'"
-					:href="`/lender/${invitee.publicId}`"
-				>
-					{{ invitee.name }}
-				</component>
-				<p v-if="whereabouts(invitee)">
-					{{ whereabouts(invitee) }}
-				</p>
+						<kv-material-icon
+							v-if="!getImageUrl(invitee)"
+							:icon="mdiAccountCircle"
+							class="!tw-block tw-mx-auto tw-w-3/4"
+						/>
+						<img
+							v-else
+							:src="getImageUrl(invitee)"
+							style="width: 200px;"
+							class="tw-object-cover tw-aspect-square"
+						>
+					</component>
+					<component
+						class="data-hj-suppress"
+						:is="!invitee.publicId ? 'span' : 'a'"
+						:href="`/lender/${invitee.publicId}`"
+					>
+						{{ invitee.name }}
+					</component>
+					<p v-if="whereabouts(invitee)">
+						{{ whereabouts(invitee) }}
+					</p>
+				</div>
 			</div>
 		</div>
 		<kv-pagination
@@ -63,6 +74,7 @@ import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderInviteesQuery from '@/graphql/query/lenderInvitees.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderInviteesList',
@@ -71,6 +83,7 @@ export default {
 	components: {
 		KvPagination,
 		KvMaterialIcon,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		publicId: {
@@ -81,10 +94,14 @@ export default {
 			type: Object,
 			required: true,
 		},
+		isLoading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
-			lenderInvitees: [],
+			lenderInvitees: new Array(6).fill({ id: 0 }),
 			inviteesLimit: 12,
 			inviteesOffset: 0,
 			totalCount: 0,
@@ -156,12 +173,14 @@ export default {
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},
-	mounted() {
-		this.fetchLenderInvitees();
-	},
 	created() {
 		this.pageQuery = _get(this.$route, 'query');
 		this.updateFromParams(this.pageQuery);
-	}
+	},
+	watch: {
+		isLoading() {
+			if (!this.isLoading) this.fetchLenderInvitees();
+		},
+	},
 };
 </script>
