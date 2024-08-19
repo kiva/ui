@@ -256,7 +256,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.isClientReady = !this.$isServer;
+		this.isClientReady = typeof window !== 'undefined';
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('selectedDefaultCardNonce', () => {
 			this.v$.$touch();

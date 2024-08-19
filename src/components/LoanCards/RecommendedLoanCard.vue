@@ -300,7 +300,7 @@ export default {
 		return this.prefetchLoanData();
 	},
 	created() {
-		if (!this.$isServer) {
+		if (typeof window !== 'undefined') {
 			this.readLoanData();
 			this.watchQueryLoanData();
 		}

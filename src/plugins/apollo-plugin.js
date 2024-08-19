@@ -6,7 +6,7 @@ const injections = ['apollo', 'cookieStore'];
 
 // install method for plugin
 export default app => {
-// export default {
+	// export default {
 	app.mixin({
 		created() {
 			if (this.$options.apollo) {
@@ -15,9 +15,9 @@ export default app => {
 				const {
 					query,
 					preFetch,
-					preFetchVariables = () => {},
-					variables = () => {},
-					result = () => {},
+					preFetchVariables = () => { },
+					variables = () => { },
+					result = () => { },
 				} = this.$options.apollo;
 
 				if (query) {
@@ -51,7 +51,7 @@ export default app => {
 						}
 					}
 
-					if (!this.$isServer) {
+					if (typeof window !== 'undefined') {
 						// Setup an observer to watch for changes to the query result
 						const observer = this.apollo.watchQuery({
 							query,

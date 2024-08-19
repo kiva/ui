@@ -133,7 +133,7 @@ export default {
 			});
 		},
 		setFrameSrc() {
-			if (!this.$isServer && window && window.location && this.formId) {
+			if (typeof window !== 'undefined' && window && window.location && this.formId) {
 				// eslint-disable-next-line max-len
 				this.iFrameSrc = `https://kiva.tfaforms.net/${this.formId}?tfa_1=${this.userId}&tfa_2=${this.maId}&tfa_3=${this.pfId}&tfa_4=${this.spId}&tfa_5=${this.spUserId}`;
 			}

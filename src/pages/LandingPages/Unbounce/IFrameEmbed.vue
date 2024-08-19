@@ -87,7 +87,7 @@ export default {
 		}
 	},
 	mounted() {
-		if (!this.$isServer) {
+		if (typeof window !== 'undefined') {
 			this.resizeIframe();
 
 			window.addEventListener('message', message => {

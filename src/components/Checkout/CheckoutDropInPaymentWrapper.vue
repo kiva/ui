@@ -223,7 +223,7 @@ export default {
 		};
 	},
 	mounted() {
-		this.isClientReady = !this.$isServer;
+		this.isClientReady = typeof window !== 'undefined';
 	},
 	methods: {
 		submit() {
