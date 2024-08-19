@@ -13,7 +13,7 @@
 			:style="{border: '1px solid #2AA967'}"
 		>
 			<img
-				src="#src/assets/images/party-emoji.png"
+				:src="partyEmoji"
 				alt="matching icon"
 				class="tw-m-auto"
 				:style="{ padding: '4px 0 2px 0', height: '1.2rem'}"
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import partyEmoji from '#src/assets/images/party-emoji.png';
+
 export default {
 	name: 'LoanMatchingText',
 	props: {
@@ -53,6 +55,11 @@ export default {
 			type: String,
 			default: '',
 		}
+	},
+	data() {
+		return {
+			partyEmoji,
+		};
 	},
 	computed: {
 		amountLeft() {

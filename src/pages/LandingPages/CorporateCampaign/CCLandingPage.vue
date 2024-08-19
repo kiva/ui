@@ -645,7 +645,7 @@ export default {
 				query: pageQuery,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route.params.dynamicRoute?.trim(),
+					contentKey: args?.route?.value?.params?.dynamicRoute?.trim(),
 				}
 			}).then(({ data }) => {
 				// Get Contentful page data
