@@ -36,7 +36,7 @@
  */
 import { gql } from 'graphql-tag';
 import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
-
+import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
@@ -103,8 +103,8 @@ export default {
 		query: userTeamMembership,
 		preFetchVariables({ route }) {
 			return {
-				teamPublicId: route.query.teamPublicId,
-				publicId: route.query.inviter ?? '',
+				teamPublicId: route?.value?.query?.teamPublicId,
+				publicId: route?.value?.query?.inviter ?? '',
 			};
 		},
 		variables() {
@@ -113,12 +113,6 @@ export default {
 				publicId: this.inviter ?? '',
 			};
 		},
-		result({ data }) {
-			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
-			this.teamName = data?.community?.team?.name ?? '';
-			this.teamId = data?.community?.team?.id ?? 0;
-			this.inviterId = data?.community?.lender?.id ?? null;
-		}
 	},
 	data() {
 		return {
@@ -150,7 +144,7 @@ export default {
 	},
 	methods: {
 		memberRedirect() {
-			if (!this.$isServer) {
+			if (typeof window !== 'undefined') {
 				window.location = this.doneUrl ? this.doneUrl : `/team/${this.teamPublicId}`;
 			}
 		},
@@ -204,6 +198,22 @@ export default {
 		}
 	},
 	created() {
+		try {
+			const data = this.apollo.readQuery({
+				query: userTeamMembership,
+				variables: {
+					teamPublicId: this.$route?.query?.teamPublicId,
+					publicId: this.$route?.query?.inviter ?? '',
+				}
+			});
+			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
+			this.teamName = data?.community?.team?.name ?? '';
+			this.teamId = data?.community?.team?.id ?? 0;
+			this.inviterId = data?.community?.lender?.id ?? null;
+		} catch (e) {
+			logReadQueryError(e, 'ProcessJoinTeam userTeamMembership');
+		}
+
 		if (this.isPending) {
 			// is pending, do nothing
 			this.isLoading = false;
