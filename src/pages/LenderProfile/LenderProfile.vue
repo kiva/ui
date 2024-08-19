@@ -11,7 +11,7 @@
 			<lender-loans-list
 				:public-id="publicId"
 				:lender-info="lenderInfo"
-				@loans-loaded="isLoading = false"
+				@loans-loaded="() => isLoading = false"
 			/>
 
 			<lender-badges
