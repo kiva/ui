@@ -280,7 +280,7 @@ import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import confetti from 'canvas-confetti';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import AnimatedStars from '#src/components/Thanks/AnimatedStars';
