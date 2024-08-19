@@ -564,7 +564,7 @@ export default {
 		this.showCheckoutError(validationErrors, true);
 
 		// Fire error for empty shop state
-		if (!this.isServer && !this.totals) {
+		if (typeof window !== 'undefined' && !this.totals) {
 			Sentry.withScope(scope => {
 				scope.setTag('init_checkout', 'Missing baseline basket information');
 				Sentry.captureMessage(`Missing baseline basket information; totals value is ${this.totals}.`);
