@@ -14,7 +14,7 @@
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<template v-if="receipt">
 						<div v-if="!calculatePeopleQtyToGoal()">
-							<img :alt="`Fully funded image`" src="#src/assets/images/thanks-page/kiva-share.png">
+							<img :alt="`Fully funded image`" :src="kivaShare">
 						</div>
 						<borrower-image
 							v-else
@@ -225,6 +225,7 @@ import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
 
 export default {
 	name: 'ThanksPageCommentAndShare',
@@ -291,6 +292,7 @@ export default {
 				text: 'Copy Link'
 			},
 			utmCampaign: 'social_share_checkout',
+			kivaShare,
 		};
 	},
 	computed: {
