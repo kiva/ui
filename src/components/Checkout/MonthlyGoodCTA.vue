@@ -80,8 +80,8 @@
 						:to="{
 							path: '/monthlygood/setup',
 							query: {
-								amount: this.mgAmount,
-								category: this.selectedGroup,
+								amount: mgAmount,
+								category: selectedGroup,
 								nextmonth: true
 							}
 						}"
