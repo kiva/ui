@@ -37,65 +37,23 @@ export const Default = (args, { argTypes }) => ({
 			<div style="width: 32px">
 				<kv-flag
 					:country="country"
-					:inline-svg="inlineSvg"
-					:aspect-ratio="aspectRatio"
+					:is-square="isSquare"
 				/>
 			</div>
 			<br />
 			<kv-flag
 				:country="country"
-				:inline-svg="inlineSvg"
-				:aspect-ratio="aspectRatio"
+				:is-square="isSquare"
 				style="width: 20px;"
 			 />
 		</div>
 	`,
 });
 
-export const InlineSvg = Default.bind({});
-InlineSvg.args = {
-	inlineSvg: true,
-};
-
 export const Square = Default.bind({});
 Square.args = {
-	aspectRatio: '1x1'
+	isSquare: true,
 };
-
-export const Circular = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
-	components: {
-		KvFlag
-	},
-	setup() { return args; },
-	template: `
-		<div style="width: 32px;">
-			<component is="style">
-				.circular {
-					border-radius: 50%;
-					overflow: hidden;
-					border: 1px solid #ccc;
-					box-sizing: content-box;
-				}
-			</component>
-			<kv-flag
-				:country="country"
-				:inline-svg="inlineSvg"
-				:aspect-ratio="aspectRatio"
-				class="circular"
-			/>
-		</div>
-	`,
-});
-Circular.args = {
-	aspectRatio: '1x1'
-};
-
-export const CircularInlineSvg = Circular.bind({});
-CircularInlineSvg.args = {
-	...Circular.args,
-	inlineSvg: true
-}
 
 export const AllCountries = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
@@ -116,8 +74,6 @@ export const AllCountries = (args, { argTypes }) => ({
 				<div>{{ country.code }} - {{ country.name }}</div>
 				<kv-flag
 					:country="country.code"
-					:inline-svg="inlineSvg"
-					:aspect-ratio="aspectRatio"
 					style="width: 32px;"
 				/>
 			</div>
@@ -127,14 +83,4 @@ export const AllCountries = (args, { argTypes }) => ({
 
 AllCountries.argTypes = {
 	country: { control: { disable: true } },
-	inlineSvg: { control: { disable: true } }
-}
-
-export const AllCountriesInlineSvg = AllCountries.bind({});
-AllCountriesInlineSvg.args = {
-	...AllCountries.args,
-	inlineSvg: true
-}
-AllCountriesInlineSvg.argTypes = {
-	...AllCountries.argTypes,
 }

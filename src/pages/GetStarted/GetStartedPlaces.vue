@@ -102,7 +102,7 @@
 											<kv-flag
 												class="country__img"
 												:country="country.code"
-												aspect-ratio="1x1"
+												:is-square="true"
 											/>
 										</span>
 

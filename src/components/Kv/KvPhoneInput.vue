@@ -19,7 +19,6 @@
 				<kv-flag
 					class="kv-phone-input__select-flag"
 					:country="selectedCountryCode"
-					:inline-svg="true"
 				/>
 
 				<select

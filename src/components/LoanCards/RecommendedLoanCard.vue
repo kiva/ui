@@ -28,7 +28,7 @@
 						v-if="countryISO"
 						:country="countryISO"
 						aspect-ratio="1x1"
-						:inline-svg="true"
+						:is-square="true"
 					/>
 					<span class="rec-loan-card__time-left">
 						{{ timeLeftMessage }}

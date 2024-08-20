@@ -105,8 +105,7 @@
 										<kv-flag
 											class="edit-preferences__flag"
 											:country="country.isoCode"
-											aspect-ratio="1x1"
-											:inline-svg="true"
+											:is-square="true"
 										/>
 									</li>
 									<li v-if="countries.length > 3" class="edit-preferences__list-item--counter">
