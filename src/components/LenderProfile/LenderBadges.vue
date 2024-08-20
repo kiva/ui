@@ -1,33 +1,37 @@
 <template>
-	<section v-if="completedAchievements.length > 0">
-		<h4
-			v-if="!isLoading"
-			class="data-hj-suppress"
-		>
-			{{ badgesTitle }}
-		</h4>
-		<kv-loading-placeholder
-			v-else
-			style="height: 30px; width: 250px;"
-		/>
-		<badges-list
-			class="tw-my-4"
-			:completed-achievements="completedAchievements"
-			:total-possible-badges="totalPossibleBadges"
-			:is-loading="isLoading"
-		/>
-	</section>
+	<async-lender-section @visible="isLoading = false;">
+		<section v-if="completedAchievements.length > 0">
+			<h4
+				v-if="!isLoading"
+				class="data-hj-suppress"
+			>
+				{{ badgesTitle }}
+			</h4>
+			<kv-loading-placeholder
+				v-else
+				style="height: 30px; width: 250px;"
+			/>
+			<badges-list
+				class="tw-my-4"
+				:completed-achievements="completedAchievements"
+				:total-possible-badges="totalPossibleBadges"
+				:is-loading="isLoading"
+			/>
+		</section>
+	</async-lender-section>
 </template>
 
 <script>
 import BadgesList from '@/pages/Portfolio/LendingStats/BadgesList';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderBadges',
 	components: {
 		BadgesList,
 		KvLoadingPlaceholder,
+		AsyncLenderSection,
 	},
 	props: {
 		completedAchievements: {
@@ -42,11 +46,11 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		isLoading: {
-			type: Boolean,
-			required: true,
-			default: true
-		}
+	},
+	data() {
+		return {
+			isLoading: true
+		};
 	},
 	computed: {
 		lenderName() {

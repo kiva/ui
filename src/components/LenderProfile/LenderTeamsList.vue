@@ -1,62 +1,64 @@
 <template>
-	<section v-if="lenderTeams.length > 0" class="tw-my-8" id="lender-teams">
-		<div v-if="!isLoading">
-			<h4 class="data-hj-suppress tw-mb-1">
-				{{ lenderTeamsTitle }}
-			</h4>
-			<p class="tw-mb-2">
-				{{ showedTeams }}
-			</p>
-		</div>
-		<kv-loading-placeholder
-			v-else
-			class="tw-mb-2"
-			style="height: 55px; width: 250px;"
-		/>
-		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
-			<div
-				v-for="(team, index) in lenderTeams"
-				:key="`team-${team.id}-${index}`"
-				class="tw-flex tw-flex-col tw-gap-0.5"
-			>
-				<div v-if="!team.id">
-					<kv-loading-placeholder class="tw-w-full tw-aspect-square" />
-				</div>
-				<div v-else>
-					<a
-						:href="`/team/${team.teamPublicId}`"
-					>
-						<kv-material-icon
-							v-if="!getImageUrl(team)"
-							:icon="mdiAccountCircle"
-							class="!tw-block tw-mx-auto tw-w-3/4"
-						/>
-						<img
-							v-else
-							:src="getImageUrl(team)"
-							style="width: 200px;"
-							class="tw-object-cover tw-aspect-square"
+	<async-lender-section @visible="fetchLenderTeams">
+		<section v-if="lenderTeams.length > 0" class="tw-my-8" id="lender-teams">
+			<div v-if="!isLoading">
+				<h4 class="data-hj-suppress tw-mb-1">
+					{{ lenderTeamsTitle }}
+				</h4>
+				<p class="tw-mb-2">
+					{{ showedTeams }}
+				</p>
+			</div>
+			<kv-loading-placeholder
+				v-else
+				class="tw-mb-2"
+				style="height: 55px; width: 250px;"
+			/>
+			<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
+				<div
+					v-for="(team, index) in lenderTeams"
+					:key="`team-${team.id}-${index}`"
+					class="tw-flex tw-flex-col tw-gap-0.5"
+				>
+					<div v-if="!team.id">
+						<kv-loading-placeholder class="tw-w-full tw-aspect-square" />
+					</div>
+					<div v-else>
+						<a
+							:href="`/team/${team.teamPublicId}`"
 						>
-					</a>
-					<a
-						:href="`/team/${team.teamPublicId}`"
-					>
-						{{ team.name }}
-					</a>
-					<p>{{ team.category }}</p>
+							<kv-material-icon
+								v-if="!getImageUrl(team)"
+								:icon="mdiAccountCircle"
+								class="!tw-block tw-mx-auto tw-w-3/4"
+							/>
+							<img
+								v-else
+								:src="getImageUrl(team)"
+								style="width: 200px;"
+								class="tw-object-cover tw-aspect-square"
+							>
+						</a>
+						<a
+							:href="`/team/${team.teamPublicId}`"
+						>
+							{{ team.name }}
+						</a>
+						<p>{{ team.category }}</p>
+					</div>
 				</div>
 			</div>
-		</div>
-		<kv-pagination
-			class="tw-mt-4"
-			v-if="totalCount > teamsLimit"
-			:limit="teamsLimit"
-			:total="totalCount"
-			:offset="teamsOffset"
-			:scroll-to-top="false"
-			@page-changed="pageChange"
-		/>
-	</section>
+			<kv-pagination
+				class="tw-mt-4"
+				v-if="totalCount > teamsLimit"
+				:limit="teamsLimit"
+				:total="totalCount"
+				:offset="teamsOffset"
+				:scroll-to-top="false"
+				@page-changed="pageChange"
+			/>
+		</section>
+	</async-lender-section>
 </template>
 
 <script>
@@ -70,6 +72,7 @@ import lenderTeamsQuery from '@/graphql/query/lenderTeams.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderTeamsList',
@@ -79,6 +82,7 @@ export default {
 		KvPagination,
 		KvMaterialIcon,
 		KvLoadingPlaceholder,
+		AsyncLenderSection,
 	},
 	props: {
 		publicId: {
@@ -89,11 +93,6 @@ export default {
 			type: Object,
 			required: true,
 		},
-		isLoading: {
-			type: Boolean,
-			required: true,
-			default: true,
-		},
 	},
 	data() {
 		return {
@@ -103,6 +102,7 @@ export default {
 			totalCount: 0,
 			pageQuery: { teams: '1' },
 			mdiAccountCircle,
+			isLoading: true,
 		};
 	},
 	computed: {
@@ -136,6 +136,7 @@ export default {
 
 				this.lenderTeams = data.community?.lender?.teams?.values ?? [];
 				this.totalCount = data.community?.lender?.teams?.totalCount ?? 0;
+				this.isLoading = false;
 			} catch (e) {
 				logReadQueryError(e, 'LenderTeamsList lenderTeamsQuery');
 			}
@@ -169,11 +170,6 @@ export default {
 	created() {
 		this.pageQuery = _get(this.$route, 'query');
 		this.updateFromParams(this.pageQuery);
-	},
-	watch: {
-		isLoading() {
-			if (!this.isLoading) this.fetchLenderTeams();
-		},
 	},
 };
 </script>

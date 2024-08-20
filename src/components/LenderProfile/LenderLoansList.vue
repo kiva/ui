@@ -105,7 +105,6 @@ export default {
 
 				this.lenderLoans = data.community?.lender?.loans?.values ?? [];
 				this.totalCount = data.community?.lender?.loans?.totalCount ?? 0;
-				this.$emit('loans-loaded');
 			} catch (e) {
 				logReadQueryError(e, 'LenderLoansList lenderLoansQuery');
 			}
