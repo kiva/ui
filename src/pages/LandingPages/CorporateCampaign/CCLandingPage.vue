@@ -1745,19 +1745,17 @@ export default {
 			width: 58.75rem;
 		}
 
-		:deep(*) {
-			.full-details-link,
-			.close-button-wrapper,
-			.info-panel a,
-			.borrower-info-body.loan-use a {
-				display: none;
-			}
+		:deep(.full-details-link),
+		:deep(.close-button-wrapper),
+		:deep(.info-panel a),
+		:deep(.borrower-info-body.loan-use a) {
+			display: none;
+		}
 
-			.name-location-sector .name {
-				text-decoration: none;
-				color: $body-font-color;
-				cursor: text;
-			}
+		:deep(.name-location-sector .name) {
+			text-decoration: none;
+			color: $body-font-color;
+			cursor: text;
 		}
 	}
 
