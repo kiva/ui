@@ -15,7 +15,7 @@
 						key="`${name}-country-list`"
 						:items="regions[name]"
 						:use-columns="true"
-						@change="onChange"
+						@update="onChange"
 					/>
 				</div>
 			</div>

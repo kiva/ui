@@ -26,7 +26,7 @@
 					v-if="currentRegion && currentRegion.length"
 					:key="openRegion"
 					:items="currentRegion"
-					@change="onChange"
+					@update="onChange"
 				/>
 				<p v-else key="none" class="tw-text-tertiary tw-p-1">
 					Pick a region

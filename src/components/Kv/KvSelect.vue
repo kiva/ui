@@ -15,7 +15,7 @@ export default {
 	name: 'KvSelect',
 	props: {
 		modelValue: {
-			type: [String, Boolean],
+			type: [String, Boolean, Number],
 			required: true,
 		},
 	},
@@ -23,6 +23,13 @@ export default {
 		return {
 			inputValue: this.modelValue,
 		};
+	},
+	watch: {
+		modelValue(newValue) {
+			if (newValue !== this.inputValue) {
+				this.inputValue = newValue;
+			}
+		},
 	},
 };
 </script>

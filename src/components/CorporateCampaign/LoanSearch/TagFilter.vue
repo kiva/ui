@@ -6,7 +6,7 @@
 					key="tags"
 					:items="tagsWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>

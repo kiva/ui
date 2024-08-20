@@ -6,7 +6,7 @@
 					key="sectors"
 					:items="sectorsWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>

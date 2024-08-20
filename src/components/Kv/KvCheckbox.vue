@@ -61,12 +61,7 @@ export default {
 	},
 	methods: {
 		onChange(event) {
-			/**
-			 * The value of the checkbox :checked state
-			 * @event change
-			 * @type {Event}
-			 */
-			this.$emit('change', event.target.checked);
+			this.$emit('update', event.target.checked);
 		},
 	},
 	watch: {
@@ -77,6 +72,13 @@ export default {
 				}
 			},
 			immediate: true,
+		},
+		checked: {
+			handler(newValue) {
+				if (newValue !== null) {
+					this.inputValue = newValue;
+				}
+			},
 		},
 	},
 };

@@ -6,7 +6,7 @@
 					key="attributes"
 					:items="attributesWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>

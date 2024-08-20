@@ -85,7 +85,7 @@
 				<kv-checkbox
 					id="user-pref-hide-interstitial"
 					:checked="userPrefHideInterstitial"
-					@change="handleChangeUserPref"
+					@update="handleChangeUserPref"
 				>
 					Don't show me this again
 				</kv-checkbox>

@@ -35,7 +35,7 @@ export default {
 			});
 		},
 		emitChangeEvent(value) {
-			this.$emit('change', {
+			this.$emit('update', {
 				radioKey: this.radioKey,
 				value
 			});

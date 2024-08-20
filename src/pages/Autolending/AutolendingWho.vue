@@ -43,14 +43,14 @@
 								<div class="small-12 large-6 columns">
 									<country-radios
 										class="tw-mb-4"
-										@change="filterRadioChange"
+										@update="filterRadioChange"
 										:selector-shown="showSelectedFilterOptions"
 									/>
 								</div>
 								<div class="small-12 large-6 columns">
 									<sector-radios
 										class="tw-mb-4"
-										@change="filterRadioChange"
+										@update="filterRadioChange"
 										:selector-shown="showSelectedFilterOptions"
 									/>
 								</div>
@@ -75,7 +75,7 @@
 											<div class="small-12 large-6 columns">
 												<attribute-radios
 													class="tw-mb-4"
-													@change="filterRadioChange"
+													@update="filterRadioChange"
 													:selector-shown="showSelectedFilterOptions"
 												/>
 											</div>
@@ -85,7 +85,7 @@
 											<div class="small-12 large-6 columns">
 												<partner-radios
 													class="tw-mb-4"
-													@change="filterRadioChange"
+													@update="filterRadioChange"
 													:selector-shown="showSelectedFilterOptions"
 												/>
 											</div>
@@ -103,7 +103,7 @@
 								</div>
 							</div>
 						</div>
-						<div v-if="showSelectedFilterOptions" key="specificFilter">
+						<div v-else key="specificFilter">
 							<country-filter v-if="selectedFilterGroup =='country'" />
 							<sector-filter v-if="selectedFilterGroup =='sector'" />
 							<attribute-filter v-if="selectedFilterGroup =='theme'" />

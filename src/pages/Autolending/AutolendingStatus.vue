@@ -8,8 +8,8 @@
 					@click="showLightbox = true; triggerWatcher()"
 					data-test="autolending-status"
 				>
-					<span class="tw-uppercase">{{ autolendingStatus }}</span>
-					<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
+					<!-- eslint-disable-next-line max-len -->
+					<span class="tw-uppercase">{{ autolendingStatus }}</span> <span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
 				</button>.
 			</p>
 

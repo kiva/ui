@@ -9,7 +9,7 @@
 					key="partners"
 					:items="partnersWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>

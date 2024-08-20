@@ -3,7 +3,7 @@
 		id="pushNotifications"
 		name="pushNotifications"
 		v-model="pushNotificationsActive"
-		@change="changePushSetting"
+		@update="changePushSetting"
 	>
 		Receive notifications on this device
 	</kv-checkbox>

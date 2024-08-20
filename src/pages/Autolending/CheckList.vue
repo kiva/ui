@@ -16,7 +16,7 @@
 				<kv-checkbox
 					:id="$filters.changeCase(`${name}-${id}`, 'paramCase')"
 					:checked="selected"
-					@change="$emit('change', $event, id);"
+					@update="$emit('update', $event, id);"
 				>
 					{{ name }}
 				</kv-checkbox>
@@ -46,7 +46,7 @@ export default {
 	methods: {
 		emitAll(checked) {
 			const ids = this.items.map(x => x.id);
-			this.$emit('change', checked, ids);
+			this.$emit('update', checked, ids);
 		},
 	},
 };

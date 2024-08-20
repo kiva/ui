@@ -1,7 +1,7 @@
 <template>
 	<div class="lend-timing-dropdown">
 		<span>Lend my balance for me</span>
-		<kv-select :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
+		<kv-select v-model="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
 			<option value="0">
 				As soon as possible
 			</option>
@@ -66,7 +66,8 @@ export default {
 					return 0;
 			}
 		},
-		updateLendAfterDaysIdle(value) {
+		updateLendAfterDaysIdle(event) {
+			const { value } = event.target;
 			if (value !== this.lendAfterDaysIdle) {
 				this.apollo.mutate({
 					mutation: gql`mutation updateLendAfterDaysIdle($value: Int) {
