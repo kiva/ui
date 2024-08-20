@@ -26,7 +26,7 @@
 					</label>
 					<kv-currency-input
 						:id="'amount-' + componentKey"
-						:value="amount"
+						v-model="monthlyAmount"
 						@input="updateAmount"
 					/>
 					<ul class="validation-errors tw-text-danger" v-if="v$.$invalid">
@@ -99,6 +99,11 @@ export default {
 			default: 'Contribute monthly'
 		},
 	},
+	data() {
+		return {
+			monthlyAmount: this.amount,
+		};
+	},
 	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		componentKey() {
@@ -129,6 +134,13 @@ export default {
 			});
 		}
 	},
+	watch: {
+		amount(newValue) {
+			if (newValue !== this.monthlyAmount) {
+				this.monthlyAmount = newValue;
+			}
+		}
+	}
 };
 
 </script>

@@ -48,14 +48,8 @@
 							<div class="row align-center tw-text-center">
 								<div class="medium-10 small-12 columns">
 									<div class="row column">
-										<strong>Each month on the</strong>
-										<label
-											class="tw-sr-only"
-											:class="{ 'tw-text-danger': v$.dayOfMonth?.$invalid }"
-											:for="dayOfMonth"
-										>
-											Day of the Month
-										</label>
+										<!-- eslint-disable-next-line max-len -->
+										<strong>Each month on the</strong> <label class="tw-sr-only" :class="{ 'tw-text-danger': v$.dayOfMonth?.$invalid }" :for="dayOfMonth">Day of the Month</label>
 										<kv-text-input
 											v-if="isDayInputShown"
 											@blur="hideDayInput()"
