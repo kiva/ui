@@ -1,5 +1,5 @@
 <template>
-	<async-lender-section @visible="isLoading = false;">
+	<async-lender-section @visible="() => isLoading = false">
 		<section v-if="completedAchievements.length > 0">
 			<h4
 				v-if="!isLoading"

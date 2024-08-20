@@ -1,5 +1,5 @@
 <template>
-	<async-lender-section @visible="isLoading = false;">
+	<async-lender-section @visible="() => isLoading = false">
 		<section v-if="countriesData.length > 0">
 			<div v-if="isLoading">
 				<kv-loading-placeholder
