@@ -1,56 +1,69 @@
 <template>
-	<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
-		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderInviteesTitle }}
-		</h4>
-		<p class="tw-mb-2">
-			{{ showedInvitees }}
-		</p>
-
-		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
-			<div
-				v-for="invitee in lenderInvitees"
-				:key="`invitee-${invitee.id}`"
-				class="tw-flex tw-flex-col tw-gap-0.5"
-			>
-				<component
-					:is="!invitee.publicId ? 'span' : 'a'"
-					:href="`/lender/${invitee.publicId}`"
-				>
-					<kv-material-icon
-						v-if="!getImageUrl(invitee)"
-						:icon="mdiAccountCircle"
-						class="!tw-block tw-mx-auto tw-w-3/4"
-					/>
-					<img
-						v-else
-						:src="getImageUrl(invitee)"
-						style="width: 200px;"
-						class="tw-object-cover tw-aspect-square"
-					>
-				</component>
-				<component
-					class="data-hj-suppress"
-					:is="!invitee.publicId ? 'span' : 'a'"
-					:href="`/lender/${invitee.publicId}`"
-				>
-					{{ invitee.name }}
-				</component>
-				<p v-if="whereabouts(invitee)">
-					{{ whereabouts(invitee) }}
+	<async-lender-section @visible="fetchLenderInvitees">
+		<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
+			<div v-if="!isLoading">
+				<h4 class="data-hj-suppress tw-mb-1">
+					{{ lenderInviteesTitle }}
+				</h4>
+				<p class="tw-mb-2">
+					{{ showedInvitees }}
 				</p>
 			</div>
-		</div>
-		<kv-pagination
-			class="tw-mt-4"
-			v-if="totalCount > inviteesLimit"
-			:limit="inviteesLimit"
-			:total="totalCount"
-			:offset="inviteesOffset"
-			:scroll-to-top="false"
-			@page-changed="pageChange"
-		/>
-	</section>
+			<kv-loading-placeholder
+				v-else
+				class="tw-mb-2"
+				style="height: 55px; width: 250px;"
+			/>
+			<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
+				<div
+					v-for="(invitee, index) in lenderInvitees"
+					:key="`invitee-${invitee.id}-${index}`"
+					class="tw-flex tw-flex-col tw-gap-0.5"
+				>
+					<div v-if="!invitee.id">
+						<kv-loading-placeholder class="tw-w-full tw-aspect-square" />
+					</div>
+					<div v-else>
+						<component
+							:is="!invitee.publicId ? 'span' : 'a'"
+							:href="`/lender/${invitee.publicId}`"
+						>
+							<kv-material-icon
+								v-if="!getImageUrl(invitee)"
+								:icon="mdiAccountCircle"
+								class="!tw-block tw-mx-auto tw-w-3/4"
+							/>
+							<img
+								v-else
+								:src="getImageUrl(invitee)"
+								style="width: 200px;"
+								class="tw-object-cover tw-aspect-square"
+							>
+						</component>
+						<component
+							class="data-hj-suppress"
+							:is="!invitee.publicId ? 'span' : 'a'"
+							:href="`/lender/${invitee.publicId}`"
+						>
+							{{ invitee.name }}
+						</component>
+						<p v-if="whereabouts(invitee)">
+							{{ whereabouts(invitee) }}
+						</p>
+					</div>
+				</div>
+			</div>
+			<kv-pagination
+				class="tw-mt-4"
+				v-if="totalCount > inviteesLimit"
+				:limit="inviteesLimit"
+				:total="totalCount"
+				:offset="inviteesOffset"
+				:scroll-to-top="false"
+				@page-changed="pageChange"
+			/>
+		</section>
+	</async-lender-section>
 </template>
 
 <script>
@@ -63,6 +76,8 @@ import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderInviteesQuery from '@/graphql/query/lenderInvitees.graphql';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderInviteesList',
@@ -71,6 +86,8 @@ export default {
 	components: {
 		KvPagination,
 		KvMaterialIcon,
+		KvLoadingPlaceholder,
+		AsyncLenderSection,
 	},
 	props: {
 		publicId: {
@@ -84,12 +101,13 @@ export default {
 	},
 	data() {
 		return {
-			lenderInvitees: [],
+			lenderInvitees: new Array(6).fill({ id: 0 }),
 			inviteesLimit: 12,
 			inviteesOffset: 0,
 			totalCount: 0,
 			pageQuery: { invitees: '1' },
 			mdiAccountCircle,
+			isLoading: true,
 		};
 	},
 	computed: {
@@ -123,6 +141,7 @@ export default {
 
 				this.lenderInvitees = data.community?.lender?.invitees?.values ?? [];
 				this.totalCount = data.community?.lender?.invitees?.totalCount ?? 0;
+				this.isLoading = false;
 			} catch (e) {
 				logReadQueryError(e, 'LenderInviteesList lenderInviteesQuery');
 			}
@@ -156,12 +175,9 @@ export default {
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},
-	mounted() {
-		this.fetchLenderInvitees();
-	},
 	created() {
 		this.pageQuery = _get(this.$route, 'query');
 		this.updateFromParams(this.pageQuery);
-	}
+	},
 };
 </script>

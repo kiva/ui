@@ -1,41 +1,55 @@
 <template>
-	<section v-if="lenderDedications.length > 0" class="tw-my-8" id="lender-dedications">
-		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderDedicationsTitle }}
-		</h4>
-		<p class="tw-mb-2">
-			{{ showedDedications }}
-		</p>
-
-		<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
-			<div
-				v-for="dedication in lenderDedications"
-				:key="`dedication-${dedication.id}`"
-				class="tw-flex tw-flex-col tw-gap-0.5"
-			>
-				<a
-					:href="`/dedication/${dedication.loanId}`"
-				>
-					<dedicate-heart class="tw-w-full tw-px-4 tw-fill-brand" />
-				</a>
-				<a
-					:href="`/dedication/${dedication.loanId}`"
-					class="data-hj-suppress"
-				>
-					Dedicated by {{ dedication.senderName }}
-				</a>
+	<async-lender-section @visible="fetchLenderDedications">
+		<section v-if="lenderDedications.length > 0" class="tw-my-8" id="lender-dedications">
+			<div v-if="!isLoading">
+				<h4 class="data-hj-suppress tw-mb-1">
+					{{ lenderDedicationsTitle }}
+				</h4>
+				<p class="tw-mb-2">
+					{{ showedDedications }}
+				</p>
 			</div>
-		</div>
-		<kv-pagination
-			class="tw-mt-4"
-			v-if="totalCount > dedicationsLimit"
-			:limit="dedicationsLimit"
-			:total="totalCount"
-			:offset="dedicationsOffset"
-			:scroll-to-top="false"
-			@page-changed="pageChange"
-		/>
-	</section>
+			<kv-loading-placeholder
+				v-else
+				class="tw-mb-2"
+				style="height: 55px; width: 250px;"
+			/>
+
+			<div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 lg:tw-grid-cols-6 tw-gap-4">
+				<div
+					v-for="(dedication, index) in lenderDedications"
+					:key="`dedication-${dedication.id}-${index}`"
+					class="tw-flex tw-flex-col tw-gap-0.5"
+				>
+					<div v-if="!dedication.id">
+						<kv-loading-placeholder class="tw-w-full tw-aspect-square" />
+					</div>
+					<div v-else>
+						<a
+							:href="`/dedication/${dedication.loanId}`"
+						>
+							<dedicate-heart class="tw-w-full tw-px-4 tw-fill-brand" />
+						</a>
+						<a
+							:href="`/dedication/${dedication.loanId}`"
+							class="data-hj-suppress"
+						>
+							Dedicated by {{ dedication.senderName }}
+						</a>
+					</div>
+				</div>
+			</div>
+			<kv-pagination
+				class="tw-mt-4"
+				v-if="totalCount > dedicationsLimit"
+				:limit="dedicationsLimit"
+				:total="totalCount"
+				:offset="dedicationsOffset"
+				:scroll-to-top="false"
+				@page-changed="pageChange"
+			/>
+		</section>
+	</async-lender-section>
 </template>
 
 <script>
@@ -48,6 +62,8 @@ import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import lenderDedicationsQuery from '@/graphql/query/lenderDedications.graphql';
 import DedicateHeart from '@/assets/icons/inline/dedicate-heart.svg';
 import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderDedicationsList',
@@ -56,6 +72,8 @@ export default {
 	components: {
 		KvPagination,
 		DedicateHeart,
+		KvLoadingPlaceholder,
+		AsyncLenderSection
 	},
 	props: {
 		publicId: {
@@ -69,12 +87,13 @@ export default {
 	},
 	data() {
 		return {
-			lenderDedications: [],
+			lenderDedications: new Array(6).fill({ id: 0 }),
 			dedicationsLimit: 12,
 			dedicationsOffset: 0,
 			totalCount: 0,
 			pageQuery: { dedications: '1' },
 			mdiAccountCircle,
+			isLoading: true,
 		};
 	},
 	computed: {
@@ -108,6 +127,7 @@ export default {
 
 				this.lenderDedications = data.community?.lender?.dedicationsReceived?.values ?? [];
 				this.totalCount = data.community?.lender?.dedicationsReceived?.totalCount ?? 0;
+				this.isLoading = false;
 			} catch (e) {
 				logReadQueryError(e, 'LenderDedicationsList lenderDedicationsQuery');
 			}
@@ -135,12 +155,9 @@ export default {
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},
-	mounted() {
-		this.fetchLenderDedications();
-	},
 	created() {
 		this.pageQuery = _get(this.$route, 'query');
 		this.updateFromParams(this.pageQuery);
-	}
+	},
 };
 </script>
