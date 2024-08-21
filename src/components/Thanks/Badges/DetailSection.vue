@@ -6,38 +6,20 @@
 				YOUR BADGES
 			</p>
 		</div>
-		<h2 class="tw-pb-2">
-			Collect new badges with every loan
-		</h2>
-		<p class="tw-text-secondary tw-pb-2">
-			Tap to learn how:
-		</p>
-		<div
-			class="
-				tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2 md:tw-gap-4
-				tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
-			"
+		<!-- TODO: Add Badge Carousel -->
+		<p>{{ selectedBadge }}</p>
+		<kv-button
+			class="tw-w-full"
+			to="/portfolio"
+			v-kv-track-event="[
+				'thanks',
+				'click',
+				'set-as-goal',
+				currentBadgeName
+			]"
 		>
-			<div
-				v-for="badge in badges"
-				:key="badge.id"
-				class="badge-card"
-				v-kv-track-event="[
-					'thanks',
-					'click',
-					'choose-a-badge',
-					badge.name
-				]"
-				@click="() => selectBadge(badge.name)"
-			>
-				<img
-					:src="imageRequire(`./${badge.img}.svg`)"
-					class="tw-w-10 tw-h-10 tw-mx-auto"
-					alt="Gift icon"
-				>
-				<p>{{ badge.name }}</p>
-			</div>
-		</div>
+			Set as goal
+		</kv-button>
 		<kv-button
 			v-if="!isGuest"
 			class="tw-w-full no-border"
@@ -47,7 +29,7 @@
 				'thanks',
 				'click',
 				'go-to-my-kiva',
-				'Button seen after badge badge options shown'
+				`Button seen after seeing ${currentBadgeName} badge`
 			]"
 		>
 			Go to my kiva
@@ -63,20 +45,12 @@ import KvButton from '~/@kiva/kv-components/vue/KvButton';
 const imageRequire = require.context('@/assets/images/thanks-page/badges', true);
 
 export default {
-	name: 'DiscoverSection',
+	name: 'DetailSection',
 	props: {
-		isGuest: {
-			type: Boolean,
-			default: false
-		},
-		selectedLoanRegion: {
+		selectedBadge: {
 			type: String,
 			default: ''
 		},
-		badges: {
-			type: Array,
-			default: () => ([])
-		}
 	},
 	components: {
 		KvButton,
@@ -86,10 +60,20 @@ export default {
 		return {
 			imageRequire,
 			mdiChevronLeft,
+			currentBadge: null,
 		};
 	},
+	computed: {
+		randomSortedBadges() {
+			const badges = [...this.defaultSortBadges];
+			return badges.sort(() => Math.random() - 0.5);
+		},
+		currentBadgeName() {
+			return this.currentBadge?.name ?? '';
+		},
+	},
 	mounted() {
-		const badgesNames = this.badges.map(badge => badge.name).join(', ');
+		const badgesNames = this.randomSortedBadges.map(badge => badge.name).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
@@ -102,22 +86,11 @@ export default {
 			this.$kvTrackEvent('thanks', 'click', 'back-to-earned-badge');
 			this.$emit('back');
 		},
-		selectBadge(badgeName) {
-			this.$kvTrackEvent('thanks', 'click', 'choose-a-badge', badgeName);
-			this.$emit('select-badge', badgeName);
-		}
 	}
 };
 </script>
 
 <style lang="postcss" scoped>
-
-.badge-card {
-	width: 156px;
-	height: 148px;
-	box-shadow: 0 4px 12px 0 #00000014;
-	@apply tw-cursor-pointer tw-border tw-flex tw-flex-col tw-rounded tw-gap-2 tw-border-none tw-justify-center;
-}
 
 .no-border >>> span {
 	@apply tw-bg-transparent tw-border-0;
