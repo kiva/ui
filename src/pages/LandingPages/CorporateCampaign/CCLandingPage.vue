@@ -669,7 +669,8 @@ export default {
 		// TODO: Convert to prefetch function and check for page path before fetching all content
 		// - Requires extended contentful graphql query options for include depth and query by addtional fields
 		preFetchVariables({ route }) {
-			return { contentType: 'page', contentKey: route.params.dynamicRoute };
+			const currentRoute = route?.value ?? route;
+			return { contentType: 'page', contentKey: currentRoute?.params?.dynamicRoute };
 		},
 		variables() {
 			return { contentType: 'page', contentKey: this.$route.params.dynamicRoute };

@@ -517,9 +517,10 @@ export default {
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
-			const publicId = getPublicId(route);
+			const currentRoute = route?.value ?? route;
+			const publicId = getPublicId(currentRoute);
 			return {
-				loanId: Number(route?.params?.id ?? 0),
+				loanId: Number(currentRoute?.params?.id ?? 0),
 				publicId,
 				getInviter: !!publicId,
 				basketId: cookieStore.get('kvbskt'),

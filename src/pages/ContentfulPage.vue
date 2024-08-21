@@ -215,9 +215,10 @@ export default {
 	apollo: {
 		query: contentfulEntries,
 		preFetchVariables({ route, client }) {
+			const currentRoute = route?.value ?? route;
 			return {
 				contentType: 'page',
-				contentKey: route?.meta?.contentfulPage(route, client, experimentVersionFragment)?.trim(),
+				contentKey: currentRoute?.meta?.contentfulPage(currentRoute, client, experimentVersionFragment)?.trim(),
 			};
 		},
 		variables() {

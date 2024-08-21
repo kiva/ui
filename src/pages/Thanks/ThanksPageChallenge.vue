@@ -260,7 +260,8 @@ export default {
 			});
 		},
 		preFetchVariables({ route }) {
-			return { challengeId: route.params.challengeId };
+			const currentRoute = route?.value ?? route;
+			return { challengeId: currentRoute?.params?.challengeId };
 		},
 		variables() {
 			return { challengeId: this.$route.params.challengeId };
