@@ -245,7 +245,7 @@ export default {
 			// Set email updates based on comms preference MP-271
 			let { emailUpdates } = this;
 			if (this.enableRadioBtnExperiment) {
-				emailUpdates = this.selectedComms === '1';
+				emailUpdates = this.selectedComms === 'on';
 			}
 			this.$emit('opt-in', emailUpdates);
 

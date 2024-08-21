@@ -3,43 +3,15 @@
 		<kv-page-container
 			class="tw-pt-4 tw-pb-8"
 		>
-			<lender-summary
+			<lender-profile-wrapper
+				v-if="lenderIsPublic"
 				:public-id="publicId"
 				:lender-info="lenderInfo"
-			/>
-
-			<lender-loans-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-badges
-				:total-possible-badges="allAchievements.length"
+				:all-achievements="allAchievements"
 				:completed-achievements="completedAchievements"
-				:lender-info="lenderInfo"
 			/>
-
-			<lender-dedications-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-teams-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-invitees-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-stats
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-map
-				:lender-info="lenderInfo"
+			<not-found-wrapper
+				v-else
 			/>
 		</kv-page-container>
 	</www-page>
@@ -48,15 +20,9 @@
 <script>
 import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import LenderSummary from '#src/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
-import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
-import LenderStats from '#src/components/LenderProfile/LenderStats';
-import LenderTeamsList from '#src/components/LenderProfile/LenderTeamsList';
-import LenderBadges from '#src/components/LenderProfile/LenderBadges';
-import LenderInviteesList from '#src/components/LenderProfile/LenderInviteesList';
-import LenderDedicationsList from '#src/components/LenderProfile/LenderDedicationsList';
-import LenderMap from '#src/components/LenderProfile/LenderMap';
+import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
+import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -65,32 +31,60 @@ export default {
 	components: {
 		WwwPage,
 		KvPageContainer,
-		LenderSummary,
-		LenderLoansList,
-		LenderStats,
-		LenderTeamsList,
-		LenderBadges,
-		LenderInviteesList,
-		LenderDedicationsList,
-		LenderMap,
+		LenderProfileWrapper,
+		NotFoundWrapper,
 	},
 	metaInfo() {
 		return {
 			title: this.pageTitle,
 			meta: [
-				{ property: 'og:title', vmid: 'og:title', content: this.pageTitle },
-				{ property: 'og:description', vmid: 'og:description', content: this.pageDescription },
-				{ property: 'og:site_name', vmid: 'og:site_name', content: 'Kiva' },
 				{
 					vmid: 'description',
 					name: 'description',
 					content: this.pageDescription,
-				}
+				},
+				{
+					property: 'og:title',
+					vmid: 'og:title',
+					content: this.pageTitle,
+				},
+				{
+					property: 'og:description',
+					vmid: 'og:description',
+					content: this.pageDescription,
+				},
+				{
+					property: 'og:site_name',
+					vmid: 'og:site_name',
+					content: 'Kiva',
+				},
+				{
+					property: 'og:image',
+					vmid: 'og:image',
+					content: this.seoImageUrl,
+				},
 			].concat([
 				{
 					vmid: 'facebook_label',
 					name: 'facebook_label',
-					content: `Kiva - Lender > ${this.lenderName} from ${this.lenderWhereAbouts}`
+					content: this.pageTitle,
+				},
+			]).concat([
+				// Twitter Tags
+				{
+					name: 'twitter:title',
+					vmid: 'twitter:title',
+					content: this.pageTitle,
+				},
+				{
+					name: 'twitter:image',
+					vmid: 'twitter:image',
+					content: this.seoImageUrl,
+				},
+				{
+					name: 'twitter:description',
+					vmid: 'twitter:description',
+					content: this.pageDescription,
 				},
 			]).concat([
 				{
@@ -106,6 +100,7 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			allAchievements: [],
+			lenderIsPublic: false,
 		};
 	},
 	apollo: {
@@ -130,10 +125,18 @@ export default {
 			return this.lenderInfo?.loanCount ?? 0;
 		},
 		pageTitle() {
-			return `Lender > ${this.lenderName} from ${this.lenderWhereAbouts}`;
+			let title = `Lender > ${this.lenderName}`;
+			if (this.lenderWhereAbouts) title += ` from ${this.lenderWhereAbouts}`;
+			return title;
 		},
 		pageDescription() {
-			return `${this.lenderName} from ${this.lenderWhereAbouts} has made ${this.loanCount} loans on Kiva.`;
+			let description = `${this.lenderName}`;
+			if (this.lenderWhereAbouts) description += ` from ${this.lenderWhereAbouts}`;
+			description += ` has made ${this.loanCount} loan${this.loanCount === 1 ? '' : 's'} on Kiva.`;
+			return description;
+		},
+		seoImageUrl() {
+			return this.lenderInfo?.seoImage?.url ?? '';
 		},
 		completedAchievements() {
 			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
@@ -150,8 +153,10 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
 		}
-		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
-		this.allAchievements = cachedLenderInfo.userAchievementProgress?.achievementProgress ?? [];
+
+		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
+		this.allAchievements = cachedLenderInfo?.userAchievementProgress?.achievementProgress ?? [];
+		this.lenderIsPublic = !!this.lenderInfo?.id;
 	}
 };
 </script>

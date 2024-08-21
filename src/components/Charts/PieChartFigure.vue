@@ -1,6 +1,6 @@
 <template>
 	<figure
-		class="pie-chart tw-flex tw-items-center tw-justify-center tw-gap-2"
+		class="pie-chart tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-justify-center tw-gap-2"
 		@mouseleave="activeSlice = null"
 	>
 		<!-- pie chart -->
@@ -46,8 +46,8 @@
 			</div>
 		</div>
 		<!-- key -->
-		<div style="width: 12rem; height: 85%;" class="tw-flex tw-flex-col tw-justify-between">
-			<ol>
+		<div style="width: 14rem; height: 85%;" class="tw-flex tw-flex-col tw-justify-between">
+			<ol class="tw-pl-4 md:tw-pl-0">
 				<li
 					v-for="(slice, index) in slices.slice(pageIndex * slicesPerPage, (pageIndex + 1) * slicesPerPage)"
 					:key="index"
@@ -65,7 +65,7 @@
 				</li>
 			</ol>
 			<!-- paging controls -->
-			<div v-if="pageCount > 1">
+			<div class="tw-flex tw-justify-center md:tw-justify-start" v-if="pageCount > 1">
 				<button
 					:disabled="pageIndex === 0"
 					class="tw-font-medium tw-p-0.5 disabled:tw-opacity-low"
@@ -189,7 +189,10 @@ export default {
 
 <style lang="postcss" scoped>
 .pie-chart {
-	height: 20rem;
+	height: 40rem;
+	@screen md {
+		height: 20rem;
+	}
 }
 
 .pie-placeholder {

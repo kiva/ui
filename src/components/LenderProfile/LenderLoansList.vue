@@ -1,18 +1,25 @@
 <template>
 	<section v-if="lenderLoans.length > 0" class="tw-my-8" id="lender-loans">
-		<h4 class="data-hj-suppress tw-mb-1">
-			{{ lenderLoansTitle }}
-		</h4>
-		<p class="tw-mb-2">
-			{{ showedLoans }}
-		</p>
+		<div v-if="totalCount > 0">
+			<h4 class="data-hj-suppress tw-mb-1">
+				{{ lenderLoansTitle }}
+			</h4>
+			<p class="tw-mb-2">
+				{{ showedLoans }}
+			</p>
+		</div>
+		<kv-loading-placeholder
+			v-else
+			class="tw-mb-2"
+			style="height: 55px; width: 250px;"
+		/>
 
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-3">
 			<new-home-page-loan-card
 				class="!tw-max-w-full lender-card"
 				v-for="(loan, index) in lenderLoans"
 				:item-index="index"
-				:key="`loan-${loan.id}`"
+				:key="`loan-${loan.id}-${index}`"
 				:loan-id="loan.id"
 				:lender-public-id="publicId"
 			/>
@@ -37,6 +44,7 @@ import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderLoansQuery from '#src/graphql/query/lenderLoans.graphql';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
 import KvPagination from '@kiva/kv-components/vue/KvPagination';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderLoansList',
@@ -45,6 +53,7 @@ export default {
 	components: {
 		NewHomePageLoanCard,
 		KvPagination,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		publicId: {
@@ -58,7 +67,7 @@ export default {
 	},
 	data() {
 		return {
-			lenderLoans: [],
+			lenderLoans: new Array(4).fill({ id: 0 }),
 			loansLimit: 12,
 			loansOffset: 0,
 			totalCount: 0,
@@ -73,7 +82,7 @@ export default {
 		},
 		showedLoans() {
 			return this.totalCount > 1
-				? `${this.totalCount} loans`
+				? `${numeral(this.totalCount).format('0,0')} loans`
 				: `${this.totalCount} loan`;
 		},
 		urlParams() {

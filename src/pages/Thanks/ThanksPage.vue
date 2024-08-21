@@ -1,5 +1,11 @@
 <template>
-	<www-page data-testid="thanks-page" :class="{'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation}">
+	<www-page
+		data-testid="thanks-page"
+		:class="{
+			'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation,
+			'relative-container': badgesCustomExpEnabled
+		}"
+	>
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
@@ -12,8 +18,6 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
-				:opted-in="optedIn"
-				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 		<template v-else-if="showNewTYPage">
@@ -614,4 +618,12 @@ export default {
 		margin-bottom: 0.5rem;
 	}
 }
+</style>
+
+<style lang="postcss" scoped>
+
+.relative-container >>> main {
+	@apply tw-relative;
+}
+
 </style>
