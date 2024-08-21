@@ -3,43 +3,15 @@
 		<kv-page-container
 			class="tw-pt-4 tw-pb-8"
 		>
-			<lender-summary
+			<lender-profile-wrapper
+				v-if="lenderIsPublic"
 				:public-id="publicId"
 				:lender-info="lenderInfo"
-			/>
-
-			<lender-loans-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-badges
-				:total-possible-badges="allAchievements.length"
+				:all-achievements="allAchievements"
 				:completed-achievements="completedAchievements"
-				:lender-info="lenderInfo"
 			/>
-
-			<lender-dedications-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-teams-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-invitees-list
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-stats
-				:lender-info="lenderInfo"
-			/>
-
-			<lender-map
-				:lender-info="lenderInfo"
+			<not-found-wrapper
+				v-else
 			/>
 		</kv-page-container>
 	</www-page>
@@ -48,15 +20,9 @@
 <script>
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import LenderSummary from '@/components/LenderProfile/LenderSummary';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
-import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
-import LenderStats from '@/components/LenderProfile/LenderStats';
-import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
-import LenderBadges from '@/components/LenderProfile/LenderBadges';
-import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
-import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
-import LenderMap from '@/components/LenderProfile/LenderMap';
+import LenderProfileWrapper from '@/components/LenderProfile/LenderProfileWrapper';
+import NotFoundWrapper from '@/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -65,14 +31,8 @@ export default {
 	components: {
 		WwwPage,
 		KvPageContainer,
-		LenderSummary,
-		LenderLoansList,
-		LenderStats,
-		LenderTeamsList,
-		LenderBadges,
-		LenderInviteesList,
-		LenderDedicationsList,
-		LenderMap,
+		LenderProfileWrapper,
+		NotFoundWrapper,
 	},
 	metaInfo() {
 		return {
@@ -140,6 +100,7 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			allAchievements: [],
+			lenderIsPublic: false,
 		};
 	},
 	apollo: {
@@ -191,8 +152,10 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'LenderProfile lenderPublicProfileQuery');
 		}
-		this.lenderInfo = cachedLenderInfo.community?.lender ?? {};
-		this.allAchievements = cachedLenderInfo.userAchievementProgress?.achievementProgress ?? [];
+
+		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
+		this.allAchievements = cachedLenderInfo?.userAchievementProgress?.achievementProgress ?? [];
+		this.lenderIsPublic = !!this.lenderInfo?.id;
 	}
 };
 </script>
