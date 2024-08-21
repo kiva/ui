@@ -112,7 +112,7 @@ export default {
 		query: loanCardQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {
-			return _merge({ limit: loansPerPage }, fromUrlParams(route.query));
+			return _merge({ limit: loansPerPage }, fromUrlParams(route?.value?.query));
 		},
 		variables() {
 			return {
