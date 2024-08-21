@@ -284,11 +284,7 @@ export default {
 }
 
 .container-shadow {
-	box-shadow: 0 5px 25px 0px #D1DCD6
-}
-
-.grow {
-	@apply tw-w-full tw-h-full tw-top-0 tw-left-0 tw-transform-none;
+	box-shadow: 0 5px 25px 0 #D1DCD6;
 }
 
 </style>
