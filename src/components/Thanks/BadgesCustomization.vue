@@ -288,7 +288,7 @@ import KvButton from '@kiva/kv-components/vue/KvButton';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true });
+const imageRequire = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true, query: '?url' });
 const images = metaGlobReader(imageRequire, '/src/assets/images/thanks-page/');
 
 export default {
