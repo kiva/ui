@@ -80,6 +80,7 @@ export default {
 			this.initPopper().then(() => {
 				this.setTimeout(() => {
 					this.show = true;
+					this.popper.scheduleUpdate();
 					this.attachBodyEvents();
 				}, this.openDelay);
 			});
