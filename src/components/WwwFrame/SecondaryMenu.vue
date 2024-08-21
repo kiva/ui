@@ -16,7 +16,7 @@ export default {
 .secondary-nav {
 	background-color: $kiva-darkgreen;
 
-	ul {
+	:deep(ul) {
 		display: block;
 		list-style: none;
 		margin: 0 auto;

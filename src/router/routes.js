@@ -33,32 +33,30 @@ export default [
 	{
 		path: '/build',
 		component: () => import('#src/pages/Build/BuildPage'),
-		children: [
-			{
-				path: 'code-of-conduct',
-				component: () => import('#src/pages/Build/CodeOfConductPage'),
-			},
-			{
-				path: 'data-snapshots',
-				component: () => import('#src/pages/Build/DataPage')
-			},
-			{
-				path: 'docs',
-				component: () => import('#src/pages/Build/DocsPage')
-			},
-			{
-				path: 'getting-started',
-				component: () => import('#src/pages/Build/GettingStartedPage'),
-			},
-			{
-				path: 'research',
-				component: () => import('#src/pages/Build/Research')
-			},
-			{
-				path: 'terms-of-service',
-				component: () => import('#src/pages/Build/TermsOfService'),
-			},
-		],
+	},
+	{
+		path: '/build/code-of-conduct',
+		component: () => import('#src/pages/Build/CodeOfConductPage'),
+	},
+	{
+		path: '/build/data-snapshots',
+		component: () => import('#src/pages/Build/DataPage'),
+	},
+	{
+		path: '/build/docs',
+		component: () => import('#src/pages/Build/DocsPage'),
+	},
+	{
+		path: '/build/getting-started',
+		component: () => import('#src/pages/Build/GettingStartedPage'),
+	},
+	{
+		path: '/build/research',
+		component: () => import('#src/pages/Build/Research'),
+	},
+	{
+		path: '/build/terms-of-service',
+		component: () => import('#src/pages/Build/TermsOfService'),
 	},
 	{
 		path: '/categories',
