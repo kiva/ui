@@ -1,37 +1,46 @@
 <template>
 	<div
 		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-h-full tw-bg-stone-1"
-		:style="{maxWidth: '620px', minHeight: '1012px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
-		:class="{'tw-bg-stone-1': badgeRevealed}"
+		:style="{maxWidth: '620px', minHeight: '1012px'}"
+		:class="{'container-shadow': !showNewBg}"
 	>
-		<transition name="fade">
+		<div class="new-background tw-h-0 tw-w-0" :class="{ 'grow': newBgActive }"></div>
+		<transition-group name="fade" tag="div">
 			<FirstScreen
+				key="first-screen"
 				v-if="newScreenSteps === 0"
 				:lender="lender"
 				:loans="loans"
 				:is-guest="isGuest"
-				:new-screen-steps="newScreenSteps"
 				:selected-loan="selectedLoan"
 				:receipt="receipt"
-				:badge-revealed="badgeRevealed"
-				@show-discover-badges="showAllBadges"
+				@show-discover-badges="showDiscoverBadges"
+				@show-new-bg="showNewBg"
+			/>
+			<RevealedBadge
+				key="revealed-badge-screen"
+				@show-discover-badges="showDiscoverBadges"
+				v-if="newScreenSteps === 1"
+				:is-guest="isGuest"
 			/>
 			<DiscoverSection
-				v-if="newScreenSteps === 1"
+				v-if="newScreenSteps === 2"
+				key="discover-screen"
 				:selected-loan-region="selectedLoanRegion"
 				:is-guest="isGuest"
 				:badges="randomSortedBadges"
-				@step-back="() => newScreenSteps = 0"
+				@back="() => newScreenSteps -= 1"
 				@select-badge="selectBadge"
 			/>
 			<DetailSection
-				v-if="newScreenSteps === 2"
+				v-if="newScreenSteps === 3"
+				key="detail-screen"
 				:selected-badge="selectedBadge"
 				:badges="randomSortedBadges"
 				:is-guest="isGuest"
-				@step-back="() => newScreenSteps -= 1"
+				@back="() => newScreenSteps -= 1"
 			/>
-		</transition>
+		</transition-group>
 	</div>
 </template>
 
@@ -39,8 +48,8 @@
 import confetti from 'canvas-confetti';
 import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
 import DetailSection from '@/components/Thanks/Badges/DetailSection';
-import badgeCustomization from '@/plugins/badge-customization-mixin';
 import FirstScreen from '@/components/Thanks/Badges/FirstScreen';
+import RevealedBadge from '@/components/Thanks/Badges/RevealedBadge';
 
 export default {
 	name: 'BadgesCustomization',
@@ -48,6 +57,7 @@ export default {
 		FirstScreen,
 		DiscoverSection,
 		DetailSection,
+		RevealedBadge,
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
@@ -72,7 +82,6 @@ export default {
 			default: () => ({})
 		},
 	},
-	mixins: [badgeCustomization],
 	data() {
 		return {
 			isBlurred: true,
@@ -110,7 +119,7 @@ export default {
 					img: 'most-vulnerable'
 				}
 			],
-			badgeRevealed: false,
+			newBgActive: false,
 		};
 	},
 	computed: {
@@ -118,31 +127,24 @@ export default {
 			const badges = [...this.defaultSortBadges];
 			return badges.sort(() => Math.random() - 0.5);
 		},
+		selectedLoanRegion() {
+			return this.selectedLoan?.geocode?.country?.region ?? '';
+		}
 	},
 	methods: {
 		hash(loan) {
 			return loan?.image?.hash ?? '';
 		},
-		toggleBlur() {
-			this.isBlurred = !this.isBlurred;
-			if (!this.isBlurred) {
-				this.badgeBlurRevealing = true;
-			} else {
-				this.badgeBlurRevealing = false;
-			}
-
-			setTimeout(() => {
-				this.badgeBlurRevealCompleted = true;
-			}, 1000);
-		},
-		showAllBadges() {
-			this.badgeRevealed = true;
-			this.newScreenSteps += 1;
+		showDiscoverBadges() {
+			this.newScreenSteps = 2;
 		},
 		selectBadge(badgeName) {
 			this.newScreenSteps += 1;
 			this.selectedBadge = badgeName;
-		}
+		},
+		showNewBg() {
+			this.newBgActive = true;
+		},
 	},
 	created() {
 		this.defaultSortBadges.unshift(
@@ -279,6 +281,14 @@ export default {
 
 .fade-enter {
 	@apply tw-opacity-0;
+}
+
+.container-shadow {
+	box-shadow: 0 5px 25px 0px #D1DCD6
+}
+
+.grow {
+	@apply tw-w-full tw-h-full tw-top-0 tw-left-0 tw-transform-none;
 }
 
 </style>

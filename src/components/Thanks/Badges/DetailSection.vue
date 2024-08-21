@@ -84,7 +84,7 @@ export default {
 	methods: {
 		backToEarnedBadge() {
 			this.$kvTrackEvent('thanks', 'click', 'back-to-earned-badge');
-			this.$emit('step-back');
+			this.$emit('back');
 		},
 	}
 };
