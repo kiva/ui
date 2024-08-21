@@ -43,7 +43,7 @@ import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const kivaContentBlockImageGlob = import.meta.glob(
-	'/src/assets/images/possibilities-banners/kiva-content-block/*.*',
+	'/src/assets/images/possibilities-banners/kiva-content-block/**/*.*',
 	{ eager: true }
 );
 const kivaContentBlockImageRequire = metaGlobReader(

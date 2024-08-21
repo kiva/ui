@@ -54,7 +54,7 @@
 import { metaGlobReader } from '#src/util/importHelpers';
 import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
-const imageRequire = import.meta.glob('/src/assets/images/borrower-profile/education-placement/*.*', {
+const imageRequire = import.meta.glob('/src/assets/images/borrower-profile/education-placement/**/*.*', {
 	eager: true,
 	query: '?url',
 });
