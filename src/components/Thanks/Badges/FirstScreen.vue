@@ -319,10 +319,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		newScreenSteps: {
-			type: Number,
-			default: 0
-		},
 		selectedLoan: {
 			type: Object,
 			default: () => ({})
