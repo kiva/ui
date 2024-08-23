@@ -19,7 +19,7 @@
 			"
 		>
 			<div
-				v-for="badge in badges"
+				v-for="(badge, idx) in badges"
 				:key="badge.id"
 				class="badge-card"
 				v-kv-track-event="[
@@ -28,7 +28,7 @@
 					'choose-a-badge',
 					badge.name
 				]"
-				@click="() => selectBadge(badge.name)"
+				@click="() => selectBadge(idx)"
 			>
 				<img
 					:src="imageRequire(`./${badge.img}.svg`)"
@@ -102,9 +102,8 @@ export default {
 			this.$kvTrackEvent('thanks', 'click', 'back-to-earned-badge');
 			this.$emit('back');
 		},
-		selectBadge(badgeName) {
-			this.$kvTrackEvent('thanks', 'click', 'choose-a-badge', badgeName);
-			this.$emit('select-badge', badgeName);
+		selectBadge(idx) {
+			this.$emit('select-badge', idx);
 		}
 	}
 };
