@@ -31,7 +31,7 @@
 						class="badge tw-mx-auto"
 						alt="Gift icon"
 					>
-					<h3 v-if="badge.name !== selectedName" class="tw-text-center">
+					<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
 						{{ badge.name }}
 					</h3>
 				</div>
@@ -162,6 +162,9 @@ export default {
 			const badgeIndex = this.$refs.badgeCarousel.currentIndex + 1;
 			this.currentBadgeIndex = badgeIndex;
 		},
+		hideBadgeName(badgeId) {
+			return badgeId !== this.currentBadge?.id;
+		}
 	}
 };
 </script>
