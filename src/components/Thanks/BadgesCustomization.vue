@@ -35,7 +35,7 @@
 			<DetailSection
 				v-else-if="newScreenSteps === 3"
 				key="detail-screen"
-				:selected-badge="selectedBadge"
+				:selected-badge-idx="selectedBadgeIdx"
 				:badges="randomSortedBadges"
 				:is-guest="isGuest"
 				@back="() => newScreenSteps -= 1"
@@ -85,32 +85,57 @@ export default {
 	data() {
 		return {
 			newScreenSteps: 0,
-			selectedBadge: '',
+			selectedBadgeId: 0,
 			defaultSortBadges: [
 				{
 					id: 2,
 					name: 'Climate',
-					img: 'climate'
+					img: 'climate',
+					description: 'Climate change is impacting unbanked and underserved populations the most.',
+					goals: [
+						'Complete 2 eco-friendly loans.',
+						'Learn one cool thing about climate action'
+					]
 				},
 				{
 					id: 3,
 					name: 'Women',
-					img: 'women'
+					img: 'women',
+					description: 'Over 50% of unbanked people worldwide are women, lacking access to financial services.',
+					goals: [
+						'Complete 2 loans for women',
+						'Learn one cool thing about women',
+					]
 				},
 				{
 					id: 4,
 					name: 'U.S. Entrepreneurs',
-					img: 'entrepreneurs'
+					img: 'entrepreneurs',
+					description: '1 in 10 U.S. adults are unbanked & roughly 1 in 4 are underbanked.',
+					goals: [
+						'Complete 2 loans for U.S. Entrepreneurs',
+						'Learn one cool thing about U.S. Entrepreneurs',
+					]
 				},
 				{
 					id: 5,
 					name: 'Refugees',
-					img: 'refugees'
+					img: 'refugees',
+					description: 'When people are forced to flee their homes and livelihoods, they also leave behind their financial security.',
+					goals: [
+						'Complete 2 loans for refugees',
+						'Learn one cool thing about refugees',
+					]
 				},
 				{
 					id: 6,
 					name: 'Most Vulnerable',
-					img: 'most-vulnerable'
+					img: 'most-vulnerable',
+					description: 'Help families and communities access the medicine, surgeries and healthcare services they need.',
+					goals: [
+						'Complete 2 loans to help the most vulnerable',
+						'Learn one cool thing about the most vulnerable populations on Kiva',
+					]
 				}
 			],
 			newBgActive: false,
@@ -123,7 +148,16 @@ export default {
 		},
 		selectedLoanRegion() {
 			return this.selectedLoan?.geocode?.country?.region ?? '';
-		}
+		},
+		borrowerName() {
+			return this.selectedLoan?.name ?? '';
+		},
+		loanCountry() {
+			return this.selectedLoan?.geocode?.country?.name ?? '';
+		},
+		loanRegion() {
+			return this.selectedLoan?.geocode?.country?.region ?? '';
+		},
 	},
 	methods: {
 		hash(loan) {
@@ -132,9 +166,9 @@ export default {
 		showDiscoverBadges() {
 			this.newScreenSteps = 2;
 		},
-		selectBadge(badgeName) {
+		selectBadge(badgeIdx) {
 			this.newScreenSteps += 1;
-			this.selectedBadge = badgeName;
+			this.selectedBadgeIdx = badgeIdx;
 		},
 		showNewBg() {
 			this.newBgActive = true;
@@ -144,8 +178,13 @@ export default {
 		this.defaultSortBadges.unshift(
 			{
 				id: 1,
-				name: this.selectedLoan?.geocode?.country?.region,
-				img: 'region'
+				name: this.loanRegion,
+				img: 'region',
+				goals: [
+					`Complete 2 loans from ${this.loanCountry}`,
+					`Learn 1 cool thing about ${this.loanRegion}`,
+				],
+				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
 			}
 		);
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
