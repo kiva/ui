@@ -101,6 +101,7 @@ export default {
 					id: 3,
 					name: 'Women',
 					img: 'women',
+					// eslint-disable-next-line max-len
 					description: 'Over 50% of unbanked people worldwide are women, lacking access to financial services.',
 					goals: [
 						'Complete 2 loans for women',
@@ -121,6 +122,7 @@ export default {
 					id: 5,
 					name: 'Refugees',
 					img: 'refugees',
+					// eslint-disable-next-line max-len
 					description: 'When people are forced to flee their homes and livelihoods, they also leave behind their financial security.',
 					goals: [
 						'Complete 2 loans for refugees',
@@ -131,6 +133,7 @@ export default {
 					id: 6,
 					name: 'Most Vulnerable',
 					img: 'most-vulnerable',
+					// eslint-disable-next-line max-len
 					description: 'Help families and communities access the medicine, surgeries and healthcare services they need.',
 					goals: [
 						'Complete 2 loans to help the most vulnerable',
@@ -184,6 +187,7 @@ export default {
 					`Complete 2 loans from ${this.loanCountry}`,
 					`Learn 1 cool thing about ${this.loanRegion}`,
 				],
+				// eslint-disable-next-line max-len
 				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
 			}
 		);
