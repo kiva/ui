@@ -57,7 +57,7 @@
 		<div class="tw-pt-4">
 			<kv-button
 				class="tw-w-full tw-pb-2"
-				to="/portfolio"
+				@click="setAsGoal"
 				v-kv-track-event="[
 					'thanks',
 					'click',
@@ -87,6 +87,7 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
+import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -95,6 +96,7 @@ const imageRequire = require.context('@/assets/images/thanks-page/badges', true)
 
 export default {
 	name: 'DetailSection',
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		selectedBadgeIdx: {
 			type: Number,
@@ -107,6 +109,10 @@ export default {
 		isGuest: {
 			type: Boolean,
 			default: false
+		},
+		userPreferences: {
+			type: Object,
+			default: () => ({})
 		},
 	},
 	components: {
@@ -164,7 +170,72 @@ export default {
 		},
 		hideBadgeName(badgeId) {
 			return badgeId !== this.currentBadge?.id;
-		}
+		},
+		async createUserPreferences() {
+			const createUserPreferencesMutation = gql`
+					mutation createUserPreferences {
+						my {
+							createUserPreferences(userPreferences: {preferences: ""}) {
+								id
+								preferences
+							}
+						}
+					}
+				`;
+
+			const createUserPreferences = this.apollo.mutate({
+				mutation: createUserPreferencesMutation,
+			});
+			const response = await createUserPreferences;
+
+			return response?.data?.my?.createUserPreferences?.id;
+		},
+		async setAsGoal() {
+			try {
+				let updateUserPreferencesId = this.userPreferences?.id ?? null;
+
+				if (!updateUserPreferencesId) {
+					updateUserPreferencesId = await this.createUserPreferences();
+				}
+				const currentPreferences = JSON.parse(this.userPreferences?.preferences ?? {});
+				const preferences = JSON.stringify({ ...currentPreferences, goal: this.currentBadgeName });
+
+				const updateUserPreferencesMutation = gql`
+					mutation UpdateUserPreferences(
+						$updateUserPreferencesId: Int!,
+						$preferences: String
+					) {
+						my {
+							updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
+								preferences: $preferences
+						}) {
+								id
+								preferences
+							}
+						}
+				}`;
+
+				const updateUserPreferences = this.apollo.mutate({
+					mutation: updateUserPreferencesMutation,
+					variables: {
+						updateUserPreferencesId,
+						preferences,
+					},
+				});
+
+				const response = await updateUserPreferences;
+				if (response.errors) {
+					throw new Error(
+						response.errors[0].extensions.code
+						|| response.errors[0].message
+					);
+				} else {
+					this.$route.push({ path: '/portfolio', query: { goal_saved: true } });
+				}
+			} catch (error) {
+				throw new Error(error);
+			}
+		},
 	}
 };
 </script>
