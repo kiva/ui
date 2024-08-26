@@ -22,9 +22,9 @@
 import { gql } from '@apollo/client';
 import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
 import getCacheKey from '@/util/getCacheKey';
-import PieChartFigure from '@/components/Charts/PieChartFigure';
-import TreeMapFigure from '@/components/Charts/TreeMapFigure';
 import StatsTable from '@/components/Stats/StatsTable';
+import KvPieChart from '~/@kiva/kv-components/vue/KvPieChart';
+import KvTreeMapChart from '~/@kiva/kv-components/vue/KvTreeMapChart';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -66,10 +66,10 @@ export default {
 		chartType() {
 			switch (this.chart) {
 				case 'pie':
-					return PieChartFigure;
+					return KvPieChart;
 				case 'treemap':
 				default:
-					return TreeMapFigure;
+					return KvTreeMapChart;
 			}
 		},
 	},
