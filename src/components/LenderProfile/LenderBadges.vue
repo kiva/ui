@@ -1,12 +1,12 @@
 <template>
 	<async-lender-section @visible="() => isLoading = false">
 		<section v-if="completedAchievements.length > 0">
-			<h4
+			<h2
 				v-if="!isLoading"
 				class="data-hj-suppress"
 			>
 				{{ badgesTitle }}
-			</h4>
+			</h2>
 			<kv-loading-placeholder
 				v-else
 				style="height: 30px; width: 250px;"

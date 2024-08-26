@@ -11,9 +11,9 @@
 				/>
 			</div>
 			<div v-else>
-				<h4 class="data-hj-suppress tw-mb-2">
+				<h2 class="data-hj-suppress tw-mb-2">
 					{{ lenderMapTitle }}
-				</h4>
+				</h2>
 				<kv-map
 					class="
 						tw-rounded
