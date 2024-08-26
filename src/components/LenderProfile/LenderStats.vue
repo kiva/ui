@@ -11,9 +11,9 @@
 				/>
 			</div>
 			<div v-else>
-				<h4 class="tw-mb-2">
+				<h2 class="tw-mb-2">
 					Portfolio distribution
-				</h4>
+				</h2>
 				<stats-table
 					class="lender-stats"
 					:location-stats="locationStats"
@@ -92,9 +92,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="postcss" scoped>
-::v-deep .lender-stats > div button {
-	@apply tw-text-h5;
-}
-</style>
