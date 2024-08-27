@@ -227,9 +227,11 @@ export default {
 
 				const response = await updateUserPreferences;
 				if (response.errors) {
+					this.$showTipMsg('There was a problem saving your goal', 'error');
+
 					throw new Error(
-						response.errors[0].extensions.code
-						|| response.errors[0].message
+						response?.errors?.[0]?.extensions?.code
+						|| response?.errors?.[0]?.message
 					);
 				} else {
 					this.$route.push({ path: '/portfolio', query: { goal_saved: true } });
