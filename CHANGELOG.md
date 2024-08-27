@@ -1,3 +1,61 @@
+## [2.751.0](https://github.com/kiva/ui/compare/v2.750.0...v2.751.0) (2024-08-27)
+
+
+### 🎉 New Features
+
+* 404 page added ([#5444](https://github.com/kiva/ui/issues/5444)) ([c477382](https://github.com/kiva/ui/commit/c47738239b58f143aa5e770f58ae2e8954105f40))
+* charts replaced with shared ones from kv components ([#5458](https://github.com/kiva/ui/issues/5458)) ([251c64b](https://github.com/kiva/ui/commit/251c64b6b6921c31074396f725e968f7a8e6972e))
+* create an intermediate screen after badge is revealed to enhance transition between screens ([8d69893](https://github.com/kiva/ui/commit/8d69893c20196c0bba056b986716104c422ad32d))
+* handle unknown lender on profile page ([#5455](https://github.com/kiva/ui/issues/5455)) ([a4c1986](https://github.com/kiva/ui/commit/a4c1986d67f6a4ca77f7c78a831fa8551990642d))
+* integrate kv-carousel for badges ([5dada33](https://github.com/kiva/ui/commit/5dada334a0178534366c9035e17f0bb092a5587c))
+* lender profile headings updated ([#5459](https://github.com/kiva/ui/issues/5459)) ([d25806d](https://github.com/kiva/ui/commit/d25806dbddc22f5fadc6d81380355e3a2ead7f7e))
+* loading states adding to lender profile sections ([#5451](https://github.com/kiva/ui/issues/5451)) ([c17e0fd](https://github.com/kiva/ui/commit/c17e0fd2f89bb5d73f847ab2e23cc1a6de93644d))
+* loans map added to lender profile ([#5438](https://github.com/kiva/ui/issues/5438)) ([55ba677](https://github.com/kiva/ui/commit/55ba677cf82de55adda65587aa5ebb40d5f4398e))
+* meta data updated in lender profile ([#5445](https://github.com/kiva/ui/issues/5445)) ([f0a1d70](https://github.com/kiva/ui/commit/f0a1d70352ff7ac565389e3b824fae0efc145c32))
+* pie chart mobile view fixed ([#5447](https://github.com/kiva/ui/issues/5447)) ([e230642](https://github.com/kiva/ui/commit/e23064296159b1da64d3e8a5a74b72fba934d168))
+* reorganize structure and create discover component view ([b308c78](https://github.com/kiva/ui/commit/b308c78700c606fdd41263f6050c3cf572a9b88b))
+* set badge fullscreen on click and fade in elements ([c8ed11c](https://github.com/kiva/ui/commit/c8ed11c31447079ce64074e22032f5f0bc6b1c0a))
+* set new deposit incentive end date MP-692 ([83bba41](https://github.com/kiva/ui/commit/83bba41a9d276edea74b8f90fc11b0a9a0ad1c10))
+* smooth badge unblur ([ed9af43](https://github.com/kiva/ui/commit/ed9af433a1a83cdc709dca647d774ec0621f1cc1))
+
+
+### 🐛 Bugfixes
+
+* 3 cols for desktop ([4a6b1aa](https://github.com/kiva/ui/commit/4a6b1aafa3b42996fa3e906f31aed889bdd69a45))
+* change refugee badge name to plural ([8e10d76](https://github.com/kiva/ui/commit/8e10d76ef2b6255c41156f275f1be1b2cc60d618))
+* extract async checkout error object with primary format ([2746096](https://github.com/kiva/ui/commit/27460969f0ad836266e8869b8ffeba90a148cff4))
+* fix optional chaining for fallback error states ([8c586ff](https://github.com/kiva/ui/commit/8c586ff78b8be2b16eb9557a0c2169a8e3ed2d21))
+* grow new bg to fullscreen except for header and footer ([59f941a](https://github.com/kiva/ui/commit/59f941a29b95d6ed53367e636220a444b409e5ba))
+* hide name using badge id ([11e992d](https://github.com/kiva/ui/commit/11e992de8ca41b18b54217e7bfcb12ef493581c7))
+* lint ([d637937](https://github.com/kiva/ui/commit/d63793718eac79af35b8bcd47b6179dcd237318a))
+* lint ([49bb940](https://github.com/kiva/ui/commit/49bb940b725c61032d82c7881257cdc575dc1f69))
+* lint ([2f5852a](https://github.com/kiva/ui/commit/2f5852ae94612ebe900645cead47316e4fe5f33d))
+* lint ([67e819e](https://github.com/kiva/ui/commit/67e819e98d5693a9c4653a3dbc19791463404cf3))
+* mfa api token auth requires using authorize call, not checkSession MP-479 ([56f4fc5](https://github.com/kiva/ui/commit/56f4fc53aac82baef73a96f0e03d6d3427bd3356))
+* missing region in ty page query ([b778aab](https://github.com/kiva/ui/commit/b778aab59a3c801ee6a1337a5b4465bb770a4317))
+* missing track property ([f357a9b](https://github.com/kiva/ui/commit/f357a9bfd5c9242a05ca4644c7d325dba62024c4))
+* remove checkout sticky code ([a40e081](https://github.com/kiva/ui/commit/a40e08131e480dd6e11b360e93553285f1b62960))
+* remove unused args in story ([b8810f9](https://github.com/kiva/ui/commit/b8810f913f4e4e24f63e27ebccb315042ff1fb9e))
+* state is in hash and show error page for error conditions MP-479 ([59d3186](https://github.com/kiva/ui/commit/59d3186f160368afc464d5a7826d676f1cfaad4c))
+* state param not generated before authorize call MP-479 ([88d0eff](https://github.com/kiva/ui/commit/88d0eff94a828bb9696eb708ed1c33ea2f528376))
+* tw class ([657250f](https://github.com/kiva/ui/commit/657250f2b8c753b4d767f04993d71ab772476539))
+* update component library ([bb5513b](https://github.com/kiva/ui/commit/bb5513bc0eb0faaa07737e336c1a86c70e2bc4de))
+* update selected comms value check ([8517ecd](https://github.com/kiva/ui/commit/8517ecdaa0f5b4824c97c52ff8ea6eab8bc0755f))
+
+
+### 🪚 Refactors
+
+* remove unused code ([fc166d0](https://github.com/kiva/ui/commit/fc166d038a8b452f495fa6e20cbb3b624db30156))
+* remove unused code ([5067f12](https://github.com/kiva/ui/commit/5067f12d2af4e760e1c487704df8c94ccd9e5f2c))
+* revert changes from WwwPage component ([88ee076](https://github.com/kiva/ui/commit/88ee0768537df040b0881d446cf6421f159ecf15))
+* sections to improve transition ([98af79f](https://github.com/kiva/ui/commit/98af79f32b8670a92e3afe1b4eab9d8b26436a69))
+* variable names ([800c207](https://github.com/kiva/ui/commit/800c207bfcf27800ff415d65cdbf066c4e4582d5))
+
+
+### 🧹 Chores
+
+* **release:** 2.751.0-rc.1 [skip ci] ([817e0c9](https://github.com/kiva/ui/commit/817e0c9da3d53f40132de454705dad9c046caa0a)), closes [#5444](https://github.com/kiva/ui/issues/5444) [#5458](https://github.com/kiva/ui/issues/5458) [#5455](https://github.com/kiva/ui/issues/5455) [#5459](https://github.com/kiva/ui/issues/5459) [#5451](https://github.com/kiva/ui/issues/5451) [#5438](https://github.com/kiva/ui/issues/5438) [#5445](https://github.com/kiva/ui/issues/5445) [#5447](https://github.com/kiva/ui/issues/5447)
+
 ## [2.751.0-rc.1](https://github.com/kiva/ui/compare/v2.750.0...v2.751.0-rc.1) (2024-08-27)
 
 
