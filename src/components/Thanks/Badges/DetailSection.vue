@@ -237,7 +237,7 @@ export default {
 					this.$route.push({ path: '/portfolio', query: { goal_saved: true } });
 				}
 			} catch (error) {
-				throw new Error(error);
+				console.error(error);
 			}
 		},
 	}
