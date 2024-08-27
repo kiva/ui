@@ -550,6 +550,7 @@ $border-width: 1px;
 	/* Show helper text */
 	#dropin-container .braintree-sheet__container > .braintree-sheet:not(.braintree-card)::before {
 		@apply tw-absolute tw-w-full tw-left-0 tw-top-3.5 tw-font-medium;
+
 		content: 'Click payment method again to continue';
 	}
 </style>
