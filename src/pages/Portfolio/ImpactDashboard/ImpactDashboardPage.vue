@@ -115,7 +115,7 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 
 		if (this.$route?.query?.goal_saved) {
-			this.$showTipMessage('Goal saved');
+			this.$showTipMsg('Goal saved');
 		}
 	},
 	mounted() {

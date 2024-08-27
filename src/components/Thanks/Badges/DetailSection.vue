@@ -24,7 +24,6 @@
 						'choose-a-badge',
 						badge.name
 					]"
-					@click="() => selectBadge(badge.name)"
 				>
 					<img
 						:src="imageRequire(`./${badge.img}.svg`)"
@@ -173,18 +172,21 @@ export default {
 		},
 		async createUserPreferences() {
 			const createUserPreferencesMutation = gql`
-					mutation createUserPreferences {
-						my {
-							createUserPreferences(userPreferences: {preferences: ""}) {
-								id
-								preferences
-							}
+				mutation createUserPreferences($preferences: String) {
+					my {
+						createUserPreferences(userPreferences: {preferences: $preferences}) {
+							id
+							preferences
 						}
 					}
-				`;
+				}
+			`;
 
 			const createUserPreferences = this.apollo.mutate({
 				mutation: createUserPreferencesMutation,
+				variables: {
+					preferences: '',
+				},
 			});
 			const response = await createUserPreferences;
 
@@ -197,7 +199,7 @@ export default {
 				if (!updateUserPreferencesId) {
 					updateUserPreferencesId = await this.createUserPreferences();
 				}
-				const currentPreferences = JSON.parse(this.userPreferences?.preferences ?? {});
+				const currentPreferences = this.userPreferences?.preferences ?? {};
 				const preferences = JSON.stringify({ ...currentPreferences, goal: this.currentBadgeName });
 
 				const updateUserPreferencesMutation = gql`
