@@ -60,9 +60,9 @@
 </template>
 
 <script>
-import PieChartFigure from '@/components/Charts/PieChartFigure';
-import TreeMapFigure from '@/components/Charts/TreeMapFigure';
 import DistributionTable from '@/pages/Portfolio/ImpactDashboard/DistributionTable';
+import KvPieChart from '~/@kiva/kv-components/vue/KvPieChart';
+import KvTreeMapChart from '~/@kiva/kv-components/vue/KvTreeMapChart';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvTab from '~/@kiva/kv-components/vue/KvTab';
 import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
@@ -72,7 +72,7 @@ export default {
 	name: 'StatsTable',
 	components: {
 		DistributionTable,
-		PieChartFigure,
+		KvPieChart,
 		KvTab,
 		KvTabs,
 		KvTabPanel,
@@ -125,10 +125,10 @@ export default {
 		chartType() {
 			switch (this.chart) {
 				case 'pie':
-					return PieChartFigure;
+					return KvPieChart;
 				case 'treemap':
 				default:
-					return TreeMapFigure;
+					return KvTreeMapChart;
 			}
 		},
 		inPortfolio() {

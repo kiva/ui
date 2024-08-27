@@ -1,22 +1,37 @@
 <template>
-	<section class="tw-my-8">
-		<h4 class="tw-mb-2">
-			Portfolio distribution
-		</h4>
-		<stats-table
-			class="lender-stats"
-			:location-stats="locationStats"
-			:gender-stats="genderStats"
-			:sector-stats="sectorStats"
-			:partner-stats="partnerStats"
-			track-category="lender"
-			chart="pie"
-		/>
-	</section>
+	<async-lender-section @visible="() => isLoading = false">
+		<section class="tw-my-8">
+			<div v-if="isLoading">
+				<kv-loading-placeholder
+					class="tw-mb-2"
+					style="height: 30px; width: 250px;"
+				/>
+				<kv-loading-placeholder
+					class="tw-w-full tw-aspect-video"
+				/>
+			</div>
+			<div v-else>
+				<h2 class="tw-mb-2">
+					Portfolio distribution
+				</h2>
+				<stats-table
+					class="lender-stats"
+					:location-stats="locationStats"
+					:gender-stats="genderStats"
+					:sector-stats="sectorStats"
+					:partner-stats="partnerStats"
+					track-category="lender"
+					chart="pie"
+				/>
+			</div>
+		</section>
+	</async-lender-section>
 </template>
 
 <script>
 import StatsTable from '@/components/Stats/StatsTable';
+import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderStats',
@@ -26,10 +41,17 @@ export default {
 			type: Object,
 			default: () => ({}),
 			required: true,
-		}
+		},
+	},
+	data() {
+		return {
+			isLoading: true,
+		};
 	},
 	components: {
 		StatsTable,
+		KvLoadingPlaceholder,
+		AsyncLenderSection,
 	},
 	methods: {
 		statsWithPercent(stats) {
@@ -70,9 +92,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="postcss" scoped>
-::v-deep .lender-stats > div button {
-	@apply tw-text-h5;
-}
-</style>

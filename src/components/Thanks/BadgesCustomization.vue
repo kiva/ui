@@ -1,215 +1,65 @@
 <template>
 	<div
-		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-relative"
-		:style="{maxWidth: '620px', boxShadow: '0px 5px 25px 0px #D1DCD6'}"
+		class="md:tw-my-6 md:tw-rounded tw-mx-auto tw-overflow-x-hidden tw-h-full tw-bg-stone-1"
+		:style="{maxWidth: '620px', minHeight: '1012px'}"
+		:class="{'container-shadow': !showNewBg}"
 	>
-		<div class="tw-bg-stone-1 md:tw-rounded-b">
-			<div
-				class="tw-text-center tw-pt-4 tw-pb-5 md:tw-rounded-t hide-for-print"
-				style="background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);"
-			>
-				<h1 class="tw-text-white tw-mb-1">
-					Success!
-				</h1>
-				<p class="tw-text-subhead tw-text-white tw-px-3 md:tw-px-8">
-					{{ headerCopy }}
-				</p>
-				<div class="tw-relative tw-mt-3">
-					<div class="badge-container">
-						<img
-							:class="{ 'blurred': isBlurred, 'wiggle': wiggle }"
-							:src="imageRequire(`./equity-badge.svg`)"
-							class="badge"
-							alt="Gift icon"
-						>
-						<kv-button
-							@click="() => toggleBlur"
-							variant="secondary"
-							class="reveal-button"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'reveal-badge',
-							]"
-						>
-							<span class="tw-flex tw-items-center tw-gap-1">
-								<img
-									:src="imageRequire(`./gift.svg`)"
-									class="tw-w-3 tw-h-3"
-									alt="Gift icon"
-								>
-								{{ revealBtnCta }}
-							</span>
-						</kv-button>
-					</div>
-				</div>
-			</div>
-			<div
-				class="secondary-container"
-			>
-				<h3 class="tw-text-center tw-pt-1">
-					You are now part of {{ borrowerName }}'s journey! Here's what's next:
-				</h3>
-				<loan-next-steps
-					class="tw-mb-5"
-					:weeks-to-repay="weeksToRepay"
-				/>
-				<div class="tw-mb-2 hide-for-print">
-					<div v-if="!isGuest">
-						<kv-button
-							class="tw-w-full ghost-button"
-							to="/portfolio"
-							variant="secondary"
-							v-kv-track-event="[
-								'thanks',
-								'click',
-								'go-to-my-kiva',
-							]"
-						>
-							Go to my kiva
-						</kv-button>
-					</div>
-					<div
-						v-else
-						class="option-box"
-						:class="{'open' : openCreateAccount}"
-						@click="() => openCreateAccount = !openCreateAccount"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-account-creation-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Create your account
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openCreateAccount}"
-						/>
-					</div>
-					<kv-expandable
-						v-show="openCreateAccount"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<h2>Before you go!</h2>
-							<!-- eslint-disable-next-line max-len -->
-							<p>Finish setting up your account to track and relend your money as you are paid back.</p>
-							<guest-account-creation
-								class="tw-pt-3 account-creation"
-								event-category="thanks"
-								event-label="open-account-creation-drawer"
-							/>
-						</div>
-					</kv-expandable>
-				</div>
-			</div>
-			<div class="tw-pt-2 tw-pb-5 tw-border-t tw-px-3 md:tw-px-8" style="border-top-color: #ECE4D5;">
-				<div class="tw-mb-2">
-					<!-- eslint-disable-next-line max-len -->
-					<div
-						class="option-box hide-for-print"
-						:class="{'open' : openOrderConfirmation}"
-						@click="() => openOrderConfirmation = !openOrderConfirmation"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-order-confirmation-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Show previous loan details
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openOrderConfirmation}"
-						/>
-					</div>
-					<kv-expandable
-						v-show="openOrderConfirmation"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<checkout-receipt
-								v-if="receipt"
-								:lender="lender"
-								:receipt="receipt"
-							/>
-						</div>
-					</kv-expandable>
-				</div>
-				<div class="hide-for-print">
-					<div
-						class="option-box"
-						:class="{'open' : openShareModule}"
-						@click="() => openShareModule = !openShareModule"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'open-share-drawer',
-						]"
-					>
-						<p class="tw-font-medium">
-							Share
-						</p>
-						<kv-material-icon
-							:icon="mdiChevronDown"
-							class="expandable-button"
-							:class="{'tw-rotate-180' : openShareModule}"
-						/>
-					</div>
-					<kv-expandable
-						v-show="openShareModule"
-						easing="ease-in-out"
-					>
-						<div class="tw-py-2">
-							<social-share-v2
-								v-if="receipt"
-								class="social-share"
-								:lender="lender"
-								:loans="loans"
-							/>
-						</div>
-					</kv-expandable>
-				</div>
-			</div>
-		</div>
+		<div class="new-background tw-h-0 tw-w-0" :class="{ 'grow': newBgActive }"></div>
+		<transition-group name="fade" tag="div">
+			<FirstScreen
+				key="first-screen"
+				v-if="newScreenSteps === 0"
+				:lender="lender"
+				:loans="loans"
+				:is-guest="isGuest"
+				:selected-loan="selectedLoan"
+				:receipt="receipt"
+				@show-discover-badges="showDiscoverBadges"
+				@show-new-bg="showNewBg"
+			/>
+			<RevealedBadge
+				key="revealed-badge-screen"
+				@show-discover-badges="showDiscoverBadges"
+				v-else-if="newScreenSteps === 1"
+				:is-guest="isGuest"
+			/>
+			<DiscoverSection
+				v-else-if="newScreenSteps === 2"
+				key="discover-screen"
+				:selected-loan-region="selectedLoanRegion"
+				:is-guest="isGuest"
+				:badges="randomSortedBadges"
+				@back="() => newScreenSteps -= 1"
+				@select-badge="selectBadge"
+			/>
+			<DetailSection
+				v-else-if="newScreenSteps === 3"
+				key="detail-screen"
+				:selected-badge-idx="selectedBadgeIdx"
+				:badges="randomSortedBadges"
+				:is-guest="isGuest"
+				@back="() => newScreenSteps -= 1"
+			/>
+		</transition-group>
 	</div>
 </template>
 
 <script>
-import { addMonths, differenceInWeeks } from 'date-fns';
-import LoanNextSteps from '@/components/Thanks/LoanNextSteps';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import { mdiChevronDown } from '@mdi/js';
-import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
 import confetti from 'canvas-confetti';
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-
-const imageRequire = require.context('@/assets/images/thanks-page/', true);
+import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
+import DetailSection from '@/components/Thanks/Badges/DetailSection';
+import FirstScreen from '@/components/Thanks/Badges/FirstScreen';
+import RevealedBadge from '@/components/Thanks/Badges/RevealedBadge';
 
 export default {
 	name: 'BadgesCustomization',
 	components: {
-		LoanNextSteps,
-		KvExpandable,
-		CheckoutReceipt,
-		SocialShareV2,
-		GuestAccountCreation,
-		KvButton,
-		KvMaterialIcon,
+		FirstScreen,
+		DiscoverSection,
+		DetailSection,
+		RevealedBadge,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [smoothScrollMixin],
 	props: {
 		selectedLoan: {
 			type: Object,
@@ -231,140 +81,119 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		optedIn: {
-			type: Boolean,
-			default: false
-		},
-		shortVersionEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
-			openCreateAccount: false,
-			openOrderConfirmation: false,
-			openShareModule: false,
-			mdiChevronDown,
-			confirmOptInChoice: false,
-			selectOption: false,
-			imageRequire,
-			isBlurred: true,
-			isMobileLayout: false,
-			wiggle: false,
+			newScreenSteps: 0,
+			selectedBadgeId: 0,
+			defaultSortBadges: [
+				{
+					id: 2,
+					name: 'Climate',
+					img: 'climate',
+					description: 'Climate change is impacting unbanked and underserved populations the most.',
+					goals: [
+						'Complete 2 eco-friendly loans.',
+						'Learn one cool thing about climate action'
+					]
+				},
+				{
+					id: 3,
+					name: 'Women',
+					img: 'women',
+					// eslint-disable-next-line max-len
+					description: 'Over 50% of unbanked people worldwide are women, lacking access to financial services.',
+					goals: [
+						'Complete 2 loans for women',
+						'Learn one cool thing about women',
+					]
+				},
+				{
+					id: 4,
+					name: 'U.S. Entrepreneurs',
+					img: 'entrepreneurs',
+					description: '1 in 10 U.S. adults are unbanked & roughly 1 in 4 are underbanked.',
+					goals: [
+						'Complete 2 loans for U.S. Entrepreneurs',
+						'Learn one cool thing about U.S. Entrepreneurs',
+					]
+				},
+				{
+					id: 5,
+					name: 'Refugees',
+					img: 'refugees',
+					// eslint-disable-next-line max-len
+					description: 'When people are forced to flee their homes and livelihoods, they also leave behind their financial security.',
+					goals: [
+						'Complete 2 loans for refugees',
+						'Learn one cool thing about refugees',
+					]
+				},
+				{
+					id: 6,
+					name: 'Most Vulnerable',
+					img: 'most-vulnerable',
+					// eslint-disable-next-line max-len
+					description: 'Help families and communities access the medicine, surgeries and healthcare services they need.',
+					goals: [
+						'Complete 2 loans to help the most vulnerable',
+						'Learn one cool thing about the most vulnerable populations on Kiva',
+					]
+				}
+			],
+			newBgActive: false,
 		};
 	},
 	computed: {
+		randomSortedBadges() {
+			const badges = [...this.defaultSortBadges];
+			return badges.sort(() => Math.random() - 0.5);
+		},
+		selectedLoanRegion() {
+			return this.selectedLoan?.geocode?.country?.region ?? '';
+		},
 		borrowerName() {
 			return this.selectedLoan?.name ?? '';
 		},
-		filteredLoans() {
-			const filteredLoans = [...this.loans];
-			if (this.loans.length === 3) {
-				const indexToRemove = filteredLoans.indexOf(loan => loan.id === this.selectedLoan.id);
-				const removedLoan = filteredLoans.splice(indexToRemove, 1)[0];
-				filteredLoans.splice(1, 0, removedLoan);
-			}
-			return filteredLoans.slice(0, 3);
+		loanCountry() {
+			return this.selectedLoan?.geocode?.country?.name ?? '';
 		},
-		weeksToRepay() {
-			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
-			const today = new Date();
-			if (date) {
-				// Get the number of weeks between the first repayment date (in the future) and now
-				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
-			}
-
-			// Calculating a possible range of weeks between the planned expiration date and a month after
-			const expDate = Date.parse(this.selectedLoan?.plannedExpirationDate);
-			const minDate = differenceInWeeks(addMonths(today, 1), today);
-			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
-			if (minDate === maxDate) {
-				return `${minDate} weeks`;
-			}
-
-			return `${minDate} - ${maxDate} weeks`;
+		loanRegion() {
+			return this.selectedLoan?.geocode?.country?.region ?? '';
 		},
-		marginLeftWeight() {
-			if (this.filteredLoans.length === 1) {
-				return 0;
-			}
-			if (this.filteredLoans.length === 2) {
-				return 6;
-			}
-
-			return 10;
-		},
-		headerCopy() {
-			return 'Celebrate your first loan with a special gift. 🙌';
-		},
-		ctaCopy() {
-			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
-				return 'Complete your account to track your impact and manage repayments.';
-			}
-			if (this.isGuest || (!this.isGuest && !this.optedIn)) {
-				// eslint-disable-next-line max-len
-				return `Want to hear how you're impacting ${this.borrowerName}'s life and more ways to help people like them?`;
-			}
-
-			return '';
-		},
-		revealBtnCta() {
-			return `${this.isMobileLayout ? 'Tap' : 'Click'} to reveal`;
-		}
 	},
 	methods: {
 		hash(loan) {
 			return loan?.image?.hash ?? '';
 		},
-		updateOptIn(value) {
-			this.selectOption = true;
-			this.openCreateAccount = true;
-			if (value) {
-				try {
-					this.apollo.mutate({
-						mutation: gql`
-							mutation updateCommunicationSettings(
-								$lenderNews: Boolean
-							) {
-								my {
-									updateCommunicationSettings(
-										communicationSettings: {
-											lenderNews: $lenderNews
-										}
-									)
-								}
-							}
-						`,
-						variables: {
-							lenderNews: value,
-						},
-					});
-				} catch (error) {
-					logFormatter(error, 'error');
-				}
-			}
-			const elementToScrollTo = document.querySelector('#loan-info');
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-			this.confirmOptInChoice = value;
+		showDiscoverBadges() {
+			this.newScreenSteps = 2;
 		},
-		toggleBlur() {
-			this.isBlurred = !this.isBlurred;
-		}
+		selectBadge(badgeIdx) {
+			this.newScreenSteps += 1;
+			this.selectedBadgeIdx = badgeIdx;
+		},
+		showNewBg() {
+			this.newBgActive = true;
+		},
 	},
 	created() {
+		this.defaultSortBadges.unshift(
+			{
+				id: 1,
+				name: this.loanRegion,
+				img: 'region',
+				goals: [
+					`Complete 2 loans from ${this.loanCountry}`,
+					`Learn 1 cool thing about ${this.loanRegion}`,
+				],
+				// eslint-disable-next-line max-len
+				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+			}
+		);
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
-		this.isMobileLayout = window.innerWidth < 1024;
-
-		this.wiggle = true;
-		setTimeout(() => {
-			this.wiggle = false;
-		}, 1000);
-
 		confetti({
 			origin: {
 				y: 0.2
@@ -380,93 +209,25 @@ export default {
 
 <style lang="postcss" scoped>
 
-.expandable-button {
-	@apply tw-w-3 tw-h-3 tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500;
+.new-background {
+	transition: all 1s ease-in-out;
+	@apply tw-bg-stone-1 tw-absolute tw-top-1/2 tw-left-1/2 tw-w-0 tw-h-0 tw-z-1;
 }
 
-.ghost-button >>> span {
-	@apply tw-bg-transparent tw-border-black;
+.grow {
+	@apply tw-w-full tw-h-full tw-top-0 tw-left-0 tw-transform-none;
 }
 
-.account-creation >>> input {
-	@apply tw-bg-stone-1;
+.fade-enter-active {
+	transition: opacity 1s;
 }
 
-.secondary-container {
-	@apply tw-bg-stone-1 tw-w-full tw-px-3 md:tw-px-8 tw-z-1 tw-pt-3;
+.fade-enter {
+	@apply tw-opacity-0;
 }
 
-.option-box {
-	transition: border 0.2s ease, border-radius 0.5s ease;
-	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
-}
-
-.social-share >>> .share__social.social {
-	@apply tw-w-full;
-}
-
-.option-box.open {
-	@apply tw-border-t-0 tw-border-l-0 tw-border-r-0 tw-rounded-none;
-}
-
-.hide-for-print {
-	@apply print:tw-hidden;
-}
-
-.badge-container {
-	box-shadow: 0 4px 12px 0 #00000014;
-	transition: filter 0.3s ease;
-	width: 228px;
-	height: 233px;
-	background-color: #F3F1EF33;
-	@apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
-}
-
-.badge {
-	width: 180px;
-	height: 185px;
-}
-
-.blurred {
-	filter: blur(8px);
-}
-
-.reveal-button {
-	@apply tw-absolute tw-bottom-3;
-}
-
-.reveal-button >>> span {
-	opacity: 90%;
-	@apply tw-border-black;
-}
-
-@keyframes wiggle {
-	0% {
-		transform: rotate(0deg);
-		filter: blur(8px);
-	}
-
-	25% {
-		transform: rotate(-10deg);
-	}
-
-	50% {
-		transform: rotate(10deg);
-		filter: blur(2px);
-	}
-
-	75% {
-		transform: rotate(-10deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-		filter: blur(8px);
-	}
-}
-
-.wiggle {
-	animation: wiggle 1s ease-in-out;
+.container-shadow {
+	box-shadow: 0 5px 25px 0 #D1DCD6;
 }
 
 </style>
