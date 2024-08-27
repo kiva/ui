@@ -18,6 +18,7 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
+				:user-preferences="userPreferences"
 			/>
 		</template>
 		<template v-else-if="showNewTYPage">
@@ -264,6 +265,7 @@ export default {
 			optedIn: false,
 			enableShortVersion: false,
 			badgesCustomExpEnabled: false,
+			userPreferences: null
 		};
 	},
 	apollo: {
@@ -565,6 +567,7 @@ export default {
 		}
 
 		// Thanks Bagdes Experiment
+		this.userPreferences = data?.my?.userPreferences ?? null;
 		if (this.optedIn) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
