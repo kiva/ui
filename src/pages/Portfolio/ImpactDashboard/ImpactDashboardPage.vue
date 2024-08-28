@@ -36,6 +36,7 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import { gql } from '@apollo/client';
 import { readBoolSetting } from '@/util/settingsUtils';
 import portfolioQuery from '@/graphql/query/portfolioQuery.graphql';
+import badgeGoalMixin from '@/plugins/badge-goal-mixin';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -77,9 +78,15 @@ export default {
 			allowedTeams: [],
 		};
 	},
+	mixins: [badgeGoalMixin],
 	apollo: {
-		async preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+		async preFetch(config, client, { route }) {
+			return client.query({ query: portfolioQuery })
+				.then(({ data }) => {
+					if (!data?.my?.userPreferences?.id && route?.query?.goal_saved) {
+						return this.createUserPreferences();
+					}
+				});
 		},
 	},
 	methods: {
@@ -102,7 +109,7 @@ export default {
 			});
 		}
 	},
-	created() {
+	async created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 		const userTeams = portfolioQueryData.my?.teams?.values ?? [];
@@ -115,7 +122,14 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 
 		if (this.$route?.query?.goal_saved) {
-			this.$showTipMsg('Goal saved');
+			const badgeName = this.route?.query?.goal_saved ?? '';
+			const userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+
+			this.storeGoal({ userPreferences, badgeName }).then(() => {
+				this.$showTipMsg('Goal saved');
+			}).catch(() => {
+				this.$showTipMsg('There was a problem saving your goal', 'error');
+			});
 		}
 	},
 	mounted() {
