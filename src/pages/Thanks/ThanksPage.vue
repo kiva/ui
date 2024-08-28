@@ -413,7 +413,7 @@ export default {
 			return false;
 		},
 		showNewTYPage() {
-			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
+			return !this.landedOnUSLoan && !this.optedIn;
 		},
 	},
 	created() {
