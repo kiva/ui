@@ -233,6 +233,9 @@ export default {
 						response?.errors?.[0]?.extensions?.code
 						|| response?.errors?.[0]?.message
 					);
+				} else if (this.isGuest) {
+					const doneUrl = encodeURIComponent('/portfolio?goal_saved=true');
+					window.location = `/ui-login?earnBadge=1&doneUrl=${doneUrl}`;
 				} else {
 					this.$router.push({ path: '/portfolio', query: { goal_saved: true } });
 				}
