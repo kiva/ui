@@ -36,10 +36,6 @@ import AsyncLenderSection from './AsyncLenderSection';
 export default {
 	name: 'LenderStats',
 	props: {
-		publicId: {
-			type: String,
-			required: true,
-		},
 		lenderStats: {
 			type: Object,
 			required: true,
