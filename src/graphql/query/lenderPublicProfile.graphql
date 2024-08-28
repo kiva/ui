@@ -24,48 +24,6 @@ query LenderPublicProfile ($publicId: String!) {
 				otherInfo
 				url
 			}
-			statsPerCountry {
-				values {
-					id
-					loanCount
-					country {
-						name
-						numLoansFundraising
-						geocode {
-							latitude
-							longitude
-						}
-						isoCode
-					}
-				}
-			}
-			statsPerGender {
-				values {
-					id
-					loanCount
-					gender
-				}
-			}
-			statsPerPartner {
-				values {
-					id
-					loanCount
-					partner {
-						id
-						name
-					}
-				}
-			}
-			statsPerSector {
-				values {
-					id
-					loanCount
-					sector {
-						id
-						name
-					}
-				}
-			}
 		}
 	}
 	userAchievementProgress(publicId: $publicId) {
