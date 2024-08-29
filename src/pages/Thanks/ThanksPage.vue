@@ -21,7 +21,7 @@
 				:user-preferences="userPreferences"
 			/>
 		</template>
-		<template v-else-if="showNewTYPage">
+		<template v-else-if="showNewTYPage && loans.length > 0">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
 				:loans="loans"
