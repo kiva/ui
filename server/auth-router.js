@@ -129,6 +129,12 @@ export default function authRouter(config = {}) {
 			options.optInComms = cookies.opt_in_comms;
 		}
 
+		// Badge Experiment MP-387
+		if (req.query.earnBadge) {
+			options.earn_badge = true;
+			options.login_hint = 'signUp';
+		}
+
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
 	});

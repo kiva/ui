@@ -113,6 +113,10 @@ export default {
 		});
 
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+
+		if (this.$route?.query?.goal_saved) {
+			this.$showTipMsg('Goal saved');
+		}
 	},
 	mounted() {
 		this.loadEducationPost();

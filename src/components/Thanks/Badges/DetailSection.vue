@@ -1,0 +1,271 @@
+<template>
+	<div class="tw-px-2 tw-relative tw-z-2 tw-text-center">
+		<div class="tw-flex tw-pt-2 tw-pb-4 tw-justify-center tw-cursor-pointer" @click="backToEarnedBadge">
+			<kv-material-icon :icon="mdiChevronLeft" class="tw-w-3 tw-h-3" />
+			<p class="tw-text-center tw-w-full">
+				YOUR BADGES
+			</p>
+		</div>
+		<kv-carousel
+			:embla-options="{ loop: true, align: 'center', startIndex: selectedBadgeIdx }"
+			:is-dotted="true"
+			:in-circle="true"
+			class="badge-carousel"
+			@change="handleChange"
+			ref="badgeCarousel"
+		>
+			<template v-for="badge in badges" #[`slide${badge.id}`] :key="badge.id">
+				<div
+					class="tw-flex tw-flex-col"
+					v-kv-track-event="[
+						'thanks',
+						'click',
+						'choose-a-badge',
+						badge.name
+					]"
+				>
+					<img
+						:src="imageRequire(`${badge.img}.svg`)"
+						class="badge tw-mx-auto"
+						alt="Gift icon"
+					>
+					<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
+						{{ badge.name }}
+					</h3>
+				</div>
+			</template>
+		</kv-carousel>
+		<div class="tw-px-1 md:tw-px-8 tw-pt-2">
+			<h2 class="tw-pb-2">
+				{{ selectedName }}
+			</h2>
+			<p class="tw-pb-2">
+				{{ selectedDescription }}
+			</p>
+			<div class="tw-flex tw-flex-col tw-gap-1 tw-text-left">
+				<div :key="goal" v-for="goal in selectedGoals" class="tw-flex tw-gap-1">
+					<kv-material-icon
+						:icon="mdiCheckCircleOutline"
+						class="tw-w-3 tw-h-3 tw-text-gray-300 tw-align-middle"
+					/>
+					<p>{{ goal }}</p>
+				</div>
+			</div>
+		</div>
+		<div class="tw-pt-4">
+			<kv-button
+				class="tw-w-full tw-pb-2"
+				@click="setAsGoal"
+				v-kv-track-event="[
+					'thanks',
+					'click',
+					'set-as-goal',
+					currentBadgeName
+				]"
+			>
+				Set as goal
+			</kv-button>
+			<kv-button
+				v-if="!isGuest"
+				class="tw-w-full no-border"
+				to="/portfolio"
+				variant="secondary"
+				v-kv-track-event="[
+					'thanks',
+					'click',
+					'go-to-my-kiva',
+					`Button seen after seeing ${currentBadgeName} badge`
+				]"
+			>
+				Go to my kiva
+			</kv-button>
+		</div>
+	</div>
+</template>
+
+<script>
+import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
+import { gql } from '@apollo/client';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import { metaGlobReader } from '#src/util/importHelpers';
+
+const imageGlob = import.meta.glob('/src/assets/images/thanks-page/badges/*.*', { eager: true, query: '?url' });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/thanks-page/badges/');
+
+export default {
+	name: 'DetailSection',
+	inject: ['apollo', 'cookieStore'],
+	props: {
+		selectedBadgeIdx: {
+			type: Number,
+			default: 0
+		},
+		badges: {
+			type: Array,
+			default: () => ([])
+		},
+		isGuest: {
+			type: Boolean,
+			default: false
+		},
+		userPreferences: {
+			type: Object,
+			default: () => ({})
+		},
+	},
+	components: {
+		KvButton,
+		KvMaterialIcon,
+		KvCarousel,
+	},
+	data() {
+		return {
+			imageRequire,
+			mdiChevronLeft,
+			mdiCheckCircleOutline,
+			currentBadgeIndex: 0,
+		};
+	},
+	computed: {
+		currentBadgeName() {
+			return this.currentBadge?.name ?? '';
+		},
+		currentBadge() {
+			if (this.selectedBadgeIdx && !this.currentBadgeIndex) {
+				return this.badges[this.selectedBadgeIdx];
+			}
+
+			const index = this.currentBadgeIndex > 1 ? this.currentBadgeIndex - 1 : 0;
+			return this.badges[index] ?? null;
+		},
+		selectedName() {
+			return this.currentBadge?.name ?? '';
+		},
+		selectedDescription() {
+			return this.currentBadge?.description ?? '';
+		},
+		selectedGoals() {
+			return this.currentBadge?.goals ?? [];
+		},
+	},
+	mounted() {
+		const badgesNames = this.badges.map(badge => badge.name).join(', ');
+		this.$kvTrackEvent(
+			'thanks',
+			'view',
+			'view-all-badges',
+			badgesNames
+		);
+	},
+	methods: {
+		backToEarnedBadge() {
+			this.$kvTrackEvent('thanks', 'click', 'back-to-earned-badge');
+			this.$emit('back');
+		},
+		handleChange() {
+			const badgeIndex = this.$refs.badgeCarousel.currentIndex + 1;
+			this.currentBadgeIndex = badgeIndex;
+		},
+		hideBadgeName(badgeId) {
+			return badgeId !== this.currentBadge?.id;
+		},
+		async createUserPreferences() {
+			const createUserPreferencesMutation = gql`
+				mutation createUserPreferences($preferences: String) {
+					my {
+						createUserPreferences(userPreferences: {preferences: $preferences}) {
+							id
+							preferences
+						}
+					}
+				}
+			`;
+
+			const createUserPreferences = this.apollo.mutate({
+				mutation: createUserPreferencesMutation,
+				variables: {
+					preferences: '',
+				},
+			});
+			const response = await createUserPreferences;
+
+			return response?.data?.my?.createUserPreferences?.id;
+		},
+		async setAsGoal() {
+			try {
+				let updateUserPreferencesId = this.userPreferences?.id ?? null;
+
+				if (!updateUserPreferencesId) {
+					updateUserPreferencesId = await this.createUserPreferences();
+				}
+				const currentPreferences = this.userPreferences?.preferences ?? {};
+				const preferences = JSON.stringify({ ...currentPreferences, goal: this.currentBadgeName });
+
+				const updateUserPreferencesMutation = gql`
+					mutation UpdateUserPreferences(
+						$updateUserPreferencesId: Int!,
+						$preferences: String
+					) {
+						my {
+							updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
+								preferences: $preferences
+						}) {
+								id
+								preferences
+							}
+						}
+				}`;
+
+				const updateUserPreferences = this.apollo.mutate({
+					mutation: updateUserPreferencesMutation,
+					variables: {
+						updateUserPreferencesId,
+						preferences,
+					},
+				});
+
+				const response = await updateUserPreferences;
+				if (response.errors) {
+					this.$showTipMsg('There was a problem saving your goal', 'error');
+
+					throw new Error(
+						response?.errors?.[0]?.extensions?.code
+						|| response?.errors?.[0]?.message
+					);
+				} else if (this.isGuest) {
+					const doneUrl = encodeURIComponent('/portfolio?goal_saved=true');
+					window.location = `/ui-login?earnBadge=1&doneUrl=${doneUrl}`;
+				} else {
+					this.$router.push({ path: '/portfolio', query: { goal_saved: true } });
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		},
+	}
+};
+</script>
+
+<style lang="postcss" scoped>
+
+.no-border :deep(span) {
+	@apply tw-bg-transparent tw-border-0;
+}
+
+.badge {
+	width: 164px;
+	height: 164px;
+}
+
+.badge-carousel :deep(.cirle-slide) {
+	flex: 0 0 36%;
+	@apply tw-mx-auto tw-flex tw-items-end tw-justify-center;
+}
+
+.badge-carousel :deep(.circle-carousel) {
+	@apply tw-mx-auto;
+}
+
+</style>

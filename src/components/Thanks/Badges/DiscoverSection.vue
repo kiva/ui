@@ -19,7 +19,7 @@
 			"
 		>
 			<div
-				v-for="badge in randomSortedBadges"
+				v-for="(badge, idx) in badges"
 				:key="badge.id"
 				class="badge-card"
 				v-kv-track-event="[
@@ -28,6 +28,7 @@
 					'choose-a-badge',
 					badge.name
 				]"
+				@click="() => selectBadge(idx)"
 			>
 				<img
 					:src="images(`${badge.img}.svg`)"
@@ -74,6 +75,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		badges: {
+			type: Array,
+			default: () => ([])
+		}
 	},
 	components: {
 		KvButton,
@@ -83,48 +88,10 @@ export default {
 		return {
 			images,
 			mdiChevronLeft,
-			defaultSortBadges: [
-				{
-					id: 1,
-					name: this.selectedLoanRegion,
-					img: 'region'
-				},
-				{
-					id: 2,
-					name: 'Climate',
-					img: 'climate'
-				},
-				{
-					id: 3,
-					name: 'Women',
-					img: 'women'
-				},
-				{
-					id: 4,
-					name: 'U.S. Entrepreneurs',
-					img: 'entrepreneurs'
-				},
-				{
-					id: 5,
-					name: 'Refugees',
-					img: 'refugees'
-				},
-				{
-					id: 6,
-					name: 'Most Vulnerable',
-					img: 'most-vulnerable'
-				}
-			],
 		};
 	},
-	computed: {
-		randomSortedBadges() {
-			const badges = [...this.defaultSortBadges];
-			return badges.sort(() => Math.random() - 0.5);
-		},
-	},
 	mounted() {
-		const badgesNames = this.randomSortedBadges.map(badge => badge.name).join(', ');
+		const badgesNames = this.badges.map(badge => badge.name).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
@@ -135,8 +102,11 @@ export default {
 	methods: {
 		backToEarnedBadge() {
 			this.$kvTrackEvent('thanks', 'click', 'back-to-earned-badge');
-			this.$emit('back-to-earned-badge');
+			this.$emit('back');
 		},
+		selectBadge(idx) {
+			this.$emit('select-badge', idx);
+		}
 	}
 };
 </script>

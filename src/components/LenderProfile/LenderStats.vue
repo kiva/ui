@@ -1,5 +1,5 @@
 <template>
-	<async-lender-section @visible="() => isLoading = false">
+	<async-lender-section @visible="$emit('get-lender-stats')">
 		<section class="tw-my-8">
 			<div v-if="isLoading">
 				<kv-loading-placeholder
@@ -11,9 +11,9 @@
 				/>
 			</div>
 			<div v-else>
-				<h4 class="tw-mb-2">
+				<h2 class="tw-mb-2">
 					Portfolio distribution
-				</h4>
+				</h2>
 				<stats-table
 					class="lender-stats"
 					:location-stats="locationStats"
@@ -35,11 +35,9 @@ import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderStats',
-	inject: ['apollo', 'cookieStore'],
 	props: {
-		lenderInfo: {
+		lenderStats: {
 			type: Object,
-			default: () => ({}),
 			required: true,
 		},
 	},
@@ -66,35 +64,36 @@ export default {
 	},
 	computed: {
 		locationStats() {
-			return this.statsWithPercent((this.lenderInfo?.statsPerCountry?.values ?? []).map(stat => ({
+			return this.statsWithPercent((this.lenderStats?.statsPerCountry?.values ?? []).map(stat => ({
 				label: stat.country.name,
 				value: stat.loanCount,
 			})));
 		},
 		genderStats() {
-			return this.statsWithPercent((this.lenderInfo?.statsPerGender?.values ?? []).map(stat => ({
+			return this.statsWithPercent((this.lenderStats?.statsPerGender?.values ?? []).map(stat => ({
 				label: `${stat.gender.charAt(0).toUpperCase()}${stat.gender.slice(1)}`,
 				value: stat.loanCount,
 			})));
 		},
 		sectorStats() {
-			return this.statsWithPercent((this.lenderInfo?.statsPerSector?.values ?? []).map(stat => ({
+			return this.statsWithPercent((this.lenderStats?.statsPerSector?.values ?? []).map(stat => ({
 				label: stat.sector.name,
 				value: stat.loanCount,
 			})));
 		},
 		partnerStats() {
-			return this.statsWithPercent((this.lenderInfo?.statsPerPartner?.values ?? []).map(stat => ({
+			return this.statsWithPercent((this.lenderStats?.statsPerPartner?.values ?? []).map(stat => ({
 				label: stat.partner?.name ?? 'No partner',
 				value: stat.loanCount,
 			})));
 		},
-	}
+	},
+	watch: {
+		lenderStats() {
+			if (Object.keys(this.lenderStats).length !== 0) {
+				this.isLoading = false;
+			}
+		},
+	},
 };
 </script>
-
-<style lang="postcss" scoped>
-:deep(.lender-stats > div button) {
-	@apply tw-text-h5;
-}
-</style>

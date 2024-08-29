@@ -32,16 +32,21 @@
 		/>
 
 		<lender-stats
-			:lender-info="lenderInfo"
+			:public-id="publicId"
+			:lender-stats="lenderStats"
+			@get-lender-stats="fetchLenderStats"
 		/>
 
 		<lender-map
 			:lender-info="lenderInfo"
+			:lender-stats="lenderStats"
 		/>
 	</div>
 </template>
 
 <script>
+import lenderStatsQuery from '#src/graphql/query/lenderStats.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 import LenderSummary from '#src/components/LenderProfile/LenderSummary';
 import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
 import LenderStats from '#src/components/LenderProfile/LenderStats';
@@ -53,6 +58,7 @@ import LenderMap from '#src/components/LenderProfile/LenderMap';
 
 export default {
 	name: 'LenderProfileWrapper',
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		publicId: {
 			type: String,
@@ -72,6 +78,11 @@ export default {
 			default: () => ([]),
 		},
 	},
+	data() {
+		return {
+			lenderStats: {},
+		};
+	},
 	components: {
 		LenderSummary,
 		LenderLoansList,
@@ -81,6 +92,22 @@ export default {
 		LenderInviteesList,
 		LenderDedicationsList,
 		LenderMap,
+	},
+	methods: {
+		async fetchLenderStats() {
+			try {
+				const { data } = await this.apollo.query({
+					query: lenderStatsQuery,
+					variables: {
+						publicId: this.publicId,
+					},
+				});
+
+				this.lenderStats = data.community?.lender ?? {};
+			} catch (e) {
+				logReadQueryError(e, 'LenderStats lenderStatsQuery');
+			}
+		},
 	},
 };
 </script>

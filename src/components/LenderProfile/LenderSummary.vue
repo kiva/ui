@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<h3 class="data-hj-suppress">
+		<h1 class="data-hj-suppress">
 			Kiva Lender {{ lenderName }}
-		</h3>
+		</h1>
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-gap-y-2 md:tw-gap-x-8 tw-pt-2">
 			<div class="tw-w-full md:tw-basis-1/4 tw-pt-1.5">
 				<kv-material-icon

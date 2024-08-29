@@ -2,9 +2,9 @@
 	<async-lender-section @visible="fetchLenderInvitees">
 		<section v-if="lenderInvitees.length > 0" class="tw-my-8" id="lender-invitees">
 			<div v-if="!isLoading">
-				<h4 class="data-hj-suppress tw-mb-1">
+				<h2 class="data-hj-suppress tw-mb-1">
 					{{ lenderInviteesTitle }}
-				</h4>
+				</h2>
 				<p class="tw-mb-2">
 					{{ showedInvitees }}
 				</p>
