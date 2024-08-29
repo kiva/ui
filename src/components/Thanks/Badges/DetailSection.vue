@@ -86,7 +86,6 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
-import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';

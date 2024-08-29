@@ -76,17 +76,13 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			allowedTeams: [],
+			userPreferences: null,
 		};
 	},
 	mixins: [badgeGoalMixin],
 	apollo: {
-		async preFetch(config, client, { route }) {
-			return client.query({ query: portfolioQuery })
-				.then(({ data }) => {
-					if (!data?.my?.userPreferences?.id && route?.query?.goal_saved) {
-						return this.createUserPreferences();
-					}
-				});
+		preFetch(config, client) {
+			return client.query({ query: portfolioQuery });
 		},
 	},
 	methods: {
@@ -109,7 +105,7 @@ export default {
 			});
 		}
 	},
-	async created() {
+	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 		const userTeams = portfolioQueryData.my?.teams?.values ?? [];
@@ -120,20 +116,26 @@ export default {
 		});
 
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+		this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+	},
+	mounted() {
+		this.loadEducationPost();
 
 		if (this.$route?.query?.goal_saved) {
 			const badgeName = this.route?.query?.goal_saved ?? '';
-			const userPreferences = portfolioQueryData.my?.userPreferences ?? null;
 
-			this.storeGoal({ userPreferences, badgeName }).then(() => {
+			if (!this.userPreferences?.id) {
+				this.createUserPreferences().then(({ data }) => {
+					this.userPreferences = data?.my?.createUserPreferences ?? null;
+				});
+			}
+
+			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
 				this.$showTipMsg('Goal saved');
 			}).catch(() => {
 				this.$showTipMsg('There was a problem saving your goal', 'error');
 			});
 		}
-	},
-	mounted() {
-		this.loadEducationPost();
 	}
 };
 </script>

@@ -24,7 +24,7 @@ export default {
 				},
 			});
 		},
-		async storeGoal({ userPreferences, badgeName }) {
+		storeGoal({ userPreferences, badgeName }) {
 			checkInjections(this, injections);
 
 			try {
@@ -46,15 +46,13 @@ export default {
 						}
 				}`;
 
-				const updateUserPreferences = this.apollo.mutate({
+				return this.apollo.mutate({
 					mutation: updateUserPreferencesMutation,
 					variables: {
 						updateUserPreferencesId: userPreferences.id,
 						preferences,
 					},
 				});
-
-				return updateUserPreferences;
 			} catch (error) {
 				throw new Error(error);
 			}
