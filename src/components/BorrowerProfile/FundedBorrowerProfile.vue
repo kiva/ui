@@ -85,7 +85,7 @@
 						:loan="category.loan"
 						loan-card-type="FeaturedHeroLoan"
 						:position="1"
-						:row-number="0"
+						:row-number="index"
 						:is-visitor="isVisitor"
 					/>
 				</div>
