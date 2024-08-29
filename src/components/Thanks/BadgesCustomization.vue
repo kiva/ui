@@ -38,6 +38,7 @@
 				:selected-badge-idx="selectedBadgeIdx"
 				:badges="randomSortedBadges"
 				:is-guest="isGuest"
+				:user-preferences="userPreferences"
 				@back="() => newScreenSteps -= 1"
 			/>
 		</transition-group>
@@ -78,6 +79,10 @@ export default {
 			default: () => ([])
 		},
 		receipt: {
+			type: Object,
+			default: () => ({})
+		},
+		userPreferences: {
 			type: Object,
 			default: () => ({})
 		},

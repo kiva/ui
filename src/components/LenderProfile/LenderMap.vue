@@ -111,6 +111,10 @@ export default {
 			type: Object,
 			required: true,
 		},
+		lenderStats: {
+			type: Object,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -125,7 +129,7 @@ export default {
 				: 'Lending Activity by Country';
 		},
 		countriesData() {
-			return (this.lenderInfo?.statsPerCountry?.values ?? []).map(stat => ({
+			return (this.lenderStats?.statsPerCountry?.values ?? []).map(stat => ({
 				label: stat.country?.name ?? '',
 				value: stat.loanCount ?? '',
 				lat: stat.country?.geocode?.latitude ?? 0,

@@ -24,7 +24,6 @@
 						'choose-a-badge',
 						badge.name
 					]"
-					@click="() => selectBadge(badge.name)"
 				>
 					<img
 						:src="imageRequire(`./${badge.img}.svg`)"
@@ -57,7 +56,7 @@
 		<div class="tw-pt-4">
 			<kv-button
 				class="tw-w-full tw-pb-2"
-				to="/portfolio"
+				@click="setAsGoal"
 				v-kv-track-event="[
 					'thanks',
 					'click',
@@ -87,6 +86,7 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
+import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -95,6 +95,7 @@ const imageRequire = require.context('@/assets/images/thanks-page/badges', true)
 
 export default {
 	name: 'DetailSection',
+	inject: ['apollo', 'cookieStore'],
 	props: {
 		selectedBadgeIdx: {
 			type: Number,
@@ -107,6 +108,10 @@ export default {
 		isGuest: {
 			type: Boolean,
 			default: false
+		},
+		userPreferences: {
+			type: Object,
+			default: () => ({})
 		},
 	},
 	components: {
@@ -164,7 +169,80 @@ export default {
 		},
 		hideBadgeName(badgeId) {
 			return badgeId !== this.currentBadge?.id;
-		}
+		},
+		async createUserPreferences() {
+			const createUserPreferencesMutation = gql`
+				mutation createUserPreferences($preferences: String) {
+					my {
+						createUserPreferences(userPreferences: {preferences: $preferences}) {
+							id
+							preferences
+						}
+					}
+				}
+			`;
+
+			const createUserPreferences = this.apollo.mutate({
+				mutation: createUserPreferencesMutation,
+				variables: {
+					preferences: '',
+				},
+			});
+			const response = await createUserPreferences;
+
+			return response?.data?.my?.createUserPreferences?.id;
+		},
+		async setAsGoal() {
+			try {
+				let updateUserPreferencesId = this.userPreferences?.id ?? null;
+
+				if (!updateUserPreferencesId) {
+					updateUserPreferencesId = await this.createUserPreferences();
+				}
+				const currentPreferences = this.userPreferences?.preferences ?? {};
+				const preferences = JSON.stringify({ ...currentPreferences, goal: this.currentBadgeName });
+
+				const updateUserPreferencesMutation = gql`
+					mutation UpdateUserPreferences(
+						$updateUserPreferencesId: Int!,
+						$preferences: String
+					) {
+						my {
+							updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
+								preferences: $preferences
+						}) {
+								id
+								preferences
+							}
+						}
+				}`;
+
+				const updateUserPreferences = this.apollo.mutate({
+					mutation: updateUserPreferencesMutation,
+					variables: {
+						updateUserPreferencesId,
+						preferences,
+					},
+				});
+
+				const response = await updateUserPreferences;
+				if (response.errors) {
+					this.$showTipMsg('There was a problem saving your goal', 'error');
+
+					throw new Error(
+						response?.errors?.[0]?.extensions?.code
+						|| response?.errors?.[0]?.message
+					);
+				} else if (this.isGuest) {
+					const doneUrl = encodeURIComponent('/portfolio?goal_saved=true');
+					window.location = `/ui-login?earnBadge=1&doneUrl=${doneUrl}`;
+				} else {
+					this.$router.push({ path: '/portfolio', query: { goal_saved: true } });
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		},
 	}
 };
 </script>
