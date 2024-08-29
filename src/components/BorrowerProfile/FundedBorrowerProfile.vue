@@ -85,7 +85,7 @@
 						:loan="category.loan"
 						loan-card-type="FeaturedHeroLoan"
 						:position="1"
-						:row-number="index"
+						:row-number="index + 1"
 						:is-visitor="isVisitor"
 					/>
 				</div>
@@ -218,6 +218,8 @@ export default {
 		this.createViewportObserver();
 		this.rows = [
 			{
+				identifier: 'sector',
+				rowIndex: 1,
 				heading: 'Support these ',
 				subHeading: '',
 				onlyLoan: false,
@@ -226,6 +228,8 @@ export default {
 				loanIds: []
 			},
 			{
+				identifier: 'recommended',
+				rowIndex: 2,
 				heading: 'Recommended Borrower',
 				subHeading: 'We selected this loan for you because it\'s similar to ',
 				onlyLoan: true,
@@ -234,6 +238,8 @@ export default {
 				loan: null
 			},
 			{
+				identifier: 'gender',
+				rowIndex: 3,
 				heading: 'Support these ',
 				subHeading: '',
 				onlyLoan: false,
@@ -242,6 +248,8 @@ export default {
 				loanIds: []
 			},
 			{
+				identifier: 'country',
+				rowIndex: 4,
 				heading: 'Support these borrowers in ',
 				subHeading: '',
 				onlyLoan: false,
@@ -259,6 +267,26 @@ export default {
 				(top > 0 || bottom > 0)
 				&& top < vHeight
 			);
+		},
+		trackDisplayedLoans(sectionIdentifier, sectionPosition, loans) {
+			const loansDisplayed = loans?.filter(l => !!l?.id)?.map((l, i) => ({
+				position: i + 1,
+				loanId: l.id,
+			})) ?? [];
+
+			if (loansDisplayed.length) {
+				const event = {
+					// eslint-disable-next-line max-len
+					schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_lend_by_category_loan_display_event_v3_schema_1_0_0.json#',
+					data: {
+						sectionIdentifier,
+						sectionPosition,
+						loansDisplayed,
+					},
+				};
+
+				this.$kvTrackSelfDescribingEvent(event);
+			}
 		},
 		fetchLoanData() {
 			const row = this.rows.shift();
@@ -307,6 +335,7 @@ export default {
 									expLabel
 								}
 							];
+							this.trackDisplayedLoans(row.identifier, row.rowIndex, personalizedLoans);
 							this.isLoading = false;
 							if (this.refIsVisible()) {
 								this.fetchLoanData();
@@ -325,13 +354,14 @@ export default {
 								limit: row.limit
 							}
 						}).then(({ data }) => {
-							const loans = data?.ml?.relatedLoansByTopics?.[0]?.values ?? [];
+							const loan = (data?.ml?.relatedLoansByTopics?.[0]?.values ?? [])[0];
 							this.categories = [
 								...this.categories,
 								{
-									heading: row.heading, loan: loans[0], loanIds: [], subHeading: row.subHeading
+									heading: row.heading, loan, loanIds: [], subHeading: row.subHeading
 								}
 							];
+							this.trackDisplayedLoans(row.identifier, row.rowIndex, [loan]);
 							this.isLoading = false;
 							if (this.refIsVisible()) {
 								this.fetchLoanData();
