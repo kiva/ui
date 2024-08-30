@@ -72,6 +72,7 @@
 					<kv-checkbox
 						class="tw-text-small tw-font-medium custom-checkbox"
 						v-model="showFundraisingLoans"
+						@click="showFundraisingLoansEvent"
 					>
 						Show fundraising loans
 					</kv-checkbox>
@@ -184,12 +185,22 @@ export default {
 	},
 	methods: {
 		countryFilterClicked(countryIso) {
+			this.$kvTrackEvent('lender-profile', 'click', 'lender-loans-map-country-fundraising-loans', countryIso);
 			this.$router.push({
 				path: '/lend/filter',
 				query: {
 					country: countryIso,
 				},
 			});
+		},
+		showFundraisingLoansEvent() {
+			this.$kvTrackEvent(
+				'lender-profile',
+				'toggle',
+				'lender-loans-map-show-fundraising-loans',
+				null,
+				this.showFundraisingLoans ? 0 : 1
+			);
 		},
 	},
 };
