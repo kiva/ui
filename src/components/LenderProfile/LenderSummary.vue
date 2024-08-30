@@ -31,6 +31,11 @@
 								<a
 									:href="value"
 									target="_blank"
+									v-kv-track-event="[
+										'lender-profile',
+										'click',
+										'lender-summary-website'
+									]"
 								>
 									{{ value }}
 								</a>
@@ -54,6 +59,11 @@
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
 						:href="`/gifts/kiva-cards?handle=${publicId}#/lender`"
+						v-kv-track-event="[
+							'lender-profile',
+							'click',
+							'send-a-kiva-card-button'
+						]"
 					>
 						Send a Kiva Card
 					</kv-button>
@@ -76,7 +86,14 @@
 				<p>In order to send a message, you will need to make a loan using your own funds first. This helps us prevent spam and unwanted messages.</p>
 				<p class="tw-mt-2">
 					Please
-					<router-link to="/lend">
+					<router-link
+						to="/lend"
+						v-kv-track-event="[
+							'lender-profile',
+							'click',
+							'send-message-make-a-loan'
+						]"
+					>
 						make a loan first
 					</router-link>
 					(note that loans made with bonus credit are not eligible) and then try your message again!
@@ -215,6 +232,7 @@ export default {
 	methods: {
 		showMessageLightbox() {
 			this.lightboxVisible = true;
+			this.$kvTrackEvent('lender-profile', 'click', 'send-message-lightbox-button');
 		},
 		lightboxClosed() {
 			this.lightboxVisible = false;
@@ -222,6 +240,7 @@ export default {
 		closeLightbox() {
 			this.lenderMessage = '';
 			this.lightboxClosed();
+			this.$kvTrackEvent('lender-profile', 'click', 'send-message-close-button');
 		},
 		sendMessage() {
 			this.sendingMessage = true;
@@ -239,10 +258,12 @@ export default {
 				this.errorMessage = e[0]?.message
 					? e[0].message
 					: 'There was a problem sending your message. Please try again later.';
+				this.$kvTrackEvent('lender-profile', 'fail', 'send-message', this.errorMessage);
 			} finally {
 				this.sendingMessage = false;
 				this.closeLightbox();
 				this.$showTipMsg('Your message has been sent!');
+				this.$kvTrackEvent('lender-profile', 'click', 'send-message-button');
 			}
 		},
 	},
