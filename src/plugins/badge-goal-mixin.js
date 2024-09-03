@@ -49,7 +49,7 @@ export default {
 				return this.apollo.mutate({
 					mutation: updateUserPreferencesMutation,
 					variables: {
-						updateUserPreferencesId: userPreferences?.id,
+						updateUserPreferencesId: userPreferences.id,
 						preferences,
 					},
 				});
