@@ -13,6 +13,10 @@ query portfolioQuery {
 				}
 			}
 		}
+		userPreferences {
+			id
+			preferences
+		}
 	}
 	general {
 		team_challenge_enable: uiConfigSetting(key: "portfolio_team_challenge_enable") {

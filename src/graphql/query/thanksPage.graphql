@@ -137,10 +137,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		communicationSettings {
 			lenderNews
 		}
-		userPreferences {
-			id
-			preferences
-		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
