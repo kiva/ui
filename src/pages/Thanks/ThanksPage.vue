@@ -18,10 +18,9 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
-				:user-preferences="userPreferences"
 			/>
 		</template>
-		<template v-else-if="showNewTYPage">
+		<template v-else-if="showNewTYPage && loans.length > 0">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
 				:loans="loans"
@@ -262,7 +261,6 @@ export default {
 			enableMayChallengeHeader: false,
 			optedIn: false,
 			badgesCustomExpEnabled: false,
-			userPreferences: null
 		};
 	},
 	apollo: {
@@ -550,7 +548,6 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// Thanks Badges Experiment
-		this.userPreferences = data?.my?.userPreferences ?? null;
 		if (this.optedIn) {
 			const { version } = trackExperimentVersion(
 				this.apollo,

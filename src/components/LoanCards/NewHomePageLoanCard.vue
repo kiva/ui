@@ -124,12 +124,12 @@
 		</router-link>
 		<div v-if="dedications.length > 0">
 			💚
-			<router-link
-				:to="`/dedication/${loanId}`"
-				class="data-hj-suppress tw-capitalize"
+			<button
+				class="data-hj-suppress tw-capitalize tw-text-action hover:tw-underline"
+				@click="dedicationClickEvent"
 			>
 				{{ dedicationsCopy }}
-			</router-link>
+			</button>
 		</div>
 	</div>
 </template>
@@ -338,6 +338,10 @@ export default {
 			if (this.loan) {
 				this.isLoading = false;
 			}
+		},
+		dedicationClickEvent() {
+			this.$emit('dedication-click', { loanId: this.loanId, dedicationCopy: this.dedicationsCopy });
+			this.$router.push(`/dedication/${this.loanId}`);
 		},
 	},
 	created() {

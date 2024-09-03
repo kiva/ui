@@ -1,3 +1,46 @@
+## [2.752.0](https://github.com/kiva/ui/compare/v2.751.0...v2.752.0) (2024-08-29)
+
+
+### 🎉 New Features
+
+* add helper text to braintree dropin ([58920d3](https://github.com/kiva/ui/commit/58920d3c709b2854e25c3b0a86719737d9297482))
+* lender stats data import updated ([#5467](https://github.com/kiva/ui/issues/5467)) ([77106c1](https://github.com/kiva/ui/commit/77106c144edbffcef90ef2ec3513a0974fa07652))
+* redirect guest users to register form ([a546090](https://github.com/kiva/ui/commit/a54609058eb6a2fd8baeeb0e6cf59ae2ad009722))
+* show tip on error ([7eb123f](https://github.com/kiva/ui/commit/7eb123fad43238b707424ce0e2793b85fa8d5f94))
+* update user preferences when saving goal ([d439700](https://github.com/kiva/ui/commit/d43970003502f02eb9d298121ebfd354e282a399))
+
+
+### 🐛 Bugfixes
+
+* json parse error ([c275ef6](https://github.com/kiva/ui/commit/c275ef657cd46cd623b7bcc7f01c32b028386396))
+* linting ([94de904](https://github.com/kiva/ui/commit/94de904b083b4cc017db316725bce3bb0aea75fc))
+* router ([763c2f7](https://github.com/kiva/ui/commit/763c2f7eff7e4f229d4439221f639e948cb1802a))
+* using console instead of throw when catching error ([af3dc0e](https://github.com/kiva/ui/commit/af3dc0ee091b2374ae868a9bd2321980bca9d56c))
+
+
+### 🧹 Chores
+
+* **release:** 2.752.0-rc.1 [skip ci] ([46fe664](https://github.com/kiva/ui/commit/46fe664deb0809d595c26bf99571c07339f04a0f)), closes [#5467](https://github.com/kiva/ui/issues/5467)
+
+## [2.752.0-rc.1](https://github.com/kiva/ui/compare/v2.751.0...v2.752.0-rc.1) (2024-08-29)
+
+
+### 🎉 New Features
+
+* add helper text to braintree dropin ([58920d3](https://github.com/kiva/ui/commit/58920d3c709b2854e25c3b0a86719737d9297482))
+* lender stats data import updated ([#5467](https://github.com/kiva/ui/issues/5467)) ([77106c1](https://github.com/kiva/ui/commit/77106c144edbffcef90ef2ec3513a0974fa07652))
+* redirect guest users to register form ([a546090](https://github.com/kiva/ui/commit/a54609058eb6a2fd8baeeb0e6cf59ae2ad009722))
+* show tip on error ([7eb123f](https://github.com/kiva/ui/commit/7eb123fad43238b707424ce0e2793b85fa8d5f94))
+* update user preferences when saving goal ([d439700](https://github.com/kiva/ui/commit/d43970003502f02eb9d298121ebfd354e282a399))
+
+
+### 🐛 Bugfixes
+
+* json parse error ([c275ef6](https://github.com/kiva/ui/commit/c275ef657cd46cd623b7bcc7f01c32b028386396))
+* linting ([94de904](https://github.com/kiva/ui/commit/94de904b083b4cc017db316725bce3bb0aea75fc))
+* router ([763c2f7](https://github.com/kiva/ui/commit/763c2f7eff7e4f229d4439221f639e948cb1802a))
+* using console instead of throw when catching error ([af3dc0e](https://github.com/kiva/ui/commit/af3dc0ee091b2374ae868a9bd2321980bca9d56c))
+
 ## [2.751.0](https://github.com/kiva/ui/compare/v2.750.0...v2.751.0) (2024-08-27)
 
 
