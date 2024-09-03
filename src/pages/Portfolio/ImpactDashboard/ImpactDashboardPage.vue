@@ -118,16 +118,15 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 		this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
 	},
-	mounted() {
+	async mounted() {
 		this.loadEducationPost();
 
 		if (this.$route?.query?.goal_saved) {
-			const badgeName = this.route?.query?.goal_saved ?? '';
+			const badgeName = this.$route?.query?.goal_saved ?? '';
 
 			if (!this.userPreferences?.id) {
-				this.createUserPreferences().then(({ data }) => {
-					this.userPreferences = data?.my?.createUserPreferences ?? null;
-				});
+				const createPreferences = await this.createUserPreferences();
+				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? null;
 			}
 
 			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {

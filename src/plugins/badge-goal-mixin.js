@@ -28,7 +28,7 @@ export default {
 			checkInjections(this, injections);
 
 			try {
-				const currentPreferences = userPreferences?.preferences ?? {};
+				const currentPreferences = JSON.parse(userPreferences?.preferences) ?? {};
 				const preferences = JSON.stringify({ ...currentPreferences, goal: badgeName });
 
 				const updateUserPreferencesMutation = gql`
@@ -49,7 +49,7 @@ export default {
 				return this.apollo.mutate({
 					mutation: updateUserPreferencesMutation,
 					variables: {
-						updateUserPreferencesId: userPreferences.id,
+						updateUserPreferencesId: userPreferences?.id,
 						preferences,
 					},
 				});
