@@ -22,6 +22,7 @@
 				:key="`loan-${loan.id}-${index}`"
 				:loan-id="loan.id"
 				:lender-public-id="publicId"
+				@dedication-click="trackDedication"
 			/>
 		</div>
 		<kv-pagination
@@ -30,6 +31,7 @@
 			:limit="loansLimit"
 			:total="totalCount"
 			:offset="loansOffset"
+			track-event-category="lender-profile-loans"
 			@page-changed="pageChange"
 		/>
 	</section>
@@ -130,7 +132,16 @@ export default {
 			const elementToScrollTo = document.querySelector(sectionId);
 			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 50 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-		}
+		},
+		trackDedication(dedication) {
+			this.$kvTrackEvent(
+				'lender-profile',
+				'click',
+				'lender-made-dedication',
+				dedication.dedicationCopy,
+				dedication.loanId
+			);
+		},
 	},
 	mounted() {
 		this.fetchLenderLoans();

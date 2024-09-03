@@ -27,12 +27,26 @@
 					<div v-else>
 						<a
 							:href="`/dedication/${dedication.loanId}`"
+							v-kv-track-event="[
+								'lender-profile',
+								'click',
+								'lender-received-dedication',
+								dedication.senderName,
+								dedication.loanId
+							]"
 						>
 							<dedicate-heart class="tw-w-full tw-px-4 tw-fill-brand" />
 						</a>
 						<a
 							:href="`/dedication/${dedication.loanId}`"
 							class="data-hj-suppress"
+							v-kv-track-event="[
+								'lender-profile',
+								'click',
+								'lender-received-dedication',
+								dedication.senderName,
+								dedication.loanId
+							]"
 						>
 							Dedicated by {{ dedication.senderName }}
 						</a>
@@ -46,6 +60,7 @@
 				:total="totalCount"
 				:offset="dedicationsOffset"
 				:scroll-to-top="false"
+				track-event-category="lender-profile-dedications"
 				@page-changed="pageChange"
 			/>
 		</section>

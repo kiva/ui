@@ -26,6 +26,7 @@
 					<div v-else>
 						<a
 							:href="`/team/${team.teamPublicId}`"
+							v-kv-track-event="['lender-profile', 'click', 'lender-team', team.name, team.id]"
 						>
 							<kv-material-icon
 								v-if="!getImageUrl(team)"
@@ -41,6 +42,7 @@
 						</a>
 						<a
 							:href="`/team/${team.teamPublicId}`"
+							v-kv-track-event="['lender-profile', 'click', 'lender-team', team.name, team.id]"
 						>
 							{{ team.name }}
 						</a>
@@ -55,6 +57,7 @@
 				:total="totalCount"
 				:offset="teamsOffset"
 				:scroll-to-top="false"
+				track-event-category="lender-profile-teams"
 				@page-changed="pageChange"
 			/>
 		</section>
