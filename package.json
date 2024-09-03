@@ -202,7 +202,6 @@
 		"vite": "^5.2.11",
 		"vite-bundle-visualizer": "^1.2.1",
 		"vite-plugin-graphql-loader": "^3.0.1",
-		"vite-plugin-html-purgecss": "^0.1.1",
 		"vite-plugin-svg-store": "^0.1.4",
 		"vite-svg-loader": "^5.1.0",
 		"wait-on": "^5.2.0"
