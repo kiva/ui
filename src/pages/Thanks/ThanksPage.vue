@@ -20,7 +20,7 @@
 				:is-guest="isGuest"
 			/>
 		</template>
-		<template v-else-if="showNewTYPage && loans.length > 0">
+		<template v-else-if="showNewTYPage">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
 				:loans="loans"
@@ -408,7 +408,7 @@ export default {
 			return false;
 		},
 		showNewTYPage() {
-			return !this.landedOnUSLoan && !this.optedIn;
+			return !this.landedOnUSLoan && !this.optedIn && this.loans.length > 0;
 		},
 	},
 	created() {
