@@ -95,7 +95,11 @@ export default {
 					goals: [
 						'Complete 2 eco-friendly loans.',
 						'Learn one cool thing about climate action'
-					]
+					],
+					category: {
+						tags: ['#Eco-friendly', '#Sustainable Ag'],
+					},
+					count: 0
 				},
 				{
 					id: 3,
@@ -106,7 +110,11 @@ export default {
 					goals: [
 						'Complete 2 loans for women',
 						'Learn one cool thing about women',
-					]
+					],
+					category: {
+						gender: 'female',
+					},
+					count: 0
 				},
 				{
 					id: 4,
@@ -116,7 +124,12 @@ export default {
 					goals: [
 						'Complete 2 loans for U.S. Entrepreneurs',
 						'Learn one cool thing about U.S. Entrepreneurs',
-					]
+					],
+					category: {
+						countryIsoCode: ['US', 'GU', 'VI', 'PR'],
+						distributionModel: 'direct'
+					},
+					count: 0
 				},
 				{
 					id: 5,
@@ -127,7 +140,11 @@ export default {
 					goals: [
 						'Complete 2 loans for refugees',
 						'Learn one cool thing about refugees',
-					]
+					],
+					category: {
+						themes: ['Refugees/Displaced'],
+					},
+					count: 0
 				},
 				{
 					id: 6,
@@ -138,7 +155,12 @@ export default {
 					goals: [
 						'Complete 2 loans to help the most vulnerable',
 						'Learn one cool thing about the most vulnerable populations on Kiva',
-					]
+					],
+					category: {
+						themes: ['Vulnerable Groups'],
+						distributionModel: 'fieldPartner'
+					},
+					count: 0
 				}
 			],
 			newBgActive: false,
@@ -176,6 +198,37 @@ export default {
 		showNewBg() {
 			this.newBgActive = true;
 		},
+		countLoansInCategories() {
+			this.defaultSortBadges.forEach((badge, idx) => {
+				this.loans.forEach(loan => {
+					let matches = true;
+
+					if (badge.category.themes) {
+						matches = matches && badge.category.themes.some(theme => loan.themes.includes(theme));
+					}
+
+					if (badge.category.tags) {
+						matches = matches && badge.category.tags.some(tag => loan.tags.includes(tag));
+					}
+
+					if (badge.category.gender) {
+						matches = matches && loan.gender === badge.category.gender;
+					}
+
+					if (badge.category.countryIsoCode) {
+						matches = matches && badge.category.countryIsoCode.includes(loan.geocode.country.isoCode);
+					}
+
+					if (badge.category.distributionModel) {
+						matches = matches && loan.distributionModel === badge.category.distributionModel;
+					}
+
+					if (matches) {
+						this.defaultSortBadges[idx].count += 1;
+					}
+				});
+			});
+		}
 	},
 	created() {
 		this.defaultSortBadges.unshift(
@@ -189,8 +242,13 @@ export default {
 				],
 				// eslint-disable-next-line max-len
 				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+				category: {
+					countryIsoCode: [this.selectedLoan.geocode.country.isoCode],
+				},
+				count: 0
 			}
 		);
+		this.countLoansInCategories();
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
