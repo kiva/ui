@@ -60,7 +60,8 @@
 					'thanks',
 					'click',
 					'set-as-goal',
-					currentBadgeName
+					currentBadgeName,
+					currentBadge.count,
 				]"
 			>
 				Set as goal
@@ -74,7 +75,8 @@
 					'thanks',
 					'click',
 					'go-to-my-kiva',
-					`Button seen after seeing ${currentBadgeName} badge`
+					`Button seen after seeing ${currentBadgeName} badge`,
+					currentBadge.count,
 				]"
 			>
 				Go to my kiva
@@ -153,12 +155,12 @@ export default {
 		},
 	},
 	mounted() {
-		const badgesNames = this.badges.map(badge => badge.name).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
-			'view-all-badges',
-			badgesNames
+			'view-badge-details',
+			this.selectedName,
+			this.currentBadge.count,
 		);
 	},
 	methods: {

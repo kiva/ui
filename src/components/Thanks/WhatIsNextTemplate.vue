@@ -50,20 +50,11 @@
 					class="secondary-container"
 				>
 					<template v-if="!selectOption">
-						<template v-if="!shortVersionEnabled">
-							<h4 class="tw-text-center tw-pt-1">
-								What to expect next:
-							</h4>
-							<loan-next-steps
-								class="tw-mb-5"
-								:weeks-to-repay="weeksToRepay"
-							/>
-						</template>
 						<div class="tw-flex tw-flex-col tw-gap-2 tw-pb-3">
 							<h3 class="tw-text-center" v-if="ctaCopy">
 								{{ ctaCopy }}
 							</h3>
-							<template v-if="!optedIn || (optedIn && isGuest && !shortVersionEnabled)">
+							<template v-if="!optedIn">
 								<kv-button
 									@click="() => updateOptIn(true)"
 									v-kv-track-event="[
@@ -87,7 +78,7 @@
 									No, I don’t want to receive updates
 								</kv-button>
 							</template>
-							<template v-else-if="isGuest && optedIn && shortVersionEnabled">
+							<template v-else-if="isGuest && optedIn">
 								<guest-account-creation
 									class="tw-pt-3 account-creation"
 									event-category="thanks"
@@ -260,8 +251,6 @@
 </template>
 
 <script>
-import { addMonths, differenceInWeeks } from 'date-fns';
-import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
@@ -283,7 +272,6 @@ const images = metaGlobReader(imagesGlob, '../../assets/images/thanks-page/');
 export default {
 	name: 'WhatIsNextTemplate',
 	components: {
-		LoanNextSteps,
 		KvExpandable,
 		CheckoutReceipt,
 		SocialShareV2,
@@ -320,10 +308,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		shortVersionEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -349,25 +333,6 @@ export default {
 			}
 			return filteredLoans.slice(0, 3);
 		},
-		weeksToRepay() {
-			const date = this.selectedLoan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
-			const today = new Date();
-			if (date) {
-				// Get the number of weeks between the first repayment date (in the future) and now
-				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
-			}
-
-			// Calculating a possible range of weeks between the planned expiration date and a month after
-			const expDate = Date.parse(this.selectedLoan?.plannedExpirationDate);
-			const minDate = differenceInWeeks(addMonths(today, 1), today);
-			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
-			if (minDate === maxDate) {
-				return `${minDate} weeks`;
-			}
-
-			return `${minDate} - ${maxDate} weeks`;
-		},
 		marginLeftWeight() {
 			if (this.filteredLoans.length === 1) {
 				return 0;
@@ -384,7 +349,7 @@ export default {
 			}
 			if (this.loans.length === 2) {
 				const names = this.loans.map(loan => loan.name).join(' and ');
-				return `You are part of ${names}'s journey now'`;
+				return `You are part of ${names}'s journey now`;
 			}
 			const beginning = `You are part of ${this.loans[0].name}, ${this.loans[1].name}, and `;
 
@@ -394,7 +359,7 @@ export default {
 			return `${beginning} ${this.loans.length - 2} others journey now`;
 		},
 		ctaCopy() {
-			if (this.optedIn && this.isGuest && this.shortVersionEnabled) {
+			if (this.optedIn && this.isGuest) {
 				return 'Complete your account to track your impact and manage repayments.';
 			}
 			if (this.isGuest || (!this.isGuest && !this.optedIn)) {
@@ -443,7 +408,7 @@ export default {
 		}
 	},
 	created() {
-		this.$kvTrackEvent('thanks', 'view', 'opt-in-request', this.isGuest ? 'guest' : 'signed-in');
+		this.$kvTrackEvent('thanks', 'view', 'Thanks-marketing-opt-in-prompt', this.isGuest ? 'guest' : 'registered');
 	},
 	mounted() {
 		confetti({
