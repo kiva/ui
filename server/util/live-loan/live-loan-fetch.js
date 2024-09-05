@@ -244,7 +244,7 @@ const findFilterOption = (options, name, value) => {
 
 // Takes a string like: "sort_expiringSoon,gender_female"
 // and extracts the sort option, e.g. "expiringSoon"
-async function parseSortString(sortString, sortOptions) {
+function parseSortString(sortString, sortOptions) {
 	let sort = null;
 
 	// only try parsing if the input is valid
@@ -330,7 +330,7 @@ const parseFilterStringFLSS = async filterString => {
 async function fetchRecommendationsByFilter(filterString) {
 	const filters = await parseFilterStringFLSS(filterString);
 	const sortOptions = await fetchFLSSSorts();
-	const sortBy = await parseSortString(filterString, sortOptions);
+	const sortBy = parseSortString(filterString, sortOptions);
 	return fetchLoansFromGraphQL(
 		{
 			query: `query($filters: [FundraisingLoanSearchFilterInput!], $sortBy: SortEnum) {
@@ -426,11 +426,11 @@ async function parseFilterStringLegacy(filterString) {
 
 // Get loans from legacy lend search matching a set of filters
 async function fetchRecommendationsByLegacyFilter(filterString) {
-	const sortOptions = await fetchSorts();
-	const [filters, sort] = await Promise.all([
+	const [filters, sortOptions] = await Promise.all([
 		parseFilterStringLegacy(filterString),
-		parseSortString(filterString, sortOptions),
+		fetchSorts(),
 	]);
+	const sort = parseSortString(filterString, sortOptions);
 	return fetchLoansFromGraphQL(
 		{
 			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
@@ -477,8 +477,8 @@ const shouldUseFLSS = async filterString => {
 
 	// Check which sort options are used in the filter string
 	const [legacySorts, flssSorts] = await Promise.all([fetchSorts(), fetchFLSSSorts()]);
-	const legacySort = await parseSortString(filterString, legacySorts);
-	const FLSSSort = await parseSortString(filterString, flssSorts);
+	const legacySort = parseSortString(filterString, legacySorts);
+	const FLSSSort = parseSortString(filterString, flssSorts);
 	const usingLegacySort = !!legacySort;
 	const usingFLSSSort = !!FLSSSort;
 
