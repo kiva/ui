@@ -14,8 +14,7 @@
 		</p>
 		<div
 			class="
-				tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2 md:tw-gap-4
-				tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
+				tw-flex tw-flex-wrap tw-gap-2 md:tw-gap-4 tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
 			"
 		>
 			<div
