@@ -472,7 +472,7 @@ async function fetchLoanById(loanId) {
 const shouldUseFLSS = async filterString => {
 	// input needs to be a string
 	if (!filterString || typeof filterString !== 'string') {
-		return false;
+		return true; // Returning true so that FLSS is the default
 	}
 
 	// Check which sort options are used in the filter string
