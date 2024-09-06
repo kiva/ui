@@ -84,8 +84,8 @@ export default {
 }
 
 .step-text {
-	@apply tw-ml-1 tw-mt-2.5 tw-text-base;
 	font-size: 1.2rem;
+	@apply tw-ml-1 tw-mt-2.5 tw-text-base;
 }
 
 .line {
