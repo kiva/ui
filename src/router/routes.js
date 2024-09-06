@@ -443,6 +443,14 @@ module.exports = [
 		}
 	},
 	{
+		path: '/my-kiva',
+		component: () => import('@/pages/Portfolio/MyKiva/MyKivaPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/portfolio',
 		component: () => import('@/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
