@@ -111,8 +111,8 @@ export default {
 <style lang="postcss" scoped>
 
 .badge-card {
-	width: 156px;
-	height: 148px;
+	width: 166px;
+	height: 158px;
 	box-shadow: 0 4px 12px 0 #00000014;
 	@apply tw-cursor-pointer tw-border tw-flex tw-flex-col tw-rounded tw-gap-2 tw-border-none tw-justify-center;
 }

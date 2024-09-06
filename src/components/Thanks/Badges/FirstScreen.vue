@@ -216,7 +216,7 @@
 						]"
 					>
 						<p class="tw-font-medium">
-							Show previous loan details
+							Show confirmation
 						</p>
 						<kv-material-icon
 							:icon="mdiChevronDown"
