@@ -88,12 +88,12 @@ export default {
 		};
 	},
 	mounted() {
-		const badgesNames = this.badges.map(badge => badge.name).join(', ');
+		const badgesTracking = this.badges.map(badge => badge.tracking).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
 			'view-all-badges',
-			badgesNames
+			badgesTracking
 		);
 	},
 	methods: {
