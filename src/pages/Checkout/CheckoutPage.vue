@@ -435,6 +435,7 @@ export default {
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
 			userOptedIn: false,
+			addedUpsellLoans: [],
 		};
 	},
 	apollo: {
@@ -959,7 +960,8 @@ export default {
 				});
 			});
 		},
-		getUpsellModuleData() {
+		getUpsellModuleData(loanId = 0) {
+			this.addedUpsellLoans.push(loanId);
 			this.apollo.query({
 				query: upsellQuery,
 				fetchPolicy: 'network-only',
@@ -967,7 +969,7 @@ export default {
 				this.continueButtonState = 'active';
 				const loans = data?.lend?.loans?.values || [];
 				// Temp solution so we don't show reserved loans on upsell
-				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan))[0] || {};
+				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
 			});
 		},
 		verificationComplete() {
@@ -1018,7 +1020,7 @@ export default {
 							);
 							// eslint-disable-next-line max-len
 							this.$showTipMsg('Looks like that loan was reserved by someone else! Try this one instead.', 'info');
-							this.getUpsellModuleData();
+							this.getUpsellModuleData(loanId);
 							this.refreshTotals();
 						} else {
 							this.$showTipMsg(error.message, 'error');
