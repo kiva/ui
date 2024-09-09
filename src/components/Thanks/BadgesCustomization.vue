@@ -188,6 +188,9 @@ export default {
 		loanRegion() {
 			return this.selectedLoan?.geocode?.country?.region ?? '';
 		},
+		loanCountryIsoCode() {
+			return this.selectedLoan?.geocode?.country?.isoCode ?? '';
+		},
 	},
 	methods: {
 		hash(loan) {
@@ -237,25 +240,26 @@ export default {
 	},
 	created() {
 		// TODO: disabling to help track down memory leak
-		// this.defaultSortBadges.unshift(
-		// 	{
-		// 		id: 1,
-		// 		name: this.loanRegion,
-		// 		img: 'region',
-		// 		goals: [
-		// 			`Complete 2 loans from ${this.loanCountry}`,
-		// 			`Learn 1 cool thing about ${this.loanRegion}`,
-		// 		],
-		// 		// eslint-disable-next-line max-len
-		// 		description:
-		//      	`Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
-		// 		category: {
-		// 			countryIsoCode: [this.selectedLoan.geocode.country.isoCode],
-		// 		},
-		// 		count: 0,
-		// 		tracking: `Region-${this.loanRegion}`,
-		// 	}
-		// );
+		// if (this.loanCountryIsoCode) {
+		// 	this.defaultSortBadges.unshift(
+		// 		{
+		// 			id: 1,
+		// 			name: this.loanRegion,
+		// 			img: 'region',
+		// 			goals: [
+		// 				`Complete 2 loans from ${this.loanCountry}`,
+		// 				`Learn 1 cool thing about ${this.loanRegion}`,
+		// 			],
+		// 			// eslint-disable-next-line max-len
+		// 			description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+		// 			category: {
+		// 				countryIsoCode: [this.loanCountryIsoCode],
+		// 			},
+		// 			count: 0,
+		// 			tracking: `Region-${this.loanRegion}`,
+		// 		}
+		// 	);
+		// }
 		this.countLoansInCategories();
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},

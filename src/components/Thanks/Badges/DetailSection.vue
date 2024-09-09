@@ -143,6 +143,9 @@ export default {
 			const index = this.currentBadgeIndex > 1 ? this.currentBadgeIndex - 1 : 0;
 			return this.badges[index] ?? null;
 		},
+		currentBadgeTracking() {
+			return this.currentBadge?.tracking ?? '';
+		},
 		selectedName() {
 			return this.currentBadge?.name ?? '';
 		},
@@ -177,6 +180,13 @@ export default {
 		handleChange() {
 			const badgeIndex = this.$refs.badgeCarousel.currentIndex + 1;
 			this.currentBadgeIndex = badgeIndex;
+			this.$kvTrackEvent(
+				'thanks',
+				'view',
+				'view-badge-details',
+				this.currentBadgeTracking,
+				this.currentBadge.count
+			);
 		},
 		hideBadgeName(badgeId) {
 			return badgeId !== this.currentBadge?.id;
