@@ -1,3 +1,10 @@
+## [2.753.1-rc.1](https://github.com/kiva/ui/compare/v2.753.0...v2.753.1-rc.1) (2024-09-09)
+
+
+### 🐛 Bugfixes
+
+* try disabling lender map for memory leak ([6862692](https://github.com/kiva/ui/commit/68626929c2173bf855ecad3bb7697428f7dda408))
+
 ## [2.753.0](https://github.com/kiva/ui/compare/v2.752.0...v2.753.0) (2024-09-09)
 
 
