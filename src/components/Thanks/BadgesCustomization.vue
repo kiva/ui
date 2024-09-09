@@ -251,7 +251,8 @@ export default {
 		// 				`Learn 1 cool thing about ${this.loanRegion}`,
 		// 			],
 		// 			// eslint-disable-next-line max-len
-		// 			description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+		// 			description:
+		// 				`Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
 		// 			category: {
 		// 				countryIsoCode: [this.loanCountryIsoCode],
 		// 			},
