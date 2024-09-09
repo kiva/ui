@@ -1,3 +1,38 @@
+## [2.753.0-rc.1](https://github.com/kiva/ui/compare/v2.752.0...v2.753.0-rc.1) (2024-09-09)
+
+
+### 🎉 New Features
+
+* add loan display snowplow events to funded bp ([93bb3b6](https://github.com/kiva/ui/commit/93bb3b62f56794743a9b36bae92a363f2218db03))
+* handle goal in portfolio for all users in experiment ([05a7f04](https://github.com/kiva/ui/commit/05a7f046e3caaff15300ec600a370a98e76ac123))
+* my kiva experiment setup added ([#5480](https://github.com/kiva/ui/issues/5480)) ([beb8b23](https://github.com/kiva/ui/commit/beb8b23cc309ae69b9d444111d5dea1efb882a94))
+* roll out TY page experiment ([2765bb6](https://github.com/kiva/ui/commit/2765bb62889d762b8f276566f92ba4060c70f1c4))
+* tracking events added to lender profile ([#5472](https://github.com/kiva/ui/issues/5472)) ([bf30028](https://github.com/kiva/ui/commit/bf30028ffc486ecd8857ed2396297f4e0ae2475d))
+
+
+### 🐛 Bugfixes
+
+* add number of loans within badge category in anaylitics ([3799cd4](https://github.com/kiva/ui/commit/3799cd468894becc58c9744f526d91b39c0befc8))
+* bg was wrong when user not opted in and no loans in checkout ([52367d0](https://github.com/kiva/ui/commit/52367d03d62142c8e602e3e36bd299eec82780e9))
+* carousel design ([c386c31](https://github.com/kiva/ui/commit/c386c31314b403b3e9744182fdfb2991876fb750))
+* conflict ([c228fdb](https://github.com/kiva/ui/commit/c228fdb82fb12be724381a22d86d7d9a858d6966))
+* design tweaks ([541f95c](https://github.com/kiva/ui/commit/541f95c2b70aff6c7fbd4aa9f4bc888fa79fd092))
+* ensure show available upsell loan ([#5485](https://github.com/kiva/ui/issues/5485)) ([8eee617](https://github.com/kiva/ui/commit/8eee6177e395eedd1043efdfbb771e3df5165ce1))
+* evaluate some tags and themes ([80f3b3b](https://github.com/kiva/ui/commit/80f3b3b6bf45abb9f1c1e5cdfcbfbd8016687bf0))
+* goal name and handling create user preference before storing goal ([03af218](https://github.com/kiva/ui/commit/03af2187d8eb6e6956e6e238a7ca1c03ff2ba677))
+* index was incorrect on recommended loan on funded BP for interaction snowplow ([9ebc14c](https://github.com/kiva/ui/commit/9ebc14ceb812f95eae2c5d6d08aeb3ff4c14734b))
+* line length ([3e864cb](https://github.com/kiva/ui/commit/3e864cbe8fcd75e025c504c769913ff9c3c8a1b4))
+* lint ([386b92d](https://github.com/kiva/ui/commit/386b92d563fea5faa2525e2f482ab74c413dd739))
+* long line ([aed018f](https://github.com/kiva/ui/commit/aed018fe721265c355357fff03965d6bc766288b))
+* missing tracking information ([6ad1d97](https://github.com/kiva/ui/commit/6ad1d970c3fa2b4658256f1fec88026c51e7bb5b))
+* moving logic to mounted ([fa2d9d9](https://github.com/kiva/ui/commit/fa2d9d9959d7de50b2ab524c25e6d7236558d1b5))
+* remove optional chaining ([56397b9](https://github.com/kiva/ui/commit/56397b91489b3ce871f3e7c24b5690f964ea73fe))
+* resolve potential loan country undefined server error ([8ff58dd](https://github.com/kiva/ui/commit/8ff58dd101f4f753c58efaafcd03bd57db863337))
+* show new TY experience for more users ([ec62bb9](https://github.com/kiva/ui/commit/ec62bb927aba37c1a0776f9b88cb3ebf4f12d597))
+* show old ty page for non-loan purchases ([5cd8808](https://github.com/kiva/ui/commit/5cd88085a5891ce95001914025a9f4b91a27e1ce))
+* try commenting out unshift in effort to track down memory leak ([bf9a23a](https://github.com/kiva/ui/commit/bf9a23ac79c8d97e515a53bb249d877e7a826094))
+* upgrading components library to make sure tree map still works ([b7f6ebf](https://github.com/kiva/ui/commit/b7f6ebffd798351a069f3cafb9cb56a0b79439c2))
+
 ## [2.752.0](https://github.com/kiva/ui/compare/v2.751.0...v2.752.0) (2024-08-29)
 
 
