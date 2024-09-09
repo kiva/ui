@@ -87,6 +87,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							unreservedAmount @client
 							inPfp
 							gender
+							tags
+							... on LoanPartner {
+								themes
+							}
 						}
 						team {
 							id
@@ -136,10 +140,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 		communicationSettings {
 			lenderNews
-		}
-		userPreferences {
-			id
-			preferences
 		}
 	}
 	general {

@@ -6,36 +6,43 @@
 				YOUR BADGES
 			</p>
 		</div>
-		<kv-carousel
-			:embla-options="{ loop: true, align: 'center', startIndex: selectedBadgeIdx }"
-			:is-dotted="true"
-			:in-circle="true"
-			class="badge-carousel"
-			@change="handleChange"
-			ref="badgeCarousel"
-		>
-			<template v-for="badge in badges" #[`slide${badge.id}`]>
-				<div
-					:key="badge.id"
-					class="tw-flex tw-flex-col"
-					v-kv-track-event="[
-						'thanks',
-						'click',
-						'choose-a-badge',
-						badge.name
-					]"
-				>
-					<img
-						:src="imageRequire(`./${badge.img}.svg`)"
-						class="badge tw-mx-auto"
-						alt="Gift icon"
+		<div class="tw-mx-auto" style="max-width: 8rem;">
+			<kv-carousel
+				:embla-options="{
+					loop: false,
+					align: 'center',
+					startIndex: selectedBadgeIdx,
+				}"
+				slides-to-scroll="visible"
+				:is-dotted="true"
+				:in-circle="true"
+				class="badge-carousel tw-overflow-visible"
+				@change="handleChange"
+				ref="badgeCarousel"
+			>
+				<template v-for="badge in badges" #[`slide${badge.id}`]>
+					<div
+						:key="badge.id"
+						class="tw-flex tw-flex-col slide-container"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'choose-a-badge',
+							badge.name
+						]"
 					>
-					<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
-						{{ badge.name }}
-					</h3>
-				</div>
-			</template>
-		</kv-carousel>
+						<img
+							:src="imageRequire(`./${badge.img}.svg`)"
+							class="badge tw-mx-auto tw-mb-2"
+							alt="Gift icon"
+						>
+						<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
+							{{ badge.name }}
+						</h3>
+					</div>
+				</template>
+			</kv-carousel>
+		</div>
 		<div class="tw-px-1 md:tw-px-8 tw-pt-2">
 			<h2 class="tw-pb-2">
 				{{ selectedName }}
@@ -56,12 +63,13 @@
 		<div class="tw-pt-4">
 			<kv-button
 				class="tw-w-full tw-pb-2"
-				@click="setAsGoal"
+				:href="setGoalLink"
 				v-kv-track-event="[
 					'thanks',
 					'click',
 					'set-as-goal',
-					currentBadgeName
+					currentBadgeName,
+					currentBadge.count,
 				]"
 			>
 				Set as goal
@@ -75,7 +83,8 @@
 					'thanks',
 					'click',
 					'go-to-my-kiva',
-					`Button seen after seeing ${currentBadgeName} badge`
+					`Button seen after seeing ${currentBadgeName} badge`,
+					currentBadge.count,
 				]"
 			>
 				Go to my kiva
@@ -86,7 +95,6 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
-import { gql } from '@apollo/client';
 import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
@@ -108,10 +116,6 @@ export default {
 		isGuest: {
 			type: Boolean,
 			default: false
-		},
-		userPreferences: {
-			type: Object,
-			default: () => ({})
 		},
 	},
 	components: {
@@ -139,6 +143,9 @@ export default {
 			const index = this.currentBadgeIndex > 1 ? this.currentBadgeIndex - 1 : 0;
 			return this.badges[index] ?? null;
 		},
+		currentBadgeTracking() {
+			return this.currentBadge?.tracking ?? '';
+		},
 		selectedName() {
 			return this.currentBadge?.name ?? '';
 		},
@@ -148,14 +155,21 @@ export default {
 		selectedGoals() {
 			return this.currentBadge?.goals ?? [];
 		},
+		setGoalLink() {
+			const doneUrl = `/portfolio?goal_saved=${this.currentBadgeName}`;
+			if (this.isGuest) {
+				return `/ui-login?earnBadge=1&doneUrl=${encodeURIComponent(doneUrl)}`;
+			}
+			return doneUrl;
+		},
 	},
 	mounted() {
-		const badgesNames = this.badges.map(badge => badge.name).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
-			'view-all-badges',
-			badgesNames
+			'view-badge-details',
+			this.currentBadge.tracking,
+			this.currentBadge.count,
 		);
 	},
 	methods: {
@@ -166,82 +180,16 @@ export default {
 		handleChange() {
 			const badgeIndex = this.$refs.badgeCarousel.currentIndex + 1;
 			this.currentBadgeIndex = badgeIndex;
+			this.$kvTrackEvent(
+				'thanks',
+				'view',
+				'view-badge-details',
+				this.currentBadgeTracking,
+				this.currentBadge.count
+			);
 		},
 		hideBadgeName(badgeId) {
 			return badgeId !== this.currentBadge?.id;
-		},
-		async createUserPreferences() {
-			const createUserPreferencesMutation = gql`
-				mutation createUserPreferences($preferences: String) {
-					my {
-						createUserPreferences(userPreferences: {preferences: $preferences}) {
-							id
-							preferences
-						}
-					}
-				}
-			`;
-
-			const createUserPreferences = this.apollo.mutate({
-				mutation: createUserPreferencesMutation,
-				variables: {
-					preferences: '',
-				},
-			});
-			const response = await createUserPreferences;
-
-			return response?.data?.my?.createUserPreferences?.id;
-		},
-		async setAsGoal() {
-			try {
-				let updateUserPreferencesId = this.userPreferences?.id ?? null;
-
-				if (!updateUserPreferencesId) {
-					updateUserPreferencesId = await this.createUserPreferences();
-				}
-				const currentPreferences = this.userPreferences?.preferences ?? {};
-				const preferences = JSON.stringify({ ...currentPreferences, goal: this.currentBadgeName });
-
-				const updateUserPreferencesMutation = gql`
-					mutation UpdateUserPreferences(
-						$updateUserPreferencesId: Int!,
-						$preferences: String
-					) {
-						my {
-							updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
-								preferences: $preferences
-						}) {
-								id
-								preferences
-							}
-						}
-				}`;
-
-				const updateUserPreferences = this.apollo.mutate({
-					mutation: updateUserPreferencesMutation,
-					variables: {
-						updateUserPreferencesId,
-						preferences,
-					},
-				});
-
-				const response = await updateUserPreferences;
-				if (response.errors) {
-					this.$showTipMsg('There was a problem saving your goal', 'error');
-
-					throw new Error(
-						response?.errors?.[0]?.extensions?.code
-						|| response?.errors?.[0]?.message
-					);
-				} else if (this.isGuest) {
-					const doneUrl = encodeURIComponent('/portfolio?goal_saved=true');
-					window.location = `/ui-login?earnBadge=1&doneUrl=${doneUrl}`;
-				} else {
-					this.$router.push({ path: '/portfolio', query: { goal_saved: true } });
-				}
-			} catch (error) {
-				console.error(error);
-			}
 		},
 	}
 };
@@ -259,7 +207,6 @@ export default {
 }
 
 .badge-carousel >>> .cirle-slide {
-	flex: 0 0 36%;
 	@apply tw-mx-auto tw-flex tw-items-end tw-justify-center;
 }
 

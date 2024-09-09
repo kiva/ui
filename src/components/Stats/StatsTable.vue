@@ -32,7 +32,13 @@
 		</template>
 		<template #tabPanels>
 			<kv-tab-panel id="location-stat-panel" ref="locationPanel">
-				<component :is="chartType" class="tw-mb-4" :loading="locationLoading" :values="locationStats" />
+				<component
+					:is="chartType"
+					class="tw-mb-4"
+					:loading="locationLoading"
+					:values="locationStats"
+					@click="handleChartClick"
+				/>
 				<distribution-table :values="locationStats" measure-name="Location" />
 				<kv-button
 					v-if="!locationLoading && inPortfolio"
@@ -133,6 +139,11 @@ export default {
 		},
 		inPortfolio() {
 			return this.$route?.name?.includes('portfolio');
+		},
+	},
+	methods: {
+		handleChartClick(label) {
+			this.$emit('click', label);
 		},
 	},
 };

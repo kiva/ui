@@ -30,12 +30,16 @@
 </template>
 
 <script>
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from '@apollo/client';
 import { readBoolSetting } from '@/util/settingsUtils';
 import portfolioQuery from '@/graphql/query/portfolioQuery.graphql';
+import badgeGoalMixin from '@/plugins/badge-goal-mixin';
 import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -48,6 +52,8 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
+
+const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -75,11 +81,28 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			allowedTeams: [],
+			userPreferences: null,
 		};
 	},
+	mixins: [badgeGoalMixin],
 	apollo: {
-		async preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+		preFetch(config, client) {
+			return Promise.all([
+				client.query({ query: portfolioQuery }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: MY_KIVA_EXP_KEY } }),
+			]).then(result => {
+				const userData = result?.[0]?.data?.my ?? {};
+				const loanCount = userData.lender?.loanCount ?? 0;
+
+				const { version } = client.readFragment({
+					id: `Experiment:${MY_KIVA_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) ?? {};
+
+				if (version === 'b' && loanCount < 4) {
+					return Promise.reject({ path: '/my-kiva' });
+				}
+			});
 		},
 	},
 	methods: {
@@ -113,13 +136,33 @@ export default {
 		});
 
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+		this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+	},
+	async mounted() {
+		this.loadEducationPost();
+
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			MY_KIVA_EXP_KEY,
+			'EXP-MP-623-Sept2024'
+		);
 
 		if (this.$route?.query?.goal_saved) {
-			this.$showTipMsg('Goal saved');
+			const badgeName = this.$route?.query?.goal_saved ?? '';
+
+			if (!this.userPreferences?.id) {
+				const createPreferences = await this.createUserPreferences();
+				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? null;
+			}
+
+			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
+				this.$showTipMsg('Goal saved');
+			}).catch(() => {
+				this.$showTipMsg('There was a problem saving your goal', 'error');
+			});
 		}
-	},
-	mounted() {
-		this.loadEducationPost();
 	}
 };
 </script>

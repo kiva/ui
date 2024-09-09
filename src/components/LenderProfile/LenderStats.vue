@@ -20,8 +20,9 @@
 					:gender-stats="genderStats"
 					:sector-stats="sectorStats"
 					:partner-stats="partnerStats"
-					track-category="lender"
+					track-category="lender-profile"
 					chart="pie"
+					@click="handleChartClick"
 				/>
 			</div>
 		</section>
@@ -60,6 +61,9 @@ export default {
 				...stat,
 				percent: stat.value / total,
 			}));
+		},
+		handleChartClick(label) {
+			this.$kvTrackEvent('lender-profile', 'click', 'lender-distribution-chart', label);
 		},
 	},
 	computed: {

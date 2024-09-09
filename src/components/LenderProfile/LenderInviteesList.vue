@@ -27,6 +27,7 @@
 						<component
 							:is="!invitee.publicId ? 'span' : 'a'"
 							:href="`/lender/${invitee.publicId}`"
+							v-kv-track-event="['lender-profile', 'click', 'lender-invitee', invitee.publicId]"
 						>
 							<kv-material-icon
 								v-if="!getImageUrl(invitee)"
@@ -44,6 +45,7 @@
 							class="data-hj-suppress"
 							:is="!invitee.publicId ? 'span' : 'a'"
 							:href="`/lender/${invitee.publicId}`"
+							v-kv-track-event="['lender-profile', 'click', 'lender-invitee', invitee.publicId]"
 						>
 							{{ invitee.name }}
 						</component>
@@ -60,6 +62,7 @@
 				:total="totalCount"
 				:offset="inviteesOffset"
 				:scroll-to-top="false"
+				track-event-category="lender-profile-invitees"
 				@page-changed="pageChange"
 			/>
 		</section>

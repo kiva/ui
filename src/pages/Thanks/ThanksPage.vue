@@ -18,7 +18,6 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
-				:user-preferences="userPreferences"
 			/>
 		</template>
 		<template v-else-if="showNewTYPage">
@@ -29,7 +28,6 @@
 				:lender="lender"
 				:is-guest="isGuest"
 				:opted-in="optedIn"
-				:short-version-enabled="enableShortVersion"
 			/>
 		</template>
 		<template v-else>
@@ -198,7 +196,6 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const NEW_THANKS_PAGE_EXP = 'new_ty_page_minimal';
 const THANKS_BADGES_EXP = 'thanks_badges';
 
 const getLoans = receipt => {
@@ -263,9 +260,7 @@ export default {
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
 			optedIn: false,
-			enableShortVersion: false,
 			badgesCustomExpEnabled: false,
-			userPreferences: null
 		};
 	},
 	apollo: {
@@ -413,7 +408,7 @@ export default {
 			return false;
 		},
 		showNewTYPage() {
-			return !this.landedOnUSLoan && (this.isFirstLoan || this.isGuest) && !this.optedIn;
+			return !this.landedOnUSLoan && !this.optedIn && this.loans.length > 0;
 		},
 	},
 	created() {
@@ -552,22 +547,7 @@ export default {
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
-		// New Thanks Page Experiment
-		if (this.showNewTYPage) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'thanks',
-				NEW_THANKS_PAGE_EXP,
-				'EXP-MP-267-Jun2024',
-			);
-			if (version === 'b') {
-				this.enableShortVersion = true;
-			}
-		}
-
-		// Thanks Bagdes Experiment
-		this.userPreferences = data?.my?.userPreferences ?? null;
+		// Thanks Badges Experiment
 		if (this.optedIn) {
 			const { version } = trackExperimentVersion(
 				this.apollo,

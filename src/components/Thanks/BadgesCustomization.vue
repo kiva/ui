@@ -38,7 +38,6 @@
 				:selected-badge-idx="selectedBadgeIdx"
 				:badges="randomSortedBadges"
 				:is-guest="isGuest"
-				:user-preferences="userPreferences"
 				@back="() => newScreenSteps -= 1"
 			/>
 		</transition-group>
@@ -82,10 +81,6 @@ export default {
 			type: Object,
 			default: () => ({})
 		},
-		userPreferences: {
-			type: Object,
-			default: () => ({})
-		},
 	},
 	data() {
 		return {
@@ -100,7 +95,12 @@ export default {
 					goals: [
 						'Complete 2 eco-friendly loans.',
 						'Learn one cool thing about climate action'
-					]
+					],
+					category: {
+						tags: ['#Eco-friendly', '#Sustainable Ag'],
+					},
+					count: 0,
+					tracking: 'Climate',
 				},
 				{
 					id: 3,
@@ -111,7 +111,12 @@ export default {
 					goals: [
 						'Complete 2 loans for women',
 						'Learn one cool thing about women',
-					]
+					],
+					category: {
+						gender: 'female',
+					},
+					count: 0,
+					tracking: 'Women',
 				},
 				{
 					id: 4,
@@ -121,7 +126,13 @@ export default {
 					goals: [
 						'Complete 2 loans for U.S. Entrepreneurs',
 						'Learn one cool thing about U.S. Entrepreneurs',
-					]
+					],
+					category: {
+						countryIsoCode: ['US', 'GU', 'VI', 'PR'],
+						distributionModel: 'direct'
+					},
+					count: 0,
+					tracking: 'U.S. Entrepreneurs',
 				},
 				{
 					id: 5,
@@ -132,7 +143,12 @@ export default {
 					goals: [
 						'Complete 2 loans for refugees',
 						'Learn one cool thing about refugees',
-					]
+					],
+					category: {
+						themes: ['Refugees/Displaced'],
+					},
+					count: 0,
+					tracking: 'Refugees',
 				},
 				{
 					id: 6,
@@ -143,7 +159,13 @@ export default {
 					goals: [
 						'Complete 2 loans to help the most vulnerable',
 						'Learn one cool thing about the most vulnerable populations on Kiva',
-					]
+					],
+					category: {
+						themes: ['Vulnerable Groups'],
+						distributionModel: 'fieldPartner'
+					},
+					count: 0,
+					tracking: 'Most Vulnerable',
 				}
 			],
 			newBgActive: false,
@@ -166,6 +188,9 @@ export default {
 		loanRegion() {
 			return this.selectedLoan?.geocode?.country?.region ?? '';
 		},
+		loanCountryIsoCode() {
+			return this.selectedLoan?.geocode?.country?.isoCode ?? '';
+		},
 	},
 	methods: {
 		hash(loan) {
@@ -181,21 +206,62 @@ export default {
 		showNewBg() {
 			this.newBgActive = true;
 		},
+		countLoansInCategories() {
+			this.defaultSortBadges.forEach((badge, idx) => {
+				this.loans.forEach(loan => {
+					let matches = true;
+
+					if (badge.category.themes) {
+						matches = matches && badge.category.themes.some(theme => loan.themes.includes(theme));
+					}
+
+					if (badge.category.tags) {
+						matches = matches && badge.category.tags.some(tag => loan.tags.includes(tag));
+					}
+
+					if (badge.category.gender) {
+						matches = matches && loan.gender === badge.category.gender;
+					}
+
+					if (badge.category.countryIsoCode) {
+						matches = matches && badge.category.countryIsoCode.includes(loan.geocode.country.isoCode);
+					}
+
+					if (badge.category.distributionModel) {
+						matches = matches && loan.distributionModel === badge.category.distributionModel;
+					}
+
+					if (matches) {
+						this.defaultSortBadges[idx].count += 1;
+					}
+				});
+			});
+		}
 	},
 	created() {
-		this.defaultSortBadges.unshift(
-			{
-				id: 1,
-				name: this.loanRegion,
-				img: 'region',
-				goals: [
-					`Complete 2 loans from ${this.loanCountry}`,
-					`Learn 1 cool thing about ${this.loanRegion}`,
-				],
-				// eslint-disable-next-line max-len
-				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
-			}
-		);
+		// TODO: disabling to help track down memory leak
+		// if (this.loanCountryIsoCode) {
+		// 	this.defaultSortBadges.unshift(
+		// 		{
+		// 			id: 1,
+		// 			name: this.loanRegion,
+		// 			img: 'region',
+		// 			goals: [
+		// 				`Complete 2 loans from ${this.loanCountry}`,
+		// 				`Learn 1 cool thing about ${this.loanRegion}`,
+		// 			],
+		// 			// eslint-disable-next-line max-len
+		// 			description:
+		// 				`Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+		// 			category: {
+		// 				countryIsoCode: [this.loanCountryIsoCode],
+		// 			},
+		// 			count: 0,
+		// 			tracking: `Region-${this.loanRegion}`,
+		// 		}
+		// 	);
+		// }
+		this.countLoansInCategories();
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},
 	mounted() {
