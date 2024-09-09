@@ -546,9 +546,10 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+		const usedKivaCard = Number(this.receipt?.totals?.kivaCardTotal);
 
 		// Thanks Badges Experiment
-		if (this.optedIn) {
+		if (this.optedIn && !usedKivaCard) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
