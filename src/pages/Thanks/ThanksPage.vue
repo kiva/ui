@@ -188,8 +188,8 @@ import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
 import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 // TODO: reenable after testing memory leak
+// import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 // import BadgesCustomization from '@/components/Thanks/BadgesCustomization';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
@@ -198,7 +198,8 @@ import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const THANKS_BADGES_EXP = 'thanks_badges';
+// TODO: reenable after testing memory leak
+// const THANKS_BADGES_EXP = 'thanks_badges';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
