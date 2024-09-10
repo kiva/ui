@@ -1,3 +1,12 @@
+## [2.754.1-rc.1](https://github.com/kiva/ui/compare/v2.754.0...v2.754.1-rc.1) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([3de8068](https://github.com/kiva/ui/commit/3de8068018580ff9e8ab675fa88881decb432579))
+* reenable features for demo ([1a53750](https://github.com/kiva/ui/commit/1a53750b3de3b50c04b05cb95618862fa8e68a7b))
+* try disabling ty badge experience to track down memory leak ([ac0fb20](https://github.com/kiva/ui/commit/ac0fb20dd40a4fb925fa4bc96773ecc6970cf82c))
+
 ## [2.754.0](https://github.com/kiva/ui/compare/v2.753.1...v2.754.0) (2024-09-10)
 
 
