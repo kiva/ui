@@ -1,3 +1,16 @@
+## [2.754.0-rc.1](https://github.com/kiva/ui/compare/v2.753.1...v2.754.0-rc.1) (2024-09-10)
+
+
+### 🎉 New Features
+
+* exclude users that uses kiva card on checkout ([f683109](https://github.com/kiva/ui/commit/f683109645f7dbe7ae0abaab48d7421b466895f1))
+
+
+### 🐛 Bugfixes
+
+* hide badge experiment when user checkouts with a printable card ([f765b23](https://github.com/kiva/ui/commit/f765b234e8fab6945a8e194fa94cb32d4d81034c))
+* try disabling new lender profile page ([7911980](https://github.com/kiva/ui/commit/7911980a787bb87255794ebe555ebc0b1b6c7059))
+
 ## [2.753.1](https://github.com/kiva/ui/compare/v2.753.0...v2.753.1) (2024-09-09)
 
 
