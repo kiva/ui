@@ -410,6 +410,17 @@ export default {
 		showNewTYPage() {
 			return !this.landedOnUSLoan && !this.optedIn && this.loans.length > 0;
 		},
+		receiptValues() {
+			return this.receipt?.items?.values ?? [];
+		},
+		kivaCards() {
+			if (!this.receiptValues.length) return [];
+			return this.receipt.items.values.filter(item => item.basketItemType === 'kiva_card');
+		},
+		printableKivaCards() {
+			if (!this.receiptValues.length) return [];
+			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
+		},
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -546,9 +557,8 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
-
 		// Thanks Badges Experiment
-		if (this.optedIn) {
+		if (this.optedIn && !this.printableKivaCards.length) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,

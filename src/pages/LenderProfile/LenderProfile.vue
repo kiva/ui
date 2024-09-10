@@ -3,7 +3,8 @@
 		<kv-page-container
 			class="tw-pt-4 tw-pb-8"
 		>
-			<lender-profile-wrapper
+			<!-- TODO: disable to help identify memory leak -->
+			<!-- <lender-profile-wrapper
 				v-if="lenderIsPublic"
 				:public-id="publicId"
 				:lender-info="lenderInfo"
@@ -12,7 +13,7 @@
 			/>
 			<not-found-wrapper
 				v-else
-			/>
+			/> -->
 		</kv-page-container>
 	</www-page>
 </template>
@@ -21,8 +22,9 @@
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
-import LenderProfileWrapper from '@/components/LenderProfile/LenderProfileWrapper';
-import NotFoundWrapper from '@/components/NotFound/NotFoundWrapper';
+// TODO: disable to help identify memory leak
+// import LenderProfileWrapper from '@/components/LenderProfile/LenderProfileWrapper';
+// import NotFoundWrapper from '@/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
 
 export default {
@@ -31,8 +33,9 @@ export default {
 	components: {
 		WwwPage,
 		KvPageContainer,
-		LenderProfileWrapper,
-		NotFoundWrapper,
+		// TODO: disable to help identify memory leak
+		// LenderProfileWrapper,
+		// NotFoundWrapper,
 	},
 	metaInfo() {
 		return {
