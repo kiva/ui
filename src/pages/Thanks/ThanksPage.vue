@@ -11,8 +11,7 @@
 				:monthly-donation-amount="monthlyDonationAmount"
 			/>
 		</template>
-		<!-- TODO: reenable after testing memory leak -->
-		<!-- <template v-else-if="badgesCustomExpEnabled">
+		<template v-else-if="badgesCustomExpEnabled">
 			<badges-customization
 				:selected-loan="selectedLoan"
 				:loans="loans"
@@ -20,7 +19,7 @@
 				:lender="lender"
 				:is-guest="isGuest"
 			/>
-		</template> -->
+		</template>
 		<template v-else-if="showNewTYPage">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
@@ -189,8 +188,7 @@ import ShareChallenge from '@/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-// TODO: reenable after testing memory leak
-// import BadgesCustomization from '@/components/Thanks/BadgesCustomization';
+import BadgesCustomization from '@/components/Thanks/BadgesCustomization';
 import KvButton from '~/@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '../../util/teamsUtil';
 import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
@@ -236,8 +234,7 @@ export default {
 		ChallengeHeader,
 		ShareChallenge,
 		WhatIsNextTemplate,
-		// TODO: reenable after testing memory leak
-		// BadgesCustomization,
+		BadgesCustomization,
 	},
 	inject: ['apollo', 'cookieStore'],
 	metaInfo() {
@@ -561,19 +558,18 @@ export default {
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 		// Thanks Badges Experiment
-		// TODO: reenable after testing memory leak
-		// if (this.optedIn && !this.printableKivaCards.length) {
-		// 	const { version } = trackExperimentVersion(
-		// 		this.apollo,
-		// 		this.$kvTrackEvent,
-		// 		'thanks',
-		// 		THANKS_BADGES_EXP,
-		// 		'EXP-MP-608-Aug2024',
-		// 	);
-		// 	if (version === 'b') {
-		// 		this.badgesCustomExpEnabled = true;
-		// 	}
-		// }
+		if (this.optedIn && !this.printableKivaCards.length) {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'thanks',
+				THANKS_BADGES_EXP,
+				'EXP-MP-608-Aug2024',
+			);
+			if (version === 'b') {
+				this.badgesCustomExpEnabled = true;
+			}
+		}
 	},
 	methods: {
 		createGuestAccount() {
