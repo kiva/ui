@@ -37,11 +37,10 @@
 			@get-lender-stats="fetchLenderStats"
 		/>
 
-		<!-- TODO: try disabling map to identify memory leak -->
-		<!-- <lender-map
+		<lender-map
 			:lender-info="lenderInfo"
 			:lender-stats="lenderStats"
-		/> -->
+		/>
 	</div>
 </template>
 
@@ -55,8 +54,7 @@ import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
 import LenderBadges from '@/components/LenderProfile/LenderBadges';
 import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
 import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
-// TODO: try disabling map to identify memory leak
-// import LenderMap from '@/components/LenderProfile/LenderMap';
+import LenderMap from '@/components/LenderProfile/LenderMap';
 
 export default {
 	name: 'LenderProfileWrapper',
@@ -93,8 +91,7 @@ export default {
 		LenderBadges,
 		LenderInviteesList,
 		LenderDedicationsList,
-		// TODO: try disabling map to identify memory leak
-		// LenderMap,
+		LenderMap,
 	},
 	methods: {
 		async fetchLenderStats() {
