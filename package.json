@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "2.754.1",
+	"version": "2.754.2-rc.1",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -123,6 +123,7 @@
 		"store2": "^2.12.0",
 		"timesync": "^1.0.8",
 		"title-case": "^3.0.2",
+		"treemap-squarify": "^1.0.1",
 		"uuid": "^8.3.0",
 		"vue": "^2.6.14",
 		"vue-docgen-loader": "^2.0.0",

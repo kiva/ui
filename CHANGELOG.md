@@ -1,3 +1,12 @@
+## [2.754.2-rc.1](https://github.com/kiva/ui/compare/v2.754.1...v2.754.2-rc.1) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([58a96e6](https://github.com/kiva/ui/commit/58a96e6a3dc2e06c8ac178a185408c04f72002a5))
+* linting ([bea8f01](https://github.com/kiva/ui/commit/bea8f01fd3f69b81186aa40d1576ade914166253))
+* try old charts while tracking down memory leak ([642cc1b](https://github.com/kiva/ui/commit/642cc1b6f0bf95d8cc028c8d3f6358fab296811d))
+
 ## [2.754.1](https://github.com/kiva/ui/compare/v2.754.0...v2.754.1) (2024-09-10)
 
 

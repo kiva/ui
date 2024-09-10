@@ -23,8 +23,6 @@ import { gql } from '@apollo/client';
 import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
 import getCacheKey from '@/util/getCacheKey';
 import StatsTable from '@/components/Stats/StatsTable';
-import KvPieChart from '~/@kiva/kv-components/vue/KvPieChart';
-import KvTreeMapChart from '~/@kiva/kv-components/vue/KvTreeMapChart';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -61,17 +59,6 @@ export default {
 			partnerLoadingPromise: null,
 			partnerStats: [],
 		};
-	},
-	computed: {
-		chartType() {
-			switch (this.chart) {
-				case 'pie':
-					return KvPieChart;
-				case 'treemap':
-				default:
-					return KvTreeMapChart;
-			}
-		},
 	},
 	mounted() {
 		// Fetch data for each panel as it becomes visible.
