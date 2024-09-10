@@ -203,10 +203,12 @@ export default {
 <style lang="postcss" scoped>
 .treemap-figure {
 	height: 30rem;
+
 	/* account for every block having a 0.25rem right margin */
 	width: calc(100% + 0.25rem);
 	margin-right: -0.25rem;
 }
+
 @screen md {
 	.treemap-figure {
 		height: 20rem;

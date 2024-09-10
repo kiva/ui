@@ -191,6 +191,7 @@ export default {
 .pie-chart {
 	height: 20rem;
 }
+
 .pie-placeholder {
 	width: 20rem;
 }
