@@ -45,7 +45,9 @@ import { getTreemap } from 'treemap-squarify';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
+
 const { breakpoints } = kvTokensPrimitives;
+
 export default {
 	name: 'TreeMapFigure',
 	components: {

@@ -90,6 +90,7 @@
 import numeral from 'numeral';
 import Alea from '@/util/experiment/Alea';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+
 // convenience function to get point on circumference of a given circle (from https://codepen.io/grieve/pen/xwGMJp)
 function circumPointFromAngle(cx, cy, r, a) {
 	return [
@@ -97,6 +98,7 @@ function circumPointFromAngle(cx, cy, r, a) {
 		cy + r * Math.sin(a)
 	];
 }
+
 export default {
 	name: 'PieChartFigure',
 	props: {
