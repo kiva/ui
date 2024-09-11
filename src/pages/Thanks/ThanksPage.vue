@@ -366,8 +366,8 @@ export default {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
 		showFocusedShareAsk() {
-			// if jumpToGuestUpsell is true, don't show focused share ask;
-			if (this.jumpToGuestUpsell) {
+			// if jumpToGuestUpsell is true or there's print-it-yourself card don't show focused share ask;
+			if (this.jumpToGuestUpsell || this.printableKivaCards.length) {
 				return false;
 			}
 			// Only show focused share ask for non-guest loan purchases or for only US loan purchases from guests
