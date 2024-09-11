@@ -66,6 +66,7 @@
 					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 					:show-guest-upsell="isGuest"
 					:show-share="loans.length > 0"
+					:show-receipt="this.printableKivaCards.length > 0"
 				>
 					<template #receipt>
 						<checkout-receipt
