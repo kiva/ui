@@ -1,3 +1,11 @@
+## [2.756.1-rc.1](https://github.com/kiva/ui/compare/v2.756.0...v2.756.1-rc.1) (2024-09-11)
+
+
+### 🐛 Bugfixes
+
+* version in lock was wrong ([1728d00](https://github.com/kiva/ui/commit/1728d00966b82df8054a409ea7605217fc11950d))
+* walk up component lib version ([bca7390](https://github.com/kiva/ui/commit/bca7390a0a6e15a16e426e3d3efb48d67d93f258))
+
 ## [2.756.0](https://github.com/kiva/ui/compare/v2.755.0...v2.756.0) (2024-09-11)
 
 
