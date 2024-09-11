@@ -66,6 +66,7 @@
 					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 					:show-guest-upsell="isGuest"
 					:show-share="loans.length > 0"
+					:show-receipt="this.printableKivaCards.length > 0"
 				>
 					<template #receipt>
 						<checkout-receipt
@@ -366,8 +367,8 @@ export default {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
 		showFocusedShareAsk() {
-			// if jumpToGuestUpsell is true, don't show focused share ask;
-			if (this.jumpToGuestUpsell) {
+			// if jumpToGuestUpsell is true or there's print-it-yourself card don't show focused share ask;
+			if (this.jumpToGuestUpsell || this.printableKivaCards.length) {
 				return false;
 			}
 			// Only show focused share ask for non-guest loan purchases or for only US loan purchases from guests
@@ -558,7 +559,7 @@ export default {
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 		// Thanks Badges Experiment
-		if (this.optedIn && !this.printableKivaCards.length) {
+		if (this.optedIn && !this.printableKivaCards.length && isFirstLoan) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
