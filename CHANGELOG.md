@@ -1,3 +1,20 @@
+## [2.755.0](https://github.com/kiva/ui/compare/v2.754.2...v2.755.0) (2024-09-11)
+
+
+### 🎉 New Features
+
+* footer updated ([#5496](https://github.com/kiva/ui/issues/5496)) ([1ca7a26](https://github.com/kiva/ui/commit/1ca7a26b5d84153c8f7dd651b1655bdb22737022))
+
+
+### 🐛 Bugfixes
+
+* try rolling back components library for memory leak ([872ba69](https://github.com/kiva/ui/commit/872ba69e940ae91d1f6388097620d690fdd1361e))
+
+
+### 🧹 Chores
+
+* **release:** 2.755.0-rc.1 [skip ci] ([1b6e543](https://github.com/kiva/ui/commit/1b6e543cccb5a4f000cdfbc8e071f5dffbcc3be8)), closes [#5496](https://github.com/kiva/ui/issues/5496)
+
 ## [2.755.0-rc.1](https://github.com/kiva/ui/compare/v2.754.2...v2.755.0-rc.1) (2024-09-11)
 
 
