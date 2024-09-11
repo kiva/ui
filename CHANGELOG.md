@@ -1,3 +1,23 @@
+## [2.756.0](https://github.com/kiva/ui/compare/v2.755.0...v2.756.0) (2024-09-11)
+
+
+### 🎉 New Features
+
+* exclude from badge experiments users that has lent before ([bff4917](https://github.com/kiva/ui/commit/bff491760205c78c358b6aa8ca5d09f868e029b2))
+* showing old ty page for print-in-yourself kiva card in basket ([74f4843](https://github.com/kiva/ui/commit/74f4843d000c32ec1d96f7758bfd5447d670b5c6))
+
+
+### 🐛 Bugfixes
+
+* linting ([5eb37ae](https://github.com/kiva/ui/commit/5eb37ae42a13d71d0e1aa02886c03c62f6f6f87a))
+* print kiva cards should have more priority on visible section ([0e4d746](https://github.com/kiva/ui/commit/0e4d7467425fb1a9b2dcd031a35d0abd4d3886da))
+* rollback component lib further ([4deb59c](https://github.com/kiva/ui/commit/4deb59c393048150d6d84e0fc31be9734f529e17))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.0-rc.1 [skip ci] ([9c64669](https://github.com/kiva/ui/commit/9c646695489743236cde45a103f6b273e0d02e51))
+
 ## [2.756.0-rc.1](https://github.com/kiva/ui/compare/v2.755.0...v2.756.0-rc.1) (2024-09-11)
 
 
