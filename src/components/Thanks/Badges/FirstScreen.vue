@@ -74,7 +74,7 @@
 		>
 			<p class="tw-pb-4">
 				<!-- eslint-disable-next-line max-len -->
-				You are a hero! Thanks to your loan, we are one step closer to a more financially inclusive world.
+				You made a difference! Thanks to your contribution we are one step closer to a more financially inclusive world.
 			</p>
 			<kv-button
 				class="tw-w-full tw-mb-2"
