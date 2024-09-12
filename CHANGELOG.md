@@ -1,3 +1,15 @@
+## [2.756.4](https://github.com/kiva/ui/compare/v2.756.3...v2.756.4) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* try next component lib version for memory leak ([74d9520](https://github.com/kiva/ui/commit/74d9520c16ce20bd517275be0afec87f4490fd2d))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.4-rc.1 [skip ci] ([0e2e91d](https://github.com/kiva/ui/commit/0e2e91db9c253a475e8a5c13de29e88c9e819356))
+
 ## [2.756.4-rc.1](https://github.com/kiva/ui/compare/v2.756.3...v2.756.4-rc.1) (2024-09-12)
 
 
