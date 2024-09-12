@@ -1,3 +1,15 @@
+## [2.757.0-rc.1](https://github.com/kiva/ui/compare/v2.756.4...v2.757.0-rc.1) (2024-09-12)
+
+
+### 🎉 New Features
+
+* change of copy in revealed badge description ([f9e95d6](https://github.com/kiva/ui/commit/f9e95d6c19d85656f48956917e6cb51f064d14b1))
+
+
+### 🐛 Bugfixes
+
+* try next component lib version ([59b9523](https://github.com/kiva/ui/commit/59b9523df2626c23faac0667415f8bd433182825))
+
 ## [2.756.4](https://github.com/kiva/ui/compare/v2.756.3...v2.756.4) (2024-09-12)
 
 
