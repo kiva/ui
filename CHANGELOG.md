@@ -1,3 +1,10 @@
+## [2.756.2-rc.1](https://github.com/kiva/ui/compare/v2.756.1...v2.756.2-rc.1) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* next package version while investigating memory leak ([711551f](https://github.com/kiva/ui/commit/711551fdcd566e5883f6399892e325a9bbca8eb0))
+
 ## [2.756.1](https://github.com/kiva/ui/compare/v2.756.0...v2.756.1) (2024-09-11)
 
 
