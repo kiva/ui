@@ -28,7 +28,7 @@ export default {
 			checkInjections(this, injections);
 
 			try {
-				const preferences = { ...userPreferences.preferences, goal: badgeName };
+				const preferences = JSON.stringify({ ...userPreferences.preferences, goal: badgeName });
 
 				const updateUserPreferencesMutation = gql`
 					mutation UpdateUserPreferences(
