@@ -86,8 +86,7 @@
 import numeral from 'numeral';
 import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
 import KvMap from '~/@kiva/kv-components/vue/KvMap';
-// TODO: reenable after memory leak test
-// import { getLoansIntervals } from '~/@kiva/kv-components/utils/mapUtils';
+import { getLoansIntervals } from '~/@kiva/kv-components/utils/mapUtils';
 import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
@@ -148,9 +147,7 @@ export default {
 			});
 
 			const maxNumLoansToOneCountry = Math.max(...loanCountsArray);
-			// TODO: reenable after memory leak test
-			// const intervals = getLoansIntervals(1, maxNumLoansToOneCountry, 6);
-			const intervals = [];
+			const intervals = getLoansIntervals(1, maxNumLoansToOneCountry, 6);
 
 			if (intervals.length === 1) {
 				const [inf, sup] = intervals[0]; // eslint-disable-line no-unused-vars
