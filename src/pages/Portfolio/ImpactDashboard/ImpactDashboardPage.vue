@@ -154,7 +154,7 @@ export default {
 
 			if (!this.userPreferences?.id) {
 				const createPreferences = await this.createUserPreferences();
-				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? null;
+				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
 			}
 
 			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
