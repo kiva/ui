@@ -1,3 +1,15 @@
+## [2.758.0-rc.1](https://github.com/kiva/ui/compare/v2.757.0...v2.758.0-rc.1) (2024-09-13)
+
+
+### 🎉 New Features
+
+* add support for new equity badge in lending stats ([484efef](https://github.com/kiva/ui/commit/484efef9663c9a685c7ba68130d9b658a1a82464))
+
+
+### 🐛 Bugfixes
+
+* another lib version check ([7fdb065](https://github.com/kiva/ui/commit/7fdb065cfe8d4693d6bed112f98a1144e8f7cfec))
+
 ## [2.757.0](https://github.com/kiva/ui/compare/v2.756.4...v2.757.0) (2024-09-12)
 
 

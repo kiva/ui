@@ -30,7 +30,7 @@
 			<img :src="challenge.badgeSvg" class="tw-h-10 tw-flex-none tw-mx-auto">
 			<div class="tw-w-full">
 				<span class="tw-font-medium">{{ challenge.challengeName }}</span>
-				<p class="tw-text-secondary tw-text-small">
+				<p v-if="shouldShowBadgeDate(challenge)" class="tw-text-secondary tw-text-small">
 					{{ challenge.dateTagline }}
 				</p>
 			</div>
@@ -116,7 +116,11 @@ export default {
 					this.$showTipMsg('There was a problem loading badges', 'error');
 				});
 			}
-		}
+		},
+		shouldShowBadgeDate(challenge) {
+			// Lifetime badges currently have an "n/a" date tagline
+			return challenge?.dateTagline?.toLowerCase() !== 'n/a';
+		},
 	},
 };
 </script>
