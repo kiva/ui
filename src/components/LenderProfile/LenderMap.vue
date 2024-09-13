@@ -147,8 +147,8 @@ export default {
 				loanCountsArray.push(country.value);
 			});
 
+			const maxNumLoansToOneCountry = Math.max(...loanCountsArray);
 			// TODO: reenable after memory leak test
-			// const maxNumLoansToOneCountry = Math.max(...loanCountsArray);
 			// const intervals = getLoansIntervals(1, maxNumLoansToOneCountry, 6);
 			const intervals = [];
 
