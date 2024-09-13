@@ -1,3 +1,12 @@
+## [2.758.1-rc.1](https://github.com/kiva/ui/compare/v2.758.0...v2.758.1-rc.1) (2024-09-13)
+
+
+### 🐛 Bugfixes
+
+* latest lib with potential memory leak fix ([8255a24](https://github.com/kiva/ui/commit/8255a2448f5567e8687e73a07a2be0094b27744b))
+* revert changes from memory leak investigations ([8af2d5c](https://github.com/kiva/ui/commit/8af2d5c059b13a39bbcacc4e6283ab96a3f2de2a))
+* used firstLoan variable was not considering if the user was a guest ([a2ee1c6](https://github.com/kiva/ui/commit/a2ee1c6f850b6b960178f1802d6505924b7229b3))
+
 ## [2.758.0](https://github.com/kiva/ui/compare/v2.757.0...v2.758.0) (2024-09-13)
 
 
