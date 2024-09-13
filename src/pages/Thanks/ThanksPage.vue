@@ -559,7 +559,8 @@ export default {
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 		// Thanks Badges Experiment
-		if (this.optedIn && !this.printableKivaCards.length && isFirstLoan) {
+		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
+		if (enableExperiment) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
