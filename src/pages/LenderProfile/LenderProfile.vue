@@ -90,7 +90,6 @@ export default {
 				{
 					vmid: 'robots',
 					name: 'robots',
-					content: 'noindex, nofollow',
 				},
 			]),
 		};
