@@ -32,7 +32,8 @@
 							]"
 						>
 							<ActivityAvatar
-								class="avatar md:!tw-h-12 md:!tw-w-12 !tw-h-10 !tw-w-10 tw-border-4 tw-border-white"
+								:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
+								class="avatar md:!tw-h-12 md:!tw-w-12 !tw-h-10 !tw-w-10"
 								:lender-image-url="lenderImageUrl"
 								:lender-name="lenderName"
 							/>
@@ -40,7 +41,7 @@
 					</div>
 				</div>
 				<div class="tw-col-span-12">
-					<p>NEXT STEPS GOES HERE!</p>
+					<p>NEXT STEPS GO HERE!</p>
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -128,7 +129,7 @@ export default {
 }
 
 .avatar >>> img {
-	@apply tw-h-10 tw-w-10 md:tw-h-12 md:tw-w-12;
+	@apply tw-h-10 tw-w-10 md:tw-h-12 md:tw-w-12 tw-border-4 tw-border-white;
 }
 
 .avatar >>> span {
