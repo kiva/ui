@@ -15,7 +15,9 @@
 						As a donor, you help Kiva provide loans to underserved communities and unlock financial access. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
-						<h2 v-if="showDafThanks" class="tw-mb-2">Watch Manal’s story:</h2>
+						<h2 v-if="showDafThanks" class="tw-mb-2">
+							Watch Manal’s story:
+						</h2>
 						<iframe
 							class="tw-aspect-video tw-mx-auto tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
 							width="560"
