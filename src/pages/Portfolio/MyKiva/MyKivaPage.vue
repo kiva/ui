@@ -33,7 +33,7 @@
 						>
 							<ActivityAvatar
 								:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
-								class="avatar md:!tw-h-12 md:!tw-w-12 !tw-h-10 !tw-w-10"
+								class="avatar !tw-h-10 !tw-w-10"
 								:lender-image-url="lenderImageUrl"
 								:lender-name="lenderName"
 							/>
@@ -123,13 +123,24 @@ export default {
 	margin-top: -40px;
 
 	@screen md {
-		margin-top: -48px;
+		margin-top: -50px;
 	}
 	@apply tw-relative;
 }
 
+.avatar {
+	@screen md {
+		width: 6.25rem !important;
+		height: 6.25rem !important;
+	}
+}
+
 .avatar >>> img {
-	@apply tw-h-10 tw-w-10 md:tw-h-12 md:tw-w-12 tw-border-4 tw-border-white;
+	@screen md {
+		width: 6.25rem;
+		height: 6.25rem;
+	}
+	@apply tw-h-10 tw-w-10 tw-border-4 tw-border-white;
 }
 
 .avatar >>> span {
