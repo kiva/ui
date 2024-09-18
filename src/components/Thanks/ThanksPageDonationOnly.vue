@@ -6,11 +6,18 @@
 					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
-					<p class="tw-text-center tw-mb-2 tw-text-subhead">
+					<p v-if="showDafThanks" class="tw-text-center tw-mb-2 tw-text-subhead">
+						<!--eslint-disable-next-line max-len-->
+						As a donor, you’re <b class="tw-text-eco-green-3">helping create opportunities that improve peoples’ livelihoods</b>. Interested in learning more about supporting Kiva? Reach out to the team at <a href="mailto:majorgiving@kiva.org">majorgiving@kiva.org</a>
+					</p>
+					<p v-else class="tw-text-center tw-mb-2 tw-text-subhead">
 						<!--eslint-disable-next-line max-len-->
 						As a donor, you help Kiva provide loans to underserved communities and unlock financial access. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
+						<h2 v-if="showDafThanks" class="tw-mb-2">
+							Watch Manal’s story:
+						</h2>
 						<iframe
 							class="tw-aspect-video tw-mx-auto tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
 							width="560"
@@ -165,7 +172,11 @@ export default {
 		monthlyDonationAmount: {
 			type: String,
 			default: ''
-		}
+		},
+		showDafThanks: {
+			type: Boolean,
+			default: false
+		},
 	},
 	mixins: [socialSharingMixin, smoothScrollMixin],
 	data() {
@@ -204,7 +215,7 @@ export default {
 			return getFullUrl(base, args);
 		},
 		headerMsg() {
-			if (this.isGuest) return 'Thank you for supporting our mission';
+			if (this.isGuest || !this.lender?.firstName) return 'Thank you for supporting our mission';
 			return `${this.lender?.firstName}, thank you for supporting our mission`;
 		},
 		utmContent() {

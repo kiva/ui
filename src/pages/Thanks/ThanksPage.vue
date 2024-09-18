@@ -9,6 +9,7 @@
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
+				:show-daf-thanks="showDafThanks"
 			/>
 		</template>
 		<template v-else-if="badgesCustomExpEnabled">
@@ -311,8 +312,12 @@ export default {
 		}
 	},
 	computed: {
+		showDafThanks() {
+			return !!this.$route?.query?.show_daf_thanks;
+		},
 		isOnlyDonation() {
-			return (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
+			return this.showDafThanks
+				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
 				|| this.monthlyDonationAmount?.length;
 		},
 		askForComments() {
