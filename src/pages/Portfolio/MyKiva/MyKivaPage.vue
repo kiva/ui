@@ -4,25 +4,9 @@
 			<kv-page-container>
 				<kv-grid class="tw-grid-cols-12">
 					<div class="tw-col-span-12 tw-mb-4 tw-relative">
-						<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-pt-2 tw-pb-1">
+						<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-py-2">
 							<h3>Welcome back 👋</h3>
 						</div>
-						<a
-							href="/settings/account"
-							v-kv-track-event="[
-								'portofolio',
-								'click',
-								'account-profile-pic'
-							]"
-						>
-							<ActivityAvatar
-								v-if="avatarStyle.top"
-								:style="avatarStyle"
-								class="avatar !tw-h-10 !tw-w-10 tw-border-4 tw-border-white"
-								:lender-image-url="lenderImageUrl"
-								:lender-name="lenderName"
-							/>
-						</a>
 						<kv-material-icon
 							class="tw-absolute tw-right-0 tw-bg-white tw-p-1 tw-rounded-full tw-cursor-pointer tw-mt-2"
 							name="settings"
@@ -33,11 +17,27 @@
 			</kv-page-container>
 		</div>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw-mt-1.5">
-				<div class="tw-col-span-8 md:tw-col-span-11">
-					<h2 class="md:tw-mr-3 md:tw-text-right">
-						{{ lenderName }}
-					</h2>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12">
+					<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
+						<h2>
+							{{ lenderName }}
+						</h2>
+						<a
+							href="/settings/account"
+							v-kv-track-event="[
+								'portofolio',
+								'click',
+								'account-profile-pic'
+							]"
+						>
+							<ActivityAvatar
+								class="avatar md:!tw-h-12 md:!tw-w-12 !tw-h-10 !tw-w-10 tw-border-4 tw-border-white"
+								:lender-image-url="lenderImageUrl"
+								:lender-name="lenderName"
+							/>
+						</a>
+					</div>
 				</div>
 				<div class="tw-col-span-12">
 					<p>NEXT STEPS GOES HERE!</p>
@@ -72,11 +72,6 @@ export default {
 	data() {
 		return {
 			lender: null,
-			avatarStyle: {
-				position: 'absolute',
-				top: '',
-				right: '0px',
-			},
 			mdiCogOutline
 		};
 	},
@@ -88,8 +83,6 @@ export default {
 		},
 	},
 	mounted() {
-		this.adjustAvatarPosition();
-
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -99,15 +92,6 @@ export default {
 		);
 
 		this.$kvTrackEvent('portofolio', 'view', 'new-my-kiva');
-	},
-	methods: {
-		adjustAvatarPosition() {
-			const { landscape } = this.$refs;
-			if (landscape) {
-				const containerHeight = landscape.clientHeight;
-				this.avatarStyle.top = `${containerHeight - 40}px`;
-			}
-		},
 	},
 	computed: {
 		lenderName() {
@@ -124,8 +108,6 @@ export default {
 
 .landscape {
 	background-image: url('~@/assets/images/my-kiva/header-mobile.svg');
-	background-size: cover;
-	background-repeat: no-repeat;
 	height: 148px;
 
 	@screen md {
@@ -133,10 +115,20 @@ export default {
 		background-position: 75%;
 		height: 249px;
 	}
+	@apply tw-bg-cover tw-bg-no-repeat;
+}
+
+.profile {
+	margin-top: -40px;
+
+	@screen md {
+		margin-top: -48px;
+	}
+	@apply tw-relative;
 }
 
 .avatar >>> img {
-	@apply tw-h-10 tw-w-10;
+	@apply tw-h-10 tw-w-10 md:tw-h-12 md:tw-w-12;
 }
 
 .avatar >>> span {
