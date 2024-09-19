@@ -5,66 +5,19 @@
 			:user-balance="userBalance"
 			@navigation-closed="showNavigation = false"
 		/>
-		<div ref="landscape" class="tw-w-full landscape tw-relative">
-			<kv-page-container class="!tw-max-w-4xl">
-				<kv-grid class="tw-grid-cols-12">
-					<div class="tw-col-span-12 tw-mb-4 tw-relative">
-						<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-py-2">
-							<h3>Welcome back 👋</h3>
-						</div>
-						<kv-material-icon
-							class="tw-absolute tw-right-0 tw-bg-white tw-p-1 tw-rounded-full tw-cursor-pointer tw-mt-2"
-							name="settings"
-							:icon="mdiCogOutline"
-						/>
-					</div>
-				</kv-grid>
-			</kv-page-container>
-		</div>
-		<kv-page-container class="!tw-max-w-4xl">
-			<kv-grid class="tw-grid-cols-12">
-				<div class="tw-col-span-12">
-					<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
-						<h2>
-							{{ lenderName }}
-						</h2>
-						<a
-							href="/settings/account"
-							v-kv-track-event="[
-								'portofolio',
-								'click',
-								'account-profile-pic'
-							]"
-						>
-							<ActivityAvatar
-								:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
-								class="avatar !tw-h-10 !tw-w-10"
-								:lender-image-url="lenderImageUrl"
-								:lender-name="lenderName"
-							/>
-						</a>
-					</div>
-				</div>
-				<div class="tw-col-span-12">
-					<p>NEXT STEPS GO HERE!</p>
-				</div>
-			</kv-grid>
-		</kv-page-container>
+		<MyKivaHero />
+		<MyKivaProfile :lender="lender" />
 	</www-page>
 </template>
 
 <script>
-import logReadQueryError from '@/util/logReadQueryError';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '@/components/MyKiva/MyKivaNavigation';
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
 import { mdiCogOutline } from '@mdi/js';
 import myKivaQuery from '@/graphql/query/myKiva.graphql';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import MyKivaHero from '@/components/MyKiva/MyKivaHero';
+import MyKivaProfile from '@/components/MyKiva/MyKivaProfile';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
@@ -72,12 +25,10 @@ export default {
 	name: 'MyKivaPage',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		ActivityAvatar,
-		KvPageContainer,
 		MyKivaNavigation,
-		KvGrid,
 		WwwPage,
-		KvMaterialIcon,
+		MyKivaHero,
+		MyKivaProfile
 	},
 	data() {
 		return {
@@ -91,6 +42,7 @@ export default {
 		query: myKivaQuery,
 		preFetch: true,
 		result(result) {
+			this.userInfo = result.data?.my ?? {};
 			this.lender = result.data?.my?.lender ?? null;
 		},
 	},
@@ -106,16 +58,6 @@ export default {
 		},
 	},
 	async mounted() {
-		try {
-			const { data } = await this.apollo.query({
-				query: userInfoQuery,
-			});
-
-			this.userInfo = data.my ?? {};
-		} catch (e) {
-			logReadQueryError(e, 'LenderSummary userIdQuery');
-		}
-
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -128,47 +70,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-
-.landscape {
-	background-image: url('~@/assets/images/my-kiva/header-mobile.svg');
-	height: 148px;
-
-	@screen md {
-		background-image: url('~@/assets/images/my-kiva/header-desktop.svg');
-		background-position: 75%;
-		height: 249px;
-	}
-	@apply tw-bg-cover tw-bg-no-repeat;
-}
-
-.profile {
-	margin-top: -40px;
-
-	@screen md {
-		margin-top: -50px;
-	}
-	@apply tw-relative;
-}
-
-.avatar {
-	@screen md {
-		width: 6.25rem !important;
-		height: 6.25rem !important;
-	}
-}
-
-.avatar >>> img {
-	@screen md {
-		width: 6.25rem;
-		height: 6.25rem;
-	}
-	@apply tw-h-10 tw-w-10 tw-border-4 tw-border-white;
-}
-
-.avatar >>> span {
-	@apply tw-text-h1 tw--mt-1;
-}
-
-</style>
