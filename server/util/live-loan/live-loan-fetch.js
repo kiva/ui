@@ -60,7 +60,27 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 }
 
 // Get per-user recommended loans from the ML service
-async function fetchRecommendationsByLoginId(id) {
+async function fetchRecommendationsByLoginId(id, flss = false) {
+	if (flss) {
+		return fetchLoansFromGraphQL(
+			{
+				query: `query($userId: Int) {
+					fundraisingLoans(
+						pageNumber: 0,
+						limit: ${loanCount},
+						userId: $userId,
+						origin: "email:live-loans"
+					) {
+						${loanValues}
+					}
+				}`,
+				variables: {
+					userId: Number(id),
+				}
+			},
+			'data.fundraisingLoans.values'
+		);
+	}
 	return fetchLoansFromGraphQL(
 		{
 			query: `{
@@ -142,6 +162,22 @@ async function fetchSorts() {
 	]);
 }
 
+async function fetchFLSSSorts() {
+	return Promise.resolve([
+		'amountHighToLow',
+		'amountLeft',
+		'amountLowToHigh',
+		'expiringSoon',
+		'mostRecent',
+		'personalized',
+		'personalizedAutolending',
+		'personalizedFallback',
+		'popularityScore',
+		'repaymentTerm',
+		'researchScore'
+	]);
+}
+
 // Get possible themes
 async function fetchThemes() {
 	// If needed, these could be fetched async from legacy api, though be sure to cache results!
@@ -197,12 +233,47 @@ const getFilterArrays = filterString => {
 	return [...matches].map(match => [match[1], match[2]]);
 };
 
+// Helper function to find possible filter options from a given list
+const findFilterOption = (options, name, value) => {
+	const option = options.find(o => o?.name?.toLowerCase() === value);
+	if (!option) {
+		warn(`Unknown ${name} "${value}"`);
+	}
+	return option;
+};
+
+// Takes a string like: "sort_expiringSoon,gender_female"
+// and extracts the sort option, e.g. "expiringSoon"
+function parseSortString(sortString, sortOptions) {
+	let sort = null;
+
+	// only try parsing if the input is valid
+	if (sortString && typeof sortString === 'string') {
+		// start pasring the string
+		getFilterArrays(sortString)
+			// remove any filter that isn't "sort"
+			.filter(([name]) => name === 'sort')
+			// return just the value of the sort option
+			.map(array => array?.[1])
+			// if the sort option value is valid, set it as the sort to be returned
+			.forEach(value => {
+				const sortOption = sortOptions.find(o => o?.toLowerCase() === value);
+				if (sortOption) {
+					sort = sortOption;
+				}
+			});
+	}
+	return sort;
+}
+
 // Only returns true for supported FLSS loan search filters
 const supportedFilterFLSS = name => {
 	switch (name) {
 		case 'country':
 		case 'gender':
 		case 'sector':
+		case 'theme':
+		case 'tag':
 			return true;
 		default:
 			warn(`Unsupported FLSS filter "${name}"`);
@@ -212,41 +283,70 @@ const supportedFilterFLSS = name => {
 
 // Takes a string like: "gender_female,sector_education"
 // and returns an array of objects like: [ { gender: { eq: 'female' } }, { sector: { eq: 'education' } } ]
-const parseFilterStringFLSS = filterString => {
+const parseFilterStringFLSS = async filterString => {
 	// If the filter string is not valid, return an empty array
 	if (!filterString || typeof filterString !== 'string') {
-		return [];
+		return null;
 	}
-	return getFilterArrays(filterString)
+
+	const filters = {};
+
+	// Helper function to add to a value to an array filter
+	const addArrayFilterValue = (name, value) => {
+		// Make sure existing value is an array if it isn't already
+		filters[name] = filters[name] || { [name]: { any: [] } };
+		// Add the new value to the existing array
+		filters[name][name].any.push(value);
+	};
+
+	// Fetch possible filter options
+	const tags = await fetchTags();
+
+	// Start parsing the filter string
+	getFilterArrays(filterString)
+		.filter(([name]) => name !== 'sort')
 		.filter(([name]) => supportedFilterFLSS(name))
-		.map(([name, value]) => {
-			// FLSS uses 'countryIsoCode' for the country filter
+		.forEach(([name, value]) => {
 			if (name === 'country') {
-				return { countryIsoCode: { eq: value } };
+				// FLSS uses 'countryIsoCode' for the country filter
+				addArrayFilterValue('countryIsoCode', value);
+			} else if (name === 'tag') {
+				// FLSS uses 'tagId' for the tag filter
+				const tag = findFilterOption(tags, name, value);
+				if (tag) {
+					addArrayFilterValue('tagId', tag.id);
+				}
+			} else {
+				// Other filters can be passed through directly
+				addArrayFilterValue(name, value);
 			}
-			// Other filters can be passed through directly
-			return { [name]: { eq: value } };
 		});
+
+	const filterValues = Object.values(filters);
+	return filterValues.length ? filterValues : null;
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
-async function fetchRecommendationsByFilter(userId, filterString) {
+async function fetchRecommendationsByFilter(filterString) {
+	const filters = await parseFilterStringFLSS(filterString);
+	const sortOptions = await fetchFLSSSorts();
+	const sortBy = parseSortString(filterString, sortOptions);
 	return fetchLoansFromGraphQL(
 		{
-			query: `query($userId: Int, $filters: [FundraisingLoanSearchFilterInput!]) {
+			query: `query($filters: [FundraisingLoanSearchFilterInput!], $sortBy: SortEnum) {
 				fundraisingLoans(
-					pageNumber:0,
+					pageNumber: 0,
 					limit: ${loanCount},
 					filters: $filters,
-					userId: $userId,
+					sortBy: $sortBy,
 					origin: "email:live-loans"
 				) {
 					${loanValues}
 				}
 			}`,
 			variables: {
-				userId: Number(userId),
-				filters: parseFilterStringFLSS(filterString),
+				filters,
+				sortBy,
 			}
 		},
 		'data.fundraisingLoans.values'
@@ -286,14 +386,6 @@ async function parseFilterStringLegacy(filterString) {
 		// Add the new value to the existing array
 		filters[name].push(value);
 	};
-	// Helper function to find possible filter options from a given list
-	const findFilterOption = (options, name, value) => {
-		const option = options.find(o => o?.name?.toLowerCase() === value);
-		if (!option) {
-			warn(`Unknown ${name} "${value}"`);
-		}
-		return option;
-	};
 
 	// only try parsing if the input is valid
 	if (filterString && typeof filterString === 'string') {
@@ -332,39 +424,13 @@ async function parseFilterStringLegacy(filterString) {
 	return filters;
 }
 
-// Takes a string like: "sort_expiringSoon,gender_female"
-// and extracts the sort option, e.g. "expiringSoon"
-async function parseSortStringLegacy(sortString) {
-	let sort = null;
-
-	// only try parsing if th einput is valid
-	if (sortString && typeof sortString === 'string') {
-		// get possible sorts
-		const sortOptions = await fetchSorts();
-
-		// start pasring the string
-		getFilterArrays(sortString)
-			// remove any filter that isn't "sort"
-			.filter(([name]) => name === 'sort')
-			// return just the value of the sort option
-			.map(array => array?.[1])
-			// if the sort option value is valid, set it as the sort to be returned
-			.forEach(value => {
-				const sortOption = sortOptions.find(o => o?.toLowerCase() === value);
-				if (sortOption) {
-					sort = sortOption;
-				}
-			});
-	}
-	return sort;
-}
-
 // Get loans from legacy lend search matching a set of filters
 async function fetchRecommendationsByLegacyFilter(filterString) {
-	const [filters, sort] = await Promise.all([
+	const [filters, sortOptions] = await Promise.all([
 		parseFilterStringLegacy(filterString),
-		parseSortStringLegacy(filterString)
+		fetchSorts(),
 	]);
+	const sort = parseSortString(filterString, sortOptions);
 	return fetchLoansFromGraphQL(
 		{
 			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
@@ -401,15 +467,44 @@ async function fetchLoanById(loanId) {
 		'data.lend.loan'
 	);
 }
+
+// Check if the filter string contains any FLSS filters
+const shouldUseFLSS = async filterString => {
+	// input needs to be a string
+	if (!filterString || typeof filterString !== 'string') {
+		return true; // Returning true so that FLSS is the default
+	}
+
+	// Check which sort options are used in the filter string
+	const [legacySorts, flssSorts] = await Promise.all([fetchSorts(), fetchFLSSSorts()]);
+	const legacySort = parseSortString(filterString, legacySorts);
+	const FLSSSort = parseSortString(filterString, flssSorts);
+	const usingLegacySort = !!legacySort;
+	const usingFLSSSort = !!FLSSSort;
+
+	// If the filter string contains a sort option that is only supported by one of the services, use that service
+	if (usingFLSSSort && !usingLegacySort) {
+		return true;
+	}
+	if (usingLegacySort && !usingFLSSSort) {
+		return false;
+	}
+
+	// Use FLSS by default
+	return true;
+};
+
 // Export a function that will fetch loans by live-loan type and id
 module.exports = async function fetchLoansByType(type, id, flss = false) {
 	if (type === 'user') {
-		return flss ? fetchRecommendationsByFilter(id) : fetchRecommendationsByLoginId(id);
+		return fetchRecommendationsByLoginId(id, flss);
 	} if (type === 'loan') {
 		return fetchRecommendationsByLoanId(id);
 	} if (type === 'filter') {
-		// Swap which line below is commented out to switch between FLSS and legacy (monolith) lend search
-		// return fetchRecommendationsByFilter(id);
+		if (await shouldUseFLSS(id)) {
+			return fetchRecommendationsByFilter(id);
+		}
+		warn(`Using legacy loan search for filter "${id}"`);
 		return fetchRecommendationsByLegacyFilter(id);
 	}
 	if (type === 'loanid') {
