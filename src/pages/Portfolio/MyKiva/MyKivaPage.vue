@@ -1,7 +1,7 @@
 <template>
 	<www-page main-class="tw-bg-secondary">
 		<div ref="landscape" class="tw-w-full landscape tw-relative">
-			<kv-page-container>
+			<kv-page-container class="!tw-max-w-4xl">
 				<kv-grid class="tw-grid-cols-12">
 					<div class="tw-col-span-12 tw-mb-4 tw-relative">
 						<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-py-2">
@@ -16,7 +16,7 @@
 				</kv-grid>
 			</kv-page-container>
 		</div>
-		<kv-page-container>
+		<kv-page-container class="!tw-max-w-4xl">
 			<kv-grid class="tw-grid-cols-12">
 				<div class="tw-col-span-12">
 					<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
