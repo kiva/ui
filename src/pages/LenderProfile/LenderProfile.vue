@@ -86,12 +86,6 @@ export default {
 					vmid: 'twitter:description',
 					content: this.pageDescription,
 				},
-			]).concat([
-				{
-					vmid: 'robots',
-					name: 'robots',
-					content: 'noindex, nofollow',
-				},
 			]),
 		};
 	},
