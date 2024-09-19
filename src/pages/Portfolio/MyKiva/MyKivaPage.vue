@@ -16,7 +16,6 @@
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '@/components/MyKiva/MyKivaNavigation';
-import { mdiCogOutline } from '@mdi/js';
 import myKivaQuery from '@/graphql/query/myKiva.graphql';
 import MyKivaHero from '@/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '@/components/MyKiva/MyKivaProfile';
@@ -35,7 +34,6 @@ export default {
 	data() {
 		return {
 			lender: null,
-			mdiCogOutline,
 			showNavigation: false,
 			userInfo: {},
 		};
@@ -65,7 +63,7 @@ export default {
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 		},
 	},
-	async mounted() {
+	mounted() {
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
