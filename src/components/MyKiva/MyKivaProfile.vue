@@ -1,37 +1,32 @@
 <template>
-	<kv-page-container class="!tw-max-w-4xl">
-		<kv-grid class="tw-grid-cols-12">
-			<div class="tw-col-span-12">
-				<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
-					<h2>
-						{{ lenderName }}
-					</h2>
-					<a
-						href="/settings/account"
-						v-kv-track-event="[
-							'portofolio',
-							'click',
-							'account-profile-pic'
-						]"
-					>
-						<ActivityAvatar
-							:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
-							class="avatar !tw-h-10 !tw-w-10"
-							:lender-image-url="lenderImageUrl"
-							:lender-name="lenderName"
-						/>
-					</a>
-				</div>
-			</div>
-		</kv-grid>
-	</kv-page-container>
+	<MyKivaContainer>
+		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
+			<h2>
+				{{ lenderName }}
+			</h2>
+			<a
+				href="/settings/account"
+				v-kv-track-event="[
+					'portofolio',
+					'click',
+					'account-profile-pic'
+				]"
+			>
+				<ActivityAvatar
+					:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
+					class="avatar !tw-h-10 !tw-w-10"
+					:lender-image-url="lenderImageUrl"
+					:lender-name="lenderName"
+				/>
+			</a>
+		</div>
+	</MyKivaContainer>
 </template>
 
 <script>
 
 import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import MyKivaContainer from '@/components/MyKiva/MyKivaContainer';
 
 export default {
 	name: 'MyKivaProfile',
@@ -43,8 +38,7 @@ export default {
 	},
 	components: {
 		ActivityAvatar,
-		KvPageContainer,
-		KvGrid,
+		MyKivaContainer,
 	},
 	computed: {
 		lenderName() {
