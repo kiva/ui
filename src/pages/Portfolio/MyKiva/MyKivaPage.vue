@@ -144,7 +144,7 @@ export default {
 }
 
 .avatar >>> span {
-	@apply tw-text-h2;
+	@apply tw-text-h1 tw--mt-1;
 }
 
 </style>
