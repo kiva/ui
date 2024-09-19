@@ -50,7 +50,8 @@
 						<li
 							v-for="setting in profileSettingsOptions"
 							:key="setting.text"
-							class="tw-mt-1.5 hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300"
+							class="tw-mt-1.5
+								hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300 tw-delay-100"
 						>
 							<router-link
 								class="tw-text-primary tw-font-medium"
@@ -74,7 +75,8 @@
 						<li
 							v-for="setting in lendingOptions"
 							:key="setting.text"
-							class="tw-mt-1.5 hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300"
+							class="tw-mt-1.5
+								hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300 tw-delay-100"
 						>
 							<component
 								:is="setting.isDonate && !parseFloat(userBalance) ? 'span' : 'router-link'"
@@ -99,7 +101,8 @@
 						<li
 							v-for="setting in communityOptions"
 							:key="setting.text"
-							class="tw-mt-1.5 hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300"
+							class="tw-mt-1.5
+								hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300 tw-delay-100"
 						>
 							<router-link
 								class="tw-text-primary tw-font-medium"

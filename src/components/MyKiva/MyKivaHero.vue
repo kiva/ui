@@ -4,11 +4,15 @@
 			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-py-2">
 				<h3>Welcome back 👋</h3>
 			</div>
-			<kv-material-icon
-				class="tw-absolute tw-right-0 tw-bg-white tw-p-1 tw-rounded-full tw-cursor-pointer tw-mt-2"
-				name="settings"
-				:icon="mdiCogOutline"
-			/>
+			<button
+				@click="$emit('show-navigation')"
+			>
+				<kv-material-icon
+					class="tw-absolute tw-right-0 tw-bg-white tw-p-1 tw-rounded-full tw-mt-2"
+					name="settings"
+					:icon="mdiCogOutline"
+				/>
+			</button>
 		</MyKivaContainer>
 	</div>
 </template>

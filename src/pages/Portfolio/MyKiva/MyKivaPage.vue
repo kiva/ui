@@ -5,7 +5,9 @@
 			:user-balance="userBalance"
 			@navigation-closed="showNavigation = false"
 		/>
-		<MyKivaHero />
+		<MyKivaHero
+			@show-navigation="handleShowNavigation"
+		/>
 		<MyKivaProfile :lender="lender" />
 	</www-page>
 </template>
@@ -55,6 +57,12 @@ export default {
 		},
 		lenderImageUrl() {
 			return this?.lender?.image?.url ?? '';
+		},
+	},
+	methods: {
+		handleShowNavigation() {
+			this.showNavigation = true;
+			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 		},
 	},
 	async mounted() {
