@@ -1,5 +1,5 @@
 <template>
-	<div ref="landscape" class="tw-w-full landscape tw-relative">
+	<div class="tw-w-full landscape tw-relative">
 		<MyKivaContainer>
 			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1 tw-py-2">
 				<h3>Welcome back 👋</h3>
