@@ -74,7 +74,7 @@ jobs:
           repository: kiva/marketplace-web-ui-ci
           token: ${{ env.GITHUB_PAT }}
           path: .docker
-          ref: main
+          ref: vue3-ui-dockerfile
           patterns: |
             resources/org/kiva/marketplaceWebUiCi/ui
       - name: move files
