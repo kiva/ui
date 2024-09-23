@@ -1,15 +1,16 @@
 <template>
 	<www-page main-class="tw-bg-secondary">
-		<kv-page-container>
-			<!-- My Kiva Page Content -->
-		</kv-page-container>
+		<MyKivaHero />
+		<MyKivaProfile :lender="lender" />
 	</www-page>
 </template>
 
 <script>
 import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import myKivaQuery from '@/graphql/query/myKiva.graphql';
+import MyKivaHero from '@/components/MyKiva/MyKivaHero';
+import MyKivaProfile from '@/components/MyKiva/MyKivaProfile';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
@@ -18,7 +19,20 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
-		KvPageContainer,
+		MyKivaHero,
+		MyKivaProfile
+	},
+	data() {
+		return {
+			lender: null,
+		};
+	},
+	apollo: {
+		query: myKivaQuery,
+		preFetch: true,
+		result(result) {
+			this.lender = result.data?.my?.lender ?? null;
+		},
 	},
 	mounted() {
 		trackExperimentVersion(
@@ -28,6 +42,8 @@ export default {
 			MY_KIVA_EXP_KEY,
 			'EXP-MP-623-Sept2024'
 		);
+
+		this.$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 	},
 };
 </script>

@@ -1,3 +1,42 @@
+## [2.759.0-rc.1](https://github.com/kiva/ui/compare/v2.758.1...v2.759.0-rc.1) (2024-09-23)
+
+
+### 🎉 New Features
+
+* daf thanks page variation ([71b095f](https://github.com/kiva/ui/commit/71b095f6333e994ea40fab94934ced212b73561c))
+* my kiva header ([f1bd0eb](https://github.com/kiva/ui/commit/f1bd0eb10cde2be6842699b754152a6b33a6919d))
+* redirect to new lender page ([cffd656](https://github.com/kiva/ui/commit/cffd65659b9b8168598d62b3544f8e630d7973b2))
+* use FLSS for live loan image filter searches when supported MP-732 ([27768b8](https://github.com/kiva/ui/commit/27768b8004463f441730762caf720cf05c8ccb14))
+
+
+### 🐛 Bugfixes
+
+* avatar size for desktop ([84499d6](https://github.com/kiva/ui/commit/84499d684c6c80739d9e996e75be398d21d82600))
+* border in avatar ([425529c](https://github.com/kiva/ui/commit/425529c06f660705320a583e95f59cb430ee04c0))
+* center user first letter in avatar ([91d57a2](https://github.com/kiva/ui/commit/91d57a2409e1066662e112cef97f5a06d7e305b3))
+* container size ([0820e2f](https://github.com/kiva/ui/commit/0820e2f56b7fd3193e519b7587d8fb352654deea))
+* empty object as default ([ffbf491](https://github.com/kiva/ui/commit/ffbf491f4b2e71449f39a1383c92f82cd8326ea4))
+* error in parsing user preferences as json ([92c06e5](https://github.com/kiva/ui/commit/92c06e5f13fa8e959a79d1a695126dc513e5b312))
+* linting ([ae166f4](https://github.com/kiva/ui/commit/ae166f4dfaafb27317165519cac60c7ffcc7301a))
+* parseSortString does not need to be async MP-732 ([28654fc](https://github.com/kiva/ui/commit/28654fc3ac5c4b58f876ea7414e46a439f6c210b))
+* preference needs to be an string ([2e6913d](https://github.com/kiva/ui/commit/2e6913d81429a6c95031e84f0290d4f8110f086b))
+* remove ref ([61cfd8c](https://github.com/kiva/ui/commit/61cfd8c684c3db41b3ba0d568e7cf379825f414d))
+* remove robots rule ([bf02af3](https://github.com/kiva/ui/commit/bf02af34a55cd4759cdb1658811c35ca997ccfc7))
+* styles and alignment ([3137b01](https://github.com/kiva/ui/commit/3137b0172ebe2975829dc0914e03386115d3f59d))
+* typo errors in profile ([d71a05d](https://github.com/kiva/ui/commit/d71a05d19d14ae7397cb8118ccf2494d09f5ad78))
+* update live-loan tests and no-filter default ([14fccde](https://github.com/kiva/ui/commit/14fccdebe8cf6e19f8e2b886d85e1eee906a08ef))
+
+
+### 🪚 Refactors
+
+* new container for my kiva ([71ef961](https://github.com/kiva/ui/commit/71ef961b97bb2bec97c5e3579bbe4036fce9e240))
+* split into components ([23e76ba](https://github.com/kiva/ui/commit/23e76babbe11d4ef746b57bded7bb2f0c9abc2ed))
+
+
+### 🧹 Chores
+
+* allow input of optional ci build branch ([e44feaf](https://github.com/kiva/ui/commit/e44feaf16a9df51ac76fbb03e129d711eeca1f70))
+
 ## [2.758.1](https://github.com/kiva/ui/compare/v2.758.0...v2.758.1) (2024-09-13)
 
 

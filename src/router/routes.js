@@ -343,7 +343,7 @@ module.exports = [
 	},
 	{
 		name: 'lenderProfile',
-		path: '/lender-vue/:publicId',
+		path: '/lender/:publicId',
 		component: () => import('@/pages/LenderProfile/LenderProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
