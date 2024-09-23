@@ -7,7 +7,7 @@
 			<a
 				href="/settings/account"
 				v-kv-track-event="[
-					'portofolio',
+					'portfolio',
 					'click',
 					'account-profile-pic'
 				]"
@@ -42,7 +42,7 @@ export default {
 	},
 	computed: {
 		lenderName() {
-			return this?.lender?.name ?? 'Christian';
+			return this?.lender?.name ?? '';
 		},
 		lenderImageUrl() {
 			return this?.lender?.image?.url ?? '';
