@@ -51,10 +51,10 @@ export default {
 			return this.userInfo?.userAccount?.balance ?? '';
 		},
 		lenderName() {
-			return this?.lender?.name ?? '';
+			return this.lender?.name ?? '';
 		},
 		lenderImageUrl() {
-			return this?.lender?.image?.url ?? '';
+			return this.lender?.image?.url ?? '';
 		},
 	},
 	methods: {
