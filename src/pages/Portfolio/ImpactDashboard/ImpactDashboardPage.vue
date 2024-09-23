@@ -30,6 +30,9 @@
 </template>
 
 <script>
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -49,6 +52,8 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
+
+const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -82,7 +87,22 @@ export default {
 	mixins: [badgeGoalMixin],
 	apollo: {
 		preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+			return Promise.all([
+				client.query({ query: portfolioQuery }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: MY_KIVA_EXP_KEY } }),
+			]).then(result => {
+				const userData = result?.[0]?.data?.my ?? {};
+				const loanCount = userData.lender?.loanCount ?? 0;
+
+				const { version } = client.readFragment({
+					id: `Experiment:${MY_KIVA_EXP_KEY}`,
+					fragment: experimentVersionFragment,
+				}) ?? {};
+
+				if (version === 'b' && loanCount < 4) {
+					return Promise.reject({ path: '/my-kiva' });
+				}
+			});
 		},
 	},
 	methods: {
@@ -121,12 +141,20 @@ export default {
 	async mounted() {
 		this.loadEducationPost();
 
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			MY_KIVA_EXP_KEY,
+			'EXP-MP-623-Sept2024'
+		);
+
 		if (this.$route?.query?.goal_saved) {
 			const badgeName = this.$route?.query?.goal_saved ?? '';
 
 			if (!this.userPreferences?.id) {
 				const createPreferences = await this.createUserPreferences();
-				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? null;
+				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
 			}
 
 			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {

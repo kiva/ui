@@ -364,7 +364,7 @@ export default [
 	},
 	{
 		name: 'lenderProfile',
-		path: '/lender-vue/:publicId',
+		path: '/lender/:publicId',
 		component: () => import('#src/pages/LenderProfile/LenderProfile'),
 		meta: {
 			excludeFromStaticSitemap: true,
@@ -460,6 +460,14 @@ export default [
 		}),
 		meta: {
 			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/my-kiva',
+		component: () => import('#src/pages/Portfolio/MyKiva/MyKivaPage'),
+		meta: {
+			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},

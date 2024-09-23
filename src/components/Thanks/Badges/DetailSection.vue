@@ -6,35 +6,42 @@
 				YOUR BADGES
 			</p>
 		</div>
-		<kv-carousel
-			:embla-options="{ loop: true, align: 'center', startIndex: selectedBadgeIdx }"
-			:is-dotted="true"
-			:in-circle="true"
-			class="badge-carousel"
-			@change="handleChange"
-			ref="badgeCarousel"
-		>
-			<template v-for="badge in badges" #[`slide${badge.id}`] :key="badge.id">
-				<div
-					class="tw-flex tw-flex-col"
-					v-kv-track-event="[
-						'thanks',
-						'click',
-						'choose-a-badge',
-						badge.name
-					]"
-				>
-					<img
-						:src="imageRequire(`${badge.img}.svg`)"
-						class="badge tw-mx-auto"
-						alt="Gift icon"
+		<div class="tw-mx-auto" style="max-width: 8rem;">
+			<kv-carousel
+				:embla-options="{
+					loop: false,
+					align: 'center',
+					startIndex: selectedBadgeIdx,
+				}"
+				slides-to-scroll="visible"
+				:is-dotted="true"
+				:in-circle="true"
+				class="badge-carousel tw-overflow-visible"
+				@change="handleChange"
+				ref="badgeCarousel"
+			>
+				<template v-for="badge in badges" #[`slide${badge.id}`] :key="badge.id">
+					<div
+						class="tw-flex tw-flex-col slide-container"
+						v-kv-track-event="[
+							'thanks',
+							'click',
+							'choose-a-badge',
+							badge.name
+						]"
 					>
-					<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
-						{{ badge.name }}
-					</h3>
-				</div>
-			</template>
-		</kv-carousel>
+						<img
+							:src="imageRequire(`${badge.img}.svg`)"
+							class="badge tw-mx-auto tw-mb-2"
+							alt="Gift icon"
+						>
+						<h3 v-if="hideBadgeName(badge.id)" class="tw-text-center">
+							{{ badge.name }}
+						</h3>
+					</div>
+				</template>
+			</kv-carousel>
+		</div>
 		<div class="tw-px-1 md:tw-px-8 tw-pt-2">
 			<h2 class="tw-pb-2">
 				{{ selectedName }}
@@ -137,6 +144,9 @@ export default {
 			const index = this.currentBadgeIndex > 1 ? this.currentBadgeIndex - 1 : 0;
 			return this.badges[index] ?? null;
 		},
+		currentBadgeTracking() {
+			return this.currentBadge?.tracking ?? '';
+		},
 		selectedName() {
 			return this.currentBadge?.name ?? '';
 		},
@@ -159,7 +169,7 @@ export default {
 			'thanks',
 			'view',
 			'view-badge-details',
-			this.selectedName,
+			this.currentBadge.tracking,
 			this.currentBadge.count,
 		);
 	},
@@ -171,6 +181,13 @@ export default {
 		handleChange() {
 			const badgeIndex = this.$refs.badgeCarousel.currentIndex + 1;
 			this.currentBadgeIndex = badgeIndex;
+			this.$kvTrackEvent(
+				'thanks',
+				'view',
+				'view-badge-details',
+				this.currentBadgeTracking,
+				this.currentBadge.count
+			);
 		},
 		hideBadgeName(badgeId) {
 			return badgeId !== this.currentBadge?.id;

@@ -14,8 +14,7 @@
 		</p>
 		<div
 			class="
-				tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-2 md:tw-gap-4
-				tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
+				tw-flex tw-flex-wrap tw-gap-2 md:tw-gap-4 tw-justify-center tw-max-w-fit tw-mx-auto tw-pb-4
 			"
 		>
 			<div
@@ -91,12 +90,12 @@ export default {
 		};
 	},
 	mounted() {
-		const badgesNames = this.badges.map(badge => badge.name).join(', ');
+		const badgesTracking = this.badges.map(badge => badge.tracking).join(', ');
 		this.$kvTrackEvent(
 			'thanks',
 			'view',
 			'view-all-badges',
-			badgesNames
+			badgesTracking
 		);
 	},
 	methods: {
@@ -114,8 +113,8 @@ export default {
 <style lang="postcss" scoped>
 
 .badge-card {
-	width: 156px;
-	height: 148px;
+	width: 166px;
+	height: 158px;
 	box-shadow: 0 4px 12px 0 #00000014;
 	@apply tw-cursor-pointer tw-border tw-flex tw-flex-col tw-rounded tw-gap-2 tw-border-none tw-justify-center;
 }

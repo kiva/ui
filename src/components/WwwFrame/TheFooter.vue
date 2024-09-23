@@ -192,15 +192,6 @@
 									Teams
 								</router-link>
 							</li>
-							<li>
-								<router-link
-									to="/kivau/intro"
-									v-kv-track-event="['Footer', 'click-Community-Students and educators']"
-									class="tw-text-small"
-								>
-									Students and educators
-								</router-link>
-							</li>
 						</ul>
 					</kv-accordion-item>
 					<kv-accordion-item
@@ -641,15 +632,6 @@
 										class="tw-text-small"
 									>
 										Teams
-									</router-link>
-								</li>
-								<li>
-									<router-link
-										to="/kivau/intro"
-										v-kv-track-event="['Footer', 'click-Community-Students and educators']"
-										class="tw-text-small"
-									>
-										Students and educators
 									</router-link>
 								</li>
 							</ul>

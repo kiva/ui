@@ -10,16 +10,13 @@ jest.mock('../../../../server/util/argv', () => {
 });
 
 describe('live-loan-fetch', () => {
-	beforeAll(() => jest.spyOn(global.console, 'warn').mockImplementation(() => ({})));
-
-	afterAll(jest.restoreAllMocks);
-
-	describe('fetchRecommendationsByLegacyFilter', () => {
+	describe('fetchRecommendationsByFilter', () => {
 		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
 		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
 			fetch.default.mockClear();
 			fetch.default.mockResolvedValue({ json: () => { } });
+
 			// Run the filter parsing
 			await fetchLoansByType.default('filter', inputString);
 
@@ -35,60 +32,124 @@ describe('live-loan-fetch', () => {
 		}
 
 		// Test that expectedSort is used for the graphql query that's based on the inputString
-		async function testSortParsing(inputString, expectedSort) {
+		async function testSortParsingLegacy(inputString, expectedSort) {
 			const { sort } = await readParsedVariable(inputString);
 			expect(sort).toEqual(expectedSort);
 		}
+		async function testSortParsing(inputString, expectedSort) {
+			const { sortBy } = await readParsedVariable(inputString);
+			expect(sortBy).toEqual(expectedSort);
+		}
 
 		it('converts input strings to valid LoanSearchFiltersInput objects', async () => {
-			await testFilterParsing('gender_male,sector_education', { gender: 'male', sector: [15] });
-			await testFilterParsing('sector_retail', { sector: [7] });
-			await testFilterParsing('gender_female', { gender: 'female' });
-			await testFilterParsing('country_us,country_pr', { country: ['us', 'pr'] });
-			await testFilterParsing('country_co,country_ke', { country: ['co', 'ke'] });
-			await testFilterParsing('gender_female,country_us', { gender: 'female', country: ['us'] });
-			await testFilterParsing('gender_male,sector_arts,sector_agriculture', { gender: 'male', sector: [9, 1] });
-			await testFilterParsing('sector_personal use', { sector: [16] });
-			await testFilterParsing('sort_expiringSoon,gender_female', { gender: 'female' });
-			await testFilterParsing('theme_green', { theme: ['Green'] });
-			await testFilterParsing('theme_disaster recovery', { theme: ['Disaster recovery'] });
-			await testFilterParsing('theme_refugees/displaced', { theme: ['Refugees/Displaced'] });
-			await testFilterParsing('theme_start-up', { theme: ['Start-Up'] });
-			await testFilterParsing('theme_youth,theme_green', { theme: ['Youth', 'Green'] });
-			await testFilterParsing('tag_u.s. black-owned businesses', { loanTags: [43] });
+			// Using sort_random forces using the legacy loan search
+			await testFilterParsing('sort_random,gender_male,sector_education', { gender: 'male', sector: [15] });
+			await testFilterParsing('sort_random,sector_retail', { sector: [7] });
+			await testFilterParsing('sort_random,gender_female', { gender: 'female' });
+			await testFilterParsing('sort_random,country_us,country_pr', { country: ['us', 'pr'] });
+			await testFilterParsing('sort_random,country_co,country_ke', { country: ['co', 'ke'] });
+			await testFilterParsing('sort_random,gender_female,country_us', { gender: 'female', country: ['us'] });
 			await testFilterParsing(
-				'tag_u.s. black-owned businesses,theme_green',
+				'sort_random,gender_male,sector_arts,sector_agriculture',
+				{ gender: 'male', sector: [9, 1] }
+			);
+			await testFilterParsing('sort_random,sector_personal use', { sector: [16] });
+			await testFilterParsing('sort_random,gender_female', { gender: 'female' });
+			await testFilterParsing('sort_random,theme_green', { theme: ['Green'] });
+			await testFilterParsing('sort_random,theme_disaster recovery', { theme: ['Disaster recovery'] });
+			await testFilterParsing('sort_random,theme_refugees/displaced', { theme: ['Refugees/Displaced'] });
+			await testFilterParsing('sort_random,theme_start-up', { theme: ['Start-Up'] });
+			await testFilterParsing('sort_random,theme_youth,theme_green', { theme: ['Youth', 'Green'] });
+			await testFilterParsing('sort_random,tag_u.s. black-owned businesses', { loanTags: [43] });
+			await testFilterParsing(
+				'sort_random,tag_u.s. black-owned businesses,theme_green',
 				{ loanTags: [43], theme: ['Green'] }
 			);
 			await testFilterParsing(
-				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
+				'sort_random,tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
 				{ loanTags: [45, 43] }
 			);
-			await testFilterParsing('notafilter_value', {});
-			await testFilterParsing('sector_notasector', {});
-			await testFilterParsing('theme_notatheme', {});
-			await testFilterParsing('', {});
-			await testFilterParsing('1234', {});
+			await testFilterParsing('sort_random,notafilter_value', {});
+			await testFilterParsing('sort_random,sector_notasector', {});
+			await testFilterParsing('sort_random,theme_notatheme', {});
+			await testFilterParsing('sort_random,tag_notatag', {});
+			await testFilterParsing('sort_random', {});
+			await testFilterParsing('sort_random,1234', {});
 		});
 
 		it('converts input strings to valid LoanSearchSortByEnum values', async () => {
-			await testSortParsing('sort_newest', 'newest');
-			await testSortParsing('sort_expiringSoon,gender_female', 'expiringSoon');
+			await testSortParsingLegacy('sort_random', 'random');
+			await testSortParsingLegacy('sort_random,gender_female', 'random');
+		});
+
+		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
+			await testFilterParsing(
+				'gender_male,sector_education',
+				[{ gender: { any: ['male'] } }, { sector: { any: ['education'] } }]
+			);
+			await testFilterParsing('sector_retail', [{ sector: { any: ['retail'] } }]);
+			await testFilterParsing('gender_female', [{ gender: { any: ['female'] } }]);
+			await testFilterParsing('country_us,country_pr', [{ countryIsoCode: { any: ['us', 'pr'] } }]);
+			await testFilterParsing('country_co,country_ke', [{ countryIsoCode: { any: ['co', 'ke'] } }]);
+			await testFilterParsing(
+				'gender_female,country_us',
+				[{ gender: { any: ['female'] } }, { countryIsoCode: { any: ['us'] } }]
+			);
+			await testFilterParsing(
+				'gender_male,sector_arts,sector_agriculture',
+				[{ gender: { any: ['male'] } }, { sector: { any: ['arts', 'agriculture'] } }]
+			);
+			await testFilterParsing('sector_personal use', [{ sector: { any: ['personal use'] } }]);
+			await testFilterParsing('sort_expiringSoon,gender_female', [{ gender: { any: ['female'] } }]);
+			await testFilterParsing('theme_green', [{ theme: { any: ['green'] } }]);
+			await testFilterParsing('theme_disaster recovery', [{ theme: { any: ['disaster recovery'] } }]);
+			await testFilterParsing('theme_refugees/displaced', [{ theme: { any: ['refugees/displaced'] } }]);
+			await testFilterParsing('theme_start-up', [{ theme: { any: ['start-up'] } }]);
+			await testFilterParsing('theme_youth,theme_green', [{ theme: { any: ['youth', 'green'] } }]);
+			await testFilterParsing('tag_u.s. black-owned businesses', [{ tagId: { any: [43] } }]);
+			await testFilterParsing(
+				'tag_u.s. black-owned businesses,theme_green',
+				[{ tagId: { any: [43] } }, { theme: { any: ['green'] } }]
+			);
+			await testFilterParsing(
+				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
+				[{ tagId: { any: [45, 43] } }]
+			);
+
+			await testFilterParsing(
+				'gender_male,sector_education',
+				[
+					{ gender: { any: ['male'] } },
+					{ sector: { any: ['education'] } }
+				]
+			);
+			await testFilterParsing(
+				'sector_retail',
+				[
+					{ sector: { any: ['retail'] } }
+				]
+			);
+			await testFilterParsing(
+				'country_us,country_pr',
+				[
+					{ countryIsoCode: { any: ['us', 'pr'] } },
+				]
+			);
+			await testFilterParsing('notafilter_value', null);
+			await testFilterParsing('tag_notatag', null);
+			await testFilterParsing('', null);
+			await testFilterParsing('1234', null);
+		});
+
+		it('converts input strings to valid SortEnum values', async () => {
+			await testSortParsing('sort_expiringSoon', 'expiringSoon');
+			await testSortParsing('sort_mostRecent,gender_female', 'mostRecent');
+			await testSortParsing('sort_researchScore', 'researchScore');
 
 			await testSortParsing('sort_notasort', null);
 			await testSortParsing('gender_female', null);
 			await testSortParsing('', null);
 			await testSortParsing('1234', null);
-		});
-
-		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
-			await testFilterParsing('gender_male,sector_education', { gender: 'male', sector: [15] });
-			await testFilterParsing('sector_retail', { sector: [7] });
-			await testFilterParsing('country_us,country_pr', { country: ['us', 'pr'] });
-
-			await testFilterParsing('notafilter_value', {});
-			await testFilterParsing('', {});
-			await testFilterParsing('1234', {});
 		});
 	});
 

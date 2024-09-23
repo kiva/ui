@@ -1,0 +1,13 @@
+query ftdQuery {
+	my {
+    id
+    lender {
+      id
+      name
+      image {
+        id
+        url
+      }
+    }
+  }
+}

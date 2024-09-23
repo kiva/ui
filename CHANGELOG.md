@@ -1,3 +1,397 @@
+## [2.758.1](https://github.com/kiva/ui/compare/v2.758.0...v2.758.1) (2024-09-13)
+
+
+### 🐛 Bugfixes
+
+* latest lib with potential memory leak fix ([8255a24](https://github.com/kiva/ui/commit/8255a2448f5567e8687e73a07a2be0094b27744b))
+* revert changes from memory leak investigations ([8af2d5c](https://github.com/kiva/ui/commit/8af2d5c059b13a39bbcacc4e6283ab96a3f2de2a))
+* used firstLoan variable was not considering if the user was a guest ([a2ee1c6](https://github.com/kiva/ui/commit/a2ee1c6f850b6b960178f1802d6505924b7229b3))
+
+
+### 🧹 Chores
+
+* **release:** 2.758.1-rc.1 [skip ci] ([3554847](https://github.com/kiva/ui/commit/3554847a16db6fe9ecce8939e567493c60314a47))
+
+## [2.758.1-rc.1](https://github.com/kiva/ui/compare/v2.758.0...v2.758.1-rc.1) (2024-09-13)
+
+
+### 🐛 Bugfixes
+
+* latest lib with potential memory leak fix ([8255a24](https://github.com/kiva/ui/commit/8255a2448f5567e8687e73a07a2be0094b27744b))
+* revert changes from memory leak investigations ([8af2d5c](https://github.com/kiva/ui/commit/8af2d5c059b13a39bbcacc4e6283ab96a3f2de2a))
+* used firstLoan variable was not considering if the user was a guest ([a2ee1c6](https://github.com/kiva/ui/commit/a2ee1c6f850b6b960178f1802d6505924b7229b3))
+
+## [2.758.0](https://github.com/kiva/ui/compare/v2.757.0...v2.758.0) (2024-09-13)
+
+
+### 🎉 New Features
+
+* add support for new equity badge in lending stats ([484efef](https://github.com/kiva/ui/commit/484efef9663c9a685c7ba68130d9b658a1a82464))
+
+
+### 🐛 Bugfixes
+
+* another lib version check ([7fdb065](https://github.com/kiva/ui/commit/7fdb065cfe8d4693d6bed112f98a1144e8f7cfec))
+
+
+### 🧹 Chores
+
+* **release:** 2.758.0-rc.1 [skip ci] ([0508a0e](https://github.com/kiva/ui/commit/0508a0ebd1250c6cf094c18c1cb196025b78fde4))
+
+## [2.758.0-rc.1](https://github.com/kiva/ui/compare/v2.757.0...v2.758.0-rc.1) (2024-09-13)
+
+
+### 🎉 New Features
+
+* add support for new equity badge in lending stats ([484efef](https://github.com/kiva/ui/commit/484efef9663c9a685c7ba68130d9b658a1a82464))
+
+
+### 🐛 Bugfixes
+
+* another lib version check ([7fdb065](https://github.com/kiva/ui/commit/7fdb065cfe8d4693d6bed112f98a1144e8f7cfec))
+
+## [2.757.0](https://github.com/kiva/ui/compare/v2.756.4...v2.757.0) (2024-09-12)
+
+
+### 🎉 New Features
+
+* change of copy in revealed badge description ([f9e95d6](https://github.com/kiva/ui/commit/f9e95d6c19d85656f48956917e6cb51f064d14b1))
+
+
+### 🐛 Bugfixes
+
+* try next component lib version ([59b9523](https://github.com/kiva/ui/commit/59b9523df2626c23faac0667415f8bd433182825))
+
+
+### 🧹 Chores
+
+* **release:** 2.757.0-rc.1 [skip ci] ([0949737](https://github.com/kiva/ui/commit/0949737755bb966e4417d8ddda99acaba4718cd1))
+
+## [2.757.0-rc.1](https://github.com/kiva/ui/compare/v2.756.4...v2.757.0-rc.1) (2024-09-12)
+
+
+### 🎉 New Features
+
+* change of copy in revealed badge description ([f9e95d6](https://github.com/kiva/ui/commit/f9e95d6c19d85656f48956917e6cb51f064d14b1))
+
+
+### 🐛 Bugfixes
+
+* try next component lib version ([59b9523](https://github.com/kiva/ui/commit/59b9523df2626c23faac0667415f8bd433182825))
+
+## [2.756.4](https://github.com/kiva/ui/compare/v2.756.3...v2.756.4) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* try next component lib version for memory leak ([74d9520](https://github.com/kiva/ui/commit/74d9520c16ce20bd517275be0afec87f4490fd2d))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.4-rc.1 [skip ci] ([0e2e91d](https://github.com/kiva/ui/commit/0e2e91db9c253a475e8a5c13de29e88c9e819356))
+
+## [2.756.4-rc.1](https://github.com/kiva/ui/compare/v2.756.3...v2.756.4-rc.1) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* try next component lib version for memory leak ([74d9520](https://github.com/kiva/ui/commit/74d9520c16ce20bd517275be0afec87f4490fd2d))
+
+## [2.756.3](https://github.com/kiva/ui/compare/v2.756.2...v2.756.3) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* try next component lib version for memory leak ([a6c04f4](https://github.com/kiva/ui/commit/a6c04f42de65863924c4a9aff3c64c2eb56f4188))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.3-rc.1 [skip ci] ([53cf2df](https://github.com/kiva/ui/commit/53cf2dfdab42826cd40cf8997f3ad28338d2dac6))
+
+## [2.756.3-rc.1](https://github.com/kiva/ui/compare/v2.756.2...v2.756.3-rc.1) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* try next component lib version for memory leak ([a6c04f4](https://github.com/kiva/ui/commit/a6c04f42de65863924c4a9aff3c64c2eb56f4188))
+
+## [2.756.2](https://github.com/kiva/ui/compare/v2.756.1...v2.756.2) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* next package version while investigating memory leak ([711551f](https://github.com/kiva/ui/commit/711551fdcd566e5883f6399892e325a9bbca8eb0))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.2-rc.1 [skip ci] ([3422943](https://github.com/kiva/ui/commit/3422943cdc64e50f5cfa387ac9f30ee1e4cb99bd))
+
+## [2.756.2-rc.1](https://github.com/kiva/ui/compare/v2.756.1...v2.756.2-rc.1) (2024-09-12)
+
+
+### 🐛 Bugfixes
+
+* next package version while investigating memory leak ([711551f](https://github.com/kiva/ui/commit/711551fdcd566e5883f6399892e325a9bbca8eb0))
+
+## [2.756.1](https://github.com/kiva/ui/compare/v2.756.0...v2.756.1) (2024-09-11)
+
+
+### 🐛 Bugfixes
+
+* version in lock was wrong ([1728d00](https://github.com/kiva/ui/commit/1728d00966b82df8054a409ea7605217fc11950d))
+* walk up component lib version ([bca7390](https://github.com/kiva/ui/commit/bca7390a0a6e15a16e426e3d3efb48d67d93f258))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.1-rc.1 [skip ci] ([d9b33c4](https://github.com/kiva/ui/commit/d9b33c460a35e2ea1606b3528d59e8d515f0061f))
+
+## [2.756.1-rc.1](https://github.com/kiva/ui/compare/v2.756.0...v2.756.1-rc.1) (2024-09-11)
+
+
+### 🐛 Bugfixes
+
+* version in lock was wrong ([1728d00](https://github.com/kiva/ui/commit/1728d00966b82df8054a409ea7605217fc11950d))
+* walk up component lib version ([bca7390](https://github.com/kiva/ui/commit/bca7390a0a6e15a16e426e3d3efb48d67d93f258))
+
+## [2.756.0](https://github.com/kiva/ui/compare/v2.755.0...v2.756.0) (2024-09-11)
+
+
+### 🎉 New Features
+
+* exclude from badge experiments users that has lent before ([bff4917](https://github.com/kiva/ui/commit/bff491760205c78c358b6aa8ca5d09f868e029b2))
+* showing old ty page for print-in-yourself kiva card in basket ([74f4843](https://github.com/kiva/ui/commit/74f4843d000c32ec1d96f7758bfd5447d670b5c6))
+
+
+### 🐛 Bugfixes
+
+* linting ([5eb37ae](https://github.com/kiva/ui/commit/5eb37ae42a13d71d0e1aa02886c03c62f6f6f87a))
+* print kiva cards should have more priority on visible section ([0e4d746](https://github.com/kiva/ui/commit/0e4d7467425fb1a9b2dcd031a35d0abd4d3886da))
+* rollback component lib further ([4deb59c](https://github.com/kiva/ui/commit/4deb59c393048150d6d84e0fc31be9734f529e17))
+
+
+### 🧹 Chores
+
+* **release:** 2.756.0-rc.1 [skip ci] ([9c64669](https://github.com/kiva/ui/commit/9c646695489743236cde45a103f6b273e0d02e51))
+
+## [2.756.0-rc.1](https://github.com/kiva/ui/compare/v2.755.0...v2.756.0-rc.1) (2024-09-11)
+
+
+### 🎉 New Features
+
+* exclude from badge experiments users that has lent before ([bff4917](https://github.com/kiva/ui/commit/bff491760205c78c358b6aa8ca5d09f868e029b2))
+* showing old ty page for print-in-yourself kiva card in basket ([74f4843](https://github.com/kiva/ui/commit/74f4843d000c32ec1d96f7758bfd5447d670b5c6))
+
+
+### 🐛 Bugfixes
+
+* linting ([5eb37ae](https://github.com/kiva/ui/commit/5eb37ae42a13d71d0e1aa02886c03c62f6f6f87a))
+* print kiva cards should have more priority on visible section ([0e4d746](https://github.com/kiva/ui/commit/0e4d7467425fb1a9b2dcd031a35d0abd4d3886da))
+* rollback component lib further ([4deb59c](https://github.com/kiva/ui/commit/4deb59c393048150d6d84e0fc31be9734f529e17))
+
+## [2.755.0](https://github.com/kiva/ui/compare/v2.754.2...v2.755.0) (2024-09-11)
+
+
+### 🎉 New Features
+
+* footer updated ([#5496](https://github.com/kiva/ui/issues/5496)) ([1ca7a26](https://github.com/kiva/ui/commit/1ca7a26b5d84153c8f7dd651b1655bdb22737022))
+
+
+### 🐛 Bugfixes
+
+* try rolling back components library for memory leak ([872ba69](https://github.com/kiva/ui/commit/872ba69e940ae91d1f6388097620d690fdd1361e))
+
+
+### 🧹 Chores
+
+* **release:** 2.755.0-rc.1 [skip ci] ([1b6e543](https://github.com/kiva/ui/commit/1b6e543cccb5a4f000cdfbc8e071f5dffbcc3be8)), closes [#5496](https://github.com/kiva/ui/issues/5496)
+
+## [2.755.0-rc.1](https://github.com/kiva/ui/compare/v2.754.2...v2.755.0-rc.1) (2024-09-11)
+
+
+### 🎉 New Features
+
+* footer updated ([#5496](https://github.com/kiva/ui/issues/5496)) ([1ca7a26](https://github.com/kiva/ui/commit/1ca7a26b5d84153c8f7dd651b1655bdb22737022))
+
+
+### 🐛 Bugfixes
+
+* try rolling back components library for memory leak ([872ba69](https://github.com/kiva/ui/commit/872ba69e940ae91d1f6388097620d690fdd1361e))
+
+## [2.754.2](https://github.com/kiva/ui/compare/v2.754.1...v2.754.2) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([58a96e6](https://github.com/kiva/ui/commit/58a96e6a3dc2e06c8ac178a185408c04f72002a5))
+* linting ([bea8f01](https://github.com/kiva/ui/commit/bea8f01fd3f69b81186aa40d1576ade914166253))
+* try old charts while tracking down memory leak ([642cc1b](https://github.com/kiva/ui/commit/642cc1b6f0bf95d8cc028c8d3f6358fab296811d))
+
+
+### 🧹 Chores
+
+* **release:** 2.754.2-rc.1 [skip ci] ([ea8f09e](https://github.com/kiva/ui/commit/ea8f09ee2787fd5b4254fcde63a18057d89b9285))
+
+## [2.754.2-rc.1](https://github.com/kiva/ui/compare/v2.754.1...v2.754.2-rc.1) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([58a96e6](https://github.com/kiva/ui/commit/58a96e6a3dc2e06c8ac178a185408c04f72002a5))
+* linting ([bea8f01](https://github.com/kiva/ui/commit/bea8f01fd3f69b81186aa40d1576ade914166253))
+* try old charts while tracking down memory leak ([642cc1b](https://github.com/kiva/ui/commit/642cc1b6f0bf95d8cc028c8d3f6358fab296811d))
+
+## [2.754.1](https://github.com/kiva/ui/compare/v2.754.0...v2.754.1) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([3de8068](https://github.com/kiva/ui/commit/3de8068018580ff9e8ab675fa88881decb432579))
+* reenable features for demo ([1a53750](https://github.com/kiva/ui/commit/1a53750b3de3b50c04b05cb95618862fa8e68a7b))
+* try disabling ty badge experience to track down memory leak ([ac0fb20](https://github.com/kiva/ui/commit/ac0fb20dd40a4fb925fa4bc96773ecc6970cf82c))
+
+
+### 🧹 Chores
+
+* **release:** 2.754.1-rc.1 [skip ci] ([d702703](https://github.com/kiva/ui/commit/d702703f660fa0eeccf41c2ec505fa118d781156))
+
+## [2.754.1-rc.1](https://github.com/kiva/ui/compare/v2.754.0...v2.754.1-rc.1) (2024-09-10)
+
+
+### 🐛 Bugfixes
+
+* linting ([3de8068](https://github.com/kiva/ui/commit/3de8068018580ff9e8ab675fa88881decb432579))
+* reenable features for demo ([1a53750](https://github.com/kiva/ui/commit/1a53750b3de3b50c04b05cb95618862fa8e68a7b))
+* try disabling ty badge experience to track down memory leak ([ac0fb20](https://github.com/kiva/ui/commit/ac0fb20dd40a4fb925fa4bc96773ecc6970cf82c))
+
+## [2.754.0](https://github.com/kiva/ui/compare/v2.753.1...v2.754.0) (2024-09-10)
+
+
+### 🎉 New Features
+
+* exclude users that uses kiva card on checkout ([f683109](https://github.com/kiva/ui/commit/f683109645f7dbe7ae0abaab48d7421b466895f1))
+
+
+### 🐛 Bugfixes
+
+* hide badge experiment when user checkouts with a printable card ([f765b23](https://github.com/kiva/ui/commit/f765b234e8fab6945a8e194fa94cb32d4d81034c))
+* try disabling new lender profile page ([7911980](https://github.com/kiva/ui/commit/7911980a787bb87255794ebe555ebc0b1b6c7059))
+
+
+### 🧹 Chores
+
+* **release:** 2.754.0-rc.1 [skip ci] ([a2daadb](https://github.com/kiva/ui/commit/a2daadbcf012b0ff061d801a7059c80d57a28795))
+
+## [2.754.0-rc.1](https://github.com/kiva/ui/compare/v2.753.1...v2.754.0-rc.1) (2024-09-10)
+
+
+### 🎉 New Features
+
+* exclude users that uses kiva card on checkout ([f683109](https://github.com/kiva/ui/commit/f683109645f7dbe7ae0abaab48d7421b466895f1))
+
+
+### 🐛 Bugfixes
+
+* hide badge experiment when user checkouts with a printable card ([f765b23](https://github.com/kiva/ui/commit/f765b234e8fab6945a8e194fa94cb32d4d81034c))
+* try disabling new lender profile page ([7911980](https://github.com/kiva/ui/commit/7911980a787bb87255794ebe555ebc0b1b6c7059))
+
+## [2.753.1](https://github.com/kiva/ui/compare/v2.753.0...v2.753.1) (2024-09-09)
+
+
+### 🐛 Bugfixes
+
+* try disabling lender map for memory leak ([6862692](https://github.com/kiva/ui/commit/68626929c2173bf855ecad3bb7697428f7dda408))
+
+
+### 🧹 Chores
+
+* **release:** 2.753.1-rc.1 [skip ci] ([0d0d6be](https://github.com/kiva/ui/commit/0d0d6be536b142fc4157b05e0066f1a0abb78c4b))
+
+## [2.753.1-rc.1](https://github.com/kiva/ui/compare/v2.753.0...v2.753.1-rc.1) (2024-09-09)
+
+
+### 🐛 Bugfixes
+
+* try disabling lender map for memory leak ([6862692](https://github.com/kiva/ui/commit/68626929c2173bf855ecad3bb7697428f7dda408))
+
+## [2.753.0](https://github.com/kiva/ui/compare/v2.752.0...v2.753.0) (2024-09-09)
+
+
+### 🎉 New Features
+
+* add loan display snowplow events to funded bp ([93bb3b6](https://github.com/kiva/ui/commit/93bb3b62f56794743a9b36bae92a363f2218db03))
+* handle goal in portfolio for all users in experiment ([05a7f04](https://github.com/kiva/ui/commit/05a7f046e3caaff15300ec600a370a98e76ac123))
+* my kiva experiment setup added ([#5480](https://github.com/kiva/ui/issues/5480)) ([beb8b23](https://github.com/kiva/ui/commit/beb8b23cc309ae69b9d444111d5dea1efb882a94))
+* roll out TY page experiment ([2765bb6](https://github.com/kiva/ui/commit/2765bb62889d762b8f276566f92ba4060c70f1c4))
+* tracking events added to lender profile ([#5472](https://github.com/kiva/ui/issues/5472)) ([bf30028](https://github.com/kiva/ui/commit/bf30028ffc486ecd8857ed2396297f4e0ae2475d))
+
+
+### 🐛 Bugfixes
+
+* add number of loans within badge category in anaylitics ([3799cd4](https://github.com/kiva/ui/commit/3799cd468894becc58c9744f526d91b39c0befc8))
+* bg was wrong when user not opted in and no loans in checkout ([52367d0](https://github.com/kiva/ui/commit/52367d03d62142c8e602e3e36bd299eec82780e9))
+* carousel design ([c386c31](https://github.com/kiva/ui/commit/c386c31314b403b3e9744182fdfb2991876fb750))
+* conflict ([c228fdb](https://github.com/kiva/ui/commit/c228fdb82fb12be724381a22d86d7d9a858d6966))
+* design tweaks ([541f95c](https://github.com/kiva/ui/commit/541f95c2b70aff6c7fbd4aa9f4bc888fa79fd092))
+* ensure show available upsell loan ([#5485](https://github.com/kiva/ui/issues/5485)) ([8eee617](https://github.com/kiva/ui/commit/8eee6177e395eedd1043efdfbb771e3df5165ce1))
+* evaluate some tags and themes ([80f3b3b](https://github.com/kiva/ui/commit/80f3b3b6bf45abb9f1c1e5cdfcbfbd8016687bf0))
+* goal name and handling create user preference before storing goal ([03af218](https://github.com/kiva/ui/commit/03af2187d8eb6e6956e6e238a7ca1c03ff2ba677))
+* index was incorrect on recommended loan on funded BP for interaction snowplow ([9ebc14c](https://github.com/kiva/ui/commit/9ebc14ceb812f95eae2c5d6d08aeb3ff4c14734b))
+* line length ([3e864cb](https://github.com/kiva/ui/commit/3e864cbe8fcd75e025c504c769913ff9c3c8a1b4))
+* lint ([386b92d](https://github.com/kiva/ui/commit/386b92d563fea5faa2525e2f482ab74c413dd739))
+* long line ([aed018f](https://github.com/kiva/ui/commit/aed018fe721265c355357fff03965d6bc766288b))
+* missing tracking information ([6ad1d97](https://github.com/kiva/ui/commit/6ad1d970c3fa2b4658256f1fec88026c51e7bb5b))
+* moving logic to mounted ([fa2d9d9](https://github.com/kiva/ui/commit/fa2d9d9959d7de50b2ab524c25e6d7236558d1b5))
+* remove optional chaining ([56397b9](https://github.com/kiva/ui/commit/56397b91489b3ce871f3e7c24b5690f964ea73fe))
+* resolve potential loan country undefined server error ([8ff58dd](https://github.com/kiva/ui/commit/8ff58dd101f4f753c58efaafcd03bd57db863337))
+* show new TY experience for more users ([ec62bb9](https://github.com/kiva/ui/commit/ec62bb927aba37c1a0776f9b88cb3ebf4f12d597))
+* show old ty page for non-loan purchases ([5cd8808](https://github.com/kiva/ui/commit/5cd88085a5891ce95001914025a9f4b91a27e1ce))
+* try commenting out unshift in effort to track down memory leak ([bf9a23a](https://github.com/kiva/ui/commit/bf9a23ac79c8d97e515a53bb249d877e7a826094))
+* upgrading components library to make sure tree map still works ([b7f6ebf](https://github.com/kiva/ui/commit/b7f6ebffd798351a069f3cafb9cb56a0b79439c2))
+
+
+### 🧹 Chores
+
+* **release:** 2.753.0-rc.1 [skip ci] ([3ed52de](https://github.com/kiva/ui/commit/3ed52debab90c727283fd6d557d1bfca3c38f165)), closes [#5480](https://github.com/kiva/ui/issues/5480) [#5472](https://github.com/kiva/ui/issues/5472) [#5485](https://github.com/kiva/ui/issues/5485)
+
+## [2.753.0-rc.1](https://github.com/kiva/ui/compare/v2.752.0...v2.753.0-rc.1) (2024-09-09)
+
+
+### 🎉 New Features
+
+* add loan display snowplow events to funded bp ([93bb3b6](https://github.com/kiva/ui/commit/93bb3b62f56794743a9b36bae92a363f2218db03))
+* handle goal in portfolio for all users in experiment ([05a7f04](https://github.com/kiva/ui/commit/05a7f046e3caaff15300ec600a370a98e76ac123))
+* my kiva experiment setup added ([#5480](https://github.com/kiva/ui/issues/5480)) ([beb8b23](https://github.com/kiva/ui/commit/beb8b23cc309ae69b9d444111d5dea1efb882a94))
+* roll out TY page experiment ([2765bb6](https://github.com/kiva/ui/commit/2765bb62889d762b8f276566f92ba4060c70f1c4))
+* tracking events added to lender profile ([#5472](https://github.com/kiva/ui/issues/5472)) ([bf30028](https://github.com/kiva/ui/commit/bf30028ffc486ecd8857ed2396297f4e0ae2475d))
+
+
+### 🐛 Bugfixes
+
+* add number of loans within badge category in anaylitics ([3799cd4](https://github.com/kiva/ui/commit/3799cd468894becc58c9744f526d91b39c0befc8))
+* bg was wrong when user not opted in and no loans in checkout ([52367d0](https://github.com/kiva/ui/commit/52367d03d62142c8e602e3e36bd299eec82780e9))
+* carousel design ([c386c31](https://github.com/kiva/ui/commit/c386c31314b403b3e9744182fdfb2991876fb750))
+* conflict ([c228fdb](https://github.com/kiva/ui/commit/c228fdb82fb12be724381a22d86d7d9a858d6966))
+* design tweaks ([541f95c](https://github.com/kiva/ui/commit/541f95c2b70aff6c7fbd4aa9f4bc888fa79fd092))
+* ensure show available upsell loan ([#5485](https://github.com/kiva/ui/issues/5485)) ([8eee617](https://github.com/kiva/ui/commit/8eee6177e395eedd1043efdfbb771e3df5165ce1))
+* evaluate some tags and themes ([80f3b3b](https://github.com/kiva/ui/commit/80f3b3b6bf45abb9f1c1e5cdfcbfbd8016687bf0))
+* goal name and handling create user preference before storing goal ([03af218](https://github.com/kiva/ui/commit/03af2187d8eb6e6956e6e238a7ca1c03ff2ba677))
+* index was incorrect on recommended loan on funded BP for interaction snowplow ([9ebc14c](https://github.com/kiva/ui/commit/9ebc14ceb812f95eae2c5d6d08aeb3ff4c14734b))
+* line length ([3e864cb](https://github.com/kiva/ui/commit/3e864cbe8fcd75e025c504c769913ff9c3c8a1b4))
+* lint ([386b92d](https://github.com/kiva/ui/commit/386b92d563fea5faa2525e2f482ab74c413dd739))
+* long line ([aed018f](https://github.com/kiva/ui/commit/aed018fe721265c355357fff03965d6bc766288b))
+* missing tracking information ([6ad1d97](https://github.com/kiva/ui/commit/6ad1d970c3fa2b4658256f1fec88026c51e7bb5b))
+* moving logic to mounted ([fa2d9d9](https://github.com/kiva/ui/commit/fa2d9d9959d7de50b2ab524c25e6d7236558d1b5))
+* remove optional chaining ([56397b9](https://github.com/kiva/ui/commit/56397b91489b3ce871f3e7c24b5690f964ea73fe))
+* resolve potential loan country undefined server error ([8ff58dd](https://github.com/kiva/ui/commit/8ff58dd101f4f753c58efaafcd03bd57db863337))
+* show new TY experience for more users ([ec62bb9](https://github.com/kiva/ui/commit/ec62bb927aba37c1a0776f9b88cb3ebf4f12d597))
+* show old ty page for non-loan purchases ([5cd8808](https://github.com/kiva/ui/commit/5cd88085a5891ce95001914025a9f4b91a27e1ce))
+* try commenting out unshift in effort to track down memory leak ([bf9a23a](https://github.com/kiva/ui/commit/bf9a23ac79c8d97e515a53bb249d877e7a826094))
+* upgrading components library to make sure tree map still works ([b7f6ebf](https://github.com/kiva/ui/commit/b7f6ebffd798351a069f3cafb9cb56a0b79439c2))
+
 ## [2.752.0](https://github.com/kiva/ui/compare/v2.751.0...v2.752.0) (2024-08-29)
 
 

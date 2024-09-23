@@ -99,7 +99,8 @@ export default {
 					category: {
 						tags: ['#Eco-friendly', '#Sustainable Ag'],
 					},
-					count: 0
+					count: 0,
+					tracking: 'Climate',
 				},
 				{
 					id: 3,
@@ -114,7 +115,8 @@ export default {
 					category: {
 						gender: 'female',
 					},
-					count: 0
+					count: 0,
+					tracking: 'Women',
 				},
 				{
 					id: 4,
@@ -129,7 +131,8 @@ export default {
 						countryIsoCode: ['US', 'GU', 'VI', 'PR'],
 						distributionModel: 'direct'
 					},
-					count: 0
+					count: 0,
+					tracking: 'U.S. Entrepreneurs',
 				},
 				{
 					id: 5,
@@ -144,7 +147,8 @@ export default {
 					category: {
 						themes: ['Refugees/Displaced'],
 					},
-					count: 0
+					count: 0,
+					tracking: 'Refugees',
 				},
 				{
 					id: 6,
@@ -160,7 +164,8 @@ export default {
 						themes: ['Vulnerable Groups'],
 						distributionModel: 'fieldPartner'
 					},
-					count: 0
+					count: 0,
+					tracking: 'Most Vulnerable',
 				}
 			],
 			newBgActive: false,
@@ -182,6 +187,9 @@ export default {
 		},
 		loanRegion() {
 			return this.selectedLoan?.geocode?.country?.region ?? '';
+		},
+		loanCountryIsoCode() {
+			return this.selectedLoan?.geocode?.country?.isoCode ?? '';
 		},
 	},
 	methods: {
@@ -231,23 +239,26 @@ export default {
 		}
 	},
 	created() {
-		this.defaultSortBadges.unshift(
-			{
-				id: 1,
-				name: this.loanRegion,
-				img: 'region',
-				goals: [
-					`Complete 2 loans from ${this.loanCountry}`,
-					`Learn 1 cool thing about ${this.loanRegion}`,
-				],
-				// eslint-disable-next-line max-len
-				description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
-				category: {
-					countryIsoCode: [this.selectedLoan.geocode.country.isoCode],
-				},
-				count: 0
-			}
-		);
+		if (this.loanCountryIsoCode) {
+			this.defaultSortBadges.unshift(
+				{
+					id: 1,
+					name: this.loanRegion,
+					img: 'region',
+					goals: [
+						`Complete 2 loans from ${this.loanCountry}`,
+						`Learn 1 cool thing about ${this.loanRegion}`,
+					],
+					// eslint-disable-next-line max-len
+					description: `Like ${this.borrowerName}, people in ${this.loanRegion} continue to be financially excluded.`,
+					category: {
+						countryIsoCode: [this.loanCountryIsoCode],
+					},
+					count: 0,
+					tracking: `Region-${this.loanRegion}`,
+				}
+			);
+		}
 		this.countLoansInCategories();
 		this.$kvTrackEvent('thanks', 'view', 'equity badge', this.isGuest ? 'guest' : 'signed-in');
 	},

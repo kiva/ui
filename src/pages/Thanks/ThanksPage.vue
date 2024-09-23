@@ -9,6 +9,7 @@
 		<template v-if="isOnlyDonation">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
+				:show-daf-thanks="showDafThanks"
 			/>
 		</template>
 		<template v-else-if="badgesCustomExpEnabled">
@@ -66,6 +67,7 @@
 					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 					:show-guest-upsell="isGuest"
 					:show-share="loans.length > 0"
+					:show-receipt="this.printableKivaCards.length > 0"
 				>
 					<template #receipt>
 						<checkout-receipt
@@ -311,8 +313,12 @@ export default {
 		}
 	},
 	computed: {
+		showDafThanks() {
+			return !!this.$route?.query?.show_daf_thanks;
+		},
 		isOnlyDonation() {
-			return (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
+			return this.showDafThanks
+				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
 				|| this.monthlyDonationAmount?.length;
 		},
 		askForComments() {
@@ -366,8 +372,8 @@ export default {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
 		showFocusedShareAsk() {
-			// if jumpToGuestUpsell is true, don't show focused share ask;
-			if (this.jumpToGuestUpsell) {
+			// if jumpToGuestUpsell is true or there's print-it-yourself card don't show focused share ask;
+			if (this.jumpToGuestUpsell || this.printableKivaCards.length) {
 				return false;
 			}
 			// Only show focused share ask for non-guest loan purchases or for only US loan purchases from guests
@@ -409,6 +415,17 @@ export default {
 		},
 		showNewTYPage() {
 			return !this.landedOnUSLoan && !this.optedIn && this.loans.length > 0;
+		},
+		receiptValues() {
+			return this.receipt?.items?.values ?? [];
+		},
+		kivaCards() {
+			if (!this.receiptValues.length) return [];
+			return this.receipt.items.values.filter(item => item.basketItemType === 'kiva_card');
+		},
+		printableKivaCards() {
+			if (!this.receiptValues.length) return [];
+			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 	},
 	created() {
@@ -546,9 +563,9 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
-
 		// Thanks Badges Experiment
-		if (this.optedIn) {
+		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
+		if (enableExperiment) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,

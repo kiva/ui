@@ -346,11 +346,17 @@ export default {
 		showShare: {
 			type: Boolean,
 			default: true
+		},
+		showReceipt: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		let visibleSection = 'receipt';
-		if (this.showGuestUpsell) {
+		if (this.showReceipt) {
+			visibleSection = 'receipt';
+		} else if (this.showGuestUpsell) {
 			visibleSection = 'guest';
 		} else if (this.showShare) {
 			visibleSection = 'share';
