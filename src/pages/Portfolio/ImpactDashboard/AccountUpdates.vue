@@ -77,12 +77,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
-import getCacheKey from '@/util/getCacheKey';
+import getCacheKey from '#src/util/getCacheKey';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'AccountUpdates',

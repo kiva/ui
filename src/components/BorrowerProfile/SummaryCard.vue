@@ -109,16 +109,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
-import HeartComment from '@/assets/icons/inline/heart-comment.svg';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const preFetchQuery = gql`
 	query summaryCard($loanId: Int!) {
@@ -271,8 +271,9 @@ export default {
 		query: preFetchQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {
+			const currentRoute = route?.value ?? route;
 			return {
-				loanId: Number(route?.params?.id ?? 0),
+				loanId: Number(currentRoute?.params?.id ?? 0),
 			};
 		},
 		variables() {

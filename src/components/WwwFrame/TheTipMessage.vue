@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import { captureException } from '@sentry/vue';
-import { gql } from '@apollo/client';
+import * as Sentry from '@sentry/vue';
+import { gql } from 'graphql-tag';
 import DOMPurify from 'dompurify';
-import { TIP, WARNING, ERROR } from '@/api/fixtures/FlashMessageTypeEnum';
-import tipMessageData from '@/graphql/query/tipMessage/tipMessageData.graphql';
-import KvToast from '~/@kiva/kv-components/vue/KvToast';
+import { TIP, WARNING, ERROR } from '#src/api/fixtures/FlashMessageTypeEnum';
+import tipMessageData from '#src/graphql/query/tipMessage/tipMessageData.graphql';
+import KvToast from '@kiva/kv-components/vue/KvToast';
 
 // query for flash messages
 const flashMessageQuery = gql`
@@ -98,7 +98,7 @@ export default {
 		}).catch(err => {
 			try {
 				console.error(err);
-				captureException(err);
+				Sentry.captureException(err);
 			} catch (e) {
 				// no-op
 			}
@@ -148,11 +148,14 @@ export default {
 		// open and close the toast when the current message changes
 		currentMessage: {
 			handler(message) {
-				if (message) {
-					this.showCurrentMessage();
-				} else {
-					this.$refs.tip?.close();
-				}
+				// Ensure that $refs are defined for the initial component render
+				this.$nextTick(() => {
+					if (message) {
+						this.showCurrentMessage();
+					} else {
+						this.$refs.tip?.close();
+					}
+				});
 			},
 			immediate: true,
 		},

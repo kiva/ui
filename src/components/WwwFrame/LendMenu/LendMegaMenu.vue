@@ -222,9 +222,9 @@
 
 <script>
 import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 

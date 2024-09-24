@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
+import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
 
 export default {
 	name: 'SystemPage',
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .system-page {
 	height: 100%;

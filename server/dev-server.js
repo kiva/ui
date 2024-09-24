@@ -1,25 +1,35 @@
-// verify npm/node/dependency versions
-require('../build/check-versions')();
+import { config as dotEnvConfig } from 'dotenv';
+import chokidar from 'chokidar';
+import express from 'express';
+import helmet from 'helmet';
+import locale from 'locale';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import promBundle from 'express-prom-bundle';
+import { createServer as createViteServer } from 'vite';
+import { info, error } from './util/log.js';
+import { setupTracing } from './util/tracer.js';
+import serverRoutes from './available-routes-middleware.js';
+import sitemapMiddleware from './sitemap/middleware.js';
+import authRouter from './auth-router.js';
+import sessionRouter from './session-router.js';
+import timesyncRouter from './timesync-router.cjs';
+import liveLoanRouter from './live-loan-router.js';
+import vueMiddleware from './vue-middleware.js';
+import argv from './util/argv.js';
+import selectConfig from '../config/selectConfig.js';
+import initCache from './util/initCache.js';
+import { errorLogger, fallbackErrorHandler, requestLogger } from './util/errorLogger.js';
 
-const { setupTracing } = require('./util/tracer');
-
+// tracing
 setupTracing();
 
-// dependencies
-require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
-require('dotenv').config({ path: './.config.env' });
-const chokidar = require('chokidar');
-const express = require('express');
-const helmet = require('helmet');
-const locale = require('locale');
-const MFS = require('memory-fs');
-const path = require('path');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const threadLoader = require('thread-loader');
-const promBundle = require('express-prom-bundle');
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// dependencies
+dotEnvConfig({ path: '/etc/kiva-ui-server/config.env' });
+dotEnvConfig({ path: './.config.env' });
 const metricsMiddleware = promBundle({
 	includeMethod: true,
 	includePath: true,
@@ -30,20 +40,7 @@ const metricsMiddleware = promBundle({
 	}
 });
 
-// Import Middleware for Exposing server routes
-const serverRoutes = require('./available-routes-middleware');
-const sitemapMiddleware = require('./sitemap/middleware');
-const authRouter = require('./auth-router');
-const sessionRouter = require('./session-router');
-const timesyncRouter = require('./timesync-router');
-const liveLoanRouter = require('./live-loan-router');
-const vueMiddleware = require('./vue-middleware');
-const serverConfig = require('../build/webpack.server.conf');
-const clientConfig = require('../build/webpack.client.dev.conf');
-const argv = require('./util/argv');
-const config = require('../config/selectConfig')(argv.config || 'local');
-const initCache = require('./util/initCache');
-const logger = require('./util/errorLogger');
+const config = await selectConfig(argv.config || 'local');
 
 // Initialize a Cache instance
 const cache = initCache(config.server);
@@ -51,155 +48,84 @@ const cache = initCache(config.server);
 // app init
 const port = argv.port || config.server.port;
 const app = express();
+(async function createServer() {
+	// Setup Vite Server
+	const vite = await createViteServer({
+		server: { middlewareMode: true },
+		appType: 'custom',
+		root: path.resolve(__dirname, '../'),
+	});
 
-// Set sensible security headers for express
-app.use(helmet({
-	contentSecurityPolicy: false,
-}));
+	// promise to delay request handling until bundles are created
+	let resolveHandlerReady;
+	const handlerReady = new Promise(resolve => { resolveHandlerReady = resolve; });
+	let handler = () => error('dev-server handler was called before it was ready');
 
-// Setup Request Logger
-app.use(logger.requestLogger);
+	let clientManifest;
 
-// Setup thread loader for use in webpack build
-threadLoader.warmup({
-	// pool options, like passed to loader options
-	// must match loader options to boot the correct pool
-}, [
-	// modules to load
-	'babel-loader',
-	'graphql-tag/loader',
-	'vue-style-loader',
-	'css-loader',
-	'postcss-loader',
-	'sass-loader'
-]);
-
-// webpack setup
-const clientCompiler = webpack({
-	...clientConfig,
-	devServer: {
-		hot: false, // Ensures that HMR works as expected
-	},
-});
-const serverCompiler = webpack(serverConfig);
-const devMiddleware = webpackDevMiddleware(clientCompiler, {
-	stats: 'none', // Hides compilation logs
-	publicPath: clientConfig.output.publicPath,
-});
-const hotMiddleware = webpackHotMiddleware(clientCompiler, {
-	path: '/__ui_hmr',
-	log: () => { }
-});
-
-// file reader helper
-const readFile = (fs, file) => {
-	try {
-		return fs.readFileSync(path.join(clientConfig.output.path, file), 'utf-8');
-	} catch (e) { /* intentionally empty */ }
-};
-
-// promise to delay request handling until bundles are created
-let resolveHandlerReady;
-const handlerReady = new Promise(resolve => { resolveHandlerReady = resolve; });
-
-let handler = () => console.info(JSON.stringify({
-	meta: {},
-	level: 'error',
-	message: 'dev-server handler was called before it was ready'
-}));
-let clientManifest;
-let serverBundle;
-
-// function to update the request handler
-const updateHandler = () => {
-	if (clientManifest && serverBundle) {
+	// function to update the request handler
+	const updateHandler = async () => {
 		handler = vueMiddleware({
 			clientManifest,
-			serverBundle,
 			config,
+			vite,
 		});
 		resolveHandlerReady();
-	}
-};
+	};
 
-// update on template change
-chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () => {
-	console.info(JSON.stringify({
-		meta: {},
-		level: 'log',
-		message: 'index.template.html updated.'
+	// update on template change
+	chokidar.watch(path.resolve(__dirname, '../index.html')).on('change', () => {
+		info('index.html updated.');
+		updateHandler();
+	});
+
+	// Set sensible security headers for express
+	app.use(helmet({
+		contentSecurityPolicy: false,
 	}));
+
+	// Setup Request Logger
+	app.use(requestLogger);
+
+	// Read locale from request
+	app.use(locale(config.app.locale.supported, config.app.locale.default));
+
+	// Apply serverRoutes middleware to expose available routes
+	app.use('/ui-routes', serverRoutes);
+
+	// Apply sitemap middleware to expose routes we want search engine crawlers to see
+	app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, config.server));
+
+	// Handle time sychronization requests
+	app.use('/', timesyncRouter());
+
+	// dynamic personalized loan routes
+	app.use('/live-loan', liveLoanRouter(cache));
+
+	// install vite middlewares
+	app.use(vite.middlewares);
+
+	// load metrics middleware
+	app.use(metricsMiddleware);
+
+	// Configure session
+	app.use('/', sessionRouter(config.server));
+
+	// Configure auth
+	app.use('/', authRouter(config.app));
+
+	// install handler
 	updateHandler();
-});
+	app.use((req, res, next) => {
+		handlerReady.then(() => handler(req, res, next));
+	});
 
-// update when the client manifest changes
-clientCompiler.hooks.done.tap('done', rawStats => {
-	// abort if there were errors
-	const stats = rawStats?.toJson();
-	if (stats?.errors?.length) return;
+	// Setup Request Logger
+	app.use(errorLogger);
 
-	// read client manifest from dev-middleware filesystem
-	clientManifest = JSON.parse(readFile(devMiddleware.context.outputFileSystem, 'vue-ssr-client-manifest.json'));
-	updateHandler();
-});
+	// Final Error Handler
+	app.use(fallbackErrorHandler);
 
-// update when the server bundle changes
-const mfs = new MFS();
-serverCompiler.outputFileSystem = mfs;
-serverCompiler.watch({
-	poll: 1000
-}, (err, rawStats) => {
-	// abort on error
-	if (err) throw err;
-	const stats = rawStats.toJson();
-	if (stats.errors.length) return;
-
-	// read server bundle from server-compiler filesystem
-	serverBundle = JSON.parse(readFile(mfs, 'vue-ssr-server-bundle.json'));
-	updateHandler();
-});
-
-// Read locale from request
-app.use(locale(config.app.locale.supported, config.app.locale.default));
-
-// Apply serverRoutes middleware to expose available routes
-app.use('/ui-routes', serverRoutes);
-
-// Apply sitemap middleware to expose routes we want search engine crawlers to see
-app.use('/sitemaps/ui.xml', sitemapMiddleware(config.app, config.server));
-
-// Handle time sychronization requests
-app.use('/', timesyncRouter());
-
-// dynamic personalized loan routes
-app.use('/live-loan', liveLoanRouter(cache));
-
-// install dev/hot middleware
-app.use(devMiddleware);
-app.use(hotMiddleware);
-
-// load metrics middleware
-app.use(metricsMiddleware);
-
-// Configure session
-app.use('/', sessionRouter(config.server));
-
-// Configure auth
-app.use('/', authRouter(config.app));
-
-// install handler
-app.use((req, res, next) => {
-	handlerReady.then(() => handler(req, res, next));
-});
-
-// Setup Request Logger
-app.use(logger.errorLogger);
-// Final Error Handler
-app.use(logger.fallbackErrorHandler);
-
-// start server
-app.listen(port, () => console.info(JSON.stringify({
-	meta: {},
-	level: 'log',
-	message: `dev-server started at localhost:${port}`
-})));
+	// start server
+	app.listen(port, () => info(`dev-server started at localhost:${port}`));
+}());

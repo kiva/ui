@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import KvButton from '#src/components/Kv/KvButton';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
+import { addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 export default {
 	name: 'CampaignPartnerThanks',
@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .campaign-partner-thanks {
 	&__header {

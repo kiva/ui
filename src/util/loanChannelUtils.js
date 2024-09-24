@@ -3,10 +3,10 @@ import {
 	getCachedLoanChannel,
 	getLoanChannelVariables,
 	watchLoanChannel
-} from '@/util/flssUtils';
-import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
-import logFormatter from '@/util/logFormatter';
+} from '#src/util/flssUtils';
+import loanChannelQuery from '#src/graphql/query/loanChannelDataExpanded.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import logFormatter from '#src/util/logFormatter';
 
 /**
  * Returns the FLSS loan search state object based on the map and category
@@ -138,7 +138,6 @@ export function watchChannelQuery(apollo, queryMap, channelUrl, loanQueryVars, n
 		});
 
 		watch(vars => {
-			// eslint-disable-next-line max-len
 			observer.setVariables(queryMapFLSS ? getLoanChannelVariables(queryMapFLSS, vars) : vars);
 		});
 

@@ -45,7 +45,7 @@
 					style="width: 4rem;"
 				/>
 				<dd v-else class="stat-value">
-					{{ numberOfLoans | numeral('0,0') }}
+					{{ $filters.numeral(numberOfLoans, '0,0') }}
 				</dd>
 				<dt class="stat-def">
 					Loans made
@@ -85,15 +85,15 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import getCacheKey from '@/util/getCacheKey';
+import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight } from '@mdi/js';
-import AsyncPortfolioSection from './AsyncPortfolioSection';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
 	name: 'LendingInsights',
@@ -160,7 +160,7 @@ export default {
 
 <style lang="postcss" scoped>
 .stats-container {
-	background-color: rgba(255, 255, 255, 0.05);
+	background-color: rgb(255 255 255 / 5%);
 	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
 }
 

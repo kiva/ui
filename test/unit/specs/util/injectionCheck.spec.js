@@ -1,4 +1,4 @@
-import checkInjections from '@/util/injectionCheck';
+import checkInjections from '#src/util/injectionCheck';
 
 describe('injectionCheck', () => {
 	it('throws an error if vm instance does not inject required injections', () => {

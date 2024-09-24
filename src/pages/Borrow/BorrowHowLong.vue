@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import IntroGraphic from '@/assets/inline-svgs/borrow/howlong.svg';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import IntroGraphic from '#src/assets/inline-svgs/borrow/howlong.svg';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'BorrowHowLong',
@@ -46,7 +46,7 @@ export default {
 		KvButton,
 		KvGrid,
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: 'How Long | Borrow Pre-application',
 			meta: [

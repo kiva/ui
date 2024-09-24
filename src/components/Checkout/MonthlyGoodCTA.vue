@@ -11,7 +11,7 @@
 				<div class="small-12 large-4 column">
 					<label
 						class="tw-font-medium"
-						:class="{ 'error': $v.mgAmount.$invalid }"
+						:class="{ 'error': v$.mgAmount?.$invalid }"
 						for="amount"
 					>
 						Amount
@@ -33,7 +33,7 @@
 					</kv-select>
 					<kv-currency-input
 						class="text-input"
-						:class="{ 'error': $v.mgAmount.$invalid }"
+						:class="{ 'error': v$.mgAmount?.$invalid }"
 						id="amount"
 						v-model="mgAmount"
 						v-if="mgOptionSelected === 'other'"
@@ -65,11 +65,11 @@
 			</div>
 			<!-- Errors and Messaging -->
 			<div class="row column tw-text-center">
-				<ul class="validation-errors tw-text-danger" v-if="$v.mgAmount.$invalid">
-					<li v-if="!$v.mgAmount.required">
+				<ul class="validation-errors tw-text-danger" v-if="v$.mgAmount?.$invalid">
+					<li v-if="v$.mgAmount?.required?.$invalid">
 						Amount field is required
 					</li>
-					<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+					<li v-if="v$.mgAmount?.minValue?.$invalid || v$.mgAmount?.maxValue?.$invalid">
 						Enter an amount of $5-$8,500
 					</li>
 				</ul>
@@ -80,14 +80,14 @@
 						:to="{
 							path: '/monthlygood/setup',
 							query: {
-								amount: this.mgAmount,
-								category: this.selectedGroup,
+								amount: mgAmount,
+								category: selectedGroup,
 								nextmonth: true
 							}
 						}"
 						v-kv-track-event="['Thanks', 'EXP-SUBS-526-Oct2020', 'click-monthly-good-signup']"
 						class="monthly-good-cta__button"
-						:state="$v.mgAmount.$invalid ? 'disabled' : ''"
+						:state="v$.mgAmount?.$invalid ? 'disabled' : ''"
 					>
 						{{ buttonText }}
 					</kv-button>
@@ -99,14 +99,14 @@
 
 <script>
 import numeral from 'numeral';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 /**
  * This CTA goes to the MG setup form
@@ -140,14 +140,15 @@ export default {
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
-		validationMixin
 	],
-	validations: {
-		mgAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(maxAmount),
-		},
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(maxAmount),
+			},
+		};
 	},
 	data() {
 		return {
@@ -190,6 +191,7 @@ export default {
 			]
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		selectedAmountTracking() {
 			return ['MonthlyGood', 'click-amount-option', numeral(this.mgOptionSelected).format('$0,0.00')];
@@ -221,7 +223,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .monthly-good-cta {
 	padding: 1.5rem;

@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import activityFeedTokenQuery from '@/graphql/query/activityFeedToken.graphql';
-import KvCommentsContainer from '~/@kiva/kv-components/vue/KvCommentsContainer';
+import activityFeedTokenQuery from '#src/graphql/query/activityFeedToken.graphql';
+import KvCommentsContainer from '@kiva/kv-components/vue/KvCommentsContainer';
 
 export default {
 	name: 'CommentsContainer',

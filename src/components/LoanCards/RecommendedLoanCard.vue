@@ -28,13 +28,13 @@
 						v-if="countryISO"
 						:country="countryISO"
 						aspect-ratio="1x1"
-						:inline-svg="true"
+						:is-square="true"
 					/>
 					<span class="rec-loan-card__time-left">
 						{{ timeLeftMessage }}
 					</span>
 					<span class="rec-loan-card__amount-left">
-						{{ amountLeftWithoutReservation | numeral('$0,0') }} to go
+						{{ $filters.numeral(amountLeftWithoutReservation, '$0,0') }} to go
 					</span>
 				</div>
 			</div>
@@ -89,16 +89,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import KvFlag from '@/components/Kv/KvFlag';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import LendButton from '@/components/LoanCards/Buttons/LendButton2';
-import WhySpecial from '@/components/LoanCards/WhySpecial';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import KvFlag from '#src/components/Kv/KvFlag';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import LendButton from '#src/components/LoanCards/Buttons/LendButton2';
+import WhySpecial from '#src/components/LoanCards/WhySpecial';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
@@ -300,7 +300,7 @@ export default {
 		return this.prefetchLoanData();
 	},
 	created() {
-		if (!this.$isServer) {
+		if (typeof window !== 'undefined') {
 			this.readLoanData();
 			this.watchQueryLoanData();
 		}
@@ -320,7 +320,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
 
 %nested-column-flex {
 	display: flex;
@@ -350,13 +351,13 @@ export default {
 
 		border-radius: rem-calc(20);
 		overflow: hidden;
-		box-shadow: 0 rem-calc(8) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
+		box-shadow: 0 rem-calc(8) rem-calc(30) 0 rgb(0 0 0 / 15%);
 	}
 
 	&__image-wrapper {
 		position: relative;
 		width: 100%;
-		padding-bottom: 200/320 * 100%;
+		padding-bottom: math.div(200, 320) * 100%;
 
 		&--loading {
 			flex-basis: 0;
@@ -376,7 +377,7 @@ export default {
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.7) 86%);
+		background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 70%) 86%);
 
 		.rec-loan-card__country-flag {
 			position: absolute;
@@ -439,7 +440,7 @@ export default {
 		}
 	}
 
-	& ::v-deep .fundraising-status-meter {
+	& :deep(.fundraising-status-meter) {
 		height: rem-calc(6);
 		border-radius: 0;
 
@@ -472,7 +473,7 @@ export default {
 
 	&__loan-use {
 		flex-grow: 1;
-		line-height: (22 / 16);
+		line-height: math.div(22, 16);
 
 		&--loading {
 			margin-bottom: 1rem;

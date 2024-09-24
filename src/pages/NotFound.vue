@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import NotFoundWrapper from '@/components/NotFound/NotFoundWrapper';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'NotFound',

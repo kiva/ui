@@ -3,6 +3,7 @@
 		type="text"
 		ref="kvCurrencyInputRef"
 		v-model="displayValue"
+		v-bind="$attrs"
 		@blur="isInputActive = false"
 		@focus="isInputActive = true"
 		placeholder="$"
@@ -12,7 +13,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'KvCurrencyInput',
@@ -20,17 +21,18 @@ export default {
 		KvTextInput
 	},
 	props: {
-		value: {
-			type: Number,
-			default: 0,
-		},
 		id: {
 			type: String,
 			default: '',
 		},
+		modelValue: {
+			type: [Number, String],
+			required: true,
+		},
 	},
 	data() {
 		return {
+			value: this.modelValue,
 			isInputActive: false
 		};
 	},
@@ -56,6 +58,11 @@ export default {
 				this.$emit('input', newValue);
 			}
 		}
-	}
+	},
+	watch: {
+		modelValue(newValue) {
+			this.value = newValue;
+		},
+	},
 };
 </script>

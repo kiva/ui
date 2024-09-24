@@ -14,7 +14,7 @@
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
 					<template v-if="receipt">
 						<div v-if="!calculatePeopleQtyToGoal()">
-							<img :alt="`Fully funded image`" :src="thanksImgRequire(`./kiva-share.png`)">
+							<img :alt="`Fully funded image`" :src="kivaShare">
 						</div>
 						<borrower-image
 							v-else
@@ -42,20 +42,18 @@
 						<div v-if="calculatePeopleQtyToGoal()" class="tw-flex-auto tw-mb-2">
 							<figure>
 								<figcaption class="tw-flex progress">
-									<template>
-										<p
-											class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
-											data-testid="bp-summary-amount-to-go"
-										>
-											{{ loan.unreservedAmount | numeral('$0,0[.]00') }} TO GO
-										</p>
-										<p
-											class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
-											data-testid="bp-summary-timeleft"
-										>
-											{{ loan.fundraisingTimeLeft }} remaining
-										</p>
-									</template>
+									<p
+										class="tw-flex-auto tw-text-left tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
+										data-testid="bp-summary-amount-to-go"
+									>
+										{{ $filters.numeral(loan.unreservedAmount, '$0,0[.]00') }} TO GO
+									</p>
+									<p
+										class="tw-flex-auto tw-text-right tw-text-h4 tw-mt-2 tw-mx-0 tw-mb-0.5"
+										data-testid="bp-summary-timeleft"
+									>
+										{{ loan.fundraisingTimeLeft }} remaining
+									</p>
 								</figcaption>
 								<kv-progress-bar
 									class="tw-mb-1.5 lg:tw-mb-1 tw-bg-tertiary"
@@ -133,83 +131,81 @@
 					<p class="tw-m-0 tw-text-subhead">
 						{{ thanksPageBody }}
 					</p>
-					<template>
-						<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
-							<button
-								data-testid="share-facebook-button"
-								class="social__btn social__btn--facebook"
-								@click="showSharePopUp(
-									facebookShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to Facebook!')"
-								v-kv-track-event="
-									['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
-							>
-								<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
-								<span>Share on Facebook</span>
-							</button>
-							<button
-								data-testid="share-copy-link-button"
-								class="social__btn social__btn--link
+					<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">
+						<button
+							data-testid="share-facebook-button"
+							class="social__btn social__btn--facebook"
+							@click="showSharePopUp(
+								facebookShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to Facebook!')"
+							v-kv-track-event="
+								['post-checkout', 'share', 'facebook', utmCampaign, loanId]"
+						>
+							<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
+							<span>Share on Facebook</span>
+						</button>
+						<button
+							data-testid="share-copy-link-button"
+							class="social__btn social__btn--link
 									tw-border-action tw-border"
-								:class="copyStatus.class"
-								:disabled="copyStatus.disabled"
-								v-kv-track-event="
-									['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
-								@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
-							>
-								<kv-material-icon
-									name="clipboard"
-									class="social__icon"
-									:icon="mdiLink"
-								/>
-								<span>{{ copyStatus.text }}</span>
-							</button>
-							<button
-								data-testid="share-twitter-button"
-								class="social__btn social__btn--twitter"
-								v-kv-track-event="
-									['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
-								@click="showSharePopUp(
-									twitterShareUrl({utmCampaign, utmContent}),
-									'Thanks for tweeting!')"
-							>
-								<kv-icon name="twitter" title="Twitter" class="social__icon" />
-								<span>Tweet your followers</span>
-							</button>
-							<button
-								data-testid="share-linkedin-button"
-								class="social__btn social__btn--linkedin"
-								v-kv-track-event="
-									['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
-								@click="showSharePopUp(
-									linkedInShareUrl({utmCampaign, utmContent}),
-									'Thanks for sharing to LinkedIn!')"
-							>
-								<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
-								<span>Share on LinkedIn</span>
-							</button>
-						</div>
-						<div class="tw-text-center tw-mt-2">
-							<button
-								class="tw-block tw-mx-auto tw-text-action
+							:class="copyStatus.class"
+							:disabled="copyStatus.disabled"
+							v-kv-track-event="
+								['post-checkout', 'share', 'copy-link', utmCampaign, loanId]"
+							@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
+						>
+							<kv-material-icon
+								name="clipboard"
+								class="social__icon"
+								:icon="mdiLink"
+							/>
+							<span>{{ copyStatus.text }}</span>
+						</button>
+						<button
+							data-testid="share-twitter-button"
+							class="social__btn social__btn--twitter"
+							v-kv-track-event="
+								['post-checkout', 'share', 'twitter', utmCampaign, loanId]"
+							@click="showSharePopUp(
+								twitterShareUrl({utmCampaign, utmContent}),
+								'Thanks for tweeting!')"
+						>
+							<kv-icon name="twitter" title="Twitter" class="social__icon" />
+							<span>Tweet your followers</span>
+						</button>
+						<button
+							data-testid="share-linkedin-button"
+							class="social__btn social__btn--linkedin"
+							v-kv-track-event="
+								['post-checkout', 'share', 'linkedin', utmCampaign, loanId]"
+							@click="showSharePopUp(
+								linkedInShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to LinkedIn!')"
+						>
+							<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
+							<span>Share on LinkedIn</span>
+						</button>
+					</div>
+					<div class="tw-text-center tw-mt-2">
+						<button
+							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
-								@click="emitGuestCreateAccount"
-								v-if="isGuest"
-								v-kv-track-event="['Thanks','click-create-account','Create my account']"
-							>
-								Create my account
-							</button>
-							<router-link
-								class="tw-block tw-mx-auto tw-text-action
+							@click="emitGuestCreateAccount"
+							v-if="isGuest"
+							v-kv-track-event="['Thanks','click-create-account','Create my account']"
+						>
+							Create my account
+						</button>
+						<router-link
+							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
-								v-else
-								to="/portfolio"
-								v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
-							>
-								No, continue to my portfolio
-							</router-link>
-						</div>
-					</template>
+							v-else
+							to="/portfolio"
+							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
+						>
+							No, continue to my portfolio
+						</router-link>
+					</div>
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -218,19 +214,18 @@
 
 <script>
 import { mdiCheckAll, mdiLink } from '@mdi/js';
-import { getFullUrl } from '@/util/urlUtils';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import ShareStepper from '@/components/Thanks/ShareStepper';
-import CommentAsk from '@/components/Thanks/CommentAsk';
-import KvIcon from '@/components/Kv/KvIcon';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-
-const thanksImgRequire = require.context('@/assets/images/thanks-page', true);
+import { getFullUrl } from '#src/util/urlUtils';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import ShareStepper from '#src/components/Thanks/ShareStepper';
+import CommentAsk from '#src/components/Thanks/CommentAsk';
+import KvIcon from '#src/components/Kv/KvIcon';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
 
 export default {
 	name: 'ThanksPageCommentAndShare',
@@ -281,14 +276,13 @@ export default {
 		},
 	},
 	mixins: [socialSharingMixin],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thank you!'
 		};
 	},
 	data() {
 		return {
-			thanksImgRequire,
 			mdiCheckAll,
 			mdiLink,
 			message: '',
@@ -298,6 +292,7 @@ export default {
 				text: 'Copy Link'
 			},
 			utmCampaign: 'social_share_checkout',
+			kivaShare,
 		};
 	},
 	computed: {
@@ -385,8 +380,8 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import "foundation";
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
 $color-twitter: #08a0e9;

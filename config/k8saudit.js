@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var base = require('./audit.js')
+import { merge } from 'webpack-merge';
+import base from './audit.js';
 
-module.exports = merge(base, {
+export default merge(base, {
 	app: {
 		publicPath: 'https://www-audit-kiva-org.freetls.fastly.net/',
 	},
@@ -10,4 +10,4 @@ module.exports = merge(base, {
 		memcachedServers: 'marketplace-k8s-ui-audit.knmtma.cfg.usw2.cache.amazonaws.com:11211',
 		disableCluster: true,
 	}
-})
+});

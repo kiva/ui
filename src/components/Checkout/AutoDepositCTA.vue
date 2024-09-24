@@ -3,7 +3,7 @@
 		<div class="tw-m-3">
 			<img
 				class="tw-mx-auto"
-				:src="imageRequire(`./loan-re-cycle.svg`)"
+				:src="loanRecylceUrl"
 				alt="loan to loan relending graphic"
 			>
 		</div>
@@ -41,26 +41,26 @@
 							v-if="!isDayInputShown"
 							v-kv-track-event="['Thanks', 'click-Edit-auto-deposit-date', 'auto-deposit-edit-date']"
 						>
-							<strong>{{ dayOfMonth | numeral('Oo') }}</strong> of each month:
+							<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong> of each month:
 						</button>
 					</p>
 					<!-- Errors and Messaging -->
-					<ul class="validation-errors tw-mb-1" v-if="$v.dayOfMonth.$invalid">
-						<li v-if="!$v.dayOfMonth.required">
+					<ul class="validation-errors tw-mb-1" v-if="v$.dayOfMonth?.$invalid">
+						<li v-if="v$.dayOfMonth?.required?.$invalid">
 							Day field is required
 						</li>
-						<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+						<li v-if="v$.dayOfMonth?.minValue?.$invalid || v$.dayOfMonth?.maxValue?.$invalid">
 							Enter day of month - 1 to 31
 						</li>
 					</ul>
-					<small v-if="!$v.dayOfMonth.$invalid && dayOfMonth > 28" class="tw-mb-1">
+					<small v-if="v$.dayOfMonth?.$invalid && dayOfMonth > 28" class="tw-mb-1">
 						(note - deposit may be processed on the last day of the month)
 					</small>
 				</div>
 				<div class="tw-mb-2.5 tw-flex">
 					<label
 						class="tw-sr-only"
-						:class="{ 'error': $v.adAmount.$invalid }"
+						:class="{ 'error': v$.adAmount?.$invalid }"
 						for="amount"
 					>
 						Amount
@@ -81,7 +81,7 @@
 					</kv-select>
 					<kv-currency-input
 						class="text-input tw-flex-1"
-						:class="{ 'error': $v.adAmount.$invalid }"
+						:class="{ 'error': v$.adAmount?.$invalid }"
 						id="amount"
 						v-model="adAmount"
 						v-if="adOptionSelected === 'other'"
@@ -104,24 +104,24 @@
 					</button>
 				</div>
 				<!-- Errors and Messaging -->
-				<ul class="validation-errors tw-text-danger tw-mb-2" v-if="$v.adAmount.$invalid">
-					<li v-if="!$v.adAmount.required">
+				<ul class="validation-errors tw-text-danger tw-mb-2" v-if="v$.adAmount?.$invalid">
+					<li v-if="v$.adAmount?.required?.$invalid">
 						Amount field is required
 					</li>
-					<li v-if="!$v.adAmount.minValue || !$v.adAmount.maxValue">
+					<li v-if="v$.adAmount?.minValue?.$invalid || v$.adAmount?.maxValue?.$invalid">
 						Enter an amount of $5-$10,000
 					</li>
 				</ul>
 			</div>
 
 			<h3 class="tw-text-right tw-mb-4">
-				Total: {{ adAmount | numeral('$0.00') }}
+				Total: {{ $filters.numeral(adAmount, '$0.00') }}
 			</h3>
 
 			<div v-if="isClientReady">
 				<!-- TODO: Fix activeLoginCheck on thanks route -->
 				<div class="tw-text-center tw-relative">
-					<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+					<div class="payment-dropin-invalid-cover" v-if="v$.$invalid"></div>
 					<auto-deposit-drop-in-payment-wrapper
 						class="tw-mx-auto"
 						:amount="adAmount"
@@ -138,18 +138,17 @@
 
 <script>
 import numeral from 'numeral';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 import { mdiClose } from '@mdi/js';
 
-import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import loanRecylceUrl from '#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url';
 
 // arbitrary number below 10k
 const maxAmount = 10000;
@@ -182,28 +181,28 @@ export default {
 		}
 
 	},
-	mixins: [
-		validationMixin
-	],
-	validations: {
-		adAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(maxAmount),
-		},
-		donation: {
-			minValue: minValue(0),
-			maxValue: maxValue(maxAmount),
-			combinedTotal(value) {
-				return value + this.adAmount < maxAmount && value + this.adAmount > 0;
-			}
-		},
-		dayOfMonth: {
-			required,
-			minValue: minValue(1),
-			maxValue: maxValue(31)
-		},
+	validations() {
+		return {
+			adAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(maxAmount),
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(maxAmount),
+				combinedTotal(value) {
+					return value + this.adAmount < maxAmount && value + this.adAmount > 0;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	data() {
 		return {
 			adAmount: 5,
@@ -244,9 +243,9 @@ export default {
 			],
 			dayOfMonth: parseInt(new Date().getDate(), 10),
 			donation: 0,
-			imageRequire,
 			isClientReady: false,
 			isDayInputShown: false,
+			loanRecylceUrl,
 			mdiClose,
 			showLoadingOverlay: false
 		};
@@ -284,19 +283,19 @@ export default {
 			});
 		},
 		hideDayInput() {
-			if (!this.$v.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
 	},
 	mounted() {
-		this.isClientReady = !this.$isServer;
+		this.isClientReady = typeof window !== 'undefined';
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .auto-deposit-cta {
 	padding: 1.5rem;

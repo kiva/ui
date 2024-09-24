@@ -1,4 +1,4 @@
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
 
 import causeList from '../mock-data/cause-selector-data-mock';
 
@@ -16,8 +16,8 @@ export default {
 		cause: {
 			control: {
 				type: 'select',
-				options: causeList,
-			}
+			},
+			options: causeList,
 		},
 	},
 };
@@ -32,6 +32,7 @@ export const Default = (args, { argTypes }) => ({
 			console.log(`Changed to ${val}`);
 		}
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<kv-cause-selector

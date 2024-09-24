@@ -1,4 +1,4 @@
-import ChallengeCallout from '@/components/Lend/LoanSearch/ChallengeCallout';
+import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {
@@ -32,8 +32,8 @@ const publicLendProfile = {
 };
 
 
-export const Default = story({ teamName: 'A+' });
-export const Lender = story({ shareLender: publicLendProfile, teamName: 'A+' });
+export const Default = story({ teamName: 'A+', showAddedToCartMessage: true });
+export const Lender = story({ shareLender: publicLendProfile, teamName: 'A+', showAddedToCartMessage: true });
 export const AddToCard = story({
 	currentLender: { lender: publicLendProfile },
 	teamName: 'A+',

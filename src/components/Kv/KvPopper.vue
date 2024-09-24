@@ -16,7 +16,7 @@ import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
-} from '@/util/touchEvents';
+} from '#src/util/touchEvents';
 
 export default {
 	name: 'KvPopper',
@@ -80,6 +80,7 @@ export default {
 			this.initPopper().then(() => {
 				this.setTimeout(() => {
 					this.show = true;
+					this.popper.scheduleUpdate();
 					this.attachBodyEvents();
 				}, this.openDelay);
 			});

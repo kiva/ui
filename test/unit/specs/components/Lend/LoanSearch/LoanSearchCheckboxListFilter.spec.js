@@ -1,8 +1,8 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import LoanSearchCheckboxListFilter from '#src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
+import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
+import { globalOptions } from '../../../../specUtils';
 
 const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 	id: i,
@@ -12,9 +12,9 @@ const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 
 describe('LoanSearchCheckboxListFilter', () => {
 	let spyTrackEvent;
-
 	beforeEach(() => {
-		spyTrackEvent = jest.spyOn(Vue.prototype, '$kvTrackEvent');
+		spyTrackEvent = jest.fn();
+		jest.clearAllMocks();
 	});
 
 	afterEach(jest.restoreAllMocks);
@@ -44,18 +44,18 @@ describe('LoanSearchCheckboxListFilter', () => {
 	it('should select based on prop', async () => {
 		const options = getOptions();
 
-		const { getByLabelText, updateProps } = render(LoanSearchCheckboxListFilter, {
+		const { getByLabelText, rerender } = render(LoanSearchCheckboxListFilter, {
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
-		await updateProps({ ids: [0] });
+		await rerender({ ids: [0] });
 		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
 
-		await updateProps({ ids: [0, 1] });
+		await rerender({ ids: [0, 1] });
 		expect(getByLabelText(getCheckboxLabel(options[0])).checked).toBeTruthy();
 		expect(getByLabelText(getCheckboxLabel(options[1])).checked).toBeTruthy();
 
-		await updateProps({ ids: [] });
+		await rerender({ ids: [] });
 		options.forEach(item => expect(getByLabelText(getCheckboxLabel(item)).checked).toBeFalsy());
 	});
 
@@ -64,6 +64,12 @@ describe('LoanSearchCheckboxListFilter', () => {
 
 		const user = userEvent.setup();
 		const { getByText, emitted } = render(LoanSearchCheckboxListFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 
@@ -76,7 +82,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 	it('should disable checkboxes when no fundraising loans', async () => {
 		const initialOptions = getOptions();
 
-		const { getByLabelText, updateProps } = render(
+		const { getByLabelText, rerender } = render(
 			LoanSearchCheckboxListFilter,
 			{ props: { options: initialOptions, filterKey: 'key', eventAction: 'action' } }
 		);
@@ -84,7 +90,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 		initialOptions.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeFalsy());
 
 		const options = getOptions(true);
-		await updateProps({ options });
+		await rerender({ options });
 
 		options.forEach(s => expect(getByLabelText(getCheckboxLabel(s)).disabled).toBeTruthy());
 	});
@@ -94,6 +100,12 @@ describe('LoanSearchCheckboxListFilter', () => {
 
 		const user = userEvent.setup();
 		const { getByText } = render(LoanSearchCheckboxListFilter, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: { options, filterKey: 'key', eventAction: 'action' }
 		});
 

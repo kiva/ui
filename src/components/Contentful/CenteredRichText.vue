@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import DynamicRichText from '#src/components/Contentful/DynamicRichText';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'CenteredRichText',

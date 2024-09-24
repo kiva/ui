@@ -1,4 +1,4 @@
-import { ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client/core/index';
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import ContentfulPreviewLink from './ContentfulPreviewLink';

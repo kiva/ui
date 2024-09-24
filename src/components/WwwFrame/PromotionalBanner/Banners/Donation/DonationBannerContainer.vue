@@ -15,7 +15,7 @@
 
 <script>
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import DonationBanner from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner';
+import DonationBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner';
 
 export default {
 	name: 'DonationBannerContainer',

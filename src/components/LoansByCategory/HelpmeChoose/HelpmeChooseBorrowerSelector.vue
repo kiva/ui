@@ -61,7 +61,7 @@ export default {
 			return this.selected === this.index;
 		},
 		boxShadow() {
-			if (this.activeLoan) return '0px 4px 15px rgba(0, 0, 0, 0.05);';
+			if (this.activeLoan) return '0px 4px 15px rgba(0, 0, 0, 0.05)';
 			return 'none';
 		}
 	},

@@ -61,11 +61,11 @@
 </template>
 
 <script>
-import KvContentfulImg from '@/components/Kv/KvContentfulImg';
-import SectionWithBackground from '@/components/Contentful/SectionWithBackground';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
+import SectionWithBackground from '#src/components/Contentful/SectionWithBackground';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'TestimonialCards',

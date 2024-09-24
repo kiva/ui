@@ -1,22 +1,13 @@
-/* global UI_TAG */
-/* eslint-disable vue/multi-word-component-names */
-import Vue from 'vue';
-import VueCompositionAPI from '@vue/composition-api';
-import * as Sentry from '@sentry/vue';
-import Meta from 'vue-meta';
-import VueProgressBar from 'vue-progressbar';
-import Vue2TouchEvents from 'vue2-touch-events';
+import { createSSRApp } from 'vue';
+import { VueHeadMixin, createHead } from '@unhead/vue';
+import VueProgressBar from '@aacassandra/vue3-progressbar';
+import Vue3TouchEvents from 'vue3-touch-events';
 
-import App from '@/App';
-import createRouter from '@/router';
-import createApolloClient from '@/api/apollo';
-import kivaPlugins from '@/plugins';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
-
-// Track if plugins have already been installed (in case this is SSR)
-let pluginsInstalled = false;
-
-Vue.config.productionTip = false;
+import App from '#src/App';
+import createRouter from '#src/router';
+import createApolloClient from '#src/api/apollo';
+import kivaPlugins from '#src/plugins';
+import kvAnalytics from '#src/plugins/kv-analytics-plugin';
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
@@ -29,30 +20,37 @@ export default function createApp({
 	locale,
 	fetch,
 	url = '',
+	isServer = false,
 } = {}) {
-	if (!pluginsInstalled) {
-		pluginsInstalled = true;
+	// Create a new app instance
+	const app = createSSRApp(App);
 
-		Vue.use(VueCompositionAPI);
-		Vue.use(Meta);
-		Vue.use(kivaPlugins);
-		Vue.use(kvAnalytics);
-		Vue.use(Vue2TouchEvents);
-		Vue.use(VueProgressBar, {
-			color: '#26b6e8',
-			failedColor: '#9c021a',
-			thickness: '0.2rem',
-			transition: {
-				speed: '0.2s',
-				opacity: '0s',
-				termination: 300,
-			},
-			autoFinish: false,
-		});
-	}
+	// Create a new router instance
+	const router = createRouter({ isServer });
+	app.use(router);
+	const route = router.resolve(url);
 
-	const router = createRouter();
-	const { route } = router.resolve(url);
+	const head = createHead();
+	// head for composition api
+	app.use(head);
+	// head for options api
+	app.mixin(VueHeadMixin);
+
+	app.use(kivaPlugins);
+	app.use(kvAnalytics);
+	app.use(Vue3TouchEvents);
+	// Vue progress bar exports an object with a 'default' property on the server
+	app.use(VueProgressBar.default ?? VueProgressBar, {
+		color: '#26b6e8',
+		failedColor: '#9c021a',
+		thickness: '0.2rem',
+		transition: {
+			speed: '0.2s',
+			opacity: '0s',
+			termination: 300,
+		},
+		autoFinish: false,
+	});
 
 	const apolloClient = createApolloClient({
 		...apollo,
@@ -63,68 +61,18 @@ export default function createApp({
 		route,
 	});
 
-	// Checking that sentry is enabled & is not server side
-	if (appConfig.enableSentry && typeof window !== 'undefined') {
-		Sentry.init({
-			Vue,
-			trackComponents: true,
-			dsn: appConfig.sentryURI,
-			integrations: [
-				new Sentry.BrowserTracing({
-					routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-					tracingOrigins: [appConfig.host],
-				}),
-			],
-			release: UI_TAG,
-			// Set tracesSampleRate to 1.0 to capture 100%
-			// of transactions for performance monitoring.
-			// We recommend adjusting this value in production
-			tracesSampleRate: appConfig?.sentryTraceSampleRate,
-			beforeSend(event) {
-				// make sentry colleted event easy to compare to
-				const eventAsString = JSON.stringify(event);
-				// match specific 3rd party events for exclusion
-				// Skip sending failed to fetch error caused by unhandled promise rejection in google ads
-				// Sentry Event Link: https://kiva.sentry.io/issues/4413252219/events/726c65f507684f43b748e913d4793518/
-				// This url is unreachable: https://pagead2.googlesyndication.com/pagead/buyside_topics/set/
-				if (eventAsString.indexOf('Failed to fetch') !== -1
-					&& eventAsString.indexOf('pagead') !== -1) {
-					return false;
-				}
-				// Skip sending failed loads of pX
-				// eslint-disable-next-line quotes
-				if (eventAsString.indexOf("Cannot set property 'PX1065' of undefined") !== -1) {
-					return false;
-				}
-				// Skip sending errors from CefSharp
-				// https://forum.sentry.io/t/unhandledrejection-non-error-promise-rejection-captured-with-value/14062/20
-				if (eventAsString.indexOf('Object Not Found Matching Id') !== -1) {
-					return false;
-				}
-				// return event otherwise
-				return event;
-			},
-		});
-	}
+	app.provide('apollo', apolloClient);
+	app.provide('cookieStore', cookieStore);
+	app.provide('device', device);
+	app.provide('kvAuth0', kvAuth0);
+	app.provide('locale', locale);
 
 	// Provide application config to all components
-	Vue.prototype.$appConfig = appConfig;
-
-	const app = new Vue({
-		name: '',
-		router,
-		render: h => h(App),
-		provide: {
-			apollo: apolloClient,
-			cookieStore,
-			device,
-			kvAuth0,
-			locale,
-		}
-	});
+	app.config.globalProperties.$appConfig = appConfig;
 
 	return {
 		app,
+		head,
 		router,
 		apolloClient,
 	};

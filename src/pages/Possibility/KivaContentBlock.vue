@@ -36,12 +36,20 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvButton from '#src/components/Kv/KvButton';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const kivaContentBlockImageRequire = require.context('@/assets/images/possibilities-banners/kiva-content-block/', true);
+const kivaContentBlockImageGlob = import.meta.glob(
+	'/src/assets/images/possibilities-banners/kiva-content-block/**/*.*',
+	{ eager: true }
+);
+const kivaContentBlockImageRequire = metaGlobReader(
+	kivaContentBlockImageGlob,
+	'/src/assets/images/possibilities-banners/kiva-content-block/'
+);
 
 export default {
 	name: 'KivaContentBlock',
@@ -56,8 +64,8 @@ export default {
 			kivaContentBlockData: [
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset2.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset2@2x.jpg')]
+						['small', kivaContentBlockImageRequire('1x/Asset2.jpg')],
+						['small retina', kivaContentBlockImageRequire('2x/Asset2@2x.jpg')]
 					],
 					url: '/blog/a-loan-to-one-entrepreneur-in-togo-impacts-his-whole-community',
 					headline: 'Possibility in family traditions',
@@ -65,8 +73,8 @@ export default {
 				},
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset3.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset3@2x.jpg')]
+						['small', kivaContentBlockImageRequire('1x/Asset3.jpg')],
+						['small retina', kivaContentBlockImageRequire('2x/Asset3@2x.jpg')]
 					],
 					url: '/blog/three-sisters-become-fish-farming-pioneers',
 					headline: 'Possibility grows in ponds',
@@ -74,8 +82,8 @@ export default {
 				},
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset4.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset4@2x.jpg')]
+						['small', kivaContentBlockImageRequire('1x/Asset4.jpg')],
+						['small retina', kivaContentBlockImageRequire('2x/Asset4@2x.jpg')]
 					],
 					url: '/blog/ernestina-is-a-skilled-carver-making-a-name-for-herself-in-a-male-dominated-craft',
 					headline: 'Turning possibility into craft',
@@ -89,7 +97,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@use 'sass:color';
+@import '#src/assets/scss/settings';
 
 $cta-color: #611b1f;
 $cta-color2: #00244e;
@@ -109,7 +118,7 @@ $cta-color3: #02582e;
 		color: $cta-color;
 		font-weight: bold;
 		max-width: 24rem;
-		margin: 0 auto 1rem auto;
+		margin: 0 auto 1rem;
 		text-align: center;
 
 		@include breakpoint(large) {
@@ -122,7 +131,7 @@ $cta-color3: #02582e;
 	.subheadline {
 		font-weight: $global-weight-highlight;
 		max-width: 24rem;
-		margin: 0 auto 1.5rem auto;
+		margin: 0 auto 1.5rem;
 		text-align: center;
 
 		@include breakpoint(large) {
@@ -141,11 +150,11 @@ $cta-color3: #02582e;
 
 		.action-button {
 			background-color: $cta-color;
-			box-shadow: 0 2px darken($cta-color, 10%);
+			box-shadow: 0 2px color.adjust($cta-color, $lightness: -10%);
 
 			&:hover,
 			&:focus {
-				background-color: darken($cta-color, 10%);
+				background-color: color.adjust($cta-color, $lightness: -10%);
 			}
 		}
 	}
@@ -159,11 +168,11 @@ $cta-color3: #02582e;
 
 		.action-button-wrapper .action-button {
 			background-color: $cta-color2;
-			box-shadow: 0 2px darken($cta-color2, 10%);
+			box-shadow: 0 2px color.adjust($cta-color2, $lightness: -10%);
 
 			&:hover,
 			&:focus {
-				background-color: darken($cta-color2, 10%);
+				background-color: color.adjust($cta-color2, $lightness: -10%);
 			}
 		}
 	}
@@ -176,11 +185,11 @@ $cta-color3: #02582e;
 
 		.action-button-wrapper .action-button {
 			background-color: $cta-color3;
-			box-shadow: 0 2px darken($cta-color3, 10%);
+			box-shadow: 0 2px color.adjust($cta-color3, $lightness: -10%);
 
 			&:hover,
 			&:focus {
-				background-color: darken($cta-color3, 10%);
+				background-color: color.adjust($cta-color3, $lightness: -10%);
 			}
 		}
 	}

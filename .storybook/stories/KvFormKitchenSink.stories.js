@@ -1,13 +1,13 @@
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvSelect from '@/components/Kv/KvSelect';
-import KvPhoneInput from '@/components/Kv/KvPhoneInput';
-import KvPillToggle from '@/components/Kv/KvPillToggle';
-import KvRadio from '@/components/Kv/KvRadio';
-import KvRangeSlider from '@/components/Kv/KvRangeSlider';
-import KvToggle from '@/components/Kv/KvToggle';
-import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvSelect from '#src/components/Kv/KvSelect';
+import KvPhoneInput from '#src/components/Kv/KvPhoneInput';
+import KvPillToggle from '#src/components/Kv/KvPillToggle';
+import KvRadio from '#src/components/Kv/KvRadio';
+import KvRangeSlider from '#src/components/Kv/KvRangeSlider';
+import KvToggle from '#src/components/Kv/KvToggle';
+import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
 
 export default {
 	title: 'Kv/Form Elements',
@@ -82,7 +82,8 @@ export const KitchenSink = () => ({
 			kvToggle1: true,
 			kvToggle2: false,
 			kvToggle3: true,
-			KvVerificationCodeInput: 123456
+			KvVerificationCodeInput: 123456,
+			kvBaseInputValue: '',
 		}
 	},
 	template: `
@@ -285,6 +286,7 @@ export const KitchenSink = () => ({
 						type="text"
 						name="baseInput"
 						:validation="{}"
+						v-model="kvBaseInputValue"
 					>
 						Base input
 					</kv-base-input>
@@ -292,6 +294,7 @@ export const KitchenSink = () => ({
 						type="text"
 						name="baseInputError"
 						:validation="kvBaseInputError"
+						v-model="kvBaseInputValue"
 					>
 						Base input with error
 

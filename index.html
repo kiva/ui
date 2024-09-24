@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html data-vue-meta-server-rendered lang="en" ${htmlAttrs}>
+	<head>
+		${appConfig}
+		${externals}
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="manifest" href="/static/manifest.webmanifest"></head>
+		${headTags}
+		${preloadLinks}
+	</head>
+	<body ${bodyAttrs}>
+		<noscript>
+			<!-- Google Tag Manager -->
+			<iframe src="//www.googletagmanager.com/ns.html?id=${googleTagmanagerId}"
+				height="0" width="0" style="display:none;visibility:hidden"></iframe>
+		</noscript>
+		${bodyTagsOpen}
+		<div id="app">${appHtml}</div>
+		${appState}
+		<script type="module" src="/src/client-entry.js"></script>
+		${bodyTags}
+	</body>
+</html>

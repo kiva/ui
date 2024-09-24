@@ -1,11 +1,11 @@
-import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
-import { readJSONSetting, hashCode } from '@/util/settingsUtils';
-import logReadQueryError from '@/util/logReadQueryError';
+import experimentSettingQuery from '#src/graphql/query/experimentSetting.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
+import { readJSONSetting, hashCode } from '#src/util/settingsUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
 import { v4 as uuidv4 } from 'uuid';
-import logFormatter from '@/util/logFormatter';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import logFormatter from '#src/util/logFormatter';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import Alea from './Alea';
 
 /**

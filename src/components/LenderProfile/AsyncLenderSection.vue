@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import delayUntilVisibleMixin from '@/plugins/delay-until-visible-mixin';
+import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 
 export default {
 	name: 'AsyncLenderSection',

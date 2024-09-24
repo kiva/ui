@@ -91,10 +91,10 @@
 import {
 	mdiFacebook, mdiLinkedin, mdiTwitter, mdiLink
 } from '@mdi/js';
-import socialSharingMixin from '@/plugins/social-sharing-mixin';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvSocialShareButton',

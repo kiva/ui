@@ -5,10 +5,9 @@
 	>
 		<!-- Set of image sources -->
 		<template v-if="sourceSizes.length > 0">
-			<template v-for="(image, index) in sourceSizes">
+			<template v-for="(image, index) in sourceSizes" :key="index">
 				<!-- browser supports webp -->
 				<source
-					:key="'webp-image'+index"
 					:media="'('+image.media+')'"
 					type="image/webp"
 					:srcset="`
@@ -17,7 +16,6 @@
 				>
 				<!-- browser doesn't support webp -->
 				<source
-					:key="'fallback-image'+index"
 					:media="'('+image.media+')'"
 					:srcset="`
 					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=${fallbackFormat}&q=65 2x,

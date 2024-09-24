@@ -178,29 +178,29 @@
 </template>
 
 <script>
-import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
-import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
-import LoanSearchFilter from '@/components/Lend/LoanSearch/LoanSearchFilter';
-import TeamPicksSwitch from '@/components/Lend/LoanSearch/TeamPicksSwitch';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import { FLSS_ORIGIN_LEND_FILTER } from '@/util/flssUtils';
-import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { convertQueryToFilters, hasExcludedQueryParams, updateQueryParams } from '@/util/loanSearch/queryParamUtils';
-import { updateSearchState } from '@/util/loanSearch/searchStateUtils';
-import logReadQueryError from '@/util/logReadQueryError';
-import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
-import KvPagination from '@/components/Kv/KvPagination';
-import KvResultsPerPage from '@/components/Kv/KvResultsPerPage';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import { getDefaultLoanSearchState } from '@/api/localResolvers/loanSearch';
-import { isNumber } from '@/util//numberUtils';
-import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-import LoanSearchSavedSearch from '@/components/Lend/LoanSearch/LoanSearchSavedSearch';
-import filterConfig from '@/util/loanSearch/filterConfig';
-import { gql } from '@apollo/client';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import itemsInBasketQuery from '#src/graphql/query/basketItems.graphql';
+import loanSearchStateQuery from '#src/graphql/query/loanSearchState.graphql';
+import LoanSearchFilter from '#src/components/Lend/LoanSearch/LoanSearchFilter';
+import TeamPicksSwitch from '#src/components/Lend/LoanSearch/TeamPicksSwitch';
+import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import { FLSS_ORIGIN_LEND_FILTER } from '#src/util/flssUtils';
+import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '#src/util/loanSearch/dataUtils';
+import { convertQueryToFilters, hasExcludedQueryParams, updateQueryParams } from '#src/util/loanSearch/queryParamUtils';
+import { updateSearchState } from '#src/util/loanSearch/searchStateUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
+import KvPagination from '#src/components/Kv/KvPagination';
+import KvResultsPerPage from '#src/components/Kv/KvResultsPerPage';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
+import { isNumber } from '#src/util//numberUtils';
+import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
+import LoanSearchSavedSearch from '#src/components/Lend/LoanSearch/LoanSearchSavedSearch';
+import filterConfig from '#src/util/loanSearch/filterConfig';
+import { gql } from 'graphql-tag';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 const COOKIE_KEY = 'kv-search-result-count';
 
@@ -286,11 +286,12 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(_, client, { route }) {
+			const currentRoute = route.value ?? {};
 			// Handle temporary query param exclusions
-			if (Object.keys(route?.query).length && hasExcludedQueryParams(route?.query)) {
+			if (Object.keys(currentRoute.query ?? {}).length && hasExcludedQueryParams(currentRoute.query ?? {})) {
 				// fallback to legacy lend with original query params
-				return Promise.reject({ path: route.fullPath.replace('/filter', '') });
+				return Promise.reject({ path: currentRoute.fullPath?.replace('/filter', '') });
 			}
 
 			return client.query({

@@ -1,6 +1,6 @@
-import { filterUiType } from '@/util/loanSearch/filterUtils';
+import { filterUiType } from '#src/util/loanSearch/filterUtils';
 import _orderBy from 'lodash/orderBy';
-import { getIdsFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { getIdsFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 /**
  * The themes/attributes that are always visible in the filter UI
@@ -64,7 +64,7 @@ export default {
 		return [];
 	},
 	getRemovedFacet: (loanSearchState, facet) => ({
-		themeId: [...loanSearchState.themeId?.filter(id => facet.id !== id)]
+		themeId: [...(loanSearchState?.themeId ?? []).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: (loanSearchState, allFacets) => ({
 		theme: loanSearchState?.themeId.map(themeId => allFacets.themeFacets.find(t => t.id === themeId).name)
@@ -78,7 +78,8 @@ export default {
 	getFilterFromQuery: (query, allFacets) => ({
 		themeId: getIdsFromQueryParam(
 			query.attribute || query.attributes || query.theme,
-			allFacets?.themeNames, allFacets?.themeFacets
+			allFacets?.themeNames,
+			allFacets?.themeFacets
 		) ?? []
 	}),
 	getQueryFromFilter: loanSearchState => ({

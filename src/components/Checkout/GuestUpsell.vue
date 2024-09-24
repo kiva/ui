@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 
 export default {
 	name: 'GuestUpsell',

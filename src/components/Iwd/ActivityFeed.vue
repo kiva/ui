@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import ActivityCard from '@/components/Iwd/ActivityCard';
-import iwdActionsQuery from '@/graphql/query/IwdActions.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
+import ActivityCard from '#src/components/Iwd/ActivityCard';
+import iwdActionsQuery from '#src/graphql/query/IwdActions.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 export default {
 	name: 'ActivityFeed',

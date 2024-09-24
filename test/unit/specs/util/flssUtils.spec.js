@@ -7,14 +7,14 @@ import {
 	fetchLoanChannel,
 	getCachedLoanChannel,
 	watchLoanChannel,
-} from '@/util/flssUtils';
-import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
-import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
-import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
-import filterConfig from '@/util/loanSearch/filterConfig';
+} from '#src/util/flssUtils';
+import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
+import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
+import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
 		config: {
 			a: { getFlssFilter: jest.fn().mockReturnValue({ a: 'a' }) },

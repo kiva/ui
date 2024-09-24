@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<div>
 		<h1 class="tw-text-center tw-text-h2 tw-mb-2">
 			You're already signed up for a subscription

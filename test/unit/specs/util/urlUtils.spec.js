@@ -1,4 +1,4 @@
-import { getFullUrl, isCCPage, isExcludedUrl } from '@/util/urlUtils';
+import { getFullUrl, isCCPage, isExcludedUrl } from '#src/util/urlUtils';
 
 describe('urlUtils.js', () => {
 	describe('getFullUrl', () => {
@@ -49,7 +49,7 @@ describe('urlUtils.js', () => {
 				redirect_uri: 'http://kiva.org',
 				quote: undefined,
 			}))
-				// eslint-disable-next-line max-len
+
 				.toBe('https://www.facebook.com/dialog/share?redirect_uri=http%3A%2F%2Fkiva.org');
 		});
 		it('return a valid url if missing args', () => {

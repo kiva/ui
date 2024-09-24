@@ -1,5 +1,4 @@
-// This file uses common JS imports/exports so our express router can use it as well.
-const numeral = require('numeral');
+import numeral from 'numeral';
 
 const DIRECT = 'direct';
 const PARTNER = 'fieldPartner';
@@ -156,4 +155,4 @@ function getLoanUse({
 		+ `${truncateUse(normalizeUse(use, name), maxLength)}`;
 }
 
-module.exports = getLoanUse;
+export default getLoanUse;

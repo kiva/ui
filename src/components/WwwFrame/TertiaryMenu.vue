@@ -5,18 +5,18 @@
 </template>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .tertiary-nav {
-	li {
+	:deep(li) {
 		margin-bottom: 1rem;
 	}
 
-	a {
+	:deep(a) {
 		font-weight: 400;
 	}
 
-	.router-link-exact-active {
+	:deep(.router-link-exact-active) {
 		color: rgb(var(--text-tertiary));
 	}
 }

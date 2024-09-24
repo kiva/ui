@@ -19,7 +19,7 @@
 					:key="item.value"
 					:disabled="item.disabled"
 					v-model="selected"
-					@change="updateSelected($event, [item.value])"
+					@update="updateSelected($event, [item.value])"
 					class="tw-text-small"
 				>
 					{{ item.title }}
@@ -31,8 +31,8 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'CheckboxList',

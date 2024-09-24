@@ -2,6 +2,7 @@
 	Numerical methods for Power, Factorial, Pi, Sine, Cosine and Tangent
 	from "TRIGONOMETRY IN SASS" by Daniel Perez Alvarez (https://unindented.org/articles/trigonometry-in-sass/)
 */
+@use 'sass:math';
 
 @function pow($number, $exp) {
 	$value: 1;
@@ -9,8 +10,7 @@
 		@for $i from 1 through $exp {
 			$value: $value * $number;
 		}
-	}
-	@else if $exp < 0 {
+	} @else if $exp < 0 {
 		@for $i from 1 through -$exp {
 			$value: $value / $number;
 		}
@@ -33,8 +33,9 @@
 }
 
 @function rad($angle) {
-	$unit: unit($angle);
+	$unit: math.unit($angle);
 	$unitless: $angle / ($angle * 0 + 1);
+
 	// If the angle has 'deg' as unit, convert to radians.
 	@if $unit == deg {
 		$unitless: $unitless / 180 * pi();
@@ -45,6 +46,7 @@
 @function sin($angle) {
 	$sin: 0;
 	$angle: rad($angle);
+
 	// Iterate a bunch of times.
 	@for $i from 0 through 10 {
 		$sin: $sin + pow(-1, $i) * pow($angle, (2 * $i + 1)) / fact(2 * $i + 1);
@@ -55,6 +57,7 @@
 @function cos($angle) {
 	$cos: 0;
 	$angle: rad($angle);
+
 	// Iterate a bunch of times.
 	@for $i from 0 through 10 {
 		$cos: $cos + pow(-1, $i) * pow($angle, 2 * $i) / fact(2 * $i);

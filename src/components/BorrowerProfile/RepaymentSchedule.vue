@@ -20,7 +20,7 @@
 				<p class="tw-inline-block tw-font-medium ">
 					{{ formattedFirstRepaymentDate }}
 				</p>
-				<span v-if="this.status === 'payingBack'">
+				<span v-if="status === 'payingBack'">
 					<p class="tw-inline-block">
 						and are
 					</p>
@@ -159,12 +159,12 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {
@@ -229,6 +229,7 @@ export default {
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
 			partnerName: '',
+			disbursalDate: '',
 		};
 	},
 	methods: {
@@ -251,6 +252,7 @@ export default {
 				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
 				this.firstRepaymentDate = this.repaymentSchedule[0]?.dueToKivaDate || '';
+				this.disbursalDate = data?.lend?.loan?.terms?.disbursalDate || '';
 			});
 		},
 	},
@@ -287,7 +289,7 @@ export default {
 			const monthlyTotalRepayments = [];
 			let repaid = false;
 			let delinquent = false;
-			if (this.repaymentSchedule !== []) {
+			if (this.repaymentSchedule.length !== 0) {
 				const repaymentScheduleByDueDate = this.repaymentSchedule.reduce((acc, repaymentItem) => {
 					if (!acc[repaymentItem.dueToKivaDate]) acc[repaymentItem.dueToKivaDate] = [];
 					acc[repaymentItem.dueToKivaDate].push(repaymentItem);

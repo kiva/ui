@@ -8,7 +8,8 @@
 			type="checkbox"
 			:id="id"
 			:disabled="disabled"
-			:checked="checked"
+			v-model="inputValue"
+			v-bind="$attrs"
 			@change="onChange($event)"
 		>
 		<label
@@ -47,23 +48,44 @@ export default {
 		checkboxRight: {
 			type: Boolean,
 			default: false
-		}
+		},
+		modelValue: {
+			type: Boolean,
+			default: null,
+		},
+	},
+	data() {
+		return {
+			inputValue: this.checked,
+		};
 	},
 	methods: {
 		onChange(event) {
-			/**
-			 * The value of the checkbox :checked state
-			 * @event change
-			 * @type {Event}
-			 */
-			this.$emit('change', event.target.checked);
+			this.$emit('update', event.target.checked);
 		},
-	}
+	},
+	watch: {
+		modelValue: {
+			handler(newValue) {
+				if (newValue !== null) {
+					this.inputValue = newValue;
+				}
+			},
+			immediate: true,
+		},
+		checked: {
+			handler(newValue) {
+				if (newValue !== null) {
+					this.inputValue = newValue;
+				}
+			},
+		},
+	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-checkbox {
 	display: block;
@@ -87,7 +109,7 @@ export default {
 		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
 		position: relative;
-		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
+		box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
 		transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
 
 		&::after {

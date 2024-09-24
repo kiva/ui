@@ -43,11 +43,11 @@ import _map from 'lodash/map';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
-import loanCardQuery from '@/graphql/query/loanCardData.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KvPagination from '@/components/Kv/KvPagination';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
+import loanCardQuery from '#src/graphql/query/loanCardData.graphql';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
+import KvPagination from '#src/components/Kv/KvPagination';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 
 const loansPerPage = 12;
 
@@ -86,7 +86,7 @@ export default {
 		KvLoadingOverlay,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		title: 'Fundraising loans'
 	},
 	data() {
@@ -112,7 +112,8 @@ export default {
 		query: loanCardQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {
-			return _merge({ limit: loansPerPage }, fromUrlParams(route.query));
+			const currentRoute = route?.value ?? route;
+			return _merge({ limit: loansPerPage }, fromUrlParams(currentRoute?.query));
 		},
 		variables() {
 			return {

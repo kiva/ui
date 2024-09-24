@@ -123,10 +123,12 @@
 
 <script>
 import gsap from 'gsap';
+import { metaGlobReader } from '#src/util/importHelpers';
 import * as MorphSVGPlugin from '../../util/animation/MorphSVGPlugin';
 import FifteenYearsButton from './15YearsButton';
 
-const imageRequire = require.context('@/assets/images/15-years/profiles', true);
+const imageRequire = import.meta.glob('/src/assets/images/15-years/profiles/*.*', { eager: true });
+const profileImages = metaGlobReader(imageRequire, '/src/assets/images/15-years/profiles/');
 
 const getRandomInt = (minimum, maximum) => {
 	const min = Math.ceil(minimum);
@@ -178,9 +180,9 @@ export default {
 		},
 		portraitSrc() {
 			return {
-				avif: imageRequire(`./${this.person.img}.avif`),
-				png: imageRequire(`./${this.person.img}.png`),
-				webp: imageRequire(`./${this.person.img}.webp`),
+				avif: profileImages(`${this.person.img}.avif`),
+				png: profileImages(`${this.person.img}.png`),
+				webp: profileImages(`${this.person.img}.webp`),
 			};
 		}
 	},
@@ -259,8 +261,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 /* stylelint-disable no-descending-specificity */
 .profile {
@@ -273,7 +275,7 @@ export default {
 
 	&--expanded {
 		.profile__portrait-wrapper {
-			background: linear-gradient(to bottom, #FFF 0%, rgba(255, 255, 255, 0.7) 100%);
+			background: linear-gradient(to bottom, #FFF 0%, rgb(255 255 255 / 70%) 100%);
 			overflow: hidden;
 		}
 
@@ -296,10 +298,7 @@ export default {
 
 	&__portrait-wrapper {
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
+		inset: 0;
 		margin: 0 rem-calc(-23);
 		border-bottom: 1px solid $offwhite;
 
@@ -359,10 +358,7 @@ export default {
 	&__portrait-background {
 		position: absolute;
 		z-index: 0;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
+		inset: 0;
 		display: flex;
 	}
 
@@ -407,7 +403,7 @@ export default {
 	}
 
 	&__body {
-		&::v-deep {
+		:deep(&) {
 			a {
 				color: $mint;
 			}

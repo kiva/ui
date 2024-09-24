@@ -9,7 +9,7 @@
 					key="partners"
 					:items="partnersWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>
@@ -18,10 +18,10 @@
 
 <script>
 import _map from 'lodash/map';
-import { gql } from '@apollo/client';
-import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
-import autoLendingSelectedQuery from '@/graphql/query/autolending/autoLendingSelected.graphql';
-import { queryAllPartners } from '@/util/autoLendingUtils';
+import { gql } from 'graphql-tag';
+import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
+import autoLendingSelectedQuery from '#src/graphql/query/autolending/autoLendingSelected.graphql';
+import { queryAllPartners } from '#src/util/autoLendingUtils';
 import CheckList from './CheckList';
 
 export default {

@@ -889,14 +889,14 @@
 
 export default {
 	name: 'TermsOfUse',
-	metaInfo: {
+	head: {
 		title: 'Terms Of Use'
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 // This CSS came from original terms page.
 ul.light li {

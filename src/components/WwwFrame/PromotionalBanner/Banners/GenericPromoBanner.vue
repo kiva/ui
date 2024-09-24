@@ -7,7 +7,7 @@
 		<kv-icon
 			v-if="iconKey"
 			:name="iconKey"
-			class=" tw-fill-current tw-text-white tw-h-3 tw-w-3 tw-max-w-3 tw-my-0 tw-mr-1.5"
+			class="icon-container tw-fill-current tw-text-white tw-h-3 tw-w-3 tw-max-w-3 tw-my-0 tw-mr-1.5"
 		/>
 		<span class="text-center">
 			<component
@@ -43,9 +43,9 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvIcon from '#src/components/Kv/KvIcon';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'GenericPromoBanner',
@@ -134,9 +134,11 @@ export default {
 </script>
 
 <style scoped lang="postcss">
-
-.progress-bar-exp >>> div {
-	@apply tw-bg-action-highlight;
+.icon-container :deep(g) {
+	@apply tw-fill-white;
 }
 
+.progress-bar-exp :deep(div) {
+	@apply tw-bg-action-highlight;
+}
 </style>

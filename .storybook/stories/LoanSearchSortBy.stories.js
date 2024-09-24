@@ -1,5 +1,5 @@
-import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import LoanSearchSortBy from '#src/components/Lend/LoanSearch/LoanSearchSortBy';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 
 export default {
 	title: 'Loan Search/Loan Search Sort Order',
@@ -25,9 +25,9 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchSortBy },
+		setup() { return args; },
 		template: '<loan-search-sort-by :all-sort-options="allSortOptions" :sort="sort" />',
 	})
-	template.args = args;
 	return template;
 };
 

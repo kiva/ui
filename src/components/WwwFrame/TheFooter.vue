@@ -320,7 +320,7 @@
 								<img
 									class="tw-h-5 tw-mr-1"
 									style="width: 7.5rem;"
-									src="@/assets/icons/app-store.svg"
+									:src="appStoreLogoUrl"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
 								>
@@ -336,7 +336,7 @@
 								<img
 									class="tw-h-5"
 									style="width: 8.4375rem;"
-									src="@/assets/icons/play-store.svg"
+									:src="playStoreLogoUrl"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
 								>
@@ -668,7 +668,7 @@
 									>
 										<img
 											class="download-app-ios tw-h-5 tw-mr-1"
-											src="@/assets/icons/app-store.svg"
+											:src="appStoreLogoUrl"
 											loading="lazy"
 											alt="Check out our new app on the App Store"
 										>
@@ -684,7 +684,7 @@
 									>
 										<img
 											class="download-app-android tw-h-5"
-											src="@/assets/icons/play-store.svg"
+											:src="playStoreLogoUrl"
 											loading="lazy"
 											alt="Check out our new app on the Play Store"
 										>
@@ -818,12 +818,14 @@
 
 <script>
 import { getYear } from 'date-fns';
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
-import Disclaimers from '@/components/WwwFrame/DisclaimersContentful';
+import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
+import Disclaimers from '#src/components/WwwFrame/DisclaimersContentful';
 import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import appStoreLogoUrl from '#src/assets/icons/app-store.svg?url';
+import playStoreLogoUrl from '#src/assets/icons/play-store.svg?url';
 
 export default {
 	name: 'TheFooter',
@@ -855,7 +857,9 @@ export default {
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms',
 			appStoreUrl: 'https://apps.apple.com/app/id1453093374',
+			appStoreLogoUrl,
 			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending',
+			playStoreLogoUrl,
 			mdiFacebook,
 			mdiInstagram,
 			mdiTwitter

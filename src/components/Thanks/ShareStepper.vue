@@ -2,9 +2,8 @@
 	<div class="tw-my-2 tw-px-2">
 		<div v-if="!isFirstLoan" style="width: 136px;" class="tw-mx-auto tw-px-1">
 			<div class="tw-flex tw-items-center">
-				<template v-for="step in steps">
+				<template v-for="step in steps" :key="step.key">
 					<ShareStepperStep
-						:key="step.key"
 						:step="step.key"
 						:is-last-step="step.key === steps.length - 1"
 						:text="!commentsMode ? step.text : ''"
@@ -34,7 +33,7 @@
 </template>
 
 <script>
-import ShareStepperStep from '@/components/Thanks/ShareStepperStep';
+import ShareStepperStep from '#src/components/Thanks/ShareStepperStep';
 
 export default {
 	name: 'ShareStepper',

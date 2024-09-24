@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
 export default {
 	props: {
@@ -35,7 +35,7 @@ export default {
 			});
 		},
 		emitChangeEvent(value) {
-			this.$emit('change', {
+			this.$emit('update', {
 				radioKey: this.radioKey,
 				value
 			});

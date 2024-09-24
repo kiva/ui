@@ -29,7 +29,7 @@
 						:id="`${id}-custom-amount-input`"
 						:ref="`${id}-kvCurrencyRef`"
 						class="input-element"
-						:class="{'custom-input-element': true, 'error': $v.$invalid}"
+						:class="{'custom-input-element': true, 'error': v$.$invalid}"
 						v-model="customAmountModel"
 						:aria-disabled="!selected === 'custom'"
 						:disabled="!selected === 'custom'"
@@ -37,8 +37,8 @@
 				</div>
 			</transition>
 		</div>
-		<ul class="validation-errors" v-if="$v.$invalid">
-			<li v-if="!$v.customAmountModel.minValue || !$v.customAmountModel.maxValue">
+		<ul class="validation-errors" v-if="v$.$invalid">
+			<li v-if="v$.customAmountModel?.minValue?.$invalid || v$.customAmountModel?.maxValue?.$invalid">
 				Enter an amount of ${{ minCustomAmount }}&ndash;${{ maxCustomAmount }}
 			</li>
 		</ul>
@@ -46,18 +46,15 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
 export default {
 	name: 'MultiAmountSelector',
 	components: {
 		KvCurrencyInput
 	},
-	mixins: [
-		validationMixin
-	],
 	props: {
 		id: {
 			type: String,
@@ -106,6 +103,7 @@ export default {
 			customAmountModel: this.customAmount,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	validations() {
 		return {
 			customAmountModel: {
@@ -138,7 +136,7 @@ export default {
 				});
 			}
 			// to prevent unnecessary validations from showing
-			if (newVal !== 'custom' && this.$v.$invalid) {
+			if (newVal !== 'custom' && this.v$.$invalid) {
 				// reset to valid default value
 				this.customAmountModel = this.minCustomAmount;
 			}
@@ -167,14 +165,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .custom-amount-holder {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset: 0;
 	margin: 0;
 
 	.custom-input-element {

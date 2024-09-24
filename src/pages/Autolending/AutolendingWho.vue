@@ -15,7 +15,7 @@
 						<span v-if="!showSelectedFilterOptions"></span>
 						<button
 							class="tw-text-link back-to-options"
-							v-if="showSelectedFilterOptions"
+							v-else
 							@click="backToAllOptions"
 						>
 							<kv-icon
@@ -43,14 +43,14 @@
 								<div class="small-12 large-6 columns">
 									<country-radios
 										class="tw-mb-4"
-										@change="filterRadioChange"
+										@update="filterRadioChange"
 										:selector-shown="showSelectedFilterOptions"
 									/>
 								</div>
 								<div class="small-12 large-6 columns">
 									<sector-radios
 										class="tw-mb-4"
-										@change="filterRadioChange"
+										@update="filterRadioChange"
 										:selector-shown="showSelectedFilterOptions"
 									/>
 								</div>
@@ -75,7 +75,7 @@
 											<div class="small-12 large-6 columns">
 												<attribute-radios
 													class="tw-mb-4"
-													@change="filterRadioChange"
+													@update="filterRadioChange"
 													:selector-shown="showSelectedFilterOptions"
 												/>
 											</div>
@@ -85,7 +85,7 @@
 											<div class="small-12 large-6 columns">
 												<partner-radios
 													class="tw-mb-4"
-													@change="filterRadioChange"
+													@update="filterRadioChange"
 													:selector-shown="showSelectedFilterOptions"
 												/>
 											</div>
@@ -103,7 +103,7 @@
 								</div>
 							</div>
 						</div>
-						<div v-if="showSelectedFilterOptions" key="specificFilter">
+						<div v-else key="specificFilter">
 							<country-filter v-if="selectedFilterGroup =='country'" />
 							<sector-filter v-if="selectedFilterGroup =='sector'" />
 							<attribute-filter v-if="selectedFilterGroup =='theme'" />
@@ -128,12 +128,12 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 import AttributeFilter from './AttributeFilter';
 import AttributeRadios from './AttributeRadios';
@@ -235,7 +235,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .autolending-who-lightbox {
 	.who-inputs-wrapper {
@@ -248,7 +248,7 @@ export default {
 		}
 	}
 
-	::v-deep .kv-lightbox {
+	:deep(.kv-lightbox) {
 		.who-inputs-wrapper {
 			max-width: 100%;
 
@@ -263,7 +263,7 @@ export default {
 
 		.filter-title {
 			font-size: 1rem;
-			margin: 1rem auto 0.5rem auto;
+			margin: 1rem auto 0.5rem;
 			font-weight: $global-weight-highlight;
 		}
 	}

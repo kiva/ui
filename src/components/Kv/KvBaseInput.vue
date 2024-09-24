@@ -7,7 +7,6 @@
 				:valid="!validation.$error"
 				:value="checkboxValue"
 				v-model="inputValue"
-				v-on="inputListeners"
 				v-bind="$attrs"
 			>
 				<slot></slot>
@@ -21,7 +20,6 @@
 				class="tw-w-full"
 				:valid="!validation.$error"
 				v-model="inputValue"
-				v-on="inputListeners"
 				v-bind="$attrs"
 			/>
 		</template>
@@ -42,9 +40,8 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'KvBaseInput',
@@ -73,13 +70,21 @@ export default {
 				return {};
 			},
 		},
+		modelValue: {
+			type: [String, Boolean],
+			required: true,
+		},
 	},
-	mixins: [inputWrapperMixin],
+	data() {
+		return {
+			inputValue: this.modelValue,
+		};
+	},
 	computed: {
 		// A named slot will be created for each validator that fails, where the name of the slot will
 		// be the key of the validator that failed in the validation object
 		errors() {
-			return Object.keys(this.validation.$params || {}).filter(param => !this.validation[param]);
+			return (this.validation.$errors ?? []).map(e => e?.$params?.type);
 		},
 	},
 };

@@ -1,4 +1,4 @@
-const { info } = require('../../util/log');
+import { info } from '../../util/log.js';
 
 // Get route paths from vue-router route definitions.
 // Recursively searches children and ignores any route (and children of that route)
@@ -23,9 +23,7 @@ function getRoutes(haystack, root = '') {
 		.flat();
 }
 
-// This sitemap generator reads the vue-router route definitions and
-// adds a sitemap url for every route that is not excluded.
-module.exports = async function staticRouteGenerator() {
+export async function staticRouteGenerator() {
 	// get route definitions
 	info('Sitemap: staticRouteGenerator: loading routes definition file');
 	const { default: allRoutes } = await import('../../../src/router/routes.js');
@@ -33,4 +31,4 @@ module.exports = async function staticRouteGenerator() {
 	const routes = getRoutes(allRoutes);
 	info('Sitemap: staticRouteGenerator: found routes', { routes });
 	return routes;
-};
+}

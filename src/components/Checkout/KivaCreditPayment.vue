@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import { pollForFinishedCheckout } from '@kiva/kv-shop';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'KivaCreditPayment',

@@ -109,15 +109,15 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
+import { gql } from 'graphql-tag';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';

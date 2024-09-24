@@ -12,7 +12,7 @@
 					<div class="tw-my-3">
 						<img
 							class="tw-mx-auto"
-							:src="imageRequire(`./thumbs-up.svg`)"
+							:src="thumbsUpUrl"
 							alt="loan to loan relending graphic"
 						>
 					</div>
@@ -34,7 +34,7 @@
 					<div class="tw-mb-3">
 						<img
 							class="tw-mx-auto"
-							:src="imageRequire(`./email-opening.svg`)"
+							:src="emailOpeningUrl"
 							alt="loan to loan relending graphic"
 						>
 					</div>
@@ -65,13 +65,13 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-
-const imageRequire = require.context('@/assets/images/kiva-classic-illustrations/', true);
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import emailOpeningUrl from '#src/assets/images/kiva-classic-illustrations/email-opening.svg?url';
+import thumbsUpUrl from '#src/assets/images/kiva-classic-illustrations/thumbs-up.svg?url';
 
 const pageQuery = gql`query autoDepositThanksPage {
 	my {
@@ -97,7 +97,8 @@ export default {
 			totalAmount: 0,
 			donationAmount: 0,
 			autoDepositAmount: 0,
-			imageRequire,
+			emailOpeningUrl,
+			thumbsUpUrl,
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
