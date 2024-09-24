@@ -73,17 +73,17 @@
 </template>
 
 <script>
-import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
+import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
 	mdiChevronDown,
 	mdiChevronUp
 } from '@mdi/js';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import LoanNextSteps from '@/components/Thanks/LoanNextSteps';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import { addMonths, differenceInWeeks } from 'date-fns';
-import { isLoanFundraising } from '@/util/loanUtils';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { isLoanFundraising } from '#src/util/loanUtils';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'BorrowerStatusCard',

@@ -1,4 +1,4 @@
-import BorrowerStatusCard from '@/components/MyKiva/BorrowerStatusCard.vue';
+import BorrowerStatusCard from '#src/components/MyKiva/BorrowerStatusCard.vue';
 import { mockLoansArray } from '../utils';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
