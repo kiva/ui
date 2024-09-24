@@ -1,4 +1,4 @@
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 
 export default ({ cookieStore, kvAuth0 }) => {
 	return {

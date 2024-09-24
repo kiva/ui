@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import logReadQueryError from '@/util/logReadQueryError';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import lenderPublicProfileQuery from '@/graphql/query/lenderPublicProfile.graphql';
-import LenderProfileWrapper from '@/components/LenderProfile/LenderProfileWrapper';
-import NotFoundWrapper from '@/components/NotFound/NotFoundWrapper';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import logReadQueryError from '#src/util/logReadQueryError';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
+import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
+import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'LenderProfile',
@@ -99,7 +99,8 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const publicId = route.params?.publicId ?? '';
+			const currentRoute = route.value ?? {};
+			const publicId = currentRoute.params?.publicId ?? '';
 
 			return client.query({
 				query: lenderPublicProfileQuery,

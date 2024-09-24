@@ -14,7 +14,7 @@
 							</div>
 						</div>
 						<div class="loan-title columns small-8">
-							<h3><span>${{ loan.price | numeral('0,0') }}</span> to {{ loan.loan.name }}</h3>
+							<h3><span>${{ $filters.numeral(loan.price, '0,0') }}</span> to {{ loan.loan.name }}</h3>
 							<loan-reservation
 								class="popup-reservation-text"
 								:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
@@ -27,7 +27,9 @@
 						<span class="text-loans-in-basket columns small-6">
 							{{ loanCount }} <span v-if="loanCount > 1">loans</span><span v-else>loan</span> in basket
 						</span>
-						<span class="text-subtotals columns small-6">Subtotal ${{ loanTotals | numeral('0,0') }}</span>
+						<span class="text-subtotals columns small-6">
+							Subtotal ${{ $filters.numeral(loanTotals, '0,0') }}
+						</span>
 					</div>
 					<div class="button-actions row">
 						<div class="columns small-12 medium-6">
@@ -83,7 +85,7 @@
 				<kv-checkbox
 					id="user-pref-hide-interstitial"
 					:checked="userPrefHideInterstitial"
-					@change="handleChangeUserPref"
+					@update="handleChangeUserPref"
 				>
 					Don't show me this again
 				</kv-checkbox>
@@ -97,16 +99,16 @@ import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import store2 from 'store2';
-import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
-import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import KvButton from '@/components/Kv/KvButton';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import LoanReservation from '@/components/Checkout/LoanReservation';
-import LYML from '@/components/LoansYouMightLike/LymlContainer';
-import getCacheKey from '@/util/getCacheKey';
+import basketAddInterstitial from '#src/graphql/query/basketAddInterstitialClient.graphql';
+import basketAddInterstitialData from '#src/graphql/query/basketAddInterstitialData.graphql';
+import updateAddToBasketInterstitial from '#src/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import KvButton from '#src/components/Kv/KvButton';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import LoanReservation from '#src/components/Checkout/LoanReservation';
+import LYML from '#src/components/LoansYouMightLike/LymlContainer';
+import getCacheKey from '#src/util/getCacheKey';
 
 export default {
 	name: 'AddToBasketInterstitial',
@@ -237,7 +239,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .basket-add-interstitial {
 	.lightbox-loan-wrapper {
@@ -325,11 +327,8 @@ export default {
 	position: absolute;
 	width: auto;
 	height: auto;
-	left: 1rem;
-	right: 1rem;
-	bottom: 0;
-	top: 0;
-	background-color: rgba(white, 0.7);
+	inset: 0 1rem;
+	background-color: rgb(255 255 255 / 70%);
 
 	.spinner-wrapper {
 		display: flex;

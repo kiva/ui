@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .hamburger-menu {
 	$hamburger-transition-timing: 0.16s ease;

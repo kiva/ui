@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import BorrowIntro from '@/pages/Borrow/BorrowIntro';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import BorrowIntro from '#src/pages/Borrow/BorrowIntro';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'BorrowIndex',
-	metaInfo() {
+	head() {
 		return {
 			meta: [
 				{

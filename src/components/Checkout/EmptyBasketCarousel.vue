@@ -24,9 +24,8 @@
 					:slide-max-width="singleSlideWidth"
 					@interact-carousel="onInteractCarousel"
 				>
-					<template v-for="(loan, index) in randomLoans" #[`slide${index}`]>
+					<template v-for="(loan, index) in randomLoans" #[`slide${index}`] :key="`loan-card-${index}`">
 						<kv-classic-loan-card-container
-							:key="`loan-card-${index}`"
 							:loan-id="loan.id"
 							:use-full-width="true"
 							:show-tags="true"
@@ -45,10 +44,10 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import { runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { FLSS_ORIGIN_CHECKOUT } from '@/util/flssUtils';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_CHECKOUT } from '#src/util/flssUtils';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'EmptyBasketCarousel',

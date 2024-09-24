@@ -51,7 +51,7 @@
 					<kv-button
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
-						@click="showMessageLightbox()"
+						@click="() => showMessageLightbox()"
 					>
 						Send message
 					</kv-button>
@@ -154,12 +154,12 @@
 <script>
 import { format, parseISO } from 'date-fns';
 import { mdiAccountCircle, mdiPencilOutline } from '@mdi/js';
-import logReadQueryError from '@/util/logReadQueryError';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import sendLenderMessageMutation from '@/graphql/mutation/sendLenderMessage.graphql';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import logReadQueryError from '#src/util/logReadQueryError';
+import userInfoQuery from '#src/graphql/query/userInfo.graphql';
+import sendLenderMessageMutation from '#src/graphql/mutation/sendLenderMessage.graphql';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'LenderSummary',

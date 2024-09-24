@@ -55,14 +55,14 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { formatContentGroupsFlat } from '@/util/contentfulUtils';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import { gql } from 'graphql-tag';
+import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const contentfulContentQuery = gql`query instantDonationThanksContent {
 	contentful {
@@ -73,7 +73,7 @@ const contentfulContentQuery = gql`query instantDonationThanksContent {
 export default {
 	name: 'InstantDonationThanks',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thanks for your donation!'
 		};

@@ -28,7 +28,7 @@
 <script>
 import { mdiTimerSandComplete, mdiFlag, mdiHeart } from '@mdi/js';
 import { differenceInDays, parseISO } from 'date-fns';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'LoanTag',

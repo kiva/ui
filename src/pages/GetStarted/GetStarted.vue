@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
+import WwwPageMinimal from '#src/components/WwwFrame/WwwPageMinimal';
 
 export default {
 	name: 'GetStarted',
 	components: {
 		WwwPageMinimal,
 	},
-	metaInfo: {
+	head: {
 		title: 'Get Started'
 	},
 };

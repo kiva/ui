@@ -9,8 +9,8 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import getClientToken from '#src/graphql/query/checkout/getClientToken.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 /**
 * Displays the Braintree Drop In Interface
@@ -270,7 +270,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 $form-border-radius: rem-calc(4);
 $active-border-color: $input-checked-color;
@@ -281,14 +281,14 @@ $border-width: 1px;
 // Use [data-braintree-id=""] selectors whenever possible as
 // Braintree guarantees that these will not be easily changed.
 #dropin-container {
-	::v-deep {
+	:deep(*) {
 		// Main DropIn
 		.braintree-dropin {
 			font-family: inherit;
 		}
 
 		// General Braintree errors, failed to process, etc
-		[data-braintree-id="sheet-error"] {
+		[data-braintree-id=sheet-error] {
 			background-color: $white;
 		}
 
@@ -304,7 +304,7 @@ $border-width: 1px;
 
 		// Saved payment methods container
 		// List of vaulted cards
-		[data-braintree-id="methods-container"] {
+		[data-braintree-id=methods-container] {
 			.braintree-method--active {
 				border-color: $active-border-color;
 				border-width: $border-width;
@@ -321,15 +321,15 @@ $border-width: 1px;
 		}
 
 		// Payment method 'sheet' or main content area
-		[data-braintree-id="paypal"],
-		[data-braintree-id="applePay"],
-		[data-braintree-id="googlePay"],
-		[data-braintree-id="card"] {
+		[data-braintree-id=paypal],
+		[data-braintree-id=applePay],
+		[data-braintree-id=googlePay],
+		[data-braintree-id=card] {
 			border: 0;
 		}
 
 		// Credit Card payment content
-		[data-braintree-id="card"] {
+		[data-braintree-id=card] {
 			// Main payment method content - either button or form
 			.braintree-sheet__content {
 				// Classes for input fields. - Credit Card Only
@@ -378,9 +378,9 @@ $border-width: 1px;
 				}
 
 				// Exp, CVV, and Postal Code groups
-				[data-braintree-id="expiration-date-field-group"],
-				[data-braintree-id="cvv-field-group"],
-				[data-braintree-id="postal-code-field-group"] {
+				[data-braintree-id=expiration-date-field-group],
+				[data-braintree-id=cvv-field-group],
+				[data-braintree-id=postal-code-field-group] {
 					width: 49%;
 					flex-basis: auto;
 					flex-grow: unset;
@@ -389,7 +389,7 @@ $border-width: 1px;
 		}
 
 		// Credit Card icons in form header
-		[data-braintree-id="card-view-icons"] {
+		[data-braintree-id=card-view-icons] {
 			padding-bottom: 0;
 
 			& > div {
@@ -402,7 +402,7 @@ $border-width: 1px;
 
 		// responsive paypal button
 		// prevents bug causing button to get slightly cut off in mobile
-		[data-braintree-id="paypal-button"] {
+		[data-braintree-id=paypal-button] {
 			width: 99%;
 			@include breakpoint(medium) {
 				width: 250px;
@@ -410,7 +410,7 @@ $border-width: 1px;
 		}
 
 		// Hides credit card icon in number field until credit card type is known
-		[data-braintree-id="number-field-group"]:not(.braintree-form__field-group--card-type-known) svg {
+		[data-braintree-id=number-field-group]:not(.braintree-form__field-group--card-type-known) svg {
 			display: none;
 		}
 
@@ -424,7 +424,7 @@ $border-width: 1px;
 }
 
 #payment-updating-overlay {
-	background-color: rgba(255, 255, 255, 0.7);
+	background-color: rgb(255 255 255 / 70%);
 	z-index: 500;
 }
 
@@ -444,39 +444,39 @@ $border-width: 1px;
 	'Choose a way to pay'
 	'Paying with Card'
 	'Other ways to pay' */
-	#dropin-container [data-braintree-id="choose-a-way-to-pay"],
-	#dropin-container [data-braintree-id="methods-label"],
-	#dropin-container [data-braintree-id="other-ways-to-pay"] {
+	#dropin-container [data-braintree-id=choose-a-way-to-pay],
+	#dropin-container [data-braintree-id=methods-label],
+	#dropin-container [data-braintree-id=other-ways-to-pay] {
 		@apply tw-text-small tw-text-tertiary tw-w-full;
 	}
 
 	/* Payment method container */
-	#dropin-container [data-braintree-id="sheet-container"] {
+	#dropin-container [data-braintree-id=sheet-container] {
 		@apply tw-bg-white;
 	}
 
 	/* Payment method form headers */
-	#dropin-container [data-braintree-id="paypal-sheet-header"],
-	#dropin-container [data-braintree-id="apple-pay-sheet-header"],
-	#dropin-container [data-braintree-id="google-pay-sheet-header"],
-	#dropin-container [data-braintree-id="card-sheet-header"] {
+	#dropin-container [data-braintree-id=paypal-sheet-header],
+	#dropin-container [data-braintree-id=apple-pay-sheet-header],
+	#dropin-container [data-braintree-id=google-pay-sheet-header],
+	#dropin-container [data-braintree-id=card-sheet-header] {
 		/* bottom padding and bottom margin creates spacing around the BT loading indicator */
 		@apply tw-bg-transparent tw-border-0 tw-p-0 tw-pb-1 tw-mb-1;
 	}
 
 	/* Payment Method logo in header */
-	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__logo--header,
-	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__logo--header,
-	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__logo--header,
-	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__logo--header {
+	#dropin-container [data-braintree-id=paypal-sheet-header] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id=apple-pay-sheet-header] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id=google-pay-sheet-header] .braintree-sheet__logo--header,
+	#dropin-container [data-braintree-id=card-sheet-header] .braintree-sheet__logo--header {
 		@apply tw-hidden;
 	}
 
 	/* Moves credit card icons to new line. */
-	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__header-label,
-	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__header-label,
-	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__header-label,
-	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__header-label {
+	#dropin-container [data-braintree-id=paypal-sheet-header] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id=apple-pay-sheet-header] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id=google-pay-sheet-header] .braintree-sheet__header-label,
+	#dropin-container [data-braintree-id=card-sheet-header] .braintree-sheet__header-label {
 		@apply tw-w-full;
 	}
 
@@ -485,64 +485,64 @@ $border-width: 1px;
 	'Paypal'
 	'GooglePay'
 	'ApplePay' */
-	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__text,
-	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__text,
-	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__text,
-	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__text,
-	#dropin-container [data-braintree-id="paypal-sheet-header"] .braintree-sheet__label,
-	#dropin-container [data-braintree-id="apple-pay-sheet-header"] .braintree-sheet__label,
-	#dropin-container [data-braintree-id="google-pay-sheet-header"] .braintree-sheet__label,
-	#dropin-container [data-braintree-id="card-sheet-header"] .braintree-sheet__label {
+	#dropin-container [data-braintree-id=paypal-sheet-header] .braintree-sheet__text,
+	#dropin-container [data-braintree-id=apple-pay-sheet-header] .braintree-sheet__text,
+	#dropin-container [data-braintree-id=google-pay-sheet-header] .braintree-sheet__text,
+	#dropin-container [data-braintree-id=card-sheet-header] .braintree-sheet__text,
+	#dropin-container [data-braintree-id=paypal-sheet-header] .braintree-sheet__label,
+	#dropin-container [data-braintree-id=apple-pay-sheet-header] .braintree-sheet__label,
+	#dropin-container [data-braintree-id=google-pay-sheet-header] .braintree-sheet__label,
+	#dropin-container [data-braintree-id=card-sheet-header] .braintree-sheet__label {
 		@apply tw-ml-0 tw-text-h4 tw-text-primary tw-text-left;
 	}
 
 	/* Saved payment methods container
 	List of vaulted cards */
-	#dropin-container [data-braintree-id="upper-container"]::before {
+	#dropin-container [data-braintree-id=upper-container]::before {
 		background-color: transparent;
 	}
 
-	#dropin-container [data-braintree-id="methods-container"] .braintree-method {
+	#dropin-container [data-braintree-id=methods-container] .braintree-method {
 		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-p-2;
 	}
 
-	#dropin-container [data-braintree-id="methods-container"] .braintree-method:first-child {
+	#dropin-container [data-braintree-id=methods-container] .braintree-method:first-child {
 		@apply tw-rounded-tr tw-rounded-tl tw-rounded-bl-none tw-rounded-br-none;
 	}
 
-	#dropin-container [data-braintree-id="methods-container"] .braintree-method:last-child {
+	#dropin-container [data-braintree-id=methods-container] .braintree-method:last-child {
 		@apply tw-rounded-br tw-rounded-bl;
 	}
 
 	/* Payment Option buttons on initial UI */
-	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option {
+	#dropin-container [data-braintree-id=payment-options-container] .braintree-option {
 		@apply tw-border-solid tw-border-tertiary tw-w-full tw-border tw-border-b-0 tw-p-2;
 	}
 
-	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:first-child {
+	#dropin-container [data-braintree-id=payment-options-container] .braintree-option:first-child {
 		@apply tw-rounded-tr tw-rounded-tl tw-rounded-bl-none tw-rounded-br-none;
 	}
 
-	#dropin-container [data-braintree-id="payment-options-container"] .braintree-option:last-child {
+	#dropin-container [data-braintree-id=payment-options-container] .braintree-option:last-child {
 		@apply tw-rounded-br tw-rounded-bl tw-border-b;
 	}
 
 	/* 'Choose another way to pay' text */
-	#dropin-container [data-braintree-id="toggle"],
-	#dropin-container [data-braintree-id="toggle"]:hover {
+	#dropin-container [data-braintree-id=toggle],
+	#dropin-container [data-braintree-id=toggle]:hover {
 		@apply tw-bg-transparent tw-text-h4 tw-text-link;
 	}
 
-	#dropin-container [data-braintree-id="toggle"] span,
-	#dropin-container [data-braintree-id="toggle"] span:focus,
-	#dropin-container [data-braintree-id="toggle"] span:hover {
+	#dropin-container [data-braintree-id=toggle] span,
+	#dropin-container [data-braintree-id=toggle] span:focus,
+	#dropin-container [data-braintree-id=toggle] span:hover {
 		@apply tw-text-base tw-no-underline tw-border-0;
 		@apply tw-font-medium;
 	}
 
 	/* Credit Card Payment Content
 	Form field labels */
-	#dropin-container [data-braintree-id="card"] .braintree-sheet__content .braintree-form__label {
+	#dropin-container [data-braintree-id=card] .braintree-sheet__content .braintree-form__label {
 		@apply tw-text-base;
 		@apply tw-font-medium;
 	}

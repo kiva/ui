@@ -65,11 +65,11 @@
 
 <script>
 import _map from 'lodash/map';
-import { expand, collapse } from '@/util/expander';
+import { expand, collapse } from '#src/util/expander';
 import { mdiCheckCircle } from '@mdi/js';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import ItemList from './ItemList';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'StatsSection',

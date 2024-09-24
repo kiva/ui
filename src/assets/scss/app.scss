@@ -1,13 +1,14 @@
 // import all the variables
 @import 'settings';
-@import 'foundation';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 // import global foundation components
-@include foundation-flex-classes;
-@include foundation-flex-grid;
-@include foundation-visibility-classes;
+@include foundation-flex-classes ();
+@include foundation-flex-grid ();
+@include foundation-visibility-classes ();
 
 // import global styles
+/* stylelint-disable no-invalid-position-at-import-rule */
 @import 'global/fonts';
 @import 'global/page-layout';
 @import 'global/line-breaks';

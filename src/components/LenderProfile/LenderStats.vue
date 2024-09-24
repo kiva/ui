@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import StatsTable from '@/components/Stats/StatsTable';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import StatsTable from '#src/components/Stats/StatsTable';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {

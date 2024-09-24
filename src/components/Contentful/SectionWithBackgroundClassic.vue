@@ -39,9 +39,10 @@ import {
 	mintTheme,
 	defaultTheme,
 	darkMintTheme
-} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
+} from '@kiva/kv-tokens/configs/kivaColors.cjs';
+import { defineAsyncComponent } from 'vue';
 
-const KvContentfulImg = () => import('~/@kiva/kv-components/vue/KvContentfulImg');
+const KvContentfulImg = defineAsyncComponent(() => import('@kiva/kv-components/vue/KvContentfulImg'));
 
 /**
 * Section Background

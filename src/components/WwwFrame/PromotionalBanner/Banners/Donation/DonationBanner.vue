@@ -102,11 +102,11 @@
 <script>
 import { mdiClose } from '@mdi/js';
 import numeral from 'numeral';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'DonationBanner',
@@ -173,7 +173,7 @@ export default {
 		}
 	}
 
-	.donation-amount >>> span {
+	.donation-amount :deep(span) {
 		@apply tw-px-1;
 	}
 </style>

@@ -1,4 +1,4 @@
-import EcoChallengeLightbox from '@/components/Lightboxes/EcoChallengeLightbox.vue';
+import EcoChallengeLightbox from '#src/components/Lightboxes/EcoChallengeLightbox.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
@@ -68,6 +68,12 @@ export const EcoChallengeLightboxCombo0 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[0],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -75,15 +81,17 @@ export const EcoChallengeLightboxCombo0 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo0.args = {
-	progresses: allMilestoneCombinations[0],
-};
 
 export const EcoChallengeLightboxCombo1 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[1],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -91,15 +99,17 @@ export const EcoChallengeLightboxCombo1 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo1.args = {
-	progresses: allMilestoneCombinations[1],
-};
 
 export const EcoChallengeLightboxCombo2 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[2],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -107,15 +117,17 @@ export const EcoChallengeLightboxCombo2 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo2.args = {
-	progresses: allMilestoneCombinations[2],
-};
 
 export const EcoChallengeLightboxCombo3 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[3],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -123,16 +135,17 @@ export const EcoChallengeLightboxCombo3 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo3.args = {
-	progresses: allMilestoneCombinations[3],
-};
-
 
 export const EcoChallengeLightboxCombo4 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[4],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -140,15 +153,17 @@ export const EcoChallengeLightboxCombo4 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo4.args = {
-	progresses: allMilestoneCombinations[4],
-};
 
 export const EcoChallengeLightboxCombo5 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[5],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -156,15 +171,17 @@ export const EcoChallengeLightboxCombo5 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo5.args = {
-	progresses: allMilestoneCombinations[5],
-};
 
 export const EcoChallengeLightboxCombo6 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[6],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -172,15 +189,17 @@ export const EcoChallengeLightboxCombo6 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo6.args = {
-	progresses: allMilestoneCombinations[6],
-};
 
 export const EcoChallengeLightboxCombo7 = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { EcoChallengeLightbox },
 	mixins: [cookieStoreStoryMixin(), apolloStoryMixin()],
+	setup() {
+		return {
+			progresses: allMilestoneCombinations[7],
+			visible: true
+		};
+	},
 	template: `
 		<eco-challenge-lightbox
 			:visible="visible"
@@ -188,11 +207,3 @@ export const EcoChallengeLightboxCombo7 = (args, { argTypes }) => ({
 		 />
 		`,
 });
-
-EcoChallengeLightboxCombo7.args = {
-	progresses: allMilestoneCombinations[7],
-};
-
-
-
-

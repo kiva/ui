@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import BadgesList from '@/pages/Portfolio/LendingStats/BadgesList';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {

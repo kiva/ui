@@ -25,15 +25,15 @@
 			</p>
 			<div v-for="year in years" :key="year">
 				<h2>{{ year }}</h2>
-				<!-- eslint-disable vue/no-use-v-if-with-v-for -->
-				<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<!-- eslint-enable -->
+				<template v-for="(paper, index) in papers">
+					<div v-if="paper.year === year" :key="index">
+						<p>
+							<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
+								<i>{{ paper.publication }}</i>
+							</a>
+						</p>
+					</div>
+				</template>
 			</div>
 		</build-page-wrapper>
 	</www-page>
@@ -41,9 +41,9 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import DeveloperSecondaryMenu from '#src/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	name: 'Research',
@@ -52,7 +52,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Research'
 	},
 	data() {

@@ -7,7 +7,7 @@
 			<a
 				href="/settings/account"
 				v-kv-track-event="[
-					'portofolio',
+					'portfolio',
 					'click',
 					'account-profile-pic'
 				]"
@@ -25,8 +25,8 @@
 
 <script>
 
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
-import MyKivaContainer from '@/components/MyKiva/MyKivaContainer';
+import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 
 export default {
 	name: 'MyKivaProfile',
@@ -42,7 +42,7 @@ export default {
 	},
 	computed: {
 		lenderName() {
-			return this?.lender?.name ?? 'Christian';
+			return this?.lender?.name ?? '';
 		},
 		lenderImageUrl() {
 			return this?.lender?.image?.url ?? '';

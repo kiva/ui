@@ -9,7 +9,7 @@ const wellKnownErrorCodes = [
 	'api.authenticationRequired'
 ];
 
-export function handleApolloErrors(handlers = {}, errors, args) {
+export function handleApolloErrors(handlers = {}, errors = [], args = {}) {
 	// Get the error code for each error from either error.code or error.extensions.code
 	const formattedErrors = _map(errors, error => {
 		const extensions = error.extensions || {};

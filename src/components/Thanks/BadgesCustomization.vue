@@ -46,10 +46,10 @@
 
 <script>
 import confetti from 'canvas-confetti';
-import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
-import DetailSection from '@/components/Thanks/Badges/DetailSection';
-import FirstScreen from '@/components/Thanks/Badges/FirstScreen';
-import RevealedBadge from '@/components/Thanks/Badges/RevealedBadge';
+import DiscoverSection from '#src/components/Thanks/Badges/DiscoverSection';
+import DetailSection from '#src/components/Thanks/Badges/DetailSection';
+import FirstScreen from '#src/components/Thanks/Badges/FirstScreen';
+import RevealedBadge from '#src/components/Thanks/Badges/RevealedBadge';
 
 export default {
 	name: 'BadgesCustomization',

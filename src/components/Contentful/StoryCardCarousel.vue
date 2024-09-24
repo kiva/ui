@@ -15,8 +15,8 @@
 					class="story-card-carousel tw-overflow-visible"
 					slide-max-width="36rem"
 				>
-					<template v-for="(slide, index) in carouselSlides" #[`slide${index}`]>
-						<story-card :content="slide" :key="index" />
+					<template v-for="(slide, index) in carouselSlides" #[`slide${index}`] :key="index">
+						<story-card :content="slide" />
 					</template>
 				</kv-carousel>
 			</div>
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import StoryCard from '@/components/Contentful/StoryCard';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import StoryCard from '#src/components/Contentful/StoryCard';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'StoryCardCarousel',
@@ -64,21 +64,21 @@ export default {
 
 <style lang="postcss" scoped>
 /* Reposition the carousel controls */
-.story-card-carousel::v-deep .kv-carousel__controls {
+.story-card-carousel:deep(.kv-carousel__controls) {
 	@apply tw-m-auto tw-px-4 md:tw-px-5 tw-justify-center md:tw-justify-end;
 }
 
 /* Add rounded corners to story card images */
-.story-card-carousel::v-deep .dynamic-rich-text picture {
+.story-card-carousel:deep(.dynamic-rich-text picture) {
 	@apply tw-rounded tw-overflow-hidden;
 }
 
 /* Set font styles for body text */
-.story-card-carousel::v-deep .dynamic-rich-text p {
+.story-card-carousel:deep(.dynamic-rich-text) p {
 	@apply tw-text-subhead;
 }
 
-.story-card-carousel::v-deep .dynamic-rich-text b {
+.story-card-carousel:deep(.dynamic-rich-text) b {
 	@apply tw-text-brand-900 tw-font-book;
 }
 </style>
@@ -88,6 +88,7 @@ export default {
 	.story-card {
 		// Remove background set in StoryCard
 		background: none;
+
 		// Remove extra padding between bottom of story card and the carousel controls
 		padding-bottom: 0;
 
@@ -99,7 +100,7 @@ export default {
 	}
 
 	// When a slide is not active, hide every element that isn't an image in the DynamicRichText blocks in the slide
-	[role="group"][aria-current="false"] {
+	[role=group][aria-current=false] {
 		.story-card .dynamic-rich-text {
 			& > * {
 				opacity: 0;

@@ -1,4 +1,4 @@
-import ActivityCard from '@/components/Iwd/ActivityCard';
+import ActivityCard from '#src/components/Iwd/ActivityCard';
 
 export default {
 	title: 'IWD/ActivityCard',
@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ActivityCard },
+		setup() { return args; },
 		template: `
 			<div>
 				<activity-card

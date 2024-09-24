@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'EducationPost',
@@ -123,7 +123,7 @@ export default {
 	@apply !tw-block tw-w-full tw-h-full tw-mb-1;
 }
 
-.card-container-image >>> img {
+.card-container-image :deep(img) {
 	max-height: 180px;
 	@apply tw-rounded;
 

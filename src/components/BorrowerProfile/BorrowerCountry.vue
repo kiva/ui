@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import KvMap from '@/components/Kv/KvMap';
+import { gql } from 'graphql-tag';
+import KvMap from '#src/components/Kv/KvMap';
 import CountryInfo from './CountryInfo';
 
 export default {

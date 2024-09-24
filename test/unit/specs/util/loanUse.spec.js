@@ -1,7 +1,7 @@
 import {
 	FUNDRAISING, INACTIVE, REVIEWED, PAYING_BACK
-} from '@/api/fixtures/LoanStatusEnum';
-import getLoanUse from '@/util/loanUse';
+} from '#src/api/fixtures/LoanStatusEnum';
+import getLoanUse from '#src/util/loanUse';
 
 const loanDefaults = {
 	anonymizationLevel: 'none',

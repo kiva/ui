@@ -1,9 +1,9 @@
-import flssLoanQuery from '@/graphql/query/flssLoansQuery.graphql';
-import flssLoanFacetsQuery from '@/graphql/query/flssLoanFacetsQuery.graphql';
-import flssLoanChannelQuery from '@/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '@/graphql/query/loanFinding/categoryListFlss.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
+import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
+import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 
 /**
  * FLSS Query Context Const lists
@@ -44,10 +44,10 @@ export function getFlssFilters(loanSearchState) {
 export async function fetchFacets(
 	apollo,
 	origin = FLSS_ORIGIN_NOT_SPECIFIED,
-	isoCodeFilters,
-	themeFilters,
-	sectorFilters,
-	tagFilters,
+	isoCodeFilters = {},
+	themeFilters = {},
+	sectorFilters = {},
+	tagFilters = {},
 ) {
 	try {
 		const result = await apollo.query({

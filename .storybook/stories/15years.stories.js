@@ -1,21 +1,15 @@
-import Vue from 'vue';
-
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins);
-
-import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
-import FifteenYears from '@/pages/15Years/15Years';
-import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
-import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
-import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
+import AppealBanner15 from '#src/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
+import FifteenYears from '#src/pages/15Years/15Years';
+import FifteenYearsHeader from '#src/components/15Years/15YearsHeader';
+import FifteenYearsHowKivaWorks from '#src/components/15Years/15YearsHowKivaWorks';
+import FifteenYearsIndividuals from '#src/components/15Years/15YearsIndividuals';
+import FifteenYearsPartners from '#src/components/15Years/15YearsPartners';
+import FifteenYearsStyles from '#src/components/15Years/15YearsStyles';
+import FifteenYearsTimeline from '#src/components/15Years/15YearsTimeline';
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
-import {appealBanner} from '../mock-data/contentful-data-mock';
+import { appealBanner } from '../mock-data/contentful-data-mock';
 import countryFacetsDataMock from '../mock-data/country-facets-data-mock';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
@@ -87,7 +81,8 @@ export const Combined = (args, { argTypes }) => ({
 		FifteenYears,
 	},
 	layout: 'fullscreen',
-	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}),  cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
@@ -99,7 +94,8 @@ export const AppealBanner = (args, { argTypes }) => ({
 	},
 	props: Object.keys(argTypes),
 	decorators: [FifteenYearsDecorator],
-	mixins: [apolloStoryMixin({ queryResult: recentFundedLoans}), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: recentFundedLoans }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<appeal-banner-15 :appeal-banner-content="appealBannerContent"  />
 	`,
@@ -111,7 +107,8 @@ export const Header = (args, { argTypes }) => ({
 	},
 	props: Object.keys(argTypes),
 	decorators: [FifteenYearsDecorator],
-	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<fifteen-years-header />
 	`,
@@ -124,6 +121,7 @@ export const Timeline = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	decorators: [FifteenYearsDecorator],
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<fifteen-years-timeline />
 	`,
@@ -136,6 +134,7 @@ export const Individuals = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
+	setup() { return args; },
 	template: `
 		<fifteen-years-individuals />
 	`,
@@ -148,6 +147,7 @@ export const Partners = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
+	setup() { return args; },
 	template: `
 		<fifteen-years-partners />
 	`,
@@ -160,6 +160,7 @@ export const HowKivaWorks = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
+	setup() { return args; },
 	template: `
 		<fifteen-years-how-kiva-works />
 	`,

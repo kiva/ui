@@ -1,4 +1,4 @@
-import achievementMilestonesQuery from '@/graphql/query/achievementMilestones.graphql';
+import achievementMilestonesQuery from '#src/graphql/query/achievementMilestones.graphql';
 
 /**
  * achievementsQuery query

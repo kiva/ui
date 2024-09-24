@@ -26,7 +26,7 @@
 					v-if="currentRegion && currentRegion.length"
 					:key="openRegion"
 					:items="currentRegion"
-					@change="onChange"
+					@update="onChange"
 				/>
 				<p v-else key="none" class="tw-text-tertiary tw-p-1">
 					Pick a region
@@ -41,9 +41,9 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client';
-import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
-import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import { gql } from 'graphql-tag';
+import countryListQuery from '#src/graphql/query/autolending/countryList.graphql';
+import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from './CheckList';
 
 export default {

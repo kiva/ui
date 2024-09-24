@@ -1,8 +1,7 @@
 import { render } from '@testing-library/vue';
-import TeamsMenu from '@/components/WwwFrame/Header/TeamsMenu';
-import Vue from 'vue';
-import CookieStore from '@/util/cookieStore';
-import { MockKvAuth0 } from '@/util/KvAuth0';
+import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
+import CookieStore from '#src/util/cookieStore';
+import { MockKvAuth0 } from '#src/util/KvAuth0';
 
 const user = {
 	my: {
@@ -90,20 +89,21 @@ const userWithMultipleTeams = {
 };
 
 function renderTeamsMenu(props) {
-	Vue.directive('kv-track-event', () => ({}));
-
 	return render(TeamsMenu, {
 		props,
+		directives: { kvTrackEvent: () => { } },
 		provide: {
 			apollo: {
-				readFragment: () => {},
+				readFragment: () => { },
 				query: () => Promise.resolve({}),
-				readQuery: () => {},
+				readQuery: () => { },
 			},
 			cookieStore: new CookieStore(),
 			kvAuth0: MockKvAuth0,
 		},
-		stubs: ['router-link']
+		global: {
+			stubs: ['router-link']
+		},
 	});
 }
 

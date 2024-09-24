@@ -103,7 +103,7 @@
 						<div class="tw-z-5 tw-flex tw-flex-col tw-items-center tw-mt-2.5">
 							<template v-if="confirmOptInChoice">
 								<img
-									:src="imageRequire(`./hi-five.svg`)"
+									:src="images('hi-five.svg')"
 									class="tw-w-7 tw-h-7 tw-mb-1"
 									alt="Hi five icon"
 								>
@@ -113,7 +113,7 @@
 							</template>
 							<template v-else>
 								<img
-									:src="imageRequire(`./paper-plane.svg`)"
+									:src="images('paper-plane.svg')"
 									class="tw-w-7 tw-h-7 tw-mb-1"
 									alt="Paper plane icon"
 								>
@@ -251,21 +251,23 @@
 </template>
 
 <script>
-import KvExpandable from '@/components/Kv/KvExpandable';
+import KvExpandable from '#src/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
-import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
-import AnimatedSparkles from '@/components/Thanks/AnimatedSparkles';
+import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
+import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import AnimatedSparkles from '#src/components/Thanks/AnimatedSparkles';
 import confetti from 'canvas-confetti';
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { gql } from 'graphql-tag';
+import logFormatter from '#src/util/logFormatter';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/thanks-page/', true);
+const imagesGlob = import.meta.glob('../../assets/images/thanks-page/*.*', { eager: true, query: '?url' });
+const images = metaGlobReader(imagesGlob, '../../assets/images/thanks-page/');
 
 export default {
 	name: 'WhatIsNextTemplate',
@@ -315,7 +317,7 @@ export default {
 			mdiChevronDown,
 			confirmOptInChoice: false,
 			selectOption: false,
-			imageRequire,
+			images,
 		};
 	},
 	computed: {
@@ -454,7 +456,7 @@ export default {
 	@apply tw-absolute tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2;
 }
 
-.borrower-image >>> img.tw-object-contain {
+.borrower-image :deep(img.tw-object-contain) {
 	@apply tw-object-fill;
 }
 
@@ -464,15 +466,15 @@ export default {
 	@apply !tw-z-5;
 }
 
-.social-share >>> .share__social.social {
+.social-share :deep(.share__social.social) {
 	@apply tw-w-full;
 }
 
-.ghost-button >>> span {
+.ghost-button :deep(span) {
 	@apply tw-bg-transparent;
 }
 
-.account-creation >>> input {
+.account-creation :deep(input) {
 	@apply tw-bg-stone-1;
 }
 

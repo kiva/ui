@@ -1,6 +1,6 @@
 import {
 	removeTrailingParagraphTag,
-} from '@/util/contentful/richTextRenderer';
+} from '#src/util/contentful/richTextRenderer';
 
 import RichTextField from '../../fixtures/RichTextField.json';
 

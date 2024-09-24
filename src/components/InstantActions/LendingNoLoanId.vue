@@ -17,12 +17,12 @@
 </template>
 
 <script>
-// import logFormatter from '@/util/logFormatter';
+// import logFormatter from '#src/util/logFormatter';
 
 export default {
 	name: 'LendingNoLoanId',
 	inject: ['locale'],
-	metaInfo: {
+	head: {
 		title: 'Error'
 	},
 	props: {

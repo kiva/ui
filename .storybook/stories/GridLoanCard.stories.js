@@ -1,63 +1,61 @@
-import Vue from 'vue'
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import GridLoanCard from '#src/components/LoanCards/GridLoanCard';
 
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins)
+const args = {
+	amountLeft: 250,
+	expiringSoonMessage: 'Only 3 Days Left!',
+	isFavorite: false,
+	isExpired: false,
+	isFunded: false,
+	isSelectedByAnother: false,
+	isVisitor: false,
+	itemsInBasket: [1],
+	percentRaised: .4,
+	loan: {
+		id: 1,
+		name: 'Loan Name',
+		image: {
+			retina: 'https://via.placeholder.com/956x720',
+			default: 'https://via.placeholder.com/478x360',
+			hash: ''
+		},
+		loanAmount: '1250',
+		geocode: {
+			country: {
+				name: 'United States',
+				isoCode: 'us'
+			},
+		},
+		use: 'to buy more fire wood to sell at local market to meet customer demand.',
+		status: '',
+		borrowerCount: 2,
+		lenderRepaymentTerm: 24,
+		matchingText: 'Donation Matcher',
+		userProperties: {
+			lentTo: false
+		},
+		loanFundraisingInfo: {
+			fundedAmount: 1000,
+			reservedAmount: 0,
+			isExpiringSoon: false,
+		},
+		fullLoanUse: 'A loan of $1,250 helps to buy more fire wood to sell at local market to meet customer demand.'
+	},
+};
 
 export default {
 	title: 'Loan Cards/Grid Loan Card',
 	component: GridLoanCard,
-	args: {
-		amountLeft: 250,
-		expiringSoonMessage: 'Only 3 Days Left!',
-		isFavorite: false,
-		isExpired: false,
-		isFunded: false,
-		isSelectedByAnother: false,
-		isVisitor: false,
-		itemsInBasket: [1],
-		percentRaised: .4,
-		loan: {
-			id: 1,
-			name: 'Loan Name',
-			image: {
-				retina: 'https://via.placeholder.com/956x720',
-				default: 'https://via.placeholder.com/478x360',
-				hash: ''
-			},
-			loanAmount: '1250',
-			geocode: {
-				country: {
-					name: 'United States',
-					isoCode: 'us'
-				},
-			},
-			use: 'to buy more fire wood to sell at local market to meet customer demand.',
-			status: '',
-			borrowerCount: 2,
-			lenderRepaymentTerm: 24,
-			matchingText: 'Donation Matcher',
-			userProperties: {
-				lentTo: false
-			},
-			loanFundraisingInfo: {
-				fundedAmount: 1000,
-				reservedAmount: 0,
-				isExpiringSoon: false,
-			},
-			fullLoanUse: 'A loan of $1,250 helps to buy more fire wood to sell at local market to meet customer demand.'
-		},
-	},
+	args,
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin()],
 	components: {
 		GridLoanCard,
 	},
+	setup() { return args; },
 	template: `
 		<grid-loan-card
 			:items-in-basket="itemsInBasket"
@@ -74,12 +72,13 @@ export const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const Tags = (args, { argTypes }) => ({
+export const Tags = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin()],
 	components: {
 		GridLoanCard,
 	},
+	setup() { return args; },
 	template: `
 		<grid-loan-card
 			:items-in-basket="itemsInBasket"

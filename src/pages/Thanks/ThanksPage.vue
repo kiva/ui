@@ -108,8 +108,8 @@
 					</h2>
 					<kv-button
 						:href="`/ui-login?force=true&doneUrl=${
-							(this.$route.query.kiva_transaction_id && this.$route.query.kiva_transaction_id !== null)
-								? encodeURIComponent(this.$route.fullPath)
+							($route.query.kiva_transaction_id && $route.query.kiva_transaction_id !== null)
+								? encodeURIComponent($route.fullPath)
 								: encodeURIComponent('/portfolio')
 						}`"
 					>
@@ -132,7 +132,7 @@
 					<template v-else>
 						Please log in to see your receipt.
 						<kv-button
-							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`"
+							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
 							class="tw-ml-1"
 						>
 							Log in to continue
@@ -166,34 +166,34 @@
 
 <script>
 import numeral from 'numeral';
-import { readBoolSetting } from '@/util/settingsUtils';
-import logReadQueryError from '@/util/logReadQueryError';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import GuestUpsell from '@/components/Checkout/GuestUpsell';
-import AutoDepositCTA from '@/components/Checkout/AutoDepositCTA';
-import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import ThanksLayoutV2 from '@/components/Thanks/ThanksLayoutV2';
-import ThanksPageCommentAndShare from '@/components/Thanks/ThanksPageCommentAndShare';
-import ThanksPageDonationOnly from '@/components/Thanks/ThanksPageDonationOnly';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
+import GuestUpsell from '#src/components/Checkout/GuestUpsell';
+import AutoDepositCTA from '#src/components/Checkout/AutoDepositCTA';
+import MonthlyGoodCTA from '#src/components/Checkout/MonthlyGoodCTA';
+import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import ThanksLayoutV2 from '#src/components/Thanks/ThanksLayoutV2';
+import ThanksPageCommentAndShare from '#src/components/Thanks/ThanksPageCommentAndShare';
+import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
 import orderBy from 'lodash/orderBy';
-import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-import { processPageContentFlat } from '@/util/contentfulUtils';
-import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import { setHotJarUserAttributes } from '@/util/hotJarUtils';
-import logFormatter from '@/util/logFormatter';
-import { joinArray } from '@/util/joinArray';
-import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
-import ShareChallenge from '@/components/Thanks/ShareChallenge';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import WhatIsNextTemplate from '@/components/Thanks/WhatIsNextTemplate';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import BadgesCustomization from '@/components/Thanks/BadgesCustomization';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import { fetchGoals } from '../../util/teamsUtil';
-import teamsGoalsQuery from '../../graphql/query/teamsGoals.graphql';
+import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+import { processPageContentFlat } from '#src/util/contentfulUtils';
+import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
+import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
+import logFormatter from '#src/util/logFormatter';
+import { joinArray } from '#src/util/joinArray';
+import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
+import ShareChallenge from '#src/components/Thanks/ShareChallenge';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import { fetchGoals } from '#src/util/teamsUtil';
+import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -239,7 +239,7 @@ export default {
 		BadgesCustomization,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thank you!'
 		};
@@ -267,8 +267,9 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
-			const transactionId = route.query?.kiva_transaction_id
-				? numeral(route.query?.kiva_transaction_id).value()
+			const currentRoute = route.value ?? {};
+			const transactionId = currentRoute.query?.kiva_transaction_id
+				? numeral(currentRoute.query.kiva_transaction_id).value()
 				: null;
 
 			// Check if transactionId is null, resolve the promise if missing
@@ -359,7 +360,6 @@ export default {
 			return this.pageData?.page?.contentGroups?.thanksMgCtaJan_2021;
 		},
 		ctaContentBlock() {
-			// eslint-disable-next-line max-len
 			return this.ctaContentGroup?.contents?.find(contentItem => contentItem.key === 'thanks-mg-cta');
 		},
 		ctaHeadline() {
@@ -590,10 +590,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .page-content {
-	padding: 1.625rem 0 0 0;
+	padding: 1.625rem 0 0;
 
 	@media print {
 		padding: 0;

@@ -1,8 +1,8 @@
-const { parentPort, workerData } = require('worker_threads');
-const initCache = require('../util/initCache');
-const { info } = require('../util/log');
-const memJsUtils = require('../util/memJsUtils');
-const generators = require('./generators');
+import { parentPort, workerData } from 'worker_threads';
+import initCache from '../util/initCache.js';
+import { info } from '../util/log.js';
+import { getFromCache, setToCache } from '../util/memJsUtils.js';
+import * as generators from './generators/index.js';
 
 const {
 	appConfig,
@@ -50,7 +50,7 @@ async function getSitemap() {
 
 	// check for & return cached version
 	const cacheKey = `ui-xml-sitemap-${host}`;
-	const sitemapFromCache = await memJsUtils.getFromCache(cacheKey, cache);
+	const sitemapFromCache = await getFromCache(cacheKey, cache);
 	if (sitemapFromCache) {
 		info(`Sitemap: returning cached sitemap ${cacheKey}`, { sitemapFromCache });
 		parentPort.postMessage({ sitemap: sitemapFromCache });
@@ -60,7 +60,7 @@ async function getSitemap() {
 	// otherwise create sitemap and cache it
 	const sitemap = await createSitemap(host);
 	info(`Sitemap: caching sitemap ${cacheKey}`, { sitemap });
-	await memJsUtils.setToCache(cacheKey, sitemap, CACHE_TTL, cache);
+	await setToCache(cacheKey, sitemap, CACHE_TTL, cache);
 	parentPort.postMessage({ sitemap });
 }
 

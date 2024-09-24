@@ -38,10 +38,10 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import { gql } from 'graphql-tag';
+import KvButton from '#src/components/Kv/KvButton';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SaveButton',
@@ -141,7 +141,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .save-button-wrapper {
 	.loading-spinner {
@@ -149,7 +149,7 @@ export default {
 		width: 1rem;
 		height: 1rem;
 
-		& >>> .line {
+		& :deep(.line) {
 			background-color: $white;
 		}
 	}

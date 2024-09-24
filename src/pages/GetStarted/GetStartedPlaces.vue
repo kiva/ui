@@ -102,7 +102,7 @@
 											<kv-flag
 												class="country__img"
 												:country="country.code"
-												aspect-ratio="1x1"
+												:is-square="true"
 											/>
 										</span>
 
@@ -170,19 +170,19 @@
 
 <script>
 import _orderBy from 'lodash/orderBy';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import Fuse from 'fuse.js/dist/fuse.common';
 // import Fuse from 'fuse.js'; // re-enabled after https://github.com/krisk/Fuse/pull/383 is merged
 
-import countryListQuery from '@/graphql/query/countryList.graphql';
+import countryListQuery from '#src/graphql/query/countryList.graphql';
 
-import logReadQueryError from '@/util/logReadQueryError';
+import logReadQueryError from '#src/util/logReadQueryError';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvFlag from '@/components/Kv/KvFlag';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvProgressBar from '@/components/Kv/KvProgressBar';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '#src/components/Kv/KvButton';
+import KvFlag from '#src/components/Kv/KvFlag';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvProgressBar from '#src/components/Kv/KvProgressBar';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String) {
 	general {
@@ -206,7 +206,7 @@ export default {
 		KvProgressBar,
 		KvLoadingSpinner,
 	},
-	metaInfo: {
+	head: {
 		title: 'Places - Get Started'
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -384,9 +384,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
-$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
+@import '#src/assets/scss/settings';
+
+$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgb(0 0 0 / 15%);
+$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgb(0 0 0 / 35%);
 
 .get-started {
 	&__form {
@@ -396,7 +397,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		max-width: rem-calc(1088);
 
 		@include breakpoint(medium) {
-			box-shadow: 0 2px 100px 0 rgba(0, 0, 0, 0.1);
+			box-shadow: 0 2px 100px 0 rgb(0 0 0 / 10%);
 		}
 
 		@include breakpoint(large) {
@@ -444,10 +445,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 	&__list {
 		list-style: none;
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
+		inset: 0;
 		margin: 0;
 		padding-bottom: 1rem;
 		overflow-y: scroll;

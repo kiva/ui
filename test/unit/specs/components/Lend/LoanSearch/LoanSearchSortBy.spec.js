@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+import LoanSearchSortBy from '#src/components/Lend/LoanSearch/LoanSearchSortBy';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 
 // Prospective sort options from both APIs (values for flss will expand)
 const allSortOptions = [
@@ -44,24 +44,24 @@ describe('LoanSearchSortBy', () => {
 	});
 
 	it('should select based on prop', async () => {
-		const { getByLabelText, updateProps } = render(LoanSearchSortBy, { props: { allSortOptions } });
+		const { getByLabelText, rerender } = render(LoanSearchSortBy, { props: { allSortOptions } });
 
 		const recommendedSort = getByLabelText('Recommended', { selector: 'input' });
 		expect(recommendedSort.checked).toBeTruthy();
 
-		await updateProps({ sort: 'expiringSoon' });
+		await rerender({ sort: 'expiringSoon' });
 		let radio = getByLabelText('Ending soon');
 		expect(radio.checked).toBeTruthy();
 
-		await updateProps({ sort: '' });
+		await rerender({ sort: '' });
 		radio = getByLabelText('Recommended');
 		expect(radio.checked).toBeTruthy();
 
-		await updateProps({ sort: 'asd' });
+		await rerender({ sort: 'asd' });
 		radio = getByLabelText('Recommended');
 		expect(radio.checked).toBeTruthy();
 
-		await updateProps({ sort: null });
+		await rerender({ sort: null });
 		radio = getByLabelText('Recommended');
 		expect(radio.checked).toBeTruthy();
 	});

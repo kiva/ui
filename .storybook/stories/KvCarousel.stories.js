@@ -1,8 +1,9 @@
-import KvCarousel from '@/components/Kv/KvCarousel';
-import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import { metaGlobReader } from '#src/util/importHelpers';
 
 import causeList from '../mock-data/cause-selector-data-mock';
 
@@ -26,7 +27,7 @@ const defaultCarouselSlides = `
 export default {
 	title: 'Kv/KvCarousel',
 	component: KvCarousel,
- };
+};
 
 export const Default = () => ({
 	components: {
@@ -316,7 +317,9 @@ export const loanCardExample = () => ({
 	}
 });
 
-const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
+const slidesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/kivan-slider/*.*', { eager: true });
+const slidesImageRequire = metaGlobReader(slidesImageGlob, '/src/assets/images/possibilities-banners/kivan-slider/');
+
 export const KivanSlider = () => ({
 	components: {
 		KvCarousel,
@@ -330,32 +333,32 @@ export const KivanSlider = () => ({
 				return [
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-1a-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-1a-retina.jpg')]
+							['small', slidesImageRequire('kivan-1a-std.jpg')],
+							['small retina', slidesImageRequire('kivan-1a-retina.jpg')]
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-1b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-1b-retina.jpg')],
+							['small', slidesImageRequire('kivan-1b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-1b-retina.jpg')],
 						]
 					},
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-2a-std.jpg')],
+							['small', slidesImageRequire('kivan-2a-std.jpg')],
 							['small retina', slidesImageRequire('./kivan-2a-retina.jpg')],
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-2b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-2b-retina.jpg')],
+							['small', slidesImageRequire('kivan-2b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-2b-retina.jpg')],
 						]
 					},
 					{
 						left: [
-							['small', slidesImageRequire('./kivan-3a-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-3a-retina.jpg')],
+							['small', slidesImageRequire('kivan-3a-std.jpg')],
+							['small retina', slidesImageRequire('kivan-3a-retina.jpg')],
 						],
 						right: [
-							['small', slidesImageRequire('./kivan-3b-std.jpg')],
-							['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
+							['small', slidesImageRequire('kivan-3b-std.jpg')],
+							['small retina', slidesImageRequire('kivan-3b-retina.jpg')]
 						]
 					}
 				]
@@ -386,7 +389,9 @@ export const KivanSlider = () => ({
 	`,
 });
 
-const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
+const imageGlob = import.meta.glob('/src/assets/images/hero-slideshow/*.*', { eager: true });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/hero-slideshow/');
+
 export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 	components: {
 		KvCarousel,
@@ -408,16 +413,16 @@ export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 		},
 		heroImages(number) {
 			return [
-				['small', imageRequire(`./hero-${number}-sm-std.jpg`)],
-				['small retina', imageRequire(`./hero-${number}-sm-retina.jpg`)],
-				['medium', imageRequire(`./hero-${number}-med-std.jpg`)],
-				['medium retina', imageRequire(`./hero-${number}-med-retina.jpg`)],
-				['large', imageRequire(`./hero-${number}-lg-std.jpg`)],
-				['large retina', imageRequire(`./hero-${number}-lg-retina.jpg`)],
-				['xga', imageRequire(`./hero-${number}-xga-std.jpg`)],
-				['xga retina', imageRequire(`./hero-${number}-xga-retina.jpg`)],
-				['wxga', imageRequire(`./hero-${number}-wxga-std.jpg`)],
-				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
+				['small', imageRequire(`hero-${number}-sm-std.jpg`)],
+				['small retina', imageRequire(`hero-${number}-sm-retina.jpg`)],
+				['medium', imageRequire(`hero-${number}-med-std.jpg`)],
+				['medium retina', imageRequire(`hero-${number}-med-retina.jpg`)],
+				['large', imageRequire(`hero-${number}-lg-std.jpg`)],
+				['large retina', imageRequire(`hero-${number}-lg-retina.jpg`)],
+				['xga', imageRequire(`hero-${number}-xga-std.jpg`)],
+				['xga retina', imageRequire(`hero-${number}-xga-retina.jpg`)],
+				['wxga', imageRequire(`hero-${number}-wxga-std.jpg`)],
+				['wxga retina', imageRequire(`hero-${number}-wxga-retina.jpg`)],
 			];
 		},
 	},

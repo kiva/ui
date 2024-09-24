@@ -1,31 +1,29 @@
-require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
+import { config as config$0 } from 'dotenv';
+import cluster from 'cluster';
+import http from 'http';
+import express from 'express';
+import compression from 'compression';
+import helmet from 'helmet';
+import locale from 'locale';
+import promBundle from 'express-prom-bundle';
+import { info } from './util/log.js';
+import { setupTracing } from './util/tracer.js';
+import serverRoutes from './available-routes-middleware.js';
+import sitemapMiddleware from './sitemap/middleware.js';
+import authRouter from './auth-router.js';
+import sessionRouter from './session-router.js';
+import timesyncRouter from './timesync-router.cjs';
+import liveLoanRouter from './live-loan-router.js';
+import vueMiddleware from './vue-middleware.js';
+import argv from './util/argv.js';
+import selectConfig from '../config/selectConfig.js';
+import initCache from './util/initCache.js';
+import { errorLogger, fallbackErrorHandler, requestLogger } from './util/errorLogger.js';
+import initializeTerminus from './util/terminusConfig.js';
 
-// eslint-disable-next-line import/order
-const { setupTracing } = require('./util/tracer');
-
+({ config: config$0 }.config({ path: '/etc/kiva-ui-server/config.env' }));
 setupTracing();
-
-const cluster = require('cluster');
-const http = require('http');
-const express = require('express');
-const compression = require('compression');
-const helmet = require('helmet');
-const locale = require('locale');
-const promBundle = require('express-prom-bundle');
-const serverRoutes = require('./available-routes-middleware');
-const sitemapMiddleware = require('./sitemap/middleware');
-const authRouter = require('./auth-router');
-const sessionRouter = require('./session-router');
-const timesyncRouter = require('./timesync-router');
-const liveLoanRouter = require('./live-loan-router');
-const vueMiddleware = require('./vue-middleware');
-const serverBundle = require('../dist/vue-ssr-server-bundle.json');
-const clientManifest = require('../dist/vue-ssr-client-manifest.json');
-const argv = require('./util/argv');
-const config = require('../config/selectConfig')(argv.config);
-const initCache = require('./util/initCache');
-const logger = require('./util/errorLogger');
-const initializeTerminus = require('./util/terminusConfig');
+const config = await selectConfig(argv.config);
 
 const metricsMiddleware = promBundle({
 	includeMethod: true,
@@ -36,9 +34,6 @@ const metricsMiddleware = promBundle({
 		collectDefaultMetrics: {}
 	}
 });
-
-// Initialize tracing
-require('./util/mockTrace');
 
 // Initialize a Cache instance
 const cache = initCache(config.server);
@@ -61,8 +56,8 @@ app.use(helmet({
 }));
 
 // Set headers for static files
-function setHeaders(res, path) {
-	if (/\/fonts\//.test(path)) {
+function setHeaders(res, requestPath) {
+	if (/\/fonts\//.test(requestPath)) {
 		// Allow fonts to be loaded from anywhere
 		res.header('Access-Control-Allow-Origin', '*');
 	} else {
@@ -73,14 +68,14 @@ function setHeaders(res, path) {
 	res.header('Surrogate-Key', 'ui-all ui-static all-assets');
 }
 
-app.use('/static', express.static('dist/static', {
+app.use('/static', express.static('dist/client/static', {
 	setHeaders,
 	maxAge: '1y'
 }));
 
 // Setup Request Logger
 // -> placed here to exclude static
-app.use(logger.requestLogger);
+app.use(requestLogger);
 
 // Read locale from request
 app.use(locale(config.app.locale.supported, config.app.locale.default));
@@ -105,16 +100,13 @@ app.use('/', sessionRouter(config.server));
 app.use('/', authRouter(config.app));
 
 // Setup Vue Request handler
-app.use(vueMiddleware({
-	serverBundle,
-	clientManifest,
-	config,
-}));
+app.use(vueMiddleware({ config }));
 
 // Setup Request Error Logger
-app.use(logger.errorLogger);
+app.use(errorLogger);
+
 // Final Error Handler
-app.use(logger.fallbackErrorHandler);
+app.use(fallbackErrorHandler);
 
 if (config.server.disableCluster) {
 	// initialize http server instance
@@ -124,11 +116,7 @@ if (config.server.disableCluster) {
 	initializeTerminus(server, cache);
 
 	// listen for requests
-	server.listen(port, () => console.info(JSON.stringify({
-		meta: {},
-		level: 'log',
-		message: `server (pid: ${process.pid}) started at localhost:${port}`
-	})));
+	server.listen(port, () => info(`server (pid: ${process.pid}) started at localhost:${port}`));
 } else {
 	// Cluster Activation
 	// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
@@ -137,40 +125,23 @@ if (config.server.disableCluster) {
 	const numCPUs = 2;
 
 	// Start the cluster master process
-	if (cluster.isMaster && !argv.mock) {
-		console.log(JSON.stringify({
-			meta: {},
-			level: 'log',
-			message: `Master ${process.pid} is running`
-		}));
+	if (cluster.isPrimary && !argv.mock) {
+		info(`Primary ${process.pid} is running`);
 
 		// Fork workers.
-		for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
+		for (let i = 0; i < numCPUs; i += 1) {
 			cluster.fork();
 		}
 
-		// Check if work id is died
-		// eslint-disable-next-line no-unused-vars
+		// Check if work id died
 		cluster.on('exit', (worker, code, signal) => {
-			console.info(JSON.stringify({
-				meta: {},
-				level: 'log',
-				message: `worker ${worker.process.pid} died`
-			}));
+			info(`Worker ${worker.process.pid} died`, { code, signal });
 		});
 	} else {
 		// Start the worker processes
 		// - these can share any TCP connection
-		console.info(JSON.stringify({
-			meta: {},
-			level: 'log',
-			message: `Worker ${process.pid} started`
-		}));
+		info(`Worker ${process.pid} started`);
 
-		app.listen(port, () => console.info(JSON.stringify({
-			meta: {},
-			level: 'log',
-			message: `server started at localhost:${port}`
-		})));
+		app.listen(port, () => info(`server started at localhost:${port}`));
 	}
 }

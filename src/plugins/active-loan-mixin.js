@@ -1,5 +1,5 @@
-import updateActiveLoan from '@/graphql/mutation/updateActiveLoan.graphql';
-import checkInjections from '@/util/injectionCheck';
+import updateActiveLoan from '#src/graphql/mutation/updateActiveLoan.graphql';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['apollo'];
 

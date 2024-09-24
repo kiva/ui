@@ -30,18 +30,18 @@
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { gql } from '@apollo/client';
-import { readBoolSetting } from '@/util/settingsUtils';
-import portfolioQuery from '@/graphql/query/portfolioQuery.graphql';
-import badgeGoalMixin from '@/plugins/badge-goal-mixin';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import { gql } from 'graphql-tag';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -128,8 +128,8 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
-		const userTeams = portfolioQueryData.my?.teams?.values ?? [];
-		let allowedTeamsSettings = portfolioQueryData.general?.challenge_allowed_teams?.value ?? '';
+		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
+		let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
 		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
 		this.allowedTeams = userTeams.filter(t => {
 			return allowedTeamsSettings.includes(t.team.teamPublicId);

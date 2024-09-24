@@ -18,15 +18,13 @@
 							class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 							:slide-max-width="singleSlideWidth"
 						>
-							<template v-for="(slide, index) in carouselSlides" #[`slide${index}`]>
+							<template v-for="(slide, index) in carouselSlides" #[`slide${index}`] :key="index">
 								<story-card
 									:content="slide"
-									:key="index"
 									v-if="slide.contentType === 'storyCard'"
 								/>
 								<dynamic-rich-text
 									:html="getRichText(slide.richText)"
-									:key="index"
 									v-if="slide.contentType === 'richTextContent'"
 								/>
 							</template>
@@ -45,17 +43,17 @@
 </template>
 
 <script>
-import contentfulStylesMixin from '@/plugins/contentful-ui-setting-styles-mixin';
-import SectionWithBackgroundClassic from '@/components/Contentful/SectionWithBackgroundClassic';
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import DynamicRichText from '@/components/Contentful/DynamicRichText';
-import ButtonWrapper from '@/components/Contentful/ButtonWrapper';
+import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import DynamicRichText from '#src/components/Contentful/DynamicRichText';
+import ButtonWrapper from '#src/components/Contentful/ButtonWrapper';
 
-import StoryCard from '@/components/Contentful/StoryCard';
+import StoryCard from '#src/components/Contentful/StoryCard';
 
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 
 /**
 * Hero With Carousel Component
@@ -133,7 +131,7 @@ export default {
 			// tw-grid width is 1072px == 67 rem
 			const twGridRemWidth = 67;
 			const slidesToShow = this.carousel?.slidesToShow ?? 1;
-			const columnGaps = (this.carousel?.slidesToShow - 1) * 2;
+			const columnGaps = (slidesToShow - 1) * 2;
 			const availableSpaceForSlides = twGridRemWidth - columnGaps;
 			return `${Math.floor(availableSpaceForSlides / slidesToShow)}rem`;
 		},

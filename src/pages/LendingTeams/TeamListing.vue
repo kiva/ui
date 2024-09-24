@@ -250,14 +250,14 @@
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
-import teamNoImage from '@/assets/images/team_s135.png';
-import { gql } from '@apollo/client';
-import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import teamNoImage from '#src/assets/images/team_s135.png';
+import { gql } from 'graphql-tag';
+import KvPagination from '@kiva/kv-components/vue/KvPagination';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
 
@@ -435,8 +435,15 @@ export default {
 			teamSort, teamCategory, teamOption, queryString, offset
 		}) {
 			this.loading = true;
-			await fetchTeams(this.apollo, teamSort, teamCategory, teamOption,
-				queryString, offset, this.limit).then(teams => {
+			await fetchTeams(
+				this.apollo,
+				teamSort,
+				teamCategory,
+				teamOption,
+				queryString,
+				offset,
+				this.limit
+			).then(teams => {
 				this.teams = teams.values;
 				this.totalCount = teams.totalCount;
 				if (this.teams.length === 0 && this.totalCount > 0) {

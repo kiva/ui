@@ -1,4 +1,4 @@
-import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
+import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
 
 export default {
 	title: 'Kv/KvSectionModalLoader',
@@ -9,6 +9,7 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { KvSectionModalLoader },
+		setup() { return args; },
 		template: `
 			<div style="height: 200px; width: 200px; background: gray; position: relative;">
 				<kv-section-modal-loader
@@ -19,7 +20,6 @@ const story = (args) => {
 			</div>
 		`,
 	})
-	template.args = args;
 	return template;
 };
 

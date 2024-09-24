@@ -3,7 +3,7 @@ import _flatten from 'lodash/flatten';
 import _map from 'lodash/map';
 import Fuse from 'fuse.js/dist/fuse.common';
 // import Fuse from 'fuse.js'; // re-enabled after https://github.com/krisk/Fuse/pull/383 is merged
-import { startsWith } from '@/util/comparators';
+import { startsWith } from '#src/util/comparators';
 
 /*
  * Simple wrapper class around Fuse

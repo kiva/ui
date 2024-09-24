@@ -6,8 +6,8 @@ import {
 	differenceInMilliseconds,
 } from 'date-fns';
 import numeral from 'numeral';
-import logFormatter from '@/util/logFormatter';
-import getLoanUse from '@/util/loanUse';
+import logFormatter from '#src/util/logFormatter';
+import getLoanUse from '#src/util/loanUse';
 
 // Return true if the given loan object is missing the given field.
 // Logs an error to the console if the field is missing.

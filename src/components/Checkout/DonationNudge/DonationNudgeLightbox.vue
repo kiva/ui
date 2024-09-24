@@ -67,14 +67,14 @@
 </template>
 
 <script>
-import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
-import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
+import DonationNudgeBoxes from '#src/components/Checkout/DonationNudge/DonationNudgeBoxes';
+import KvCharityNavigator from '#src/components/Kv/KvCharityNavigator';
 import { mdiInformation } from '@mdi/js';
-import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
-import { gql } from '@apollo/client';
-import { readBoolSetting } from '@/util/settingsUtils';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
+import { gql } from 'graphql-tag';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'DonationNudgeLightbox',

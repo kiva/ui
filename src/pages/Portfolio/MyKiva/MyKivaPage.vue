@@ -72,7 +72,7 @@ export default {
 			'EXP-MP-623-Sept2024'
 		);
 
-		this.$kvTrackEvent('portofolio', 'view', 'new-my-kiva');
+		this.$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 	},
 };
 </script>

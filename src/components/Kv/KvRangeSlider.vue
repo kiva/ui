@@ -76,7 +76,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $thumb-diameter: 1.25em;
 $thumb-fill: $input-checked-color;
@@ -123,7 +123,7 @@ $track-fill: $input-checked-color;
 	.input {
 		--percent-full: 0%;
 
-		-webkit-appearance: none;
+		appearance: none;
 		margin: 0;
 		padding: 0;
 		width: 100%;
@@ -155,7 +155,7 @@ $track-fill: $input-checked-color;
 		&::-webkit-slider-thumb {
 			@include thumb();
 
-			-webkit-appearance: none;
+			appearance: none;
 			margin-top: 0.5 * ($track-height - $thumb-diameter);
 		}
 

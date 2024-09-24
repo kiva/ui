@@ -33,11 +33,11 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvRadio from '@/components/Kv/KvRadio';
-import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
-import autoLendingSelectedQuery from '@/graphql/query/autolending/autoLendingSelected.graphql';
-import { queryAllPartners } from '@/util/autoLendingUtils';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvRadio from '#src/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '#src/plugins/any-or-selected-autolending-radio-mixin';
+import autoLendingSelectedQuery from '#src/graphql/query/autolending/autoLendingSelected.graphql';
+import { queryAllPartners } from '#src/util/autoLendingUtils';
 
 export default {
 	name: 'PartnerRadios',

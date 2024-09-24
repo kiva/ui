@@ -8,30 +8,32 @@
 				To finish creating your account, please enter your first and last name below.
 			</p>
 			<form id="guestAccountClaimForm" action="." @submit.prevent.stop="claimGuestAccount" class="tw-text-left">
-				<kv-base-input
-					name="firstName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-model.trim="firstName"
-					:validation="$v.firstName"
-				>
-					First name
-					<template #required>
-						Enter first name.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="lastName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-model.trim="lastName"
-					:validation="$v.lastName"
-				>
-					Last name
-					<template #required>
-						Enter last name.
-					</template>
-				</kv-base-input>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="firstName"
+						type="text"
+						v-model.trim="firstName"
+						:validation="v$.firstName"
+					>
+						First name
+						<template #required>
+							Enter first name.
+						</template>
+					</kv-base-input>
+				</div>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="lastName"
+						type="text"
+						v-model.trim="lastName"
+						:validation="v$.lastName"
+					>
+						Last name
+						<template #required>
+							Enter last name.
+						</template>
+					</kv-base-input>
+				</div>
 				<kv-button
 					class="claim-button tw-w-full"
 					type="submit"
@@ -44,15 +46,15 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
-import SystemPage from '@/components/SystemFrame/SystemPage';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'GuestAccountClaim',
-	metaInfo() {
+	head() {
 		return {
 			title: 'Claim account'
 		};
@@ -63,16 +65,15 @@ export default {
 		KvBaseInput,
 	},
 	inject: ['apollo'],
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		firstName: {
-			required,
-		},
-		lastName: {
-			required,
-		},
+	validations() {
+		return {
+			firstName: {
+				required,
+			},
+			lastName: {
+				required,
+			},
+		};
 	},
 	data() {
 		return {
@@ -80,12 +81,13 @@ export default {
 			lastName: '',
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	methods: {
 		claimGuestAccount() {
 			this.$kvTrackEvent('Login', 'click-guest-enter-name-cta', 'Done');
-			this.$v.$touch();
+			this.v$.$touch();
 
-			if (!this.$v.$invalid) {
+			if (!this.v$.$invalid) {
 				const params = [
 					`firstName=${encodeURIComponent(this.firstName)}`,
 					`lastName=${encodeURIComponent(this.lastName)}`,
@@ -96,7 +98,7 @@ export default {
 					window.location = `https://${this.$appConfig.auth0.domain}/continue?${params}`;
 				});
 			} else {
-				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.$v.firstName, this.$v.lastName]);
+				this.$kvTrackEvent('Login', 'error-guest-enter-name-cta', [this.v$.firstName, this.v$.lastName]);
 			}
 		}
 	},

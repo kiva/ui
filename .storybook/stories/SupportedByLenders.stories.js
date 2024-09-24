@@ -1,6 +1,6 @@
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
 import activities from '../mock-data/activity-feed-data-mock';
-import KvUserAvatar from '~/@kiva/kv-components/vue/KvUserAvatar';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 export default {
 	title: 'Components/SupportedByLenders',
@@ -11,13 +11,13 @@ const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { SupportedByLenders, KvUserAvatar },
+		setup() { return args; },
 		template: `
-      <supported-by-lenders
-        :participants="participants"
-      />
+			<supported-by-lenders
+				:participants="participants"
+			/>
 		`,
 	});
-	template.args = args;
 	return template;
 };
 

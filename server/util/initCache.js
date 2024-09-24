@@ -1,5 +1,5 @@
-const LRU = require('lru-cache');
-const memjs = require('memjs');
+import LRU from 'lru-cache';
+import memjs from 'memjs';
 
 function FakeMemcached(options) {
 	// Create LRU-cache instance
@@ -32,8 +32,7 @@ function FakeMemcached(options) {
 }
 
 let cache;
-
-module.exports = function initCache(config) {
+export default function initCache(config) {
 	// Return existing cache if already initialized
 	if (cache) {
 		return cache;
@@ -54,4 +53,4 @@ module.exports = function initCache(config) {
 		max: 1000
 	});
 	return cache;
-};
+}

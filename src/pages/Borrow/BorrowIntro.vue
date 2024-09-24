@@ -103,13 +103,13 @@
 <script>
 import { mdiClock } from '@mdi/js';
 
-import BorrowStep1 from '@/assets/inline-svgs/borrow/precheck.svg';
-import BorrowStep2 from '@/assets/inline-svgs/borrow/newaccount.svg';
-import BorrowStep3 from '@/assets/inline-svgs/borrow/application.svg';
+import BorrowStep1 from '#src/assets/inline-svgs/borrow/precheck.svg';
+import BorrowStep2 from '#src/assets/inline-svgs/borrow/newaccount.svg';
+import BorrowStep3 from '#src/assets/inline-svgs/borrow/application.svg';
 
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'BorrowIntro',
@@ -121,7 +121,7 @@ export default {
 		KvGrid,
 		KvMaterialIcon,
 	},
-	metaInfo: {
+	head: {
 		title: 'Borrow Pre-application',
 	},
 	data() {

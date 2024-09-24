@@ -66,13 +66,13 @@
 </template>
 
 <script>
-import DistributionTable from '@/pages/Portfolio/ImpactDashboard/DistributionTable';
-import KvPieChart from '~/@kiva/kv-components/vue/KvPieChart';
-import KvTreeMapChart from '~/@kiva/kv-components/vue/KvTreeMapChart';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
+import DistributionTable from '#src/pages/Portfolio/ImpactDashboard/DistributionTable';
+import KvPieChart from '@kiva/kv-components/vue/KvPieChart';
+import KvTreeMapChart from '@kiva/kv-components/vue/KvTreeMapChart';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 
 export default {
 	name: 'StatsTable',

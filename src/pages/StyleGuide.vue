@@ -55,9 +55,9 @@
 
 <script>
 import { mdiGithub } from '@mdi/js';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'StyleGuide',
@@ -66,7 +66,7 @@ export default {
 		KvMaterialIcon,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Styleguide'
 	},
 	data() {

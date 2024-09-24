@@ -1,4 +1,4 @@
-import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
+import MonthlyGoodUpdateForm from '#src/components/Forms/MonthlyGoodUpdateForm';
 
 export default {
 	title: 'Forms/MonthlyGoodUpdateForm',
@@ -27,6 +27,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		MonthlyGoodUpdateForm
 	},
+	setup() { return args; },
 	template: `
 		<monthly-good-update-form
 			:donation="donation"

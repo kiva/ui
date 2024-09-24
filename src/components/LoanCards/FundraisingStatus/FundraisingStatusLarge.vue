@@ -3,7 +3,7 @@
 		class="fundraising-status"
 	>
 		<div class="funded-status-line tw-text-brand tw-text-small">
-			{{ percentRaised | numeral('0%') }} funded{{ lenderCount ? ` by ${lenderCount} lenders` : '' }}
+			{{ $filters.numeral(percentRaised, '0%') }} funded{{ lenderCount ? ` by ${lenderCount} lenders` : '' }}
 		</div>
 		<div
 			class="fundraising-status-meter-wrapper"
@@ -22,14 +22,14 @@
 				Funded
 			</span>
 			<span v-else>
-				{{ timeLeftMessage }} / ${{ amountLeft | numeral('0,0') }} to go
+				{{ timeLeftMessage }} / ${{ $filters.numeral(amountLeft, '0,0') }} to go
 			</span>
 		</div>
 	</div>
 </template>
 
 <script>
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 
 export default {
 	name: 'FundraisingStatusLarge',
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .fundraising-status {
 	display: flex;

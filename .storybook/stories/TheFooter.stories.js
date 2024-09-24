@@ -4,10 +4,10 @@ import {
 	wrdFooterTheme,
 	fifteenYearFooterTheme,
 	blueFooter
-} from '@/util/siteThemes';
+} from '#src/util/siteThemes';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import TheFooter from '@/components/WwwFrame/TheFooter';
+import TheFooter from '#src/components/WwwFrame/TheFooter';
 
 export default {
 	title: 'WwwFrame/TheFooter',
@@ -19,15 +19,15 @@ export default {
 		theme: {
 			control: {
 				type: 'select',
-				options: {
-					'none': null,
-					'lightFooter':lightFooter,
-					'iwdFooterTheme': iwdFooterTheme,
-					'wrdFooterTheme': wrdFooterTheme,
-					'fifteenYearFooterTheme': fifteenYearFooterTheme,
-					'blueFooter': blueFooter,
-				},
-			}
+			},
+			options: {
+				'none': null,
+				'lightFooter': lightFooter,
+				'iwdFooterTheme': iwdFooterTheme,
+				'wrdFooterTheme': wrdFooterTheme,
+				'fifteenYearFooterTheme': fifteenYearFooterTheme,
+				'blueFooter': blueFooter,
+			},
 		},
 	}
 };
@@ -38,6 +38,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		TheFooter
 	},
+	setup() { return args; },
 	template: `
 		<the-footer
 			:theme="theme"
