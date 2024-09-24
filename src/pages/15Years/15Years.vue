@@ -64,7 +64,7 @@ export default {
 
 	.footer {
 		height: 11rem;
-		background-image: url('#src/assets/images/15-years/footer-background.svg');
+		background-image: url('/src/assets/images/15-years/footer-background.svg');
 		background-size: 100%;
 		background-position: bottom;
 		background-repeat: no-repeat;

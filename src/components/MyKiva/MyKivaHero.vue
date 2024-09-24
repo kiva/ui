@@ -39,12 +39,12 @@ export default {
 <style lang="postcss" scoped>
 
 .landscape {
-	background-image: url('#src/assets/images/my-kiva/header-mobile.svg');
+	background-image: url('/src/assets/images/my-kiva/header-mobile.svg');
 	background-position: 75%;
 	height: 148px;
 
 	@screen md {
-		background-image: url('#src/assets/images/my-kiva/header-desktop.svg');
+		background-image: url('/src/assets/images/my-kiva/header-desktop.svg');
 		background-size: cover;
 		background-position: center;
 		height: 249px;

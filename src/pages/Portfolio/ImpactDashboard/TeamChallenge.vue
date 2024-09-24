@@ -77,7 +77,7 @@ export default {
 
 <style scoped lang="postcss">
 	.team-challenge {
-		background-image: url('#src/assets/images/backgrounds/team_challenge_bg.png');
+		background-image: url('/src/assets/images/backgrounds/team_challenge_bg.png');
 		background-position-y: 110px;
 		min-height: 50vh;
 	}
