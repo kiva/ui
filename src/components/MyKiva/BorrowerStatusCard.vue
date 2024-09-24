@@ -238,7 +238,6 @@ export default {
 <style lang="postcss" scoped>
 
 .card-container {
-  max-height: 464px;
   @apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
 
   @screen md {
