@@ -88,7 +88,7 @@ jobs:
         uses: ./.github/actions/upload-static-assets
         with:
           source_dir: "dist"
-          include: "static/*"
+          include: "client/static/*"
           cache_control: "public,max-age=31536000"
       - name: docker-push
         uses: ./.github/actions/docker-build-push
