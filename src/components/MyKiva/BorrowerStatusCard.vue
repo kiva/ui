@@ -9,8 +9,7 @@
 				<div class="tw-flex-1">
 					<div
 						class="tw-w-10 tw-h-10 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
-              tw-rounded-full tw-shadow"
-						style="margin-top: -2.5rem;"
+							tw-rounded-full tw-shadow tw--mt-5"
 					>
 						<BorrowerImage
 							class="tw-w-full tw-rounded-full tw-bg-brand"
@@ -43,7 +42,7 @@
 				<div class="tw-flex-1">
 					<button
 						class="tw-flex tw-items-center tw-justify-center tw-py-2 tw-w-full
-              md:tw-pointer-events-none"
+							md:tw-pointer-events-none"
 						@click="toggleWhatIsNext"
 					>
 						<p class="tw-text-action tw-font-medium md:tw-text-black">
@@ -119,7 +118,7 @@ export default {
 			return this.loan?.name ?? '';
 		},
 		hash() {
-			return this.loan.image?.hash ?? '';
+			return this.loan?.image?.hash ?? '';
 		},
 		pronoun() {
 			if (this.loan?.gender === 'male') return 'his';
@@ -127,7 +126,7 @@ export default {
 			return 'their';
 		},
 		loanUse() {
-			return this.loan.use ?? '';
+			return this.loan?.use ?? '';
 		},
 		loanFunFact() {
 			// TODO: Replace this logic once MP-820 is complete
@@ -186,8 +185,8 @@ export default {
 		},
 		description() {
 			return `${this.borrowerName}
-        ${this.isFundraising ? 'will use' : 'used'}
-        ${this.pronoun} loan ${this.loanUse} ${this.loanFunFact}`;
+				${this.isFundraising ? 'will use' : 'used'}
+				${this.pronoun} loan ${this.loanUse} ${this.loanFunFact}`;
 		},
 		currentStep() {
 			if (this.isFundraising) {
@@ -238,19 +237,15 @@ export default {
 <style lang="postcss" scoped>
 
 .card-container {
-  @apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
+	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
 
-  @screen md {
-    width: 468px;
-  }
+	@screen md {
+		width: 468px;
+	}
 
-  @screen lg {
-    width: 520px;
-  }
-}
-
-.avatar {
-  margin-top: -4rem;
+	@screen lg {
+		width: 520px;
+	}
 }
 
 </style>
