@@ -48,7 +48,7 @@ export default {
 		border-radius: $button-radius;
 		line-height: 1.125;
 		background-color: #fff;
-		background-image: url('#src/assets/images/customDropdown.png');
+		background-image: url('/src/assets/images/customDropdown.png');
 		background-size: rem-calc(23) rem-calc(20);
 		background-repeat: no-repeat;
 		background-position: right -1.9rem center;
