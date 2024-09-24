@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import MyKivaNavigation from '@/components/MyKiva/MyKivaNavigation';
-import myKivaQuery from '@/graphql/query/myKiva.graphql';
-import MyKivaHero from '@/components/MyKiva/MyKivaHero';
-import MyKivaProfile from '@/components/MyKiva/MyKivaProfile';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
+import myKivaQuery from '#src/graphql/query/myKiva.graphql';
+import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
+import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
