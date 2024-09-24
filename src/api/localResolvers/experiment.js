@@ -7,9 +7,9 @@ import {
 	getLoginId,
 	getCookieAssignments,
 	setCookieAssignments,
-} from '@/util/experiment/experimentUtils';
-import Experiment from '@/api/fixtures/Experiment';
-import logFormatter from '@/util/logFormatter';
+} from '#src/util/experiment/experimentUtils';
+import Experiment from '#src/api/fixtures/Experiment';
+import logFormatter from '#src/util/logFormatter';
 
 /**
  * Local resolvers for experiment assignment

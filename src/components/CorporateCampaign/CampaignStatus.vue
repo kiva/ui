@@ -39,7 +39,7 @@
 							:class="{ 'tw-underline': inContext, 'tw-cursor-pointer': inContext }"
 							:style="inContext ? 'text-decoration: underline; cursor: pointer;' : ''"
 						>
-							You have ${{ promoAmount | numeral }}
+							You have {{ $filters.numeral(promoAmount, '$0,0[.]00') }}
 							<span v-if="promoName">from {{ promoName }}</span>
 							to lend!
 						</span>
@@ -58,8 +58,8 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 export default {
 	name: 'CampaignStatus',
@@ -122,7 +122,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .campaign-status {
 	max-width: inherit;

@@ -48,12 +48,12 @@
 
 <script>
 
-import { toParagraphs } from '@/util/loanUtils';
-import { gql } from '@apollo/client';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { toParagraphs } from '#src/util/loanUtils';
+import { gql } from 'graphql-tag';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const allChannelsQuery = gql`
 	query allChannelsQuery {
@@ -165,7 +165,7 @@ export default {
 		return {
 			spotlightPlaceholderImageCTF: '',
 			spotlightLoan: {},
-			allChannelsData: {},
+			allChannelsData: [],
 			isLoading: true,
 			targetedLoanChannelID: null
 		};
@@ -229,7 +229,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.spotlight-loan-image >>> img {
+.spotlight-loan-image :deep(img) {
 	@apply tw-rounded tw-object-contain tw-bg-black md:tw-object-cover md:tw-object-top;
 	@apply tw-w-full tw-max-h-[280px] md:tw-max-h-[450px];
 	@apply md:tw-min-h-[320px];

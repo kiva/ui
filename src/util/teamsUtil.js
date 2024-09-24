@@ -1,6 +1,6 @@
-import teamsQuery from '@/graphql/query/teamsQuery.graphql';
-import teamsGoals from '@/graphql/query/teamsGoals.graphql';
-import leaderboardsQuery from '@/graphql/query/leaderboardsQuery.graphql';
+import teamsQuery from '#src/graphql/query/teamsQuery.graphql';
+import teamsGoals from '#src/graphql/query/teamsGoals.graphql';
+import leaderboardsQuery from '#src/graphql/query/leaderboardsQuery.graphql';
 
 export const teamCategories = [
 	{

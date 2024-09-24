@@ -5,7 +5,7 @@
 		<div class="loan-results">
 			<template v-if="totalPreferredCount > 0">
 				<h1 class="tw-text-center tw-mb-4 tw-mx-auto" style="max-width: 50rem;">
-					Out of {{ totalFundRaisingCount | numeral(0,0) }} borrowers, these are your perfect matches.
+					Out of {{ $filters.numeral(totalFundRaisingCount, 0,0) }} borrowers, these are your perfect matches.
 				</h1>
 			</template>
 			<template v-else>
@@ -111,16 +111,18 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
-import EditPreferences from '@/components/GetStarted/EditPreferences';
-import KvProgressBar from '@/components/Kv/KvProgressBar';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
-import logFormatter from '@/util/logFormatter';
+import FrequentlyAskedQuestions from '#src/components/GetStarted/FrequentlyAskedQuestions';
+import EditPreferences from '#src/components/GetStarted/EditPreferences';
+import KvProgressBar from '#src/components/Kv/KvProgressBar';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import RecommendedLoanCard from '#src/components/LoanCards/RecommendedLoanCard';
+import logFormatter from '#src/util/logFormatter';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
+const imgGlob = import.meta.glob('/src/assets/images/lend-by-category-homepage/*.*', { eager: true });
+const imgRequire = metaGlobReader(imgGlob, '/src/assets/images/lend-by-category-homepage/');
 
 export default {
 	name: 'GetStartedResults',
@@ -139,30 +141,30 @@ export default {
 			totalFundRaisingCount: 0,
 			howItWorksImgs: {
 				loan: [
-					['small', imgRequire('./how-it-works-loan.png')],
-					['small retina', imgRequire('./how-it-works-loan_2x.png')],
+					['small', imgRequire('how-it-works-loan.png')],
+					['small retina', imgRequire('how-it-works-loan_2x.png')],
 				],
 				repaid: [
-					['small', imgRequire('./how-it-works-repaid.png')],
-					['small retina', imgRequire('./how-it-works-repaid_2x.png')],
+					['small', imgRequire('how-it-works-repaid.png')],
+					['small retina', imgRequire('how-it-works-repaid_2x.png')],
 				],
 				people: [
-					['small', imgRequire('./loan-not-donation.png')],
-					['small retina', imgRequire('./loan-not-donation_2x.png')],
+					['small', imgRequire('loan-not-donation.png')],
+					['small retina', imgRequire('loan-not-donation_2x.png')],
 				],
 			},
 			flourishImgs: {
 				greenLeft: [
-					['small', imgRequire('./flourish-green-left.png')],
-					['large', imgRequire('./flourish-green-left.png')],
-					['large retina', imgRequire('./flourish-green-left_2x.png')],
+					['small', imgRequire['./flourish-green-left.png']],
+					['large', imgRequire['./flourish-green-left.png']],
+					['large retina', imgRequire['./flourish-green-left_2x.png']],
 				],
 			},
 			causeValues: [],
 			countriesValues: []
 		};
 	},
-	metaInfo: {
+	head: {
 		title: 'Results - Get Started'
 	},
 	computed: {
@@ -266,7 +268,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-results {
 	padding-top: 1.5rem;

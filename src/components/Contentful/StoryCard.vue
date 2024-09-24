@@ -71,16 +71,16 @@
 </template>
 
 <script>
-import { richTextRenderer } from '@/util/contentful/richTextRenderer';
-import DynamicRichText from '@/components/Contentful/DynamicRichText';
+import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import DynamicRichText from '#src/components/Contentful/DynamicRichText';
 import {
 	darkTheme,
 	darkGreenTheme,
 	mintTheme,
 	defaultTheme
-} from '~/@kiva/kv-tokens/configs/kivaColors.cjs';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
-import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
+} from '@kiva/kv-tokens/configs/kivaColors.cjs';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider';
 /**
 * Story Card Component
 * */
@@ -159,7 +159,7 @@ export default {
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
-	@import 'settings';
+	@import '#src/assets/scss/settings';
 
 	.story-card,
 	.story-card__imageCard {
@@ -172,7 +172,7 @@ export default {
 		position: relative;
 	}
 
-	.story-card__imageCard >>> div .kv-contentful-img::after,
+	.story-card__imageCard :deep(div) .kv-contentful-img::after,
 	.story-card__imageCard-title {
 		bottom: 0.5rem;
 		content: "";
@@ -181,8 +181,8 @@ export default {
 		text-transform: uppercase;
 	}
 
-	.story-card__imageCard >>> div .kv-contentful-img::after {
-		background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+	.story-card__imageCard :deep(div) .kv-contentful-img::after {
+		background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 0%) 100%);
 		bottom: 0;
 		content: "";
 		height: 5rem;
@@ -198,49 +198,49 @@ export default {
 	}
 
 	// Override default prose layout
-	.story-card__content >>> .tw-prose {
+	.story-card__content :deep(.tw-prose) {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 	}
 
-	.story-card__content--center >>> .tw-prose {
+	.story-card__content--center :deep(.tw-prose) {
 		align-items: center;
 	}
 
-	.story-card__content--left >>> .tw-prose {
+	.story-card__content--left :deep(.tw-prose) {
 		align-items: flex-start;
 	}
 
-	.story-card__content--right >>> .tw-prose {
+	.story-card__content--right :deep(.tw-prose) {
 		align-items: flex-end;
 	}
 
-	.story-card >>> .tw-prose u {
+	.story-card :deep(.tw-prose) u {
 		text-decoration: none;
 	}
 
-	.story-card >>> .tw-prose h1 i,
-	.story-card >>> .tw-prose h1 u,
-	.story-card >>> .tw-prose h2 i,
-	.story-card >>> .tw-prose h2 u,
-	.story-card >>> .tw-prose h3 i,
-	.story-card >>> .tw-prose h3 u {
+	.story-card :deep(.tw-prose) h1 i,
+	.story-card :deep(.tw-prose) h1 u,
+	.story-card :deep(.tw-prose) h2 i,
+	.story-card :deep(.tw-prose) h2 u,
+	.story-card :deep(.tw-prose) h3 i,
+	.story-card :deep(.tw-prose) h3 u {
 		position: relative;
 		display: inline-block;
 		font-style: normal;
 	}
 
 	// Text formatting for headlines.
-	.story-card >>> .tw-prose h1 b,
-	.story-card >>> .tw-prose h2 b,
-	.story-card >>> .tw-prose h3 b {
+	.story-card :deep(.tw-prose) h1 b,
+	.story-card :deep(.tw-prose) h2 b,
+	.story-card :deep(.tw-prose) h3 b {
 		color: rgba(var(--text-action));
 	}
 
-	.story-card >>> .tw-prose h1 u::after,
-	.story-card >>> .tw-prose h2 u::after,
-	.story-card >>> .tw-prose h3 u::after {
+	.story-card :deep(.tw-prose) h1 u::after,
+	.story-card :deep(.tw-prose) h2 u::after,
+	.story-card :deep(.tw-prose) h3 u::after {
 		background-image: url("data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2aWV3Qm94PSIwIDAgMTU4IDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTE1NC43NSA2Yy0zLjY2OS0uNDk5NDYtMTE0LjI2MjEtNi40OTI5NzktMTUyIDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJhYTk2NyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS13aWR0aD0iNCIvPjwvc3ZnPg==");
 		content: "";
 		display: block;
@@ -252,9 +252,9 @@ export default {
 		height: 8px;
 	}
 
-	.story-card >>> .tw-prose h1 i::after,
-	.story-card >>> .tw-prose h2 i::after,
-	.story-card >>> .tw-prose h3 i::after {
+	.story-card :deep(.tw-prose) h1 i::after,
+	.story-card :deep(.tw-prose) h2 i::after,
+	.story-card :deep(.tw-prose) h3 i::after {
 		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHZpZXdCb3g9IjAgMCAzNzcgOTkiPgoJPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCQkuc3ZnX2xpbmV7ZmlsbDpub25lO3N0cm9rZTojMmFhOTY3O3N0cm9rZS13aWR0aDo0O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO3ZlY3Rvci1lZmZlY3Q6IG5vbi1zY2FsaW5nLXN0cm9rZTt9Cgk8L3N0eWxlPgoJPHBhdGggY2xhc3M9InN2Z19saW5lIiBkPSJNMzA4Ljg5NyAyNy43MTNDMzU2LjYwMSAzMy4zODA5IDQyMy4zODYgNTEuMjA4MyAzMDguODkzIDc3LjE3NUMxNjUuNzc2IDEwOS42MzMgLTMyLjI1OTYgOTYuNTc0IDkuODI2MzMgMzkuODExOEM0My40OTUxIC01LjU5Nzk3IDI1Ny4yNTEgMi40OTkyNiAzNTkuOTIgMTIuMjI0MSIvPgo8L3N2Zz4=");
 		content: "";
 		display: block;

@@ -20,9 +20,8 @@
 				@change="handleChange"
 				ref="badgeCarousel"
 			>
-				<template v-for="badge in badges" #[`slide${badge.id}`]>
+				<template v-for="badge in badges" #[`slide${badge.id}`] :key="badge.id">
 					<div
-						:key="badge.id"
 						class="tw-flex tw-flex-col slide-container"
 						v-kv-track-event="[
 							'thanks',
@@ -32,7 +31,7 @@
 						]"
 					>
 						<img
-							:src="imageRequire(`./${badge.img}.svg`)"
+							:src="imageRequire(`${badge.img}.svg`)"
 							class="badge tw-mx-auto tw-mb-2"
 							alt="Gift icon"
 						>
@@ -95,11 +94,13 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/thanks-page/badges', true);
+const imageGlob = import.meta.glob('/src/assets/images/thanks-page/badges/*.*', { eager: true, query: '?url' });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/thanks-page/badges/');
 
 export default {
 	name: 'DetailSection',
@@ -197,7 +198,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.no-border >>> span {
+.no-border :deep(span) {
 	@apply tw-bg-transparent tw-border-0;
 }
 
@@ -206,11 +207,12 @@ export default {
 	height: 164px;
 }
 
-.badge-carousel >>> .cirle-slide {
+.badge-carousel :deep(.cirle-slide) {
+	flex: 0 0 36%;
 	@apply tw-mx-auto tw-flex tw-items-end tw-justify-center;
 }
 
-.badge-carousel >>> .circle-carousel {
+.badge-carousel :deep(.circle-carousel) {
 	@apply tw-mx-auto;
 }
 

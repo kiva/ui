@@ -22,10 +22,9 @@
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
 		>
-			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`]>
+			<template v-for="(loanId, index) in augmentedLoanIds" #[`slide${index}`] :key="`loan-${loanId}`">
 				<new-home-page-loan-card
 					:item-index="index"
-					:key="`loan-${loanId}`"
 					:loan-id="loanId"
 				/>
 			</template>
@@ -49,10 +48,10 @@
 </template>
 
 <script>
-import getCategoryName from '@/util/categoryUtils';
-import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
+import getCategoryName from '#src/util/categoryUtils';
+import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 
 export default {
 	name: 'KivaLoanCardCarousel',

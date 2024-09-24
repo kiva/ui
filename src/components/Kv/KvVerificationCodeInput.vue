@@ -31,8 +31,7 @@
 			autocomplete="one-time-code"
 			:disabled="disabled"
 			:maxlength="maxlength"
-			:value="value"
-			v-on="inputListeners"
+			v-model="inputValue"
 			@input="$emit('input', $event.target.value)"
 		>
 	</div>
@@ -53,14 +52,19 @@ export default {
 			type: Number,
 			default: 6
 		},
-		value: {
-			type: String,
-			default: ''
-		},
 		disabled: {
 			type: Boolean,
 			default: false
-		}
+		},
+		modelValue: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			inputValue: this.modelValue,
+		};
 	},
 	computed: {
 		cssVars() {
@@ -68,21 +72,12 @@ export default {
 				'--kv-verification-code-input-maxlength': this.maxlength
 			};
 		},
-		inputListeners() {
-			return {
-				// Pass through any listeners from the parent to the input element like blur, focus, etc. ...
-				// https://vuejs.org/v2/guide/components-custom-events.html#Binding-Native-Events-to-Components
-				...this.$listeners,
-				// ...except for the listener to the 'input' event which is emitted by this component
-				input: () => {},
-			};
-		},
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-verification-code-input {
 	font-size: 3em; // All sizing is relative to this. You could override this from the parent.

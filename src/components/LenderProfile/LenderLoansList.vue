@@ -41,12 +41,12 @@
 import _isEqual from 'lodash/isEqual';
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import logReadQueryError from '@/util/logReadQueryError';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import lenderLoansQuery from '@/graphql/query/lenderLoans.graphql';
-import NewHomePageLoanCard from '@/components/LoanCards/NewHomePageLoanCard';
-import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import logReadQueryError from '#src/util/logReadQueryError';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import lenderLoansQuery from '#src/graphql/query/lenderLoans.graphql';
+import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
+import KvPagination from '@kiva/kv-components/vue/KvPagination';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderLoansList',
@@ -130,7 +130,7 @@ export default {
 		},
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 50 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		},
 		trackDedication(dedication) {
@@ -154,8 +154,8 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-::v-deep .lender-card .loading-placeholder,
-::v-deep .lender-card .loading-paragraph {
+:deep(.lender-card .loading-placeholder),
+:deep(.lender-card .loading-paragraph) {
 	@apply !tw-w-full !tw-max-w-full;
 }
 </style>

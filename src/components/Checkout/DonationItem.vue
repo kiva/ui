@@ -1,119 +1,118 @@
 <template>
 	<!-- DO NOT REMOVE basket-donation-item class -->
 	<div class="basket-donation-item">
-		<template>
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
-				<!-- donation image -->
-				<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-					<img
-						class="tw-bg-brand-100 tw-border tw-border-gray-300 tw-w-12 tw-h-12 tw-p-1 tw-rounded"
-						:src="imageRequire(`./leaf_heart.svg`)"
-						alt="donation line item image"
-						data-testid="basket-donation-image"
-					>
-				</div>
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
+			<!-- donation image -->
+			<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+				<img
+					class="tw-bg-brand-100 tw-border tw-border-gray-300 tw-w-12 tw-h-12 tw-p-1 tw-rounded"
+					:src="leafHeartUrl"
+					alt="donation line item image"
+					data-testid="basket-donation-image"
+				>
+			</div>
 
-				<!-- donation text -->
-				<div class="tw-flex-auto">
-					<div class="tw-mb-0.5">
-						<div class="tw-flex tw-items-center tw-justify-between">
-							<div>
-								<div class="tw-w-full tw-flex">
-									<h2
-										class="tw-flex-1 md:tw-flex-grow tw-text-h3"
-										data-testid="basket-donation-title"
-									>
-										{{ basketDonationHeader }}
-									</h2>
-								</div>
-								<div
-									v-show="!editDonation"
-									class="md:tw-hidden"
+			<!-- donation text -->
+			<div class="tw-flex-auto">
+				<div class="tw-mb-0.5">
+					<div class="tw-flex tw-items-center tw-justify-between">
+						<div>
+							<div class="tw-w-full tw-flex">
+								<h2
+									class="tw-flex-1 md:tw-flex-grow tw-text-h3"
+									data-testid="basket-donation-title"
 								>
-									<button
-										class="donation-amount"
-										data-testid="basket-donation-edit-button-mobile-amount"
-										v-kv-track-event="['basket', 'Edit Donation']"
-										@click="enterEditDonation"
+									{{ basketDonationHeader }}
+								</h2>
+							</div>
+							<div
+								v-show="!editDonation"
+								class="md:tw-hidden"
+							>
+								<button
+									class="donation-amount"
+									data-testid="basket-donation-edit-button-mobile-amount"
+									v-kv-track-event="['basket', 'Edit Donation']"
+									@click="enterEditDonation"
+									title="Edit Donation"
+								>
+									{{ formattedAmount }}
+									<kv-material-icon
+										role="img"
+										aria-label="Edit Donation"
 										title="Edit Donation"
-									>
-										{{ formattedAmount }}
-										<kv-material-icon
-											role="img"
-											aria-label="Edit Donation"
-											title="Edit Donation"
-											class="edit-donation tw-text-action
+										class="edit-donation tw-text-action
 											tw-w-3.5
 											tw-h-3.5
 											tw-py-0.5
 											tw-hidden md:tw-inline-block
 											"
-											name="pencil"
-											:icon="mdiPencil"
-										/>
-									</button>
-									<button
-										class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
-										data-testid="basket-donation-edit-button-mobile-pencil"
-										v-kv-track-event="['basket', 'Edit Donation']"
-										@click="enterEditDonation"
+										name="pencil"
+										:icon="mdiPencil"
+									/>
+								</button>
+								<button
+									class="donation-amount md:tw-hidden tw-flex-none tw-align-middle"
+									data-testid="basket-donation-edit-button-mobile-pencil"
+									v-kv-track-event="['basket', 'Edit Donation']"
+									@click="enterEditDonation"
+									title="Edit Donation"
+								>
+									<kv-material-icon
+										role="img"
+										aria-label="Edit Donation"
 										title="Edit Donation"
-									>
-										<kv-material-icon
-											role="img"
-											aria-label="Edit Donation"
-											title="Edit Donation"
-											class="edit-donation tw-text-action
+										class="edit-donation tw-text-action
 										tw-w-3.5
 										tw-h-3.5
 										tw-py-0.5
 										md:tw-hidden"
-											name="pencil"
-											:icon="mdiPencil"
-										/>
-									</button>
-								</div>
-							</div>
-							<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
-								<img
-									class="tw-w-7 tw-h-7 tw-rounded"
-									:src="imageRequire(`./leaf_heart.svg`)"
-									alt="donation line item image"
-									data-testid="basket-donation-image"
-								>
+										name="pencil"
+										:icon="mdiPencil"
+									/>
+								</button>
 							</div>
 						</div>
-
-						<div>
-							<div
-								class="donation-tagline tw-my-1 tw-max-w-2xl"
-								data-testid="basket-donation-tagline"
+						<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
+							<img
+								class="tw-w-7 tw-h-7 tw-rounded"
+								:src="leafHeartUrl"
+								alt="donation line item image"
+								data-testid="basket-donation-image"
 							>
-								<p
-									class="tw-text-base"
-								>
-									{{ basketDonationTagline }}
-								</p>
-							</div>
-							<button
-								class="tw-flex tw-items-center tw-text-base tw-text-link"
-								data-testid="basket-donation-info-lightbox"
-								@click="triggerDefaultLightbox"
-								v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
-							>
-								{{ donationDetailsLink }}
-								<kv-material-icon
-									class="tw-ml-0.5 tw-w-2 tw-h-2"
-									:icon="mdiArrowRight"
-								/>
-							</button>
 						</div>
 					</div>
-				</div>
 
-				<!-- donation total -->
-				<div
-					class="
+					<div>
+						<div
+							class="donation-tagline tw-my-1 tw-max-w-2xl"
+							data-testid="basket-donation-tagline"
+						>
+							<p
+								class="tw-text-base"
+							>
+								{{ basketDonationTagline }}
+							</p>
+						</div>
+						<button
+							class="tw-flex tw-items-center tw-text-base tw-text-link"
+							data-testid="basket-donation-info-lightbox"
+							@click="triggerDefaultLightbox"
+							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+						>
+							{{ donationDetailsLink }}
+							<kv-material-icon
+								class="tw-ml-0.5 tw-w-2 tw-h-2"
+								:icon="mdiArrowRight"
+							/>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- donation total -->
+			<div
+				class="
 				tw-flex-none
 				tw-w-full
 				md:tw-w-auto
@@ -121,73 +120,72 @@
 				lg:tw-ml-4.5
 				tw-mt-1.5
 				md:tw-mt-0"
+			>
+				<div
+					v-show="!editDonation"
+					class="tw-hidden md:tw-block tw-text-right"
 				>
-					<div
-						v-show="!editDonation"
-						class="tw-hidden md:tw-block tw-text-right"
+					<button
+						class="donation-amount"
+						data-testid="basket-donation-edit-button-combined"
+						v-kv-track-event="['basket', 'Edit Donation']"
+						@click="enterEditDonation"
+						title="Edit Donation"
 					>
-						<button
-							class="donation-amount"
-							data-testid="basket-donation-edit-button-combined"
-							v-kv-track-event="['basket', 'Edit Donation']"
-							@click="enterEditDonation"
+						{{ formattedAmount }}
+						<kv-material-icon
+							role="img"
+							aria-label="Edit Donation"
 							title="Edit Donation"
-						>
-							{{ formattedAmount }}
-							<kv-material-icon
-								role="img"
-								aria-label="Edit Donation"
-								title="Edit Donation"
-								class="edit-donation tw-text-action
+							class="edit-donation tw-text-action
 								tw-w-3.5
 								tw-h-3.5
 								tw-py-0.5
 								tw-align-bottom
 								"
-								name="pencil"
-								:icon="mdiPencil"
-							/>
-						</button>
-					</div>
-					<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
-						<kv-text-input
-							class="donation-amount-input"
-							data-testid="basket-donation-edit-input"
-							name="donation"
-							id="donation"
-							v-model="amount"
-							@blur="validateInput"
-							@keyup.enter.prevent="updateDonation()"
+							name="pencil"
+							:icon="mdiPencil"
 						/>
-						<kv-button
-							variant="secondary"
-							class="update-donation-inline-button"
-							data-testid="basket-donation-edit-submit"
-							@click="updateDonation()"
-						>
-							Update
-						</kv-button>
-						<button
-							class="show-for-medium remove-wrapper"
-							@click="updateLoanAmount('remove')"
-							data-testid="basket-donation-remove"
-						>
-							<kv-material-icon
-								class="remove-x tw-text-tertiary"
-								name="small-x"
-								:from-sprite="true"
-								title="Remove donation"
-							/>
-						</button>
-					</div>
-					<donate-repayments
-						v-if="hasLoans"
-						@updating-totals="$emit('updating-totals', $event)"
-						@refreshtotals="$emit('refreshtotals')"
-					/>
+					</button>
 				</div>
+				<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+					<kv-text-input
+						class="donation-amount-input"
+						data-testid="basket-donation-edit-input"
+						name="donation"
+						id="donation"
+						v-model="amount"
+						@blur="validateInput"
+						@keyup.enter.prevent="updateDonation()"
+					/>
+					<kv-button
+						variant="secondary"
+						class="update-donation-inline-button"
+						data-testid="basket-donation-edit-submit"
+						@click="updateDonation()"
+					>
+						Update
+					</kv-button>
+					<button
+						class="show-for-medium remove-wrapper"
+						@click="updateLoanAmount('remove')"
+						data-testid="basket-donation-remove"
+					>
+						<kv-material-icon
+							class="remove-x tw-text-tertiary"
+							name="small-x"
+							:from-sprite="true"
+							title="Remove donation"
+						/>
+					</button>
+				</div>
+				<donate-repayments
+					v-if="hasLoans"
+					@updating-totals="$emit('updating-totals', $event)"
+					@refreshtotals="$emit('refreshtotals')"
+				/>
 			</div>
-		</template>
+		</div>
 		<!-- Donation nudge lightbox -->
 		<donation-nudge-lightbox
 			ref="nudgeLightbox"
@@ -219,16 +217,15 @@
 <script>
 import numeral from 'numeral';
 import { mdiPencil, mdiArrowRight } from '@mdi/js';
-import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import HowKivaUsesDonation from '@/components/Checkout/HowKivaUsesDonation';
-import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-
-const imageRequire = require.context('@/assets/images/', true);
+import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
+import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
 export default {
 	name: 'DonationItem',
@@ -270,8 +267,8 @@ export default {
 			loanHistoryCount: null,
 			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
-			imageRequire,
-			mdiArrowRight
+			mdiArrowRight,
+			leafHeartUrl,
 		};
 	},
 	created() {
@@ -392,7 +389,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .inline-donation-amount {
 	width: rem-calc(132);

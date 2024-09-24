@@ -233,26 +233,26 @@
 <script>
 import numeral from 'numeral';
 import { mdiChevronRight, mdiMapMarker, mdiCheckCircleOutline } from '@mdi/js';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import { isMatchAtRisk, readLoanFragment, watchLoanData } from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import LoanProgressGroup from '@/components/LoanCards/LoanProgressGroup';
-import LoanMatchingText from '@/components/LoanCards/LoanMatchingText';
-import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
-import loanCardFieldsFragment from '@/graphql/fragments/loanCardFields.graphql';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import LoanTag from '@/components/LoanCards/LoanTags/LoanTag';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import { isMatchAtRisk, readLoanFragment, watchLoanData } from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerName from '#src/components/BorrowerProfile/BorrowerName';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import LoanProgressGroup from '#src/components/LoanCards/LoanProgressGroup';
+import LoanMatchingText from '#src/components/LoanCards/LoanMatchingText';
+import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import loanCardFieldsFragment from '#src/graphql/fragments/loanCardFields.graphql';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import LoanTag from '#src/components/LoanCards/LoanTags/LoanTag';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}

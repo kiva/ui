@@ -24,7 +24,7 @@ export default {
 			captchaValue: '',
 		};
 	},
-	metaInfo: {
+	head: {
 		script: [
 			{
 				src: 'https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnloadCallback&render=explicit',

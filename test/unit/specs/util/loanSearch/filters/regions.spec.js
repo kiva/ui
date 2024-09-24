@@ -2,8 +2,8 @@ import regions, {
 	transformIsoCodes,
 	getCountryIsoCodesFromQueryParam,
 	getUpdatedRegions
-} from '@/util/loanSearch/filters/regions';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
+} from '#src/util/loanSearch/filters/regions';
+import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import {
 	mockTransformedRegions,
 	mockAllFacets,
@@ -264,7 +264,8 @@ describe('regions.js', () => {
 		it('should update numLoansFundraising', () => {
 			// Next regions have no Middle East and different fundraising numbers
 			const nextSouthAmerica = mockTransformedSouthAmerica(
-				[mockTransformedChile(1), mockTransformedColombia(2)], 3
+				[mockTransformedChile(1), mockTransformedColombia(2)],
+				3
 			);
 
 			expect(getUpdatedRegions(mockTransformedRegions, [nextSouthAmerica])).toEqual([
@@ -277,7 +278,8 @@ describe('regions.js', () => {
 			const southAmerica = mockTransformedSouthAmerica();
 			const middleEast = mockTransformedMiddleEast();
 			const updatedSouthAmerica = mockTransformedSouthAmerica(
-				[mockTransformedChile(0), mockTransformedColombia(0)], 0
+				[mockTransformedChile(0), mockTransformedColombia(0)],
+				0
 			);
 
 			expect(getUpdatedRegions([southAmerica], [middleEast])).toEqual([middleEast, updatedSouthAmerica]);

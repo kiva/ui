@@ -1,39 +1,18 @@
-const path = require('path');
-
-module.exports = {
-	stories: [
-		'./stories/**/*.stories.@(js|mdx)'
-	],
-	addons: [
-		'@storybook/addon-essentials',
-		'@storybook/addon-links',
-		'@storybook/addon-a11y',
-		'@storybook/addon-postcss',
-		'@storybook/addon-storysource'
-	],
-	webpackFinal: async (config) => {
-		config.module.rules.push({
-		  	test: /\,css&/,
-		  	exclude: [/\.module\.css$/, /@storybook/],
-		  	use: [
-				"style-loader",
-				{
-					loader: "css-loader",
-					options: { importLoaders: 1, sourceMap: false },
-				},
-				{
-				loader: 'postcss-loader',
-					options: {
-						ident: 'postcss',
-						plugins: [
-						require('tailwindcss'),
-						require('autoprefixer')
-						]
-					}
-				}
-		  	],
-		  	include: path.resolve(__dirname, '../'),
-		})
-		return config
-	}
-}
+/** @type { import('@storybook/vue3-vite').StorybookConfig } */
+const config = {
+  stories: ["./stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@chromatic-com/storybook",
+    "@storybook/addon-interactions",
+  ],
+  framework: {
+    name: "@storybook/vue3-vite",
+    options: {},
+  },
+  docs: {
+    autodocs: "tag",
+  },
+};
+export default config;

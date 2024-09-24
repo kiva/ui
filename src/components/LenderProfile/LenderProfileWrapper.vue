@@ -45,16 +45,16 @@
 </template>
 
 <script>
-import lenderStatsQuery from '@/graphql/query/lenderStats.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
-import LenderSummary from '@/components/LenderProfile/LenderSummary';
-import LenderLoansList from '@/components/LenderProfile/LenderLoansList';
-import LenderStats from '@/components/LenderProfile/LenderStats';
-import LenderTeamsList from '@/components/LenderProfile/LenderTeamsList';
-import LenderBadges from '@/components/LenderProfile/LenderBadges';
-import LenderInviteesList from '@/components/LenderProfile/LenderInviteesList';
-import LenderDedicationsList from '@/components/LenderProfile/LenderDedicationsList';
-import LenderMap from '@/components/LenderProfile/LenderMap';
+import lenderStatsQuery from '#src/graphql/query/lenderStats.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import LenderSummary from '#src/components/LenderProfile/LenderSummary';
+import LenderLoansList from '#src/components/LenderProfile/LenderLoansList';
+import LenderStats from '#src/components/LenderProfile/LenderStats';
+import LenderTeamsList from '#src/components/LenderProfile/LenderTeamsList';
+import LenderBadges from '#src/components/LenderProfile/LenderBadges';
+import LenderInviteesList from '#src/components/LenderProfile/LenderInviteesList';
+import LenderDedicationsList from '#src/components/LenderProfile/LenderDedicationsList';
+import LenderMap from '#src/components/LenderProfile/LenderMap';
 
 export default {
 	name: 'LenderProfileWrapper',

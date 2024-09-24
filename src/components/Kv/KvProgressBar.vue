@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-progress-bar {
 	$background-color: #fff;
@@ -31,8 +31,6 @@ export default {
 	display: block;
 	width: 100%;
 	background-color: $background-color;
-	-webkit-appearance: none;
-	-moz-appearance: none;
 	appearance: none;
 	height: rem-calc(4);
 

@@ -1,8 +1,10 @@
-const express = require('express');
-const session = require('express-session');
-const MemcachedStore = require('connect-memjs')(session);
+import express from 'express';
+import session from 'express-session';
+import connectMemjs from 'connect-memjs';
 
-module.exports = function sessionRouter(config = {}) {
+const MemcachedStore = connectMemjs(session);
+
+export default function sessionRouter(config = {}) {
 	const router = express.Router();
 
 	const secret = process.env.UI_SESSION_SECRET;
@@ -36,4 +38,4 @@ module.exports = function sessionRouter(config = {}) {
 
 	router.use(session(sessionOptions));
 	return router;
-};
+}

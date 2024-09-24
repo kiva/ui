@@ -122,16 +122,16 @@
 </template>
 
 <script>
-import logFormatter from '@/util/logFormatter';
+import logFormatter from '#src/util/logFormatter';
 import { mdiPencilOutline } from '@mdi/js';
-import loanAddComment from '@/graphql/mutation/loanAddComment.graphql';
-import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '@/plugins/guest-comment-mixin';
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
+import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'CommentAsk',

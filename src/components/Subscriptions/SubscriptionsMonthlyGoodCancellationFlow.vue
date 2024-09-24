@@ -50,7 +50,7 @@
 					</button>
 				</div>
 				<!-- Step 2 -->
-				<div v-if="currentStep === '2-expensive'" key="2-expensive">
+				<div v-else-if="currentStep === '2-expensive'" key="2-expensive">
 					<p class="mg-cancel-lightbox__text tw-mb-4">
 						You can change your monthly contribution to as little as $5 a month at any time.
 					</p>
@@ -72,7 +72,7 @@
 						Continue cancellation
 					</kv-button>
 				</div>
-				<div v-if="currentStep === '2-choose'" key="2-choose">
+				<div v-else-if="currentStep === '2-choose'" key="2-choose">
 					<p class="mg-cancel-lightbox__text tw-mb-4">
 						You can change lending categories at any time to better fit the causes you support.
 					</p>
@@ -105,7 +105,7 @@
 				</div>
 				<!-- Step 3 -->
 				<!-- eslint-disable-next-line max-len -->
-				<div v-if="currentStep === '3-reason' || currentStep === '3-expensive' || currentStep === '3-choose-a' || currentStep === '3-choose-b'" key="3">
+				<div v-else-if="currentStep === '3-reason' || currentStep === '3-expensive' || currentStep === '3-choose-a' || currentStep === '3-choose-b'" key="3">
 					<label>
 						<textarea
 							class="
@@ -138,7 +138,7 @@
 				</div>
 				<!-- Step 3 -->
 				<!-- eslint-disable-next-line max-len -->
-				<div v-if="currentStep === '4-confirm'" key="4">
+				<div v-else-if="currentStep === '4-confirm'" key="4">
 					<p class="tw-mb-3">
 						Are you sure?
 						<span>
@@ -177,8 +177,8 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SubscriptionsMonthlyGoodCancellationFlow',
@@ -285,7 +285,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .mg-cancel-lightbox {
 	&__content {

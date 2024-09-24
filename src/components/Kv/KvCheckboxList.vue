@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'KvCheckboxList',
@@ -47,7 +47,7 @@ export default {
 		 */
 		selectedValues: {
 			type: Array,
-			default: () => []
+			default: () => ([]),
 		},
 	},
 	data() {
@@ -63,14 +63,16 @@ export default {
 	methods: {
 		toggleSelectAll() {
 			const isAll = this.isAllSelected;
+			const updatedSelected = [...this.selected];
 			this.items.forEach(item => {
-				const index = this.selected.indexOf(item.value);
+				const index = updatedSelected.indexOf(item.value);
 				const exists = index !== -1;
 				if (isAll) {
-					if (exists) this.selected.splice(index, 1);
-				} else if (!exists) this.selected.push(item.value);
+					if (exists) updatedSelected.splice(index, 1);
+				} else if (!exists) updatedSelected.push(item.value);
 			});
-			this.updateSelected(this.selected, undefined, true);
+			this.selected = updatedSelected;
+			this.updateSelected(updatedSelected, undefined, true);
 		},
 		updateSelected(values, changed, wasSelectAll) {
 			this.$emit('updated', { values: [...values], changed, wasSelectAll });

@@ -58,7 +58,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="kv-lightbox__controls" v-if="this.$slots.controls">
+					<div class="kv-lightbox__controls" v-if="$slots.controls">
 						<slot name="controls"></slot>
 					</div>
 				</div>
@@ -69,8 +69,8 @@
 
 <script>
 import FocusLock from 'vue-focus-lock';
-import KvIcon from '@/components/Kv/KvIcon';
-import lockScrollUtils from '@/plugins/lock-scroll';
+import KvIcon from '#src/components/Kv/KvIcon';
+import lockScrollUtils from '#src/plugins/lock-scroll';
 
 export default {
 	name: 'KvLightbox',
@@ -171,19 +171,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .kv-lightbox {
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
 	position: fixed;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
+	inset: 0;
 	z-index: 1500;
-	background: rgba(72, 72, 72, 0.6);
+	background: rgb(72 72 72 / 60%);
 	font-size: 1rem;
 
 	@include breakpoint(medium) {
@@ -197,7 +194,7 @@ export default {
 		overflow: hidden;
 
 		// dynamically added div from vue-focus-lock
-		::v-deep > [data-lock] {
+		:deep(> [data-lock]) {
 			width: 100%;
 		}
 	}
@@ -209,10 +206,7 @@ export default {
 		padding: 1.5rem;
 		max-height: 100%;
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		inset: 0;
 
 		&:focus {
 			outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
@@ -236,6 +230,7 @@ export default {
 		flex: 0 1 auto; // ie11
 		overflow: auto;
 		position: relative;
+
 		// set a negative margin + padding to push the scrollbar to edge of the dialog.
 		margin: 0 -1.5rem;
 		padding: 0 1.5rem;
@@ -259,7 +254,7 @@ export default {
 		flex-shrink: 0;
 		margin-top: 1rem;
 
-		::v-deep button {
+		:deep(button) {
 			margin-bottom: 0;
 		}
 	}
@@ -324,7 +319,7 @@ export default {
 	}
 
 	&--inverted {
-		background: rgba(0, 0, 0, 0.9);
+		background: rgb(0 0 0 / 90%);
 
 		.kv-lightbox__container {
 			background: transparent;

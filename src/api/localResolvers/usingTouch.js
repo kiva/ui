@@ -1,4 +1,4 @@
-import query from '@/graphql/query/shared/usingTouchClient.graphql';
+import query from '#src/graphql/query/shared/usingTouchClient.graphql';
 /*
  * UsingTouch resolvers
  */

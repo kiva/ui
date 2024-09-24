@@ -112,25 +112,25 @@
 </template>
 
 <script>
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import LendingCategorySection from '@/components/LoanFinding/LendingCategorySection';
-import QuickFiltersSection from '@/components/LoanFinding/QuickFiltersSection';
-import PartnerSpotlightSection from '@/components/LoanFinding/PartnerSpotlightSection';
-import FiveDollarsBanner from '@/components/LoanFinding/FiveDollarsBanner';
-import { runLoansQuery } from '@/util/loanSearch/dataUtils';
-import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '@/util/flssUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import { spotlightData } from '@/assets/data/components/LoanFinding/spotlightData.json';
-import flssLoansQueryExtended from '@/graphql/query/flssLoansQueryExtended.graphql';
-import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import HandOrangeIcon from '@/assets/images/hand_orange.svg';
-import basketModalMixin from '@/plugins/basket-modal-mixin';
-import KvCartModal from '~/@kiva/kv-components/vue/KvCartModal';
+import userInfoQuery from '#src/graphql/query/userInfo.graphql';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
+import QuickFiltersSection from '#src/components/LoanFinding/QuickFiltersSection';
+import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
+import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
+import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
+import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
+import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
@@ -151,7 +151,7 @@ export default {
 		KvCartModal,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
 			meta: [
@@ -510,7 +510,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
->>> [role=progressbar] {
+:deep([role=progressbar]) {
 	@apply tw-bg-tertiary;
 }
 

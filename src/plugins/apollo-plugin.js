@@ -1,13 +1,13 @@
-import checkInjections from '@/util/injectionCheck';
-import logReadQueryError from '@/util/logReadQueryError';
-import { isContentfulQuery } from '@/util/contentful/isContentfulQuery';
+import checkInjections from '#src/util/injectionCheck';
+import logReadQueryError from '#src/util/logReadQueryError';
+import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
 
 const injections = ['apollo', 'cookieStore'];
 
 // install method for plugin
-export default Vue => {
-// export default {
-	Vue.mixin({
+export default app => {
+	// export default {
+	app.mixin({
 		created() {
 			if (this.$options.apollo) {
 				checkInjections(this, injections);
@@ -15,9 +15,9 @@ export default Vue => {
 				const {
 					query,
 					preFetch,
-					preFetchVariables = () => {},
-					variables = () => {},
-					result = () => {},
+					preFetchVariables = () => { },
+					variables = () => { },
+					result = () => { },
 				} = this.$options.apollo;
 
 				if (query) {
@@ -51,7 +51,7 @@ export default Vue => {
 						}
 					}
 
-					if (!this.$isServer) {
+					if (typeof window !== 'undefined') {
 						// Setup an observer to watch for changes to the query result
 						const observer = this.apollo.watchQuery({
 							query,

@@ -1,4 +1,4 @@
-import KvAlert from '@/components/Kv/KvAlert';
+import KvAlert from '#src/components/Kv/KvAlert';
 
 export default {
 	title: 'Kv/KvAlert',
@@ -11,8 +11,8 @@ export default {
 		variant: {
 			control: {
 				type: 'select',
-				options: [ 'success', 'caution', 'danger'],
-			}
+			},
+			options: ['success', 'caution', 'danger'],
 		},
 	},
 };
@@ -22,6 +22,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		KvAlert
 	},
+	setup() { return args; },
 	template: `
 		<kv-alert
 			:variant="variant"

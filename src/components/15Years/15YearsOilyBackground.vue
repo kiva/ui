@@ -44,18 +44,21 @@ export default {
 				if (i === 1) {
 					const p0 = path[0];
 					const p1 = p;
-					tl = tl.fromTo(id, {
-						morphSVG: {
-							shape: p0.shape, shapeIndex: 0
-						}
-					},
-					{
-						morphSVG: {
-							shape: p1.shape, shapeIndex: 0, type: (p.type || 'linear')
+					tl = tl.fromTo(
+						id,
+						{
+							morphSVG: {
+								shape: p0.shape, shapeIndex: 0
+							}
 						},
-						ease: (p1.ease || standardEase),
-						duration: duration * p1.position
-					});
+						{
+							morphSVG: {
+								shape: p1.shape, shapeIndex: 0, type: (p.type || 'linear')
+							},
+							ease: (p1.ease || standardEase),
+							duration: duration * p1.position
+						}
+					);
 				} else if (i > 1) {
 					const p0 = path[i - 1];
 					const p1 = p;
@@ -203,8 +206,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .oily-background {
 	position: absolute;

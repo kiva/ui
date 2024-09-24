@@ -1,10 +1,5 @@
-import Vue from 'vue'
-import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner.vue';
+import DepositIncentiveBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner.vue';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins);
 
 export default {
 	title: 'WwwFrame/Banners/DepositIncentiveBanner',
@@ -28,11 +23,11 @@ const provideMockedApollo = (mockedResult) => {
 };
 
 const userInfo = {
-  my: {
+	my: {
 		id: 1017469,
 		depositIncentiveAmountToLend: 25,
-  },
-	 shop: {
+	},
+	shop: {
 		id: 1,
 		basket: {
 			id: 1,
@@ -46,11 +41,11 @@ const userInfo = {
 
 export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
-  mixins: [cookieStoreStoryMixin()],
+	mixins: [cookieStoreStoryMixin()],
 	components: {
 		DepositIncentiveBanner
 	},
-  provide: {
+	provide: {
 		apollo: provideMockedApollo({}),
 	},
 	template: `
@@ -60,11 +55,11 @@ export const Default = (args, { argTypes }) => ({
 
 export const WithBalance = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
-  mixins: [cookieStoreStoryMixin()],
+	mixins: [cookieStoreStoryMixin()],
 	components: {
 		DepositIncentiveBanner
 	},
-  provide: {
+	provide: {
 		apollo: provideMockedApollo(userInfo),
 	},
 	template: `

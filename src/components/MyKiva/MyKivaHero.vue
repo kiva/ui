@@ -15,8 +15,8 @@
 
 <script>
 import { mdiCogOutline } from '@mdi/js';
-import MyKivaContainer from '@/components/MyKiva/MyKivaContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'MyKivaHero',
@@ -35,12 +35,12 @@ export default {
 <style lang="postcss" scoped>
 
 .landscape {
-	background-image: url('~@/assets/images/my-kiva/header-mobile.svg');
+	background-image: url('#src/assets/images/my-kiva/header-mobile.svg');
 	background-position: 75%;
 	height: 148px;
 
 	@screen md {
-		background-image: url('~@/assets/images/my-kiva/header-desktop.svg');
+		background-image: url('#src/assets/images/my-kiva/header-desktop.svg');
 		background-size: cover;
 		background-position: center;
 		height: 249px;

@@ -27,10 +27,10 @@
 
 <script>
 /* eslint-disable vue/multi-word-component-names */
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
-import CustomSecondaryMenu from '@/components/WwwFrame/Menus/CustomSecondaryMenu';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TertiaryMenu from '#src/components/WwwFrame/TertiaryMenu';
+import CustomSecondaryMenu from '#src/components/WwwFrame/Menus/CustomSecondaryMenu';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 
 export default {
 	name: 'Legal',
@@ -40,7 +40,7 @@ export default {
 		TertiaryMenu,
 		CustomSecondaryMenu
 	},
-	metaInfo: {
+	head: {
 		title: 'Terms Of Use'
 	},
 	data() {

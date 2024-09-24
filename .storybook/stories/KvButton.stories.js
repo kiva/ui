@@ -1,4 +1,4 @@
-import KvButton from '@/components/Kv/KvButton';
+import KvButton from '#src/components/Kv/KvButton';
 
 export default {
 	title: 'KV/KvButton',

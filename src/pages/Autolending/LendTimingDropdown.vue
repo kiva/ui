@@ -1,7 +1,7 @@
 <template>
 	<div class="lend-timing-dropdown">
 		<span>Lend my balance for me</span>
-		<kv-select :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
+		<kv-select v-model="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
 			<option value="0">
 				As soon as possible
 			</option>
@@ -26,8 +26,8 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvSelect from '@/components/Kv/KvSelect';
+import { gql } from 'graphql-tag';
+import KvSelect from '#src/components/Kv/KvSelect';
 
 export default {
 	name: 'LendTimingDropdown',
@@ -66,7 +66,8 @@ export default {
 					return 0;
 			}
 		},
-		updateLendAfterDaysIdle(value) {
+		updateLendAfterDaysIdle(event) {
+			const { value } = event.target;
 			if (value !== this.lendAfterDaysIdle) {
 				this.apollo.mutate({
 					mutation: gql`mutation updateLendAfterDaysIdle($value: Int) {
@@ -132,7 +133,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lend-timing-dropdown {
 	margin-bottom: 1rem;

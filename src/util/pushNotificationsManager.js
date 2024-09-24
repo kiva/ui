@@ -1,8 +1,7 @@
 export function registerServiceWorker() {
 	return new Promise((resolve, reject) => {
 		if ('serviceWorker' in navigator) {
-			// eslint-disable-next-line max-len
-			return navigator.serviceWorker.register('/js/kv-notifications/kvPushNotificationsServiceWorker.js', { scope: '/' })
+			navigator.serviceWorker.register('/js/kv-notifications/kvPushNotificationsServiceWorker.js', { scope: '/' })
 				.then(() => {
 					return navigator.serviceWorker.ready
 						.then(registration => {
@@ -36,15 +35,16 @@ export function registerServiceWorker() {
 					}
 					reject(error);
 				});
+		} else {
+			reject('Oops - setting up notifications didn\'t work.');
 		}
-		reject('Oops - setting up notifications didn\'t work.');
 	});
 }
 
 export function isSubscribed() {
 	return new Promise((resolve, reject) => {
 		if ('serviceWorker' in navigator) {
-			return navigator.serviceWorker.getRegistration()
+			navigator.serviceWorker.getRegistration()
 				.then(registration => {
 					if (registration) {
 						return registration.pushManager.getSubscription()
@@ -64,15 +64,16 @@ export function isSubscribed() {
 				.catch(error => {
 					reject(error);
 				});
+		} else {
+			reject();
 		}
-		reject();
 	});
 }
 
 export function unsubscribe() {
 	return new Promise((resolve, reject) => {
 		if ('serviceWorker' in navigator) {
-			return navigator.serviceWorker.getRegistration()
+			navigator.serviceWorker.getRegistration()
 				.then(registration => {
 					if (registration) {
 						return registration.pushManager.getSubscription()
@@ -103,7 +104,8 @@ export function unsubscribe() {
 				.catch(() => {
 					reject('Oops - unsubscribing didn\'t work. Please refresh the page and try again.');
 				});
+		} else {
+			reject('Oops - unsubscribing didn\'t work. Please refresh the page and try again.');
 		}
-		reject('Oops - unsubscribing didn\'t work. Please refresh the page and try again.');
 	});
 }

@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import DeveloperSecondaryMenu from '#src/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
 
 export default {
 	name: 'BuildPage',
@@ -51,7 +51,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Developer Home'
 	},
 };

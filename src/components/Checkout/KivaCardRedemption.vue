@@ -77,7 +77,7 @@
 								alt="print-kiva-card"
 								class="tw-mb-6 tw-border tw-border-secondary"
 								height="116"
-								src="~@/assets/images/checkout/printcard_codelocation.jpg"
+								:src="printCardCodeLocation"
 								width="450"
 							>
 							<p class="tw-mb-2">
@@ -87,7 +87,7 @@
 								alt="email-kiva-card"
 								class="tw-mb-6 tw-border tw-border-secondary"
 								height="199"
-								src="~@/assets/images/checkout/emailcard_codelocation.jpg"
+								:src="emailCardCodeLocation"
 								width="450"
 							>
 						</kv-lightbox>
@@ -128,13 +128,15 @@
 
 <script>
 import _forEach from 'lodash/forEach';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
-import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
+import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import printCardCodeLocation from '#src/assets/images/checkout/printcard_codelocation.jpg';
+import emailCardCodeLocation from '#src/assets/images/checkout/emailcard_codelocation.jpg';
 
 export default {
 	name: 'KivaCardRedemption',
@@ -162,6 +164,8 @@ export default {
 			kivaCardCode: '',
 			id: '',
 			defaultLbVisible: false,
+			printCardCodeLocation,
+			emailCardCodeLocation,
 		};
 	},
 	mounted() {
@@ -243,7 +247,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .toggle-arrow {
 	transition: transform 300ms ease;
@@ -252,7 +256,7 @@ export default {
 	width: rem-calc(20);
 	margin-left: 9%;
 
-	@media screen and (min-width: 851px) {
+	@media screen and (width >= 851px) {
 		margin-left: 18%;
 	}
 }

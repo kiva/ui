@@ -5,3 +5,7 @@
 kiva-ui.local {
 	reverse_proxy localhost:8888
 }
+
+kiva-ui.local:24679 {
+	reverse_proxy localhost:24678
+}

@@ -49,11 +49,11 @@
 </template>
 
 <script>
-import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvCodeBlock from '@/components/Kv/KvCodeBlock';
-import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
-import BuildPageWrapper from '@/components/Build/BuildPageWrapper';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import DeveloperSecondaryMenu from '#src/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import KvCodeBlock from '#src/components/Kv/KvCodeBlock';
+import KvMultiCodeBlock from '#src/components/Kv/KvMultiCodeBlock';
+import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 export default {
 	name: 'DocsPage',
@@ -64,7 +64,7 @@ export default {
 		BuildPageWrapper,
 		WwwPage,
 	},
-	metaInfo: {
+	head: {
 		title: 'Developer Docs'
 	},
 	data() {

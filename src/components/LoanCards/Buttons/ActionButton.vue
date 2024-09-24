@@ -16,7 +16,7 @@
 
 <script>
 import _includes from 'lodash/includes';
-import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
+import addToBasketInsterstitial from '#src/plugins/add-to-basket-show-interstitial';
 import LendAmountButton from './LendAmountButton';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';

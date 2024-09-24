@@ -1,4 +1,4 @@
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 export const HUGE_LEND_AMOUNT_EXP = 'enable_huge_lend_amount';
 

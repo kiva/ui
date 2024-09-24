@@ -9,7 +9,7 @@
 					key="attributes"
 					:items="attributesWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>
@@ -20,9 +20,9 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client';
-import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
-import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import { gql } from 'graphql-tag';
+import themeListQuery from '#src/graphql/query/autolending/themeList.graphql';
+import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
 import CheckList from './CheckList';
 
 export default {

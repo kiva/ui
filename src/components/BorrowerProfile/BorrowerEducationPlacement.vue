@@ -10,7 +10,7 @@
 		<div class="tw-flex tw-items-center tw-gap-2 tw-mb-2">
 			<div class="tw-h-10 tw-w-10">
 				<img
-					:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/associate.png`)"
+					:src="getImage(`${regionFolder}/associate.png`)"
 					alt="Manon, Investment Manager for Africa"
 				>
 			</div>
@@ -26,11 +26,11 @@
 		<div id="education-photos" class="tw-mb-2">
 			<div class="tw-flex tw-items-center tw-w-full tw-overflow-auto tw-gap-2.5">
 				<img
-					:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_1.jpg`)"
+					:src="getImage(`${regionFolder}/photo_1.jpg`)"
 					:alt="`Borrower photo from ${loanRegion}`"
 				>
 				<img
-					:src="imageRequire(`./borrower-profile/education-placement/${regionFolder}/photo_2.jpg`)"
+					:src="getImage(`${regionFolder}/photo_2.jpg`)"
 					:alt="`Borrower photo from ${loanRegion}`"
 				>
 			</div>
@@ -41,23 +41,30 @@
 		>
 			<img
 				class="tw-w-7 tw-h-7"
-				:src="imageRequire(`./leaf_heart.svg`)"
+				:src="leafHeartUrl"
 				alt="donation line item image"
 			>
 			<!-- eslint-disable-next-line max-len -->
-			<p>None of this work would be possible without donations from lenders like you. Thank you for continuing to support {{ associateNameAndTitle | splitName }} and the Kiva team! </p>
+			<p>None of this work would be possible without donations from lenders like you. Thank you for continuing to support {{ splitName(associateNameAndTitle) }} and the Kiva team! </p>
 		</div>
 	</section>
 </template>
 
 <script>
-const imageRequire = require.context('@/assets/images/', true);
+import { metaGlobReader } from '#src/util/importHelpers';
+import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
+
+const imageRequire = import.meta.glob('/src/assets/images/borrower-profile/education-placement/**/*.*', {
+	eager: true,
+	query: '?url',
+});
+const images = metaGlobReader(imageRequire, '/src/assets/images/borrower-profile/education-placement/');
 
 export default {
 	name: 'BorrowerEducationPlacement',
 	data() {
 		return {
-			imageRequire,
+			leafHeartUrl,
 		};
 	},
 	props: {
@@ -66,10 +73,13 @@ export default {
 			default: ''
 		}
 	},
-	filters: {
+	methods: {
+		getImage(path) {
+			return images(path);
+		},
 		splitName(value) {
 			return value.split(',')[0];
-		}
+		},
 	},
 	computed: {
 		associateNameAndTitle() {

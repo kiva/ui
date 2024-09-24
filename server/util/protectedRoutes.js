@@ -1,4 +1,4 @@
-module.exports = [
+export default [
 	'auto-deposit',
 	'checkout',
 	'confirm-instant-donation',

@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
 
 export default {
 	name: 'LoanCategorySelectorHomeExp',
@@ -84,7 +84,7 @@ export default {
 		overflow: initial;
 	}
 
-	@media (min-width: 734px) {
+	@media (width >= 734px) {
 		.tabs-container {
 			width: 15.25rem;
 			@apply tw-flex md:tw-flex-col;

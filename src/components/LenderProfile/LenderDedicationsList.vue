@@ -72,12 +72,12 @@ import _isEqual from 'lodash/isEqual';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
-import logReadQueryError from '@/util/logReadQueryError';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import lenderDedicationsQuery from '@/graphql/query/lenderDedications.graphql';
-import DedicateHeart from '@/assets/icons/inline/dedicate-heart.svg';
-import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import logReadQueryError from '#src/util/logReadQueryError';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import lenderDedicationsQuery from '#src/graphql/query/lenderDedications.graphql';
+import DedicateHeart from '#src/assets/icons/inline/dedicate-heart.svg';
+import KvPagination from '@kiva/kv-components/vue/KvPagination';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
@@ -166,7 +166,7 @@ export default {
 		},
 		scrollToSection(sectionId) {
 			const elementToScrollTo = document.querySelector(sectionId);
-			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop - 50 ?? 0;
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 50 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 	},

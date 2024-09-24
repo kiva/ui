@@ -11,12 +11,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .secondary-nav {
 	background-color: $kiva-darkgreen;
 
-	ul {
+	:deep(ul) {
 		display: block;
 		list-style: none;
 		margin: 0 auto;

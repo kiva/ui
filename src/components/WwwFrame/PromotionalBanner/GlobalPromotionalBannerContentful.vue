@@ -23,20 +23,21 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
-import { settingEnabled } from '@/util/settingsUtils';
-import { globalBannerDenyList, isExcludedUrl } from '@/util/urlUtils';
+import { settingEnabled } from '#src/util/settingsUtils';
+import { globalBannerDenyList, isExcludedUrl } from '#src/util/urlUtils';
 
-import AppealBannerCircularContainer
-	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
-import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
-import DonationBannerContainer from '@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import DepositIncentiveBanner from '@/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
+import AppealBannerCircularContainer from
+	'#src/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
+import GenericPromoBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+import DonationBannerContainer from
+	'#src/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBannerContainer';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import DepositIncentiveBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/DepositIncentiveBanner';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 

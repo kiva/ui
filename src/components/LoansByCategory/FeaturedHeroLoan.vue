@@ -88,11 +88,11 @@
 </template>
 
 <script>
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import BorrowerInfoName from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
 	name: 'FeaturedHeroLoan',
@@ -189,7 +189,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $row-max-width: 58.75rem;
 
@@ -203,7 +203,7 @@ $row-max-width: 58.75rem;
 
 	.featured-cards-display-window {
 		&:hover {
-			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgb(0 0 0 / 10%);
 		}
 
 		overflow: hidden;

@@ -13,7 +13,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 export default {
 	name: 'LoanProgressGroup',
@@ -42,7 +42,7 @@ export default {
 			const formattedMoneyLeft = this.numeralLeft.format('$0,0[.]00');
 			const formattedTimeLeft = `${this.timeLeft !== '' ? `. ${this.timeLeft}` : ''}`;
 			// Some time left strings already include an exclamation mark
-			const exclamationMark = this.amountLow && !formattedTimeLeft.includes('!') ? '!' : '';
+			const exclamationMark = !formattedTimeLeft.includes('!') ? '!' : '';
 			if (!this.numeralLeft.value()) return 'Funded!';
 			return `${formattedMoneyLeft} to go${formattedTimeLeft}${exclamationMark}`;
 		}

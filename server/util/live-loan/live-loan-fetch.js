@@ -1,5 +1,5 @@
-const fetchGraphQL = require('../fetchGraphQL');
-const { warn, error } = require('../log');
+import fetchGraphQL from '../fetchGraphQL.js';
+import { warn, error } from '../log.js';
 
 // Number of loans to fetch
 const loanCount = 4;
@@ -495,7 +495,7 @@ const shouldUseFLSS = async filterString => {
 };
 
 // Export a function that will fetch loans by live-loan type and id
-module.exports = async function fetchLoansByType(type, id, flss = false) {
+export default async function fetchLoansByType(type, id, flss = false) {
 	if (type === 'user') {
 		return fetchRecommendationsByLoginId(id, flss);
 	} if (type === 'loan') {
@@ -511,4 +511,4 @@ module.exports = async function fetchLoansByType(type, id, flss = false) {
 		return fetchLoanById(id);
 	}
 	throw new Error('Type must be user, loan, or filter');
-};
+}

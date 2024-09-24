@@ -25,8 +25,8 @@
 
 <script>
 
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
-import MyKivaContainer from '@/components/MyKiva/MyKivaContainer';
+import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 
 export default {
 	name: 'MyKivaProfile',

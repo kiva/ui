@@ -1,4 +1,4 @@
-import ThanksPage from '@/pages/Thanks/ThanksPage';
+import ThanksPage from '#src/pages/Thanks/ThanksPage';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
@@ -8,9 +8,9 @@ import {
 	femaleLoanDataWithInviter,
 	iwdExperiment,
 } from '../mock-data/thanks-page-data-mock';
-import VueRouter from 'vue-router';
+import * as VueRouter from 'vue-router';
 
-const routes = new VueRouter();
+const routes = VueRouter.createRouter({ routes: [], history: VueRouter.createWebHistory() });
 
 export default {
 	title: 'Page/ThanksPage',

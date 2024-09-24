@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvSelectBox, { NO_RESULTS } from '@/components/Kv/KvSelectBox';
+import KvSelectBox, { NO_RESULTS } from '#src/components/Kv/KvSelectBox';
 
 const items = [...Array(20)].map((_, i) => ({ id: i, name: `Item ${20 - i + 1}`, header: `Header ${i % 5}` }));
 
@@ -18,14 +18,14 @@ describe('KvSelectBox', () => {
 	});
 
 	it('should render with full width', async () => {
-		const { getByText, getByRole, updateProps } = render(KvSelectBox, { props: { id: 'id', placeholder: 'test' } });
+		const { getByText, getByRole, rerender } = render(KvSelectBox, { props: { id: 'id', placeholder: 'test' } });
 
-		expect(getByRole('textbox').parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
+		expect(getByRole('textbox').parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
 		expect(getByText(NO_RESULTS).parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(false);
 
-		await updateProps({ isFullWidth: true });
+		await rerender({ isFullWidth: true });
 
-		expect(getByRole('textbox').parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
+		expect(getByRole('textbox').parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
 		expect(getByText(NO_RESULTS).parentNode.parentNode.parentNode.classList.contains('tw-w-full')).toBe(true);
 	});
 
@@ -70,11 +70,11 @@ describe('KvSelectBox', () => {
 	});
 
 	it('should sort', async () => {
-		const { getAllByRole, updateProps } = render(KvSelectBox, { props: { id: 'id', items, headerKey: 'header' } });
+		const { getAllByRole, rerender } = render(KvSelectBox, { props: { id: 'id', items, headerKey: 'header' } });
 
 		expect(getAllByRole('listitem')[1].textContent.trim()).toBe('Item 11');
 
-		await updateProps({ shouldSort: false });
+		await rerender({ shouldSort: false });
 
 		expect(getAllByRole('listitem')[1].textContent.trim()).toBe('Item 21');
 	});
@@ -92,7 +92,7 @@ describe('KvSelectBox', () => {
 	});
 
 	it('should disable selected items', async () => {
-		const { getByText, updateProps } = render(KvSelectBox, { props: { id: 'id', items, selectedIds: [1] } });
+		const { getByText, rerender } = render(KvSelectBox, { props: { id: 'id', items, selectedIds: [1] } });
 
 		const item0 = getByText(items[0].name).parentNode;
 		const item1 = getByText(items[1].name).parentNode;
@@ -105,7 +105,7 @@ describe('KvSelectBox', () => {
 		expect(item2.classList.contains('tw-bg-tertiary')).toBe(false);
 		expect(item2.classList.contains('tw-pointer-events-none')).toBe(false);
 
-		await updateProps({ selectedIds: [0, 2] });
+		await rerender({ selectedIds: [0, 2] });
 
 		expect(item0.classList.contains('tw-bg-tertiary')).toBe(true);
 		expect(item0.classList.contains('tw-pointer-events-none')).toBe(true);

@@ -1,4 +1,4 @@
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 export default {
 	title: 'Kv/KvLoadingSpinner',

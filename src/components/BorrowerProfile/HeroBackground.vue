@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import { gql } from 'graphql-tag';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'HeroBackground',
@@ -81,8 +81,9 @@ export default {
 		`,
 		preFetch: true,
 		preFetchVariables({ route }) {
+			const currentRoute = route?.value ?? route;
 			return {
-				loanId: Number(route?.params?.id ?? 0),
+				loanId: Number(currentRoute?.params?.id ?? 0),
 			};
 		},
 		variables() {

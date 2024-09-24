@@ -1,4 +1,4 @@
-import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchLocationFilter from '#src/components/Lend/LoanSearch/LoanSearchLocationFilter';
 
 export default {
 	title: 'Loan Search/Loan Search Location Filter',
@@ -9,9 +9,9 @@ const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { LoanSearchLocationFilter },
+		setup() { return args; },
 		template: '<loan-search-location-filter :regions="regions" :active-iso-codes="activeIsoCodes" />',
 	})
-	template.args = args;
 	return template;
 };
 

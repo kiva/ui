@@ -31,11 +31,11 @@
 
 <script>
 import _get from 'lodash/get';
-import activeLoanClient from '@/graphql/query/activeLoanClient.graphql';
-import activeLoanMixin from '@/plugins/active-loan-mixin';
-import lockScrollUtils from '@/plugins/lock-scroll';
-import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
+import activeLoanClient from '#src/graphql/query/activeLoanClient.graphql';
+import activeLoanMixin from '#src/plugins/active-loan-mixin';
+import lockScrollUtils from '#src/plugins/lock-scroll';
+import categoryRowArrowsVisibleMixin from '#src/plugins/category-row-arrows-visible-mixin';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
 
 export default {
 	name: 'ExpandableLoanCardExpanded',
@@ -161,7 +161,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .expandable-loan-card-expanded {
 	.expandable-loan-card-expanded-container {
@@ -172,10 +172,7 @@ export default {
 			background: $ghost;
 
 			/* !important is required since positioning for desktop is set in JS */
-			top: 0 !important;
-			left: 0 !important;
-			bottom: 0;
-			right: 0;
+			inset: 0 !important;
 			margin: 0;
 			padding: 0;
 
@@ -204,10 +201,7 @@ export default {
 				pointer-events: initial;
 				position: fixed;
 				z-index: 1000;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
+				inset: 0;
 			}
 		}
 	}

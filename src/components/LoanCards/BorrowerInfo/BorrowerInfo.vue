@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import BorrowerInfoHeader from '@/components/LoanCards/BorrowerInfo/BorrowerInfoHeader';
-import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
+import BorrowerInfoHeader from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoHeader';
+import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
 
 export default {
 	name: 'BorrowerInfo',
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .borrower-info-wrapper {
 	text-align: center;

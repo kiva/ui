@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import KvExpandable from '@/components/Kv/KvExpandable';
+import KvExpandable from '#src/components/Kv/KvExpandable';
 
 export default {
 	name: 'ExpandableListItem',

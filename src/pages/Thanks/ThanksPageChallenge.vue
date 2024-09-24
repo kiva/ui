@@ -46,7 +46,7 @@
 						style="max-width: 295px;"
 					>
 						<h3 class="tw-text-primary-inverse tw-mr-1.5">
-							You've completed your {{ completedAchievements.length | numeral('Oo') }} challenge.
+							You've completed your {{ $filters.numeral(completedAchievements.length, 'Oo') }} challenge.
 						</h3>
 						<img :src="badgeImage" class="tw-h-6 tw-w-6 tw-flex-none tw-mx-auto">
 					</div>
@@ -77,7 +77,7 @@
 					class="tw-flex tw-w-full tw-justify-between"
 				>
 					<h2 class="tw-mr-1.5">
-						Your {{ completedAchievements.length | numeral('Oo') }} challenge!
+						Your {{ $filters.numeral(completedAchievements.length, 'Oo') }} challenge!
 					</h2>
 					<div
 						class="tw-flex"
@@ -168,25 +168,25 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { mdiCheckAll } from '@mdi/js';
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
-import userAchievementsProgress from '@/graphql/query/userAchievementsProgress.graphql';
+import userAchievementsProgress from '#src/graphql/query/userAchievementsProgress.graphql';
 
-import logReadQueryError from '@/util/logReadQueryError';
-import logFormatter from '@/util/logFormatter';
+import logReadQueryError from '#src/util/logReadQueryError';
+import logFormatter from '#src/util/logFormatter';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const pageQuery = gql`query thanksPageChallenge($challengeId: String!) {
 	my {
@@ -213,7 +213,7 @@ export default {
 		WwwPage,
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thank you!'
 		};
@@ -234,14 +234,15 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const transactionId = route.query?.kiva_transaction_id
-				? numeral(route.query?.kiva_transaction_id).value()
+			const currentRoute = route.value ?? {};
+			const transactionId = currentRoute.query?.kiva_transaction_id
+				? numeral(currentRoute.query.kiva_transaction_id).value()
 				: null;
 
 			return client.query({
 				query: pageQuery,
 				variables: {
-					challengeId: route.params?.challengeId,
+					challengeId: currentRoute.params?.challengeId,
 				}
 			}).then(({ data }) => {
 				return client.query({
@@ -259,7 +260,8 @@ export default {
 			});
 		},
 		preFetchVariables({ route }) {
-			return { challengeId: route.params.challengeId };
+			const currentRoute = route?.value ?? route;
+			return { challengeId: currentRoute?.params?.challengeId };
 		},
 		variables() {
 			return { challengeId: this.$route.params.challengeId };
@@ -313,8 +315,10 @@ export default {
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e,
-				`Thanks challenge page readQuery failed: (transaction_id: ${transactionId})`);
+			logReadQueryError(
+				e,
+				`Thanks challenge page readQuery failed: (transaction_id: ${transactionId})`
+			);
 		}
 		this.lender = {
 			...(data?.my?.userAccount ?? {})
@@ -341,8 +345,10 @@ export default {
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e,
-				`Thanks challenge page achievements readQuery failed: (transaction_id: ${transactionId})`);
+			logReadQueryError(
+				e,
+				`Thanks challenge page achievements readQuery failed: (transaction_id: ${transactionId})`
+			);
 		}
 		this.allAchievements = achievementData?.userAchievementProgress?.achievementProgress ?? [];
 	},
@@ -362,7 +368,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.badge-thank-you-copy ::v-deep p {
+.badge-thank-you-copy :deep(p) {
 	@apply tw-text-subhead tw-mt-1;
 }
 </style>

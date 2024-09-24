@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import checkInjections from '@/util/injectionCheck';
+import { gql } from 'graphql-tag';
+import checkInjections from '#src/util/injectionCheck';
 
 const injections = ['cookieStore', 'apollo'];
 

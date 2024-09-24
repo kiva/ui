@@ -34,14 +34,14 @@
  * If team join is unsuccessful, display error message
  * If join team is pending, display pending message
  */
-import { gql } from '@apollo/client';
-import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
-
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import joinTeam from '@/graphql/mutation/joinTeam.graphql';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvLoadingSpinner from '~/@kiva/kv-components/vue/KvLoadingSpinner';
+import { gql } from 'graphql-tag';
+import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
 
 const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!, $publicId: String!) {
 	my {
@@ -102,9 +102,10 @@ export default {
 		preFetch: true,
 		query: userTeamMembership,
 		preFetchVariables({ route }) {
+			const currentRoute = route?.value ?? route;
 			return {
-				teamPublicId: route.query.teamPublicId,
-				publicId: route.query.inviter ?? '',
+				teamPublicId: currentRoute?.query?.teamPublicId,
+				publicId: currentRoute?.query?.inviter ?? '',
 			};
 		},
 		variables() {
@@ -113,12 +114,6 @@ export default {
 				publicId: this.inviter ?? '',
 			};
 		},
-		result({ data }) {
-			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
-			this.teamName = data?.community?.team?.name ?? '';
-			this.teamId = data?.community?.team?.id ?? 0;
-			this.inviterId = data?.community?.lender?.id ?? null;
-		}
 	},
 	data() {
 		return {
@@ -150,7 +145,7 @@ export default {
 	},
 	methods: {
 		memberRedirect() {
-			if (!this.$isServer) {
+			if (typeof window !== 'undefined') {
 				window.location = this.doneUrl ? this.doneUrl : `/team/${this.teamPublicId}`;
 			}
 		},
@@ -204,6 +199,22 @@ export default {
 		}
 	},
 	created() {
+		try {
+			const data = this.apollo.readQuery({
+				query: userTeamMembership,
+				variables: {
+					teamPublicId: this.$route?.query?.teamPublicId,
+					publicId: this.$route?.query?.inviter ?? '',
+				}
+			});
+			this.userMembershipStatus = data?.community?.team?.userProperties?.membershipStatus ?? 'none';
+			this.teamName = data?.community?.team?.name ?? '';
+			this.teamId = data?.community?.team?.id ?? 0;
+			this.inviterId = data?.community?.lender?.id ?? null;
+		} catch (e) {
+			logReadQueryError(e, 'ProcessJoinTeam userTeamMembership');
+		}
+
 		if (this.isPending) {
 			// is pending, do nothing
 			this.isLoading = false;

@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import CommunityGraphic from '@/assets/inline-svgs/borrow/community.svg';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import CommunityGraphic from '#src/assets/inline-svgs/borrow/community.svg';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'BorrowCommunity',
@@ -47,7 +47,7 @@ export default {
 		KvButton,
 		KvGrid,
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: 'Community | Borrow Pre-application',
 			meta: [

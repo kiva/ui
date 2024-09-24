@@ -1,11 +1,11 @@
-import { updateSearchState, getValidatedSearchState, createSavedSearch } from '@/util/loanSearch/searchStateUtils';
-import { FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import updateLoanSearchMutation from '@/graphql/mutation/updateLoanSearchState.graphql';
-import createSavedSearchMutation from '@/graphql/mutation/createSavedSearch.graphql';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import { updateSearchState, getValidatedSearchState, createSavedSearch } from '#src/util/loanSearch/searchStateUtils';
+import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import updateLoanSearchMutation from '#src/graphql/mutation/updateLoanSearchState.graphql';
+import createSavedSearchMutation from '#src/graphql/mutation/createSavedSearch.graphql';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockAllFacets, savedSearchParams } from '../../../fixtures/mockLoanSearchData';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
 		config: {
 			a: { getValidatedSearchState: jest.fn().mockReturnValue({ a: 'a' }) },

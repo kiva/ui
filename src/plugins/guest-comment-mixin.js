@@ -4,8 +4,8 @@
  * If the cookie values are present, and the user is logged in,
  * we can now leave the comment and remove the cookiies
  */
-import logFormatter from '@/util/logFormatter';
-import loanAddComment from '@/graphql/mutation/loanAddComment.graphql';
+import logFormatter from '#src/util/logFormatter';
+import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
 
 export const GUEST_COMMENT_COMMENT = 'guestCommentComment';
 export const GUEST_COMMENT_LOANID = 'guestCommentLoanId';

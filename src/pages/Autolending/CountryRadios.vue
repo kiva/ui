@@ -33,13 +33,10 @@
 </template>
 
 <script>
-import _map from 'lodash/map';
-import _get from 'lodash/get';
-
-import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvRadio from '@/components/Kv/KvRadio';
-import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
+import countryListQuery from '#src/graphql/query/autolending/countryList.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvRadio from '#src/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '#src/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	name: 'CountryRadios',
@@ -61,10 +58,8 @@ export default {
 		query: countryListQuery,
 		preFetch: true,
 		result({ data }) {
-			this.currentFilterValues = _get(
-				data, 'autolending.currentProfile.loanSearchCriteria.filters.country'
-			) || [];
-			this.allCountries = _map(_get(data, 'lend.countryFacets'), 'country') || [];
+			this.currentFilterValues = data?.autolending?.currentProfile?.loanSearchCriteria?.filters?.country ?? [];
+			this.allCountries = (data?.lend?.countryFacets ?? []).map(({ country }) => country);
 
 			if (this.currentFilterValues.length) {
 				this.radio = 'some';

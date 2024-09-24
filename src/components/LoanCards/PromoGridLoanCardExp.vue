@@ -32,10 +32,12 @@
 
 <script>
 import { paramCase } from 'change-case';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import getCacheKey from '@/util/getCacheKey';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import getCacheKey from '#src/util/getCacheKey';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
+const promoLoanImageGlob = import.meta.glob('/src/assets/images/mg-promo-loan-card/*.*', { eager: true });
+const promoLoanImageRequire = metaGlobReader(promoLoanImageGlob, '/src/assets/images/mg-promo-loan-card/');
 
 export default {
 	name: 'PromoGridLoanCardExp',
@@ -57,13 +59,13 @@ export default {
 		backgroundImage() {
 			if (this.categoryLabel) {
 				return [
-					['small', promoLoanImageRequire(`./mg-promo-${paramCase(this.categoryLabel)}-std.jpg`)],
-					['small retina', promoLoanImageRequire(`./mg-promo-${paramCase(this.categoryLabel)}-retina.jpg`)],
+					['small', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-std.jpg`)],
+					['small retina', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-retina.jpg`)],
 				];
 			}
 			return [
-				['small', promoLoanImageRequire('./mg-promo-default-std.jpg')],
-				['small retina', promoLoanImageRequire('./mg-promo-default-retina.jpg')],
+				['small', promoLoanImageRequire('mg-promo-default-std.jpg')],
+				['small retina', promoLoanImageRequire('mg-promo-default-retina.jpg')],
 			];
 		}
 	},
@@ -76,11 +78,8 @@ export default {
 	display: block;
 	content: '';
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: linear-gradient(transparent 25%, rgb(0, 0, 0) 75%);
+	inset: 0;
+	background: linear-gradient(transparent 25%, rgb(0 0 0) 75%);
 }
 
 </style>

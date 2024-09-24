@@ -102,24 +102,24 @@
 </template>
 
 <script>
-import logReadQueryError from '@/util/logReadQueryError';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import HeroBackground from '@/components/BorrowerProfile/HeroBackground';
-import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import LoanProgress from '@/components/BorrowerProfile/LoanProgress';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
-import personalizedLoansQuery from '@/graphql/query/lendByCategory/personalizedLoans.graphql';
-import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import { FLSS_ORIGIN_BP_FUNDED } from '@/util/flssUtils';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import logReadQueryError from '#src/util/logReadQueryError';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
+import BorrowerName from '#src/components/BorrowerProfile/BorrowerName';
+import LoanProgress from '#src/components/BorrowerProfile/LoanProgress';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import KivaClassicLoanCarousel from '#src/components/LoanCollections/KivaClassicLoanCarousel';
+import personalizedLoansQuery from '#src/graphql/query/lendByCategory/personalizedLoans.graphql';
+import mlLoansYouMightLikeData from '#src/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
+import { FLSS_ORIGIN_BP_FUNDED } from '#src/util/flssUtils';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 export default {
 	name: 'FundedBorrowerProfile',
-	metaInfo() {
+	head() {
 		return {
 			title: `${this.loan.name} from ${this.loan.geocode?.country?.name}'s loan has been funded!`,
 			meta: [
@@ -211,7 +211,7 @@ export default {
 			if (this.loanStatus === 'funded') {
 				return 1;
 			}
-			return this.loan?.loanFundraisingInfo?.fundedAmount / this.loan?.loanAmount;
+			return (this.loan?.loanFundraisingInfo?.fundedAmount ?? 0) / (this.loan?.loanAmount ?? 0);
 		},
 	},
 	mounted() {
@@ -402,7 +402,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loans-container {
 	max-width: 67rem;
@@ -412,10 +412,7 @@ export default {
 	position: relative;
 	width: auto;
 	height: auto;
-	left: 1rem;
-	right: 1rem;
-	bottom: 0;
-	top: 0;
+	inset: 0 1rem;
 	min-height: 6rem;
 
 	.spinner-wrapper {

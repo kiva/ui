@@ -1,4 +1,4 @@
-import ChallengeHeader from '@/components/Thanks/ChallengeHeader';
+import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 
 export default {
@@ -11,6 +11,7 @@ const story = (args = {}) => {
 		props: Object.keys(argTypes),
 		components: { ChallengeHeader },
 		mixins: [apolloStoryMixin()],
+		setup() { return args; },
 		template: '<challenge-header :goal="goal" :teamPublicId="teamPublicId" />',
 	});
 	template.args = args;

@@ -1,21 +1,15 @@
 import { render } from '@testing-library/vue';
-import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
+import { globalOptions } from '../../../../specUtils';
 
 describe('LendAmountButton', () => {
 	it('should display amount with a number input', async () => {
-		const { getByText } = render(LendAmountButton,
-			{
-				provide: {
-					apollo: {
-						query: () => Promise.resolve({}),
-					},
-				},
-				props: { amountLeft: 20.00 },
+		const { getByText } = render(LendAmountButton, {
+			global: {
+				...globalOptions,
 			},
-			vue => {
-				vue.use(kvAnalytics);
-			});
+			props: { amountLeft: 20.00 },
+		});
 
 		// Expect the button to exist and have correct amount
 		const buttonElement = getByText('Lend $20');
@@ -23,18 +17,15 @@ describe('LendAmountButton', () => {
 	});
 
 	it('should display amount with a string input', async () => {
-		const { getByText } = render(LendAmountButton,
+		const { getByText } = render(
+			LendAmountButton,
 			{
-				provide: {
-					apollo: {
-						query: () => Promise.resolve({}),
-					},
+				global: {
+					...globalOptions,
 				},
 				props: { amountLeft: '20.00' },
-			},
-			vue => {
-				vue.use(kvAnalytics);
-			});
+			}
+		);
 
 		// Expect the button to exist and have correct amount
 		const buttonElement = getByText('Lend $20');

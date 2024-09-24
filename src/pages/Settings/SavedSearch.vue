@@ -38,15 +38,15 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import mySavedSearches from '@/graphql/query/mySavedSearches.graphql';
-import SaveSearchItem from '@/components/Settings/SaveSearchItem';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { gql } from 'graphql-tag';
+import mySavedSearches from '#src/graphql/query/mySavedSearches.graphql';
+import SaveSearchItem from '#src/components/Settings/SaveSearchItem';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 const pageQuery = gql`query savedSearchPage {
 	my {
@@ -104,7 +104,7 @@ export default {
 				},
 			}).then(result => {
 				const savedSearchData = result?.data?.my?.savedSearches;
-				const fetchedSavedSearches = [...savedSearchData?.values];
+				const fetchedSavedSearches = [...(savedSearchData?.values ?? [])];
 				const existingSavedSearches = this.savedSearches;
 				this.savedSearches = [...existingSavedSearches, ...fetchedSavedSearches];
 				this.loading = false;

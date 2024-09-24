@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import KvCheckboxList from '@/components/Kv/KvCheckboxList';
-import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '@/util/loanSearch/filterUtils';
+import KvCheckboxList from '#src/components/Kv/KvCheckboxList';
+import { getUpdatedNumLoansFundraising, getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
 
 export default {
 	name: 'LoanSearchCheckboxListFilter',

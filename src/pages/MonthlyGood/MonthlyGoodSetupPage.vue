@@ -7,7 +7,7 @@
 			>
 				<div class="small-12 medium-11 large-10 column">
 					<h2 class="tw-mb-4">
-						Heads up! You have {{ balance | numeral('$0') }} available to lend.
+						Heads up! You have {{ $filters.numeral(balance, '$0') }} available to lend.
 					</h2>
 					<p class="tw-mb-2">
 						<!-- eslint-disable-next-line max-len -->
@@ -48,14 +48,8 @@
 							<div class="row align-center tw-text-center">
 								<div class="medium-10 small-12 columns">
 									<div class="row column">
-										<strong>Each month on the</strong>
-										<label
-											class="tw-sr-only"
-											:class="{ 'tw-text-danger': $v.dayOfMonth.$invalid }"
-											:for="dayOfMonth"
-										>
-											Day of the Month
-										</label>
+										<!-- eslint-disable-next-line max-len -->
+										<strong>Each month on the</strong> <label class="tw-sr-only" :class="{ 'tw-text-danger': v$.dayOfMonth?.$invalid }" :for="dayOfMonth">Day of the Month</label>
 										<kv-text-input
 											v-if="isDayInputShown"
 											@blur="hideDayInput()"
@@ -73,14 +67,17 @@
 											@click="isDayInputShown = true"
 											v-if="!isDayInputShown"
 										>
-											<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+											<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 											<kv-icon class="tw-w-2 tw-h-2" name="pencil" title="Edit" />
 										</button>
-										<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-											<li v-if="!$v.dayOfMonth.required">
+										<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
+											<li v-if="v$.dayOfMonth?.required?.$invalid">
 												Field is required
 											</li>
-											<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+											<li
+												v-if="v$.dayOfMonth?.minValue?.$invalid
+													|| v$.dayOfMonth?.maxValue?.$invalid"
+											>
 												Enter day of month - 1 to 31
 											</li>
 										</ul>
@@ -101,7 +98,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': $v.mgAmount.$invalid }"
+												:class="{ 'tw-text-danger': v$.mgAmount?.$invalid }"
 												for="amount"
 											>
 												Amount
@@ -114,11 +111,14 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="$v.mgAmount.$invalid">
-												<li v-if="!$v.mgAmount.required">
+											<ul class="tw-text-right validation-errors" v-if="v$.mgAmount?.$invalid">
+												<li v-if="v$.mgAmount?.required?.$invalid">
 													Field is required
 												</li>
-												<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+												<li
+													v-if="v$.mgAmount?.minValue?.$invalid
+														|| v$.mgAmount?.maxValue?.$invalid"
+												>
 													Enter an amount of $5-$10,000
 												</li>
 											</ul>
@@ -145,7 +145,7 @@
 										<div class="medium-5 small-6 columns">
 											<label
 												class="tw-sr-only"
-												:class="{ 'tw-text-danger': $v.donation.$invalid }"
+												:class="{ 'tw-text-danger': v$.donation?.$invalid }"
 												:for="`
 													${donationOptionSelected !== 'other'
 													? 'donation' : 'donation_other'
@@ -176,8 +176,11 @@
 										</div>
 
 										<div class="small-12 columns">
-											<ul class="tw-text-right validation-errors" v-if="$v.donation.$invalid">
-												<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+											<ul class="tw-text-right validation-errors" v-if="v$.donation?.$invalid">
+												<li
+													v-if="v$.donation?.minValue?.$invalid
+														|| v$.donation?.maxValue?.$invalid"
+												>
 													Enter an amount of $0-$10,000
 												</li>
 											</ul>
@@ -191,14 +194,15 @@
 
 										<div class="medium-5 small-6 columns">
 											<span class="tw-ml-1 tw-font-medium">
-												{{ totalCombinedDeposit | numeral('$0,0.00') }}
+												{{ $filters.numeral(totalCombinedDeposit, '$0,0.00') }}
 											</span>
 										</div>
 
 										<div class="small-12 columns">
 											<ul
 												class="tw-text-center validation-errors"
-												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+												v-if="v$.mgAmount?.maxTotal?.$invalid
+													|| v$.donation?.maxTotal?.$invalid"
 											>
 												<li>
 													The maximum Monthly Good total is $10,000.<br>
@@ -253,7 +257,7 @@
 								</p>
 
 								<div class="payment-dropin-wrapper" v-if="hasActiveLogin">
-									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+									<div class="payment-dropin-invalid-cover" v-if="v$.$invalid"></div>
 									<monthly-good-drop-in-payment-wrapper
 										:amount="totalCombinedDeposit"
 										:donate-amount="donation"
@@ -298,31 +302,31 @@
 
 <script>
 import numeral from 'numeral';
-import { gql } from '@apollo/client';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { gql } from 'graphql-tag';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 import { subDays } from 'date-fns';
 
-import logReadQueryError from '@/util/logReadQueryError';
-import { checkLastLoginTime } from '@/util/authenticationGuard';
-import { myFTDQuery } from '@/util/checkoutUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import { checkLastLoginTime } from '#src/util/authenticationGuard';
+import { myFTDQuery } from '#src/util/checkoutUtils';
 
-import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
+import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 
-import AlreadySubscribedNotice from '@/components/MonthlyGood/AlreadySubscribedNotice';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import LegacySubscriberNotice from '@/components/MonthlyGood/LegacySubscriberNotice';
-import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import AlreadySubscribedNotice from '#src/components/MonthlyGood/AlreadySubscribedNotice';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import LegacySubscriberNotice from '#src/components/MonthlyGood/LegacySubscriberNotice';
+import MonthlyGoodDropInPaymentWrapper from '#src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
 	general {
@@ -445,36 +449,38 @@ export default {
 			autoDepositNoticeThreshold: 150
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mixins: [
-		validationMixin,
 		loanGroupCategoriesMixin
 	],
-	validations: {
-		mgAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.donation < 10000;
-			}
-		},
-		donation: {
-			minValue: minValue(0),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.mgAmount < 10000;
-			}
-		},
-		dayOfMonth: {
-			required,
-			minValue: minValue(1),
-			maxValue: maxValue(31)
-		},
-
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.donation < 10000;
+				}
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.mgAmount < 10000;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+		};
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
+			const currentRoute = route.value ?? {};
 			/**
 			 * Implementation of SUBS-609 Experiment Results
 			 * For users without a currently active login.
@@ -509,7 +515,7 @@ export default {
 							// Auth error will be caught here, redirect to login.
 							return Promise.reject({
 								path: '/ui-login',
-								query: { force: true, doneUrl: route.fullPath }
+								query: { force: true, doneUrl: currentRoute.fullPath }
 							});
 						});
 					}
@@ -648,7 +654,7 @@ export default {
 	},
 	methods: {
 		hideDayInput() {
-			if (!this.$v.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -720,7 +726,7 @@ export default {
 		},
 		calculatedDonationOptions() {
 			// If mgAmount isn't valid, just set these values on the amount prop.
-			const amountToBasePercentageOn = this.$v.mgAmount.$invalid ? this.amount : this.mgAmount;
+			const amountToBasePercentageOn = this.v$.mgAmount?.$invalid ? this.amount : this.mgAmount;
 			return [
 				{
 					value: '20',
@@ -756,7 +762,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .monthly-good-setup-page {
 	position: relative;
@@ -820,11 +826,8 @@ export default {
 
 	.payment-dropin-invalid-cover {
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		background: rgba(255, 255, 255, 0.8);
+		inset: 0;
+		background: rgb(255 255 255 / 80%);
 		z-index: 10000;
 	}
 

@@ -5,11 +5,11 @@ import {
 	getCachedChannel,
 	getLoanChannel,
 	watchChannelQuery,
-} from '@/util/loanChannelUtils';
-import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import * as experimentalUtils from '@/util/experiment/experimentUtils';
-import * as flssUtils from '@/util/flssUtils';
-import { getLoanChannelVariables } from '@/util/flssUtils';
+} from '#src/util/loanChannelUtils';
+import loanChannelQuery from '#src/graphql/query/loanChannelDataExpanded.graphql';
+import * as experimentalUtils from '#src/util/experiment/experimentUtils';
+import * as flssUtils from '#src/util/flssUtils';
+import { getLoanChannelVariables } from '#src/util/flssUtils';
 
 const mockWomenMap = {
 	id: 5,

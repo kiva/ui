@@ -49,8 +49,8 @@
 
 <script>
 import FocusLock from 'vue-focus-lock';
-import KvIcon from '@/components/Kv/KvIcon';
-import lockScrollUtils from '@/plugins/lock-scroll';
+import KvIcon from '#src/components/Kv/KvIcon';
+import lockScrollUtils from '#src/plugins/lock-scroll';
 
 export default {
 	name: '15YearsLightbox',
@@ -129,16 +129,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .lightbox-wrap {
 	display: block;
 	position: fixed;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
+	inset: 0;
 	overflow-y: auto;
 	z-index: 1500;
 	max-height: 100vh;
@@ -152,10 +149,7 @@ export default {
 
 .lightbox-container {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset: 0;
 	display: flex;
 	flex-direction: column;
 }

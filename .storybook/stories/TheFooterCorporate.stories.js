@@ -4,29 +4,33 @@ import {
 	wrdFooterTheme,
 	fifteenYearFooterTheme,
 	blueFooter
-} from '@/util/siteThemes';
-import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
+} from '#src/util/siteThemes';
+import TheFooterCorporate from '#src/components/WwwFrame/TheFooterCorporate';
+
+const imageGlob = import.meta.glob('/src/assets/images/logos/*.*', { eager: true });
+
+const args = {
+	theme: null,
+	corporateLogoUrl: Object.keys(imageGlob)[0],
+};
 
 export default {
 	title: 'WwwFrame/TheFooterCorporate',
 	component: TheFooterCorporate,
-	args: {
-		theme: null,
-		corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
-	},
+	args,
 	argTypes: {
 		theme: {
 			control: {
 				type: 'select',
-				options: {
-					'none': null,
-					'lightFooter':lightFooter,
-					'iwdFooterTheme': iwdFooterTheme,
-					'wrdFooterTheme': wrdFooterTheme,
-					'fifteenYearFooterTheme': fifteenYearFooterTheme,
-					'blueFooter': blueFooter,
-				},
-			}
+			},
+			options: {
+				'none': null,
+				'lightFooter': lightFooter,
+				'iwdFooterTheme': iwdFooterTheme,
+				'wrdFooterTheme': wrdFooterTheme,
+				'fifteenYearFooterTheme': fifteenYearFooterTheme,
+				'blueFooter': blueFooter,
+			},
 		},
 	}
 };
@@ -36,10 +40,10 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		TheFooterCorporate
 	},
+	setup() { return args; },
 	template: `
 		<the-footer-corporate
 			:theme="theme"
-			:corporate="corporate"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
 	`,
@@ -47,10 +51,12 @@ export const Default = (args, { argTypes }) => ({
 
 export const Themed = Default.bind({});
 Themed.args = {
+	...args,
 	theme: wrdFooterTheme,
 };
 
 export const WithoutCorporateLogoUrl = Default.bind({});
 WithoutCorporateLogoUrl.args = {
+	...args,
 	corporateLogoUrl: null,
 };
