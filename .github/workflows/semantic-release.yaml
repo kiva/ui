@@ -10,11 +10,7 @@ on:
           - staging
           - production
         required: true
-      ci-branch:
-        type: string
-        description: 'The branch to run the CI on.'
-        default: 'main'
-        required: false
+
   push:
     branches:
       - staging
@@ -79,7 +75,7 @@ jobs:
           repository: kiva/marketplace-web-ui-ci
           token: ${{ env.GITHUB_PAT }}
           path: .docker
-          ref: ${{ github.event.inputs.ci-branch }}
+          ref: "main"
           patterns: |
             resources/org/kiva/marketplaceWebUiCi/ui
       - name: move files
