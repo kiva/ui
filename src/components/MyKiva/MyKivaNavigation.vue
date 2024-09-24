@@ -36,7 +36,7 @@
 				</button>
 			</div>
 			<div
-				class="tw-overflow-y-auto tw-transition-opacity tw-delay-200"
+				class="tw-overflow-y-auto tw-overflow-x-hidden tw-transition-opacity tw-delay-200"
 				:class="{
 					'tw-opacity-0 tw-duration-0': !open,
 					'tw-opacity-full tw-duration-500': open,
