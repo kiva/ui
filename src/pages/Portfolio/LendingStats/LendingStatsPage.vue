@@ -162,7 +162,7 @@ export default {
 				userId: this.userId.toString(),
 			},
 		}).then(({ data }) => {
-			this.allAchievements = data?.userAchievementProgress?.achievementProgress;
+			this.allAchievements = data?.userAchievementProgress?.achievementProgress ?? [];
 		});
 	},
 	computed: {
