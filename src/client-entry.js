@@ -97,11 +97,11 @@ async function setupTouchDetection(apolloClient) {
 
 async function setupAnalytics(app, apolloClient) {
 	const userId = await getUserId(apolloClient);
-	await app.$setKvAnalyticsData(userId);
-	app.$fireServerPageView();
-	app.$fireQueuedEvents();
+	await app.config.globalProperties.$setKvAnalyticsData(userId);
+	app.config.globalProperties.$fireServerPageView();
+	app.config.globalProperties.$fireQueuedEvents();
 	const { default: collectWebVitals } = await import('#src/util/webVitals');
-	collectWebVitals(app.$kvTrackEvent);
+	collectWebVitals(app.config.globalProperties.$kvTrackEvent);
 }
 
 async function setupSentry(app, router) {
