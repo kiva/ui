@@ -24,6 +24,11 @@ const story = (args = {}) => {
 		components: { BorrowerStatusCard },
 		mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
 		setup() { return { args }; },
+		provide: {
+			$kvTrackEvent: () => Promise.resolve({
+				fn: () => ({}),
+			}),
+		},
 		template: `
 			<borrower-status-card v-bind="args" />
 		`,

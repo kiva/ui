@@ -17,23 +17,10 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { mdiCogOutline } from '@mdi/js';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-
-export default {
-	name: 'MyKivaHero',
-	components: {
-		MyKivaContainer,
-		KvMaterialIcon
-	},
-	data() {
-		return {
-			mdiCogOutline
-		};
-	}
-};
 </script>
 
 <style lang="postcss" scoped>
