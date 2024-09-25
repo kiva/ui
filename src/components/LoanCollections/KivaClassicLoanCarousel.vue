@@ -33,29 +33,29 @@
 				/>
 			</template>
 			<!-- Show View more Card -->
-			<router-link
-				v-if="showViewMoreCard"
-				:key="`view-more-card`"
-				class="tw-flex tw-items-center tw-h-full tw-w-full
+			<template v-if="showViewMoreCard" #view-more>
+				<router-link
+					:key="`view-more-card`"
+					class="tw-flex tw-items-center tw-h-full tw-w-full
 						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
-				:to="cleanUrl"
-				v-kv-track-event="[
-					'Lending',
-					'click-carousel-view-all-category-loans',
-					`${viewAllLoansCategoryTitle}`]"
-			>
-				<div class="tw-w-full tw-text-center">
-					<h3>{{ viewAllLoansCategoryTitle }}</h3>
+					:to="cleanUrl"
+					v-kv-track-event="[
+						'Lending',
+						'click-carousel-view-all-category-loans',
+						`${viewAllLoansCategoryTitle}`]"
+				>
+					<div class="tw-w-full tw-text-center">
+						<h3>{{ viewAllLoansCategoryTitle }}</h3>
+					</div>
+				</router-link>
+			</template>
+			<template v-if="showCheckBackMessage" #check-back>
+				<div class="tw-flex tw-items-center tw-h-full tw-w-full tw-border-action-highlight tw-rounded">
+					<div class="tw-w-full tw-text-center">
+						<h3>Check back later, we add new loans everyday.</h3>
+					</div>
 				</div>
-			</router-link>
-			<div
-				v-if="showCheckBackMessage" class="tw-flex tw-items-center tw-h-full tw-w-full
-					tw-border-action-highlight tw-rounded"
-			>
-				<div class="tw-w-full tw-text-center">
-					<h3>Check back later, we add new loans everyday.</h3>
-				</div>
-			</div>
+			</template>
 		</kv-carousel>
 		<template v-if="newHomeExp">
 			<div class="tw-hidden md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">

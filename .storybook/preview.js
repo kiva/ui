@@ -31,6 +31,7 @@ setup((app) => {
 	// Mock the analytics Vue plugin
 	app.directive('kv-track-event', () => { });
 	app.config.globalProperties.$kvTrackEvent = () => { };
+	app.config.globalProperties.$kvTrackSelfDescribingEvent = () => { };
 
 	// provide global application config
 	app.config.globalProperties.$appConfig = config.app;
