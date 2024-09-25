@@ -6,7 +6,6 @@ const baseUrl = process.env.BASE_URL || 'development.kiva.org';
 const env = process.env.SHORT_ENV || 'dev';
 const formattedUrlEnv = env === 'prod' ? '' : `${env}.`;
 const enableOptimizely = process.env.ENABLE_OPTIMIZELY !== 'false';
-const enablePerimeterx = process.env.ENABLE_PERIMETERX !== 'false';
 const enableHotjar = process.env.ENABLE_HOTJAR !== 'false';
 const graphqlUri = process.env.API_HOSTNAME || `https://gateway.${baseUrl}/graphql`;
 
@@ -55,7 +54,6 @@ export const app = {
 	enableGTM: true,
 	enableHotjar,
 	enableOptimizely,
-	enablePerimeterx,
 	enableSentry: true,
 	enableSnowplow: true,
 	fbApplicationId: process.env.FACEBOOK_APP_ID || '364044572460',
