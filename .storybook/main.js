@@ -14,5 +14,19 @@ const config = {
   docs: {
     autodocs: "tag",
   },
+  async viteFinal(config) {
+    // Merge custom configuration into the default config
+    const { mergeConfig } = await import('vite');
+
+    return mergeConfig(config, {
+		build: {
+			rollupOptions: {
+				output: {
+					chunkFileNames: 'assets/entry-[name]-[hash:10].js',
+				},
+			},
+		},
+    });
+  },
 };
 export default config;
