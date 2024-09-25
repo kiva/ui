@@ -53,14 +53,13 @@ async function fetchGqlPossibleTypes(url, cache) {
 		}
 	});
 
-	// Convert the possible types object to JSON
 	const typesJSON = JSON.stringify(possibleTypes);
-
-	// Cache the possible types in the local process
-	process.env.FETCHED_GQL_TYPES = typesJSON;
-
-	// Cache the possible types in memcached for other processes to use
-	await setToCache('ui-gql-possible-types', typesJSON, 24 * 60 * 60, cache);
+	if (typesJSON) {
+		// Cache the possible types in the local process
+		process.env.FETCHED_GQL_TYPES = typesJSON;
+		// Cache the possible types for 24 hours for other processes
+		await setToCache('ui-gql-possible-types', typesJSON, 24 * 60 * 60, cache);
+	}
 
 	return possibleTypes;
 }
