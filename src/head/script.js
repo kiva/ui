@@ -77,20 +77,7 @@ export default (config, globalOneTrustEvent) => {
 			a.appendChild(r);
 		})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 	};
-	// Always load
-	// PerimeterX snippet
-	if (config.enablePerimeterx) {
-		/* eslint-disable */
-		(function(){
-			window._pxAppId = config.perimeterxAppId;
-			var p = document.getElementsByTagName('script')[0],
-				s = document.createElement('script');
-			s.async = 1;
-			s.src = `${window.location.origin}/${config.perimeterxAppId.substring(2)}/init.js`;
-			p.parentNode.insertBefore(s,p);
-		}());
-		/* eslint-enable */
-	}
+
 	// Google Recaptcha loaded indicator
 	window.recaptchaLoaded = new Promise(resolve => {
 		window.recaptchaOnloadCallback = () => {
