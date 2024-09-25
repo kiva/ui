@@ -123,84 +123,78 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { mdiClose } from '@mdi/js';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import { ref, toRefs, watch } from 'vue';
 
-export default {
-	name: 'MyKivaNavigation',
-	components: {
-		KvMaterialIcon,
+const props = defineProps({
+	visible: {
+		type: Boolean,
+		default: false,
 	},
-	props: {
-		visible: {
-			type: Boolean,
-			default: false,
-		},
-		userBalance: {
-			type: String,
-			default: '',
-		},
+	userBalance: {
+		type: String,
+		default: '',
 	},
-	data() {
+});
+
+const emit = defineEmits(['navigation-closed']);
+
+const { visible, userBalance } = toRefs(props);
+
+const open = ref(false);
+const profileSettingsOptions = ref([
+	{ link: '/settings/account', text: 'Account' },
+	{ link: '/settings/security', text: 'Security and login' },
+	{ link: '/settings/email', text: 'Email' },
+	{ link: '/settings/payments', text: 'Payment methods' },
+	{ link: '/settings/data', text: 'Data' },
+]);
+const lendingOptions = ref([
+	{ link: '/portfolio/loans', text: 'My loans' },
+	{ link: '/portfolio/lending-stats', text: 'Lending stats' },
+	{ link: '/portfolio/estimated-repayments', text: 'Estimated repayments' },
+	{ link: '/portfolio/credit/deposit', text: 'Add credit' },
+	{ link: '/portfolio/withdraw', text: 'Withdraw' },
+	{ link: '/donate/supportusprocess', text: 'Donate credit', isDonate: true },
+	{ link: '/portfolio/donations', text: 'My donations' },
+	{ link: '/portfolio/transactions', text: 'Transaction history' },
+	{ link: '/portfolio/invites', text: 'Invite friends' },
+	{ link: '/portfolio/credit/bonus-history', text: 'Free credit history' },
+	{ link: '/portfolio/kiva-cards', text: 'Purchased Kiva cards' },
+]);
+const communityOptions = ref([
+	{ link: '/teams/my-teams', text: 'My teams' },
+	{ link: '/account/messages', text: 'Messages' },
+]);
+
+const returnLendingUrl = setting => {
+	if (setting.isDonate) {
 		return {
-			open: false,
-			mdiClose,
-			profileSettingsOptions: [
-				{ link: '/settings/account', text: 'Account' },
-				{ link: '/settings/security', text: 'Security and login' },
-				{ link: '/settings/email', text: 'Email' },
-				{ link: '/settings/payments', text: 'Payment methods' },
-				{ link: '/settings/data', text: 'Data' },
-			],
-			lendingOptions: [
-				{ link: '/portfolio/loans', text: 'My loans' },
-				{ link: '/portfolio/lending-stats', text: 'Lending stats' },
-				{ link: '/portfolio/estimated-repayments', text: 'Estimated repayments' },
-				{ link: '/portfolio/credit/deposit', text: 'Add credit' },
-				{ link: '/portfolio/withdraw', text: 'Withdraw' },
-				{ link: '/donate/supportusprocess', text: 'Donate credit', isDonate: true },
-				{ link: '/portfolio/donations', text: 'My donations' },
-				{ link: '/portfolio/transactions', text: 'Transaction history' },
-				{ link: '/portfolio/invites', text: 'Invite friends' },
-				{ link: '/portfolio/credit/bonus-history', text: 'Free credit history' },
-				{ link: '/portfolio/kiva-cards', text: 'Purchased Kiva cards' },
-			],
-			communityOptions: [
-				{ link: '/teams/my-teams', text: 'My teams' },
-				{ link: '/account/messages', text: 'Messages' },
-			],
+			path: setting.link,
+			query: {
+				donationAmount: userBalance.value
+			}
 		};
-	},
-	methods: {
-		returnLendingUrl(setting) {
-			if (setting.isDonate) {
-				return {
-					path: setting.link,
-					query: {
-						donationAmount: this.userBalance
-					}
-				};
-			}
-			return setting.link;
-		},
-		closeSideSheet() {
-			this.open = false;
-			setTimeout(() => {
-				this.$emit('navigation-closed');
-			}, '700');
-		},
-	},
-	watch: {
-		visible() {
-			if (this.visible) {
-				setTimeout(() => {
-					this.open = true;
-				}, '300');
-			}
-		},
-	},
+	}
+	return setting.link;
 };
+
+const closeSideSheet = () => {
+	open.value = false;
+	setTimeout(() => {
+		emit('navigation-closed');
+	}, '700');
+};
+
+watch(visible, () => {
+	if (visible.value) {
+		setTimeout(() => {
+			open.value = true;
+		}, '300');
+	}
+});
 </script>
 
 <style lang="postcss" scoped>
