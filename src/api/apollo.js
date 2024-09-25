@@ -39,16 +39,16 @@ export default function createApolloClient({
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
-			NetworkErrorRetryLink({
-				activateRetry: appConfig?.apolloNetworkErrorRetryActive,
-				attemptsMax: appConfig?.apolloNetworkErrorRetryAttempts,
-			}),
-			NetworkErrorLoggingLink(),
 			SnowplowSessionLink({ cookieStore }),
 			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ cookieStore }),
+			NetworkErrorLoggingLink(),
+			NetworkErrorRetryLink({
+				activateRetry: appConfig?.apolloNetworkErrorRetryActive,
+				attemptsMax: appConfig?.apolloNetworkErrorRetryAttempts,
+			}),
 			HttpLinkCreator({
 				uri,
 				fetch,
