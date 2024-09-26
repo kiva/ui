@@ -171,6 +171,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import numeral from 'numeral';
 
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
@@ -351,8 +352,8 @@ export default {
 		formUpdated({
 			mgAmount, donation, dayOfMonth, category, isChanged, isFormValid
 		}) {
-			this.mgAmount = mgAmount;
-			this.donation = donation;
+			this.mgAmount = numeral(mgAmount).value();
+			this.donation = numeral(donation).value();
 			this.dayOfMonth = dayOfMonth;
 			this.category = category;
 			this.isChanged = isChanged;

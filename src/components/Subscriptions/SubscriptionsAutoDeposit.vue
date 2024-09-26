@@ -313,6 +313,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import numeral from 'numeral';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minValue, maxValue } from '@vuelidate/validators';
 
@@ -378,14 +379,14 @@ export default {
 				minValue: minValue(5),
 				maxValue: maxValue(10000),
 				maxTotal(value) {
-					return value + this.donation < 10000;
+					return numeral(value).value() + numeral(this.donation).value() < 10000;
 				}
 			},
 			donation: {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				maxTotal(value) {
-					return value + this.mgAmount < 10000;
+					return numeral(value).value() + numeral(this.mgAmount).value() < 10000;
 				}
 			},
 			dayOfMonth: {
@@ -426,7 +427,7 @@ export default {
 	},
 	computed: {
 		totalCombinedDeposit() {
-			return this.donation + this.mgAmount;
+			return numeral(this.donation).value() + numeral(this.mgAmount).value();
 		},
 		isChanged() {
 			return this.v$.$dirty;
