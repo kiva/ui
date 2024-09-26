@@ -28,7 +28,7 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.9.x
-          lhci autorun --config=./lighthouserc-prod.js
+          lhci autorun --config=./lighthouserc-prod.cjs
           lhci upload --target=filesystem --outputDir=./lhci
           node format-lh-for-s3.js
       - name: Configure AWS Credentials
