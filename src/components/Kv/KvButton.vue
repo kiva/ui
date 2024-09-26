@@ -7,14 +7,12 @@ export default {
 	render() {
 		const options = {
 			class: { button: true },
-			props: {},
-			attrs: {},
 		};
 		if (this.to) {
-			options.props.to = this.to;
+			options.to = this.to;
 		}
 		if (this.href) {
-			options.attrs.href = this.href;
+			options.href = this.href;
 		}
 		return h(this.tag, options, this.$slots.default());
 	},
