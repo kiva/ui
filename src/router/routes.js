@@ -464,14 +464,6 @@ export default [
 		}
 	},
 	{
-		path: '/my-kiva',
-		component: () => import('#src/pages/Portfolio/MyKiva/MyKivaPage'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/portfolio',
 		component: () => import('#src/pages/Portfolio/ImpactDashboard/ImpactDashboardPage'),
 		meta: {
