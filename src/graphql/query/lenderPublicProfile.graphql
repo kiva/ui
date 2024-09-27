@@ -27,6 +27,7 @@ query LenderPublicProfile ($publicId: String!) {
 		}
 	}
 	userAchievementProgress(publicId: $publicId) {
+		id
 		achievementProgress {
 			achievementId
 			status

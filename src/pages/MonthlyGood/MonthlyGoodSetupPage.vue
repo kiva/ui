@@ -310,6 +310,7 @@ import { subDays } from 'date-fns';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { checkLastLoginTime } from '#src/util/authenticationGuard';
 import { myFTDQuery } from '#src/util/checkoutUtils';
+import { getFullUrl } from '#src/util/urlUtils';
 
 import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
@@ -460,14 +461,14 @@ export default {
 				minValue: minValue(5),
 				maxValue: maxValue(10000),
 				maxTotal(value) {
-					return value + this.donation < 10000;
+					return numeral(value).value() + numeral(this.donation).value() < 10000;
 				}
 			},
 			donation: {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				maxTotal(value) {
-					return value + this.mgAmount < 10000;
+					return numeral(value) + numeral(this.mgAmount).value() < 10000;
 				}
 			},
 			dayOfMonth: {
@@ -664,8 +665,8 @@ export default {
 
 			const mgSignupData = {
 				mgTotalAmount: this.totalCombinedDeposit,
-				mgLendingAmount: this.mgAmount,
-				mgDonationAmount: this.donation,
+				mgLendingAmount: numeral(this.mgAmount).value(),
+				mgDonationAmount: numeral(this.donation).value(),
 				mgDayOfMonth: this.dayOfMonth,
 				mgCategory: this.selectedGroup,
 				isFTD: false,
@@ -703,16 +704,19 @@ export default {
 	computed: {
 		// change url parameters if form values are changed for login redirect
 		loginRedirectUrl() {
-			let redirectString = this.$route.path;
-			// eslint-disable-next-line max-len
-			redirectString += `?amount=${this.mgAmount}&category=${this.selectedGroup}&day=${this.dayOfMonth}&initDonation=${this.donation}`;
+			const params = {
+				amount: numeral(this.mgAmount).value(),
+				category: this.selectedGroup,
+				day: this.dayOfMonth,
+				initDonation: numeral(this.donation).value()
+			};
 			if (this.source) {
-				redirectString += `&source=${this.source}`;
+				params.source = this.source;
 			}
-			return encodeURIComponent(redirectString);
+			return getFullUrl(this.$route.path, params);
 		},
 		totalCombinedDeposit() {
-			return this.donation + this.mgAmount;
+			return numeral(this.donation).value() + numeral(this.mgAmount).value();
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
