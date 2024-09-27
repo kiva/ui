@@ -19,7 +19,7 @@
 					:key="item.value"
 					:disabled="item.disabled"
 					v-model="selected"
-					@update="updateSelected($event, [item.value])"
+					@change="updateSelected($event, [item.value])"
 					class="tw-text-small"
 				>
 					{{ item.title }}
