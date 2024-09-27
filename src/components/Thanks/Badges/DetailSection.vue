@@ -198,6 +198,10 @@ export default {
 
 <style lang="postcss" scoped>
 
+.slide-container {
+	width: 164px;
+}
+
 .no-border :deep(span) {
 	@apply tw-bg-transparent tw-border-0;
 }
