@@ -33,7 +33,7 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab>
+					<KvTab v-if="loans.length > 9">
 						<a href="/portfolio/loans">View all</a>
 					</KvTab>
 				</template>

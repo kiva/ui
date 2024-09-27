@@ -9,6 +9,7 @@
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile :lender="lender" />
+		<MyKivaBorrowerCarousel :loans="loans" :has-active-loans="hasActiveLoans" />
 	</www-page>
 </template>
 
@@ -19,6 +20,7 @@ import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
+import { isLoanFundraising } from '#src/util/loanUtils';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
@@ -36,6 +38,7 @@ export default {
 			lender: null,
 			showNavigation: false,
 			userInfo: {},
+			loans: [],
 		};
 	},
 	apollo: {
@@ -44,6 +47,7 @@ export default {
 		result(result) {
 			this.userInfo = result.data?.my ?? {};
 			this.lender = result.data?.my?.lender ?? null;
+			this.loans = result.data?.my?.loans ?? [];
 		},
 	},
 	computed: {
@@ -56,6 +60,9 @@ export default {
 		lenderImageUrl() {
 			return this.lender?.image?.url ?? '';
 		},
+		hasActiveLoans() {
+			return this.loans?.some(loan => loan.status === 'repaying' || isLoanFundraising(loan));
+		}
 	},
 	methods: {
 		handleShowNavigation() {
