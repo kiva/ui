@@ -158,10 +158,12 @@ const singleSlideWidth = computed(() => {
 		max-width: 520px;
 	}
 }
+
 :deep(.borrower-carousel) div.kv-carousel__controls {
 	@apply tw-hidden;
 }
-:deep(.tabs) div[role="tablist"] {
+
+:deep(.tabs) div[role=tablist] {
 	@apply md:tw-gap-3.5;
 }
 </style>
