@@ -341,6 +341,7 @@ const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
+const THANKS_BADGES_EXP = 'thanks_badges';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -637,7 +638,9 @@ export default {
 					// eslint-disable-next-line max-len
 					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
 					const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
-					this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
+					const badgeExpEnabled = this.isTYBadgesExperimentEnabled();
+					this.challengeRedirectQueryParam = challengeProgressed && !badgeExpEnabled
+						? `&challenge=${challengeProgressed}` : '';
 				});
 			// end challenge code
 		}
@@ -1119,6 +1122,15 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
+		isTYBadgesExperimentEnabled() {
+			// Deposit incentive experiment MP-72
+			const thanksBadgeExp = this.apollo.readFragment({
+				id: `Experiment:${THANKS_BADGES_EXP}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			return thanksBadgeExp?.version === 'b';
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
