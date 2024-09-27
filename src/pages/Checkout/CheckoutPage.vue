@@ -627,9 +627,9 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// Don't fetch challenge status if IWD2024 experiment is enabled
+		// Don't fetch challenge status if IWD2024 experiment or Badge Experiment are enabled
 		// to avoid being redirected to the challenge thank you page
-		if (!this.iwdExpEnabled) {
+		if (!this.iwdExpEnabled || !this.isTYBadgesExperimentActive()) {
 			// Fetch Challenge Status
 			// If a loan in basket makes progress towards an active challenge,
 			// set query param to redirect to special thank you page
@@ -638,9 +638,7 @@ export default {
 					// eslint-disable-next-line max-len
 					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
 					const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
-					const badgeExpEnabled = this.isTYBadgesExperimentEnabled();
-					this.challengeRedirectQueryParam = challengeProgressed && !badgeExpEnabled
-						? `&challenge=${challengeProgressed}` : '';
+					this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
 				});
 			// end challenge code
 		}
@@ -1121,14 +1119,14 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
-		isTYBadgesExperimentEnabled() {
-			// Deposit incentive experiment MP-72
+		isTYBadgesExperimentActive() {
+			// TY Badge experiment MP-387
 			const thanksBadgeExp = this.apollo.readFragment({
 				id: `Experiment:${THANKS_BADGES_EXP}`,
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			return thanksBadgeExp?.version === 'b';
+			return thanksBadgeExp?.version;
 		}
 	},
 	destroyed() {
