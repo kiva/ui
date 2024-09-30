@@ -1,3 +1,21 @@
+## [2.760.0](https://github.com/kiva/ui/compare/v2.759.0...v2.760.0) (2024-09-30)
+
+### 🎉 New Features
+
+* adding new condition to redirect to challenge page ([2b12489](https://github.com/kiva/ui/commit/2b1248928389fd499a5ac1048e2be38aa7f07213))
+
+### 🐛 Bugfixes
+
+* change logic to avoid redirect if experiment is active ([806ff16](https://github.com/kiva/ui/commit/806ff16a94b876735347cf4f2c451d2fd76d6a0f))
+
+### 🏗️ Build System
+
+* ensure image build happens if github release was published ([3e336df](https://github.com/kiva/ui/commit/3e336dffb5a8e75b3e4386cfd49101054657aeea))
+
+### 🧹 Chores
+
+* **release:** 2.760.0-rc.1 [skip ci] ([aa688ae](https://github.com/kiva/ui/commit/aa688ae2feb29c8e62d8dc1da9b67965a8ca362f))
+
 ## [2.760.0-rc.1](https://github.com/kiva/ui/compare/v2.759.0...v2.760.0-rc.1) (2024-09-30)
 
 ### 🎉 New Features
