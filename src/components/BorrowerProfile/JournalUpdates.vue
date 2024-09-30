@@ -54,33 +54,11 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
 import UpdateDetails from './UpdateDetails';
-
-const updatesQuery = gql`query updatesQuery($loanId: Int!, $limit: Int, $offset: Int) {
-	lend {
-		loan(id: $loanId) {
-			id
-			name
-			updates(limit: $limit, offset: $offset ) {
-				totalCount
-				values {
-					id
-					body
-					subject
-					date
-					image {
-						id
-						url(customSize: "h200w700")
-					}
-				}
-			}
-		}
-	}
-}`;
 
 export default {
 	name: 'JournalUpdates',

@@ -242,17 +242,19 @@ export default {
 			this.lightboxClosed();
 			this.$kvTrackEvent('lender-profile', 'click', 'send-message-close-button');
 		},
-		sendMessage() {
+		async sendMessage() {
 			this.sendingMessage = true;
 			this.errorMessage = '';
 			try {
-				this.apollo.mutate({
+				const result = await this.apollo.mutate({
 					mutation: sendLenderMessageMutation,
 					variables: {
 						lenderPublicId: this.publicId,
 						message: this.lenderMessage,
 					},
 				});
+				console.log(result);
+				
 			} catch (e) {
 				this.sendingMessage = false;
 				this.errorMessage = e[0]?.message
