@@ -214,14 +214,16 @@ export default {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				combinedTotal(value) {
-					return +value + this.donation < 10000 && +value + this.donation > 0;
+					const total = numeral(value).value() + numeral(this.donation).value();
+					return total < 10000 && total > 0;
 				}
 			},
 			donation: {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				combinedTotal(value) {
-					return value + this.adAmount < 10000 && value + this.adAmount > 0;
+					const total = numeral(value).value() + numeral(this.adAmount).value();
+					return total < 10000 && total > 0;
 				}
 			},
 			dayOfMonth: {
@@ -324,7 +326,7 @@ export default {
 	},
 	computed: {
 		totalCombinedDeposit() {
-			return this.donation + +this.adAmount;
+			return numeral(this.donation).value() + numeral(this.adAmount).value();
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {

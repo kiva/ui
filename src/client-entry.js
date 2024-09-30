@@ -175,8 +175,9 @@ function setupClientRouting({
 				route: to,
 			});
 			next();
-		} catch {
-			next();
+		} catch (error) {
+			// pass error through next to ensure redirect to login
+			next(error);
 		}
 	});
 
