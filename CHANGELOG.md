@@ -1,3 +1,13 @@
+## [2.760.1](https://github.com/kiva/ui/compare/v2.760.0...v2.760.1) (2024-09-30)
+
+### 🐛 Bugfixes
+
+* iwd has false value causing the redirect ([ef1084f](https://github.com/kiva/ui/commit/ef1084f077ade449b1e54c472e94d2aece71f975))
+
+### 🧹 Chores
+
+* **release:** 2.760.1-rc.1 [skip ci] ([4bde41f](https://github.com/kiva/ui/commit/4bde41f4968336b04fb645c00766d2581a2cdcaf))
+
 ## [2.760.1-rc.1](https://github.com/kiva/ui/compare/v2.760.0...v2.760.1-rc.1) (2024-09-30)
 
 ### 🐛 Bugfixes
