@@ -433,7 +433,7 @@ export default {
 		const cachedRecommendedLoans = this.apollo.readQuery({
 			query: flssLoansQueryExtended,
 			variables: prefetchedRecommendedLoansVariables
-		})?.fundraisingLoans?.values ?? [];
+		})?.fundraisingLoans?.values?.filter(loan => loan !== null) ?? [];
 
 		this.initializeFiveDollarsNotes();
 
