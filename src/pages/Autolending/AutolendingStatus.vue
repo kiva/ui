@@ -66,7 +66,7 @@
 						data-test="status-save-button"
 						class="smaller button"
 						v-if="!isSaving"
-						@click.native="save"
+						@click="save"
 						:disabled="!isChanged"
 					>
 						Save
@@ -151,6 +151,14 @@ export default {
 	mounted() {
 		// After initial value is loaded, setup watch
 		this.$watch('autolendingStatus', this.watchAutolendingStatus);
+		this.$watch('showLightbox', next => {
+			if (next) {
+				this.autolendingStatus = this.setAutolendingStatus({
+					isEnabled: this.isEnabled,
+					pauseUntil: this.pauseUntil
+				});
+			}
+		});
 	},
 	methods: {
 		watchAutolendingStatus() {
