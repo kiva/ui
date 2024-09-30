@@ -629,7 +629,7 @@ export default {
 
 		// Don't fetch challenge status if IWD2024 experiment or Badge Experiment are enabled
 		// to avoid being redirected to the challenge thank you page
-		if (!this.iwdExpEnabled || !this.isTYBadgesExperimentActive()) {
+		if (!this.iwdExpEnabled && !this.isTYBadgesExperimentActive()) {
 			// Fetch Challenge Status
 			// If a loan in basket makes progress towards an active challenge,
 			// set query param to redirect to special thank you page
