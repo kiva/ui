@@ -10,7 +10,7 @@
 			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab v-for="(loan, index) in filteredLoans" :key="index" :label="index + 1" :for-panel="loan.id">
-						<div class="tw-flex tw-flex-col tw-justify-center">
+						<div class="tw-flex tw-flex-col tw-justify-center tw-items-center">
 							<div
 								class="tw-w-8 tw-h-8 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
 									tw-rounded-full tw-shadow"
@@ -38,9 +38,9 @@
 					</KvTab>
 				</template>
 				<template #tabPanels>
-					<kv-tab-panel v-for="(loan, index) in loans" :key="index" :id="loan.id">
+					<KvTabPanel v-for="(loan, index) in loans" :key="index" :id="loan.id">
 						<p class="tw-hidden" :id="loan.id"></p>
-					</kv-tab-panel>
+					</KvTabPanel>
 				</template>
 			</KvTabs>
 			<div class="carousel-container">
@@ -63,11 +63,14 @@
 <script setup>
 import KvTabs from '@kiva/kv-components/vue/KvTabs';
 import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import { defineProps, ref, computed } from 'vue';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import {
+	defineProps, ref, computed, toRefs
+} from 'vue';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const props = defineProps({
@@ -85,7 +88,7 @@ const props = defineProps({
 	},
 });
 
-const { loans, hasActiveLoans } = props;
+const { loans, hasActiveLoans } = toRefs(props);
 
 const carousel = ref(null);
 
@@ -102,34 +105,34 @@ const getBorrowerHash = loan => {
 };
 
 const title = computed(() => {
-	if (!hasActiveLoans) {
-		return `You changed <u>${loans.length} lives</u>!`;
+	if (!hasActiveLoans.value) {
+		return `You changed <u>${loans.value.length} lives</u>!`;
 	}
-	if (loans.length) {
-		if (loans.length === 1) {
+	if (loans.value.length) {
+		if (loans.value.length === 1) {
 			return 'You’re changing a life right now!';
 		}
-		return `You’re <u>changing ${loans.length} liv</u>es right now!`;
+		return `You’re <u>changing ${loans.value.length} liv</u>es right now!`;
 	}
 	return 'Change a life <u>today</u>!';
 });
 
 const btnCta = computed(() => {
-	if (!hasActiveLoans) {
+	if (!hasActiveLoans.value) {
 		return 'See previously supported borrowers';
 	}
 	return 'Make a loan';
 });
 
 const link = computed(() => {
-	if (!hasActiveLoans) {
+	if (!hasActiveLoans.value) {
 		return '/portfolio';
 	}
 	return '/lend-by-category';
 });
 
 const filteredLoans = computed(() => {
-	return loans.slice(0, 9);
+	return loans.value.slice(0, 9);
 });
 
 const singleSlideWidth = computed(() => {

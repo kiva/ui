@@ -1,4 +1,4 @@
-query ftdQuery {
+query myKivaQuery {
 	my {
     id
     loans(limit: 10) {
@@ -20,6 +20,12 @@ query ftdQuery {
             isoCode
             region
           }
+        }
+        loanAmount
+        loanFundraisingInfo {
+          fundedAmount
+          reservedAmount
+          isExpiringSoon
         }
         plannedExpirationDate
         terms {
