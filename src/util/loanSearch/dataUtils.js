@@ -50,7 +50,7 @@ export async function runLoansQuery(apollo, loanSearchState, origin) {
 		origin,
 	);
 
-	return { loans: flssData?.values ?? [], totalCount: flssData?.totalCount ?? 0 };
+	return { loans: flssData?.values?.filter(loan => loan !== null) ?? [], totalCount: flssData?.totalCount ?? 0 };
 }
 
 /**
