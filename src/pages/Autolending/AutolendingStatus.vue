@@ -151,14 +151,6 @@ export default {
 	mounted() {
 		// After initial value is loaded, setup watch
 		this.$watch('autolendingStatus', this.watchAutolendingStatus);
-		this.$watch('showLightbox', next => {
-			if (next) {
-				this.autolendingStatus = this.setAutolendingStatus({
-					isEnabled: this.isEnabled,
-					pauseUntil: this.pauseUntil
-				});
-			}
-		});
 	},
 	methods: {
 		watchAutolendingStatus() {
