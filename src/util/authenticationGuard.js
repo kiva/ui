@@ -16,11 +16,12 @@ export function checkLastLoginTime(data, durationKey, defaultDuration) {
 }
 
 const processErrors = (error, route) => {
+	const doneUrl = route?.value?.fullPath || route?.fullPath || '';
 	if (error.message.indexOf('activeLoginRequired') > -1 || error.message.indexOf('recentLoginRequired') > -1) {
 		// Force a login when active/recent login is required
 		return {
 			path: '/ui-login',
-			query: { force: true, doneUrl: route.fullPath }
+			query: { force: true, doneUrl }
 		};
 	}
 
@@ -28,7 +29,7 @@ const processErrors = (error, route) => {
 		// Redirect to login upon authentication error
 		return {
 			path: '/ui-login',
-			query: { doneUrl: route.fullPath }
+			query: { doneUrl }
 		};
 	}
 
@@ -38,7 +39,7 @@ const processErrors = (error, route) => {
 		return {
 			path: '/start-verification',
 			query: {
-				doneUrl: route.fullPath,
+				doneUrl,
 				process: lastMatchedRoute.meta.process || '',
 			}
 		};
@@ -54,7 +55,7 @@ const processErrors = (error, route) => {
 	// catch all redirect to login
 	return {
 		path: '/ui-login',
-		query: { doneUrl: route.fullPath }
+		query: { doneUrl }
 	};
 };
 
