@@ -24,7 +24,7 @@
 							]"
 						/>
 					</div>
-					<h3 class="tw-text-center md:tw-text-left tw-mb-1">
+					<h3 class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2">
 						{{ title }}
 					</h3>
 					<p class="tw-text-center md:tw-text-left">

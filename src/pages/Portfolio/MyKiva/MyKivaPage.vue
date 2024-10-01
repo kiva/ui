@@ -9,7 +9,7 @@
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile :lender="lender" />
-		<MyKivaBorrowerCarousel :loans="loans" :has-active-loans="hasActiveLoans" />
+		<MyKivaBorrowerCarousel :loans="loans" @selected-loan="handleSelectedLoan" />
 	</www-page>
 </template>
 
@@ -21,7 +21,6 @@ import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
-import { isLoanFundraising } from '#src/util/loanUtils';
 
 import {
 	ref,
@@ -47,16 +46,16 @@ const handleShowNavigation = () => {
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 };
 
+const handleSelectedLoan = () => {
+	// TODO: work with updates
+};
+
 apollo.query({ query: myKivaQuery })
 	.then(result => {
 		userInfo.value = result.data?.my ?? {};
 		lender.value = result.data?.my?.lender ?? null;
 		loans.value = result.data?.my?.loans?.values ?? [];
 	});
-
-const hasActiveLoans = computed(() => {
-	return loans.value.some(loan => loan?.status === 'repaying' || isLoanFundraising(loan));
-});
 
 onMounted(() => {
 	trackExperimentVersion(

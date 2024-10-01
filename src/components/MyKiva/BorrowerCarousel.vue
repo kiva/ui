@@ -2,7 +2,14 @@
 	<MyKivaContainer>
 		<h2 v-html="title" class="tw-mb-3.5"></h2>
 		<div :class="{'tw-flex tw-justify-center': !loans.length }">
-			<KvButton v-if="!loans.length || !hasActiveLoans" :to="link">
+			<KvButton
+				v-kv-track-event="[
+					'portfolio',
+					'click',
+					btnEventLabel
+				]" v-if="!loans.length || !hasActiveLoans"
+				:to="link"
+			>
 				{{ btnCta }}
 			</KvButton>
 		</div>
@@ -10,7 +17,7 @@
 			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab v-for="(loan, index) in filteredLoans" :key="index" :label="index + 1" :for-panel="loan.id">
-						<div class="tw-flex tw-flex-col tw-justify-center tw-items-center">
+						<div class="tw-flex tw-flex-col tw-justify-start tw-items-center tw-w-10">
 							<div
 								class="tw-w-8 tw-h-8 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
 									tw-rounded-full tw-shadow"
@@ -28,13 +35,19 @@
 									]"
 								/>
 							</div>
-							<h5 class="tw-text-center">
+							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal">
 								{{ getBorrowerName(loan) }}
 							</h5>
 						</div>
 					</KvTab>
 					<KvTab v-if="loans.length > 9">
-						<a href="/portfolio/loans">View all</a>
+						<a
+							href="/portfolio/loans" v-kv-track-event="[
+								'portfolio',
+								'click',
+								'view-all'
+							]"
+						>View all</a>
 					</KvTab>
 				</template>
 				<template #tabPanels>
@@ -56,6 +69,16 @@
 					</template>
 				</KvCarousel>
 			</div>
+			<div class="tw-text-right" v-if="hasCompletedBorrowers">
+				<a
+					class="tw-text-h5"
+					href="/portfolio/loans" v-kv-track-event="[
+						'portfolio',
+						'click',
+						'see-all-borrowers'
+					]"
+				>See all borrowers</a>
+			</div>
 		</div>
 	</MyKivaContainer>
 </template>
@@ -68,9 +91,19 @@ import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import { isLoanFundraising } from '#src/util/loanUtils';
 import {
-	defineProps, ref, computed, toRefs
+	defineProps,
+	ref,
+	computed,
+	toRefs,
+	inject,
+	onMounted
 } from 'vue';
+import {
+	PAYING_BACK,
+	REFUNDED,
+} from '#src/api/fixtures/LoanStatusEnum';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const props = defineProps({
@@ -82,17 +115,20 @@ const props = defineProps({
 		default: () => ([]),
 		required: true,
 	},
-	hasActiveLoans: {
-		type: Boolean,
-		default: true,
-	},
 });
 
-const { loans, hasActiveLoans } = toRefs(props);
+const $kvTrackEvent = inject('$kvTrackEvent');
+const emit = defineEmits(['selected-loan']);
 
+const { loans } = toRefs(props);
 const carousel = ref(null);
 
+const hasActiveLoans = computed(() => {
+	return loans.value.some(loan => loan?.status === PAYING_BACK || isLoanFundraising(loan));
+});
+
 const handleChange = event => {
+	emit('selected-loan', loans.value[event]);
 	carousel.value.goToSlide(event);
 };
 
@@ -131,6 +167,13 @@ const link = computed(() => {
 	return '/lend-by-category';
 });
 
+const btnEventLabel = computed(() => {
+	if (!hasActiveLoans.value) {
+		return 'see-previously-supported-borrowers';
+	}
+	return 'Make-a-loan-no-loans-state';
+});
+
 const filteredLoans = computed(() => {
 	return loans.value.slice(0, 9);
 });
@@ -144,6 +187,18 @@ const singleSlideWidth = computed(() => {
 		return '468px';
 	}
 	return '520px';
+});
+
+const hasCompletedBorrowers = computed(() => {
+	return loans.value.some(loan => loan?.status === REFUNDED);
+});
+
+onMounted(() => {
+	if (!hasActiveLoans.value) {
+		$kvTrackEvent('portfolio', 'view', 'no-active-borrowers');
+	} else {
+		$kvTrackEvent('portfolio', 'view', 'active-borrowers', loans.value.length);
+	}
 });
 
 </script>
@@ -167,6 +222,6 @@ const singleSlideWidth = computed(() => {
 }
 
 :deep(.tabs) div[role=tablist] {
-	@apply md:tw-gap-3.5;
+	@apply md:tw-gap-3.5 tw-items-baseline;
 }
 </style>
