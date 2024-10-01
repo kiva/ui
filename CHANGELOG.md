@@ -1,3 +1,9 @@
+## [2.761.0-rc.1](https://github.com/kiva/ui/compare/v2.760.1...v2.761.0-rc.1) (2024-10-01)
+
+### 🎉 New Features
+
+* message added for failed message sent ([#5567](https://github.com/kiva/ui/issues/5567)) ([386c26f](https://github.com/kiva/ui/commit/386c26f460b0a10a6be5e4749a8e5151badb589d))
+
 ## [2.760.1](https://github.com/kiva/ui/compare/v2.760.0...v2.760.1) (2024-09-30)
 
 ### 🐛 Bugfixes
