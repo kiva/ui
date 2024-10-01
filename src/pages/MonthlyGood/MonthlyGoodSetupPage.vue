@@ -468,7 +468,7 @@ export default {
 				minValue: minValue(0),
 				maxValue: maxValue(10000),
 				maxTotal(value) {
-					return numeral(value) + numeral(this.mgAmount).value() < 10000;
+					return numeral(value).value() + numeral(this.mgAmount).value() < 10000;
 				}
 			},
 			dayOfMonth: {
