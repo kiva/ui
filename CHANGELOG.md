@@ -1,3 +1,13 @@
+## [2.761.0](https://github.com/kiva/ui/compare/v2.760.1...v2.761.0) (2024-10-01)
+
+### 🎉 New Features
+
+* message added for failed message sent ([#5567](https://github.com/kiva/ui/issues/5567)) ([386c26f](https://github.com/kiva/ui/commit/386c26f460b0a10a6be5e4749a8e5151badb589d))
+
+### 🧹 Chores
+
+* **release:** 2.761.0-rc.1 [skip ci] ([5d6b077](https://github.com/kiva/ui/commit/5d6b077425881ec1c4d1412a7e07efc27238e98f)), closes [#5567](https://github.com/kiva/ui/issues/5567)
+
 ## [2.761.0-rc.1](https://github.com/kiva/ui/compare/v2.760.1...v2.761.0-rc.1) (2024-10-01)
 
 ### 🎉 New Features
