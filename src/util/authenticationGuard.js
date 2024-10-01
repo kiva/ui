@@ -1,4 +1,3 @@
-import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
 import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
 
@@ -97,7 +96,7 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 					throw new Error('recentLoginRequired');
 				}
 				// Route requires multi factor authentication or email verification
-				if (mfaRequired && !kvAuth0.isMfaAuthenticated() && !_get(data, 'my.emailVerifiedRecently')) {
+				if (mfaRequired && !kvAuth0.isMfaAuthenticated() && !data?.my?.emailVerifiedRecently) {
 					throw new Error('verificationRequired');
 				}
 				resolve();

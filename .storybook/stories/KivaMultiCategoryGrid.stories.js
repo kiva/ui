@@ -3,6 +3,15 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import LoanCategorySelectorHomeExp from '#src/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
 import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import loanData from '../mock-data/loan-data-mock';
+
+const queryResult = {
+	data: {
+		lend: {
+			loan: loanData[0],
+		},
+	}
+};
 
 const args = {
 	showAllButton: true,
@@ -49,7 +58,7 @@ export default {
 export const DefaultGrid = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: { LoanCategorySelectorHomeExp, KivaLoanCardCategory, KvGrid },
-	mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
+	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
 	methods: {
 		handleCategoryClick(payload) {
 			this.selectedChannel = this.combinedLoanChannelData.find(

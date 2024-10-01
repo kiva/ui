@@ -1,6 +1,6 @@
 <template>
 	<async-lender-section @visible="$emit('get-lender-stats')">
-		<section class="tw-my-8">
+		<section v-if="showStats" class="tw-my-8">
 			<div v-if="isLoading">
 				<kv-loading-placeholder
 					class="tw-mb-2"
@@ -45,6 +45,7 @@ export default {
 	data() {
 		return {
 			isLoading: true,
+			showStats: true,
 		};
 	},
 	components: {
@@ -96,6 +97,16 @@ export default {
 		lenderStats() {
 			if (Object.keys(this.lenderStats).length !== 0) {
 				this.isLoading = false;
+			}
+			const entries = Object.entries(this.lenderStats);
+			let values = [];
+			entries.forEach(element => {
+				if (element?.[1]?.values) {
+					values = [...element[1].values];
+				}
+			});
+			if (values.length === 0) {
+				this.showStats = false;
 			}
 		},
 	},

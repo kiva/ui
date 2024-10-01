@@ -1,32 +1,40 @@
 <template>
-	<www-page main-class="tw-bg-secondary">
-		<template #secondary>
-			<the-my-kiva-secondary-menu />
-		</template>
-		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0" data-testid="portfolio">
-				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
-				<div
-					class="tw-col-span-12 md:tw-col-span-9"
-					:class="{ 'tw-pt-3' : !showTeamChallenge }"
-				>
-					<team-challenge
-						v-if="showTeamChallenge"
-						:allowed-teams="allowedTeams"
-					/>
-					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
-					<lending-insights />
-					<recent-loans-list />
-					<your-donations />
-					<education-module v-if="post" :post="post" />
-					<kiva-credit-stats />
-					<account-updates />
-					<your-teams />
-					<distribution-graphs />
-				</div>
-			</kv-grid>
-		</kv-page-container>
-	</www-page>
+	<div>
+		<my-kiva-page
+			v-if="showMyKivaPage"
+		/>
+		<www-page
+			v-else
+			main-class="tw-bg-secondary"
+		>
+			<template #secondary>
+				<the-my-kiva-secondary-menu />
+			</template>
+			<kv-page-container>
+				<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0" data-testid="portfolio">
+					<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
+					<div
+						class="tw-col-span-12 md:tw-col-span-9"
+						:class="{ 'tw-pt-3' : !showTeamChallenge }"
+					>
+						<team-challenge
+							v-if="showTeamChallenge"
+							:allowed-teams="allowedTeams"
+						/>
+						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
+						<lending-insights />
+						<recent-loans-list />
+						<your-donations />
+						<education-module v-if="post" :post="post" />
+						<kiva-credit-stats />
+						<account-updates />
+						<your-teams />
+						<distribution-graphs />
+					</div>
+				</kv-grid>
+			</kv-page-container>
+		</www-page>
+	</div>
 </template>
 
 <script>
@@ -52,8 +60,10 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
+import MyKivaPage from '../MyKiva/MyKivaPage';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
+const MY_KIVA_LOAN_LIMIT = 4;
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -74,6 +84,7 @@ export default {
 		YourTeams,
 		YourDonations,
 		TeamChallenge,
+		MyKivaPage,
 	},
 	data() {
 		return {
@@ -82,6 +93,7 @@ export default {
 			teamsChallengeEnable: false,
 			allowedTeams: [],
 			userPreferences: null,
+			showMyKivaPage: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -90,19 +102,7 @@ export default {
 			return Promise.all([
 				client.query({ query: portfolioQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: MY_KIVA_EXP_KEY } }),
-			]).then(result => {
-				const userData = result?.[0]?.data?.my ?? {};
-				const loanCount = userData.lender?.loanCount ?? 0;
-
-				const { version } = client.readFragment({
-					id: `Experiment:${MY_KIVA_EXP_KEY}`,
-					fragment: experimentVersionFragment,
-				}) ?? {};
-
-				if (version === 'b' && loanCount < 4) {
-					return Promise.reject({ path: '/my-kiva' });
-				}
-			});
+			]);
 		},
 	},
 	methods: {
@@ -126,21 +126,31 @@ export default {
 		}
 	},
 	created() {
+		const { version } = this.apollo.readFragment({
+			id: `Experiment:${MY_KIVA_EXP_KEY}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
-		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
-		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
-		let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
-		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
-		this.allowedTeams = userTeams.filter(t => {
-			return allowedTeamsSettings.includes(t.team.teamPublicId);
-		});
 
-		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
-		this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+		const userData = portfolioQueryData?.my ?? {};
+		const loanCount = userData.lender?.loanCount ?? 0;
+
+		if (version === 'b' && loanCount < MY_KIVA_LOAN_LIMIT) {
+			this.showMyKivaPage = true;
+		} else {
+			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
+			const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
+			let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
+			allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
+			this.allowedTeams = userTeams.filter(t => {
+				return allowedTeamsSettings.includes(t.team.teamPublicId);
+			});
+
+			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+			this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+		}
 	},
 	async mounted() {
-		this.loadEducationPost();
-
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -149,19 +159,23 @@ export default {
 			'EXP-MP-623-Sept2024'
 		);
 
-		if (this.$route?.query?.goal_saved) {
-			const badgeName = this.$route?.query?.goal_saved ?? '';
+		if (!this.showMyKivaPage) {
+			this.loadEducationPost();
 
-			if (!this.userPreferences?.id) {
-				const createPreferences = await this.createUserPreferences();
-				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
+			if (this.$route?.query?.goal_saved) {
+				const badgeName = this.$route?.query?.goal_saved ?? '';
+
+				if (!this.userPreferences?.id) {
+					const createPreferences = await this.createUserPreferences();
+					this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
+				}
+
+				this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
+					this.$showTipMsg('Goal saved');
+				}).catch(() => {
+					this.$showTipMsg('There was a problem saving your goal', 'error');
+				});
 			}
-
-			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
-				this.$showTipMsg('Goal saved');
-			}).catch(() => {
-				this.$showTipMsg('There was a problem saving your goal', 'error');
-			});
 		}
 	}
 };

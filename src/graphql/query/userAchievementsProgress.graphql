@@ -3,6 +3,7 @@ query userAchievementProgress(
 	$userId: String!
 ) {
 	userAchievementProgress(userId: $userId) {
+		id
 		achievementProgress {
 			achievementId
 			status

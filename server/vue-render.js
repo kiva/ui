@@ -1,6 +1,5 @@
 import initCache from './util/initCache.js';
 import { info } from './util/log.js';
-import vueSsrCache from './util/vueSsrCache.js';
 import getGqlPossibleTypes from './util/getGqlPossibleTypes.js';
 import getSessionCookies from './util/getSessionCookies.js';
 
@@ -19,7 +18,7 @@ export default async function render({
 
 	// if cache is not initialized, initialize it
 	if (!cache) {
-		cache = vueSsrCache(initCache(serverConfig));
+		cache = initCache(serverConfig);
 	}
 
 	// get graphql api possible types for the graphql client

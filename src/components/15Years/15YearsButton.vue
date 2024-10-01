@@ -6,15 +6,13 @@ export default {
 	render() {
 		const options = {
 			class: ['fifteen-yr-button', this.variant ? `fifteen-yr-button--${this.variant}` : ''],
-			props: {},
-			attrs: {},
 			on: { click: this.onClick },
 		};
 		if (this.to) {
-			options.props.to = this.to;
+			options.to = this.to;
 		}
 		if (this.href) {
-			options.attrs.href = this.href;
+			options.href = this.href;
 		}
 		return h(this.tag, options, this.$slots.default());
 	},

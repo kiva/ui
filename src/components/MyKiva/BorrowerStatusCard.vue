@@ -71,7 +71,7 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
@@ -83,155 +83,143 @@ import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import {
+	ref,
+	computed,
+	toRefs,
+	defineProps,
+	inject,
+	onMounted,
+} from 'vue';
 
-export default {
-	name: 'BorrowerStatusCard',
-	props: {
-		loan: {
-			type: Object,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			isMobile: false,
-			open: false,
-			mdiChevronDown,
-			mdiChevronUp,
-		};
-	},
-	components: {
-		BorrowerImage,
-		HeroBackground,
-		LoanNextSteps,
-		KvMaterialIcon,
-		KvExpandable,
-	},
-	computed: {
-		title() {
-			return `${this.borrowerName} in ${this.borrowerCountry}`;
-		},
-		borrowerCountry() {
-			return this.loan?.geocode?.country?.name ?? '';
-		},
-		borrowerName() {
-			return this.loan?.name ?? '';
-		},
-		hash() {
-			return this.loan?.image?.hash ?? '';
-		},
-		pronoun() {
-			if (this.loan?.gender === 'male') return 'his';
-			if (this.loan?.gender === 'female') return 'her';
-			return 'their';
-		},
-		loanUse() {
-			return this.loan?.use ?? '';
-		},
-		loanFunFact() {
-			// TODO: Replace this logic once MP-820 is complete
-			const region = this.loan?.geocode?.country?.region ?? '';
-			if (region === 'North America') {
-				switch (this.borrowerCountry) {
-					case 'United States':
-						// eslint-disable-next-line max-len
-						return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.**';
-					case 'Puerto Rico':
-						// eslint-disable-next-line max-len
-						return 'Small businesses are a crucial part of Puerto Rico\'s economy, employing around 44% of Puerto Rico\'s workforce.';
-					case 'Dominican Republic':
-						// eslint-disable-next-line max-len
-						return 'Poverty in the Dominican Republic has decreased significantly, from 40% of the population in 2003 to 20% in 2019.';
-					case 'Haiti':
-						// eslint-disable-next-line max-len
-						return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability.';
-					case 'Mexico':
-						// eslint-disable-next-line max-len
-						return 'In Mexico, financial access is improving, with over half of adults able to access a bank account. ';
-					default:
-						// eslint-disable-next-line max-len
-						return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability. ';
-				}
-			}
-			switch (region) {
-				case 'Central America':
-					// eslint-disable-next-line max-len
-					return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.**';
-				case 'South America':
-					// eslint-disable-next-line max-len
-					return 'People living in poverty in South America has decreased from ~30% in 2002 to less than 20% by 2020.';
-				case 'Africa':
-					// eslint-disable-next-line max-len
-					return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.**';
-				case 'Middle East':
-					// eslint-disable-next-line max-len
-					return 'The number of people with bank accounts is on the rise in the Middle East, a vital step in driving economic opportunity.';
-				case 'Eastern Europe':
-					// eslint-disable-next-line max-len
-					return 'Eastern European countries have made progress in reducing poverty levels over the past decade through social protection programs.';
-				case 'Asia':
-					// eslint-disable-next-line max-len
-					return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.**';
-				default:
-					// eslint-disable-next-line max-len
-					return 'In areas of Oceania like Fiji, the gender gap is improving—with more women able to access financial services.';
-			}
-		},
-		loanStatus() {
-			if (this.isFundraising) {
-				return 'Fundraising';
-			}
-			return 'Repaying';
-		},
-		description() {
-			return `${this.borrowerName}
-				${this.isFundraising ? 'will use' : 'used'}
-				${this.pronoun} loan ${this.loanUse} ${this.loanFunFact}`;
-		},
-		currentStep() {
-			if (this.isFundraising) {
-				return 1;
-			}
-			return 4;
-		},
-		weeksToRepay() {
-			const date = this.loan?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
-			const today = new Date();
-			if (date) {
-				// Get the number of weeks between the first repayment date (in the future) and now
-				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
-			}
+const $kvTrackEvent = inject('$kvTrackEvent');
 
-			// Calculating a possible range of weeks between the planned expiration date and a month after
-			const expDate = Date.parse(this.loan?.plannedExpirationDate);
-			const minDate = differenceInWeeks(addMonths(today, 1), today);
-			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
-			if (minDate === maxDate) {
-				return `${minDate} weeks`;
-			}
-
-			return `${minDate} - ${maxDate} weeks`;
-		},
-		isFundraising() {
-			return isLoanFundraising(this.loan);
-		}
+const props = defineProps({
+	loan: {
+		type: Object,
+		required: true,
 	},
-	mounted() {
-		this.isMobile = document.documentElement.clientWidth < 735;
-		if (!this.isMobile) {
-			this.open = true;
-		}
-	},
-	methods: {
-		toggleWhatIsNext() {
-			if (!this.open) {
-				this.$kvTrackEvent('portfolio', 'click', 'what-is-next', this.borrowerName, this.loan.id);
-			}
-			this.open = !this.open;
+});
+
+const { loan } = toRefs(props);
+
+const isMobile = ref(false);
+const open = ref(false);
+
+const borrowerName = computed(() => loan.value?.name ?? '');
+const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
+const hash = computed(() => loan.value?.image?.hash ?? '');
+const pronoun = computed(() => {
+	if (loan.value?.gender === 'male') return 'his';
+	if (loan?.value?.gender === 'female') return 'her';
+	return 'their';
+});
+const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`);
+const loanUse = computed(() => loan.value?.use ?? '');
+
+const loanFunFact = computed(() => {
+	// TODO: Replace this logic once MP-820 is complete
+	const region = loan.value?.geocode?.country?.region ?? '';
+	if (region === 'North America') {
+		switch (borrowerCountry.value) {
+			case 'United States':
+
+				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.**';
+			case 'Puerto Rico':
+				// eslint-disable-next-line max-len
+				return 'Small businesses are a crucial part of Puerto Rico\'s economy, employing around 44% of Puerto Rico\'s workforce.';
+			case 'Dominican Republic':
+				// eslint-disable-next-line max-len
+				return 'Poverty in the Dominican Republic has decreased significantly, from 40% of the population in 2003 to 20% in 2019.';
+			case 'Haiti':
+				// eslint-disable-next-line max-len
+				return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability.';
+			case 'Mexico':
+				// eslint-disable-next-line max-len
+				return 'In Mexico, financial access is improving, with over half of adults able to access a bank account. ';
+			default:
+				// eslint-disable-next-line max-len
+				return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability. ';
 		}
 	}
+	switch (region) {
+		case 'Central America':
+			// eslint-disable-next-line max-len
+			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.**';
+		case 'South America':
+			// eslint-disable-next-line max-len
+			return 'People living in poverty in South America has decreased from ~30% in 2002 to less than 20% by 2020.';
+		case 'Africa':
+			// eslint-disable-next-line max-len
+			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.**';
+		case 'Middle East':
+			// eslint-disable-next-line max-len
+			return 'The number of people with bank accounts is on the rise in the Middle East, a vital step in driving economic opportunity.';
+		case 'Eastern Europe':
+			// eslint-disable-next-line max-len
+			return 'Eastern European countries have made progress in reducing poverty levels over the past decade through social protection programs.';
+		case 'Asia':
+			// eslint-disable-next-line max-len
+			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.**';
+		default:
+			// eslint-disable-next-line max-len
+			return 'In areas of Oceania like Fiji, the gender gap is improving—with more women able to access financial services.';
+	}
+});
+
+const isFundraising = computed(() => isLoanFundraising(loan.value));
+
+const loanStatus = computed(() => {
+	if (isFundraising.value) {
+		return 'Fundraising';
+	}
+	return 'Repaying';
+});
+const description = computed(() => {
+	return `${borrowerName.value}
+		${isFundraising.value ? 'will use' : 'used'}
+		${pronoun.value} loan ${loanUse.value} ${loanFunFact.value}`;
+});
+const currentStep = computed(() => {
+	if (isFundraising.value) {
+		return 1;
+	}
+	return 4;
+});
+
+const weeksToRepay = computed(() => {
+	const date = loan.value?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
+	const today = new Date();
+	if (date) {
+		// Get the number of weeks between the first repayment date (in the future) and now
+		return `${differenceInWeeks(Date.parse(date), today)} weeks`;
+	}
+
+	// Calculating a possible range of weeks between the planned expiration date and a month after
+	const expDate = Date.parse(loan.value?.plannedExpirationDate);
+	const minDate = differenceInWeeks(addMonths(today, 1), today);
+	const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
+
+	if (minDate === maxDate) {
+		return `${minDate} weeks`;
+	}
+
+	return `${minDate} - ${maxDate} weeks`;
+});
+
+const toggleWhatIsNext = () => {
+	if (!open.value) {
+		$kvTrackEvent('portfolio', 'click', 'what-is-next', borrowerName.value, loan.value.id);
+	}
+	open.value = !open.value;
 };
+
+onMounted(() => {
+	isMobile.value = document.documentElement.clientWidth < 735;
+	if (!isMobile.value) {
+		open.value = true;
+	}
+});
 </script>
 
 <style lang="postcss" scoped>

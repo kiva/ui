@@ -1,6 +1,5 @@
 import fetch from './fetch.js';
-import { log } from './log.js';
-import { trace } from './mockTrace.js';
+import { getFromCache, setToCache } from './memJsUtils.js';
 
 const GQL_BUILT_IN_TYPES = [
 	'__Schema',
@@ -12,89 +11,76 @@ const GQL_BUILT_IN_TYPES = [
 	'__Directive'
 ];
 
-function fetchGqlPossibleTypes(url, cache) {
-	return fetch(url, {
+async function fetchSchema(url) {
+	const result = await fetch(url, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			// eslint-disable-next-line max-len
 			query: '{ __schema { queryType { name } mutationType { name } subscriptionType { name } types { name fields { name } possibleTypes { name } } } }'
 		}),
-	})
-		.then(result => result.json())
-		// eslint-disable-next-line no-underscore-dangle
-		.then(result => result?.data?.__schema ?? {})
-		.then(({
-			types, queryType, mutationType, subscriptionType
-		}) => {
-			const possibleTypes = { Mergable: [] };
-			types?.forEach(type => {
-				// Skip adding possible types for built-in GraphQL types and root types
-				if (GQL_BUILT_IN_TYPES.includes(type.name)
-					|| type.name === queryType?.name
-					|| type.name === mutationType?.name
-					|| type.name === subscriptionType?.name) {
-					return;
-				}
-				// If this type has possible types, include them in the possibleTypes
-				// object as { Typename: ['PossibleTypenameA', 'PossibleTypenameB'] }
-				if (type.possibleTypes && type.possibleTypes.length) {
-					possibleTypes[type.name] = type.possibleTypes.map(({ name }) => name);
-				}
-				// If this type doesn't have an ID field, declare it as mergeable.
-				// See https://github.com/apollographql/apollo-client/pull/7070#issue-708438002
-				if (type.fields && type.fields.length && !type.fields.some(field => field.name === 'id')) {
-					possibleTypes.Mergable.push(type.name);
-				}
-			});
-
-			const typesJSON = JSON.stringify(possibleTypes);
-
-			// Cache the possible types in the local process
-			process.env.FETCHED_GQL_TYPES = typesJSON;
-
-			// Cache the possible types in memcached for other processes to use
-			cache.set('ui-gql-possible-types', typesJSON, { expires: 24 * 60 * 60 }, (error, success) => {
-				if (error) {
-					log(`MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`, 'error');
-				}
-				if (success) {
-					log(`MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`);
-				}
-			});
-			return possibleTypes;
-		});
+	});
+	const data = await result.json();
+	// eslint-disable-next-line no-underscore-dangle
+	return data?.data?.__schema ?? {};
 }
 
-function getGqlPossibleTypesFromCache(cache) {
-	return new Promise(resolve => {
-		// If the possible types have already been fetched in this process, return them
-		if (process.env.FETCHED_GQL_TYPES) {
-			resolve(JSON.parse(process.env.FETCHED_GQL_TYPES));
+async function fetchGqlPossibleTypes(url, cache) {
+	// Get types from schema
+	const {
+		types, queryType, mutationType, subscriptionType
+	} = await fetchSchema(url);
+
+	// Construct possible types object
+	const possibleTypes = { Mergable: [] };
+	types?.forEach(type => {
+		// Skip adding possible types for built-in GraphQL types and root types
+		if (GQL_BUILT_IN_TYPES.includes(type.name)
+			|| type.name === queryType?.name
+			|| type.name === mutationType?.name
+			|| type.name === subscriptionType?.name) {
 			return;
 		}
-
-		// Otherwise, check the cache
-		cache.get('ui-gql-possible-types', (error, data) => {
-			let parsedData = [];
-			if (error) {
-				log(`MemJS Error Getting ui-gql-fragment-types, Error: ${error}`, 'error');
-			}
-			if (data) parsedData = JSON.parse(data);
-			resolve(parsedData);
-		});
+		// If this type has possible types, include them in the possibleTypes
+		// object as { Typename: ['PossibleTypenameA', 'PossibleTypenameB'] }
+		if (type.possibleTypes && type.possibleTypes.length) {
+			possibleTypes[type.name] = type.possibleTypes.map(({ name }) => name);
+		}
+		// If this type doesn't have an ID field, declare it as mergeable.
+		// See https://github.com/apollographql/apollo-client/pull/7070#issue-708438002
+		if (type.fields && type.fields.length && !type.fields.some(field => field.name === 'id')) {
+			possibleTypes.Mergable.push(type.name);
+		}
 	});
+
+	const typesJSON = JSON.stringify(possibleTypes);
+	if (typesJSON) {
+		// Cache the possible types in the local process
+		process.env.FETCHED_GQL_TYPES = typesJSON;
+		// Cache the possible types for 24 hours for other processes
+		await setToCache('ui-gql-possible-types', typesJSON, 24 * 60 * 60, cache);
+	}
+
+	return possibleTypes;
 }
 
-export default (function getGqlPossibleTypes(url, cache) {
-	return trace('getGqlFragmentTypes', () => {
-		return trace('getGqlFragmentsFromCache', () => {
-			return getGqlPossibleTypesFromCache(cache).then(data => {
-				if (Object.keys(data).length) {
-					return data;
-				}
-				return trace('fetchGqlFragments', () => fetchGqlPossibleTypes(url, cache));
-			});
-		});
-	});
+async function getGqlPossibleTypesFromCache(cache) {
+	// If the possible types have already been fetched in this process, return them
+	if (process.env.FETCHED_GQL_TYPES) {
+		return JSON.parse(process.env.FETCHED_GQL_TYPES);
+	}
+
+	// Otherwise, check the cache
+	const data = await getFromCache('ui-gql-possible-types', cache);
+	if (data) {
+		return JSON.parse(data);
+	}
+}
+
+export default (async function getGqlPossibleTypes(url, cache) {
+	const data = await getGqlPossibleTypesFromCache(cache);
+	if (data) {
+		return data;
+	}
+	return fetchGqlPossibleTypes(url, cache);
 });

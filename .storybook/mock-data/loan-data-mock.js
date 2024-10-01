@@ -7,6 +7,7 @@ export default [
 		"status": "fundraising",
 		"name": "Alan",
 		"borrowerCount": 1,
+		"gender": "female",
 		"geocode": {
 			"city": "Kochkor district, Naryn region",
 			"state": "Naryn Region",
@@ -77,6 +78,7 @@ export default [
 		"status": "fundraising",
 		"name": "Alan",
 		"borrowerCount": 1,
+		"gender": "female",
 		"geocode": {
 			"city": "Lyantonde",
 			"state": "Central Region",
@@ -143,6 +145,7 @@ export default [
 		"status": "fundraising",
 		"name": "Alan",
 		"borrowerCount": 1,
+		"gender": "female",
 		"geocode": {
 			"city": "Elbasan",
 			"state": "Elbasan County",

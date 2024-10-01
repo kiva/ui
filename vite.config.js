@@ -32,6 +32,9 @@ export default defineConfig({
 		'**/*.bin',
 		'**/*.wasm',
 	],
+	// Force all assets/vite calls through /static in dev mode, compiled mode is covered by the build config below
+	base: isProd ? '/' : '/static/',
+	// Use /static for all assets in prod mode
 	build: {
 		assetsDir: 'static',
 		assetsInlineLimit: (filePath, content) => {

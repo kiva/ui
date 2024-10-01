@@ -152,7 +152,7 @@ export default {
 				channelUrl,
 				loanQueryVars,
 			);
-			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
+			const loanChannelData = channelData?.lend?.loanChannelsById ?? [];
 			this.selectedChannel = loanChannelData?.[0];
 		},
 	},

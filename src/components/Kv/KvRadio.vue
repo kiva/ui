@@ -47,7 +47,17 @@ export default {
 		isChecked() {
 			return this.radioValue === this.modelValue;
 		}
-	}
+	},
+	watch: {
+		modelValue: {
+			immediate: true,
+			handler(value) {
+				if (value !== this.inputValue) {
+					this.inputValue = value;
+				}
+			}
+		},
+	},
 };
 
 </script>
