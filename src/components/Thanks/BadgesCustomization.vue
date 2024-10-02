@@ -212,11 +212,13 @@ export default {
 					let matches = true;
 
 					if (badge.category.themes) {
-						matches = matches && badge.category.themes.some(theme => loan?.themes?.includes(theme));
+						const themes = loan?.themes ?? [];
+						matches = matches && badge.category.themes.some(theme => themes.includes(theme));
 					}
 
 					if (badge.category.tags) {
-						matches = matches && badge.category.tags.some(tag => loan?.tags?.includes(tag));
+						const tags = loan?.tags ?? [];
+						matches = matches && badge.category.tags.some(tag => tags.includes(tag));
 					}
 
 					if (badge.category.gender) {
