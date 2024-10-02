@@ -7,6 +7,7 @@ async function deepAdd(components, set) {
 	const values = Array.isArray(components) ? components : Object.values(components);
 
 	return Promise.all(values.map(async definition => {
+		console.log('definition', definition);
 		let def = definition;
 		// import dynamic component
 		if (typeof definition === 'function') {
