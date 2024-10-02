@@ -5,11 +5,19 @@
 				Prod Routes
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">
-				<li v-for="route in prodRoutes" :key="route.path">
-					<router-link :to="route.path">
+				<li v-for="route in prodRoutes" :key="route.path" class="tw-mb-1">
+					<router-link :to="pathWithParams(route)">
 						<!-- eslint-disable-next-line -->
-						{{ route.path.replace('/','') }} <span v-if="route.name !== 'no-name'">({{ route.name }})</span>
+						{{ pathWithParams(route).replace('/','') }} <span v-if="route.name !== 'no-name'">({{ route.name }})</span>
 					</router-link>
+					<input
+						class="tw-ml-1 tw-px-1 tw-border"
+						type="text"
+						v-for="(value, key) in route.params"
+						:key="key"
+						v-model="route.params[key]"
+						:placeholder="`set ${key}`"
+					>
 				</li>
 			</ul>
 		</div>
@@ -18,11 +26,19 @@
 				Dev Routes
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">
-				<li v-for="route in devRoutes" :key="route.path">
-					<router-link :to="route.path">
+				<li v-for="route in devRoutes" :key="route.path" class="tw-mb-1">
+					<router-link :to="pathWithParams(route)">
 						<!-- eslint-disable-next-line -->
-						{{ route.path.replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
+						{{ pathWithParams(route).replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
 					</router-link>
+					<input
+						class="tw-ml-1 tw-px-1 tw-border"
+						type="text"
+						v-for="(value, key) in route.params"
+						:key="key"
+						v-model="route.params[key]"
+						:placeholder="`set ${key}`"
+					>
 				</li>
 			</ul>
 		</div>
@@ -31,7 +47,7 @@
 				Redirects
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">
-				<li v-for="route in redirectRoutes" :key="route.path">
+				<li v-for="route in redirectRoutes" :key="route.path" class="tw-mb-1">
 					<router-link :to="route.path">
 						<!-- eslint-disable-next-line -->
 						{{ route.path.replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
@@ -57,6 +73,7 @@ export default {
 			devRoutes: [],
 			prodRoutes: [],
 			redirectRoutes: [],
+			paramRegex: /:\w+/g,
 		};
 	},
 	created() {
@@ -69,7 +86,13 @@ export default {
 		};
 
 		this.$router.options.routes.forEach(route => {
-			const routeWithDefaults = { ...defaults, ...route };
+			const matchesArr = route.path.match(this.paramRegex) ?? [];
+			const params = matchesArr.reduce((matchesObj, match) => ({ ...matchesObj, [match]: null }), {});
+			const routeWithDefaults = {
+				...defaults,
+				...route,
+				params,
+			};
 			if (route.redirect) {
 				return this.redirectRoutes.push(routeWithDefaults);
 			}
@@ -79,6 +102,11 @@ export default {
 
 			this.prodRoutes.push(routeWithDefaults);
 		});
+	},
+	methods: {
+		pathWithParams(route) {
+			return route.path.replace(this.paramRegex, match => route.params[match] || match);
+		}
 	},
 };
 </script>
