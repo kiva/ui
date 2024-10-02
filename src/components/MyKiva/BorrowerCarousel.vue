@@ -102,7 +102,8 @@ import {
 } from 'vue';
 import {
 	PAYING_BACK,
-	REFUNDED,
+	ENDED,
+	DEFAULTED
 } from '#src/api/fixtures/LoanStatusEnum';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
@@ -190,7 +191,7 @@ const singleSlideWidth = computed(() => {
 });
 
 const hasCompletedBorrowers = computed(() => {
-	return loans.value.some(loan => loan?.status === REFUNDED);
+	return loans.value.some(loan => loan?.status === ENDED || loan?.status === DEFAULTED);
 });
 
 onMounted(() => {
