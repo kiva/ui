@@ -64,6 +64,7 @@ export default {
 	components: {
 		KvIcon
 	},
+	emits: ['change'],
 	props: {
 		/**
 		 * The cause to display
