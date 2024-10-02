@@ -212,23 +212,23 @@ export default {
 					let matches = true;
 
 					if (badge.category.themes) {
-						matches = matches && badge.category.themes.some(theme => loan.themes.includes(theme));
+						matches = matches && badge.category.themes.some(theme => loan?.themes?.includes(theme));
 					}
 
 					if (badge.category.tags) {
-						matches = matches && badge.category.tags.some(tag => loan.tags.includes(tag));
+						matches = matches && badge.category.tags.some(tag => loan?.tags?.includes(tag));
 					}
 
 					if (badge.category.gender) {
-						matches = matches && loan.gender === badge.category.gender;
+						matches = matches && loan?.gender === badge.category.gender;
 					}
 
 					if (badge.category.countryIsoCode) {
-						matches = matches && badge.category.countryIsoCode.includes(loan.geocode.country.isoCode);
+						matches = matches && badge.category.countryIsoCode.includes(loan?.geocode?.country?.isoCode);
 					}
 
 					if (badge.category.distributionModel) {
-						matches = matches && loan.distributionModel === badge.category.distributionModel;
+						matches = matches && loan?.distributionModel === badge.category.distributionModel;
 					}
 
 					if (matches) {
