@@ -188,6 +188,7 @@ import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
 
 export default {
 	name: 'DetailedLoanCard',
+	emits: ['add-to-basket', 'close-detailed-loan-card', 'track-interaction'],
 	props: {
 		loan: {
 			type: Object,

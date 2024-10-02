@@ -64,6 +64,7 @@ export default {
 		FundraisingStatusMeter,
 	},
 	inject: ['apollo'],
+	emits: ['add-to-basket', 'processing-add-to-basket'],
 	props: {
 		itemsInBasket: {
 			type: Array,

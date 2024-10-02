@@ -66,6 +66,7 @@ export default {
 			isShown: false
 		};
 	},
+	emits: ['lightbox-closed'],
 	props: {
 		visible: {
 			type: Boolean,

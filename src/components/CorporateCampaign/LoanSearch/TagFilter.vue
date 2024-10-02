@@ -25,6 +25,7 @@ export default {
 	mixins: [
 		anyOrSelectedAutolendingFilter
 	],
+	emits: ['updated-filters'],
 	props: {
 		allTags: {
 			type: Array,

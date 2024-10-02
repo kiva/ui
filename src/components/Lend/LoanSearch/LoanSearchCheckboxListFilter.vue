@@ -15,6 +15,7 @@ export default {
 	components: {
 		KvCheckboxList,
 	},
+	emits: ['updated'],
 	props: {
 		options: {
 			type: Array,

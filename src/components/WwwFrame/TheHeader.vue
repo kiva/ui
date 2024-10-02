@@ -687,6 +687,7 @@ export default {
 			loansInBasket: [],
 		};
 	},
+	emits: ['show-basket'],
 	props: {
 		hideSearchInHeader: {
 			type: Boolean,

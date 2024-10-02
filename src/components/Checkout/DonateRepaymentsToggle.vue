@@ -74,6 +74,7 @@ export default {
 		KvLightbox,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	data() {
 		return {
 			donateRepayments: false,

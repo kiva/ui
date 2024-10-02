@@ -235,6 +235,7 @@ export default {
 		MonthlyGoodUpdateForm,
 		SubscriptionsMonthlyGoodCancellationFlow,
 	},
+	emits: ['cancel-subscription', 'unsaved-changes'],
 	data() {
 		return {
 			isSaving: false,

@@ -16,6 +16,7 @@ import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 export default {
 	name: 'AsyncPortfolioSection',
 	mixins: [delayUntilVisibleMixin],
+	emits: ['visible'],
 	props: {
 		variant: {
 			validator(value) {

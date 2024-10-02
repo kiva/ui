@@ -21,6 +21,8 @@
 import { mdiCogOutline } from '@mdi/js';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+
+defineEmits(['show-navigation']);
 </script>
 
 <style lang="postcss" scoped>

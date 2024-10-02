@@ -65,6 +65,13 @@ export default {
 		HoverLoanCardLarge,
 		KvIcon,
 	},
+	emits: [
+		'add-to-basket',
+		'track-interaction',
+		'update-detailed-loan-index',
+		'update-hover-loan-index',
+		'set-prevent-updating-detailed-card',
+	],
 	props: {
 		cardNumber: {
 			type: Number,

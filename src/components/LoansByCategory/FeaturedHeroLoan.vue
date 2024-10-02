@@ -104,6 +104,7 @@ export default {
 		BorrowerInfoName,
 	},
 	inject: ['apollo'],
+	emits: ['toggle-favorite', 'track-interaction'],
 	props: {
 		amountLeft: {
 			type: Number,

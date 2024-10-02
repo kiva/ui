@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag';
 
 export default {
+	emits: ['update'],
 	props: {
 		selectorShown: {
 			type: Boolean,

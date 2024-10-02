@@ -171,6 +171,7 @@ export default {
 	mixins: [
 		clickOutside,
 	],
+	emits: ['update-location', 'handle-overlay'],
 	props: {
 		regions: {
 			type: Array,

@@ -154,6 +154,7 @@ import LocationSelector from './LocationSelector';
 export default {
 	name: 'QuickFilters',
 	inject: ['cookieStore'],
+	emits: ['update-filters', 'reset-filters', 'handle-overlay'],
 	props: {
 		totalLoans: {
 			type: Number,

@@ -48,6 +48,7 @@ export default {
 		RemoveBasketItem,
 	},
 	inject: ['apollo'],
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		price: {
 			type: String,

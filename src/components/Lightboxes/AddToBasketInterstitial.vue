@@ -122,6 +122,7 @@ export default {
 		LYML,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket', 'processing-add-to-basket'],
 	data() {
 		return {
 			basketInterstitialState: {},

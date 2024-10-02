@@ -8,6 +8,7 @@ export default {
 			enableAddToBasketExp: false,
 		};
 	},
+	emits: ['show-cart-modal'],
 	created() {
 		// MP-346 New Add To Basket
 		const newAddToBasketExpData = this.apollo.readFragment({

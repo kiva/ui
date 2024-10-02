@@ -20,6 +20,7 @@ const AppleIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/imag
 
 export default {
 	name: 'HelpmeChooseTrigger',
+	emits: ['update'],
 	props: {
 		variant: {
 			type: String,

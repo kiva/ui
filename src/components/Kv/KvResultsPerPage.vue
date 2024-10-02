@@ -21,6 +21,7 @@ export default {
 	components: {
 		KvSelect,
 	},
+	emits: ['updated'],
 	props: {
 		options: {
 			type: Array,

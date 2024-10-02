@@ -93,6 +93,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
+	emits: ['add-to-basket', 'data-loaded'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,

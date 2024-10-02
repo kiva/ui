@@ -179,6 +179,7 @@ export default {
 		KvMaterialIcon
 	},
 	mixins: [smoothReflow, smoothScrollMixin],
+	emits: ['amount-selected', 'toggle-banner'],
 	props: {
 		targetAmount: {
 			type: Number,

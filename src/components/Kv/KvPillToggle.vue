@@ -27,6 +27,7 @@
 <script>
 export default {
 	name: 'KvPillToggle',
+	emits: ['pill-toggled'],
 	props: {
 		id: {
 			type: String,

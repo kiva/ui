@@ -144,6 +144,7 @@ export default {
 		LoanPrice,
 		RemoveBasketItem,
 	},
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		kivaCard: {
 			type: Object,

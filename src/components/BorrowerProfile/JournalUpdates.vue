@@ -90,6 +90,7 @@ export default {
 		UpdateDetails
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['hide-section'],
 	props: {
 		loanId: {
 			type: Number,

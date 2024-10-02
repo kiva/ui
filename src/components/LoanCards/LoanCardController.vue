@@ -88,6 +88,19 @@ const ListLoanCard = defineAsyncComponent(() => import('#src/components/LoanCard
 
 export default {
 	name: 'LoanCardController',
+	emits: [
+		'track-interaction',
+		'toggle-favorite',
+		'add-to-basket',
+		'processing-add-to-basket',
+		'image-click',
+		'name-click',
+		'read-more-link',
+		'update-detailed-loan-index',
+		'update-hover-loan-index',
+		'close-detailed-loan-card',
+		'set-prevent-updating-detailed-card',
+	],
 	props: {
 		disableRedirects: {
 			type: Boolean,

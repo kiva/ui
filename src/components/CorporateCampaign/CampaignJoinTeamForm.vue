@@ -77,6 +77,7 @@ export default {
 		KvLightbox,
 		KvLoadingOverlay,
 	},
+	emits: ['team-process-complete'],
 	props: {
 		promoId: {
 			type: Number,

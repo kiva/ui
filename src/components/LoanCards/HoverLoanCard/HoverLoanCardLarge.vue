@@ -106,6 +106,12 @@ export default {
 	mixins: [
 		hoverLoanCardMixin,
 	],
+	emits: [
+		'add-to-basket',
+		'track-interaction',
+		'update-detailed-loan-index',
+		'toggle-favorite',
+	],
 	props: {
 		expiringSoonMessage: {
 			type: String,

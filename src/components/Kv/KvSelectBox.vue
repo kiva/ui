@@ -58,6 +58,7 @@ export default {
 	components: {
 		KvTextInput,
 	},
+	emits: ['selected'],
 	props: {
 		id: {
 			type: String,

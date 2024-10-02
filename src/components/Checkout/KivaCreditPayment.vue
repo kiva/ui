@@ -25,6 +25,12 @@ export default {
 	mixins: [
 		checkoutUtils
 	],
+	emits: [
+		'complete-transaction',
+		'checkout-failure',
+		'refreshtotals',
+		'updating-totals'
+	],
 	props: {
 		useAsyncCheckout: {
 			type: Boolean,

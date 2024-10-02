@@ -23,6 +23,7 @@ import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInf
 
 export default {
 	name: 'BorrowerInfo',
+	emits: ['track-loan-card-interaction'],
 	props: {
 		use: {
 			type: String,

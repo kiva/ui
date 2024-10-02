@@ -33,6 +33,7 @@ export default {
 		KvMaterialIcon,
 		KvRadio,
 	},
+	emits: ['updated'],
 	props: {
 		/**
 		 * allSortOptions contains all sort emuns tagged with their type

@@ -23,6 +23,7 @@ export default {
 	components: {
 		KvRadio,
 	},
+	emits: ['updated'],
 	props: {
 		options: {
 			type: Array,

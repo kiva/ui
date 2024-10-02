@@ -64,6 +64,7 @@ export default {
 		KvClassicLoanCardContainer,
 		ViewMoreCard,
 	},
+	emits: ['add-to-basket'],
 	props: {
 		title: {
 			type: String,

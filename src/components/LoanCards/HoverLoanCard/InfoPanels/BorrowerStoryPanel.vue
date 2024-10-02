@@ -44,6 +44,7 @@ export default {
 		KvLoadingSpinner
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['track-interaction'],
 	props: {
 		expandable: {
 			type: Boolean,

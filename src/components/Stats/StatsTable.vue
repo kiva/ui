@@ -84,6 +84,7 @@ export default {
 		KvTabPanel,
 		KvButton,
 	},
+	emits: ['click'],
 	props: {
 		locationLoading: {
 			type: Boolean,

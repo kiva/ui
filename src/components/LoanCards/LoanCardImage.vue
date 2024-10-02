@@ -41,6 +41,7 @@ export default {
 	components: {
 		FavoriteStar,
 	},
+	emits: ['favorite-toggled', 'image-click', 'track-loan-card-interaction'],
 	props: {
 		loanId: {
 			type: Number,

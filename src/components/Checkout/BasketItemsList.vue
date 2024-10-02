@@ -57,6 +57,12 @@ import { userUsLoanCheckout } from '#src/util/optimizelyUserMetrics';
 
 export default {
 	name: 'BasketItemsList',
+	emits: [
+		'refreshtotals',
+		'updating-totals',
+		'jump-to-loans',
+		'validateprecheckout',
+	],
 	props: {
 		disableRedirects: {
 			type: Boolean,

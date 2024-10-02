@@ -58,6 +58,7 @@ export default {
 	components: {
 		KvMaterialIcon,
 	},
+	emits: ['page-changed'],
 	props: {
 		limit: {
 			type: Number,

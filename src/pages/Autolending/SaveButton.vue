@@ -51,6 +51,7 @@ export default {
 		KvLightbox,
 		KvLoadingSpinner,
 	},
+	emits: ['autolendingSaved'],
 	props: {
 		showWarning: {
 			type: Boolean,

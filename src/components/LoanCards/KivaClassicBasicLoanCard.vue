@@ -284,6 +284,7 @@ const loanQuery = gql`
 
 export default {
 	name: 'KivaClassicBasicLoanCard',
+	emits: ['show-loan-details', 'add-to-basket', 'custom-checkout-button-action'],
 	props: {
 		loanId: {
 			type: Number,

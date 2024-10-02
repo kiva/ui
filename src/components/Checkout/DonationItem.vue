@@ -239,6 +239,7 @@ export default {
 		HowKivaUsesDonation,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		donation: {
 			type: Object,

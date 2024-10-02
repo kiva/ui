@@ -22,6 +22,7 @@ export default {
 	components: {
 		KvButton,
 	},
+	emits: ['handle-category-click'],
 	props: {
 		/**
 		 * Array of loan channel data in an object
