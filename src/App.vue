@@ -1,6 +1,5 @@
 <template>
 	<div
-		id="app"
 		class="tw-h-full tw-bg-primary"
 		:data-hydrated="dataHydrated"
 	>
