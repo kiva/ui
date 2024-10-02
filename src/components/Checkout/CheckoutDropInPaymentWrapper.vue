@@ -172,6 +172,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, braintreeDropInError],
+	emits: ['complete-transaction', 'updating-totals', 'refreshtotals', 'opt-in'],
 	props: {
 		amount: {
 			type: String,

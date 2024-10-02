@@ -20,6 +20,7 @@ import {
 
 export default {
 	name: 'KvPopper',
+	emits: ['show', 'hide'],
 	props: {
 		controller: {
 			validator(value) {

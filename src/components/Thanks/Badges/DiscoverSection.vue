@@ -65,6 +65,7 @@ const images = metaGlobReader(imageRequire, '/src/assets/images/thanks-page/badg
 
 export default {
 	name: 'DiscoverSection',
+	emits: ['back', 'select-badge'],
 	props: {
 		isGuest: {
 			type: Boolean,

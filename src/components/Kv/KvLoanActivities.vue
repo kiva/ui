@@ -77,6 +77,7 @@ export default {
 		KvLightbox,
 		KvLendCta
 	},
+	emits: ['add-to-basket'],
 	props: {
 		/**
 		 * loan object coming from parent component

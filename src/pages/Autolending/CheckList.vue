@@ -30,6 +30,7 @@ import KvCheckbox from '#src/components/Kv/KvCheckbox';
 
 export default {
 	name: 'CheckList',
+	emits: ['update'],
 	props: {
 		items: {
 			type: Array,

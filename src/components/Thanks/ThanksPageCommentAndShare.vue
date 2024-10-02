@@ -241,6 +241,7 @@ export default {
 		KvPageContainer,
 		KvButton
 	},
+	emits: ['guest-create-account'],
 	props: {
 		receipt: {
 			type: Object,

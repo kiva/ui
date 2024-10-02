@@ -55,6 +55,7 @@ export default {
 		KvCarousel,
 		KvClassicLoanCardContainer
 	},
+	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,

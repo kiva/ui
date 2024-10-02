@@ -41,6 +41,7 @@ export default {
 		KvExpandable,
 		KvMaterialIcon,
 	},
+	emits: ['toggle'],
 	props: {
 		/**
 		 * Question Title

@@ -21,6 +21,7 @@ export default {
 	components: {
 		FifteenYearsGlobeCTA,
 	},
+	emits: ['selectcountry', 'pan'],
 	data() {
 		return {
 			ctaVisible: false,

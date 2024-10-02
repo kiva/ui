@@ -16,6 +16,7 @@ export default {
 		}
 		return h(this.tag, options, this.$slots.default());
 	},
+	emits: ['click'],
 	props: {
 		to: {
 			type: String,

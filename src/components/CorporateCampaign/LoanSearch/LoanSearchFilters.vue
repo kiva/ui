@@ -305,6 +305,12 @@ export default {
 		SortOrder,
 		TagFilter
 	},
+	emits: [
+		'updated-filters',
+		'updated-sort-by',
+		'reset-loan-filters',
+		'set-loan-display'
+	],
 	props: {
 		activeLoanDisplay: {
 			type: String,

@@ -304,6 +304,7 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 	},
+	emits: ['show-new-bg'],
 	props: {
 		receipt: {
 			type: Object,

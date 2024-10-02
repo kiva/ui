@@ -51,6 +51,7 @@ export default {
 		KvButton,
 		KvCheckbox
 	},
+	emits: ['delete-saved-search'],
 	props: {
 		savedSearch: {
 			type: Object,

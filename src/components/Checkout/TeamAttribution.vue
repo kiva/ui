@@ -34,6 +34,7 @@ import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'TeamAttribution',
+	emits: ['refresh-totals', 'updating-totals'],
 	props: {
 		teams: {
 			type: Array,

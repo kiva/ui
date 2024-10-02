@@ -232,6 +232,7 @@ export default {
 		TeamPicksSwitch,
 	},
 	mixins: [addToBasketExpMixin],
+	emits: ['add-to-basket', 'show-cart-modal'],
 	props: {
 		extendFlssFilters: {
 			type: Boolean,

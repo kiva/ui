@@ -103,6 +103,14 @@ export default {
 		KvPagination,
 		KivaClassicBasicLoanCard,
 	},
+	emits: [
+		'add-to-basket',
+		'remove-loan-from-basket',
+		'reset-loan-filters',
+		'show-basket',
+		'show-loan-details',
+		'update-total-count',
+	],
 	props: {
 		checkoutVisible: {
 			type: Boolean,

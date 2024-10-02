@@ -55,6 +55,7 @@ export default {
 		KvMaterialIcon,
 		KvExpandable,
 	},
+	emits: ['toggle'],
 	props: {
 		/**
 		 * Unique id. used for a11y

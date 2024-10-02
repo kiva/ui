@@ -94,6 +94,7 @@ export default {
 		KvUiButton,
 		KvGrid
 	},
+	emits: ['show-basket'],
 	props: {
 		promoAmount: {
 			type: String,

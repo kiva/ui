@@ -86,6 +86,7 @@ export default {
 		LoanCardController,
 		KvLoadingPlaceholder
 	},
+	emits: ['show-triggers'],
 	props: {
 		loans: {
 			type: Array,

@@ -27,6 +27,7 @@ export default {
 	components: {
 		KvRadio
 	},
+	emits: ['sort-order-updated'],
 	props: {
 		selectedSort: {
 			type: String,

@@ -198,6 +198,7 @@ export default {
 		};
 	},
 	setup() { return { v$: useVuelidate() }; },
+	emits: ['form-update'],
 	props: {
 		/**
 		 * Should all inputs on the form be disabled

@@ -25,6 +25,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		loanId: {
 			type: Number,

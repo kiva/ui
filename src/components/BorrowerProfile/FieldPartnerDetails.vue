@@ -141,6 +141,7 @@ export default {
 			mdiStarHalfFull,
 		};
 	},
+	emits: ['show-definition'],
 	props: {
 		partnerId: { // Partner.id
 			type: Number,

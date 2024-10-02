@@ -179,6 +179,7 @@ export default {
 		BorrowerInfoHeader,
 		BorrowerInfoBody,
 	},
+	emits: ['track-interaction', 'toggle-favorite'],
 	props: {
 		isVisitor: {
 			type: Boolean,

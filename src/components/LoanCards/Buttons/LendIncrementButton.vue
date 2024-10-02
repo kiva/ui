@@ -54,6 +54,7 @@ export default {
 			loading: false,
 		};
 	},
+	emits: ['add-to-basket'],
 	props: {
 		loanId: {
 			type: Number,

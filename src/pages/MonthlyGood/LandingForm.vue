@@ -85,6 +85,7 @@ export default {
 			}
 		};
 	},
+	emits: ['update:amount', 'update:selectedGroup'],
 	props: {
 		amount: {
 			type: Number,

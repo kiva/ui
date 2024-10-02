@@ -78,6 +78,7 @@ export default {
 	components: {
 		KvIcon,
 	},
+	emits: ['change', 'interact-carousel'],
 	props: {
 		autoplay: {
 			type: Boolean,

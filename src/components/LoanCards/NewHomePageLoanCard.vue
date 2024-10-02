@@ -191,6 +191,7 @@ const loanCardQuery = gql`
 
 export default {
 	name: 'NewHomePageLoanCard',
+	emits: ['dedication-click'],
 	props: {
 		loanId: {
 			type: Number,

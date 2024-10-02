@@ -1,4 +1,5 @@
 export default {
+	emits: ['track-interaction'],
 	props: {
 		amountLeft: {
 			type: Number,

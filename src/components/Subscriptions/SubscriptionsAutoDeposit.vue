@@ -357,6 +357,7 @@ export default {
 		KvSettingsCard,
 		KvTextInput,
 	},
+	emits: ['cancel-subscription', 'unsaved-changes'],
 	data() {
 		return {
 			isSaving: false,

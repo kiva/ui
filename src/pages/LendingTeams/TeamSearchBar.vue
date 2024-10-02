@@ -33,6 +33,7 @@ export default {
 		KvTextInput,
 	},
 	inject: ['apollo'],
+	emits: ['search'],
 	props: {
 		initialValue: {
 			type: String,

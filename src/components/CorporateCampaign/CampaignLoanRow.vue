@@ -82,6 +82,15 @@ export default {
 		KvLoadingSpinner,
 		KivaClassicBasicLoanCard
 	},
+	emits: [
+		'add-to-basket',
+		'remove-loan-from-basket',
+		'reset-loan-filters',
+		'show-basket',
+		'show-loan-details',
+		'update-available-loans',
+		'update-total-count'
+	],
 	props: {
 		filters: {
 			type: Object,

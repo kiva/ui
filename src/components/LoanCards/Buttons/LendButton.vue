@@ -23,6 +23,7 @@ export default {
 		KvButton,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket', 'update:loading'],
 	props: {
 		loanId: {
 			type: Number,

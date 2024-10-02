@@ -70,6 +70,7 @@ export default {
 	components: {
 		KvUiButton,
 	},
+	emits: ['jump-to-loans', 'add-to-basket'],
 	props: {
 		heroAreaContent: {
 			type: Object,

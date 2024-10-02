@@ -50,6 +50,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
+	emits: ['add-to-basket'],
 	props: {
 		spotlightData: {
 			type: Object,

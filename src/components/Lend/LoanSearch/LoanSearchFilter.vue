@@ -165,6 +165,7 @@ export default {
 		KvSelectBox,
 		KvRangeMinMaxSlider,
 	},
+	emits: ['reset', 'updated'],
 	props: {
 		extendFlssFilters: {
 			type: Boolean,

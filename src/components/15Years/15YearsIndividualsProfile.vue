@@ -141,6 +141,7 @@ export default {
 	components: {
 		FifteenYearsButton,
 	},
+	emits: ['show-full-profile', 'show-next-person'],
 	props: {
 		expanded: {
 			type: Boolean,

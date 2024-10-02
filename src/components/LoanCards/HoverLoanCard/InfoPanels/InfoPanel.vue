@@ -38,6 +38,7 @@ export default {
 		KvExpandable,
 		KvIcon,
 	},
+	emits: ['track-interaction'],
 	props: {
 		id: {
 			type: String,

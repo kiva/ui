@@ -44,6 +44,7 @@ export default {
 		KvLightbox,
 		KvButton,
 	},
+	emits: ['verification-complete', 'campaign-verification-opt-out'],
 	props: {
 		formId: {
 			type: String,

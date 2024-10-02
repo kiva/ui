@@ -50,6 +50,7 @@ export default {
 		KvToast,
 		SupportedByLenders,
 	},
+	emits: ['close'],
 	props: {
 		currentLender: {
 			type: Object,

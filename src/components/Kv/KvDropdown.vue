@@ -20,6 +20,7 @@ import {
 export default {
 	name: 'KvDropdown',
 	inject: ['apollo', 'cookieStore'],
+	emits: ['show', 'hide'],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },

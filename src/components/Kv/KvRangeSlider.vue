@@ -31,6 +31,7 @@ export default {
 		prop: 'value',
 		event: 'input'
 	},
+	emits: ['input', 'change'],
 	props: {
 		id: {
 			type: String,

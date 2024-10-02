@@ -187,6 +187,7 @@ export default {
 		KvButton,
 		KvLightbox,
 	},
+	emits: ['abort-cancel', 'confirm-cancel', 'modify-cancel'],
 	props: {
 		showCancelLightbox: {
 			type: Boolean,

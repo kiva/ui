@@ -123,6 +123,7 @@ export default {
 		AnimatedStars,
 		GuestAccountCreation,
 	},
+	emits: ['show-discover-badges'],
 	props: {
 		isGuest: {
 			type: Boolean,

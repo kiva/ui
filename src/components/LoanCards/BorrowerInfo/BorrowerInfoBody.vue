@@ -23,6 +23,7 @@
 <script>
 export default {
 	name: 'BorrowerInfoBody',
+	emits: ['track-loan-card-interaction', 'read-more-link'],
 	props: {
 		loanId: {
 			type: Number,

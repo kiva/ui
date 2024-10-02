@@ -36,6 +36,7 @@ export default {
 	mixins: [
 		anyOrSelectedAutolendingFilter
 	],
+	emits: ['updated-filters'],
 	props: {
 		allCountries: {
 			type: Array,

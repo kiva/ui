@@ -123,6 +123,7 @@ const upsellLoansQuery = gql`query upsellLoansQuery(
 export default {
 	name: 'DepositIncentiveUpsell',
 	inject: ['apollo'],
+	emits: ['adding-loan', 'done-adding'],
 	props: {
 		maxLoans: {
 			type: Number,

@@ -89,6 +89,7 @@ export default {
 		LoanCardController,
 		KvLoadingSpinner,
 	},
+	emits: ['add-to-basket', 'processing-add-to-basket', 'no-rec-loans-found'],
 	props: {
 		basketedLoans: {
 			type: Array,

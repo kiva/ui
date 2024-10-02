@@ -16,6 +16,7 @@ export default {
 	components: {
 		LendButton,
 	},
+	emits: ['add-to-basket'],
 	props: {
 		loanId: {
 			type: Number,

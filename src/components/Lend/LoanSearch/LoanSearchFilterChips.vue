@@ -37,6 +37,7 @@ export default {
 		KvChipClassic,
 		KvTextLink,
 	},
+	emits: ['updated', 'reset'],
 	props: {
 		loanSearchState: {
 			type: Object,
