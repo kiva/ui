@@ -17,37 +17,74 @@
 					]"
 				/>
 			</div>
-			<div>
+			<div class="tw-flex tw-flex-col tw-items-start">
 				<p class="tw-mb-0.5 tw-font-medium">
 					{{ title }}
 				</p>
-				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded">
+				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded tw-w-auto">
 					🎉 {{ loanStatus }}
 				</div>
 			</div>
 		</div>
 		<div class="tw-my-1">
 			<p>{{ subject }}</p>
-			<p v-html="body"></p>
-			<button>read more</button>
+			<span v-html="truncatedBody"></span>
+			<button
+				v-if="showTruncatedBody"
+				class="tw-inline tw-text-action hover:tw-underline"
+				@click="openLightbox"
+			>
+				read more
+			</button>
 		</div>
-		<div class="tw-flex tw-justify-end tw-text-secondary tw-text-small">
-			<div>
-				Update #1 <span class="tw-mx-1">&bull;</span>
+		<div
+			:class="[
+				'tw-flex tw-items-center tw-mt-2.5',
+				{ 'tw-justify-between': isFundraising },
+				{ 'tw-justify-end': !isFundraising },
+			]"
+		>
+			<button
+				v-if="isFundraising"
+				class="tw-flex tw-items-center"
+				@click="shareLoan"
+			>
+				<div
+					class="tw-rounded-full tw-bg-secondary tw-w-4 tw-h-4 tw-mr-1
+						tw-flex tw-items-center tw-justify-center"
+				>
+					<KvMaterialIcon
+						class="tw-w-2 tw-h-2 tw-text-action"
+						:icon="mdiExportVariant"
+					/>
+				</div>
+				<span class="tw-text-small tw-font-medium">Share</span>
+			</button>
+
+			<div class="tw-flex tw-text-secondary tw-text-small">
+				<div v-if="updateNumber">
+					Update #{{ updateNumber }} <span class="tw-mx-1">&bull;</span>
+				</div>
+				<span>{{ uploadDate }}</span>
 			</div>
-			<span>Date</span>
 		</div>
 	</div>
 </template>
 
 <script setup>
+import { format } from 'date-fns';
+import { mdiExportVariant } from '@mdi/js';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
 	computed,
 	toRefs,
 	defineProps,
+	inject,
 } from 'vue';
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	loan: {
@@ -58,9 +95,15 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	updateNumber: {
+		type: String,
+		default: '',
+	},
 });
 
 const { loan, update } = toRefs(props);
+
+const emit = defineEmits(['read-more-clicked', 'share-loan-clicked']);
 
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
@@ -77,14 +120,41 @@ const loanStatus = computed(() => {
 });
 
 const subject = computed(() => update.value?.subject ?? '');
-const body = computed(() => update.value?.body ?? '');
+const body = computed(() => {
+	return update.value?.body ?? '';
+});
+const truncatedBody = computed(() => {
+	let truncatedCopy = body.value.split(' ').splice(0, 14).join(' ');
+	if (truncatedCopy.length < body.value.length) {
+		truncatedCopy += '...&nbsp;';
+	}
+	return truncatedCopy;
+});
+
+const showTruncatedBody = computed(() => body.value.length > truncatedBody.value.length);
+
+const uploadDate = computed(() => {
+	const date = update.value?.date ?? '';
+	const dateObj = !date ? new Date() : new Date(date);
+	return format(dateObj, 'LLL. d, yyyy');
+});
+
+const openLightbox = () => {
+	emit('read-more-clicked', update.value.id);
+	$kvTrackEvent('portfolio', 'click', 'borrower-update-read-more', update.value.id);
+};
+
+const shareLoan = () => {
+	emit('share-loan-clicked');
+	$kvTrackEvent('portfolio', 'click', 'borrower-update-share-loan', loan.value.id);
+};
 </script>
 
 <style lang="postcss" scoped>
 .update-card {
 	width: 322px;
 
-	@screen lg {
+	@screen md {
 		width: 422px;
 	}
 }

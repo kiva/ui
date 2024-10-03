@@ -1,5 +1,7 @@
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard.vue';
 import { mockLoansArray } from '../utils';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
 
 export default {
 	title: 'MyKiva/JournalUpdateCard',
@@ -16,10 +18,17 @@ const update = {
 	"image": null
 };
 
+const lender = {
+	id: 1017469,
+	public: true,
+    inviterName: 'Test User',
+};
+
 const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { JournalUpdateCard },
+		mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
 		setup() { return { args }; },
 		provide: {
 			$kvTrackEvent: () => Promise.resolve({
@@ -27,14 +36,28 @@ const story = (args = {}) => {
 			}),
 		},
 		template: `
-			<div class="tw-bg-eco-green-1 tw-p-0.5">
-				<journal-update-card v-bind="args" />
+			<div class="tw-bg-eco-green-1 tw-p-1" style="max-width: 450px;">
+				<journal-update-card
+					v-bind="args"
+					@read-more-clicked="onReadMoreClicked"
+					@share-loan-clicked="onShareLoanClicked"
+				/>
 			</div>
 		`,
+		methods: {
+			onReadMoreClicked(updateId) {
+				console.log(updateId);
+			},
+			onShareLoanClicked() {
+				console.log('share loan clicked');
+			},
+		},
 	});
 	template.args = args;
 	return template;
 };
 
-export const Default = story({ loan: mockLoans[0], update });
-export const Repaying = story({ loan: { ...mockLoans[0], status: 'payingBack' }, update });
+export const Default = story({ loan: mockLoans[0], update, lender });
+export const Repaying = story({ loan: { ...mockLoans[0], status: 'payingBack' }, update, lender });
+export const UpdateNumber = story({ loan: mockLoans[0], update, updateNumber: '2', lender });
+export const NotTruncatedBody = story({ loan: { ...mockLoans[0], status: 'payingBack' }, update: { ...update, body: 'Testing not truncated body feature.' }, lender});
