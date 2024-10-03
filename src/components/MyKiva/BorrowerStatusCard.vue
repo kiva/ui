@@ -188,8 +188,10 @@ const currentStep = computed(() => {
 });
 
 const weeksToRepay = computed(() => {
-	const date = loan.value?.terms?.expectedPayments?.[0]?.dueToKivaDate ?? null;
 	const today = new Date();
+	const date = loan.value?.terms?.expectedPayments
+		?.find(payment => differenceInWeeks(Date.parse(payment?.dueToKivaDate), today) > 0)
+		?.dueToKivaDate ?? null;
 	if (date) {
 		// Get the number of weeks between the first repayment date (in the future) and now
 		return `${differenceInWeeks(Date.parse(date), today)} weeks`;
