@@ -110,7 +110,7 @@ export default {
 	mounted() {
 		this.isShown = this.visible;
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.closeLightbox();
 	},
 	methods: {

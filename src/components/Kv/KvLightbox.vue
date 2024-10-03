@@ -128,7 +128,7 @@ export default {
 		this.isShown = this.visible;
 		this.init();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.closeLightbox();
 	},
 	methods: {

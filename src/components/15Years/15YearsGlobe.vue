@@ -156,7 +156,7 @@ export default {
 			}
 		};
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.gkview) {
 			this.gkview.release();
 		}

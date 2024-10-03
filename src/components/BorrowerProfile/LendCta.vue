@@ -873,7 +873,7 @@ export default {
 	mounted() {
 		this.createWrapperObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyWrapperObserver();
 	},
 };

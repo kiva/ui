@@ -194,7 +194,7 @@ export default {
 			this.saveWindowWidth();
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledResize());
 	},
 	methods: {

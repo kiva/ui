@@ -71,7 +71,7 @@ export default {
 			this.popper.scheduleUpdate();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.unmakeDropdown();
 	},
 	methods: {

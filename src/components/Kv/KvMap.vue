@@ -309,7 +309,7 @@ export default {
 			}
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.mapInstance) {
 			if (!this.hasWebGL && !this.leafletReady) {
 				// turn off the leaflet instance

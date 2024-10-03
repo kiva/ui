@@ -494,7 +494,7 @@ export default {
 			this.fetchLoanActivity();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 		this.watchedQuery.subscription?.unsubscribe();
 	},

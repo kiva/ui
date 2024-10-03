@@ -283,7 +283,7 @@ This is a message requesting the Kiva Post Grot typekit for the purpose(s) of
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

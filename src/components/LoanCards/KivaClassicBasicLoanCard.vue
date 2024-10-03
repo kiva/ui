@@ -588,7 +588,7 @@ export default {
 			this.createViewportObserver();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 		this.watchedQuery.subscription?.unsubscribe();
 	},

@@ -221,7 +221,7 @@ export default {
 			return 'Phone number';
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.lightboxVisible = false;
 	},
 	methods: {

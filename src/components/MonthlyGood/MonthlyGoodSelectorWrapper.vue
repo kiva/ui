@@ -165,7 +165,7 @@ export default {
 			this.mgStickBarOffset = offsetHeight;
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('scroll', this.throttledScroll);
 		window.removeEventListener('scroll', () => {
 			this.hasScrolled = true;

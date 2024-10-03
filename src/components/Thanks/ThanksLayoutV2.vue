@@ -391,7 +391,7 @@ export default {
 			return this.visibleSection === 'share';
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', _throttle(() => {
 			this.determineIfMobile();
 		}, 200));
