@@ -41,16 +41,16 @@
 				<template #controls>
 					<div class="tw-text-center">
 						<div v-if="showForm">
-							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
+							<kv-button class="smaller" @click.prevent="handleJoinTeam">
 								Join Now
 							</kv-button>
 							<br><br>
-							<kv-button class="text-link" @click.native.prevent="handleRejectTeam">
+							<kv-button class="text-link" @click.prevent="handleRejectTeam">
 								Opt-out
 							</kv-button>
 						</div>
 						<div v-if="showSuccess || showError">
-							<kv-button class="smaller" @click.native.prevent="handleContinue">
+							<kv-button class="smaller" @click.prevent="handleContinue">
 								Continue
 							</kv-button>
 						</div>

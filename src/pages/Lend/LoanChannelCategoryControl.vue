@@ -10,7 +10,7 @@
 				<router-link
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
-					@click.native="trackAdvancedFilters"
+					@click="trackAdvancedFilters"
 				>
 					<img class="tw-w-2 tw-mr-1" :src="tuneUrl">
 					Advanced filters

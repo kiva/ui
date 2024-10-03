@@ -20,7 +20,7 @@
 			<p class="tw-mb-4">
 				Once we verify your account, you can continue checking out!
 			</p>
-			<kv-button v-if="!sending" @click.native="send" data-testid="basket-verification-send-button">
+			<kv-button v-if="!sending" @click="send" data-testid="basket-verification-send-button">
 				Send verification link
 			</kv-button>
 			<kv-loading-spinner class="sending-spinner" v-else />
@@ -40,7 +40,7 @@
 			<p class="tw-mb-4">
 				After receiving the email, follow the link provided to continue checking out with your Kiva Credit.
 			</p>
-			<kv-button v-if="!sending" @click.native="send" data-testid="basket-verification-resend-button">
+			<kv-button v-if="!sending" @click="send" data-testid="basket-verification-resend-button">
 				Resend email
 			</kv-button>
 			<kv-loading-spinner class="sending-spinner" v-else />

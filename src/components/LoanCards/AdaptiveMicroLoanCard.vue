@@ -6,7 +6,7 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
-			@click.native="trackProfileClick"
+			@click="trackProfileClick"
 			:open-in-new-tab="true"
 			:use-default-styles="false"
 		/>

@@ -37,7 +37,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-logo-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-logo-intro')"
 									:state="activeSection.includes('creative-studio-logo') ? 'active' : ''"
 								>
 									Logos
@@ -48,7 +48,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-colors-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-colors-intro')"
 									:state="activeSection.includes('creative-studio-colors') ? 'active' : ''"
 								>
 									Colors
@@ -59,7 +59,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-typography-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-typography-intro')"
 									:state="activeSection.includes('creative-studio-typography') ? 'active' : ''"
 								>
 									Type

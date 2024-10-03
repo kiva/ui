@@ -39,7 +39,7 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'keep-exploring-button-click']"
-								@click.native.prevent="closeLightbox"
+								@click.prevent="closeLightbox"
 							>
 								Find more loans
 							</kv-button>
@@ -52,7 +52,7 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'checkout-button-click']"
-								@click.native="closeLightbox"
+								@click="closeLightbox"
 							>
 								Checkout
 							</kv-button>

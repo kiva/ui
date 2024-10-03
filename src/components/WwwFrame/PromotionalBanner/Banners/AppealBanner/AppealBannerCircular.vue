@@ -70,7 +70,7 @@
 								:key="`amount-${index}`"
 								variant="secondary"
 								class="tw-border-brand tw-text-brand"
-								@click.native="onClickAmountBtn(buttonAmount)"
+								@click="onClickAmountBtn(buttonAmount)"
 								v-kv-track-event="[
 									'promo',
 									'click-amount-btn',
@@ -135,7 +135,7 @@
 					</div>
 					<div class="tw-flex-shrink tw-mx-2">
 						<kv-button
-							@click.native="onClickToggleBanner"
+							@click="onClickToggleBanner"
 							variant="primary"
 							v-kv-track-event="[
 								'promo',
