@@ -27,8 +27,6 @@ export default {
 					KvContentfulImg: defineAsyncComponent(() => import('@kiva/kv-components/vue/KvContentfulImg')),
 					ButtonWrapper: defineAsyncComponent(() => import('#src/components/Contentful/ButtonWrapper')),
 				},
-				props: {
-				},
 			};
 		},
 		elementClasses() {
@@ -52,16 +50,7 @@ export default {
 		}
 	},
 	render() {
-		return h(
-			'div', /* Wrap output in a div since Vue templates must have 1 root element */
-			[
-				h(this.dynamicComponent, {
-					class: this.elementClasses,
-					props: {
-					},
-				})
-			]
-		);
+		return h(this.dynamicComponent, { class: this.elementClasses });
 	}
 };
 </script>
