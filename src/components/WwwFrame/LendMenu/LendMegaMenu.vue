@@ -3,7 +3,7 @@
 		<router-link
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
-			@click.native="trackMgLinkClick"
+			@click="trackMgLinkClick"
 		>
 			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-font-medium">
 				Lend monthly

@@ -11,7 +11,7 @@
 					class="thanks-page__icon-button expanded"
 					v-if="showGuestUpsell"
 					:class="{ active: isGuestSelected }"
-					@click.native="setVisibleSection('guest')"
+					@click="setVisibleSection('guest')"
 				>
 					<template #icon-left>
 						<kv-icon
@@ -33,7 +33,7 @@
 					class="thanks-page__icon-button expanded"
 					v-if="showMgCta"
 					:class="{ active: isMgSelected }"
-					@click.native="setVisibleSection('mg')"
+					@click="setVisibleSection('mg')"
 				>
 					<template #icon-left>
 						<kv-icon
@@ -54,7 +54,7 @@
 					data-testid="thanks-page-button-receipt"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isReceiptSelected }"
-					@click.native="setVisibleSection('receipt')"
+					@click="setVisibleSection('receipt')"
 				>
 					<template #icon-left>
 						<kv-icon
@@ -75,7 +75,7 @@
 					data-testid="thanks-page-button-share"
 					class="thanks-page__icon-button expanded"
 					:class="{ active: isShareSelected }"
-					@click.native="setVisibleSection('share')"
+					@click="setVisibleSection('share')"
 					v-if="showShare"
 				>
 					<template #icon-left>
@@ -151,7 +151,7 @@
 						:class="{ active: isGuestSelected }"
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isGuestSelected ? 'true' : 'false'"
-						@click.native="setVisibleSection('guest')"
+						@click="setVisibleSection('guest')"
 					>
 						<template #icon-left>
 							<kv-icon
@@ -196,7 +196,7 @@
 						aria-controls="`kv-accordion-mg-accordion`"
 						:aria-expanded="isMgSelected ? 'true' : 'false'"
 						v-kv-track-event="['thanks', 'click-Monthly-Good', 'Monthly Good']"
-						@click.native="setVisibleSection('mg')"
+						@click="setVisibleSection('mg')"
 					>
 						<template #icon-left>
 							<kv-icon
@@ -240,7 +240,7 @@
 						aria-controls="`kv-accordion-receipt-accordion`"
 						:aria-expanded="isReceiptSelected ? 'true' : 'false'"
 						v-kv-track-event="['thanks', 'click-Order-Confirmation', 'Order Confirmation']"
-						@click.native="setVisibleSection('receipt')"
+						@click="setVisibleSection('receipt')"
 					>
 						<template #icon-left>
 							<kv-icon
@@ -285,7 +285,7 @@
 						aria-controls="`kv-accordion-share-accordion`"
 						:aria-expanded="isShareSelected ? 'true' : 'false'"
 						v-kv-track-event="['thanks', 'click-Share', 'Share']"
-						@click.native="setVisibleSection('share')"
+						@click="setVisibleSection('share')"
 					>
 						<template #icon-left>
 							<kv-icon

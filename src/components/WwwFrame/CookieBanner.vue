@@ -9,7 +9,7 @@
 					preferences please see our <a href="/legal/cookie" target="_blank">cookie policy</a>.
 					<kv-button
 						class="setting close-button"
-						@click.native.stop.prevent="handleClickClose"
+						@click.stop.prevent="handleClickClose"
 						aria-label="Close"
 					>
 						Sounds good

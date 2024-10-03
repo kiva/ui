@@ -32,7 +32,7 @@
 				</p>
 				<div class="tw-flex tw-flex-wrap tw-gap-2">
 					<kv-ui-button
-						@click.native.prevent="jumpToLoans"
+						@click.prevent="jumpToLoans"
 						v-kv-track-event="[
 							'Campaign',
 							'click-hero-cta',

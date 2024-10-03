@@ -65,7 +65,7 @@
 									:amount-left="amountLeft"
 									:show-now="!enableFiveDollarsNotes"
 									:enable-five-dollars-notes="enableFiveDollarsNotes"
-									@click.native="trackInteraction({
+									@click="trackInteraction({
 										interactionType: 'addToBasket',
 										interactionElement: 'Lend25'
 									})"

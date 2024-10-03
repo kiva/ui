@@ -61,7 +61,7 @@
 					:minimal-checkout-button="true"
 					:is-amount-lend-button="lessThan25"
 					:amount-left="amountLeft"
-					@click.native="trackInteraction({
+					@click="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
 					})"
