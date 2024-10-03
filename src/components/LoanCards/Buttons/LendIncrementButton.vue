@@ -4,7 +4,7 @@
 			<kv-select
 				id="lend-increment-amount"
 				v-model="selectedOption"
-				@update:modelValue="trackLendAmountSelection"
+				@update:model-value="trackLendAmountSelection"
 			>
 				<option
 					v-for="price in prices"
@@ -21,7 +21,7 @@
 			:class="{ 'tw-w-full': loading }"
 			:price="selectedOption"
 			:loan-id="loanId"
-			:loading.sync="loading"
+			v-model:loading="loading"
 			@add-to-basket="$emit('add-to-basket', $event)"
 		>
 			{{ buttonText }}
