@@ -22,11 +22,6 @@ query myKivaQuery {
           }
         }
         loanAmount
-        loanFundraisingInfo {
-          fundedAmount
-          reservedAmount
-          isExpiringSoon
-        }
         plannedExpirationDate
         terms {
           currency

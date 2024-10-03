@@ -98,7 +98,6 @@ import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import { isLoanFundraising } from '#src/util/loanUtils';
 import {
 	defineProps,
 	ref,
@@ -110,7 +109,10 @@ import {
 import {
 	PAYING_BACK,
 	ENDED,
-	DEFAULTED
+	DEFAULTED,
+	FUNDED,
+	FUNDRAISING,
+	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
@@ -136,7 +138,7 @@ const { loans } = toRefs(props);
 const carousel = ref(null);
 
 const hasActiveLoans = computed(() => {
-	return loans.value.some(loan => loan?.status === PAYING_BACK || isLoanFundraising(loan));
+	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
 });
 
 const handleChange = event => {

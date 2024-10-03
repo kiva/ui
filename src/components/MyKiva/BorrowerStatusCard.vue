@@ -81,7 +81,6 @@ import {
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import { addMonths, differenceInWeeks } from 'date-fns';
-import { isLoanFundraising } from '#src/util/loanUtils';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import {
 	ref,
@@ -91,6 +90,9 @@ import {
 	inject,
 	onMounted,
 } from 'vue';
+import {
+	FUNDRAISING,
+} from '#src/api/fixtures/LoanStatusEnum';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -167,7 +169,7 @@ const loanFunFact = computed(() => {
 	}
 });
 
-const isFundraising = computed(() => isLoanFundraising(loan.value));
+const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
 
 const loanStatus = computed(() => {
 	if (isFundraising.value) {
