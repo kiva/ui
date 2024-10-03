@@ -89,7 +89,7 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('a'));
 
-		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(2);
+		expect(filterConfig.config.a.getRemovedFacet).toHaveBeenCalledTimes(1);
 		expect(filterConfig.config.a.getRemovedFacet)
 			.toHaveBeenCalledWith({ name: 'a' }, { name: 'a', key: 'a', __typename: 'TypeA' });
 		expect(emitted().updated[0]).toEqual([{ a: null }]);
@@ -113,7 +113,7 @@ describe('LoanSearchFilterChips', () => {
 
 		await user.click(getByText('a'));
 
-		expect(spyTrackEvent).toHaveBeenCalledTimes(2);
+		expect(spyTrackEvent).toHaveBeenCalledTimes(1);
 		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'click-remove-filter-chip', 'TypeA-a');
 	});
 });
