@@ -3,8 +3,8 @@
 		<div class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-font-medium">
 			🎉 {{ loanStatus }}
 		</div>
-		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
-			<HeroBackground style="height: 96px;" class="!tw-block tw-rounded-t" />
+		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t">
+			<HeroBackground style="height: 96px;" class="!tw-block" />
 			<div class="tw-flex tw-justify-center tw-gap-1.5 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5">
 				<div class="tw-flex-1">
 					<div
@@ -124,7 +124,7 @@ const loanFunFact = computed(() => {
 		switch (borrowerCountry.value) {
 			case 'United States':
 
-				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.**';
+				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.*';
 			case 'Puerto Rico':
 				// eslint-disable-next-line max-len
 				return 'Small businesses are a crucial part of Puerto Rico\'s economy, employing around 44% of Puerto Rico\'s workforce.';
@@ -145,13 +145,13 @@ const loanFunFact = computed(() => {
 	switch (region) {
 		case 'Central America':
 			// eslint-disable-next-line max-len
-			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.**';
+			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.*';
 		case 'South America':
 			// eslint-disable-next-line max-len
 			return 'People living in poverty in South America has decreased from ~30% in 2002 to less than 20% by 2020.';
 		case 'Africa':
 			// eslint-disable-next-line max-len
-			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.**';
+			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.*';
 		case 'Middle East':
 			// eslint-disable-next-line max-len
 			return 'The number of people with bank accounts is on the rise in the Middle East, a vital step in driving economic opportunity.';
@@ -160,7 +160,7 @@ const loanFunFact = computed(() => {
 			return 'Eastern European countries have made progress in reducing poverty levels over the past decade through social protection programs.';
 		case 'Asia':
 			// eslint-disable-next-line max-len
-			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.**';
+			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.*';
 		default:
 			// eslint-disable-next-line max-len
 			return 'In areas of Oceania like Fiji, the gender gap is improving—with more women able to access financial services.';

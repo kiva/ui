@@ -1,19 +1,25 @@
 <template>
 	<MyKivaContainer>
-		<h2 v-html="title" class="tw-mb-3.5"></h2>
-		<div :class="{'tw-flex tw-justify-center': !loans.length }">
-			<KvButton
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					btnEventLabel
-				]" v-if="!loans.length || !hasActiveLoans"
-				:to="link"
-			>
-				{{ btnCta }}
-			</KvButton>
-		</div>
-		<div v-if="hasActiveLoans">
+		<template v-if="isLoading">
+			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3" :style="{width: '20rem', height: '5rem'}" />
+			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3 tw-mx-auto" :style="{width: '15rem', height: '3rem'}" />
+		</template>
+		<template v-else>
+			<h2 v-html="title" class="tw-mb-3.5"></h2>
+			<div :class="{'tw-flex tw-justify-center': !loans.length }">
+				<KvButton
+					v-kv-track-event="[
+						'portfolio',
+						'click',
+						btnEventLabel
+					]" v-if="!loans.length || !hasActiveLoans"
+					:to="link"
+				>
+					{{ btnCta }}
+				</KvButton>
+			</div>
+		</template>
+		<div v-if="hasActiveLoans && !isLoading">
 			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab v-for="(loan, index) in filteredLoans" :key="index" :label="index + 1" :for-panel="loan.id">
@@ -91,6 +97,7 @@ import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
 	defineProps,
@@ -115,6 +122,13 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 		required: true,
+	},
+	/**
+	 * Data is loading
+	 * */
+	isLoading: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -147,7 +161,7 @@ const title = computed(() => {
 	}
 	if (loans.value.length) {
 		if (loans.value.length === 1) {
-			return 'You’re changing a life right now!';
+			return 'You’re <u>changing a life</u> right now!';
 		}
 		return `You’re <u>changing ${loans.value.length} liv</u>es right now!`;
 	}

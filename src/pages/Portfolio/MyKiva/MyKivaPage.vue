@@ -9,7 +9,7 @@
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile :lender="lender" />
-		<MyKivaBorrowerCarousel :loans="loans" @selected-loan="handleSelectedLoan" />
+		<MyKivaBorrowerCarousel :loans="loans" @selected-loan="handleSelectedLoan" :is-loading="isLoading" />
 	</www-page>
 </template>
 
@@ -38,6 +38,7 @@ const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
 const loans = ref([]);
+const isLoading = computed(() => !lender.value);
 
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 
