@@ -1130,7 +1130,7 @@ export default {
 			return thanksBadgeExp?.version;
 		}
 	},
-	destroyed() {
+	unmounted() {
 		clearInterval(this.currentTimeInterval);
 	},
 };
