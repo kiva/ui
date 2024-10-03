@@ -9,6 +9,7 @@
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile :lender="lender" />
+		<MyKivaBorrowerCarousel :loans="loans" @selected-loan="handleSelectedLoan" :is-loading="isLoading" />
 	</www-page>
 </template>
 
@@ -19,6 +20,8 @@ import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
+import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+
 import {
 	ref,
 	computed,
@@ -34,6 +37,8 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
+const loans = ref([]);
+const isLoading = computed(() => !lender.value);
 
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 
@@ -42,10 +47,15 @@ const handleShowNavigation = () => {
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 };
 
+const handleSelectedLoan = () => {
+	// TODO: work with updates
+};
+
 apollo.query({ query: myKivaQuery })
 	.then(result => {
 		userInfo.value = result.data?.my ?? {};
 		lender.value = result.data?.my?.lender ?? null;
+		loans.value = result.data?.my?.loans?.values ?? [];
 	});
 
 onMounted(() => {
