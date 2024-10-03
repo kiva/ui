@@ -101,7 +101,7 @@ export default {
 		document.addEventListener('click', this.clickDocument);
 		document.addEventListener('touchstart', this.clickDocument);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		document.removeEventListener('click', this.clickDocument);
 		document.removeEventListener('touchstart', this.clickDocument);
 

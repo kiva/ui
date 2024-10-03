@@ -119,7 +119,7 @@ export default {
 		// we're doing this all client side
 		this.loadLoans();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.handleResize);
 	}
 };

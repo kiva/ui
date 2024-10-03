@@ -889,7 +889,7 @@ export default {
 		});
 		window.addEventListener('resize', this.determineIfMobile());
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.determineIfMobile());
 	},
 	methods: {

@@ -60,7 +60,7 @@ export default {
 
 		window.addEventListener('resize', this.throttledDetermineIsCollapsable);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIsCollapsable);
 	},
 	computed: {

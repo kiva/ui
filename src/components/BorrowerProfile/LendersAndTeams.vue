@@ -416,7 +416,7 @@ export default {
 		this.createObserver();
 		this.gatherCurrentUserData();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

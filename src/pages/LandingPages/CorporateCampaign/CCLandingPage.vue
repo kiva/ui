@@ -738,7 +738,7 @@ export default {
 
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.currentTimeInterval);
 	},
 	watch: {

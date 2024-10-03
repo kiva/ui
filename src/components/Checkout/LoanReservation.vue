@@ -135,7 +135,7 @@ export default {
 	mounted() {
 		this.activateReservationTimer();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.reservationMessageId) {
 			clearInterval(this.reservationMessageId);
 		}

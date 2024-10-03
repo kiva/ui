@@ -162,7 +162,7 @@ export default {
 	mounted() {
 		this.startEnrollment();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.lightboxVisible = false;
 	},
 	methods: {
