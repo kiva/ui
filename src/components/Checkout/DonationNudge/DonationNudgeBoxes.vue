@@ -76,7 +76,7 @@
 						<div class="tw-self-center md:tw-w-full">
 							<kv-button
 								class="tw-w-14 md:tw-w-full"
-								@click.native="setCustomDonationAndClose"
+								@click="setCustomDonationAndClose"
 								id="customDonationSubmitBtn"
 								data-testid="custom-donation-submit-btn"
 							>

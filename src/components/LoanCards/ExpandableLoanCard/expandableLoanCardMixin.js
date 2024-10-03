@@ -1,4 +1,5 @@
 export default {
+	emits: ['toggle-favorite', 'track-interaction'],
 	props: {
 		amountLeft: {
 			type: Number,

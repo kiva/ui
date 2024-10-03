@@ -68,6 +68,7 @@ export default {
 		UpdateDetails
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['hide-section'],
 	props: {
 		loanId: {
 			type: Number,
@@ -159,7 +160,7 @@ export default {
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

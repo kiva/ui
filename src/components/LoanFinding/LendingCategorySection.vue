@@ -64,6 +64,7 @@ export default {
 		KvClassicLoanCardContainer,
 		ViewMoreCard,
 	},
+	emits: ['add-to-basket'],
 	props: {
 		title: {
 			type: String,
@@ -170,7 +171,7 @@ export default {
 	mounted() {
 		window.addEventListener('resize', this.handleResize);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.handleResize);
 	}
 };

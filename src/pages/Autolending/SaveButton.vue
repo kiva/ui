@@ -4,7 +4,7 @@
 			data-test="save-button"
 			class="smaller"
 			v-if="!saving"
-			@click.native="checkSave"
+			@click="checkSave"
 			:disabled="!isChanged"
 		>
 			Save
@@ -24,10 +24,10 @@
 			</p>
 			<template #controls>
 				<div class="warning-buttons">
-					<kv-button class="smallest secondary" @click.native="save">
+					<kv-button class="smallest secondary" @click="save">
 						Continue anyway
 					</kv-button>
-					<kv-button class="smallest" @click.native="closeWarning">
+					<kv-button class="smallest" @click="closeWarning">
 						Add more categories
 					</kv-button>
 				</div>
@@ -51,6 +51,7 @@ export default {
 		KvLightbox,
 		KvLoadingSpinner,
 	},
+	emits: ['autolendingSaved'],
 	props: {
 		showWarning: {
 			type: Boolean,

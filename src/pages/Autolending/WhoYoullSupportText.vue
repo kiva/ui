@@ -71,6 +71,7 @@ export default {
 			kivaChooses: true,
 		};
 	},
+	emits: ['click'],
 	apollo: {
 		query: gql`query whoYoullSupport {
 			autolending @client {

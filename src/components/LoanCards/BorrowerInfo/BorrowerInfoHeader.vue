@@ -21,6 +21,7 @@ export default {
 	components: {
 		BorrowerInfoName,
 	},
+	emits: ['track-loan-card-interaction'],
 	props: {
 		country: {
 			type: String,

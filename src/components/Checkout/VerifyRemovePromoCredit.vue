@@ -46,6 +46,7 @@ export default {
 		KvButton,
 		KvLightbox,
 	},
+	emits: ['credit-removed', 'promo-opt-out-lightbox-closed', 'updating-totals'],
 	props: {
 		activeCreditType: {
 			type: String,

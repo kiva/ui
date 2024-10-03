@@ -105,6 +105,7 @@ const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/thanks-page/b
 export default {
 	name: 'DetailSection',
 	inject: ['apollo', 'cookieStore'],
+	emits: ['back'],
 	props: {
 		selectedBadgeIdx: {
 			type: Number,

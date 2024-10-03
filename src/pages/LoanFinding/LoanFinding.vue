@@ -503,7 +503,7 @@ export default {
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroySpotlightViewportObserver();
 	},
 };

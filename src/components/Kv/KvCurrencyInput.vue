@@ -20,6 +20,7 @@ export default {
 	components: {
 		KvTextInput
 	},
+	emits: ['input'],
 	props: {
 		id: {
 			type: String,

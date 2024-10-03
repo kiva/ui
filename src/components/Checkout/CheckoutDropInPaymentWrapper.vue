@@ -57,7 +57,7 @@
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="basket"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 					is-checkout
 				/>
 				<template v-else>
@@ -67,7 +67,7 @@
 						name="termsAgreement"
 						class="checkbox tw-text-small tw-mb-2"
 						v-model="termsAgreement"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'terms-of-use',
@@ -98,7 +98,7 @@
 						class="checkbox tw-text-small tw-mb-2"
 						name="emailUpdates"
 						v-model="emailUpdates"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'marketing-updates',
@@ -172,6 +172,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, braintreeDropInError],
+	emits: ['complete-transaction', 'updating-totals', 'refreshtotals', 'opt-in'],
 	props: {
 		amount: {
 			type: String,

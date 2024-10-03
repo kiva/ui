@@ -48,6 +48,7 @@ export default {
 	mixins: [
 		hoverLoanCardMixin,
 	],
+	emits: ['update-detailed-loan-index'],
 	props: {
 		expanded: {
 			type: Boolean,

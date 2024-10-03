@@ -250,7 +250,7 @@
 						<router-link
 							to="/lend-by-category"
 							data-testid="empty-basket-loans-link"
-							v-kv-track-event.native="
+							v-kv-track-event="
 								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
 							"
 						>
@@ -1130,7 +1130,7 @@ export default {
 			return thanksBadgeExp?.version;
 		}
 	},
-	destroyed() {
+	unmounted() {
 		clearInterval(this.currentTimeInterval);
 	},
 };

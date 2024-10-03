@@ -135,7 +135,7 @@ export default {
 			this.apollo.mutate({
 				mutation: startEmailVerification,
 				variables: {
-					doneUrl: this.doneUrl || null,
+					doneUrl: this.doneUrl || '',
 				},
 				awaitRefetchQueries: true,
 				refetchQueries: [

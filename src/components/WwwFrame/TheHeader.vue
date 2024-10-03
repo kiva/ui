@@ -123,10 +123,10 @@
 							data-testid="header-lend"
 							class="header__button header__lend tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Lend']"
-							@pointerenter.native.stop="onLendLinkPointerEnter"
-							@pointerleave.native.stop="onLendLinkPointerLeave"
-							@pointerup.native.stop="onLendLinkPointerUp"
-							@click.native.stop="onLendLinkClick"
+							@pointerenter.stop="onLendLinkPointerEnter"
+							@pointerleave.stop="onLendLinkPointerLeave"
+							@pointerup.stop="onLendLinkPointerUp"
+							@click.stop="onLendLinkClick"
 						>
 							<span class="tw-flex tw-items-center">Lend
 								<kv-material-icon
@@ -149,8 +149,8 @@
 								<kv-page-container>
 									<the-lend-menu
 										ref="lendMenu"
-										@pointerenter.native="onLendMenuPointerEnter"
-										@pointerleave.native="onLendMenuPointerLeave"
+										@pointerenter="onLendMenuPointerEnter"
+										@pointerleave="onLendMenuPointerLeave"
 									/>
 								</kv-page-container>
 							</div>
@@ -687,6 +687,7 @@ export default {
 			loansInBasket: [],
 		};
 	},
+	emits: ['show-basket'],
 	props: {
 		hideSearchInHeader: {
 			type: Boolean,
@@ -888,7 +889,7 @@ export default {
 		});
 		window.addEventListener('resize', this.determineIfMobile());
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.determineIfMobile());
 	},
 	methods: {

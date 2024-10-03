@@ -123,6 +123,7 @@ export default {
 		};
 	},
 	mixins: [smoothScrollMixin],
+	emits: ['close-banner'],
 	props: {
 		buttonAmounts: {
 			type: Array,

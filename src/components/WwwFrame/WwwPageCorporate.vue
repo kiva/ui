@@ -47,6 +47,7 @@ export default {
 		TheFooterCorporate,
 		TheHeader,
 	},
+	emits: ['show-basket'],
 	props: {
 		corporateLogoUrl: {
 			type: String,

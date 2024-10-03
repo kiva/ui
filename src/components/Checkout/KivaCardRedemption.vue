@@ -148,6 +148,7 @@ export default {
 		KvTextInput,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		credits: {
 			type: Array,

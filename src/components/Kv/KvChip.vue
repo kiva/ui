@@ -16,6 +16,7 @@ import KvIcon from '#src/components/Kv/KvIcon';
 export default {
 	name: 'KvChip',
 	components: { KvIcon },
+	emits: ['click-chip'],
 	props: {
 		title: {
 			type: String,

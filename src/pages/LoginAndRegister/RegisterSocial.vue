@@ -70,7 +70,7 @@
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="authentication"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 				/>
 				<input
 					v-if="enableRadioBtnExperiment"
@@ -86,7 +86,7 @@
 						v-show="needsTerms"
 						v-model="newAcctTerms"
 						:validation="v$.newAcctTerms"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'terms-of-use',
@@ -111,7 +111,7 @@
 						type="checkbox"
 						v-show="needsNews"
 						v-model="newsConsent"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'marketing-updates',

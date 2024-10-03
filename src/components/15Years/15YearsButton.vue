@@ -16,6 +16,7 @@ export default {
 		}
 		return h(this.tag, options, this.$slots.default());
 	},
+	emits: ['click'],
 	props: {
 		to: {
 			type: String,
@@ -45,8 +46,6 @@ export default {
 	methods: {
 		onClick(e) {
 			if (this.tag === 'button' && this.$attrs.type !== 'submit') {
-				// emit a vue event and prevent native event
-				// so we don't have to write @click.native in our templates
 				e.preventDefault();
 				this.$emit('click', e);
 			}

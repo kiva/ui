@@ -75,7 +75,7 @@
 						data-test="when-save-button"
 						class="smaller button"
 						v-if="!isSaving"
-						@click.native="save"
+						@click="save"
 						:disabled="!isChanged"
 					>
 						Save

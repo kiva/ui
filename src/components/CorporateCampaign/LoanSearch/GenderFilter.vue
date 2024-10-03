@@ -25,6 +25,7 @@ export default {
 	components: {
 		KvRadio
 	},
+	emits: ['gender-updated'],
 	props: {
 		selectedGender: {
 			type: String,

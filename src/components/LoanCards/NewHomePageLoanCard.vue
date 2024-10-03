@@ -191,6 +191,7 @@ const loanCardQuery = gql`
 
 export default {
 	name: 'NewHomePageLoanCard',
+	emits: ['dedication-click'],
 	props: {
 		loanId: {
 			type: Number,
@@ -364,7 +365,7 @@ export default {
 			this.createViewportObserver();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 	},
 	watch: {

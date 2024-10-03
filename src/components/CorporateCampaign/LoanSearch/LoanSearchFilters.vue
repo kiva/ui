@@ -94,7 +94,7 @@
 							v-if="isChipsCollapsable"
 							variant="secondary"
 							class="chips__toggle tw-mb-2"
-							@click.native="isChipsCollapsed = !isChipsCollapsed"
+							@click="isChipsCollapsed = !isChipsCollapsed"
 						>
 							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
 						</kv-button>
@@ -102,7 +102,7 @@
 						<kv-button
 							v-if="!isInitialFilters"
 							class="chips__toggle"
-							@click.native="handleResetFilters"
+							@click="handleResetFilters"
 						>
 							Reset all
 						</kv-button>
@@ -236,7 +236,7 @@
 			<template #controls>
 				<kv-button
 					variant="primary"
-					@click.native.prevent="applyFilters"
+					@click.prevent="applyFilters"
 				>
 					Apply Filters
 				</kv-button>
@@ -305,6 +305,12 @@ export default {
 		SortOrder,
 		TagFilter
 	},
+	emits: [
+		'updated-filters',
+		'updated-sort-by',
+		'reset-loan-filters',
+		'set-loan-display'
+	],
 	props: {
 		activeLoanDisplay: {
 			type: String,

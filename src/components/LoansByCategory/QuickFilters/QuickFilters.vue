@@ -53,7 +53,7 @@
 						v-model="selectedGender"
 						id="gender"
 						style="min-width: 140px;"
-						@click.native="trackDropdownClick('gender')"
+						@click="trackDropdownClick('gender')"
 					>
 						<option
 							v-for="gender in filterOptions.gender"
@@ -68,7 +68,7 @@
 				<div class="tw-w-full">
 					<location-selector
 						v-if="!removeLocationDropdown"
-						@click.native="trackDropdownClick('location')"
+						@click="trackDropdownClick('location')"
 						@handle-overlay="handleQuickFiltersOverlay"
 						:regions="filterOptions.location"
 						:total-loans="totalLoans"
@@ -95,7 +95,7 @@
 					:disabled="!filtersLoaded"
 					v-model="sortBy"
 					style="min-width: 180px;"
-					@click.native="trackDropdownClick('sort')"
+					@click="trackDropdownClick('sort')"
 				>
 					<option
 						v-for="sortType in filterOptions.sorting"
@@ -120,7 +120,7 @@
 					id="sortBy"
 					:disabled="!filtersLoaded"
 					v-model="sortBy"
-					@click.native="trackDropdownClick('sort')"
+					@click="trackDropdownClick('sort')"
 				>
 					<option
 						v-for="sortType in filterOptions.sorting"
@@ -154,6 +154,7 @@ import LocationSelector from './LocationSelector';
 export default {
 	name: 'QuickFilters',
 	inject: ['cookieStore'],
+	emits: ['update-filters', 'reset-filters', 'handle-overlay'],
 	props: {
 		totalLoans: {
 			type: Number,

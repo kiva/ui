@@ -26,6 +26,7 @@ export default {
 	components: {
 		KvCheckbox,
 	},
+	emits: ['updated'],
 	props: {
 		/**
 		 * Whether to show the select/deselect all link

@@ -52,6 +52,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [braintreeDropInError],
+	emits: ['complete-transaction', 'no-update'],
 	props: {
 		amount: {
 			type: Number,

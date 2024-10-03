@@ -47,6 +47,7 @@ export default {
 		prop: 'value',
 		event: 'input'
 	},
+	emits: ['input'],
 	props: {
 		maxlength: {
 			type: Number,

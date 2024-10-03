@@ -331,7 +331,7 @@
 					<div class="columns small-12 large-8">
 						<kv-button
 							class="smallest"
-							@click.native="saveSettings"
+							@click="saveSettings"
 							:disabled="!isChanged || isProcessing"
 						>
 							Save email settings <kv-loading-spinner v-if="isProcessing" />

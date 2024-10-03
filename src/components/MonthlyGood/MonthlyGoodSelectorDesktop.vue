@@ -82,7 +82,7 @@
 			<div class="shrink column monthly-selector__take-action-wrapper">
 				<!--  classic hollow -->
 				<kv-button
-					@click.native="navigateToMG"
+					@click="navigateToMG"
 					class="monthly-selector__take-action"
 					v-kv-track-event="[
 						'homepage',
@@ -184,7 +184,7 @@ export default {
 	mounted() {
 		document.addEventListener('keyup', this.onKeyUp);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		document.removeEventListener('keyup', this.onKeyUp);
 	},
 	methods: {

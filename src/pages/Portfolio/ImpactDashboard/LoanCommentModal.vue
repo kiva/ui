@@ -59,6 +59,7 @@ export default {
 		KvMaterialIcon,
 		KvButton,
 	},
+	emits: ['comment-modal-closed'],
 	props: {
 		loan: {
 			type: Object,

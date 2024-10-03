@@ -55,6 +55,7 @@ export default {
 	components: {
 		KvCurrencyInput
 	},
+	emits: ['pill-toggled', 'custom-amount-updated'],
 	props: {
 		id: {
 			type: String,

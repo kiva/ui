@@ -78,6 +78,7 @@ export default {
 	components: {
 		KvIcon,
 	},
+	emits: ['change', 'interact-carousel'],
 	props: {
 		autoplay: {
 			type: Boolean,
@@ -250,7 +251,7 @@ export default {
 			this.$emit('change', this.currentIndex);
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.autoplay) {
 			clearInterval(this.intervalTimer);
 		}

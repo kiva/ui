@@ -99,6 +99,7 @@ export default {
 		KvLoadingPlaceholder,
 		KvProgressBar,
 	},
+	emits: ['open-comment-modal'],
 	props: {
 		loanId: {
 			type: Number,

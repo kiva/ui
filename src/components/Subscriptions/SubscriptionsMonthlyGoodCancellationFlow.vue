@@ -65,7 +65,7 @@
 					<kv-button
 						class="tw-w-full"
 						variant="secondary"
-						@click.native.prevent="trackEvent({
+						@click.prevent="trackEvent({
 							label: `monthly good cancel ; Continue cancellation`,
 							property: 'cancel reason ; amount_other'}); goToStep('3-expensive')"
 					>
@@ -187,6 +187,7 @@ export default {
 		KvButton,
 		KvLightbox,
 	},
+	emits: ['abort-cancel', 'confirm-cancel', 'modify-cancel'],
 	props: {
 		showCancelLightbox: {
 			type: Boolean,

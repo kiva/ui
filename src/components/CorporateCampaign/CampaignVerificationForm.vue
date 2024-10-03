@@ -16,7 +16,7 @@
 			<div class="tw-text-center">
 				<kv-button
 					class="text-link"
-					@click.native="optOut"
+					@click="optOut"
 				>
 					No thanks, I'll opt out
 				</kv-button>
@@ -44,6 +44,7 @@ export default {
 		KvLightbox,
 		KvButton,
 	},
+	emits: ['verification-complete', 'campaign-verification-opt-out'],
 	props: {
 		formId: {
 			type: String,

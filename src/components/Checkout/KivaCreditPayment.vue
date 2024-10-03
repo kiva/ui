@@ -5,7 +5,7 @@
 		class="tw-mb-2"
 		v-kv-track-event="['payment.continueBtn']"
 		title="Checkout using your Kiva credit"
-		@click.native.prevent="validateCreditBasket"
+		@click.prevent="validateCreditBasket"
 	>
 		<slot>Complete order</slot>
 	</kv-button>
@@ -24,6 +24,12 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
 		checkoutUtils
+	],
+	emits: [
+		'complete-transaction',
+		'checkout-failure',
+		'refreshtotals',
+		'updating-totals'
 	],
 	props: {
 		useAsyncCheckout: {

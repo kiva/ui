@@ -21,7 +21,7 @@
 				data-testid="donate-repayments"
 				v-if="!myDonateRepayments"
 				v-model="donateRepayments"
-				@update:modelValue="setDonateRepayments"
+				@update:model-value="setDonateRepayments"
 			>
 				<span
 					id="donate-repayments-tooltip"
@@ -74,6 +74,7 @@ export default {
 		KvLightbox,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	data() {
 		return {
 			donateRepayments: false,

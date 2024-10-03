@@ -23,6 +23,7 @@ export default {
 		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
+	emits: ['transactions-enabled'],
 	props: {
 		amount: {
 			type: String,

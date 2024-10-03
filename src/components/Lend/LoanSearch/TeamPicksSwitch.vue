@@ -26,6 +26,7 @@ export default {
 	components: {
 		KvSwitch
 	},
+	emits: ['handle-team-picks'],
 	props: {
 		showPicks: {
 			type: Boolean,

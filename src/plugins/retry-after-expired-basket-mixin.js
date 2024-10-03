@@ -5,6 +5,7 @@ import logFormatter from '#src/util/logFormatter';
 const injections = ['apollo', 'cookieStore'];
 
 export default {
+	emits: ['add-to-basket'],
 	mounted() {
 		checkInjections(this, injections);
 
