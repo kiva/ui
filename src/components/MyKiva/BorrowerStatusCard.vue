@@ -200,7 +200,7 @@ const weeksToRepay = computed(() => {
 	const minDate = differenceInWeeks(addMonths(today, 1), today);
 	const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
 
-	if (minDate === maxDate) {
+	if (minDate === maxDate || maxDate < 0) {
 		return `${minDate} weeks`;
 	}
 

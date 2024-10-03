@@ -1,8 +1,8 @@
 <template>
 	<MyKivaContainer>
 		<template v-if="isLoading">
-			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3" :style="{width: '20rem', height: '5rem'}" />
-			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3 tw-mx-auto" :style="{width: '15rem', height: '3rem'}" />
+			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4" :style="{width: '10rem', height: '3rem'}" />
+			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3" :style="{width: '17rem', height: '17rem'}" />
 		</template>
 		<template v-else>
 			<h2 v-html="title" class="tw-mb-3.5"></h2>
@@ -123,9 +123,6 @@ const props = defineProps({
 		default: () => ([]),
 		required: true,
 	},
-	/**
-	 * Data is loading
-	 * */
 	isLoading: {
 		type: Boolean,
 		default: false,
