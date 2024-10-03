@@ -1,6 +1,7 @@
 <template>
 	<transition name="kvfade">
 		<div
+			v-if="randomLoans.length"
 			class="
 				section-wrapper
 				random-loan-cards
@@ -10,7 +11,7 @@
 				tw-border-tertiary
 			"
 		>
-			<div v-if="randomLoans.length" class="section-container tw-mx-auto tw-my-0">
+			<div class="section-container tw-mx-auto tw-my-0">
 				<kv-carousel
 					v-if="randomLoans.length > 0 && !loading"
 					class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
