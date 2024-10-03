@@ -34,7 +34,7 @@ module.exports = {
 		browser: true,
 		es2022: true,
 	},
-	extends: ['plugin:vue/strongly-recommended', 'airbnb-base', 'plugin:storybook/recommended'],
+	extends: ['plugin:vue/vue3-strongly-recommended', 'airbnb-base', 'plugin:storybook/recommended'],
 	// required to lint *.vue files
 	plugins: [
 		'graphql',
