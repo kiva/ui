@@ -7,7 +7,7 @@
 				class="loan-price tw-w-full"
 				style="max-width: 18rem;"
 				id="loan-price"
-				@update:modelValue="updateLoanReservation()"
+				@update:model-value="updateLoanReservation()"
 			>
 				<option
 					v-for="priceOption in prices"

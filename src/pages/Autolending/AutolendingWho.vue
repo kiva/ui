@@ -114,7 +114,7 @@
 				<template #controls>
 					<div class="row">
 						<div class="columns shrink">
-							<save-button @autolendingSaved="settingsSaved" />
+							<save-button @autolending-saved="settingsSaved" />
 						</div>
 						<div class="columns" v-show="!kivaChooses">
 							<inline-counter />

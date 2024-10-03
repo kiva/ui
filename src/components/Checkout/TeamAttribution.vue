@@ -8,7 +8,7 @@
 				v-model="selectedId"
 				class="team-select-dd data-hj-suppress tw-float-left"
 				style="max-width: rem-calc(250);"
-				@update:modelValue="updateLoanReservation()"
+				@update:model-value="updateLoanReservation()"
 			>
 				<option value="0">
 					None
