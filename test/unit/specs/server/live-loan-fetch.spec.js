@@ -41,6 +41,11 @@ describe('live-loan-fetch', () => {
 			expect(sortBy).toEqual(expectedSort);
 		}
 
+		beforeEach(() => {
+			// Suppress console warnings
+			jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+		});
+
 		it('converts input strings to valid LoanSearchFiltersInput objects', async () => {
 			// Using sort_random forces using the legacy loan search
 			await testFilterParsing('sort_random,gender_male,sector_education', { gender: 'male', sector: [15] });
