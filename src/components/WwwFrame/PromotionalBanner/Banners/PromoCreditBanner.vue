@@ -15,7 +15,7 @@
 		>
 
 			Please go back to your first Kiva tab or <span class="tw-underline">
-				click here</span> to use your {{ promoData.bonusBalance | numeral('$0.00') }} promo credit.
+				click here</span> to use your {{ promoData.bonusBalanceFormatted }} promo credit.
 
 		</a>
 	</div>
@@ -194,6 +194,7 @@ export default {
 		promoData() {
 			return {
 				bonusBalance: this.bonusBalance,
+				bonusBalanceFormatted: numeral(this.bonusBalance).format('$0[.]00'),
 				available: this.creditAvailable,
 				displayName: this.promoFundDisplayName,
 				pageId: this.managedAccountPageId,
