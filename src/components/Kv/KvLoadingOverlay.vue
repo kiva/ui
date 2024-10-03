@@ -53,7 +53,7 @@ export default {
 		this.onScroll();
 		window.addEventListener('scroll', this.throttledScroll);
 	},
-	destroyed() {
+	unmounted() {
 		window.removeEventListener('scroll', this.throttledScroll);
 	},
 };

@@ -232,7 +232,7 @@ export default {
 			);
 		}
 	},
-	destroyed() {
+	unmounted() {
 		clearTimeout(this.loadingOnTimeout);
 		clearTimeout(this.loadingOffTimeout);
 	}
