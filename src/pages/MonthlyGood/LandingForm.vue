@@ -9,7 +9,7 @@
 				<kv-select
 					class="tw-w-full" id="borrower-categories"
 					:model-value="selectedGroup"
-					@update:modelValue="updateSelected"
+					@update:model-value="updateSelected"
 				>
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}

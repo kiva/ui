@@ -68,7 +68,7 @@
 					id="mgAmountDropdown"
 					class="tw-w-full"
 					v-model.number="mgAmount"
-					@update:modelValue="trackMgAmountSelection"
+					@update:model-value="trackMgAmountSelection"
 				>
 					<option
 						v-for="(option, index) in mgAmountOptions"
