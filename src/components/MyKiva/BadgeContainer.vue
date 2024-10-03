@@ -37,7 +37,7 @@ const title = computed(() => {
 
 <style lang="postcss" scoped>
 .in-progress {
+	background-image: url('/src/assets/inline-svgs/my-kiva/dash.svg');
   @apply tw-grayscale tw-rounded-full tw-w-fit tw-bg-secondary;
-  background-image: url('/src/assets/inline-svgs/my-kiva/dash.svg');
 }
 </style>
