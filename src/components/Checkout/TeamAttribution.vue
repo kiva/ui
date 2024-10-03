@@ -34,7 +34,7 @@ import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'TeamAttribution',
-	emits: ['refresh-totals', 'updating-totals'],
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		teams: {
 			type: Array,
@@ -106,7 +106,7 @@ export default {
 							: 'Team Attribution Removal Success',
 						numeral(this.selectedId).value()
 					);
-					this.$emit('refresh-totals', 'team-update');
+					this.$emit('refreshtotals', 'team-update');
 					this.cachedId = this.selectedId;
 				}
 			}).catch(error => {

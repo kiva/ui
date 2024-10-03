@@ -107,7 +107,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -123,7 +123,7 @@
 				:managed-account-id="managedAccountId"
 				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 				:promo-name="promoName"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -186,7 +186,10 @@ export default {
 		'complete-transaction',
 		'checkout-failure',
 		'refreshtotals',
-		'updating-totals'
+		'updating-totals',
+		'jump-to-loans',
+		'credit-removed',
+		'transaction-complete',
 	],
 	props: {
 		isLoggedIn: {

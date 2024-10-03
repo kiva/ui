@@ -92,7 +92,7 @@ export default {
 		LoanTag
 	},
 	inject: ['apollo'],
-	emit: ['track-interaction', 'toggle-favorite'],
+	emits: ['track-interaction', 'toggle-favorite', 'add-to-basket'],
 	props: {
 		amountLeft: {
 			type: Number,

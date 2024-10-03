@@ -304,7 +304,7 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 	},
-	emits: ['show-new-bg'],
+	emits: ['show-new-bg', 'show-discover-badges'],
 	props: {
 		receipt: {
 			type: Object,
