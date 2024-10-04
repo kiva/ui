@@ -1,7 +1,10 @@
 <template>
-	<div>
+	<div v-if="updates.length > 0" class="tw-my-3">
+		<h3 class="tw-my-2">
+			Updates
+		</h3>
 		<KvCarousel
-			class="tw-w-full updates-carousel"
+			class="tw-w-full updates-carousel md:tw-overflow-visible"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:embla-options="{ loop: false }"

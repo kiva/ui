@@ -1,8 +1,11 @@
 <template>
-	<MyKivaContainer>
+	<div>
 		<template v-if="isLoading">
-			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4" :style="{width: '10rem', height: '3rem'}" />
-			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3" :style="{width: '17rem', height: '17rem'}" />
+			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6" />
+			<KvLoadingPlaceholder
+				class="tw-mb-2 lg:tw-mb-3 !tw-w-full md:!tw-w-1/2"
+				:style="{ height: '17rem' }"
+			/>
 		</template>
 		<template v-else>
 			<h2 v-html="title" class="tw-mb-3.5"></h2>
@@ -22,7 +25,12 @@
 		<div v-if="hasActiveLoans && !isLoading">
 			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
-					<KvTab v-for="(loan, index) in filteredLoans" :key="index" :label="index + 1" :for-panel="loan.id">
+					<KvTab
+						v-for="(loan, index) in filteredLoans"
+						:key="index"
+						:label="index + 1"
+						:for-panel="`${loan.id}`"
+					>
 						<div class="tw-flex tw-flex-col tw-justify-start tw-items-center tw-w-10">
 							<div
 								class="tw-w-8 tw-h-8 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
@@ -57,7 +65,11 @@
 					</KvTab>
 				</template>
 				<template #tabPanels>
-					<KvTabPanel v-for="(loan, index) in loans" :key="index" :id="loan.id">
+					<KvTabPanel
+						v-for="(loan, index) in loans"
+						:key="index"
+						:id="`${loan.id}`"
+					>
 						<p class="tw-hidden" :id="loan.id"></p>
 					</KvTabPanel>
 				</template>
@@ -86,7 +98,7 @@
 				>See all borrowers</a>
 			</div>
 		</div>
-	</MyKivaContainer>
+	</div>
 </template>
 
 <script setup>
@@ -96,7 +108,6 @@ import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import {
 	defineProps,

@@ -1,7 +1,12 @@
 <template>
 	<MyKivaContainer>
 		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
-			<h2>
+			<KvLoadingPlaceholder
+				v-if="isLoading"
+				class="!tw-h-5 tw-mt-6 md:tw-mt-0"
+				:style="{ width: '10rem' }"
+			/>
+			<h2 v-else>
 				{{ lenderName }}
 			</h2>
 			<a
@@ -17,6 +22,7 @@
 					class="avatar !tw-h-10 !tw-w-10"
 					:lender-image-url="lenderImageUrl"
 					:lender-name="lenderName"
+					:is-loading="isLoading"
 				/>
 			</a>
 		</div>
@@ -26,13 +32,18 @@
 <script setup>
 import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { computed, toRefs } from 'vue';
 
 const props = defineProps({
 	lender: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isLoading: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { lender } = toRefs(props);
@@ -57,23 +68,24 @@ const lenderImageUrl = computed(() => {
 	@apply tw-relative;
 }
 
-.avatar {
+.avatar, .avatar :deep(div) {
 	@screen md {
 		width: 6.25rem !important;
 		height: 6.25rem !important;
 	}
+	@apply tw-h-10 tw-w-10;
 }
 
-.avatar >>> img {
+.avatar :deep(img) {
 	@screen md {
 		width: 6.25rem;
 		height: 6.25rem;
 	}
-	@apply tw-h-10 tw-w-10 tw-border-4 tw-border-white;
+	@apply tw-h-10 tw-w-10 tw-border-4 tw-border-white tw-max-w-10 md:tw-max-w-full;
 }
 
-.avatar >>> span {
-	@apply tw-text-h1 tw--mt-1;
+.avatar :deep(span) {
+	@apply tw-text-h1 tw--mt-1 ;
 }
 
 </style>
