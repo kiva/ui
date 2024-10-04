@@ -66,7 +66,7 @@
 					<kv-verification-code-input
 						class="verification-code__input"
 						id="verification_code"
-						v-model="userVerificationCode"
+						@update="userVerificationCode = $event"
 					/>
 					<kv-loading-spinner
 						v-if="verificationPending"
