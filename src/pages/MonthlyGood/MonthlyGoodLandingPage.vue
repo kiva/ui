@@ -4,6 +4,7 @@
 		<kv-hero
 			class="tw-text-center"
 			style="margin-bottom: 0;"
+			v-if="isClientReady"
 		>
 			<template #images>
 				<kv-contentful-img
@@ -47,7 +48,7 @@
 				</div>
 			</template>
 		</kv-hero>
-		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2">
+		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2" v-if="isClientReady">
 			<h1
 				class="tw-text-primary tw-shadow-transparent tw-mt-2
 			tw-text-h2" v-html="heroHeadline"
@@ -72,6 +73,7 @@
 			</div>
 		</div>
 		<automatically-support-notice
+			v-if="isClientReady"
 			:value-headline="personalizedHeadline"
 			:value-body="personalizedBody"
 			:value-image="personalizedImage"
@@ -238,24 +240,14 @@ export default {
 				['xga', mgLandingPageImageRequire('mg-chooseloan-desktop.png')],
 			],
 			hasModernSub: false,
-			selectedChannelLoanIds: [],
-			selectedChannel: {},
-			showCarousel: true,
-			showViewMoreCard: false,
+			isClientReady: false,
 		};
-	},
-	created() {
-		const resultsArray = this.lendingCategories.filter(element => {
-			return element.value === this.category;
-		});
-		this.selectedChannelLoanIds = resultsArray?.[0]?.expLoansIds ?? [];
 	},
 	watch: {
 		selectedGroup() {
 			const resultsArray = this.lendingCategories.filter(element => {
 				return element.value === this.selectedGroup;
 			});
-			this.selectedChannelLoanIds = resultsArray?.[0]?.expLoansIds ?? [];
 			this.$kvTrackEvent(
 				'MonthlyGood',
 				'click-category-option',
@@ -374,7 +366,10 @@ export default {
 				}
 			});
 		},
-	}
+	},
+	mounted() {
+		this.isClientReady = typeof window !== 'undefined';
+	},
 };
 </script>
 
