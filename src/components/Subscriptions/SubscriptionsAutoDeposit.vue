@@ -66,7 +66,7 @@
 											<div class="row align-center tw-text-left">
 												<div class="small-12 columns">
 													<div class="row column">
-														<strong>Each month on the</strong>
+														<strong class="tw-pr-0.5">Each month on the</strong>
 														<label
 															class="tw-sr-only"
 															:class="{ 'error': v$.dayOfMonth?.$invalid }"
@@ -94,7 +94,7 @@
 															<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 															<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 														</button>
-														<strong>we'll process the following:</strong>
+														<strong class="tw-pl-0.5">we'll process the following:</strong>
 														<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
 															<li v-if="v$.dayOfMonth?.required?.$invalid">
 																Field is required
