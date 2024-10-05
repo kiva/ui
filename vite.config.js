@@ -49,6 +49,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 				// vite default
 				return size <= 4096;
 			},
+			sourcemap: !isProd,
 		},
 		css: {
 			postcss: {
