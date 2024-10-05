@@ -226,6 +226,7 @@ import LoanSearchFilters, { getSearchableFilters } from '#src/api/fixtures/LoanS
 import syncDate from '#src/util/syncDate';
 import trackTransactionEvent from '#src/util/trackTransactionEvent';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import emitter from '#src/plugins/event-emitter';
 import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHowKivaWorks from '#src/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '#src/components/CorporateCampaign/CampaignJoinTeamForm';
@@ -709,6 +710,11 @@ export default {
 		// show a loading screen if the page loads with an loan in the basket.
 		// const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
+
+		// setup emitter watcher
+		emitter.on('jumpToLoans', () => {
+			this.jumpToLoans();
+		});
 	},
 	async mounted() {
 		this.isClientReady = typeof window !== 'undefined';
@@ -1502,16 +1508,23 @@ export default {
 				this.basketBalancing = false;
 			}
 		},
-		checkoutLightboxClosed() {
+		async checkoutLightboxClosed() {
 			this.checkoutVisible = false;
+			// gaurd against navigation reset if hash is already empty
+			if (this.$router?.hash !== '') {
+				await this.$router.push(this.adjustRouteHash('')).catch(() => {});
+			}
 			this.handleScrollPosition();
-			this.$router.push(this.adjustRouteHash('')).catch(() => {});
+		},
+		getLoanSectionRef() {
+			const refs = this.$refs;
+			return refs?.mlLoanDisplay?.$refs || refs?.mlLoanDisplay?.[0]?.$refs;
 		},
 		handleScrollPosition(y) {
 			if (this.scrollToLoans) {
-				this.scrollToLoans = false;
-				this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
-			} else if (y) {
+				// Fetch Current Refs using method above and Navigate using the result
+				this.getLoanSectionRef()?.campaignLoanSection?.scrollIntoView({ behavior: 'smooth' });
+			} else if (typeof y !== 'undefined') {
 				window.scrollTo(0, y);
 			}
 		},
@@ -1637,7 +1650,6 @@ export default {
 		jumpToLoans() {
 			this.scrollToLoans = true;
 			this.checkoutLightboxClosed();
-			this.handleScrollPosition();
 		},
 		adjustRouteHash(hash) {
 			const route = { ...this.$route };
