@@ -771,9 +771,6 @@ export default {
 		}
 	},
 	computed: {
-		loanDisplayComponent() {
-			return this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
-		},
 		campaignLoanWrapperProps() {
 			return {
 				filters: this.filters,
