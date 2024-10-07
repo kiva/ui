@@ -165,7 +165,7 @@ function toUrlParams(variables) {
 
 // Turn an object of url query parameters into an object of graphql variables
 function fromUrlParams(params) {
-	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
+	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params ?? { page: 0 }));
 }
 
 function getTargetedChannel(targetedRoute, allChannels) {
@@ -259,7 +259,7 @@ export default {
 		},
 		handleCanonicalUrl() {
 			let url = `https://${this.$appConfig.host}${this.$route.path}`;
-			if (this.$route.query.page && Number(this.$route.query.page) > 1) {
+			if (this.$route?.query?.page && Number(this.$route?.query?.page) > 1) {
 				url = `${url}?page=${this.$route.query.page}`;
 			}
 			return url;
