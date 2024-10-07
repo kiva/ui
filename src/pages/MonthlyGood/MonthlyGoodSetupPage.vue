@@ -481,7 +481,8 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			// server uses route.value, client uses route
+			const currentRoute = route?.value ?? route ?? {};
 			/**
 			 * Implementation of SUBS-609 Experiment Results
 			 * For users without a currently active login.
