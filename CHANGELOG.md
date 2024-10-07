@@ -1,3 +1,84 @@
+## [3.0.0-rc.2](https://github.com/kiva/ui/compare/v3.0.0-rc.1...v3.0.0-rc.2) (2024-10-07)
+
+### 🎉 New Features
+
+* adding new condition to redirect to challenge page ([a562fc9](https://github.com/kiva/ui/commit/a562fc986c6bae23db330815b01466c8c534239e))
+* create component to show in progress badge ([10d7af1](https://github.com/kiva/ui/commit/10d7af1939971e83a898013dfee59c3bec28f7d6))
+* edit sitemap path params MP-880 ([e74aad4](https://github.com/kiva/ui/commit/e74aad492bc9a60672f5555d95401ba12f78ac93))
+* get active loans ([894d4c5](https://github.com/kiva/ui/commit/894d4c557bfcbf3c09c404822f60228ce748fb86))
+* message added for failed message sent ([#5567](https://github.com/kiva/ui/issues/5567)) ([1bf66ef](https://github.com/kiva/ui/commit/1bf66ef765c49274c491805e21e7d8dffcd2043d))
+* move redirect routes to own section of sitemap MP-880 ([ece45b6](https://github.com/kiva/ui/commit/ece45b68231069fa5807be28eb7bb9e69703343c))
+* my kiva carousel component for borrower status card ([abbc34d](https://github.com/kiva/ui/commit/abbc34d0846f2be8cab76a0736d6b4c141d7be8e))
+* use custom dash ([4ee0470](https://github.com/kiva/ui/commit/4ee0470ec79494dd030b17cb99f959e33413077b))
+
+### 🐛 Bugfixes
+
+* add padding to ad update form date ([2a3a0f5](https://github.com/kiva/ui/commit/2a3a0f51dca3ddf8da44089d24e830fc972d75af))
+* add request for new ID field on userAchievementProgress ([c16b6c6](https://github.com/kiva/ui/commit/c16b6c699495c007bad873d9140b0b818197a2fa))
+* add watcher to update state when lightbox opens, remove deprecated click attribute ([04cf84f](https://github.com/kiva/ui/commit/04cf84f7d577b04f20289592484bbd2f28620aa0))
+* adding optional chaining for counting loans method ([e03918d](https://github.com/kiva/ui/commit/e03918d9adf7a0a4ce9fe6a616480143eb80daac))
+* calculate next payment date ([096637a](https://github.com/kiva/ui/commit/096637a9e8c2369c1afb9b67bb0eeed11334292a))
+* cause selector input needs to declare events emitted MP-873 ([d2cf2c8](https://github.com/kiva/ui/commit/d2cf2c8b513b4de4b2d13d3e262ca3ceaf17c90b))
+* change logic to avoid redirect if experiment is active ([2a9de74](https://github.com/kiva/ui/commit/2a9de746ac05970e5090c657f9711806bda1d7cb))
+* checking status to know if a loan is fundraising ([abc2c50](https://github.com/kiva/ui/commit/abc2c50174302ed71a5de9c753555ef8c5b4a555))
+* default value for themes and tags ([b120c5b](https://github.com/kiva/ui/commit/b120c5bcda49ae8446af75fbc2099a4695b05a38))
+* definition of completed loans ([b730d3b](https://github.com/kiva/ui/commit/b730d3bcb1d3007513b67b37804dc756604c90d4))
+* done url after auth guard, done url not being empty string, team filter to url ([85109d0](https://github.com/kiva/ui/commit/85109d03b61c5b15a3ac9053632711ae228bcb1c))
+* dynamic rich text rendering ([ba24489](https://github.com/kiva/ui/commit/ba24489c1ac723d08c60f3e1545264780d091499))
+* emitted events need to be declared in components for vue to handle them correctly MP-901 ([621935a](https://github.com/kiva/ui/commit/621935a759f5c53a08399e964799afc709b40fa7))
+* event names for listeners must be hyphenated ([067e3a7](https://github.com/kiva/ui/commit/067e3a79dba97a2b140f57a11c88a9415f0b7c50))
+* filter out null values from queries used on LBC ([ec8b170](https://github.com/kiva/ui/commit/ec8b170f5265fac42b7326aa1b3da3cf7c49558d))
+* hydration and missing content on mg page ([08b3bbb](https://github.com/kiva/ui/commit/08b3bbb5a44e2f9e9e31d22691d81a06fe62a63d))
+* install mitt event bus, update dev-inspect command with tailwind-watch ([fc4f2e4](https://github.com/kiva/ui/commit/fc4f2e4da0b1a59019bc0c25d3a3193f2dada040))
+* iwd has false value causing the redirect ([1d66315](https://github.com/kiva/ui/commit/1d66315ce1983e46780c9a86973978ba31d3a96f))
+* lender profile stats bugs fixed ([#5564](https://github.com/kiva/ui/issues/5564)) ([74cac0b](https://github.com/kiva/ui/commit/74cac0be2908d98445da4e6afa6c62bd986c57b5))
+* lint ([fa7d7f3](https://github.com/kiva/ui/commit/fa7d7f33bebf8bf28043cfb0926e8aad8c349383))
+* lint ([d1f80c2](https://github.com/kiva/ui/commit/d1f80c2d3f1822cc0a91a2b3f8c7986318cb9d3e))
+* loading placeholder and handle negative dates ([4becfd9](https://github.com/kiva/ui/commit/4becfd968553baaefb314468b3051f4b1965b3cb))
+* location filters on lend-by-category ([86b52c5](https://github.com/kiva/ui/commit/86b52c536b26aebfdcf8e921161349f9d98275b6))
+* make vite load everything behind the static path in dev mode, helps fix tilt ([60f7ec3](https://github.com/kiva/ui/commit/60f7ec32a3c1c6b1e5fd7952904cd28edfa90a58))
+* missing tracking and buttons ([8a1ba24](https://github.com/kiva/ui/commit/8a1ba24ce5569c887e33423bccf3f8d8218319f2))
+* monthly good and auto deposit calculations doing string concat instead of addition MP-882 ([51411c5](https://github.com/kiva/ui/commit/51411c5bd4979c3f2396c60d0b3ea4ef29b2cc9a))
+* pass error to next to ensure auth guard redirect, remove lodash usage ([1f40682](https://github.com/kiva/ui/commit/1f406821f910e2629d83c253b83696dd9abaac0d))
+* pass null instead of all, which is not an enum option, in team leaderboard category field ([486db0f](https://github.com/kiva/ui/commit/486db0fc75e56519c6bd5de247c6c6b79f6226aa))
+* reactive loans ([9971d6d](https://github.com/kiva/ui/commit/9971d6d0a1ee306777f27168104dc7f680fa0a1e))
+* redirect to error if contentful entry is missing, fix dynamic rendering mode in the client ([12a9210](https://github.com/kiva/ui/commit/12a921028dea46bedb5765e9af9339f4b219e071))
+* remove depreacted .native modifier ([24375b3](https://github.com/kiva/ui/commit/24375b3055ae5ceaaf4b95b2845c4dbbbac0152a))
+* remove deprecated filter ([524819c](https://github.com/kiva/ui/commit/524819c9a9eb059098792042fed8fdc2fef9063f))
+* remove duplicate id=app ([16b0555](https://github.com/kiva/ui/commit/16b055522ee0c5be716d45e7a8c278900b99c3d8))
+* remove unused KvRangeSlider component ([909b5cc](https://github.com/kiva/ui/commit/909b5cc049e461376549f0497b3c79d9cf4a7273))
+* remove unused v-model from KvVerificationCodeInput to cleanup events MP-901 ([91aea77](https://github.com/kiva/ui/commit/91aea77131cba29ebb5e84efa3419b2243eb7cbc))
+* rename format-lh-for-s3 file ([2ce0c0d](https://github.com/kiva/ui/commit/2ce0c0d069861dc9d3a0b600405441dcd0c23b58))
+* rename refresh-totals -> refreshtotals for consistency and define missing emits ([113a6de](https://github.com/kiva/ui/commit/113a6de447984765917cea754b592b17520ac645))
+* replace .sync with v-model:value ([7102be7](https://github.com/kiva/ui/commit/7102be79aad5fa9e931bb616a50f1074996561d3))
+* replace deprecated beforeDestroy with beforeUnmount ([072ddcb](https://github.com/kiva/ui/commit/072ddcb8921e954b8937fb36cabdfa70ff75144e))
+* replace deprecated destroyed with unmounted ([e62801a](https://github.com/kiva/ui/commit/e62801af734f75385cb53d364a28923b79aa1d20))
+* root element of transition needs to have v-if or v-show ([0ed6e1e](https://github.com/kiva/ui/commit/0ed6e1e0a3e0a744f7238fad512303c5676d6957))
+* set inital input value in legacy KvRadio component, remove unused watch in autolending status ([f02626d](https://github.com/kiva/ui/commit/f02626d86c0babf88ed5f822fcd83c10aa81aafb))
+* slide width in badge experiment ([9d6effe](https://github.com/kiva/ui/commit/9d6effee48e5ff986b7d9c7a2675439211ac80d7))
+* solve conflicts ([1fa0046](https://github.com/kiva/ui/commit/1fa00460520e930ccbec3ea1f9a41f4a57df1012))
+* style issues and loading placeholder ([c905197](https://github.com/kiva/ui/commit/c90519714c2684210a23251939ee4be77573b631))
+* turn on source maps when not in production, helps with server debugger ([1009d62](https://github.com/kiva/ui/commit/1009d6229a902c6703f4f58609c24194c0604131))
+* update path to lighthouse upload file ([afc41d1](https://github.com/kiva/ui/commit/afc41d1ba0a182d4981c10b21b70d7d1dcb3b6e1))
+* use event emitter for dynamic events out of contentful content, fix basket hash ([cd249f6](https://github.com/kiva/ui/commit/cd249f67187f482400feaab64825cde27ebfd309))
+* validation in monthly good setup form ([82249d0](https://github.com/kiva/ui/commit/82249d0f1e8ff6aed65c73f14b0b28415ddc050c))
+
+### 📚 Documentation Changes
+
+* remove outdated comment ([1b2df91](https://github.com/kiva/ui/commit/1b2df9184acb5f58076e3aed3808e65198842caa))
+
+### 🔍 Tests
+
+* apply vue3 linting rules ([a428be8](https://github.com/kiva/ui/commit/a428be87fae96a88925c8f3848d355862189dbd0))
+* suppress console warnings from live-loan test ([4b0e6f9](https://github.com/kiva/ui/commit/4b0e6f9debd088348dc8106f9ae211ff81bb9b21))
+* update click event count expected in LoanSearchFilterChips ([d3925f5](https://github.com/kiva/ui/commit/d3925f5e21605bf2af473fc13eecff5cb5fa40eb))
+
+### 🧹 Chores
+
+* **deps:** upgrade kv-components to v3.102.4 and kv-shop to 1.12.50 ([eeae06b](https://github.com/kiva/ui/commit/eeae06b8503c52a51db31275599929b62a51e383))
+* remove console log ([1c649c7](https://github.com/kiva/ui/commit/1c649c719bc23d1056d009eb6d44e9ef5d26da11))
+* remove unused loanDisplayComponent computed prop ([07ab4bc](https://github.com/kiva/ui/commit/07ab4bcae8778f5d25cb11ab860e6eaae9893d43))
+
 ## [3.0.0-rc.1](https://github.com/kiva/ui/compare/v2.759.0...v3.0.0-rc.1) (2024-09-26)
 
 ### ⚠ BREAKING CHANGES
