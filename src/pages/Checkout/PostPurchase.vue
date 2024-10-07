@@ -1,8 +1,8 @@
 <script>
 import numeral from 'numeral';
-import trackTransactionMutation from '@/graphql/mutation/shop/trackTransaction.graphql';
-import parseGACookie from '@/util/parseGACookie';
-import parseSPCookie from '@/util/parseSPCookie';
+import trackTransactionMutation from '#src/graphql/mutation/shop/trackTransaction.graphql';
+import parseGACookie from '#src/util/parseGACookie';
+import parseSPCookie from '#src/util/parseSPCookie';
 
 export default {
 	name: 'PostPurchase',
@@ -12,14 +12,15 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
+			const currentRoute = route.value ?? {};
 			return new Promise((resolve, reject) => {
 				if (typeof window !== 'undefined') {
 					// force server load if currently on a browser client
-					window.location = route.fullPath;
+					window.location = currentRoute.fullPath;
 				} else {
-					const transactionId = numeral(route.query.kiva_transaction_id).value();
-					const valetInviter = route?.query?.valet_inviter ?? '';
-					const optedIn = route?.query?.optedIn ?? '';
+					const transactionId = numeral(currentRoute.query?.kiva_transaction_id).value();
+					const valetInviter = currentRoute.query?.valet_inviter ?? '';
+					const optedIn = currentRoute.query?.optedIn ?? '';
 					if (!transactionId) {
 						// redirect to thanks page if no transaction id was provided
 						// currently resolves to portfolio via ThanksView getCheckoutId method
@@ -38,8 +39,8 @@ export default {
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
 						// If challenge query exists, then redirect to challenge thanks page
-						let successPath = route.query.challenge
-							? `/checkout/thanks/${route.query.challenge}` : '/thanks';
+						let successPath = currentRoute.query?.challenge
+							? `/checkout/thanks/${currentRoute.query.challenge}` : '/thanks';
 
 						successPath = valetInviter || optedIn ? '/checkout/thanks' : successPath;
 
@@ -66,7 +67,7 @@ export default {
 								medium,
 								snowplowSessionId,
 								snowplowUserId,
-								source: gclid || route.query.gclid ? 'google-cpc' : source,
+								source: gclid || currentRoute.query?.gclid ? 'google-cpc' : source,
 								transactionId,
 								visitorId: cookieStore.get('uiv') || null
 							},

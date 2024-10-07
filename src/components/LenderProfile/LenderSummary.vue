@@ -51,7 +51,7 @@
 					<kv-button
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
-						@click="showMessageLightbox()"
+						@click="() => showMessageLightbox()"
 					>
 						Send message
 					</kv-button>
@@ -72,7 +72,7 @@
 		</div>
 		<kv-lightbox
 			:visible="lightboxVisible"
-			@lightbox-closed="lightboxClosed"
+			@lightbox-closed="closeLightbox"
 			:title="lightboxTitle"
 		>
 			<!-- eslint-disable max-len vue/singleline-html-element-content-newline -->
@@ -154,12 +154,12 @@
 <script>
 import { format, parseISO } from 'date-fns';
 import { mdiAccountCircle, mdiPencilOutline } from '@mdi/js';
-import logReadQueryError from '@/util/logReadQueryError';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
-import sendLenderMessageMutation from '@/graphql/mutation/sendLenderMessage.graphql';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import logReadQueryError from '#src/util/logReadQueryError';
+import userInfoQuery from '#src/graphql/query/userInfo.graphql';
+import sendLenderMessageMutation from '#src/graphql/mutation/sendLenderMessage.graphql';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'LenderSummary',
@@ -234,37 +234,39 @@ export default {
 			this.lightboxVisible = true;
 			this.$kvTrackEvent('lender-profile', 'click', 'send-message-lightbox-button');
 		},
-		lightboxClosed() {
-			this.lightboxVisible = false;
-		},
 		closeLightbox() {
+			this.lightboxVisible = false;
 			this.lenderMessage = '';
-			this.lightboxClosed();
+			this.errorMessage = '';
 			this.$kvTrackEvent('lender-profile', 'click', 'send-message-close-button');
 		},
 		sendMessage() {
 			this.sendingMessage = true;
 			this.errorMessage = '';
-			try {
-				this.apollo.mutate({
-					mutation: sendLenderMessageMutation,
-					variables: {
-						lenderPublicId: this.publicId,
-						message: this.lenderMessage,
-					},
-				});
-			} catch (e) {
+			this.apollo.mutate({
+				mutation: sendLenderMessageMutation,
+				variables: {
+					lenderPublicId: this.publicId,
+					message: this.lenderMessage,
+				},
+			}).then(response => {
+				const messageSent = response.data?.my?.sendMessage ?? false;
+				this.sendingMessage = false;
+				if (messageSent) {
+					this.closeLightbox();
+					this.$showTipMsg('Your message has been sent!');
+					this.$kvTrackEvent('lender-profile', 'click', 'send-message-button');
+				} else {
+					this.errorMessage = 'There was a problem sending your message. Please try again later.';
+					this.$kvTrackEvent('lender-profile', 'fail', 'send-message', this.errorMessage);
+				}
+			}).catch(e => {
 				this.sendingMessage = false;
 				this.errorMessage = e[0]?.message
 					? e[0].message
 					: 'There was a problem sending your message. Please try again later.';
 				this.$kvTrackEvent('lender-profile', 'fail', 'send-message', this.errorMessage);
-			} finally {
-				this.sendingMessage = false;
-				this.closeLightbox();
-				this.$showTipMsg('Your message has been sent!');
-				this.$kvTrackEvent('lender-profile', 'click', 'send-message-button');
-			}
+			});
 		},
 	},
 	async mounted() {

@@ -13,15 +13,15 @@
 			<div v-show="triggersVisible" class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-2 lg:tw-gap-4">
 				<helpme-choose-trigger
 					variant="amountLeft"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 				<helpme-choose-trigger
 					:variant="secondOption"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 				<helpme-choose-trigger
 					variant="researchScore"
-					@click="showLoans"
+					@update="showLoans"
 				/>
 			</div>
 
@@ -56,13 +56,14 @@
 </template>
 
 <script>
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import HelpmeChooseTrigger from './HelpmeChooseTrigger';
 import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
 export default {
 	name: 'HelpmeChooseWrapper',
+	emits: ['update'],
 	props: {
 		remainingLoans: {
 			type: Array,

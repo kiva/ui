@@ -19,7 +19,6 @@
 				<kv-flag
 					class="kv-phone-input__select-flag"
 					:country="selectedCountryCode"
-					:inline-svg="true"
 				/>
 
 				<select
@@ -48,11 +47,10 @@
 				class="kv-phone-input__input"
 				:id="id"
 				:placeholder="placeholderNumber"
-				:value="displayNumber"
 				:disabled="disabled"
 				:valid="valid"
+				v-model="displayNumber"
 				v-bind="$attrs"
-				v-on="inputListeners"
 				@input="onInputPhoneNumber"
 			/>
 		</div>
@@ -69,8 +67,8 @@ import {
 	parsePhoneNumberFromString,
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
-import KvFlag from '@/components/Kv/KvFlag';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvFlag from '#src/components/Kv/KvFlag';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes
@@ -83,18 +81,11 @@ export default {
 		KvFlag,
 		KvTextInput
 	},
-	model: {
-		prop: 'value',
-		event: 'input'
-	},
+	emits: ['input', 'validity-changed'],
 	props: {
 		id: {
 			type: String,
 			required: true
-		},
-		value: {
-			type: String,
-			default: ''
 		},
 		disabled: {
 			type: Boolean,
@@ -104,11 +95,15 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		modelValue: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
 			countryList,
-			displayNumber: this.formatPhoneNumber(this.value), // pretty display of the phone number
+			displayNumber: this.formatPhoneNumber(this.modelValue), // pretty display of the phone number
 			selectedCountryCode: 'US',
 		};
 	},
@@ -129,15 +124,6 @@ export default {
 		},
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
-		},
-		inputListeners() {
-			return {
-				// Pass through any listeners from the parent to the input element, like blur, focus, etc. ...
-				// https://vuejs.org/v2/guide/components-custom-events.html#Binding-Native-Events-to-Components
-				...this.$listeners,
-				// ...except for the listener to the 'input' event which is emitted by this component
-				input: () => {},
-			};
 		},
 	},
 	watch: {
@@ -197,7 +183,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .kv-phone-input {
 	&__wrapper {

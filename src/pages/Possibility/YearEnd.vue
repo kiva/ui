@@ -65,14 +65,16 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-// import KivanSlider from '@/pages/Possibility/KivanSlider'; // replaced by KvCarousel
-import SketchyArrow from '@/assets/inline-svgs/sketchy-arrow.svg';
-import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
+import KvButton from '#src/components/Kv/KvButton';
+import KvHero from '#src/components/Kv/KvHero';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+// import KivanSlider from '#src/pages/Possibility/KivanSlider'; // replaced by KvCarousel
+import SketchyArrow from '#src/assets/inline-svgs/sketchy-arrow.svg';
+import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
+const yearEndImagesGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
+const yearEndImagesRequire = metaGlobReader(yearEndImagesGlob, '/src/assets/images/possibilities-banners/');
 
 export default {
 	name: 'YearEnd',
@@ -84,22 +86,22 @@ export default {
 		SketchyArrow,
 		KivaContentBlock,
 	},
-	metaInfo: {
+	head: {
 		title: 'Year End'
 	},
 	data() {
 		return {
 			yearEndImages: [
-				['small', yearEndImagesRequire('./Phase3-sm-std.jpg')],
-				['small retina', yearEndImagesRequire('./Phase3-sm-retina.jpg')],
-				['medium', yearEndImagesRequire('./Phase3-med-std.jpg')],
-				['medium retina', yearEndImagesRequire('./Phase3-med-retina.jpg')],
-				['large', yearEndImagesRequire('./Phase3-lg-std.jpg')],
-				['large retina', yearEndImagesRequire('./Phase3-lg-retina.jpg')],
-				['xga', yearEndImagesRequire('./Phase3-xl-std.jpg')],
-				['xga retina', yearEndImagesRequire('./Phase3-xl-retina.jpg')],
-				['wxga', yearEndImagesRequire('./Phase3-xxl-std.jpg')],
-				['wxga retina', yearEndImagesRequire('./Phase3-xxl-retina.jpg')]
+				['small', yearEndImagesRequire('Phase3-sm-std.jpg')],
+				['small retina', yearEndImagesRequire('Phase3-sm-retina.jpg')],
+				['medium', yearEndImagesRequire('Phase3-med-std.jpg')],
+				['medium retina', yearEndImagesRequire('Phase3-med-retina.jpg')],
+				['large', yearEndImagesRequire('Phase3-lg-std.jpg')],
+				['large retina', yearEndImagesRequire('Phase3-lg-retina.jpg')],
+				['xga', yearEndImagesRequire('Phase3-xl-std.jpg')],
+				['xga retina', yearEndImagesRequire('Phase3-xl-retina.jpg')],
+				['wxga', yearEndImagesRequire('Phase3-xxl-std.jpg')],
+				['wxga retina', yearEndImagesRequire('Phase3-xxl-retina.jpg')]
 			],
 		};
 	}
@@ -107,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 $blue: #015a76;
 $dark_blue: #00244e;

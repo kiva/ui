@@ -4,8 +4,8 @@
 			<div class="small-12 medium-10 large-6 xlarge-5 columns">
 				<img
 					class="tw-block tw-mx-auto tw-mb-4 md:tw-mt-0"
-					src="@/assets/images/loan-card-stack.jpg"
-					srcset="@/assets/images/loan-card-stack_2x.jpg 2x"
+					:src="loanCardStack"
+					:srcset="`${loanCardStack} 2x`"
 					alt=""
 					width="383"
 					height="455"
@@ -32,7 +32,7 @@
 				</p>
 				<div class="tw-flex tw-flex-wrap tw-gap-2">
 					<kv-ui-button
-						@click.native.prevent="jumpToLoans"
+						@click.prevent="jumpToLoans"
 						v-kv-track-event="[
 							'Campaign',
 							'click-hero-cta',
@@ -60,15 +60,17 @@
 	</section>
 </template>
 <script>
-import { addBlankTargetToExternalLinks } from '@/util/contentful/richTextRenderer';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import { addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import loanCardStack from '#src/assets/images/loan-card-stack.jpg';
 
 export default {
 	name: 'CampaignHero',
 	components: {
 		KvUiButton,
 	},
+	emits: ['jump-to-loans', 'add-to-basket'],
 	props: {
 		heroAreaContent: {
 			type: Object,
@@ -80,7 +82,9 @@ export default {
 		},
 	},
 	data() {
-		return {};
+		return {
+			loanCardStack,
+		};
 	},
 	computed: {
 		headline() {

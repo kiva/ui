@@ -1,5 +1,5 @@
-import { filterUiType, transformRadioGroupOptions, getFilterKeyFromValue } from '@/util/loanSearch/filterUtils';
-import { getBooleanValueFromQueryParam } from '@/util/loanSearch/queryParseUtils';
+import { filterUiType, transformRadioGroupOptions, getFilterKeyFromValue } from '#src/util/loanSearch/filterUtils';
+import { getBooleanValueFromQueryParam } from '#src/util/loanSearch/queryParseUtils';
 
 // Is individual option keys
 export const INDIVIDUAL_KEY = 'INDIVIDUAL';

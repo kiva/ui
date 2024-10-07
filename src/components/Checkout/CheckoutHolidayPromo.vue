@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import shopAddOnePrintKivaCard from '@/graphql/mutation/shopAddOnePrintKivaCard.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import shopAddOnePrintKivaCard from '#src/graphql/mutation/shopAddOnePrintKivaCard.graphql';
 
 export default {
 	name: 'CheckoutHolidayPromo',
@@ -23,6 +23,7 @@ export default {
 		KvIcon,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals'],
 	methods: {
 		addOnePrintKivaCard() {
 			this.$emit('updating-totals', true);

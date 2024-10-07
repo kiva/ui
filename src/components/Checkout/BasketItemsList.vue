@@ -49,14 +49,20 @@
 </template>
 
 <script>
-import BasketItem from '@/components/Checkout/BasketItem';
-import DonationItem from '@/components/Checkout/DonationItem';
-import KivaCardItem from '@/components/Checkout/KivaCardItem';
-import DepositIncentiveUpsell from '@/components/Checkout/DepositIncentiveUpsell';
-import { userUsLoanCheckout } from '@/util/optimizelyUserMetrics';
+import BasketItem from '#src/components/Checkout/BasketItem';
+import DonationItem from '#src/components/Checkout/DonationItem';
+import KivaCardItem from '#src/components/Checkout/KivaCardItem';
+import DepositIncentiveUpsell from '#src/components/Checkout/DepositIncentiveUpsell';
+import { userUsLoanCheckout } from '#src/util/optimizelyUserMetrics';
 
 export default {
 	name: 'BasketItemsList',
+	emits: [
+		'refreshtotals',
+		'updating-totals',
+		'jump-to-loans',
+		'validateprecheckout',
+	],
 	props: {
 		disableRedirects: {
 			type: Boolean,

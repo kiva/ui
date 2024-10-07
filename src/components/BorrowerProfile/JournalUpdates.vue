@@ -1,5 +1,5 @@
+<!-- this id is used to link directly to the section via a hash '#updates' in the url -->
 <template>
-	<!-- this id is used to link directly to the section via a hash '#updates' in the url -->
 	<section id="updates">
 		<!-- Display Content -->
 		<h2 class="tw-text-h2 tw-mb-3" :data-testid="`bp-updates-header`">
@@ -54,11 +54,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 import UpdateDetails from './UpdateDetails';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
 
 const updatesQuery = gql`query updatesQuery($loanId: Int!, $limit: Int, $offset: Int) {
 	lend {
@@ -90,6 +90,7 @@ export default {
 		UpdateDetails
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['hide-section'],
 	props: {
 		loanId: {
 			type: Number,
@@ -181,7 +182,7 @@ export default {
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

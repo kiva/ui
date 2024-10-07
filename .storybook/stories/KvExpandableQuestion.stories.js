@@ -1,17 +1,14 @@
-import Vue from 'vue'
-import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
+import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins)
+const args = {
+	title: 'Can I cancel anytime?',
+	content: '<p>Yes. Auto deposits can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a>.</p>'
+};
 
 export default {
 	title: 'Kv/KvExpandableQuestion',
 	component: KvExpandableQuestion,
-	args: {
-		title: 'Can I cancel anytime?',
-		content: '<p>Yes. Auto deposits can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a>.</p>'
-	},
+	args,
 };
 
 export const Default = (args, { argTypes }) => ({
@@ -19,12 +16,13 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		KvExpandableQuestion
 	},
+	setup() { return args; },
 	template: `
 		<div class="row collapse">
 			<kv-expandable-question
 				:title="title"
 				:content="content"
-				:id="title | changeCase('paramCase')"
+				:id="$filters.changeCase(title, 'paramCase')"
 				class="small-12 columns"
 			/>
 		</div>

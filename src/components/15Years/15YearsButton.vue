@@ -1,21 +1,22 @@
 <script>
+import { h } from 'vue';
+
 export default {
 	name: '15YearsButton',
-	render(createElement) {
+	render() {
 		const options = {
 			class: ['fifteen-yr-button', this.variant ? `fifteen-yr-button--${this.variant}` : ''],
-			props: {},
-			attrs: {},
 			on: { click: this.onClick },
 		};
 		if (this.to) {
-			options.props.to = this.to;
+			options.to = this.to;
 		}
 		if (this.href) {
-			options.attrs.href = this.href;
+			options.href = this.href;
 		}
-		return createElement(this.tag, options, this.$slots.default);
+		return h(this.tag, options, this.$slots.default());
 	},
+	emits: ['click'],
 	props: {
 		to: {
 			type: String,
@@ -45,8 +46,6 @@ export default {
 	methods: {
 		onClick(e) {
 			if (this.tag === 'button' && this.$attrs.type !== 'submit') {
-				// emit a vue event and prevent native event
-				// so we don't have to write @click.native in our templates
 				e.preventDefault();
 				this.$emit('click', e);
 			}
@@ -56,8 +55,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .fifteen-yr-button {
 	@include h5();

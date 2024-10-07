@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export const defaultOptions = [15, 25, 50];
 
@@ -21,6 +21,7 @@ export default {
 	components: {
 		KvSelect,
 	},
+	emits: ['updated'],
 	props: {
 		options: {
 			type: Array,

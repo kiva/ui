@@ -94,7 +94,7 @@
 							v-if="isChipsCollapsable"
 							variant="secondary"
 							class="chips__toggle tw-mb-2"
-							@click.native="isChipsCollapsed = !isChipsCollapsed"
+							@click="isChipsCollapsed = !isChipsCollapsed"
 						>
 							{{ isChipsCollapsed ? `Show all ${filterChips.length} filters` : 'Hide filters' }}
 						</kv-button>
@@ -102,7 +102,7 @@
 						<kv-button
 							v-if="!isInitialFilters"
 							class="chips__toggle"
-							@click.native="handleResetFilters"
+							@click="handleResetFilters"
 						>
 							Reset all
 						</kv-button>
@@ -236,7 +236,7 @@
 			<template #controls>
 				<kv-button
 					variant="primary"
-					@click.native.prevent="applyFilters"
+					@click.prevent="applyFilters"
 				>
 					Apply Filters
 				</kv-button>
@@ -248,19 +248,19 @@
 <script>
 import _isEqual from 'lodash/isEqual';
 import _sortBy from 'lodash/sortBy';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { mdiChevronDown, mdiGridLarge, mdiLandRowsHorizontal } from '@mdi/js';
-import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
-import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
-import LocationFilter from '@/components/CorporateCampaign/LoanSearch/LocationFilter';
-import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
-import SortOrder from '@/components/CorporateCampaign/LoanSearch/SortOrder';
-import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
-import KvChipClassic from '@/components/Kv/KvChipClassic';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvAccordionItem from '~/@kiva/kv-components/vue/KvAccordionItem';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import AttributeFilter from '#src/components/CorporateCampaign/LoanSearch/AttributeFilter';
+import GenderFilter from '#src/components/CorporateCampaign/LoanSearch/GenderFilter';
+import LocationFilter from '#src/components/CorporateCampaign/LoanSearch/LocationFilter';
+import SectorFilter from '#src/components/CorporateCampaign/LoanSearch/SectorFilter';
+import SortOrder from '#src/components/CorporateCampaign/LoanSearch/SortOrder';
+import TagFilter from '#src/components/CorporateCampaign/LoanSearch/TagFilter';
+import KvChipClassic from '#src/components/Kv/KvChipClassic';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvAccordionItem from '@kiva/kv-components/vue/KvAccordionItem';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -305,6 +305,12 @@ export default {
 		SortOrder,
 		TagFilter
 	},
+	emits: [
+		'updated-filters',
+		'updated-sort-by',
+		'reset-loan-filters',
+		'set-loan-display'
+	],
 	props: {
 		activeLoanDisplay: {
 			type: String,
@@ -630,7 +636,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-filters {
 	&__top-row {
@@ -658,13 +664,13 @@ export default {
 	&__toggle-icon {
 		width: 2.2rem;
 		height: 1.75rem;
-		margin: 0 0 0 0;
+		margin: 0;
 		display: inline-block;
 		vertical-align: top;
 	}
 
 	&__lightbox {
-		::v-deep .kv-lightbox__container {
+		:deep(.kv-lightbox__container) {
 			min-width: 20rem;
 		}
 	}

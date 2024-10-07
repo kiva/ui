@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import logFormatter from '@/util/logFormatter';
-import basketCountQuery from '@/graphql/query/basketCount.graphql';
-import basketItemsQuery from '@/graphql/query/basketItems.graphql';
-import basketLoansInfoQuery from '@/graphql/query/basketLoansInfo.graphql';
-import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import logFormatter from '#src/util/logFormatter';
+import basketCountQuery from '#src/graphql/query/basketCount.graphql';
+import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
+import basketLoansInfoQuery from '#src/graphql/query/basketLoansInfo.graphql';
+import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 
 export const INVALID_BASKET_ERROR = 'invalidBasket';
 

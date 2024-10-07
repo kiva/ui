@@ -14,14 +14,14 @@ describe('live-loan-fetch', () => {
 		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
 		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => {} });
+			fetch.default.mockClear();
+			fetch.default.mockResolvedValue({ json: () => { } });
 
 			// Run the filter parsing
-			await fetchLoansByType('filter', inputString);
+			await fetchLoansByType.default('filter', inputString);
 
 			// Extract the grahpql query variables
-			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
+			const { variables } = JSON.parse(fetch.default.mock.calls[0][1].body);
 			return variables;
 		}
 
@@ -41,6 +41,11 @@ describe('live-loan-fetch', () => {
 			expect(sortBy).toEqual(expectedSort);
 		}
 
+		beforeEach(() => {
+			// Suppress console warnings
+			jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+		});
+
 		it('converts input strings to valid LoanSearchFiltersInput objects', async () => {
 			// Using sort_random forces using the legacy loan search
 			await testFilterParsing('sort_random,gender_male,sector_education', { gender: 'male', sector: [15] });
@@ -49,8 +54,10 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('sort_random,country_us,country_pr', { country: ['us', 'pr'] });
 			await testFilterParsing('sort_random,country_co,country_ke', { country: ['co', 'ke'] });
 			await testFilterParsing('sort_random,gender_female,country_us', { gender: 'female', country: ['us'] });
-			await testFilterParsing('sort_random,gender_male,sector_arts,sector_agriculture',
-				{ gender: 'male', sector: [9, 1] });
+			await testFilterParsing(
+				'sort_random,gender_male,sector_arts,sector_agriculture',
+				{ gender: 'male', sector: [9, 1] }
+			);
 			await testFilterParsing('sort_random,sector_personal use', { sector: [16] });
 			await testFilterParsing('sort_random,gender_female', { gender: 'female' });
 			await testFilterParsing('sort_random,theme_green', { theme: ['Green'] });
@@ -59,10 +66,14 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('sort_random,theme_start-up', { theme: ['Start-Up'] });
 			await testFilterParsing('sort_random,theme_youth,theme_green', { theme: ['Youth', 'Green'] });
 			await testFilterParsing('sort_random,tag_u.s. black-owned businesses', { loanTags: [43] });
-			await testFilterParsing('sort_random,tag_u.s. black-owned businesses,theme_green',
-				{ loanTags: [43], theme: ['Green'] });
-			await testFilterParsing('sort_random,tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
-				{ loanTags: [45, 43] });
+			await testFilterParsing(
+				'sort_random,tag_u.s. black-owned businesses,theme_green',
+				{ loanTags: [43], theme: ['Green'] }
+			);
+			await testFilterParsing(
+				'sort_random,tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
+				{ loanTags: [45, 43] }
+			);
 			await testFilterParsing('sort_random,notafilter_value', {});
 			await testFilterParsing('sort_random,sector_notasector', {});
 			await testFilterParsing('sort_random,theme_notatheme', {});
@@ -77,16 +88,22 @@ describe('live-loan-fetch', () => {
 		});
 
 		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
-			await testFilterParsing('gender_male,sector_education',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['education'] } }]);
+			await testFilterParsing(
+				'gender_male,sector_education',
+				[{ gender: { any: ['male'] } }, { sector: { any: ['education'] } }]
+			);
 			await testFilterParsing('sector_retail', [{ sector: { any: ['retail'] } }]);
 			await testFilterParsing('gender_female', [{ gender: { any: ['female'] } }]);
 			await testFilterParsing('country_us,country_pr', [{ countryIsoCode: { any: ['us', 'pr'] } }]);
 			await testFilterParsing('country_co,country_ke', [{ countryIsoCode: { any: ['co', 'ke'] } }]);
-			await testFilterParsing('gender_female,country_us',
-				[{ gender: { any: ['female'] } }, { countryIsoCode: { any: ['us'] } }]);
-			await testFilterParsing('gender_male,sector_arts,sector_agriculture',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['arts', 'agriculture'] } }]);
+			await testFilterParsing(
+				'gender_female,country_us',
+				[{ gender: { any: ['female'] } }, { countryIsoCode: { any: ['us'] } }]
+			);
+			await testFilterParsing(
+				'gender_male,sector_arts,sector_agriculture',
+				[{ gender: { any: ['male'] } }, { sector: { any: ['arts', 'agriculture'] } }]
+			);
 			await testFilterParsing('sector_personal use', [{ sector: { any: ['personal use'] } }]);
 			await testFilterParsing('sort_expiringSoon,gender_female', [{ gender: { any: ['female'] } }]);
 			await testFilterParsing('theme_green', [{ theme: { any: ['green'] } }]);
@@ -95,21 +112,34 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('theme_start-up', [{ theme: { any: ['start-up'] } }]);
 			await testFilterParsing('theme_youth,theme_green', [{ theme: { any: ['youth', 'green'] } }]);
 			await testFilterParsing('tag_u.s. black-owned businesses', [{ tagId: { any: [43] } }]);
-			await testFilterParsing('tag_u.s. black-owned businesses,theme_green',
-				[{ tagId: { any: [43] } }, { theme: { any: ['green'] } }]);
-			await testFilterParsing('tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
-				[{ tagId: { any: [45, 43] } }]);
+			await testFilterParsing(
+				'tag_u.s. black-owned businesses,theme_green',
+				[{ tagId: { any: [43] } }, { theme: { any: ['green'] } }]
+			);
+			await testFilterParsing(
+				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
+				[{ tagId: { any: [45, 43] } }]
+			);
 
-			await testFilterParsing('gender_male,sector_education', [
-				{ gender: { any: ['male'] } },
-				{ sector: { any: ['education'] } }
-			]);
-			await testFilterParsing('sector_retail', [
-				{ sector: { any: ['retail'] } }
-			]);
-			await testFilterParsing('country_us,country_pr', [
-				{ countryIsoCode: { any: ['us', 'pr'] } },
-			]);
+			await testFilterParsing(
+				'gender_male,sector_education',
+				[
+					{ gender: { any: ['male'] } },
+					{ sector: { any: ['education'] } }
+				]
+			);
+			await testFilterParsing(
+				'sector_retail',
+				[
+					{ sector: { any: ['retail'] } }
+				]
+			);
+			await testFilterParsing(
+				'country_us,country_pr',
+				[
+					{ countryIsoCode: { any: ['us', 'pr'] } },
+				]
+			);
 			await testFilterParsing('notafilter_value', null);
 			await testFilterParsing('tag_notatag', null);
 			await testFilterParsing('', null);
@@ -130,17 +160,17 @@ describe('live-loan-fetch', () => {
 
 	describe('fetchRecommendationsByFLSS', () => {
 		it('have flss call defined with userId', async () => {
-			fetch.mockClear();
-			fetch.mockResolvedValue({ json: () => {} });
+			fetch.default.mockClear();
+			fetch.default.mockResolvedValue({ json: () => { } });
 
-			await fetchLoansByType('user', '1234', true);
+			await fetchLoansByType.default('user', '1234', true);
 
-			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
+			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
 			expect(query).toContain('fundraisingLoans');
-			expect(fetch.mock.results[0].value).toBeDefined();
+			expect(fetch.default.mock.results[0].value).toBeDefined();
 		});
 	});
 });

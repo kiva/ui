@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import KivaClassicLoanCarousel from '@/components/LoanCollections/KivaClassicLoanCarousel';
-import { FLSS_ORIGIN_NOT_SPECIFIED } from '@/util/flssUtils';
+import KivaClassicLoanCarousel from '#src/components/LoanCollections/KivaClassicLoanCarousel';
+import { FLSS_ORIGIN_NOT_SPECIFIED } from '#src/util/flssUtils';
 
 import {
 	getLoanChannel,
-} from '@/util/loanChannelUtils';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
+} from '#src/util/loanChannelUtils';
+import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
 
 export default {
 	name: 'KivaClassicSingleCategoryCarousel',
@@ -152,7 +152,7 @@ export default {
 				channelUrl,
 				loanQueryVars,
 			);
-			const loanChannelData = channelData?.data?.lend?.loanChannelsById ?? [];
+			const loanChannelData = channelData?.lend?.loanChannelsById ?? [];
 			this.selectedChannel = loanChannelData?.[0];
 		},
 	},

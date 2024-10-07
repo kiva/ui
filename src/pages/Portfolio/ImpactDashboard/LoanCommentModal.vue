@@ -44,12 +44,12 @@
 </template>
 
 <script>
-import logFormatter from '@/util/logFormatter';
+import logFormatter from '#src/util/logFormatter';
 import { mdiPencilOutline } from '@mdi/js';
-import loanAddComment from '@/graphql/mutation/loanAddComment.graphql';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LoanCommentModal',
@@ -59,6 +59,7 @@ export default {
 		KvMaterialIcon,
 		KvButton,
 	},
+	emits: ['comment-modal-closed'],
 	props: {
 		loan: {
 			type: Object,

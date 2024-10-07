@@ -3,7 +3,7 @@
 		<router-link
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
-			@click.native="trackMgLinkClick"
+			@click="trackMgLinkClick"
 		>
 			<!-- eslint-disable-next-line max-len -->
 			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-border-b tw-border-tertiary tw-font-medium">
@@ -91,7 +91,7 @@
 						<kv-accordion-item
 							v-for="i in 8"
 							:key="i"
-							:id="`placeholder-${i}-panel` | changeCase('paramCase')"
+							:id="$filters.changeCase(`placeholder-${i}-panel`, 'paramCase')"
 							:disabled="true"
 						>
 							<template #header>
@@ -109,7 +109,7 @@
 						<kv-accordion-item
 							v-for="region in regions"
 							:key="region.name"
-							:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
+							:id="$filters.changeCase(`lend-menu-${region.name}-panel`, 'paramCase')"
 							ref="regionAccordions"
 						>
 							<template #header>
@@ -174,15 +174,15 @@
 </template>
 
 <script>
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
+import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import SearchList from './SearchList';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
 import CountryList from './CountryList';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import SearchList from './SearchList';
 
 export default {
 	name: 'LendListMenu',

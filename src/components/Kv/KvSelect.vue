@@ -3,7 +3,6 @@
 		<select
 			class="dropdown"
 			v-model="inputValue"
-			v-on="inputListeners"
 			v-bind="$attrs"
 		>
 			<slot></slot>
@@ -12,16 +11,31 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
-
 export default {
 	name: 'KvSelect',
-	mixins: [inputWrapperMixin]
+	props: {
+		modelValue: {
+			type: [String, Boolean, Number],
+			required: true,
+		},
+	},
+	data() {
+		return {
+			inputValue: this.modelValue,
+		};
+	},
+	watch: {
+		modelValue(newValue) {
+			if (newValue !== this.inputValue) {
+				this.inputValue = newValue;
+			}
+		},
+	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .dropdown-wrapper {
 	white-space: nowrap;
@@ -34,7 +48,7 @@ export default {
 		border-radius: $button-radius;
 		line-height: 1.125;
 		background-color: #fff;
-		background-image: url('~@/assets/images/customDropdown.png');
+		background-image: url('/src/assets/images/customDropdown.png');
 		background-size: rem-calc(23) rem-calc(20);
 		background-repeat: no-repeat;
 		background-position: right -1.9rem center;

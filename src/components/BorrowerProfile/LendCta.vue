@@ -82,7 +82,7 @@
 										'click-Modify loan amount',
 										'open dialog'
 									]"
-									@update:modelValue="trackLendAmountSelection"
+									@update:model-value="trackLendAmountSelection"
 								>
 									<option
 										v-for="priceOption in prices"
@@ -150,7 +150,7 @@
 						</form>
 						<!-- Continue to checkout button -->
 						<kv-ui-button
-							v-if="this.state === 'basketed'"
+							v-if="state === 'basketed'"
 							class="tw-inline-flex tw-flex-1"
 							data-testid="bp-lend-cta-checkout-button"
 							to="/basket"
@@ -173,7 +173,7 @@
 								'Lending',
 								'Non actionable loan',
 								ctaButtonText,
-								this.status
+								status
 							]"
 						>
 							{{ ctaButtonText }}
@@ -279,7 +279,7 @@
 
 			<transition
 				enter-active-class="tw-transition-transform tw-duration-700 tw-delay-300"
-				:enter-class="transitionEnterClasses"
+				:enter-from-class="transitionEnterClasses"
 				enter-to-class="tw-transform tw-translate-y-0 md:tw-translate-y-0 lg:tw-translate-y-0"
 			>
 				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
@@ -334,40 +334,31 @@
 						<transition
 							mode="out-in"
 							key="transition"
-							class="tw-flex tw-flex-col"
 							enter-active-class="tw-transition-all tw-duration-1000"
-							enter-class="tw-transform tw--translate-y-2 tw-opacity-0"
+							enter-from-class="tw-transform tw--translate-y-2 tw-opacity-0"
 							enter-to-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-active-class="tw-transition-all tw-duration-1000"
-							leave-class="tw-transform tw-translate-y-0 tw-opacity-full"
+							leave-from-class="tw-transform tw-translate-y-0 tw-opacity-full"
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
 								v-if="currentSlotStat === 'lenderCount'"
-								class="tw-inline-block tw-align-middle"
+								class="tw-inline-block"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
 							>
-								<kv-material-icon
-									class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle"
-									:icon="mdiLightningBolt"
-								/>
-								powered by {{ numLenders }} lenders
+								<!-- eslint-disable-next-line max-len -->
+								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" /><span class="tw-align-middle">powered by {{ numLenders }} lenders</span>
 							</span>
 
 							<span
-								v-if="currentSlotStat === 'matchingText'"
-								class="tw-inline-block tw-align-middle"
+								v-else-if="currentSlotStat === 'matchingText'"
+								class="tw-inline-block"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
 							>
-								<span
-									class="tw-text-h3 tw-inline-block tw-align-middle tw-px-1"
-								>
-									🎉
-								</span>
-								{{ matchRatio + 1 }}X
-								<span> MATCHED LOAN</span>
+								<!-- eslint-disable-next-line max-len -->
+								<span class="tw-text-h3 tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
 						</transition>
 					</div>
@@ -379,36 +370,36 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client';
-import { setLendAmount, INVALID_BASKET_ERROR } from '@/util/basketUtils';
+import { gql } from 'graphql-tag';
+import { setLendAmount, INVALID_BASKET_ERROR } from '#src/util/basketUtils';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
 	isLessThan25,
 	isBetween25And500,
 	getLendCtaSelectedOption,
-} from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
+} from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
+} from '#src/util/experiment/experimentUtils';
 
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 
-import JumpLinks from '@/components/BorrowerProfile/JumpLinks';
-import LoanBookmark from '@/components/BorrowerProfile/LoanBookmark';
-import LendAmountButton from '@/components/LoanCards/Buttons/LendAmountButton';
-import CompleteLoanWrapper from '@/components/BorrowerProfile/CompleteLoanWrapper';
+import JumpLinks from '#src/components/BorrowerProfile/JumpLinks';
+import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
+import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
+import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLoanActivities from '@/components/Kv/KvLoanActivities';
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import KvUiSelect from '~/@kiva/kv-components/vue/KvSelect';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import { setChallengeCookieData } from '../../util/teamChallengeUtils';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvLoanActivities from '#src/components/Kv/KvLoanActivities';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import KvUiSelect from '@kiva/kv-components/vue/KvSelect';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 
 export default {
 	name: 'LendCta',
@@ -753,7 +744,7 @@ export default {
 			// limit price options
 			const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
 			const priceArray = getDropdownPriceArray(this.unreservedAmount, minAmount, this.enableFiveDollarsNotes, this.inPfp, showHugeAmount); // eslint-disable-line max-len
-			// eslint-disable-next-line
+
 			if (this.isCompleteLoanActive && !priceArray.includes(Number(this.unreservedAmount).toFixed())) {
 				priceArray.push(Number(this.unreservedAmount).toFixed());
 			}
@@ -867,7 +858,6 @@ export default {
 			return this.state === 'lent-to';
 		},
 		isCompleteLoanActive() {
-			// eslint-disable-next-line
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {
@@ -883,7 +873,7 @@ export default {
 	mounted() {
 		this.createWrapperObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyWrapperObserver();
 	},
 };

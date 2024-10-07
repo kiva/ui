@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
+import KvButton from '#src/components/Kv/KvButton';
 
 /**
  * This component is a wrapper that creates a kv-button with icons on the left and/or right and a unique kvButton style.
@@ -56,7 +56,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .icon-btn {
 	// Button styles
@@ -99,7 +99,7 @@ export default {
 	}
 
 	// Default icon size.
-	::v-deep .icon {
+	:deep(.icon) {
 		width: 1.25rem;
 		height: 1.25rem;
 	}
@@ -115,15 +115,15 @@ export default {
 		color: #fff;
 		border-color: rgb(var(--border-action-highlight));
 
-		.icon-btn__icon--right ::v-deep svg {
+		.icon-btn__icon--right :deep(svg) {
 			color: var(--kv-color-hover);
 		}
 
-		.icon-btn__icon--right ::v-deep svg [stroke] {
+		.icon-btn__icon--right :deep(svg) [stroke] {
 			stroke: var(--kv-color-hover);
 		}
 
-		.icon-btn__icon--left ::v-deep svg [stroke] {
+		.icon-btn__icon--left :deep(svg) [stroke] {
 			stroke: var(--kv-left-icon-hover);
 		}
 
@@ -139,15 +139,15 @@ export default {
 		color: rgb(var(--text-primary));
 
 		.icon-btn__icon-background {
-			background-color: rgba(var(--kv-left-icon-color-active), 0.3);
+			background-color: rgb(var(--kv-left-icon-color-active) 0.3);
 		}
 
-		.icon-btn__icon--left ::v-deep svg {
-			color: rgba(var(--kv-left-icon-color-active), 1);
+		.icon-btn__icon--left :deep(svg) {
+			color: rgb(var(--kv-left-icon-color-active) 1);
 		}
 
-		.icon-btn__icon--left ::v-deep svg [stroke] {
-			stroke: rgba(var(--kv-left-icon-color-active), 1);
+		.icon-btn__icon--left :deep(svg) [stroke] {
+			stroke: rgb(var(--kv-left-icon-color-active) 1);
 		}
 	}
 }

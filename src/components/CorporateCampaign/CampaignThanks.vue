@@ -57,14 +57,14 @@
 <script>
 import confetti from 'canvas-confetti';
 
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
-import { joinArray } from '@/util/joinArray';
-import { userHasLentBefore, userHasDepositBefore } from '@/util/optimizelyUserMetrics';
-import { setHotJarUserAttributes } from '@/util/hotJarUtils';
+import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
+import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
+import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+import { joinArray } from '#src/util/joinArray';
+import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
+import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
 import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 const hasLentBeforeCookie = 'kvu_lb';
@@ -80,7 +80,7 @@ export default {
 		SocialShareV2
 	},
 	inject: ['apollo', 'cookieStore'],
-	metaInfo() {
+	head() {
 		return {
 			title: 'Thank you!'
 		};
@@ -206,7 +206,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .campaign-thanks {
 	position: relative;

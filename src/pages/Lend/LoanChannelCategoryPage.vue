@@ -27,19 +27,19 @@
 </template>
 
 <script>
-import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoanChannelCategoryControl from '@/pages/Lend/LoanChannelCategoryControl';
-import retryAfterExpiredBasket from '@/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import basketModalMixin from '@/plugins/basket-modal-mixin';
-import KvCartModal from '~/@kiva/kv-components/vue/KvCartModal';
+import updateAddToBasketInterstitial from '#src/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInterstitial';
+import LoanChannelCategoryControl from '#src/pages/Lend/LoanChannelCategoryControl';
+import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
 
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 
@@ -126,8 +126,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
-.cart-modal >>> div.container {
+.cart-modal :deep(div.container) {
 	top: var(--modal-top) !important;
 
 	@media screen(md) {

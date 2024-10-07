@@ -20,7 +20,7 @@
 			style="line-height: 0; /* global property affects images within anchors - override required */"
 		>
 			<borrower-image
-				v-if="!this.anonymousSupporterCard && this.hash"
+				v-if="!anonymousSupporterCard && hash"
 				class="tw-w-full tw-rounded tw-bg-black"
 				:alt="name"
 				:aspect-ratio="borrowerImageAspect"
@@ -36,7 +36,7 @@
 				]"
 			/>
 			<div
-				v-else-if="!this.anonymousSupporterCard && !this.hash"
+				v-else-if="!anonymousSupporterCard && !hash"
 				class="
 					tw-w-full
 					tw-rounded
@@ -64,9 +64,7 @@
 					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12"
 			>
 				<!-- Kiva K logo -->
-				<img
-					src="@/assets/images/kiva_k.svg"
-				>
+				<img :src="kivaKUrl">
 			</div>
 		</div>
 
@@ -93,7 +91,7 @@
 			:controller="toolTipId"
 			:data-testid="`tooltip-id-${toolTipId}`"
 			theme="dark"
-			v-if="teamTooltipData && !this.isMobile"
+			v-if="teamTooltipData && !isMobile"
 		>
 			{{ teamTooltipData.category }}<br>
 			{{ teamTooltipData.lendersForTeamMessage }}
@@ -102,9 +100,11 @@
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue';
 import _throttle from 'lodash/throttle';
-import KvTooltip from '@/components/Kv/KvTooltip';
+import KvTooltip from '#src/components/Kv/KvTooltip';
 import BorrowerImage from './BorrowerImage';
+import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {
 	name: 'SupporterDetails',
@@ -144,6 +144,7 @@ export default {
 	},
 	data() {
 		return {
+			kivaKUrl,
 			anonymousSupporterCard: false,
 			isMobile: false,
 			userCardStyleOptions: [
@@ -203,7 +204,7 @@ export default {
 		},
 		toolTipId() {
 			const lenderElementId = this.publicId || '';
-			const teamElementId = `team_${this.teamId}_${this.$vnode.key}`;
+			const teamElementId = `team_${this.teamId}_${getCurrentInstance().vnode.key}`;
 			return this.displayType === 'teams' ? teamElementId : lenderElementId;
 		}
 	},
@@ -212,7 +213,7 @@ export default {
 			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', _throttle(() => {
 			this.determineIfMobile();
 		}, 200));

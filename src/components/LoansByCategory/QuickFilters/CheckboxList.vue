@@ -31,8 +31,8 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'CheckboxList',
@@ -40,6 +40,7 @@ export default {
 		KvCheckbox,
 		KvMaterialIcon
 	},
+	emits: ['updated', 'closeRegions'],
 	props: {
 		/**
 		 * The items to display in the checkbox list

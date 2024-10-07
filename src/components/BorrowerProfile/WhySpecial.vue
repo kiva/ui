@@ -17,11 +17,11 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import { formatWhySpecial } from '@/util/loanUtils';
+import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import { formatWhySpecial } from '#src/util/loanUtils';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'WhySpecial',
@@ -113,7 +113,7 @@ export default {
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

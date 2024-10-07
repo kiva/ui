@@ -1,13 +1,8 @@
-import Vue from "vue";
 import apolloStoryMixin from "../mixins/apollo-story-mixin";
 import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
 import kvAuth0StoryMixin from "../mixins/kv-auth0-story-mixin";
 
-import TheHeader from "@/components/WwwFrame/TheHeader";
-
-// import plugins
-import kivaPlugins from "@/plugins";
-Vue.use(kivaPlugins);
+import TheHeader from "#src/components/WwwFrame/TheHeader";
 
 const loggedIn = {
 	my: {
@@ -176,18 +171,22 @@ const provideMockedApollo = (mockedResult) => {
 	};
 };
 
+const imageGlob = import.meta.glob('/src/assets/images/logos/*.*', { eager: true });
+
+const args = {
+	hideSearchInHeader: false,
+	minimal: false,
+	corporate: false,
+	corporateLogoUrl: Object.keys(imageGlob)[0],
+};
+
 export default {
 	title: "WwwFrame/TheHeader",
 	component: TheHeader,
 	parameters: {
 		layout: "fullscreen",
 	},
-	args: {
-		hideSearchInHeader: false,
-		minimal: false,
-		corporate: false,
-		corporateLogoUrl: require("@/assets/images/logos/visa.svg"),
-	},
+	args,
 };
 
 const Default = (args, { argTypes }) => ({
@@ -196,6 +195,7 @@ const Default = (args, { argTypes }) => ({
 		TheHeader,
 	},
 	mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+	setup() { return args; },
 	template: `
 		<the-header
 			:minimal="minimal"
@@ -204,9 +204,9 @@ const Default = (args, { argTypes }) => ({
 	`,
 });
 
-export const Visitor = Default.bind({});
+export const Visitor = Default.bind(args);
 
-export const VisitorItemInCart = (args, { argTypes }) => ({
+export const VisitorItemInCart = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -215,12 +215,13 @@ export const VisitorItemInCart = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(itemInCart),
 	},
+	setup() { return args; },
 	template: `
 		<the-header />
 	`,
 });
 
-export const LoggedIn = (args, { argTypes }) => ({
+export const LoggedIn = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -229,12 +230,13 @@ export const LoggedIn = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(loggedIn),
 	},
+	setup() { return args; },
 	template: `
 		<the-header />
 	`,
 });
 
-export const LoggedInItemInCart = (args, { argTypes }) => ({
+export const LoggedInItemInCart = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -243,12 +245,13 @@ export const LoggedInItemInCart = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(loggedInUserItemInCart),
 	},
+	setup() { return args; },
 	template: `
 		<the-header />
 	`,
 });
 
-export const LoggedInLargeCart = (args, { argTypes }) => ({
+export const LoggedInLargeCart = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -257,12 +260,13 @@ export const LoggedInLargeCart = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(loggedInLargeCart),
 	},
+	setup() { return args; },
 	template: `
 		<the-header />
 	`,
 });
 
-export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
+export const CorporateVisitorItemInCart = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -271,12 +275,13 @@ export const CorporateVisitorItemInCart = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(itemInCart),
 	},
+	setup() { return args; },
 	template: `
 		<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 
-export const CorporateLoggedIn = (args, { argTypes }) => ({
+export const CorporateLoggedIn = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -285,12 +290,13 @@ export const CorporateLoggedIn = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(loggedIn),
 	},
+	setup() { return args; },
 	template: `
 		<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 
-export const CorporateLoggedInItemInCart = (args, { argTypes }) => ({
+export const CorporateLoggedInItemInCart = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		TheHeader,
@@ -299,18 +305,21 @@ export const CorporateLoggedInItemInCart = (args, { argTypes }) => ({
 	provide: {
 		apollo: provideMockedApollo(loggedInUserItemInCart),
 	},
+	setup() { return args; },
 	template: `
-	<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
+		<the-header :corporate="true" :corporate-logo-url="corporateLogoUrl" />
 	`,
 });
 
 export const HideSearchInHeader = Default.bind({});
 HideSearchInHeader.args = {
+	...args,
 	hideSearchInHeader: true,
 };
 
 export const Minimal = Default.bind({});
 Minimal.args = {
+	...args,
 	minimal: true,
 };
 

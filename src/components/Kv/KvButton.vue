@@ -1,20 +1,20 @@
 <script>
+import { h } from 'vue';
+
 /* eslint-disable vue/require-prop-types */
 export default {
 	name: 'KvButton',
-	render(createElement) {
+	render() {
 		const options = {
 			class: { button: true },
-			props: {},
-			attrs: {},
 		};
 		if (this.to) {
-			options.props.to = this.to;
+			options.to = this.to;
 		}
 		if (this.href) {
-			options.attrs.href = this.href;
+			options.href = this.href;
 		}
-		return createElement(this.tag, options, this.$slots.default);
+		return h(this.tag, options, this.$slots.default());
 	},
 	props: {
 		to: { default: null },
@@ -32,8 +32,9 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'foundation';
+@use 'sass:color';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 @mixin secondary-styles() {
 	background-color: $button-secondary-background;
@@ -79,7 +80,7 @@ export default {
 	&.alert {
 		@include button-style($kiva-accent-red, auto, $white);
 
-		box-shadow: $button-secondary-shadow darken($kiva-accent-red, 10%);
+		box-shadow: $button-secondary-shadow color.adjust($kiva-accent-red, $lightness: -10%);
 	}
 
 	&.classic {
@@ -91,8 +92,8 @@ export default {
 
 		&:hover,
 		&:focus {
-			border-color: darken($kiva-green, 10%);
-			background-color: darken($kiva-green, 10%);
+			border-color: color.adjust($kiva-green, $lightness: -10%);
+			background-color: color.adjust($kiva-green, $lightness: -10%);
 			box-shadow: none;
 		}
 	}
@@ -107,8 +108,8 @@ export default {
 		&:focus {
 			background-color: $button-secondary-background;
 			box-shadow: none;
-			border-color: darken($kiva-green, 10%);
-			color: darken($kiva-green, 10%);
+			border-color: color.adjust($kiva-green, $lightness: -10%);
+			color: color.adjust($kiva-green, $lightness: -10%);
 		}
 
 		&[disabled] {

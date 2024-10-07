@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import { getFilterKeyFromValue } from '@/util/loanSearch/filterUtils';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import { getFilterKeyFromValue } from '#src/util/loanSearch/filterUtils';
+import KvRadio from '@kiva/kv-components/vue/KvRadio';
 
 export const ALL_LOANS_TITLE = 'All loans';
 
@@ -23,6 +23,7 @@ export default {
 	components: {
 		KvRadio,
 	},
+	emits: ['updated'],
 	props: {
 		options: {
 			type: Array,

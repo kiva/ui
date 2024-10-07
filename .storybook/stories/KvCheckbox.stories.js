@@ -1,9 +1,9 @@
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
 
 export default {
 	title: 'Kv/Form Elements/KvCheckbox',
 	component: KvCheckbox,
- };
+};
 
 export const Default = () => ({
 	components: {
@@ -22,7 +22,7 @@ export const Default = () => ({
 			<kv-checkbox
 				id="checkbox-1"
 				v-model="option1"
-				@change="onChange"
+				@update="onChange"
 				disabled
 			>
 				Option 1
@@ -30,14 +30,14 @@ export const Default = () => ({
 			<kv-checkbox
 				id="checkbox-2"
 				v-model="option2"
-				@change="onChange"
+				@update="onChange"
 			>
 				Option 2
 			</kv-checkbox>
 			<kv-checkbox
 				id="checkbox-3"
 				v-model="option3"
-				@change="onChange"
+				@update="onChange"
 			>
 				Option 3
 			</kv-checkbox>
@@ -60,14 +60,14 @@ export const Checked = () => ({
 			<kv-checkbox
 				id="checked1"
 				:checked="someMethod(true)"
-				@change="onChange"
+				@update="onChange"
 			>
 				True by default
 			</kv-checkbox>
 			<kv-checkbox
 				id="checked2"
 				:checked="someMethod(false)"
-				@change="onChange"
+				@update="onChange"
 			>
 				False by default
 			</kv-checkbox>

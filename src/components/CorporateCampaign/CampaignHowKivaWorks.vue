@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import FifteenYearsHowKivaWorksCarousel from '@/components/15Years/15YearsHowKivaWorksCarousel';
+import FifteenYearsHowKivaWorksCarousel from '#src/components/15Years/15YearsHowKivaWorksCarousel';
 
-const step1Video = require('@/assets/media/15-years/step1.mp4');
-const step2Video = require('@/assets/media/15-years/step2.mp4');
-const step3Video = require('@/assets/media/15-years/step3.mp4');
-const step4Video = require('@/assets/media/15-years/step4.mp4');
+import step1Video from '#src/assets/media/15-years/step1.mp4';
+import step2Video from '#src/assets/media/15-years/step2.mp4';
+import step3Video from '#src/assets/media/15-years/step3.mp4';
+import step4Video from '#src/assets/media/15-years/step4.mp4';
 
 export default {
 	name: 'CampaignHowKivaWorks',
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .works {
 	padding: 4rem 0;

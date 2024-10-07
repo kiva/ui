@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-relative tw-block tw-w-full" :style="mapDimensions">
 		<div
-			:id="`kv-map-holder-${this.mapId}`"
+			:id="`kv-map-holder-${mapId}`"
 			:ref="refString"
 			class="tw-w-full tw-h-full tw-bg-black"
 			:style="{ position: 'absolute' }"
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import { createIntersectionObserver } from '@/util/observerUtils';
-import testDelayedGlobalLibrary from '@/util/timeoutUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import testDelayedGlobalLibrary from '#src/util/timeoutUtils';
 
 export default {
 	name: 'KvMap',
-	metaInfo() {
+	head() {
 		return {
 			script: [].concat(!this.hasWebGL ? [
 				// leaflet - uses raster tiles for additional browser coverage
@@ -254,7 +254,7 @@ export default {
 			}
 		},
 		initializeLeaflet() {
-			/* eslint-disable no-undef, max-len */
+			/* eslint-disable no-undef */
 			// Initialize primary mapInstance
 			this.mapInstance = L.map(`kv-map-holder-${this.mapId}`, {
 				center: [this.lat, this.long],
@@ -267,7 +267,7 @@ export default {
 				doubleClickZoom: false,
 				attributionControl: false
 			});
-			/* eslint-disable quotes */
+
 			// Add our tileset to the mapInstance
 			L.tileLayer('https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=n1Mz5ziX3k6JfdjFe7mx', {
 				tileSize: 512,
@@ -275,8 +275,8 @@ export default {
 				minZoom: 1,
 				crossOrigin: true
 			}).addTo(this.mapInstance);
-			/* eslint-enable quotes */
-			/* eslint-enable no-undef, max-len */
+
+			/* eslint-enable no-undef */
 
 			// signify map has loaded
 			this.mapLoaded = true;
@@ -309,7 +309,7 @@ export default {
 			}
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.mapInstance) {
 			if (!this.hasWebGL && !this.leafletReady) {
 				// turn off the leaflet instance

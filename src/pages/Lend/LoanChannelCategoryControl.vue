@@ -10,9 +10,9 @@
 				<router-link
 					:to="filterUrl"
 					class="tw-text-action tw-flex tw-items-center tw-float-right"
-					@click.native="trackAdvancedFilters"
+					@click="trackAdvancedFilters"
 				>
-					<img class="tw-w-2 tw-mr-1" src="@/assets/images/tune.svg">
+					<img class="tw-w-2 tw-mr-1" :src="tuneUrl">
 					Advanced filters
 				</router-link>
 				<p class="tw-text-small">
@@ -60,7 +60,7 @@
 			class="tw-relative tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
 			style="max-width: 1200px;"
 		>
-			<!-- emtpy state for no loans result -->
+			<!-- empty state for no loans result -->
 			<empty-state
 				v-show="emptyState"
 				class="tw-mb-2 tw-mx-1"
@@ -172,30 +172,31 @@ import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import logReadQueryError from '@/util/logReadQueryError';
-import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import KvPagination from '@/components/Kv/KvPagination';
-import PromoGridLoanCardExp from '@/components/LoanCards/PromoGridLoanCardExp';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+import loanChannelPageQuery from '#src/graphql/query/loanChannelPage.graphql';
+import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
+import KvPagination from '#src/components/Kv/KvPagination';
+import PromoGridLoanCardExp from '#src/components/LoanCards/PromoGridLoanCardExp';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import {
 	preFetchChannel,
 	getCachedChannel,
 	watchChannelQuery,
 	getLoanChannel,
 	getFLSSQueryMap,
-} from '@/util/loanChannelUtils';
-import { runFacetsQueries, fetchLoanFacets } from '@/util/loanSearch/dataUtils';
-import { transformIsoCodes } from '@/util/loanSearch/filters/regions';
-import { FLSS_ORIGIN_CATEGORY } from '@/util/flssUtils';
-import QuickFilters from '@/components/LoansByCategory/QuickFilters/QuickFilters';
-import HelpmeChooseWrapper from '@/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
-import KvClassicLoanCardContainer from '@/components/LoanCards/KvClassicLoanCardContainer';
-import EmptyState from '@/components/LoanFinding/EmptyState';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import addToBasketExpMixin from '@/plugins/add-to-basket-exp-mixin';
+} from '#src/util/loanChannelUtils';
+import { runFacetsQueries, fetchLoanFacets } from '#src/util/loanSearch/dataUtils';
+import { transformIsoCodes } from '#src/util/loanSearch/filters/regions';
+import { FLSS_ORIGIN_CATEGORY } from '#src/util/flssUtils';
+import QuickFilters from '#src/components/LoansByCategory/QuickFilters/QuickFilters';
+import HelpmeChooseWrapper from '#src/components/LoansByCategory/HelpmeChoose/HelpmeChooseWrapper';
+import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+import EmptyState from '#src/components/LoanFinding/EmptyState';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import tuneUrl from '#src/assets/images/tune.svg?url';
 
 const defaultLoansPerPage = 12;
 
@@ -239,7 +240,7 @@ function getPageOffset(query, limit) {
 
 export default {
 	name: 'LoanChannelCategoryControl',
-	metaInfo() {
+	head() {
 		return {
 			title: this.metaTitle,
 			link: [
@@ -339,13 +340,14 @@ export default {
 			helpMeChooseSort: null,
 			helpMeChooseLoans: [],
 			isLoadingHC: true,
+			tuneUrl,
 		};
 	},
 	computed: {
 		urlParams() {
 			const page = Math.floor(this.offset / this.limit) + 1;
 
-			return { page: page > 1 ? String(page) : undefined };
+			return { ...(page > 1 && { page: String(page) }) };
 		},
 		lastLoanPage() {
 			return Math.ceil(this.totalCount / this.limit);
@@ -465,7 +467,7 @@ export default {
 					}
 				};
 				const { route } = args;
-				const { query, params, path } = route;
+				const { query, params, path } = (route?.value ?? route ?? {});
 
 				// Filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = params.category;
@@ -858,7 +860,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-count {
 	text-align: center;

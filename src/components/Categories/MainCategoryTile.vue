@@ -78,7 +78,7 @@
 
 <script>
 
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 
 export default {
 	name: 'MainCategoryTile',
@@ -169,11 +169,11 @@ export default {
 /* tw-transform-gpu is used to eliminate readjustments/wiggles after the zoom effect on the images.
 Rendering by the GPU here instead of the CPU ensures a smoother transition. */
 
-.category-image__large >>> img {
+.category-image__large :deep(img) {
 	@apply group-hover:tw-scale-110 tw-transition-all tw-duration-500 tw-ease-in-out tw-transform-gpu;
 }
 
-.category-image__small >>> img {
+.category-image__small :deep(img) {
 	@apply tw-object-cover;
 	@apply tw-w-[152px];
 	@apply tw-h-[152px];

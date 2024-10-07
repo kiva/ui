@@ -71,13 +71,14 @@
 import _throttle from 'lodash/throttle';
 import EmblaCarousel from 'embla-carousel';
 
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'KvCarousel',
 	components: {
 		KvIcon,
 	},
+	emits: ['change', 'interact-carousel'],
 	props: {
 		autoplay: {
 			type: Boolean,
@@ -189,7 +190,8 @@ export default {
 			if (this.indicatorStyle !== 'none') {
 				// pause the css animation on the indicator
 				this.$refs.KvCarouselIndicator.style.setProperty(
-					'--kv-carousel-play-state', `${isPaused ? 'paused' : 'running'}`
+					'--kv-carousel-play-state',
+					`${isPaused ? 'paused' : 'running'}`
 				);
 			}
 		},
@@ -221,7 +223,8 @@ export default {
 		if (this.autoplay && this.slides.length > 1) {
 			// init the CSS custom property for CSS animation
 			this.$refs.KvCarouselIndicator.style.setProperty(
-				'--kv-carousel-autoplay-interval', `${this.autoplayInterval}s`
+				'--kv-carousel-autoplay-interval',
+				`${this.autoplayInterval}s`
 			);
 
 			const refreshRate = 0.1; // 100 milliseconds
@@ -248,7 +251,7 @@ export default {
 			this.$emit('change', this.currentIndex);
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.autoplay) {
 			clearInterval(this.intervalTimer);
 		}
@@ -318,8 +321,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'foundation';
+@use 'sass:math';
+@import '#src/assets/scss/settings';
+@import 'node_modules/foundation-sites/scss/foundation';
 
 $arrow-width: rem-calc(41);
 $arrow-margin: rem-calc(8);
@@ -441,7 +445,7 @@ $bar-indicator-margin: rem-calc(4);
 			&::after {
 				display: block;
 				content: '';
-				background: hsla(0, 0%, 100%, 0.5);
+				background: hsl(0deg 0% 100% / 50%);
 				width: 100%;
 				height: 100%;
 				transform-origin: left;
@@ -502,7 +506,7 @@ $bar-indicator-margin: rem-calc(4);
 			border-radius: 0;
 			width: auto;
 			flex: 1;
-			margin: 0 ($bar-indicator-margin / 2) $bar-indicator-margin;
+			margin: 0 math.div($bar-indicator-margin, 2) $bar-indicator-margin;
 
 			&:first-child {
 				margin-left: 0;
@@ -516,7 +520,7 @@ $bar-indicator-margin: rem-calc(4);
 				&::after {
 					display: block;
 					content: '';
-					background: hsla(0, 0%, 100%, 0.5);
+					background: hsl(0deg 0% 100% / 50%);
 					width: 100%;
 					height: 100%;
 				}

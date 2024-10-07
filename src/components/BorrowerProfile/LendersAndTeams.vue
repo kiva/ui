@@ -48,13 +48,13 @@
 				:data-testid="`bp-${displayType}-grid`"
 			>
 				<supporter-details
-					v-if="this.supporterOfLoan"
+					v-if="supporterOfLoan"
 					:data-testid="`bp-${displayType}-support-details-supporter`"
 					display-type="lenders"
-					:hash="this.userImageHash"
-					:name="this.userName"
-					:whereabouts="this.userWhereabouts"
-					:supporter-page-url="this.lenderPageUrl"
+					:hash="userImageHash"
+					:name="userName"
+					:whereabouts="userWhereabouts"
+					:supporter-page-url="lenderPageUrl"
 				/>
 				<supporter-details
 					v-for="(item, index) in truncatedItemList" :key="index"
@@ -67,11 +67,11 @@
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
-					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					v-if="hasAnonymousSupporters && displayType === 'lenders'"
 					:data-testid="`bp-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
-					:has-anonymous-supporters="this.hasAnonymousSupporters"
+					:has-anonymous-supporters="hasAnonymousSupporters"
 				/>
 			</div>
 
@@ -108,13 +108,13 @@
 				:data-testid="`bp-lightbox-${displayType}-grid`"
 			>
 				<supporter-details
-					v-if="this.supporterOfLoan"
+					v-if="supporterOfLoan"
 					:data-testid="`bp-lightbox-${displayType}-support-details-supporter`"
 					display-type="lenders"
-					:hash="this.userImageHash"
-					:name="this.userName"
-					:whereabouts="this.userWhereabouts"
-					:supporter-page-url="this.lenderPageUrl"
+					:hash="userImageHash"
+					:name="userName"
+					:whereabouts="userWhereabouts"
+					:supporter-page-url="lenderPageUrl"
 				/>
 				<supporter-details
 					v-for="(item, index) in filteredItemList" :key="`lb_item_${index}`"
@@ -127,11 +127,11 @@
 					:whereabouts="`${ displayType === 'lenders' ? item.lenderPage.whereabouts : ''}`"
 				/>
 				<supporter-details
-					v-if="this.hasAnonymousSupporters && this.displayType === 'lenders'"
+					v-if="hasAnonymousSupporters && displayType === 'lenders'"
 					:data-testid="`bp-lightbox-${displayType}-support-details-anonymous`"
 					name="+ Anonymous lenders"
 					display-type="lenders"
-					:has-anonymous-supporters="this.hasAnonymousSupporters"
+					:has-anonymous-supporters="hasAnonymousSupporters"
 				/>
 			</div>
 
@@ -151,14 +151,14 @@
 
 <script>
 import { mdiLightningBolt } from '@mdi/js';
-import { gql } from '@apollo/client';
-import { createIntersectionObserver } from '@/util/observerUtils';
+import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 import SupporterDetails from './SupporterDetails';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {
@@ -239,6 +239,7 @@ export default {
 		SupporterDetails,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['hide-section'],
 	props: {
 		displayType: {
 			type: String,
@@ -415,7 +416,7 @@ export default {
 		this.createObserver();
 		this.gatherCurrentUserData();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

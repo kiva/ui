@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var base = require('./index.js')
+import { merge } from 'webpack-merge';
+import base from './index.js';
 
-module.exports = merge(base, {
+export default merge(base, {
 	app: {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
@@ -75,4 +75,4 @@ module.exports = merge(base, {
 		memcachedServers: 'localhost:11211',
 		// disableCluster: true,
 	}
-})
+});

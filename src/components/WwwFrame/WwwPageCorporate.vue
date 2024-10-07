@@ -26,13 +26,13 @@
 </template>
 
 <script>
-import hasEverLoggedInQuery from '@/graphql/query/shared/hasEverLoggedIn.graphql';
-import CookieBanner from '@/components/WwwFrame/CookieBanner';
-import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
-import TheBrowserCheck from '@/components/WwwFrame/TheBrowserCheck';
-import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
-import TheHeader from '@/components/WwwFrame/TheHeader';
-import { assignAllActiveExperiments } from '@/util/experiment/experimentUtils';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import TheBasketBar from '#src/components/WwwFrame/TheBasketBar';
+import TheBrowserCheck from '#src/components/WwwFrame/TheBrowserCheck';
+import TheFooterCorporate from '#src/components/WwwFrame/TheFooterCorporate';
+import TheHeader from '#src/components/WwwFrame/TheHeader';
+import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 
 export default {
 	name: 'WwwPageCorporate',
@@ -47,6 +47,7 @@ export default {
 		TheFooterCorporate,
 		TheHeader,
 	},
+	emits: ['show-basket'],
 	props: {
 		corporateLogoUrl: {
 			type: String,

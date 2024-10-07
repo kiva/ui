@@ -14,13 +14,14 @@
 </template>
 
 <script>
-import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import BorrowerInfoName from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
 	name: 'BorrowerInfoHeader',
 	components: {
 		BorrowerInfoName,
 	},
+	emits: ['track-loan-card-interaction'],
 	props: {
 		country: {
 			type: String,

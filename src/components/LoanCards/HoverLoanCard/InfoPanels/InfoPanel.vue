@@ -1,5 +1,9 @@
 <template>
-	<div class="info-panel tw-bg-primary" style="--tw-bg-opacity: 0.95;">
+	<div
+		class="info-panel tw-bg-primary" style="
+
+--tw-bg-opacity: 0.95;"
+	>
 		<button
 			@click.prevent="toggle"
 			:aria-controls="id"
@@ -25,8 +29,8 @@
 </template>
 
 <script>
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'InfoPanel',
@@ -34,6 +38,7 @@ export default {
 		KvExpandable,
 		KvIcon,
 	},
+	emits: ['track-interaction'],
 	props: {
 		id: {
 			type: String,
@@ -76,7 +81,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .info-panel {
 	.title-button {
@@ -105,7 +110,7 @@ export default {
 		}
 	}
 
-	.title-button[aria-expanded="true"] {
+	.title-button[aria-expanded=true] {
 		.panel-icon {
 			transform: rotate(-180deg);
 		}

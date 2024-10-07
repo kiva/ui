@@ -94,24 +94,22 @@
 			<div v-if="!isLoading" class="tw-flex-auto tw-mb-2">
 				<figure>
 					<figcaption class="tw-flex">
-						<template>
-							<div class="tw-flex-auto tw-text-left">
-								<p
-									class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
-									data-testid="bp-summary-amount-to-go"
-								>
-									{{ Math.floor(fundraisingPercent) }}% FUNDED
-								</p>
-							</div>
+						<div class="tw-flex-auto tw-text-left">
 							<p
-								class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
-								data-testid="bp-summary-timeleft"
+								class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
+								data-testid="bp-summary-amount-to-go"
 							>
-								<span lass="tw-text-h3 tw-block tw-m-0">
-									{{ loanAmount | numeral('$0,0[.]00') }}
-								</span>
+								{{ Math.floor(fundraisingPercent) }}% FUNDED
 							</p>
-						</template>
+						</div>
+						<p
+							class="tw-flex-auto tw-text-right progress-text tw-mb-2 tw-mt-2"
+							data-testid="bp-summary-timeleft"
+						>
+							<span lass="tw-text-h3 tw-block tw-m-0">
+								{{ $filters.numeral(loanAmount, '$0,0[.]00') }}
+							</span>
+						</p>
 					</figcaption>
 					<kv-progress-bar
 						v-if="!isLoading"
@@ -136,19 +134,19 @@
 
 <script>
 import { mdiMapMarker } from '@mdi/js';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
-import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
-import timeLeftMixin from '@/plugins/loan/time-left-mixin';
-import BorrowerImage from '@/components/BorrowerProfile/BorrowerImage';
-import BorrowerName from '@/components/BorrowerProfile/BorrowerName';
-import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
-import { readLoanFragment, watchLoanCardData } from '@/util/loanUtils';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import SummaryTag from '@/components/BorrowerProfile/SummaryTag';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerName from '#src/components/BorrowerProfile/BorrowerName';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import { readLoanFragment, watchLoanCardData } from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export const loanFieldsFragment = gql`
 	fragment loanFields on LoanBasic {
@@ -193,6 +191,7 @@ const loanCardQuery = gql`
 
 export default {
 	name: 'NewHomePageLoanCard',
+	emits: ['dedication-click'],
 	props: {
 		loanId: {
 			type: Number,
@@ -247,7 +246,7 @@ export default {
 		},
 		fundraisingPercent() {
 			if (this.loan?.distributionModel) {
-				return this.loan?.fundraisingPercent * 100;
+				return (this.loan?.fundraisingPercent ?? 0) * 100;
 			}
 			return 0;
 		},
@@ -366,7 +365,7 @@ export default {
 			this.createViewportObserver();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 	},
 	watch: {
@@ -401,7 +400,7 @@ export default {
 }
 
 .selected-card:hover {
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	box-shadow: 0 4px 10px rgb(0 0 0 / 5%);
 }
 
 .progress-text {

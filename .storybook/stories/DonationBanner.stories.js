@@ -1,28 +1,26 @@
-import Vue from "vue";
-import DonationBanner from "@/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner.vue";
+import DonationBanner from "#src/components/WwwFrame/PromotionalBanner/Banners/Donation/DonationBanner.vue";
 
-// import plugins
-import kivaPlugins from "@/plugins";
-Vue.use(kivaPlugins);
+const args = {
+	isOpen: true,
+	buttonAmounts: [20, 35, 50],
+	headline: "Donate $50, get $25 to lend.",
+	frequency: "monthly",
+	bannerImageUrl:
+		"//images.ctfassets.net/j0p9a6ql0rn7/46U7dagWY4pn1vaUPLYaYx/707ada55d0152f6d4b72aa74d894a22c/icon-heart.png",
+};
 
 export default {
 	title: "WwwFrame/Banners/DonationBanner",
 	component: DonationBanner,
-	args: {
-		isOpen: true,
-		buttonAmounts: [20, 35, 50],
-		headline: "Donate $50, get $25 to lend.",
-		frequency: "monthly",
-		bannerImageUrl:
-			"//images.ctfassets.net/j0p9a6ql0rn7/46U7dagWY4pn1vaUPLYaYx/707ada55d0152f6d4b72aa74d894a22c/icon-heart.png",
-	},
+	args,
 };
 
-export const Default = (args, { argTypes }) => ({
+export const Default = (_, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		DonationBanner,
 	},
+	setup() { return args; },
 	template: `
 		<div>
 			<donation-banner

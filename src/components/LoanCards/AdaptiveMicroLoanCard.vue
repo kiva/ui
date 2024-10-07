@@ -6,7 +6,7 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
-			@click.native="trackProfileClick"
+			@click="trackProfileClick"
 			:open-in-new-tab="true"
 			:use-default-styles="false"
 		/>
@@ -53,9 +53,9 @@ import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import _includes from 'lodash/includes';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
 	name: 'AdaptiveMicroLoanCard',
@@ -64,6 +64,7 @@ export default {
 		FundraisingStatusMeter,
 	},
 	inject: ['apollo'],
+	emits: ['add-to-basket', 'processing-add-to-basket'],
 	props: {
 		itemsInBasket: {
 			type: Array,
@@ -177,7 +178,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .minimal-loan-card {
 	margin: 1rem;
@@ -211,14 +212,14 @@ export default {
 	width: 50%;
 	padding: 0.25rem 0.875rem 0;
 
-	@media screen and (min-width: 320px) {
+	@media screen and (width >= 320px) {
 		padding-top: 0.5rem;
 		font-size: rem-calc(16);
 	}
 
 	@include breakpoint(medium) {
 		width: 100%;
-		padding: 0.875rem 0.875rem;
+		padding: 0.875rem;
 	}
 
 	.name {
@@ -230,7 +231,7 @@ export default {
 		overflow: hidden;
 		text-overflow: ellipsis;
 
-		@media screen and (min-width: 320px) {
+		@media screen and (width >= 320px) {
 			padding-bottom: 0.375rem;
 			font-size: rem-calc(16);
 		}
@@ -252,7 +253,7 @@ export default {
 			text-overflow: ellipsis;
 		}
 
-		@media screen and (min-width: 320px) {
+		@media screen and (width >= 320px) {
 			padding: 0 0 0.375rem;
 		}
 	}
@@ -262,7 +263,7 @@ export default {
 		bottom: 0.25rem;
 		padding: 0;
 
-		@media screen and (min-width: 320px) {
+		@media screen and (width >= 320px) {
 			bottom: 0.5rem;
 		}
 
@@ -277,7 +278,7 @@ export default {
 			margin-bottom: 0;
 			font-size: rem-calc(14);
 
-			@media screen and (min-width: 320px) {
+			@media screen and (width >= 320px) {
 				font-size: rem-calc(16);
 			}
 		}

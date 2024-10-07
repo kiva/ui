@@ -1,6 +1,5 @@
-import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
-import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
+import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
 
 const isServer = typeof window === 'undefined';
 
@@ -17,11 +16,12 @@ export function checkLastLoginTime(data, durationKey, defaultDuration) {
 }
 
 const processErrors = (error, route) => {
+	const doneUrl = route?.value?.fullPath || route?.fullPath || '';
 	if (error.message.indexOf('activeLoginRequired') > -1 || error.message.indexOf('recentLoginRequired') > -1) {
 		// Force a login when active/recent login is required
 		return {
 			path: '/ui-login',
-			query: { force: true, doneUrl: route.fullPath }
+			query: { force: true, doneUrl }
 		};
 	}
 
@@ -29,17 +29,17 @@ const processErrors = (error, route) => {
 		// Redirect to login upon authentication error
 		return {
 			path: '/ui-login',
-			query: { doneUrl: route.fullPath }
+			query: { doneUrl }
 		};
 	}
 
 	if (error.message.indexOf('verificationRequired') > -1) {
-		const lastMatchedRoute = route.matched[route.matched.length - 1];
+		const lastMatchedRoute = route.value.matched[route.value.matched.length - 1];
 		// Redirect to email verification page
 		return {
 			path: '/start-verification',
 			query: {
-				doneUrl: route.fullPath,
+				doneUrl,
 				process: lastMatchedRoute.meta.process || '',
 			}
 		};
@@ -55,7 +55,7 @@ const processErrors = (error, route) => {
 	// catch all redirect to login
 	return {
 		path: '/ui-login',
-		query: { doneUrl: route.fullPath }
+		query: { doneUrl }
 	};
 };
 
@@ -66,21 +66,22 @@ const processErrors = (error, route) => {
 // The two possible meta properties are activeLoginRequired, and authenticationRequired
 // activeLoginRequired takes priority over authenticationRequired since it implies authenticationRequired
 // and recentLoginRequired takes priority over activeLoginRequired since it implies activeLoginRequired
-// eslint-disable-next-line import/prefer-default-export
+
 export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 	// Skip authentication checks if Auth0 usage is not enabled
 	if (!kvAuth0.enabled) {
 		return Promise.resolve();
 	}
 	return new Promise((resolve, reject) => {
-		const activeRequired = route.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
-		const authRequired = route.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
-		const mfaRequired = route.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
-		const recentRequired = route.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
+		const currentRoute = route.value ?? route ?? {};
+		const activeRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
+		const authRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
+		const mfaRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
+		const recentRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
 
 		// Route requires some sort of authentication
 		if (activeRequired || authRequired || mfaRequired || recentRequired) {
-			return apolloClient.query({
+			apolloClient.query({
 				query: authenticationQuery,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
@@ -96,15 +97,16 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 					throw new Error('recentLoginRequired');
 				}
 				// Route requires multi factor authentication or email verification
-				if (mfaRequired && !kvAuth0.isMfaAuthenticated() && !_get(data, 'my.emailVerifiedRecently')) {
+				if (mfaRequired && !kvAuth0.isMfaAuthenticated() && !data?.my?.emailVerifiedRecently) {
 					throw new Error('verificationRequired');
 				}
 				resolve();
 			}).catch(e => {
 				reject(processErrors(e, route));
 			});
+		} else {
+			// Route does not require any authentication
+			resolve();
 		}
-		// Route does not require any authentication
-		resolve();
 	});
 }

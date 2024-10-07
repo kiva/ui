@@ -122,9 +122,9 @@ import {
 	mdiStarHalfFull
 } from '@mdi/js';
 import numeral from 'numeral';
-import DescriptionListItem from '@/components/BorrowerProfile/DescriptionListItem';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
+import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
 
 export default {
 	name: 'FieldPartnerDetails',
@@ -141,6 +141,7 @@ export default {
 			mdiStarHalfFull,
 		};
 	},
+	emits: ['show-definition'],
 	props: {
 		partnerId: { // Partner.id
 			type: Number,

@@ -70,7 +70,7 @@
 								:key="`amount-${index}`"
 								variant="secondary"
 								class="tw-border-brand tw-text-brand"
-								@click.native="onClickAmountBtn(buttonAmount)"
+								@click="onClickAmountBtn(buttonAmount)"
 								v-kv-track-event="[
 									'promo',
 									'click-amount-btn',
@@ -135,7 +135,7 @@
 					</div>
 					<div class="tw-flex-shrink tw-mx-2">
 						<kv-button
-							@click.native="onClickToggleBanner"
+							@click="onClickToggleBanner"
 							variant="primary"
 							v-kv-track-event="[
 								'promo',
@@ -155,14 +155,14 @@
 <script>
 // import numeral from 'numeral';
 import smoothReflow from 'vue-smooth-reflow';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { mdiClose } from '@mdi/js';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'AppealBannerCircular',
@@ -179,6 +179,7 @@ export default {
 		KvMaterialIcon
 	},
 	mixins: [smoothReflow, smoothScrollMixin],
+	emits: ['amount-selected', 'toggle-banner'],
 	props: {
 		targetAmount: {
 			type: Number,

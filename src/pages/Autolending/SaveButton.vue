@@ -4,7 +4,7 @@
 			data-test="save-button"
 			class="smaller"
 			v-if="!saving"
-			@click.native="checkSave"
+			@click="checkSave"
 			:disabled="!isChanged"
 		>
 			Save
@@ -24,10 +24,10 @@
 			</p>
 			<template #controls>
 				<div class="warning-buttons">
-					<kv-button class="smallest secondary" @click.native="save">
+					<kv-button class="smallest secondary" @click="save">
 						Continue anyway
 					</kv-button>
-					<kv-button class="smallest" @click.native="closeWarning">
+					<kv-button class="smallest" @click="closeWarning">
 						Add more categories
 					</kv-button>
 				</div>
@@ -38,10 +38,10 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import { gql } from 'graphql-tag';
+import KvButton from '#src/components/Kv/KvButton';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 export default {
 	name: 'SaveButton',
@@ -51,6 +51,7 @@ export default {
 		KvLightbox,
 		KvLoadingSpinner,
 	},
+	emits: ['autolendingSaved'],
 	props: {
 		showWarning: {
 			type: Boolean,
@@ -141,7 +142,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .save-button-wrapper {
 	.loading-spinner {
@@ -149,7 +150,7 @@ export default {
 		width: 1rem;
 		height: 1rem;
 
-		& >>> .line {
+		& :deep(.line) {
 			background-color: $white;
 		}
 	}

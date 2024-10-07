@@ -1,4 +1,4 @@
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 
 const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
@@ -8,6 +8,7 @@ export default {
 			enableAddToBasketExp: false,
 		};
 	},
+	emits: ['show-cart-modal'],
 	created() {
 		// MP-346 New Add To Basket
 		const newAddToBasketExpData = this.apollo.readFragment({

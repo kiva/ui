@@ -5,7 +5,7 @@ import {
 	reset,
 	setDelay,
 } from 'timesync';
-import syncDate from '@/util/syncDate';
+import syncDate from '#src/util/syncDate';
 
 describe('syncDate.js', () => {
 	const delay = 10000;

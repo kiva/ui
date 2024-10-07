@@ -56,7 +56,7 @@
 						{{ missingMilestones.length === 1 ? 'Last' : 'Next' }} Step
 					</h4>
 					<h3>
-						Find a loan for {{ step.name | changeCase('noCase') }}!
+						Find a loan for {{ $filters.changeCase(step.name, 'noCase') }}!
 					</h3>
 				</div>
 				<kv-button
@@ -106,18 +106,18 @@
 <script>
 // This component was used in the Eco Challenge. Currently not in use.
 
-import IconClimateChallenge from '@/assets/icons/inline/achievements/globe-leaf.svg';
+import IconClimateChallenge from '#src/assets/icons/inline/achievements/globe-leaf.svg';
 import {
 	mdiArrowRight,
 	mdiCheckboxBlankCircleOutline,
 	mdiCheckCircle
 } from '@mdi/js';
-import { joinArray } from '@/util/joinArray';
-import { missingMilestones } from '@/util/achievementUtils';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { joinArray } from '#src/util/joinArray';
+import { missingMilestones } from '#src/util/achievementUtils';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'EcoChallengeLightbox',
@@ -129,6 +129,7 @@ export default {
 		KvTextLink,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['close-lightbox'],
 	props: {
 		visible: {
 			type: Boolean,

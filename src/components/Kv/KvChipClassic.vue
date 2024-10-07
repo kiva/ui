@@ -19,13 +19,14 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvChipClassic',
 	components: {
 		KvMaterialIcon,
 	},
+	emits: ['click'],
 	data() {
 		return {
 			mdiClose,

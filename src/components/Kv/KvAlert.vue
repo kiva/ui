@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'KvAlert',
@@ -64,7 +64,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@use 'sass:color';
+@import '#src/assets/scss/settings';
 
 .kv-alert {
 	width: 100%;
@@ -75,17 +76,17 @@ export default {
 	align-items: flex-start;
 
 	&--success {
-		background-color: lighten($kiva-green, 38%);
+		background-color: color.adjust($kiva-green, $lightness: 38%);
 		border-color: $kiva-green;
 	}
 
 	&--caution {
-		background-color: lighten($kiva-alert-yellow, 25%);
+		background-color: color.adjust($kiva-alert-yellow, $lightness: 25%);
 		border-color: $kiva-alert-yellow;
 	}
 
 	&--danger {
-		background-color: lighten($kiva-accent-red, 38%);
+		background-color: color.adjust($kiva-accent-red, $lightness: 38%);
 		border-color: $kiva-accent-red;
 	}
 

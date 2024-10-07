@@ -32,8 +32,8 @@ import {
 } from '@mdi/js';
 import { paramCase } from 'change-case';
 
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvExpandableQuestion',
@@ -41,6 +41,7 @@ export default {
 		KvExpandable,
 		KvMaterialIcon,
 	},
+	emits: ['toggle'],
 	props: {
 		/**
 		 * Question Title

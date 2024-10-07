@@ -1,9 +1,9 @@
 <template>
 	<div
 		class="tw-w-full tw-flex tw-flex-col tw-bg-primary-inverse tw-rounded tw-p-1 lg:tw-p-2 tw-cursor-pointer"
-		@click="$emit('click', variant)"
+		@click="$emit('update', variant)"
 	>
-		<img :src="imgSource" class="tw-hidden lg:tw-block tw-w-3">
+		<component v-if="imgSource" :is="imgSource" class="tw-hidden lg:tw-block tw-w-3" />
 		<!-- eslint-disable-next-line max-len -->
 		<h3 class="tw-text-base lg:tw-text-h3 tw-py-0.5 lg:tw-py-0 tw-text-primary-inverse lg:tw-mt-5 tw-text-center lg:tw-text-left">
 			{{ title }}
@@ -12,12 +12,15 @@
 </template>
 
 <script>
-import progressIcon from '@/assets/images/helpmechoose/progress.svg';
-import kivaIcon from '@/assets/images/helpmechoose/kiva_mark.svg';
-import appleIcon from '@/assets/images/helpmechoose/apple.svg';
+import { defineAsyncComponent, shallowRef } from 'vue';
+
+const ProgressIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/progress.svg')));
+const KivaIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/kiva_mark.svg')));
+const AppleIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/apple.svg')));
 
 export default {
 	name: 'HelpmeChooseTrigger',
+	emits: ['update'],
 	props: {
 		variant: {
 			type: String,
@@ -26,9 +29,9 @@ export default {
 	},
 	data() {
 		return {
-			progressIcon,
-			kivaIcon,
-			appleIcon
+			ProgressIcon,
+			KivaIcon,
+			AppleIcon
 		};
 	},
 	computed: {
@@ -56,16 +59,16 @@ export default {
 			let src;
 			switch (this.variant) {
 				case 'amountLeft':
-					src = this.progressIcon;
+					src = this.ProgressIcon;
 					break;
 				case 'personalized':
-					src = this.kivaIcon;
+					src = this.KivaIcon;
 					break;
 				case 'researchScore':
-					src = this.appleIcon;
+					src = this.AppleIcon;
 					break;
 				case 'popularityScore':
-					src = this.kivaIcon;
+					src = this.KivaIcon;
 					break;
 				default:
 					src = '';

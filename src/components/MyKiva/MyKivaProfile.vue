@@ -23,32 +23,27 @@
 	</MyKivaContainer>
 </template>
 
-<script>
+<script setup>
+import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import { computed, toRefs } from 'vue';
 
-import ActivityAvatar from '@/components/Iwd/ActivityAvatar';
-import MyKivaContainer from '@/components/MyKiva/MyKivaContainer';
+const props = defineProps({
+	lender: {
+		type: Object,
+		default: () => ({}),
+	}
+});
 
-export default {
-	name: 'MyKivaProfile',
-	props: {
-		lender: {
-			type: Object,
-			default: () => ({}),
-		}
-	},
-	components: {
-		ActivityAvatar,
-		MyKivaContainer,
-	},
-	computed: {
-		lenderName() {
-			return this?.lender?.name ?? '';
-		},
-		lenderImageUrl() {
-			return this?.lender?.image?.url ?? '';
-		},
-	},
-};
+const { lender } = toRefs(props);
+
+const lenderName = computed(() => {
+	return lender?.value?.name ?? '';
+});
+
+const lenderImageUrl = computed(() => {
+	return lender?.value?.image?.url ?? '';
+});
 </script>
 
 <style lang="postcss" scoped>

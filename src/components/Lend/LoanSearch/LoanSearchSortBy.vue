@@ -22,10 +22,10 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import { sortByNameToDisplay } from '@/util/loanSearch/filters/sortOptions';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvRadio from '~/@kiva/kv-components/vue/KvRadio';
+import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import { sortByNameToDisplay } from '#src/util/loanSearch/filters/sortOptions';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvRadio from '@kiva/kv-components/vue/KvRadio';
 
 export default {
 	name: 'LoanSearchSortBy',
@@ -33,6 +33,7 @@ export default {
 		KvMaterialIcon,
 		KvRadio,
 	},
+	emits: ['updated'],
 	props: {
 		/**
 		 * allSortOptions contains all sort emuns tagged with their type

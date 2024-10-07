@@ -1,4 +1,4 @@
-import loanSearchStateQuery from '@/graphql/query/loanSearchState.graphql';
+import loanSearchStateQuery from '#src/graphql/query/loanSearchState.graphql';
 
 // eslint-disable-next-line no-underscore-dangle
 const __typename = 'LoanSearchState';

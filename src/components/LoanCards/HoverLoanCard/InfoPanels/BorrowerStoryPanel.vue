@@ -33,8 +33,8 @@
 
 <script>
 import _get from 'lodash/get';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import loanDescriptionQuery from '@/graphql/query/loanDescription.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import loanDescriptionQuery from '#src/graphql/query/loanDescription.graphql';
 import InfoPanel from './InfoPanel';
 
 export default {
@@ -44,6 +44,7 @@ export default {
 		KvLoadingSpinner
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['track-interaction'],
 	props: {
 		expandable: {
 			type: Boolean,
@@ -88,7 +89,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loan-story {
 	padding: rem-calc(5) rem-calc(2);
@@ -98,10 +99,7 @@ export default {
 	position: absolute;
 	width: auto;
 	height: auto;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
+	inset: 0;
 	background-color: rgba($platinum, 0.7);
 
 	.spinner-wrapper {

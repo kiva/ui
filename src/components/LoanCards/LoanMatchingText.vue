@@ -26,7 +26,7 @@
 </template>
 
 <script>
-const imgRequire = require.context('@/assets/images/', true);
+import partyEmoji from '#src/assets/images/party-emoji.png';
 
 export default {
 	name: 'LoanMatchingText',
@@ -56,6 +56,11 @@ export default {
 			default: '',
 		}
 	},
+	data() {
+		return {
+			partyEmoji,
+		};
+	},
 	computed: {
 		amountLeft() {
 			return this.loanAmount - this.fundedAmount - this.reservedAmount;
@@ -75,9 +80,6 @@ export default {
 			}
 			return `${this.matchRatio + 1}x matching by ${this.matcherName}`;
 		},
-		partyEmoji() {
-			return imgRequire('./party-emoji.png');
-		}
 	}
 };
 </script>

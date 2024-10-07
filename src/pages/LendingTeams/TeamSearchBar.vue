@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'TeamSearchBar',
@@ -33,6 +33,7 @@ export default {
 		KvTextInput,
 	},
 	inject: ['apollo'],
+	emits: ['search'],
 	props: {
 		initialValue: {
 			type: String,

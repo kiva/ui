@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { mdiPencilOutline } from '@mdi/js';
-import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'ShareButton',
@@ -107,7 +107,7 @@ export default {
 			return Math.round(percent * 100);
 		},
 		amountRemaining() {
-			return `$${this.loan?.loanAmount - this.loan?.loanFundraisingInfo?.fundedAmount}`;
+			return `$${(this.loan?.loanAmount ?? 0) - (this.loan?.loanFundraisingInfo?.fundedAmount ?? 0)}`;
 		},
 		isBorrower() {
 			// If the loan id's match or the share query param is present, the user is the borrower
@@ -155,7 +155,7 @@ export default {
 					: `I'm crowdfunding a loan on Kiva — Help me hit ${this.progressPercent + 10}% today!`;
 			}
 			// Not the borrower of this loan
-			const borrowerName = this.$options.filters.changeCase(this.name, 'titleCase');
+			const borrowerName = this.$filters.changeCase(this.name, 'titleCase');
 			if (this.inPfp) {
 				return this.progressPfpPercent >= 50
 					? `Help ${borrowerName} reach their goal – only ${remainingLenders} ${lenderText} to go!`
@@ -180,7 +180,7 @@ export default {
 		},
 		shareLink() {
 			if (this.loan.id && this.lender?.inviterName) {
-				return `/invitedby/${this.lender.inviterName}/for/${this.loan.id}`; // eslint-disable-line max-len
+				return `/invitedby/${this.lender.inviterName}/for/${this.loan.id}`;
 			}
 			return `${this.$route.path}`;
 		},

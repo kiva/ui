@@ -45,9 +45,9 @@
 // Perhaps we could do some magic DOM reordering via this.$slots.header or
 // pass a prop like 'tag' that sets the parent node of the button. <accordion tag="h3">...
 
-import KvExpandable from '@/components/Kv/KvExpandable';
+import KvExpandable from '#src/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvAccordionItem',
@@ -55,6 +55,7 @@ export default {
 		KvMaterialIcon,
 		KvExpandable,
 	},
+	emits: ['toggle'],
 	props: {
 		/**
 		 * Unique id. used for a11y

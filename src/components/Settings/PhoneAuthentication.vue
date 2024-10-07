@@ -24,18 +24,18 @@
 						<kv-phone-input
 							class="phone-authentication__phone-input tw-mb-1 data-hj-suppress"
 							:disabled="enrollmentPending"
-							:valid="!$v.phoneNumber.$error"
+							:valid="!v$.phoneNumber?.$invalid"
 							id="phone_input"
 							ref="phoneInput"
 							v-model="phoneNumber"
-							@blur="$v.phoneNumber.$touch"
+							@blur="v$.phoneNumber.$touch"
 							@validity-changed="onValidityChanged"
 						/>
-						<ul class="validation-errors" v-if="$v.phoneNumber.$error">
-							<li v-if="!$v.phoneNumber.required">
+						<ul class="validation-errors" v-if="v$.phoneNumber?.$invalid">
+							<li v-if="v$.phoneNumber?.required?.$invalid">
 								Field is required
 							</li>
-							<li v-if="$v.phoneNumber.required && $v.phoneNumber.$invalid">
+							<li v-else>
 								Phone number is invalid
 							</li>
 						</ul>
@@ -54,7 +54,7 @@
 						<kv-button
 							class="tw-w-full tw-mb-2"
 							type="button"
-							:state="$v.phoneNumber.$invalid ? 'disabled' : ''"
+							:state="v$.phoneNumber?.$invalid ? 'disabled' : ''"
 							@click="startEnrollment('SMS')"
 						>
 							Text message
@@ -62,7 +62,7 @@
 						<kv-button
 							class="tw-w-full"
 							type="button"
-							:state="$v.phoneNumber.$invalid ? 'disabled' : ''"
+							:state="v$.phoneNumber?.$invalid ? 'disabled' : ''"
 							@click="startEnrollment('voice')"
 						>
 							Phone call
@@ -107,7 +107,7 @@
 						<kv-button
 							class="tw-w-full tw-mb-2"
 							type="submit"
-							:state="$v.userVerificationCode.$invalid ? 'disabled' : ''"
+							:state="v$.userVerificationCode?.$invalid ? 'disabled' : ''"
 						>
 							Done
 						</kv-button>
@@ -137,24 +137,24 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
+import { useVuelidate } from '@vuelidate/core';
 import {
 	required, minLength, maxLength, numeric
-} from 'vuelidate/lib/validators';
+} from '@vuelidate/validators';
 import * as Sentry from '@sentry/vue';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvPhoneInput from '@/components/Kv/KvPhoneInput';
-import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
-import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
-import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvPhoneInput from '#src/components/Kv/KvPhoneInput';
+import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
+import FirstMFASetup from '#src/pages/Settings/FirstMFASetup';
+import RecoveryCodeConfirm from '#src/pages/Settings/RecoveryCodeConfirm';
 
-import enrollSMSAuthenticatorMutation from '@/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
-import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
-import confirmSMSAuthenticatorEnrollmentMutation from '@/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
+import enrollSMSAuthenticatorMutation from '#src/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
+import enrollVoiceAuthenticatorMutation from '#src/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
+import confirmSMSAuthenticatorEnrollmentMutation from '#src/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
 import confirmVoiceAuthenticatorEnrollmentMutation from
-	'@/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+	'#src/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'PhoneAuthentication',
@@ -167,7 +167,6 @@ export default {
 		KvVerificationCodeInput,
 		RecoveryCodeConfirm,
 	},
-	mixins: [validationMixin],
 	inject: ['apollo', 'kvAuth0'],
 	props: {
 		first: {
@@ -175,17 +174,19 @@ export default {
 			default: false,
 		},
 	},
-	validations: {
-		phoneNumber: {
-			required,
-			valid() { return this.isPhoneNumberValid; }
-		},
-		userVerificationCode: {
-			required,
-			minLength: minLength(6),
-			maxLength: maxLength(6),
-			numeric
-		}
+	validations() {
+		return {
+			phoneNumber: {
+				required,
+				valid() { return this.isPhoneNumberValid; }
+			},
+			userVerificationCode: {
+				required,
+				minLength: minLength(6),
+				maxLength: maxLength(6),
+				numeric
+			}
+		};
 	},
 	data() {
 		return {
@@ -203,6 +204,7 @@ export default {
 			step: 0,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		lightboxTitle() {
 			if (this.step === 1) {
@@ -219,7 +221,7 @@ export default {
 			return 'Phone number';
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.lightboxVisible = false;
 	},
 	methods: {
@@ -360,7 +362,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .phone-authentication {
 	&__body {

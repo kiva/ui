@@ -27,6 +27,7 @@
 <script>
 export default {
 	name: 'KvPillToggle',
+	emits: ['pill-toggled'],
 	props: {
 		id: {
 			type: String,
@@ -81,7 +82,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .kv-pill-toggle {
 	display: flex;
@@ -99,7 +100,7 @@ export default {
 		min-height: 100%;
 		margin-left: rem-calc(-1);
 		line-height: 1.3;
-		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
+		box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
 		transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 
 		&:hover {

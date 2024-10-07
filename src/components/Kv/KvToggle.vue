@@ -27,6 +27,7 @@ export default {
 		prop: 'checked',
 		event: 'change'
 	},
+	emits: ['change'],
 	props: {
 		id: {
 			type: String,
@@ -55,7 +56,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import '#src/assets/scss/settings';
 
 .kv-toggle {
 	position: relative;

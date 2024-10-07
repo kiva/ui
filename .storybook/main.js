@@ -1,39 +1,32 @@
-const path = require('path');
+/** @type { import('@storybook/vue3-vite').StorybookConfig } */
+const config = {
+  stories: ["./stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@chromatic-com/storybook",
+    "@storybook/addon-interactions",
+  ],
+  framework: {
+    name: "@storybook/vue3-vite",
+    options: {},
+  },
+  docs: {
+    autodocs: "tag",
+  },
+  async viteFinal(config) {
+    // Merge custom configuration into the default config
+    const { mergeConfig } = await import('vite');
 
-module.exports = {
-	stories: [
-		'./stories/**/*.stories.@(js|mdx)'
-	],
-	addons: [
-		'@storybook/addon-essentials',
-		'@storybook/addon-links',
-		'@storybook/addon-a11y',
-		'@storybook/addon-postcss',
-		'@storybook/addon-storysource'
-	],
-	webpackFinal: async (config) => {
-		config.module.rules.push({
-		  	test: /\,css&/,
-		  	exclude: [/\.module\.css$/, /@storybook/],
-		  	use: [
-				"style-loader",
-				{
-					loader: "css-loader",
-					options: { importLoaders: 1, sourceMap: false },
+    return mergeConfig(config, {
+		build: {
+			rollupOptions: {
+				output: {
+					chunkFileNames: 'assets/entry-[name]-[hash:10].js',
 				},
-				{
-				loader: 'postcss-loader',
-					options: {
-						ident: 'postcss',
-						plugins: [
-						require('tailwindcss'),
-						require('autoprefixer')
-						]
-					}
-				}
-		  	],
-		  	include: path.resolve(__dirname, '../'),
-		})
-		return config
-	}
-}
+			},
+		},
+    });
+  },
+};
+export default config;

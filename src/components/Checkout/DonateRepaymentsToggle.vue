@@ -21,7 +21,7 @@
 				data-testid="donate-repayments"
 				v-if="!myDonateRepayments"
 				v-model="donateRepayments"
-				@update:modelValue="setDonateRepayments"
+				@update:model-value="setDonateRepayments"
 			>
 				<span
 					id="donate-repayments-tooltip"
@@ -62,10 +62,10 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
-import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
+import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
+import updateLoanReservationDonateRepayments from '#src/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
 
 export default {
 	name: 'DonateRepaymentsToggle',
@@ -74,6 +74,7 @@ export default {
 		KvLightbox,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	data() {
 		return {
 			donateRepayments: false,
@@ -188,7 +189,7 @@ export default {
 
 <style lang="postcss" scoped>
 /* Hack to remove spacing from right side of checkbox, to align items on checkout page... */
-.kv-checkbox >>> label > div {
+.kv-checkbox :deep(label) > div {
 	@apply tw-mr-0;
 }
 </style>

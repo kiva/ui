@@ -1,9 +1,9 @@
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 function getFilenames(r) {
-	return r.keys().map((filename) => {
+	return Object.keys(r).map((filename) => {
 		let str = filename;
-		str = str.substring(2); // remove ./
+		str = str.substring(str.lastIndexOf('/') + 1); // remove leading path
 		str = str.substring(0, str.length - 4); // remove .svg
 		return str;
 	});
@@ -12,7 +12,7 @@ function getFilenames(r) {
 export default {
 	title: 'Kv/KvIcon',
 	component: KvIcon,
- };
+};
 
 export const Default = () => ({
 	components: {
@@ -25,13 +25,15 @@ export const Default = () => ({
 	`,
 });
 
+const iconGlob = import.meta.glob('/src/assets/icons/inline/*.*', { eager: true });
+
 export const inlined = () => ({
 	components: {
 		KvIcon
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/icons/inline/', true, /\.svg$/))
+			iconNames: getFilenames(iconGlob)
 		}
 	},
 	template: `
@@ -59,13 +61,15 @@ export const inlined = () => ({
 	`,
 });
 
+const spriteGlob = import.meta.glob('/src/assets/icons/sprite/*.*', { eager: true });
+
 export const fromSprite = () => ({
 	components: {
 		KvIcon
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/icons/sprite/', true, /\.svg$/))
+			iconNames: getFilenames(spriteGlob)
 		}
 	},
 	template: `

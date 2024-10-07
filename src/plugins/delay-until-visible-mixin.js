@@ -1,4 +1,4 @@
-import { createIntersectionObserver } from '@/util/observerUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
 export default {
 	data() {
@@ -27,7 +27,7 @@ export default {
 			}
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.delayUntilVisibleObserver) {
 			this.delayUntilVisibleObserver.disconnect();
 		}

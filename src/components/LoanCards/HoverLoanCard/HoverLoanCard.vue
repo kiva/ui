@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
-import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
+import KvIcon from '#src/components/Kv/KvIcon';
+import categoryRowArrowsVisibleMixin from '#src/plugins/category-row-arrows-visible-mixin';
 import HoverLoanCardSmall from './HoverLoanCardSmall';
 import HoverLoanCardLarge from './HoverLoanCardLarge';
 import hoverLoanCardMixin from './hoverLoanCardMixin';
@@ -65,6 +65,13 @@ export default {
 		HoverLoanCardLarge,
 		KvIcon,
 	},
+	emits: [
+		'add-to-basket',
+		'track-interaction',
+		'update-detailed-loan-index',
+		'update-hover-loan-index',
+		'set-prevent-updating-detailed-card',
+	],
 	props: {
 		cardNumber: {
 			type: Number,
@@ -212,11 +219,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
-@import "components/loan-cards/hover-loan-card";
+@use 'sass:math';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/loan-cards/hover-loan-card';
 
 .hover-loan-card {
-	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109) rem-calc($hover-card-right-margin);
+	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109);
 
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
 
@@ -245,7 +253,7 @@ export default {
 	}
 
 	&.shift-left {
-		transform: translateX(-$hover-card-width-difference / 2);
+		transform: translateX(-#{math.div($hover-card-width-difference, 2)});
 	}
 
 	&.shift-left-double {
@@ -253,7 +261,7 @@ export default {
 	}
 
 	&.shift-right {
-		transform: translateX($hover-card-width-difference / 2);
+		transform: translateX(math.div($hover-card-width-difference, 2));
 	}
 
 	&.shift-right-double {

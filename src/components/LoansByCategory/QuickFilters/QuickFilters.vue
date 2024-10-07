@@ -53,7 +53,7 @@
 						v-model="selectedGender"
 						id="gender"
 						style="min-width: 140px;"
-						@click.native="trackDropdownClick('gender')"
+						@click="trackDropdownClick('gender')"
 					>
 						<option
 							v-for="gender in filterOptions.gender"
@@ -68,7 +68,7 @@
 				<div class="tw-w-full">
 					<location-selector
 						v-if="!removeLocationDropdown"
-						@click.native="trackDropdownClick('location')"
+						@click="trackDropdownClick('location')"
 						@handle-overlay="handleQuickFiltersOverlay"
 						:regions="filterOptions.location"
 						:total-loans="totalLoans"
@@ -95,7 +95,7 @@
 					:disabled="!filtersLoaded"
 					v-model="sortBy"
 					style="min-width: 180px;"
-					@click.native="trackDropdownClick('sort')"
+					@click="trackDropdownClick('sort')"
 				>
 					<option
 						v-for="sortType in filterOptions.sorting"
@@ -120,7 +120,7 @@
 					id="sortBy"
 					:disabled="!filtersLoaded"
 					v-model="sortBy"
-					@click.native="trackDropdownClick('sort')"
+					@click="trackDropdownClick('sort')"
 				>
 					<option
 						v-for="sortType in filterOptions.sorting"
@@ -146,14 +146,15 @@
 
 <script>
 import { mdiFilterVariant, mdiChevronDown } from '@mdi/js';
-import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 import LocationSelector from './LocationSelector';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'QuickFilters',
 	inject: ['cookieStore'],
+	emits: ['update-filters', 'reset-filters', 'handle-overlay'],
 	props: {
 		totalLoans: {
 			type: Number,
@@ -394,7 +395,7 @@ export default {
 		display: none;
 	}
 
-	@media screen and (min-width: 600px) {
+	@media screen and (width >= 600px) {
 		.placeholder {
 			display: flex;
 		}
@@ -404,7 +405,7 @@ export default {
 		overflow-x: auto;
 	}
 
-	@media screen and (min-width: 734px) {
+	@media screen and (width >= 734px) {
 		.overflow-container {
 			overflow-x: visible;
 		}
@@ -416,13 +417,13 @@ export default {
 
 	.filter-pill {
 		padding: 10px 0 10px 50px;
-		box-shadow: 0 calc(4px) calc(15px) 0 rgba(0, 0, 0, 0.05);
+		box-shadow: 0 calc(4px) calc(15px) 0 rgb(0 0 0 / 5%);
 		min-width: 160px;
 		border-right: 20px transparent solid;
 		@apply focus:tw-outline-none focus:tw-border-transparent;
 	}
 
-	#customizedSortBySelector >>> select {
+	#customizedSortBySelector :deep(select) {
 		border-style: none;
 		padding: 0 0 0 4px;
 		width: auto;
@@ -434,7 +435,7 @@ export default {
 		@apply focus:tw-ring-0 focus:tw-ring-offset-0;
 	}
 
-	#customizedSortBySelector >>> span:nth-child(2) {
+	#customizedSortBySelector :deep(span:nth-child(2)) {
 		display: none;
 	}
 </style>

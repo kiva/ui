@@ -26,7 +26,7 @@
 					<vue-qrcode
 						class="app-authentication__barcode"
 						:value="barcodeURI"
-						size="150"
+						:size="150"
 						level="L"
 						v-if="barcodeURI"
 					/>
@@ -66,7 +66,7 @@
 					<kv-verification-code-input
 						class="verification-code__input"
 						id="verification_code"
-						v-model="userVerificationCode"
+						@update="userVerificationCode = $event"
 					/>
 					<kv-loading-spinner
 						v-if="verificationPending"
@@ -80,7 +80,7 @@
 					<kv-button
 						class="tw-w-full"
 						type="submit"
-						:state="$v.userVerificationCode.$invalid ? 'disabled' : ''"
+						:state="v$.userVerificationCode?.$invalid ? 'disabled' : ''"
 						v-if="!verificationPending"
 					>
 						Done
@@ -102,24 +102,23 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { validationMixin } from 'vuelidate';
+import { useVuelidate } from '@vuelidate/core';
 import {
 	required, minLength, maxLength, numeric
-} from 'vuelidate/lib/validators';
+} from '@vuelidate/validators';
 import VueQrcode from 'qrcode.vue';
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
-import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
-import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
-import confirmOTPAuthenticatorEnrollment from '@/graphql/mutation/mfa/confirmOTPAuthenticatorEnrollment.graphql';
-import enrollOTPAuthenticator from '@/graphql/mutation/mfa/enrollOTPAuthenticator.graphql';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
+import FirstMFASetup from '#src/pages/Settings/FirstMFASetup';
+import RecoveryCodeConfirm from '#src/pages/Settings/RecoveryCodeConfirm';
+import confirmOTPAuthenticatorEnrollment from '#src/graphql/mutation/mfa/confirmOTPAuthenticatorEnrollment.graphql';
+import enrollOTPAuthenticator from '#src/graphql/mutation/mfa/enrollOTPAuthenticator.graphql';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'AppAuthentication',
 	inject: ['apollo', 'kvAuth0'],
-	mixins: [validationMixin],
 	props: {
 		first: {
 			type: Boolean,
@@ -135,13 +134,15 @@ export default {
 		RecoveryCodeConfirm,
 		VueQrcode,
 	},
-	validations: {
-		userVerificationCode: {
-			required,
-			minLength: minLength(6),
-			maxLength: maxLength(6),
-			numeric
-		}
+	validations() {
+		return {
+			userVerificationCode: {
+				required,
+				minLength: minLength(6),
+				maxLength: maxLength(6),
+				numeric
+			}
+		};
 	},
 	data() {
 		return {
@@ -157,10 +158,11 @@ export default {
 			verificationError: '',
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	mounted() {
 		this.startEnrollment();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.lightboxVisible = false;
 	},
 	methods: {
@@ -278,7 +280,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .app-authentication {
 	&__body {

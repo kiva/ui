@@ -19,9 +19,9 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
-import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
-import logFormatter from '@/util/logFormatter';
+import { gql } from 'graphql-tag';
+import initAutolending from '#src/graphql/mutation/autolending/initAutolending.graphql';
+import logFormatter from '#src/util/logFormatter';
 import SaveButton from './SaveButton';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
@@ -103,7 +103,7 @@ export default {
 	mounted() {
 		window.addEventListener('beforeunload', this.onLeave);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.onLeave);
 	},
 	methods: {
@@ -118,7 +118,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .autolending {
 	.button {
@@ -127,7 +127,7 @@ export default {
 			width: 1rem;
 			height: 1rem;
 
-			& >>> .line {
+			& :deep(.line) {
 				background-color: $white;
 			}
 		}

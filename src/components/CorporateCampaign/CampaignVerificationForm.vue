@@ -16,7 +16,7 @@
 			<div class="tw-text-center">
 				<kv-button
 					class="text-link"
-					@click.native="optOut"
+					@click="optOut"
 				>
 					No thanks, I'll opt out
 				</kv-button>
@@ -26,16 +26,16 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import logFormatter from '@/util/logFormatter';
-import parseSPCookie from '@/util/parseSPCookie';
-import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
+import { gql } from 'graphql-tag';
+import logFormatter from '#src/util/logFormatter';
+import parseSPCookie from '#src/util/parseSPCookie';
+import KvButton from '#src/components/Kv/KvButton';
+import KvLightbox from '#src/components/Kv/KvLightbox';
 
 export default {
 	name: 'CampaignVerificationForm',
 	inject: ['apollo', 'cookieStore'],
-	metaInfo: {
+	head: {
 		// script: [
 		// 	{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
 		// ],
@@ -44,6 +44,7 @@ export default {
 		KvLightbox,
 		KvButton,
 	},
+	emits: ['verification-complete', 'campaign-verification-opt-out'],
 	props: {
 		formId: {
 			type: String,
@@ -133,7 +134,7 @@ export default {
 			});
 		},
 		setFrameSrc() {
-			if (!this.$isServer && window && window.location && this.formId) {
+			if (typeof window !== 'undefined' && window && window.location && this.formId) {
 				// eslint-disable-next-line max-len
 				this.iFrameSrc = `https://kiva.tfaforms.net/${this.formId}?tfa_1=${this.userId}&tfa_2=${this.maId}&tfa_3=${this.pfId}&tfa_4=${this.spId}&tfa_5=${this.spUserId}`;
 			}
@@ -189,6 +190,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 </style>

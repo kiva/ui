@@ -1,13 +1,11 @@
-import { addParameters } from '@storybook/vue';
-import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
-import Vue from 'vue';
-import Meta from 'vue-meta';
-import VueRouter from 'vue-router'
-import KvThemeProvider from '~/@kiva/kv-components/vue/KvThemeProvider';
-import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors';
-
-//load all the svg icon sprites
-import '@/assets/iconLoader';
+import { setup } from '@storybook/vue3';
+import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { VueHeadMixin, createHead } from '@unhead/vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider.vue';
+import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
+import changeCaseFilter from '../src/plugins/change-case-filter';
+import numeralFilter from '../src/plugins/numeral-filter';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
@@ -22,19 +20,45 @@ import './storybookStyles.scss';
 // import config file for storybook environment
 import config from '../config/local';
 
-// initialize vue-meta
-Vue.use(Meta);
+setup((app) => {
+	// Create a new router instance
+	const router = createRouter({
+		history: createWebHistory(),
+		routes: [],
+	});
+	app.use(router);
 
-// Mock the analytics Vue plugin
-Vue.use({ install: Vue => {
-	Vue.directive('kv-track-event', () => {});
-	Vue.prototype.$kvTrackEvent = () => {};
-}});
+	// Mock the analytics Vue plugin
+	app.directive('kv-track-event', () => { });
+	app.config.globalProperties.$kvTrackEvent = () => { };
+	app.config.globalProperties.$kvTrackSelfDescribingEvent = () => { };
 
-Vue.use(VueRouter)
+	// provide global application config
+	app.config.globalProperties.$appConfig = config.app;
 
-// provide global application config
-Vue.prototype.$appConfig = config.app;
+	// Provide $filters
+	app.config.globalProperties.$filters = {
+		changeCase: changeCaseFilter,
+		numeral: numeralFilter,
+	};
+
+	// initialize unhead
+	const head = createHead();
+	// head for composition api
+	app.use(head);
+	// head for options api
+	app.mixin(VueHeadMixin);
+
+	// install dovetail font
+	head.push({
+		link: [
+			{
+				rel: 'stylesheet',
+				href: 'https://use.typekit.net/pmj7shs.css',
+			},
+		],
+	});
+});
 
 // add custom viewports
 const customViewports = {
@@ -62,10 +86,10 @@ const customViewports = {
 };
 
 
-addParameters({
+export const parameters = {
 	options: {
 		storySort: (a, b) => { // sort the categories alphabetically.
-			return a[1].kind === b[1].kind ? 0 : a[1].id.localeCompare(b[1].id, undefined, { numeric: true });
+			return a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true });
 		},
 		showRoots: true,
 		enableShortcuts: false,
@@ -91,18 +115,18 @@ addParameters({
 		],
 	},
 	viewport: {
-    viewports: {
+		viewports: {
 			...MINIMAL_VIEWPORTS,
 			...customViewports,
-    },
-  },
-});
+		},
+	},
+};
 
 // Wrap all stories with the kv-theme-provider component
 export const decorators = [(story) => ({
 	components: { story, KvThemeProvider },
 	template: '<kv-theme-provider :theme="theme"><story /></kv-theme-provider>',
 	data() { return { theme: defaultTheme } },
-	router: new VueRouter(),
+	// router: new VueRouter(),
 })];
 

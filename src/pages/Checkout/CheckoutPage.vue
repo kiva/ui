@@ -219,7 +219,7 @@
 				:form-id="externalFormId"
 				:ma-id="String(managedAccountId)"
 				:pf-id="String(promoFundId)"
-				:user-id="String(this.myId)"
+				:user-id="String(myId)"
 				@verification-complete="verificationComplete"
 				@campaign-verification-opt-out="handleVerificationOptOut"
 			/>
@@ -250,7 +250,7 @@
 						<router-link
 							to="/lend-by-category"
 							data-testid="empty-basket-loans-link"
-							v-kv-track-event.native="
+							v-kv-track-event="
 								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
 							"
 						>
@@ -284,63 +284,64 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import { readBoolSetting } from '@/util/settingsUtils';
-import { preFetchAll } from '@/util/apolloPreFetch';
-import syncDate from '@/util/syncDate';
-import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import { preFetchAll } from '#src/util/apolloPreFetch';
+import syncDate from '#src/util/syncDate';
+import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
 import {
 	achievementsQuery,
 	achievementProgression,
-} from '@/util/achievementUtils';
-import { getPromoFromBasket } from '@/util/campaignUtils';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
-import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
-import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
-import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUser.graphql';
-import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
-import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
-import OrderTotals from '@/components/Checkout/OrderTotals';
-import BasketItemsList from '@/components/Checkout/BasketItemsList';
-import BasketVerification from '@/components/Checkout/BasketVerification';
-import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
-import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
-import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
-import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import EmptyBasketCarousel from '@/components/Checkout/EmptyBasketCarousel';
-import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import upsellQuery from '@/graphql/query/checkout/upsellLoans.graphql';
-import UpsellModule from '@/components/Checkout/UpsellModule';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+} from '#src/util/achievementUtils';
+import { getPromoFromBasket } from '#src/util/campaignUtils';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
+import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
+import shopBasketUpdate from '#src/graphql/query/checkout/shopBasketUpdate.graphql';
+import setupBasketForUserMutation from '#src/graphql/mutation/shopSetupBasketForUser.graphql';
+import validatePreCheckoutMutation from '#src/graphql/mutation/shopValidatePreCheckout.graphql';
+import validationErrorsFragment from '#src/graphql/fragments/checkoutValidationErrors.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import KivaCreditPayment from '#src/components/Checkout/KivaCreditPayment';
+import OrderTotals from '#src/components/Checkout/OrderTotals';
+import BasketItemsList from '#src/components/Checkout/BasketItemsList';
+import BasketVerification from '#src/components/Checkout/BasketVerification';
+import KivaCardRedemption from '#src/components/Checkout/KivaCardRedemption';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import CampaignVerificationForm from '#src/components/CorporateCampaign/CampaignVerificationForm';
+import CampaignJoinTeamForm from '#src/components/CorporateCampaign/CampaignJoinTeamForm';
+import CheckoutHolidayPromo from '#src/components/Checkout/CheckoutHolidayPromo';
+import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
+import EmptyBasketCarousel from '#src/components/Checkout/EmptyBasketCarousel';
+import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
+import upsellQuery from '#src/graphql/query/checkout/upsellLoans.graphql';
+import UpsellModule from '#src/components/Checkout/UpsellModule';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
-import { isLoanFundraising } from '@/util/loanUtils';
-import MatchedLoansLightbox from '@/components/Checkout/MatchedLoansLightbox';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '@/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '@/plugins/huge-lend-amount-mixin';
-import iwdExperimentMixin from '@/plugins/iwd-experiment-mixin';
-import FtdsMessage from '@/components/Checkout/FtdsMessage';
-import FtdsDisclaimer from '@/components/Checkout/FtdsDisclaimer';
-import { removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { isLoanFundraising } from '#src/util/loanUtils';
+import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
+import iwdExperimentMixin from '#src/plugins/iwd-experiment-mixin';
+import FtdsMessage from '#src/components/Checkout/FtdsMessage';
+import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
+import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
+const THANKS_BADGES_EXP = 'thanks_badges';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -384,7 +385,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
-	metaInfo: {
+	head: {
 		title: 'Checkout'
 	},
 	data() {
@@ -531,7 +532,7 @@ export default {
 		this.showCheckoutError(validationErrors, true);
 
 		// Fire error for empty shop state
-		if (!this.isServer && !this.totals) {
+		if (typeof window !== 'undefined' && !this.totals) {
 			Sentry.withScope(scope => {
 				scope.setTag('init_checkout', 'Missing baseline basket information');
 				Sentry.captureMessage(`Missing baseline basket information; totals value is ${this.totals}.`);
@@ -626,9 +627,9 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// Don't fetch challenge status if IWD2024 experiment is enabled
+		// Don't fetch challenge status if IWD2024 experiment or Badge Experiment are enabled
 		// to avoid being redirected to the challenge thank you page
-		if (!this.iwdExpEnabled) {
+		if (!this.iwdExpEnabled && !this.isTYBadgesExperimentActive()) {
 			// Fetch Challenge Status
 			// If a loan in basket makes progress towards an active challenge,
 			// set query param to redirect to special thank you page
@@ -644,9 +645,10 @@ export default {
 	},
 	computed: {
 		isUpsellUnder100() {
-			const amountLeft = this.upsellLoan?.loanAmount
-			- this.upsellLoan?.loanFundraisingInfo?.fundedAmount
-			- this.upsellLoan?.loanFundraisingInfo?.reservedAmount || 0;
+			const loanAmount = this.upsellLoan?.loanAmount ?? 0;
+			const fundedAmount = this.upsellLoan?.loanFundraisingInfo?.fundedAmount ?? 0;
+			const reservedAmount = this.upsellLoan?.loanFundraisingInfo?.reservedAmount ?? 0;
+			const amountLeft = loanAmount - fundedAmount - reservedAmount;
 			return amountLeft < 100;
 		},
 		showIncentiveUpsell() {
@@ -810,7 +812,7 @@ export default {
 
 						// Refetch the queries for all the components in this route. All the components that use
 						// the default options for the apollo plugin or that setup their own query observer will update
-						const matched = this.$router.getMatchedComponents(this.$route);
+						const { matched } = this.$route;
 						// When this is initially called the graphql doesn't have the auth token
 						// This has the unfortunate side affect of resetting the recently set userId from the login
 						return preFetchAll(matched, this.apollo, {
@@ -1118,21 +1120,30 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
+		isTYBadgesExperimentActive() {
+			// TY Badge experiment MP-387
+			const thanksBadgeExp = this.apollo.readFragment({
+				id: `Experiment:${THANKS_BADGES_EXP}`,
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			return thanksBadgeExp?.version;
+		}
 	},
-	destroyed() {
+	unmounted() {
 		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .upsellContainer,
 .upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
-@media screen and (max-width: 733px) {
+@media screen and (width <= 733px) {
 	.upsellContainer,
 	.upsellContainer > .loading-placeholder {
 		min-height: 300px;
@@ -1143,7 +1154,7 @@ export default {
 	// loading overlay overrides
 	#loading-overlay,
 	#updating-overlay {
-		background-color: rgba(255, 255, 255, 0.7);
+		background-color: rgb(255 255 255 / 70%);
 	}
 }
 </style>

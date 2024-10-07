@@ -14,7 +14,7 @@
 			<p v-html="valueBody"></p>
 		</div>
 		<div
-			class="md:tw-flex-1 tw-block
+			class="md:tw-flex-1
 			tw-order-first md:tw-order-last
 			md:tw-px-4
 			tw-mb-2 md:tw-mb-4
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '~/@kiva/kv-components/vue/KvContentfulImg';
+import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
 
 export default {
 	name: 'AutomaticallySupportNotice',

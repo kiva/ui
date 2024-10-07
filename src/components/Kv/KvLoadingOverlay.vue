@@ -8,8 +8,8 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import getCacheKey from '@/util/getCacheKey';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import getCacheKey from '#src/util/getCacheKey';
 
 export default {
 	name: 'KvLoadingOverlay',
@@ -53,14 +53,14 @@ export default {
 		this.onScroll();
 		window.addEventListener('scroll', this.throttledScroll);
 	},
-	destroyed() {
+	unmounted() {
 		window.removeEventListener('scroll', this.throttledScroll);
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .loading-overlay {
 	position: absolute;

@@ -6,7 +6,7 @@
 					key="tags"
 					:items="tagsWithSelected"
 					:use-columns="true"
-					@change="onChange"
+					@update="onChange"
 				/>
 			</div>
 		</div>
@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
-import CheckList from '@/pages/Autolending/CheckList';
+import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from '#src/pages/Autolending/CheckList';
 
 export default {
 	name: 'TagFilter',
@@ -25,6 +25,7 @@ export default {
 	mixins: [
 		anyOrSelectedAutolendingFilter
 	],
+	emits: ['updated-filters'],
 	props: {
 		allTags: {
 			type: Array,
@@ -116,6 +117,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import 'settings';
+// @import '#src/assets/scss/settings';
 
 </style>

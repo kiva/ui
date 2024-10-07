@@ -116,15 +116,15 @@
 </template>
 
 <script>
-import { isCCPage } from '@/util/urlUtils';
-import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
-import LoanMatcher from '@/components/Checkout/LoanMatcher';
-import LoanPromoCredits from '@/components/Checkout/LoanPromoCredits';
-import LoanReservation from '@/components/Checkout/LoanReservation';
-import LoanPrice from '@/components/Checkout/LoanPrice';
-import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
-import TeamAttribution from '@/components/Checkout/TeamAttribution';
-import { getForcedTeamId, removeLoansFromChallengeCookie } from '@/util/teamChallengeUtils';
+import { isCCPage } from '#src/util/urlUtils';
+import CheckoutItemImg from '#src/components/Checkout/CheckoutItemImg';
+import LoanMatcher from '#src/components/Checkout/LoanMatcher';
+import LoanPromoCredits from '#src/components/Checkout/LoanPromoCredits';
+import LoanReservation from '#src/components/Checkout/LoanReservation';
+import LoanPrice from '#src/components/Checkout/LoanPrice';
+import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
+import TeamAttribution from '#src/components/Checkout/TeamAttribution';
+import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 
 export default {
 	name: 'BasketItem',
@@ -138,6 +138,12 @@ export default {
 		TeamAttribution
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: [
+		'refreshtotals',
+		'updating-totals',
+		'jump-to-loans',
+		'validateprecheckout',
+	],
 	props: {
 		disableRedirects: {
 			type: Boolean,
@@ -205,7 +211,10 @@ export default {
 		teams: {
 			handler() {
 				this.forceTeamId = getForcedTeamId(
-					this.cookieStore, this.loan.id, this.combinedTeams, this.appendedTeams
+					this.cookieStore,
+					this.loan.id,
+					this.combinedTeams,
+					this.appendedTeams
 				);
 			},
 			immediate: true

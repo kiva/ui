@@ -75,7 +75,7 @@
 						data-test="when-save-button"
 						class="smaller button"
 						v-if="!isSaving"
-						@click.native="save"
+						@click="save"
 						:disabled="!isChanged"
 					>
 						Save
@@ -93,15 +93,15 @@
 
 <script>
 import _get from 'lodash/get';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import _isFinite from 'lodash/isFinite';
 
-import KvButton from '@/components/Kv/KvButton';
-import KvSelect from '@/components/Kv/KvSelect';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvRadio from '@/components/Kv/KvRadio';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
+import KvButton from '#src/components/Kv/KvButton';
+import KvSelect from '#src/components/Kv/KvSelect';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvRadio from '#src/components/Kv/KvRadio';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 
 import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';
@@ -221,7 +221,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .autolending-when-lightbox {
 	.when-inputs-wrapper {
@@ -238,7 +238,7 @@ export default {
 	line-height: 2.7rem;
 }
 
-::v-deep .dropdown {
+:deep(.dropdown) {
 	margin-bottom: 0;
 }
 </style>

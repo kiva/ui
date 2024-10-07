@@ -22,7 +22,7 @@
 					</div>
 
 					<img
-						:src="imageRequire(`./equity-badge.svg`)"
+						:src="imageRequire('equity-badge.svg')"
 						class="badge tw-z-2"
 						alt="Gift icon"
 					>
@@ -103,14 +103,16 @@
 </template>
 
 <script>
-import KvExpandable from '@/components/Kv/KvExpandable';
-import AnimatedStars from '@/components/Thanks/AnimatedStars';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import AnimatedStars from '#src/components/Thanks/AnimatedStars';
 import { mdiChevronDown } from '@mdi/js';
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/thanks-page/', true);
+const imageGlob = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true, query: '?url' });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/thanks-page/');
 
 export default {
 	name: 'RevealedBadge',
@@ -121,6 +123,7 @@ export default {
 		AnimatedStars,
 		GuestAccountCreation,
 	},
+	emits: ['show-discover-badges'],
 	props: {
 		isGuest: {
 			type: Boolean,
@@ -154,11 +157,11 @@ export default {
 	@apply tw-flex tw-items-center tw-justify-center tw-mx-auto tw-rounded-lg;
 }
 
-.no-border >>> span {
+.no-border :deep(span) {
 	@apply tw-bg-transparent tw-border-0;
 }
 
-.account-creation >>> input {
+.account-creation :deep(input) {
 	@apply tw-bg-stone-1;
 }
 

@@ -1,8 +1,8 @@
-import LoanSpotlight from '@/components/Categories/LoanSpotlight';
+import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 
 const loanHorizontal = {
 	id: 2389631,
@@ -42,7 +42,7 @@ const loanVertical = {
 
 const loanAverage = {
 	id: 2387011,
-	description: "Atsupe is a young, 27-year-old woman who is married and has 3 children. She sells food and gets her supplies at the market.<br /><br />She is requesting a loan to develop her business by buying a large number of bags of cassava flour and rice.<br /><br />She wants to satisfy her customers and earn some money for her family.",								lenderRepaymentTerm: 7,
+	description: "Atsupe is a young, 27-year-old woman who is married and has 3 children. She sells food and gets her supplies at the market.<br /><br />She is requesting a loan to develop her business by buying a large number of bags of cassava flour and rice.<br /><br />She wants to satisfy her customers and earn some money for her family.", lenderRepaymentTerm: 7,
 	anonymizationLevel: "none",
 	geocode: {
 		city: "Tokoin",
@@ -97,10 +97,16 @@ export const SpotlightLoanLoading = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ loading: true }), cookieStoreStoryMixin()],
 	components: { LoanSpotlight },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
 		<loan-spotlight
-		:category-slug="categorySlug"
-		:fallback-category-slug="fallbackCategorySlug"
+			:category-slug="categorySlug"
+			:fallback-category-slug="fallbackCategorySlug"
 		 />
 		`,
 });
@@ -109,10 +115,16 @@ export const SpotlightLoanHorizontal = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ queryResult: getLoan(loanHorizontal) }), cookieStoreStoryMixin()],
 	components: { LoanSpotlight },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
 		<loan-spotlight
-		:category-slug="categorySlug"
-		:fallback-category-slug="fallbackCategorySlug"
+			:category-slug="categorySlug"
+			:fallback-category-slug="fallbackCategorySlug"
 		 />
 		`,
 });
@@ -121,22 +133,34 @@ export const SpotlightLoanVertical = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ queryResult: getLoan(loanVertical) }), cookieStoreStoryMixin()],
 	components: { LoanSpotlight },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
 		<loan-spotlight
-		:category-slug="categorySlug"
-		:fallback-category-slug="fallbackCategorySlug"
+			:category-slug="categorySlug"
+			:fallback-category-slug="fallbackCategorySlug"
 		 />
 		`,
 });
 
-export const SpotlightLoanAverageSize= (args, { argTypes }) => ({
+export const SpotlightLoanAverageSize = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ queryResult: getLoan(loanAverage) }), cookieStoreStoryMixin()],
 	components: { LoanSpotlight },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
 		<loan-spotlight
-		:category-slug="categorySlug"
-		:fallback-category-slug="fallbackCategorySlug"
+			:category-slug="categorySlug"
+			:fallback-category-slug="fallbackCategorySlug"
 		 />
 		`,
 });
@@ -145,6 +169,12 @@ export const SpotlightLoanDoubleAverage = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ queryResult: getLoan(loanAverage) }), cookieStoreStoryMixin()],
 	components: { LoanSpotlight },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
 		<div style="width: 100%; max-width: 1200px; display:flex">
 			<div>
@@ -164,24 +194,30 @@ export const SpotlightLoanDoubleAverage = (args, { argTypes }) => ({
 
 });
 
-export const SpotlightLoanInsideGrid= (args, { argTypes }) => ({
+export const SpotlightLoanInsideGrid = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin({ queryResult: getLoan(loanAverage) }), cookieStoreStoryMixin()],
-	components: { LoanSpotlight, KvGrid, KvPageContainer  },
+	components: { LoanSpotlight, KvGrid, KvPageContainer },
+	setup() {
+		return {
+			categorySlug: 'recommended-by-lenders',
+			fallbackCategorySlug: 'women'
+		};
+	},
 	template: `
-	<kv-page-container>
-		<kv-grid class="tw-grid-cols-12">
-			<div class="tw-col-span-12 lg:tw-col-span-6">
-				<loan-spotlight
-				:category-slug="categorySlug"
-				:fallback-category-slug="fallbackCategorySlug"
-				/>
-			</div>
-			<div class="tw-col-span-12 lg:tw-col-span-6 tw-bg-secondary tw-p-5">
-				Other Content
-			</div>
-		 </kv-grid>
-	</kv-page-container>
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12">
+				<div class="tw-col-span-12 lg:tw-col-span-6">
+					<loan-spotlight
+					:category-slug="categorySlug"
+					:fallback-category-slug="fallbackCategorySlug"
+					/>
+				</div>
+				<div class="tw-col-span-12 lg:tw-col-span-6 tw-bg-secondary tw-p-5">
+					Other Content
+				</div>
+			</kv-grid>
+		</kv-page-container>
 	`,
 });
 

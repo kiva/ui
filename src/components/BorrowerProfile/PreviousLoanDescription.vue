@@ -1,7 +1,7 @@
 <template>
 	<section data-testid="bp-story-previous-loan">
 		<kv-text-link
-			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', this.loanId]"
+			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', loanId]"
 			@click.prevent="performClick"
 		>
 			Show previous loan details
@@ -29,7 +29,7 @@
 				</p>
 
 				<router-link
-					v-if="previousLoanId && this.borrowerOrGroupName !== ''"
+					v-if="previousLoanId && borrowerOrGroupName !== ''"
 					:to="`/lend/${previousLoanId}`"
 					:data-testid="`bp-story-previous-loan-link`"
 					v-kv-track-event="[
@@ -39,7 +39,7 @@
 						previousLoanId
 					]"
 				>
-					{{ this.borrowerOrGroupName }}'s previous loan
+					{{ borrowerOrGroupName }}'s previous loan
 				</router-link>
 			</div>
 		</kv-expandable>
@@ -48,11 +48,11 @@
 
 <script>
 import { mdiChevronDown } from '@mdi/js';
-import { toParagraphs } from '@/util/loanUtils';
-import { gql } from '@apollo/client';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import KvTextLink from '~/@kiva/kv-components/vue/KvTextLink';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import { toParagraphs } from '#src/util/loanUtils';
+import { gql } from 'graphql-tag';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
 	lend {

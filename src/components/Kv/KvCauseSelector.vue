@@ -53,15 +53,18 @@
 
 <script>
 import { paramCase } from 'change-case';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon from '#src/components/Kv/KvIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/cause-selector/', true);
+const imageRequire = import.meta.glob('/src/assets/images/cause-selector/*.*', { eager: true });
+const images = metaGlobReader(imageRequire, '/src/assets/images/cause-selector/');
 
 export default {
 	name: 'KvCauseSelector',
 	components: {
 		KvIcon
 	},
+	emits: ['change'],
 	props: {
 		/**
 		 * The cause to display
@@ -110,10 +113,10 @@ export default {
 	},
 	computed: {
 		causeImageSrc() {
-			return imageRequire(`./${paramCase(this.cause)}.png`);
+			return images(`${paramCase(this.cause)}.png`);
 		},
 		causeImage2xSrc() {
-			return imageRequire(`./${paramCase(this.cause)}_2x.png`);
+			return images(`${paramCase(this.cause)}_2x.png`);
 		},
 	},
 	methods: {
@@ -131,10 +134,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
-$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
-$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
+$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgb(0 0 0 / 15%);
+$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgb(0 0 0 / 35%);
 
 .kv-cause-selector {
 	width: rem-calc(120);

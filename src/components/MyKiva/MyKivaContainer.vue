@@ -10,18 +10,9 @@
 	</div>
 </template>
 
-<script>
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-
-export default {
-	name: 'MyKivaContainer',
-	components: {
-		KvPageContainer,
-		KvGrid,
-	},
-};
-
+<script setup>
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 </script>
 
 <style lang="postcss" scoped>

@@ -21,7 +21,7 @@
 				<kv-select
 					id="category"
 					v-model="teamCategory"
-					@update:modelValue="pushChangesToUrl"
+					@update:model-value="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamCategory]"
 				>
 					<option v-for="(category, index) in teamCategories" :key="index" :value="category.value">
@@ -33,7 +33,7 @@
 				<kv-select
 					id="categoryTeams"
 					v-model="teamOption"
-					@update:modelValue="pushChangesToUrl"
+					@update:model-value="pushChangesToUrl"
 					v-kv-track-event="['teams', 'filter', 'teams-search', teamOption]"
 				>
 					<option value="">
@@ -56,7 +56,7 @@
 				<div>
 					<kv-select
 						id="categorySort" v-model="teamSort"
-						@update:modelValue="pushChangesToUrl"
+						@update:model-value="pushChangesToUrl"
 					>
 						<!-- <option value="recentActivityScore">
 							Recent Activity
@@ -250,14 +250,14 @@
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
-import teamNoImage from '@/assets/images/team_s135.png';
-import { gql } from '@apollo/client';
-import KvPagination from '~/@kiva/kv-components/vue/KvPagination';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import teamNoImage from '#src/assets/images/team_s135.png';
+import { gql } from 'graphql-tag';
+import KvPagination from '@kiva/kv-components/vue/KvPagination';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 const teamsPerPage = 10;
 
@@ -384,7 +384,7 @@ export default {
 			this.pageQuery = { page: this.offset / this.limit };
 			this.pushChangesToUrl();
 		},
-		pushChangesToUrl() {
+		async pushChangesToUrl() {
 			const pushToRouter = variable => {
 				this.$router.push({
 					query: {
@@ -405,7 +405,7 @@ export default {
 			if (this.teamCategory === '' && this.teamCategory !== this.$route.query?.category) {
 				const query = { ...this.$route.query };
 				delete query?.category;
-				this.$router.replace({ query });
+				await this.$router.push({ query });
 			}
 			if (this.teamOption && this.teamOption !== this.$route.query?.teamOption) {
 				pushToRouter('teamOption');
@@ -414,7 +414,7 @@ export default {
 			if (this.teamOption === '' && this.teamOption !== this.$route.query?.teamOption) {
 				const query = { ...this.$route.query };
 				delete query?.teamOption;
-				this.$router.replace({ query });
+				await this.$router.push({ query });
 			}
 			if (this.queryString && this.queryString !== this.$route.query?.queryString) {
 				pushToRouter('queryString');
@@ -435,8 +435,15 @@ export default {
 			teamSort, teamCategory, teamOption, queryString, offset
 		}) {
 			this.loading = true;
-			await fetchTeams(this.apollo, teamSort, teamCategory, teamOption,
-				queryString, offset, this.limit).then(teams => {
+			await fetchTeams(
+				this.apollo,
+				teamSort,
+				teamCategory,
+				teamOption,
+				queryString,
+				offset,
+				this.limit
+			).then(teams => {
 				this.teams = teams.values;
 				this.totalCount = teams.totalCount;
 				if (this.teams.length === 0 && this.totalCount > 0) {

@@ -83,9 +83,9 @@
 </template>
 
 <script>
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvUiButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvUiButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'CampaignProgressBar',
@@ -94,6 +94,7 @@ export default {
 		KvUiButton,
 		KvGrid
 	},
+	emits: ['show-basket'],
 	props: {
 		promoAmount: {
 			type: String,

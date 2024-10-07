@@ -128,13 +128,13 @@
 
 <script>
 import numeral from 'numeral';
-import teamNoImage from '@/assets/images/team_s135.png';
+import teamNoImage from '#src/assets/images/team_s135.png';
 import _throttle from 'lodash/throttle';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabPanel from '~/@kiva/kv-components/vue/KvTabPanel';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
 export default {
 	name: 'TeamLeaderboard',
@@ -209,18 +209,18 @@ export default {
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledResize);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledResize);
 	},
 };
 </script>
 
 <style scoped lang="postcss">
-	.leaderboard-tabs .members-leaderboard >>> div {
+	.leaderboard-tabs .members-leaderboard :deep(div) {
 		@apply tw-mb-0;
 	}
 
-	.leaderboard-tabs >>> div[role="tablist"] {
+	.leaderboard-tabs :deep(div[role=tablist]) {
 		@apply tw-gap-x-1 md:tw-gap-x-2 lg:tw-gap-x-3 tw-mb-1;
 	}
 </style>

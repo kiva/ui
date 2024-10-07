@@ -55,7 +55,7 @@
 					:is-simple-lend-button="true"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 
-					@click.native="trackInteraction({
+					@click="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
 					})"
@@ -75,19 +75,20 @@
 </template>
 
 <script>
-import activeLoanMixin from '@/plugins/active-loan-mixin';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import BorrowerInfoHeaderExpandable from '@/components/LoanCards/BorrowerInfo/BorrowerInfoHeaderExpandable';
-import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
-import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
-import KvIcon from '@/components/Kv/KvIcon';
+import activeLoanMixin from '#src/plugins/active-loan-mixin';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
+import BorrowerInfoHeaderExpandable from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoHeaderExpandable';
+import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
+import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import expandableLoanCardMixin from '#src/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
+import categoryRowArrowsVisibleMixin from '#src/plugins/category-row-arrows-visible-mixin';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'ExpandableLoanCard',
+	emits: ['add-to-basket', 'track-interaction'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -126,7 +127,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .expandable-loan-card {
 	background-color: $white;
@@ -168,7 +169,7 @@ export default {
 	.expandable-loan-card-bottom {
 		border: 1px solid $kiva-stroke-gray;
 		border-top: none;
-		padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+		padding: 0.5rem 0.75rem 0.75rem;
 		max-height: rem-calc(100);
 		transition: max-height ease-out 0.2s;
 		overflow-y: hidden;
@@ -179,7 +180,7 @@ export default {
 	}
 
 	&.expanded {
-		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgb(0 0 0 / 10%);
 
 		.expandable-loan-card-bottom {
 			max-height: rem-calc(450);

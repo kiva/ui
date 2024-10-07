@@ -6,7 +6,7 @@
 					<div
 						v-if="fetchedLogoUrl"
 						class="tw-w-14 tw-h-14 tw-flex tw-justify-center
-							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2 tw-border
+							tw-items-center tw-rounded-full tw-z-1 tw-bg-white tw--mr-2
 							tw-border-white tw-border-4 logo"
 					>
 						<img
@@ -16,8 +16,8 @@
 						>
 					</div>
 					<div
-						class="tw-w-14 tw-h-14 tw-rounded-full tw-border tw-border-white
-					tw-border-4 tw-overflow-hidden logo"
+						class="tw-w-14 tw-h-14 tw-rounded-full tw-border-white
+							tw-border-4 tw-overflow-hidden logo"
 					>
 						<img
 							src="../../assets/images/kiva_k_cutout_new.jpg"
@@ -39,36 +39,38 @@
 				:action="`https://${$appConfig.auth0.domain}/continue?state=${$route.query.state}`"
 				@submit="postRegisterSocialForm"
 			>
-				<kv-base-input
-					name="firstName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-show="needsNames"
-					v-model.trim="firstName"
-					:validation="$v.firstName"
-				>
-					First name
-					<template #required>
-						Enter first name.
-					</template>
-				</kv-base-input>
-				<kv-base-input
-					name="lastName"
-					class="data-hj-suppress tw-w-full tw-mb-4"
-					type="text"
-					v-show="needsNames"
-					v-model.trim="lastName"
-					:validation="$v.lastName"
-				>
-					Last name
-					<template #required>
-						Enter last name.
-					</template>
-				</kv-base-input>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="firstName"
+						type="text"
+						v-show="true"
+						v-model.trim="firstName"
+						:validation="v$.firstName"
+					>
+						First name
+						<template #required>
+							Enter first name.
+						</template>
+					</kv-base-input>
+				</div>
+				<div class="data-hj-suppress tw-w-full tw-mb-4">
+					<kv-base-input
+						name="lastName"
+						type="text"
+						v-show="needsNames"
+						v-model.trim="lastName"
+						:validation="v$.lastName"
+					>
+						Last name
+						<template #required>
+							Enter last name.
+						</template>
+					</kv-base-input>
+				</div>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="authentication"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 				/>
 				<input
 					v-if="enableRadioBtnExperiment"
@@ -83,8 +85,8 @@
 						type="checkbox"
 						v-show="needsTerms"
 						v-model="newAcctTerms"
-						:validation="$v.newAcctTerms"
-						@update:modelValue="$kvTrackEvent(
+						:validation="v$.newAcctTerms"
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'terms-of-use',
@@ -109,7 +111,7 @@
 						type="checkbox"
 						v-show="needsNews"
 						v-model="newsConsent"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'marketing-updates',
@@ -127,7 +129,7 @@
 					/>
 					<p
 						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
-						v-if="needsCaptcha && $v.captcha.$error"
+						v-if="needsCaptcha && v$.captcha?.$invalid"
 					>
 						Please complete the captcha.
 					</p>
@@ -156,24 +158,25 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, requiredIf } from 'vuelidate/lib/validators';
-import logReadQueryError from '@/util/logReadQueryError';
-import KvBaseInput from '@/components/Kv/KvBaseInput';
-import ReCaptchaEnterprise from '@/components/Forms/ReCaptchaEnterprise';
-import SystemPage from '@/components/SystemFrame/SystemPage';
-import strategicPartnerLoginInfoByPageIdQuery from '@/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import { computed } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, requiredIf } from '@vuelidate/validators';
+import logReadQueryError from '#src/util/logReadQueryError';
+import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
+import SystemPage from '#src/components/SystemFrame/SystemPage';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import strategicPartnerLoginInfoByPageIdQuery from '#src/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import UserUpdatesPreference from '#src/components/Checkout/UserUpdatesPreference';
+import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
 export default {
 	name: 'RegisterSocial',
-	metaInfo() {
+	head() {
 		return {
 			title: 'Complete registration'
 		};
@@ -185,12 +188,9 @@ export default {
 		SystemPage,
 		UserUpdatesPreference,
 	},
-	mixins: [
-		validationMixin,
-	],
 	provide() {
 		return {
-			$v: this.$v
+			v$: computed(() => this.v$),
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -221,6 +221,7 @@ export default {
 			enableRadioBtnExperiment: false,
 		};
 	},
+	setup() { return { v$: useVuelidate() }; },
 	computed: {
 		registrationMessage() {
 			const parts = [];
@@ -344,13 +345,14 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const pageId = route?.query?.partnerContentId;
+			const currentRoute = route.value ?? {};
+			const pageId = currentRoute.query?.partnerContentId;
 			if (!pageId) {
 				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
 			}
 			return client.query({
 				query: strategicPartnerLoginInfoByPageIdQuery,
-				variables: { pageId: route.query.partnerContentId ?? '' }
+				variables: { pageId: currentRoute.query.partnerContentId ?? '' }
 			});
 		}
 	},
@@ -358,9 +360,9 @@ export default {
 		postRegisterSocialForm(event) {
 			this.$kvTrackEvent('Register', 'click-register-social-cta', 'Complete registration');
 
-			this.$v.$touch();
+			this.v$.$touch();
 
-			if (!this.$v.$invalid) {
+			if (!this.v$.$invalid) {
 				// Set news consent based on comms preference MP-271
 				if (this.enableRadioBtnExperiment) {
 					this.newsConsent = this.selectedComms === '1';
@@ -380,11 +382,10 @@ export default {
 
 <style lang="postcss" scoped>
 .logo {
-	box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 18px rgba(0 0 0 / 20%);
 }
 
-.radio-error >>> label > div {
+.radio-error :deep(label > div) {
 	@apply tw-border-danger-highlight;
 }
-
 </style>

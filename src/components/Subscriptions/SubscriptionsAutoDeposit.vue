@@ -15,21 +15,21 @@
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ dayOfMonth | numeral('Oo') }}
+							{{ $filters.numeral(dayOfMonth, 'Oo') }}
 						</button>
 						of each month
 						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ mgAmount | numeral('$0,0.00') }}
+							{{ $filters.numeral(mgAmount, '$0,0.00') }}
 						</button>
 						will be transferred to your lending balance and
 						<button
 							class="tw-text-link tw-font-medium"
 							@click="showEditLightbox = true;"
 						>
-							{{ donation | numeral('$0,0.00') }}
+							{{ $filters.numeral(donation, '$0,0.00') }}
 						</button>
 						will be donated to Kiva.
 					</p>
@@ -66,10 +66,10 @@
 											<div class="row align-center tw-text-left">
 												<div class="small-12 columns">
 													<div class="row column">
-														<strong>Each month on the</strong>
+														<strong class="tw-pr-0.5">Each month on the</strong>
 														<label
 															class="tw-sr-only"
-															:class="{ 'error': $v.dayOfMonth.$invalid }"
+															:class="{ 'error': v$.dayOfMonth?.$invalid }"
 															for="dayOfMonth"
 														>
 															Day of the Month
@@ -91,17 +91,17 @@
 															@click="isDayInputShown = true"
 															v-if="!isDayInputShown"
 														>
-															<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+															<strong>{{ $filters.numeral(dayOfMonth, 'Oo') }}</strong>
 															<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 														</button>
-														<strong>we'll process the following:</strong>
-														<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-															<li v-if="!$v.dayOfMonth.required">
+														<strong class="tw-pl-0.5">we'll process the following:</strong>
+														<ul class="validation-errors" v-if="v$.dayOfMonth?.$invalid">
+															<li v-if="v$.dayOfMonth?.required?.$invalid">
 																Field is required
 															</li>
 															<li
-																v-if="!$v.dayOfMonth.minValue
-																	|| !$v.dayOfMonth.maxValue"
+																v-if="v$.dayOfMonth?.minValue?.$invalid
+																	|| v$.dayOfMonth?.maxValue?.$invalid"
 															>
 																Enter day of month between 1 and 31
 															</li>
@@ -123,7 +123,7 @@
 															<div class="small-6 medium-4 columns">
 																<label
 																	class="tw-sr-only"
-																	:class="{ 'error': $v.mgAmount.$invalid }"
+																	:class="{ 'error': v$.mgAmount?.$invalid }"
 																	for="amount"
 																>
 																	Amount
@@ -137,14 +137,14 @@
 														<div class="row columns align-middle">
 															<ul
 																class="tw-text-right validation-errors"
-																v-if="$v.mgAmount.$invalid"
+																v-if="v$.mgAmount?.$invalid"
 															>
-																<li v-if="!$v.mgAmount.required">
+																<li v-if="v$.mgAmount?.required?.$invalid">
 																	Field is required
 																</li>
 																<li
-																	v-if="!$v.mgAmount.minValue
-																		|| !$v.mgAmount.maxValue"
+																	v-if="v$.mgAmount?.minValue?.$invalid
+																		|| v$.mgAmount?.maxValue?.$invalid"
 																>
 																	Enter an amount of $5-$10,000
 																</li>
@@ -161,7 +161,7 @@
 															<div class="small-6 medium-4 columns">
 																<label
 																	class="tw-sr-only"
-																	:class="{ 'error': $v.donation.$invalid }"
+																	:class="{ 'error': v$.donation?.$invalid }"
 																	for="amount"
 																>
 																	Donation
@@ -175,11 +175,11 @@
 														<div class="row column align-middle">
 															<ul
 																class="tw-text-right validation-errors"
-																v-if="$v.donation.$invalid"
+																v-if="v$.donation?.$invalid"
 															>
 																<li
-																	v-if="!$v.donation.minValue
-																		|| !$v.donation.maxValue"
+																	v-if="v$.donation?.minValue?.$invalid
+																		|| v$.donation?.maxValue?.$invalid"
 																>
 																	Enter an amount of $0-$10,000
 																</li>
@@ -194,14 +194,15 @@
 															<div class="small-6 medium-4 columns">
 																<strong
 																	class="additional-left-pad-currency"
-																>{{ totalCombinedDeposit | numeral('$0,0.00') }}
+																>{{ $filters.numeral(totalCombinedDeposit, '$0,0.00') }}
 																</strong>
 															</div>
 														</div>
 														<div class="row column">
 															<ul
 																class="tw-text-center validation-errors"
-																v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+																v-if="v$.mgAmount?.maxTotal?.$invalid
+																	|| v$.donation?.maxTotal?.$invalid"
 															>
 																<li>
 																	The maximum Auto Deposit total is $10,000.<br>
@@ -249,7 +250,7 @@
 								</div>
 								<!-- Payment Methods -->
 								<div
-									v-if="!settingsOpen"
+									v-else
 									class="row column" key="paymentSettings"
 								>
 									<button
@@ -311,17 +312,18 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { validationMixin } from 'vuelidate';
-import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { gql } from 'graphql-tag';
+import numeral from 'numeral';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, maxValue } from '@vuelidate/validators';
 
-import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvLightbox from '~/@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
@@ -355,6 +357,7 @@ export default {
 		KvSettingsCard,
 		KvTextInput,
 	},
+	emits: ['cancel-subscription', 'unsaved-changes'],
 	data() {
 		return {
 			isSaving: false,
@@ -369,30 +372,30 @@ export default {
 			paymentMethod: {}
 		};
 	},
-	mixins: [
-		validationMixin,
-	],
-	validations: {
-		mgAmount: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.donation < 10000;
-			}
-		},
-		donation: {
-			minValue: minValue(0),
-			maxValue: maxValue(10000),
-			maxTotal(value) {
-				return value + this.mgAmount < 10000;
-			}
-		},
-		dayOfMonth: {
-			required,
-			minValue: minValue(1),
-			maxValue: maxValue(31)
-		},
+	setup() { return { v$: useVuelidate() }; },
+	validations() {
+		return {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return numeral(value).value() + numeral(this.donation).value() < 10000;
+				}
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return numeral(value).value() + numeral(this.mgAmount).value() < 10000;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+		};
 	},
 	apollo: {
 		query: pageQuery,
@@ -414,27 +417,27 @@ export default {
 	mounted() {
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('mgAmount', () => {
-			this.$v.$touch();
+			this.v$.$touch();
 		});
 		this.$watch('donation', () => {
-			this.$v.$touch();
+			this.v$.$touch();
 		});
 		this.$watch('dayOfMonth', () => {
-			this.$v.$touch();
+			this.v$.$touch();
 		});
 	},
 	computed: {
 		totalCombinedDeposit() {
-			return this.donation + this.mgAmount;
+			return numeral(this.donation).value() + numeral(this.mgAmount).value();
 		},
 		isChanged() {
-			return this.$v.$dirty;
+			return this.v$.$dirty;
 		},
 		slideTransition() {
 			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
 		},
 		saveButtonState() {
-			if (!this.isChanged || this.$v.$invalid) {
+			if (!this.isChanged || this.v$.$invalid) {
 				return 'disabled';
 			}
 			if (this.isSaving) {
@@ -454,7 +457,7 @@ export default {
 			this.showEditLightbox = false;
 		},
 		hideDayInput() {
-			if (!this.$v.dayOfMonth.$invalid) {
+			if (!this.v$.dayOfMonth?.$invalid) {
 				this.isDayInputShown = false;
 			}
 		},
@@ -505,7 +508,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 form {
 	.row {

@@ -12,6 +12,7 @@
 <script>
 export default {
 	name: 'ReCaptchaEnterprise',
+	emits: ['update'],
 	props: {
 		required: {
 			type: Boolean,
@@ -24,7 +25,7 @@ export default {
 			captchaValue: '',
 		};
 	},
-	metaInfo: {
+	head: {
 		script: [
 			{
 				src: 'https://www.google.com/recaptcha/enterprise.js?onload=recaptchaOnloadCallback&render=explicit',

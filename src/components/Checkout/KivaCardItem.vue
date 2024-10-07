@@ -7,21 +7,21 @@
 					v-if="cardType == 'print'"
 					alt="print-kiva-card"
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					src="~@/assets/images/checkout/kiva_card_print_preview.jpg"
+					:src="kivaCardPrintPreview"
 				>
 				<!-- Postal Kiva Card -->
 				<img
 					v-if="cardType == 'postal'"
 					alt="postal-kiva-card"
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					src="~@/assets/images/checkout/kiva_card_postal_preview.jpg"
+					:src="kivaCardPostalPreview"
 				>
 				<!-- Email or Lender Kiva Card -->
 				<img
 					v-if="cardType === 'email' || cardType === 'lender'"
 					alt="email-kiva-card"
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					src="~@/assets/images/checkout/kiva_card_email_preview.jpg"
+					:src="kivaCardEmailPreview"
 				>
 			</div>
 		</div>
@@ -130,9 +130,12 @@
 <script>
 import { format, parseISO } from 'date-fns';
 import { mdiPencil } from '@mdi/js';
-import LoanPrice from '@/components/Checkout/LoanPrice';
-import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import LoanPrice from '#src/components/Checkout/LoanPrice';
+import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import kivaCardPrintPreview from '#src/assets/images/checkout/kiva_card_print_preview.jpg';
+import kivaCardPostalPreview from '#src/assets/images/checkout/kiva_card_postal_preview.jpg';
+import kivaCardEmailPreview from '#src/assets/images/checkout/kiva_card_email_preview.jpg';
 
 export default {
 	name: 'KivaCardItem',
@@ -141,6 +144,7 @@ export default {
 		LoanPrice,
 		RemoveBasketItem,
 	},
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		kivaCard: {
 			type: Object,
@@ -160,7 +164,10 @@ export default {
 			mailingZip: this.kivaCard.kivaCardObject.mailingInfo.zip,
 			mdiPencil,
 			quantity: this.kivaCard.quantity,
-			idsInGroup: this.kivaCard.idsInGroup
+			idsInGroup: this.kivaCard.idsInGroup,
+			kivaCardPrintPreview,
+			kivaCardPostalPreview,
+			kivaCardEmailPreview,
 		};
 	},
 	computed: {

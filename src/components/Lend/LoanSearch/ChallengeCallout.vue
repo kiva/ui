@@ -39,9 +39,9 @@
 
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
-import SupportedByLenders from '@/components/BorrowerProfile/SupportedByLenders';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvToast from '~/@kiva/kv-components/vue/KvToast';
+import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvToast from '@kiva/kv-components/vue/KvToast';
 
 export default {
 	name: 'ChallengeCallout',
@@ -50,6 +50,7 @@ export default {
 		KvToast,
 		SupportedByLenders,
 	},
+	emits: ['close'],
 	props: {
 		currentLender: {
 			type: Object,
@@ -116,15 +117,15 @@ export default {
 
 <style scoped lang="postcss">
 
-.toast-container >>> .tw-bg-secondary {
+.toast-container :deep(.tw-bg-secondary) {
 	background-color: white !important;
 }
 
-.toast-container >>> div[data-test="tip-message"] {
+.toast-container :deep(div[data-test=tip-message]) {
 	@apply tw-mx-0;
 }
 
-.toast-container >>> div.tw-shadow > :first-child {
+.toast-container :deep(div.tw-shadow) > :first-child {
 	@apply tw-hidden;
 }
 </style>

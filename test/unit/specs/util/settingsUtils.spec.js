@@ -1,4 +1,4 @@
-import { readJSONSetting, hashCode, readBoolSetting } from '@/util/settingsUtils';
+import { readJSONSetting, hashCode, readBoolSetting } from '#src/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
 	describe('readJSONSetting', () => {

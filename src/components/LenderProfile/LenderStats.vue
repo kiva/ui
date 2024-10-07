@@ -1,6 +1,6 @@
 <template>
 	<async-lender-section @visible="$emit('get-lender-stats')">
-		<section class="tw-my-8">
+		<section v-if="showStats" class="tw-my-8">
 			<div v-if="isLoading">
 				<kv-loading-placeholder
 					class="tw-mb-2"
@@ -30,12 +30,13 @@
 </template>
 
 <script>
-import StatsTable from '@/components/Stats/StatsTable';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
+import StatsTable from '#src/components/Stats/StatsTable';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderStats',
+	emits: ['get-lender-stats'],
 	props: {
 		lenderStats: {
 			type: Object,
@@ -45,6 +46,7 @@ export default {
 	data() {
 		return {
 			isLoading: true,
+			showStats: true,
 		};
 	},
 	components: {
@@ -96,6 +98,16 @@ export default {
 		lenderStats() {
 			if (Object.keys(this.lenderStats).length !== 0) {
 				this.isLoading = false;
+			}
+			const entries = Object.entries(this.lenderStats);
+			let values = [];
+			entries.forEach(element => {
+				if (element?.[1]?.values) {
+					values = [...element[1].values];
+				}
+			});
+			if (values.length === 0) {
+				this.showStats = false;
 			}
 		},
 	},

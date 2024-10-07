@@ -34,13 +34,14 @@
 </template>
 
 <script>
-import FavoriteStar from '@/components/LoanCards/FavoriteStar';
+import FavoriteStar from '#src/components/LoanCards/FavoriteStar';
 
 export default {
 	name: 'LoanCardImage',
 	components: {
 		FavoriteStar,
 	},
+	emits: ['favorite-toggled', 'image-click', 'track-loan-card-interaction'],
 	props: {
 		loanId: {
 			type: Number,
@@ -108,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .borrower-image-wrapper {
 	&.absolute-positioned {

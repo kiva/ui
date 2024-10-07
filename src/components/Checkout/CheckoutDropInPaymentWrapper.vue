@@ -48,16 +48,16 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="promoGuestCheckoutEnabled && $v.email.error">
+				<p v-if="promoGuestCheckoutEnabled && v$.email?.$invalid">
 					Valid campaign email required
 				</p>
-				<p v-else-if="$v.email.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
+				<p v-else-if="v$.email?.$invalid" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="basket"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 					is-checkout
 				/>
 				<template v-else>
@@ -67,7 +67,7 @@
 						name="termsAgreement"
 						class="checkbox tw-text-small tw-mb-2"
 						v-model="termsAgreement"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'terms-of-use',
@@ -77,17 +77,17 @@
 					>
 						I have read and agree to the
 						<a
-							:href="`https://${this.$appConfig.host}/legal/terms`"
+							:href="`https://${$appConfig.host}/legal/terms`"
 							target="_blank"
 							title="Open Terms of Use in a new window"
 						>Terms of Use</a>
 						and
 						<a
-							:href="`https://${this.$appConfig.host}/legal/privacy`"
+							:href="`https://${$appConfig.host}/legal/privacy`"
 							target="_blank"
 							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
 						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
-						<p v-if="$v.termsAgreement.$error" class="input-error tw-text-danger tw-text-base">
+						<p v-if="v$.termsAgreement?.$invalid" class="input-error tw-text-danger tw-text-base">
 							You must agree to the Kiva Terms of service & Privacy
 							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 						</p>
@@ -98,7 +98,7 @@
 						class="checkbox tw-text-small tw-mb-2"
 						name="emailUpdates"
 						v-model="emailUpdates"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'marketing-updates',
@@ -133,23 +133,24 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { validationMixin } from 'vuelidate';
-import { required, email, requiredIf } from 'vuelidate/lib/validators';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email, requiredIf } from '@vuelidate/validators';
 import * as Sentry from '@sentry/vue';
+import { defineAsyncComponent } from 'vue';
 
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import braintreeDropInError from '@/plugins/braintree-dropin-error-mixin';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import braintreeDropInError from '#src/plugins/braintree-dropin-error-mixin';
 
-import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-import braintreeDepositAndCheckoutAsync from '@/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
+import braintreeDepositAndCheckout from '#src/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import braintreeDepositAndCheckoutAsync from '#src/graphql/mutation/braintreeDepositAndCheckoutAsync.graphql';
 
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { trackExperimentVersion } from '@/util/experiment/experimentUtils';
-import UserUpdatesPreference from '@/components/Checkout/UserUpdatesPreference';
-import { pollForFinishedCheckout } from '~/@kiva/kv-shop';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '~/@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import UserUpdatesPreference from '#src/components/Checkout/UserUpdatesPreference';
+import { pollForFinishedCheckout } from '@kiva/kv-shop';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 
@@ -157,18 +158,21 @@ export default {
 	name: 'CheckoutDropInPaymentWrapper',
 	components: {
 		KvButton,
-		BraintreeDropInInterface: () => import('@/components/Payment/BraintreeDropInInterface'),
+		BraintreeDropInInterface: defineAsyncComponent(() => import(
+			'#src/components/Payment/BraintreeDropInInterface'
+		)),
 		KvCheckbox,
 		KvTextInput,
 		UserUpdatesPreference,
 	},
 	provide() {
 		return {
-			$v: this.$v
+			v$: this.v$
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [checkoutUtils, validationMixin, braintreeDropInError],
+	mixins: [checkoutUtils, braintreeDropInError],
+	emits: ['complete-transaction', 'updating-totals', 'refreshtotals', 'opt-in'],
 	props: {
 		amount: {
 			type: String,
@@ -204,27 +208,30 @@ export default {
 			enableRadioBtnExperiment: false,
 		};
 	},
-	validations: {
-		email: {
-			required,
-			email,
-		},
-		termsAgreement: {
-			required: value => value === true,
-		},
-		selectedComms: {
-			required: requiredIf(enableRadioBtnExperiment => enableRadioBtnExperiment),
-		},
+	setup() { return { v$: useVuelidate() }; },
+	validations() {
+		return {
+			email: {
+				required,
+				email,
+			},
+			termsAgreement: {
+				required: value => value === true,
+			},
+			selectedComms: {
+				required: requiredIf(enableRadioBtnExperiment => enableRadioBtnExperiment),
+			},
+		};
 	},
 	mounted() {
-		this.isClientReady = !this.$isServer;
+		this.isClientReady = typeof window !== 'undefined';
 	},
 	methods: {
 		submit() {
 			this.$kvTrackEvent('basket', 'click', 'braintree-checkout-button');
 			if (this.isGuestCheckout) {
-				this.$v.$touch();
-				if (!this.$v.$invalid) {
+				this.v$.$touch();
+				if (!this.v$.$invalid) {
 					this.validateGuestBasketAndCheckout();
 				}
 			} else {
@@ -502,7 +509,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.radio-error >>> label > div {
+.radio-error :deep(label > div) {
 	@apply tw-border-danger-highlight;
 }
 

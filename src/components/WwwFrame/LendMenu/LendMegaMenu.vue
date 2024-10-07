@@ -3,7 +3,7 @@
 		<router-link
 			v-if="showMGUpsellLink"
 			to="/monthlygood"
-			@click.native="trackMgLinkClick"
+			@click="trackMgLinkClick"
 		>
 			<span class="tw-inline-flex tw-items-center tw-py-2 tw-mb-2 tw-gap-0.5 tw-font-medium">
 				Lend monthly
@@ -222,9 +222,9 @@
 
 <script>
 import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 

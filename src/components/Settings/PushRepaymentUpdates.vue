@@ -3,15 +3,15 @@
 		id="pushNotifications"
 		name="pushNotifications"
 		v-model="pushNotificationsActive"
-		@change="changePushSetting"
+		@update="changePushSetting"
 	>
 		Receive notifications on this device
 	</kv-checkbox>
 </template>
 
 <script>
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import { registerServiceWorker, isSubscribed, unsubscribe } from '@/util/pushNotificationsManager';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import { registerServiceWorker, isSubscribed, unsubscribe } from '#src/util/pushNotificationsManager';
 
 export default {
 	name: 'PushRepaymentUpdates',

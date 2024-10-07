@@ -1,6 +1,47 @@
-query ftdQuery {
+query myKivaQuery {
 	my {
     id
+    loans(limit: 10) {
+      values {
+        id
+        name
+        gender
+        status
+        image {
+          id
+          url
+          hash
+        }
+        geocode {
+          city
+          state
+          country {
+            name
+            isoCode
+            region
+          }
+        }
+        loanAmount
+        plannedExpirationDate
+        terms {
+          currency
+          currencyFullName
+          lossLiabilityNonpayment
+          lossLiabilityCurrencyExchange
+          loanAmount
+          disbursalDate
+          disbursalAmount
+          flexibleFundraisingEnabled
+          lenderRepaymentTerm
+          expectedPayments {
+            amount
+            localAmount
+            dueToKivaDate
+            effectiveDate
+          }
+        }
+      }
+    }
     lender {
       id
       name
@@ -9,5 +50,9 @@ query ftdQuery {
         url
       }
     }
+    userAccount {
+			id
+			balance
+		}
   }
 }

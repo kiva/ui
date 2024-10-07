@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var base = require('./dev-vm.js')
+import { merge } from 'webpack-merge';
+import base from './dev-vm.js';
 
-module.exports = merge(base, {
+export default merge(base, {
 	app: {
 		host: 'localhost',
 		publicPath: '/',
@@ -27,5 +27,6 @@ module.exports = merge(base, {
 		memcachedEnabled: false,
 		memcachedServers: '',
 		gzipEnabled: true,
+		disableCluster: true,
 	},
-})
+});

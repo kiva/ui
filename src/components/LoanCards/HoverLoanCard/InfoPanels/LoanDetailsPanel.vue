@@ -18,32 +18,32 @@
 			class="loan-details-container tw-prose"
 		>
 			<dl>
-				<div v-if="this.loanLength">
+				<div v-if="loanLength">
 					<dt>Loan length:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loanLength }} months
 					</dd>
 				</div>
-				<div v-if="this.repaymentSchedule">
+				<div v-if="repaymentSchedule">
 					<dt>Repayment schedule:</dt>
 					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ repaymentSchedule }}
 					</dd>
 				</div>
-				<div v-if="this.disbursalDate">
+				<div v-if="disbursalDate">
 					<dt>Disbursal date:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ disbursalDateFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.fundingModel !== ''">
+				<div v-if="fundingModel !== ''">
 					<dt>Funding model:</dt>
 					<dd class="tw-text-brand tw-my-0.5 tw-capitalize">
 						{{ fundingModelFormatted }}
 					</dd>
 				</div>
 				<div>
-					<dt v-if="this.currencyLossLiability">
+					<dt v-if="currencyLossLiability">
 						Partner covers currency loss:
 					</dt>
 					<dt v-else>
@@ -53,19 +53,19 @@
 						{{ currencyLossLiabilityFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.facilitatedByFieldPartner">
+				<div v-if="facilitatedByFieldPartner">
 					<dt>Facilitated by Field Partner/trustee:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ facilitatedByFieldPartnerFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.borrowerPayingInterest">
+				<div v-if="borrowerPayingInterest">
 					<dt>Is borrower paying interest?</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ borrowerPayingInterestFormatted }}
 					</dd>
 				</div>
-				<div v-if="this.riskRating">
+				<div v-if="riskRating">
 					<dt>Field Partner risk rating:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ riskRating }} stars
@@ -73,39 +73,39 @@
 				</div>
 			</dl>
 			<template
-				v-if="this.fundsLentInCountry
-					|| this.partnerLoansCurrentlyFundraising
-					|| this.directLoansCurrentlyFundraising"
+				v-if="fundsLentInCountry
+					|| partnerLoansCurrentlyFundraising
+					|| directLoansCurrentlyFundraising"
 			>
 				<h3 class="tw-mb-1 tw-mt-4">
 					{{ country }} country facts
 				</h3>
 				<dl>
-					<!-- <div v-if="this.avgAnnualIncome">
+					<!-- <div v-if="avgAnnualIncome">
 					<dt>Average annual income (USD):</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ avgAnnualIncome }}
 					</p>
 				</div> -->
-					<div v-if="this.fundsLentInCountry">
+					<div v-if="fundsLentInCountry">
 						<dt>Funds lent in {{ country }}:</dt>
 						<dd class="tw-text-brand tw-my-0.5">
 							{{ fundsLentInCountryFormatted }}
 						</dd>
 					</div>
-					<div v-if="this.partnerLoansCurrentlyFundraising">
+					<div v-if="partnerLoansCurrentlyFundraising">
 						<dt>Loans currently fundraising:</dt>
 						<dd class="tw-text-brand tw-my-0.5">
 							{{ partnerLoansCurrentlyFundraising }}
 						</dd>
 					</div>
-					<div v-if="this.directLoansCurrentlyFundraising">
+					<div v-if="directLoansCurrentlyFundraising">
 						<dt>Loans currently fundraising:</dt>
 						<dd class="tw-text-brand tw-my-0.5">
 							{{ directLoansCurrentlyFundraising }}
 						</dd>
 					</div>
-				<!-- <div v-if="this.loansTransactedIn">
+				<!-- <div v-if="loansTransactedIn">
 					<dt>Loans transacted in:</dt>
 					<dd class="tw-text-brand tw-my-0.5">
 						{{ loansTransactedIn }}
@@ -113,7 +113,7 @@
 				</div> -->
 				</dl>
 			</template>
-			<div v-if="this.whySpecial">
+			<div v-if="whySpecial">
 				<h3 class="tw-mb-1 tw-mt-4">
 					This loan is special because
 				</h3>
@@ -129,8 +129,8 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { format, parseISO } from 'date-fns';
-import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import loanDetailsQuery from '#src/graphql/query/loanDetails.graphql';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import InfoPanel from './InfoPanel';
 
 export default {
@@ -140,6 +140,7 @@ export default {
 		KvLoadingSpinner
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['track-interaction'],
 	props: {
 		expandable: {
 			type: Boolean,
@@ -260,7 +261,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .panel-title {
 	margin-bottom: rem-calc(10);

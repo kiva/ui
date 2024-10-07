@@ -7,11 +7,10 @@
 				Reset All
 			</p>
 		</button>
-		<template v-for="key in filterConfig.keys">
+		<template v-for="key in filterConfig.keys" :key="key">
 			<template v-if="shouldDisplayFilter(key)">
 				<component
-					:key="key"
-					:is="filterConfig.config[key].uiConfig.hasAccordion ? KvAccordionItem : 'div'"
+					:is="filterConfig.config[key].uiConfig.hasAccordion ? AsyncKvAccordionItem : 'div'"
 					:id="`${key}-filter-container`"
 					class="tw-mb-0.5"
 				>
@@ -94,7 +93,7 @@
 						:is-percentage="filterConfig.config[key].uiConfig.isPercentage"
 						:displayed-unit="filterConfig.config[key].uiConfig.displayedUnit"
 						class="tw-mt-0.5"
-						@change="payload => debouncedHandleRangeSlider(
+						@updated="(payload) => debouncedHandleRangeSlider(
 							filterConfig.config[key].uiConfig.stateKey,
 							payload,
 							filterConfig.config[key].uiConfig.eventAction
@@ -132,21 +131,24 @@
 </template>
 
 <script>
-import KvAccordionItem from '@/components/Kv/KvAccordionItem';
+import { defineAsyncComponent, shallowRef } from 'vue';
+import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import { mdiClose, mdiArrowRight } from '@mdi/js';
-import LoanSearchLocationFilter from '@/components/Lend/LoanSearch/LoanSearchLocationFilter';
-import LoanSearchCheckboxListFilter from '@/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
-import LoanSearchSortBy from '@/components/Lend/LoanSearch/LoanSearchSortBy';
-import { filterUiType, FLSS_QUERY_TYPE } from '@/util/loanSearch/filterUtils';
-import KvSectionModalLoader from '@/components/Kv/KvSectionModalLoader';
-import KvSelectBox from '@/components/Kv/KvSelectBox';
-import LoanSearchRadioGroupFilter from '@/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+import LoanSearchLocationFilter from '#src/components/Lend/LoanSearch/LoanSearchLocationFilter';
+import LoanSearchCheckboxListFilter from '#src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
+import LoanSearchSortBy from '#src/components/Lend/LoanSearch/LoanSearchSortBy';
+import { filterUiType, FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
+import KvSelectBox from '#src/components/Kv/KvSelectBox';
+import LoanSearchRadioGroupFilter from '#src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import _debounce from 'lodash/debounce';
-import filterConfig from '@/util/loanSearch/filterConfig';
-import KvRangeMinMaxSlider from '@/components/Kv/KvRangeMinMaxSlider';
-import { createMinMaxRange, getMinMaxRangeQueryParam } from '@/util/loanSearch/minMaxRange';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
+import filterConfig from '#src/util/loanSearch/filterConfig';
+import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
+import { createMinMaxRange, getMinMaxRangeQueryParam } from '#src/util/loanSearch/minMaxRange';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+
+const AsyncKvAccordionItem = shallowRef(defineAsyncComponent(() => import('#src/components/Kv/KvAccordionItem')));
 
 export default {
 	name: 'LoanSearchFilter',
@@ -163,6 +165,7 @@ export default {
 		KvSelectBox,
 		KvRangeMinMaxSlider,
 	},
+	emits: ['reset', 'updated'],
 	props: {
 		extendFlssFilters: {
 			type: Boolean,
@@ -197,7 +200,7 @@ export default {
 			debouncedHandleUpdateKeywordSearch: _debounce(this.handleUpdateKeywordSearch, 750),
 			filterConfig,
 			filterUiType,
-			KvAccordionItem,
+			AsyncKvAccordionItem,
 			debouncedHandleRangeSlider: _debounce(this.handleRangeSlider, 500),
 		};
 	},

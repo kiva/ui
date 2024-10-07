@@ -82,7 +82,7 @@
 						:enable-huge-amount="enableHugeAmount"
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
-						@click.native="trackInteraction({
+						@click="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
 						})"
@@ -139,7 +139,7 @@
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 
-						@click.native="trackInteraction({
+						@click="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
 						})"
@@ -162,12 +162,12 @@
 </template>
 
 <script>
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import BorrowerInfoHeader from '@/components/LoanCards/BorrowerInfo/BorrowerInfoHeader';
-import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
-import MatchingText from '@/components/LoanCards/MatchingText';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
+import BorrowerInfoHeader from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoHeader';
+import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
+import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
+import MatchingText from '#src/components/LoanCards/MatchingText';
+import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
 
 export default {
 	name: 'ListLoanCard',
@@ -179,6 +179,7 @@ export default {
 		BorrowerInfoHeader,
 		BorrowerInfoBody,
 	},
+	emits: ['track-interaction', 'toggle-favorite', 'add-to-basket'],
 	props: {
 		isVisitor: {
 			type: Boolean,
@@ -267,7 +268,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .list-loan-card {
 	background-color: $white;
@@ -341,7 +342,7 @@ export default {
 	}
 
 	&:hover {
-		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgb(0 0 0 / 10%);
 	}
 
 	@include breakpoint(large) {

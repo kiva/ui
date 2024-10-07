@@ -15,6 +15,7 @@
 <script>
 export default {
 	name: 'BorrowerInfoName',
+	emits: ['name-click', 'track-loan-card-interaction'],
 	props: {
 		disableLink: {
 			type: Boolean,

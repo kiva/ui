@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvResultsPerPage, { defaultOptions } from '@/components/Kv/KvResultsPerPage';
+import KvResultsPerPage, { defaultOptions } from '#src/components/Kv/KvResultsPerPage';
 
 global.scrollTo = jest.fn();
 
@@ -49,9 +49,9 @@ describe('KvResultsPerPage', () => {
 	it('should not emit updated with prop change', async () => {
 		const options = [1, 2, 3];
 
-		const { updateProps, getByRole, emitted } = render(KvResultsPerPage, { props: { options } });
+		const { rerender, getByRole, emitted } = render(KvResultsPerPage, { props: { options } });
 
-		await updateProps({ selected: 2 });
+		await rerender({ selected: 2 });
 
 		expect(getByRole('combobox').value).toBe('2');
 		expect(emitted().updated).toBe(undefined);
@@ -60,11 +60,11 @@ describe('KvResultsPerPage', () => {
 	it('should not set invalid option', async () => {
 		const options = [1, 2, 3];
 
-		const { updateProps, getByRole } = render(KvResultsPerPage, { props: { options, selected: 2 } });
+		const { rerender, getByRole } = render(KvResultsPerPage, { props: { options, selected: 2 } });
 
 		expect(getByRole('combobox').value).toBe('2');
 
-		await updateProps({ selected: 4 });
+		await rerender({ selected: 4 });
 
 		expect(getByRole('combobox').value).toBe('1');
 	});

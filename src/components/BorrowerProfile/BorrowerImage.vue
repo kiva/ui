@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getKivaImageUrl } from '@/util/imageUtils';
+import { getKivaImageUrl } from '#src/util/imageUtils';
 
 export default {
 	name: 'BorrowerImage',

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'FirstMFASetup',

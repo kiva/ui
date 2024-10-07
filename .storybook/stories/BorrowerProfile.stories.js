@@ -1,11 +1,5 @@
-import Vue from 'vue'
-
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins)
-
-import BorrowerProfile from '@/pages/BorrowerProfile/BorrowerProfile'
-import FundedBorrowerProfile from '@/components/BorrowerProfile/FundedBorrowerProfile'
+import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile'
+import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile'
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
@@ -18,6 +12,41 @@ const queryResult = {
 	data: {
 		lend: {
 			loan: mockLoans[0]
+		},
+		fundraisingLoans: {
+			values: [
+				{
+					id: 2413188
+				},
+				{
+					id: 2411288
+				},
+				{
+					id: 2406410
+				},
+				{
+					id: 2406459
+				},
+				{
+					id: 2406956
+				},
+				{
+					id: 2408858
+				}
+			]
+		},
+		ml: {
+			relatedLoansByTopics: [
+				{
+					values: [
+						mockLoans[0],
+						mockLoans[0],
+						mockLoans[0],
+						mockLoans[0],
+						mockLoans[0]
+					]
+				}
+			]
 		}
 	}
 };
@@ -54,17 +83,19 @@ export const Default = () => ({
 	template: `<borrower-profile />`,
 });
 
-export const Funded = () => ({
-	components: { FundedBorrowerProfile	},
+export const Funded = (_, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: { FundedBorrowerProfile },
 	parameters: {
 		layout: 'fullscreen',
 	},
 	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
-	template: `<funded-borrower-profile />`,
+	setup() { return { loan: mockLoans[0], hash: mockLoans[0].image.hash }; },
+	template: `<funded-borrower-profile :loan="loan" :hash="hash" />`,
 });
 
 export const PrivateFundraisingPeriod = () => ({
-	components: { BorrowerProfile},
+	components: { BorrowerProfile },
 	parameters: {
 		layout: 'fullscreen',
 	},

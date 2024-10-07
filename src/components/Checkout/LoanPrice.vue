@@ -7,7 +7,7 @@
 				class="loan-price tw-w-full"
 				style="max-width: 18rem;"
 				id="loan-price"
-				@update:modelValue="updateLoanReservation()"
+				@update:model-value="updateLoanReservation()"
 			>
 				<option
 					v-for="priceOption in prices"
@@ -35,11 +35,11 @@
 <script>
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
-import RemoveBasketItem from '@/components/Checkout/RemoveBasketItem';
-import { getDropdownPriceArrayCheckout } from '@/util/loanUtils';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
+import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
+import { getDropdownPriceArrayCheckout } from '#src/util/loanUtils';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'LoanPrice',
@@ -48,6 +48,7 @@ export default {
 		RemoveBasketItem,
 	},
 	inject: ['apollo'],
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		price: {
 			type: String,

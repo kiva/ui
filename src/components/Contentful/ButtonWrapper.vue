@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import emitter from '#src/plugins/event-emitter';
 
 /**
 * Contentful Button Wrapper
@@ -57,8 +58,8 @@ export default {
 			if (customEventName) {
 				// Current behavior is to replace a button navigation if a custom event name is passed
 				event.stopPropagation();
-				// Emit root level event that any component can listen for
-				this.$root.$emit(customEventName);
+				// Emit event that any component can listen for using the event-emitter plugin
+				emitter.emit(customEventName, { eventName: customEventName, event });
 			}
 		},
 	}

@@ -105,17 +105,17 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
-import { processPageContent } from '@/util/contentfulUtils';
+import { gql } from 'graphql-tag';
+import { processPageContent } from '#src/util/contentfulUtils';
 
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvFrequentlyAskedQuestions from '@/components/Kv/KvFrequentlyAskedQuestions';
-import AutoDepositSignUpForm from '@/components/AutoDeposit/AutoDepositSignUpForm';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
+import AutoDepositSignUpForm from '#src/components/AutoDeposit/AutoDepositSignUpForm';
 
-import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
-import IconLend from '@/assets/icons/inline/lend.svg';
-import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import IconAutoDepositAlternate from '#src/assets/icons/inline/auto-deposit-alternate.svg';
+import IconLend from '#src/assets/icons/inline/lend.svg';
+import IconUpdatesAlternate from '#src/assets/icons/inline/updates-alternate.svg';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`query autoDepositLandingPage {
 	my {
@@ -144,7 +144,7 @@ const pageQuery = gql`query autoDepositLandingPage {
 
 export default {
 	name: 'AutoDepositLandingPage',
-	metaInfo() {
+	head() {
 		return 	{
 			title: 'Set up an Auto Deposit',
 			meta: [

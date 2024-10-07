@@ -15,9 +15,9 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'RemoveBasketItem',
@@ -25,6 +25,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		loanId: {
 			type: Number,

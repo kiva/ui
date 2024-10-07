@@ -51,13 +51,14 @@
 
 <script>
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'KvPagination',
 	components: {
 		KvMaterialIcon,
 	},
+	emits: ['page-changed'],
 	props: {
 		limit: {
 			type: Number,

@@ -49,7 +49,7 @@
 import DOMPurify from 'dompurify';
 import { format, parseISO } from 'date-fns';
 
-import KvSocialShareButton from '@/components/Kv/KvSocialShareButton';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 
 export default {
 	name: 'UpdateDetails',

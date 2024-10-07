@@ -19,10 +19,10 @@
 					name="piggy-bank"
 				/>
 				<span v-if="promoFund.displayName">
-					{{ promoName }} has given you ${{ promoFund.promoPrice | numeral }} in credit.
+					{{ promoName }} has given you {{ $filters.numeral(promoFund.promoPrice, '$0,0[.]00') }} in credit.
 				</span>
 				<span v-else>
-					You have been given ${{ promoFund.promoPrice | numeral }} in credit.
+					You have been given {{ $filters.numeral(promoFund.promoPrice, '$0,0[.]00') }} in credit.
 				</span>
 				<span>
 					&nbsp;&nbsp;We've suggested a borrower to lend your remaining ${{ lcaLoanPrice }} credit to.
@@ -31,7 +31,7 @@
 		</div>
 		<basket-items-list
 			class="in-context-checkout__basket-items"
-			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
+			:class="{ 'in-context-checkout__basket-items--hide-donation' : !showDonation}"
 			:disable-redirects="disableRedirects"
 			:loans="loans"
 			:donations="donations"
@@ -107,7 +107,7 @@
 				@complete-transaction="completeTransaction"
 				class="checkout-button"
 				id="kiva-credit-payment-button"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -123,7 +123,7 @@
 				:managed-account-id="managedAccountId"
 				:promo-guest-checkout-enabled="promoGuestCheckoutEnabled"
 				:promo-name="promoName"
-				@refreshtotals="$emit('refresh-totals')"
+				@refreshtotals="$emit('refreshtotals')"
 				@updating-totals="setUpdatingTotals"
 				@checkout-failure="handleCheckoutFailure"
 			/>
@@ -152,18 +152,18 @@
 
 <script>
 import numeral from 'numeral';
-import { myFTDQuery, formatTransactionData } from '@/util/checkoutUtils';
-import { isCCPage } from '@/util/urlUtils';
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
-import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
-import KivaCreditGuestPayment from '@/components/Checkout/KivaCreditGuestPayment';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import BasketItemsList from '@/components/Checkout/BasketItemsList';
-import OrderTotals from '@/components/Checkout/OrderTotals';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
+import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
+import { isCCPage } from '#src/util/urlUtils';
+import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
+import KivaCreditPayment from '#src/components/Checkout/KivaCreditPayment';
+import KivaCreditGuestPayment from '#src/components/Checkout/KivaCreditGuestPayment';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import BasketItemsList from '#src/components/Checkout/BasketItemsList';
+import OrderTotals from '#src/components/Checkout/OrderTotals';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
 
 export default {
 	name: 'InContextCheckout',
@@ -181,6 +181,15 @@ export default {
 	},
 	mixins: [
 		checkoutUtils
+	],
+	emits: [
+		'complete-transaction',
+		'checkout-failure',
+		'refreshtotals',
+		'updating-totals',
+		'jump-to-loans',
+		'credit-removed',
+		'transaction-complete',
 	],
 	props: {
 		isLoggedIn: {
@@ -338,7 +347,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .in-context-checkout {
 	position: relative;
@@ -347,10 +356,7 @@ export default {
 		z-index: 1000;
 		width: auto;
 		height: auto;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		top: 0;
+		inset: 0;
 		background-color: rgba($kiva-bg-lightgray, 0.7);
 
 		.spinner-wrapper {
@@ -368,7 +374,7 @@ export default {
 	// DO NOT REMOVE
 	&__basket-items {
 		&--hide-donation {
-			::v-deep .basket-donation-item {
+			:deep(.basket-donation-item) {
 				display: none;
 			}
 		}
@@ -377,14 +383,14 @@ export default {
 	&__order-totals {
 		margin-bottom: 1.5rem;
 
-		::v-deep .order-total,
-		::v-deep .kiva-credit {
+		:deep(.order-total),
+		:deep(.kiva-credit) {
 			font-size: 1.125rem;
 			margin-bottom: 0.25rem;
 		}
 
-		::v-deep .order-total strong,
-		::v-deep .kiva-credit strong {
+		:deep(.order-total) strong,
+		:deep(.kiva-credit) strong {
 			// margin-right: 1.725rem;
 			margin-right: 2rem;
 		}

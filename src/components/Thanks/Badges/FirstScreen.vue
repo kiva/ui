@@ -40,7 +40,7 @@
 								'wiggle': wiggle,
 								'tw-z-2': badgeBlurRevealing
 							}"
-							:src="imageRequire(`./equity-badge.svg`)"
+							:src="imageRequire('equity-badge.svg')"
 							class="badge"
 							alt="Gift icon"
 						>
@@ -59,7 +59,7 @@
 					>
 						<span class="tw-flex tw-items-center tw-gap-1">
 							<img
-								:src="imageRequire(`./gift.svg`)"
+								:src="imageRequire('gift.svg')"
 								class="tw-w-3 tw-h-3"
 								alt="Gift icon"
 							>
@@ -279,16 +279,18 @@
 <script>
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { mdiChevronDown } from '@mdi/js';
-import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import SocialShareV2 from '@/components/Checkout/SocialShareV2';
-import GuestAccountCreation from '@/components/Forms/GuestAccountCreation';
-import AnimatedStars from '@/components/Thanks/AnimatedStars';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import LoanNextSteps from '@/components/Thanks/LoanNextSteps';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
+import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import AnimatedStars from '#src/components/Thanks/AnimatedStars';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/thanks-page/', true);
+const imageGlob = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true, query: '?url' });
+const imageRequire = metaGlobReader(imageGlob, '/src/assets/images/thanks-page/');
 
 export default {
 	name: 'FirstScreen',
@@ -302,6 +304,7 @@ export default {
 		KvButton,
 		KvMaterialIcon,
 	},
+	emits: ['show-new-bg', 'show-discover-badges'],
 	props: {
 		receipt: {
 			type: Object,
@@ -406,15 +409,15 @@ export default {
 	@apply tw-w-3 tw-h-3 tw-align-middle tw-mb-0.5 tw-transition-transform tw-ease-in-out tw-duration-500;
 }
 
-.ghost-button >>> span {
+.ghost-button :deep(span) {
 	@apply tw-bg-transparent tw-border-black;
 }
 
-.no-border >>> span {
+.no-border :deep(span) {
 	@apply tw-bg-transparent tw-border-0;
 }
 
-.account-creation >>> input {
+.account-creation :deep(input) {
 	@apply tw-bg-stone-1;
 }
 
@@ -427,7 +430,7 @@ export default {
 	@apply tw-w-full tw-border tw-rounded tw-flex tw-justify-between tw-cursor-pointer tw-py-2 tw-px-3;
 }
 
-.social-share >>> .share__social.social {
+.social-share :deep(.share__social.social) {
 	@apply tw-w-full;
 }
 
@@ -462,8 +465,8 @@ export default {
 	@apply tw-absolute tw-bottom-3;
 }
 
-.reveal-button >>> span {
-	opacity: 90%;
+.reveal-button :deep(span) {
+	opacity: 0.9;
 	@apply tw-border-black;
 }
 

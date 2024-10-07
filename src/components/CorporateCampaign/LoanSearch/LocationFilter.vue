@@ -15,7 +15,7 @@
 						key="`${name}-country-list`"
 						:items="regions[name]"
 						:use-columns="true"
-						@change="onChange"
+						@update="onChange"
 					/>
 				</div>
 			</div>
@@ -25,8 +25,8 @@
 
 <script>
 import _groupBy from 'lodash/groupBy';
-import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
-import CheckList from '@/pages/Autolending/CheckList';
+import anyOrSelectedAutolendingFilter from '#src/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from '#src/pages/Autolending/CheckList';
 
 export default {
 	name: 'LocationFilter',
@@ -36,6 +36,7 @@ export default {
 	mixins: [
 		anyOrSelectedAutolendingFilter
 	],
+	emits: ['updated-filters'],
 	props: {
 		allCountries: {
 			type: Array,
@@ -133,7 +134,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import 'settings';
+// @import '#src/assets/scss/settings';
 
 .country-filters {
 	&__region-section {

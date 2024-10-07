@@ -186,9 +186,7 @@
 					v-if="isCorporateCampaign"
 					class="tw-w-auto tw-text-right tw-flex-1"
 				>
-					<template>
-						You'll pay:
-					</template>
+					You'll pay:
 				</div>
 				<div
 					class="tw-pl-2"
@@ -216,23 +214,23 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import logFormatter from '@/util/logFormatter';
-import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
-import { removeCredit } from '@/util/checkoutUtils';
-import { isCCPage } from '@/util/urlUtils';
-import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import KvTooltip from '@/components/Kv/KvTooltip';
-import VerifyRemovePromoCredit from '@/components/Checkout/VerifyRemovePromoCredit';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+import logFormatter from '#src/util/logFormatter';
+import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
+import { removeCredit } from '#src/util/checkoutUtils';
+import { isCCPage } from '#src/util/urlUtils';
+import showVerificationLightbox from '#src/graphql/mutation/checkout/showVerificationLightbox.graphql';
+import KvTooltip from '#src/components/Kv/KvTooltip';
+import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
+import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import {
 	getExperimentSettingCached,
 	trackExperimentVersion
-} from '@/util/experiment/experimentUtils';
-import DonationItem from '@/components/Checkout/DonationItem';
+} from '#src/util/experiment/experimentUtils';
+import DonationItem from '#src/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'OrderTotals',
@@ -243,6 +241,11 @@ export default {
 		KvMaterialIcon
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: [
+		'refreshtotals',
+		'updating-totals',
+		'credit-removed'
+	],
 	props: {
 		totals: {
 			type: Object,
@@ -488,7 +491,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .order-totals {
 	.tooltip {

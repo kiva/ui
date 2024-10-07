@@ -103,7 +103,7 @@
 										:items="getItems(region.countries)"
 										:selected-values="selectedCountries"
 										@updated="updateCountries($event)"
-										@closeRegions="toggleRegions()"
+										@close-regions="toggleRegions()"
 									/>
 								</div>
 							</div>
@@ -130,7 +130,7 @@
 					:items="getItems(activeCountries)"
 					:selected-values="selectedCountries"
 					@updated="updateCountries($event)"
-					@closeRegions="toggleRegions()"
+					@close-regions="toggleRegions()"
 				/>
 				<div class="tw-flex tw-gap-2 tw-justify-end">
 					<button @click="selectedCountries = []" class="tw-text-link">
@@ -150,14 +150,14 @@
 
 <script>
 import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
-import clickOutside from '@/plugins/click-outside';
-import { getCheckboxLabel } from '@/util/loanSearch/filterUtils';
-import KvExpandable from '@/components/Kv/KvExpandable';
-import kvTokensPrimitives from '~/@kiva/kv-tokens/primitives.json';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import clickOutside from '#src/plugins/click-outside';
+import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
+import KvExpandable from '#src/components/Kv/KvExpandable';
+import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
 import CheckboxList from './CheckboxList';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
 
 export default {
 	name: 'LocationSelector',
@@ -171,6 +171,7 @@ export default {
 	mixins: [
 		clickOutside,
 	],
+	emits: ['update-location', 'handle-overlay'],
 	props: {
 		regions: {
 			type: Array,
@@ -301,24 +302,26 @@ export default {
 		},
 	},
 	watch: {
-		selectedCountries() {
-			this.$emit('update-location', [...this.selectedCountries]);
-		}
-	}
-
+		selectedCountries: {
+			handler() {
+				this.$emit('update-location', [...this.selectedCountries]);
+			},
+			deep: true,
+		},
+	},
 };
 </script>
 
 <style lang="postcss" scoped>
-#locationWrapper >>> input {
+#locationWrapper :deep(input) {
 	@apply tw-pl-2;
 }
 
-#locationWrapper >>> input::placeholder {
+#locationWrapper :deep(input::placeholder) {
 	@apply tw-text-black;
 }
 
-#locationWrapper >>> span {
+#locationWrapper :deep(span) {
 	@apply tw-left-auto;
 	@apply tw-right-1;
 }

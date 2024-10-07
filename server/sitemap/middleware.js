@@ -1,15 +1,15 @@
-const path = require('path');
-const { Worker } = require('worker_threads');
-const { info } = require('../util/log');
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { Worker } from 'worker_threads';
+import { info } from '../util/log.js';
 
 // Length of time that sitemap is cached in memcache, CDNs, and browsers
 const CACHE_TTL = 60 * 60; // 1 hour (seconds)
 
-// Sitemap middleware
-module.exports = function sitemapMiddleware(appConfig, serverConfig) {
+export default function sitemapMiddleware(appConfig, serverConfig) {
 	return (req, res, next) => {
 		// Create worker thread to generate sitemap
-		const worker = new Worker(path.resolve(__dirname, 'worker.js'), {
+		const worker = new Worker(resolve(dirname(fileURLToPath(import.meta.url)), 'worker.js'), {
 			workerData: {
 				appConfig,
 				serverConfig,
@@ -39,4 +39,4 @@ module.exports = function sitemapMiddleware(appConfig, serverConfig) {
 			}
 		});
 	};
-};
+}

@@ -5,7 +5,7 @@
 			Earn your $25 Reward¹
 		</h3>
 		<p class="tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center">
-			<kv-icon name="present" class="tw-h-2.5 tw-w-2.5 tw-fill-brand tw--rotate-12 tw-mr-0.5" />
+			<kv-icon name="present" id="present-icon" class="tw-h-2.5 tw-w-2.5 tw--rotate-12 tw-mr-0.5" />
 			<span v-if="!loadingProgress">
 				{{ amountLeftFormatted }} away! Don't miss out on your free lending credit.
 			</span>
@@ -25,8 +25,8 @@
 			slides-to-scroll="visible"
 			:embla-options="{ loop: false }"
 		>
-			<template v-for="(loan, index) in displayLoans" #[`slide${index+1}`]>
-				<div :key="loan.id || index">
+			<template v-for="(loan, index) in displayLoans" #[`slide${index+1}`] :key="loan.id || index">
+				<div>
 					<!-- loan image -->
 					<div
 						class="loan-slide-image tw-overflow-hidden tw-rounded tw-bg-secondary tw-mb-1"
@@ -74,14 +74,14 @@
 
 <script>
 import * as Sentry from '@sentry/vue';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvCarousel from '~/@kiva/kv-components/vue/KvCarousel';
-import KvLoadingPlaceholder from '~/@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvProgressBar from '~/@kiva/kv-components/vue/KvProgressBar';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import KvIcon from '#src/components/Kv/KvIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
 
 const upsellLoansQuery = gql`query upsellLoansQuery(
 	$maxLoans: Int!
@@ -123,6 +123,7 @@ const upsellLoansQuery = gql`query upsellLoansQuery(
 export default {
 	name: 'DepositIncentiveUpsell',
 	inject: ['apollo'],
+	emits: ['adding-loan', 'done-adding'],
 	props: {
 		maxLoans: {
 			type: Number,
@@ -301,5 +302,9 @@ export default {
 	.loan-info {
 		max-width: 244px;
 	}
+}
+
+#present-icon :deep(g) {
+	@apply tw-fill-brand;
 }
 </style>

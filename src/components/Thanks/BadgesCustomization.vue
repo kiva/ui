@@ -46,10 +46,10 @@
 
 <script>
 import confetti from 'canvas-confetti';
-import DiscoverSection from '@/components/Thanks/Badges/DiscoverSection';
-import DetailSection from '@/components/Thanks/Badges/DetailSection';
-import FirstScreen from '@/components/Thanks/Badges/FirstScreen';
-import RevealedBadge from '@/components/Thanks/Badges/RevealedBadge';
+import DiscoverSection from '#src/components/Thanks/Badges/DiscoverSection';
+import DetailSection from '#src/components/Thanks/Badges/DetailSection';
+import FirstScreen from '#src/components/Thanks/Badges/FirstScreen';
+import RevealedBadge from '#src/components/Thanks/Badges/RevealedBadge';
 
 export default {
 	name: 'BadgesCustomization',
@@ -212,23 +212,25 @@ export default {
 					let matches = true;
 
 					if (badge.category.themes) {
-						matches = matches && badge.category.themes.some(theme => loan.themes.includes(theme));
+						const themes = loan?.themes ?? [];
+						matches = matches && badge.category.themes.some(theme => themes.includes(theme));
 					}
 
 					if (badge.category.tags) {
-						matches = matches && badge.category.tags.some(tag => loan.tags.includes(tag));
+						const tags = loan?.tags ?? [];
+						matches = matches && badge.category.tags.some(tag => tags.includes(tag));
 					}
 
 					if (badge.category.gender) {
-						matches = matches && loan.gender === badge.category.gender;
+						matches = matches && loan?.gender === badge.category.gender;
 					}
 
 					if (badge.category.countryIsoCode) {
-						matches = matches && badge.category.countryIsoCode.includes(loan.geocode.country.isoCode);
+						matches = matches && badge.category.countryIsoCode.includes(loan?.geocode?.country?.isoCode);
 					}
 
 					if (badge.category.distributionModel) {
-						matches = matches && loan.distributionModel === badge.category.distributionModel;
+						matches = matches && loan?.distributionModel === badge.category.distributionModel;
 					}
 
 					if (matches) {

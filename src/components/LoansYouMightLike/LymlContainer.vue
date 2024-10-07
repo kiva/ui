@@ -1,10 +1,7 @@
 <template>
 	<transition name="kvfade">
-		<div class="lyml-section-wrapper">
-			<div
-				class="lyml-section-container"
-				v-if="showLYML"
-			>
+		<div v-if="showLYML" class="lyml-section-wrapper">
+			<div class="lyml-section-container">
 				<div id="lyml-row-cards">
 					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
@@ -54,19 +51,19 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _uniqBy from 'lodash/uniqBy';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
-import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
-import basketCount from '@/graphql/query/basketCount.graphql';
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import LoanCardController from '#src/components/LoanCards/LoanCardController';
+import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import loansYouMightLikeData from '#src/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import mlLoansYouMightLikeData from '#src/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
+import basketCount from '#src/graphql/query/basketCount.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
@@ -89,6 +86,7 @@ export default {
 		LoanCardController,
 		KvLoadingSpinner,
 	},
+	emits: ['add-to-basket', 'processing-add-to-basket', 'no-rec-loans-found'],
 	props: {
 		basketedLoans: {
 			type: Array,
@@ -193,7 +191,7 @@ export default {
 			this.saveWindowWidth();
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledResize());
 	},
 	methods: {
@@ -322,7 +320,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 .lyml-section-wrapper {
 	padding: 0;
@@ -344,6 +342,7 @@ export default {
 .arrow {
 	display: block;
 	position: absolute;
+
 	// hidden by default on small, for vertical scrolling
 	visibility: hidden;
 	cursor: pointer;
@@ -357,7 +356,7 @@ export default {
 	height: rem-calc(40);
 	line-height: rem-calc(34);
 	text-align: center;
-	box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 3px 0 rgb(0 0 0 / 50%);
 
 	&:hover,
 	&:active {
@@ -375,6 +374,7 @@ export default {
 	// show arrows when carousel interface is active
 	@include breakpoint(medium) {
 		visibility: visible;
+
 		// width: auto;
 		width: rem-calc(40);
 	}
@@ -441,10 +441,7 @@ export default {
 	position: absolute;
 	width: auto;
 	height: auto;
-	left: 1rem;
-	right: 1rem;
-	bottom: 0;
-	top: 0;
+	inset: 0 1rem;
 	background-color: rgba($platinum, 0.7);
 
 	.spinner-wrapper {

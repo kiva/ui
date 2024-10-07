@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /*
  * Custom renderer for Contentful Rich Text content
  * Has the ability to return html for embedded assets
@@ -8,9 +7,9 @@
 
 import {
 	formatResponsiveImageSet, responsiveImageSetSourceSets, formatContentTypes
-} from '@/util/contentfulUtils';
-import { BLOCKS, INLINES } from '~/@contentful/rich-text-types';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+} from '#src/util/contentfulUtils';
+import { BLOCKS, INLINES } from '@contentful/rich-text-types';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 /**
  * Returns a string representation of a value
@@ -114,7 +113,7 @@ export function richTextRenderer(content) {
 			// The content prop expects an object, but in this context
 			// only passing in a string representation of an object will work
 			// We must stringify the object, then replace the quotes
-			// eslint-disable-next-line max-len
+
 			const buttonObjectAsString = htmlSafeStringify(entryContent?.fields);
 			return `<button-wrapper class="tw-whitespace-normal" :content="${buttonObjectAsString}" />`;
 		}
@@ -160,7 +159,6 @@ export function richTextRenderer(content) {
 	return documentToHtmlString(contentWithoutTrailingEmptyParagraph, options);
 }
 
-/* eslint-disable import/prefer-default-export */
 /**
  * Adds target="_blank" to links so they open in a new tab
  *

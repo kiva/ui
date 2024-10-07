@@ -9,7 +9,7 @@
 					preferences please see our <a href="/legal/cookie" target="_blank">cookie policy</a>.
 					<kv-button
 						class="setting close-button"
-						@click.native.stop.prevent="handleClickClose"
+						@click.stop.prevent="handleClickClose"
 						aria-label="Close"
 					>
 						Sounds good
@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
-import getCacheKey from '@/util/getCacheKey';
+import KvButton from '#src/components/Kv/KvButton';
+import getCacheKey from '#src/util/getCacheKey';
 
 export default {
 	name: 'CookieBanner',
@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import '#src/assets/scss/settings';
 
 $banner-padding-mobile: 0.75rem;
 $banner-padding-desktop: 1.5rem;
@@ -89,7 +89,7 @@ $banner-padding-desktop: 1.5rem;
 		position: relative;
 		background: #f4f4f4;
 		font-size: rem-calc(14);
-		border: 0.5px solid rgba(151, 151, 151, 0.3);
+		border: 0.5px solid rgb(151 151 151 / 30%);
 		border-radius: rem-calc(2);
 		color: $charcoal;
 		padding: $banner-padding-mobile;

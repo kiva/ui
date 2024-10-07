@@ -76,7 +76,7 @@
 						<div class="tw-self-center md:tw-w-full">
 							<kv-button
 								class="tw-w-14 md:tw-w-full"
-								@click.native="setCustomDonationAndClose"
+								@click="setCustomDonationAndClose"
 								id="customDonationSubmitBtn"
 								data-testid="custom-donation-submit-btn"
 							>
@@ -92,8 +92,8 @@
 
 <script>
 import numeral from 'numeral';
-import KvTextInput from '~/@kiva/kv-components/vue/KvTextInput';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'DonationNudgeBoxes',

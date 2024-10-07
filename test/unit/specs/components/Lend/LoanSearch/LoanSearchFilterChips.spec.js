@@ -1,11 +1,11 @@
-import Vue from 'vue';
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchFilterChips from '@/components/Lend/LoanSearch/LoanSearchFilterChips';
-import filterConfig from '@/util/loanSearch/filterConfig';
+import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
+import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
+import { globalOptions } from '../../../../specUtils';
 
-jest.mock('@/util/loanSearch/filterConfig', () => {
+jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
 		config: {
 			a: {
@@ -23,18 +23,21 @@ jest.mock('@/util/loanSearch/filterConfig', () => {
 
 describe('LoanSearchFilterChips', () => {
 	let spyTrackEvent;
-
 	beforeEach(() => {
-		spyTrackEvent = jest.spyOn(Vue.prototype, '$kvTrackEvent');
-
+		spyTrackEvent = jest.fn();
 		jest.clearAllMocks();
 	});
 
-	afterEach(jest.restoreAllMocks);
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
 
 	it('should handle missing props', () => {
-		render(LoanSearchFilterChips);
-		render(LoanSearchFilterChips, { props: { allFacets: mockAllFacets } });
+		render(LoanSearchFilterChips, {
+		});
+		render(LoanSearchFilterChips, {
+			props: { allFacets: mockAllFacets }
+		});
 	});
 
 	it('should handle render state with missing state', () => {
@@ -75,6 +78,9 @@ describe('LoanSearchFilterChips', () => {
 		const user = userEvent.setup();
 
 		const { getByText, emitted } = render(LoanSearchFilterChips, {
+			global: {
+				...globalOptions,
+			},
 			props: {
 				loanSearchState: { name: 'a' },
 				allFacets: mockAllFacets
@@ -93,6 +99,12 @@ describe('LoanSearchFilterChips', () => {
 		const user = userEvent.setup();
 
 		const { getByText } = render(LoanSearchFilterChips, {
+			global: {
+				...globalOptions,
+				mocks: {
+					$kvTrackEvent: spyTrackEvent
+				},
+			},
 			props: {
 				loanSearchState: mockState,
 				allFacets: mockAllFacets

@@ -8,7 +8,7 @@
 				v-model="selectedId"
 				class="team-select-dd data-hj-suppress tw-float-left"
 				style="max-width: rem-calc(250);"
-				@update:modelValue="updateLoanReservation()"
+				@update:model-value="updateLoanReservation()"
 			>
 				<option value="0">
 					None
@@ -29,11 +29,12 @@
 import _forEach from 'lodash/forEach';
 import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
-import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
-import KvSelect from '~/@kiva/kv-components/vue/KvSelect';
+import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
+import KvSelect from '@kiva/kv-components/vue/KvSelect';
 
 export default {
 	name: 'TeamAttribution',
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		teams: {
 			type: Array,
@@ -102,9 +103,10 @@ export default {
 						'basket',
 						'Update Team Loan Attribution',
 						this.selectedId === 0 ? 'Team Attribution Removed'
-							: 'Team Attribution Removal Success', numeral(this.selectedId).value()
+							: 'Team Attribution Removal Success',
+						numeral(this.selectedId).value()
 					);
-					this.$emit('refresh-totals', 'team-update');
+					this.$emit('refreshtotals', 'team-update');
 					this.cachedId = this.selectedId;
 				}
 			}).catch(error => {

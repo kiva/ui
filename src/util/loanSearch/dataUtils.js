@@ -1,12 +1,12 @@
-import loanFacetsQuery from '@/graphql/query/loanFacetsQuery.graphql';
-import loanEnumsQuery from '@/graphql/query/loanEnumsQuery.graphql';
+import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
+import loanEnumsQuery from '#src/graphql/query/loanEnumsQuery.graphql';
 import {
 	fetchFacets,
 	fetchLoans,
 	getFlssFilters,
 	FLSS_ORIGIN_NOT_SPECIFIED,
-} from '@/util/flssUtils';
-import logReadQueryError from '@/util/logReadQueryError';
+} from '#src/util/flssUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 /**
  * Runs the query to get the filter facets
@@ -50,7 +50,7 @@ export async function runLoansQuery(apollo, loanSearchState, origin) {
 		origin,
 	);
 
-	return { loans: flssData?.values ?? [], totalCount: flssData?.totalCount ?? 0 };
+	return { loans: flssData?.values?.filter(loan => loan !== null) ?? [], totalCount: flssData?.totalCount ?? 0 };
 }
 
 /**

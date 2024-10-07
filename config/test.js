@@ -1,7 +1,7 @@
-const { merge } = require('webpack-merge');
-var base = require('./index.js')
+import { merge } from 'webpack-merge';
+import base from './index.js';
 
-module.exports = merge(base, {
+export default merge(base, {
 	app: {
 		host: 'www.test.kiva.org',
 		publicPath: 'https://www-test-kiva-org.freetls.fastly.net/ui/',
@@ -49,7 +49,7 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.test.kiva.org/process-ssr-auth',
 			domain: 'login.test.kiva.org',
 		},
-		paypal : {
+		paypal: {
 			url: 'www.sandbox.paypal.com',
 			environment: 'sandbox'
 		},
@@ -60,4 +60,4 @@ module.exports = merge(base, {
 		memcachedEnabled: true,
 		memcachedServers: 'test-memcached-01:11211',
 	}
-})
+});

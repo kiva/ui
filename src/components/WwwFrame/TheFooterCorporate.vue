@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
+import CampaignLogoGroup from '#src/components/CorporateCampaign/CampaignLogoGroup';
 
 export default {
 	name: 'TheFooterCorporate',

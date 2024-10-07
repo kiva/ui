@@ -55,7 +55,8 @@ export default {
 	methods: {
 		getLeaderboards() {
 			this.isLoading = true;
-			fetchLeaderboard(this.apollo, this.teamCategory)
+			const selectedCategory = this.teamCategory === 'all' ? null : this.teamCategory;
+			fetchLeaderboard(this.apollo, selectedCategory)
 				.then(leaderboards => {
 					this.funded = leaderboards?.amountFunded ?? {};
 					this.members = leaderboards?.newUsers ?? {};

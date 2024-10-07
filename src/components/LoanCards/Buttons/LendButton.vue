@@ -12,10 +12,10 @@
 <script>
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
-import { handleInvalidBasket, hasBasketExpired } from '@/util/basketUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
+import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 
 export default {
 	name: 'LendButton',
@@ -23,6 +23,7 @@ export default {
 		KvButton,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket', 'update:loading'],
 	props: {
 		loanId: {
 			type: Number,

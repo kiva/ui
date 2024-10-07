@@ -1,12 +1,12 @@
 import _get from 'lodash/get';
-import appInstallQuery from '@/graphql/query/appInstall.graphql';
-import checkInjections from '@/util/injectionCheck';
-import logReadQueryError from '@/util/logReadQueryError';
+import appInstallQuery from '#src/graphql/query/appInstall.graphql';
+import checkInjections from '#src/util/injectionCheck';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 const injections = ['apollo', 'cookieStore'];
 
 export default {
-	metaInfo() {
+	head() {
 		return {
 			meta: this.showBanner ? [
 				// Apple specific meta tag to show native app install banner

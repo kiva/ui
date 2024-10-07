@@ -1,8 +1,6 @@
-/*
-	Middleware to expose available routes at the /ui-routes endpoint
-*/
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
 const vuejsRouteFile = '../src/router/routes.js';
 
@@ -12,10 +10,10 @@ const vuejsRouteFile = '../src/router/routes.js';
  */
 function buildRouteJSON() {
 	// Pull in Route Declarations as a string so import statements aren't attempted
-	const routesAsString = fs.readFileSync(path.resolve(__dirname, vuejsRouteFile), 'utf-8');
+	const routesAsString = fs.readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), vuejsRouteFile), 'utf-8');
 	// Clean out the arrow functions and imports used for code-splitting routes in vue
 	// re-establish a js array from our cleaned string
-	const matchPaths = RegExp(/path:\s'([^']*)'/g);
+	const matchPaths = /path:\s'([^']*)'/g;
 	let myArray = [];
 	const paths = [];
 	// eslint-disable-next-line
@@ -44,8 +42,7 @@ function buildRouteJSON() {
 	return paths;
 }
 
-// eslint-disable-next-line
-module.exports = (req, res, next) => {
+export default (req, res) => {
 	res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 	res.json(buildRouteJSON());
 };

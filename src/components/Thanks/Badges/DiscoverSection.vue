@@ -30,7 +30,7 @@
 				@click="() => selectBadge(idx)"
 			>
 				<img
-					:src="imageRequire(`./${badge.img}.svg`)"
+					:src="images(`${badge.img}.svg`)"
 					class="tw-w-10 tw-h-10 tw-mx-auto"
 					alt="Gift icon"
 				>
@@ -56,13 +56,16 @@
 
 <script>
 import { mdiChevronLeft } from '@mdi/js';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import { metaGlobReader } from '#src/util/importHelpers';
 
-const imageRequire = require.context('@/assets/images/thanks-page/badges', true);
+const imageRequire = import.meta.glob('/src/assets/images/thanks-page/badges/*.*', { eager: true, query: '?url' });
+const images = metaGlobReader(imageRequire, '/src/assets/images/thanks-page/badges/');
 
 export default {
 	name: 'DiscoverSection',
+	emits: ['back', 'select-badge'],
 	props: {
 		isGuest: {
 			type: Boolean,
@@ -83,7 +86,7 @@ export default {
 	},
 	data() {
 		return {
-			imageRequire,
+			images,
 			mdiChevronLeft,
 		};
 	},
@@ -117,7 +120,7 @@ export default {
 	@apply tw-cursor-pointer tw-border tw-flex tw-flex-col tw-rounded tw-gap-2 tw-border-none tw-justify-center;
 }
 
-.no-border >>> span {
+.no-border :deep(span) {
 	@apply tw-bg-transparent tw-border-0;
 }
 

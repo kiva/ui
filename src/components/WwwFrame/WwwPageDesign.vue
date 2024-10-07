@@ -37,7 +37,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-logo-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-logo-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-logo-intro')"
 									:state="activeSection.includes('creative-studio-logo') ? 'active' : ''"
 								>
 									Logos
@@ -48,7 +48,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-colors-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-colors-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-colors-intro')"
 									:state="activeSection.includes('creative-studio-colors') ? 'active' : ''"
 								>
 									Colors
@@ -59,7 +59,7 @@
 									variant="ghost"
 									class="tw-w-full md:tw-w-auto"
 									href="#creative-studio-typography-intro"
-									@click.native.prevent="scrollPastNav('#creative-studio-typography-intro')"
+									@click.prevent="scrollPastNav('#creative-studio-typography-intro')"
 									:state="activeSection.includes('creative-studio-typography') ? 'active' : ''"
 								>
 									Type
@@ -192,16 +192,16 @@
 
 <script>
 import { mdiEmailOutline } from '@mdi/js';
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
-import KivaCreativeStudioLogo from '@/assets/inline-svgs/logos/kiva-creative-studio-logo.svg';
-import InstagramLogo from '@/assets/inline-svgs/logos/instagram-logo.svg';
-import FacebookLogo from '@/assets/inline-svgs/logos/facebook-logo.svg';
-import TwitterLogo from '@/assets/inline-svgs/logos/twitter-logo.svg';
-import { createIntersectionObserver } from '@/util/observerUtils';
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvGrid from '~/@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '~/@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '~/@kiva/kv-components/vue/KvMaterialIcon';
+import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
+import KivaCreativeStudioLogo from '#src/assets/inline-svgs/logos/kiva-creative-studio-logo.svg';
+import InstagramLogo from '#src/assets/inline-svgs/logos/instagram-logo.svg';
+import FacebookLogo from '#src/assets/inline-svgs/logos/facebook-logo.svg';
+import TwitterLogo from '#src/assets/inline-svgs/logos/twitter-logo.svg';
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 export default {
 	name: 'WwwPageDesign',
@@ -283,7 +283,7 @@ This is a message requesting the Kiva Post Grot typekit for the purpose(s) of
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

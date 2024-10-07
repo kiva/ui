@@ -10,7 +10,7 @@
 					:vertical="true"
 					v-for="category in loanChannels" :key="category.id"
 					:for-panel="`tab-${category.id}`"
-					@click.native="handleCategoryClick(category)"
+					@click="handleCategoryClick(category)"
 				>
 					{{ category.shortName }}
 				</kv-tab>
@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import KvButton from '~/@kiva/kv-components/vue/KvButton';
-import KvTab from '~/@kiva/kv-components/vue/KvTab';
-import KvTabs from '~/@kiva/kv-components/vue/KvTabs';
+import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTab from '@kiva/kv-components/vue/KvTab';
+import KvTabs from '@kiva/kv-components/vue/KvTabs';
 
 export default {
 	name: 'LoanCategorySelectorHomeExp',
@@ -43,6 +43,7 @@ export default {
 			categoryPage: '/lend-by-category/',
 		};
 	},
+	emits: ['handle-category-click'],
 	props: {
 		/**
 		 * Array of loan channel data in an object
@@ -84,7 +85,7 @@ export default {
 		overflow: initial;
 	}
 
-	@media (min-width: 734px) {
+	@media (width >= 734px) {
 		.tabs-container {
 			width: 15.25rem;
 			@apply tw-flex md:tw-flex-col;

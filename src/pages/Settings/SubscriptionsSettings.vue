@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import SubscriptionsSettingsCards from '@/components/Settings/SubscriptionsSettingsCards';
-import KvDefaultWrapper from '@/components/Kv/KvDefaultWrapper';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+import SubscriptionsSettingsCards from '#src/components/Settings/SubscriptionsSettingsCards';
+import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 
 export default {
 	name: 'SubscriptionsSettings',
@@ -31,7 +31,7 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage
 	},
-	metaInfo: {
+	head: {
 		title: 'Subscription settings',
 	},
 };

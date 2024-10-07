@@ -10,17 +10,18 @@
 
 <script>
 import { gsap } from 'gsap';
-import geojson from '@/assets/data/components/15-years/geojson.json';
-import geoData from '@/assets/binary/geo/35-10.bin';
-import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
-import textureKiva from '@/assets/images/15-years/texture-kiva.png';
-import FifteenYearsGlobeCTA from '@/components/15Years/15YearsGlobeCTA';
+import geojson from '#src/assets/data/components/15-years/geojson.json';
+import geoData from '#src/assets/binary/geo/35-10.bin';
+import gkWasm from '#src/assets/wasm/gkweb_bg.wasm';
+import textureKiva from '#src/assets/images/15-years/texture-kiva.png';
+import FifteenYearsGlobeCTA from '#src/components/15Years/15YearsGlobeCTA';
 
 export default {
 	name: '15YearsGlobe',
 	components: {
 		FifteenYearsGlobeCTA,
 	},
+	emits: ['selectcountry', 'pan'],
 	data() {
 		return {
 			ctaVisible: false,
@@ -40,7 +41,7 @@ export default {
 			DataStore,
 			CalloutManager,
 			CalloutDefinition
-		} = await import('@/lib/globekit/globekit.esm');
+		} = await import('#src/lib/globekit/globekit.esm');
 		const { default: DotCallout } = await import('./15YearsGlobeDotCallout');
 		const { default: PinCallout } = await import('./15YearsGlobePinCallout');
 
@@ -155,7 +156,7 @@ export default {
 			}
 		};
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.gkview) {
 			this.gkview.release();
 		}
@@ -176,7 +177,7 @@ export default {
 			return false;
 		},
 		async selectCountry(country) {
-			const { CalloutDefinition } = await import('@/lib/globekit/globekit.esm');
+			const { CalloutDefinition } = await import('#src/lib/globekit/globekit.esm');
 			const { default: PinCallout } = await import('./15YearsGlobePinCallout');
 
 			this.automatedSelection = country;
@@ -208,8 +209,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .globe-component {
 	pointer-events: none;
@@ -247,7 +248,7 @@ export default {
 		height: 100%;
 		border-radius: 50%;
 		background: white;
-		box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
+		box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgb(0 0 0 / 25%);
 	}
 }
 
@@ -268,7 +269,7 @@ export default {
 
 .globe-component.fallback {
 	.globe-container::before {
-		background: white url('~@/assets/images/15-years/globe/fallback.jpg') top left no-repeat;
+		background: white url('#src/assets/images/15-years/globe/fallback.jpg') top left no-repeat;
 		background-size: 100% 100%;
 	}
 
@@ -280,8 +281,8 @@ export default {
 </style>
 
 <style lang="scss">
-@import 'settings';
-@import 'components/15-years/15-years';
+@import '#src/assets/scss/settings';
+@import '#src/assets/scss/components/15-years/15-years';
 
 .callout {
 	display: inline-block;
@@ -294,7 +295,7 @@ export default {
 	background: $tomato;
 	border: rem-calc(2) solid white;
 	border-radius: 50%;
-	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgb(0 0 0 / 25%);
 	width: rem-calc(16);
 	height: rem-calc(16);
 }
@@ -322,10 +323,10 @@ export default {
 	border: rem-calc(3) solid white;
 	overflow: hidden;
 	background-color: #fff;
-	background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
+	background-image: url('flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
 	background-size: 100%;
 	background-repeat: no-repeat;
-	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgb(0 0 0 / 25%);
 }
 
 .pin-callout.hidden {
