@@ -67,7 +67,7 @@
 					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
 					:show-guest-upsell="isGuest"
 					:show-share="loans.length > 0"
-					:show-receipt="this.printableKivaCards.length > 0"
+					:show-receipt="printableKivaCards.length > 0"
 				>
 					<template #receipt>
 						<checkout-receipt
@@ -424,7 +424,7 @@ export default {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'kiva_card');
 		},
 		printableKivaCards() {
-			if (!this.receiptValues.length) return [];
+			if (!this.kivaCards.length) return [];
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 	},
