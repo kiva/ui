@@ -99,7 +99,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
 
 			return client.query({
@@ -137,6 +137,7 @@ export default {
 		},
 	},
 	created() {
+		console.log('LenderProfile created', this.$route?.params?.publicId, this.$route);
 		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
