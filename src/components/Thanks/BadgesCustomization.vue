@@ -50,6 +50,7 @@ import DiscoverSection from '#src/components/Thanks/Badges/DiscoverSection';
 import DetailSection from '#src/components/Thanks/Badges/DetailSection';
 import FirstScreen from '#src/components/Thanks/Badges/FirstScreen';
 import RevealedBadge from '#src/components/Thanks/Badges/RevealedBadge';
+import logFormatter from '#src/util/logFormatter';
 
 export default {
 	name: 'BadgesCustomization',
@@ -213,6 +214,12 @@ export default {
 
 					if (badge.category.themes) {
 						const themes = loan?.themes ?? [];
+						logFormatter('thanks badge themes', 'info', {
+							loan,
+							loanThemes: loan?.themes,
+							themes,
+							typeofThemes: typeof themes
+						});
 						matches = matches && badge.category.themes.some(theme => themes.includes(theme));
 					}
 
