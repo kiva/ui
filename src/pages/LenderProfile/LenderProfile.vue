@@ -137,7 +137,6 @@ export default {
 		},
 	},
 	created() {
-		console.log('LenderProfile created', this.$route?.params?.publicId, this.$route);
 		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
