@@ -1,3 +1,12 @@
+## [3.0.1-rc.1](https://github.com/kiva/ui/compare/v3.0.0...v3.0.1-rc.1) (2024-10-08)
+
+### 🐛 Bugfixes
+
+* ensure route values during client page load ([af36ceb](https://github.com/kiva/ui/commit/af36cebaca460ce4300c61042aebd9ed2a253f01))
+* guard printableKivaCards with kivaCards ([4044b51](https://github.com/kiva/ui/commit/4044b51581d6a8d2cadaf253601c0c56dc3de73b))
+* the server uses route.value, client uses route due to in-page transition ([b02a50c](https://github.com/kiva/ui/commit/b02a50cc45a81c7681fc6125c4674abc036a53cf))
+* use default page number of 0 if no page number is passed in ([e78b4b6](https://github.com/kiva/ui/commit/e78b4b684b17cdac5e7b14a13b299fb36f7fe16c))
+
 ## [3.0.0](https://github.com/kiva/ui/compare/v2.759.0...v3.0.0) (2024-10-07)
 
 ### ⚠ BREAKING CHANGES
