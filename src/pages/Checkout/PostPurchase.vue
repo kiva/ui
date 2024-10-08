@@ -12,7 +12,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			return new Promise((resolve, reject) => {
 				if (typeof window !== 'undefined') {
 					// force server load if currently on a browser client

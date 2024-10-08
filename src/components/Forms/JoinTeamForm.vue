@@ -64,7 +64,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			return client.query({
 				query: TeamInfoFromId,
 				variables: {
