@@ -462,7 +462,7 @@ export default {
 	apollo: {
 		query: preFetchQuery,
 		preFetch(_config, client, { route, cookieStore }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const publicId = getPublicId(currentRoute);
 			return client
 				.query({

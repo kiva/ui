@@ -345,7 +345,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const pageId = currentRoute.query?.partnerContentId;
 			if (!pageId) {
 				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });

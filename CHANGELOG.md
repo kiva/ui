@@ -1,3 +1,14 @@
+## [3.0.2-rc.1](https://github.com/kiva/ui/compare/v3.0.1...v3.0.2-rc.1) (2024-10-08)
+
+### 🐛 Bugfixes
+
+* add client version of route to preFetch methods that use it ([3e65159](https://github.com/kiva/ui/commit/3e65159d3ef7332794e558991a0952f18fe3907f))
+* remove lender route console log ([3838999](https://github.com/kiva/ui/commit/383899904bb90530d69c0be1f64ed7c8f9c929bd))
+
+### 🧹 Chores
+
+* update kv-shop + kv-components ([0732c07](https://github.com/kiva/ui/commit/0732c073bf42e0c42da7e362e2e753e4d0eefd02))
+
 ## [3.0.1](https://github.com/kiva/ui/compare/v3.0.0...v3.0.1) (2024-10-08)
 
 ### 🐛 Bugfixes

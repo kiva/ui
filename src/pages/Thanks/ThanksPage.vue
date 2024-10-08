@@ -267,7 +267,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const transactionId = currentRoute.query?.kiva_transaction_id
 				? numeral(currentRoute.query.kiva_transaction_id).value()
 				: null;
