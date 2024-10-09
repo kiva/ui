@@ -1,6 +1,7 @@
 <template>
 	<div class="tw-w-full">
 		<kv-button
+			v-if="variant !== 'hidden'"
 			class="tw-w-full"
 			data-testid="bp-share-cta-button"
 			@click="isLightboxVisible = true;"
@@ -17,7 +18,7 @@
 		<kv-lightbox
 			:visible="isLightboxVisible"
 			:title="modalTitle"
-			@lightbox-closed="isLightboxVisible = false"
+			@lightbox-closed="closeLightbox"
 		>
 			<slot name="modal-content"></slot>
 			<div
@@ -89,7 +90,10 @@
 
 <script>
 import {
-	mdiFacebook, mdiLinkedin, mdiTwitter, mdiLink
+	mdiFacebook,
+	mdiLinkedin,
+	mdiTwitter,
+	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -117,7 +121,7 @@ export default {
 		variant: {
 			type: String,
 			validator: value => {
-				return ['primary', 'secondary', 'link', 'ghost', 'danger', 'caution'].indexOf(value) !== -1;
+				return ['primary', 'secondary', 'link', 'ghost', 'danger', 'caution', 'hidden'].indexOf(value) !== -1;
 			},
 			default: 'caution'
 		},
@@ -186,6 +190,19 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			return `${base}${this.shareUrl}`;
+		},
+	},
+	methods: {
+		closeLightbox() {
+			this.isLightboxVisible = false;
+			this.$emit('lightbox-closed');
+		},
+	},
+	watch: {
+		openLightbox() {
+			if (this.openLightbox) {
+				this.isLightboxVisible = true;
+			}
 		},
 	},
 	mounted() {

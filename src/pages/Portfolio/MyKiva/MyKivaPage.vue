@@ -9,19 +9,56 @@
 			:user-info="userInfo"
 			@show-navigation="handleShowNavigation"
 		/>
-		<MyKivaProfile :lender="lender" />
-		<MyKivaBorrowerCarousel :loans="loans" @selected-loan="handleSelectedLoan" :is-loading="isLoading" />
+		<MyKivaProfile
+			:lender="lender"
+			:is-loading="isLoading"
+		/>
+		<MyKivaContainer>
+			<div
+				class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
+				style="line-height: 0;"
+			>
+				<span
+					class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
+					style="line-height: 0; font-weight: 600;"
+				>
+					MY IMPACT
+				</span>
+			</div>
+			<div
+				:class="[
+					'tw-flex',
+					{ 'tw-flex-col': !showSingleArray },
+					{ 'tw-flex-col lg:tw-flex-row lg:tw-gap-3': showSingleArray }
+				]"
+			>
+				<MyKivaBorrowerCarousel
+					:loans="loans"
+					:is-loading="isLoading"
+					@selected-loan="handleSelectedLoan"
+				/>
+				<JournalUpdatesCarousel
+					:loan="activeLoan"
+					:updates="loanUpdates"
+					:lender="lender"
+				/>
+			</div>
+		</MyKivaContainer>
 	</www-page>
 </template>
 
 <script setup>
+import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
+import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 
 import {
 	ref,
@@ -39,6 +76,9 @@ const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
 const loans = ref([]);
+const activeLoan = ref({});
+const loanUpdates = ref([]);
+
 const isLoading = computed(() => !lender.value);
 
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
@@ -48,8 +88,20 @@ const handleShowNavigation = () => {
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 };
 
-const handleSelectedLoan = () => {
-	// TODO: work with updates
+const fetchLoanUpdates = loanId => {
+	apollo.query({ query: updatesQuery, variables: { loanId } })
+		.then(result => {
+			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage updatesQuery');
+		});
+};
+
+const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
+
+const handleSelectedLoan = loan => {
+	activeLoan.value = loan;
+	fetchLoanUpdates(activeLoan.value.id);
 };
 
 apollo.query({ query: myKivaQuery })
@@ -57,6 +109,13 @@ apollo.query({ query: myKivaQuery })
 		userInfo.value = result.data?.my ?? {};
 		lender.value = result.data?.my?.lender ?? null;
 		loans.value = result.data?.my?.loans?.values ?? [];
+		if (loans.value.length > 0) {
+			// eslint-disable-next-line prefer-destructuring
+			activeLoan.value = loans.value[0];
+			fetchLoanUpdates(activeLoan.value.id);
+		}
+	}).catch(e => {
+		logReadQueryError(e, 'MyKivaPage myKivaQuery');
 	});
 
 onMounted(() => {
