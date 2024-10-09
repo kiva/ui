@@ -6,6 +6,7 @@
 			@navigation-closed="showNavigation = false"
 		/>
 		<MyKivaHero
+			:user-info="userInfo"
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile :lender="lender" />

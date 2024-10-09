@@ -1,6 +1,7 @@
 query myKivaQuery {
 	my {
     id
+    isBorrower
     loans(limit: 10) {
       values {
         id
@@ -54,5 +55,8 @@ query myKivaQuery {
 			id
 			balance
 		}
+    trustee {
+      id
+    }
   }
 }
