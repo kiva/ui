@@ -2,17 +2,17 @@
 	<www-page
 		data-testid="thanks-page"
 		:class="{
-			'tw-bg-eco-green-1 !tw-h-auto': showNewTYPage && !isOnlyDonation,
-			'relative-container': badgesCustomExpEnabled
+			'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW,
+			'relative-container': activeView === BADGES_VIEW
 		}"
 	>
-		<template v-if="isOnlyDonation">
+		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 				:show-daf-thanks="showDafThanks"
 			/>
 		</template>
-		<template v-else-if="badgesCustomExpEnabled">
+		<template v-if="activeView === BADGES_VIEW">
 			<badges-customization
 				:selected-loan="selectedLoan"
 				:loans="loans"
@@ -21,7 +21,7 @@
 				:is-guest="isGuest"
 			/>
 		</template>
-		<template v-else-if="showNewTYPage">
+		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
 				:loans="loans"
@@ -31,136 +31,129 @@
 				:opted-in="optedIn"
 			/>
 		</template>
-		<template v-else>
-			<div v-if="!showMayChallengeHeader && showChallengeHeader && teamPublicId" class="tw-bg-secondary">
-				<challenge-header :goal="goal" :team-public-id="teamPublicId" />
-			</div>
-			<div class="row page-content" v-if="receipt && !showFocusedShareAsk">
-				<div class="small-12 columns thanks">
-					<div class="thanks__header hide-for-print">
-						<template v-if="receipt">
-							<h1
-								class="tw-mt-1 tw-mb-3"
-							>
-								Thank you!
-							</h1>
-							<p
-								v-if="loans.length > 0"
-								class="thanks__header-subhead tw-text-subhead tw-mb-2"
-								data-testid="thanks-message"
-							>
-								Thanks for supporting
-								<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
-							</p>
-							<p v-if="lender.email" class="hide-for-print">
-								We've emailed your order confirmation to
-								<strong class="data-hj-suppress ">{{ lender.email }}</strong>
-							</p>
-							<p v-else class="hide-for-print">
-								We've emailed your order confirmation to you.
-							</p>
-						</template>
-					</div>
+		<div v-if="challengeHeaderVisible" class="tw-bg-secondary">
+			<challenge-header :goal="goal" :team-public-id="teamPublicId" />
+		</div>
+		<div class="row page-content" v-if="activeView === V2_VIEW">
+			<div class="small-12 columns thanks">
+				<div class="thanks__header hide-for-print">
+					<h1
+						class="tw-mt-1 tw-mb-3"
+					>
+						Thank you!
+					</h1>
+					<p
+						v-if="loans.length > 0"
+						class="thanks__header-subhead tw-text-subhead tw-mb-2"
+						data-testid="thanks-message"
+					>
+						Thanks for supporting
+						<span class="data-hj-suppress">{{ borrowerSupport }}</span>.<br>
+					</p>
+					<p v-if="lender.email" class="hide-for-print">
+						We've emailed your order confirmation to
+						<strong class="data-hj-suppress ">{{ lender.email }}</strong>
+					</p>
+					<p v-else class="hide-for-print">
+						We've emailed your order confirmation to you.
+					</p>
 				</div>
-				<thanks-layout-v2
-					v-if="receipt"
-					:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
-					:show-guest-upsell="isGuest"
-					:show-share="loans.length > 0"
-					:show-receipt="printableKivaCards.length > 0"
-				>
-					<template #receipt>
-						<checkout-receipt
-							v-if="receipt"
-							:lender="lender"
-							:receipt="receipt"
-						/>
-					</template>
-					<template #ad>
-						<auto-deposit-c-t-a />
-					</template>
-					<template #mg>
-						<monthly-good-c-t-a
-							:headline="ctaHeadline"
-							:body-copy="ctaBodyCopy"
-							:button-text="ctaButtonText"
-						/>
-					</template>
-					<template #share>
-						<social-share-v2
-							v-if="receipt"
-							class="thanks__social-share"
-							:lender="lender"
-							:loans="loans"
-						/>
-					</template>
-					<template #guest>
-						<guest-upsell
-							:loans="loans"
-						/>
-					</template>
-				</thanks-layout-v2>
 			</div>
-			<template v-else-if="!receipt">
-				<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
-					<h2 class="tw-m-4">
-						Please log in to see your receipt.
-					</h2>
+			<thanks-layout-v2
+				:show-mg-cta="!isMonthlyGoodSubscriber && !isGuest && !hasModernSub"
+				:show-guest-upsell="isGuest"
+				:show-share="loans.length > 0"
+				:show-receipt="printableKivaCards.length > 0"
+			>
+				<template #receipt>
+					<checkout-receipt
+						:lender="lender"
+						:receipt="receipt"
+					/>
+				</template>
+				<template #ad>
+					<auto-deposit-c-t-a />
+				</template>
+				<template #mg>
+					<monthly-good-c-t-a
+						:headline="ctaHeadline"
+						:body-copy="ctaBodyCopy"
+						:button-text="ctaButtonText"
+					/>
+				</template>
+				<template #share>
+					<social-share-v2
+						class="thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+					/>
+				</template>
+				<template #guest>
+					<guest-upsell
+						:loans="loans"
+					/>
+				</template>
+			</thanks-layout-v2>
+		</div>
+		<template v-if="activeView === LOGIN_REQUIRED_VIEW">
+			<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
+				<h2 class="tw-m-4">
+					Please log in to see your receipt.
+				</h2>
+				<kv-button
+					:href="`/ui-login?force=true&doneUrl=${
+						($route.query.kiva_transaction_id && $route.query.kiva_transaction_id !== null)
+							? encodeURIComponent($route.fullPath)
+							: encodeURIComponent('/portfolio')
+					}`"
+				>
+					Log in to continue
+				</kv-button>
+			</div>
+		</template>
+		<template v-if="activeView === MAY_CHALLENGE_VIEW">
+			<div
+				v-if="loans.length > 0"
+				class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
+			>
+				<template v-if="receipt">
+					Thanks for supporting
+					<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
+					We've emailed your order confirmation to
+					<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
+					<span v-else>you.</span>
+				</template>
+				<template v-else>
+					Please log in to see your receipt.
 					<kv-button
-						:href="`/ui-login?force=true&doneUrl=${
-							($route.query.kiva_transaction_id && $route.query.kiva_transaction_id !== null)
-								? encodeURIComponent($route.fullPath)
-								: encodeURIComponent('/portfolio')
-						}`"
+						:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
+						class="tw-ml-1"
 					>
 						Log in to continue
 					</kv-button>
-				</div>
-			</template>
-			<template v-if="showMayChallengeHeader">
-				<div
-					v-if="loans.length > 0"
-					class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
-				>
-					<template v-if="receipt">
-						Thanks for supporting
-						<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
-						We've emailed your order confirmation to
-						<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
-						<span v-else>you.</span>
-					</template>
-					<template v-else>
-						Please log in to see your receipt.
-						<kv-button
-							:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
-							class="tw-ml-1"
-						>
-							Log in to continue
-						</kv-button>
-					</template>
-				</div>
-				<share-challenge
-					v-if="teamPublicId"
-					:goal="goal"
-					:loan="challengeLoan"
-					:team-public-id="teamPublicId"
-					:lender="lender"
-					:is-guest="isGuest"
-					:team-name="teamName"
-				/>
-			</template>
-			<thanks-page-comment-and-share
-				v-if="receipt && showFocusedShareAsk"
-				:receipt="receipt"
+				</template>
+			</div>
+			<share-challenge
+				v-if="teamPublicId"
+				:goal="goal"
+				:loan="challengeLoan"
+				:team-public-id="teamPublicId"
 				:lender="lender"
-				:loan="selectedLoan"
 				:is-guest="isGuest"
-				:is-first-loan="showFtdMessage"
-				:ftd-credit-amount="ftdCreditAmount"
-				@guest-create-account="createGuestAccount"
-				:ask-for-comments="askForComments"
+				:team-name="teamName"
 			/>
 		</template>
+		<thanks-page-comment-and-share
+			v-if="activeView === COMMENT_AND_SHARE_VIEW"
+			:receipt="receipt"
+			:lender="lender"
+			:loan="selectedLoan"
+			:is-guest="isGuest"
+			:is-first-loan="showFtdMessage"
+			:ftd-credit-amount="ftdCreditAmount"
+			@guest-create-account="createGuestAccount"
+			:ask-for-comments="askForComments"
+		/>
 	</www-page>
 </template>
 
@@ -199,6 +192,15 @@ const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const THANKS_BADGES_EXP = 'thanks_badges';
+
+// Thanks views
+const DONATION_ONLY_VIEW = 'donation_only';
+const BADGES_VIEW = 'badges';
+const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
+const MAY_CHALLENGE_VIEW = 'may_challenge';
+const V2_VIEW = 'v2';
+const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
+const LOGIN_REQUIRED_VIEW = 'login_required';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -263,6 +265,13 @@ export default {
 			enableMayChallengeHeader: false,
 			optedIn: false,
 			badgesCustomExpEnabled: false,
+			DONATION_ONLY_VIEW,
+			BADGES_VIEW,
+			MARKETING_OPT_IN_VIEW,
+			MAY_CHALLENGE_VIEW,
+			V2_VIEW,
+			COMMENT_AND_SHARE_VIEW,
+			LOGIN_REQUIRED_VIEW,
 		};
 	},
 	apollo: {
@@ -316,11 +325,6 @@ export default {
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
-		isOnlyDonation() {
-			return this.showDafThanks
-				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
-				|| this.monthlyDonationAmount?.length;
-		},
 		askForComments() {
 			// comments ask should be displayed for logged in users
 			// checking out with a PFP loan or a loan that is attributed to a team.
@@ -371,14 +375,6 @@ export default {
 		ctaButtonText() {
 			return this.ctaContentBlock?.primaryCtaText;
 		},
-		showFocusedShareAsk() {
-			// if jumpToGuestUpsell is true or there's print-it-yourself card don't show focused share ask;
-			if (this.jumpToGuestUpsell || this.printableKivaCards.length) {
-				return false;
-			}
-			// Only show focused share ask for non-guest loan purchases or for only US loan purchases from guests
-			return (this.selectedLoan.id && !this.isGuest) || this.isGuestUsCheckout;
-		},
 		isGuestUsCheckout() {
 			// Is a guest checking out only with US loans?
 			// eslint-disable-next-line no-underscore-dangle
@@ -413,9 +409,6 @@ export default {
 			}
 			return false;
 		},
-		showNewTYPage() {
-			return !this.landedOnUSLoan && !this.optedIn && this.loans.length > 0;
-		},
 		receiptValues() {
 			return this.receipt?.items?.values ?? [];
 		},
@@ -427,6 +420,48 @@ export default {
 			if (!this.kivaCards.length) return [];
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
+		activeView() {
+			// Show the donation only view if the user has only donated and not lent
+			if (this.showDafThanks
+				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
+				|| this.monthlyDonationAmount?.length) {
+				return DONATION_ONLY_VIEW;
+			}
+			// Show the badges view if badges experiment is enabled
+			if (this.badgesCustomExpEnabled) {
+				return BADGES_VIEW;
+			}
+			// Show the marketing opt-in view if the user has not opted in, has loans, and has not landed on a US loan
+			if (!this.landedOnUSLoan && !this.optedIn && this.loans.length > 0) {
+				return MARKETING_OPT_IN_VIEW;
+			}
+			// Show the May challenge view if the May challenge header is enabled
+			if (this.showMayChallengeHeader) {
+				return MAY_CHALLENGE_VIEW;
+			}
+			// Show the login required view if we couldn't get the receipt
+			if (!this.receipt) {
+				return LOGIN_REQUIRED_VIEW;
+			}
+			// Show the comment and share view if jumpToGuestUpsell is not true, there are no printable Kiva cards, and
+			// the user is either a guest who made a US loan, or a logged in user who made a loan.
+			if (!this.jumpToGuestUpsell
+				&& !this.printableKivaCards.length
+				&& (this.isGuestUsCheckout || (this.selectedLoan.id && !this.isGuest))
+			) {
+				return COMMENT_AND_SHARE_VIEW;
+			}
+			// Show the v2 view by default
+			return V2_VIEW;
+		},
+		challengeHeaderVisible() {
+			return !this.showMayChallengeHeader
+				&& this.showChallengeHeader
+				&& this.teamPublicId
+				&& this.activeView !== DONATION_ONLY_VIEW
+				&& this.activeView !== BADGES_VIEW
+				&& this.activeView !== MARKETING_OPT_IN_VIEW;
+		}
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
