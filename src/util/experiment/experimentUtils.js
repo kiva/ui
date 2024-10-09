@@ -1,6 +1,7 @@
 import experimentSettingQuery from '#src/graphql/query/experimentSetting.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
+import initCache from '#server/util/initCache';
 import { readJSONSetting, hashCode } from '#src/util/settingsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { v4 as uuidv4 } from 'uuid';
@@ -45,6 +46,29 @@ export async function getActiveExperiments(cache, client) {
 }
 
 /**
+ * Gets the experiment setting from the server cache (memcache)
+ *
+ * @param {ApolloClient} client The Apollo client
+ * @param {string} key The experiment key
+ * @param {object} appConfig App configuration
+ * @returns {Object} The experiment setting
+ */
+export function getExperimentSettingFromServerCache(client, key, appConfig) {
+	if (typeof window !== 'undefined') return null;
+	const serverCache = initCache(appConfig);
+	const experimentSetting = serverCache.get(`experimentSetting:${key}`);
+	if (experimentSetting) {
+		// Write the experiment setting to the Apollo cache
+		client.writeQuery({
+			query: experimentSettingQuery,
+			data: { general: { uiExperimentSetting: experimentSetting } },
+			variables: { key },
+		});
+	}
+	return experimentSetting;
+}
+
+/**
  * Gets the experiment setting data for a given experiment key synchronously
  *
  * @param {ApolloClient} client The Apollo client
@@ -69,14 +93,23 @@ export function getExperimentSettingCached(client, key) {
  *
  * @param {Object} client The Apollo client
  * @param {string} key The experiment key
+ * @param {object} appConfig App configuration
  * @return {Promise<Object>} The experiment settings
  */
-export function getExperimentSettingAsync(client, key) {
+export function getExperimentSettingAsync(client, key, appConfig) {
 	return client.query({
 		query: experimentSettingQuery,
 		variables: { key },
 	}).then(({ data }) => {
-		return readJSONSetting(data, 'general.uiExperimentSetting.value') ?? {};
+		const experimentSetting = readJSONSetting(data, 'general.uiExperimentSetting.value') ?? {};
+		if (experimentSetting.name) {
+			// Write the experiment setting to memcache
+			if (typeof window === 'undefined') {
+				const serverCache = initCache(appConfig);
+				serverCache.set(`experimentSetting:${key}`, experimentSetting, { expires: 60 });
+			}
+		}
+		return experimentSetting;
 	});
 }
 
@@ -87,9 +120,12 @@ export function getExperimentSettingAsync(client, key) {
  * @param {ApolloCache} client The Apollo client
  * @returns {Promise<Object>|Object}The experiment settings
  */
-export function getExperimentSetting(key, client) {
+export function getExperimentSetting(key, client, appConfig) {
+	console.log('getExperimentSetting params:', key, client, appConfig);
+	const memCached = getExperimentSettingFromServerCache(client, key, appConfig);
+	if (memCached?.name) return memCached;
 	const cached = getExperimentSettingCached(client, key);
-	return cached.name ? cached : getExperimentSettingAsync(client, key);
+	return cached.name ? cached : getExperimentSettingAsync(client, key, appConfig);
 }
 
 /**

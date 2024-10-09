@@ -18,7 +18,7 @@ import logFormatter from '#src/util/logFormatter';
  * @param {Object} param0.route The initial route resolved by the Vue router
  * @returns {Object} The local resolvers
  */
-export default ({ cookieStore, route }) => {
+export default ({ appConfig, cookieStore, route }) => {
 	return {
 		resolvers: {
 			Query: {
@@ -46,7 +46,7 @@ export default ({ cookieStore, route }) => {
 					}
 
 					// Get the settings of the experiment (name, distribution, population)
-					const experimentSetting = await getExperimentSetting(id, client);
+					const experimentSetting = await getExperimentSetting(id, client, appConfig);
 					if (!experimentSetting.name) {
 						logFormatter(`Experiment setting is missing: ${id}`, 'warn');
 						return Experiment({ id });

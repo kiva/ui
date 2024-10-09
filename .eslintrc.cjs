@@ -50,6 +50,7 @@ module.exports = {
 			alias: {
 				map: [
 					['#src', resolve('src')],
+					['#server', resolve('server')],
 				],
 				extensions: ['.js', '.mjs', '.vue'],
 			},
