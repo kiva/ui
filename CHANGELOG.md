@@ -1,3 +1,15 @@
+## [3.0.3](https://github.com/kiva/ui/compare/v3.0.2...v3.0.3) (2024-10-09)
+
+### 🐛 Bugfixes
+
+* analytics directive ([da29cc4](https://github.com/kiva/ui/commit/da29cc4f992d5267b0b62dd1a2d0933591c66297))
+
+### 🧹 Chores
+
+* identify themes issue MP-921 ([3e05e03](https://github.com/kiva/ui/commit/3e05e03bb3131ba7453b7e72cf3b5c87e759d3d0))
+* **release:** 3.0.3-rc.1 [skip ci] ([c6d52fd](https://github.com/kiva/ui/commit/c6d52fd3e6dabe1a0b6e6fe46e14bc9410743b91))
+* remove debug log MP-921 ([9e1a7f7](https://github.com/kiva/ui/commit/9e1a7f7f81c867f3eca9e9ea24d231ccd7a0d5cf))
+
 ## [3.0.3-rc.1](https://github.com/kiva/ui/compare/v3.0.2...v3.0.3-rc.1) (2024-10-09)
 
 ### 🐛 Bugfixes
