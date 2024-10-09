@@ -50,6 +50,7 @@ export default function createMiddleware({ config, vite }) {
 	if (!vite) {
 		// Create a worker pool to render the app for production
 		const pool = vueWorkerPool({
+			idleTimeout: config.server.vueWorkerIdleTimeout,
 			minWorkers: config.server.minVueWorkers,
 			maxWorkers: config.server.maxVueWorkers,
 			workerData: {
