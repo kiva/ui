@@ -328,7 +328,7 @@ export default {
 		};
 
 		app.directive('kv-track-event', {
-			bind: (el, binding) => {
+			beforeMount: (el, binding) => {
 				// TODO: add arg for once, submit + change events
 				if (typeof el === 'object' && binding.value) {
 					el.addEventListener('click', () => {
