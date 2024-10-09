@@ -612,6 +612,16 @@ export default {
 				this.badgesCustomExpEnabled = true;
 			}
 		}
+
+		// Track may challenge page view
+		if (this.activeView === MAY_CHALLENGE_VIEW) {
+			this.$kvTrackEvent('thanks', 'view', 'May challenge view', this.isGuest ? 'guest' : 'signed-in');
+		}
+
+		// Track login required view
+		if (this.activeView === LOGIN_REQUIRED_VIEW) {
+			this.$kvTrackEvent('thanks', 'view', 'Need to login view', this.isGuest ? 'guest' : 'signed-in');
+		}
 	},
 	methods: {
 		createGuestAccount() {
