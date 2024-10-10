@@ -47,6 +47,7 @@ export default {
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['lightbox-closed'],
 	props: {
 		lender: {
 			type: Object,

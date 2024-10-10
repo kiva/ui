@@ -267,6 +267,7 @@ const filterOptionsQuery = gql`
 		lend {
 			countryFacets {
 				country {
+					id
 					isoCode
 					name
 					numLoansFundraising

@@ -73,6 +73,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							geocode {
 								city
 								country {
+									id
 									name
 									isoCode
 									region

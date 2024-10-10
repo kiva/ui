@@ -17,6 +17,7 @@ query myKivaQuery {
           city
           state
           country {
+			id
             name
             isoCode
             region
