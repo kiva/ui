@@ -14,35 +14,62 @@
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
-			<div
-				class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-				style="line-height: 0;"
-			>
-				<span
-					class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-					style="line-height: 0; font-weight: 600;"
+			<section class="tw-py-2">
+				<div
+					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
+					style="line-height: 0;"
 				>
-					MY IMPACT
-				</span>
-			</div>
-			<div
-				:class="[
-					'tw-flex',
-					{ 'tw-flex-col': !showSingleArray },
-					{ 'tw-flex-col lg:tw-flex-row lg:tw-gap-3': showSingleArray }
-				]"
-			>
-				<MyKivaBorrowerCarousel
-					:loans="loans"
-					:is-loading="isLoading"
-					@selected-loan="handleSelectedLoan"
-				/>
-				<JournalUpdatesCarousel
-					:loan="activeLoan"
-					:updates="loanUpdates"
-					:lender="lender"
-				/>
-			</div>
+					<span
+						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
+						style="line-height: 0; font-weight: 600;"
+					>
+						MY IMPACT
+					</span>
+				</div>
+				<div
+					:class="[
+						'tw-flex',
+						{ 'tw-flex-col': !showSingleArray },
+						{ 'tw-flex-col lg:tw-flex-row lg:tw-gap-3': showSingleArray }
+					]"
+				>
+					<MyKivaBorrowerCarousel
+						:loans="loans"
+						:is-loading="isLoading"
+						@selected-loan="handleSelectedLoan"
+					/>
+					<JournalUpdatesCarousel
+						:loan="activeLoan"
+						:updates="loanUpdates"
+						:lender="lender"
+					/>
+				</div>
+			</section>
+			<section class="tw-py-2">
+				<div
+					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
+					style="line-height: 0;"
+				>
+					<span
+						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
+						style="line-height: 0; font-weight: 600;"
+					>
+						BADGES AND ACHIEVEMENTS
+					</span>
+				</div>
+				<div>
+					<button
+						@click="showBadgeModal = true"
+					>
+						Show Modal
+					</button>
+
+					<BadgeModal
+						:show-lightbox="showBadgeModal"
+						@badge-modal-closed="showBadgeModal = false"
+					/>
+				</div>
+			</section>
 		</MyKivaContainer>
 	</www-page>
 </template>
@@ -59,6 +86,7 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
+import BadgeModal from '#src/components/MyKiva/BadgeModal';
 
 import {
 	ref,
@@ -78,6 +106,7 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
+const showBadgeModal = ref(false);
 
 const isLoading = computed(() => !lender.value);
 
