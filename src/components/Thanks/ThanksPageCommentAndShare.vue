@@ -365,6 +365,11 @@ export default {
 		if (this.receipt) {
 			this.handleFacebookResponse('post-checkout');
 		}
+		if (this.askForComments) {
+			this.$kvTrackEvent('thanks', 'view', 'Loan commenting view', this.isGuest ? 'guest' : 'signed-in');
+		} else {
+			this.$kvTrackEvent('thanks', 'view', 'Share this loan view', this.isGuest ? 'guest' : 'signed-in');
+		}
 	},
 };
 

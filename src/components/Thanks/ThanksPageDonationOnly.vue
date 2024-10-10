@@ -240,6 +240,7 @@ export default {
 			this.$showTipMsg(msg, 'confirmation', true);
 		}
 		this.gatherCurrentUserData();
+		this.$kvTrackEvent('thanks', 'view', 'Donations only view', this.isGuest ? 'guest' : 'signed-in');
 	}
 };
 </script>
