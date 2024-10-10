@@ -67,6 +67,7 @@ query shopBasketUpdate($basketId: String) {
 							}
 							geocode {
 								country {
+									id
 									name
 									isoCode
 								}

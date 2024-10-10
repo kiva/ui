@@ -149,6 +149,7 @@ const countryQuery = gql`query featuredCountry {
 	lend {
 		countryFacets {
 			country {
+				id
 				name
 				numLoansFundraising
 				fundsLentInCountry

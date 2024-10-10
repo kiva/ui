@@ -123,6 +123,7 @@ const processInstantLendingContent = gql`query instantLendingContent($loanId: In
 				city
 				state
 				country {
+					id
 					name
 				}
 			}

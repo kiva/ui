@@ -2,6 +2,7 @@ query countriesNotLentTo {
 	lend {
 		countryFacets {
 			country {
+				id
 				isoCode
 				name
 				region
@@ -13,6 +14,7 @@ query countriesNotLentTo {
 		lendingStats {
 			id
 			countriesLentTo {
+				id
 				isoCode
 			}
 		}

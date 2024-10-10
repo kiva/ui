@@ -102,6 +102,7 @@ export default {
 									id
 									loanCount
 									country {
+										id
 										name
 									}
 								}

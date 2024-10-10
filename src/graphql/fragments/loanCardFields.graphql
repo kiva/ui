@@ -10,6 +10,7 @@ fragment loanCardFields on LoanBasic {
 		# state is used for US loans on LoanChannelCategoryPage
 		state
 		country {
+			id
 			isoCode
 			name
 			region

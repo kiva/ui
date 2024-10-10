@@ -220,6 +220,7 @@ export default {
 					}
 					countries {
 						values {
+							id
 							isoCode
 						}
 					}

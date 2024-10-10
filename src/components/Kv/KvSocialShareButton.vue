@@ -107,6 +107,7 @@ export default {
 		KvLightbox,
 		KvMaterialIcon
 	},
+	emits: ['lightbox-closed'],
 	props: {
 		/**
 		 * Title in the pop up modal

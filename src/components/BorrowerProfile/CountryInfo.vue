@@ -139,6 +139,7 @@ export default {
 								latitude
 								longitude
 								country {
+									id
 									numLoansFundraising
 									ppp
 									isoCode
@@ -149,6 +150,7 @@ export default {
 						}
 						countryFacets {
 							country {
+								id
 								isoCode
 								region
 							}
