@@ -403,9 +403,9 @@ export default {
 
 		this.determineIfMobile();
 		this.$kvTrackEvent(
-			'thanks',
-			'view',
-			`${this.visibleSection} v2 view`,
+			'post-checkout',
+			'show',
+			`${this.visibleSection}-v2-view`,
 			this.showGuestUpsell ? 'guest' : 'signed-in'
 		);
 	},
