@@ -366,9 +366,9 @@ export default {
 			this.handleFacebookResponse('post-checkout');
 		}
 		if (this.askForComments) {
-			this.$kvTrackEvent('thanks', 'view', 'Loan commenting view', this.isGuest ? 'guest' : 'signed-in');
+			this.$kvTrackEvent('post-checkout', 'show', 'loan-commenting-view', this.isGuest ? 'guest' : 'signed-in');
 		} else {
-			this.$kvTrackEvent('thanks', 'view', 'Share this loan view', this.isGuest ? 'guest' : 'signed-in');
+			this.$kvTrackEvent('post-checkout', 'show', 'share-this-loan-view', this.isGuest ? 'guest' : 'signed-in');
 		}
 	},
 };
