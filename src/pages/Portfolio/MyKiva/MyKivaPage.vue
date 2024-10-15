@@ -1,5 +1,5 @@
 <template>
-	<www-page main-class="tw-bg-secondary">
+	<www-page main-class="tw-bg-secondary tw-overflow-hidden" class="tw-relative">
 		<MyKivaNavigation
 			:visible="showNavigation"
 			:user-balance="userBalance"
