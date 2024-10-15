@@ -12,7 +12,7 @@
 							tw-rounded-full tw-shadow tw--mt-5"
 					>
 						<BorrowerImage
-							class="tw-w-full tw-rounded-full tw-bg-brand"
+							class="tw-w-full tw-rounded-full"
 							:alt="borrowerName"
 							:aspect-ratio="1"
 							:default-image="{ width: 80, faceZoom: 50 }"
@@ -29,8 +29,9 @@
 					</h3>
 					<p class="tw-text-center md:tw-text-left">
 						{{ description }}
+						<br>
 						<a
-							class="tw-w-full md:tw-w-auto tw-text-action"
+							class="tw-text-action"
 							:href="`/lend/${loan.id}`"
 							variant="primary"
 							v-kv-track-event="['portfolio', 'click', 'view-details', borrowerName, loan.id]"
@@ -54,7 +55,7 @@
 							:icon="open ? mdiChevronUp : mdiChevronDown"
 						/>
 					</button>
-					<kv-expandable easing="ease-in-out">
+					<kv-expandable easing="ease-in-out" class="tw-block md:tw-hidden">
 						<div v-show="open">
 							<LoanNextSteps
 								class="tw-mb-5"
@@ -65,6 +66,13 @@
 							/>
 						</div>
 					</kv-expandable>
+					<LoanNextSteps
+						class="tw-hidden md:tw-block tw-mb-5"
+						:weeks-to-repay="weeksToRepay"
+						:current-step="currentStep"
+						:repayments-started="!isFundraising"
+						no-animation
+					/>
 				</div>
 			</div>
 		</div>

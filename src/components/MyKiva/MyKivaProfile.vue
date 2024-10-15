@@ -1,12 +1,12 @@
 <template>
 	<MyKivaContainer>
-		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-3">
+		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-4">
 			<KvLoadingPlaceholder
 				v-if="isLoading"
-				class="!tw-h-5 tw-mt-6 md:tw-mt-0"
+				class="!tw-h-5 tw-mt-6 md:tw-mt-0 tw-mr-auto md:tw-mr-0"
 				:style="{ width: '10rem' }"
 			/>
-			<h2 v-else>
+			<h2 v-else class="tw-mr-auto md:tw-mr-0">
 				{{ lenderName }}
 			</h2>
 			<a
