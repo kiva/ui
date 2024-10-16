@@ -153,6 +153,7 @@
 					Cancel registration
 				</a>
 			</div>
+			<kv-loading-overlay v-if="loading" class="tw-rounded" />
 		</div>
 	</system-page>
 </template>
@@ -163,6 +164,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, requiredIf } from '@vuelidate/validators';
 import logReadQueryError from '#src/util/logReadQueryError';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '#src/components/SystemFrame/SystemPage';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -184,6 +186,7 @@ export default {
 	components: {
 		KvBaseInput,
 		KvButton,
+		KvLoadingOverlay,
 		ReCaptchaEnterprise,
 		SystemPage,
 		UserUpdatesPreference,
@@ -219,6 +222,7 @@ export default {
 			needsComms: false,
 			selectedComms: '',
 			enableRadioBtnExperiment: false,
+			loading: false,
 		};
 	},
 	setup() { return { v$: useVuelidate() }; },
@@ -368,6 +372,7 @@ export default {
 					this.newsConsent = this.selectedComms === '1';
 				}
 
+				this.loading = true;
 				this.$kvTrackEvent('Register', 'register-social-success');
 			} else {
 				event.preventDefault();
