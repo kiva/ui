@@ -8,7 +8,7 @@
 				<div
 					class="tw-absolute tw-h-full tw-z-docked"
 				>
-					<AnimatedStars badge-completed :style="{ minWidth: '16rem'}" class="tw-h-full" />
+					<MyKivaBadgeStars badge-completed :style="{ minWidth: '16rem'}" class="tw-h-full" />
 				</div>
 
 				<img
@@ -35,7 +35,7 @@
 			</h4>
 		</div>
 		<KvSocialShareButton
-			style="max-width: 328px; margin: 0 auto"
+			class="share-button"
 			v-kv-track-event="[
 				'portfolio',
 				'click',
@@ -64,7 +64,7 @@
 <script setup>
 
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
-import AnimatedStars from '#src/components/Thanks/AnimatedStars';
+import MyKivaBadgeStars from '#src/components/MyKiva/MyKivaBadgeStars';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 
 import confetti from 'canvas-confetti';
@@ -112,8 +112,13 @@ const badgeImage = computed(() => {
 const badgeCategory = computed(() => badge.value?.challengeName ?? '');
 const tiers = computed(() => lendingAchievement.value?.tiers ?? []);
 
+const sortedTiers = computed(() => {
+	const defaultTiers = [...tiers.value];
+	return defaultTiers.sort((a, b) => b.target - a.target);
+});
+
 const currentTier = computed(() => {
-	return tiers.value?.findLast(tier => tier.completedDate) ?? null;
+	return sortedTiers.value?.findLast(tier => tier.completedDate) ?? null;
 });
 const badgeLevel = computed(() => {
 	return currentTier.value?.target ?? 0;
@@ -147,21 +152,28 @@ onMounted(() => {
 <style lang="postcss" scoped>
 
 .container {
-  @apply tw-mx-auto tw-bg-white tw-p-4.5 tw-rounded;
-  max-width: 888px;
+	@apply tw-mx-auto tw-bg-white tw-p-4.5 tw-rounded;
 }
+
 .badge-container {
-  @apply tw-flex tw-flex-col tw-justify-center tw-items-center;
+	@apply tw-flex tw-flex-col tw-justify-center tw-items-center;
 }
 
 .badge {
 	@apply tw-mx-auto;
-  width: 160px;
-  height: 160px;
 
-  @screen md {
-    width: 211px;
-    height: 211px;
-  }
+	width: 160px;
+	height: 160px;
+
+	@screen md {
+		width: 211px;
+		height: 211px;
+	}
+}
+
+.share-button {
+	@apply tw-mx-auto;
+
+	max-width: 328px;
 }
 </style>
