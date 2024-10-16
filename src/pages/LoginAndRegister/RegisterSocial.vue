@@ -43,7 +43,7 @@
 					<kv-base-input
 						name="firstName"
 						type="text"
-						v-show="true"
+						v-show="needsNames"
 						v-model.trim="firstName"
 						:validation="v$.firstName"
 					>
