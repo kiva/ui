@@ -3,30 +3,32 @@
 		id="guestUpsellForm"
 		@submit.prevent.stop="submit"
 	>
-		<kv-base-input
-			name="firstName"
-			class="data-hj-suppress tw-mb-2"
-			type="text"
-			v-model.trim="firstName"
-			:validation="v$.firstName"
-		>
-			First name
-			<template #required>
-				Enter first name.
-			</template>
-		</kv-base-input>
-		<kv-base-input
-			name="lastName"
-			class="data-hj-suppress tw-mb-2"
-			type="text"
-			v-model.trim="lastName"
-			:validation="v$.lastName"
-		>
-			Last name
-			<template #required>
-				Enter last name.
-			</template>
-		</kv-base-input>
+		<div class="data-hj-suppress tw-mb-2">
+			<kv-base-input
+				name="firstName"
+				type="text"
+				v-model.trim="firstName"
+				:validation="v$.firstName"
+			>
+				First name
+				<template #required>
+					Enter first name.
+				</template>
+			</kv-base-input>
+		</div>
+		<div class="data-hj-suppress tw-mb-2">
+			<kv-base-input
+				name="lastName"
+				type="text"
+				v-model.trim="lastName"
+				:validation="v$.lastName"
+			>
+				Last name
+				<template #required>
+					Enter last name.
+				</template>
+			</kv-base-input>
+		</div>
 		<p
 			v-if="serverError"
 			class="tw-text-danger tw-text-small tw-font-medium tw-mb-2"
