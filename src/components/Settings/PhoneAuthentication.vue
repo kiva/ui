@@ -24,14 +24,14 @@
 						<kv-phone-input
 							class="phone-authentication__phone-input tw-mb-1 data-hj-suppress"
 							:disabled="enrollmentPending"
-							:valid="!v$.phoneNumber?.$invalid"
+							:valid="!v$.phoneNumber?.$error"
 							id="phone_input"
 							ref="phoneInput"
 							v-model="phoneNumber"
 							@blur="v$.phoneNumber.$touch"
 							@validity-changed="onValidityChanged"
 						/>
-						<ul class="validation-errors" v-if="v$.phoneNumber?.$invalid">
+						<ul class="validation-errors" v-if="v$.phoneNumber?.$error">
 							<li v-if="v$.phoneNumber?.required?.$invalid">
 								Field is required
 							</li>

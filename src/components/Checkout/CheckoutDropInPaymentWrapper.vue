@@ -48,10 +48,10 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="promoGuestCheckoutEnabled && v$.email?.$invalid">
+				<p v-if="promoGuestCheckoutEnabled && v$.email?.$error">
 					Valid campaign email required
 				</p>
-				<p v-else-if="v$.email?.$invalid" class="input-error tw-text-danger tw-text-base tw-mb-2">
+				<p v-else-if="v$.email?.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
 				<user-updates-preference
@@ -87,7 +87,7 @@
 							target="_blank"
 							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
 						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
-						<p v-if="v$.termsAgreement?.$invalid" class="input-error tw-text-danger tw-text-base">
+						<p v-if="v$.termsAgreement?.$error" class="input-error tw-text-danger tw-text-base">
 							You must agree to the Kiva Terms of service & Privacy
 							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 						</p>
