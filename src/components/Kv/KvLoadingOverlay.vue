@@ -1,14 +1,14 @@
 <template>
 	<div class="loading-overlay">
 		<div class="spinner-wrapper" :style="{ top }">
-			<kv-loading-spinner />
+			<kv-loading-spinner size="large" />
 		</div>
 	</div>
 </template>
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
 import getCacheKey from '#src/util/getCacheKey';
 
 export default {
