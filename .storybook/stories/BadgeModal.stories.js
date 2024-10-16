@@ -1,5 +1,5 @@
 import BadgeModal from '#src/components/MyKiva/BadgeModal.vue';
-import { badgeNoProgress } from '../mock-data/badge-tiered-data-mock';
+import { badgeNoProgress } from '../mock-data/tiered-lending-achievement-data-mock';
 
 export default {
 	title: 'MyKiva/Badge Modal',
