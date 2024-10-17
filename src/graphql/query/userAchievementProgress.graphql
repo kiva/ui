@@ -1,0 +1,16 @@
+query UserAchievementProgress {
+  userAchievementProgress {
+    id
+    tieredLendingAchievements {
+      id
+      status
+      totalProgressToAchievement
+      tiers {
+        target
+        tierStatement
+        completedDate
+        learnMoreURL
+      }
+    }
+  }
+}
