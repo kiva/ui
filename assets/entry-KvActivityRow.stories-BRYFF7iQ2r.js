@@ -1,0 +1,4 @@
+import{K as i}from"./entry-KvActivityRow-B_1joX1Ueq.js";import"./entry-KvUserAvatar-BkaEcb4s4h.js";import"./entry-vue.esm-bundler-CCMUuEADRp.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const u={title:"Kv/KvActivityRow",component:i},n={lenderName:"Stephanie",lenderImage:"https://www.development.kiva.org/img/s100/26e15431f51b540f31cd9f011cc54f31.jpg",text:"Stephanie lent $25"},p=e=>{const o=(m,{argTypes:c})=>({props:Object.keys(c),components:{KvActivityRow:i},setup(){return e},template:`<kv-activity-row
+            :activity="activity" />`});return o.args=e,o},t=p({activity:n});var r,s,a;t.parameters={...t.parameters,docs:{...(r=t.parameters)==null?void 0:r.docs,source:{originalSource:`story({
+  activity
+})`,...(a=(s=t.parameters)==null?void 0:s.docs)==null?void 0:a.source}}};const f=["Default"];export{t as Default,f as __namedExportsOrder,u as default};
