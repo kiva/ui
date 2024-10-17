@@ -156,7 +156,7 @@ const fetchBadgesData = () => {
 		query: contentfulEntriesQuery,
 		variables: {
 			contentType: 'challenge',
-			limit: 100,
+			limit: 200,
 		}
 	})
 		.then(result => {

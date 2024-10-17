@@ -96,6 +96,7 @@ const badgesArray = computed(() => {
 				};
 			} else {
 				const hasStarted = userAchievement.status !== 'NO_PROGRESS';
+				// TODO: Change this to level when we have the data from the backend
 				const level = userAchievement.totalProgressToAchievement;
 				badgeFound = {
 					...badgeFound,
