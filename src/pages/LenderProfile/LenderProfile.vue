@@ -18,21 +18,13 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag';
-
 import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import { defaultBadges } from '#src/util/achievementUtils';
-
-const badgeQuery = gql`query contentfulBadgeImage ($badgeKey: String!) {
-	contentful {
-		entries(contentKey: $badgeKey, contentType: "challenge")
-	}
-}`;
+import useBadgeContentfulData from '#src/composables/useBadgeContentfulData';
 
 export default {
 	name: 'LenderProfile',
@@ -113,15 +105,11 @@ export default {
 		preFetch(config, client, { route }) {
 			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
-
-			const utmCampaign = currentRoute?.query?.utm_campaign ?? '';
-			const isUtmValid = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
-			const badgeKey = utmCampaign.split('badge_')[1];
-			const isBadgeKeyValid = defaultBadges.includes(badgeKey);
+			const { isBadgeKeyValid, badgeQuery, badgeKey } = useBadgeContentfulData(client, currentRoute);
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isUtmValid && isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
+				isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
 			]);
 		}
 	},
@@ -162,21 +150,6 @@ export default {
 			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
 		},
 	},
-	methods: {
-		async loadBadgeInfo(badgeKey) {
-			const data = this.apollo.readQuery({
-				query: badgeQuery,
-				variables: { badgeKey }
-			});
-
-			const contentfulData = data?.contentful?.entries?.items ?? null;
-			if (contentfulData) {
-				this.enableBadgeContent = true;
-				this.badgeImage = contentfulData?.[0]?.fields?.badgeImage?.fields?.file?.url ?? null;
-				this.badgeCategory = contentfulData?.[0]?.fields?.challengeName ?? '';
-			}
-		}
-	},
 	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
@@ -193,12 +166,13 @@ export default {
 		this.allAchievements = cachedLenderInfo?.userAchievementProgress?.achievementProgress ?? [];
 		this.lenderIsPublic = !!this.lenderInfo?.id;
 
-		const utmCampaign = this.$route?.query?.utm_campaign ?? '';
-		const isUtmValid = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
-		const badgeKey = utmCampaign.split('badge_')[1];
-		const isBadgeKeyValid = defaultBadges.includes(badgeKey);
-		if (isUtmValid && isBadgeKeyValid) {
-			await this.loadBadgeInfo(badgeKey);
+		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);
+
+		if (isBadgeKeyValid) {
+			const { badgeImage, badgeCategory } = await loadBadgeInfo();
+			this.badgeImage = badgeImage;
+			this.badgeCategory = badgeCategory;
+			this.enableBadgeContent = true;
 		}
 	}
 };
