@@ -28,7 +28,7 @@
 				}"
 			>
 				<component
-					v-if="index > 0"
+					v-if="isBadgeImageLoaded && index > 0"
 					:is="getLineComponent(positions[index - 1], position)"
 					class="tw-absolute"
 					:style="getLineStyle(positions[index - 1], position)"
@@ -37,6 +37,7 @@
 					:src="badgeImageUrl"
 					alt="Badge"
 					class="tw-h-full tw-z-1 tw-relative"
+					@load="isBadgeImageLoaded = true"
 				>
 			</div>
 		</div>
@@ -78,6 +79,7 @@ const props = defineProps({
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { getTierPositions, getLineComponent, getLineStyle } = useBadgeModal(props.badge);
+const isBadgeImageLoaded = ref(false);
 
 const positions = ref(getTierPositions());
 </script>
