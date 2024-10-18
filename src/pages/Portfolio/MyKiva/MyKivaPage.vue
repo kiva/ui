@@ -68,10 +68,11 @@
 						:user-achievements="userAchievements"
 					/>
 
-					<BadgeModal
+					<!-- TODO: reenable with badge data -->
+					<!-- <BadgeModal
 						:show-lightbox="showBadgeModal"
 						@badge-modal-closed="showBadgeModal = false"
-					/>
+					/> -->
 				</div>
 			</section>
 		</MyKivaContainer>
@@ -92,7 +93,8 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
+// TODO: reenable with badge data
+// import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 
 import {
@@ -113,7 +115,8 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
-const showBadgeModal = ref(false);
+// TODO: reenable with badge data
+// const showBadgeModal = ref(false);
 const userAchievements = ref([]);
 const badgesData = ref([]);
 

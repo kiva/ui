@@ -58,6 +58,8 @@ setup((app) => {
 			},
 		],
 	});
+
+	app.provide('$kvTrackEvent', () => { });
 });
 
 // add custom viewports
