@@ -57,12 +57,16 @@
 						BADGES AND ACHIEVEMENTS
 					</span>
 				</div>
-				<div>
-					<button
-						@click="showBadgeModal = true"
+				<div class="tw-mt-3">
+					<h3
+						class="tw-text-center tw-mb-2"
 					>
-						Show Modal
-					</button>
+						My impact journeys
+					</h3>
+					<BadgesSection
+						:badges-data="badgesData"
+						:user-achievements="userAchievements"
+					/>
 
 					<BadgeModal
 						:show-lightbox="showBadgeModal"
@@ -81,12 +85,15 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import BadgesSection from '#src/components/MyKiva/BadgesSection';
 
 import {
 	ref,
@@ -107,6 +114,8 @@ const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
+const userAchievements = ref([]);
+const badgesData = ref([]);
 
 const isLoading = computed(() => !lender.value);
 
@@ -133,6 +142,30 @@ const handleSelectedLoan = loan => {
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
+const fetchUserAchievements = () => {
+	apollo.query({ query: userAchievementProgressQuery })
+		.then(result => {
+			userAchievements.value = result.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage userAchievementProgressQuery');
+		});
+};
+
+const fetchBadgesData = () => {
+	apollo.query({
+		query: contentfulEntriesQuery,
+		variables: {
+			contentType: 'challenge',
+			limit: 200,
+		}
+	})
+		.then(result => {
+			badgesData.value = result.data?.contentful?.entries?.items ?? [];
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
+		});
+};
+
 apollo.query({ query: myKivaQuery })
 	.then(result => {
 		userInfo.value = result.data?.my ?? {};
@@ -157,5 +190,8 @@ onMounted(() => {
 	);
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
+
+	fetchBadgesData();
+	fetchUserAchievements();
 });
 </script>
