@@ -877,7 +877,7 @@ export default {
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
-		userHasDepositBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
+		userHasDepositBefore(this.cookieStore.get(hasDepositBeforeCookie) === 'true');
 	},
 	mounted() {
 		// MARS-246 Hotjar user attributes
