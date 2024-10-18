@@ -22,6 +22,7 @@ query basketLoansInfo(
 				city
 				state
 				country {
+					id
 					name
 					isoCode
 				}

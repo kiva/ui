@@ -81,6 +81,7 @@ export default {
 		KvFlag,
 		KvTextInput
 	},
+	emits: ['input', 'validity-changed'],
 	props: {
 		id: {
 			type: String,

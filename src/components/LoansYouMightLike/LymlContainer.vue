@@ -1,10 +1,7 @@
 <template>
 	<transition name="kvfade">
-		<div class="lyml-section-wrapper">
-			<div
-				class="lyml-section-container"
-				v-if="showLYML"
-			>
+		<div v-if="showLYML" class="lyml-section-wrapper">
+			<div class="lyml-section-container">
 				<div id="lyml-row-cards">
 					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
@@ -89,6 +86,7 @@ export default {
 		LoanCardController,
 		KvLoadingSpinner,
 	},
+	emits: ['add-to-basket', 'processing-add-to-basket', 'no-rec-loans-found'],
 	props: {
 		basketedLoans: {
 			type: Array,
@@ -193,7 +191,7 @@ export default {
 			this.saveWindowWidth();
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledResize());
 	},
 	methods: {

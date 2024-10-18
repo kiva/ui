@@ -213,7 +213,7 @@ export default {
 			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', _throttle(() => {
 			this.determineIfMobile();
 		}, 200));

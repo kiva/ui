@@ -78,6 +78,7 @@ export default {
 	components: {
 		DescriptionListItem,
 	},
+	emits: ['show-definition'],
 	props: {
 		partnerName: { // LoanPartner.partnerName
 			type: String,

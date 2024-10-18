@@ -41,6 +41,7 @@ export default {
 		KvIcon,
 		KvCheckboxList,
 	},
+	emits: ['updated'],
 	props: {
 		/**
 		 * The regions with countries used to build the checkbox lists. Expected format:

@@ -241,6 +241,11 @@ export default {
 		KvMaterialIcon
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: [
+		'refreshtotals',
+		'updating-totals',
+		'credit-removed'
+	],
 	props: {
 		totals: {
 			type: Object,

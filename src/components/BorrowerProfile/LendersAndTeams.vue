@@ -239,6 +239,7 @@ export default {
 		SupporterDetails,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['hide-section'],
 	props: {
 		displayType: {
 			type: String,
@@ -415,7 +416,7 @@ export default {
 		this.createObserver();
 		this.gatherCurrentUserData();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

@@ -54,6 +54,7 @@ export default {
 	mixins: [
 		braintreeDropinError
 	],
+	emits: ['complete-transaction', 'no-update'],
 	props: {
 		amount: {
 			type: Number,

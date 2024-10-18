@@ -40,6 +40,7 @@ export default {
 		KvCheckbox,
 		KvMaterialIcon
 	},
+	emits: ['updated', 'closeRegions'],
 	props: {
 		/**
 		 * The items to display in the checkbox list

@@ -102,6 +102,7 @@ const loanQuery = gql`
 
 export default {
 	name: 'KvClassicLoanCardContainer',
+	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals'],
 	props: {
 		loanId: {
 			type: Number,
@@ -493,7 +494,7 @@ export default {
 			this.fetchLoanActivity();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 		this.watchedQuery.subscription?.unsubscribe();
 	},

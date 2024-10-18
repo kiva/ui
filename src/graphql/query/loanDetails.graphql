@@ -11,6 +11,7 @@ query loanDetails(
 			repaymentInterval
 			geocode {
 				country {
+					id
 					name
 				}
 			}
@@ -27,6 +28,7 @@ query loanDetails(
 					riskRating
 					currencyExchangeLossRate
 					countries {
+						id
 						ppp
 						fundsLentInCountry
 						numLoansFundraising

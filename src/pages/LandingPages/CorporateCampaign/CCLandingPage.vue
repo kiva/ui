@@ -63,7 +63,7 @@
 				/>
 			</div>
 			<!-- add wrappers for ml components with necessary props -->
-			<div v-if="usesDynamicContentfulRendering">
+			<div v-if="usesDynamicContentfulRendering && isClientReady">
 				<div
 					:key="content.key"
 					v-for="({ component, content }) in contentGroups"
@@ -226,6 +226,7 @@ import LoanSearchFilters, { getSearchableFilters } from '#src/api/fixtures/LoanS
 import syncDate from '#src/util/syncDate';
 import trackTransactionEvent from '#src/util/trackTransactionEvent';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
+import emitter from '#src/plugins/event-emitter';
 import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
 import CampaignHowKivaWorks from '#src/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignJoinTeamForm from '#src/components/CorporateCampaign/CampaignJoinTeamForm';
@@ -240,11 +241,7 @@ import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoC
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import { setLendAmount } from '#src/util/basketUtils';
 
-// Error page
-const ErrorPage = defineAsyncComponent(() => import('#src/pages/Error'));
-
 // Content Group Types
-// TODO: update the campaign components to accept "content" prop
 const CampaignHero = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignHero'));
 const CampaignLogoGroup = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignLogoGroup'));
 const CampaignPartner = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignPartner'));
@@ -257,12 +254,6 @@ const DynamicHeroClassic = defineAsyncComponent(() => import('#src/components/Co
 const HeroWithCarousel = defineAsyncComponent(() => import('#src/components/Contentful/HeroWithCarousel'));
 const LoansByCategoryCarousel = defineAsyncComponent(() => import(
 	'#src/components/Contentful/LoansByCategoryCarousel'
-));
-const LoansByCategoryGrid = defineAsyncComponent(() => import(
-	'#src/components/Contentful/HomePage/NewHomeLoansByCategoryGrid'
-));
-const MonthlyGoodSelectorWrapper = defineAsyncComponent(() => import(
-	'#src/components/MonthlyGood/MonthlyGoodSelectorWrapper'
 ));
 const FrequentlyAskedQuestions = defineAsyncComponent(() => import(
 	'#src/components/Contentful/FrequentlyAskedQuestions'
@@ -360,6 +351,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 							}
 							geocode {
 								country {
+									id
 									name
 									isoCode
 								}
@@ -476,8 +468,6 @@ const getComponentFromType = type => {
 			return CampaignHero;
 		case 'mlLoanDisplay':
 			return CampaignLoanWrapper;
-		case 'monthlyGoodSelector':
-			return MonthlyGoodSelectorWrapper;
 		case 'frequentlyAskedQuestions':
 			return FrequentlyAskedQuestions;
 		case 'cardRow':
@@ -490,8 +480,6 @@ const getComponentFromType = type => {
 			return HeroWithCarousel;
 		case 'loansByCategoryCarousel':
 			return LoansByCategoryCarousel;
-		case 'loansByCategoryGrid':
-			return LoansByCategoryGrid;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
 		case 'mediaItemsCentered':
@@ -511,7 +499,7 @@ const getContentGroups = pageData => {
 	return groups.map(group => ({
 		component: getComponentFromType(group.type),
 		content: group,
-	})).filter(group => typeof group.component === 'function');
+	})).filter(group => typeof group.component === 'object' && group.component !== null);
 };
 
 // Get the Contentful Page data from the data of an Apollo query result
@@ -533,16 +521,21 @@ export default {
 		CampaignThanks,
 		CampaignVerificationForm,
 		DynamicHeroClassic,
+		FrequentlyAskedQuestions,
+		HeroWithCarousel,
 		InContextCheckout,
 		KvLightbox,
 		KvLoadingOverlay,
 		LoanCardController,
+		MediaItemsCentered,
 		WwwPageCorporate,
 		VerifyRemovePromoCredit,
+		CardRow,
 		CenteredRichText,
 		RichTextItemsCentered,
 		LoansByCategoryCarousel,
-		CampaignLoanWrapper
+		CampaignLoanWrapper,
+		StoryCardCarousel,
 	},
 	mixins: [
 		checkoutUtils
@@ -571,6 +564,7 @@ export default {
 	},
 	data() {
 		return {
+			isClientReady: false,
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,
@@ -647,22 +641,29 @@ export default {
 					contentType: 'page',
 					contentKey: args?.route?.value?.params?.dynamicRoute?.trim(),
 				}
-			}).then(({ data }) => {
+			}).then(async ({ data }) => {
 				// Get Contentful page data
 				const pageData = getPageData(data);
+
 				if (pageData.error) {
 					// Only import the error page if there is a contentful error
-					return Promise.all([ErrorPage()]);
+					return Promise.reject({
+						path: '/error',
+						query: {
+							error: pageData?.error,
+							error_description: 'We could not find that page, please check the url and try again.',
+						},
+					});
 				}
 				// Get components for content groups
-				const contentGroups = getContentGroups(pageData);
+				const contentGroups = await getContentGroups(pageData);
 				// Start importing all components
 				return Promise.all([
-					...contentGroups.map(g => g.component()),
+					...contentGroups.map(g => g.component),
 				]);
-			}).then(resolvedImports => {
+			}).then(async resolvedImports => {
 				// Call preFetch for page frame and content group components
-				const components = resolvedImports.map(resolvedImport => resolvedImport.default);
+				const components = resolvedImports.map(resolvedImport => resolvedImport);
 				return preFetchAll(components, client, args);
 			});
 		},
@@ -710,8 +711,15 @@ export default {
 		// show a loading screen if the page loads with an loan in the basket.
 		// const basketItems = this.rawPageData?.shop?.basket?.items?.values ?? [];
 		this.loadingPage = basketItems.some(item => item.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle, max-len
+
+		// setup emitter watcher
+		emitter.on('jumpToLoans', () => {
+			this.jumpToLoans();
+		});
 	},
 	async mounted() {
+		this.isClientReady = typeof window !== 'undefined';
+
 		// check for applied promo
 		await this.verifyOrApplyPromotion();
 
@@ -737,7 +745,7 @@ export default {
 
 		this.setAuthStatus(this.kvAuth0?.user ?? {});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.currentTimeInterval);
 	},
 	watch: {
@@ -764,9 +772,6 @@ export default {
 		}
 	},
 	computed: {
-		loanDisplayComponent() {
-			return this.$refs?.mlLoanDisplay?.$refs || this.$refs?.mlLoanDisplay?.[0]?.$refs;
-		},
 		campaignLoanWrapperProps() {
 			return {
 				filters: this.filters,
@@ -1501,16 +1506,23 @@ export default {
 				this.basketBalancing = false;
 			}
 		},
-		checkoutLightboxClosed() {
+		async checkoutLightboxClosed() {
 			this.checkoutVisible = false;
+			// gaurd against navigation reset if hash is already empty
+			if (this.$router?.hash !== '') {
+				await this.$router.push(this.adjustRouteHash('')).catch(() => {});
+			}
 			this.handleScrollPosition();
-			this.$router.push(this.adjustRouteHash('')).catch(() => {});
+		},
+		getLoanSectionRef() {
+			const refs = this.$refs;
+			return refs?.mlLoanDisplay?.$refs || refs?.mlLoanDisplay?.[0]?.$refs;
 		},
 		handleScrollPosition(y) {
 			if (this.scrollToLoans) {
-				this.scrollToLoans = false;
-				this.loanDisplayComponent.campaignLoanSection.scrollIntoView({ behavior: 'smooth' });
-			} else if (y) {
+				// Fetch Current Refs using method above and Navigate using the result
+				this.getLoanSectionRef()?.campaignLoanSection?.scrollIntoView({ behavior: 'smooth' });
+			} else if (typeof y !== 'undefined') {
 				window.scrollTo(0, y);
 			}
 		},

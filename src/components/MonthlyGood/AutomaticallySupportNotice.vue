@@ -14,7 +14,7 @@
 			<p v-html="valueBody"></p>
 		</div>
 		<div
-			class="md:tw-flex-1 tw-block
+			class="md:tw-flex-1
 			tw-order-first md:tw-order-last
 			md:tw-px-4
 			tw-mb-2 md:tw-mb-4

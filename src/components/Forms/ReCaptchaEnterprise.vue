@@ -12,6 +12,7 @@
 <script>
 export default {
 	name: 'ReCaptchaEnterprise',
+	emits: ['update'],
 	props: {
 		required: {
 			type: Boolean,

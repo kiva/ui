@@ -105,7 +105,7 @@ export default {
 			oneTrustGlobalEvent();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('oneTrustAccepted', this.handleOneTrustAccepted);
 
 		window.removeEventListener('resize', _throttle(() => {

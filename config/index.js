@@ -78,6 +78,7 @@ export const server = {
 	gzipEnabled: false,
 	minVueWorkers: 1,
 	maxVueWorkers: 3,
+	vueWorkerIdleTimeout: 0,
 };
 
 export default {

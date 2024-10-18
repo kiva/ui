@@ -101,7 +101,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route, kvAuth0 }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			return client.query({ query: getVerificationState, fetchPolicy: 'network-only' })
 				.then(result => {
 					// Redirect to doneUrl if email has already been verified recently

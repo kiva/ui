@@ -55,6 +55,7 @@ export default {
 		KvButton,
 		KvCheckbox,
 	},
+	emits: ['done'],
 	props: {
 		mfaRecoveryCode: {
 			type: String,

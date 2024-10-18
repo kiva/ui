@@ -66,6 +66,7 @@ export default {
 			isShown: false
 		};
 	},
+	emits: ['lightbox-closed'],
 	props: {
 		visible: {
 			type: Boolean,
@@ -109,7 +110,7 @@ export default {
 	mounted() {
 		this.isShown = this.visible;
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.closeLightbox();
 	},
 	methods: {

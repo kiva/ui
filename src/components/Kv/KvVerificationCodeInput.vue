@@ -31,8 +31,7 @@
 			autocomplete="one-time-code"
 			:disabled="disabled"
 			:maxlength="maxlength"
-			v-model="inputValue"
-			@input="$emit('input', $event.target.value)"
+			@input="$emit('update', $event.target.value)"
 		>
 	</div>
 </template>
@@ -43,10 +42,7 @@
 
 export default {
 	name: 'KvVerificationCodeInput',
-	model: {
-		prop: 'value',
-		event: 'input'
-	},
+	emits: ['update'],
 	props: {
 		maxlength: {
 			type: Number,
@@ -56,15 +52,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		modelValue: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			inputValue: this.modelValue,
-		};
 	},
 	computed: {
 		cssVars() {
@@ -81,13 +68,14 @@ export default {
 
 .kv-verification-code-input {
 	font-size: 3em; // All sizing is relative to this. You could override this from the parent.
+	width: calc(var(--kv-verification-code-input-maxlength) * 1.1125em + 1.5em);
 
 	&__input {
 		font-size: 1em;
 		font-variant-numeric: tabular-nums;
 		letter-spacing: 0.5em;
-		padding: 1em 0 1em 1em;
-		width: calc(var(--kv-verification-code-input-maxlength) * 1.1125em + 1.25em);
+		padding: 0.5em 0 0.5em 1em;
+		width: 100%;
 	}
 }
 </style>

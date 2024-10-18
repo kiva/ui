@@ -29,6 +29,7 @@
 <script>
 export default {
 	name: 'HelpmeChooseBorrowerSelector',
+	emits: ['select'],
 	props: {
 		imageUrl: {
 			type: String,

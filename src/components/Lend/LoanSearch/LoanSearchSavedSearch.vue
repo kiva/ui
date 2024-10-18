@@ -43,7 +43,7 @@
 					Email me when new loans become available
 				</kv-checkbox>
 				<kv-button
-					@click.native="saveSavedSearch"
+					@click="saveSavedSearch"
 					:state="savedSearchName.length === 0 ? 'disabled' : null"
 				>
 					Create Saved Search

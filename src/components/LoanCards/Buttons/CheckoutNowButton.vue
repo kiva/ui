@@ -31,6 +31,7 @@ export default {
 			mdiCheckboxMarkedCircleOutline
 		};
 	},
+	emits: ['add-to-basket'],
 	props: {
 		disableRedirects: {
 			type: Boolean,

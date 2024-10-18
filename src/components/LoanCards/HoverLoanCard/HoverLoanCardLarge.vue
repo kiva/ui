@@ -61,7 +61,7 @@
 					:minimal-checkout-button="true"
 					:is-amount-lend-button="lessThan25"
 					:amount-left="amountLeft"
-					@click.native="trackInteraction({
+					@click="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
 					})"
@@ -105,6 +105,12 @@ export default {
 	inject: ['apollo'],
 	mixins: [
 		hoverLoanCardMixin,
+	],
+	emits: [
+		'add-to-basket',
+		'track-interaction',
+		'update-detailed-loan-index',
+		'toggle-favorite',
 	],
 	props: {
 		expiringSoonMessage: {

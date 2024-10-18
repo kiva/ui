@@ -63,6 +63,7 @@ import HelpmeChooseRecommendations from './HelpmeChooseRecommendations';
 
 export default {
 	name: 'HelpmeChooseWrapper',
+	emits: ['update'],
 	props: {
 		remainingLoans: {
 			type: Array,

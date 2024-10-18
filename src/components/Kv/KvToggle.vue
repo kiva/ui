@@ -27,6 +27,7 @@ export default {
 		prop: 'checked',
 		event: 'change'
 	},
+	emits: ['change'],
 	props: {
 		id: {
 			type: String,

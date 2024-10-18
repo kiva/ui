@@ -209,7 +209,7 @@ export default {
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledResize);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledResize);
 	},
 };

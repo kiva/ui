@@ -55,6 +55,7 @@ export default {
 						latitude
 						longitude
 						country {
+							id
 							geocode {
 								latitude
 								longitude

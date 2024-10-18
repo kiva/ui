@@ -8,6 +8,7 @@
 		:utm-content="utmContent"
 		:open-lightbox="forceLightbox"
 		:loan-id="loan.id"
+		@lightbox-closed="closeLightbox"
 	>
 		<template #modal-content>
 			<div class="tw-relative">
@@ -46,6 +47,7 @@ export default {
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['lightbox-closed'],
 	props: {
 		lender: {
 			type: Object,
@@ -74,6 +76,10 @@ export default {
 		variant: {
 			type: String,
 			default: 'caution'
+		},
+		openLightbox: {
+			type: Boolean,
+			default: false
 		}
 	},
 	created() {
@@ -185,9 +191,14 @@ export default {
 			return `${this.$route.path}`;
 		},
 		forceLightbox() {
-			// If query param share=true return true to force lightbox open
-			return this.$route.query.share === 'true';
-		}
+			// If query param share=true return true to force lightbox open or opened from prop
+			return this.$route.query.share === 'true' || this.openLightbox;
+		},
+	},
+	methods: {
+		closeLightbox() {
+			this.$emit('lightbox-closed');
+		},
 	},
 };
 </script>

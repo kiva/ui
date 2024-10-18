@@ -103,7 +103,7 @@ export default {
 	mounted() {
 		window.addEventListener('beforeunload', this.onLeave);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.onLeave);
 	},
 	methods: {

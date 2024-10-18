@@ -81,7 +81,7 @@
 									<kv-button
 										class="smaller payment-settings-default-form__save-button"
 										v-if="!isProcessing"
-										@click.native="savePaymentSettings"
+										@click="savePaymentSettings"
 										:disabled="!isChanged || v$.$invalid"
 									>
 										Save Settings
@@ -96,7 +96,7 @@
 										id="dropin-submit"
 										class="smaller payment-settings-default-form__add-button"
 										:disabled="!enableAddCardButton || isProcessing"
-										@click.native="submitDropInAddACard"
+										@click="submitDropInAddACard"
 									>
 										<kv-icon name="lock" />
 										Add card <kv-loading-spinner v-if="isProcessing" />
@@ -124,7 +124,7 @@
 			<template #controls>
 				<kv-button
 					class="smallest secondary"
-					@click.prevent.native="showRemoveLightbox = false"
+					@click.prevent="showRemoveLightbox = false"
 				>
 					Cancel
 				</kv-button>
@@ -132,7 +132,7 @@
 				<kv-button
 					class="smallest alert"
 					v-if="!isProcessing"
-					@click.prevent.native="removeCard(selectedPaymentMethod.nonce)"
+					@click.prevent="removeCard(selectedPaymentMethod.nonce)"
 				>
 					Remove card
 				</kv-button>
@@ -161,7 +161,7 @@
 				<kv-button
 					id="active-card-no"
 					class="smallest secondary"
-					@click.prevent.native="showActiveLightbox = false"
+					@click.prevent="showActiveLightbox = false"
 				>
 					Close
 				</kv-button>

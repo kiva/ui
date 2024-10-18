@@ -20,6 +20,7 @@ import {
 
 export default {
 	name: 'KvPopper',
+	emits: ['show', 'hide'],
 	props: {
 		controller: {
 			validator(value) {
@@ -69,7 +70,7 @@ export default {
 			this.popper.scheduleUpdate();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.removeEvents();
 		if (this.popper) {
 			this.popper.destroy();

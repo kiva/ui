@@ -48,16 +48,16 @@
 						'Where should we email your receipt?'
 					)"
 				/>
-				<p v-if="promoGuestCheckoutEnabled && v$.email?.$invalid">
+				<p v-if="promoGuestCheckoutEnabled && v$.email?.$error">
 					Valid campaign email required
 				</p>
-				<p v-else-if="v$.email?.$invalid" class="input-error tw-text-danger tw-text-base tw-mb-2">
+				<p v-else-if="v$.email?.$error" class="input-error tw-text-danger tw-text-base tw-mb-2">
 					Valid email required.
 				</p>
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="basket"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 					is-checkout
 				/>
 				<template v-else>
@@ -67,7 +67,7 @@
 						name="termsAgreement"
 						class="checkbox tw-text-small tw-mb-2"
 						v-model="termsAgreement"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'terms-of-use',
@@ -87,7 +87,7 @@
 							target="_blank"
 							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
 						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
-						<p v-if="v$.termsAgreement?.$invalid" class="input-error tw-text-danger tw-text-base">
+						<p v-if="v$.termsAgreement?.$error" class="input-error tw-text-danger tw-text-base">
 							You must agree to the Kiva Terms of service & Privacy
 							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
 						</p>
@@ -98,7 +98,7 @@
 						class="checkbox tw-text-small tw-mb-2"
 						name="emailUpdates"
 						v-model="emailUpdates"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'basket',
 							'click',
 							'marketing-updates',
@@ -172,6 +172,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [checkoutUtils, braintreeDropInError],
+	emits: ['complete-transaction', 'updating-totals', 'refreshtotals', 'opt-in'],
 	props: {
 		amount: {
 			type: String,

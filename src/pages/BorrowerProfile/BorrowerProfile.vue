@@ -220,6 +220,7 @@ const preFetchQuery = gql`
 					city
 					state
 					country {
+						id
 						name
 						isoCode
 						region
@@ -289,6 +290,7 @@ const mountedQuery = gql`
 					partner {
 						id
 						countries {
+							id
 							name
 						}
 					}
@@ -462,7 +464,7 @@ export default {
 	apollo: {
 		query: preFetchQuery,
 		preFetch(_config, client, { route, cookieStore }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const publicId = getPublicId(currentRoute);
 			return client
 				.query({
@@ -668,7 +670,7 @@ export default {
 			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', _throttle(() => {
 			this.determineIfMobile();
 		}, 200));

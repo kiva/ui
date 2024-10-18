@@ -21,6 +21,7 @@ export default {
 	components: {
 		FifteenYearsGlobeCTA,
 	},
+	emits: ['selectcountry', 'pan'],
 	data() {
 		return {
 			ctaVisible: false,
@@ -155,7 +156,7 @@ export default {
 			}
 		};
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.gkview) {
 			this.gkview.release();
 		}

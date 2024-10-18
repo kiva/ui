@@ -129,6 +129,7 @@ export default {
 						countryFacets {
 							count
 							country {
+								id
 								name
 								region
 								isoCode

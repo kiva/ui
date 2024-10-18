@@ -429,7 +429,7 @@ export default {
 		window.addEventListener('resize', this.throttledResize);
 		this.determineIfMobile();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 		window.removeEventListener('resize', this.throttledResize);
 	},

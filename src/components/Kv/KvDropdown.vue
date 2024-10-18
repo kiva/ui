@@ -20,6 +20,7 @@ import {
 export default {
 	name: 'KvDropdown',
 	inject: ['apollo', 'cookieStore'],
+	emits: ['show', 'hide'],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },
@@ -70,7 +71,7 @@ export default {
 			this.popper.scheduleUpdate();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.unmakeDropdown();
 	},
 	methods: {

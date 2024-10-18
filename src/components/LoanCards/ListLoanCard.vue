@@ -82,7 +82,7 @@
 						:enable-huge-amount="enableHugeAmount"
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
-						@click.native="trackInteraction({
+						@click="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
 						})"
@@ -139,7 +139,7 @@
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 
-						@click.native="trackInteraction({
+						@click="trackInteraction({
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
 						})"
@@ -179,6 +179,7 @@ export default {
 		BorrowerInfoHeader,
 		BorrowerInfoBody,
 	},
+	emits: ['track-interaction', 'toggle-favorite', 'add-to-basket'],
 	props: {
 		isVisitor: {
 			type: Boolean,

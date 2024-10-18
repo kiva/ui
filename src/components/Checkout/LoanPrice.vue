@@ -7,7 +7,7 @@
 				class="loan-price tw-w-full"
 				style="max-width: 18rem;"
 				id="loan-price"
-				@update:modelValue="updateLoanReservation()"
+				@update:model-value="updateLoanReservation()"
 			>
 				<option
 					v-for="priceOption in prices"
@@ -48,6 +48,7 @@ export default {
 		RemoveBasketItem,
 	},
 	inject: ['apollo'],
+	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		price: {
 			type: String,

@@ -53,7 +53,7 @@
 					:is-visitor="isVisitor"
 					class="tw-mt-2 tw-w-full"
 					:class="{'tw-mb-2' : !isMatchAtRisk && !isFunded}"
-					@click.native="trackInteraction({
+					@click="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
 					})"
@@ -92,6 +92,7 @@ export default {
 		LoanTag
 	},
 	inject: ['apollo'],
+	emits: ['track-interaction', 'toggle-favorite', 'add-to-basket'],
 	props: {
 		amountLeft: {
 			type: Number,

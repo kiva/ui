@@ -36,6 +36,7 @@ import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
 	name: 'LenderStats',
+	emits: ['get-lender-stats'],
 	props: {
 		lenderStats: {
 			type: Object,

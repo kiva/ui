@@ -99,7 +99,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
 
 			return client.query({

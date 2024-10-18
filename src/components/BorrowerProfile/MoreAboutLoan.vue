@@ -253,7 +253,7 @@ export default {
 	mounted() {
 		this.createObserver();
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyObserver();
 	},
 };

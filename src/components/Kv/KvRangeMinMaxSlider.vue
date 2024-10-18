@@ -32,6 +32,7 @@ import { getDisplayedNumber } from '#src/util/loanSearch/filterUtils';
 
 export default {
 	name: 'KvRangeMinMaxSlider',
+	emits: ['updated'],
 	props: {
 		rangeMin: {
 			type: Number,

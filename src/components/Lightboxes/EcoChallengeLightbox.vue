@@ -129,6 +129,7 @@ export default {
 		KvTextLink,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['close-lightbox'],
 	props: {
 		visible: {
 			type: Boolean,

@@ -148,7 +148,7 @@
 							<kv-button
 								class="text-link"
 								v-if="selectedCountries.length !== 0"
-								@click.prevent.native="toggleAllCountries(false)"
+								@click.prevent="toggleAllCountries(false)"
 								v-kv-track-event="['Lending', 'click-place-clear', 'clear']"
 							>
 								Clear
@@ -190,6 +190,7 @@ const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String
 			id
 			countries {
 				values {
+					id
 					isoCode
 				}
 			}

@@ -395,7 +395,7 @@ export default {
 			}
 		},
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 	},
 };

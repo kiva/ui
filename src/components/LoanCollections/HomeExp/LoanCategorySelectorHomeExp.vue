@@ -10,7 +10,7 @@
 					:vertical="true"
 					v-for="category in loanChannels" :key="category.id"
 					:for-panel="`tab-${category.id}`"
-					@click.native="handleCategoryClick(category)"
+					@click="handleCategoryClick(category)"
 				>
 					{{ category.shortName }}
 				</kv-tab>
@@ -43,6 +43,7 @@ export default {
 			categoryPage: '/lend-by-category/',
 		};
 	},
+	emits: ['handle-category-click'],
 	props: {
 		/**
 		 * Array of loan channel data in an object

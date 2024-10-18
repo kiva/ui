@@ -26,6 +26,7 @@ export default {
 	components: {
 		KvMaterialIcon,
 	},
+	emits: ['click'],
 	data() {
 		return {
 			mdiClose,

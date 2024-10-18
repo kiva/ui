@@ -95,6 +95,7 @@ const spotlightLoanQuery = gql`
 						geocode {
 							city
 							country {
+								id
 								name
 							}
 						}

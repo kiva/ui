@@ -43,7 +43,7 @@
 					<kv-base-input
 						name="firstName"
 						type="text"
-						v-show="true"
+						v-show="needsNames"
 						v-model.trim="firstName"
 						:validation="v$.firstName"
 					>
@@ -70,7 +70,7 @@
 				<user-updates-preference
 					v-if="enableRadioBtnExperiment"
 					tracking-category="authentication"
-					@update:modelValue="selectedComms = $event"
+					@update:model-value="selectedComms = $event"
 				/>
 				<input
 					v-if="enableRadioBtnExperiment"
@@ -86,7 +86,7 @@
 						v-show="needsTerms"
 						v-model="newAcctTerms"
 						:validation="v$.newAcctTerms"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'terms-of-use',
@@ -111,7 +111,7 @@
 						type="checkbox"
 						v-show="needsNews"
 						v-model="newsConsent"
-						@update:modelValue="$kvTrackEvent(
+						@update:model-value="$kvTrackEvent(
 							'authentication',
 							'click',
 							'marketing-updates',
@@ -129,7 +129,7 @@
 					/>
 					<p
 						class="tw-text-center tw-text-danger tw-text-small tw-font-medium tw-mt-1"
-						v-if="needsCaptcha && v$.captcha?.$invalid"
+						v-if="needsCaptcha && v$.captcha?.$error"
 					>
 						Please complete the captcha.
 					</p>
@@ -153,6 +153,7 @@
 					Cancel registration
 				</a>
 			</div>
+			<kv-loading-overlay v-if="loading" class="tw-rounded" />
 		</div>
 	</system-page>
 </template>
@@ -163,6 +164,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, requiredIf } from '@vuelidate/validators';
 import logReadQueryError from '#src/util/logReadQueryError';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '#src/components/SystemFrame/SystemPage';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -184,6 +186,7 @@ export default {
 	components: {
 		KvBaseInput,
 		KvButton,
+		KvLoadingOverlay,
 		ReCaptchaEnterprise,
 		SystemPage,
 		UserUpdatesPreference,
@@ -219,6 +222,7 @@ export default {
 			needsComms: false,
 			selectedComms: '',
 			enableRadioBtnExperiment: false,
+			loading: false,
 		};
 	},
 	setup() { return { v$: useVuelidate() }; },
@@ -345,7 +349,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? {};
+			const currentRoute = route.value ?? route ?? {};
 			const pageId = currentRoute.query?.partnerContentId;
 			if (!pageId) {
 				return client.query({ query: experimentQuery, variables: { id: COMMS_OPT_IN_EXP_KEY } });
@@ -368,6 +372,7 @@ export default {
 					this.newsConsent = this.selectedComms === '1';
 				}
 
+				this.loading = true;
 				this.$kvTrackEvent('Register', 'register-social-success');
 			} else {
 				event.preventDefault();

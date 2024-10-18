@@ -55,7 +55,7 @@
 					:is-simple-lend-button="true"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 
-					@click.native="trackInteraction({
+					@click="trackInteraction({
 						interactionType: 'addToBasket',
 						interactionElement: 'Lend25'
 					})"
@@ -88,6 +88,7 @@ import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'ExpandableLoanCard',
+	emits: ['add-to-basket', 'track-interaction'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,

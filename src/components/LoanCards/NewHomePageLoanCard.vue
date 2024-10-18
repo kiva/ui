@@ -154,6 +154,7 @@ export const loanFieldsFragment = gql`
 		distributionModel
 		geocode {
 			country {
+				id
 				name
 			}
 		}
@@ -191,6 +192,7 @@ const loanCardQuery = gql`
 
 export default {
 	name: 'NewHomePageLoanCard',
+	emits: ['dedication-click'],
 	props: {
 		loanId: {
 			type: Number,
@@ -364,7 +366,7 @@ export default {
 			this.createViewportObserver();
 		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.destroyViewportObserver();
 	},
 	watch: {

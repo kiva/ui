@@ -241,6 +241,7 @@ export default {
 		KvPageContainer,
 		KvButton
 	},
+	emits: ['guest-create-account'],
 	props: {
 		receipt: {
 			type: Object,
@@ -363,6 +364,11 @@ export default {
 	mounted() {
 		if (this.receipt) {
 			this.handleFacebookResponse('post-checkout');
+		}
+		if (this.askForComments) {
+			this.$kvTrackEvent('post-checkout', 'show', 'loan-commenting-view', this.isGuest ? 'guest' : 'signed-in');
+		} else {
+			this.$kvTrackEvent('post-checkout', 'show', 'share-this-loan-view', this.isGuest ? 'guest' : 'signed-in');
 		}
 	},
 };

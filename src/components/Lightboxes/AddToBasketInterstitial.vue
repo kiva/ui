@@ -39,7 +39,7 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'keep-exploring-button-click']"
-								@click.native.prevent="closeLightbox"
+								@click.prevent="closeLightbox"
 							>
 								Find more loans
 							</kv-button>
@@ -52,7 +52,7 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'checkout-button-click']"
-								@click.native="closeLightbox"
+								@click="closeLightbox"
 							>
 								Checkout
 							</kv-button>
@@ -122,6 +122,7 @@ export default {
 		LYML,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket', 'processing-add-to-basket'],
 	data() {
 		return {
 			basketInterstitialState: {},
@@ -231,7 +232,7 @@ export default {
 			);
 		}
 	},
-	destroyed() {
+	unmounted() {
 		clearTimeout(this.loadingOnTimeout);
 		clearTimeout(this.loadingOffTimeout);
 	}

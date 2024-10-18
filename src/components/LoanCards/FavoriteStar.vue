@@ -43,6 +43,7 @@ export default {
 	components: {
 		KvMaterialIcon,
 	},
+	emits: ['favorite-toggled'],
 	props: {
 		isFavorite: {
 			type: Boolean,

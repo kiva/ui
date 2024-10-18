@@ -23,6 +23,7 @@ export default {
 		KvIcon,
 	},
 	inject: ['apollo'],
+	emits: ['updating-totals'],
 	methods: {
 		addOnePrintKivaCard() {
 			this.$emit('updating-totals', true);

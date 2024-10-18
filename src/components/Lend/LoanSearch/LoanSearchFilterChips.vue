@@ -37,6 +37,7 @@ export default {
 		KvChipClassic,
 		KvTextLink,
 	},
+	emits: ['updated', 'reset'],
 	props: {
 		loanSearchState: {
 			type: Object,
@@ -59,7 +60,7 @@ export default {
 
 		window.addEventListener('resize', this.throttledDetermineIsCollapsable);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIsCollapsable);
 	},
 	computed: {

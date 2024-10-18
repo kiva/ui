@@ -41,7 +41,7 @@
 						class="get-started__submit-btn"
 						type="submit"
 						:disabled="selectedCauses.length === 0"
-						@click.native="trackTransition"
+						@click="trackTransition"
 					>
 						Next
 					</kv-button>

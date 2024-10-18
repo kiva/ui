@@ -89,6 +89,7 @@ export default {
 		DescriptionListItem,
 		KvTextLink,
 	},
+	emits: ['show-definition'],
 	props: {
 		borrowerName: {
 			type: String,

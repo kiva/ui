@@ -6,7 +6,7 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
-			@click.native="trackProfileClick"
+			@click="trackProfileClick"
 			:open-in-new-tab="true"
 			:use-default-styles="false"
 		/>
@@ -64,6 +64,7 @@ export default {
 		FundraisingStatusMeter,
 	},
 	inject: ['apollo'],
+	emits: ['add-to-basket', 'processing-add-to-basket'],
 	props: {
 		itemsInBasket: {
 			type: Array,

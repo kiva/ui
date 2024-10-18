@@ -103,7 +103,7 @@
 										:items="getItems(region.countries)"
 										:selected-values="selectedCountries"
 										@updated="updateCountries($event)"
-										@closeRegions="toggleRegions()"
+										@close-regions="toggleRegions()"
 									/>
 								</div>
 							</div>
@@ -130,7 +130,7 @@
 					:items="getItems(activeCountries)"
 					:selected-values="selectedCountries"
 					@updated="updateCountries($event)"
-					@closeRegions="toggleRegions()"
+					@close-regions="toggleRegions()"
 				/>
 				<div class="tw-flex tw-gap-2 tw-justify-end">
 					<button @click="selectedCountries = []" class="tw-text-link">
@@ -171,6 +171,7 @@ export default {
 	mixins: [
 		clickOutside,
 	],
+	emits: ['update-location', 'handle-overlay'],
 	props: {
 		regions: {
 			type: Array,

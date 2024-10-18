@@ -4,7 +4,7 @@
 			@input="event => $emit('update:modelValue', event.target.value)"
 			class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2 tw-text-small"
 		>
-			<div :class="{'radio-error': v$.selectedComms?.$invalid}">
+			<div :class="{'radio-error': v$.selectedComms?.$error}">
 				<kv-radio
 					value="on"
 					v-model="selectedComms"
@@ -21,7 +21,7 @@
 					Send me updates from people I've funded, my impact, and other ways I can help.
 				</kv-radio>
 			</div>
-			<div :class="{'radio-error': v$.selectedComms?.$invalid}">
+			<div :class="{'radio-error': v$.selectedComms?.$error}">
 				<kv-radio
 					value="off"
 					name="newsConsent"
@@ -40,7 +40,7 @@
 			</div>
 		</fieldset>
 		<p
-			v-if="v$.selectedComms?.$invalid"
+			v-if="v$.selectedComms?.$error"
 			class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
 		>
 			Choose your communication preferences.

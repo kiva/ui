@@ -69,7 +69,7 @@ export default {
 	},
 	computed: {
 		basketLink() {
-			return this.corporate ? this.addHashToRoute('show-basket') : '/basket';
+			return this.corporate ? this.addHashToRoute('#show-basket') : '/basket';
 		},
 		hideBasketBar() {
 			// hide this banner on managed lending landing + checkout pages
