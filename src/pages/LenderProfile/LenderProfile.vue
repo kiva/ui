@@ -198,7 +198,7 @@ export default {
 		const badgeKey = utmCampaign.split('badge_')[1];
 		const isBadgeKeyValid = defaultBadges.includes(badgeKey);
 		if (isUtmValid && isBadgeKeyValid) {
-			await this.loadBadgeInfo(`${badgeKey}`);
+			await this.loadBadgeInfo(badgeKey);
 		}
 	}
 };
