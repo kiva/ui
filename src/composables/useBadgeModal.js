@@ -1,6 +1,11 @@
 import { ref } from 'vue';
 import Alea from '#src/util/experiment/Alea';
+import useIsMobile from '#src/composables/useIsMobile';
+import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
+import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
+import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
 
+export const MOBILE_BREAKPOINT = 440;
 export const STATE_JOURNEY = 'JOURNEY';
 export const STATE_EARNED = 'EARNED';
 export const STATE_IN_PROGRESS = 'IN_PROGRESS';
@@ -20,6 +25,7 @@ export default function useBadgeModal(currentBadge) {
 	 * }
 	 */
 	const badge = ref(currentBadge);
+	const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 	const getTierPositions = () => {
 		const MIN_POSITION = 0;
@@ -44,5 +50,67 @@ export default function useBadgeModal(currentBadge) {
 		return positions;
 	};
 
-	return { getTierPositions };
+	const getLineComponent = (previousPosition, currentPosition) => {
+		const difference = currentPosition - previousPosition;
+		let component = LineSmall;
+		if (isMobile.value) {
+			if (Math.abs(difference) === 2) {
+				component = LineLarge;
+			} else if (Math.abs(difference) === 1) {
+				if (currentPosition === 1) {
+					component = LineMedium;
+				} else {
+					component = LineSmall;
+				}
+			}
+		}
+		return component;
+	};
+
+	const getLineStyle = (previousPosition, currentPosition) => {
+		const difference = currentPosition - previousPosition;
+		let width = '134px';
+		let top;
+		let left;
+		let transform;
+		const isMiddle = currentPosition === 1;
+		if (difference === -2) {
+			if (isMobile.value) width = '215px';
+			top = isMobile.value ? '-112%' : '56%';
+			left = isMobile.value ? '16%' : '-128%';
+			transform = isMobile.value ? 'rotate(-72deg)' : 'rotate(-82deg)';
+		} else if (difference === -1) {
+			if (isMobile.value) {
+				width = isMiddle ? '146px' : '110px';
+			}
+			const mobileTop = isMiddle ? '-125px' : '-106%';
+			const mobileLeft = isMiddle ? undefined : '11%';
+			top = isMobile.value ? mobileTop : '42%';
+			left = isMobile.value ? mobileLeft : '-128%';
+			transform = isMobile.value ? 'scaleX(-1)' : 'rotate(-82deg)';
+		} else if (difference === 1) {
+			if (isMobile.value) {
+				width = isMiddle ? '154px' : '112px';
+			}
+			const mobileTop = isMiddle ? '-125px' : '-105%';
+			top = isMobile.value ? mobileTop : '-15%';
+			left = isMobile.value ? '-90%' : '-120%';
+			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';
+		} else if (difference === 2) {
+			if (isMobile.value) {
+				width = '215px';
+				transform = 'scaleX(-1) rotate(-69deg)';
+			}
+			top = isMobile.value ? '-106%' : '-89%';
+			left = isMobile.value ? '-164px' : '-90%';
+		}
+		return {
+			width,
+			...(top && { top }),
+			...(left && { left }),
+			...(transform && { transform }),
+		};
+	};
+
+	return { getTierPositions, getLineComponent, getLineStyle };
 }

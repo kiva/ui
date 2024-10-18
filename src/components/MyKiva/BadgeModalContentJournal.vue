@@ -3,22 +3,40 @@
 		<p>
 			{{ description }}
 		</p>
-		<div class="tw-flex tw-flex-col md:tw-flex-row tw-overflow-auto tw-py-2 md:tw-py-4">
+		<div
+			class="tw-flex tw-overflow-auto"
+			:class="{
+				'tw-flex-col tw-py-2 tw-px-2': isMobile,
+				'tw-flex-row tw-py-4 tw-px-0': !isMobile,
+			}"
+		>
 			<div
 				v-for="(position, index) in positions"
 				:key="index"
-				class="tw-shrink-0 md:tw-self-auto"
+				class="badge tw-shrink-0 tw-relative"
 				:class="{
-					'md:tw-ml-3': index > 0,
-					'md:tw-mr-6': index < positions.length - 1,
-					'tw-self-center md:tw-mt-7': position === 1,
-					'tw-self-end md:tw-mt-14': position === 2
+					'badge-mobile': isMobile,
+					'tw-ml-3': !isMobile && index > 0,
+					'tw-mr-6': !isMobile && index < positions.length - 1,
+					'tw-mb-0 tw-self-auto': !isMobile,
+					'tw-self-center': isMobile && position === 1,
+					'tw-self-end': isMobile && position === 2
+				}"
+				:style="{
+					height: isMobile ? '112px' : '138px',
+					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`,
 				}"
 			>
+				<component
+					v-if="index > 0"
+					:is="getLineComponent(positions[index - 1], position)"
+					class="tw-absolute"
+					:style="getLineStyle(positions[index - 1], position)"
+				/>
 				<img
 					:src="badgeImageUrl"
 					alt="Badge"
-					:style="{ height: '140px' }"
+					class="tw-h-full tw-z-1 tw-relative"
 				>
 			</div>
 		</div>
@@ -26,16 +44,9 @@
 </template>
 
 <script setup>
-import {
-	defineProps,
-	ref,
-	// inject,
-} from 'vue';
-import useBadgeModal from '#src/composables/useBadgeModal';
-// import BadgeContainer from './BadgeContainer.vue';
-
-// const $kvTrackEvent = inject('$kvTrackEvent');
-// const emit = defineEmits(['badge-modal-closed']);
+import { defineProps, ref } from 'vue';
+import useIsMobile from '#src/composables/useIsMobile';
+import useBadgeModal, { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 
 const props = defineProps({
 	/**
@@ -65,7 +76,14 @@ const props = defineProps({
 	},
 });
 
-const { getTierPositions } = useBadgeModal(props.badge);
+const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const { getTierPositions, getLineComponent, getLineStyle } = useBadgeModal(props.badge);
 
 const positions = ref(getTierPositions());
 </script>
+
+<style lang="postcss">
+.badge-mobile:not(:last-of-type) {
+	@apply tw-mb-7;
+}
+</style>
