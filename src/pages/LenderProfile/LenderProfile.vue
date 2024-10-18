@@ -26,6 +26,7 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import { defaultBadges } from '#src/util/achievementUtils';
 
 const badgeQuery = gql`query contentfulBadgeImage ($badgeKey: String!) {
 	contentful {
@@ -114,12 +115,13 @@ export default {
 			const publicId = currentRoute.params?.publicId ?? '';
 
 			const utmCampaign = currentRoute?.query?.utm_campaign ?? '';
-			const loadBadgeInfo = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
+			const isUtmValid = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
 			const badgeKey = utmCampaign.split('badge_')[1];
+			const isBadgeKeyValid = defaultBadges.includes(badgeKey);
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				loadBadgeInfo ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
+				isUtmValid && isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
 			]);
 		}
 	},
@@ -161,7 +163,7 @@ export default {
 		},
 	},
 	methods: {
-		loadBadgeInfo(badgeKey) {
+		async loadBadgeInfo(badgeKey) {
 			const data = this.apollo.readQuery({
 				query: badgeQuery,
 				variables: { badgeKey }
@@ -175,7 +177,7 @@ export default {
 			}
 		}
 	},
-	created() {
+	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
@@ -192,9 +194,11 @@ export default {
 		this.lenderIsPublic = !!this.lenderInfo?.id;
 
 		const utmCampaign = this.$route?.query?.utm_campaign ?? '';
-		if (utmCampaign.includes('badge_') && utmCampaign.includes('social_share')) {
-			const badgeKey = utmCampaign.split('badge_')[1];
-			this.loadBadgeInfo(badgeKey);
+		const isUtmValid = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
+		const badgeKey = utmCampaign.split('badge_')[1];
+		const isBadgeKeyValid = defaultBadges.includes(badgeKey);
+		if (isUtmValid && isBadgeKeyValid) {
+			await this.loadBadgeInfo(`${badgeKey}`);
 		}
 	}
 };
