@@ -10,6 +10,12 @@ export const STATE_JOURNEY = 'JOURNEY';
 export const STATE_EARNED = 'EARNED';
 export const STATE_IN_PROGRESS = 'IN_PROGRESS';
 
+/**
+ * General utilities for the MyKiva badge modal
+ *
+ * @param currentBadge The badge data from the achievement service
+ * @returns Utilities for the MyKiva badge modal
+ */
 export default function useBadgeModal(currentBadge) {
 	/**
 	 * {
@@ -27,6 +33,11 @@ export default function useBadgeModal(currentBadge) {
 	const badge = ref(currentBadge);
 	const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
+	/**
+	 * Gets the positioning of the badge tiers in the journey (3 possible positions)
+	 *
+	 * @returns The positions of the badge tiers
+	 */
 	const getTierPositions = () => {
 		const MIN_POSITION = 0;
 		const MAX_POSITION = 2;
@@ -44,12 +55,19 @@ export default function useBadgeModal(currentBadge) {
 			}
 
 			positions.push(randomPosition);
-			previousPosition = randomNumber;
+			previousPosition = randomPosition;
 		});
 
 		return positions;
 	};
 
+	/**
+	 * Gets the appropriate line component for the badge tier in the journey based on positioning
+	 *
+	 * @param previousPosition The position of the previous badge tier
+	 * @param currentPosition The position of the current badge tier
+	 * @returns The line component for the current badge tier
+	 */
 	const getLineComponent = (previousPosition, currentPosition) => {
 		const difference = currentPosition - previousPosition;
 		let component = LineSmall;
@@ -67,6 +85,13 @@ export default function useBadgeModal(currentBadge) {
 		return component;
 	};
 
+	/**
+	 * Gets the CSS styles for the line component based on the position in the journey
+	 *
+	 * @param previousPosition The position of the previous badge tier
+	 * @param currentPosition The position of the current badge tier
+	 * @returns The CSS styles for the current badge tier line component
+	 */
 	const getLineStyle = (previousPosition, currentPosition) => {
 		const difference = currentPosition - previousPosition;
 		let width = '134px';
