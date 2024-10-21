@@ -51,20 +51,7 @@
 
 <script setup>
 import { computed, toRefs } from 'vue';
-
-const WOMEN_KEY = 'womens-equality';
-const US_EQUALITY_KEY = 'us-economic-equality';
-const CLIMATE_KEY = 'climate-action';
-const REFUGEE_KEY = 'refugee-equality';
-const BASIC_NEEDS_KEY = 'basic-needs';
-
-const defaultBadges = [
-	WOMEN_KEY,
-	US_EQUALITY_KEY,
-	BASIC_NEEDS_KEY,
-	CLIMATE_KEY,
-	REFUGEE_KEY,
-];
+import { defaultBadges } from '#src/util/achievementUtils';
 
 defineEmits(['badge-clicked']);
 

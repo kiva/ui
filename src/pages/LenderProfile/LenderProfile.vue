@@ -24,6 +24,7 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import useBadgeContentfulData from '#src/composables/useBadgeContentfulData';
 
 export default {
 	name: 'LenderProfile',
@@ -34,7 +35,7 @@ export default {
 		LenderProfileWrapper,
 		NotFoundWrapper,
 	},
-	metaInfo() {
+	head() {
 		return {
 			title: this.pageTitle,
 			meta: [
@@ -95,18 +96,22 @@ export default {
 			publicId: '',
 			allAchievements: [],
 			lenderIsPublic: false,
+			enableBadgeContent: false,
+			badgeImage: null,
+			badgeCategory: '',
 		};
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
 			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
+			const { isBadgeKeyValid, badgeQuery, badgeKey } = useBadgeContentfulData(client, currentRoute);
 
-			return client.query({
-				query: lenderPublicProfileQuery,
-				variables: { publicId }
-			});
-		},
+			return Promise.all([
+				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
+				isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
+			]);
+		}
 	},
 	computed: {
 		lenderName() {
@@ -119,24 +124,33 @@ export default {
 			return this.lenderInfo?.loanCount ?? 0;
 		},
 		pageTitle() {
+			if (this.enableBadgeContent) {
+				const checkoutLoans = this.$route.query?.badgeLoans ?? 0;
+				return `${this.lenderName} has supported ${checkoutLoans} to ${this.badgeCategory}`;
+			}
+
 			let title = `Lender > ${this.lenderName}`;
 			if (this.lenderWhereAbouts) title += ` from ${this.lenderWhereAbouts}`;
 			return title;
 		},
 		pageDescription() {
+			if (this.enableBadgeContent) {
+				return `Join ${this.lenderName} in celebrating this milestone`;
+			}
+
 			let description = `${this.lenderName}`;
 			if (this.lenderWhereAbouts) description += ` from ${this.lenderWhereAbouts}`;
 			description += ` has made ${this.loanCount} loan${this.loanCount === 1 ? '' : 's'} on Kiva.`;
 			return description;
 		},
 		seoImageUrl() {
-			return this.lenderInfo?.seoImage?.url ?? '';
+			return this.enableBadgeContent ? this.badgeImage : this.lenderInfo?.seoImage?.url ?? '';
 		},
 		completedAchievements() {
 			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
 		},
 	},
-	created() {
+	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
 		let cachedLenderInfo = {};
 		try {
@@ -151,6 +165,15 @@ export default {
 		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
 		this.allAchievements = cachedLenderInfo?.userAchievementProgress?.achievementProgress ?? [];
 		this.lenderIsPublic = !!this.lenderInfo?.id;
+
+		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);
+
+		if (isBadgeKeyValid) {
+			const { badgeImage, badgeCategory } = await loadBadgeInfo();
+			this.badgeImage = badgeImage;
+			this.badgeCategory = badgeCategory;
+			this.enableBadgeContent = true;
+		}
 	}
 };
 </script>
