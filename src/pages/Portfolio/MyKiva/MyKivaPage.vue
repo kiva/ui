@@ -45,6 +45,33 @@
 					/>
 				</div>
 			</section>
+		</MyKivaContainer>
+		<section class="tw-my-2">
+			<MyKivaStats
+				:user-achievements="userAchievements"
+			/>
+			<MyKivaContainer>
+				<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
+					<router-link
+						v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+						to="/portfolio/lending-stats"
+						class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
+					>
+						See all lending stats
+					</router-link>
+					<button
+						class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
+							tw-bg-action hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
+						v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
+						@click="$router.push('/lend-by-category')"
+						variant="secondary"
+					>
+						Make a loan
+					</button>
+				</div>
+			</MyKivaContainer>
+		</section>
+		<MyKivaContainer>
 			<section class="tw-py-2">
 				<div
 					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
@@ -96,6 +123,7 @@ import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarouse
 // TODO: reenable with badge data
 // import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
+import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 
 import {
 	ref,
