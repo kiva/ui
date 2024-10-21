@@ -66,13 +66,15 @@
 					<BadgesSection
 						:badges-data="badgesData"
 						:user-achievements="userAchievements"
+						@badge-clicked="handleBadgeClicked"
 					/>
 
-					<!-- TODO: reenable with badge data -->
-					<!-- <BadgeModal
-						:show-lightbox="showBadgeModal"
+					<BadgeModal
+						v-if="selectedBadgeData"
+						:show="showBadgeModal"
+						:badge="selectedBadgeData"
 						@badge-modal-closed="showBadgeModal = false"
-					/> -->
+					/>
 				</div>
 			</section>
 		</MyKivaContainer>
@@ -93,8 +95,7 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-// TODO: reenable with badge data
-// import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 
 import {
@@ -115,8 +116,8 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
-// TODO: reenable with badge data
-// const showBadgeModal = ref(false);
+const showBadgeModal = ref(false);
+const selectedBadgeData = ref();
 const userAchievements = ref([]);
 const badgesData = ref([]);
 
@@ -127,6 +128,11 @@ const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 const handleShowNavigation = () => {
 	showNavigation.value = true;
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
+};
+
+const handleBadgeClicked = badge => {
+	selectedBadgeData.value = badge;
+	showBadgeModal.value = true;
 };
 
 const fetchLoanUpdates = loanId => {

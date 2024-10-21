@@ -102,7 +102,7 @@ const badgesArray = computed(() => {
 					...badgeFound,
 					hasStarted,
 					level,
-					status: userAchievement.status,
+					...userAchievement,
 				};
 			}
 
@@ -117,7 +117,7 @@ const getBadgeTitle = badge => badge?.fields?.challengeName ?? '';
 const getBadgeImgUrl = badge => badge?.fields?.badgeImage?.fields?.file?.url ?? '';
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .badge-container {
     width: 175px;
 

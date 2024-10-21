@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ description }}
+			{{ badge.fields.shareFact }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-auto"
@@ -34,7 +34,7 @@
 					:style="getLineStyle(positions[index - 1], position)"
 				/>
 				<img
-					:src="badgeImageUrl"
+					:src="badge.fields.badgeImage.fields.file.url"
 					alt="Badge"
 					class="tw-h-full tw-z-1 tw-relative"
 					@load="isBadgeImageLoaded = true"
@@ -52,27 +52,30 @@ import useBadgeModal, { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal
 const props = defineProps({
 	/**
 	 * {
-	 *   id: 'badge-id'.
+	 *   id: '',
+	 *   fields: {
+	 *     challengeName: '',
+	 *     shareFact: '',
+	 *     badgeImage: {
+	 *       fields: {
+	 *         file: {
+	 *           url: '',
+	 *         },
+	 *       },
+	 *     },
+	 *   },
 	 *   tiers: [
 	 *     {
 	 *       target: 2,
 	 *       learnMoreUrl: '',
 	 *       completedDate: null,
 	 *       tierStatement: ""
-	 *     }
-	 *   ]
+	 *     },
+	 *   ],
 	 * }
 	 */
 	badge: {
 		type: Object,
-		required: true,
-	},
-	description: {
-		type: String,
-		required: true,
-	},
-	badgeImageUrl: {
-		type: String,
 		required: true,
 	},
 });
