@@ -1,69 +1,106 @@
 <template>
-	<section class="tw-flex tw-overflow-hidden tw-flex-col tw-justify-center tw-items-center tw-px-16 tw-py-8 tw-bg-green-800 tw-max-md:tw-px-5">
-		<div class="tw-flex tw-w-full tw-max-w-[1042px] tw-max-md:tw-max-w-full">
-			<div class="tw-flex tw-z-10 tw-flex-wrap tw-flex-auto tw-gap-16 tw-items-center tw-mr-0 tw-text-neutral-100 tw-max-md:tw-max-w-full">
-				<StatItem :value="livesTouched" label="Lives touched" />
-				<StatItem :value="totalAmountLent" label="Lent to borrowers" prefix="$" />
-				<StatItem :value="completedAchievements" label="Badges earned" />
-				<StatItem :value="totalCountriesLentTo" label="Countries reached" />
-			</div>
-			<div class="tw-flex tw-flex-col tw-shrink-0 tw-self-start tw-text-lg tw-leading-none tw-text-center tw-basis-0 tw-font-[621] tw-grow-0 tw-w-fit">
-				<kv-button
-					v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
-					:href="/lend-by-category"
-					variant="secondary"
+	<div class="stats-section tw-py-4">
+		<MyKivaContainer>
+			<div class="tw-flex tw-justify-between tw-items-center">
+				<div
+					class="tw-inline-flex tw-flex-wrap tw-w-full lg:tw-w-9/12
+					tw-justify-center tw-gap-y-4 tw-gap-x-5 md:tw-gap-x-11 lg:tw-gap-x-6 lg:tw-pr-3"
 				>
-					Make a loan
-				</kv-button>
-				<a
-					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
-					href="/portfolio/lending-stats"
-					class="tw-mt-5 tw-text-white"
-				>
-					See all lending stats
-				</a>
+					<StatItem :value="livesTouched" :label="livesTouchedLabel" />
+					<StatItem :value="totalAmountLent" label="in loans<br>funded" prefix="$" />
+					<StatItem :value="completedAchievementsNumber" :label="badgesLabel" />
+					<StatItem :value="totalCountriesLentTo" :label="countryLabel" class="tw-hidden md:tw-flex" />
+				</div>
+				<div class="tw-hidden lg:tw-flex tw-flex-col tw-w-3/12 tw-h-full">
+					<button
+						class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-action
+							tw-bg-primary hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
+						v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
+						@click="$router.push('/lend-by-category')"
+						variant="secondary"
+					>
+						Make a loan
+					</button>
+					<router-link
+						v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+						to="/portfolio/lending-stats"
+						class="tw-text-white tw-mx-auto tw-mt-2 hover:tw-text-white tw-font-medium"
+					>
+						See all lending stats
+					</router-link>
+				</div>
 			</div>
-		</div>
-	</section>
+		</MyKivaContainer>
+	</div>
 </template>
-<script>
-import StatItem from '#src/components/Kv/StatItem.vue';
-import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+<script setup>
+import logReadQueryError from '#src/util/logReadQueryError';
+import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import StatItem from '#src/components/MyKiva/StatItem';
+import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import {
+	ref,
+	computed,
+	onMounted,
+	inject,
+	toRefs,
+} from 'vue';
 
-export default {
-	name: 'LendingStats',
-	components: {
-		StatItem,
-		KvButton
+const apollo = inject('apollo');
+
+const props = defineProps({
+	badgesData: {
+		type: Array,
+		default: () => ([])
 	},
-	inject: ['apollo'],
-	metaInfo: {
-		title: 'Lending Stats'
-	},
-	data() {
-		return {
-			livesTouched: 0,
-			totalAmountLent: 0,
-			totalCountriesLentTo: 0
-		};
-	},
-	apollo: {
-		query: lendingStatsQuery,
-		preFetch: true,
-		result({ data }) {
-			this.livesTouched = data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
-			this.totalAmountLent = data?.my?.userStats?.amount_of_loans ?? 0;
-			this.totalCountriesLentTo = data?.my?.statsPerCountry?.totalCount ?? 0;
-			this.userId = data?.my?.userAccount?.id;
-		},
-	},
-	computed: {
-		completedAchievements() {
-			return this.allAchievements.filter(
-				achievement => achievement.status === 'COMPLETE'
-			);
-		}
+	userAchievements: {
+		type: Array,
+		default: () => ([])
 	}
-};
+});
+
+const { userAchievements } = toRefs(props);
+
+const livesTouched = ref(0);
+const totalAmountLent = ref(0);
+const totalCountriesLentTo = ref(0);
+
+const completedAchievements = computed(() => {
+	return userAchievements.value.filter(
+		achievement => achievement.status === 'COMPLETE'
+	);
+});
+
+const completedAchievementsNumber = computed(() => {
+	return completedAchievements.value?.length ?? 0;
+});
+
+const countryLabel = computed(() => {
+	return totalCountriesLentTo.value === 1 ? 'Country<br>lent to' : 'Countries<br>lent to';
+});
+
+const livesTouchedLabel = computed(() => {
+	return livesTouched.value === 1 ? 'Live<br>touched' : 'Lives<br>touched';
+});
+
+const badgesLabel = computed(() => {
+	return completedAchievementsNumber.value === 1 ? 'badge<br>earned' : 'badges<br>earned';
+});
+
+onMounted(() => {
+	apollo.query({ query: lendingStatsQuery })
+		.then(result => {
+			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
+			totalAmountLent.value = result.data?.my?.userStats?.amount_of_loans ?? 0;
+			totalCountriesLentTo.value = result.data?.my?.statsPerCountry?.totalCount ?? 0;
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage myKivaQuery');
+		});
+});
 </script>
+
+<style scoped>
+.stats-section {
+	background-image: url('/src/assets/images/my-kiva/stats-bg.jpg');
+}
+</style>
