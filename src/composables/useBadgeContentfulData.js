@@ -8,6 +8,17 @@ export const badgeQuery = gql`query contentfulBadgeImage ($badgeKey: String!) {
 	}
 }`;
 
+// Targets defined for each level
+const levelsTarget = {
+	level1: 2,
+	level2: 3,
+	level3: 5,
+	level4: 10,
+	level5: 20,
+	level6: 50,
+	level7: 100,
+};
+
 export default function useBadgeContentfulData(client, route) {
 	const utmCampaign = route?.query?.utm_campaign ?? '';
 	const isUtmValid = utmCampaign.includes('badge_') && utmCampaign.includes('social_share');
@@ -16,6 +27,7 @@ export default function useBadgeContentfulData(client, route) {
 	const loadBadgeInfo = async () => {
 		let badgeImage = null;
 		let badgeCategory = '';
+		let badgeTarget = 0;
 
 		try {
 			const data = client.readQuery({
@@ -27,6 +39,7 @@ export default function useBadgeContentfulData(client, route) {
 			if (contentfulData) {
 				badgeImage = contentfulData?.[0]?.fields?.badgeImage?.fields?.file?.url ?? null;
 				badgeCategory = contentfulData?.[0]?.fields?.challengeName ?? '';
+				badgeTarget = levelsTarget?.[`level${contentfulData?.[0]?.fields?.level}`] ?? 0;
 			}
 		} catch (e) {
 			logReadQueryError(e, 'useBadgeContentfulData');
@@ -34,14 +47,15 @@ export default function useBadgeContentfulData(client, route) {
 
 		return {
 			badgeImage,
-			badgeCategory
+			badgeCategory,
+			badgeTarget,
 		};
 	};
 
 	return {
 		badgeQuery,
 		badgeKey,
-		isBadgeKeyValid: isUtmValid && defaultBadges.includes(badgeKey),
+		isBadgeKeyValid: isUtmValid && defaultBadges.some(badgeName => badgeKey.includes(badgeName)),
 		loadBadgeInfo,
 	};
 }

@@ -99,6 +99,7 @@ export default {
 			enableBadgeContent: false,
 			badgeImage: null,
 			badgeCategory: '',
+			badgeTarget: 0,
 		};
 	},
 	apollo: {
@@ -125,8 +126,7 @@ export default {
 		},
 		pageTitle() {
 			if (this.enableBadgeContent) {
-				const checkoutLoans = this.$route.query?.badgeLoans ?? 0;
-				return `${this.lenderName} has supported ${checkoutLoans} to ${this.badgeCategory}`;
+				return `${this.lenderName} has supported ${this.badgeTarget} to ${this.badgeCategory}`;
 			}
 
 			let title = `Lender > ${this.lenderName}`;
@@ -169,9 +169,10 @@ export default {
 		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);
 
 		if (isBadgeKeyValid) {
-			const { badgeImage, badgeCategory } = await loadBadgeInfo();
+			const { badgeImage, badgeCategory, badgeTarget } = await loadBadgeInfo();
 			this.badgeImage = badgeImage;
 			this.badgeCategory = badgeCategory;
+			this.badgeTarget = badgeTarget;
 			this.enableBadgeContent = true;
 		}
 	}
