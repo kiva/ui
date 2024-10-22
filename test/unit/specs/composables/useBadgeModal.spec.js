@@ -13,7 +13,7 @@ jest.mock('vue', () => ({
 describe('useBadgeModal.js', () => {
 	describe('getTierPositions', () => {
 		it('should return expected positions', () => {
-			const { getTierPositions } = useBadgeModal(badgeNoProgress);
+			const { getTierPositions } = useBadgeModal({ ...badgeNoProgress, id: 'womens-equality' });
 
 			const results = getTierPositions();
 
