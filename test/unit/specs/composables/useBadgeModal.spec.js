@@ -74,18 +74,18 @@ describe('useBadgeModal.js', () => {
 			expect(getLineStyle(0, 1)).toEqual({
 				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
-			expect(getLineStyle(0, 2)).toEqual({ left: '-90%', top: '-89%', width: '134px' });
+			expect(getLineStyle(0, 2)).toEqual({ left: '-56%', top: '-95%', width: '134px' });
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '-128%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
 				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
-				left: '-128%', top: '56%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-106%', top: '56%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 1)).toEqual({
-				left: '-128%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 		});
 
@@ -95,21 +95,21 @@ describe('useBadgeModal.js', () => {
 			const { getLineStyle } = useBadgeModal(badgeNoProgress);
 
 			expect(getLineStyle(0, 1)).toEqual({
-				left: '-90%', top: '-125px', transform: 'rotate(-2deg)', width: '154px'
+				left: '-8%', top: '-166px', transform: 'rotate(-2deg)', width: '154px'
 			});
 			expect(getLineStyle(0, 2)).toEqual({
-				left: '-164px', top: '-106%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
+				left: '-112px', top: '-120%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
 			});
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '11%', top: '-106%', transform: 'scaleX(-1)', width: '110px'
+				left: '11%', top: '-106%', transform: 'scaleX(-1)', width: '124px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
-				left: '-90%', top: '-105%', transform: 'rotate(-2deg)', width: '112px'
+				left: '-8%', top: '-105%', transform: 'rotate(-2deg)', width: '124px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
 				left: '16%', top: '-112%', transform: 'rotate(-72deg)', width: '215px'
 			});
-			expect(getLineStyle(2, 1)).toEqual({ top: '-125px', transform: 'scaleX(-1)', width: '146px' });
+			expect(getLineStyle(2, 1)).toEqual({ top: '-162px', transform: 'scaleX(-1)', width: '146px' });
 		});
 	});
 });

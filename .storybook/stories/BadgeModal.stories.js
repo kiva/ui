@@ -1,5 +1,5 @@
 import BadgeModal from '#src/components/MyKiva/BadgeModal.vue';
-import { badgeNoProgress } from '../mock-data/badge-journey-data-mock';
+import { badgeNoProgress, badgeFirstTierComplete } from '../mock-data/badge-journey-data-mock';
 
 export default {
 	title: 'MyKiva/Badge Modal',
@@ -19,4 +19,8 @@ const story = (args) => {
 	return template;
 };
 
-export const Default = story({ badge: badgeNoProgress });
+export const Default = story({ badge: { ...badgeNoProgress, id: 'us-economic-equality' } });
+
+export const LineVariations = story({ badge: { ...badgeNoProgress, id: 'womens-equality' } });
+
+export const FirstTierComplete = story({ badge: { ...badgeNoProgress, id: 'us-economic-equality' } });
