@@ -23,7 +23,7 @@
 		"fetchSchema": "node build/fetch-schema.js && wait-on build/schema.graphql",
 		"report": "vite-bundle-visualizer",
 		"unit": "jest --config test/unit/jest.conf.cjs --coverage",
-		"unit-watch": "jest --config test/unit/jest.conf.js --watch",
+		"unit-watch": "jest --config test/unit/jest.conf.cjs --watch",
 		"test": "npm run lint && npm run unit && npm run build && npm run test:e2e",
 		"test:e2e": "npm start -- --config=dev-vm-mac && wait-on tcp:8888 && npm run e2e:headless",
 		"coverage:merge": "node test/mergeCoverage.cjs",

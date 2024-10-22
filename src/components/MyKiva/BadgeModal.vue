@@ -1,6 +1,6 @@
 <template>
-	<KvLightbox :visible="show" :title="title" @lightbox-closed="closeLightbox">
-		<component :is="contentComponent" :badge="badge" :description="description" :badge-image-url="badgeImageUrl" />
+	<KvLightbox :visible="show" :title="badge.fields.challengeName" @lightbox-closed="closeLightbox">
+		<component :is="contentComponent" :badge="badge" />
 	</KvLightbox>
 </template>
 
@@ -30,31 +30,30 @@ const props = defineProps({
 	},
 	/**
 	 * {
-	 *   id: 'badge-id'.
+	 *   id: '',
+	 *   fields: {
+	 *     challengeName: '',
+	 *     shareFact: '',
+	 *     badgeImage: {
+	 *       fields: {
+	 *         file: {
+	 *           url: '',
+	 *         },
+	 *       },
+	 *     },
+	 *   },
 	 *   tiers: [
 	 *     {
 	 *       target: 2,
 	 *       learnMoreUrl: '',
 	 *       completedDate: null,
 	 *       tierStatement: ""
-	 *     }
-	 *   ]
+	 *     },
+	 *   ],
 	 * }
 	 */
 	badge: {
 		type: Object,
-		required: true,
-	},
-	title: {
-		type: String,
-		required: true,
-	},
-	description: {
-		type: String,
-		required: true,
-	},
-	badgeImageUrl: {
-		type: String,
 		required: true,
 	},
 });
