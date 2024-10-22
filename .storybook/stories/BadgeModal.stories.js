@@ -23,4 +23,4 @@ export const Default = story({ badge: { ...badgeNoProgress, id: 'us-economic-equ
 
 export const LineVariations = story({ badge: { ...badgeNoProgress, id: 'womens-equality' } });
 
-export const FirstTierComplete = story({ badge: { ...badgeNoProgress, id: 'us-economic-equality' } });
+export const FirstTierComplete = story({ badge: { ...badgeFirstTierComplete, id: 'us-economic-equality' } });
