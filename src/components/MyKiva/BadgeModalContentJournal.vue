@@ -21,12 +21,21 @@
 					'tw-mb-0 tw-self-auto': !isMobile,
 					'tw-self-start': isMobile && position === 0,
 					'tw-self-center': isMobile && position === 1,
-					'tw-self-end': isMobile && position === 2
+					'tw-self-end': isMobile && position === 2,
+					'tw-cursor-pointer': !!sortedTiers?.[index]?.completedDate,
 				}"
 				:style="{
 					width: '133px',
 					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`
 				}"
+				v-kv-track-event="[
+					'portfolio',
+					'click',
+					'Already earned badge modal',
+					badge.fields.challengeName,
+					index + 1
+				]"
+				@click="event => handleBadgeClick(event, index)"
 			>
 				<div class="tw-relative">
 					<component
@@ -55,6 +64,13 @@
 							'tw-invisible': index !== positions.length - 1 && !showEarnBadge(index),
 							'tw-hidden': (!isMobile || index === positions.length - 1) && !showEarnBadge(index),
 						}"
+						v-kv-track-event="[
+							'portfolio',
+							'click',
+							'Earn a badge - within badge journey map modal',
+							badge.fields.challengeName,
+							index + 1
+						]"
 					>
 						Earn badge
 					</KvButton>
@@ -125,6 +141,13 @@ const tierCaption = index => {
 };
 
 const showEarnBadge = index => !!sortedTiers.value[index - 1]?.completedDate && !sortedTiers.value[index].completedDate;
+
+const handleBadgeClick = (event, index) => {
+	// Prevent analytics being logged when non-completed tier is clicked
+	if (!sortedTiers.value[index]?.completedDate) {
+		event.stopImmediatePropagation();
+	}
+};
 </script>
 
 <style lang="postcss">
