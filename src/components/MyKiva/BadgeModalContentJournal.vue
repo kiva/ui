@@ -66,7 +66,7 @@
 
 <script setup>
 import { defineProps, ref, computed } from 'vue';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import useIsMobile from '#src/composables/useIsMobile';
 import useBadgeModal, { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import KvButton from '@kiva/kv-components/vue/KvButton';
@@ -116,7 +116,8 @@ const positions = ref(getTierPositions());
 const tierCaption = index => {
 	const tier = sortedTiers.value[index];
 	if (tier.completedDate) {
-		return format(parseISO(tier.completedDate), 'MMMM do, yyyy');
+		// Date is in format "2024-10-22T18:49:21Z[UTC]"
+		return format(new Date(tier.completedDate.replace('[UTC]', '')), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
 		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
