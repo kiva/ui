@@ -118,7 +118,9 @@ const tierCaption = index => {
 	if (tier.completedDate) {
 		return format(parseISO(tier.completedDate), 'MMMM do, yyyy');
 	}
-	return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
+	if (tier.target) {
+		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
+	}
 };
 
 const showEarnBadge = index => !!sortedTiers.value[index - 1]?.completedDate && !sortedTiers.value[index].completedDate;

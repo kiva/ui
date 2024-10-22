@@ -91,7 +91,7 @@ onMounted(() => {
 	apollo.query({ query: lendingStatsQuery })
 		.then(result => {
 			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
-			totalAmountLent.value = result.data?.my?.userStats?.amount_of_loans ?? 0;
+			totalAmountLent.value = +(result.data?.my?.userStats?.amount_of_loans ?? 0);
 			totalCountriesLentTo.value = result.data?.my?.statsPerCountry?.totalCount ?? 0;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage myKivaQuery');
