@@ -50,6 +50,14 @@
 						class="tw-h-full tw-z-1 tw-relative"
 						@load="isBadgeImageLoaded = true"
 					>
+					<div
+						v-if="isBadgeImageLoaded && showEarnBadge(index)"
+						class="tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200
+							tw-text-center tw-px-0.5 tw-z-2"
+						style="right: -2px; bottom: -2px;"
+					>
+						{{ badge.totalProgressToAchievement }}
+					</div>
 				</div>
 				<div v-if="isBadgeImageLoaded" class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
