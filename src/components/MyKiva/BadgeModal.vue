@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox :visible="show" :title="badge.fields.challengeName" @lightbox-closed="closeLightbox">
-		<component :is="contentComponent" :badge="badge" />
+		<component :is="contentComponent" :key="badge.id" :badge="badge" />
 	</KvLightbox>
 </template>
 

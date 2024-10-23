@@ -1,4 +1,16 @@
-import useBadgeModal from '#src/composables/useBadgeModal';
+import useBadgeModal,
+{
+	BADGE_SHAPE_OBLONG,
+	BADGE_SHAPE_RECTANGLE,
+	BADGE_SHAPE_ARCH,
+	BADGE_SHAPE_OVAL,
+	BADGE_SHAPE_CIRCLE,
+	ID_WOMENS_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+} from '#src/composables/useBadgeModal';
 import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
 import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
 import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
@@ -13,7 +25,7 @@ jest.mock('vue', () => ({
 describe('useBadgeModal.js', () => {
 	describe('getTierPositions', () => {
 		it('should return expected positions', () => {
-			const { getTierPositions } = useBadgeModal(badgeNoProgress);
+			const { getTierPositions } = useBadgeModal({ ...badgeNoProgress, id: 'womens-equality' });
 
 			const results = getTierPositions();
 
@@ -74,18 +86,18 @@ describe('useBadgeModal.js', () => {
 			expect(getLineStyle(0, 1)).toEqual({
 				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
-			expect(getLineStyle(0, 2)).toEqual({ left: '-90%', top: '-89%', width: '134px' });
+			expect(getLineStyle(0, 2)).toEqual({ left: '-56%', top: '-95%', width: '134px' });
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '-128%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
 				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
-				left: '-128%', top: '56%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-106%', top: '56%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 1)).toEqual({
-				left: '-128%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 		});
 
@@ -95,21 +107,48 @@ describe('useBadgeModal.js', () => {
 			const { getLineStyle } = useBadgeModal(badgeNoProgress);
 
 			expect(getLineStyle(0, 1)).toEqual({
-				left: '-90%', top: '-125px', transform: 'rotate(-2deg)', width: '154px'
+				left: '-8%', top: '-166px', transform: 'rotate(-2deg)', width: '154px'
 			});
 			expect(getLineStyle(0, 2)).toEqual({
-				left: '-164px', top: '-106%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
+				left: '-112px', top: '-120%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
 			});
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '11%', top: '-106%', transform: 'scaleX(-1)', width: '110px'
+				left: '11%', top: '-106%', transform: 'scaleX(-1)', width: '124px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
-				left: '-90%', top: '-105%', transform: 'rotate(-2deg)', width: '112px'
+				left: '-8%', top: '-105%', transform: 'rotate(-2deg)', width: '124px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
 				left: '16%', top: '-112%', transform: 'rotate(-72deg)', width: '215px'
 			});
-			expect(getLineStyle(2, 1)).toEqual({ top: '-125px', transform: 'scaleX(-1)', width: '146px' });
+			expect(getLineStyle(2, 1)).toEqual({ top: '-162px', transform: 'scaleX(-1)', width: '146px' });
+		});
+	});
+
+	describe('getBadgeShape', () => {
+		it('should return expected shape for womens-equality', () => {
+			const { getBadgeShape } = useBadgeModal({ id: ID_WOMENS_EQUALITY });
+			expect(getBadgeShape()).toEqual(BADGE_SHAPE_OBLONG);
+		});
+
+		it('should return expected shape for us-economic-equality', () => {
+			const { getBadgeShape } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
+			expect(getBadgeShape()).toEqual(BADGE_SHAPE_RECTANGLE);
+		});
+
+		it('should return expected shape for climate-action', () => {
+			const { getBadgeShape } = useBadgeModal({ id: ID_CLIMATE_ACTION });
+			expect(getBadgeShape()).toEqual(BADGE_SHAPE_ARCH);
+		});
+
+		it('should return expected shape for refugee-equality', () => {
+			const { getBadgeShape } = useBadgeModal({ id: ID_REFUGEE_EQUALITY });
+			expect(getBadgeShape()).toEqual(BADGE_SHAPE_OVAL);
+		});
+
+		it('should return expected shape for basic-needs', () => {
+			const { getBadgeShape } = useBadgeModal({ id: ID_BASIC_NEEDS });
+			expect(getBadgeShape()).toEqual(BADGE_SHAPE_CIRCLE);
 		});
 	});
 });
