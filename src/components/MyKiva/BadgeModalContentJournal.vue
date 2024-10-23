@@ -44,12 +44,13 @@
 						class="tw-absolute"
 						:style="getLineStyle(positions[index - 1], position)"
 					/>
-					<img
-						:src="badge.fields.badgeImage.fields.file.url"
-						alt="Badge"
-						class="tw-h-full tw-z-1 tw-relative"
-						@load="isBadgeImageLoaded = true"
-					>
+					<BadgeContainer :status="getBadgeStatus(index)" class="tw-z-1">
+						<img
+							:src="badge.fields.badgeImage.fields.file.url"
+							alt="Badge"
+							@load="isBadgeImageLoaded = true"
+						>
+					</BadgeContainer>
 					<div
 						v-if="isBadgeImageLoaded && showEarnBadge(index)"
 						class="tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200
@@ -92,8 +93,15 @@
 import { defineProps, ref, computed } from 'vue';
 import { format } from 'date-fns';
 import useIsMobile from '#src/composables/useIsMobile';
-import useBadgeModal, { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
+import useBadgeModal,
+{
+	MOBILE_BREAKPOINT,
+	BADGE_COMPLETED,
+	BADGE_IN_PROGRESS,
+	BADGE_LOCKED
+} from '#src/composables/useBadgeModal';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
 	/**
@@ -148,7 +156,21 @@ const tierCaption = index => {
 	}
 };
 
-const showEarnBadge = index => !!sortedTiers.value[index - 1]?.completedDate && !sortedTiers.value[index].completedDate;
+const showEarnBadge = index => {
+	return (!sortedTiers.value[index - 1] || !!sortedTiers.value[index - 1]?.completedDate)
+		&& !sortedTiers.value[index].completedDate;
+};
+
+const getBadgeStatus = index => {
+	const tier = sortedTiers.value[index] ?? {};
+	if (tier.completedDate) {
+		return BADGE_COMPLETED;
+	}
+	if (showEarnBadge(index)) {
+		return BADGE_IN_PROGRESS;
+	}
+	return BADGE_LOCKED;
+};
 
 const handleBadgeClick = (event, index) => {
 	// Prevent analytics being logged when non-completed tier is clicked
