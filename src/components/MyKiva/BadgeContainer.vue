@@ -44,7 +44,7 @@ const animateLock = ref(false);
 const handleBadgeClick = () => {
 	if (isLocked.value) {
 		animateLock.value = true;
-		setTimeout(() => { animateLock.value = false; }, 1500);
+		setTimeout(() => { animateLock.value = false; }, 1600);
 	}
 };
 </script>
@@ -54,31 +54,40 @@ const handleBadgeClick = () => {
   0%, 7% {
     transform: rotateZ(0);
   }
+
   15% {
     transform: rotateZ(-15deg);
   }
+
   20% {
     transform: rotateZ(10deg);
   }
+
   25% {
     transform: rotateZ(-10deg);
   }
+
   30% {
     transform: rotateZ(5deg);
   }
+
   35% {
     transform: rotateZ(-5deg);
   }
-  30% {
+
+  40% {
     transform: rotateZ(3deg);
   }
-  40% {
+
+  45% {
     transform: rotateZ(-3deg);
   }
-  45% {
+
+  50% {
     transform: rotateZ(1deg);
   }
-  50%, 100% {
+
+  55%, 100% {
     transform: rotateZ(0);
   }
 }
