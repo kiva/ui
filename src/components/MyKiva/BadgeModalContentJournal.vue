@@ -7,7 +7,7 @@
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
 			:class="{
 				'tw-flex-col tw-py-2 tw-px-2': isMobile,
-				'tw-flex-row tw-py-4 tw-px-0': !isMobile,
+				'tw-flex-row tw-py-4 tw-px-0.5': !isMobile,
 			}"
 		>
 			<div
@@ -44,7 +44,7 @@
 						class="tw-absolute"
 						:style="getLineStyle(positions[index - 1], position)"
 					/>
-					<BadgeContainer :status="getBadgeStatus(index)" class="tw-z-1">
+					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()" class="tw-z-1">
 						<img
 							:src="badge.fields.badgeImage.fields.file.url"
 							alt="Badge"
@@ -134,7 +134,12 @@ const props = defineProps({
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-const { getTierPositions, getLineComponent, getLineStyle } = useBadgeModal(props.badge);
+const {
+	getTierPositions,
+	getLineComponent,
+	getLineStyle,
+	getBadgeShape,
+} = useBadgeModal(props.badge);
 const isBadgeImageLoaded = ref(false);
 
 const sortedTiers = computed(() => {

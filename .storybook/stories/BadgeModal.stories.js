@@ -19,8 +19,12 @@ const story = (args) => {
 	return template;
 };
 
+const badgeWithLineVariations = JSON.parse(JSON.stringify(badgeNoProgress));
+badgeWithLineVariations.id = 'us-economic-equality';
+badgeWithLineVariations.fields.badgeImage.fields.file.url = 'https://images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/04ddc29a4cda74e10357a3716e8ec187/Women_Level_1.svg';
+
 export const Default = story({ badge: { ...badgeNoProgress, id: 'us-economic-equality' } });
 
-export const LineVariations = story({ badge: { ...badgeNoProgress, id: 'womens-equality' } });
+export const LineVariations = story({ badge: { ...badgeWithLineVariations, id: 'womens-equality' } });
 
 export const FirstTierComplete = story({ badge: { ...badgeFirstTierComplete, id: 'us-economic-equality' } });
