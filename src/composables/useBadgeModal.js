@@ -9,6 +9,10 @@ export const MOBILE_BREAKPOINT = 440;
 export const STATE_JOURNEY = 'JOURNEY';
 export const STATE_EARNED = 'EARNED';
 export const STATE_IN_PROGRESS = 'IN_PROGRESS';
+export const BADGE_COMPLETED = 'COMPLETED';
+export const BADGE_IN_PROGRESS = 'IN_PROGRESS';
+export const BADGE_LOCKED = 'LOCKED';
+export const BADGE_STATUS = [BADGE_COMPLETED, BADGE_IN_PROGRESS, BADGE_LOCKED];
 
 /**
  * General utilities for the MyKiva badge modal
