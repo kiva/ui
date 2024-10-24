@@ -37,7 +37,7 @@
 				]"
 				@click="event => handleBadgeClick(event, index)"
 			>
-				<div class="tw-relative">
+				<div class="tw-relative tw-text-center">
 					<component
 						v-if="isBadgeImageLoaded && index > 0"
 						:is="getLineComponent(positions[index - 1], position)"
@@ -48,6 +48,7 @@
 						<img
 							:src="badge.fields.badgeImage.fields.file.url"
 							alt="Badge"
+							style="max-height: 133px;"
 							@load="isBadgeImageLoaded = true"
 						>
 					</BadgeContainer>
