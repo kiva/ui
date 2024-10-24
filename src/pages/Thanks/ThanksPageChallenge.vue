@@ -173,7 +173,7 @@ import { mdiCheckAll } from '@mdi/js';
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
-import userAchievementsProgress from '#src/graphql/query/userAchievementsProgress.graphql';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 
 import logReadQueryError from '#src/util/logReadQueryError';
 import logFormatter from '#src/util/logFormatter';
@@ -245,12 +245,13 @@ export default {
 					challengeId: currentRoute.params?.challengeId,
 				}
 			}).then(({ data }) => {
-				return client.query({
-					query: userAchievementsProgress,
-					variables: {
-						userId: data?.my?.userAccount?.id?.toString(),
-					},
-				});
+				if (data?.my) {
+					return client.query({
+						query: userAchievementProgressQuery,
+					});
+				}
+
+				return Promise.resolve();
 			}).catch(errorResponse => {
 				logFormatter(
 					`Thanks challenge page preFetch failed: (transaction_id: ${transactionId})`,
@@ -279,7 +280,7 @@ export default {
 		},
 		completedAchievements() {
 			return this.allAchievements.filter(
-				achievement => achievement.status === 'COMPLETE'
+				achievement => achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE'
 			);
 		},
 		thankYouImage() {
@@ -336,21 +337,23 @@ export default {
 		}
 
 		// Get achievement completion status
-		let achievementData = {};
-		try {
-			achievementData = this.apollo.readQuery({
-				query: userAchievementsProgress,
-				variables: {
-					userId: data?.my?.userAccount?.id?.toString(),
-				}
-			});
-		} catch (e) {
-			logReadQueryError(
-				e,
-				`Thanks challenge page achievements readQuery failed: (transaction_id: ${transactionId})`
-			);
+		if (data?.my) {
+			let achievementData = {};
+			try {
+				achievementData = this.apollo.readQuery({
+					query: userAchievementProgressQuery,
+					variables: {
+						userId: data?.my?.userAccount?.id?.toString(),
+					}
+				});
+			} catch (e) {
+				logReadQueryError(
+					e,
+					`Thanks challenge page achievements readQuery failed: (transaction_id: ${transactionId})`
+				);
+			}
+			this.allAchievements = achievementData?.userAchievementProgress?.lendingAchievements ?? [];
 		}
-		this.allAchievements = achievementData?.userAchievementProgress?.achievementProgress ?? [];
 	},
 	mounted() {
 		confetti({

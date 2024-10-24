@@ -7,8 +7,6 @@
 				v-if="lenderIsPublic"
 				:public-id="publicId"
 				:lender-info="lenderInfo"
-				:all-achievements="allAchievements"
-				:completed-achievements="completedAchievements"
 			/>
 			<not-found-wrapper
 				v-else
@@ -94,7 +92,6 @@ export default {
 		return {
 			lenderInfo: {},
 			publicId: '',
-			allAchievements: [],
 			lenderIsPublic: false,
 			enableBadgeContent: false,
 			badgeImage: null,
@@ -146,9 +143,6 @@ export default {
 		seoImageUrl() {
 			return this.enableBadgeContent ? this.badgeImage : this.lenderInfo?.seoImage?.url ?? '';
 		},
-		completedAchievements() {
-			return this.allAchievements.filter(achievement => achievement.status === 'COMPLETE');
-		},
 	},
 	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -163,7 +157,6 @@ export default {
 		}
 
 		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
-		this.allAchievements = cachedLenderInfo?.userAchievementProgress?.achievementProgress ?? [];
 		this.lenderIsPublic = !!this.lenderInfo?.id;
 
 		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);

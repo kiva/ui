@@ -71,7 +71,7 @@ export default {
 	computed: {
 		/* Challenge keys for completed challenges */
 		completedChallengeKeys() {
-			return this.completedAchievements.map(achievement => achievement.achievementId).join(',');
+			return this.completedAchievements.map(achievement => achievement.id).join(',');
 		},
 		inPortfolio() {
 			return this.$route?.name?.includes('portfolio');

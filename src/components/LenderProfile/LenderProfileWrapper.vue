@@ -11,9 +11,8 @@
 		/>
 
 		<lender-badges
-			:total-possible-badges="allAchievements.length"
-			:completed-achievements="completedAchievements"
 			:lender-info="lenderInfo"
+			:public-id="publicId"
 		/>
 
 		<lender-dedications-list

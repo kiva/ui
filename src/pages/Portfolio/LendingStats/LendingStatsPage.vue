@@ -88,7 +88,7 @@
 import _differenceBy from 'lodash/differenceBy';
 import _sortBy from 'lodash/sortBy';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
-import userAchievementsProgress from '#src/graphql/query/userAchievementsProgress.graphql';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -157,18 +157,15 @@ export default {
 	},
 	created() {
 		this.apollo.query({
-			query: userAchievementsProgress,
-			variables: {
-				userId: this.userId.toString(),
-			},
+			query: userAchievementProgressQuery,
 		}).then(({ data }) => {
-			this.allAchievements = data?.userAchievementProgress?.achievementProgress ?? [];
+			this.allAchievements = data?.userAchievementProgress?.lendingAchievements ?? [];
 		});
 	},
 	computed: {
 		completedAchievements() {
 			return this.allAchievements.filter(
-				achievement => achievement.status === 'COMPLETE'
+				achievement => achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE'
 			);
 		},
 	},
