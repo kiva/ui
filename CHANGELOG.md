@@ -1,3 +1,66 @@
+## [3.1.0](https://github.com/kiva/ui/compare/v3.0.3...v3.1.0) (2024-10-24)
+
+### 🎉 New Features
+
+* [MP-767] mykiva lending stats ([#5576](https://github.com/kiva/ui/issues/5576)) ([b006486](https://github.com/kiva/ui/commit/b006486e295c741201b2536ef9a2c6a47b692019))
+* add badge container with new states to journey ([d492880](https://github.com/kiva/ui/commit/d49288090e238b1ca395eecf4bd88750dfa5dd23))
+* add badge tier captions and earn badge button ([3b1ee17](https://github.com/kiva/ui/commit/3b1ee1770361d750754dd3700f5d68292e28047a))
+* add initial locked badge version with lock wiggle on click ([bf98056](https://github.com/kiva/ui/commit/bf98056dc3d47a1c7f477e9be3f1097121052306))
+* add loan counter on badge image ([37c4664](https://github.com/kiva/ui/commit/37c466409b47114b99e573ff9e952de2fc8d34d0))
+* add metadata content in lender profile for badge share ([8887658](https://github.com/kiva/ui/commit/88876585af8e1b8ab8aa18b816a89cf87dcec2c6))
+* add outline to in-progress badge and solid shape to locked ([780fc97](https://github.com/kiva/ui/commit/780fc9775b743836d7cb934ef858ea25939ccb98))
+* add test to composable ([2f40fa2](https://github.com/kiva/ui/commit/2f40fa22dba81afad7190ed39dfc64d22b0a1a9f))
+* borrower and trustee links added to my kiva hero ([#5597](https://github.com/kiva/ui/issues/5597)) ([7f526fe](https://github.com/kiva/ui/commit/7f526fe545e3590bf8a4c8e1269d56708375e59b))
+* configurable idle timeout for vue workers ([00b5249](https://github.com/kiva/ui/commit/00b5249023ca860ef102435bf8bde14295773ea4))
+* connect badge modal to real data ([aefc166](https://github.com/kiva/ui/commit/aefc1669a60b86d9dd658729225abf9737c1dd05))
+* generic modal added for badge states ([#5600](https://github.com/kiva/ui/issues/5600)) ([88b496c](https://github.com/kiva/ui/commit/88b496ce59fd2d6a81cd9407f6723975cc7b81ae))
+* implemented badge journey lines ([fd6d061](https://github.com/kiva/ui/commit/fd6d06101aca9e18913007841965e9da43ba9219))
+* initial my kiva journey modal content ([d0de14d](https://github.com/kiva/ui/commit/d0de14d0ba45dd2aa022349eed12258bba15d5d5))
+* modal content for completed badges ([18fb9d3](https://github.com/kiva/ui/commit/18fb9d3ef9a99f4753ffaf08033d47657985a0d0))
+* my kiva badges section ([#5607](https://github.com/kiva/ui/issues/5607)) ([65c5b04](https://github.com/kiva/ui/commit/65c5b046a9f2e0d9f4b024ce600b2f832a621dae))
+* my kiva updates section ([#5584](https://github.com/kiva/ui/issues/5584)) ([b24145f](https://github.com/kiva/ui/commit/b24145f5f1013bc16e8d58a2c552dfdb865896c7))
+* prevent double-clicking complete registration CTA MP-938 ([c39d113](https://github.com/kiva/ui/commit/c39d113015b17615242e450a6db33a748844361a))
+* thanks view tracking MP-921 ([d6eb9c0](https://github.com/kiva/ui/commit/d6eb9c08f1200bbf29e825c366e3121a9fa981c4))
+* use kv-components KvLoadingSpinner for KvLoadingOverlay ([c8ed306](https://github.com/kiva/ui/commit/c8ed30619d540b74be0b3fa80c9fbe4089cd6eef))
+* validate badge key exist ([3ea45a4](https://github.com/kiva/ui/commit/3ea45a43f55965c724162a7d56ecccbe73fd6885))
+
+### 🐛 Bugfixes
+
+* add badge journey analytics ([454558e](https://github.com/kiva/ui/commit/454558eabfbc2bc0c1e48ca7f8cc316347cbc9a0))
+* add composable file ([a751667](https://github.com/kiva/ui/commit/a75166721f5139c27ea30719590c5dc72b1c3d77))
+* add correct data to story ([efa1006](https://github.com/kiva/ui/commit/efa1006a1cc38194a16e7ef7652a2e85ae8e7891))
+* add missing country id and emits declaration to pass linting ([76776f3](https://github.com/kiva/ui/commit/76776f3ed4338ecae64d2fa88c49c19101d1b6b7))
+* add unit tests for composables, fix issues discovered with testing ([8875b53](https://github.com/kiva/ui/commit/8875b5341ac9caadc79dd11f69882cb56379ba08))
+* adjusted with most recent changes ([0f14e4f](https://github.com/kiva/ui/commit/0f14e4f491406532b019ff781983ddb9327acdcd))
+* classes need to be applied to KvBaseInput wrapper MP-938 ([9b068bb](https://github.com/kiva/ui/commit/9b068bbc5fe924fb21f0c1d9eb32c5914e433d39))
+* ensure journey re-renders correctly when different badges are opened ([9875910](https://github.com/kiva/ui/commit/98759104b3c6ea32c060917aa632f7a85adcfbc5))
+* ensure test more stable ([dfeb0f6](https://github.com/kiva/ui/commit/dfeb0f6d0f0a2b7a17e9f2938e6502a5550ae29f))
+* first name box should only show when names required MP-938 ([1d0bbcb](https://github.com/kiva/ui/commit/1d0bbcb55548125a71cc7f6ca2cda617c2a469f2))
+* get loan number in title from badge target ([37c3d66](https://github.com/kiva/ui/commit/37c3d66372135f4107a73b10fafcf98eb550debe))
+* handle date format ([63ed680](https://github.com/kiva/ui/commit/63ed680cee199268434a4b87d10de577e31e46cf))
+* hasDespositedBefore cookie not used where it should be ([a8c9906](https://github.com/kiva/ui/commit/a8c99063bc8d1e0f3e69c29105e66663969b9c5e))
+* hide journey lines until badge image loads ([7fde30d](https://github.com/kiva/ui/commit/7fde30d88b15ba109cddf3891fe11e3fbf9b7335))
+* linting ([9b19d8d](https://github.com/kiva/ui/commit/9b19d8d4422293adb973df96c2ebb0784d058f8b))
+* merge badge story data ([49777c4](https://github.com/kiva/ui/commit/49777c42f04a9de363f349ad545b55277ac18874))
+* missing file ([accbc87](https://github.com/kiva/ui/commit/accbc87cd076ad64350ee089d2d0203998eb4431))
+* random issues resolved with my kiva work ([a598b57](https://github.com/kiva/ui/commit/a598b575cb72aac4b328d91bde6f93d41d5028a9))
+* remove embed exp ([771bff0](https://github.com/kiva/ui/commit/771bff0c15867a2035751a15280c6e6deee3e096))
+* resolve a couple console warnings and errors ([302c034](https://github.com/kiva/ui/commit/302c03476cd1a32b24864fc565085fe09526c029))
+* resolve console warning for carousel ([4756361](https://github.com/kiva/ui/commit/475636106ed9a9f395e8300d9b69375c6aef8559))
+* solve comments ([3226745](https://github.com/kiva/ui/commit/3226745989f0634f7b5f1cf02ee48b1a130c34c0))
+* update new event tag names MP-921 ([c7adb1d](https://github.com/kiva/ui/commit/c7adb1d473e1a847fc0122e10b2bc4ee36853055))
+* validation checks were changed to invalid when they should have stayed error MP-938 ([f664ead](https://github.com/kiva/ui/commit/f664ead5a3e7dcf38d429a38dcf7c30995068b1a))
+
+### 🪚 Refactors
+
+* move thanks visible view logic from template to computed value MP-921 ([ede678b](https://github.com/kiva/ui/commit/ede678bd6a1268736abd97c2f9ee0bd75b5b1a9f))
+* separate lending achievement mock to different file ([96741dc](https://github.com/kiva/ui/commit/96741dcf53e4e9d6ef7da359e999879cec28f8f7))
+* use composable for loading badge info ([874c2d5](https://github.com/kiva/ui/commit/874c2d54d9d9374abcabb04b69a1c50916b65f2d))
+
+### 🧹 Chores
+
+* **release:** 3.1.0-rc.1 [skip ci] ([85be008](https://github.com/kiva/ui/commit/85be00821406ecadb371b1fba0d477af9ab07f1d)), closes [#5576](https://github.com/kiva/ui/issues/5576) [#5597](https://github.com/kiva/ui/issues/5597) [#5600](https://github.com/kiva/ui/issues/5600) [#5607](https://github.com/kiva/ui/issues/5607) [#5584](https://github.com/kiva/ui/issues/5584)
+
 ## [3.1.0-rc.1](https://github.com/kiva/ui/compare/v3.0.3...v3.1.0-rc.1) (2024-10-24)
 
 ### 🎉 New Features
