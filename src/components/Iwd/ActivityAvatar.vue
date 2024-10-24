@@ -1,38 +1,51 @@
 <template>
-	<div class="tw-w-4 tw-h-4" v-if="!isDefaultProfilePic(imageFilename) && !isAnonymousUser && imageFilename">
-		<img
-			:src="lenderImageUrl"
-			alt="Image of lender"
-			class="tw-rounded-full tw-inline-block tw-w-4 tw-h-4 data-hj-suppress"
-		>
-	</div>
-	<div
-		v-else-if="!isAnonymousUser && isDefaultProfilePic(imageFilename) || !imageFilename"
-		class="tw-rounded-full tw-inline-flex tw-align-center tw-justify-center tw-w-4 tw-h-4"
-		:class="randomizedUserAvatarClass"
-	>
-		<!-- First Letter of lender name -->
-		<span class="tw-self-center">
-			{{ lenderNameFirstLetter }}
-		</span>
-	</div>
+	<KvLoadingPlaceholder
+		v-if="isLoading"
+		class="tw-w-4 tw-h-4 !tw-rounded-full"
+	/>
 	<div
 		v-else
-		class="tw-rounded-full tw-bg-brand tw-inline-flex tw-items-center tw-justify-center tw-w-4 tw-h-4"
+		class="tw-w-4 tw-h-4"
 	>
-		<!-- Kiva K logo -->
-		<component :is="KivaIcon" alt="Kiva Icon" />
+		<div class="tw-w-4 tw-h-4" v-if="!isDefaultProfilePic(imageFilename) && !isAnonymousUser && imageFilename">
+			<img
+				:src="lenderImageUrl"
+				alt="Image of lender"
+				class="tw-rounded-full tw-inline-block tw-w-4 tw-h-4 data-hj-suppress"
+			>
+		</div>
+		<div
+			v-else-if="!isAnonymousUser && isDefaultProfilePic(imageFilename) || !imageFilename"
+			class="tw-rounded-full tw-inline-flex tw-align-center tw-justify-center tw-w-4 tw-h-4"
+			:class="randomizedUserAvatarClass"
+		>
+			<!-- First Letter of lender name -->
+			<span class="tw-self-center">
+				{{ lenderNameFirstLetter }}
+			</span>
+		</div>
+		<div
+			v-else
+			class="tw-rounded-full tw-bg-brand tw-inline-flex tw-items-center tw-justify-center tw-w-4 tw-h-4"
+		>
+			<!-- Kiva K logo -->
+			<component :is="KivaIcon" alt="Kiva Icon" />
+		</div>
 	</div>
 </template>
 
 <script>
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import { defineAsyncComponent, shallowRef } from 'vue';
 
 const KivaIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/kiva_mark.svg')));
 
 export default {
 	name: 'ActivityAvatar',
+	components: {
+		KvLoadingPlaceholder,
+	},
 	props: {
 		lenderImageUrl: {
 			type: String,
@@ -41,7 +54,11 @@ export default {
 		lenderName: {
 			type: String,
 			required: true
-		}
+		},
+		isLoading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {

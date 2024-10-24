@@ -118,6 +118,7 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 			id
 			geocode {
 				country {
+					id
 					name
 					isoCode
 				}

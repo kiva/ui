@@ -402,6 +402,12 @@ export default {
 		}, 200));
 
 		this.determineIfMobile();
+		this.$kvTrackEvent(
+			'post-checkout',
+			'show',
+			`${this.visibleSection}-v2-view`,
+			this.showGuestUpsell ? 'guest' : 'signed-in'
+		);
 	},
 };
 </script>

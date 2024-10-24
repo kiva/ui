@@ -154,6 +154,7 @@ export const loanFieldsFragment = gql`
 		distributionModel
 		geocode {
 			country {
+				id
 				name
 			}
 		}

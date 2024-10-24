@@ -190,6 +190,7 @@ const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String
 			id
 			countries {
 				values {
+					id
 					isoCode
 				}
 			}

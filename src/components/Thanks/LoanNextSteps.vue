@@ -1,5 +1,5 @@
 <template>
-	<div class="steps-container">
+	<div class="tw-flex tw-flex-col">
 		<ul class="steps-list tw-flex tw-flex-col tw-justify-end tw-gap-1">
 			<li
 				v-for="(step, index) in steps"
@@ -82,10 +82,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.steps-container {
-	@apply tw-flex tw-flex-col;
-}
-
 .steps-list {
 	@apply tw-list-none tw-p-0 tw-relative;
 }

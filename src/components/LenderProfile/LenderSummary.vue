@@ -240,7 +240,7 @@ export default {
 			this.errorMessage = '';
 			this.$kvTrackEvent('lender-profile', 'click', 'send-message-close-button');
 		},
-		sendMessage() {
+		async sendMessage() {
 			this.sendingMessage = true;
 			this.errorMessage = '';
 			this.apollo.mutate({

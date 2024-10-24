@@ -220,6 +220,7 @@ const preFetchQuery = gql`
 					city
 					state
 					country {
+						id
 						name
 						isoCode
 						region
@@ -289,6 +290,7 @@ const mountedQuery = gql`
 					partner {
 						id
 						countries {
+							id
 							name
 						}
 					}

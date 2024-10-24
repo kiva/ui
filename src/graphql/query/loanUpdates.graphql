@@ -1,0 +1,21 @@
+query updatesQuery($loanId: Int!, $limit: Int, $offset: Int) {
+    lend {
+        loan(id: $loanId) {
+            id
+            name
+            updates(limit: $limit, offset: $offset ) {
+                totalCount
+                values {
+                    id
+                    body
+                    subject
+                    date
+                    image {
+                        id
+                        url(customSize: "h200w700")
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,8 +1,11 @@
 <template>
-	<MyKivaContainer>
+	<div>
 		<template v-if="isLoading">
-			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4" :style="{width: '10rem', height: '3rem'}" />
-			<KvLoadingPlaceholder class="tw-mb-2 lg:tw-mb-3" :style="{width: '17rem', height: '17rem'}" />
+			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6" />
+			<KvLoadingPlaceholder
+				class="tw-mb-2 lg:tw-mb-3 !tw-w-full md:!tw-w-1/2"
+				:style="{ height: '17rem' }"
+			/>
 		</template>
 		<template v-else>
 			<h2 v-html="title" class="tw-mb-3.5"></h2>
@@ -22,14 +25,19 @@
 		<div v-if="hasActiveLoans && !isLoading">
 			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
-					<KvTab v-for="(loan, index) in filteredLoans" :key="index" :label="index + 1" :for-panel="loan.id">
+					<KvTab
+						v-for="(loan, index) in filteredLoans"
+						:key="index"
+						:label="index + 1"
+						:for-panel="`${loan.id}`"
+					>
 						<div class="tw-flex tw-flex-col tw-justify-start tw-items-center tw-w-10">
 							<div
 								class="tw-w-8 tw-h-8 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
 									tw-rounded-full tw-shadow"
 							>
 								<BorrowerImage
-									class="tw-w-full tw-rounded-full tw-bg-brand"
+									class="tw-w-full tw-rounded-full"
 									:alt="getBorrowerName(loan)"
 									:aspect-ratio="1"
 									:default-image="{ width: 80, faceZoom: 50 }"
@@ -41,12 +49,12 @@
 									]"
 								/>
 							</div>
-							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal">
+							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal tw-pt-0.5">
 								{{ getBorrowerName(loan) }}
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="loans.length > 9">
+					<KvTab v-if="loans.length > 9" for-panel="view-more">
 						<a
 							href="/portfolio/loans" v-kv-track-event="[
 								'portfolio',
@@ -57,7 +65,11 @@
 					</KvTab>
 				</template>
 				<template #tabPanels>
-					<KvTabPanel v-for="(loan, index) in loans" :key="index" :id="loan.id">
+					<KvTabPanel
+						v-for="(loan, index) in loans"
+						:key="index"
+						:id="`${loan.id}`"
+					>
 						<p class="tw-hidden" :id="loan.id"></p>
 					</KvTabPanel>
 				</template>
@@ -86,17 +98,17 @@
 				>See all borrowers</a>
 			</div>
 		</div>
-	</MyKivaContainer>
+	</div>
 </template>
 
 <script setup>
+import _throttle from 'lodash/throttle';
 import KvTabs from '@kiva/kv-components/vue/KvTabs';
 import KvTab from '@kiva/kv-components/vue/KvTab';
 import KvTabPanel from '@kiva/kv-components/vue/KvTabPanel';
 import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 import {
 	defineProps,
@@ -104,7 +116,8 @@ import {
 	computed,
 	toRefs,
 	inject,
-	onMounted
+	onMounted,
+	onBeforeUnmount
 } from 'vue';
 import {
 	PAYING_BACK,
@@ -136,6 +149,7 @@ const emit = defineEmits(['selected-loan']);
 
 const { loans } = toRefs(props);
 const carousel = ref(null);
+const windowWidth = ref(0);
 
 const hasActiveLoans = computed(() => {
 	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
@@ -193,7 +207,7 @@ const filteredLoans = computed(() => {
 });
 
 const singleSlideWidth = computed(() => {
-	const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 520;
+	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
 
 	if (viewportWidth < 768) {
 		return '288px';
@@ -207,12 +221,26 @@ const hasCompletedBorrowers = computed(() => {
 	return loans.value.some(loan => loan?.status === ENDED || loan?.status === DEFAULTED);
 });
 
+const handleResize = () => {
+	windowWidth.value = window.innerWidth;
+};
+
+const throttledResize = _throttle(handleResize, 200);
+
 onMounted(() => {
 	if (!hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'no-active-borrowers');
 	} else {
 		$kvTrackEvent('portfolio', 'view', 'active-borrowers', loans.value.length);
 	}
+
+	window.addEventListener('resize', throttledResize);
+
+	handleResize();
+});
+
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', throttledResize);
 });
 
 </script>

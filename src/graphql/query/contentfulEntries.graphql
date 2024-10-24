@@ -4,12 +4,14 @@ query contentfulEntries(
 	$contentType: String!
 	$contentKey: String
 	$preview: Boolean
+	$limit: Int
 ) {
 	contentful {
 		entries(
 			contentType: $contentType
 			contentKey: $contentKey
 			preview: $preview
+			limit: $limit
 		)
 	}
 }

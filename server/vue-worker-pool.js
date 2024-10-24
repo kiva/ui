@@ -6,7 +6,12 @@ import { Piscina } from 'piscina';
 import promClient from 'prom-client';
 
 let pool;
-export default function createWorkerPool({ minWorkers, maxWorkers, workerData } = {}) {
+export default function createWorkerPool({
+	idleTimeout,
+	minWorkers,
+	maxWorkers,
+	workerData
+} = {}) {
 	// Terminate the existing pool if it was created
 	if (pool) {
 		pool.destroy();
@@ -15,6 +20,7 @@ export default function createWorkerPool({ minWorkers, maxWorkers, workerData } 
 	// Create pool of worker threads for Vue rendering
 	pool = new Piscina({
 		filename: resolve(dirname(fileURLToPath(import.meta.url)), 'vue-worker.js'),
+		idleTimeout,
 		minThreads: minWorkers,
 		maxThreads: maxWorkers,
 		workerData,

@@ -86,6 +86,7 @@ query initializeCheckout($basketId: String) {
 							}
 							geocode {
 								country {
+									id
 									name
 									isoCode
 								}

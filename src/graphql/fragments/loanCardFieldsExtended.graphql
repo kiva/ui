@@ -10,6 +10,7 @@ fragment loanCardFieldsExtended on LoanBasic {
 		# state is used for US loans on LoanChannelCategoryPage
 		state
 		country {
+			id
 			isoCode
 			name
 			region
@@ -62,7 +63,7 @@ fragment loanCardFieldsExtended on LoanBasic {
 	unreservedAmount @client
 	fundraisingPercent @client
 	fundraisingTimeLeft @client
-	
+
 	... on LoanPartner {
 		partnerName
 		themes

@@ -2,6 +2,7 @@ query countryList {
 	lend {
 		countryFacets {
 			country {
+				id
 				name
 				region
 				isoCode

@@ -7,6 +7,7 @@ query myLendingStats {
 		lendingStats {
 			id
 			countriesLentTo {
+				id
 				isoCode
 				name
 			}
@@ -22,12 +23,24 @@ query myLendingStats {
 				id
 				name
 			}
+			lentTo {
+        		borrowers {
+          			totalCount
+        		}
+      		}
 		}
+		userStats {
+      		amount_of_loans
+    	}
+		statsPerCountry {
+      		totalCount
+    	}
 	}
 	lend {
 		countryFacets {
 			count
 			country {
+				id
 				name
 				region
 				isoCode

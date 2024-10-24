@@ -1,19 +1,22 @@
 <template>
 	<div
 		v-if="visible"
-		class="tw-absolute tw-inset-0 tw-bg-black tw-transition-all tw-duration-150 tw-z-modal
-            tw-mt-8 md:tw-mt-9 tw-pt-0.5"
-		:class="{
-			'tw-bg-opacity-0 tw-delay-300': !open,
-			'tw-bg-opacity-low': open,
-		}"
-		@click.self="closeSideSheet"
+		class="tw-absolute tw-inset-0 tw-z-modal tw-mt-8 md:tw-mt-9 tw-pt-0.5 tw-overflow-hidden"
 	>
 		<div
-			class="tw-absolute tw-right-0 tw-transition-all tw-duration-300 tw-bg-white tw-rounded-l-lg"
+			class="tw-absolute tw-inset-0 tw-bg-black tw-transition-all tw-duration-150"
 			:class="{
-				'tw-w-0 tw-p-0 tw-delay-200': !open,
-				'is-open tw-p-3': open,
+				'tw-bg-opacity-0 tw-delay-300': !open,
+				'tw-bg-opacity-low': open,
+			}"
+			@click.self="closeSideSheet"
+		></div>
+		<div
+			class="my-kiva-navigation tw-absolute tw-right-0 tw-transition-all tw-duration-300 tw-bg-white
+				tw-rounded-l-lg tw-p-3"
+			:class="{
+				'tw-translate-x-full tw-delay-200': !open,
+				'tw-translate-x-0 tw-p-3': open,
 			}"
 		>
 			<div
@@ -54,7 +57,7 @@
 								hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300 tw-delay-100"
 						>
 							<router-link
-								class="tw-text-primary tw-font-medium"
+								class="tw-text-primary tw-font-medium tw-block"
 								:to="setting.link"
 								v-kv-track-event="[
 									'SecondaryNav links',
@@ -198,8 +201,9 @@ watch(visible, () => {
 </script>
 
 <style lang="postcss" scoped>
-.is-open {
+.my-kiva-navigation {
 	width: 20rem;
+
 	@screen md {
 		width: 25rem;
 	}
