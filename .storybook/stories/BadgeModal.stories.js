@@ -1,5 +1,12 @@
 import BadgeModal from '#src/components/MyKiva/BadgeModal.vue';
-import { badgeNoProgress, badgeFirstTierComplete } from '../mock-data/badge-journey-data-mock';
+import {
+	badgeWomensEquality,
+	badgeUsEconomicEquality,
+	badgeClimateAction,
+	badgeRefugeeEquality,
+	badgeBasicNeeds,
+	badgeFirstTierComplete
+} from '../mock-data/badge-journey-data-mock';
 
 export default {
 	title: 'MyKiva/Badge Modal',
@@ -19,12 +26,14 @@ const story = (args) => {
 	return template;
 };
 
-const badgeWithLineVariations = JSON.parse(JSON.stringify(badgeNoProgress));
-badgeWithLineVariations.id = 'us-economic-equality';
-badgeWithLineVariations.fields.badgeImage.fields.file.url = 'https://images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/04ddc29a4cda74e10357a3716e8ec187/Women_Level_1.svg';
+export const WomensEquality = story({ badge: badgeWomensEquality });
 
-export const Default = story({ badge: { ...badgeNoProgress, id: 'us-economic-equality' } });
+export const UsEconomicEquality = story({ badge: badgeUsEconomicEquality });
 
-export const LineVariations = story({ badge: { ...badgeWithLineVariations, id: 'womens-equality' } });
+export const ClimateAction = story({ badge: badgeClimateAction });
 
-export const FirstTierComplete = story({ badge: { ...badgeFirstTierComplete, id: 'us-economic-equality' } });
+export const RefugeeEquality = story({ badge: badgeRefugeeEquality });
+
+export const BasicNeeds = story({ badge: badgeBasicNeeds });
+
+export const FirstTierComplete = story({ badge: badgeFirstTierComplete });

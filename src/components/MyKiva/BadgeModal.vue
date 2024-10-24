@@ -14,7 +14,7 @@ import {
 } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
-const BadgeModalContentJournal = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJournal'));
+const BadgeModalContentJourney = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJourney'));
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['badge-modal-closed']);
@@ -66,9 +66,9 @@ const closeLightbox = () => {
 const contentComponent = computed(() => {
 	switch (props.state) {
 		// TODO: update with upcoming modal content components
-		case STATE_EARNED: return BadgeModalContentJournal;
-		case STATE_IN_PROGRESS: return BadgeModalContentJournal;
-		case STATE_JOURNEY: default: return BadgeModalContentJournal;
+		case STATE_EARNED: return BadgeModalContentJourney;
+		case STATE_IN_PROGRESS: return BadgeModalContentJourney;
+		case STATE_JOURNEY: default: return BadgeModalContentJourney;
 	}
 });
 </script>

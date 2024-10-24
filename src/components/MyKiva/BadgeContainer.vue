@@ -9,7 +9,7 @@
 			v-if="isInProgress"
 			:is="outlineComponent"
 			class="tw-absolute tw-h-full"
-			style="height: 105%; width: 105%; top: -4px; left: -4px;"
+			style="height: 105%; width: 106%; top: -4px; left: -4px;"
 		/>
 		<component v-else-if="isLocked" :is="solidComponent" class="tw-absolute tw-h-full tw-top-0" />
 		<div

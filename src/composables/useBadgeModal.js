@@ -122,17 +122,17 @@ export default function useBadgeModal(currentBadge) {
 		const isMiddle = currentPosition === 1;
 		if (difference === -2) {
 			if (isMobile.value) width = '215px';
-			top = isMobile.value ? '-112%' : '56%';
-			left = isMobile.value ? '16%' : '-106%';
+			top = isMobile.value ? '-121%' : '56%';
+			left = isMobile.value ? '12%' : '-106%';
 			transform = isMobile.value ? 'rotate(-72deg)' : 'rotate(-82deg)';
 		} else if (difference === -1) {
 			if (isMobile.value) {
 				width = isMiddle ? '146px' : '124px';
 			}
-			const mobileTop = isMiddle ? '-162px' : '-106%';
+			const mobileTop = isMiddle ? '-162px' : '-105%';
 			const mobileLeft = isMiddle ? undefined : '11%';
 			top = isMobile.value ? mobileTop : '42%';
-			left = isMobile.value ? mobileLeft : '-118%';
+			left = isMobile.value ? mobileLeft : '-116%';
 			transform = isMobile.value ? 'scaleX(-1)' : 'rotate(-82deg)';
 		} else if (difference === 1) {
 			if (isMobile.value) {
@@ -140,7 +140,7 @@ export default function useBadgeModal(currentBadge) {
 			}
 			const mobileTop = isMiddle ? '-166px' : '-105%';
 			top = isMobile.value ? mobileTop : '-15%';
-			left = isMobile.value ? '-8%' : '-120%';
+			left = isMobile.value ? '-8%' : '-114%';
 			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';
 		} else if (difference === 2) {
 			if (isMobile.value) {
@@ -148,7 +148,7 @@ export default function useBadgeModal(currentBadge) {
 				transform = 'scaleX(-1) rotate(-69deg)';
 			}
 			top = isMobile.value ? '-120%' : '-95%';
-			left = isMobile.value ? '-112px' : '-56%';
+			left = isMobile.value ? '-94px' : '-56%';
 		}
 		return {
 			width,
