@@ -1,0 +1,10 @@
+import{B as u}from"./entry-BorrowerStatusCard-LL9f1G8PYY.js";import{m as y}from"./entry-utils-DPTlI_yqzd.js";import{a as k}from"./entry-apollo-story-mixin-CB9BNmK9U5.js";import{c as f}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import"./entry-vue.esm-bundler-CCMUuEADRp.js";import"./entry-HeroBackground-EoypLa25_P.js";import"./entry-index-CKVkeXup4D.js";import"./entry-tslib.es6-CxsSpKd0p8.js";import"./entry-KvContentfulImg-QAG-LJtxRF.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-BorrowerImage-B3GWN-qTdY.js";import"./entry-imageUtils-DMLkgPJKqw.js";import"./entry-mdi-BqhcKrkTVU.js";import"./entry-KvExpandable-CiymQjBy2I.js";import"./entry-LoanNextSteps-DRLu90K_XM.js";import"./entry-index-CbPSoDvqj7.js";import"./entry-index-COmIkRYU2t.js";import"./entry-index-BTftIkQSSB.js";import"./entry-index-D4S0JsTkt8.js";import"./entry-index-E9YXH6yDgX.js";import"./entry-KvMaterialIcon-D8DnGkc65h.js";import"./entry-loan-data-mock-K6LggmKLGT.js";const F={title:"MyKiva/BorrowerStatusCard",component:u},t=y(3),g={data:{lend:{loan:t[0]}}},l=(a={})=>{const s=(S,{argTypes:d})=>({props:Object.keys(d),components:{BorrowerStatusCard:u},mixins:[k({queryResult:g}),f()],setup(){return{args:a}},provide:{$kvTrackEvent:()=>Promise.resolve({fn:()=>({})})},template:`
+            <borrower-status-card v-bind="args" />
+        `});return s.args=a,s},r=l({loan:t[0]}),o=l({loan:{...t[0],status:"payingBack"}});var e,m,p;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:`story({
+  loan: mockLoans[0]
+})`,...(p=(m=r.parameters)==null?void 0:m.docs)==null?void 0:p.source}}};var n,i,c;o.parameters={...o.parameters,docs:{...(n=o.parameters)==null?void 0:n.docs,source:{originalSource:`story({
+  loan: {
+    ...mockLoans[0],
+    status: 'payingBack'
+  }
+})`,...(c=(i=o.parameters)==null?void 0:i.docs)==null?void 0:c.source}}};const G=["Default","Repaying"];export{r as Default,o as Repaying,G as __namedExportsOrder,F as default};

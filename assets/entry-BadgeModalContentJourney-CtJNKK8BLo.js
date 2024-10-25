@@ -1,0 +1,21 @@
+import{b as _,d as S,N as O,o as i,c as m,e as u,I as p,F as z,G as F,D,n as v,u as t,L as k,f as C,B as G,h,a as K,w as M,H as V}from"./entry-vue.esm-bundler-CCMUuEADRp.js";import{u as $,h as j,M as J,B as R,b as q,c as x}from"./entry-useBadgeModal-DHGnMkICqF.js";import{K as H}from"./entry-KvButton-CplWdZYNKD.js";import{B as U}from"./entry-BadgeContainer-BiQE4h7kOR.js";import{f as Q}from"./entry-index-DMzEMPK2qH.js";import"./entry-throttle-C_gUPZjI8B.js";import"./entry-_commonjsHelpers-BosuxZz1dT.js";import"./entry-isSymbol-Cs2hrTnPnb.js";import"./entry-toNumber-BfkLXMgxIK.js";import"./entry-KvLoadingSpinner-BFva1V4s4F.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-mdi-BqhcKrkTVU.js";import"./entry-KvMaterialIcon-D8DnGkc65h.js";import"./entry-index-COmIkRYU2t.js";import"./entry-index-CbPSoDvqj7.js";import"./entry-index-tAHLmhMYuW.js";import"./entry-index-D4S0JsTkt8.js";const W=["onClick"],X={class:"tw-relative tw-text-center"},Y=["src"],Z={key:1,class:"tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200 tw-text-center tw-px-0.5 tw-z-2",style:{right:"-2px",bottom:"-2px"}},ee={key:0,class:"tw-text-center tw-bg-white tw-z-1 tw-relative"},te={class:"tw-font-medium"},ae={class:"tw-text-small"},se={__name:"BadgeModalContentJourney",props:{badge:{type:Object,required:!0}},setup(c){const f=c,{isMobile:o}=$(J),{getTierPositions:E,getLineComponent:N,getLineStyle:I,getBadgeShape:L}=j(f.badge),g=_(!1),r=S(()=>{const s=[...f.badge.tiers??[]];return s.sort((a,l)=>a.target-l.target),s}),d=_(E()),T=s=>{const a=r.value[s];if(a.completedDate)return Q(new Date(a.completedDate.replace("[UTC]","")),"MMMM do, yyyy");if(a.target)return`${f.badge.totalProgressToAchievement} of ${a.target} loans`},w=s=>{var a;return(!r.value[s-1]||!!((a=r.value[s-1])!=null&&a.completedDate))&&!r.value[s].completedDate},A=s=>(r.value[s]??{}).completedDate?R:w(s)?q:x,P=(s,a)=>{var l;(l=r.value[a])!=null&&l.completedDate||s.stopImmediatePropagation()};return(s,a)=>{const l=O("kv-track-event");return i(),m("div",null,[u("p",null,p(c.badge.fields.shareFact),1),u("div",{class:v(["tw-flex tw-overflow-x-auto tw-overflow-y-hidden",{"tw-flex-col tw-py-2 tw-px-2":t(o),"tw-flex-row tw-py-4 tw-px-0.5":!t(o)}])},[(i(!0),m(z,null,F(d.value,(n,e)=>{var b,y;return D((i(),m("div",{key:e,class:v(["badge tw-shrink-0 tw-relative",{"badge-mobile":t(o),"tw-ml-3":!t(o)&&e>0,"tw-mr-6":!t(o)&&e<d.value.length-1,"tw-mb-0 tw-self-auto":!t(o),"tw-self-start":t(o)&&n===0,"tw-self-center":t(o)&&n===1,"tw-self-end":t(o)&&n===2,"tw-cursor-pointer":!!((y=(b=r.value)==null?void 0:b[e])!=null&&y.completedDate)}]),style:k({width:"133px",marginTop:`${t(o)||n==0?0:n===1?100:200}px`}),onClick:B=>P(B,e)},[u("div",X,[g.value&&e>0?(i(),C(G(t(N)(d.value[e-1],n)),{key:0,class:"tw-absolute",style:k(t(I)(d.value[e-1],n))},null,8,["style"])):h("",!0),K(t(U),{status:A(e),shape:t(L)(),class:"tw-z-1"},{default:M(()=>[u("img",{src:c.badge.fields.badgeImage.fields.file.url,alt:"Badge",style:{"max-height":"133px"},onLoad:a[0]||(a[0]=B=>g.value=!0)},null,40,Y)],void 0),_:2},1032,["status","shape"]),g.value&&w(e)?(i(),m("div",Z,p(c.badge.totalProgressToAchievement),1)):h("",!0)]),g.value?(i(),m("div",ee,[u("div",te," Level "+p(e+1),1),u("div",ae,p(T(e)),1),D((i(),C(t(H),{class:v(["tw-mt-1 tw-whitespace-nowrap",{"tw-invisible":e!==d.value.length-1&&!w(e),"tw-hidden":(!t(o)||e===d.value.length-1)&&!w(e)}])},{default:M(()=>[V(" Earn badge ")],void 0),_:2},1032,["class"])),[[l,["portfolio","click","Earn a badge - within badge journey map modal",c.badge.fields.challengeName,e+1]]])])):h("",!0)],14,W)),[[l,["portfolio","click","Already earned badge modal",c.badge.fields.challengeName,e+1]]])}),128))],2)])}}};se.__docgenInfo={exportName:"default",displayName:"BadgeModalContentJourney",description:"",tags:{},props:[{name:"badge",description:`{
+  id: '',
+  fields: {
+    challengeName: '',
+    shareFact: '',
+    badgeImage: {
+      fields: {
+        file: {
+          url: '',
+        },
+      },
+    },
+  },
+  totalProgressToAchievement,
+  tiers: [
+    {
+      target: 2,
+      completedDate: null,
+    },
+  ],
+}`,type:{name:"object"},required:!0}],sourceFiles:["/home/runner/work/ui/ui/src/components/MyKiva/BadgeModalContentJourney.vue"]};export{se as default};
