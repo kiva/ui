@@ -250,7 +250,7 @@ const onLoadMore = () => {
 
 <style lang="postcss" scoped>
 
-.kv-carousel >>> div[aria-label*="screen"]  {
+.kv-carousel >>> div[aria-label*=screen]  {
   @apply tw-invisible;
 }
 
