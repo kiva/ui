@@ -129,7 +129,7 @@ export default function useBadgeModal(currentBadge) {
 			if (isMobile.value) {
 				width = isMiddle ? '146px' : '124px';
 			}
-			const mobileTop = isMiddle ? '-162px' : '-105%';
+			const mobileTop = isMiddle ? '-162px' : '-108%';
 			const mobileLeft = isMiddle ? undefined : '11%';
 			top = isMobile.value ? mobileTop : '42%';
 			left = isMobile.value ? mobileLeft : '-116%';
@@ -138,7 +138,7 @@ export default function useBadgeModal(currentBadge) {
 			if (isMobile.value) {
 				width = isMiddle ? '154px' : '124px';
 			}
-			const mobileTop = isMiddle ? '-166px' : '-105%';
+			const mobileTop = isMiddle ? '-166px' : '-111%';
 			top = isMobile.value ? mobileTop : '-15%';
 			left = isMobile.value ? '-8%' : '-114%';
 			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';

@@ -7,7 +7,7 @@ export const badgeWomensEquality = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/b3df9fefbaf0b74b6ec57f6dfd8463fc/Women_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/70d21f8db5f93b20be1581ef333dc60e/Women_10.svg",
 				}
 			}
 		},
@@ -69,7 +69,7 @@ export const badgeUsEconomicEquality = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/1c0ddc3aa7741d1009e16cedecb8bddb/US_Business_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/0155bb0e9a32be6b00071afa4769b10c/US_Business_10.svg",
 				}
 			}
 		},
@@ -131,7 +131,7 @@ export const badgeClimateAction = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/3YklKNLbiA4kAcOgk5ouaw/6711980145ed95ae700ec4c5e9021a92/Climate_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/3YklKNLbiA4kAcOgk5ouaw/14b41006455dfd756f141e0217bb8e9c/Climate_10.svg",
 				}
 			}
 		},
@@ -193,7 +193,7 @@ export const badgeRefugeeEquality = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/1SEhQMUbYUqZopjP2o67XK/fc659a59a47646fde534d458ffbb9a49/Refugees_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/1SEhQMUbYUqZopjP2o67XK/c9b1f51837d87905d2a71578c0d6c434/Refugees_10.svg",
 				}
 			}
 		},
@@ -255,7 +255,7 @@ export const badgeBasicNeeds = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/694uSymh8om0MxbiCjWZxl/ac958bbc13490692a9ba0ef07cc81547/Basic_Needs_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/694uSymh8om0MxbiCjWZxl/b55c8cb3f3743efdd56b56beea8dfb42/Basic_Needs_10.svg",
 				}
 			}
 		},
@@ -317,7 +317,7 @@ export const badgeFirstTierComplete = {
 		"badgeImage": {
 			"fields": {
 				"file": {
-					"url": "//images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/1c0ddc3aa7741d1009e16cedecb8bddb/US_Business_10.svg",
+					"url": "https://images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/0155bb0e9a32be6b00071afa4769b10c/US_Business_10.svg",
 				}
 			}
 		},
