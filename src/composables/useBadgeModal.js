@@ -30,7 +30,7 @@ export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
-// TODO: Use the LoanChannelQueryMap to get the correct filters
+// TODO: CLIMATE_ACTION_FILTER and BASIC_NEEDS_FILTER require special params to be correctly implemented
 export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
 export const CLIMATE_ACTION_FILTER = 'attribute=32&tag=9,8';
 export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
@@ -189,7 +189,6 @@ export default function useBadgeModal(currentBadge) {
 	 * Gets the URL params of the badge to be used in lend/filter
 	 * @returns The URL params
 	 */
-
 	const getPrefilteredUrl = () => {
 		switch (badge.value.id) {
 			case ID_WOMENS_EQUALITY:

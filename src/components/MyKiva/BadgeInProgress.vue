@@ -54,8 +54,7 @@
 			</template>
 		</KvCarousel>
 		<div
-			class="md:tw-hidden tw-grid
-      tw-justify-items-center tw-gap-3 md:tw-gap-y-4 md:tw-py-1.5"
+			class="md:tw-hidden tw-grid tw-justify-items-center tw-gap-3 md:tw-gap-y-4 md:tw-py-1.5"
 		>
 			<template
 				v-for="(loanId, index) in augmentedLoanIds"
@@ -202,6 +201,7 @@ const onInteractCarousel = interaction => {
 };
 
 const badgeName = computed(() => props.badge?.fields?.challengeName ?? '');
+// TODO: Replace once the work of using the icon of the correct in-progress badge level is complete
 const badgeImage = computed(() => props.badge?.fields?.badgeImage?.fields?.file?.url ?? '');
 const badgeLevel = computed(() => props.badge?.fields?.level ?? '');
 const totalProgress = computed(() => props.badge?.totalProgressToAchievement ?? 0);
