@@ -113,10 +113,10 @@ describe('useBadgeModal.js', () => {
 				left: '-94px', top: '-120%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
 			});
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '11%', top: '-105%', transform: 'scaleX(-1)', width: '124px'
+				left: '11%', top: '-108%', transform: 'scaleX(-1)', width: '124px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
-				left: '-8%', top: '-105%', transform: 'rotate(-2deg)', width: '124px'
+				left: '-8%', top: '-111%', transform: 'rotate(-2deg)', width: '124px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
 				left: '12%', top: '-121%', transform: 'rotate(-72deg)', width: '215px'
