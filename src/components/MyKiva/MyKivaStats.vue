@@ -67,7 +67,7 @@ const totalCountriesLentTo = ref(0);
 
 const completedAchievements = computed(() => {
 	return userAchievements.value.filter(
-		achievement => achievement.status === 'COMPLETE'
+		achievement => achievement.status === 'COMPLETE' // Update this status field when having from backend
 	);
 });
 
