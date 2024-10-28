@@ -108,14 +108,10 @@ const badgeImage = computed(() => {
 const badgeCategory = computed(() => badge.value?.challengeName ?? '');
 const tiers = computed(() => badge.value?.tiers ?? []);
 
-const sortedTiers = computed(() => {
-	const defaultTiers = [...tiers.value];
-	return defaultTiers.sort((a, b) => a.target - b.target);
+const currentTier = computed(() => {
+	return tiers.value?.find(tier => !tier.completedDate) ?? null;
 });
 
-const currentTier = computed(() => {
-	return sortedTiers.value?.find(tier => !tier.completedDate) ?? null;
-});
 const badgeLevel = computed(() => {
 	return currentTier.value?.target ?? 0;
 });

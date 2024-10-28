@@ -1,9 +1,10 @@
 <template>
-	<KvLightbox :visible="show" :title="badge.fields.challengeName" @lightbox-closed="closeLightbox">
+	<KvLightbox :visible="show" :title="title" @lightbox-closed="closeLightbox">
 		<component
 			:is="contentComponent"
 			:key="badge.id"
 			:badge="badge"
+			:lender="lender"
 			@badge-level-clicked="handleBadgeLevelClicked"
 		/>
 	</KvLightbox>
@@ -77,6 +78,11 @@ const closeLightbox = () => {
 const handleBadgeLevelClicked = e => {
 	emit('badge-level-clicked', e);
 };
+
+const title = computed(() => {
+	if (props.state === STATE_JOURNEY) return props.badge.fields.challengeName;
+	return null;
+});
 
 const contentComponent = computed(() => {
 	switch (props.state) {
