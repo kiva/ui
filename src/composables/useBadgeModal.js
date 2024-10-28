@@ -30,6 +30,12 @@ export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
+// TODO: /lend/filter does not support the "OR" filter needed between different filters. BASIC_NEEDS and CLIMATE_ACTION
+export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
+export const CLIMATE_ACTION_FILTER = 'attribute=32&tag=9,8';
+export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
+export const WOMENS_EQUALITY_FILTER = 'gender=female';
+export const BASIC_NEEDS_FILTER = 'sector=6,10&attribute=8';
 
 /**
  * General utilities for the MyKiva badge modal
@@ -179,7 +185,27 @@ export default function useBadgeModal(currentBadge) {
 		}
 	};
 
+	/**
+	 * Gets the URL params of the badge to be used in lend/filter
+	 * @returns The URL params
+	 */
+	const getPrefilteredUrl = () => {
+		switch (badge.value.id) {
+			case ID_WOMENS_EQUALITY:
+				return WOMENS_EQUALITY_FILTER;
+			case ID_US_ECONOMIC_EQUALITY:
+				return US_ECONOMIC_EQUALITY_FILTER;
+			case ID_CLIMATE_ACTION:
+				return CLIMATE_ACTION_FILTER;
+			case ID_REFUGEE_EQUALITY:
+				return REFUGEE_EQUALITY_FILTER;
+			case ID_BASIC_NEEDS:
+			default:
+				return BASIC_NEEDS_FILTER;
+		}
+	};
+
 	return {
-		getTierPositions, getLineComponent, getLineStyle, getBadgeShape
+		getTierPositions, getLineComponent, getLineStyle, getBadgeShape, getPrefilteredUrl
 	};
 }
