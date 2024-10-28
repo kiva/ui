@@ -7,12 +7,18 @@ import logReadQueryError from '#src/util/logReadQueryError';
  * Utilities for loading and combining tiered badge data
  *
  * @param apollo The current Apollo client instance
- * @returns Cleaned up tiered badge data
+ * @returns Badge data and utilities
  */
 export default function useBadgeData(apollo) {
 	const badgeAchievementData = ref();
 	const badgeContentfulData = ref();
 
+	/**
+	 * Gets a cleaned up version of Contentful badge data
+	 *
+	 * @param entry The Contentful entry
+	 * @returns The cleaned up Contentful badge data
+	 */
 	const getContentfulLevelData = entry => ({
 		id: entry?.fields?.key?.replace(/-level-\d+/, '') ?? '',
 		level: +(entry?.fields?.key?.replace(/\D/g, '') ?? ''),
@@ -20,6 +26,9 @@ export default function useBadgeData(apollo) {
 		imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
 	});
 
+	/**
+	 * Calls Apollo to get the badge achievement service data
+	 */
 	const fetchAchievementData = () => {
 		apollo.query({ query: userAchievementProgressQuery })
 			.then(result => {
@@ -29,6 +38,9 @@ export default function useBadgeData(apollo) {
 			});
 	};
 
+	/**
+	 * Calls Apollo to get the badge Contentful data
+	 */
 	const fetchContentfulData = () => {
 		apollo.query({
 			query: contentfulEntriesQuery,
@@ -43,6 +55,60 @@ export default function useBadgeData(apollo) {
 			}).catch(e => {
 				logReadQueryError(e, 'useBadgeData contentfulEntriesQuery');
 			});
+	};
+
+	/**
+	 * Combines the badge data into a more usable form
+	 *
+	 * @param allAchievementData All of the data for the user from the achievement service
+	 * @param allContentfulData All of the badge data from Contentful
+	 * @returns Combined and cleaned up badge data
+	 */
+	const combineBadgeData = (allAchievementData, allContentfulData) => {
+		const badges = [];
+
+		// Ensure data loaded from both achievement service and Contentful
+		if (allAchievementData && allContentfulData) {
+			// Currently only targeting specific tiered badges
+			allAchievementData.forEach(achievementData => {
+				const contentfulData = allContentfulData.filter(entry => entry.id === achievementData.id);
+
+				// Ensure badges are defined in both locations
+				if (achievementData && contentfulData) {
+					const sortedTiers = [...(achievementData.tiers ?? [])].map((t, i) => {
+						const tier = JSON.parse(JSON.stringify(t));
+						// Ensure achievement data includes numerical level of tier
+						tier.level = i + 1;
+						return tier;
+					});
+
+					sortedTiers.sort((a, b) => a.target - b.target);
+
+					// Get specific properties used in the UI
+					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
+					const hasStarted = completedTiers.length > 0;
+					const level = hasStarted ? completedTiers[completedTiers.length - 1].level : undefined;
+
+					// Combine the achievement service and Contentful data
+					badges.push({
+						id: achievementData.id,
+						contentfulData,
+						achievementData: {
+							...achievementData,
+							tiers: sortedTiers.map(t => ({
+								...t,
+								// Date is in format "2024-10-22T18:49:21Z[UTC]"
+								completedDate: t.completedDate?.replace('[UTC]', ''),
+							})),
+						},
+						hasStarted,
+						level,
+					});
+				}
+			});
+		}
+
+		return badges;
 	};
 
 	/**
@@ -74,52 +140,17 @@ export default function useBadgeData(apollo) {
 	 *   "level": undefined
 	 * }
 	 */
-	const badgeData = computed(() => {
-		const badges = [];
-
-		// Ensure data loaded from both achievement service and Contentful
-		if (badgeAchievementData.value && badgeContentfulData.value) {
-			// Currently only targeting specific tiered badges
-			badgeAchievementData.value.forEach(achievementData => {
-				const contentfulData = badgeContentfulData.value.filter(entry => entry.id === achievementData.id);
-
-				// Ensure badges are defined in both locations
-				if (achievementData && contentfulData) {
-					const sortedTiers = [...(achievementData.tiers ?? [])].map((t, i) => {
-						const tier = JSON.parse(JSON.stringify(t));
-						// Ensure achievement data includes numerical level of tier
-						tier.level = i + 1;
-						return tier;
-					});
-
-					sortedTiers.sort((a, b) => a.target - b.target);
-
-					// Get specific properties used in the UI
-					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
-					const hasStarted = completedTiers.length > 0;
-					const level = hasStarted ? completedTiers[completedTiers.length - 1].level : undefined;
-
-					// Combine the achievement service and Contentful data
-					badges.push({
-						id: achievementData.id,
-						contentfulData,
-						achievementData: {
-							...achievementData,
-							tiers: sortedTiers,
-						},
-						hasStarted,
-						level,
-					});
-				}
-			});
-		}
-		return badges;
-	});
+	const badgeData = computed(() => combineBadgeData(badgeAchievementData.value, badgeContentfulData.value));
 
 	onMounted(() => {
 		fetchAchievementData();
 		fetchContentfulData();
 	});
 
-	return { badgeAchievementData, badgeData };
+	return {
+		combineBadgeData,
+		getContentfulLevelData,
+		badgeAchievementData,
+		badgeData
+	};
 }
