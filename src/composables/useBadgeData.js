@@ -32,7 +32,10 @@ export default function useBadgeData() {
 	const fetchAchievementData = apollo => {
 		apollo.query({ query: userAchievementProgressQuery })
 			.then(result => {
-				badgeAchievementData.value = result.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
+				badgeAchievementData.value = [
+					...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
+					...(result.data?.userAchievementProgress?.tieredLendingAchievements ?? [])
+				];
 			}).catch(e => {
 				logReadQueryError(e, 'useBadgeData userAchievementProgressQuery');
 			});
