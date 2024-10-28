@@ -1,8 +1,8 @@
 <template>
 	<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center tw-gap-2.5">
 		<div
-			v-for="badge in badgesArray"
-			:key="badge.fields.key"
+			v-for="(badge, index) in visibleBadges"
+			:key="index"
 			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
 			:class="{
 				'tw-bg-white': badge.hasStarted,
@@ -50,55 +50,19 @@
 </template>
 
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 defineEmits(['badge-clicked']);
 
 const props = defineProps({
-	badgesData: {
+	badgeData: {
 		type: Array,
 		default: () => ([])
 	},
-	userAchievements: {
-		type: Array,
-		default: () => ([])
-	}
 });
 
-const { badgesData, userAchievements } = toRefs(props);
-
-const badgesArray = computed(() => {
-	const badges = [];
-	if (badgesData.value.length > 0) {
-		defaultBadges.forEach(badgeKey => {
-			let badgeFound = badgesData.value.find(entry => entry.fields.key === `${badgeKey}-level-1`);
-			const userAchievement = userAchievements.value.find(entry => entry.id === badgeKey);
-
-			if (!userAchievement) {
-				badgeFound = {
-					...badgeFound,
-					hasStarted: false,
-					level: 0,
-				};
-			} else {
-				// TODO: Update this status field when we have the data from the backend
-				const hasStarted = userAchievement.status !== 'NO_PROGRESS';
-				// TODO: Change this to level when we have the data from the backend
-				const level = userAchievement.totalProgressToAchievement;
-				badgeFound = {
-					...badgeFound,
-					hasStarted,
-					level,
-					...userAchievement,
-				};
-			}
-
-			badges.push(badgeFound);
-		});
-	}
-	return badges;
-});
+const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
 
 const getBadgeTitle = badge => badge?.fields?.challengeName ?? '';
 
