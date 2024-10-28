@@ -2,7 +2,6 @@ import { onMounted, ref, computed } from 'vue';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { defaultBadges } from '#src/util/achievementUtils';
 
 /**
  * Utilities for loading and combining tiered badge data
@@ -81,9 +80,8 @@ export default function useBadgeData(apollo) {
 		// Ensure data loaded from both achievement service and Contentful
 		if (badgeAchievementData.value && badgeContentfulData.value) {
 			// Currently only targeting specific tiered badges
-			defaultBadges.forEach(badgeKey => {
-				const achievementData = badgeAchievementData.value.find(entry => entry.id === badgeKey);
-				const contentfulData = badgeContentfulData.value.filter(entry => entry.id === badgeKey);
+			badgeAchievementData.value.forEach(achievementData => {
+				const contentfulData = badgeContentfulData.value.filter(entry => entry.id === achievementData.id);
 
 				// Ensure badges are defined in both locations
 				if (achievementData && contentfulData) {
@@ -103,6 +101,7 @@ export default function useBadgeData(apollo) {
 
 					// Combine the achievement service and Contentful data
 					badges.push({
+						id: achievementData.id,
 						contentfulData,
 						achievementData: {
 							...achievementData,

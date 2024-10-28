@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center tw-gap-2.5">
 		<div
-			v-for="(badge, index) in badgeData"
+			v-for="(badge, index) in visibleBadges"
 			:key="index"
 			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
 			:class="{
@@ -50,14 +50,19 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { defaultBadges } from '#src/util/achievementUtils';
+
 defineEmits(['badge-clicked']);
 
-defineProps({
+const props = defineProps({
 	badgeData: {
 		type: Array,
 		default: () => ([])
 	},
 });
+
+const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
 
 const getBadgeTitle = badge => badge?.fields?.challengeName ?? '';
 
