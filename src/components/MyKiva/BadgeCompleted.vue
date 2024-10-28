@@ -86,13 +86,9 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	lendingAchievement: {
-		type: Object,
-		default: () => ({}),
-	},
 });
 
-const { badge, lender, lendingAchievement } = toRefs(props);
+const { badge, lender } = toRefs(props);
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
 const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));
@@ -110,15 +106,15 @@ const badgeImage = computed(() => {
 });
 
 const badgeCategory = computed(() => badge.value?.challengeName ?? '');
-const tiers = computed(() => lendingAchievement.value?.tiers ?? []);
+const tiers = computed(() => badge.value?.tiers ?? []);
 
 const sortedTiers = computed(() => {
 	const defaultTiers = [...tiers.value];
-	return defaultTiers.sort((a, b) => b.target - a.target);
+	return defaultTiers.sort((a, b) => a.target - b.target);
 });
 
 const currentTier = computed(() => {
-	return sortedTiers.value?.findLast(tier => tier.completedDate) ?? null;
+	return sortedTiers.value?.find(tier => !tier.completedDate) ?? null;
 });
 const badgeLevel = computed(() => {
 	return currentTier.value?.target ?? 0;
@@ -139,8 +135,9 @@ const earnedDate = computed(() => `Earned ${format(new Date(currentTier.value.co
 onMounted(() => {
 	confetti({
 		origin: {
-			y: 0.2
+			y: 0.2,
 		},
+		zIndex: 1400, // tw-z-modal
 		particleCount: 150,
 		spread: 200,
 		colors: ['#6AC395', '#223829', '#95D4B3'],

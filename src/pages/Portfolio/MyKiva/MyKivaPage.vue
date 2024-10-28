@@ -100,7 +100,10 @@
 						v-if="selectedBadgeData"
 						:show="showBadgeModal"
 						:badge="selectedBadgeData"
-						@badge-modal-closed="showBadgeModal = false"
+						:lender="lender"
+						@badge-modal-closed="handleBadgeModalClosed"
+						:state="state"
+						@badge-level-clicked="handleBadgeLevelClicked"
 					/>
 				</div>
 			</section>
@@ -125,6 +128,7 @@ import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarouse
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
+import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 import {
 	ref,
@@ -148,6 +152,7 @@ const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const userAchievements = ref([]);
 const badgesData = ref([]);
+const state = ref(STATE_JOURNEY);
 
 const isLoading = computed(() => !lender.value);
 
@@ -161,6 +166,19 @@ const handleShowNavigation = () => {
 const handleBadgeClicked = badge => {
 	selectedBadgeData.value = badge;
 	showBadgeModal.value = true;
+};
+
+const handleBadgeLevelClicked = completedDate => {
+	state.value = completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+};
+
+const handleBadgeModalClosed = () => {
+	if (state.value === STATE_JOURNEY) {
+		showBadgeModal.value = false;
+		return;
+	}
+
+	state.value = STATE_JOURNEY;
 };
 
 const fetchLoanUpdates = loanId => {
