@@ -131,7 +131,12 @@ const MY_KIVA_EXP_KEY = 'my_kiva_page';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { badgeAchievementData, badgeData } = useBadgeData(apollo);
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	badgeAchievementData,
+	badgeData,
+} = useBadgeData(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -196,5 +201,8 @@ onMounted(() => {
 	);
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
+
+	fetchAchievementData(apollo);
+	fetchContentfulData(apollo);
 });
 </script>

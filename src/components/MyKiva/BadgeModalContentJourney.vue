@@ -154,8 +154,7 @@ const positions = ref(getTierPositions());
 const tierCaption = index => {
 	const tier = sortedTiers.value[index];
 	if (tier.completedDate) {
-		// Date is in format "2024-10-22T18:49:21Z[UTC]"
-		return format(new Date(tier.completedDate.replace('[UTC]', '')), 'MMMM do, yyyy');
+		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
 		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
