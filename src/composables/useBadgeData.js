@@ -1,4 +1,4 @@
-import { onMounted, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -6,10 +6,9 @@ import logReadQueryError from '#src/util/logReadQueryError';
 /**
  * Utilities for loading and combining tiered badge data
  *
- * @param apollo The current Apollo client instance
  * @returns Badge data and utilities
  */
-export default function useBadgeData(apollo) {
+export default function useBadgeData() {
 	const badgeAchievementData = ref();
 	const badgeContentfulData = ref();
 
@@ -23,13 +22,14 @@ export default function useBadgeData(apollo) {
 		id: entry?.fields?.key?.replace(/-level-\d+/, '') ?? '',
 		level: +(entry?.fields?.key?.replace(/\D/g, '') ?? ''),
 		levelName: entry?.fields?.challengeName ?? '',
+		challengeName: (entry?.fields?.challengeName ?? '').replace(/\s*✨\d+✨/, ''),
 		imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
 	});
 
 	/**
 	 * Calls Apollo to get the badge achievement service data
 	 */
-	const fetchAchievementData = () => {
+	const fetchAchievementData = apollo => {
 		apollo.query({ query: userAchievementProgressQuery })
 			.then(result => {
 				badgeAchievementData.value = result.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
@@ -41,7 +41,7 @@ export default function useBadgeData(apollo) {
 	/**
 	 * Calls Apollo to get the badge Contentful data
 	 */
-	const fetchContentfulData = () => {
+	const fetchContentfulData = apollo => {
 		apollo.query({
 			query: contentfulEntriesQuery,
 			variables: {
@@ -112,6 +112,39 @@ export default function useBadgeData(apollo) {
 	};
 
 	/**
+	 * Gets the current (incomplete) tier for the provided badge
+	 *
+	 * @param badge The badge to get the current tier for
+	 * @returns The current tier of the badge
+	 */
+	const getCurrentTierData = badge => {
+		let currentTier;
+		badge.achievementData.tiers.forEach(t => {
+			if (!currentTier) {
+				currentTier = t;
+			} else if (!!currentTier.completedDate && !t.completedDate) {
+				currentTier = t;
+			}
+		});
+		/**
+		 * {
+		 *   "id": "",
+		 *   "challengeName": "",
+		 *   "level": 1,
+		 *   "levelName": "",
+		 *   "imageUrl": "",
+		 *   "target": 1,
+		 *   "tierStatement": "",
+		 *   "learnMoreURL": ""
+		 * }
+		 */
+		return {
+			...badge.contentfulData.find(t => t.level === currentTier.level),
+			...currentTier,
+		};
+	};
+
+	/**
 	 * {
 	 *   "contentfulData": [
 	 *     {
@@ -142,14 +175,12 @@ export default function useBadgeData(apollo) {
 	 */
 	const badgeData = computed(() => combineBadgeData(badgeAchievementData.value, badgeContentfulData.value));
 
-	onMounted(() => {
-		fetchAchievementData();
-		fetchContentfulData();
-	});
-
 	return {
+		fetchAchievementData,
+		fetchContentfulData,
 		combineBadgeData,
 		getContentfulLevelData,
+		getCurrentTierData,
 		badgeAchievementData,
 		badgeData
 	};

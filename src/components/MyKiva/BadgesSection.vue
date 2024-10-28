@@ -10,7 +10,7 @@
 			}"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
-				{{ getBadgeTitle(badge) }}
+				{{ getCurrentTierData(badge).challengeName }}
 			</span>
 			<div
 				class="tw-p-1"
@@ -20,11 +20,11 @@
 				style="height: 148px;"
 			>
 				<img
-					:src="getBadgeImgUrl(badge)"
+					:src="getCurrentTierData(badge).imageUrl"
 					class="tw-h-full tw-mx-auto"
 				>
 			</div>
-			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-mt-2 tw-font-medium">
+			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-font-medium tw-grow">
 				<span
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
@@ -32,12 +32,12 @@
 					Level {{ badge.level }}/5
 				</span>
 				<button
-					class="tw-text-action hover:tw-underline"
+					class="tw-text-action hover:tw-underline tw-mt-auto"
 					v-kv-track-event="[
 						'portfolio',
 						'click',
 						badge.hasStarted ? 'Continue' : 'Start this journey',
-						getBadgeTitle(badge),
+						getCurrentTierData(badge).challengeName,
 						badge.level
 					]"
 					@click="() => $emit('badge-clicked', badge)"
@@ -52,6 +52,7 @@
 <script setup>
 import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
+import useBadgeData from '#src/composables/useBadgeData';
 
 defineEmits(['badge-clicked']);
 
@@ -62,11 +63,9 @@ const props = defineProps({
 	},
 });
 
+const { getCurrentTierData } = useBadgeData();
+
 const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
-
-const getBadgeTitle = badge => badge?.fields?.challengeName ?? '';
-
-const getBadgeImgUrl = badge => badge?.fields?.badgeImage?.fields?.file?.url ?? '';
 </script>
 
 <style lang="postcss" scoped>

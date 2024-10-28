@@ -1,5 +1,12 @@
+/* eslint-disable max-len */
 import useBadgeData from '#src/composables/useBadgeData';
-import { achievementData, contentfulData, combinedData } from '../../fixtures/useBadgeDataMock';
+import {
+	achievementData,
+	contentfulData,
+	combinedData,
+	badgeNoProgress,
+	badgeLastTier,
+} from '../../fixtures/useBadgeDataMock';
 
 jest.mock('vue', () => ({
 	onMounted: callback => callback(),
@@ -9,18 +16,6 @@ jest.mock('vue', () => ({
 
 describe('useBadgeData.js', () => {
 	describe('getTierPositions', () => {
-		it('should call apollo for data', () => {
-			const apolloMock = {
-				query: jest.fn()
-					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
-					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
-			};
-
-			useBadgeData(apolloMock);
-
-			expect(apolloMock.query).toHaveBeenCalledTimes(2);
-		});
-
 		it('should combine data like expected', () => {
 			const apolloMock = {
 				query: jest.fn()
@@ -35,6 +30,42 @@ describe('useBadgeData.js', () => {
 			);
 
 			expect(badgeData).toEqual(combinedData);
+		});
+	});
+
+	describe('getCurrentTierData', () => {
+		it('should get the current tier data', () => {
+			const { getCurrentTierData } = useBadgeData();
+
+			expect(getCurrentTierData(badgeNoProgress)).toEqual({
+				id: 'basic-needs',
+				level: 1,
+				levelName: 'Basic needs',
+				challengeName: 'Basic needs',
+				imageUrl: '//images.ctfassets.net/j0p9a6ql0rn7/694uSymh8om0MxbiCjWZxl/b55c8cb3f3743efdd56b56beea8dfb42/Basic_Needs_10.svg',
+				__typename: 'Tier',
+				target: 2,
+				tierStatement: '',
+				completedDate: undefined,
+				learnMoreURL: ''
+			});
+		});
+
+		it('should get the current last data (with emoji)', () => {
+			const { getCurrentTierData } = useBadgeData();
+
+			expect(getCurrentTierData(badgeLastTier)).toEqual({
+				id: 'basic-needs',
+				level: 7,
+				levelName: 'Basic needs✨100✨',
+				challengeName: 'Basic needs',
+				imageUrl: '//images.ctfassets.net/j0p9a6ql0rn7/1LLL9K4PgaUZb3H0JLWEPU/4ed0ec9c5515fa25410b9e32d6a8e7cf/Basic_Needs_70.svg',
+				__typename: 'Tier',
+				target: 100,
+				tierStatement: '',
+				completedDate: undefined,
+				learnMoreURL: ''
+			});
 		});
 	});
 });
