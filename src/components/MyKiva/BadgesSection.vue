@@ -3,11 +3,19 @@
 		<div
 			v-for="(badge, index) in visibleBadges"
 			:key="index"
-			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
+			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded tw-cursor-pointer"
 			:class="{
 				'tw-bg-white': badge.hasStarted,
 				'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
 			}"
+			v-kv-track-event="[
+				'portfolio',
+				'click',
+				badge.hasStarted ? 'Continue' : 'Start this journey',
+				getCurrentTierData(badge).challengeName,
+				badge.level
+			]"
+			@click="() => $emit('badge-clicked', badge)"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
 				{{ getCurrentTierData(badge).challengeName }}
@@ -33,14 +41,6 @@
 				</span>
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
-					v-kv-track-event="[
-						'portfolio',
-						'click',
-						badge.hasStarted ? 'Continue' : 'Start this journey',
-						getCurrentTierData(badge).challengeName,
-						badge.level
-					]"
-					@click="() => $emit('badge-clicked', badge)"
 				>
 					{{ badge.hasStarted ? 'Continue' : 'Start this journey' }}
 				</button>
