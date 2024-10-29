@@ -99,7 +99,30 @@
 				</div>
 			</section>
 		</MyKivaContainer>
+		<section class="tw-bg-white tw-py-2">
+			<MyKivaContainer>
+				<div class="tw-my-3">
+					<h3
+						class="tw-text-center tw-mb-2"
+					>
+						My achievements
+					</h3>
+					<EarnedBadgesSection
+						:badges-data="badgesData"
+						:lending-achievements="lendingAchievements"
+						:tiered-achievements="tieredAchievements"
+						@badge-clicked="handleBadgeClicked"
+					/>
+				</div>
+			</MyKivaContainer>
+		</section>
 	</www-page>
+	<BadgeModal
+		v-if="selectedBadgeData"
+		:show="showBadgeModal"
+		:badge="selectedBadgeData"
+		@badge-modal-closed="showBadgeModal = false"
+	/>
 </template>
 
 <script setup>
@@ -118,6 +141,7 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
+import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 
 import {
 	ref,
