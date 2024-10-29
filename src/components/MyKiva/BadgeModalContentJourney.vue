@@ -183,7 +183,7 @@ const handleBadgeClick = (event, index) => {
 	// Prevent analytics being logged when non-completed tier is clicked
 	if (!sortedTiers.value[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
 		event.stopImmediatePropagation();
-		emit('badge-level-clicked', sortedTiers.value[index]?.completedDate);
+		emit('badge-level-clicked', sortedTiers.value[index]?.level);
 	}
 };
 </script>

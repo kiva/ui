@@ -5,6 +5,7 @@
 			:key="badge.id"
 			:badge="badge"
 			:lender="lender"
+			:tier="tier"
 			@badge-level-clicked="handleBadgeLevelClicked"
 		/>
 	</KvLightbox>
@@ -68,6 +69,10 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	tier: {
+		type: Object,
+		default: () => ({}),
+	}
 });
 
 const closeLightbox = () => {
@@ -80,7 +85,9 @@ const handleBadgeLevelClicked = e => {
 };
 
 const title = computed(() => {
-	if (props.state === STATE_JOURNEY) return props.badge.fields.challengeName;
+	if (props.state === STATE_JOURNEY) {
+		return props.badge?.contentfulData?.[props.tier]?.challengeName ?? '';
+	}
 	return null;
 });
 

@@ -95,8 +95,9 @@
 						:show="showBadgeModal"
 						:badge="selectedBadgeData"
 						:lender="lender"
-						@badge-modal-closed="handleBadgeModalClosed"
 						:state="state"
+						:tier="tier"
+						@badge-modal-closed="handleBadgeModalClosed"
 						@badge-level-clicked="handleBadgeLevelClicked"
 					/>
 				</div>
@@ -150,7 +151,8 @@ const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
-const state = ref(STATE_JOURNEY);
+const state = ref(STATE_EARNED);
+const tier = ref(0);
 
 const isLoading = computed(() => !lender.value);
 
@@ -166,8 +168,10 @@ const handleBadgeClicked = badge => {
 	showBadgeModal.value = true;
 };
 
-const handleBadgeLevelClicked = completedDate => {
-	state.value = completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+const handleBadgeLevelClicked = level => {
+	tier.value = level;
+	const selectedTier = badgeData?.achievementData?.tiers?.find(t => t.level === level);
+	state.value = selectedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
 };
 
 const handleBadgeModalClosed = () => {

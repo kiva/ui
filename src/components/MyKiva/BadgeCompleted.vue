@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="badge-container tw-flex-col tw-mb-4">
 			<h2 class="tw-text-center tw-mb-2">
-				{{ badgeTitle }}
+				{{ badgeCategory }}
 			</h2>
 			<div class="tw-relative tw-z-1 tw-mb-3" :style="{ minWidth: '16rem'}">
 				<div
@@ -14,7 +14,7 @@
 				<img
 					:src="badgeImage"
 					class="badge tw-z-2"
-					:alt="badgeTitle"
+					:alt="badgeCategory"
 				>
 			</div>
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
@@ -86,9 +86,13 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	tier: {
+		type: Object,
+		default: () => ({}),
+	}
 });
 
-const { badge, lender } = toRefs(props);
+const { badge, lender, tier } = toRefs(props);
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
 const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));
@@ -101,32 +105,35 @@ const utmContent = computed(() => {
 	return 'anonymous';
 });
 
+const tiers = computed(() => badge.value?.achievementData?.tiers ?? []);
+
+const currentTierIndex = computed(() => {
+	return tiers.value?.findIndex(t => t?.level === tier.value) ?? null;
+});
+
 const badgeImage = computed(() => {
-	return badge.value.fields?.badgeImage?.fields?.file?.url ?? '';
+	return badge.value.contentfulData?.[currentTierIndex.value]?.imageUrl ?? '';
 });
 
-const badgeCategory = computed(() => badge.value?.challengeName ?? '');
-const tiers = computed(() => badge.value?.tiers ?? []);
-
-const currentTier = computed(() => {
-	return tiers.value?.find(tier => !tier.completedDate) ?? null;
-});
+const badgeCategory = computed(() => badge.value?.contentfulData?.[currentTierIndex.value]?.challengeName ?? '');
 
 const badgeLevel = computed(() => {
-	return currentTier.value?.target ?? 0;
+	return tiers.value?.[currentTierIndex.value]?.target ?? 0;
 });
 
-const badgeTitle = computed(() => {
-	return badge.value?.fields?.challengeName ?? '';
-});
 const funFact = computed(() => {
-	return badge.value.fields?.shareFact ?? '';
+	return badge.value.contentfulData?.[currentTierIndex.value]?.shareFact ?? '';
 });
+
 const funFactSource = computed(() => {
-	return badge.value.fields?.shareFactFootnote ?? '';
+	return badge.value.contentfulData?.[currentTierIndex.value]?.shareFactFootnote ?? '';
 });
-const learnMoreLink = computed(() => badge.value.shareFactUrl ?? '');
-const earnedDate = computed(() => `Earned ${format(new Date(currentTier.value.completedDate), 'MMMM do, yyyy')}`);
+const learnMoreLink = computed(() => badge.value.contentfulData?.shareFactUrl ?? '');
+const earnedDate = computed(() => `Earned ${
+	format(
+		new Date(tiers.value?.[currentTierIndex.value]?.completedDate ?? null),
+		'MMMM do, yyyy'
+	)}`);
 
 onMounted(() => {
 	confetti({
