@@ -179,9 +179,9 @@ export default function useBadgeData() {
 	const badgeData = computed(() => combineBadgeData(badgeAchievementData.value, badgeContentfulData.value));
 
 	/**
-	 *
-	 * @param {*} badge The badge to get the specific tier for
-	 * @param {*} level The level of the tier to get
+	 * Gets the badge data with specific contentful and achievement data for the tier
+	 * @param badge The badge to get the specific tier for
+	 * @param level The level of the tier to get
 	 * @returns The badge data with specific contentful and achievement data for the tier
 	 */
 	const getTierBadgeDataById = (badge, level) => {

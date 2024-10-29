@@ -152,7 +152,7 @@ const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_EARNED);
-const tier = ref(0);
+const tier = ref(null);
 
 const isLoading = computed(() => !lender.value);
 
@@ -168,10 +168,9 @@ const handleBadgeClicked = badge => {
 	showBadgeModal.value = true;
 };
 
-const handleBadgeLevelClicked = level => {
-	tier.value = level;
-	const selectedTier = badgeData?.achievementData?.tiers?.find(t => t.level === level);
-	state.value = selectedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+const handleBadgeLevelClicked = clickedTier => {
+	tier.value = clickedTier;
+	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
 };
 
 const handleBadgeModalClosed = () => {
