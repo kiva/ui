@@ -61,7 +61,7 @@
 				</div>
 				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
-						Level {{ index + 1 }}
+						{{ badge.contentfulData[index].levelName }}
 					</div>
 					<div class="tw-text-small">
 						{{ tierCaption(index) }}
