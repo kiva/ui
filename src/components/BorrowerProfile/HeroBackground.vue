@@ -29,6 +29,12 @@ export default {
 	components: {
 		KvContentfulImg,
 	},
+	props: {
+		loanId: {
+			type: Number,
+			default: 0,
+		},
+	},
 	data() {
 		return {
 			contentfulAlt: '',
@@ -89,7 +95,7 @@ export default {
 		},
 		variables() {
 			return {
-				loanId: Number(this.$route?.params?.id ?? 0),
+				loanId: this.loanId || Number(this.$route?.params?.id ?? 0),
 			};
 		},
 		result(result) {
