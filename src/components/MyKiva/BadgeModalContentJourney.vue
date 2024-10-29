@@ -143,6 +143,8 @@ const {
 } = useBadgeModal(props.badge);
 const isBadgeImageLoaded = ref(false);
 
+const emit = defineEmits(['badge-level-clicked']);
+
 const sortedTiers = computed(() => {
 	const tiers = [...(props.badge.tiers ?? [])];
 	tiers.sort((a, b) => a.target - b.target);
@@ -179,8 +181,9 @@ const getBadgeStatus = index => {
 
 const handleBadgeClick = (event, index) => {
 	// Prevent analytics being logged when non-completed tier is clicked
-	if (!sortedTiers.value[index]?.completedDate) {
+	if (!sortedTiers.value[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
 		event.stopImmediatePropagation();
+		emit('badge-level-clicked', sortedTiers.value[index]);
 	}
 };
 </script>

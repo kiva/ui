@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="badge-container tw-flex-col tw-mb-4">
 			<h2 class="tw-text-center tw-mb-2">
-				{{ badgeTitle }}
+				{{ badgeCategory }}
 			</h2>
 			<div class="tw-relative tw-z-1 tw-mb-3" :style="{ minWidth: '16rem'}">
 				<div
@@ -14,7 +14,7 @@
 				<img
 					:src="badgeImage"
 					class="badge tw-z-2"
-					:alt="badgeTitle"
+					:alt="badgeCategory"
 				>
 			</div>
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
@@ -66,6 +66,7 @@
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import MyKivaBadgeStars from '#src/components/MyKiva/MyKivaBadgeStars';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import useBadgeData from '#src/composables/useBadgeData';
 
 import confetti from 'canvas-confetti';
 import {
@@ -86,13 +87,16 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	lendingAchievement: {
+	tier: {
 		type: Object,
 		default: () => ({}),
-	},
+	}
 });
 
-const { badge, lender, lendingAchievement } = toRefs(props);
+const { badge, lender, tier } = toRefs(props);
+const { getTierBadgeDataByLevel } = useBadgeData();
+
+const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
 const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));
@@ -106,41 +110,35 @@ const utmContent = computed(() => {
 });
 
 const badgeImage = computed(() => {
-	return badge.value.fields?.badgeImage?.fields?.file?.url ?? '';
+	return badgeData.value.contentfulData?.imageUrl ?? '';
 });
 
-const badgeCategory = computed(() => badge.value?.challengeName ?? '');
-const tiers = computed(() => lendingAchievement.value?.tiers ?? []);
+const badgeCategory = computed(() => badgeData.value?.contentfulData?.challengeName ?? '');
 
-const sortedTiers = computed(() => {
-	const defaultTiers = [...tiers.value];
-	return defaultTiers.sort((a, b) => b.target - a.target);
-});
-
-const currentTier = computed(() => {
-	return sortedTiers.value?.findLast(tier => tier.completedDate) ?? null;
-});
 const badgeLevel = computed(() => {
-	return currentTier.value?.target ?? 0;
+	return badgeData.value?.achievementData?.target ?? 0;
 });
 
-const badgeTitle = computed(() => {
-	return badge.value?.fields?.challengeName ?? '';
-});
 const funFact = computed(() => {
-	return badge.value.fields?.shareFact ?? '';
+	return badgeData.value.contentfulData?.shareFact ?? '';
 });
+
 const funFactSource = computed(() => {
-	return badge.value.fields?.shareFactFootnote ?? '';
+	return badgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
-const learnMoreLink = computed(() => badge.value.shareFactUrl ?? '');
-const earnedDate = computed(() => `Earned ${format(new Date(currentTier.value.completedDate), 'MMMM do, yyyy')}`);
+const learnMoreLink = computed(() => badgeData.value.contentfulData?.shareFactUrl ?? '');
+const earnedDate = computed(() => `Earned ${
+	format(
+		new Date(badgeData.value?.achievementData?.completedDate ?? null),
+		'MMMM do, yyyy'
+	)}`);
 
 onMounted(() => {
 	confetti({
 		origin: {
-			y: 0.2
+			y: 0.2,
 		},
+		zIndex: 1400, // tw-z-modal
 		particleCount: 150,
 		spread: 200,
 		colors: ['#6AC395', '#223829', '#95D4B3'],
