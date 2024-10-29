@@ -4,7 +4,7 @@
 			🎉 {{ loanStatus }}
 		</div>
 		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t">
-			<HeroBackground style="height: 96px;" class="!tw-block" />
+			<HeroBackground style="height: 96px;" class="!tw-block" :loan-id="loan.id" />
 			<div class="tw-flex tw-justify-center tw-gap-1.5 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5">
 				<div class="tw-flex-1">
 					<div
