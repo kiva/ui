@@ -94,9 +94,9 @@ const props = defineProps({
 });
 
 const { badge, lender, tier } = toRefs(props);
-const { getTierBadgeDataById } = useBadgeData();
+const { getTierBadgeDataByLevel } = useBadgeData();
 
-const badgeData = computed(() => getTierBadgeDataById(badge.value, tier.value?.level));
+const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
 const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));

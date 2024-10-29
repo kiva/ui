@@ -184,7 +184,7 @@ export default function useBadgeData() {
 	 * @param level The level of the tier to get
 	 * @returns The badge data with specific contentful and achievement data for the tier
 	 */
-	const getTierBadgeDataById = (badge, level) => {
+	const getTierBadgeDataByLevel = (badge, level) => {
 		const tierIndex = badge?.achievementData?.tiers?.findIndex(t => t?.level === level);
 		const achievementData = badge?.achievementData?.tiers?.[tierIndex];
 		const contentfulData = badge?.contentfulData?.[tierIndex];
@@ -204,6 +204,6 @@ export default function useBadgeData() {
 		getCurrentTierData,
 		badgeAchievementData,
 		badgeData,
-		getTierBadgeDataById,
+		getTierBadgeDataByLevel,
 	};
 }
