@@ -176,7 +176,7 @@ const title = computed(() => {
 		if (loans.value.length === 1) {
 			return 'You’re <u>changing a life</u> right now!';
 		}
-		return `You’re <u>changing ${loans.value.length} liv</u>es right now!`;
+		return `You’re <u>changing ${loans.value.length} lives</u> right now!`;
 	}
 	return 'Change a life <u>today</u>!';
 });
