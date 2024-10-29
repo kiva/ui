@@ -112,7 +112,7 @@
 		"passport": "^0.7.0",
 		"passport-auth0": "^1.4.4",
 		"path2d-polyfill": "^2.0.1",
-		"piscina": "^4.4.0",
+		"piscina": "^4.7.0",
 		"popper.js": "^1.16.1",
 		"prom-client": "^15.0.0",
 		"qrcode.vue": "^3.4.1",
