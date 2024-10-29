@@ -47,9 +47,7 @@
 			</section>
 		</MyKivaContainer>
 		<section class="tw-my-2">
-			<MyKivaStats
-				:user-achievements="userAchievements"
-			/>
+			<MyKivaStats :user-achievements="badgeAchievementData" />
 			<MyKivaContainer>
 				<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
 					<router-link
@@ -90,11 +88,7 @@
 					>
 						My impact journeys
 					</h3>
-					<BadgesSection
-						:badges-data="badgesData"
-						:user-achievements="userAchievements"
-						@badge-clicked="handleBadgeClicked"
-					/>
+					<BadgesSection :badge-data="badgeData" @badge-clicked="handleBadgeClicked" />
 
 					<BadgeModal
 						v-if="selectedBadgeData"
@@ -118,8 +112,6 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
-import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -128,6 +120,7 @@ import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarouse
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
+import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 import {
@@ -142,6 +135,13 @@ const MY_KIVA_EXP_KEY = 'my_kiva_page';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	badgeAchievementData,
+	badgeData,
+} = useBadgeData(apollo);
+
 const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
@@ -150,8 +150,6 @@ const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
-const userAchievements = ref([]);
-const badgesData = ref([]);
 const state = ref(STATE_JOURNEY);
 
 const isLoading = computed(() => !lender.value);
@@ -197,30 +195,6 @@ const handleSelectedLoan = loan => {
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
-const fetchUserAchievements = () => {
-	apollo.query({ query: userAchievementProgressQuery })
-		.then(result => {
-			userAchievements.value = result.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage userAchievementProgressQuery');
-		});
-};
-
-const fetchBadgesData = () => {
-	apollo.query({
-		query: contentfulEntriesQuery,
-		variables: {
-			contentType: 'challenge',
-			limit: 200,
-		}
-	})
-		.then(result => {
-			badgesData.value = result.data?.contentful?.entries?.items ?? [];
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
-		});
-};
-
 apollo.query({ query: myKivaQuery })
 	.then(result => {
 		userInfo.value = result.data?.my ?? {};
@@ -246,7 +220,7 @@ onMounted(() => {
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 
-	fetchBadgesData();
-	fetchUserAchievements();
+	fetchAchievementData(apollo);
+	fetchContentfulData(apollo);
 });
 </script>
