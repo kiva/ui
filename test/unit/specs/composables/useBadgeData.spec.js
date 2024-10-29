@@ -68,4 +68,18 @@ describe('useBadgeData.js', () => {
 			});
 		});
 	});
+
+	describe('getTierBadgeDataById', () => {
+		it('should get the badge data by id and tier', () => {
+			const { getTierBadgeDataById } = useBadgeData();
+			const tier = 7;
+			const sampleBadge = combinedData[0];
+
+			expect(getTierBadgeDataById(sampleBadge, tier)).toEqual({
+				...sampleBadge,
+				contentfulData: sampleBadge.contentfulData?.[tier - 1],
+				achievementData: sampleBadge.achievementData?.tiers?.[tier - 1],
+			});
+		});
+	});
 });

@@ -178,6 +178,24 @@ export default function useBadgeData() {
 	 */
 	const badgeData = computed(() => combineBadgeData(badgeAchievementData.value, badgeContentfulData.value));
 
+	/**
+	 *
+	 * @param {*} badge The badge to get the specific tier for
+	 * @param {*} level The level of the tier to get
+	 * @returns The badge data with specific contentful and achievement data for the tier
+	 */
+	const getTierBadgeDataById = (badge, level) => {
+		const tierIndex = badge?.achievementData?.tiers?.findIndex(t => t?.level === level);
+		const achievementData = badge?.achievementData?.tiers?.[tierIndex];
+		const contentfulData = badge?.contentfulData?.[tierIndex];
+
+		return {
+			...badge,
+			contentfulData,
+			achievementData,
+		};
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -185,6 +203,7 @@ export default function useBadgeData() {
 		getContentfulLevelData,
 		getCurrentTierData,
 		badgeAchievementData,
-		badgeData
+		badgeData,
+		getTierBadgeDataById,
 	};
 }

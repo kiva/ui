@@ -66,6 +66,7 @@
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import MyKivaBadgeStars from '#src/components/MyKiva/MyKivaBadgeStars';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import useBadgeData from '#src/composables/useBadgeData';
 
 import confetti from 'canvas-confetti';
 import {
@@ -93,6 +94,9 @@ const props = defineProps({
 });
 
 const { badge, lender, tier } = toRefs(props);
+const { getTierBadgeDataById } = useBadgeData();
+
+const badgeData = computed(() => getTierBadgeDataById(badge.value, tier.value));
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
 const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));
@@ -105,33 +109,27 @@ const utmContent = computed(() => {
 	return 'anonymous';
 });
 
-const tiers = computed(() => badge.value?.achievementData?.tiers ?? []);
-
-const currentTierIndex = computed(() => {
-	return tiers.value?.findIndex(t => t?.level === tier.value) ?? null;
-});
-
 const badgeImage = computed(() => {
-	return badge.value.contentfulData?.[currentTierIndex.value]?.imageUrl ?? '';
+	return badgeData.value.contentfulData?.imageUrl ?? '';
 });
 
-const badgeCategory = computed(() => badge.value?.contentfulData?.[currentTierIndex.value]?.challengeName ?? '');
+const badgeCategory = computed(() => badgeData.value?.contentfulData?.challengeName ?? '');
 
 const badgeLevel = computed(() => {
-	return tiers.value?.[currentTierIndex.value]?.target ?? 0;
+	return badgeData.value?.achievementData?.target ?? 0;
 });
 
 const funFact = computed(() => {
-	return badge.value.contentfulData?.[currentTierIndex.value]?.shareFact ?? '';
+	return badgeData.value.contentfulData?.shareFact ?? '';
 });
 
 const funFactSource = computed(() => {
-	return badge.value.contentfulData?.[currentTierIndex.value]?.shareFactFootnote ?? '';
+	return badgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
-const learnMoreLink = computed(() => badge.value.contentfulData?.shareFactUrl ?? '');
+const learnMoreLink = computed(() => badgeData.value.contentfulData?.shareFactUrl ?? '');
 const earnedDate = computed(() => `Earned ${
 	format(
-		new Date(tiers.value?.[currentTierIndex.value]?.completedDate ?? null),
+		new Date(badgeData.value?.achievementData?.completedDate ?? null),
 		'MMMM do, yyyy'
 	)}`);
 
