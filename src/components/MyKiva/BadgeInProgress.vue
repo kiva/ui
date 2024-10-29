@@ -7,8 +7,7 @@
 				<img
 					:src="badgeImage"
 					alt="Badge"
-					style="max-height: 133px;"
-					@load="isBadgeImageLoaded = true"
+					style="height: 133px; width: 133px;"
 				>
 			</BadgeContainer>
 			<div>
@@ -97,29 +96,6 @@ import useIsMobile from '#src/composables/useIsMobile';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
-	/**
-	 * {
-	 *   id: '',
-	 *   fields: {
-	 *     challengeName: '',
-	 *     shareFact: '',
-	 *     badgeImage: {
-	 *       fields: {
-	 *         file: {
-	 *           url: '',
-	 *         },
-	 *       },
-	 *     },
-	 *   },
-	 *   totalProgressToAchievement,
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       completedDate: null,
-	 *     },
-	 *   ],
-	 * }
-	 */
 	badge: {
 		type: Object,
 		default: () => ({}),
@@ -200,11 +176,11 @@ const onInteractCarousel = interaction => {
 	$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);
 };
 
-const badgeName = computed(() => props.badge?.fields?.challengeName ?? '');
+const badgeName = computed(() => props.badge?.challengeName ?? '');
 // TODO: Replace once the work of using the icon of the correct in-progress badge level is complete
 const badgeImage = computed(() => props.badge?.fields?.badgeImage?.fields?.file?.url ?? '');
 const badgeLevel = computed(() => props.badge?.fields?.level ?? '');
-const totalProgress = computed(() => props.badge?.totalProgressToAchievement ?? 0);
+const totalProgress = computed(() => props.badge?.achievementData?.totalProgressToAchievement ?? 0);
 const tiers = computed(() => props.badge?.tiers ?? []);
 
 const sortedTiers = computed(() => {

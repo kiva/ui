@@ -41,30 +41,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	/**
-	 * {
-	 *   id: '',
-	 *   fields: {
-	 *     challengeName: '',
-	 *     shareFact: '',
-	 *     badgeImage: {
-	 *       fields: {
-	 *         file: {
-	 *           url: '',
-	 *         },
-	 *       },
-	 *     },
-	 *   },
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       learnMoreUrl: '',
-	 *       completedDate: null,
-	 *       tierStatement: ""
-	 *     },
-	 *   ],
-	 * }
-	 */
 	badge: {
 		type: Object,
 		required: true,
@@ -86,9 +62,9 @@ const handleBadgeLevelClicked = e => {
 
 const title = computed(() => {
 	if (props.state === STATE_JOURNEY) {
-		return props.badge?.contentfulData?.[props.tier]?.challengeName ?? '';
+		return props.badge?.challengeName ?? '';
 	}
-	return null;
+	return '';
 });
 
 const contentComponent = computed(() => {

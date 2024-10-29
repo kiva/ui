@@ -71,13 +71,13 @@ export default function useBadgeData() {
 		const badges = [];
 
 		// Ensure data loaded from both achievement service and Contentful
-		if (allAchievementData && allContentfulData) {
+		if (allAchievementData?.length > 0 && allContentfulData?.length > 0) {
 			// Currently only targeting specific tiered badges
 			allAchievementData.forEach(achievementData => {
 				const contentfulData = allContentfulData.filter(entry => entry.id === achievementData.id);
 
 				// Ensure badges are defined in both locations
-				if (achievementData && contentfulData) {
+				if (achievementData && contentfulData.length > 0) {
 					const sortedTiers = [...(achievementData.tiers ?? [])].map((t, i) => {
 						const tier = JSON.parse(JSON.stringify(t));
 						// Ensure achievement data includes numerical level of tier
@@ -86,6 +86,7 @@ export default function useBadgeData() {
 					});
 
 					sortedTiers.sort((a, b) => a.target - b.target);
+					contentfulData.sort((a, b) => a.level - b.level);
 
 					// Get specific properties used in the UI
 					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
@@ -95,6 +96,8 @@ export default function useBadgeData() {
 					// Combine the achievement service and Contentful data
 					badges.push({
 						id: achievementData.id,
+						challengeName: contentfulData[0].challengeName,
+						description: achievementData.description,
 						contentfulData,
 						achievementData: {
 							...achievementData,
@@ -149,11 +152,15 @@ export default function useBadgeData() {
 
 	/**
 	 * {
+	 *   "id": "",
+	 *   "challengeName": "",
+	 *   "description": "",
 	 *   "contentfulData": [
 	 *     {
 	 *       "id": "",
 	 *       "level": 1,
 	 *       "levelName": "",
+	 *       "challengeName": "",
 	 *       "imageUrl": ""
 	 *     },
 	 *     ...
