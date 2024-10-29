@@ -192,7 +192,7 @@ describe('useBadgeModal.js', () => {
 
 		it('should return expected styles for us-economic-equality', () => {
 			const { getNumberCircleStyles } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
-			expect(getNumberCircleStyles()).toEqual({ right: '-2px', bottom: '-2px' });
+			expect(getNumberCircleStyles()).toEqual({ right: '10px', bottom: '2px' });
 		});
 
 		it('should return expected styles for climate-action', () => {

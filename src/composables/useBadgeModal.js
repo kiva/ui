@@ -206,6 +206,7 @@ export default function useBadgeModal(currentBadge) {
 			case ID_BASIC_NEEDS:
 				return { right: '10px', bottom: '10px' };
 			case ID_US_ECONOMIC_EQUALITY:
+				return { right: '10px', bottom: '2px' };
 			case ID_CLIMATE_ACTION:
 			default:
 				return { right: '-2px', bottom: '-2px' };
