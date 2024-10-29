@@ -1,6 +1,5 @@
 import BadgeCompleted from '#src/components/MyKiva/BadgeCompleted.vue';
-import contentfulBadge from '../mock-data/contentful-badge-data-mock';
-import tieredLendingAchievement from '../mock-data/tiered-lending-achievement-data-mock';
+import { badgeFirstTierComplete } from '../mock-data/badge-journey-data-mock';
 
 export default {
 	title: 'MyKiva/BadgeCompleted',
@@ -21,11 +20,11 @@ const story = (args = {}) => {
 };
 
 export const Default = story({
-	badge: contentfulBadge,
-	lendingAchievement: tieredLendingAchievement[0],
+	badge: badgeFirstTierComplete,
 	lender: {
 		publicName: 'Christian',
 		public: true,
 		publicId: 'christian78848470'
-	}
+	},
+	tier: badgeFirstTierComplete.achievementData.tiers[0],
 });

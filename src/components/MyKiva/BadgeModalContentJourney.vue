@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ badge.fields.shareFact }}
+			{{ badge.description }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
@@ -22,46 +22,44 @@
 					'tw-self-start': isMobile && position === 0,
 					'tw-self-center': isMobile && position === 1,
 					'tw-self-end': isMobile && position === 2,
-					'tw-cursor-pointer': !!sortedTiers?.[index]?.completedDate,
+					'tw-cursor-pointer': !!badge.achievementData.tiers[index].completedDate,
 				}"
 				:style="{
-					width: '133px',
 					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`
 				}"
 				v-kv-track-event="[
 					'portfolio',
 					'click',
 					'Already earned badge modal',
-					badge.fields.challengeName,
+					badge.challengeName,
 					index + 1
 				]"
 				@click="event => handleBadgeClick(event, index)"
 			>
 				<div class="tw-relative tw-text-center">
 					<component
-						v-if="isBadgeImageLoaded && index > 0"
+						v-if="index > 0"
 						:is="getLineComponent(positions[index - 1], position)"
 						class="tw-absolute"
 						:style="getLineStyle(positions[index - 1], position)"
 					/>
 					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()" class="tw-z-1">
 						<img
-							:src="badge.fields.badgeImage.fields.file.url"
+							:src="badge.contentfulData[index].imageUrl"
 							alt="Badge"
-							style="max-height: 133px;"
-							@load="isBadgeImageLoaded = true"
+							style="height: 133px; width: 133px;"
 						>
 					</BadgeContainer>
 					<div
-						v-if="isBadgeImageLoaded && showEarnBadge(index)"
+						v-if="showEarnBadge(index)"
 						class="tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200
 							tw-text-center tw-px-0.5 tw-z-2"
-						style="right: -2px; bottom: -2px;"
+						:style="getNumberCircleStyles()"
 					>
-						{{ badge.totalProgressToAchievement }}
+						{{ badge.achievementData.totalProgressToAchievement }}
 					</div>
 				</div>
-				<div v-if="isBadgeImageLoaded" class="tw-text-center tw-bg-white tw-z-1 tw-relative">
+				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
 						Level {{ index + 1 }}
 					</div>
@@ -78,7 +76,7 @@
 							'portfolio',
 							'click',
 							'Earn a badge - within badge journey map modal',
-							badge.fields.challengeName,
+							badge.challengeName,
 							index + 1
 						]"
 					>
@@ -91,7 +89,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from 'vue';
+import { defineProps, ref } from 'vue';
 import { format } from 'date-fns';
 import useIsMobile from '#src/composables/useIsMobile';
 import useBadgeModal,
@@ -105,29 +103,6 @@ import KvButton from '@kiva/kv-components/vue/KvButton';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
-	/**
-	 * {
-	 *   id: '',
-	 *   fields: {
-	 *     challengeName: '',
-	 *     shareFact: '',
-	 *     badgeImage: {
-	 *       fields: {
-	 *         file: {
-	 *           url: '',
-	 *         },
-	 *       },
-	 *     },
-	 *   },
-	 *   totalProgressToAchievement,
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       completedDate: null,
-	 *     },
-	 *   ],
-	 * }
-	 */
 	badge: {
 		type: Object,
 		required: true,
@@ -140,36 +115,31 @@ const {
 	getLineComponent,
 	getLineStyle,
 	getBadgeShape,
+	getNumberCircleStyles,
 } = useBadgeModal(props.badge);
-const isBadgeImageLoaded = ref(false);
 
 const emit = defineEmits(['badge-level-clicked']);
-
-const sortedTiers = computed(() => {
-	const tiers = [...(props.badge.tiers ?? [])];
-	tiers.sort((a, b) => a.target - b.target);
-	return tiers;
-});
 
 const positions = ref(getTierPositions());
 
 const tierCaption = index => {
-	const tier = sortedTiers.value[index];
+	const tier = props.badge.achievementData.tiers[index];
 	if (tier.completedDate) {
 		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
-		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
+		return `${props.badge.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
 	}
 };
 
 const showEarnBadge = index => {
-	return (!sortedTiers.value[index - 1] || !!sortedTiers.value[index - 1]?.completedDate)
-		&& !sortedTiers.value[index].completedDate;
+	return (
+		!props.badge.achievementData.tiers[index - 1] || !!props.badge.achievementData.tiers[index - 1]?.completedDate
+	) && !props.badge.achievementData.tiers[index].completedDate;
 };
 
 const getBadgeStatus = index => {
-	const tier = sortedTiers.value[index] ?? {};
+	const tier = props.badge.achievementData.tiers[index] ?? {};
 	if (tier.completedDate) {
 		return BADGE_COMPLETED;
 	}
@@ -181,9 +151,9 @@ const getBadgeStatus = index => {
 
 const handleBadgeClick = (event, index) => {
 	// Prevent analytics being logged when non-completed tier is clicked
-	if (!sortedTiers.value[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
+	if (!props.badge.achievementData.tiers[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
 		event.stopImmediatePropagation();
-		emit('badge-level-clicked', sortedTiers.value[index]);
+		emit('badge-level-clicked', props.badge.achievementData.tiers[index]);
 	}
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-relative tw-inline-block tw-cursor-pointer"
-		:class="{ 'tw-grayscale': isInProgress }"
+		:class="{ 'tw-grayscale': isInProgress, 'invisible-badge': isLocked }"
 		@click="handleBadgeClick"
 	>
 		<slot></slot>
@@ -11,7 +11,12 @@
 			class="tw-absolute tw-h-full tw-top-0"
 			:style="outlineStyles"
 		/>
-		<component v-else-if="isLocked" :is="solidComponent" class="tw-absolute tw-h-full tw-top-0" />
+		<component
+			v-else-if="isLocked"
+			:is="solidComponent"
+			class="tw-absolute tw-top-0"
+			style="height: 96%;"
+		/>
 		<div
 			v-if="isLocked"
 			class="tw-absolute tw-flex"
@@ -128,6 +133,10 @@ const handleBadgeClick = () => {
 <style lang="postcss" scoped>
 :deep(svg) {
 	@apply tw-h-full tw-w-full;
+}
+
+.invisible-badge :deep(img) {
+	@apply tw-invisible;
 }
 
 @keyframes wiggle {
