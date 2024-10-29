@@ -1,8 +1,8 @@
 <template>
 	<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center tw-gap-2.5">
 		<div
-			v-for="badge in badgesArray"
-			:key="badge.fields.key"
+			v-for="(badge, index) in visibleBadges"
+			:key="index"
 			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
 			:class="{
 				'tw-bg-white': badge.hasStarted,
@@ -10,7 +10,7 @@
 			}"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
-				{{ getBadgeTitle(badge) }}
+				{{ getCurrentTierData(badge).challengeName }}
 			</span>
 			<div
 				class="tw-p-1"
@@ -20,11 +20,11 @@
 				style="height: 148px;"
 			>
 				<img
-					:src="getBadgeImgUrl(badge)"
+					:src="getCurrentTierData(badge).imageUrl"
 					class="tw-h-full tw-mx-auto"
 				>
 			</div>
-			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-mt-2 tw-font-medium">
+			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-font-medium tw-grow">
 				<span
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
@@ -32,12 +32,12 @@
 					Level {{ badge.level }}/5
 				</span>
 				<button
-					class="tw-text-action hover:tw-underline"
+					class="tw-text-action hover:tw-underline tw-mt-auto"
 					v-kv-track-event="[
 						'portfolio',
 						'click',
 						badge.hasStarted ? 'Continue' : 'Start this journey',
-						getBadgeTitle(badge),
+						getCurrentTierData(badge).challengeName,
 						badge.level
 					]"
 					@click="() => $emit('badge-clicked', badge)"
@@ -50,58 +50,22 @@
 </template>
 
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
+import useBadgeData from '#src/composables/useBadgeData';
 
 defineEmits(['badge-clicked']);
 
 const props = defineProps({
-	badgesData: {
+	badgeData: {
 		type: Array,
 		default: () => ([])
 	},
-	userAchievements: {
-		type: Array,
-		default: () => ([])
-	}
 });
 
-const { badgesData, userAchievements } = toRefs(props);
+const { getCurrentTierData } = useBadgeData();
 
-const badgesArray = computed(() => {
-	const badges = [];
-	if (badgesData.value.length > 0) {
-		defaultBadges.forEach(badgeKey => {
-			let badgeFound = badgesData.value.find(entry => entry.fields.key === `${badgeKey}-level-1`);
-			const userAchievement = userAchievements.value.find(entry => entry.id === badgeKey);
-
-			if (!userAchievement) {
-				badgeFound = {
-					...badgeFound,
-					hasStarted: false,
-					level: 0,
-				};
-			} else {
-				const hasStarted = userAchievement.status !== 'NO_PROGRESS';
-				// TODO: Change this to level when we have the data from the backend
-				const level = userAchievement.totalProgressToAchievement;
-				badgeFound = {
-					...badgeFound,
-					hasStarted,
-					level,
-					...userAchievement,
-				};
-			}
-
-			badges.push(badgeFound);
-		});
-	}
-	return badges;
-});
-
-const getBadgeTitle = badge => badge?.fields?.challengeName ?? '';
-
-const getBadgeImgUrl = badge => badge?.fields?.badgeImage?.fields?.file?.url ?? '';
+const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
 </script>
 
 <style lang="postcss" scoped>

@@ -37,7 +37,7 @@
 				]"
 				@click="event => handleBadgeClick(event, index)"
 			>
-				<div class="tw-relative">
+				<div class="tw-relative tw-text-center">
 					<component
 						v-if="isBadgeImageLoaded && index > 0"
 						:is="getLineComponent(positions[index - 1], position)"
@@ -48,6 +48,7 @@
 						<img
 							:src="badge.fields.badgeImage.fields.file.url"
 							alt="Badge"
+							style="max-height: 133px;"
 							@load="isBadgeImageLoaded = true"
 						>
 					</BadgeContainer>
@@ -142,6 +143,8 @@ const {
 } = useBadgeModal(props.badge);
 const isBadgeImageLoaded = ref(false);
 
+const emit = defineEmits(['badge-level-clicked']);
+
 const sortedTiers = computed(() => {
 	const tiers = [...(props.badge.tiers ?? [])];
 	tiers.sort((a, b) => a.target - b.target);
@@ -153,8 +156,7 @@ const positions = ref(getTierPositions());
 const tierCaption = index => {
 	const tier = sortedTiers.value[index];
 	if (tier.completedDate) {
-		// Date is in format "2024-10-22T18:49:21Z[UTC]"
-		return format(new Date(tier.completedDate.replace('[UTC]', '')), 'MMMM do, yyyy');
+		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
 		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
@@ -179,8 +181,9 @@ const getBadgeStatus = index => {
 
 const handleBadgeClick = (event, index) => {
 	// Prevent analytics being logged when non-completed tier is clicked
-	if (!sortedTiers.value[index]?.completedDate) {
+	if (!sortedTiers.value[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
 		event.stopImmediatePropagation();
+		emit('badge-level-clicked', sortedTiers.value[index]);
 	}
 };
 </script>

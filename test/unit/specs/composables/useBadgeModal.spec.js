@@ -10,6 +10,11 @@ import useBadgeModal,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
+	US_ECONOMIC_EQUALITY_FILTER,
+	WOMENS_EQUALITY_FILTER,
+	CLIMATE_ACTION_FILTER,
+	REFUGEE_EQUALITY_FILTER,
+	BASIC_NEEDS_FILTER
 } from '#src/composables/useBadgeModal';
 import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
 import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
@@ -84,20 +89,20 @@ describe('useBadgeModal.js', () => {
 			const { getLineStyle } = useBadgeModal(badgeNoProgress);
 
 			expect(getLineStyle(0, 1)).toEqual({
-				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
+				left: '-114%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
 			expect(getLineStyle(0, 2)).toEqual({ left: '-56%', top: '-95%', width: '134px' });
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-116%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
-				left: '-120%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
+				left: '-114%', top: '-15%', transform: 'rotate(180deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
 				left: '-106%', top: '56%', transform: 'rotate(-82deg)', width: '134px'
 			});
 			expect(getLineStyle(2, 1)).toEqual({
-				left: '-118%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
+				left: '-116%', top: '42%', transform: 'rotate(-82deg)', width: '134px'
 			});
 		});
 
@@ -110,16 +115,16 @@ describe('useBadgeModal.js', () => {
 				left: '-8%', top: '-166px', transform: 'rotate(-2deg)', width: '154px'
 			});
 			expect(getLineStyle(0, 2)).toEqual({
-				left: '-112px', top: '-120%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
+				left: '-94px', top: '-120%', transform: 'scaleX(-1) rotate(-69deg)', width: '215px'
 			});
 			expect(getLineStyle(1, 0)).toEqual({
-				left: '11%', top: '-106%', transform: 'scaleX(-1)', width: '124px'
+				left: '11%', top: '-108%', transform: 'scaleX(-1)', width: '124px'
 			});
 			expect(getLineStyle(1, 2)).toEqual({
-				left: '-8%', top: '-105%', transform: 'rotate(-2deg)', width: '124px'
+				left: '-8%', top: '-111%', transform: 'rotate(-2deg)', width: '124px'
 			});
 			expect(getLineStyle(2, 0)).toEqual({
-				left: '16%', top: '-112%', transform: 'rotate(-72deg)', width: '215px'
+				left: '12%', top: '-121%', transform: 'rotate(-72deg)', width: '215px'
 			});
 			expect(getLineStyle(2, 1)).toEqual({ top: '-162px', transform: 'scaleX(-1)', width: '146px' });
 		});
@@ -149,6 +154,33 @@ describe('useBadgeModal.js', () => {
 		it('should return expected shape for basic-needs', () => {
 			const { getBadgeShape } = useBadgeModal({ id: ID_BASIC_NEEDS });
 			expect(getBadgeShape()).toEqual(BADGE_SHAPE_CIRCLE);
+		});
+	});
+
+	describe('getPrefilteredUrl', () => {
+		it('should return expected prefiltered url for womens-equality', () => {
+			const { getPrefilteredUrl } = useBadgeModal({ id: ID_WOMENS_EQUALITY });
+			expect(getPrefilteredUrl()).toEqual(WOMENS_EQUALITY_FILTER);
+		});
+
+		it('should return expected prefiltered url for us-economic-equality', () => {
+			const { getPrefilteredUrl } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
+			expect(getPrefilteredUrl()).toEqual(US_ECONOMIC_EQUALITY_FILTER);
+		});
+
+		it('should return expected prefiltered url for women-equality', () => {
+			const { getPrefilteredUrl } = useBadgeModal({ id: ID_CLIMATE_ACTION });
+			expect(getPrefilteredUrl()).toEqual(CLIMATE_ACTION_FILTER);
+		});
+
+		it('should return expected prefiltered url for refugee-equality', () => {
+			const { getPrefilteredUrl } = useBadgeModal({ id: ID_REFUGEE_EQUALITY });
+			expect(getPrefilteredUrl()).toEqual(REFUGEE_EQUALITY_FILTER);
+		});
+
+		it('should return expected prefiltered url for basic-needs', () => {
+			const { getPrefilteredUrl } = useBadgeModal({ id: ID_BASIC_NEEDS });
+			expect(getPrefilteredUrl()).toEqual(BASIC_NEEDS_FILTER);
 		});
 	});
 });

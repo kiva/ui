@@ -30,6 +30,11 @@ export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
+export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
+export const CLIMATE_ACTION_FILTER = 'tag=9';
+export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
+export const WOMENS_EQUALITY_FILTER = 'gender=female';
+export const BASIC_NEEDS_FILTER = 'sector=6,10';
 
 /**
  * General utilities for the MyKiva badge modal
@@ -122,25 +127,25 @@ export default function useBadgeModal(currentBadge) {
 		const isMiddle = currentPosition === 1;
 		if (difference === -2) {
 			if (isMobile.value) width = '215px';
-			top = isMobile.value ? '-112%' : '56%';
-			left = isMobile.value ? '16%' : '-106%';
+			top = isMobile.value ? '-121%' : '56%';
+			left = isMobile.value ? '12%' : '-106%';
 			transform = isMobile.value ? 'rotate(-72deg)' : 'rotate(-82deg)';
 		} else if (difference === -1) {
 			if (isMobile.value) {
 				width = isMiddle ? '146px' : '124px';
 			}
-			const mobileTop = isMiddle ? '-162px' : '-106%';
+			const mobileTop = isMiddle ? '-162px' : '-108%';
 			const mobileLeft = isMiddle ? undefined : '11%';
 			top = isMobile.value ? mobileTop : '42%';
-			left = isMobile.value ? mobileLeft : '-118%';
+			left = isMobile.value ? mobileLeft : '-116%';
 			transform = isMobile.value ? 'scaleX(-1)' : 'rotate(-82deg)';
 		} else if (difference === 1) {
 			if (isMobile.value) {
 				width = isMiddle ? '154px' : '124px';
 			}
-			const mobileTop = isMiddle ? '-166px' : '-105%';
+			const mobileTop = isMiddle ? '-166px' : '-111%';
 			top = isMobile.value ? mobileTop : '-15%';
-			left = isMobile.value ? '-8%' : '-120%';
+			left = isMobile.value ? '-8%' : '-114%';
 			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';
 		} else if (difference === 2) {
 			if (isMobile.value) {
@@ -148,7 +153,7 @@ export default function useBadgeModal(currentBadge) {
 				transform = 'scaleX(-1) rotate(-69deg)';
 			}
 			top = isMobile.value ? '-120%' : '-95%';
-			left = isMobile.value ? '-112px' : '-56%';
+			left = isMobile.value ? '-94px' : '-56%';
 		}
 		return {
 			width,
@@ -179,7 +184,27 @@ export default function useBadgeModal(currentBadge) {
 		}
 	};
 
+	/**
+	 * Gets the URL params of the badge to be used in lend/filter
+	 * @returns The URL params
+	 */
+	const getPrefilteredUrl = () => {
+		switch (badge.value.id) {
+			case ID_WOMENS_EQUALITY:
+				return WOMENS_EQUALITY_FILTER;
+			case ID_US_ECONOMIC_EQUALITY:
+				return US_ECONOMIC_EQUALITY_FILTER;
+			case ID_CLIMATE_ACTION:
+				return CLIMATE_ACTION_FILTER;
+			case ID_REFUGEE_EQUALITY:
+				return REFUGEE_EQUALITY_FILTER;
+			case ID_BASIC_NEEDS:
+			default:
+				return BASIC_NEEDS_FILTER;
+		}
+	};
+
 	return {
-		getTierPositions, getLineComponent, getLineStyle, getBadgeShape
+		getTierPositions, getLineComponent, getLineStyle, getBadgeShape, getPrefilteredUrl
 	};
 }

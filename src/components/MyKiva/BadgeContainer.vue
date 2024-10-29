@@ -8,8 +8,8 @@
 		<component
 			v-if="isInProgress"
 			:is="outlineComponent"
-			class="tw-absolute tw-h-full"
-			style="height: 105%; width: 105%; top: -4px; left: -4px;"
+			class="tw-absolute tw-h-full tw-top-0"
+			:style="outlineStyles"
 		/>
 		<component v-else-if="isLocked" :is="solidComponent" class="tw-absolute tw-h-full tw-top-0" />
 		<div
@@ -99,6 +99,21 @@ const solidComponent = computed(() => {
 			return SolidRectangle;
 		default:
 			return SolidCircle;
+	}
+});
+
+const outlineStyles = computed(() => {
+	switch (props.shape) {
+		case BADGE_SHAPE_ARCH:
+			return { width: '90%', left: '5%' };
+		case BADGE_SHAPE_OBLONG:
+			return { height: '96%', top: '2%' };
+		case BADGE_SHAPE_OVAL:
+			return { width: '103%', left: '-1%' };
+		case BADGE_SHAPE_RECTANGLE:
+			return { width: '94%', left: '3%' };
+		default:
+			return { width: '97%', left: '2%' };
 	}
 });
 

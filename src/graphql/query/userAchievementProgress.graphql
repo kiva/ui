@@ -1,9 +1,19 @@
 query UserAchievementProgress {
   userAchievementProgress {
     id
+    lendingAchievements {
+      id
+      description
+      milestoneProgress {
+        earnedAtDate
+        id
+        milestoneStatus
+        progress
+        target
+      }
+    }
     tieredLendingAchievements {
       id
-      status
       totalProgressToAchievement
       tiers {
         target

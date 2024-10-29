@@ -132,8 +132,17 @@ async function setupSentry(app, router) {
 				&& eventAsString.indexOf('pagead') !== -1) {
 				return false;
 			}
-			// Skip sending failed loads of pX
-			if (eventAsString.indexOf("Cannot set property 'PX1065' of undefined") !== -1) {
+			// Skip Load failed caused by failed fetch calls in 3rd party libraries
+			// NOTE: we do see failed loads for our own async modules, this doesn't filter those out
+			// Sentry Event Link: https://kiva.sentry.io/issues/3808313433/events/427b92cf47ed4aaeb321caf20783eba0/
+			if ((eventAsString.indexOf('Load failed') !== -1
+				|| eventAsString.indexOf('Failed to fetch') !== -1
+				|| eventAsString.indexOf('TypeError') !== -1)
+				&& (
+					(eventAsString.indexOf('ct.pinterest') !== -1)
+					|| (eventAsString.indexOf('rum.management') !== -1)
+				)
+			) {
 				return false;
 			}
 			// Skip sending errors from CefSharp
