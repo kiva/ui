@@ -21,7 +21,7 @@
 			v-if="isLocked"
 			class="tw-absolute tw-flex"
 			:class="{ 'animate-wiggle': animateLock }"
-			style="left: calc(50% - 14px); top: calc(50% - 14px)"
+			style="left: calc(50% - 14px); top: calc(48% - 14px)"
 		>
 			<KvMaterialIcon
 				class="tw-w-3.5 tw-h-3.5 tw-text-white"
