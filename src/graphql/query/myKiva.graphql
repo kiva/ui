@@ -8,6 +8,7 @@ query myKivaQuery {
         name
         gender
         status
+		use
         image {
           id
           url
