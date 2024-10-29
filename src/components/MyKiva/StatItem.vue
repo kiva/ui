@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-text-white tw-items-center">
+	<div class="tw-flex tw-flex-col md:tw-flex-row tw-text-white tw-items-center">
 		<div class="tw-flex">
 			<span
 				v-if="prefix"
@@ -7,13 +7,13 @@
 			>
 				{{ prefix }}
 			</span>
-			<p class="tw-text-jumbo">
+			<p class="tw-text-h1 md:tw-text-jumbo">
 				{{ parsedValue(value) }}
 			</p>
 		</div>
 		<p
 			v-html="label"
-			class="tw-text-base tw-ml-1"
+			class="tw-text-base md:tw-ml-1"
 			style="line-height: 22px;"
 		></p>
 	</div>
