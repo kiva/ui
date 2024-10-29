@@ -94,7 +94,11 @@
 						v-if="selectedBadgeData"
 						:show="showBadgeModal"
 						:badge="selectedBadgeData"
-						@badge-modal-closed="showBadgeModal = false"
+						:lender="lender"
+						:state="state"
+						:tier="tier"
+						@badge-modal-closed="handleBadgeModalClosed"
+						@badge-level-clicked="handleBadgeLevelClicked"
 					/>
 				</div>
 			</section>
@@ -142,6 +146,7 @@ import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
+import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 import {
 	ref,
@@ -155,7 +160,12 @@ const MY_KIVA_EXP_KEY = 'my_kiva_page';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { badgeAchievementData, badgeData } = useBadgeData(apollo);
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	badgeAchievementData,
+	badgeData,
+} = useBadgeData(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -165,6 +175,8 @@ const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
+const state = ref(STATE_EARNED);
+const tier = ref(null);
 
 const isLoading = computed(() => !lender.value);
 
@@ -178,6 +190,20 @@ const handleShowNavigation = () => {
 const handleBadgeClicked = badge => {
 	selectedBadgeData.value = badge;
 	showBadgeModal.value = true;
+};
+
+const handleBadgeLevelClicked = clickedTier => {
+	tier.value = clickedTier;
+	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+};
+
+const handleBadgeModalClosed = () => {
+	if (state.value === STATE_JOURNEY) {
+		showBadgeModal.value = false;
+		return;
+	}
+
+	state.value = STATE_JOURNEY;
 };
 
 const fetchLoanUpdates = loanId => {
@@ -220,5 +246,8 @@ onMounted(() => {
 	);
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
+
+	fetchAchievementData(apollo);
+	fetchContentfulData(apollo);
 });
 </script>
