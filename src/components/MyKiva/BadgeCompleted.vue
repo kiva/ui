@@ -113,7 +113,7 @@ const badgeImage = computed(() => {
 	return badgeData.value.contentfulData?.imageUrl ?? '';
 });
 
-const badgeCategory = computed(() => badgeData.value?.contentfulData?.challengeName ?? '');
+const badgeCategory = computed(() => badgeData.value?.challengeName ?? '');
 
 const badgeLevel = computed(() => {
 	return badgeData.value?.achievementData?.target ?? 0;

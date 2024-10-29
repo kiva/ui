@@ -43,19 +43,6 @@ export const BASIC_NEEDS_FILTER = 'sector=6,10';
  * @returns Utilities for the MyKiva badge modal
  */
 export default function useBadgeModal(currentBadge) {
-	/**
-	 * {
-	 *   id: 'badge-id'.
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       learnMoreUrl: '',
-	 *       completedDate: null,
-	 *       tierStatement: ""
-	 *     }
-	 *   ]
-	 * }
-	 */
 	const badge = ref(currentBadge);
 	const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -70,7 +57,7 @@ export default function useBadgeModal(currentBadge) {
 		const positions = [];
 		let previousPosition;
 
-		(badge.value.tiers ?? []).forEach((_tier, index) => {
+		(badge.value.achievementData.tiers ?? []).forEach((_tier, index) => {
 			const randomNumber = Alea(`${badge.value.id}-${index}`)();
 			let randomPosition = Math.floor(randomNumber * (MAX_POSITION - MIN_POSITION + 1)) + MIN_POSITION;
 
@@ -186,6 +173,7 @@ export default function useBadgeModal(currentBadge) {
 
 	/**
 	 * Gets the URL params of the badge to be used in lend/filter
+	 *
 	 * @returns The URL params
 	 */
 	const getPrefilteredUrl = () => {
@@ -204,7 +192,32 @@ export default function useBadgeModal(currentBadge) {
 		}
 	};
 
+	/**
+	 * Gets the styles needed for positioning the small circle on the badge journey for progress
+	 *
+	 * @returns The styles for the small circle
+	 */
+	const getNumberCircleStyles = () => {
+		switch (badge.value.id) {
+			case ID_WOMENS_EQUALITY:
+				return { right: '20px', bottom: '6px' };
+			case ID_REFUGEE_EQUALITY:
+				return { right: '10px', bottom: '18px' };
+			case ID_BASIC_NEEDS:
+				return { right: '10px', bottom: '10px' };
+			case ID_US_ECONOMIC_EQUALITY:
+			case ID_CLIMATE_ACTION:
+			default:
+				return { right: '-2px', bottom: '-2px' };
+		}
+	};
+
 	return {
-		getTierPositions, getLineComponent, getLineStyle, getBadgeShape, getPrefilteredUrl
+		getTierPositions,
+		getLineComponent,
+		getLineStyle,
+		getBadgeShape,
+		getPrefilteredUrl,
+		getNumberCircleStyles,
 	};
 }

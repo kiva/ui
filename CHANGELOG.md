@@ -1,3 +1,82 @@
+## [3.2.0](https://github.com/kiva/ui/compare/v3.1.0...v3.2.0) (2024-10-29)
+
+### 🎉 New Features
+
+* badge in progress content component ([652de6f](https://github.com/kiva/ui/commit/652de6ffc58f7fa8e6c584f5d71e98ce2adc07b1))
+* composable for tiered badge data ([90a5086](https://github.com/kiva/ui/commit/90a5086bba0ea5ebdf3f99ef79b27acdaffd7b8c))
+* integrate badge modal with completed state ([b998eaf](https://github.com/kiva/ui/commit/b998eafb8ca172be4d4da1f415239e66ee057ec6))
+* mechanism for getting and displaying current tier badge data ([3fbc8d3](https://github.com/kiva/ui/commit/3fbc8d3d69e2614276aee0cf4d325cd084249d74))
+* modify component to match new badge structure ([e5874ab](https://github.com/kiva/ui/commit/e5874aba85c79a59b60a6ffae850cc51614a2842))
+* stories for all current badges and styles adjusted accordingly ([50e41a0](https://github.com/kiva/ui/commit/50e41a07df7d489a4038dc00469f06951eac1a71))
+* user achievements query updated ([#5615](https://github.com/kiva/ui/issues/5615)) ([71160c0](https://github.com/kiva/ui/commit/71160c02ec5e9675250809f1a3eb6d28c861b6a7))
+
+### 🐛 Bugfixes
+
+* add additional error signature filter for pinterest tag ([ea98843](https://github.com/kiva/ui/commit/ea98843806b66bbcdec95f28c50d65a83192758e))
+* add more tests and todo description ([309ba85](https://github.com/kiva/ui/commit/309ba85fc5ca45ee068ebb2300e296004d43fea9))
+* added basic testing for new badge composable, consolidated tier date fixing ([9e31b28](https://github.com/kiva/ui/commit/9e31b28edf1ae5cc098472dab7060ff68e89ad8a))
+* adjust to new square badges ([6f251c0](https://github.com/kiva/ui/commit/6f251c0704b0c0dfa5c7e0b27a21e9a0834727b8))
+* combine old and new badge data ([1e07b9d](https://github.com/kiva/ui/commit/1e07b9dcf7074575bdb50985319cd74da2cd3171))
+* conflicts ([2040c1a](https://github.com/kiva/ui/commit/2040c1a42fbe33eb885d5d8ea45ac18c0c6ec980))
+* hide title in badge completed state ([d15c5f3](https://github.com/kiva/ui/commit/d15c5f3d15d2100eef4c0817120e72c9054f167a))
+* hold all achievement data ([fa64544](https://github.com/kiva/ui/commit/fa6454467ce9005a915f1d747045e033fe505e4c))
+* lint ([b720162](https://github.com/kiva/ui/commit/b720162f38877525e538f4055e658685951934b0))
+* remove px filter, filter out external failed load sentry events ([f5425d0](https://github.com/kiva/ui/commit/f5425d08fe697c70bfc50b840750299d72edddb3))
+* renamed file appropriately ([338cc28](https://github.com/kiva/ui/commit/338cc28e5f289dd027ccd3dc2f52183ccd406f13))
+* resolve comments and add todos ([72e8fbf](https://github.com/kiva/ui/commit/72e8fbf1d0e57f3cc5fc0d0cbd8542ad2da0cca1))
+* small adjustment ([494b698](https://github.com/kiva/ui/commit/494b698961b3fe0912e505ee53e3b722b5e72ed9))
+* solve comments ([b105684](https://github.com/kiva/ui/commit/b1056841bf70e332eea2559419d37638ef63899f))
+* update method name ([f9ce0b0](https://github.com/kiva/ui/commit/f9ce0b0aedfbc658d7f0692a0a1b5f8562119efb))
+* update params for climate action and basic needs ([a74f0ab](https://github.com/kiva/ui/commit/a74f0ab7215188033c96f6efc9d9d6bd9ea1ec19))
+
+### 🪚 Refactors
+
+* create new method to get specific level data from badge ([598f59b](https://github.com/kiva/ui/commit/598f59bfd3d467fe58b125abb213786a25e74c91))
+
+### 🧹 Chores
+
+* filter out addition Failed to fetch calls from 3rd party scripts ([f4d802a](https://github.com/kiva/ui/commit/f4d802acff13ddb7def94154a839990bcacb4efd))
+* **release:** 3.2.0-rc.1 [skip ci] ([0753a51](https://github.com/kiva/ui/commit/0753a51a521ea8b8a3dd871db94b5169125c0030)), closes [#5615](https://github.com/kiva/ui/issues/5615)
+
+## [3.2.0-rc.1](https://github.com/kiva/ui/compare/v3.1.0...v3.2.0-rc.1) (2024-10-29)
+
+### 🎉 New Features
+
+* badge in progress content component ([652de6f](https://github.com/kiva/ui/commit/652de6ffc58f7fa8e6c584f5d71e98ce2adc07b1))
+* composable for tiered badge data ([90a5086](https://github.com/kiva/ui/commit/90a5086bba0ea5ebdf3f99ef79b27acdaffd7b8c))
+* integrate badge modal with completed state ([b998eaf](https://github.com/kiva/ui/commit/b998eafb8ca172be4d4da1f415239e66ee057ec6))
+* mechanism for getting and displaying current tier badge data ([3fbc8d3](https://github.com/kiva/ui/commit/3fbc8d3d69e2614276aee0cf4d325cd084249d74))
+* modify component to match new badge structure ([e5874ab](https://github.com/kiva/ui/commit/e5874aba85c79a59b60a6ffae850cc51614a2842))
+* stories for all current badges and styles adjusted accordingly ([50e41a0](https://github.com/kiva/ui/commit/50e41a07df7d489a4038dc00469f06951eac1a71))
+* user achievements query updated ([#5615](https://github.com/kiva/ui/issues/5615)) ([71160c0](https://github.com/kiva/ui/commit/71160c02ec5e9675250809f1a3eb6d28c861b6a7))
+
+### 🐛 Bugfixes
+
+* add additional error signature filter for pinterest tag ([ea98843](https://github.com/kiva/ui/commit/ea98843806b66bbcdec95f28c50d65a83192758e))
+* add more tests and todo description ([309ba85](https://github.com/kiva/ui/commit/309ba85fc5ca45ee068ebb2300e296004d43fea9))
+* added basic testing for new badge composable, consolidated tier date fixing ([9e31b28](https://github.com/kiva/ui/commit/9e31b28edf1ae5cc098472dab7060ff68e89ad8a))
+* adjust to new square badges ([6f251c0](https://github.com/kiva/ui/commit/6f251c0704b0c0dfa5c7e0b27a21e9a0834727b8))
+* combine old and new badge data ([1e07b9d](https://github.com/kiva/ui/commit/1e07b9dcf7074575bdb50985319cd74da2cd3171))
+* conflicts ([2040c1a](https://github.com/kiva/ui/commit/2040c1a42fbe33eb885d5d8ea45ac18c0c6ec980))
+* hide title in badge completed state ([d15c5f3](https://github.com/kiva/ui/commit/d15c5f3d15d2100eef4c0817120e72c9054f167a))
+* hold all achievement data ([fa64544](https://github.com/kiva/ui/commit/fa6454467ce9005a915f1d747045e033fe505e4c))
+* lint ([b720162](https://github.com/kiva/ui/commit/b720162f38877525e538f4055e658685951934b0))
+* remove px filter, filter out external failed load sentry events ([f5425d0](https://github.com/kiva/ui/commit/f5425d08fe697c70bfc50b840750299d72edddb3))
+* renamed file appropriately ([338cc28](https://github.com/kiva/ui/commit/338cc28e5f289dd027ccd3dc2f52183ccd406f13))
+* resolve comments and add todos ([72e8fbf](https://github.com/kiva/ui/commit/72e8fbf1d0e57f3cc5fc0d0cbd8542ad2da0cca1))
+* small adjustment ([494b698](https://github.com/kiva/ui/commit/494b698961b3fe0912e505ee53e3b722b5e72ed9))
+* solve comments ([b105684](https://github.com/kiva/ui/commit/b1056841bf70e332eea2559419d37638ef63899f))
+* update method name ([f9ce0b0](https://github.com/kiva/ui/commit/f9ce0b0aedfbc658d7f0692a0a1b5f8562119efb))
+* update params for climate action and basic needs ([a74f0ab](https://github.com/kiva/ui/commit/a74f0ab7215188033c96f6efc9d9d6bd9ea1ec19))
+
+### 🪚 Refactors
+
+* create new method to get specific level data from badge ([598f59b](https://github.com/kiva/ui/commit/598f59bfd3d467fe58b125abb213786a25e74c91))
+
+### 🧹 Chores
+
+* filter out addition Failed to fetch calls from 3rd party scripts ([f4d802a](https://github.com/kiva/ui/commit/f4d802acff13ddb7def94154a839990bcacb4efd))
+
 ## [3.1.0](https://github.com/kiva/ui/compare/v3.0.3...v3.1.0) (2024-10-24)
 
 ### 🎉 New Features

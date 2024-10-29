@@ -175,7 +175,7 @@ const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
-const state = ref(STATE_EARNED);
+const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 
 const isLoading = computed(() => !lender.value);
@@ -188,6 +188,7 @@ const handleShowNavigation = () => {
 };
 
 const handleBadgeClicked = badge => {
+	state.value = STATE_JOURNEY;
 	selectedBadgeData.value = badge;
 	showBadgeModal.value = true;
 };
