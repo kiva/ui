@@ -22,23 +22,14 @@
 					'tw-self-start': isMobile && position === 0,
 					'tw-self-center': isMobile && position === 1,
 					'tw-self-end': isMobile && position === 2,
-					'tw-cursor-pointer': !!badge.achievementData.tiers[index].completedDate,
 				}"
 				:style="{
 					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`,
 					zIndex: positions.length - index,
 					width: '133px',
 				}"
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					'Already earned badge modal',
-					badge.challengeName,
-					index + 1
-				]"
-				@click="event => handleBadgeClick(event, index)"
 			>
-				<div class="tw-relative tw-text-center tw-bg-white">
+				<div class="tw-relative tw-text-center tw-bg-white tw-cursor-pointer" @click="handleBadgeClick(index)">
 					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()">
 						<component
 							v-if="index > 0"
@@ -74,13 +65,7 @@
 							'tw-invisible': index !== positions.length - 1 && !showEarnBadge(index),
 							'tw-hidden': (!isMobile || index === positions.length - 1) && !showEarnBadge(index),
 						}"
-						v-kv-track-event="[
-							'portfolio',
-							'click',
-							'Earn a badge - within badge journey map modal',
-							badge.challengeName,
-							index + 1
-						]"
+						@click="handleBadgeClick(index)"
 					>
 						Earn badge
 					</KvButton>
@@ -151,11 +136,12 @@ const getBadgeStatus = index => {
 	return BADGE_LOCKED;
 };
 
-const handleBadgeClick = (event, index) => {
-	// Prevent analytics being logged when non-completed tier is clicked
-	if (!props.badge.achievementData.tiers[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
-		event.stopImmediatePropagation();
-		emit('badge-level-clicked', props.badge.achievementData.tiers[index]);
+const handleBadgeClick = index => {
+	if (getBadgeStatus(index) !== BADGE_LOCKED) {
+		emit('badge-level-clicked', {
+			challengeName: props.badge.challengeName,
+			tier: props.badge.achievementData.tiers[index]
+		});
 	}
 };
 </script>
