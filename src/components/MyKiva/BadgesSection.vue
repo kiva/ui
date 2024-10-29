@@ -12,13 +12,13 @@
 				'portfolio',
 				'click',
 				badge.hasStarted ? 'Continue' : 'Start this journey',
-				getCurrentTierData(badge).challengeName,
+				badge.challengeName,
 				badge.level
 			]"
 			@click="() => $emit('badge-clicked', badge)"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
-				{{ getCurrentTierData(badge).challengeName }}
+				{{ badge.challengeName }}
 			</span>
 			<div
 				class="tw-p-1"
