@@ -25,7 +25,9 @@
 					'tw-cursor-pointer': !!badge.achievementData.tiers[index].completedDate,
 				}"
 				:style="{
-					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`
+					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`,
+					zIndex: positions.length - index,
+					width: '133px',
 				}"
 				v-kv-track-event="[
 					'portfolio',
@@ -36,14 +38,14 @@
 				]"
 				@click="event => handleBadgeClick(event, index)"
 			>
-				<div class="tw-relative tw-text-center">
-					<component
-						v-if="index > 0"
-						:is="getLineComponent(positions[index - 1], position)"
-						class="tw-absolute"
-						:style="getLineStyle(positions[index - 1], position)"
-					/>
-					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()" class="tw-z-1">
+				<div class="tw-relative tw-text-center tw-bg-white">
+					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()">
+						<component
+							v-if="index > 0"
+							:is="getLineComponent(positions[index - 1], position)"
+							class="tw-absolute"
+							:style="getLineStyle(positions[index - 1], position)"
+						/>
 						<img
 							:src="badge.contentfulData[index].imageUrl"
 							alt="Badge"

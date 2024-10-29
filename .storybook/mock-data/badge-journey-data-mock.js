@@ -267,7 +267,7 @@ export const badgeClimateAction = {
 		{
 			"id": "climate-action",
 			"level": 6,
-			"levelName": "Climate action✨50✨",
+			"levelName": "Climate action ✨50✨",
 			"challengeName": "Climate action",
 			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3vmiyohO4jjDEwnzO4QMZh/f724ce214554fd10b7bd5980cf34d0a0/Climate_60.svg"
 		},
@@ -500,7 +500,7 @@ export const badgeBasicNeeds = {
 		{
 			"id": "basic-needs",
 			"level": 7,
-			"levelName": "Basic needs✨100✨",
+			"levelName": "Basic needs ✨100✨",
 			"challengeName": "Basic needs",
 			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/1LLL9K4PgaUZb3H0JLWEPU/4ed0ec9c5515fa25410b9e32d6a8e7cf/Basic_Needs_70.svg"
 		}
