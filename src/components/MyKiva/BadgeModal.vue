@@ -13,19 +13,13 @@
 
 <script setup>
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import {
-	defineProps,
-	inject,
-	defineAsyncComponent,
-	computed,
-} from 'vue';
+import { defineProps, defineAsyncComponent, computed } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 const BadgeModalContentJourney = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJourney'));
 const BadgeInProgress = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeInProgress'));
 const BadgeCompleted = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeCompleted'));
 
-const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked']);
 
 const props = defineProps({
@@ -53,7 +47,6 @@ const props = defineProps({
 
 const closeLightbox = () => {
 	emit('badge-modal-closed');
-	$kvTrackEvent('portfolio', 'click', 'badge-modal-closed');
 };
 
 const handleBadgeLevelClicked = e => {
