@@ -34,6 +34,38 @@
 		<div v-if="challengeHeaderVisible" class="tw-bg-secondary">
 			<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 		</div>
+		<template v-if="showMayChallengeHeader">
+			<div
+				v-if="loans.length > 0"
+				class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
+			>
+				<template v-if="receipt">
+					Thanks for supporting
+					<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
+					We've emailed your order confirmation to
+					<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
+					<span v-else>you.</span>
+				</template>
+				<template v-else>
+					Please log in to see your receipt.
+					<kv-button
+						:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
+						class="tw-ml-1"
+					>
+						Log in to continue
+					</kv-button>
+				</template>
+			</div>
+			<share-challenge
+				v-if="teamPublicId"
+				:goal="goal"
+				:loan="challengeLoan"
+				:team-public-id="teamPublicId"
+				:lender="lender"
+				:is-guest="isGuest"
+				:team-name="teamName"
+			/>
+		</template>
 		<div class="row page-content" v-if="activeView === V2_VIEW">
 			<div class="small-12 columns thanks">
 				<div class="thanks__header hide-for-print">
@@ -111,38 +143,6 @@
 				</kv-button>
 			</div>
 		</template>
-		<template v-if="activeView === MAY_CHALLENGE_VIEW">
-			<div
-				v-if="loans.length > 0"
-				class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
-			>
-				<template v-if="receipt">
-					Thanks for supporting
-					<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
-					We've emailed your order confirmation to
-					<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
-					<span v-else>you.</span>
-				</template>
-				<template v-else>
-					Please log in to see your receipt.
-					<kv-button
-						:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
-						class="tw-ml-1"
-					>
-						Log in to continue
-					</kv-button>
-				</template>
-			</div>
-			<share-challenge
-				v-if="teamPublicId"
-				:goal="goal"
-				:loan="challengeLoan"
-				:team-public-id="teamPublicId"
-				:lender="lender"
-				:is-guest="isGuest"
-				:team-name="teamName"
-			/>
-		</template>
 		<thanks-page-comment-and-share
 			v-if="activeView === COMMENT_AND_SHARE_VIEW"
 			:receipt="receipt"
@@ -197,7 +197,6 @@ const THANKS_BADGES_EXP = 'thanks_badges';
 const DONATION_ONLY_VIEW = 'donation_only';
 const BADGES_VIEW = 'badges';
 const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
-const MAY_CHALLENGE_VIEW = 'may_challenge';
 const V2_VIEW = 'v2';
 const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
 const LOGIN_REQUIRED_VIEW = 'login_required';
@@ -268,7 +267,6 @@ export default {
 			DONATION_ONLY_VIEW,
 			BADGES_VIEW,
 			MARKETING_OPT_IN_VIEW,
-			MAY_CHALLENGE_VIEW,
 			V2_VIEW,
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
@@ -393,7 +391,19 @@ export default {
 			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
 		},
 		showMayChallengeHeader() {
-			return this.challengeLoan && this.enableMayChallengeHeader;
+			return this.challengeLoan
+				&& this.enableMayChallengeHeader
+				&& this.activeView !== DONATION_ONLY_VIEW
+				&& this.activeView !== BADGES_VIEW
+				&& this.activeView !== MARKETING_OPT_IN_VIEW;
+		},
+		challengeHeaderVisible() {
+			return !this.showMayChallengeHeader
+				&& this.showChallengeHeader
+				&& this.teamPublicId
+				&& this.activeView !== DONATION_ONLY_VIEW
+				&& this.activeView !== BADGES_VIEW
+				&& this.activeView !== MARKETING_OPT_IN_VIEW;
 		},
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
@@ -435,10 +445,6 @@ export default {
 			if (!this.landedOnUSLoan && !this.optedIn && this.loans.length > 0) {
 				return MARKETING_OPT_IN_VIEW;
 			}
-			// Show the May challenge view if the May challenge header is enabled
-			if (this.showMayChallengeHeader) {
-				return MAY_CHALLENGE_VIEW;
-			}
 			// Show the login required view if we couldn't get the receipt
 			if (!this.receipt) {
 				return LOGIN_REQUIRED_VIEW;
@@ -454,14 +460,6 @@ export default {
 			// Show the v2 view by default
 			return V2_VIEW;
 		},
-		challengeHeaderVisible() {
-			return !this.showMayChallengeHeader
-				&& this.showChallengeHeader
-				&& this.teamPublicId
-				&& this.activeView !== DONATION_ONLY_VIEW
-				&& this.activeView !== BADGES_VIEW
-				&& this.activeView !== MARKETING_OPT_IN_VIEW;
-		}
 	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
@@ -614,8 +612,8 @@ export default {
 		}
 
 		// Track may challenge page view
-		if (this.activeView === MAY_CHALLENGE_VIEW) {
-			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-view', this.isGuest ? 'guest' : 'signed-in');
+		if (this.showMayChallengeHeader) {
+			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-header', this.isGuest ? 'guest' : 'signed-in');
 		}
 
 		// Track login required view
