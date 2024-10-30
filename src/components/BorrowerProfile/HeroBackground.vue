@@ -105,48 +105,57 @@ export default {
 			this.city = loan?.geocode?.city ?? '';
 		},
 	},
-	mounted() {
-		this.apollo.query({
-			query: gql`
-				query bpHeroBackgroundImage(
-					$stateKey: String,
-					$cityKey: String,
-					$countryKey: String,
-					$placeholderKey: String
-					) {
-					contentful {
-						city: entries(contentType: "background", contentKey: $cityKey)
-						state: entries(contentType: "background", contentKey: $stateKey)
-						country: entries(contentType: "background", contentKey: $countryKey)
-						placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+	methods: {
+		fetchImage() {
+			this.apollo.query({
+				query: gql`
+					query bpHeroBackgroundImage(
+						$stateKey: String,
+						$cityKey: String,
+						$countryKey: String,
+						$placeholderKey: String
+						) {
+						contentful {
+							city: entries(contentType: "background", contentKey: $cityKey)
+							state: entries(contentType: "background", contentKey: $stateKey)
+							country: entries(contentType: "background", contentKey: $countryKey)
+							placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+						}
 					}
+				`,
+				variables: {
+					cityKey: this.cityKey,
+					stateKey: this.stateKey,
+					countryKey: this.countryKey,
+					placeholderKey: this.placeholderKey,
+				},
+			}).then(result => {
+				const cityMedia = result?.data?.contentful?.city?.items?.[0]?.fields?.backgroundMedia ?? null;
+				const stateMedia = result?.data?.contentful?.state?.items?.[0]?.fields?.backgroundMedia ?? null;
+				const countryMedia = result?.data?.contentful?.country?.items?.[0]?.fields?.backgroundMedia ?? null;
+				const placeholder = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? null;
+				if (cityMedia) {
+					this.contentfulSrc = cityMedia?.fields?.file?.url ?? null;
+					this.contentfulAlt = cityMedia?.fields?.description ?? null;
+				} else if (stateMedia) {
+					this.contentfulSrc = stateMedia?.fields?.file?.url ?? null;
+					this.contentfulAlt = stateMedia?.fields?.description ?? null;
+				} else if (countryMedia) {
+					this.contentfulSrc = countryMedia?.fields?.file?.url ?? null;
+					this.contentfulAlt = countryMedia?.fields?.description ?? null;
+				} else if (placeholder) {
+					this.contentfulSrc = placeholder?.fields?.file?.url ?? null;
+					this.contentfulAlt = placeholder?.fields?.description ?? null;
 				}
-			`,
-			variables: {
-				cityKey: this.cityKey,
-				stateKey: this.stateKey,
-				countryKey: this.countryKey,
-				placeholderKey: this.placeholderKey,
-			},
-		}).then(result => {
-			const cityMedia = result?.data?.contentful?.city?.items?.[0]?.fields?.backgroundMedia ?? null;
-			const stateMedia = result?.data?.contentful?.state?.items?.[0]?.fields?.backgroundMedia ?? null;
-			const countryMedia = result?.data?.contentful?.country?.items?.[0]?.fields?.backgroundMedia ?? null;
-			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? null;
-			if (cityMedia) {
-				this.contentfulSrc = cityMedia?.fields?.file?.url ?? null;
-				this.contentfulAlt = cityMedia?.fields?.description ?? null;
-			} else if (stateMedia) {
-				this.contentfulSrc = stateMedia?.fields?.file?.url ?? null;
-				this.contentfulAlt = stateMedia?.fields?.description ?? null;
-			} else if (countryMedia) {
-				this.contentfulSrc = countryMedia?.fields?.file?.url ?? null;
-				this.contentfulAlt = countryMedia?.fields?.description ?? null;
-			} else if (placeholderMedia) {
-				this.contentfulSrc = placeholderMedia?.fields?.file?.url ?? null;
-				this.contentfulAlt = placeholderMedia?.fields?.description ?? null;
+			});
+		}
+	},
+	watch: {
+		isoCode(newVal, oldVal) {
+			if (newVal && newVal !== oldVal) {
+				this.fetchImage();
 			}
-		});
+		}
 	},
 };
 </script>
