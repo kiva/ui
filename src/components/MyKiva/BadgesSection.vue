@@ -52,6 +52,7 @@
 <script setup>
 import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
 
 defineEmits(['badge-clicked']);
@@ -65,7 +66,11 @@ const props = defineProps({
 
 const { getCurrentTierData } = useBadgeData();
 
-const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
+const visibleBadges = computed(() => {
+	return props.badgeData
+		.filter(b => defaultBadges.includes(b.id))
+		.sort(indexIn(defaultBadges, 'id'));
+});
 </script>
 
 <style lang="postcss" scoped>
