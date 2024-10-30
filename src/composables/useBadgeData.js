@@ -93,6 +93,14 @@ export default function useBadgeData() {
 					const hasStarted = completedTiers.length > 0;
 					const level = hasStarted ? completedTiers[completedTiers.length - 1].level : undefined;
 
+					// Clean up milestone progress date format
+					const { milestoneProgress } = achievementData;
+					const milestoneProgressArr = milestoneProgress?.map(m => ({
+						...m,
+						// Date is in format "2024-10-22T18:49:21Z[UTC]"
+						earnedAtDate: m.earnedAtDate?.replace('[UTC]', ''),
+					}));
+
 					// Combine the achievement service and Contentful data
 					badges.push({
 						id: achievementData.id,
@@ -106,6 +114,7 @@ export default function useBadgeData() {
 								// Date is in format "2024-10-22T18:49:21Z[UTC]"
 								completedDate: t.completedDate?.replace('[UTC]', ''),
 							})),
+							milestoneProgress: milestoneProgressArr,
 						},
 						hasStarted,
 						level,

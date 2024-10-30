@@ -88,7 +88,10 @@
 					>
 						My impact journeys
 					</h3>
-					<BadgesSection :badge-data="badgeData" @badge-clicked="handleBadgeSectionClicked" />
+					<BadgesSection
+						:badge-data="badgeData"
+						@badge-clicked="handleBadgeSectionClicked"
+					/>
 
 					<BadgeModal
 						v-if="selectedBadgeData"
@@ -103,6 +106,10 @@
 				</div>
 			</section>
 		</MyKivaContainer>
+		<EarnedBadgesSection
+			:badges-data="badgeData"
+			@badge-clicked="handleBadgeClicked"
+		/>
 	</www-page>
 </template>
 
@@ -122,6 +129,7 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
+import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 import {
