@@ -90,8 +90,9 @@
 					</h3>
 					<BadgesSection
 						:badge-data="badgeData"
-						@badge-clicked="handleBadgeClicked"
+						@badge-clicked="handleBadgeSectionClicked"
 					/>
+
 					<BadgeModal
 						v-if="selectedBadgeData"
 						:show="showBadgeModal"
@@ -100,7 +101,7 @@
 						:state="state"
 						:tier="tier"
 						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeLevelClicked"
+						@badge-level-clicked="handleBadgeJourneyLevelClicked"
 					/>
 				</div>
 			</section>
@@ -170,15 +171,25 @@ const handleShowNavigation = () => {
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 };
 
-const handleBadgeClicked = badge => {
+const handleBadgeSectionClicked = badge => {
 	state.value = STATE_JOURNEY;
 	selectedBadgeData.value = badge;
 	showBadgeModal.value = true;
 };
 
-const handleBadgeLevelClicked = clickedTier => {
+const handleBadgeJourneyLevelClicked = payload => {
+	const { challengeName, tier: clickedTier } = payload;
+
 	tier.value = clickedTier;
 	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		state.value === STATE_EARNED ? 'Already earned badge modal' : 'Earn a badge - within badge journey map modal',
+		challengeName,
+		clickedTier.level,
+	);
 };
 
 const handleBadgeModalClosed = () => {
