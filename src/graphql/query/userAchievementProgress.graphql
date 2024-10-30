@@ -15,8 +15,8 @@ query UserAchievementProgress {
     tieredLendingAchievements {
       id
       totalProgressToAchievement
-	  matchingLoans {
-		id
+      matchingLoans {
+        id
         filters
       }
       tiers {
