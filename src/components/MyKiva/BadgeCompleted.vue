@@ -99,7 +99,7 @@ const { getTierBadgeDataByLevel } = useBadgeData();
 const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
-const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : 'https://www.kiva.org'));
+const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : ''));
 // eslint-disable-next-line max-len
 const shareMessage = "It's not everyday you change a life! Thank you, from all of us at Kiva and the millions of lives changed around the world.";
 
@@ -150,7 +150,7 @@ onMounted(() => {
 <style lang="postcss" scoped>
 
 .container {
-	@apply tw-mx-auto tw-bg-white tw-p-4.5 tw-rounded;
+	@apply tw-mx-auto tw-bg-white tw-pt-4.5 md:tw-pt-0 tw-px-4.5 tw-pb-4.5 tw-rounded;
 }
 
 .badge-container {
