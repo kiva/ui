@@ -13,7 +13,7 @@
 		</div>
 		<p
 			v-html="label"
-			class="tw-text-base md:tw-ml-1"
+			class="tw-text-base tw-text-center md:tw-text-left md:tw-ml-1"
 			style="line-height: 22px;"
 		></p>
 	</div>
