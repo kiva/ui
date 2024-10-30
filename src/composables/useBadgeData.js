@@ -81,6 +81,7 @@ export default function useBadgeData() {
 	 * Calls Apollo to get the badge Contentful data
 	 *
 	 * @param apollo The current instance of Apollo
+	 * @param combinedBadgeData The combined data for the badge
 	 */
 	const fetchLoanIdData = (apollo, combinedBadgeData) => {
 		apollo.query({
