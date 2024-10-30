@@ -123,6 +123,7 @@ import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import useUserPreferences from '#src/composables/useUserPreferences';
 
 import {
 	ref,
@@ -142,6 +143,8 @@ const {
 	badgeAchievementData,
 	badgeData,
 } = useBadgeData(apollo);
+
+const { saveUserPreferences } = useUserPreferences(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -207,6 +210,20 @@ apollo.query({ query: myKivaQuery })
 			// eslint-disable-next-line prefer-destructuring
 			activeLoan.value = loans.value[0];
 			fetchLoanUpdates(activeLoan.value.id);
+
+			const preferences = userInfo.value?.userPreferences?.preferences;
+			const formattedPreference = typeof preferences === 'string'
+				? JSON.parse(userInfo.value?.userPreferences?.preferences)
+				: preferences;
+
+			if (!formattedPreference?.myKivaPageExp) {
+				saveUserPreferences({
+					userPreferences: userInfo.value?.userPreferences ?? null,
+					newPreference: {
+						myKivaPageExp: 1,
+					}
+				});
+			}
 		}
 	}).catch(e => {
 		logReadQueryError(e, 'MyKivaPage myKivaQuery');

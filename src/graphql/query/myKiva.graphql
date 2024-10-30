@@ -1,5 +1,5 @@
 query myKivaQuery {
-	my {
+  my {
     id
     isBorrower
     loans(limit: 10) {
@@ -17,7 +17,7 @@ query myKivaQuery {
           city
           state
           country {
-			id
+      id
             name
             isoCode
             region
@@ -53,11 +53,15 @@ query myKivaQuery {
       }
     }
     userAccount {
-			id
-			balance
-		}
+      id
+      balance
+    }
     trustee {
       id
+    }
+    userPreferences {
+      id
+      preferences
     }
   }
 }
