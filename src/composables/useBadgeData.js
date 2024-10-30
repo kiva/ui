@@ -2,6 +2,18 @@ import { ref, computed } from 'vue';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { gql } from 'graphql-tag';
+
+export const ID_WOMENS_EQUALITY = 'womens-equality';
+export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
+export const ID_CLIMATE_ACTION = 'climate-action';
+export const ID_REFUGEE_EQUALITY = 'refugee-equality';
+export const ID_BASIC_NEEDS = 'basic-needs';
+export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
+export const CLIMATE_ACTION_FILTER = 'tag=9';
+export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
+export const WOMENS_EQUALITY_FILTER = 'gender=female';
+export const BASIC_NEEDS_FILTER = 'sector=6,10';
 
 /**
  * Utilities for loading and combining tiered badge data
@@ -11,6 +23,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 export default function useBadgeData() {
 	const badgeAchievementData = ref();
 	const badgeContentfulData = ref();
+	const badgeLoanIdData = ref();
 
 	/**
 	 * Gets a cleaned up version of Contentful badge data
@@ -28,6 +41,8 @@ export default function useBadgeData() {
 
 	/**
 	 * Calls Apollo to get the badge achievement service data
+	 *
+	 * @param apollo The current instance of Apollo
 	 */
 	const fetchAchievementData = apollo => {
 		apollo.query({ query: userAchievementProgressQuery })
@@ -43,6 +58,8 @@ export default function useBadgeData() {
 
 	/**
 	 * Calls Apollo to get the badge Contentful data
+	 *
+	 * @param apollo The current instance of Apollo
 	 */
 	const fetchContentfulData = apollo => {
 		apollo.query({
@@ -57,6 +74,33 @@ export default function useBadgeData() {
 					.map(entry => getContentfulLevelData(entry));
 			}).catch(e => {
 				logReadQueryError(e, 'useBadgeData contentfulEntriesQuery');
+			});
+	};
+
+	/**
+	 * Calls Apollo to get the badge Contentful data
+	 *
+	 * @param apollo The current instance of Apollo
+	 * @param combinedBadgeData The combined data for the badge
+	 */
+	const fetchLoanIdData = (apollo, combinedBadgeData) => {
+		apollo.query({
+			query: gql`query badgeLoanIds($filters: [FundraisingLoanSearchFilterInput!], $limit: Int!) {
+				fundraisingLoans(filters: $filters, limit: $limit) {
+					values {
+						id
+					}
+				}
+			}`,
+			variables: {
+				filters: combinedBadgeData.achievementData.matchingLoans.filters,
+				limit: 6,
+			}
+		})
+			.then(result => {
+				badgeLoanIdData.value = (result?.data?.fundraisingLoans?.values ?? []).map(l => l.id);
+			}).catch(e => {
+				logReadQueryError(e, 'useBadgeData badgeLoanIds');
 			});
 	};
 
@@ -177,6 +221,9 @@ export default function useBadgeData() {
 	 *   "achievementData": {
 	 *     "id": "",
 	 *     "totalProgressToAchievement": 0,
+	 *     "matchingLoans": {
+	 *       "filters": [],
+	 *     },
 	 *     "tiers": [
 	 *       {
 	 *         "target": 1,
@@ -196,8 +243,9 @@ export default function useBadgeData() {
 
 	/**
 	 * Gets the badge data with specific contentful and achievement data for the tier
+	 *
 	 * @param badge The badge to get the specific tier for
-	 * @param level The level of the tier to get
+	 * @param level The numerical level of the tier to get
 	 * @returns The badge data with specific contentful and achievement data for the tier
 	 */
 	const getTierBadgeDataByLevel = (badge, level) => {
@@ -212,14 +260,39 @@ export default function useBadgeData() {
 		};
 	};
 
+	/**
+	 * Gets the URL params of the badge to be used in lend/filter
+	 *
+	 * @param combineBadgeData The combined data for the badge
+	 * @returns The URL params
+	 */
+	const getFilteredUrl = combinedBadgeData => {
+		switch (combinedBadgeData.id) {
+			case ID_WOMENS_EQUALITY:
+				return WOMENS_EQUALITY_FILTER;
+			case ID_US_ECONOMIC_EQUALITY:
+				return US_ECONOMIC_EQUALITY_FILTER;
+			case ID_CLIMATE_ACTION:
+				return CLIMATE_ACTION_FILTER;
+			case ID_REFUGEE_EQUALITY:
+				return REFUGEE_EQUALITY_FILTER;
+			case ID_BASIC_NEEDS:
+			default:
+				return BASIC_NEEDS_FILTER;
+		}
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
+		fetchLoanIdData,
 		combineBadgeData,
 		getContentfulLevelData,
 		getCurrentTierData,
+		getTierBadgeDataByLevel,
+		getFilteredUrl,
 		badgeAchievementData,
 		badgeData,
-		getTierBadgeDataByLevel,
+		badgeLoanIdData,
 	};
 }

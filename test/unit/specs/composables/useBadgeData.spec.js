@@ -1,5 +1,16 @@
 /* eslint-disable max-len */
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, {
+	ID_WOMENS_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	US_ECONOMIC_EQUALITY_FILTER,
+	WOMENS_EQUALITY_FILTER,
+	CLIMATE_ACTION_FILTER,
+	REFUGEE_EQUALITY_FILTER,
+	BASIC_NEEDS_FILTER,
+} from '#src/composables/useBadgeData';
 import {
 	achievementData,
 	contentfulData,
@@ -80,6 +91,33 @@ describe('useBadgeData.js', () => {
 				contentfulData: sampleBadge.contentfulData?.[tier - 1],
 				achievementData: sampleBadge.achievementData?.tiers?.[tier - 1],
 			});
+		});
+	});
+
+	describe('getFilteredUrl', () => {
+		it('should return expected filtered url for womens-equality', () => {
+			const { getFilteredUrl } = useBadgeData();
+			expect(getFilteredUrl({ id: ID_WOMENS_EQUALITY })).toEqual(WOMENS_EQUALITY_FILTER);
+		});
+
+		it('should return expected filtered url for us-economic-equality', () => {
+			const { getFilteredUrl } = useBadgeData();
+			expect(getFilteredUrl({ id: ID_US_ECONOMIC_EQUALITY })).toEqual(US_ECONOMIC_EQUALITY_FILTER);
+		});
+
+		it('should return expected filtered url for climate-action', () => {
+			const { getFilteredUrl } = useBadgeData();
+			expect(getFilteredUrl({ id: ID_CLIMATE_ACTION })).toEqual(CLIMATE_ACTION_FILTER);
+		});
+
+		it('should return expected filtered url for refugee-equality', () => {
+			const { getFilteredUrl } = useBadgeData();
+			expect(getFilteredUrl({ id: ID_REFUGEE_EQUALITY })).toEqual(REFUGEE_EQUALITY_FILTER);
+		});
+
+		it('should return expected filtered url for basic-needs', () => {
+			const { getFilteredUrl } = useBadgeData();
+			expect(getFilteredUrl({ id: ID_BASIC_NEEDS })).toEqual(BASIC_NEEDS_FILTER);
 		});
 	});
 });

@@ -194,6 +194,7 @@ const handleBadgeJourneyLevelClicked = payload => {
 
 const handleBadgeModalClosed = () => {
 	if (state.value === STATE_JOURNEY) {
+		selectedBadgeData.value = undefined;
 		showBadgeModal.value = false;
 		return;
 	}
