@@ -88,8 +88,10 @@
 					>
 						My impact journeys
 					</h3>
-					<BadgesSection :badge-data="badgeData" @badge-clicked="handleBadgeClicked" />
-
+					<BadgesSection
+						:badge-data="badgeData"
+						@badge-clicked="handleBadgeClicked"
+					/>
 					<BadgeModal
 						v-if="selectedBadgeData"
 						:show="showBadgeModal"
@@ -103,30 +105,11 @@
 				</div>
 			</section>
 		</MyKivaContainer>
-		<section class="tw-bg-white tw-py-2">
-			<MyKivaContainer>
-				<div class="tw-my-3">
-					<h3
-						class="tw-text-center tw-mb-2"
-					>
-						My achievements
-					</h3>
-					<EarnedBadgesSection
-						:badges-data="badgesData"
-						:lending-achievements="lendingAchievements"
-						:tiered-achievements="tieredAchievements"
-						@badge-clicked="handleBadgeClicked"
-					/>
-				</div>
-			</MyKivaContainer>
-		</section>
+		<EarnedBadgesSection
+			:badges-data="badgeData"
+			@badge-clicked="handleBadgeClicked"
+		/>
 	</www-page>
-	<BadgeModal
-		v-if="selectedBadgeData"
-		:show="showBadgeModal"
-		:badge="selectedBadgeData"
-		@badge-modal-closed="showBadgeModal = false"
-	/>
 </template>
 
 <script setup>
