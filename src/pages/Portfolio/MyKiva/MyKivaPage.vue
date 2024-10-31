@@ -208,13 +208,7 @@ const handleBadgeJourneyLevelClicked = payload => {
 };
 
 const handleBadgeModalClosed = isEarnedSection => {
-	if (state.value === STATE_JOURNEY) {
-		selectedBadgeData.value = undefined;
-		showBadgeModal.value = false;
-		return;
-	}
-
-	if (isEarnedSection) {
+	if (state.value === STATE_JOURNEY || isEarnedSection) {
 		selectedBadgeData.value = undefined;
 		showBadgeModal.value = false;
 		return;

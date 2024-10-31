@@ -144,15 +144,11 @@ const loadMoreBadges = () => {
 };
 
 const clickBadge = badge => {
-	const badgeCategory = badge.level === 0
-		? badge?.contentfulData?.[0]?.challengeName
-		: badge?.contentfulData?.find(data => data.level === badge.level)?.challengeName;
-
 	$kvTrackEvent(
 		'portfolio',
 		'click',
 		'already-earned-badge-modal-from-earned-badge-section',
-		badgeCategory,
+		badge.challengeName,
 		badge.level,
 	);
 	emit('badge-clicked', badge);
