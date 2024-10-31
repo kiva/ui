@@ -17,7 +17,7 @@
 							<div
 								class="tw-p-1 tw-cursor-pointer"
 								style="height: 148px;"
-								@click="() => $emit('badge-clicked', badge)"
+								@click="clickBadge(badge)"
 							>
 								<img
 									:src="getBadgeImgUrl(badge)"
@@ -41,6 +41,7 @@
 						<kv-button
 							class="tw-mt-2 tw-mx-auto"
 							variant="secondary"
+							v-kv-track-event="['portfolio', 'click', 'load-more-badges']"
 							@click="loadMoreBadges"
 						>
 							Load more
@@ -53,12 +54,19 @@
 </template>
 
 <script setup>
-import { computed, toRefs, ref } from 'vue';
+import {
+	computed,
+	toRefs,
+	ref,
+	inject,
+} from 'vue';
 import { format } from 'date-fns';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 
-defineEmits(['badge-clicked']);
+const $kvTrackEvent = inject('$kvTrackEvent');
+
+const emit = defineEmits(['badge-clicked']);
 
 const props = defineProps({
 	badgesData: {
@@ -133,6 +141,21 @@ const getBadgeDate = badge => {
 
 const loadMoreBadges = () => {
 	visibleOffset.value += 1;
+};
+
+const clickBadge = badge => {
+	const badgeCategory = badge.level === 0
+		? badge?.contentfulData?.[0]?.challengeName
+		: badge?.contentfulData?.find(data => data.level === badge.level)?.challengeName;
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		'already-earned-badge-modal-from-earned-badge-section',
+		badgeCategory,
+		badge.level,
+	);
+	emit('badge-clicked', badge);
 };
 </script>
 
