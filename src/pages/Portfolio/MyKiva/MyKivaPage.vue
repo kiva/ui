@@ -131,6 +131,7 @@ import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import useUserPreferences from '#src/composables/useUserPreferences';
 
 import {
 	ref,
@@ -150,6 +151,8 @@ const {
 	badgeAchievementData,
 	badgeData,
 } = useBadgeData(apollo);
+
+const { saveUserPreferences } = useUserPreferences(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -218,21 +221,39 @@ const handleSelectedLoan = loan => {
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
-apollo.query({ query: myKivaQuery })
-	.then(result => {
-		userInfo.value = result.data?.my ?? {};
-		lender.value = result.data?.my?.lender ?? null;
-		loans.value = result.data?.my?.loans?.values ?? [];
-		if (loans.value.length > 0) {
+const fetchMyKivaData = () => {
+	return apollo.query({ query: myKivaQuery })
+		.then(result => {
+			userInfo.value = result.data?.my ?? {};
+			lender.value = result.data?.my?.lender ?? null;
+			loans.value = result.data?.my?.loans?.values ?? [];
+			if (loans.value.length > 0) {
 			// eslint-disable-next-line prefer-destructuring
-			activeLoan.value = loans.value[0];
-			fetchLoanUpdates(activeLoan.value.id);
-		}
-	}).catch(e => {
-		logReadQueryError(e, 'MyKivaPage myKivaQuery');
-	});
+				activeLoan.value = loans.value[0];
+				fetchLoanUpdates(activeLoan.value.id);
+			}
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage myKivaQuery');
+		});
+};
 
-onMounted(() => {
+const saveMyKivaToUserPreferences = () => {
+	const preferences = userInfo.value?.userPreferences?.preferences;
+	const formattedPreference = typeof preferences === 'string'
+		? JSON.parse(userInfo.value?.userPreferences?.preferences)
+		: preferences;
+
+	if (!formattedPreference?.myKivaPageExp) {
+		saveUserPreferences({
+			userPreferences: userInfo.value?.userPreferences ?? null,
+			newPreference: {
+				myKivaPageExp: 1,
+			}
+		});
+	}
+};
+
+onMounted(async () => {
 	trackExperimentVersion(
 		apollo,
 		$kvTrackEvent,
@@ -243,7 +264,9 @@ onMounted(() => {
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 
+	await fetchMyKivaData();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+	saveMyKivaToUserPreferences();
 });
 </script>
