@@ -37,7 +37,7 @@
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
 				>
-					Level {{ badge.level }}/{{ getBadgeWithVisibleTiers(badge).achievementData.tiers.length }}
+					{{ levelCaption(badge) }}
 				</span>
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
@@ -71,6 +71,10 @@ const visibleBadges = computed(() => {
 		.filter(b => defaultBadges.includes(b.id))
 		.sort(indexIn(defaultBadges, 'id'));
 });
+
+const levelCaption = badge => {
+	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+};
 </script>
 
 <style lang="postcss" scoped>
