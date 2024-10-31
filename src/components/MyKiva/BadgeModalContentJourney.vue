@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ badge.description }}
+			{{ badgeWithVisibleTiers.description }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
@@ -38,7 +38,7 @@
 							:style="getLineStyle(positions[index - 1], position)"
 						/>
 						<img
-							:src="badge.contentfulData[index].imageUrl"
+							:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
 							alt="Badge"
 							style="height: 133px; width: 133px;"
 						>
@@ -49,12 +49,12 @@
 							tw-text-center tw-px-0.5 tw-z-2"
 						:style="getNumberCircleStyles()"
 					>
-						{{ badge.achievementData.totalProgressToAchievement }}
+						{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
 					</div>
 				</div>
 				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
-						{{ badge.contentfulData[index].levelName }}
+						{{ badgeWithVisibleTiers.contentfulData[index].levelName }}
 					</div>
 					<div class="tw-text-small">
 						{{ tierCaption(index) }}
@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, computed } from 'vue';
 import { format } from 'date-fns';
 import useIsMobile from '#src/composables/useIsMobile';
 import useBadgeModal,
@@ -87,6 +87,7 @@ import useBadgeModal,
 	BADGE_LOCKED
 } from '#src/composables/useBadgeModal';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -96,37 +97,43 @@ const props = defineProps({
 	},
 });
 
+const { getBadgeWithVisibleTiers } = useBadgeData();
+
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+
+const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
+
 const {
 	getTierPositions,
 	getLineComponent,
 	getLineStyle,
 	getBadgeShape,
 	getNumberCircleStyles,
-} = useBadgeModal(props.badge);
+} = useBadgeModal(badgeWithVisibleTiers.value);
 
 const emit = defineEmits(['badge-level-clicked']);
 
 const positions = ref(getTierPositions());
 
 const tierCaption = index => {
-	const tier = props.badge.achievementData.tiers[index];
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
 	if (tier.completedDate) {
 		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
-		return `${props.badge.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
+		return `${badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
 	}
 };
 
 const showEarnBadge = index => {
 	return (
-		!props.badge.achievementData.tiers[index - 1] || !!props.badge.achievementData.tiers[index - 1]?.completedDate
-	) && !props.badge.achievementData.tiers[index].completedDate;
+		!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]
+		|| !!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]?.completedDate
+	) && !badgeWithVisibleTiers.value.achievementData.tiers[index].completedDate;
 };
 
 const getBadgeStatus = index => {
-	const tier = props.badge.achievementData.tiers[index] ?? {};
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index] ?? {};
 	if (tier.completedDate) {
 		return BADGE_COMPLETED;
 	}
@@ -139,8 +146,8 @@ const getBadgeStatus = index => {
 const handleBadgeClick = index => {
 	if (getBadgeStatus(index) !== BADGE_LOCKED) {
 		emit('badge-level-clicked', {
-			challengeName: props.badge.challengeName,
-			tier: props.badge.achievementData.tiers[index]
+			challengeName: badgeWithVisibleTiers.value.challengeName,
+			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
 		});
 	}
 };

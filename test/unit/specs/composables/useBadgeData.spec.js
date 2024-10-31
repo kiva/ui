@@ -44,11 +44,11 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getCurrentTierData', () => {
+	describe('getActiveTierData', () => {
 		it('should get the current tier data', () => {
-			const { getCurrentTierData } = useBadgeData();
+			const { getActiveTierData } = useBadgeData();
 
-			expect(getCurrentTierData(badgeNoProgress)).toEqual({
+			expect(getActiveTierData(badgeNoProgress)).toEqual({
 				id: 'basic-needs',
 				level: 1,
 				levelName: 'Basic needs',
@@ -63,9 +63,9 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should get the current last data (with emoji)', () => {
-			const { getCurrentTierData } = useBadgeData();
+			const { getActiveTierData } = useBadgeData();
 
-			expect(getCurrentTierData(badgeLastTier)).toEqual({
+			expect(getActiveTierData(badgeLastTier)).toEqual({
 				id: 'basic-needs',
 				level: 7,
 				levelName: 'Basic needs✨100✨',
@@ -75,6 +75,27 @@ describe('useBadgeData.js', () => {
 				target: 100,
 				tierStatement: '',
 				completedDate: undefined,
+				learnMoreURL: ''
+			});
+		});
+
+		it('should get the current last data when all completed', () => {
+			const data = JSON.parse(JSON.stringify(badgeLastTier));
+			data.level = 7;
+			data.achievementData.tiers[6].completedDate = '2024-10-22T18:49:21Z';
+
+			const { getActiveTierData } = useBadgeData();
+
+			expect(getActiveTierData(data)).toEqual({
+				id: 'basic-needs',
+				level: 7,
+				levelName: 'Basic needs✨100✨',
+				challengeName: 'Basic needs',
+				imageUrl: '//images.ctfassets.net/j0p9a6ql0rn7/1LLL9K4PgaUZb3H0JLWEPU/4ed0ec9c5515fa25410b9e32d6a8e7cf/Basic_Needs_70.svg',
+				__typename: 'Tier',
+				target: 100,
+				tierStatement: '',
+				completedDate: '2024-10-22T18:49:21Z',
 				learnMoreURL: ''
 			});
 		});
@@ -118,6 +139,240 @@ describe('useBadgeData.js', () => {
 		it('should return expected filtered url for basic-needs', () => {
 			const { getFilteredUrl } = useBadgeData();
 			expect(getFilteredUrl({ id: ID_BASIC_NEEDS })).toEqual(BASIC_NEEDS_FILTER);
+		});
+	});
+
+	describe('getBadgeWithVisibleTiers', () => {
+		it('should return expected tiers for not started', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = undefined;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(3);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.achievementData.tiers.length).toBe(3);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+		});
+
+		it('should return expected tiers for tier 1', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 1;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(3);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.achievementData.tiers.length).toBe(3);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+		});
+
+		it('should return expected tiers for tier 2', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 2;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(3);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.achievementData.tiers.length).toBe(3);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+		});
+
+		it('should return expected tiers for tier 3', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 3;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(5);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.contentfulData[3].level).toBe(4);
+			expect(result.contentfulData[4].level).toBe(5);
+			expect(result.achievementData.tiers.length).toBe(5);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+			expect(result.achievementData.tiers[3].level).toBe(4);
+			expect(result.achievementData.tiers[4].level).toBe(5);
+		});
+
+		it('should return expected tiers for tier 4', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 4;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(5);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.contentfulData[3].level).toBe(4);
+			expect(result.contentfulData[4].level).toBe(5);
+			expect(result.achievementData.tiers.length).toBe(5);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+			expect(result.achievementData.tiers[3].level).toBe(4);
+			expect(result.achievementData.tiers[4].level).toBe(5);
+		});
+
+		it('should return expected tiers for tier 5', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 5;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(7);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.contentfulData[3].level).toBe(4);
+			expect(result.contentfulData[4].level).toBe(5);
+			expect(result.contentfulData[5].level).toBe(6);
+			expect(result.contentfulData[6].level).toBe(7);
+			expect(result.achievementData.tiers.length).toBe(7);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+			expect(result.achievementData.tiers[3].level).toBe(4);
+			expect(result.achievementData.tiers[4].level).toBe(5);
+			expect(result.achievementData.tiers[5].level).toBe(6);
+			expect(result.achievementData.tiers[6].level).toBe(7);
+		});
+
+		it('should return expected tiers for tier 6', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 6;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(7);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.contentfulData[3].level).toBe(4);
+			expect(result.contentfulData[4].level).toBe(5);
+			expect(result.contentfulData[5].level).toBe(6);
+			expect(result.contentfulData[6].level).toBe(7);
+			expect(result.achievementData.tiers.length).toBe(7);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+			expect(result.achievementData.tiers[3].level).toBe(4);
+			expect(result.achievementData.tiers[4].level).toBe(5);
+			expect(result.achievementData.tiers[5].level).toBe(6);
+			expect(result.achievementData.tiers[6].level).toBe(7);
+		});
+
+		it('should return expected tiers for tier 7', () => {
+			const apolloMock = {
+				query: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
+					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
+			};
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
+			const badgeData = combineBadgeData(
+				achievementData.userAchievementProgress.tieredLendingAchievements,
+				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+			)[0];
+			badgeData.level = 7;
+
+			const result = getBadgeWithVisibleTiers(badgeData);
+
+			expect(result.contentfulData.length).toBe(7);
+			expect(result.contentfulData[0].level).toBe(1);
+			expect(result.contentfulData[1].level).toBe(2);
+			expect(result.contentfulData[2].level).toBe(3);
+			expect(result.contentfulData[3].level).toBe(4);
+			expect(result.contentfulData[4].level).toBe(5);
+			expect(result.contentfulData[5].level).toBe(6);
+			expect(result.contentfulData[6].level).toBe(7);
+			expect(result.achievementData.tiers.length).toBe(7);
+			expect(result.achievementData.tiers[0].level).toBe(1);
+			expect(result.achievementData.tiers[1].level).toBe(2);
+			expect(result.achievementData.tiers[2].level).toBe(3);
+			expect(result.achievementData.tiers[3].level).toBe(4);
+			expect(result.achievementData.tiers[4].level).toBe(5);
+			expect(result.achievementData.tiers[5].level).toBe(6);
+			expect(result.achievementData.tiers[6].level).toBe(7);
 		});
 	});
 });

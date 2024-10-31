@@ -134,8 +134,8 @@ export default function useBadgeData() {
 
 					// Get specific properties used in the UI
 					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
-					const hasStarted = completedTiers.length > 0;
-					const level = hasStarted ? completedTiers[completedTiers.length - 1].level : undefined;
+					const hasStarted = completedTiers.length > 0 || achievementData?.totalProgressToAchievement > 0;
+					const level = hasStarted ? completedTiers?.[completedTiers.length - 1]?.level : undefined;
 
 					// Clean up milestone progress date format
 					const { milestoneProgress } = achievementData;
@@ -171,20 +171,14 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Gets the current (incomplete) tier for the provided badge
+	 * Gets the active (inprogress or completed final) tier for the provided badge
 	 *
-	 * @param badge The badge to get the current tier for
-	 * @returns The current tier of the badge
+	 * @param badge The badge to get the active tier for
+	 * @returns The active tier of the badge
 	 */
-	const getCurrentTierData = badge => {
-		let currentTier;
-		badge.achievementData.tiers.forEach(t => {
-			if (!currentTier) {
-				currentTier = t;
-			} else if (!!currentTier.completedDate && !t.completedDate) {
-				currentTier = t;
-			}
-		});
+	const getActiveTierData = badge => {
+		const levelIndex = (badge.level === badge.achievementData.tiers.length ? badge.level - 1 : badge.level) ?? 0;
+		const currentTier = badge.achievementData.tiers[levelIndex];
 		/**
 		 * {
 		 *   "id": "",
@@ -282,15 +276,37 @@ export default function useBadgeData() {
 		}
 	};
 
+	/**
+	 * Gets the badge data visible tiers to ensure the user doesn't get overwhelmed
+	 *
+	 * @param combinedBadgeData The combined data for the badge
+	 * @returns The badge data with tiers to show to the user
+	 */
+	const getBadgeWithVisibleTiers = combinedBadgeData => {
+		const currentTier = getActiveTierData(combinedBadgeData);
+		const visibleData = JSON.parse(JSON.stringify(combinedBadgeData));
+
+		if (currentTier.level < 4) {
+			visibleData.contentfulData.splice(3);
+			visibleData.achievementData.tiers.splice(3);
+		} else if (currentTier.level > 3 && currentTier.level < 6) {
+			visibleData.contentfulData.splice(5);
+			visibleData.achievementData.tiers.splice(5);
+		}
+
+		return visibleData;
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
 		fetchLoanIdData,
 		combineBadgeData,
 		getContentfulLevelData,
-		getCurrentTierData,
+		getActiveTierData,
 		getTierBadgeDataByLevel,
 		getFilteredUrl,
+		getBadgeWithVisibleTiers,
 		badgeAchievementData,
 		badgeData,
 		badgeLoanIdData,
