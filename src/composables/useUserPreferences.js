@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 export default function useUserPreferences(apollo) {
 	const createUserPreferences = () => {
@@ -20,8 +21,8 @@ export default function useUserPreferences(apollo) {
 					preferences: '',
 				},
 			});
-		} catch (error) {
-			throw new Error(error);
+		} catch (e) {
+			logReadQueryError(e, 'useUserPreferences createUserPreferences');
 		}
 	};
 
@@ -51,8 +52,8 @@ export default function useUserPreferences(apollo) {
 					preferences,
 				},
 			});
-		} catch (error) {
-			throw new Error(error);
+		} catch (e) {
+			logReadQueryError(e, 'useUserPreferences updateUserPreferences');
 		}
 	};
 
@@ -67,8 +68,8 @@ export default function useUserPreferences(apollo) {
 			const response = await updateUserPreferences({ userPreferences: currentPreferences, newPreference });
 
 			return response;
-		} catch (error) {
-			throw new Error(error);
+		} catch (e) {
+			logReadQueryError(e, 'useUserPreferences saveUserPreferences');
 		}
 	};
 

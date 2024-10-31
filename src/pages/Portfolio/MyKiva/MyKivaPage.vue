@@ -217,14 +217,14 @@ const fetchMyKivaData = () => {
 		});
 };
 
-const fetchUserPreferences = async () => {
+const saveMyKivaToUserPreferences = () => {
 	const preferences = userInfo.value?.userPreferences?.preferences;
 	const formattedPreference = typeof preferences === 'string'
 		? JSON.parse(userInfo.value?.userPreferences?.preferences)
 		: preferences;
 
 	if (!formattedPreference?.myKivaPageExp) {
-		await saveUserPreferences({
+		saveUserPreferences({
 			userPreferences: userInfo.value?.userPreferences ?? null,
 			newPreference: {
 				myKivaPageExp: 1,
@@ -247,6 +247,6 @@ onMounted(async () => {
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
-	fetchUserPreferences();
+	saveMyKivaToUserPreferences();
 });
 </script>

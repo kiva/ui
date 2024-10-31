@@ -42,7 +42,7 @@ describe('useUserPreferences.js', () => {
 	});
 
 	describe('saveUserPreferences', () => {
-		it('should create user preferences expected', async () => {
+		it('should save user preferences expected', async () => {
 			const apolloMock = {
 				mutate: jest.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
