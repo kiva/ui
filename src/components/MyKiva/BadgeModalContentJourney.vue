@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ badgeWthVisibleTiers.description }}
+			{{ badgeWithVisibleTiers.description }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
@@ -38,7 +38,7 @@
 							:style="getLineStyle(positions[index - 1], position)"
 						/>
 						<img
-							:src="badgeWthVisibleTiers.contentfulData[index].imageUrl"
+							:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
 							alt="Badge"
 							style="height: 133px; width: 133px;"
 						>
@@ -49,12 +49,12 @@
 							tw-text-center tw-px-0.5 tw-z-2"
 						:style="getNumberCircleStyles()"
 					>
-						{{ badgeWthVisibleTiers.achievementData.totalProgressToAchievement }}
+						{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
 					</div>
 				</div>
 				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
-						{{ badgeWthVisibleTiers.contentfulData[index].levelName }}
+						{{ badgeWithVisibleTiers.contentfulData[index].levelName }}
 					</div>
 					<div class="tw-text-small">
 						{{ tierCaption(index) }}
@@ -101,7 +101,7 @@ const { getBadgeWithVisibleTiers } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
-const badgeWthVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
+const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
 
 const {
 	getTierPositions,
@@ -109,31 +109,31 @@ const {
 	getLineStyle,
 	getBadgeShape,
 	getNumberCircleStyles,
-} = useBadgeModal(badgeWthVisibleTiers.value);
+} = useBadgeModal(badgeWithVisibleTiers.value);
 
 const emit = defineEmits(['badge-level-clicked']);
 
 const positions = ref(getTierPositions());
 
 const tierCaption = index => {
-	const tier = badgeWthVisibleTiers.value.achievementData.tiers[index];
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
 	if (tier.completedDate) {
 		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
-		return `${badgeWthVisibleTiers.value.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
+		return `${badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
 	}
 };
 
 const showEarnBadge = index => {
 	return (
-		!badgeWthVisibleTiers.value.achievementData.tiers[index - 1]
-		|| !!badgeWthVisibleTiers.value.achievementData.tiers[index - 1]?.completedDate
-	) && !badgeWthVisibleTiers.value.achievementData.tiers[index].completedDate;
+		!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]
+		|| !!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]?.completedDate
+	) && !badgeWithVisibleTiers.value.achievementData.tiers[index].completedDate;
 };
 
 const getBadgeStatus = index => {
-	const tier = badgeWthVisibleTiers.value.achievementData.tiers[index] ?? {};
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index] ?? {};
 	if (tier.completedDate) {
 		return BADGE_COMPLETED;
 	}
@@ -146,8 +146,8 @@ const getBadgeStatus = index => {
 const handleBadgeClick = index => {
 	if (getBadgeStatus(index) !== BADGE_LOCKED) {
 		emit('badge-level-clicked', {
-			challengeName: badgeWthVisibleTiers.value.challengeName,
-			tier: badgeWthVisibleTiers.value.achievementData.tiers[index]
+			challengeName: badgeWithVisibleTiers.value.challengeName,
+			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
 		});
 	}
 };
