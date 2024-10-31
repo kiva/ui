@@ -28,7 +28,7 @@
 				style="height: 148px;"
 			>
 				<img
-					:src="getCurrentTierData(badge).imageUrl"
+					:src="getActiveTierData(badge).imageUrl"
 					class="tw-h-full tw-mx-auto"
 				>
 			</div>
@@ -64,7 +64,7 @@ const props = defineProps({
 	},
 });
 
-const { getCurrentTierData } = useBadgeData();
+const { getActiveTierData } = useBadgeData();
 
 const visibleBadges = computed(() => {
 	return props.badgeData

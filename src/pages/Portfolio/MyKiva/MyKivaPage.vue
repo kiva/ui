@@ -108,7 +108,6 @@
 		</MyKivaContainer>
 		<EarnedBadgesSection
 			:badges-data="badgeData"
-			@badge-clicked="handleBadgeClicked"
 		/>
 	</www-page>
 </template>
