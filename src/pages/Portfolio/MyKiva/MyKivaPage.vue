@@ -100,6 +100,7 @@
 						:lender="lender"
 						:state="state"
 						:tier="tier"
+						:is-earned-section="isEarnedSectionModal"
 						@badge-modal-closed="handleBadgeModalClosed"
 						@badge-level-clicked="handleBadgeJourneyLevelClicked"
 					/>
@@ -108,6 +109,7 @@
 		</MyKivaContainer>
 		<EarnedBadgesSection
 			:badges-data="badgeData"
+			@badge-clicked="handleEarnedBadgeClicked"
 		/>
 	</www-page>
 </template>
@@ -163,6 +165,7 @@ const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_JOURNEY);
 const tier = ref(null);
+const isEarnedSectionModal = ref(false);
 
 const isLoading = computed(() => !lender.value);
 
@@ -176,6 +179,16 @@ const handleShowNavigation = () => {
 const handleBadgeSectionClicked = badge => {
 	state.value = STATE_JOURNEY;
 	selectedBadgeData.value = badge;
+	isEarnedSectionModal.value = false;
+	showBadgeModal.value = true;
+};
+
+const handleEarnedBadgeClicked = badge => {
+	const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
+	state.value = STATE_EARNED;
+	tier.value = selectedTier;
+	selectedBadgeData.value = badge;
+	isEarnedSectionModal.value = true;
 	showBadgeModal.value = true;
 };
 
@@ -194,8 +207,8 @@ const handleBadgeJourneyLevelClicked = payload => {
 	);
 };
 
-const handleBadgeModalClosed = () => {
-	if (state.value === STATE_JOURNEY) {
+const handleBadgeModalClosed = isEarnedSection => {
+	if (state.value === STATE_JOURNEY || isEarnedSection) {
 		selectedBadgeData.value = undefined;
 		showBadgeModal.value = false;
 		return;
