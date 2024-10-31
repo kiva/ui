@@ -14,7 +14,7 @@ export default ({
 	apolloBatching,
 	stellateGraphqlUri,
 }) => {
-	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1;
+	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1 || uri.indexOf('stellate') > -1;
 
 	const options = {
 		uri,
@@ -25,6 +25,11 @@ export default ({
 			// fix request blocked b/c of self-signed certificate on dev-vm.
 			strictSSL: !onVm,
 		}
+	};
+
+	const stellateOptions = {
+		...options,
+		uri: stellateGraphqlUri ?? uri,
 	};
 
 	const link = split(
@@ -46,7 +51,8 @@ export default ({
 			// use default graphql uri
 			return false;
 		},
-		(!apolloBatching ? new HttpLink(options) : new BatchHttpLink(options)), // function returns TRUE use this
+		// eslint-disable-next-line max-len
+		(!apolloBatching ? new HttpLink(stellateOptions) : new BatchHttpLink(stellateOptions)), // function returns TRUE use this
 		(!apolloBatching ? new HttpLink(options) : new BatchHttpLink(options)), // function returns FALSE use this
 	);
 
