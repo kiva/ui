@@ -9789,5 +9789,5 @@ export const badgeLastTier = {
 		]
 	},
 	hasStarted: false,
-	level: undefined,
+	level: 6,
 };

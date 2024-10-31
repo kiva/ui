@@ -28,7 +28,7 @@
 				style="height: 148px;"
 			>
 				<img
-					:src="getCurrentTierData(badge).imageUrl"
+					:src="getActiveTierData(badge).imageUrl"
 					class="tw-h-full tw-mx-auto"
 				>
 			</div>
@@ -37,7 +37,7 @@
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
 				>
-					Level {{ badge.level }}/5
+					{{ levelCaption(badge) }}
 				</span>
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
@@ -64,13 +64,17 @@ const props = defineProps({
 	},
 });
 
-const { getCurrentTierData } = useBadgeData();
+const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
 const visibleBadges = computed(() => {
 	return props.badgeData
 		.filter(b => defaultBadges.includes(b.id))
 		.sort(indexIn(defaultBadges, 'id'));
 });
+
+const levelCaption = badge => {
+	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+};
 </script>
 
 <style lang="postcss" scoped>
