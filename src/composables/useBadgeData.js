@@ -135,7 +135,7 @@ export default function useBadgeData() {
 					// Get specific properties used in the UI
 					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
 					const hasStarted = completedTiers.length > 0 || achievementData?.totalProgressToAchievement > 0;
-					const level = hasStarted ? completedTiers?.[completedTiers.length - 1]?.level ?? 1 : undefined;
+					const level = hasStarted ? completedTiers?.[completedTiers.length - 1]?.level : undefined;
 
 					// Clean up milestone progress date format
 					const { milestoneProgress } = achievementData;

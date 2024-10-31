@@ -63,7 +63,7 @@ export const achievementData = {
 			{
 				__typename: 'TieredLendingAchievement',
 				id: 'climate-action',
-				totalProgressToAchievement: 0,
+				totalProgressToAchievement: 1,
 				tiers: [
 					{
 						__typename: 'Tier',
@@ -9128,7 +9128,7 @@ export const combinedData = [
 		achievementData: {
 			__typename: 'TieredLendingAchievement',
 			id: 'climate-action',
-			totalProgressToAchievement: 0,
+			totalProgressToAchievement: 1,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9188,7 +9188,7 @@ export const combinedData = [
 				}
 			]
 		},
-		hasStarted: false,
+		hasStarted: true,
 		level: undefined,
 	},
 	{
