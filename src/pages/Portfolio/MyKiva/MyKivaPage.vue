@@ -201,35 +201,39 @@ const handleSelectedLoan = loan => {
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
-apollo.query({ query: myKivaQuery })
-	.then(result => {
-		userInfo.value = result.data?.my ?? {};
-		lender.value = result.data?.my?.lender ?? null;
-		loans.value = result.data?.my?.loans?.values ?? [];
-		if (loans.value.length > 0) {
+const fetchMyKivaData = () => {
+	return apollo.query({ query: myKivaQuery })
+		.then(result => {
+			userInfo.value = result.data?.my ?? {};
+			lender.value = result.data?.my?.lender ?? null;
+			loans.value = result.data?.my?.loans?.values ?? [];
+			if (loans.value.length > 0) {
 			// eslint-disable-next-line prefer-destructuring
-			activeLoan.value = loans.value[0];
-			fetchLoanUpdates(activeLoan.value.id);
-
-			const preferences = userInfo.value?.userPreferences?.preferences;
-			const formattedPreference = typeof preferences === 'string'
-				? JSON.parse(userInfo.value?.userPreferences?.preferences)
-				: preferences;
-
-			if (!formattedPreference?.myKivaPageExp) {
-				saveUserPreferences({
-					userPreferences: userInfo.value?.userPreferences ?? null,
-					newPreference: {
-						myKivaPageExp: 1,
-					}
-				});
+				activeLoan.value = loans.value[0];
+				fetchLoanUpdates(activeLoan.value.id);
 			}
-		}
-	}).catch(e => {
-		logReadQueryError(e, 'MyKivaPage myKivaQuery');
-	});
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage myKivaQuery');
+		});
+};
 
-onMounted(() => {
+const fetchUserPreferences = async () => {
+	const preferences = userInfo.value?.userPreferences?.preferences;
+	const formattedPreference = typeof preferences === 'string'
+		? JSON.parse(userInfo.value?.userPreferences?.preferences)
+		: preferences;
+
+	if (!formattedPreference?.myKivaPageExp) {
+		await saveUserPreferences({
+			userPreferences: userInfo.value?.userPreferences ?? null,
+			newPreference: {
+				myKivaPageExp: 1,
+			}
+		});
+	}
+};
+
+onMounted(async () => {
 	trackExperimentVersion(
 		apollo,
 		$kvTrackEvent,
@@ -240,7 +244,9 @@ onMounted(() => {
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 
+	await fetchMyKivaData();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+	fetchUserPreferences();
 });
 </script>

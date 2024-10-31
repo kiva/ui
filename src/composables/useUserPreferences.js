@@ -1,27 +1,31 @@
 import { gql } from 'graphql-tag';
 
 export default function useUserPreferences(apollo) {
-	const	createUserPreferences = () => {
-		const createUserPreferencesMutation = gql`
-			mutation createUserPreferences($preferences: String) {
-				my {
-					createUserPreferences(userPreferences: {preferences: $preferences}) {
-						id
-						preferences
+	const createUserPreferences = () => {
+		try {
+			const createUserPreferencesMutation = gql`
+				mutation createUserPreferences($preferences: String) {
+					my {
+						createUserPreferences(userPreferences: {preferences: $preferences}) {
+							id
+							preferences
+						}
 					}
 				}
-			}
-		`;
+			`;
 
-		return apollo.mutate({
-			mutation: createUserPreferencesMutation,
-			variables: {
-				preferences: '',
-			},
-		});
+			return apollo.mutate({
+				mutation: createUserPreferencesMutation,
+				variables: {
+					preferences: '',
+				},
+			});
+		} catch (error) {
+			throw new Error(error);
+		}
 	};
 
-	const updateUserPreferences = ({ userPreferences, newPreference }) => {
+	const updateUserPreferences = async ({ userPreferences, newPreference }) => {
 		try {
 			const preferences = JSON.stringify({ ...userPreferences.preferences, ...newPreference });
 
@@ -53,13 +57,19 @@ export default function useUserPreferences(apollo) {
 	};
 
 	const saveUserPreferences = async ({ userPreferences, newPreference }) => {
-		let currentPreferences = userPreferences;
-		if (!userPreferences?.id) {
-			const createPreferences = await createUserPreferences();
-			currentPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
-		}
+		try {
+			let currentPreferences = userPreferences;
+			if (!userPreferences?.id) {
+				const createPreferences = await createUserPreferences();
+				currentPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
+			}
 
-		return updateUserPreferences({ userPreferences: currentPreferences, newPreference });
+			const response = await updateUserPreferences({ userPreferences: currentPreferences, newPreference });
+
+			return response;
+		} catch (error) {
+			throw new Error(error);
+		}
 	};
 
 	return {
