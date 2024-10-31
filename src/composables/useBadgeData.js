@@ -277,12 +277,12 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Gets the visible tiers to ensure the user doesn't get overwhelmed
+	 * Gets the badge data visible tiers to ensure the user doesn't get overwhelmed
 	 *
 	 * @param combinedBadgeData The combined data for the badge
-	 * @returns The tiers to show to the user
+	 * @returns The badge data with tiers to show to the user
 	 */
-	const getVisibleTiers = combinedBadgeData => {
+	const getBadgeWithVisibleTiers = combinedBadgeData => {
 		const currentTier = getActiveTierData(combinedBadgeData);
 		const visibleData = JSON.parse(JSON.stringify(combinedBadgeData));
 
@@ -306,7 +306,7 @@ export default function useBadgeData() {
 		getActiveTierData,
 		getTierBadgeDataByLevel,
 		getFilteredUrl,
-		getVisibleTiers,
+		getBadgeWithVisibleTiers,
 		badgeAchievementData,
 		badgeData,
 		badgeLoanIdData,

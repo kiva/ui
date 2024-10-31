@@ -142,21 +142,21 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getVisibleTiers', () => {
+	describe('getBadgeWithVisibleTiers', () => {
 		it('should return expected tiers for not started', () => {
 			const apolloMock = {
 				query: jest.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = undefined;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(3);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -174,14 +174,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 1;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(3);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -199,14 +199,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 2;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(3);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -224,14 +224,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 3;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(5);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -253,14 +253,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 4;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(5);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -282,14 +282,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 5;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(7);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -315,14 +315,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 6;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(7);
 			expect(result.contentfulData[0].level).toBe(1);
@@ -348,14 +348,14 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
-			const { combineBadgeData, getContentfulLevelData, getVisibleTiers } = useBadgeData(apolloMock);
+			const { combineBadgeData, getContentfulLevelData, getBadgeWithVisibleTiers } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			)[0];
 			badgeData.level = 7;
 
-			const result = getVisibleTiers(badgeData);
+			const result = getBadgeWithVisibleTiers(badgeData);
 
 			expect(result.contentfulData.length).toBe(7);
 			expect(result.contentfulData[0].level).toBe(1);

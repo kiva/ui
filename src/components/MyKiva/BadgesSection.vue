@@ -37,7 +37,7 @@
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
 				>
-					Level {{ badge.level }}/5
+					Level {{ badge.level }}/{{ getBadgeWithVisibleTiers(badge).achievementData.tiers.length }}
 				</span>
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
@@ -64,7 +64,7 @@ const props = defineProps({
 	},
 });
 
-const { getActiveTierData } = useBadgeData();
+const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
 const visibleBadges = computed(() => {
 	return props.badgeData
