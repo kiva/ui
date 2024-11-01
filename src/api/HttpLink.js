@@ -38,14 +38,12 @@ export default ({
 			if (!stellateGraphqlUri) {
 				return false;
 			}
-			console.log('- - - - - - - - - -');
-			console.log('operation name:', operation.operationName);
 			// check if the operation is cachable
-			if (cachableQueryOperationNames.includes(operation.operationName)) {
-				console.log('cachable operation detected');
+			if (cachableQueryOperationNames.includes(operation.operationName)
+				// only use stellate uri if the response is ok, retry failed queries to origin instead
+				&& operation.getContext().response.ok !== false) {
 				// update our options if we are caching the query
 				options.uri = stellateGraphqlUri;
-				console.log('using stellate uri:', options.uri);
 				return true;
 			}
 			// use default graphql uri
