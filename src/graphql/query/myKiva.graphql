@@ -55,6 +55,7 @@ query myKivaQuery {
     }
     userAccount {
       id
+      firstName
       balance
     }
     trustee {

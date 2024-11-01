@@ -40,16 +40,20 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	userInfo: {
+		type: Object,
+		default: () => ({}),
+	},
 	isLoading: {
 		type: Boolean,
 		default: false,
 	},
 });
 
-const { lender } = toRefs(props);
+const { lender, userInfo } = toRefs(props);
 
 const lenderName = computed(() => {
-	return lender?.value?.name ?? '';
+	return userInfo?.value?.userAccount?.firstName ?? '';
 });
 
 const lenderImageUrl = computed(() => {

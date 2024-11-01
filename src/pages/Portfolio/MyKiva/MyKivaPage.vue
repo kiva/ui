@@ -11,6 +11,7 @@
 		/>
 		<MyKivaProfile
 			:lender="lender"
+			:user-info="userInfo"
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
