@@ -54,7 +54,7 @@
 				</div>
 				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
-						{{ badgeWithVisibleTiers.contentfulData[index].levelName }}
+						{{ getTierName(index) }}
 					</div>
 					<div class="tw-text-small">
 						{{ tierCaption(index) }}
@@ -141,6 +141,11 @@ const getBadgeStatus = index => {
 		return BADGE_IN_PROGRESS;
 	}
 	return BADGE_LOCKED;
+};
+
+const getTierName = index => {
+	const contentfulData = badgeWithVisibleTiers.value.contentfulData[index];
+	return `${contentfulData.challengeName} ${contentfulData.levelName}`;
 };
 
 const handleBadgeClick = index => {
