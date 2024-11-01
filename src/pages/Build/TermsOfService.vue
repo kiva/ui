@@ -39,7 +39,7 @@
 			</p>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
-				"Kiva API" means the set of web services provided by Kiva at api.kivaws.org for purposes of programmatically accessing data or information in or through the Kiva microlending platform.
+				"Kiva API" means the set of web services provided by Kiva at api.kivaws.org or gateway.production.kiva.org for purposes of programmatically accessing data or information in or through the Kiva microlending platform.
 			</p>
 			<p>
 				<!-- eslint-disable-next-line max-len -->

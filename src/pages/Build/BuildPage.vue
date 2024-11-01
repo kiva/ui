@@ -22,7 +22,7 @@
 				before embarking on your first application.
 			</p>
 			<p>
-				Check out our <a href="https://api.kivaws.org/graphql"> GraphQL API methods</a>.
+				Check out our <a href="https://gateway.production.kiva.org/graphql"> GraphQL API methods</a>.
 			</p>
 			<h2>Share your app </h2>
 			<p>
