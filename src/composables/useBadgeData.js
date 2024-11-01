@@ -251,6 +251,7 @@ export default function useBadgeData() {
 			...badge,
 			contentfulData,
 			achievementData,
+			tierName: `${(contentfulData.challengeName ?? '')} ${(contentfulData.levelName ?? '')}`
 		};
 	};
 

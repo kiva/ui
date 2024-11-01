@@ -11,7 +11,7 @@
 				>
 			</BadgeContainer>
 			<div>
-				<h3>{{ badge.challengeName }}</h3>
+				<h3>{{ tierBadgeData.tierName }}</h3>
 				<p>{{ subHeader }}</p>
 			</div>
 		</div>

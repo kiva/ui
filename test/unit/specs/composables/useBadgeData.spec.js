@@ -111,6 +111,7 @@ describe('useBadgeData.js', () => {
 				...sampleBadge,
 				contentfulData: sampleBadge.contentfulData?.[tier - 1],
 				achievementData: sampleBadge.achievementData?.tiers?.[tier - 1],
+				tierName: `${sampleBadge.contentfulData?.[tier - 1].challengeName} ${sampleBadge.contentfulData?.[tier - 1].levelName}`,
 			});
 		});
 	});
