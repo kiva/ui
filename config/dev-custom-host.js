@@ -18,6 +18,10 @@ export default merge(base, devVm, {
 		gaId: 'UA-11686022-7', // dev-vm property
 		enableSentry: false,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
+		// Testing values for stellate, uncomment and adjust as needed
+		// stellateGraphqlUri: process.env.STELLATE_GRAPHQL_URI || 'https://kiva.stellate.sh',
+		// eslint-disable-next-line max-len
+		// stellateCachedOperations: process.env.STELLATE_CACHED_OPERATIONS || 'configSetting,experimentIds,experimentSetting',
 		auth0: {
 			loginRedirectUrls: {
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.development.kiva.org/authenticate?authLevel=recent',

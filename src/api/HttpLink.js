@@ -35,7 +35,6 @@ export default ({
 			if (!stellateGraphqlUri || cachableQueryOperationNames.length === 0) {
 				return false;
 			}
-			console.log('operation getContext().response: ', operation.getContext()?.response);
 			// check if the operation is cachable
 			if (cachableQueryOperationNames.includes(operation.operationName)
 				// only use stellate uri if the response is ok or undefined, retry failed queries to origin instead
