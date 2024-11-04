@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		class="badge-modal"
+		:class="{'badge-modal': !isJourneyActive}"
 		:visible="show"
 		:title="title"
 		@lightbox-closed="closeLightbox"

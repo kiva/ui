@@ -105,6 +105,7 @@
 							:is-earned-section="isEarnedSectionModal"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
+							@back-to-journey="handleBackToJourney"
 						/>
 					</div>
 				</section>
