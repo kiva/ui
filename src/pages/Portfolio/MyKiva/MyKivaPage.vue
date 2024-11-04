@@ -47,71 +47,73 @@
 				</div>
 			</section>
 		</MyKivaContainer>
-		<section class="tw-my-2">
-			<MyKivaStats :user-achievements="badgeAchievementData" />
-			<MyKivaContainer>
-				<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
-					<router-link
-						v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
-						to="/portfolio/lending-stats"
-						class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
-					>
-						See all lending stats
-					</router-link>
-					<button
-						class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
+		<template v-if="badgeAchievementData">
+			<section class="tw-my-2">
+				<MyKivaStats :user-achievements="badgeAchievementData" />
+				<MyKivaContainer>
+					<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
+						<router-link
+							v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+							to="/portfolio/lending-stats"
+							class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
+						>
+							See all lending stats
+						</router-link>
+						<button
+							class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
 							tw-bg-action hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
-						v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
-						@click="$router.push('/lend-by-category')"
-						variant="secondary"
-					>
-						Make a loan
-					</button>
-				</div>
-			</MyKivaContainer>
-		</section>
-		<MyKivaContainer>
-			<section class="tw-py-2">
-				<div
-					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-					style="line-height: 0;"
-				>
-					<span
-						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-						style="line-height: 0; font-weight: 600;"
-					>
-						BADGES AND ACHIEVEMENTS
-					</span>
-				</div>
-				<div class="tw-mt-3">
-					<h3
-						class="tw-text-center tw-mb-2"
-					>
-						My impact journeys
-					</h3>
-					<BadgesSection
-						:badge-data="badgeData"
-						@badge-clicked="handleBadgeSectionClicked"
-					/>
-
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						:is-earned-section="isEarnedSectionModal"
-						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeJourneyLevelClicked"
-					/>
-				</div>
+							v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
+							@click="$router.push('/lend-by-category')"
+							variant="secondary"
+						>
+							Make a loan
+						</button>
+					</div>
+				</MyKivaContainer>
 			</section>
-		</MyKivaContainer>
-		<EarnedBadgesSection
-			:badges-data="badgeData"
-			@badge-clicked="handleEarnedBadgeClicked"
-		/>
+			<MyKivaContainer>
+				<section class="tw-py-2">
+					<div
+						class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
+						style="line-height: 0;"
+					>
+						<span
+							class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
+							style="line-height: 0; font-weight: 600;"
+						>
+							BADGES AND ACHIEVEMENTS
+						</span>
+					</div>
+					<div class="tw-mt-3">
+						<h3
+							class="tw-text-center tw-mb-2"
+						>
+							My impact journeys
+						</h3>
+						<BadgesSection
+							:badge-data="badgeData"
+							@badge-clicked="handleBadgeSectionClicked"
+						/>
+
+						<BadgeModal
+							v-if="selectedBadgeData"
+							:show="showBadgeModal"
+							:badge="selectedBadgeData"
+							:lender="lender"
+							:state="state"
+							:tier="tier"
+							:is-earned-section="isEarnedSectionModal"
+							@badge-modal-closed="handleBadgeModalClosed"
+							@badge-level-clicked="handleBadgeJourneyLevelClicked"
+						/>
+					</div>
+				</section>
+			</MyKivaContainer>
+			<EarnedBadgesSection
+				:badges-data="badgeData"
+				@badge-clicked="handleEarnedBadgeClicked"
+			/>
+		</template>
 	</www-page>
 </template>
 
