@@ -123,6 +123,14 @@ export default {
 			}).then(({ data }) => {
 				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
 			});
+		},
+		hasSeenMyKivaPage(userData) {
+			const preferences = userData?.userPreferences?.preferences ?? null;
+			const formattedPreference = typeof preferences === 'string'
+				? JSON.parse(userData?.userPreferences?.preferences)
+				: preferences;
+
+			return formattedPreference?.myKivaPageExp ?? 0;
 		}
 	},
 	created() {
@@ -135,7 +143,7 @@ export default {
 		const userData = portfolioQueryData?.my ?? {};
 		const loanCount = userData.lender?.loanCount ?? 0;
 
-		if (version === 'b' && loanCount < MY_KIVA_LOAN_LIMIT) {
+		if ((version === 'b' && loanCount < MY_KIVA_LOAN_LIMIT) || this.hasSeenMyKivaPage(userData)) {
 			this.showMyKivaPage = true;
 		} else {
 			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');

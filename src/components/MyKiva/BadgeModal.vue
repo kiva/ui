@@ -6,6 +6,7 @@
 			:badge="badge"
 			:lender="lender"
 			:tier="tier"
+			:is-earned-section="isEarnedSection"
 			@badge-level-clicked="handleBadgeLevelClicked"
 		/>
 	</KvLightbox>
@@ -42,11 +43,15 @@ const props = defineProps({
 	tier: {
 		type: Object,
 		default: () => ({}),
+	},
+	isEarnedSection: {
+		type: Boolean,
+		default: () => false,
 	}
 });
 
 const closeLightbox = () => {
-	emit('badge-modal-closed');
+	emit('badge-modal-closed', props.isEarnedSection);
 };
 
 const handleBadgeLevelClicked = e => {

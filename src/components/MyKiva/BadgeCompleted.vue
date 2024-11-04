@@ -20,13 +20,7 @@
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
 				{{ funFact }}<a
 					:href="learnMoreLink"
-					v-kv-track-event="[
-						'portfolio',
-						'click',
-						'Already earned badge modal - Learn more',
-						badgeCategory,
-						badgeLevel
-					]"
+					@click="trackLearnMore"
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"
 				> Learn more</a>
 			</h2>
@@ -36,13 +30,7 @@
 		</div>
 		<KvSocialShareButton
 			class="share-button"
-			v-kv-track-event="[
-				'portfolio',
-				'click',
-				'Already earned badge modal - Share badge',
-				badgeCategory,
-				badgeLevel
-			]"
+			@click="trackSharing"
 			variant="primary"
 			modal-title="Celebrate your badge!"
 			:share-message="shareMessage"
@@ -73,10 +61,13 @@ import {
 	defineProps,
 	computed,
 	toRefs,
-	onMounted
+	onMounted,
+	inject,
 } from 'vue';
 import { format } from 'date-fns';
 import { mdiExportVariant } from '@mdi/js';
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	badge: {
@@ -90,10 +81,20 @@ const props = defineProps({
 	tier: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isEarnedSection: {
+		type: Boolean,
+		default: () => false,
+	},
 });
 
-const { badge, lender, tier } = toRefs(props);
+const {
+	badge,
+	lender,
+	tier,
+	isEarnedSection
+} = toRefs(props);
+
 const { getTierBadgeDataByLevel } = useBadgeData();
 
 const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
@@ -110,6 +111,9 @@ const utmContent = computed(() => {
 });
 
 const badgeImage = computed(() => {
+	if (!tier.value) {
+		return badge.value.contentfulData?.[0]?.imageUrl ?? '';
+	}
 	return badgeData.value.contentfulData?.imageUrl ?? '';
 });
 
@@ -120,6 +124,9 @@ const badgeLevel = computed(() => {
 });
 
 const funFact = computed(() => {
+	if (!tier.value) {
+		return badge.value.contentfulData?.[0]?.shareFact ?? '';
+	}
 	return badgeData.value.contentfulData?.shareFact ?? '';
 });
 
@@ -127,11 +134,47 @@ const funFactSource = computed(() => {
 	return badgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
 const learnMoreLink = computed(() => badgeData.value.contentfulData?.shareFactUrl ?? '');
-const earnedDate = computed(() => `Earned ${
-	format(
-		new Date(badgeData.value?.achievementData?.completedDate ?? null),
-		'MMMM do, yyyy'
-	)}`);
+const earnedDate = computed(() => {
+	let earnedAtDate = '';
+	if (!tier.value) {
+		earnedAtDate = badge.value?.earnedAtDate ?? null;
+	} else {
+		earnedAtDate = badgeData.value?.achievementData?.completedDate ?? null;
+	}
+	return `Earned ${
+		format(
+			new Date(earnedAtDate),
+			'MMMM do, yyyy'
+		)}`;
+});
+
+const trackLearnMore = () => {
+	const label = isEarnedSection.value
+		? 'already-earned-badge-modal-from-earned-badge-section-learn-more'
+		: 'Already earned badge modal - Learn more';
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		label,
+		badgeCategory.value,
+		badgeLevel.value
+	);
+};
+
+const trackSharing = () => {
+	const label = isEarnedSection.value
+		? 'already-earned-badge-modal-from-earned-badge-section-share-badge'
+		: 'Already earned badge modal - Share badge';
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		label,
+		badgeCategory.value,
+		badgeLevel.value
+	);
+};
 
 onMounted(() => {
 	confetti({

@@ -209,9 +209,14 @@ const filteredLoans = computed(() => {
 const singleSlideWidth = computed(() => {
 	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
 
+	// Handle small mobile screens
+	if (viewportWidth < 450) {
+		return '100%';
+	}
 	if (viewportWidth < 768) {
 		return '288px';
-	} if (window.innerWidth < 1024) {
+	}
+	if (window.innerWidth < 1024) {
 		return '468px';
 	}
 	return '520px';
