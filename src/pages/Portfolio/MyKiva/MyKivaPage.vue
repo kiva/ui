@@ -104,6 +104,7 @@
 						:is-earned-section="isEarnedSectionModal"
 						@badge-modal-closed="handleBadgeModalClosed"
 						@badge-level-clicked="handleBadgeJourneyLevelClicked"
+						@back-to-journey="handleBackToJourney"
 					/>
 				</div>
 			</section>
@@ -208,13 +209,12 @@ const handleBadgeJourneyLevelClicked = payload => {
 	);
 };
 
-const handleBadgeModalClosed = isEarnedSection => {
-	if (state.value === STATE_JOURNEY || isEarnedSection) {
-		selectedBadgeData.value = undefined;
-		showBadgeModal.value = false;
-		return;
-	}
+const handleBadgeModalClosed = () => {
+	selectedBadgeData.value = undefined;
+	showBadgeModal.value = false;
+};
 
+const handleBackToJourney = () => {
 	state.value = STATE_JOURNEY;
 };
 
