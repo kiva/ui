@@ -145,7 +145,10 @@ const getBadgeStatus = index => {
 
 const getTierName = index => {
 	const contentfulData = badgeWithVisibleTiers.value.contentfulData[index];
-	return `${contentfulData.challengeName} ${contentfulData.levelName}`;
+	if (contentfulData.challengeName && contentfulData.levelName) {
+		return `${contentfulData.challengeName} ${contentfulData.levelName}`;
+	}
+	return `Level ${index + 1}`;
 };
 
 const handleBadgeClick = index => {
