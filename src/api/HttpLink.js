@@ -9,7 +9,8 @@ export default ({
 	stellateGraphqlUri,
 	stellateCachedOperations,
 }) => {
-	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1 || uri.indexOf('stellate') > -1;
+	// Note: we will have issues in the client and may need to check this too: uri.indexOf('stellate') > -1
+	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1;
 
 	const options = {
 		uri,
@@ -22,12 +23,15 @@ export default ({
 		}
 	};
 
+	// Create a new options object for stellate
 	const stellateOptions = {
 		...options,
 		uri: stellateGraphqlUri ?? uri,
 	};
 
-	const cachableQueryOperationNames = stellateCachedOperations.split(',');
+	// Format operations list into an arrayif it's not undefined or an empty string
+	const cachableQueryOperationNames = (stellateCachedOperations && stellateCachedOperations !== '')
+		? stellateCachedOperations?.split(',') : [];
 
 	const link = split(
 		operation => {
