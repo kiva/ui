@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ badgeWithVisibleTiers.description }}
+			{{ badgeWithVisibleTiers.achievementData.description }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
