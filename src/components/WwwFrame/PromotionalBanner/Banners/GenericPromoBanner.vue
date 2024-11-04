@@ -18,8 +18,9 @@
 				class="tw-text-center tw-text-white tw-text-base hover:tw-text-white hover:tw-no-underline
 				tw-align-bottom"
 				v-kv-track-event="handleTracking"
-				v-html="processedContent"
-			/>
+			>
+				<span v-html="processedContent"></span>
+			</component>
 			<a
 				v-if="hasDisclaimer"
 				@click="scrollToSection('#disclaimers')"
