@@ -53,6 +53,7 @@ export default function createMiddleware({ config, vite }) {
 			idleTimeout: config.server.vueWorkerIdleTimeout,
 			minWorkers: config.server.minVueWorkers,
 			maxWorkers: config.server.maxVueWorkers,
+			recordTiming: config.server.vueWorkerRecordTiming,
 			workerData: {
 				ssrManifest,
 				serverConfig: config.server,

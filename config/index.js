@@ -79,6 +79,7 @@ export const server = {
 	minVueWorkers: 1,
 	maxVueWorkers: 3,
 	vueWorkerIdleTimeout: 0,
+	vueWorkerRecordTiming: false,
 };
 
 export default {

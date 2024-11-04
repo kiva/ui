@@ -101,6 +101,7 @@ export const server = {
 	minVueWorkers: parseInt(process.env.MIN_VUE_WORKERS, 10) || 1,
 	maxVueWorkers: parseInt(process.env.MAX_VUE_WORKERS, 10) || 3,
 	vueWorkerIdleTimeout: parseInt(process.env.VUE_WORKER_IDLE_TIMEOUT, 10) || 0,
+	vueWorkerRecordTiming: process.env.VUE_WORKER_RECORD_TIMING === 'true',
 };
 
 export default {
