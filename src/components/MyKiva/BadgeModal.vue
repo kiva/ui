@@ -6,17 +6,14 @@
 		@lightbox-closed="closeLightbox"
 	>
 		<template v-if="!isJourneyActive" #header>
-			<div class="tw-flex tw-justify-between">
-				<div class="tw-flex tw-gap-0.5 tw-items-center tw-cursor-pointer" @click="backToJourney">
-					<kv-material-icon
-						class="tw-w-2.5 tw-h-2.5"
-						:icon="mdiArrowLeft"
-					/>
-					<p class="tw-font-medium">
-						Back
-					</p>
-				</div>
-				<div class="tw-absolute tw--mt-0.5 tw-left-1/2 tw-h-2 tw-w-0.5 tw-rounded-full tw-bg-gray-400"></div>
+			<div class="tw-flex tw-gap-0.5 tw-items-center tw-cursor-pointer" @click="backToJourney">
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5"
+					:icon="mdiArrowLeft"
+				/>
+				<p class="tw-font-medium">
+					Back
+				</p>
 			</div>
 		</template>
 		<component
