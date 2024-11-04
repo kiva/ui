@@ -123,7 +123,7 @@ const getBadgeTitle = badge => {
 		return badge?.contentfulData?.[0]?.challengeName ?? '';
 	}
 	const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
-	return `${badgeData?.challengeName} ${badgeData?.level}` ?? '';
+	return `${badgeData?.challengeName} ${badgeData?.levelName}` ?? '';
 };
 
 const getBadgeImgUrl = badge => {
