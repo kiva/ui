@@ -1,3 +1,63 @@
+## [3.3.0](https://github.com/kiva/ui/compare/v3.2.0...v3.3.0) (2024-11-04)
+
+### 🎉 New Features
+
+* add mock data for achievement without completed tiers but with loan progress ([98e05e8](https://github.com/kiva/ui/commit/98e05e84ba10d737a0546814e973adfd597ebebf))
+* connect badge data correctly to journey, resolve merge conflicts ([3dc85ef](https://github.com/kiva/ui/commit/3dc85effd855fa743a0837fdc0fb2d38cf82b672))
+* connect data to badge modal in-progress state ([9818f1b](https://github.com/kiva/ui/commit/9818f1b36da4ad1dc907724a1e115379fbc03914))
+* loan id prop in HeroBackground for pages besides borrower profile ([b9531bd](https://github.com/kiva/ui/commit/b9531bdd521ea5737659f6a15107587a83530692))
+* method for displaying visible tiers and simplified active tier method ([b102561](https://github.com/kiva/ui/commit/b102561711ebc020b81a1a842c6615fcc4c2f214))
+* moving logic to onMounted and add condition to impact dashboard to show my kiva page ([81e6488](https://github.com/kiva/ui/commit/81e6488510ae82b3939beeb4b9bc79c919d647e4))
+* my kiva earned badges section ([#5631](https://github.com/kiva/ui/issues/5631)) ([9f0a25a](https://github.com/kiva/ui/commit/9f0a25a5085cdc626fbfd7d11dfe3ad10b8918fe))
+* my kiva earned badges section modal ([#5639](https://github.com/kiva/ui/issues/5639)) ([b488ff4](https://github.com/kiva/ui/commit/b488ff429949af1eeb6dd1bd0165e7878c6c8302))
+* save if user was part of my kiva experiment in preferences ([0c604c1](https://github.com/kiva/ui/commit/0c604c10c336cbebbc70b66eb501da022fd5822e))
+* use description from achievement service in badge journey ([67759e5](https://github.com/kiva/ui/commit/67759e56ac4d4975ae500fe1fa2939166b7bee4b))
+* use FixedQueue for better performance in the vue worker pool ([5db12f6](https://github.com/kiva/ui/commit/5db12f66d8f763635654707052c25c0f915a9583))
+* use new badge Contentful levelName in UI ([51aa638](https://github.com/kiva/ui/commit/51aa638656f5dcf24482770e8acf1244cb664297))
+* use new Contentful levelName for badges, updated journey to use it ([97bfb98](https://github.com/kiva/ui/commit/97bfb98c869267a5bcc3c3d4a941fbb2d28ae7b6))
+* use only visible tiers in badge section and journey ([94b82f0](https://github.com/kiva/ui/commit/94b82f01cfd1b33f915847d12a0f8efff4d1ae3e))
+* using totalProgressToAchiviement to evaluate if journey started ([1975fed](https://github.com/kiva/ui/commit/1975fed36539ca768234c48bd1a98af7d74263b4))
+
+### 🐛 Bugfixes
+
+* add loan use for borrower status cards ([9edbec3](https://github.com/kiva/ui/commit/9edbec39ba260a30542a642c1a97319d566040dc))
+* add safety around contentful fields for displayed tier name ([26e9062](https://github.com/kiva/ui/commit/26e9062792e3cfebb88eba12d173931e2b788fb8))
+* added missing comment ([13eafb3](https://github.com/kiva/ui/commit/13eafb3d95700b7b1e55bc4e574feba2241b47d4))
+* badge closed event wasn't required and closed event gets called twice by lightbox ([e2aaadb](https://github.com/kiva/ui/commit/e2aaadb2311b1b12da6f9e486f4e9ac5304d9ae7))
+* badge section to use correct challenge name prop ([1bda16e](https://github.com/kiva/ui/commit/1bda16e0780fd3c4a6000893478f2189c46774f9))
+* borrower carousel card full width in mobile ([1d06362](https://github.com/kiva/ui/commit/1d06362ce8ec9c0c0a0205f92ed67612252b1432))
+* center align stat text for mobile ([d2674de](https://github.com/kiva/ui/commit/d2674dea3d2c5e5082907eda6371b39aeb769fc3))
+* clicking badge should open journey modal initially ([dbe94b9](https://github.com/kiva/ui/commit/dbe94b9dc0b302bf859420754ce688a4e565afe7))
+* clicking entire badge should open modal ([170ebe9](https://github.com/kiva/ui/commit/170ebe920ad1e9481f642b9829c969506bc40800))
+* contentful standard banner rendering ([030e133](https://github.com/kiva/ui/commit/030e1339ff9be6221ad0baa23c5b60b7a937b031))
+* get new image for hero background when isoCode changes ([953acf7](https://github.com/kiva/ui/commit/953acf742974872c5955cb1c2fa28320a6496a80))
+* guest account flow store name in userAccount instead of lender ([c1dac87](https://github.com/kiva/ui/commit/c1dac87ddb9158089b9154aebac6a4b04977a203))
+* hide MyKiva content further down page as achievement data loads ([ec3ec15](https://github.com/kiva/ui/commit/ec3ec15013d4351c062ad6a4ec6a9b1525a21af3))
+* indentation ([07262ac](https://github.com/kiva/ui/commit/07262ac8e49007469a34c0553438833eff3cbc12))
+* lending stat item mobile styles ([9be713e](https://github.com/kiva/ui/commit/9be713e3bde59a1ee210eba7db3cff6cbd760836))
+* may challenge should only be a header not the full view ([94a0d89](https://github.com/kiva/ui/commit/94a0d89f253f368b84a377c6e8b11b492a2e2c08))
+* method name misspelling ([6b7fbfa](https://github.com/kiva/ui/commit/6b7fbfab98f6d96d4d2d4a833f677c02753fceb4))
+* move back circle after other styling changes ([93615ee](https://github.com/kiva/ui/commit/93615eea9a5efa0741cc9cf6635cb2bb3b502286))
+* my kiva query indentation ([6461f95](https://github.com/kiva/ui/commit/6461f95ebe4c9ee7d16f90f740f1b326ae73d857))
+* order badge journeys by order of default badges ([b33a5b8](https://github.com/kiva/ui/commit/b33a5b8db6dda69ef07fb11b15e85a548d01b2a7))
+* resolve issues with badge modal click analytics ([9e63b57](https://github.com/kiva/ui/commit/9e63b57a9f3af96aab4f3d319973048ab640efcd))
+* resolve minor issues with earned modal ([9d50c46](https://github.com/kiva/ui/commit/9d50c46eac9a57c1d76ce540616515121ca60773))
+* resolve missing bottom padding in desktop ([08c1914](https://github.com/kiva/ui/commit/08c1914e544fc4da7b6c9670e31d53b4b0087930))
+* resolve new issue with journey arrows from longer level names and other changes ([9bc6c41](https://github.com/kiva/ui/commit/9bc6c41785c30c37257c0763a3bbed906ce649ec))
+* simplify prop ([972dcd4](https://github.com/kiva/ui/commit/972dcd462f6a432cf8e1599e018dea82931d15c6))
+* small adjustment to circle position ([74e0c3b](https://github.com/kiva/ui/commit/74e0c3b9e09ba67bfef76859391e6b3a8934f7a4))
+* small adjustment to locked badge ([df55520](https://github.com/kiva/ui/commit/df55520bf6664e9c478a61bbf467c79045b37739))
+* solve comments ([7d135c1](https://github.com/kiva/ui/commit/7d135c1a1791d567cbf76fe8620d3db034caf0bc))
+* underline full word of "lives" ([5fd906b](https://github.com/kiva/ui/commit/5fd906bb954fdd58125799629c11c7d82295cfa9))
+* update kv-components with new lender profile map data ([6afcf4c](https://github.com/kiva/ui/commit/6afcf4c1f19f20d91be7b190cabbb29833c143ad))
+* use the active tier level in badges section ([0f80f37](https://github.com/kiva/ui/commit/0f80f37fdcc4ff34f6c1ac9ee99c672be26506b9))
+* use the contentful level names in the badge journey ([636d5f8](https://github.com/kiva/ui/commit/636d5f847830ec7383d6f5d125a9c58f8c78c079))
+
+### 🧹 Chores
+
+* **deps:** upgrade piscina to v4.7.0 ([cfd1e0e](https://github.com/kiva/ui/commit/cfd1e0e459011c77716609250866c2e775812105))
+* **release:** 3.3.0-rc.1 [skip ci] ([ab9ef86](https://github.com/kiva/ui/commit/ab9ef8692800e24379613415a8f65fe48e17b00f)), closes [#5631](https://github.com/kiva/ui/issues/5631) [#5639](https://github.com/kiva/ui/issues/5639)
+
 ## [3.3.0-rc.1](https://github.com/kiva/ui/compare/v3.2.0...v3.3.0-rc.1) (2024-11-04)
 
 ### 🎉 New Features
