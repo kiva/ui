@@ -2,17 +2,12 @@ import { BatchHttpLink } from '@apollo/client/link/batch-http/index';
 import { HttpLink } from '@apollo/client/link/http/index';
 import { split } from '@apollo/client/core/index';
 
-const cachableQueryOperationNames = [
-	'configSetting',
-	'experimentIds',
-	'experimentSetting'
-];
-
 export default ({
 	uri = '',
 	fetch,
 	apolloBatching,
 	stellateGraphqlUri,
+	stellateCachedOperations,
 }) => {
 	const onVm = uri.indexOf('vm') > -1 || uri.indexOf('local') > -1 || uri.indexOf('stellate') > -1;
 
@@ -32,16 +27,19 @@ export default ({
 		uri: stellateGraphqlUri ?? uri,
 	};
 
+	const cachableQueryOperationNames = stellateCachedOperations.split(',');
+
 	const link = split(
 		operation => {
 			// check to see if we have a Stellate uri available
-			if (!stellateGraphqlUri) {
+			if (!stellateGraphqlUri || cachableQueryOperationNames.length === 0) {
 				return false;
 			}
+			console.log('operation getContext().response: ', operation.getContext()?.response);
 			// check if the operation is cachable
 			if (cachableQueryOperationNames.includes(operation.operationName)
-				// only use stellate uri if the response is ok, retry failed queries to origin instead
-				&& operation.getContext().response.ok !== false) {
+				// only use stellate uri if the response is ok or undefined, retry failed queries to origin instead
+				&& operation.getContext()?.response?.ok !== false) {
 				// update our options if we are caching the query
 				options.uri = stellateGraphqlUri;
 				return true;

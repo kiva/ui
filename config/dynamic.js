@@ -88,6 +88,7 @@ export const app = {
 	sentryTraceSampleRate: process.env.SENTRY_TRACE_RATE || 0.25,
 	snowplowUri: process.env.SNOWPLOW_URI || 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 	stellateGraphqlUri: process.env.STELLATE_GRAPHQL_URI || null,
+	stellateCachedOperations: process.env.STELLATE_CACHED_OPERATIONS || '',
 	transport: 'https',
 };
 

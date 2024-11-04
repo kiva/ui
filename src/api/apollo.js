@@ -54,6 +54,7 @@ export default function createApolloClient({
 				fetch,
 				apolloBatching: appConfig?.apolloBatching ?? true,
 				stellateGraphqlUri: appConfig?.stellateGraphqlUri,
+				stellateCachedOperations: appConfig?.stellateCachedOperations,
 			}),
 		]),
 		cache,
