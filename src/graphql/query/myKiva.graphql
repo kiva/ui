@@ -1,5 +1,5 @@
 query myKivaQuery {
-	my {
+  my {
     id
     isBorrower
     loans(limit: 10) {
@@ -8,6 +8,7 @@ query myKivaQuery {
         name
         gender
         status
+		use
         image {
           id
           url
@@ -17,7 +18,7 @@ query myKivaQuery {
           city
           state
           country {
-			id
+            id
             name
             isoCode
             region
@@ -53,11 +54,16 @@ query myKivaQuery {
       }
     }
     userAccount {
-			id
-			balance
-		}
+      id
+      firstName
+      balance
+    }
     trustee {
       id
+    }
+    userPreferences {
+      id
+      preferences
     }
   }
 }

@@ -14,7 +14,12 @@ query UserAchievementProgress {
     }
     tieredLendingAchievements {
       id
+	  description
       totalProgressToAchievement
+      matchingLoans {
+        id
+        filters
+      }
       tiers {
         target
         tierStatement

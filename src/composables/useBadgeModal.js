@@ -4,6 +4,13 @@ import useIsMobile from '#src/composables/useIsMobile';
 import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
 import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
 import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
+import {
+	ID_WOMENS_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+} from './useBadgeData';
 
 export const MOBILE_BREAKPOINT = 440;
 export const STATE_JOURNEY = 'JOURNEY';
@@ -25,16 +32,6 @@ export const BADGE_SHAPE = [
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
 ];
-export const ID_WOMENS_EQUALITY = 'womens-equality';
-export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
-export const ID_CLIMATE_ACTION = 'climate-action';
-export const ID_REFUGEE_EQUALITY = 'refugee-equality';
-export const ID_BASIC_NEEDS = 'basic-needs';
-export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
-export const CLIMATE_ACTION_FILTER = 'tag=9';
-export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
-export const WOMENS_EQUALITY_FILTER = 'gender=female';
-export const BASIC_NEEDS_FILTER = 'sector=6,10';
 
 /**
  * General utilities for the MyKiva badge modal
@@ -43,19 +40,6 @@ export const BASIC_NEEDS_FILTER = 'sector=6,10';
  * @returns Utilities for the MyKiva badge modal
  */
 export default function useBadgeModal(currentBadge) {
-	/**
-	 * {
-	 *   id: 'badge-id'.
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       learnMoreUrl: '',
-	 *       completedDate: null,
-	 *       tierStatement: ""
-	 *     }
-	 *   ]
-	 * }
-	 */
 	const badge = ref(currentBadge);
 	const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -70,7 +54,7 @@ export default function useBadgeModal(currentBadge) {
 		const positions = [];
 		let previousPosition;
 
-		(badge.value.tiers ?? []).forEach((_tier, index) => {
+		(badge.value.achievementData.tiers ?? []).forEach((_tier, index) => {
 			const randomNumber = Alea(`${badge.value.id}-${index}`)();
 			let randomPosition = Math.floor(randomNumber * (MAX_POSITION - MIN_POSITION + 1)) + MIN_POSITION;
 
@@ -185,26 +169,30 @@ export default function useBadgeModal(currentBadge) {
 	};
 
 	/**
-	 * Gets the URL params of the badge to be used in lend/filter
-	 * @returns The URL params
+	 * Gets the styles needed for positioning the small circle on the badge journey for progress
+	 *
+	 * @returns The styles for the small circle
 	 */
-	const getPrefilteredUrl = () => {
+	const getNumberCircleStyles = () => {
 		switch (badge.value.id) {
 			case ID_WOMENS_EQUALITY:
-				return WOMENS_EQUALITY_FILTER;
-			case ID_US_ECONOMIC_EQUALITY:
-				return US_ECONOMIC_EQUALITY_FILTER;
-			case ID_CLIMATE_ACTION:
-				return CLIMATE_ACTION_FILTER;
+				return { right: '20px', bottom: '6px' };
 			case ID_REFUGEE_EQUALITY:
-				return REFUGEE_EQUALITY_FILTER;
+				return { right: '10px', bottom: '18px' };
 			case ID_BASIC_NEEDS:
+				return { right: '10px', bottom: '10px' };
+			case ID_US_ECONOMIC_EQUALITY:
+			case ID_CLIMATE_ACTION:
 			default:
-				return BASIC_NEEDS_FILTER;
+				return { right: '-2px', bottom: '-2px' };
 		}
 	};
 
 	return {
-		getTierPositions, getLineComponent, getLineStyle, getBadgeShape, getPrefilteredUrl
+		getTierPositions,
+		getLineComponent,
+		getLineStyle,
+		getBadgeShape,
+		getNumberCircleStyles,
 	};
 }

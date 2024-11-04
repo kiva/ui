@@ -2,7 +2,7 @@
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { SHARE_ENV } from 'worker_threads';
-import { Piscina } from 'piscina';
+import { Piscina, FixedQueue } from 'piscina';
 import promClient from 'prom-client';
 
 let pool;
@@ -20,6 +20,7 @@ export default function createWorkerPool({
 	// Create pool of worker threads for Vue rendering
 	pool = new Piscina({
 		filename: resolve(dirname(fileURLToPath(import.meta.url)), 'vue-worker.js'),
+		taskQueue: new FixedQueue(),
 		idleTimeout,
 		minThreads: minWorkers,
 		maxThreads: maxWorkers,

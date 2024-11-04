@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<p>
-			{{ badge.fields.shareFact }}
+			{{ badgeWithVisibleTiers.description }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
@@ -22,48 +22,39 @@
 					'tw-self-start': isMobile && position === 0,
 					'tw-self-center': isMobile && position === 1,
 					'tw-self-end': isMobile && position === 2,
-					'tw-cursor-pointer': !!sortedTiers?.[index]?.completedDate,
 				}"
 				:style="{
+					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`,
+					zIndex: positions.length - index,
 					width: '133px',
-					marginTop: `${isMobile || position == 0 ? 0 : (position === 1 ? 100 : 200)}px`
 				}"
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					'Already earned badge modal',
-					badge.fields.challengeName,
-					index + 1
-				]"
-				@click="event => handleBadgeClick(event, index)"
 			>
-				<div class="tw-relative tw-text-center">
-					<component
-						v-if="isBadgeImageLoaded && index > 0"
-						:is="getLineComponent(positions[index - 1], position)"
-						class="tw-absolute"
-						:style="getLineStyle(positions[index - 1], position)"
-					/>
-					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()" class="tw-z-1">
+				<div class="tw-relative tw-text-center tw-bg-white tw-cursor-pointer" @click="handleBadgeClick(index)">
+					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()">
+						<component
+							v-if="index > 0"
+							:is="getLineComponent(positions[index - 1], position)"
+							class="tw-absolute"
+							:style="getLineStyle(positions[index - 1], position)"
+						/>
 						<img
-							:src="badge.fields.badgeImage.fields.file.url"
+							:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
 							alt="Badge"
-							style="max-height: 133px;"
-							@load="isBadgeImageLoaded = true"
+							style="height: 133px; width: 133px;"
 						>
 					</BadgeContainer>
 					<div
-						v-if="isBadgeImageLoaded && showEarnBadge(index)"
+						v-if="showEarnBadge(index)"
 						class="tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200
 							tw-text-center tw-px-0.5 tw-z-2"
-						style="right: -2px; bottom: -2px;"
+						:style="getNumberCircleStyles()"
 					>
-						{{ badge.totalProgressToAchievement }}
+						{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
 					</div>
 				</div>
-				<div v-if="isBadgeImageLoaded" class="tw-text-center tw-bg-white tw-z-1 tw-relative">
+				<div class="tw-text-center tw-bg-white tw-z-1 tw-relative">
 					<div class="tw-font-medium">
-						Level {{ index + 1 }}
+						{{ getTierName(index) }}
 					</div>
 					<div class="tw-text-small">
 						{{ tierCaption(index) }}
@@ -74,13 +65,7 @@
 							'tw-invisible': index !== positions.length - 1 && !showEarnBadge(index),
 							'tw-hidden': (!isMobile || index === positions.length - 1) && !showEarnBadge(index),
 						}"
-						v-kv-track-event="[
-							'portfolio',
-							'click',
-							'Earn a badge - within badge journey map modal',
-							badge.fields.challengeName,
-							index + 1
-						]"
+						@click="handleBadgeClick(index)"
 					>
 						Earn badge
 					</KvButton>
@@ -102,74 +87,53 @@ import useBadgeModal,
 	BADGE_LOCKED
 } from '#src/composables/useBadgeModal';
 import KvButton from '@kiva/kv-components/vue/KvButton';
+import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
-	/**
-	 * {
-	 *   id: '',
-	 *   fields: {
-	 *     challengeName: '',
-	 *     shareFact: '',
-	 *     badgeImage: {
-	 *       fields: {
-	 *         file: {
-	 *           url: '',
-	 *         },
-	 *       },
-	 *     },
-	 *   },
-	 *   totalProgressToAchievement,
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       completedDate: null,
-	 *     },
-	 *   ],
-	 * }
-	 */
 	badge: {
 		type: Object,
 		required: true,
 	},
 });
 
+const { getBadgeWithVisibleTiers } = useBadgeData();
+
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+
+const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
+
 const {
 	getTierPositions,
 	getLineComponent,
 	getLineStyle,
 	getBadgeShape,
-} = useBadgeModal(props.badge);
-const isBadgeImageLoaded = ref(false);
+	getNumberCircleStyles,
+} = useBadgeModal(badgeWithVisibleTiers.value);
 
 const emit = defineEmits(['badge-level-clicked']);
-
-const sortedTiers = computed(() => {
-	const tiers = [...(props.badge.tiers ?? [])];
-	tiers.sort((a, b) => a.target - b.target);
-	return tiers;
-});
 
 const positions = ref(getTierPositions());
 
 const tierCaption = index => {
-	const tier = sortedTiers.value[index];
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
 	if (tier.completedDate) {
 		return format(new Date(tier.completedDate), 'MMMM do, yyyy');
 	}
 	if (tier.target) {
-		return `${props.badge.totalProgressToAchievement} of ${tier.target} loans`;
+		return `${badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement} of ${tier.target} loans`;
 	}
 };
 
 const showEarnBadge = index => {
-	return (!sortedTiers.value[index - 1] || !!sortedTiers.value[index - 1]?.completedDate)
-		&& !sortedTiers.value[index].completedDate;
+	return (
+		!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]
+		|| !!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]?.completedDate
+	) && !badgeWithVisibleTiers.value.achievementData.tiers[index].completedDate;
 };
 
 const getBadgeStatus = index => {
-	const tier = sortedTiers.value[index] ?? {};
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index] ?? {};
 	if (tier.completedDate) {
 		return BADGE_COMPLETED;
 	}
@@ -179,11 +143,20 @@ const getBadgeStatus = index => {
 	return BADGE_LOCKED;
 };
 
-const handleBadgeClick = (event, index) => {
-	// Prevent analytics being logged when non-completed tier is clicked
-	if (!sortedTiers.value[index]?.completedDate && getBadgeStatus(index) !== BADGE_LOCKED) {
-		event.stopImmediatePropagation();
-		emit('badge-level-clicked', sortedTiers.value[index]);
+const getTierName = index => {
+	const contentfulData = badgeWithVisibleTiers.value.contentfulData[index];
+	if (contentfulData.challengeName && contentfulData.levelName) {
+		return `${contentfulData.challengeName} ${contentfulData.levelName}`;
+	}
+	return `Level ${index + 1}`;
+};
+
+const handleBadgeClick = index => {
+	if (getBadgeStatus(index) !== BADGE_LOCKED) {
+		emit('badge-level-clicked', {
+			challengeName: badgeWithVisibleTiers.value.challengeName,
+			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
+		});
 	}
 };
 </script>

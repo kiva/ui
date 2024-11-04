@@ -11,6 +11,7 @@
 		/>
 		<MyKivaProfile
 			:lender="lender"
+			:user-info="userInfo"
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
@@ -46,63 +47,73 @@
 				</div>
 			</section>
 		</MyKivaContainer>
-		<section class="tw-my-2">
-			<MyKivaStats :user-achievements="badgeAchievementData" />
-			<MyKivaContainer>
-				<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
-					<router-link
-						v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
-						to="/portfolio/lending-stats"
-						class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
-					>
-						See all lending stats
-					</router-link>
-					<button
-						class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
+		<template v-if="badgeAchievementData">
+			<section class="tw-my-2">
+				<MyKivaStats :user-achievements="badgeAchievementData" />
+				<MyKivaContainer>
+					<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
+						<router-link
+							v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+							to="/portfolio/lending-stats"
+							class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
+						>
+							See all lending stats
+						</router-link>
+						<button
+							class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
 							tw-bg-action hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
-						v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
-						@click="$router.push('/lend-by-category')"
-						variant="secondary"
-					>
-						Make a loan
-					</button>
-				</div>
-			</MyKivaContainer>
-		</section>
-		<MyKivaContainer>
-			<section class="tw-py-2">
-				<div
-					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-					style="line-height: 0;"
-				>
-					<span
-						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-						style="line-height: 0; font-weight: 600;"
-					>
-						BADGES AND ACHIEVEMENTS
-					</span>
-				</div>
-				<div class="tw-mt-3">
-					<h3
-						class="tw-text-center tw-mb-2"
-					>
-						My impact journeys
-					</h3>
-					<BadgesSection :badge-data="badgeData" @badge-clicked="handleBadgeClicked" />
-
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeLevelClicked"
-					/>
-				</div>
+							v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
+							@click="$router.push('/lend-by-category')"
+							variant="secondary"
+						>
+							Make a loan
+						</button>
+					</div>
+				</MyKivaContainer>
 			</section>
-		</MyKivaContainer>
+			<MyKivaContainer>
+				<section class="tw-py-2">
+					<div
+						class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
+						style="line-height: 0;"
+					>
+						<span
+							class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
+							style="line-height: 0; font-weight: 600;"
+						>
+							BADGES AND ACHIEVEMENTS
+						</span>
+					</div>
+					<div class="tw-mt-3">
+						<h3
+							class="tw-text-center tw-mb-2"
+						>
+							My impact journeys
+						</h3>
+						<BadgesSection
+							:badge-data="badgeData"
+							@badge-clicked="handleBadgeSectionClicked"
+						/>
+
+						<BadgeModal
+							v-if="selectedBadgeData"
+							:show="showBadgeModal"
+							:badge="selectedBadgeData"
+							:lender="lender"
+							:state="state"
+							:tier="tier"
+							:is-earned-section="isEarnedSectionModal"
+							@badge-modal-closed="handleBadgeModalClosed"
+							@badge-level-clicked="handleBadgeJourneyLevelClicked"
+						/>
+					</div>
+				</section>
+			</MyKivaContainer>
+			<EarnedBadgesSection
+				:badges-data="badgeData"
+				@badge-clicked="handleEarnedBadgeClicked"
+			/>
+		</template>
 	</www-page>
 </template>
 
@@ -122,7 +133,9 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
+import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import useUserPreferences from '#src/composables/useUserPreferences';
 
 import {
 	ref,
@@ -143,6 +156,8 @@ const {
 	badgeData,
 } = useBadgeData(apollo);
 
+const { saveUserPreferences } = useUserPreferences(apollo);
+
 const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
@@ -151,8 +166,9 @@ const activeLoan = ref({});
 const loanUpdates = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
-const state = ref(STATE_EARNED);
+const state = ref(STATE_JOURNEY);
 const tier = ref(null);
+const isEarnedSectionModal = ref(false);
 
 const isLoading = computed(() => !lender.value);
 
@@ -163,18 +179,40 @@ const handleShowNavigation = () => {
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 };
 
-const handleBadgeClicked = badge => {
+const handleBadgeSectionClicked = badge => {
+	state.value = STATE_JOURNEY;
 	selectedBadgeData.value = badge;
+	isEarnedSectionModal.value = false;
 	showBadgeModal.value = true;
 };
 
-const handleBadgeLevelClicked = clickedTier => {
-	tier.value = clickedTier;
-	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+const handleEarnedBadgeClicked = badge => {
+	const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
+	state.value = STATE_EARNED;
+	tier.value = selectedTier;
+	selectedBadgeData.value = badge;
+	isEarnedSectionModal.value = true;
+	showBadgeModal.value = true;
 };
 
-const handleBadgeModalClosed = () => {
-	if (state.value === STATE_JOURNEY) {
+const handleBadgeJourneyLevelClicked = payload => {
+	const { challengeName, tier: clickedTier } = payload;
+
+	tier.value = clickedTier;
+	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		state.value === STATE_EARNED ? 'Already earned badge modal' : 'Earn a badge - within badge journey map modal',
+		challengeName,
+		clickedTier.level,
+	);
+};
+
+const handleBadgeModalClosed = isEarnedSection => {
+	if (state.value === STATE_JOURNEY || isEarnedSection) {
+		selectedBadgeData.value = undefined;
 		showBadgeModal.value = false;
 		return;
 	}
@@ -198,21 +236,39 @@ const handleSelectedLoan = loan => {
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
-apollo.query({ query: myKivaQuery })
-	.then(result => {
-		userInfo.value = result.data?.my ?? {};
-		lender.value = result.data?.my?.lender ?? null;
-		loans.value = result.data?.my?.loans?.values ?? [];
-		if (loans.value.length > 0) {
+const fetchMyKivaData = () => {
+	return apollo.query({ query: myKivaQuery })
+		.then(result => {
+			userInfo.value = result.data?.my ?? {};
+			lender.value = result.data?.my?.lender ?? null;
+			loans.value = result.data?.my?.loans?.values ?? [];
+			if (loans.value.length > 0) {
 			// eslint-disable-next-line prefer-destructuring
-			activeLoan.value = loans.value[0];
-			fetchLoanUpdates(activeLoan.value.id);
-		}
-	}).catch(e => {
-		logReadQueryError(e, 'MyKivaPage myKivaQuery');
-	});
+				activeLoan.value = loans.value[0];
+				fetchLoanUpdates(activeLoan.value.id);
+			}
+		}).catch(e => {
+			logReadQueryError(e, 'MyKivaPage myKivaQuery');
+		});
+};
 
-onMounted(() => {
+const saveMyKivaToUserPreferences = () => {
+	const preferences = userInfo.value?.userPreferences?.preferences;
+	const formattedPreference = typeof preferences === 'string'
+		? JSON.parse(userInfo.value?.userPreferences?.preferences)
+		: preferences;
+
+	if (!formattedPreference?.myKivaPageExp) {
+		saveUserPreferences({
+			userPreferences: userInfo.value?.userPreferences ?? null,
+			newPreference: {
+				myKivaPageExp: 1,
+			}
+		});
+	}
+};
+
+onMounted(async () => {
 	trackExperimentVersion(
 		apollo,
 		$kvTrackEvent,
@@ -223,7 +279,9 @@ onMounted(() => {
 
 	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
 
+	await fetchMyKivaData();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+	saveMyKivaToUserPreferences();
 });
 </script>

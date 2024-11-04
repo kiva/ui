@@ -5,17 +5,14 @@ import useBadgeModal,
 	BADGE_SHAPE_ARCH,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_CIRCLE,
+} from '#src/composables/useBadgeModal';
+import {
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
-	US_ECONOMIC_EQUALITY_FILTER,
-	WOMENS_EQUALITY_FILTER,
-	CLIMATE_ACTION_FILTER,
-	REFUGEE_EQUALITY_FILTER,
-	BASIC_NEEDS_FILTER
-} from '#src/composables/useBadgeModal';
+} from '#src/composables/useBadgeData';
 import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
 import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
 import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
@@ -157,30 +154,30 @@ describe('useBadgeModal.js', () => {
 		});
 	});
 
-	describe('getPrefilteredUrl', () => {
-		it('should return expected prefiltered url for womens-equality', () => {
-			const { getPrefilteredUrl } = useBadgeModal({ id: ID_WOMENS_EQUALITY });
-			expect(getPrefilteredUrl()).toEqual(WOMENS_EQUALITY_FILTER);
+	describe('getNumberCircleStyles', () => {
+		it('should return expected styles for womens-equality', () => {
+			const { getNumberCircleStyles } = useBadgeModal({ id: ID_WOMENS_EQUALITY });
+			expect(getNumberCircleStyles()).toEqual({ right: '20px', bottom: '6px' });
 		});
 
-		it('should return expected prefiltered url for us-economic-equality', () => {
-			const { getPrefilteredUrl } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
-			expect(getPrefilteredUrl()).toEqual(US_ECONOMIC_EQUALITY_FILTER);
+		it('should return expected styles for us-economic-equality', () => {
+			const { getNumberCircleStyles } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
+			expect(getNumberCircleStyles()).toEqual({ right: '-2px', bottom: '-2px' });
 		});
 
-		it('should return expected prefiltered url for women-equality', () => {
-			const { getPrefilteredUrl } = useBadgeModal({ id: ID_CLIMATE_ACTION });
-			expect(getPrefilteredUrl()).toEqual(CLIMATE_ACTION_FILTER);
+		it('should return expected styles for climate-action', () => {
+			const { getNumberCircleStyles } = useBadgeModal({ id: ID_CLIMATE_ACTION });
+			expect(getNumberCircleStyles()).toEqual({ right: '-2px', bottom: '-2px' });
 		});
 
-		it('should return expected prefiltered url for refugee-equality', () => {
-			const { getPrefilteredUrl } = useBadgeModal({ id: ID_REFUGEE_EQUALITY });
-			expect(getPrefilteredUrl()).toEqual(REFUGEE_EQUALITY_FILTER);
+		it('should return expected styles for refugee-equality', () => {
+			const { getNumberCircleStyles } = useBadgeModal({ id: ID_REFUGEE_EQUALITY });
+			expect(getNumberCircleStyles()).toEqual({ right: '10px', bottom: '18px' });
 		});
 
-		it('should return expected prefiltered url for basic-needs', () => {
-			const { getPrefilteredUrl } = useBadgeModal({ id: ID_BASIC_NEEDS });
-			expect(getPrefilteredUrl()).toEqual(BASIC_NEEDS_FILTER);
+		it('should return expected styles for basic-needs', () => {
+			const { getNumberCircleStyles } = useBadgeModal({ id: ID_BASIC_NEEDS });
+			expect(getNumberCircleStyles()).toEqual({ right: '10px', bottom: '10px' });
 		});
 	});
 });

@@ -6,6 +6,7 @@
 			:badge="badge"
 			:lender="lender"
 			:tier="tier"
+			:is-earned-section="isEarnedSection"
 			@badge-level-clicked="handleBadgeLevelClicked"
 		/>
 	</KvLightbox>
@@ -13,19 +14,13 @@
 
 <script setup>
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import {
-	defineProps,
-	inject,
-	defineAsyncComponent,
-	computed,
-} from 'vue';
+import { defineProps, defineAsyncComponent, computed } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 
 const BadgeModalContentJourney = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJourney'));
 const BadgeInProgress = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeInProgress'));
 const BadgeCompleted = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeCompleted'));
 
-const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked']);
 
 const props = defineProps({
@@ -41,30 +36,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	/**
-	 * {
-	 *   id: '',
-	 *   fields: {
-	 *     challengeName: '',
-	 *     shareFact: '',
-	 *     badgeImage: {
-	 *       fields: {
-	 *         file: {
-	 *           url: '',
-	 *         },
-	 *       },
-	 *     },
-	 *   },
-	 *   tiers: [
-	 *     {
-	 *       target: 2,
-	 *       learnMoreUrl: '',
-	 *       completedDate: null,
-	 *       tierStatement: ""
-	 *     },
-	 *   ],
-	 * }
-	 */
 	badge: {
 		type: Object,
 		required: true,
@@ -72,12 +43,15 @@ const props = defineProps({
 	tier: {
 		type: Object,
 		default: () => ({}),
+	},
+	isEarnedSection: {
+		type: Boolean,
+		default: () => false,
 	}
 });
 
 const closeLightbox = () => {
-	emit('badge-modal-closed');
-	$kvTrackEvent('portfolio', 'click', 'badge-modal-closed');
+	emit('badge-modal-closed', props.isEarnedSection);
 };
 
 const handleBadgeLevelClicked = e => {
@@ -86,9 +60,9 @@ const handleBadgeLevelClicked = e => {
 
 const title = computed(() => {
 	if (props.state === STATE_JOURNEY) {
-		return props.badge?.contentfulData?.[props.tier]?.challengeName ?? '';
+		return props.badge?.challengeName ?? '';
 	}
-	return null;
+	return '';
 });
 
 const contentComponent = computed(() => {

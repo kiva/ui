@@ -3,14 +3,22 @@
 		<div
 			v-for="(badge, index) in visibleBadges"
 			:key="index"
-			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
+			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded tw-cursor-pointer"
 			:class="{
 				'tw-bg-white': badge.hasStarted,
 				'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
 			}"
+			v-kv-track-event="[
+				'portfolio',
+				'click',
+				badge.hasStarted ? 'Continue' : 'Start this journey',
+				badge.challengeName,
+				badge.level
+			]"
+			@click="() => $emit('badge-clicked', badge)"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
-				{{ getCurrentTierData(badge).challengeName }}
+				{{ badge.challengeName }}
 			</span>
 			<div
 				class="tw-p-1"
@@ -20,7 +28,7 @@
 				style="height: 148px;"
 			>
 				<img
-					:src="getCurrentTierData(badge).imageUrl"
+					:src="getActiveTierData(badge).imageUrl"
 					class="tw-h-full tw-mx-auto"
 				>
 			</div>
@@ -29,18 +37,10 @@
 					v-if="badge.hasStarted"
 					class="tw-mx-auto"
 				>
-					Level {{ badge.level }}/5
+					{{ levelCaption(badge) }}
 				</span>
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
-					v-kv-track-event="[
-						'portfolio',
-						'click',
-						badge.hasStarted ? 'Continue' : 'Start this journey',
-						getCurrentTierData(badge).challengeName,
-						badge.level
-					]"
-					@click="() => $emit('badge-clicked', badge)"
 				>
 					{{ badge.hasStarted ? 'Continue' : 'Start this journey' }}
 				</button>
@@ -52,6 +52,7 @@
 <script setup>
 import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
 
 defineEmits(['badge-clicked']);
@@ -63,9 +64,17 @@ const props = defineProps({
 	},
 });
 
-const { getCurrentTierData } = useBadgeData();
+const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
-const visibleBadges = computed(() => props.badgeData.filter(b => defaultBadges.includes(b.id)));
+const visibleBadges = computed(() => {
+	return props.badgeData
+		.filter(b => defaultBadges.includes(b.id))
+		.sort(indexIn(defaultBadges, 'id'));
+});
+
+const levelCaption = badge => {
+	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+};
 </script>
 
 <style lang="postcss" scoped>
