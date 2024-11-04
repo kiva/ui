@@ -214,6 +214,7 @@ export default function useBadgeData() {
 	 *   ],
 	 *   "achievementData": {
 	 *     "id": "",
+	 *     "description": "",
 	 *     "totalProgressToAchievement": 0,
 	 *     "matchingLoans": {
 	 *       "filters": [],
