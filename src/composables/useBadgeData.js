@@ -34,8 +34,8 @@ export default function useBadgeData() {
 	const getContentfulLevelData = entry => ({
 		id: entry?.fields?.key?.replace(/-level-\d+/, '') ?? '',
 		level: +(entry?.fields?.key?.replace(/\D/g, '') ?? ''),
-		levelName: entry?.fields?.challengeName ?? '',
-		challengeName: (entry?.fields?.challengeName ?? '').replace(/\s*✨\d+✨/, ''),
+		levelName: entry?.fields?.levelName ?? '',
+		challengeName: entry?.fields?.challengeName ?? '',
 		imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
 	});
 
@@ -214,6 +214,7 @@ export default function useBadgeData() {
 	 *   ],
 	 *   "achievementData": {
 	 *     "id": "",
+	 *     "description": "",
 	 *     "totalProgressToAchievement": 0,
 	 *     "matchingLoans": {
 	 *       "filters": [],
@@ -251,6 +252,7 @@ export default function useBadgeData() {
 			...badge,
 			contentfulData,
 			achievementData,
+			tierName: `${(contentfulData.challengeName ?? '')} ${(contentfulData.levelName ?? '')}`
 		};
 	};
 

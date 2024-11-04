@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="badge-container tw-flex-col tw-mb-4">
 			<h2 class="tw-text-center tw-mb-2">
-				{{ badgeCategory }}
+				{{ badgeData.tierName }}
 			</h2>
 			<div class="tw-relative tw-z-1 tw-mb-3" :style="{ minWidth: '16rem'}">
 				<div
@@ -14,7 +14,7 @@
 				<img
 					:src="badgeImage"
 					class="badge tw-z-2"
-					:alt="badgeCategory"
+					:alt="badgeData.tierName"
 				>
 			</div>
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
@@ -117,8 +117,6 @@ const badgeImage = computed(() => {
 	return badgeData.value.contentfulData?.imageUrl ?? '';
 });
 
-const badgeCategory = computed(() => badgeData.value?.challengeName ?? '');
-
 const badgeLevel = computed(() => {
 	return badgeData.value?.achievementData?.target ?? 0;
 });
@@ -157,7 +155,7 @@ const trackLearnMore = () => {
 		'portfolio',
 		'click',
 		label,
-		badgeCategory.value,
+		badgeData.value.challengeName,
 		badgeLevel.value
 	);
 };
@@ -171,7 +169,7 @@ const trackSharing = () => {
 		'portfolio',
 		'click',
 		label,
-		badgeCategory.value,
+		badgeData.value.challengeName,
 		badgeLevel.value
 	);
 };
