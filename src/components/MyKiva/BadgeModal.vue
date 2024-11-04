@@ -1,11 +1,11 @@
 <template>
 	<KvLightbox
-		:class="{'badge-modal': !isJourneyActive}"
+		:class="{'badge-modal': !isJourneyActive && !isEarnedSection}"
 		:visible="show"
 		:title="title"
 		@lightbox-closed="closeLightbox"
 	>
-		<template v-if="!isJourneyActive" #header>
+		<template v-if="!isJourneyActive && !isEarnedSection" #header>
 			<div class="tw-flex tw-gap-0.5 tw-items-center tw-cursor-pointer" @click="backToJourney">
 				<kv-material-icon
 					class="tw-w-2.5 tw-h-2.5"
