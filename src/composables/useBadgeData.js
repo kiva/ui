@@ -3,6 +3,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
+import { defaultBadges } from '#src/util/achievementUtils';
 
 export const ID_WOMENS_EQUALITY = 'womens-equality';
 export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
@@ -261,7 +262,7 @@ export default function useBadgeData() {
 			...badge,
 			contentfulData,
 			achievementData,
-			tierName: `${(contentfulData.challengeName ?? '')} ${(contentfulData.levelName ?? '')}`
+			tierName: `${(contentfulData?.challengeName ?? '')} ${(contentfulData?.levelName ?? '')}`
 		};
 	};
 
@@ -308,6 +309,20 @@ export default function useBadgeData() {
 		return visibleData;
 	};
 
+	/**
+	 * Get the badge key and check if it has a valid format
+	 *
+	 * @param {*} badgeKey The badge key to validate
+	 * @returns Whether the badge key is valid or not
+	 */
+	const isBadgeKeyValid = badgeKey => {
+		return badgeKey.includes('badge_')
+			&& badgeKey.includes('social_share')
+			&& defaultBadges.some(
+				badgeName => badgeKey.includes(badgeName)
+			);
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -321,5 +336,6 @@ export default function useBadgeData() {
 		badgeAchievementData,
 		badgeData,
 		badgeLoanIdData,
+		isBadgeKeyValid,
 	};
 }

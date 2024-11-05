@@ -11,6 +11,7 @@ import useBadgeData, {
 	REFUGEE_EQUALITY_FILTER,
 	BASIC_NEEDS_FILTER,
 } from '#src/composables/useBadgeData';
+import { defaultBadges } from '#src/util/achievementUtils';
 import {
 	achievementData,
 	contentfulData,
@@ -374,6 +375,34 @@ describe('useBadgeData.js', () => {
 			expect(result.achievementData.tiers[4].level).toBe(5);
 			expect(result.achievementData.tiers[5].level).toBe(6);
 			expect(result.achievementData.tiers[6].level).toBe(7);
+		});
+	});
+
+	describe('isBadgeKeyValid', () => {
+		it('should return true for valid women badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[0]}`)).toBe(true);
+		});
+		it('should return true for valid us economic equality badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[1]}`)).toBe(true);
+		});
+		it('should return true for valid climate action badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[2]}`)).toBe(true);
+		});
+		it('should return true for valid refugee equality badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[3]}`)).toBe(true);
+		});
+		it('should return true for valid basic needs badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[4]}`)).toBe(true);
+		});
+
+		it('should return false for invalid badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid('invalid-key')).toBe(false);
 		});
 	});
 });

@@ -22,7 +22,17 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import useBadgeContentfulData from '#src/composables/useBadgeContentfulData';
+import useBadgeData from '#src/composables/useBadgeData';
+
+import { useRoute } from 'vue-router';
+
+import {
+	ref,
+	computed,
+	inject,
+	onMounted,
+	watch,
+} from 'vue';
 
 export default {
 	name: 'LenderProfile',
@@ -32,6 +42,55 @@ export default {
 		KvPageContainer,
 		LenderProfileWrapper,
 		NotFoundWrapper,
+	},
+	setup() {
+		const apollo = inject('apollo');
+
+		const {
+			isBadgeKeyValid, fetchAchievementData, fetchContentfulData, badgeData, getTierBadgeDataByLevel
+		} = useBadgeData();
+
+		const route = useRoute();
+
+		const utmCampaign = route.query?.utm_campaign ?? '';
+		const badgeLevel = route.query?.badge_level ?? 0;
+		const badgeKey = utmCampaign.split('badge_')[1];
+		const enableBadgeContent = ref(false);
+
+		onMounted(async () => {
+			if (isBadgeKeyValid(utmCampaign)) {
+				await fetchAchievementData(apollo);
+				await fetchContentfulData(apollo);
+			}
+		});
+
+		const badge = computed(() => {
+			const sharedBadge = badgeData.value?.find(data => data.id === badgeKey);
+			return getTierBadgeDataByLevel(sharedBadge, Number(badgeLevel));
+		});
+
+		const badgeImage = computed(() => {
+			return badge.value?.contentfulData?.imageUrl ?? '';
+		});
+
+		const badgeCategory = computed(() => {
+			return badge.value?.contentfulData?.challengeName ?? '';
+		});
+
+		const badgeTarget = computed(() => {
+			return badge.value?.achievementData?.target ?? '';
+		});
+
+		watch(() => badge.value, () => {
+			enableBadgeContent.value = true;
+		});
+
+		return {
+			badgeImage,
+			badgeCategory,
+			badgeTarget,
+			enableBadgeContent,
+		};
 	},
 	head() {
 		return {
@@ -93,21 +152,15 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			lenderIsPublic: false,
-			enableBadgeContent: false,
-			badgeImage: null,
-			badgeCategory: '',
-			badgeTarget: 0,
 		};
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
 			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
-			const { isBadgeKeyValid, badgeQuery, badgeKey } = useBadgeContentfulData(client, currentRoute);
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
 			]);
 		}
 	},
@@ -158,16 +211,6 @@ export default {
 
 		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
 		this.lenderIsPublic = !!this.lenderInfo?.id;
-
-		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);
-
-		if (isBadgeKeyValid) {
-			const { badgeImage, badgeCategory, badgeTarget } = await loadBadgeInfo();
-			this.badgeImage = badgeImage;
-			this.badgeCategory = badgeCategory;
-			this.badgeTarget = badgeTarget;
-			this.enableBadgeContent = true;
-		}
 	}
 };
 </script>
