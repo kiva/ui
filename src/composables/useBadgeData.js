@@ -37,6 +37,9 @@ export default function useBadgeData() {
 		levelName: entry?.fields?.levelName ?? '',
 		challengeName: entry?.fields?.challengeName ?? '',
 		imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
+		shareFact: entry?.fields?.shareFact ?? '',
+		shareFactFootnote: entry?.fields?.shareFactFootnote ?? '',
+		shareFactUrl: entry?.fields?.shareFactUrl ?? '',
 	});
 
 	/**
@@ -185,6 +188,9 @@ export default function useBadgeData() {
 		 *   "challengeName": "",
 		 *   "level": 1,
 		 *   "levelName": "",
+		 *   "shareFact": "",
+		 *   "shareFactFootnote": "",
+		 *   "shareFactUrl": "",
 		 *   "imageUrl": "",
 		 *   "target": 1,
 		 *   "tierStatement": "",
@@ -207,6 +213,9 @@ export default function useBadgeData() {
 	 *       "id": "",
 	 *       "level": 1,
 	 *       "levelName": "",
+	 *       "shareFact": "",
+	 *       "shareFactFootnote": "",
+	 *       "shareFactUrl": "",
 	 *       "challengeName": "",
 	 *       "imageUrl": ""
 	 *     },

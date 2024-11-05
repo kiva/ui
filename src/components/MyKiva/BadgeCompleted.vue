@@ -18,7 +18,7 @@
 				>
 			</div>
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
-				{{ funFact }}<a
+				"{{ funFact }}" <span v-if="funFactSource">*</span> <a
 					:href="learnMoreLink"
 					@click="trackLearnMore"
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"
@@ -43,8 +43,8 @@
 				<span class="tw-font-medium">Share</span>
 			</div>
 		</KvSocialShareButton>
-		<p class="tw-text-small tw-text-center tw-text-secondary tw-mt-1.5">
-			{{ funFactSource }}
+		<p v-if="funFactSource" class="tw-text-small tw-text-center tw-text-secondary tw-mt-1.5">
+			*{{ funFactSource }}
 		</p>
 	</div>
 </template>
