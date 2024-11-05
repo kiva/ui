@@ -83,7 +83,7 @@
 					:embla-options="{ loop: false, align: 'center'}"
 				>
 					<template v-for="(loan, index) in loans" #[`slide${index+1}`] :key="loan.id || index">
-						<BorrowerStatusCard :loan="loan" />
+						<BorrowerStatusCard :loan="loan" class="tw-h-full" />
 					</template>
 				</KvCarousel>
 			</div>
