@@ -30,14 +30,39 @@
 
 <script setup>
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import { defineProps, defineAsyncComponent, computed } from 'vue';
+import {
+	defineProps,
+	defineAsyncComponent,
+	computed,
+	defineComponent,
+	h,
+} from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import { mdiArrowLeft } from '@mdi/js';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-const BadgeModalContentJourney = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJourney'));
-const BadgeInProgress = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeInProgress'));
-const BadgeCompleted = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeCompleted'));
+const ModalLoader = defineComponent(() => {
+	return () => {
+		return h(KvLoadingPlaceholder, { style: 'height: 200px; width: 100%; min-width: 300px' });
+	};
+});
+
+const BadgeModalContentJourney = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeModalContentJourney'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
+const BadgeInProgress = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeInProgress'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
+const BadgeCompleted = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeCompleted'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
 
 const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked', 'back-to-journey']);
 
