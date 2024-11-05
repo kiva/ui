@@ -115,6 +115,13 @@
 				@badge-clicked="handleEarnedBadgeClicked"
 			/>
 		</template>
+		<div v-if="showLoanFootnote" class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5">
+			<MyKivaContainer>
+				<section>
+					*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
+				</section>
+			</MyKivaContainer>
+		</div>
 	</www-page>
 </template>
 
@@ -137,6 +144,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
+import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 
 import {
 	ref,
@@ -170,6 +178,7 @@ const selectedBadgeData = ref();
 const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 const isEarnedSectionModal = ref(false);
+const showLoanFootnote = ref(false);
 
 const isLoading = computed(() => !lender.value);
 
@@ -243,7 +252,8 @@ const fetchMyKivaData = () => {
 			lender.value = result.data?.my?.lender ?? null;
 			loans.value = result.data?.my?.loans?.values ?? [];
 			if (loans.value.length > 0) {
-			// eslint-disable-next-line prefer-destructuring
+				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
+				// eslint-disable-next-line prefer-destructuring
 				activeLoan.value = loans.value[0];
 				fetchLoanUpdates(activeLoan.value.id);
 			}
