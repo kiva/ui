@@ -19,7 +19,7 @@
 				possible we decided to use GraphQL. One of the great things about
 				GraphQL is it's self documenting so you can easily explore all the
 				functionality by going to the
-				<a href="https://api.kivaws.org/graphql">GraphiQL Explorer</a>.
+				<a href="https://gateway.production.kiva.org/graphql">GraphiQL Explorer</a>.
 				Click on the "Docs" link in the top right corner to open the Documentation
 				Explorer. Click the "play" button to run the query you build.
 
@@ -77,7 +77,7 @@ export default {
 					// eslint-disable-next-line no-script-url
 					title: 'Javascript: POST Method',
 					snippet:
-`fetch('https://api.kivaws.org/graphql', {
+`fetch('https://gateway.production.kiva.org/graphql', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ query: "{lend {loan (id: 1568001){id name}}}" }),
@@ -92,7 +92,7 @@ export default {
 # via pip with the command: pip install requests
 import requests
 
-base_url = 'https://api.kivaws.org/graphql?query='
+base_url = 'https://gateway.production.kiva.org/graphql?query='
 
 graphql_query = "{lend {loan (id: 1568001){id name}}}"
 
@@ -106,7 +106,7 @@ r.json()`,
 # via pip with the command: pip install requests
 import requests
 
-base_url = 'https://api.kivaws.org/graphql?query='
+base_url = 'https://gateway.production.kiva.org/graphql?query='
 
 graphql_query = "{lend {loan (id: 1568001){id name}}}"
 
@@ -120,7 +120,7 @@ r.json()`,
   -X GET \\
   -H "Content-Type: application/json" \\
   --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
-  'https://api.kivaws.org/graphql'`,
+  'https://gateway.production.kiva.org/graphql'`,
 				},
 				{
 					title: 'CURL: POST method',
@@ -129,7 +129,7 @@ r.json()`,
   -X POST \\
   -H "Content-Type: application/json" \\
   --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
-  'https://api.kivaws.org/graphql'`,
+  'https://gateway.production.kiva.org/graphql'`,
 				},
 			],
 		};
