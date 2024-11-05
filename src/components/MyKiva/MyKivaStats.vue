@@ -1,5 +1,5 @@
 <template>
-	<div class="stats-section tw-py-4">
+	<div v-if="isLoaded" class="stats-section tw-py-4">
 		<MyKivaContainer>
 			<div class="tw-flex tw-justify-between tw-items-center">
 				<div
@@ -61,6 +61,7 @@ const props = defineProps({
 
 const { userAchievements } = toRefs(props);
 
+const isLoaded = ref(false);
 const livesTouched = ref(0);
 const totalAmountLent = ref(0);
 const totalCountriesLentTo = ref(0);
@@ -93,6 +94,7 @@ onMounted(() => {
 			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
 			totalAmountLent.value = +(result.data?.my?.userStats?.amount_of_loans ?? 0);
 			totalCountriesLentTo.value = result.data?.my?.statsPerCountry?.totalCount ?? 0;
+			isLoaded.value = true;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage myKivaQuery');
 		});
