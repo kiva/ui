@@ -15,7 +15,8 @@
 							class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded"
 						>
 							<div
-								class="tw-p-1 tw-cursor-pointer"
+								class="tw-p-1"
+								:class="{ 'tw-cursor-pointer': isTieredBadge(badge) }"
 								style="height: 148px;"
 								@click="clickBadge(badge)"
 							>
@@ -143,15 +144,20 @@ const loadMoreBadges = () => {
 	visibleOffset.value += 1;
 };
 
+const isTieredBadge = badge => !!badge?.achievementData?.tiers?.length;
+
 const clickBadge = badge => {
-	$kvTrackEvent(
-		'portfolio',
-		'click',
-		'already-earned-badge-modal-from-earned-badge-section',
-		badge.challengeName,
-		badge.level,
-	);
-	emit('badge-clicked', badge);
+	// Badge click behavior only supported for tiered badges
+	if (isTieredBadge(badge)) {
+		$kvTrackEvent(
+			'portfolio',
+			'click',
+			'already-earned-badge-modal-from-earned-badge-section',
+			badge.challengeName,
+			badge.level,
+		);
+		emit('badge-clicked', badge);
+	}
 };
 </script>
 

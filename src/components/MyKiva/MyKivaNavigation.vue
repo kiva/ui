@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="visible"
-		class="tw-absolute tw-inset-0 tw-z-modal tw-mt-8 md:tw-mt-9 tw-pt-0.5 tw-overflow-hidden"
+		class="tw-absolute tw-inset-0 tw-z-modal tw-pt-0.5 tw-overflow-hidden"
 	>
 		<div
 			class="tw-absolute tw-inset-0 tw-bg-black tw-transition-all tw-duration-150"
