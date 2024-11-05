@@ -23,16 +23,8 @@ import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWra
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import useBadgeData from '#src/composables/useBadgeData';
-
-import { useRoute } from 'vue-router';
-
-import {
-	ref,
-	computed,
-	inject,
-	onMounted,
-	watch,
-} from 'vue';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
 export default {
 	name: 'LenderProfile',
@@ -42,55 +34,6 @@ export default {
 		KvPageContainer,
 		LenderProfileWrapper,
 		NotFoundWrapper,
-	},
-	setup() {
-		const apollo = inject('apollo');
-
-		const {
-			isBadgeKeyValid, fetchAchievementData, fetchContentfulData, badgeData, getTierBadgeDataByLevel
-		} = useBadgeData();
-
-		const route = useRoute();
-
-		const utmCampaign = route.query?.utm_campaign ?? '';
-		const badgeLevel = route.query?.badge_level ?? 0;
-		const badgeKey = utmCampaign.split('badge_')[1];
-		const enableBadgeContent = ref(false);
-
-		onMounted(async () => {
-			if (isBadgeKeyValid(utmCampaign)) {
-				await fetchAchievementData(apollo);
-				await fetchContentfulData(apollo);
-			}
-		});
-
-		const badge = computed(() => {
-			const sharedBadge = badgeData.value?.find(data => data.id === badgeKey);
-			return getTierBadgeDataByLevel(sharedBadge, Number(badgeLevel));
-		});
-
-		const badgeImage = computed(() => {
-			return badge.value?.contentfulData?.imageUrl ?? '';
-		});
-
-		const badgeCategory = computed(() => {
-			return badge.value?.contentfulData?.challengeName ?? '';
-		});
-
-		const badgeTarget = computed(() => {
-			return badge.value?.achievementData?.target ?? '';
-		});
-
-		watch(() => badge.value, () => {
-			enableBadgeContent.value = true;
-		});
-
-		return {
-			badgeImage,
-			badgeCategory,
-			badgeTarget,
-			enableBadgeContent,
-		};
 	},
 	head() {
 		return {
@@ -152,15 +95,26 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			lenderIsPublic: false,
+			badgeData: null,
 		};
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
 			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
+			const badgeKey = currentRoute.query?.utm_campaign;
+			const { isBadgeKeyValid } = useBadgeData();
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
+				isBadgeKeyValid(badgeKey) ? client.query({ query: userAchievementProgressQuery }) : null,
+				isBadgeKeyValid(badgeKey) ? client.query({
+					query: contentfulEntriesQuery,
+					variables: {
+						contentType: 'challenge',
+						limit: 200,
+					}
+				}) : null,
 			]);
 		}
 	},
@@ -196,6 +150,53 @@ export default {
 		seoImageUrl() {
 			return this.enableBadgeContent ? this.badgeImage : this.lenderInfo?.seoImage?.url ?? '';
 		},
+		badgeImage() {
+			return this.badgeData?.contentfulData?.imageUrl ?? '';
+		},
+		badgeCategory() {
+			return this.badgeData?.contentfulData?.challengeName ?? '';
+		},
+		badgeTarget() {
+			return this.badgeData?.achievementData?.target ?? '';
+		},
+		enableBadgeContent() {
+			return !!this.badgeData?.id;
+		}
+	},
+	methods: {
+		getBadgeData() {
+			const {
+				isBadgeKeyValid, combineBadgeData, getContentfulLevelData, getTierBadgeDataByLevel
+			} = useBadgeData();
+			const badgeKey = this.$route.query?.utm_campaign ?? '';
+
+			if (isBadgeKeyValid(badgeKey)) {
+				const badgeId = badgeKey.split('badge_')[1] ?? '';
+				const badgeLevel = this.$route.query?.badge_level ?? 0;
+
+				const achievementResult = this.apollo.readQuery({ query: userAchievementProgressQuery });
+				const badgeAchievementData = [
+					...(achievementResult?.userAchievementProgress?.lendingAchievements ?? []),
+					...(achievementResult?.userAchievementProgress?.tieredLendingAchievements ?? [])
+				];
+
+				const contentfulResult = this.apollo.readQuery({
+					query: contentfulEntriesQuery,
+					variables: {
+						contentType: 'challenge',
+						limit: 200,
+					}
+				});
+
+				const badgeContentfulData = (contentfulResult?.contentful?.entries?.items ?? [])
+					.map(entry => getContentfulLevelData(entry));
+
+				const badgeData = combineBadgeData(badgeAchievementData, badgeContentfulData);
+				const sharedBadge = badgeData.find(badge => badge.id === badgeId);
+
+				this.badgeData = getTierBadgeDataByLevel(sharedBadge, Number(badgeLevel));
+			}
+		}
 	},
 	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -211,6 +212,8 @@ export default {
 
 		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
 		this.lenderIsPublic = !!this.lenderInfo?.id;
+
+		this.getBadgeData();
 	}
 };
 </script>

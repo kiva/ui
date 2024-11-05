@@ -312,7 +312,7 @@ export default function useBadgeData() {
 	/**
 	 * Get the badge key and check if it has a valid format
 	 *
-	 * @param {*} badgeKey The badge key to validate
+	 * @param badgeKey The badge key to validate
 	 * @returns Whether the badge key is valid or not
 	 */
 	const isBadgeKeyValid = badgeKey => {
