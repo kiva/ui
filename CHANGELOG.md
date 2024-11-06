@@ -1,3 +1,35 @@
+## [3.4.0-rc.1](https://github.com/kiva/ui/compare/v3.3.0...v3.4.0-rc.1) (2024-11-06)
+
+### 🎉 New Features
+
+* add buttons to modal and fix padding issues ([887014a](https://github.com/kiva/ui/commit/887014ac8bb2fed54f965df5171730ea6ad89f91))
+* added loader for badge modal async components ([0a9d43b](https://github.com/kiva/ui/commit/0a9d43bbe589cd53d888e3b075727b7970400350))
+* footnote support for borrower status cards in MyKiva ([8a40ef9](https://github.com/kiva/ui/commit/8a40ef9aa6e31d18f7b36cd93578c0e57db7e931))
+* optional run & wait time recordings in vue worker pool ([202b393](https://github.com/kiva/ui/commit/202b393aa4c016dbd7552d15931d1cc14a16d318))
+* setup apollo http link to switch to stellate uri for cachable operations ([7cf60d2](https://github.com/kiva/ui/commit/7cf60d2c9ec22277f8e7a394368dfb8e9a2e3218))
+* use share info in badge earned modal ([9686771](https://github.com/kiva/ui/commit/9686771e223205534b0135e08fd4d76dc50f7b65))
+
+### 🐛 Bugfixes
+
+* add fallback for retries and remove console logs ([c0a5ac8](https://github.com/kiva/ui/commit/c0a5ac82c60d8bb825b03e2d37b13a3882b60132))
+* adjust retry query with optional chaining, make operations list configurable ([01c9db4](https://github.com/kiva/ui/commit/01c9db4709dbf1c680ccdbcac0f3f10da9d69d6a))
+* another adjustment to hiding UI while waiting for data ([17c065b](https://github.com/kiva/ui/commit/17c065b0b959d5486df61df32a5c1e97aa8a3c1f))
+* borrower carousel in MyKiva should have consistent height ([831f899](https://github.com/kiva/ui/commit/831f89953d172d23620c8164c01f94dcf7b64fc5))
+* conflicts ([f0d9d59](https://github.com/kiva/ui/commit/f0d9d592e63b62330679d5e3a4307ba2842cdabb))
+* create separate options object, temporarily bypass csp for stellate for experimentation ([da63ed8](https://github.com/kiva/ui/commit/da63ed86ac7f634db6c94432c55f5477cfe40738))
+* do not show back button on earned section ([59735a7](https://github.com/kiva/ui/commit/59735a7f566098a76d4c362a30fec561d2bd7434))
+* padding and back action ([e614992](https://github.com/kiva/ui/commit/e614992d139903d4690f48bca5237791644cd11b))
+* remove click from non-tiered badges ([2c4bdae](https://github.com/kiva/ui/commit/2c4bdaea57c417e0a292cfafc8c1645d8de2990a))
+* remove small design on modal ([6d25095](https://github.com/kiva/ui/commit/6d2509505d848c417f933a71f7c5637309ea8443))
+* resolve MyKiva settings menu location issue ([ab01531](https://github.com/kiva/ui/commit/ab015318c59eb80ed93dcf3c8c7f80ef5c57a958))
+* update gifts url in the footer to new path ([13d71b6](https://github.com/kiva/ui/commit/13d71b6d214fe824279eb75575ea33b783223fac))
+* update string to array conversion ([4608ff4](https://github.com/kiva/ui/commit/4608ff4d803b818b5e16ee5726d0db5459ac3d77))
+
+### 🧹 Chores
+
+* add stellate testing values to local config ([aed39e1](https://github.com/kiva/ui/commit/aed39e11f75175422c49cc2858b8f1709dffd7f4))
+* update build/docs url to our new graph uris ([5393ea5](https://github.com/kiva/ui/commit/5393ea5bd801993ad18bc6dfadeb9ec1aa4265c3))
+
 ## [3.3.0](https://github.com/kiva/ui/compare/v3.2.0...v3.3.0) (2024-11-04)
 
 ### 🎉 New Features
