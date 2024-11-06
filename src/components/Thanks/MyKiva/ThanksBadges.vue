@@ -103,6 +103,7 @@ import { mdiChevronDown } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 
+// TODO: ensure these props are all needed as functionality is expanded (some currently unused)
 defineProps({
 	selectedLoan: {
 		type: Object,
