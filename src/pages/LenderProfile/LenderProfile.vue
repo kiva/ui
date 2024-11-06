@@ -25,6 +25,7 @@ import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import useBadgeData from '#src/composables/useBadgeData';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
+import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 
 export default {
 	name: 'LenderProfile',
@@ -107,15 +108,13 @@ export default {
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isBadgeKeyValid(badgeKey) ? [
-					client.query({ query: userAchievementProgressQuery }),
-					client.query({
-						query: contentfulEntriesQuery,
-						variables: {
-							contentType: 'challenge',
-							limit: 200,
-						}
-					})] : null,
+				isBadgeKeyValid(badgeKey) ? client.query({
+					query: lenderProfileBadgeDataQuery,
+					variables: {
+						contentType: 'challenge',
+						limit: 200,
+					}
+				}) : null,
 			]);
 		}
 	},
@@ -175,21 +174,19 @@ export default {
 				const badgeId = badgeKey.split('badge_')[1] ?? '';
 				const badgeLevel = this.$route.query?.badge_level ?? 0;
 
-				const achievementResult = this.apollo.readQuery({ query: userAchievementProgressQuery });
-				const badgeAchievementData = [
-					...(achievementResult?.userAchievementProgress?.lendingAchievements ?? []),
-					...(achievementResult?.userAchievementProgress?.tieredLendingAchievements ?? [])
-				];
-
-				const contentfulResult = this.apollo.readQuery({
-					query: contentfulEntriesQuery,
+				const result = this.apollo.readQuery({
+					query: lenderProfileBadgeDataQuery,
 					variables: {
 						contentType: 'challenge',
 						limit: 200,
 					}
 				});
 
-				const badgeContentfulData = (contentfulResult?.contentful?.entries?.items ?? [])
+				const badgeAchievementData = [
+					...(result?.userAchievementProgress?.lendingAchievements ?? []),
+					...(result?.userAchievementProgress?.tieredLendingAchievements ?? [])
+				];
+				const badgeContentfulData = (result?.contentful?.entries?.items ?? [])
 					.map(entry => getContentfulLevelData(entry));
 
 				const badgeData = combineBadgeData(badgeAchievementData, badgeContentfulData);
