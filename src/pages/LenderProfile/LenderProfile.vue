@@ -23,8 +23,6 @@ import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWra
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
 import useBadgeData from '#src/composables/useBadgeData';
-import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 
 export default {
