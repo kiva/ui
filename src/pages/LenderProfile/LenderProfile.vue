@@ -107,14 +107,15 @@ export default {
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isBadgeKeyValid(badgeKey) ? client.query({ query: userAchievementProgressQuery }) : null,
-				isBadgeKeyValid(badgeKey) ? client.query({
-					query: contentfulEntriesQuery,
-					variables: {
-						contentType: 'challenge',
-						limit: 200,
-					}
-				}) : null,
+				isBadgeKeyValid(badgeKey) ? [
+					client.query({ query: userAchievementProgressQuery }),
+					client.query({
+						query: contentfulEntriesQuery,
+						variables: {
+							contentType: 'challenge',
+							limit: 200,
+						}
+					})] : null,
 			]);
 		}
 	},
