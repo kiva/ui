@@ -213,9 +213,6 @@ const singleSlideWidth = computed(() => {
 	if (viewportWidth < 450) {
 		return '100%';
 	}
-	if (viewportWidth < 768) {
-		return '288px';
-	}
 	if (window.innerWidth < 1024) {
 		return '468px';
 	}
