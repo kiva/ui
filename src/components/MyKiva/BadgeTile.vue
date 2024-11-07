@@ -1,0 +1,156 @@
+<template>
+	<div>
+		<KvLoadingPlaceholder
+			v-if="isLoading"
+			class="!tw-h-14 !tw-w-full md:!tw-w-1/2"
+		/>
+		<div
+			v-else-if="!isLoading"
+			class="tw-cursor-pointer"
+			@click="badgeClicked"
+		>
+			<h4 class="tw-mb-1">
+				you’re almost there
+			</h4>
+			<div class="tw-bg-white tw-p-2 tw-rounded md:tw-w-1/2">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<BadgeContainer
+						v-if="badgeShape"
+						:status="BADGE_IN_PROGRESS"
+						:shape="badgeShape"
+						class="tw-z-1"
+					>
+						<img
+							:src="tierData.contentfulData.imageUrl"
+							alt="Badge"
+							style="height: 133px; width: 133px;"
+						>
+					</BadgeContainer>
+					<div>
+						<p class="tw-font-medium">
+							{{ badgeName }}
+						</p>
+						<p class="tw-text-small">
+							{{ tierCaption }}
+						</p>
+						<button
+							class="tw-flex tw-items-center tw-gap-0.5 tw-font-medium tw-mt-1 tw-text-action
+								hover:tw-underline"
+						>
+							Earn badge
+							<KvMaterialIcon
+								class="tw-w-2.5 tw-h-2.5 tw-text-action"
+								:icon="mdiArrowRight"
+							/>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script setup>
+import { mdiArrowRight } from '@mdi/js';
+import { defaultBadges } from '#src/util/achievementUtils';
+import { indexIn } from '#src/util/comparators';
+import useBadgeModal, { BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import useBadgeData from '#src/composables/useBadgeData';
+import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import {
+	computed,
+	toRefs,
+	watch,
+	ref,
+	inject,
+} from 'vue';
+
+const props = defineProps({
+	userInfo: {
+		type: Object,
+		default: () => ({}),
+	},
+	badgesData: {
+		type: Array,
+		default: () => ([])
+	},
+	isLoading: {
+		type: Boolean,
+		default: false,
+	},
+});
+
+const $kvTrackEvent = inject('$kvTrackEvent');
+
+const emit = defineEmits(['badge-clicked']);
+
+const { userInfo, badgesData } = toRefs(props);
+const { getTierBadgeDataByLevel } = useBadgeData();
+
+const tierData = ref({});
+const badgeShape = ref(null);
+
+const userPreferences = computed(() => {
+	const preferencesData = userInfo.value?.userPreferences?.preferences ?? null;
+	return preferencesData ? JSON.parse(preferencesData) : {};
+});
+
+const tieredBadges = computed(() => {
+	return badgesData.value
+		.filter(b => defaultBadges.includes(b.id))
+		.sort(indexIn(defaultBadges, 'id'));
+});
+
+const selectedTier = computed(() => {
+	const tiers = [];
+	tieredBadges.value.forEach(badge => {
+		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
+		tiers.push({
+			badge,
+			totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
+			tier,
+		});
+	});
+	const sorted = tiers.sort((a, b) => {
+		const aDiff = a.tier.target - a.totalProgressToAchievement;
+		const bDiff = b.tier.target - b.totalProgressToAchievement;
+
+		return aDiff - bDiff;
+	});
+
+	const userBadge = userPreferences.value?.goal ?? null;
+	if (userBadge) {
+		const userTier = sorted.find(t => t.badge.challengeName === userBadge);
+		if (userTier) {
+			return userTier;
+		}
+	}
+
+	return tiers[0];
+});
+
+const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
+const tierCaption = computed(() => {
+	const progress = selectedTier?.value?.totalProgressToAchievement ?? '';
+	const target = selectedTier?.value?.tier?.target ?? '';
+
+	return `${progress} of ${target} loans`;
+});
+
+const badgeClicked = () => {
+	$kvTrackEvent('portfolio', 'click', 'Earn a badge - header', badgeName.value, selectedTier.value.tier.level);
+	emit('badge-clicked', selectedTier.value);
+};
+
+watch(selectedTier, newVal => {
+	if (newVal) {
+		const { getBadgeShape } = useBadgeModal(selectedTier.value.badge);
+		badgeShape.value = getBadgeShape();
+		const tierBadgeData = computed(() => getTierBadgeDataByLevel(selectedTier.value.badge, selectedTier.value.tier.level)); // eslint-disable-line max-len
+		tierData.value = tierBadgeData.value;
+		$kvTrackEvent('portfolio', 'view', 'Earn a badge', badgeName.value, selectedTier.value.tier.level);
+	}
+});
+</script>
