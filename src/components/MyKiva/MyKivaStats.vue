@@ -67,9 +67,21 @@ const totalAmountLent = ref(0);
 const totalCountriesLentTo = ref(0);
 
 const completedAchievements = computed(() => {
-	return userAchievements.value.filter(
-		achievement => achievement.status === 'COMPLETE' // Update this status field when having from backend
-	);
+	const achievements = [];
+	userAchievements.value.forEach(achievement => {
+		if (achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE') {
+			achievements.push(achievement);
+		}
+		if (achievement.tiers?.length) {
+			achievement.tiers.forEach(tier => {
+				if (tier.completedDate) {
+					achievements.push(achievement);
+				}
+			});
+		}
+	});
+
+	return achievements;
 });
 
 const completedAchievementsNumber = computed(() => {
