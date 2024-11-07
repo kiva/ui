@@ -1,5 +1,8 @@
 <template>
-	<section class="tw-bg-white tw-py-2">
+	<section
+		v-if="completedBadges.length"
+		class="tw-bg-white tw-py-2"
+	>
 		<MyKivaContainer>
 			<div class="tw-my-3">
 				<h3

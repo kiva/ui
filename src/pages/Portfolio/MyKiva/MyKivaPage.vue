@@ -15,6 +15,14 @@
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
+			<section class="tw-pt-2">
+				<BadgeTile
+					:user-info="userInfo"
+					:badges-data="badgeData"
+					:is-loading="isLoading"
+					@badge-clicked="handleBadgeTileClicked"
+				/>
+			</section>
 			<section class="tw-py-2">
 				<div
 					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
@@ -140,6 +148,7 @@ import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarouse
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
+import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
@@ -187,6 +196,14 @@ const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 const handleShowNavigation = () => {
 	showNavigation.value = true;
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
+};
+
+const handleBadgeTileClicked = selectedTier => {
+	state.value = STATE_IN_PROGRESS;
+	selectedBadgeData.value = selectedTier.badge;
+	tier.value = selectedTier.tier;
+	isEarnedSectionModal.value = false;
+	showBadgeModal.value = true;
 };
 
 const handleBadgeSectionClicked = badge => {
