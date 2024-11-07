@@ -22,7 +22,8 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import useBadgeContentfulData from '#src/composables/useBadgeContentfulData';
+import useBadgeData from '#src/composables/useBadgeData';
+import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 
 export default {
 	name: 'LenderProfile',
@@ -93,21 +94,25 @@ export default {
 			lenderInfo: {},
 			publicId: '',
 			lenderIsPublic: false,
-			enableBadgeContent: false,
-			badgeImage: null,
-			badgeCategory: '',
-			badgeTarget: 0,
+			badgeData: null,
 		};
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
 			const currentRoute = route.value ?? route ?? {};
 			const publicId = currentRoute.params?.publicId ?? '';
-			const { isBadgeKeyValid, badgeQuery, badgeKey } = useBadgeContentfulData(client, currentRoute);
+			const badgeKey = currentRoute.query?.utm_campaign;
+			const { isBadgeKeyValid } = useBadgeData();
 
 			return Promise.all([
 				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isBadgeKeyValid ? client.query({ query: badgeQuery, variables: { badgeKey } }) : null,
+				isBadgeKeyValid(badgeKey) ? client.query({
+					query: lenderProfileBadgeDataQuery,
+					variables: {
+						contentType: 'challenge',
+						limit: 200,
+					}
+				}) : null,
 			]);
 		}
 	},
@@ -143,6 +148,51 @@ export default {
 		seoImageUrl() {
 			return this.enableBadgeContent ? this.badgeImage : this.lenderInfo?.seoImage?.url ?? '';
 		},
+		badgeImage() {
+			return this.badgeData?.contentfulData?.imageUrl ?? '';
+		},
+		badgeCategory() {
+			return this.badgeData?.contentfulData?.challengeName ?? '';
+		},
+		badgeTarget() {
+			return this.badgeData?.achievementData?.target ?? '';
+		},
+		enableBadgeContent() {
+			return !!this.badgeData?.id;
+		}
+	},
+	methods: {
+		getBadgeData() {
+			const {
+				isBadgeKeyValid, combineBadgeData, getContentfulLevelData, getTierBadgeDataByLevel
+			} = useBadgeData();
+			const badgeKey = this.$route.query?.utm_campaign ?? '';
+
+			if (isBadgeKeyValid(badgeKey)) {
+				const badgeId = badgeKey.split('badge_')[1] ?? '';
+				const badgeLevel = this.$route.query?.badge_level ?? 0;
+
+				const result = this.apollo.readQuery({
+					query: lenderProfileBadgeDataQuery,
+					variables: {
+						contentType: 'challenge',
+						limit: 200,
+					}
+				});
+
+				const badgeAchievementData = [
+					...(result?.userAchievementProgress?.lendingAchievements ?? []),
+					...(result?.userAchievementProgress?.tieredLendingAchievements ?? [])
+				];
+				const badgeContentfulData = (result?.contentful?.entries?.items ?? [])
+					.map(entry => getContentfulLevelData(entry));
+
+				const badgeData = combineBadgeData(badgeAchievementData, badgeContentfulData);
+				const sharedBadge = badgeData.find(badge => badge.id === badgeId);
+
+				this.badgeData = getTierBadgeDataByLevel(sharedBadge, Number(badgeLevel));
+			}
+		}
 	},
 	async created() {
 		this.publicId = this.$route?.params?.publicId ?? '';
@@ -159,15 +209,7 @@ export default {
 		this.lenderInfo = cachedLenderInfo?.community?.lender ?? {};
 		this.lenderIsPublic = !!this.lenderInfo?.id;
 
-		const { isBadgeKeyValid, loadBadgeInfo } = useBadgeContentfulData(this.apollo, this.$route);
-
-		if (isBadgeKeyValid) {
-			const { badgeImage, badgeCategory, badgeTarget } = await loadBadgeInfo();
-			this.badgeImage = badgeImage;
-			this.badgeCategory = badgeCategory;
-			this.badgeTarget = badgeTarget;
-			this.enableBadgeContent = true;
-		}
+		this.getBadgeData();
 	}
 };
 </script>
