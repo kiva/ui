@@ -23,9 +23,9 @@ import KvGrid from '@kiva/kv-components/vue/KvGrid';
 }
 
 .container > div {
-	@media screen and (min-width: 67rem) {
-		padding-left: 0px;
-		padding-right: 0px;
+	@media screen and (width <= 67rem) {
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 </style>
