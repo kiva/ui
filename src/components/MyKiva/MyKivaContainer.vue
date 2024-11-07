@@ -21,4 +21,11 @@ import KvGrid from '@kiva/kv-components/vue/KvGrid';
 	max-width: 67rem;
 	@apply tw-mx-auto;
 }
+
+.container > div {
+	@media screen and (width >= 67rem) {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 </style>
