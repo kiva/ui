@@ -45,8 +45,9 @@
 					</BadgeContainer>
 					<div
 						v-if="showEarnBadge(index)"
-						class="tw-absolute tw-rounded-full tw-min-w-3 tw-h-3 tw-font-medium tw-bg-gray-200
-							tw-text-center tw-px-0.5 tw-z-2"
+						class="tw-absolute tw-flex tw-items-center tw-justify-center tw-rounded-full tw-min-w-3
+							tw-min-h-3 tw-font-medium tw-bg-gray-200 tw-text-center tw-z-2 tw-px-0.5
+							tw-aspect-square tw-text-small"
 						:style="getNumberCircleStyles()"
 					>
 						{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
