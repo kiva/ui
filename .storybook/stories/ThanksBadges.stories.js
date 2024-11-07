@@ -8,6 +8,17 @@ export default {
 	component: ThanksBadges,
 };
 
+const mockLender = {
+	firstName: 'Test',
+	lastName: 'User',
+	email: 'testuser@kiva.org',
+	inviterName: 'testUser123',
+};
+
+const mockLoans = mockedReceiptData.items.values
+	.filter(item => item.basketItemType === 'loan_reservation')
+	.map(item => item.loan);
+
 const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
@@ -20,6 +31,15 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const Guest = story({ receipt: mockedReceiptData });
+export const Guest = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+});
 
-export const User = story({ isGuest: false, receipt: mockedReceiptData });
+export const User = story({
+	isGuest: false,
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+});

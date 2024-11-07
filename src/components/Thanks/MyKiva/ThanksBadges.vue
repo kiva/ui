@@ -23,7 +23,7 @@
 					v-show="openCreateAccount"
 					easing="ease-in-out"
 				>
-					<div class="tw-py-2">
+					<div>
 						<h2>Before you go!</h2>
 						<p>Finish setting up your account to track and relend your money as you are paid back.</p>
 						<GuestAccountCreation
@@ -53,13 +53,11 @@
 					v-show="openOrderConfirmation"
 					easing="ease-in-out"
 				>
-					<div class="tw-py-2">
-						<CheckoutReceipt
-							v-if="receipt"
-							:lender="lender"
-							:receipt="receipt"
-						/>
-					</div>
+					<CheckoutReceipt
+						v-if="receipt"
+						:lender="lender"
+						:receipt="receipt"
+					/>
 				</KvExpandable>
 			</div>
 			<div
@@ -73,21 +71,19 @@
 				<KvMaterialIcon
 					:icon="mdiChevronDown"
 					class="expandable-button"
-					:class="{'tw-rotate-180' : openShareModule}"
+					:class="{ 'tw-rotate-180' : openShareModule }"
 				/>
 			</div>
 			<KvExpandable
 				v-show="openShareModule"
 				easing="ease-in-out"
 			>
-				<div class="tw-py-2">
-					<SocialShareV2
-						v-if="receipt"
-						class="social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
-				</div>
+				<SocialShareV2
+					v-if="receipt"
+					class="social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
 			</KvExpandable>
 		</div>
 	</div>
@@ -105,10 +101,6 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 
 // TODO: ensure these props are all needed as functionality is expanded (some currently unused)
 defineProps({
-	selectedLoan: {
-		type: Object,
-		default: () => ({}),
-	},
 	isGuest: {
 		type: Boolean,
 		default: true,
