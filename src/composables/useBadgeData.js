@@ -4,6 +4,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
+export const ID_EQUITY = 'equity';
 export const ID_WOMENS_EQUALITY = 'womens-equality';
 export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
@@ -308,6 +309,68 @@ export default function useBadgeData() {
 		return visibleData;
 	};
 
+	/**
+	 * Gets the last completed level of the provided badge
+	 *
+	 * @param badge The data of the badge
+	 * @returns The last completed level
+	 */
+	const getLastCompletedBadgeLevelData = badge => {
+		if (badge.achievementData?.milestoneProgress?.length) {
+			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+			if (earnedAtDate) {
+				const contentfulData = badge.contentfulData?.[0] ?? {};
+				return {
+					...badge,
+					contentfulData,
+					levelName: contentfulData.challengeName,
+				};
+			}
+		} else if (badge.achievementData?.tiers?.length) {
+			const tiers = JSON.parse(JSON.stringify(badge.achievementData.tiers));
+			tiers.sort((a, b) => new Date(a.completedDate) - new Date(b.completedDate));
+			const levelIndex = tiers[0].level - 1;
+			const contentfulData = badge.contentfulData[levelIndex];
+			return {
+				...badge,
+				contentfulData,
+				achievementData: tiers[levelIndex],
+				// eslint-disable-next-line max-len
+				levelName: `${(contentfulData.challengeName ?? '')}${(contentfulData.levelName ? ' ' : '')}${(contentfulData.levelName ?? '')}`
+			};
+		}
+		return {};
+	};
+
+	/**
+	 * Gets the highest priority badge for displaying to the user
+	 *
+	 * @param badges The badges to get the highest priority badge from
+	 * @returns The highest priority badge
+	 */
+	const getHighestPriorityDisplayBadge = badges => {
+		const badgeOrder = [
+			ID_EQUITY,
+			ID_WOMENS_EQUALITY,
+			ID_US_ECONOMIC_EQUALITY,
+			ID_BASIC_NEEDS,
+			ID_CLIMATE_ACTION,
+			ID_REFUGEE_EQUALITY
+		];
+		let displayedBadge;
+		if (badges.length) {
+			const sortedBadges = JSON.parse(JSON.stringify(badges));
+			sortedBadges.sort((a, b) => badgeOrder.indexOf(a.id) - badgeOrder.indexOf(b.id));
+			for (let i = 0; i < sortedBadges.length; i += 1) {
+				const badge = sortedBadges[i];
+				if (!displayedBadge || (badge.level ?? 1) > displayedBadge.level) {
+					displayedBadge = badge;
+				}
+			}
+		}
+		return displayedBadge ?? {};
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -318,6 +381,8 @@ export default function useBadgeData() {
 		getTierBadgeDataByLevel,
 		getFilteredUrl,
 		getBadgeWithVisibleTiers,
+		getLastCompletedBadgeLevelData,
+		getHighestPriorityDisplayBadge,
 		badgeAchievementData,
 		badgeData,
 		badgeLoanIdData,

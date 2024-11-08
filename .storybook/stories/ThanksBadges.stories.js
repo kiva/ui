@@ -1,23 +1,18 @@
 import ThanksBadges from '#src/components/Thanks/MyKiva/ThanksBadges';
-import mockedReceiptData from '../mock-data/receipt-data-mock';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
+import {
+	mockedReceiptData,
+	mockLender,
+	mockLoans,
+	mockOldBadge,
+	mockTieredBadge,
+} from '../mock-data/thanks-badges-mock-data';
 
 export default {
 	title: 'MyKiva/Thanks',
 	component: ThanksBadges,
 };
-
-const mockLender = {
-	firstName: 'Test',
-	lastName: 'User',
-	email: 'testuser@kiva.org',
-	inviterName: 'testUser123',
-};
-
-const mockLoans = mockedReceiptData.items.values
-	.filter(item => item.basketItemType === 'loan_reservation')
-	.map(item => item.loan);
 
 const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
@@ -35,6 +30,7 @@ export const Guest = story({
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
 });
 
 export const User = story({
@@ -42,4 +38,26 @@ export const User = story({
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const BadgeOld = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockOldBadge],
+});
+
+export const BadgeTiered = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const BadgeMultiple = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockOldBadge, mockTieredBadge],
 });
