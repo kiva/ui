@@ -107,11 +107,13 @@ const selectedTier = computed(() => {
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
-		tiers.push({
-			badge,
-			totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
-			tier,
-		});
+		if (tier) {
+			tiers.push({
+				badge,
+				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
+				tier,
+			});
+		}
 	});
 	const sorted = tiers.sort((a, b) => {
 		const aDiff = a.tier.target - a.totalProgressToAchievement;
