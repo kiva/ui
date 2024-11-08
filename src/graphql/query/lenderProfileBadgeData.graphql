@@ -1,0 +1,44 @@
+query lenderProfileBadgeData(
+  $contentType: String!
+  $contentKey: String
+  $preview: Boolean
+  $limit: Int
+) {
+  userAchievementProgress {
+    id
+    lendingAchievements {
+      id
+      description
+      milestoneProgress {
+        earnedAtDate
+        id
+        milestoneStatus
+        progress
+        target
+      }
+    }
+    tieredLendingAchievements {
+      id
+      description
+      totalProgressToAchievement
+      matchingLoans {
+        id
+        filters
+      }
+      tiers {
+        target
+        tierStatement
+        completedDate
+        learnMoreURL
+      }
+    }
+  }
+  contentful {
+    entries(
+      contentType: $contentType
+      contentKey: $contentKey
+      preview: $preview
+      limit: $limit
+    )
+  }
+}
