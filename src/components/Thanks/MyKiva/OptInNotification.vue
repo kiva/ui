@@ -1,12 +1,12 @@
 <template>
 	<div
-		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-0.5 md:tw-gap-2
+		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-2
 			tw-bg-white tw-rounded tw-px-3 tw-py-1.5"
 		:style="{maxWidth: '620px'}"
 	>
 		<div
 			v-if="receiveNews"
-			class="avatars-container tw-flex tw-items-center tw-w-full"
+			class="avatars-container tw-flex tw-items-center"
 		>
 			<KvUserAvatar
 				v-for="loan, index in loansToDisplay"
@@ -60,8 +60,8 @@ const notificationMsg = computed(() => {
 <style lang="postcss" scoped>
 
 .avatars-container {
-	@media screen and (width >= 414px) {
-		width: auto;
+	@media screen and (width <= 375px ) {
+		width: 100%;
 	}
 }
 

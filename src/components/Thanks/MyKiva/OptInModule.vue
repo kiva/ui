@@ -4,27 +4,18 @@
 			<div class="module-container">
 				<h2>{{ title }}</h2>
 				<div class="tw-flex tw-items-center tw-justify-center">
-					<BorrowerImage
+					<KvUserAvatar
 						v-for="loan, index in loansToDisplay"
 						:key="loan.id"
-						class="borrower-image"
-						:class="{'centered-borrower' : index === 1 && loansToDisplay.length === 3}"
+						:lender-name="loan?.name"
+						:lender-image-url="loan?.image?.url"
+						class="borrower-image tw-rounded-full tw-shadow tw-border-white tw-border-2"
+						:class="{'centered-borrower-image' : index === 1 && loansToDisplay.length === 3}"
 						:style="{
 							marginRight: getMarginRight(index),
 							marginLeft: getMarginLeft(index),
 							zIndex: index === 1 ? 2 : 1,
 						}"
-						:aspect-ratio="3 / 4"
-						:default-image="{ width: 336 }"
-						:hash="hash(loan)"
-						:images="[
-							{ width: 336, viewSize: 1024 },
-							{ width: 336, viewSize: 768 },
-							{ width: 416, viewSize: 480 },
-							{ width: 374, viewSize: 414 },
-							{ width: 335, viewSize: 375 },
-							{ width: 280 },
-						]"
 					/>
 				</div>
 				<h3>{{ description }}</h3>
@@ -70,19 +61,15 @@
 import { computed, inject, ref } from 'vue';
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
-import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 import OptInNotification from './OptInNotification';
 
 const props = defineProps({
-	selectedLoan: {
-		type: Object,
-		default: () => ({})
-	},
 	loans: {
 		type: Array,
 		default: () => ([])
@@ -99,16 +86,12 @@ const receiveNews = ref(false);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
-const borrowerName = computed(() => {
-	return props.selectedLoan?.name ?? '';
-});
-
 const title = computed(() => {
 	if (props.optedIn) {
 		return 'Thank you! You reached a milestone';
 	}
 	if (props.loans.length === 1) {
-		return `Thank you! You and ${borrowerName.value} are in this together now.`;
+		return `Thank you! You and ${props.loans[0]?.name} are in this together now.`;
 	}
 	if (props.loans.length === 2) {
 		const names = props.loans.map(loan => loan?.name).join(' and ');
@@ -120,18 +103,10 @@ const title = computed(() => {
 });
 
 const description = computed(
-	() => `Want to hear how you're impacting ${borrowerName.value}'s life and more ways to help people like them?`
+	() => `Want to hear how you're impacting ${props.loans[0]?.name}'s life and more ways to help people like them?`
 );
 
-const loansToDisplay = computed(() => {
-	const loans = [...props.loans];
-	if (props.loans.length === 3) {
-		const indexToRemove = loans.indexOf(loan => loan.id === props.selectedLoan.id);
-		const removedLoan = loans.splice(indexToRemove, 1)[0];
-		loans.splice(1, 0, removedLoan);
-	}
-	return loans.slice(0, 3);
-});
+const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const getMarginRight = index => {
 	if (loansToDisplay.value.length > 2 && index === 0) {
@@ -181,7 +156,7 @@ const updateOptIn = value => {
 				},
 			});
 		} catch (error) {
-			logReadQueryError(error, 'error');
+			logReadQueryError(error, 'OptInModule updateCommunicationSettings');
 		}
 	}
 	newConsentAnswered.value = true;
@@ -218,23 +193,17 @@ const updateOptIn = value => {
 	}
 }
 
-.borrower-image {
-	width: 80px !important;
-	height: 80px !important;
+.borrower-image, .borrower-image :deep(img) {
+	width: 80px;
+	height: 80px;
 
 	@screen md {
-		width: 160px !important;
-		height: 160px !important;
+		width: 160px;
+		height: 160px;
 	}
-
-	@apply tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2 !tw-pb-0;
 }
 
-.borrower-image :deep(img) {
-	@apply tw-object-cover;
-}
-
-.centered-borrower {
+.centered-borrower-image, .centered-borrower-image :deep(img) {
 	width: 100px !important;
 	height: 100px !important;
 
@@ -250,7 +219,7 @@ const updateOptIn = value => {
 
 .collapse-enter-active,
 .collapse-leave-active {
-  transition: max-height 1s ease, opacity 1s ease;
+  transition: max-height 1s ease, opacity 1s ease, padding 1s ease;
   overflow: hidden;
 }
 
