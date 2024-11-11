@@ -175,10 +175,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	optedIn: {
-		type: Boolean,
-		default: false
-	},
 	selectedLoan: {
 		type: Object,
 		default: () => ({})

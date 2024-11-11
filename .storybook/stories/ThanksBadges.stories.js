@@ -26,8 +26,6 @@ const story = (args = {}) => {
 	return template;
 };
 
-const loans = mockedReceiptData.items.values?.map((item) => item?.loan).filter(loan => !!loan?.id);
-
 export const UserGuest = story({
 	lender: mockLender,
 	loans: mockLoans,
@@ -105,8 +103,8 @@ export const UserGuestOptedOutWithOneLoan = story({
 	isGuest: false,
 	optedIn: false,
 	receipt: mockedReceiptData,
-	loans: loans.slice(0, 1),
-	selectedLoan: loans[0],
+	loans: mockLoans.slice(0, 1),
+	selectedLoan: mockLoans[0],
 	badgesAchieved: [mockTieredBadge],
 });
 
@@ -115,7 +113,16 @@ export const UserGuestOptedOutWithTwoLoans = story({
 	isGuest: false,
 	optedIn: false,
 	receipt: mockedReceiptData,
-	loans: loans.slice(0, 2),
+	loans: mockLoans.slice(0, 2),
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserGuestOptedOutWithThreeOrMoreLoans = story({
+	lender: mockLender,
+	isGuest: false,
+	optedIn: false,
+	receipt: mockedReceiptData,
+	loans: mockLoans.slice(0, 3),
 	badgesAchieved: [mockTieredBadge],
 });
 

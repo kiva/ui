@@ -3,31 +3,31 @@
 		<template v-if="!newConsentAnswered">
 			<div class="module-container">
 				<h2>{{ title }}</h2>
-				<div class="borrower-container">
-					<div
-						class="tw-flex tw-justify-center tw-items-center tw-z-1 image-container"
-					>
-						<borrower-image
-							v-for="loan, index in loansToDisplay"
-							:key="loan.id"
-							class="borrower-image"
-							:class="{'centered-borrower' : index === 1 && loansToDisplay.length === 3}"
-							:style="{
-								marginLeft: `${loans.length === 2 && index === 1
-									? (index * marginLeftWeight)
-									: (index - 1) * marginLeftWeight}rem`,
-								zIndex: `${index + 1}`,
-							}"
-							:aspect-ratio="1"
-							:default-image="{ width: 200, faceZoom: 30 }"
-							:hash="hash(loan)"
-							:images="[
-								{ width: 200, faceZoom: 30 },
-							]"
-						/>
-					</div>
+				<div class="tw-flex tw-items-center tw-justify-center">
+					<BorrowerImage
+						v-for="loan, index in loansToDisplay"
+						:key="loan.id"
+						class="borrower-image"
+						:class="{'centered-borrower' : index === 1 && loansToDisplay.length === 3}"
+						:style="{
+							marginRight: getMarginRight(index),
+							marginLeft: getMarginLeft(index),
+							zIndex: index === 1 ? 2 : 1,
+						}"
+						:aspect-ratio="3 / 4"
+						:default-image="{ width: 336 }"
+						:hash="hash(loan)"
+						:images="[
+							{ width: 336, viewSize: 1024 },
+							{ width: 336, viewSize: 768 },
+							{ width: 416, viewSize: 480 },
+							{ width: 374, viewSize: 414 },
+							{ width: 335, viewSize: 375 },
+							{ width: 280 },
+						]"
+					/>
 				</div>
-				<p>{{ description }}</p>
+				<h3>{{ description }}</h3>
 				<div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
 					<kv-button
 						class="tw-w-full"
@@ -108,7 +108,7 @@ const title = computed(() => {
 		return 'Thank you! You reached a milestone';
 	}
 	if (props.loans.length === 1) {
-		return `You and ${borrowerName.value} are in this together now.`;
+		return `Thank you! You and ${borrowerName.value} are in this together now.`;
 	}
 	if (props.loans.length === 2) {
 		const names = props.loans.map(loan => loan?.name).join(' and ');
@@ -133,20 +133,27 @@ const loansToDisplay = computed(() => {
 	return loans.slice(0, 3);
 });
 
-const marginLeftWeight = computed(() => {
-	if (loansToDisplay.value.length === 1) {
-		return 0;
-	}
-	if (loansToDisplay.value.length === 2) {
-		return 6;
-	}
-
-	if (isMobile.value) {
-		return 7;
+const getMarginRight = index => {
+	if (loansToDisplay.value.length > 2 && index === 0) {
+		if (isMobile.value) {
+			return '-40px';
+		}
+		return '-80px';
 	}
 
-	return 12;
-});
+	return '0';
+};
+
+const getMarginLeft = index => {
+	if (loansToDisplay.value.length > 1 && index === loansToDisplay.value.length - 1) {
+		if (isMobile.value) {
+			return '-40px';
+		}
+		return '-80px';
+	}
+
+	return '0';
+};
 
 const hash = loan => {
 	return loan?.image?.hash ?? '';
@@ -220,8 +227,11 @@ const updateOptIn = value => {
 		height: 160px !important;
 	}
 
-	box-shadow: '0px 4.42px 22.1px 0px #D1DCD6';
-	@apply tw-absolute tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2 tw-pb-0;
+	@apply tw-w-full tw-rounded-full tw-bg-black tw-border-4 tw-border-white tw-z-2 !tw-pb-0;
+}
+
+.borrower-image :deep(img) {
+	@apply tw-object-cover;
 }
 
 .centered-borrower {
@@ -232,8 +242,6 @@ const updateOptIn = value => {
 		width: 180px !important;
 		height: 180px !important;
 	}
-
-	@apply !tw-z-5;
 }
 
 .ghost-button :deep(span) {
