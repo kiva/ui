@@ -3,6 +3,7 @@ query myKivaQuery {
     id
     isBorrower
     loans(limit: 10) {
+      totalCount
       values {
         id
         name

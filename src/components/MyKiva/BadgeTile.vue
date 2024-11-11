@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<KvLoadingPlaceholder
-			v-if="isLoading"
+			v-if="tileLoader"
 			class="!tw-h-14 !tw-w-full md:!tw-w-1/2"
 		/>
 		<div
-			v-else-if="!isLoading"
+			v-else
 			class="tw-cursor-pointer"
 			@click="badgeClicked"
 		>
@@ -76,10 +76,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
-	isLoading: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -91,6 +87,7 @@ const { getTierBadgeDataByLevel } = useBadgeData();
 
 const tierData = ref({});
 const badgeShape = ref(null);
+const tileLoader = ref(true);
 
 const userPreferences = computed(() => {
 	const preferencesData = userInfo.value?.userPreferences?.preferences ?? null;
@@ -107,11 +104,13 @@ const selectedTier = computed(() => {
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
-		tiers.push({
-			badge,
-			totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
-			tier,
-		});
+		if (tier) {
+			tiers.push({
+				badge,
+				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
+				tier,
+			});
+		}
 	});
 	const sorted = tiers.sort((a, b) => {
 		const aDiff = a.tier.target - a.totalProgressToAchievement;
@@ -152,5 +151,9 @@ watch(selectedTier, newVal => {
 		tierData.value = tierBadgeData.value;
 		$kvTrackEvent('portfolio', 'view', 'Earn a badge', badgeName.value, selectedTier.value.tier.level);
 	}
+});
+
+watch(badgeName, () => {
+	tileLoader.value = false;
 });
 </script>

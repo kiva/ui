@@ -1,7 +1,13 @@
 import ThanksBadges from '#src/components/Thanks/MyKiva/ThanksBadges';
-import mockedReceiptData from '../mock-data/receipt-data-mock';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
+import {
+	mockedReceiptData,
+	mockLender,
+	mockLoans,
+	mockOldBadge,
+	mockTieredBadge,
+} from '../mock-data/thanks-badges-mock-data';
 
 export default {
 	title: 'MyKiva/Thanks',
@@ -22,12 +28,56 @@ const story = (args = {}) => {
 
 const loans = mockedReceiptData.items.values?.map((item) => item?.loan).filter(loan => !!loan?.id);
 
-export const Guest = story({ receipt: mockedReceiptData, loans, selectedLoan: loans[0] });
+export const Guest = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
 
-export const UserOptedIn = story({ isGuest: false, receipt: mockedReceiptData, loans, selectedLoan: loans[0], optedIn: true });
+export const User = story({
+	isGuest: false,
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
 
-export const OptedOutWithOneLoan = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 1), selectedLoan: loans[0] });
+export const BadgeOld = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockOldBadge],
+});
 
-export const OptedOutWithTwoLoans = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 2), selectedLoan: loans[0] });
+export const BadgeTiered = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
 
-export const OptedOutWithTwoOrMoreLoans = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 3), selectedLoan: loans[0] });
+export const BadgeMultiple = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockOldBadge, mockTieredBadge],
+});
+
+export const UserWithOneLoan = story({
+	lender: mockLender,
+	isGuest: false,
+	receipt: mockedReceiptData,
+	loans: loans.slice(0, 1),
+	selectedLoan: loans[0],
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserWithTwoLoans = story({
+	lender: mockLender,
+	isGuest: false,
+	receipt: mockedReceiptData,
+	loans: loans.slice(0, 2),
+	selectedLoan: loans[0],
+	badgesAchieved: [mockTieredBadge],
+});

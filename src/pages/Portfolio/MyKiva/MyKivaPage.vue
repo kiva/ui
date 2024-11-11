@@ -19,7 +19,6 @@
 				<BadgeTile
 					:user-info="userInfo"
 					:badges-data="badgeData"
-					:is-loading="isLoading"
 					@badge-clicked="handleBadgeTileClicked"
 				/>
 			</section>
@@ -44,6 +43,7 @@
 				>
 					<MyKivaBorrowerCarousel
 						:loans="loans"
+						:total-loans="totalLoans"
 						:is-loading="isLoading"
 						@selected-loan="handleSelectedLoan"
 					/>
@@ -188,6 +188,7 @@ const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 const isEarnedSectionModal = ref(false);
 const showLoanFootnote = ref(false);
+const totalLoans = ref(0);
 
 const isLoading = computed(() => !lender.value);
 
@@ -268,6 +269,7 @@ const fetchMyKivaData = () => {
 			userInfo.value = result.data?.my ?? {};
 			lender.value = result.data?.my?.lender ?? null;
 			loans.value = result.data?.my?.loans?.values ?? [];
+			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			if (loans.value.length > 0) {
 				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
 				// eslint-disable-next-line prefer-destructuring
