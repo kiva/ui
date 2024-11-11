@@ -20,6 +20,14 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const Guest = story({ receipt: mockedReceiptData });
+const loans = mockedReceiptData.items.values?.map((item) => item?.loan).filter(loan => !!loan?.id);
 
-export const User = story({ isGuest: false, receipt: mockedReceiptData });
+export const Guest = story({ receipt: mockedReceiptData, loans, selectedLoan: loans[0] });
+
+export const UserOptedIn = story({ isGuest: false, receipt: mockedReceiptData, loans, selectedLoan: loans[0], optedIn: true });
+
+export const OptedOutWithOneLoan = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 1), selectedLoan: loans[0] });
+
+export const OptedOutWithTwoLoans = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 2), selectedLoan: loans[0] });
+
+export const OptedOutWithTwoOrMoreLoans = story({ isGuest: false, receipt: mockedReceiptData, loans: loans.slice(0, 3), selectedLoan: loans[0] });

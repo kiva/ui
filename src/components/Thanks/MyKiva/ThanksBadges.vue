@@ -1,5 +1,12 @@
 <template>
 	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4">
+		<OptInModule
+			v-if="!isGuest && !optedIn"
+			class="tw-pb-4"
+			:selected-loan="selectedLoan"
+			:loans="loans"
+			:is-guest="isGuest"
+		/>
 		<div
 			class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3"
 			:style="{ maxWidth: '620px' }"
@@ -102,6 +109,7 @@ import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import OptInModule from './OptInModule';
 
 // TODO: ensure these props are all needed as functionality is expanded (some currently unused)
 defineProps({
@@ -125,6 +133,10 @@ defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	optedIn: {
+		type: Boolean,
+		default: false
+	}
 });
 
 const openCreateAccount = ref(false);
