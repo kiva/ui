@@ -121,6 +121,13 @@
 				/>
 			</KvExpandable>
 		</div>
+		<KvLightbox
+			:visible="showGuestAccountModal"
+			title="Finish creating your account to see what's next"
+			@lightbox-closed="showGuestAccountModal = false"
+		>
+			<GuestAccountCreation />
+		</KvLightbox>
 	</div>
 </template>
 
@@ -130,6 +137,7 @@ import confetti from 'canvas-confetti';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown, mdiArrowRight } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
@@ -174,6 +182,7 @@ const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBa
 const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
+const showGuestAccountModal = ref(false);
 
 const numberOfBadges = computed(() => props.badgesAchieved.length);
 
@@ -211,7 +220,7 @@ const badgeFunFactFootnote = computed(() => badgeData.value.contentfulData?.shar
 
 const handleContinue = () => {
 	if (props.isGuest) {
-		openCreateAccount.value = true;
+		showGuestAccountModal.value = true;
 	} else {
 		// eslint-disable-next-line vue/no-mutating-props
 		props.router?.push('/portfolio');
