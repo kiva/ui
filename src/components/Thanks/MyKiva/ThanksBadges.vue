@@ -7,8 +7,8 @@
 				<KvUserAvatar
 					v-for="(loan, index) in loansToDisplay"
 					:key="loan.id"
-					:lender-name="loan.name"
-					:lender-image-url="loan.image.url"
+					:lender-name="loan?.name"
+					:lender-image-url="loan?.image?.url"
 					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
 					:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
 					:style="{
