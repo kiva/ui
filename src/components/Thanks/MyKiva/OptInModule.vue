@@ -8,10 +8,10 @@
 						class="tw-flex tw-justify-center tw-items-center tw-z-1 image-container"
 					>
 						<borrower-image
-							v-for="loan, index in filteredLoans"
+							v-for="loan, index in loansToDisplay"
 							:key="loan.id"
 							class="borrower-image"
-							:class="{'centered-borrower' : index === 1 && filteredLoans.length === 3}"
+							:class="{'centered-borrower' : index === 1 && loansToDisplay.length === 3}"
 							:style="{
 								marginLeft: `${loans.length === 2 && index === 1
 									? (index * marginLeftWeight)
@@ -58,8 +58,9 @@
 
 		<template v-if="newConsentAnswered">
 			<OptInNotification
-				:filtered-loans="filteredLoans"
+				:loans-to-display="loansToDisplay"
 				:receive-news="receiveNews"
+				:is-mobile="isMobile"
 			/>
 		</template>
 	</transition-group>
@@ -122,7 +123,7 @@ const description = computed(
 	() => `Want to hear how you're impacting ${borrowerName.value}'s life and more ways to help people like them?`
 );
 
-const filteredLoans = computed(() => {
+const loansToDisplay = computed(() => {
 	const loans = [...props.loans];
 	if (props.loans.length === 3) {
 		const indexToRemove = loans.indexOf(loan => loan.id === props.selectedLoan.id);
@@ -133,10 +134,10 @@ const filteredLoans = computed(() => {
 });
 
 const marginLeftWeight = computed(() => {
-	if (filteredLoans.value.length === 1) {
+	if (loansToDisplay.value.length === 1) {
 		return 0;
 	}
-	if (filteredLoans.value.length === 2) {
+	if (loansToDisplay.value.length === 2) {
 		return 6;
 	}
 

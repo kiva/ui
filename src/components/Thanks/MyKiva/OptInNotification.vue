@@ -1,27 +1,25 @@
 <template>
 	<div
-		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-2 tw-bg-white tw-rounded tw-px-3 tw-py-1.5"
+		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-0.5 md:tw-gap-2
+			tw-bg-white tw-rounded tw-px-3 tw-py-1.5"
 		:style="{maxWidth: '620px'}"
 	>
 		<div
 			v-if="receiveNews"
-			class="tw-flex tw-justify-center tw-items-center tw-z-1"
+			class="avatar-container tw-flex tw-items-center tw-w-auto"
 		>
-			<borrower-image
-				v-for="loan, index in filteredLoans"
+			<KvUserAvatar
+				v-for="loan, index in loansToDisplay"
 				:key="loan.id"
-				class="borrower-image"
-				:class="{'centered-borrower' : index === 1 && filteredLoans.length === 3}"
+				:lender-name="loan?.name"
+				:lender-image-url="loan?.image?.url"
+				class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+				:class="{'smaller-borrower-avatar' : loansToDisplay.length > 2 && index !== 1 }"
 				:style="{
-					marginLeft: `${index > 0 ? -1 : 0}rem`,
-					zIndex: `${index + 1}`,
+					zIndex: index === 1 ? 2 : 1,
+					marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
+					marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-22px' : '0',
 				}"
-				:aspect-ratio="0"
-				:default-image="{ width: 200, faceZoom: 30 }"
-				:hash="hash(loan)"
-				:images="[
-					{ width: 200, faceZoom: 30 },
-				]"
 			/>
 		</div>
 		<p class="tw-font-medium">
@@ -32,17 +30,21 @@
 
 <script setup>
 import { computed } from 'vue';
-import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 
 const props = defineProps({
 	receiveNews: {
 		type: Boolean,
 		default: false
 	},
-	filteredLoans: {
+	loansToDisplay: {
 		type: Array,
 		default: () => ([]),
 	},
+	isMobile: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const notificationMsg = computed(() => {
@@ -53,26 +55,21 @@ const notificationMsg = computed(() => {
 	return 'We won’t send updates. You can change this setting at any time.';
 });
 
-const hash = loan => {
-	return loan?.image?.hash ?? '';
-};
-
 </script>
 
 <style lang="postcss" scoped>
 
-.borrower-image {
-	width: 36px !important;
-	height: 36px !important;
+.avatar-container {
+	@media screen and (width >= 414px) {
+		width: auto;
+	}
 
-	@apply tw-rounded-full tw-bg-black tw-border-2 tw-border-white tw-z-2;
+	@apply tw-w-full;
 }
 
-.centered-borrower {
-	width: 48px !important;
-	height: 48px !important;
-
-	@apply !tw-z-5;
+.smaller-borrower-avatar :deep(img) {
+	height: 36px;
+	width: 36px;
 }
 
 </style>
