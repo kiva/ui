@@ -53,7 +53,9 @@ const props = defineProps({
 const { lender, userInfo } = toRefs(props);
 
 const lenderName = computed(() => {
-	return userInfo?.value?.userAccount?.firstName ?? '';
+	const firstName = userInfo?.value?.userAccount?.firstName ?? '';
+	const lastName = userInfo?.value?.userAccount?.lastName ?? '';
+	return `${firstName} ${lastName}`;
 });
 
 const lenderImageUrl = computed(() => {
