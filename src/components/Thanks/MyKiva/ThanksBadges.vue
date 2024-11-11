@@ -2,14 +2,30 @@
 	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
 		<!-- Opt In module -->
 		<OptInModule
-			v-if="!isGuest && !optedIn"
+			v-if="!isGuest && !isOptedIn"
 			:selected-loan="selectedLoan"
 			:loans="loans"
 			:is-guest="isGuest"
 		/>
 		<!-- Badges module -->
 		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
-			<h2>{{ moduleTitle }}</h2>
+			<!-- Borrower images -->
+			<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
+				<KvUserAvatar
+					v-for="(loan, index) in loansToDisplay"
+					:key="loan.id"
+					:lender-name="loan?.name"
+					:lender-image-url="loan?.image?.url"
+					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+					:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
+					:style="{
+						zIndex: index === 1 ? 2 : 1,
+						marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
+						marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-22px' : '0',
+					}"
+				/>
+			</div>
+			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
 			<BadgeContainer>
 				<img
 					v-if="badgeImageUrl"
@@ -120,6 +136,7 @@ import { onMounted, ref, computed } from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown, mdiArrowRight } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
@@ -133,6 +150,10 @@ const props = defineProps({
 	isGuest: {
 		type: Boolean,
 		default: true,
+	},
+	isOptedIn: {
+		type: Boolean,
+		default: false,
 	},
 	lender: {
 		type: Object,
@@ -168,8 +189,16 @@ const openShareModule = ref(false);
 
 const numberOfBadges = computed(() => props.badgesAchieved.length);
 
+const loansToDisplay = computed(() => props.loans.slice(0, 3));
+
 const moduleTitle = computed(() => {
-	return numberOfBadges.value === 1 ? 'You reached a milestone.' : `You reached ${numberOfBadges.value} milestones.`;
+	let title = '';
+	if (props.isOptedIn) {
+		title += 'Thank you!<br />';
+	}
+	title += numberOfBadges.value === 1 ? 'You reached a milestone' : `You reached ${numberOfBadges.value} milestones`;
+	title += props.isOptedIn ? '.' : '!';
+	return title;
 });
 
 const continueButtonText = computed(() => {
@@ -241,5 +270,10 @@ onMounted(() => {
 
 .continue-button :deep(span) {
 	@apply tw-flex;
+}
+
+.smaller-borrower-avatar :deep(img) {
+	height: 36px;
+	width: 36px;
 }
 </style>

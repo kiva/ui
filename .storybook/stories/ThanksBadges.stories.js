@@ -28,17 +28,53 @@ const story = (args = {}) => {
 
 const loans = mockedReceiptData.items.values?.map((item) => item?.loan).filter(loan => !!loan?.id);
 
-export const Guest = story({
+export const UserGuest = story({
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
 });
 
-export const User = story({
+export const UserLoggedIn = story({
 	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInNotOptedIn = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInSingleLoan = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInTwoLoans = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 2),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInThreeLoans = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 3),
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
 });
@@ -64,20 +100,21 @@ export const BadgeMultiple = story({
 	badgesAchieved: [mockOldBadge, mockTieredBadge],
 });
 
-export const UserWithOneLoan = story({
+export const UserGuestOptedOutWithOneLoan = story({
 	lender: mockLender,
 	isGuest: false,
+	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: loans.slice(0, 1),
-	selectedLoan: loans[0],
 	badgesAchieved: [mockTieredBadge],
 });
 
-export const UserWithTwoLoans = story({
+export const UserGuestOptedOutWithTwoLoans = story({
 	lender: mockLender,
 	isGuest: false,
+	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: loans.slice(0, 2),
-	selectedLoan: loans[0],
 	badgesAchieved: [mockTieredBadge],
 });
+
