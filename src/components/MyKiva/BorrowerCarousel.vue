@@ -142,12 +142,16 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	totalLoans: {
+		type: Number,
+		default: 0,
+	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['selected-loan']);
 
-const { loans } = toRefs(props);
+const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
 const windowWidth = ref(0);
 
@@ -170,13 +174,13 @@ const getBorrowerHash = loan => {
 
 const title = computed(() => {
 	if (!hasActiveLoans.value) {
-		return `You changed <u>${loans.value.length} lives</u>!`;
+		return `You changed <u>${totalLoans.value} lives</u>!`;
 	}
 	if (loans.value.length) {
-		if (loans.value.length === 1) {
+		if (totalLoans.value === 1) {
 			return 'You’re <u>changing a life</u> right now!';
 		}
-		return `You’re <u>changing ${loans.value.length} lives</u> right now!`;
+		return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
 	}
 	return 'Change a life <u>today</u>!';
 });
