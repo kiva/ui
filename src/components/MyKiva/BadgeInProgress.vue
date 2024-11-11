@@ -33,7 +33,6 @@
 					:loan-id="loanId"
 					:show-tags="true"
 					:use-full-width="true"
-					:show-view-loan="true"
 					class="tw-h-full"
 				/>
 			</template>
@@ -59,7 +58,6 @@
 				<KvClassicLoanCardContainer
 					:loan-id="loanId"
 					:show-tags="true"
-					:show-view-loan="true"
 					class="tw-h-full"
 				/>
 			</template>
