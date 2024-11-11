@@ -26,17 +26,53 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const Guest = story({
+export const UserGuest = story({
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
 });
 
-export const User = story({
+export const UserLoggedIn = story({
 	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInNotOptedIn = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInSingleLoan = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInTwoLoans = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 2),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInOptedInThreeLoans = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 3),
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
 });
