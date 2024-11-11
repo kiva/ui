@@ -106,6 +106,7 @@ export const UserGuestOptedOutWithOneLoan = story({
 	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: loans.slice(0, 1),
+	selectedLoan: loans[0],
 	badgesAchieved: [mockTieredBadge],
 });
 

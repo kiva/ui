@@ -6,7 +6,7 @@
 	>
 		<div
 			v-if="receiveNews"
-			class="avatar-container tw-flex tw-items-center tw-w-auto"
+			class="avatars-container tw-flex tw-items-center tw-w-full"
 		>
 			<KvUserAvatar
 				v-for="loan, index in loansToDisplay"
@@ -59,12 +59,10 @@ const notificationMsg = computed(() => {
 
 <style lang="postcss" scoped>
 
-.avatar-container {
+.avatars-container {
 	@media screen and (width >= 414px) {
 		width: auto;
 	}
-
-	@apply tw-w-full;
 }
 
 .smaller-borrower-avatar :deep(img) {

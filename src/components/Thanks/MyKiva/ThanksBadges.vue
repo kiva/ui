@@ -179,6 +179,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	selectedLoan: {
+		type: Object,
+		default: () => ({})
+	}
 });
 
 const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBadgeData();
