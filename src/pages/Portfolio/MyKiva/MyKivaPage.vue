@@ -19,7 +19,6 @@
 				<BadgeTile
 					:user-info="userInfo"
 					:badges-data="badgeData"
-					:is-loading="isLoading"
 					@badge-clicked="handleBadgeTileClicked"
 				/>
 			</section>
