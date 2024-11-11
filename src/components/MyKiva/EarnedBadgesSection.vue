@@ -168,7 +168,7 @@ const clickBadge = badge => {
 .badge-container {
     width: 157px;
 
-	@media (min-width: 410px) {
+	@media (width >= 410px) {
 		width: 175px;
 	}
 
