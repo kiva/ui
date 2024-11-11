@@ -130,10 +130,6 @@ const getMarginLeft = index => {
 	return '0';
 };
 
-const hash = loan => {
-	return loan?.image?.hash ?? '';
-};
-
 const updateOptIn = value => {
 	if (value) {
 		try {
