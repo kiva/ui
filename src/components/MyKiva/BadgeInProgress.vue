@@ -18,7 +18,7 @@
 		<KvCarousel
 			:key="`${badge.id}-carousel-${isLoading}-${loanDisplayCount}`"
 			class="kv-carousel tw-w-full md:tw-block tw-hidden"
-			:embla-options="{ loop: false }"
+			:embla-options="{ loop: false, startIndex: carouselIndex }"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
@@ -117,6 +117,7 @@ const {
 const isLoading = ref(true);
 const loanIds = ref();
 const loadMoreClicked = ref(false);
+const carouselIndex = ref(0);
 
 const loanDisplayCount = computed(() => (loadMoreClicked.value ? 6 : 3));
 const tierBadgeData = computed(() => getTierBadgeDataByLevel(props.badge, props.tier.level));
@@ -166,6 +167,7 @@ const onLoadMore = () => {
 		);
 
 		loadMoreClicked.value = true;
+		carouselIndex.value = 1;
 	} else {
 		$kvTrackEvent(
 			'portfolio',
@@ -180,6 +182,7 @@ const onLoadMore = () => {
 };
 
 watch(() => props.badge, () => {
+	carouselIndex.value = 0;
 	isLoading.value = true;
 	loanIds.value = [];
 	loadMoreClicked.value = false;
