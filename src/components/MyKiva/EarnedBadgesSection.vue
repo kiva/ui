@@ -166,7 +166,11 @@ const clickBadge = badge => {
 
 <style lang="postcss" scoped>
 .badge-container {
-    width: 175px;
+    width: 157px;
+
+	@media (min-width: 410px) {
+		width: 175px;
+	}
 
     @screen md {
         width: 220px;
