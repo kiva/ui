@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-2
-			tw-bg-white tw-rounded tw-px-3 tw-py-1.5"
+		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-0.5 md:tw-gap-2
+			tw-bg-white tw-rounded tw-px-3 tw-py-1.5 container"
 		:style="{maxWidth: '620px'}"
 	>
 		<div
@@ -13,18 +13,18 @@
 				:key="loan.id"
 				:lender-name="loan?.name"
 				:lender-image-url="loan?.image?.url"
-				class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+				class="avatar tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
 				:class="{'smaller-borrower-avatar' : loansToDisplay.length > 2 && index !== 1 }"
 				:style="{
 					zIndex: index === 1 ? 2 : 1,
-					marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
-					marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-22px' : '0',
+					marginRight: loansToDisplay.length > 2 && index === 0 ? '-30px' : '0',
+					marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-30px' : '0',
 				}"
 			/>
 		</div>
-		<p class="tw-font-medium">
+		<span class="tw-font-medium">
 			{{ notificationMsg }}
-		</p>
+		</span>
 	</div>
 </template>
 
@@ -59,9 +59,18 @@ const notificationMsg = computed(() => {
 
 <style lang="postcss" scoped>
 
-.avatars-container {
-	@media screen and (width <= 375px ) {
+.container {
+	@media screen and (width <= 422px ) {
+		display: block;
+		margin: 0 auto;
+		text-align: center;
 		width: 100%;
+	}
+}
+
+.container > .avatars-container {
+	@media screen and (width <= 422px ) {
+		justify-content: center;
 	}
 }
 

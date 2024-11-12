@@ -110,10 +110,7 @@ const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const getMarginRight = index => {
 	if (loansToDisplay.value.length > 2 && index === 0) {
-		if (isMobile.value) {
-			return '-40px';
-		}
-		return '-80px';
+		return '-100px';
 	}
 
 	return '0';
@@ -121,10 +118,7 @@ const getMarginRight = index => {
 
 const getMarginLeft = index => {
 	if (loansToDisplay.value.length > 1 && index === loansToDisplay.value.length - 1) {
-		if (isMobile.value) {
-			return '-40px';
-		}
-		return '-80px';
+		return '-100px';
 	}
 
 	return '0';
@@ -164,7 +158,7 @@ const updateOptIn = value => {
 
 .module-container {
 	max-width: 620px;
-	max-height: 800px;
+	max-height: 900px;
 
 	@apply tw-flex tw-flex-col tw-mx-auto tw-overflow-hidden tw-opacity-full tw-bg-white
 		tw-text-center tw-px-3 md:tw-px-8 tw-gap-3 tw-rounded-lg tw-py-4;
@@ -190,22 +184,22 @@ const updateOptIn = value => {
 }
 
 .borrower-image, .borrower-image :deep(img) {
-	width: 80px;
-	height: 80px;
+	width: 124px;
+	height: 120px;
 
 	@screen md {
-		width: 160px;
+		width: 164px;
 		height: 160px;
 	}
 }
 
 .centered-borrower-image, .centered-borrower-image :deep(img) {
-	width: 100px !important;
-	height: 100px !important;
+	width: 164px !important;
+	height: 160px !important;
 
 	@screen md {
-		width: 180px !important;
-		height: 180px !important;
+		width: 204px !important;
+		height: 200px !important;
 	}
 }
 
