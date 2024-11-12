@@ -23,7 +23,7 @@
 			</div>
 		</template>
 		<div v-if="hasActiveLoans && !isLoading">
-			<KvTabs @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
+			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab
 						v-for="(loan, index) in filteredLoans"
@@ -81,6 +81,7 @@
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
+					@change="onInteractCarousel"
 				>
 					<template v-for="(loan, index) in loans" #[`slide${index+1}`] :key="loan.id || index">
 						<BorrowerStatusCard :loan="loan" class="tw-h-full" />
@@ -153,6 +154,7 @@ const emit = defineEmits(['selected-loan']);
 
 const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
+const tabs = ref(null);
 const windowWidth = ref(0);
 
 const hasActiveLoans = computed(() => {
@@ -232,6 +234,10 @@ const handleResize = () => {
 };
 
 const throttledResize = _throttle(handleResize, 200);
+
+const onInteractCarousel = interaction => {
+	tabs.value.tabContext.selectedIndex = interaction.value;
+};
 
 onMounted(() => {
 	if (!hasActiveLoans.value) {
