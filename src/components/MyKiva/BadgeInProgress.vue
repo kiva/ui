@@ -21,7 +21,7 @@
 		</div>
 		<KvCarousel
 			:key="`${badge.id}-carousel-${isLoading}-${loanDisplayCount}`"
-			class="kv-carousel tw-w-full md:tw-block tw-hidden"
+			class="kv-carousel tw-w-full md:tw-block tw-hidden tw-px-1"
 			:embla-options="{ loop: false, startIndex: carouselIndex }"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"

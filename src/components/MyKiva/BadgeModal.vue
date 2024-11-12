@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		:class="{'badge-modal': !isJourneyActive && !isEarnedSection}"
+		:class="{ 'badge-modal': !isJourneyActive && !isEarnedSection, 'wide-modal': state === STATE_IN_PROGRESS }"
 		:visible="show"
 		:title="title"
 		@lightbox-closed="closeLightbox"
@@ -126,11 +126,15 @@ const contentComponent = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
-.badge-modal >>> [data-test*=lightbox] > div.tw-flex {
+.wide-modal :deep([data-test*=lightbox]) {
+	max-width: 67rem !important;
+}
+
+.badge-modal :deep([data-test*=lightbox]) > div.tw-flex {
 	@apply md:!tw-pt-2.5 md:tw-pb-2.5 tw-pb-0;
 }
 
-.badge-modal >>> [data-test*=lightbox] > div.tw-flex > button {
+.badge-modal :deep([data-test*=lightbox]) > div.tw-flex > button {
 	@apply !tw-h-auto;
 }
 </style>
