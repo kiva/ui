@@ -57,7 +57,7 @@
 				</div>
 			</section>
 		</MyKivaContainer>
-		<template v-if="badgeAchievementData">
+		<template v-if="isAchievementDataLoaded">
 			<section class="tw-my-2">
 				<MyKivaStats :user-achievements="badgeAchievementData" />
 				<MyKivaContainer>
@@ -94,7 +94,7 @@
 							BADGES AND ACHIEVEMENTS
 						</span>
 					</div>
-					<div class="tw-mt-3">
+					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">
 						<h3
 							class="tw-text-center tw-mb-2"
 						>
@@ -121,6 +121,7 @@
 				</section>
 			</MyKivaContainer>
 			<EarnedBadgesSection
+				:id="MY_ACHIEVEMENTS_ID"
 				:badges-data="badgeData"
 				@badge-clicked="handleEarnedBadgeClicked"
 			/>
@@ -156,15 +157,18 @@ import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
-
 import {
 	ref,
 	computed,
 	inject,
 	onMounted,
+	watch,
+	nextTick,
 } from 'vue';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
+const MY_IMPACT_JOURNEYS_ID = 'my-impact-journeys';
+const MY_ACHIEVEMENTS_ID = 'my-achievements';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -193,7 +197,7 @@ const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
 
 const isLoading = computed(() => !lender.value);
-
+const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 
 const handleShowNavigation = () => {
@@ -314,5 +318,18 @@ onMounted(async () => {
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	saveMyKivaToUserPreferences();
+});
+
+watch(isAchievementDataLoaded, () => {
+	if (isAchievementDataLoaded.value) {
+		nextTick(() => {
+			// Scroll to section once async data is loaded
+			const targetId = window.location.hash.replace('#', '');
+			const targetElement = document.getElementById(targetId);
+			if (targetElement) {
+				targetElement.scrollIntoView({ behavior: 'smooth' });
+			}
+		});
+	}
 });
 </script>
