@@ -27,7 +27,7 @@
 					</BadgeContainer>
 					<div>
 						<p class="tw-font-medium">
-							{{ badgeName }}
+							{{ tierData.tierName }}
 						</p>
 						<p class="tw-text-small">
 							{{ tierCaption }}
