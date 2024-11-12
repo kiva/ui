@@ -97,3 +97,32 @@ export const BadgeMultiple = story({
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockOldBadge, mockTieredBadge],
 });
+
+export const UserGuestOptedOutWithOneLoan = story({
+	lender: mockLender,
+	isGuest: false,
+	optedIn: false,
+	receipt: mockedReceiptData,
+	loans: mockLoans.slice(0, 1),
+	selectedLoan: mockLoans[0],
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserGuestOptedOutWithTwoLoans = story({
+	lender: mockLender,
+	isGuest: false,
+	optedIn: false,
+	receipt: mockedReceiptData,
+	loans: mockLoans.slice(0, 2),
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserGuestOptedOutWithThreeOrMoreLoans = story({
+	lender: mockLender,
+	isGuest: false,
+	optedIn: false,
+	receipt: mockedReceiptData,
+	loans: mockLoans.slice(0, 3),
+	badgesAchieved: [mockTieredBadge],
+});
+

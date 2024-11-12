@@ -1,5 +1,12 @@
 <template>
 	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
+		<!-- Opt In module -->
+		<OptInModule
+			v-if="!isGuest && !isOptedIn"
+			:selected-loan="selectedLoan"
+			:loans="loans"
+			:is-guest="isGuest"
+		/>
 		<!-- Badges module -->
 		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
 			<!-- Borrower images -->
@@ -145,6 +152,7 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import useBadgeData from '#src/composables/useBadgeData';
+import OptInModule from './OptInModule';
 
 const props = defineProps({
 	isGuest: {
@@ -175,6 +183,10 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	selectedLoan: {
+		type: Object,
+		default: () => ({})
+	}
 });
 
 const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBadgeData();
