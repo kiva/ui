@@ -20,18 +20,18 @@
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
 				{{ badge.challengeName }}
 			</span>
-			<div
-				class="tw-p-1"
-				:class="{
-					'tw-grayscale': !badge.hasStarted
-				}"
-				style="height: 148px;"
+			<BadgeContainer
+				:status="getBadgeStatus(badge)"
+				:shape="getBadgeShape(badge.id)"
+				class="tw-self-start tw-mx-auto"
+				style="height: 133px;"
 			>
 				<img
 					:src="getActiveTierData(badge).imageUrl"
+					:alt="badge.challengeName"
 					class="tw-h-full tw-mx-auto"
 				>
-			</div>
+			</BadgeContainer>
 			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-font-medium tw-grow">
 				<span
 					v-if="badge.hasStarted"
@@ -54,6 +54,8 @@ import { computed } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
+import { getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import BadgeContainer from './BadgeContainer';
 
 defineEmits(['badge-clicked']);
 
@@ -74,6 +76,14 @@ const visibleBadges = computed(() => {
 
 const levelCaption = badge => {
 	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+};
+
+const getBadgeStatus = badge => {
+	const activeTier = getActiveTierData(badge);
+	if (activeTier?.level === badge?.achievementData?.tiers?.length) {
+		return BADGE_COMPLETED;
+	}
+	return BADGE_IN_PROGRESS;
 };
 </script>
 
