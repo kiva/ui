@@ -34,6 +34,7 @@
 				</div>
 			</div>
 			<button
+				:disabled="isLoading"
 				@click="$emit('show-navigation')"
 			>
 				<kv-material-icon
@@ -58,7 +59,11 @@ const props = defineProps({
 	userInfo: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isLoading: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { userInfo } = toRefs(props);

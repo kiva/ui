@@ -8,6 +8,7 @@
 		/>
 		<MyKivaHero
 			:user-info="userInfo"
+			:is-loading="isLoading"
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile
