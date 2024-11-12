@@ -34,6 +34,28 @@ export const BADGE_SHAPE = [
 ];
 
 /**
+ * Gets the shape of the badge
+ *
+ * @param badgeId The ID of the badge
+ * @returns The shape of the badge
+ */
+export const getBadgeShape = badgeId => {
+	switch (badgeId) {
+		case ID_WOMENS_EQUALITY:
+			return BADGE_SHAPE_OBLONG;
+		case ID_US_ECONOMIC_EQUALITY:
+			return BADGE_SHAPE_RECTANGLE;
+		case ID_CLIMATE_ACTION:
+			return BADGE_SHAPE_ARCH;
+		case ID_REFUGEE_EQUALITY:
+			return BADGE_SHAPE_OVAL;
+		case ID_BASIC_NEEDS:
+		default:
+			return BADGE_SHAPE_CIRCLE;
+	}
+};
+
+/**
  * General utilities for the MyKiva badge modal
  *
  * @param currentBadge The badge data from the achievement service
@@ -148,27 +170,6 @@ export default function useBadgeModal(currentBadge) {
 	};
 
 	/**
-	 * Gets the shape of the badge
-	 *
-	 * @returns The shape of the badge
-	 */
-	const getBadgeShape = () => {
-		switch (badge.value.id) {
-			case ID_WOMENS_EQUALITY:
-				return BADGE_SHAPE_OBLONG;
-			case ID_US_ECONOMIC_EQUALITY:
-				return BADGE_SHAPE_RECTANGLE;
-			case ID_CLIMATE_ACTION:
-				return BADGE_SHAPE_ARCH;
-			case ID_REFUGEE_EQUALITY:
-				return BADGE_SHAPE_OVAL;
-			case ID_BASIC_NEEDS:
-			default:
-				return BADGE_SHAPE_CIRCLE;
-		}
-	};
-
-	/**
 	 * Gets the styles needed for positioning the small circle on the badge journey for progress
 	 *
 	 * @returns The styles for the small circle
@@ -192,7 +193,6 @@ export default function useBadgeModal(currentBadge) {
 		getTierPositions,
 		getLineComponent,
 		getLineStyle,
-		getBadgeShape,
 		getNumberCircleStyles,
 	};
 }

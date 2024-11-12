@@ -105,6 +105,8 @@ onMounted(() => {
 		.then(result => {
 			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
 			totalAmountLent.value = result.data?.my?.userStats?.amount_of_loans ?? 0;
+			// Handle new user use-case
+			totalAmountLent.value = totalAmountLent.value === '0.00' ? 0 : totalAmountLent.value;
 			totalCountriesLentTo.value = result.data?.my?.statsPerCountry?.totalCount ?? 0;
 			isLoaded.value = true;
 		}).catch(e => {
