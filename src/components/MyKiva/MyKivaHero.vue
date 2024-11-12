@@ -37,7 +37,7 @@
 				@click="$emit('show-navigation')"
 			>
 				<kv-material-icon
-					class="tw-absolute tw-right-0 tw-bg-white tw-p-0.5 tw-rounded-full tw-mt-2 tw-shadow-lg"
+					class="tw-absolute tw-right-0 tw-bg-white tw-p-0.5 tw-rounded-full tw-shadow-lg tw-top-1"
 					name="settings"
 					:icon="mdiCogOutline"
 				/>
