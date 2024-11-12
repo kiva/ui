@@ -3,7 +3,11 @@
 		<div
 			class="tw-pt-1 tw-pb-1.5 tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-justify-left tw-gap-3"
 		>
-			<BadgeContainer :status="BADGE_IN_PROGRESS" :shape="getBadgeShape()" class="tw-z-1 !tw-cursor-default">
+			<BadgeContainer
+				:status="BADGE_IN_PROGRESS"
+				:shape="getBadgeShape(badge.id)"
+				class="tw-z-1 !tw-cursor-default"
+			>
 				<img
 					:src="tierBadgeData.contentfulData.imageUrl"
 					alt="Badge"
@@ -84,7 +88,7 @@ import {
 	ref,
 	inject,
 } from 'vue';
-import useBadgeModal, { BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { BADGE_IN_PROGRESS, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 import BadgeContainer from './BadgeContainer';
@@ -104,7 +108,6 @@ const apollo = inject('apollo');
 const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getBadgeShape } = useBadgeModal(props.badge);
 const {
 	fetchLoanIdData,
 	badgeLoanIdData,

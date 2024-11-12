@@ -54,7 +54,7 @@
 import { mdiArrowRight } from '@mdi/js';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
-import useBadgeModal, { BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { BADGE_IN_PROGRESS, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
@@ -145,8 +145,7 @@ const badgeClicked = () => {
 
 watch(selectedTier, newVal => {
 	if (newVal) {
-		const { getBadgeShape } = useBadgeModal(selectedTier.value.badge);
-		badgeShape.value = getBadgeShape();
+		badgeShape.value = getBadgeShape(selectedTier.value.badge.id);
 		const tierBadgeData = computed(() => getTierBadgeDataByLevel(selectedTier.value.badge, selectedTier.value.tier.level)); // eslint-disable-line max-len
 		tierData.value = tierBadgeData.value;
 		$kvTrackEvent('portfolio', 'view', 'Earn a badge', badgeName.value, selectedTier.value.tier.level);

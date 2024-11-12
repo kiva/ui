@@ -30,7 +30,7 @@
 				}"
 			>
 				<div class="tw-relative tw-text-center tw-bg-white tw-cursor-pointer" @click="handleBadgeClick(index)">
-					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape()">
+					<BadgeContainer :status="getBadgeStatus(index)" :shape="getBadgeShape(badgeWithVisibleTiers.id)">
 						<component
 							v-if="index > 0"
 							:is="getLineComponent(positions[index - 1], position)"
@@ -85,7 +85,8 @@ import useBadgeModal,
 	MOBILE_BREAKPOINT,
 	BADGE_COMPLETED,
 	BADGE_IN_PROGRESS,
-	BADGE_LOCKED
+	BADGE_LOCKED,
+	getBadgeShape,
 } from '#src/composables/useBadgeModal';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import useBadgeData from '#src/composables/useBadgeData';
@@ -108,7 +109,6 @@ const {
 	getTierPositions,
 	getLineComponent,
 	getLineStyle,
-	getBadgeShape,
 	getNumberCircleStyles,
 } = useBadgeModal(badgeWithVisibleTiers.value);
 
