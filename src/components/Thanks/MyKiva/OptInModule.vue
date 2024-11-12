@@ -12,7 +12,7 @@
 						class="borrower-image tw-rounded-full tw-shadow"
 						:class="{
 							'centered-borrower-image' : index === 1 && loansToDisplay.length === 3,
-							'pair-loans': loansToDisplay.length === 2
+							'single-pair-loans': loansToDisplay.length < 3
 						}"
 						:style="{
 							marginRight: getMarginRight(index),
@@ -24,7 +24,7 @@
 				<h3>{{ description }}</h3>
 				<div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
 					<kv-button
-						class="tw-w-full"
+						class="tw-w-full btn"
 						@click="() => updateOptIn(true)"
 						v-kv-track-event="[
 							'thanks',
@@ -37,7 +37,7 @@
 					<kv-button
 						@click="() => updateOptIn(false)"
 						variant="ghost"
-						class="tw-w-full ghost-button"
+						class="tw-w-full btn ghost"
 						v-kv-track-event="[
 							'thanks',
 							'click',
@@ -206,7 +206,7 @@ const updateOptIn = value => {
 	}
 }
 
-.pair-loans, .pair-loans :deep(img) {
+.single-pair-loans, .single-pair-loans :deep(img) {
 	width: 148px !important;
 	height: 148px !important;
 
@@ -230,7 +230,11 @@ const updateOptIn = value => {
 	@apply tw-border-4 tw-border-white;
 }
 
-.ghost-button :deep(span) {
+.btn :deep(span) {
+	@apply tw-px-0;
+}
+
+.btn.ghost :deep(span) {
 	@apply tw-bg-transparent;
 }
 
