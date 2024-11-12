@@ -4,15 +4,14 @@
 			v-if="tileLoader"
 			class="!tw-h-14 !tw-w-full md:!tw-w-1/2"
 		/>
-		<div
-			v-else
-			class="tw-cursor-pointer"
-			@click="badgeClicked"
-		>
+		<div v-else>
 			<h4 class="tw-mb-1">
 				you’re almost there
 			</h4>
-			<div class="tw-bg-white tw-p-2 tw-rounded md:tw-w-1/2">
+			<div
+				class="tw-bg-white tw-p-2 tw-rounded md:tw-w-1/2 tw-cursor-pointer"
+				@click="badgeClicked"
+			>
 				<div class="tw-flex tw-items-center tw-gap-2">
 					<BadgeContainer
 						v-if="badgeShape"
