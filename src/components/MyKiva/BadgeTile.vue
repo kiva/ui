@@ -9,7 +9,7 @@
 				you’re almost there
 			</h4>
 			<div
-				class="tw-bg-white tw-p-2 tw-rounded md:tw-w-1/2 tw-cursor-pointer"
+				class="tw-bg-white tw-p-1.5 tw-rounded md:tw-w-1/2 tw-cursor-pointer"
 				@click="badgeClicked"
 			>
 				<div class="tw-flex tw-items-center tw-gap-2">
@@ -18,18 +18,19 @@
 						:status="BADGE_IN_PROGRESS"
 						:shape="badgeShape"
 						class="tw-z-1"
+						:class="{ '-tw-ml-1 -tw-mr-1.5': badgeShape === BADGE_SHAPE_OBLONG }"
 					>
 						<img
 							:src="tierData.contentfulData.imageUrl"
 							alt="Badge"
-							style="height: 133px; width: 133px;"
+							style="height: 72px; width: 72px;"
 						>
 					</BadgeContainer>
 					<div>
 						<p class="tw-font-medium">
 							{{ tierData.tierName }}
 						</p>
-						<p class="tw-text-small">
+						<p class="tw-text-small -tw-mt-0.5">
 							{{ tierCaption }}
 						</p>
 						<button
@@ -53,7 +54,7 @@
 import { mdiArrowRight } from '@mdi/js';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
-import { BADGE_IN_PROGRESS, getBadgeShape } from '#src/composables/useBadgeModal';
+import { BADGE_IN_PROGRESS, BADGE_SHAPE_OBLONG, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
@@ -149,9 +150,9 @@ watch(selectedTier, newVal => {
 		tierData.value = tierBadgeData.value;
 		$kvTrackEvent('portfolio', 'view', 'Earn a badge', badgeName.value, selectedTier.value.tier.level);
 	}
-});
+}, { immediate: true });
 
 watch(badgeName, () => {
-	tileLoader.value = false;
-});
+	tileLoader.value = !badgeName.value;
+}, { immediate: true });
 </script>
