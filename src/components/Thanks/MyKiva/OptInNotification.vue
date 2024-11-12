@@ -6,7 +6,7 @@
 	>
 		<div
 			v-if="receiveNews"
-			class="avatars-container tw-flex tw-items-center"
+			class="avatars-container tw-flex tw-items-center tw-flex-2"
 		>
 			<KvUserAvatar
 				v-for="loan, index in loansToDisplay"
@@ -59,18 +59,9 @@ const notificationMsg = computed(() => {
 
 <style lang="postcss" scoped>
 
-.container {
-	@media screen and (width <= 422px ) {
-		display: block;
-		margin: 0 auto;
-		text-align: center;
-		width: 100%;
-	}
-}
-
-.container > .avatars-container {
-	@media screen and (width <= 422px ) {
-		justify-content: center;
+.avatars-container {
+	@media screen and (width <= 420px ) {
+		width: 120px;
 	}
 }
 

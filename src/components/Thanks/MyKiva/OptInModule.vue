@@ -9,8 +9,11 @@
 						:key="loan.id"
 						:lender-name="loan?.name"
 						:lender-image-url="loan?.image?.url"
-						class="borrower-image tw-rounded-full tw-shadow tw-border-white tw-border-2"
-						:class="{'centered-borrower-image' : index === 1 && loansToDisplay.length === 3}"
+						class="borrower-image tw-rounded-full tw-shadow"
+						:class="{
+							'centered-borrower-image' : index === 1 && loansToDisplay.length === 3,
+							'pair-loans': loansToDisplay.length === 2
+						}"
 						:style="{
 							marginRight: getMarginRight(index),
 							marginLeft: getMarginLeft(index),
@@ -110,6 +113,9 @@ const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const getMarginRight = index => {
 	if (loansToDisplay.value.length > 2 && index === 0) {
+		if (isMobile.value) {
+			return '-81.5px';
+		}
 		return '-100px';
 	}
 
@@ -118,6 +124,13 @@ const getMarginRight = index => {
 
 const getMarginLeft = index => {
 	if (loansToDisplay.value.length > 1 && index === loansToDisplay.value.length - 1) {
+		if (loansToDisplay.value.length === 2) {
+			return '-63px';
+		}
+
+		if (isMobile.value) {
+			return '-81.5px';
+		}
 		return '-100px';
 	}
 
@@ -185,11 +198,21 @@ const updateOptIn = value => {
 
 .borrower-image, .borrower-image :deep(img) {
 	width: 124px;
-	height: 120px;
+	height: 124px;
 
 	@screen md {
-		width: 164px;
+		width: 160px;
 		height: 160px;
+	}
+}
+
+.pair-loans, .pair-loans :deep(img) {
+	width: 148px !important;
+	height: 148px !important;
+
+	@screen md {
+		width: 200px !important;
+		height: 200px !important;
 	}
 }
 
@@ -198,9 +221,13 @@ const updateOptIn = value => {
 	height: 160px !important;
 
 	@screen md {
-		width: 204px !important;
+		width: 200px !important;
 		height: 200px !important;
 	}
+}
+
+.borrower-image :deep(img), .centered-borrower-image :deep(img) {
+	@apply tw-border-4 tw-border-white;
 }
 
 .ghost-button :deep(span) {
@@ -209,7 +236,7 @@ const updateOptIn = value => {
 
 .collapse-enter-active,
 .collapse-leave-active {
-  transition: max-height 1s ease, opacity 1s ease, padding 1s ease;
+  transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
   overflow: hidden;
 }
 
