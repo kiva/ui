@@ -21,7 +21,9 @@
 						}"
 					/>
 				</div>
-				<h3>{{ description }}</h3>
+				<h3 class="tw-font-book">
+					{{ description }}
+				</h3>
 				<div class="tw-w-full tw-flex tw-flex-col tw-gap-2">
 					<kv-button
 						class="tw-w-full btn"
