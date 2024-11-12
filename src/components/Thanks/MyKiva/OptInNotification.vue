@@ -22,7 +22,7 @@
 				}"
 			/>
 		</div>
-		<span class="tw-text-small md:tw-text-base !tw-font-medium">
+		<span class="!tw-font-medium message">
 			{{ notificationMsg }}
 		</span>
 	</div>
@@ -62,6 +62,13 @@ const notificationMsg = computed(() => {
 .smaller-borrower-avatar :deep(img) {
 	height: 36px;
 	width: 36px;
+}
+
+.message {
+	@media screen and (width <= 398px) {
+		font-size: 0.8125rem !important;
+		line-height: 1.5 !important;
+	}
 }
 
 </style>
