@@ -160,7 +160,7 @@ const publicId = computed(() => {
 });
 
 const open = ref(false);
-const profileSettingsOptions = ref([
+const profileSettingsOptions = computed(() => [
 	{ link: '/settings/account', text: 'Account' },
 	{ link: '/settings/security', text: 'Security and login' },
 	{ link: '/settings/email', text: 'Email' },
