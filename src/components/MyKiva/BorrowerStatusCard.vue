@@ -54,7 +54,6 @@
 						</p>
 						<KvMaterialIcon
 							class="tw-w-3 tw-h-3 tw-text-action md:tw-hidden"
-							@click="open = !open"
 							:icon="open ? mdiChevronUp : mdiChevronDown"
 						/>
 					</button>
@@ -99,7 +98,6 @@ import {
 	toRefs,
 	defineProps,
 	inject,
-	onMounted,
 } from 'vue';
 import {
 	FUNDRAISING,
@@ -116,8 +114,6 @@ const props = defineProps({
 });
 
 const { loan } = toRefs(props);
-
-const isMobile = ref(false);
 const open = ref(false);
 
 const borrowerName = computed(() => loan.value?.name ?? '');
@@ -227,13 +223,6 @@ const toggleWhatIsNext = () => {
 	}
 	open.value = !open.value;
 };
-
-onMounted(() => {
-	isMobile.value = document.documentElement.clientWidth < 735;
-	if (!isMobile.value) {
-		open.value = true;
-	}
-});
 </script>
 
 <style lang="postcss" scoped>
