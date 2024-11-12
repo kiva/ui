@@ -2,6 +2,7 @@
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
 		<MyKivaNavigation
 			:visible="showNavigation"
+			:user-info="userInfo"
 			:user-balance="userBalance"
 			@navigation-closed="showNavigation = false"
 		/>
