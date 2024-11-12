@@ -173,7 +173,7 @@ const lendingOptions = ref([
 	{ link: '/portfolio/lending-stats', text: 'Lending stats' },
 	{ link: '/portfolio/estimated-repayments', text: 'Estimated repayments' },
 	{ link: '/portfolio/credit/deposit', text: 'Add credit' },
-	{ link: '/portfolio/withdraw', text: 'Withdraw' },
+	{ link: '/withdraw', text: 'Withdraw' },
 	{ link: '/donate/supportusprocess', text: 'Donate credit', isDonate: true },
 	{ link: '/portfolio/donations', text: 'My donations' },
 	{ link: '/portfolio/transactions', text: 'Transaction history' },
