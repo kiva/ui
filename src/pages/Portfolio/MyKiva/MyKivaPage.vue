@@ -308,7 +308,7 @@ onMounted(async () => {
 		'EXP-MP-623-Sept2024'
 	);
 
-	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
+	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);
