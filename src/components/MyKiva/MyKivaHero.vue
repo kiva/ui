@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-w-full landscape tw-relative">
 		<MyKivaContainer>
-			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1.5 tw-py-2">
+			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-p-1.5">
 				<h3>Welcome back 👋</h3>
 				<div
 					v-if="isBorrower || isTrustee"
