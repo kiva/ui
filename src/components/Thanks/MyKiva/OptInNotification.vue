@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-flex tw-mx-auto tw-items-center tw-justify-start tw-gap-0.5 md:tw-gap-2
-			tw-bg-white tw-rounded tw-px-3 tw-py-1.5 container"
+			tw-bg-white tw-rounded tw-px-1.5 md:tw-px-3 tw-py-1.5 container"
 		:style="{maxWidth: '620px'}"
 	>
 		<div
@@ -22,7 +22,7 @@
 				}"
 			/>
 		</div>
-		<span class="tw-font-medium">
+		<span class="tw-text-small md:tw-text-base !tw-font-medium">
 			{{ notificationMsg }}
 		</span>
 	</div>
@@ -59,15 +59,9 @@ const notificationMsg = computed(() => {
 
 <style lang="postcss" scoped>
 
-.avatars-container {
-	@media screen and (width <= 420px ) {
-		width: 120px;
-	}
-}
-
 .smaller-borrower-avatar :deep(img) {
-	height: 36px;
-	width: 36px;
+	height: 48px;
+	width: 48px;
 }
 
 </style>
