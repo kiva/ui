@@ -129,12 +129,21 @@
 <script setup>
 import { mdiClose } from '@mdi/js';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import { ref, toRefs, watch } from 'vue';
+import {
+	ref,
+	toRefs,
+	watch,
+	computed,
+} from 'vue';
 
 const props = defineProps({
 	visible: {
 		type: Boolean,
 		default: false,
+	},
+	userInfo: {
+		type: Object,
+		default: () => ({}),
 	},
 	userBalance: {
 		type: String,
@@ -144,7 +153,11 @@ const props = defineProps({
 
 const emit = defineEmits(['navigation-closed']);
 
-const { visible, userBalance } = toRefs(props);
+const { visible, userInfo, userBalance } = toRefs(props);
+
+const publicId = computed(() => {
+	return userInfo.value?.userAccount?.publicId ?? '';
+});
 
 const open = ref(false);
 const profileSettingsOptions = ref([
@@ -153,13 +166,14 @@ const profileSettingsOptions = ref([
 	{ link: '/settings/email', text: 'Email' },
 	{ link: '/settings/payments', text: 'Payment methods' },
 	{ link: '/settings/data', text: 'Data' },
+	{ link: `/lender/${publicId.value}`, text: 'Public lender profile' },
 ]);
 const lendingOptions = ref([
 	{ link: '/portfolio/loans', text: 'My loans' },
 	{ link: '/portfolio/lending-stats', text: 'Lending stats' },
 	{ link: '/portfolio/estimated-repayments', text: 'Estimated repayments' },
 	{ link: '/portfolio/credit/deposit', text: 'Add credit' },
-	{ link: '/portfolio/withdraw', text: 'Withdraw' },
+	{ link: '/withdraw', text: 'Withdraw' },
 	{ link: '/donate/supportusprocess', text: 'Donate credit', isDonate: true },
 	{ link: '/portfolio/donations', text: 'My donations' },
 	{ link: '/portfolio/transactions', text: 'Transaction history' },
