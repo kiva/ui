@@ -26,13 +26,6 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const UserGuest = story({
-	lender: mockLender,
-	loans: mockLoans,
-	receipt: mockedReceiptData,
-	badgesAchieved: [mockTieredBadge],
-});
-
 export const UserLoggedIn = story({
 	isGuest: false,
 	lender: mockLender,
@@ -43,11 +36,19 @@ export const UserLoggedIn = story({
 
 export const UserLoggedInNotOptedIn = story({
 	isGuest: false,
-	isOptedIn: true,
+	isOptedIn: false,
 	lender: mockLender,
 	loans: mockLoans.slice(0, 1),
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInNotOptedInNoBadge = story({
+	isGuest: false,
+	isOptedIn: false,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
 });
 
 export const UserLoggedInOptedInSingleLoan = story({

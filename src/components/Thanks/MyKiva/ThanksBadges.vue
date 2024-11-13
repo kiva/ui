@@ -6,7 +6,7 @@
 			:loans="loans"
 		/>
 		<!-- Badges module -->
-		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
+		<div v-if="hasBadgeData" class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
 			<!-- Borrower images -->
 			<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
 				<KvUserAvatar
@@ -216,6 +216,8 @@ const badgeData = computed(() => {
 const badgeImageUrl = computed(() => badgeData.value.contentfulData?.imageUrl ?? '');
 
 const badgeLevelName = computed(() => badgeData.value.levelName ?? '');
+
+const hasBadgeData = computed(() => !!badgeLevelName.value);
 
 const badgeFunFact = computed(() => {
 	// eslint-disable-next-line max-len
