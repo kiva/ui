@@ -322,8 +322,8 @@ watch(isAchievementDataLoaded, () => {
 	if (isAchievementDataLoaded.value) {
 		nextTick(() => {
 			// Scroll to section once async data is loaded
-			const targetId = window.location.hash.replace('#', '');
-			const targetElement = document.getElementById(targetId);
+			const targetId = window?.location?.hash?.replace('#', '');
+			const targetElement = document?.getElementById(targetId);
 			if (targetElement) {
 				targetElement.scrollIntoView({ behavior: 'smooth' });
 			}
