@@ -14,7 +14,7 @@
 				v-kv-track-event="[
 					'portfolio',
 					'click',
-					'account-profile-pic'
+					'Account profile pic'
 				]"
 			>
 				<ActivityAvatar
