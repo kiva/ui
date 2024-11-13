@@ -11,7 +11,7 @@
 			v-kv-track-event="[
 				'portfolio',
 				'click',
-				badge.hasStarted ? 'Continue' : 'Start this journey',
+				'Badge journey map',
 				badge.challengeName,
 				badge.level
 			]"
