@@ -152,7 +152,7 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
@@ -167,8 +167,6 @@ import {
 } from 'vue';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
-const MY_IMPACT_JOURNEYS_ID = 'my-impact-journeys';
-const MY_ACHIEVEMENTS_ID = 'my-achievements';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
