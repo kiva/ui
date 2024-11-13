@@ -27,6 +27,7 @@
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
 			@interact-carousel="onInteractCarousel"
+			@change="onInteractCarousel"
 		>
 			<template
 				v-for="(loanId, index) in augmentedLoanIds"
