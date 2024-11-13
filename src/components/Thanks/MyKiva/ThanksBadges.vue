@@ -3,9 +3,7 @@
 		<!-- Opt In module -->
 		<OptInModule
 			v-if="!isGuest && !isOptedIn"
-			:selected-loan="selectedLoan"
 			:loans="loans"
-			:is-guest="isGuest"
 		/>
 		<!-- Badges module -->
 		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
