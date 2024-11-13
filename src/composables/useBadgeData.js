@@ -16,6 +16,8 @@ export const CLIMATE_ACTION_FILTER = 'tag=9';
 export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
 export const WOMENS_EQUALITY_FILTER = 'gender=female';
 export const BASIC_NEEDS_FILTER = 'sector=6,10';
+export const MY_IMPACT_JOURNEYS_ID = 'my-impact-journeys';
+export const MY_ACHIEVEMENTS_ID = 'my-achievements';
 
 /**
  * Utilities for loading and combining tiered badge data
