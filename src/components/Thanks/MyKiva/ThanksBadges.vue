@@ -3,7 +3,6 @@
 		<!-- Opt In module -->
 		<OptInModule
 			v-if="!isGuest && !isOptedIn"
-			:selected-loan="selectedLoan"
 			:loans="loans"
 			:is-guest="isGuest"
 		/>
@@ -36,7 +35,16 @@
 			</BadgeContainer>
 			<h3>{{ badgeLevelName }} unlocked</h3>
 			<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
-			<KvButton class="continue-button tw-w-full tw-my-0.5" @click="handleContinue">
+			<KvButton
+				class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
+				v-kv-track-event="[
+					'post-checkout',
+					'click',
+					'create-new-account',
+					isGuest ? 'guest' : 'signed-in',
+					numberOfBadgesEarned,
+				]"
+			>
 				{{ continueButtonText }}
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
 			</KvButton>
@@ -50,7 +58,7 @@
 				<div
 					class="option-box"
 					:class="{ 'open' : openCreateAccount }"
-					@click="openCreateAccount = !openCreateAccount"
+					@click="handleClickCreateAccount"
 				>
 					<p class="tw-font-medium">
 						Create your account
@@ -70,8 +78,10 @@
 						<p>Finish setting up your account to track and relend your money as you are paid back.</p>
 						<GuestAccountCreation
 							class="tw-pt-3"
-							event-category="thanks"
-							event-label="open-account-creation-drawer"
+							event-category="post-checkout"
+							event-label="create-new-account-from-drawer"
+							event-property="guest"
+							:event-value="numberOfBadgesEarned"
 						/>
 					</div>
 				</KvExpandable>
@@ -80,7 +90,7 @@
 				<div
 					class="option-box"
 					:class="{ 'open' : openOrderConfirmation }"
-					@click="openOrderConfirmation = !openOrderConfirmation"
+					@click="handleClickOrderConfirmation"
 				>
 					<p class="tw-font-medium">
 						Show confirmation
@@ -133,13 +143,19 @@
 			title="Finish creating your account to see what's next"
 			@lightbox-closed="showGuestAccountModal = false"
 		>
-			<GuestAccountCreation />
+			<GuestAccountCreation
+				event-label="create-new-account"
+				event-property="guest"
+				:event-value="numberOfBadgesEarned"
+			/>
 		</KvLightbox>
 	</div>
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import {
+	onMounted, ref, computed, inject
+} from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
@@ -183,9 +199,9 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	selectedLoan: {
-		type: Object,
-		default: () => ({})
+	numberOfBadgesEarned: {
+		type: Number,
+		default: 0
 	}
 });
 
@@ -195,6 +211,8 @@ const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const numberOfBadges = computed(() => props.badgesAchieved.length);
 
@@ -233,12 +251,51 @@ const badgeFunFactFootnote = computed(() => badgeData.value.contentfulData?.shar
 const handleContinue = () => {
 	if (props.isGuest) {
 		showGuestAccountModal.value = true;
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'open-account-creation-drawer',
+			'guest',
+			props.numberOfBadgesEarned,
+		);
 	} else {
 		const hasBadges = numberOfBadges.value > 0;
 		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'continue-to-my-kiva',
+			'guest',
+			props.numberOfBadgesEarned,
+		);
+
 		// eslint-disable-next-line vue/no-mutating-props
 		props.router?.push(`/portfolio${hasBadges ? `#${sectionToScrollTo}` : ''}`);
 	}
+};
+
+const handleClickCreateAccount = () => {
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		'open-account-creation-drawer',
+		'guest',
+		props.numberOfBadgesEarned,
+	);
+
+	openCreateAccount.value = !openCreateAccount.value;
+};
+
+const handleClickOrderConfirmation = () => {
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		'open-order-confirmation-drawer',
+		props.isGuest ? 'guest' : 'signed-in',
+		props.numberOfBadgesEarned,
+	);
+
+	openOrderConfirmation.value = !openOrderConfirmation.value;
 };
 
 onMounted(() => {

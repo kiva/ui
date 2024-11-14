@@ -79,6 +79,14 @@ export default {
 			type: String,
 			default: 'create-guest-account'
 		},
+		eventProperty: {
+			type: String,
+			default: ''
+		},
+		eventValue: {
+			type: Number,
+			default: 0
+		}
 	},
 	data() {
 		return {
@@ -93,7 +101,13 @@ export default {
 			this.serverError = false;
 			this.v$.$touch();
 			if (!this.v$.$invalid) {
-				this.$kvTrackEvent(this.eventCategory, 'click', this.eventLabel);
+				this.$kvTrackEvent(
+					this.eventCategory,
+					'click',
+					this.eventLabel,
+					this.eventProperty,
+					this.eventValue ? this.eventValue : null
+				);
 
 				// will end up redirecting to password reset page.
 				this.apollo.mutate({
