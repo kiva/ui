@@ -22,6 +22,19 @@ import fetch from 'make-fetch-happen';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+// custom fetch wrapper to log fetch requests
+const customFetch = async (uri, options) => {
+	const response = await fetch(uri, options);
+	// Log the outgoing options
+	logFormatter(`Fetch Options: ${uri}, Options: ${JSON.stringify(options)}`);
+
+	// Log the full response
+	// eslint-disable-next-line max-len
+	logFormatter(`Server fetch: ${uri}, Status: ${response.status}, Headers: ${JSON.stringify(response.headers.raw())}`);
+
+	return response;
+};
+
 function fillTemplate(template, data) {
 	let html = template;
 	Object.keys(data).forEach(key => {
@@ -167,7 +180,7 @@ export default async context => {
 		device,
 		kvAuth0,
 		locale,
-		fetch,
+		fetch: config?.apolloQueryFetchLogging ? customFetch : fetch,
 		url,
 		isServer: true,
 	});

@@ -9,11 +9,13 @@ function getAuthContext(context, user, token) {
 			authorization: `Bearer ${token}`
 		};
 	}
+	console.log(`Updated Auth Context: ${JSON.stringify(context?.headers, null, 2)}`);
 	return context;
 }
 
 export default ({ kvAuth0 }) => {
 	return setContext((operation, previousContext) => {
+		console.log('operation keys: ', Object.keys(operation));
 		// If auth0 is not enabled, don't add anything to the context
 		if (!kvAuth0.enabled) return getAuthContext(previousContext);
 

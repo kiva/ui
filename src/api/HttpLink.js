@@ -6,6 +6,7 @@ export default ({
 	uri = '',
 	fetch,
 	apolloBatching,
+	stellateDebugHeaders,
 	stellateGraphqlUri,
 	stellateCachedOperations,
 }) => {
@@ -26,6 +27,10 @@ export default ({
 	// Create a new options object for stellate
 	const stellateOptions = {
 		...options,
+		headers: stellateDebugHeaders ? {
+			...options?.headers,
+			'gcdn-debug': 1,
+		} : {},
 		uri: stellateGraphqlUri ?? uri,
 	};
 
