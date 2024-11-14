@@ -164,8 +164,6 @@ import {
 	onMounted,
 } from 'vue';
 
-const MY_KIVA_EXP_KEY = 'my_kiva_page';
-
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -300,14 +298,6 @@ const saveMyKivaToUserPreferences = () => {
 };
 
 onMounted(async () => {
-	trackExperimentVersion(
-		apollo,
-		$kvTrackEvent,
-		'event-tracking',
-		MY_KIVA_EXP_KEY,
-		'EXP-MP-623-Sept2024'
-	);
-
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 
 	await fetchMyKivaData();

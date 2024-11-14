@@ -1,3 +1,11 @@
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import { readBoolSetting } from '#src/util/settingsUtils';
+
+export const THANKS_BADGES_EXP = 'thanks_badges';
+const MY_KIVA_EXP = 'my_kiva_page';
+const MY_KIVA_LOAN_LIMIT = 4;
+
 /**
  * Determines whether the provided loan needs a footnote
  *
@@ -18,4 +26,48 @@ export const hasLoanFunFactFootnote = loan => {
 		default:
 			return false;
 	}
+};
+
+/**
+ * Gets whether the MyKiva experience is enabled for the user, excluding some specific logic for the TY page
+ *
+ * @param apollo The current Apollo client
+ * @param $kvTrackEvent The Kiva tracking event function
+ * @param generalSettings The general settings object
+ * @param preferences The user preferences object
+ * @param loanTotal The total number of loans the user has made
+ * @returns Whether the MyKiva experience is enabled for the user
+ */
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, preferences, loanTotal) => {
+	const myKivaFeatureEnabled = readBoolSetting(generalSettings, 'myKivaEnabled.value');
+	if (myKivaFeatureEnabled) {
+		const { version: thanksVersion } = apollo.readFragment({
+			id: `Experiment:${THANKS_BADGES_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		const isThanksExperimentEnabled = thanksVersion === 'b';
+
+		const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
+		const hasSeenMyKiva = !!(formattedPreference?.myKivaPageExp ?? 0);
+
+		if (isThanksExperimentEnabled || hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
+			const { version: myKivaVersion } = apollo.readFragment({
+				id: `Experiment:${MY_KIVA_EXP}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+			const isMyKivaExperimentEnabled = myKivaVersion === 'b';
+
+			trackExperimentVersion(
+				apollo,
+				$kvTrackEvent,
+				'event-tracking',
+				MY_KIVA_EXP,
+				'EXP-MP-623-Sept2024'
+			);
+
+			// The user preference hasSeenMyKiva can be true when we override for internal testing
+			return hasSeenMyKiva || isMyKivaExperimentEnabled;
+		}
+	}
+	return false;
 };

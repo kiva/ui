@@ -199,11 +199,11 @@ import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
+import { getIsMyKivaEnabled, THANKS_BADGES_EXP } from '#src/util/myKivaUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const THANKS_BADGES_EXP = 'thanks_badges';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -285,6 +285,7 @@ export default {
 			V2_VIEW,
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
+			myKivaEnabled: false,
 		};
 	},
 	apollo: {
@@ -452,6 +453,10 @@ export default {
 				|| this.monthlyDonationAmount?.length) {
 				return DONATION_ONLY_VIEW;
 			}
+			// Show the MyKiva view if qualifications are met
+			if (this.myKivaEnabled) {
+				return MY_KIVA_BADGES_VIEW;
+			}
 			// Show the badges view if badges experiment is enabled
 			if (this.badgesCustomExpEnabled) {
 				return BADGES_VIEW;
@@ -611,9 +616,24 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+
+		// MyKiva Badges Experiment
+		// TODO: add additional condition for "if basket earned a tiered badge OR not opted-in"
+		if (!this.landedOnUSLoan && !this.printableKivaCards.length) {
+			this.myKivaEnabled = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				data?.general ?? {},
+				data?.my?.userPreferences?.preferences ?? null,
+				totalLoans
+			);
+		}
+
 		// Thanks Badges Experiment
 		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
-		if (enableExperiment) {
+		// Show current TY badge page if MyKiva feature is not enabled
+		const myKivaFeatureEnabled = readBoolSetting(data, 'general.myKivaEnabled.value');
+		if (enableExperiment && !myKivaFeatureEnabled) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
