@@ -42,7 +42,7 @@
 					'click',
 					'create-new-account',
 					isGuest ? 'guest' : 'signed-in',
-					numberOfBadgesEarned,
+					numberOfBadges,
 				]"
 			>
 				{{ continueButtonText }}
@@ -81,7 +81,7 @@
 							event-category="post-checkout"
 							event-label="create-new-account-from-drawer"
 							event-property="guest"
-							:event-value="numberOfBadgesEarned"
+							:event-value="numberOfBadges"
 						/>
 					</div>
 				</KvExpandable>
@@ -146,7 +146,7 @@
 			<GuestAccountCreation
 				event-label="create-new-account"
 				event-property="guest"
-				:event-value="numberOfBadgesEarned"
+				:event-value="numberOfBadges"
 			/>
 		</KvLightbox>
 	</div>
@@ -199,10 +199,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	numberOfBadgesEarned: {
-		type: Number,
-		default: 0
-	}
 });
 
 const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBadgeData();
@@ -256,7 +252,7 @@ const handleContinue = () => {
 			'click',
 			'open-account-creation-drawer',
 			'guest',
-			props.numberOfBadgesEarned,
+			numberOfBadges.value,
 		);
 	} else {
 		const hasBadges = numberOfBadges.value > 0;
@@ -266,7 +262,7 @@ const handleContinue = () => {
 			'click',
 			'continue-to-my-kiva',
 			'guest',
-			props.numberOfBadgesEarned,
+			numberOfBadges.value,
 		);
 
 		// eslint-disable-next-line vue/no-mutating-props
@@ -280,7 +276,7 @@ const handleClickCreateAccount = () => {
 		'click',
 		'open-account-creation-drawer',
 		'guest',
-		props.numberOfBadgesEarned,
+		numberOfBadges.value,
 	);
 
 	openCreateAccount.value = !openCreateAccount.value;
@@ -292,7 +288,7 @@ const handleClickOrderConfirmation = () => {
 		'click',
 		'open-order-confirmation-drawer',
 		props.isGuest ? 'guest' : 'signed-in',
-		props.numberOfBadgesEarned,
+		numberOfBadges.value,
 	);
 
 	openOrderConfirmation.value = !openOrderConfirmation.value;
