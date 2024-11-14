@@ -77,7 +77,7 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	numberOfBadgesEarned: {
+	numberOfBadges: {
 		type: Number,
 		default: 0,
 	}
@@ -144,7 +144,7 @@ const updateOptIn = value => {
 		'click',
 		`${value ? 'accept' : 'reject'}-opt-in-request`,
 		props.isGuest ? 'guest' : 'signed-in',
-		props.numberOfBadgesEarned,
+		props.numberOfBadges,
 	);
 
 	if (value) {

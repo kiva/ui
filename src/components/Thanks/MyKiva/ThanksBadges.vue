@@ -5,6 +5,7 @@
 			v-if="!isGuest && !isOptedIn"
 			:loans="loans"
 			:is-guest="isGuest"
+			:number-of-badges="numberOfBadges"
 		/>
 		<!-- Badges module -->
 		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
