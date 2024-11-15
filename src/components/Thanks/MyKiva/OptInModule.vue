@@ -28,11 +28,6 @@
 					<kv-button
 						class="tw-w-full btn"
 						@click="() => updateOptIn(true)"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'accept-opt-in-request',
-						]"
 					>
 						Yes, keep me updated
 					</kv-button>
@@ -40,11 +35,6 @@
 						@click="() => updateOptIn(false)"
 						variant="ghost"
 						class="tw-w-full btn ghost"
-						v-kv-track-event="[
-							'thanks',
-							'click',
-							'reject-opt-in-request',
-						]"
 					>
 						No, I don’t want to receive updates
 					</kv-button>
@@ -79,9 +69,18 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
+	isGuest: {
+		type: Boolean,
+		default: false,
+	},
+	numberOfBadges: {
+		type: Number,
+		default: 0,
+	}
 });
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
 
@@ -133,6 +132,14 @@ const getMarginLeft = index => {
 };
 
 const updateOptIn = value => {
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		`${value ? 'accept' : 'reject'}-opt-in-request`,
+		props.isGuest ? 'guest' : 'signed-in',
+		props.numberOfBadges,
+	);
+
 	if (value) {
 		try {
 			apollo.mutate({
