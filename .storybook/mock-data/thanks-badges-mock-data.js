@@ -15,15 +15,15 @@ export const mockLoans = mockedReceiptData.items.values
 
 export const mockOldBadge = {
 	"id": "equity",
-	"challengeName": "Equity Badge",
+	"challengeName": "Equality Badge",
 	"description": "",
 	"contentfulData": [
 		{
 			"id": "equity",
 			"level": 0,
 			"levelName": "",
-			"challengeName": "Equity Badge",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/6yl0sXP8fgaRaRwIaEVJO4/89ce4fae6c80ab1aed59a1e3ad055c3b/Equality_Badge_SVG.svg",
+			"challengeName": "Equality Badge",
+			"imageUrl": "https://images.ctfassets.net/j0p9a6ql0rn7/6yl0sXP8fgaRaRwIaEVJO4/23ca0d8da49569f1d318a76d3b7575b1/Equality.png",
 			"shareFact": "",
 			"shareFactFootnote": "",
 			"shareFactUrl": ""
