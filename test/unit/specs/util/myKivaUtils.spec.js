@@ -1,4 +1,8 @@
-import { hasLoanFunFactFootnote, getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote, getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
+
+jest.mock('#src/util/logReadQueryError');
 
 describe('myKivaUtils.js', () => {
 	describe('hasLoanFunFactFootnote', () => {
@@ -86,6 +90,36 @@ describe('myKivaUtils.js', () => {
 			const result = hasLoanFunFactFootnote(loan);
 
 			expect(result).toBe(false);
+		});
+	});
+
+	describe('fetchPostCheckoutAchievements', () => {
+		let apolloMock;
+
+		beforeEach(() => {
+			apolloMock = {
+				query: jest.fn()
+			};
+		});
+
+		it('should call apollo.query with the correct parameters', async () => {
+			const loanIds = [1, 2, 3];
+			await fetchPostCheckoutAchievements(apolloMock, loanIds);
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: postCheckoutAchievementsQuery,
+				variables: { loanIds }
+			});
+		});
+
+		it('should call logReadQueryError on error', async () => {
+			const loanIds = [1, 2, 3];
+			const error = new Error('Test error');
+			apolloMock.query.mockRejectedValueOnce(error);
+
+			await fetchPostCheckoutAchievements(apolloMock, loanIds);
+
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'myKivaUtils postCheckoutAchievementsQuery');
 		});
 	});
 

@@ -193,13 +193,14 @@ import { joinArray } from '#src/util/joinArray';
 import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
 import ShareChallenge from '#src/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
-import { getIsMyKivaEnabled, THANKS_BADGES_EXP } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, THANKS_BADGES_EXP } from '#src/util/myKivaUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -233,6 +234,8 @@ const getTeamId = loans => {
 		.map(loan => loan.team.id) ?? [];
 	return teamsIds?.[0] ?? null;
 };
+
+const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'ThanksPage',
@@ -286,6 +289,7 @@ export default {
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
 			myKivaEnabled: false,
+			badgesAchieved: [],
 		};
 	},
 	apollo: {
@@ -322,9 +326,12 @@ export default {
 				};
 				const limit = 1;
 
+				const myKivaFeatureEnabled = readBoolSetting(data?.general, 'myKivaEnabled.value');
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					teamId ? fetchGoals(client, limit, filters) : null,
+					myKivaFeatureEnabled ? fetchPostCheckoutAchievements(client, getLoanIds(loans)) : null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -618,7 +625,6 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// MyKiva Badges Experiment
-		// TODO: add additional condition for "if basket earned a tiered badge OR not opted-in"
 		if (!this.landedOnUSLoan && !this.printableKivaCards.length) {
 			this.myKivaEnabled = getIsMyKivaEnabled(
 				this.apollo,
@@ -627,6 +633,20 @@ export default {
 				data?.my?.userPreferences?.preferences ?? null,
 				totalLoans
 			);
+
+			if (this.myKivaEnabled) {
+				try {
+					const response = this.apollo.readQuery({
+						query: postCheckoutAchievementsQuery,
+						variables: { loanIds: getLoanIds(this.loans) },
+					});
+					this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
+					// MyKiva view only shown if user is not opted-in or checkout achieved badges
+					this.myKivaEnabled = !this.optedIn || this.badgesAchieved.length > 0;
+				} catch (e) {
+					logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
+				}
+			}
 		}
 
 		// Thanks Badges Experiment

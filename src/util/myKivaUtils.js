@@ -1,4 +1,6 @@
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 
@@ -25,6 +27,23 @@ export const hasLoanFunFactFootnote = loan => {
 			return true;
 		default:
 			return false;
+	}
+};
+
+/**
+ * Fetches the post-checkout achievements for the provided loan IDs
+ *
+ * @param apollo The current Apollo client
+ * @param loanIds The loan IDs to fetch achievements for
+ */
+export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
+	try {
+		await apollo.query({
+			query: postCheckoutAchievementsQuery,
+			variables: { loanIds },
+		});
+	} catch (e) {
+		logReadQueryError(e, 'myKivaUtils postCheckoutAchievementsQuery');
 	}
 };
 
