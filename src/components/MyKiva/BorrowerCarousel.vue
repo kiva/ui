@@ -83,8 +83,12 @@
 					:embla-options="{ loop: false, align: 'center'}"
 					@change="onInteractCarousel"
 				>
-					<template v-for="(loan, index) in loans" #[`slide${index+1}`] :key="loan.id || index">
-						<BorrowerStatusCard :loan="loan" class="tw-h-full" />
+					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
+						<BorrowerStatusCard
+							:loan="loan" class="tw-h-full"
+							@toggle-what-is-next="openWhatIsNext = $event"
+							:open-what-is-next="openWhatIsNext"
+						/>
 					</template>
 				</KvCarousel>
 			</div>
@@ -156,6 +160,7 @@ const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
 const tabs = ref(null);
 const windowWidth = ref(0);
+const openWhatIsNext = ref(false);
 
 const hasActiveLoans = computed(() => {
 	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
