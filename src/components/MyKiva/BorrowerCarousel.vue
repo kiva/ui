@@ -66,7 +66,7 @@
 				</template>
 				<template #tabPanels>
 					<KvTabPanel
-						v-for="(loan, index) in loans"
+						v-for="(loan, index) in filteredLoans"
 						:key="index"
 						:id="`${loan.id}`"
 					>
