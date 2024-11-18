@@ -137,7 +137,6 @@
 </template>
 
 <script setup>
-import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -157,7 +156,7 @@ import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/co
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 import {
 	ref,
 	computed,
@@ -303,20 +302,6 @@ const saveMyKivaToUserPreferences = () => {
 	}
 };
 
-const isFirstLogin = () => {
-	const lastLogin = kvAuth0.user?.exp;
-	const memberSince = lender.value?.memberSince;
-	const lastLoginDate = fromUnixTime(lastLogin);
-	lastLoginDate.setHours(lastLoginDate.getHours() - 1);
-
-	const minutesDiff = differenceInMinutes(
-		lastLoginDate,
-		new Date(memberSince),
-	);
-
-	return minutesDiff < 5;
-};
-
 const badgesAchieved = computed(() => {
 	const completedBadgesArr = [];
 
@@ -348,7 +333,9 @@ const scrollToTarget = target => {
 };
 
 const checkGuestAchievementsToScroll = () => {
-	if (isFirstLogin()) {
+	const lastLogin = kvAuth0.user?.exp;
+	const memberSince = lender.value?.memberSince;
+	if (isFirstLogin(lastLogin, memberSince)) {
 		const numberOfBadges = badgesAchieved.value.length;
 		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
 		scrollToTarget(sectionToScrollTo);
