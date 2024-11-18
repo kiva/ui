@@ -137,6 +137,7 @@
 </template>
 
 <script setup>
+import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -170,6 +171,7 @@ const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const kvAuth0 = inject('kvAuth0');
 
 const {
 	fetchAchievementData,
@@ -301,6 +303,58 @@ const saveMyKivaToUserPreferences = () => {
 	}
 };
 
+const isFirstLogin = () => {
+	const lastLogin = kvAuth0.user?.exp;
+	const memberSince = lender.value?.memberSince;
+	const lastLoginDate = fromUnixTime(lastLogin);
+	lastLoginDate.setHours(lastLoginDate.getHours() - 1);
+
+	const minutesDiff = differenceInMinutes(
+		lastLoginDate,
+		new Date(memberSince),
+	);
+
+	return minutesDiff < 5;
+};
+
+const badgesAchieved = computed(() => {
+	const completedBadgesArr = [];
+
+	badgeData.value.forEach(badge => {
+		if (badge.achievementData?.tiers?.length) {
+			const { tiers } = badge.achievementData;
+			tiers.forEach(tierObj => {
+				if (tierObj.completedDate) {
+					completedBadgesArr.push(badge);
+				}
+			});
+		}
+		if (badge.achievementData?.milestoneProgress?.length) {
+			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+			if (earnedAtDate) {
+				completedBadgesArr.push(badge);
+			}
+		}
+	});
+
+	return completedBadgesArr;
+});
+
+const scrollToTarget = target => {
+	const targetElement = document.getElementById(target);
+	if (targetElement) {
+		targetElement.scrollIntoView({ behavior: 'smooth' });
+	}
+};
+
+const checkGuestAchievementsToScroll = () => {
+	if (isFirstLogin()) {
+		const numberOfBadges = badgesAchieved.value.length;
+		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
+		scrollToTarget(sectionToScrollTo);
+	}
+};
+
 onMounted(async () => {
 	trackExperimentVersion(
 		apollo,
@@ -323,10 +377,8 @@ watch(isAchievementDataLoaded, () => {
 		nextTick(() => {
 			// Scroll to section once async data is loaded
 			const targetId = window?.location?.hash?.replace('#', '');
-			const targetElement = document?.getElementById(targetId);
-			if (targetElement) {
-				targetElement.scrollIntoView({ behavior: 'smooth' });
-			}
+			scrollToTarget(targetId);
+			checkGuestAchievementsToScroll();
 		});
 	}
 });
