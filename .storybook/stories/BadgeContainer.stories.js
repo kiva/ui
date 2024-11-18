@@ -28,8 +28,8 @@ const story = (args = {}, badgeUrl) => {
 		components: { BadgeContainer },
 		setup() { return { args }; },
 		template: `
-			<badge-container v-bind="args" style="width: 150px; height: 150px;">
-				<img src="${badgeUrl}" />
+			<badge-container v-bind="args" style="width: 500px; height: 500px;">
+				<img src="${badgeUrl}" style="width: 300px; height: 300px; margin: 0 auto; margin-top: 80px" />
 			</badge-container>
 		`,
 	});
@@ -66,3 +66,9 @@ export const RectangleCompleted = story({ status: BADGE_COMPLETED, shape: BADGE_
 export const RectangleInProgress = story({ status: BADGE_IN_PROGRESS, shape: BADGE_SHAPE_RECTANGLE }, badgeUsEconomicEquality.contentfulData[0].imageUrl);
 
 export const RectangleLocked = story({ status: BADGE_LOCKED, shape: BADGE_SHAPE_RECTANGLE }, badgeUsEconomicEquality.contentfulData[0].imageUrl);
+
+export const BadgeWithRays = story({showRays: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);
+
+export const BadgeWithShine = story({showShine: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);
+
+export const BadgeWithShineAndRays = story({showRays: true, showShine: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);
