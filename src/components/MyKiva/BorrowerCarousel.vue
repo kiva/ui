@@ -94,7 +94,7 @@
 					href="/portfolio/loans" v-kv-track-event="[
 						'portfolio',
 						'click',
-						'see-all-borrowers'
+						'See all borrowers'
 					]"
 				>See all borrowers</a>
 			</div>
@@ -203,9 +203,9 @@ const link = computed(() => {
 
 const btnEventLabel = computed(() => {
 	if (!hasActiveLoans.value) {
-		return 'see-previously-supported-borrowers';
+		return 'see-previously-supported-people';
 	}
-	return 'Make-a-loan-no-loans-state';
+	return 'Make a loan - no loans state';
 });
 
 const filteredLoans = computed(() => {
@@ -241,9 +241,9 @@ const onInteractCarousel = interaction => {
 
 onMounted(() => {
 	if (!hasActiveLoans.value) {
-		$kvTrackEvent('portfolio', 'view', 'no-active-borrowers');
+		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
 	} else {
-		$kvTrackEvent('portfolio', 'view', 'active-borrowers', loans.value.length);
+		$kvTrackEvent('portfolio', 'view', 'Active borrowers', loans.value.length);
 	}
 
 	window.addEventListener('resize', throttledResize);
