@@ -230,12 +230,15 @@ const handleBadgeClick = () => {
 	0% {
 		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
 	}
+
 	50% {
 		background-image: url('/src/assets/images/my-kiva/rays/second.svg');
 	}
+
 	99% {
 		background-image: url('/src/assets/images/my-kiva/rays/third.svg');
 	}
+
 	100% {
 		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
 	}
@@ -245,6 +248,7 @@ const handleBadgeClick = () => {
 	0%, 99% {
 		@apply tw-opacity-full;
 	}
+
 	100%  {
 		@apply tw-opacity-0;
 	}
@@ -274,6 +278,7 @@ const handleBadgeClick = () => {
 	0% {
 		@apply tw--top-full tw--left-full;
 	}
+
 	100% {
 		@apply tw-top-full tw-left-full;
 	}
