@@ -28,8 +28,8 @@ const story = (args = {}, badgeUrl) => {
 		components: { BadgeContainer },
 		setup() { return { args }; },
 		template: `
-			<badge-container v-bind="args" style="width: 500px; height: 500px;">
-				<img src="${badgeUrl}" style="width: 300px; height: 300px; margin: 0 auto; margin-top: 80px" />
+			<badge-container v-bind="args" style="width: 150px; height: 150px;">
+				<img src="${badgeUrl}" />
 			</badge-container>
 		`,
 	});
