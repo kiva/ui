@@ -53,6 +53,7 @@ query myKivaQuery {
         id
         url
       }
+      memberSince
     }
     userAccount {
       id

@@ -1,4 +1,5 @@
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { getUnixTime } from 'date-fns';
+import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 
 describe('myKivaUtils.js', () => {
 	describe('hasLoanFunFactFootnote', () => {
@@ -84,6 +85,30 @@ describe('myKivaUtils.js', () => {
 			};
 
 			const result = hasLoanFunFactFootnote(loan);
+
+			expect(result).toBe(false);
+		});
+	});
+
+	describe('isFirstLogin', () => {
+		it('should return true for first login user', () => {
+			const memberSince = new Date();
+			let lastLogin = new Date(memberSince);
+			lastLogin.setMinutes(lastLogin.getMinutes() + 62);
+			lastLogin = getUnixTime(lastLogin);
+
+			const result = isFirstLogin(lastLogin, memberSince);
+
+			expect(result).toBe(true);
+		});
+
+		it('should return false if not first login user', () => {
+			const memberSince = new Date();
+			let lastLogin = new Date(memberSince);
+			lastLogin.setMinutes(lastLogin.getMinutes() + 82);
+			lastLogin = getUnixTime(lastLogin);
+
+			const result = isFirstLogin(lastLogin, memberSince);
 
 			expect(result).toBe(false);
 		});
