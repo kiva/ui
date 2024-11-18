@@ -26,6 +26,7 @@ export const app = {
 		defaultIndex: `${env}_fundraising_popularity`,
 	},
 	apolloBatching,
+	apolloQueryFetchLogging: process.env.APOLLO_QUERY_FETCH_LOGGING || false,
 	apolloNetworkErrorRetryActive,
 	apolloNetworkErrorRetryAttempts,
 	auth0: {
@@ -87,6 +88,7 @@ export const app = {
 	sentryURI: process.env.SENTRY_URI || 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
 	sentryTraceSampleRate: process.env.SENTRY_TRACE_RATE || 0.25,
 	snowplowUri: process.env.SNOWPLOW_URI || 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+	stellateDebugHeaders: process.env.STELLATE_DEBUG_HEADERS || false,
 	stellateGraphqlUri: process.env.STELLATE_GRAPHQL_URI || null,
 	stellateCachedOperations: process.env.STELLATE_CACHED_OPERATIONS || '',
 	transport: 'https',
