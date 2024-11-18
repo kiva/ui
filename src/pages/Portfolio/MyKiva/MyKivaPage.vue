@@ -377,7 +377,7 @@ watch(isAchievementDataLoaded, () => {
 		nextTick(() => {
 			// Scroll to section once async data is loaded
 			const targetId = window?.location?.hash?.replace('#', '');
-			scrollToTarget(targetId);
+			if (targetId) scrollToTarget(targetId);
 			checkGuestAchievementsToScroll();
 		});
 	}
