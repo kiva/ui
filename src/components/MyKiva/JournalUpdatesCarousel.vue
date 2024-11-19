@@ -14,7 +14,7 @@
 				<JournalUpdateCard
 					:loan="loan"
 					:update="update"
-					:update-number="`${index + 1}`"
+					:update-number="`${totalUpdates - index}`"
 					@read-more-clicked="openLightbox"
 					@share-loan-clicked="shareLoanClicked"
 				/>
@@ -71,6 +71,10 @@ const props = defineProps({
 	lender: {
 		type: Object,
 		default: () => ({}),
+	},
+	totalUpdates: {
+		type: Number,
+		default: 0,
 	},
 });
 

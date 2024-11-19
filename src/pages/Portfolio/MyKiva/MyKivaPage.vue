@@ -53,6 +53,7 @@
 						:loan="activeLoan"
 						:updates="loanUpdates"
 						:lender="lender"
+						:total-updates="totalUpdates"
 					/>
 				</div>
 			</section>
@@ -187,6 +188,7 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
+const totalUpdates = ref(0);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_JOURNEY);
@@ -256,6 +258,7 @@ const fetchLoanUpdates = loanId => {
 	apollo.query({ query: updatesQuery, variables: { loanId } })
 		.then(result => {
 			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
+			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
