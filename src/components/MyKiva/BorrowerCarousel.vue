@@ -215,7 +215,7 @@ const btnEventLabel = computed(() => {
 });
 
 const filteredLoans = computed(() => {
-	return loans.value.slice(0, 9);
+	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status)).slice(0, 9);
 });
 
 const singleSlideWidth = computed(() => {
