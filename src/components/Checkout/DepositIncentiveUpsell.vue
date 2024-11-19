@@ -78,10 +78,10 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
-import KvProgressBar from '@kiva/kv-components/dist/components/KvProgressBar';
+import KvButton from '#kv-components/KvButton';
+import KvCarousel from '#kv-components/KvCarousel';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvProgressBar from '#kv-components/KvProgressBar';
 
 const upsellLoansQuery = gql`query upsellLoansQuery(
 	$maxLoans: Int!

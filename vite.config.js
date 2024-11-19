@@ -106,6 +106,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			alias: {
 				// alias src directory
 				'#src': resolve('src'),
+				// alias kv-component directory
+				'#kv-components': resolve('node_modules/@kiva/kv-components/dist/components'),
 				// alias promise module to handle timesync calling require('promise')
 				promise: resolve('build/promise.js'),
 				// this alias is required for the rendering of src/components/Contentful/DynamicRichText.vue

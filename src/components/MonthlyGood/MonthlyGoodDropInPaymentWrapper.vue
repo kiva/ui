@@ -39,7 +39,7 @@ import braintreeUpdateSubscriptionPaymentMethod from
 	'#src/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'MonthlyGoodDropInPaymentWrapper',

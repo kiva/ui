@@ -1,8 +1,8 @@
 import KivaClassicSingleCategoryCarousel from '#src/components/LoanCollections/KivaClassicSingleCategoryCarousel.vue';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 import loanData from '../mock-data/loan-data-mock';
 
 const queryResult = {

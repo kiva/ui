@@ -32,7 +32,7 @@
 <script setup>
 import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import { computed, toRefs } from 'vue';
 
 const props = defineProps({

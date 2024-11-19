@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
-import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
+import KvCheckbox from '#kv-components/KvCheckbox';
+import KvTextInput from '#kv-components/KvTextInput';
 
 export default {
 	name: 'KvBaseInput',

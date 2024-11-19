@@ -333,9 +333,9 @@ import iwdExperimentMixin from '#src/plugins/iwd-experiment-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';

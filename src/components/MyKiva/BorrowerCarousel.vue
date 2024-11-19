@@ -108,13 +108,13 @@
 
 <script setup>
 import _throttle from 'lodash/throttle';
-import KvTabs from '@kiva/kv-components/dist/components/KvTabs';
-import KvTab from '@kiva/kv-components/dist/components/KvTab';
-import KvTabPanel from '@kiva/kv-components/dist/components/KvTabPanel';
-import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvTabs from '#kv-components/KvTabs';
+import KvTab from '#kv-components/KvTab';
+import KvTabPanel from '#kv-components/KvTabPanel';
+import KvCarousel from '#kv-components/KvCarousel';
+import KvButton from '#kv-components/KvButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import {
 	defineProps,
 	ref,

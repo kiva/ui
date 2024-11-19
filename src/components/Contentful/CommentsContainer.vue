@@ -4,7 +4,7 @@
 
 <script>
 import activityFeedTokenQuery from '#src/graphql/query/activityFeedToken.graphql';
-import KvCommentsContainer from '@kiva/kv-components/dist/components/KvCommentsContainer';
+import KvCommentsContainer from '#kv-components/KvCommentsContainer';
 
 export default {
 	name: 'CommentsContainer',

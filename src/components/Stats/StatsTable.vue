@@ -67,12 +67,12 @@
 
 <script>
 import DistributionTable from '#src/pages/Portfolio/ImpactDashboard/DistributionTable';
-import KvPieChart from '@kiva/kv-components/dist/components/KvPieChart';
-import KvTreeMapChart from '@kiva/kv-components/dist/components/KvTreeMapChart';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvTab from '@kiva/kv-components/dist/components/KvTab';
-import KvTabs from '@kiva/kv-components/dist/components/KvTabs';
-import KvTabPanel from '@kiva/kv-components/dist/components/KvTabPanel';
+import KvPieChart from '#kv-components/KvPieChart';
+import KvTreeMapChart from '#kv-components/KvTreeMapChart';
+import KvButton from '#kv-components/KvButton';
+import KvTab from '#kv-components/KvTab';
+import KvTabs from '#kv-components/KvTabs';
+import KvTabPanel from '#kv-components/KvTabPanel';
 
 export default {
 	name: 'StatsTable',

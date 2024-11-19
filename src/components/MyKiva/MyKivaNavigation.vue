@@ -128,7 +128,7 @@
 
 <script setup>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import {
 	ref,
 	toRefs,

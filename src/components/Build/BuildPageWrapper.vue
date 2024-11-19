@@ -10,7 +10,7 @@
 
 <script>
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvGrid from '#kv-components/KvGrid';
 
 export default {
 	name: 'BuildPageWrapper',

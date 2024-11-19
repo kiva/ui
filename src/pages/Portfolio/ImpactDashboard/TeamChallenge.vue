@@ -48,7 +48,7 @@
 
 <script>
 import { mdiArrowRight } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'TeamChallenge',

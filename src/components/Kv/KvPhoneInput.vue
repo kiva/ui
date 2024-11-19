@@ -68,7 +68,7 @@ import {
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
 import KvFlag from '#src/components/Kv/KvFlag';
-import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
+import KvTextInput from '#kv-components/KvTextInput';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes

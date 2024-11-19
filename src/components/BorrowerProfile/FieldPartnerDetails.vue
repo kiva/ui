@@ -123,8 +123,8 @@ import {
 } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvTextLink from '@kiva/kv-components/dist/components/KvTextLink';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvTextLink from '#kv-components/KvTextLink';
 
 export default {
 	name: 'FieldPartnerDetails',

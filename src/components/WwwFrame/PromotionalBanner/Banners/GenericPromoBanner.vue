@@ -46,7 +46,7 @@
 <script>
 import KvIcon from '#src/components/Kv/KvIcon';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvProgressBar from '@kiva/kv-components/dist/components/KvProgressBar';
+import KvProgressBar from '#kv-components/KvProgressBar';
 
 export default {
 	name: 'GenericPromoBanner',

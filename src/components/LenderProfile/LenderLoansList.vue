@@ -45,8 +45,8 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderLoansQuery from '#src/graphql/query/lenderLoans.graphql';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
-import KvPagination from '@kiva/kv-components/dist/components/KvPagination';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvPagination from '#kv-components/KvPagination';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 export default {
 	name: 'LenderLoansList',

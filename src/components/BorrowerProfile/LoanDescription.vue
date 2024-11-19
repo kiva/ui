@@ -91,7 +91,7 @@
 <script>
 import { toParagraphs } from '#src/util/loanUtils';
 import previousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 
 export default {
 	name: 'LoanDescription',

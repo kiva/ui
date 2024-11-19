@@ -195,8 +195,8 @@ import KvDropdown from '#src/components/Kv/KvDropdown';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import TheSettingsTertiaryMenu from '#src/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
 

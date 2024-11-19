@@ -395,10 +395,10 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvLoanActivities from '#src/components/Kv/KvLoanActivities';
 import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
-import KvUiSelect from '@kiva/kv-components/dist/components/KvSelect';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvUiButton from '@kiva/kv-components/dist/components/KvButton';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvUiSelect from '#kv-components/KvSelect';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvUiButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 
 export default {

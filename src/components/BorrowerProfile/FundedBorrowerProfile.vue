@@ -114,8 +114,8 @@ import personalizedLoansQuery from '#src/graphql/query/lendByCategory/personaliz
 import mlLoansYouMightLikeData from '#src/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
 import LoanCardController from '#src/components/LoanCards/LoanCardController';
 import { FLSS_ORIGIN_BP_FUNDED } from '#src/util/flssUtils';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'FundedBorrowerProfile',

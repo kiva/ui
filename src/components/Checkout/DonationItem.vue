@@ -221,10 +221,10 @@ import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvTextInput from '#kv-components/KvTextInput';
+import KvButton from '#kv-components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
 import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
 
 export default {

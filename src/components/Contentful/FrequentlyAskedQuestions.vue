@@ -19,7 +19,7 @@
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'FrequentlyAskedQuestions',
