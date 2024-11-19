@@ -112,12 +112,12 @@
 import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
-import KvTab from '@kiva/kv-components/dist/components/KvTab';
-import KvTabPanel from '@kiva/kv-components/dist/components/KvTabPanel';
-import KvTabs from '@kiva/kv-components/dist/components/KvTabs';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvTab from '#kv-components/KvTab';
+import KvTabPanel from '#kv-components/KvTabPanel';
+import KvTabs from '#kv-components/KvTabs';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';

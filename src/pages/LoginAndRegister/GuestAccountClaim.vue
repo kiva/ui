@@ -50,7 +50,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import SystemPage from '#src/components/SystemFrame/SystemPage';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'GuestAccountClaim',

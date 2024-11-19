@@ -48,7 +48,7 @@ import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_CHECKOUT } from '#src/util/flssUtils';
-import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
+import KvCarousel from '#kv-components/KvCarousel';
 
 export default {
 	name: 'EmptyBasketCarousel',

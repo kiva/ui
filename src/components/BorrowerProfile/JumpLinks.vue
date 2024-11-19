@@ -30,7 +30,7 @@
 <script>
 import { mdiAccount, mdiFormatListBulleted } from '@mdi/js';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'JumpLinks',

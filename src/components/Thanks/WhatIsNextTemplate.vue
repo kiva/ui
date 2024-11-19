@@ -262,8 +262,8 @@ import confetti from 'canvas-confetti';
 import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const imagesGlob = import.meta.glob('../../assets/images/thanks-page/*.*', { eager: true, query: '?url' });

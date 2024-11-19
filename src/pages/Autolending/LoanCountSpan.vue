@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import KvLoadingSpinner from '@kiva/kv-components/dist/components/KvLoadingSpinner';
+import KvLoadingSpinner from '#kv-components/KvLoadingSpinner';
 
 export default {
 	name: 'LoanCountSpan',

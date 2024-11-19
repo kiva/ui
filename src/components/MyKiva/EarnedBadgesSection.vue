@@ -65,7 +65,7 @@ import {
 	inject,
 } from 'vue';
 import { format } from 'date-fns';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvButton from '#kv-components/KvButton';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 
 const $kvTrackEvent = inject('$kvTrackEvent');

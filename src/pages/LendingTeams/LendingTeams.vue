@@ -98,9 +98,9 @@
 <script>
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TeamGoalsList from '#src/components/Teams/TeamGoalsList';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 import TeamListing from './TeamListing';
 import TeamLeaderboards from './TeamLeaderboards';
 

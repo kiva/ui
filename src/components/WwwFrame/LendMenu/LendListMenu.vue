@@ -176,11 +176,11 @@
 <script>
 import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import { mdiArrowRight } from '@mdi/js';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvTab from '@kiva/kv-components/dist/components/KvTab';
-import KvTabPanel from '@kiva/kv-components/dist/components/KvTabPanel';
-import KvTabs from '@kiva/kv-components/dist/components/KvTabs';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvTab from '#kv-components/KvTab';
+import KvTabPanel from '#kv-components/KvTabPanel';
+import KvTabs from '#kv-components/KvTabs';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 

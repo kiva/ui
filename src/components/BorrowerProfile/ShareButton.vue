@@ -31,7 +31,7 @@
 import { gql } from 'graphql-tag';
 import { mdiPencilOutline } from '@mdi/js';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'ShareButton',
