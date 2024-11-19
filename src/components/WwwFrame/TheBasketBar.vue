@@ -34,8 +34,8 @@
 <script>
 import countQuery from '#src/graphql/query/basketCount.graphql';
 import { mdiCart } from '@mdi/js';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 
 export default {
 	name: 'TheBasketBar',

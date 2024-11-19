@@ -65,8 +65,8 @@
 
 <script>
 import { format } from 'date-fns';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvLendCta from '@kiva/kv-components/vue/KvLendCta';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvLendCta from '@kiva/kv-components/dist/components/KvLendCta';
 import KvActivityRow from './KvActivityRow';
 
 export default {

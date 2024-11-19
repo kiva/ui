@@ -41,7 +41,7 @@
 <script>
 import { formatMediaAssetArray } from '#src/util/contentfulUtils';
 import { gql } from 'graphql-tag';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 
 export default {
 	name: 'BadgesList',

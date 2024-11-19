@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'KivaClassicLoanCategorySelector',

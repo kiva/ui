@@ -37,9 +37,9 @@
 <script>
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvContentfulImg from '@kiva/kv-components/dist/components/KvContentfulImg';
 
 export default {
 	name: 'MediaItemsCentered',

@@ -56,12 +56,12 @@
 import { computed, inject, ref } from 'vue';
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvUserAvatar from '@kiva/kv-components/dist/components/KvUserAvatar';
 import OptInNotification from './OptInNotification';
 
 const props = defineProps({

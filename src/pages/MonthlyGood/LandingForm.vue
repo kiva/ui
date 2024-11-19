@@ -63,8 +63,8 @@ import { required, minValue, maxValue } from '@vuelidate/validators';
 
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvSelect from '@kiva/kv-components/dist/components/KvSelect';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'LandingForm',

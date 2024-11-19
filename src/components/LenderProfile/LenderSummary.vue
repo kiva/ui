@@ -157,9 +157,9 @@ import { mdiAccountCircle, mdiPencilOutline } from '@mdi/js';
 import logReadQueryError from '#src/util/logReadQueryError';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
 import sendLenderMessageMutation from '#src/graphql/mutation/sendLenderMessage.graphql';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
 
 export default {
 	name: 'LenderSummary',

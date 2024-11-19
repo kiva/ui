@@ -1,6 +1,6 @@
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
 
 const args = {
 	frequentlyAskedQuestionsHeadline: 'Questions',

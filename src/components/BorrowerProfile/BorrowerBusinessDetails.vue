@@ -57,7 +57,7 @@
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
 import * as Sentry from '@sentry/vue';
-import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvTextLink from '@kiva/kv-components/dist/components/KvTextLink';
 import { defineAsyncComponent } from 'vue';
 
 const TwitterLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/twitter-logo.svg'));

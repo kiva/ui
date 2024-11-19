@@ -612,10 +612,10 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvUserAvatar from '@kiva/kv-components/dist/components/KvUserAvatar';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 

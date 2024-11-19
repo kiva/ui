@@ -26,7 +26,7 @@ import {
 	darkTheme,
 	mintTheme
 } from '@kiva/kv-tokens/configs/kivaColors.cjs';
-import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider';
+import KvThemeProvider from '@kiva/kv-components/dist/components/KvThemeProvider';
 
 export default {
 	name: 'KvTooltip',

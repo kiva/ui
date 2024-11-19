@@ -182,11 +182,11 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvProgressBar from '@kiva/kv-components/dist/components/KvProgressBar';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 const pageQuery = gql`query thanksPageChallenge($challengeId: String!) {
 	my {

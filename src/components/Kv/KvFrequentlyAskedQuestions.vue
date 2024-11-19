@@ -22,7 +22,7 @@
 <script>
 import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
 
 export default {
 	name: 'KvFrequentlyAskedQuestions',

@@ -84,10 +84,10 @@
 
 <script>
 import numeral from 'numeral';
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
-import KvMap from '@kiva/kv-components/vue/KvMap';
+import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
+import KvMap from '@kiva/kv-components/dist/components/KvMap';
 import { getLoansIntervals } from '@kiva/kv-components/utils/mapUtils';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 const mapColors = [

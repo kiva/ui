@@ -14,7 +14,7 @@
 
 <script>
 import { getFilterKeyFromValue } from '#src/util/loanSearch/filterUtils';
-import KvRadio from '@kiva/kv-components/vue/KvRadio';
+import KvRadio from '@kiva/kv-components/dist/components/KvRadio';
 
 export const ALL_LOANS_TITLE = 'All loans';
 

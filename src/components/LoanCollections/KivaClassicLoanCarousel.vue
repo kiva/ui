@@ -94,8 +94,8 @@
 <script>
 import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
-import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'KivaClassicLoanCarousel',

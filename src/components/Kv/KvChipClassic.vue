@@ -19,7 +19,7 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 
 export default {
 	name: 'KvChipClassic',

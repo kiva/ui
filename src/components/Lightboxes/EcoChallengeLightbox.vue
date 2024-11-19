@@ -114,10 +114,10 @@ import {
 } from '@mdi/js';
 import { joinArray } from '#src/util/joinArray';
 import { missingMilestones } from '#src/util/achievementUtils';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvTextLink from '@kiva/kv-components/dist/components/KvTextLink';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 
 export default {
 	name: 'EcoChallengeLightbox',

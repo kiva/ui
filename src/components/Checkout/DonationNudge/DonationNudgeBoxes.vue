@@ -92,8 +92,8 @@
 
 <script>
 import numeral from 'numeral';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'DonationNudgeBoxes',

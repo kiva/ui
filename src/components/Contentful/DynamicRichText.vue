@@ -24,7 +24,7 @@ export default {
 					KvFrequentlyAskedQuestions: defineAsyncComponent(() => import(
 						'#src/components/Kv/KvFrequentlyAskedQuestions'
 					)),
-					KvContentfulImg: defineAsyncComponent(() => import('@kiva/kv-components/vue/KvContentfulImg')),
+					KvContentfulImg: defineAsyncComponent(() => import('@kiva/kv-components/dist/components/KvContentfulImg')),
 					ButtonWrapper: defineAsyncComponent(() => import('#src/components/Contentful/ButtonWrapper')),
 				},
 			};

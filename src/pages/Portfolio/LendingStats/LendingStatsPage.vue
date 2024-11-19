@@ -92,8 +92,8 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
 import BadgesSection from './BadgesSection';
 import StatsSection from './StatsSection';
 

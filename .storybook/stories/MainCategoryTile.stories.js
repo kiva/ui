@@ -1,6 +1,6 @@
 import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
 
 export default {
 	title: 'Components/Main Category Tile',

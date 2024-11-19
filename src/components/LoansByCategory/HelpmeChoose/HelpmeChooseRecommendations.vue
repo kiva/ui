@@ -74,8 +74,8 @@
 <script>
 import { mdiRefresh } from '@mdi/js';
 import LoanCardController from '#src/components/LoanCards/LoanCardController';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 import HelpmeChooseBorrowerSelector from './HelpmeChooseBorrowerSelector';
 
 export default {
