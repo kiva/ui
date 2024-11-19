@@ -161,15 +161,11 @@ const carousel = ref(null);
 const tabs = ref(null);
 const windowWidth = ref(0);
 const openWhatIsNext = ref(false);
+const lastVisitedLoanIdx = ref(0);
 
 const hasActiveLoans = computed(() => {
 	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
 });
-
-const handleChange = event => {
-	emit('selected-loan', loans.value[event]);
-	carousel.value.goToSlide(event);
-};
 
 const getBorrowerName = loan => {
 	return loan?.name ?? '';
@@ -217,6 +213,16 @@ const btnEventLabel = computed(() => {
 const filteredLoans = computed(() => {
 	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status)).slice(0, 9);
 });
+
+const handleChange = event => {
+	if (event < filteredLoans.value.length) {
+		emit('selected-loan', loans.value[event]);
+		carousel.value.goToSlide(event);
+		lastVisitedLoanIdx.value = event;
+	} else {
+		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
+	}
+};
 
 const singleSlideWidth = computed(() => {
 	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
