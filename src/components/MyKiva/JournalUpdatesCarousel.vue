@@ -54,6 +54,7 @@ import {
 	defineProps,
 	inject,
 	computed,
+	watch,
 } from 'vue';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -73,7 +74,7 @@ const props = defineProps({
 	},
 });
 
-const { loan } = toRefs(props);
+const { loan, updates } = toRefs(props);
 
 const isLightboxVisible = ref(false);
 const clickedUpdate = ref(0);
@@ -112,6 +113,12 @@ const shareLoanClicked = () => {
 const interactCarousel = () => {
 	$kvTrackEvent('portfolio', 'click', 'update-carousel');
 };
+
+watch(() => updates, () => {
+	if (updates.value.length > 0) {
+		$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+	}
+});
 </script>
 
 <style lang="postcss" scoped>
