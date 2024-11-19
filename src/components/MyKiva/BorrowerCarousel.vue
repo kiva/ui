@@ -8,7 +8,11 @@
 			/>
 		</template>
 		<template v-else>
-			<h2 v-html="title" class="tw-mb-3.5"></h2>
+			<h2
+				v-html="title"
+				class="tw-mb-3.5"
+				:class="{ 'tw-text-center': !loans.length }"
+			></h2>
 			<div :class="{'tw-flex tw-justify-center': !loans.length }">
 				<KvButton
 					v-kv-track-event="[
@@ -190,17 +194,19 @@ const title = computed(() => {
 });
 
 const btnCta = computed(() => {
-	if (!hasActiveLoans.value) {
-		return 'See previously supported borrowers';
+	if (!loans.value.length) {
+		return 'Make a loan';
 	}
-	return 'Make a loan';
+
+	return 'See previously supported borrowers';
 });
 
 const link = computed(() => {
-	if (!hasActiveLoans.value) {
-		return '/portfolio';
+	if (!loans.value.length) {
+		return '/lend-by-category';
 	}
-	return '/lend-by-category';
+
+	return '/portfolio/loans';
 });
 
 const btnEventLabel = computed(() => {
