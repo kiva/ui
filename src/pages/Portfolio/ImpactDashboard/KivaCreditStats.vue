@@ -42,8 +42,8 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { defineAsyncComponent } from 'vue';
 import getCacheKey from '#src/util/getCacheKey';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import KivaEffectFigure from './KivaEffectFigure';
 

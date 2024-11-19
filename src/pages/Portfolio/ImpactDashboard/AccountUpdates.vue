@@ -81,7 +81,7 @@ import { gql } from 'graphql-tag';
 import { format } from 'date-fns';
 import DOMPurify from 'dompurify';
 import getCacheKey from '#src/util/getCacheKey';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {

@@ -154,9 +154,9 @@ import clickOutside from '#src/plugins/click-outside';
 import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
 import CheckboxList from './CheckboxList';
 
 export default {

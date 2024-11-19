@@ -55,8 +55,8 @@
 
 <script>
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
 import UpdateDetails from './UpdateDetails';
 

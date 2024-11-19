@@ -57,8 +57,8 @@ import { indexIn } from '#src/util/comparators';
 import { BADGE_IN_PROGRESS, BADGE_SHAPE_OBLONG, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 import {
 	computed,
 	toRefs,

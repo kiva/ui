@@ -158,16 +158,16 @@ import {
 	onMounted, ref, computed, inject
 } from 'vue';
 import confetti from 'canvas-confetti';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvUserAvatar from '@kiva/kv-components/dist/components/KvUserAvatar';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown, mdiArrowRight } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
 import OptInModule from './OptInModule';
 

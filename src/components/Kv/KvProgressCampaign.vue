@@ -28,7 +28,7 @@
 <script>
 import numeral from 'numeral';
 import HeartOutFromBox from '#src/assets/inline-svgs/challenge/heart-out-from-box.svg';
-import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '@kiva/kv-components/dist/components/KvProgressBar';
 
 export default {
 	name: 'KvProgressCampaign',

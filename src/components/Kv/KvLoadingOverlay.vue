@@ -8,7 +8,7 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
+import KvLoadingSpinner from '@kiva/kv-components/dist/components/KvLoadingSpinner';
 import getCacheKey from '#src/util/getCacheKey';
 
 export default {

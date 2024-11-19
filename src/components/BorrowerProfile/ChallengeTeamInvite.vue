@@ -33,8 +33,8 @@
 
 <script>
 import { mdiArrowTopRight, mdiClose } from '@mdi/js';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
-import KvToast from '@kiva/kv-components/vue/KvToast';
+import KvUserAvatar from '@kiva/kv-components/dist/components/KvUserAvatar';
+import KvToast from '@kiva/kv-components/dist/components/KvToast';
 
 export default {
 	name: 'ChallengeTeamInvite',

@@ -47,7 +47,7 @@ import * as Sentry from '@sentry/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import KvBaseInput from '#src/components/Kv/KvBaseInput';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'GuestAccountCreation',

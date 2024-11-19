@@ -148,9 +148,9 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import UserUpdatesPreference from '#src/components/Checkout/UserUpdatesPreference';
 import { pollForFinishedCheckout } from '@kiva/kv-shop';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
+import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 

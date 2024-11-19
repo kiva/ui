@@ -72,9 +72,9 @@ import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '#src/util/logReadQueryError';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderTeamsQuery from '#src/graphql/query/lenderTeams.graphql';
-import KvPagination from '@kiva/kv-components/vue/KvPagination';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvPagination from '@kiva/kv-components/dist/components/KvPagination';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
