@@ -145,8 +145,8 @@ import mfaQuery from '#src/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '#src/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '#src/graphql/mutation/mfa/removeOneMfaMethod.graphql';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
 
 export default {
 	name: 'TwoStepVerificationPage',

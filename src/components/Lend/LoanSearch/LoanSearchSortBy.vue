@@ -24,8 +24,8 @@
 import { mdiInformation } from '@mdi/js';
 import { FLSS_QUERY_TYPE, STANDARD_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import { sortByNameToDisplay } from '#src/util/loanSearch/filters/sortOptions';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvRadio from '@kiva/kv-components/vue/KvRadio';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvRadio from '@kiva/kv-components/dist/components/KvRadio';
 
 export default {
 	name: 'LoanSearchSortBy',

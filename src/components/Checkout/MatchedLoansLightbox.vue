@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
 
 export default {
 	name: 'MatchedLoansLightbox',

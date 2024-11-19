@@ -134,9 +134,9 @@
 import { gql } from 'graphql-tag';
 import { mdiFileDocumentOutline } from '@mdi/js';
 import numeral from 'numeral';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvTextLink from '@kiva/kv-components/dist/components/KvTextLink';
 
 const asNumber = value => numeral(value ?? 0).value();
 

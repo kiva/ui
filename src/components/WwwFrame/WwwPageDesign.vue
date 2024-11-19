@@ -198,10 +198,10 @@ import InstagramLogo from '#src/assets/inline-svgs/logos/instagram-logo.svg';
 import FacebookLogo from '#src/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '#src/assets/inline-svgs/logos/twitter-logo.svg';
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 
 export default {
 	name: 'WwwPageDesign',

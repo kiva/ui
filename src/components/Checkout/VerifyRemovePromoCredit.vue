@@ -36,8 +36,8 @@
 <script>
 import { removeCredit } from '#src/util/checkoutUtils';
 import logFormatter from '#src/util/logFormatter';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
 
 export default {
 	name: 'VerifyRemovePromoCredit',

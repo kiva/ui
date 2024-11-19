@@ -132,7 +132,7 @@ import { format, parseISO } from 'date-fns';
 import { mdiPencil } from '@mdi/js';
 import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
 import kivaCardPrintPreview from '#src/assets/images/checkout/kiva_card_print_preview.jpg';
 import kivaCardPostalPreview from '#src/assets/images/checkout/kiva_card_postal_preview.jpg';
 import kivaCardEmailPreview from '#src/assets/images/checkout/kiva_card_email_preview.jpg';
