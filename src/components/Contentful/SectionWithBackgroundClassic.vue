@@ -38,7 +38,12 @@ import {
 	darkGreenTheme,
 	mintTheme,
 	defaultTheme,
-	darkMintTheme
+	darkMintTheme,
+	greenLightTheme,
+	greenDarkTheme,
+	marigoldLightTheme,
+	stoneLightTheme,
+	stoneDarkTheme,
 } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 import { defineAsyncComponent } from 'vue';
 
@@ -165,7 +170,12 @@ export default {
 				kivaClassicGreen: darkGreenTheme,
 				kivaClassicDark: darkTheme,
 				imageCard: darkTheme,
-				kivaDarkMint: darkMintTheme
+				kivaDarkMint: darkMintTheme,
+				ecoGreenLight: greenLightTheme,
+				ecoGreenDark: greenDarkTheme,
+				ecoMarigoldLight: marigoldLightTheme,
+				ecoStoneLight: stoneLightTheme,
+				ecoStoneDark: stoneDarkTheme,
 			};
 			const theme = themeMapper[this.themeName] ?? defaultTheme;
 			// No styles needed if using the default theme
