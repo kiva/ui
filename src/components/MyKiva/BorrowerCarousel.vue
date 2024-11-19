@@ -180,16 +180,17 @@ const getBorrowerHash = loan => {
 };
 
 const title = computed(() => {
+	if (!loans.value.length) {
+		return 'Change a life <u>today</u>!';
+	}
 	if (!hasActiveLoans.value) {
 		return `You changed <u>${totalLoans.value} lives</u>!`;
 	}
-	if (loans.value.length) {
-		if (totalLoans.value === 1) {
-			return 'You’re <u>changing a life</u> right now!';
-		}
-		return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
+
+	if (totalLoans.value === 1) {
+		return 'You’re <u>changing a life</u> right now!';
 	}
-	return 'Change a life <u>today</u>!';
+	return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
 });
 
 const btnCta = computed(() => {

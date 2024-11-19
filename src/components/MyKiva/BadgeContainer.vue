@@ -1,9 +1,15 @@
 <template>
 	<div
 		class="tw-relative tw-inline-block tw-cursor-pointer"
-		:class="{ 'tw-grayscale': isInProgress, 'invisible-badge': isLocked }"
+		:class="{
+			'tw-grayscale': isInProgress,
+			'invisible-badge': isLocked,
+			'rays-bg': showRays,
+		}"
 		@click="handleBadgeClick"
 	>
+		<FirstBadgeShine v-if="showShine" ref="firstShine" class="shine tw-w-full" />
+		<SecondBadgeShine v-if="showShine" ref="secondShine" class="second-shine tw-w-full" />
 		<slot></slot>
 		<component
 			v-if="isInProgress"
@@ -57,6 +63,8 @@ import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg';
 import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg';
 import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg';
 import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg';
+import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
+import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
 
 const props = defineProps({
 	status: {
@@ -69,6 +77,14 @@ const props = defineProps({
 		default: BADGE_SHAPE_CIRCLE,
 		validator: value => BADGE_SHAPE.includes(value),
 	},
+	showRays: {
+		type: Boolean,
+		default: false,
+	},
+	showShine: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const isInProgress = computed(() => props.status === BADGE_IN_PROGRESS);
@@ -76,6 +92,8 @@ const isInProgress = computed(() => props.status === BADGE_IN_PROGRESS);
 const isLocked = computed(() => props.status === BADGE_LOCKED);
 
 const animateLock = ref(false);
+const firstShine = ref(null);
+const secondShine = ref(null);
 
 const outlineComponent = computed(() => {
 	switch (props.shape) {
@@ -123,6 +141,16 @@ const outlineStyles = computed(() => {
 });
 
 const handleBadgeClick = () => {
+	if (firstShine.value && secondShine.value) {
+		firstShine.value.$el.classList.remove('animate');
+		secondShine.value.$el.classList.remove('animate');
+
+		setTimeout(() => {
+			firstShine.value.$el.classList.add('animate');
+			secondShine.value.$el.classList.add('animate');
+		}, 10);
+	}
+
 	if (isLocked.value) {
 		animateLock.value = true;
 		setTimeout(() => { animateLock.value = false; }, 1600);
@@ -140,48 +168,119 @@ const handleBadgeClick = () => {
 }
 
 @keyframes wiggle {
-  0%, 7% {
-    transform: rotateZ(0);
-  }
+	0%, 7% {
+		transform: rotateZ(0);
+	}
 
-  15% {
-    transform: rotateZ(-15deg);
-  }
+	15% {
+		transform: rotateZ(-15deg);
+	}
 
-  20% {
-    transform: rotateZ(10deg);
-  }
+	20% {
+		transform: rotateZ(10deg);
+	}
 
-  25% {
-    transform: rotateZ(-10deg);
-  }
+	25% {
+		transform: rotateZ(-10deg);
+	}
 
-  30% {
-    transform: rotateZ(5deg);
-  }
+	30% {
+		transform: rotateZ(5deg);
+	}
 
-  35% {
-    transform: rotateZ(-5deg);
-  }
+	35% {
+		transform: rotateZ(-5deg);
+	}
 
-  40% {
-    transform: rotateZ(3deg);
-  }
+	40% {
+		transform: rotateZ(3deg);
+	}
 
-  45% {
-    transform: rotateZ(-3deg);
-  }
+	45% {
+		transform: rotateZ(-3deg);
+	}
 
-  50% {
-    transform: rotateZ(1deg);
-  }
+	50% {
+		transform: rotateZ(1deg);
+	}
 
-  55%, 100% {
-    transform: rotateZ(0);
-  }
+	55%, 100% {
+		transform: rotateZ(0);
+	}
 }
 
 .animate-wiggle {
 	animation: wiggle 2s linear;
+}
+
+/** Rays */
+.rays-bg {
+	animation: transitionRays 2s infinite;
+
+	@apply tw-w-full tw-h-full tw-bg-cover tw-bg-center;
+}
+
+.rays-bg::before {
+	animation: fadeRays 2s infinite;
+
+	@apply tw-opacity-0;
+}
+
+@keyframes transitionRays {
+	0% {
+		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
+	}
+
+	50% {
+		background-image: url('/src/assets/images/my-kiva/rays/second.svg');
+	}
+
+	99% {
+		background-image: url('/src/assets/images/my-kiva/rays/third.svg');
+	}
+
+	100% {
+		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
+	}
+}
+
+@keyframes fadeRays {
+	0%, 99% {
+		@apply tw-opacity-full;
+	}
+
+	100%  {
+		@apply tw-opacity-0;
+	}
+}
+
+/** Shine */
+.shine, .second-shine {
+	width: 500px;
+	transition: opacity 0.3s ease;
+
+	@apply tw-absolute tw-w-full tw-h-full tw-opacity-0 tw-pointer-events-none tw--top-full tw--left-full;
+}
+
+.shine.animate {
+	animation: shineMove 1.2s ease forwards;
+
+	@apply tw-opacity-full;
+}
+
+.second-shine.animate {
+	animation: shineMove 1.2s ease forwards 0.05s;
+
+	@apply tw-opacity-full;
+}
+
+@keyframes shineMove {
+	0% {
+		@apply tw--top-full tw--left-full;
+	}
+
+	100% {
+		@apply tw-top-full tw-left-full;
+	}
 }
 </style>
