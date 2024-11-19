@@ -70,8 +70,8 @@ import teamNoImage from '#src/assets/images/team_s135.png';
 import teamGoalInfo from '#src/plugins/team-goal-mixin';
 import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
 import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
+import KvButton from '#kv-components/KvButton';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 export default {
 	name: 'TeamGoal',

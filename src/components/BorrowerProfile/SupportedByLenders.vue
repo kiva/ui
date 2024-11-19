@@ -22,7 +22,7 @@
 
 <script>
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-import KvUserAvatar from '@kiva/kv-components/dist/components/KvUserAvatar';
+import KvUserAvatar from '#kv-components/KvUserAvatar';
 
 export default {
 	name: 'SupportedByLenders',

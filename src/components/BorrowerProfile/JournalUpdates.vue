@@ -55,8 +55,8 @@
 
 <script>
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvButton from '#kv-components/KvButton';
 import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
 import UpdateDetails from './UpdateDetails';
 

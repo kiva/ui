@@ -69,7 +69,7 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
+import KvGrid from '#kv-components/KvGrid';
 import emailOpeningUrl from '#src/assets/images/kiva-classic-illustrations/email-opening.svg?url';
 import thumbsUpUrl from '#src/assets/images/kiva-classic-illustrations/thumbs-up.svg?url';
 

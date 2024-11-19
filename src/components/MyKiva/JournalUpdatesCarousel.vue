@@ -44,9 +44,9 @@
 </template>
 
 <script setup>
-import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
+import KvCarousel from '#kv-components/KvCarousel';
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import {
 	ref,

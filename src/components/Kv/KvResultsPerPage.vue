@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import KvSelect from '@kiva/kv-components/dist/components/KvSelect';
+import KvSelect from '#kv-components/KvSelect';
 
 export const defaultOptions = [15, 25, 50];
 

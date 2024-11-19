@@ -47,7 +47,7 @@ import {
 } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 import { defineAsyncComponent } from 'vue';
 
-const KvContentfulImg = defineAsyncComponent(() => import('@kiva/kv-components/dist/components/KvContentfulImg'));
+const KvContentfulImg = defineAsyncComponent(() => import('#kv-components/KvContentfulImg'));
 
 /**
 * Section Background

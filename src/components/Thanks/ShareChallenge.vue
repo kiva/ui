@@ -127,9 +127,9 @@ import { mdiLink } from '@mdi/js';
 import { getFullUrl } from '#src/util/urlUtils';
 import clipboardCopy from 'clipboard-copy';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'ShareChallenge',

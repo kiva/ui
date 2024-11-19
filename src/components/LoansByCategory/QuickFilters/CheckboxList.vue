@@ -31,8 +31,8 @@
 
 <script>
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvCheckbox from '#kv-components/KvCheckbox';
 
 export default {
 	name: 'CheckboxList',

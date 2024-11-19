@@ -40,8 +40,8 @@
 import { gql } from 'graphql-tag';
 import { sortByNameToDisplay } from '#src/util/loanSearch/filters/sortOptions';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
+import KvButton from '#kv-components/KvButton';
+import KvCheckbox from '#kv-components/KvCheckbox';
 
 export default {
 	name: 'SaveSearchItem',

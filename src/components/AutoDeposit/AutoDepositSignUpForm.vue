@@ -172,11 +172,11 @@ import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 
 import userIdQuery from '#src/graphql/query/userId.graphql';
 import { mdiPencil } from '@mdi/js';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvCheckbox from '@kiva/kv-components/dist/components/KvCheckbox';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvSelect from '@kiva/kv-components/dist/components/KvSelect';
-import KvTextInput from '@kiva/kv-components/dist/components/KvTextInput';
+import KvButton from '#kv-components/KvButton';
+import KvCheckbox from '#kv-components/KvCheckbox';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvSelect from '#kv-components/KvSelect';
+import KvTextInput from '#kv-components/KvTextInput';
 
 let frozenDropdownOptions;
 

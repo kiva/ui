@@ -57,7 +57,7 @@
 import { mdiGithub } from '@mdi/js';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'StyleGuide',

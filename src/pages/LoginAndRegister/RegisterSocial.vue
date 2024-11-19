@@ -167,7 +167,7 @@ import KvBaseInput from '#src/components/Kv/KvBaseInput';
 import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import ReCaptchaEnterprise from '#src/components/Forms/ReCaptchaEnterprise';
 import SystemPage from '#src/components/SystemFrame/SystemPage';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvButton from '#kv-components/KvButton';
 import strategicPartnerLoginInfoByPageIdQuery from '#src/graphql/query/strategicPartnerLoginInfoByPageId.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';

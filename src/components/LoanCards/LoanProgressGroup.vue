@@ -13,7 +13,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvProgressBar from '@kiva/kv-components/dist/components/KvProgressBar';
+import KvProgressBar from '#kv-components/KvProgressBar';
 
 export default {
 	name: 'LoanProgressGroup',

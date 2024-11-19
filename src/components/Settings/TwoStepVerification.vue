@@ -46,8 +46,8 @@ import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
 
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvLoadingPlaceholder from '@kiva/kv-components/dist/components/KvLoadingPlaceholder';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvButton from '#kv-components/KvButton';
 
 const pageQuery = gql`query mfaQuery {
 	my {

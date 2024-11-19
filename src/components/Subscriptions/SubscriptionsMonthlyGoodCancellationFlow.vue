@@ -177,8 +177,8 @@
 </template>
 
 <script>
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
+import KvButton from '#kv-components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
 
 export default {
 	name: 'SubscriptionsMonthlyGoodCancellationFlow',

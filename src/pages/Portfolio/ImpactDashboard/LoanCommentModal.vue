@@ -47,9 +47,9 @@
 import logFormatter from '#src/util/logFormatter';
 import { mdiPencilOutline } from '@mdi/js';
 import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
-import KvLightbox from '@kiva/kv-components/dist/components/KvLightbox';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'LoanCommentModal',

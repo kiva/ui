@@ -59,10 +59,10 @@ import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvContentfulImg from '@kiva/kv-components/dist/components/KvContentfulImg';
-import KvGrid from '@kiva/kv-components/dist/components/KvGrid';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 const contentfulContentQuery = gql`query instantDonationThanksContent {
 	contentful {

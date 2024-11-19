@@ -285,8 +285,8 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import AnimatedStars from '#src/components/Thanks/AnimatedStars';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const imageGlob = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true, query: '?url' });

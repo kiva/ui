@@ -80,8 +80,8 @@
 
 <script setup>
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import KvCarousel from '@kiva/kv-components/dist/components/KvCarousel';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
+import KvCarousel from '#kv-components/KvCarousel';
+import KvButton from '#kv-components/KvButton';
 import {
 	computed,
 	watch,

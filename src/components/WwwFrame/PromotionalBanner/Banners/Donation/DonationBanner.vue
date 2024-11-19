@@ -103,10 +103,10 @@
 import { mdiClose } from '@mdi/js';
 import numeral from 'numeral';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvPageContainer from '@kiva/kv-components/dist/components/KvPageContainer';
-import KvButton from '@kiva/kv-components/dist/components/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/dist/components/KvMaterialIcon';
-import KvContentfulImg from '@kiva/kv-components/dist/components/KvContentfulImg';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
 
 export default {
 	name: 'DonationBanner',
