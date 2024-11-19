@@ -1,3 +1,11 @@
+## [3.4.0-rc.3](https://github.com/kiva/ui/compare/v3.4.0-rc.2...v3.4.0-rc.3) (2024-11-19)
+
+### 🐛 Bugfixes
+
+* copy and style for no loans ([079a751](https://github.com/kiva/ui/commit/079a751001d9d0ea48c1fa508391b5a84c27d1ae))
+* donate link fixed on mykiva nav ([#5699](https://github.com/kiva/ui/issues/5699)) ([1a54df2](https://github.com/kiva/ui/commit/1a54df21f9f2901c197805d4ea9c500695d57155))
+* mykiva mobile loan card width fixed ([#5700](https://github.com/kiva/ui/issues/5700)) ([f19529d](https://github.com/kiva/ui/commit/f19529da8cb00af251f79716f3ad638edf3f3729))
+
 ## [3.4.0-rc.2](https://github.com/kiva/ui/compare/v3.4.0-rc.1...v3.4.0-rc.2) (2024-11-19)
 
 ### 🎉 New Features
