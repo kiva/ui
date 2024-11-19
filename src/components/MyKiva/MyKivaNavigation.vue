@@ -78,12 +78,18 @@
 						<li
 							v-for="setting in lendingOptions"
 							:key="setting.text"
-							class="tw-mt-1.5
-								hover:tw-translate-x-1 hover:lg:tw-translate-x-2 tw-duration-300 tw-delay-100"
+							:class="[
+								'tw-mt-1.5 tw-duration-300 tw-delay-100',
+								{ 'hover:tw-translate-x-1 hover:lg:tw-translate-x-2' :
+									!setting.isDonate || parseFloat(userBalance) }
+							]"
 						>
 							<component
 								:is="setting.isDonate && !parseFloat(userBalance) ? 'span' : 'router-link'"
-								class="tw-text-primary tw-font-medium"
+								:class="[
+									'tw-text-primary tw-font-medium',
+									{ 'tw-text-tertiary': setting.isDonate && !parseFloat(userBalance) }
+								]"
 								:to="returnLendingUrl(setting)"
 								v-kv-track-event="[
 									'SecondaryNav links',
