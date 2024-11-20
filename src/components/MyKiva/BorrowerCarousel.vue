@@ -8,7 +8,11 @@
 			/>
 		</template>
 		<template v-else>
-			<h2 v-html="title" class="tw-mb-3.5"></h2>
+			<h2
+				v-html="title"
+				class="tw-mb-3.5"
+				:class="{ 'tw-text-center': !loans.length }"
+			></h2>
 			<div :class="{'tw-flex tw-justify-center': !loans.length }">
 				<KvButton
 					v-kv-track-event="[
@@ -66,7 +70,7 @@
 				</template>
 				<template #tabPanels>
 					<KvTabPanel
-						v-for="(loan, index) in loans"
+						v-for="(loan, index) in filteredLoans"
 						:key="index"
 						:id="`${loan.id}`"
 					>
@@ -83,8 +87,12 @@
 					:embla-options="{ loop: false, align: 'center'}"
 					@change="onInteractCarousel"
 				>
-					<template v-for="(loan, index) in loans" #[`slide${index+1}`] :key="loan.id || index">
-						<BorrowerStatusCard :loan="loan" class="tw-h-full" />
+					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
+						<BorrowerStatusCard
+							:loan="loan" class="tw-h-full"
+							@toggle-what-is-next="openWhatIsNext = $event"
+							:open-what-is-next="openWhatIsNext"
+						/>
 					</template>
 				</KvCarousel>
 			</div>
@@ -94,7 +102,7 @@
 					href="/portfolio/loans" v-kv-track-event="[
 						'portfolio',
 						'click',
-						'see-all-borrowers'
+						'See all borrowers'
 					]"
 				>See all borrowers</a>
 			</div>
@@ -156,15 +164,12 @@ const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
 const tabs = ref(null);
 const windowWidth = ref(0);
+const openWhatIsNext = ref(false);
+const lastVisitedLoanIdx = ref(0);
 
 const hasActiveLoans = computed(() => {
 	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
 });
-
-const handleChange = event => {
-	emit('selected-loan', loans.value[event]);
-	carousel.value.goToSlide(event);
-};
 
 const getBorrowerName = loan => {
 	return loan?.name ?? '';
@@ -175,42 +180,55 @@ const getBorrowerHash = loan => {
 };
 
 const title = computed(() => {
+	if (!loans.value.length) {
+		return 'Change a life <u>today</u>!';
+	}
 	if (!hasActiveLoans.value) {
 		return `You changed <u>${totalLoans.value} lives</u>!`;
 	}
-	if (loans.value.length) {
-		if (totalLoans.value === 1) {
-			return 'You’re <u>changing a life</u> right now!';
-		}
-		return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
+
+	if (totalLoans.value === 1) {
+		return 'You’re <u>changing a life</u> right now!';
 	}
-	return 'Change a life <u>today</u>!';
+	return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
 });
 
 const btnCta = computed(() => {
-	if (!hasActiveLoans.value) {
-		return 'See previously supported borrowers';
+	if (!loans.value.length) {
+		return 'Make a loan';
 	}
-	return 'Make a loan';
+
+	return 'See previously supported borrowers';
 });
 
 const link = computed(() => {
-	if (!hasActiveLoans.value) {
-		return '/portfolio';
+	if (!loans.value.length) {
+		return '/lend-by-category';
 	}
-	return '/lend-by-category';
+
+	return '/portfolio/loans';
 });
 
 const btnEventLabel = computed(() => {
 	if (!hasActiveLoans.value) {
-		return 'see-previously-supported-borrowers';
+		return 'see-previously-supported-people';
 	}
-	return 'Make-a-loan-no-loans-state';
+	return 'Make a loan - no loans state';
 });
 
 const filteredLoans = computed(() => {
-	return loans.value.slice(0, 9);
+	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status)).slice(0, 9);
 });
+
+const handleChange = event => {
+	if (event < filteredLoans.value.length) {
+		emit('selected-loan', loans.value[event]);
+		carousel.value.goToSlide(event);
+		lastVisitedLoanIdx.value = event;
+	} else {
+		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
+	}
+};
 
 const singleSlideWidth = computed(() => {
 	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
@@ -241,9 +259,9 @@ const onInteractCarousel = interaction => {
 
 onMounted(() => {
 	if (!hasActiveLoans.value) {
-		$kvTrackEvent('portfolio', 'view', 'no-active-borrowers');
+		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
 	} else {
-		$kvTrackEvent('portfolio', 'view', 'active-borrowers', loans.value.length);
+		$kvTrackEvent('portfolio', 'view', 'Active borrowers', loans.value.length);
 	}
 
 	window.addEventListener('resize', throttledResize);

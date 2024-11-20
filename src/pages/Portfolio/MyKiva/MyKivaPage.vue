@@ -53,6 +53,7 @@
 						:loan="activeLoan"
 						:updates="loanUpdates"
 						:lender="lender"
+						:total-updates="totalUpdates"
 					/>
 				</div>
 			</section>
@@ -155,7 +156,7 @@ import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/co
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 import {
 	ref,
 	computed,
@@ -167,6 +168,7 @@ import {
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const kvAuth0 = inject('kvAuth0');
 
 const {
 	fetchAchievementData,
@@ -183,6 +185,7 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
+const totalUpdates = ref(0);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_JOURNEY);
@@ -252,6 +255,7 @@ const fetchLoanUpdates = loanId => {
 	apollo.query({ query: updatesQuery, variables: { loanId } })
 		.then(result => {
 			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
+			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
@@ -298,6 +302,46 @@ const saveMyKivaToUserPreferences = () => {
 	}
 };
 
+const badgesAchieved = computed(() => {
+	const completedBadgesArr = [];
+
+	badgeData.value.forEach(badge => {
+		if (badge.achievementData?.tiers?.length) {
+			const { tiers } = badge.achievementData;
+			tiers.forEach(tierObj => {
+				if (tierObj.completedDate) {
+					completedBadgesArr.push(badge);
+				}
+			});
+		}
+		if (badge.achievementData?.milestoneProgress?.length) {
+			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+			if (earnedAtDate) {
+				completedBadgesArr.push(badge);
+			}
+		}
+	});
+
+	return completedBadgesArr;
+});
+
+const scrollToTarget = target => {
+	const targetElement = document.getElementById(target);
+	if (targetElement) {
+		targetElement.scrollIntoView({ behavior: 'smooth' });
+	}
+};
+
+const checkGuestAchievementsToScroll = () => {
+	const lastLogin = kvAuth0.user?.exp;
+	const memberSince = lender.value?.memberSince;
+	if (isFirstLogin(lastLogin, memberSince)) {
+		const numberOfBadges = badgesAchieved.value.length;
+		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
+		scrollToTarget(sectionToScrollTo);
+	}
+};
+
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 
@@ -312,10 +356,8 @@ watch(isAchievementDataLoaded, () => {
 		nextTick(() => {
 			// Scroll to section once async data is loaded
 			const targetId = window?.location?.hash?.replace('#', '');
-			const targetElement = document?.getElementById(targetId);
-			if (targetElement) {
-				targetElement.scrollIntoView({ behavior: 'smooth' });
-			}
+			if (targetId) scrollToTarget(targetId);
+			checkGuestAchievementsToScroll();
 		});
 	}
 });

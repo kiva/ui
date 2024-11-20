@@ -3,10 +3,12 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { differenceInMinutes, fromUnixTime } from 'date-fns';
 
 export const THANKS_BADGES_EXP = 'thanks_badges';
 const MY_KIVA_EXP = 'my_kiva_page';
 const MY_KIVA_LOAN_LIMIT = 4;
+const FIRST_LOGIN_THRESHOLD = 5;
 
 /**
  * Determines whether the provided loan needs a footnote
@@ -89,4 +91,23 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, prefe
 		}
 	}
 	return false;
+};
+
+/*
+ * Determines whether is first login for the user
+ *
+ * @param lastLogin last login time from token access
+ * @param memberSince member since time from user data
+ * @returns Whether the user is logging in for the first time
+ */
+export const isFirstLogin = (lastLogin, memberSince) => {
+	const lastLoginDate = fromUnixTime(lastLogin);
+	lastLoginDate.setHours(lastLoginDate.getHours() - 1);
+
+	const minutesDiff = differenceInMinutes(
+		lastLoginDate,
+		new Date(memberSince),
+	);
+
+	return minutesDiff < FIRST_LOGIN_THRESHOLD;
 };

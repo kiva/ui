@@ -14,7 +14,7 @@
 				<JournalUpdateCard
 					:loan="loan"
 					:update="update"
-					:update-number="`${index + 1}`"
+					:update-number="`${totalUpdates - index}`"
 					@read-more-clicked="openLightbox"
 					@share-loan-clicked="shareLoanClicked"
 				/>
@@ -54,6 +54,7 @@ import {
 	defineProps,
 	inject,
 	computed,
+	watch,
 } from 'vue';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -71,9 +72,13 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	totalUpdates: {
+		type: Number,
+		default: 0,
+	},
 });
 
-const { loan } = toRefs(props);
+const { loan, updates } = toRefs(props);
 
 const isLightboxVisible = ref(false);
 const clickedUpdate = ref(0);
@@ -112,6 +117,12 @@ const shareLoanClicked = () => {
 const interactCarousel = () => {
 	$kvTrackEvent('portfolio', 'click', 'update-carousel');
 };
+
+watch(() => updates, () => {
+	if (updates.value.length > 0) {
+		$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+	}
+});
 </script>
 
 <style lang="postcss" scoped>

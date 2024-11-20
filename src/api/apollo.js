@@ -53,6 +53,7 @@ export default function createApolloClient({
 				uri,
 				fetch,
 				apolloBatching: appConfig?.apolloBatching ?? true,
+				stellateDebugHeaders: appConfig?.stellateDebugHeaders,
 				stellateGraphqlUri: appConfig?.stellateGraphqlUri,
 				stellateCachedOperations: appConfig?.stellateCachedOperations,
 			}),

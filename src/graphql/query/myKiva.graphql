@@ -2,7 +2,7 @@ query myKivaQuery {
   my {
     id
     isBorrower
-    loans(limit: 10) {
+    loans(limit: 50) {
       totalCount
       values {
         id
@@ -53,6 +53,7 @@ query myKivaQuery {
         id
         url
       }
+      memberSince
     }
     userAccount {
       id

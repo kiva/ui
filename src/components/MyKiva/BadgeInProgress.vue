@@ -62,7 +62,7 @@
 				<KvClassicLoanCardContainer
 					:loan-id="loanId"
 					:show-tags="true"
-					class="tw-h-full"
+					class="tw-h-full tw-w-full"
 				/>
 			</template>
 		</div>

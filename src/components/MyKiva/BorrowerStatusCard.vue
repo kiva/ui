@@ -37,7 +37,7 @@
 							class="tw-text-action"
 							:href="`/lend/${loan.id}`"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'view-details', borrowerName, loan.id]"
+							v-kv-track-event="['portfolio', 'click', 'View borrower details', borrowerName, loan.id]"
 						>
 							View details
 						</a>
@@ -98,6 +98,7 @@ import {
 	toRefs,
 	defineProps,
 	inject,
+	watch,
 } from 'vue';
 import {
 	FUNDRAISING,
@@ -111,10 +112,15 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	openWhatIsNext: {
+		type: Boolean,
+		required: false,
+	}
 });
 
-const { loan } = toRefs(props);
-const open = ref(false);
+const { loan, openWhatIsNext } = toRefs(props);
+const open = ref(openWhatIsNext.value);
+const emit = defineEmits(['toggle-what-is-next']);
 
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
@@ -219,10 +225,14 @@ const weeksToRepay = computed(() => {
 
 const toggleWhatIsNext = () => {
 	if (!open.value) {
-		$kvTrackEvent('portfolio', 'click', 'what-is-next', borrowerName.value, loan.value.id);
+		$kvTrackEvent('portfolio', 'click', 'What’s next?', borrowerName.value, loan.value.id);
 	}
-	open.value = !open.value;
+	emit('toggle-what-is-next', !open.value);
 };
+
+watch(() => openWhatIsNext.value, () => {
+	open.value = openWhatIsNext.value;
+});
 </script>
 
 <style lang="postcss" scoped>
