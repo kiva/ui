@@ -28,7 +28,7 @@
 					</BadgeContainer>
 					<div>
 						<p class="tw-font-medium">
-							{{ tierData.tierName }}
+							{{ tileTitle }}
 						</p>
 						<p class="tw-text-small -tw-mt-0.5">
 							{{ tierCaption }}
@@ -131,6 +131,12 @@ const selectedTier = computed(() => {
 });
 
 const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
+
+const tileTitle = computed(() => {
+	const tierLevel = selectedTier?.value?.tier?.level ?? '';
+	return `${badgeName.value} (level ${tierLevel})`;
+});
+
 const tierCaption = computed(() => {
 	const progress = selectedTier?.value?.totalProgressToAchievement ?? '';
 	const target = selectedTier?.value?.tier?.target ?? '';
