@@ -104,11 +104,14 @@ const selectedTier = computed(() => {
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
+		const tierBadgeData = getTierBadgeDataByLevel(badge, tier.level);
+		const levelName = tierBadgeData?.contentfulData?.levelName ?? '';
 		if (tier) {
 			tiers.push({
 				badge,
 				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
 				tier,
+				levelName,
 			});
 		}
 	});
@@ -133,7 +136,7 @@ const selectedTier = computed(() => {
 const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
 
 const tileTitle = computed(() => {
-	const tierLevel = selectedTier?.value?.tier?.level ?? '';
+	const tierLevel = selectedTier?.value?.levelName ?? '';
 	return `${badgeName.value} (level ${tierLevel})`;
 });
 
