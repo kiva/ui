@@ -1035,7 +1035,8 @@ export default {
 <style lang="postcss" scoped>
 .header__button {
 	@apply tw-items-center tw-flex-shrink-0;
-	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
+	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight;
+	@apply tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
 
