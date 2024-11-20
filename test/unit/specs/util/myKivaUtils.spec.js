@@ -1,5 +1,14 @@
+import {
+	hasLoanFunFactFootnote,
+	isFirstLogin,
+	getIsMyKivaEnabled,
+	fetchPostCheckoutAchievements,
+} from '#src/util/myKivaUtils';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import logReadQueryError from '#src/util/logReadQueryError';
 import { getUnixTime } from 'date-fns';
-import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
+
+jest.mock('#src/util/logReadQueryError');
 
 describe('myKivaUtils.js', () => {
 	describe('hasLoanFunFactFootnote', () => {
@@ -87,6 +96,105 @@ describe('myKivaUtils.js', () => {
 			const result = hasLoanFunFactFootnote(loan);
 
 			expect(result).toBe(false);
+		});
+	});
+
+	describe('fetchPostCheckoutAchievements', () => {
+		let apolloMock;
+
+		beforeEach(() => {
+			apolloMock = {
+				query: jest.fn()
+			};
+		});
+
+		it('should call apollo.query with the correct parameters', async () => {
+			const loanIds = [1, 2, 3];
+			await fetchPostCheckoutAchievements(apolloMock, loanIds);
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: postCheckoutAchievementsQuery,
+				variables: { loanIds }
+			});
+		});
+
+		it('should call logReadQueryError on error', async () => {
+			const loanIds = [1, 2, 3];
+			const error = new Error('Test error');
+			apolloMock.query.mockRejectedValueOnce(error);
+
+			await fetchPostCheckoutAchievements(apolloMock, loanIds);
+
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'myKivaUtils postCheckoutAchievementsQuery');
+		});
+	});
+
+	describe('getIsMyKivaEnabled', () => {
+		let apolloMock;
+		let $kvTrackEventMock;
+		let generalSettingsMock;
+		let preferencesMock;
+
+		beforeEach(() => {
+			apolloMock = { readFragment: jest.fn() };
+			$kvTrackEventMock = jest.fn();
+			generalSettingsMock = { 'myKivaEnabled.value': true };
+			preferencesMock = {};
+		});
+
+		it('should return false if myKivaFeatureEnabled is false', () => {
+			generalSettingsMock['myKivaEnabled.value'] = false;
+			apolloMock.readFragment
+				.mockReturnValueOnce({ version: 'a' })
+				.mockReturnValueOnce({ version: 'b' });
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return false if loanTotal is greater than or equal to MY_KIVA_LOAN_LIMIT', () => {
+			apolloMock.readFragment
+				.mockReturnValueOnce({ version: 'a' })
+				.mockReturnValueOnce({ version: 'b' });
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return false if no experiments are enabled', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return true if experiments are enabled', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+
+			expect(result).toBe(true);
+		});
+
+		it('should return true if hasSeenMyKiva is true', () => {
+			preferencesMock = { myKivaPageExp: 1 };
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+
+			expect(result).toBe(true);
+		});
+
+		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
+			apolloMock.readFragment
+				.mockReturnValueOnce({ version: 'a' })
+				.mockReturnValueOnce({ version: 'b' });
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
+
+			expect(result).toBe(true);
 		});
 	});
 

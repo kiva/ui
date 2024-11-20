@@ -69,10 +69,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
-	optedIn: {
-		type: Boolean,
-		default: false
-	},
 	isGuest: {
 		type: Boolean,
 		default: false,
@@ -91,9 +87,6 @@ const receiveNews = ref(false);
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const title = computed(() => {
-	if (props.optedIn) {
-		return 'Thank you! You reached a milestone';
-	}
 	if (props.loans.length === 1) {
 		return `Thank you! You and ${props.loans[0]?.name} are in this together now.`;
 	}

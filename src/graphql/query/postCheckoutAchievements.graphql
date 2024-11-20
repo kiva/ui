@@ -1,0 +1,10 @@
+query PostCheckoutAchievements($loanIds: [Int!]!) {
+	postCheckoutAchievements(loanIds: $loanIds) {
+		overallProgress {
+			id
+			achievementId
+			contributingLoanIds
+			postCheckoutTier
+		}
+	}
+}

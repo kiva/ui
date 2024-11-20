@@ -21,6 +21,17 @@
 				:is-guest="isGuest"
 			/>
 		</template>
+		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
+			<thanks-badges
+				:is-guest="isGuest"
+				:is-opted-in="optedIn"
+				:lender="lender"
+				:loans="loans"
+				:receipt="receipt"
+				:badges-achieved="[]"
+				:router="$router"
+			/>
+		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
 			<what-is-next-template
 				:selected-loan="selectedLoan"
@@ -171,6 +182,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import ThanksLayoutV2 from '#src/components/Thanks/ThanksLayoutV2';
 import ThanksPageCommentAndShare from '#src/components/Thanks/ThanksPageCommentAndShare';
 import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
+import ThanksBadges from '#src/components/Thanks/MyKiva/ThanksBadges';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
 import { processPageContentFlat } from '#src/util/contentfulUtils';
@@ -181,21 +193,23 @@ import { joinArray } from '#src/util/joinArray';
 import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
 import ShareChallenge from '#src/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
 import KvButton from '@kiva/kv-components/vue/KvButton';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
+import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, THANKS_BADGES_EXP } from '#src/util/myKivaUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const THANKS_BADGES_EXP = 'thanks_badges';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
 const BADGES_VIEW = 'badges';
+const MY_KIVA_BADGES_VIEW = 'my_kiva_badges';
 const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
 const V2_VIEW = 'v2';
 const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
@@ -221,6 +235,8 @@ const getTeamId = loans => {
 	return teamsIds?.[0] ?? null;
 };
 
+const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
+
 export default {
 	name: 'ThanksPage',
 	components: {
@@ -238,6 +254,7 @@ export default {
 		ShareChallenge,
 		WhatIsNextTemplate,
 		BadgesCustomization,
+		ThanksBadges,
 	},
 	inject: ['apollo', 'cookieStore'],
 	head() {
@@ -266,10 +283,13 @@ export default {
 			badgesCustomExpEnabled: false,
 			DONATION_ONLY_VIEW,
 			BADGES_VIEW,
+			MY_KIVA_BADGES_VIEW,
 			MARKETING_OPT_IN_VIEW,
 			V2_VIEW,
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
+			myKivaEnabled: false,
+			badgesAchieved: [],
 		};
 	},
 	apollo: {
@@ -306,9 +326,12 @@ export default {
 				};
 				const limit = 1;
 
+				const myKivaFeatureEnabled = readBoolSetting(data?.general, 'myKivaEnabled.value');
+
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					teamId ? fetchGoals(client, limit, filters) : null,
+					myKivaFeatureEnabled ? fetchPostCheckoutAchievements(client, getLoanIds(loans)) : null,
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -436,6 +459,10 @@ export default {
 				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
 				|| this.monthlyDonationAmount?.length) {
 				return DONATION_ONLY_VIEW;
+			}
+			// Show the MyKiva view if qualifications are met
+			if (this.myKivaEnabled) {
+				return MY_KIVA_BADGES_VIEW;
 			}
 			// Show the badges view if badges experiment is enabled
 			if (this.badgesCustomExpEnabled) {
@@ -596,9 +623,37 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+
+		// MyKiva Badges Experiment
+		if (!this.landedOnUSLoan && !this.printableKivaCards.length) {
+			this.myKivaEnabled = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				data?.general ?? {},
+				data?.my?.userPreferences?.preferences ?? null,
+				totalLoans
+			);
+
+			if (this.myKivaEnabled) {
+				try {
+					const response = this.apollo.readQuery({
+						query: postCheckoutAchievementsQuery,
+						variables: { loanIds: getLoanIds(this.loans) },
+					});
+					this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
+					// MyKiva view only shown if user is not opted-in or checkout achieved badges
+					this.myKivaEnabled = !this.optedIn || this.badgesAchieved.length > 0;
+				} catch (e) {
+					logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
+				}
+			}
+		}
+
 		// Thanks Badges Experiment
 		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
-		if (enableExperiment) {
+		// Show current TY badge page if MyKiva feature is not enabled
+		const myKivaFeatureEnabled = readBoolSetting(data, 'general.myKivaEnabled.value');
+		if (enableExperiment && !myKivaFeatureEnabled) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,

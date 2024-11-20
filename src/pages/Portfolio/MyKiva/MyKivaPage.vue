@@ -139,7 +139,6 @@
 
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -166,8 +165,6 @@ import {
 	watch,
 	nextTick,
 } from 'vue';
-
-const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -346,14 +343,6 @@ const checkGuestAchievementsToScroll = () => {
 };
 
 onMounted(async () => {
-	trackExperimentVersion(
-		apollo,
-		$kvTrackEvent,
-		'event-tracking',
-		MY_KIVA_EXP_KEY,
-		'EXP-MP-623-Sept2024'
-	);
-
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 
 	await fetchMyKivaData();
