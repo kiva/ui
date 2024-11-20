@@ -104,9 +104,9 @@ const selectedTier = computed(() => {
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
-		const tierBadgeData = getTierBadgeDataByLevel(badge, tier.level);
-		const levelName = tierBadgeData?.contentfulData?.levelName ?? '';
 		if (tier) {
+			const tierBadgeData = getTierBadgeDataByLevel(badge, tier.level);
+			const levelName = tierBadgeData?.contentfulData?.levelName ?? '';
 			tiers.push({
 				badge,
 				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
