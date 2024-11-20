@@ -54,6 +54,7 @@
 						:updates="loanUpdates"
 						:lender="lender"
 						:total-updates="totalUpdates"
+						@load-more-updates="loadMoreUpdates"
 					/>
 				</div>
 			</section>
@@ -196,6 +197,7 @@ const tier = ref(null);
 const isEarnedSectionModal = ref(false);
 const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
+const updatesOffset = ref(0);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -255,7 +257,7 @@ const handleBackToJourney = () => {
 };
 
 const fetchLoanUpdates = loanId => {
-	apollo.query({ query: updatesQuery, variables: { loanId } })
+	apollo.query({ query: updatesQuery, variables: { loanId, limit: 3, offset: updatesOffset.value } })
 		.then(result => {
 			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
@@ -264,9 +266,15 @@ const fetchLoanUpdates = loanId => {
 		});
 };
 
+const loadMoreUpdates = () => {
+	updatesOffset.value += 1;
+	fetchLoanUpdates(activeLoan.value.id);
+};
+
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
 
 const handleSelectedLoan = loan => {
+	updatesOffset.value = 0;
 	activeLoan.value = loan;
 	fetchLoanUpdates(activeLoan.value.id);
 };

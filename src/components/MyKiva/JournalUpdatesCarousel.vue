@@ -1,25 +1,39 @@
 <template>
-	<div v-if="updates.length > 0" class="tw-my-3">
-		<h3 class="tw-my-2">
-			Updates
-		</h3>
-		<KvCarousel
-			class="tw-w-full updates-carousel md:tw-overflow-visible"
-			:multiple-slides-visible="true"
-			slides-to-scroll="visible"
-			:embla-options="{ loop: false }"
-			@interact-carousel="interactCarousel"
+	<div v-if="updates.length > 0" class="tw-my-3 tw-flex tw-items-center tw-gap-3">
+		<div>
+			<h3 class="tw-my-2">
+				Updates
+			</h3>
+			<KvCarousel
+				class="tw-w-full updates-carousel md:tw-overflow-visible"
+				:multiple-slides-visible="true"
+				slides-to-scroll="visible"
+				:embla-options="{ loop: false }"
+				@interact-carousel="interactCarousel"
+			>
+				<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
+					<JournalUpdateCard
+						:loan="loan"
+						:update="update"
+						:update-number="`${totalUpdates - index}`"
+						@read-more-clicked="openLightbox"
+						@share-loan-clicked="shareLoanClicked"
+					/>
+				</template>
+			</KvCarousel>
+		</div>
+		<div
+			v-if="showLoadMore"
+			class="tw-pr-3"
 		>
-			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
-				<JournalUpdateCard
-					:loan="loan"
-					:update="update"
-					:update-number="`${totalUpdates - index}`"
-					@read-more-clicked="openLightbox"
-					@share-loan-clicked="shareLoanClicked"
-				/>
-			</template>
-		</KvCarousel>
+			<kv-button
+				class="tw-mt-2"
+				variant="secondary"
+				@click="loadMoreUpdates"
+			>
+				Load more<br>updates
+			</kv-button>
+		</div>
 		<KvLightbox
 			:visible="isLightboxVisible"
 			title=""
@@ -48,6 +62,7 @@ import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard';
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import KvButton from '@kiva/kv-components/vue/KvButton';
 import {
 	ref,
 	toRefs,
@@ -78,7 +93,9 @@ const props = defineProps({
 	},
 });
 
-const { loan, updates } = toRefs(props);
+const { loan, updates, totalUpdates } = toRefs(props);
+
+const emit = defineEmits(['load-more-updates']);
 
 const isLightboxVisible = ref(false);
 const clickedUpdate = ref(0);
@@ -95,6 +112,8 @@ const shareCampaign = computed(() => {
 const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loan.value?.lenders?.numLenders ?? 0);
+
+const showLoadMore = computed(() => updates.value?.length < totalUpdates.value);
 
 const openLightbox = updateId => {
 	clickedUpdate.value = updateId;
@@ -116,6 +135,11 @@ const shareLoanClicked = () => {
 
 const interactCarousel = () => {
 	$kvTrackEvent('portfolio', 'click', 'update-carousel');
+};
+
+const loadMoreUpdates = () => {
+	$kvTrackEvent('portfolio', 'click', 'borrower-update-load-more');
+	emit('load-more-updates');
 };
 
 watch(() => updates, () => {
