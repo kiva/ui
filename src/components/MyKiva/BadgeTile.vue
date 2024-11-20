@@ -28,7 +28,7 @@
 					</BadgeContainer>
 					<div>
 						<p class="tw-font-medium">
-							{{ tierData.tierName }}
+							{{ tileTitle }}
 						</p>
 						<p class="tw-text-small -tw-mt-0.5">
 							{{ tierCaption }}
@@ -104,11 +104,14 @@ const selectedTier = computed(() => {
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
+		const tierBadgeData = getTierBadgeDataByLevel(badge, tier.level);
+		const levelName = tierBadgeData?.contentfulData?.levelName ?? '';
 		if (tier) {
 			tiers.push({
 				badge,
 				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
 				tier,
+				levelName,
 			});
 		}
 	});
@@ -131,6 +134,12 @@ const selectedTier = computed(() => {
 });
 
 const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
+
+const tileTitle = computed(() => {
+	const tierLevel = selectedTier?.value?.levelName ?? '';
+	return `${badgeName.value} (level ${tierLevel})`;
+});
+
 const tierCaption = computed(() => {
 	const progress = selectedTier?.value?.totalProgressToAchievement ?? '';
 	const target = selectedTier?.value?.tier?.target ?? '';
