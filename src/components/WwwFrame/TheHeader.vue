@@ -350,7 +350,7 @@
 									to="/basket"
 									v-kv-track-event="['TopNav','click-Basket']"
 									data-testid="header-basket"
-									class="tw-flex tw-justify-center tw-items-center"
+									class="tw-flex tw-justify-center tw-items-center tw-z-5"
 								>
 									<div class="tw-relative tw-flex tw-items-center">
 										<kv-user-avatar
@@ -1089,7 +1089,7 @@ export default {
 
 .bubble-count {
 	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-white
-		tw-text-center tw-text-small tw-bg-brand tw-z-5 tw-mr-0.5 md:tw-mr-1;
+		tw-text-center tw-text-small tw-bg-brand tw-z-3 tw-mr-0.5 md:tw-mr-1 tw-cursor-pointer;
 }
 
 .user-avatar :deep(img),
