@@ -18,6 +18,12 @@ export default merge(base, devVm, {
 		gaId: 'UA-11686022-7', // dev-vm property
 		enableSentry: false,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
+		// apolloQueryFetchLogging: process.env.APOLLO_QUERY_FETCH_LOGGING || true,
+		// Testing values for stellate, uncomment and adjust as needed
+		// stellateDebugHeaders: process.env.STELLATE_DEBUG_HEADERS || true,
+		// stellateGraphqlUri: process.env.STELLATE_GRAPHQL_URI || 'https://kiva-staging.stellate.sh',
+		// eslint-disable-next-line max-len
+		// stellateCachedOperations: process.env.STELLATE_CACHED_OPERATIONS || 'configSetting,experimentIds,experimentSetting',
 		auth0: {
 			loginRedirectUrls: {
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.development.kiva.org/authenticate?authLevel=recent',

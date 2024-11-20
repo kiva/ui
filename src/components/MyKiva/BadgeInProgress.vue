@@ -3,7 +3,11 @@
 		<div
 			class="tw-pt-1 tw-pb-1.5 tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-justify-left tw-gap-3"
 		>
-			<BadgeContainer :status="BADGE_IN_PROGRESS" :shape="getBadgeShape()" class="tw-z-1 !tw-cursor-default">
+			<BadgeContainer
+				:status="BADGE_IN_PROGRESS"
+				:shape="getBadgeShape(badge.id)"
+				class="tw-z-1 !tw-cursor-default"
+			>
 				<img
 					:src="tierBadgeData.contentfulData.imageUrl"
 					alt="Badge"
@@ -17,12 +21,12 @@
 		</div>
 		<KvCarousel
 			:key="`${badge.id}-carousel-${isLoading}-${loanDisplayCount}`"
-			class="kv-carousel tw-w-full md:tw-block tw-hidden"
-			:embla-options="{ loop: false }"
+			class="kv-carousel tw-w-full md:tw-block tw-hidden tw-px-1"
+			:embla-options="{ loop: false, startIndex: carouselIndex }"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
-			@interact-carousel="onInteractCarousel"
+			@change="onInteractCarousel"
 		>
 			<template
 				v-for="(loanId, index) in augmentedLoanIds"
@@ -33,7 +37,6 @@
 					:loan-id="loanId"
 					:show-tags="true"
 					:use-full-width="true"
-					:show-view-loan="true"
 					class="tw-h-full"
 				/>
 			</template>
@@ -59,8 +62,7 @@
 				<KvClassicLoanCardContainer
 					:loan-id="loanId"
 					:show-tags="true"
-					:show-view-loan="true"
-					class="tw-h-full"
+					class="tw-h-full tw-w-full"
 				/>
 			</template>
 		</div>
@@ -86,7 +88,7 @@ import {
 	ref,
 	inject,
 } from 'vue';
-import useBadgeModal, { BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { BADGE_IN_PROGRESS, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 import BadgeContainer from './BadgeContainer';
@@ -106,7 +108,6 @@ const apollo = inject('apollo');
 const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getBadgeShape } = useBadgeModal(props.badge);
 const {
 	fetchLoanIdData,
 	badgeLoanIdData,
@@ -117,6 +118,7 @@ const {
 const isLoading = ref(true);
 const loanIds = ref();
 const loadMoreClicked = ref(false);
+const carouselIndex = ref(0);
 
 const loanDisplayCount = computed(() => (loadMoreClicked.value ? 6 : 3));
 const tierBadgeData = computed(() => getTierBadgeDataByLevel(props.badge, props.tier.level));
@@ -166,6 +168,7 @@ const onLoadMore = () => {
 		);
 
 		loadMoreClicked.value = true;
+		carouselIndex.value = 1;
 	} else {
 		$kvTrackEvent(
 			'portfolio',
@@ -180,6 +183,7 @@ const onLoadMore = () => {
 };
 
 watch(() => props.badge, () => {
+	carouselIndex.value = 0;
 	isLoading.value = true;
 	loanIds.value = [];
 	loadMoreClicked.value = false;

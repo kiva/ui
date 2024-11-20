@@ -1,5 +1,21 @@
 <template>
-	<KvLightbox :visible="show" :title="title" @lightbox-closed="closeLightbox">
+	<KvLightbox
+		:class="{ 'badge-modal': !isJourneyActive && !isEarnedSection, 'wide-modal': state === STATE_IN_PROGRESS }"
+		:visible="show"
+		:title="title"
+		@lightbox-closed="closeLightbox"
+	>
+		<template v-if="!isJourneyActive && !isEarnedSection" #header>
+			<div class="tw-flex tw-gap-0.5 tw-items-center tw-cursor-pointer" @click="backToJourney">
+				<kv-material-icon
+					class="tw-w-2.5 tw-h-2.5"
+					:icon="mdiArrowLeft"
+				/>
+				<p class="tw-font-medium">
+					Back
+				</p>
+			</div>
+		</template>
 		<component
 			:is="contentComponent"
 			:key="badge.id"
@@ -14,14 +30,41 @@
 
 <script setup>
 import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import { defineProps, defineAsyncComponent, computed } from 'vue';
+import {
+	defineProps,
+	defineAsyncComponent,
+	computed,
+	defineComponent,
+	h,
+} from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { mdiArrowLeft } from '@mdi/js';
+import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
 
-const BadgeModalContentJourney = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeModalContentJourney'));
-const BadgeInProgress = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeInProgress'));
-const BadgeCompleted = defineAsyncComponent(() => import('#src/components/MyKiva/BadgeCompleted'));
+const ModalLoader = defineComponent(() => {
+	return () => {
+		return h(KvLoadingPlaceholder, { style: 'height: 200px; width: 100%; min-width: 300px' });
+	};
+});
 
-const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked']);
+const BadgeModalContentJourney = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeModalContentJourney'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
+const BadgeInProgress = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeInProgress'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
+const BadgeCompleted = defineAsyncComponent({
+	loader: () => import('#src/components/MyKiva/BadgeCompleted'),
+	loadingComponent: ModalLoader,
+	delay: 100,
+});
+
+const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked', 'back-to-journey']);
 
 const props = defineProps({
 	show: {
@@ -58,8 +101,16 @@ const handleBadgeLevelClicked = e => {
 	emit('badge-level-clicked', e);
 };
 
+const backToJourney = () => {
+	emit('back-to-journey');
+};
+
+const isJourneyActive = computed(() => {
+	return props.state === STATE_JOURNEY;
+});
+
 const title = computed(() => {
-	if (props.state === STATE_JOURNEY) {
+	if (isJourneyActive.value) {
 		return props.badge?.challengeName ?? '';
 	}
 	return '';
@@ -73,3 +124,17 @@ const contentComponent = computed(() => {
 	}
 });
 </script>
+
+<style lang="postcss" scoped>
+.wide-modal :deep([data-test*=lightbox]) {
+	max-width: 67rem !important;
+}
+
+.badge-modal :deep([data-test*=lightbox]) > div.tw-flex {
+	@apply md:!tw-pt-2.5 md:tw-pb-2.5 tw-pb-0;
+}
+
+.badge-modal :deep([data-test*=lightbox]) > div.tw-flex > button {
+	@apply !tw-h-auto;
+}
+</style>

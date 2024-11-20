@@ -224,7 +224,7 @@
 							</li>
 							<li>
 								<router-link
-									to="/gifts"
+									to="/gifts-that-give-back"
 									v-kv-track-event="['Footer', 'click-Explore-Gifts']"
 									class="tw-text-small"
 								>
@@ -512,7 +512,7 @@
 								</li>
 								<li>
 									<router-link
-										to="/gifts"
+										to="/gifts-that-give-back"
 										v-kv-track-event="['Footer', 'click-Explore-Gifts']"
 										class="tw-text-small"
 									>

@@ -11,6 +11,7 @@ import useBadgeData, {
 	REFUGEE_EQUALITY_FILTER,
 	BASIC_NEEDS_FILTER,
 } from '#src/composables/useBadgeData';
+import { defaultBadges } from '#src/util/achievementUtils';
 import {
 	achievementData,
 	contentfulData,
@@ -374,6 +375,131 @@ describe('useBadgeData.js', () => {
 			expect(result.achievementData.tiers[4].level).toBe(5);
 			expect(result.achievementData.tiers[5].level).toBe(6);
 			expect(result.achievementData.tiers[6].level).toBe(7);
+		});
+	});
+
+	describe('isBadgeKeyValid', () => {
+		it('should return true for valid women badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[0]}`)).toBe(true);
+		});
+		it('should return true for valid us economic equality badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[1]}`)).toBe(true);
+		});
+		it('should return true for valid climate action badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[2]}`)).toBe(true);
+		});
+		it('should return true for valid refugee equality badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[3]}`)).toBe(true);
+		});
+		it('should return true for valid basic needs badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid(`social_share_badge_${defaultBadges[4]}`)).toBe(true);
+		});
+
+		it('should return false for invalid badge key', () => {
+			const { isBadgeKeyValid } = useBadgeData();
+			expect(isBadgeKeyValid('invalid-key')).toBe(false);
+		});
+	});
+
+	describe('getLastCompletedBadgeLevelData', () => {
+		it('should return the last completed badge level data when milestoneProgress is available', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+			const badge = {
+				achievementData: {
+					milestoneProgress: [
+						{ earnedAtDate: '2024-10-22T18:49:21Z' }
+					]
+				},
+				contentfulData: [
+					{ challengeName: 'Basic needs' }
+				]
+			};
+
+			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[0],
+				levelName: 'Basic needs'
+			});
+		});
+
+		it('should return the last completed badge level data when tiers are available', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+			const badge = {
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-23T18:49:21Z' }
+					]
+				},
+				contentfulData: [
+					{ challengeName: 'Basic needs', levelName: '1' },
+					{ challengeName: 'Basic needs', levelName: '2' }
+				]
+			};
+
+			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[0],
+				achievementData: badge.achievementData.tiers[0],
+				levelName: 'Basic needs 1'
+			});
+		});
+
+		it('should return an empty object when no milestoneProgress or tiers are available', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+			const badge = {
+				achievementData: {},
+				contentfulData: []
+			};
+
+			expect(getLastCompletedBadgeLevelData(badge)).toEqual({});
+		});
+	});
+
+	describe('getHighestPriorityDisplayBadge', () => {
+		it('should return the highest priority badge based on predefined order', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [
+				{ id: ID_BASIC_NEEDS, level: 1 },
+				{ id: ID_CLIMATE_ACTION, level: 1 },
+				{ id: ID_WOMENS_EQUALITY, level: 1 }
+			];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_WOMENS_EQUALITY, level: 1 });
+		});
+
+		it('should return an empty object if no badges are provided', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({});
+		});
+
+		it('should return the highest priority badge even if levels are undefined', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [
+				{ id: ID_BASIC_NEEDS },
+				{ id: ID_CLIMATE_ACTION },
+				{ id: ID_WOMENS_EQUALITY }
+			];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_WOMENS_EQUALITY });
+		});
+
+		it('should return the highest priority badge based on level', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [
+				{ id: ID_BASIC_NEEDS, level: 1 },
+				{ id: ID_CLIMATE_ACTION, level: 3 },
+				{ id: ID_WOMENS_EQUALITY, level: 2 }
+			];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_CLIMATE_ACTION, level: 3 });
 		});
 	});
 });

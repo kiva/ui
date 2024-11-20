@@ -24,17 +24,20 @@ query myLendingStats {
 				name
 			}
 			lentTo {
-        		borrowers {
-          			totalCount
-        		}
-      		}
+				borrowers {
+					totalCount
+				}
+				countries {
+					totalCount
+				}
+			}
 		}
 		userStats {
-      		amount_of_loans
-    	}
+			amount_of_loans
+		}
 		statsPerCountry {
-      		totalCount
-    	}
+			totalCount
+		}
 	}
 	lend {
 		countryFacets {

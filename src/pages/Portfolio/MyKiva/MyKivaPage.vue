@@ -1,12 +1,14 @@
 <template>
-	<www-page main-class="tw-bg-secondary tw-overflow-hidden" class="tw-relative">
+	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
 		<MyKivaNavigation
 			:visible="showNavigation"
+			:user-info="userInfo"
 			:user-balance="userBalance"
 			@navigation-closed="showNavigation = false"
 		/>
 		<MyKivaHero
 			:user-info="userInfo"
+			:is-loading="isLoading"
 			@show-navigation="handleShowNavigation"
 		/>
 		<MyKivaProfile
@@ -15,6 +17,13 @@
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
+			<section class="tw-pt-2">
+				<BadgeTile
+					:user-info="userInfo"
+					:badges-data="badgeData"
+					@badge-clicked="handleBadgeTileClicked"
+				/>
+			</section>
 			<section class="tw-py-2">
 				<div
 					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
@@ -36,6 +45,7 @@
 				>
 					<MyKivaBorrowerCarousel
 						:loans="loans"
+						:total-loans="totalLoans"
 						:is-loading="isLoading"
 						@selected-loan="handleSelectedLoan"
 					/>
@@ -43,11 +53,12 @@
 						:loan="activeLoan"
 						:updates="loanUpdates"
 						:lender="lender"
+						:total-updates="totalUpdates"
 					/>
 				</div>
 			</section>
 		</MyKivaContainer>
-		<template v-if="badgeAchievementData">
+		<template v-if="isAchievementDataLoaded">
 			<section class="tw-my-2">
 				<MyKivaStats :user-achievements="badgeAchievementData" />
 				<MyKivaContainer>
@@ -84,7 +95,7 @@
 							BADGES AND ACHIEVEMENTS
 						</span>
 					</div>
-					<div class="tw-mt-3">
+					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">
 						<h3
 							class="tw-text-center tw-mb-2"
 						>
@@ -105,15 +116,24 @@
 							:is-earned-section="isEarnedSectionModal"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
+							@back-to-journey="handleBackToJourney"
 						/>
 					</div>
 				</section>
 			</MyKivaContainer>
 			<EarnedBadgesSection
+				:id="MY_ACHIEVEMENTS_ID"
 				:badges-data="badgeData"
 				@badge-clicked="handleEarnedBadgeClicked"
 			/>
 		</template>
+		<div v-if="showLoanFootnote" class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5">
+			<MyKivaContainer>
+				<section>
+					*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
+				</section>
+			</MyKivaContainer>
+		</div>
 	</www-page>
 </template>
 
@@ -132,22 +152,26 @@ import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarouse
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
-import useBadgeData from '#src/composables/useBadgeData';
+import BadgeTile from '#src/components/MyKiva/BadgeTile';
+import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
-
+import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 import {
 	ref,
 	computed,
 	inject,
 	onMounted,
+	watch,
+	nextTick,
 } from 'vue';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const kvAuth0 = inject('kvAuth0');
 
 const {
 	fetchAchievementData,
@@ -164,19 +188,30 @@ const userInfo = ref({});
 const loans = ref([]);
 const activeLoan = ref({});
 const loanUpdates = ref([]);
+const totalUpdates = ref(0);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 const isEarnedSectionModal = ref(false);
+const showLoanFootnote = ref(false);
+const totalLoans = ref(0);
 
 const isLoading = computed(() => !lender.value);
-
+const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
 	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
+};
+
+const handleBadgeTileClicked = selectedTier => {
+	state.value = STATE_IN_PROGRESS;
+	selectedBadgeData.value = selectedTier.badge;
+	tier.value = selectedTier.tier;
+	isEarnedSectionModal.value = false;
+	showBadgeModal.value = true;
 };
 
 const handleBadgeSectionClicked = badge => {
@@ -210,13 +245,12 @@ const handleBadgeJourneyLevelClicked = payload => {
 	);
 };
 
-const handleBadgeModalClosed = isEarnedSection => {
-	if (state.value === STATE_JOURNEY || isEarnedSection) {
-		selectedBadgeData.value = undefined;
-		showBadgeModal.value = false;
-		return;
-	}
+const handleBadgeModalClosed = () => {
+	selectedBadgeData.value = undefined;
+	showBadgeModal.value = false;
+};
 
+const handleBackToJourney = () => {
 	state.value = STATE_JOURNEY;
 };
 
@@ -224,6 +258,7 @@ const fetchLoanUpdates = loanId => {
 	apollo.query({ query: updatesQuery, variables: { loanId } })
 		.then(result => {
 			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
+			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
@@ -242,8 +277,10 @@ const fetchMyKivaData = () => {
 			userInfo.value = result.data?.my ?? {};
 			lender.value = result.data?.my?.lender ?? null;
 			loans.value = result.data?.my?.loans?.values ?? [];
+			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			if (loans.value.length > 0) {
-			// eslint-disable-next-line prefer-destructuring
+				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
+				// eslint-disable-next-line prefer-destructuring
 				activeLoan.value = loans.value[0];
 				fetchLoanUpdates(activeLoan.value.id);
 			}
@@ -268,6 +305,46 @@ const saveMyKivaToUserPreferences = () => {
 	}
 };
 
+const badgesAchieved = computed(() => {
+	const completedBadgesArr = [];
+
+	badgeData.value.forEach(badge => {
+		if (badge.achievementData?.tiers?.length) {
+			const { tiers } = badge.achievementData;
+			tiers.forEach(tierObj => {
+				if (tierObj.completedDate) {
+					completedBadgesArr.push(badge);
+				}
+			});
+		}
+		if (badge.achievementData?.milestoneProgress?.length) {
+			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+			if (earnedAtDate) {
+				completedBadgesArr.push(badge);
+			}
+		}
+	});
+
+	return completedBadgesArr;
+});
+
+const scrollToTarget = target => {
+	const targetElement = document.getElementById(target);
+	if (targetElement) {
+		targetElement.scrollIntoView({ behavior: 'smooth' });
+	}
+};
+
+const checkGuestAchievementsToScroll = () => {
+	const lastLogin = kvAuth0.user?.exp;
+	const memberSince = lender.value?.memberSince;
+	if (isFirstLogin(lastLogin, memberSince)) {
+		const numberOfBadges = badgesAchieved.value.length;
+		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
+		scrollToTarget(sectionToScrollTo);
+	}
+};
+
 onMounted(async () => {
 	trackExperimentVersion(
 		apollo,
@@ -277,11 +354,22 @@ onMounted(async () => {
 		'EXP-MP-623-Sept2024'
 	);
 
-	$kvTrackEvent('portfolio', 'view', 'new-my-kiva');
+	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	saveMyKivaToUserPreferences();
+});
+
+watch(isAchievementDataLoaded, () => {
+	if (isAchievementDataLoaded.value) {
+		nextTick(() => {
+			// Scroll to section once async data is loaded
+			const targetId = window?.location?.hash?.replace('#', '');
+			if (targetId) scrollToTarget(targetId);
+			checkGuestAchievementsToScroll();
+		});
+	}
 });
 </script>

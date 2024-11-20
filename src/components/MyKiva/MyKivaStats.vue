@@ -1,5 +1,5 @@
 <template>
-	<div class="stats-section tw-py-4">
+	<div v-if="isLoaded" class="stats-section tw-py-4">
 		<MyKivaContainer>
 			<div class="tw-flex tw-justify-between tw-items-center">
 				<div
@@ -61,14 +61,27 @@ const props = defineProps({
 
 const { userAchievements } = toRefs(props);
 
+const isLoaded = ref(false);
 const livesTouched = ref(0);
 const totalAmountLent = ref(0);
 const totalCountriesLentTo = ref(0);
 
 const completedAchievements = computed(() => {
-	return userAchievements.value.filter(
-		achievement => achievement.status === 'COMPLETE' // Update this status field when having from backend
-	);
+	const achievements = [];
+	userAchievements.value.forEach(achievement => {
+		if (achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE') {
+			achievements.push(achievement);
+		}
+		if (achievement.tiers?.length) {
+			achievement.tiers.forEach(tier => {
+				if (tier.completedDate) {
+					achievements.push(achievement);
+				}
+			});
+		}
+	});
+
+	return achievements;
 });
 
 const completedAchievementsNumber = computed(() => {
@@ -91,8 +104,11 @@ onMounted(() => {
 	apollo.query({ query: lendingStatsQuery })
 		.then(result => {
 			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
-			totalAmountLent.value = +(result.data?.my?.userStats?.amount_of_loans ?? 0);
-			totalCountriesLentTo.value = result.data?.my?.statsPerCountry?.totalCount ?? 0;
+			totalAmountLent.value = result.data?.my?.userStats?.amount_of_loans ?? 0;
+			// Handle new user use-case
+			totalAmountLent.value = totalAmountLent.value === '0.00' ? 0 : totalAmountLent.value;
+			totalCountriesLentTo.value = result.data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
+			isLoaded.value = true;
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage myKivaQuery');
 		});

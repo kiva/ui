@@ -31,13 +31,13 @@
 						{{ title }}
 					</h3>
 					<p class="tw-text-center md:tw-text-left">
-						{{ description }}
+						{{ description }}{{ hasLoanFunFactFootnote(loan) ? '*' : '' }}
 						<br>
 						<a
 							class="tw-text-action"
 							:href="`/lend/${loan.id}`"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'view-details', borrowerName, loan.id]"
+							v-kv-track-event="['portfolio', 'click', 'View borrower details', borrowerName, loan.id]"
 						>
 							View details
 						</a>
@@ -54,7 +54,6 @@
 						</p>
 						<KvMaterialIcon
 							class="tw-w-3 tw-h-3 tw-text-action md:tw-hidden"
-							@click="open = !open"
 							:icon="open ? mdiChevronUp : mdiChevronDown"
 						/>
 					</button>
@@ -99,11 +98,12 @@ import {
 	toRefs,
 	defineProps,
 	inject,
-	onMounted,
+	watch,
 } from 'vue';
 import {
 	FUNDRAISING,
 } from '#src/api/fixtures/LoanStatusEnum';
+import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -112,12 +112,15 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	openWhatIsNext: {
+		type: Boolean,
+		required: false,
+	}
 });
 
-const { loan } = toRefs(props);
-
-const isMobile = ref(false);
-const open = ref(false);
+const { loan, openWhatIsNext } = toRefs(props);
+const open = ref(openWhatIsNext.value);
+const emit = defineEmits(['toggle-what-is-next']);
 
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
@@ -131,13 +134,11 @@ const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`
 const loanUse = computed(() => loan.value?.use ?? '');
 
 const loanFunFact = computed(() => {
-	// TODO: Replace this logic once MP-820 is complete
 	const region = loan.value?.geocode?.country?.region ?? '';
 	if (region === 'North America') {
 		switch (borrowerCountry.value) {
 			case 'United States':
-
-				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.*';
+				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.';
 			case 'Puerto Rico':
 				// eslint-disable-next-line max-len
 				return 'Small businesses are a crucial part of Puerto Rico\'s economy, employing around 44% of Puerto Rico\'s workforce.';
@@ -158,13 +159,13 @@ const loanFunFact = computed(() => {
 	switch (region) {
 		case 'Central America':
 			// eslint-disable-next-line max-len
-			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.*';
+			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.';
 		case 'South America':
 			// eslint-disable-next-line max-len
 			return 'People living in poverty in South America has decreased from ~30% in 2002 to less than 20% by 2020.';
 		case 'Africa':
 			// eslint-disable-next-line max-len
-			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.*';
+			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.';
 		case 'Middle East':
 			// eslint-disable-next-line max-len
 			return 'The number of people with bank accounts is on the rise in the Middle East, a vital step in driving economic opportunity.';
@@ -173,7 +174,7 @@ const loanFunFact = computed(() => {
 			return 'Eastern European countries have made progress in reducing poverty levels over the past decade through social protection programs.';
 		case 'Asia':
 			// eslint-disable-next-line max-len
-			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.*';
+			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.';
 		default:
 			// eslint-disable-next-line max-len
 			return 'In areas of Oceania like Fiji, the gender gap is improving—with more women able to access financial services.';
@@ -224,16 +225,13 @@ const weeksToRepay = computed(() => {
 
 const toggleWhatIsNext = () => {
 	if (!open.value) {
-		$kvTrackEvent('portfolio', 'click', 'what-is-next', borrowerName.value, loan.value.id);
+		$kvTrackEvent('portfolio', 'click', 'What’s next?', borrowerName.value, loan.value.id);
 	}
-	open.value = !open.value;
+	emit('toggle-what-is-next', !open.value);
 };
 
-onMounted(() => {
-	isMobile.value = document.documentElement.clientWidth < 735;
-	if (!isMobile.value) {
-		open.value = true;
-	}
+watch(() => openWhatIsNext.value, () => {
+	open.value = openWhatIsNext.value;
 });
 </script>
 

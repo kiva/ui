@@ -18,7 +18,7 @@
 				>
 			</div>
 			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
-				{{ funFact }}<a
+				"{{ funFact }}" <span v-if="funFactSource">*</span> <a
 					:href="learnMoreLink"
 					@click="trackLearnMore"
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"
@@ -43,8 +43,8 @@
 				<span class="tw-font-medium">Share</span>
 			</div>
 		</KvSocialShareButton>
-		<p class="tw-text-small tw-text-center tw-text-secondary tw-mt-1.5">
-			{{ funFactSource }}
+		<p v-if="funFactSource" class="tw-text-small tw-text-center tw-text-secondary tw-mt-1.5">
+			*{{ funFactSource }}
 		</p>
 	</div>
 </template>
@@ -100,7 +100,7 @@ const { getTierBadgeDataByLevel } = useBadgeData();
 const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
 const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
-const shareUrl = computed(() => (isPublic.value ? `/lender/${lender.value?.publicId}` : ''));
+
 // eslint-disable-next-line max-len
 const shareMessage = "It's not everyday you change a life! Thank you, from all of us at Kiva and the millions of lives changed around the world.";
 
@@ -118,7 +118,12 @@ const badgeImage = computed(() => {
 });
 
 const badgeLevel = computed(() => {
-	return badgeData.value?.achievementData?.target ?? 0;
+	return badgeData.value?.achievementData?.level ?? 0;
+});
+
+const shareUrl = computed(() => {
+	const base = isPublic.value ? `/lender/${lender.value?.publicId}` : '';
+	return `${base}?badge_level=${badgeLevel.value}`;
 });
 
 const funFact = computed(() => {

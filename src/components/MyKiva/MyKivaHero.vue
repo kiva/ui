@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-w-full landscape tw-relative">
 		<MyKivaContainer>
-			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-px-1.5 tw-py-2">
+			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-p-1.5">
 				<h3>Welcome back 👋</h3>
 				<div
 					v-if="isBorrower || isTrustee"
@@ -34,10 +34,11 @@
 				</div>
 			</div>
 			<button
+				:disabled="isLoading"
 				@click="$emit('show-navigation')"
 			>
 				<kv-material-icon
-					class="tw-absolute tw-right-0 tw-bg-white tw-p-0.5 tw-rounded-full tw-mt-2 tw-shadow-lg"
+					class="tw-absolute tw-right-0 tw-bg-white tw-p-0.5 tw-rounded-full tw-shadow-lg tw-top-1 tw-w-4"
 					name="settings"
 					:icon="mdiCogOutline"
 				/>
@@ -58,7 +59,11 @@ const props = defineProps({
 	userInfo: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isLoading: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { userInfo } = toRefs(props);

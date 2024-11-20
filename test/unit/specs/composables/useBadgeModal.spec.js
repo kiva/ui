@@ -5,6 +5,7 @@ import useBadgeModal,
 	BADGE_SHAPE_ARCH,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_CIRCLE,
+	getBadgeShape,
 } from '#src/composables/useBadgeModal';
 import {
 	ID_WOMENS_EQUALITY,
@@ -129,28 +130,23 @@ describe('useBadgeModal.js', () => {
 
 	describe('getBadgeShape', () => {
 		it('should return expected shape for womens-equality', () => {
-			const { getBadgeShape } = useBadgeModal({ id: ID_WOMENS_EQUALITY });
-			expect(getBadgeShape()).toEqual(BADGE_SHAPE_OBLONG);
+			expect(getBadgeShape(ID_WOMENS_EQUALITY)).toEqual(BADGE_SHAPE_OBLONG);
 		});
 
 		it('should return expected shape for us-economic-equality', () => {
-			const { getBadgeShape } = useBadgeModal({ id: ID_US_ECONOMIC_EQUALITY });
-			expect(getBadgeShape()).toEqual(BADGE_SHAPE_RECTANGLE);
+			expect(getBadgeShape(ID_US_ECONOMIC_EQUALITY)).toEqual(BADGE_SHAPE_RECTANGLE);
 		});
 
 		it('should return expected shape for climate-action', () => {
-			const { getBadgeShape } = useBadgeModal({ id: ID_CLIMATE_ACTION });
-			expect(getBadgeShape()).toEqual(BADGE_SHAPE_ARCH);
+			expect(getBadgeShape(ID_CLIMATE_ACTION)).toEqual(BADGE_SHAPE_ARCH);
 		});
 
 		it('should return expected shape for refugee-equality', () => {
-			const { getBadgeShape } = useBadgeModal({ id: ID_REFUGEE_EQUALITY });
-			expect(getBadgeShape()).toEqual(BADGE_SHAPE_OVAL);
+			expect(getBadgeShape(ID_REFUGEE_EQUALITY)).toEqual(BADGE_SHAPE_OVAL);
 		});
 
 		it('should return expected shape for basic-needs', () => {
-			const { getBadgeShape } = useBadgeModal({ id: ID_BASIC_NEEDS });
-			expect(getBadgeShape()).toEqual(BADGE_SHAPE_CIRCLE);
+			expect(getBadgeShape(ID_BASIC_NEEDS)).toEqual(BADGE_SHAPE_CIRCLE);
 		});
 	});
 

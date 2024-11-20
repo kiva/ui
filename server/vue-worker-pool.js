@@ -10,6 +10,7 @@ export default function createWorkerPool({
 	idleTimeout,
 	minWorkers,
 	maxWorkers,
+	recordTiming,
 	workerData
 } = {}) {
 	// Terminate the existing pool if it was created
@@ -21,6 +22,7 @@ export default function createWorkerPool({
 	pool = new Piscina({
 		filename: resolve(dirname(fileURLToPath(import.meta.url)), 'vue-worker.js'),
 		taskQueue: new FixedQueue(),
+		recordTiming: recordTiming === true,
 		idleTimeout,
 		minThreads: minWorkers,
 		maxThreads: maxWorkers,

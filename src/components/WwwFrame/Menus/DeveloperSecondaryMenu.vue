@@ -35,7 +35,7 @@ export default {
 				},
 				{
 					name: 'API',
-					url: 'https://api.kivaws.org/graphql',
+					url: 'https://gateway.production.kiva.org/graphql',
 				},
 				{
 					name: 'My Apps',
