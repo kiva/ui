@@ -49,7 +49,7 @@
 
 <script>
 import { differenceInMinutes, differenceInSeconds } from 'date-fns';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 
 export default {
 	name: 'LoanReservation',

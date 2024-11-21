@@ -45,8 +45,8 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 import KvSectionModalLoader from '#src/components/Kv/KvSectionModalLoader';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 
 const pageQuery = gql`query savedSearchPage {
 	my {

@@ -130,7 +130,7 @@ import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
+import KvCartModal from '#kv-components/KvCartModal';
 
 const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';

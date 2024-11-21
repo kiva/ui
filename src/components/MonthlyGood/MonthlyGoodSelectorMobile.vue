@@ -99,10 +99,10 @@ import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 import { metaGlobReader } from '#src/util/importHelpers';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvUiSelect from '@kiva/kv-components/vue/KvSelect';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvButton from '#kv-components/KvButton';
+import KvUiSelect from '#kv-components/KvSelect';
 
 const mgSelectorImgRequire = import.meta.glob('/src/assets/images/mg-selector-icons/*.*', {
 	eager: true,

@@ -42,7 +42,7 @@
 import { gql } from 'graphql-tag';
 import KvAlert from '#src/components/Kv/KvAlert';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '#kv-components/KvButton';
 
 const userQuery = gql`query getUserEmail {
 	my {

@@ -58,10 +58,10 @@ import IconAdd from '#src/assets/icons/inline/add.svg';
 import { createSavedSearch } from '#src/util/loanSearch/searchStateUtils';
 import logFormatter from '#src/util/logFormatter';
 import filterConfig from '#src/util/loanSearch/filterConfig';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvButton from '#kv-components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvTextInput from '#kv-components/KvTextInput';
+import KvCheckbox from '#kv-components/KvCheckbox';
 
 export default {
 	name: 'LoanSearchSavedSearch',

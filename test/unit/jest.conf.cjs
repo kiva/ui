@@ -10,6 +10,7 @@ module.exports = {
 		'^/src/(.*)$': '<rootDir>/src/$1',
 		'^#src/(.*)?url$': '<rootDir>/test/unit/transforms/svgTransform.cjs',
 		'^#src/(.*)$': '<rootDir>/src/$1',
+		'^#kv-components/(.*)$': '<rootDir>/node_modules/@kiva/kv-components/dist/components/$1',
 		foundation: '<rootDir>/build/no-op.js',
 	},
 	transform: {

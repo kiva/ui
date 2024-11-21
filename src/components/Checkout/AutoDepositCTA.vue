@@ -145,9 +145,9 @@ import { mdiClose } from '@mdi/js';
 import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvSelect from '#kv-components/KvSelect';
+import KvTextInput from '#kv-components/KvTextInput';
 import loanRecylceUrl from '#src/assets/images/kiva-classic-illustrations/loan-re-cycle.svg?url';
 
 // arbitrary number below 10k

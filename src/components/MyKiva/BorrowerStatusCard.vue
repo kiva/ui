@@ -91,7 +91,7 @@ import {
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import { addMonths, differenceInWeeks } from 'date-fns';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import {
 	ref,
 	computed,

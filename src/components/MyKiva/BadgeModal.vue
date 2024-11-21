@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 import {
 	defineProps,
 	defineAsyncComponent,
@@ -39,8 +39,8 @@ import {
 } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import { mdiArrowLeft } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 const ModalLoader = defineComponent(() => {
 	return () => {

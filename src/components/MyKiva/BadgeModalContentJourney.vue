@@ -88,7 +88,7 @@ import useBadgeModal,
 	BADGE_LOCKED,
 	getBadgeShape,
 } from '#src/composables/useBadgeModal';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '#kv-components/KvButton';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvCheckbox from '#kv-components/KvCheckbox';
 
 export default {
 	name: 'KvCheckboxList',

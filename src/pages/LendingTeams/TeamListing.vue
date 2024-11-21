@@ -252,10 +252,10 @@ import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
 import teamNoImage from '#src/assets/images/team_s135.png';
 import { gql } from 'graphql-tag';
-import KvPagination from '@kiva/kv-components/vue/KvPagination';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvPagination from '#kv-components/KvPagination';
+import KvSelect from '#kv-components/KvSelect';
+import KvButton from '#kv-components/KvButton';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
 

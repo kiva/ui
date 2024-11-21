@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
 
 export default {
 	name: 'AutomaticallySupportNotice',

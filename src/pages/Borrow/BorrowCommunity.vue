@@ -37,8 +37,8 @@
 
 <script>
 import CommunityGraphic from '#src/assets/inline-svgs/borrow/community.svg';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 
 export default {
 	name: 'BorrowCommunity',

@@ -132,9 +132,9 @@ import KvIcon from '#src/components/Kv/KvIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvButton from '#kv-components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvTextInput from '#kv-components/KvTextInput';
 import printCardCodeLocation from '#src/assets/images/checkout/printcard_codelocation.jpg';
 import emailCardCodeLocation from '#src/assets/images/checkout/emailcard_codelocation.jpg';
 

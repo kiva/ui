@@ -72,7 +72,7 @@ import basicLoanQuery from '#src/graphql/query/basicLoanData.graphql';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import numeral from 'numeral';
-import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvCarousel from '#kv-components/KvCarousel';
 
 export default {
 	name: 'CampaignLoanRow',

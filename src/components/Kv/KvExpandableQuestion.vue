@@ -33,7 +33,7 @@ import {
 import { paramCase } from 'change-case';
 
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'KvExpandableQuestion',
