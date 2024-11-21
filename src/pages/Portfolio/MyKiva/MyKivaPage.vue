@@ -259,8 +259,9 @@ const handleBackToJourney = () => {
 const fetchLoanUpdates = loanId => {
 	apollo.query({ query: updatesQuery, variables: { loanId, limit: 3, offset: updatesOffset.value } })
 		.then(result => {
-			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
+			const updates = result.data?.lend?.loan?.updates?.values ?? [];
+			loanUpdates.value = loanUpdates.value.concat(updates);
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});

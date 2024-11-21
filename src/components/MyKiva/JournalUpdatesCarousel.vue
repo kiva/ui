@@ -1,39 +1,40 @@
 <template>
-	<div v-if="updates.length > 0" class="tw-my-3 tw-flex tw-items-center tw-gap-3">
-		<div>
-			<h3 class="tw-my-2">
-				Updates
-			</h3>
-			<KvCarousel
-				class="tw-w-full updates-carousel md:tw-overflow-visible"
-				:multiple-slides-visible="true"
-				slides-to-scroll="visible"
-				:embla-options="{ loop: false }"
-				@interact-carousel="interactCarousel"
-			>
-				<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
-					<JournalUpdateCard
-						:loan="loan"
-						:update="update"
-						:update-number="`${totalUpdates - index}`"
-						@read-more-clicked="openLightbox"
-						@share-loan-clicked="shareLoanClicked"
-					/>
-				</template>
-			</KvCarousel>
-		</div>
-		<div
-			v-if="showLoadMore"
-			class="tw-pr-3"
+	<div v-if="updates.length > 0" class="tw-my-3">
+		<h3 class="tw-my-2">
+			Updates
+		</h3>
+		<KvCarousel
+			class="tw-w-full updates-carousel md:tw-overflow-visible"
+			:key="updates.length"
+			:multiple-slides-visible="true"
+			slides-to-scroll="visible"
+			:embla-options="{ loop: false, startIndex: carouselIndex }"
+			@interact-carousel="interactCarousel"
 		>
-			<kv-button
-				class="tw-mt-2"
-				variant="secondary"
-				@click="loadMoreUpdates"
-			>
-				Load more<br>updates
-			</kv-button>
-		</div>
+			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
+				<JournalUpdateCard
+					:loan="loan"
+					:update="update"
+					:update-number="`${totalUpdates - index}`"
+					@read-more-clicked="openLightbox"
+					@share-loan-clicked="shareLoanClicked"
+				/>
+			</template>
+			<template v-if="showLoadMore" #view-more>
+				<div
+					:key="`view-more-card`"
+					class="tw-flex tw-items-center tw-h-full tw-pr-3"
+				>
+					<kv-button
+						class="tw-mt-2"
+						variant="secondary"
+						@click="loadMoreUpdates"
+					>
+						Load more<br>updates
+					</kv-button>
+				</div>
+			</template>
+		</KvCarousel>
 		<KvLightbox
 			:visible="isLightboxVisible"
 			title=""
@@ -102,6 +103,7 @@ const clickedUpdate = ref(0);
 const updateSubject = ref('');
 const updateBody = ref('');
 const shareLoan = ref(false);
+const carouselIndex = ref(0);
 
 const inPfp = computed(() => loan.value?.inPfp ?? false);
 
@@ -143,10 +145,16 @@ const loadMoreUpdates = () => {
 };
 
 watch(() => updates, () => {
-	if (updates.value.length > 0) {
+	if (updates.value.length > 0 && updates.value.length < 3) {
 		$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+		carouselIndex.value = 0;
 	}
-});
+	if (updates.value.length > 3) {
+		carouselIndex.value = updates.value.length - 2;
+	}
+},
+{ deep: true },
+);
 </script>
 
 <style lang="postcss" scoped>
