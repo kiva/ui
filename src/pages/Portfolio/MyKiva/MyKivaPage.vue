@@ -197,6 +197,7 @@ const tier = ref(null);
 const isEarnedSectionModal = ref(false);
 const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
+const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 
 const isLoading = computed(() => !lender.value);
@@ -257,7 +258,14 @@ const handleBackToJourney = () => {
 };
 
 const fetchLoanUpdates = loanId => {
-	apollo.query({ query: updatesQuery, variables: { loanId, limit: 3, offset: updatesOffset.value } })
+	apollo.query({
+		query: updatesQuery,
+		variables: {
+			loanId,
+			limit: updatesLimit.value,
+			offset: updatesOffset.value
+		}
+	})
 		.then(result => {
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 			const updates = result.data?.lend?.loan?.updates?.values ?? [];
@@ -268,7 +276,7 @@ const fetchLoanUpdates = loanId => {
 };
 
 const loadMoreUpdates = () => {
-	updatesOffset.value += 1;
+	updatesOffset.value += updatesLimit.value;
 	fetchLoanUpdates(activeLoan.value.id);
 };
 
