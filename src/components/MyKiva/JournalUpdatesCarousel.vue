@@ -144,16 +144,18 @@ const loadMoreUpdates = () => {
 	emit('load-more-updates');
 };
 
-watch(() => updates, () => {
-	if (updates.value.length > 0 && updates.value.length < 3) {
-		$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
-		carouselIndex.value = 0;
-	}
-	if (updates.value.length > 3) {
-		carouselIndex.value = updates.value.length - 2;
-	}
-},
-{ deep: true },
+watch(
+	() => updates,
+	() => {
+		if (updates.value.length > 0 && updates.value.length < 3) {
+			$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+			carouselIndex.value = 0;
+		}
+		if (updates.value.length > 3) {
+			carouselIndex.value = updates.value.length - 2;
+		}
+	},
+	{ deep: true },
 );
 </script>
 
