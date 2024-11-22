@@ -277,10 +277,11 @@ export default {
 
 <style lang="postcss" scoped>
 .desktop-link {
-	@apply tw-block tw-pr-4 tw-py-2 tw-text-primary-inverse hover:tw-underline hover:tw-text-primary-inverse;
+	@apply tw-block tw-pr-4 tw-py-2 tw-text-primary-inverse hover:tw-text-primary-inverse;
+	@apply tw-no-underline hover:tw-underline;
 }
 
 .mobile-link {
-	@apply tw-block tw-px-2 tw-py-1 tw-w-full tw-border-b tw-border-tertiary;
+	@apply tw-block tw-px-2 tw-py-1 tw-w-full tw-border-b tw-border-tertiary tw-no-underline;
 }
 </style>
