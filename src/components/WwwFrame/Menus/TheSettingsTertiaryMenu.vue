@@ -103,7 +103,7 @@ export default {
 
 <style lang="postcss" scoped>
 .settings-tertitary-menu-link {
-	@apply tw-block tw-px-2 tw-py-1;
+	@apply tw-block tw-px-2 tw-py-1 tw-no-underline;
 }
 
 .settings-tertitary-menu-active-link {
