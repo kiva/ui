@@ -328,6 +328,7 @@ export default {
 	column-fill: auto; /* Tailwind doesnt have a column-fill option currently */
 	@apply tw-columns-3 tw-gap-4;
 }
+
 .lend-menu-link {
 	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
