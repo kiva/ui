@@ -22,16 +22,21 @@
 		</p>
 		<div
 			v-else
-			v-for="(challenge, index) in challengeDataContentful"
-			:key="index"
+			v-for="badge in completedAchievements"
+			:key="badge.id"
 			class="tw-flex tw-w-full tw-gap-1"
 			:class="{'tw-items-center': !inPortfolio }"
 		>
-			<img :src="challenge.badgeSvg" class="tw-h-10 tw-flex-none tw-mx-auto">
+			<img
+				:src="getBadgeImgUrl(badge)"
+				class="tw-h-10 tw-flex-none tw-mx-auto"
+			>
 			<div class="tw-w-full">
-				<span class="tw-font-medium">{{ challenge.challengeName }}</span>
-				<p v-if="shouldShowBadgeDate(challenge)" class="tw-text-secondary tw-text-small">
-					{{ challenge.dateTagline }}
+				<span class="tw-font-medium">
+					{{ getBadgeTitle(badge) }}
+				</span>
+				<p class="tw-text-secondary tw-text-small">
+					{{ getBadgeDate(badge) }}
 				</p>
 			</div>
 		</div>
@@ -39,9 +44,8 @@
 </template>
 
 <script>
-import { formatMediaAssetArray } from '#src/util/contentfulUtils';
-import { gql } from 'graphql-tag';
 import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { format } from 'date-fns';
 
 export default {
 	name: 'BadgesList',
@@ -63,63 +67,30 @@ export default {
 			default: false
 		},
 	},
-	data() {
-		return {
-			challengeDataContentful: [],
-		};
-	},
 	computed: {
-		/* Challenge keys for completed challenges */
-		completedChallengeKeys() {
-			return this.completedAchievements.map(achievement => achievement.id).join(',');
-		},
 		inPortfolio() {
 			return this.$route?.name?.includes('portfolio');
 		},
 	},
-	watch: {
-		// When this prop has loaded we can load the badges content from contentful
-		totalPossibleBadges: {
-			handler(next) {
-				if (next !== 0) {
-					this.loadBadgesContent();
-				}
-			},
-			immediate: true
-		}
-	},
 	methods: {
-		loadBadgesContent() {
-			if (this.completedChallengeKeys !== '') {
-				const filterFields = `fields.key[in]=${this.completedChallengeKeys}`;
-				this.apollo.query({
-					query: gql`query contentfulDefinitions($customFields: String) {
-					contentful {
-						entries(contentType: "challenge", customFields: $customFields)
-					}
-				}`,
-					variables: {
-						customFields: filterFields
-					},
-				}).then(result => {
-					const contentfulData = result.data?.contentful?.entries?.items ?? null;
-					if (contentfulData) {
-						this.challengeDataContentful = contentfulData.map(item => {
-							return {
-								...item.fields,
-								badgeSvg: formatMediaAssetArray([item.fields.badgeImage])?.[0]?.file?.url,
-							};
-						});
-					}
-				}).catch(err => {
-					console.error(err);
-					this.$showTipMsg('There was a problem loading badges', 'error');
-				});
+		getBadgeTitle(badge) {
+			if (badge.level === 0) {
+				return badge?.contentfulData?.[0]?.challengeName ?? '';
 			}
+			const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
+			return `${badgeData?.challengeName} ${badgeData?.levelName}` ?? '';
 		},
-		shouldShowBadgeDate(challenge) {
-			// Lifetime badges currently have an "n/a" date tagline
-			return challenge?.dateTagline?.toLowerCase() !== 'n/a';
+		getBadgeImgUrl(badge) {
+			if (badge.level === 0) {
+				return badge?.contentfulData?.[0]?.imageUrl ?? '';
+			}
+			const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
+			return badgeData?.imageUrl ?? '';
+		},
+
+		getBadgeDate(badge) {
+			const earnedAtDate = badge.earnedAtDate ? Date.parse(badge.earnedAtDate) : new Date();
+			return format(earnedAtDate, 'MMM yyyy');
 		},
 	},
 };

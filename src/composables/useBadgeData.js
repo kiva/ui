@@ -51,8 +51,8 @@ export default function useBadgeData() {
 	 *
 	 * @param apollo The current instance of Apollo
 	 */
-	const fetchAchievementData = apollo => {
-		apollo.query({ query: userAchievementProgressQuery })
+	const fetchAchievementData = (apollo, publicId = null) => {
+		apollo.query({ query: userAchievementProgressQuery, variables: { publicId } })
 			.then(result => {
 				badgeAchievementData.value = [
 					...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
@@ -388,6 +388,53 @@ export default function useBadgeData() {
 		return displayedBadge ?? {};
 	};
 
+	/**
+	 * Get completed badges of a user
+	 *
+	 * @param badges The badges to get the completed badges from
+	 * @returns Completed badges
+	 */
+	const getCompletedBadges = badges => {
+		const completedBadgesArr = [];
+
+		badges?.forEach(badge => {
+			if (badge.achievementData?.tiers?.length) {
+				const { tiers } = badge.achievementData;
+				tiers.forEach(tier => {
+					if (tier.completedDate) {
+						completedBadgesArr.push({
+							...badge,
+							earnedAtDate: tier.completedDate,
+							level: tier.level,
+						});
+					}
+				});
+			}
+			if (badge?.achievementData?.milestoneProgress?.length) {
+				const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+				if (earnedAtDate) {
+					completedBadgesArr.push({
+						...badge,
+						earnedAtDate,
+						level: 0,
+					});
+				}
+			}
+		});
+
+		return completedBadgesArr;
+	};
+
+	const completedBadges = computed(() => {
+		const completedBadgesArr = getCompletedBadges(badgeData.value);
+
+		completedBadgesArr.sort((a, b) => {
+			return new Date(a.earnedAtDate) - new Date(b.earnedAtDate);
+		});
+
+		return completedBadgesArr;
+	});
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -400,9 +447,11 @@ export default function useBadgeData() {
 		getBadgeWithVisibleTiers,
 		getLastCompletedBadgeLevelData,
 		getHighestPriorityDisplayBadge,
+		getCompletedBadges,
 		badgeAchievementData,
 		badgeData,
 		badgeLoanIdData,
 		isBadgeKeyValid,
+		completedBadges,
 	};
 }

@@ -23,7 +23,7 @@
 					</p>
 					<hr class="tw-border-tertiary tw-my-4">
 					<badges-section
-						:total-possible-badges="allAchievements.length"
+						:total-possible-badges="badgesData.length"
 						:completed-achievements="completedAchievements"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
@@ -88,12 +88,13 @@
 import _differenceBy from 'lodash/differenceBy';
 import _sortBy from 'lodash/sortBy';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
-import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import KvGrid from '#kv-components/KvGrid';
 import KvPageContainer from '#kv-components/KvPageContainer';
+import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
+import useBadgeData from '#src/composables/useBadgeData';
 import BadgesSection from './BadgesSection';
 import StatsSection from './StatsSection';
 
@@ -124,6 +125,7 @@ export default {
 			partnersNotLentTo: [],
 			userId: null,
 			allAchievements: [],
+			badgesData: [],
 		};
 	},
 	apollo: {
@@ -157,19 +159,43 @@ export default {
 	},
 	created() {
 		this.apollo.query({
-			query: userAchievementProgressQuery,
+			query: lenderProfileBadgeDataQuery,
+			variables: {
+				contentType: 'challenge',
+				limit: 200,
+			}
 		}).then(({ data }) => {
-			this.allAchievements = data?.userAchievementProgress?.lendingAchievements ?? [];
+			this.allAchievements = data ?? {};
 		});
 	},
 	computed: {
 		completedAchievements() {
-			return this.allAchievements.filter(
-				achievement => achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE'
-			);
+			const completedBadgesArr = this.getBadgesData();
+
+			completedBadgesArr.sort((a, b) => {
+				return new Date(a.earnedAtDate) - new Date(b.earnedAtDate);
+			});
+
+			return completedBadgesArr;
 		},
 	},
 	methods: {
+		getBadgesData() {
+			const {
+				combineBadgeData, getCompletedBadges, getContentfulLevelData
+			} = useBadgeData();
+
+			const badgeAchievementData = [
+				...(this.allAchievements?.userAchievementProgress?.lendingAchievements ?? []),
+				...(this.allAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [])
+			];
+			const badgeContentfulData = (this.allAchievements?.contentful?.entries?.items ?? [])
+				.map(entry => getContentfulLevelData(entry));
+
+			this.badgesData = combineBadgeData(badgeAchievementData, badgeContentfulData);
+
+			return getCompletedBadges(this.badgesData);
+		},
 		iconForSector(sector) {
 			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
 		}
