@@ -231,6 +231,7 @@ export default {
 	@apply tw-bg-primary tw-p-4 tw-block;
 }
 
+.section__link,
 .section__link:hover,
 .section__link:focus {
 	@apply tw-no-underline;
