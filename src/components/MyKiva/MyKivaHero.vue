@@ -50,7 +50,7 @@
 <script setup>
 import { mdiCogOutline } from '@mdi/js';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import { computed, toRefs } from 'vue';
 
 defineEmits(['show-navigation']);

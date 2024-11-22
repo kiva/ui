@@ -21,7 +21,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvPageContainer from '#kv-components/KvPageContainer';
 import useBadgeData from '#src/composables/useBadgeData';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 

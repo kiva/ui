@@ -39,7 +39,7 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dolla
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import KvCartModal from '@kiva/kv-components/vue/KvCartModal';
+import KvCartModal from '#kv-components/KvCartModal';
 
 const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
 

@@ -28,7 +28,7 @@
 					</BadgeContainer>
 					<div>
 						<p class="tw-font-medium">
-							{{ tierData.tierName }}
+							{{ tileTitle }}
 						</p>
 						<p class="tw-text-small -tw-mt-0.5">
 							{{ tierCaption }}
@@ -57,8 +57,8 @@ import { indexIn } from '#src/util/comparators';
 import { BADGE_IN_PROGRESS, BADGE_SHAPE_OBLONG, getBadgeShape } from '#src/composables/useBadgeModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import {
 	computed,
 	toRefs,
@@ -105,10 +105,13 @@ const selectedTier = computed(() => {
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
 		if (tier) {
+			const tierBadgeData = getTierBadgeDataByLevel(badge, tier.level);
+			const levelName = tierBadgeData?.contentfulData?.levelName ?? '';
 			tiers.push({
 				badge,
 				totalProgressToAchievement: badge.achievementData.totalProgressToAchievement,
 				tier,
+				levelName,
 			});
 		}
 	});
@@ -131,6 +134,12 @@ const selectedTier = computed(() => {
 });
 
 const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
+
+const tileTitle = computed(() => {
+	const tierLevel = selectedTier?.value?.levelName ?? '';
+	return `${badgeName.value} (level ${tierLevel})`;
+});
+
 const tierCaption = computed(() => {
 	const progress = selectedTier?.value?.totalProgressToAchievement ?? '';
 	const target = selectedTier?.value?.tier?.target ?? '';

@@ -19,7 +19,7 @@
 
 <script>
 import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
 
 export default {
 	name: 'CampaignLogoGroup',

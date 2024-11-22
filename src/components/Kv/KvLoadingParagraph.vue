@@ -10,7 +10,7 @@
 
 <script>
 import getCacheKey from '#src/util/getCacheKey';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 export default {
 	name: 'KvLoadingParagraph',

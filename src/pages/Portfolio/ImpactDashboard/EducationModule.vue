@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvGrid from '#kv-components/KvGrid';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 import EducationPost from './EducationPost';
 import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';

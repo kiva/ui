@@ -98,7 +98,7 @@ import KvFlag from '#src/components/Kv/KvFlag';
 import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 import LendButton from '#src/components/LoanCards/Buttons/LendButton2';
 import WhySpecial from '#src/components/LoanCards/WhySpecial';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {

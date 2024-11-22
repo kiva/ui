@@ -46,8 +46,8 @@ import { gql } from 'graphql-tag';
 import * as Sentry from '@sentry/vue';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 function getFullPath(url = '/') {
 	if (url.startsWith('/')) {

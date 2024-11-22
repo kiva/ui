@@ -133,7 +133,7 @@ import { gql } from 'graphql-tag';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 
 import AttributeFilter from './AttributeFilter';
 import AttributeRadios from './AttributeRadios';

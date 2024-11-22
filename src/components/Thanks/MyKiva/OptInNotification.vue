@@ -30,7 +30,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
+import KvUserAvatar from '#kv-components/KvUserAvatar';
 
 const props = defineProps({
 	receiveNews: {

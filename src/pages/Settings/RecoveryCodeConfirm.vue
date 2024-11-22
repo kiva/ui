@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
+import KvButton from '#kv-components/KvButton';
+import KvCheckbox from '#kv-components/KvCheckbox';
 
 export default {
 	name: 'RecoveryCodeConfirm',

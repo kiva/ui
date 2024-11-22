@@ -47,7 +47,7 @@
 
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import { mdiChevronDown } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'KvAccordionItem',

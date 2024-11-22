@@ -53,7 +53,7 @@ import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
 import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
 import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.graphql';
 import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'JoinTeamForm',

@@ -153,8 +153,8 @@ import enrollVoiceAuthenticatorMutation from '#src/graphql/mutation/mfa/enrollVo
 import confirmSMSAuthenticatorEnrollmentMutation from '#src/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
 import confirmVoiceAuthenticatorEnrollmentMutation from
 	'#src/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'PhoneAuthentication',

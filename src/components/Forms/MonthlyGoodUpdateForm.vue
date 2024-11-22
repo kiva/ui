@@ -167,9 +167,9 @@ import { required, minValue, maxValue } from '@vuelidate/validators';
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import { mdiPencil } from '@mdi/js';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvSelect from '#kv-components/KvSelect';
+import KvTextInput from '#kv-components/KvTextInput';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 /**
  * This form contains all the fields and validation to modify a MG Subscription

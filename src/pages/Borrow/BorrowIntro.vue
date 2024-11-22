@@ -107,9 +107,9 @@ import BorrowStep1 from '#src/assets/inline-svgs/borrow/precheck.svg';
 import BorrowStep2 from '#src/assets/inline-svgs/borrow/newaccount.svg';
 import BorrowStep3 from '#src/assets/inline-svgs/borrow/application.svg';
 
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 
 export default {
 	name: 'BorrowIntro',

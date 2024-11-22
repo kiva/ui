@@ -105,12 +105,12 @@ import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
-import KvLoadingSpinner from '@kiva/kv-components/vue/KvLoadingSpinner';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
+import KvLoadingSpinner from '#kv-components/KvLoadingSpinner';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 const processInstantLendingContent = gql`query instantLendingContent($loanId: Int!) {
 	contentful {

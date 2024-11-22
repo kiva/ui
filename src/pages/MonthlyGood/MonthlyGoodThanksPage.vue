@@ -28,7 +28,7 @@ import { mdiCheckCircle } from '@mdi/js';
 import { addMonths, formatDistanceToNow } from 'date-fns';
 import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 const pageQuery = gql`query monthlyGoodThanksPage {
 	my {

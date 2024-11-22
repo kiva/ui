@@ -10,7 +10,7 @@
 <script>
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import BorrowIntro from '#src/pages/Borrow/BorrowIntro';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'BorrowIndex',

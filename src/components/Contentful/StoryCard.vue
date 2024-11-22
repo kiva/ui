@@ -77,10 +77,15 @@ import {
 	darkTheme,
 	darkGreenTheme,
 	mintTheme,
-	defaultTheme
+	defaultTheme,
+	greenLightTheme,
+	greenDarkTheme,
+	marigoldLightTheme,
+	stoneLightTheme,
+	stoneDarkTheme,
 } from '@kiva/kv-tokens/configs/kivaColors.cjs';
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
-import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
+import KvThemeProvider from '#kv-components/KvThemeProvider';
 /**
 * Story Card Component
 * */
@@ -117,7 +122,12 @@ export default {
 				kivaClassicMint: mintTheme,
 				kivaClassicGreen: darkGreenTheme,
 				kivaClassicDark: darkTheme,
-				imageCard: darkTheme
+				imageCard: darkTheme,
+				ecoGreenLight: greenLightTheme,
+				ecoGreenDark: greenDarkTheme,
+				ecoMarigoldLight: marigoldLightTheme,
+				ecoStoneLight: stoneLightTheme,
+				ecoStoneDark: stoneDarkTheme,
 			};
 			return themeMapper[this.content?.theme] ?? defaultTheme;
 		},

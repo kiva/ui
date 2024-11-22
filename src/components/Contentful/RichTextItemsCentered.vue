@@ -37,8 +37,8 @@ import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWith
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import DynamicRichText from '#src/components/Contentful/DynamicRichText';
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
 
 export default {
 	name: 'RichTextItemsCentered',
