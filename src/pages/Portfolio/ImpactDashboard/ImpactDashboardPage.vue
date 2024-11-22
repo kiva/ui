@@ -155,7 +155,7 @@ export default {
 			});
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
-			this.userPreferences = portfolioQueryData.my?.userPreferences ?? null;
+			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
 	},
 	async mounted() {
