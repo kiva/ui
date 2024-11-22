@@ -344,7 +344,7 @@ export default function useBadgeData() {
 					levelName: contentfulData.challengeName,
 				};
 			}
-		} else if (badge.achievementData?.tiers?.length) {
+		} else if (badge?.achievementData?.tiers?.length) {
 			const tiers = JSON.parse(JSON.stringify(badge.achievementData.tiers));
 			tiers.sort((a, b) => new Date(a.completedDate) - new Date(b.completedDate));
 			const levelIndex = tiers[0].level - 1;
@@ -426,6 +426,11 @@ export default function useBadgeData() {
 		return completedBadgesArr;
 	};
 
+	/**
+	 * Get completed badges sorted by earned date
+	 *
+	 * @returns Completed badges sorted by earned date
+	 */
 	const completedBadges = computed(() => {
 		const completedBadgesArr = getCompletedBadges(badgeData.value);
 

@@ -58,10 +58,6 @@ export default {
 			type: Array,
 			default: () => ([])
 		},
-		totalPossibleBadges: {
-			type: Number,
-			default: 0
-		},
 		isLoading: {
 			type: Boolean,
 			default: false
@@ -87,7 +83,6 @@ export default {
 			const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
 			return badgeData?.imageUrl ?? '';
 		},
-
 		getBadgeDate(badge) {
 			const earnedAtDate = badge.earnedAtDate ? Date.parse(badge.earnedAtDate) : new Date();
 			return format(earnedAtDate, 'MMM yyyy');

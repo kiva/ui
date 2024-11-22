@@ -549,5 +549,28 @@ describe('useBadgeData.js', () => {
 				}
 			]);
 		});
+		it('should return empty array when not badges', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges(null)).toEqual([]);
+		});
+		it('should return empty array when badges are not well formatted', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges([
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: null }
+						]
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: undefined }
+						]
+					},
+				}
+			])).toEqual([]);
+		});
 	});
 });

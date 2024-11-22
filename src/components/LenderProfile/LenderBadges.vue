@@ -14,7 +14,6 @@
 			<badges-list
 				class="tw-my-4"
 				:completed-achievements="completedBadges"
-				:total-possible-badges="totalPossibleBadges"
 				:is-loading="isLoading"
 			/>
 		</section>
@@ -42,7 +41,6 @@ const props = defineProps({
 const apollo = inject('apollo');
 
 const {
-	badgeData,
 	fetchAchievementData,
 	fetchContentfulData,
 	completedBadges,
@@ -51,10 +49,10 @@ const isLoading = ref(true);
 const badgesTitle = computed(() => (props.lenderInfo?.name ? `${props.lenderInfo.name}'s badges` : 'Badges'));
 
 const fetchUserAchievements = async () => {
-	await fetchAchievementData(apollo, props.publicId);
-	await fetchContentfulData(apollo);
+	await Promise.all([
+		fetchAchievementData(apollo, props.publicId),
+		fetchContentfulData(apollo),
+	]);
 	isLoading.value = false;
 };
-
-const totalPossibleBadges = computed(() => badgeData.value?.length ?? 0);
 </script>
