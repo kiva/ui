@@ -187,7 +187,7 @@ export default {
 
 <style lang="postcss" scoped>
 .portfolio-tertitary-menu-link {
-	@apply tw-block tw-py-1 tw-w-full;
+	@apply tw-block tw-py-1 tw-w-full tw-no-underline;
 }
 
 .portfolio-tertitary-menu-active-link {

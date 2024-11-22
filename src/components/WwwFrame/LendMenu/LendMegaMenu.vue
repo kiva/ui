@@ -49,8 +49,7 @@
 								>
 									<a
 										:href="category.url"
-										class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-									tw-py-1 tw-inline-block"
+										class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
 									>
 										{{ category.name }}
@@ -63,7 +62,7 @@
 								<li class="tw-w-[11rem]">
 									<router-link
 										to="/lend-by-category/recommended-by-lenders"
-										class="tw-text-action hover:tw-text-action-highlight tw-inline-block tw-py-1"
+										class="lend-menu-link tw-text-action tw-inline-block tw-py-1"
 										v-kv-track-event="['TopNav','click-Lend-Recommended-by-lenders']"
 									>
 										Recommended by lenders
@@ -72,7 +71,7 @@
 								<li class="tw-w-[11rem]">
 									<router-link
 										to="/categories"
-										class="tw-text-primary hover:tw-text-action-highlight tw-inline-block tw-py-1"
+										class="lend-menu-link tw-text-primary tw-inline-block tw-py-1"
 										v-kv-track-event="['TopNav','click-Lend-All_Categories']"
 									>
 										All categories
@@ -80,7 +79,7 @@
 								</li>
 								<li class="tw-w-[11rem]" ref="allLoans">
 									<router-link
-										class="tw-text-primary hover:tw-text-action-highlight tw-inline-block tw-py-1"
+										class="lend-menu-link tw-text-primary tw-inline-block tw-py-1"
 										to="/lend"
 										v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 									>
@@ -102,7 +101,7 @@
 											v-if="favorites > 0"
 											:to="{ path: '/lend', query: { lenderFavorite: userId } }"
 											v-kv-track-event="['TopNav','click-Lend-Favorites']"
-											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
+											class="lend-menu-link tw-text-primary tw-text-left
 												tw-py-1 tw-inline-block"
 										>
 											Saved loans
@@ -119,7 +118,7 @@
 											v-if="hasSearches"
 											@click="openSection(savedSearchesTitle)"
 											:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
-											class="tw-text-primary tw-text-left tw-py-1 tw-inline-block
+											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block
 											hover:tw-text-action-highlight hover:tw-underline"
 										>
 											{{ savedSearchesTitle }}
@@ -196,8 +195,7 @@
 											@click="openSection(region.name)"
 											:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
 											v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
-											class="tw-text-primary tw-text-left tw-py-1
-											hover:tw-text-action-highlight hover:tw-underline "
+											class="lend-menu-link tw-text-primary tw-text-left tw-py-1"
 											:class="{ 'tw-text-action' : isOpenSection(region.name)}"
 										>
 											{{ region.name }}
@@ -329,5 +327,9 @@ export default {
 .search-list {
 	column-fill: auto; /* Tailwind doesnt have a column-fill option currently */
 	@apply tw-columns-3 tw-gap-4;
+}
+
+.lend-menu-link {
+	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
 </style>
