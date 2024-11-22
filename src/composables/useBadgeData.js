@@ -50,6 +50,7 @@ export default function useBadgeData() {
 	 * Calls Apollo to get the badge achievement service data
 	 *
 	 * @param apollo The current instance of Apollo
+	 * @param publicId Whether to get achievement data for a specific user
 	 */
 	const fetchAchievementData = (apollo, publicId = null) => {
 		apollo.query({ query: userAchievementProgressQuery, variables: { publicId } })
