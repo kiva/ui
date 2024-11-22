@@ -34,8 +34,6 @@ export default {
 @import '#src/assets/scss/settings';
 
 .system-page {
-	height: 100%;
-
 	&__header {
 		display: block;
 		position: absolute;
@@ -60,7 +58,7 @@ export default {
 		display: flex;
 		justify-content: center;
 		align-items: flex-start;
-		min-height: 100%;
+		min-height: 100vh;
 		text-align: center;
 	}
 
