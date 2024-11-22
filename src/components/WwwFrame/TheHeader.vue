@@ -1045,7 +1045,8 @@ export default {
 }
 
 .dropdown-list a {
-	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1;
+	@apply tw-font-medium tw-text-primary tw-block tw-w-full tw-py-1;
+	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
 
 /* CSS grid areas to manage position changes across breakpoints without markup duplication */

@@ -51,7 +51,7 @@
 								<a
 									:href="category.url"
 									v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
-									class="lend-link"
+									class="lend-link tw-text-primary"
 								>
 									{{ category.name }}
 								</a>
@@ -60,7 +60,7 @@
 						<li class="tw-border-t tw-border-tertiary">
 							<router-link
 								to="/lend-by-category/recommended-by-lenders"
-								class="lend-link tw-text-brand"
+								class="lend-link tw-text-action"
 								v-kv-track-event="['TopNav','click-Lend-Recommended-by-lenders']"
 							>
 								Recommended by lenders
@@ -69,7 +69,7 @@
 						<li>
 							<router-link
 								to="/lend"
-								class="lend-link"
+								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 							>
 								All loans
@@ -78,7 +78,7 @@
 						<li>
 							<router-link
 								to="/categories"
-								class="lend-link"
+								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-All_Categories']"
 							>
 								All categories
@@ -129,7 +129,7 @@
 							<router-link
 								v-if="favorites > 0"
 								:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-								class="lend-link"
+								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Favorites']"
 							>
 								Saved loans
@@ -160,7 +160,7 @@
 						<li>
 							<a
 								href="/lend/countries-not-lent"
-								class="lend-link"
+								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
@@ -270,6 +270,7 @@ export default {
 
 <style lang="postcss" scoped>
 .lend-link {
-	@apply tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1;
+	@apply tw-block tw-w-full tw-py-1;
+	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
 </style>
