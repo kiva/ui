@@ -1,6 +1,6 @@
 <template>
 	<async-lender-section @visible="fetchUserAchievements">
-		<section v-if="completedAchievements.length > 0">
+		<section v-if="completedBadges.length > 0">
 			<h2
 				v-if="!isLoading"
 				class="data-hj-suppress"
@@ -13,92 +13,46 @@
 			/>
 			<badges-list
 				class="tw-my-4"
-				:completed-achievements="completedAchievements"
-				:total-possible-badges="totalPossibleBadges"
+				:completed-achievements="completedBadges"
 				:is-loading="isLoading"
 			/>
 		</section>
 	</async-lender-section>
 </template>
 
-<script>
-import { gql } from 'graphql-tag';
-import logReadQueryError from '#src/util/logReadQueryError';
+<script setup>
 import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
 import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { computed, ref, inject } from 'vue';
+import useBadgeData from '#src/composables/useBadgeData';
 import AsyncLenderSection from './AsyncLenderSection';
 
-const userAchievementProgressQuery = gql`query userAchievementProgress( $publicId: String!) {
-	userAchievementProgress(publicId: $publicId) {
-		id
-		lendingAchievements {
-			id
-			milestoneProgress {
-				id
-				milestoneStatus
-			}
-		}
-	}
-}`;
+const props = defineProps({
+	lenderInfo: {
+		type: Object,
+		default: () => ({})
+	},
+	publicId: {
+		type: String,
+		required: true,
+	},
+});
 
-export default {
-	name: 'LenderBadges',
-	inject: ['apollo', 'cookieStore'],
-	components: {
-		BadgesList,
-		KvLoadingPlaceholder,
-		AsyncLenderSection,
-	},
-	props: {
-		lenderInfo: {
-			type: Object,
-			default: () => ({})
-		},
-		publicId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			isLoading: true,
-			allAchievements: [],
-		};
-	},
-	computed: {
-		lenderName() {
-			return this.lenderInfo?.name ?? '';
-		},
-		badgesTitle() {
-			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s badges`
-				: 'Badges';
-		},
-		completedAchievements() {
-			return this.allAchievements.filter(
-				achievement => achievement.milestoneProgress?.[0]?.milestoneStatus === 'COMPLETE'
-			);
-		},
-		totalPossibleBadges() {
-			return this.allAchievements?.length ?? 0;
-		},
-	},
-	methods: {
-		async fetchUserAchievements() {
-			try {
-				const { data } = await this.apollo.query({
-					query: userAchievementProgressQuery,
-					variables: {
-						publicId: this.publicId,
-					},
-				});
+const apollo = inject('apollo');
 
-				this.allAchievements = data?.userAchievementProgress?.lendingAchievements ?? [];
-				this.isLoading = false;
-			} catch (e) {
-				logReadQueryError(e, 'LenderBadges userAchievementsProgress');
-			}
-		},
-	},
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	completedBadges,
+} = useBadgeData(apollo);
+const isLoading = ref(true);
+const badgesTitle = computed(() => (props.lenderInfo?.name ? `${props.lenderInfo.name}'s badges` : 'Badges'));
+
+const fetchUserAchievements = async () => {
+	await Promise.all([
+		fetchAchievementData(apollo, props.publicId),
+		fetchContentfulData(apollo),
+	]);
+	isLoading.value = false;
 };
 </script>
