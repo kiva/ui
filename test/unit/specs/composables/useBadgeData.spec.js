@@ -516,4 +516,75 @@ describe('useBadgeData.js', () => {
 			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_CLIMATE_ACTION, level: 3 });
 		});
 	});
+
+	describe('getCompletedBadges', () => {
+		it('should return the completed badges', () => {
+			const { getCompletedBadges } = useBadgeData();
+			const badges = [
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-22T18:49:21Z' }
+						]
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: []
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-23T18:49:21Z' }
+						]
+					},
+				},
+			];
+
+			expect(getCompletedBadges(badges)).toEqual([
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-22T18:49:21Z' }
+						]
+					},
+					earnedAtDate: '2024-10-22T18:49:21Z',
+					level: 0,
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-23T18:49:21Z' }
+						]
+					},
+					earnedAtDate: '2024-10-23T18:49:21Z',
+					level: 0,
+				}
+			]);
+		});
+		it('should return empty array when not badges', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges(null)).toEqual([]);
+		});
+		it('should return empty array when badges are not well formatted', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges([
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: null }
+						]
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: undefined }
+						]
+					},
+				}
+			])).toEqual([]);
+		});
+	});
 });

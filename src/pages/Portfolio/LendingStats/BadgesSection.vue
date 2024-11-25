@@ -6,7 +6,7 @@
 				v-if="!isLoading"
 				class="tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center"
 			>
-				{{ badgesObtained }}/{{ totalPossibleBadges }}
+				{{ badgesObtained }}
 			</span>
 			<kv-loading-placeholder
 				v-else
@@ -16,7 +16,6 @@
 		</h2>
 		<badges-list
 			:completed-achievements="completedAchievements"
-			:total-possible-badges="totalPossibleBadges"
 			:is-loading="isLoading"
 		/>
 	</section>
@@ -39,10 +38,9 @@ export default {
 			type: Array,
 			default: () => []
 		},
-		/* total number of possible badges */
-		totalPossibleBadges: {
-			type: Number,
-			default: 0
+		isLoading: {
+			type: Boolean,
+			default: false
 		},
 	},
 	components: {
@@ -52,9 +50,6 @@ export default {
 	computed: {
 		badgesObtained() {
 			return this.completedAchievements.length ?? 0;
-		},
-		isLoading() {
-			return this.totalPossibleBadges === 0;
 		},
 	},
 };

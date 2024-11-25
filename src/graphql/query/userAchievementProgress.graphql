@@ -1,5 +1,5 @@
-query UserAchievementProgress {
-  userAchievementProgress {
+query UserAchievementProgress($publicId: String) {
+  userAchievementProgress(publicId: $publicId) {
     id
     lendingAchievements {
       id
