@@ -256,24 +256,6 @@
 							data-testid="bp-lend-cta-jump-links"
 						/>
 					</div>
-					<div v-if="!!activities && !isSticky">
-						<hr
-							class="tw-block tw-border-tertiary tw-w-full tw-my-2"
-						>
-						<supported-by-lenders
-							:participants="participants"
-						/>
-						<kv-loan-activities
-							class="tw-w-full"
-							:loan="loan"
-							:activities="activities"
-							:basket-items="basketItems"
-							:user-balance="userBalance"
-							:error-msg="errorMsg"
-							:is-adding="isAdding"
-							@add-to-basket="addToBasket"
-						/>
-					</div>
 				</div>
 			</kv-grid>
 
@@ -393,8 +375,6 @@ import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvLoanActivities from '#src/components/Kv/KvLoanActivities';
-import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
 import KvUiSelect from '#kv-components/KvSelect';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import KvUiButton from '#kv-components/KvButton';
@@ -412,10 +392,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false,
-		},
-		activities: {
-			type: Object,
-			default: null,
 		},
 		enableHugeAmount: {
 			type: Boolean,
@@ -436,8 +412,6 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		KvLoanActivities,
-		SupportedByLenders,
 	},
 	data() {
 		return {
@@ -575,11 +549,7 @@ export default {
 		},
 	},
 	methods: {
-		async addToBasket(lendAmount = 0) {
-			if (lendAmount) {
-				this.$kvTrackEvent('Borrower profile', 'click', 'loan-activities-lend', this.loan?.id, lendAmount);
-			}
-
+		async addToBasket() {
 			if (this.teamData?.id) {
 				const challenge = {
 					teamId: this.teamData.id,
@@ -591,7 +561,6 @@ export default {
 
 			this.isAdding = true;
 			this.errorMsg = '';
-			this.selectedOption = Number(lendAmount) || this.selectedOption;
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
@@ -866,9 +835,6 @@ export default {
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
 		},
-		participants() {
-			return this.activities?.lend?.loan?.lendingActions ?? {};
-		}
 	},
 	mounted() {
 		this.createWrapperObserver();

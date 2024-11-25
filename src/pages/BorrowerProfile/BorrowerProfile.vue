@@ -179,7 +179,6 @@ import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
 import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
-import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
@@ -190,7 +189,6 @@ const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? 
 
 const SHARE_LANGUAGE_EXP = 'share_language_bp';
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
-const ACTIVITY_FEED_EXP = 'activity_feed_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const preFetchQuery = gql`
@@ -609,22 +607,6 @@ export default {
 			if (educationExpData.version === 'b') {
 				this.showEducationPlacementExp = true;
 			}
-		}
-
-		const activityFeedExpData = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'borrower-profile',
-			ACTIVITY_FEED_EXP,
-			'EXP-ACK-1037-MAR2024',
-		);
-		if (activityFeedExpData?.version === 'b') {
-			const response = await this.apollo.query({
-				query: loanActivitiesQuery,
-				variables: { loanId: this.loanId }
-			});
-
-			this.activities = response?.data ?? null;
 		}
 
 		const challengeHeaderExpData = this.apollo.readFragment({
