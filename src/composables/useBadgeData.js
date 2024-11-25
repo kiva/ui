@@ -399,7 +399,7 @@ export default function useBadgeData() {
 		const completedBadgesArr = [];
 
 		badges?.forEach(badge => {
-			if (badge.achievementData?.tiers?.length) {
+			if (badge?.achievementData?.tiers?.length) {
 				const { tiers } = badge.achievementData;
 				tiers.forEach(tier => {
 					if (tier.completedDate) {
