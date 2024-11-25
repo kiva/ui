@@ -16,7 +16,6 @@
 		</h2>
 		<badges-list
 			:completed-achievements="completedAchievements"
-			:total-possible-badges="totalPossibleBadges"
 			:is-loading="isLoading"
 		/>
 	</section>
