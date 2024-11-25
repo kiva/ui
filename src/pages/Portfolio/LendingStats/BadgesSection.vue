@@ -6,7 +6,7 @@
 				v-if="!isLoading"
 				class="tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center"
 			>
-				{{ badgesObtained }}/{{ totalPossibleBadges }}
+				{{ badgesObtained }}
 			</span>
 			<kv-loading-placeholder
 				v-else
