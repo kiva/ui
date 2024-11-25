@@ -101,8 +101,7 @@
 											v-if="favorites > 0"
 											:to="{ path: '/lend', query: { lenderFavorite: userId } }"
 											v-kv-track-event="['TopNav','click-Lend-Favorites']"
-											class="lend-menu-link tw-text-primary tw-text-left
-												tw-py-1 tw-inline-block"
+											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>
 											Saved loans
 										</router-link>
@@ -118,8 +117,7 @@
 											v-if="hasSearches"
 											@click="openSection(savedSearchesTitle)"
 											:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
-											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block
-											hover:tw-text-action-highlight hover:tw-underline"
+											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>
 											{{ savedSearchesTitle }}
 										</button>
@@ -134,8 +132,7 @@
 										<a
 											href="/lend/countries-not-lent"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
-											class="tw-text-primary tw-text-left hover:tw-text-action-highlight
-												tw-py-1 tw-inline-block"
+											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>
 											Countries I haven't lent to
 										</a>
