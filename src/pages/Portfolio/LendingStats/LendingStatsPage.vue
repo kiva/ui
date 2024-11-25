@@ -23,7 +23,7 @@
 					</p>
 					<hr class="tw-border-tertiary tw-my-4">
 					<badges-section
-						:total-possible-badges="totalPossibleBadges"
+						:is-loading="badgesLoading"
 						:completed-achievements="completedAchievements"
 					/>
 					<hr class="tw-border-tertiary tw-my-4">
@@ -178,10 +178,8 @@ export default {
 
 			return completedBadgesArr;
 		},
-		totalPossibleBadges() {
-			return this.badgesData.reduce((acc, badge) => {
-				return acc + (badge?.contentfulData?.length ?? 0);
-			}, 0);
+		badgesLoading() {
+			return !this.badgesData.length;
 		}
 	},
 	methods: {

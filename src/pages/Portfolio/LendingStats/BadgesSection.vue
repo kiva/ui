@@ -38,10 +38,9 @@ export default {
 			type: Array,
 			default: () => []
 		},
-		/* total number of possible badges */
-		totalPossibleBadges: {
-			type: Number,
-			default: 0
+		isLoading: {
+			type: Boolean,
+			default: false
 		},
 	},
 	components: {
@@ -51,9 +50,6 @@ export default {
 	computed: {
 		badgesObtained() {
 			return this.completedAchievements.length ?? 0;
-		},
-		isLoading() {
-			return this.totalPossibleBadges === 0;
 		},
 	},
 };
