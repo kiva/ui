@@ -448,7 +448,6 @@ export default {
 			inPfp: false,
 			userBalance: undefined,
 			loan: null,
-			errorMsg: '',
 		};
 	},
 	apollo: {
@@ -560,7 +559,6 @@ export default {
 			}
 
 			this.isAdding = true;
-			this.errorMsg = '';
 			setLendAmount({
 				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
 				apollo: this.apollo,
@@ -577,11 +575,8 @@ export default {
 					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
 				}
 				this.isAdding = false;
-				this.errorMsg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message
-					? e[0].message
-					: 'There was a problem adding the loan to your basket';
-
-				this.$showTipMsg(this.errorMsg, 'error');
+				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit' && e[0]?.message;
+				this.$showTipMsg(msg, 'error');
 			});
 		},
 		createWrapperObserver() {
