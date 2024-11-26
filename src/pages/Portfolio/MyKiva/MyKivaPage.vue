@@ -207,7 +207,7 @@ const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
 
 const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
-	return tieredBadges.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
 
 const handleShowNavigation = () => {
