@@ -114,7 +114,7 @@
 <script>
 import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import numeral from 'numeral';
-import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '#kv-components/KvProgressBar';
 
 export default {
 	name: 'LoanProgress',

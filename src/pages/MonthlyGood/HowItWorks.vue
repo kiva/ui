@@ -18,7 +18,7 @@ import CenteredRichText from '#src/components/Contentful/CenteredRichText';
 import RichTextItemsCentered from '#src/components/Contentful/RichTextItemsCentered';
 import { darkGreenTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
 
-import KvThemeProvider from '@kiva/kv-components/vue/KvThemeProvider';
+import KvThemeProvider from '#kv-components/KvThemeProvider';
 
 export default {
 	name: 'HowItWorks',

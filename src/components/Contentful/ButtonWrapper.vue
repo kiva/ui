@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '#kv-components/KvButton';
 import emitter from '#src/plugins/event-emitter';
 
 /**

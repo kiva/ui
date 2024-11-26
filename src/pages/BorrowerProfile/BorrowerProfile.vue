@@ -184,7 +184,7 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 

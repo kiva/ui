@@ -105,8 +105,8 @@ import { required, minValue, maxValue } from '@vuelidate/validators';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
+import KvButton from '#kv-components/KvButton';
+import KvSelect from '#kv-components/KvSelect';
 
 /**
  * This CTA goes to the MG setup form

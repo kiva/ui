@@ -1,7 +1,7 @@
 <template>
 	<footer
 		class="tw-p-2 md:tw-p-3
-				lg:tw-px-2 lg:tw-py-3 tw-bg-secondary tw-text-primary
+				lg:tw-px-2 lg:tw-py-3 tw-bg-primary tw-text-primary
 				print:tw-p-0 print:tw-font-book print:tw-min-h-[auto]"
 	>
 		<kv-page-container>
@@ -821,9 +821,9 @@ import { getYear } from 'date-fns';
 import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import Disclaimers from '#src/components/WwwFrame/DisclaimersContentful';
 import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import appStoreLogoUrl from '#src/assets/icons/app-store.svg?url';
 import playStoreLogoUrl from '#src/assets/icons/play-store.svg?url';
 

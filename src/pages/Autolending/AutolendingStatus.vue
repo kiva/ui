@@ -92,7 +92,7 @@ import KvSelect from '#src/components/Kv/KvSelect';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import KvRadio from '#src/components/Kv/KvRadio';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvLightbox from '#kv-components/KvLightbox';
 
 export default {
 	name: 'AutolendingStatus',

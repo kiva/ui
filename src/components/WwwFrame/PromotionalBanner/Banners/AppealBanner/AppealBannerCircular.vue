@@ -159,10 +159,10 @@ import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { mdiClose } from '@mdi/js';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvContentfulImg from '@kiva/kv-components/vue/KvContentfulImg';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvContentfulImg from '#kv-components/KvContentfulImg';
 
 export default {
 	name: 'AppealBannerCircular',

@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
 </script>
 
 <style lang="postcss" scoped>

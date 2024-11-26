@@ -16,7 +16,7 @@
 				:href="trimmedLink"
 				:target="isExternalLink ? '_blank' : '_self'"
 				class="tw-text-center tw-text-white tw-text-base hover:tw-text-white hover:tw-no-underline
-				tw-align-bottom"
+				tw-no-underline tw-align-bottom"
 				v-kv-track-event="handleTracking"
 			>
 				<span v-html="processedContent"></span>
@@ -24,7 +24,7 @@
 			<a
 				v-if="hasDisclaimer"
 				@click="scrollToSection('#disclaimers')"
-				class="tw-text-white"
+				class="tw-text-white tw-no-underline"
 				v-kv-track-event="['promo', 'click-Contentful-banner', 'disclaimer-superscript', '1']"
 			>
 				<sup>
@@ -46,7 +46,7 @@
 <script>
 import KvIcon from '#src/components/Kv/KvIcon';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvProgressBar from '@kiva/kv-components/vue/KvProgressBar';
+import KvProgressBar from '#kv-components/KvProgressBar';
 
 export default {
 	name: 'GenericPromoBanner',

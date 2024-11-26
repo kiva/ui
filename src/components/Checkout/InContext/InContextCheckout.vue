@@ -162,8 +162,8 @@ import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '#src/components/Checkout/BasketItemsList';
 import OrderTotals from '#src/components/Checkout/OrderTotals';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
+import KvButton from '#kv-components/KvButton';
+import KvGrid from '#kv-components/KvGrid';
 
 export default {
 	name: 'InContextCheckout',

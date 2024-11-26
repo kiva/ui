@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'SidebarContainer',

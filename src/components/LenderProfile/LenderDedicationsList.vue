@@ -76,8 +76,8 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderDedicationsQuery from '#src/graphql/query/lenderDedications.graphql';
 import DedicateHeart from '#src/assets/icons/inline/dedicate-heart.svg';
-import KvPagination from '@kiva/kv-components/vue/KvPagination';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvPagination from '#kv-components/KvPagination';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {

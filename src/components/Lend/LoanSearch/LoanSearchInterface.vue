@@ -199,8 +199,8 @@ import LoanSearchSavedSearch from '#src/components/Lend/LoanSearch/LoanSearchSav
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { gql } from 'graphql-tag';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvLightbox from '@kiva/kv-components/vue/KvLightbox';
+import KvButton from '#kv-components/KvButton';
+import KvLightbox from '#kv-components/KvLightbox';
 
 const COOKIE_KEY = 'kv-search-result-count';
 

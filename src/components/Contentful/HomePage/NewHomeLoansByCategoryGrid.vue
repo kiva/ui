@@ -25,7 +25,7 @@ import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mix
 import KivaMultiCategoryGrid from '#src/components/Homepage/HomeExp/KivaMultiCategoryGrid';
 import { loanFieldsFragment } from '#src/components/LoanCards/NewHomePageLoanCard';
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 /**
  * Extract Loan Channel settings from Contentful Ui Setting dataObject

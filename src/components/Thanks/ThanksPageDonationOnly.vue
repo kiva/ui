@@ -128,9 +128,9 @@ import { getFullUrl } from '#src/util/urlUtils';
 import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 const userQuery = gql`query userQuery {
 	my {

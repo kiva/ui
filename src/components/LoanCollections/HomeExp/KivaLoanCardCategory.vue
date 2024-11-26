@@ -80,8 +80,8 @@
 <script>
 import getCategoryName from '#src/util/categoryUtils';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
-import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvCarousel from '#kv-components/KvCarousel';
+import KvButton from '#kv-components/KvButton';
 
 export default {
 	name: 'KivaLoanCardCategory',

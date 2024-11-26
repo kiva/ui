@@ -102,9 +102,9 @@ import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
 import MonthlyGoodModule from '#src/components/Categories/MonthlyGoodModule';
 import FrequentlyAskedQuestions from '#src/components/Contentful/FrequentlyAskedQuestions';
 import { gql } from 'graphql-tag';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
+import KvButton from '#kv-components/KvButton';
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {

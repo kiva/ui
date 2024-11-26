@@ -8,7 +8,7 @@
 			:href="impactDashboardLink"
 			class="
 					tw-text-white
-					hover:tw-no-underline hover:tw-text-white
+					tw-no-underline hover:tw-no-underline hover:tw-text-white
 					active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="impact-dashboard-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
@@ -29,7 +29,7 @@
 				:to="`/cc/${promoData.pageId}`"
 				class="
 					tw-text-white
-					hover:tw-no-underline hover:tw-text-white
+					tw-no-underline hover:tw-no-underline hover:tw-text-white
 					active:tw-text-white visited:tw-text-white focus:tw-text-white"
 				data-testid="cc-promo-banner"
 				v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
@@ -55,7 +55,7 @@
 			href="/lend/freeCreditEligible"
 			class="
 				tw-text-white
-				hover:tw-no-underline hover:tw-text-white
+				tw-no-underline hover:tw-no-underline hover:tw-text-white
 				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
@@ -68,7 +68,7 @@
 			:to="`/cc/${promoData.pageId}`"
 			class="
 				tw-text-white
-				hover:tw-no-underline hover:tw-text-white
+				tw-no-underline hover:tw-no-underline hover:tw-text-white
 				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="cc-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"

@@ -324,10 +324,10 @@ import LegacySubscriberNotice from '#src/components/MonthlyGood/LegacySubscriber
 import MonthlyGoodDropInPaymentWrapper from '#src/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvCheckbox from '@kiva/kv-components/vue/KvCheckbox';
-import KvSelect from '@kiva/kv-components/vue/KvSelect';
-import KvTextInput from '@kiva/kv-components/vue/KvTextInput';
+import KvButton from '#kv-components/KvButton';
+import KvCheckbox from '#kv-components/KvCheckbox';
+import KvSelect from '#kv-components/KvSelect';
+import KvTextInput from '#kv-components/KvTextInput';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
 	general {

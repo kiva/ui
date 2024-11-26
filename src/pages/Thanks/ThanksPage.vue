@@ -184,7 +184,7 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
-import KvButton from '@kiva/kv-components/vue/KvButton';
+import KvButton from '#kv-components/KvButton';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 

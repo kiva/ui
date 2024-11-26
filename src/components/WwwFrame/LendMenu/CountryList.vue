@@ -5,7 +5,8 @@
 				v-if="country.count > 0"
 				:href="`/lend/filter?country=${country.isoCode}`"
 				v-kv-track-event="['TopNav', 'click-Lend-Country', country.name]"
-				class="tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1"
+				class="tw-text-primary tw-block tw-w-full tw-py-1
+					tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight"
 			>
 				{{ country.name }} ({{ country.count }})
 			</a>

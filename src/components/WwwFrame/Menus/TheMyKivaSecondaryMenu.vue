@@ -195,8 +195,8 @@ import KvDropdown from '#src/components/Kv/KvDropdown';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import TheSettingsTertiaryMenu from '#src/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
 
@@ -277,10 +277,11 @@ export default {
 
 <style lang="postcss" scoped>
 .desktop-link {
-	@apply tw-block tw-pr-4 tw-py-2 tw-text-primary-inverse hover:tw-underline hover:tw-text-primary-inverse;
+	@apply tw-block tw-pr-4 tw-py-2 tw-text-primary-inverse hover:tw-text-primary-inverse;
+	@apply tw-no-underline hover:tw-underline;
 }
 
 .mobile-link {
-	@apply tw-block tw-px-2 tw-py-1 tw-w-full tw-border-b tw-border-tertiary;
+	@apply tw-block tw-px-2 tw-py-1 tw-w-full tw-border-b tw-border-tertiary tw-no-underline;
 }
 </style>

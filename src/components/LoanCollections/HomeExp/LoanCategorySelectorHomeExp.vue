@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvTab from '@kiva/kv-components/vue/KvTab';
-import KvTabs from '@kiva/kv-components/vue/KvTabs';
+import KvButton from '#kv-components/KvButton';
+import KvTab from '#kv-components/KvTab';
+import KvTabs from '#kv-components/KvTabs';
 
 export default {
 	name: 'LoanCategorySelectorHomeExp',

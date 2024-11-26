@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'KvDefaultWrapper',

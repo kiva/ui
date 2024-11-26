@@ -94,9 +94,9 @@
 
 <script>
 import { mdiChevronLeft, mdiCheckCircleOutline } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvCarousel from '@kiva/kv-components/vue/KvCarousel';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvButton from '#kv-components/KvButton';
+import KvCarousel from '#kv-components/KvCarousel';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const imageGlob = import.meta.glob('/src/assets/images/thanks-page/badges/*.*', { eager: true, query: '?url' });

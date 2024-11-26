@@ -25,7 +25,7 @@
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
 import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import AsyncLenderSection from './AsyncLenderSection';
 
 const userAchievementProgressQuery = gql`query userAchievementProgress( $publicId: String!) {

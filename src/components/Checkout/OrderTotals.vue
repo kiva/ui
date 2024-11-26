@@ -230,7 +230,7 @@ import {
 } from '#src/util/experiment/experimentUtils';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 
 export default {
 	name: 'OrderTotals',

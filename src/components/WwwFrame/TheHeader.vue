@@ -612,10 +612,10 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvUserAvatar from '@kiva/kv-components/vue/KvUserAvatar';
-import KvButton from '@kiva/kv-components/vue/KvButton';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvUserAvatar from '#kv-components/KvUserAvatar';
+import KvButton from '#kv-components/KvButton';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvPageContainer from '#kv-components/KvPageContainer';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -1035,7 +1035,8 @@ export default {
 <style lang="postcss" scoped>
 .header__button {
 	@apply tw-items-center tw-flex-shrink-0;
-	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight hover:tw-no-underline focus:tw-no-underline;
+	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight;
+	@apply tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
 
@@ -1044,7 +1045,8 @@ export default {
 }
 
 .dropdown-list a {
-	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1;
+	@apply tw-font-medium tw-text-primary tw-block tw-w-full tw-py-1;
+	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
 
 /* CSS grid areas to manage position changes across breakpoints without markup duplication */

@@ -249,10 +249,10 @@ import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/
 import loanCardFieldsFragment from '#src/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '#src/components/LoanCards/LoanTags/LoanTag';
-import KvLoadingPlaceholder from '@kiva/kv-components/vue/KvLoadingPlaceholder';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvUiButton from '@kiva/kv-components/vue/KvButton';
-import KvTextLink from '@kiva/kv-components/vue/KvTextLink';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvUiButton from '#kv-components/KvButton';
+import KvTextLink from '#kv-components/KvTextLink';
 
 const loanQuery = gql`
 	${loanCardFieldsFragment}

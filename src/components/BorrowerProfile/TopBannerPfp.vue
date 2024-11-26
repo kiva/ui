@@ -36,9 +36,9 @@
 
 <script>
 import { mdiInformationOutline } from '@mdi/js';
-import KvMaterialIcon from '@kiva/kv-components/vue/KvMaterialIcon';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'TopBannerPfp',

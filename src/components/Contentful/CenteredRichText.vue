@@ -22,8 +22,8 @@ import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mix
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import DynamicRichText from '#src/components/Contentful/DynamicRichText';
-import KvGrid from '@kiva/kv-components/vue/KvGrid';
-import KvPageContainer from '@kiva/kv-components/vue/KvPageContainer';
+import KvGrid from '#kv-components/KvGrid';
+import KvPageContainer from '#kv-components/KvPageContainer';
 
 export default {
 	name: 'CenteredRichText',
