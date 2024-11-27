@@ -167,6 +167,7 @@ import {
 	watch,
 	nextTick,
 } from 'vue';
+import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
@@ -378,6 +379,7 @@ onMounted(async () => {
 	);
 
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
+	fireHotJarEvent('my_kiva_viewed');
 
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);
