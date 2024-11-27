@@ -407,6 +407,14 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getLastCompletedBadgeLevelData', () => {
+		it('should handle missed data', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+
+			expect(getLastCompletedBadgeLevelData(undefined)).toEqual({});
+
+			expect(getLastCompletedBadgeLevelData({})).toEqual({});
+		});
+
 		it('should return the last completed badge level data when milestoneProgress is available', () => {
 			const { getLastCompletedBadgeLevelData } = useBadgeData();
 			const badge = {
@@ -462,6 +470,12 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getHighestPriorityDisplayBadge', () => {
+		it('should handle undefined', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+
+			expect(getHighestPriorityDisplayBadge(undefined)).toEqual({});
+		});
+
 		it('should return the highest priority badge based on predefined order', () => {
 			const { getHighestPriorityDisplayBadge } = useBadgeData();
 			const badges = [

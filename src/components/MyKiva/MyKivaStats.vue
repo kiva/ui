@@ -51,10 +51,6 @@ import {
 const apollo = inject('apollo');
 
 const props = defineProps({
-	badgesData: {
-		type: Array,
-		default: () => ([])
-	},
 	userAchievements: {
 		type: Array,
 		default: () => ([])
