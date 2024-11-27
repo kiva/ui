@@ -7,7 +7,8 @@ export const badgeWomensEquality = {
 			"level": 1,
 			"levelName": "1",
 			"challengeName": "Women's equality",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/70d21f8db5f93b20be1581ef333dc60e/Women_10.svg"
+			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3dAEh0zYSkqK5Up5q8Flv8/70d21f8db5f93b20be1581ef333dc60e/Women_10.svg",
+			"shareFact": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
 		},
 		{
 			"id": "womens-equality",
@@ -56,6 +57,7 @@ export const badgeWomensEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "womens-equality",
 		"totalProgressToAchievement": 0,
+		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -120,7 +122,8 @@ export const badgeUsEconomicEquality = {
 			"level": 1,
 			"levelName": "1",
 			"challengeName": "U.S. economic equality",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/0155bb0e9a32be6b00071afa4769b10c/US_Business_10.svg"
+			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3C3ddaga4hEXBlb9WxsdlQ/0155bb0e9a32be6b00071afa4769b10c/US_Business_10.svg",
+			"shareFact": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
 		},
 		{
 			"id": "us-economic-equality",
@@ -169,6 +172,7 @@ export const badgeUsEconomicEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "us-economic-equality",
 		"totalProgressToAchievement": 0,
+		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -234,7 +238,8 @@ export const badgeClimateAction = {
 			"level": 1,
 			"levelName": "1",
 			"challengeName": "Climate action",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3YklKNLbiA4kAcOgk5ouaw/14b41006455dfd756f141e0217bb8e9c/Climate_10.svg"
+			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/3YklKNLbiA4kAcOgk5ouaw/14b41006455dfd756f141e0217bb8e9c/Climate_10.svg",
+			"shareFact": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
 		},
 		{
 			"id": "climate-action",
@@ -283,6 +288,7 @@ export const badgeClimateAction = {
 		"__typename": "TieredLendingAchievement",
 		"id": "climate-action",
 		"totalProgressToAchievement": 0,
+		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -347,7 +353,8 @@ export const badgeRefugeeEquality = {
 			"level": 1,
 			"levelName": "1",
 			"challengeName": "Refugee equality",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/1SEhQMUbYUqZopjP2o67XK/c9b1f51837d87905d2a71578c0d6c434/Refugees_10.svg"
+			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/1SEhQMUbYUqZopjP2o67XK/c9b1f51837d87905d2a71578c0d6c434/Refugees_10.svg",
+			"shareFact": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
 		},
 		{
 			"id": "refugee-equality",
@@ -396,6 +403,7 @@ export const badgeRefugeeEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "refugee-equality",
 		"totalProgressToAchievement": 0,
+		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -460,7 +468,8 @@ export const badgeBasicNeeds = {
 			"level": 1,
 			"levelName": "1",
 			"challengeName": "Basic needs",
-			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/694uSymh8om0MxbiCjWZxl/b55c8cb3f3743efdd56b56beea8dfb42/Basic_Needs_10.svg"
+			"imageUrl": "//images.ctfassets.net/j0p9a6ql0rn7/694uSymh8om0MxbiCjWZxl/b55c8cb3f3743efdd56b56beea8dfb42/Basic_Needs_10.svg",
+			"shareFact": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
 		},
 		{
 			"id": "basic-needs",
@@ -509,6 +518,7 @@ export const badgeBasicNeeds = {
 		"__typename": "TieredLendingAchievement",
 		"id": "basic-needs",
 		"totalProgressToAchievement": 0,
+		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
