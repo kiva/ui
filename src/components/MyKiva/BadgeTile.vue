@@ -55,7 +55,13 @@ import { mdiArrowRight } from '@mdi/js';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import { BADGE_IN_PROGRESS, BADGE_SHAPE_OBLONG, getBadgeShape } from '#src/composables/useBadgeModal';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, {
+	ID_WOMENS_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+} from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
 import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
@@ -144,7 +150,30 @@ const tierCaption = computed(() => {
 	const progress = selectedTier?.value?.totalProgressToAchievement ?? '';
 	const target = selectedTier?.value?.tier?.target ?? '';
 
-	return `${progress} of ${target} loans`;
+	let subtitle;
+
+	switch (selectedTier?.value?.badge?.id) {
+		case ID_WOMENS_EQUALITY:
+			subtitle = 'to women';
+			break;
+		case ID_US_ECONOMIC_EQUALITY:
+			subtitle = 'to U.S. entrepreneurs';
+			break;
+		case ID_CLIMATE_ACTION:
+			subtitle = 'to climate action';
+			break;
+		case ID_REFUGEE_EQUALITY:
+			subtitle = 'to refugees';
+			break;
+		case ID_BASIC_NEEDS:
+			subtitle = 'for fundamental needs';
+			break;
+		default:
+			subtitle = '';
+			break;
+	}
+
+	return `${progress} of ${target} loans${subtitle ? ` ${subtitle}` : ''}`;
 });
 
 const badgeClicked = () => {

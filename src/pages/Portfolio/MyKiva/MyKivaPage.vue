@@ -17,7 +17,7 @@
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
-			<section class="tw-pt-2">
+			<section v-if="!allBadgesCompleted" class="tw-pt-2">
 				<BadgeTile
 					:user-info="userInfo"
 					:badges-data="badgeData"
@@ -168,6 +168,7 @@ import {
 	nextTick,
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
+import { defaultBadges } from '#src/util/achievementUtils';
 
 const MY_KIVA_EXP_KEY = 'my_kiva_page';
 
@@ -204,6 +205,11 @@ const updatesOffset = ref(0);
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
+
+const allBadgesCompleted = computed(() => {
+	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
+	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+});
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
