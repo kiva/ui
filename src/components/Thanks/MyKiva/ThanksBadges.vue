@@ -1,5 +1,8 @@
 <template>
-	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
+	<div
+		ref="tyBadgeContainer"
+		class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5"
+	>
 		<!-- Opt In module -->
 		<OptInModule
 			v-if="!isGuest && !isOptedIn"
@@ -8,7 +11,24 @@
 			:number-of-badges="numberOfBadges"
 		/>
 		<!-- Badges module -->
-		<div v-if="hasBadgeData" class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
+		<div
+			v-if="hasBadgeData"
+			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center"
+			:class="{ 'tw-relative' : showBadgeRays }"
+		>
+			<!-- BG Rays -->
+			<div v-show="showBadgeRays" class="ray_box">
+				<div class="ray ray1"></div>
+				<div class="ray ray2"></div>
+				<div class="ray ray3"></div>
+				<div class="ray ray4"></div>
+				<div class="ray ray5"></div>
+				<div class="ray ray6"></div>
+				<div class="ray ray7"></div>
+				<div class="ray ray8"></div>
+				<div class="ray ray9"></div>
+				<div class="ray ray10"></div>
+			</div>
 			<!-- Borrower images -->
 			<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
 				<KvUserAvatar
@@ -26,7 +46,9 @@
 				/>
 			</div>
 			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-			<BadgeContainer>
+			<BadgeContainer
+				:show-shine="showBadgeShine"
+			>
 				<img
 					v-if="badgeImageUrl"
 					:src="badgeImageUrl"
@@ -154,8 +176,9 @@
 </template>
 
 <script setup>
+import _throttle from 'lodash/throttle';
 import {
-	onMounted, ref, computed, inject
+	onMounted, ref, computed, inject, onBeforeUnmount,
 } from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
@@ -208,6 +231,8 @@ const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
+const tyBadgeContainer = ref(null);
+const hasScrolled = ref(false);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -246,6 +271,32 @@ const badgeFunFact = computed(() => {
 });
 
 const badgeFunFactFootnote = computed(() => badgeData.value.contentfulData?.shareFactFootnote ?? '');
+
+const showBadgeShine = computed(() => {
+	if (props.isOptedIn) {
+		return true;
+	}
+	if (hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const showBadgeRays = computed(() => {
+	if (!props.isOptedIn && hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const handleScroll = () => {
+	const { top } = tyBadgeContainer.value.getBoundingClientRect();
+	if (top < -50 && !hasScrolled.value) {
+		hasScrolled.value = true;
+	}
+};
+
+const throttledScroll = _throttle(handleScroll, 200);
 
 const handleContinue = () => {
 	if (props.isGuest) {
@@ -298,15 +349,27 @@ const handleClickOrderConfirmation = () => {
 };
 
 onMounted(() => {
-	confetti({
-		origin: {
-			y: 0.2
-		},
-		particleCount: 150,
-		spread: 200,
-		colors: ['#6AC395', '#223829', '#95D4B3'],
-		disableForReducedMotion: true,
-	});
+	if (props.isOptedIn) {
+		confetti({
+			origin: {
+				y: 0.2
+			},
+			particleCount: 150,
+			spread: 200,
+			colors: ['#6AC395', '#223829', '#95D4B3'],
+			disableForReducedMotion: true,
+		});
+	} else {
+		window.addEventListener('scroll', throttledScroll);
+
+		handleScroll();
+	}
+});
+
+onBeforeUnmount(() => {
+	if (!props.isOptedIn) {
+		window.removeEventListener('scroll', throttledScroll);
+	}
 });
 </script>
 
@@ -342,5 +405,116 @@ onMounted(() => {
 .smaller-borrower-avatar :deep(img) {
 	height: 36px;
 	width: 36px;
+}
+
+/** Rays */
+.ray_box {
+	@apply tw-absolute tw-mx-auto tw-left-0 tw-right-0 tw-bottom-0 tw-aspect-square tw-top-5;
+	transform-origin: center;
+	width: 250px;
+}
+
+.ray {
+	background: linear-gradient(180deg, rgba(241, 179, 67, 0.09) 0%,
+		rgba(241, 179, 67, 0.5) 50%, rgba(241, 179, 67, 0.03) 100%);
+    margin-left:10px;
+    border-radius:80% 80% 0 0;
+    position:absolute;
+}
+
+.ray1 {
+    height:180px;
+    width:30px;
+	transform: rotate(180deg);
+    top: -10%;
+    left: 40%;
+	animation: ray_anim 2.5s ease-in-out infinite;
+}
+.ray2 {
+    height:100px;
+    width:8px;
+	transform: rotate(220deg);
+    top: 8%;
+	left: 75%;
+	animation: ray_anim 2.5s ease-in-out 1s infinite;
+}
+.ray3 {
+    height:170px;
+    width:20px;
+	transform: rotate(250deg);
+    top: 25%;
+	left: 75%;
+	animation: ray_anim 2.5s ease-in-out 1.5s infinite;
+}
+.ray4 {
+    height:120px;
+    width:14px;
+	transform: rotate(305deg);
+    top: 70%;
+    left: 85%;
+	animation: ray_anim 2.5s ease-in-out 0.5s infinite;
+}
+.ray5 {
+    height:140px;
+    width:30px;
+	transform: rotate(-15deg);
+    top: 90%;
+    left: 55%;
+	animation: ray_anim 2.5s ease-in-out 1s infinite;
+}
+.ray6 {
+    height:130px;
+    width:35px;
+	transform: rotate(30deg);
+    top: 95%;
+    left: 15%;
+	animation: ray_anim 2.5s ease-in-out 2s infinite;
+}
+.ray7 {
+    height:180px;
+    width:10px;
+	transform: rotate(70deg);
+    top: 50%;
+    left: 10%;
+	animation: ray_anim 2.5s ease-in-out 1.5s infinite;
+}
+.ray8 {
+    height:120px;
+    width:30px;
+	transform: rotate(100deg);
+    top: 38%;
+    left: -5%;
+	animation: ray_anim 2.5s ease-in-out 0.5s infinite;
+}
+.ray9 {
+    height:80px;
+    width:10px;
+	transform: rotate(120deg);
+    top: 25%;
+    left: 1%;
+	animation: ray_anim 2.5s ease-in-out 2s infinite;
+}
+.ray10 {
+    height:190px;
+    width:23px;
+	transform: rotate(150deg);
+    top: 1%;
+    left: 25%;
+	animation: ray_anim 2.5s ease-in-out 1s infinite;
+}
+
+@keyframes ray_anim {
+	0% {
+		opacity: 0.4;
+	}
+	25% {
+		opacity: 1;
+	}
+	75% {
+		opacity: 1;
+	}
+    100% {
+		opacity: 0.4;
+	}
 }
 </style>

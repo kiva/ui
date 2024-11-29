@@ -1,15 +1,14 @@
 <template>
 	<div
-		class="tw-relative tw-inline-block tw-cursor-pointer"
+		class="tw-relative tw-inline-block tw-w-auto"
 		:class="{
 			'tw-grayscale': isInProgress,
-			'invisible-badge': isLocked,
-			'rays-bg': showRays,
+			'invisible-badge tw-cursor-pointer': isLocked,
 		}"
 		@click="handleBadgeClick"
 	>
-		<FirstBadgeShine v-if="showShine" ref="firstShine" class="shine tw-w-full" />
-		<SecondBadgeShine v-if="showShine" ref="secondShine" class="second-shine tw-w-full" />
+		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
+		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
 		<slot></slot>
 		<component
 			v-if="isInProgress"
@@ -38,7 +37,13 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from 'vue';
+import {
+	defineProps,
+	ref,
+	computed,
+	onMounted,
+	watch,
+} from 'vue';
 import {
 	BADGE_STATUS,
 	BADGE_COMPLETED,
@@ -76,10 +81,6 @@ const props = defineProps({
 		type: String,
 		default: BADGE_SHAPE_CIRCLE,
 		validator: value => BADGE_SHAPE.includes(value),
-	},
-	showRays: {
-		type: Boolean,
-		default: false,
 	},
 	showShine: {
 		type: Boolean,
@@ -141,6 +142,13 @@ const outlineStyles = computed(() => {
 });
 
 const handleBadgeClick = () => {
+	if (isLocked.value) {
+		animateLock.value = true;
+		setTimeout(() => { animateLock.value = false; }, 1600);
+	}
+};
+
+const handleShine = () => {
 	if (firstShine.value && secondShine.value) {
 		firstShine.value.$el.classList.remove('animate');
 		secondShine.value.$el.classList.remove('animate');
@@ -150,12 +158,19 @@ const handleBadgeClick = () => {
 			secondShine.value.$el.classList.add('animate');
 		}, 10);
 	}
-
-	if (isLocked.value) {
-		animateLock.value = true;
-		setTimeout(() => { animateLock.value = false; }, 1600);
-	}
 };
+
+watch(() => props.showShine, newValue => {
+	if (newValue) {
+		handleShine();
+	}
+});
+
+onMounted(() => {
+	if (props.showShine) {
+		handleShine();
+	}
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -213,74 +228,34 @@ const handleBadgeClick = () => {
 	animation: wiggle 2s linear;
 }
 
-/** Rays */
-.rays-bg {
-	animation: transitionRays 2s infinite;
-
-	@apply tw-w-full tw-h-full tw-bg-cover tw-bg-center;
-}
-
-.rays-bg::before {
-	animation: fadeRays 2s infinite;
-
-	@apply tw-opacity-0;
-}
-
-@keyframes transitionRays {
-	0% {
-		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
-	}
-
-	50% {
-		background-image: url('/src/assets/images/my-kiva/rays/second.svg');
-	}
-
-	99% {
-		background-image: url('/src/assets/images/my-kiva/rays/third.svg');
-	}
-
-	100% {
-		background-image: url('/src/assets/images/my-kiva/rays/first.svg');
-	}
-}
-
-@keyframes fadeRays {
-	0%, 99% {
-		@apply tw-opacity-full;
-	}
-
-	100%  {
-		@apply tw-opacity-0;
-	}
-}
-
 /** Shine */
 .shine, .second-shine {
 	width: 500px;
 	transition: opacity 0.3s ease;
 
-	@apply tw-absolute tw-w-full tw-h-full tw-opacity-0 tw-pointer-events-none tw--top-full tw--left-full;
+	@apply tw-absolute tw-w-full tw-h-full tw-opacity-0 tw--top-1/2 tw--left-1/2;
 }
 
 .shine.animate {
-	animation: shineMove 1.2s ease forwards;
-
-	@apply tw-opacity-full;
+	animation: shineMove 0.8s ease forwards;
 }
 
 .second-shine.animate {
-	animation: shineMove 1.2s ease forwards 0.05s;
-
-	@apply tw-opacity-full;
+	animation: shineMove 0.8s ease forwards 0.05s;
 }
 
 @keyframes shineMove {
 	0% {
-		@apply tw--top-full tw--left-full;
+		@apply tw--top-1/2 tw--left-1/2;
 	}
-
+	2% {
+		@apply tw-opacity-full;
+	}
+	95% {
+		@apply tw-opacity-full;
+	}
 	100% {
-		@apply tw-top-full tw-left-full;
+		@apply tw-top-3/4 tw-left-3/4 tw-opacity-0;
 	}
 }
 </style>
