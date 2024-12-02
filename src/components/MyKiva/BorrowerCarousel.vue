@@ -262,7 +262,7 @@ watch(() => loans.value, () => {
 	if (!hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
 	} else {
-		$kvTrackEvent('portfolio', 'view', 'Active borrowers', loans.value.length);
+		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
 	}
 });
 
