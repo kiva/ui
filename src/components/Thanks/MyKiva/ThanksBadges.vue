@@ -12,7 +12,7 @@
 		/>
 		<!-- Badges module -->
 		<div
-			v-if="hasBadgeData"
+			v-if="isLoading || hasBadgeData"
 			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center tw-overflow-hidden"
 			:class="{ 'tw-relative' : showBadgeRays }"
 		>
@@ -30,50 +30,54 @@
 				<div class="ray ray10"></div>
 			</div>
 			<!-- Borrower images -->
-			<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
-				<KvUserAvatar
-					v-for="(loan, index) in loansToDisplay"
-					:key="loan.id"
-					:lender-name="loan?.name"
-					:lender-image-url="loan?.image?.url"
-					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
-					:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
-					:style="{
-						zIndex: index === 1 ? 2 : 1,
-						marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
-						marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-22px' : '0',
-					}"
-				/>
-			</div>
-			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-			<BadgeContainer
-				:show-shine="showBadgeShine"
-			>
-				<img
-					v-if="badgeImageUrl"
-					:src="badgeImageUrl"
-					alt="Badge"
-					style="height: 250px; width: 250px;"
+			<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
+			<template v-else>
+				<!-- Borrower images -->
+				<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
+					<KvUserAvatar
+						v-for="(loan, index) in loansToDisplay"
+						:key="loan.id"
+						:lender-name="loan?.name"
+						:lender-image-url="loan?.image?.url"
+						class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+						:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
+						:style="{
+							zIndex: index === 1 ? 2 : 1,
+							marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
+							marginLeft: loansToDisplay.length > 1&& index === loansToDisplay.length - 1
+								? '-22px' : '0',
+						}"
+					/>
+				</div>
+				<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
+				<BadgeContainer>
+					<img
+						v-if="badgeImageUrl"
+						:src="badgeImageUrl"
+						:show-shine="showBadgeShine"
+						alt="Badge"
+						style="height: 250px; width: 250px;"
+					>
+				</BadgeContainer>
+				<h3>{{ badgeLevelName }} unlocked</h3>
+				<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
+				<KvButton
+					class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
+					v-kv-track-event="[
+						'post-checkout',
+						'click',
+						'create-new-account',
+						isGuest ? 'guest' : 'signed-in',
+						numberOfBadges,
+					]"
 				>
-			</BadgeContainer>
-			<h3>{{ badgeLevelName }} unlocked</h3>
-			<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
-			<KvButton
-				class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
-				v-kv-track-event="[
-					'post-checkout',
-					'click',
-					'create-new-account',
-					isGuest ? 'guest' : 'signed-in',
-					numberOfBadges,
-				]"
-			>
-				{{ continueButtonText }}
-				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
-			</KvButton>
-			<p v-if="badgeFunFactFootnote" class="tw-text-small">
-				*{{ badgeFunFactFootnote }}
-			</p>
+					{{ continueButtonText }}
+					<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
+				</KvButton>
+				<p v-if="badgeFunFactFootnote" class="tw-text-small">
+					*{{ badgeFunFactFootnote }}
+				</p>
+			</template>
 		</div>
 		<!-- Miscellaneous module -->
 		<div class="content-box">
@@ -178,7 +182,12 @@
 <script setup>
 import _throttle from 'lodash/throttle';
 import {
-	onMounted, ref, computed, inject, onBeforeUnmount,
+	onMounted,
+	ref,
+	computed,
+	inject,
+	watch,
+	onBeforeUnmount,
 } from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
@@ -192,6 +201,7 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvButton from '#kv-components/KvButton';
 import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import OptInModule from './OptInModule';
 
 const props = defineProps({
@@ -215,6 +225,11 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	/**
+	 * [{
+	 *   achievementId: string,
+	 * }]
+	 */
 	badgesAchieved: {
 		type: Array,
 		default: () => ([]),
@@ -225,8 +240,16 @@ const props = defineProps({
 	},
 });
 
-const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBadgeData();
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	badgeData,
+	getHighestPriorityDisplayBadge,
+	getLastCompletedBadgeLevelData,
+} = useBadgeData();
 
+const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
+const badgeDataAchieved = ref();
 const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
@@ -235,6 +258,9 @@ const tyBadgeContainer = ref(null);
 const hasScrolled = ref(false);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
+
+const isLoading = computed(() => !badgeDataAchieved.value);
 
 const numberOfBadges = computed(() => props.badgesAchieved.length);
 
@@ -254,23 +280,23 @@ const continueButtonText = computed(() => {
 	return numberOfBadges.value === 1 ? 'Continue' : `See all ${numberOfBadges.value} milestones`;
 });
 
-const badgeData = computed(() => {
-	const displayedBadge = getHighestPriorityDisplayBadge(props.badgesAchieved);
+const displayedBadgeData = computed(() => {
+	const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
 	return getLastCompletedBadgeLevelData(displayedBadge);
 });
 
-const badgeImageUrl = computed(() => badgeData.value.contentfulData?.imageUrl ?? '');
+const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
-const badgeLevelName = computed(() => badgeData.value.levelName ?? '');
+const badgeLevelName = computed(() => displayedBadgeData.value.levelName ?? '');
 
 const hasBadgeData = computed(() => !!badgeLevelName.value);
 
 const badgeFunFact = computed(() => {
 	// eslint-disable-next-line max-len
-	return badgeData.value.contentfulData?.shareFact || 'Making a difference starts here. See your impact and achievements.';
+	return displayedBadgeData.value.contentfulData?.shareFact || 'Making a difference starts here. See your impact and achievements.';
 });
 
-const badgeFunFactFootnote = computed(() => badgeData.value.contentfulData?.shareFactFootnote ?? '');
+const badgeFunFactFootnote = computed(() => displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '');
 
 const showBadgeShine = computed(() => {
 	if (props.isOptedIn) {
@@ -349,6 +375,10 @@ const handleClickOrderConfirmation = () => {
 };
 
 onMounted(() => {
+	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
+	fetchAchievementData(apollo);
+	fetchContentfulData(apollo);
+
 	if (props.isOptedIn) {
 		confetti({
 			origin: {
@@ -371,6 +401,23 @@ onBeforeUnmount(() => {
 		window.removeEventListener('scroll', throttledScroll);
 	}
 });
+
+watch(() => badgeData.value, () => {
+	if (badgeData.value.length) {
+		badgeDataAchieved.value = badgeData.value.filter(b => badgeIdsAchieved.value.includes(b.id));
+
+		// Show confetti only after the badge data has been loaded and displayed
+		confetti({
+			origin: {
+				y: 0.2
+			},
+			particleCount: 150,
+			spread: 200,
+			colors: ['#6AC395', '#223829', '#95D4B3'],
+			disableForReducedMotion: true,
+		});
+	}
+}, { immediate: true });
 </script>
 
 <style lang="postcss" scoped>

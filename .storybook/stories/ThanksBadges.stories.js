@@ -5,8 +5,10 @@ import {
 	mockedReceiptData,
 	mockLender,
 	mockLoans,
-	mockOldBadge,
-	mockTieredBadge,
+	mockUserAchievementProgress,
+	mockContentful,
+	MOCK_OLD_BADGE_ID,
+	MOCK_TIERED_BADGE_ID,
 } from '../mock-data/thanks-badges-mock-data';
 
 export default {
@@ -14,17 +16,35 @@ export default {
 	component: ThanksBadges,
 };
 
-const story = (args = {}) => {
+const queryResult = {
+	data: {
+		userAchievementProgress: mockUserAchievementProgress,
+		contentful: mockContentful,
+	}
+};
+
+const mockOldBadge = { achievementId: MOCK_OLD_BADGE_ID };
+
+const mockTieredBadge = { achievementId: MOCK_TIERED_BADGE_ID };
+
+const story = (args = {}, result = queryResult) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ThanksBadges },
-		mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
+		mixins: [apolloStoryMixin({ queryResult: result }), cookieStoreStoryMixin()],
 		setup() { return { args }; },
 		template: '<ThanksBadges v-bind="args" />',
 	});
 	template.args = args;
 	return template;
 };
+
+export const Loading = story({
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+}, {});
 
 export const UserLoggedIn = story({
 	isGuest: false,

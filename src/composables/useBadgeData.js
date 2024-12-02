@@ -334,7 +334,7 @@ export default function useBadgeData() {
 	 * @returns The last completed level
 	 */
 	const getLastCompletedBadgeLevelData = badge => {
-		if (badge.achievementData?.milestoneProgress?.length) {
+		if (badge?.achievementData?.milestoneProgress?.length) {
 			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
 			if (earnedAtDate) {
 				const contentfulData = badge.contentfulData?.[0] ?? {};
@@ -376,7 +376,7 @@ export default function useBadgeData() {
 			ID_REFUGEE_EQUALITY
 		];
 		let displayedBadge;
-		if (badges.length) {
+		if (badges?.length) {
 			const sortedBadges = JSON.parse(JSON.stringify(badges));
 			sortedBadges.sort((a, b) => badgeOrder.indexOf(a.id) - badgeOrder.indexOf(b.id));
 			for (let i = 0; i < sortedBadges.length; i += 1) {

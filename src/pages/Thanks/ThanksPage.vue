@@ -28,7 +28,7 @@
 				:lender="lender"
 				:loans="loans"
 				:receipt="receipt"
-				:badges-achieved="[]"
+				:badges-achieved="badgesAchieved"
 				:router="$router"
 			/>
 		</template>
