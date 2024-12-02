@@ -613,7 +613,7 @@ watch(() => badgeData.value, () => {
 		opacity: 1;
 	}
 
-    100% {
+	100% {
 		opacity: 0.4;
 	}
 }
