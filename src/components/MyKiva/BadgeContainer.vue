@@ -248,6 +248,7 @@ onMounted(() => {
 	0% {
 		@apply tw--top-full tw--left-full;
 	}
+
 	100% {
 		@apply tw-top-full tw-left-full;
 	}
