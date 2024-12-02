@@ -126,7 +126,8 @@ import {
 	toRefs,
 	inject,
 	onMounted,
-	onBeforeUnmount
+	onBeforeUnmount,
+	watch,
 } from 'vue';
 import {
 	PAYING_BACK,
@@ -257,13 +258,15 @@ const onInteractCarousel = interaction => {
 	tabs.value.tabContext.selectedIndex = interaction.value;
 };
 
-onMounted(() => {
+watch(() => loans.value, () => {
 	if (!hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
 	} else {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', loans.value.length);
 	}
+});
 
+onMounted(() => {
 	window.addEventListener('resize', throttledResize);
 
 	handleResize();
