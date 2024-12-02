@@ -414,8 +414,8 @@ onBeforeUnmount(() => {
 }
 
 .ray {
-	background: linear-gradient(180deg, rgba(241, 179, 67, 0.09) 0%,
-		rgba(241, 179, 67, 0.5) 50%, rgba(241, 179, 67, 0.03) 100%);
+	background: linear-gradient(180deg, rgba(241, 179, 67, 0.03) 0%,
+		rgba(241, 179, 67, 0.25) 50%, rgba(241, 179, 67, 0.03) 100%);
     border-radius:80% 80% 0 0;
 	animation: ray_anim 2.5s ease-in-out infinite;
 	@apply tw-absolute tw-ml-1;
