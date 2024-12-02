@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-relative tw-inline-block tw-w-auto"
+		class="tw-relative tw-inline-block tw-w-auto tw-overflow-hidden"
 		:class="{
 			'tw-grayscale': isInProgress,
 			'invisible-badge tw-cursor-pointer': isLocked,
@@ -233,29 +233,23 @@ onMounted(() => {
 	width: 500px;
 	transition: opacity 0.3s ease;
 
-	@apply tw-absolute tw-w-full tw-h-full tw-opacity-0 tw--top-1/2 tw--left-1/2;
+	@apply tw-absolute tw-w-full tw-h-full tw--top-full tw--left-full;
 }
 
 .shine.animate {
-	animation: shineMove 0.8s ease forwards;
+	animation: shineMove 2.4s ease-in-out forwards infinite;
 }
 
 .second-shine.animate {
-	animation: shineMove 0.8s ease forwards 0.05s;
+	animation: shineMove 2.4s ease-in-out forwards 0.05s infinite;
 }
 
 @keyframes shineMove {
 	0% {
-		@apply tw--top-1/2 tw--left-1/2;
-	}
-	2% {
-		@apply tw-opacity-full;
-	}
-	95% {
-		@apply tw-opacity-full;
+		@apply tw--top-full tw--left-full;
 	}
 	100% {
-		@apply tw-top-3/4 tw-left-3/4 tw-opacity-0;
+		@apply tw-top-full tw-left-full;
 	}
 }
 </style>

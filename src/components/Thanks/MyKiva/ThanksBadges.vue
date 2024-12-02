@@ -13,7 +13,7 @@
 		<!-- Badges module -->
 		<div
 			v-if="hasBadgeData"
-			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center"
+			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center tw-overflow-hidden"
 			:class="{ 'tw-relative' : showBadgeRays }"
 		>
 			<!-- BG Rays -->
@@ -410,97 +410,144 @@ onBeforeUnmount(() => {
 /** Rays */
 .ray_box {
 	@apply tw-absolute tw-mx-auto tw-left-0 tw-right-0 tw-bottom-0 tw-aspect-square tw-top-5;
-	transform-origin: center;
 	width: 250px;
 }
 
 .ray {
 	background: linear-gradient(180deg, rgba(241, 179, 67, 0.09) 0%,
 		rgba(241, 179, 67, 0.5) 50%, rgba(241, 179, 67, 0.03) 100%);
-    margin-left:10px;
     border-radius:80% 80% 0 0;
-    position:absolute;
+	animation: ray_anim 2.5s ease-in-out infinite;
+	@apply tw-absolute tw-ml-1;
 }
 
 .ray1 {
-    height:180px;
-    width:30px;
 	transform: rotate(180deg);
-    top: -10%;
-    left: 40%;
-	animation: ray_anim 2.5s ease-in-out infinite;
+	height: 130px;
+    width: 30px;
+	top: -15%;
+    left: 42%;
+	@screen md {
+		height: 80px;
+		top: -12%;
+	}
 }
 .ray2 {
-    height:100px;
-    width:8px;
 	transform: rotate(220deg);
-    top: 8%;
-	left: 75%;
-	animation: ray_anim 2.5s ease-in-out 1s infinite;
+	animation-delay: 1s;
+	height: 140px;
+    width: 8px;
+	top: -5%;
+	left: 85%;
+	@screen md {
+		height: 130px;
+		top: -15%;
+		left: 85%;
+	}
 }
 .ray3 {
-    height:170px;
-    width:20px;
 	transform: rotate(250deg);
-    top: 25%;
-	left: 75%;
-	animation: ray_anim 2.5s ease-in-out 1.5s infinite;
+	animation-delay: 1.5s;
+	height: 80px;
+    width: 20px;
+	top: 45%;
+	left: 88%;
+	@screen md {
+		height: 180px;
+		top: 15%;
+		left: 105%;
+	}
 }
 .ray4 {
-    height:120px;
-    width:14px;
 	transform: rotate(305deg);
-    top: 70%;
-    left: 85%;
-	animation: ray_anim 2.5s ease-in-out 0.5s infinite;
+	animation-delay: 0.5s;
+	height: 90px;
+    width: 14px;
+	top: 80%;
+    left: 90%;
+	@screen md {
+		height: 180px;
+		top: 65%;
+		left: 98%;
+	}
 }
 .ray5 {
-    height:140px;
-    width:30px;
 	transform: rotate(-15deg);
-    top: 90%;
-    left: 55%;
-	animation: ray_anim 2.5s ease-in-out 1s infinite;
+	animation-delay: 1s;
+	height: 110px;
+    width: 30px;
+	top: 110%;
+    left: 60%;
+	@screen md {
+		height: 130px;
+		top: 100%;
+		left: 58%;
+	}
 }
 .ray6 {
-    height:130px;
-    width:35px;
 	transform: rotate(30deg);
-    top: 95%;
-    left: 15%;
-	animation: ray_anim 2.5s ease-in-out 2s infinite;
+	animation-delay: 2s;
+	height: 110px;
+    width: 25px;
+	top: 105%;
+    left: 18%;
+	@screen md {
+		height: 130px;
+		top: 98%;
+		left: 15%;
+	}
 }
 .ray7 {
-    height:180px;
-    width:10px;
 	transform: rotate(70deg);
-    top: 50%;
-    left: 10%;
-	animation: ray_anim 2.5s ease-in-out 1.5s infinite;
+	animation-delay: 1.5s;
+	height: 90px;
+    width: 10px;
+	top: 80%;
+    left: 0%;
+	@screen md {
+		height: 180px;
+		top: 63%;
+		left: -15%;
+	}
 }
 .ray8 {
-    height:120px;
-    width:30px;
 	transform: rotate(100deg);
-    top: 38%;
+	animation-delay: 0.5s;
+	height: 80px;
+    width: 28px;
+	top: 55%;
     left: -5%;
-	animation: ray_anim 2.5s ease-in-out 0.5s infinite;
+	@screen md {
+		height: 180px;
+		top: 25%;
+		left: -20%;
+	}
 }
 .ray9 {
-    height:80px;
-    width:10px;
 	transform: rotate(120deg);
-    top: 25%;
+	animation-delay: 2s;
+	height: 80px;
+    width: 10px;
+	top: 30%;
     left: 1%;
-	animation: ray_anim 2.5s ease-in-out 2s infinite;
+	@screen md {
+		height: 180px;
+		top: -5%;
+		left: -15%;
+	}
 }
 .ray10 {
-    height:190px;
-    width:23px;
 	transform: rotate(150deg);
-    top: 1%;
-    left: 25%;
-	animation: ray_anim 2.5s ease-in-out 1s infinite;
+	animation-delay: 1s;
+	height: 120px;
+    width: 23px;
+	top: -2%;
+    left: 12%;
+	@screen md {
+		height: 90px;
+		top: -5%;
+		left: 12%;
+	}
 }
 
 @keyframes ray_anim {
