@@ -50,11 +50,12 @@
 					/>
 				</div>
 				<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-				<BadgeContainer>
+				<BadgeContainer
+					:show-shine="showBadgeShine"
+				>
 					<img
 						v-if="badgeImageUrl"
 						:src="badgeImageUrl"
-						:show-shine="showBadgeShine"
 						alt="Badge"
 						style="height: 250px; width: 250px;"
 					>
@@ -379,17 +380,7 @@ onMounted(() => {
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 
-	if (props.isOptedIn) {
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150,
-			spread: 200,
-			colors: ['#6AC395', '#223829', '#95D4B3'],
-			disableForReducedMotion: true,
-		});
-	} else {
+	if (!props.isOptedIn) {
 		window.addEventListener('scroll', throttledScroll);
 
 		handleScroll();
@@ -406,16 +397,18 @@ watch(() => badgeData.value, () => {
 	if (badgeData.value.length) {
 		badgeDataAchieved.value = badgeData.value.filter(b => badgeIdsAchieved.value.includes(b.id));
 
-		// Show confetti only after the badge data has been loaded and displayed
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150,
-			spread: 200,
-			colors: ['#6AC395', '#223829', '#95D4B3'],
-			disableForReducedMotion: true,
-		});
+		// Show confetti only after the badge data has been loaded and displayed and is opted in
+		if (props.isOptedIn) {
+			confetti({
+				origin: {
+					y: 0.2
+				},
+				particleCount: 150,
+				spread: 200,
+				colors: ['#6AC395', '#223829', '#95D4B3'],
+				disableForReducedMotion: true,
+			});
+		}
 	}
 }, { immediate: true });
 </script>
