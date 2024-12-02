@@ -1,5 +1,8 @@
 <template>
-	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
+	<div
+		ref="tyBadgeContainer"
+		class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5"
+	>
 		<!-- Opt In module -->
 		<OptInModule
 			v-if="!isGuest && !isOptedIn"
@@ -10,8 +13,23 @@
 		<!-- Badges module -->
 		<div
 			v-if="isLoading || hasBadgeData"
-			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center"
+			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center tw-overflow-hidden"
+			:class="{ 'tw-relative' : showBadgeRays }"
 		>
+			<!-- BG Rays -->
+			<div v-show="showBadgeRays" class="ray_box">
+				<div class="ray ray1"></div>
+				<div class="ray ray2"></div>
+				<div class="ray ray3"></div>
+				<div class="ray ray4"></div>
+				<div class="ray ray5"></div>
+				<div class="ray ray6"></div>
+				<div class="ray ray7"></div>
+				<div class="ray ray8"></div>
+				<div class="ray ray9"></div>
+				<div class="ray ray10"></div>
+			</div>
+			<!-- Borrower images -->
 			<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 			<template v-else>
 				<!-- Borrower images -->
@@ -32,7 +50,9 @@
 					/>
 				</div>
 				<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-				<BadgeContainer>
+				<BadgeContainer
+					:show-shine="showBadgeShine"
+				>
 					<img
 						v-if="badgeImageUrl"
 						:src="badgeImageUrl"
@@ -161,12 +181,14 @@
 </template>
 
 <script setup>
+import _throttle from 'lodash/throttle';
 import {
 	onMounted,
 	ref,
 	computed,
 	inject,
 	watch,
+	onBeforeUnmount,
 } from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
@@ -233,6 +255,8 @@ const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
+const tyBadgeContainer = ref(null);
+const hasScrolled = ref(false);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
@@ -274,6 +298,32 @@ const badgeFunFact = computed(() => {
 });
 
 const badgeFunFactFootnote = computed(() => displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '');
+
+const showBadgeShine = computed(() => {
+	if (props.isOptedIn) {
+		return true;
+	}
+	if (hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const showBadgeRays = computed(() => {
+	if (!props.isOptedIn && hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const handleScroll = () => {
+	const { top } = tyBadgeContainer.value.getBoundingClientRect();
+	if (top < -50 && !hasScrolled.value) {
+		hasScrolled.value = true;
+	}
+};
+
+const throttledScroll = _throttle(handleScroll, 200);
 
 const handleContinue = () => {
 	if (props.isGuest) {
@@ -325,26 +375,40 @@ const handleClickOrderConfirmation = () => {
 	openOrderConfirmation.value = !openOrderConfirmation.value;
 };
 
-onMounted(async () => {
+onMounted(() => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+
+	if (!props.isOptedIn) {
+		window.addEventListener('scroll', throttledScroll);
+
+		handleScroll();
+	}
+});
+
+onBeforeUnmount(() => {
+	if (!props.isOptedIn) {
+		window.removeEventListener('scroll', throttledScroll);
+	}
 });
 
 watch(() => badgeData.value, () => {
 	if (badgeData.value.length) {
 		badgeDataAchieved.value = badgeData.value.filter(b => badgeIdsAchieved.value.includes(b.id));
 
-		// Show confetti only after the badge data has been loaded and displayed
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150,
-			spread: 200,
-			colors: ['#6AC395', '#223829', '#95D4B3'],
-			disableForReducedMotion: true,
-		});
+		// Show confetti only after the badge data has been loaded and displayed and is opted in
+		if (props.isOptedIn) {
+			confetti({
+				origin: {
+					y: 0.2
+				},
+				particleCount: 150,
+				spread: 200,
+				colors: ['#6AC395', '#223829', '#95D4B3'],
+				disableForReducedMotion: true,
+			});
+		}
 	}
 }, { immediate: true });
 </script>
@@ -381,5 +445,176 @@ watch(() => badgeData.value, () => {
 .smaller-borrower-avatar :deep(img) {
 	height: 36px;
 	width: 36px;
+}
+
+/** Rays */
+.ray_box {
+	@apply tw-absolute tw-mx-auto tw-left-0 tw-right-0 tw-bottom-0 tw-aspect-square tw-top-5;
+
+	width: 250px;
+}
+
+.ray {
+	background: linear-gradient(180deg, rgba(241 179 67 / 3%) 0%,
+	rgba(241 179 67 / 25%) 50%, rgba(241 179 67 / 3%) 100%);
+	border-radius:80% 80% 0 0;
+	animation: ray_anim 2.5s ease-in-out infinite;
+	@apply tw-absolute tw-ml-1;
+}
+
+.ray1 {
+	transform: rotate(180deg);
+	height: 130px;
+	width: 30px;
+	top: -15%;
+	left: 42%;
+	@screen md {
+		height: 80px;
+		top: -12%;
+	}
+}
+
+.ray2 {
+	transform: rotate(220deg);
+	animation-delay: 1s;
+	height: 140px;
+	width: 8px;
+	top: -5%;
+	left: 85%;
+	@screen md {
+		height: 130px;
+		top: -15%;
+		left: 85%;
+	}
+}
+
+.ray3 {
+	transform: rotate(250deg);
+	animation-delay: 1.5s;
+	height: 80px;
+	width: 20px;
+	top: 45%;
+	left: 88%;
+	@screen md {
+		height: 180px;
+		top: 15%;
+		left: 105%;
+	}
+}
+
+.ray4 {
+	transform: rotate(305deg);
+	animation-delay: 0.5s;
+	height: 90px;
+	width: 14px;
+	top: 80%;
+	left: 90%;
+	@screen md {
+		height: 180px;
+		top: 65%;
+		left: 98%;
+	}
+}
+
+.ray5 {
+	transform: rotate(-15deg);
+	animation-delay: 1s;
+	height: 110px;
+	width: 30px;
+	top: 110%;
+	left: 60%;
+	@screen md {
+		height: 130px;
+		top: 100%;
+		left: 58%;
+	}
+}
+
+.ray6 {
+	transform: rotate(30deg);
+	animation-delay: 2s;
+	height: 110px;
+	width: 25px;
+	top: 105%;
+	left: 18%;
+	@screen md {
+		height: 130px;
+		top: 98%;
+		left: 15%;
+	}
+}
+
+.ray7 {
+	transform: rotate(70deg);
+	animation-delay: 1.5s;
+	height: 90px;
+	width: 10px;
+	top: 80%;
+	left: 0%;
+	@screen md {
+		height: 180px;
+		top: 63%;
+		left: -15%;
+	}
+}
+
+.ray8 {
+	transform: rotate(100deg);
+	animation-delay: 0.5s;
+	height: 80px;
+	width: 28px;
+	top: 55%;
+	left: -5%;
+	@screen md {
+		height: 180px;
+		top: 25%;
+		left: -20%;
+	}
+}
+
+.ray9 {
+	transform: rotate(120deg);
+	animation-delay: 2s;
+	height: 80px;
+	width: 10px;
+	top: 30%;
+	left: 1%;
+	@screen md {
+		height: 180px;
+		top: -5%;
+		left: -15%;
+	}
+}
+
+.ray10 {
+	transform: rotate(150deg);
+	animation-delay: 1s;
+	height: 120px;
+	width: 23px;
+	top: -2%;
+	left: 12%;
+	@screen md {
+		height: 90px;
+		top: -5%;
+		left: 12%;
+	}
+}
+
+@keyframes ray_anim {
+	0% {
+		opacity: 0.4;
+	}
+
+	25% {
+		opacity: 1;
+	}
+
+	75% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.4;
+	}
 }
 </style>
