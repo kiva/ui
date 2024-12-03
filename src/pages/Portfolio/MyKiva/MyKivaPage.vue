@@ -166,6 +166,7 @@ import {
 	watch,
 	nextTick,
 } from 'vue';
+import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 const apollo = inject('apollo');
@@ -367,6 +368,7 @@ const checkGuestAchievementsToScroll = () => {
 
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
+	fireHotJarEvent('my_kiva_viewed');
 
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);
