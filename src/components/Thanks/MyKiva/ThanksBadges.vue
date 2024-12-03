@@ -33,7 +33,7 @@
 			<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 			<template v-else>
 				<!-- Borrower images -->
-				<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
+				<div v-if="(isGuest || isOptedIn) && loansToDisplay.length" class="tw-flex tw-items-center">
 					<KvUserAvatar
 						v-for="(loan, index) in loansToDisplay"
 						:key="loan.id"
@@ -201,7 +201,7 @@ import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvButton from '#kv-components/KvButton';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
 import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import OptInModule from './OptInModule';
 
@@ -244,6 +244,7 @@ const props = defineProps({
 const {
 	fetchAchievementData,
 	fetchContentfulData,
+	badgeContentfulData,
 	badgeData,
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
@@ -263,13 +264,14 @@ const apollo = inject('apollo');
 
 const isLoading = computed(() => !badgeDataAchieved.value);
 
-const numberOfBadges = computed(() => props.badgesAchieved.length);
+// Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
+const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const moduleTitle = computed(() => {
 	let title = '';
-	if (props.isOptedIn) {
+	if (props.isGuest || props.isOptedIn) {
 		title += 'Thank you!<br />';
 	}
 	title += numberOfBadges.value === 1 ? 'You reached a milestone' : `You reached ${numberOfBadges.value} milestones`;
@@ -282,8 +284,14 @@ const continueButtonText = computed(() => {
 });
 
 const displayedBadgeData = computed(() => {
-	const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
-	return getLastCompletedBadgeLevelData(displayedBadge);
+	if (badgeDataAchieved.value?.length) {
+		if (props.isGuest) {
+			return badgeDataAchieved.value[0];
+		}
+		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
+		return getLastCompletedBadgeLevelData(displayedBadge);
+	}
+	return {};
 });
 
 const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
@@ -375,10 +383,26 @@ const handleClickOrderConfirmation = () => {
 	openOrderConfirmation.value = !openOrderConfirmation.value;
 };
 
-onMounted(() => {
+const showConfetti = () => {
+	confetti({
+		origin: {
+			y: 0.2
+		},
+		particleCount: 150,
+		spread: 200,
+		colors: ['#6AC395', '#223829', '#95D4B3'],
+		disableForReducedMotion: true,
+	});
+};
+
+onMounted(async () => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
-	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+
+	if (!props.isGuest) {
+		// Achievement data can't be loaded for guests
+		await fetchAchievementData(apollo);
+	}
 
 	if (!props.isOptedIn) {
 		window.addEventListener('scroll', throttledScroll);
@@ -393,21 +417,30 @@ onBeforeUnmount(() => {
 	}
 });
 
+watch(() => badgeContentfulData.value, () => {
+	// Guests don't have access to achievement data, so we only show the equity badge
+	if (props.isGuest && badgeContentfulData.value?.length) {
+		const equityBadge = badgeContentfulData.value.find(b => b.id === ID_EQUITY);
+		if (equityBadge) {
+			badgeDataAchieved.value = [
+				{
+					levelName: equityBadge.challengeName,
+					contentfulData: { ...equityBadge },
+				},
+			];
+
+			showConfetti();
+		}
+	}
+});
+
 watch(() => badgeData.value, () => {
-	if (badgeData.value.length) {
+	if (!props.isGuest && badgeData.value.length) {
 		badgeDataAchieved.value = badgeData.value.filter(b => badgeIdsAchieved.value.includes(b.id));
 
 		// Show confetti only after the badge data has been loaded and displayed and is opted in
 		if (props.isOptedIn) {
-			confetti({
-				origin: {
-					y: 0.2
-				},
-				particleCount: 150,
-				spread: 200,
-				colors: ['#6AC395', '#223829', '#95D4B3'],
-				disableForReducedMotion: true,
-			});
+			showConfetti();
 		}
 	}
 }, { immediate: true });
