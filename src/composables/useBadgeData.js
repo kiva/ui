@@ -455,6 +455,7 @@ export default function useBadgeData() {
 		getHighestPriorityDisplayBadge,
 		getCompletedBadges,
 		badgeAchievementData,
+		badgeContentfulData,
 		badgeData,
 		badgeLoanIdData,
 		isBadgeKeyValid,
