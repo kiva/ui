@@ -67,6 +67,7 @@ export default function createApp({
 	app.provide('kvAuth0', kvAuth0);
 	app.provide('locale', locale);
 	app.provide('$kvTrackEvent', app.config.globalProperties.$kvTrackEvent); // provide kvTrackEvent for composition api
+	app.provide('$appConfig', appConfig); // provide appConfig for composition api
 
 	// Provide application config to all components
 	app.config.globalProperties.$appConfig = appConfig;
