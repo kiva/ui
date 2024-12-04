@@ -452,9 +452,32 @@ describe('useBadgeData.js', () => {
 
 			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
 				...badge,
-				contentfulData: badge.contentfulData[0],
-				achievementData: badge.achievementData.tiers[0],
-				levelName: 'Basic needs 1'
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				levelName: 'Basic needs 2'
+			});
+		});
+
+		it('should return the last completed badge level data when tiers have same completed date', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+			const badge = {
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-22T18:49:21Z' }
+					]
+				},
+				contentfulData: [
+					{ challengeName: 'Basic needs', levelName: '1' },
+					{ challengeName: 'Basic needs', levelName: '2' }
+				]
+			};
+
+			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				levelName: 'Basic needs 2'
 			});
 		});
 
