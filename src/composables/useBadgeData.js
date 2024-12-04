@@ -346,7 +346,9 @@ export default function useBadgeData() {
 			}
 		} else if (badge?.achievementData?.tiers?.length) {
 			const tiers = JSON.parse(JSON.stringify(badge.achievementData.tiers));
+			// Sort by completed date descending
 			tiers.sort((a, b) => {
+				// Handle when tiers were achieved at the same time
 				if (a.completedDate === b.completedDate) {
 					return b.level - a.level;
 				}
