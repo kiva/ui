@@ -625,7 +625,7 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// MyKiva Badges Experiment
-		if (!this.landedOnUSLoan && !this.printableKivaCards.length) {
+		if (!this.landedOnUSLoan && !this.printableKivaCards.length && hasLentBefore) {
 			this.myKivaEnabled = getIsMyKivaEnabled(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -641,6 +641,8 @@ export default {
 						variables: { loanIds: getLoanIds(this.loans) },
 					});
 					this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
+					// Don't show badges without a new tier achieved
+					this.badgesAchieved = this.badgesAchieved.filter(b => b.preCheckoutTier !== b.postCheckoutTier);
 					// MyKiva view only shown if user is not opted-in or checkout achieved badges
 					this.myKivaEnabled = !this.optedIn || this.badgesAchieved.length > 0;
 				} catch (e) {
