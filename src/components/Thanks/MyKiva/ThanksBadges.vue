@@ -12,12 +12,12 @@
 		/>
 		<!-- Badges module -->
 		<div
-			v-if="isLoading || hasBadgeData"
+			v-if="(badgesAchieved.length || isGuest) && (isLoading || hasBadgeData)"
 			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center tw-overflow-hidden"
 			:class="{ 'tw-relative' : showBadgeRays }"
 		>
 			<!-- BG Rays -->
-			<div v-show="showBadgeRays" class="ray_box">
+			<div v-show="!isLoading && showBadgeRays" class="ray_box">
 				<div class="ray ray1"></div>
 				<div class="ray ray2"></div>
 				<div class="ray ray3"></div>

@@ -3,6 +3,8 @@ query PostCheckoutAchievements($loanIds: [Int!]!) {
 		overallProgress {
 			id
 			achievementId
+			preCheckoutTier
+			postCheckoutTier
 		}
 	}
 }

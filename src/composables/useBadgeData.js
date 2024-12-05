@@ -346,13 +346,20 @@ export default function useBadgeData() {
 			}
 		} else if (badge?.achievementData?.tiers?.length) {
 			const tiers = JSON.parse(JSON.stringify(badge.achievementData.tiers));
-			tiers.sort((a, b) => new Date(a.completedDate) - new Date(b.completedDate));
+			// Sort by completed date descending
+			tiers.sort((a, b) => {
+				// Handle when tiers were achieved at the same time
+				if (a.completedDate === b.completedDate) {
+					return b.level - a.level;
+				}
+				return new Date(b.completedDate) - new Date(a.completedDate);
+			});
 			const levelIndex = tiers[0].level - 1;
 			const contentfulData = badge.contentfulData[levelIndex];
 			return {
 				...badge,
 				contentfulData,
-				achievementData: tiers[levelIndex],
+				achievementData: tiers[0],
 				// eslint-disable-next-line max-len
 				levelName: `${(contentfulData.challengeName ?? '')}${(contentfulData.levelName ? ' ' : '')}${(contentfulData.levelName ?? '')}`
 			};
