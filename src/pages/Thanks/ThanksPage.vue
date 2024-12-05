@@ -642,7 +642,10 @@ export default {
 					});
 					this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
 					// Don't show badges without a new tier achieved
-					this.badgesAchieved = this.badgesAchieved.filter(b => b.preCheckoutTier !== b.postCheckoutTier);
+					this.badgesAchieved = this.badgesAchieved.filter(b => {
+						// The equality badge doesn't have tiers
+						return b.preCheckoutTier === null || b.preCheckoutTier !== b.postCheckoutTier;
+					});
 					// MyKiva view only shown if user is guest, is not opted-in, or checkout achieved badges
 					this.myKivaEnabled = this.isGuest || !this.optedIn || this.badgesAchieved.length > 0;
 				} catch (e) {
