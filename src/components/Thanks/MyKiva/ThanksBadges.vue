@@ -9,11 +9,21 @@
 			:loans="loans"
 			:is-guest="isGuest"
 			:number-of-badges="numberOfBadges"
+			class="print:tw-hidden"
 		/>
 		<!-- Badges module -->
 		<div
 			v-if="(badgesAchieved.length || isGuest) && (isLoading || hasBadgeData)"
-			class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center tw-overflow-hidden"
+			class="
+				content-box
+				tw-flex
+				tw-flex-col
+				tw-items-center
+				tw-gap-1.5
+				tw-text-center
+				tw-overflow-hidden
+				print:tw-hidden
+			"
 			:class="{ 'tw-relative' : showBadgeRays }"
 		>
 			<!-- BG Rays -->
@@ -82,7 +92,7 @@
 		</div>
 		<!-- Miscellaneous module -->
 		<div class="content-box">
-			<div v-if="isGuest" class="tw-mb-2">
+			<div v-if="isGuest" class="tw-mb-2 print:tw-hidden">
 				<div
 					class="option-box"
 					:class="{ 'open' : openCreateAccount }"
@@ -116,7 +126,7 @@
 			</div>
 			<div class="tw-mb-2">
 				<div
-					class="option-box"
+					class="option-box print:!tw-hidden"
 					:class="{ 'open' : openOrderConfirmation }"
 					@click="handleClickOrderConfirmation"
 				>
@@ -141,7 +151,7 @@
 				</KvExpandable>
 			</div>
 			<div
-				class="option-box"
+				class="option-box print:!tw-hidden"
 				:class="{ 'open' : openShareModule }"
 				@click="openShareModule = !openShareModule"
 			>
@@ -448,7 +458,8 @@ watch(() => badgeData.value, () => {
 
 <style lang="postcss" scoped>
 .content-box {
-	@apply tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full;
+	@apply tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full
+		print:tw-shadow-transparent;
 
 	max-width: 620px;
 }
