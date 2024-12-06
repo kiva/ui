@@ -5,8 +5,10 @@ import {
 	mockedReceiptData,
 	mockLender,
 	mockLoans,
-	mockOldBadge,
-	mockTieredBadge,
+	mockUserAchievementProgress,
+	mockContentful,
+	MOCK_OLD_BADGE_ID,
+	MOCK_TIERED_BADGE_ID,
 } from '../mock-data/thanks-badges-mock-data';
 
 export default {
@@ -14,11 +16,22 @@ export default {
 	component: ThanksBadges,
 };
 
-const story = (args = {}) => {
+const queryResult = {
+	data: {
+		userAchievementProgress: mockUserAchievementProgress,
+		contentful: mockContentful,
+	}
+};
+
+const mockOldBadge = { achievementId: MOCK_OLD_BADGE_ID };
+
+const mockTieredBadge = { achievementId: MOCK_TIERED_BADGE_ID };
+
+const story = (args = {}, result = queryResult) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ThanksBadges },
-		mixins: [apolloStoryMixin(), cookieStoreStoryMixin()],
+		mixins: [apolloStoryMixin({ queryResult: result }), cookieStoreStoryMixin()],
 		setup() { return { args }; },
 		template: '<ThanksBadges v-bind="args" />',
 	});
@@ -26,12 +39,12 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const UserGuest = story({
+export const Loading = story({
+	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
-	badgesAchieved: [mockTieredBadge],
-});
+}, {});
 
 export const UserLoggedIn = story({
 	isGuest: false,
@@ -43,11 +56,17 @@ export const UserLoggedIn = story({
 
 export const UserLoggedInNotOptedIn = story({
 	isGuest: false,
-	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans.slice(0, 1),
 	receipt: mockedReceiptData,
 	badgesAchieved: [mockTieredBadge],
+});
+
+export const UserLoggedInNotOptedInNoBadge = story({
+	isGuest: false,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
 });
 
 export const UserLoggedInOptedInSingleLoan = story({
@@ -100,29 +119,27 @@ export const BadgeMultiple = story({
 
 export const UserGuestOptedOutWithOneLoan = story({
 	lender: mockLender,
-	isGuest: false,
-	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: mockLoans.slice(0, 1),
 	selectedLoan: mockLoans[0],
-	badgesAchieved: [mockTieredBadge],
 });
 
 export const UserGuestOptedOutWithTwoLoans = story({
 	lender: mockLender,
-	isGuest: false,
-	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: mockLoans.slice(0, 2),
-	badgesAchieved: [mockTieredBadge],
 });
 
 export const UserGuestOptedOutWithThreeOrMoreLoans = story({
 	lender: mockLender,
-	isGuest: false,
-	optedIn: false,
 	receipt: mockedReceiptData,
 	loans: mockLoans.slice(0, 3),
-	badgesAchieved: [mockTieredBadge],
 });
 
+export const UserGuestOptedIn = story({
+	lender: mockLender,
+	isOptedIn: true,
+	receipt: mockedReceiptData,
+	loans: mockLoans.slice(0, 1),
+	selectedLoan: mockLoans[0],
+});

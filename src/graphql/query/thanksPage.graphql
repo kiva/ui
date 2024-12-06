@@ -142,6 +142,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		communicationSettings {
 			lenderNews
 		}
+		userPreferences {
+			id
+			preferences
+		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
@@ -157,6 +161,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			value
 		}
 		newThanksPageEnabled: featureSetting(key: "new_thanks_page.enabled") {
+			key
+			value
+		}
+		myKivaEnabled: featureSetting(key: "my_kiva.enabled") {
 			key
 			value
 		}

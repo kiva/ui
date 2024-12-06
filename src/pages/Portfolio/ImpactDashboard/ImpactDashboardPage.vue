@@ -38,9 +38,6 @@
 </template>
 
 <script>
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -48,6 +45,7 @@ import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
+import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import KvGrid from '#kv-components/KvGrid';
 import KvPageContainer from '#kv-components/KvPageContainer';
 import AccountOverview from './AccountOverview';
@@ -61,9 +59,6 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import MyKivaPage from '../MyKiva/MyKivaPage';
-
-const MY_KIVA_EXP_KEY = 'my_kiva_page';
-const MY_KIVA_LOAN_LIMIT = 4;
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -101,7 +96,6 @@ export default {
 		preFetch(config, client) {
 			return Promise.all([
 				client.query({ query: portfolioQuery }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: MY_KIVA_EXP_KEY } }),
 			]);
 		},
 	},
@@ -124,28 +118,21 @@ export default {
 				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
 			});
 		},
-		hasSeenMyKivaPage(userData) {
-			const preferences = userData?.userPreferences?.preferences ?? null;
-			const formattedPreference = typeof preferences === 'string'
-				? JSON.parse(userData?.userPreferences?.preferences)
-				: preferences;
-
-			return formattedPreference?.myKivaPageExp ?? 0;
-		}
 	},
 	created() {
-		const { version } = this.apollo.readFragment({
-			id: `Experiment:${MY_KIVA_EXP_KEY}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
-
 		const userData = portfolioQueryData?.my ?? {};
+		const generalData = portfolioQueryData?.general ?? {};
 		const loanCount = userData.lender?.loanCount ?? 0;
+		this.showMyKivaPage = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			generalData,
+			userData?.userPreferences?.preferences ?? null,
+			loanCount
+		);
 
-		if ((version === 'b' && loanCount < MY_KIVA_LOAN_LIMIT) || this.hasSeenMyKivaPage(userData)) {
-			this.showMyKivaPage = true;
-		} else {
+		if (!this.showMyKivaPage) {
 			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 			const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
 			let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
@@ -159,14 +146,6 @@ export default {
 		}
 	},
 	async mounted() {
-		trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'event-tracking',
-			MY_KIVA_EXP_KEY,
-			'EXP-MP-623-Sept2024'
-		);
-
 		if (!this.showMyKivaPage) {
 			this.loadEducationPost();
 

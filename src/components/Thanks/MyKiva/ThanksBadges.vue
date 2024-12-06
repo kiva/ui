@@ -1,61 +1,98 @@
 <template>
-	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
+	<div
+		ref="tyBadgeContainer"
+		class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5"
+	>
 		<!-- Opt In module -->
 		<OptInModule
 			v-if="!isGuest && !isOptedIn"
 			:loans="loans"
 			:is-guest="isGuest"
 			:number-of-badges="numberOfBadges"
+			class="print:tw-hidden"
 		/>
 		<!-- Badges module -->
-		<div class="content-box tw-flex tw-flex-col tw-items-center tw-gap-1.5 tw-text-center">
-			<!-- Borrower images -->
-			<div v-if="isOptedIn && loansToDisplay.length" class="tw-flex tw-items-center">
-				<KvUserAvatar
-					v-for="(loan, index) in loansToDisplay"
-					:key="loan.id"
-					:lender-name="loan?.name"
-					:lender-image-url="loan?.image?.url"
-					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
-					:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
-					:style="{
-						zIndex: index === 1 ? 2 : 1,
-						marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
-						marginLeft: loansToDisplay.length > 1 && index === loansToDisplay.length - 1 ? '-22px' : '0',
-					}"
-				/>
+		<div
+			v-if="(badgesAchieved.length || isGuest) && (isLoading || hasBadgeData)"
+			class="
+				content-box
+				tw-flex
+				tw-flex-col
+				tw-items-center
+				tw-gap-1.5
+				tw-text-center
+				tw-overflow-hidden
+				print:tw-hidden
+			"
+			:class="{ 'tw-relative' : showBadgeRays }"
+		>
+			<!-- BG Rays -->
+			<div v-show="!isLoading && showBadgeRays" class="ray_box">
+				<div class="ray ray1"></div>
+				<div class="ray ray2"></div>
+				<div class="ray ray3"></div>
+				<div class="ray ray4"></div>
+				<div class="ray ray5"></div>
+				<div class="ray ray6"></div>
+				<div class="ray ray7"></div>
+				<div class="ray ray8"></div>
+				<div class="ray ray9"></div>
+				<div class="ray ray10"></div>
 			</div>
-			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-			<BadgeContainer>
-				<img
-					v-if="badgeImageUrl"
-					:src="badgeImageUrl"
-					alt="Badge"
-					style="height: 250px; width: 250px;"
+			<!-- Borrower images -->
+			<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
+			<template v-else>
+				<!-- Borrower images -->
+				<div v-if="(isGuest || isOptedIn) && loansToDisplay.length" class="tw-flex tw-items-center">
+					<KvUserAvatar
+						v-for="(loan, index) in loansToDisplay"
+						:key="loan.id"
+						:lender-name="loan?.name"
+						:lender-image-url="loan?.image?.url"
+						class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+						:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
+						:style="{
+							zIndex: index === 1 ? 2 : 1,
+							marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
+							marginLeft: loansToDisplay.length > 1&& index === loansToDisplay.length - 1
+								? '-22px' : '0',
+						}"
+					/>
+				</div>
+				<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
+				<BadgeContainer
+					:show-shine="showBadgeShine"
 				>
-			</BadgeContainer>
-			<h3>{{ badgeLevelName }} unlocked</h3>
-			<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
-			<KvButton
-				class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
-				v-kv-track-event="[
-					'post-checkout',
-					'click',
-					'create-new-account',
-					isGuest ? 'guest' : 'signed-in',
-					numberOfBadges,
-				]"
-			>
-				{{ continueButtonText }}
-				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
-			</KvButton>
-			<p v-if="badgeFunFactFootnote" class="tw-text-small">
-				*{{ badgeFunFactFootnote }}
-			</p>
+					<img
+						v-if="badgeImageUrl"
+						:src="badgeImageUrl"
+						alt="Badge"
+						style="height: 250px; width: 250px;"
+					>
+				</BadgeContainer>
+				<h3>{{ badgeLevelName }} unlocked</h3>
+				<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
+				<KvButton
+					class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
+					v-kv-track-event="[
+						'post-checkout',
+						'click',
+						'create-new-account',
+						isGuest ? 'guest' : 'signed-in',
+						numberOfBadges,
+					]"
+				>
+					{{ continueButtonText }}
+					<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
+				</KvButton>
+				<p v-if="badgeFunFactFootnote" class="tw-text-small">
+					*{{ badgeFunFactFootnote }}
+				</p>
+			</template>
 		</div>
 		<!-- Miscellaneous module -->
 		<div class="content-box">
-			<div v-if="isGuest" class="tw-mb-2">
+			<div v-if="isGuest" class="tw-mb-2 print:tw-hidden">
 				<div
 					class="option-box"
 					:class="{ 'open' : openCreateAccount }"
@@ -89,7 +126,7 @@
 			</div>
 			<div class="tw-mb-2">
 				<div
-					class="option-box"
+					class="option-box print:!tw-hidden"
 					:class="{ 'open' : openOrderConfirmation }"
 					@click="handleClickOrderConfirmation"
 				>
@@ -114,7 +151,7 @@
 				</KvExpandable>
 			</div>
 			<div
-				class="option-box"
+				class="option-box print:!tw-hidden"
 				:class="{ 'open' : openShareModule }"
 				@click="openShareModule = !openShareModule"
 			>
@@ -154,8 +191,14 @@
 </template>
 
 <script setup>
+import _throttle from 'lodash/throttle';
 import {
-	onMounted, ref, computed, inject
+	onMounted,
+	ref,
+	computed,
+	inject,
+	watch,
+	onBeforeUnmount,
 } from 'vue';
 import confetti from 'canvas-confetti';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
@@ -168,7 +211,8 @@ import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import KvButton from '#kv-components/KvButton';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import OptInModule from './OptInModule';
 
 const props = defineProps({
@@ -192,6 +236,11 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	/**
+	 * [{
+	 *   achievementId: string,
+	 * }]
+	 */
 	badgesAchieved: {
 		type: Array,
 		default: () => ([]),
@@ -202,22 +251,37 @@ const props = defineProps({
 	},
 });
 
-const { getHighestPriorityDisplayBadge, getLastCompletedBadgeLevelData } = useBadgeData();
+const {
+	fetchAchievementData,
+	fetchContentfulData,
+	badgeContentfulData,
+	badgeData,
+	getHighestPriorityDisplayBadge,
+	getLastCompletedBadgeLevelData,
+} = useBadgeData();
 
+const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
+const badgeDataAchieved = ref();
 const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
+const tyBadgeContainer = ref(null);
+const hasScrolled = ref(false);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
 
-const numberOfBadges = computed(() => props.badgesAchieved.length);
+const isLoading = computed(() => !badgeDataAchieved.value);
+
+// Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
+const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const moduleTitle = computed(() => {
 	let title = '';
-	if (props.isOptedIn) {
+	if (props.isGuest || props.isOptedIn) {
 		title += 'Thank you!<br />';
 	}
 	title += numberOfBadges.value === 1 ? 'You reached a milestone' : `You reached ${numberOfBadges.value} milestones`;
@@ -229,21 +293,55 @@ const continueButtonText = computed(() => {
 	return numberOfBadges.value === 1 ? 'Continue' : `See all ${numberOfBadges.value} milestones`;
 });
 
-const badgeData = computed(() => {
-	const displayedBadge = getHighestPriorityDisplayBadge(props.badgesAchieved);
-	return getLastCompletedBadgeLevelData(displayedBadge);
+const displayedBadgeData = computed(() => {
+	if (badgeDataAchieved.value?.length) {
+		if (props.isGuest) {
+			return badgeDataAchieved.value[0];
+		}
+		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
+		return getLastCompletedBadgeLevelData(displayedBadge);
+	}
+	return {};
 });
 
-const badgeImageUrl = computed(() => badgeData.value.contentfulData?.imageUrl ?? '');
+const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
-const badgeLevelName = computed(() => badgeData.value.levelName ?? '');
+const badgeLevelName = computed(() => displayedBadgeData.value.levelName ?? '');
+
+const hasBadgeData = computed(() => !!badgeLevelName.value);
 
 const badgeFunFact = computed(() => {
 	// eslint-disable-next-line max-len
-	return badgeData.value.contentfulData?.shareFact || 'Making a difference starts here. See your impact and achievements.';
+	return displayedBadgeData.value.contentfulData?.shareFact || 'Making a difference starts here. See your impact and achievements.';
 });
 
-const badgeFunFactFootnote = computed(() => badgeData.value.contentfulData?.shareFactFootnote ?? '');
+const badgeFunFactFootnote = computed(() => displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '');
+
+const showBadgeShine = computed(() => {
+	if (props.isOptedIn) {
+		return true;
+	}
+	if (hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const showBadgeRays = computed(() => {
+	if (!props.isOptedIn && hasScrolled.value) {
+		return true;
+	}
+	return false;
+});
+
+const handleScroll = () => {
+	const { top } = tyBadgeContainer.value.getBoundingClientRect();
+	if (top < -50 && !hasScrolled.value) {
+		hasScrolled.value = true;
+	}
+};
+
+const throttledScroll = _throttle(handleScroll, 200);
 
 const handleContinue = () => {
 	if (props.isGuest) {
@@ -295,7 +393,7 @@ const handleClickOrderConfirmation = () => {
 	openOrderConfirmation.value = !openOrderConfirmation.value;
 };
 
-onMounted(() => {
+const showConfetti = () => {
 	confetti({
 		origin: {
 			y: 0.2
@@ -305,12 +403,63 @@ onMounted(() => {
 		colors: ['#6AC395', '#223829', '#95D4B3'],
 		disableForReducedMotion: true,
 	});
+};
+
+onMounted(async () => {
+	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
+	fetchContentfulData(apollo);
+
+	if (!props.isGuest) {
+		// Achievement data can't be loaded for guests
+		await fetchAchievementData(apollo);
+	}
+
+	if (!props.isOptedIn) {
+		window.addEventListener('scroll', throttledScroll);
+
+		handleScroll();
+	}
 });
+
+onBeforeUnmount(() => {
+	if (!props.isOptedIn) {
+		window.removeEventListener('scroll', throttledScroll);
+	}
+});
+
+watch(() => badgeContentfulData.value, () => {
+	// Guests don't have access to achievement data, so we only show the equity badge
+	if (props.isGuest && badgeContentfulData.value?.length) {
+		const equityBadge = badgeContentfulData.value.find(b => b.id === ID_EQUITY);
+		if (equityBadge) {
+			badgeDataAchieved.value = [
+				{
+					levelName: equityBadge.challengeName,
+					contentfulData: { ...equityBadge },
+				},
+			];
+
+			showConfetti();
+		}
+	}
+});
+
+watch(() => badgeData.value, () => {
+	if (!props.isGuest && badgeData.value.length) {
+		badgeDataAchieved.value = badgeData.value.filter(b => badgeIdsAchieved.value.includes(b.id));
+
+		// Show confetti only after the badge data has been loaded and displayed and is opted in
+		if (props.isOptedIn) {
+			showConfetti();
+		}
+	}
+}, { immediate: true });
 </script>
 
 <style lang="postcss" scoped>
 .content-box {
-	@apply tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full;
+	@apply tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full
+		print:tw-shadow-transparent;
 
 	max-width: 620px;
 }
@@ -340,5 +489,176 @@ onMounted(() => {
 .smaller-borrower-avatar :deep(img) {
 	height: 36px;
 	width: 36px;
+}
+
+/** Rays */
+.ray_box {
+	@apply tw-absolute tw-mx-auto tw-left-0 tw-right-0 tw-bottom-0 tw-aspect-square tw-top-5;
+
+	width: 250px;
+}
+
+.ray {
+	background: linear-gradient(180deg, rgba(241 179 67 / 3%) 0%,
+	rgba(241 179 67 / 25%) 50%, rgba(241 179 67 / 3%) 100%);
+	border-radius:80% 80% 0 0;
+	animation: ray_anim 2.5s ease-in-out infinite;
+	@apply tw-absolute tw-ml-1;
+}
+
+.ray1 {
+	transform: rotate(180deg);
+	height: 130px;
+	width: 30px;
+	top: -15%;
+	left: 42%;
+	@screen md {
+		height: 80px;
+		top: -12%;
+	}
+}
+
+.ray2 {
+	transform: rotate(220deg);
+	animation-delay: 1s;
+	height: 140px;
+	width: 8px;
+	top: -5%;
+	left: 85%;
+	@screen md {
+		height: 130px;
+		top: -15%;
+		left: 85%;
+	}
+}
+
+.ray3 {
+	transform: rotate(250deg);
+	animation-delay: 1.5s;
+	height: 80px;
+	width: 20px;
+	top: 45%;
+	left: 88%;
+	@screen md {
+		height: 180px;
+		top: 15%;
+		left: 105%;
+	}
+}
+
+.ray4 {
+	transform: rotate(305deg);
+	animation-delay: 0.5s;
+	height: 90px;
+	width: 14px;
+	top: 80%;
+	left: 90%;
+	@screen md {
+		height: 180px;
+		top: 65%;
+		left: 98%;
+	}
+}
+
+.ray5 {
+	transform: rotate(-15deg);
+	animation-delay: 1s;
+	height: 110px;
+	width: 30px;
+	top: 110%;
+	left: 60%;
+	@screen md {
+		height: 130px;
+		top: 100%;
+		left: 58%;
+	}
+}
+
+.ray6 {
+	transform: rotate(30deg);
+	animation-delay: 2s;
+	height: 110px;
+	width: 25px;
+	top: 105%;
+	left: 18%;
+	@screen md {
+		height: 130px;
+		top: 98%;
+		left: 15%;
+	}
+}
+
+.ray7 {
+	transform: rotate(70deg);
+	animation-delay: 1.5s;
+	height: 90px;
+	width: 10px;
+	top: 80%;
+	left: 0%;
+	@screen md {
+		height: 180px;
+		top: 63%;
+		left: -15%;
+	}
+}
+
+.ray8 {
+	transform: rotate(100deg);
+	animation-delay: 0.5s;
+	height: 80px;
+	width: 28px;
+	top: 55%;
+	left: -5%;
+	@screen md {
+		height: 180px;
+		top: 25%;
+		left: -20%;
+	}
+}
+
+.ray9 {
+	transform: rotate(120deg);
+	animation-delay: 2s;
+	height: 80px;
+	width: 10px;
+	top: 30%;
+	left: 1%;
+	@screen md {
+		height: 180px;
+		top: -5%;
+		left: -15%;
+	}
+}
+
+.ray10 {
+	transform: rotate(150deg);
+	animation-delay: 1s;
+	height: 120px;
+	width: 23px;
+	top: -2%;
+	left: 12%;
+	@screen md {
+		height: 90px;
+		top: -5%;
+		left: 12%;
+	}
+}
+
+@keyframes ray_anim {
+	0% {
+		opacity: 0.4;
+	}
+
+	25% {
+		opacity: 1;
+	}
+
+	75% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.4;
+	}
 }
 </style>
