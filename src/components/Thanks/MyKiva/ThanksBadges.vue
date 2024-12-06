@@ -5,7 +5,7 @@
 	>
 		<!-- Opt In module -->
 		<OptInModule
-			v-if="!isGuest && !isOptedIn"
+			v-if="showOptInModule"
 			:loans="loans"
 			:is-guest="isGuest"
 			:number-of-badges="numberOfBadges"
@@ -13,7 +13,7 @@
 		/>
 		<!-- Badges module -->
 		<div
-			v-if="(badgesAchieved.length || isGuest) && (isLoading || hasBadgeData)"
+			v-if="showBadgeModule"
 			class="
 				content-box
 				tw-flex
@@ -72,16 +72,7 @@
 				</BadgeContainer>
 				<h3>{{ badgeLevelName }} unlocked</h3>
 				<p>{{ badgeFunFact }}{{ badgeFunFactFootnote ? '*' : '' }}</p>
-				<KvButton
-					class="continue-button tw-w-full tw-my-0.5" @click="handleContinue"
-					v-kv-track-event="[
-						'post-checkout',
-						'click',
-						'create-new-account',
-						isGuest ? 'guest' : 'signed-in',
-						numberOfBadges,
-					]"
-				>
+				<KvButton class="continue-button tw-w-full tw-my-0.5" @click="handleContinue">
 					{{ continueButtonText }}
 					<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
 				</KvButton>
@@ -153,7 +144,7 @@
 			<div
 				class="option-box print:!tw-hidden"
 				:class="{ 'open' : openShareModule }"
-				@click="openShareModule = !openShareModule"
+				@click="handleClickShareDrawer"
 			>
 				<p class="tw-font-medium">
 					Share
@@ -334,6 +325,12 @@ const showBadgeRays = computed(() => {
 	return false;
 });
 
+const showOptInModule = computed(() => !props.isGuest && !props.isOptedIn);
+
+const showBadgeModule = computed(() => {
+	return (props.badgesAchieved.length || props.isGuest) && (isLoading.value || hasBadgeData.value);
+});
+
 const handleScroll = () => {
 	const { top } = tyBadgeContainer.value.getBoundingClientRect();
 	if (top < -50 && !hasScrolled.value) {
@@ -349,7 +346,7 @@ const handleContinue = () => {
 		$kvTrackEvent(
 			'post-checkout',
 			'click',
-			'open-account-creation-drawer',
+			'create-new-account',
 			'guest',
 			numberOfBadges.value,
 		);
@@ -370,27 +367,45 @@ const handleContinue = () => {
 };
 
 const handleClickCreateAccount = () => {
-	$kvTrackEvent(
-		'post-checkout',
-		'click',
-		'open-account-creation-drawer',
-		'guest',
-		numberOfBadges.value,
-	);
-
 	openCreateAccount.value = !openCreateAccount.value;
+
+	if (openCreateAccount.value) {
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'open-account-creation-drawer',
+			'guest',
+			numberOfBadges.value,
+		);
+	}
 };
 
 const handleClickOrderConfirmation = () => {
-	$kvTrackEvent(
-		'post-checkout',
-		'click',
-		'open-order-confirmation-drawer',
-		props.isGuest ? 'guest' : 'signed-in',
-		numberOfBadges.value,
-	);
-
 	openOrderConfirmation.value = !openOrderConfirmation.value;
+
+	if (openOrderConfirmation.value) {
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'open-order-confirmation-drawer',
+			props.isGuest ? 'guest' : 'signed-in',
+			numberOfBadges.value,
+		);
+	}
+};
+
+const handleClickShareDrawer = () => {
+	openShareModule.value = !openShareModule.value;
+
+	if (openShareModule.value) {
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'open-share-drawer',
+			props.isGuest ? 'guest' : 'signed-in',
+			numberOfBadges.value,
+		);
+	}
 };
 
 const showConfetti = () => {
@@ -418,6 +433,15 @@ onMounted(async () => {
 		window.addEventListener('scroll', throttledScroll);
 
 		handleScroll();
+	}
+
+	if (showBadgeModule.value) {
+		const eventProperty = props.isGuest ? 'guest' : 'signed-in';
+		if (showOptInModule.value) {
+			$kvTrackEvent('post-checkout', 'show', 'opt-in-then-badge', eventProperty, numberOfBadges.value);
+		} else {
+			$kvTrackEvent('post-checkout', 'show', 'badge-only', eventProperty, numberOfBadges.value);
+		}
 	}
 });
 
