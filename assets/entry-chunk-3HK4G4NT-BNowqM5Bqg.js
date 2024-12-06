@@ -1,0 +1,1 @@
+function r(e){return e?Array.isArray(e)?e:[e]:[]}function y({attrs:e,listeners:l},t=[]){const c=r(e==null?void 0:e.class),o=r(e==null?void 0:e.style),n=l?{...l}:{};t.forEach(u=>{delete n[u]});const s={...e};return delete s.class,delete s.style,{classes:c,styles:o,inputAttrs:s,inputListeners:n}}export{y as u};
