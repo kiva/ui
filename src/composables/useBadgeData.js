@@ -12,7 +12,7 @@ export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
 export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
-export const CLIMATE_ACTION_FILTER = 'tag=9';
+export const CLIMATE_ACTION_FILTER = 'tag=8,9';
 export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
 export const WOMENS_EQUALITY_FILTER = 'gender=female';
 export const BASIC_NEEDS_FILTER = 'sector=6,10';
