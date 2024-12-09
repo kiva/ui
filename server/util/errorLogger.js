@@ -8,7 +8,6 @@ export const requestLogger = expressWinston.logger({
 			stringify: true
 		})
 	],
-	meta: false,
 	requestWhitelist: ['url', 'responseTime', 'level', 'message', 'headers.host', 'headers.method'],
 	msg: 'HTTP {{res.statusCode}} {{req.method}} {{req.url}} {{res.responseTime}}ms',
 	ignoreRoute: req => {
