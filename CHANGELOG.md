@@ -1,3 +1,56 @@
+## [3.5.0](https://github.com/kiva/ui/compare/v3.4.0...v3.5.0) (2024-11-26)
+
+### 🎉 New Features
+
+* add ecosystem themes ([eaf7174](https://github.com/kiva/ui/commit/eaf7174344e67eddceb86cf037bc21a854048d17))
+
+### 🐛 Bugfixes
+
+* link styles for personalized lend menu ([203117b](https://github.com/kiva/ui/commit/203117bffa38f81cc0ffec5df0b9f1b422d3648e))
+* minor style fixes for SystemPage frame and Settings page ([f571ef3](https://github.com/kiva/ui/commit/f571ef3eecdce783340fb553da32ed06bce450da))
+* remove underline from promo banner ([5b31e78](https://github.com/kiva/ui/commit/5b31e78626bffaa30344dcaa13a9e21b3c176a15))
+* remove underline from tertiary and secondary menus ([0b9fda4](https://github.com/kiva/ui/commit/0b9fda43de6d9f72e92ad939af3cdb61a37f190e))
+* remove underlines from header nav links ([7c3df13](https://github.com/kiva/ui/commit/7c3df137c7bd3df4281ff0aa7647c950317d486a))
+* update header and footer styling for ecosystem default theme MP-1103 ([3a32e61](https://github.com/kiva/ui/commit/3a32e61b3290703e42dc8c75d09f85b1f875dd36))
+* update kv-components location ([e3c40f7](https://github.com/kiva/ui/commit/e3c40f723236d85cba689475a66d253266ff7045))
+* use alias for kv-components imports ([615c254](https://github.com/kiva/ui/commit/615c254a166fa45d4ca6733e12908eeb25543e12))
+
+### 💅 Code Style Changes
+
+* fix lint whitespace error ([b04b96e](https://github.com/kiva/ui/commit/b04b96ed1919167d5d639b8838362012ef0a84a9))
+
+### 🧹 Chores
+
+* **deps:** upgrade kv-components and kv-shop ([bbe576e](https://github.com/kiva/ui/commit/bbe576ec0f2588673e622f62e62385e186c08aed))
+* **deps:** upgrade kv-components, kv-shop, and kv-tokens to latest ([9344540](https://github.com/kiva/ui/commit/934454046f18baf170baf9be745e27fb1b4d8ad2))
+* **release:** 3.5.0-rc.1 [skip ci] ([e0be7b4](https://github.com/kiva/ui/commit/e0be7b47bb06989442198bf202aa43957e2919a2))
+
+## [3.5.0-rc.1](https://github.com/kiva/ui/compare/v3.4.0...v3.5.0-rc.1) (2024-11-25)
+
+### 🎉 New Features
+
+* add ecosystem themes ([eaf7174](https://github.com/kiva/ui/commit/eaf7174344e67eddceb86cf037bc21a854048d17))
+
+### 🐛 Bugfixes
+
+* link styles for personalized lend menu ([203117b](https://github.com/kiva/ui/commit/203117bffa38f81cc0ffec5df0b9f1b422d3648e))
+* minor style fixes for SystemPage frame and Settings page ([f571ef3](https://github.com/kiva/ui/commit/f571ef3eecdce783340fb553da32ed06bce450da))
+* remove underline from promo banner ([5b31e78](https://github.com/kiva/ui/commit/5b31e78626bffaa30344dcaa13a9e21b3c176a15))
+* remove underline from tertiary and secondary menus ([0b9fda4](https://github.com/kiva/ui/commit/0b9fda43de6d9f72e92ad939af3cdb61a37f190e))
+* remove underlines from header nav links ([7c3df13](https://github.com/kiva/ui/commit/7c3df137c7bd3df4281ff0aa7647c950317d486a))
+* update header and footer styling for ecosystem default theme MP-1103 ([3a32e61](https://github.com/kiva/ui/commit/3a32e61b3290703e42dc8c75d09f85b1f875dd36))
+* update kv-components location ([e3c40f7](https://github.com/kiva/ui/commit/e3c40f723236d85cba689475a66d253266ff7045))
+* use alias for kv-components imports ([615c254](https://github.com/kiva/ui/commit/615c254a166fa45d4ca6733e12908eeb25543e12))
+
+### 💅 Code Style Changes
+
+* fix lint whitespace error ([b04b96e](https://github.com/kiva/ui/commit/b04b96ed1919167d5d639b8838362012ef0a84a9))
+
+### 🧹 Chores
+
+* **deps:** upgrade kv-components and kv-shop ([bbe576e](https://github.com/kiva/ui/commit/bbe576ec0f2588673e622f62e62385e186c08aed))
+* **deps:** upgrade kv-components, kv-shop, and kv-tokens to latest ([9344540](https://github.com/kiva/ui/commit/934454046f18baf170baf9be745e27fb1b4d8ad2))
+
 ## [3.4.0](https://github.com/kiva/ui/compare/v3.3.0...v3.4.0) (2024-11-20)
 
 ### 🎉 New Features
