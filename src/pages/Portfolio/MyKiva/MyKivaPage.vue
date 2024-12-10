@@ -17,7 +17,7 @@
 			:is-loading="isLoading"
 		/>
 		<MyKivaContainer>
-			<section class="tw-pt-2">
+			<section v-if="!allBadgesCompleted" class="tw-pt-2">
 				<BadgeTile
 					:user-info="userInfo"
 					:badges-data="badgeData"
@@ -54,6 +54,7 @@
 						:updates="loanUpdates"
 						:lender="lender"
 						:total-updates="totalUpdates"
+						@load-more-updates="loadMoreUpdates"
 					/>
 				</div>
 			</section>
@@ -139,7 +140,6 @@
 
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -166,8 +166,8 @@ import {
 	watch,
 	nextTick,
 } from 'vue';
-
-const MY_KIVA_EXP_KEY = 'my_kiva_page';
+import { fireHotJarEvent } from '#src/util/hotJarUtils';
+import { defaultBadges } from '#src/util/achievementUtils';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -196,10 +196,17 @@ const tier = ref(null);
 const isEarnedSectionModal = ref(false);
 const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
+const updatesLimit = ref(3);
+const updatesOffset = ref(0);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => userInfo.value?.userAccount?.balance ?? '');
+
+const allBadgesCompleted = computed(() => {
+	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
+	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+});
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
@@ -255,18 +262,32 @@ const handleBackToJourney = () => {
 };
 
 const fetchLoanUpdates = loanId => {
-	apollo.query({ query: updatesQuery, variables: { loanId } })
+	apollo.query({
+		query: updatesQuery,
+		variables: {
+			loanId,
+			limit: updatesLimit.value,
+			offset: updatesOffset.value
+		}
+	})
 		.then(result => {
-			loanUpdates.value = result.data?.lend?.loan?.updates?.values ?? [];
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
+			const updates = result.data?.lend?.loan?.updates?.values ?? [];
+			loanUpdates.value = loanUpdates.value.concat(updates);
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
 };
 
+const loadMoreUpdates = () => {
+	updatesOffset.value += updatesLimit.value;
+	fetchLoanUpdates(activeLoan.value.id);
+};
+
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
 
 const handleSelectedLoan = loan => {
+	updatesOffset.value = 0;
 	activeLoan.value = loan;
 	fetchLoanUpdates(activeLoan.value.id);
 };
@@ -346,15 +367,8 @@ const checkGuestAchievementsToScroll = () => {
 };
 
 onMounted(async () => {
-	trackExperimentVersion(
-		apollo,
-		$kvTrackEvent,
-		'event-tracking',
-		MY_KIVA_EXP_KEY,
-		'EXP-MP-623-Sept2024'
-	);
-
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
+	fireHotJarEvent('my_kiva_viewed');
 
 	await fetchMyKivaData();
 	fetchAchievementData(apollo);

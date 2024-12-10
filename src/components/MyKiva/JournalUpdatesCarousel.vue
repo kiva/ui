@@ -5,9 +5,10 @@
 		</h3>
 		<KvCarousel
 			class="tw-w-full updates-carousel md:tw-overflow-visible"
+			:key="updates.length"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
-			:embla-options="{ loop: false }"
+			:embla-options="{ loop: false, startIndex: carouselIndex }"
 			@interact-carousel="interactCarousel"
 		>
 			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
@@ -18,6 +19,20 @@
 					@read-more-clicked="openLightbox"
 					@share-loan-clicked="shareLoanClicked"
 				/>
+			</template>
+			<template v-if="showLoadMore" #view-more>
+				<div
+					:key="`view-more-card`"
+					class="tw-flex tw-items-center tw-h-full tw-pr-3"
+				>
+					<kv-button
+						class="tw-mt-2"
+						variant="secondary"
+						@click="loadMoreUpdates"
+					>
+						Load more<br>updates
+					</kv-button>
+				</div>
 			</template>
 		</KvCarousel>
 		<KvLightbox
@@ -48,6 +63,7 @@ import KvCarousel from '#kv-components/KvCarousel';
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard';
 import KvLightbox from '#kv-components/KvLightbox';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import KvButton from '#kv-components/KvButton';
 import {
 	ref,
 	toRefs,
@@ -78,13 +94,16 @@ const props = defineProps({
 	},
 });
 
-const { loan, updates } = toRefs(props);
+const { loan, updates, totalUpdates } = toRefs(props);
+
+const emit = defineEmits(['load-more-updates']);
 
 const isLightboxVisible = ref(false);
 const clickedUpdate = ref(0);
 const updateSubject = ref('');
 const updateBody = ref('');
 const shareLoan = ref(false);
+const carouselIndex = ref(0);
 
 const inPfp = computed(() => loan.value?.inPfp ?? false);
 
@@ -95,6 +114,8 @@ const shareCampaign = computed(() => {
 const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loan.value?.lenders?.numLenders ?? 0);
+
+const showLoadMore = computed(() => updates.value?.length < totalUpdates.value);
 
 const openLightbox = updateId => {
 	clickedUpdate.value = updateId;
@@ -118,11 +139,24 @@ const interactCarousel = () => {
 	$kvTrackEvent('portfolio', 'click', 'update-carousel');
 };
 
-watch(() => updates, () => {
-	if (updates.value.length > 0) {
-		$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
-	}
-});
+const loadMoreUpdates = () => {
+	$kvTrackEvent('portfolio', 'click', 'borrower-update-load-more');
+	emit('load-more-updates');
+};
+
+watch(
+	() => updates,
+	() => {
+		if (updates.value.length > 0 && updates.value.length < 3) {
+			$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+			carouselIndex.value = 0;
+		}
+		if (updates.value.length > 3) {
+			carouselIndex.value = updates.value.length - 2;
+		}
+	},
+	{ deep: true },
+);
 </script>
 
 <style lang="postcss" scoped>

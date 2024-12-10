@@ -31,5 +31,9 @@ query portfolioQuery {
 			key
 			value
 		}
+		myKivaEnabled: featureSetting(key: "my_kiva.enabled") {
+			key
+			value
+		}
 	}
 }

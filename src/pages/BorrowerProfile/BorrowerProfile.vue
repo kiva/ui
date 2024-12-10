@@ -46,7 +46,6 @@
 						:loan-id="loanId"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeLendAmount"
-						:activities="activities"
 						:team-data="teamData"
 					>
 						<template #sharebutton>
@@ -179,7 +178,6 @@ import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import _throttle from 'lodash/throttle';
 import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
-import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
@@ -188,9 +186,7 @@ import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
-const SHARE_LANGUAGE_EXP = 'share_language_bp';
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
-const ACTIVITY_FEED_EXP = 'activity_feed_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 const preFetchQuery = gql`
@@ -202,12 +198,6 @@ const preFetchQuery = gql`
 		$imgDefaultSize: String = "w480h360",
 		$imgRetinaSize: String = "w960h720"
 	) {
-		general {
-			uiExperimentSetting(key: "share_language_bp") {
-				key
-				value
-			}
-		}
 		lend {
 			loan(id: $loanId) {
 				id
@@ -218,7 +208,6 @@ const preFetchQuery = gql`
 				}
 				geocode {
 					city
-					state
 					country {
 						id
 						name
@@ -437,9 +426,6 @@ export default {
 			partnerName: '',
 			partnerCountry: '',
 			isoCode: '',
-			shareLanguageExpVersion: 'a',
-			city: '',
-			state: '',
 			isMobile: false,
 			isLoading: true,
 			regionBelongsToExp: false,
@@ -453,7 +439,6 @@ export default {
 				'Asia',
 				'Europe'
 			],
-			activities: null,
 			enableChallengeHeader: false,
 			teamData: {},
 			shareLender: undefined,
@@ -512,7 +497,6 @@ export default {
 					}
 
 					return Promise.all([
-						client.query({ query: experimentAssignmentQuery, variables: { id: SHARE_LANGUAGE_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
 					]);
@@ -560,8 +544,6 @@ export default {
 			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
 
 			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
-			this.city = loan?.geocode?.city ?? '';
-			this.state = loan?.geocode?.state ?? '';
 			this.loanRegion = loan?.geocode?.country?.region ?? '';
 			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
 		},
@@ -586,18 +568,6 @@ export default {
 		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		this.lender = data?.my?.userAccount ?? {};
 
-		// ACK-469 Experiment Tracking for generating the scle in utm_campaign
-		const { version } = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'borrower-profile',
-			SHARE_LANGUAGE_EXP,
-			'EXP-ACK-469-Apr2023',
-		);
-		if (version) {
-			this.shareLanguageExpVersion = version;
-		}
-
 		if (this.regionBelongsToExp) {
 			const educationExpData = trackExperimentVersion(
 				this.apollo,
@@ -609,22 +579,6 @@ export default {
 			if (educationExpData.version === 'b') {
 				this.showEducationPlacementExp = true;
 			}
-		}
-
-		const activityFeedExpData = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'borrower-profile',
-			ACTIVITY_FEED_EXP,
-			'EXP-ACK-1037-MAR2024',
-		);
-		if (activityFeedExpData?.version === 'b') {
-			const response = await this.apollo.query({
-				query: loanActivitiesQuery,
-				variables: { loanId: this.loanId }
-			});
-
-			this.activities = response?.data ?? null;
 		}
 
 		const challengeHeaderExpData = this.apollo.readFragment({
@@ -677,8 +631,7 @@ export default {
 	},
 	computed: {
 		shareCampaign() {
-			// eslint-disable-next-line max-len
-			return this.inPfp ? `social_share_bp_pfp_scle_${this.shareLanguageExpVersion}` : `social_share_bp_scle_${this.shareLanguageExpVersion}`;
+			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
 		},
 		loanId() {
 			return Number(this.$route.params.id || 0);
@@ -716,33 +669,17 @@ export default {
 			if (this.anonymizationLevel === 'full') {
 				return 'Can you help support this loan?';
 			}
-			if (this.shareLanguageExpVersion === 'a') {
-				// control scle
-				/** if inviterName is blank or share query param (used for sharing your own loan)
-				 * is set to true, then we don't want to use the inviter name in the share title
-				 */
-				if (this.inviterName === '' || this.$route.query.share === 'true') {
-					return `Can you help support ${this.name}?`;
-				}
-				return `Can you help ${this.inviterName} support ${this.name}?`;
-			}
-			// variant scle
 			/** if inviterName is blank or share query param (used for sharing your own loan)
 			 * is set to true, then we don't want to use the inviter name in the share title
 			 */
 			if (this.inviterName === '' || this.$route.query.share === 'true') {
-				return `Can you help support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
+				return `Can you help support ${this.name}?`;
 			}
-			// eslint-disable-next-line max-len
-			return `Can you help ${this.inviterName} support ${this.name} in ${this.city}${this.state ? `, ${this.state}` : ''}?`;
+			return `Can you help ${this.inviterName} support ${this.name}?`;
 		},
 		shareDescription() {
-			if (this.anonymizationLevel === 'full' || this.shareLanguageExpVersion === 'a') {
-				// eslint-disable-next-line max-len
-				return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
-			}
 			// eslint-disable-next-line max-len
-			return `Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in ${this.city}${this.state ? `, ${this.state}` : ''}`;
+			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
 		showFundraising() {
 			return this.amountLeft && this.status === 'fundraising';

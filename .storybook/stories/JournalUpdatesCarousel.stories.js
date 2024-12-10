@@ -72,4 +72,5 @@ const story = (args = {}) => {
 };
 
 export const Default = story({ loan: mockLoans[0], updates, lender, totalUpdates: 4 });
+export const LoadMore = story({ loan: mockLoans[0], updates, lender, totalUpdates: 6 });
 export const SingleUpdate = story({ loan: mockLoans[0], updates: [updates[0]], lender, totalUpdates: 1 });

@@ -407,6 +407,14 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getLastCompletedBadgeLevelData', () => {
+		it('should handle missed data', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+
+			expect(getLastCompletedBadgeLevelData(undefined)).toEqual({});
+
+			expect(getLastCompletedBadgeLevelData({})).toEqual({});
+		});
+
 		it('should return the last completed badge level data when milestoneProgress is available', () => {
 			const { getLastCompletedBadgeLevelData } = useBadgeData();
 			const badge = {
@@ -444,9 +452,32 @@ describe('useBadgeData.js', () => {
 
 			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
 				...badge,
-				contentfulData: badge.contentfulData[0],
-				achievementData: badge.achievementData.tiers[0],
-				levelName: 'Basic needs 1'
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				levelName: 'Basic needs 2'
+			});
+		});
+
+		it('should return the last completed badge level data when tiers have same completed date', () => {
+			const { getLastCompletedBadgeLevelData } = useBadgeData();
+			const badge = {
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-22T18:49:21Z' }
+					]
+				},
+				contentfulData: [
+					{ challengeName: 'Basic needs', levelName: '1' },
+					{ challengeName: 'Basic needs', levelName: '2' }
+				]
+			};
+
+			expect(getLastCompletedBadgeLevelData(badge)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				levelName: 'Basic needs 2'
 			});
 		});
 
@@ -462,6 +493,12 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getHighestPriorityDisplayBadge', () => {
+		it('should handle undefined', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+
+			expect(getHighestPriorityDisplayBadge(undefined)).toEqual({});
+		});
+
 		it('should return the highest priority badge based on predefined order', () => {
 			const { getHighestPriorityDisplayBadge } = useBadgeData();
 			const badges = [
@@ -500,6 +537,77 @@ describe('useBadgeData.js', () => {
 			];
 
 			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_CLIMATE_ACTION, level: 3 });
+		});
+	});
+
+	describe('getCompletedBadges', () => {
+		it('should return the completed badges', () => {
+			const { getCompletedBadges } = useBadgeData();
+			const badges = [
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-22T18:49:21Z' }
+						]
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: []
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-23T18:49:21Z' }
+						]
+					},
+				},
+			];
+
+			expect(getCompletedBadges(badges)).toEqual([
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-22T18:49:21Z' }
+						]
+					},
+					earnedAtDate: '2024-10-22T18:49:21Z',
+					level: 0,
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-23T18:49:21Z' }
+						]
+					},
+					earnedAtDate: '2024-10-23T18:49:21Z',
+					level: 0,
+				}
+			]);
+		});
+		it('should return empty array when not badges', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges(null)).toEqual([]);
+		});
+		it('should return empty array when badges are not well formatted', () => {
+			const { getCompletedBadges } = useBadgeData();
+			expect(getCompletedBadges([
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: null }
+						]
+					},
+				},
+				{
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: undefined }
+						]
+					},
+				}
+			])).toEqual([]);
 		});
 	});
 });

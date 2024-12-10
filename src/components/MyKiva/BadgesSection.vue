@@ -42,7 +42,7 @@
 				<button
 					class="tw-text-action hover:tw-underline tw-mt-auto"
 				>
-					{{ badge.hasStarted ? 'Continue' : 'Start this journey' }}
+					{{ ctaCaption(badge) }}
 				</button>
 			</div>
 		</div>
@@ -74,16 +74,26 @@ const visibleBadges = computed(() => {
 		.sort(indexIn(defaultBadges, 'id'));
 });
 
-const levelCaption = badge => {
-	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
-};
-
 const getBadgeStatus = badge => {
 	const activeTier = getActiveTierData(badge);
 	if (activeTier?.level === badge?.achievementData?.tiers?.length) {
 		return BADGE_COMPLETED;
 	}
 	return BADGE_IN_PROGRESS;
+};
+
+const levelCaption = badge => {
+	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
+		return 'Complete!';
+	}
+	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+};
+
+const ctaCaption = badge => {
+	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
+		return 'See this journey';
+	}
+	return badge.hasStarted ? 'Continue' : 'Start this journey';
 };
 </script>
 

@@ -12,7 +12,7 @@ export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
 export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
-export const CLIMATE_ACTION_FILTER = 'tag=9';
+export const CLIMATE_ACTION_FILTER = 'tag=8,9';
 export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
 export const WOMENS_EQUALITY_FILTER = 'gender=female';
 export const BASIC_NEEDS_FILTER = 'sector=6,10';
@@ -50,9 +50,10 @@ export default function useBadgeData() {
 	 * Calls Apollo to get the badge achievement service data
 	 *
 	 * @param apollo The current instance of Apollo
+	 * @param publicId Whether to get achievement data for a specific user
 	 */
-	const fetchAchievementData = apollo => {
-		apollo.query({ query: userAchievementProgressQuery })
+	const fetchAchievementData = (apollo, publicId = null) => {
+		apollo.query({ query: userAchievementProgressQuery, variables: { publicId } })
 			.then(result => {
 				badgeAchievementData.value = [
 					...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
@@ -333,7 +334,7 @@ export default function useBadgeData() {
 	 * @returns The last completed level
 	 */
 	const getLastCompletedBadgeLevelData = badge => {
-		if (badge.achievementData?.milestoneProgress?.length) {
+		if (badge?.achievementData?.milestoneProgress?.length) {
 			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
 			if (earnedAtDate) {
 				const contentfulData = badge.contentfulData?.[0] ?? {};
@@ -343,15 +344,22 @@ export default function useBadgeData() {
 					levelName: contentfulData.challengeName,
 				};
 			}
-		} else if (badge.achievementData?.tiers?.length) {
+		} else if (badge?.achievementData?.tiers?.length) {
 			const tiers = JSON.parse(JSON.stringify(badge.achievementData.tiers));
-			tiers.sort((a, b) => new Date(a.completedDate) - new Date(b.completedDate));
+			// Sort by completed date descending
+			tiers.sort((a, b) => {
+				// Handle when tiers were achieved at the same time
+				if (a.completedDate === b.completedDate) {
+					return b.level - a.level;
+				}
+				return new Date(b.completedDate) - new Date(a.completedDate);
+			});
 			const levelIndex = tiers[0].level - 1;
 			const contentfulData = badge.contentfulData[levelIndex];
 			return {
 				...badge,
 				contentfulData,
-				achievementData: tiers[levelIndex],
+				achievementData: tiers[0],
 				// eslint-disable-next-line max-len
 				levelName: `${(contentfulData.challengeName ?? '')}${(contentfulData.levelName ? ' ' : '')}${(contentfulData.levelName ?? '')}`
 			};
@@ -375,7 +383,7 @@ export default function useBadgeData() {
 			ID_REFUGEE_EQUALITY
 		];
 		let displayedBadge;
-		if (badges.length) {
+		if (badges?.length) {
 			const sortedBadges = JSON.parse(JSON.stringify(badges));
 			sortedBadges.sort((a, b) => badgeOrder.indexOf(a.id) - badgeOrder.indexOf(b.id));
 			for (let i = 0; i < sortedBadges.length; i += 1) {
@@ -387,6 +395,58 @@ export default function useBadgeData() {
 		}
 		return displayedBadge ?? {};
 	};
+
+	/**
+	 * Get completed badges of a user
+	 *
+	 * @param badges The badges to get the completed badges from
+	 * @returns Completed badges
+	 */
+	const getCompletedBadges = badges => {
+		const completedBadgesArr = [];
+
+		badges?.forEach(badge => {
+			if (badge?.achievementData?.tiers?.length) {
+				const { tiers } = badge.achievementData;
+				tiers.forEach(tier => {
+					if (tier.completedDate) {
+						completedBadgesArr.push({
+							...badge,
+							earnedAtDate: tier.completedDate,
+							level: tier.level,
+						});
+					}
+				});
+			}
+			if (badge?.achievementData?.milestoneProgress?.length) {
+				const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
+				if (earnedAtDate) {
+					completedBadgesArr.push({
+						...badge,
+						earnedAtDate,
+						level: 0,
+					});
+				}
+			}
+		});
+
+		return completedBadgesArr;
+	};
+
+	/**
+	 * Get completed badges sorted by earned date
+	 *
+	 * @returns Completed badges sorted by earned date
+	 */
+	const completedBadges = computed(() => {
+		const completedBadgesArr = getCompletedBadges(badgeData.value);
+
+		completedBadgesArr.sort((a, b) => {
+			return new Date(a.earnedAtDate) - new Date(b.earnedAtDate);
+		});
+
+		return completedBadgesArr;
+	});
 
 	return {
 		fetchAchievementData,
@@ -400,9 +460,12 @@ export default function useBadgeData() {
 		getBadgeWithVisibleTiers,
 		getLastCompletedBadgeLevelData,
 		getHighestPriorityDisplayBadge,
+		getCompletedBadges,
 		badgeAchievementData,
+		badgeContentfulData,
 		badgeData,
 		badgeLoanIdData,
 		isBadgeKeyValid,
+		completedBadges,
 	};
 }

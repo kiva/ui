@@ -33,7 +33,9 @@
 		</MyKivaContainer>
 	</div>
 </template>
+
 <script setup>
+import numeral from 'numeral';
 import logReadQueryError from '#src/util/logReadQueryError';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import StatItem from '#src/components/MyKiva/StatItem';
@@ -49,10 +51,6 @@ import {
 const apollo = inject('apollo');
 
 const props = defineProps({
-	badgesData: {
-		type: Array,
-		default: () => ([])
-	},
 	userAchievements: {
 		type: Array,
 		default: () => ([])
@@ -104,9 +102,7 @@ onMounted(() => {
 	apollo.query({ query: lendingStatsQuery })
 		.then(result => {
 			livesTouched.value = result.data?.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
-			totalAmountLent.value = result.data?.my?.userStats?.amount_of_loans ?? 0;
-			// Handle new user use-case
-			totalAmountLent.value = totalAmountLent.value === '0.00' ? 0 : totalAmountLent.value;
+			totalAmountLent.value = numeral(result.data?.my?.userStats?.amount_of_loans ?? 0).value();
 			totalCountriesLentTo.value = result.data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
 			isLoaded.value = true;
 		}).catch(e => {

@@ -8,7 +8,7 @@
 						v-for="loan, index in loansToDisplay"
 						:key="loan.id"
 						:lender-name="loan?.name"
-						:lender-image-url="loan?.image?.url"
+						:lender-image-url="getLoanImageUrl(loan)"
 						class="borrower-image tw-rounded-full tw-shadow"
 						:class="{
 							'centered-borrower-image' : index === 1 && loansToDisplay.length === 3,
@@ -62,16 +62,13 @@ import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
 import KvUserAvatar from '#kv-components/KvUserAvatar';
+import { getKivaImageUrl } from '#src/util/imageUtils';
 import OptInNotification from './OptInNotification';
 
 const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([])
-	},
-	optedIn: {
-		type: Boolean,
-		default: false
 	},
 	isGuest: {
 		type: Boolean,
@@ -85,15 +82,13 @@ const props = defineProps({
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const $appConfig = inject('$appConfig');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const title = computed(() => {
-	if (props.optedIn) {
-		return 'Thank you! You reached a milestone';
-	}
 	if (props.loans.length === 1) {
 		return `Thank you! You and ${props.loans[0]?.name} are in this together now.`;
 	}
@@ -173,6 +168,15 @@ const updateOptIn = value => {
 	}
 	newConsentAnswered.value = true;
 	receiveNews.value = value;
+};
+
+const getLoanImageUrl = loan => {
+	return getKivaImageUrl({
+		height: 500,
+		width: 500,
+		base: $appConfig.photoPath,
+		hash: loan?.image?.hash,
+	});
 };
 </script>
 

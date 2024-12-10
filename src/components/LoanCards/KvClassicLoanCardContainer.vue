@@ -39,7 +39,7 @@
 				:lender-name="borrowerName"
 				:lender-image-url="borrowerImageUrl"
 				:class="{'animate': isAnimating}"
-				@animationend="resetBubble"
+				@transitionend="resetBubble"
 			/>
 		</div>
 	</div>
