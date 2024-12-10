@@ -1,0 +1,37 @@
+import{g as $}from"./entry-index-CKVkeXup4D.js";import{n as g}from"./entry-numeral-BEwyVwpTZh.js";import{d as I}from"./entry-updateLoanReservation-CMshdCI3Lr.js";import{K as P}from"./entry-KvIcon-DBO1ZOylRP.js";import{K as T}from"./entry-KvButton-DkbqxWSep7.js";import{K as S}from"./entry-KvCarousel-DBMOzBb6gG.js";import{K as U}from"./entry-KvLoadingPlaceholder-D_0lEsjIvJ.js";import{K as D}from"./entry-KvProgressBar-DoEPy2EJkw.js";import{c as m,e as r,a as f,E as h,h as i,f as l,O as E,J as K,r as u,G as N,o,w,C as B,D as C,R as A,S as F}from"./entry-vue.esm-bundler-gh2KZVgkoT.js";import{_ as V}from"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import{a as z,c as M}from"./entry-exports-QxsLoHZpMP.js";const q=$`query upsellLoansQuery(
+	$maxLoans: Int!
+	$minAmount: Float!
+	$excludeLoanIds: [Int!]
+) {
+	fundraisingLoans(
+		filters: [{
+			amountLeft: {
+				range: {
+					gte: $minAmount
+				}
+			}
+			loanIds: {
+				none: $excludeLoanIds
+			}
+		}]
+		limit: $maxLoans
+	) {
+		values {
+			id
+			image {
+				id
+				url(customSize: "w150,h138")
+				retinaUrl: url(customSize: "w300,h276")
+				lgUrl: url(customSize: "w244,h185")
+				lgRetinaUrl: url(customSize: "w488,h370")
+			}
+			name
+			geocode {
+				country {
+					id
+					name
+				}
+			}
+		}
+	}
+}`,v={name:"DepositIncentiveUpsell",inject:["apollo"],emits:["adding-loan","done-adding"],props:{maxLoans:{type:Number,default:4},goal:{type:Number,default:0},progress:{type:Number,default:0},excludeLoanIds:{type:Array,default:()=>[]}},components:{KvButton:T,KvCarousel:S,KvIcon:P,KvLoadingPlaceholder:U,KvProgressBar:D},data(){return{loadingLoans:!0,loans:[]}},computed:{amountLeft(){return this.goal-this.progress},amountLeftFormatted(){return g(this.amountLeft).format("$0,0[.]00")},loadingProgress(){return this.goal===0},progressPercent(){return this.goal===0?0:Math.min(100,this.progress/this.goal*100)},displayLoans(){return this.loadingLoans||this.loadingProgress||!this.loans.length?new Array(this.maxLoans).fill({id:0}):this.loans}},methods:{addToBasket(e){this.$emit("adding-loan");const s=this.amountLeft;this.apollo.mutate({mutation:I,variables:{loanid:e,price:g(s).format("0.00")}}).then(({errors:n})=>{var p;if(this.$emit("done-adding"),n!=null&&n[0]){const d=n[0];if(((p=d.extensions)==null?void 0:p.code)==="no_shares_added_regular_xb")this.$kvTrackEvent("basket","fail","incentive-upsell-add-to-basket",`loan ${e} reserved`,s),this.$showTipMsg("Looks like that loan was reserved by someone else! Try one of these instead.","info"),this.fetchLoans();else{this.$showTipMsg(d.message,"error");try{this.$kvTrackEvent("basket","fail","incentive-upsell-add-to-basket",`loan ${e}: ${d.message.substring(0,40)}...`,s),z(`Add to Basket: ${d.message}`)}catch{}}}else this.$kvTrackEvent("basket","add-to-basket","incentive-upsell-add-to-basket",e,s)}).catch(n=>{this.$emit("done-adding"),this.$showTipMsg("Failed to add loan. Please try again.","error"),this.$kvTrackEvent("basket","fail","incentive-upsell-add-to-basket",`loan ${e}: ${n.toString().substring(0,40)}...`,s),M(n)})},fetchLoans(){this.loadingLoans=!0,this.apollo.query({query:q,variables:{maxLoans:this.maxLoans,minAmount:this.amountLeft,excludeLoanIds:this.excludeLoanIds},fetchPolicy:"network-only"}).then(({data:e})=>{var s;this.loans=((s=e==null?void 0:e.fundraisingLoans)==null?void 0:s.values)??[],this.loadingLoans=!1,this.loans.forEach(n=>{this.$kvTrackEvent("basket","show","incentive-upsell-loan",n.id,this.amountLeft)})})}},watch:{progress:{immediate:!0,handler(e,s){Number.isFinite(e)&&e!==s&&this.fetchLoans()}}}},R=e=>(A("data-v-6e2109d0"),e=e(),F(),e),j=R(()=>r("h3",{class:"tw-mb-1"}," Earn your $25 Reward¹ ",-1)),Q={class:"tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center"},G={key:0},J={class:"loan-slide-image tw-overflow-hidden tw-rounded tw-bg-secondary tw-mb-1"},O={key:0,class:"tw-w-full tw-h-full tw-block"},H=["srcset"],W=["srcset"],X=["src","alt"],Y={class:"loan-info tw-mb-1"},Z={key:0};function ee(e,s,n,p,d,a){const k=u("kv-icon"),c=u("kv-loading-placeholder"),_=u("kv-progress-bar"),b=u("kv-button"),y=u("kv-carousel"),L=N("kv-track-event");return o(),m("li",null,[j,r("p",Q,[f(k,{name:"present",id:"present-icon",class:"tw-h-2.5 tw-w-2.5 tw--rotate-12 tw-mr-0.5"}),a.loadingProgress?i("",!0):(o(),m("span",G,h(a.amountLeftFormatted)+" away! Don't miss out on your free lending credit. ",1)),a.loadingProgress?(o(),l(c,{key:1,class:"tw-h-2.5 tw-max-w-xs"})):i("",!0)]),a.loadingProgress?i("",!0):(o(),l(_,{key:0,class:"tw-w-full tw-max-w-sm tw-mb-2","aria-label":"Percent progress towards lending reward",value:a.progressPercent},null,8,["value"])),a.loadingProgress?(o(),l(c,{key:1,class:"tw-h-1 tw-w-full tw-max-w-sm tw-mb-2"})):i("",!0),f(y,{class:"tw-w-full","multiple-slides-visible":!0,"slides-to-scroll":"visible","embla-options":{loop:!1}},E({_:2},[K(a.displayLoans,(t,x)=>({name:`slide${x+1}`,fn:w(()=>[r("div",null,[r("div",J,[t.id?(o(),m("picture",O,[r("source",{srcset:`${t.image.lgRetinaUrl} 2x, ${t.image.lgUrl} 1x`,media:"(min-width: 1024px)"},null,8,H),r("source",{srcset:`${t.image.retinaUrl} 2x, ${t.image.url} 1x`,media:"(min-width: 0)"},null,8,W),r("img",{class:"tw-w-full tw-h-full tw-object-cover",src:t.image.lgUrl,alt:"Photo of "+t.name,loading:"lazy"},null,8,X)])):i("",!0),t.id?i("",!0):(o(),l(c,{key:1,style:{height:"0","padding-bottom":"100%"}}))]),r("p",Y,[t.id?(o(),m("span",Z," Lend "+h(a.amountLeftFormatted)+" to "+h(t.name)+" in "+h(t.geocode.country.name),1)):i("",!0),t.id?i("",!0):(o(),l(c,{key:1,class:"tw-h-2.5 tw-w-10/12 tw-mb-1"})),t.id?i("",!0):(o(),l(c,{key:2,class:"tw-h-2.5 tw-w-1/2 lg:tw-hidden"}))]),B((o(),l(b,{onClick:te=>a.addToBasket(t.id),state:t.id?"":"disabled",variant:"secondary"},{default:w(()=>[C(" Add to basket ")],void 0,!0),_:2},1032,["onClick","state"])),[[L,["basket","click","incentive-upsell-add-to-basket",t.id,a.amountLeft]]])])])}))]),1024)])}const he=V(v,[["render",ee],["__scopeId","data-v-6e2109d0"]]);v.__docgenInfo={displayName:"DepositIncentiveUpsell",exportName:"default",description:"",tags:{},props:[{name:"maxLoans",type:{name:"number"},defaultValue:{func:!1,value:"4"}},{name:"goal",type:{name:"number"},defaultValue:{func:!1,value:"0"}},{name:"progress",type:{name:"number"},defaultValue:{func:!1,value:"0"}},{name:"excludeLoanIds",type:{name:"array"},defaultValue:{func:!1,value:"[]"}}],events:[{name:"adding-loan"},{name:"done-adding"}],sourceFiles:["/home/runner/work/ui/ui/src/components/Checkout/DepositIncentiveUpsell.vue"]};export{he as D};
