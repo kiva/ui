@@ -1,3 +1,77 @@
+## [3.6.0](https://github.com/kiva/ui/compare/v3.5.0...v3.6.0) (2024-12-10)
+
+### 🎉 New Features
+
+* add ecosystem themes ([9cb391e](https://github.com/kiva/ui/commit/9cb391e6e55fbac55fb37d3924dcb1a1cdefc0ed))
+* add more to badge title caption ([124c6d0](https://github.com/kiva/ui/commit/124c6d037e30cd3270471d029b7c611a2bca6232))
+* add tiered badges to BadgesList component ([2c29b71](https://github.com/kiva/ui/commit/2c29b716dbc179ef2cf641e4aaf60dc933acad9a))
+* bp activity fead code clean up ([#5712](https://github.com/kiva/ui/issues/5712)) ([4217368](https://github.com/kiva/ui/commit/4217368aa7c465d657718efc989e8bb8810dd477))
+* complete status added to journey ([#5708](https://github.com/kiva/ui/issues/5708)) ([7dad329](https://github.com/kiva/ui/commit/7dad329c3b61f4fcecf847ef21d408ed1e13b27f))
+* connect MyKiva TY page to real achievement service data ([2a09064](https://github.com/kiva/ui/commit/2a09064e14ca5a45d5b6d95c459de68a391176f9))
+* firing hotjar event in my kiva page ([3d16a87](https://github.com/kiva/ui/commit/3d16a87e53cbd911aa7277308cffe812fe2bbee6))
+* hide badge tile when all tiered badges are completed ([5a10410](https://github.com/kiva/ui/commit/5a1041011920c12c3bdd95de40ba5762814abf7a))
+* implement logic for when to show MyKiva view of thanks page ([03981d8](https://github.com/kiva/ui/commit/03981d8372b949e897f7cb69a5219785bbd3f20e))
+* level added to badge tile ([#5702](https://github.com/kiva/ui/issues/5702)) ([07166ba](https://github.com/kiva/ui/commit/07166bac7f695e073119b3b7cff03fc2c8a7fa5e))
+* load more updates ([#5706](https://github.com/kiva/ui/issues/5706)) ([7c6277c](https://github.com/kiva/ui/commit/7c6277c27a5d3cf1c82f424f1cd187b7dfe533e2))
+* logic for displaying MyKiva minus checking achieved badge and opt out ([1a2db15](https://github.com/kiva/ui/commit/1a2db15019b4454be2903bb6cfe234ea45dddd36))
+* remove totalPossibleBadges from start of badges section ([36e8e0f](https://github.com/kiva/ui/commit/36e8e0f98261dc193529d2338b2a6f818e8efa03))
+* ty page badge animations ([#5719](https://github.com/kiva/ui/issues/5719)) ([611c298](https://github.com/kiva/ui/commit/611c29838e27c07c79dfee7474c74b7035078afb))
+
+### 🐛 Bugfixes
+
+* add clarifying comment ([d4e9dad](https://github.com/kiva/ui/commit/d4e9dad4434c1694157dcf170ac5fd6affc447d7))
+* add missing stories for MyKiva badge modal ([55f568a](https://github.com/kiva/ui/commit/55f568af13d557ff5bb7961f1e748be8fe3948cb))
+* add MyKiva TY view and correct props, but not currently shown ([51ec31c](https://github.com/kiva/ui/commit/51ec31c98d386b28e2e2ee31be239000bfcbb950))
+* add one more optional chaining ([20ad09c](https://github.com/kiva/ui/commit/20ad09cb38536c5e7d690b23874cccf221ad0915))
+* added missing MyKiva TY page analytics ([ee25ccf](https://github.com/kiva/ui/commit/ee25ccfc69c85d572f8bf9c43ee2fbabbbf77c44))
+* adding publicId param to jsdoc ([233535f](https://github.com/kiva/ui/commit/233535fa47d625c32b74a11ca7dcc1c00ebfaed2))
+* adjustments for guest user in MyKiva TY flow ([ea4ae6c](https://github.com/kiva/ui/commit/ea4ae6c6757502b3ab7086e5038323bab7465fee))
+* badge tile bug fixed ([#5705](https://github.com/kiva/ui/issues/5705)) ([f1c03ce](https://github.com/kiva/ui/commit/f1c03ce0f62be04a7783e6bc68c49a61a736d336))
+* badges loading indicator ([e2414fb](https://github.com/kiva/ui/commit/e2414fbb8f4e9e33efdf486f583e47d9215b012a))
+* basket link z-index in sticky checkout exp ([12b872c](https://github.com/kiva/ui/commit/12b872cc30cff9164ed8bde144872bd122f1e8c7))
+* change event handler to transition ([779b1e0](https://github.com/kiva/ui/commit/779b1e030bb038044d5197ae91da3ac8b67c336d))
+* climate action needed one more tag filter ([622edd4](https://github.com/kiva/ui/commit/622edd4ee0d48fa4491f1bf718da189b197a302f))
+* don't how badges without new tier achieved, only show MyKiva TY when loans checked out ([32c8b3c](https://github.com/kiva/ui/commit/32c8b3c470bd3202123d598fea26c5050c41ebb4))
+* enhance image quality ([c795c3e](https://github.com/kiva/ui/commit/c795c3e49df086695f538b60fedde80acaabac4a))
+* get the correct completed tier, handle when tiers completed at the same time ([7d05a89](https://github.com/kiva/ui/commit/7d05a89f2b48d704db6d537f0800c1f801cfc0a2))
+* improve print view of MyKiva TY page ([1c4e19f](https://github.com/kiva/ui/commit/1c4e19f4118faf0946135c8a67575e12eb6a7554))
+* link styles for personalized lend menu ([2ba6d39](https://github.com/kiva/ui/commit/2ba6d397b7017c01401e4efc6344abab3e55f6ff))
+* merge down production branch, cleanup merge conflicts from hotfix merge failure ([9853bad](https://github.com/kiva/ui/commit/9853baddd7dd3583fd38a3203738c717f15b83ad))
+* minor style fixes for SystemPage frame and Settings page ([f0c7240](https://github.com/kiva/ui/commit/f0c72401fa8927fcf8db7b21074ba88e73387d64))
+* missing optional chaining ([90517bf](https://github.com/kiva/ui/commit/90517bfc57ee2df07ad0af0a89e5e077acef4c42))
+* missing optional chaining ([801799f](https://github.com/kiva/ui/commit/801799fc8e926666cf6e2cdcf6dc6590be1ab51e))
+* mykiva hero images replaced ([#5720](https://github.com/kiva/ui/issues/5720)) ([6584a07](https://github.com/kiva/ui/commit/6584a072aea82e05c88a0d82a2728939186682e5))
+* only show badges module when badges achieved or guest, don't show rays on loading ([4fb6ae9](https://github.com/kiva/ui/commit/4fb6ae902c1f19135ca73672e39be790145a76bb))
+* remove totalPossibleBadges prop ([cbced40](https://github.com/kiva/ui/commit/cbced40904352da30bdf678776e5019879440c9d))
+* remove underline from promo banner ([7338105](https://github.com/kiva/ui/commit/733810560800226a637b6410d3641507f1e81e35))
+* remove underline from tertiary and secondary menus ([dae4906](https://github.com/kiva/ui/commit/dae490676bfbc445e88ce024d72b155e32fe5633))
+* remove underlines from header nav links ([921f0c9](https://github.com/kiva/ui/commit/921f0c93d69cf279b119f4d0505534c904388de1))
+* removed unneeded prop from opt in module ([afaab6c](https://github.com/kiva/ui/commit/afaab6c99098c4e00428475d0e3ddb903d3774b7))
+* removed unused import ([9caa36c](https://github.com/kiva/ui/commit/9caa36c9d8250e79ed71deb2ce92596ab90e4d0f))
+* resolve comments and total possible badges count ([112cfa0](https://github.com/kiva/ui/commit/112cfa0d5b9b803e421f815a4d0a4f4d449bed07))
+* resolve issue where equality badge wasn't being shown ([aab297a](https://github.com/kiva/ui/commit/aab297a641ac20755e57e8c546b20a1200b0b910))
+* resolve issue with guest use case ([56590d4](https://github.com/kiva/ui/commit/56590d42ab58755733fd576cf0a29a462a3ed2b2))
+* resolve warning about stat prop ([aaafa25](https://github.com/kiva/ui/commit/aaafa25875c2e4b5278536d79597a77584bb0048))
+* revert code for experiment ACK-469 ([2d5dacf](https://github.com/kiva/ui/commit/2d5dacfccf3f16abecec344185e63e709c1799c4))
+* solve conflict ([f1aa2cc](https://github.com/kiva/ui/commit/f1aa2cc535118a83cabc68907bbde714ee14bcf5))
+* support case where user has not opted in and didn't achieve a badge ([c24beb9](https://github.com/kiva/ui/commit/c24beb9514f4c3d1de54732ff84540e2c003f61f))
+* tracking event trigger fixed for loans number ([#5718](https://github.com/kiva/ui/issues/5718)) ([953c8ec](https://github.com/kiva/ui/commit/953c8ec76b58340cd63b9f8a073b7ec7014e5fe6))
+* update header and footer styling for ecosystem default theme MP-1103 ([49060e5](https://github.com/kiva/ui/commit/49060e524679a8a88f309b38090d3d528f055355))
+* update kv-components location ([c106daa](https://github.com/kiva/ui/commit/c106daad6e78cd2870f17d3e45855143a17d7f51))
+* use alias for kv-components imports ([1f031c5](https://github.com/kiva/ui/commit/1f031c55024d4dec4b9aceda723f9e345b0dd971))
+
+### 💅 Code Style Changes
+
+* fix lint whitespace error ([d09d825](https://github.com/kiva/ui/commit/d09d825d7ff3194720a809c6384358e93221c703))
+
+### 🧹 Chores
+
+* add request/response metadata to logs ([6aebdf0](https://github.com/kiva/ui/commit/6aebdf0a0332e180a34907a5c2a5c4956f3b8207))
+* **deps:** upgrade kv-components and kv-shop ([7d289db](https://github.com/kiva/ui/commit/7d289dbf3d5892cf48afa7cbea59df83d0ecaedc))
+* **deps:** upgrade kv-components, kv-shop, and kv-tokens to latest ([a5df3d6](https://github.com/kiva/ui/commit/a5df3d64eba8bfae2a02e54af417b2b173515239))
+* **release:** 3.6.0-rc.1 [skip ci] ([69061b2](https://github.com/kiva/ui/commit/69061b28f07c8aecc536f68b2cc07d57463d5945)), closes [#5712](https://github.com/kiva/ui/issues/5712) [#5708](https://github.com/kiva/ui/issues/5708) [#5702](https://github.com/kiva/ui/issues/5702) [#5706](https://github.com/kiva/ui/issues/5706) [#5719](https://github.com/kiva/ui/issues/5719) [#5705](https://github.com/kiva/ui/issues/5705) [#5720](https://github.com/kiva/ui/issues/5720) [#5718](https://github.com/kiva/ui/issues/5718)
+* sync package + package lock kv-tokens version ([4b058e7](https://github.com/kiva/ui/commit/4b058e7cbb565f5fbf405038ab66d60380ee55d6))
+
 ## [3.6.0-rc.1](https://github.com/kiva/ui/compare/v3.5.0...v3.6.0-rc.1) (2024-12-10)
 
 ### 🎉 New Features
