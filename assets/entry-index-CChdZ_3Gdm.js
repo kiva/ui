@@ -1,0 +1,1 @@
+import{_ as e}from"./entry-tslib.es6-CxsSpKd0p8.js";import{n as i}from"./entry-index-CIhg29qoqd.js";function m(a,r){return r===void 0&&(r={}),i(a,e({delimiter:"."},r))}function t(a,r){return r===void 0&&(r={}),m(a,e({delimiter:"-"},r))}export{m as d,t as p};
