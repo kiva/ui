@@ -4,6 +4,7 @@
 		:class="{
 			'tw-grayscale': isInProgress,
 			'invisible-badge tw-cursor-pointer': isLocked,
+			'tw-overflow-hidden': showShine,
 		}"
 		@click="handleBadgeClick"
 	>
