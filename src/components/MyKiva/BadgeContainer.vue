@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="tw-relative tw-inline-block tw-w-auto tw-overflow-hidden"
+		class="tw-relative tw-inline-block tw-w-auto"
 		:class="{
 			'tw-grayscale': isInProgress,
 			'invisible-badge tw-cursor-pointer': isLocked,
+			'tw-overflow-hidden': showShine,
 		}"
 		@click="handleBadgeClick"
 	>
