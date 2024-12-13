@@ -1,0 +1,31 @@
+#import '../fragments/loanCardFields.graphql'
+
+query loanRecommendations(
+  $filterObject: [FundraisingLoanSearchFilterInput!]
+  $sortBy: SortEnum = personalized
+  $imgDefaultSize: String = "w480h360"
+  $imgRetinaSize: String = "w960h720"
+  $origin: String
+  $userId: Int
+  $limit: Int
+) {
+  loanRecommendations(
+    filters: $filterObject,
+    sortBy: $sortBy,
+    origin: $origin,
+    userId: $userId,
+    limit: $limit
+  ) {
+    totalCount
+    values {
+      id
+      ...loanCardFields
+      image {
+        id
+        default: url(customSize: $imgDefaultSize)
+        retina: url(customSize: $imgRetinaSize)
+        hash
+      }
+    }
+  }
+}
