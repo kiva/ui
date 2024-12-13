@@ -1,4 +1,5 @@
 import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
+import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
 import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
@@ -121,6 +122,43 @@ export async function fetchLoans(
 		return result.data?.fundraisingLoans;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchLoans flssLoanQuery');
+	}
+}
+
+/**
+ * Fetches recommended loans from the FLSS API
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {String} origin Origin of query formatted as web:##page-context##
+ * @param {Object} filters Optional filters to apply to recommendations
+ * @param {String} sortBy Sort option for recommendations (defaults to 'personalized')
+ * @param {Number} userId Optional user ID to get personalized recommendations
+ * @param {Number} limit Optional limit for the number of recommendations
+ * @returns {Object} The results of the recommendations query
+ */
+export async function fetchRecommendedLoans(
+	apollo,
+	origin = FLSS_ORIGIN_NOT_SPECIFIED,
+	filters = null,
+	sortBy = 'personalized',
+	userId = null,
+	limit = null,
+) {
+	try {
+		const result = await apollo.query({
+			query: loanRecommendationsQuery,
+			variables: {
+				filterObject: filters,
+				sortBy,
+				origin,
+				userId,
+				limit,
+			},
+			fetchPolicy: 'network-only',
+		});
+		return result.data?.loanRecommendations;
+	} catch (e) {
+		logReadQueryError(e, 'flssUtils fetchRecommendedLoans');
 	}
 }
 

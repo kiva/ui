@@ -7,12 +7,14 @@ import {
 	fetchLoanChannel,
 	getCachedLoanChannel,
 	watchLoanChannel,
+	fetchRecommendedLoans,
 } from '#src/util/flssUtils';
 import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
 import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
 import filterConfig from '#src/util/loanSearch/filterConfig';
+import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 
 jest.mock('#src/util/loanSearch/filterConfig', () => {
 	return {
@@ -245,6 +247,56 @@ describe('flssUtils.js', () => {
 		it('should return the expected observer', () => {
 			const observer = watchLoanChannel(apollo, queryMap, loanQueryVars);
 			expect(observer).toBe(result);
+		});
+	});
+
+	describe('fetchRecommendedLoans', () => {
+		const result = { values: [], totalCount: 0 };
+		const dataObj = { data: { loanRecommendations: result } };
+		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const filters = { sector: ['Agriculture'] };
+		const sortBy = 'personalized';
+		const userId = 12345;
+		const limit = 8;
+		const apolloVariables = {
+			query: loanRecommendationsQuery,
+			variables: {
+				filterObject: filters,
+				sortBy,
+				origin: 'web:no-context',
+				userId,
+				limit,
+			},
+			fetchPolicy: 'network-only',
+		};
+
+		beforeEach(() => {
+			apollo.query.mockClear();
+		});
+
+		it('should pass the correct query variables to apollo', async () => {
+			await fetchRecommendedLoans(apollo, 'web:no-context', filters, sortBy, userId, limit);
+			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
+		});
+
+		it('should return the loan recommendations data', async () => {
+			const data = await fetchRecommendedLoans(apollo, 'web:no-context', filters, sortBy, userId, limit);
+			expect(data).toBe(result);
+		});
+
+		it('should handle null/undefined optional parameters', async () => {
+			await fetchRecommendedLoans(apollo);
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: loanRecommendationsQuery,
+				variables: {
+					filterObject: null,
+					sortBy: 'personalized',
+					origin: 'web:no-context',
+					userId: null,
+					limit: null,
+				},
+				fetchPolicy: 'network-only',
+			});
 		});
 	});
 });
