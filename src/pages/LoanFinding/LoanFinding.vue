@@ -455,6 +455,16 @@ export default {
 		}
 	},
 	created() {
+		const loanRecommendationsData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			LOAN_RECOMMENDATIONS_EXP_KEY,
+			'EXP-DSCI-2167-Dec2024'
+		);
+
+		this.enableLoanRecommendations = loanRecommendationsData.version === 'b';
+
 		const cachedUserInfo = this.apollo.readQuery({
 			query: userInfoQuery,
 		});
@@ -462,7 +472,6 @@ export default {
 		this.userInfo = cachedUserInfo.my?.userAccount ?? {};
 
 		let cachedRecommendedLoans = [];
-
 		if (this.enableLoanRecommendations) {
 			const recommendedLoansData = this.apollo.readQuery({
 				query: loanRecommendationsQueryExtended,
@@ -520,15 +529,6 @@ export default {
 			'EXP-CORE-1564-Oct2023'
 		);
 		this.enableAlmostFundedRow = almostFundedRowTestData.version === 'b';
-
-		const loanRecommendationsData = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'Lending',
-			LOAN_RECOMMENDATIONS_EXP_KEY,
-			'EXP-DSCI-2167-Dec2024'
-		);
-		this.enableLoanRecommendations = loanRecommendationsData.version === 'b';
 
 		this.firstRowLoans = [
 			...cachedRecommendedLoans,
