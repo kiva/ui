@@ -568,7 +568,7 @@ describe('useBadgeData.js', () => {
 				...badge,
 				contentfulData: badge.contentfulData[1],
 				achievementData: badge.achievementData.tiers[1],
-				levelName: 'Basic needs 2'
+				levelName: 'Basic needs (level 2)'
 			});
 		});
 
@@ -591,7 +591,7 @@ describe('useBadgeData.js', () => {
 				...badge,
 				contentfulData: badge.contentfulData[1],
 				achievementData: badge.achievementData.tiers[1],
-				levelName: 'Basic needs 2'
+				levelName: 'Basic needs (level 2)'
 			});
 		});
 
@@ -722,6 +722,35 @@ describe('useBadgeData.js', () => {
 					},
 				}
 			])).toEqual([]);
+		});
+	});
+
+	describe('getLevelName', () => {
+		it('should return the challenge name with level name when level name is present', () => {
+			const { getLevelName } = useBadgeData();
+			const data = {
+				challengeName: 'Basic needs',
+				levelName: '1'
+			};
+			expect(getLevelName(data)).toEqual('Basic needs (level 1)');
+		});
+
+		it('should return only the challenge name when level name is not present', () => {
+			const { getLevelName } = useBadgeData();
+			const data = {
+				challengeName: 'Basic needs'
+			};
+			expect(getLevelName(data)).toEqual('Basic needs');
+		});
+
+		it('should return an empty string when contentfulData is undefined', () => {
+			const { getLevelName } = useBadgeData();
+			expect(getLevelName(undefined)).toEqual('');
+		});
+
+		it('should return an empty string when contentfulData is null', () => {
+			const { getLevelName } = useBadgeData();
+			expect(getLevelName(null)).toEqual('');
 		});
 	});
 });

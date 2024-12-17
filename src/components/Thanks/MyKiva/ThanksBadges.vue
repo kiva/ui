@@ -249,6 +249,7 @@ const {
 	badgeData,
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
+	getTierBadgeDataByLevel,
 } = useBadgeData();
 
 const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -297,7 +298,10 @@ const displayedBadgeData = computed(() => {
 
 const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
-const badgeLevelName = computed(() => displayedBadgeData.value.levelName ?? '');
+const badgeLevelName = computed(() => {
+	const levelData = getTierBadgeDataByLevel(displayedBadgeData.value, displayedBadgeData.value.level);
+	return levelData.tierName;
+});
 
 const hasBadgeData = computed(() => !!badgeLevelName.value);
 
