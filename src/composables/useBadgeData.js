@@ -280,7 +280,7 @@ export default function useBadgeData() {
 			...badge,
 			contentfulData,
 			achievementData,
-			tierName: getLevelName(contentfulData) || badge.challengeName,
+			tierName: getLevelName(contentfulData),
 		};
 	};
 
