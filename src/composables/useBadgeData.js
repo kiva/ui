@@ -280,7 +280,8 @@ export default function useBadgeData() {
 			...badge,
 			contentfulData,
 			achievementData,
-			tierName: getLevelName(contentfulData),
+			// Fallback shouldn't be used but added just in case
+			tierName: getLevelName(contentfulData) || badge.challengeName,
 		};
 	};
 
