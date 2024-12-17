@@ -67,6 +67,7 @@ import {
 import { format } from 'date-fns';
 import KvButton from '#kv-components/KvButton';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import useBadgeData from '#src/composables/useBadgeData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -83,6 +84,8 @@ const visibleLimit = ref(6);
 const visibleOffset = ref(1);
 
 const { badgesData } = toRefs(props);
+
+const { getTierBadgeDataByLevel } = useBadgeData();
 
 const completedBadges = computed(() => {
 	const completedBadgesArr = [];
@@ -123,11 +126,8 @@ const completedBadges = computed(() => {
 const visibleBadges = computed(() => completedBadges.value.slice(0, visibleLimit.value * visibleOffset.value));
 
 const getBadgeTitle = badge => {
-	if (badge.level === 0) {
-		return badge?.contentfulData?.[0]?.challengeName ?? '';
-	}
-	const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
-	return `${badgeData?.challengeName} ${badgeData?.levelName}` ?? '';
+	const levelData = getTierBadgeDataByLevel(badge, badge.level);
+	return levelData.tierName;
 };
 
 const getBadgeImgUrl = badge => {

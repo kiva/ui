@@ -261,12 +261,18 @@ export default function useBadgeData() {
 		const tierIndex = badge?.achievementData?.tiers?.findIndex(t => t?.level === level);
 		const achievementData = badge?.achievementData?.tiers?.[tierIndex];
 		const contentfulData = badge?.contentfulData?.[tierIndex];
+		const levelText = typeof contentfulData?.levelName !== 'undefined'
+			? ` (level ${contentfulData?.levelName})`
+			: '';
 
 		return {
 			...badge,
 			contentfulData,
 			achievementData,
-			tierName: `${(contentfulData?.challengeName ?? '')} ${(contentfulData?.levelName ?? '')}`
+			// Handle both tiered and old badges (use challenge name for non-tiered)
+			tierName: contentfulData?.challengeName
+				? `${(contentfulData.challengeName)}${levelText}`
+				: badge.challengeName,
 		};
 	};
 
