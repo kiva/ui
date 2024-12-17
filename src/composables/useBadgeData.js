@@ -251,6 +251,18 @@ export default function useBadgeData() {
 	const badgeData = computed(() => combineBadgeData(badgeAchievementData.value, badgeContentfulData.value));
 
 	/**
+	 * Returns the formatted name for the provided Contentful data
+	 *
+	 * @param contentfulData The Contentful data for the badge and/or badge level
+	 * @returns Formatted badge and/or badge level name
+	 */
+	const getLevelName = contentfulData => {
+		const levelText = contentfulData?.levelName ? ` (level ${contentfulData?.levelName})` : '';
+		const challengeName = contentfulData?.challengeName ?? '';
+		return levelText ? `${challengeName}${levelText}` : challengeName;
+	};
+
+	/**
 	 * Gets the badge data with specific contentful and achievement data for the tier
 	 *
 	 * @param badge The badge to get the specific tier for
@@ -260,19 +272,15 @@ export default function useBadgeData() {
 	const getTierBadgeDataByLevel = (badge, level) => {
 		const tierIndex = badge?.achievementData?.tiers?.findIndex(t => t?.level === level);
 		const achievementData = badge?.achievementData?.tiers?.[tierIndex];
-		const contentfulData = badge?.contentfulData?.[tierIndex];
-		const levelText = typeof contentfulData?.levelName !== 'undefined'
-			? ` (level ${contentfulData?.levelName})`
-			: '';
+		const contentfulData = badge?.contentfulData?.[tierIndex]
+			// The TY page provides a badge object with a single contentfulData property
+			|| (typeof badge?.contentfulData?.length === 'undefined' ? badge.contentfulData : undefined);
 
 		return {
 			...badge,
 			contentfulData,
 			achievementData,
-			// Handle both tiered and old badges (use challenge name for non-tiered)
-			tierName: contentfulData?.challengeName
-				? `${(contentfulData.challengeName)}${levelText}`
-				: (badge?.challengeName ?? ''),
+			tierName: getLevelName(contentfulData) || badge.challengeName,
 		};
 	};
 
@@ -347,7 +355,7 @@ export default function useBadgeData() {
 				return {
 					...badge,
 					contentfulData,
-					levelName: contentfulData.challengeName,
+					levelName: getLevelName(contentfulData),
 				};
 			}
 		} else if (badge?.achievementData?.tiers?.length) {
@@ -366,8 +374,7 @@ export default function useBadgeData() {
 				...badge,
 				contentfulData,
 				achievementData: tiers[0],
-				// eslint-disable-next-line max-len
-				levelName: `${(contentfulData.challengeName ?? '')}${(contentfulData.levelName ? ' ' : '')}${(contentfulData.levelName ?? '')}`
+				levelName: getLevelName(contentfulData),
 			};
 		}
 		return {};
@@ -473,5 +480,6 @@ export default function useBadgeData() {
 		badgeLoanIdData,
 		isBadgeKeyValid,
 		completedBadges,
+		getLevelName,
 	};
 }
