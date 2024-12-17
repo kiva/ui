@@ -97,6 +97,7 @@ export const UserLoggedInOptedInThreeLoans = story({
 });
 
 export const BadgeOld = story({
+	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
@@ -104,6 +105,7 @@ export const BadgeOld = story({
 });
 
 export const BadgeTiered = story({
+	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
@@ -111,6 +113,7 @@ export const BadgeTiered = story({
 });
 
 export const BadgeMultiple = story({
+	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,
