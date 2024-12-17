@@ -46,6 +46,7 @@
 <script>
 import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import { format } from 'date-fns';
+import useBadgeData from '#src/composables/useBadgeData';
 
 export default {
 	name: 'BadgesList',
@@ -70,11 +71,9 @@ export default {
 	},
 	methods: {
 		getBadgeTitle(badge) {
-			if (badge.level === 0) {
-				return badge?.contentfulData?.[0]?.challengeName ?? '';
-			}
-			const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
-			return `${badgeData?.challengeName} ${badgeData?.levelName}` ?? '';
+			const { getTierBadgeDataByLevel } = useBadgeData();
+			const levelData = getTierBadgeDataByLevel(badge, badge.level);
+			return levelData.tierName;
 		},
 		getBadgeImgUrl(badge) {
 			if (badge.level === 0) {
