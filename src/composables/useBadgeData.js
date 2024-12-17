@@ -189,17 +189,18 @@ export default function useBadgeData() {
 		const currentTier = badge.achievementData.tiers[levelIndex];
 		/**
 		 * {
-		 *   "id": "",
-		 *   "challengeName": "",
-		 *   "level": 1,
-		 *   "levelName": "",
-		 *   "shareFact": "",
-		 *   "shareFactFootnote": "",
-		 *   "shareFactUrl": "",
-		 *   "imageUrl": "",
-		 *   "target": 1,
-		 *   "tierStatement": "",
-		 *   "learnMoreURL": ""
+		 *   "id": string,
+		 *   "challengeName": string,
+		 *   "level": number,
+		 *   "levelName": string,
+		 *   "shareFact": string,
+		 *   "shareFactFootnote": string,
+		 *   "shareFactUrl": string,
+		 *   "imageUrl": string,
+		 *   "target": number,
+		 *   "tierStatement": string,
+		 *   "learnMoreURL": string,
+		 *   "completedDate": string,
 		 * }
 		 */
 		return {
