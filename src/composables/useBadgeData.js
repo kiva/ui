@@ -272,7 +272,7 @@ export default function useBadgeData() {
 			// Handle both tiered and old badges (use challenge name for non-tiered)
 			tierName: contentfulData?.challengeName
 				? `${(contentfulData.challengeName)}${levelText}`
-				: badge.challengeName,
+				: (badge?.challengeName ?? ''),
 		};
 	};
 
