@@ -1,0 +1,9 @@
+const r={kind:"Document",definitions:[{kind:"OperationDefinition",operation:"query",name:{kind:"Name",value:"basketCount"},variableDefinitions:[{kind:"VariableDefinition",variable:{kind:"Variable",name:{kind:"Name",value:"basketId"}},type:{kind:"NamedType",name:{kind:"Name",value:"String"}},directives:[]}],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"shop"},arguments:[{kind:"Argument",name:{kind:"Name",value:"basketId"},value:{kind:"Variable",name:{kind:"Name",value:"basketId"}}}],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"nonTrivialItemCount"},arguments:[],directives:[]}]}}]}}],loc:{start:0,end:131}};r.loc.source={body:`
+                query basketCount($basketId: String) {
+	shop (basketId: $basketId) {
+		id
+		nonTrivialItemCount
+	}
+}
+
+            `,name:"GraphQL request",locationOffset:{line:1,column:1}};const l=(e,i)=>{if(e.kind==="FragmentSpread")i.add(e.name.value);else if(e.kind==="VariableDefinition"){const n=e.type;n.kind==="NamedType"&&i.add(n.name.value)}e.selectionSet&&e.selectionSet.selections.forEach(function(n){l(n,i)}),e.variableDefinitions&&e.variableDefinitions.forEach(function(n){l(n,i)}),e.definitions&&e.definitions.forEach(function(n){l(n,i)})},d={},k=e=>{e.definitions.forEach(function(i){if(i.name){const n=new Set;l(i,n),d[i.name.value]=n}})};k(r);const f=(e,i)=>{for(let n=0;n<e.definitions.length;n++){const a=e.definitions[n];if(a.name&&a.name.value==i)return a}},m=(e,i)=>{const n={kind:e.kind,definitions:[f(e,i)]};e.hasOwnProperty("loc")&&(n.loc=e.loc);const a=d[i]||new Set,c=new Set;let s=new Set;for(a.forEach(o=>{s.add(o)});s.size>0;){const o=s;s=new Set,o.forEach(t=>{c.has(t)||(c.add(t),(d[t]||new Set).forEach(u=>{s.add(u)}))})}return c.forEach(o=>{const t=f(e,o);t&&n.definitions.push(t)}),n};m(r,"basketCount");export{r as d};
