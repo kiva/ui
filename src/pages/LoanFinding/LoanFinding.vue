@@ -198,42 +198,37 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({
-				query: experimentAssignmentQuery,
-				variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
-			}).then(() => {
-				return client.query({
+			return Promise.all([
+				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: LOAN_RECOMMENDATIONS_EXP_KEY }
-				});
-			}).then(loanRecommendationsExp => {
-				const useRecommendations = loanRecommendationsExp?.data?.experiment?.version === 'b';
+				}),
+				client.query({ query: userInfoQuery })
+			]).then(([recommendationsExp, userInfo]) => {
+				const useRecommendations = recommendationsExp?.data?.experiment?.version === 'b';
+				const userId = userInfo?.data?.my?.userAccount?.id || null;
 
-				return client.query({ query: userInfoQuery })
-					.then(userInfoResult => {
-						const userId = userInfoResult?.data?.my?.userAccount?.id || null;
-
-						const recommendedLoansPromise = client.query({
-							query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
-							variables: useRecommendations ? {
-								...prefetchedRecommendationsVariables,
-								userId
-							} : prefetchedFlssVariables
-						});
-
-						return Promise.all([
-							Promise.resolve(userInfoResult),
-							client.query({
-								query: experimentAssignmentQuery,
-								variables: { id: FIVE_DOLLARS_NOTES_EXP }
-							}),
-							client.query({
-								query: experimentAssignmentQuery,
-								variables: { id: FLSS_ONGOING_EXP_KEY }
-							}),
-							recommendedLoansPromise
-						]);
-					});
+				return Promise.all([
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
+					}),
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: FIVE_DOLLARS_NOTES_EXP }
+					}),
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: FLSS_ONGOING_EXP_KEY }
+					}),
+					client.query({
+						query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
+						variables: useRecommendations ? {
+							...prefetchedRecommendationsVariables,
+							userId
+						} : prefetchedFlssVariables
+					})
+				]);
 			});
 		}
 	},
