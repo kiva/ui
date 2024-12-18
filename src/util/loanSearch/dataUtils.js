@@ -3,6 +3,7 @@ import loanEnumsQuery from '#src/graphql/query/loanEnumsQuery.graphql';
 import {
 	fetchFacets,
 	fetchLoans,
+	fetchRecommendedLoans,
 	getFlssFilters,
 	FLSS_ORIGIN_NOT_SPECIFIED,
 } from '#src/util/flssUtils';
@@ -48,6 +49,37 @@ export async function runLoansQuery(apollo, loanSearchState, origin) {
 		loanSearchState?.pageOffset,
 		loanSearchState?.pageLimit,
 		origin,
+	);
+
+	return { loans: flssData?.values?.filter(loan => loan !== null) ?? [], totalCount: flssData?.totalCount ?? 0 };
+}
+
+/**
+ * Runs the query to get recommended loans
+ *
+ * @param {Object} apollo The Apollo client instance
+ * @param {Object} options Query options including userId and origin
+ * @param {Number} options.userId The user ID to get recommendations for (optional)
+ * @param {String} options.origin Origin of query formatted as web:##page-context##
+ * @param {Object} options.filterObject Optional filters to apply to recommendations
+ * @param {String} options.sortBy Sort option for recommendations (defaults to 'personalized')
+ * @param {Number} options.limit Limit the number of recommendations (optional)
+ * @returns {Object} The results of the recommendations query
+ */
+export async function runRecommendationsQuery(apollo, {
+	userId = null,
+	origin = FLSS_ORIGIN_NOT_SPECIFIED,
+	filterObject = null,
+	sortBy = 'personalized',
+	limit = null
+} = {}) {
+	const flssData = await fetchRecommendedLoans(
+		apollo,
+		origin,
+		filterObject,
+		sortBy,
+		userId,
+		limit
 	);
 
 	return { loans: flssData?.values?.filter(loan => loan !== null) ?? [], totalCount: flssData?.totalCount ?? 0 };

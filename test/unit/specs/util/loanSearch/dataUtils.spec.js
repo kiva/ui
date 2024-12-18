@@ -1,4 +1,9 @@
-import { runFacetsQueries, runLoansQuery, fetchLoanFacets } from '#src/util/loanSearch/dataUtils';
+import {
+	runFacetsQueries,
+	runLoansQuery,
+	fetchLoanFacets,
+	runRecommendationsQuery
+} from '#src/util/loanSearch/dataUtils';
 import * as flssUtils from '#src/util/flssUtils';
 import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
 import loanEnumsQuery from '#src/graphql/query/loanEnumsQuery.graphql';
@@ -123,6 +128,41 @@ describe('dataUtils.js', () => {
 				mockState.pageOffset,
 				mockState.pageLimit,
 				origin,
+			);
+			expect(result).toEqual({ loans, totalCount });
+		});
+	});
+
+	describe('runRecommendationsQuery', () => {
+		let spyFetchRecommendedLoans;
+		const apollo = {};
+		const loans = [{ test: 'test' }];
+		const totalCount = 5;
+		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
+		const fakeUserId = 54321;
+		const limit = 12;
+		beforeEach(() => {
+			spyFetchRecommendedLoans = jest.spyOn(flssUtils, 'fetchRecommendedLoans')
+				.mockImplementation(() => Promise.resolve({ values: loans, totalCount }));
+		});
+
+		afterEach(jest.restoreAllMocks);
+
+		it('should return recommended loans', async () => {
+			const result = await runRecommendationsQuery(apollo, {
+				origin,
+				filterObject: null,
+				sortBy: 'personalized',
+				userId: fakeUserId,
+				limit
+			});
+			expect(spyFetchRecommendedLoans).toHaveBeenCalledWith(
+				apollo,
+				origin,
+				null,
+				'personalized',
+				fakeUserId,
+				limit
 			);
 			expect(result).toEqual({ loans, totalCount });
 		});
