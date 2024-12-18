@@ -91,7 +91,7 @@ const countryLabel = computed(() => {
 });
 
 const livesTouchedLabel = computed(() => {
-	return livesTouched.value === 1 ? 'Live<br>touched' : 'Lives<br>touched';
+	return livesTouched.value === 1 ? 'Life<br>touched' : 'Lives<br>touched';
 });
 
 const badgesLabel = computed(() => {
