@@ -42,7 +42,7 @@
 			</div>
 		</template>
 
-		<template v-if="newConsentAnswered">
+		<template v-else>
 			<OptInNotification
 				:loans-to-display="loansToDisplay"
 				:receive-news="receiveNews"
