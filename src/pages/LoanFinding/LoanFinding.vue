@@ -199,30 +199,43 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: experimentAssignmentQuery, variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
-			}).then(async () => {
-				const loanRecommendationsExp = await client.query({
+				query: experimentAssignmentQuery,
+				variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
+			}).then(() => {
+				return client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: LOAN_RECOMMENDATIONS_EXP_KEY }
 				});
+			}).then(loanRecommendationsExp => {
 				const useRecommendations = loanRecommendationsExp?.data?.experiment?.version === 'b';
 
-				const recommendedLoansPromise = client.query({
-					query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
-					variables: useRecommendations ? {
-						...prefetchedRecommendationsVariables,
-						userId: config.userId || null
-					} : prefetchedFlssVariables
-				});
+				return client.query({ query: userInfoQuery })
+					.then(userInfoResult => {
+						const userId = userInfoResult?.data?.my?.userAccount?.id || null;
 
-				return Promise.all([
-					client.query({ query: userInfoQuery }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-					recommendedLoansPromise
-				]);
+						const recommendedLoansPromise = client.query({
+							query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
+							variables: useRecommendations ? {
+								...prefetchedRecommendationsVariables,
+								userId
+							} : prefetchedFlssVariables
+						});
+
+						return Promise.all([
+							Promise.resolve(userInfoResult),
+							client.query({
+								query: experimentAssignmentQuery,
+								variables: { id: FIVE_DOLLARS_NOTES_EXP }
+							}),
+							client.query({
+								query: experimentAssignmentQuery,
+								variables: { id: FLSS_ONGOING_EXP_KEY }
+							}),
+							recommendedLoansPromise
+						]);
+					});
 			});
-		},
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -287,7 +300,7 @@ export default {
 			let loans = [];
 			if (this.enableLoanRecommendations) {
 				const response = await runRecommendationsQuery(this.apollo, {
-					userId: this.userInfo?.id,
+					userId: this.userInfo?.id || null,
 					origin: FLSS_ORIGIN_LEND_BY_CATEGORY,
 					limit: 12
 				});
@@ -485,10 +498,7 @@ export default {
 		} else {
 			const flssLoansData = this.apollo.readQuery({
 				query: flssLoansQueryExtended,
-				variables: {
-					pageLimit: 4,
-					origin: FLSS_ORIGIN_LEND_BY_CATEGORY
-				}
+				variables: prefetchedFlssVariables
 			});
 			cachedRecommendedLoans = flssLoansData?.fundraisingLoans?.values?.filter(loan => loan !== null) ?? [];
 		}

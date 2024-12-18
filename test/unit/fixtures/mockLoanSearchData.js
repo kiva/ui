@@ -14,7 +14,7 @@ export const mockState = {
 	partnerId: [1],
 	isMatchable: true,
 	flexibleFundraisingEnabled: false,
-	activityId: [9],
+	activityId: [9]
 };
 
 export const savedSearchParams = {
