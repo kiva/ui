@@ -162,6 +162,20 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User URL Router FLSS
+	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// User IMG Router Recommendations (Legacy)
+	router.use('/recommendations/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'legacy', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
 	// User IMG Router Recommendations (Kiva Classic)
 	router.use('/recommendations/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
