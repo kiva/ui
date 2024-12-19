@@ -19,7 +19,11 @@ async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEF
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
-	const loanData = await trace('fetchLoansByType', { resource: type }, async () => fetchLoansByType(type, id, queryType === QUERY_TYPE.FLSS, queryType === QUERY_TYPE.RECOMMENDATIONS)); // eslint-disable-line max-len
+	const loanData = await trace(
+		'fetchLoansByType',
+		{ resource: type },
+		async () => fetchLoansByType(type, id, queryType)
+	);
 
 	// Set the loan data in memcache, return the loan data
 	if (loanData && loanData.length) {
@@ -162,7 +166,7 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
-	// User URL Router FLSS
+	// User URL Router Recommendations
 	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
 			await redirectToUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
