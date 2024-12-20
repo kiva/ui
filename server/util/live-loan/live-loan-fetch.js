@@ -70,7 +70,7 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT)
 	if (queryType === QUERY_TYPE.RECOMMENDATIONS) {
 		return fetchLoansFromGraphQL(
 			{
-				query: `query($userId: Int, $limit: Int) {
+				query: `query($userId: Int) {
 					loanRecommendations(
 						userId: $userId,
 						limit: ${loanCount},
@@ -80,8 +80,7 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT)
 					}
 				}`,
 				variables: {
-					userId: Number(id),
-					limit: loanCount
+					userId: Number(id)
 				}
 			},
 			'data.loanRecommendations.values'
