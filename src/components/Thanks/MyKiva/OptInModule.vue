@@ -83,6 +83,7 @@ const props = defineProps({
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const $appConfig = inject('$appConfig');
+const cookieStore = inject('cookieStore');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
 
@@ -133,19 +134,10 @@ const getMarginLeft = index => {
 	return '0';
 };
 
-const updateOptIn = value => {
-	$kvTrackEvent(
-		'post-checkout',
-		'click',
-		`${value ? 'accept' : 'reject'}-opt-in-request`,
-		props.isGuest ? 'guest' : 'signed-in',
-		props.numberOfBadges,
-	);
-
-	if (value) {
-		try {
-			apollo.mutate({
-				mutation: gql`
+const updateCommunicationSettings = lenderNews => {
+	try {
+		apollo.mutate({
+			mutation: gql`
 					mutation updateCommunicationSettings(
 						$lenderNews: Boolean
 					) {
@@ -158,12 +150,58 @@ const updateOptIn = value => {
 						}
 					}
 				`,
-				variables: {
-					lenderNews: value,
-				},
-			});
-		} catch (error) {
-			logReadQueryError(error, 'OptInModule updateCommunicationSettings');
+			variables: {
+				lenderNews,
+			},
+		});
+	} catch (error) {
+		logReadQueryError(error, 'OptInModule updateCommunicationSettings');
+	}
+};
+
+const updateVisitorEmailOptIn = (lenderNews, visitorId) => {
+	try {
+		apollo.mutate({
+			mutation: gql`
+				mutation updateVisitorCommunicationSettings(
+					$lenderNews: Boolean,
+					$visitorId: String!
+				) {
+					visitorEmailOptIn {
+						updateCommunicationSettings(
+							communicationSettings: {
+								lenderNews: $lenderNews
+							},
+							visitorId: $visitorId
+						)
+					}
+				}
+			`,
+			variables: {
+				lenderNews,
+				visitorId,
+			},
+		});
+	} catch (error) {
+		logReadQueryError(error, 'OptInModule updateVisitorCommunicationSettings');
+	}
+};
+
+const updateOptIn = value => {
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		`${value ? 'accept' : 'reject'}-opt-in-request`,
+		props.isGuest ? 'guest' : 'signed-in',
+		props.numberOfBadges,
+	);
+
+	if (value) {
+		const visitorId = cookieStore.get('uiv') || null;
+		if (props.isGuest) {
+			updateVisitorEmailOptIn(value, visitorId);
+		} else {
+			updateCommunicationSettings(value);
 		}
 	}
 	newConsentAnswered.value = true;

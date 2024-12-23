@@ -329,7 +329,7 @@ const showBadgeRays = computed(() => {
 	return false;
 });
 
-const showOptInModule = computed(() => !props.isGuest && !props.isOptedIn);
+const showOptInModule = computed(() => !props.isOptedIn);
 
 const showBadgeModule = computed(() => {
 	return (props.badgesAchieved.length || props.isGuest) && (isLoading.value || hasBadgeData.value);
