@@ -99,10 +99,9 @@
 					/>
 				</div>
 				<KvExpandable
-					v-show="openCreateAccount"
 					easing="ease-in-out"
 				>
-					<div>
+					<div v-show="openCreateAccount">
 						<h2>Before you go!</h2>
 						<p>Finish setting up your account to track and relend your money as you are paid back.</p>
 						<GuestAccountCreation
@@ -131,11 +130,11 @@
 					/>
 				</div>
 				<KvExpandable
-					v-show="openOrderConfirmation"
 					easing="ease-in-out"
 				>
 					<CheckoutReceipt
 						v-if="receipt"
+						v-show="openOrderConfirmation"
 						:lender="lender"
 						:receipt="receipt"
 					/>
@@ -156,11 +155,10 @@
 				/>
 			</div>
 			<KvExpandable
-				v-show="openShareModule"
 				easing="ease-in-out"
 			>
 				<SocialShareV2
-					v-if="receipt"
+					v-show="openShareModule"
 					class="social-share"
 					:lender="lender"
 					:loans="loans"
