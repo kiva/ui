@@ -151,11 +151,9 @@ export default {
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
 				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
 				{ color: 'tw-text-white', bg: 'tw-bg-action' },
-				// { color: 'tw-text-800', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-action' },
 				{ color: 'tw-text-brand-50', bg: 'tw-bg-black' },
 				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
-				// { color: 'tw-text-action', bg: 'tw-bg-gray-50' },
 				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			]
 		};
