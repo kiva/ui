@@ -198,7 +198,7 @@ const updateOptIn = value => {
 
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
-		if (props.isGuest) {
+		if (props.isGuest && visitorId) {
 			updateVisitorEmailOptIn(value, visitorId);
 		} else {
 			updateCommunicationSettings(value);
