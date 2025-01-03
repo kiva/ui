@@ -7,6 +7,7 @@ import {
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getUnixTime } from 'date-fns';
+import * as experimentUtils from '#src/util/experiment/experimentUtils';
 
 jest.mock('#src/util/logReadQueryError');
 
@@ -134,13 +135,17 @@ describe('myKivaUtils.js', () => {
 		let $kvTrackEventMock;
 		let generalSettingsMock;
 		let preferencesMock;
+		let trackExperimentVersionMock;
 
 		beforeEach(() => {
 			apolloMock = { readFragment: jest.fn() };
 			$kvTrackEventMock = jest.fn();
 			generalSettingsMock = { 'myKivaEnabled.value': true };
 			preferencesMock = {};
+			trackExperimentVersionMock = jest.spyOn(experimentUtils, 'trackExperimentVersion');
 		});
+
+		afterEach(jest.restoreAllMocks);
 
 		it('should return false if myKivaFeatureEnabled is false', () => {
 			generalSettingsMock['myKivaEnabled.value'] = false;
@@ -195,6 +200,26 @@ describe('myKivaUtils.js', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
 
 			expect(result).toBe(true);
+		});
+
+		it('should not call trackExperimentVersion if flag not provided', () => {
+			apolloMock.readFragment
+				.mockReturnValueOnce({ version: 'a' })
+				.mockReturnValueOnce({ version: 'b' });
+
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
+
+			expect(trackExperimentVersionMock).toBeCalledTimes(0);
+		});
+
+		it('should call trackExperimentVersion if flag provided', () => {
+			apolloMock.readFragment
+				.mockReturnValueOnce({ version: 'a' })
+				.mockReturnValueOnce({ version: 'b' });
+
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3, true);
+
+			expect(trackExperimentVersionMock).toBeCalledTimes(1);
 		});
 	});
 
