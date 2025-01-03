@@ -631,7 +631,8 @@ export default {
 				this.$kvTrackEvent,
 				data?.general ?? {},
 				data?.my?.userPreferences?.preferences ?? null,
-				totalLoans
+				totalLoans,
+				true,
 			);
 
 			if (this.myKivaEnabled) {

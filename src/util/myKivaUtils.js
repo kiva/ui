@@ -57,9 +57,17 @@ export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
  * @param generalSettings The general settings object
  * @param preferences The user preferences object
  * @param loanTotal The total number of loans the user has made
+ * @param trackExperiment Whether to track the experiment version
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, preferences, loanTotal) => {
+export const getIsMyKivaEnabled = (
+	apollo,
+	$kvTrackEvent,
+	generalSettings,
+	preferences,
+	loanTotal,
+	trackExperiment = false,
+) => {
 	const myKivaFeatureEnabled = readBoolSetting(generalSettings, 'myKivaEnabled.value');
 	if (myKivaFeatureEnabled) {
 		const { version: thanksVersion } = apollo.readFragment({
@@ -78,13 +86,15 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, prefe
 			}) ?? {};
 			const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-			trackExperimentVersion(
-				apollo,
-				$kvTrackEvent,
-				'event-tracking',
-				MY_KIVA_EXP,
-				'EXP-MP-623-Sept2024'
-			);
+			if (trackExperiment) {
+				trackExperimentVersion(
+					apollo,
+					$kvTrackEvent,
+					'event-tracking',
+					MY_KIVA_EXP,
+					'EXP-MP-623-Sept2024'
+				);
+			}
 
 			// The user preference hasSeenMyKiva can be true when we override for internal testing
 			return hasSeenMyKiva || isMyKivaExperimentEnabled;
