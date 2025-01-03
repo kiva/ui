@@ -204,7 +204,7 @@ export default function useBadgeData() {
 		 * }
 		 */
 		return {
-			...badge.contentfulData.find(t => t.level === currentTier.level),
+			...badge.contentfulData.find(t => t.level === currentTier?.level),
 			...currentTier,
 		};
 	};
