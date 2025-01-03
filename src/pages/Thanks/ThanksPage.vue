@@ -431,17 +431,6 @@ export default {
 		teamName() {
 			return this.loans?.[0]?.team?.name ?? '';
 		},
-		landedOnUSLoan() {
-			const bpPattern = /^\/lend\/(\d+)/;
-
-			if (bpPattern.test(this.$appConfig.firstPage)) {
-				const url = this.$appConfig.firstPage?.split('/');
-				const firstVisitloanId = url?.[2] ?? null;
-				const landedLoan = this.loans.find(loan => loan.id === Number(firstVisitloanId));
-				return landedLoan?.geocode?.country?.isoCode === 'US';
-			}
-			return false;
-		},
 		receiptValues() {
 			return this.receipt?.items?.values ?? [];
 		},
@@ -468,8 +457,8 @@ export default {
 			if (this.badgesCustomExpEnabled) {
 				return BADGES_VIEW;
 			}
-			// Show the marketing opt-in view if the user has not opted in, has loans, and has not landed on a US loan
-			if (!this.landedOnUSLoan && !this.optedIn && this.loans.length > 0) {
+			// Show the marketing opt-in view if the user has not opted in and has loans
+			if (!this.optedIn && this.loans.length > 0) {
 				return MARKETING_OPT_IN_VIEW;
 			}
 			// Show the login required view if we couldn't get the receipt
