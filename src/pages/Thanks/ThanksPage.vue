@@ -625,7 +625,7 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// MyKiva Badges Experiment
-		if (!this.landedOnUSLoan && !this.printableKivaCards.length && hasLentBefore) {
+		if (!this.printableKivaCards.length && hasLentBefore) {
 			this.myKivaEnabled = getIsMyKivaEnabled(
 				this.apollo,
 				this.$kvTrackEvent,
