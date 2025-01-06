@@ -5,7 +5,6 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 
-export const THANKS_BADGES_EXP = 'thanks_badges';
 const MY_KIVA_EXP = 'my_kiva_page';
 const MY_KIVA_LOAN_LIMIT = 4;
 const FIRST_LOGIN_THRESHOLD = 5;
@@ -57,44 +56,28 @@ export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
  * @param generalSettings The general settings object
  * @param preferences The user preferences object
  * @param loanTotal The total number of loans the user has made
- * @param trackExperiment Whether to track the experiment version
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (
-	apollo,
-	$kvTrackEvent,
-	generalSettings,
-	preferences,
-	loanTotal,
-	trackExperiment = false,
-) => {
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, preferences, loanTotal) => {
 	const myKivaFeatureEnabled = readBoolSetting(generalSettings, 'myKivaEnabled.value');
 	if (myKivaFeatureEnabled) {
-		const { version: thanksVersion } = apollo.readFragment({
-			id: `Experiment:${THANKS_BADGES_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-		const isThanksExperimentEnabled = thanksVersion === 'b';
-
 		const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
 		const hasSeenMyKiva = !!(formattedPreference?.myKivaPageExp ?? 0);
 
-		if (isThanksExperimentEnabled || hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
+		if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
 			const { version: myKivaVersion } = apollo.readFragment({
 				id: `Experiment:${MY_KIVA_EXP}`,
 				fragment: experimentVersionFragment,
 			}) ?? {};
 			const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-			if (trackExperiment) {
-				trackExperimentVersion(
-					apollo,
-					$kvTrackEvent,
-					'event-tracking',
-					MY_KIVA_EXP,
-					'EXP-MP-623-Sept2024'
-				);
-			}
+			trackExperimentVersion(
+				apollo,
+				$kvTrackEvent,
+				'event-tracking',
+				MY_KIVA_EXP,
+				'EXP-MP-623-Sept2024'
+			);
 
 			// The user preference hasSeenMyKiva can be true when we override for internal testing
 			return hasSeenMyKiva || isMyKivaExperimentEnabled;

@@ -171,7 +171,7 @@ describe('myKivaUtils.js', () => {
 		it('should return false if no experiments are enabled', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'a' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
 
 			expect(result).toBe(false);
 		});
@@ -179,7 +179,7 @@ describe('myKivaUtils.js', () => {
 		it('should return true if experiments are enabled', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
 
 			expect(result).toBe(true);
 		});
@@ -193,31 +193,17 @@ describe('myKivaUtils.js', () => {
 		});
 
 		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
-			apolloMock.readFragment
-				.mockReturnValueOnce({ version: 'a' })
-				.mockReturnValueOnce({ version: 'b' });
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
 
 			expect(result).toBe(true);
 		});
 
-		it('should not call trackExperimentVersion if flag not provided', () => {
-			apolloMock.readFragment
-				.mockReturnValueOnce({ version: 'a' })
-				.mockReturnValueOnce({ version: 'b' });
+		it('should call trackExperimentVersion', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
 			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3);
-
-			expect(trackExperimentVersionMock).toBeCalledTimes(0);
-		});
-
-		it('should call trackExperimentVersion if flag provided', () => {
-			apolloMock.readFragment
-				.mockReturnValueOnce({ version: 'a' })
-				.mockReturnValueOnce({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 3, true);
 
 			expect(trackExperimentVersionMock).toBeCalledTimes(1);
 		});

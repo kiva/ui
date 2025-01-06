@@ -200,7 +200,7 @@ import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
 import KvButton from '#kv-components/KvButton';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
-import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, THANKS_BADGES_EXP } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -614,33 +614,33 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// MyKiva Badges Experiment
-		if (!this.printableKivaCards.length && hasLentBefore) {
-			this.myKivaEnabled = getIsMyKivaEnabled(
-				this.apollo,
-				this.$kvTrackEvent,
-				data?.general ?? {},
-				data?.my?.userPreferences?.preferences ?? null,
-				totalLoans,
-				true,
-			);
+		this.myKivaEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			data?.general ?? {},
+			data?.my?.userPreferences?.preferences ?? null,
+			totalLoans
+		);
 
-			if (this.myKivaEnabled) {
-				try {
-					const response = this.apollo.readQuery({
-						query: postCheckoutAchievementsQuery,
-						variables: { loanIds: getLoanIds(this.loans) },
-					});
-					this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
-					// Don't show badges without a new tier achieved
-					this.badgesAchieved = this.badgesAchieved.filter(b => {
-						// The equality badge doesn't have tiers
-						return b.preCheckoutTier === null || b.preCheckoutTier !== b.postCheckoutTier;
-					});
-					// MyKiva view only shown if user is guest, is not opted-in, or checkout achieved badges
-					this.myKivaEnabled = this.isGuest || !this.optedIn || this.badgesAchieved.length > 0;
-				} catch (e) {
-					logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
-				}
+		if (this.myKivaEnabled) {
+			try {
+				const response = this.apollo.readQuery({
+					query: postCheckoutAchievementsQuery,
+					variables: { loanIds: getLoanIds(this.loans) },
+				});
+				this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
+				// Don't show badges without a new tier achieved
+				this.badgesAchieved = this.badgesAchieved.filter(b => {
+					// The equality badge doesn't have tiers
+					return b.preCheckoutTier === null || b.preCheckoutTier !== b.postCheckoutTier;
+				});
+				// MyKiva view only shown if user:
+				// - Doesn't have a printable Kiva card and has a loan in checkout
+				// - AND (is guest, is not opted-in, or checkout achieved badges)
+				this.myKivaEnabled = !this.printableKivaCards.length && hasLentBefore
+					&& (this.isGuest || !this.optedIn || this.badgesAchieved.length > 0);
+			} catch (e) {
+				logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
 			}
 		}
 
@@ -653,7 +653,7 @@ export default {
 				this.apollo,
 				this.$kvTrackEvent,
 				'thanks',
-				THANKS_BADGES_EXP,
+				'thanks_badges',
 				'EXP-MP-608-Aug2024',
 			);
 			if (version === 'b') {
@@ -670,6 +670,13 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
+
+		this.$kvTrackEvent(
+			'post-checkout',
+			'show',
+			`active-view-${this.activeView}`,
+			this.isGuest ? 'guest' : 'signed-in'
+		);
 	},
 	methods: {
 		createGuestAccount() {

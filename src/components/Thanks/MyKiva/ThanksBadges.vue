@@ -446,6 +446,8 @@ onMounted(async () => {
 		}
 	} else if (showOptInModule.value) {
 		$kvTrackEvent('post-checkout', 'show', 'opt-in-only', eventProperty, numberOfBadges.value);
+	} else {
+		$kvTrackEvent('post-checkout', 'show', 'my-kiva-fallback', eventProperty, numberOfBadges.value);
 	}
 });
 
