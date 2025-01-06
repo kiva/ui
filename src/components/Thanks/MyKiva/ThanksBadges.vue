@@ -348,7 +348,7 @@ const handleContinue = () => {
 		$kvTrackEvent(
 			'post-checkout',
 			'click',
-			'create-new-account',
+			'continue-to-my-kiva',
 			'guest',
 			numberOfBadges.value,
 		);
@@ -359,7 +359,7 @@ const handleContinue = () => {
 			'post-checkout',
 			'click',
 			'continue-to-my-kiva',
-			'guest',
+			'signed-in',
 			numberOfBadges.value,
 		);
 
