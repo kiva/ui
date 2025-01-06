@@ -670,6 +670,13 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
+
+		this.$kvTrackEvent(
+			'post-checkout',
+			'show',
+			`active-view-${this.activeView}`,
+			this.isGuest ? 'guest' : 'signed-in'
+		);
 	},
 	methods: {
 		createGuestAccount() {
