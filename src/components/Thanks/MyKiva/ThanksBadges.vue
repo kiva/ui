@@ -437,13 +437,15 @@ onMounted(async () => {
 		handleScroll();
 	}
 
+	const eventProperty = props.isGuest ? 'guest' : 'signed-in';
 	if (showBadgeModule.value) {
-		const eventProperty = props.isGuest ? 'guest' : 'signed-in';
 		if (showOptInModule.value) {
 			$kvTrackEvent('post-checkout', 'show', 'opt-in-then-badge', eventProperty, numberOfBadges.value);
 		} else {
 			$kvTrackEvent('post-checkout', 'show', 'badge-only', eventProperty, numberOfBadges.value);
 		}
+	} else if (showOptInModule.value) {
+		$kvTrackEvent('post-checkout', 'show', 'opt-in-only', eventProperty, numberOfBadges.value);
 	}
 });
 
