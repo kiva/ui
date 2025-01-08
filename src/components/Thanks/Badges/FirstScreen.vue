@@ -13,25 +13,6 @@
 		<div
 			class="tw-pt-4 tw-pb-5 bg-gradient"
 		>
-			<div
-				v-if="(isGuest || isOptedIn) && loansToDisplay.length"
-				class="tw-flex tw-items-center tw-justify-center"
-			>
-				<KvUserAvatar
-					v-for="(loan, index) in loansToDisplay"
-					:key="loan.id"
-					:lender-name="loan?.name"
-					:lender-image-url="loan?.image?.url"
-					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
-					:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
-					:style="{
-						zIndex: index === 1 ? 2 : 1,
-						marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
-						marginLeft: loansToDisplay.length > 1&& index === loansToDisplay.length - 1
-							? '-22px' : '0',
-					}"
-				/>
-			</div>
 			<h1
 				class="tw-mb-1 tw-transition-all tw-duration-1000 tw-ease-in-out tw-relative tw-z-2"
 				:class="{
@@ -314,7 +295,6 @@ import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import KvButton from '#kv-components/KvButton';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -332,7 +312,6 @@ export default {
 		AnimatedStars,
 		KvButton,
 		KvMaterialIcon,
-		KvUserAvatar,
 		OptInModule,
 	},
 	emits: ['show-new-bg', 'show-discover-badges'],
@@ -414,9 +393,6 @@ export default {
 		},
 		revealBtnCta() {
 			return `${this.isMobileLayout ? 'Tap' : 'Click'} to reveal`;
-		},
-		loansToDisplay() {
-			return this.loans.slice(0, 3);
 		},
 		numberOfBadges() {
 			return this.badgesAchieved.length || 1;
