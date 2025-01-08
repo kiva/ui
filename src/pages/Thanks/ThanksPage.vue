@@ -19,6 +19,8 @@
 				:receipt="receipt"
 				:lender="lender"
 				:is-guest="isGuest"
+				:is-opted-in="optedIn"
+				:badges-achieved="badgesAchieved"
 			/>
 		</template>
 		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
