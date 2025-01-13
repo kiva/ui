@@ -1,3 +1,24 @@
+## [3.7.0-rc.2](https://github.com/kiva/ui/compare/v3.7.0-rc.1...v3.7.0-rc.2) (2025-01-13)
+
+### 🎉 New Features
+
+* bp why special position fixed ([#5751](https://github.com/kiva/ui/issues/5751)) ([f0e43dd](https://github.com/kiva/ui/commit/f0e43ddace707bb216e9c2fb400665535ebc78aa))
+* only show active loans in MyKiva count ([c2ce859](https://github.com/kiva/ui/commit/c2ce859f20393f8f44e9ac1f788844f1c8a4a4bc))
+* optin and optout modules added to old badge ty page ([#5753](https://github.com/kiva/ui/issues/5753)) ([bb915da](https://github.com/kiva/ui/commit/bb915da0946507db20691fd99bfbb7e97479d7f8))
+* optin option added to guest users in non mykiva ty page ([#5755](https://github.com/kiva/ui/issues/5755)) ([5f8f502](https://github.com/kiva/ui/commit/5f8f5029111bdda311cfdc2c65e4699ec6f33e5d))
+* tracking event added for opt in only to ty page ([#5750](https://github.com/kiva/ui/issues/5750)) ([55658cb](https://github.com/kiva/ui/commit/55658cb5cb98a31bb5b4a1f774dcd6230646daae))
+
+### 🐛 Bugfixes
+
+* add optional chaining for data edge case ([c1c3960](https://github.com/kiva/ui/commit/c1c39605c2a7ae2e1de1c0e7928c5af3ba6c5e05))
+* adjust how and when MyKiva experiment is tracked ([3022825](https://github.com/kiva/ui/commit/302282570b8a44d7d6cf4c832ddd960c45ceb51c))
+* mykiva ty page tracking evetns fixed ([#5749](https://github.com/kiva/ui/issues/5749)) ([c9506ae](https://github.com/kiva/ui/commit/c9506aed79fc96ae23046cd5c37f624dd3699399))
+* update analytics for ty page ([6cd4057](https://github.com/kiva/ui/commit/6cd405726b0a89ebbca8fa144423dfa2a43ecbe6))
+
+### 🏎️ Performance Improvements
+
+* preload dovetail font ([2dd9e67](https://github.com/kiva/ui/commit/2dd9e67572a302c164adae9744e79f30926b3c65))
+
 ## [3.7.0-rc.1](https://github.com/kiva/ui/compare/v3.6.0...v3.7.0-rc.1) (2025-01-03)
 
 ### 🎉 New Features
