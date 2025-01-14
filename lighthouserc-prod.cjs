@@ -24,11 +24,14 @@ module.exports = {
 			],
 			numberOfRuns: 5,
 		},
-		upload: {
-			target: 'lhci',
-			serverBaseUrl: 'https://lighthouse-ci-kiva-prod.herokuapp.com/',
-			token: process.env.LHCI_PROD_BUILD_TOKEN,
-			ignoreDuplicateBuildFailure: true
+		assert: {
+			assertions: {
+				'categories:accessibility': 'warn',
+				'categories:best-practices': 'warn',
+				'categories:performance': 'warn',
+				'categories:pwa': 'warn',
+				'categories:seo': 'warn',
+			}
 		},
 	},
 };

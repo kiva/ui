@@ -118,12 +118,13 @@ import LendingCategorySection from '#src/components/LoanFinding/LendingCategoryS
 import QuickFiltersSection from '#src/components/LoanFinding/QuickFiltersSection';
 import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
 import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
-import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
+import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
@@ -132,12 +133,23 @@ import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvCartModal from '#kv-components/KvCartModal';
 
-const prefetchedRecommendedLoansVariables = { pageLimit: 4, origin: FLSS_ORIGIN_LEND_BY_CATEGORY };
+const prefetchedFlssVariables = {
+	pageLimit: 4,
+	origin: FLSS_ORIGIN_LEND_BY_CATEGORY
+};
+
+const prefetchedRecommendationsVariables = {
+	origin: FLSS_ORIGIN_LEND_BY_CATEGORY,
+	userId: null,
+	limit: 4
+};
+
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
 const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
+const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 
 export default {
 	name: 'LoanFinding',
@@ -181,26 +193,44 @@ export default {
 			enableQFMobileVersion: false,
 			enableAlmostFundedRow: false,
 			HandOrangeIcon,
+			enableLoanRecommendations: false,
 		};
 	},
 	apollo: {
 		preFetch(config, client) {
-			return client.query({
-				query: experimentAssignmentQuery, variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
-			}).then(() => {
-				const recommendedLoansPromise = client.query({
-					query: flssLoansQueryExtended,
-					variables: prefetchedRecommendedLoansVariables
-				});
+			return Promise.all([
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: LOAN_RECOMMENDATIONS_EXP_KEY }
+				}),
+				client.query({ query: userInfoQuery })
+			]).then(([recommendationsExp, userInfo]) => {
+				const useRecommendations = recommendationsExp?.data?.experiment?.version === 'b';
+				const userId = userInfo?.data?.my?.userAccount?.id || null;
 
 				return Promise.all([
-					client.query({ query: userInfoQuery }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-					client.query({ query: experimentAssignmentQuery, variables: { id: FLSS_ONGOING_EXP_KEY } }),
-					recommendedLoansPromise
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: THREE_LOANS_RECOMMENDED_ROW_EXP_KEY }
+					}),
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: FIVE_DOLLARS_NOTES_EXP }
+					}),
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: FLSS_ONGOING_EXP_KEY }
+					}),
+					client.query({
+						query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
+						variables: useRecommendations ? {
+							...prefetchedRecommendationsVariables,
+							userId
+						} : prefetchedFlssVariables
+					})
 				]);
 			});
-		},
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -262,22 +292,31 @@ export default {
 	},
 	methods: {
 		async getRecommendedLoans() {
-			const { loans } = await runLoansQuery(
-				this.apollo,
-				{ pageLimit: 12 },
-				FLSS_ORIGIN_LEND_BY_CATEGORY
-			);
+			let loans = [];
+			if (this.enableLoanRecommendations) {
+				const response = await runRecommendationsQuery(this.apollo, {
+					userId: this.userInfo?.id || null,
+					origin: FLSS_ORIGIN_LEND_BY_CATEGORY,
+					limit: 12
+				});
+				loans = response.loans;
+			} else {
+				const response = await runLoansQuery(
+					this.apollo,
+					{ pageLimit: 12 },
+					FLSS_ORIGIN_LEND_BY_CATEGORY
+				);
+				loans = response.loans;
+			}
 
 			// Ensure unique loans are pushed since recommendations can change quickly
 			const remainingRecommendedLoans = loans
 				.filter(l => !this.firstRowLoans.filter(r => r.id === l.id).length)
 				.slice(0, 8);
-
 			this.firstRowLoans = [
 				...this.firstRowLoans.slice(0, 4),
 				...remainingRecommendedLoans
 			];
-
 			this.trackFirstRowDisplayedLoans();
 		},
 		async getSecondCategoryData() {
@@ -424,16 +463,40 @@ export default {
 		}
 	},
 	created() {
+		const loanRecommendationsData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			LOAN_RECOMMENDATIONS_EXP_KEY,
+			'EXP-DSCI-2167-Dec2024'
+		);
+
+		this.enableLoanRecommendations = loanRecommendationsData.version === 'b';
+
 		const cachedUserInfo = this.apollo.readQuery({
 			query: userInfoQuery,
 		});
 
 		this.userInfo = cachedUserInfo.my?.userAccount ?? {};
 
-		const cachedRecommendedLoans = this.apollo.readQuery({
-			query: flssLoansQueryExtended,
-			variables: prefetchedRecommendedLoansVariables
-		})?.fundraisingLoans?.values?.filter(loan => loan !== null) ?? [];
+		let cachedRecommendedLoans = [];
+		if (this.enableLoanRecommendations) {
+			const recommendedLoansData = this.apollo.readQuery({
+				query: loanRecommendationsQueryExtended,
+				variables: {
+					...prefetchedRecommendationsVariables,
+					userId: this.userInfo?.id || null
+				}
+			});
+			cachedRecommendedLoans = recommendedLoansData
+				?.loanRecommendations?.values?.filter(loan => loan !== null) ?? [];
+		} else {
+			const flssLoansData = this.apollo.readQuery({
+				query: flssLoansQueryExtended,
+				variables: prefetchedFlssVariables
+			});
+			cachedRecommendedLoans = flssLoansData?.fundraisingLoans?.values?.filter(loan => loan !== null) ?? [];
+		}
 
 		this.initializeFiveDollarsNotes();
 

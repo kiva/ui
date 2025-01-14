@@ -67,8 +67,5 @@ export const RectangleInProgress = story({ status: BADGE_IN_PROGRESS, shape: BAD
 
 export const RectangleLocked = story({ status: BADGE_LOCKED, shape: BADGE_SHAPE_RECTANGLE }, badgeUsEconomicEquality.contentfulData[0].imageUrl);
 
-export const BadgeWithRays = story({showRays: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);
-
 export const BadgeWithShine = story({showShine: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);
 
-export const BadgeWithShineAndRays = story({showRays: true, showShine: true, status: BADGE_COMPLETED, shape: BADGE_SHAPE_ARCH}, badgeClimateAction.contentfulData[0].imageUrl);

@@ -14,6 +14,8 @@
 				:is-guest="isGuest"
 				:selected-loan="selectedLoan"
 				:receipt="receipt"
+				:is-opted-in="isOptedIn"
+				:badges-achieved="badgesAchieved"
 				@show-discover-badges="showDiscoverBadges"
 				@show-new-bg="showNewBg"
 			/>
@@ -80,6 +82,14 @@ export default {
 		receipt: {
 			type: Object,
 			default: () => ({})
+		},
+		isOptedIn: {
+			type: Boolean,
+			default: false,
+		},
+		badgesAchieved: {
+			type: Array,
+			default: () => ([]),
 		},
 	},
 	data() {

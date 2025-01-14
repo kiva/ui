@@ -99,7 +99,7 @@ const props = defineProps({
 	},
 });
 
-const { getBadgeWithVisibleTiers } = useBadgeData();
+const { getBadgeWithVisibleTiers, getTierBadgeDataByLevel } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -145,11 +145,8 @@ const getBadgeStatus = index => {
 };
 
 const getTierName = index => {
-	const contentfulData = badgeWithVisibleTiers.value.contentfulData[index];
-	if (contentfulData.challengeName && contentfulData.levelName) {
-		return `${contentfulData.challengeName} ${contentfulData.levelName}`;
-	}
-	return `Level ${index + 1}`;
+	const levelData = getTierBadgeDataByLevel(badgeWithVisibleTiers.value, index + 1);
+	return levelData.tierName;
 };
 
 const handleBadgeClick = index => {

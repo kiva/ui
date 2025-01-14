@@ -103,16 +103,130 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getTierBadgeDataByLevel', () => {
-		it('should get the badge data by id and tier', () => {
+		it('should return the correct badge data for a given tier level with numeric level name', () => {
 			const { getTierBadgeDataByLevel } = useBadgeData();
-			const tier = 7;
-			const sampleBadge = combinedData[0];
+			const badge = {
+				id: 'basic-needs',
+				challengeName: 'Basic needs',
+				contentfulData: [
+					{ level: 1, challengeName: 'Basic needs', levelName: '1' },
+					{ level: 2, challengeName: 'Basic needs', levelName: '2' },
+					{ level: 3, challengeName: 'Basic needs', levelName: '3' }
+				],
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+						{ level: 3, completedDate: '2024-10-24T18:49:21Z' }
+					]
+				}
+			};
+			const level = 2;
 
-			expect(getTierBadgeDataByLevel(sampleBadge, tier)).toEqual({
-				...sampleBadge,
-				contentfulData: sampleBadge.contentfulData?.[tier - 1],
-				achievementData: sampleBadge.achievementData?.tiers?.[tier - 1],
-				tierName: `${sampleBadge.contentfulData?.[tier - 1].challengeName} ${sampleBadge.contentfulData?.[tier - 1].levelName}`,
+			expect(getTierBadgeDataByLevel(badge, level)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				tierName: 'Basic needs (level 2)'
+			});
+		});
+
+		it('should return the correct badge data for a given tier level with string level name', () => {
+			const { getTierBadgeDataByLevel } = useBadgeData();
+			const badge = {
+				id: 'basic-needs',
+				challengeName: 'Basic needs',
+				contentfulData: [
+					{ level: 1, challengeName: 'Basic needs', levelName: '1' },
+					{ level: 2, challengeName: 'Basic needs', levelName: '✨50✨' },
+					{ level: 3, challengeName: 'Basic needs', levelName: '3' }
+				],
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+						{ level: 3, completedDate: '2024-10-24T18:49:21Z' }
+					]
+				}
+			};
+			const level = 2;
+
+			expect(getTierBadgeDataByLevel(badge, level)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				tierName: 'Basic needs (level ✨50✨)'
+			});
+		});
+
+		it('should return the correct badge data for a tier level with no level name', () => {
+			const { getTierBadgeDataByLevel } = useBadgeData();
+			const badge = {
+				id: 'basic-needs',
+				challengeName: 'Basic needs',
+				contentfulData: [
+					{ level: 1, challengeName: 'Basic needs' },
+					{ level: 2, challengeName: 'Basic needs' },
+					{ level: 3, challengeName: 'Basic needs' }
+				],
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+						{ level: 3, completedDate: '2024-10-24T18:49:21Z' }
+					]
+				}
+			};
+			const level = 2;
+
+			expect(getTierBadgeDataByLevel(badge, level)).toEqual({
+				...badge,
+				contentfulData: badge.contentfulData[1],
+				achievementData: badge.achievementData.tiers[1],
+				tierName: 'Basic needs'
+			});
+		});
+
+		it('should return the correct badge data for a tier level with missing contentful data', () => {
+			const { getTierBadgeDataByLevel } = useBadgeData();
+			const badge = {
+				id: 'basic-needs',
+				challengeName: 'Basic needs',
+				contentfulData: [
+					{ level: 1, challengeName: 'Basic needs', levelName: '1' },
+					{ level: 2, challengeName: 'Basic needs', levelName: '2' }
+				],
+				achievementData: {
+					tiers: [
+						{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+						{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+						{ level: 3, completedDate: '2024-10-24T18:49:21Z' }
+					]
+				}
+			};
+			const level = 3;
+
+			expect(getTierBadgeDataByLevel(badge, level)).toEqual({
+				...badge,
+				contentfulData: undefined,
+				achievementData: badge.achievementData.tiers[2],
+				tierName: 'Basic needs'
+			});
+		});
+
+		it('should return the correct badge data for a tier level with no contentful data', () => {
+			const { getTierBadgeDataByLevel } = useBadgeData();
+			const badge = {
+				id: 'basic-needs',
+				challengeName: 'Basic needs',
+			};
+			const level = 3;
+
+			expect(getTierBadgeDataByLevel(badge, level)).toEqual({
+				...badge,
+				contentfulData: undefined,
+				achievementData: undefined,
+				tierName: 'Basic needs'
 			});
 		});
 	});
@@ -454,7 +568,7 @@ describe('useBadgeData.js', () => {
 				...badge,
 				contentfulData: badge.contentfulData[1],
 				achievementData: badge.achievementData.tiers[1],
-				levelName: 'Basic needs 2'
+				levelName: 'Basic needs (level 2)'
 			});
 		});
 
@@ -477,7 +591,7 @@ describe('useBadgeData.js', () => {
 				...badge,
 				contentfulData: badge.contentfulData[1],
 				achievementData: badge.achievementData.tiers[1],
-				levelName: 'Basic needs 2'
+				levelName: 'Basic needs (level 2)'
 			});
 		});
 
@@ -608,6 +722,35 @@ describe('useBadgeData.js', () => {
 					},
 				}
 			])).toEqual([]);
+		});
+	});
+
+	describe('getLevelName', () => {
+		it('should return the challenge name with level name when level name is present', () => {
+			const { getLevelName } = useBadgeData();
+			const data = {
+				challengeName: 'Basic needs',
+				levelName: '1'
+			};
+			expect(getLevelName(data)).toEqual('Basic needs (level 1)');
+		});
+
+		it('should return only the challenge name when level name is not present', () => {
+			const { getLevelName } = useBadgeData();
+			const data = {
+				challengeName: 'Basic needs'
+			};
+			expect(getLevelName(data)).toEqual('Basic needs');
+		});
+
+		it('should return an empty string when contentfulData is undefined', () => {
+			const { getLevelName } = useBadgeData();
+			expect(getLevelName(undefined)).toEqual('');
+		});
+
+		it('should return an empty string when contentfulData is null', () => {
+			const { getLevelName } = useBadgeData();
+			expect(getLevelName(null)).toEqual('');
 		});
 	});
 });

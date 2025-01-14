@@ -168,9 +168,11 @@ const windowWidth = ref(0);
 const openWhatIsNext = ref(false);
 const lastVisitedLoanIdx = ref(0);
 
-const hasActiveLoans = computed(() => {
-	return loans.value.some(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status));
+const activeLoans = computed(() => {
+	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
 });
+
+const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
 const getBorrowerName = loan => {
 	return loan?.name ?? '';
@@ -191,7 +193,7 @@ const title = computed(() => {
 	if (totalLoans.value === 1) {
 		return 'You’re <u>changing a life</u> right now!';
 	}
-	return `You’re <u>changing ${totalLoans.value} lives</u> right now!`;
+	return `You’re <u>changing ${activeLoans.value.length} lives</u> right now!`;
 });
 
 const btnCta = computed(() => {

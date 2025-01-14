@@ -2,6 +2,14 @@
 	<div
 		class="tw-relative tw-text-center md:tw-rounded-t hide-for-print"
 	>
+		<!-- Opt In module -->
+		<opt-in-module
+			v-if="!isOptedIn"
+			:loans="loans"
+			:is-guest="isGuest"
+			:number-of-badges="numberOfBadges"
+			class="print:tw-hidden opt-in-module"
+		/>
 		<div
 			class="tw-pt-4 tw-pb-5 bg-gradient"
 		>
@@ -287,6 +295,7 @@ import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import KvButton from '#kv-components/KvButton';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const imageGlob = import.meta.glob('/src/assets/images/thanks-page/*.*', { eager: true, query: '?url' });
@@ -303,6 +312,7 @@ export default {
 		AnimatedStars,
 		KvButton,
 		KvMaterialIcon,
+		OptInModule,
 	},
 	emits: ['show-new-bg', 'show-discover-badges'],
 	props: {
@@ -325,6 +335,14 @@ export default {
 		selectedLoan: {
 			type: Object,
 			default: () => ({})
+		},
+		isOptedIn: {
+			type: Boolean,
+			default: false,
+		},
+		badgesAchieved: {
+			type: Array,
+			default: () => ([]),
 		},
 	},
 	data() {
@@ -375,6 +393,9 @@ export default {
 		},
 		revealBtnCta() {
 			return `${this.isMobileLayout ? 'Tap' : 'Click'} to reveal`;
+		},
+		numberOfBadges() {
+			return this.badgesAchieved.length || 1;
 		},
 	},
 	methods: {
@@ -503,4 +524,7 @@ export default {
 	background: linear-gradient(166.92deg, #276A43 4.84%, #4DD083 95.26%);
 }
 
+.opt-in-module :deep(.module-container) {
+	@apply tw-rounded-none tw-pt-4 md:tw-pt-0;
+}
 </style>

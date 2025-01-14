@@ -61,6 +61,7 @@
 										'thanks',
 										'click',
 										'accept-opt-in-request',
+										isGuest ? 'guest' : 'signed-in',
 									]"
 								>
 									Yes, keep me updated
@@ -73,6 +74,7 @@
 										'thanks',
 										'click',
 										'reject-opt-in-request',
+										isGuest ? 'guest' : 'signed-in',
 									]"
 								>
 									No, I don’t want to receive updates
@@ -378,34 +380,66 @@ export default {
 			this.selectOption = true;
 			this.openCreateAccount = true;
 			if (value) {
-				try {
-					this.apollo.mutate({
-						mutation: gql`
-							mutation updateCommunicationSettings(
-								$lenderNews: Boolean
-							) {
-								my {
-									updateCommunicationSettings(
-										communicationSettings: {
-											lenderNews: $lenderNews
-										}
-									)
+				const visitorId = this.cookieStore.get('uiv') || null;
+				if (this.isGuest && visitorId) {
+					this.updateVisitorEmailOptIn(value, visitorId);
+				} else {
+					try {
+						this.apollo.mutate({
+							mutation: gql`
+								mutation updateCommunicationSettings(
+									$lenderNews: Boolean
+								) {
+									my {
+										updateCommunicationSettings(
+											communicationSettings: {
+												lenderNews: $lenderNews
+											}
+										)
+									}
 								}
-							}
-						`,
-						variables: {
-							lenderNews: value,
-						},
-					});
-				} catch (error) {
-					logFormatter(error, 'error');
+							`,
+							variables: {
+								lenderNews: value,
+							},
+						});
+					} catch (error) {
+						logFormatter(error, 'error');
+					}
 				}
 			}
 			const elementToScrollTo = document.querySelector('#loan-info');
 			const topOfSectionToScrollTo = elementToScrollTo?.offsetTop ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 			this.confirmOptInChoice = value;
-		}
+		},
+		updateVisitorEmailOptIn(lenderNews, visitorId) {
+			try {
+				this.apollo.mutate({
+					mutation: gql`
+					mutation updateVisitorCommunicationSettings(
+						$lenderNews: Boolean,
+						$visitorId: String!
+					) {
+						visitorEmailOptIn {
+							updateCommunicationSettings(
+								communicationSettings: {
+									lenderNews: $lenderNews
+								},
+								visitorId: $visitorId
+							)
+						}
+					}
+				`,
+					variables: {
+						lenderNews,
+						visitorId,
+					},
+				});
+			} catch (error) {
+				logFormatter(error, 'OptInModule updateVisitorCommunicationSettings');
+			}
+		},
 	},
 	created() {
 		this.$kvTrackEvent('thanks', 'view', 'Thanks-marketing-opt-in-prompt', this.isGuest ? 'guest' : 'registered');

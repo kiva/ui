@@ -76,7 +76,7 @@ const visibleBadges = computed(() => {
 
 const getBadgeStatus = badge => {
 	const activeTier = getActiveTierData(badge);
-	if (activeTier?.level === badge?.achievementData?.tiers?.length) {
+	if (activeTier?.level === badge?.achievementData?.tiers?.length && activeTier?.completedDate) {
 		return BADGE_COMPLETED;
 	}
 	return BADGE_IN_PROGRESS;

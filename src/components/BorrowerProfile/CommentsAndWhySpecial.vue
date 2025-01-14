@@ -129,7 +129,12 @@
 						</div>
 					</div>
 				</template>
-				<why-special data-testid="bp-why-special" :loan-id="loanId" />
+				<template v-if="!loading" #why-special>
+					<why-special
+						data-testid="bp-why-special"
+						:loan-id="loanId"
+					/>
+				</template>
 			</kv-carousel>
 		</div>
 		<kv-lightbox

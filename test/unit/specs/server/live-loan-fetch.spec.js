@@ -163,13 +163,29 @@ describe('live-loan-fetch', () => {
 			fetch.default.mockClear();
 			fetch.default.mockResolvedValue({ json: () => { } });
 
-			await fetchLoansByType.default('user', '1234', true);
+			await fetchLoansByType.default('user', '1234', 'flss');
 
 			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
 			expect(query).toContain('fundraisingLoans');
+			expect(fetch.default.mock.results[0].value).toBeDefined();
+		});
+	});
+
+	describe('fetchRecommendationsByLoanRecs', () => {
+		it('should make recommendations call with correct parameters', async () => {
+			fetch.default.mockClear();
+			fetch.default.mockResolvedValue({ json: () => { } });
+
+			await fetchLoansByType.default('user', '1234', 'recommendations');
+
+			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
+			expect(fetch).toBeDefined();
+			expect(variables.userId).toEqual(1234);
+			expect(query).toBeDefined();
+			expect(query).toContain('loanRecommendations');
 			expect(fetch.default.mock.results[0].value).toBeDefined();
 		});
 	});

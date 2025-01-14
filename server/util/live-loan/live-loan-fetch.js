@@ -1,6 +1,12 @@
 import fetchGraphQL from '../fetchGraphQL.js';
 import { warn, error } from '../log.js';
 
+export const QUERY_TYPE = {
+	DEFAULT: 'default',
+	FLSS: 'flss',
+	RECOMMENDATIONS: 'recommendations'
+};
+
 // Number of loans to fetch
 const loanCount = 4;
 
@@ -60,8 +66,26 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 }
 
 // Get per-user recommended loans from the ML service
-async function fetchRecommendationsByLoginId(id, flss = false) {
-	if (flss) {
+async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT) {
+	if (queryType === QUERY_TYPE.RECOMMENDATIONS) {
+		return fetchLoansFromGraphQL(
+			{
+				query: `query($userId: Int) {
+					loanRecommendations(
+						userId: $userId,
+						limit: ${loanCount},
+						origin: "email:live-loans"
+					) {
+						${loanValues}
+					}
+				}`,
+				variables: {
+					userId: Number(id)
+				}
+			},
+			'data.loanRecommendations.values'
+		);
+	} if (queryType === QUERY_TYPE.FLSS) {
 		return fetchLoansFromGraphQL(
 			{
 				query: `query($userId: Int) {
@@ -495,9 +519,9 @@ const shouldUseFLSS = async filterString => {
 };
 
 // Export a function that will fetch loans by live-loan type and id
-export default async function fetchLoansByType(type, id, flss = false) {
+export default async function fetchLoansByType(type, id, queryType = QUERY_TYPE.DEFAULT) {
 	if (type === 'user') {
-		return fetchRecommendationsByLoginId(id, flss);
+		return fetchRecommendationsByLoginId(id, queryType);
 	} if (type === 'loan') {
 		return fetchRecommendationsByLoanId(id);
 	} if (type === 'filter') {

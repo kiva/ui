@@ -2,11 +2,12 @@ import express from 'express';
 import { error } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
-import fetchLoansByType from './util/live-loan/live-loan-fetch.js';
+import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 
-async function fetchRecommendedLoans(type, id, cache, flss = false) {
-	const loanCachedName = flss ? `recommendations-by-${type}-id-${id}-flss` : `recommendations-by-${type}-id-${id}`;
+async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT) {
+	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
+	const loanCachedName = `recommendations-by-${type}-id-${id}${queryTypeSuffix}`;
 	// If we have loan data in memjscache return that quickly
 	try {
 		const cachedLoanData = await getFromCache(loanCachedName, cache);
@@ -18,7 +19,11 @@ async function fetchRecommendedLoans(type, id, cache, flss = false) {
 	}
 
 	// Otherwise we need to hit the graphql endpoint.
-	const loanData = await trace('fetchLoansByType', { resource: type }, async () => fetchLoansByType(type, id, flss)); // eslint-disable-line max-len
+	const loanData = await trace(
+		'fetchLoansByType',
+		{ resource: type },
+		async () => fetchLoansByType(type, id, queryType)
+	);
 
 	// Set the loan data in memcache, return the loan data
 	if (loanData && loanData.length) {
@@ -34,12 +39,15 @@ async function fetchRecommendedLoans(type, id, cache, flss = false) {
 	throw new Error('No loans returned');
 }
 
-async function getLoanForRequest(type, cache, req, flss = false) {
+async function getLoanForRequest(type, cache, req, queryType = QUERY_TYPE.DEFAULT) {
 	// Use default values for id and offset if they are not numeric
 	const id = req.params?.id || 0;
 	const offset = req.params?.offset || 1;
 
-	const loanData = await trace('fetchRecommendedLoans', async () => fetchRecommendedLoans(type, id, cache, flss));
+	const loanData = await trace(
+		'fetchRecommendedLoans',
+		async () => fetchRecommendedLoans(type, id, cache, queryType)
+	);
 
 	// if there are fewer loan results than the offset, return the last result
 	if (offset > loanData.length) {
@@ -48,9 +56,9 @@ async function getLoanForRequest(type, cache, req, flss = false) {
 	return loanData[offset - 1];
 }
 
-async function redirectToUrl(type, cache, req, res, flss = false) {
+async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	try {
-		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, flss));
+		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
 		// Standard destination is the borrower profile page
 		let redirect = `/lend/${loan.id}`;
 		// If the original request had query params on it, forward those along
@@ -72,11 +80,12 @@ async function redirectToUrl(type, cache, req, res, flss = false) {
 	}
 }
 
-async function serveImg(type, style, cache, req, res, flss = false) {
+async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	try {
-		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, flss));
+		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
 		let loanImg;
-		const imgCachedName = flss ? `loan-card-img-${style}-${loan.id}-flss` : `loan-card-img-${style}-${loan.id}`;
+		const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
+		const imgCachedName = `loan-card-img-${style}-${loan.id}${queryTypeSuffix}`;
 		const cachedLoanImg = await getFromCache(imgCachedName, cache);
 		if (cachedLoanImg) {
 			loanImg = cachedLoanImg;
@@ -139,21 +148,42 @@ export default function liveLoanRouter(cache) {
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
-			await redirectToUrl('user', cache, req, res, true);
+			await redirectToUrl('user', cache, req, res, QUERY_TYPE.FLSS);
 		});
 	});
 
 	// User IMG Router FLSS (Legacy)
 	router.use('/flss/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'legacy', cache, req, res, true);
+			await serveImg('user', 'legacy', cache, req, res, QUERY_TYPE.FLSS);
 		});
 	});
 
 	// User IMG Router FLSS (Kiva Classic)
 	router.use('/flss/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
-			await serveImg('user', 'classic', cache, req, res, true);
+			await serveImg('user', 'classic', cache, req, res, QUERY_TYPE.FLSS);
+		});
+	});
+
+	// User URL Router Recommendations
+	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
+			await redirectToUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// User IMG Router Recommendations (Legacy)
+	router.use('/recommendations/u/:id(\\d{0,})/img/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'legacy', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// User IMG Router Recommendations (Kiva Classic)
+	router.use('/recommendations/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'classic', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
 		});
 	});
 

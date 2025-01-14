@@ -99,10 +99,9 @@
 					/>
 				</div>
 				<KvExpandable
-					v-show="openCreateAccount"
 					easing="ease-in-out"
 				>
-					<div>
+					<div v-show="openCreateAccount">
 						<h2>Before you go!</h2>
 						<p>Finish setting up your account to track and relend your money as you are paid back.</p>
 						<GuestAccountCreation
@@ -131,11 +130,11 @@
 					/>
 				</div>
 				<KvExpandable
-					v-show="openOrderConfirmation"
 					easing="ease-in-out"
 				>
 					<CheckoutReceipt
 						v-if="receipt"
+						v-show="openOrderConfirmation"
 						:lender="lender"
 						:receipt="receipt"
 					/>
@@ -156,11 +155,10 @@
 				/>
 			</div>
 			<KvExpandable
-				v-show="openShareModule"
 				easing="ease-in-out"
 			>
 				<SocialShareV2
-					v-if="receipt"
+					v-show="openShareModule"
 					class="social-share"
 					:lender="lender"
 					:loans="loans"
@@ -249,6 +247,7 @@ const {
 	badgeData,
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
+	getTierBadgeDataByLevel,
 } = useBadgeData();
 
 const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -297,7 +296,10 @@ const displayedBadgeData = computed(() => {
 
 const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
-const badgeLevelName = computed(() => displayedBadgeData.value.levelName ?? '');
+const badgeLevelName = computed(() => {
+	const levelData = getTierBadgeDataByLevel(displayedBadgeData.value, displayedBadgeData.value.level);
+	return levelData.tierName;
+});
 
 const hasBadgeData = computed(() => !!badgeLevelName.value);
 
@@ -325,7 +327,7 @@ const showBadgeRays = computed(() => {
 	return false;
 });
 
-const showOptInModule = computed(() => !props.isGuest && !props.isOptedIn);
+const showOptInModule = computed(() => !props.isOptedIn);
 
 const showBadgeModule = computed(() => {
 	return (props.badgesAchieved.length || props.isGuest) && (isLoading.value || hasBadgeData.value);
@@ -346,7 +348,7 @@ const handleContinue = () => {
 		$kvTrackEvent(
 			'post-checkout',
 			'click',
-			'create-new-account',
+			'continue-to-my-kiva',
 			'guest',
 			numberOfBadges.value,
 		);
@@ -357,7 +359,7 @@ const handleContinue = () => {
 			'post-checkout',
 			'click',
 			'continue-to-my-kiva',
-			'guest',
+			'signed-in',
 			numberOfBadges.value,
 		);
 
@@ -435,13 +437,17 @@ onMounted(async () => {
 		handleScroll();
 	}
 
+	const eventProperty = props.isGuest ? 'guest' : 'signed-in';
 	if (showBadgeModule.value) {
-		const eventProperty = props.isGuest ? 'guest' : 'signed-in';
 		if (showOptInModule.value) {
 			$kvTrackEvent('post-checkout', 'show', 'opt-in-then-badge', eventProperty, numberOfBadges.value);
 		} else {
 			$kvTrackEvent('post-checkout', 'show', 'badge-only', eventProperty, numberOfBadges.value);
 		}
+	} else if (showOptInModule.value) {
+		$kvTrackEvent('post-checkout', 'show', 'opt-in-only', eventProperty, numberOfBadges.value);
+	} else {
+		$kvTrackEvent('post-checkout', 'show', 'my-kiva-fallback', eventProperty, numberOfBadges.value);
 	}
 });
 
