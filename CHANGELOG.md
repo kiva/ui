@@ -1,3 +1,61 @@
+## [3.7.0](https://github.com/kiva/ui/compare/v3.6.0...v3.7.0) (2025-01-14)
+
+### 🎉 New Features
+
+* added support for a couple more endpoint types ([c0f32ef](https://github.com/kiva/ui/commit/c0f32ef495ee3c874ba365198e8d16e305d1ea7d))
+* bp why special position fixed ([#5751](https://github.com/kiva/ui/issues/5751)) ([f0e43dd](https://github.com/kiva/ui/commit/f0e43ddace707bb216e9c2fb400665535ebc78aa))
+* erl email integration with loanRecommendations endpoint ([7262420](https://github.com/kiva/ui/commit/726242033568ddd2ff2a0a73469ec395473a1581))
+* experiment integration ([e5c850e](https://github.com/kiva/ui/commit/e5c850e71c2fd7a8ae2c4572972820470ec20720))
+* integrate recommended loans endpoint with lending home row ([de164e6](https://github.com/kiva/ui/commit/de164e66ba0ce0cbd54d6becba0e301b6b8a9ee4))
+* only show active loans in MyKiva count ([c2ce859](https://github.com/kiva/ui/commit/c2ce859f20393f8f44e9ac1f788844f1c8a4a4bc))
+* only track my kiva experiment from thank you page ([bed2749](https://github.com/kiva/ui/commit/bed2749bfc15b57bd6a586323cca42d10f3a75fa))
+* optin and optout modules added to old badge ty page ([#5753](https://github.com/kiva/ui/issues/5753)) ([bb915da](https://github.com/kiva/ui/commit/bb915da0946507db20691fd99bfbb7e97479d7f8))
+* optin option added to guest users in non mykiva ty page ([#5755](https://github.com/kiva/ui/issues/5755)) ([5f8f502](https://github.com/kiva/ui/commit/5f8f5029111bdda311cfdc2c65e4699ec6f33e5d))
+* show my kiva thank you to us driven lenders ([8a5731f](https://github.com/kiva/ui/commit/8a5731f9e9884f7714c8af32416c98b0e5cc2c47))
+* tracking event added for opt in only to ty page ([#5750](https://github.com/kiva/ui/issues/5750)) ([55658cb](https://github.com/kiva/ui/commit/55658cb5cb98a31bb5b4a1f774dcd6230646daae))
+* update level name util to support badge object used on MyKiva TY page ([d967d57](https://github.com/kiva/ui/commit/d967d574a08b340501e7591e5b0f274b81931ebc))
+* update opt-in module with guest mutation ([9ad9cdc](https://github.com/kiva/ui/commit/9ad9cdca7b54f6120fc6e3c2ea5931304f171e02))
+* use badge name with level in parenthesis throughout new experience ([e92550b](https://github.com/kiva/ui/commit/e92550b0465943cc1a77b839b000bb0363285db8))
+
+### 🐛 Bugfixes
+
+* add optional chaining for data edge case ([c1c3960](https://github.com/kiva/ui/commit/c1c39605c2a7ae2e1de1c0e7928c5af3ba6c5e05))
+* added clarifying comment ([69c5590](https://github.com/kiva/ui/commit/69c5590724130742baa08ced7f89ff45dff4a15a))
+* addressing pr comments ([dfbbc06](https://github.com/kiva/ui/commit/dfbbc06cf6b583a455bbd9c7737153f37942cf4b))
+* adjust how and when MyKiva experiment is tracked ([3022825](https://github.com/kiva/ui/commit/302282570b8a44d7d6cf4c832ddd960c45ceb51c))
+* adjust MyKiva lending stats language ([d181d9c](https://github.com/kiva/ui/commit/d181d9c3a5757f2775e4bcf5d563d97f15d03046))
+* bug fix ([21b0883](https://github.com/kiva/ui/commit/21b08839115bfd5aacd4d6c7ba4d71c876d8a8f3))
+* check completed date when showing badge last tier as completed ([31999da](https://github.com/kiva/ui/commit/31999dae58c1258a16edd83e331e0b72a603d59b))
+* check if visitorId when updating communication settings ([f520851](https://github.com/kiva/ui/commit/f5208514e30ae293ff2c65f75967ae3afdff6dea))
+* cleanup functionality broken for stories from recent work ([abbe776](https://github.com/kiva/ui/commit/abbe776e91381f86f177d35abb3e30d070ffd701))
+* debugging with console statements for testing experiment ([0cc6a18](https://github.com/kiva/ui/commit/0cc6a181deba764d6e09727037171ed0416c8cd9))
+* extra optional chaining ([ad8a29d](https://github.com/kiva/ui/commit/ad8a29dbcfaa42043104e32657177b9c855fb412))
+* hide overflow when shine is enable ([7edc443](https://github.com/kiva/ui/commit/7edc44355a9a0f219deb8b4d03893e9f8821045a))
+* looks like transition group might need else instead of multiple ifs ([5b3234f](https://github.com/kiva/ui/commit/5b3234f26f390636805a98b1bb3ea055d9fae7fb))
+* minor cleanup ([538ab9c](https://github.com/kiva/ui/commit/538ab9c04fb3fd0527ae530282ebb528c6d9d780))
+* mykiva ty page tracking evetns fixed ([#5749](https://github.com/kiva/ui/issues/5749)) ([c9506ae](https://github.com/kiva/ui/commit/c9506aed79fc96ae23046cd5c37f624dd3699399))
+* position of v-show directive on expandable ([ae2a3db](https://github.com/kiva/ui/commit/ae2a3dbe1a296f19ef2212c5c10867ce06271749))
+* pr comments addressed ([5016ca2](https://github.com/kiva/ui/commit/5016ca2a39adad9bcb3b0d8f695e328c0ab1c910))
+* promise chaining ([d55c190](https://github.com/kiva/ui/commit/d55c1907b6d0434d678e98fa9deef900766c668c))
+* remove borrower profile bg from tile options ([864b950](https://github.com/kiva/ui/commit/864b950e6f7f7164daf671a840fd6e86c88671f8))
+* remove commented out lighthouse config to see if it stops autmatically running assertions ([5508c98](https://github.com/kiva/ui/commit/5508c98581d56b019eb2666bccd550b6f3d617e1))
+* remove old commented tile bg options ([09ec295](https://github.com/kiva/ui/commit/09ec29557eb5ff0d4005d041c80a40f9e5d83bff))
+* remove other special casing for us driven lenders ([1212752](https://github.com/kiva/ui/commit/121275255e59c7f708cc118d1b02cfeb2418cd2d))
+* restore unintended change ([0f83e82](https://github.com/kiva/ui/commit/0f83e8263447c525977fc6c3937658378c11d0bf))
+* set all assertion categories to warn ([c7f680f](https://github.com/kiva/ui/commit/c7f680fba10d7f5b96dd005838c6b29c31cfbde5))
+* track lines in journey and removing unused stories ([114ffb0](https://github.com/kiva/ui/commit/114ffb045fe7835290d425ccae09de1a1e823f31))
+* update analytics for ty page ([6cd4057](https://github.com/kiva/ui/commit/6cd405726b0a89ebbca8fa144423dfa2a43ecbe6))
+
+### 🏎️ Performance Improvements
+
+* preload dovetail font ([2dd9e67](https://github.com/kiva/ui/commit/2dd9e67572a302c164adae9744e79f30926b3c65))
+
+### 🧹 Chores
+
+* **release:** 3.7.0-rc.1 [skip ci] ([8342241](https://github.com/kiva/ui/commit/8342241302ce4ebd94eef489c71fc22bf0f7d649))
+* **release:** 3.7.0-rc.2 [skip ci] ([6a49050](https://github.com/kiva/ui/commit/6a49050784702fab45d2398863e944c943fc99af)), closes [#5751](https://github.com/kiva/ui/issues/5751) [#5753](https://github.com/kiva/ui/issues/5753) [#5755](https://github.com/kiva/ui/issues/5755) [#5750](https://github.com/kiva/ui/issues/5750) [#5749](https://github.com/kiva/ui/issues/5749)
+* turn off lighthouse push to external server ([5a6132a](https://github.com/kiva/ui/commit/5a6132a58c03d3a7f3f44cfca50743f1a98ea707))
+
 ## [3.7.0-rc.2](https://github.com/kiva/ui/compare/v3.7.0-rc.1...v3.7.0-rc.2) (2025-01-13)
 
 ### 🎉 New Features
