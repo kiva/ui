@@ -470,6 +470,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/loans',
+		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
+		meta: {
+			authenticationRequired: false,
+			excludeFromStaticSitemap: false,
+		}
+	},
+	{
 		path: '/possibility',
 		component: () => import('#src/pages/Possibility/Possibility'),
 		children: [

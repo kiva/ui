@@ -1,0 +1,26 @@
+query portfolioLoans($offset: Int, $limit: Int) {
+  my {
+    loans(offset: $offset, limit: $limit) {
+      totalCount
+      values {
+        id
+        name
+        status
+        loanAmount
+        borrowerCount
+        geocode {
+          country {
+            name
+          }
+        }
+        loanFundraisingInfo {
+          fundedAmount
+          reservedAmount
+        }
+        image {
+          url
+        }
+      }
+    }
+  }
+}

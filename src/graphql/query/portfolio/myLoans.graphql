@@ -1,0 +1,35 @@
+query myLoans {
+	my {
+		loans(limit: 50) {
+			values {
+				id
+				name
+				status
+				use
+				image {
+					url
+				}
+				geocode {
+					country {
+						name
+					}
+				}
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				terms {
+					loanAmount
+					expectedPayments {
+						dueToKivaDate
+					}
+				}
+				teams {
+					values {
+						name
+					}
+				}
+			}
+		}
+	}
+}
