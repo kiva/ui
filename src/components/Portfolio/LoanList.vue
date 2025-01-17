@@ -134,6 +134,7 @@ export default {
 			query: gql`
 				query myLoans {
 					my {
+						id
 						loans(limit: 50) {
 							values {
 								id
@@ -141,10 +142,12 @@ export default {
 								status
 								use
 								image {
+									id
 									url
 								}
 								geocode {
 									country {
+										id
 										name
 									}
 								}
@@ -160,6 +163,7 @@ export default {
 								}
 								teams {
 									values {
+										id
 										name
 									}
 								}
