@@ -13,14 +13,11 @@
 					<h1 class="tw-mb-2">
 						My loans
 					</h1>
-					<p class="tw-text-subhead tw-text-secondary tw-mb-4">
-						Track and manage your Kiva loan portfolio
-					</p>
 					<div class="tw-mb-8">
 						<p class="tw-text-right tw-text-tertiary tw-text-small">
 							*Updated as of {{ lastUpdated }}
 						</p>
-						<loan-stats-table :stats="stats" :avg-stats="avgStats" />
+						<loan-stats-table />
 					</div>
 					<loan-filter-bar :total-loans="totalLoans" />
 					<loan-list :loans="loans" />

@@ -1,5 +1,6 @@
 query myLoans {
 	my {
+		id
 		loans(limit: 50) {
 			values {
 				id
@@ -7,10 +8,12 @@ query myLoans {
 				status
 				use
 				image {
+					id
 					url
 				}
 				geocode {
 					country {
+						id
 						name
 					}
 				}
@@ -26,6 +29,7 @@ query myLoans {
 				}
 				teams {
 					values {
+						id
 						name
 					}
 				}

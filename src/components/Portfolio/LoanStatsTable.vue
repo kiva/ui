@@ -16,10 +16,10 @@
 					Amount lent
 				</div>
 				<div class="tw-col-span-4 tw-text-right">
-					$50.00
+					{{ stats.amountLent ? `$${stats.amountLent.toFixed(2)}` : '$0.00' }}
 				</div>
 				<div class="tw-col-span-4 tw-text-right">
-					$367.52
+					{{ avgStats.amountLent ? `$${avgStats.amountLent.toFixed(2)}` : '$0.00' }}
 				</div>
 			</div>
 			<div class="tw-grid tw-grid-cols-12 tw-gap-4">
@@ -205,16 +205,24 @@
 </template>
 
 <script>
+import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+
 export default {
 	name: 'LoanStatsTable',
-	props: {
-		stats: {
-			type: Object,
-			default: () => ({})
-		},
-		avgStats: {
-			type: Object,
-			default: () => ({})
+	inject: ['apollo', 'cookieStore'],
+	data() {
+		return {
+			stats: {},
+			avgStats: {},
+			loading: true
+		};
+	},
+	apollo: {
+		query: lendingStatsQuery,
+		result({ data }) {
+			this.stats = data?.my?.userStats ?? {};
+			this.avgStats = data?.general?.averageKivaStats ?? {};
+			this.loading = false;
 		}
 	}
 };
