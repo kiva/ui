@@ -466,6 +466,8 @@ export default function useBadgeData() {
 	/**
 	 * Get explanation for an earned badge
 	 *
+	 * @param badgeId The Id of the badge
+	 * @param target The badge tier target
 	 * @returns reason for a completed badge
 	 */
 	const getEarnedBadgeExplanation = (badgeId, target) => {
