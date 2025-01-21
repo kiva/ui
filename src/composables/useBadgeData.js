@@ -463,6 +463,28 @@ export default function useBadgeData() {
 		return completedBadgesArr;
 	});
 
+	/**
+	 * Get explanation for an earned badge
+	 *
+	 * @returns reason for a completed badge
+	 */
+	const getEarnedBadgeExplanation = (badgeId, target) => {
+		switch (badgeId) {
+			case ID_WOMENS_EQUALITY:
+				return `${target} women`;
+			case ID_CLIMATE_ACTION:
+				return `${target} climate stewards with eco-friendly projects`;
+			case ID_US_ECONOMIC_EQUALITY:
+				return `${target} people in the United States or Puerto Rico`;
+			case ID_BASIC_NEEDS:
+				return `${target} people in need of housing, healthcare, clean water or sanitation`;
+			case ID_REFUGEE_EQUALITY:
+				return `${target} refugees or displaced people`;
+			default:
+				return '';
+		}
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -483,5 +505,6 @@ export default function useBadgeData() {
 		isBadgeKeyValid,
 		completedBadges,
 		getLevelName,
+		getEarnedBadgeExplanation,
 	};
 }
