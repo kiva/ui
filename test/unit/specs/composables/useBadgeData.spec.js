@@ -779,10 +779,5 @@ describe('useBadgeData.js', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
 			expect(getEarnedBadgeExplanation(ID_BASIC_NEEDS, target)).toEqual(`${target} people in need of housing, healthcare, clean water or sanitation`);
 		});
-
-		it('should return expected explanation for basic-needs', () => {
-			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_BASIC_NEEDS, target)).toEqual(`${target} people in need of housing, healthcare, clean water or sanitation`);
-		});
 	});
 });
