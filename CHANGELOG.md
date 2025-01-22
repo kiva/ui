@@ -1,3 +1,19 @@
+## [3.8.0](https://github.com/kiva/ui/compare/v3.7.0...v3.8.0) (2025-01-22)
+
+### 🎉 New Features
+
+* adding more info about how you earned a badge message in badge completed modal ([8057a47](https://github.com/kiva/ui/commit/8057a47b565953efd576428b1f5b9702cbce9dc7))
+
+### 🐛 Bugfixes
+
+* missing params in jsdoc ([4e49613](https://github.com/kiva/ui/commit/4e4961340ea79bb9971733ababeb9190bf0b56e5))
+* remove duplicated test ([bf8d44f](https://github.com/kiva/ui/commit/bf8d44fcba512966338758479d0e24cedb85c468))
+* update my kiva settings keys ([d013096](https://github.com/kiva/ui/commit/d013096feaea6c0f29c0fa13363aa6e4ad4ceadf))
+
+### 🧹 Chores
+
+* **release:** 3.8.0-rc.1 [skip ci] ([021d5eb](https://github.com/kiva/ui/commit/021d5eb1933cbea27a9df9a27eaa765e268c827c))
+
 ## [3.8.0-rc.1](https://github.com/kiva/ui/compare/v3.7.0...v3.8.0-rc.1) (2025-01-22)
 
 ### 🎉 New Features
