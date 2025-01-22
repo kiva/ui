@@ -8963,9 +8963,6 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -8976,9 +8973,6 @@ export const combinedData = [
 				shareFact: '3 in 5 U.S. business owners brought in more income after their Kiva loan.*',
 				shareFactFootnote: 'Kiva borrowers surveyed by 60 Decibels.',
 				shareFactUrl: '/',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -8989,9 +8983,6 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9002,9 +8993,6 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9015,9 +9003,6 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9028,9 +9013,6 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9041,14 +9023,15 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
-				matchingLoans: {
-					filters: [],
-				}
 			},
 		],
 		achievementData: {
 			__typename: 'TieredLendingAchievement',
 			id: 'us-economic-equality',
+			milestoneProgress: undefined,
+			matchingLoans: {
+				filters: [],
+			},
 			totalProgressToAchievement: 2,
 			tiers: [
 				{
@@ -9109,6 +9092,7 @@ export const combinedData = [
 				}
 			]
 		},
+		description: undefined,
 		hasStarted: true,
 		level: 1,
 	},
@@ -9191,6 +9175,10 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'climate-action',
 			totalProgressToAchievement: 1,
+			matchingLoans: {
+				filters: [],
+			},
+			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9250,6 +9238,7 @@ export const combinedData = [
 				}
 			]
 		},
+		description: undefined,
 		hasStarted: true,
 		level: undefined,
 	},
@@ -9332,6 +9321,10 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'womens-equality',
 			totalProgressToAchievement: 0,
+			matchingLoans: {
+				filters: [],
+			},
+			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9390,6 +9383,7 @@ export const combinedData = [
 				}
 			]
 		},
+		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	},
@@ -9472,6 +9466,10 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'refugee-equality',
 			totalProgressToAchievement: 0,
+			matchingLoans: {
+				filters: [],
+			},
+			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9531,6 +9529,7 @@ export const combinedData = [
 				}
 			]
 		},
+		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	},
@@ -9612,6 +9611,10 @@ export const combinedData = [
 		achievementData: {
 			__typename: 'TieredLendingAchievement',
 			id: 'basic-needs',
+			matchingLoans: {
+				filters: [],
+			},
+			milestoneProgress: undefined,
 			totalProgressToAchievement: 0,
 			tiers: [
 				{
@@ -9672,6 +9675,7 @@ export const combinedData = [
 				}
 			]
 		},
+		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	}
