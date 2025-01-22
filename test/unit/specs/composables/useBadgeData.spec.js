@@ -40,7 +40,8 @@ describe('useBadgeData.js', () => {
 				achievementData.userAchievementProgress.tieredLendingAchievements,
 				contentfulData.contentful.entries.items.map(getContentfulLevelData),
 			);
-
+			console.log(badgeData);
+			console.log(combinedData);
 			expect(badgeData).toEqual(combinedData);
 		});
 	});

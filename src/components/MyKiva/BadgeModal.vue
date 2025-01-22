@@ -102,7 +102,7 @@ const handleBadgeLevelClicked = e => {
 };
 
 const backToJourney = () => {
-	emit('back-to-journey');
+	emit('back-to-journey', props.badge);
 };
 
 const isJourneyActive = computed(() => {

@@ -8963,6 +8963,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -8973,6 +8976,9 @@ export const combinedData = [
 				shareFact: '3 in 5 U.S. business owners brought in more income after their Kiva loan.*',
 				shareFactFootnote: 'Kiva borrowers surveyed by 60 Decibels.',
 				shareFactUrl: '/',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -8983,6 +8989,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -8993,6 +9002,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9003,6 +9015,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9013,6 +9028,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 			{
 				id: 'us-economic-equality',
@@ -9023,6 +9041,9 @@ export const combinedData = [
 				shareFact: '',
 				shareFactFootnote: '',
 				shareFactUrl: '',
+				matchingLoans: {
+					filters: [],
+				}
 			},
 		],
 		achievementData: {

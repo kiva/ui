@@ -167,6 +167,9 @@ export default function useBadgeData() {
 								completedDate: t.completedDate?.replace('[UTC]', ''),
 							})),
 							milestoneProgress: milestoneProgressArr,
+							matchingLoans: {
+								filters: achievementData.matchingLoans?.filters ?? [],
+							}
 						},
 						hasStarted,
 						level,
