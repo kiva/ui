@@ -305,6 +305,8 @@ export default function useBadgeData() {
 				return CLIMATE_ACTION_FILTER;
 			case ID_REFUGEE_EQUALITY:
 				return REFUGEE_EQUALITY_FILTER;
+			case ID_EQUITY:
+				return '';
 			case ID_BASIC_NEEDS:
 			default:
 				return BASIC_NEEDS_FILTER;
