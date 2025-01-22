@@ -185,7 +185,7 @@ describe('myKivaUtils.js', () => {
 		});
 
 		it('should return true if hasSeenMyKiva is true', () => {
-			preferencesMock = { myKivaPageExp: 1 };
+			preferencesMock = { myKivaJan2025Exp: 1 };
 
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, generalSettingsMock, preferencesMock, 4);
 

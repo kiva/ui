@@ -24,8 +24,8 @@
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"
 				> Learn more</a>
 			</h2>
-			<h4 class="tw-text-secondary">
-				{{ earnedDate }}
+			<h4 class="tw-text-secondary tw-text-center">
+				{{ earnedBadgeDateAndReason }}
 			</h4>
 		</div>
 		<KvSocialShareButton
@@ -95,7 +95,7 @@ const {
 	isEarnedSection
 } = toRefs(props);
 
-const { getTierBadgeDataByLevel } = useBadgeData();
+const { getTierBadgeDataByLevel, getEarnedBadgeExplanation } = useBadgeData();
 
 const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
@@ -121,6 +121,10 @@ const badgeLevel = computed(() => {
 	return badgeData.value?.achievementData?.level ?? 0;
 });
 
+const badgeTarget = computed(() => {
+	return badgeData.value?.achievementData?.target ?? 0;
+});
+
 const shareUrl = computed(() => {
 	const base = isPublic.value ? `/lender/${lender.value?.publicId}` : '';
 	return `${base}?badge_level=${badgeLevel.value}`;
@@ -144,11 +148,11 @@ const earnedDate = computed(() => {
 	} else {
 		earnedAtDate = badgeData.value?.achievementData?.completedDate ?? null;
 	}
-	return `Earned ${
-		format(
-			new Date(earnedAtDate),
-			'MMMM do, yyyy'
-		)}`;
+	return format(new Date(earnedAtDate), 'MMMM do, yyyy');
+});
+
+const earnedBadgeDateAndReason = computed(() => {
+	return `earned on ${earnedDate.value} for helping ${getEarnedBadgeExplanation(badge.value.id, badgeTarget.value)}`;
 });
 
 const trackLearnMore = () => {

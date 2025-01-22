@@ -320,11 +320,11 @@ const saveMyKivaToUserPreferences = () => {
 		? JSON.parse(userInfo.value?.userPreferences?.preferences)
 		: preferences;
 
-	if (!formattedPreference?.myKivaPageExp) {
+	if (!formattedPreference?.myKivaJan2025Exp) {
 		saveUserPreferences({
 			userPreferences: userInfo.value?.userPreferences ?? null,
 			newPreference: {
-				myKivaPageExp: 1,
+				myKivaJan2025Exp: 1,
 			}
 		});
 	}

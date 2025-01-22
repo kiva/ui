@@ -754,4 +754,31 @@ describe('useBadgeData.js', () => {
 			expect(getLevelName(null)).toEqual('');
 		});
 	});
+
+	describe('getEarnedExplanation', () => {
+		const target = 3;
+		it('should return expected explanation for us-economic-equality', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_US_ECONOMIC_EQUALITY, target)).toEqual(`${target} people in the United States or Puerto Rico`);
+		});
+
+		it('should return expected explanationfor climate-action', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_CLIMATE_ACTION, target)).toEqual(`${target} climate stewards with eco-friendly projects`);
+		});
+		it('should return expected explanation for womens-equality', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_WOMENS_EQUALITY, target)).toEqual(`${target} women`);
+		});
+
+		it('should return expected explanation for refugee-equality', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_REFUGEE_EQUALITY, target)).toEqual(`${target} refugees or displaced people`);
+		});
+
+		it('should return expected explanation for basic-needs', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_BASIC_NEEDS, target)).toEqual(`${target} people in need of housing, healthcare, clean water or sanitation`);
+		});
+	});
 });
