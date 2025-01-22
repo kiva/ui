@@ -5,7 +5,7 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 
-const MY_KIVA_EXP = 'my_kiva_page';
+const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
 const FIRST_LOGIN_THRESHOLD = 5;
 
@@ -62,7 +62,7 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, prefe
 	const myKivaFeatureEnabled = readBoolSetting(generalSettings, 'myKivaEnabled.value');
 	if (myKivaFeatureEnabled) {
 		const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
-		const hasSeenMyKiva = !!(formattedPreference?.myKivaPageExp ?? 0);
+		const hasSeenMyKiva = !!(formattedPreference?.myKivaJan2025Exp ?? 0);
 
 		if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
 			const { version: myKivaVersion } = apollo.readFragment({
@@ -76,7 +76,7 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, prefe
 				$kvTrackEvent,
 				'event-tracking',
 				MY_KIVA_EXP,
-				'EXP-MP-623-Sept2024'
+				'EXP-MP-1235-Jan2025'
 			);
 
 			// The user preference hasSeenMyKiva can be true when we override for internal testing
