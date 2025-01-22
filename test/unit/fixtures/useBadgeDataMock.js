@@ -9178,7 +9178,6 @@ export const combinedData = [
 			matchingLoans: {
 				filters: [],
 			},
-			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9238,7 +9237,6 @@ export const combinedData = [
 				}
 			]
 		},
-		description: undefined,
 		hasStarted: true,
 		level: undefined,
 	},
@@ -9324,7 +9322,6 @@ export const combinedData = [
 			matchingLoans: {
 				filters: [],
 			},
-			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9383,7 +9380,6 @@ export const combinedData = [
 				}
 			]
 		},
-		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	},
@@ -9469,7 +9465,6 @@ export const combinedData = [
 			matchingLoans: {
 				filters: [],
 			},
-			milestoneProgress: undefined,
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9529,7 +9524,6 @@ export const combinedData = [
 				}
 			]
 		},
-		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	},
@@ -9614,7 +9608,6 @@ export const combinedData = [
 			matchingLoans: {
 				filters: [],
 			},
-			milestoneProgress: undefined,
 			totalProgressToAchievement: 0,
 			tiers: [
 				{
@@ -9675,7 +9668,6 @@ export const combinedData = [
 				}
 			]
 		},
-		description: undefined,
 		hasStarted: false,
 		level: undefined,
 	}
