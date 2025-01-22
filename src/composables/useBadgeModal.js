@@ -10,6 +10,7 @@ import {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
+	ID_EQUITY,
 } from './useBadgeData';
 
 export const MOBILE_BREAKPOINT = 440;
@@ -25,12 +26,14 @@ export const BADGE_SHAPE_CIRCLE = 'SHAPE_CIRCLE';
 export const BADGE_SHAPE_OBLONG = 'SHAPE_OBLONG';
 export const BADGE_SHAPE_OVAL = 'SHAPE_OVAL';
 export const BADGE_SHAPE_RECTANGLE = 'SHAPE_RECTANGLE';
+export const BADGE_SHAPE_EQUITY = 'SHAPE_EQUITY';
 export const BADGE_SHAPE = [
 	BADGE_SHAPE_ARCH,
 	BADGE_SHAPE_CIRCLE,
 	BADGE_SHAPE_OBLONG,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
+	BADGE_SHAPE_EQUITY,
 ];
 
 /**
@@ -49,6 +52,8 @@ export const getBadgeShape = badgeId => {
 			return BADGE_SHAPE_ARCH;
 		case ID_REFUGEE_EQUALITY:
 			return BADGE_SHAPE_OVAL;
+		case ID_EQUITY:
+			return BADGE_SHAPE_EQUITY;
 		case ID_BASIC_NEEDS:
 		default:
 			return BADGE_SHAPE_CIRCLE;

@@ -56,6 +56,7 @@ import {
 	BADGE_SHAPE_OBLONG,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
+	BADGE_SHAPE_EQUITY,
 } from '#src/composables/useBadgeModal';
 import { mdiLock } from '@mdi/js';
 import KvMaterialIcon from '#kv-components/KvMaterialIcon';
@@ -71,6 +72,7 @@ import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg';
 import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
+import OutlineEquity from '#src/assets/images/my-kiva/badge-outline-equity.svg';
 
 const props = defineProps({
 	status: {
@@ -107,6 +109,8 @@ const outlineComponent = computed(() => {
 			return OutlineOval;
 		case BADGE_SHAPE_RECTANGLE:
 			return OutlineRectangle;
+		case BADGE_SHAPE_EQUITY:
+			return OutlineEquity;
 		default:
 			return OutlineCircle;
 	}
@@ -137,6 +141,10 @@ const outlineStyles = computed(() => {
 			return { width: '103%', left: '-1%' };
 		case BADGE_SHAPE_RECTANGLE:
 			return { width: '94%', left: '3%' };
+		case BADGE_SHAPE_EQUITY:
+			return {
+				width: '120%', height: '110%', left: '-9.8%', top: '-3.5%'
+			};
 		default:
 			return { width: '97%', left: '2%' };
 	}
