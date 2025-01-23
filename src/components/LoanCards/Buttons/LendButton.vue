@@ -15,7 +15,7 @@ import * as Sentry from '@sentry/vue';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 
 export default {
 	name: 'LendButton',

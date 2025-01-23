@@ -22,7 +22,7 @@
 
 <script setup>
 import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import { computed, ref, inject } from 'vue';
 import useBadgeData from '#src/composables/useBadgeData';
 import AsyncLenderSection from './AsyncLenderSection';

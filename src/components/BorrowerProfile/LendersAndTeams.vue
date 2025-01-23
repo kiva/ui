@@ -154,11 +154,9 @@ import { mdiLightningBolt } from '@mdi/js';
 import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvTextLink from '#kv-components/KvTextLink';
+import {
+	KvLoadingPlaceholder, KvButton, KvLightbox, KvMaterialIcon, KvTextLink
+} from '@kiva/kv-components';
 import SupporterDetails from './SupporterDetails';
 
 const teamsQuery = gql`query teamsQuery($loanId: Int!, $limit: Int, $offset: Int, $sortBy: TeamSearchSortByEnum) {

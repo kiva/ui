@@ -217,9 +217,7 @@
 
 <script>
 import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvGrid from '#kv-components/KvGrid';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvLoadingPlaceholder, KvGrid, KvMaterialIcon } from '@kiva/kv-components';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 

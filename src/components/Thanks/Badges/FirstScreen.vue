@@ -293,8 +293,7 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import AnimatedStars from '#src/components/Thanks/AnimatedStars';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import { metaGlobReader } from '#src/util/importHelpers';
 

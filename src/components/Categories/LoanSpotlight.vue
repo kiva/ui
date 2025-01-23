@@ -52,8 +52,7 @@ import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvButton from '#kv-components/KvButton';
+import { KvLoadingPlaceholder, KvButton } from '@kiva/kv-components';
 
 const allChannelsQuery = gql`
 	query allChannelsQuery {

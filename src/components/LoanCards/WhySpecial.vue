@@ -20,7 +20,7 @@
 
 <script>
 import { mdiStar } from '@mdi/js';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'WhySpecial',

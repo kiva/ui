@@ -96,9 +96,7 @@ import {
 	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvLightbox, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'KvSocialShareButton',

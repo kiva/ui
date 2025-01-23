@@ -59,7 +59,7 @@ import {
 	BADGE_SHAPE_EQUITY,
 } from '#src/composables/useBadgeModal';
 import { mdiLock } from '@mdi/js';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 import OutlineArch from '#src/assets/images/my-kiva/badge-outline-arch.svg';
 import OutlineCircle from '#src/assets/images/my-kiva/badge-outline-circle.svg';
 import OutlineOblong from '#src/assets/images/my-kiva/badge-outline-oblong.svg';

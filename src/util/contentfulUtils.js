@@ -1,5 +1,5 @@
 import { camelCase } from 'change-case';
-import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
+import kvTokensPrimitives from '@kiva/kv-tokens';
 
 /**
  * Takes formatted responsiveImageSet and returns an array of image objects which

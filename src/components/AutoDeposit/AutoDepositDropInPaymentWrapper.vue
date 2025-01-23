@@ -39,7 +39,7 @@ import braintreeUpdateSubscriptionPaymentMethod from
 	'#src/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 
 export default {
 	name: 'AutoDepositDropInPaymentWrapper',

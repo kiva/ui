@@ -65,7 +65,7 @@ import {
 	inject,
 } from 'vue';
 import { format } from 'date-fns';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import useBadgeData from '#src/composables/useBadgeData';
 

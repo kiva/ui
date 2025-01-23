@@ -25,8 +25,8 @@ import KvPopper from '#src/components/Kv/KvPopper';
 import {
 	darkTheme,
 	mintTheme
-} from '@kiva/kv-tokens/configs/kivaColors.cjs';
-import KvThemeProvider from '#kv-components/KvThemeProvider';
+} from '@kiva/kv-tokens';
+import { KvThemeProvider } from '@kiva/kv-components';
 
 export default {
 	name: 'KvTooltip',

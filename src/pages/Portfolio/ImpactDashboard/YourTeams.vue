@@ -83,8 +83,7 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import KvButton from '#kv-components/KvButton';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {

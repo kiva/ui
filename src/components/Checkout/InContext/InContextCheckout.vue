@@ -162,8 +162,7 @@ import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '#src/components/Checkout/BasketItemsList';
 import OrderTotals from '#src/components/Checkout/OrderTotals';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
+import { KvButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'InContextCheckout',

@@ -30,7 +30,7 @@ import _forEach from 'lodash/forEach';
 import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
 import updateLoanReservationTeam from '#src/graphql/mutation/updateLoanReservationTeam.graphql';
-import KvSelect from '#kv-components/KvSelect';
+import { KvSelect } from '@kiva/kv-components';
 
 export default {
 	name: 'TeamAttribution',

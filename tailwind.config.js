@@ -1,7 +1,7 @@
-const kvConfig = require('@kiva/kv-components/tailwind.config.cjs');
+import { tailwindConfig } from '@kiva/kv-tokens';
 
-module.exports = {
-	presets: [kvConfig],
+export default {
+	presets: [tailwindConfig],
 	content: [
 		'./node_modules/@kiva/kv-components/**/*.vue',
 		'./node_modules/@kiva/kv-components/utils/**/*.js',

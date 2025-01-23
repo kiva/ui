@@ -21,8 +21,7 @@
 import { gql } from 'graphql-tag';
 import { mdiBookmarkOutline, mdiBookmark } from '@mdi/js';
 import bookmarkLoan from '#src/util/bookmarkUtil';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanBookmark',

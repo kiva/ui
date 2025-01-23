@@ -114,10 +114,9 @@ import {
 } from '@mdi/js';
 import { joinArray } from '#src/util/joinArray';
 import { missingMilestones } from '#src/util/achievementUtils';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvButton from '#kv-components/KvButton';
-import KvTextLink from '#kv-components/KvTextLink';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import {
+	KvLightbox, KvButton, KvTextLink, KvMaterialIcon
+} from '@kiva/kv-components';
 
 export default {
 	name: 'EcoChallengeLightbox',

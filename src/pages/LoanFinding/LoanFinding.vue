@@ -131,7 +131,7 @@ import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import KvCartModal from '#kv-components/KvCartModal';
+import { KvCartModal } from '@kiva/kv-components';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -578,7 +578,7 @@ export default {
 }
 
 @screen md {
-	.cart-modal >>> div.container {
+	.cart-modal:deep(div.container) {
 		right: var(--modal-right) !important;
 	}
 }

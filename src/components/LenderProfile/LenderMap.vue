@@ -84,10 +84,9 @@
 
 <script>
 import numeral from 'numeral';
-import KvCheckbox from '#kv-components/KvCheckbox';
-import KvMap from '#kv-components/KvMap';
-import { getLoansIntervals } from '@kiva/kv-components';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import {
+	KvCheckbox, KvMap, getLoansIntervals, KvLoadingPlaceholder
+} from '@kiva/kv-components';
 import AsyncLenderSection from './AsyncLenderSection';
 
 const mapColors = [
@@ -207,7 +206,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.custom-checkbox ::v-deep label > div:first-of-type {
+.custom-checkbox:deep(label > div:first-of-type) {
 	@apply tw-w-2 tw-h-2;
 }
 </style>

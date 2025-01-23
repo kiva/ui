@@ -57,8 +57,7 @@ import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
 import loanCardFieldsExtendedFragment from '#src/graphql/fragments/loanCardFieldsExtended.graphql';
 import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
-import KvClassicLoanCard from '#kv-components/KvClassicLoanCard';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
+import { KvClassicLoanCard, KvUserAvatar } from '@kiva/kv-components';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 

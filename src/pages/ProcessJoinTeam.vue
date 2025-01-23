@@ -39,9 +39,7 @@ import createTeamRecruitment from '#src/graphql/mutation/createTeamRecruitment.g
 import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import joinTeam from '#src/graphql/mutation/joinTeam.graphql';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvGrid from '#kv-components/KvGrid';
-import KvLoadingSpinner from '#kv-components/KvLoadingSpinner';
+import { KvPageContainer, KvGrid, KvLoadingSpinner } from '@kiva/kv-components';
 
 const userTeamMembership = gql`query userTeamMembership( $teamPublicId: String!, $publicId: String!) {
 	my {

@@ -182,8 +182,7 @@ import MonthlyGoodDropInPaymentWrapper from '#src/components/MonthlyGood/Monthly
 import SubscriptionsMonthlyGoodCancellationFlow from
 	'#src/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
 import getMonthsCount from '#src/util/dateUtils';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
+import { KvButton, KvLightbox } from '@kiva/kv-components';
 
 const CHANGE_SUBSCRIPTION = 'change_subscription';
 const UPDATE_PAYMENT_METHOD = 'update_payment_method';

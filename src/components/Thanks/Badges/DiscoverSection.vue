@@ -56,8 +56,7 @@
 
 <script>
 import { mdiChevronLeft } from '@mdi/js';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvButton from '#kv-components/KvButton';
+import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const imageRequire = import.meta.glob('/src/assets/images/thanks-page/badges/*.*', { eager: true, query: '?url' });

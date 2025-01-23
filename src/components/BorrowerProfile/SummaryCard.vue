@@ -112,8 +112,7 @@
 import { gql } from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';

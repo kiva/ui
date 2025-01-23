@@ -41,8 +41,7 @@
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import StoryCard from '#src/components/Contentful/StoryCard';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 
 /**
 * Card Row Component

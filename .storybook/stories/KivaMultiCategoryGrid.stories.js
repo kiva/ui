@@ -2,7 +2,7 @@ import KivaLoanCardCategory from '#src/components/LoanCollections/HomeExp/KivaLo
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import LoanCategorySelectorHomeExp from '#src/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
-import KvGrid from '#kv-components/KvGrid';
+import { KvGrid } from '@kiva/kv-components';
 import loanData from '../mock-data/loan-data-mock';
 
 const queryResult = {

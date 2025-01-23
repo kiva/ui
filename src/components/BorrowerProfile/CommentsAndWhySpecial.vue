@@ -212,12 +212,9 @@ import logFormatter from '#src/util/logFormatter';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import clickOutside from '#src/plugins/click-outside';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import KvCarousel from '#kv-components/KvCarousel';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvRadio from '#kv-components/KvRadio';
-import KvButton from '#kv-components/KvButton';
+import {
+	KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox, KvRadio, KvButton
+} from '@kiva/kv-components';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {

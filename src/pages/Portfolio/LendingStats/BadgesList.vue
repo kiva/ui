@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import { format } from 'date-fns';
 import useBadgeData from '#src/composables/useBadgeData';
 

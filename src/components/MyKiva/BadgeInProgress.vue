@@ -80,8 +80,7 @@
 
 <script setup>
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import KvCarousel from '#kv-components/KvCarousel';
-import KvButton from '#kv-components/KvButton';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
 import {
 	computed,
 	watch,
@@ -200,7 +199,7 @@ watch(() => badgeLoanIdData.value, () => {
 </script>
 
 <style lang="postcss" scoped>
-.kv-carousel >>> div[aria-label*=screen]  {
+.kv-carousel:deep(div[aria-label*=screen]) {
   @apply tw-invisible;
 }
 

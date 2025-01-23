@@ -64,8 +64,7 @@ import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
 import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '#src/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvCheckbox from '#kv-components/KvCheckbox';
+import { KvLightbox, KvCheckbox } from '@kiva/kv-components';
 
 export default {
 	name: 'DonateRepaymentsToggle',

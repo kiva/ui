@@ -144,9 +144,7 @@ import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 import { readLoanFragment, watchLoanCardData } from '#src/util/loanUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvProgressBar from '#kv-components/KvProgressBar';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvLoadingPlaceholder, KvProgressBar, KvMaterialIcon } from '@kiva/kv-components';
 
 export const loanFieldsFragment = gql`
 	fragment loanFields on LoanBasic {

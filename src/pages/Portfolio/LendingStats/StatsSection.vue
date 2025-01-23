@@ -67,8 +67,7 @@
 import _map from 'lodash/map';
 import { expand, collapse } from '#src/util/expander';
 import { mdiCheckCircle } from '@mdi/js';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import ItemList from './ItemList';
 
 export default {

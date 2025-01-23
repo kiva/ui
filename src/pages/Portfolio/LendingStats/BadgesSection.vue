@@ -23,7 +23,7 @@
 
 <script>
 import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'BadgesSection',

@@ -53,7 +53,7 @@
 
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import MyKivaBadgeStars from '#src/components/MyKiva/MyKivaBadgeStars';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
 
 import confetti from 'canvas-confetti';

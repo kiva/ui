@@ -56,12 +56,11 @@
 import { computed, inject, ref } from 'vue';
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
-import KvButton from '#kv-components/KvButton';
+import { KvButton, KvUserAvatar } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
 import { getKivaImageUrl } from '#src/util/imageUtils';
 import OptInNotification from './OptInNotification';
 

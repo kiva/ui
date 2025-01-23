@@ -96,9 +96,7 @@ import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import basketCountQuery from '#src/graphql/query/basketCount.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvCartModal from '#kv-components/KvCartModal';
+import { KvPageContainer, KvMaterialIcon, KvCartModal } from '@kiva/kv-components';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';

@@ -55,8 +55,7 @@ import {
 	mdiClose
 } from '@mdi/js';
 import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'UpsellModule',

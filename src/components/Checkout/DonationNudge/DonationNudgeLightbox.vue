@@ -73,8 +73,7 @@ import { mdiInformation } from '@mdi/js';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvLightbox, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'DonationNudgeLightbox',

@@ -821,9 +821,7 @@ import { getYear } from 'date-fns';
 import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 import Disclaimers from '#src/components/WwwFrame/DisclaimersContentful';
 import { mdiFacebook, mdiInstagram, mdiTwitter } from '@mdi/js';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvGrid, KvPageContainer, KvMaterialIcon } from '@kiva/kv-components';
 import appStoreLogoUrl from '#src/assets/icons/app-store.svg?url';
 import playStoreLogoUrl from '#src/assets/icons/play-store.svg?url';
 

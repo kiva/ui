@@ -90,9 +90,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
-import KvButton from '#kv-components/KvButton';
-import KvCheckbox from '#kv-components/KvCheckbox';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvButton, KvCheckbox, KvTextInput } from '@kiva/kv-components';
 
 export default {
 	name: 'KivaCreditGuestPayment',

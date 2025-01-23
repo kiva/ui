@@ -147,8 +147,7 @@
 <script>
 import { mdiFilterVariant, mdiChevronDown } from '@mdi/js';
 import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvSelect from '#kv-components/KvSelect';
+import { KvMaterialIcon, KvSelect } from '@kiva/kv-components';
 import LocationSelector from './LocationSelector';
 
 export default {
