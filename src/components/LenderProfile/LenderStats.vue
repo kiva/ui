@@ -31,7 +31,7 @@
 
 <script>
 import StatsTable from '#src/components/Stats/StatsTable';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {

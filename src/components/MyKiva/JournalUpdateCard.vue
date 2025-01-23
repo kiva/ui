@@ -75,7 +75,7 @@
 import { format } from 'date-fns';
 import { mdiExportVariant } from '@mdi/js';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
 	computed,

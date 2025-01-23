@@ -28,7 +28,7 @@
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
 import StoryCard from '#src/components/Contentful/StoryCard';
-import KvCarousel from '#kv-components/KvCarousel';
+import { KvCarousel } from '@kiva/kv-components';
 
 export default {
 	name: 'StoryCardCarousel',

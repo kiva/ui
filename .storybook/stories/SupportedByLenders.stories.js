@@ -1,6 +1,6 @@
 import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
 import activities from '../mock-data/activity-feed-data-mock';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
+import { KvUserAvatar } from '@kiva/kv-components';
 
 export default {
 	title: 'Components/SupportedByLenders',

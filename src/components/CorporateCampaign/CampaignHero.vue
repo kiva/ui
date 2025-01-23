@@ -61,7 +61,7 @@
 </template>
 <script>
 import { addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
-import KvUiButton from '#kv-components/KvButton';
+import { KvButton as KvUiButton } from '@kiva/kv-components';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import loanCardStack from '#src/assets/images/loan-card-stack.jpg';
 

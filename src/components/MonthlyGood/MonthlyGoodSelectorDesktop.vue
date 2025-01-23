@@ -108,7 +108,7 @@ import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 import clickOutside from '#src/plugins/click-outside';
 import { metaGlobReader } from '#src/util/importHelpers';
 
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 
 const mgSelectorImgRequire = import.meta.glob('/src/assets/images/mg-selector-icons/*.*', {
 	eager: true,

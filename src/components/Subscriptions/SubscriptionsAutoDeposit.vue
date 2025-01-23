@@ -321,9 +321,7 @@ import AutoDepositDropInPaymentWrapper from '#src/components/AutoDeposit/AutoDep
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvButton, KvLightbox, KvTextInput } from '@kiva/kv-components';
 
 const pageQuery = gql`query autoDepositPage {
 	my {

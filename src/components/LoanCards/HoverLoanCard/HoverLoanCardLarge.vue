@@ -19,6 +19,7 @@
 					<kv-flag
 						v-if="loan.geocode.country.isoCode"
 						:country="loan.geocode.country.isoCode"
+						:name="loan.geocode.country.name"
 						class="flag"
 					/>
 					<borrower-info-name
@@ -82,7 +83,7 @@
 	</div>
 </template>
 <script>
-import KvFlag from '#src/components/Kv/KvFlag';
+import { KvFlag } from '@kiva/kv-components';
 import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
 import FundraisingStatus from '#src/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import hoverLoanCardMixin from '#src/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';

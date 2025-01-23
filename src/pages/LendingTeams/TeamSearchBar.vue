@@ -23,8 +23,7 @@
 </template>
 
 <script>
-import KvButton from '#kv-components/KvButton';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvButton, KvTextInput } from '@kiva/kv-components';
 
 export default {
 	name: 'TeamSearchBar',

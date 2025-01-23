@@ -19,7 +19,7 @@
 
 <script>
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
-import KvSwitch from '#kv-components/KvSwitch';
+import { KvSwitch } from '@kiva/kv-components';
 
 export default {
 	name: 'TeamPicksSwitch',

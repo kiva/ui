@@ -37,7 +37,7 @@ import {
 	isLessThan25,
 	isBetween25And500
 } from '#src/util/loanUtils';
-import KvSelect from '#kv-components/KvSelect';
+import { KvSelect } from '@kiva/kv-components';
 
 export default {
 	name: 'LendIncrementButton',

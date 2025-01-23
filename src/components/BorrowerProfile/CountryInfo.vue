@@ -65,8 +65,7 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvUiButton from '#kv-components/KvButton';
+import { KvLoadingPlaceholder, KvButton as KvUiButton } from '@kiva/kv-components';
 
 export default {
 	name: 'CountryInfo',

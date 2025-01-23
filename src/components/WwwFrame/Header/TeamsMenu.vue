@@ -85,7 +85,7 @@ import KvDropdown from '#src/components/Kv/KvDropdown';
 import {
 	mdiChevronDown,
 } from '@mdi/js';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'TeamsMenu',

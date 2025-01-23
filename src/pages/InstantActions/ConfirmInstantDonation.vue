@@ -104,9 +104,7 @@ import numeral from 'numeral';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import KvButton from '#kv-components/KvButton';
-import KvContentfulImg from '#kv-components/KvContentfulImg';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvButton, KvContentfulImg, KvPageContainer } from '@kiva/kv-components';
 
 const contentfulContentQuery = gql`query confirmDonationContent {
 	contentful {

@@ -17,8 +17,7 @@
 
 <script>
 import { mdiCheckboxMarkedCircleOutline } from '@mdi/js';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'CheckoutNowButton',

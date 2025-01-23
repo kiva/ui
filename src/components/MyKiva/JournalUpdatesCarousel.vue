@@ -59,11 +59,9 @@
 </template>
 
 <script setup>
-import KvCarousel from '#kv-components/KvCarousel';
+import { KvCarousel, KvLightbox, KvButton } from '@kiva/kv-components';
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard';
-import KvLightbox from '#kv-components/KvLightbox';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
-import KvButton from '#kv-components/KvButton';
 import {
 	ref,
 	toRefs,

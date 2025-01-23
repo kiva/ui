@@ -8,6 +8,7 @@
 			<kv-flag
 				v-if="isCountry"
 				:country="item.isoCode"
+				:name="item.name"
 				class="item-flag tw-w-2 tw-mr-0.5 tw-flex-shrink-0"
 			/>
 			<kv-icon
@@ -26,8 +27,8 @@
 </template>
 
 <script>
+import { KvFlag } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvFlag from '#src/components/Kv/KvFlag';
 
 export default {
 	name: 'ItemList',

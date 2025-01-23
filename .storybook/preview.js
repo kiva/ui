@@ -2,8 +2,8 @@ import { setup } from '@storybook/vue3';
 import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { VueHeadMixin, createHead } from '@unhead/vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import KvThemeProvider from '#kv-components/KvThemeProvider';
-import { defaultTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
+import { KvThemeProvider } from '@kiva/kv-components';
+import { defaultTheme } from '@kiva/kv-tokens';
 import changeCaseFilter from '../src/plugins/change-case-filter';
 import numeralFilter from '../src/plugins/numeral-filter';
 

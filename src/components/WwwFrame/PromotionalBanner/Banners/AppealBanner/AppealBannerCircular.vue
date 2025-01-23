@@ -159,10 +159,9 @@ import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { mdiClose } from '@mdi/js';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvContentfulImg from '#kv-components/KvContentfulImg';
+import {
+	KvPageContainer, KvButton, KvMaterialIcon, KvContentfulImg
+} from '@kiva/kv-components';
 
 export default {
 	name: 'AppealBannerCircular',

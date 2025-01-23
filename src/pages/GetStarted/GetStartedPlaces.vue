@@ -102,6 +102,7 @@
 											<kv-flag
 												class="country__img"
 												:country="country.code"
+												:name="country.name"
 												:is-square="true"
 											/>
 										</span>
@@ -173,13 +174,13 @@ import _orderBy from 'lodash/orderBy';
 import { gql } from 'graphql-tag';
 import Fuse from 'fuse.js/dist/fuse.common';
 // import Fuse from 'fuse.js'; // re-enabled after https://github.com/krisk/Fuse/pull/383 is merged
+import { KvFlag } from '@kiva/kv-components';
 
 import countryListQuery from '#src/graphql/query/countryList.graphql';
 
 import logReadQueryError from '#src/util/logReadQueryError';
 
 import KvButton from '#src/components/Kv/KvButton';
-import KvFlag from '#src/components/Kv/KvFlag';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvProgressBar from '#src/components/Kv/KvProgressBar';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';

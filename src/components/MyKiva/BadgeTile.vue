@@ -63,8 +63,7 @@ import useBadgeData, {
 	ID_BASIC_NEEDS,
 } from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import {
 	computed,
 	toRefs,

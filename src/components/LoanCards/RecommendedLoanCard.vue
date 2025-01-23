@@ -27,6 +27,7 @@
 						class="rec-loan-card__country-flag"
 						v-if="countryISO"
 						:country="countryISO"
+						:name="countryName"
 						aspect-ratio="1x1"
 						:is-square="true"
 					/>
@@ -94,11 +95,10 @@ import * as Sentry from '@sentry/vue';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
 import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
-import KvFlag from '#src/components/Kv/KvFlag';
 import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 import LendButton from '#src/components/LoanCards/Buttons/LendButton2';
 import WhySpecial from '#src/components/LoanCards/WhySpecial';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvFlag, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {

@@ -1,5 +1,5 @@
 import _throttle from 'lodash/throttle';
-import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
+import kvTokensPrimitives from '@kiva/kv-tokens';
 import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
 
 /**

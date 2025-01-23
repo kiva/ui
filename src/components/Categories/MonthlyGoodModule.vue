@@ -37,7 +37,7 @@
 
 <script>
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 import { metaGlobReader } from '#src/util/importHelpers';
 
 const monthlyGoodImagesGlob = import.meta.glob('/src/assets/images/mg-hero-slideshow/*.*', { eager: true });

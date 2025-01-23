@@ -26,8 +26,7 @@
 import { mdiArrowRight } from '@mdi/js';
 import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import filterConfig from '#src/util/loanSearch/filterConfig';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import viewMoreGlassUrl from '#src/assets/images/view_more_glass.svg?url';
 
 export default {

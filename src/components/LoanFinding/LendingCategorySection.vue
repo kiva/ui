@@ -54,7 +54,7 @@
 import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvCarousel from '#kv-components/KvCarousel';
+import { KvCarousel } from '@kiva/kv-components';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {

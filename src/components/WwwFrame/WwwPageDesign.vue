@@ -198,10 +198,9 @@ import InstagramLogo from '#src/assets/inline-svgs/logos/instagram-logo.svg';
 import FacebookLogo from '#src/assets/inline-svgs/logos/facebook-logo.svg';
 import TwitterLogo from '#src/assets/inline-svgs/logos/twitter-logo.svg';
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import KvButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import {
+	KvButton, KvGrid, KvPageContainer, KvMaterialIcon
+} from '@kiva/kv-components';
 
 export default {
 	name: 'WwwPageDesign',

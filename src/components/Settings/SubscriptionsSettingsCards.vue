@@ -72,8 +72,7 @@ import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import SubscriptionsMonthlyGood from '#src/components/Subscriptions/SubscriptionsMonthlyGood';
 import SubscriptionsAutoDeposit from '#src/components/Subscriptions/SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from '#src/components/Subscriptions/SubscriptionsLegacy';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
+import { KvButton, KvLightbox } from '@kiva/kv-components';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {

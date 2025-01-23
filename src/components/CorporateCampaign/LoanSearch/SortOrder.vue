@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import KvRadio from '#kv-components/KvRadio';
+import { KvRadio } from '@kiva/kv-components';
 
 export default {
 	name: 'SortOrder',

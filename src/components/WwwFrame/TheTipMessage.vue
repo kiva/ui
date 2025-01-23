@@ -12,7 +12,7 @@ import { gql } from 'graphql-tag';
 import DOMPurify from 'dompurify';
 import { TIP, WARNING, ERROR } from '#src/api/fixtures/FlashMessageTypeEnum';
 import tipMessageData from '#src/graphql/query/tipMessage/tipMessageData.graphql';
-import KvToast from '#kv-components/KvToast';
+import { KvToast } from '@kiva/kv-components';
 
 // query for flash messages
 const flashMessageQuery = gql`

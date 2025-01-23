@@ -130,11 +130,9 @@
 import numeral from 'numeral';
 import teamNoImage from '#src/assets/images/team_s135.png';
 import _throttle from 'lodash/throttle';
-import KvTab from '#kv-components/KvTab';
-import KvTabPanel from '#kv-components/KvTabPanel';
-import KvTabs from '#kv-components/KvTabs';
-import KvProgressBar from '#kv-components/KvProgressBar';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import {
+	KvTab, KvTabPanel, KvTabs, KvProgressBar, KvLoadingPlaceholder
+} from '@kiva/kv-components';
 
 export default {
 	name: 'TeamLeaderboard',

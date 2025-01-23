@@ -90,9 +90,7 @@ import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
-import KvGrid from '#kv-components/KvGrid';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {

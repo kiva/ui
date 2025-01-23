@@ -127,11 +127,9 @@ import { mdiPencilOutline } from '@mdi/js';
 import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
 import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvButton from '#kv-components/KvButton';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import {
+	KvMaterialIcon, KvButton, KvLightbox, KvGrid, KvPageContainer
+} from '@kiva/kv-components';
 
 export default {
 	name: 'CommentAsk',

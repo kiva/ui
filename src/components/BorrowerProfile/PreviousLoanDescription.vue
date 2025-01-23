@@ -51,8 +51,7 @@ import { mdiChevronDown } from '@mdi/js';
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import KvTextLink from '#kv-components/KvTextLink';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvTextLink, KvMaterialIcon } from '@kiva/kv-components';
 
 const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
 	lend {

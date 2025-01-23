@@ -41,7 +41,7 @@ import _get from 'lodash/get';
 import { gql } from 'graphql-tag';
 import KvButton from '#src/components/Kv/KvButton';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
-import KvLightbox from '#kv-components/KvLightbox';
+import { KvLightbox } from '@kiva/kv-components';
 
 export default {
 	name: 'SaveButton',

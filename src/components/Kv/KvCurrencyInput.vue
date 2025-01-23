@@ -13,7 +13,7 @@
 
 <script>
 import numeral from 'numeral';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvTextInput } from '@kiva/kv-components';
 
 export default {
 	name: 'KvCurrencyInput',

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import KvCheckbox from '#kv-components/KvCheckbox';
+import { KvCheckbox } from '@kiva/kv-components';
 
 export default {
 	name: 'KvCheckboxList',

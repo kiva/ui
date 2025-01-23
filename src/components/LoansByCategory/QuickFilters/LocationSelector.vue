@@ -153,10 +153,8 @@ import { mdiMagnify, mdiChevronDown, mdiClose } from '@mdi/js';
 import clickOutside from '#src/plugins/click-outside';
 import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import kvTokensPrimitives from '@kiva/kv-tokens/primitives.json';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvButton from '#kv-components/KvButton';
-import KvTextInput from '#kv-components/KvTextInput';
+import kvTokensPrimitives from '@kiva/kv-tokens';
+import { KvMaterialIcon, KvButton, KvTextInput } from '@kiva/kv-components';
 import CheckboxList from './CheckboxList';
 
 export default {

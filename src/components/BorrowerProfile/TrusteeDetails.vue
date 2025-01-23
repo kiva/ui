@@ -81,7 +81,7 @@
 import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
-import KvTextLink from '#kv-components/KvTextLink';
+import { KvTextLink } from '@kiva/kv-components';
 
 export default {
 	name: 'TrusteeDetails',

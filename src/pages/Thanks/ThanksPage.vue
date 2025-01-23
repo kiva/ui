@@ -199,7 +199,7 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
@@ -724,7 +724,7 @@ export default {
 
 <style lang="postcss" scoped>
 
-.relative-container >>> main {
+.relative-container:deep(main) {
 	@apply tw-relative;
 }
 

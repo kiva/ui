@@ -86,8 +86,7 @@ import {
 	RAISED,
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvProgressBar from '#kv-components/KvProgressBar';
+import { KvLoadingPlaceholder, KvProgressBar } from '@kiva/kv-components';
 
 const DELINQUENT = 'payingBackDelinquent';
 

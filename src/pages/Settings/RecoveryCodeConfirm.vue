@@ -40,8 +40,7 @@
 </template>
 
 <script>
-import KvButton from '#kv-components/KvButton';
-import KvCheckbox from '#kv-components/KvCheckbox';
+import { KvButton, KvCheckbox } from '@kiva/kv-components';
 
 export default {
 	name: 'RecoveryCodeConfirm',

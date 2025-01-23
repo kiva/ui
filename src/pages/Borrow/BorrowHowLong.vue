@@ -36,8 +36,7 @@
 
 <script>
 import IntroGraphic from '#src/assets/inline-svgs/borrow/howlong.svg';
-import KvButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
+import { KvButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'BorrowHowLong',

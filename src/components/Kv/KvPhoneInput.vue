@@ -18,20 +18,21 @@
 			<div class="kv-phone-input__select-wrapper">
 				<kv-flag
 					class="kv-phone-input__select-flag"
-					:country="selectedCountryCode"
+					:country="selectedCountry.code"
+					:name="selectedCountry.name"
 				/>
 
 				<select
 					class="kv-phone-input__select-country"
 					:id="`country_select_${id}`"
-					v-model="selectedCountryCode"
+					v-model="selectedCountry"
 					@change="onInputCountry"
 					:disabled="disabled"
 				>
 					<option
 						v-for="country in countryList"
 						:key="`country-${country.name}`"
-						:value="country.code"
+						:value="country"
 					>
 						{{ country.name }}
 					</option>
@@ -67,8 +68,7 @@ import {
 	parsePhoneNumberFromString,
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
-import KvFlag from '#src/components/Kv/KvFlag';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvFlag, KvTextInput } from '@kiva/kv-components';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes
@@ -104,26 +104,26 @@ export default {
 		return {
 			countryList,
 			displayNumber: this.formatPhoneNumber(this.modelValue), // pretty display of the phone number
-			selectedCountryCode: 'US',
+			selectedCountry: countryList.find(country => country.code === 'US'),
 		};
 	},
 	computed: {
 		countryCallingCode() {
-			return getCountryCallingCode(this.selectedCountryCode);
+			return getCountryCallingCode(this.selectedCountry.code);
 		},
 		e164Number() { // E.164 formatted phone number
-			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountryCode);
+			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountry.code);
 			return phoneNumber?.number || '';
 		},
 		isEmpty() {
 			return this.displayNumber.length === 0;
 		},
 		isValid() {
-			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountryCode);
+			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountry.code);
 			return phoneNumber?.isValid() || false;
 		},
 		placeholderNumber() {
-			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
+			return getExampleNumber(this.selectedCountry.code, exampleNumbers)?.formatNational() || '';
 		},
 	},
 	watch: {
@@ -139,7 +139,7 @@ export default {
 				return val.replace('(', '');
 			}
 
-			const asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
+			const asYouTypeFormatter = new AsYouType(this.selectedCountry.code);
 			return asYouTypeFormatter.input(val);
 		},
 		onInputCountry() {
@@ -169,7 +169,7 @@ export default {
 		setCountryFromNumber(num) {
 			const phoneNumber = parsePhoneNumberFromString(num);
 			if (phoneNumber?.country) {
-				this.selectedCountryCode = phoneNumber.country;
+				this.selectedCountry = this.countryList.find(country => country.code === phoneNumber.country);
 				this.displayNumber = this.formatPhoneNumber(phoneNumber.formatNational());
 			}
 		}

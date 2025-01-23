@@ -54,6 +54,7 @@
 							v-if="loan.geocode.country.isoCode"
 							class="flag"
 							:country="loan.geocode.country.isoCode"
+							:name="loan.geocode.country.name"
 						/>
 						<div>
 							{{ `${loan.geocode.city ? `${loan.geocode.city}, ` : ''}` }}{{ loan.geocode.country.name }}
@@ -171,12 +172,12 @@
 
 <script>
 import _get from 'lodash/get';
+import { KvFlag } from '@kiva/kv-components';
 import BorrowerInfoBody from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import KvIcon from '#src/components/Kv/KvIcon';
 import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
 import BorrowerInfoName from '#src/components/LoanCards/BorrowerInfo/BorrowerInfoName';
-import KvFlag from '#src/components/Kv/KvFlag';
 import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '#src/components/LoanCards/MatchingText';
 import FundraisingStatusLarge from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';

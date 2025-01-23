@@ -83,9 +83,7 @@
 </template>
 
 <script>
-import KvProgressBar from '#kv-components/KvProgressBar';
-import KvUiButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
+import { KvProgressBar, KvButton as KvUiButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'CampaignProgressBar',

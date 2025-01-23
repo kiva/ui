@@ -21,7 +21,7 @@
 import contentfulStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
 import KivaClassicMultiCategoryCarousel from '#src/components/LoanCollections/KivaClassicMultiCategoryCarousel';
 import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWithBackgroundClassic';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvPageContainer } from '@kiva/kv-components';
 
 export default {
 	name: 'LoansByCategoryCarousel',

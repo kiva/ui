@@ -252,10 +252,9 @@ import numeral from 'numeral';
 import _mapValues from 'lodash/mapValues';
 import teamNoImage from '#src/assets/images/team_s135.png';
 import { gql } from 'graphql-tag';
-import KvPagination from '#kv-components/KvPagination';
-import KvSelect from '#kv-components/KvSelect';
-import KvButton from '#kv-components/KvButton';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import {
+	KvPagination, KvSelect, KvButton, KvLoadingPlaceholder
+} from '@kiva/kv-components';
 import { fetchTeams, teamCategories, teamCategoryFriendlyName } from '../../util/teamsUtil';
 import TeamSearchBar from './TeamSearchBar';
 
