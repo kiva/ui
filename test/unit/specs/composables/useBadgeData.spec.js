@@ -5,6 +5,13 @@ import useBadgeData, {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
+	ID_EQUITY,
+	ID_WORLD_REFUGEE_DAY_24,
+	ID_EARTH_DAY_24,
+	ID_IWD_24,
+	ID_CLIMATE,
+	ID_ROAD_3BB,
+	ID_2BB,
 	US_ECONOMIC_EQUALITY_FILTER,
 	WOMENS_EQUALITY_FILTER,
 	CLIMATE_ACTION_FILTER,
@@ -758,26 +765,61 @@ describe('useBadgeData.js', () => {
 		const target = 3;
 		it('should return expected explanation for us-economic-equality', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_US_ECONOMIC_EQUALITY, target)).toEqual(`${target} people in the United States or Puerto Rico`);
+			expect(getEarnedBadgeExplanation(ID_US_ECONOMIC_EQUALITY, target)).toEqual(`for helping ${target} people in the United States or Puerto Rico`);
 		});
 
 		it('should return expected explanationfor climate-action', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_CLIMATE_ACTION, target)).toEqual(`${target} climate stewards with eco-friendly projects`);
+			expect(getEarnedBadgeExplanation(ID_CLIMATE_ACTION, target)).toEqual(`for helping ${target} climate stewards with eco-friendly projects`);
 		});
 		it('should return expected explanation for womens-equality', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_WOMENS_EQUALITY, target)).toEqual(`${target} women`);
+			expect(getEarnedBadgeExplanation(ID_WOMENS_EQUALITY, target)).toEqual(`for helping ${target} women`);
 		});
 
 		it('should return expected explanation for refugee-equality', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_REFUGEE_EQUALITY, target)).toEqual(`${target} refugees or displaced people`);
+			expect(getEarnedBadgeExplanation(ID_REFUGEE_EQUALITY, target)).toEqual(`for helping ${target} refugees or displaced people`);
 		});
 
 		it('should return expected explanation for basic-needs', () => {
 			const { getEarnedBadgeExplanation } = useBadgeData();
-			expect(getEarnedBadgeExplanation(ID_BASIC_NEEDS, target)).toEqual(`${target} people in need of housing, healthcare, clean water or sanitation`);
+			expect(getEarnedBadgeExplanation(ID_BASIC_NEEDS, target)).toEqual(`for helping ${target} people in need of housing, healthcare, clean water or sanitation`);
+		});
+
+		it('should return expected explanation for equity', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_EQUITY, target)).toEqual('for helping your first person on kiva');
+		});
+
+		it('should return expected explanation for world refugee day', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_WORLD_REFUGEE_DAY_24, target)).toEqual('for helping a refugee on world refugee day');
+		});
+
+		it('should return expected explanation for earth day', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_EARTH_DAY_24, target)).toEqual('for contributing to a climate project on earth day');
+		});
+
+		it('should return expected explanation for internationa womens day', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_IWD_24, target)).toEqual('for helping a woman on international women’s day');
+		});
+
+		it('should return expected explanation for climate change', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_CLIMATE, target)).toEqual('for contributing to 3 eco-friendly projects');
+		});
+
+		it('should return expected explanation for 3BB Road', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_ROAD_3BB, target)).toEqual('for helping us kickstart our goal to reach $3b in total impact');
+		});
+
+		it('should return expected explanation for 2BB thanks', () => {
+			const { getEarnedBadgeExplanation } = useBadgeData();
+			expect(getEarnedBadgeExplanation(ID_2BB, target)).toEqual('for helping us reach $2b in total impact');
 		});
 	});
 });
