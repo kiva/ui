@@ -103,7 +103,7 @@
 												class="country__img"
 												:country="country.code"
 												:name="country.name"
-												:is-square="true"
+												aspect-ratio="1x1"
 											/>
 										</span>
 

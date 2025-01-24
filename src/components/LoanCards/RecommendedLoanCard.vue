@@ -23,14 +23,16 @@
 					loading="lazy"
 				>
 				<div class="rec-loan-card__image-overlay">
-					<kv-flag
+					<div
 						class="rec-loan-card__country-flag"
 						v-if="countryISO"
-						:country="countryISO"
-						:name="countryName"
-						aspect-ratio="1x1"
-						:is-square="true"
-					/>
+					>
+						<kv-flag
+							:country="countryISO"
+							:name="countryName"
+							aspect-ratio="1x1"
+						/>
+					</div>
 					<span class="rec-loan-card__time-left">
 						{{ timeLeftMessage }}
 					</span>

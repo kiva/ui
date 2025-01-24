@@ -5,12 +5,15 @@
 			:key="item[itemKey]"
 			class="tw-flex tw-items-center tw-float-left tw-w-full md:tw-w-1/2 tw-pb-0.5"
 		>
-			<kv-flag
+			<div
 				v-if="isCountry"
-				:country="item.isoCode"
-				:name="item.name"
 				class="item-flag tw-w-2 tw-mr-0.5 tw-flex-shrink-0"
-			/>
+			>
+				<kv-flag
+					:country="item.isoCode"
+					:name="item.name"
+				/>
+			</div>
 			<kv-icon
 				v-else
 				:name="iconKey(item)"

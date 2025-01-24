@@ -106,7 +106,7 @@
 											class="edit-preferences__flag"
 											:country="country.isoCode"
 											:name="country.name"
-											:is-square="true"
+											aspect-ratio="1x1"
 										/>
 									</li>
 									<li v-if="countries.length > 3" class="edit-preferences__list-item--counter">
