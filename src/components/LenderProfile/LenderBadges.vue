@@ -46,7 +46,7 @@ const {
 	completedBadges,
 } = useBadgeData(apollo);
 const isLoading = ref(true);
-const badgesTitle = computed(() => (props.lenderInfo?.name ? `${props.lenderInfo.name}'s badges` : 'Badges'));
+const badgesTitle = computed(() => (props.lenderInfo?.name ? `${props.lenderInfo.name}'s achievements` : 'Badges'));
 
 const fetchUserAchievements = async () => {
 	await Promise.all([

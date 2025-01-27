@@ -1,7 +1,7 @@
 <template>
 	<section data-testid="lend-stat-badges" class="stats-section">
 		<h2 class="tw-flex tw-gap-2 tw-mb-4">
-			<span>My Badges</span>
+			<span>My Achievements</span>
 			<span
 				v-if="!isLoading"
 				class="tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center"
