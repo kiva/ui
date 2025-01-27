@@ -1,26 +1,12 @@
 <template>
 	<www-page
 		data-testid="thanks-page"
-		:class="{
-			'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW,
-			'relative-container': activeView === BADGES_VIEW
-		}"
+		:class="{ 'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW }"
 	>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 				:show-daf-thanks="showDafThanks"
-			/>
-		</template>
-		<template v-if="activeView === BADGES_VIEW">
-			<badges-customization
-				:selected-loan="selectedLoan"
-				:loans="loans"
-				:receipt="receipt"
-				:lender="lender"
-				:is-guest="isGuest"
-				:is-opted-in="optedIn"
-				:badges-achieved="badgesAchieved"
 			/>
 		</template>
 		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
@@ -197,8 +183,6 @@ import ShareChallenge from '#src/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
 import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
@@ -210,7 +194,6 @@ const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
-const BADGES_VIEW = 'badges';
 const MY_KIVA_BADGES_VIEW = 'my_kiva_badges';
 const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
 const V2_VIEW = 'v2';
@@ -255,7 +238,6 @@ export default {
 		ChallengeHeader,
 		ShareChallenge,
 		WhatIsNextTemplate,
-		BadgesCustomization,
 		ThanksBadges,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -282,9 +264,7 @@ export default {
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
 			optedIn: false,
-			badgesCustomExpEnabled: false,
 			DONATION_ONLY_VIEW,
-			BADGES_VIEW,
 			MY_KIVA_BADGES_VIEW,
 			MARKETING_OPT_IN_VIEW,
 			V2_VIEW,
@@ -417,7 +397,6 @@ export default {
 			return this.challengeLoan
 				&& this.enableMayChallengeHeader
 				&& this.activeView !== DONATION_ONLY_VIEW
-				&& this.activeView !== BADGES_VIEW
 				&& this.activeView !== MARKETING_OPT_IN_VIEW;
 		},
 		challengeHeaderVisible() {
@@ -425,7 +404,6 @@ export default {
 				&& this.showChallengeHeader
 				&& this.teamPublicId
 				&& this.activeView !== DONATION_ONLY_VIEW
-				&& this.activeView !== BADGES_VIEW
 				&& this.activeView !== MARKETING_OPT_IN_VIEW;
 		},
 		teamName() {
@@ -452,10 +430,6 @@ export default {
 			// Show the MyKiva view if qualifications are met
 			if (this.myKivaEnabled) {
 				return MY_KIVA_BADGES_VIEW;
-			}
-			// Show the badges view if badges experiment is enabled
-			if (this.badgesCustomExpEnabled) {
-				return BADGES_VIEW;
 			}
 			// Show the marketing opt-in view if the user has not opted in and has loans
 			if (!this.optedIn && this.loans.length > 0) {
@@ -643,21 +617,6 @@ export default {
 			}
 		}
 
-		// Thanks Badges Experiment
-		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
-		if (enableExperiment) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'thanks',
-				'thanks_badges',
-				'EXP-MP-608-Aug2024',
-			);
-			if (version === 'b') {
-				this.badgesCustomExpEnabled = true;
-			}
-		}
-
 		// Track may challenge page view
 		if (this.showMayChallengeHeader) {
 			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-header', this.isGuest ? 'guest' : 'signed-in');
@@ -715,12 +674,4 @@ export default {
 		margin-bottom: 0.5rem;
 	}
 }
-</style>
-
-<style lang="postcss" scoped>
-
-.relative-container:deep(main) {
-	@apply tw-relative;
-}
-
 </style>
