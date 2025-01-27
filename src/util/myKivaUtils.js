@@ -2,7 +2,6 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
