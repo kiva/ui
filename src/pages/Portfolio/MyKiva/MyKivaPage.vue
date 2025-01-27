@@ -93,7 +93,7 @@
 							class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
 							style="line-height: 0; font-weight: 600;"
 						>
-							BADGES AND ACHIEVEMENTS
+							MILESTONES AND ACHIEVEMENTS
 						</span>
 					</div>
 					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">

@@ -68,7 +68,7 @@
 						}"
 						@click="handleBadgeClick(index)"
 					>
-						Earn badge
+						Continue
 					</KvButton>
 				</div>
 			</div>
