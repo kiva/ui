@@ -328,12 +328,10 @@ export default {
 				};
 				const limit = 1;
 
-				const myKivaFeatureEnabled = readBoolSetting(data?.general, 'myKivaEnabled.value');
-
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					teamId ? fetchGoals(client, limit, filters) : null,
-					myKivaFeatureEnabled ? fetchPostCheckoutAchievements(client, getLoanIds(loans)) : null,
+					fetchPostCheckoutAchievements(client, getLoanIds(loans)),
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -619,7 +617,6 @@ export default {
 		this.myKivaEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.general ?? {},
 			data?.my?.userPreferences?.preferences ?? null,
 			totalLoans
 		);
@@ -648,9 +645,7 @@ export default {
 
 		// Thanks Badges Experiment
 		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
-		// Show current TY badge page if MyKiva feature is not enabled
-		const myKivaFeatureEnabled = readBoolSetting(data, 'general.myKivaEnabled.value');
-		if (enableExperiment && !myKivaFeatureEnabled) {
+		if (enableExperiment) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
