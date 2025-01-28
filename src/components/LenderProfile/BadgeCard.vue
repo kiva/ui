@@ -82,6 +82,7 @@ const getBadgeImgUrl = badge => {
 <style lang="postcss" scoped>
 .badge-card {
     @apply tw-bg-white tw-rounded tw-drop-shadow-lg tw-origin-bottom-right tw-absolute tw-ease-in-out tw-duration-300;
+
     height: 160px;
     width: 120px;
 }
