@@ -265,7 +265,7 @@ const handleBackToJourney = badge => {
 	}
 };
 
-const fetchLoanUpdates = loanId => {
+const fetchLoanUpdates = (loanId, loadMore) => {
 	apollo.query({
 		query: updatesQuery,
 		variables: {
@@ -277,7 +277,11 @@ const fetchLoanUpdates = loanId => {
 		.then(result => {
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 			const updates = result.data?.lend?.loan?.updates?.values ?? [];
-			loanUpdates.value = loanUpdates.value.concat(updates);
+			if (loadMore) {
+				loanUpdates.value = loanUpdates.value.concat(updates);
+			} else {
+				loanUpdates.value = updates;
+			}
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
@@ -285,7 +289,7 @@ const fetchLoanUpdates = loanId => {
 
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
-	fetchLoanUpdates(activeLoan.value.id);
+	fetchLoanUpdates(activeLoan.value.id, true);
 };
 
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
