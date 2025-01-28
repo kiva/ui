@@ -1,17 +1,25 @@
 <template>
 	<async-lender-section @visible="fetchUserAchievements">
-		<section v-if="completedBadges.length > 0">
-			<h2 class="data-hj-suppress">
-				{{ badgesTitle }}
-			</h2>
-			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center lg:tw-justify-start tw-gap-3 md:tw-gap-8 lg:tw-gap-3.5 tw-my-4">
-				<BadgeCard
-					v-for="badge in showedBadges"
-					:key="badge.id"
-					:badge="badge"
-					@click="handleBadgeClicked"
-				/>
+		<section
+			v-if="completedBadges.length > 0"
+			class="tw-bg-gray-100"
+		>
+			<div
+				class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8 tw-pt-4"
+				style="max-width: 1200px;"
+			>
+				<h2 class="data-hj-suppress">
+					{{ badgesTitle }}
+				</h2>
+				<!-- eslint-disable-next-line max-len -->
+				<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center lg:tw-justify-start tw-gap-3 md:tw-gap-8 lg:tw-gap-3.5 tw-my-4">
+					<BadgeCard
+						v-for="badge in showedBadges"
+						:key="badge.id"
+						:badge="badge"
+						@click="handleBadgeClicked"
+					/>
+				</div>
 			</div>
 		</section>
 		<BadgeModal

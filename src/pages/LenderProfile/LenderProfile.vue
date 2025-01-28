@@ -1,17 +1,13 @@
 <template>
 	<www-page>
-		<kv-page-container
-			class="tw-pt-4 tw-pb-8"
-		>
-			<lender-profile-wrapper
-				v-if="lenderIsPublic"
-				:public-id="publicId"
-				:lender-info="lenderInfo"
-			/>
-			<not-found-wrapper
-				v-else
-			/>
-		</kv-page-container>
+		<lender-profile-wrapper
+			v-if="lenderIsPublic"
+			:public-id="publicId"
+			:lender-info="lenderInfo"
+		/>
+		<not-found-wrapper
+			v-else
+		/>
 	</www-page>
 </template>
 
@@ -21,7 +17,6 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWrapper';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
-import { KvPageContainer } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 
@@ -30,7 +25,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
-		KvPageContainer,
 		LenderProfileWrapper,
 		NotFoundWrapper,
 	},

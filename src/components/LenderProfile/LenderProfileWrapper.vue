@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<kv-page-container
+		class="tw-pt-4"
+	>
 		<lender-summary
 			:public-id="publicId"
 			:lender-info="lenderInfo"
@@ -9,12 +11,14 @@
 			:public-id="publicId"
 			:lender-info="lenderInfo"
 		/>
-
-		<lender-badges
-			:lender-info="lenderInfo"
-			:public-id="publicId"
-		/>
-
+	</kv-page-container>
+	<lender-badges
+		:lender-info="lenderInfo"
+		:public-id="publicId"
+	/>
+	<kv-page-container
+		class="tw-pb-8"
+	>
 		<lender-dedications-list
 			:public-id="publicId"
 			:lender-info="lenderInfo"
@@ -40,7 +44,7 @@
 			:lender-info="lenderInfo"
 			:lender-stats="lenderStats"
 		/>
-	</div>
+	</kv-page-container>
 </template>
 
 <script>
@@ -54,6 +58,7 @@ import LenderBadges from '#src/components/LenderProfile/LenderBadges';
 import LenderInviteesList from '#src/components/LenderProfile/LenderInviteesList';
 import LenderDedicationsList from '#src/components/LenderProfile/LenderDedicationsList';
 import LenderMap from '#src/components/LenderProfile/LenderMap';
+import { KvPageContainer } from '@kiva/kv-components';
 
 export default {
 	name: 'LenderProfileWrapper',
@@ -91,6 +96,7 @@ export default {
 		LenderInviteesList,
 		LenderDedicationsList,
 		LenderMap,
+		KvPageContainer,
 	},
 	methods: {
 		async fetchLenderStats() {
