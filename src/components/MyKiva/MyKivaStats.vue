@@ -95,7 +95,7 @@ const livesTouchedLabel = computed(() => {
 });
 
 const badgesLabel = computed(() => {
-	return completedAchievementsNumber.value === 1 ? 'badge<br>earned' : 'badges<br>earned';
+	return completedAchievementsNumber.value === 1 ? 'milestone<br>achieved' : 'milestones<br>achieved';
 });
 
 onMounted(() => {

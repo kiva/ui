@@ -2,7 +2,6 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
@@ -53,36 +52,33 @@ export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
  *
  * @param apollo The current Apollo client
  * @param $kvTrackEvent The Kiva tracking event function
- * @param generalSettings The general settings object
  * @param preferences The user preferences object
  * @param loanTotal The total number of loans the user has made
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, generalSettings, preferences, loanTotal) => {
-	const myKivaFeatureEnabled = readBoolSetting(generalSettings, 'myKivaEnabled.value');
-	if (myKivaFeatureEnabled) {
-		const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
-		const hasSeenMyKiva = !!(formattedPreference?.myKivaJan2025Exp ?? 0);
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, preferences, loanTotal) => {
+	const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
+	const hasSeenMyKiva = !!(formattedPreference?.myKivaJan2025Exp ?? 0);
 
-		if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
-			const { version: myKivaVersion } = apollo.readFragment({
-				id: `Experiment:${MY_KIVA_EXP}`,
-				fragment: experimentVersionFragment,
-			}) ?? {};
-			const isMyKivaExperimentEnabled = myKivaVersion === 'b';
+	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
+		const { version: myKivaVersion } = apollo.readFragment({
+			id: `Experiment:${MY_KIVA_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+		const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-			trackExperimentVersion(
-				apollo,
-				$kvTrackEvent,
-				'event-tracking',
-				MY_KIVA_EXP,
-				'EXP-MP-1235-Jan2025'
-			);
+		trackExperimentVersion(
+			apollo,
+			$kvTrackEvent,
+			'event-tracking',
+			MY_KIVA_EXP,
+			'EXP-MP-1235-Jan2025'
+		);
 
-			// The user preference hasSeenMyKiva can be true when we override for internal testing
-			return hasSeenMyKiva || isMyKivaExperimentEnabled;
-		}
+		// The user preference hasSeenMyKiva can be true when we override for internal testing
+		return hasSeenMyKiva || isMyKivaExperimentEnabled;
 	}
+
 	return false;
 };
 

@@ -37,7 +37,7 @@
 							class="tw-flex tw-items-center tw-gap-0.5 tw-font-medium tw-mt-1 tw-text-action
 								hover:tw-underline"
 						>
-							Earn badge
+							Achieve milestone
 							<KvMaterialIcon
 								class="tw-w-2.5 tw-h-2.5 tw-text-action"
 								:icon="mdiArrowRight"

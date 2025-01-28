@@ -164,10 +164,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
-		myKivaEnabled: featureSetting(key: "my_kiva.enabled") {
-			key
-			value
-		}
 	}
 	mySubscriptions(includeDisabled: false) {
 		values {

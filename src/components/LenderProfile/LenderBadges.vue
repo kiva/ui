@@ -94,7 +94,11 @@ const showedBadges = computed(() => {
 	];
 });
 
-const badgesTitle = computed(() => (props.lenderInfo?.name ? `${props.lenderInfo.name}'s achievements` : 'Achievements')); // eslint-disable-line max-len
+const badgesTitle = computed(() => (
+	props.lenderInfo?.name
+		? `${props.lenderInfo.name}'s achievements`
+		: 'Achievements'
+));
 
 const fetchUserAchievements = async () => {
 	await Promise.all([
