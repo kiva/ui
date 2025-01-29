@@ -1,6 +1,6 @@
 <template>
 	<!-- Loading Template -->
-	<div class="tw-flex" v-if="isLoading">
+	<div class="tw-flex tw-pl-2" v-if="isLoading">
 		<kv-loading-placeholder
 			class="tw-h-10 tw-w-12 tw-flex-none tw-mx-auto tw-mr-2"
 			:style="{width: '6rem', height: '5rem'}"
@@ -16,43 +16,47 @@
 		</div>
 	</div>
 	<!-- Badges Template -->
-	<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-2" v-else>
+	<div
+		v-else
+		class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center lg:tw-justify-start tw-gap-5 md:tw-gap-4
+			lg:tw-gap-6 tw-pl-2 lg:tw-pl-5"
+	>
 		<p v-if="completedAchievements.length === 0">
 			You haven't earned any badges yet.
 		</p>
-		<div
-			v-else
-			v-for="badge in completedAchievements"
+		<BadgeCard
+			v-for="badge in showedBadges"
 			:key="badge.id"
-			class="tw-flex tw-w-full tw-gap-1"
-			:class="{'tw-items-center': !inPortfolio }"
-		>
-			<img
-				:src="getBadgeImgUrl(badge)"
-				class="tw-h-10 tw-flex-none tw-mx-auto"
-			>
-			<div class="tw-w-full">
-				<span class="tw-font-medium">
-					{{ getBadgeTitle(badge) }}
-				</span>
-				<p class="tw-text-secondary tw-text-small">
-					{{ getBadgeDate(badge) }}
-				</p>
-			</div>
-		</div>
+			:badge="badge"
+			@click="handleBadgeClicked"
+			style="width: 140px;"
+		/>
+		<BadgeModal
+			v-if="selectedBadgeData"
+			:show="showBadgeModal"
+			:badge="selectedBadgeData"
+			:state="state"
+			:tier="tier"
+			:is-earned-section="true"
+			@badge-modal-closed="handleBadgeModalClosed"
+		/>
 	</div>
 </template>
 
 <script>
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
-import { format } from 'date-fns';
-import useBadgeData from '#src/composables/useBadgeData';
+import { defaultBadges } from '#src/util/achievementUtils';
+import { STATE_EARNED } from '#src/composables/useBadgeModal';
+import BadgeCard from '#src/components/LenderProfile/BadgeCard';
+import BadgeModal from '#src/components/MyKiva/BadgeModal';
 
 export default {
 	name: 'BadgesList',
 	inject: ['apollo'],
 	components: {
 		KvLoadingPlaceholder,
+		BadgeCard,
+		BadgeModal,
 	},
 	props: {
 		completedAchievements: {
@@ -64,28 +68,51 @@ export default {
 			default: false
 		},
 	},
+	data() {
+		return {
+			showBadgeModal: false,
+			selectedBadgeData: null,
+			state: STATE_EARNED,
+			tier: null,
+		};
+	},
 	computed: {
-		inPortfolio() {
-			return this.$route?.name?.includes('portfolio');
+		sortedTieredBadges() {
+			const tieredBadges = [];
+			defaultBadges.forEach(element => {
+				const filteredBadges = this.completedAchievements
+					.filter(badge => badge.id === element)
+					.sort((a, b) => b.level - a.level);
+
+				if (filteredBadges.length > 0) {
+					tieredBadges.push(filteredBadges[0]);
+				}
+			});
+			return tieredBadges;
+		},
+		sortedEventBadges() {
+			return this.completedAchievements
+				.filter(b => b.achievementData?.tiers?.length === 0)
+				.sort((a, b) => new Date(a.earnedAtDate) - new Date(b.earnedAtDate));
+		},
+		showedBadges() {
+			return [
+				...this.sortedTieredBadges,
+				...this.sortedEventBadges
+			];
 		},
 	},
 	methods: {
-		getBadgeTitle(badge) {
-			const { getTierBadgeDataByLevel } = useBadgeData();
-			const levelData = getTierBadgeDataByLevel(badge, badge.level);
-			return levelData.tierName;
+		handleBadgeClicked(badge) {
+			const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
+			this.tier = selectedTier;
+			this.selectedBadgeData = badge;
+			this.showBadgeModal = true;
 		},
-		getBadgeImgUrl(badge) {
-			if (badge.level === 0) {
-				return badge?.contentfulData?.[0]?.imageUrl ?? '';
-			}
-			const badgeData = badge?.contentfulData?.find(data => data.level === badge.level);
-			return badgeData?.imageUrl ?? '';
-		},
-		getBadgeDate(badge) {
-			const earnedAtDate = badge.earnedAtDate ? Date.parse(badge.earnedAtDate) : new Date();
-			return format(earnedAtDate, 'MMM yyyy');
-		},
+		handleBadgeModalClosed() {
+			this.selectedBadgeData = undefined;
+			this.showBadgeModal = false;
+		}
 	},
 };
 </script>
