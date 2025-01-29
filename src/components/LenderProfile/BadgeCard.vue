@@ -14,6 +14,7 @@
 						'badge-card',
 						{ 'last-badge-card': !mouseOver, 'last-badge-card-hover': mouseOver }
 					]"
+					style="height: 134px;"
 				></div>
 				<div
 					v-if="badge.level > 2"
@@ -21,6 +22,7 @@
 						'badge-card',
 						{ 'third-badge-card': !mouseOver, 'third-badge-card-hover': mouseOver }
 					]"
+					style="height: 142px;"
 				></div>
 				<div
 					v-if="badge.level > 1"
@@ -28,9 +30,11 @@
 						'badge-card',
 						{ 'second-badge-card': !mouseOver, 'second-badge-card-hover': mouseOver }
 					]"
+					style="height: 150px;"
 				></div>
 				<div
 					class="badge-card tw-py-3.5 tw-px-1 tw-rotate-0 tw-cursor-pointer"
+					style="height: 160px;"
 					@mouseover="mouseOver = true"
 					@mouseleave="mouseOver = false"
 					@click="$emit('click', badge)"
@@ -42,7 +46,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-font-medium tw-text-center tw-pt-3.5">
+		<div class="tw-font-medium tw-text-center tw-pt-1">
 			{{ getBadgeTitle(badge) }}
 		</div>
 	</div>
@@ -81,9 +85,9 @@ const getBadgeImgUrl = badge => {
 
 <style lang="postcss" scoped>
 .badge-card {
-    @apply tw-bg-white tw-rounded tw-drop-shadow-lg tw-origin-bottom-right tw-absolute tw-ease-in-out tw-duration-300;
+    @apply tw-bg-white tw-rounded tw-drop-shadow-lg tw-origin-bottom-left tw-absolute tw-ease-in-out tw-duration-300
+	tw-bottom-0;
 
-    height: 160px;
     width: 120px;
 }
 
