@@ -3,14 +3,14 @@
 		data-testid="thanks-page"
 		:class="{ 'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW }"
 	>
+		<template v-if="activeView === SINGLE_VERSION_VIEW">
+			<ThanksPageSingleVersion />
+		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 				:show-daf-thanks="showDafThanks"
 			/>
-		</template>
-		<template v-if="activeView === SINGLE_VERSION_VIEW">
-			<ThanksPageSingleVersion />
 		</template>
 		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
 			<thanks-badges
@@ -190,6 +190,7 @@ import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -244,6 +245,7 @@ export default {
 		ShareChallenge,
 		WhatIsNextTemplate,
 		ThanksBadges,
+		ThanksPageSingleVersion,
 	},
 	inject: ['apollo', 'cookieStore'],
 	head() {
@@ -427,6 +429,10 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the single version view if the experiment is enabled
+			if (this.thanksSingleVersionEnabled) {
+				return SINGLE_VERSION_VIEW;
+			}
 			// Show the donation only view if the user has only donated and not lent
 			if (this.showDafThanks
 				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
@@ -452,9 +458,6 @@ export default {
 				&& (this.isGuestUsCheckout || (this.selectedLoan.id && !this.isGuest))
 			) {
 				return COMMENT_AND_SHARE_VIEW;
-			}
-			if (this.thanksSingleVersionEnabled) {
-				return SINGLE_VERSION_VIEW;
 			}
 			// Show the v2 view by default
 			return V2_VIEW;
