@@ -3,6 +3,9 @@
 		data-testid="thanks-page"
 		:class="{ 'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW }"
 	>
+		<template v-if="activeView === SINGLE_VERSION_VIEW">
+			<ThanksPageSingleVersion />
+		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
@@ -187,10 +190,12 @@ import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const TY_SINGLE_VERSION_EXP = 'ty_single_version';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -199,6 +204,7 @@ const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
 const V2_VIEW = 'v2';
 const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
 const LOGIN_REQUIRED_VIEW = 'login_required';
+const SINGLE_VERSION_VIEW = 'thanks_single_version';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -239,6 +245,7 @@ export default {
 		ShareChallenge,
 		WhatIsNextTemplate,
 		ThanksBadges,
+		ThanksPageSingleVersion,
 	},
 	inject: ['apollo', 'cookieStore'],
 	head() {
@@ -272,6 +279,7 @@ export default {
 			LOGIN_REQUIRED_VIEW,
 			myKivaEnabled: false,
 			badgesAchieved: [],
+			thanksSingleVersionEnabled: false,
 		};
 	},
 	apollo: {
@@ -421,6 +429,10 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the single version view if the experiment is enabled
+			if (this.thanksSingleVersionEnabled) {
+				return SINGLE_VERSION_VIEW;
+			}
 			// Show the donation only view if the user has only donated and not lent
 			if (this.showDafThanks
 				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
@@ -626,6 +638,14 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
+
+		// Check if TY page single version is enabled
+		const singleVersionExp = this.apollo.readFragment({
+			id: `Experiment:${TY_SINGLE_VERSION_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		this.thanksSingleVersionEnabled = singleVersionExp?.version === 'b';
 
 		this.$kvTrackEvent(
 			'post-checkout',
