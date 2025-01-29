@@ -9,6 +9,9 @@
 				:show-daf-thanks="showDafThanks"
 			/>
 		</template>
+		<template v-if="activeView === SINGLE_VERSION_VIEW">
+			<ThanksPageSingleVersion />
+		</template>
 		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
 			<thanks-badges
 				:is-guest="isGuest"
@@ -191,6 +194,7 @@ import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myK
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const TY_SINGLE_VERSION_EXP = 'ty_single_version';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -199,6 +203,7 @@ const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
 const V2_VIEW = 'v2';
 const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
 const LOGIN_REQUIRED_VIEW = 'login_required';
+const SINGLE_VERSION_VIEW = 'thanks_single_version';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -272,6 +277,7 @@ export default {
 			LOGIN_REQUIRED_VIEW,
 			myKivaEnabled: false,
 			badgesAchieved: [],
+			thanksSingleVersionEnabled: false,
 		};
 	},
 	apollo: {
@@ -446,6 +452,9 @@ export default {
 				&& (this.isGuestUsCheckout || (this.selectedLoan.id && !this.isGuest))
 			) {
 				return COMMENT_AND_SHARE_VIEW;
+			}
+			if (this.thanksSingleVersionEnabled) {
+				return SINGLE_VERSION_VIEW;
 			}
 			// Show the v2 view by default
 			return V2_VIEW;
@@ -626,6 +635,14 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
+
+		// Check if TY page single version is enabled
+		const singleVersionExp = this.apollo.readFragment({
+			id: `Experiment:${TY_SINGLE_VERSION_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		this.thanksSingleVersionEnabled = singleVersionExp?.version === 'b';
 
 		this.$kvTrackEvent(
 			'post-checkout',
