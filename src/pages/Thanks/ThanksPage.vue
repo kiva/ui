@@ -4,7 +4,10 @@
 		:class="{ 'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW }"
 	>
 		<template v-if="activeView === SINGLE_VERSION_VIEW">
-			<ThanksPageSingleVersion />
+			<ThanksPageSingleVersion
+				:is-guest="isGuest"
+				:loans="loans"
+			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
@@ -280,6 +283,7 @@ export default {
 			myKivaEnabled: false,
 			badgesAchieved: [],
 			thanksSingleVersionEnabled: false,
+			SINGLE_VERSION_VIEW,
 		};
 	},
 	apollo: {
