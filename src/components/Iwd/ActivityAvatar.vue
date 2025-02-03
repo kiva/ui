@@ -36,7 +36,7 @@
 
 <script>
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import { defineAsyncComponent, shallowRef } from 'vue';
 
 const KivaIcon = shallowRef(defineAsyncComponent(() => import('#src/assets/images/helpmechoose/kiva_mark.svg')));

@@ -67,9 +67,7 @@
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import RewardsIcon from '#src/assets/icons/inline/rewards.svg';
 import teamGoalInfo from '#src/plugins/team-goal-mixin';
-import KvButton from '#kv-components/KvButton';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvGrid from '#kv-components/KvGrid';
+import { KvButton, KvPageContainer, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'ChallengeHeader',

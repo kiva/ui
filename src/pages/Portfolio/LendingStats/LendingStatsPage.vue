@@ -22,11 +22,6 @@
 						Use this page to collect loans and hit milestones along the way.
 					</p>
 					<hr class="tw-border-tertiary tw-my-4">
-					<badges-section
-						:is-loading="badgesLoading"
-						:completed-achievements="completedAchievements"
-					/>
-					<hr class="tw-border-tertiary tw-my-4">
 					<stats-section
 						title="Countries &amp; Territories*"
 						noun="country"
@@ -70,7 +65,12 @@
 						show-more-id="show-more-fieldpartner"
 						lend-new-id="lend-new-fieldpartner"
 					/>
-					<hr class="tw-border-tertiary tw-my-4">
+					<hr class="tw-border-tertiary tw-mt-4">
+					<badges-section
+						:is-loading="badgesLoading"
+						:completed-achievements="completedAchievements"
+					/>
+					<hr class="tw-border-tertiary tw-mb-4">
 					<p>
 						* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
 						This means, you may end up supporting a loan in a country or through a Lending Partner that
@@ -91,8 +91,7 @@ import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgesSection from './BadgesSection';

@@ -93,7 +93,7 @@
 							class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
 							style="line-height: 0; font-weight: 600;"
 						>
-							BADGES AND ACHIEVEMENTS
+							MILESTONES AND ACHIEVEMENTS
 						</span>
 					</div>
 					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">
@@ -153,7 +153,7 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import useUserPreferences from '#src/composables/useUserPreferences';
@@ -257,11 +257,15 @@ const handleBadgeModalClosed = () => {
 	showBadgeModal.value = false;
 };
 
-const handleBackToJourney = () => {
-	state.value = STATE_JOURNEY;
+const handleBackToJourney = badge => {
+	if (badge.id === ID_EQUITY) {
+		handleBadgeModalClosed();
+	} else {
+		state.value = STATE_JOURNEY;
+	}
 };
 
-const fetchLoanUpdates = loanId => {
+const fetchLoanUpdates = (loanId, loadMore) => {
 	apollo.query({
 		query: updatesQuery,
 		variables: {
@@ -273,7 +277,11 @@ const fetchLoanUpdates = loanId => {
 		.then(result => {
 			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
 			const updates = result.data?.lend?.loan?.updates?.values ?? [];
-			loanUpdates.value = loanUpdates.value.concat(updates);
+			if (loadMore) {
+				loanUpdates.value = loanUpdates.value.concat(updates);
+			} else {
+				loanUpdates.value = updates;
+			}
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
@@ -281,7 +289,7 @@ const fetchLoanUpdates = loanId => {
 
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
-	fetchLoanUpdates(activeLoan.value.id);
+	fetchLoanUpdates(activeLoan.value.id, true);
 };
 
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);

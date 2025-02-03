@@ -1,5 +1,4 @@
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import KivaCreditStats from '#src/pages/Portfolio/ImpactDashboard/KivaCreditStats';
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';

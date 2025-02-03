@@ -37,7 +37,7 @@
 							class="tw-flex tw-items-center tw-gap-0.5 tw-font-medium tw-mt-1 tw-text-action
 								hover:tw-underline"
 						>
-							Earn badge
+							Achieve milestone
 							<KvMaterialIcon
 								class="tw-w-2.5 tw-h-2.5 tw-text-action"
 								:icon="mdiArrowRight"
@@ -61,10 +61,10 @@ import useBadgeData, {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
+	ID_EQUITY,
 } from '#src/composables/useBadgeData';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import {
 	computed,
 	toRefs,
@@ -107,6 +107,7 @@ const tieredBadges = computed(() => {
 });
 
 const selectedTier = computed(() => {
+	const numberOfUserLoans = userInfo.value?.loans?.totalCount ?? 0;
 	const tiers = [];
 	tieredBadges.value.forEach(badge => {
 		const tier = badge.achievementData?.tiers?.find(t => !t.completedDate);
@@ -136,12 +137,29 @@ const selectedTier = computed(() => {
 		}
 	}
 
+	if (numberOfUserLoans === 0) {
+		const equityBadge = badgesData.value.find(b => b.id === ID_EQUITY);
+		equityBadge.achievementData.tiers.push({
+			level: 0,
+		});
+		tiers.unshift({
+			badge: equityBadge,
+			totalProgressToAchievement: 0,
+			tier: {
+				level: 0,
+			},
+		});
+	}
+
 	return tiers[0];
 });
 
 const badgeName = computed(() => selectedTier?.value?.badge?.challengeName ?? '');
 
 const tileTitle = computed(() => {
+	if (selectedTier?.value?.badge?.id === ID_EQUITY) {
+		return badgeName.value;
+	}
 	const tierLevel = selectedTier?.value?.levelName ?? '';
 	return `${badgeName.value} (level ${tierLevel})`;
 });
@@ -168,6 +186,8 @@ const tierCaption = computed(() => {
 		case ID_BASIC_NEEDS:
 			subtitle = 'for fundamental needs';
 			break;
+		case ID_EQUITY:
+			return '1 loan to anyone in need';
 		default:
 			subtitle = '';
 			break;

@@ -163,8 +163,7 @@ import { gql } from 'graphql-tag';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLightbox from '#kv-components/KvLightbox';
+import { KvMaterialIcon, KvLightbox } from '@kiva/kv-components';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {

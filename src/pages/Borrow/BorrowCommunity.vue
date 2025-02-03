@@ -37,8 +37,7 @@
 
 <script>
 import CommunityGraphic from '#src/assets/inline-svgs/borrow/community.svg';
-import KvButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
+import { KvButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'BorrowCommunity',

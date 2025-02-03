@@ -51,7 +51,7 @@
 import getCategoryName from '#src/util/categoryUtils';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
-import KvCarousel from '#kv-components/KvCarousel';
+import { KvCarousel } from '@kiva/kv-components';
 
 export default {
 	name: 'KivaLoanCardCarousel',

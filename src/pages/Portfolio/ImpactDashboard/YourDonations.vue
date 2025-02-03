@@ -98,11 +98,9 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import { mdiArrowRight } from '@mdi/js';
-import KvGrid from '#kv-components/KvGrid';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvButton from '#kv-components/KvButton';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import {
+	KvGrid, KvLightbox, KvButton, KvLoadingPlaceholder, KvMaterialIcon
+} from '@kiva/kv-components';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {

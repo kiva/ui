@@ -114,7 +114,7 @@ import FirstMFASetup from '#src/pages/Settings/FirstMFASetup';
 import RecoveryCodeConfirm from '#src/pages/Settings/RecoveryCodeConfirm';
 import confirmOTPAuthenticatorEnrollment from '#src/graphql/mutation/mfa/confirmOTPAuthenticatorEnrollment.graphql';
 import enrollOTPAuthenticator from '#src/graphql/mutation/mfa/enrollOTPAuthenticator.graphql';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 
 export default {
 	name: 'AppAuthentication',

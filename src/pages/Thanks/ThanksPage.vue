@@ -1,26 +1,18 @@
 <template>
 	<www-page
 		data-testid="thanks-page"
-		:class="{
-			'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW,
-			'relative-container': activeView === BADGES_VIEW
-		}"
+		:class="{ 'tw-bg-eco-green-1 !tw-h-auto': activeView === MARKETING_OPT_IN_VIEW }"
 	>
+		<template v-if="activeView === SINGLE_VERSION_VIEW">
+			<ThanksPageSingleVersion
+				:is-guest="isGuest"
+				:loans="loans"
+			/>
+		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
 			<thanks-page-donation-only
 				:monthly-donation-amount="monthlyDonationAmount"
 				:show-daf-thanks="showDafThanks"
-			/>
-		</template>
-		<template v-if="activeView === BADGES_VIEW">
-			<badges-customization
-				:selected-loan="selectedLoan"
-				:loans="loans"
-				:receipt="receipt"
-				:lender="lender"
-				:is-guest="isGuest"
-				:is-opted-in="optedIn"
-				:badges-achieved="badgesAchieved"
 			/>
 		</template>
 		<template v-if="activeView === MY_KIVA_BADGES_VIEW">
@@ -197,25 +189,25 @@ import ShareChallenge from '#src/components/Thanks/ShareChallenge';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import BadgesCustomization from '#src/components/Thanks/BadgesCustomization';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
+const TY_SINGLE_VERSION_EXP = 'ty_single_version';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
-const BADGES_VIEW = 'badges';
 const MY_KIVA_BADGES_VIEW = 'my_kiva_badges';
 const MARKETING_OPT_IN_VIEW = 'marketing_opt_in';
 const V2_VIEW = 'v2';
 const COMMENT_AND_SHARE_VIEW = 'comment_and_share';
 const LOGIN_REQUIRED_VIEW = 'login_required';
+const SINGLE_VERSION_VIEW = 'thanks_single_version';
 
 const getLoans = receipt => {
 	const loansResponse = receipt?.items?.values ?? [];
@@ -255,8 +247,8 @@ export default {
 		ChallengeHeader,
 		ShareChallenge,
 		WhatIsNextTemplate,
-		BadgesCustomization,
 		ThanksBadges,
+		ThanksPageSingleVersion,
 	},
 	inject: ['apollo', 'cookieStore'],
 	head() {
@@ -282,9 +274,7 @@ export default {
 			showChallengeHeader: false,
 			enableMayChallengeHeader: false,
 			optedIn: false,
-			badgesCustomExpEnabled: false,
 			DONATION_ONLY_VIEW,
-			BADGES_VIEW,
 			MY_KIVA_BADGES_VIEW,
 			MARKETING_OPT_IN_VIEW,
 			V2_VIEW,
@@ -292,6 +282,8 @@ export default {
 			LOGIN_REQUIRED_VIEW,
 			myKivaEnabled: false,
 			badgesAchieved: [],
+			thanksSingleVersionEnabled: false,
+			SINGLE_VERSION_VIEW,
 		};
 	},
 	apollo: {
@@ -328,12 +320,10 @@ export default {
 				};
 				const limit = 1;
 
-				const myKivaFeatureEnabled = readBoolSetting(data?.general, 'myKivaEnabled.value');
-
 				return Promise.all([
 					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 					teamId ? fetchGoals(client, limit, filters) : null,
-					myKivaFeatureEnabled ? fetchPostCheckoutAchievements(client, getLoanIds(loans)) : null,
+					fetchPostCheckoutAchievements(client, getLoanIds(loans)),
 				]);
 			}).catch(errorResponse => {
 				logFormatter(
@@ -419,7 +409,6 @@ export default {
 			return this.challengeLoan
 				&& this.enableMayChallengeHeader
 				&& this.activeView !== DONATION_ONLY_VIEW
-				&& this.activeView !== BADGES_VIEW
 				&& this.activeView !== MARKETING_OPT_IN_VIEW;
 		},
 		challengeHeaderVisible() {
@@ -427,7 +416,6 @@ export default {
 				&& this.showChallengeHeader
 				&& this.teamPublicId
 				&& this.activeView !== DONATION_ONLY_VIEW
-				&& this.activeView !== BADGES_VIEW
 				&& this.activeView !== MARKETING_OPT_IN_VIEW;
 		},
 		teamName() {
@@ -445,6 +433,10 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the single version view if the experiment is enabled
+			if (this.thanksSingleVersionEnabled) {
+				return SINGLE_VERSION_VIEW;
+			}
 			// Show the donation only view if the user has only donated and not lent
 			if (this.showDafThanks
 				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
@@ -454,10 +446,6 @@ export default {
 			// Show the MyKiva view if qualifications are met
 			if (this.myKivaEnabled) {
 				return MY_KIVA_BADGES_VIEW;
-			}
-			// Show the badges view if badges experiment is enabled
-			if (this.badgesCustomExpEnabled) {
-				return BADGES_VIEW;
 			}
 			// Show the marketing opt-in view if the user has not opted in and has loans
 			if (!this.optedIn && this.loans.length > 0) {
@@ -619,7 +607,6 @@ export default {
 		this.myKivaEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.general ?? {},
 			data?.my?.userPreferences?.preferences ?? null,
 			totalLoans
 		);
@@ -646,23 +633,6 @@ export default {
 			}
 		}
 
-		// Thanks Badges Experiment
-		const enableExperiment = this.optedIn && !this.printableKivaCards.length && (isFirstLoan || this.isGuest);
-		// Show current TY badge page if MyKiva feature is not enabled
-		const myKivaFeatureEnabled = readBoolSetting(data, 'general.myKivaEnabled.value');
-		if (enableExperiment && !myKivaFeatureEnabled) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'thanks',
-				'thanks_badges',
-				'EXP-MP-608-Aug2024',
-			);
-			if (version === 'b') {
-				this.badgesCustomExpEnabled = true;
-			}
-		}
-
 		// Track may challenge page view
 		if (this.showMayChallengeHeader) {
 			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-header', this.isGuest ? 'guest' : 'signed-in');
@@ -672,6 +642,14 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
+
+		// Check if TY page single version is enabled
+		const singleVersionExp = this.apollo.readFragment({
+			id: `Experiment:${TY_SINGLE_VERSION_EXP}`,
+			fragment: experimentVersionFragment,
+		}) ?? {};
+
+		this.thanksSingleVersionEnabled = singleVersionExp?.version === 'b';
 
 		this.$kvTrackEvent(
 			'post-checkout',
@@ -720,12 +698,4 @@ export default {
 		margin-bottom: 0.5rem;
 	}
 }
-</style>
-
-<style lang="postcss" scoped>
-
-.relative-container >>> main {
-	@apply tw-relative;
-}
-
 </style>

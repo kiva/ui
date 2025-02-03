@@ -44,7 +44,7 @@ import {
 	marigoldLightTheme,
 	stoneLightTheme,
 	stoneDarkTheme,
-} from '@kiva/kv-tokens/configs/kivaColors.cjs';
+} from '@kiva/kv-tokens';
 import { defineAsyncComponent } from 'vue';
 
 const KvContentfulImg = defineAsyncComponent(() => import('#kv-components/KvContentfulImg'));

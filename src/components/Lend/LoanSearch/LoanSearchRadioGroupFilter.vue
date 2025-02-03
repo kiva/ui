@@ -14,7 +14,7 @@
 
 <script>
 import { getFilterKeyFromValue } from '#src/util/loanSearch/filterUtils';
-import KvRadio from '#kv-components/KvRadio';
+import { KvRadio } from '@kiva/kv-components';
 
 export const ALL_LOANS_TITLE = 'All loans';
 

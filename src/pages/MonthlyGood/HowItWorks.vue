@@ -16,9 +16,8 @@
 <script>
 import CenteredRichText from '#src/components/Contentful/CenteredRichText';
 import RichTextItemsCentered from '#src/components/Contentful/RichTextItemsCentered';
-import { darkGreenTheme } from '@kiva/kv-tokens/configs/kivaColors.cjs';
-
-import KvThemeProvider from '#kv-components/KvThemeProvider';
+import { darkGreenTheme } from '@kiva/kv-tokens';
+import { KvThemeProvider } from '@kiva/kv-components';
 
 export default {
 	name: 'HowItWorks',

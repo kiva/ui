@@ -11,7 +11,7 @@
 <script>
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvPageContainer } from '@kiva/kv-components';
 
 export default {
 	name: 'NotFound',

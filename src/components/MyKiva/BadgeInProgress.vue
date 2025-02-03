@@ -80,8 +80,7 @@
 
 <script setup>
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import KvCarousel from '#kv-components/KvCarousel';
-import KvButton from '#kv-components/KvButton';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
 import {
 	computed,
 	watch,
@@ -89,7 +88,7 @@ import {
 	inject,
 } from 'vue';
 import { BADGE_IN_PROGRESS, getBadgeShape } from '#src/composables/useBadgeModal';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 import BadgeContainer from './BadgeContainer';
 
@@ -112,7 +111,7 @@ const {
 	fetchLoanIdData,
 	badgeLoanIdData,
 	getFilteredUrl,
-	getTierBadgeDataByLevel
+	getTierBadgeDataByLevel,
 } = useBadgeData();
 
 const isLoading = ref(true);
@@ -123,6 +122,9 @@ const carouselIndex = ref(0);
 const loanDisplayCount = computed(() => (loadMoreClicked.value ? 6 : 3));
 const tierBadgeData = computed(() => getTierBadgeDataByLevel(props.badge, props.tier.level));
 const subHeader = computed(() => {
+	if (props.badge.id === ID_EQUITY) {
+		return '1 loan to anyone in need';
+	}
 	const progress = props.badge.achievementData.totalProgressToAchievement;
 	const { target } = tierBadgeData.value.achievementData;
 	return `${progress} of ${target} loans completed`;
@@ -197,7 +199,7 @@ watch(() => badgeLoanIdData.value, () => {
 </script>
 
 <style lang="postcss" scoped>
-.kv-carousel >>> div[aria-label*=screen]  {
+.kv-carousel:deep(div[aria-label*=screen]) {
   @apply tw-invisible;
 }
 

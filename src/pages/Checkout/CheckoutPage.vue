@@ -333,15 +333,12 @@ import iwdExperimentMixin from '#src/plugins/iwd-experiment-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvButton from '#kv-components/KvButton';
+import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-components';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
-const THANKS_BADGES_EXP = 'thanks_badges';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -627,9 +624,8 @@ export default {
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
 
-		// Don't fetch challenge status if IWD2024 experiment or Badge Experiment are enabled
-		// to avoid being redirected to the challenge thank you page
-		if (!this.iwdExpEnabled && !this.isTYBadgesExperimentActive()) {
+		// Don't fetch challenge status if IWD2024 experiment to avoid being redirected to the challenge thank you page
+		if (!this.iwdExpEnabled) {
 			// Fetch Challenge Status
 			// If a loan in basket makes progress towards an active challenge,
 			// set query param to redirect to special thank you page
@@ -1120,15 +1116,6 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
-		isTYBadgesExperimentActive() {
-			// TY Badge experiment MP-387
-			const thanksBadgeExp = this.apollo.readFragment({
-				id: `Experiment:${THANKS_BADGES_EXP}`,
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			return thanksBadgeExp?.version;
-		}
 	},
 	unmounted() {
 		clearInterval(this.currentTimeInterval);

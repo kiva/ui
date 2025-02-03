@@ -53,7 +53,7 @@
 
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import MyKivaBadgeStars from '#src/components/MyKiva/MyKivaBadgeStars';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
 
 import confetti from 'canvas-confetti';
@@ -126,8 +126,9 @@ const badgeTarget = computed(() => {
 });
 
 const shareUrl = computed(() => {
-	const base = isPublic.value ? `/lender/${lender.value?.publicId}` : '';
-	return `${base}?badge_level=${badgeLevel.value}`;
+	let url = isPublic.value ? `/lender/${lender.value?.publicId}` : '';
+	url += tier.value ? `?badge_level=${badgeLevel.value}` : '';
+	return url;
 });
 
 const funFact = computed(() => {
@@ -140,7 +141,12 @@ const funFact = computed(() => {
 const funFactSource = computed(() => {
 	return badgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
-const learnMoreLink = computed(() => badgeData.value.contentfulData?.shareFactUrl ?? '');
+const learnMoreLink = computed(() => {
+	if (!tier.value) {
+		return badge.value.contentfulData?.[0]?.shareFactUrl ?? '';
+	}
+	return badgeData.value.contentfulData?.shareFactUrl ?? '';
+});
 const earnedDate = computed(() => {
 	let earnedAtDate = '';
 	if (!tier.value) {
@@ -152,7 +158,7 @@ const earnedDate = computed(() => {
 });
 
 const earnedBadgeDateAndReason = computed(() => {
-	return `earned on ${earnedDate.value} for helping ${getEarnedBadgeExplanation(badge.value.id, badgeTarget.value)}`;
+	return `earned on ${earnedDate.value} ${getEarnedBadgeExplanation(badge.value.id, badgeTarget.value)}`;
 });
 
 const trackLearnMore = () => {

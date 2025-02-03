@@ -40,8 +40,7 @@
 <script>
 import { mdiArrowTopRight } from '@mdi/js';
 import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvToast from '#kv-components/KvToast';
+import { KvMaterialIcon, KvToast } from '@kiva/kv-components';
 
 export default {
 	name: 'ChallengeCallout',

@@ -89,7 +89,7 @@ import { mdiMagnify } from '@mdi/js';
 import lockScrollUtils from '#src/plugins/lock-scroll';
 import getCacheKey from '#src/util/getCacheKey';
 import { hasExcludedQueryParams } from '#src/util/loanSearch/queryParamUtils';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvTextInput } from '@kiva/kv-components';
 
 const engine = new SearchEngine();
 

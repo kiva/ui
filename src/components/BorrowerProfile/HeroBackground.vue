@@ -21,7 +21,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import KvContentfulImg from '#kv-components/KvContentfulImg';
+import { KvContentfulImg } from '@kiva/kv-components';
 
 export default {
 	name: 'HeroBackground',

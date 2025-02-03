@@ -45,8 +45,7 @@ import teamsGoals from '#src/graphql/query/teamsGoals.graphql';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _orderBy from 'lodash/orderBy';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvGrid from '#kv-components/KvGrid';
+import { KvPageContainer, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'TeamGoalsList',

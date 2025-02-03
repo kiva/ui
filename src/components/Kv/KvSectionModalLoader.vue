@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import KvLoadingSpinner from '#kv-components/KvLoadingSpinner';
+import { KvLoadingSpinner } from '@kiva/kv-components';
 
 export const LOADING_LABEL = 'Section modal loader';
 

@@ -375,10 +375,9 @@ import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
 
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvUiSelect from '#kv-components/KvSelect';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvUiButton from '#kv-components/KvButton';
-import KvGrid from '#kv-components/KvGrid';
+import {
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
+} from '@kiva/kv-components';
 import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 
 export default {

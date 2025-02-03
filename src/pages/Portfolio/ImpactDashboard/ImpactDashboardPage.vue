@@ -46,8 +46,7 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -122,12 +121,10 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
-		const generalData = portfolioQueryData?.general ?? {};
 		const loanCount = userData.lender?.loanCount ?? 0;
 		this.showMyKivaPage = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			generalData,
 			userData?.userPreferences?.preferences ?? null,
 			loanCount
 		);

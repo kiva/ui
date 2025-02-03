@@ -114,7 +114,7 @@
 <script>
 import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import numeral from 'numeral';
-import KvProgressBar from '#kv-components/KvProgressBar';
+import { KvProgressBar } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanProgress',

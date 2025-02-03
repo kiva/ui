@@ -28,7 +28,7 @@
 import { gql } from 'graphql-tag';
 import KivaLoanCardCategory from '#src/components/LoanCollections/HomeExp/KivaLoanCardCategory';
 import LoanCategorySelectorHomeExp from '#src/components/LoanCollections/HomeExp/LoanCategorySelectorHomeExp';
-import KvGrid from '#kv-components/KvGrid';
+import { KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'KivaMultiCategoryGrid',

@@ -612,10 +612,9 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
-import KvButton from '#kv-components/KvButton';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import {
+	KvUserAvatar, KvButton, KvMaterialIcon, KvPageContainer
+} from '@kiva/kv-components';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 

@@ -6,6 +6,15 @@ import { gql } from 'graphql-tag';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 export const ID_EQUITY = 'equity';
+export const ID_WORLD_REFUGEE_DAY_24 = 'wrd-2024-challenge';
+export const ID_WORLD_REFUGEE_DAY = 'wrd-23-challenge';
+export const ID_EARTH_DAY = 'earthday-23-challenge';
+export const ID_EARTH_DAY_24 = 'earth-day-2024-challenge';
+export const ID_IWD = 'iwd-challenge';
+export const ID_IWD_24 = 'iwd-2024-challenge';
+export const ID_CLIMATE = 'climate-challenge';
+export const ID_ROAD_3BB = '2BB-23-Roadto3BB';
+export const ID_2BB = '2BB-23-Thanks';
 export const ID_WOMENS_EQUALITY = 'womens-equality';
 export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
@@ -167,6 +176,9 @@ export default function useBadgeData() {
 								completedDate: t.completedDate?.replace('[UTC]', ''),
 							})),
 							milestoneProgress: milestoneProgressArr,
+							matchingLoans: {
+								filters: achievementData.matchingLoans?.filters ?? [],
+							}
 						},
 						hasStarted,
 						level,
@@ -302,6 +314,8 @@ export default function useBadgeData() {
 				return CLIMATE_ACTION_FILTER;
 			case ID_REFUGEE_EQUALITY:
 				return REFUGEE_EQUALITY_FILTER;
+			case ID_EQUITY:
+				return '';
 			case ID_BASIC_NEEDS:
 			default:
 				return BASIC_NEEDS_FILTER;
@@ -473,15 +487,32 @@ export default function useBadgeData() {
 	const getEarnedBadgeExplanation = (badgeId, target) => {
 		switch (badgeId) {
 			case ID_WOMENS_EQUALITY:
-				return `${target} women`;
+				return `for helping ${target} women`;
 			case ID_CLIMATE_ACTION:
-				return `${target} climate stewards with eco-friendly projects`;
+				return `for helping ${target} climate stewards with eco-friendly projects`;
 			case ID_US_ECONOMIC_EQUALITY:
-				return `${target} people in the United States or Puerto Rico`;
+				return `for helping ${target} people in the United States or Puerto Rico`;
 			case ID_BASIC_NEEDS:
-				return `${target} people in need of housing, healthcare, clean water or sanitation`;
+				return `for helping ${target} people in need of housing, healthcare, clean water or sanitation`;
 			case ID_REFUGEE_EQUALITY:
-				return `${target} refugees or displaced people`;
+				return `for helping ${target} refugees or displaced people`;
+			case ID_EQUITY:
+				return 'for helping your first person on kiva';
+			case ID_WORLD_REFUGEE_DAY:
+			case ID_WORLD_REFUGEE_DAY_24:
+				return 'for helping a refugee on world refugee day';
+			case ID_EARTH_DAY:
+			case ID_EARTH_DAY_24:
+				return 'for contributing to a climate project on earth day';
+			case ID_IWD:
+			case ID_IWD_24:
+				return 'for helping a woman on international women’s day';
+			case ID_CLIMATE:
+				return 'for contributing to 3 eco-friendly projects';
+			case ID_ROAD_3BB:
+				return 'for helping us kickstart our goal to reach $3b in total impact';
+			case ID_2BB:
+				return 'for helping us reach $2b in total impact';
 			default:
 				return '';
 		}

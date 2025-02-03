@@ -1,3 +1,42 @@
+## [3.9.0-rc.1](https://github.com/kiva/ui/compare/v3.8.0...v3.9.0-rc.1) (2025-02-03)
+
+### 🎉 New Features
+
+* commenting module added to unified ty page ([#5771](https://github.com/kiva/ui/issues/5771)) ([a15456b](https://github.com/kiva/ui/commit/a15456b9014902a7b1d1e0a87303866b43d8c952))
+* experiment flag for new ty page ([be74b74](https://github.com/kiva/ui/commit/be74b74826567de5dfd0cf2f5bad811dcb5a8c09))
+* lending stats badges section updated ([#5769](https://github.com/kiva/ui/issues/5769)) ([4fcf546](https://github.com/kiva/ui/commit/4fcf5466aa2d60d20d4dd232a37b421df91fe1bc))
+* modal added for non tiered badges ([#5762](https://github.com/kiva/ui/issues/5762)) ([f4f187f](https://github.com/kiva/ui/commit/f4f187f6304df05be8eaa5535797c5a57d10a411))
+* modify opt-in module for unified ty page ([e0f77cc](https://github.com/kiva/ui/commit/e0f77cc23d216f737f336383b4aa81a8aa31841a))
+* mykiva equlity badge zero loans ([#5758](https://github.com/kiva/ui/issues/5758)) ([0081e66](https://github.com/kiva/ui/commit/0081e66916c51d190efb741cc19c17fefc8da364))
+* public profile badges update ([#5767](https://github.com/kiva/ui/issues/5767)) ([eb5892d](https://github.com/kiva/ui/commit/eb5892d8e382d6b559ba81002ea698956e1ff558))
+* replace badge references ([088926d](https://github.com/kiva/ui/commit/088926dcc2edfcf7a886deb04c173b6b4d907b4e))
+* update kv-components imports and replace KvFlag SHUA-129 SHUA-137 ([bb4618f](https://github.com/kiva/ui/commit/bb4618ff36d26ea00aba67ec1bf28b350e6c7a09))
+
+### 🐛 Bugfixes
+
+* add missing file ([aedd625](https://github.com/kiva/ui/commit/aedd62591a0153875bd4a1f1089cd2cef99bd066))
+* adjust KvFlag wrapper styling ([23a4992](https://github.com/kiva/ui/commit/23a4992444abb3dab14f8293b1591bdde2671b60))
+* experiment precedence over other views ([3e00fa1](https://github.com/kiva/ui/commit/3e00fa1b6e6b08760cf12389a854aa2e11fe3316))
+* filters fixed for modal equity loans ([#5759](https://github.com/kiva/ui/issues/5759)) ([e6afe73](https://github.com/kiva/ui/commit/e6afe734e8c2e0a1567aa1d41cddd64078c3dcd0))
+* include new kv-components dist folder in tailwind content ([00a32dd](https://github.com/kiva/ui/commit/00a32ddcf7a8e4f8fe57f945ea103a0d453802a8))
+* lending stats badge section gray bg removed ([#5770](https://github.com/kiva/ui/issues/5770)) ([d6813f0](https://github.com/kiva/ui/commit/d6813f01ce96aeb63629f87a4161d4350297b46c))
+* missing fallback ([980a3bd](https://github.com/kiva/ui/commit/980a3bdae0ad9b4e7ff5e59353bb8d51aab06245))
+* missing replacement in stats ([d913999](https://github.com/kiva/ui/commit/d913999d361e7aa6edf5cd247bbff1b6a2bd99e9))
+* remove mykiva feature flag ([f68fe29](https://github.com/kiva/ui/commit/f68fe2913f48ba56a1e2f369c01c07d6b43ca23b))
+* remove old badge experiment code from checkout ([6089b88](https://github.com/kiva/ui/commit/6089b88ddc6c27dc3946b8d0d08ce4fe559048ab))
+* removed code for old badge ty page ([bddd9a9](https://github.com/kiva/ui/commit/bddd9a95342b1721e186d15b4b4c73397d1bba8c))
+* removed import change missing from last commit ([dc92668](https://github.com/kiva/ui/commit/dc92668443c62c11fcb4898393244d30de741bc8))
+* reset journal updates when selected loan changed ([5a8ef22](https://github.com/kiva/ui/commit/5a8ef22654836b062241f31db169612558a1552c))
+* resolve conflicts ([972fd94](https://github.com/kiva/ui/commit/972fd94e0135a6639d41ad2d32d8384ac50b8196))
+
+### 🏎️ Performance Improvements
+
+* analyze /borrow page with lighthouse ([b1e4d45](https://github.com/kiva/ui/commit/b1e4d45ddaca63cb91a3868b17c4b67468327bb8))
+
+### 🧹 Chores
+
+* **deps:** update kv-components, kv-shop, and kv-tokens ([d22c07b](https://github.com/kiva/ui/commit/d22c07b26a1d1764c46457475db34e06575fe7b1))
+
 ## [3.8.0](https://github.com/kiva/ui/compare/v3.7.0...v3.8.0) (2025-01-22)
 
 ### 🎉 New Features

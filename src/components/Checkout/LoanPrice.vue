@@ -39,7 +39,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import { getDropdownPriceArrayCheckout } from '#src/util/loanUtils';
-import KvSelect from '#kv-components/KvSelect';
+import { KvSelect } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanPrice',

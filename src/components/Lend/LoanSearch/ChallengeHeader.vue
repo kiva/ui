@@ -73,8 +73,7 @@
 import teamGoalInfo from '#src/plugins/team-goal-mixin';
 import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
 import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
-import KvInlineActivityFeed from '#kv-components/KvInlineActivityFeed';
+import { KvUserAvatar, KvInlineActivityFeed } from '@kiva/kv-components';
 
 export default {
 	name: 'ChallengeHeader',

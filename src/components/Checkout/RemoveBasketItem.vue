@@ -17,7 +17,7 @@
 import { mdiClose } from '@mdi/js';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import { KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'RemoveBasketItem',

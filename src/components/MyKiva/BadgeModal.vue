@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import KvLightbox from '#kv-components/KvLightbox';
+import { KvLightbox, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import {
 	defineProps,
 	defineAsyncComponent,
@@ -39,8 +39,6 @@ import {
 } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import { mdiArrowLeft } from '@mdi/js';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 const ModalLoader = defineComponent(() => {
 	return () => {
@@ -102,7 +100,7 @@ const handleBadgeLevelClicked = e => {
 };
 
 const backToJourney = () => {
-	emit('back-to-journey');
+	emit('back-to-journey', props.badge);
 };
 
 const isJourneyActive = computed(() => {

@@ -64,8 +64,7 @@
 import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
 import SectionWithBackground from '#src/components/Contentful/SectionWithBackground';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvGrid from '#kv-components/KvGrid';
+import { KvPageContainer, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'TestimonialCards',

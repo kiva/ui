@@ -50,7 +50,7 @@ module.exports = {
 			alias: {
 				map: [
 					['#src', resolve('src')],
-					['#kv-components', resolve('node_modules/@kiva/kv-components/dist/components')],
+					['#kv-components', resolve('node_modules/@kiva/kv-components/dist/vue')],
 				],
 				extensions: ['.js', '.mjs', '.vue'],
 			},

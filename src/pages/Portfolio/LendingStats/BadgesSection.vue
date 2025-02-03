@@ -1,7 +1,7 @@
 <template>
-	<section data-testid="lend-stat-badges" class="stats-section">
+	<section data-testid="lend-stat-badges" class="stats-section tw-py-4">
 		<h2 class="tw-flex tw-gap-2 tw-mb-4">
-			<span>My Badges</span>
+			<span>My Achievements</span>
 			<span
 				v-if="!isLoading"
 				class="tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center"
@@ -23,7 +23,7 @@
 
 <script>
 import BadgesList from '#src/pages/Portfolio/LendingStats/BadgesList';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'BadgesSection',

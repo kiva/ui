@@ -257,10 +257,9 @@ import SectorFilter from '#src/components/CorporateCampaign/LoanSearch/SectorFil
 import SortOrder from '#src/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '#src/components/CorporateCampaign/LoanSearch/TagFilter';
 import KvChipClassic from '#src/components/Kv/KvChipClassic';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvAccordionItem from '#kv-components/KvAccordionItem';
-import KvLightbox from '#kv-components/KvLightbox';
-import KvButton from '#kv-components/KvButton';
+import {
+	KvMaterialIcon, KvAccordionItem, KvLightbox, KvButton
+} from '@kiva/kv-components';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {

@@ -8,7 +8,7 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import KvLoadingSpinner from '#kv-components/KvLoadingSpinner';
+import { KvLoadingSpinner } from '@kiva/kv-components';
 import getCacheKey from '#src/util/getCacheKey';
 
 export default {

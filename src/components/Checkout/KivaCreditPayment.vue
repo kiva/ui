@@ -14,7 +14,7 @@
 <script>
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import { pollForFinishedCheckout } from '@kiva/kv-shop';
-import KvButton from '#kv-components/KvButton';
+import { KvButton } from '@kiva/kv-components';
 
 export default {
 	name: 'KivaCreditPayment',

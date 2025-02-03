@@ -21,7 +21,7 @@ import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { formatWhySpecial } from '#src/util/loanUtils';
 
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'WhySpecial',

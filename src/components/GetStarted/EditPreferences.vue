@@ -105,7 +105,8 @@
 										<kv-flag
 											class="edit-preferences__flag"
 											:country="country.isoCode"
-											:is-square="true"
+											:name="country.name"
+											aspect-ratio="1x1"
 										/>
 									</li>
 									<li v-if="countries.length > 3" class="edit-preferences__list-item--counter">
@@ -150,8 +151,8 @@
 </template>
 
 <script>
+import { KvFlag } from '@kiva/kv-components';
 import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
-import KvFlag from '#src/components/Kv/KvFlag';
 import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {

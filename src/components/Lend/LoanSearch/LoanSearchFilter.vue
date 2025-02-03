@@ -145,8 +145,7 @@ import _debounce from 'lodash/debounce';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
 import { createMinMaxRange, getMinMaxRangeQueryParam } from '#src/util/loanSearch/minMaxRange';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvTextInput from '#kv-components/KvTextInput';
+import { KvMaterialIcon, KvTextInput } from '@kiva/kv-components';
 
 const AsyncKvAccordionItem = shallowRef(defineAsyncComponent(() => import('#src/components/Kv/KvAccordionItem')));
 

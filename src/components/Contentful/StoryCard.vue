@@ -83,9 +83,8 @@ import {
 	marigoldLightTheme,
 	stoneLightTheme,
 	stoneDarkTheme,
-} from '@kiva/kv-tokens/configs/kivaColors.cjs';
-import KvContentfulImg from '#kv-components/KvContentfulImg';
-import KvThemeProvider from '#kv-components/KvThemeProvider';
+} from '@kiva/kv-tokens';
+import { KvContentfulImg, KvThemeProvider } from '@kiva/kv-components';
 /**
 * Story Card Component
 * */

@@ -51,9 +51,7 @@ import ButtonWrapper from '#src/components/Contentful/ButtonWrapper';
 
 import StoryCard from '#src/components/Contentful/StoryCard';
 
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvCarousel from '#kv-components/KvCarousel';
+import { KvGrid, KvPageContainer, KvCarousel } from '@kiva/kv-components';
 
 /**
 * Hero With Carousel Component

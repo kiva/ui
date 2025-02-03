@@ -146,9 +146,7 @@ import DynamicRichText from '#src/components/Contentful/DynamicRichText';
 import ButtonWrapper from '#src/components/Contentful/ButtonWrapper';
 import { responsiveImageSetSourceSets } from '#src/util/contentfulUtils';
 import { richTextRenderer, addBlankTargetToExternalLinks } from '#src/util/contentful/richTextRenderer';
-import KvContentfulImg from '#kv-components/KvContentfulImg';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvContentfulImg, KvGrid, KvPageContainer } from '@kiva/kv-components';
 
 /**
 * Dynamic Hero Component

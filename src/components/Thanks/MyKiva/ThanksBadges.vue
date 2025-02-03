@@ -190,18 +190,16 @@ import {
 	onBeforeUnmount,
 } from 'vue';
 import confetti from 'canvas-confetti';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
+import {
+	KvMaterialIcon, KvUserAvatar, KvLightbox, KvButton, KvLoadingPlaceholder
+} from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import KvUserAvatar from '#kv-components/KvUserAvatar';
-import KvLightbox from '#kv-components/KvLightbox';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown, mdiArrowRight } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import KvButton from '#kv-components/KvButton';
 import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 import OptInModule from './OptInModule';
 
 const props = defineProps({

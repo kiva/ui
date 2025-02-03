@@ -220,11 +220,9 @@ import ShareStepper from '#src/components/Thanks/ShareStepper';
 import CommentAsk from '#src/components/Thanks/CommentAsk';
 import KvIcon from '#src/components/Kv/KvIcon';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
-import KvMaterialIcon from '#kv-components/KvMaterialIcon';
-import KvProgressBar from '#kv-components/KvProgressBar';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
-import KvButton from '#kv-components/KvButton';
+import {
+	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton
+} from '@kiva/kv-components';
 import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
 
 export default {

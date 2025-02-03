@@ -21,6 +21,7 @@ module.exports = {
 				'https://www.kiva.org/design',
 				'https://www.kiva.org/ui-site-map',
 				'https://www.kiva.org/cc/kiva-partner',
+				'https://www.kiva.org/borrow',
 			],
 			numberOfRuns: 5,
 		},
