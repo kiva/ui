@@ -1,3 +1,4 @@
+import logFormatter from '#src/util/logFormatter';
 import showTipMessage from '#src/graphql/mutation/tipMessage/showTipMessage.graphql';
 
 export default function useTipMessage(apollo) {
@@ -9,6 +10,8 @@ export default function useTipMessage(apollo) {
 				type: tipMsgType,
 				persist: tipPersist,
 			},
+		}).catch(e => {
+			logFormatter(e, 'error');
 		});
 	};
 
