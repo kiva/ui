@@ -96,7 +96,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, computed, inject } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
 import logFormatter from '#src/util/logFormatter';

@@ -23,7 +23,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 
