@@ -1,4 +1,4 @@
-import ThanksPageUnifiedVersion from '#src/components/Thanks/ThanksPageSingleVersion';
+import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import {
@@ -11,8 +11,8 @@ import {
 } from '../mock-data/thanks-badges-mock-data';
 
 export default {
-	title: 'Page/ThanksPageUnifiedVersion',
-	component: ThanksPageUnifiedVersion,
+	title: 'Page/ThanksPageSingleVersion',
+	component: ThanksPageSingleVersion,
 };
 
 const queryResult = {
@@ -27,10 +27,10 @@ const mockTieredBadge = { achievementId: MOCK_TIERED_BADGE_ID };
 const story = (args = {}, result = queryResult) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		components: { ThanksPageUnifiedVersion },
+		components: { ThanksPageSingleVersion },
 		mixins: [apolloStoryMixin({ queryResult: result }), cookieStoreStoryMixin()],
 		setup() { return { args }; },
-		template: '<ThanksPageUnifiedVersion v-bind="args" />',
+		template: '<ThanksPageSingleVersion v-bind="args" />',
 	});
 	template.args = args;
 	return template;
