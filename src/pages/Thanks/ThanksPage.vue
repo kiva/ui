@@ -6,8 +6,12 @@
 		<template v-if="activeView === SINGLE_VERSION_VIEW">
 			<ThanksPageSingleVersion
 				:is-guest="isGuest"
-				:loans="loans"
 				:is-opted-in="optedIn"
+				:lender="lender"
+				:loans="loans"
+				:receipt="receipt"
+				:monthly-donation-amount="monthlyDonationAmount"
+				:badges-achieved="badgesAchieved"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">

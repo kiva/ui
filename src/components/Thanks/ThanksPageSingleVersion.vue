@@ -9,7 +9,12 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
-			<KivaCards v-if="printableKivaCards.length" :printable-kiva-cards="printableKivaCards" class="tw-mb-2.5" />
+			<KivaCards
+				v-if="printableKivaCards.length"
+				:printable-kiva-cards="printableKivaCards"
+				class="tw-mb-2.5"
+				@view-pdf-clicked="scrollToReceipt"
+			/>
 			<template v-if="!isGuest">
 				<LoanComment
 					v-for="loan in loans"
@@ -18,15 +23,25 @@
 					class="tw-mb-2.5"
 				/>
 			</template>
+			<AccountReceiptShare
+				ref="receiptSection"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:receipt="receipt"
+				:lender="lender"
+				:loans="loans"
+				:show-receipt="showReceipt"
+			/>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
+import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
 
 const props = defineProps({
 	isGuest: {
@@ -36,6 +51,10 @@ const props = defineProps({
 	isOptedIn: {
 		type: Boolean,
 		default: false,
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
 	},
 	loans: {
 		type: Array,
@@ -49,17 +68,16 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	/**
-	 * [{
-	 *   achievementId: string,
-	 * }]
-	 */
 	badgesAchieved: {
 		type: Array,
 		default: () => ([]),
 	},
 });
 
+const receiptSection = ref(null);
+const showReceipt = ref(false);
+
+// Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
 const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
 
 const showOptInModule = computed(() => !props.isOptedIn);
@@ -71,6 +89,14 @@ const onlyDonations = computed(() => (
 
 const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 	.filter(item => item.basketItemType === 'kiva_card' && item.kivaCardObject?.deliveryType === 'print'));
+
+const scrollToReceipt = () => {
+	showReceipt.value = true;
+	// Wait for order confirmation expandable to open before scrolling
+	setTimeout(() => {
+		receiptSection.value?.orderConfirmationContainer?.scrollIntoView({ behavior: 'smooth' });
+	}, 500);
+};
 </script>
 
 <style lang="postcss" scoped>
