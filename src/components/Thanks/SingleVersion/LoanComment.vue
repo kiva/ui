@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="showComment"
-		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-2.5 tw-py-1.5 tw-w-full
+		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
             print:tw-shadow-transparent"
 	>
 		<KvUserAvatar
@@ -47,7 +47,7 @@
 			Leave Comment
 		</KvButton>
 
-		<p class="tw-text-base tw-mt-2">
+		<p class="tw-text-base tw-mt-2 tw-text-center">
 			Your comments can really help <span class="data-hj-suppress">{{ loanName }}</span> fully fund their loan.
 		</p>
 
@@ -96,7 +96,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, computed, inject } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
 import logFormatter from '#src/util/logFormatter';

@@ -9,27 +9,24 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
-			<div
-				v-if="!isGuest"
-			>
+			<KivaCards v-if="printableKivaCards.length" :printable-kiva-cards="printableKivaCards" class="tw-mb-2.5" />
+			<template v-if="!isGuest">
 				<LoanComment
 					v-for="loan in loans"
 					:key="loan.id"
 					:loan="loan"
 					class="tw-mb-2.5"
 				/>
-			</div>
+			</template>
 		</div>
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+import { computed } from 'vue';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
-
-import {
-	computed,
-} from 'vue';
+import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 
 const props = defineProps({
 	isGuest: {
@@ -69,9 +66,11 @@ const showOptInModule = computed(() => !props.isOptedIn);
 
 const onlyDonations = computed(() => (
 	(props.receipt && props.receipt?.totals?.itemTotal === props.receipt?.totals?.donationTotal)
-	|| props.monthlyDonationAmount?.length
+		|| !!props.monthlyDonationAmount?.length
 ));
 
+const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
+	.filter(item => item.basketItemType === 'kiva_card' && item.kivaCardObject?.deliveryType === 'print'));
 </script>
 
 <style lang="postcss" scoped>
