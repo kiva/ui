@@ -33,6 +33,7 @@
 		</div>
 		<div class="tw-mb-2">
 			<div
+				ref="orderConfirmationContainer"
 				class="option-box print:!tw-hidden"
 				:class="{ 'open' : openOrderConfirmation }"
 				@click="handleClickOrderConfirmation"
@@ -82,7 +83,13 @@
 </template>
 
 <script setup>
-import { ref, inject, computed } from 'vue';
+import {
+	ref,
+	inject,
+	computed,
+	watch,
+	defineExpose
+} from 'vue';
 import { KvMaterialIcon, KvExpandable } from '@kiva/kv-components';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
@@ -112,10 +119,15 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	showReceipt: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const POST_CHECKOUT_EVENT_CATEGORY = 'post-checkout';
 const CLICK_EVENT_ACTION = 'click';
+const orderConfirmationContainer = ref(null);
 const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
@@ -163,6 +175,14 @@ const handleClickShareDrawer = () => {
 		);
 	}
 };
+
+watch(() => props.showReceipt, newValue => {
+	if (newValue) {
+		openOrderConfirmation.value = true;
+	}
+});
+
+defineExpose({ orderConfirmationContainer });
 </script>
 
 <style lang="postcss" scoped>
