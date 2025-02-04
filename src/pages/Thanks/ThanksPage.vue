@@ -7,6 +7,7 @@
 			<ThanksPageSingleVersion
 				:is-guest="isGuest"
 				:loans="loans"
+				:is-opted-in="optedIn"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
