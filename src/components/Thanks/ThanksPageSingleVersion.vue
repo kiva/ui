@@ -18,6 +18,13 @@
 					class="tw-mb-2.5"
 				/>
 			</template>
+			<AccountReceiptShare
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:receipt="receipt"
+				:lender="lender"
+				:loans="loans"
+			/>
 		</div>
 	</div>
 </template>
@@ -27,6 +34,7 @@ import { computed } from 'vue';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
+import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
 
 const props = defineProps({
 	isGuest: {
@@ -36,6 +44,10 @@ const props = defineProps({
 	isOptedIn: {
 		type: Boolean,
 		default: false,
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
 	},
 	loans: {
 		type: Array,
@@ -49,17 +61,13 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	/**
-	 * [{
-	 *   achievementId: string,
-	 * }]
-	 */
 	badgesAchieved: {
 		type: Array,
 		default: () => ([]),
 	},
 });
 
+// Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
 const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
 
 const showOptInModule = computed(() => !props.isOptedIn);
