@@ -9,6 +9,14 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<JourneyGeneralPrompt
+				v-if="badgesAchieved.length === 0"
+				:loans="loans"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				@continue-as-guest="scrollToAccountCreation"
+				class="tw-mb-2.5"
+			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
@@ -31,17 +39,21 @@
 				:lender="lender"
 				:loans="loans"
 				:show-receipt="showReceipt"
+				:show-create-account="showCreateAccount"
 			/>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
+import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	isGuest: {
@@ -74,8 +86,13 @@ const props = defineProps({
 	},
 });
 
+const POST_CHECKOUT_EVENT_CATEGORY = 'post-checkout';
+const CLICK_EVENT_ACTION = 'click';
 const receiptSection = ref(null);
 const showReceipt = ref(false);
+const showCreateAccount = ref(false);
+
+const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
 // Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
 const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
@@ -96,6 +113,30 @@ const scrollToReceipt = () => {
 	setTimeout(() => {
 		receiptSection.value?.orderConfirmationContainer?.scrollIntoView({ behavior: 'smooth' });
 	}, 500);
+
+	$kvTrackEvent(
+		POST_CHECKOUT_EVENT_CATEGORY,
+		CLICK_EVENT_ACTION,
+		'open-order-confirmation-drawer',
+		userType.value,
+		numberOfBadges,
+	);
+};
+
+const scrollToAccountCreation = () => {
+	showCreateAccount.value = true;
+	// Wait for create account expandable to open before scrolling
+	setTimeout(() => {
+		receiptSection.value?.createAccountContainer?.scrollIntoView({ behavior: 'smooth' });
+	}, 500);
+
+	$kvTrackEvent(
+		POST_CHECKOUT_EVENT_CATEGORY,
+		CLICK_EVENT_ACTION,
+		'open-account-creation-drawer',
+		userType.value,
+		numberOfBadges,
+	);
 };
 </script>
 

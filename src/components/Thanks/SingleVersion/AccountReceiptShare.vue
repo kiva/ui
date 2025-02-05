@@ -2,6 +2,7 @@
 	<div class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col">
 		<div v-if="isGuest" class="tw-mb-2 print:tw-hidden">
 			<div
+				ref="createAccountContainer"
 				class="option-box"
 				:class="{ 'open' : openCreateAccount }"
 				@click="handleClickCreateAccount"
@@ -123,11 +124,16 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showCreateAccount: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const POST_CHECKOUT_EVENT_CATEGORY = 'post-checkout';
 const CLICK_EVENT_ACTION = 'click';
 const orderConfirmationContainer = ref(null);
+const createAccountContainer = ref(null);
 const openCreateAccount = ref(false);
 const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
@@ -182,7 +188,13 @@ watch(() => props.showReceipt, newValue => {
 	}
 });
 
-defineExpose({ orderConfirmationContainer });
+watch(() => props.showCreateAccount, newValue => {
+	if (newValue) {
+		openCreateAccount.value = true;
+	}
+});
+
+defineExpose({ orderConfirmationContainer, createAccountContainer });
 </script>
 
 <style lang="postcss" scoped>
