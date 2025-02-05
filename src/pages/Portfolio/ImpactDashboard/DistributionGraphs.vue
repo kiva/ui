@@ -8,6 +8,7 @@
 				Portfolio distribution
 			</h2>
 			<kv-switch
+				class="tw-flex switch"
 				v-model="showOnlyActiveLoans"
 			>
 				<div class="tw-flex tw-items-center tw-gap-0.5">
@@ -264,3 +265,15 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.switch :deep(div.tw-bg-tertiary) {
+	@apply !tw-h-3.5;
+
+	width: 3.25rem;
+}
+
+.switch :deep(div.tw-bg-white) {
+	@apply !tw-w-2.5 !tw-h-2.5;
+}
+</style>
