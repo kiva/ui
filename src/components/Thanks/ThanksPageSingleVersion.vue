@@ -47,7 +47,6 @@
 				:lender="lender"
 				:loans="loans"
 				:show-receipt="showReceipt"
-				:show-create-account="showCreateAccount"
 			/>
 		</div>
 		<KvLightbox
@@ -116,10 +115,8 @@ const props = defineProps({
 	},
 });
 
-const CLICK_EVENT_ACTION = 'click';
 const receiptSection = ref(null);
 const showReceipt = ref(false);
-const showCreateAccount = ref(false);
 const router = useRouter();
 const showGuestAccountModal = ref(false);
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -161,6 +158,7 @@ const scrollToReceipt = () => {
 
 const handleContinue = () => {
 	const EVENT_CATEGORY = 'post-checkout';
+	const CLICK_EVENT_ACTION = 'click';
 
 	if (props.isGuest) {
 		showGuestAccountModal.value = true;
