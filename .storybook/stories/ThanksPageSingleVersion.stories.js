@@ -36,8 +36,18 @@ const story = (args = {}, result = queryResult) => {
 	return template;
 };
 
+export const Loading = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+}, {});
+
 export const UserLoggedIn = story({
 	isGuest: false,
+	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: mockedReceiptData,

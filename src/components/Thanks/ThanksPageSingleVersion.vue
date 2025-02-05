@@ -9,6 +9,13 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<BadgeMilestone
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				:badge-achieved-ids="badgeAchievedIds"
+				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
@@ -59,6 +66,7 @@ import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
+import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
 import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
@@ -103,6 +111,7 @@ const props = defineProps({
 const receiptSection = ref(null);
 const showReceipt = ref(false);
 const showGuestAccountModal = ref(false);
+const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
@@ -139,8 +148,6 @@ const scrollToReceipt = () => {
 	}, 500);
 };
 
-// TODO: remove comment when method is in use
-// eslint-disable-next-line no-unused-vars
 const handleContinue = () => {
 	const EVENT_CATEGORY = 'post-checkout';
 	const CLICK_EVENT_ACTION = 'click';
