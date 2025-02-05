@@ -9,6 +9,14 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<BadgeMilestone
+				v-if="badgesAchieved.length > 0"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				:badge-achieved-ids="badgeAchievedIds"
+				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
 			<JourneyGeneralPrompt
 				v-if="badgesAchieved.length === 0"
 				:loans="loans"
@@ -42,16 +50,38 @@
 				:show-create-account="showCreateAccount"
 			/>
 		</div>
+		<KvLightbox
+			:visible="showGuestAccountModal"
+			title="Finish creating your account to see what's next"
+			@lightbox-closed="showGuestAccountModal = false"
+		>
+			<GuestAccountCreation
+				event-label="create-new-account"
+				:event-property="userType"
+				:event-value="numberOfBadges"
+			/>
+		</KvLightbox>
 	</div>
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import {
+	ref,
+	computed,
+	onMounted,
+	inject,
+} from 'vue';
+import confetti from 'canvas-confetti';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
+import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import { KvLightbox } from '@kiva/kv-components';
+import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -91,6 +121,9 @@ const CLICK_EVENT_ACTION = 'click';
 const receiptSection = ref(null);
 const showReceipt = ref(false);
 const showCreateAccount = ref(false);
+const router = useRouter();
+const showGuestAccountModal = ref(false);
+const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
@@ -106,6 +139,18 @@ const onlyDonations = computed(() => (
 
 const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 	.filter(item => item.basketItemType === 'kiva_card' && item.kivaCardObject?.deliveryType === 'print'));
+
+const showConfetti = () => {
+	confetti({
+		origin: {
+			y: 0.2
+		},
+		particleCount: 150,
+		spread: 200,
+		colors: ['#6AC395', '#223829', '#95D4B3'],
+		disableForReducedMotion: true,
+	});
+};
 
 const scrollToReceipt = () => {
 	showReceipt.value = true;
@@ -138,6 +183,35 @@ const scrollToAccountCreation = () => {
 		numberOfBadges,
 	);
 };
+
+const handleContinue = () => {
+	const EVENT_CATEGORY = 'post-checkout';
+
+	if (props.isGuest) {
+		showGuestAccountModal.value = true;
+		$kvTrackEvent(
+			EVENT_CATEGORY,
+			CLICK_EVENT_ACTION,
+			'continue-to-my-kiva',
+			userType,
+			numberOfBadges.value,
+		);
+	} else {
+		$kvTrackEvent(
+			EVENT_CATEGORY,
+			CLICK_EVENT_ACTION,
+			'continue-to-my-kiva',
+			userType,
+			numberOfBadges.value,
+		);
+
+		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
+
+		router.push(`/portfolio${!numberOfBadges.value ? '' : `#${sectionToScrollTo}`}`);
+	}
+};
+
+onMounted(showConfetti);
 </script>
 
 <style lang="postcss" scoped>
