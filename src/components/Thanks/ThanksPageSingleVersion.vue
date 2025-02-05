@@ -70,6 +70,7 @@ import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone'
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
 import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -102,11 +103,9 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	router: {
-		type: Object,
-		default: () => ({}),
-	},
 });
+
+const router = useRouter();
 
 const receiptSection = ref(null);
 const showReceipt = ref(false);
@@ -172,8 +171,7 @@ const handleContinue = () => {
 
 		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
 
-		// eslint-disable-next-line vue/no-mutating-props
-		props.router?.push(`/portfolio${!numberOfBadges.value ? '' : `#${sectionToScrollTo}`}`);
+		router.push(`/portfolio${!numberOfBadges.value ? '' : `#${sectionToScrollTo}`}`);
 	}
 };
 

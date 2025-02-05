@@ -12,7 +12,6 @@
 				:receipt="receipt"
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
-				:router="$router"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
