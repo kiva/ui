@@ -10,10 +10,19 @@
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<BadgeMilestone
+				v-if="badgesAchieved.length > 0"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
 				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<JourneyGeneralPrompt
+				v-if="badgesAchieved.length === 0"
+				:loans="loans"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				@continue-as-guest="handleContinue"
 				class="tw-mb-2.5"
 			/>
 			<KivaCards
@@ -66,6 +75,7 @@ import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
+import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
@@ -105,10 +115,9 @@ const props = defineProps({
 	},
 });
 
-const router = useRouter();
-
 const receiptSection = ref(null);
 const showReceipt = ref(false);
+const router = useRouter();
 const showGuestAccountModal = ref(false);
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
 
