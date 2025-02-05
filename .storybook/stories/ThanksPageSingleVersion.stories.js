@@ -100,3 +100,12 @@ export const UserNotOptedInWithOnlyKivaCard = story({
 	loans: [],
 	selectedLoan: null,
 });
+
+export const UserInControlVariant = story({
+	isGuest: false,
+	lender: mockLender,
+	loans: mockLoans.slice(0, 1),
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+	inControlVariant: true,
+});

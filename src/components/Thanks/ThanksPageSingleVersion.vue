@@ -9,6 +9,10 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<ControlModule
+				v-if="inControlVariant"
+				class="print:tw-hidden tw-mb-2.5"
+			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
@@ -42,6 +46,7 @@ import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
+import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 
 const props = defineProps({
 	isGuest: {
@@ -72,6 +77,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	inControlVariant: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const receiptSection = ref(null);
