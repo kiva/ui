@@ -1,8 +1,20 @@
 <template>
 	<async-portfolio-section data-testid="distribution-graphs">
-		<h2 class="tw-mb-2">
-			Portfolio distribution
-		</h2>
+		<div
+			class="tw-flex tw-flex-col tw-justify-between
+				lg:tw-flex-row tw-items-start lg:tw-items-center tw-gap-1 tw-mb-2"
+		>
+			<h2>
+				Portfolio distribution
+			</h2>
+			<kv-switch
+				v-model="showOnlyActiveLoans"
+			>
+				<div class="tw-flex tw-items-center tw-gap-0.5">
+					<p>Show only active loans</p>
+				</div>
+			</kv-switch>
+		</div>
 		<!-- tabs -->
 		<stats-table
 			ref="table"
@@ -23,6 +35,7 @@ import { gql } from 'graphql-tag';
 import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 import getCacheKey from '#src/util/getCacheKey';
 import StatsTable from '#src/components/Stats/StatsTable';
+import { KvSwitch } from '@kiva/kv-components';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -33,6 +46,7 @@ export default {
 	components: {
 		AsyncPortfolioSection,
 		StatsTable,
+		KvSwitch,
 	},
 	props: {
 		chart: {
@@ -58,6 +72,8 @@ export default {
 			partnerLoading: true,
 			partnerLoadingPromise: null,
 			partnerStats: [],
+
+			showOnlyActiveLoans: false,
 		};
 	},
 	mounted() {
@@ -94,10 +110,10 @@ export default {
 		fetchLocationStats() {
 			if (this.locationLoading && !this.locationLoadingPromise) {
 				this.locationLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByCountry {
+					query: gql`query myStatsByCountry ($onlyActiveLoans: Boolean) {
 						my {
 							id
-							statsPerCountry {
+							statsPerCountry (onlyActiveLoans: $onlyActiveLoans) {
 								values {
 									id
 									loanCount
@@ -108,7 +124,10 @@ export default {
 								}
 							}
 						}
-					}`
+					}`,
+					variables: {
+						onlyActiveLoans: this.showOnlyActiveLoans,
+					}
 				}).then(({ data }) => {
 					this.locationLoading = false;
 					this.locationStats = this.statsWithPercent(
@@ -126,10 +145,10 @@ export default {
 		fetchGenderStats() {
 			if (this.genderLoading && !this.genderLoadingPromise) {
 				this.genderLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByGender {
+					query: gql`query myStatsByGender($onlyActiveLoans: Boolean) {
 						my {
 							id
-							statsPerGender {
+							statsPerGender(onlyActiveLoans: $onlyActiveLoans) {
 								values {
 									id
 									loanCount
@@ -137,7 +156,10 @@ export default {
 								}
 							}
 						}
-					}`
+					}`,
+					variables: {
+						onlyActiveLoans: this.showOnlyActiveLoans,
+					}
 				}).then(({ data }) => {
 					this.genderLoading = false;
 					this.genderStats = this.statsWithPercent(
@@ -155,10 +177,10 @@ export default {
 		fetchSectorStats() {
 			if (this.sectorLoading && !this.sectorLoadingPromise) {
 				this.sectorLoadingPromise = this.apollo.query({
-					query: gql`query myStatsBySector {
+					query: gql`query myStatsBySector ($onlyActiveLoans: Boolean) {
 						my {
 							id
-							statsPerSector {
+							statsPerSector (onlyActiveLoans: $onlyActiveLoans) {
 								values {
 									id
 									loanCount
@@ -169,7 +191,10 @@ export default {
 								}
 							}
 						}
-					}`
+					}`,
+					variables: {
+						onlyActiveLoans: this.showOnlyActiveLoans,
+					}
 				}).then(({ data }) => {
 					this.sectorLoading = false;
 					this.sectorStats = this.statsWithPercent(
@@ -187,10 +212,10 @@ export default {
 		fetchPartnerStats() {
 			if (this.partnerLoading && !this.partnerLoadingPromise) {
 				this.partnerLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByPartner {
+					query: gql`query myStatsByPartner ($onlyActiveLoans: Boolean) {
 						my {
 							id
-							statsPerPartner {
+							statsPerPartner (onlyActiveLoans: $onlyActiveLoans) {
 								values {
 									id
 									loanCount
@@ -201,7 +226,10 @@ export default {
 								}
 							}
 						}
-					}`
+					}`,
+					variables: {
+						onlyActiveLoans: this.showOnlyActiveLoans,
+					}
 				}).then(({ data }) => {
 					this.partnerLoading = false;
 					this.partnerStats = this.statsWithPercent(
@@ -214,6 +242,25 @@ export default {
 					// This allows the fetch to be retried when this section becomes visible again if it failed
 					this.partnerLoadingPromise = null;
 				});
+			}
+		},
+	},
+	watch: {
+		showOnlyActiveLoans(next, prev) {
+			if (next !== prev) {
+				const tableRefs = this.$refs.table.$refs;
+				if (tableRefs.locationPanel?.isActive) {
+					this.fetchLocationStats();
+				}
+				if (tableRefs.genderPanel?.isActive) {
+					this.fetchGenderStats();
+				}
+				if (tableRefs.sectorPanel?.isActive) {
+					this.fetchSectorStats();
+				}
+				if (tableRefs.partnerPanel?.isActive) {
+					this.fetchPartnerStats();
+				}
 			}
 		},
 	},
