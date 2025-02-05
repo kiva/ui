@@ -22,7 +22,7 @@
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
-				@continue-as-guest="scrollToAccountCreation"
+				@continue-as-guest="handleContinue"
 				class="tw-mb-2.5"
 			/>
 			<KivaCards
@@ -116,7 +116,6 @@ const props = defineProps({
 	},
 });
 
-const POST_CHECKOUT_EVENT_CATEGORY = 'post-checkout';
 const CLICK_EVENT_ACTION = 'click';
 const receiptSection = ref(null);
 const showReceipt = ref(false);
@@ -158,30 +157,6 @@ const scrollToReceipt = () => {
 	setTimeout(() => {
 		receiptSection.value?.orderConfirmationContainer?.scrollIntoView({ behavior: 'smooth' });
 	}, 500);
-
-	$kvTrackEvent(
-		POST_CHECKOUT_EVENT_CATEGORY,
-		CLICK_EVENT_ACTION,
-		'open-order-confirmation-drawer',
-		userType.value,
-		numberOfBadges,
-	);
-};
-
-const scrollToAccountCreation = () => {
-	showCreateAccount.value = true;
-	// Wait for create account expandable to open before scrolling
-	setTimeout(() => {
-		receiptSection.value?.createAccountContainer?.scrollIntoView({ behavior: 'smooth' });
-	}, 500);
-
-	$kvTrackEvent(
-		POST_CHECKOUT_EVENT_CATEGORY,
-		CLICK_EVENT_ACTION,
-		'open-account-creation-drawer',
-		userType.value,
-		numberOfBadges,
-	);
 };
 
 const handleContinue = () => {

@@ -24,6 +24,7 @@
 		</div>
 		<h2
 			class="tw-text-center tw-text-primary"
+			style="line-height: 125%;"
 		>
 			<span
 				v-if="isOptedIn"
@@ -44,7 +45,7 @@
 				'post-checkout',
 				'click',
 				'continue-to-my-kiva',
-				isGuest ? 'guest' : 'signed-in',
+				userType,
 				'journeyGeneral'
 			]"
 			@click="handleClickContinue"
@@ -91,12 +92,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowRight, mdiChevronDown } from '@mdi/js';
 import { KvUserAvatar, KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import JourneyImg from '#src/assets/images/thanks-page/journey.svg';
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
 
@@ -119,10 +122,21 @@ const props = defineProps({
 
 const openImpactJourneys = ref(false);
 
+const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
+
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const handleClickImpactJourneys = () => {
 	openImpactJourneys.value = !openImpactJourneys.value;
+
+	if (openImpactJourneys.value) {
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'show-whats-an-impact-journey',
+			userType.value,
+		);
+	}
 };
 
 const handleClickContinue = () => {
