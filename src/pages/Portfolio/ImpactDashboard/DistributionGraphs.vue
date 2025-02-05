@@ -246,21 +246,19 @@ export default {
 		},
 	},
 	watch: {
-		showOnlyActiveLoans(next, prev) {
-			if (next !== prev) {
-				const tableRefs = this.$refs.table.$refs;
-				if (tableRefs.locationPanel?.isActive) {
-					this.fetchLocationStats();
-				}
-				if (tableRefs.genderPanel?.isActive) {
-					this.fetchGenderStats();
-				}
-				if (tableRefs.sectorPanel?.isActive) {
-					this.fetchSectorStats();
-				}
-				if (tableRefs.partnerPanel?.isActive) {
-					this.fetchPartnerStats();
-				}
+		showOnlyActiveLoans() {
+			const tableRefs = this.$refs.table.$refs;
+			if (tableRefs.locationPanel?.isActive) {
+				this.fetchLocationStats();
+			}
+			if (tableRefs.genderPanel?.isActive) {
+				this.fetchGenderStats();
+			}
+			if (tableRefs.sectorPanel?.isActive) {
+				this.fetchSectorStats();
+			}
+			if (tableRefs.partnerPanel?.isActive) {
+				this.fetchPartnerStats();
 			}
 		},
 	},
