@@ -9,35 +9,37 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
-			<ControlModule
-				v-if="!myKivaEnabled"
-				:is-opted-in="isOptedIn"
-				@continue="handleContinue"
-				class="print:tw-hidden tw-mb-2.5"
-			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
-			<BadgeMilestone
-				v-if="(badgesAchieved.length > 0 || onlyKivaCards || onlyDonations) && myKivaEnabled"
-				:is-guest="isGuest"
+			<template v-if="myKivaEnabled">
+				<BadgeMilestone
+					v-if="(badgesAchieved.length > 0 || onlyKivaCards || onlyDonations)"
+					:is-guest="isGuest"
+					:is-opted-in="isOptedIn"
+					:badge-achieved-ids="badgeAchievedIds"
+					:only-kiva-cards="onlyKivaCards"
+					:only-donations="onlyDonations"
+					@continue-clicked="handleContinue"
+					class="tw-mb-2.5"
+				/>
+				<JourneyGeneralPrompt
+					v-else
+					:loans="loans"
+					:is-guest="isGuest"
+					:is-opted-in="isOptedIn"
+					@continue-as-guest="handleContinue"
+					class="tw-mb-2.5"
+				/>
+			</template>
+			<ControlModule
+				v-else
 				:is-opted-in="isOptedIn"
-				:badge-achieved-ids="badgeAchievedIds"
-				:only-kiva-cards="onlyKivaCards"
-				:only-donations="onlyDonations"
-				@continue-clicked="handleContinue"
-				class="tw-mb-2.5"
-			/>
-			<JourneyGeneralPrompt
-				v-if="badgesAchieved.length === 0 && myKivaEnabled"
-				:loans="loans"
-				:is-guest="isGuest"
-				:is-opted-in="isOptedIn"
-				@continue-as-guest="handleContinue"
-				class="tw-mb-2.5"
+				@continue="handleContinue"
+				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<LoanComment
 				v-if="!isGuest && loanForComment"
