@@ -3,16 +3,16 @@
 		<div
 			style="min-height: 481px;"
 			class="
-        tw-flex
-        tw-flex-col
-        tw-items-center
-        tw-gap-1.5
-        tw-text-center
-        tw-overflow-hidden
-        print:tw-hidden
-        tw-relative
-        tw-justify-between
-      "
+				tw-flex
+				tw-flex-col
+				tw-items-center
+				tw-gap-1.5
+				tw-text-center
+				tw-overflow-hidden
+				print:tw-hidden
+				tw-relative
+				tw-justify-between
+			"
 		>
 			<h2 v-html="title" class="tw-text-center"></h2>
 			<!-- BG Rays -->
