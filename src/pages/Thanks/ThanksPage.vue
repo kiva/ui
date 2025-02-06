@@ -12,6 +12,7 @@
 				:receipt="receipt"
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
+				:my-kiva-enabled="myKivaEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">

@@ -10,11 +10,13 @@
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<ControlModule
-				v-if="inControlVariant"
+				v-if="!myKivaEnabled"
+				:is-opted-in="isOptedIn"
+				@continue="handleContinue"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<BadgeMilestone
-				v-if="badgesAchieved.length > 0"
+				v-if="badgesAchieved.length > 0 && myKivaEnabled"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -22,7 +24,7 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="badgesAchieved.length === 0"
+				v-if="badgesAchieved.length === 0 && myKivaEnabled"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -118,7 +120,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	inControlVariant: {
+	myKivaEnabled: {
 		type: Boolean,
 		default: false,
 	}
