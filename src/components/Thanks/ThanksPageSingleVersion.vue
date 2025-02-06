@@ -212,11 +212,11 @@ onMounted(showConfetti);
 
 <style lang="postcss" scoped>
 .content-box {
-	@media (max-width: 733px) {
+	@media (width < 733px) {
 		width: 100%;
 	}
 
-	@media (min-width: 734px) {
+	@media (width >= 734px) {
 		width: 620px;
 	}
 }
