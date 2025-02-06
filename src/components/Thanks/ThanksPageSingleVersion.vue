@@ -9,36 +9,36 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
-			<BadgeMilestone
-				v-if="badgesAchieved.length > 0"
-				:is-guest="isGuest"
-				:is-opted-in="isOptedIn"
-				:badge-achieved-ids="badgeAchievedIds"
-				@continue-clicked="handleContinue"
-				class="tw-mb-2.5"
-			/>
-			<JourneyGeneralPrompt
-				v-if="badgesAchieved.length === 0"
-				:loans="loans"
-				:is-guest="isGuest"
-				:is-opted-in="isOptedIn"
-				@continue-as-guest="handleContinue"
-				class="tw-mb-2.5"
-			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
-			<template v-if="!isGuest">
-				<LoanComment
-					v-for="loan in loans"
-					:key="loan.id"
-					:loan="loan"
-					class="tw-mb-2.5"
-				/>
-			</template>
+			<BadgeMilestone
+				v-if="badgesAchieved.length > 0 || onlyKivaCards || onlyDonations"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				:badge-achieved-ids="badgeAchievedIds"
+				:only-kiva-cards="onlyKivaCards"
+				:only-donations="onlyDonations"
+				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<JourneyGeneralPrompt
+				v-else
+				:loans="loans"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				@continue-as-guest="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<LoanComment
+				v-if="!isGuest && loanForComment"
+				:key="loanForComment.id"
+				:loan="loanForComment"
+				class="tw-mb-2.5"
+			/>
 			<AccountReceiptShare
 				ref="receiptSection"
 				:is-guest="isGuest"
@@ -47,6 +47,7 @@
 				:lender="lender"
 				:loans="loans"
 				:show-receipt="showReceipt"
+				:only-donations="onlyDonations"
 			/>
 		</div>
 		<KvLightbox
@@ -81,6 +82,7 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
 import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
+import _orderBy from 'lodash/orderBy';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -136,6 +138,14 @@ const onlyDonations = computed(() => (
 const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 	.filter(item => item.basketItemType === 'kiva_card' && item.kivaCardObject?.deliveryType === 'print'));
 
+const onlyKivaCards = computed(() => (props.receipt?.items?.values ?? [])
+	.every(item => item.basketItemType === 'kiva_card'));
+
+const loanForComment = computed(() => {
+	const orderedLoans = _orderBy(props.loans, ['unreservedAmount'], ['desc']);
+	return orderedLoans[0];
+});
+
 const showConfetti = () => {
 	confetti({
 		origin: {
@@ -189,6 +199,12 @@ onMounted(showConfetti);
 
 <style lang="postcss" scoped>
 .content-box {
-	max-width: 620px;
+	@media (max-width: 733px) {
+		width: 100%;
+	}
+
+	@media (min-width: 734px) {
+		width: 620px;
+	}
 }
 </style>
