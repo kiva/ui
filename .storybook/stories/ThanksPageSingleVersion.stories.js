@@ -24,6 +24,41 @@ const queryResult = {
 
 const mockTieredBadge = { achievementId: MOCK_TIERED_BADGE_ID };
 
+const receiptWithSingleLoan = {
+	...mockedReceiptData,
+	items: {
+		values: [mockedReceiptData.items.values.filter(item => item.basketItemType === 'loan_reservation')[0]],
+	},
+};
+
+const receiptWithMultipleLoans = {
+	...mockedReceiptData,
+	items: {
+		values: mockedReceiptData.items.values.filter(item => item.basketItemType === 'loan_reservation'),
+	},
+};
+
+const receiptWithOnlyKivaCards = {
+	...mockedReceiptData,
+	items: { values: mockedReceiptData.items.values.filter(item => item.basketItemType === 'kiva_card') },
+};
+
+const receiptWithOnlyDonations = {
+	...mockedReceiptData,
+	items: { values: mockedReceiptData.items.values.filter(item => item.basketItemType === 'donation') },
+	totals: {
+		itemTotal: "960.25",
+		donationTotal: "960.25",
+		kivaCardTotal: "0.00",
+		depositTotals: {
+			depositTotal: "960.25",
+			kivaCreditAdded: "0.00",
+			kivaCreditUsed: "0.00"
+		},
+		kivaCreditAppliedTotal: "960.25"
+	},
+};
+
 const story = (args = {}, result = queryResult) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
@@ -36,77 +71,94 @@ const story = (args = {}, result = queryResult) => {
 	return template;
 };
 
-export const Loading = story({
+export const LoadingBadge = story({
 	isGuest: false,
 	isOptedIn: true,
 	lender: mockLender,
-	loans: mockLoans,
-	receipt: mockedReceiptData,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
 	badgesAchieved: [mockTieredBadge],
 }, {});
 
-export const UserLoggedIn = story({
+export const KivaCards = story({
+	isOptedIn: true,
+	receipt: receiptWithOnlyKivaCards,
+});
+
+export const KivaCardsNotOptedIn = story({
+	receipt: receiptWithOnlyKivaCards,
+});
+
+export const Donations = story({
+	isOptedIn: true,
+	receipt: receiptWithOnlyDonations,
+});
+
+export const DonationsNotOptedIn = story({
+	isOptedIn: false,
+	receipt: receiptWithOnlyDonations,
+});
+
+export const NoBadgeSingleLoan = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+});
+
+export const NoBadgeMultipleLoans = story({
 	isGuest: false,
 	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans,
-	receipt: mockedReceiptData,
-	badgesAchieved: [mockTieredBadge],
+	receipt: receiptWithMultipleLoans,
 });
 
-export const UserLoggedInNotOptedIn = story({
+export const NoBadgeSingleLoanNotOptedIn = story({
 	isGuest: false,
 	lender: mockLender,
-	loans: mockLoans.slice(0, 1),
-	receipt: mockedReceiptData,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+});
+
+export const NoBadgeMultipleLoansNotOptedIn = story({
+	isGuest: false,
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: receiptWithMultipleLoans,
+});
+
+export const BadgeSingleLoan = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
 	badgesAchieved: [mockTieredBadge],
 });
 
-export const UserGuestNotOptedIn = story({
+export const BadgeMultipleLoans = story({
+	isGuest: false,
+	isOptedIn: true,
 	lender: mockLender,
-	receipt: mockedReceiptData,
-	loans: mockLoans.slice(0, 1),
-	selectedLoan: mockLoans[0],
+	loans: mockLoans,
+	receipt: receiptWithMultipleLoans,
+	badgesAchieved: [mockTieredBadge],
 });
 
-export const UserNotOptedInWithOnlyDonation = story({
+export const BadgeSingleLoanNotOptedIn = story({
+	isGuest: false,
 	lender: mockLender,
-	isOptedIn: false,
-	receipt: {
-		...mockedReceiptData,
-		"totals": {
-			"itemTotal": "960.25",
-			"donationTotal": "960.25",
-			"kivaCardTotal": "0.00",
-			"depositTotals": {
-				"depositTotal": "960.25",
-				"kivaCreditAdded": "0.00",
-				"kivaCreditUsed": "0.00"
-			},
-			"kivaCreditAppliedTotal": "960.25"
-		},
-	},
-	loans: [],
-	selectedLoan: null,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+	badgesAchieved: [mockTieredBadge],
 });
 
-export const UserNotOptedInWithOnlyKivaCard = story({
+export const BadgeMultipleLoansNotOptedIn = story({
+	isGuest: false,
 	lender: mockLender,
-	isOptedIn: false,
-	receipt: {
-		...mockedReceiptData,
-		"totals": {
-			"itemTotal": "960.25",
-			"donationTotal": "0.00",
-			"kivaCardTotal": "960.25",
-			"depositTotals": {
-				"depositTotal": "960.25",
-				"kivaCreditAdded": "0.00",
-				"kivaCreditUsed": "0.00"
-			},
-			"kivaCreditAppliedTotal": "0.00"
-		}
-	},
-	loans: [],
-	selectedLoan: null,
+	loans: mockLoans,
+	receipt: receiptWithMultipleLoans,
+	badgesAchieved: [mockTieredBadge],
 });
