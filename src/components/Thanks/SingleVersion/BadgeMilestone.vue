@@ -4,7 +4,7 @@
 		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
 			tw-gap-2 print:tw-hidden tw-items-center tw-text-center tw-overflow-hidden tw-relative"
 	>
-		<div v-show="!isLoading && showAnimations" class="ray-box">
+		<div v-show="!isLoading" class="ray-box">
 			<div class="ray ray1"></div>
 			<div class="ray ray2"></div>
 			<div class="ray ray3"></div>
@@ -21,7 +21,7 @@
 			<h2 style="line-height: 1.25;">
 				{{ title }}
 			</h2>
-			<BadgeContainer :show-shine="showAnimations">
+			<BadgeContainer :show-shine="true">
 				<img
 					v-if="badgeImageUrl"
 					:src="badgeImageUrl"
@@ -47,9 +47,7 @@ import {
 	computed,
 	watch,
 	onMounted,
-	onBeforeUnmount,
 } from 'vue';
-import _throttle from 'lodash/throttle';
 import { mdiArrowRight } from '@mdi/js';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -70,6 +68,14 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	onlyKivaCards: {
+		type: Boolean,
+		default: false,
+	},
+	onlyDonations: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const apollo = inject('apollo');
@@ -83,20 +89,19 @@ const {
 	getLastCompletedBadgeLevelData,
 } = useBadgeData();
 
-const hasScrolled = ref(false);
 const badgeDataAchieved = ref();
 
 const isLoading = computed(() => !badgeDataAchieved.value);
 
-const showBadgeModule = computed(() => props.isGuest || !!props.badgeAchievedIds.length);
+const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCards || props.onlyDonations);
 
-const showAnimations = computed(() => hasScrolled.value);
+const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
 const title = computed(() => (props.isOptedIn ? 'Thank you!' : 'Take the next step on your impact journey.'));
 
 const displayedBadgeData = computed(() => {
 	if (badgeDataAchieved.value?.length) {
-		if (props.isGuest) {
+		if (showEqualityBadge.value) {
 			return badgeDataAchieved.value[0];
 		}
 		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
@@ -107,32 +112,19 @@ const displayedBadgeData = computed(() => {
 
 const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
-const handleScroll = () => {
-	if (!hasScrolled.value) {
-		hasScrolled.value = true;
-	}
-};
-
-const SCROLL_EVENT = 'scroll';
-const throttledScroll = _throttle(handleScroll, 200);
-
 onMounted(async () => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
 	fetchContentfulData(apollo);
 
-	if (!props.isGuest) {
-		// Achievement data can't be loaded for guests
+	if (!showEqualityBadge.value) {
+		// Achievement data isn't needed when showing the equity badge
 		await fetchAchievementData(apollo);
 	}
-
-	window.addEventListener(SCROLL_EVENT, throttledScroll);
 });
-
-onBeforeUnmount(() => window.removeEventListener(SCROLL_EVENT, throttledScroll));
 
 watch(() => badgeContentfulData.value, () => {
 	// Guests don't have access to achievement data, so we only show the equity badge
-	if (props.isGuest && badgeContentfulData.value?.length) {
+	if (showEqualityBadge.value && badgeContentfulData.value?.length) {
 		const equityBadge = badgeContentfulData.value.find(b => b.id === ID_EQUITY);
 		if (equityBadge) {
 			badgeDataAchieved.value = [
@@ -146,7 +138,7 @@ watch(() => badgeContentfulData.value, () => {
 });
 
 watch(() => badgeData.value, () => {
-	if (!props.isGuest && badgeData.value.length) {
+	if (!showEqualityBadge.value && badgeData.value.length) {
 		badgeDataAchieved.value = badgeData.value.filter(b => props.badgeAchievedIds.includes(b.id));
 	}
 }, { immediate: true });
