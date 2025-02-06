@@ -274,7 +274,7 @@
 					</li>
 				</ul>
 			</section>
-			<section class="section section--print hide-for-print">
+			<section class="section section--print print:!tw-hidden">
 				<button
 					data-testid="print-receipt"
 					class="print tw-text-link tw-flex tw-items-center tw-gap-1"

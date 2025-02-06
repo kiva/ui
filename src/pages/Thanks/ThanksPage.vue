@@ -204,7 +204,7 @@ import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVers
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const TY_SINGLE_VERSION_EXP = 'ty_single_version';
+const TY_SINGLE_VERSION_KEY = 'general.single_version_enable.value';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -527,6 +527,9 @@ export default {
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
 
+		// Enable single version TY page
+		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
+
 		this.loans = getLoans(this.receipt);
 
 		// Fetch Goal Information
@@ -648,14 +651,6 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
-
-		// Check if TY page single version is enabled
-		const singleVersionExp = this.apollo.readFragment({
-			id: `Experiment:${TY_SINGLE_VERSION_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-
-		this.thanksSingleVersionEnabled = singleVersionExp?.version === 'b';
 
 		this.$kvTrackEvent(
 			'post-checkout',
