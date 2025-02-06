@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
-			tw-text-center tw-gap-3"
+			tw-text-center tw-gap-3 print:tw-hidden"
 	>
 		<h2>Thank you!</h2>
 		<h3 class="tw-text-center tw-font-book">
