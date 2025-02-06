@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, inject } from 'vue';
+import { computed, defineProps } from 'vue';
 import Globe from '#src/assets/inline-svgs/thanks/globe.svg';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
