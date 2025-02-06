@@ -24,7 +24,7 @@
 		</div>
 		<h2
 			class="tw-text-center tw-text-primary"
-			style="line-height: 125%;"
+			style="line-height: 1.25;"
 		>
 			<span
 				v-if="isOptedIn"

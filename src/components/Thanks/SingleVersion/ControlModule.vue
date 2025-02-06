@@ -16,7 +16,7 @@
 				tw-justify-between
 			"
 		>
-			<h2 v-html="title" class="tw-text-center"></h2>
+			<h2 v-html="title" class="tw-text-center" style="line-height: 1.25;"></h2>
 			<div class="tw-relative">
 				<BgRays style="top: -70px; left: -30px" />
 				<Globe class="tw-z-1 tw-my-2" style="width: 194px; height: 189px;" />
