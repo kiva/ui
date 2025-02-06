@@ -9,6 +9,12 @@
 				:only-donations="onlyDonations"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<ControlModule
+				v-if="!myKivaEnabled"
+				:is-opted-in="isOptedIn"
+				@continue="handleContinue"
+				class="print:tw-hidden tw-mb-2.5"
+			/>
 			<KivaCards
 				v-if="printableKivaCards.length"
 				:printable-kiva-cards="printableKivaCards"
@@ -16,7 +22,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<BadgeMilestone
-				v-if="badgesAchieved.length > 0 || onlyKivaCards || onlyDonations"
+				v-if="(badgesAchieved.length > 0 || onlyKivaCards || onlyDonations) && myKivaEnabled"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -26,7 +32,7 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-else
+				v-if="badgesAchieved.length === 0 && myKivaEnabled"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -76,6 +82,7 @@ import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
+import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
@@ -115,6 +122,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	myKivaEnabled: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const receiptSection = ref(null);
