@@ -9,7 +9,7 @@
 			:lender-image-url="loanImageUrl"
 			class="tw-mx-auto"
 		/>
-		<h2	class="tw-mt-1 tw-mb-3 tw-text-center">
+		<h2	class="tw-mt-1 tw-mb-3 tw-text-center" style="line-height: 1.25;">
 			Tell others why you love this loan to <span class="data-hj-suppress">{{ loanName }}</span>
 		</h2>
 		<div class="tw-relative">

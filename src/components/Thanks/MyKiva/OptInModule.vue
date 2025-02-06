@@ -2,7 +2,9 @@
 	<transition-group name="collapse" tag="div">
 		<template v-if="!newConsentAnswered">
 			<div class="module-container">
-				<h2>{{ title }}</h2>
+				<h2 style="line-height: 1.25;">
+					{{ title }}
+				</h2>
 				<div
 					v-if="loansToDisplay.length"
 					class="tw-flex tw-items-center tw-justify-center"

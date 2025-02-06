@@ -42,7 +42,7 @@
 				@click="handleClickOrderConfirmation"
 			>
 				<p class="tw-font-medium">
-					Order confirmation
+					{{ receiptTitle }}
 				</p>
 				<KvMaterialIcon
 					:icon="mdiChevronDown"
@@ -126,6 +126,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	onlyDonations: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const POST_CHECKOUT_EVENT_CATEGORY = 'post-checkout';
@@ -136,6 +140,8 @@ const openOrderConfirmation = ref(false);
 const openShareModule = ref(false);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
+
+const receiptTitle = computed(() => (props.onlyDonations ? 'Donation receipt' : 'Order confirmation'));
 
 const handleClickCreateAccount = () => {
 	openCreateAccount.value = !openCreateAccount.value;
