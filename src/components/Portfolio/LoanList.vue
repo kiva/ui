@@ -185,6 +185,6 @@ export default {
 	right: 0;
 	height: 100%;
 	width: 2rem;
-	background: linear-gradient(to left, #fff, rgba(255, 255, 255, 0));
+	background: linear-gradient(to left, #fff, rgb(255 255 255 / 0%));
 }
 </style>
