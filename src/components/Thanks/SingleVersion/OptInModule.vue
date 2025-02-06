@@ -2,8 +2,13 @@
 	<transition-group name="collapse" tag="div">
 		<template v-if="!newConsentAnswered">
 			<div class="module-container">
-				<h2>{{ title }}</h2>
-				<div class="tw-flex tw-items-center tw-justify-center">
+				<h2 style="line-height: 125%;">
+					{{ title }}
+				</h2>
+				<div
+					v-if="loansToDisplay.length"
+					class="tw-flex tw-items-center tw-justify-center"
+				>
 					<KvUserAvatar
 						v-for="loan, index in loansToDisplay"
 						:key="loan.id"
@@ -56,12 +61,12 @@
 import { computed, inject, ref } from 'vue';
 import { KvButton, KvUserAvatar } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
+import useOptIn from '#src/composables/useOptIn';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
 import { getKivaImageUrl } from '#src/util/imageUtils';
-import useOptIn from '#src/composables/useOptIn';
-import OptInNotification from './OptInNotification';
+import OptInNotification from '#src/components/Thanks/MyKiva/OptInNotification';
 
 const props = defineProps({
 	loans: {
@@ -76,6 +81,10 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	onlyDonations: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const apollo = inject('apollo');
@@ -89,6 +98,12 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
 
 const title = computed(() => {
+	if (props.onlyDonations) {
+		return 'Thank you!';
+	}
+	if (!props.loans.length) {
+		return 'Thank you for changing lives with Kiva!';
+	}
 	if (props.loans.length === 1) {
 		return `Thank you! You and ${props.loans[0]?.name} are in this together now.`;
 	}
@@ -101,9 +116,17 @@ const title = computed(() => {
 		and ${props.loans[2]?.name} are in this together now.`;
 });
 
-const description = computed(
-	() => `Want to hear how you're impacting ${props.loans[0]?.name}'s life and more ways to help people like them?`
-);
+const description = computed(() => {
+	if (props.onlyDonations) {
+		return 'Want to hear how your donation is changing real lives?';
+	}
+	if (props.loans.length) {
+		// eslint-disable-next-line max-len
+		return `Want to hear how you're impacting ${props.loans[0]?.name}'s life and more ways to help people like them?`;
+	}
+
+	return 'Want to hear how your support is changing real lives?';
+});
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
