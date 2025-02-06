@@ -1,5 +1,8 @@
 <template>
-	<div class="module-container">
+	<div
+		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8
+			tw-py-4 tw-flex tw-flex-col tw-text-center tw-gap-3 tw-mb-2.5"
+	>
 		<div
 			style="min-height: 481px;"
 			class="
@@ -55,12 +58,3 @@ const title = computed(() => {
 });
 
 </script>
-
-<style lang="postcss" scoped>
-
-.module-container {
-	@apply tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8
-		tw-py-4 tw-flex tw-flex-col tw-text-center tw-gap-3 tw-mb-2.5;
-}
-
-</style>
