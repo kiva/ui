@@ -182,3 +182,11 @@ export const LoggedIn = story({
 	receipt: receiptWithSingleLoan,
 	myKivaEnabled: true,
 });
+
+export const AllTransactionTypes = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: mockedReceiptData,
+	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
+});
