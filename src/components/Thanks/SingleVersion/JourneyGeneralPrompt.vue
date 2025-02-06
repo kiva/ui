@@ -31,7 +31,7 @@
 			>
 				Thank you! <br>
 			</span>
-			You’re making progress on your impact journey!
+			You’re making progress on your impact journey{{ isOptedIn ? '.' : '!' }}
 		</h2>
 
 		<JourneyImg
@@ -77,15 +77,17 @@
 			<KvExpandable
 				easing="ease-in-out"
 			>
-				<p
+				<div
 					v-show="openImpactJourneys"
-					class="tw-pt-2 tw-text-primary"
+					class="tw-text-primary"
 				>
-					Impact journeys are your personal guide to making a difference.
-					<br><br>
-					Get inspired, track your progress, celebrate impact milestones,
-					and easily see the real change you can make!
-				</p>
+					<p class="tw-pt-2">
+						Impact journeys are your personal guide to making a difference.
+						<br><br>
+						Get inspired, track your progress, celebrate impact milestones,
+						and easily see the real change you can make!
+					</p>
+				</div>
 			</KvExpandable>
 		</div>
 	</div>
