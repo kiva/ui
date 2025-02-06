@@ -72,93 +72,113 @@ const story = (args = {}, result = queryResult) => {
 };
 
 export const LoadingBadge = story({
-	isGuest: false,
 	isOptedIn: true,
 	lender: mockLender,
 	loans: [mockLoans[0]],
 	receipt: receiptWithSingleLoan,
 	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
 }, {});
 
 export const KivaCards = story({
 	isOptedIn: true,
 	receipt: receiptWithOnlyKivaCards,
+	myKivaEnabled: true,
 });
 
 export const KivaCardsNotOptedIn = story({
 	receipt: receiptWithOnlyKivaCards,
+	myKivaEnabled: true,
 });
 
 export const Donations = story({
 	isOptedIn: true,
 	receipt: receiptWithOnlyDonations,
+	myKivaEnabled: true,
 });
 
 export const DonationsNotOptedIn = story({
-	isOptedIn: false,
 	receipt: receiptWithOnlyDonations,
+	myKivaEnabled: true,
 });
 
 export const NoBadgeSingleLoan = story({
-	isGuest: false,
 	isOptedIn: true,
 	lender: mockLender,
 	loans: [mockLoans[0]],
 	receipt: receiptWithSingleLoan,
+	myKivaEnabled: true,
 });
 
 export const NoBadgeMultipleLoans = story({
-	isGuest: false,
 	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: receiptWithMultipleLoans,
+	myKivaEnabled: true,
 });
 
 export const NoBadgeSingleLoanNotOptedIn = story({
-	isGuest: false,
 	lender: mockLender,
 	loans: [mockLoans[0]],
 	receipt: receiptWithSingleLoan,
+	myKivaEnabled: true,
 });
 
 export const NoBadgeMultipleLoansNotOptedIn = story({
-	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: receiptWithMultipleLoans,
+	myKivaEnabled: true,
 });
 
-export const BadgeSingleLoan = story({
-	isGuest: false,
-	isOptedIn: true,
-	lender: mockLender,
-	loans: [mockLoans[0]],
-	receipt: receiptWithSingleLoan,
-	badgesAchieved: [mockTieredBadge],
-});
-
-export const BadgeMultipleLoans = story({
-	isGuest: false,
+export const Badge = story({
 	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: receiptWithMultipleLoans,
 	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
 });
 
 export const BadgeSingleLoanNotOptedIn = story({
-	isGuest: false,
 	lender: mockLender,
 	loans: [mockLoans[0]],
 	receipt: receiptWithSingleLoan,
 	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
 });
 
 export const BadgeMultipleLoansNotOptedIn = story({
-	isGuest: false,
 	lender: mockLender,
 	loans: mockLoans,
 	receipt: receiptWithMultipleLoans,
 	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
+});
+
+export const ControlKivaCards = story({
+	isOptedIn: true,
+	receipt: receiptWithOnlyKivaCards,
+});
+
+export const ControlDonations = story({
+	isOptedIn: true,
+	receipt: receiptWithOnlyDonations,
+});
+
+export const ControlNotOptedIn = story({
+	lender: mockLender,
+	loans: mockLoans,
+	receipt: receiptWithMultipleLoans,
+	badgesAchieved: [mockTieredBadge],
+});
+
+export const LoggedIn = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+	myKivaEnabled: true,
 });
