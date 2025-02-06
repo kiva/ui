@@ -2,7 +2,7 @@
 	<div
 		v-if="showComment"
 		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
-            print:tw-shadow-transparent"
+            print:tw-hidden"
 	>
 		<KvUserAvatar
 			:lender-name="loanName"
