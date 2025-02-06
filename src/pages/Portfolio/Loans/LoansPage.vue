@@ -69,8 +69,8 @@ export default {
 					funded: 0,
 					payingBack: 0,
 					payingBackDelinquent: 0,
-					repaid: 1,
-					repaidWithCurrencyLoss: 1,
+					repaid: 0,
+					repaidWithCurrencyLoss: 0,
 					defaulted: 0,
 					refunded: 0,
 					expired: 0

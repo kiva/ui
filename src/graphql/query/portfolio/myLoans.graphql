@@ -15,11 +15,16 @@ query myLoans {
 					country {
 						id
 						name
+						isoCode
 					}
 				}
 				loanAmount
 				loanFundraisingInfo {
 					fundedAmount
+				}
+				sector {
+					id
+					name
 				}
 				terms {
 					loanAmount
@@ -31,6 +36,10 @@ query myLoans {
 					values {
 						id
 						name
+						image {
+							url
+              				id
+						}
 					}
 				}
 			}

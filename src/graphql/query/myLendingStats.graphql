@@ -34,6 +34,27 @@ query myLendingStats {
 		}
 		userStats {
 			amount_of_loans
+			number_of_loans
+			num_raised
+			total_fund_raising
+			amount_repaid
+			total_paying_back
+			amount_defaulted
+			total_defaulted
+			amount_refunded
+			num_refunded
+			total_refunded
+			arrears_rate
+			amount_in_arrears
+			amount_outstanding
+			num_paying_back
+			default_rate
+			amount_defaulted
+			total_defaulted
+			num_ended
+			total_ended
+			currency_loss_rate
+			currency_loss
 		}
 		statsPerCountry {
 			totalCount

@@ -470,7 +470,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/loans',
+		path: '/portfolio/loans-beta',
 		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
 		meta: {
 			authenticationRequired: true,
