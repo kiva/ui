@@ -61,7 +61,7 @@ setup((app) => {
 
 	app.provide('$kvTrackEvent', () => { });
 
-	app.provide('$appConfig', { photoPath: 'https://www.development.kiva.org/img/' });
+	app.provide('$appConfig', { photoPath: 'https://www.kiva.org/img/' });
 });
 
 // add custom viewports

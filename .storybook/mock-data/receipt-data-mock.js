@@ -2,7 +2,7 @@
 * A receipt object
 */
 export default {
-	"transactionTime" : "2020-01-30T00:52:31Z",
+	"transactionTime": "2020-01-30T00:52:31Z",
 	"credits": {
 		"values": [
 			{
@@ -39,7 +39,7 @@ export default {
 					"name": "Alan",
 					"id": 1911067,
 					"image": {
-						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s300/5e041e655faa305c49c13505d1c17cba.jpg",
+						"url": "https://www-kiva-org.global.ssl.fastly.net/img/s300/5e041e655faa305c49c13505d1c17cba.jpg",
 						"hash": "5e041e655faa305c49c13505d1c17cba"
 					},
 					"use": "to expand her business by purchasing more stock such as seed and manure for the expansion of her vegetable garden.",
@@ -64,7 +64,7 @@ export default {
 					"name": "Alan",
 					"id": 1908530,
 					"image": {
-						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s300/da9ac74228e39e15cc198f8165e68c20.jpg",
+						"url": "https://www-kiva-org.global.ssl.fastly.net/img/s300/da9ac74228e39e15cc198f8165e68c20.jpg",
 						"hash": "da9ac74228e39e15cc198f8165e68c20"
 					},
 					"use": "to buy taro roots (seedlings), banana tubers (seedlings), chemicals, a bag back sprayer, and a chainsaw.",
@@ -89,7 +89,7 @@ export default {
 					"name": "Barrio Concepcion Group",
 					"id": 1907517,
 					"image": {
-						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s300/213d4f59069e192a2a4b9ee1fb56b649.jpg",
+						"url": "https://www-kiva-org.global.ssl.fastly.net/img/s300/213d4f59069e192a2a4b9ee1fb56b649.jpg",
 						"hash": "213d4f59069e192a2a4b9ee1fb56b649"
 					},
 					"use": "to buy a stove with a grill, kitchen utensils, corn and firewood.",
@@ -114,7 +114,7 @@ export default {
 					"name": "Alan",
 					"id": 1909791,
 					"image": {
-						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s300/26e15431f51b540f31cd9f011cc54f31.jpg",
+						"url": "https://www-kiva-org.global.ssl.fastly.net/img/s300/26e15431f51b540f31cd9f011cc54f31.jpg",
 						"hash": "26e15431f51b540f31cd9f011cc54f31"
 					},
 					"use": "to buy farming inputs and improve her production in 2020 for an increased income.",
@@ -139,7 +139,7 @@ export default {
 					"name": "Las Victoriosas Group",
 					"id": 1906824,
 					"image": {
-						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s300/26342071330beb8309d17a5d262da2dd.jpg",
+						"url": "https://www-kiva-org.global.ssl.fastly.net/img/s300/26342071330beb8309d17a5d262da2dd.jpg",
 						"hash": "26342071330beb8309d17a5d262da2dd"
 					},
 					"use": "to buy used clothing for men, women and children in specific sizes.",

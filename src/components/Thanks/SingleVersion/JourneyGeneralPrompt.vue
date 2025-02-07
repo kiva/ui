@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
-            print:tw-shadow-transparent"
+            print:!tw-hidden"
 	>
 		<div
 			v-if="loansToDisplay.length && isOptedIn"
@@ -24,14 +24,14 @@
 		</div>
 		<h2
 			class="tw-text-center tw-text-primary"
-			style="line-height: 125%;"
+			style="line-height: 1.25;"
 		>
 			<span
 				v-if="isOptedIn"
 			>
 				Thank you! <br>
 			</span>
-			You’re making progress on your impact journey!
+			You’re making progress on your impact journey{{ isOptedIn ? '.' : '!' }}
 		</h2>
 
 		<JourneyImg
@@ -77,15 +77,17 @@
 			<KvExpandable
 				easing="ease-in-out"
 			>
-				<p
+				<div
 					v-show="openImpactJourneys"
-					class="tw-pt-2 tw-text-primary"
+					class="tw-text-primary"
 				>
-					Impact journeys are your personal guide to making a difference.
-					<br><br>
-					Get inspired, track your progress, celebrate impact milestones,
-					and easily see the real change you can make!
-				</p>
+					<p class="tw-pt-2">
+						Impact journeys are your personal guide to making a difference.
+						<br><br>
+						Get inspired, track your progress, celebrate impact milestones,
+						and easily see the real change you can make!
+					</p>
+				</div>
 			</KvExpandable>
 		</div>
 	</div>

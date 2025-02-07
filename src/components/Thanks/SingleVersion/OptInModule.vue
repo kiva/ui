@@ -2,7 +2,7 @@
 	<transition-group name="collapse" tag="div">
 		<template v-if="!newConsentAnswered">
 			<div class="module-container">
-				<h2 style="line-height: 125%;">
+				<h2 style="line-height: 1.25;">
 					{{ title }}
 				</h2>
 				<div

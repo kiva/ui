@@ -4,7 +4,6 @@
 			tw-py-4 tw-flex tw-flex-col tw-text-center tw-gap-3 tw-mb-2.5"
 	>
 		<div
-			style="min-height: 481px;"
 			class="
 				tw-flex
 				tw-flex-col
@@ -17,9 +16,11 @@
 				tw-justify-between
 			"
 		>
-			<h2 v-html="title" class="tw-text-center"></h2>
-			<BgRays />
-			<Globe class="tw-z-1" style="width: 194px; height: 189px;" />
+			<h2 v-html="title" class="tw-text-center" style="line-height: 1.25;"></h2>
+			<div class="tw-relative">
+				<BgRays style="top: -70px; left: -30px" />
+				<Globe class="tw-z-1 tw-my-2" style="width: 194px; height: 189px;" />
+			</div>
 			<KvButton
 				class="tw-w-full"
 				@click="emit('continue')"
