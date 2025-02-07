@@ -6,18 +6,18 @@ export default apollo => {
 		try {
 			apollo.mutate({
 				mutation: gql`
-            mutation updateCommunicationSettings(
-              $lenderNews: Boolean
-            ) {
-              my {
-                updateCommunicationSettings(
-                  communicationSettings: {
-                    lenderNews: $lenderNews
-                  }
-                )
-              }
-            }
-          `,
+					mutation updateCommunicationSettings(
+						$lenderNews: Boolean
+					) {
+						my {
+							updateCommunicationSettings(
+								communicationSettings: {
+									lenderNews: $lenderNews
+								}
+							)
+						}
+					}
+				`,
 				variables: {
 					lenderNews,
 				},
@@ -31,20 +31,20 @@ export default apollo => {
 		try {
 			apollo.mutate({
 				mutation: gql`
-          mutation updateVisitorCommunicationSettings(
-            $lenderNews: Boolean,
-            $visitorId: String!
-          ) {
-            visitorEmailOptIn {
-              updateCommunicationSettings(
-                communicationSettings: {
-                  lenderNews: $lenderNews
-                },
-                visitorId: $visitorId
-              )
-            }
-          }
-        `,
+				mutation updateVisitorCommunicationSettings(
+					$lenderNews: Boolean,
+					$visitorId: String!
+				) {
+					visitorEmailOptIn {
+						updateCommunicationSettings(
+							communicationSettings: {
+								lenderNews: $lenderNews
+							},
+							visitorId: $visitorId
+						)
+					}
+				}
+			`,
 				variables: {
 					lenderNews,
 					visitorId,
