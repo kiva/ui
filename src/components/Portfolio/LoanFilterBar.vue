@@ -2,6 +2,7 @@
 	<div>
 		<div class="tw-flex tw-flex-col tw-gap-2">
 			<kv-text-input
+				id="loan-filter-text-input"
 				v-model="searchText"
 				placeholder="Search by name, ID, partner or location"
 			/>
@@ -9,6 +10,7 @@
 				<div class="tw-flex tw-items-center tw-gap-2">
 					<span class="tw-text-secondary tw-text-sm">Status:</span>
 					<kv-select
+						id="loan-filter-select"
 						v-model="selectedStatus"
 						class="tw-min-w-[120px]"
 					>
@@ -72,7 +74,7 @@ export default {
 	props: {
 		totalLoans: {
 			type: Number,
-			default: 2
+			default: 0
 		}
 	}
 };

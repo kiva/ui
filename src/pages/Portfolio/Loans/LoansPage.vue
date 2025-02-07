@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -37,6 +36,7 @@ import KvPageContainer from '#kv-components/KvPageContainer';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
+import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
 
 export default {
 	name: 'LoansPage',
@@ -71,11 +71,19 @@ export default {
 			}
 		};
 	},
-	apollo: {
-		loans: {
+	created() {
+		this.apollo.query({
 			query: myLoansQuery,
-			update: data => data.my.loans.values
-		}
+			fetchPolicy: 'network-only'
+		}).then(({ data }) => {
+			if (data?.my?.loans) {
+				console.log('LoansPage fetched data:', data.my.loans);
+				this.loans = data.my.loans.values || [];
+				this.totalLoans = data.my.loans.totalCount || this.loans.length;
+			}
+		}).catch(error => {
+			console.error('Error fetching loans:', error);
+		});
 	}
 };
 </script>

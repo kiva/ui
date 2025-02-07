@@ -29,7 +29,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="loans.length === 0">
+						<tr v-if="!loans.length">
 							<td class="tw-text-center tw-text-secondary tw-px-2" colspan="7">
 								No loans found
 							</td>
@@ -75,7 +75,7 @@
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div class="tw-mb-1">
-										${{ loan.loanAmount }}
+										${{ loan.loanFundraisingInfo.fundedAmount }}
 									</div>
 									<div class="tw-mb-1">
 										{{ formatDate(loan.loanFundraisingInfo.fundedDate) || '(Endpoint TBD)' }}
@@ -114,19 +114,19 @@
 </template>
 
 <script>
-import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
-import KvFlag from '#kv-components/KvFlag';
+import KvFlag from '#src/components/Kv/KvFlag';
 
 export default {
 	name: 'LoanList',
-	inject: ['apollo', 'cookieStore'],
+	inject: ['cookieStore'],
+	props: {
+		loans: {
+			type: Array,
+			default: () => []
+		}
+	},
 	components: {
 		KvFlag
-	},
-	data() {
-		return {
-			loans: []
-		};
 	},
 	methods: {
 		getLoanLength(payments) {
@@ -159,20 +159,6 @@ export default {
 			};
 			return mapping[rawStatus] || rawStatus;
 		},
-		async fetchLoans() {
-			try {
-				const { data } = await this.apollo.query({
-					query: myLoansQuery,
-					fetchPolicy: 'network-only'
-				});
-				this.loans = data.my.loans.values;
-			} catch (error) {
-				console.error('Error fetching loans:', error);
-			}
-		}
-	},
-	created() {
-		this.fetchLoans();
 	}
 };
 </script>
