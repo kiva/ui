@@ -53,14 +53,7 @@ export default {
 	},
 	data() {
 		return {
-			lastUpdated: new Date().toLocaleDateString('en-US', {
-				month: 'short',
-				day: 'numeric',
-				year: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit',
-				hour12: true
-			}),
+			lastUpdated: '(Endpoint TBD)',
 			loans: [],
 			totalLoans: 0,
 			stats: {

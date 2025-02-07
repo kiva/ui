@@ -115,7 +115,7 @@
 
 <script>
 import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
-import KvFlag from '#src/components/Kv/KvFlag';
+import KvFlag from '#kv-components/KvFlag';
 
 export default {
 	name: 'LoanList',
