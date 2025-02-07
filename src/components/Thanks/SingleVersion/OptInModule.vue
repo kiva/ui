@@ -193,7 +193,7 @@ const getLoanImageUrl = loan => {
 	max-width: 620px;
 	max-height: 900px;
 
-	@apply tw-flex tw-flex-col tw-mx-auto tw-overflow-hidden tw-opacity-full tw-bg-white
+	@apply tw-flex tw-flex-col tw-overflow-hidden tw-opacity-full tw-bg-white tw-w-full
 		tw-text-center tw-px-3 md:tw-px-8 tw-gap-3 tw-rounded md:tw-rounded-lg tw-py-4 tw-shadow-lg;
 }
 
