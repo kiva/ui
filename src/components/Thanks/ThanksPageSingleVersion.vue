@@ -82,7 +82,7 @@ import {
 } from 'vue';
 import confetti from 'canvas-confetti';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
-import OptInModule from '#src/components/Thanks/MyKiva/OptInModule';
+import OptInModule from '#src/components/Thanks/SingleVersion/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
 import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
