@@ -41,7 +41,7 @@
 			variant="primary"
 			:state="buttonState"
 			aria-label="Comment"
-			@click="submitCommentAsUser"
+			@click="submitComment"
 			v-kv-track-event="['post-checkout', 'submit', 'comments-ask', 'comment']"
 		>
 			Leave Comment
@@ -105,12 +105,20 @@ import {
 } from '@kiva/kv-components';
 import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
 import useTipMessage from '#src/composables/useTipMessage';
+import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
+
+const emit = defineEmits(['guest-continue']);
 
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 
 const { $showTipMsg } = useTipMessage(apollo);
 
 const props = defineProps({
+	isGuest: {
+		type: Boolean,
+		default: true,
+	},
 	loan: {
 		type: Object,
 		default: () => ({}),
@@ -136,6 +144,15 @@ const buttonState = computed(() => {
 	return '';
 });
 
+const submitCommentAsGuest = () => {
+	// Save comment to cookie
+	cookieStore.set(GUEST_COMMENT_COMMENT, userComment.value, { path: '/' });
+	cookieStore.set(GUEST_COMMENT_LOANID, loanId.value, { path: '/' });
+
+	// Show create account form
+	emit('guest-continue');
+};
+
 const submitCommentAsUser = () => {
 	loading.value = true;
 	apollo.mutate({
@@ -145,7 +162,7 @@ const submitCommentAsUser = () => {
 			body: userComment.value
 		}
 	}).then(({ data }) => {
-		// comment was added successfully
+		// Comment was added successfully
 		if (data.loan.addComment) {
 			$showTipMsg(`Thank you for helping ${loanName.value}!`);
 			showComment.value = false;
@@ -158,5 +175,13 @@ const submitCommentAsUser = () => {
 	}).finally(() => {
 		loading.value = false;
 	});
+};
+
+const submitComment = () => {
+	if (props.isGuest) {
+		submitCommentAsGuest();
+	} else {
+		submitCommentAsUser();
+	}
 };
 </script>

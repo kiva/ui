@@ -42,10 +42,11 @@
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<LoanComment
-				v-if="!isGuest && loanForComment"
-				:key="loanForComment.id"
+				v-if="loanForComment"
+				:is-guest="isGuest"
 				:loan="loanForComment"
 				class="tw-mb-2.5"
+				@guest-continue="handleContinue"
 			/>
 			<AccountReceiptShare
 				ref="receiptSection"
