@@ -32,6 +32,12 @@ query myLoans {
 						dueToKivaDate
 					}
 				}
+				userProperties {
+					loanBalance {
+						amountPurchasedByLender
+						amountRepaidToLender
+					}
+				}
 				teams {
 					values {
 						id

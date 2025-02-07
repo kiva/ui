@@ -75,7 +75,7 @@
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div class="tw-mb-1">
-										${{ loan.loanFundraisingInfo.fundedAmount }}
+										${{ loan.userProperties.loanBalance.amountPurchasedByLender }}
 									</div>
 									<div class="tw-mb-1">
 										{{ formatDate(loan.loanFundraisingInfo.fundedDate) || '(Endpoint TBD)' }}
@@ -97,7 +97,7 @@
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div class="tw-mb-1">
-										${{ loan.loanFundraisingInfo.fundedAmount }} repaid to you
+										${{ loan.userProperties.loanBalance.amountRepaidToLender }} repaid to you
 									</div>
 								</div>
 							</td>
