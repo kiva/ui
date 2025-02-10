@@ -38,6 +38,7 @@
 			<ControlModule
 				v-else
 				:is-opted-in="isOptedIn"
+				:only-kiva-cards="onlyKivaCards"
 				@continue="handleContinue"
 				class="print:tw-hidden tw-mb-2.5"
 			/>

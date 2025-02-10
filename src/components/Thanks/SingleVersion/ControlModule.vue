@@ -49,13 +49,17 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	onlyKivaCards: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const title = computed(() => {
-	const msg = 'Stay up to date with your lending history, stats, and more!';
-	return props.isOptedIn
-		? `Thank you!<br>${msg}`
-		: msg;
+	const msg = 'Stay up to date with your lending history, stats, and more';
+	return props.isOptedIn && !props.onlyKivaCards
+		? `Thank you!<br>${msg}.`
+		: `${msg}!`;
 });
 
 </script>
