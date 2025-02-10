@@ -44,6 +44,8 @@ import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
 import BgRays from '#src/components/Thanks/BgRays';
 
+defineEmits(['continue']);
+
 const props = defineProps({
 	isOptedIn: {
 		type: Boolean,
