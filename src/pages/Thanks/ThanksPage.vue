@@ -12,7 +12,7 @@
 				:receipt="receipt"
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
-				:my-kiva-enabled="myKivaEnabled"
+				:my-kiva-enabled="myKivaExperimentEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -286,6 +286,7 @@ export default {
 			V2_VIEW,
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
+			myKivaExperimentEnabled: false,
 			myKivaEnabled: false,
 			badgesAchieved: [],
 			thanksSingleVersionEnabled: false,
@@ -613,14 +614,14 @@ export default {
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
 
 		// MyKiva Badges Experiment
-		this.myKivaEnabled = getIsMyKivaEnabled(
+		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
 			data?.my?.userPreferences?.preferences ?? null,
 			totalLoans
 		);
 
-		if (this.myKivaEnabled) {
+		if (this.myKivaExperimentEnabled) {
 			try {
 				const response = this.apollo.readQuery({
 					query: postCheckoutAchievementsQuery,
