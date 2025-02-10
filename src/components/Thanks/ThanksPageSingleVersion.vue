@@ -220,6 +220,7 @@ onMounted(() => {
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
 
 	const analyticsModuleOrder = [
+		userType.value,
 		isOptInLoan ? 'optInLoan' : '',
 		isOptInDonate ? 'optInDonate' : '',
 		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
@@ -231,7 +232,6 @@ onMounted(() => {
 		props.isGuest ? 'drawerCreateAccount' : '',
 		'drawerOrderConfirmation',
 		'drawerShare',
-		userType.value,
 	].filter(s => !!s).join('-');
 
 	$kvTrackEvent(
