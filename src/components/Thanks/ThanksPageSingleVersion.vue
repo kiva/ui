@@ -10,40 +10,38 @@
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<KivaCards
-				v-if="printableKivaCards.length"
+				v-if="showKivaCardsModule"
 				:printable-kiva-cards="printableKivaCards"
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
-			<template v-if="myKivaEnabled">
-				<BadgeMilestone
-					v-if="(badgesAchieved.length > 0 || onlyKivaCards || onlyDonations)"
-					:is-guest="isGuest"
-					:is-opted-in="isOptedIn"
-					:badge-achieved-ids="badgeAchievedIds"
-					:only-kiva-cards="onlyKivaCards"
-					:only-donations="onlyDonations"
-					@continue-clicked="handleContinue"
-					class="tw-mb-2.5"
-				/>
-				<JourneyGeneralPrompt
-					v-else
-					:loans="loans"
-					:is-guest="isGuest"
-					:is-opted-in="isOptedIn"
-					@continue-as-guest="handleContinue"
-					class="tw-mb-2.5"
-				/>
-			</template>
+			<BadgeMilestone
+				v-if="showBadgeModule"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				:badge-achieved-ids="badgeAchievedIds"
+				:only-kiva-cards="onlyKivaCards"
+				:only-donations="onlyDonations"
+				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<JourneyGeneralPrompt
+				v-if="showJourneyModule"
+				:loans="loans"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				@continue-as-guest="handleContinue"
+				class="tw-mb-2.5"
+			/>
 			<ControlModule
-				v-else
+				v-if="showControlModule"
 				:is-opted-in="isOptedIn"
 				:only-kiva-cards="onlyKivaCards"
 				@continue="handleContinue"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<LoanComment
-				v-if="loanForComment"
+				v-if="showLoanComment"
 				:is-guest="isGuest"
 				:loan="loanForComment"
 				class="tw-mb-2.5"
@@ -95,6 +93,8 @@ import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useB
 import { useRouter } from 'vue-router';
 import _orderBy from 'lodash/orderBy';
 
+const EVENT_CATEGORY = 'post-checkout';
+
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
@@ -143,8 +143,6 @@ const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 // Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
 const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
 
-const showOptInModule = computed(() => !props.isOptedIn);
-
 const onlyDonations = computed(() => (
 	(props.receipt && props.receipt?.totals?.itemTotal === props.receipt?.totals?.donationTotal)
 		|| !!props.monthlyDonationAmount?.length
@@ -160,6 +158,13 @@ const loanForComment = computed(() => {
 	const orderedLoans = _orderBy(props.loans, ['unreservedAmount'], ['desc']);
 	return orderedLoans[0];
 });
+
+const showOptInModule = computed(() => !props.isOptedIn);
+const showKivaCardsModule = computed(() => printableKivaCards.value.length);
+const showBadgeModule = computed(() => props.myKivaEnabled && props.badgesAchieved.length > 0);
+const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
+const showControlModule = computed(() => !props.myKivaEnabled);
+const showLoanComment = computed(() => !!loanForComment.value);
 
 const showConfetti = () => {
 	confetti({
@@ -182,7 +187,6 @@ const scrollToReceipt = () => {
 };
 
 const handleContinue = () => {
-	const EVENT_CATEGORY = 'post-checkout';
 	const CLICK_EVENT_ACTION = 'click';
 
 	if (props.isGuest) {
@@ -209,7 +213,34 @@ const handleContinue = () => {
 	}
 };
 
-onMounted(showConfetti);
+onMounted(() => {
+	showConfetti();
+
+	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
+	const isOptInDonate = showOptInModule.value && onlyDonations.value;
+
+	const analyticsModuleOrder = [
+		isOptInLoan ? 'optInLoan' : '',
+		isOptInDonate ? 'optInDonate' : '',
+		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
+		showKivaCardsModule.value ? 'kivaCard' : '',
+		showBadgeModule.value ? 'journeyBadgeEarned' : '',
+		showJourneyModule.value ? 'journeyBadgeNotEarned' : '',
+		showControlModule.value ? 'journeyGeneral' : '',
+		showLoanComment.value ? 'commenting' : '',
+		props.isGuest ? 'drawerCreateAccount' : '',
+		'drawerOrderConfirmation',
+		'drawerShare',
+		userType.value,
+	].filter(s => !!s).join('-');
+
+	$kvTrackEvent(
+		EVENT_CATEGORY,
+		'view',
+		'unified-thanks',
+		analyticsModuleOrder,
+	);
+});
 </script>
 
 <style lang="postcss" scoped>
