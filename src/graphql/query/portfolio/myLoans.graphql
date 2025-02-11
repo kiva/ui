@@ -1,7 +1,7 @@
 query myLoans {
 	my {
 		id
-		loans(limit: 50) {
+		loans {
 			values {
 				id
 				name
@@ -28,6 +28,7 @@ query myLoans {
 				}
 				terms {
 					loanAmount
+					disbursalDate
 					expectedPayments {
 						dueToKivaDate
 					}

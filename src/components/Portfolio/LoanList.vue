@@ -1,29 +1,29 @@
 <template>
 	<div class="loan-list-container tw-mt-4">
 		<div class="loan-list-scroll-container tw-relative">
-			<div class="loan-list-inner-container tw-overflow-x-auto">
-				<table class="tw-w-full">
+			<div class="loan-list-inner-container tw-overflow-x-auto tw-min-w-full">
+				<table class="tw-w-full tw-min-w-[900px]">
 					<thead>
 						<tr class="tw-border-y tw-border-tertiary">
-							<th class="tw-text-left tw-font-medium tw-px-2">
+							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
 								Loan details
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2">
+							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
 								Status
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2">
+							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
 								You loaned
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2">
+							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
 								Amount
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2">
+							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
 								Length
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2">
+							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
 								Paid back or raised
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2">
+							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
 								Team
 							</th>
 						</tr>
@@ -39,7 +39,7 @@
 							:key="loan.id"
 							class="tw-border-b tw-border-tertiary"
 						>
-							<td class="tw-px-2">
+							<td class="tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-center">
 									<img
 										:src="loan.image.url"
@@ -48,7 +48,17 @@
 									>
 									<div>
 										<div class="tw-font-semibold">
-											{{ loan.name }} <span class="tw-text-gray-600">(#{{ loan.id }})</span>
+											<a
+												:href="`https://www.kiva.org/lend/${loan.id}`"
+												class="tw-text-action"
+												v-kv-track-event="[
+													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
+											>
+												{{ loan.name }}
+												<div>
+													#{{ loan.id }}
+												</div>
+											</a>
 										</div>
 										<div class="tw-text-secondary">
 											{{ loan.sector?.name || '-' }}
@@ -77,8 +87,8 @@
 									<div class="tw-mb-1">
 										${{ loan.userProperties.loanBalance.amountPurchasedByLender }}
 									</div>
-									<div class="tw-mb-1">
-										{{ formatDate(loan.loanFundraisingInfo.fundedDate) || '(Endpoint TBD)' }}
+									<div class="tw-mb-1 tw-text-secondary">
+										{{ formatDate(loan.terms.disbursalDate) || '(Endpoint TBD)' }}
 									</div>
 								</div>
 							</td>
@@ -102,7 +112,18 @@
 								</div>
 							</td>
 							<td class="tw-max-w-[150px] tw-whitespace-normal tw-break-words tw-px-2">
-								{{ loan.teams?.values?.[0]?.name || '-' }}
+								<div class="tw-items-center">
+									<template v-if="loan.teams?.values?.[0]">
+										<img
+											v-if="loan.teams.values[0].image?.url"
+											:src="loan.teams.values[0].image.url"
+											:alt="`${loan.teams.values[0].name} team image`"
+											class="tw-w-5 tw-h-5"
+										>
+										<span>{{ loan.teams.values[0].name }}</span>
+									</template>
+									<span v-else>-</span>
+								</div>
 							</td>
 						</tr>
 					</tbody>
