@@ -96,16 +96,6 @@ export default [
 		}
 	},
 	{
-		path: '/checkout/thanks/:challengeId',
-		component: () => import('#src/pages/Thanks/ThanksPageChallenge'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-		props: route => ({
-			challengeId: route.params.challengeId,
-		})
-	},
-	{
 		path: '/checkout/thanks',
 		component: () => import('#src/pages/Thanks/ThanksPage'),
 		meta: {
