@@ -161,12 +161,20 @@ const loanForComment = computed(() => {
 	return orderedLoans[0];
 });
 
+const hasPfpLoan = computed(() => props.loans.some(loan => loan?.inPfp));
+
+const hasTeamAttributedPartnerLoan = computed(
+	() => props.loans.some(loan => loan?.distributionModel === 'fieldPartner' && loan?.team?.name)
+);
+
+const askforComments = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => printableKivaCards.value.length);
 const showBadgeModule = computed(() => props.myKivaEnabled && props.badgesAchieved.length > 0);
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
-const showLoanComment = computed(() => !!loanForComment.value);
+const showLoanComment = computed(() => !!loanForComment.value && askforComments.value);
 
 const showConfetti = () => {
 	confetti({

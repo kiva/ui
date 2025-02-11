@@ -141,6 +141,15 @@ export const Badge = story({
 	myKivaEnabled: true,
 });
 
+export const BadgeLoansNotInPfpOptedIn = story({
+	isOptedIn: true,
+	lender: mockLender,
+	loans: mockLoans.slice(1),
+	receipt: receiptWithMultipleLoans,
+	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
+});
+
 export const BadgeSingleLoanNotOptedIn = story({
 	lender: mockLender,
 	loans: [mockLoans[0]],
