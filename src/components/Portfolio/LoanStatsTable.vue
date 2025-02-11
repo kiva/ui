@@ -10,7 +10,24 @@
 			</div>
 		</div>
 
-		<div class="tw-space-y-2">
+		<div v-if="loading" class="tw-space-y-2">
+			<div v-for="i in 13" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4">
+				<kv-loading-placeholder
+					class="tw-col-span-4"
+					style="width: 120px; height: 16px;"
+				/>
+				<kv-loading-placeholder
+					class="tw-col-span-4 tw-ml-auto"
+					style="width: 80px; height: 16px;"
+				/>
+				<kv-loading-placeholder
+					class="tw-col-span-4 tw-ml-auto"
+					style="width: 80px; height: 16px;"
+				/>
+			</div>
+		</div>
+
+		<div v-else class="tw-space-y-2">
 			<div class="tw-grid tw-grid-cols-12 tw-gap-4">
 				<div class="tw-col-span-4">
 					Amount lent
@@ -230,9 +247,13 @@
 
 <script>
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
 
 export default {
 	name: 'LoanStatsTable',
+	components: {
+		KvLoadingPlaceholder
+	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
