@@ -51,13 +51,14 @@
 				/>
 			</div>
 			<KvExpandable easing="ease-in-out">
-				<CheckoutReceipt
-					v-if="receipt"
-					v-show="openOrderConfirmation"
-					:lender="lender"
-					:receipt="receipt"
-					class="tw-pt-2"
-				/>
+				<div v-show="openOrderConfirmation">
+					<CheckoutReceipt
+						v-if="receipt"
+						:lender="lender"
+						:receipt="receipt"
+						class="tw-pt-2"
+					/>
+				</div>
 			</KvExpandable>
 		</div>
 		<div
