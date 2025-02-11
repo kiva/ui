@@ -141,7 +141,7 @@ export const Badge = story({
 	myKivaEnabled: true,
 });
 
-export const BadgeLoansNotInPfpOptedIn = story({
+export const BadgeLoansInPfp = story({
 	isOptedIn: true,
 	lender: mockLender,
 	loans: mockLoans.slice(1),
