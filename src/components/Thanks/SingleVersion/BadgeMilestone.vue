@@ -170,3 +170,10 @@ watch(() => badgeData.value, () => {
 	@apply tw-flex;
 }
 </style>
+
+<style lang="postcss" scoped>
+.smaller-borrower-avatar :deep(img) {
+	height: 36px;
+	width: 36px;
+}
+</style>
