@@ -31,8 +31,8 @@
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import KvGrid from '#kv-components/KvGrid';
-import KvPageContainer from '#kv-components/KvPageContainer';
+import { KvPageContainer, KvGrid } from '@kiva/kv-components';
+
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';

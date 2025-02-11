@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import KvFlag from '#src/components/Kv/KvFlag';
+import { KvFlag } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanList',

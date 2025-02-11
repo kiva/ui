@@ -247,7 +247,7 @@
 
 <script>
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
-import KvLoadingPlaceholder from '#kv-components/KvLoadingPlaceholder';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanStatsTable',

@@ -60,9 +60,7 @@
 </template>
 
 <script>
-import KvSelect from '#kv-components/KvSelect';
-import KvTextInput from '#kv-components/KvTextInput';
-import KvButton from '#kv-components/KvButton';
+import { KvSelect, KvTextInput, KvButton } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanFilterBar',
