@@ -292,10 +292,6 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
-import {
-	achievementsQuery,
-	achievementProgression,
-} from '#src/util/achievementUtils';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
@@ -329,7 +325,6 @@ import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox'
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
-import iwdExperimentMixin from '#src/plugins/iwd-experiment-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
@@ -381,7 +376,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, iwdExperimentMixin, hugeLendAmount],
+	mixins: [checkoutUtils, fiveDollarsTest, hugeLendAmount],
 	head: {
 		title: 'Checkout'
 	},
@@ -428,7 +423,6 @@ export default {
 			isFtdMessageEnable: false,
 			ftdCreditAmount: '',
 			ftdValidDate: '',
-			iwdExpEnabled: false,
 			// Deposit incentive experiment MP-72
 			depositIncentiveAmountToLend: 0,
 			depositIncentiveExperimentEnabled: false,
@@ -596,8 +590,6 @@ export default {
 		// Enable huge lend amount
 		this.initializeHugeLendAmount();
 
-		this.iwdExpEnabled = this.isIwdExperimentEnabled();
-
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
 	},
@@ -623,21 +615,6 @@ export default {
 		this.handleToast();
 		this.getPromoInformationFromBasket();
 		this.getUpsellModuleData();
-
-		// Don't fetch challenge status if IWD2024 experiment to avoid being redirected to the challenge thank you page
-		if (!this.iwdExpEnabled) {
-			// Fetch Challenge Status
-			// If a loan in basket makes progress towards an active challenge,
-			// set query param to redirect to special thank you page
-			achievementsQuery(this.apollo, this.loanIdsInBasket)
-				.then(({ data }) => {
-					// eslint-disable-next-line max-len
-					const checkoutMilestoneProgresses = data?.achievementMilestonesForCheckout?.checkoutMilestoneProgresses;
-					const challengeProgressed = achievementProgression(checkoutMilestoneProgresses);
-					this.challengeRedirectQueryParam = challengeProgressed ? `&challenge=${challengeProgressed}` : '';
-				});
-			// end challenge code
-		}
 	},
 	computed: {
 		isUpsellUnder100() {
@@ -760,9 +737,6 @@ export default {
 		},
 		showFtdMessage() {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
-		},
-		iwdLoan() {
-			return (this.loans?.filter(l => l?.loan?.gender?.toUpperCase() === 'FEMALE') ?? [])?.[0];
 		},
 	},
 	methods: {
