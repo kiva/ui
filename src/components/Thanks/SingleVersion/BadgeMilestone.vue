@@ -89,7 +89,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	showLoanComment: {
+	loanCommentModuleShown: {
 		type: Boolean,
 		default: false,
 	}
@@ -131,7 +131,7 @@ const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.im
 
 const avatars = computed(() => props.loans.slice(0, 3));
 
-const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.showLoanComment);
+const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.loanCommentModuleShown);
 
 onMounted(async () => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs

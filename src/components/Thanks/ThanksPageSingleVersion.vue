@@ -23,7 +23,7 @@
 				:only-kiva-cards="onlyKivaCards"
 				:only-donations="onlyDonations"
 				:loans="loans"
-				:show-loan-comment="showLoanComment"
+				:loan-comment-module-shown="showLoanComment"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
@@ -161,20 +161,18 @@ const loanForComment = computed(() => {
 	return orderedLoans[0];
 });
 
-const hasPfpLoan = computed(() => props.loans.some(loan => loan?.inPfp));
+const hasPfpLoan = computed(() => loanForComment.value?.inPfp ?? false);
 
 const hasTeamAttributedPartnerLoan = computed(
-	() => props.loans.some(loan => loan?.distributionModel === 'fieldPartner' && loan?.team?.name)
+	() => loanForComment.value?.distributionModel === 'fieldPartner' && loanForComment.value?.team?.name
 );
-
-const askforComments = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => printableKivaCards.value.length);
 const showBadgeModule = computed(() => props.myKivaEnabled && props.badgesAchieved.length > 0);
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
-const showLoanComment = computed(() => !!loanForComment.value && askforComments.value);
+const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
 const showConfetti = () => {
 	confetti({
