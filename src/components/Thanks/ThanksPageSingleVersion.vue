@@ -22,6 +22,8 @@
 				:badge-achieved-ids="badgeAchievedIds"
 				:only-kiva-cards="onlyKivaCards"
 				:only-donations="onlyDonations"
+				:loans="loans"
+				:show-loan-comment="showLoanComment"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
