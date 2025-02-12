@@ -8,22 +8,7 @@
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
 			<!-- Borrower images -->
-			<div v-if="showAvatars" class="tw-flex tw-items-center">
-				<KvUserAvatar
-					v-for="(loan, index) in avatars"
-					:key="loan.id"
-					:lender-name="loan?.name"
-					:lender-image-url="loan?.image?.url"
-					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
-					:class="{ 'smaller-borrower-avatar': avatars.length > 2 && index !== 1 }"
-					:style="{
-						zIndex: index === 1 ? 2 : 1,
-						marginRight: avatars.length > 2 && index === 0 ? '-22px' : '0',
-						marginLeft: avatars.length > 1&& index === avatars.length - 1
-							? '-22px' : '0',
-					}"
-				/>
-			</div>
+			<BorrowerAvatarsContainer v-if="showAvatars" :loans="avatars" />
 			<h2 style="line-height: 1.25;">
 				{{ title }}
 			</h2>
@@ -57,9 +42,10 @@ import {
 import { mdiArrowRight } from '@mdi/js';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import {
-	KvMaterialIcon, KvButton, KvLoadingPlaceholder, KvUserAvatar
+	KvMaterialIcon, KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
+import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import BgRays from '#src/components/Thanks/BgRays';
 
 const emit = defineEmits(['continue-clicked']);
@@ -174,12 +160,5 @@ watch(() => badgeData.value, () => {
 <style lang="postcss" scoped>
 .continue-button :deep(span) {
 	@apply tw-flex;
-}
-</style>
-
-<style lang="postcss" scoped>
-.smaller-borrower-avatar :deep(img) {
-	height: 36px;
-	width: 36px;
 }
 </style>
