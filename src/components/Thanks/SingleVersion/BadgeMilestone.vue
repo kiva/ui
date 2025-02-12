@@ -7,6 +7,23 @@
 		<BgRays v-show="!isLoading" />
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
+			<!-- Borrower images -->
+			<div v-if="showAvatars" class="tw-flex tw-items-center">
+				<KvUserAvatar
+					v-for="(loan, index) in avatars"
+					:key="loan.id"
+					:lender-name="loan?.name"
+					:lender-image-url="loan?.image?.url"
+					class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
+					:class="{ 'smaller-borrower-avatar': avatars.length > 2 && index !== 1 }"
+					:style="{
+						zIndex: index === 1 ? 2 : 1,
+						marginRight: avatars.length > 2 && index === 0 ? '-22px' : '0',
+						marginLeft: avatars.length > 1&& index === avatars.length - 1
+							? '-22px' : '0',
+					}"
+				/>
+			</div>
 			<h2 style="line-height: 1.25;">
 				{{ title }}
 			</h2>
@@ -39,7 +56,9 @@ import {
 } from 'vue';
 import { mdiArrowRight } from '@mdi/js';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
-import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import {
+	KvMaterialIcon, KvButton, KvLoadingPlaceholder, KvUserAvatar
+} from '@kiva/kv-components';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import BgRays from '#src/components/Thanks/BgRays';
 
@@ -66,6 +85,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	loans: {
+		type: Array,
+		default: () => ([]),
+	},
+	loanCommentModuleShown: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const apollo = inject('apollo');
@@ -102,6 +129,10 @@ const displayedBadgeData = computed(() => {
 
 const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.imageUrl ?? '');
 
+const avatars = computed(() => props.loans.slice(0, 3));
+
+const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.loanCommentModuleShown);
+
 onMounted(async () => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
 	fetchContentfulData(apollo);
@@ -137,5 +168,12 @@ watch(() => badgeData.value, () => {
 <style lang="postcss" scoped>
 .continue-button :deep(span) {
 	@apply tw-flex;
+}
+</style>
+
+<style lang="postcss" scoped>
+.smaller-borrower-avatar :deep(img) {
+	height: 36px;
+	width: 36px;
 }
 </style>

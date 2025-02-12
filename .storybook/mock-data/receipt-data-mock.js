@@ -48,7 +48,8 @@ export default {
 						"country": {
 							"name": "Zambia"
 						}
-					}
+					},
+					"inPfp": true
 				}
 			},
 			{
@@ -73,7 +74,8 @@ export default {
 						"country": {
 							"name": "Samoa"
 						}
-					}
+					},
+					"inPfp": false
 				}
 			},
 			{
@@ -98,7 +100,8 @@ export default {
 						"country": {
 							"name": "Guatemala"
 						}
-					}
+					},
+					"inPfp": false
 				}
 			},
 			{
@@ -123,7 +126,8 @@ export default {
 						"country": {
 							"name": "Kenya"
 						}
-					}
+					},
+					"inPfp": false
 				}
 			},
 			{
@@ -148,7 +152,8 @@ export default {
 						"country": {
 							"name": "Guatemala"
 						}
-					}
+					},
+					"inPfp": false
 				}
 			},
 			{
