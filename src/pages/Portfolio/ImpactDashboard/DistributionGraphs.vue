@@ -111,10 +111,10 @@ export default {
 		fetchLocationStats() {
 			if (this.locationLoading && !this.locationLoadingPromise) {
 				this.locationLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByCountry ($onlyActiveLoans: Boolean) {
+					query: gql`query myStatsByCountry ($activeLoansOnly: Boolean) {
 						my {
 							id
-							statsPerCountry (onlyActiveLoans: $onlyActiveLoans) {
+							statsPerCountry (activeLoansOnly: $activeLoansOnly) {
 								values {
 									id
 									loanCount
@@ -127,7 +127,7 @@ export default {
 						}
 					}`,
 					variables: {
-						onlyActiveLoans: this.showOnlyActiveLoans,
+						activeLoansOnly: this.showOnlyActiveLoans,
 					}
 				}).then(({ data }) => {
 					this.locationLoading = false;
@@ -146,10 +146,10 @@ export default {
 		fetchGenderStats() {
 			if (this.genderLoading && !this.genderLoadingPromise) {
 				this.genderLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByGender($onlyActiveLoans: Boolean) {
+					query: gql`query myStatsByGender($activeLoansOnly: Boolean) {
 						my {
 							id
-							statsPerGender(onlyActiveLoans: $onlyActiveLoans) {
+							statsPerGender(activeLoansOnly: $activeLoansOnly) {
 								values {
 									id
 									loanCount
@@ -159,7 +159,7 @@ export default {
 						}
 					}`,
 					variables: {
-						onlyActiveLoans: this.showOnlyActiveLoans,
+						activeLoansOnly: this.showOnlyActiveLoans,
 					}
 				}).then(({ data }) => {
 					this.genderLoading = false;
@@ -178,10 +178,10 @@ export default {
 		fetchSectorStats() {
 			if (this.sectorLoading && !this.sectorLoadingPromise) {
 				this.sectorLoadingPromise = this.apollo.query({
-					query: gql`query myStatsBySector ($onlyActiveLoans: Boolean) {
+					query: gql`query myStatsBySector ($activeLoansOnly: Boolean) {
 						my {
 							id
-							statsPerSector (onlyActiveLoans: $onlyActiveLoans) {
+							statsPerSector (activeLoansOnly: $activeLoansOnly) {
 								values {
 									id
 									loanCount
@@ -194,7 +194,7 @@ export default {
 						}
 					}`,
 					variables: {
-						onlyActiveLoans: this.showOnlyActiveLoans,
+						activeLoansOnly: this.showOnlyActiveLoans,
 					}
 				}).then(({ data }) => {
 					this.sectorLoading = false;
@@ -213,10 +213,10 @@ export default {
 		fetchPartnerStats() {
 			if (this.partnerLoading && !this.partnerLoadingPromise) {
 				this.partnerLoadingPromise = this.apollo.query({
-					query: gql`query myStatsByPartner ($onlyActiveLoans: Boolean) {
+					query: gql`query myStatsByPartner ($activeLoansOnly: Boolean) {
 						my {
 							id
-							statsPerPartner (onlyActiveLoans: $onlyActiveLoans) {
+							statsPerPartner (activeLoansOnly: $activeLoansOnly) {
 								values {
 									id
 									loanCount
@@ -229,7 +229,7 @@ export default {
 						}
 					}`,
 					variables: {
-						onlyActiveLoans: this.showOnlyActiveLoans,
+						activeLoansOnly: this.showOnlyActiveLoans,
 					}
 				}).then(({ data }) => {
 					this.partnerLoading = false;
