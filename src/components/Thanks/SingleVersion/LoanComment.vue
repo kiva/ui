@@ -144,6 +144,10 @@ const buttonState = computed(() => {
 	return '';
 });
 
+/**
+ * We don't currently allow guests to add comments due to requiring the user to have a team attribution for the loan.
+ * This guest functionality was verified to be working and keeping in case we want to allow it in the future.
+ */
 const submitCommentAsGuest = () => {
 	// Save comment to cookie
 	cookieStore.set(GUEST_COMMENT_COMMENT, userComment.value, { path: '/' });
