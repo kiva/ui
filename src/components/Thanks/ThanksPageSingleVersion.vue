@@ -169,9 +169,9 @@ const hasTeamAttributedPartnerLoan = computed(
 );
 
 const showOptInModule = computed(() => !props.isOptedIn);
-const showKivaCardsModule = computed(() => printableKivaCards.value.length);
+const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showBadgeModule = computed(() => {
-	return props.myKivaEnabled && (props.badgesAchieved.length > 0 || onlyDonations.value || onlyKivaCards.value);
+	return props.myKivaEnabled && (numberOfBadges.value > 0 || onlyDonations.value || onlyKivaCards.value);
 });
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
