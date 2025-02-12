@@ -236,6 +236,16 @@ export const LoggedIn = story({
 	myKivaEnabled: true,
 });
 
+export const LoggedInBadge = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
+});
+
 export const AllTransactionTypes = story({
 	lender: mockLender,
 	loans: mockLoans,

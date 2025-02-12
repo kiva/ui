@@ -38,10 +38,19 @@
 			<h3 v-if="showSimplifiedTitle">
 				Take the next step on your impact journey.
 			</h3>
+			<h2
+				v-if="funFact"
+				class="tw-text-h3 tw-italic tw-text-desert-rose-4 tw-text-center"
+			>
+				{{ funFact }} <span v-if="funFactSource">*</span>
+			</h2>
 			<KvButton class="continue-button tw-w-full tw-my-0.5" @click="emit('continue-clicked')">
 				Continue
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
 			</KvButton>
+			<p v-if="funFactSource" class="tw-text-small tw-text-center tw-text-secondary">
+				*{{ funFactSource }}
+			</p>
 		</template>
 	</div>
 </template>
@@ -138,6 +147,12 @@ const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.im
 const avatars = computed(() => props.loans.slice(0, 3));
 
 const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.loanCommentModuleShown);
+
+const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFact ?? '');
+
+const funFactSource = computed(() => {
+	return displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '';
+});
 
 onMounted(async () => {
 	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
