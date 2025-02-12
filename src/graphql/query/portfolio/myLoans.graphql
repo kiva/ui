@@ -26,6 +26,7 @@ query myLoans {
 					id
 					name
 				}
+				lenderRepaymentTerm
 				terms {
 					loanAmount
 					disbursalDate
@@ -48,6 +49,10 @@ query myLoans {
               				id
 						}
 					}
+				}
+				... on LoanPartner {
+					partnerName
+					partnerId
 				}
 			}
 			totalCount

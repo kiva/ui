@@ -29,7 +29,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="!loans.length">
+						<tr v-if="loading">
+							<td colspan="7" class="tw-px-2 tw-py-4">
+								<div v-for="i in 3" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4">
+									<kv-loading-placeholder
+										v-for="(placeholder, index) in placeholders"
+										:key="index"
+										:class="[
+											`tw-col-span-${placeholder.span}`,
+											placeholder.marginLeft && 'tw-ml-auto'
+										]"
+										style="height: 16px;"
+									/>
+								</div>
+							</td>
+						</tr>
+						<tr v-else-if="!loans.length">
 							<td class="tw-text-center tw-text-secondary tw-px-2" colspan="7">
 								No loans found
 							</td>
@@ -49,7 +64,7 @@
 									<div>
 										<div class="tw-font-semibold">
 											<a
-												:href="`https://www.kiva.org/lend/${loan.id}`"
+												:href="`/lend/${loan.id}`"
 												class="tw-text-action"
 												v-kv-track-event="[
 													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
@@ -64,15 +79,22 @@
 											{{ loan.sector?.name || '-' }}
 										</div>
 										<div class="tw-flex tw-items-center tw-text-secondary">
-											<kv-flag
-												v-if="loan.geocode?.country?.isoCode"
-												class="tw-w-4 tw-h-4 tw-mr-1"
-												:country="loan.geocode?.country?.isoCode"
-											/>
+											<div class="tw-w-2 tw-h-2 tw-mr-1">
+												<kv-flag
+													v-if="loan.geocode?.country?.isoCode"
+													:country="loan.geocode?.country?.isoCode"
+												/>
+											</div>
 											{{ loan.geocode?.country?.name || '-' }}
 										</div>
 										<div class="tw-text-secondary" v-if="loan.partnerName">
-											{{ loan.partnerName }}
+											<a
+												:href="getPartnerUrl(loan.partnerId)"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{{ loan.partnerName }}
+											</a>
 										</div>
 									</div>
 								</div>
@@ -101,7 +123,7 @@
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
-									{{ getLoanLength(loan.terms.expectedPayments) }} mos
+									{{ loan.lenderRepaymentTerm || '-' }} mos
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">
@@ -135,7 +157,7 @@
 </template>
 
 <script>
-import { KvFlag } from '@kiva/kv-components';
+import { KvFlag, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanList',
@@ -144,20 +166,17 @@ export default {
 		loans: {
 			type: Array,
 			default: () => []
+		},
+		loading: {
+			type: Boolean,
+			default: true
 		}
 	},
 	components: {
-		KvFlag
+		KvFlag,
+		KvLoadingPlaceholder
 	},
 	methods: {
-		getLoanLength(payments) {
-			if (!payments || !payments.length) return '-';
-			const firstPayment = new Date(payments[0].dueToKivaDate);
-			const lastPayment = new Date(payments[payments.length - 1].dueToKivaDate);
-			const months =				(lastPayment.getFullYear() - firstPayment.getFullYear()) * 12
-				+ (lastPayment.getMonth() - firstPayment.getMonth());
-			return months;
-		},
 		formatDate(date) {
 			if (!date) return '';
 			return new Date(date).toLocaleDateString('en-US', {
@@ -180,6 +199,24 @@ export default {
 			};
 			return mapping[rawStatus] || rawStatus;
 		},
+	},
+	computed: {
+		getPartnerUrl() {
+			return partnerId => `/about/where-kiva-works/partners/${partnerId}`;
+		}
+	},
+	data() {
+		return {
+			placeholders: [
+				{ span: 4 },
+				{ span: 1 },
+				{ span: 1, marginLeft: true },
+				{ span: 1, marginLeft: true },
+				{ span: 1, marginLeft: true },
+				{ span: 2, marginLeft: true },
+				{ span: 2 }
+			]
+		};
 	}
 };
 </script>

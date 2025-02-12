@@ -20,7 +20,7 @@
 						<loan-stats-table />
 					</div>
 					<loan-filter-bar :total-loans="totalLoans" />
-					<loan-list :loans="loans" />
+					<loan-list :loans="loans" :loading="loading" />
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -56,6 +56,7 @@ export default {
 			lastUpdated: '(Endpoint TBD)',
 			loans: [],
 			totalLoans: 0,
+			loading: true,
 			stats: {
 				loanStatuses: {
 					fundraising: 0,
@@ -83,6 +84,8 @@ export default {
 			}
 		}).catch(error => {
 			console.error('Error fetching loans:', error);
+		}).finally(() => {
+			this.loading = false;
 		});
 	}
 };
