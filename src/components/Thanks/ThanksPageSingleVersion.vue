@@ -143,8 +143,10 @@ const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
-// Handle when a guest doesn't have access to achievement data but at least achieved the equity badge
-const numberOfBadges = computed(() => (props.badgesAchieved.length || 1));
+// Guests and transactions without loans should see the fallback equity version of the badge module
+const numberOfBadges = computed(() => {
+	return props.badgesAchieved.length || (props.isGuest || props.loans.length === 0 ? 1 : 0);
+});
 
 const onlyDonations = computed(() => (
 	(props.receipt && props.receipt?.totals?.itemTotal === props.receipt?.totals?.donationTotal)
@@ -165,7 +167,7 @@ const loanForComment = computed(() => {
 const hasPfpLoan = computed(() => loanForComment.value?.inPfp ?? false);
 
 const hasTeamAttributedPartnerLoan = computed(
-	() => loanForComment.value?.distributionModel === 'fieldPartner' && loanForComment.value?.team?.name
+	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
 
 const showOptInModule = computed(() => !props.isOptedIn);

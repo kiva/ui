@@ -20,7 +20,10 @@
 		</h2>
 
 		<JourneyImg
-			class="tw-mx-auto tw-mt-2"
+			class="tw-mx-auto tw-mt-2 md:tw-hidden tw-w-full"
+		/>
+		<JourneyDesktopImg
+			class="tw-mx-auto tw-mt-2 tw-hidden md:tw-block tw-w-full"
 		/>
 
 		<KvButton
@@ -85,6 +88,7 @@ import { mdiArrowRight, mdiChevronDown } from '@mdi/js';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import JourneyImg from '#src/assets/images/thanks-page/journey.svg';
+import JourneyDesktopImg from '#src/assets/images/thanks-page/journey-desktop.svg';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
