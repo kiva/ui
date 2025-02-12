@@ -5,27 +5,11 @@
 				<h2 style="line-height: 1.25;">
 					{{ title }}
 				</h2>
-				<div
+				<BorrowerAvatarsContainer
 					v-if="loansToDisplay.length"
-					class="tw-flex tw-items-center tw-justify-center"
-				>
-					<KvUserAvatar
-						v-for="loan, index in loansToDisplay"
-						:key="loan.id"
-						:lender-name="loan?.name"
-						:lender-image-url="getLoanImageUrl(loan)"
-						class="borrower-image tw-rounded-full tw-shadow"
-						:class="{
-							'centered-borrower-image' : index === 1 && loansToDisplay.length === 3,
-							'single-pair-loans': loansToDisplay.length < 3
-						}"
-						:style="{
-							marginRight: getMarginRight(index),
-							marginLeft: getMarginLeft(index),
-							zIndex: index === 1 ? 2 : 1,
-						}"
-					/>
-				</div>
+					:loans="loansToDisplay"
+					show-large-avatars
+				/>
 				<h3 class="tw-font-book">
 					{{ description }}
 				</h3>
@@ -59,14 +43,14 @@
 
 <script setup>
 import { computed, inject, ref } from 'vue';
-import { KvButton, KvUserAvatar } from '@kiva/kv-components';
+import { KvButton } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import useOptIn from '#src/composables/useOptIn';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
-import { getKivaImageUrl } from '#src/util/imageUtils';
 import OptInNotification from '#src/components/Thanks/MyKiva/OptInNotification';
+import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 
 const props = defineProps({
 	loans: {
@@ -89,7 +73,6 @@ const props = defineProps({
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const $appConfig = inject('$appConfig');
 const cookieStore = inject('cookieStore');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
@@ -130,32 +113,6 @@ const description = computed(() => {
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
-const getMarginRight = index => {
-	if (loansToDisplay.value.length > 2 && index === 0) {
-		if (isMobile.value) {
-			return '-81.5px';
-		}
-		return '-100px';
-	}
-
-	return '0';
-};
-
-const getMarginLeft = index => {
-	if (loansToDisplay.value.length > 1 && index === loansToDisplay.value.length - 1) {
-		if (loansToDisplay.value.length === 2) {
-			return '-63px';
-		}
-
-		if (isMobile.value) {
-			return '-81.5px';
-		}
-		return '-100px';
-	}
-
-	return '0';
-};
-
 const updateOptIn = value => {
 	$kvTrackEvent(
 		'post-checkout',
@@ -177,14 +134,6 @@ const updateOptIn = value => {
 	receiveNews.value = value;
 };
 
-const getLoanImageUrl = loan => {
-	return getKivaImageUrl({
-		height: 500,
-		width: 500,
-		base: $appConfig.photoPath,
-		hash: loan?.image?.hash,
-	});
-};
 </script>
 
 <style lang="postcss" scoped>
@@ -195,59 +144,6 @@ const getLoanImageUrl = loan => {
 
 	@apply tw-flex tw-flex-col tw-overflow-hidden tw-opacity-full tw-bg-white tw-w-full
 		tw-text-center tw-px-3 md:tw-px-8 tw-gap-3 tw-rounded md:tw-rounded-lg tw-py-4 tw-shadow-lg;
-}
-
-.borrower-container {
-	animation: fadein ease-in 1s;
-	width: 70px;
-
-	@screen md {
-		width: 150px;
-	}
-
-	@apply tw-block tw-relative tw-mx-auto tw-z-4;
-}
-
-.borrower-container > div {
-	height: 100px;
-
-	@screen md {
-		height: 200px;
-	}
-}
-
-.borrower-image, .borrower-image :deep(img) {
-	width: 124px;
-	height: 124px;
-
-	@screen md {
-		width: 160px;
-		height: 160px;
-	}
-}
-
-.single-pair-loans, .single-pair-loans :deep(img) {
-	width: 148px !important;
-	height: 148px !important;
-
-	@screen md {
-		width: 200px !important;
-		height: 200px !important;
-	}
-}
-
-.centered-borrower-image, .centered-borrower-image :deep(img) {
-	width: 164px !important;
-	height: 160px !important;
-
-	@screen md {
-		width: 200px !important;
-		height: 200px !important;
-	}
-}
-
-.borrower-image :deep(img), .centered-borrower-image :deep(img) {
-	@apply tw-border-4 tw-border-white;
 }
 
 .btn :deep(span) {

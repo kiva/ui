@@ -3,25 +3,10 @@
 		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
             print:!tw-hidden"
 	>
-		<div
+		<BorrowerAvatarsContainer
 			v-if="loansToDisplay.length && isOptedIn"
-			class="tw-flex tw-items-center tw-justify-center"
-		>
-			<KvUserAvatar
-				v-for="loan, index in loansToDisplay"
-				:key="loan.id"
-				:lender-name="loan?.name"
-				:lender-image-url="loan?.image?.url"
-				class="tw-rounded-full tw-shadow tw-border-white tw-border-2 tw-w-auto"
-				:class="{ 'smaller-borrower-avatar': loansToDisplay.length > 2 && index !== 1 }"
-				:style="{
-					zIndex: index === 1 ? 2 : 1,
-					marginRight: loansToDisplay.length > 2 && index === 0 ? '-22px' : '0',
-					marginLeft: loansToDisplay.length > 1&& index === loansToDisplay.length - 1
-						? '-22px' : '0',
-				}"
-			/>
-		</div>
+			:loans="loansToDisplay"
+		/>
 		<h2
 			class="tw-text-center tw-text-primary"
 			style="line-height: 1.25;"
@@ -97,9 +82,10 @@
 import { computed, ref, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowRight, mdiChevronDown } from '@mdi/js';
-import { KvUserAvatar, KvButton, KvMaterialIcon } from '@kiva/kv-components';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import JourneyImg from '#src/assets/images/thanks-page/journey.svg';
+import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
