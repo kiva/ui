@@ -208,7 +208,7 @@ const handleContinue = () => {
 			EVENT_CATEGORY,
 			CLICK_EVENT_ACTION,
 			'continue-to-my-kiva',
-			userType,
+			userType.value,
 			numberOfBadges.value,
 		);
 	} else {
@@ -216,7 +216,7 @@ const handleContinue = () => {
 			EVENT_CATEGORY,
 			CLICK_EVENT_ACTION,
 			'continue-to-my-kiva',
-			userType,
+			userType.value,
 			numberOfBadges.value,
 		);
 
