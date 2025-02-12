@@ -35,7 +35,7 @@
 					style="height: 250px; width: 250px;"
 				>
 			</BadgeContainer>
-			<h3 v-if="isOptedIn">
+			<h3 v-if="showSimplifiedTitle">
 				Take the next step on your impact journey.
 			</h3>
 			<KvButton class="continue-button tw-w-full tw-my-0.5" @click="emit('continue-clicked')">
@@ -92,7 +92,11 @@ const props = defineProps({
 	loanCommentModuleShown: {
 		type: Boolean,
 		default: false,
-	}
+	},
+	kivaCardsModuleShown: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const apollo = inject('apollo');
@@ -114,7 +118,9 @@ const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCards ||
 
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
-const title = computed(() => (props.isOptedIn ? 'Thank you!' : 'Take the next step on your impact journey.'));
+const showSimplifiedTitle = computed(() => props.isOptedIn && !props.kivaCardsModuleShown);
+
+const title = computed(() => (showSimplifiedTitle.value ? 'Thank you!' : 'Take the next step on your impact journey.'));
 
 const displayedBadgeData = computed(() => {
 	if (badgeDataAchieved.value?.length) {

@@ -24,6 +24,7 @@
 				:only-donations="onlyDonations"
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
+				:kiva-cards-module-shown="showKivaCardsModule"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
@@ -169,7 +170,9 @@ const hasTeamAttributedPartnerLoan = computed(
 
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => printableKivaCards.value.length);
-const showBadgeModule = computed(() => props.myKivaEnabled && props.badgesAchieved.length > 0);
+const showBadgeModule = computed(() => {
+	return props.myKivaEnabled && (props.badgesAchieved.length > 0 || onlyDonations.value || onlyKivaCards.value);
+});
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);

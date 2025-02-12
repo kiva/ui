@@ -59,6 +59,20 @@ const receiptWithOnlyDonations = {
 	},
 };
 
+const receiptWithKivaCardsAndLoans = {
+	...mockedReceiptData,
+	items: {
+		values: mockedReceiptData.items.values.filter(item => ['loan_reservation', 'kiva_card'].includes(item.basketItemType)),
+	},
+};
+
+const receiptWithDonationsAndLoans = {
+	...mockedReceiptData,
+	items: {
+		values: mockedReceiptData.items.values.filter(item => ['loan_reservation', 'donation'].includes(item.basketItemType)),
+	},
+};
+
 const story = (args = {}, result = queryResult) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
@@ -97,8 +111,38 @@ export const Donations = story({
 	myKivaEnabled: true,
 });
 
+export const KivaCardsWithLoans = story({
+	isOptedIn: true,
+	loans: mockLoans,
+	receipt: receiptWithKivaCardsAndLoans,
+	myKivaEnabled: true,
+});
+
+export const KivaCardsWithBadge = story({
+	isOptedIn: true,
+	loans: mockLoans,
+	receipt: receiptWithKivaCardsAndLoans,
+	badgesAchieved: [mockTieredBadge],
+	myKivaEnabled: true,
+});
+
 export const DonationsNotOptedIn = story({
 	receipt: receiptWithOnlyDonations,
+	myKivaEnabled: true,
+});
+
+export const DonationsWithLoans = story({
+	isOptedIn: true,
+	loans: mockLoans,
+	receipt: receiptWithDonationsAndLoans,
+	myKivaEnabled: true,
+});
+
+export const DonationsWithBadge = story({
+	isOptedIn: true,
+	loans: mockLoans,
+	receipt: receiptWithDonationsAndLoans,
+	badgesAchieved: [mockTieredBadge],
 	myKivaEnabled: true,
 });
 
