@@ -250,15 +250,23 @@ export default {
 		showOnlyActiveLoans() {
 			const tableRefs = this.$refs.table.$refs;
 			if (tableRefs.locationPanel?.isActive) {
+				this.locationLoading = true;
+				this.locationStats = [];
 				this.fetchLocationStats();
 			}
 			if (tableRefs.genderPanel?.isActive) {
+				this.genderLoading = true;
+				this.genderStats = [];
 				this.fetchGenderStats();
 			}
 			if (tableRefs.sectorPanel?.isActive) {
+				this.sectorLoading = true;
+				this.sectorStats = [];
 				this.fetchSectorStats();
 			}
 			if (tableRefs.partnerPanel?.isActive) {
+				this.partnerLoading = true;
+				this.partnerStats = [];
 				this.fetchPartnerStats();
 			}
 		},
