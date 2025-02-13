@@ -27,147 +27,19 @@
 	</div>
 
 	<div v-else class="tw-space-y-2">
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+		<div
+			v-for="row in statsRows"
+			:key="row.key"
+			class="tw-grid tw-grid-cols-12 tw-gap-4"
+		>
 			<div class="tw-col-span-4">
-				Amount lent
+				{{ row.label }}
 			</div>
 			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_of_loans ? `$${Number(stats.amount_of_loans).toFixed(2)}` : '$0.00' }}
+				{{ formatValue(stats[row.key], row.type) }}
 			</div>
 			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount repaid
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_repaid ? `$${Number(stats.amount_repaid).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount lost
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_defaulted ? `$${Number(stats.amount_defaulted).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount refunded
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_refunded ? `$${Number(stats.amount_refunded).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Delinquency rate
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.arrears_rate ? `${(Number(stats.arrears_rate) * 100).toFixed(2)}%` : '0.00%' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount in arrears
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_in_arrears ? `$${Number(stats.amount_in_arrears).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Outstanding loans
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_outstanding ? `$${Number(stats.amount_outstanding).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Default rate
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.default_rate ? `${(Number(stats.default_rate) * 100).toFixed(2)}%` : '0.00%' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount defaulted
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.amount_defaulted ? `$${Number(stats.amount_defaulted).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount ended
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.total_ended ? `$${Number(stats.total_ended).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Currency loss rate
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.currency_loss_rate ? `${Number(stats.currency_loss_rate).toFixed(2)}%` : '0.00%' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Amount of currency loss
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ stats.currency_loss ? `$${(Number(stats.currency_loss) * -1).toFixed(2)}` : '$0.00' }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-		</div>
-		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<div class="tw-col-span-4">
-				Currency loss reimbursement
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				Endpoint TBD
+				{{ formatValue(avgStats[row.key], row.type) }}
 			</div>
 		</div>
 	</div>
@@ -203,7 +75,23 @@ export default {
 	data() {
 		return {
 			stats: {},
+			avgStats: {},
 			loading: true,
+			statsRows: [
+				{ label: 'Amount lent', key: 'amount_of_loans', type: 'currency' },
+				{ label: 'Amount repaid', key: 'amount_repaid', type: 'currency' },
+				{ label: 'Amount lost', key: 'amount_defaulted', type: 'currency' },
+				{ label: 'Amount refunded', key: 'amount_refunded', type: 'currency' },
+				{ label: 'Delinquency rate', key: 'arrears_rate', type: 'percentage' },
+				{ label: 'Amount in arrears', key: 'amount_in_arrears', type: 'currency' },
+				{ label: 'Outstanding loans', key: 'amount_outstanding', type: 'currency' },
+				{ label: 'Default rate', key: 'default_rate', type: 'percentage' },
+				{ label: 'Amount defaulted', key: 'amount_defaulted', type: 'currency' },
+				{ label: 'Amount ended', key: 'total_ended', type: 'currency' },
+				{ label: 'Currency loss rate', key: 'currency_loss_rate', type: 'currencyLossRate' },
+				{ label: 'Amount of currency loss', key: 'currency_loss', type: 'currencyNegative' },
+				{ label: 'Currency loss reimbursement', key: 'currency_reimbursement', type: 'currency' }
+			],
 			loanCounts: {
 				fundraising: 0,
 				funded: 0,
@@ -228,10 +116,36 @@ export default {
 			]
 		};
 	},
+	methods: {
+		formatValue(value, type) {
+			if (value === undefined || value === null) {
+				return 'Endpoint TBD';
+			}
+
+			if (!value) {
+				return type === 'percentage' || type === 'currencyLossRate' ? '0.00%' : '$0.00';
+			}
+
+			const num = Number(value);
+			switch (type) {
+				case 'currencyLossRate':
+					return `${num.toFixed(2)}%`;
+				case 'percentage':
+					return `${(num * 100).toFixed(2)}%`;
+				case 'currencyNegative':
+					return `$${(num * -1).toFixed(2)}`;
+				case 'currency':
+				default:
+					return `$${num.toFixed(2)}`;
+			}
+		}
+	},
 	apollo: {
 		query: lendingStatsQuery,
 		result({ data }) {
 			this.stats = data?.my?.userStats ?? {};
+			this.avgStats = {};
+			this.loading = false;
 
 			// Update loan counts from stats
 			this.loanCounts = {
@@ -245,8 +159,6 @@ export default {
 				refunded: this.stats.num_refunded || 0,
 				expired: this.stats.num_expired || 0
 			};
-
-			this.loading = false;
 		}
 	}
 };
