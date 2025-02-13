@@ -23,12 +23,12 @@
 			<h3 v-if="showSimplifiedTitle">
 				Take the next step on your impact journey.
 			</h3>
-			<h2
+			<p
 				v-if="funFact"
-				class="tw-text-h3 tw-italic tw-text-desert-rose-4 tw-text-center"
+				class="tw-text-base tw-text-primary tw-text-center"
 			>
-				{{ funFact }} <span v-if="funFactSource">*</span>
-			</h2>
+				{{ funFact }}<span v-if="funFactSource">*</span>
+			</p>
 			<KvButton class="continue-button tw-w-full tw-my-0.5" @click="emit('continue-clicked')">
 				Continue
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
