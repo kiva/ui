@@ -91,7 +91,6 @@
 											<a
 												:href="getPartnerUrl(loan.partnerId)"
 												target="_blank"
-												rel="noopener noreferrer"
 											>
 												{{ loan.partnerName }}
 											</a>
