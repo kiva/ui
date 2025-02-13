@@ -25,7 +25,7 @@
 						v-model="selectedStatus"
 					>
 						<option value="all">
-							All loans
+							All statuses
 						</option>
 					</kv-select>
 				</div>
@@ -35,14 +35,14 @@
 						v-model="selectedLocation"
 					>
 						<option value="all">
-							Location
+							All regions
 						</option>
 					</kv-select>
 					<kv-select
 						v-model="selectedPartner"
 					>
 						<option value="all">
-							Partner
+							All partners
 						</option>
 					</kv-select>
 				</div>
@@ -54,29 +54,19 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import { KvSelect, KvTextInput, KvButton } from '@kiva/kv-components';
 
-export default {
-	name: 'LoanFilterBar',
-	components: {
-		KvSelect,
-		KvTextInput,
-		KvButton,
-	},
-	data() {
-		return {
-			searchText: '',
-			selectedStatus: 'all',
-			selectedLocation: 'all',
-			selectedPartner: 'all'
-		};
-	},
-	props: {
-		totalLoans: {
-			type: Number,
-			default: 0
-		}
+defineProps({
+	totalLoans: {
+		type: Number,
+		default: 0
 	}
-};
+});
+
+const searchText = ref('');
+const selectedStatus = ref('all');
+const selectedLocation = ref('all');
+const selectedPartner = ref('all');
 </script>

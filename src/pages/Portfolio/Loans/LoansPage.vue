@@ -33,6 +33,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { KvPageContainer, KvGrid } from '@kiva/kv-components';
 
+import logFormatter from '#src/util/logFormatter';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
@@ -72,7 +73,7 @@ export default {
 			}
 		};
 	},
-	created() {
+	mounted() {
 		this.apollo.query({
 			query: myLoansQuery,
 			fetchPolicy: 'network-only'
@@ -82,7 +83,7 @@ export default {
 				this.totalLoans = data.my.loans.totalCount;
 			}
 		}).catch(error => {
-			console.error('Error fetching loans:', error);
+			logFormatter('Error fetching loans:', error);
 		}).finally(() => {
 			this.loading = false;
 		});

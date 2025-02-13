@@ -13,19 +13,20 @@
 		</thead>
 
 		<tbody v-if="loading">
-			<tr v-for="i in 13" :key="i">
+			<tr v-for="i in 5" :key="i">
 				<td>
 					<kv-loading-placeholder
+						class="tw-my-1"
 						style="width: 120px; height: 16px;"
 					/>
 				</td>
-				<td class="tw-text-right">
+				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
 						class="tw-ml-auto"
 						style="width: 80px; height: 16px;"
 					/>
 				</td>
-				<td class="tw-text-right">
+				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
 						class="tw-ml-auto"
 						style="width: 80px; height: 16px;"

@@ -59,7 +59,7 @@
 									<img
 										:src="loan.image.url"
 										alt="Loan image"
-										class="tw-w-[50px] tw-h-[50px] tw-mr-2"
+										class="loan-image tw-mr-2"
 									>
 									<div>
 										<div class="tw-font-semibold">
@@ -132,7 +132,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="tw-max-w-[150px] tw-whitespace-normal tw-break-words tw-px-2">
+							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
 								<div class="tw-items-center">
 									<template v-if="loan.teams?.values?.[0]">
 										<img
@@ -232,14 +232,20 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 .scroll-gradient {
-	pointer-events: none;
-	position: absolute;
-	top: 0;
-	right: 0;
-	height: 100%;
+	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-right-0 tw-h-full;
+
 	width: 2rem;
 	background: linear-gradient(to left, #fff, rgb(255 255 255 / 0%));
+}
+
+.loan-image {
+	width: 50px;
+	height: 50px;
+}
+
+.team-cell {
+	max-width: 150px;
 }
 </style>
