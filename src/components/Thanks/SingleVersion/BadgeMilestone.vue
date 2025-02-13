@@ -72,11 +72,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	onlyKivaCards: {
-		type: Boolean,
-		default: false,
-	},
-	onlyDonations: {
+	onlyKivaCardsAndDonations: {
 		type: Boolean,
 		default: false,
 	},
@@ -109,7 +105,7 @@ const badgeDataAchieved = ref();
 
 const isLoading = computed(() => !badgeDataAchieved.value);
 
-const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCards || props.onlyDonations);
+const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAndDonations);
 
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
