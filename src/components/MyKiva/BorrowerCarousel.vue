@@ -156,7 +156,6 @@ const props = defineProps({
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const emit = defineEmits(['selected-loan']);
 
 const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
@@ -222,7 +221,6 @@ const filteredLoans = computed(() => {
 
 const handleChange = event => {
 	if (event < filteredLoans.value.length) {
-		emit('selected-loan', loans.value[event]);
 		carousel.value.goToSlide(event);
 		lastVisitedLoanIdx.value = event;
 	} else {
