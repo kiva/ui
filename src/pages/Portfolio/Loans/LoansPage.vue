@@ -78,9 +78,8 @@ export default {
 			fetchPolicy: 'network-only'
 		}).then(({ data }) => {
 			if (data?.my?.loans) {
-				console.log('LoansPage fetched data:', data.my.loans);
 				this.loans = data.my.loans.values || [];
-				this.totalLoans = data.my.loans.totalCount || this.loans.length;
+				this.totalLoans = data.my.loans.totalCount;
 			}
 		}).catch(error => {
 			console.error('Error fetching loans:', error);

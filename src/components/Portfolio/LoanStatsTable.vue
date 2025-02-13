@@ -1,64 +1,80 @@
 <template>
-	<div class="tw-flex tw-justify-between tw-mb-2 tw-bg-[#efefef] tw-p-2">
-		<div class="tw-flex-1"></div>
-		<div class="tw-flex-1 tw-text-right tw-font-medium">
-			My stats
-		</div>
-		<div class="tw-flex-1 tw-text-right tw-font-medium">
-			Avg Kiva lender
-		</div>
-	</div>
+	<div>
+		<table class="tw-w-full">
+			<thead>
+				<tr class="tw-bg-[#efefef]">
+					<th scope="col">
+					</th>
+					<th scope="col" class="tw-text-right tw-p-2 tw-font-medium">
+						My stats
+					</th>
+					<th scope="col" class="tw-text-right tw-p-2 tw-font-medium">
+						Avg Kiva lender
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-if="loading">
+					<td colspan="3" class="tw-p-2">
+						<div v-for="i in 13" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4">
+							<kv-loading-placeholder
+								v-for="(placeholder, index) in placeholders"
+								:key="index"
+								:class="[
+									`tw-col-span-${placeholder.span}`,
+									placeholder.marginLeft && 'tw-ml-auto'
+								]"
+								style="height: 16px;"
+							/>
+						</div>
+					</td>
+				</tr>
+				<template v-else>
+					<tr
+						v-for="row in statsRows"
+						:key="row.key"
+					>
+						<td class="tw-p-1 tw-text-left">
+							{{ row.label }}
+						</td>
+						<td class="tw-p-1 tw-text-right">
+							{{ formatValue(stats[row.key], row.type) }}
+						</td>
+						<td class="tw-p-1 tw-text-right">
+							{{ formatValue(avgStats[row.key], row.type) }}
+						</td>
+					</tr>
+				</template>
+			</tbody>
+		</table>
 
-	<div v-if="loading" class="tw-space-y-2">
-		<div v-for="i in 13" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<kv-loading-placeholder
-				class="tw-col-span-4"
-				style="width: 120px; height: 16px;"
-			/>
-			<kv-loading-placeholder
-				class="tw-col-span-4 tw-ml-auto"
-				style="width: 80px; height: 16px;"
-			/>
-			<kv-loading-placeholder
-				class="tw-col-span-4 tw-ml-auto"
-				style="width: 80px; height: 16px;"
-			/>
-		</div>
-	</div>
+		<hr class="tw-border-tertiary tw-my-4">
 
-	<div v-else class="tw-space-y-2">
-		<div
-			v-for="row in statsRows"
-			:key="row.key"
-			class="tw-grid tw-grid-cols-12 tw-gap-4"
-		>
-			<div class="tw-col-span-4">
-				{{ row.label }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ formatValue(stats[row.key], row.type) }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ formatValue(avgStats[row.key], row.type) }}
-			</div>
-		</div>
-	</div>
-
-	<hr class="tw-border-tertiary tw-my-4">
-
-	<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-2">
-		<div
-			v-for="row in loanCountRows"
-			:key="row.key"
-			class="tw-grid tw-grid-cols-6 tw-gap-0 tw-font-medium"
-		>
-			<div class="tw-col-span-4">
-				{{ row.label }}
-			</div>
-			<div class="tw-col-span-2 tw-text-right">
-				{{ loanCounts[row.key] }}
-			</div>
-		</div>
+		<table class="tw-w-full">
+			<thead>
+				<tr class="tw-bg-[#efefef]">
+					<th scope="col" class="tw-text-left tw-p-2">
+						Loan status
+					</th>
+					<th scope="col" class="tw-text-right tw-p-2">
+						Count
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					v-for="row in loanCountRows"
+					:key="row.key"
+				>
+					<td class="tw-p-2 tw-text-left">
+						{{ row.label }}
+					</td>
+					<td class="tw-p-2 tw-text-right">
+						{{ loanCounts[row.key] }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </template>
 
