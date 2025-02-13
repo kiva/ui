@@ -1,48 +1,53 @@
 <template>
-	<div class="tw-flex tw-justify-between tw-mb-2 tw-bg-[#efefef] tw-p-2">
-		<div class="tw-flex-1"></div>
-		<div class="tw-flex-1 tw-text-right tw-font-medium">
-			My stats
-		</div>
-		<div class="tw-flex-1 tw-text-right tw-font-medium">
-			Avg Kiva lender
-		</div>
-	</div>
+	<table class="tw-w-full">
+		<thead>
+			<tr class="tw-bg-gray-200">
+				<th class="tw-flex-1 tw-p-2"></th>
+				<th class="tw-flex-1 tw-text-right tw-font-medium tw-p-2">
+					My stats
+				</th>
+				<th class="tw-flex-1 tw-text-right tw-font-medium tw-p-2">
+					Avg Kiva lender
+				</th>
+			</tr>
+		</thead>
 
-	<div v-if="loading" class="tw-space-y-2">
-		<div v-for="i in 13" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4">
-			<kv-loading-placeholder
-				class="tw-col-span-4"
-				style="width: 120px; height: 16px;"
-			/>
-			<kv-loading-placeholder
-				class="tw-col-span-4 tw-ml-auto"
-				style="width: 80px; height: 16px;"
-			/>
-			<kv-loading-placeholder
-				class="tw-col-span-4 tw-ml-auto"
-				style="width: 80px; height: 16px;"
-			/>
-		</div>
-	</div>
+		<tbody v-if="loading">
+			<tr v-for="i in 13" :key="i">
+				<td>
+					<kv-loading-placeholder
+						style="width: 120px; height: 16px;"
+					/>
+				</td>
+				<td class="tw-text-right">
+					<kv-loading-placeholder
+						class="tw-ml-auto"
+						style="width: 80px; height: 16px;"
+					/>
+				</td>
+				<td class="tw-text-right">
+					<kv-loading-placeholder
+						class="tw-ml-auto"
+						style="width: 80px; height: 16px;"
+					/>
+				</td>
+			</tr>
+		</tbody>
 
-	<div v-else class="tw-space-y-2">
-		<div
-			v-for="row in statsRows"
-			:key="row.key"
-			class="tw-grid tw-grid-cols-12 tw-gap-4"
-		>
-			<div class="tw-col-span-4">
-				{{ row.label }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ formatValue(stats[row.key], row.type) }}
-			</div>
-			<div class="tw-col-span-4 tw-text-right">
-				{{ formatValue(avgStats[row.key], row.type) }}
-			</div>
-		</div>
-	</div>
+		<tbody v-else>
+			<tr v-for="row in statsRows" :key="row.key">
+				<td class="tw-p-1">
+					{{ row.label }}
+				</td>
+				<td class="tw-text-right tw-p-1">
+					{{ formatValue(stats[row.key], row.type) }}
+				</td>
+				<td class="tw-text-right tw-p-1">
+					{{ formatValue(avgStats[row.key], row.type) }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
 	<hr class="tw-border-tertiary tw-my-4">
 

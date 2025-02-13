@@ -1,8 +1,8 @@
 <template>
-	<div class="loan-list-container tw-mt-4">
-		<div class="loan-list-scroll-container tw-relative">
-			<div class="loan-list-inner-container tw-overflow-x-auto tw-min-w-full">
-				<table class="tw-w-full tw-min-w-[900px]">
+	<div class="tw-mt-4">
+		<div class="tw-relative">
+			<div class="tw-overflow-x-auto tw-min-w-full">
+				<table class="tw-w-full">
 					<thead>
 						<tr class="tw-border-y tw-border-tertiary">
 							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
@@ -158,6 +158,18 @@
 
 <script>
 import { KvFlag, KvLoadingPlaceholder } from '@kiva/kv-components';
+import {
+	DEFAULTED,
+	ENDED,
+	EXPIRED,
+	FUNDED,
+	FUNDRAISING,
+	PAYING_BACK,
+	RAISED,
+	REFUNDED,
+} from '#src/api/fixtures/LoanStatusEnum';
+
+const DELINQUENT = 'payingBackDelinquent';
 
 export default {
 	name: 'LoanList',
@@ -187,15 +199,15 @@ export default {
 		},
 		getPrintableStatus(rawStatus) {
 			const mapping = {
-				fundraising: 'Fundraising',
-				funded: 'Funded',
-				raised: 'Raised',
-				payingBack: 'Paying Back',
-				ended: 'Ended',
-				delinquent: 'Delinquent',
-				defaulted: 'Defaulted',
-				refunded: 'Refunded',
-				expired: 'Expired'
+				[FUNDRAISING]: 'Fundraising',
+				[FUNDED]: 'Funded',
+				[RAISED]: 'Raised',
+				[PAYING_BACK]: 'Paying Back',
+				[ENDED]: 'Ended',
+				[DELINQUENT]: 'Delinquent',
+				[DEFAULTED]: 'Defaulted',
+				[REFUNDED]: 'Refunded',
+				[EXPIRED]: 'Expired'
 			};
 			return mapping[rawStatus] || rawStatus;
 		},
