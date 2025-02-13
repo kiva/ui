@@ -20,8 +20,7 @@
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
-				:only-kiva-cards="onlyKivaCards"
-				:only-donations="onlyDonations"
+				:only-kiva-cards-and-donations="onlyKivaCardsAndDonations"
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
@@ -159,6 +158,9 @@ const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 const onlyKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 	.every(item => item.basketItemType === 'kiva_card'));
 
+const onlyKivaCardsAndDonations = computed(() => (props.receipt?.items?.values ?? [])
+	.every(item => ['kiva_card', 'donation'].includes(item.basketItemType)));
+
 const loanForComment = computed(() => {
 	const orderedLoans = _orderBy(props.loans, ['unreservedAmount'], ['desc']);
 	return orderedLoans[0];
@@ -173,7 +175,7 @@ const hasTeamAttributedPartnerLoan = computed(
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showBadgeModule = computed(() => {
-	return props.myKivaEnabled && (numberOfBadges.value > 0 || onlyDonations.value || onlyKivaCards.value);
+	return props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value);
 });
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
