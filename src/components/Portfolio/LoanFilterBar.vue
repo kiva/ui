@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="tw-flex tw-flex-col">
-			<div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
+			<div class="tw-flex tw-justify-between tw-mb-2">
 				<div class="tw-text-sm tw-text-h2">
 					Filter loans
 				</div>
@@ -19,11 +19,10 @@
 			/>
 			<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
 				<div class="tw-flex tw-items-center tw-gap-2">
-					<span class="tw-text-secondary tw-text-sm">Status:</span>
+					<span class="tw-text-secondary">Status:</span>
 					<kv-select
 						id="loan-filter-select"
 						v-model="selectedStatus"
-						class="tw-min-w-[120px]"
 					>
 						<option value="all">
 							All loans
@@ -31,10 +30,9 @@
 					</kv-select>
 				</div>
 				<div class="tw-flex tw-items-center tw-gap-2">
-					<span class="tw-text-secondary tw-text-sm">Filter by:</span>
+					<span class="tw-text-secondary">Filter by:</span>
 					<kv-select
 						v-model="selectedLocation"
-						class="tw-min-w-[120px]"
 					>
 						<option value="all">
 							Location
@@ -42,7 +40,6 @@
 					</kv-select>
 					<kv-select
 						v-model="selectedPartner"
-						class="tw-min-w-[120px]"
 					>
 						<option value="all">
 							Partner
@@ -51,10 +48,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-flex tw-items-center tw-justify-between tw-mt-2">
-			<div class="tw-text-secondary">
-				Sorted by date posted on Kiva
-			</div>
+		<div class="tw-text-secondary tw-mt-2">
+			Sorted by date posted on Kiva
 		</div>
 	</div>
 </template>
