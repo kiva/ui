@@ -174,73 +174,20 @@
 
 	<hr class="tw-border-tertiary tw-my-4">
 
-	<div class="tw-grid tw-grid-cols-6 md:tw-grid-cols-12 tw-gap-0 md:tw-gap-4 tw-font-medium">
-		<div class="tw-col-span-4">
-			Fundraising
-		</div>
-		<div class="tw-col-span-2 tw-text-right">
-			{{ loanCounts.fundraising }}
-		</div>
-		<div class="md:tw-col-span-4 tw-col-span-4">
-			Funded
-		</div>
-		<div class="md:tw-col-span-2 tw-col-span-2 tw-text-right">
-			{{ loanCounts.funded }}
-		</div>
-	</div>
-	<div class="tw-grid tw-grid-cols-6 md:tw-grid-cols-12 tw-gap-0 md:tw-gap-4 tw-font-medium">
-		<div class="tw-col-span-4">
-			Paying back
-		</div>
-		<div class="tw-col-span-2 tw-text-right">
-			{{ loanCounts.payingBack }}
-		</div>
-		<div class="md:tw-col-span-4 tw-col-span-4">
-			Paying back delinquent
-		</div>
-		<div class="md:tw-col-span-2 tw-col-span-2 tw-text-right">
-			{{ loanCounts.payingBackDelinquent }}
+	<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-2">
+		<div
+			v-for="row in loanCountRows"
+			:key="row.key"
+			class="tw-grid tw-grid-cols-6 tw-gap-0 tw-font-medium"
+		>
+			<div class="tw-col-span-4">
+				{{ row.label }}
+			</div>
+			<div class="tw-col-span-2 tw-text-right">
+				{{ loanCounts[row.key] }}
+			</div>
 		</div>
 	</div>
-	<div class="tw-grid tw-grid-cols-6 md:tw-grid-cols-12 tw-gap-0 md:tw-gap-4 tw-font-medium">
-		<div class="tw-col-span-4">
-			Repaid
-		</div>
-		<div class="tw-col-span-2 tw-text-right">
-			{{ loanCounts.repaid }}
-		</div>
-		<div class="md:tw-col-span-4 tw-col-span-4">
-			Repaid with currency loss
-		</div>
-		<div class="md:tw-col-span-2 tw-col-span-2 tw-text-right">
-			{{ loanCounts.repaidWithCurrencyLoss }}
-		</div>
-	</div>
-	<div class="tw-grid tw-grid-cols-6 md:tw-grid-cols-12 tw-gap-0 md:tw-gap-4 tw-font-medium">
-		<div class="tw-col-span-4">
-			Ended in default
-		</div>
-		<div class="tw-col-span-2 tw-text-right">
-			{{ loanCounts.defaulted }}
-		</div>
-		<div class="md:tw-col-span-4 tw-col-span-4">
-			Refunded
-		</div>
-		<div class="md:tw-col-span-2 tw-col-span-2 tw-text-right">
-			{{ loanCounts.refunded }}
-		</div>
-	</div>
-	<div class="tw-grid tw-grid-cols-6 md:tw-grid-cols-12 tw-gap-0 md:tw-gap-4 tw-font-medium">
-		<div class="tw-col-span-4">
-			Expired
-		</div>
-		<div class="tw-col-span-2 tw-text-right">
-			{{ loanCounts.expired }}
-		</div>
-		<div class="md:tw-col-span-4 tw-col-span-4"></div>
-		<div class="md:tw-col-span-2 tw-col-span-2"></div>
-	</div>
-	<hr class="tw-border-tertiary tw-my-4">
 </template>
 
 <script>
@@ -267,7 +214,18 @@ export default {
 				defaulted: 0,
 				refunded: 0,
 				expired: 0
-			}
+			},
+			loanCountRows: [
+				{ label: 'Fundraising', key: 'fundraising' },
+				{ label: 'Funded', key: 'funded' },
+				{ label: 'Paying back', key: 'payingBack' },
+				{ label: 'Paying back delinquent', key: 'payingBackDelinquent' },
+				{ label: 'Repaid', key: 'repaid' },
+				{ label: 'Repaid with currency loss', key: 'repaidWithCurrencyLoss' },
+				{ label: 'Ended in default', key: 'defaulted' },
+				{ label: 'Refunded', key: 'refunded' },
+				{ label: 'Expired', key: 'expired' }
+			]
 		};
 	},
 	apollo: {
