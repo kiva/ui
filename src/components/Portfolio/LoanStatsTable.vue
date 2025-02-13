@@ -51,16 +51,27 @@
 
 	<hr class="tw-border-tertiary tw-my-4">
 
-	<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-2">
+	<div
+		class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-2"
+		role="table"
+		aria-label="Loan count statistics"
+	>
 		<div
 			v-for="row in loanCountRows"
 			:key="row.key"
 			class="tw-grid tw-grid-cols-6 tw-gap-0 tw-font-medium"
+			role="row"
 		>
-			<div class="tw-col-span-4">
+			<div
+				class="tw-col-span-4"
+				role="cell"
+			>
 				{{ row.label }}
 			</div>
-			<div class="tw-col-span-2 tw-text-right">
+			<div
+				class="tw-col-span-2 tw-text-right"
+				role="cell"
+			>
 				{{ loanCounts[row.key] }}
 			</div>
 		</div>
