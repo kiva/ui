@@ -1,0 +1,34 @@
+query userUpdates($limit: Int, $offset: Int) {
+    my {
+        id
+        updates(limit: $limit, offset: $offset) {
+            totalCount
+            values {
+                id
+                body
+                subject
+                date
+                loan {
+                    id
+                    name
+                    status
+                    loanAmount
+                    loanFundraisingInfo {
+                        fundedAmount
+                        reservedAmount
+                    }
+                    image {
+                        id
+                        hash
+                    }
+                    geocode {
+                        country {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
