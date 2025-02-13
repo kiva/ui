@@ -83,7 +83,7 @@ export default {
 				this.totalLoans = data.my.loans.totalCount;
 			}
 		}).catch(error => {
-			logFormatter('Error fetching loans:', error);
+			logFormatter(`Error fetching loans: ${error}`, 'error');
 		}).finally(() => {
 			this.loading = false;
 		});
