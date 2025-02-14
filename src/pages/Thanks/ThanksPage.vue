@@ -618,7 +618,7 @@ export default {
 			this.apollo,
 			this.$kvTrackEvent,
 			data?.my?.userPreferences?.preferences ?? null,
-			totalLoans
+			data?.my?.loans?.totalCount,
 		);
 
 		if (this.myKivaExperimentEnabled) {

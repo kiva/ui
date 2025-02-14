@@ -121,12 +121,11 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
-		const loanCount = userData.lender?.loanCount ?? 0;
 		this.showMyKivaPage = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
 			userData?.userPreferences?.preferences ?? null,
-			loanCount
+			userData.lender?.loanCount,
 		);
 
 		if (!this.showMyKivaPage) {
