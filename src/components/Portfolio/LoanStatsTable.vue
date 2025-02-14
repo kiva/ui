@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import lendingStatsQuery from '#src/graphql/query/myPortfolioLoansLendingStats.graphql';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
