@@ -150,8 +150,7 @@ const badgeLevelName = computed(() => {
 	return levelData.tierName;
 });
 
-const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFact
-	|| 'Making a difference starts here. See your impact and achievements.');
+const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFact ?? '');
 
 const funFactSource = computed(() => {
 	return displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '';
