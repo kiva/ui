@@ -1,6 +1,10 @@
 import {
 	hasLoanFunFactFootnote,
 	isFirstLogin,
+	createUserPreferences,
+	updateUserPreferences,
+	saveUserPreferences,
+	saveMyKivaToUserPreferences,
 	getIsMyKivaEnabled,
 	fetchPostCheckoutAchievements,
 } from '#src/util/myKivaUtils';
@@ -8,8 +12,39 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getUnixTime } from 'date-fns';
 import * as experimentUtils from '#src/util/experiment/experimentUtils';
+import * as logFormatter from '#src/util/logFormatter';
+import { expect } from '@storybook/test';
 
 jest.mock('#src/util/logReadQueryError');
+
+const userPreferenceDataMock = {
+	my: {
+		userPreference: {
+			id: 1,
+			preferences: ''
+		}
+	}
+};
+
+const createPreferenceDataMock = {
+	my: {
+		createUserPreferences: {
+			id: 1,
+			preferences: ''
+		}
+	}
+};
+
+const updatedPreferenceDataMock = {
+	my: {
+		userPreference: {
+			id: 1,
+			preferences: {
+				test: 'test'
+			}
+		}
+	}
+};
 
 describe('myKivaUtils.js', () => {
 	describe('hasLoanFunFactFootnote', () => {
@@ -130,6 +165,189 @@ describe('myKivaUtils.js', () => {
 		});
 	});
 
+	describe('createUserPreferences', () => {
+		it('should create user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn().mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
+			};
+
+			const newUserPreference = await createUserPreferences(apolloMock);
+
+			expect(newUserPreference).toEqual({
+				data: createPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: { preferences: '' }
+			});
+		});
+	});
+
+	describe('updateUserPreferences', () => {
+		it('should update user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await updateUserPreferences(
+				apolloMock,
+				userPreferenceDataMock.my.userPreference,
+				{ test: 'test' }
+			);
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
+					preferences: '{"test":"test"}',
+				},
+			});
+		});
+	});
+
+	describe('saveUserPreferences', () => {
+		it('should create user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await saveUserPreferences(
+				apolloMock,
+				{},
+				{ test: 'test' },
+			);
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(2);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: { preferences: '' }
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: createPreferenceDataMock.my.createUserPreferences.id,
+					preferences: '{"test":"test"}',
+				},
+			});
+		});
+
+		it('should updated user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await saveUserPreferences(
+				apolloMock,
+				userPreferenceDataMock?.my?.userPreference,
+				{ test: 'test' },
+			);
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
+					preferences: '{"test":"test"}',
+				},
+			});
+		});
+	});
+
+	describe('saveMyKivaToUserPreferences', () => {
+		it('should create user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await saveMyKivaToUserPreferences(apolloMock, {});
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(2);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: { preferences: '' }
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: createPreferenceDataMock.my.createUserPreferences.id,
+					preferences: '{"myKivaJan2025Exp":1}',
+				},
+			});
+		});
+
+		it('should updated user preferences as expected', async () => {
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await saveMyKivaToUserPreferences(
+				apolloMock,
+				updatedPreferenceDataMock.my.userPreference,
+			);
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(1);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
+					preferences: '{"test":"test","myKivaJan2025Exp":1}',
+				},
+			});
+		});
+
+		it('should handle bad json', async () => {
+			const mockLogFormatter = jest.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+
+			const apolloMock = {
+				mutate: jest.fn()
+					.mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
+					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
+			};
+
+			const newUserPreference = await saveMyKivaToUserPreferences(
+				apolloMock,
+				{ preferences: '' },
+			);
+
+			expect(newUserPreference).toEqual({
+				data: updatedPreferenceDataMock
+			});
+			expect(apolloMock.mutate).toHaveBeenCalledTimes(2);
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: expect.any(Object),
+				variables: {
+					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
+					preferences: '{"myKivaJan2025Exp":1}',
+				},
+			});
+			expect(mockLogFormatter).toHaveBeenCalledTimes(1);
+		});
+	});
+
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
@@ -137,7 +355,7 @@ describe('myKivaUtils.js', () => {
 		let trackExperimentVersionMock;
 
 		beforeEach(() => {
-			apolloMock = { readFragment: jest.fn() };
+			apolloMock = { readFragment: jest.fn(), mutate: jest.fn() };
 			$kvTrackEventMock = jest.fn();
 			preferencesMock = {};
 			trackExperimentVersionMock = jest.spyOn(experimentUtils, 'trackExperimentVersion');
@@ -191,6 +409,15 @@ describe('myKivaUtils.js', () => {
 			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
 
 			expect(trackExperimentVersionMock).toBeCalledTimes(1);
+		});
+
+		it('should call apollo to store preferences', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+
+			// Just checking if called instead of the number of times due to not wanting to wait for promise
+			expect(apolloMock.mutate).toBeCalled();
 		});
 	});
 
