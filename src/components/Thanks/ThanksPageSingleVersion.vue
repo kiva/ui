@@ -24,7 +24,6 @@
 				:only-donations="onlyDonations"
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
-				:kiva-cards-module-shown="showKivaCardsModule"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>

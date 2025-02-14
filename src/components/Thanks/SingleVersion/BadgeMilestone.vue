@@ -9,9 +9,7 @@
 		<template v-else>
 			<!-- Borrower images -->
 			<BorrowerAvatarsContainer v-if="showAvatars" :loans="avatars" />
-			<h2 style="line-height: 1.25;">
-				{{ title }}
-			</h2>
+			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
 			<BadgeContainer :show-shine="true">
 				<img
 					v-if="badgeImageUrl"
@@ -20,9 +18,7 @@
 					style="height: 250px; width: 250px;"
 				>
 			</BadgeContainer>
-			<h3 v-if="showSimplifiedTitle">
-				Take the next step on your impact journey.
-			</h3>
+			<h3>{{ badgeLevelName }} unlocked</h3>
 			<p
 				v-if="funFact"
 				class="tw-text-base tw-text-primary tw-text-center"
@@ -88,10 +84,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	kivaCardsModuleShown: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const apollo = inject('apollo');
@@ -103,6 +95,7 @@ const {
 	badgeData,
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
+	getTierBadgeDataByLevel,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -113,9 +106,23 @@ const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCards ||
 
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
-const showSimplifiedTitle = computed(() => props.isOptedIn && !props.kivaCardsModuleShown);
+const moduleTitle = computed(() => {
+	let title = '';
+	if (props.isOptedIn) {
+		title += 'Thank you!<br />';
+	}
 
-const title = computed(() => (showSimplifiedTitle.value ? 'Thank you!' : 'Take the next step on your impact journey.'));
+	if (!badgeDataAchieved.value?.length) {
+		title += 'Take the next step on your impact journey.';
+	} else {
+		title += badgeDataAchieved.value?.length === 1
+			? 'You reached a milestone'
+			: `You reached ${badgeDataAchieved.value?.length} milestones`;
+		title += props.isOptedIn ? '.' : '!';
+	}
+
+	return title;
+});
 
 const displayedBadgeData = computed(() => {
 	if (badgeDataAchieved.value?.length) {
@@ -133,6 +140,11 @@ const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.im
 const avatars = computed(() => props.loans.slice(0, 3));
 
 const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.loanCommentModuleShown);
+
+const badgeLevelName = computed(() => {
+	const levelData = getTierBadgeDataByLevel(displayedBadgeData.value, displayedBadgeData.value.level);
+	return levelData.tierName;
+});
 
 const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFact ?? '');
 
