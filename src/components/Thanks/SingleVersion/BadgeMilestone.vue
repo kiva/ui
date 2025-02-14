@@ -84,6 +84,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	kivaCardsModuleShown: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const apollo = inject('apollo');
@@ -108,7 +112,7 @@ const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeA
 
 const moduleTitle = computed(() => {
 	let title = '';
-	if (props.isOptedIn) {
+	if (props.isOptedIn && !props.kivaCardsModuleShown) {
 		title += 'Thank you!<br />';
 	}
 
@@ -118,7 +122,7 @@ const moduleTitle = computed(() => {
 		title += badgeDataAchieved.value?.length === 1
 			? 'You reached a milestone'
 			: `You reached ${badgeDataAchieved.value?.length} milestones`;
-		title += props.isOptedIn ? '.' : '!';
+		title += props.isOptedIn && !props.kivaCardsModuleShown ? '.' : '!';
 	}
 
 	return title;
