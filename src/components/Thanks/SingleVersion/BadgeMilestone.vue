@@ -18,7 +18,7 @@
 					style="height: 250px; width: 250px;"
 				>
 			</BadgeContainer>
-			<h3>{{ badgeLevelName }} unlocked</h3>
+			<h3>{{ badgeLevelName }}</h3>
 			<p
 				v-if="funFact"
 				class="tw-text-base tw-text-primary tw-text-center"
