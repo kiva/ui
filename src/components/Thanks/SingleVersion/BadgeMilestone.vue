@@ -18,9 +18,11 @@
 					style="height: 250px; width: 250px;"
 				>
 			</BadgeContainer>
-			<h3>{{ badgeLevelName }}</h3>
+			<h3 v-if="loansCount">
+				{{ badgeLevelName }}
+			</h3>
 			<p
-				v-if="funFact"
+				v-if="funFact && loansCount"
 				class="tw-text-base tw-text-primary tw-text-center"
 			>
 				{{ funFact }}<span v-if="funFactSource">*</span>
@@ -29,7 +31,7 @@
 				Continue
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
 			</KvButton>
-			<p v-if="funFactSource" class="tw-text-small tw-text-center tw-text-secondary">
+			<p v-if="funFactSource && loansCount" class="tw-text-small tw-text-center tw-text-secondary">
 				*{{ funFactSource }}
 			</p>
 		</template>
@@ -106,13 +108,15 @@ const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAnd
 
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
+const loansCount = computed(() => props.loans?.length ?? 0);
+
 const moduleTitle = computed(() => {
 	let title = '';
 	if (props.isOptedIn && !props.kivaCardsModuleShown) {
 		title += 'Thank you!<br />';
 	}
 
-	if (!badgeDataAchieved.value?.length) {
+	if (!loansCount.value) {
 		title += 'Take the next step on your impact journey.';
 	} else {
 		title += badgeDataAchieved.value?.length === 1
