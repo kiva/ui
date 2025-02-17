@@ -4,20 +4,22 @@
 		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
 			tw-gap-2 print:tw-hidden tw-items-center tw-text-center tw-overflow-hidden tw-relative"
 	>
-		<BgRays v-show="!isLoading" />
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
 			<!-- Borrower images -->
 			<BorrowerAvatarsContainer v-if="showAvatars" :loans="avatars" />
 			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
-			<BadgeContainer :show-shine="true">
-				<img
-					v-if="badgeImageUrl"
-					:src="badgeImageUrl"
-					alt="Badge"
-					style="height: 250px; width: 250px;"
-				>
-			</BadgeContainer>
+			<div class="tw-relative">
+				<BgRays v-show="!isLoading" style="top: -50px;" />
+				<BadgeContainer :show-shine="true">
+					<img
+						v-if="badgeImageUrl"
+						:src="badgeImageUrl"
+						alt="Badge"
+						style="height: 250px; width: 250px;"
+					>
+				</BadgeContainer>
+			</div>
 			<h3>{{ badgeLevelName }}</h3>
 			<p
 				v-if="funFact"
