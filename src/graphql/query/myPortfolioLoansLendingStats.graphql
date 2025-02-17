@@ -1,0 +1,29 @@
+query myPortfolioLoansLendingStats {
+	my {
+		id
+		userAccount {
+			id
+		}
+		userStats {
+			amount_of_loans
+			amount_repaid
+			amount_defaulted
+			amount_refunded
+			arrears_rate
+			amount_in_arrears
+			amount_outstanding
+			default_rate
+			total_ended
+			currency_loss_rate
+			currency_loss
+			num_fund_raising
+			num_raised
+			num_paying_back
+			number_delinquent
+			num_ended
+			num_defaulted
+			num_refunded
+			num_expired
+		}
+	}
+}
