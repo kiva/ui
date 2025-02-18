@@ -5,7 +5,7 @@ import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 const NEW_ADD_TO_BASKET_KEY = 'new_atb_experience_enable';
 
 export default {
-	inject: ['apollo', 'cookieStore'],
+	inject: ['apollo'],
 	data() {
 		return {
 			enableAddToBasketExp: false,
