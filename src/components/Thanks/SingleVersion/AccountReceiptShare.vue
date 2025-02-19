@@ -76,12 +76,13 @@
 			/>
 		</div>
 		<KvExpandable easing="ease-in-out">
-			<SocialShareV2
-				v-show="openShareModule"
-				class="social-share"
-				:lender="lender"
-				:loans="loans"
-			/>
+			<div v-show="openShareModule">
+				<SocialShareV2
+					class="social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+			</div>
 		</KvExpandable>
 	</div>
 </template>
