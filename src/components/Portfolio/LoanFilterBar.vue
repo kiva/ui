@@ -8,6 +8,8 @@
 				<kv-button
 					class="tw-text-sm"
 					variant="primary"
+					v-kv-track-event="['portfolio', 'click', 'export-loans']"
+					@click="handleExportClick"
 				>
 					Export {{ totalLoans }} loans
 				</kv-button>
@@ -55,18 +57,45 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { KvSelect, KvTextInput, KvButton } from '@kiva/kv-components';
+import logReadQueryError from '#src/util/logReadQueryError';
+import userIdQuery from '#src/graphql/query/userId.graphql';
 
-defineProps({
+const props = defineProps({
 	totalLoans: {
 		type: Number,
 		default: 0
 	}
 });
 
+const apollo = inject('apollo');
 const searchText = ref('');
 const selectedStatus = ref('all');
 const selectedLocation = ref('all');
 const selectedPartner = ref('all');
+
+const handleExportClick = async () => {
+	try {
+		const { data } = await apollo.query({
+			query: userIdQuery
+		});
+
+		const userId = data?.my?.userAccount?.id;
+		if (!userId) {
+			console.error('No user ID available for export');
+			return;
+		}
+
+		const queryParams = new URLSearchParams({
+			iDisplayStart: '0',
+			iDisplayLength: props.totalLoans.toString(),
+			user_id: userId.toString()
+		});
+
+		window.location.href = `/portfolio/loans/export?${queryParams.toString()}`;
+	} catch (error) {
+		logReadQueryError(error, 'LoanFilterBar userIdQuery');
+	}
+};
 </script>
