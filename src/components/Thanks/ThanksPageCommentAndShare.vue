@@ -114,6 +114,7 @@
 			:loan-name="loan.name"
 			:loan-id="loan.id"
 			:is-guest="isGuest"
+			:guest-username="guestUsername"
 		/>
 		<!-- Share Section -->
 		<kv-page-container v-if="!hideShareSection">
@@ -272,6 +273,10 @@ export default {
 		hideShareSection: {
 			type: Boolean,
 			default: false,
+		},
+		guestUsername: {
+			type: String,
+			default: '',
 		},
 	},
 	mixins: [socialSharingMixin],

@@ -135,6 +135,11 @@ export default function authRouter(config = {}) {
 			options.login_hint = 'signUp';
 		}
 
+		// Guest Username
+		if (req.query.username) {
+			options.username = req.query.username;
+		}
+
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		passport.authenticate('auth0', options)(req, res, next);
 	});

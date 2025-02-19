@@ -30,6 +30,7 @@
 						event-label="create-new-account-from-drawer"
 						:event-property="userType"
 						:event-value="numberOfBadges"
+						:guest-username="guestUsername"
 					/>
 				</div>
 			</KvExpandable>
@@ -131,6 +132,10 @@ const props = defineProps({
 	onlyDonations: {
 		type: Boolean,
 		default: false,
+	},
+	guestUsername: {
+		type: String,
+		default: ''
 	},
 });
 

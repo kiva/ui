@@ -9,7 +9,7 @@ import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-
 export default {
 	name: 'GuestAccountRedirect',
 	apollo: {
-		preFetch(config, client, { cookieStore }) {
+		preFetch(config, client, { cookieStore, route }) {
 			return client.query({
 				query: gql`query guestRedirect($basketId: String) {
 					shop (basketId: $basketId) {
@@ -45,6 +45,9 @@ export default {
 
 				// Check to see if user is authenticated
 				if (!data?.my?.userAccount?.id) {
+					const currentRoute = route.value ?? route ?? {};
+					const username = currentRoute.query?.username ?? '';
+
 					return Promise.reject({
 						path: '/ui-login',
 						query: {
@@ -52,6 +55,7 @@ export default {
 								guest: true,
 							})}`,
 							doneUrl: `${path}?${queryString}`,
+							username,
 						},
 					});
 				}

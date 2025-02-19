@@ -163,6 +163,7 @@
 				event-label="create-new-account"
 				event-property="guest"
 				:event-value="numberOfBadges"
+				:guest-username="guestUsername"
 			/>
 		</KvLightbox>
 	</div>
@@ -225,6 +226,10 @@ const props = defineProps({
 	router: {
 		type: Object,
 		default: () => ({}),
+	},
+	guestUsername: {
+		type: String,
+		default: '',
 	},
 });
 
