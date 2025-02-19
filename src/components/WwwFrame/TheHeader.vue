@@ -345,66 +345,41 @@
 								}"
 							>
 								<router-link
-									v-if="enableBasketExperiment"
-									id="basket-exp"
 									to="/basket"
-									v-kv-track-event="['TopNav','click-Basket']"
 									data-testid="header-basket"
-									class="tw-flex tw-justify-center tw-items-center tw-z-5"
+									class="tw-hidden"
+									:class="{
+										'header__button header__basket md:tw-flex': hasBasket,
+										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<div class="tw-relative tw-flex tw-items-center">
-										<kv-user-avatar
-											:key="loan.id"
-											v-for="(loan, i) in loansInBasket"
-											:lender-name="loan.name"
-											:lender-image-url="loan.image"
-											class="user-avatar !tw-w-5"
-											:class="{ 'tw--ml-4': i > 0}"
-											:style="{ 'z-index': loansInBasket.length - i }"
-										/>
-										<span class="bubble-count">
-											{{ basketCount }}
-										</span>
-									</div>
+									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+										{{ basketNumber }}
+									</span>
+									<span class="tw-hidden md:tw-flex">Basket</span>
 								</router-link>
-								<template v-else>
-									<router-link
-										to="/basket"
-										data-testid="header-basket"
-										class="tw-hidden"
-										:class="{
-											'header__button header__basket md:tw-flex': hasBasket,
-											'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
-										}"
-										v-kv-track-event="['TopNav','click-Basket']"
-									>
-										<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-											{{ basketNumber }}
-										</span>
-										<span class="tw-hidden md:tw-flex">Basket</span>
-									</router-link>
 
-									<!-- Mobile Basket -->
-									<router-link
-										to="/basket"
-										data-testid="header-basket"
-										class="tw-flex tw-items-center"
-										:class="{
-											'tw-hidden': !hasBasket,
-											'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
-										}"
-										v-kv-track-event="['TopNav','click-Basket']"
-									>
-										<!-- eslint-disable-next-line max-len -->
-										<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
-											{{ basketCount }}
-										</span>
-										<kv-material-icon
-											:icon="mdiBriefcase"
-											class="tw-inline-block tw-w-4 tw-h-4"
-										/>
-									</router-link>
-								</template>
+								<!-- Mobile Basket -->
+								<router-link
+									to="/basket"
+									data-testid="header-basket"
+									class="tw-flex tw-items-center"
+									:class="{
+										'tw-hidden': !hasBasket,
+										'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
+									}"
+									v-kv-track-event="['TopNav','click-Basket']"
+								>
+									<!-- eslint-disable-next-line max-len -->
+									<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
+										{{ basketCount }}
+									</span>
+									<kv-material-icon
+										:icon="mdiBriefcase"
+										class="tw-inline-block tw-w-4 tw-h-4"
+									/>
+								</router-link>
 							</div>
 
 							<!-- Log in Link -->

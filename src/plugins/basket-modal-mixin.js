@@ -44,11 +44,12 @@ export default {
 			}
 		},
 		getTargetsPosition() {
-			const target = document.getElementById('basket-exp');
+			const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
+			const target = targets.find(t => t?.clientHeight);
 			const header = document.getElementsByTagName('header')[0];
 			return {
-				basketPosition: target.getBoundingClientRect(),
-				headerPosition: header.getBoundingClientRect(),
+				basketPosition: target?.getBoundingClientRect(),
+				headerPosition: header?.getBoundingClientRect(),
 			};
 		},
 	},
