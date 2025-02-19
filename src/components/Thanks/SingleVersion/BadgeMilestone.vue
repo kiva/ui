@@ -20,7 +20,9 @@
 					>
 				</BadgeContainer>
 			</div>
-			<h3>{{ badgeLevelName }}</h3>
+			<h3 v-if="loansCount">
+				{{ badgeLevelName }}
+			</h3>
 			<p
 				v-if="funFact && loansCount"
 				class="tw-text-base tw-text-primary tw-text-center"
