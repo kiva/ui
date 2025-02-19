@@ -455,7 +455,7 @@ export default {
 					transactionId
 				);
 				// Complete transaction handles additional analytics + redirect
-				this.$emit('complete-transaction', transactionId);
+				this.$emit('complete-transaction', { transactionId, username: this.email });
 			}
 		},
 		handleFailedCheckout(kivaBraintreeResponse) {

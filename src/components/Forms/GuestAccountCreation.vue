@@ -86,7 +86,11 @@ export default {
 		eventValue: {
 			type: Number,
 			default: 0
-		}
+		},
+		guestUsername: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -129,10 +133,14 @@ export default {
 					if (result?.errors?.length > 0) {
 						throw result.errors;
 					}
-					const resetUrl = result?.data?.general?.startGuestAccountClaim;
+					let resetUrl = result?.data?.general?.startGuestAccountClaim;
 					if (!resetUrl) {
 						throw new Error('Missing reset url');
 					}
+					if (this.guestUsername) {
+						resetUrl += `?username=${this.guestUsername}`;
+					}
+
 					window.location = resetUrl;
 				}).catch(err => {
 					this.serverError = true;

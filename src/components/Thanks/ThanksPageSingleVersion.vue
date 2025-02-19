@@ -58,6 +58,7 @@
 				:loans="loans"
 				:show-receipt="showReceipt"
 				:only-donations="onlyDonations"
+				:guest-username="guestUsername"
 			/>
 		</div>
 		<KvLightbox
@@ -69,6 +70,7 @@
 				event-label="create-new-account"
 				:event-property="userType"
 				:event-value="numberOfBadges"
+				:guest-username="guestUsername"
 			/>
 		</KvLightbox>
 	</div>
@@ -131,7 +133,11 @@ const props = defineProps({
 	myKivaEnabled: {
 		type: Boolean,
 		default: false,
-	}
+	},
+	guestUsername: {
+		type: String,
+		default: '',
+	},
 });
 
 const receiptSection = ref(null);

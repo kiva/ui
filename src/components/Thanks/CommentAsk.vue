@@ -112,7 +112,9 @@
 						</p>
 
 						<div class="tw-mt-3 tw-max-w-sm tw-mx-auto">
-							<guest-account-creation />
+							<guest-account-creation
+								:guest-username="guestUsername"
+							/>
 						</div>
 					</div>
 				</kv-grid>
@@ -154,6 +156,10 @@ export default {
 		isGuest: {
 			type: Boolean,
 			default: false
+		},
+		guestUsername: {
+			type: String,
+			default: '',
 		},
 	},
 	data() {

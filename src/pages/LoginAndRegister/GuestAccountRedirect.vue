@@ -9,9 +9,10 @@ import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-
 export default {
 	name: 'GuestAccountRedirect',
 	apollo: {
-		preFetch(config, client, { cookieStore }) {
-			return client.query({
-				query: gql`query guestRedirect($basketId: String) {
+		preFetch(config, client, { cookieStore, route }) {
+			return Promise.all([
+				client.query({
+					query: gql`query guestRedirect($basketId: String) {
 					shop (basketId: $basketId) {
 						id
 						nonTrivialItemCount
@@ -23,7 +24,10 @@ export default {
 						}
 					}
 				}`,
-			}).then(({ data }) => {
+				}),
+				route,
+			]).then(data => {
+				const dataQuery = data[0].data;
 				// Add claimed=1 to the url to show a confirmation tip message on the page
 				const query = { claimed: 1 };
 
@@ -31,7 +35,7 @@ export default {
 				// Redirect to loan page if there is a pending guest comment
 				// Otherwise /portfolio
 				let path = '';
-				if (data?.shop?.nonTrivialItemCount > 0) {
+				if (dataQuery?.shop?.nonTrivialItemCount > 0) {
 					path = '/checkout';
 				} else if (cookieStore.get(GUEST_COMMENT_COMMENT) && cookieStore.get(GUEST_COMMENT_LOANID)) {
 					path = `/lend/${cookieStore.get(GUEST_COMMENT_LOANID)}`;
@@ -44,7 +48,10 @@ export default {
 					.join('&');
 
 				// Check to see if user is authenticated
-				if (!data?.my?.userAccount?.id) {
+				if (!dataQuery?.my?.userAccount?.id) {
+					const currentRoute = data[1].value ?? data[1] ?? {};
+					const username = currentRoute.query?.username ?? '';
+
 					return Promise.reject({
 						path: '/ui-login',
 						query: {
@@ -52,6 +59,7 @@ export default {
 								guest: true,
 							})}`,
 							doneUrl: `${path}?${queryString}`,
+							username,
 						},
 					});
 				}
