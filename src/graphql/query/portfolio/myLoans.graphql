@@ -1,0 +1,61 @@
+query myLoans {
+	my {
+		id
+		loans {
+			values {
+				id
+				name
+				status
+				use
+				image {
+					id
+					url
+				}
+				geocode {
+					country {
+						id
+						name
+						isoCode
+					}
+				}
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				sector {
+					id
+					name
+				}
+				lenderRepaymentTerm
+				terms {
+					loanAmount
+					disbursalDate
+					expectedPayments {
+						dueToKivaDate
+					}
+				}
+				userProperties {
+					loanBalance {
+						amountPurchasedByLender
+						amountRepaidToLender
+					}
+				}
+				teams {
+					values {
+						id
+						name
+						image {
+							url
+              				id
+						}
+					}
+				}
+				... on LoanPartner {
+					partnerName
+					partnerId
+				}
+			}
+			totalCount
+		}
+	}
+}

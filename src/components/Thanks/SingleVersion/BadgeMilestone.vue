@@ -4,27 +4,25 @@
 		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
 			tw-gap-2 print:tw-hidden tw-items-center tw-text-center tw-overflow-hidden tw-relative"
 	>
-		<BgRays v-show="!isLoading" />
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
 			<!-- Borrower images -->
 			<BorrowerAvatarsContainer v-if="showAvatars" :loans="avatars" />
-			<h2 style="line-height: 1.25;">
-				{{ title }}
-			</h2>
-			<BadgeContainer :show-shine="true">
-				<img
-					v-if="badgeImageUrl"
-					:src="badgeImageUrl"
-					alt="Badge"
-					style="height: 250px; width: 250px;"
-				>
-			</BadgeContainer>
-			<h3 v-if="showSimplifiedTitle">
-				Take the next step on your impact journey.
-			</h3>
+			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
+			<div class="tw-relative">
+				<BgRays v-show="!isLoading" style="top: -50px;" />
+				<BadgeContainer :show-shine="true">
+					<img
+						v-if="badgeImageUrl"
+						:src="badgeImageUrl"
+						alt="Badge"
+						style="height: 250px; width: 250px;"
+					>
+				</BadgeContainer>
+			</div>
+			<h3>{{ badgeLevelName }}</h3>
 			<p
-				v-if="funFact"
+				v-if="funFact && loansCount"
 				class="tw-text-base tw-text-primary tw-text-center"
 			>
 				{{ funFact }}<span v-if="funFactSource">*</span>
@@ -33,7 +31,7 @@
 				Continue
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
 			</KvButton>
-			<p v-if="funFactSource" class="tw-text-small tw-text-center tw-text-secondary">
+			<p v-if="funFactSource && loansCount" class="tw-text-small tw-text-center tw-text-secondary">
 				*{{ funFactSource }}
 			</p>
 		</template>
@@ -87,7 +85,7 @@ const props = defineProps({
 	kivaCardsModuleShown: {
 		type: Boolean,
 		default: false,
-	},
+	}
 });
 
 const apollo = inject('apollo');
@@ -99,6 +97,7 @@ const {
 	badgeData,
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
+	getTierBadgeDataByLevel,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -109,9 +108,25 @@ const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAnd
 
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
 
-const showSimplifiedTitle = computed(() => props.isOptedIn && !props.kivaCardsModuleShown);
+const loansCount = computed(() => props.loans?.length ?? 0);
 
-const title = computed(() => (showSimplifiedTitle.value ? 'Thank you!' : 'Take the next step on your impact journey.'));
+const moduleTitle = computed(() => {
+	let title = '';
+	if (props.isOptedIn && !props.kivaCardsModuleShown) {
+		title += 'Thank you!<br />';
+	}
+
+	if (!loansCount.value) {
+		title += 'Take the next step on your impact journey.';
+	} else {
+		title += badgeDataAchieved.value?.length === 1
+			? 'You reached a milestone'
+			: `You reached ${badgeDataAchieved.value?.length} milestones`;
+		title += props.isOptedIn && !props.kivaCardsModuleShown ? '.' : '!';
+	}
+
+	return title;
+});
 
 const displayedBadgeData = computed(() => {
 	if (badgeDataAchieved.value?.length) {
@@ -129,6 +144,11 @@ const badgeImageUrl = computed(() => displayedBadgeData.value.contentfulData?.im
 const avatars = computed(() => props.loans.slice(0, 3));
 
 const showAvatars = computed(() => props.isOptedIn && avatars.value.length && !props.loanCommentModuleShown);
+
+const badgeLevelName = computed(() => {
+	const levelData = getTierBadgeDataByLevel(displayedBadgeData.value, displayedBadgeData.value.level);
+	return levelData.tierName;
+});
 
 const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFact ?? '');
 
