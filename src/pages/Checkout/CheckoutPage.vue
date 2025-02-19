@@ -876,7 +876,7 @@ export default {
 				if (this.checkingOutAsGuest) {
 					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
 				}
-				if (payload.username) {
+				if (payload?.username) {
 					checkoutAdditionalQueryParams += `&username=${payload.username}`;
 				}
 
