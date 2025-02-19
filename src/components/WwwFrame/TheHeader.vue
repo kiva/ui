@@ -588,7 +588,7 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import {
-	KvUserAvatar, KvButton, KvMaterialIcon, KvPageContainer
+	KvButton, KvMaterialIcon, KvPageContainer
 } from '@kiva/kv-components';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
@@ -623,7 +623,6 @@ export default {
 		KvButton,
 		TheLendMenu: defineAsyncComponent(() => import('#src/components/WwwFrame/LendMenu/TheLendMenu')),
 		TeamsMenu,
-		KvUserAvatar,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [addToBasketExpMixin],
