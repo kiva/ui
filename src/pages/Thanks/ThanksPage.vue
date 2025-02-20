@@ -13,6 +13,7 @@
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -30,6 +31,7 @@
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
 				:router="$router"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
@@ -40,6 +42,7 @@
 				:lender="lender"
 				:is-guest="isGuest"
 				:opted-in="optedIn"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<div v-if="challengeHeaderVisible" class="tw-bg-secondary">
@@ -164,6 +167,7 @@
 			:ftd-credit-amount="ftdCreditAmount"
 			@guest-create-account="createGuestAccount"
 			:ask-for-comments="askForComments"
+			:guest-username="guestUsername"
 		/>
 	</www-page>
 </template>
@@ -291,6 +295,7 @@ export default {
 			badgesAchieved: [],
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
+			guestUsername: '',
 		};
 	},
 	apollo: {
@@ -612,6 +617,7 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+		this.guestUsername = this.$route.query?.username ?? '';
 
 		// MyKiva Badges Experiment
 		this.myKivaExperimentEnabled = getIsMyKivaEnabled(

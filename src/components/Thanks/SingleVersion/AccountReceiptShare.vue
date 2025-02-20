@@ -30,6 +30,7 @@
 						event-label="create-new-account-from-drawer"
 						:event-property="userType"
 						:event-value="numberOfBadges"
+						:guest-username="guestUsername"
 					/>
 				</div>
 			</KvExpandable>
@@ -76,12 +77,13 @@
 			/>
 		</div>
 		<KvExpandable easing="ease-in-out">
-			<SocialShareV2
-				v-show="openShareModule"
-				class="social-share"
-				:lender="lender"
-				:loans="loans"
-			/>
+			<div v-show="openShareModule">
+				<SocialShareV2
+					class="social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+			</div>
 		</KvExpandable>
 	</div>
 </template>
@@ -130,6 +132,10 @@ const props = defineProps({
 	onlyDonations: {
 		type: Boolean,
 		default: false,
+	},
+	guestUsername: {
+		type: String,
+		default: ''
 	},
 });
 

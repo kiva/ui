@@ -435,7 +435,8 @@ export default {
 			}
 		},
 		getTargetPosition() {
-			const target = document.getElementById('basket-exp');
+			const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
+			const target = targets.find(t => t?.clientHeight);
 			return target.getBoundingClientRect();
 		},
 		animateBubble() {

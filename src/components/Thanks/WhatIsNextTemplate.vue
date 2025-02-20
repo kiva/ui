@@ -85,6 +85,7 @@
 									class="tw-pt-3 account-creation"
 									event-category="thanks"
 									event-label="open-account-creation-drawer"
+									:guest-username="guestUsername"
 								/>
 							</template>
 							<template v-else>
@@ -175,6 +176,7 @@
 								class="tw-pt-3 account-creation"
 								event-category="thanks"
 								event-label="open-account-creation-drawer"
+								:guest-username="guestUsername"
 							/>
 						</div>
 					</kv-expandable>
@@ -308,6 +310,10 @@ export default {
 		optedIn: {
 			type: Boolean,
 			default: false
+		},
+		guestUsername: {
+			type: String,
+			default: '',
 		},
 	},
 	data() {

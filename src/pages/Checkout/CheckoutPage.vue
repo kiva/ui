@@ -850,7 +850,8 @@ export default {
 				this.setUpdatingTotals(false);
 			});
 		},
-		completeTransaction(transactionId) {
+		completeTransaction(payload) {
+			const transactionId = typeof payload === 'object' ? payload.transactionId : payload;
 			// compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
@@ -874,6 +875,9 @@ export default {
 				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
 				if (this.checkingOutAsGuest) {
 					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
+				}
+				if (payload?.username) {
+					checkoutAdditionalQueryParams += `&username=${payload.username}`;
 				}
 
 				// redirect to thanks
