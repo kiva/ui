@@ -617,7 +617,7 @@ export default {
 		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.my?.userPreferences?.preferences ?? null,
+			data?.my?.userPreferences,
 			data?.my?.loans?.totalCount,
 		);
 

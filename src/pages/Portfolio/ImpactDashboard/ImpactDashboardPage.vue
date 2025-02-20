@@ -124,7 +124,7 @@ export default {
 		this.showMyKivaPage = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			userData?.userPreferences?.preferences ?? null,
+			userData?.userPreferences,
 			userData.lender?.loanCount,
 		);
 
