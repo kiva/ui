@@ -46,9 +46,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-font-medium tw-text-center tw-pt-1">
-			{{ getBadgeTitle(badge) }}
-		</div>
+		<p v-html="getBadgeTitle(badge)" class="tw-font-medium tw-text-center tw-pt-1"></p>
 	</div>
 </template>
 
@@ -71,7 +69,7 @@ const mouseOver = ref(false);
 
 const getBadgeTitle = badge => {
 	const levelData = getTierBadgeDataByLevel(badge, badge.level);
-	return levelData.tierName;
+	return `${levelData.challengeName} <br /> ${levelData.level > 0 ? `(level ${levelData.level})` : ''}`;
 };
 
 const getBadgeImgUrl = badge => {
