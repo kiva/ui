@@ -61,6 +61,7 @@ import { ref, inject } from 'vue';
 import { KvSelect, KvTextInput, KvButton } from '@kiva/kv-components';
 import logReadQueryError from '#src/util/logReadQueryError';
 import userIdQuery from '#src/graphql/query/userId.graphql';
+import logFormatter from '#src/util/logFormatter';
 
 const props = defineProps({
 	totalLoans: {
@@ -83,7 +84,8 @@ const handleExportClick = async () => {
 
 		const userId = data?.my?.userAccount?.id;
 		if (!userId) {
-			console.error('No user ID available for export');
+			logFormatter('No user ID available for export');
+			this.$showTipMsg('There was a problem preparing your loan export.', 'error');
 			return;
 		}
 
@@ -93,9 +95,10 @@ const handleExportClick = async () => {
 			user_id: userId.toString()
 		});
 
-		window.location.href = `/portfolio/loans/export?${queryParams.toString()}`;
+		window.location.href = `https://www.kiva.org/portfolio/loans/export?${queryParams.toString()}`;
 	} catch (error) {
 		logReadQueryError(error, 'LoanFilterBar userIdQuery');
+		this.$showTipMsg('There was a problem preparing your loan export.', 'error');
 	}
 };
 </script>
