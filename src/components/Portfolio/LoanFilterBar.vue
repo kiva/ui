@@ -85,7 +85,6 @@ const handleExportClick = async () => {
 		const userId = data?.my?.userAccount?.id;
 		if (!userId) {
 			logFormatter('No user ID available for export');
-			this.$showTipMsg('There was a problem preparing your loan export.', 'error');
 			return;
 		}
 
@@ -95,10 +94,9 @@ const handleExportClick = async () => {
 			user_id: userId.toString()
 		});
 
-		window.location.href = `https://www.kiva.org/portfolio/loans/export?${queryParams.toString()}`;
+		window.location.href = `/portfolio/loans/export?${queryParams.toString()}`;
 	} catch (error) {
 		logReadQueryError(error, 'LoanFilterBar userIdQuery');
-		this.$showTipMsg('There was a problem preparing your loan export.', 'error');
 	}
 };
 </script>
