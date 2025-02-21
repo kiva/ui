@@ -445,8 +445,12 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the login required view if we couldn't get the receipt
+			if (!this.receipt) {
+				return LOGIN_REQUIRED_VIEW;
+			}
 			// Show the single version view if the experiment is enabled
-			if (this.thanksSingleVersionEnabled && this.receipt) {
+			if (this.thanksSingleVersionEnabled) {
 				return SINGLE_VERSION_VIEW;
 			}
 			// Show the donation only view if the user has only donated and not lent
@@ -462,10 +466,6 @@ export default {
 			// Show the marketing opt-in view if the user has not opted in and has loans
 			if (!this.optedIn && this.loans.length > 0) {
 				return MARKETING_OPT_IN_VIEW;
-			}
-			// Show the login required view if we couldn't get the receipt
-			if (!this.receipt) {
-				return LOGIN_REQUIRED_VIEW;
 			}
 			// Show the comment and share view if jumpToGuestUpsell is not true, there are no printable Kiva cards, and
 			// the user is either a guest who made a US loan, or a logged in user who made a loan.
