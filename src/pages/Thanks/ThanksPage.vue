@@ -446,7 +446,7 @@ export default {
 		},
 		activeView() {
 			// Show the single version view if the experiment is enabled
-			if (this.thanksSingleVersionEnabled) {
+			if (this.thanksSingleVersionEnabled && this.receipt) {
 				return SINGLE_VERSION_VIEW;
 			}
 			// Show the donation only view if the user has only donated and not lent
