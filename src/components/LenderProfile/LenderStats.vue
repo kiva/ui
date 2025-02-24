@@ -11,9 +11,23 @@
 				/>
 			</div>
 			<div v-else>
-				<h2 class="tw-mb-2">
-					Portfolio distribution
-				</h2>
+				<div
+					class="tw-flex tw-flex-col tw-justify-between
+						lg:tw-flex-row tw-items-start lg:tw-items-center tw-gap-1 tw-mb-2"
+				>
+					<h2>
+						Portfolio distribution
+					</h2>
+					<kv-switch
+						class="tw-flex switch"
+						v-model="showOnlyActiveLoans"
+						@update:model-value="$emit('get-lender-stats', $event)"
+					>
+						<div class="tw-flex tw-items-center tw-gap-0.5">
+							<p>Show only active loans</p>
+						</div>
+					</kv-switch>
+				</div>
 				<stats-table
 					class="lender-stats"
 					:location-stats="locationStats"
@@ -31,7 +45,7 @@
 
 <script>
 import StatsTable from '#src/components/Stats/StatsTable';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvSwitch } from '@kiva/kv-components';
 import AsyncLenderSection from './AsyncLenderSection';
 
 export default {
@@ -47,12 +61,14 @@ export default {
 		return {
 			isLoading: true,
 			showStats: true,
+			showOnlyActiveLoans: false,
 		};
 	},
 	components: {
 		StatsTable,
 		KvLoadingPlaceholder,
 		AsyncLenderSection,
+		KvSwitch,
 	},
 	methods: {
 		statsWithPercent(stats) {
@@ -113,3 +129,15 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.switch :deep(div.tw-bg-tertiary) {
+	@apply !tw-h-3.5;
+
+	width: 3.25rem;
+}
+
+.switch :deep(div.tw-bg-white) {
+	@apply !tw-w-2.5 !tw-h-2.5;
+}
+</style>
