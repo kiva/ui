@@ -119,12 +119,12 @@
 						/>
 					</div>
 				</section>
+				<EarnedBadgesSection
+					:id="MY_ACHIEVEMENTS_ID"
+					:completed-badges="completedBadges"
+					@badge-clicked="handleEarnedBadgeClicked"
+				/>
 			</MyKivaContainer>
-			<EarnedBadgesSection
-				:id="MY_ACHIEVEMENTS_ID"
-				:badges-data="badgeData"
-				@badge-clicked="handleEarnedBadgeClicked"
-			/>
 		</template>
 		<div v-if="showLoanFootnote" class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5">
 			<MyKivaContainer>
@@ -175,6 +175,7 @@ const {
 	fetchContentfulData,
 	badgeAchievementData,
 	badgeData,
+	completedBadges,
 } = useBadgeData(apollo);
 
 const lender = ref(null);

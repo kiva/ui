@@ -18,7 +18,7 @@
 		>
 			<h2 v-html="title" class="tw-text-center" style="line-height: 1.25;"></h2>
 			<div class="tw-relative">
-				<BgRays style="top: -70px; left: -30px" />
+				<BgRays class="bg-rays" />
 				<Globe class="tw-z-1 tw-my-2" style="width: 194px; height: 189px;" />
 			</div>
 			<KvButton
@@ -65,3 +65,14 @@ const title = computed(() => {
 });
 
 </script>
+
+<style lang="postcss" scoped>
+.bg-rays {
+	top: -70px;
+	left: -30px;
+
+	@screen md {
+		top: -40px;
+	}
+}
+</style>

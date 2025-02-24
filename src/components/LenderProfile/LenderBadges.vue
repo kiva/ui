@@ -12,7 +12,7 @@
 					{{ badgesTitle }}
 				</h2>
 				<!-- eslint-disable-next-line max-len -->
-				<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center lg:tw-justify-start tw-gap-3 md:tw-gap-8 lg:tw-gap-3.5 tw-my-4">
+				<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center lg:tw-justify-start tw-gap-6 md:tw-gap-8 tw-my-4">
 					<BadgeCard
 						v-for="badge in showedBadges"
 						:key="badge.id"
