@@ -31,7 +31,7 @@ export default {
 	},
 	computed: {
 		isInExperimentPages() {
-			return this.$route.path.includes('lend-by-category') || this.$route.path.includes('lend/filter');
+			return this.$route.path.includes('lend');
 		},
 	}
 };
