@@ -154,7 +154,6 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
-import useUserPreferences from '#src/composables/useUserPreferences';
 import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 import {
 	ref,
@@ -178,8 +177,6 @@ const {
 	badgeData,
 	completedBadges,
 } = useBadgeData(apollo);
-
-const { saveUserPreferences } = useUserPreferences(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -306,22 +303,6 @@ const fetchMyKivaData = () => {
 		});
 };
 
-const saveMyKivaToUserPreferences = () => {
-	const preferences = userInfo.value?.userPreferences?.preferences;
-	const formattedPreference = typeof preferences === 'string'
-		? JSON.parse(userInfo.value?.userPreferences?.preferences)
-		: preferences;
-
-	if (!formattedPreference?.myKivaJan2025Exp) {
-		saveUserPreferences({
-			userPreferences: userInfo.value?.userPreferences ?? null,
-			newPreference: {
-				myKivaJan2025Exp: 1,
-			}
-		});
-	}
-};
-
 const badgesAchieved = computed(() => {
 	const completedBadgesArr = [];
 
@@ -370,7 +351,6 @@ onMounted(async () => {
 	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
-	saveMyKivaToUserPreferences();
 });
 
 watch(isAchievementDataLoaded, () => {
