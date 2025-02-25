@@ -93,8 +93,10 @@ export default function authRouter(config = {}) {
 		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
+			const username = req.query.username || '';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
+				username,
 			})}`;
 		}
 		// Override the login hint with whatever hint is set in the request
@@ -133,11 +135,6 @@ export default function authRouter(config = {}) {
 		if (req.query.earnBadge) {
 			options.earn_badge = true;
 			options.login_hint = 'signUp';
-		}
-
-		// Guest Username
-		if (req.query.username) {
-			options.username = req.query.username;
 		}
 
 		info(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
