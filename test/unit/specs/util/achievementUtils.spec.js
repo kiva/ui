@@ -1,5 +1,5 @@
 import {
-	achievementProgression, missingMilestones
+	missingMilestones
 } from '#src/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
@@ -61,22 +61,6 @@ const sampleAPIMilestoneProgress = [
 	}
 
 ];
-describe('achievementUtils.js achievementProgression', () => {
-	test('Should return true for achievement with 1 milestone in completeable status', () => {
-		expect(achievementProgression(sampleAPIMilestoneProgress)).toBe('climate-challenge');
-	});
-
-	test('Should return false if either param is missing or undefined', () => {
-		expect(achievementProgression(undefined)).toBe(null);
-		expect(achievementProgression([])).toBe(null);
-	});
-
-	test('Should return true for achievement with 1 milestone in new_progress status', () => {
-		const newProgress = sampleAPIMilestoneProgress;
-		newProgress[0].status = 'NEW_PROGRESS';
-		expect(achievementProgression(newProgress)).toBe('climate-challenge');
-	});
-});
 
 describe('achievementUtils.js missingMilestones', () => {
 	test('Should return achievements yet to be completed', () => {

@@ -3,7 +3,7 @@ query updatesQuery($loanId: Int!, $limit: Int, $offset: Int) {
         loan(id: $loanId) {
             id
             name
-            updates(limit: $limit, offset: $offset ) {
+            updates(limit: $limit, offset: $offset) {
                 totalCount
                 values {
                     id

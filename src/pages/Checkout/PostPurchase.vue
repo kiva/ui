@@ -21,6 +21,7 @@ export default {
 					const transactionId = numeral(currentRoute.query?.kiva_transaction_id).value();
 					const valetInviter = currentRoute.query?.valet_inviter ?? '';
 					const optedIn = currentRoute.query?.optedIn ?? '';
+					const username = currentRoute.query?.username ?? '';
 					if (!transactionId) {
 						// redirect to thanks page if no transaction id was provided
 						// currently resolves to portfolio via ThanksView getCheckoutId method
@@ -38,11 +39,7 @@ export default {
 						// get tracking data from snowplow cookie
 						const { snowplowUserId, snowplowSessionId } = parseSPCookie(cookieStore);
 
-						// If challenge query exists, then redirect to challenge thanks page
-						let successPath = currentRoute.query?.challenge
-							? `/checkout/thanks/${currentRoute.query.challenge}` : '/thanks';
-
-						successPath = valetInviter || optedIn ? '/checkout/thanks' : successPath;
+						const successPath = valetInviter || optedIn ? '/checkout/thanks' : '/thanks';
 
 						// build route for thanks page redirect
 						const successRoute = {
@@ -56,6 +53,10 @@ export default {
 
 						if (optedIn) {
 							successRoute.query.optedIn = optedIn;
+						}
+
+						if (username) {
+							successRoute.query.username = username;
 						}
 
 						// track the transaction event

@@ -6,7 +6,14 @@
 		<template v-if="activeView === SINGLE_VERSION_VIEW">
 			<ThanksPageSingleVersion
 				:is-guest="isGuest"
+				:is-opted-in="optedIn"
+				:lender="lender"
 				:loans="loans"
+				:receipt="receipt"
+				:monthly-donation-amount="monthlyDonationAmount"
+				:badges-achieved="badgesAchieved"
+				:my-kiva-enabled="myKivaExperimentEnabled"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -24,6 +31,7 @@
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
 				:router="$router"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
@@ -34,6 +42,7 @@
 				:lender="lender"
 				:is-guest="isGuest"
 				:opted-in="optedIn"
+				:guest-username="guestUsername"
 			/>
 		</template>
 		<div v-if="challengeHeaderVisible" class="tw-bg-secondary">
@@ -158,6 +167,7 @@
 			:ftd-credit-amount="ftdCreditAmount"
 			@guest-create-account="createGuestAccount"
 			:ask-for-comments="askForComments"
+			:guest-username="guestUsername"
 		/>
 	</www-page>
 </template>
@@ -198,7 +208,7 @@ import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVers
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const TY_SINGLE_VERSION_EXP = 'ty_single_version';
+const TY_SINGLE_VERSION_KEY = 'general.single_version_enable.value';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -280,10 +290,12 @@ export default {
 			V2_VIEW,
 			COMMENT_AND_SHARE_VIEW,
 			LOGIN_REQUIRED_VIEW,
+			myKivaExperimentEnabled: false,
 			myKivaEnabled: false,
 			badgesAchieved: [],
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
+			guestUsername: '',
 		};
 	},
 	apollo: {
@@ -433,6 +445,10 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the login required view if we couldn't get the receipt
+			if (!this.receipt) {
+				return LOGIN_REQUIRED_VIEW;
+			}
 			// Show the single version view if the experiment is enabled
 			if (this.thanksSingleVersionEnabled) {
 				return SINGLE_VERSION_VIEW;
@@ -450,10 +466,6 @@ export default {
 			// Show the marketing opt-in view if the user has not opted in and has loans
 			if (!this.optedIn && this.loans.length > 0) {
 				return MARKETING_OPT_IN_VIEW;
-			}
-			// Show the login required view if we couldn't get the receipt
-			if (!this.receipt) {
-				return LOGIN_REQUIRED_VIEW;
 			}
 			// Show the comment and share view if jumpToGuestUpsell is not true, there are no printable Kiva cards, and
 			// the user is either a guest who made a US loan, or a logged in user who made a loan.
@@ -520,6 +532,9 @@ export default {
 		// Credit amount for FTD message from settings
 		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
 		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
+
+		// Enable single version TY page
+		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
 
 		this.loans = getLoans(this.receipt);
 
@@ -602,16 +617,17 @@ export default {
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
 		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+		this.guestUsername = this.$route.query?.username ?? '';
 
 		// MyKiva Badges Experiment
-		this.myKivaEnabled = getIsMyKivaEnabled(
+		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.my?.userPreferences?.preferences ?? null,
-			totalLoans
+			data?.my?.userPreferences,
+			!this.isGuest ? data?.my?.loans?.totalCount : 1,
 		);
 
-		if (this.myKivaEnabled) {
+		if (this.myKivaExperimentEnabled) {
 			try {
 				const response = this.apollo.readQuery({
 					query: postCheckoutAchievementsQuery,
@@ -642,14 +658,6 @@ export default {
 		if (this.activeView === LOGIN_REQUIRED_VIEW) {
 			this.$kvTrackEvent('post-checkout', 'show', 'need-to-login-view', this.isGuest ? 'guest' : 'signed-in');
 		}
-
-		// Check if TY page single version is enabled
-		const singleVersionExp = this.apollo.readFragment({
-			id: `Experiment:${TY_SINGLE_VERSION_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-
-		this.thanksSingleVersionEnabled = singleVersionExp?.version === 'b';
 
 		this.$kvTrackEvent(
 			'post-checkout',

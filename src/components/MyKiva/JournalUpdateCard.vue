@@ -87,10 +87,6 @@ import {
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
-	loan: {
-		type: Object,
-		required: true,
-	},
 	update: {
 		type: Object,
 		required: true,
@@ -101,10 +97,11 @@ const props = defineProps({
 	},
 });
 
-const { loan, update } = toRefs(props);
+const { update } = toRefs(props);
 
 const emit = defineEmits(['read-more-clicked', 'share-loan-clicked']);
 
+const loan = computed(() => update.value?.loan ?? {});
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
 const hash = computed(() => loan.value?.image?.hash ?? '');

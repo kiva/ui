@@ -47,10 +47,8 @@
 						:loans="loans"
 						:total-loans="totalLoans"
 						:is-loading="isLoading"
-						@selected-loan="handleSelectedLoan"
 					/>
 					<JournalUpdatesCarousel
-						:loan="activeLoan"
 						:updates="loanUpdates"
 						:lender="lender"
 						:total-updates="totalUpdates"
@@ -121,12 +119,12 @@
 						/>
 					</div>
 				</section>
+				<EarnedBadgesSection
+					:id="MY_ACHIEVEMENTS_ID"
+					:completed-badges="completedBadges"
+					@badge-clicked="handleEarnedBadgeClicked"
+				/>
 			</MyKivaContainer>
-			<EarnedBadgesSection
-				:id="MY_ACHIEVEMENTS_ID"
-				:badges-data="badgeData"
-				@badge-clicked="handleEarnedBadgeClicked"
-			/>
 		</template>
 		<div v-if="showLoanFootnote" class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5">
 			<MyKivaContainer>
@@ -143,7 +141,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
-import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
+import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -156,7 +154,6 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
-import useUserPreferences from '#src/composables/useUserPreferences';
 import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
 import {
 	ref,
@@ -178,15 +175,13 @@ const {
 	fetchContentfulData,
 	badgeAchievementData,
 	badgeData,
+	completedBadges,
 } = useBadgeData(apollo);
-
-const { saveUserPreferences } = useUserPreferences(apollo);
 
 const lender = ref(null);
 const showNavigation = ref(false);
 const userInfo = ref({});
 const loans = ref([]);
-const activeLoan = ref({});
 const loanUpdates = ref([]);
 const totalUpdates = ref(0);
 const showBadgeModal = ref(false);
@@ -265,18 +260,17 @@ const handleBackToJourney = badge => {
 	}
 };
 
-const fetchLoanUpdates = (loanId, loadMore) => {
+const fetchUserUpdates = loadMore => {
 	apollo.query({
-		query: updatesQuery,
+		query: userUpdatesQuery,
 		variables: {
-			loanId,
 			limit: updatesLimit.value,
 			offset: updatesOffset.value
 		}
 	})
 		.then(result => {
-			totalUpdates.value = result.data?.lend?.loan?.updates?.totalCount ?? 0;
-			const updates = result.data?.lend?.loan?.updates?.values ?? [];
+			totalUpdates.value = result.data?.my?.updates?.totalCount ?? 0;
+			const updates = result.data?.my?.updates?.values ?? [];
 			if (loadMore) {
 				loanUpdates.value = loanUpdates.value.concat(updates);
 			} else {
@@ -289,16 +283,10 @@ const fetchLoanUpdates = (loanId, loadMore) => {
 
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
-	fetchLoanUpdates(activeLoan.value.id, true);
+	fetchUserUpdates(true);
 };
 
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
-
-const handleSelectedLoan = loan => {
-	updatesOffset.value = 0;
-	activeLoan.value = loan;
-	fetchLoanUpdates(activeLoan.value.id);
-};
 
 const fetchMyKivaData = () => {
 	return apollo.query({ query: myKivaQuery })
@@ -309,29 +297,10 @@ const fetchMyKivaData = () => {
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			if (loans.value.length > 0) {
 				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
-				// eslint-disable-next-line prefer-destructuring
-				activeLoan.value = loans.value[0];
-				fetchLoanUpdates(activeLoan.value.id);
 			}
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage myKivaQuery');
 		});
-};
-
-const saveMyKivaToUserPreferences = () => {
-	const preferences = userInfo.value?.userPreferences?.preferences;
-	const formattedPreference = typeof preferences === 'string'
-		? JSON.parse(userInfo.value?.userPreferences?.preferences)
-		: preferences;
-
-	if (!formattedPreference?.myKivaJan2025Exp) {
-		saveUserPreferences({
-			userPreferences: userInfo.value?.userPreferences ?? null,
-			newPreference: {
-				myKivaJan2025Exp: 1,
-			}
-		});
-	}
 };
 
 const badgesAchieved = computed(() => {
@@ -379,9 +348,9 @@ onMounted(async () => {
 	fireHotJarEvent('my_kiva_viewed');
 
 	await fetchMyKivaData();
+	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
-	saveMyKivaToUserPreferences();
 });
 
 watch(isAchievementDataLoaded, () => {

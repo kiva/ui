@@ -96,16 +96,6 @@ export default [
 		}
 	},
 	{
-		path: '/checkout/thanks/:challengeId',
-		component: () => import('#src/pages/Thanks/ThanksPageChallenge'),
-		meta: {
-			excludeFromStaticSitemap: true,
-		},
-		props: route => ({
-			challengeId: route.params.challengeId,
-		})
-	},
-	{
 		path: '/checkout/thanks',
 		component: () => import('#src/pages/Thanks/ThanksPage'),
 		meta: {
@@ -474,6 +464,14 @@ export default [
 	{
 		path: '/portfolio/lending-stats',
 		component: () => import('#src/pages/Portfolio/LendingStats/LendingStatsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/portfolio/loans-beta',
+		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,

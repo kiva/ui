@@ -1,15 +1,15 @@
 <template>
 	<div
 		v-if="showComment"
-		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-2.5 tw-py-1.5 tw-w-full
-            print:tw-shadow-transparent"
+		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
+            print:tw-hidden"
 	>
 		<KvUserAvatar
 			:lender-name="loanName"
 			:lender-image-url="loanImageUrl"
 			class="tw-mx-auto"
 		/>
-		<h2	class="tw-mt-1 tw-mb-3">
+		<h2	class="tw-mt-1 tw-mb-3 tw-text-center" style="line-height: 1.25;">
 			Tell others why you love this loan to <span class="data-hj-suppress">{{ loanName }}</span>
 		</h2>
 		<div class="tw-relative">
@@ -41,13 +41,13 @@
 			variant="primary"
 			:state="buttonState"
 			aria-label="Comment"
-			@click="submitCommentAsUser"
+			@click="submitComment"
 			v-kv-track-event="['post-checkout', 'submit', 'comments-ask', 'comment']"
 		>
 			Leave Comment
 		</KvButton>
 
-		<p class="tw-text-base tw-mt-2">
+		<p class="tw-text-base tw-mt-2 tw-text-center">
 			Your comments can really help <span class="data-hj-suppress">{{ loanName }}</span> fully fund their loan.
 		</p>
 
@@ -96,7 +96,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, computed, inject } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
 import logFormatter from '#src/util/logFormatter';
@@ -105,12 +105,20 @@ import {
 } from '@kiva/kv-components';
 import loanAddComment from '#src/graphql/mutation/loanAddComment.graphql';
 import useTipMessage from '#src/composables/useTipMessage';
+import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
+
+const emit = defineEmits(['guest-continue']);
 
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 
 const { $showTipMsg } = useTipMessage(apollo);
 
 const props = defineProps({
+	isGuest: {
+		type: Boolean,
+		default: true,
+	},
 	loan: {
 		type: Object,
 		default: () => ({}),
@@ -136,6 +144,19 @@ const buttonState = computed(() => {
 	return '';
 });
 
+/**
+ * We don't currently allow guests to add comments due to requiring the user to have a team attribution for the loan.
+ * This guest functionality was verified to be working and keeping in case we want to allow it in the future.
+ */
+const submitCommentAsGuest = () => {
+	// Save comment to cookie
+	cookieStore.set(GUEST_COMMENT_COMMENT, userComment.value, { path: '/' });
+	cookieStore.set(GUEST_COMMENT_LOANID, loanId.value, { path: '/' });
+
+	// Show create account form
+	emit('guest-continue');
+};
+
 const submitCommentAsUser = () => {
 	loading.value = true;
 	apollo.mutate({
@@ -145,7 +166,7 @@ const submitCommentAsUser = () => {
 			body: userComment.value
 		}
 	}).then(({ data }) => {
-		// comment was added successfully
+		// Comment was added successfully
 		if (data.loan.addComment) {
 			$showTipMsg(`Thank you for helping ${loanName.value}!`);
 			showComment.value = false;
@@ -158,5 +179,13 @@ const submitCommentAsUser = () => {
 	}).finally(() => {
 		loading.value = false;
 	});
+};
+
+const submitComment = () => {
+	if (props.isGuest) {
+		submitCommentAsGuest();
+	} else {
+		submitCommentAsUser();
+	}
 };
 </script>

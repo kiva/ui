@@ -16,7 +16,7 @@
 			<section>
 				<div
 					data-testid="print-kcard-msg"
-					class="section tw-text-center hide-for-print"
+					class="section tw-text-center print:!tw-hidden"
 					v-if="printableKivaCards.length > 0"
 				>
 					<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
@@ -104,7 +104,7 @@
 
 								<kv-button
 									data-testid="kcard-print-button"
-									class="tw-mb-2"
+									class="tw-mb-2 print:!tw-hidden"
 									target="_blank"
 									:href="`/gifts/kiva-cards/print?giftCode=${card.kivaCardObject.redemptionCode}`"
 								>
@@ -158,7 +158,7 @@
 					</li>
 					<li
 						data-testid="kcard-portfolio"
-						class="section tw-text-center"
+						class="section tw-text-center print:!tw-hidden"
 						v-if="kivaCards.length > 0"
 					>
 						For more details about all your Kiva Card purchases, please visit your
@@ -184,7 +184,7 @@
 							<router-link
 								v-if="receipt.totals.donationTotal > 0"
 								data-testid="print-donation-information"
-								class="smallest"
+								class="smallest print:tw-hidden"
 								to="/portfolio/donations"
 							>
 								Print Donation Information
@@ -274,7 +274,7 @@
 					</li>
 				</ul>
 			</section>
-			<section class="section section--print hide-for-print">
+			<section class="section section--print print:!tw-hidden">
 				<button
 					data-testid="print-receipt"
 					class="print tw-text-link tw-flex tw-items-center tw-gap-1"

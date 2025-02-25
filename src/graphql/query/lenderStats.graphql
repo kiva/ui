@@ -1,8 +1,8 @@
-query LenderStats ($publicId: String!) {
+query LenderStats ($publicId: String!, $activeLoansOnly: Boolean) {
 	community {
 		lender(publicId: $publicId) {
 			id
-			statsPerCountry {
+			statsPerCountry(activeLoansOnly: $activeLoansOnly) {
 				values {
 					id
 					loanCount
@@ -18,14 +18,14 @@ query LenderStats ($publicId: String!) {
 					}
 				}
 			}
-			statsPerGender {
+			statsPerGender(activeLoansOnly: $activeLoansOnly) {
 				values {
 					id
 					loanCount
 					gender
 				}
 			}
-			statsPerPartner {
+			statsPerPartner(activeLoansOnly: $activeLoansOnly) {
 				values {
 					id
 					loanCount
@@ -35,7 +35,7 @@ query LenderStats ($publicId: String!) {
 					}
 				}
 			}
-			statsPerSector {
+			statsPerSector(activeLoansOnly: $activeLoansOnly) {
 				values {
 					id
 					loanCount

@@ -93,8 +93,10 @@ export default function authRouter(config = {}) {
 		// Used by guest checkout to start account claiming process (password reset)
 		if (req.query.forgot === 'true') {
 			options.prompt = 'login';
+			const username = req.query.username || '';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
+				username,
 			})}`;
 		}
 		// Override the login hint with whatever hint is set in the request

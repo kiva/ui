@@ -17,8 +17,8 @@
 					:alt="badgeData.tierName"
 				>
 			</div>
-			<h2 class="tw-italic tw-font-medium tw-text-desert-rose-4 tw-mb-2 tw-text-center">
-				"{{ funFact }}" <span v-if="funFactSource">*</span> <a
+			<h2 class="tw-text-h3 tw-italic tw-text-desert-rose-4 tw-mb-2 tw-text-center">
+				{{ funFact }} <span v-if="funFactSource">*</span> <a
 					:href="learnMoreLink"
 					@click="trackLearnMore"
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"

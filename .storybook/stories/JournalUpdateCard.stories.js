@@ -1,5 +1,4 @@
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard.vue';
-import { mockLoansArray } from '../utils';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from "../mixins/cookie-store-story-mixin";
 
@@ -8,14 +7,37 @@ export default {
 	component: JournalUpdateCard,
 };
 
-const mockLoans = mockLoansArray(1);
-
 const update = {
-	"id": 1365244,
-	"body": "I’m thrilled to update you on our progress! Thanks to your support, we’ve entered the next phase of our journey—choosing the perfect fabric for our new bust-friendly styles. The swatches are on their way, and we’re evaluating two amazing options:<br />\r\n<br />\r\nCotton Spandex Jersey<br />\r\nBamboo Viscose Spandex<br />\r\n<br />\r\nBoth fabrics are not only comfortable and functional, but they are also natural and better for the environment. Choosing natural fabrics like cotton and bamboo is important to us because they are biodegradable, unlike synthetic materials that contribute to long-term pollution. Additionally, natural fabrics require fewer chemicals in their production, and bamboo in particular grows rapidly without the need for pesticides, making it a more sustainable option.<br />\r\n<br />\r\nWe prioritize breathability and comfort, but also want to do our part in reducing the fashion industry’s environmental footprint. By choosing natural fabrics, we’re working toward creating sustainable, eco-friendly clothing that looks good, feels good, and is better for the planet.<br />\r\n<br />\r\nThank you once again for your belief in our mission and for your support in helping us bring these new styles to life. I’ll keep you updated on our final choice, and as always, we are grateful for your continued support!<br />\r\n<br />\r\nWarm regards,<br />\r\nKristen Allen<br />\r\nFounder, Exclusively Kristen",
-	"subject": "Exciting Update: Fabric Swatches Are on the Way!",
-	"date": "2024-09-21T11:37:31Z",
-	"image": null
+    "__typename": "Update",
+    "id": 1392249,
+    "body": "<p>He managed to buy manure to boost his crop production, he is earning better from sales.</p>",
+    "subject": "Moses is happy.",
+    "date": "2025-02-07T10:16:49Z",
+    "loan": {
+        "__typename": "LoanPartner",
+        "id": 2722925,
+        "name": "Moses",
+        "status": "fundraising",
+        "loanAmount": "1850.00",
+        "loanFundraisingInfo": {
+            "__typename": "LoanFundraisingInfo",
+            "fundedAmount": "150.00",
+            "reservedAmount": "0.00"
+        },
+        "image": {
+            "__typename": "Image",
+            "id": 5423429,
+            "hash": "093374973a7cfb1f18652d3aac5bbd05"
+        },
+        "geocode": {
+            "__typename": "Geocode",
+            "country": {
+                "__typename": "Country",
+                "id": 1,
+                "name": "Uganda",
+            }
+        }
+    }
 };
 
 const lender = {
@@ -57,7 +79,7 @@ const story = (args = {}) => {
 	return template;
 };
 
-export const Default = story({ loan: mockLoans[0], update, lender });
-export const Repaying = story({ loan: { ...mockLoans[0], status: 'payingBack' }, update, lender });
-export const UpdateNumber = story({ loan: mockLoans[0], update, updateNumber: '2', lender });
-export const NotTruncatedBody = story({ loan: { ...mockLoans[0], status: 'payingBack' }, update: { ...update, body: 'Testing not truncated body feature.' }, lender});
+export const Default = story({ update, lender });
+export const Repaying = story({ update: { ...update, loan: { ...update.loan, status: 'funded' } }, lender });
+export const UpdateNumber = story({ update, updateNumber: '2', lender });
+export const NotTruncatedBody = story({ update: { ...update, body: 'Testing not truncated body feature.' }, lender});

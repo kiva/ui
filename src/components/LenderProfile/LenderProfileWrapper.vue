@@ -99,12 +99,13 @@ export default {
 		KvPageContainer,
 	},
 	methods: {
-		async fetchLenderStats() {
+		async fetchLenderStats(activeLoansOnly = false) {
 			try {
 				const { data } = await this.apollo.query({
 					query: lenderStatsQuery,
 					variables: {
 						publicId: this.publicId,
+						activeLoansOnly,
 					},
 				});
 

@@ -4,6 +4,16 @@
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
+		<kv-cart-modal
+			v-if="addedLoan"
+			:style="{'--modal-right': `${modalPosition.right}px`}"
+			class="cart-modal"
+			:added-loan="addedLoan"
+			:visible="cartModalVisible"
+			:photo-path="PHOTO_PATH"
+			:basket-count="basketCount"
+			@cart-modal-closed="closeCartModal"
+		/>
 		<div
 			:class="[
 				'tw-w-full',
@@ -376,13 +386,15 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
-	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid, KvCartModal
 } from '@kiva/kv-components';
 import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
 
 export default {
 	name: 'LendCta',
 	inject: ['apollo', 'cookieStore'],
+	mixins: [basketModalMixin],
 	props: {
 		loanId: {
 			type: Number,
@@ -411,6 +423,7 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
+		KvCartModal,
 	},
 	data() {
 		return {
@@ -447,6 +460,7 @@ export default {
 			inPfp: false,
 			userBalance: undefined,
 			loan: null,
+			basketSize: 0,
 		};
 	},
 	apollo: {
@@ -475,6 +489,17 @@ export default {
 						lenders{
 							totalCount
 						}
+						image {
+							id
+							url
+							hash
+						}
+						geocode {
+							country {
+								id
+								name
+							}
+						}
 					}
 				}
 				shop (basketId: $basketId) {
@@ -488,6 +513,7 @@ export default {
 							}
 						}
 					}
+					nonTrivialItemCount
 				}
 				my {
 					id
@@ -538,6 +564,7 @@ export default {
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
 			}
+			this.basketSize = result.data?.shop?.nonTrivialItemCount || 0;
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
@@ -556,10 +583,10 @@ export default {
 				};
 				setChallengeCookieData(this.cookieStore, challenge);
 			}
-
+			const amount = isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption;
 			this.isAdding = true;
 			setLendAmount({
-				amount: isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption,
+				amount,
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
@@ -569,6 +596,10 @@ export default {
 					// eslint-disable-next-line max-len
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
 				}
+				// Show modal after 1s (Defined in CSS)
+				setTimeout(() => {
+					this.formatAddedLoan(amount);
+				}, 1000);
 			}).catch(e => {
 				if (e?.message !== INVALID_BASKET_ERROR) {
 					this.$kvTrackEvent('borrower-profile', 'add-to-basket', 'Failed to add loan. Please try again.');
@@ -657,6 +688,19 @@ export default {
 				}
 			}
 		},
+		formatAddedLoan(amount) {
+			const addedLoan = {
+				id: this.loan.id,
+				name: this.loan?.name ?? '',
+				image: this.loan?.image?.url ?? '',
+				country: this.loan?.geocode?.country?.name ?? '',
+				imageHash: this.loan?.image?.hash ?? '',
+				amount,
+				basketSize: this.basketSize,
+			};
+
+			this.handleCartModal(addedLoan);
+		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -845,5 +889,11 @@ export default {
 	/* TODO make this color a variable */
 	color: #CE4A00;
 	@apply tw-w-full tw-text-small tw-text-center tw-font-medium;
+}
+
+@screen md {
+	.cart-modal:deep(div.container) {
+		right: var(--modal-right) !important;
+	}
 }
 </style>

@@ -3,10 +3,40 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
+import { gql } from 'graphql-tag';
+import logFormatter from '#src/util/logFormatter';
 
+export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
 const FIRST_LOGIN_THRESHOLD = 5;
+
+export const createUserPreferencesMutation = gql`
+	mutation createUserPreferences($preferences: String) {
+		my {
+			createUserPreferences(userPreferences: { preferences: $preferences }) {
+				id
+				preferences
+			}
+		}
+	}
+`;
+
+export const updateUserPreferencesMutation = gql`
+	mutation UpdateUserPreferences(
+		$updateUserPreferencesId: Int!,
+		$preferences: String
+	) {
+		my {
+			updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
+				preferences: $preferences
+		}) {
+				id
+				preferences
+			}
+		}
+	}
+`;
 
 /**
  * Determines whether the provided loan needs a footnote
@@ -48,17 +78,68 @@ export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
 };
 
 /**
+ * Creates user preferences for the current user
+ *
+ * @param apollo The current Apollo client
+ * @param newPreferences The new preferences to add
+ * @returns The results of the mutation
+ */
+export const createUserPreferences = async (apollo, newPreferences) => {
+	try {
+		return await apollo.mutate({
+			mutation: createUserPreferencesMutation,
+			variables: { preferences: JSON.stringify(newPreferences) },
+		});
+	} catch (e) {
+		logReadQueryError(e, 'myKivaUtils createUserPreferencesMutation');
+	}
+};
+
+/**
+ * Updates the user preferences for the current user
+ *
+ * @param apollo The current Apollo client
+ * @param userPreferences The original user preferences
+ * @param parsedPreferences The parsed user preferences
+ * @param newPreferences The new preferences to add
+ * @returns The updated user preferences
+ */
+export const updateUserPreferences = async (apollo, userPreferences, parsedPreferences, newPreferences) => {
+	try {
+		const preferences = JSON.stringify({ ...parsedPreferences, ...newPreferences });
+
+		return await apollo.mutate({
+			mutation: updateUserPreferencesMutation,
+			variables: {
+				updateUserPreferencesId: userPreferences.id,
+				preferences,
+			},
+		});
+	} catch (e) {
+		logReadQueryError(e, 'myKivaUtils updateUserPreferencesMutation');
+	}
+};
+
+/**
  * Gets whether the MyKiva experience is enabled for the user, excluding some specific logic for the TY page
  *
  * @param apollo The current Apollo client
  * @param $kvTrackEvent The Kiva tracking event function
- * @param preferences The user preferences object
+ * @param userPreferences The user preferences object
  * @param loanTotal The total number of loans the user has made
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, preferences, loanTotal) => {
-	const formattedPreference = typeof preferences === 'string' ? JSON.parse(preferences) : preferences;
-	const hasSeenMyKiva = !!(formattedPreference?.myKivaJan2025Exp ?? 0);
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanTotal) => {
+	// Parse the user preferences to determine if the user has seen MyKiva
+	let parsedPreferences = {};
+	let hasSeenMyKiva = false;
+	try {
+		const preferences = userPreferences?.preferences ?? '';
+		parsedPreferences = preferences ? JSON.parse(preferences) : {};
+		hasSeenMyKiva = !!(parsedPreferences?.[MY_KIVA_PREFERENCE_KEY] ?? false);
+	} catch (e) {
+		logFormatter('getIsMyKivaEnabled JSON parsing exception', 'error');
+	}
 
 	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
 		const { version: myKivaVersion } = apollo.readFragment({
@@ -74,6 +155,19 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, preferences, loanTotal
 			MY_KIVA_EXP,
 			'EXP-MP-1235-Jan2025'
 		);
+
+		// Ensure that the user continues to see MyKiva after passing the loan limit
+		// Only update the user preferences if running client-side
+		if (isMyKivaExperimentEnabled && !hasSeenMyKiva && typeof window !== 'undefined') {
+			const newPreferences = { [MY_KIVA_PREFERENCE_KEY]: 1 };
+
+			if (userPreferences === null) {
+				// Handle the case where the user has no previous preferences
+				createUserPreferences(apollo, newPreferences);
+			} else {
+				updateUserPreferences(apollo, userPreferences, parsedPreferences, newPreferences);
+			}
+		}
 
 		// The user preference hasSeenMyKiva can be true when we override for internal testing
 		return hasSeenMyKiva || isMyKivaExperimentEnabled;
