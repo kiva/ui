@@ -69,9 +69,9 @@ export default {
 		query: homepageStatistics,
 		preFetch: true,
 		result({ data }) {
-			const rawAmountFunded = data?.general?.kivaStats?.amountFunded;
-			const rawNumLenders = data?.general?.kivaStats?.numLenders;
-			const rawNumBorrowers = data?.general?.kivaStats?.numBorrowers;
+			const rawAmountFunded = data?.general?.kivaStats?.amountFundedTotal ?? null;
+			const rawNumLenders = data?.general?.kivaStats?.numLenders ?? null;
+			const rawNumBorrowers = data?.general?.kivaStats?.numBorrowers ?? null;
 			// Only modify component values on valid values
 			if (!Number.isNaN(Number(rawAmountFunded))) {
 				try {
