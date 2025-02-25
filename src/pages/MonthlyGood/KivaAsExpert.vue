@@ -7,18 +7,15 @@
 		<div class="row">
 			<div class="small-12 columns">
 				<h2 class="tw-text-h1 tw-mb-4">
-					{{ yearsSinceStartCalc }} years, ${{ amountFunded }} billion in impact
+					{{ title }}
 				</h2>
 			</div>
 			<div class="small-12 large-7 columns">
-				<p class="tw-mb-4">
-					<!-- eslint-disable-next-line max-len -->
-					With nearly ${{ amountFunded }} billion in loans funded, Kiva is a leading global nonprofit creating opportunity for communities in need around the world. Your support will help us continue to push boundaries. Join the movement of <strong>{{ numLenders }} million lenders</strong> who’ve supported <strong>{{ numBorrowers }} million borrowers</strong>.
-				</p>
+				<p class="tw-mb-4" v-html="description"></p>
 				<kv-responsive-image
 					:images="billionImpactImages"
 					class="hide-for-large community-image tw-mb-4"
-					:alt="`${yearsSinceStartCalc} years, ${amountFunded} billion in impact`"
+					:alt="title"
 				/>
 				<slot name="form"></slot>
 			</div>
@@ -26,7 +23,7 @@
 				<kv-responsive-image
 					:images="billionImpactImages"
 					class="show-for-large community-image"
-					:alt="`${yearsSinceStartCalc} years, ${amountFunded} billion in impact`"
+					:alt="title"
 				/>
 			</div>
 		</div>
@@ -39,6 +36,7 @@ import numeral from 'numeral';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import homepageStatistics from '#src/graphql/query/whyKivaData.graphql';
 import { metaGlobReader } from '#src/util/importHelpers';
+import logFormatter from '#src/util/logFormatter';
 
 const billionImpactImagesGlob = import.meta.glob('/src/assets/images/10-years-billion-impact/*.*', { eager: true });
 const billionImpactImagesRequire = metaGlobReader(
@@ -76,13 +74,31 @@ export default {
 			const rawNumBorrowers = data?.general?.kivaStats?.numBorrowers;
 			// Only modify component values on valid values
 			if (!Number.isNaN(Number(rawAmountFunded))) {
-				this.amountFunded = numeral(rawAmountFunded).divide(billion).format('0.0');
+				try {
+					this.amountFunded = numeral(rawAmountFunded).divide(billion).format('0.0');
+				} catch (error) {
+					this.amountFunded = '';
+
+					logFormatter('KivaAsExpert error in amountFunded', error);
+				}
 			}
 			if (!Number.isNaN(Number(rawNumLenders))) {
-				this.numLenders = numeral(rawNumLenders).divide(million).format('0.0');
+				try {
+					this.numLenders = numeral(rawNumLenders).divide(million).format('0.0');
+				} catch (error) {
+					this.numLenders = '';
+
+					logFormatter('KivaAsExpert error in numLenders', error);
+				}
 			}
 			if (!Number.isNaN(Number(rawNumBorrowers))) {
-				this.numBorrowers = numeral(rawNumBorrowers).divide(million).format('0.0');
+				try {
+					this.numBorrowers = numeral(rawNumBorrowers).divide(million).format('0.0');
+				} catch (error) {
+					this.numBorrowers = '';
+
+					logFormatter('KivaAsExpert error in numBorrowers', error);
+				}
 			}
 		},
 	},
@@ -92,6 +108,19 @@ export default {
 			// non-profit on October 12, 2005
 			const foundedDate = new Date(2005, 10, 12);
 			return differenceInYears(Date.now(), foundedDate);
+		},
+		title() {
+			// eslint-disable-next-line max-len
+			return `${this.yearsSinceStartCalc} years, ${this.amountFunded ? `${this.amountFunded} billion in impact` : 'billions of dollars in impact'}`;
+		},
+		description() {
+			let desc = 'With billions of dollars in loans funded';
+			if (this.amountFunded) {
+				desc = `With nearly ${this.amountFunded} billion`;
+			}
+
+			// eslint-disable-next-line max-len
+			return `${desc}, Kiva is a leading global nonprofit creating opportunity for communities in need around the world. Your support will help us continue to push boundaries. Join the movement of <strong>${this.numLenders} million lenders</strong> who’ve supported <strong>${this.numBorrowers} million borrowers</strong>.`;
 		},
 	}
 };
