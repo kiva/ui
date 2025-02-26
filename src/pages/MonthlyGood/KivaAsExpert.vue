@@ -111,12 +111,12 @@ export default {
 		},
 		title() {
 			// eslint-disable-next-line max-len
-			return `${this.yearsSinceStartCalc} years, ${this.amountFunded ? `${this.amountFunded} billion in impact` : 'billions of dollars in impact'}`;
+			return `${this.yearsSinceStartCalc} years, ${this.amountFunded ? `$${this.amountFunded} billion in impact` : 'billions of dollars in impact'}`;
 		},
 		description() {
 			let desc = 'With billions of dollars';
 			if (this.amountFunded) {
-				desc = `With nearly ${this.amountFunded} billion`;
+				desc = `With nearly $${this.amountFunded} billion`;
 			}
 
 			// eslint-disable-next-line max-len
