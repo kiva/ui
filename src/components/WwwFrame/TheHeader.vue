@@ -2,7 +2,7 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment && isInExperimentPages,
+			'tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
 		}"
 	>
 		<nav
@@ -741,7 +741,7 @@ export default {
 			return this.basketCount;
 		},
 		enableBasketExperiment() {
-			return this.enableAddToBasketExp && this.hasBasket && this.isInExperimentPages;
+			return this.enableAddToBasketExp && this.isInExperimentPages;
 		},
 	},
 	apollo: {
