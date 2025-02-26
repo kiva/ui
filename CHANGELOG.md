@@ -1,3 +1,15 @@
+## [3.11.0-rc.1](https://github.com/kiva/ui/compare/v3.10.0...v3.11.0-rc.1) (2025-02-26)
+
+### 🎉 New Features
+
+* use new field for amountFunded value ([7c283e9](https://github.com/kiva/ui/commit/7c283e9cd57b255986213ea57e194d3d39e09e57))
+
+### 🐛 Bugfixes
+
+* adjust monthly good page text ([bca8498](https://github.com/kiva/ui/commit/bca8498465b4436b483393758e05443f169723f7))
+* missing field in query ([fe1f9d0](https://github.com/kiva/ui/commit/fe1f9d018e4a00cf9203f128b330f38c7dbe9276))
+* missing field login hint ([#5831](https://github.com/kiva/ui/issues/5831)) ([70414dc](https://github.com/kiva/ui/commit/70414dcfbd24e4ed14f1386bd9d6f8f6badcb381))
+
 ## [3.10.0](https://github.com/kiva/ui/compare/v3.9.0...v3.10.0) (2025-02-25)
 
 ### 🎉 New Features
