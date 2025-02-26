@@ -1,3 +1,19 @@
+## [3.12.0](https://github.com/kiva/ui/compare/v3.11.0...v3.12.0) (2025-02-26)
+
+### 🎉 New Features
+
+* recommended loans removed from nav ([#5836](https://github.com/kiva/ui/issues/5836)) ([e806367](https://github.com/kiva/ui/commit/e80636726b9e326d318108715a00270444ba47d1))
+
+### 🐛 Bugfixes
+
+* atb modal position fixed ([#5834](https://github.com/kiva/ui/issues/5834)) ([6562306](https://github.com/kiva/ui/commit/65623061db6bcaa6536f28cc9e524aee09f1b6e2))
+* continue button emit event ([24ff10a](https://github.com/kiva/ui/commit/24ff10a5bd63bc669e801444f9377cd4bffce776))
+* missing dollar sign ([782531a](https://github.com/kiva/ui/commit/782531aa580999da1f8df1fdde427ea524e25730))
+
+### 🧹 Chores
+
+* **release:** 3.12.0-rc.1 [skip ci] ([fb2eb6a](https://github.com/kiva/ui/commit/fb2eb6af854124eae60277cd7f98c09a8c4c378b)), closes [#5836](https://github.com/kiva/ui/issues/5836) [#5834](https://github.com/kiva/ui/issues/5834)
+
 ## [3.12.0-rc.1](https://github.com/kiva/ui/compare/v3.11.0...v3.12.0-rc.1) (2025-02-26)
 
 ### 🎉 New Features
