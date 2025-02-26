@@ -59,15 +59,6 @@
 						</template>
 						<li class="tw-border-t tw-border-tertiary">
 							<router-link
-								to="/lend-by-category/recommended-by-lenders"
-								class="lend-link tw-text-action"
-								v-kv-track-event="['TopNav','click-Lend-Recommended-by-lenders']"
-							>
-								Recommended by lenders
-							</router-link>
-						</li>
-						<li>
-							<router-link
 								to="/lend"
 								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-All_Loans']"

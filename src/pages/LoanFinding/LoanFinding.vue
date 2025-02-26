@@ -2,7 +2,10 @@
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<kv-cart-modal
 			v-if="addedLoan"
-			:style="{'--modal-right': `${modalPosition.right}px`}"
+			:style="{
+				'--modal-right': `${modalPosition.right}px`,
+				'--modal-top': `${modalPosition.top}px`
+			}"
 			class="cart-modal"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
@@ -580,6 +583,7 @@ export default {
 @screen md {
 	.cart-modal:deep(div.container) {
 		right: var(--modal-right) !important;
+		top: var(--modal-top) !important;
 	}
 }
 </style>
