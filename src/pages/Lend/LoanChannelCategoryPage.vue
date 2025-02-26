@@ -126,11 +126,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.cart-modal :deep(div.container) {
-	top: var(--modal-top) !important;
-
-	@media screen(md) {
+@screen md {
+	.cart-modal:deep(div.container) {
 		right: var(--modal-right) !important;
+		top: var(--modal-top) !important;
 	}
 }
 </style>
