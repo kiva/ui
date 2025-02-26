@@ -61,15 +61,6 @@
 							<ul class="tw-font-medium">
 								<li class="tw-w-[11rem]">
 									<router-link
-										to="/lend-by-category/recommended-by-lenders"
-										class="lend-menu-link tw-text-action tw-inline-block tw-py-1"
-										v-kv-track-event="['TopNav','click-Lend-Recommended-by-lenders']"
-									>
-										Recommended by lenders
-									</router-link>
-								</li>
-								<li class="tw-w-[11rem]">
-									<router-link
 										to="/categories"
 										class="lend-menu-link tw-text-primary tw-inline-block tw-py-1"
 										v-kv-track-event="['TopNav','click-Lend-All_Categories']"
