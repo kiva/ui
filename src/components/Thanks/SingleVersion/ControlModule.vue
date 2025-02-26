@@ -23,7 +23,7 @@
 			</div>
 			<KvButton
 				class="tw-w-full"
-				@click="emit('continue')"
+				@click="$emit('continue')"
 			>
 				<div class="tw-flex tw-items-center tw-gap-1">
 					Continue
