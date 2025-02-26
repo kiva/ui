@@ -114,13 +114,13 @@ export default {
 			return `${this.yearsSinceStartCalc} years, ${this.amountFunded ? `${this.amountFunded} billion in impact` : 'billions of dollars in impact'}`;
 		},
 		description() {
-			let desc = 'With billions of dollars in loans funded';
+			let desc = 'With billions of dollars';
 			if (this.amountFunded) {
 				desc = `With nearly ${this.amountFunded} billion`;
 			}
 
 			// eslint-disable-next-line max-len
-			return `${desc}, Kiva is a leading global nonprofit creating opportunity for communities in need around the world. Your support will help us continue to push boundaries. Join the movement of <strong>${this.numLenders} million lenders</strong> who’ve supported <strong>${this.numBorrowers} million borrowers</strong>.`;
+			return `${desc} in loans funded, Kiva is a leading global nonprofit creating opportunity for communities in need around the world. Your support will help us continue to push boundaries. Join the movement of <strong>${this.numLenders} million lenders</strong> who’ve supported <strong>${this.numBorrowers} million borrowers</strong>.`;
 		},
 	}
 };
