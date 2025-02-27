@@ -9,7 +9,7 @@
 				'--modal-right': `${modalPosition.right}px`,
 				'--modal-top': `${modalPosition.top}px`
 			}"
-			class="cart-modal"
+			class="cart-modal tw-top-0"
 			:added-loan="addedLoan"
 			:visible="cartModalVisible"
 			:photo-path="PHOTO_PATH"
