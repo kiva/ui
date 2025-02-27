@@ -1,0 +1,1 @@
+import{_ as i}from"./entry-_baseToString-C08wEDsWoH.js";var n=i,o=function(){try{var e=n(Object,"defineProperty");return e({},"",{}),e}catch{}}(),s=o,t=s;function u(e,r,a){r=="__proto__"&&t?t(e,r,{configurable:!0,enumerable:!0,value:a,writable:!0}):e[r]=a}var f=u;export{f as _,s as a};
