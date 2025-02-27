@@ -2,7 +2,7 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
+			'md:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
 		}"
 	>
 		<nav
@@ -596,7 +596,6 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-const NEW_ADD_TO_BASKET_EXP = 'new_add_to_basket';
 
 const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
 	my {
@@ -656,7 +655,6 @@ export default {
 			basketTotal: 0,
 			teams: null,
 			teamsMenuEnabled: false,
-			enableAddToBasketExp: false,
 			loansInBasket: [],
 		};
 	},
@@ -833,20 +831,6 @@ export default {
 
 		if (version) {
 			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
-		}
-
-		const newAddToBasketExpData = this.apollo.readFragment({
-			id: `Experiment:${NEW_ADD_TO_BASKET_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-
-		if (newAddToBasketExpData?.version) {
-			this.enableAddToBasketExp = newAddToBasketExpData?.version === 'b';
-			this.$kvTrackEvent(
-				'basket',
-				NEW_ADD_TO_BASKET_EXP,
-				newAddToBasketExpData?.version,
-			);
 		}
 
 		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
