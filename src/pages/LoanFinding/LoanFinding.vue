@@ -1,17 +1,9 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
-		<kv-cart-modal
-			v-if="addedLoan"
-			:style="{
-				'--modal-right': `${modalPosition.right}px`,
-				'--modal-top': `${modalPosition.top}px`
-			}"
-			class="cart-modal tw-top-0"
+		<kv-atb-modal-container
 			:added-loan="addedLoan"
-			:visible="cartModalVisible"
-			:photo-path="PHOTO_PATH"
-			:basket-count="basketCount"
-			@cart-modal-closed="closeCartModal"
+			:cart-modal-visible="cartModalVisible"
+			@close-cart-modal="closeCartModal"
 		/>
 		<div class="tw-w-full">
 			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
@@ -134,7 +126,7 @@ import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import { KvCartModal } from '@kiva/kv-components';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -163,7 +155,7 @@ export default {
 		QuickFiltersSection,
 		PartnerSpotlightSection,
 		FiveDollarsBanner,
-		KvCartModal,
+		KvAtbModalContainer,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
 	head() {
@@ -578,12 +570,5 @@ export default {
 <style lang="postcss" scoped>
 :deep([role=progressbar]) {
 	@apply tw-bg-tertiary;
-}
-
-@screen md {
-	.cart-modal:deep(div.container) {
-		right: var(--modal-right) !important;
-		top: var(--modal-top) !important;
-	}
 }
 </style>
