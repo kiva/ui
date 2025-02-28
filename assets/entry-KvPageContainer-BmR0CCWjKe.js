@@ -1,0 +1,1 @@
+import{o,c as e,g as r}from"./entry-vue.esm-bundler-CTwdbZZHjD.js";import{s}from"./entry-KvWideLoanCard-CbH2sjp8GX.js";const l={},n={class:"tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8",style:{"max-width":"1200px"}};function a(t,c,m,p,x,d){return o(),e("div",n,[r(t.$slots,"default")])}const f=s(l,[["render",a]]);export{f as x};

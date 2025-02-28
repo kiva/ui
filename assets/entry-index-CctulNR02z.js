@@ -1,0 +1,1 @@
+import{b as i}from"./entry-index-BSZLBqOjEU.js";import{r as n}from"./entry-index-COmIkRYU2t.js";import{g as d}from"./entry-index-E9YXH6yDgX.js";function a(r,e,f){n(2,arguments);var o=i(r,e)/1e3;return d(void 0)(o)}export{a as d};

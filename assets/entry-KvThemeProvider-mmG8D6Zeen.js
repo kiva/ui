@@ -1,0 +1,1 @@
+import{o as r,c as o,g as l,v as s}from"./entry-vue.esm-bundler-CTwdbZZHjD.js";import{s as a}from"./entry-KvWideLoanCard-CbH2sjp8GX.js";const n={props:{theme:{type:Object,default:null}}};function m(e,c,t,p,i,d){return r(),o("div",{style:s({...t.theme,color:"rgb(var(--text-primary))"})},[l(e.$slots,"default")],4)}const y=a(n,[["render",m]]);export{y as h};
