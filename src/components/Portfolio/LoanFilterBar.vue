@@ -17,6 +17,8 @@
 							All statuses
 						</option>
 					</kv-select>
+				</div>
+				<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
 					<span class="tw-text-secondary">Filter by:</span>
 					<kv-select
 						v-model="selectedLocation"
@@ -33,7 +35,7 @@
 						</option>
 					</kv-select>
 				</div>
-				<div class="tw-ml-auto">
+				<div class="lg:tw-ml-auto">
 					<kv-button
 						class="tw-text-sm"
 						variant="primary"
