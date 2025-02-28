@@ -1,25 +1,12 @@
 <template>
 	<div>
 		<div class="tw-flex tw-flex-col">
-			<div class="tw-flex tw-justify-between tw-mb-2">
-				<div class="tw-text-sm tw-text-h2">
-					Filter loans
-				</div>
-				<kv-button
-					class="tw-text-sm"
-					variant="primary"
-					v-kv-track-event="['portfolio', 'click', 'export-loans']"
-					@click="handleExportClick"
-				>
-					Export {{ totalLoans }} loans
-				</kv-button>
-			</div>
 			<kv-text-input
 				id="loan-filter-text-input"
 				v-model="searchText"
 				placeholder="Search by name, ID, partner or location"
 			/>
-			<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
+			<div class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
 				<div class="tw-flex tw-items-center tw-gap-2">
 					<span class="tw-text-secondary">Status:</span>
 					<kv-select
@@ -30,8 +17,6 @@
 							All statuses
 						</option>
 					</kv-select>
-				</div>
-				<div class="tw-flex tw-items-center tw-gap-2">
 					<span class="tw-text-secondary">Filter by:</span>
 					<kv-select
 						v-model="selectedLocation"
@@ -47,6 +32,16 @@
 							All partners
 						</option>
 					</kv-select>
+				</div>
+				<div class="tw-ml-auto">
+					<kv-button
+						class="tw-text-sm"
+						variant="primary"
+						v-kv-track-event="['portfolio', 'click', 'export-loans']"
+						@click="handleExportClick"
+					>
+						Export {{ totalLoans }} loans
+					</kv-button>
 				</div>
 			</div>
 		</div>

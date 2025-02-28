@@ -7,18 +7,22 @@
 			<kv-grid class="tw-grid-cols-12">
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
 				<div
-					class="tw-col-span-12 md:tw-col-span-9 tw-pt-4 tw-pb-8
-					md:tw-pt-6 md:tw-pb-12 lg:tw-pt-8 lg:tw-pb-16"
+					class="tw-col-span-12 md:tw-col-span-9 tw-pt-4
+					md:tw-pt-6 lg:tw-pt-8"
 				>
 					<h1 class="tw-mb-2">
 						My loans
 					</h1>
-					<div class="tw-mb-8">
+					<div class="tw-mb-2">
 						<p class="tw-text-right tw-text-tertiary tw-text-small">
 							*Updated as of {{ lastUpdated }}
 						</p>
 						<loan-stats-table />
 					</div>
+				</div>
+				<div
+					class="tw-col-span-12"
+				>
 					<loan-filter-bar :total-loans="totalLoans" />
 					<loan-list :loans="loans" :loading="loading" />
 				</div>
