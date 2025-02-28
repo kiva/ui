@@ -4,18 +4,10 @@
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
-		<kv-cart-modal
-			v-if="addedLoan"
-			:style="{
-				'--modal-right': `${modalPosition.right}px`,
-				'--modal-top': `${modalPosition.top}px`
-			}"
-			class="cart-modal tw-top-0"
+		<kv-atb-modal-container
 			:added-loan="addedLoan"
-			:visible="cartModalVisible"
-			:photo-path="PHOTO_PATH"
-			:basket-count="basketCount"
-			@cart-modal-closed="closeCartModal"
+			:cart-modal-visible="cartModalVisible"
+			@close-cart-modal="closeCartModal"
 		/>
 		<div
 			:class="[
@@ -389,10 +381,11 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
-	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid, KvCartModal
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
 } from '@kiva/kv-components';
 import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
 export default {
 	name: 'LendCta',
@@ -426,7 +419,7 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		KvCartModal,
+		KvAtbModalContainer,
 	},
 	data() {
 		return {
@@ -892,12 +885,5 @@ export default {
 	/* TODO make this color a variable */
 	color: #CE4A00;
 	@apply tw-w-full tw-text-small tw-text-center tw-font-medium;
-}
-
-@screen md {
-	.cart-modal:deep(div.container) {
-		right: var(--modal-right) !important;
-		top: var(--modal-top) !important;
-	}
 }
 </style>
