@@ -53,7 +53,7 @@ export default {
 						query: {
 							loginHint: `login|${JSON.stringify({
 								guest: true,
-								username: encodeURIComponent(username),
+								username,
 							})}`,
 							doneUrl: `${path}?${queryString}`,
 						},
