@@ -56,7 +56,7 @@ export default {
 						}
 
 						if (username) {
-							successRoute.query.username = username;
+							successRoute.query.username = encodeURIComponent(username);
 						}
 
 						// track the transaction event
