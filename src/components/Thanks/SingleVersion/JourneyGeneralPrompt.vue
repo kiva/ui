@@ -47,7 +47,7 @@
 				/>
 			</span>
 		</KvButton>
-		<div class="tw-my-2">
+		<div class="tw-mt-2">
 			<div
 				class="tw-flex tw-items-center tw-justify-between tw-text-action print:!tw-hidden tw-cursor-pointer"
 				:class="{ 'open' : openImpactJourneys }"
