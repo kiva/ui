@@ -241,7 +241,6 @@ onMounted(() => {
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
 
 	const analyticsModuleOrder = [
-		userType.value,
 		isOptInLoan ? 'optInLoan' : '',
 		isOptInDonate ? 'optInDonate' : '',
 		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
@@ -258,8 +257,8 @@ onMounted(() => {
 	$kvTrackEvent(
 		EVENT_CATEGORY,
 		'view',
-		'unified-thanks',
 		analyticsModuleOrder,
+		userType.value,
 	);
 });
 </script>
