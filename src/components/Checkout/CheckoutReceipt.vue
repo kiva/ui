@@ -106,6 +106,7 @@
 									data-testid="kcard-print-button"
 									class="tw-mb-2 print:!tw-hidden"
 									target="_blank"
+									@click="printKivaCard"
 									:href="`/gifts/kiva-cards/print?giftCode=${card.kivaCardObject.redemptionCode}`"
 								>
 									Print Kiva Card
@@ -186,6 +187,7 @@
 								data-testid="print-donation-information"
 								class="smallest print:tw-hidden"
 								to="/portfolio/donations"
+								@click="printDonationInformation"
 							>
 								Print Donation Information
 							</router-link>
@@ -329,6 +331,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableKivaCardTracking: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		formattedTransactionTime() {
@@ -356,9 +362,22 @@ export default {
 	methods: {
 		printReceipt() {
 			if (typeof window !== 'undefined') {
+				if (this.enableKivaCardTracking) {
+					this.$kvTrackEvent('post-checkout', 'click', 'print-receipt-order-confirmation drawer');
+				}
 				window.print();
 			}
 		},
+		printDonationInformation() {
+			if (this.enableKivaCardTracking) {
+				this.$kvTrackEvent('post-checkout', 'click', 'print-donation-information drawer');
+			}
+		},
+		printKivaCard() {
+			if (this.enableKivaCardTracking) {
+				this.$kvTrackEvent('post-checkout', 'click', 'kiva-card-view-pdf-order-confirmation drawer');
+			}
+		}
 	}
 };
 </script>

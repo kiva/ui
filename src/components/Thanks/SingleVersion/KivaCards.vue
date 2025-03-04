@@ -7,7 +7,14 @@
 		<h3 class="tw-text-center tw-font-book">
 			{{ message }}
 		</h3>
-		<KvButton @click="handleClick">
+		<KvButton
+			v-kv-track-event="[
+				'post-checkout',
+				'click',
+				'kiva-card-view-pdf-top'
+			]"
+			@click="handleClick"
+		>
 			{{ buttonText }}
 		</KvButton>
 	</div>

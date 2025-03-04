@@ -57,6 +57,7 @@
 						v-if="receipt"
 						:lender="lender"
 						:receipt="receipt"
+						enable-kiva-card-tracking
 						class="tw-pt-2"
 					/>
 				</div>
