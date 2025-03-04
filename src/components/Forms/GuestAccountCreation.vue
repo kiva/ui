@@ -138,7 +138,7 @@ export default {
 						throw new Error('Missing reset url');
 					}
 					if (this.guestUsername) {
-						resetUrl += `&username=${decodeURIComponent(this.guestUsername)}`;
+						resetUrl += `&username=${encodeURIComponent(this.guestUsername)}`;
 					}
 
 					window.location = resetUrl;
