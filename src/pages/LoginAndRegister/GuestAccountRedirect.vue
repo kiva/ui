@@ -51,10 +51,10 @@ export default {
 					return Promise.reject({
 						path: '/ui-login',
 						query: {
-							loginHint: encodeURIComponent(`login|${JSON.stringify({
+							loginHint: `login|${JSON.stringify({
 								guest: true,
-								username,
-							})}`),
+								username: encodeURIComponent(username),
+							})}`,
 							doneUrl: `${path}?${queryString}`,
 						},
 					});
