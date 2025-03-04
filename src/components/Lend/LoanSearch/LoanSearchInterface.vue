@@ -520,8 +520,8 @@ export default {
 			updateQueryParams(challengeFiltersObject, this.$router, this.queryType);
 			this.challengeFilters = challengeFiltersObject;
 		},
-		showCartModal(payload) {
-			this.$emit('show-cart-modal', payload);
+		showCartModal(basketSize) {
+			this.$emit('show-cart-modal', basketSize);
 		},
 	},
 	watch: {

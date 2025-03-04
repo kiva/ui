@@ -1,7 +1,7 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<kv-atb-modal-container
-			:added-loan="addedLoan"
+			:basket-size="basketSize"
 			:cart-modal-visible="cartModalVisible"
 			@close-cart-modal="closeCartModal"
 		/>

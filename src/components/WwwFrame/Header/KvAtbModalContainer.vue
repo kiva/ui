@@ -1,12 +1,11 @@
 <template>
 	<KvCartModal
-		v-if="addedLoan"
+		v-if="cartModalVisible"
 		:style="{
 			'--modal-right': `${modalPosition.right}px`,
 			'--modal-top': `${modalPosition.top}px`
 		}"
 		class="cart-modal !tw-top-0"
-		:added-loan="addedLoan"
 		:visible="cartModalVisible"
 		:photo-path="PHOTO_PATH"
 		:basket-count="basketCount"
@@ -26,9 +25,9 @@ const router = useRouter();
 const emit = defineEmits(['close-cart-modal']);
 
 const props = defineProps({
-	addedLoan: {
-		type: Object,
-		default: () => ({}),
+	basketSize: {
+		type: Number,
+		default: 0,
 	},
 	cartModalVisible: {
 		type: Boolean,
@@ -37,7 +36,7 @@ const props = defineProps({
 });
 
 const basketCount = computed(() => {
-	return props.addedLoan?.basketSize ?? 0;
+	return props.basketSize ?? 0;
 });
 
 const getTargetsPosition = () => {
