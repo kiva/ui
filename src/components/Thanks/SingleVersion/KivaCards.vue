@@ -7,24 +7,18 @@
 		<h3 class="tw-text-center tw-font-book">
 			{{ message }}
 		</h3>
-		<KvButton
-			v-kv-track-event="[
-				'post-checkout',
-				'click',
-				'kiva-card-view-pdf-top'
-			]"
-			@click="handleClick"
-		>
+		<KvButton @click="handleClick">
 			{{ buttonText }}
 		</KvButton>
 	</div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { KvButton } from '@kiva/kv-components';
 
 const emit = defineEmits(['view-pdf-clicked']);
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	printableKivaCards: {
@@ -46,6 +40,7 @@ const buttonText = computed(() => {
 });
 
 const handleClick = () => {
+	$kvTrackEvent('post-checkout', 'click', 'kiva-card-view-pdf-top');
 	emit('view-pdf-clicked');
 };
 </script>
