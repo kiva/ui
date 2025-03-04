@@ -116,7 +116,7 @@ const description = computed(() => {
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
-const updateOptIn = value => {
+const updateOptIn = async value => {
 	buttonState.value = 'loading';
 
 	$kvTrackEvent(
@@ -130,9 +130,9 @@ const updateOptIn = value => {
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
 		if (props.isGuest && visitorId) {
-			updateVisitorEmailOptIn(value, visitorId);
+			await updateVisitorEmailOptIn(value, visitorId);
 		} else {
-			updateCommunicationSettings(value);
+			await updateCommunicationSettings(value);
 		}
 	}
 	newConsentAnswered.value = true;
