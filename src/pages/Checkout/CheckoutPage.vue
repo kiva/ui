@@ -877,7 +877,7 @@ export default {
 					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
 				}
 				if (payload?.username) {
-					checkoutAdditionalQueryParams += `&username=${payload.username}`;
+					checkoutAdditionalQueryParams += `&username=${encodeURIComponent(payload.username)}`;
 				}
 
 				// redirect to thanks
