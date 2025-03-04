@@ -3,20 +3,20 @@ const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 export default {
 	data() {
 		return {
-			addedLoan: null,
 			cartModalVisible: false,
+			basketSize: 0,
 		};
 	},
 	methods: {
-		handleCartModal(payload) {
-			if (payload?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
-				this.addedLoan = { ...payload };
+		handleCartModal(basketSize) {
+			if (basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+				this.basketSize = basketSize;
 				this.cartModalVisible = true;
 			}
 		},
 		closeCartModal() {
 			this.cartModalVisible = false;
-			this.addedLoan = null;
+			this.basketSize = 0;
 		},
 	},
 };

@@ -1,7 +1,7 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<kv-atb-modal-container
-			:added-loan="addedLoan"
+			:basket-size="basketSize"
 			:cart-modal-visible="cartModalVisible"
 			@close-cart-modal="closeCartModal"
 		/>
