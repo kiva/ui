@@ -445,13 +445,13 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
-			// Show the login required view if we couldn't get the receipt
 			// Show the donation only view if the user has only donated and not lent
 			if (this.showDafThanks
 				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
 				|| this.monthlyDonationAmount?.length) {
 				return DONATION_ONLY_VIEW;
 			}
+			// Show the login required view if we couldn't get the receipt
 			if (!this.receipt) {
 				return LOGIN_REQUIRED_VIEW;
 			}
