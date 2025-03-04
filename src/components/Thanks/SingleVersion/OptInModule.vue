@@ -17,11 +17,13 @@
 					<kv-button
 						class="tw-w-full btn"
 						@click="() => updateOptIn(true)"
+						:state="buttonState"
 					>
 						Yes, keep me updated
 					</kv-button>
 					<kv-button
 						@click="() => updateOptIn(false)"
+						:state="buttonState"
 						variant="ghost"
 						class="tw-w-full btn ghost"
 					>
@@ -76,6 +78,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
+const buttonState = ref('');
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
@@ -114,6 +117,8 @@ const description = computed(() => {
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
 const updateOptIn = value => {
+	buttonState.value = 'loading';
+
 	$kvTrackEvent(
 		'post-checkout',
 		'click',
