@@ -245,7 +245,7 @@ onMounted(() => {
 		isOptInDonate ? 'optInDonate' : '',
 		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
 		showKivaCardsModule.value ? 'kivaCard' : '',
-		showBadgeModule.value ? 'journeyBadgeEarned' : '',
+		showBadgeModule.value && !onlyKivaCardsAndDonations.value ? 'journeyBadgeEarned' : '',
 		showJourneyModule.value ? 'journeyBadgeNotEarned' : '',
 		showControlModule.value ? 'journeyGeneral' : '',
 		showLoanComment.value ? 'commenting' : '',
