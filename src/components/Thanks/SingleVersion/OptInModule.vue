@@ -130,9 +130,9 @@ const updateOptIn = async value => {
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
 		if (props.isGuest && visitorId) {
-			await updateVisitorEmailOptIn(value, visitorId);
+			await updateVisitorEmailOptIn(value, value, false, visitorId);
 		} else {
-			await updateCommunicationSettings(value);
+			await updateCommunicationSettings(value, value, false);
 		}
 	}
 	newConsentAnswered.value = true;

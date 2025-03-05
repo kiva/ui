@@ -141,6 +141,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 		}
 		communicationSettings {
 			lenderNews
+			loanUpdates
 		}
 		userPreferences {
 			id

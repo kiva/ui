@@ -618,7 +618,9 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
+			|| this.$route.query?.optedIn === 'true';
+
 		this.guestUsername = this.$route.query?.username ?? '';
 
 		// MyKiva Badges Experiment

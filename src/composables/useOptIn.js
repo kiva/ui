@@ -2,17 +2,21 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
 export default apollo => {
-	const updateCommunicationSettings = lenderNews => {
+	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
-			apollo.mutate({
+			await apollo.mutate({
 				mutation: gql`
 					mutation updateCommunicationSettings(
 						$lenderNews: Boolean
+						$loanUpdates: Boolean
+						$globalUnsubscribed: Boolean
 					) {
 						my {
 							updateCommunicationSettings(
 								communicationSettings: {
 									lenderNews: $lenderNews
+									loanUpdates: $loanUpdates
+									globalUnsubscribed: $globalUnsubscribed
 								}
 							)
 						}
@@ -20,6 +24,8 @@ export default apollo => {
 				`,
 				variables: {
 					lenderNews,
+					loanUpdates,
+					globalUnsubscribed,
 				},
 			});
 		} catch (error) {
@@ -27,18 +33,22 @@ export default apollo => {
 		}
 	};
 
-	const updateVisitorEmailOptIn = (lenderNews, visitorId) => {
+	const updateVisitorEmailOptIn = async (lenderNews, loanUpdates, globalUnsubscribed, visitorId) => {
 		try {
-			apollo.mutate({
+			await apollo.mutate({
 				mutation: gql`
 				mutation updateVisitorCommunicationSettings(
 					$lenderNews: Boolean,
+					$loanUpdates: Boolean,
+					$globalUnsubscribed: Boolean,
 					$visitorId: String!
 				) {
 					visitorEmailOptIn {
 						updateCommunicationSettings(
 							communicationSettings: {
 								lenderNews: $lenderNews
+								loanUpdates: $loanUpdates
+								globalUnsubscribed: $globalUnsubscribed
 							},
 							visitorId: $visitorId
 						)
@@ -47,6 +57,8 @@ export default apollo => {
 			`,
 				variables: {
 					lenderNews,
+					loanUpdates,
+					globalUnsubscribed,
 					visitorId,
 				},
 			});

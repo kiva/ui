@@ -133,7 +133,7 @@ const getMarginLeft = index => {
 	return '0';
 };
 
-const updateOptIn = value => {
+const updateOptIn = async value => {
 	$kvTrackEvent(
 		'post-checkout',
 		'click',
@@ -145,9 +145,9 @@ const updateOptIn = value => {
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
 		if (props.isGuest && visitorId) {
-			updateVisitorEmailOptIn(value, visitorId);
+			await updateVisitorEmailOptIn(value, value, false, visitorId);
 		} else {
-			updateCommunicationSettings(value);
+			await updateCommunicationSettings(value, value, false);
 		}
 	}
 	newConsentAnswered.value = true;
