@@ -445,10 +445,8 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
-			// Show the donation only view if the user has only donated and not lent
-			if (this.showDafThanks
-				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
-				|| this.monthlyDonationAmount?.length) {
+			// Show the donation only view if the user has only subscribed to a donation
+			if (this.showDafThanks || this.monthlyDonationAmount) {
 				return DONATION_ONLY_VIEW;
 			}
 			// Show the login required view if we couldn't get the receipt
@@ -458,6 +456,10 @@ export default {
 			// Show the single version view if the experiment is enabled
 			if (this.thanksSingleVersionEnabled) {
 				return SINGLE_VERSION_VIEW;
+			}
+			// Show the donation only view if the user has only donated and not lent
+			if (this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal) {
+				return DONATION_ONLY_VIEW;
 			}
 			// Show the MyKiva view if qualifications are met
 			if (this.myKivaEnabled) {
