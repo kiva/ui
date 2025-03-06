@@ -239,6 +239,7 @@ onMounted(() => {
 
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
+	const badgeNotEarned = onlyKivaCardsAndDonations.value && !showControlModule.value;
 
 	const analyticsModuleOrder = [
 		isOptInLoan ? 'optInLoan' : '',
@@ -246,7 +247,7 @@ onMounted(() => {
 		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
 		showKivaCardsModule.value ? 'kivaCard' : '',
 		showBadgeModule.value && !onlyKivaCardsAndDonations.value ? 'journeyBadgeEarned' : '',
-		showJourneyModule.value ? 'journeyBadgeNotEarned' : '',
+		showJourneyModule.value || badgeNotEarned ? 'journeyBadgeNotEarned' : '',
 		showControlModule.value ? 'journeyGeneral' : '',
 		showLoanComment.value ? 'commenting' : '',
 		props.isGuest ? 'drawerCreateAccount' : '',
