@@ -110,7 +110,6 @@ export default function authRouter(config = {}) {
 		// Specify ssoRedirect url
 		if (req.query.ssoRedirect) {
 			options.ssoRedirect = req.query.ssoRedirect;
-			options.prompt = 'login';
 		}
 		// Enable Kiva Corp Partner version of the login UI
 		if (req.query.kivaCorpPartner) {
