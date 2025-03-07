@@ -1,3 +1,10 @@
+## [3.13.0-rc.2](https://github.com/kiva/ui/compare/v3.13.0-rc.1...v3.13.0-rc.2) (2025-03-07)
+
+### 🐛 Bugfixes
+
+* re-add sso forced login ([815a897](https://github.com/kiva/ui/commit/815a8978d8a24cb022dcf6586e6df05e18805ef8))
+* remove forced sso login ([d2d8f20](https://github.com/kiva/ui/commit/d2d8f20fc19fc227be322549495643657bfa3e82))
+
 ## [3.13.0-rc.1](https://github.com/kiva/ui/compare/v3.12.0...v3.13.0-rc.1) (2025-03-06)
 
 ### 🎉 New Features
