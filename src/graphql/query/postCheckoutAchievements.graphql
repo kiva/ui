@@ -5,6 +5,7 @@ query PostCheckoutAchievements($loanIds: [Int!]!) {
 			achievementId
 			preCheckoutTier
 			postCheckoutTier
+			contributingLoanIds
 		}
 	}
 }

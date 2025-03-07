@@ -10,6 +10,7 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:enable-huge-amount="enableHugeAmount"
 					:is-logged-in="isLoggedIn"
+					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -116,6 +117,10 @@ export default {
 			type: Number,
 			default: 0
 		},
+		possibleAchievementProgress: {
+			type: Array,
+			default: () => ([])
+		},
 	},
 	components: {
 		BasketItem,
@@ -130,5 +135,15 @@ export default {
 			userUsLoanCheckout(hasUsLoan);
 		}
 	},
+	methods: {
+		isLoanContributingInAchievements(loanId) {
+			const achievementProgress = this.possibleAchievementProgress.find(
+				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
+			);
+
+			return achievementProgress
+				&& achievementProgress?.postCheckoutTier !== achievementProgress?.preCheckoutTier;
+		},
+	}
 };
 </script>

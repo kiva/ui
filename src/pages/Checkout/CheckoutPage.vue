@@ -44,6 +44,7 @@
 							:is-logged-in="isLoggedIn"
 							:show-incentive-upsell="showIncentiveUpsell"
 							:incentive-goal="depositIncentiveAmountToLend"
+							:possible-achievement-progress="possibleAchievementProgress"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -329,6 +330,8 @@ import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-components';
+import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -350,6 +353,22 @@ const myTeamsQuery = gql`query myTeamsQuery {
 		}
 	}
 }`;
+
+const getLoans = basket => {
+	const loansResponse = basket?.items?.values ?? [];
+	console.log(loansResponse);
+	const loans = loansResponse
+		.filter(item => item.basketItemType === 'loan_reservation')
+		.map(item => {
+			return {
+				...item.loan,
+			};
+		});
+
+	return loans;
+};
+
+const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'CheckoutPage',
@@ -428,6 +447,8 @@ export default {
 			depositIncentiveExperimentEnabled: false,
 			userOptedIn: false,
 			addedUpsellLoans: [],
+			possibleAchievementProgress: [],
+			newAtbExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -466,6 +487,16 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 					]);
+				})
+				.then(response => {
+					// eslint-disable-next-line max-len
+					const newAtbExpEnabled = readBoolSetting(response[0]?.data, 'general.new_atb_experience_enable.value');
+					if (newAtbExpEnabled) {
+						const basket = response[0]?.data?.shop?.basket ?? null;
+						const loans = getLoans(basket);
+
+						return fetchPostCheckoutAchievements(client, getLoanIds(loans));
+					}
 				});
 		},
 		result({ data }) {
@@ -498,6 +529,8 @@ export default {
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
+
+			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -592,6 +625,15 @@ export default {
 
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
+
+		if (this.newAtbExpEnabled) {
+			const response = this.apollo.readQuery({
+				query: postCheckoutAchievementsQuery,
+				variables: { loanIds: getLoanIds(this.loans) },
+			});
+
+			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
+		}
 	},
 	mounted() {
 		// update current time every second for reactivity

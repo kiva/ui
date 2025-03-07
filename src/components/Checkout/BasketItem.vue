@@ -11,7 +11,7 @@
 		</div>
 		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info" data-testid="basket-loan-info">
-				<div class="tw-flex tw-mb-0.5">
+				<div class="tw-flex tw-mb-1">
 					<h2 class="tw-text-h3 tw-flex-grow" data-testid="basket-loan-name">
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
@@ -23,6 +23,14 @@
 						@updating-totals="$emit('updating-totals', $event)"
 					/>
 				</div>
+				<KvCartPill
+					v-if="contributesInAchievement"
+					show-bg
+				>
+					<template #icon>
+						<IconChoice />
+					</template>
+				</KvCartPill>
 				<loan-matcher
 					class="tw-mb-1"
 					data-testid="basket-loan-matching-text"
@@ -125,6 +133,8 @@ import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
+import KvCartPill from '#kv-components/KvCartPill';
+import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 
 export default {
 	name: 'BasketItem',
@@ -135,7 +145,9 @@ export default {
 		LoanReservation,
 		LoanPrice,
 		RemoveBasketItem,
-		TeamAttribution
+		TeamAttribution,
+		KvCartPill,
+		IconChoice,
 	},
 	inject: ['apollo', 'cookieStore'],
 	emits: [
@@ -166,6 +178,10 @@ export default {
 			default: false,
 		},
 		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
+		contributesInAchievement: {
 			type: Boolean,
 			default: false
 		}
