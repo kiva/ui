@@ -30,6 +30,10 @@ query initializeCheckout($basketId: String) {
 			value
 			description
 		}
+		new_atb_experience_enable: uiConfigSetting(key: "new_atb_experience_enable") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id
@@ -63,6 +67,7 @@ query initializeCheckout($basketId: String) {
 					}
 					id
 					price
+					basketItemType
 					... on LoanReservation {
 						expiryTime
 						isEndingSoon
