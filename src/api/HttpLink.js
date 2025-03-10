@@ -35,17 +35,17 @@ export default ({
 	};
 
 	// Format operations list into an arrayif it's not undefined or an empty string
-	const cachableQueryOperationNames = (stellateCachedOperations && stellateCachedOperations !== '')
+	const cachableOperations = (stellateCachedOperations && stellateCachedOperations !== '')
 		? stellateCachedOperations?.split(',') : [];
 
 	const link = split(
 		operation => {
 			// check to see if we have a Stellate uri available
-			if (!stellateGraphqlUri || cachableQueryOperationNames.length === 0) {
+			if (!stellateGraphqlUri || cachableOperations.length === 0) {
 				return false;
 			}
 			// check if the operation is cachable
-			if (cachableQueryOperationNames.includes(operation.operationName)
+			if ((cachableOperations.includes(operation.operationName) || cachableOperations.includes('*'))
 				// only use stellate uri if the response is ok or undefined, retry failed queries to origin instead
 				&& operation.getContext()?.response?.ok !== false) {
 				// update our options if we are caching the query
