@@ -356,7 +356,6 @@ const myTeamsQuery = gql`query myTeamsQuery {
 
 const getLoans = basket => {
 	const loansResponse = basket?.items?.values ?? [];
-	console.log(loansResponse);
 	const loans = loansResponse
 		.filter(item => item.basketItemType === 'loan_reservation')
 		.map(item => {
