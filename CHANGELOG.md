@@ -1,3 +1,52 @@
+## [3.13.0](https://github.com/kiva/ui/compare/v3.12.0...v3.13.0) (2025-03-10)
+
+### 🎉 New Features
+
+* add logic for monthly donation in activeView computed ([bfd0604](https://github.com/kiva/ui/commit/bfd0604db478f94642107c9fd96f683554819d26))
+* adding tracking events to kiva cards transaction info in checkout receipt ([c2d295d](https://github.com/kiva/ui/commit/c2d295dde388db25b33c5ad102fe0004a14d70d3))
+* changing module order label to prop and replacing it with userType ([3398193](https://github.com/kiva/ui/commit/3398193e0e9a6d461ccbc79f7528f90e7e048fde))
+* kv cart modal container added ([#5839](https://github.com/kiva/ui/issues/5839)) ([da63952](https://github.com/kiva/ui/commit/da639521ce1a3f9de7303c4098cbb2d10e309440))
+* kv cart modal updated ([#5848](https://github.com/kiva/ui/issues/5848)) ([4732c35](https://github.com/kiva/ui/commit/4732c35ffc26f1e63e86e6951abc8b775f72dde6))
+* only encode username when redirect to auth0 ([b84c0cf](https://github.com/kiva/ui/commit/b84c0cfde51e50f0dfcd9a6cfaa2adf05c57db9e))
+* spinner added to optin module buttons ([#5853](https://github.com/kiva/ui/issues/5853)) ([e0571c3](https://github.com/kiva/ui/commit/e0571c3470d78786b767d0618d3fd165412c6f21))
+* update loans page to fit new design spec ([3241a21](https://github.com/kiva/ui/commit/3241a211ac4de6c2433bf86ab7e880b9cdfe7582))
+
+### 🐛 Bugfixes
+
+* adding encoding in checkout page ([d406e84](https://github.com/kiva/ui/commit/d406e842facaeda7e85ff75faf097a9ded389bf3))
+* avoid multiple encoding, just encode the beggining of the guest flow ([1484f70](https://github.com/kiva/ui/commit/1484f7061cc9bcf18cc1b87cda3bb32337cad832))
+* comment position ([352275a](https://github.com/kiva/ui/commit/352275af3d0f88e669ba628937242a2facaa0d07))
+* correct email settings from optin modules ([#5859](https://github.com/kiva/ui/issues/5859)) ([44fbabf](https://github.com/kiva/ui/commit/44fbabf30094f480d83c85cb594b0e5780584d7d))
+* decoding instead of encoding username ([05290d2](https://github.com/kiva/ui/commit/05290d2b3950179bd7f494c3f0a1917f9e34a01b))
+* encoding a non redirect in post purchase ([73559c2](https://github.com/kiva/ui/commit/73559c224d35957492f321b0b058fc374b3c570d))
+* encoding between auth0 and ui redirects ([18b0a63](https://github.com/kiva/ui/commit/18b0a6303b5df508741e035e24198a06f3f92653))
+* encoding the full loginHint value instead of just the username ([e113700](https://github.com/kiva/ui/commit/e1137003c6b7b7c39a60c822595b504b68788234))
+* event with journeyBadgeEarned value in no loans use cases ([d5cb81f](https://github.com/kiva/ui/commit/d5cb81fa12d9f5b6749ab4a8a022e01e6ba01f43))
+* force login screen to load for sso redirects ([19edb03](https://github.com/kiva/ui/commit/19edb03419705a8345e4f6ef989655938f659ac8))
+* guestUsername has the blank space when redirected to ty page from checkout ([29dbddf](https://github.com/kiva/ui/commit/29dbddfb3434bdfb6e6fedf3ccbb61df304fff18))
+* journeyBadgeNotEarned not in event for no loan cases ([0740506](https://github.com/kiva/ui/commit/07405061476fae04790cfd01de6182c27258b324))
+* margin in journey bottom ([a11f692](https://github.com/kiva/ui/commit/a11f6929dd8a71f16a7ea4eb9ef3cd9efdf12a31))
+* missing encoding for guest flow ([dae5a05](https://github.com/kiva/ui/commit/dae5a05346a7c59ebd0dfe16e6a53038d682612c))
+* missing encoding for username ([1c6907b](https://github.com/kiva/ui/commit/1c6907b74ab1645b9dcbc9624b0a366fc41eaa68))
+* missing encoding in post purchase ([2aa22d6](https://github.com/kiva/ui/commit/2aa22d66185135dddb2c1b4b9e7f5a301e3ed54a))
+* missing redirect in guest account ceration ([458db9a](https://github.com/kiva/ui/commit/458db9a35525fa7f99cee2f623fb993a5e2c38b9))
+* potential race condition ([7095dfe](https://github.com/kiva/ui/commit/7095dfe91d43142b7d489c7a7dff24a27c7093f9))
+* re-add sso forced login ([815a897](https://github.com/kiva/ui/commit/815a8978d8a24cb022dcf6586e6df05e18805ef8))
+* remove forced sso login ([d2d8f20](https://github.com/kiva/ui/commit/d2d8f20fc19fc227be322549495643657bfa3e82))
+* showing ty page for monthly donation amount ([29e5801](https://github.com/kiva/ui/commit/29e5801dc5eb356bd7375f0a9fdd18060f73baff))
+* standarize padding in modules ([75fc081](https://github.com/kiva/ui/commit/75fc0816ec975428879759c5721216e7b79b9846))
+* static header for mobile ([#5837](https://github.com/kiva/ui/issues/5837)) ([c6cfc8e](https://github.com/kiva/ui/commit/c6cfc8ef1619abbf62768f3f3991d32ea6ba623e))
+* update breakpoints ([5e30604](https://github.com/kiva/ui/commit/5e306041853abe88eda2944f924160dacb213fd6))
+
+### 🪚 Refactors
+
+* view pdf button tracking ([2280af6](https://github.com/kiva/ui/commit/2280af64ce3ba2554044977496257101837cb470))
+
+### 🧹 Chores
+
+* **release:** 3.13.0-rc.1 [skip ci] ([bbeeb23](https://github.com/kiva/ui/commit/bbeeb23a382f9d2be968ad089b2db681b2357846)), closes [#5839](https://github.com/kiva/ui/issues/5839) [#5848](https://github.com/kiva/ui/issues/5848) [#5853](https://github.com/kiva/ui/issues/5853) [#5859](https://github.com/kiva/ui/issues/5859) [#5837](https://github.com/kiva/ui/issues/5837)
+* **release:** 3.13.0-rc.2 [skip ci] ([8687818](https://github.com/kiva/ui/commit/8687818c7b9f90fb808bbdea4d680872a28864de))
+
 ## [3.13.0-rc.2](https://github.com/kiva/ui/compare/v3.13.0-rc.1...v3.13.0-rc.2) (2025-03-07)
 
 ### 🐛 Bugfixes
