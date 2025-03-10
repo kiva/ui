@@ -1,0 +1,1 @@
+import{r as i,t as e}from"./entry-index-COmIkRYU2t.js";import{d as m}from"./entry-updateLoanFavorite-BVGvftO32-.js";function u(r,a){i(2,arguments);var t=e(r),o=e(a);return t.getTime()<o.getTime()}function d(r,a,t){return r.mutate({mutation:m,variables:{loan_id:a,is_favorite:t}})}export{d as b,u as i};
