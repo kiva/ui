@@ -4,18 +4,10 @@
 		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
-		<kv-cart-modal
-			v-if="addedLoan"
-			:style="{
-				'--modal-right': `${modalPosition.right}px`,
-				'--modal-top': `${modalPosition.top}px`
-			}"
-			class="cart-modal"
-			:added-loan="addedLoan"
-			:visible="cartModalVisible"
-			:photo-path="PHOTO_PATH"
-			:basket-count="basketCount"
-			@cart-modal-closed="closeCartModal"
+		<kv-atb-modal-container
+			:basket-size="basketSize"
+			:cart-modal-visible="cartModalVisible"
+			@close-cart-modal="closeCartModal"
 		/>
 		<div
 			:class="[
@@ -389,10 +381,11 @@ import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWra
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
-	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid, KvCartModal
+	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
 } from '@kiva/kv-components';
 import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
 export default {
 	name: 'LendCta',
@@ -426,7 +419,7 @@ export default {
 		JumpLinks,
 		LoanBookmark,
 		CompleteLoanWrapper,
-		KvCartModal,
+		KvAtbModalContainer,
 	},
 	data() {
 		return {
@@ -491,17 +484,6 @@ export default {
 						}
 						lenders{
 							totalCount
-						}
-						image {
-							id
-							url
-							hash
-						}
-						geocode {
-							country {
-								id
-								name
-							}
 						}
 					}
 				}
@@ -601,7 +583,7 @@ export default {
 				}
 				// Show modal after 1s (Defined in CSS)
 				setTimeout(() => {
-					this.formatAddedLoan(amount);
+					this.handleCartModal(this.basketSize);
 				}, 1000);
 			}).catch(e => {
 				if (e?.message !== INVALID_BASKET_ERROR) {
@@ -691,19 +673,6 @@ export default {
 				}
 			}
 		},
-		formatAddedLoan(amount) {
-			const addedLoan = {
-				id: this.loan.id,
-				name: this.loan?.name ?? '',
-				image: this.loan?.image?.url ?? '',
-				country: this.loan?.geocode?.country?.name ?? '',
-				imageHash: this.loan?.image?.hash ?? '',
-				amount,
-				basketSize: this.basketSize,
-			};
-
-			this.handleCartModal(addedLoan);
-		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
@@ -892,12 +861,5 @@ export default {
 	/* TODO make this color a variable */
 	color: #CE4A00;
 	@apply tw-w-full tw-text-small tw-text-center tw-font-medium;
-}
-
-@screen md {
-	.cart-modal:deep(div.container) {
-		right: var(--modal-right) !important;
-		top: var(--modal-top) !important;
-	}
 }
 </style>

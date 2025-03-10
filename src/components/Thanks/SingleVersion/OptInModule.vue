@@ -17,11 +17,13 @@
 					<kv-button
 						class="tw-w-full btn"
 						@click="() => updateOptIn(true)"
+						:state="buttonState"
 					>
 						Yes, keep me updated
 					</kv-button>
 					<kv-button
 						@click="() => updateOptIn(false)"
+						:state="buttonState"
 						variant="ghost"
 						class="tw-w-full btn ghost"
 					>
@@ -76,6 +78,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
+const buttonState = ref('');
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
@@ -113,7 +116,9 @@ const description = computed(() => {
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
-const updateOptIn = value => {
+const updateOptIn = async value => {
+	buttonState.value = 'loading';
+
 	$kvTrackEvent(
 		'post-checkout',
 		'click',
@@ -125,9 +130,9 @@ const updateOptIn = value => {
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
 		if (props.isGuest && visitorId) {
-			updateVisitorEmailOptIn(value, visitorId);
+			await updateVisitorEmailOptIn(value, value, false, visitorId);
 		} else {
-			updateCommunicationSettings(value);
+			await updateCommunicationSettings(value, value, false);
 		}
 	}
 	newConsentAnswered.value = true;

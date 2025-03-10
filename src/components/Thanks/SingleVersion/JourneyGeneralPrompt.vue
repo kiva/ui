@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-2 tw-w-full
+		class="tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-w-full
             print:!tw-hidden"
 	>
 		<BorrowerAvatarsContainer
@@ -47,7 +47,7 @@
 				/>
 			</span>
 		</KvButton>
-		<div class="tw-my-2">
+		<div class="tw-mt-2">
 			<div
 				class="tw-flex tw-items-center tw-justify-between tw-text-action print:!tw-hidden tw-cursor-pointer"
 				:class="{ 'open' : openImpactJourneys }"

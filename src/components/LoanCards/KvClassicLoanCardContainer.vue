@@ -285,7 +285,7 @@ export default {
 					this.animateBubble();
 					// Show modal after 1s (Defined in CSS)
 					setTimeout(() => {
-						this.formatAddedLoan(lendAmount);
+						this.$emit('show-cart-modal', this.basketCount);
 					}, 1000);
 				}
 				this.isAdding = false;
@@ -467,18 +467,6 @@ export default {
 			this.showBubble = false;
 			this.isAnimating = false;
 		},
-		formatAddedLoan(amount) {
-			const addedLoan = {
-				id: this.loan.id,
-				name: this.loan?.name ?? '',
-				image: this.loan?.image?.url ?? '',
-				country: this.loan?.geocode?.country?.name ?? '',
-				imageHash: this.loan?.image?.hash ?? '',
-				amount,
-				basketSize: this.basketCount,
-			};
-			this.$emit('show-cart-modal', addedLoan);
-		}
 	},
 	mounted() {
 		if (this.loan) {

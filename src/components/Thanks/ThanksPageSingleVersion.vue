@@ -239,15 +239,15 @@ onMounted(() => {
 
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
+	const badgeNotEarned = onlyKivaCardsAndDonations.value && !showControlModule.value;
 
 	const analyticsModuleOrder = [
-		userType.value,
 		isOptInLoan ? 'optInLoan' : '',
 		isOptInDonate ? 'optInDonate' : '',
 		showOptInModule.value && !isOptInLoan && !isOptInDonate ? 'optInOther' : '',
 		showKivaCardsModule.value ? 'kivaCard' : '',
-		showBadgeModule.value ? 'journeyBadgeEarned' : '',
-		showJourneyModule.value ? 'journeyBadgeNotEarned' : '',
+		showBadgeModule.value && !onlyKivaCardsAndDonations.value ? 'journeyBadgeEarned' : '',
+		showJourneyModule.value || badgeNotEarned ? 'journeyBadgeNotEarned' : '',
 		showControlModule.value ? 'journeyGeneral' : '',
 		showLoanComment.value ? 'commenting' : '',
 		props.isGuest ? 'drawerCreateAccount' : '',
@@ -258,8 +258,8 @@ onMounted(() => {
 	$kvTrackEvent(
 		EVENT_CATEGORY,
 		'view',
-		'unified-thanks',
 		analyticsModuleOrder,
+		userType.value,
 	);
 });
 </script>

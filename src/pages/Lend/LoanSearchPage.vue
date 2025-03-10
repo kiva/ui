@@ -1,17 +1,9 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
-		<kv-cart-modal
-			v-if="addedLoan"
-			:style="{
-				'--modal-right': `${modalPosition.right}px`,
-				'--modal-top': `${modalPosition.top}px`
-			}"
-			class="cart-modal"
-			:added-loan="addedLoan"
-			:visible="cartModalVisible"
-			:photo-path="PHOTO_PATH"
-			:basket-count="basketCount"
-			@cart-modal-closed="closeCartModal"
+		<kv-atb-modal-container
+			:basket-size="basketSize"
+			:cart-modal-visible="cartModalVisible"
+			@close-cart-modal="closeCartModal"
 		/>
 		<challenge-callout
 			v-if="showChallengeCallout"
@@ -96,7 +88,8 @@ import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import basketCountQuery from '#src/graphql/query/basketCount.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import { KvPageContainer, KvMaterialIcon, KvCartModal } from '@kiva/kv-components';
+import { KvPageContainer, KvMaterialIcon } from '@kiva/kv-components';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
@@ -140,7 +133,7 @@ export default {
 		LoanSearchInterface,
 		ChallengeHeader,
 		ChallengeCallout,
-		KvCartModal,
+		KvAtbModalContainer,
 	},
 	data() {
 		return {
@@ -410,12 +403,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-@screen md {
-	.cart-modal:deep(div.container) {
-		right: var(--modal-right) !important;
-		top: var(--modal-top) !important;
-	}
-}
-</style>

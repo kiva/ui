@@ -159,13 +159,12 @@ const funFactSource = computed(() => {
 });
 
 onMounted(async () => {
-	// Load combined badge data, since badgesAchieved prop only contains the badge IDs
-	fetchContentfulData(apollo);
-
-	if (!showEqualityBadge.value) {
+	await Promise.all([
+		// Load combined badge data, since badgesAchieved prop only contains the badge IDs
+		fetchContentfulData(apollo),
 		// Achievement data isn't needed when showing the equity badge
-		await fetchAchievementData(apollo);
-	}
+		!showEqualityBadge.value ? fetchAchievementData(apollo) : undefined,
+	]);
 });
 
 watch(() => badgeContentfulData.value, () => {

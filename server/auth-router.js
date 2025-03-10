@@ -96,7 +96,7 @@ export default function authRouter(config = {}) {
 			const username = req.query.username || '';
 			options.login_hint = `forgotPassword|${JSON.stringify({
 				guest: true,
-				username,
+				username: encodeURIComponent(username),
 			})}`;
 		}
 		// Override the login hint with whatever hint is set in the request

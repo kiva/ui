@@ -445,6 +445,10 @@ export default {
 			return this.kivaCards.filter(card => card.kivaCardObject.deliveryType === 'print');
 		},
 		activeView() {
+			// Show the donation only view if the user has only subscribed to a donation
+			if (this.showDafThanks || this.monthlyDonationAmount) {
+				return DONATION_ONLY_VIEW;
+			}
 			// Show the login required view if we couldn't get the receipt
 			if (!this.receipt) {
 				return LOGIN_REQUIRED_VIEW;
@@ -454,9 +458,7 @@ export default {
 				return SINGLE_VERSION_VIEW;
 			}
 			// Show the donation only view if the user has only donated and not lent
-			if (this.showDafThanks
-				|| (this.receipt && this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal)
-				|| this.monthlyDonationAmount?.length) {
+			if (this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal) {
 				return DONATION_ONLY_VIEW;
 			}
 			// Show the MyKiva view if qualifications are met
@@ -482,6 +484,8 @@ export default {
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
+
+		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 		const transactionId = this.$route.query?.kiva_transaction_id
 			? numeral(this.$route.query?.kiva_transaction_id).value()
 			: null;
@@ -494,8 +498,6 @@ export default {
 			);
 			return false;
 		}
-
-		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 
 		try {
 			data = this.apollo.readQuery({
@@ -616,7 +618,9 @@ export default {
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
 
-		this.optedIn = data?.my?.communicationSettings?.lenderNews || this.$route.query?.optedIn === 'true';
+		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
+			|| this.$route.query?.optedIn === 'true';
+
 		this.guestUsername = this.$route.query?.username ?? '';
 
 		// MyKiva Badges Experiment

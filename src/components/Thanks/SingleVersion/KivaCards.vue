@@ -14,10 +14,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { KvButton } from '@kiva/kv-components';
 
 const emit = defineEmits(['view-pdf-clicked']);
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	printableKivaCards: {
@@ -39,6 +40,7 @@ const buttonText = computed(() => {
 });
 
 const handleClick = () => {
+	$kvTrackEvent('post-checkout', 'click', 'kiva-card-view-pdf-top');
 	emit('view-pdf-clicked');
 };
 </script>
