@@ -1,3 +1,14 @@
+## [3.14.0-rc.1](https://github.com/kiva/ui/compare/v3.13.0...v3.14.0-rc.1) (2025-03-10)
+
+### 🎉 New Features
+
+* send all operations through stellate when wildcard is used ([1e6da87](https://github.com/kiva/ui/commit/1e6da87dd25cc6c5d86a994cb827d35cae831e21))
+* show pill when loan in checkout helps user make progress towards a new achievements ([88e5b4d](https://github.com/kiva/ui/commit/88e5b4da52126aa5577fb9a5f34c5ed79f374e9d))
+
+### 🐛 Bugfixes
+
+* remove log ([7709126](https://github.com/kiva/ui/commit/770912626d457fafc7f12e0dc099ec7b4b4dbd43))
+
 ## [3.13.0](https://github.com/kiva/ui/compare/v3.12.0...v3.13.0) (2025-03-10)
 
 ### 🎉 New Features
