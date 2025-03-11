@@ -133,7 +133,7 @@ import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
-import KvCartPill from '#kv-components/KvCartPill';
+import { KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 
 export default {
