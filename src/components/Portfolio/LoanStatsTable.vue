@@ -162,7 +162,6 @@ export default {
 		result({ data }) {
 			this.stats = data?.my?.userStats ?? {};
 			this.avgStats = {
-				amount_of_loans: data?.general?.kivaStats?.avgAmountLent ?? null,
 				amount_repaid: data?.general?.kivaStats?.avgAmountRepaid ?? null,
 				amount_in_arrears: data?.general?.kivaStats?.avgAmountArrears ?? null,
 				amount_outstanding: data?.general?.kivaStats?.avgAmountOutstanding ?? null,
@@ -170,6 +169,7 @@ export default {
 				amount_defaulted: data?.general?.kivaStats?.avgAmountDefaulted ?? null,
 				// The following fields are not yet available in the current API
 				// TODO: Add these values in once backend issues are resolved
+				amount_of_loans: null,
 				arrears_rate: null,
 				amount_refunded: null,
 				total_ended: null,
