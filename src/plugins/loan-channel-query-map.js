@@ -1058,6 +1058,7 @@ export default {
 				{
 					id: 172,
 					url: 'basic-needs',
+					queryParams: 'sector=6,10',
 					flssLoanSearch: {
 						sectorId: [6, 10],
 					},
