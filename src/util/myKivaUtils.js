@@ -157,8 +157,12 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 		);
 
 		// Ensure that the user continues to see MyKiva after passing the loan limit
-		// Only update the user preferences if running client-side
-		if (isMyKivaExperimentEnabled && !hasSeenMyKiva && typeof window !== 'undefined') {
+		// Only update the user preferences if running client-side and defined
+		if (isMyKivaExperimentEnabled
+			&& !hasSeenMyKiva
+			&& typeof window !== 'undefined'
+			&& typeof userPreferences !== 'undefined'
+		) {
 			const newPreferences = { [MY_KIVA_PREFERENCE_KEY]: 1 };
 
 			if (userPreferences === null) {

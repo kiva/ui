@@ -1,0 +1,12 @@
+query userAtbModal {
+	my {
+		id
+        userPreferences {
+            id
+            preferences
+        }
+        loans {
+            totalCount
+        }
+	}
+}
