@@ -35,7 +35,7 @@ import { KvLightbox } from '@kiva/kv-components';
 
 const props = defineProps({
 	amount: {
-		type: [String],
+		type: String,
 		required: true
 	},
 	paymentHistory: {
