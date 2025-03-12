@@ -39,7 +39,7 @@ export default {
 	},
 	props: {
 		amount: {
-			type: [Number, String],
+			type: [String],
 			required: true
 		},
 		paymentHistory: {

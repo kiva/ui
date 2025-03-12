@@ -128,7 +128,6 @@
 							<td class="tw-px-2">
 								<paid-amount-modal
 									:amount="loan.userProperties.loanBalance.amountRepaidToLender"
-									:loan-amount="loan.terms.loanAmount"
 								/>
 							</td>
 							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
