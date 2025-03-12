@@ -87,6 +87,8 @@ const modalPosition = computed(() => {
 	return { right, top };
 });
 
+const isGuest = computed(() => !userData.value?.my);
+
 const fetchUserData = async () => {
 	await apollo.query({
 		query: userAtbModalQuery,
@@ -104,7 +106,7 @@ onMounted(async () => {
 		apollo,
 		$kvTrackEvent,
 		userData.value?.my?.userPreferences,
-		userData.value?.my?.loans?.totalCount || 0,
+		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 	);
 });
 </script>

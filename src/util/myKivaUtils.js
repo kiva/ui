@@ -157,7 +157,8 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 		);
 
 		// Ensure that the user continues to see MyKiva after passing the loan limit
-		// Only update the user preferences if running client-side and defined
+		// eslint-disable-next-line max-len
+		// Only update the user preferences if running client-side and defined instead that guests users have undefined userPreferences.
 		if (isMyKivaExperimentEnabled
 			&& !hasSeenMyKiva
 			&& typeof window !== 'undefined'
