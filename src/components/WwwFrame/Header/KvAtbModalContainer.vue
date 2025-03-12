@@ -11,24 +11,43 @@
 		:basket-count="basketCount"
 		@cart-modal-closed="closeCartModal"
 	>
-		<template
-			#content
-			v-if="myKivaExperimentEnabled"
-		>
-			<!-- ATB content -->
+		<template #content>
+			<div
+				v-if="showModalContent"
+				class="tw-mx-2.5 tw-border-t tw-border-tertiary tw-py-2"
+			>
+				<KvCartPill
+					class="!tw-w-full"
+					:borrower-name="borrowerName"
+					:milestones-number="contributingAchievements.length"
+				>
+					<template #icon>
+						<IconChoice
+							class="tw-min-w-3"
+						/>
+					</template>
+				</KvCartPill>
+			</div>
 		</template>
 	</KvCartModal>
 </template>
 
 <script setup>
 import {
-	computed, inject, onMounted, ref
+	computed,
+	inject,
+	onMounted,
+	ref,
+	watch,
+	toRefs,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
-import { KvCartModal } from '@kiva/kv-components';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import { KvCartModal, KvCartPill } from '@kiva/kv-components';
+import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -38,22 +57,30 @@ const router = useRouter();
 const emit = defineEmits(['close-cart-modal']);
 
 const props = defineProps({
-	basketSize: {
-		type: Number,
-		default: 0,
-	},
 	cartModalVisible: {
 		type: Boolean,
 		default: () => false,
 	},
+	addedLoan: {
+		type: Object,
+		default: () => ({}),
+	},
 });
+
+const { addedLoan } = toRefs(props);
 
 const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
+const contributingAchievements = ref([]);
+const showModalContent = ref(false);
 
 const basketCount = computed(() => {
-	return props.basketSize ?? 0;
+	return addedLoan.value?.basketSize ?? 0;
 });
+
+const isGuest = computed(() => !userData.value?.my);
+
+const borrowerName = computed(() => addedLoan.value?.name);
 
 const getTargetsPosition = () => {
 	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
@@ -64,6 +91,13 @@ const getTargetsPosition = () => {
 		headerPosition: header?.getBoundingClientRect(),
 	};
 };
+
+const modalPosition = computed(() => {
+	const { basketPosition, headerPosition } = getTargetsPosition();
+	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
+	const top = `${headerPosition.bottom}`;
+	return { right, top };
+});
 
 const handleRedirect = type => {
 	if (type === 'view-basket') {
@@ -77,17 +111,9 @@ const closeCartModal = closedBy => {
 		$kvTrackEvent('basket', 'dismiss', 'basket-modal', type);
 		handleRedirect(type);
 	}
+	showModalContent.value = false;
 	emit('close-cart-modal');
 };
-
-const modalPosition = computed(() => {
-	const { basketPosition, headerPosition } = getTargetsPosition();
-	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
-	const top = `${headerPosition.bottom}`;
-	return { right, top };
-});
-
-const isGuest = computed(() => !userData.value?.my);
 
 const fetchUserData = async () => {
 	await apollo.query({
@@ -98,6 +124,25 @@ const fetchUserData = async () => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
 };
+
+const fetchPostCheckoutAchievements = async loanIds => {
+	await apollo.query({
+		query: postCheckoutAchievementsQuery,
+		variables: { loanIds }
+	}).then(({ data }) => {
+		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
+		contributingAchievements.value = loanAchievements.filter(achievement => achievement.postCheckoutTier !== achievement.preCheckoutTier); // eslint-disable-line max-len
+		showModalContent.value = contributingAchievements.value.length;
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
+	});
+};
+
+watch(addedLoan, async () => {
+	if (myKivaExperimentEnabled.value && !isGuest.value) {
+		fetchPostCheckoutAchievements([addedLoan.value?.id]);
+	}
+});
 
 onMounted(async () => {
 	await fetchUserData();

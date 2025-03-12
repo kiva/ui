@@ -285,7 +285,7 @@ export default {
 					this.animateBubble();
 					// Show modal after 1s (Defined in CSS)
 					setTimeout(() => {
-						this.$emit('show-cart-modal', this.basketCount);
+						this.formatAddedLoan();
 					}, 1000);
 				}
 				this.isAdding = false;
@@ -467,6 +467,14 @@ export default {
 			this.showBubble = false;
 			this.isAnimating = false;
 		},
+		formatAddedLoan() {
+			const addedLoan = {
+				id: this.loan?.id,
+				name: this.loan?.name ?? '',
+				basketSize: this.basketCount,
+			};
+			this.$emit('show-cart-modal', addedLoan);
+		}
 	},
 	mounted() {
 		if (this.loan) {
