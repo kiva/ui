@@ -132,7 +132,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	}).then(({ data }) => {
 		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
 		contributingAchievements.value = loanAchievements.filter(achievement => achievement.postCheckoutTier !== achievement.preCheckoutTier); // eslint-disable-line max-len
-		showModalContent.value = myKivaExperimentEnabled.value && contributingAchievements.value.length;
+		showModalContent.value = contributingAchievements.value.length;
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
 	});
