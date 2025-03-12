@@ -24,11 +24,12 @@
 					/>
 				</div>
 				<KvCartPill
-					v-if="contributesInAchievement"
+					v-if="contributesInAchievement || isFirstLoan"
 					show-bg
 				>
 					<template #icon>
-						<IconChoice />
+						<EquityBadge v-if="isFirstLoan" class="tw-h-4 tw-w-4" />
+						<IconChoice v-else />
 					</template>
 				</KvCartPill>
 				<loan-matcher
@@ -135,6 +136,7 @@ import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import KvCartPill from '#kv-components/KvCartPill';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
+import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 
 export default {
 	name: 'BasketItem',
@@ -148,6 +150,7 @@ export default {
 		TeamAttribution,
 		KvCartPill,
 		IconChoice,
+		EquityBadge,
 	},
 	inject: ['apollo', 'cookieStore'],
 	emits: [
@@ -155,6 +158,7 @@ export default {
 		'updating-totals',
 		'jump-to-loans',
 		'validateprecheckout',
+		'removed-loan',
 	],
 	props: {
 		disableRedirects: {
@@ -184,7 +188,11 @@ export default {
 		contributesInAchievement: {
 			type: Boolean,
 			default: false
-		}
+		},
+		isFirstLoan: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -240,6 +248,7 @@ export default {
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
+				this.$emit('removed-loan', this.loan.id);
 				this.loanVisible = false;
 				removeLoansFromChallengeCookie(this.cookieStore, [this.loan.id]);
 			}
