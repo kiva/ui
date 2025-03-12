@@ -28,39 +28,30 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import numeral from 'numeral';
 import { KvLightbox } from '@kiva/kv-components';
 
-export default {
-	name: 'PaidAmountModal',
-	components: {
-		KvLightbox
+const props = defineProps({
+	amount: {
+		type: [String],
+		required: true
 	},
-	props: {
-		amount: {
-			type: [String],
-			required: true
-		},
-		paymentHistory: {
-			type: Array,
-			default: () => ([
-				// Fake hardcoded example data to use while API endpoints are still being worked on
-				{ date: 'Dec 18, 2024', amount: '2.37', type: 'repaid' },
-				{ date: 'Jan 28, 2025', amount: '0.89', type: 'repaid' },
-				{ date: 'Jan 28, 2025', amount: '0.01', type: 'loss' }
-			])
-		}
-	},
-	data() {
-		return {
-			showModal: false
-		};
-	},
-	computed: {
-		formattedAmount() {
-			return numeral(this.amount).format('0,0.00');
-		}
+	paymentHistory: {
+		type: Array,
+		default: () => ([
+			// Fake hardcoded example data to use while API endpoints are still being worked on
+			{ date: 'Dec 18, 2024', amount: '2.37', type: 'repaid' },
+			{ date: 'Jan 28, 2025', amount: '0.89', type: 'repaid' },
+			{ date: 'Jan 28, 2025', amount: '0.01', type: 'loss' }
+		])
 	}
-};
+});
+
+const showModal = ref(false);
+
+const formattedAmount = computed(() => {
+	return numeral(props.amount).format('0,0.00');
+});
 </script>
