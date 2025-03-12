@@ -125,12 +125,11 @@
 									{{ loan.lenderRepaymentTerm || '-' }} mos
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
-								<div>
-									<div class="tw-mb-1">
-										${{ loan.userProperties.loanBalance.amountRepaidToLender }} repaid to you
-									</div>
-								</div>
+							<td class="tw-px-2">
+								<paid-amount-modal
+									:amount="loan.userProperties.loanBalance.amountRepaidToLender"
+									:loan-amount="loan.terms.loanAmount"
+								/>
 							</td>
 							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
 								<div class="tw-items-center">
@@ -167,6 +166,7 @@ import {
 	RAISED,
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
+import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
 
 const DELINQUENT = 'payingBackDelinquent';
 
@@ -185,7 +185,8 @@ export default {
 	},
 	components: {
 		KvFlag,
-		KvLoadingPlaceholder
+		KvLoadingPlaceholder,
+		PaidAmountModal
 	},
 	methods: {
 		formatDate(date) {
