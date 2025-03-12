@@ -533,7 +533,7 @@ export default {
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
-			this.isFirstLoan = this.loans.length && this.lenderTotalLoans === this.loans.length;
+			this.isFirstLoan = this.loans.length && !this.lenderTotalLoans;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
