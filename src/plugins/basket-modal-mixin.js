@@ -4,13 +4,13 @@ export default {
 	data() {
 		return {
 			cartModalVisible: false,
-			basketSize: 0,
+			addedLoan: {},
 		};
 	},
 	methods: {
-		handleCartModal(basketSize) {
-			if (basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
-				this.basketSize = basketSize;
+		handleCartModal(addedLoan) {
+			if (addedLoan.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+				this.addedLoan = addedLoan;
 				this.cartModalVisible = true;
 			}
 		},

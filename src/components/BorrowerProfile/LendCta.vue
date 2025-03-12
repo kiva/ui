@@ -5,7 +5,7 @@
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container
-			:basket-size="basketSize"
+			:added-loan="addedLoan"
 			:cart-modal-visible="cartModalVisible"
 			@close-cart-modal="closeCartModal"
 		/>
@@ -583,7 +583,7 @@ export default {
 				}
 				// Show modal after 1s (Defined in CSS)
 				setTimeout(() => {
-					this.handleCartModal(this.basketSize);
+					this.formatAddedLoan();
 				}, 1000);
 			}).catch(e => {
 				if (e?.message !== INVALID_BASKET_ERROR) {
@@ -673,6 +673,14 @@ export default {
 				}
 			}
 		},
+		formatAddedLoan() {
+			const addedLoan = {
+				id: this.loanId,
+				name: this.name ?? '',
+				basketSize: this.basketSize,
+			};
+			this.handleCartModal(addedLoan);
+		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {
