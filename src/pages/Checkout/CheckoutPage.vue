@@ -45,8 +45,10 @@
 							:show-incentive-upsell="showIncentiveUpsell"
 							:incentive-goal="depositIncentiveAmountToLend"
 							:possible-achievement-progress="possibleAchievementProgress"
+							:is-first-loan="isFirstLoan"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
+							@removed-loan="calculateProgressAchievement($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
 						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
@@ -448,6 +450,7 @@ export default {
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
 			newAtbExpEnabled: false,
+			isFirstLoan: false,
 		};
 	},
 	apollo: {
@@ -530,6 +533,7 @@ export default {
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
+			this.isFirstLoan = this.loans.length && this.lenderTotalLoans === this.loans.length;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1135,6 +1139,19 @@ export default {
 
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
+		calculateProgressAchievement(removedLoanId) {
+			if (this.newAtbExpEnabled) {
+				const loanIds = this.loanIdsInBasket.filter(loanId => loanId !== removedLoanId);
+				if (loanIds.length) {
+					this.apollo.query({
+						query: postCheckoutAchievementsQuery,
+						variables: { loanIds },
+					}).then(({ data }) => {
+						this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
+					});
+				}
+			}
+		}
 	},
 	unmounted() {
 		clearInterval(this.currentTimeInterval);
