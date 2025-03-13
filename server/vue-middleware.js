@@ -86,6 +86,7 @@ export default function createMiddleware({ config, vite }) {
 		const context = {
 			url: req.url,
 			config: { ...config.app, firstPage: req.session?.firstPage },
+			kivaUserAgent: config.server.userAgent,
 			cookies,
 			user: req.user || {},
 			locale: req.locale,

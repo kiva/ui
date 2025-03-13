@@ -4,6 +4,7 @@ import { split } from '@apollo/client/core/index';
 
 export default ({
 	uri = '',
+	userAgent,
 	fetch,
 	apolloBatching,
 	stellateDebugHeaders,
@@ -24,13 +25,18 @@ export default ({
 		}
 	};
 
+	// Add user agent to headers if it exists
+	if (userAgent) {
+		options.headers['User-Agent'] = userAgent;
+	}
+
 	// Create a new options object for stellate
 	const stellateOptions = {
 		...options,
 		headers: stellateDebugHeaders ? {
 			...options?.headers,
 			'gcdn-debug': 1,
-		} : {},
+		} : options.headers,
 		uri: stellateGraphqlUri ?? uri,
 	};
 
