@@ -40,6 +40,7 @@ import {
 	ref,
 	watch,
 	toRefs,
+	onUnmounted,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
@@ -48,6 +49,7 @@ import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvCartModal, KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
+import _throttle from 'lodash/throttle';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -163,8 +165,18 @@ onMounted(async () => {
 	);
 
 	updateHeaderPosition();
-	window.addEventListener('scroll', updateHeaderPosition);
+
+	window.addEventListener('scroll', _throttle(() => {
+		updateHeaderPosition();
+	}, 200));
 });
+
+onUnmounted(() => {
+	window.removeEventListener('scroll', _throttle(() => {
+		updateHeaderPosition();
+	}, 200));
+});
+
 </script>
 
 <style lang="postcss" scoped>
