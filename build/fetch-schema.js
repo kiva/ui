@@ -2,12 +2,10 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readFile, writeFile } from 'fs';
 import { extendSchema, parse, printSchema } from 'graphql';
-import minimist from 'minimist';
 import getRemoteGqlSchema from '../server/util/getRemoteGqlSchema.js';
-import selectConfig from '../config/selectConfig.js';
+import config, { initConfig } from '../server/util/config.js';
 
-const argv = minimist(process.argv.slice(2));
-const config = await selectConfig(argv.config);
+await initConfig();
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
