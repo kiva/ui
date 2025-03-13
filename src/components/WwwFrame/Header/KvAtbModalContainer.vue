@@ -73,7 +73,7 @@ const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
-const headerPosition = ref({});
+const headerBottomPosition = ref(0);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -85,8 +85,10 @@ const borrowerName = computed(() => addedLoan.value?.name);
 
 const updateHeaderPosition = () => {
 	const header = document.getElementsByTagName('header')[0];
-	if (header) {
-		headerPosition.value = header?.getBoundingClientRect();
+	const headerPosition = header?.getBoundingClientRect() ?? null;
+
+	if (headerPosition && headerPosition?.bottom !== headerBottomPosition.value) {
+		headerBottomPosition.value = headerPosition?.bottom;
 	}
 };
 
@@ -101,7 +103,7 @@ const getTargetsPosition = () => {
 const modalPosition = computed(() => {
 	const { basketPosition } = getTargetsPosition();
 	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
-	const top = `${headerPosition.value?.bottom}`;
+	const top = `${headerBottomPosition.value}`;
 	return { right, top };
 });
 
