@@ -94,6 +94,8 @@ const updateHeaderPosition = () => {
 	}
 };
 
+const updateHeaderPositionThrottled = _throttle(updateHeaderPosition, 100);
+
 const getTargetsPosition = () => {
 	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
 	const target = targets.find(t => t?.clientHeight);
@@ -165,16 +167,11 @@ onMounted(async () => {
 	);
 
 	updateHeaderPosition();
-
-	window.addEventListener('scroll', _throttle(() => {
-		updateHeaderPosition();
-	}, 200));
+	window.addEventListener('scroll', updateHeaderPositionThrottled);
 });
 
 onUnmounted(() => {
-	window.removeEventListener('scroll', _throttle(() => {
-		updateHeaderPosition();
-	}, 200));
+	window.removeEventListener('scroll', updateHeaderPositionThrottled);
 });
 
 </script>
