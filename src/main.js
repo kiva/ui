@@ -19,6 +19,7 @@ export default function createApp({
 	kvAuth0,
 	locale,
 	fetch,
+	kivaUserAgent,
 	url = '',
 	isServer = false,
 } = {}) {
@@ -58,6 +59,7 @@ export default function createApp({
 		cookieStore,
 		kvAuth0,
 		fetch,
+		userAgent: kivaUserAgent,
 		route,
 	});
 
