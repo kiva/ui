@@ -73,6 +73,7 @@ const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
+const headerPosition = ref({});
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -82,20 +83,25 @@ const isGuest = computed(() => !userData.value?.my);
 
 const borrowerName = computed(() => addedLoan.value?.name);
 
+const updateHeaderPosition = () => {
+	const header = document.getElementsByTagName('header')[0];
+	if (header) {
+		headerPosition.value = header?.getBoundingClientRect();
+	}
+};
+
 const getTargetsPosition = () => {
 	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
 	const target = targets.find(t => t?.clientHeight);
-	const header = document.getElementsByTagName('header')[0];
 	return {
 		basketPosition: target?.getBoundingClientRect(),
-		headerPosition: header?.getBoundingClientRect(),
 	};
 };
 
 const modalPosition = computed(() => {
-	const { basketPosition, headerPosition } = getTargetsPosition();
+	const { basketPosition } = getTargetsPosition();
 	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
-	const top = `${headerPosition.bottom}`;
+	const top = `${headerPosition.value?.bottom}`;
 	return { right, top };
 });
 
@@ -153,6 +159,9 @@ onMounted(async () => {
 		userData.value?.my?.userPreferences,
 		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 	);
+
+	updateHeaderPosition();
+	window.addEventListener('scroll', updateHeaderPosition);
 });
 </script>
 
