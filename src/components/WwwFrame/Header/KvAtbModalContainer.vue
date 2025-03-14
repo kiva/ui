@@ -40,6 +40,7 @@ import {
 	ref,
 	watch,
 	toRefs,
+	onUnmounted,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
@@ -48,6 +49,7 @@ import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvCartModal, KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
+import _throttle from 'lodash/throttle';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -73,6 +75,7 @@ const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
+const headerBottomPosition = ref(0);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -82,20 +85,29 @@ const isGuest = computed(() => !userData.value?.my);
 
 const borrowerName = computed(() => addedLoan.value?.name);
 
+const updateHeaderPosition = () => {
+	const header = document.getElementsByTagName('header')[0];
+	const headerPosition = header?.getBoundingClientRect() ?? null;
+
+	if (headerPosition && headerPosition?.bottom !== headerBottomPosition.value) {
+		headerBottomPosition.value = headerPosition?.bottom;
+	}
+};
+
+const updateHeaderPositionThrottled = _throttle(updateHeaderPosition, 100);
+
 const getTargetsPosition = () => {
 	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
 	const target = targets.find(t => t?.clientHeight);
-	const header = document.getElementsByTagName('header')[0];
 	return {
 		basketPosition: target?.getBoundingClientRect(),
-		headerPosition: header?.getBoundingClientRect(),
 	};
 };
 
 const modalPosition = computed(() => {
-	const { basketPosition, headerPosition } = getTargetsPosition();
+	const { basketPosition } = getTargetsPosition();
 	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
-	const top = `${headerPosition.bottom}`;
+	const top = `${headerBottomPosition.value}`;
 	return { right, top };
 });
 
@@ -153,7 +165,15 @@ onMounted(async () => {
 		userData.value?.my?.userPreferences,
 		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 	);
+
+	updateHeaderPosition();
+	window.addEventListener('scroll', updateHeaderPositionThrottled);
 });
+
+onUnmounted(() => {
+	window.removeEventListener('scroll', updateHeaderPositionThrottled);
+});
+
 </script>
 
 <style lang="postcss" scoped>
