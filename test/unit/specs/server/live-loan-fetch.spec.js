@@ -1,4 +1,3 @@
-const { initConfig } = require('../../../../server/util/config');
 const fetch = require('../../../../server/util/fetch');
 const fetchLoansByType = require('../../../../server/util/live-loan/live-loan-fetch');
 
@@ -43,8 +42,6 @@ describe('live-loan-fetch', () => {
 		}
 
 		beforeEach(async () => {
-			// Initialize app configuration
-			await initConfig();
 			// Suppress console warnings
 			jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 		});

@@ -17,7 +17,7 @@ import timesyncRouter from './timesync-router.cjs';
 import liveLoanRouter from './live-loan-router.js';
 import vueMiddleware from './vue-middleware.js';
 import argv from './util/argv.js';
-import config, { initConfig } from './util/config.js';
+import config from './util/config.js';
 import initCache from './util/initCache.js';
 import { errorLogger, fallbackErrorHandler, requestLogger } from './util/errorLogger.js';
 
@@ -39,9 +39,6 @@ const metricsMiddleware = promBundle({
 		collectDefaultMetrics: {}
 	}
 });
-
-// Initialize config globally
-await initConfig();
 
 // Initialize a Cache instance
 const cache = initCache(config.server);
