@@ -3,9 +3,7 @@ import { fileURLToPath } from 'url';
 import { readFile, writeFile } from 'fs';
 import { extendSchema, parse, printSchema } from 'graphql';
 import getRemoteGqlSchema from '../server/util/getRemoteGqlSchema.js';
-import config, { initConfig } from '../server/util/config.js';
-
-await initConfig();
+import config from '../server/util/config.js';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
