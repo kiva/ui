@@ -1,0 +1,7 @@
+const l={kind:"Document",definitions:[{kind:"FragmentDefinition",name:{kind:"Name",value:"experimentVersion"},typeCondition:{kind:"NamedType",name:{kind:"Name",value:"Experiment"}},directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"version"},arguments:[],directives:[]}]}}],loc:{start:0,end:88}};l.loc.source={body:`
+                fragment experimentVersion on Experiment {
+	id
+	version
+}
+
+            `,name:"GraphQL request",locationOffset:{line:1,column:1}};const c=(e,i)=>{if(e.kind==="FragmentSpread")i.add(e.name.value);else if(e.kind==="VariableDefinition"){const n=e.type;n.kind==="NamedType"&&i.add(n.name.value)}e.selectionSet&&e.selectionSet.selections.forEach(function(n){c(n,i)}),e.variableDefinitions&&e.variableDefinitions.forEach(function(n){c(n,i)}),e.definitions&&e.definitions.forEach(function(n){c(n,i)})},r={},u=e=>{e.definitions.forEach(function(i){if(i.name){const n=new Set;c(i,n),r[i.name.value]=n}})};u(l);const d=(e,i)=>{for(let n=0;n<e.definitions.length;n++){const o=e.definitions[n];if(o.name&&o.name.value==i)return o}},p=(e,i)=>{const n={kind:e.kind,definitions:[d(e,i)]};e.hasOwnProperty("loc")&&(n.loc=e.loc);const o=r[i]||new Set,f=new Set;let s=new Set;for(o.forEach(a=>{s.add(a)});s.size>0;){const a=s;s=new Set,a.forEach(t=>{f.has(t)||(f.add(t),(r[t]||new Set).forEach(m=>{s.add(m)}))})}return f.forEach(a=>{const t=d(e,a);t&&n.definitions.push(t)}),n};p(l,"experimentVersion");export{l as d};
