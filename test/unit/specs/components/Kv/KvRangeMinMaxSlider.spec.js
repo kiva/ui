@@ -244,7 +244,7 @@ describe('KvRangeMinMaxSlider', () => {
 		expect(rangeInputs[1].step).toBe('1');
 	});
 
-	it.only('should emit updated', async () => {
+	it('should emit updated', async () => {
 		const { getAllByRole, emitted } = render(KvRangeMinMaxSlider);
 
 		const rangeInputs = getAllByRole('slider');

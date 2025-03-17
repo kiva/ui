@@ -54,7 +54,8 @@ describe('BasketItem loan', () => {
 		const CheckoutItemImg = getByTestId('basket-loan-image');
 		const BorrowerLink = getByRole('link');
 		expect(BorrowerLink).toBe(CheckoutItemImg);
-		expect(BorrowerLink.href).toBe('http://localhost/lend/2444883');
+		const BorrowerLinkUrl = new URL(BorrowerLink.href);
+		expect(BorrowerLinkUrl.pathname).toBe('/lend/2444883');
 
 		const LoanPrice = document.getElementById('loan-price');
 		const LoanPriceSelected = LoanPrice.options[LoanPrice.selectedIndex].getAttribute('value');

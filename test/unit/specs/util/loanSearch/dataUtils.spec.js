@@ -24,7 +24,7 @@ describe('dataUtils.js', () => {
 		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
 
 		beforeEach(() => {
-			spyFetchFacets = jest.spyOn(flssUtils, 'fetchFacets')
+			spyFetchFacets = vi.spyOn(flssUtils, 'fetchFacets')
 				.mockImplementation(() => Promise.resolve({
 					isoCodes,
 					themes,
@@ -33,7 +33,7 @@ describe('dataUtils.js', () => {
 				}));
 		});
 
-		afterEach(jest.restoreAllMocks);
+		afterEach(vi.restoreAllMocks);
 
 		it('should return facets', async () => {
 			const apollo = {};
@@ -113,11 +113,11 @@ describe('dataUtils.js', () => {
 		const origin = FLSS_ORIGIN_NOT_SPECIFIED;
 
 		beforeEach(() => {
-			spyFetchLoans = jest.spyOn(flssUtils, 'fetchLoans')
+			spyFetchLoans = vi.spyOn(flssUtils, 'fetchLoans')
 				.mockImplementation(() => Promise.resolve({ values: loans, totalCount }));
 		});
 
-		afterEach(jest.restoreAllMocks);
+		afterEach(vi.restoreAllMocks);
 
 		it('should return loans', async () => {
 			const result = await runLoansQuery(apollo, mockState, origin);
@@ -142,11 +142,11 @@ describe('dataUtils.js', () => {
 		const fakeUserId = 54321;
 		const limit = 12;
 		beforeEach(() => {
-			spyFetchRecommendedLoans = jest.spyOn(flssUtils, 'fetchRecommendedLoans')
+			spyFetchRecommendedLoans = vi.spyOn(flssUtils, 'fetchRecommendedLoans')
 				.mockImplementation(() => Promise.resolve({ values: loans, totalCount }));
 		});
 
-		afterEach(jest.restoreAllMocks);
+		afterEach(vi.restoreAllMocks);
 
 		it('should return recommended loans', async () => {
 			const result = await runRecommendationsQuery(apollo, {
@@ -182,7 +182,7 @@ describe('dataUtils.js', () => {
 		const activity = [{ id: 1, name: 'Test Activity' }];
 
 		it('should pass the correct query variables to apollo', async () => {
-			const apollo = { query: jest.fn(() => Promise.resolve({})) };
+			const apollo = { query: vi.fn(() => Promise.resolve({})) };
 			await fetchLoanFacets(apollo);
 			const apolloVariables = { query: loanFacetsQuery, fetchPolicy: 'network-only' };
 			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
@@ -192,7 +192,7 @@ describe('dataUtils.js', () => {
 
 		it('should handle undefined', async () => {
 			const dataObj = { data: { } };
-			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+			const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 			const data = await fetchLoanFacets(apollo);
 
 			expect(data).toEqual({
@@ -241,7 +241,7 @@ describe('dataUtils.js', () => {
 				}
 			};
 
-			const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+			const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 			const data = await fetchLoanFacets(apollo);
 
 			expect(data).toEqual({

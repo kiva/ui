@@ -12,7 +12,7 @@ const mocks = {
 		}
 	}
 };
-const show = jest.fn();
+const show = vi.fn();
 
 describe('ChallengeCallout', () => {
 	it('should display team name', () => {

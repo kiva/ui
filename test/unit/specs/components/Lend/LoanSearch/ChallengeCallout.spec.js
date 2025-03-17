@@ -13,7 +13,7 @@ const mocks = {
 
 describe('ChallengeCallout', () => {
 	it('should display add to cart message', () => {
-		const show = jest.fn();
+		const show = vi.fn();
 
 		const { getByAltText, getByText } = render(ChallengeCallout, {
 			global: {

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import CookieStore from '#src/util/cookieStore';
 import clearDocumentCookies from '../../setup/clearDocumentCookies';
 
