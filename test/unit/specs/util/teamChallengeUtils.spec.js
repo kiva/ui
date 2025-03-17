@@ -14,7 +14,7 @@ describe('teamChallengeUtils.js', () => {
 
 	describe('getForcedTeamId', () => {
 		it('should use expected cookie name', () => {
-			const cookieStore = { get: jest.fn() };
+			const cookieStore = { get: vi.fn() };
 			const result = getForcedTeamId(cookieStore, 1, [], []);
 			expect(result).toEqual(undefined);
 			expect(cookieStore.get).toBeCalledTimes(1);
@@ -22,28 +22,28 @@ describe('teamChallengeUtils.js', () => {
 		});
 
 		it('should handle empty cookie', () => {
-			const cookieStore = { get: jest.fn() };
+			const cookieStore = { get: vi.fn() };
 			const result = getForcedTeamId(cookieStore, 1, [], []);
 			expect(result).toEqual(undefined);
 			expect(cookieStore.get).toBeCalledTimes(1);
 		});
 
 		it('should handle bad cookie value', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify({})), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(JSON.stringify({})), set: vi.fn() };
 			const result = getForcedTeamId(cookieStore, [mockLoans[0].loanId]);
 			expect(result).toEqual(undefined);
 			expect(cookieStore.get).toBeCalledTimes(1);
 		});
 
 		it('should handle non-matching loan ID', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			const result = getForcedTeamId(cookieStore, -1, [], []);
 			expect(result).toEqual(undefined);
 			expect(cookieStore.get).toBeCalledTimes(1);
 		});
 
 		it('should append when team arrays are empty', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			const appendedTeams = [];
 			const result = getForcedTeamId(cookieStore, mockLoans[0].loanId, [], appendedTeams);
 			expect(result).toEqual(mockLoans[0].teamId);
@@ -52,7 +52,7 @@ describe('teamChallengeUtils.js', () => {
 		});
 
 		it('should use the cookie value as default', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			const appendedTeams = [];
 			const result = getForcedTeamId(
 				cookieStore,
@@ -66,7 +66,7 @@ describe('teamChallengeUtils.js', () => {
 		});
 
 		it('should append when non-matching team ID', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			const appendedTeams = [];
 			const result = getForcedTeamId(cookieStore, mockLoans[0].loanId, [{ id: -1 }], appendedTeams);
 			expect(result).toEqual(mockLoans[0].teamId);
@@ -77,26 +77,26 @@ describe('teamChallengeUtils.js', () => {
 
 	describe('removeLoansFromChallengeCookie', () => {
 		it('should use expected cookie name', () => {
-			const cookieStore = { get: jest.fn() };
+			const cookieStore = { get: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, 1);
 			expect(cookieStore.get).toBeCalledTimes(1);
 			expect(cookieStore.get).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME);
 		});
 
 		it('should handle empty cookie', () => {
-			const cookieStore = { get: jest.fn(), set: jest.fn() };
+			const cookieStore = { get: vi.fn(), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, []);
 			expect(cookieStore.set).toBeCalledTimes(0);
 		});
 
 		it('should handle bad cookie value', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify({})), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(JSON.stringify({})), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, [mockLoans[0].loanId]);
 			expect(cookieStore.set).toBeCalledTimes(0);
 		});
 
 		it('should handle bad array', () => {
-			const cookieStore = { get: jest.fn(), set: jest.fn() };
+			const cookieStore = { get: vi.fn(), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, 1);
 			removeLoansFromChallengeCookie(cookieStore, {});
 			removeLoansFromChallengeCookie(cookieStore, undefined);
@@ -104,25 +104,25 @@ describe('teamChallengeUtils.js', () => {
 		});
 
 		it('should handle empty loan IDs', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, []);
 			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, mockCookieJson);
 		});
 
 		it('should handle empty array in cookie', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify([])), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(JSON.stringify([])), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, []);
 			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify([]));
 		});
 
 		it('should remove loan from cookie', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, [mockLoans[0].loanId]);
 			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify([mockLoans[1]]));
 		});
 
 		it('should remove loans from cookie', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(mockCookieJson), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(mockCookieJson), set: vi.fn() };
 			removeLoansFromChallengeCookie(cookieStore, [mockLoans[0].loanId, mockLoans[1].loanId]);
 			expect(cookieStore.set).toBeCalledWith(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify([]));
 		});
@@ -130,7 +130,7 @@ describe('teamChallengeUtils.js', () => {
 
 	describe('setChallengeCookie', () => {
 		it('should add data to challenge cookie', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify([])), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(JSON.stringify([])), set: vi.fn() };
 
 			const mockLoan = { loanId: 345, teamId: 678, teamName: 'Team Name 3' };
 
@@ -141,7 +141,7 @@ describe('teamChallengeUtils.js', () => {
 		});
 
 		it('should not add data without loan id', () => {
-			const cookieStore = { get: jest.fn().mockReturnValue(JSON.stringify([])), set: jest.fn() };
+			const cookieStore = { get: vi.fn().mockReturnValue(JSON.stringify([])), set: vi.fn() };
 
 			const mockLoan = { loanId: null, teamId: 678, teamName: 'Team Name 3' };
 

@@ -1,6 +1,6 @@
 import useIsMobile from '#src/composables/useIsMobile';
 
-jest.mock('vue', () => ({
+vi.mock('vue', () => ({
 	onBeforeMount: callback => { callback(); },
 	onBeforeUnmount: () => { },
 	ref: value => ({ value })

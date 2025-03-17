@@ -27,17 +27,17 @@ import {
 	badgeLastTier,
 } from '../../fixtures/useBadgeDataMock';
 
-jest.mock('vue', () => ({
-	onMounted: callback => callback(),
-	ref: value => ({ value }),
-	computed: callback => callback(),
-}));
+// vi.mock('vue', () => ({
+// 	onMounted: callback => callback(),
+// 	ref: value => ({ value }),
+// 	computed: callback => callback(),
+// }));
 
 describe('useBadgeData.js', () => {
 	describe('getTierPositions', () => {
 		it('should combine data like expected', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -268,7 +268,7 @@ describe('useBadgeData.js', () => {
 	describe('getBadgeWithVisibleTiers', () => {
 		it('should return expected tiers for not started', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -293,7 +293,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 1', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -318,7 +318,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 2', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -343,7 +343,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 3', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -372,7 +372,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 4', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -401,7 +401,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 5', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -434,7 +434,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 6', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
@@ -467,7 +467,7 @@ describe('useBadgeData.js', () => {
 
 		it('should return expected tiers for tier 7', () => {
 			const apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: achievementData }))
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};

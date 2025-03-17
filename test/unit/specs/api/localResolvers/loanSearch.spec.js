@@ -7,8 +7,8 @@ describe('loanSearch.js', () => {
 
 			const context = {
 				cache: {
-					readQuery: jest.fn().mockReturnValue({}),
-					writeQuery: jest.fn(),
+					readQuery: vi.fn().mockReturnValue({}),
+					writeQuery: vi.fn(),
 				},
 			};
 

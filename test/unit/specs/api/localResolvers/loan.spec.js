@@ -116,7 +116,7 @@ describe('loan.js', () => {
 
 			const originalError = console.error;
 			beforeEach(() => {
-				console.error = jest.fn();
+				console.error = vi.fn();
 			});
 
 			afterEach(() => {
@@ -170,7 +170,7 @@ describe('loan.js', () => {
 
 			const originalError = console.error;
 			beforeEach(() => {
-				console.error = jest.fn();
+				console.error = vi.fn();
 			});
 
 			afterEach(() => {
@@ -269,7 +269,7 @@ describe('loan.js', () => {
 
 		it('Returns an empty string if plannedExpirationDate is missing', () => {
 			const originalError = console.error;
-			console.error = jest.fn();
+			console.error = vi.fn();
 
 			testFundraisingTimeLeft({ loan: {}, expected: '' });
 			expect(console.error.mock.calls.length).toBe(1);
@@ -324,7 +324,7 @@ describe('loan.js', () => {
 
 		it('Returns an empty string if plannedExpirationDate is missing', () => {
 			const originalError = console.error;
-			console.error = jest.fn();
+			console.error = vi.fn();
 
 			const { resolvers } = loanResolverFactory();
 			const result = resolvers.LoanPartner.fundraisingTimeLeftMilliseconds({});
@@ -417,7 +417,7 @@ describe('loan.js', () => {
 
 			const originalError = console.error;
 			beforeEach(() => {
-				console.error = jest.fn();
+				console.error = vi.fn();
 			});
 
 			afterEach(() => {

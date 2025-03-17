@@ -4,7 +4,7 @@ const beforeEnterGuard = routes.find(route => route.path === '/register/social')
 
 // Test that RegisterSocial.beforeRouteEnter redirects to the error page for route object `to`
 const testRedirectToError = to => {
-	const next = jest.fn();
+	const next = vi.fn();
 	beforeEnterGuard(to, {}, next);
 	expect(next.mock.calls.length).toBe(1);
 	expect(next.mock.calls[0][0]).toBe('/error');
@@ -12,7 +12,7 @@ const testRedirectToError = to => {
 
 // Test that RegisterSocial.beforeRouteEnter does not redirect for route object `to`
 const testNoRedirect = to => {
-	const next = jest.fn();
+	const next = vi.fn();
 	beforeEnterGuard(to, {}, next);
 	expect(next.mock.calls.length).toBe(1);
 	expect(next.mock.calls[0][0]).not.toBeDefined();

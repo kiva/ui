@@ -16,7 +16,7 @@ import * as experimentUtils from '#src/util/experiment/experimentUtils';
 import * as logFormatter from '#src/util/logFormatter';
 import { expect } from '@storybook/test';
 
-jest.mock('#src/util/logReadQueryError');
+vi.mock('#src/util/logReadQueryError');
 
 const userPreferenceDataMock = {
 	my: {
@@ -141,7 +141,7 @@ describe('myKivaUtils.js', () => {
 
 		beforeEach(() => {
 			apolloMock = {
-				query: jest.fn()
+				query: vi.fn()
 			};
 		});
 
@@ -169,7 +169,7 @@ describe('myKivaUtils.js', () => {
 	describe('createUserPreferences', () => {
 		it('should create user preferences as expected', async () => {
 			const apolloMock = {
-				mutate: jest.fn().mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
+				mutate: vi.fn().mockReturnValueOnce(Promise.resolve({ data: createPreferenceDataMock }))
 			};
 			const preferences = { test: 'test' };
 
@@ -189,7 +189,7 @@ describe('myKivaUtils.js', () => {
 	describe('updateUserPreferences', () => {
 		it('should update user preferences as expected', async () => {
 			const apolloMock = {
-				mutate: jest.fn()
+				mutate: vi.fn()
 					.mockReturnValueOnce(Promise.resolve({ data: updatedPreferenceDataMock }))
 			};
 
@@ -223,14 +223,14 @@ describe('myKivaUtils.js', () => {
 		let windowMock;
 
 		beforeEach(() => {
-			apolloMock = { readFragment: jest.fn(), mutate: jest.fn() };
-			$kvTrackEventMock = jest.fn();
+			apolloMock = { readFragment: vi.fn(), mutate: vi.fn() };
+			$kvTrackEventMock = vi.fn();
 			preferencesMock = {};
-			trackExperimentVersionMock = jest.spyOn(experimentUtils, 'trackExperimentVersion');
-			windowMock = jest.spyOn(window, 'window', 'get');
+			trackExperimentVersionMock = vi.spyOn(experimentUtils, 'trackExperimentVersion');
+			windowMock = vi.spyOn(window, 'window', 'get').mockImplementation(() => ({}));
 		});
 
-		afterEach(jest.restoreAllMocks);
+		afterEach(vi.restoreAllMocks);
 
 		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
@@ -287,7 +287,7 @@ describe('myKivaUtils.js', () => {
 		});
 
 		it('should handle bad preferences json', () => {
-			const mockLogFormatter = jest.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
 			preferencesMock = {
 				id: 123,
 				preferences: 'asdasd',
