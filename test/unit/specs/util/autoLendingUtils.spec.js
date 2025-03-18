@@ -7,7 +7,7 @@ describe('autoLendingUtils.js', () => {
 	describe('queryAllPartners', () => {
 		it('should make only one call if under 100 results and return sorted', async () => {
 			const apollo = {
-				query: jest.fn().mockReturnValue(
+				query: vi.fn().mockReturnValue(
 					new Promise(resolve => {
 						resolve({
 							data: {
@@ -31,7 +31,7 @@ describe('autoLendingUtils.js', () => {
 
 		it('should make only more calls if over 100 results', async () => {
 			const apollo = {
-				query: jest.fn().mockReturnValue(
+				query: vi.fn().mockReturnValue(
 					new Promise(resolve => {
 						resolve({
 							data: {
@@ -55,7 +55,7 @@ describe('autoLendingUtils.js', () => {
 
 		it('should make only more calls if over 100 results and exactly an increment of 100', async () => {
 			const apollo = {
-				query: jest.fn().mockReturnValue(
+				query: vi.fn().mockReturnValue(
 					new Promise(resolve => {
 						resolve({
 							data: {

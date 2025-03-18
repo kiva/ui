@@ -48,7 +48,11 @@ describe('KvSelectBox', () => {
 
 		const { getByRole, getByText } = render(KvSelectBox, { props: { id: 'id' } });
 
+		expect(getByText(NO_RESULTS).parentNode.parentNode.classList.contains('tw-hidden')).toBe(true);
+
 		await user.click(getByRole('textbox'));
+
+		await vi.dynamicImportSettled();
 
 		expect(getByText(NO_RESULTS).parentNode.parentNode.classList.contains('tw-hidden')).toBe(false);
 	});
@@ -59,6 +63,8 @@ describe('KvSelectBox', () => {
 		const { getByRole, getByText } = render(KvSelectBox, { props: { id: 'id' } });
 
 		await user.click(getByRole('textbox'));
+
+		await vi.dynamicImportSettled();
 
 		const popper = getByText(NO_RESULTS).parentNode.parentNode;
 

@@ -2,10 +2,10 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import KvResultsPerPage, { defaultOptions } from '#src/components/Kv/KvResultsPerPage';
 
-global.scrollTo = jest.fn();
+global.scrollTo = vi.fn();
 
 describe('KvResultsPerPage', () => {
-	afterEach(jest.clearAllMocks);
+	afterEach(vi.clearAllMocks);
 
 	it('should render default options', () => {
 		const { getByLabelText } = render(KvResultsPerPage);

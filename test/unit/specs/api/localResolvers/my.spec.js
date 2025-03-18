@@ -23,7 +23,7 @@ describe('my.js', () => {
 
 		it('Returns true if the user is currently logged in', () => {
 			const kvAuth0 = {
-				getKivaId: jest.fn().mockReturnValue('123456')
+				getKivaId: vi.fn().mockReturnValue('123456')
 			};
 			testHasEverLoggedIn(true, { kvAuth0 });
 			expect(kvAuth0.getKivaId.mock.calls.length).toBe(1);
@@ -37,7 +37,7 @@ describe('my.js', () => {
 		it('Returns true if the cached value for this field is true', () => {
 			const context = {
 				cache: {
-					readQuery: jest.fn().mockReturnValue({
+					readQuery: vi.fn().mockReturnValue({
 						hasEverLoggedIn: true,
 					}),
 				},

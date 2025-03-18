@@ -3,7 +3,7 @@ import CookieStore from '#src/util/cookieStore';
 import { MockKvAuth0 } from '#src/util/KvAuth0';
 
 const mockRouter = {
-	push: jest.fn()
+	push: vi.fn()
 };
 
 const emptyComponent = {
