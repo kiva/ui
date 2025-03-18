@@ -1,9 +1,7 @@
 <template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<kv-atb-modal-container
-			:cart-modal-visible="cartModalVisible"
 			:added-loan="addedLoan"
-			@close-cart-modal="closeCartModal"
 		/>
 		<challenge-callout
 			v-if="showChallengeCallout"
