@@ -143,8 +143,10 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 				provider: 'istanbul',
 				reporters: ['json', 'html'],
 				reportsDirectory: './test/unit/coverage',
+				include: [
+					'src/**',
+				],
 				exclude: [
-					'./build/',
 					'./src/assets/',
 					'./src/components',
 					'./src/head/',
