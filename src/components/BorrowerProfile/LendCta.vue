@@ -6,8 +6,6 @@
 	>
 		<kv-atb-modal-container
 			:added-loan="addedLoan"
-			:cart-modal-visible="cartModalVisible"
-			@close-cart-modal="closeCartModal"
 		/>
 		<div
 			:class="[
