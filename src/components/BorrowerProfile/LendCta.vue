@@ -457,7 +457,6 @@ export default {
 			userBalance: undefined,
 			loan: null,
 			basketSize: 0,
-			isFirstLoan: false,
 		};
 	},
 	apollo: {
@@ -498,9 +497,6 @@ export default {
 								id
 							}
 						}
-						totals {
-							loanReservationTotal
-						}
 					}
 					nonTrivialItemCount
 				}
@@ -509,9 +505,6 @@ export default {
 					userAccount {
 						id
 						balance
-					}
-					loans {
-						totalCount
 					}
 				}
 				general {
@@ -557,9 +550,6 @@ export default {
 				this.lenderCountVisibility = true;
 			}
 			this.basketSize = result.data?.shop?.nonTrivialItemCount || 0;
-			const lenderTotalLoans = result.data?.my?.loans?.totalCount ?? 0;
-			const totalLoanReservation = result.data?.shop?.basket?.totals?.loanReservationTotal ?? 0;
-			this.isFirstLoan = !totalLoanReservation && !lenderTotalLoans;
 
 			// Start cycling the stats slot now that loan data is available
 			this.cycleStatsSlot();
@@ -688,7 +678,6 @@ export default {
 				id: this.loanId,
 				name: this.name ?? '',
 				basketSize: this.basketSize,
-				isFirstLoan: this.isFirstLoan,
 			};
 			this.handleCartModal(addedLoan);
 		}
