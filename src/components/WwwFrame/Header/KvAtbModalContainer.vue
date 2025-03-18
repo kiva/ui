@@ -208,9 +208,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-			return;
-		}
-		if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+		} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 			showModalContent.value = contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
