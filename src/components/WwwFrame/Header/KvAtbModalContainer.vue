@@ -33,6 +33,7 @@
 						>
 							<EquityBadge v-if="isFirstLoan" class="tw-min-w-3" />
 							<IconChoice
+								v-else
 								class="tw-min-w-3"
 							/>
 							<div
