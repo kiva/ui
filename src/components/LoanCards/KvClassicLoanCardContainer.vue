@@ -80,6 +80,7 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
+			gender
 			...loanCardFieldsExtended
 		}
 		loanThemeFilter {
@@ -471,6 +472,7 @@ export default {
 			const addedLoan = {
 				id: this.loan?.id,
 				name: this.loan?.name ?? '',
+				gender: this.loan?.gender ?? '',
 				basketSize: this.basketCount,
 			};
 			this.$emit('show-cart-modal', addedLoan);

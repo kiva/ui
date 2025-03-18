@@ -13,18 +13,18 @@
 	>
 		<template #content>
 			<div
-				v-if="showModalContent"
+				v-if="showModalContent || isFirstLoan"
 				class="tw-mx-2.5 tw-border-t tw-border-tertiary tw-py-2"
 			>
 				<KvCartPill
 					class="!tw-w-full"
 					:borrower-name="borrowerName"
 					:milestones-number="contributingAchievements.length"
+					:custom-message="pillMsg"
 				>
 					<template #icon>
-						<IconChoice
-							class="tw-min-w-3"
-						/>
+						<EquityBadge v-if="isFirstLoan" class="tw-min-w-3" />
+						<IconChoice v-else class="tw-min-w-3" />
 					</template>
 				</KvCartPill>
 			</div>
@@ -50,6 +50,7 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import { KvCartModal, KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import _throttle from 'lodash/throttle';
+import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
 
@@ -136,6 +137,25 @@ const fetchUserData = async () => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
 };
+
+const isFirstLoan = computed(() => {
+	return (isGuest.value || !userData.value?.my?.loans?.totalCount) && basketCount.value <= 1;
+});
+
+const pillMsg = computed(() => {
+	if (isFirstLoan.value) {
+		const initialHeading = `Supporting ${borrowerName.value} helps`;
+		if (addedLoan.value?.gender === 'male') {
+			return `${initialHeading} him invest in himself.`;
+		}
+		if (addedLoan.value?.gender === 'female') {
+			return `${initialHeading} her invest in herself.`;
+		}
+
+		return `${initialHeading} them invest in themselves.`;
+	}
+	return '';
+});
 
 const fetchPostCheckoutAchievements = async loanIds => {
 	await apollo.query({
