@@ -31,5 +31,9 @@ query portfolioQuery {
 			key
 			value
 		}
+		my_kiva_hero: uiConfigSetting(key: "new_mykiva_hero_enable") {
+			key
+			value
+		}
 	}
 }
