@@ -470,6 +470,7 @@ export default {
 						inPfp
 						matchingText
 						matchRatio
+						gender
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -675,6 +676,7 @@ export default {
 			const addedLoan = {
 				id: this.loanId,
 				name: this.name ?? '',
+				gender: this.loan?.gender ?? '',
 				basketSize: this.basketSize,
 			};
 			this.handleCartModal(addedLoan);
