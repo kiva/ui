@@ -1,0 +1,1 @@
+import{o as t,b as e}from"./entry-vue.esm-bundler-Bbq66B_iPn.js";import{s as o}from"./entry-KvWideLoanCard-BsTIZisVnM.js";const r={},l={class:"loading-placeholder tw-w-full tw-h-full tw-relative tw-overflow-hidden tw-bg-tertiary tw-rounded-sm"};function n(c,d){return t(),e("div",l)}const i=o(r,[["render",n],["__scopeId","data-v-39cb1116"]]);export{i as _};
