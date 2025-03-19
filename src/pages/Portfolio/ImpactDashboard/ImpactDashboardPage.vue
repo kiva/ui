@@ -2,6 +2,7 @@
 	<div>
 		<my-kiva-page
 			v-if="showMyKivaPage"
+			:is-hero-enabled="isMykivaHeroEnabled"
 		/>
 		<www-page
 			v-else
@@ -88,6 +89,7 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
+			isMykivaHeroEnabled: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -139,6 +141,8 @@ export default {
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
+		} else {
+			this.isMykivaHeroEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_hero.value');
 		}
 	},
 	async mounted() {

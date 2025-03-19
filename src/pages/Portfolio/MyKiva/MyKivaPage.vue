@@ -155,8 +155,6 @@ import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } fr
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
-import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 
 import {
 	ref,
@@ -169,8 +167,6 @@ import {
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 
-const MY_KIVA_HERO_KEY = 'new_mykiva_hero_enable';
-
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const kvAuth0 = inject('kvAuth0');
@@ -182,6 +178,13 @@ const {
 	badgeData,
 	completedBadges,
 } = useBadgeData(apollo);
+
+defineProps({
+	isHeroEnabled: {
+		type: Boolean,
+		default: () => false,
+	},
+});
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -198,7 +201,6 @@ const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
-const showMyKivaHero = ref(false);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -348,18 +350,6 @@ const checkGuestAchievementsToScroll = () => {
 		scrollToTarget(sectionToScrollTo);
 	}
 };
-
-// Get MyKiva hero ui setting to show it
-apollo.query({
-	query: uiConfigSettingQuery,
-	variables: {
-		key: MY_KIVA_HERO_KEY,
-	}
-}).then(({ data }) => {
-	showMyKivaHero.value = readBoolSetting(data, 'general.uiConfigSetting.value');
-}).catch(e => {
-	logReadQueryError(e, 'My kiva hero setting query');
-});
 
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
