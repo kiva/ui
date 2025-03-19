@@ -6,9 +6,9 @@
 				class="!tw-h-5 tw-mt-6 md:tw-mt-0 tw-mr-auto md:tw-mr-0"
 				:style="{ width: '10rem' }"
 			/>
-			<h2 v-else class="tw-mr-auto md:tw-mr-0">
+			<h3 v-else class="tw-mr-auto md:tw-mr-0">
 				{{ lenderName }}
-			</h2>
+			</h3>
 			<a
 				href="/settings/account"
 				v-kv-track-event="[
