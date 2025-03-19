@@ -186,7 +186,7 @@ const fetchUserData = async () => {
 };
 
 const isFirstLoan = computed(() => {
-	return (isGuest.value || !userData.value?.my?.loans?.totalCount) && basketCount.value <= 1;
+	return isGuest.value || !userData.value?.my?.loans?.totalCount;
 });
 
 const pillMsg = computed(() => {
