@@ -8,10 +8,10 @@
 				:lender-name="loan.name"
 				:lender-image-url="loan.image.url"
 				:class="{ 'tw--ml-2.5': i > 0 }"
-				:style="{ 'z-index': journeyLoans.length }"
+				:style="{ 'z-index': journeyTotalLoans }"
 			/>
-			<p v-if="journeyLoans.length - 3 > 0">
-				+{{ journeyLoans.length - 3 }}
+			<p v-if="extraLoanCount">
+				+{{ extraLoanCount }}
 			</p>
 		</div>
 		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1.5">
@@ -177,6 +177,8 @@ const handleBadgeClick = index => {
 };
 
 const journeyLoans = computed(() => getFilteredLoansByJourney(badgeWithVisibleTiers.value, props.loans));
+const journeyTotalLoans = computed(() => journeyLoans.value.length);
+const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
 
 const journeyLoansNames = computed(() => {
 	const names = journeyLoans.value.slice(0, 3).map(loan => loan?.name ?? '');
