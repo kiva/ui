@@ -518,6 +518,31 @@ export default function useBadgeData() {
 		}
 	};
 
+	const getFilteredLoansByJourney = (badge, loans) => {
+		const filter = getFilteredUrl(badge);
+		const values = filter.split('=')[1].split(',');
+
+		return loans.filter(loan => {
+			if (badge.id === ID_US_ECONOMIC_EQUALITY) {
+				return values.includes(loan?.geocode?.country?.isoCode);
+			}
+			if (badge.id === ID_WOMENS_EQUALITY) {
+				return values.includes(loan?.gender);
+			}
+			if (badge.id === ID_BASIC_NEEDS) {
+				return values.includes(loan?.sector?.id?.toString());
+			}
+			if (badge.id === ID_REFUGEE_EQUALITY) {
+				return loan?.themes?.some(theme => theme?.toLowerCase() === 'refugees/displaced');
+			}
+			if (badge.id === ID_CLIMATE_ACTION) {
+				return loan?.tags?.some(tag => ['#Eco-friendly', '#Sustainable Ag'].includes(tag));
+			}
+
+			return null;
+		});
+	};
+
 	return {
 		fetchAchievementData,
 		fetchContentfulData,
@@ -539,5 +564,6 @@ export default function useBadgeData() {
 		completedBadges,
 		getLevelName,
 		getEarnedBadgeExplanation,
+		getFilteredLoansByJourney,
 	};
 }
