@@ -10,7 +10,7 @@
 				:class="{ 'tw--ml-2.5': i > 0 }"
 				:style="{ 'z-index': journeyTotalLoans }"
 			/>
-			<p v-if="extraLoanCount">
+			<p v-if="extraLoanCount > 0">
 				+{{ extraLoanCount }}
 			</p>
 		</div>
