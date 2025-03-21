@@ -525,7 +525,6 @@ export default function useBadgeData() {
 	 * @param loans The loans to filter
 	 * @returns The filtered loans
 	 */
-
 	const getFilteredLoansByJourney = (badge, loans) => {
 		return loans.filter(loan => {
 			if (badge.id === ID_US_ECONOMIC_EQUALITY) {
@@ -544,10 +543,11 @@ export default function useBadgeData() {
 				return loan?.themes?.some(theme => theme?.toLowerCase() === refugeeTheme);
 			}
 			if (badge.id === ID_BASIC_NEEDS) {
-				const sector = [6, 10];
-				const themeId = 8;
+				const basicNeedsSectors = [6, 10];
+				const basicNeedsTheme = 'water and sanitation';
 
-				return sector.includes(loan?.sector?.id) || loan?.themes?.includes(themeId);
+				return basicNeedsSectors.includes(loan?.sector?.id)
+					|| loan?.themes?.some(theme => theme?.toLowerCase() === basicNeedsTheme);
 			}
 			if (badge.id === ID_CLIMATE_ACTION) {
 				const climateActionTheme = 'clean energy';

@@ -895,12 +895,24 @@ describe('useBadgeData.js', () => {
 						'Agriculture'
 					]
 				},
+				{
+					id: 3,
+					themes: [
+						'Clean Energy'
+					]
+				}
 			];
 			expect(getFilteredLoansByJourney({ id: ID_CLIMATE_ACTION }, loans)).toEqual([
 				{
 					id: 2,
 					tags: [
 						'#Eco-friendly'
+					]
+				},
+				{
+					id: 3,
+					themes: [
+						'Clean Energy'
 					]
 				}
 			]);
@@ -970,6 +982,12 @@ describe('useBadgeData.js', () => {
 					sector: {
 						id: 7,
 					}
+				},
+				{
+					id: 3,
+					themes: [
+						'Water and Sanitation'
+					]
 				}
 			];
 
@@ -980,6 +998,12 @@ describe('useBadgeData.js', () => {
 						id: 6,
 					}
 				},
+				{
+					id: 3,
+					themes: [
+						'Water and Sanitation'
+					]
+				}
 			]);
 		});
 
