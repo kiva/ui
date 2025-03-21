@@ -518,25 +518,43 @@ export default function useBadgeData() {
 		}
 	};
 
-	const getFilteredLoansByJourney = (badge, loans) => {
-		const filter = getFilteredUrl(badge);
-		const values = filter.split('=')[1].split(',');
+	/**
+	 * Get filtered loans by journey using defined search filters in vue-admin
+	 *
+	 * @param badge The badge to filter loans by
+	 * @param loans The loans to filter
+	 * @returns The filtered loans
+	 */
 
+	const getFilteredLoansByJourney = (badge, loans) => {
 		return loans.filter(loan => {
 			if (badge.id === ID_US_ECONOMIC_EQUALITY) {
-				return values.includes(loan?.geocode?.country?.isoCode);
+				const countriesIsoCode = ['PR', 'US'];
+
+				return countriesIsoCode.includes(loan?.geocode?.country?.isoCode);
 			}
 			if (badge.id === ID_WOMENS_EQUALITY) {
-				return values.includes(loan?.gender);
-			}
-			if (badge.id === ID_BASIC_NEEDS) {
-				return values.includes(loan?.sector?.id?.toString());
+				const womensEqualityFilter = 'female';
+
+				return loan?.gender === womensEqualityFilter;
 			}
 			if (badge.id === ID_REFUGEE_EQUALITY) {
-				return loan?.themes?.some(theme => theme?.toLowerCase() === 'refugees/displaced');
+				const refugeeTheme = 'refugees/displaced';
+
+				return loan?.themes?.some(theme => theme?.toLowerCase() === refugeeTheme);
+			}
+			if (badge.id === ID_BASIC_NEEDS) {
+				const sector = [6, 10];
+				const themeId = 8;
+
+				return sector.includes(loan?.sector?.id) || loan?.themes?.includes(themeId);
 			}
 			if (badge.id === ID_CLIMATE_ACTION) {
-				return loan?.tags?.some(tag => ['#Eco-friendly', '#Sustainable Ag'].includes(tag));
+				const climateActionTheme = 'clean energy';
+				const climateActionTags = ['#eco-friendly', '#sustainable ag'];
+
+				return loan?.tags?.some(tag => climateActionTags.includes(tag?.toLowerCase()))
+					|| loan?.themes?.some(theme => theme?.toLowerCase() === climateActionTheme);
 			}
 
 			return null;
