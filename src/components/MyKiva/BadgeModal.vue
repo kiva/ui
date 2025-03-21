@@ -23,6 +23,7 @@
 			:lender="lender"
 			:tier="tier"
 			:is-earned-section="isEarnedSection"
+			:loans="loans"
 			@badge-level-clicked="handleBadgeLevelClicked"
 		/>
 	</KvLightbox>
@@ -88,7 +89,11 @@ const props = defineProps({
 	isEarnedSection: {
 		type: Boolean,
 		default: () => false,
-	}
+	},
+	loans: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const closeLightbox = () => {
