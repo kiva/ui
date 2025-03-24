@@ -190,7 +190,7 @@ const journeyLoansNames = computed(() => {
 
 const journeyDescription = computed(() => {
 	// eslint-disable-next-line max-len
-	return `Your loans to ${journeyLoansNames.value} have made progress toward this impact journey. ${badgeWithVisibleTiers.value.description}`;
+	return `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. ${badgeWithVisibleTiers.value.description}`;
 });
 </script>
 
