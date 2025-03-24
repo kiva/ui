@@ -822,4 +822,216 @@ describe('useBadgeData.js', () => {
 			expect(getEarnedBadgeExplanation(ID_2BB, target)).toEqual('for helping us reach $2b in total impact');
 		});
 	});
+
+	describe('getFilteredLoansByJourney', () => {
+		it('should return expected filtered loans for us-economic-equality', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					geocode: {
+						country: {
+							isoCode: 'US'
+						}
+					}
+				},
+				{
+					id: 2,
+					geocode: {
+						country: {
+							isoCode: 'PR'
+						}
+					}
+				},
+				{
+					id: 3,
+					geocode: {
+						country: {
+							isoCode: 'PE'
+						}
+					}
+				},
+			];
+			expect(getFilteredLoansByJourney({ id: ID_US_ECONOMIC_EQUALITY }, loans)).toEqual([
+				{
+					id: 1,
+					geocode: {
+						country: {
+							isoCode: 'US'
+						}
+					}
+				},
+				{
+					id: 2,
+					geocode: {
+						country: {
+							isoCode: 'PR'
+						}
+					}
+				}
+			]);
+		});
+
+		it('should return expected filtered loans for climate-action', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					tags: [
+						'Test'
+					]
+				},
+				{
+					id: 2,
+					tags: [
+						'#Eco-friendly'
+					]
+				},
+				{
+					id: 3,
+					tags: [
+						'Agriculture'
+					]
+				},
+				{
+					id: 3,
+					themes: [
+						'Clean Energy'
+					]
+				}
+			];
+			expect(getFilteredLoansByJourney({ id: ID_CLIMATE_ACTION }, loans)).toEqual([
+				{
+					id: 2,
+					tags: [
+						'#Eco-friendly'
+					]
+				},
+				{
+					id: 3,
+					themes: [
+						'Clean Energy'
+					]
+				}
+			]);
+		});
+
+		it('should return expected filtered loans for womens-equality', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					gender: 'female'
+				}, {
+					id: 2,
+					gender: 'male'
+				}
+			];
+
+			expect(getFilteredLoansByJourney({ id: ID_WOMENS_EQUALITY }, loans)).toEqual([
+				{
+					id: 1,
+					gender: 'female'
+				}
+			]);
+		});
+
+		it('should return expected filtered loans for refugee-equality', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					themes: [
+						'Refugees/Displaced'
+					]
+				},
+				{
+					id: 2,
+					themes: [
+						'Education'
+					]
+				}
+			];
+
+			expect(getFilteredLoansByJourney({ id: ID_REFUGEE_EQUALITY }, loans)).toEqual([
+				{
+					id: 1,
+					themes: [
+						'Refugees/Displaced'
+					]
+				}
+			]);
+		});
+
+		it('should return expected filtered loans for basic-needs', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					sector: {
+						id: 6,
+					}
+				},
+				{
+					id: 2,
+					sector: {
+						id: 7,
+					}
+				},
+				{
+					id: 3,
+					themes: [
+						'Water and Sanitation'
+					]
+				}
+			];
+
+			expect(getFilteredLoansByJourney({ id: ID_BASIC_NEEDS }, loans)).toEqual([
+				{
+					id: 1,
+					sector: {
+						id: 6,
+					}
+				},
+				{
+					id: 3,
+					themes: [
+						'Water and Sanitation'
+					]
+				}
+			]);
+		});
+
+		it('should return an empty array when no loans match a filter', () => {
+			const { getFilteredLoansByJourney } = useBadgeData();
+
+			const loans = [
+				{
+					id: 1,
+					gender: 'male',
+					geocode: {
+						country: {
+							isoCode: 'PE'
+						}
+					},
+					sector: {
+						id: 2
+					},
+					themes: [
+						'Education'
+					],
+					tags: [
+						'#Agriculture'
+					]
+				},
+			];
+
+			expect(getFilteredLoansByJourney({ id: ID_WOMENS_EQUALITY }, loans)).toEqual([]);
+		});
+	});
 });

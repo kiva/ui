@@ -113,6 +113,7 @@
 							:state="state"
 							:tier="tier"
 							:is-earned-section="isEarnedSectionModal"
+							:loans="loans"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
 							@back-to-journey="handleBackToJourney"
