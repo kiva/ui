@@ -1,5 +1,5 @@
 <template>
-	<div class="carousel-container">
+	<div>
 		<KvCarousel
 			:embla-options="{
 				loop: false,
