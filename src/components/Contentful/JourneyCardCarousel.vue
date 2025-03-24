@@ -18,40 +18,47 @@
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
-					<div class="tw-absolute tw-w-full tw-bottom-1.5 tw-px-1.5">
-						<div class="tw-flex tw-items-center tw-gap-1 tw-w-full tw-mb-1.5">
-							<img
-								class="tw-h-6"
-								:src="badgeUrl(slide)"
-							>
-							<div class="tw-text-primary-inverse">
-								<h2 class="tw-text-h3">
-									{{ title(slide) }}
-								</h2>
-								<p
-									v-if="subTitle(slide)"
-									class="tw-text-small"
+					<div
+						class="slide tw-absolute tw-w-full tw-bottom-0 tw-pb-1.5 tw-px-1.5 tw-align-bottom tw-rounded-b"
+						:style="[
+							{ 'height': overlayHeight(slide) },
+						]"
+					>
+						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full">
+							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full tw-mb-1.5">
+								<img
+									class="tw-h-6"
+									:src="badgeUrl(slide)"
 								>
-									{{ subTitle(slide) }}
-								</p>
+								<div class="tw-text-primary-inverse">
+									<h2 class="tw-text-h3">
+										{{ title(slide) }}
+									</h2>
+									<p
+										v-if="subTitle(slide)"
+										class="tw-text-small"
+									>
+										{{ subTitle(slide) }}
+									</p>
+								</div>
 							</div>
-						</div>
-						<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
-							<button
-								v-if="secondaryCtaText(slide) && secondaryCtaUrl(slide)"
-								:to="secondaryCtaUrl(slide)"
-								variant="tertiary"
-								class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
-								tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
-							>
-								{{ secondaryCtaText(slide) }}
-							</button>
-							<KvButton
-								:to="primaryCtaUrl(slide)"
-								variant="secondary"
-							>
-								{{ primaryCtaText(slide) }}
-							</KvButton>
+							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
+								<button
+									v-if="showSecondaryCta(slide)"
+									:to="secondaryCtaUrl(slide)"
+									variant="tertiary"
+									class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
+									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
+								>
+									{{ secondaryCtaText(slide) }}
+								</button>
+								<KvButton
+									:to="primaryCtaUrl(slide)"
+									variant="secondary"
+								>
+									{{ primaryCtaText(slide) }}
+								</KvButton>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -93,6 +100,10 @@ const primaryCtaText = slide => slide?.primaryCtaText || '';
 const primaryCtaUrl = slide => slide?.primaryCtaUrl || '';
 const secondaryCtaText = slide => slide?.secondaryCtaText || '';
 const secondaryCtaUrl = slide => slide?.secondaryCtaUrl || '';
+const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
+const overlayHeight = slide => {
+	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -118,5 +129,9 @@ const secondaryCtaUrl = slide => slide?.secondaryCtaUrl || '';
 
 .journey-card-carousel:deep(.kv-carousel__controls > div) {
 	@apply tw-hidden;
+}
+
+.slide {
+	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
 }
 </style>
