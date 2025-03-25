@@ -77,6 +77,7 @@ import useBadgeData, {
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import _throttle from 'lodash/throttle';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
+import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -91,6 +92,7 @@ const categoryNames = {
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 const router = useRouter();
 
 const {
@@ -110,6 +112,7 @@ const { addedLoan } = toRefs(props);
 
 const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
+const basketData = ref([]);
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
 const headerBottomPosition = ref(0);
@@ -185,6 +188,23 @@ const fetchUserData = async () => {
 	});
 };
 
+const fetchBasketData = async () => {
+	await apollo.query({
+		query: basketItemsQuery,
+		variables: {
+			basketId: cookieStore.get('kvbskt') || null,
+		},
+	}).then(({ data }) => {
+		basketData.value = data?.shop?.basket?.items?.values ?? [];
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB Basket Data');
+	});
+};
+
+const loansIdsInBasket = computed(() => {
+	return basketData.value.map(item => item.id);
+});
+
 const isFirstLoan = computed(() => {
 	return isGuest.value || !userData.value?.my?.loans?.totalCount;
 });
@@ -242,7 +262,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
-		fetchPostCheckoutAchievements([addedLoan.value?.id]);
+		await fetchBasketData();
+		fetchPostCheckoutAchievements([...loansIdsInBasket.value, addedLoan.value?.id]);
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
