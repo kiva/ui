@@ -5,9 +5,7 @@
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container
-			:basket-size="basketSize"
-			:cart-modal-visible="cartModalVisible"
-			@close-cart-modal="closeCartModal"
+			:added-loan="addedLoan"
 		/>
 		<div
 			:class="[
@@ -472,6 +470,7 @@ export default {
 						inPfp
 						matchingText
 						matchRatio
+						gender
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -583,7 +582,7 @@ export default {
 				}
 				// Show modal after 1s (Defined in CSS)
 				setTimeout(() => {
-					this.handleCartModal(this.basketSize);
+					this.formatAddedLoan();
 				}, 1000);
 			}).catch(e => {
 				if (e?.message !== INVALID_BASKET_ERROR) {
@@ -673,6 +672,15 @@ export default {
 				}
 			}
 		},
+		formatAddedLoan() {
+			const addedLoan = {
+				id: this.loanId,
+				name: this.name ?? '',
+				gender: this.loan?.gender ?? '',
+				basketSize: this.basketSize,
+			};
+			this.handleCartModal(addedLoan);
+		}
 	},
 	watch: {
 		matchingText(newValue, previousValue) {

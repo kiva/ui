@@ -1,3 +1,72 @@
+## [3.14.0-rc.2](https://github.com/kiva/ui/compare/v3.14.0-rc.1...v3.14.0-rc.2) (2025-03-25)
+
+### 🎉 New Features
+
+* add case to description for single loan ([8062b75](https://github.com/kiva/ui/commit/8062b75971dfb2ea6827e6c7505717695aa06760))
+* add gender to bp atb loan ([41c7115](https://github.com/kiva/ui/commit/41c7115f45fb0a69a6f85d6b04b64239e405baf6))
+* add loan avatars to journey badge ([e568547](https://github.com/kiva/ui/commit/e568547f9620b2eadd89d4cc231c633fef0d2e46))
+* add new graphql endpoints that were recently added ([147b1cf](https://github.com/kiva/ui/commit/147b1cfa4d54d33fb1c35aaa1b8961484ff35fec))
+* addressing pr comments ([b81d70c](https://github.com/kiva/ui/commit/b81d70c66a550b4ad86378432e769b6b1fe23203))
+* change header size ([4f52a3c](https://github.com/kiva/ui/commit/4f52a3c53fbfa58f19be576bd0b4da58498d19cd))
+* equity badge in checkout and update progress on basket changes ([778bde0](https://github.com/kiva/ui/commit/778bde0a31cee0f4a69c5111ef3391a1817449c5))
+* first approach to my kiva atb modal ([#5870](https://github.com/kiva/ui/issues/5870)) ([c85874e](https://github.com/kiva/ui/commit/c85874e0adc6abc2e8bd4d271185104862703175))
+* gradient added to journey card carousel ([#5882](https://github.com/kiva/ui/issues/5882)) ([2a46cda](https://github.com/kiva/ui/commit/2a46cda93c211eb8820bfee059a3b93bca011564))
+* mykiva experiment flag added to atb modal container ([#5866](https://github.com/kiva/ui/issues/5866)) ([70fbdff](https://github.com/kiva/ui/commit/70fbdffb7dad1e46a3d8699a700dbcaa5029caad))
+* new my kiva carousel variation ([b5e1c1f](https://github.com/kiva/ui/commit/b5e1c1f4f68c74c0b699cfb5dc0ae06bcb2735f0))
+* one loan away option at my kiva atb modal ([#5875](https://github.com/kiva/ui/issues/5875)) ([0305b05](https://github.com/kiva/ui/commit/0305b05ac8c0585eada6b23f1df5240782254341))
+* payment history modal ([1c8a122](https://github.com/kiva/ui/commit/1c8a1228260baf210bfbbe3152b4163f6375685e))
+* provide custom user agent for server requests ([1fc54b6](https://github.com/kiva/ui/commit/1fc54b64433ff232de9bce42afc3fd2580cfde44))
+* show equity badge on first loan ([29296cf](https://github.com/kiva/ui/commit/29296cfef549fc1e5a8d3c8b3264a0de2667f407))
+* ui setting added to show new my kiva hero ([#5877](https://github.com/kiva/ui/issues/5877)) ([b2b15c5](https://github.com/kiva/ui/commit/b2b15c5a92ccfc0fa0efba59c4c60a56c6984343))
+* update filters from vue admin ([08db3a0](https://github.com/kiva/ui/commit/08db3a0e071c80a460e6de2bdd32980ed94c4593))
+* use module to cache process config ([043a689](https://github.com/kiva/ui/commit/043a689cebda342f2f4d1cf65080ecdf5ff9c0c0))
+
+### 🐛 Bugfixes
+
+* add query params for basic needs category page ([3614ec3](https://github.com/kiva/ui/commit/3614ec3569332d7ec8ba8f50d833502fa2da9fcb))
+* await dynamic imports for popper dependent tests ([24e95a3](https://github.com/kiva/ui/commit/24e95a3ee036aa33c4789669f19865eb3c49d42d))
+* basic needs filter and tests ([0035101](https://github.com/kiva/ui/commit/0035101c93d6f1e8670e449183224800040cac9b))
+* change to composition api and script setup ([746a05e](https://github.com/kiva/ui/commit/746a05e174fbffcf6abc83bc2695e50d37b25f3f))
+* class removed ([6f0b881](https://github.com/kiva/ui/commit/6f0b8818cda673ee1017fb822c673ea0a0268c60))
+* hide icon choice ([2b2f3db](https://github.com/kiva/ui/commit/2b2f3dbeb2a7b80ac7114ffabe66f260beac3c83))
+* isFirstLoan logic ([2037ae5](https://github.com/kiva/ui/commit/2037ae5973aa8b08fac62e76e5602443be7c4121))
+* only set user-agent header if configured ([c306bee](https://github.com/kiva/ui/commit/c306bee1a767d44460985a47192b2e930debb0b2))
+* pr comments addressed ([1e53595](https://github.com/kiva/ui/commit/1e53595a7c90717cc5d5371b761808f1aa081280))
+* recalculate modal top position ([6d60630](https://github.com/kiva/ui/commit/6d60630d25b6217953f3143fe0a1ef4102f55930))
+* removed value that isn't ready in graphql yet ([76eb112](https://github.com/kiva/ui/commit/76eb1121a9622e026234dbe4f6435f3240a35fbd))
+* removing basketCount from isFirstLoan logic ([6aefa68](https://github.com/kiva/ui/commit/6aefa680bf5809ba64f91f35e652a71b8eee7e04))
+* resolve linting ([da2bec5](https://github.com/kiva/ui/commit/da2bec547743f979d1d314f198ef82cefc0b5f0a))
+* revert lendcta changes ([66d6e7e](https://github.com/kiva/ui/commit/66d6e7e1fb9ac4349dc00f59e27827414d43f0e6))
+* select config with top-level await ([36a5f93](https://github.com/kiva/ui/commit/36a5f93fad969eb4b3363b53581072514cbf77b5))
+* solve conflicts ([a8d4793](https://github.com/kiva/ui/commit/a8d47937c306438f7baa2712b09b522d8053c2ad))
+* throttle and remove event listener ([d2aa82d](https://github.com/kiva/ui/commit/d2aa82d3dec0ef8eb7146c441d2f41cc9ec7baec))
+* throttled method ([4ad1ed9](https://github.com/kiva/ui/commit/4ad1ed96a044bde5854498bfa6371c8f7c82a4a1))
+* update basic needs FLSS filters ([76592db](https://github.com/kiva/ui/commit/76592dbec1559f24cba417416ce431ecb8aa94dd))
+* validate extraLoanCount is gt 0 ([0abd0b5](https://github.com/kiva/ui/commit/0abd0b50b7f9c8e1ce4b5040481df5627e5f2f57))
+
+### 🪚 Refactors
+
+* only ref header bottom ([be97a52](https://github.com/kiva/ui/commit/be97a5231b6f46403ab5a6200a40fafbefde5daf))
+* using computed for loan count ([1f3ece3](https://github.com/kiva/ui/commit/1f3ece3087379d052098335566259196e5921137))
+
+### 🔍 Tests
+
+* init app config for live loan fetch tests ([3e95135](https://github.com/kiva/ui/commit/3e951356908c17c4fcda21953476f2a889ae6bf9))
+* migrate from jest to vitest ([c4fabe6](https://github.com/kiva/ui/commit/c4fabe662381088c405c1f788468f8594a0113b7))
+* only collect coverage from src ([aedc3a7](https://github.com/kiva/ui/commit/aedc3a79ad4904dd08959272e2f6b1e12b8a2a23))
+* temp ignore live-loan-fetch suite failing due to esm support ([f2f4902](https://github.com/kiva/ui/commit/f2f49024c2f170f8c37f0db1cbe2a2e85879001b))
+
+## [3.14.0-rc.1](https://github.com/kiva/ui/compare/v3.13.0...v3.14.0-rc.1) (2025-03-10)
+
+### 🎉 New Features
+
+* send all operations through stellate when wildcard is used ([1e6da87](https://github.com/kiva/ui/commit/1e6da87dd25cc6c5d86a994cb827d35cae831e21))
+* show pill when loan in checkout helps user make progress towards a new achievements ([88e5b4d](https://github.com/kiva/ui/commit/88e5b4da52126aa5577fb9a5f34c5ed79f374e9d))
+
+### 🐛 Bugfixes
+
+* remove log ([7709126](https://github.com/kiva/ui/commit/770912626d457fafc7f12e0dc099ec7b4b4dbd43))
+
 ## [3.13.0](https://github.com/kiva/ui/compare/v3.12.0...v3.13.0) (2025-03-10)
 
 ### 🎉 New Features

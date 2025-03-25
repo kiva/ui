@@ -47,10 +47,10 @@ describe('loanChannelUtils.js', () => {
 	let spyConsoleInfo;
 
 	beforeEach(() => {
-		spyConsoleInfo = jest.spyOn(global.console, 'info').mockImplementation();
+		spyConsoleInfo = vi.spyOn(global.console, 'info').mockImplementation();
 	});
 
-	afterEach(jest.restoreAllMocks);
+	afterEach(vi.restoreAllMocks);
 
 	describe('getFLSSQueryMap', () => {
 		it('should handle no match', () => {
@@ -96,16 +96,16 @@ describe('loanChannelUtils.js', () => {
 	describe('preFetchChannel', () => {
 		let spyGetExperimentSettingAsync;
 		let spyFetchLoanChannel;
-		const apollo = { query: jest.fn(() => Promise.resolve()) };
+		const apollo = { query: vi.fn(() => Promise.resolve()) };
 
 		beforeEach(() => {
-			spyGetExperimentSettingAsync = jest.spyOn(experimentalUtils, 'getExperimentSettingAsync')
+			spyGetExperimentSettingAsync = vi.spyOn(experimentalUtils, 'getExperimentSettingAsync')
 				.mockImplementation(() => Promise.resolve());
-			spyFetchLoanChannel = jest.spyOn(flssUtils, 'fetchLoanChannel')
+			spyFetchLoanChannel = vi.spyOn(flssUtils, 'fetchLoanChannel')
 				.mockImplementation(() => Promise.resolve());
 		});
 
-		afterEach(jest.clearAllMocks);
+		afterEach(vi.clearAllMocks);
 
 		it('should handle channel without FLSS mapping', async () => {
 			await preFetchChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
@@ -138,13 +138,13 @@ describe('loanChannelUtils.js', () => {
 
 	describe('getCachedChannel', () => {
 		let spyGetCachedLoanChannel;
-		const apollo = { readQuery: jest.fn(() => Promise.resolve()) };
+		const apollo = { readQuery: vi.fn(() => Promise.resolve()) };
 
 		beforeEach(() => {
-			spyGetCachedLoanChannel = jest.spyOn(flssUtils, 'getCachedLoanChannel');
+			spyGetCachedLoanChannel = vi.spyOn(flssUtils, 'getCachedLoanChannel');
 		});
 
-		afterEach(jest.clearAllMocks);
+		afterEach(vi.clearAllMocks);
 
 		it('should handle channel without FLSS mapping', () => {
 			getCachedChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
@@ -189,14 +189,14 @@ describe('loanChannelUtils.js', () => {
 	describe('getLoanChannel', () => {
 		let spyGetLoanChannel;
 		const apollo = {
-			query: jest.fn(() => Promise.resolve()),
+			query: vi.fn(() => Promise.resolve()),
 		};
 
 		beforeEach(() => {
-			spyGetLoanChannel = jest.spyOn(flssUtils, 'fetchLoanChannel').mockImplementation(() => Promise.resolve());
+			spyGetLoanChannel = vi.spyOn(flssUtils, 'fetchLoanChannel').mockImplementation(() => Promise.resolve());
 		});
 
-		afterEach(jest.clearAllMocks);
+		afterEach(vi.clearAllMocks);
 
 		it('should handle channel without FLSS mapping', async () => {
 			await getLoanChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
@@ -239,20 +239,20 @@ describe('loanChannelUtils.js', () => {
 		let watchCallback;
 		let subscribeNextCallback;
 		const observer = {
-			subscribe: jest.fn(options => { subscribeNextCallback = options.next; }),
-			setVariables: jest.fn()
+			subscribe: vi.fn(options => { subscribeNextCallback = options.next; }),
+			setVariables: vi.fn()
 		};
-		const apollo = { watchQuery: jest.fn(() => observer) };
-		const watch = jest.fn(callback => { watchCallback = callback; });
+		const apollo = { watchQuery: vi.fn(() => observer) };
+		const watch = vi.fn(callback => { watchCallback = callback; });
 
 		beforeEach(() => {
-			spyWatchLoanChannel = jest.spyOn(flssUtils, 'watchLoanChannel');
+			spyWatchLoanChannel = vi.spyOn(flssUtils, 'watchLoanChannel');
 		});
 
-		afterEach(jest.clearAllMocks);
+		afterEach(vi.clearAllMocks);
 
 		it('should handle channel without FLSS mapping', () => {
-			const next = jest.fn();
+			const next = vi.fn();
 
 			const result = watchChannelQuery(apollo, mockQueryMap, 'asd', mockLoanQueryVars, next, watch);
 
@@ -277,7 +277,7 @@ describe('loanChannelUtils.js', () => {
 		it('should handle channel with FLSS mapping', () => {
 			spyWatchLoanChannel.mockReturnValueOnce(observer);
 
-			const next = jest.fn();
+			const next = vi.fn();
 
 			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
 
@@ -304,7 +304,7 @@ describe('loanChannelUtils.js', () => {
 		it('should handle active unassigned experiment', () => {
 			spyWatchLoanChannel.mockReturnValueOnce(observer);
 
-			const next = jest.fn();
+			const next = vi.fn();
 
 			const result = watchChannelQuery(apollo, mockQueryMap, 'women', mockLoanQueryVars, next, watch);
 

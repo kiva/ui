@@ -7,6 +7,8 @@ import {
 } from 'timesync';
 import syncDate from '#src/util/syncDate';
 
+vi.mock('timesync');
+
 describe('syncDate.js', () => {
 	const delay = 10000;
 

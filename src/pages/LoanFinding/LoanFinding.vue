@@ -1,9 +1,7 @@
 <template>
 	<www-page main-class="tw-bg-white" style="height: auto;">
 		<kv-atb-modal-container
-			:basket-size="basketSize"
-			:cart-modal-visible="cartModalVisible"
-			@close-cart-modal="closeCartModal"
+			:added-loan="addedLoan"
 		/>
 		<div class="tw-w-full">
 			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />

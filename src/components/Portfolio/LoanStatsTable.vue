@@ -161,7 +161,22 @@ export default {
 		query: lendingStatsQuery,
 		result({ data }) {
 			this.stats = data?.my?.userStats ?? {};
-			this.avgStats = {};
+			this.avgStats = {
+				amount_repaid: data?.general?.kivaStats?.avgAmountRepaid ?? null,
+				amount_in_arrears: data?.general?.kivaStats?.avgAmountArrears ?? null,
+				amount_outstanding: data?.general?.kivaStats?.avgAmountOutstanding ?? null,
+				default_rate: data?.general?.kivaStats?.avgDefaultRate ?? null,
+				amount_defaulted: data?.general?.kivaStats?.avgAmountDefaulted ?? null,
+				// The following fields are not yet available in the current API
+				// TODO: Add these values in once backend issues are resolved
+				amount_of_loans: null,
+				arrears_rate: null,
+				amount_refunded: null,
+				total_ended: null,
+				currency_loss_rate: null,
+				currency_loss: null,
+				currency_reimbursement: null
+			};
 			this.loading = false;
 
 			// Update loan counts from stats

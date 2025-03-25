@@ -4,9 +4,7 @@
 		:gray-background="pageLayout === 'control'"
 	>
 		<kv-atb-modal-container
-			:basket-size="basketSize"
-			:cart-modal-visible="cartModalVisible"
-			@close-cart-modal="closeCartModal"
+			:added-loan="addedLoan"
 		/>
 		<loan-channel-category-control
 			:enable-five-dollars-notes="enableFiveDollarsNotes"

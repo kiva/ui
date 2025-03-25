@@ -24,16 +24,16 @@ import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
 const MOCK_UUID = '123456789';
-jest.mock('uuid', () => ({ v4: () => MOCK_UUID }));
+vi.mock('uuid', () => ({ v4: () => MOCK_UUID }));
 
 describe('experimentUtils.js', () => {
 	describe('getActiveExperiments', () => {
 		it('should handle missing data', async () => {
 			const cache = {
-				readQuery: jest.fn().mockReturnValue({})
+				readQuery: vi.fn().mockReturnValue({})
 			};
 			const client = {
-				query: jest.fn().mockReturnValue({})
+				query: vi.fn().mockReturnValue({})
 			};
 
 			const result = await getActiveExperiments(cache, client);
@@ -45,7 +45,7 @@ describe('experimentUtils.js', () => {
 
 		it('should get active experiments from cache', async () => {
 			const cache = {
-				readQuery: jest.fn().mockReturnValue({
+				readQuery: vi.fn().mockReturnValue({
 					general: {
 						activeExperiments: {
 							value: '"asd,qwe"'
@@ -54,7 +54,7 @@ describe('experimentUtils.js', () => {
 				})
 			};
 			const client = {
-				query: jest.fn()
+				query: vi.fn()
 			};
 
 			const result = await getActiveExperiments(cache, client);
@@ -66,10 +66,10 @@ describe('experimentUtils.js', () => {
 
 		it('should get active experiments from client', async () => {
 			const cache = {
-				readQuery: jest.fn().mockReturnValue({})
+				readQuery: vi.fn().mockReturnValue({})
 			};
 			const client = {
-				query: jest.fn().mockReturnValue({
+				query: vi.fn().mockReturnValue({
 					data: {
 						general: {
 							activeExperiments: {
@@ -92,7 +92,7 @@ describe('experimentUtils.js', () => {
 		it('should handle missing data', () => {
 			const key = 'asd';
 			const client = {
-				readQuery: jest.fn().mockReturnValue({})
+				readQuery: vi.fn().mockReturnValue({})
 			};
 
 			const result = getExperimentSettingCached(client, key);
@@ -108,7 +108,7 @@ describe('experimentUtils.js', () => {
 			const key = 'asd';
 			const mockSettings = { test: 'asd' };
 			const client = {
-				readQuery: jest.fn().mockReturnValue({
+				readQuery: vi.fn().mockReturnValue({
 					general: {
 						uiExperimentSetting: {
 							value: '"{\\"test\\":\\"asd\\"}"'
@@ -131,7 +131,7 @@ describe('experimentUtils.js', () => {
 		it('should handle missing data', async () => {
 			const key = 'asd';
 			const client = {
-				query: jest.fn().mockImplementation(() => Promise.resolve({}))
+				query: vi.fn().mockImplementation(() => Promise.resolve({}))
 			};
 
 			const result = await getExperimentSettingAsync(client, key);
@@ -147,7 +147,7 @@ describe('experimentUtils.js', () => {
 			const key = 'asd';
 			const mockSettings = { test: 'asd' };
 			const client = {
-				query: jest.fn().mockImplementation(() => Promise.resolve({
+				query: vi.fn().mockImplementation(() => Promise.resolve({
 					data: {
 						general: {
 							uiExperimentSetting: {
@@ -172,8 +172,8 @@ describe('experimentUtils.js', () => {
 		it('should handle missing data', async () => {
 			const key = 'asd';
 			const client = {
-				readQuery: jest.fn().mockReturnValue({}),
-				query: jest.fn().mockImplementation(() => Promise.resolve({}))
+				readQuery: vi.fn().mockReturnValue({}),
+				query: vi.fn().mockImplementation(() => Promise.resolve({}))
 			};
 
 			const result = await getExperimentSetting(key, client);
@@ -192,14 +192,14 @@ describe('experimentUtils.js', () => {
 		it('should get settings from cache', async () => {
 			const key = 'asd';
 			const client = {
-				readQuery: jest.fn().mockReturnValue({
+				readQuery: vi.fn().mockReturnValue({
 					general: {
 						uiExperimentSetting: {
 							value: '"{\\"name\\":\\"asd\\"}"'
 						}
 					}
 				}),
-				query: jest.fn().mockImplementation(() => Promise.resolve({}))
+				query: vi.fn().mockImplementation(() => Promise.resolve({}))
 			};
 
 			const result = await getExperimentSetting(key, client);
@@ -215,8 +215,8 @@ describe('experimentUtils.js', () => {
 		it('should get settings async', async () => {
 			const key = 'asd';
 			const client = {
-				readQuery: jest.fn().mockReturnValue({}),
-				query: jest.fn().mockImplementation(() => Promise.resolve({
+				readQuery: vi.fn().mockReturnValue({}),
+				query: vi.fn().mockImplementation(() => Promise.resolve({
 					data: {
 						general: {
 							uiExperimentSetting: {
@@ -521,10 +521,10 @@ describe('experimentUtils.js', () => {
 
 		describe('mocked pseudo random number generator', () => {
 			beforeEach(() => {
-				spyAlea = jest.spyOn(Alea, 'default').mockReturnValue(() => Math.random());
+				spyAlea = vi.spyOn(Alea, 'default').mockReturnValue(() => Math.random());
 			});
 
-			afterEach(jest.restoreAllMocks);
+			afterEach(vi.restoreAllMocks);
 
 			it('should return undefined when experiment props missing', () => {
 				expect(assignVersionForLoginId(undefined, {}, loginId)).toBe(undefined);
@@ -626,9 +626,9 @@ describe('experimentUtils.js', () => {
 		it('should not call track event for undefined version', () => {
 			const data = { version: undefined };
 			const client = {
-				readFragment: jest.fn().mockReturnValue(data),
+				readFragment: vi.fn().mockReturnValue(data),
 			};
-			const trackEvent = jest.fn();
+			const trackEvent = vi.fn();
 			const key = 'asd';
 			const category = 'category';
 			const action = 'action';
@@ -646,9 +646,9 @@ describe('experimentUtils.js', () => {
 		it('should not call track event for unassigned version', () => {
 			const data = { version: 'unassigned' };
 			const client = {
-				readFragment: jest.fn().mockReturnValue(data),
+				readFragment: vi.fn().mockReturnValue(data),
 			};
-			const trackEvent = jest.fn();
+			const trackEvent = vi.fn();
 			const key = 'asd';
 			const category = 'category';
 			const action = 'action';
@@ -666,9 +666,9 @@ describe('experimentUtils.js', () => {
 		it('should call track event', () => {
 			const data = { version: 'a' };
 			const client = {
-				readFragment: jest.fn().mockReturnValue(data),
+				readFragment: vi.fn().mockReturnValue(data),
 			};
-			const trackEvent = jest.fn();
+			const trackEvent = vi.fn();
 			const key = 'asd';
 			const category = 'category';
 			const action = 'action';
@@ -686,9 +686,9 @@ describe('experimentUtils.js', () => {
 		it('should call track event with undefined action', () => {
 			const data = { version: 'a' };
 			const client = {
-				readFragment: jest.fn().mockReturnValue(data),
+				readFragment: vi.fn().mockReturnValue(data),
 			};
-			const trackEvent = jest.fn();
+			const trackEvent = vi.fn();
 			const key = 'asd';
 			const category = 'category';
 
@@ -1015,7 +1015,7 @@ describe('experimentUtils.js', () => {
 		it('should get active experiments', async () => {
 			const apollo = {
 				cache: {
-					readQuery: jest.fn()
+					readQuery: vi.fn()
 				}
 			};
 
@@ -1027,7 +1027,7 @@ describe('experimentUtils.js', () => {
 		it('should assign active experiments', async () => {
 			const apollo = {
 				cache: {
-					readQuery: jest.fn().mockReturnValue({
+					readQuery: vi.fn().mockReturnValue({
 						general: {
 							activeExperiments: {
 								value: '"a,b"'
@@ -1035,7 +1035,7 @@ describe('experimentUtils.js', () => {
 						}
 					})
 				},
-				query: jest.fn()
+				query: vi.fn()
 			};
 
 			await assignAllActiveExperiments(apollo);

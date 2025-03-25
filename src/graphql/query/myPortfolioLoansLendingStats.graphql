@@ -26,4 +26,13 @@ query myPortfolioLoansLendingStats {
 			num_expired
 		}
 	}
+	general {
+		kivaStats {
+			avgAmountRepaid
+			avgAmountArrears
+			avgAmountOutstanding
+			avgDefaultRate
+			avgAmountDefaulted
+		}
+	}
 }

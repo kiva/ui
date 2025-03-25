@@ -16,18 +16,18 @@ import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFl
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 
-jest.mock('#src/util/loanSearch/filterConfig', () => {
-	return {
+vi.mock('#src/util/loanSearch/filterConfig', () => ({
+	default: {
 		config: {
-			a: { getFlssFilter: jest.fn().mockReturnValue({ a: 'a' }) },
-			b: { getFlssFilter: jest.fn().mockReturnValue({ b: 'b' }) },
+			a: { getFlssFilter: vi.fn().mockReturnValue({ a: 'a' }) },
+			b: { getFlssFilter: vi.fn().mockReturnValue({ b: 'b' }) },
 		},
 		keys: ['a', 'b'],
-	};
-});
+	}
+}));
 
 describe('flssUtils.js', () => {
-	beforeEach(jest.clearAllMocks);
+	beforeEach(vi.clearAllMocks);
 
 	describe('getFlssFilters', () => {
 		it('should call filterConfig', () => {
@@ -44,7 +44,7 @@ describe('flssUtils.js', () => {
 	describe('fetchFacets', () => {
 		const result = {};
 		const dataObj = { data: result };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 		const filters = { gender: { any: ['FEMALE'] } };
 		const variables = {
 			isoCodeFilters: filters,
@@ -69,7 +69,7 @@ describe('flssUtils.js', () => {
 	describe('fetchCategories', () => {
 		const result = {};
 		const dataObj = { data: result };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 		const apolloVariables = { query: categoryListFlssQuery, fetchPolicy: 'network-only' };
 
 		it('should pass the correct query variables to apollo', async () => {
@@ -86,7 +86,7 @@ describe('flssUtils.js', () => {
 	describe('fetchLoans', () => {
 		const result = { values: [], totalCount: 0 };
 		const dataObj = { data: { fundraisingLoans: result } };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 		const loanQueryFilters = { any: ['US'] };
 		const sortBy = 'personalized';
 		const pageOffset = 15;
@@ -180,7 +180,7 @@ describe('flssUtils.js', () => {
 	describe('fetchLoanChannel', () => {
 		const result = {};
 		const dataObj = { data: result };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 		const queryMap = { sector: [1, 2, 3] };
 		const loanQueryVars = {
 			ids: [3],
@@ -204,7 +204,7 @@ describe('flssUtils.js', () => {
 
 	describe('getCachedLoanChannel', () => {
 		const result = {};
-		const apollo = { readQuery: jest.fn(() => result) };
+		const apollo = { readQuery: vi.fn(() => result) };
 		const queryMap = { sector: [1, 2, 3] };
 		const loanQueryVars = {
 			ids: [3],
@@ -228,7 +228,7 @@ describe('flssUtils.js', () => {
 
 	describe('watchLoanChannel', () => {
 		const result = {};
-		const apollo = { watchQuery: jest.fn(() => result) };
+		const apollo = { watchQuery: vi.fn(() => result) };
 		const queryMap = { sector: [1, 2, 3] };
 		const loanQueryVars = {
 			ids: [3],
@@ -253,7 +253,7 @@ describe('flssUtils.js', () => {
 	describe('fetchRecommendedLoans', () => {
 		const result = { values: [], totalCount: 0 };
 		const dataObj = { data: { loanRecommendations: result } };
-		const apollo = { query: jest.fn(() => Promise.resolve(dataObj)) };
+		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
 		const filters = { sector: ['Agriculture'] };
 		const sortBy = 'personalized';
 		const userId = 12345;

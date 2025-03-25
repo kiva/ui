@@ -11,7 +11,7 @@
 		</div>
 		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info" data-testid="basket-loan-info">
-				<div class="tw-flex tw-mb-0.5">
+				<div class="tw-flex tw-mb-1">
 					<h2 class="tw-text-h3 tw-flex-grow" data-testid="basket-loan-name">
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
@@ -23,6 +23,15 @@
 						@updating-totals="$emit('updating-totals', $event)"
 					/>
 				</div>
+				<KvCartPill
+					v-if="contributesInAchievement || isFirstLoan"
+					show-bg
+				>
+					<template #icon>
+						<EquityBadge v-if="isFirstLoan" class="tw-h-4 tw-w-4" />
+						<IconChoice v-else />
+					</template>
+				</KvCartPill>
 				<loan-matcher
 					class="tw-mb-1"
 					data-testid="basket-loan-matching-text"
@@ -125,6 +134,9 @@ import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
+import { KvCartPill } from '@kiva/kv-components';
+import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
+import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 
 export default {
 	name: 'BasketItem',
@@ -135,7 +147,10 @@ export default {
 		LoanReservation,
 		LoanPrice,
 		RemoveBasketItem,
-		TeamAttribution
+		TeamAttribution,
+		KvCartPill,
+		IconChoice,
+		EquityBadge,
 	},
 	inject: ['apollo', 'cookieStore'],
 	emits: [
@@ -143,6 +158,7 @@ export default {
 		'updating-totals',
 		'jump-to-loans',
 		'validateprecheckout',
+		'removed-loan',
 	],
 	props: {
 		disableRedirects: {
@@ -168,7 +184,15 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
-		}
+		},
+		contributesInAchievement: {
+			type: Boolean,
+			default: false
+		},
+		isFirstLoan: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -224,6 +248,7 @@ export default {
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
 			if ($event === 'removeLoan') {
+				this.$emit('removed-loan', this.loan.id);
 				this.loanVisible = false;
 				removeLoansFromChallengeCookie(this.cookieStore, [this.loan.id]);
 			}

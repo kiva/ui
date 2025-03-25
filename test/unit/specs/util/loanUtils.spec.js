@@ -306,19 +306,19 @@ describe('loanUtils.js', () => {
 		const mockTomorrow = new Date(2023, 1, 2);
 
 		beforeEach(() => {
-			mockCookieStoreGet = jest.fn();
-			mockCookieStoreSet = jest.fn();
+			mockCookieStoreGet = vi.fn();
+			mockCookieStoreSet = vi.fn();
 			mockCookieStore = {
 				get: mockCookieStoreGet,
 				set: mockCookieStoreSet,
 			};
-			jest.useFakeTimers('modern');
-			jest.setSystemTime(new Date(2023, 1, 1));
+			vi.useFakeTimers('modern');
+			vi.setSystemTime(new Date(2023, 1, 1));
 		});
 
 		afterEach(() => {
-			jest.clearAllMocks();
-			jest.useRealTimers();
+			vi.clearAllMocks();
+			vi.useRealTimers();
 		});
 
 		it('should handle unreserved amount greater than $50 without campaign', () => {

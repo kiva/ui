@@ -5,31 +5,25 @@ import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 import { globalOptions } from '../../../../specUtils';
 
-jest.mock('#src/util/loanSearch/filterConfig', () => {
-	return {
+vi.mock('#src/util/loanSearch/filterConfig', () => ({
+	default: {
 		config: {
 			a: {
-				getFilterChips: jest.fn().mockReturnValue([{ name: 'a', __typename: 'TypeA' }]),
-				getRemovedFacet: jest.fn().mockReturnValue({ a: null }),
+				getFilterChips: vi.fn().mockReturnValue([{ name: 'a', __typename: 'TypeA' }]),
+				getRemovedFacet: vi.fn().mockReturnValue({ a: null }),
 			},
 			b: {
-				getFilterChips: jest.fn().mockReturnValue([{ name: 'b', __typename: 'TypeB' }]),
-				getRemovedFacet: jest.fn().mockReturnValue({ b: null })
+				getFilterChips: vi.fn().mockReturnValue([{ name: 'b', __typename: 'TypeB' }]),
+				getRemovedFacet: vi.fn().mockReturnValue({ b: null })
 			},
 		},
 		keys: ['a', 'b'],
-	};
-});
+	},
+}));
 
 describe('LoanSearchFilterChips', () => {
-	let spyTrackEvent;
-	beforeEach(() => {
-		spyTrackEvent = jest.fn();
-		jest.clearAllMocks();
-	});
-
 	afterEach(() => {
-		jest.restoreAllMocks();
+		vi.clearAllMocks();
 	});
 
 	it('should handle missing props', () => {
@@ -97,6 +91,7 @@ describe('LoanSearchFilterChips', () => {
 
 	it('should track event', async () => {
 		const user = userEvent.setup();
+		const spyTrackEvent = vi.fn();
 
 		const { getByText } = render(LoanSearchFilterChips, {
 			global: {

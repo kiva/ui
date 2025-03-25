@@ -1,0 +1,137 @@
+<template>
+	<div>
+		<KvCarousel
+			:embla-options="{
+				loop: false,
+				align: slidesAligmment,
+				slidesToScroll,
+			}"
+			:multiple-slides-visible="true"
+			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
+		>
+			<template
+				v-for="(slide, index) in carouselSlides"
+				#[`slide${index}`]
+				:key="index"
+			>
+				<div
+					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
+					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
+				>
+					<div
+						class="slide tw-absolute tw-w-full tw-bottom-0 tw-pb-1.5 tw-px-1.5 tw-align-bottom tw-rounded-b"
+						:style="[
+							{ 'height': overlayHeight(slide) },
+						]"
+					>
+						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full">
+							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full tw-mb-1.5">
+								<img
+									class="tw-h-6"
+									:src="badgeUrl(slide)"
+								>
+								<div class="tw-text-primary-inverse">
+									<h2 class="tw-text-h3">
+										{{ title(slide) }}
+									</h2>
+									<p
+										v-if="subTitle(slide)"
+										class="tw-text-small"
+									>
+										{{ subTitle(slide) }}
+									</p>
+								</div>
+							</div>
+							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
+								<button
+									v-if="showSecondaryCta(slide)"
+									:to="secondaryCtaUrl(slide)"
+									variant="tertiary"
+									class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
+									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
+								>
+									{{ secondaryCtaText(slide) }}
+								</button>
+								<KvButton
+									:to="primaryCtaUrl(slide)"
+									variant="secondary"
+								>
+									{{ primaryCtaText(slide) }}
+								</KvButton>
+							</div>
+						</div>
+					</div>
+				</div>
+			</template>
+		</KvCarousel>
+	</div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+import useIsMobile from '#src/composables/useIsMobile';
+import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
+
+const props = defineProps({
+	content: {
+		type: Object,
+		default: () => ({}),
+	},
+});
+
+const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+
+const carouselSlides = computed(() => props.content?.slides || []); // TODO: replace with Contentful data
+
+const slidesAligmment = computed(() => {
+	return isMobile.value ? 'start' : 'center';
+});
+
+const slidesToScroll = computed(() => {
+	return isMobile.value ? 1 : 2;
+});
+
+const title = slide => slide?.title || '';
+const subTitle = slide => slide?.subtitle || '';
+const badgeUrl = slide => slide?.badgeUrl || '';
+const backgroundImg = slide => slide?.backgroundImg || '';
+const primaryCtaText = slide => slide?.primaryCtaText || '';
+const primaryCtaUrl = slide => slide?.primaryCtaUrl || '';
+const secondaryCtaText = slide => slide?.secondaryCtaText || '';
+const secondaryCtaUrl = slide => slide?.secondaryCtaUrl || '';
+const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
+const overlayHeight = slide => {
+	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
+};
+</script>
+
+<style lang="postcss" scoped>
+.journey-card {
+	width: 322px;
+	height: 402px;
+
+	@screen md {
+		width: 520px;
+		height: 390px;
+	}
+}
+
+.journey-card-carousel:deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-gap-x-4 tw-py-1.5 tw-w-full tw-overflow-visible;
+}
+
+.journey-card-carousel:deep(.kv-carousel__controls > button) {
+	@apply tw-w-5 tw-h-5 tw-border-0;
+
+	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+}
+
+.journey-card-carousel:deep(.kv-carousel__controls > div) {
+	@apply tw-hidden;
+}
+
+.slide {
+	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
+}
+</style>

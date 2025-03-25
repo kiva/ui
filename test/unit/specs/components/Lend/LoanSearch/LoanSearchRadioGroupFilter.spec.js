@@ -15,10 +15,10 @@ const getOptions = (isObject = false, isBoolean = false) => [...Array(4)].map((_
 const getValueMap = options => options.reduce((map, option) => { map[option.name] = option.value; return map; }, {});
 
 describe('LoanSearchRadioGroupFilter', () => {
-	const mockTrackEvent = jest.fn();
+	const mockTrackEvent = vi.fn();
 
 	beforeEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	it('should default to all', () => {

@@ -19,7 +19,8 @@ import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
 import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
 import { badgeNoProgress } from '../../fixtures/tieredLendingAchievementDataMock';
 
-jest.mock('vue', () => ({
+vi.mock('vue', () => ({
+	createElementVNode: () => {},
 	onBeforeMount: callback => { callback(); },
 	onBeforeUnmount: () => { },
 	ref: value => ({ value })

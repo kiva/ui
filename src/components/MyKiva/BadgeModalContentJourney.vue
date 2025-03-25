@@ -1,7 +1,21 @@
 <template>
 	<div>
-		<p>
-			{{ badgeWithVisibleTiers.description }}
+		<div class="tw-flex tw-shrink-0 tw-items-center tw-mb-1">
+			<KvUserAvatar
+				class="avatar tw-border-white tw-rounded tw-border-2"
+				:key="loan.id"
+				v-for="(loan, i) in journeyLoans.slice(0, 3)"
+				:lender-name="loan.name"
+				:lender-image-url="loan.image.url"
+				:class="{ 'tw--ml-2.5': i > 0 }"
+				:style="{ 'z-index': journeyTotalLoans }"
+			/>
+			<p v-if="extraLoanCount > 0">
+				+{{ extraLoanCount }}
+			</p>
+		</div>
+		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1.5">
+			{{ journeyDescription }}
 		</p>
 		<div
 			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
@@ -88,7 +102,7 @@ import useBadgeModal,
 	BADGE_LOCKED,
 	getBadgeShape,
 } from '#src/composables/useBadgeModal';
-import { KvButton } from '@kiva/kv-components';
+import { KvButton, KvUserAvatar } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
@@ -97,9 +111,13 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	loans: {
+		type: Array,
+		default: () => ([]),
+	}
 });
 
-const { getBadgeWithVisibleTiers, getTierBadgeDataByLevel } = useBadgeData();
+const { getBadgeWithVisibleTiers, getTierBadgeDataByLevel, getFilteredLoansByJourney } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -157,10 +175,31 @@ const handleBadgeClick = index => {
 		});
 	}
 };
+
+const journeyLoans = computed(() => getFilteredLoansByJourney(badgeWithVisibleTiers.value, props.loans));
+const journeyTotalLoans = computed(() => journeyLoans.value.length);
+const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
+
+const journeyLoansNames = computed(() => {
+	const names = journeyLoans.value.slice(0, 3).map(loan => loan?.name ?? '');
+
+	return names.length > 1
+		? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
+		: names[0] || '';
+});
+
+const journeyDescription = computed(() => {
+	// eslint-disable-next-line max-len
+	return `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. ${badgeWithVisibleTiers.value.description}`;
+});
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .badge-mobile:not(:last-of-type) {
 	@apply tw-mb-1.5;
+}
+
+.avatar :deep(img) {
+	@apply tw-w-4 tw-h-4;
 }
 </style>

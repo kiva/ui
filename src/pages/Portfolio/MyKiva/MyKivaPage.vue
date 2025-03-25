@@ -113,6 +113,7 @@
 							:state="state"
 							:tier="tier"
 							:is-earned-section="isEarnedSectionModal"
+							:loans="loans"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
 							@back-to-journey="handleBackToJourney"
@@ -155,6 +156,7 @@ import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } fr
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
+
 import {
 	ref,
 	computed,
@@ -177,6 +179,13 @@ const {
 	badgeData,
 	completedBadges,
 } = useBadgeData(apollo);
+
+defineProps({
+	isHeroEnabled: {
+		type: Boolean,
+		default: () => false,
+	},
+});
 
 const lender = ref(null);
 const showNavigation = ref(false);

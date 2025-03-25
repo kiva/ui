@@ -15,6 +15,7 @@ export default function createApolloClient({
 	kvAuth0,
 	types,
 	uri,
+	userAgent,
 	fetch,
 	route,
 }) {
@@ -51,6 +52,7 @@ export default function createApolloClient({
 			}),
 			HttpLinkCreator({
 				uri,
+				userAgent,
 				fetch,
 				apolloBatching: appConfig?.apolloBatching ?? true,
 				stellateDebugHeaders: appConfig?.stellateDebugHeaders,

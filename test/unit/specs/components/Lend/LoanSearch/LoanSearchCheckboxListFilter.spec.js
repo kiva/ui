@@ -13,11 +13,11 @@ const getOptions = disabled => [...Array(4)].map((_c, i) => ({
 describe('LoanSearchCheckboxListFilter', () => {
 	let spyTrackEvent;
 	beforeEach(() => {
-		spyTrackEvent = jest.fn();
-		jest.clearAllMocks();
+		spyTrackEvent = vi.fn();
+		vi.clearAllMocks();
 	});
 
-	afterEach(jest.restoreAllMocks);
+	afterEach(vi.restoreAllMocks);
 
 	it('should display items', () => {
 		const options = getOptions();

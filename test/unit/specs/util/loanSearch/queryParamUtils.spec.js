@@ -3,24 +3,24 @@ import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
-jest.mock('#src/util/loanSearch/filterConfig', () => {
-	return {
+vi.mock('#src/util/loanSearch/filterConfig', () => ({
+	default: {
 		config: {
 			a: {
-				getFilterFromQuery: jest.fn().mockReturnValue({ a: 'a' }),
-				getQueryFromFilter: jest.fn().mockReturnValue({ a: 'a' }),
+				getFilterFromQuery: vi.fn().mockReturnValue({ a: 'a' }),
+				getQueryFromFilter: vi.fn().mockReturnValue({ a: 'a' }),
 			},
 			b: {
-				getFilterFromQuery: jest.fn().mockReturnValue({ b: 'b' }),
-				getQueryFromFilter: jest.fn().mockReturnValue({ b: 'b' }),
+				getFilterFromQuery: vi.fn().mockReturnValue({ b: 'b' }),
+				getQueryFromFilter: vi.fn().mockReturnValue({ b: 'b' }),
 			},
 		},
 		keys: ['a', 'b'],
-	};
-});
+	}
+}));
 
 describe('queryParamUtils.js', () => {
-	beforeEach(jest.clearAllMocks);
+	beforeEach(vi.clearAllMocks);
 
 	describe('hasExcludedQueryParams', () => {
 		it('should return true', () => {
@@ -52,7 +52,7 @@ describe('queryParamUtils.js', () => {
 	describe('updateQueryParams', () => {
 		const getRouter = (query = {}) => ({
 			currentRoute: { value: { name: 'name', query } },
-			push: jest.fn().mockReturnValue({ catch: jest.fn() }),
+			push: vi.fn().mockReturnValue({ catch: vi.fn() }),
 		});
 
 		it('should call filterConfig', () => {

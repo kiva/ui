@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
+import { coverageConfigDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue';
 import GitRevisionPlugin from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
@@ -133,6 +134,30 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			noExternal: [
 				'@kiva/kv-components',
 			],
+		},
+		test: {
+			globals: true,
+			environment: 'happy-dom',
+			setupFiles: ['./test/unit/setup.js'],
+			coverage: {
+				provider: 'istanbul',
+				reporters: ['json', 'html'],
+				reportsDirectory: './test/unit/coverage',
+				include: [
+					'src/**',
+				],
+				exclude: [
+					'./src/assets/',
+					'./src/components',
+					'./src/head/',
+					'./src/lib/',
+					'./src/pages/',
+					'./src/plugins/index.js',
+					'./src/router/',
+					'./src/util/animation',
+					...coverageConfigDefaults.exclude,
+				]
+			}
 		},
 	};
 });

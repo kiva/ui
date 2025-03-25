@@ -123,6 +123,7 @@ export default async context => {
 	const {
 		url,
 		config,
+		kivaUserAgent,
 		cookies,
 		user,
 		locale,
@@ -181,6 +182,7 @@ export default async context => {
 		kvAuth0,
 		locale,
 		fetch: config?.apolloQueryFetchLogging ? customFetch : fetch,
+		kivaUserAgent,
 		url,
 		isServer: true,
 	});

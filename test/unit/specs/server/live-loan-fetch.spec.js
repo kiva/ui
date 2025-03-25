@@ -1,27 +1,26 @@
-const fetch = require('../../../../server/util/fetch');
-const fetchLoansByType = require('../../../../server/util/live-loan/live-loan-fetch');
+// @vitest-environment node
+import fetch from '../../../../server/util/fetch';
+import fetchLoansByType from '../../../../server/util/live-loan/live-loan-fetch';
 
 // mock out the fetch module so that no real requests are made
-jest.mock('../../../../server/util/fetch');
+vi.mock('../../../../server/util/fetch');
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
-jest.mock('../../../../server/util/argv', () => {
-	return {};
-});
+vi.mock('../../../../server/util/argv', () => ({ default: {} }));
 
 describe('live-loan-fetch', () => {
 	describe('fetchRecommendationsByFilter', () => {
 		// Extract the variables used in the graphql query performed by fetchLoansByType when given inputString
 		async function readParsedVariable(inputString) {
 			// Reset fetch mock and make it return a resolved promise when called
-			fetch.default.mockClear();
-			fetch.default.mockResolvedValue({ json: () => { } });
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => { } });
 
 			// Run the filter parsing
-			await fetchLoansByType.default('filter', inputString);
+			await fetchLoansByType('filter', inputString);
 
 			// Extract the grahpql query variables
-			const { variables } = JSON.parse(fetch.default.mock.calls[0][1].body);
+			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
 			return variables;
 		}
 
@@ -41,9 +40,9 @@ describe('live-loan-fetch', () => {
 			expect(sortBy).toEqual(expectedSort);
 		}
 
-		beforeEach(() => {
+		beforeEach(async () => {
 			// Suppress console warnings
-			jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+			vi.spyOn(console, 'warn').mockImplementation(vi.fn());
 		});
 
 		it('converts input strings to valid LoanSearchFiltersInput objects', async () => {
@@ -160,33 +159,33 @@ describe('live-loan-fetch', () => {
 
 	describe('fetchRecommendationsByFLSS', () => {
 		it('have flss call defined with userId', async () => {
-			fetch.default.mockClear();
-			fetch.default.mockResolvedValue({ json: () => { } });
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => { } });
 
-			await fetchLoansByType.default('user', '1234', 'flss');
+			await fetchLoansByType('user', '1234', 'flss');
 
-			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
+			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
 			expect(query).toContain('fundraisingLoans');
-			expect(fetch.default.mock.results[0].value).toBeDefined();
+			expect(fetch.mock.results[0].value).toBeDefined();
 		});
 	});
 
 	describe('fetchRecommendationsByLoanRecs', () => {
 		it('should make recommendations call with correct parameters', async () => {
-			fetch.default.mockClear();
-			fetch.default.mockResolvedValue({ json: () => { } });
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => { } });
 
-			await fetchLoansByType.default('user', '1234', 'recommendations');
+			await fetchLoansByType('user', '1234', 'recommendations');
 
-			const { variables, query } = JSON.parse(fetch.default.mock.calls[0][1].body);
+			const { variables, query } = JSON.parse(fetch.mock.calls[0][1].body);
 			expect(fetch).toBeDefined();
 			expect(variables.userId).toEqual(1234);
 			expect(query).toBeDefined();
 			expect(query).toContain('loanRecommendations');
-			expect(fetch.default.mock.results[0].value).toBeDefined();
+			expect(fetch.mock.results[0].value).toBeDefined();
 		});
 	});
 });

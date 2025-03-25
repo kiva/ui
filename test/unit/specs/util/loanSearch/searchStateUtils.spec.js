@@ -5,18 +5,18 @@ import createSavedSearchMutation from '#src/graphql/mutation/createSavedSearch.g
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockAllFacets, savedSearchParams } from '../../../fixtures/mockLoanSearchData';
 
-jest.mock('#src/util/loanSearch/filterConfig', () => {
-	return {
+vi.mock('#src/util/loanSearch/filterConfig', () => ({
+	default: {
 		config: {
-			a: { getValidatedSearchState: jest.fn().mockReturnValue({ a: 'a' }) },
-			b: { getValidatedSearchState: jest.fn().mockReturnValue({ b: 'b' }) },
+			a: { getValidatedSearchState: vi.fn().mockReturnValue({ a: 'a' }) },
+			b: { getValidatedSearchState: vi.fn().mockReturnValue({ b: 'b' }) },
 		},
 		keys: ['a', 'b'],
-	};
-});
+	},
+}));
 
 describe('searchStateUtils.js', () => {
-	beforeEach(jest.clearAllMocks);
+	beforeEach(vi.clearAllMocks);
 
 	describe('getValidatedSearchState', () => {
 		it('should call filterConfig', () => {
@@ -34,7 +34,7 @@ describe('searchStateUtils.js', () => {
 
 	describe('updateSearchState', () => {
 		const mockResult = 1;
-		const apollo = { mutate: jest.fn(() => Promise.resolve(mockResult)) };
+		const apollo = { mutate: vi.fn(() => Promise.resolve(mockResult)) };
 		const mockState = { a: 'a', b: 'b' };
 		const params = {
 			mutation: updateLoanSearchMutation,
@@ -60,13 +60,13 @@ describe('searchStateUtils.js', () => {
 
 	describe('createSavedSearch', () => {
 		const mockResult = { name: 'test saved search' };
-		const apollo = { mutate: jest.fn(() => Promise.resolve(mockResult)) };
+		const apollo = { mutate: vi.fn(() => Promise.resolve(mockResult)) };
 		const params = {
 			mutation: createSavedSearchMutation,
 			variables: savedSearchParams
 		};
 
-		beforeEach(jest.clearAllMocks);
+		beforeEach(vi.clearAllMocks);
 
 		it('should call apollo with provided search params and return an id and name', async () => {
 			const result = await createSavedSearch(

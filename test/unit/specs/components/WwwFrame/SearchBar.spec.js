@@ -17,7 +17,7 @@ const suggestions = [
 
 // Return a mock ApolloClient instance
 function getMockApollo() {
-	const query = jest.fn();
+	const query = vi.fn();
 	query.mockReturnValue(Promise.resolve({
 		data: {
 			lend: {

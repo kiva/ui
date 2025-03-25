@@ -2,10 +2,10 @@ import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import KvPagination from '#src/components/Kv/KvPagination';
 
-global.scrollTo = jest.fn();
+global.scrollTo = vi.fn();
 
 describe('KvPagination', () => {
-	afterEach(jest.clearAllMocks);
+	afterEach(vi.clearAllMocks);
 
 	it('should render arrows disabled by default', async () => {
 		const user = userEvent.setup();

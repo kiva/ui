@@ -10,10 +10,13 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:enable-huge-amount="enableHugeAmount"
 					:is-logged-in="isLoggedIn"
+					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
+					:is-first-loan="isFirstLoan"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
 					@jump-to-loans="$emit('jump-to-loans')"
+					@removed-loan="$emit('removed-loan', $event)"
 				/>
 			</li>
 			<deposit-incentive-upsell
@@ -62,6 +65,7 @@ export default {
 		'updating-totals',
 		'jump-to-loans',
 		'validateprecheckout',
+		'removed-loan',
 	],
 	props: {
 		disableRedirects: {
@@ -116,6 +120,14 @@ export default {
 			type: Number,
 			default: 0
 		},
+		possibleAchievementProgress: {
+			type: Array,
+			default: () => ([])
+		},
+		isFirstLoan: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		BasketItem,
@@ -130,5 +142,15 @@ export default {
 			userUsLoanCheckout(hasUsLoan);
 		}
 	},
+	methods: {
+		isLoanContributingInAchievements(loanId) {
+			const achievementProgress = this.possibleAchievementProgress.find(
+				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
+			);
+
+			return achievementProgress
+				&& achievementProgress?.postCheckoutTier !== achievementProgress?.preCheckoutTier;
+		},
+	}
 };
 </script>
