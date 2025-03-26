@@ -509,7 +509,7 @@ watch(() => badgeData.value, () => {
 	@apply tw-flex;
 }
 
-.smaller-borrower-avatar :deep(img) {
+.smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
 	height: 36px;
 	width: 36px;
 }

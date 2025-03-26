@@ -114,7 +114,7 @@ export default {
 	@apply tw-w-4;
 }
 
-.user-avatar :deep(img) {
-	@apply tw-w-4 tw-h-4;
+.user-avatar :deep(img), .user-avatar :deep(.loading-placeholder) {
+	@apply !tw-w-4 !tw-h-4;
 }
 </style>

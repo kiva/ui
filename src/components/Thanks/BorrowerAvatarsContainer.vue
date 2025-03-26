@@ -95,7 +95,7 @@ const getLoanImageUrl = loan => {
 </script>
 
 <style lang="postcss" scoped>
-.smaller-borrower-avatar :deep(img) {
+.smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
 	height: 36px;
 	width: 36px;
 }
@@ -120,7 +120,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.borrower-image, .borrower-image :deep(img) {
+.borrower-image, .borrower-image :deep(img), .borrower-image :deep(.loading-placeholder) {
 	width: 124px;
 	height: 124px;
 
@@ -130,7 +130,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.single-pair-loans, .single-pair-loans :deep(img) {
+.single-pair-loans, .single-pair-loans :deep(img), .single-pair-loans :deep(.loading-placeholder) {
 	width: 148px !important;
 	height: 148px !important;
 
@@ -140,7 +140,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.centered-borrower-image, .centered-borrower-image :deep(img) {
+.centered-borrower-image, .centered-borrower-image :deep(img), .centered-borrower-image :deep(.loading-placeholder) {
 	width: 164px !important;
 	height: 160px !important;
 
