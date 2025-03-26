@@ -473,7 +473,7 @@ export default {
 				id: this.loan?.id,
 				name: this.loan?.name ?? '',
 				gender: this.loan?.gender ?? '',
-				borrowerCount: this.loan?.borrowerCount ?? [],
+				borrowerCount: this.loan?.borrowerCount ?? 1,
 				themes: this.loan?.themes ?? [],
 				basketSize: this.basketCount,
 			};
