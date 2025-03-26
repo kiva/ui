@@ -199,7 +199,7 @@ const journeyDescription = computed(() => {
 	@apply tw-mb-1.5;
 }
 
-.avatar :deep(img) {
-	@apply tw-w-4 tw-h-4;
+.avatar :deep(img), .avatar :deep(.loading-placeholder ) {
+	@apply !tw-w-4 !tw-h-4;
 }
 </style>
