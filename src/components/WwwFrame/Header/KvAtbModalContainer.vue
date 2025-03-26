@@ -155,8 +155,6 @@ const modalPosition = computed(() => {
 	return { right, top };
 });
 
-const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value);
-
 const handleRedirect = type => {
 	if (type === 'view-basket') {
 		router.push({ path: '/basket' });
@@ -208,6 +206,8 @@ const loansIdsInBasket = computed(() => {
 const isFirstLoan = computed(() => {
 	return isGuest.value || !userData.value?.my?.loans?.totalCount;
 });
+
+const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
 
 const pillMsg = computed(() => {
 	if (isFirstLoan.value) {
