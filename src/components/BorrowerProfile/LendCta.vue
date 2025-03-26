@@ -471,6 +471,10 @@ export default {
 						matchingText
 						matchRatio
 						gender
+						borrowerCount
+						... on LoanPartner {
+							themes
+						}
 						unreservedAmount @client
 						loanFundraisingInfo {
 							fundedAmount
@@ -677,6 +681,8 @@ export default {
 				id: this.loanId,
 				name: this.name ?? '',
 				gender: this.loan?.gender ?? '',
+				borrowerCount: this.loan?.borrowerCount ?? 1,
+				themes: this.loan?.themes ?? [],
 				basketSize: this.basketSize,
 			};
 			this.handleCartModal(addedLoan);
