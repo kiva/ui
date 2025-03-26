@@ -17,20 +17,6 @@ export default [
 		}
 	},
 	{
-		path: '/borrow/pre-application',
-		component: () => import('#src/pages/Borrow/BorrowIndex'),
-		children: [
-			{
-				path: 'community',
-				component: () => import('#src/pages/Borrow/BorrowCommunity'),
-			},
-			{
-				path: 'how-long',
-				component: () => import('#src/pages/Borrow/BorrowHowLong'),
-			},
-		]
-	},
-	{
 		path: '/build',
 		component: () => import('#src/pages/Build/BuildPage'),
 	},
