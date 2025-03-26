@@ -213,14 +213,14 @@ const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilte
 const pillMsg = computed(() => {
 	if (isFirstLoan.value) {
 		const initialHeading = `Supporting ${borrowerName.value} helps`;
+		if (addedLoan.value?.borrowerCount > 1 || addedLoan.value?.themes.includes('Social Enterprise')) {
+			return `${initialHeading} them invest in themselves.`;
+		}
 		if (addedLoan.value?.gender === 'male') {
 			return `${initialHeading} him invest in himself.`;
 		}
-		if (addedLoan.value?.gender === 'female') {
-			return `${initialHeading} her invest in herself.`;
-		}
 
-		return `${initialHeading} them invest in themselves.`;
+		return `${initialHeading} her invest in herself.`;
 	}
 	return '';
 });
