@@ -27,7 +27,8 @@
 					<template #icon>
 						<div
 							:class="{
-								'tw-flex tw-items-center tw-justify-center tw-bg-gray-100 tw-p-0.5 tw-rounded'
+								// eslint-disable-next-line max-len
+								'tw-flex tw-items-center tw-justify-center tw-bg-gray-100 tw-p-0.5 tw-rounded tw-whitespace-nowrap'
 									: showOneAway,
 							}"
 						>
