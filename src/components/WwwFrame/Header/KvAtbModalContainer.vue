@@ -162,7 +162,7 @@ const handleRedirect = type => {
 		router.push({ path: '/basket' });
 	}
 	if (type === 'support-another') {
-		router.push(`lend/filter?${oneLoanAwayFilteredUrl.value}`);
+		router.push(`/lend/filter?${oneLoanAwayFilteredUrl.value}`);
 	}
 };
 
