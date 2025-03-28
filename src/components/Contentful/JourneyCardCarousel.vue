@@ -1,6 +1,17 @@
 <template>
 	<div>
+		<KvLoadingPlaceholder
+			v-if="isLoading"
+			class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6"
+		/>
+		<h2
+			v-else
+			class="tw-mb-3"
+		>
+			Take the <u>next step</u> on your impact journey
+		</h2>
 		<KvCarousel
+			:key="slides.length"
 			:embla-options="{
 				loop: false,
 				align: slidesAligmment,
@@ -10,11 +21,19 @@
 			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
 		>
 			<template
-				v-for="(slide, index) in carouselSlides"
+				v-for="(slide, index) in slides"
 				#[`slide${index}`]
 				:key="index"
 			>
+				<!-- Loading placeholder for the carousel -->
+				<KvLoadingPlaceholder
+					v-if="isLoading"
+					class="!tw-rounded journey-card"
+				/>
+
+				<!-- Journey card slide -->
 				<div
+					v-else
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
@@ -71,18 +90,21 @@
 import { computed } from 'vue';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
-import { KvCarousel, KvButton } from '@kiva/kv-components';
+import { formatUiSetting } from '#src/util/contentfulUtils';
+import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
-const props = defineProps({
-	content: {
-		type: Object,
-		default: () => ({}),
+defineProps({
+	isLoading: {
+		type: Boolean,
+		default: false,
+	},
+	slides: {
+		type: Array,
+		default: () => ([{}, {}]),
 	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-
-const carouselSlides = computed(() => props.content?.slides || []); // TODO: replace with Contentful data
 
 const slidesAligmment = computed(() => {
 	return isMobile.value ? 'start' : 'center';
@@ -92,14 +114,51 @@ const slidesToScroll = computed(() => {
 	return isMobile.value ? 1 : 2;
 });
 
-const title = slide => slide?.title || '';
-const subTitle = slide => slide?.subtitle || '';
+const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
+const getRichTextUiSettingsData = slide => {
+	const richTextContent = getRichTextContent(slide);
+	const uiSettings = richTextContent.find(
+		item => item.nodeType === 'embedded-entry-block'
+	);
+	const uiSettingsTarget = uiSettings?.data?.target ?? {};
+	const uiSettingsData = formatUiSetting(uiSettingsTarget);
+
+	return uiSettingsData?.dataObject ?? {};
+};
+
+const backgroundImg = slide => {
+	const richTextContent = getRichTextContent(slide);
+	const backgroundImage = richTextContent.find(
+		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
+	);
+	return backgroundImage?.data?.target?.fields?.file?.url || '';
+};
+const title = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.title || '';
+};
+const subTitle = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.subtitle || '';
+};
 const badgeUrl = slide => slide?.badgeUrl || '';
-const backgroundImg = slide => slide?.backgroundImg || '';
-const primaryCtaText = slide => slide?.primaryCtaText || '';
-const primaryCtaUrl = slide => slide?.primaryCtaUrl || '';
-const secondaryCtaText = slide => slide?.secondaryCtaText || '';
-const secondaryCtaUrl = slide => slide?.secondaryCtaUrl || '';
+const primaryCtaText = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.primaryCtaText || '';
+};
+const primaryCtaUrl = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.primaryCtaUrl || '';
+};
+const secondaryCtaText = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.secondaryCtaText || '';
+};
+const secondaryCtaUrl = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.secondaryCtaUrl || '';
+};
+
 const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
 const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
