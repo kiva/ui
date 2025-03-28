@@ -274,7 +274,7 @@ const fetchAchievementFromBasket = async () => {
 		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
 		achievementsFromBasket.value = loanAchievements.filter(achievement => achievement.postCheckoutTier !== achievement.preCheckoutTier); // eslint-disable-line max-len
 	}).catch(e => {
-		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
+		logFormatter(e, 'Modal ATB Basket Achievements Query ');
 	});
 };
 
