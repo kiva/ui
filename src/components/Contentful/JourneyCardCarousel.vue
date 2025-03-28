@@ -134,29 +134,29 @@ const backgroundImg = slide => {
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 };
 const title = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.title || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.title || '';
 };
 const subTitle = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.subtitle || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.subtitle || '';
 };
 const badgeUrl = slide => slide?.badgeUrl || '';
 const primaryCtaText = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.primaryCtaText || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.primaryCtaText || '';
 };
 const primaryCtaUrl = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.primaryCtaUrl || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.primaryCtaUrl || '';
 };
 const secondaryCtaText = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.secondaryCtaText || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.secondaryCtaText || '';
 };
 const secondaryCtaUrl = slide => {
-	const richtTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richtTextUiSettingsData.secondaryCtaUrl || '';
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.secondaryCtaUrl || '';
 };
 
 const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
