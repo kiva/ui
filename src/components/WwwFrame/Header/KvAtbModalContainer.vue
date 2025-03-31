@@ -244,7 +244,11 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 		filteredAchievementsData.sort((a, b) => defaultBadges.indexOf(a.id) - defaultBadges.indexOf(b.id));
 		const oneLoanAwayAchievement = filteredAchievementsData.find(achievement => {
-			return (achievement.target - 1) - achievement.totalProgressToAchievement === 1;
+			// eslint-disable-next-line max-len
+			const progressInBasket = loanAchievements.find(loanAchievement => loanAchievement.achievementId === achievement.id);
+			const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
+
+			return (achievement.target - (achievement.totalProgressToAchievement + contributingLoanIds.length)) === 1;
 		});
 		if (oneLoanAwayAchievement) {
 			oneLoanAwayFilteredUrl.value = getFilteredUrl(oneLoanAwayAchievement);
@@ -258,7 +262,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		// eslint-disable-next-line max-len
 		if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP || contributingAchievements.value.length !== achievementsFromBasket.value.length) {
 			achievementsFromBasket.value = [...contributingAchievements.value];
-			showModalContent.value = true;
+			showModalContent.value = !!achievementsFromBasket.value.length;
 			modalVisible.value = true;
 		}
 	}).catch(e => {
