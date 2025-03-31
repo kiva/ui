@@ -248,7 +248,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			const progressInBasket = loanAchievements.find(loanAchievement => loanAchievement.achievementId === achievement.id);
 			const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
 
-			return (achievement.target - (achievement.totalProgressToAchievement + contributingLoanIds.length)) === 1;
+			return achievement.totalProgressToAchievement + contributingLoanIds.length === achievement.target - 1;
 		});
 		if (oneLoanAwayAchievement) {
 			oneLoanAwayFilteredUrl.value = getFilteredUrl(oneLoanAwayAchievement);
