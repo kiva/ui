@@ -197,11 +197,11 @@ const overlayHeight = slide => {
 };
 
 // Watch orderedSlides to update isLoading
-watch(orderedSlides, newSlides => {
-	if (newSlides.length > PLACEHOLDER_SLIDES_LENGTH) {
+watch(orderedSlides, (newSlides, oldSlides) => {
+	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
 		isLoading.value = false;
 	}
-}, { immediate: true });
+}, { immediate: true, deep: true });
 </script>
 
 <style lang="postcss" scoped>
