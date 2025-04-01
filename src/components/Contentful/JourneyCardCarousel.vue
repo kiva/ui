@@ -11,7 +11,7 @@
 			Take the <u>next step</u> on your impact journey
 		</h2>
 		<KvCarousel
-			:key="slides.length"
+			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
 				align: slidesAligmment,
@@ -21,7 +21,7 @@
 			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
 		>
 			<template
-				v-for="(slide, index) in slides"
+				v-for="(slide, index) in orderedSlides"
 				#[`slide${index}`]
 				:key="index"
 			>
@@ -87,24 +87,28 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
+import { defaultBadges } from '#src/util/achievementUtils';
 import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
-defineProps({
-	isLoading: {
-		type: Boolean,
-		default: false,
-	},
+const PLACEHOLDER_SLIDES_LENGTH = 2;
+
+const props = defineProps({
 	slides: {
 		type: Array,
-		default: () => ([{}, {}]),
+		default: () => ([]),
+	},
+	badgesData: {
+		type: Array,
+		default: () => ([])
 	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const isLoading = ref(true);
 
 const slidesAligmment = computed(() => {
 	return isMobile.value ? 'start' : 'center';
@@ -125,6 +129,34 @@ const getRichTextUiSettingsData = slide => {
 
 	return uiSettingsData?.dataObject ?? {};
 };
+
+const orderedSlides = computed(() => {
+	let showedSlides = Array(PLACEHOLDER_SLIDES_LENGTH).fill({ milestoneDiff: 0 });
+	const achievementSlides = [];
+	defaultBadges.forEach(badgeKey => {
+		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
+		if (achievementContent) {
+			const tier = achievementContent.achievementData?.tiers?.find(t => !t.completedDate);
+			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
+			const slideData = props.slides.find(slide => {
+				const richTextSlideData = getRichTextUiSettingsData(slide);
+				return richTextSlideData?.achievementKey === badgeKey;
+			});
+			achievementSlides.push({
+				...slideData,
+				milestoneDiff,
+			});
+		}
+	});
+	if (achievementSlides.length > 0) {
+		showedSlides = achievementSlides;
+	}
+	const sortedSlides = showedSlides.sort((a, b) => {
+		return a.milestoneDiff - b.milestoneDiff;
+	});
+
+	return sortedSlides;
+});
 
 const backgroundImg = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -163,6 +195,13 @@ const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(sli
 const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
 };
+
+// Watch orderedSlides to update isLoading
+watch(orderedSlides, newSlides => {
+	if (newSlides.length > PLACEHOLDER_SLIDES_LENGTH) {
+		isLoading.value = false;
+	}
+}, { immediate: true });
 </script>
 
 <style lang="postcss" scoped>
