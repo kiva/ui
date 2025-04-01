@@ -464,6 +464,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/donations-beta',
+		component: () => import('#src/pages/Portfolio/Donations/DonationsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/possibility',
 		component: () => import('#src/pages/Possibility/Possibility'),
 		children: [
