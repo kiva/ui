@@ -140,7 +140,7 @@ const updateHeaderPosition = () => {
 	let target = targets.find(t => t?.clientHeight);
 
 	if (!target) {
-		// No basket found, using About as a the closest position
+		// No basket found, using About as the closest position
 		targets = [...document.querySelectorAll('[data-testid="header-about"]')];
 		target = targets.find(t => t?.clientHeight);
 	}
