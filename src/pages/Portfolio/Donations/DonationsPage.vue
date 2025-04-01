@@ -153,7 +153,7 @@
 								>
 									Load more
 								</a>
-								<KvLoadingSpinner v-else-if="loadingMore" class="!tw-w-1.5 !tw-h-1.5" />
+								<KvLoadingSpinner v-else-if="loadingMore" class="!tw-w-2.5 !tw-h-2.5 tw-m-auto" style="margin-top: 1px;" />
 							</div>
 						</template>
 					</div>
@@ -260,11 +260,11 @@ import {
 	KvMaterialIcon,
 	KvButton,
 	KvLoadingPlaceholder,
+	KvLoadingSpinner,
 } from '@kiva/kv-components';
 import logFormatter from '#src/util/logFormatter';
 import myDonationsQuery from '#src/graphql/query/portfolio/myDonations.graphql';
 import { mdiHelpCircle } from '@mdi/js';
-import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
 const LIMIT = 10;
 
