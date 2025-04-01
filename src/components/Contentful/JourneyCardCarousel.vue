@@ -55,7 +55,7 @@
 									</h2>
 									<p
 										v-if="subTitle(slide)"
-										class="tw-text-small"
+										class="tw-text-small tw-font-medium"
 									>
 										{{ subTitle(slide) }}
 									</p>
@@ -133,24 +133,33 @@ const getRichTextUiSettingsData = slide => {
 const orderedSlides = computed(() => {
 	let showedSlides = Array(PLACEHOLDER_SLIDES_LENGTH).fill({ milestoneDiff: 0 });
 	const achievementSlides = [];
+
 	defaultBadges.forEach(badgeKey => {
 		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
 		if (achievementContent) {
 			const tier = achievementContent.achievementData?.tiers?.find(t => !t.completedDate);
 			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
+			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
+
 			const slideData = props.slides.find(slide => {
 				const richTextSlideData = getRichTextUiSettingsData(slide);
 				return richTextSlideData?.achievementKey === badgeKey;
 			});
+
 			achievementSlides.push({
 				...slideData,
 				milestoneDiff,
+				target: tier.target,
+				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+				badgeImgUrl: contentfulData?.imageUrl,
 			});
 		}
 	});
+
 	if (achievementSlides.length > 0) {
 		showedSlides = achievementSlides;
 	}
+
 	const sortedSlides = showedSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
@@ -165,33 +174,38 @@ const backgroundImg = slide => {
 	);
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 };
+
 const title = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.title || '';
 };
-const subTitle = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.subtitle || '';
-};
-const badgeUrl = slide => slide?.badgeUrl || '';
+
+const subTitle = slide => `Challenge: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+
+const badgeUrl = slide => slide?.badgeImgUrl || '';
+
 const primaryCtaText = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.primaryCtaText || '';
 };
+
 const primaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.primaryCtaUrl || '';
 };
+
 const secondaryCtaText = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.secondaryCtaText || '';
 };
+
 const secondaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.secondaryCtaUrl || '';
 };
 
 const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
+
 const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
 };
