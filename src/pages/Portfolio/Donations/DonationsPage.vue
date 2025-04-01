@@ -302,7 +302,6 @@ const fetchDonationsData = async (newOffset = 0) => {
 			...(response?.data?.my?.userAccount?.donationEntries?.donations ?? [])
 		];
 		loading.value = false;
-		console.log(donationInfo.value);
 	} catch (error) {
 		logFormatter(`Error fetching donations data: ${error}`, 'error');
 	}
