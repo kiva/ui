@@ -12,13 +12,13 @@
 						<p class="tw-text-gray-500 tw-font-medium">
 							Donor name:
 						</p>
-						<h2 class="tw--mt-1 tw-mb-2 tw-break-words">
+						<h2 class="tw-mb-2 tw-break-words">
 							<KvLoadingPlaceholder
 								v-if="loading"
-								class="tw-mt-1 !tw-w-1/4 tw-inline-block"
-								style="height: 28px;"
+								class="md:!tw-mt-1 !tw-w-1/4"
+								style="height: 32px; margin-top: 2px;"
 							/>
-							<template v-else>
+							<div v-else class="tw--mt-1">
 								{{ donationInfo?.fullDonorName }}
 								<a
 									class="tw-text-small tw-no-underline"
@@ -29,7 +29,7 @@
 										'Account settings'
 									]"
 								>edit</a>
-							</template>
+							</div>
 						</h2>
 						<p>Kiva is a 501(c)(3) charitable organization. No goods or services were provided to you by Kiva in exchange for your donations. Donations may be claimed for a deduction from your U.S. taxes. Please consult with your tax counsel regarding the deductibility rules that apply to your specific tax situation.</p>
 						<a
@@ -248,13 +248,7 @@
 	</WwwPage>
 </template>
 
-<script setup>
-import {
-	ref,
-	onMounted,
-	inject,
-	computed,
-} from 'vue';
+<script>
 import numeral from 'numeral';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
@@ -272,69 +266,89 @@ import myDonationsQuery from '#src/graphql/query/portfolio/myDonations.graphql';
 import { mdiHelpCircle } from '@mdi/js';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 
-const apollo = inject('apollo');
-const $kvTrackEvent = inject('$kvTrackEvent');
-
 const LIMIT = 10;
-const loading = ref(true);
-const loadingMore = ref(false);
-const donationInfo = ref();
-const donationsTotalCount = ref();
-const donationEntries = ref();
-const showInfoModal = ref(false);
-const offset = ref(0);
 
-const displayedDonationCount = computed(() => offset.value + LIMIT);
-
-const fetchDonationsData = async (newOffset = 0) => {
-	try {
-		const response = await apollo.query({
-			query: myDonationsQuery,
-			variables: {
-				offset: newOffset,
-				limit: LIMIT,
-			},
-		});
-		donationInfo.value = response?.data?.my?.userAccount?.donationInfo;
-		donationsTotalCount.value = response?.data?.my?.userAccount?.donationEntries?.total;
-		donationEntries.value = [
-			...(donationEntries.value ?? []),
-			...(response?.data?.my?.userAccount?.donationEntries?.donations ?? [])
-		];
-		loading.value = false;
-	} catch (error) {
-		logFormatter(`Error fetching donations data: ${error}`, 'error');
-	}
+export default {
+	name: 'DonationsPage',
+	inject: ['apollo'],
+	components: {
+		WwwPage,
+		TheMyKivaSecondaryMenu,
+		ThePortfolioTertiaryMenu,
+		KvGrid,
+		KvPageContainer,
+		KvLightbox,
+		KvMaterialIcon,
+		KvButton,
+		KvLoadingPlaceholder,
+		KvLoadingSpinner,
+	},
+	data() {
+		return {
+			numeral,
+			mdiHelpCircle,
+			loading: true,
+			loadingMore: false,
+			donationsInfo: undefined,
+			donationsTotalCount: undefined,
+			donationEntries: undefined,
+			showInfoModal: false,
+			offset: 0,
+		};
+	},
+	computed: {
+		displayedDonationCount() {
+			return this.offset + LIMIT;
+		},
+	},
+	methods: {
+		async fetchDonationsData(newOffset = 0) {
+			try {
+				const response = await this.apollo.query({
+					query: myDonationsQuery,
+					variables: {
+						offset: newOffset,
+						limit: LIMIT,
+					},
+				});
+				this.donationInfo = response?.data?.my?.userAccount?.donationInfo;
+				this.donationsTotalCount = response?.data?.my?.userAccount?.donationEntries?.total;
+				this.donationEntries = [
+					...(this.donationEntries ?? []),
+					...(response?.data?.my?.userAccount?.donationEntries?.donations ?? [])
+				];
+				this.loading = false;
+			} catch (error) {
+				logFormatter(`Error fetching donations data: ${error}`, 'error');
+			}
+		},
+		closeInfoModal() {
+			this.showInfoModal = false;
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				'Close info modal',
+			);
+		},
+		getFormattedDate(timestamp) {
+			const date = new Date(timestamp * 1000);
+			return date.toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+			});
+		},
+		async loadMoreDonations() {
+			// Cache offset value so UI doesn't update until the new data is loaded
+			const newOffset = this.offset + LIMIT;
+			this.loadingMore = true;
+			await this.fetchDonationsData(newOffset);
+			this.loadingMore = false;
+			this.offset += LIMIT;
+		},
+	},
+	mounted() {
+		this.fetchDonationsData();
+	},
 };
-
-const closeInfoModal = () => {
-	showInfoModal.value = false;
-	$kvTrackEvent(
-		'portfolio',
-		'click',
-		'Close info modal',
-	);
-};
-
-const getFormattedDate = timestamp => {
-	const date = new Date(timestamp * 1000);
-	return date.toLocaleDateString('en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-	});
-};
-
-const loadMoreDonations = async () => {
-	// Cache offset value so UI doesn't update until the new data is loaded
-	const newOffset = offset.value + LIMIT;
-	loadingMore.value = true;
-	await fetchDonationsData(newOffset);
-	loadingMore.value = false;
-	offset.value += LIMIT;
-};
-
-onMounted(() => {
-	fetchDonationsData();
-});
 </script>
