@@ -5,7 +5,6 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import { gql } from 'graphql-tag';
 
-export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const FIRST_LOGIN_THRESHOLD = 5;
 export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';

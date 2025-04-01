@@ -5,7 +5,6 @@ import {
 	updateUserPreferences,
 	getIsMyKivaEnabled,
 	fetchPostCheckoutAchievements,
-	MY_KIVA_PREFERENCE_KEY,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
 } from '#src/util/myKivaUtils';
@@ -13,7 +12,6 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getUnixTime } from 'date-fns';
 import * as experimentUtils from '#src/util/experiment/experimentUtils';
-import * as logFormatter from '#src/util/logFormatter';
 import { expect } from '@storybook/test';
 
 vi.mock('#src/util/logReadQueryError');
