@@ -117,6 +117,7 @@ const basketData = ref([]);
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
 const headerBottomPosition = ref(0);
+const headerLeftPosition = ref(0);
 const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
@@ -135,6 +136,20 @@ const updateHeaderPosition = () => {
 	const header = document.getElementsByTagName('header')[0];
 	const headerPosition = header?.getBoundingClientRect() ?? null;
 
+	let targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
+	let target = targets.find(t => t?.clientHeight);
+
+	if (!target) {
+		// No basket found, using About as the closest position
+		targets = [...document.querySelectorAll('[data-testid="header-about"]')];
+		target = targets.find(t => t?.clientHeight);
+	}
+
+	const basketPosition = target?.getBoundingClientRect() ?? null;
+	if (basketPosition && basketPosition?.right !== headerLeftPosition.value) {
+		headerLeftPosition.value = basketPosition?.right;
+	}
+
 	if (headerPosition && headerPosition?.bottom !== headerBottomPosition.value) {
 		headerBottomPosition.value = headerPosition?.bottom;
 	}
@@ -142,17 +157,8 @@ const updateHeaderPosition = () => {
 
 const updateHeaderPositionThrottled = _throttle(updateHeaderPosition, 100);
 
-const getTargetsPosition = () => {
-	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
-	const target = targets.find(t => t?.clientHeight);
-	return {
-		basketPosition: target?.getBoundingClientRect(),
-	};
-};
-
 const modalPosition = computed(() => {
-	const { basketPosition } = getTargetsPosition();
-	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
+	const right = `${window.innerWidth - headerLeftPosition.value - 200}`; // 200 to be in the middle of the basket
 	const top = `${headerBottomPosition.value}`;
 	return { right, top };
 });
@@ -309,10 +315,12 @@ onMounted(async () => {
 
 	updateHeaderPosition();
 	window.addEventListener('scroll', updateHeaderPositionThrottled);
+	window.addEventListener('resize', updateHeaderPositionThrottled);
 });
 
 onUnmounted(() => {
 	window.removeEventListener('scroll', updateHeaderPositionThrottled);
+	window.removeEventListener('resize', updateHeaderPositionThrottled);
 });
 
 </script>
