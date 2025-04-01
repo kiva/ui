@@ -63,7 +63,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
-import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
@@ -79,6 +79,7 @@ import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import _throttle from 'lodash/throttle';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -123,6 +124,7 @@ const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
 const oneAwayText = ref('');
 const achievementsFromBasket = ref([]);
+const myKivaFlagEnabled = ref(false);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -189,6 +191,7 @@ const fetchUserData = async () => {
 		query: userAtbModalQuery,
 	}).then(({ data }) => {
 		userData.value = data;
+		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
@@ -303,8 +306,7 @@ onMounted(async () => {
 	myKivaExperimentEnabled.value = getIsMyKivaEnabled(
 		apollo,
 		$kvTrackEvent,
-		userData.value?.my?.userPreferences,
-		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
+		myKivaFlagEnabled.value,
 	);
 
 	if (myKivaExperimentEnabled.value && !isGuest.value) {

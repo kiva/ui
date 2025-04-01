@@ -218,139 +218,61 @@ describe('myKivaUtils.js', () => {
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
-		let preferencesMock;
 		let trackExperimentVersionMock;
 		let windowMock;
+		let mykivaFlagEnabled;
 
 		beforeEach(() => {
 			apolloMock = { readFragment: vi.fn(), mutate: vi.fn() };
 			$kvTrackEventMock = vi.fn();
-			preferencesMock = {};
+			mykivaFlagEnabled = false;
 			trackExperimentVersionMock = vi.spyOn(experimentUtils, 'trackExperimentVersion');
 			windowMock = vi.spyOn(window, 'window', 'get').mockImplementation(() => ({}));
 		});
 
 		afterEach(vi.restoreAllMocks);
 
-		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false if loanTotal is greater than or equal to MY_KIVA_LOAN_LIMIT', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
-
-			expect(result).toBe(false);
-		});
-
 		it('should return false if user is in control', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'a' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, mykivaFlagEnabled);
 
 			expect(result).toBe(false);
 		});
 
 		it('should return true if user is in variant', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			mykivaFlagEnabled = true;
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return true if hasSeenMyKiva is true', () => {
-			preferencesMock = {
-				id: 123,
-				preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-			};
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, mykivaFlagEnabled);
 
 			expect(result).toBe(true);
 		});
 
-		it('should return false if hasSeenMyKiva is missing', () => {
-			preferencesMock = {
-				id: 123,
-				preferences: '',
-			};
+		it('should return false if my kiva is not enabled', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, mykivaFlagEnabled);
 
 			expect(result).toBe(false);
-		});
-
-		it('should handle bad preferences json', () => {
-			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
-			preferencesMock = {
-				id: 123,
-				preferences: 'asdasd',
-			};
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
-
-			expect(result).toBe(false);
-			expect(mockLogFormatter).toBeCalledTimes(1);
-			expect(mockLogFormatter).toBeCalledWith('getIsMyKivaEnabled JSON parsing exception', 'error');
 		});
 
 		it('should call trackExperimentVersion', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			mykivaFlagEnabled = true;
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, mykivaFlagEnabled);
 
 			expect(trackExperimentVersionMock).toBeCalledTimes(1);
-		});
-
-		it('should only call apollo if client-side', () => {
-			windowMock.mockImplementation(() => ({}));
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
-
-			expect(apolloMock.mutate).toBeCalledTimes(1);
 		});
 
 		it('should not call apollo if server-side', () => {
 			windowMock.mockImplementation(() => (undefined));
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock);
 
 			expect(apolloMock.mutate).toBeCalledTimes(0);
-		});
-
-		it('should call apollo to create new user preferences', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, null, 3);
-
-			expect(apolloMock.mutate).toBeCalledWith({
-				mutation: createUserPreferencesMutation,
-				variables: {
-					preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-				},
-			});
-		});
-
-		it('should call apollo to update user preferences', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
-
-			expect(apolloMock.mutate).toBeCalledWith({
-				mutation: updateUserPreferencesMutation,
-				variables: {
-					updateUserPreferencesId: preferencesMock.id,
-					preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-				},
-			});
 		});
 	});
 

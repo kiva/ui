@@ -202,7 +202,7 @@ import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
 import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
-import { getIsMyKivaEnabled, fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 
 const hasLentBeforeCookie = 'kvu_lb';
@@ -296,6 +296,7 @@ export default {
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
+			myKivaFlagEnabled: false,
 		};
 	},
 	apollo: {
@@ -539,6 +540,7 @@ export default {
 		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
 
 		this.loans = getLoans(this.receipt);
+		this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 
 		// Fetch Goal Information
 		try {
@@ -627,8 +629,7 @@ export default {
 		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.my?.userPreferences,
-			!this.isGuest ? data?.my?.loans?.totalCount : 1,
+			this.myKivaFlagEnabled,
 		);
 
 		if (this.myKivaExperimentEnabled) {

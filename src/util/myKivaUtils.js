@@ -4,12 +4,11 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import { gql } from 'graphql-tag';
-import logFormatter from '#src/util/logFormatter';
 
 export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
-const MY_KIVA_LOAN_LIMIT = 4;
 const FIRST_LOGIN_THRESHOLD = 5;
+export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 
 export const createUserPreferencesMutation = gql`
 	mutation createUserPreferences($preferences: String) {
@@ -125,29 +124,16 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
  *
  * @param apollo The current Apollo client
  * @param $kvTrackEvent The Kiva tracking event function
- * @param userPreferences The user preferences object
- * @param loanTotal The total number of loans the user has made
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanTotal) => {
-	// Parse the user preferences to determine if the user has seen MyKiva
-	let parsedPreferences = {};
-	let hasSeenMyKiva = false;
-	try {
-		const preferences = userPreferences?.preferences ?? '';
-		parsedPreferences = preferences ? JSON.parse(preferences) : {};
-		hasSeenMyKiva = !!(parsedPreferences?.[MY_KIVA_PREFERENCE_KEY] ?? false);
-	} catch (e) {
-		logFormatter('getIsMyKivaEnabled JSON parsing exception', 'error');
-	}
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled) => {
+	const { version: myKivaVersion } = apollo.readFragment({
+		id: `Experiment:${MY_KIVA_EXP}`,
+		fragment: experimentVersionFragment,
+	}) ?? {};
+	const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
-		const { version: myKivaVersion } = apollo.readFragment({
-			id: `Experiment:${MY_KIVA_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
-		const isMyKivaExperimentEnabled = myKivaVersion === 'b';
-
+	if (myKivaFlagEnabled) {
 		trackExperimentVersion(
 			apollo,
 			$kvTrackEvent,
@@ -155,30 +141,9 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 			MY_KIVA_EXP,
 			'EXP-MP-1235-Jan2025'
 		);
-
-		// Ensure that the user continues to see MyKiva after passing the loan limit
-		// eslint-disable-next-line max-len
-		// Only update the user preferences if running client-side and defined instead that guests users have undefined userPreferences.
-		if (isMyKivaExperimentEnabled
-			&& !hasSeenMyKiva
-			&& typeof window !== 'undefined'
-			&& typeof userPreferences !== 'undefined'
-		) {
-			const newPreferences = { [MY_KIVA_PREFERENCE_KEY]: 1 };
-
-			if (userPreferences === null) {
-				// Handle the case where the user has no previous preferences
-				createUserPreferences(apollo, newPreferences);
-			} else {
-				updateUserPreferences(apollo, userPreferences, parsedPreferences, newPreferences);
-			}
-		}
-
-		// The user preference hasSeenMyKiva can be true when we override for internal testing
-		return hasSeenMyKiva || isMyKivaExperimentEnabled;
 	}
 
-	return false;
+	return isMyKivaExperimentEnabled && myKivaFlagEnabled;
 };
 
 /*
