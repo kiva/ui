@@ -20,7 +20,7 @@
 			<section v-if="isHeroEnabled" class="tw-my-2">
 				<JourneyCardCarousel
 					:slides="heroSlides"
-					:is-loading="isLoading"
+					:badges-data="badgeData"
 				/>
 			</section>
 			<section v-if="!allBadgesCompleted" class="tw-pt-2">
@@ -212,7 +212,7 @@ const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
-const heroSlides = ref([{}, {}]);
+const heroSlides = ref([]);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -372,7 +372,7 @@ const fetchContentfulHeroData = () => {
 		}
 	})
 		.then(result => {
-			heroSlides.value = result.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [{}, {}];
+			heroSlides.value = result.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
 		});
