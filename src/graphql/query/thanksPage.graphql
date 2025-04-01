@@ -165,6 +165,10 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 			key
 			value
 		}
+		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
+			key
+			value
+		}
 	}
 	mySubscriptions(includeDisabled: false) {
 		values {
