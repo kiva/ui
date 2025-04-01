@@ -361,6 +361,15 @@ describe('myKivaUtils.js', () => {
 
 			expect(result).toBe(false);
 		});
+
+		it('should return true if myKivaFlagEnabled is true', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			myKivaFlagEnabled = true;
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
+
+			expect(result).toBe(true);
+		});
 	});
 
 	describe('isFirstLogin', () => {
