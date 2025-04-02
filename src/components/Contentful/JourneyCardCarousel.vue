@@ -64,7 +64,7 @@
 							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
 								<button
 									v-if="showSecondaryCta(slide)"
-									:to="secondaryCtaUrl(slide)"
+									@click="goToSecondaryCtaUrl(slide)"
 									variant="tertiary"
 									class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
 									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
@@ -72,7 +72,7 @@
 									{{ secondaryCtaText(slide) }}
 								</button>
 								<KvButton
-									:to="primaryCtaUrl(slide)"
+									@click="goToPrimaryCtaUrl(slide)"
 									variant="secondary"
 								>
 									{{ primaryCtaText(slide) }}
@@ -87,7 +87,13 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import {
+	computed,
+	ref,
+	watch,
+	inject
+} from 'vue';
+import { useRouter } from 'vue-router';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
@@ -95,6 +101,9 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const PLACEHOLDER_SLIDES_LENGTH = 2;
+
+const $kvTrackEvent = inject('$kvTrackEvent');
+const router = useRouter();
 
 const props = defineProps({
 	slides: {
@@ -190,9 +199,11 @@ const primaryCtaText = slide => {
 	return richTextUiSettingsData.primaryCtaText || '';
 };
 
-const primaryCtaUrl = slide => {
+const goToPrimaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.primaryCtaUrl || '';
+	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
+	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
+	router.push(primaryCtaUrl);
 };
 
 const secondaryCtaText = slide => {
@@ -200,12 +211,15 @@ const secondaryCtaText = slide => {
 	return richTextUiSettingsData.secondaryCtaText || '';
 };
 
-const secondaryCtaUrl = slide => {
+const goToSecondaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.secondaryCtaUrl || '';
+	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
+	// eslint-disable-next-line max-len
+	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
+	router.push(secondaryCtaUrl);
 };
 
-const showSecondaryCta = slide => secondaryCtaText(slide) && secondaryCtaUrl(slide);
+const showSecondaryCta = slide => secondaryCtaText(slide);
 
 const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
