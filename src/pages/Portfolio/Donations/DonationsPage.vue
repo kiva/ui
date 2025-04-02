@@ -303,7 +303,7 @@ export default {
 			mdiHelpCircle,
 			loading: true,
 			loadingMore: false,
-			donationsInfo: undefined,
+			donationInfo: undefined,
 			donationsTotalCount: undefined,
 			donationEntries: undefined,
 			showInfoModal: false,
@@ -340,12 +340,15 @@ export default {
 			}
 		},
 		closeInfoModal() {
+			// Lightbox triggers this event twice on close
+			if (this.showInfoModal) {
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'Close info modal',
+				);
+			}
 			this.showInfoModal = false;
-			this.$kvTrackEvent(
-				'portfolio',
-				'click',
-				'Close info modal',
-			);
 		},
 		getFormattedDate(timestamp) {
 			const date = new Date(timestamp * 1000);
