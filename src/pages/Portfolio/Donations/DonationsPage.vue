@@ -99,7 +99,10 @@
 							</div>
 						</KvGrid>
 					</div>
-					<div class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-mt-3 md:tw-bg-primary">
+					<div
+						v-if="loading || hasDonations"
+						class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-mt-3 md:tw-bg-primary"
+					>
 						<KvLoadingPlaceholder
 							v-if="loading"
 							style="height: 50px;"
@@ -143,7 +146,7 @@
 								<br>
 								<a
 									v-if="displayedDonationCount < donationsTotalCount && !loadingMore"
-									class="tw-no-underline tw-cursor-pointer"
+									class="tw-no-underline tw-cursor-pointer tw-block tw-h-2.5"
 									@click="loadMoreDonations"
 									v-kv-track-event="[
 										'portfolio',
@@ -153,11 +156,17 @@
 								>
 									Load more
 								</a>
-								<KvLoadingSpinner v-else-if="loadingMore" class="!tw-w-2.5 !tw-h-2.5 tw-m-auto" style="margin-top: 1px;" />
+								<KvLoadingSpinner v-else-if="loadingMore" class="!tw-w-2.5 !tw-h-2.5 tw-m-auto" />
 							</div>
 						</template>
 					</div>
-					<div class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-mt-3 tw-bg-primary">
+					<div
+						class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-mt-3"
+						:class="{
+							'tw-bg-primary': loading || hasDonations,
+							'tw-bg-secondary md:tw-bg-primary': !loading && !hasDonations
+						}"
+					>
 						<KvLoadingPlaceholder
 							v-if="loading"
 							style="height: 50px;"
@@ -178,7 +187,7 @@
 										</p>
 									</div>
 								</div>
-								<div class="tw-col-span-12 md:tw-col-span-6">
+								<div v-if="hasDonations" class="tw-col-span-12 md:tw-col-span-6">
 									<h3 class="tw-mb-1">
 										Print tax receipts
 									</h3>
@@ -299,6 +308,9 @@ export default {
 	computed: {
 		displayedDonationCount() {
 			return this.offset + LIMIT;
+		},
+		hasDonations() {
+			return this.donationEntries?.length > 0;
 		},
 	},
 	methods: {
