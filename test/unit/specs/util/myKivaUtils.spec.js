@@ -221,6 +221,7 @@ describe('myKivaUtils.js', () => {
 		let preferencesMock;
 		let trackExperimentVersionMock;
 		let windowMock;
+		let myKivaFlagEnabled;
 
 		beforeEach(() => {
 			apolloMock = { readFragment: vi.fn(), mutate: vi.fn() };
@@ -228,6 +229,7 @@ describe('myKivaUtils.js', () => {
 			preferencesMock = {};
 			trackExperimentVersionMock = vi.spyOn(experimentUtils, 'trackExperimentVersion');
 			windowMock = vi.spyOn(window, 'window', 'get').mockImplementation(() => ({}));
+			myKivaFlagEnabled = false;
 		});
 
 		afterEach(vi.restoreAllMocks);
@@ -235,7 +237,7 @@ describe('myKivaUtils.js', () => {
 		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
 		});
@@ -243,7 +245,7 @@ describe('myKivaUtils.js', () => {
 		it('should return false if loanTotal is greater than or equal to MY_KIVA_LOAN_LIMIT', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(false);
 		});
@@ -251,7 +253,7 @@ describe('myKivaUtils.js', () => {
 		it('should return false if user is in control', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'a' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(result).toBe(false);
 		});
@@ -259,7 +261,7 @@ describe('myKivaUtils.js', () => {
 		it('should return true if user is in variant', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
 		});
@@ -270,7 +272,7 @@ describe('myKivaUtils.js', () => {
 				preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
 			};
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
 		});
@@ -281,7 +283,7 @@ describe('myKivaUtils.js', () => {
 				preferences: '',
 			};
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(false);
 		});
@@ -293,7 +295,7 @@ describe('myKivaUtils.js', () => {
 				preferences: 'asdasd',
 			};
 
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(false);
 			expect(mockLogFormatter).toBeCalledTimes(1);
@@ -303,7 +305,7 @@ describe('myKivaUtils.js', () => {
 		it('should call trackExperimentVersion', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(trackExperimentVersionMock).toBeCalledTimes(1);
 		});
@@ -312,7 +314,7 @@ describe('myKivaUtils.js', () => {
 			windowMock.mockImplementation(() => ({}));
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(apolloMock.mutate).toBeCalledTimes(1);
 		});
@@ -321,7 +323,7 @@ describe('myKivaUtils.js', () => {
 			windowMock.mockImplementation(() => (undefined));
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(apolloMock.mutate).toBeCalledTimes(0);
 		});
@@ -329,7 +331,7 @@ describe('myKivaUtils.js', () => {
 		it('should call apollo to create new user preferences', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, null, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, null, 3, myKivaFlagEnabled);
 
 			expect(apolloMock.mutate).toBeCalledWith({
 				mutation: createUserPreferencesMutation,
@@ -342,7 +344,7 @@ describe('myKivaUtils.js', () => {
 		it('should call apollo to update user preferences', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3);
+			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
 
 			expect(apolloMock.mutate).toBeCalledWith({
 				mutation: updateUserPreferencesMutation,
@@ -351,6 +353,22 @@ describe('myKivaUtils.js', () => {
 					preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
 				},
 			});
+		});
+
+		it('should return false if myKivaFlagEnabled is false', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return true if myKivaFlagEnabled is true', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			myKivaFlagEnabled = true;
+
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
+
+			expect(result).toBe(true);
 		});
 	});
 
