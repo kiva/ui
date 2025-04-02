@@ -464,7 +464,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/donations-beta',
+		path: '/portfolio/donations',
 		component: () => import('#src/pages/Portfolio/Donations/DonationsPage'),
 		meta: {
 			authenticationRequired: true,
