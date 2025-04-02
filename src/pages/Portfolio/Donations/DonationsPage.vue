@@ -64,8 +64,8 @@
 										<h4>{{ donationInfo?.currentYear }} Donations</h4>
 										<KvLoadingPlaceholder
 											v-if="loading"
-											class="tw-mt-2 !tw-w-1/2"
-											style="height: 32px;"
+											class="md:!tw-mt-2 !tw-w-1/2"
+											style="height: 32px; margin-top: 10px;"
 										/>
 										<h2 v-else class="tw-text-eco-green tw-break-words">
 											{{ numeral(donationInfo?.currentYearDonations ?? 0).format('$0,0.00') }}
@@ -75,8 +75,8 @@
 										<h4>{{ donationInfo?.latestTaxYear }} Donations</h4>
 										<KvLoadingPlaceholder
 											v-if="loading"
-											class="tw-mt-2 !tw-w-1/2"
-											style="height: 32px;"
+											class="md:!tw-mt-2 !tw-w-1/2"
+											style="height: 32px; margin-top: 10px;"
 										/>
 										<h2 v-else class="tw-text-eco-green tw-break-words">
 											{{ numeral(donationInfo?.latestTaxYearDonations ?? 0).format('$0,0.00') }}
@@ -192,28 +192,33 @@
 										Print tax receipts
 									</h3>
 									<div class="tw-flex tw-flex-col">
-										<a
+										<div
 											v-for="donationYear in donationInfo.annualDonations"
 											:key="donationYear.year"
-											:href="`/portfolio/donations/print?year=${donationYear.year}`"
-											class="tw-no-underline"
-											target="_blank"
-											v-kv-track-event="[
-												'portfolio',
-												'click',
-												'Get tax receipt for year',
-											]"
-										>{{ `${donationYear.year} Tax receipt (${numeral(donationYear.total).format('$0,0.00')})` }}</a>
-										<a
-											href="/portfolio/donations/export"
-											class="tw-no-underline tw-mt-2"
-											target="_blank"
-											v-kv-track-event="[
-												'portfolio',
-												'click',
-												'Export all donations',
-											]"
-										>Export all donations</a>
+										>
+											<a
+												:href="`/portfolio/donations/print?year=${donationYear.year}`"
+												class="tw-no-underline"
+												target="_blank"
+												v-kv-track-event="[
+													'portfolio',
+													'click',
+													'Get tax receipt for year',
+												]"
+											>{{ `${donationYear.year} Tax receipt (${numeral(donationYear.total).format('$0,0.00')})` }}</a>
+										</div>
+										<div class="tw-mt-2">
+											<a
+												href="/portfolio/donations/export"
+												class="tw-no-underline"
+												target="_blank"
+												v-kv-track-event="[
+													'portfolio',
+													'click',
+													'Export all donations',
+												]"
+											>Export all donations</a>
+										</div>
 									</div>
 								</div>
 							</KvGrid>
