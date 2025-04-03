@@ -7,7 +7,6 @@
 					<KvUserAvatar
 						v-for="loan, index in loansToDisplay"
 						:key="loan.id"
-						:ref="el => setRef(el)"
 						:lender-name="loan?.name"
 						:lender-image-url="getLoanImageUrl(loan)"
 						class="borrower-image tw-rounded-full tw-shadow"
@@ -54,9 +53,7 @@
 </template>
 
 <script setup>
-import {
-	computed, inject, onMounted, ref
-} from 'vue';
+import { computed, inject, ref } from 'vue';
 import { KvButton, KvUserAvatar } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
@@ -87,7 +84,6 @@ const $appConfig = inject('$appConfig');
 const cookieStore = inject('cookieStore');
 const newConsentAnswered = ref(false);
 const receiveNews = ref(false);
-const avatarsRefs = ref([]);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
@@ -167,30 +163,6 @@ const getLoanImageUrl = loan => {
 	});
 };
 
-const setRef = el => {
-	if (el) avatarsRefs.value.push(el);
-};
-
-const waitForImageToComplete = img => {
-	return new Promise(resolve => {
-		const check = () => {
-			if (img.complete) {
-				resolve(img);
-			} else {
-				setTimeout(check, 100);
-			}
-		};
-		check();
-	});
-};
-
-onMounted(() => {
-	avatarsRefs.value.forEach(async el => {
-		const img = el.imageRef;
-		await waitForImageToComplete(img);
-		el.onImgLoad();
-	});
-});
 </script>
 
 <style lang="postcss" scoped>

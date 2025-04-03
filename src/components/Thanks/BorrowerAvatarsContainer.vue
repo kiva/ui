@@ -3,7 +3,6 @@
 		<KvUserAvatar
 			v-for="(loan, index) in loans"
 			:key="loan.id"
-			:ref="el => setRef(el)"
 			:lender-name="loan?.name"
 			:lender-image-url="getLoanImageUrl(loan)"
 			class="tw-rounded-full tw-shadow"
@@ -30,7 +29,7 @@ import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
 import { getKivaImageUrl } from '#src/util/imageUtils';
-import { inject, onMounted, ref } from 'vue';
+import { inject } from 'vue';
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $appConfig = inject('$appConfig');
@@ -45,8 +44,6 @@ const props = defineProps({
 		default: false,
 	},
 });
-
-const avatarsRefs = ref([]);
 
 const getMarginRight = index => {
 	if (!props.showLargeAvatars) {
@@ -94,31 +91,6 @@ const getLoanImageUrl = loan => {
 		hash: loan?.image?.hash,
 	});
 };
-
-const setRef = el => {
-	if (el) avatarsRefs.value.push(el);
-};
-
-const waitForImageToComplete = img => {
-	return new Promise(resolve => {
-		const check = () => {
-			if (img?.complete) {
-				resolve(img);
-			} else {
-				setTimeout(check, 100);
-			}
-		};
-		check();
-	});
-};
-
-onMounted(() => {
-	avatarsRefs.value.forEach(async el => {
-		const img = el.imageRef;
-		await waitForImageToComplete(img);
-		el.onImgLoad();
-	});
-});
 
 </script>
 
