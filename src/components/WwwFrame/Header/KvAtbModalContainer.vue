@@ -232,7 +232,17 @@ const pillMsg = computed(() => {
 
 		return `${initialHeading} her invest in herself.`;
 	}
-	return '';
+	if (showOneAway.value) {
+		return 'You’re close to your next milestone!';
+	}
+
+	const milestonesCopy = contributingAchievements.value.length > 1
+		? `${contributingAchievements.value.length} of your milestones`
+		: 'your next milestone';
+
+	return borrowerName.value
+		? `Supporting ${borrowerName.value} will hit ${milestonesCopy}!`
+		: 'Supporting this loan achieves a milestone!';
 });
 
 const fetchPostCheckoutAchievements = async loanIds => {
@@ -266,14 +276,12 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		}
-
 		// eslint-disable-next-line max-len
-		if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP || contributingAchievements.value.length !== achievementsFromBasket.value.length) {
-			achievementsFromBasket.value = [...contributingAchievements.value];
-			showModalContent.value = !!achievementsFromBasket.value.length;
+		} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP || contributingAchievements.value.length !== achievementsFromBasket.value.length) {
+			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
+		achievementsFromBasket.value = [...contributingAchievements.value];
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
 	});
