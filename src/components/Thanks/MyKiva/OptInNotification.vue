@@ -64,8 +64,8 @@ const notificationMsg = computed(() => {
 }
 
 .smaller-borrower-avatar, .smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
-	height: 30px;
-	width: 30px;
+	height: 30px !important;
+	width: 30px !important;
 }
 
 .message {
