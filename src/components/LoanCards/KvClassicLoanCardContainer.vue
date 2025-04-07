@@ -90,6 +90,7 @@ const loanQuery = gql`
 		tag {
 			id
 			name
+			vocabularyId
 		}
 	}
 	my {
@@ -258,7 +259,7 @@ export default {
 			const tagList = result.data?.lend?.tag || [];
 			const themeList = result.data?.lend?.loanThemeFilter || [];
 			const tagsData = tagList.filter(tag => {
-				return tags?.includes(tag.name);
+				return tags?.includes(tag.name) && tag?.vocabularyId === 2;
 			});
 			const themesData = themeList.filter(theme => {
 				return themes?.includes(theme.name);
