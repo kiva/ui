@@ -189,8 +189,12 @@ const journeyLoansNames = computed(() => {
 });
 
 const journeyDescription = computed(() => {
-	// eslint-disable-next-line max-len
-	return `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. ${badgeWithVisibleTiers.value.description}`;
+	const journeyLoansCopy = journeyTotalLoans.value
+		// eslint-disable-next-line max-len
+		? `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. `
+		: '';
+
+	return `${journeyLoansCopy}${badgeWithVisibleTiers.value.description}`;
 });
 </script>
 
