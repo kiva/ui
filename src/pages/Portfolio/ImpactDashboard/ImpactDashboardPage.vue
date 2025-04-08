@@ -25,6 +25,7 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<recent-loans-list />
+						<JourneysSection />
 						<your-donations />
 						<education-module v-if="post" :post="post" />
 						<kiva-credit-stats />
@@ -58,6 +59,7 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
+import JourneysSection from './JourneysSection';
 import MyKivaPage from '../MyKiva/MyKivaPage';
 
 export default {
@@ -80,6 +82,7 @@ export default {
 		YourDonations,
 		TeamChallenge,
 		MyKivaPage,
+		JourneysSection,
 	},
 	data() {
 		return {
