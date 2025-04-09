@@ -106,7 +106,7 @@ const shareMessage = "It's not everyday you change a life! Thank you, from all o
 
 const utmCampaign = computed(() => `social_share_portfolio_badge_${badge.value.id}`);
 const utmContent = computed(() => {
-	if (lender.value?.public && lender.value?.name) return lender.value.name;
+	if (isPublic.value) return lender.value.name;
 	return 'anonymous';
 });
 
