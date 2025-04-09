@@ -83,7 +83,7 @@
 		"cross-env": "^7.0.2",
 		"date-fns": "^2.16.1",
 		"deepool": "^3.0.0",
-		"dompurify": "^2.3.9",
+		"dompurify": "^3.2.5",
 		"dotenv": "^8.1.0",
 		"embla-carousel": "^4.0.6",
 		"express": "^4.19.2",
