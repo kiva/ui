@@ -63,9 +63,12 @@ const tagsQuery = {
 // Make a graphql query <request> and return the results found at <resultPath>
 async function fetchLoansFromGraphQL(request, resultPath) {
 	try {
-		const data = await fetchGraphQL(request, resultPath);
-		// Fetch tags data to filter public tags
-		const tagsData = await fetchGraphQL(tagsQuery, 'data.lend.tag');
+		const [data, tagsData] = await Promise.all([
+			// Fetch loan data
+			await fetchGraphQL(request, resultPath),
+			// Fetch tags data to filter public tags
+			await fetchGraphQL(tagsQuery, 'data.lend.tag')
+		]);
 		if (Array.isArray(data)) {
 			// Ensure no falsy values are included in the returned array and add tagsData to each loan
 			const loansData = data
