@@ -108,12 +108,15 @@ async function setupSentry(app, router) {
 	const Sentry = await import('@sentry/vue');
 	Sentry.init({
 		app,
-		trackComponents: true,
 		dsn: config.sentryURI,
 		integrations: [
-			new Sentry.BrowserTracing({
-				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-				tracingOrigins: [config.host],
+			Sentry.browserTracingIntegration({
+				router,
+			}),
+			Sentry.vueIntegration({
+				tracingOptions: {
+					trackComponents: true,
+				},
 			}),
 		],
 		release: UI_TAG,
@@ -121,6 +124,7 @@ async function setupSentry(app, router) {
 		// of transactions for performance monitoring.
 		// We recommend adjusting this value in production
 		tracesSampleRate: config?.sentryTraceSampleRate,
+		tracePropagationTargets: [config.host],
 		beforeSend(event) {
 			// make sentry colleted event easy to compare to
 			const eventAsString = JSON.stringify(event);
