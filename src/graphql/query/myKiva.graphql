@@ -61,7 +61,6 @@ query myKivaQuery {
         url
       }
       memberSince
-      publicId
     }
     userAccount {
       id
