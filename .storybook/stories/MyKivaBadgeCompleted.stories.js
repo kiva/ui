@@ -22,7 +22,7 @@ const story = (args = {}) => {
 export const Default = story({
 	badge: badgeFirstTierComplete,
 	lender: {
-		publicName: 'Christian',
+		name: 'Christian',
 		public: true,
 		publicId: 'christian78848470'
 	},

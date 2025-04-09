@@ -68,6 +68,7 @@ query myKivaQuery {
       firstName
       lastName
       balance
+      public
     }
     trustee {
       id
