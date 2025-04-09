@@ -59,6 +59,14 @@ async function getUserId(apolloClient) {
 	return result?.data?.my?.userAccount?.id ?? null;
 }
 
+async function setupApolloCachePersistence(cache) {
+	const { persistCache, SessionStorageWrapper } = await import('apollo3-cache-persist');
+	await persistCache({
+		cache,
+		storage: new SessionStorageWrapper(window.sessionStorage),
+	});
+}
+
 async function setupAuthErrorHandling(kvAuth0, apolloClient) {
 	const { default: showTipMessage } = await import('#src/graphql/mutation/tipMessage/showTipMessage.graphql');
 	// Show a tip message when there is an unhandled auth0 error
@@ -239,6 +247,10 @@ async function initApp() {
 	// Apply Server state to Client Store
 	if (window.__APOLLO_STATE__) {
 		apolloClient.cache.restore(window.__APOLLO_STATE__);
+	}
+	// Apply persisted state from session storage to Client Store
+	if (config.apolloPersistCache) {
+		setupApolloCachePersistence(apolloClient.cache);
 	}
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);
