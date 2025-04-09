@@ -14,7 +14,7 @@
 				class="tw-mb-0.5"
 			>
 				<kv-checkbox
-					:id="$filters.changeCase(`${name}-${id}`, 'paramCase')"
+					:id="$filters.changeCase(`${name}-${id}`, 'kebabCase')"
 					:checked="selected"
 					@update="$emit('update', $event, id);"
 				>

@@ -11,7 +11,7 @@
 				:key="index"
 				:title="question.name"
 				:content="convertFromRichTextToHtml(question.richText)"
-				:id="$filters.changeCase(question.name, 'paramCase')"
+				:id="$filters.changeCase(question.name, 'kebabCase')"
 				:active="isActive(question.name)"
 				@toggle="setActiveAccordion"
 			/>

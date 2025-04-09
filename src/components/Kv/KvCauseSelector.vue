@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -113,10 +113,10 @@ export default {
 	},
 	computed: {
 		causeImageSrc() {
-			return images(`${paramCase(this.cause)}.png`);
+			return images(`${kebabCase(this.cause)}.png`);
 		},
 		causeImage2xSrc() {
-			return images(`${paramCase(this.cause)}_2x.png`);
+			return images(`${kebabCase(this.cause)}_2x.png`);
 		},
 	},
 	methods: {
