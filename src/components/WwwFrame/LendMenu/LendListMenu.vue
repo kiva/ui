@@ -82,7 +82,7 @@
 						<kv-accordion-item
 							v-for="i in 8"
 							:key="i"
-							:id="$filters.changeCase(`placeholder-${i}-panel`, 'paramCase')"
+							:id="$filters.changeCase(`placeholder-${i}-panel`, 'kebabCase')"
 							:disabled="true"
 						>
 							<template #header>
@@ -100,7 +100,7 @@
 						<kv-accordion-item
 							v-for="region in regions"
 							:key="region.name"
-							:id="$filters.changeCase(`lend-menu-${region.name}-panel`, 'paramCase')"
+							:id="$filters.changeCase(`lend-menu-${region.name}-panel`, 'kebabCase')"
 							ref="regionAccordions"
 						>
 							<template #header>

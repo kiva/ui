@@ -30,7 +30,7 @@ import {
 	mdiChevronDown,
 	mdiChevronUp
 } from '@mdi/js';
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import { KvMaterialIcon } from '@kiva/kv-components';
@@ -84,7 +84,7 @@ export default {
 	computed: {
 		/** Returns title as a url friendly slug */
 		titleSlugified() {
-			return paramCase(this.title);
+			return kebabCase(this.title);
 		}
 	},
 	mounted() {
