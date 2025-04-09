@@ -99,14 +99,14 @@ const { getTierBadgeDataByLevel, getEarnedBadgeExplanation } = useBadgeData();
 
 const badgeData = computed(() => getTierBadgeDataByLevel(badge.value, tier.value?.level));
 
-const isPublic = computed(() => lender.value?.public && lender.value?.publicName);
+const isPublic = computed(() => lender.value?.public && lender.value?.name);
 
 // eslint-disable-next-line max-len
 const shareMessage = "It's not everyday you change a life! Thank you, from all of us at Kiva and the millions of lives changed around the world.";
 
 const utmCampaign = computed(() => `social_share_portfolio_badge_${badge.value.id}`);
 const utmContent = computed(() => {
-	if (lender.value?.public && lender.value?.publicName) return lender.value.publicName;
+	if (lender.value?.public && lender.value?.name) return lender.value.name;
 	return 'anonymous';
 });
 

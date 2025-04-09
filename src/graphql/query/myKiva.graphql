@@ -61,6 +61,7 @@ query myKivaQuery {
         url
       }
       memberSince
+      publicId
     }
     userAccount {
       id
@@ -68,6 +69,7 @@ query myKivaQuery {
       firstName
       lastName
       balance
+      public
     }
     trustee {
       id

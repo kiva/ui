@@ -313,6 +313,10 @@ const fetchMyKivaData = () => {
 		.then(result => {
 			userInfo.value = result.data?.my ?? {};
 			lender.value = result.data?.my?.lender ?? null;
+			lender.value = {
+				...lender.value,
+				public: userInfo.value?.userAccount?.public ?? false,
+			};
 			loans.value = result.data?.my?.loans?.values ?? [];
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			if (loans.value.length > 0) {
