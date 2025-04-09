@@ -8,14 +8,7 @@
 				'tw-bg-white': badge.hasStarted,
 				'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
 			}"
-			v-kv-track-event="[
-				'portfolio',
-				'click',
-				'Badge journey map',
-				badge.challengeName,
-				badge.level
-			]"
-			@click="() => $emit('badge-clicked', badge)"
+			@click="badgeClicked(badge)"
 		>
 			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
 				{{ badge.challengeName }}
@@ -50,14 +43,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, watch, inject } from 'vue';
+import { useRoute } from 'vue-router';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
 import { getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import BadgeContainer from './BadgeContainer';
 
-defineEmits(['badge-clicked']);
+const emit = defineEmits(['badge-clicked']);
+
+const route = useRoute();
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	badgeData: {
@@ -95,6 +92,27 @@ const ctaCaption = badge => {
 	}
 	return badge.hasStarted ? 'Continue' : 'Start this journey';
 };
+
+const badgeClicked = badge => {
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		'Badge journey map',
+		badge.challengeName,
+		badge.level
+	);
+	emit('badge-clicked', badge);
+};
+
+watch(route, () => {
+	if (route?.hash === '#my-impact-journeys' && Object.keys(route?.query).length !== 0) {
+		const journeyId = route.query.journey;
+		const badge = visibleBadges.value.find(b => b.id === journeyId);
+		if (badge) {
+			badgeClicked(badge);
+		}
+	}
+});
 </script>
 
 <style lang="postcss" scoped>

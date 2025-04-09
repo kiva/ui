@@ -99,8 +99,8 @@ export default {
 	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
 }
 
-.challenge-avatar :deep(img) {
-	@apply md:tw-w-4 md:tw-h-4;
+.challenge-avatar :deep(img), .challenge-avatar :deep(.loading-placeholder ) {
+	@apply md:!tw-w-4 md:!tw-h-4;
 }
 
 .toast-container :deep(.tw-bg-secondary) {

@@ -2,7 +2,7 @@
 	<div>
 		<div class="tw-flex tw-shrink-0 tw-items-center tw-mb-1">
 			<KvUserAvatar
-				class="avatar tw-border-white tw-rounded tw-border-2"
+				class="avatar tw-border-white tw-rounded-full tw-border-2"
 				:key="loan.id"
 				v-for="(loan, i) in journeyLoans.slice(0, 3)"
 				:lender-name="loan.name"
@@ -189,8 +189,12 @@ const journeyLoansNames = computed(() => {
 });
 
 const journeyDescription = computed(() => {
-	// eslint-disable-next-line max-len
-	return `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. ${badgeWithVisibleTiers.value.description}`;
+	const journeyLoansCopy = journeyTotalLoans.value
+		// eslint-disable-next-line max-len
+		? `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. `
+		: '';
+
+	return `${journeyLoansCopy}${badgeWithVisibleTiers.value.description}`;
 });
 </script>
 
@@ -199,7 +203,7 @@ const journeyDescription = computed(() => {
 	@apply tw-mb-1.5;
 }
 
-.avatar :deep(img) {
-	@apply tw-w-4 tw-h-4;
+.avatar :deep(img), .avatar :deep(.loading-placeholder ) {
+	@apply !tw-w-4 !tw-h-4;
 }
 </style>

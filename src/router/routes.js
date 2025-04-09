@@ -17,20 +17,6 @@ export default [
 		}
 	},
 	{
-		path: '/borrow/pre-application',
-		component: () => import('#src/pages/Borrow/BorrowIndex'),
-		children: [
-			{
-				path: 'community',
-				component: () => import('#src/pages/Borrow/BorrowCommunity'),
-			},
-			{
-				path: 'how-long',
-				component: () => import('#src/pages/Borrow/BorrowHowLong'),
-			},
-		]
-	},
-	{
 		path: '/build',
 		component: () => import('#src/pages/Build/BuildPage'),
 	},
@@ -472,6 +458,14 @@ export default [
 	{
 		path: '/portfolio/loans-beta',
 		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/portfolio/donations',
+		component: () => import('#src/pages/Portfolio/Donations/DonationsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,

@@ -162,6 +162,7 @@ const getLoanImageUrl = loan => {
 		hash: loan?.image?.hash,
 	});
 };
+
 </script>
 
 <style lang="postcss" scoped>
@@ -193,17 +194,17 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.borrower-image, .borrower-image :deep(img) {
-	width: 124px;
-	height: 124px;
+.borrower-image, .borrower-image :deep(img), .borrower-image :deep(.loading-placeholder) {
+	width: 124px !important;
+	height: 124px !important;
 
 	@screen md {
-		width: 160px;
-		height: 160px;
+		width: 160px !important;
+		height: 160px !important;
 	}
 }
 
-.single-pair-loans, .single-pair-loans :deep(img) {
+.single-pair-loans, .single-pair-loans :deep(img), .single-pair-loans :deep(.loading-placeholder) {
 	width: 148px !important;
 	height: 148px !important;
 
@@ -213,7 +214,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.centered-borrower-image, .centered-borrower-image :deep(img) {
+.centered-borrower-image, .centered-borrower-image :deep(img), .centered-borrower-image :deep(.loading-placeholder) {
 	width: 164px !important;
 	height: 160px !important;
 

@@ -10,6 +10,7 @@ export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
 const FIRST_LOGIN_THRESHOLD = 5;
+export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 
 export const createUserPreferencesMutation = gql`
 	mutation createUserPreferences($preferences: String) {
@@ -127,9 +128,10 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
  * @param $kvTrackEvent The Kiva tracking event function
  * @param userPreferences The user preferences object
  * @param loanTotal The total number of loans the user has made
+ * @param myKivaFlagEnabled Whether the MyKiva flag is enabled
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanTotal) => {
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanTotal, myKivaFlagEnabled) => {
 	// Parse the user preferences to determine if the user has seen MyKiva
 	let parsedPreferences = {};
 	let hasSeenMyKiva = false;
@@ -141,7 +143,7 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 		logFormatter('getIsMyKivaEnabled JSON parsing exception', 'error');
 	}
 
-	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT) {
+	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT || myKivaFlagEnabled) {
 		const { version: myKivaVersion } = apollo.readFragment({
 			id: `Experiment:${MY_KIVA_EXP}`,
 			fragment: experimentVersionFragment,

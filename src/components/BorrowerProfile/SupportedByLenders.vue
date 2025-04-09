@@ -84,7 +84,8 @@ export default {
 }
 
 .challenge-avatar :deep(div,)
-.challenge-avatar :deep(img) {
-	@apply tw-w-4 tw-h-4;
+.challenge-avatar :deep(img),
+.challenge-avatar :deep(.loading-placeholder) {
+	@apply !tw-w-4 !tw-h-4;
 }
 </style>

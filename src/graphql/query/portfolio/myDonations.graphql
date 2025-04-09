@@ -1,0 +1,27 @@
+query MyDonations($offset: Int = 0, $limit: Int = 10) {
+    my {
+		id
+        userAccount {
+			id
+            donationInfo {
+                fullDonorName
+                currentYear
+                currentYearDonations
+                latestTaxYear
+                latestTaxYearDonations
+                annualDonations {
+                    year
+                    total
+                }
+            }
+            donationEntries(offset: $offset, limit: $limit) {
+                total
+                donations {
+                    id
+                    price
+                    completedTime
+                }
+            }
+        }
+    }
+}

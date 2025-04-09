@@ -27,7 +27,8 @@
 					<template #icon>
 						<div
 							:class="{
-								'tw-flex tw-items-center tw-justify-center tw-bg-gray-100 tw-p-0.5 tw-rounded'
+								// eslint-disable-next-line max-len
+								'tw-flex tw-items-center tw-justify-center tw-bg-gray-100 tw-p-0.5 tw-rounded tw-whitespace-nowrap'
 									: showOneAway,
 							}"
 						>
@@ -62,7 +63,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
-import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
@@ -77,6 +78,8 @@ import useBadgeData, {
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import _throttle from 'lodash/throttle';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
+import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -91,6 +94,7 @@ const categoryNames = {
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 const router = useRouter();
 
 const {
@@ -110,13 +114,17 @@ const { addedLoan } = toRefs(props);
 
 const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
+const basketData = ref([]);
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
 const headerBottomPosition = ref(0);
+const headerLeftPosition = ref(0);
 const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
 const oneAwayText = ref('');
+const achievementsFromBasket = ref([]);
+const myKivaFlagEnabled = ref(false);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -130,6 +138,20 @@ const updateHeaderPosition = () => {
 	const header = document.getElementsByTagName('header')[0];
 	const headerPosition = header?.getBoundingClientRect() ?? null;
 
+	let targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
+	let target = targets.find(t => t?.clientHeight);
+
+	if (!target) {
+		// No basket found, using About as the closest position
+		targets = [...document.querySelectorAll('[data-testid="header-about"]')];
+		target = targets.find(t => t?.clientHeight);
+	}
+
+	const basketPosition = target?.getBoundingClientRect() ?? null;
+	if (basketPosition && basketPosition?.right !== headerLeftPosition.value) {
+		headerLeftPosition.value = basketPosition?.right;
+	}
+
 	if (headerPosition && headerPosition?.bottom !== headerBottomPosition.value) {
 		headerBottomPosition.value = headerPosition?.bottom;
 	}
@@ -137,29 +159,18 @@ const updateHeaderPosition = () => {
 
 const updateHeaderPositionThrottled = _throttle(updateHeaderPosition, 100);
 
-const getTargetsPosition = () => {
-	const targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
-	const target = targets.find(t => t?.clientHeight);
-	return {
-		basketPosition: target?.getBoundingClientRect(),
-	};
-};
-
 const modalPosition = computed(() => {
-	const { basketPosition } = getTargetsPosition();
-	const right = `${window.innerWidth - basketPosition.right - 200}`; // 200 to be in the middle of the basket
+	const right = `${window.innerWidth - headerLeftPosition.value - 200}`; // 200 to be in the middle of the basket
 	const top = `${headerBottomPosition.value}`;
 	return { right, top };
 });
-
-const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value);
 
 const handleRedirect = type => {
 	if (type === 'view-basket') {
 		router.push({ path: '/basket' });
 	}
 	if (type === 'support-another') {
-		router.push(`lend/filter?${oneLoanAwayFilteredUrl.value}`);
+		router.push(`/lend/filter?${oneLoanAwayFilteredUrl.value}`);
 	}
 };
 
@@ -180,28 +191,58 @@ const fetchUserData = async () => {
 		query: userAtbModalQuery,
 	}).then(({ data }) => {
 		userData.value = data;
+		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
 };
 
-const isFirstLoan = computed(() => {
-	return isGuest.value || !userData.value?.my?.loans?.totalCount;
+const fetchBasketData = async () => {
+	await apollo.query({
+		query: basketItemsQuery,
+		variables: {
+			basketId: cookieStore.get('kvbskt') || null,
+		},
+	}).then(({ data }) => {
+		basketData.value = data?.shop?.basket?.items?.values ?? [];
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB Basket Data');
+	});
+};
+
+const loansIdsInBasket = computed(() => {
+	return basketData.value.map(item => item.id);
 });
+
+const isFirstLoan = computed(() => {
+	return myKivaExperimentEnabled.value && (isGuest.value || !userData.value?.my?.loans?.totalCount);
+});
+
+const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
 
 const pillMsg = computed(() => {
 	if (isFirstLoan.value) {
 		const initialHeading = `Supporting ${borrowerName.value} helps`;
+		if (addedLoan.value?.borrowerCount > 1 || addedLoan.value?.themes.includes('Social Enterprise')) {
+			return `${initialHeading} them invest in themselves.`;
+		}
 		if (addedLoan.value?.gender === 'male') {
 			return `${initialHeading} him invest in himself.`;
 		}
-		if (addedLoan.value?.gender === 'female') {
-			return `${initialHeading} her invest in herself.`;
-		}
 
-		return `${initialHeading} them invest in themselves.`;
+		return `${initialHeading} her invest in herself.`;
 	}
-	return '';
+	if (showOneAway.value) {
+		return 'You’re close to your next milestone!';
+	}
+
+	const milestonesCopy = contributingAchievements.value.length > 1
+		? `${contributingAchievements.value.length} of your milestones`
+		: 'your next milestone';
+
+	return borrowerName.value
+		? `Supporting ${borrowerName.value} will hit ${milestonesCopy}!`
+		: 'Supporting this loan achieves a milestone!';
 });
 
 const fetchPostCheckoutAchievements = async loanIds => {
@@ -222,7 +263,11 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 		filteredAchievementsData.sort((a, b) => defaultBadges.indexOf(a.id) - defaultBadges.indexOf(b.id));
 		const oneLoanAwayAchievement = filteredAchievementsData.find(achievement => {
-			return (achievement.target - 1) - achievement.totalProgressToAchievement === 1;
+			// eslint-disable-next-line max-len
+			const progressInBasket = loanAchievements.find(loanAchievement => loanAchievement.achievementId === achievement.id);
+			const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
+
+			return achievement.totalProgressToAchievement + contributingLoanIds.length === achievement.target - 1;
 		});
 		if (oneLoanAwayAchievement) {
 			oneLoanAwayFilteredUrl.value = getFilteredUrl(oneLoanAwayAchievement);
@@ -231,18 +276,33 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
-			showModalContent.value = contributingAchievements.value.length;
+		// eslint-disable-next-line max-len
+		} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP || contributingAchievements.value.length !== achievementsFromBasket.value.length) {
+			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
+		achievementsFromBasket.value = [...contributingAchievements.value];
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
 	});
 };
 
+const fetchAchievementFromBasket = async () => {
+	await apollo.query({
+		query: postCheckoutAchievementsQuery,
+		variables: { loanIds: loansIdsInBasket.value },
+	}).then(({ data }) => {
+		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
+		achievementsFromBasket.value = loanAchievements.filter(achievement => achievement.postCheckoutTier !== achievement.preCheckoutTier); // eslint-disable-line max-len
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB Basket Achievements Query ');
+	});
+};
+
 watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
-		fetchPostCheckoutAchievements([addedLoan.value?.id]);
+		await fetchBasketData();
+		fetchPostCheckoutAchievements([...loansIdsInBasket.value, addedLoan.value?.id]);
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
@@ -256,18 +316,23 @@ onMounted(async () => {
 		$kvTrackEvent,
 		userData.value?.my?.userPreferences,
 		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
+		myKivaFlagEnabled.value,
 	);
 
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		fetchAchievementData(apollo);
+		await fetchBasketData();
+		await fetchAchievementFromBasket();
 	}
 
 	updateHeaderPosition();
 	window.addEventListener('scroll', updateHeaderPositionThrottled);
+	window.addEventListener('resize', updateHeaderPositionThrottled);
 });
 
 onUnmounted(() => {
 	window.removeEventListener('scroll', updateHeaderPositionThrottled);
+	window.removeEventListener('resize', updateHeaderPositionThrottled);
 });
 
 </script>

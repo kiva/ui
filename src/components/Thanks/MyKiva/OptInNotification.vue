@@ -59,13 +59,13 @@ const notificationMsg = computed(() => {
 
 <style lang="postcss" scoped>
 
-.avatar :deep(img) {
-	@apply tw-w-4.5 tw-h-4.5 md:tw-h-6 md:tw-w-6 tw-border-2 tw-border-white;
+.avatar :deep(img), .avatar :deep(.loading-placeholder) {
+	@apply !tw-w-4.5 !tw-h-4.5 md:!tw-h-6 md:!tw-w-6 tw-border-2 tw-border-white;
 }
 
-.smaller-borrower-avatar, .smaller-borrower-avatar :deep(img) {
-	height: 30px;
-	width: 30px;
+.smaller-borrower-avatar, .smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
+	height: 30px !important;
+	width: 30px !important;
 }
 
 .message {
