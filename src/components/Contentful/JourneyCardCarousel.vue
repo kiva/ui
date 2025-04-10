@@ -38,7 +38,18 @@
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
 					<div
-						class="slide tw-absolute tw-w-full tw-bottom-0 tw-pb-1.5 tw-px-1.5 tw-align-bottom tw-rounded-b"
+						class="
+							slide
+							tw-absolute
+							tw-w-full
+							tw-bottom-0
+							tw-pb-1.5
+							tw-px-1.5
+							md:tw-pb-2
+							md:tw-px-2
+							tw-align-bottom
+							tw-rounded-b
+						"
 						:style="[
 							{ 'height': overlayHeight(slide) },
 						]"
