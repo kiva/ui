@@ -64,7 +64,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			},
 			preprocessorOptions: {
 				scss: {
-				// Suppress deprecation warnings from node modules
+					// Suppress deprecation warnings from node modules
 					quietDeps: true,
 				},
 			},
@@ -120,7 +120,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		},
 		server: {
 			hmr: {
-			// Use a different client port to allow Caddy to reverse proxy with SSL cert
+				// Use a different client port to allow Caddy to reverse proxy with SSL cert
 				clientPort: 24679,
 				port: 24678,
 			},
@@ -133,6 +133,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		ssr: {
 			noExternal: [
 				'@kiva/kv-components',
+				'@kiva/kv-shop'
 			],
 		},
 		test: {
