@@ -12,6 +12,7 @@ query initializeCheckout($basketId: String) {
 		}
 		lender {
 			id
+			loanCount
 			teams(limit: 100){
 				values {
 					name
@@ -23,6 +24,10 @@ query initializeCheckout($basketId: String) {
 			totalCount
 		}
 		depositIncentiveAmountToLend
+		userPreferences {
+			id
+			preferences
+		}
 	}
 	general {
 		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {
@@ -31,6 +36,10 @@ query initializeCheckout($basketId: String) {
 			description
 		}
 		new_atb_experience_enable: uiConfigSetting(key: "new_atb_experience_enable") {
+			key
+			value
+		}
+		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
 			key
 			value
 		}

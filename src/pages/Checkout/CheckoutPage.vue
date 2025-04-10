@@ -46,6 +46,7 @@
 							:incentive-goal="depositIncentiveAmountToLend"
 							:possible-achievement-progress="possibleAchievementProgress"
 							:is-first-loan="isFirstLoan"
+							:is-my-kiva-enabled="isMyKivaEnabled"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@removed-loan="calculateProgressAchievement($event)"
@@ -332,7 +333,7 @@ import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-components';
-import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
+import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
@@ -451,6 +452,10 @@ export default {
 			possibleAchievementProgress: [],
 			newAtbExpEnabled: false,
 			isFirstLoan: false,
+			myKivaFlagEnabled: false,
+			isMyKivaEnabled: false,
+			userPreferences: null,
+			lenderLoanCount: null,
 		};
 	},
 	apollo: {
@@ -534,6 +539,10 @@ export default {
 
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 			this.isFirstLoan = this.loans.length && !this.lenderTotalLoans;
+
+			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
+			this.userPreferences = data?.my?.userPreferences ?? null;
+			this.lenderLoanCount = data?.my?.lender?.loanCount ?? 0;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -637,6 +646,14 @@ export default {
 
 			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 		}
+
+		this.isMyKivaEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			this.userPreferences,
+			this.lenderLoanCount,
+			this.myKivaFlagEnabled,
+		);
 	},
 	mounted() {
 		// update current time every second for reactivity
