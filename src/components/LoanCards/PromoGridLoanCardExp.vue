@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import getCacheKey from '#src/util/getCacheKey';
 import { metaGlobReader } from '#src/util/importHelpers';
@@ -59,8 +59,8 @@ export default {
 		backgroundImage() {
 			if (this.categoryLabel) {
 				return [
-					['small', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-std.jpg`)],
-					['small retina', promoLoanImageRequire(`mg-promo-${paramCase(this.categoryLabel)}-retina.jpg`)],
+					['small', promoLoanImageRequire(`mg-promo-${kebabCase(this.categoryLabel)}-std.jpg`)],
+					['small retina', promoLoanImageRequire(`mg-promo-${kebabCase(this.categoryLabel)}-retina.jpg`)],
 				];
 			}
 			return [

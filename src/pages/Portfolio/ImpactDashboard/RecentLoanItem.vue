@@ -74,7 +74,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import { paramCase, sentenceCase } from 'change-case';
+import { kebabCase, sentenceCase } from 'change-case';
 import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 import {
 	DEFAULTED,
@@ -184,7 +184,7 @@ export default {
 			return `Photo of ${this.borrowerName}`;
 		},
 		borrowerNameForUrl() {
-			return paramCase(this.borrowerName);
+			return kebabCase(this.borrowerName);
 		},
 	},
 	methods: {

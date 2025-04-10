@@ -22,7 +22,7 @@ export const Default = (args, { argTypes }) => ({
 			<kv-expandable-question
 				:title="title"
 				:content="content"
-				:id="$filters.changeCase(title, 'paramCase')"
+				:id="$filters.changeCase(title, 'kebabCase')"
 				class="small-12 columns"
 			/>
 		</div>

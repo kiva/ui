@@ -13,7 +13,7 @@
 					:title="question.title"
 					:content="question.content"
 					class="small-12 columns"
-					:id="$filters.changeCase(question.title, 'paramCase')"
+					:id="$filters.changeCase(question.title, 'kebabCase')"
 					:analytics-category="`Lending`"
 				/>
 			</div>

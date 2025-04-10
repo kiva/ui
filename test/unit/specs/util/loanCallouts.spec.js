@@ -1,7 +1,31 @@
 import loanCallouts from '#src/util/loanCallouts';
 import mockLoanData from '../../fixtures/mockLoanData';
 
-const loan = mockLoanData[0];
+const loan = {
+	...mockLoanData[0],
+	tagsData: [
+		{
+			id: 1,
+			name: '#asd',
+			vocabularyId: 2
+		},
+		{
+			id: 2,
+			name: '#Eco-friendly',
+			vocabularyId: 2
+		},
+		{
+			id: 2,
+			name: '#Sustainable Ag',
+			vocabularyId: 2
+		},
+		{
+			id: 2,
+			name: '#Single Parent',
+			vocabularyId: 2
+		},
+	]
+};
 
 describe('loanCallouts', () => {
 	it('should handle undefined', () => {

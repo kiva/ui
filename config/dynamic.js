@@ -1,6 +1,7 @@
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 const apolloNetworkErrorRetryActive = process.env.APOLLO_NETWORK_RETRY_ACTIVE === 'true';
 const apolloNetworkErrorRetryAttempts = parseInt(process.env.APOLLO_NETWORK_RETRY_ATTEMPTS, 10) || 1;
+const apolloPersistCache = process.env.APOLLO_PERSIST_CACHE === 'true';
 const memcachedServers = process.env.MEMCACHE_HOST || 'ui-memcached:11211';
 const baseUrl = process.env.BASE_URL || 'development.kiva.org';
 const env = process.env.SHORT_ENV || 'dev';
@@ -29,6 +30,7 @@ export const app = {
 	apolloQueryFetchLogging: process.env.APOLLO_QUERY_FETCH_LOGGING || false,
 	apolloNetworkErrorRetryActive,
 	apolloNetworkErrorRetryAttempts,
+	apolloPersistCache,
 	auth0: {
 		loginRedirectUrls: {
 			[adminAuthId]: `https://admin.${baseUrl}/admin/login?force=1`,

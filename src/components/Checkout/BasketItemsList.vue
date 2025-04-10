@@ -12,6 +12,7 @@
 					:is-logged-in="isLoggedIn"
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan"
+					:is-my-kiva-enabled="isMyKivaEnabled"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -128,6 +129,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isMyKivaEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		BasketItem,

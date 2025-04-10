@@ -9,8 +9,17 @@ function loanCallouts(loan, categoryPageName) {
 	const callouts = [];
 	const activityName = loan?.activity?.name ?? '';
 	const sectorName = loan?.sector?.name ?? '';
-	const tags = loan?.tags?.filter(tag => tag.charAt(0) === '#')
+
+	const tagsData = loan?.tagsData ?? [];
+	const tagsList = loan?.tags ?? [];
+	// Filter public tags
+	const publicTagsList = tagsData.filter(tag => {
+		return tagsList.includes(tag.name) && tag?.vocabularyId === 2;
+	});
+	const tags = publicTagsList?.map(tag => tag.name)
+		.filter(tag => tag.charAt(0) === '#')
 		.map(tag => tag.substring(1)) ?? [];
+
 	const themes = loan?.themes ?? [];
 	const categories = {
 		ecoFriendly: !!tags
