@@ -1,3 +1,27 @@
+## [3.16.0](https://github.com/kiva/ui/compare/v3.15.0...v3.16.0) (2025-04-10)
+
+### 🎉 New Features
+
+* persist apollo cache in session storage ([e1793df](https://github.com/kiva/ui/commit/e1793dff67bb69c71b2182384c976c28f51be1ab))
+* public tags filtered for live loans callouts ([#5931](https://github.com/kiva/ui/issues/5931)) ([518f31e](https://github.com/kiva/ui/commit/518f31e1c628ddc2338e03dc74a89c24b8d1633f))
+* removing loan callouts component as not used ([#5936](https://github.com/kiva/ui/issues/5936)) ([3242738](https://github.com/kiva/ui/commit/324273893e81cf58b303f07cd6303b5543800949))
+
+### 🐛 Bugfixes
+
+* cart pill should show when my kiva is enabled ([0449f33](https://github.com/kiva/ui/commit/0449f334170f454786b12fa99e8fd29e8c2eda5c))
+* lender public information in my kiva ([a33b48e](https://github.com/kiva/ui/commit/a33b48ebfcde98076601ff7bcc46e97e5c438e52))
+* remove unused publicId field ([c39f5c7](https://github.com/kiva/ui/commit/c39f5c79948dff84992e11ba0356ac52e9ee302a))
+* resolve server error on checkout page from kv-shop ([ef5e2d9](https://github.com/kiva/ui/commit/ef5e2d96e12c125801ff7dd524bd8d41a99acc37))
+* update components to resolve error on avatar load ([d5ddae5](https://github.com/kiva/ui/commit/d5ddae5b8649ece3a7ec743bf408023010bab083))
+* use isPublic computed for utmContent ([1740349](https://github.com/kiva/ui/commit/1740349846c0ce214f4a64f5af66b1ed902e8162))
+
+### 🧹 Chores
+
+* **deps:** install apollo3-persist-cache ([dbf6508](https://github.com/kiva/ui/commit/dbf6508d719373fafd7f226874bc20caad7561a4))
+* **release:** 3.16.0-rc.1 [skip ci] ([72cc64c](https://github.com/kiva/ui/commit/72cc64c0969b64dd07da0a0fcd9a0534a22193e0)), closes [#5931](https://github.com/kiva/ui/issues/5931) [#5936](https://github.com/kiva/ui/issues/5936)
+* update kv dependencies, update change-case ([94502fa](https://github.com/kiva/ui/commit/94502fa7e403316858ee8b29684472a1574a64f1))
+* update sentry to 9 ([8255ce8](https://github.com/kiva/ui/commit/8255ce8b428a237e46c603028d9fc49556722a26))
+
 ## [3.16.0-rc.1](https://github.com/kiva/ui/compare/v3.15.0...v3.16.0-rc.1) (2025-04-10)
 
 ### 🎉 New Features
