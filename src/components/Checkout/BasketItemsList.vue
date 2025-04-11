@@ -149,12 +149,11 @@ export default {
 	},
 	methods: {
 		isLoanContributingInAchievements(loanId) {
-			const achievementProgress = this.possibleAchievementProgress.find(
+			const achievementProgress = this.possibleAchievementProgress.filter(
 				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
 			);
 
-			return achievementProgress
-				&& achievementProgress?.postCheckoutTier !== achievementProgress?.preCheckoutTier;
+			return achievementProgress.some(a => a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
 	}
 };
