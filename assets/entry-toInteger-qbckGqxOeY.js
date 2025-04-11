@@ -1,0 +1,1 @@
+import{t as o}from"./entry-toNumber-DdX6xnS_xy.js";var e=o,i=1/0,I=17976931348623157e292;function f(r){if(!r)return r===0?r:0;if(r=e(r),r===i||r===-i){var t=r<0?-1:1;return t*I}return r===r?r:0}var m=f,N=m;function F(r){var t=N(r),n=t%1;return t===t?n?t-n:t:0}var s=F;export{s as t};

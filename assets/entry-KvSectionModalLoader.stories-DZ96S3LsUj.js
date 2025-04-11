@@ -1,0 +1,15 @@
+import{b as C,e as k,d as B,n as K,h as x,a as N,o as V}from"./entry-vue.esm-bundler-Bbq66B_iPn.js";import"./entry-KvWideLoanCard-BLG9j3cwXD.js";import{p as M}from"./entry-KvLoadingSpinner-pmzcZDogp1.js";import"./entry-numeral-CmvrP3KSIW.js";import{_ as A}from"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";const D="Section modal loader",w={name:"KvSectionModalLoader",components:{KvLoadingSpinner:M},props:{loading:{type:Boolean,default:!1},bgColor:{type:String,default:"white"},rounded:{type:Boolean,default:!1},size:{type:String,default:"medium",validator:o=>["small","medium","large"].includes(o)}},data(){return{LOADING_LABEL:D}}},E=["aria-label"],O={class:"tw-absolute tw-top-5 tw-left-1/2 tw--translate-x-1/2"};function I(o,S,e,l,h,G){const z=N("kv-loading-spinner");return e.loading?(V(),C("div",{key:0,"aria-label":h.LOADING_LABEL,class:K(["tw-absolute tw-w-full tw-h-full tw-bg-opacity-[65%] tw-z-2 tw-top-0 tw-left-0",[`tw-bg-${e.bgColor}`,{"tw-rounded":e.rounded}]])},[k("div",O,[B(z,{size:e.size},null,8,["size"])])],10,E)):x("",!0)}const L=A(w,[["render",I]]);w.__docgenInfo={displayName:"KvSectionModalLoader",exportName:"default",description:"",tags:{},props:[{name:"loading",type:{name:"boolean"},defaultValue:{func:!1,value:"false"}},{name:"bgColor",type:{name:"string"},defaultValue:{func:!1,value:"'white'"}},{name:"rounded",type:{name:"boolean"},defaultValue:{func:!1,value:"false"}},{name:"size",type:{name:"string"},defaultValue:{func:!1,value:"'medium'"},values:["small","medium","large"]}],sourceFiles:["/home/runner/work/ui/ui/src/components/Kv/KvSectionModalLoader.vue"]};const P={title:"Kv/KvSectionModalLoader",component:L},n=o=>(e,{argTypes:l})=>({props:Object.keys(l),components:{KvSectionModalLoader:L},setup(){return o},template:`
+            <div style="height: 200px; width: 200px; background: gray; position: relative;">
+                <kv-section-modal-loader
+                    :loading="true"
+                    :bg-color="bgColor"
+                    :rounded="rounded"
+                    :size="size" />
+            </div>
+        `}),a=n(),t=n({bgColor:"danger"}),r=n({rounded:!0}),s=n({size:"large"});var d,c,i;a.parameters={...a.parameters,docs:{...(d=a.parameters)==null?void 0:d.docs,source:{originalSource:"story()",...(i=(c=a.parameters)==null?void 0:c.docs)==null?void 0:i.source}}};var u,m,p;t.parameters={...t.parameters,docs:{...(u=t.parameters)==null?void 0:u.docs,source:{originalSource:`story({
+  bgColor: 'danger'
+})`,...(p=(m=t.parameters)==null?void 0:m.docs)==null?void 0:p.source}}};var g,f,v;r.parameters={...r.parameters,docs:{...(g=r.parameters)==null?void 0:g.docs,source:{originalSource:`story({
+  rounded: true
+})`,...(v=(f=r.parameters)==null?void 0:f.docs)==null?void 0:v.source}}};var _,y,b;s.parameters={...s.parameters,docs:{...(_=s.parameters)==null?void 0:_.docs,source:{originalSource:`story({
+  size: 'large'
+})`,...(b=(y=s.parameters)==null?void 0:y.docs)==null?void 0:b.source}}};const Q=["Default","BgColor","Rounded","Large"];export{t as BgColor,a as Default,s as Large,r as Rounded,Q as __namedExportsOrder,P as default};
