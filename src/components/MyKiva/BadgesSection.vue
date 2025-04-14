@@ -105,7 +105,7 @@ const badgeClicked = badge => {
 };
 
 watch(route, () => {
-	if (route?.hash === '#my-impact-journeys' && Object.keys(route?.query).length !== 0) {
+	if (Object.keys(route?.query).length !== 0) {
 		const journeyId = route.query.journey;
 		const badge = visibleBadges.value.find(b => b.id === journeyId);
 		if (badge) {
