@@ -14,11 +14,11 @@
 			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
-				align: slidesAligmment,
-				slidesToScroll,
+				align: 'start',
 			}"
+			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
+			class="journey-card-carousel tw-w-full tw-overflow-visible"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -130,14 +130,6 @@ const props = defineProps({
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
 
-const slidesAligmment = computed(() => {
-	return isMobile.value ? 'start' : 'center';
-});
-
-const slidesToScroll = computed(() => {
-	return isMobile.value ? 1 : 2;
-});
-
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -236,6 +228,13 @@ const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
 };
 
+const singleSlideWidth = computed(() => {
+	if (isMobile.value) {
+		return '90%';
+	}
+	return '520px';
+});
+
 // Watch orderedSlides to update isLoading
 watch(orderedSlides, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
@@ -246,11 +245,9 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
-	width: 322px;
 	height: 402px;
 
 	@screen md {
-		width: 520px;
 		height: 390px;
 	}
 }
@@ -267,6 +264,10 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 .journey-card-carousel:deep(.kv-carousel__controls > div) {
 	@apply tw-hidden;
+}
+
+.journey-card-carousel:deep(div:first-child) {
+	@apply tw-gap-2;
 }
 
 .slide {
