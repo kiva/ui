@@ -269,6 +269,10 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 	@apply tw-hidden;
 }
 
+.journey-card-carousel:deep(div:first-child) {
+	@apply tw-gap-2;
+}
+
 .slide {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
 }
