@@ -14,12 +14,11 @@
 			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
-				align: slidesAligmment,
-				slidesToScroll,
+				align: 'start',
 			}"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
+			class="journey-card-carousel tw-w-full tw-overflow-visible"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -130,14 +129,6 @@ const props = defineProps({
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
-
-const slidesAligmment = computed(() => {
-	return isMobile.value ? 'start' : 'center';
-});
-
-const slidesToScroll = computed(() => {
-	return isMobile.value ? 1 : 2;
-});
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {

@@ -16,13 +16,13 @@
 			:user-info="userInfo"
 			:is-loading="isLoading"
 		/>
-		<section v-if="isHeroEnabled" class="tw-mt-2 tw-pl-2.5">
-			<JourneyCardCarousel
-				:slides="heroSlides"
-				:badges-data="badgeData"
-			/>
-		</section>
 		<MyKivaContainer>
+			<section v-if="isHeroEnabled" class="tw-mt-2">
+				<JourneyCardCarousel
+					:slides="heroSlides"
+					:badges-data="badgeData"
+				/>
+			</section>
 			<section v-if="!allBadgesCompleted && !isHeroEnabled" class="tw-pt-2">
 				<BadgeTile
 					:user-info="userInfo"
