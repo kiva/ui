@@ -17,6 +17,7 @@
 				align: slidesAligmment,
 				slidesToScroll,
 			}"
+			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
 		>
@@ -236,6 +237,13 @@ const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
 };
 
+const singleSlideWidth = computed(() => {
+	if (isMobile.value) {
+		return '90%';
+	}
+	return '520px';
+});
+
 // Watch orderedSlides to update isLoading
 watch(orderedSlides, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
@@ -246,11 +254,9 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
-	width: 322px;
 	height: 402px;
 
 	@screen md {
-		width: 520px;
 		height: 390px;
 	}
 }
