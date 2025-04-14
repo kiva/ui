@@ -164,7 +164,6 @@ const orderedSlides = computed(() => {
 				target: tier.target,
 				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
 				badgeImgUrl: contentfulData?.imageUrl,
-				level: tier.level,
 			});
 		}
 	});
@@ -193,7 +192,7 @@ const title = slide => {
 	return richTextUiSettingsData.title || '';
 };
 
-const subTitle = slide => `Level ${slide.level}: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+const subTitle = slide => `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
 
 const badgeUrl = slide => slide?.badgeImgUrl || '';
 
