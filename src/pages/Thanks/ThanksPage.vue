@@ -460,13 +460,13 @@ export default {
 			if (this.showDafThanks || this.monthlyDonationAmount) {
 				return DONATION_ONLY_VIEW;
 			}
-			// Show the single version view if the experiment is enabled
-			if (this.thanksSingleVersionEnabled) {
-				return SINGLE_VERSION_VIEW;
-			}
 			// Show the login required view if we couldn't get the receipt
 			if (!this.receipt) {
 				return LOGIN_REQUIRED_VIEW;
+			}
+			// Show the single version view if the experiment is enabled
+			if (this.thanksSingleVersionEnabled) {
+				return SINGLE_VERSION_VIEW;
 			}
 			// Show the donation only view if the user has only donated and not lent
 			if (this.receipt?.totals?.itemTotal === this.receipt?.totals?.donationTotal) {
