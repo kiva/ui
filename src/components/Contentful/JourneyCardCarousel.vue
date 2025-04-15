@@ -54,8 +54,8 @@
 							{ 'height': overlayHeight(slide) },
 						]"
 					>
-						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full">
-							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full tw-mb-1.5">
+						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
+							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
 								<img
 									class="tw-h-6"
 									:src="badgeUrl(slide)"
