@@ -145,6 +145,7 @@
 
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
+import { useRouter } from 'vue-router';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -178,6 +179,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 
 const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 
+const router = useRouter();
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const kvAuth0 = inject('kvAuth0');
@@ -268,6 +270,11 @@ const handleBadgeJourneyLevelClicked = payload => {
 };
 
 const handleBadgeModalClosed = () => {
+	const queryParams = { ...router.currentRoute?.value?.query };
+	if (queryParams.journey) {
+		delete queryParams.journey;
+		router.push({ ...router.currentRoute.value, query: queryParams });
+	}
 	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
 };
