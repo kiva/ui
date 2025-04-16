@@ -19,7 +19,7 @@
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full tw-overflow-visible"
-			@interact-carousel="onInteractCarousel"
+			@change="handleChange"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -130,6 +130,7 @@ const props = defineProps({
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
+const currentIndex = ref(0);
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
@@ -235,11 +236,14 @@ const singleSlideWidth = computed(() => {
 	return '520px';
 });
 
-const onInteractCarousel = interaction => {
+const handleChange = interaction => {
+	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
+	currentIndex.value = interaction.value;
+
 	$kvTrackEvent(
 		'portfolio',
 		'click',
-		interaction
+		`${direction}-step-carousel`,
 	);
 };
 
