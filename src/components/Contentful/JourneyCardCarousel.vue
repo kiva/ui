@@ -19,6 +19,7 @@
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full tw-overflow-visible"
+			@change="onInteractCarousel"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -233,6 +234,14 @@ const singleSlideWidth = computed(() => {
 	}
 	return '520px';
 });
+
+const onInteractCarousel = () => {
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		'next-step-carousel',
+	);
+};
 
 // Watch orderedSlides to update isLoading
 watch(orderedSlides, (newSlides, oldSlides) => {
