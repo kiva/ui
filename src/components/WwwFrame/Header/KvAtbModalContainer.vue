@@ -269,7 +269,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 			return achievement.totalProgressToAchievement + contributingLoanIds.length === achievement.target - 1;
 		});
-		if (oneLoanAwayAchievement) {
+		if (oneLoanAwayAchievement && !isFirstLoan.value) {
 			oneLoanAwayFilteredUrl.value = getFilteredUrl(oneLoanAwayAchievement);
 			oneLoanAwayCategory.value = categoryNames[oneLoanAwayAchievement.id];
 			const { target } = oneLoanAwayAchievement;

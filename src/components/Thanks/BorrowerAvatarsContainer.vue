@@ -121,12 +121,12 @@ const getLoanImageUrl = loan => {
 }
 
 .borrower-image, .borrower-image :deep(img), .borrower-image :deep(.loading-placeholder) {
-	width: 124px;
-	height: 124px;
+	width: 124px !important;
+	height: 124px !important;
 
 	@screen md {
-		width: 160px;
-		height: 160px;
+		width: 160px !important;
+		height: 160px !important;
 	}
 }
 

@@ -1,6 +1,5 @@
 import {
 	hasLoanFunFactFootnote,
-	isFirstLogin,
 	createUserPreferences,
 	updateUserPreferences,
 	getIsMyKivaEnabled,
@@ -11,7 +10,6 @@ import {
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getUnixTime } from 'date-fns';
 import * as experimentUtils from '#src/util/experiment/experimentUtils';
 import * as logFormatter from '#src/util/logFormatter';
 import { expect } from '@storybook/test';
@@ -369,30 +367,6 @@ describe('myKivaUtils.js', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
-		});
-	});
-
-	describe('isFirstLogin', () => {
-		it('should return true for first login user', () => {
-			const memberSince = new Date();
-			let lastLogin = new Date(memberSince);
-			lastLogin.setMinutes(lastLogin.getMinutes() + 62);
-			lastLogin = getUnixTime(lastLogin);
-
-			const result = isFirstLogin(lastLogin, memberSince);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false if not first login user', () => {
-			const memberSince = new Date();
-			let lastLogin = new Date(memberSince);
-			lastLogin.setMinutes(lastLogin.getMinutes() + 82);
-			lastLogin = getUnixTime(lastLogin);
-
-			const result = isFirstLogin(lastLogin, memberSince);
-
-			expect(result).toBe(false);
 		});
 	});
 });

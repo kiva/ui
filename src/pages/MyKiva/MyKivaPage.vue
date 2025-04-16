@@ -100,7 +100,7 @@
 							MILESTONES AND ACHIEVEMENTS
 						</span>
 					</div>
-					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">
+					<div class="tw-mt-3">
 						<h3
 							class="tw-text-center tw-mb-2"
 						>
@@ -127,7 +127,6 @@
 					</div>
 				</section>
 				<EarnedBadgesSection
-					:id="MY_ACHIEVEMENTS_ID"
 					:completed-badges="completedBadges"
 					@badge-clicked="handleEarnedBadgeClicked"
 				/>
@@ -146,6 +145,7 @@
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { useRouter } from 'vue-router';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -161,10 +161,10 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
+import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
-import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 import {
@@ -172,8 +172,6 @@ import {
 	computed,
 	inject,
 	onMounted,
-	watch,
-	nextTick,
 	onServerPrefetch,
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -182,9 +180,9 @@ import { defaultBadges } from '#src/util/achievementUtils';
 const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
+const router = useRouter();
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const kvAuth0 = inject('kvAuth0');
 
 const {
 	fetchAchievementData,
@@ -266,6 +264,11 @@ const handleBadgeJourneyLevelClicked = payload => {
 };
 
 const handleBadgeModalClosed = () => {
+	const queryParams = { ...router.currentRoute?.value?.query };
+	if (queryParams.journey) {
+		delete queryParams.journey;
+		router.push({ ...router.currentRoute.value, query: queryParams });
+	}
 	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
 };
@@ -311,6 +314,10 @@ const fetchMyKivaData = () => {
 		.then(result => {
 			userInfo.value = result.data?.my ?? {};
 			lender.value = result.data?.my?.lender ?? null;
+			lender.value = {
+				...lender.value,
+				public: userInfo.value?.userAccount?.public ?? false,
+			};
 			loans.value = result.data?.my?.loans?.values ?? [];
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			if (loans.value.length > 0) {
@@ -319,46 +326,6 @@ const fetchMyKivaData = () => {
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage myKivaQuery');
 		});
-};
-
-const badgesAchieved = computed(() => {
-	const completedBadgesArr = [];
-
-	badgeData.value.forEach(badge => {
-		if (badge.achievementData?.tiers?.length) {
-			const { tiers } = badge.achievementData;
-			tiers.forEach(tierObj => {
-				if (tierObj.completedDate) {
-					completedBadgesArr.push(badge);
-				}
-			});
-		}
-		if (badge.achievementData?.milestoneProgress?.length) {
-			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
-			if (earnedAtDate) {
-				completedBadgesArr.push(badge);
-			}
-		}
-	});
-
-	return completedBadgesArr;
-});
-
-const scrollToTarget = target => {
-	const targetElement = document.getElementById(target);
-	if (targetElement) {
-		targetElement.scrollIntoView({ behavior: 'smooth' });
-	}
-};
-
-const checkGuestAchievementsToScroll = () => {
-	const lastLogin = kvAuth0.user?.exp;
-	const memberSince = lender.value?.memberSince;
-	if (isFirstLogin(lastLogin, memberSince)) {
-		const numberOfBadges = badgesAchieved.value.length;
-		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
-		scrollToTarget(sectionToScrollTo);
-	}
 };
 
 const fetchContentfulHeroData = () => {
@@ -405,17 +372,6 @@ onMounted(async () => {
 	// Fetch Contentful data if the hero is enabled
 	if (isHeroEnabled.value) {
 		fetchContentfulHeroData();
-	}
-});
-
-watch(isAchievementDataLoaded, () => {
-	if (isAchievementDataLoaded.value) {
-		nextTick(() => {
-			// Scroll to section once async data is loaded
-			const targetId = window?.location?.hash?.replace('#', '');
-			if (targetId) scrollToTarget(targetId);
-			checkGuestAchievementsToScroll();
-		});
 	}
 });
 </script>

@@ -12,6 +12,7 @@
 					:is-logged-in="isLoggedIn"
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan"
+					:is-my-kiva-enabled="isMyKivaEnabled"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -128,6 +129,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isMyKivaEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	components: {
 		BasketItem,
@@ -144,12 +149,11 @@ export default {
 	},
 	methods: {
 		isLoanContributingInAchievements(loanId) {
-			const achievementProgress = this.possibleAchievementProgress.find(
+			const achievementProgress = this.possibleAchievementProgress.filter(
 				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
 			);
 
-			return achievementProgress
-				&& achievementProgress?.postCheckoutTier !== achievementProgress?.preCheckoutTier;
+			return achievementProgress.some(a => a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
 	}
 };

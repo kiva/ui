@@ -2,14 +2,12 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { differenceInMinutes, fromUnixTime } from 'date-fns';
 import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
 
 export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
-const FIRST_LOGIN_THRESHOLD = 5;
 export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 
 export const createUserPreferencesMutation = gql`
@@ -181,23 +179,4 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 	}
 
 	return false;
-};
-
-/*
- * Determines whether is first login for the user
- *
- * @param lastLogin last login time from token access
- * @param memberSince member since time from user data
- * @returns Whether the user is logging in for the first time
- */
-export const isFirstLogin = (lastLogin, memberSince) => {
-	const lastLoginDate = fromUnixTime(lastLogin);
-	lastLoginDate.setHours(lastLoginDate.getHours() - 1);
-
-	const minutesDiff = differenceInMinutes(
-		lastLoginDate,
-		new Date(memberSince),
-	);
-
-	return minutesDiff < FIRST_LOGIN_THRESHOLD;
 };

@@ -1,3 +1,171 @@
+## [3.16.0](https://github.com/kiva/ui/compare/v3.15.0...v3.16.0) (2025-04-10)
+
+### 🎉 New Features
+
+* persist apollo cache in session storage ([e1793df](https://github.com/kiva/ui/commit/e1793dff67bb69c71b2182384c976c28f51be1ab))
+* public tags filtered for live loans callouts ([#5931](https://github.com/kiva/ui/issues/5931)) ([518f31e](https://github.com/kiva/ui/commit/518f31e1c628ddc2338e03dc74a89c24b8d1633f))
+* removing loan callouts component as not used ([#5936](https://github.com/kiva/ui/issues/5936)) ([3242738](https://github.com/kiva/ui/commit/324273893e81cf58b303f07cd6303b5543800949))
+
+### 🐛 Bugfixes
+
+* cart pill should show when my kiva is enabled ([0449f33](https://github.com/kiva/ui/commit/0449f334170f454786b12fa99e8fd29e8c2eda5c))
+* lender public information in my kiva ([a33b48e](https://github.com/kiva/ui/commit/a33b48ebfcde98076601ff7bcc46e97e5c438e52))
+* remove unused publicId field ([c39f5c7](https://github.com/kiva/ui/commit/c39f5c79948dff84992e11ba0356ac52e9ee302a))
+* resolve server error on checkout page from kv-shop ([ef5e2d9](https://github.com/kiva/ui/commit/ef5e2d96e12c125801ff7dd524bd8d41a99acc37))
+* update components to resolve error on avatar load ([d5ddae5](https://github.com/kiva/ui/commit/d5ddae5b8649ece3a7ec743bf408023010bab083))
+* use isPublic computed for utmContent ([1740349](https://github.com/kiva/ui/commit/1740349846c0ce214f4a64f5af66b1ed902e8162))
+
+### 🧹 Chores
+
+* **deps:** install apollo3-persist-cache ([dbf6508](https://github.com/kiva/ui/commit/dbf6508d719373fafd7f226874bc20caad7561a4))
+* **release:** 3.16.0-rc.1 [skip ci] ([72cc64c](https://github.com/kiva/ui/commit/72cc64c0969b64dd07da0a0fcd9a0534a22193e0)), closes [#5931](https://github.com/kiva/ui/issues/5931) [#5936](https://github.com/kiva/ui/issues/5936)
+* update kv dependencies, update change-case ([94502fa](https://github.com/kiva/ui/commit/94502fa7e403316858ee8b29684472a1574a64f1))
+* update sentry to 9 ([8255ce8](https://github.com/kiva/ui/commit/8255ce8b428a237e46c603028d9fc49556722a26))
+
+## [3.16.0-rc.1](https://github.com/kiva/ui/compare/v3.15.0...v3.16.0-rc.1) (2025-04-10)
+
+### 🎉 New Features
+
+* persist apollo cache in session storage ([e1793df](https://github.com/kiva/ui/commit/e1793dff67bb69c71b2182384c976c28f51be1ab))
+* public tags filtered for live loans callouts ([#5931](https://github.com/kiva/ui/issues/5931)) ([518f31e](https://github.com/kiva/ui/commit/518f31e1c628ddc2338e03dc74a89c24b8d1633f))
+* removing loan callouts component as not used ([#5936](https://github.com/kiva/ui/issues/5936)) ([3242738](https://github.com/kiva/ui/commit/324273893e81cf58b303f07cd6303b5543800949))
+
+### 🐛 Bugfixes
+
+* cart pill should show when my kiva is enabled ([0449f33](https://github.com/kiva/ui/commit/0449f334170f454786b12fa99e8fd29e8c2eda5c))
+* lender public information in my kiva ([a33b48e](https://github.com/kiva/ui/commit/a33b48ebfcde98076601ff7bcc46e97e5c438e52))
+* remove unused publicId field ([c39f5c7](https://github.com/kiva/ui/commit/c39f5c79948dff84992e11ba0356ac52e9ee302a))
+* resolve server error on checkout page from kv-shop ([ef5e2d9](https://github.com/kiva/ui/commit/ef5e2d96e12c125801ff7dd524bd8d41a99acc37))
+* update components to resolve error on avatar load ([d5ddae5](https://github.com/kiva/ui/commit/d5ddae5b8649ece3a7ec743bf408023010bab083))
+* use isPublic computed for utmContent ([1740349](https://github.com/kiva/ui/commit/1740349846c0ce214f4a64f5af66b1ed902e8162))
+
+### 🧹 Chores
+
+* **deps:** install apollo3-persist-cache ([dbf6508](https://github.com/kiva/ui/commit/dbf6508d719373fafd7f226874bc20caad7561a4))
+* update kv dependencies, update change-case ([94502fa](https://github.com/kiva/ui/commit/94502fa7e403316858ee8b29684472a1574a64f1))
+* update sentry to 9 ([8255ce8](https://github.com/kiva/ui/commit/8255ce8b428a237e46c603028d9fc49556722a26))
+
+## [3.15.0](https://github.com/kiva/ui/compare/v3.14.0...v3.15.0) (2025-04-09)
+
+### 🎉 New Features
+
+* adding new condition when my kiva flag is enabled ([c360e33](https://github.com/kiva/ui/commit/c360e337d2ed2029cb6ded3549134449ca3683c2))
+* analytics added to my kiva carousel ctas ([#5904](https://github.com/kiva/ui/issues/5904)) ([c102629](https://github.com/kiva/ui/commit/c102629a88f7bebcc1083d758904d0de02582e2e))
+* check loan ids in basket instead of only added loan when atb ([0ec6034](https://github.com/kiva/ui/commit/0ec6034583b69e0839bdec35afbbcf75dd503251))
+* contentful data added to new my kiva hero carousel ([#5891](https://github.com/kiva/ui/issues/5891)) ([b34372a](https://github.com/kiva/ui/commit/b34372ac064dda2ec470c3180520bc842c1a5e17))
+* deprecate borrow precheck page ([d6e1ed4](https://github.com/kiva/ui/commit/d6e1ed411acdf00e3f1f43bde097d304e80337c0))
+* filter only public tags ([5d5f386](https://github.com/kiva/ui/commit/5d5f386f2be834a62062ca50162872ae6e24652b))
+* get achievement progress in basket before evaluating added loan ([2408abd](https://github.com/kiva/ui/commit/2408abd36fdc1e0552fe1ec8ae98b37877e0f0ee))
+* implement portfolio donations page using new graphql query ([c53dba8](https://github.com/kiva/ui/commit/c53dba8ff504612c1154fa9dd77fde819c486466))
+* journey modal open from my kiva carousel ([#5911](https://github.com/kiva/ui/issues/5911)) ([851d4b1](https://github.com/kiva/ui/commit/851d4b1ec019e307549d8eb10f0cd71247b0c720))
+* kv user avatar componented updated ([#5888](https://github.com/kiva/ui/issues/5888)) ([93e0a86](https://github.com/kiva/ui/commit/93e0a864e358ec9d2234668130b3a229bc94c8bf))
+* my kiva carousel small tweaks ([#5905](https://github.com/kiva/ui/issues/5905)) ([3ea82b4](https://github.com/kiva/ui/commit/3ea82b45e0e69a5806d92d29388a8d9c274edb77))
+* my kiva hero carousel order ([#5896](https://github.com/kiva/ui/issues/5896)) ([757c2a4](https://github.com/kiva/ui/commit/757c2a40baf981b39c1efb20688623d5084c708d))
+* progress and badge added to journey ([#5899](https://github.com/kiva/ui/issues/5899)) ([94ba744](https://github.com/kiva/ui/commit/94ba744e1acff3707b102bc863695b312f0570e2))
+* roll out new donations migration ([a4ab2c4](https://github.com/kiva/ui/commit/a4ab2c4c037586894384a06bbcc6841358ecb326))
+* show only public loan tags ([ada2100](https://github.com/kiva/ui/commit/ada2100f94f3c3745d8b825b49b7fcf4c3009ba9))
+* update kv-components ([57504ca](https://github.com/kiva/ui/commit/57504ca4cfa9ab5f025fd753335d54f68b052744))
+* using imageRef to avoid infinite loading in user avatar ([155f992](https://github.com/kiva/ui/commit/155f992b6c82763f4f718243511753ddcfa41d99))
+
+### 🐛 Bugfixes
+
+* atb position on resize ([1c18403](https://github.com/kiva/ui/commit/1c18403f7b32c55e461000cede1b91736d038fdf))
+* avatar border fixed ([#5887](https://github.com/kiva/ui/issues/5887)) ([5ccc16c](https://github.com/kiva/ui/commit/5ccc16ce48049fa162f039c6c36ee2aa7c96ae09))
+* changing error message from achievement from basket query ([b7bc942](https://github.com/kiva/ui/commit/b7bc942e0839e89e5f45aeffb07753eb51d515a0))
+* check if loan is group first for pill message ([d76cc56](https://github.com/kiva/ui/commit/d76cc561b2143e91967153a608716ee4c724b434))
+* comment typo ([6d5176d](https://github.com/kiva/ui/commit/6d5176de44c5651da2cb6b77c864c14d03af5385))
+* default borrower count value ([c56a04e](https://github.com/kiva/ui/commit/c56a04ea2324bf60aa141b4cdb8efd0cc809361d))
+* first loan option showed under my kiva flag ([#5908](https://github.com/kiva/ui/issues/5908)) ([05cd9e2](https://github.com/kiva/ui/commit/05cd9e2d0cc48893696678039bc67785518e8887))
+* hide copy if no loans in journey ([8718a84](https://github.com/kiva/ui/commit/8718a84e9543fd2ab6567f77c5d1e7d7da55a7b1))
+* hide sections when no donations and smooth out some loader pop-ins ([38d681f](https://github.com/kiva/ui/commit/38d681f29e12bf22ec85403033c101398545a88f))
+* issue loans away design copy size ([21d565c](https://github.com/kiva/ui/commit/21d565c10dd81100c3fdf21a583e5b6d0e1829fb))
+* loading placeholder size in user-avatar ([ce85cce](https://github.com/kiva/ui/commit/ce85cceb659168b7e1ee0369780888c4a562c00f))
+* loan away when logic when atb loan make progress in different badges ([d28f75f](https://github.com/kiva/ui/commit/d28f75f5ed167838ca2a2e59aa02eea30eebb320))
+* minor tweaks to donations mobile view ([92c384e](https://github.com/kiva/ui/commit/92c384eba2aaf3ba0993545d99e7232860e12d2e))
+* optin notification avatar sizes ([7db4795](https://github.com/kiva/ui/commit/7db47950f99fc6096bcfcbf2946d2110617090ac))
+* redirect path ([9aa4479](https://github.com/kiva/ui/commit/9aa44799db97054d724c5d4e17e83fe53debb5bf))
+* remove console log ([3e146ac](https://github.com/kiva/ui/commit/3e146acdfe32de455bdb51aa71fa6e56c2fc3f0b))
+* remove one loan away for equity badge ([f08fb28](https://github.com/kiva/ui/commit/f08fb28ea11826cafb091b29adc12a4b7620953d))
+* resolved double analytics and vue warning ([36a73fd](https://github.com/kiva/ui/commit/36a73fdd3d07e99ea031cb66029768e7738f6079))
+* showing one away message and when loans hit more than 1 milestone ([3db0041](https://github.com/kiva/ui/commit/3db00417948afe7ab10d7b9a60e059df316f0788))
+* use options api to ensure perfetch works on new donations page ([c666327](https://github.com/kiva/ui/commit/c666327beb4963bb664496935137ff5a5e928c74))
+* used shared spinner component ([240206a](https://github.com/kiva/ui/commit/240206a0b809234c5de92284d324a932c79e02af))
+
+### 🪚 Refactors
+
+* comparison logic ([1d97079](https://github.com/kiva/ui/commit/1d97079b83e39aaad89702b00c70442a33c42c3a))
+* remove logic moved to component ([dfb3980](https://github.com/kiva/ui/commit/dfb3980e54a3eaa8a292ddbd617c89e138238d21))
+
+### 🔍 Tests
+
+* adding case when my kiva flag is enabled ([fb9b648](https://github.com/kiva/ui/commit/fb9b648f8e5905c880b6b377358abc83f766061d))
+
+### 🧹 Chores
+
+* don't run lint pr name for dependabot prs ([c620f71](https://github.com/kiva/ui/commit/c620f71d08acb2c29d7e3a7333f50f2231930966))
+* **release:** 3.15.0-rc.1 [skip ci] ([4d2c466](https://github.com/kiva/ui/commit/4d2c466db1bb2f02fa12d21fb5d51059199fd120)), closes [#5904](https://github.com/kiva/ui/issues/5904) [#5891](https://github.com/kiva/ui/issues/5891) [#5911](https://github.com/kiva/ui/issues/5911) [#5888](https://github.com/kiva/ui/issues/5888) [#5905](https://github.com/kiva/ui/issues/5905) [#5896](https://github.com/kiva/ui/issues/5896) [#5899](https://github.com/kiva/ui/issues/5899) [#5887](https://github.com/kiva/ui/issues/5887) [#5908](https://github.com/kiva/ui/issues/5908)
+* update kv-components with on load avatar fix ([5d5c988](https://github.com/kiva/ui/commit/5d5c9888f6863c24907a46eeb4d394e46e77f439))
+
+## [3.15.0-rc.1](https://github.com/kiva/ui/compare/v3.14.0...v3.15.0-rc.1) (2025-04-09)
+
+### 🎉 New Features
+
+* adding new condition when my kiva flag is enabled ([c360e33](https://github.com/kiva/ui/commit/c360e337d2ed2029cb6ded3549134449ca3683c2))
+* analytics added to my kiva carousel ctas ([#5904](https://github.com/kiva/ui/issues/5904)) ([c102629](https://github.com/kiva/ui/commit/c102629a88f7bebcc1083d758904d0de02582e2e))
+* check loan ids in basket instead of only added loan when atb ([0ec6034](https://github.com/kiva/ui/commit/0ec6034583b69e0839bdec35afbbcf75dd503251))
+* contentful data added to new my kiva hero carousel ([#5891](https://github.com/kiva/ui/issues/5891)) ([b34372a](https://github.com/kiva/ui/commit/b34372ac064dda2ec470c3180520bc842c1a5e17))
+* deprecate borrow precheck page ([d6e1ed4](https://github.com/kiva/ui/commit/d6e1ed411acdf00e3f1f43bde097d304e80337c0))
+* filter only public tags ([5d5f386](https://github.com/kiva/ui/commit/5d5f386f2be834a62062ca50162872ae6e24652b))
+* get achievement progress in basket before evaluating added loan ([2408abd](https://github.com/kiva/ui/commit/2408abd36fdc1e0552fe1ec8ae98b37877e0f0ee))
+* implement portfolio donations page using new graphql query ([c53dba8](https://github.com/kiva/ui/commit/c53dba8ff504612c1154fa9dd77fde819c486466))
+* journey modal open from my kiva carousel ([#5911](https://github.com/kiva/ui/issues/5911)) ([851d4b1](https://github.com/kiva/ui/commit/851d4b1ec019e307549d8eb10f0cd71247b0c720))
+* kv user avatar componented updated ([#5888](https://github.com/kiva/ui/issues/5888)) ([93e0a86](https://github.com/kiva/ui/commit/93e0a864e358ec9d2234668130b3a229bc94c8bf))
+* my kiva carousel small tweaks ([#5905](https://github.com/kiva/ui/issues/5905)) ([3ea82b4](https://github.com/kiva/ui/commit/3ea82b45e0e69a5806d92d29388a8d9c274edb77))
+* my kiva hero carousel order ([#5896](https://github.com/kiva/ui/issues/5896)) ([757c2a4](https://github.com/kiva/ui/commit/757c2a40baf981b39c1efb20688623d5084c708d))
+* progress and badge added to journey ([#5899](https://github.com/kiva/ui/issues/5899)) ([94ba744](https://github.com/kiva/ui/commit/94ba744e1acff3707b102bc863695b312f0570e2))
+* roll out new donations migration ([a4ab2c4](https://github.com/kiva/ui/commit/a4ab2c4c037586894384a06bbcc6841358ecb326))
+* show only public loan tags ([ada2100](https://github.com/kiva/ui/commit/ada2100f94f3c3745d8b825b49b7fcf4c3009ba9))
+* update kv-components ([57504ca](https://github.com/kiva/ui/commit/57504ca4cfa9ab5f025fd753335d54f68b052744))
+* using imageRef to avoid infinite loading in user avatar ([155f992](https://github.com/kiva/ui/commit/155f992b6c82763f4f718243511753ddcfa41d99))
+
+### 🐛 Bugfixes
+
+* atb position on resize ([1c18403](https://github.com/kiva/ui/commit/1c18403f7b32c55e461000cede1b91736d038fdf))
+* avatar border fixed ([#5887](https://github.com/kiva/ui/issues/5887)) ([5ccc16c](https://github.com/kiva/ui/commit/5ccc16ce48049fa162f039c6c36ee2aa7c96ae09))
+* changing error message from achievement from basket query ([b7bc942](https://github.com/kiva/ui/commit/b7bc942e0839e89e5f45aeffb07753eb51d515a0))
+* check if loan is group first for pill message ([d76cc56](https://github.com/kiva/ui/commit/d76cc561b2143e91967153a608716ee4c724b434))
+* comment typo ([6d5176d](https://github.com/kiva/ui/commit/6d5176de44c5651da2cb6b77c864c14d03af5385))
+* default borrower count value ([c56a04e](https://github.com/kiva/ui/commit/c56a04ea2324bf60aa141b4cdb8efd0cc809361d))
+* first loan option showed under my kiva flag ([#5908](https://github.com/kiva/ui/issues/5908)) ([05cd9e2](https://github.com/kiva/ui/commit/05cd9e2d0cc48893696678039bc67785518e8887))
+* hide copy if no loans in journey ([8718a84](https://github.com/kiva/ui/commit/8718a84e9543fd2ab6567f77c5d1e7d7da55a7b1))
+* hide sections when no donations and smooth out some loader pop-ins ([38d681f](https://github.com/kiva/ui/commit/38d681f29e12bf22ec85403033c101398545a88f))
+* issue loans away design copy size ([21d565c](https://github.com/kiva/ui/commit/21d565c10dd81100c3fdf21a583e5b6d0e1829fb))
+* loading placeholder size in user-avatar ([ce85cce](https://github.com/kiva/ui/commit/ce85cceb659168b7e1ee0369780888c4a562c00f))
+* loan away when logic when atb loan make progress in different badges ([d28f75f](https://github.com/kiva/ui/commit/d28f75f5ed167838ca2a2e59aa02eea30eebb320))
+* minor tweaks to donations mobile view ([92c384e](https://github.com/kiva/ui/commit/92c384eba2aaf3ba0993545d99e7232860e12d2e))
+* optin notification avatar sizes ([7db4795](https://github.com/kiva/ui/commit/7db47950f99fc6096bcfcbf2946d2110617090ac))
+* redirect path ([9aa4479](https://github.com/kiva/ui/commit/9aa44799db97054d724c5d4e17e83fe53debb5bf))
+* remove console log ([3e146ac](https://github.com/kiva/ui/commit/3e146acdfe32de455bdb51aa71fa6e56c2fc3f0b))
+* remove one loan away for equity badge ([f08fb28](https://github.com/kiva/ui/commit/f08fb28ea11826cafb091b29adc12a4b7620953d))
+* resolved double analytics and vue warning ([36a73fd](https://github.com/kiva/ui/commit/36a73fdd3d07e99ea031cb66029768e7738f6079))
+* showing one away message and when loans hit more than 1 milestone ([3db0041](https://github.com/kiva/ui/commit/3db00417948afe7ab10d7b9a60e059df316f0788))
+* use options api to ensure perfetch works on new donations page ([c666327](https://github.com/kiva/ui/commit/c666327beb4963bb664496935137ff5a5e928c74))
+* used shared spinner component ([240206a](https://github.com/kiva/ui/commit/240206a0b809234c5de92284d324a932c79e02af))
+
+### 🪚 Refactors
+
+* comparison logic ([1d97079](https://github.com/kiva/ui/commit/1d97079b83e39aaad89702b00c70442a33c42c3a))
+* remove logic moved to component ([dfb3980](https://github.com/kiva/ui/commit/dfb3980e54a3eaa8a292ddbd617c89e138238d21))
+
+### 🔍 Tests
+
+* adding case when my kiva flag is enabled ([fb9b648](https://github.com/kiva/ui/commit/fb9b648f8e5905c880b6b377358abc83f766061d))
+
+### 🧹 Chores
+
+* don't run lint pr name for dependabot prs ([c620f71](https://github.com/kiva/ui/commit/c620f71d08acb2c29d7e3a7333f50f2231930966))
+* update kv-components with on load avatar fix ([5d5c988](https://github.com/kiva/ui/commit/5d5c9888f6863c24907a46eeb4d394e46e77f439))
+
 ## [3.14.0](https://github.com/kiva/ui/compare/v3.13.0...v3.14.0) (2025-03-25)
 
 ### 🎉 New Features
