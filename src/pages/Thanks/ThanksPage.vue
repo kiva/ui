@@ -30,7 +30,6 @@
 				:loans="loans"
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
-				:router="$router"
 				:guest-username="guestUsername"
 			/>
 		</template>
