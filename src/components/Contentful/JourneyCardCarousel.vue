@@ -19,7 +19,7 @@
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full tw-overflow-visible"
-			@change="onInteractCarousel"
+			@interact-carousel="onInteractCarousel"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -235,11 +235,11 @@ const singleSlideWidth = computed(() => {
 	return '520px';
 });
 
-const onInteractCarousel = () => {
+const onInteractCarousel = interaction => {
 	$kvTrackEvent(
 		'portfolio',
 		'click',
-		'next-step-carousel',
+		interaction
 	);
 };
 
