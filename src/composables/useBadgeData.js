@@ -34,8 +34,6 @@ export const CATEGORIES = {
 	[ID_REFUGEE_EQUALITY]: 'refugees-and-i-d-ps',
 	[ID_BASIC_NEEDS]: 'basic-needs',
 };
-export const MY_IMPACT_JOURNEYS_ID = 'my-impact-journeys';
-export const MY_ACHIEVEMENTS_ID = 'my-achievements';
 
 /**
  * Utilities for loading and combining tiered badge data

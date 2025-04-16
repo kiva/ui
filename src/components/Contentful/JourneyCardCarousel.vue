@@ -149,6 +149,14 @@ const orderedSlides = computed(() => {
 	defaultBadges.forEach(badgeKey => {
 		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
 		if (achievementContent) {
+			// eslint-disable-next-line no-unsafe-optional-chaining
+			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
+			const lastTier = achievementContent.achievementData?.tiers[lastTierIndex];
+			// Hidden slide for completed journeys
+			if (lastTier?.completedDate) {
+				return;
+			}
+
 			const tier = achievementContent.achievementData?.tiers?.find(t => !t.completedDate);
 			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
 			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);

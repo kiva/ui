@@ -183,15 +183,18 @@ import confetti from 'canvas-confetti';
 import {
 	KvMaterialIcon, KvUserAvatar, KvLightbox, KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
+import { useRouter } from 'vue-router';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
 import { mdiChevronDown, mdiArrowRight } from '@mdi/js';
 import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
+import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import BgRays from '#src/components/Thanks/BgRays';
 import OptInModule from './OptInModule';
+
+const router = useRouter();
 
 const props = defineProps({
 	isGuest: {
@@ -222,10 +225,6 @@ const props = defineProps({
 	badgesAchieved: {
 		type: Array,
 		default: () => ([]),
-	},
-	router: {
-		type: Object,
-		default: () => ({}),
 	},
 	guestUsername: {
 		type: String,
@@ -346,8 +345,6 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 	} else {
-		const hasBadges = numberOfBadges.value > 0;
-		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
 		$kvTrackEvent(
 			'post-checkout',
 			'click',
@@ -356,8 +353,7 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		// eslint-disable-next-line vue/no-mutating-props
-		props.router?.push(`/portfolio${hasBadges ? `#${sectionToScrollTo}` : ''}`);
+		router?.push('/portfolio');
 	}
 };
 
