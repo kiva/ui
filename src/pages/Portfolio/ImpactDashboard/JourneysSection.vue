@@ -2,6 +2,9 @@
 	<AsyncPortfolioSection
 		@visible="fetchAsyncData"
 	>
+		<h3 class="tw-mb-3 md:tw-mb-2 tw-text-center md:tw-text-left">
+			My impact journeys
+		</h3>
 		<div
 			v-if="isLoading"
 			class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center tw-gap-2.5"
@@ -20,14 +23,12 @@
 			v-if="selectedBadgeData"
 			:show="showBadgeModal"
 			:badge="selectedBadgeData"
-			:lender="lender"
-			:state="state"
+			:state="STATE_JOURNEY"
 			:tier="tier"
 			:is-earned-section="false"
 			:loans="loans"
 			@badge-modal-closed="handleBadgeModalClosed"
 			@badge-level-clicked="handleBadgeJourneyLevelClicked"
-			@back-to-journey="handleBackToJourney"
 		/>
 	</AsyncPortfolioSection>
 </template>
@@ -39,9 +40,10 @@ import {
 	ref
 } from 'vue';
 import { gql } from 'graphql-tag';
+import { useRouter } from 'vue-router';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useBadgeData from '#src/composables/useBadgeData';
-import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { STATE_JOURNEY } from '#src/composables/useBadgeModal';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
@@ -78,31 +80,23 @@ const userQuery = gql`query userQuery {
             }
         }
     }
-    lender {
-        id
-        name
-        image {
-            id
-            url
-        }
-        memberSince
-    }
   }
 }`;
 
+const router = useRouter();
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const {
 	fetchAchievementData,
 	fetchContentfulData,
 	badgeData,
+	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
-const lender = ref(null);
 const loans = ref([]);
 const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
-const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 
 const isLoading = computed(() => badgeData.value.length === 0);
@@ -113,26 +107,27 @@ const handleBadgeSectionClicked = badge => {
 };
 
 const handleBadgeJourneyLevelClicked = payload => {
-	const { tier: clickedTier } = payload;
+	const { id, challengeName, tier: clickedTier } = payload;
 
-	tier.value = clickedTier;
-	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		'Earn a badge - within badge journey map modal - old portfolio page',
+		challengeName,
+		clickedTier.level,
+	);
+
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
 const handleBadgeModalClosed = () => {
 	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
-	state.value = STATE_JOURNEY;
-};
-
-const handleBackToJourney = () => {
-	state.value = STATE_JOURNEY;
 };
 
 const fetchUserData = () => {
 	return apollo.query({ query: userQuery })
 		.then(result => {
-			lender.value = result.data?.my?.lender ?? null;
 			loans.value = result.data?.my?.loans?.values ?? [];
 		}).catch(e => {
 			logReadQueryError(e, 'Portfolio Page Journeys userQuery');

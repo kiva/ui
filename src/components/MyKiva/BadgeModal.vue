@@ -1,21 +1,9 @@
 <template>
 	<KvLightbox
-		:class="{ 'badge-modal': !isJourneyActive && !isEarnedSection }"
 		:visible="show"
 		:title="title"
 		@lightbox-closed="closeLightbox"
 	>
-		<template v-if="!isJourneyActive && !isEarnedSection" #header>
-			<div class="tw-flex tw-gap-0.5 tw-items-center tw-cursor-pointer" @click="backToJourney">
-				<kv-material-icon
-					class="tw-w-2.5 tw-h-2.5"
-					:icon="mdiArrowLeft"
-				/>
-				<p class="tw-font-medium">
-					Back
-				</p>
-			</div>
-		</template>
 		<component
 			:is="contentComponent"
 			:key="badge.id"
@@ -30,7 +18,7 @@
 </template>
 
 <script setup>
-import { KvLightbox, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import {
 	defineProps,
 	defineAsyncComponent,
@@ -39,7 +27,6 @@ import {
 	h,
 } from 'vue';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
-import { mdiArrowLeft } from '@mdi/js';
 
 const ModalLoader = defineComponent(() => {
 	return () => {
@@ -58,7 +45,7 @@ const BadgeCompleted = defineAsyncComponent({
 	delay: 100,
 });
 
-const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked', 'back-to-journey']);
+const emit = defineEmits(['badge-modal-closed', 'badge-level-clicked']);
 
 const props = defineProps({
 	show: {
@@ -99,10 +86,6 @@ const handleBadgeLevelClicked = e => {
 	emit('badge-level-clicked', e);
 };
 
-const backToJourney = () => {
-	emit('back-to-journey', props.badge);
-};
-
 const isJourneyActive = computed(() => {
 	return props.state === STATE_JOURNEY;
 });
@@ -121,13 +104,3 @@ const contentComponent = computed(() => {
 	}
 });
 </script>
-
-<style lang="postcss" scoped>
-.badge-modal :deep([data-test*=lightbox]) > div.tw-flex {
-	@apply md:!tw-pt-2.5 md:tw-pb-2.5 tw-pb-0;
-}
-
-.badge-modal :deep([data-test*=lightbox]) > div.tw-flex > button {
-	@apply !tw-h-auto;
-}
-</style>
