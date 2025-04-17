@@ -144,12 +144,14 @@
 
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
+import { readBoolSetting } from '#src/util/settingsUtils';
 import { useRouter } from 'vue-router';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
+import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -170,11 +172,13 @@ import {
 	computed,
 	inject,
 	onMounted,
+	onServerPrefetch,
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
+const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
 const router = useRouter();
 const apollo = inject('apollo');
@@ -188,13 +192,6 @@ const {
 	completedBadges,
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
-
-const props = defineProps({
-	isHeroEnabled: {
-		type: Boolean,
-		default: () => false,
-	},
-});
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -212,6 +209,7 @@ const totalLoans = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const heroSlides = ref([]);
+const isHeroEnabled = ref(false);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -341,7 +339,24 @@ const fetchContentfulHeroData = () => {
 		});
 };
 
+onServerPrefetch(async () => {
+	await apollo.query({
+		query: uiConfigSettingQuery,
+		variables: {
+			key: MY_KIVA_HERO_ENABLE_KEY,
+		}
+	});
+});
+
 onMounted(async () => {
+	const uiSettingsQueryResult = await apollo.readQuery({
+		query: uiConfigSettingQuery,
+		variables: {
+			key: MY_KIVA_HERO_ENABLE_KEY,
+		}
+	});
+	isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 
@@ -351,7 +366,7 @@ onMounted(async () => {
 	fetchContentfulData(apollo);
 
 	// Fetch Contentful data if the hero is enabled
-	if (props.isHeroEnabled) {
+	if (isHeroEnabled.value) {
 		fetchContentfulHeroData();
 	}
 });
