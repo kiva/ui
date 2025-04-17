@@ -12,10 +12,10 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 	const myKivaFlagEnabled = ref(false);
 	const userData = ref(false);
 
-	const fetchUserData = () => {
-		apollo.readQuery({
+	const fetchUserData = async () => {
+		await apollo.query({
 			query: myKivaForAllUsersQuery,
-		}).then(data => {
+		}).then(({ data }) => {
 			userData.value = data?.my ?? null;
 			myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		}).catch(e => {
@@ -23,8 +23,8 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 		});
 	};
 
-	onMounted(() => {
-		fetchUserData();
+	onMounted(async () => {
+		await fetchUserData();
 
 		redirectToMyKivaHomepage.value = userData.value?.id && getIsMyKivaEnabled(
 			apollo,

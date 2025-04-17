@@ -24,7 +24,6 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import appInstallMixin from '#src/plugins/app-install-mixin';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
-import myKivaForAllUsersQuery from '#src/graphql/query/shared/myKivaForAllUsers.graphql';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -69,7 +68,6 @@ export default {
 		preFetch(_, client) {
 			return Promise.all([
 				client.query({ query: hasEverLoggedInQuery }),
-				client.query({ query: myKivaForAllUsersQuery }),
 				assignAllActiveExperiments(client)
 			]);
 		},

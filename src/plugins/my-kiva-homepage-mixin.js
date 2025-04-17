@@ -8,13 +8,13 @@ export default {
 			redirectToMyKivaHomepage: false,
 		};
 	},
-	created() {
-		const myKivaData = this.apollo.readQuery({
+	async created() {
+		const { data } = await this.apollo.query({
 			query: myKivaForAllUsersQuery,
 		});
 
-		const userData = myKivaData?.my ?? null;
-		const myKivaFlagEnabled = readBoolSetting(myKivaData, MY_KIVA_FOR_ALL_USERS_KEY);
+		const userData = data?.my ?? null;
+		const myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 
 		this.redirectToMyKivaHomepage = userData?.id && getIsMyKivaEnabled(
 			this.apollo,
