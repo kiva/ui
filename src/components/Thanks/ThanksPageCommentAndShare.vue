@@ -201,7 +201,7 @@
 							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
 							v-else
-							to="'/portfolio'
+							to="/portfolio"
 							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 						>
 							No, continue to my portfolio

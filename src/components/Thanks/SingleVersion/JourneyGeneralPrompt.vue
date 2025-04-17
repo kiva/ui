@@ -136,7 +136,6 @@ const handleClickContinue = () => {
 		emit('continue-as-guest');
 		return;
 	}
-
 	router.push('/portfolio');
 };
 </script>
