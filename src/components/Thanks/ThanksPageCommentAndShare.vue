@@ -85,7 +85,7 @@
 			<div class="tw-flex tw-flex-col tw-gap-y-2 tw-mt-2 tw-mb-4 tw-max-w-sm tw-mx-auto">
 				<kv-button
 					variant="primary"
-					to="/portfolio"
+					:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 					v-kv-track-event="['post-checkout', 'click', 'ftd-portfolio', null, loanId]"
 				>
 					Continue to portfolio
@@ -201,7 +201,7 @@
 							class="tw-block tw-mx-auto tw-text-action
 								tw-underline hover:tw-text-action-highlight"
 							v-else
-							to="/portfolio"
+							:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 						>
 							No, continue to my portfolio
@@ -225,6 +225,7 @@ import {
 	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton
 } from '@kiva/kv-components';
 import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 export default {
 	name: 'ThanksPageCommentAndShare',
@@ -279,7 +280,7 @@ export default {
 			default: '',
 		},
 	},
-	mixins: [socialSharingMixin],
+	mixins: [socialSharingMixin, myKivaHomePageMixin],
 	head() {
 		return {
 			title: 'Thank you!'

@@ -192,6 +192,7 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import BgRays from '#src/components/Thanks/BgRays';
+import useMyKivaHome from '#src/composables/useMyKivaHome';
 import OptInModule from './OptInModule';
 
 const router = useRouter();
@@ -232,6 +233,9 @@ const props = defineProps({
 	},
 });
 
+const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
+
 const {
 	fetchAchievementData,
 	fetchContentfulData,
@@ -241,6 +245,7 @@ const {
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
 } = useBadgeData();
+const { redirectToMyKivaHomepage } = useMyKivaHome(apollo, $kvTrackEvent);
 
 const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
 const badgeDataAchieved = ref();
@@ -250,9 +255,6 @@ const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
 const tyBadgeContainer = ref(null);
 const hasScrolled = ref(false);
-
-const $kvTrackEvent = inject('$kvTrackEvent');
-const apollo = inject('apollo');
 
 const isLoading = computed(() => !badgeDataAchieved.value);
 
@@ -353,7 +355,10 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		router?.push('/portfolio');
+		if (redirectToMyKivaHomepage.value) {
+			router.push('/mykiva');
+		}
+		router.push('/portfolio');
 	}
 };
 

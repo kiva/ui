@@ -53,7 +53,7 @@
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
-							to="/portfolio"
+							:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 							data-testid="header-portfolio"
 							target="_blank"
 							class="header__button header__portfolio tw-inline-flex"
@@ -410,7 +410,7 @@
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
-								to="/portfolio"
+								:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 								class="header__button header__portfolio tw-inline-flex"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
@@ -505,7 +505,7 @@
 									</template>
 									<li>
 										<router-link
-											to="/portfolio"
+											:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 											v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
 										>
 											Portfolio
@@ -587,6 +587,7 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 import {
 	KvButton, KvMaterialIcon, KvPageContainer
 } from '@kiva/kv-components';
@@ -624,7 +625,7 @@ export default {
 		TeamsMenu,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
 	data() {
 		return {
 			isVisitor: true,

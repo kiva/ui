@@ -107,7 +107,7 @@
 							class="tw-block tw-mx-auto tw-text-action
 									tw-underline hover:tw-text-action-highlight"
 							v-if="!isGuest"
-							to="/portfolio"
+							:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 							v-kv-track-event="['Thanks','click-portfolio-cta','No, continue to my portfolio']"
 						>
 							No, continue to my portfolio
@@ -129,6 +129,7 @@ import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import { KvMaterialIcon, KvGrid, KvPageContainer } from '@kiva/kv-components';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 const userQuery = gql`query userQuery {
 	my {
@@ -174,7 +175,7 @@ export default {
 			default: false
 		},
 	},
-	mixins: [socialSharingMixin, smoothScrollMixin],
+	mixins: [socialSharingMixin, smoothScrollMixin, myKivaHomePageMixin],
 	data() {
 		return {
 			lender: null,

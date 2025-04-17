@@ -149,7 +149,7 @@
 					:href="`/ui-login?force=true&doneUrl=${
 						($route.query.kiva_transaction_id && $route.query.kiva_transaction_id !== null)
 							? encodeURIComponent($route.fullPath)
-							: encodeURIComponent('/portfolio')
+							: encodeURIComponent(redirectToMyKivaHomepage ? '/mykiva' : '/portfolio')
 					}`"
 				>
 					Log in to continue
@@ -204,6 +204,7 @@ import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -261,6 +262,7 @@ export default {
 		ThanksPageSingleVersion,
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [myKivaHomePageMixin],
 	head() {
 		return {
 			title: 'Thank you!'

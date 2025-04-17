@@ -20,7 +20,7 @@
 			<router-link to="/blog">
 				Blog
 			</router-link>
-			<router-link to="/portfolio">
+			<router-link :to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'">
 				My portfolio
 			</router-link>
 		</div>
@@ -31,3 +31,16 @@
 		</p>
 	</div>
 </template>
+
+<script setup>
+import {
+	inject,
+} from 'vue';
+import useMyKivaHome from '#src/composables/useMyKivaHome';
+
+const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
+
+const { redirectToMyKivaHomepage } = useMyKivaHome(apollo, $kvTrackEvent);
+
+</script>

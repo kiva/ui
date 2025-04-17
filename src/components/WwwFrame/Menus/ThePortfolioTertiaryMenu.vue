@@ -2,7 +2,7 @@
 	<ul class="tw-font-medium" data-testid="portfolio-tertiary-menu">
 		<li>
 			<router-link
-				to="/portfolio"
+				:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 				class="portfolio-tertitary-menu-link"
 				exact-active-class="portfolio-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-My-impact']"
@@ -140,10 +140,12 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 export default {
 	name: 'ThePortfolioTertiaryMenu',
 	inject: ['apollo', 'cookieStore'],
+	mixins: [myKivaHomePageMixin],
 	data() {
 		return {
 			userBalance: 0,

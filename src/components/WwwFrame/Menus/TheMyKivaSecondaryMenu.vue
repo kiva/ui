@@ -4,7 +4,7 @@
 			<ul>
 				<li class="tw-inline-block">
 					<router-link
-						to="/portfolio"
+						:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 						active-class="tw-underline"
 						class="desktop-link"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-My-impact']"
@@ -115,7 +115,7 @@
 					<ul class="tw-bg-secondary">
 						<li>
 							<router-link
-								to="/portfolio"
+								:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
 								class="mobile-link"
 								v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
 							>
@@ -196,6 +196,7 @@ import KvExpandable from '#src/components/Kv/KvExpandable';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import TheSettingsTertiaryMenu from '#src/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
 import { KvMaterialIcon, KvPageContainer } from '@kiva/kv-components';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 const BORROWER_APPLICANT_COOKIE_NAME = 'kvborrowerapplicant';
 
@@ -210,6 +211,7 @@ export default {
 		TheSettingsTertiaryMenu
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [myKivaHomePageMixin],
 	data() {
 		return {
 			open: false,
