@@ -49,7 +49,7 @@ import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-// Query to gather user Teams
+// Query to gather user loans
 const userQuery = gql`query userQuery {
 	my {
     id
