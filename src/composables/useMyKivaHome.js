@@ -26,8 +26,6 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 	onMounted(() => {
 		fetchUserData();
 
-		console.log('hello from useMyKivaHome');
-
 		redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
 			apollo,
 			$kvTrackEvent,
