@@ -16,6 +16,7 @@ query loanCardBasketed($id: Int!, $basketId: String) {
 			id
 			minNoteSize
 			loanFundraisingInfo {
+				id
 				fundedAmount
 				reservedAmount
 				isExpiringSoon

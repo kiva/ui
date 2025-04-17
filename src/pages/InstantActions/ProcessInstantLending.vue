@@ -130,6 +130,7 @@ const processInstantLendingContent = gql`query instantLendingContent($loanId: In
 			}
 			loanAmount
 			loanFundraisingInfo {
+				id
 				fundedAmount
 				reservedAmount
 				isExpiringSoon

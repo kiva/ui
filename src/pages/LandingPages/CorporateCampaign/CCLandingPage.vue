@@ -357,6 +357,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 								}
 							}
 							loanFundraisingInfo {
+								id
 								isExpiringSoon
 								fundedAmount
 								reservedAmount

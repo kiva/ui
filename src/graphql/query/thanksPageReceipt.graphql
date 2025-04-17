@@ -80,6 +80,7 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 							}
 							loanAmount
 							loanFundraisingInfo {
+								id
 								fundedAmount
 								reservedAmount
 							}
