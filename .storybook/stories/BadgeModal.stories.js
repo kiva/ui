@@ -7,7 +7,7 @@ import {
 	badgeBasicNeeds,
 	badgeFirstTierComplete
 } from '../mock-data/badge-journey-data-mock';
-import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import { mockLoansArray } from '../utils';
@@ -76,16 +76,6 @@ export const JourneyRefugeeEquality = story({ badge: badgeRefugeeEquality, state
 export const JourneyBasicNeeds = story({ badge: badgeBasicNeeds, state: STATE_JOURNEY });
 
 export const JourneyFirstTierComplete = story({ badge: badgeFirstTierComplete, state: STATE_JOURNEY });
-
-export const InProgressWomensEquality = story({ badge: badgeWomensEquality, tier, state: STATE_IN_PROGRESS });
-
-export const InProgressUsEconomicEquality = story({ badge: badgeUsEconomicEquality, tier, state: STATE_IN_PROGRESS });
-
-export const InProgressClimateAction = story({ badge: badgeClimateAction, tier, state: STATE_IN_PROGRESS });
-
-export const InProgressRefugeeEquality = story({ badge: badgeRefugeeEquality, tier, state: STATE_IN_PROGRESS });
-
-export const InProgressBasicNeeds = story({ badge: badgeBasicNeeds, tier, state: STATE_IN_PROGRESS });
 
 export const EarnedWomensEquality = story({ badge: badgeWomensEquality, tier, state: STATE_EARNED });
 
