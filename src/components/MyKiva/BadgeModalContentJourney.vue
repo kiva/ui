@@ -170,6 +170,7 @@ const getTierName = index => {
 const handleBadgeClick = index => {
 	if (getBadgeStatus(index) !== BADGE_LOCKED) {
 		emit('badge-level-clicked', {
+			id: badgeWithVisibleTiers.value.id,
 			challengeName: badgeWithVisibleTiers.value.challengeName,
 			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
 		});

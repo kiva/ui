@@ -163,7 +163,7 @@ import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
-import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
@@ -190,6 +190,7 @@ const {
 	badgeAchievementData,
 	badgeData,
 	completedBadges,
+	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
 const lender = ref(null);
@@ -225,11 +226,7 @@ const handleShowNavigation = () => {
 };
 
 const handleBadgeTileClicked = selectedTier => {
-	state.value = STATE_IN_PROGRESS;
-	selectedBadgeData.value = selectedTier.badge;
-	tier.value = selectedTier.tier;
-	isEarnedSectionModal.value = false;
-	showBadgeModal.value = true;
+	router.push(getLoanFindingUrl(selectedTier.badge.id, router.currentRoute.value));
 };
 
 const handleBadgeSectionClicked = badge => {
@@ -249,10 +246,7 @@ const handleEarnedBadgeClicked = badge => {
 };
 
 const handleBadgeJourneyLevelClicked = payload => {
-	const { challengeName, tier: clickedTier } = payload;
-
-	tier.value = clickedTier;
-	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+	const { id, challengeName, tier: clickedTier } = payload;
 
 	$kvTrackEvent(
 		'portfolio',
@@ -261,6 +255,8 @@ const handleBadgeJourneyLevelClicked = payload => {
 		challengeName,
 		clickedTier.level,
 	);
+
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
 const handleBadgeModalClosed = () => {
