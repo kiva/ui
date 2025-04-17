@@ -230,7 +230,7 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	isMyKivaAllUSers: {
+	isMyKivaAllUsers: {
 		type: Boolean,
 		default: false,
 	},
@@ -357,7 +357,7 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		router?.push(props.isMyKivaAllUSers ? '/mykiva' : '/portfolio');
+		router?.push(props.isMyKivaAllUsers ? '/mykiva' : '/portfolio');
 	}
 };
 
