@@ -19,7 +19,7 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 			userData.value = data?.my ?? null;
 			myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		}).catch(e => {
-			logFormatter(e, 'Modal ATB User Data');
+			logFormatter(e, 'useMyKivaHome composable');
 		});
 	};
 
