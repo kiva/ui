@@ -226,6 +226,7 @@ export default {
 								delinquent
 								loanAmount
 								loanFundraisingInfo {
+									id
 									fundedAmount
 									reservedAmount
 								}

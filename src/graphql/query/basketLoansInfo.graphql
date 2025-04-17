@@ -16,6 +16,7 @@ query basketLoansInfo(
 			name
 			status
 			loanFundraisingInfo {
+				id
 				fundedAmount
 			}
 			geocode {

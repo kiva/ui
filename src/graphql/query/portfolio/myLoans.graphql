@@ -20,6 +20,7 @@ query myLoans {
 				}
 				loanAmount
 				loanFundraisingInfo {
+					id
 					fundedAmount
 				}
 				sector {

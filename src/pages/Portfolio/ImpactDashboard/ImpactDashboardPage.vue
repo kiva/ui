@@ -2,7 +2,6 @@
 	<div>
 		<my-kiva-page
 			v-if="showMyKivaPage"
-			:is-hero-enabled="isMykivaHeroEnabled"
 		/>
 		<www-page
 			v-else
@@ -25,6 +24,9 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<recent-loans-list />
+						<JourneysSection
+							v-if="isMyKivaExperimentEnabled"
+						/>
 						<your-donations />
 						<education-module v-if="post" :post="post" />
 						<kiva-credit-stats />
@@ -44,10 +46,13 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
+import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -58,7 +63,9 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
-import MyKivaPage from '../MyKiva/MyKivaPage';
+import JourneysSection from './JourneysSection';
+
+const MY_KIVA_EXP = 'my_kiva_jan_2025';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -80,6 +87,7 @@ export default {
 		YourDonations,
 		TeamChallenge,
 		MyKivaPage,
+		JourneysSection,
 	},
 	data() {
 		return {
@@ -89,7 +97,7 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
-			isMykivaHeroEnabled: false,
+			isMyKivaExperimentEnabled: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -123,12 +131,31 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
-		this.showMyKivaPage = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			userData?.userPreferences,
-			userData.lender?.loanCount,
-		);
+
+		// User will always see old portfolio page when MyKiva is rolled out to all users
+		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
+		if (!myKivaAllUsersEnabled) {
+			this.showMyKivaPage = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				userData?.userPreferences,
+				userData.lender?.loanCount,
+			);
+		} else {
+			const { version } = this.apollo.readFragment({
+				id: `Experiment:${MY_KIVA_EXP}`,
+				fragment: experimentVersionFragment,
+			}) ?? {};
+			this.isMyKivaExperimentEnabled = version === 'b';
+
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'event-tracking',
+				MY_KIVA_EXP,
+				'EXP-MP-1235-Jan2025'
+			);
+		}
 
 		if (!this.showMyKivaPage) {
 			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
@@ -141,8 +168,6 @@ export default {
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
-		} else {
-			this.isMykivaHeroEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_hero.value');
 		}
 	},
 	async mounted() {

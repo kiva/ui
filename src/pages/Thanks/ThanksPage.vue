@@ -14,6 +14,7 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
+				:is-my-kiva-all-users="myKivaFlagEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -31,6 +32,7 @@
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
 				:guest-username="guestUsername"
+				:is-my-kiva-all-users="myKivaFlagEnabled"
 			/>
 		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">

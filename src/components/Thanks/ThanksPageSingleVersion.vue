@@ -95,12 +95,10 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import _orderBy from 'lodash/orderBy';
-import useMyKivaHome from '#src/composables/useMyKivaHome';
 
 const EVENT_CATEGORY = 'post-checkout';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const apollo = inject('apollo');
 
 const props = defineProps({
 	isGuest: {
@@ -139,9 +137,11 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	isMyKivaAllUsers: {
+		type: Boolean,
+		default: false,
+	},
 });
-
-const { redirectToMyKivaHomepage } = useMyKivaHome(apollo, $kvTrackEvent);
 
 const receiptSection = ref(null);
 const showReceipt = ref(false);
@@ -231,11 +231,7 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		if (redirectToMyKivaHomepage.value) {
-			router.push('/mykiva');
-		}
-
-		router.push('/portfolio');
+		router?.push(props.isMyKivaAllUsers ? '/mykiva' : '/portfolio');
 	}
 };
 

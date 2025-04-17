@@ -192,7 +192,6 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import BgRays from '#src/components/Thanks/BgRays';
-import useMyKivaHome from '#src/composables/useMyKivaHome';
 import OptInModule from './OptInModule';
 
 const router = useRouter();
@@ -231,6 +230,10 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	isMyKivaAllUsers: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -245,7 +248,6 @@ const {
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
 } = useBadgeData();
-const { redirectToMyKivaHomepage } = useMyKivaHome(apollo, $kvTrackEvent);
 
 const badgeIdsAchieved = ref(props.badgesAchieved.map(b => b.achievementId));
 const badgeDataAchieved = ref();
@@ -355,10 +357,7 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		if (redirectToMyKivaHomepage.value) {
-			router.push('/mykiva');
-		}
-		router.push('/portfolio');
+		router?.push(props.isMyKivaAllUsers ? '/mykiva' : '/portfolio');
 	}
 };
 

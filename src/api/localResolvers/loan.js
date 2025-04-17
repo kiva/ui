@@ -88,6 +88,7 @@ function fullLoanUse(loan, args) {
  * ... on LoanBasic {
 	 loanAmount
 	 loanFundraisingInfo {
+		 id
 		 fundedAmount
 		 reservedAmount
 	 }
@@ -195,6 +196,7 @@ function fundraisingTimeLeftMilliseconds(loan) {
  * ... on LoanBasic {
 	 loanAmount
 	 loanFundraisingInfo {
+		 id
 		 fundedAmount
 		 reservedAmount
 	 }

@@ -164,6 +164,7 @@ export const loanFieldsFragment = gql`
 		use
 		loanAmount
 		loanFundraisingInfo {
+			id
 			fundedAmount
 			reservedAmount
 		}
