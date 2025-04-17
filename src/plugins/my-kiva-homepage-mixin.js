@@ -16,11 +16,11 @@ export default {
 		const userData = myKivaData?.my ?? null;
 		const myKivaFlagEnabled = readBoolSetting(myKivaData, MY_KIVA_FOR_ALL_USERS_KEY);
 
-		this.redirectToMyKivaHomepage = getIsMyKivaEnabled(
+		this.redirectToMyKivaHomepage = userData?.id && getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
 			userData?.userPreferences,
-			userData?.my?.loans?.totalCount ?? 0,
+			userData?.loans?.totalCount ?? 0,
 			myKivaFlagEnabled,
 		);
 	}

@@ -15,7 +15,7 @@
 					<div class="tw-flex tw-justify-center">
 						<a
 							class="header__button tw-inline-flex"
-							href="/"
+							:href="redirectToMyKivaHomepage ? '/mykiva' : '/'"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
@@ -53,7 +53,7 @@
 						<router-link
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
-							:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
+							to="/portfolio"
 							data-testid="header-portfolio"
 							target="_blank"
 							class="header__button header__portfolio tw-inline-flex"
@@ -107,7 +107,7 @@
 						<div class="header__logo">
 							<a
 								class="header__button tw-inline-flex"
-								href="/"
+								:href="redirectToMyKivaHomepage ? '/mykiva' : '/'"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
@@ -410,7 +410,7 @@
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
 								data-testid="header-portfolio"
-								:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
+								to="/portfolio"
 								class="header__button header__portfolio tw-inline-flex"
 								v-kv-track-event="['TopNav','click-Portfolio']"
 							>
@@ -505,7 +505,7 @@
 									</template>
 									<li>
 										<router-link
-											:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
+											to="/portfolio"
 											v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
 										>
 											Portfolio

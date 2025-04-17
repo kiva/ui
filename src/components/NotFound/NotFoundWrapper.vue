@@ -8,7 +8,7 @@
 		</p>
 
 		<div class="tw-flex tw-flex-col tw-text-center tw-my-5 tw-gap-y-2 tw-text-subhead">
-			<router-link to="/">
+			<router-link :to="redirectToMyKivaHomepage ? '/mykiva' : '/'">
 				Home
 			</router-link>
 			<router-link to="/lend">
@@ -20,7 +20,7 @@
 			<router-link to="/blog">
 				Blog
 			</router-link>
-			<router-link :to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'">
+			<router-link to="/portfolio">
 				My portfolio
 			</router-link>
 		</div>

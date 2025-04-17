@@ -236,9 +236,6 @@ const props = defineProps({
 	},
 });
 
-const $kvTrackEvent = inject('$kvTrackEvent');
-const apollo = inject('apollo');
-
 const {
 	fetchAchievementData,
 	fetchContentfulData,
@@ -257,6 +254,9 @@ const openShareModule = ref(false);
 const showGuestAccountModal = ref(false);
 const tyBadgeContainer = ref(null);
 const hasScrolled = ref(false);
+
+const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
 
 const isLoading = computed(() => !badgeDataAchieved.value);
 

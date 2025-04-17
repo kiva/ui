@@ -90,7 +90,7 @@
 							</template>
 							<template v-else>
 								<kv-button
-									:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
+									to="/portfolio"
 									v-kv-track-event="[
 										'thanks',
 										'click',
@@ -133,7 +133,7 @@
 					<div v-if="selectOption && !isGuest">
 						<kv-button
 							class="tw-w-full"
-							:to="redirectToMyKivaHomepage ? '/mykiva' : '/portfolio'"
+							to="/portfolio"
 							v-kv-track-event="[
 								'thanks',
 								'click',
@@ -268,7 +268,6 @@ import logFormatter from '#src/util/logFormatter';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { metaGlobReader } from '#src/util/importHelpers';
-import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 const imagesGlob = import.meta.glob('../../assets/images/thanks-page/*.*', { eager: true, query: '?url' });
 const images = metaGlobReader(imagesGlob, '../../assets/images/thanks-page/');
@@ -286,7 +285,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [smoothScrollMixin, myKivaHomePageMixin],
+	mixins: [smoothScrollMixin],
 	props: {
 		selectedLoan: {
 			type: Object,

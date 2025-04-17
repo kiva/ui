@@ -5,11 +5,9 @@
 <script>
 import { gql } from 'graphql-tag';
 import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
-import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 
 export default {
 	name: 'GuestAccountRedirect',
-	mixins: [myKivaHomePageMixin],
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
 			return client.query({
@@ -37,8 +35,6 @@ export default {
 					path = '/checkout';
 				} else if (cookieStore.get(GUEST_COMMENT_COMMENT) && cookieStore.get(GUEST_COMMENT_LOANID)) {
 					path = `/lend/${cookieStore.get(GUEST_COMMENT_LOANID)}`;
-				} else if (this.redirectToMyKivaHomepage) {
-					path = '/mykiva';
 				} else {
 					path = '/portfolio';
 				}

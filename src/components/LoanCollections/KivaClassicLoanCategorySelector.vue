@@ -41,7 +41,7 @@ export default {
 			const categoryId = category?.id ?? null;
 			const categoryShortName = category?.shortName ?? '';
 			// build event category from url, special case for homepage, clean page path otherwise
-			const eventContext = this.$route.path === '/'
+			const eventContext = this.$route.path === '/' || this.$route.path === '/mykiva'
 				? 'homepage'
 				: this.$route.path.replace(/\//g, '-').replace('-', '');
 			this.$kvTrackEvent(
