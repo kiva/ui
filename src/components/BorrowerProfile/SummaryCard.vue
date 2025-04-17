@@ -170,6 +170,7 @@ const mountQuery = gql`
 				}
 				loanAmount
 				loanFundraisingInfo {
+					id
 					fundedAmount
 					reservedAmount
 				}

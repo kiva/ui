@@ -31,6 +31,7 @@ fragment loanCardFieldsExtended on LoanBasic {
 	loanAmount
 	minNoteSize
 	loanFundraisingInfo {
+		id
 		fundedAmount
 		reservedAmount
 		isExpiringSoon

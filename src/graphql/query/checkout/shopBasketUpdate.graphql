@@ -73,6 +73,7 @@ query shopBasketUpdate($basketId: String) {
 								}
 							}
 							loanFundraisingInfo {
+								id
 								isExpiringSoon
 								fundedAmount
 								reservedAmount
