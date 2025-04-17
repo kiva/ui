@@ -1,6 +1,11 @@
 <template>
 	<div>
+		<my-kiva-page
+			v-if="showMyKivaPage"
+			:is-hero-enabled="isMykivaHeroEnabled"
+		/>
 		<www-page
+			v-else
 			main-class="tw-bg-secondary"
 		>
 			<template #secondary>
@@ -41,7 +46,9 @@ import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
+import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
+import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -72,6 +79,7 @@ export default {
 		YourTeams,
 		YourDonations,
 		TeamChallenge,
+		MyKivaPage,
 	},
 	data() {
 		return {
@@ -80,6 +88,8 @@ export default {
 			teamsChallengeEnable: false,
 			allowedTeams: [],
 			userPreferences: null,
+			showMyKivaPage: false,
+			isMykivaHeroEnabled: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -112,34 +122,52 @@ export default {
 	},
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
+		const userData = portfolioQueryData?.my ?? {};
 
-		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
-		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
-		let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
-		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
-		this.allowedTeams = userTeams.filter(t => {
-			return allowedTeamsSettings.includes(t.team.teamPublicId);
-		});
+		// User will always see old portfolio page when MyKiva is rolled out to all users
+		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
+		if (!myKivaAllUsersEnabled) {
+			this.showMyKivaPage = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				userData?.userPreferences,
+				userData.lender?.loanCount,
+			);
+		}
 
-		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
-		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
+		if (!this.showMyKivaPage) {
+			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
+			const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
+			let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
+			allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
+			this.allowedTeams = userTeams.filter(t => {
+				return allowedTeamsSettings.includes(t.team.teamPublicId);
+			});
+
+			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
+		} else {
+			this.isMykivaHeroEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_hero.value');
+		}
 	},
 	async mounted() {
-		this.loadEducationPost();
+		if (!this.showMyKivaPage) {
+			this.loadEducationPost();
 
-		if (this.$route?.query?.goal_saved) {
-			const badgeName = this.$route?.query?.goal_saved ?? '';
+			if (this.$route?.query?.goal_saved) {
+				const badgeName = this.$route?.query?.goal_saved ?? '';
 
-			if (!this.userPreferences?.id) {
-				const createPreferences = await this.createUserPreferences();
-				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
+				if (!this.userPreferences?.id) {
+					const createPreferences = await this.createUserPreferences();
+					this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
+				}
+
+				this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
+					this.$showTipMsg('Goal saved');
+				}).catch(() => {
+					this.$showTipMsg('There was a problem saving your goal', 'error');
+				});
 			}
-
-			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
-				this.$showTipMsg('Goal saved');
-			}).catch(() => {
-				this.$showTipMsg('There was a problem saving your goal', 'error');
-			});
 		}
 	}
 };
