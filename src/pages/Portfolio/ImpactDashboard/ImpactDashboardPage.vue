@@ -2,7 +2,6 @@
 	<div>
 		<my-kiva-page
 			v-if="showMyKivaPage"
-			:is-hero-enabled="isMykivaHeroEnabled"
 		/>
 		<www-page
 			v-else
@@ -49,6 +48,7 @@ import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
+import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -60,7 +60,6 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import JourneysSection from './JourneysSection';
-import MyKivaPage from '../MyKiva/MyKivaPage';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -92,7 +91,6 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
-			isMykivaHeroEnabled: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -126,12 +124,17 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
-		this.showMyKivaPage = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			userData?.userPreferences,
-			userData.lender?.loanCount,
-		);
+
+		// User will always see old portfolio page when MyKiva is rolled out to all users
+		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
+		if (!myKivaAllUsersEnabled) {
+			this.showMyKivaPage = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				userData?.userPreferences,
+				userData.lender?.loanCount,
+			);
+		}
 
 		if (!this.showMyKivaPage) {
 			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
@@ -144,8 +147,6 @@ export default {
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
-		} else {
-			this.isMykivaHeroEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_hero.value');
 		}
 	},
 	async mounted() {

@@ -14,11 +14,12 @@
 			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
-				align: slidesAligmment,
-				slidesToScroll,
+				align: 'start',
 			}"
+			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full md:tw-overflow-visible"
+			class="journey-card-carousel tw-w-full tw-overflow-visible"
+			@change="handleChange"
 		>
 			<template
 				v-for="(slide, index) in orderedSlides"
@@ -38,13 +39,24 @@
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
 					<div
-						class="slide tw-absolute tw-w-full tw-bottom-0 tw-pb-1.5 tw-px-1.5 tw-align-bottom tw-rounded-b"
+						class="
+							slide
+							tw-absolute
+							tw-w-full
+							tw-bottom-0
+							tw-pb-1.5
+							tw-px-1.5
+							md:tw-pb-2
+							md:tw-px-2
+							tw-align-bottom
+							tw-rounded-b
+						"
 						:style="[
 							{ 'height': overlayHeight(slide) },
 						]"
 					>
-						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full">
-							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full tw-mb-1.5">
+						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
+							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
 								<img
 									class="tw-h-6"
 									:src="badgeUrl(slide)"
@@ -118,14 +130,7 @@ const props = defineProps({
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
-
-const slidesAligmment = computed(() => {
-	return isMobile.value ? 'start' : 'center';
-});
-
-const slidesToScroll = computed(() => {
-	return isMobile.value ? 1 : 2;
-});
+const currentIndex = ref(0);
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
@@ -146,6 +151,14 @@ const orderedSlides = computed(() => {
 	defaultBadges.forEach(badgeKey => {
 		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
 		if (achievementContent) {
+			// eslint-disable-next-line no-unsafe-optional-chaining
+			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
+			const lastTier = achievementContent.achievementData?.tiers[lastTierIndex];
+			// Hidden slide for completed journeys
+			if (lastTier?.completedDate) {
+				return;
+			}
+
 			const tier = achievementContent.achievementData?.tiers?.find(t => !t.completedDate);
 			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
 			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
@@ -161,7 +174,6 @@ const orderedSlides = computed(() => {
 				target: tier.target,
 				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
 				badgeImgUrl: contentfulData?.imageUrl,
-				level: tier.level,
 			});
 		}
 	});
@@ -190,7 +202,7 @@ const title = slide => {
 	return richTextUiSettingsData.title || '';
 };
 
-const subTitle = slide => `Level ${slide.level}: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+const subTitle = slide => `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
 
 const badgeUrl = slide => slide?.badgeImgUrl || '';
 
@@ -225,6 +237,24 @@ const overlayHeight = slide => {
 	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
 };
 
+const singleSlideWidth = computed(() => {
+	if (isMobile.value) {
+		return '90%';
+	}
+	return '520px';
+});
+
+const handleChange = interaction => {
+	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
+	currentIndex.value = interaction.value;
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		`${direction}-step-carousel`,
+	);
+};
+
 // Watch orderedSlides to update isLoading
 watch(orderedSlides, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
@@ -235,11 +265,9 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
-	width: 322px;
 	height: 402px;
 
 	@screen md {
-		width: 520px;
 		height: 390px;
 	}
 }
@@ -256,6 +284,10 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 .journey-card-carousel:deep(.kv-carousel__controls > div) {
 	@apply tw-hidden;
+}
+
+.journey-card-carousel:deep(div:first-child) {
+	@apply tw-gap-2;
 }
 
 .slide {

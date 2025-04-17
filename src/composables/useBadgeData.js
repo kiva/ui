@@ -20,13 +20,20 @@ export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
-export const US_ECONOMIC_EQUALITY_FILTER = 'country=PR,US';
-export const CLIMATE_ACTION_FILTER = 'tag=8,9';
-export const REFUGEE_EQUALITY_FILTER = 'attribute=28';
-export const WOMENS_EQUALITY_FILTER = 'gender=female';
-export const BASIC_NEEDS_FILTER = 'sector=6,10';
-export const MY_IMPACT_JOURNEYS_ID = 'my-impact-journeys';
-export const MY_ACHIEVEMENTS_ID = 'my-achievements';
+export const FILTERS = {
+	[ID_WOMENS_EQUALITY]: { gender: ['female'] },
+	[ID_US_ECONOMIC_EQUALITY]: { country: ['PR', 'US'] },
+	[ID_CLIMATE_ACTION]: { tag: ['8', '9'] },
+	[ID_REFUGEE_EQUALITY]: { attribute: ['28'] },
+	[ID_BASIC_NEEDS]: { sector: ['6', '10'] },
+};
+export const CATEGORIES = {
+	[ID_WOMENS_EQUALITY]: 'women',
+	[ID_US_ECONOMIC_EQUALITY]: 'kiva-u-s',
+	[ID_CLIMATE_ACTION]: 'eco-friendly',
+	[ID_REFUGEE_EQUALITY]: 'refugees-and-i-d-ps',
+	[ID_BASIC_NEEDS]: 'basic-needs',
+};
 
 /**
  * Utilities for loading and combining tiered badge data
@@ -299,27 +306,31 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Gets the URL params of the badge to be used in lend/filter
+	 * Returns the loan finding URL for the provided badge and current route
 	 *
-	 * @param combineBadgeData The combined data for the badge
-	 * @returns The URL params
+	 * @param badgeId The ID of the badge
+	 * @param currentRoute The current route
+	 * @returns The URL for loan finding
 	 */
-	const getFilteredUrl = combinedBadgeData => {
-		switch (combinedBadgeData.id) {
-			case ID_WOMENS_EQUALITY:
-				return WOMENS_EQUALITY_FILTER;
-			case ID_US_ECONOMIC_EQUALITY:
-				return US_ECONOMIC_EQUALITY_FILTER;
-			case ID_CLIMATE_ACTION:
-				return CLIMATE_ACTION_FILTER;
-			case ID_REFUGEE_EQUALITY:
-				return REFUGEE_EQUALITY_FILTER;
-			case ID_EQUITY:
-				return '';
-			case ID_BASIC_NEEDS:
-			default:
-				return BASIC_NEEDS_FILTER;
+	const getLoanFindingUrl = (badgeId, currentRoute) => {
+		const FILTER_PAGE = '/lend/filter';
+		const CATEGORY_PAGE = `/lend-by-category/${CATEGORIES[badgeId]}`;
+		const routePath = currentRoute?.path;
+
+		if (routePath === CATEGORY_PAGE) {
+			return undefined;
 		}
+
+		if (routePath === FILTER_PAGE) {
+			const routeQuery = JSON.parse(JSON.stringify(currentRoute?.query ?? {}));
+			const filters = FILTERS[badgeId];
+
+			Object.keys(filters).forEach(key => { routeQuery[key] = filters[key]; });
+
+			return `${FILTER_PAGE}?${new URLSearchParams(routeQuery).toString()}`;
+		}
+
+		return CATEGORY_PAGE;
 	};
 
 	/**
@@ -569,7 +580,7 @@ export default function useBadgeData() {
 		getContentfulLevelData,
 		getActiveTierData,
 		getTierBadgeDataByLevel,
-		getFilteredUrl,
+		getLoanFindingUrl,
 		getBadgeWithVisibleTiers,
 		getLastCompletedBadgeLevelData,
 		getHighestPriorityDisplayBadge,

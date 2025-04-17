@@ -59,6 +59,14 @@ async function getUserId(apolloClient) {
 	return result?.data?.my?.userAccount?.id ?? null;
 }
 
+async function setupApolloCachePersistence(cache) {
+	const { persistCache, SessionStorageWrapper } = await import('apollo3-cache-persist');
+	await persistCache({
+		cache,
+		storage: new SessionStorageWrapper(window.sessionStorage),
+	});
+}
+
 async function setupAuthErrorHandling(kvAuth0, apolloClient) {
 	const { default: showTipMessage } = await import('#src/graphql/mutation/tipMessage/showTipMessage.graphql');
 	// Show a tip message when there is an unhandled auth0 error
@@ -108,12 +116,15 @@ async function setupSentry(app, router) {
 	const Sentry = await import('@sentry/vue');
 	Sentry.init({
 		app,
-		trackComponents: true,
 		dsn: config.sentryURI,
 		integrations: [
-			new Sentry.BrowserTracing({
-				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-				tracingOrigins: [config.host],
+			Sentry.browserTracingIntegration({
+				router,
+			}),
+			Sentry.vueIntegration({
+				tracingOptions: {
+					trackComponents: true,
+				},
 			}),
 		],
 		release: UI_TAG,
@@ -121,6 +132,7 @@ async function setupSentry(app, router) {
 		// of transactions for performance monitoring.
 		// We recommend adjusting this value in production
 		tracesSampleRate: config?.sentryTraceSampleRate,
+		tracePropagationTargets: [config.host],
 		beforeSend(event) {
 			// make sentry colleted event easy to compare to
 			const eventAsString = JSON.stringify(event);
@@ -239,6 +251,10 @@ async function initApp() {
 	// Apply Server state to Client Store
 	if (window.__APOLLO_STATE__) {
 		apolloClient.cache.restore(window.__APOLLO_STATE__);
+	}
+	// Apply persisted state from session storage to Client Store
+	if (config.apolloPersistCache) {
+		setupApolloCachePersistence(apolloClient.cache);
 	}
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);

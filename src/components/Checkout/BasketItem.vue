@@ -24,7 +24,7 @@
 					/>
 				</div>
 				<KvCartPill
-					v-if="contributesInAchievement || isFirstLoan"
+					v-if="showPill"
 					show-bg
 				>
 					<template #icon>
@@ -193,6 +193,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isMyKivaEnabled: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -229,6 +233,9 @@ export default {
 				return this.forceTeamId;
 			}
 			return this.loan.team ? this.loan.team.id : 0;
+		},
+		showPill() {
+			return this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan);
 		}
 	},
 	watch: {

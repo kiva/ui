@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		:class="{ 'badge-modal': !isJourneyActive && !isEarnedSection, 'wide-modal': state === STATE_IN_PROGRESS }"
+		:class="{ 'badge-modal': !isJourneyActive && !isEarnedSection }"
 		:visible="show"
 		:title="title"
 		@lightbox-closed="closeLightbox"
@@ -38,7 +38,7 @@ import {
 	defineComponent,
 	h,
 } from 'vue';
-import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import { mdiArrowLeft } from '@mdi/js';
 
 const ModalLoader = defineComponent(() => {
@@ -49,11 +49,6 @@ const ModalLoader = defineComponent(() => {
 
 const BadgeModalContentJourney = defineAsyncComponent({
 	loader: () => import('#src/components/MyKiva/BadgeModalContentJourney'),
-	loadingComponent: ModalLoader,
-	delay: 100,
-});
-const BadgeInProgress = defineAsyncComponent({
-	loader: () => import('#src/components/MyKiva/BadgeInProgress'),
 	loadingComponent: ModalLoader,
 	delay: 100,
 });
@@ -122,17 +117,12 @@ const title = computed(() => {
 const contentComponent = computed(() => {
 	switch (props.state) {
 		case STATE_EARNED: return BadgeCompleted;
-		case STATE_IN_PROGRESS: return BadgeInProgress;
 		case STATE_JOURNEY: default: return BadgeModalContentJourney;
 	}
 });
 </script>
 
 <style lang="postcss" scoped>
-.wide-modal :deep([data-test*=lightbox]) {
-	max-width: 67rem !important;
-}
-
 .badge-modal :deep([data-test*=lightbox]) > div.tw-flex {
 	@apply md:!tw-pt-2.5 md:tw-pb-2.5 tw-pb-0;
 }
