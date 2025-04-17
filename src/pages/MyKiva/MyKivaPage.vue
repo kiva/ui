@@ -122,7 +122,6 @@
 							:loans="loans"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
-							@back-to-journey="handleBackToJourney"
 						/>
 					</div>
 				</section>
@@ -161,7 +160,7 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -267,14 +266,6 @@ const handleBadgeModalClosed = () => {
 	}
 	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
-};
-
-const handleBackToJourney = badge => {
-	if (badge.id === ID_EQUITY) {
-		handleBadgeModalClosed();
-	} else {
-		state.value = STATE_JOURNEY;
-	}
 };
 
 const fetchUserUpdates = loadMore => {
