@@ -90,10 +90,13 @@ import KvExpandable from '#src/components/Kv/KvExpandable';
 import JourneyImg from '#src/assets/images/thanks-page/journey.svg';
 import JourneyDesktopImg from '#src/assets/images/thanks-page/journey-desktop.svg';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
+import useMyKivaHome from '#src/composables/useMyKivaHome';
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
+const { portfolioPath } = useMyKivaHome(apollo, $kvTrackEvent);
 
 const emit = defineEmits(['continue-as-guest']);
 
@@ -136,7 +139,7 @@ const handleClickContinue = () => {
 		emit('continue-as-guest');
 		return;
 	}
-	router.push('/portfolio');
+	router.push(portfolioPath.value);
 };
 </script>
 

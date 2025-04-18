@@ -12,6 +12,9 @@ export default {
 		homePagePath() {
 			return this.redirectToMyKivaHomepage ? '/mykiva' : '/';
 		},
+		portfolioPath() {
+			return this.redirectToMyKivaHomepage ? '/mykiva' : '/portfolio';
+		}
 	},
 	async mounted() {
 		const { data } = await this.apollo.query({

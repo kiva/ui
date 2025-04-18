@@ -28,6 +28,10 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 		return redirectToMyKivaHomepage.value ? '/mykiva' : '/';
 	});
 
+	const portfolioPath = computed(() => {
+		return redirectToMyKivaHomepage.value ? '/mykiva' : '/portfolio';
+	});
+
 	onMounted(async () => {
 		await fetchUserData();
 
@@ -42,5 +46,6 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 
 	return {
 		homePagePath,
+		portfolioPath,
 	};
 }
