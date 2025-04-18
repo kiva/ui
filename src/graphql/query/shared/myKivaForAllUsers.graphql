@@ -1,0 +1,18 @@
+query myKivaForAllUsers {
+	my {
+		id
+		userPreferences {
+			id
+			preferences
+		}
+		loans {
+			totalCount
+		}
+	}
+	general {
+		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
+			key
+			value
+		}
+	}
+}
