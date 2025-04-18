@@ -15,7 +15,7 @@
 					<div class="tw-flex tw-justify-center">
 						<a
 							class="header__button tw-inline-flex"
-							:href="redirectToMyKivaHomepage ? '/mykiva' : '/'"
+							:href="homePagePath"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
@@ -107,7 +107,7 @@
 						<div class="header__logo">
 							<a
 								class="header__button tw-inline-flex"
-								:href="redirectToMyKivaHomepage ? '/mykiva' : '/'"
+								:href="homePagePath"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>

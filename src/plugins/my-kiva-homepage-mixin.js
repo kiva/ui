@@ -8,7 +8,12 @@ export default {
 			redirectToMyKivaHomepage: false,
 		};
 	},
-	async created() {
+	computed: {
+		homePagePath() {
+			return this.redirectToMyKivaHomepage ? '/mykiva' : '/';
+		},
+	},
+	async mounted() {
 		const { data } = await this.apollo.query({
 			query: myKivaForAllUsersQuery,
 		});

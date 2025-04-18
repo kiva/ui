@@ -8,7 +8,7 @@
 		</p>
 
 		<div class="tw-flex tw-flex-col tw-text-center tw-my-5 tw-gap-y-2 tw-text-subhead">
-			<router-link :to="redirectToMyKivaHomepage ? '/mykiva' : '/'">
+			<router-link :to="homePagePath">
 				Home
 			</router-link>
 			<router-link to="/lend">
@@ -41,6 +41,6 @@ import useMyKivaHome from '#src/composables/useMyKivaHome';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { redirectToMyKivaHomepage } = useMyKivaHome(apollo, $kvTrackEvent);
+const { homePagePath } = useMyKivaHome(apollo, $kvTrackEvent);
 
 </script>

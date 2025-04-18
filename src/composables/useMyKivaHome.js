@@ -1,5 +1,6 @@
 import {
 	ref,
+	computed,
 	onMounted,
 } from 'vue';
 import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
@@ -23,6 +24,10 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 		});
 	};
 
+	const homePagePath = computed(() => {
+		return redirectToMyKivaHomepage.value ? '/mykiva' : '/';
+	});
+
 	onMounted(async () => {
 		await fetchUserData();
 
@@ -36,6 +41,6 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 	});
 
 	return {
-		redirectToMyKivaHomepage,
+		homePagePath,
 	};
 }
