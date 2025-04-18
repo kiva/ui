@@ -24,12 +24,12 @@ export default {
 		const userData = data?.my ?? null;
 		const myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 
-		this.redirectToMyKivaHomepage = userData?.id && getIsMyKivaEnabled(
+		this.redirectToMyKivaHomepage = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
 			userData?.userPreferences,
 			userData?.loans?.totalCount ?? 0,
 			myKivaFlagEnabled,
-		);
+		) && userData?.id;
 	}
 };

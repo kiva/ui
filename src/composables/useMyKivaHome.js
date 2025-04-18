@@ -35,13 +35,13 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 	onMounted(async () => {
 		await fetchUserData();
 
-		redirectToMyKivaHomepage.value = userData.value?.id && getIsMyKivaEnabled(
+		redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
 			apollo,
 			$kvTrackEvent,
 			userData.value?.userPreferences,
 			userData.value?.loans?.totalCount ?? 0,
 			myKivaFlagEnabled.value,
-		);
+		) && userData.value?.id;
 	});
 
 	return {
