@@ -117,6 +117,8 @@ const PLACEHOLDER_SLIDES_LENGTH = 2;
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
+const emit = defineEmits(['update-journey']);
+
 const props = defineProps({
 	slides: {
 		type: Array,
@@ -228,7 +230,15 @@ const goToSecondaryCtaUrl = slide => {
 	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
 	// eslint-disable-next-line max-len
 	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	router.push(secondaryCtaUrl);
+	const urlSplit = secondaryCtaUrl.split('?');
+	const urlParams = urlSplit[1];
+
+	if (urlParams && urlParams.includes('journey')) {
+		const { achievementKey } = richTextUiSettingsData;
+		emit('update-journey', achievementKey);
+	} else {
+		router.push(secondaryCtaUrl);
+	}
 };
 
 const showSecondaryCta = slide => secondaryCtaText(slide);

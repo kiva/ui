@@ -21,6 +21,7 @@
 				<JourneyCardCarousel
 					:slides="heroSlides"
 					:badges-data="badgeData"
+					@update-journey="updateJourney"
 				/>
 			</section>
 			<section v-if="!allBadgesCompleted && !isHeroEnabled" class="tw-pt-2">
@@ -108,6 +109,7 @@
 						</h3>
 						<BadgesSection
 							:badge-data="badgeData"
+							:selected-journey="selectedJourney"
 							@badge-clicked="handleBadgeSectionClicked"
 						/>
 
@@ -209,6 +211,7 @@ const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const heroSlides = ref([]);
 const isHeroEnabled = ref(false);
+const selectedJourney = ref('');
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -259,6 +262,7 @@ const handleBadgeJourneyLevelClicked = payload => {
 };
 
 const handleBadgeModalClosed = () => {
+	selectedJourney.value = '';
 	const queryParams = { ...router.currentRoute?.value?.query };
 	if (queryParams.journey) {
 		delete queryParams.journey;
@@ -328,6 +332,10 @@ const fetchContentfulHeroData = () => {
 		}).catch(e => {
 			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
 		});
+};
+
+const updateJourney = journey => {
+	selectedJourney.value = journey;
 };
 
 onServerPrefetch(async () => {
