@@ -35,14 +35,16 @@ export default function useMyKivaHome(apollo, $kvTrackEvent, cookieStore) {
 	onMounted(async () => {
 		await fetchUserData();
 
-		redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
-			apollo,
-			$kvTrackEvent,
-			userData.value?.userPreferences,
-			userData.value?.loans?.totalCount ?? 0,
-			myKivaFlagEnabled.value,
-			cookieStore,
-		) && userData.value?.id;
+		if (myKivaFlagEnabled.value) {
+			redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
+				apollo,
+				$kvTrackEvent,
+				userData.value?.userPreferences,
+				userData.value?.loans?.totalCount ?? 0,
+				myKivaFlagEnabled.value,
+				cookieStore,
+			) && userData.value?.id;
+		}
 	});
 
 	return {
