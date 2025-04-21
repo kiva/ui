@@ -29,31 +29,29 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 	`caddy start` to run in the background or `caddy run` keep the terminal live for additional monitoring
 
-4. Add config/env file
-
-- Create `.config.env` in repo root locally
-```bash
-# Search for values in Slack history or reach out to another engineer
-UI_SESSION_SECRET=X
-UI_AUTH0_CLIENT_SECRET=X
-```
+4. Add config/env file -> create `.config.env` in repo root locally
+	```bash
+	# Search for values in Slack history or reach out to another engineer
+	UI_SESSION_SECRET=X
+	UI_AUTH0_CLIENT_SECRET=X
+	```
 
 5. In a separate terminal at the root of the ui repo
-``` bash
-# Set you node version using nvm
-$ nvm use
+	``` bash
+	# Set you node version using nvm
+	$ nvm use
 
-# Install dependencies
-$ npm ci
+	# Install dependencies
+	$ npm ci
 
-# Install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
-$ npx husky install
+	# Install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
+	$ npx husky install
 
-$ npm run dev -- --config=dev-custom-host
+	$ npm run dev -- --config=dev-custom-host
 
-# The local dev URL is now: https://kiva-ui.local/, but make sure to access a page actually run by UI, for example https://kiva-ui.local/lend-by-category/women
+	# The local dev URL is now: https://kiva-ui.local/, but make sure to access a page actually run by UI, for example https://kiva-ui.local/lend-by-category/women
 
-```
+	```
 
 5. To stop Caddy when you're done
 
