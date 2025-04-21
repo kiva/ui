@@ -14,7 +14,7 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 # Local Development Setup with Caddy
 
-> IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting alot of the Monolith TiltVM setup so this just bypasses it all.
+> IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting a lot of the Monolith TiltVM setup so this just bypasses it all.
 
 ### Required Dependencies
 
@@ -29,7 +29,16 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 	`caddy start` to run in the background or `caddy run` keep the terminal live for additional monitoring
 
-4. In a separate terminal at the root of the ui repo
+4. Add config/env file
+
+- Create `.config.env` in repo root locally
+```bash
+# Search for values in Slack history or reach out to another engineer
+UI_SESSION_SECRET=X
+UI_AUTH0_CLIENT_SECRET=X
+```
+
+5. In a separate terminal at the root of the ui repo
 ``` bash
 # Set you node version using nvm
 $ nvm use
