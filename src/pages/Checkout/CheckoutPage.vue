@@ -647,13 +647,17 @@ export default {
 			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 		}
 
-		this.isMyKivaEnabled = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			this.userPreferences,
-			this.lenderLoanCount,
-			this.myKivaFlagEnabled,
-		);
+		// Checkout page MyKiva pills only visible with new feature
+		if (this.myKivaFlagEnabled) {
+			this.isMyKivaEnabled = getIsMyKivaEnabled(
+				this.apollo,
+				this.$kvTrackEvent,
+				this.userPreferences,
+				this.lenderLoanCount,
+				this.myKivaFlagEnabled,
+				this.cookieStore,
+			);
+		}
 	},
 	mounted() {
 		// update current time every second for reactivity

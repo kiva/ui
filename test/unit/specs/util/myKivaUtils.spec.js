@@ -7,6 +7,9 @@ import {
 	MY_KIVA_PREFERENCE_KEY,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
+	setGuestAssignmentCookie,
+	checkGuestAssignmentCookie,
+	GUEST_ASSIGNMENT_COOKIE,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -210,6 +213,78 @@ describe('myKivaUtils.js', () => {
 					preferences: JSON.stringify({ test: 'test', new: 'new' }),
 				},
 			});
+		});
+	});
+
+	describe('setGuestAssignmentCookie', () => {
+		it('should set the guest assignment cookie if MyKiva is enabled and the user is a guest', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = true;
+			const isGuest = true;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE, 'true', { path: '/' });
+		});
+
+		it('should not set the guest assignment cookie if MyKiva is not enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = false;
+			const isGuest = true;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the guest assignment cookie if the user is not a guest', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = true;
+			const isGuest = false;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not throw an error if cookieStore is undefined', () => {
+			expect(() => setGuestAssignmentCookie(undefined, true, true)).not.toThrow();
+		});
+	});
+
+	describe('checkGuestAssignmentCookie', () => {
+		it('should return true if the guest assignment cookie exists', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue('true'),
+			};
+
+			const result = checkGuestAssignmentCookie(cookieStore);
+
+			expect(result).toBe(true);
+			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
+		});
+
+		it('should return false if the guest assignment cookie does not exist', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue(undefined),
+			};
+
+			const result = checkGuestAssignmentCookie(cookieStore);
+
+			expect(result).toBe(false);
+			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
+		});
+
+		it('should return false if cookieStore is undefined', () => {
+			const result = checkGuestAssignmentCookie(undefined);
+
+			expect(result).toBe(false);
 		});
 	});
 

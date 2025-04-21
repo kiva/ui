@@ -140,6 +140,8 @@ export default {
 				this.$kvTrackEvent,
 				userData?.userPreferences,
 				userData.lender?.loanCount,
+				false,
+				this.cookieStore,
 			);
 		} else {
 			const { version } = this.apollo.readFragment({
