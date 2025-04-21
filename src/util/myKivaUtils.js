@@ -9,6 +9,7 @@ export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
 export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
+export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 
 export const createUserPreferencesMutation = gql`
 	mutation createUserPreferences($preferences: String) {
@@ -120,6 +121,30 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
 };
 
 /**
+ * Set session cookie for guest MyKiva assignment to ensure consistent assignment after login
+ *
+ * @param cookieStore The cookie store
+ * @param myKivaEnabled Whether the MyKiva experience is enabled
+ * @param isGuest Whether the user is a guest
+ */
+export const setGuestAssignmentCookie = (cookieStore, myKivaEnabled, isGuest) => {
+	// Only add the session cookie if the user is a guest and MyKiva is enabled
+	if (isGuest && myKivaEnabled) {
+		cookieStore?.set(GUEST_ASSIGNMENT_COOKIE, 'true', { path: '/' });
+	}
+};
+
+/**
+ * Checks for existence of session cookie for guest MyKiva assignment
+ *
+ * @param cookieStore The cookie store
+ * @returns Whether the guest assignment cookie exists
+ */
+export const checkGuestAssignmentCookie = cookieStore => {
+	return !!cookieStore?.get(GUEST_ASSIGNMENT_COOKIE);
+};
+
+/**
  * Gets whether the MyKiva experience is enabled for the user, excluding some specific logic for the TY page
  *
  * @param apollo The current Apollo client
@@ -127,9 +152,17 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
  * @param userPreferences The user preferences object
  * @param loanTotal The total number of loans the user has made
  * @param myKivaFlagEnabled Whether the MyKiva flag is enabled
+ * @param cookieStore The cookie store
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanTotal, myKivaFlagEnabled) => {
+export const getIsMyKivaEnabled = (
+	apollo,
+	$kvTrackEvent,
+	userPreferences,
+	loanTotal,
+	myKivaFlagEnabled,
+	cookieStore,
+) => {
 	// Parse the user preferences to determine if the user has seen MyKiva
 	let parsedPreferences = {};
 	let hasSeenMyKiva = false;
@@ -141,7 +174,8 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, userPreferences, loanT
 		logFormatter('getIsMyKivaEnabled JSON parsing exception', 'error');
 	}
 
-	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT || myKivaFlagEnabled) {
+	// eslint-disable-next-line max-len
+	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT || myKivaFlagEnabled || checkGuestAssignmentCookie(cookieStore)) {
 		const { version: myKivaVersion } = apollo.readFragment({
 			id: `Experiment:${MY_KIVA_EXP}`,
 			fragment: experimentVersionFragment,

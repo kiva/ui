@@ -322,6 +322,7 @@ onMounted(async () => {
 		userData.value?.my?.userPreferences,
 		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 		myKivaFlagEnabled.value,
+		cookieStore,
 	);
 
 	if (myKivaExperimentEnabled.value && !isGuest.value) {

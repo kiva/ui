@@ -8,7 +8,7 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import logFormatter from '#src/util/logFormatter';
 import myKivaForAllUsersQuery from '#src/graphql/query/shared/myKivaForAllUsers.graphql';
 
-export default function useMyKivaHome(apollo, $kvTrackEvent) {
+export default function useMyKivaHome(apollo, $kvTrackEvent, cookieStore) {
 	const redirectToMyKivaHomepage = ref(false);
 	const myKivaFlagEnabled = ref(false);
 	const userData = ref(false);
@@ -41,6 +41,7 @@ export default function useMyKivaHome(apollo, $kvTrackEvent) {
 			userData.value?.userPreferences,
 			userData.value?.loans?.totalCount ?? 0,
 			myKivaFlagEnabled.value,
+			cookieStore,
 		) && userData.value?.id;
 	});
 

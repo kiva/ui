@@ -31,6 +31,7 @@ export default {
 				userData?.userPreferences,
 				userData?.loans?.totalCount ?? 0,
 				myKivaFlagEnabled,
+				this.cookieStore,
 			) && userData?.id;
 		}
 	}

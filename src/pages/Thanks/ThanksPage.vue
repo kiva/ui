@@ -543,6 +543,7 @@ export default {
 			data?.my?.userPreferences,
 			!this.isGuest ? data?.my?.loans?.totalCount : 1,
 			this.myKivaFlagEnabled,
+			this.cookieStore,
 		);
 
 		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;

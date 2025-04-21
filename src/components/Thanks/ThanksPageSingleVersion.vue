@@ -95,10 +95,12 @@ import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import _orderBy from 'lodash/orderBy';
+import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const cookieStore = inject('cookieStore');
 
 const props = defineProps({
 	isGuest: {
@@ -262,6 +264,8 @@ onMounted(() => {
 		analyticsModuleOrder,
 		userType.value,
 	);
+
+	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
 });
 </script>
 
