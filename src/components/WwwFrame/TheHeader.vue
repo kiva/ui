@@ -2,7 +2,7 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'lg:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
+			'md:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
 		}"
 	>
 		<nav
