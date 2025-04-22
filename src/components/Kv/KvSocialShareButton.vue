@@ -42,17 +42,17 @@
 				<kv-button
 					variant="ghost"
 					class="social-button"
-					data-testid="share-twitter-button"
-					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
+					data-testid="share-bluesky-button"
+					v-kv-track-event="[trackingCategory, 'share', 'bluesky', utmCampaign, loanId]"
 					@click="showSharePopUp(
-						twitterShareUrl({utmCampaign, utmContent}),
-						'Thanks for tweeting!')"
+						blueskyShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing!')"
 				>
 					<kv-material-icon
-						class="social-button__icon social-button__icon--twitter"
-						:icon="mdiTwitter"
+						name="bluesky" title="Bluesky"
+						class="social-button__icon social-button__icon--bluesky"
 					/>
-					<span class="tw-font-medium">Twitter</span>
+					<span class="tw-font-medium">Bluesky</span>
 				</kv-button>
 				<kv-button
 					variant="ghost"
@@ -92,7 +92,6 @@
 import {
 	mdiFacebook,
 	mdiLinkedin,
-	mdiTwitter,
 	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
@@ -179,7 +178,6 @@ export default {
 			isLightboxVisible: this.openLightbox || false,
 			mdiFacebook,
 			mdiLinkedin,
-			mdiTwitter,
 			mdiLink,
 		};
 	},
@@ -218,17 +216,25 @@ export default {
 
 <style lang="scss" scoped>
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
+
+.social {
+	&__btn {
+		&--bluesky {
+			border: 1px solid $color-bluesky;
+
+			.social__icon {
+				fill: $color-bluesky;
+			}
+		}
+	}
+}
 
 .social-button {
 	&__icon {
 		&--linkedin {
 			color: $color-linkedin;
-		}
-
-		&--twitter {
-			color: $color-twitter;
 		}
 
 		&--facebook {

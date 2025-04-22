@@ -74,6 +74,21 @@
 							</button>
 							<button
 								class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-border tw-border-gray-800 tw-rounded tw-py-1 tw-basis-1/3"
+								@click="showSharePopUp(
+									blueskyShareUrl({utmCampaign, utmContent}),
+									'Thanks for sharing to Bluesky!')"
+								v-kv-track-event="[
+									'post-checkout',
+									'share',
+									'bluesky',
+									utmCampaign,
+									selectedLoanId]"
+							>
+								<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+								<span>Share</span>
+							</button>
+							<button
+								class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-border tw-border-gray-800 tw-rounded tw-py-1 tw-basis-1/3"
 								v-kv-track-event="[
 									'post-checkout',
 									'share',
@@ -202,7 +217,7 @@ export default {
 			}
 			return getFullUrl(`${base}/${invitedBy}`, args);
 		},
-		// Expected by social-sharing-mixin (used by X/Twitter and "copy link")
+		// Expected by social-sharing-mixin (used by X/Twitter/Bluesky and "copy link")
 		shareMessage() {
 			return `Kiva is an easy way to make a real difference in someone's life.${
 				this.borrowerName && this.borrowerLocation
