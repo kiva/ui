@@ -43,8 +43,12 @@
 </template>
 
 <script setup>
-import { computed, watch, inject } from 'vue';
-import { useRoute } from 'vue-router';
+import {
+	computed,
+	watch,
+	inject,
+	toRefs
+} from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
@@ -53,7 +57,6 @@ import BadgeContainer from './BadgeContainer';
 
 const emit = defineEmits(['badge-clicked']);
 
-const route = useRoute();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
@@ -61,7 +64,13 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
+	selectedJourney: {
+		type: String,
+		default: ''
+	},
 });
+
+const { selectedJourney } = toRefs(props);
 
 const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
@@ -104,10 +113,9 @@ const badgeClicked = badge => {
 	emit('badge-clicked', badge);
 };
 
-watch(route, () => {
-	if (route?.hash === '#my-impact-journeys' && Object.keys(route?.query).length !== 0) {
-		const journeyId = route.query.journey;
-		const badge = visibleBadges.value.find(b => b.id === journeyId);
+watch(selectedJourney, () => {
+	if (selectedJourney.value) {
+		const badge = visibleBadges.value.find(b => b.id === selectedJourney.value);
 		if (badge) {
 			badgeClicked(badge);
 		}

@@ -279,7 +279,7 @@ export default [
 	},
 	{
 		path: '/lend-by-category/recommended-by-lend-by-categoryers',
-		redirect: '/lend-by-category/recommended-by-lenders',
+		redirect: '/lend-by-category',
 	},
 	{
 		path: '/lend-by-category/retail-loans',
@@ -306,12 +306,7 @@ export default [
 	},
 	{
 		path: '/lend-by-category/recommended-by-lenders',
-		component: () => import('#src/pages/Lend/LoanChannelCategoryPageRecommendedByLenders'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounceEmailCapture: true,
-			unbouncePopUp: true,
-		},
+		redirect: '/lend-by-category'
 	},
 	{
 		path: '/lend-by-category/:category',
@@ -436,6 +431,14 @@ export default [
 		}),
 		meta: {
 			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/mykiva',
+		component: () => import('#src/pages/MyKiva/MyKivaPage'),
+		meta: {
+			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},

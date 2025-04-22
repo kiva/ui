@@ -1,0 +1,106 @@
+query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
+	shop {
+		id
+		receipt(checkoutId: $checkoutId, visitorId: $visitorId) {
+			id
+			transactionTime
+			credits {
+				values {
+					id
+					creditType
+					amount
+				}
+			}
+			totals {
+				bonusAppliedTotal
+				itemTotal
+				donationTotal
+				kivaCardTotal
+				depositTotals {
+					depositTotal
+					kivaCreditAdded
+					kivaCreditUsed
+				}
+				freeTrialAppliedTotal
+				kivaCreditAppliedTotal
+				redemptionCodeAppliedTotal
+				universalCodeAppliedTotal
+			}
+			hasFreeCredits
+			items {
+				totalCount
+				values {
+					id
+					price
+					basketItemType
+					... on KivaCard {
+						individualPrice
+						basketItemType
+						kivaCardObject {
+							redemptionCode
+							deliveryType
+							mailingInfo {
+								firstName
+								lastName
+								address
+								address2
+								city
+								state
+								zip
+							}
+							recipient {
+								name
+								email
+							}
+						}
+					}
+					... on LoanReservation {
+						loan {
+							name
+							id
+							image {
+								id
+								url
+								default: url(customSize: "w480h300")
+								hash
+							}
+							use
+							fundraisingPercent @client
+							fundraisingTimeLeft @client
+							fundraisingTimeLeftMilliseconds @client
+							plannedExpirationDate
+							geocode {
+								city
+								country {
+									id
+									name
+									isoCode
+									region
+								}
+							}
+							loanAmount
+							loanFundraisingInfo {
+								id
+								fundedAmount
+								reservedAmount
+							}
+							distributionModel
+							unreservedAmount @client
+							inPfp
+							gender
+							tags
+							... on LoanPartner {
+								themes
+							}
+						}
+						team {
+							id
+							teamPublicId
+							name
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -93,13 +93,14 @@ import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGe
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
 import { KvLightbox } from '@kiva/kv-components';
-import { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 import _orderBy from 'lodash/orderBy';
+import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const cookieStore = inject('cookieStore');
 
 const props = defineProps({
 	isGuest: {
@@ -137,6 +138,10 @@ const props = defineProps({
 	guestUsername: {
 		type: String,
 		default: '',
+	},
+	isMyKivaAllUsers: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -228,9 +233,7 @@ const handleContinue = () => {
 			numberOfBadges.value,
 		);
 
-		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
-
-		router.push(`/portfolio${!numberOfBadges.value ? '' : `#${sectionToScrollTo}`}`);
+		router?.push(props.isMyKivaAllUsers ? '/mykiva' : '/portfolio');
 	}
 };
 
@@ -261,6 +264,8 @@ onMounted(() => {
 		analyticsModuleOrder,
 		userType.value,
 	);
+
+	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
 });
 </script>
 

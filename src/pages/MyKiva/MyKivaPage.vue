@@ -21,6 +21,7 @@
 				<JourneyCardCarousel
 					:slides="heroSlides"
 					:badges-data="badgeData"
+					@update-journey="updateJourney"
 				/>
 			</section>
 			<section v-if="!allBadgesCompleted && !isHeroEnabled" class="tw-pt-2">
@@ -100,7 +101,7 @@
 							MILESTONES AND ACHIEVEMENTS
 						</span>
 					</div>
-					<div :id="MY_IMPACT_JOURNEYS_ID" class="tw-mt-3">
+					<div class="tw-mt-3">
 						<h3
 							class="tw-text-center tw-mb-2"
 						>
@@ -108,6 +109,7 @@
 						</h3>
 						<BadgesSection
 							:badge-data="badgeData"
+							:selected-journey="selectedJourney"
 							@badge-clicked="handleBadgeSectionClicked"
 						/>
 
@@ -122,12 +124,10 @@
 							:loans="loans"
 							@badge-modal-closed="handleBadgeModalClosed"
 							@badge-level-clicked="handleBadgeJourneyLevelClicked"
-							@back-to-journey="handleBackToJourney"
 						/>
 					</div>
 				</section>
 				<EarnedBadgesSection
-					:id="MY_ACHIEVEMENTS_ID"
 					:completed-badges="completedBadges"
 					@badge-clicked="handleEarnedBadgeClicked"
 				/>
@@ -145,11 +145,14 @@
 
 <script setup>
 import logReadQueryError from '#src/util/logReadQueryError';
+import { readBoolSetting } from '#src/util/settingsUtils';
+import { useRouter } from 'vue-router';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
+import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -159,10 +162,10 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import useBadgeData, { MY_IMPACT_JOURNEYS_ID, MY_ACHIEVEMENTS_ID, ID_EQUITY } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
-import { STATE_JOURNEY, STATE_EARNED, STATE_IN_PROGRESS } from '#src/composables/useBadgeModal';
-import { hasLoanFunFactFootnote, isFirstLogin } from '#src/util/myKivaUtils';
+import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
+import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 import {
@@ -170,17 +173,17 @@ import {
 	computed,
 	inject,
 	onMounted,
-	watch,
-	nextTick,
+	onServerPrefetch,
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
+const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
+const router = useRouter();
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const kvAuth0 = inject('kvAuth0');
 
 const {
 	fetchAchievementData,
@@ -188,14 +191,8 @@ const {
 	badgeAchievementData,
 	badgeData,
 	completedBadges,
+	getLoanFindingUrl,
 } = useBadgeData(apollo);
-
-const props = defineProps({
-	isHeroEnabled: {
-		type: Boolean,
-		default: () => false,
-	},
-});
 
 const lender = ref(null);
 const showNavigation = ref(false);
@@ -213,6 +210,8 @@ const totalLoans = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const heroSlides = ref([]);
+const isHeroEnabled = ref(false);
+const selectedJourney = ref('');
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -229,11 +228,7 @@ const handleShowNavigation = () => {
 };
 
 const handleBadgeTileClicked = selectedTier => {
-	state.value = STATE_IN_PROGRESS;
-	selectedBadgeData.value = selectedTier.badge;
-	tier.value = selectedTier.tier;
-	isEarnedSectionModal.value = false;
-	showBadgeModal.value = true;
+	router.push(getLoanFindingUrl(selectedTier.badge.id, router.currentRoute.value));
 };
 
 const handleBadgeSectionClicked = badge => {
@@ -253,10 +248,7 @@ const handleEarnedBadgeClicked = badge => {
 };
 
 const handleBadgeJourneyLevelClicked = payload => {
-	const { challengeName, tier: clickedTier } = payload;
-
-	tier.value = clickedTier;
-	state.value = clickedTier?.completedDate ? STATE_EARNED : STATE_IN_PROGRESS;
+	const { id, challengeName, tier: clickedTier } = payload;
 
 	$kvTrackEvent(
 		'portfolio',
@@ -265,19 +257,19 @@ const handleBadgeJourneyLevelClicked = payload => {
 		challengeName,
 		clickedTier.level,
 	);
+
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
 const handleBadgeModalClosed = () => {
+	selectedJourney.value = '';
+	const queryParams = { ...router.currentRoute?.value?.query };
+	if (queryParams.journey) {
+		delete queryParams.journey;
+		router.push({ ...router.currentRoute.value, query: queryParams });
+	}
 	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
-};
-
-const handleBackToJourney = badge => {
-	if (badge.id === ID_EQUITY) {
-		handleBadgeModalClosed();
-	} else {
-		state.value = STATE_JOURNEY;
-	}
 };
 
 const fetchUserUpdates = loadMore => {
@@ -327,46 +319,6 @@ const fetchMyKivaData = () => {
 		});
 };
 
-const badgesAchieved = computed(() => {
-	const completedBadgesArr = [];
-
-	badgeData.value.forEach(badge => {
-		if (badge.achievementData?.tiers?.length) {
-			const { tiers } = badge.achievementData;
-			tiers.forEach(tierObj => {
-				if (tierObj.completedDate) {
-					completedBadgesArr.push(badge);
-				}
-			});
-		}
-		if (badge.achievementData?.milestoneProgress?.length) {
-			const earnedAtDate = badge.achievementData?.milestoneProgress?.[0]?.earnedAtDate;
-			if (earnedAtDate) {
-				completedBadgesArr.push(badge);
-			}
-		}
-	});
-
-	return completedBadgesArr;
-});
-
-const scrollToTarget = target => {
-	const targetElement = document.getElementById(target);
-	if (targetElement) {
-		targetElement.scrollIntoView({ behavior: 'smooth' });
-	}
-};
-
-const checkGuestAchievementsToScroll = () => {
-	const lastLogin = kvAuth0.user?.exp;
-	const memberSince = lender.value?.memberSince;
-	if (isFirstLogin(lastLogin, memberSince)) {
-		const numberOfBadges = badgesAchieved.value.length;
-		const sectionToScrollTo = numberOfBadges.value === 1 ? MY_IMPACT_JOURNEYS_ID : MY_ACHIEVEMENTS_ID;
-		scrollToTarget(sectionToScrollTo);
-	}
-};
-
 const fetchContentfulHeroData = () => {
 	apollo.query({
 		query: contentfulEntriesQuery,
@@ -382,7 +334,28 @@ const fetchContentfulHeroData = () => {
 		});
 };
 
+const updateJourney = journey => {
+	selectedJourney.value = journey;
+};
+
+onServerPrefetch(async () => {
+	await apollo.query({
+		query: uiConfigSettingQuery,
+		variables: {
+			key: MY_KIVA_HERO_ENABLE_KEY,
+		}
+	});
+});
+
 onMounted(async () => {
+	const uiSettingsQueryResult = await apollo.readQuery({
+		query: uiConfigSettingQuery,
+		variables: {
+			key: MY_KIVA_HERO_ENABLE_KEY,
+		}
+	});
+	isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 
@@ -392,19 +365,8 @@ onMounted(async () => {
 	fetchContentfulData(apollo);
 
 	// Fetch Contentful data if the hero is enabled
-	if (props.isHeroEnabled) {
+	if (isHeroEnabled.value) {
 		fetchContentfulHeroData();
-	}
-});
-
-watch(isAchievementDataLoaded, () => {
-	if (isAchievementDataLoaded.value) {
-		nextTick(() => {
-			// Scroll to section once async data is loaded
-			const targetId = window?.location?.hash?.replace('#', '');
-			if (targetId) scrollToTarget(targetId);
-			checkGuestAchievementsToScroll();
-		});
 	}
 });
 </script>

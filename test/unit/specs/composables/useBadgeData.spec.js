@@ -12,11 +12,8 @@ import useBadgeData, {
 	ID_CLIMATE,
 	ID_ROAD_3BB,
 	ID_2BB,
-	US_ECONOMIC_EQUALITY_FILTER,
-	WOMENS_EQUALITY_FILTER,
-	CLIMATE_ACTION_FILTER,
-	REFUGEE_EQUALITY_FILTER,
-	BASIC_NEEDS_FILTER,
+	FILTERS,
+	CATEGORIES,
 } from '#src/composables/useBadgeData';
 import { defaultBadges } from '#src/util/achievementUtils';
 import {
@@ -26,12 +23,6 @@ import {
 	badgeNoProgress,
 	badgeLastTier,
 } from '../../fixtures/useBadgeDataMock';
-
-// vi.mock('vue', () => ({
-// 	onMounted: callback => callback(),
-// 	ref: value => ({ value }),
-// 	computed: callback => callback(),
-// }));
 
 describe('useBadgeData.js', () => {
 	describe('getTierPositions', () => {
@@ -238,30 +229,76 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getFilteredUrl', () => {
-		it('should return expected filtered url for womens-equality', () => {
-			const { getFilteredUrl } = useBadgeData();
-			expect(getFilteredUrl({ id: ID_WOMENS_EQUALITY })).toEqual(WOMENS_EQUALITY_FILTER);
-		});
+	describe('getLoanFindingUrl', () => {
+		const { getLoanFindingUrl } = useBadgeData();
 
-		it('should return expected filtered url for us-economic-equality', () => {
-			const { getFilteredUrl } = useBadgeData();
-			expect(getFilteredUrl({ id: ID_US_ECONOMIC_EQUALITY })).toEqual(US_ECONOMIC_EQUALITY_FILTER);
-		});
+		Object.keys(FILTERS).forEach(badgeId => {
+			const categoryPath = `/lend-by-category/${CATEGORIES[badgeId]}`;
+			const filterParams = FILTERS[badgeId];
+			const filterString = new URLSearchParams(filterParams).toString();
+			const filterPath = `/lend/filter?${filterString}`;
 
-		it('should return expected filtered url for climate-action', () => {
-			const { getFilteredUrl } = useBadgeData();
-			expect(getFilteredUrl({ id: ID_CLIMATE_ACTION })).toEqual(CLIMATE_ACTION_FILTER);
-		});
+			it(`should return undefined if the current route matches the category page for ${badgeId}`, () => {
+				const currentRoute = { path: categoryPath };
 
-		it('should return expected filtered url for refugee-equality', () => {
-			const { getFilteredUrl } = useBadgeData();
-			expect(getFilteredUrl({ id: ID_REFUGEE_EQUALITY })).toEqual(REFUGEE_EQUALITY_FILTER);
-		});
+				const result = getLoanFindingUrl(badgeId, currentRoute);
 
-		it('should return expected filtered url for basic-needs', () => {
-			const { getFilteredUrl } = useBadgeData();
-			expect(getFilteredUrl({ id: ID_BASIC_NEEDS })).toEqual(BASIC_NEEDS_FILTER);
+				expect(result).toBeUndefined();
+			});
+
+			it(`should return the correct filtered URL if the current route matches the filter page for ${badgeId}`, () => {
+				const currentRoute = {
+					path: '/lend/filter',
+					query: {},
+				};
+
+				const result = getLoanFindingUrl(badgeId, currentRoute);
+
+				expect(result).toBe(filterPath);
+			});
+
+			it(`should return the category page URL if the current route does not match the filter or category page for ${badgeId}`, () => {
+				const currentRoute = { path: '/some-other-page' };
+
+				const result = getLoanFindingUrl(badgeId, currentRoute);
+
+				expect(result).toBe(categoryPath);
+			});
+
+			it(`should handle an empty query object gracefully for ${badgeId}`, () => {
+				const currentRoute = {
+					path: '/lend/filter',
+					query: {},
+				};
+
+				const result = getLoanFindingUrl(badgeId, currentRoute);
+
+				expect(result).toBe(filterPath);
+			});
+
+			it(`should handle existing query parameters for ${badgeId}`, () => {
+				const currentRoute = {
+					path: '/lend/filter',
+					query: { existingFilter: 'value' },
+				};
+
+				const result = getLoanFindingUrl(badgeId, currentRoute);
+
+				const expectedPath = `/lend/filter?existingFilter=value&${filterString}`;
+				expect(result).toBe(expectedPath);
+			});
+
+			it(`should handle updating query parameters for ${badgeId}`, () => {
+				const currentRoute = {
+					path: '/lend/filter',
+					query: { [Object.keys(filterParams)[0]]: ['value'] },
+				};
+
+				const result = getLoanFindingUrl(badgeId, currentRoute);
+
+				const expectedPath = `/lend/filter?${filterString}`;
+				expect(result).toBe(expectedPath);
+			});
 		});
 	});
 

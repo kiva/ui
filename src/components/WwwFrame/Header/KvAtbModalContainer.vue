@@ -100,7 +100,7 @@ const router = useRouter();
 const {
 	fetchAchievementData,
 	badgeAchievementData,
-	getFilteredUrl,
+	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
 const props = defineProps({
@@ -165,12 +165,20 @@ const modalPosition = computed(() => {
 	return { right, top };
 });
 
+const resetModal = () => {
+	showModalContent.value = false;
+	oneLoanAwayFilteredUrl.value = '';
+	oneLoanAwayCategory.value = '';
+	modalVisible.value = false;
+};
+
 const handleRedirect = type => {
 	if (type === 'view-basket') {
 		router.push({ path: '/basket' });
-	}
-	if (type === 'support-another') {
-		router.push(`/lend/filter?${oneLoanAwayFilteredUrl.value}`);
+	} else if (type === 'support-another' && oneLoanAwayFilteredUrl.value) {
+		router.push(oneLoanAwayFilteredUrl.value);
+	} else {
+		resetModal();
 	}
 };
 
@@ -180,10 +188,7 @@ const closeCartModal = closedBy => {
 		$kvTrackEvent('basket', 'dismiss', 'basket-modal', type);
 		handleRedirect(type);
 	}
-	showModalContent.value = false;
-	oneLoanAwayFilteredUrl.value = '';
-	oneLoanAwayCategory.value = '';
-	modalVisible.value = false;
+	resetModal();
 };
 
 const fetchUserData = async () => {
@@ -269,8 +274,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 			return achievement.totalProgressToAchievement + contributingLoanIds.length === achievement.target - 1;
 		});
-		if (oneLoanAwayAchievement) {
-			oneLoanAwayFilteredUrl.value = getFilteredUrl(oneLoanAwayAchievement);
+		if (oneLoanAwayAchievement && !isFirstLoan.value) {
+			oneLoanAwayFilteredUrl.value = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);
 			oneLoanAwayCategory.value = categoryNames[oneLoanAwayAchievement.id];
 			const { target } = oneLoanAwayAchievement;
 			oneAwayText.value = `${target - 1} of ${target}`;
@@ -317,6 +322,7 @@ onMounted(async () => {
 		userData.value?.my?.userPreferences,
 		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 		myKivaFlagEnabled.value,
+		cookieStore,
 	);
 
 	if (myKivaExperimentEnabled.value && !isGuest.value) {

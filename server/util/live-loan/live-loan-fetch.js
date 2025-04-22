@@ -34,6 +34,7 @@ const loanData = `
 	status
 	tags
 	loanFundraisingInfo {
+		id
 		fundedAmount
 	}
 	image {

@@ -106,6 +106,7 @@ query initializeCheckout($basketId: String) {
 								}
 							}
 							loanFundraisingInfo {
+								id
 								isExpiringSoon
 								fundedAmount
 								reservedAmount

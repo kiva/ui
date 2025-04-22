@@ -232,6 +232,7 @@ const preFetchQuery = gql`
 				fullLoanUse @client
 				fundraisingPercent @client
 				loanFundraisingInfo {
+					id
 					fundedAmount
 					reservedAmount
 				}

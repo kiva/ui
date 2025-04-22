@@ -1,6 +1,5 @@
 import {
 	hasLoanFunFactFootnote,
-	isFirstLogin,
 	createUserPreferences,
 	updateUserPreferences,
 	getIsMyKivaEnabled,
@@ -8,10 +7,12 @@ import {
 	MY_KIVA_PREFERENCE_KEY,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
+	setGuestAssignmentCookie,
+	checkGuestAssignmentCookie,
+	GUEST_ASSIGNMENT_COOKIE,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getUnixTime } from 'date-fns';
 import * as experimentUtils from '#src/util/experiment/experimentUtils';
 import * as logFormatter from '#src/util/logFormatter';
 import { expect } from '@storybook/test';
@@ -215,6 +216,78 @@ describe('myKivaUtils.js', () => {
 		});
 	});
 
+	describe('setGuestAssignmentCookie', () => {
+		it('should set the guest assignment cookie if MyKiva is enabled and the user is a guest', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = true;
+			const isGuest = true;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE, 'true', { path: '/' });
+		});
+
+		it('should not set the guest assignment cookie if MyKiva is not enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = false;
+			const isGuest = true;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the guest assignment cookie if the user is not a guest', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const myKivaEnabled = true;
+			const isGuest = false;
+
+			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not throw an error if cookieStore is undefined', () => {
+			expect(() => setGuestAssignmentCookie(undefined, true, true)).not.toThrow();
+		});
+	});
+
+	describe('checkGuestAssignmentCookie', () => {
+		it('should return true if the guest assignment cookie exists', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue('true'),
+			};
+
+			const result = checkGuestAssignmentCookie(cookieStore);
+
+			expect(result).toBe(true);
+			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
+		});
+
+		it('should return false if the guest assignment cookie does not exist', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue(undefined),
+			};
+
+			const result = checkGuestAssignmentCookie(cookieStore);
+
+			expect(result).toBe(false);
+			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
+		});
+
+		it('should return false if cookieStore is undefined', () => {
+			const result = checkGuestAssignmentCookie(undefined);
+
+			expect(result).toBe(false);
+		});
+	});
+
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
@@ -369,30 +442,6 @@ describe('myKivaUtils.js', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
-		});
-	});
-
-	describe('isFirstLogin', () => {
-		it('should return true for first login user', () => {
-			const memberSince = new Date();
-			let lastLogin = new Date(memberSince);
-			lastLogin.setMinutes(lastLogin.getMinutes() + 62);
-			lastLogin = getUnixTime(lastLogin);
-
-			const result = isFirstLogin(lastLogin, memberSince);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false if not first login user', () => {
-			const memberSince = new Date();
-			let lastLogin = new Date(memberSince);
-			lastLogin.setMinutes(lastLogin.getMinutes() + 82);
-			lastLogin = getUnixTime(lastLogin);
-
-			const result = isFirstLogin(lastLogin, memberSince);
-
-			expect(result).toBe(false);
 		});
 	});
 });

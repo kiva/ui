@@ -477,6 +477,7 @@ export default {
 						}
 						unreservedAmount @client
 						loanFundraisingInfo {
+							id
 							fundedAmount
 							reservedAmount
 							isExpiringSoon

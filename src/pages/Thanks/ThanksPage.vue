@@ -14,6 +14,7 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
+				:is-my-kiva-all-users="myKivaFlagEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -30,8 +31,8 @@
 				:loans="loans"
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
-				:router="$router"
 				:guest-username="guestUsername"
+				:is-my-kiva-all-users="myKivaFlagEnabled"
 			/>
 		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
@@ -189,6 +190,7 @@ import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnl
 import ThanksBadges from '#src/components/Thanks/MyKiva/ThanksBadges';
 import orderBy from 'lodash/orderBy';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+import thanksPageReceiptQuery from '#src/graphql/query/thanksPageReceipt.graphql';
 import { processPageContentFlat } from '#src/util/contentfulUtils';
 import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
@@ -301,46 +303,55 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { cookieStore, route }) {
-			const currentRoute = route.value ?? route ?? {};
-			const transactionId = currentRoute.query?.kiva_transaction_id
-				? numeral(currentRoute.query.kiva_transaction_id).value()
-				: null;
-
-			// Check if transactionId is null, resolve the promise if missing
-			if (!transactionId) {
-				logFormatter(
-					'Thanks page preFetch skipped due to missing transaction_id.',
-					'warning',
-				);
-				return Promise.resolve();
-			}
-
-			return client.query({
-				query: thanksPageQuery,
-				variables: {
-					checkoutId: transactionId,
-					visitorId: cookieStore.get('uiv') || null,
+			return Promise.all([
+				client.query({ query: thanksPageQuery }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+			]).then(() => {
+				const currentRoute = route.value ?? route ?? {};
+				const transactionId = currentRoute.query?.kiva_transaction_id
+					? numeral(currentRoute.query.kiva_transaction_id).value()
+					: null;
+				// Check if transactionId is null, resolve the promise if missing
+				if (!transactionId) {
+					logFormatter(
+						'Thanks page preFetch skipped due to missing transaction_id.',
+						'warning',
+					);
+					return Promise.resolve();
 				}
-			}).then(({ data }) => {
+
+				return client.query({
+					query: thanksPageReceiptQuery,
+					variables: {
+						checkoutId: transactionId,
+						visitorId: cookieStore.get('uiv') || null,
+					}
+				}).then(({ data }) => {
 				// Get teamId from receipt
-				let teamId = null;
-				const receipt = data?.shop?.receipt ?? null;
-				const loans = getLoans(receipt);
-				teamId = getTeamId(loans);
+					let teamId = null;
+					const receipt = data?.shop?.receipt ?? null;
+					const loans = getLoans(receipt);
+					teamId = getTeamId(loans);
 
-				const filters = {
-					teamId,
-				};
-				const limit = 1;
+					const filters = {
+						teamId,
+					};
+					const limit = 1;
 
-				return Promise.all([
-					client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
-					teamId ? fetchGoals(client, limit, filters) : null,
-					fetchPostCheckoutAchievements(client, getLoanIds(loans)),
-				]);
+					return Promise.all([
+						teamId ? fetchGoals(client, limit, filters) : null,
+						fetchPostCheckoutAchievements(client, getLoanIds(loans)),
+					]);
+				}).catch(errorResponse => {
+					logFormatter(
+						`Receipt thanks page preFetch failed: (transaction_id: ${transactionId})`,
+						'error',
+						{ errorResponse }
+					);
+				});
 			}).catch(errorResponse => {
 				logFormatter(
-					`Thanks page preFetch failed: (transaction_id: ${transactionId})`,
+					'Thanks page preFetch failed',
 					'error',
 					{ errorResponse }
 				);
@@ -485,6 +496,55 @@ export default {
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
+		let receiptData = {};
+
+		try {
+			data = this.apollo.readQuery({
+				query: thanksPageQuery,
+			});
+		} catch (e) {
+			logReadQueryError(e, 'Thanks page readQuery failed');
+		}
+
+		const hasEverLoggedIn = data?.hasEverLoggedIn;
+		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
+		this.hasModernSub = modernSubscriptions.length !== 0;
+		this.lender = {
+			...(data?.my?.userAccount ?? {}),
+			publicName: data?.my?.lender?.name ?? '',
+			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
+			imageUrl: data?.my?.lender?.image?.url ?? '',
+			publicId: data?.my?.lender?.publicId ?? '',
+		};
+
+		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+
+		// Enable FTDs message from settings
+		this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
+		// Credit amount for FTD message from settings
+		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
+		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
+
+		// Enable single version TY page
+		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
+
+		// Enable My Kiva Page for all users
+		this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
+
+		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
+			|| this.$route.query?.optedIn === 'true';
+
+		this.guestUsername = this.$route.query?.username ?? '';
+
+		// MyKiva Badges Experiment
+		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			data?.my?.userPreferences,
+			!this.isGuest ? data?.my?.loans?.totalCount : 1,
+			this.myKivaFlagEnabled,
+			this.cookieStore,
+		);
 
 		this.monthlyDonationAmount = this.$route.query?.monthly_donation_amount ?? null;
 		const transactionId = this.$route.query?.kiva_transaction_id
@@ -501,48 +561,24 @@ export default {
 		}
 
 		try {
-			data = this.apollo.readQuery({
-				query: thanksPageQuery,
+			receiptData = this.apollo.readQuery({
+				query: thanksPageReceiptQuery,
 				variables: {
 					checkoutId: transactionId,
 					visitorId: this.cookieStore.get('uiv') || null,
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, `Thanks page readQuery failed: (transaction_id: ${transactionId})`);
+			logReadQueryError(e, `Receipt thanks page readQuery failed: (transaction_id: ${transactionId})`);
 		}
-		const hasEverLoggedIn = data?.hasEverLoggedIn;
-		const modernSubscriptions = data?.mySubscriptions?.values ?? [];
-		this.hasModernSub = modernSubscriptions.length !== 0;
-		this.lender = {
-			...(data?.my?.userAccount ?? {}),
-			publicName: data?.my?.lender?.name ?? '',
-			teams: data?.my?.teams?.values?.map(value => value.team) ?? [],
-			imageUrl: data?.my?.lender?.image?.url ?? '',
-			publicId: data?.my?.lender?.publicId ?? '',
-		};
-
-		this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
 		// The default empty object and the v-if will prevent the
 		// receipt from rendering in the rare cases this query fails.
 		// But it will not throw a server error.
-		this.receipt = data?.shop?.receipt ?? null;
+		this.receipt = receiptData?.shop?.receipt ?? null;
 		this.isGuest = this.receipt && !data?.my?.userAccount;
 
-		// Enable FTDs message from settings
-		this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
-		// Credit amount for FTD message from settings
-		const ftdCreditAmountData = data?.general?.ftd_message_amount ?? null;
-		this.ftdCreditAmount = ftdCreditAmountData ? ftdCreditAmountData.value : '';
-
-		// Enable single version TY page
-		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
-
 		this.loans = getLoans(this.receipt);
-
-		// Enable My Kiva Page for all users
-		this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 
 		// Fetch Goal Information
 		try {
@@ -600,14 +636,14 @@ export default {
 			logFormatter(
 				`Failed to get lender for transaction id: ${transactionId}`,
 				'info',
-				{ data }
+				{ ...data, ...receiptData }
 			);
 		}
 		if (!this.receipt) {
 			logFormatter(
 				`Failed to get receipt for transaction id: ${transactionId}`,
 				'info',
-				{ data }
+				{ ...data, ...receiptData }
 			);
 		}
 
@@ -621,20 +657,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
-
-		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
-			|| this.$route.query?.optedIn === 'true';
-
-		this.guestUsername = this.$route.query?.username ?? '';
-
-		// MyKiva Badges Experiment
-		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			data?.my?.userPreferences,
-			!this.isGuest ? data?.my?.loans?.totalCount : 1,
-			this.myKivaFlagEnabled,
-		);
 
 		if (this.myKivaExperimentEnabled) {
 			try {

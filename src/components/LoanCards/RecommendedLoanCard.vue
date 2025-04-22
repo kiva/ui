@@ -152,6 +152,7 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 
 			# for percent-raised-mixin
 			loanFundraisingInfo {
+				id
 				fundedAmount
 				reservedAmount
 			}

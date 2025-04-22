@@ -2,7 +2,7 @@
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="{
-			'md:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
+			'lg:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
 		}"
 	>
 		<nav
@@ -15,7 +15,7 @@
 					<div class="tw-flex tw-justify-center">
 						<a
 							class="header__button tw-inline-flex"
-							href="/"
+							:href="homePagePath"
 							data-testid="header-home"
 							v-kv-track-event="['TopNav','click-Logo']"
 						>
@@ -107,7 +107,7 @@
 						<div class="header__logo">
 							<a
 								class="header__button tw-inline-flex"
-								href="/"
+								:href="homePagePath"
 								data-testid="header-home"
 								v-kv-track-event="['TopNav','click-Logo']"
 							>
@@ -587,6 +587,7 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 import {
 	KvButton, KvMaterialIcon, KvPageContainer
 } from '@kiva/kv-components';
@@ -624,7 +625,7 @@ export default {
 		TeamsMenu,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
 	data() {
 		return {
 			isVisitor: true,
