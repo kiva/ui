@@ -1,3 +1,120 @@
+## [3.17.0](https://github.com/kiva/ui/compare/v3.16.0...v3.17.0) (2025-04-22)
+
+### 🎉 New Features
+
+* add ID field for LoanFundraisingInfo queries ([3cde42e](https://github.com/kiva/ui/commit/3cde42e846160b2eb2e6c75759ff38a42663746f))
+* add tracking to hero carousel ([9afb3c0](https://github.com/kiva/ui/commit/9afb3c0249acac54475c321c40875604e0174574))
+* adjust carousel options ([73b75bf](https://github.com/kiva/ui/commit/73b75bf14a08607ab57212d4ce03e67fe47726a7))
+* all my kiva scrolling actions removed ([#5950](https://github.com/kiva/ui/issues/5950)) ([1f3643b](https://github.com/kiva/ui/commit/1f3643b8c76d991e24155864e84582bed4a81882))
+* avoid pushing route to open journey modal from hero carousel ([#5960](https://github.com/kiva/ui/issues/5960)) ([e029fb8](https://github.com/kiva/ui/commit/e029fb84ceab9762e2a4e877c3439fae23a3b1d4))
+* change homepage route to mykiva and move from readQuery to only query necessary data ([6d00f85](https://github.com/kiva/ui/commit/6d00f85176618ba920f07865dcc73318f2831f30))
+* completed journey hidden in my kiva hero carousel ([#5951](https://github.com/kiva/ui/issues/5951)) ([dff7f74](https://github.com/kiva/ui/commit/dff7f7423b81e12f1e6722a3cdb380f9e5a167e8))
+* ensure MyKiva assignment consistent through guest account creation ([d408ea2](https://github.com/kiva/ui/commit/d408ea28a71a918697ed7281c13830c2fcc8e554))
+* journeys section added to portfolio ([#5957](https://github.com/kiva/ui/issues/5957)) ([5caacb9](https://github.com/kiva/ui/commit/5caacb9882dd420e1113ea6c8908b191a9a5e15f))
+* keep user in loan finding when continuing from ATB modal ([a884072](https://github.com/kiva/ui/commit/a8840728010a3088e74fd795e1ead006be456150))
+* my kiva page added ([#5912](https://github.com/kiva/ui/issues/5912)) ([8fe8331](https://github.com/kiva/ui/commit/8fe83318e47d86f1abf4af6492e5b82d17f06dfb))
+* my kiva ty page redirects fixed to my kiva all users ([#5955](https://github.com/kiva/ui/issues/5955)) ([2ed3ee0](https://github.com/kiva/ui/commit/2ed3ee0eac3a025fab8d63e5ba769628797feb56))
+* redirect to /mykiva page users in experiment when they hit old /portfolio links ([77ec6d2](https://github.com/kiva/ui/commit/77ec6d2bae7b5615fcf233103e9a12df9b773987))
+* reduce gap between slides ([e506ece](https://github.com/kiva/ui/commit/e506ece606ff6f816915a687a3a42aeb82c8044c))
+* remove loan finding mykiva badge modal ([177b12d](https://github.com/kiva/ui/commit/177b12d7d2bb09bc18594d1ff5af3bd892bed345))
+* send user to /mykiva from ty page actions ([6ab5e5b](https://github.com/kiva/ui/commit/6ab5e5ba27f39df4c6bd7a00a22e8be6eeb4cc05))
+* sticky header for lg screens only ([#5963](https://github.com/kiva/ui/issues/5963)) ([6969ff4](https://github.com/kiva/ui/commit/6969ff4140e3719cdd51fdb1e3f0a0cef2b4d613))
+* ty page query refactor ([#5945](https://github.com/kiva/ui/issues/5945)) ([343f6a3](https://github.com/kiva/ui/commit/343f6a3885d38475159f50cc6a1f02ff411a2759))
+
+### 🐛 Bugfixes
+
+* atb modal fixed for first loan ([#5938](https://github.com/kiva/ui/issues/5938)) ([03654c2](https://github.com/kiva/ui/commit/03654c22e94ca3616b2196ff32edd9b2b7b716aa))
+* avoid scrolling to journeys sections from my kiva hero carousel ([#5942](https://github.com/kiva/ui/issues/5942)) ([bdc1ab3](https://github.com/kiva/ui/commit/bdc1ab3de2ee96fd19998ceb20a4bb62b57ce906))
+* change hp path only if my kiva flag is enabled ([a72b025](https://github.com/kiva/ui/commit/a72b025c91b770ccf0ef94d4ad337fea9c1866d0))
+* clean up mixins in components ([8440952](https://github.com/kiva/ui/commit/84409525a35b716beaf32d9555ddc9111fdda805))
+* conflicts ([43cff70](https://github.com/kiva/ui/commit/43cff7078c6653c4992e01cc29606500dd181f4a))
+* don't redirect when new feature disabled ([c146362](https://github.com/kiva/ui/commit/c14636250e85269fc70e0feca2715c3d19299d46))
+* error message ([2714bb9](https://github.com/kiva/ui/commit/2714bb97903f88ad20ce942a2932ff731376b17e))
+* missing mixin and composable ([acdcdd8](https://github.com/kiva/ui/commit/acdcdd8cdde6f977a6e8a45291809852518fc178))
+* moving section out of container to see slide ([848d443](https://github.com/kiva/ui/commit/848d4439402ceeb46cfb66f5e586938afa68cbac))
+* moving userId validation after getIsMyKivaEnabled call for experiment assignment ([823e2c6](https://github.com/kiva/ui/commit/823e2c6c70622376ea9e6cce897f59053b136bee))
+* mykiva carousel subtitle update ([#5944](https://github.com/kiva/ui/issues/5944)) ([feacb7f](https://github.com/kiva/ui/commit/feacb7f185a50d89c1ea8c21a2bed27950305812))
+* remove log ([7598af9](https://github.com/kiva/ui/commit/7598af916fd0aad6e3ee4b7baf58a80b9f17e194))
+* remove unused icons from toggle ([c25b963](https://github.com/kiva/ui/commit/c25b963c680e4737c2b1472e577be61a8bbdc54c))
+* remove url query from mykiva hero modal when closed ([aaaed2a](https://github.com/kiva/ui/commit/aaaed2ab261a429e2272aca5ef81a1cb3e659084))
+* removing mykiva condition in not used component ([96ef093](https://github.com/kiva/ui/commit/96ef09351f7988665f7b715208cdf617d99e426a))
+* revert changes from ty page comment and share variant ([1683ab8](https://github.com/kiva/ui/commit/1683ab81760be4cdb0d059cddf3cf5a31d2784c0))
+* revert unnecessary changes ([f609560](https://github.com/kiva/ui/commit/f6095602c649fffbd2f1301143be94741ead866f))
+* show milestone in checkout right after a non-tiered milestone achieved ([9181489](https://github.com/kiva/ui/commit/9181489eaea569dbf328cadc2ffdcd89fd7ed534))
+* slightly larger padding in hero CTA desktop version ([47650e7](https://github.com/kiva/ui/commit/47650e74988665127e4c913b2f70c1b0747e2649))
+* spacing in card carousel ([d9d74dd](https://github.com/kiva/ui/commit/d9d74ddbf09cd632734fcf6fc31a1530b62aa080))
+* track carousel swipe and update label ([50e2294](https://github.com/kiva/ui/commit/50e229444b591865d74bff4ddda7207af7ffe3b1))
+* tracking label in carousel ([78fc42e](https://github.com/kiva/ui/commit/78fc42e274fab96c2c7ae3f264f81c5636180916))
+
+### 🪚 Refactors
+
+* remove not used components and add redirects for recommended by lenders route ([420d9fb](https://github.com/kiva/ui/commit/420d9fbac0d0fbfbed705dedaca5365f49649ba1))
+* remove unused toggle component ([2164e6e](https://github.com/kiva/ui/commit/2164e6ea2c8e1976fd24fbb3143ab8c330035f2d))
+* use computed prop to get homepage url ([346557c](https://github.com/kiva/ui/commit/346557cb423c36be5518769a9bab9ebeafd6a444))
+
+### 🧹 Chores
+
+* **release:** 3.17.0-rc.1 [skip ci] ([82746f1](https://github.com/kiva/ui/commit/82746f1047aade652a8e4a1249fd1a8724dcb53d)), closes [#5950](https://github.com/kiva/ui/issues/5950) [#5960](https://github.com/kiva/ui/issues/5960) [#5951](https://github.com/kiva/ui/issues/5951) [#5957](https://github.com/kiva/ui/issues/5957) [#5912](https://github.com/kiva/ui/issues/5912) [#5955](https://github.com/kiva/ui/issues/5955) [#5963](https://github.com/kiva/ui/issues/5963) [#5945](https://github.com/kiva/ui/issues/5945) [#5938](https://github.com/kiva/ui/issues/5938) [#5942](https://github.com/kiva/ui/issues/5942) [#5944](https://github.com/kiva/ui/issues/5944)
+* update kv-tokens ([1e70b59](https://github.com/kiva/ui/commit/1e70b59d705c2ef6e6bc5c889dd30f4cc57c6e86))
+
+## [3.17.0-rc.1](https://github.com/kiva/ui/compare/v3.16.0...v3.17.0-rc.1) (2025-04-21)
+
+### 🎉 New Features
+
+* add ID field for LoanFundraisingInfo queries ([3cde42e](https://github.com/kiva/ui/commit/3cde42e846160b2eb2e6c75759ff38a42663746f))
+* add tracking to hero carousel ([9afb3c0](https://github.com/kiva/ui/commit/9afb3c0249acac54475c321c40875604e0174574))
+* adjust carousel options ([73b75bf](https://github.com/kiva/ui/commit/73b75bf14a08607ab57212d4ce03e67fe47726a7))
+* all my kiva scrolling actions removed ([#5950](https://github.com/kiva/ui/issues/5950)) ([1f3643b](https://github.com/kiva/ui/commit/1f3643b8c76d991e24155864e84582bed4a81882))
+* avoid pushing route to open journey modal from hero carousel ([#5960](https://github.com/kiva/ui/issues/5960)) ([e029fb8](https://github.com/kiva/ui/commit/e029fb84ceab9762e2a4e877c3439fae23a3b1d4))
+* change homepage route to mykiva and move from readQuery to only query necessary data ([6d00f85](https://github.com/kiva/ui/commit/6d00f85176618ba920f07865dcc73318f2831f30))
+* completed journey hidden in my kiva hero carousel ([#5951](https://github.com/kiva/ui/issues/5951)) ([dff7f74](https://github.com/kiva/ui/commit/dff7f7423b81e12f1e6722a3cdb380f9e5a167e8))
+* ensure MyKiva assignment consistent through guest account creation ([d408ea2](https://github.com/kiva/ui/commit/d408ea28a71a918697ed7281c13830c2fcc8e554))
+* journeys section added to portfolio ([#5957](https://github.com/kiva/ui/issues/5957)) ([5caacb9](https://github.com/kiva/ui/commit/5caacb9882dd420e1113ea6c8908b191a9a5e15f))
+* keep user in loan finding when continuing from ATB modal ([a884072](https://github.com/kiva/ui/commit/a8840728010a3088e74fd795e1ead006be456150))
+* my kiva page added ([#5912](https://github.com/kiva/ui/issues/5912)) ([8fe8331](https://github.com/kiva/ui/commit/8fe83318e47d86f1abf4af6492e5b82d17f06dfb))
+* my kiva ty page redirects fixed to my kiva all users ([#5955](https://github.com/kiva/ui/issues/5955)) ([2ed3ee0](https://github.com/kiva/ui/commit/2ed3ee0eac3a025fab8d63e5ba769628797feb56))
+* redirect to /mykiva page users in experiment when they hit old /portfolio links ([77ec6d2](https://github.com/kiva/ui/commit/77ec6d2bae7b5615fcf233103e9a12df9b773987))
+* reduce gap between slides ([e506ece](https://github.com/kiva/ui/commit/e506ece606ff6f816915a687a3a42aeb82c8044c))
+* remove loan finding mykiva badge modal ([177b12d](https://github.com/kiva/ui/commit/177b12d7d2bb09bc18594d1ff5af3bd892bed345))
+* send user to /mykiva from ty page actions ([6ab5e5b](https://github.com/kiva/ui/commit/6ab5e5ba27f39df4c6bd7a00a22e8be6eeb4cc05))
+* sticky header for lg screens only ([#5963](https://github.com/kiva/ui/issues/5963)) ([6969ff4](https://github.com/kiva/ui/commit/6969ff4140e3719cdd51fdb1e3f0a0cef2b4d613))
+* ty page query refactor ([#5945](https://github.com/kiva/ui/issues/5945)) ([343f6a3](https://github.com/kiva/ui/commit/343f6a3885d38475159f50cc6a1f02ff411a2759))
+
+### 🐛 Bugfixes
+
+* atb modal fixed for first loan ([#5938](https://github.com/kiva/ui/issues/5938)) ([03654c2](https://github.com/kiva/ui/commit/03654c22e94ca3616b2196ff32edd9b2b7b716aa))
+* avoid scrolling to journeys sections from my kiva hero carousel ([#5942](https://github.com/kiva/ui/issues/5942)) ([bdc1ab3](https://github.com/kiva/ui/commit/bdc1ab3de2ee96fd19998ceb20a4bb62b57ce906))
+* change hp path only if my kiva flag is enabled ([a72b025](https://github.com/kiva/ui/commit/a72b025c91b770ccf0ef94d4ad337fea9c1866d0))
+* clean up mixins in components ([8440952](https://github.com/kiva/ui/commit/84409525a35b716beaf32d9555ddc9111fdda805))
+* conflicts ([43cff70](https://github.com/kiva/ui/commit/43cff7078c6653c4992e01cc29606500dd181f4a))
+* don't redirect when new feature disabled ([c146362](https://github.com/kiva/ui/commit/c14636250e85269fc70e0feca2715c3d19299d46))
+* error message ([2714bb9](https://github.com/kiva/ui/commit/2714bb97903f88ad20ce942a2932ff731376b17e))
+* missing mixin and composable ([acdcdd8](https://github.com/kiva/ui/commit/acdcdd8cdde6f977a6e8a45291809852518fc178))
+* moving section out of container to see slide ([848d443](https://github.com/kiva/ui/commit/848d4439402ceeb46cfb66f5e586938afa68cbac))
+* moving userId validation after getIsMyKivaEnabled call for experiment assignment ([823e2c6](https://github.com/kiva/ui/commit/823e2c6c70622376ea9e6cce897f59053b136bee))
+* mykiva carousel subtitle update ([#5944](https://github.com/kiva/ui/issues/5944)) ([feacb7f](https://github.com/kiva/ui/commit/feacb7f185a50d89c1ea8c21a2bed27950305812))
+* remove log ([7598af9](https://github.com/kiva/ui/commit/7598af916fd0aad6e3ee4b7baf58a80b9f17e194))
+* remove unused icons from toggle ([c25b963](https://github.com/kiva/ui/commit/c25b963c680e4737c2b1472e577be61a8bbdc54c))
+* remove url query from mykiva hero modal when closed ([aaaed2a](https://github.com/kiva/ui/commit/aaaed2ab261a429e2272aca5ef81a1cb3e659084))
+* removing mykiva condition in not used component ([96ef093](https://github.com/kiva/ui/commit/96ef09351f7988665f7b715208cdf617d99e426a))
+* revert changes from ty page comment and share variant ([1683ab8](https://github.com/kiva/ui/commit/1683ab81760be4cdb0d059cddf3cf5a31d2784c0))
+* revert unnecessary changes ([f609560](https://github.com/kiva/ui/commit/f6095602c649fffbd2f1301143be94741ead866f))
+* show milestone in checkout right after a non-tiered milestone achieved ([9181489](https://github.com/kiva/ui/commit/9181489eaea569dbf328cadc2ffdcd89fd7ed534))
+* slightly larger padding in hero CTA desktop version ([47650e7](https://github.com/kiva/ui/commit/47650e74988665127e4c913b2f70c1b0747e2649))
+* spacing in card carousel ([d9d74dd](https://github.com/kiva/ui/commit/d9d74ddbf09cd632734fcf6fc31a1530b62aa080))
+* track carousel swipe and update label ([50e2294](https://github.com/kiva/ui/commit/50e229444b591865d74bff4ddda7207af7ffe3b1))
+* tracking label in carousel ([78fc42e](https://github.com/kiva/ui/commit/78fc42e274fab96c2c7ae3f264f81c5636180916))
+
+### 🪚 Refactors
+
+* remove not used components and add redirects for recommended by lenders route ([420d9fb](https://github.com/kiva/ui/commit/420d9fbac0d0fbfbed705dedaca5365f49649ba1))
+* remove unused toggle component ([2164e6e](https://github.com/kiva/ui/commit/2164e6ea2c8e1976fd24fbb3143ab8c330035f2d))
+* use computed prop to get homepage url ([346557c](https://github.com/kiva/ui/commit/346557cb423c36be5518769a9bab9ebeafd6a444))
+
+### 🧹 Chores
+
+* update kv-tokens ([1e70b59](https://github.com/kiva/ui/commit/1e70b59d705c2ef6e6bc5c889dd30f4cc57c6e86))
+
 ## [3.16.0](https://github.com/kiva/ui/compare/v3.15.0...v3.16.0) (2025-04-10)
 
 ### 🎉 New Features

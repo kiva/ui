@@ -14,7 +14,7 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 # Local Development Setup with Caddy
 
-> IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting alot of the Monolith TiltVM setup so this just bypasses it all.
+> IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting a lot of the Monolith TiltVM setup so this just bypasses it all.
 
 ### Required Dependencies
 
@@ -29,22 +29,29 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 	`caddy start` to run in the background or `caddy run` keep the terminal live for additional monitoring
 
-4. In a separate terminal at the root of the ui repo
-``` bash
-# Set you node version using nvm
-$ nvm use
+4. Add config/env file -> create `.config.env` in repo root locally
+	```bash
+	# Search for values in Slack history or reach out to another engineer
+	UI_SESSION_SECRET=X
+	UI_AUTH0_CLIENT_SECRET=X
+	```
 
-# Install dependencies
-$ npm ci
+5. In a separate terminal at the root of the ui repo
+	``` bash
+	# Set you node version using nvm
+	$ nvm use
 
-# Install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
-$ npx husky install
+	# Install dependencies
+	$ npm ci
 
-$ npm run dev -- --config=dev-custom-host
+	# Install husky git hooks (NOTE: This step only needs to be done once on first setup and powers pre-commit linting)
+	$ npx husky install
 
-# The local dev URL is now: https://kiva-ui.local/, but make sure to access a page actually run by UI, for example https://kiva-ui.local/lend-by-category/women
+	$ npm run dev -- --config=dev-custom-host
 
-```
+	# The local dev URL is now: https://kiva-ui.local/, but make sure to access a page actually run by UI, for example https://kiva-ui.local/lend-by-category/women
+
+	```
 
 5. To stop Caddy when you're done
 
