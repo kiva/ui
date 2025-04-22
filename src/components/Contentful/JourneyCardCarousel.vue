@@ -36,11 +36,11 @@
 				<div
 					v-else
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
+					:class="{ '!tw-bg-left-top': isNonBadgeSlide(slide) }"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
 					<div
 						class="
-							slide
 							tw-absolute
 							tw-w-full
 							tw-bottom-0
@@ -51,6 +51,7 @@
 							tw-align-bottom
 							tw-rounded-b
 						"
+						:class="{ 'slide-gradient': !isNonBadgeSlide(slide) }"
 						:style="[
 							{ 'height': overlayHeight(slide) },
 						]"
@@ -58,16 +59,24 @@
 						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
 							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
 								<img
+									v-if="!isNonBadgeSlide(slide)"
 									class="tw-h-6"
 									:src="badgeUrl(slide)"
 								>
 								<div class="tw-text-primary-inverse">
-									<h2 class="tw-text-h3">
+									<h2
+										class="tw-text-h3"
+										:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
+									>
 										{{ title(slide) }}
 									</h2>
 									<p
 										v-if="subTitle(slide)"
 										class="tw-text-small tw-font-medium"
+										:class="{
+											'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
+												isNonBadgeSlide(slide)
+										}"
 									>
 										{{ subTitle(slide) }}
 									</p>
@@ -85,7 +94,8 @@
 								</button>
 								<KvButton
 									@click="goToPrimaryCtaUrl(slide)"
-									variant="secondary"
+									:variant="primaryCtaVariant(slide)"
+									:class="{ 'tw-w-full': isNonBadgeSlide(slide) }"
 								>
 									{{ primaryCtaText(slide) }}
 								</KvButton>
@@ -138,7 +148,7 @@ const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
 	const uiSettings = richTextContent.find(
-		item => item.nodeType === 'embedded-entry-block'
+		item => item.data?.target?.sys?.contentType?.sys?.id === 'uiSetting'
 	);
 	const uiSettingsTarget = uiSettings?.data?.target ?? {};
 	const uiSettingsData = formatUiSetting(uiSettingsTarget);
@@ -184,15 +194,53 @@ const orderedSlides = computed(() => {
 		showedSlides = achievementSlides;
 	}
 
-	const sortedSlides = showedSlides.sort((a, b) => {
+	let sortedSlides = showedSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
+
+	const nonBadgesSlides = props.slides.filter(slide => {
+		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+		return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
+	});
+
+	if (nonBadgesSlides.length > 0) {
+		sortedSlides = [
+			...sortedSlides,
+			...nonBadgesSlides,
+		];
+	}
 
 	return sortedSlides;
 });
 
+const isNonBadgeSlide = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
+};
+
+const getMediaImgUrl = media => {
+	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+};
+
 const backgroundImg = slide => {
 	const richTextContent = getRichTextContent(slide);
+	if (isNonBadgeSlide(slide)) {
+		const mediaData = richTextContent.filter(
+			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
+		);
+		const mobileMediaData = mediaData.find(
+			item => item.data?.target?.fields?.key.includes('mobile')
+		);
+		const desktopMediaData = mediaData.find(
+			item => item.data?.target?.fields?.key.includes('desktop')
+		);
+
+		if (isMobile.value) {
+			return getMediaImgUrl(mobileMediaData);
+		}
+		return getMediaImgUrl(desktopMediaData);
+	}
+
 	const backgroundImage = richTextContent.find(
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
@@ -204,7 +252,14 @@ const title = slide => {
 	return richTextUiSettingsData.title || '';
 };
 
-const subTitle = slide => `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+const subTitle = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	if (isNonBadgeSlide(slide)) {
+		return richTextUiSettingsData.contentText || '';
+	}
+
+	return `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+};
 
 const badgeUrl = slide => slide?.badgeImgUrl || '';
 
@@ -218,6 +273,11 @@ const goToPrimaryCtaUrl = slide => {
 	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
 	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
 	router.push(primaryCtaUrl);
+};
+
+const primaryCtaVariant = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.primaryCtaVariant || 'secondary';
 };
 
 const secondaryCtaText = slide => {
@@ -275,6 +335,7 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
+	box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
 	height: 402px;
 
 	@screen md {
@@ -300,7 +361,7 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 	@apply tw-gap-2;
 }
 
-.slide {
+.slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
 }
 </style>
