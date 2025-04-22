@@ -156,6 +156,11 @@ const getRichTextUiSettingsData = slide => {
 	return uiSettingsData?.dataObject ?? {};
 };
 
+const isNonBadgeSlide = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
+};
+
 const orderedSlides = computed(() => {
 	let showedSlides = Array(PLACEHOLDER_SLIDES_LENGTH).fill({ milestoneDiff: 0 });
 	const achievementSlides = [];
@@ -199,8 +204,7 @@ const orderedSlides = computed(() => {
 	});
 
 	const nonBadgesSlides = props.slides.filter(slide => {
-		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-		return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
+		return isNonBadgeSlide(slide);
 	});
 
 	if (nonBadgesSlides.length > 0) {
@@ -213,11 +217,6 @@ const orderedSlides = computed(() => {
 	return sortedSlides;
 });
 
-const isNonBadgeSlide = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
-};
-
 const getMediaImgUrl = media => {
 	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
 };
@@ -225,14 +224,13 @@ const getMediaImgUrl = media => {
 const backgroundImg = slide => {
 	const richTextContent = getRichTextContent(slide);
 	if (isNonBadgeSlide(slide)) {
-		const mediaData = richTextContent.filter(
+		const mobileMediaData = richTextContent.find(
 			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
+			&& item.data?.target?.fields?.key.includes('mobile')
 		);
-		const mobileMediaData = mediaData.find(
-			item => item.data?.target?.fields?.key.includes('mobile')
-		);
-		const desktopMediaData = mediaData.find(
-			item => item.data?.target?.fields?.key.includes('desktop')
+		const desktopMediaData = richTextContent.find(
+			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
+			&& item.data?.target?.fields?.key.includes('desktop')
 		);
 
 		if (isMobile.value) {
