@@ -335,7 +335,7 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
-	box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
 	height: 402px;
 
 	@screen md {
