@@ -219,18 +219,6 @@ $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 
-.social {
-	&__btn {
-		&--bluesky {
-			border: 1px solid $color-bluesky;
-
-			.social__icon {
-				fill: $color-bluesky;
-			}
-		}
-	}
-}
-
 .social-button {
 	&__icon {
 		&--linkedin {
