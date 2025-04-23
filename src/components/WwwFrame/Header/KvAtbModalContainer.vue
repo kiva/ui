@@ -80,6 +80,7 @@ import _throttle from 'lodash/throttle';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
@@ -257,67 +258,37 @@ const updateTierTable = () => {
 	});
 };
 
+const newAchivementReached = () => {
+	if (contributingAchievements.value.length !== achievementsFromBasket.value.length) {
+		return true;
+	}
+
+	return contributingAchievements.value.some(achievement => {
+		let isTierChanged = false;
+		// eslint-disable-next-line max-len
+		const basketAchievement = achievementsFromBasket.value.find(bsktAch => bsktAch.achievementId === achievement.achievementId);
+		if (basketAchievement) {
+			isTierChanged = basketAchievement.preCheckoutTier !== achievement.preCheckoutTier;
+		}
+		if (isTierChanged) {
+			tierTable.value[achievement.achievementId] = achievement.postCheckoutTier;
+		}
+		return isTierChanged;
+	});
+};
+
 const fetchPostCheckoutAchievements = async loanIds => {
 	await apollo.query({
 		query: postCheckoutAchievementsQuery,
 		variables: { loanIds }
 	}).then(({ data }) => {
 		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
-		const contributingLoanAchievements = [];
-		const nonContributingAchievements = [];
-
-		loanAchievements.forEach(achievement => {
-			const isNonContributing = achievement.preCheckoutTier === achievement.postCheckoutTier
-				|| (
-					!!tierTable.value[achievement.achievementId]
-					&& tierTable.value[achievement.achievementId] === achievement.postCheckoutTier
-				);
-			if (isNonContributing) {
-				nonContributingAchievements.push(achievement);
-			} else {
-				contributingLoanAchievements.push(achievement);
-			}
-		});
-
+		// eslint-disable-next-line max-len
+		const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
 		contributingAchievements.value = [...contributingLoanAchievements];
 
-		const filteredAchievementsData = [];
-		nonContributingAchievements.forEach(achievement => {
-			const filteredAchievement = badgeAchievementData.value.find(badgeData => achievement.achievementId === badgeData.id); // eslint-disable-line max-len
-			const activeTier = filteredAchievement?.tiers?.find(tier => !tier.completedDate);
-			filteredAchievementsData.push({ ...filteredAchievement, ...activeTier });
-		});
-
-		filteredAchievementsData.sort((a, b) => defaultBadges.indexOf(a.id) - defaultBadges.indexOf(b.id));
-		const oneLoanAwayAchievement = filteredAchievementsData.find(achievement => {
-			// eslint-disable-next-line max-len
-			const progressInBasket = loanAchievements.find(loanAchievement => loanAchievement.achievementId === achievement.id);
-			const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
-
-			const loansProgressCount = achievement.totalProgressToAchievement + contributingLoanIds.length;
-
-			return achievement?.tiers.some(tier => tier.target - 1 === loansProgressCount);
-		});
-
-		// Evaluate if new tier was reached
-		const newAchivementReached = () => {
-			if (contributingAchievements.value.length !== achievementsFromBasket.value.length) {
-				return true;
-			}
-
-			return contributingAchievements.value.some(achievement => {
-				let isTierChanged = false;
-				// eslint-disable-next-line max-len
-				const basketAchievement = achievementsFromBasket.value.find(bsktAch => bsktAch.achievementId === achievement.achievementId);
-				if (basketAchievement) {
-					isTierChanged = basketAchievement.preCheckoutTier !== achievement.preCheckoutTier;
-				}
-				if (isTierChanged) {
-					tierTable.value[achievement.achievementId] = achievement.postCheckoutTier;
-				}
-				return isTierChanged;
-			});
-		};
+		const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
+		const oneLoanAwayAchievement = getOneLoanAwayAchievement(filteredAchievementsData, loanAchievements);
 
 		if (oneLoanAwayAchievement && !isFirstLoan.value) {
 			const loanUrl = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);
