@@ -7,6 +7,8 @@
 <script>
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+import myKivaRedirectQuery from '#src/graphql/query/myKivaRedirect.graphql';
+import { shouldRejectMyKivaHomeRedirect } from '#src/util/myKivaUtils';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -14,9 +16,21 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
  */
 export default {
 	name: 'MyKivaPage',
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
 		MyKivaPageContent,
+	},
+	apollo: {
+		preFetch(_, client, args) {
+			return client.query({ query: myKivaRedirectQuery })
+				.then(({ data }) => {
+					const result = shouldRejectMyKivaHomeRedirect(client, args, data);
+					if (result) {
+						return Promise.reject(result);
+					}
+				});
+		}
 	},
 };
 </script>

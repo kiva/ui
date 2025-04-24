@@ -1,0 +1,23 @@
+query MyKivaRedirect {
+	my {
+		id
+		userPreferences {
+			id
+			preferences
+		}
+		lender {
+			id
+			loanCount
+		}
+	}
+	general {
+		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
+			key
+			value
+		}
+	}
+	experiment(id: "my_kiva_jan_2025") @client {
+		id
+		version
+	}
+}

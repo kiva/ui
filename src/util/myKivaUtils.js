@@ -4,6 +4,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { gql } from 'graphql-tag';
 import logFormatter from '#src/util/logFormatter';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
@@ -182,13 +183,15 @@ export const getIsMyKivaEnabled = (
 		}) ?? {};
 		const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-		trackExperimentVersion(
-			apollo,
-			$kvTrackEvent,
-			'event-tracking',
-			MY_KIVA_EXP,
-			'EXP-MP-1235-Jan2025'
-		);
+		if ($kvTrackEvent) {
+			trackExperimentVersion(
+				apollo,
+				$kvTrackEvent,
+				'event-tracking',
+				MY_KIVA_EXP,
+				'EXP-MP-1235-Jan2025'
+			);
+		}
 
 		// Ensure that the user continues to see MyKiva after passing the loan limit
 		// eslint-disable-next-line max-len
@@ -213,4 +216,42 @@ export const getIsMyKivaEnabled = (
 	}
 
 	return false;
+};
+
+/**
+ * Handles the redirect logic for the MyKiva home page
+ *
+ * @param client The Apollo client
+ * @param args The arguments containing cookieStore and route
+ * @param data The data containing user information
+ * @return Object containing the redirect path if MyKiva is not enabled
+ */
+export const shouldRejectMyKivaHomeRedirect = (client, args, data) => {
+	const { cookieStore, route } = args;
+	const currentRoute = route?.value ?? route ?? {};
+
+	if (currentRoute.path === '/mykiva') {
+		const { query } = currentRoute;
+		const userData = data?.my ?? {};
+		const myKivaAllUsersEnabled = readBoolSetting(data, 'general.my_kiva_all_users.value');
+
+		const showMyKivaPage = getIsMyKivaEnabled(
+			client,
+			undefined, // Passing undefined ensures no experiment tracking for users not qualified
+			userData?.userPreferences,
+			userData.lender?.loanCount,
+			myKivaAllUsersEnabled,
+			cookieStore,
+		);
+
+		// Handle when the user is being redirect via the Fastly home redirect
+		const isHomeRedirect = query?.home === 'true';
+
+		if (!showMyKivaPage) {
+			return {
+				// Take users to correct page if MyKiva is not enabled
+				path: isHomeRedirect ? '/' : '/portfolio',
+			};
+		}
+	}
 };

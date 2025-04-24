@@ -10,6 +10,7 @@ import {
 	setGuestAssignmentCookie,
 	checkGuestAssignmentCookie,
 	GUEST_ASSIGNMENT_COOKIE,
+	shouldRejectMyKivaHomeRedirect,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -383,6 +384,14 @@ describe('myKivaUtils.js', () => {
 			expect(trackExperimentVersionMock).toBeCalledTimes(1);
 		});
 
+		it('should not call trackExperimentVersion if tracking is undefined', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+
+			getIsMyKivaEnabled(apolloMock, undefined, preferencesMock, 3, myKivaFlagEnabled);
+
+			expect(trackExperimentVersionMock).toBeCalledTimes(0);
+		});
+
 		it('should only call apollo if client-side', () => {
 			windowMock.mockImplementation(() => ({}));
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
@@ -442,6 +451,123 @@ describe('myKivaUtils.js', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
+		});
+	});
+
+	describe('shouldRejectMyKivaHomeRedirect', () => {
+		let apolloMock;
+
+		beforeEach(() => {
+			apolloMock = {
+				readFragment: vi.fn(),
+			};
+		});
+
+		it('should return undefined if the current route is not "/mykiva"', () => {
+			const args = { route: { value: { path: '/some-other-page' } } };
+			const data = {};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toBeUndefined();
+		});
+
+		it('should return undefined if MyKiva is enabled', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+
+			const args = {
+				route: { value: { path: '/mykiva', query: {} } },
+				cookieStore: {
+					get: () => 'true', // Simulate guest assignment cookie
+				},
+			};
+			const data = {
+				my: {
+					userPreferences: { preferences: JSON.stringify({ myKivaJan2025Exp: true }) },
+					lender: { loanCount: 5 },
+				},
+			};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toBeUndefined();
+		});
+
+		it('should redirect to "/" if MyKiva is not enabled and the query contains "home=true"', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+
+			const args = {
+				route: { value: { path: '/mykiva', query: { home: 'true' } } },
+				cookieStore: {
+					get: () => undefined, // No guest assignment cookie
+				},
+			};
+			const data = {
+				my: {
+					userPreferences: { preferences: JSON.stringify({}) },
+					lender: { loanCount: 2 }, // Below loan limit
+				},
+			};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toEqual({ path: '/' });
+		});
+
+		it('should redirect to "/portfolio" if MyKiva is not enabled and query does not contain "home=true"', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+
+			const args = {
+				route: { value: { path: '/mykiva', query: {} } },
+				cookieStore: {
+					get: () => undefined, // No guest assignment cookie
+				},
+			};
+			const data = {
+				my: {
+					userPreferences: { preferences: JSON.stringify({}) },
+					lender: { loanCount: 2 }, // Below loan limit
+				},
+			};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toEqual({ path: '/portfolio' });
+		});
+
+		it('should handle missing route gracefully', () => {
+			const args = { route: undefined, cookieStore: {} };
+			const data = {};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toBeUndefined();
+		});
+
+		it('should respect the "general.my_kiva_all_users.value" setting', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+
+			const args = {
+				route: { value: { path: '/mykiva', query: {} } },
+				cookieStore: {
+					get: () => undefined, // No guest assignment cookie
+				},
+			};
+			const data = {
+				my: {
+					userPreferences: { preferences: JSON.stringify({}) },
+					lender: { loanCount: 5 }, // Above loan limit
+				},
+				general: {
+					my_kiva_all_users: {
+						value: 'true', // MyKiva enabled for all users
+					},
+				},
+			};
+
+			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+
+			expect(result).toBeUndefined();
 		});
 	});
 });
