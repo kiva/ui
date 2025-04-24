@@ -148,7 +148,7 @@ export default {
 		},
 	},
 	watch: {
-		// whenever question changes, this function will run
+		// Copy link when modal is visible
 		isVisible() {
 			if (this.isVisible) {
 				setTimeout(() => {
