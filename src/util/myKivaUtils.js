@@ -237,7 +237,7 @@ export const shouldRejectMyKivaHomeRedirect = (client, args, data) => {
 		return !getIsMyKivaEnabled(
 			client,
 			undefined, // Passing undefined ensures no experiment tracking for users not qualified
-			userData?.userPreferences,
+			userData.userPreferences,
 			userData.lender?.loanCount,
 			myKivaAllUsersEnabled,
 			cookieStore,
