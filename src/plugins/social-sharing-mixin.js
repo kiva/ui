@@ -54,10 +54,9 @@ export default {
 					utm_campaign: utmCampaign,
 					utm_content: utmContent,
 				});
-				return getFullUrl('https://bsky.app/intent/compose?text=', {
+				return getFullUrl('https://bsky.app/intent/compose', {
 					text: this.shareMessage,
 					url: blueskyShareUrlWithUtms,
-					hashtags: 'microloan,kivalove',
 				});
 			}
 			return '';

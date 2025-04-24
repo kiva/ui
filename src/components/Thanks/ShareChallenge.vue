@@ -217,7 +217,7 @@ export default {
 			}
 			return getFullUrl(`${base}/${invitedBy}`, args);
 		},
-		// Expected by social-sharing-mixin (used by X/Twitter/Bluesky and "copy link")
+		// Expected by social-sharing-mixin (used by Bluesky and "copy link")
 		shareMessage() {
 			return `Kiva is an easy way to make a real difference in someone's life.${
 				this.borrowerName && this.borrowerLocation
