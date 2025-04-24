@@ -40,8 +40,8 @@
 					<span class="tw-font-medium">Facebook</span>
 				</kv-button>
 				<button
-					class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-py-1 tw-basis-1/3
-					tw-text-primary tw-border-transparent hover:tw-bg-secondary"
+					class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-py-1
+					tw-px-3 tw-text-primary tw-border-transparent hover:tw-bg-secondary"
 					@click="showSharePopUp(
 						blueskyShareUrl({utmCampaign, utmContent}),
 						'Thanks for sharing to Bluesky!')"
