@@ -212,7 +212,7 @@ export default {
 									facebook
 									instagram
 									linkedin
-									bluesky
+									twitter
 									website
 									yelp
 								}
