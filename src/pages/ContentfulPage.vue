@@ -182,8 +182,8 @@ export default {
 					content: this.title?.replace('| Kiva', ''),
 				},
 				{
-					name: 'twitter:title',
-					vmid: 'twitter:title',
+					name: 'bluesky:title',
+					vmid: 'bluesky:title',
 					content: this.title?.replace('| Kiva', ''),
 				},
 			] : []).concat(this.description ? [
@@ -198,8 +198,8 @@ export default {
 					content: this.description
 				},
 				{
-					name: 'twitter:description',
-					vmid: 'twitter:description',
+					name: 'bluesky:description',
+					vmid: 'bluesky:description',
 					content: this.description
 				},
 			] : []),

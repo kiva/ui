@@ -139,7 +139,7 @@ export default {
 				facebook: '',
 				instagram: '',
 				linkedin: '',
-				twitter: '',
+				bluesky: '',
 				website: '',
 				yelp: '',
 			},
@@ -212,7 +212,7 @@ export default {
 									facebook
 									instagram
 									linkedin
-									twitter
+									bluesky
 									website
 									yelp
 								}

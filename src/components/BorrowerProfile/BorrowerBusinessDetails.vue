@@ -60,7 +60,7 @@ import * as Sentry from '@sentry/vue';
 import { KvTextLink } from '@kiva/kv-components';
 import { defineAsyncComponent } from 'vue';
 
-const TwitterLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/twitter-logo.svg'));
+const BlueskyLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/bluesky-logo.svg'));
 const YelpLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/yelp-logo.svg'));
 const EtsyLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/etsy-logo.svg'));
 const FacebookLogo = defineAsyncComponent(() => import('#src/assets/inline-svgs/logos/facebook-logo.svg'));
@@ -71,7 +71,7 @@ export default {
 	name: 'BorrowerBusinessDetails',
 	components: {
 		KvTextLink,
-		TwitterLogo,
+		BlueskyLogo,
 		YelpLogo,
 		EtsyLogo,
 		FacebookLogo,
@@ -108,8 +108,8 @@ export default {
 	methods: {
 		getLogo(value) {
 			switch (value) {
-				case 'twitter':
-					return TwitterLogo;
+				case 'bluesky':
+					return BlueskyLogo;
 				case 'etsy':
 					return EtsyLogo;
 				case 'facebook':
@@ -126,7 +126,7 @@ export default {
 		},
 		getLogoWidth(value) {
 			switch (value) {
-				case 'twitter':
+				case 'bluesky':
 					return 28;
 				case 'etsy':
 					return 32;
@@ -144,7 +144,7 @@ export default {
 		},
 		getLogoHeight(value) {
 			switch (value) {
-				case 'twitter':
+				case 'bluesky':
 					return 23;
 				case 'etsy':
 					return 15;
@@ -192,7 +192,7 @@ export default {
 		filteredSocialLinks() {
 			const linkKeys = Object.keys(this.socialLinks);
 			// this.socialLInks includes __typename + website which we don't want in this list
-			const socialLinkKeys = ['etsy', 'facebook', 'instagram', 'linkedin', 'twitter', 'yelp'];
+			const socialLinkKeys = ['etsy', 'facebook', 'instagram', 'linkedin', 'bluesky', 'yelp'];
 			// filter out any keys without a value
 			const filteredKeys = linkKeys.filter(key => {
 				if (socialLinkKeys.includes(key)

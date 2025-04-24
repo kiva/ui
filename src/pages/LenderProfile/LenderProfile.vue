@@ -64,20 +64,20 @@ export default {
 					content: this.pageTitle,
 				},
 			]).concat([
-				// Twitter Tags
+				// Bluesky Tags
 				{
-					name: 'twitter:title',
-					vmid: 'twitter:title',
+					name: 'bluesky:title',
+					vmid: 'bluesky:title',
 					content: this.pageTitle,
 				},
 				{
-					name: 'twitter:image',
-					vmid: 'twitter:image',
+					name: 'bluesky:image',
+					vmid: 'bluesky:image',
 					content: this.seoImageUrl,
 				},
 				{
-					name: 'twitter:description',
-					vmid: 'twitter:description',
+					name: 'bluesky:description',
+					vmid: 'bluesky:description',
 					content: this.pageDescription,
 				},
 			]),

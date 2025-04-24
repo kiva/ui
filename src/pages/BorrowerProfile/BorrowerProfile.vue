@@ -350,36 +350,36 @@ export default {
 					content: this.facebookPageLabel
 				},
 			] : []).concat([
-				// Twitter Tags
-				{ name: 'twitter:title', vmid: 'twitter:title', content: this.shareTitle },
+				// bluesky Tags
+				{ name: 'bluesky:title', vmid: 'bluesky:title', content: this.shareTitle },
 				{
-					name: 'twitter:image',
-					vmid: 'twitter:image',
+					name: 'bluesky:image',
+					vmid: 'bluesky:image',
 					content: this.imageShareUrl
 				},
 				{
-					name: 'twitter:label1',
-					vmid: 'twitter:label1',
+					name: 'bluesky:label1',
+					vmid: 'bluesky:label1',
 					content: 'Supporters'
 				},
 				{
-					name: 'twitter:data1',
-					vmid: 'twitter:data1',
+					name: 'bluesky:data1',
+					vmid: 'bluesky:data1',
 					content: this.numLenders
 				},
 				{
-					name: 'twitter:label2',
-					vmid: 'twitter:label2',
+					name: 'bluesky:label2',
+					vmid: 'bluesky:label2',
 					content: 'End Date'
 				},
 				{
-					name: 'twitter:data2',
-					vmid: 'twitter:data2',
+					name: 'bluesky:data2',
+					vmid: 'bluesky:data2',
 					content: this.endDate
 				},
 				{
-					name: 'twitter:description',
-					vmid: 'twitter:description',
+					name: 'bluesky:description',
+					vmid: 'bluesky:description',
 					content: this.shareDescription
 				},
 			]).concat(isSclePresent ? [

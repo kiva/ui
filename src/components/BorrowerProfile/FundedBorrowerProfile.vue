@@ -140,8 +140,8 @@ export default {
 						content: this.shareDescription
 					},
 					{
-						name: 'twitter:description',
-						vmid: 'twitter:description',
+						name: 'bluesky:description',
+						vmid: 'bluesky:description',
 						content: this.shareDescription
 					}
 				]
