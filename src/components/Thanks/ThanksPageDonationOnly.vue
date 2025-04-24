@@ -84,7 +84,7 @@
 								['post-checkout', 'share', 'bluesky', utmCampaign]"
 							@click="showSharePopUp(
 								blueskyShareUrl({utmCampaign, utmContent}),
-								'Thanks for sharing!')"
+								'Thanks for sharing to Bluesky!')"
 						>
 							<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
 							<span>Share to your followers</span>
@@ -186,7 +186,7 @@ export default {
 			},
 			youtubeId: 'Mpp2ZH7os4Q',
 			isGuest: false,
-			message: '',
+			message: "Kiva is an easy way to make a real difference in someone's life.",
 			utmCampaign: 'social_share_checkout',
 			contentfulContent: null,
 		};
