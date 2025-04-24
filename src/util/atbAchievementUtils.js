@@ -36,13 +36,25 @@ export const filterAchievementData = (nonContributingAchievements, badgeAchievem
 	return filteredAchievementsData;
 };
 
-export const getOneLoanAwayAchievement = (filteredAchievementsData, loanAchievements) => {
-	return filteredAchievementsData.find(achievement => {
+export const getOneLoanAwayAchievement = (addedLoanId, filteredAchievementsData, loanAchievements) => {
+	let currentTarget = null;
+	const oneLoanAwayAchievement = filteredAchievementsData.find(achievement => {
 		// eslint-disable-next-line max-len
 		const progressInBasket = loanAchievements.find(loanAchievement => loanAchievement.achievementId === achievement.id);
 		const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
+		const addedLoanInContributingLoans = contributingLoanIds.includes(addedLoanId.toString());
 		const loansProgressCount = achievement.totalProgressToAchievement + contributingLoanIds.length;
+		currentTarget = achievement?.tiers.find(tier => tier.target - 1 === loansProgressCount)?.target ?? null;
 
-		return achievement?.tiers.some(tier => tier.target - 1 === loansProgressCount);
+		return addedLoanInContributingLoans && currentTarget;
 	});
+
+	if (oneLoanAwayAchievement) {
+		return {
+			...oneLoanAwayAchievement,
+			target: currentTarget,
+		};
+	}
+
+	return null;
 };

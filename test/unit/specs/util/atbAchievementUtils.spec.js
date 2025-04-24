@@ -80,10 +80,12 @@ describe('achievementUtils', () => {
 			];
 
 			const loanAchievements = [
-				{ achievementId: 2, contributingLoanIds: [101] },
+				{ achievementId: 2, contributingLoanIds: ['101'] },
 			];
 
-			const result = getOneLoanAwayAchievement(filteredAchievementsData, loanAchievements);
+			const addedLoanId = 101;
+
+			const result = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
 			expect(result?.id).toBe(2);
 		});
 
@@ -100,8 +102,10 @@ describe('achievementUtils', () => {
 				{ achievementId: 1, contributingLoanIds: [] },
 			];
 
-			const result = getOneLoanAwayAchievement(filteredAchievementsData, loanAchievements);
-			expect(result).toBeUndefined();
+			const addedLoanId = 101;
+
+			const result = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
+			expect(result).toBeNull();
 		});
 	});
 });
