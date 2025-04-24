@@ -20,6 +20,7 @@
 			<JourneyCardCarousel
 				:slides="heroSlides"
 				:badges-data="badgeData"
+				:lender="lender"
 				@update-journey="updateJourney"
 			/>
 		</section>
@@ -303,6 +304,7 @@ const fetchMyKivaData = () => {
 			lender.value = {
 				...lender.value,
 				public: userInfo.value?.userAccount?.public ?? false,
+				inviterName: userInfo.value?.userAccount?.inviterName ?? null,
 			};
 			loans.value = result.data?.my?.loans?.values ?? [];
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;

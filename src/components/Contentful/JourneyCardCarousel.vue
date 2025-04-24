@@ -105,6 +105,11 @@
 				</div>
 			</template>
 		</KvCarousel>
+		<MyKivaSharingModal
+			:lender="lender"
+			:is-visible="isSharingModalVisible"
+			@close-modal="isSharingModalVisible = false"
+		/>
 	</div>
 </template>
 
@@ -121,8 +126,11 @@ import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 const PLACEHOLDER_SLIDES_LENGTH = 2;
+const JOURNEY_MODAL_KEY = 'journey';
+const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -138,11 +146,16 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
+	lender: {
+		type: Object,
+		default: () => ({})
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
 const currentIndex = ref(0);
+const isSharingModalVisible = ref(false);
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
@@ -266,13 +279,6 @@ const primaryCtaText = slide => {
 	return richTextUiSettingsData.primaryCtaText || '';
 };
 
-const goToPrimaryCtaUrl = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
-	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	router.push(primaryCtaUrl);
-};
-
 const primaryCtaVariant = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.primaryCtaVariant || 'secondary';
@@ -283,15 +289,36 @@ const secondaryCtaText = slide => {
 	return richTextUiSettingsData.secondaryCtaText || '';
 };
 
+const getUrlParamsFromString = string => {
+	const urlSplit = string.split('?');
+	return urlSplit[1];
+};
+
+const goToPrimaryCtaUrl = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
+	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
+	const urlParams = getUrlParamsFromString(primaryCtaUrl);
+
+	if (urlParams && urlParams.includes(REFER_FRIEND_MODAL_KEY)) {
+		const paramsSplit = urlParams.split('=');
+		if (paramsSplit && paramsSplit[1] === 'true') {
+			// open sharing modal
+			isSharingModalVisible.value = true;
+		}
+	} else {
+		router.push(primaryCtaUrl);
+	}
+};
+
 const goToSecondaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
 	// eslint-disable-next-line max-len
 	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlSplit = secondaryCtaUrl.split('?');
-	const urlParams = urlSplit[1];
+	const urlParams = getUrlParamsFromString(secondaryCtaUrl);
 
-	if (urlParams && urlParams.includes('journey')) {
+	if (urlParams && urlParams.includes(JOURNEY_MODAL_KEY)) {
 		const { achievementKey } = richTextUiSettingsData;
 		emit('update-journey', achievementKey);
 	} else {
