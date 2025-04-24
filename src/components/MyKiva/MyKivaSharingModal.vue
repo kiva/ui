@@ -67,7 +67,7 @@
 					class="social-button"
 					:disabled="copyStatus.disabled"
 					v-kv-track-event="['portfolio', 'share', 'copy-link', utmCampaign]"
-					@click="copyLink({utmCampaign, utmContent}, 'Copy')"
+					@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 				>
 					<KvMaterialIcon
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
@@ -146,6 +146,22 @@ export default {
 		closeLightbox() {
 			this.$emit('close-modal');
 		},
+	},
+	watch: {
+		// whenever question changes, this function will run
+		isVisible() {
+			if (this.isVisible) {
+				setTimeout(() => {
+					this.copyLink(
+						{
+							utmCampaign: this.utmCampaign,
+							utmContent: this.utmContent
+						},
+						this.copyStatus.text
+					);
+				}, 400);
+			}
+		}
 	},
 };
 </script>
