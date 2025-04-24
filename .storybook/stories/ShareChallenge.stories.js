@@ -10,7 +10,7 @@ const socialSharingMixin = () => ({
 	methods: {
 		handleFacebookResponse: () => { },
 		showSharePopUp: () => { },
-		twitterShareUrl: () => { },
+		blueskyShareUrl: () => { },
 		facebookShareUrl: () => { },
 		linkedInShareUrl: () => { },
 		copyLink: () => { }

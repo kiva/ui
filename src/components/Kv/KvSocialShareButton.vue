@@ -39,21 +39,17 @@
 					/>
 					<span class="tw-font-medium">Facebook</span>
 				</kv-button>
-				<kv-button
-					variant="ghost"
-					class="social-button"
-					data-testid="share-twitter-button"
-					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
+				<button
+					class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-py-1
+					tw-px-3 tw-text-primary tw-border-transparent hover:tw-bg-secondary"
 					@click="showSharePopUp(
-						twitterShareUrl({utmCampaign, utmContent}),
-						'Thanks for tweeting!')"
+						blueskyShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing to Bluesky!')"
+					v-kv-track-event="[trackingCategory, 'share', 'bluesky', utmCampaign, loanId]"
 				>
-					<kv-material-icon
-						class="social-button__icon social-button__icon--twitter"
-						:icon="mdiTwitter"
-					/>
-					<span class="tw-font-medium">Twitter</span>
-				</kv-button>
+					<kv-icon name="bluesky" title="Bluesky" style="width: 28px; fill: #1877F2;" />
+					<span class="tw-font-medium">Bluesky</span>
+				</button>
 				<kv-button
 					variant="ghost"
 					class="social-button"
@@ -92,18 +88,19 @@
 import {
 	mdiFacebook,
 	mdiLinkedin,
-	mdiTwitter,
 	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import { KvButton, KvLightbox, KvMaterialIcon } from '@kiva/kv-components';
+import KvIcon from '#src/components/Kv/KvIcon';
 
 export default {
 	name: 'KvSocialShareButton',
 	components: {
 		KvButton,
+		KvIcon,
 		KvLightbox,
-		KvMaterialIcon
+		KvMaterialIcon,
 	},
 	emits: ['lightbox-closed'],
 	props: {
@@ -177,9 +174,9 @@ export default {
 				text: 'Copy'
 			},
 			isLightboxVisible: this.openLightbox || false,
+			KvIcon,
 			mdiFacebook,
 			mdiLinkedin,
-			mdiTwitter,
 			mdiLink,
 		};
 	},
@@ -218,17 +215,13 @@ export default {
 
 <style lang="scss" scoped>
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 
 .social-button {
 	&__icon {
 		&--linkedin {
 			color: $color-linkedin;
-		}
-
-		&--twitter {
-			color: $color-twitter;
 		}
 
 		&--facebook {

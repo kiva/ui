@@ -46,19 +46,17 @@ export default {
 			);
 			this.$showTipMsg(thanksText);
 		},
-		twitterShareUrl({ utmCampaign, utmContent }) {
+		blueskyShareUrl({ utmCampaign, utmContent }) {
 			if (this.shareLink && this.shareMessage) {
-				const twitterShareUrlWithUtms = getFullUrl(this.shareLink, {
-					utm_source: 't.co',
+				const blueskyShareUrlWithUtms = getFullUrl(this.shareLink, {
+					utm_source: 'bsky.app',
 					utm_medium: 'social',
 					utm_campaign: utmCampaign,
 					utm_content: utmContent,
 				});
-				return getFullUrl('https://twitter.com/intent/tweet', {
+				return getFullUrl('https://bsky.app/intent/compose', {
 					text: this.shareMessage,
-					url: twitterShareUrlWithUtms,
-					hashtags: 'microloan,kivalove',
-					via: 'Kiva',
+					url: blueskyShareUrlWithUtms,
 				});
 			}
 			return '';
