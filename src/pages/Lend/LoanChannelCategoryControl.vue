@@ -269,13 +269,13 @@ export default {
 				},
 			]).concat([
 				{
-					vmid: 'bluesky:title',
-					name: 'bluesky:title',
+					vmid: 'twitter:title',
+					name: 'twitter:title',
 					content: this.metaTitle
 				},
 				{
-					name: 'bluesky:description',
-					vmid: 'bluesky:description',
+					name: 'twitter:description',
+					vmid: 'twitter:description',
 					content: this.metaDescription
 				}
 			])
