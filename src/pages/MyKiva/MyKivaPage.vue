@@ -25,9 +25,8 @@ export default {
 		preFetch(_, client, args) {
 			return client.query({ query: myKivaRedirectQuery })
 				.then(({ data }) => {
-					const result = shouldRejectMyKivaHomeRedirect(client, args, data);
-					if (result) {
-						return Promise.reject(result);
+					if (shouldRejectMyKivaHomeRedirect(client, args, data)) {
+						return Promise.reject({ path: '/' });
 					}
 				});
 		}

@@ -455,119 +455,102 @@ describe('myKivaUtils.js', () => {
 	});
 
 	describe('shouldRejectMyKivaHomeRedirect', () => {
-		let apolloMock;
-
-		beforeEach(() => {
-			apolloMock = {
-				readFragment: vi.fn(),
+		it('should return true if the current route is /mykiva and getIsMyKivaEnabled returns false', () => {
+			const clientMock = {
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
 			};
-		});
-
-		it('should return undefined if the current route is not "/mykiva"', () => {
-			const args = { route: { value: { path: '/some-other-page' } } };
-			const data = {};
-
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
-
-			expect(result).toBeUndefined();
-		});
-
-		it('should return undefined if MyKiva is enabled', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
 			const args = {
-				route: { value: { path: '/mykiva', query: {} } },
 				cookieStore: {
-					get: () => 'true', // Simulate guest assignment cookie
+					get: vi.fn().mockReturnValue(undefined),
+				},
+				route: {
+					value: { path: '/mykiva' },
 				},
 			};
 			const data = {
 				my: {
-					userPreferences: { preferences: JSON.stringify({ myKivaJan2025Exp: true }) },
-					lender: { loanCount: 5 },
-				},
-			};
-
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
-
-			expect(result).toBeUndefined();
-		});
-
-		it('should redirect to "/" if MyKiva is not enabled and the query contains "home=true"', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-
-			const args = {
-				route: { value: { path: '/mykiva', query: { home: 'true' } } },
-				cookieStore: {
-					get: () => undefined, // No guest assignment cookie
-				},
-			};
-			const data = {
-				my: {
-					userPreferences: { preferences: JSON.stringify({}) },
-					lender: { loanCount: 2 }, // Below loan limit
-				},
-			};
-
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
-
-			expect(result).toEqual({ path: '/' });
-		});
-
-		it('should redirect to "/portfolio" if MyKiva is not enabled and query does not contain "home=true"', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-
-			const args = {
-				route: { value: { path: '/mykiva', query: {} } },
-				cookieStore: {
-					get: () => undefined, // No guest assignment cookie
-				},
-			};
-			const data = {
-				my: {
-					userPreferences: { preferences: JSON.stringify({}) },
-					lender: { loanCount: 2 }, // Below loan limit
-				},
-			};
-
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
-
-			expect(result).toEqual({ path: '/portfolio' });
-		});
-
-		it('should handle missing route gracefully', () => {
-			const args = { route: undefined, cookieStore: {} };
-			const data = {};
-
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
-
-			expect(result).toBeUndefined();
-		});
-
-		it('should respect the "general.my_kiva_all_users.value" setting', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const args = {
-				route: { value: { path: '/mykiva', query: {} } },
-				cookieStore: {
-					get: () => undefined, // No guest assignment cookie
-				},
-			};
-			const data = {
-				my: {
-					userPreferences: { preferences: JSON.stringify({}) },
-					lender: { loanCount: 5 }, // Above loan limit
+					userPreferences: {
+						preferences: JSON.stringify({}),
+					},
+					lender: {
+						loanCount: 5,
+					},
 				},
 				general: {
 					my_kiva_all_users: {
-						value: 'true', // MyKiva enabled for all users
+						value: false,
 					},
 				},
 			};
 
-			const result = shouldRejectMyKivaHomeRedirect(apolloMock, args, data);
+			const result = shouldRejectMyKivaHomeRedirect(clientMock, args, data);
 
-			expect(result).toBeUndefined();
+			expect(result).toBe(true);
+		});
+
+		it('should return false if the current route is /mykiva and getIsMyKivaEnabled returns true', () => {
+			const clientMock = {
+				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
+			};
+			const args = {
+				cookieStore: {
+					get: vi.fn().mockReturnValue('true'),
+				},
+				route: {
+					value: { path: '/mykiva' },
+				},
+			};
+			const data = {
+				my: {
+					userPreferences: {
+						preferences: JSON.stringify({ myKivaJan2025Exp: 1 }),
+					},
+					lender: {
+						loanCount: 3,
+					},
+				},
+				general: {
+					my_kiva_all_users: {
+						value: true,
+					},
+				},
+			};
+
+			const result = shouldRejectMyKivaHomeRedirect(clientMock, args, data);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return false if the current route is not /mykiva', () => {
+			const clientMock = {
+				readFragment: vi.fn(),
+			};
+			const args = {
+				cookieStore: {},
+				route: {
+					value: { path: '/other' },
+				},
+			};
+			const data = {};
+
+			const result = shouldRejectMyKivaHomeRedirect(clientMock, args, data);
+
+			expect(result).toBe(false);
+		});
+
+		it('should handle undefined route gracefully', () => {
+			const clientMock = {
+				readFragment: vi.fn(),
+			};
+			const args = {
+				cookieStore: {},
+				route: undefined,
+			};
+			const data = {};
+
+			const result = shouldRejectMyKivaHomeRedirect(clientMock, args, data);
+
+			expect(result).toBe(false);
 		});
 	});
 });

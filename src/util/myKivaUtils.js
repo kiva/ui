@@ -224,18 +224,17 @@ export const getIsMyKivaEnabled = (
  * @param client The Apollo client
  * @param args The arguments containing cookieStore and route
  * @param data The data containing user information
- * @return Object containing the redirect path if MyKiva is not enabled
+ * @return Whether the MyKiva route should be rejected
  */
 export const shouldRejectMyKivaHomeRedirect = (client, args, data) => {
 	const { cookieStore, route } = args;
 	const currentRoute = route?.value ?? route ?? {};
 
 	if (currentRoute.path === '/mykiva') {
-		const { query } = currentRoute;
 		const userData = data?.my ?? {};
 		const myKivaAllUsersEnabled = readBoolSetting(data, 'general.my_kiva_all_users.value');
 
-		const showMyKivaPage = getIsMyKivaEnabled(
+		return !getIsMyKivaEnabled(
 			client,
 			undefined, // Passing undefined ensures no experiment tracking for users not qualified
 			userData?.userPreferences,
@@ -243,15 +242,7 @@ export const shouldRejectMyKivaHomeRedirect = (client, args, data) => {
 			myKivaAllUsersEnabled,
 			cookieStore,
 		);
-
-		// Handle when the user is being redirect via the Fastly home redirect
-		const isHomeRedirect = query?.home === 'true';
-
-		if (!showMyKivaPage) {
-			return {
-				// Take users to correct page if MyKiva is not enabled
-				path: isHomeRedirect ? '/' : '/portfolio',
-			};
-		}
 	}
+
+	return false;
 };
