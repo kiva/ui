@@ -64,7 +64,7 @@ export default {
 					content: this.pageTitle,
 				},
 			]).concat([
-				// twitter Tags
+				// Twitter Tags
 				{
 					name: 'twitter:title',
 					vmid: 'twitter:title',

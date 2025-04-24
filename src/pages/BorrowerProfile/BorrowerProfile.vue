@@ -350,7 +350,7 @@ export default {
 					content: this.facebookPageLabel
 				},
 			] : []).concat([
-				// twitter Tags
+				// Twitter Tags
 				{ name: 'twitter:title', vmid: 'twitter:title', content: this.shareTitle },
 				{
 					name: 'twitter:image',
