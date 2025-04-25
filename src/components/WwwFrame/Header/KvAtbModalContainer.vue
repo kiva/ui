@@ -224,6 +224,17 @@ const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value && (isGuest.value || !userData.value?.my?.loans?.totalCount);
 });
 
+const numberOfMilestones = computed(() => {
+	return achievementsFromBasket.value.reduce(
+		(total, achievement) => {
+			const achievementProgress = achievement.postCheckoutTier - achievement.preCheckoutTier;
+
+			return total + (achievementProgress > 0 ? achievementProgress : 0);
+		},
+		0
+	);
+});
+
 const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
 
 const pillMsg = computed(() => {
@@ -242,8 +253,8 @@ const pillMsg = computed(() => {
 		return 'You’re close to your next milestone!';
 	}
 
-	const milestonesCopy = achievementsFromBasket.value.length > 1
-		? `${achievementsFromBasket.value.length} of your milestones`
+	const milestonesCopy = numberOfMilestones.value > 1
+		? `${numberOfMilestones.value} of your milestones`
 		: 'your next milestone';
 
 	return borrowerName.value
