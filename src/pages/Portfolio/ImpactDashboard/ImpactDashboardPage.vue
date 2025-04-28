@@ -23,7 +23,7 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
-						<recent-loans-list />
+						<LoanCards />
 						<JourneysSection
 							v-if="isMyKivaExperimentEnabled"
 						/>
@@ -58,12 +58,12 @@ import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
 import KivaCreditStats from './KivaCreditStats';
 import LendingInsights from './LendingInsights';
-import RecentLoansList from './RecentLoansList';
 import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import JourneysSection from './JourneysSection';
+import LoanCards from './LoanCards';
 
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
 
@@ -79,7 +79,6 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		LendingInsights,
-		RecentLoansList,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
@@ -88,6 +87,7 @@ export default {
 		TeamChallenge,
 		MyKivaPage,
 		JourneysSection,
+		LoanCards,
 	},
 	data() {
 		return {

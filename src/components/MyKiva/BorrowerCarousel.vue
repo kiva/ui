@@ -58,7 +58,7 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="loans.length > 9" for-panel="view-more">
+					<KvTab v-if="loans.length > cardsNumber" for-panel="view-more">
 						<a
 							href="/portfolio/loans" v-kv-track-event="[
 								'portfolio',
@@ -90,8 +90,11 @@
 					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
 						<BorrowerStatusCard
 							:loan="loan" class="tw-h-full"
-							@toggle-what-is-next="openWhatIsNext = $event"
 							:open-what-is-next="openWhatIsNext"
+							:show-menu="showMenu"
+							@toggle-what-is-next="openWhatIsNext = $event"
+							@open-comment-modal="openCommentModal"
+							@open-share-modal="openShareModal"
 						/>
 					</template>
 				</KvCarousel>
@@ -107,6 +110,26 @@
 				>See all borrowers</a>
 			</div>
 		</div>
+		<!-- Loan Comment Component -->
+		<LoanCommentModal
+			:loan="commentLoanData"
+			@comment-modal-closed="commentLoanData.visible = false"
+		/>
+		<!-- Share Button -->
+		<ShareButton
+			v-if="sharedLoan"
+			class="tw-block !tw-w-auto"
+			:loan="sharedLoan"
+			variant="hidden"
+			:lender="lender"
+			:campaign="SHARE_CAMPAIGN"
+			:in-pfp="inPfp"
+			:pfp-min-lenders="pfpMinLenders"
+			:num-lenders="numLenders"
+			:open-lightbox="shareLoan"
+			:is-portfolio="true"
+			@lightbox-closed="closeShareModal"
+		/>
 	</div>
 </template>
 
@@ -134,7 +157,11 @@ import {
 	FUNDRAISING,
 	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
+import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
+import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerStatusCard from './BorrowerStatusCard';
+
+const SHARE_CAMPAIGN = 'social_share_portfolio';
 
 const props = defineProps({
 	/**
@@ -153,6 +180,18 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	showMenu: {
+		type: Boolean,
+		default: false,
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
+	},
+	cardsNumber: {
+		type: Number,
+		default: 9,
+	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -163,6 +202,13 @@ const tabs = ref(null);
 const windowWidth = ref(0);
 const openWhatIsNext = ref(false);
 const lastVisitedLoanIdx = ref(0);
+const sharedLoan = ref(null);
+const commentLoanData = ref({
+	loanId: 0,
+	borrowerName: '',
+	visible: false,
+});
+const shareLoan = ref(false);
 
 const activeLoans = computed(() => {
 	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
@@ -216,8 +262,15 @@ const btnEventLabel = computed(() => {
 });
 
 const filteredLoans = computed(() => {
-	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status)).slice(0, 9);
+	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED]
+		.includes(loan?.status)).slice(0, props.cardsNumber);
 });
+
+const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);
+
+const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
+
+const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
 const handleChange = event => {
 	if (event < filteredLoans.value.length) {
@@ -253,6 +306,23 @@ const throttledResize = _throttle(handleResize, 200);
 
 const onInteractCarousel = interaction => {
 	tabs.value.tabContext.selectedIndex = interaction.value;
+};
+
+const openCommentModal = payload => {
+	commentLoanData.value = {
+		...payload,
+		visible: true
+	};
+};
+
+const openShareModal = payload => {
+	sharedLoan.value = payload?.loan ?? null;
+	shareLoan.value = true;
+};
+
+const closeShareModal = () => {
+	shareLoan.value = false;
+	sharedLoan.value = null;
 };
 
 watch(() => loans.value, () => {

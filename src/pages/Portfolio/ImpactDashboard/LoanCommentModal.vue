@@ -113,6 +113,7 @@ export default {
 			});
 		},
 		closeModal() {
+			this.userComment = '';
 			this.$emit('comment-modal-closed');
 		}
 	},
