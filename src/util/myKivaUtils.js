@@ -145,6 +145,18 @@ export const checkGuestAssignmentCookie = cookieStore => {
 };
 
 /**
+ * Sets a cookie to redirect the user to the MyKiva homepage
+ *
+ * @param cookieStore The cookie store
+ */
+export const setMyKivaRedirectCookie = cookieStore => {
+	const expires = new Date();
+	// Set the cookie to expire in 2 months
+	expires.setMonth(expires.getMonth() + 2);
+	cookieStore?.set('mykivaredirect', 'true', expires);
+};
+
+/**
  * Gets whether the MyKiva experience is enabled for the user, excluding some specific logic for the TY page
  *
  * @param apollo The current Apollo client
@@ -209,7 +221,14 @@ export const getIsMyKivaEnabled = (
 		}
 
 		// The user preference hasSeenMyKiva can be true when we override for internal testing
-		return hasSeenMyKiva || isMyKivaExperimentEnabled;
+		const showMyKiva = hasSeenMyKiva || isMyKivaExperimentEnabled;
+
+		// Set cookie used in Fastly VCL to redirect to MyKiva homepage
+		if (showMyKiva) {
+			setMyKivaRedirectCookie(cookieStore);
+		}
+
+		return showMyKiva;
 	}
 
 	return false;
