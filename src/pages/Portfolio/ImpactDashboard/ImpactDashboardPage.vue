@@ -25,7 +25,7 @@
 						<lending-insights />
 						<recent-loans-list />
 						<JourneysSection
-							v-if="isMyKivaExperimentEnabled"
+							v-if="showMyKivaJourneySection"
 						/>
 						<your-donations />
 						<education-module v-if="post" :post="post" />
@@ -46,9 +46,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
@@ -64,8 +62,6 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import JourneysSection from './JourneysSection';
-
-const MY_KIVA_EXP = 'my_kiva_jan_2025';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -97,7 +93,7 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
-			isMyKivaExperimentEnabled: false,
+			showMyKivaJourneySection: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -134,29 +130,18 @@ export default {
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
+		const isMykivaEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			userData?.userPreferences,
+			userData.lender?.loanCount,
+			myKivaAllUsersEnabled,
+			this.cookieStore,
+		);
 		if (!myKivaAllUsersEnabled) {
-			this.showMyKivaPage = getIsMyKivaEnabled(
-				this.apollo,
-				this.$kvTrackEvent,
-				userData?.userPreferences,
-				userData.lender?.loanCount,
-				false,
-				this.cookieStore,
-			);
+			this.showMyKivaPage = isMykivaEnabled;
 		} else {
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${MY_KIVA_EXP}`,
-				fragment: experimentVersionFragment,
-			}) ?? {};
-			this.isMyKivaExperimentEnabled = version === 'b';
-
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				MY_KIVA_EXP,
-				'EXP-MP-1235-Jan2025'
-			);
+			this.showMyKivaJourneySection = isMykivaEnabled;
 		}
 
 		if (!this.showMyKivaPage) {
