@@ -25,7 +25,7 @@
 						<lending-insights />
 						<recent-loans-list />
 						<JourneysSection
-							v-if="isMyKivaExperimentEnabled"
+							v-if="showMyKivaJourneySection"
 						/>
 						<your-donations />
 						<education-module v-if="post" :post="post" />
@@ -97,7 +97,7 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
-			isMyKivaExperimentEnabled: false,
+			showMyKivaJourneySection: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -134,29 +134,18 @@ export default {
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
+		const isMykivaEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			userData?.userPreferences,
+			userData.lender?.loanCount,
+			myKivaAllUsersEnabled,
+			this.cookieStore,
+		);
 		if (!myKivaAllUsersEnabled) {
-			this.showMyKivaPage = getIsMyKivaEnabled(
-				this.apollo,
-				this.$kvTrackEvent,
-				userData?.userPreferences,
-				userData.lender?.loanCount,
-				false,
-				this.cookieStore,
-			);
+			this.showMyKivaPage = isMykivaEnabled;
 		} else {
-			const { version } = this.apollo.readFragment({
-				id: `Experiment:${MY_KIVA_EXP}`,
-				fragment: experimentVersionFragment,
-			}) ?? {};
-			this.isMyKivaExperimentEnabled = version === 'b';
-
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				MY_KIVA_EXP,
-				'EXP-MP-1235-Jan2025'
-			);
+			this.showMyKivaJourneySection = isMykivaEnabled;
 		}
 
 		if (!this.showMyKivaPage) {
