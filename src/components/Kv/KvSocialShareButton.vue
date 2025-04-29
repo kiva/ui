@@ -232,7 +232,7 @@ $color-linkedin: #0077b5;
 		}
 
 		&--bluesky {
-			color: $color-linkedin;
+			color: $color-bluesky;
 		}
 
 		&--facebook {
