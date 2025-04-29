@@ -153,22 +153,6 @@ export default {
 			this.$emit('close-modal');
 		},
 	},
-	watch: {
-		// Copy link when modal is visible
-		isVisible() {
-			if (this.isVisible) {
-				setTimeout(() => {
-					this.copyLink(
-						{
-							utmCampaign: this.utmCampaign,
-							utmContent: this.utmContent
-						},
-						this.copyStatus.text
-					);
-				}, 400);
-			}
-		}
-	},
 };
 </script>
 

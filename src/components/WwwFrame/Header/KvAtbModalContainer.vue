@@ -123,9 +123,9 @@ const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
 const oneAwayText = ref('');
-const achievementsFromBasket = ref([]);
 const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
+const milestonesProgress = ref({});
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -217,25 +217,23 @@ const fetchBasketData = async () => {
 };
 
 const loansIdsInBasket = computed(() => {
-	return basketData.value.map(item => item.id);
+	// eslint-disable-next-line no-underscore-dangle
+	return basketData.value.filter(item => item.__typename === 'LoanReservation').map(item => item.id);
 });
 
 const isFirstLoan = computed(() => {
-	return myKivaExperimentEnabled.value && (isGuest.value || !userData.value?.my?.loans?.totalCount);
-});
-
-const numberOfMilestones = computed(() => {
-	return achievementsFromBasket.value.reduce(
-		(total, achievement) => {
-			const achievementProgress = achievement.postCheckoutTier - achievement.preCheckoutTier;
-
-			return total + (achievementProgress > 0 ? achievementProgress : 0);
-		},
-		0
-	);
+	return myKivaExperimentEnabled.value
+		&& (isGuest.value || !userData.value?.my?.loans?.totalCount)
+		&& loansIdsInBasket.value.length === 1;
 });
 
 const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
+
+const milestonesProgressCount = computed(() => {
+	return Object.values(milestonesProgress.value).reduce((acc, value) => {
+		return acc + (value > 0 ? value : 0);
+	}, 0);
+});
 
 const pillMsg = computed(() => {
 	if (isFirstLoan.value) {
@@ -253,8 +251,8 @@ const pillMsg = computed(() => {
 		return 'You’re close to your next milestone!';
 	}
 
-	const milestonesCopy = numberOfMilestones.value > 1
-		? `${numberOfMilestones.value} of your milestones`
+	const milestonesCopy = milestonesProgressCount.value > 1
+		? `${milestonesProgressCount.value} of your milestones`
 		: 'your next milestone';
 
 	return borrowerName.value
@@ -263,8 +261,10 @@ const pillMsg = computed(() => {
 });
 
 const updateTierTable = () => {
-	achievementsFromBasket.value.forEach(achievement => {
-		tierTable.value[achievement.achievementId] = achievement.postCheckoutTier;
+	contributingAchievements.value.forEach(achievement => {
+		const { achievementId } = achievement;
+		tierTable.value[achievementId] = achievement.postCheckoutTier;
+		milestonesProgress.value[achievementId] = achievement.postCheckoutTier - achievement.preCheckoutTier;
 	});
 };
 
@@ -306,7 +306,6 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
-		achievementsFromBasket.value = [...contributingAchievements.value];
 		updateTierTable();
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
@@ -319,7 +318,8 @@ const fetchAchievementFromBasket = async () => {
 		variables: { loanIds: loansIdsInBasket.value },
 	}).then(({ data }) => {
 		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
-		achievementsFromBasket.value = loanAchievements.filter(achievement => achievement.postCheckoutTier !== achievement.preCheckoutTier); // eslint-disable-line max-len
+		const { contributingLoanAchievements } = splitAchievements(loanAchievements, tierTable.value);
+		contributingAchievements.value = [...contributingLoanAchievements];
 		updateTierTable();
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Basket Achievements Query ');

@@ -10,6 +10,7 @@ import {
 	setGuestAssignmentCookie,
 	checkGuestAssignmentCookie,
 	GUEST_ASSIGNMENT_COOKIE,
+	setMyKivaRedirectCookie,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -288,6 +289,34 @@ describe('myKivaUtils.js', () => {
 		});
 	});
 
+	describe('setMyKivaRedirectCookie', () => {
+		it('should set a cookie with the correct name, value, and expiration', () => {
+			const mockCookieStore = {
+				set: vi.fn(),
+			};
+
+			setMyKivaRedirectCookie(mockCookieStore);
+
+			expect(mockCookieStore.set).toHaveBeenCalledTimes(1);
+			expect(mockCookieStore.set).toHaveBeenCalledWith(
+				'mykivaredirect',
+				'true',
+				expect.any(Date)
+			);
+
+			// Verify the expiration date is approximately 2 months from now
+			const expirationDate = mockCookieStore.set.mock.calls[0][2];
+			const expectedDate = new Date();
+			expectedDate.setMonth(expectedDate.getMonth() + 2);
+			expect(expirationDate.getMonth()).toBe(expectedDate.getMonth());
+			expect(expirationDate.getFullYear()).toBe(expectedDate.getFullYear());
+		});
+
+		it('should not throw an error when cookieStore is undefined', () => {
+			expect(() => setMyKivaRedirectCookie(undefined)).not.toThrow();
+		});
+	});
+
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
@@ -442,6 +471,65 @@ describe('myKivaUtils.js', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
 
 			expect(result).toBe(true);
+		});
+
+		it('should set the redirect cookie when conditions are met', () => {
+			const mockApollo = {
+				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
+			};
+			const mockTrackEvent = vi.fn();
+			const mockCookieStore = {
+				set: vi.fn(),
+			};
+			const userPreferences = { preferences: JSON.stringify({}) };
+			const loanTotal = 5;
+
+			const result = getIsMyKivaEnabled(
+				mockApollo,
+				mockTrackEvent,
+				userPreferences,
+				loanTotal,
+				true,
+				mockCookieStore
+			);
+
+			expect(result).toBe(true);
+			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+				id: 'Experiment:my_kiva_jan_2025',
+				fragment: expect.any(Object),
+			});
+			expect(mockTrackEvent).toHaveBeenCalled();
+			expect(mockCookieStore.set).toHaveBeenCalledWith(
+				'mykivaredirect',
+				'true',
+				expect.any(Date)
+			);
+		});
+
+		it('should not set the redirect cookie if conditions are not met', () => {
+			const mockApollo = {
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+			const mockTrackEvent = vi.fn();
+			const mockCookieStore = {
+				set: vi.fn(),
+			};
+			const userPreferences = { preferences: JSON.stringify({}) };
+			const loanTotal = 3; // Below the loan limit
+
+			const result = getIsMyKivaEnabled(
+				mockApollo,
+				mockTrackEvent,
+				userPreferences,
+				loanTotal,
+				myKivaFlagEnabled,
+				mockCookieStore
+			);
+
+			expect(result).toBe(false);
+			expect(mockApollo.readFragment).toHaveBeenCalled();
+			expect(mockTrackEvent).toHaveBeenCalled();
+			expect(mockCookieStore.set).not.toHaveBeenCalled();
 		});
 	});
 });
