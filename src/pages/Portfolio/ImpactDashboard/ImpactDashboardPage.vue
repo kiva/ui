@@ -46,9 +46,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
@@ -64,8 +62,6 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import JourneysSection from './JourneysSection';
-
-const MY_KIVA_EXP = 'my_kiva_jan_2025';
 
 export default {
 	name: 'ImpactDashboardPage',
