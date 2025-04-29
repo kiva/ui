@@ -44,7 +44,7 @@ export const getOneLoanAwayAchievement = (addedLoanId, filteredAchievementsData,
 		const contributingLoanIds = progressInBasket?.contributingLoanIds ?? [];
 		const addedLoanInContributingLoans = contributingLoanIds.includes(addedLoanId.toString());
 		const loansProgressCount = achievement.totalProgressToAchievement + contributingLoanIds.length;
-		currentTarget = achievement?.tiers.find(tier => tier.target - 1 === loansProgressCount)?.target ?? null;
+		currentTarget = achievement?.tiers?.find(tier => tier.target - 1 === loansProgressCount)?.target ?? null;
 
 		return addedLoanInContributingLoans && currentTarget;
 	});
