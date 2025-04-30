@@ -23,11 +23,11 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
+						<your-donations />
 						<LoanCards />
 						<JourneysSection
 							v-if="showMyKivaJourneySection"
 						/>
-						<your-donations />
 						<education-module v-if="post" :post="post" />
 						<kiva-credit-stats />
 						<account-updates />
