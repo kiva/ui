@@ -322,6 +322,7 @@ const supportedFilterFLSS = name => {
 		case 'sector':
 		case 'theme':
 		case 'tag':
+		case 'amountleft':
 			return true;
 		default:
 			warn(`Unsupported FLSS filter "${name}"`);
@@ -347,6 +348,14 @@ const parseFilterStringFLSS = async filterString => {
 		filters[name][name].any.push(value);
 	};
 
+	// Helper function to add a range filter
+	const addRangeFilterValue = (name, operator, value) => {
+		// Convert the value to a number if needed
+		const numValue = parseFloat(value);
+		// Create range filter structure
+		filters[name] = { [name]: { range: { [operator]: numValue } } };
+	};
+
 	// Fetch possible filter options
 	const tags = await fetchTags();
 
@@ -355,7 +364,13 @@ const parseFilterStringFLSS = async filterString => {
 		.filter(([name]) => name !== 'sort')
 		.filter(([name]) => supportedFilterFLSS(name))
 		.forEach(([name, value]) => {
-			if (name === 'country') {
+			// Special case for amountLeft with "gte" operation
+			// Value format would be "gte100" or "gte50", etc.
+			if (name === 'amountleft' && value.startsWith('gte')) {
+				// Extract the numeric part from the value (e.g., "gte100" -> "100")
+				const numericValue = value.substring(3); // Remove "gte" prefix
+				addRangeFilterValue('amountLeft', 'gte', numericValue);
+			} else if (name === 'country') {
 				// FLSS uses 'countryIsoCode' for the country filter
 				addArrayFilterValue('countryIsoCode', value);
 			} else if (name === 'tag') {
