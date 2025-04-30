@@ -153,7 +153,7 @@ export default {
 				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
 			);
 
-			return achievementProgress.some(a => a?.postCheckoutTier !== a?.preCheckoutTier);
+			return !this.isLoggedIn || achievementProgress.some(a => a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
 	}
 };
