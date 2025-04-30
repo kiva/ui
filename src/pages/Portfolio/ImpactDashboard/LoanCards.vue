@@ -98,7 +98,7 @@ const fetchAsyncData = () => {
 			};
 			isLoading.value = false;
 		}).catch(e => {
-			logReadQueryError(e, 'Portfolio Page Journeys userQuery');
+			logReadQueryError(e, 'Portfolio Page Loans userQuery');
 		});
 };
 </script>

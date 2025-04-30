@@ -322,7 +322,7 @@ const menuAction = id => {
 };
 
 const withinBoundaryCheck = event => {
-	const target = optionsMenu.value ?? null;
+	const target = optionsMenu?.value ?? null;
 	if (!target) return false;
 	const withinBoundary = event.composedPath().includes(target);
 	if (!withinBoundary && menuOpen.value) {

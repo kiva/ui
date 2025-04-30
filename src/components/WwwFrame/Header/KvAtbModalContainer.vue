@@ -217,11 +217,14 @@ const fetchBasketData = async () => {
 };
 
 const loansIdsInBasket = computed(() => {
-	return basketData.value.map(item => item.id);
+	// eslint-disable-next-line no-underscore-dangle
+	return basketData.value.filter(item => item.__typename === 'LoanReservation').map(item => item.id);
 });
 
 const isFirstLoan = computed(() => {
-	return myKivaExperimentEnabled.value && (isGuest.value || !userData.value?.my?.loans?.totalCount);
+	return myKivaExperimentEnabled.value
+		&& (isGuest.value || !userData.value?.my?.loans?.totalCount)
+		&& basketCount.value === 1;
 });
 
 const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);

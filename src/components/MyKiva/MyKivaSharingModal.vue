@@ -37,16 +37,16 @@
 				<KvButton
 					variant="ghost"
 					class="social-button"
-					v-kv-track-event="['portfolio', 'share', 'twitter', utmCampaign]"
+					v-kv-track-event="['portfolio', 'share', 'bluesky', utmCampaign]"
 					@click="showSharePopUp(
-						twitterShareUrl({utmCampaign, utmContent}),
-						'Thanks for tweeting!')"
+						blueskyShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing to Bluesky!')"
 				>
 					<KvMaterialIcon
-						class="social-button__icon social-button__icon--twitter"
-						:icon="mdiTwitter"
+						class="social-button__icon social-button__icon--bluesky"
+						:icon="KvBlueskyIcon"
 					/>
-					<span class="tw-font-medium">Twitter</span>
+					<span class="tw-font-medium">Bluesky</span>
 				</KvButton>
 				<KvButton
 					variant="ghost"
@@ -89,7 +89,12 @@ import {
 	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
-import { KvButton, KvLightbox, KvMaterialIcon } from '@kiva/kv-components';
+import {
+	KvBlueskyIcon,
+	KvButton,
+	KvLightbox,
+	KvMaterialIcon
+} from '@kiva/kv-components';
 
 const SHARE_MESSAGE = 'Join me and make lasting change on Kiva!';
 const SHARE_CAMPAIGN = 'social_share_mykiva';
@@ -116,6 +121,7 @@ export default {
 	data() {
 		return {
 			shareMessage: SHARE_MESSAGE,
+			KvBlueskyIcon,
 			mdiPencilOutline,
 			mdiFacebook,
 			mdiLinkedin,
@@ -147,22 +153,6 @@ export default {
 			this.$emit('close-modal');
 		},
 	},
-	watch: {
-		// Copy link when modal is visible
-		isVisible() {
-			if (this.isVisible) {
-				setTimeout(() => {
-					this.copyLink(
-						{
-							utmCampaign: this.utmCampaign,
-							utmContent: this.utmContent
-						},
-						this.copyStatus.text
-					);
-				}, 400);
-			}
-		}
-	},
 };
 </script>
 
@@ -174,7 +164,7 @@ export default {
 
 <style lang="scss" scoped>
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 
 .social-button {
@@ -183,8 +173,8 @@ $color-linkedin: #0077b5;
 			color: $color-linkedin;
 		}
 
-		&--twitter {
-			color: $color-twitter;
+		&--bluesky {
+			color: $color-bluesky;
 		}
 
 		&--facebook {
