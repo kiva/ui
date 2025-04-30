@@ -8,6 +8,7 @@
 		:utm-content="utmContent"
 		:open-lightbox="forceLightbox"
 		:loan-id="loan.id"
+		:tracking-category="isPortfolio ? 'portfolio' : 'borrower-profile'"
 		@lightbox-closed="closeLightbox"
 	>
 		<template #modal-content>
@@ -80,7 +81,11 @@ export default {
 		openLightbox: {
 			type: Boolean,
 			default: false
-		}
+		},
+		isPortfolio: {
+			type: Boolean,
+			default: false
+		},
 	},
 	created() {
 		// This query is part of the header query and should be in the cache.
@@ -120,6 +125,9 @@ export default {
 			return this.loan?.id === this.borrowedLoanId || this.$route.query.share === 'true';
 		},
 		modalTitle() {
+			if (this.isPortfolio) {
+				return `Share ${this.name}'s story`;
+			}
 			if (this.isBorrower) {
 				if (this.inPfp) {
 					return this.progressPfpPercent >= 50 ? 'You’re almost there' : 'Set a goal for today';
@@ -143,6 +151,9 @@ export default {
 			return 'this lender';
 		},
 		shareMessage() {
+			if (this.isPortfolio) {
+				return `I’m proud to have lent to ${this.name}. Learn more about their story.`;
+			}
 			/* eslint-disable max-len */
 			const remainingLenders = this.pfpMinLenders - this.numLenders;
 			const lenderText = remainingLenders === 1 ? 'lender' : 'lenders';
