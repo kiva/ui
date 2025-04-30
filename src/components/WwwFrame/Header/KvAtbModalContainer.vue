@@ -223,8 +223,9 @@ const loansIdsInBasket = computed(() => {
 
 const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value
-		&& (isGuest.value || !userData.value?.my?.loans?.totalCount)
-		&& loansIdsInBasket.value.length === 1;
+		&& ((isGuest.value && basketCount.value === 1)
+			|| (!userData.value?.my?.loans?.totalCount && basketCount.value === 1)
+		);
 });
 
 const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
