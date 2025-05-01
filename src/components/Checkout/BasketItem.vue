@@ -197,6 +197,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		hasEverLoggedIn: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -235,7 +239,7 @@ export default {
 			return this.loan.team ? this.loan.team.id : 0;
 		},
 		showPill() {
-			return this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan);
+			return this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan) && !this.hasEverLoggedIn;
 		}
 	},
 	watch: {

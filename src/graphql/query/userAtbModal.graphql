@@ -1,4 +1,5 @@
 query userAtbModal {
+	hasEverLoggedIn @client
 	my {
 		id
 		userPreferences {

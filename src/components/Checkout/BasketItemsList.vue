@@ -13,6 +13,7 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
+					:has-ever-logged-in="hasEverLoggedIn"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -132,6 +133,10 @@ export default {
 		lenderTotalLoans: {
 			type: Number,
 			default: 0
+		},
+		hasEverLoggedIn: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {

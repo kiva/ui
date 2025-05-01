@@ -126,6 +126,7 @@ const oneAwayText = ref('');
 const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
 const milestonesProgress = ref({});
+const hasEverLoggedIn = ref(false);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -196,7 +197,8 @@ const fetchUserData = async () => {
 	await apollo.query({
 		query: userAtbModalQuery,
 	}).then(({ data }) => {
-		userData.value = data;
+		userData.value = data?.my ?? null;
+		hasEverLoggedIn.value = data?.hasEverLoggedIn ?? false;
 		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
@@ -224,7 +226,8 @@ const loansIdsInBasket = computed(() => {
 const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value
 		&& (isGuest.value || !userData.value?.my?.loans?.totalCount)
-		&& basketCount.value === 1;
+		&& basketCount.value === 1
+		&& !hasEverLoggedIn.value;
 });
 
 const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
