@@ -225,7 +225,7 @@ const loansIdsInBasket = computed(() => {
 
 const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value
-		&& (isGuest.value || (!userData.value?.my?.loans?.totalCount && hasEverLoggedIn.value))
+		&& ((isGuest.value && !hasEverLoggedIn.value) || (!isGuest.value && !userData.value?.my?.loans?.totalCount))
 		&& basketCount.value === 1;
 });
 
