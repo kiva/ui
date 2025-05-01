@@ -29,7 +29,7 @@
 					style="height: 32px;"
 				>
 					<template #icon>
-						<EquityBadge v-if="isFirstLoan" class="tw-h-3 tw-w-4" />
+						<EquityBadge v-if="isFirstLoan" class="tw-h-3 tw-w-4 tw--mr-0.5" />
 						<IconChoice v-else />
 					</template>
 				</KvCartPill>
