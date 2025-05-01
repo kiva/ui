@@ -10,6 +10,7 @@
 			:is-loading="isLoading"
 			:show-menu="true"
 			:cards-number="6"
+			:show-cta-when-no-loans="false"
 			class="portfolio-borrowers-carousel"
 		/>
 	</AsyncPortfolioSection>
