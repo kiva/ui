@@ -53,14 +53,15 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(config, client, { route }) {
 			return client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } })
 				.then(({ data }) => {
-					const query = args?.route?.query ?? {};
+					const currentRoute = route?.value ?? route ?? {};
+					const query = currentRoute?.query ?? {};
 					const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 
 					// Redirect to /lend-category-beta/** if combo page flag is enabled
-					const category = args?.route?.value?.params?.category ?? '';
+					const category = currentRoute?.params?.category ?? '';
 
 					if (isComboPageEnabled) {
 						return Promise.reject({ path: `/lend-category-beta/${category}`, query });
