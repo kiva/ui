@@ -158,12 +158,13 @@ export default {
 	mixins: [fiveDollarsTest, hugeLendAmount, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } }),
 				client.query({ query: experimentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
 			]).then(([{ data }]) => {
-				const query = args?.route?.value?.query ?? {};
+				const currentRoute = route?.value ?? route ?? {};
+				const query = currentRoute?.query ?? {};
 				const loggedInUser = getHasEverLoggedIn(client);
 				const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 
