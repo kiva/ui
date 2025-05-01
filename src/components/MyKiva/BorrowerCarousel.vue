@@ -19,7 +19,7 @@
 						'portfolio',
 						'click',
 						btnEventLabel
-					]" v-if="!loans.length || !hasActiveLoans"
+					]" v-if="showCtaWhenNoLoans && (!loans.length || !hasActiveLoans)"
 					:to="link"
 				>
 					{{ btnCta }}
@@ -191,6 +191,10 @@ const props = defineProps({
 	cardsNumber: {
 		type: Number,
 		default: 9,
+	},
+	showCtaWhenNoLoans: {
+		type: Boolean,
+		default: true,
 	},
 });
 
