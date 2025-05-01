@@ -338,22 +338,23 @@ const parseFilterStringFLSS = async filterString => {
 		return null;
 	}
 
-	const filters = {};
+	// Create a single filter object with all properties
+	const combinedFilter = {};
 
-	// Helper function to add to a value to an array filter
+	// Helper function to add an array filter
 	const addArrayFilterValue = (name, value) => {
-		// Make sure existing value is an array if it isn't already
-		filters[name] = filters[name] || { [name]: { any: [] } };
-		// Add the new value to the existing array
-		filters[name][name].any.push(value);
+		// Create the array if it doesn't exist
+		combinedFilter[name] = combinedFilter[name] || { any: [] };
+		// Add the value to the existing array
+		combinedFilter[name].any.push(value);
 	};
 
 	// Helper function to add a range filter
 	const addRangeFilterValue = (name, operator, value) => {
 		// Convert the value to a number if needed
 		const numValue = parseFloat(value);
-		// Create range filter structure
-		filters[name] = { [name]: { range: { [operator]: numValue } } };
+		// Add the range filter
+		combinedFilter[name] = { range: { [operator]: numValue } };
 	};
 
 	// Fetch possible filter options
@@ -364,7 +365,7 @@ const parseFilterStringFLSS = async filterString => {
 		.filter(([name]) => name !== 'sort')
 		.filter(([name]) => supportedFilterFLSS(name))
 		.forEach(([name, value]) => {
-			// Special case for amountLeft with "gte" operation
+			// Special case for amountleft with "gte" operation
 			// Value format would be "gte100" or "gte50", etc.
 			if (name === 'amountleft' && value.startsWith('gte')) {
 				// Extract the numeric part from the value (e.g., "gte100" -> "100")
@@ -385,8 +386,8 @@ const parseFilterStringFLSS = async filterString => {
 			}
 		});
 
-	const filterValues = Object.values(filters);
-	return filterValues.length ? filterValues : null;
+	// Return the combined filter in an array if any filters were added
+	return Object.keys(combinedFilter).length ? [combinedFilter] : null;
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
