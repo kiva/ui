@@ -26,9 +26,10 @@
 				<KvCartPill
 					v-if="showPill"
 					show-bg
+					style="height: 32px;"
 				>
 					<template #icon>
-						<EquityBadge v-if="isFirstLoan" class="tw-h-4 tw-w-4" />
+						<EquityBadge v-if="isFirstLoan" class="tw-h-3 tw-w-4" />
 						<IconChoice v-else />
 					</template>
 				</KvCartPill>
