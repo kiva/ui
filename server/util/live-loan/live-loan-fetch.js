@@ -364,7 +364,7 @@ const parseFilterStringFLSS = async filterString => {
 		.filter(([name]) => name !== 'sort')
 		.filter(([name]) => supportedFilterFLSS(name))
 		.forEach(([name, value]) => {
-			// Special case for amountLeft with "gte" operation
+			// Special case for amountleft with "gte" operation
 			// Value format would be "gte100" or "gte50", etc.
 			if (name === 'amountleft' && value.startsWith('gte')) {
 				// Extract the numeric part from the value (e.g., "gte100" -> "100")
