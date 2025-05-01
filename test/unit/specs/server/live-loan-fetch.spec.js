@@ -89,7 +89,7 @@ describe('live-loan-fetch', () => {
 		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
 			await testFilterParsing(
 				'gender_male,sector_education',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['education'] } }]
+				[{ gender: { any: ['male'] }, sector: { any: ['education'] } }]
 			);
 			await testFilterParsing('sector_retail', [{ sector: { any: ['retail'] } }]);
 			await testFilterParsing('gender_female', [{ gender: { any: ['female'] } }]);
@@ -97,11 +97,11 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('country_co,country_ke', [{ countryIsoCode: { any: ['co', 'ke'] } }]);
 			await testFilterParsing(
 				'gender_female,country_us',
-				[{ gender: { any: ['female'] } }, { countryIsoCode: { any: ['us'] } }]
+				[{ gender: { any: ['female'] }, countryIsoCode: { any: ['us'] } }]
 			);
 			await testFilterParsing(
 				'gender_male,sector_arts,sector_agriculture',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['arts', 'agriculture'] } }]
+				[{ gender: { any: ['male'] }, sector: { any: ['arts', 'agriculture'] } }]
 			);
 			await testFilterParsing('sector_personal use', [{ sector: { any: ['personal use'] } }]);
 			await testFilterParsing('sort_expiringSoon,gender_female', [{ gender: { any: ['female'] } }]);
@@ -113,18 +113,16 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('tag_u.s. black-owned businesses', [{ tagId: { any: [43] } }]);
 			await testFilterParsing(
 				'tag_u.s. black-owned businesses,theme_green',
-				[{ tagId: { any: [43] } }, { theme: { any: ['green'] } }]
+				[{ tagId: { any: [43] }, theme: { any: ['green'] } }]
 			);
 			await testFilterParsing(
 				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
 				[{ tagId: { any: [45, 43] } }]
 			);
-
 			await testFilterParsing(
 				'gender_male,sector_education',
 				[
-					{ gender: { any: ['male'] } },
-					{ sector: { any: ['education'] } }
+					{ gender: { any: ['male'] }, sector: { any: ['education'] } }
 				]
 			);
 			await testFilterParsing(
