@@ -13,7 +13,6 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
-					:has-ever-logged-in="hasEverLoggedIn"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -161,7 +160,9 @@ export default {
 			return achievementProgress.some(a => !a?.preCheckoutTier || a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
 		isFirstLoan(idx) {
-			return idx === 0 && this.lenderTotalLoans === 0;
+			if (idx !== 0 || this.lenderTotalLoans !== 0) return false;
+
+			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		}
 	}
 };
