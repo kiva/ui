@@ -3,6 +3,43 @@
 		<div class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-font-medium">
 			🎉 {{ loanStatus }}
 		</div>
+		<div
+			v-if="showMenu"
+			class="tw-absolute tw-top-1 tw-right-1"
+		>
+			<div class="tw-relative">
+				<button
+					class="tw-bg-white tw-rounded-full tw-w-4 tw-h-4 tw-flex tw-items-center tw-justify-center
+						tw-absolute tw-right-0 menu-trigger"
+					v-kv-track-event="['portfolio', 'click', '3-dot-menu']"
+					@click="menuOpen = true"
+				>
+					<KvMaterialIcon
+						:icon="mdiDotsVertical"
+					/>
+				</button>
+				<div
+					ref="optionsMenu"
+					v-if="menuOpen"
+					class="tw-absolute tw-right-0 tw-rounded tw-border tw-border-tertiary tw-bg-white tw-z-1
+						vertical-menu"
+					style="width: 236px;"
+				>
+					<div
+						v-for="(item) in menuOptions"
+						:key="item.id"
+						class="tw-px-3 tw-py-1.5 tw-border-b tw-border-gray-100 last:tw-border-b-0"
+					>
+						<button
+							@click="menuAction(item.id)"
+							class="tw-w-full tw-text-left"
+						>
+							{{ item.label }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t">
 			<HeroBackground style="height: 96px;" class="!tw-block" :loan-id="loan.id" />
 			<div
@@ -33,14 +70,14 @@
 					<p class="tw-text-center md:tw-text-left">
 						{{ description }}{{ hasLoanFunFactFootnote(loan) ? '*' : '' }}
 						<br>
-						<a
+						<button
+							v-if="!showMenu"
 							class="tw-text-action"
-							:href="`/lend/${loan.id}`"
+							@click="viewDetails"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'View borrower details', borrowerName, loan.id]"
 						>
 							View details
-						</a>
+						</button>
 					</p>
 				</div>
 				<div class="tw-flex-1">
@@ -86,12 +123,14 @@ import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
 	mdiChevronDown,
-	mdiChevronUp
+	mdiChevronUp,
+	mdiDotsVertical,
 } from '@mdi/js';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { KvMaterialIcon } from '@kiva/kv-components';
+import { useRouter } from 'vue-router';
 import {
 	ref,
 	computed,
@@ -105,7 +144,14 @@ import {
 } from '#src/api/fixtures/LoanStatusEnum';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 
+const COMMENT_ID = 'comment';
+const DETAILS_ID = 'details';
+const SHARE_ID = 'share';
+
+const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const emit = defineEmits(['toggle-what-is-next', 'open-comment-modal', 'open-share-modal']);
 
 const props = defineProps({
 	loan: {
@@ -115,12 +161,32 @@ const props = defineProps({
 	openWhatIsNext: {
 		type: Boolean,
 		required: false,
-	}
+	},
+	showMenu: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { loan, openWhatIsNext } = toRefs(props);
 const open = ref(openWhatIsNext.value);
-const emit = defineEmits(['toggle-what-is-next']);
+const menuOpen = ref(false);
+const optionsMenu = ref(null);
+
+const menuOptions = [
+	{
+		id: COMMENT_ID,
+		label: 'Leave a comment',
+	},
+	{
+		id: DETAILS_ID,
+		label: 'View details',
+	},
+	{
+		id: SHARE_ID,
+		label: 'Share',
+	},
+];
 
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
@@ -230,8 +296,54 @@ const toggleWhatIsNext = () => {
 	emit('toggle-what-is-next', !open.value);
 };
 
+const viewDetails = () => {
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		props.showMenu ? 'recent-loans' : 'View details',
+		borrowerName.value,
+		loan.value.id
+	);
+
+	router.push(`/lend/${loan.value?.id}`);
+};
+
+const menuAction = id => {
+	if (id === COMMENT_ID) {
+		emit('open-comment-modal', { loanId: loan.value?.id, borrowerName: borrowerName.value });
+	} else if (id === DETAILS_ID) {
+		viewDetails();
+	} else if (id === SHARE_ID) {
+		$kvTrackEvent('portfolio', 'click', 'share-lightbox', 'social_share_portfolio');
+		emit('open-share-modal', { loan: loan.value });
+	}
+
+	menuOpen.value = false;
+};
+
+const withinBoundaryCheck = event => {
+	const target = optionsMenu?.value ?? null;
+	if (!target) return false;
+	const withinBoundary = event.composedPath().includes(target);
+	if (!withinBoundary && menuOpen.value) {
+		menuOpen.value = false;
+	}
+};
+
 watch(() => openWhatIsNext.value, () => {
 	open.value = openWhatIsNext.value;
+});
+
+watch(() => menuOpen.value, () => {
+	if (props.showMenu) {
+		setTimeout(() => {
+			if (menuOpen.value) {
+				document.addEventListener('pointerup', withinBoundaryCheck);
+			} else {
+				document.removeEventListener('pointerup', withinBoundaryCheck);
+			}
+		});
+	}
 });
 </script>
 
@@ -249,4 +361,7 @@ watch(() => openWhatIsNext.value, () => {
 	}
 }
 
+.menu-trigger, .vertical-menu {
+	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+}
 </style>

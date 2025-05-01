@@ -45,8 +45,9 @@
 							:show-incentive-upsell="showIncentiveUpsell"
 							:incentive-goal="depositIncentiveAmountToLend"
 							:possible-achievement-progress="possibleAchievementProgress"
-							:is-first-loan="isFirstLoan"
+							:lender-total-loans="lenderTotalLoans"
 							:is-my-kiva-enabled="isMyKivaEnabled"
+							:has-ever-logged-in="hasEverLoggedIn"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@removed-loan="calculateProgressAchievement($event)"
@@ -451,7 +452,6 @@ export default {
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
 			newAtbExpEnabled: false,
-			isFirstLoan: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
 			userPreferences: null,
@@ -538,7 +538,6 @@ export default {
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
-			this.isFirstLoan = this.loans.length && !this.lenderTotalLoans;
 
 			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 			this.userPreferences = data?.my?.userPreferences ?? null;

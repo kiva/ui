@@ -119,7 +119,6 @@ describe('live-loan-fetch', () => {
 				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
 				[{ tagId: { any: [45, 43] } }]
 			);
-
 			await testFilterParsing(
 				'gender_male,sector_education',
 				[
@@ -143,6 +142,18 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('tag_notatag', null);
 			await testFilterParsing('', null);
 			await testFilterParsing('1234', null);
+			await testFilterParsing('amountleft_gte100', [{ amountLeft: { range: { gte: 100 } } }]);
+			await testFilterParsing('amountleft_gte200', [{ amountLeft: { range: { gte: 200 } } }]);
+			await testFilterParsing('amountleft_gte300', [{ amountLeft: { range: { gte: 300 } } }]);
+			await testFilterParsing('gender_female,amountleft_gte100', [
+				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 100 } } }
+			]);
+			await testFilterParsing('gender_female,amountleft_gte200', [
+				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 200 } } }
+			]);
+			await testFilterParsing('gender_female,amountleft_gte300', [
+				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 300 } } }
+			]);
 		});
 
 		it('converts input strings to valid SortEnum values', async () => {

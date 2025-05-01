@@ -17,23 +17,20 @@
 </template>
 
 <script>
+import { readBoolSetting } from '#src/util/settingsUtils';
 import updateAddToBasketInterstitial from '#src/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInterstitial';
 import LoanChannelCategoryControl from '#src/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
-const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
-
-const getHasEverLoggedIn = client => !!(client.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn);
+const CATEGORY_REDIRECT_KEY = 'combo_page_enable';
 
 export default {
 	name: 'LoanChannelCategoryPage',
@@ -56,20 +53,17 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, args) {
-			return client.query({ query: experimentAssignmentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } })
-				.then(() => {
-					const query = args?.route?.query ?? {};
+		preFetch(config, client, { route }) {
+			return client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } })
+				.then(({ data }) => {
+					const currentRoute = route?.value ?? route ?? {};
+					const query = currentRoute?.query ?? {};
+					const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 
-					// Redirect to /lend-category-beta/** if user has previously signed in and experiment is assigned
-					const { version } = client.readFragment({
-						id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
-						fragment: experimentVersionFragment,
-					}) ?? {};
+					// Redirect to /lend-category-beta/** if combo page flag is enabled
+					const category = currentRoute?.params?.category ?? '';
 
-					const category = args?.route?.params?.category ?? '';
-
-					if (version === 'b' && getHasEverLoggedIn(client)) {
+					if (isComboPageEnabled) {
 						return Promise.reject({ path: `/lend-category-beta/${category}`, query });
 					}
 
@@ -90,17 +84,6 @@ export default {
 
 		// Enable huge lend amount
 		this.initializeHugeLendAmount();
-	},
-	mounted() {
-		if (getHasEverLoggedIn(this.apollo)) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				CATEGORY_REDIRECT_EXP_KEY,
-				'EXP-CORE-1205-May2023'
-			);
-		}
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {

@@ -78,16 +78,16 @@
 							<span>{{ copyStatus.text }}</span>
 						</button>
 						<button
-							data-testid="share-twitter-button"
-							class="social__btn social__btn--twitter"
+							data-testid="share-bluesky-button"
+							class="social__btn social__btn--bluesky"
 							v-kv-track-event="
-								['post-checkout', 'share', 'twitter', utmCampaign]"
+								['post-checkout', 'share', 'bluesky', utmCampaign]"
 							@click="showSharePopUp(
-								twitterShareUrl({utmCampaign, utmContent}),
-								'Thanks for tweeting!')"
+								blueskyShareUrl({utmCampaign, utmContent}),
+								'Thanks for sharing to Bluesky!')"
 						>
-							<kv-icon name="twitter" title="Twitter" class="social__icon" />
-							<span>Tweet your followers</span>
+							<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+							<span>Share to your followers</span>
 						</button>
 						<button
 							data-testid="share-linkedin-button"
@@ -186,7 +186,7 @@ export default {
 			},
 			youtubeId: 'Mpp2ZH7os4Q',
 			isGuest: false,
-			message: '',
+			message: "Kiva is an easy way to make a real difference in someone's life.",
 			utmCampaign: 'social_share_checkout',
 			contentfulContent: null,
 		};
@@ -258,7 +258,7 @@ export default {
 @import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 $color-copy-link: #2B7C5F;
 
@@ -272,11 +272,11 @@ $color-copy-link: #2B7C5F;
 			}
 		}
 
-		&--twitter {
-			border: 1px solid $color-twitter;
+		&--bluesky {
+			border: 1px solid $color-bluesky;
 
 			.social__icon {
-				fill: $color-twitter;
+				fill: $color-bluesky;
 			}
 		}
 

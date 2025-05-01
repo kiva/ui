@@ -11,7 +11,7 @@
 					:enable-huge-amount="enableHugeAmount"
 					:is-logged-in="isLoggedIn"
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
-					:is-first-loan="isFirstLoan"
+					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
@@ -125,11 +125,15 @@ export default {
 			type: Array,
 			default: () => ([])
 		},
-		isFirstLoan: {
+		isMyKivaEnabled: {
 			type: Boolean,
 			default: false
 		},
-		isMyKivaEnabled: {
+		lenderTotalLoans: {
+			type: Number,
+			default: 0
+		},
+		hasEverLoggedIn: {
 			type: Boolean,
 			default: false
 		}
@@ -153,8 +157,13 @@ export default {
 				achievement => achievement?.contributingLoanIds?.includes(loanId.toString())
 			);
 
-			return achievementProgress.some(a => a?.postCheckoutTier !== a?.preCheckoutTier);
+			return achievementProgress.some(a => !a?.preCheckoutTier || a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
+		isFirstLoan(idx) {
+			if (idx !== 0 || this.lenderTotalLoans !== 0) return false;
+
+			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
+		}
 	}
 };
 </script>

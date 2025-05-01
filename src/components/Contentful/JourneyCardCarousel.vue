@@ -36,11 +36,11 @@
 				<div
 					v-else
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
+					:class="{ '!tw-bg-left-top': isNonBadgeSlide(slide) }"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
 				>
 					<div
 						class="
-							slide
 							tw-absolute
 							tw-w-full
 							tw-bottom-0
@@ -51,6 +51,7 @@
 							tw-align-bottom
 							tw-rounded-b
 						"
+						:class="{ 'slide-gradient': !isNonBadgeSlide(slide) }"
 						:style="[
 							{ 'height': overlayHeight(slide) },
 						]"
@@ -58,16 +59,24 @@
 						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
 							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
 								<img
+									v-if="!isNonBadgeSlide(slide)"
 									class="tw-h-6"
 									:src="badgeUrl(slide)"
 								>
 								<div class="tw-text-primary-inverse">
-									<h2 class="tw-text-h3">
+									<h2
+										class="tw-text-h3"
+										:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
+									>
 										{{ title(slide) }}
 									</h2>
 									<p
 										v-if="subTitle(slide)"
 										class="tw-text-small tw-font-medium"
+										:class="{
+											'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
+												isNonBadgeSlide(slide)
+										}"
 									>
 										{{ subTitle(slide) }}
 									</p>
@@ -85,7 +94,8 @@
 								</button>
 								<KvButton
 									@click="goToPrimaryCtaUrl(slide)"
-									variant="secondary"
+									:variant="primaryCtaVariant(slide)"
+									:class="{ 'tw-w-full': isNonBadgeSlide(slide) }"
 								>
 									{{ primaryCtaText(slide) }}
 								</KvButton>
@@ -95,6 +105,11 @@
 				</div>
 			</template>
 		</KvCarousel>
+		<MyKivaSharingModal
+			:lender="lender"
+			:is-visible="isSharingModalVisible"
+			@close-modal="isSharingModalVisible = false"
+		/>
 	</div>
 </template>
 
@@ -111,8 +126,11 @@ import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 const PLACEHOLDER_SLIDES_LENGTH = 2;
+const JOURNEY_MODAL_KEY = 'journey';
+const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -128,22 +146,32 @@ const props = defineProps({
 		type: Array,
 		default: () => ([])
 	},
+	lender: {
+		type: Object,
+		default: () => ({})
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const isLoading = ref(true);
 const currentIndex = ref(0);
+const isSharingModalVisible = ref(false);
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
 	const uiSettings = richTextContent.find(
-		item => item.nodeType === 'embedded-entry-block'
+		item => item.data?.target?.sys?.contentType?.sys?.id === 'uiSetting'
 	);
 	const uiSettingsTarget = uiSettings?.data?.target ?? {};
 	const uiSettingsData = formatUiSetting(uiSettingsTarget);
 
 	return uiSettingsData?.dataObject ?? {};
+};
+
+const isNonBadgeSlide = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
 
 const orderedSlides = computed(() => {
@@ -184,15 +212,46 @@ const orderedSlides = computed(() => {
 		showedSlides = achievementSlides;
 	}
 
-	const sortedSlides = showedSlides.sort((a, b) => {
+	let sortedSlides = showedSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
+
+	const nonBadgesSlides = props.slides.filter(slide => {
+		return isNonBadgeSlide(slide);
+	});
+
+	if (nonBadgesSlides.length > 0) {
+		sortedSlides = [
+			...sortedSlides,
+			...nonBadgesSlides,
+		];
+	}
 
 	return sortedSlides;
 });
 
+const getMediaImgUrl = media => {
+	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+};
+
 const backgroundImg = slide => {
 	const richTextContent = getRichTextContent(slide);
+	if (isNonBadgeSlide(slide)) {
+		const mobileMediaData = richTextContent.find(
+			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
+			&& item.data?.target?.fields?.key.includes('mobile')
+		);
+		const desktopMediaData = richTextContent.find(
+			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
+			&& item.data?.target?.fields?.key.includes('desktop')
+		);
+
+		if (isMobile.value) {
+			return getMediaImgUrl(mobileMediaData);
+		}
+		return getMediaImgUrl(desktopMediaData);
+	}
+
 	const backgroundImage = richTextContent.find(
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
@@ -204,7 +263,14 @@ const title = slide => {
 	return richTextUiSettingsData.title || '';
 };
 
-const subTitle = slide => `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+const subTitle = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	if (isNonBadgeSlide(slide)) {
+		return richTextUiSettingsData.contentText || '';
+	}
+
+	return `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+};
 
 const badgeUrl = slide => slide?.badgeImgUrl || '';
 
@@ -213,11 +279,9 @@ const primaryCtaText = slide => {
 	return richTextUiSettingsData.primaryCtaText || '';
 };
 
-const goToPrimaryCtaUrl = slide => {
+const primaryCtaVariant = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
-	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	router.push(primaryCtaUrl);
+	return richTextUiSettingsData.primaryCtaVariant || 'secondary';
 };
 
 const secondaryCtaText = slide => {
@@ -225,15 +289,36 @@ const secondaryCtaText = slide => {
 	return richTextUiSettingsData.secondaryCtaText || '';
 };
 
+const getUrlParamsFromString = string => {
+	const urlSplit = string.split('?');
+	return urlSplit[1];
+};
+
+const goToPrimaryCtaUrl = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
+	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
+	const urlParams = getUrlParamsFromString(primaryCtaUrl);
+
+	if (urlParams && urlParams.includes(REFER_FRIEND_MODAL_KEY)) {
+		const paramsSplit = urlParams.split('=');
+		if (paramsSplit && paramsSplit[1] === 'true') {
+			// open sharing modal
+			isSharingModalVisible.value = true;
+		}
+	} else {
+		router.push(primaryCtaUrl);
+	}
+};
+
 const goToSecondaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
 	// eslint-disable-next-line max-len
 	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlSplit = secondaryCtaUrl.split('?');
-	const urlParams = urlSplit[1];
+	const urlParams = getUrlParamsFromString(secondaryCtaUrl);
 
-	if (urlParams && urlParams.includes('journey')) {
+	if (urlParams && urlParams.includes(JOURNEY_MODAL_KEY)) {
 		const { achievementKey } = richTextUiSettingsData;
 		emit('update-journey', achievementKey);
 	} else {
@@ -275,6 +360,7 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 
 <style lang="postcss" scoped>
 .journey-card {
+	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
 	height: 402px;
 
 	@screen md {
@@ -300,7 +386,7 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 	@apply tw-gap-2;
 }
 
-.slide {
+.slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
 }
 </style>

@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { readBoolSetting } from '#src/util/settingsUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import LoanSearchInterface from '#src/components/Lend/LoanSearch/LoanSearchInterface';
 import ChallengeHeader from '#src/components/Lend/LoanSearch/ChallengeHeader';
@@ -75,6 +76,7 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
+import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
@@ -91,7 +93,7 @@ import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalConta
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
 
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
-const CATEGORY_REDIRECT_EXP_KEY = 'category_filter_redirect';
+const CATEGORY_REDIRECT_KEY = 'combo_page_enable';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const SHOW_LOANS_ACTIVITY_FEED_EXP = 'filter_loans_activity_feed';
 
@@ -156,21 +158,18 @@ export default {
 	mixins: [fiveDollarsTest, hugeLendAmount, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		preFetch(config, client, args) {
+		preFetch(config, client, { route }) {
 			return Promise.all([
-				client.query({ query: experimentQuery, variables: { id: CATEGORY_REDIRECT_EXP_KEY } }),
+				client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } }),
 				client.query({ query: experimentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
-			]).then(() => {
-				const query = args?.route?.query ?? {};
+			]).then(([{ data }]) => {
+				const currentRoute = route?.value ?? route ?? {};
+				const query = currentRoute?.query ?? {};
 				const loggedInUser = getHasEverLoggedIn(client);
+				const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 
-				// Redirect to /lend-category-beta if user has previously signed in and experiment is assigned
-				const { version } = client.readFragment({
-					id: `Experiment:${CATEGORY_REDIRECT_EXP_KEY}`,
-					fragment: experimentVersionFragment,
-				}) ?? {};
-
-				if (version === 'b' && loggedInUser) {
+				// Redirect to /lend-category-beta if combo page flag is enabled
+				if (isComboPageEnabled) {
 					return Promise.reject({ path: '/lend-category-beta', query });
 				}
 
@@ -371,16 +370,6 @@ export default {
 		this.hasBasket = data?.shop?.nonTrivialItemCount > 0;
 	},
 	mounted() {
-		if (getHasEverLoggedIn(this.apollo)) {
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				CATEGORY_REDIRECT_EXP_KEY,
-				'EXP-CORE-1205-May2023'
-			);
-		}
-
 		// Track experiment version for challenge header
 		trackExperimentVersion(
 			this.apollo,

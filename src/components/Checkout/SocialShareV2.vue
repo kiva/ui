@@ -26,20 +26,20 @@
 				<span>Share</span>
 			</button>
 			<button
-				data-testid="share-twitter-button"
-				class="social__btn social__btn--twitter"
+				data-testid="share-bluesky-button"
+				class="social__btn social__btn--bluesky"
 				@click="showSharePopUp(
-					twitterShareUrl({utmCampaign, utmContent}),
-					'Thanks for tweeting!')"
+					blueskyShareUrl({utmCampaign, utmContent}),
+					'Thanks for sharing to Bluesky!')"
 				v-kv-track-event="[
 					'post-checkout',
 					'share',
-					'twitter',
+					'bluesky',
 					utmCampaign,
 					selectedLoanId]"
 			>
-				<kv-icon name="twitter" title="Twitter" class="social__icon" />
-				<span>Tweet</span>
+				<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+				<span>Share</span>
 			</button>
 			<button
 				data-testid="share-linkedin-button"
@@ -187,7 +187,7 @@ export default {
 @import 'node_modules/foundation-sites/scss/foundation';
 
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 $loan-circle-size: rem-calc(70);
 $loan-circle-margin: 1rem;
@@ -452,10 +452,10 @@ $loan-triangle-size: rem-calc(12);
 			@include button-style($color-facebook, auto, #fff);
 		}
 
-		&--twitter {
+		&--bluesky {
 			display: flex;
 			justify-content: center;
-			@include button-style($color-twitter, auto, #fff);
+			@include button-style($color-bluesky, auto, #fff);
 		}
 
 		&--linkedin {

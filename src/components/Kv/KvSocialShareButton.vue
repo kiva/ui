@@ -42,17 +42,17 @@
 				<kv-button
 					variant="ghost"
 					class="social-button"
-					data-testid="share-twitter-button"
-					v-kv-track-event="[trackingCategory, 'share', 'twitter', utmCampaign, loanId]"
+					data-testid="share-bluesky-button"
+					v-kv-track-event="[trackingCategory, 'share', 'bluesky', utmCampaign, loanId]"
 					@click="showSharePopUp(
-						twitterShareUrl({utmCampaign, utmContent}),
-						'Thanks for tweeting!')"
+						blueskyShareUrl({utmCampaign, utmContent}),
+						'Thanks for sharing to Bluesky!')"
 				>
 					<kv-material-icon
-						class="social-button__icon social-button__icon--twitter"
-						:icon="mdiTwitter"
+						class="social-button__icon social-button__icon--bluesky"
+						:icon="KvBlueskyIcon"
 					/>
-					<span class="tw-font-medium">Twitter</span>
+					<span class="tw-font-medium">Bluesky</span>
 				</kv-button>
 				<kv-button
 					variant="ghost"
@@ -92,18 +92,22 @@
 import {
 	mdiFacebook,
 	mdiLinkedin,
-	mdiTwitter,
 	mdiLink,
 } from '@mdi/js';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
-import { KvButton, KvLightbox, KvMaterialIcon } from '@kiva/kv-components';
+import {
+	KvBlueskyIcon,
+	KvButton,
+	KvLightbox,
+	KvMaterialIcon
+} from '@kiva/kv-components';
 
 export default {
 	name: 'KvSocialShareButton',
 	components: {
 		KvButton,
 		KvLightbox,
-		KvMaterialIcon
+		KvMaterialIcon,
 	},
 	emits: ['lightbox-closed'],
 	props: {
@@ -177,9 +181,9 @@ export default {
 				text: 'Copy'
 			},
 			isLightboxVisible: this.openLightbox || false,
+			KvBlueskyIcon,
 			mdiFacebook,
 			mdiLinkedin,
-			mdiTwitter,
 			mdiLink,
 		};
 	},
@@ -218,7 +222,7 @@ export default {
 
 <style lang="scss" scoped>
 $color-facebook: #3b5998;
-$color-twitter: #08a0e9;
+$color-bluesky: #1185FE;
 $color-linkedin: #0077b5;
 
 .social-button {
@@ -227,8 +231,8 @@ $color-linkedin: #0077b5;
 			color: $color-linkedin;
 		}
 
-		&--twitter {
-			color: $color-twitter;
+		&--bluesky {
+			color: $color-bluesky;
 		}
 
 		&--facebook {

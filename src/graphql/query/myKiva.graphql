@@ -9,7 +9,7 @@ query myKivaQuery {
         name
         gender
         status
-		use
+        use
         image {
           id
           url
@@ -61,6 +61,7 @@ query myKivaQuery {
         url
       }
       memberSince
+	  publicId
     }
     userAccount {
       id
@@ -69,6 +70,7 @@ query myKivaQuery {
       lastName
       balance
       public
+      inviterName
     }
     trustee {
       id
