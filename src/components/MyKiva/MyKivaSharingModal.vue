@@ -106,6 +106,7 @@ export default {
 		KvLightbox,
 		KvMaterialIcon,
 	},
+	inject: ['apollo'],
 	mixins: [socialSharingMixin],
 	emits: ['close-modal'],
 	props: {
