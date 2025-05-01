@@ -1,3 +1,21 @@
+## [3.18.0-rc.2](https://github.com/kiva/ui/compare/v3.18.0-rc.1...v3.18.0-rc.2) (2025-05-01)
+
+### 🎉 New Features
+
+* hide settings menu when user in /mykiva ([10c5880](https://github.com/kiva/ui/commit/10c588013eea8d233dff7a46619c03264ffa2cb7))
+
+### 🐛 Bugfixes
+
+* another issue with atb resolved ([7f85864](https://github.com/kiva/ui/commit/7f858648f5da0a7e9e106c03be8df78307838428))
+* fixes the FLSS multiple filters bug ([dc46c30](https://github.com/kiva/ui/commit/dc46c30a71dfd1238ecb4ff814c5962cce238a02))
+* hide fallback cta on old portfolio ([7674031](https://github.com/kiva/ui/commit/767403142e08ca33ac522f4a8b7cb0febd985ce8))
+* hopefully last atb fix ([31df8c5](https://github.com/kiva/ui/commit/31df8c5709fa0d39b6cef832519b346edab6d2bb))
+
+### 🧹 Chores
+
+* **ui:** add automated tests to amountleft filter ([879d80f](https://github.com/kiva/ui/commit/879d80f01e50fe1bcf50ebcc36ca171ccd5380d6))
+* **ui:** fix automated tests for LoanSearchFiltersInput ([371b540](https://github.com/kiva/ui/commit/371b540db5b76ca663f85b69e306f9f5866cd736))
+
 ## [3.18.0-rc.1](https://github.com/kiva/ui/compare/v3.17.0...v3.18.0-rc.1) (2025-05-01)
 
 ### 🎉 New Features
