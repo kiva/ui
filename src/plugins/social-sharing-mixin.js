@@ -55,8 +55,8 @@ export default {
 					utm_content: utmContent,
 				});
 				return getFullUrl('https://bsky.app/intent/compose', {
-					text: this.shareMessage,
-					url: blueskyShareUrlWithUtms,
+					// Bluesky requires the URL to be in the text field
+					text: `${this.shareMessage} ${blueskyShareUrlWithUtms}`
 				});
 			}
 			return '';

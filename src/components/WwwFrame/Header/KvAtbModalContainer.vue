@@ -126,6 +126,7 @@ const oneAwayText = ref('');
 const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
 const milestonesProgress = ref({});
+const hasEverLoggedIn = ref(false);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -196,7 +197,8 @@ const fetchUserData = async () => {
 	await apollo.query({
 		query: userAtbModalQuery,
 	}).then(({ data }) => {
-		userData.value = data;
+		userData.value = data ?? null;
+		hasEverLoggedIn.value = data?.hasEverLoggedIn ?? false;
 		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
@@ -223,7 +225,7 @@ const loansIdsInBasket = computed(() => {
 
 const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value
-		&& (isGuest.value || !userData.value?.my?.loans?.totalCount)
+		&& (isGuest.value || (!userData.value?.my?.loans?.totalCount && !hasEverLoggedIn.value))
 		&& basketCount.value === 1;
 });
 
@@ -268,7 +270,7 @@ const updateTierTable = () => {
 	});
 };
 
-const newAchivementReached = () => {
+const newAchievementReached = () => {
 	return contributingAchievements.value.some(achievement => {
 		const hasTierChanged = tierTable.value[achievement.achievementId] !== achievement.postCheckoutTier;
 		if (hasTierChanged) {
@@ -292,7 +294,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
 		// eslint-disable-next-line max-len
 		const oneLoanAwayAchievement = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
-		const achievementReached = newAchivementReached();
+		const achievementReached = newAchievementReached();
 
 		if (oneLoanAwayAchievement?.id && !isFirstLoan.value && !achievementReached) {
 			const loanUrl = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);

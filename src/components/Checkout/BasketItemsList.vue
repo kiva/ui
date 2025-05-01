@@ -132,6 +132,10 @@ export default {
 		lenderTotalLoans: {
 			type: Number,
 			default: 0
+		},
+		hasEverLoggedIn: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
@@ -156,7 +160,9 @@ export default {
 			return achievementProgress.some(a => !a?.preCheckoutTier || a?.postCheckoutTier !== a?.preCheckoutTier);
 		},
 		isFirstLoan(idx) {
-			return idx === 0 && this.lenderTotalLoans === 0;
+			if (idx !== 0 || this.lenderTotalLoans !== 0) return false;
+
+			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		}
 	}
 };

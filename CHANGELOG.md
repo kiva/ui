@@ -1,3 +1,62 @@
+## [3.18.0-rc.1](https://github.com/kiva/ui/compare/v3.17.0...v3.18.0-rc.1) (2025-05-01)
+
+### 🎉 New Features
+
+* calculate milestones progress in basket using tiers difference ([c4ce1a2](https://github.com/kiva/ui/commit/c4ce1a2c5bd10cfe3baf678931795b589c7a7bc8))
+* combo page flag added to filter and category pages ([#5998](https://github.com/kiva/ui/issues/5998)) ([5b43fe4](https://github.com/kiva/ui/commit/5b43fe4842f49dccc9385f122d5ca912aab43386))
+* create simple cookie for redirecting at cdn layer ([64300f0](https://github.com/kiva/ui/commit/64300f036efc21d4f8040a22a725faa42acee9b8))
+* donations section moved on portfolio page ([#5994](https://github.com/kiva/ui/issues/5994)) ([e79a3da](https://github.com/kiva/ui/commit/e79a3da50ed9914f74bc1f6757402704a5e27e30))
+* moving filter data methods to util ([c99e6c4](https://github.com/kiva/ui/commit/c99e6c46b566aa4335df0dc92f4bc1b09bfe2d2e))
+* mykiva borrowers carousel added to portolio page ([#5992](https://github.com/kiva/ui/issues/5992)) ([54ea9b4](https://github.com/kiva/ui/commit/54ea9b490700b28459111f74511adf2a2632e873))
+* mykiva sharing modal added to journeys carousel ([2c09ed7](https://github.com/kiva/ui/commit/2c09ed7c5d4e8a5de15b3ece1a192bfb5ff4de87))
+* non badges slides added to journeys carousel ([#5968](https://github.com/kiva/ui/issues/5968)) ([51a7503](https://github.com/kiva/ui/commit/51a750308adaa137a1b43eef2a0a591e8f7ce98a))
+* **ui:** Add amountLeft filter to Live Loans ([7460297](https://github.com/kiva/ui/commit/74602979af08c387c77b8c4f7e58b744f19bc676))
+
+### 🐛 Bugfixes
+
+* add userHasLoggedIn to first loan logic in atb and pill ([b7ea29b](https://github.com/kiva/ui/commit/b7ea29bdb65052762a33a23aa7376a794c34d77e))
+* adjust logic for logged out user atb ([4222a25](https://github.com/kiva/ui/commit/4222a25a0dbf75c97e0e10524d34db1710e5da8a))
+* adjust spacing as well ([cc4e7af](https://github.com/kiva/ui/commit/cc4e7af911f5ed204b93531b4ace46231fbdd677))
+* adjustments to how mykiva page is loaded ([0145796](https://github.com/kiva/ui/commit/014579679817e19fd85054a35f87690b7e3a21b9))
+* atb modal content when hitting a new achievement or user is one loan away ([017c539](https://github.com/kiva/ui/commit/017c53998abcf79d3f16474085611c0307d8ff21))
+* auto copy sharing url removed ([#5983](https://github.com/kiva/ui/issues/5983)) ([a8f53b9](https://github.com/kiva/ui/commit/a8f53b9ddbe44eeb3210c315960a836ecee00f17))
+* change how bluesky shares links ([eac1fba](https://github.com/kiva/ui/commit/eac1fba6ff33eace0032b59ce50f007ccca91f71))
+* combo page redirect fix ([#6000](https://github.com/kiva/ui/issues/6000)) ([bfcffd2](https://github.com/kiva/ui/commit/bfcffd2234378e36e9fc4bc9c28b6e48af3e0e77))
+* comment updated ([62024d7](https://github.com/kiva/ui/commit/62024d797c774cd1229751c5ba9cd34b19b45573))
+* correct count of milestones ([27d8374](https://github.com/kiva/ui/commit/27d837482406eec26ba3b021df89ef809f9a667a))
+* equity basket pill and first loan logic to show equity badge ([8986bd8](https://github.com/kiva/ui/commit/8986bd8acf56c85291e9b195de61d528a3fd081e))
+* first loan logic in atb and checkout pill ([904485d](https://github.com/kiva/ui/commit/904485de2f3561f4e3dd409d3b2de3b118ec8717))
+* isFirstLoan logic ([50ad53f](https://github.com/kiva/ui/commit/50ad53fc7ab954c4f9c188f07867de31d4f0ce17))
+* link copied when modal opens ([3eb6d82](https://github.com/kiva/ui/commit/3eb6d820ad2230b8c9a58c3eecc82de7cc458fda))
+* lint ([5455831](https://github.com/kiva/ui/commit/545583110148386e579c751a015cf1da97860f67))
+* local dev change requirement for newer vite version ([143b56e](https://github.com/kiva/ui/commit/143b56e1c121e804e3d3fa2e65ec1197102e0d76))
+* make mykiva pills on checkout same size ([283577c](https://github.com/kiva/ui/commit/283577cff1c81b3d0c7f34ed7634381869943888))
+* move isFirstLoan logic to list component to validate individually ([9fa5f64](https://github.com/kiva/ui/commit/9fa5f643af55af939ccce8f980c4773ed3456475))
+* nullish coalescing when achievement has no tiers property ([f83c547](https://github.com/kiva/ui/commit/f83c547f7e5e655ce6f833c4083de1ae6df2e2c3))
+* one more spacing tweak ([67f8c1a](https://github.com/kiva/ui/commit/67f8c1a2d626ab719f1a160e8f664330a02b2e3d))
+* remove twitter from social share ([7092f3b](https://github.com/kiva/ui/commit/7092f3b9fd1da466a9b8126ccbb491383268e8f2))
+* resolve issue with logged in mykiva atb pills ([ad9c981](https://github.com/kiva/ui/commit/ad9c98102ed9aa560d28d932913009a5b8b0cd4a))
+* save current reached tiers from basket to compare future progress ([6098126](https://github.com/kiva/ui/commit/60981262d68b3e9e218f23c9ed3e7143d90aad4a))
+* showing journey section for users that has seen my kiva ([816de7b](https://github.com/kiva/ui/commit/816de7b92c141a342f1c786e869a44a2b0c70df1))
+* sticky header for large screen only reverted ([#5966](https://github.com/kiva/ui/issues/5966)) ([8dd5f6a](https://github.com/kiva/ui/commit/8dd5f6aeea9f8534ec9c3f65c7034e4578662b5f))
+* using basketCount for first loan logic ([b1d125a](https://github.com/kiva/ui/commit/b1d125ac6969cbfe877ecae93c1e768469146e3e))
+
+### 🧹 Chores
+
+* add default to data.message ([7c4aa94](https://github.com/kiva/ui/commit/7c4aa94581084e944808d8fe1503bcad29d0971e))
+* add missing step in readme for new engineers ([a462610](https://github.com/kiva/ui/commit/a4626108e927cc84f02f9cb5105b9767bbbad7ea))
+* fix styles in new icon to respect previous layout ([e361e22](https://github.com/kiva/ui/commit/e361e225daa372141b933bac011cbdbdeb43bc13))
+* misc change of comments to capital letters ([ea02345](https://github.com/kiva/ui/commit/ea02345ad0c42565f6c20ea830bad6ace8c8e581))
+* missed one more bluesky to twitter tag ([9104872](https://github.com/kiva/ui/commit/91048725a787bee030ba07ada4eb9a619f6483dc))
+* missing unsaved changes ([1896f4f](https://github.com/kiva/ui/commit/1896f4f80e98736230d571991e910642e8036541))
+* re-upload MP-1553 with no dependency issues ([fdacce4](https://github.com/kiva/ui/commit/fdacce43faa667b215f99050b21934a207579a4e))
+* remove breaking change in gql query ([878f090](https://github.com/kiva/ui/commit/878f0903d1782196a395427a52fff5d86899ef92))
+* remove unused css classes, fix icon ([05b9735](https://github.com/kiva/ui/commit/05b9735603c55ff75b6f68dc9afbc923c45be11b))
+* remove unused style code ([cde3f9c](https://github.com/kiva/ui/commit/cde3f9ce94fb8c4e45b306437043c6786f7ba8df))
+* revert bluesky tags to twitter ([b6799ff](https://github.com/kiva/ui/commit/b6799ffb53c44b78343f594f8931b1e131d46d76))
+* revert bluesky to twitter in return data ([fb39050](https://github.com/kiva/ui/commit/fb3905014b849402c8294e37b33b6cb49b344601))
+* revert changes in BorrowerBusinessDetails ([18527f5](https://github.com/kiva/ui/commit/18527f5d1c73e14fdd62ef1541a8d8c1d37883b9))
+
 ## [3.17.0](https://github.com/kiva/ui/compare/v3.16.0...v3.17.0) (2025-04-22)
 
 ### 🎉 New Features

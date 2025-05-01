@@ -34,6 +34,7 @@
 				</div>
 			</div>
 			<button
+				v-if="!userInHomepage"
 				:disabled="isLoading"
 				@click="$emit('show-navigation')"
 			>
@@ -52,6 +53,7 @@ import { mdiCogOutline } from '@mdi/js';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { computed, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
 
 defineEmits(['show-navigation']);
 
@@ -67,9 +69,15 @@ const props = defineProps({
 });
 
 const { userInfo } = toRefs(props);
+const router = useRouter();
 
 const isBorrower = computed(() => userInfo.value?.isBorrower ?? false);
 const isTrustee = computed(() => !!userInfo.value?.trustee?.id ?? false);
+
+const userInHomepage = computed(() => {
+	return router.currentRoute.value?.path === '/mykiva';
+});
+
 </script>
 
 <style lang="postcss" scoped>
