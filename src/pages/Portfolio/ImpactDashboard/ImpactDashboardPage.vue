@@ -23,11 +23,11 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
-						<recent-loans-list />
+						<your-donations />
+						<LoanCards />
 						<JourneysSection
 							v-if="showMyKivaJourneySection"
 						/>
-						<your-donations />
 						<education-module v-if="post" :post="post" />
 						<kiva-credit-stats />
 						<account-updates />
@@ -56,12 +56,12 @@ import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
 import KivaCreditStats from './KivaCreditStats';
 import LendingInsights from './LendingInsights';
-import RecentLoansList from './RecentLoansList';
 import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import JourneysSection from './JourneysSection';
+import LoanCards from './LoanCards';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -75,7 +75,6 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		LendingInsights,
-		RecentLoansList,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
@@ -84,6 +83,7 @@ export default {
 		TeamChallenge,
 		MyKivaPage,
 		JourneysSection,
+		LoanCards,
 	},
 	data() {
 		return {

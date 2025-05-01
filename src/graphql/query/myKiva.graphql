@@ -9,7 +9,7 @@ query myKivaQuery {
         name
         gender
         status
-		use
+        use
         image {
           id
           url
