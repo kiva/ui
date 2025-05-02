@@ -1,6 +1,9 @@
 query portfolioQuery {
 	my {
 		id
+		loans {
+			totalCount
+		}
 		teams (
 			limit: 100
 		) {

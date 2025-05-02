@@ -128,7 +128,7 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
-		this.loansCount = userData.lender?.loanCount ?? 0;
+		this.loansCount = userData?.loans?.totalCount ?? 0;
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
@@ -136,7 +136,7 @@ export default {
 			this.apollo,
 			this.$kvTrackEvent,
 			userData?.userPreferences,
-			this.loansCount,
+			userData.lender?.loanCount,
 			myKivaAllUsersEnabled,
 			this.cookieStore,
 		);
