@@ -24,7 +24,7 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<your-donations />
-						<LoanCards />
+						<LoanCards v-if="loansCount" />
 						<JourneysSection
 							v-if="showMyKivaJourneySection"
 						/>
@@ -94,6 +94,7 @@ export default {
 			userPreferences: null,
 			showMyKivaPage: false,
 			showMyKivaJourneySection: false,
+			loansCount: 0,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -127,6 +128,7 @@ export default {
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
+		this.loansCount = userData.lender?.loanCount ?? 0;
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
@@ -134,7 +136,7 @@ export default {
 			this.apollo,
 			this.$kvTrackEvent,
 			userData?.userPreferences,
-			userData.lender?.loanCount,
+			this.loansCount,
 			myKivaAllUsersEnabled,
 			this.cookieStore,
 		);
