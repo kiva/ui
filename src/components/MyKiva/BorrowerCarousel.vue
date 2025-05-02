@@ -11,15 +11,15 @@
 			<h2
 				v-html="title"
 				class="tw-mb-3.5"
-				:class="{ 'tw-text-center': !loans.length }"
+				:class="{ 'tw-text-center': !filteredLoans.length }"
 			></h2>
-			<div :class="{'tw-flex tw-justify-center': !loans.length }">
+			<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
 				<KvButton
 					v-kv-track-event="[
 						'portfolio',
 						'click',
 						btnEventLabel
-					]" v-if="showCtaWhenNoLoans && (!loans.length || !hasActiveLoans)"
+					]" v-if="showCtaWhenNoLoans && (!filteredLoans.length || !hasActiveLoans)"
 					:to="link"
 				>
 					{{ btnCta }}
@@ -27,7 +27,7 @@
 			</div>
 		</template>
 		<div v-if="hasActiveLoans && !isLoading">
-			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="loans.length > 1" class="tabs">
+			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="filteredLoans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab
 						v-for="(loan, index) in filteredLoans"
@@ -58,7 +58,7 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="loans.length > cardsNumber" for-panel="view-more">
+					<KvTab v-if="filteredLoans.length > cardsNumber" for-panel="view-more">
 						<a
 							href="/portfolio/loans" v-kv-track-event="[
 								'portfolio',
