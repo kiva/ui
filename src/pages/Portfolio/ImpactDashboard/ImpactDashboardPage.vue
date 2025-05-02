@@ -24,7 +24,7 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<your-donations />
-						<LoanCards />
+						<LoanCards v-if="filteredLoans.length > 0" />
 						<JourneysSection
 							v-if="showMyKivaJourneySection"
 						/>
@@ -51,6 +51,12 @@ import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import {
+	PAYING_BACK,
+	FUNDED,
+	FUNDRAISING,
+	RAISED
+} from '#src/api/fixtures/LoanStatusEnum';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -94,6 +100,7 @@ export default {
 			userPreferences: null,
 			showMyKivaPage: false,
 			showMyKivaJourneySection: false,
+			loans: [],
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -124,9 +131,16 @@ export default {
 			});
 		},
 	},
+	computed: {
+		filteredLoans() {
+			return this.loans.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED]
+				.includes(loan?.status));
+		}
+	},
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
+		this.loans = userData?.loans?.values ?? [];
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
