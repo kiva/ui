@@ -6,6 +6,13 @@ query portfolioQuery {
 			values {
 				id
 				status
+				geocode {
+					country {
+						id
+						name
+						region
+					}
+				}
 			}
 		}
 		teams (

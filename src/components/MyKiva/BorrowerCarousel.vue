@@ -58,7 +58,7 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="filteredLoans.length > cardsNumber" for-panel="view-more">
+					<KvTab v-if="totalLoans > filteredLoans.length" for-panel="view-more">
 						<a
 							href="/portfolio/loans" v-kv-track-event="[
 								'portfolio',

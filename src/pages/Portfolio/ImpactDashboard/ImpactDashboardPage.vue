@@ -24,7 +24,9 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<your-donations />
-						<LoanCards v-if="filteredLoans.length > 0" />
+						<LoanCards
+							v-if="filteredLoans.length > 0"
+						/>
 						<JourneysSection
 							v-if="showMyKivaJourneySection"
 						/>
@@ -36,6 +38,16 @@
 					</div>
 				</kv-grid>
 			</kv-page-container>
+			<div
+				v-if="showLoanFootnote"
+				class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5"
+			>
+				<kv-page-container>
+					<section>
+						*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
+					</section>
+				</kv-page-container>
+			</div>
 		</www-page>
 	</div>
 </template>
@@ -48,7 +60,7 @@ import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
-import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import {
@@ -101,6 +113,8 @@ export default {
 			showMyKivaPage: false,
 			showMyKivaJourneySection: false,
 			loans: [],
+			filteredLoans: [],
+			showLoanFootnote: false,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -131,16 +145,17 @@ export default {
 			});
 		},
 	},
-	computed: {
-		filteredLoans() {
-			return this.loans.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED]
-				.includes(loan?.status));
-		}
-	},
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
 		this.loans = userData?.loans?.values ?? [];
+		if (this.loans.length > 0) {
+			this.filteredLoans = this.loans
+				.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(loan?.status))
+				.slice(0, 6);
+
+			this.showLoanFootnote = this.filteredLoans.some(l => hasLoanFunFactFootnote(l));
+		}
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
