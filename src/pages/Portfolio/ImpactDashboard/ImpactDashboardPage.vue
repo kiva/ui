@@ -5,7 +5,7 @@
 		/>
 		<www-page
 			v-else
-			main-class="tw-bg-secondary"
+			main-class="tw-bg-secondary tw-overflow-hidden"
 		>
 			<template #secondary>
 				<the-my-kiva-secondary-menu />
