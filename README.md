@@ -38,8 +38,8 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 5. In a separate terminal at the root of the ui repo
 	``` bash
-	# Set you node version using nvm
-	$ nvm use
+	# Use/install the required Node version using nvm
+	$ nvm i
 
 	# Install dependencies
 	$ npm ci
@@ -62,6 +62,9 @@ Kiva welcomes outside contributions to our UI repository. If you have any ideas 
 
 ``` bash
 # DEV MODE
+
+# use/install the required Node version using nvm
+$ nvm i
 
 # install dependencies
 $ npm ci
@@ -105,8 +108,11 @@ $ npm test
 
 $ ./ui-server.sh {status|log|restart|local|start_local}
 
+# use/install the required Node version using nvm
+$ nvm i
+
 # install dependencies
-$ npm install
+$ npm ci
 
 # optionally install husky git hooks
 $ npx husky install
