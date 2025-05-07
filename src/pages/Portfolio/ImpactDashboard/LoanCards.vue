@@ -103,9 +103,3 @@ const fetchAsyncData = () => {
 		});
 };
 </script>
-
-<style lang="postcss" scoped>
-:deep(.portfolio-borrowers-carousel > h2) {
-    @apply tw-hidden;
-}
-</style>

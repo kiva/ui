@@ -1,3 +1,18 @@
+## [3.19.0-rc.1](https://github.com/kiva/ui/compare/v3.18.0...v3.19.0-rc.1) (2025-05-07)
+
+### 🎉 New Features
+
+* disclaimer added to portfolio page ([#6011](https://github.com/kiva/ui/issues/6011)) ([67eddf1](https://github.com/kiva/ui/commit/67eddf1a8297ad614972d93d6233a56fcd25a8e7))
+* show borrowers carousel title back ([#6009](https://github.com/kiva/ui/issues/6009)) ([0ab282b](https://github.com/kiva/ui/commit/0ab282bfa5ffc0b618877d35c676c77dd45078e2))
+
+### 🐛 Bugfixes
+
+* count filtered loans to show LoanCards in portfolio ([b369e2a](https://github.com/kiva/ui/commit/b369e2a797e5af4d2b79755ebf6efaba6fbdd95e))
+* get loansCount from loans instead of lender ([52753f0](https://github.com/kiva/ui/commit/52753f05d225efacba65347123c5f7342c63f0aa))
+* hide loancard component if no loans in portfolio ([e64c901](https://github.com/kiva/ui/commit/e64c9010c1c150b6e66eb3fb1b212229201105a9))
+* mykiva borrowers carousel fix ([#6007](https://github.com/kiva/ui/issues/6007)) ([46622a0](https://github.com/kiva/ui/commit/46622a07d494336dcd788de2deefbf7ae583f91d))
+* portfolio overflow fix ([#6012](https://github.com/kiva/ui/issues/6012)) ([c3e6a87](https://github.com/kiva/ui/commit/c3e6a8712b423bb77a8d1137c592a71a9049c8c4))
+
 ## [3.18.0](https://github.com/kiva/ui/compare/v3.17.0...v3.18.0) (2025-05-01)
 
 ### 🎉 New Features

@@ -1,6 +1,20 @@
 query portfolioQuery {
 	my {
 		id
+		loans(limit: 50) {
+			totalCount
+			values {
+				id
+				status
+				geocode {
+					country {
+						id
+						name
+						region
+					}
+				}
+			}
+		}
 		teams (
 			limit: 100
 		) {
