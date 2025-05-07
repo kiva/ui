@@ -188,8 +188,7 @@ export default {
 		query: processInstantLendingContent,
 		preFetch: true,
 		preFetchVariables({ route }) {
-			const currentRoute = route?.value ?? route;
-			return { loanId: parseInt(currentRoute?.params?.loanId, 10) };
+			return { loanId: parseInt(route?.params?.loanId, 10) };
 		},
 		variables() {
 			return { loanId: parseInt(this.$route.params.loanId, 10) };

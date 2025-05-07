@@ -163,8 +163,7 @@ export default {
 				client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } }),
 				client.query({ query: experimentQuery, variables: { id: CHALLENGE_HEADER_EXP } }),
 			]).then(([{ data }]) => {
-				const currentRoute = route?.value ?? route ?? {};
-				const query = currentRoute?.query ?? {};
+				const query = route?.query ?? {};
 				const loggedInUser = getHasEverLoggedIn(client);
 				const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 

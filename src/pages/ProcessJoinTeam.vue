@@ -100,10 +100,9 @@ export default {
 		preFetch: true,
 		query: userTeamMembership,
 		preFetchVariables({ route }) {
-			const currentRoute = route?.value ?? route;
 			return {
-				teamPublicId: currentRoute?.query?.teamPublicId,
-				publicId: currentRoute?.query?.inviter ?? '',
+				teamPublicId: route?.query?.teamPublicId,
+				publicId: route?.query?.inviter ?? '',
 			};
 		},
 		variables() {

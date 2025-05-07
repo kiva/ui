@@ -48,10 +48,10 @@ export function userHasDepositBefore(hasDepositedBefore) {
 	setUserAttribute('has_deposited_before', hasDepositedBefore ? 'yes' : 'no');
 }
 
-export function buildUserDataGlobal(router, cookieStore, apolloClient) {
+export function buildUserDataGlobal(currentRoute, cookieStore, apolloClient) {
 	let data = null;
-	const transactionId = router.currentRoute.query?.kiva_transaction_id
-		? numeral(router.currentRoute.query?.kiva_transaction_id).value()
+	const transactionId = currentRoute.query?.kiva_transaction_id
+		? numeral(currentRoute.query?.kiva_transaction_id).value()
 		: null;
 	try {
 		data = transactionId ? apolloClient.readQuery({

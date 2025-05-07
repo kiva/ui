@@ -640,7 +640,7 @@ export default {
 				query: pageQuery,
 				variables: {
 					contentType: 'page',
-					contentKey: args?.route?.value?.params?.dynamicRoute?.trim(),
+					contentKey: args?.route?.params?.dynamicRoute?.trim(),
 				}
 			}).then(async ({ data }) => {
 				// Get Contentful page data
@@ -671,8 +671,7 @@ export default {
 		// TODO: Convert to prefetch function and check for page path before fetching all content
 		// - Requires extended contentful graphql query options for include depth and query by addtional fields
 		preFetchVariables({ route }) {
-			const currentRoute = route?.value ?? route;
-			return { contentType: 'page', contentKey: currentRoute?.params?.dynamicRoute };
+			return { contentType: 'page', contentKey: route?.params?.dynamicRoute };
 		},
 		variables() {
 			return { contentType: 'page', contentKey: this.$route.params.dynamicRoute };

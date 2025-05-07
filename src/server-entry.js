@@ -13,7 +13,6 @@ import oneTrustEvent from '#src/head/oneTrustEvent';
 
 // import noscriptTemplate from '#src/head/noscript.html';
 import { authenticationGuard } from '#src/util/authenticationGuard';
-import { contentfulPreviewCookie } from '#src/util/contentfulPreviewCookie';
 
 import logFormatter from '#src/util/logFormatter';
 import { buildUserDataGlobal } from '#src/util/optimizelyUserMetrics';
@@ -113,7 +112,7 @@ function renderPreloadLinks(modules, manifest = {}) {
 	return links;
 }
 
-// This exported function will be called by `bundleRenderer`.
+// This exported function will be called by vue-render.
 // This is where we perform data-prefetching to determine the
 // state of our application before actually rendering it.
 // Since data fetching is async, this function is expected to
@@ -163,8 +162,6 @@ export default async context => {
 		kvAuth0 = MockKvAuth0;
 	}
 
-	// __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
-
 	const {
 		app,
 		head,
@@ -211,13 +208,12 @@ export default async context => {
 		// TODO: Check for + redirect to kiva php app external route
 		throw { code: 404 };
 	}
-	contentfulPreviewCookie({ route: router.currentRoute, cookieStore });
 
 	try {
 		// Use route meta property to determine if route needs authentication
 		// authenticationGuard will reject promise with a redirect to login if
 		// required authentication query fails
-		await authenticationGuard({ route: router.currentRoute, apolloClient, kvAuth0 });
+		await authenticationGuard({ route: router.currentRoute.value, apolloClient, kvAuth0 });
 
 		// Pre-fetch graphql queries from the components (and all of their child components)
 		// matched by the route
@@ -226,7 +222,7 @@ export default async context => {
 		await preFetchAll(matchedComponents, apolloClient, {
 			cookieStore,
 			kvAuth0,
-			route: router.currentRoute,
+			route: router.currentRoute.value,
 			device
 		});
 
@@ -249,7 +245,7 @@ export default async context => {
 		// the initial data fetching on the client.
 		const appState = renderGlobals({
 			__APOLLO_STATE__: apolloClient.cache.extract(),
-			pageData: buildUserDataGlobal(router, cookieStore, apolloClient)
+			pageData: buildUserDataGlobal(router.currentRoute.value, cookieStore, apolloClient)
 		});
 
 		// render head tags
