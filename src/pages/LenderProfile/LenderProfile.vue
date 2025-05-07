@@ -93,9 +93,8 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { route }) {
-			const currentRoute = route.value ?? route ?? {};
-			const publicId = currentRoute.params?.publicId ?? '';
-			const badgeKey = currentRoute.query?.utm_campaign ?? '';
+			const publicId = route?.params?.publicId ?? '';
+			const badgeKey = route?.query?.utm_campaign ?? '';
 			const { isBadgeKeyValid } = useBadgeData();
 
 			return Promise.all([

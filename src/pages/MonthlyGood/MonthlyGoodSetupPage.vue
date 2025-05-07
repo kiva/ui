@@ -480,8 +480,6 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
-			// server uses route.value, client uses route
-			const currentRoute = route?.value ?? route ?? {};
 			/**
 			 * Implementation of SUBS-609 Experiment Results
 			 * For users without a currently active login.
@@ -516,7 +514,7 @@ export default {
 							// Auth error will be caught here, redirect to login.
 							return Promise.reject({
 								path: '/ui-login',
-								query: { force: true, doneUrl: currentRoute.fullPath }
+								query: { force: true, doneUrl: route.fullPath }
 							});
 						});
 					}

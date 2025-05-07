@@ -56,12 +56,11 @@ export default {
 		preFetch(config, client, { route }) {
 			return client.query({ query: uiConfigSettingQuery, variables: { key: CATEGORY_REDIRECT_KEY } })
 				.then(({ data }) => {
-					const currentRoute = route?.value ?? route ?? {};
-					const query = currentRoute?.query ?? {};
+					const query = route?.query ?? {};
 					const isComboPageEnabled = readBoolSetting(data, 'general.uiConfigSetting.value');
 
 					// Redirect to /lend-category-beta/** if combo page flag is enabled
-					const category = currentRoute?.params?.category ?? '';
+					const category = route?.params?.category ?? '';
 
 					if (isComboPageEnabled) {
 						return Promise.reject({ path: `/lend-category-beta/${category}`, query });

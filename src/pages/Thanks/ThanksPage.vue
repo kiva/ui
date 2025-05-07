@@ -307,9 +307,8 @@ export default {
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
 			]).then(() => {
-				const currentRoute = route.value ?? route ?? {};
-				const transactionId = currentRoute.query?.kiva_transaction_id
-					? numeral(currentRoute.query.kiva_transaction_id).value()
+				const transactionId = route?.query?.kiva_transaction_id
+					? numeral(route?.query.kiva_transaction_id).value()
 					: null;
 				// Check if transactionId is null, resolve the promise if missing
 				if (!transactionId) {

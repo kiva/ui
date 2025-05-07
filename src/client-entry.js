@@ -176,8 +176,7 @@ function setupClientRouting({
 	// the data that we already have. Using router.beforeResolve() so that all
 	// async components are resolved.
 	router.beforeResolve(async (to, from, next) => {
-		const [{ contentfulPreviewCookie }, { authenticationGuard }, { preFetchAll }] = await Promise.all([
-			import('#src/util/contentfulPreviewCookie'),
+		const [{ authenticationGuard }, { preFetchAll }] = await Promise.all([
 			import('#src/util/authenticationGuard'),
 			import('#src/util/apolloPreFetch'),
 		]);
@@ -186,7 +185,6 @@ function setupClientRouting({
 		const prevMatched = from.matched;
 		const activated = matched.filter((c, i) => prevMatched[i] !== c);
 
-		contentfulPreviewCookie({ route: to, cookieStore });
 		try {
 			await authenticationGuard({ route: to, apolloClient, kvAuth0 });
 			// Pre-fetch graphql queries from activated components

@@ -16,7 +16,7 @@ export function checkLastLoginTime(data, durationKey, defaultDuration) {
 }
 
 const processErrors = (error, route) => {
-	const doneUrl = route?.value?.fullPath || route?.fullPath || '';
+	const doneUrl = route.fullPath || '';
 	if (error.message.indexOf('activeLoginRequired') > -1 || error.message.indexOf('recentLoginRequired') > -1) {
 		// Force a login when active/recent login is required
 		return {
@@ -34,7 +34,7 @@ const processErrors = (error, route) => {
 	}
 
 	if (error.message.indexOf('verificationRequired') > -1) {
-		const lastMatchedRoute = route.value.matched[route.value.matched.length - 1];
+		const lastMatchedRoute = route.matched[route.matched.length - 1];
 		// Redirect to email verification page
 		return {
 			path: '/start-verification',
@@ -73,11 +73,10 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 		return Promise.resolve();
 	}
 	return new Promise((resolve, reject) => {
-		const currentRoute = route.value ?? route ?? {};
-		const activeRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
-		const authRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
-		const mfaRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
-		const recentRequired = currentRoute.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
+		const activeRequired = route.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
+		const authRequired = route.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
+		const mfaRequired = route.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
+		const recentRequired = route.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
 
 		// Route requires some sort of authentication
 		if (activeRequired || authRequired || mfaRequired || recentRequired) {
