@@ -312,7 +312,7 @@ export default {
 				},
 				{
 					id: 60,
-					url: 'loans-that-are-almost-funded',
+					url: 'almost-funded',
 					queryParams: 'status=fundRaising&sortBy=amountLeft',
 					algoliaParams: 'sortBy=amountLeft',
 					flssLoanSearch: {
