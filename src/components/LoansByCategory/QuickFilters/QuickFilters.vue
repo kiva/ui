@@ -378,7 +378,8 @@ export default {
 		},
 		removeSortByDropdown() {
 			return this.targetedLoanChannelUrl === 'ending-soon'
-				|| this.targetedLoanChannelUrl === 'featured-projects';
+				|| this.targetedLoanChannelUrl === 'featured-projects'
+				|| this.targetedLoanChannelUrl === 'almost-funded';
 		}
 	},
 };
