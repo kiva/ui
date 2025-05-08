@@ -82,6 +82,7 @@
 				<KvCarousel
 					ref="carousel"
 					class="borrower-carousel tw-w-full md:tw-overflow-visible"
+					:class="{'hidden-controls': filteredLoans.length < 1}"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
@@ -350,8 +351,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
-
-.carousel-container {
+.carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
 
 	@screen md {
@@ -363,7 +363,7 @@ onBeforeUnmount(() => {
 	}
 }
 
-:deep(.borrower-carousel) div.kv-carousel__controls {
+:deep(.hidden-controls) div.kv-carousel__controls {
 	@apply tw-hidden;
 }
 
