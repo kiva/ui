@@ -82,7 +82,6 @@
 				<KvCarousel
 					ref="carousel"
 					class="borrower-carousel tw-w-full md:tw-overflow-visible"
-					:class="{'hidden-controls': filteredLoans.length < 1}"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
@@ -361,10 +360,6 @@ onBeforeUnmount(() => {
 	@screen lg {
 		max-width: 520px;
 	}
-}
-
-:deep(.hidden-controls) div.kv-carousel__controls {
-	@apply tw-hidden;
 }
 
 :deep(.tabs) div[role=tablist] {
