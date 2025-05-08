@@ -350,8 +350,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
-
-.carousel-container {
+.carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
 
 	@screen md {
@@ -361,10 +360,6 @@ onBeforeUnmount(() => {
 	@screen lg {
 		max-width: 520px;
 	}
-}
-
-:deep(.borrower-carousel) div.kv-carousel__controls {
-	@apply tw-hidden;
 }
 
 :deep(.tabs) div[role=tablist] {
