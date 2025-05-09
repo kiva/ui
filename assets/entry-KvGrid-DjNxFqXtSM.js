@@ -1,0 +1,1 @@
+import{e,o as a,w as r,f as s,C as n}from"./entry-vue.esm-bundler-Q9GDM36OM6.js";import{s as l}from"./entry-KvWideLoanCard-BcPVF-r37T.js";const p={props:{as:{type:String,default:"div"}}};function c(t,d,o,i,f,m){return a(),e(n(o.as),{class:"tw-grid tw-gap-2 md:tw-gap-3 lg:tw-gap-3.5"},{default:r(()=>[s(t.$slots,"default")]),_:3})}const u=l(p,[["render",c]]);export{u as g};
