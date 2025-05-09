@@ -199,7 +199,13 @@ export default {
 			return getCompletedBadges(this.badgesData);
 		},
 		iconForSector(sector) {
-			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
+			const sectorName = sector.name
+				.replace(/&/g, '')
+				.replace(/\s+/g, '-')
+				.trim()
+				.toLowerCase();
+
+			return `sector-${sectorName}`;
 		}
 	}
 };
