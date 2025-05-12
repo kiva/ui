@@ -270,6 +270,10 @@ export default [
 		redirect: '/lend-by-category/ending-soon',
 	},
 	{
+		path: '/lend-by-category/loans-that-are-almost-funded',
+		redirect: '/lend-by-category/almost-funded',
+	},
+	{
 		path: '/lend-by-category/loans-to-artisans',
 		redirect: '/lend-by-category/arts',
 	},
