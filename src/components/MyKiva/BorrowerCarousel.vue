@@ -213,6 +213,7 @@ const commentLoanData = ref({
 	visible: false,
 });
 const shareLoan = ref(false);
+const previousLastIndex = ref(0);
 
 const activeLoans = computed(() => {
 	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
@@ -277,7 +278,11 @@ const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
 const handleChange = event => {
-	$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
+	previousLastIndex.value = lastVisitedLoanIdx.value;
+	if (lastVisitedLoanIdx.value !== event) {
+		$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
+	}
+
 	if (event < filteredLoans.value.length) {
 		carousel.value.goToSlide(event);
 		lastVisitedLoanIdx.value = event;
@@ -310,6 +315,9 @@ const handleResize = () => {
 const throttledResize = _throttle(handleResize, 200);
 
 const onInteractCarousel = interaction => {
+	if (previousLastIndex.value === lastVisitedLoanIdx.value) {
+		$kvTrackEvent('portfolio', 'click', 'borrower-card-carousel');
+	}
 	tabs.value.tabContext.selectedIndex = interaction.value;
 };
 
