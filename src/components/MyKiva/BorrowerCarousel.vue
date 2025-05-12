@@ -277,6 +277,7 @@ const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
 const handleChange = event => {
+	$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
 	if (event < filteredLoans.value.length) {
 		carousel.value.goToSlide(event);
 		lastVisitedLoanIdx.value = event;
