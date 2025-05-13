@@ -13,8 +13,6 @@ export default merge(base, {
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?XDEBUG_SESSION_START=PHPSTORM',
 		// use this to override authentication
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?user_id=<user id>&app_id=org.kiva.www&scopes=access',
-		enablePerimeterx: false,
-		perimeterxAppId: '###',
 		enableAnalytics: false,
 		enableGTM: false,
 		googleTagmanagerId: 'GTM-PXFRMT',
