@@ -5,8 +5,6 @@ export const app = {
 	publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
 	photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 	graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
-	enablePerimeterx: true,
-	perimeterxAppId: 'PXr3pNVz1F',
 	enableAnalytics: true,
 	enableGTM: true,
 	googleTagmanagerId: 'GTM-PX6FDG',

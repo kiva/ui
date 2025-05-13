@@ -7,7 +7,6 @@ export default merge(base, {
 		publicPath: '/',
 		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
-		enablePerimeterx: false,
 		enableAnalytics: false,
 		enableSnowplow: false,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',

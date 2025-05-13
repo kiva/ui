@@ -84,7 +84,6 @@ export const app = {
 		url: process.env.PAYPAL_URL || 'www.sandbox.paypal.com',
 		environment: process.env.PAYPAL_ENVIRONMENT || 'sandbox'
 	},
-	perimeterxAppId: process.env.PERIMETERX_APP_ID || 'PX5u4Lz98O',
 	photoPath: process.env.PHOTO_PATH || 'https://www-dev-kiva-org.freetls.fastly.net/img/',
 	publicPath: process.env.PUBLIC_PATH || `https://www.${baseUrl}/`,
 	sentryURI: process.env.SENTRY_URI || 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
