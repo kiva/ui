@@ -1,31 +1,22 @@
 import { merge } from 'webpack-merge';
-import base from './dev-vm.js';
+import base from './k8s-local.js';
 
 export default merge(base, {
 	app: {
-		host: 'localhost',
-		publicPath: '/',
-		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
-		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
-		enableAnalytics: false,
-		enableSnowplow: false,
-		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
-		enableGA: false,
-		gaId: 'UA-11686022-7', // dev-vm property
-		enableSentry: false,
+		apolloBatching: false, // Remove this once batching is enabled in prod
 		auth0: {
 			enable: false,
 		},
-		oneTrust: {
-			enable: false
-		}
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
+		host: 'localhost',
+		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
+		publicPath: '/',
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
-		sessionUri: '',
+		gzipEnabled: true,
 		memcachedEnabled: false,
 		memcachedServers: '',
-		gzipEnabled: true,
-		disableCluster: true,
+		sessionUri: '',
 	},
 });
