@@ -3,7 +3,7 @@
 		<MyKivaContainer>
 			<div
 				class="tw-p-1.5"
-				:class="{'tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-p-1.5': !userInHomepage}"
+				:class="{'tw-bg-white tw-rounded-b tw-absolute tw-top-0': !userInHomepage}"
 			>
 				<h3 v-if="!userInHomepage">
 					Welcome back 👋
