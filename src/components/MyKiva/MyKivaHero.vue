@@ -1,8 +1,13 @@
 <template>
-	<div class="tw-w-full landscape tw-relative">
+	<div class="tw-w-full" :class="{'landscape tw-relative': !userInHomepage}">
 		<MyKivaContainer>
-			<div class="tw-bg-white tw-rounded-b tw-absolute tw-top-0 tw-p-1.5">
-				<h3>Welcome back 👋</h3>
+			<div
+				class="tw-p-1.5"
+				:class="{'tw-bg-white tw-rounded-b tw-absolute tw-top-0': !userInHomepage}"
+			>
+				<h3 v-if="!userInHomepage">
+					Welcome back 👋
+				</h3>
 				<div
 					v-if="isBorrower || isTrustee"
 					class="tw-flex tw-flex-col tw-mt-1 tw-gap-1"
@@ -53,7 +58,6 @@ import { mdiCogOutline } from '@mdi/js';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { computed, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
 
 defineEmits(['show-navigation']);
 
@@ -66,17 +70,16 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userInHomepage: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { userInfo } = toRefs(props);
-const router = useRouter();
 
 const isBorrower = computed(() => userInfo.value?.isBorrower ?? false);
 const isTrustee = computed(() => !!userInfo.value?.trustee?.id ?? false);
-
-const userInHomepage = computed(() => {
-	return router.currentRoute.value?.path === '/mykiva';
-});
 
 </script>
 

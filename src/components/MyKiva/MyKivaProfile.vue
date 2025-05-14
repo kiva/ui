@@ -1,15 +1,22 @@
 <template>
 	<MyKivaContainer>
-		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-4">
+		<div
+			:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
+		>
 			<KvLoadingPlaceholder
 				v-if="isLoading"
 				class="!tw-h-5 tw-mt-6 md:tw-mt-0 tw-mr-auto md:tw-mr-0"
 				:style="{ width: '10rem' }"
 			/>
-			<h3 v-else class="tw-mr-auto md:tw-mr-0">
-				{{ lenderName }}
-			</h3>
+			<p
+				v-else
+				class="tw-mr-auto md:tw-mr-0"
+				:class="{'tw-text-h2': userInHomepage, 'tw-text-h3': !userInHomepage}"
+				v-html="headerMsg"
+			>
+			</p>
 			<a
+				v-if="!userInHomepage"
 				href="/settings/account"
 				v-kv-track-event="[
 					'portfolio',
@@ -48,6 +55,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userInHomepage: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { lender, userInfo } = toRefs(props);
@@ -55,7 +66,18 @@ const { lender, userInfo } = toRefs(props);
 const lenderName = computed(() => {
 	const firstName = userInfo?.value?.userAccount?.firstName ?? '';
 	const lastName = userInfo?.value?.userAccount?.lastName ?? '';
+
+	if (props.userInHomepage) {
+		return `${firstName}`;
+	}
+
 	return `${firstName} ${lastName}`;
+});
+
+const headerMsg = computed(() => {
+	return props.userInHomepage
+		? `For you, <u>${lenderName.value}</u>`
+		: lenderName.value;
 });
 
 const lenderImageUrl = computed(() => {
