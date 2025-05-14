@@ -41,7 +41,7 @@ export const app = {
 		},
 		enable: true,
 		checkFakeAuth,
-		apiAudience: process.env.ALTERNATE_API_AUDIENCE || `https://api.${baseUrl}/graphql`,
+		apiAudience: process.env.ALTERNATE_API_AUDIENCE || `https://gateway.${baseUrl}/graphql`,
 		mfaAudience: `https://kiva-${env}.auth0.com/mfa/`,
 		browserClientID,
 		serverClientID,
@@ -84,7 +84,7 @@ export const app = {
 		url: process.env.PAYPAL_URL || 'www.sandbox.paypal.com',
 		environment: process.env.PAYPAL_ENVIRONMENT || 'sandbox'
 	},
-	photoPath: process.env.PHOTO_PATH || 'https://www-dev-kiva-org.freetls.fastly.net/img/',
+	photoPath: process.env.PHOTO_PATH || `https://www.${baseUrl}/img/`,
 	publicPath: process.env.PUBLIC_PATH || `https://www.${baseUrl}/`,
 	sentryURI: process.env.SENTRY_URI || 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
 	sentryTraceSampleRate: process.env.SENTRY_TRACE_RATE || 0.25,
