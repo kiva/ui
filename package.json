@@ -20,7 +20,7 @@
 		"destroyBuildCache": "rimraf node_modules/.cache/hard-source",
 		"e2e:dev": "cypress open --config baseUrl=https://dev-vm-01.kiva.org",
 		"e2e:headless": "cypress run --config baseUrl=https://dev-vm-01.kiva.org",
-		"fetchSchema": "node build/fetch-schema.js && wait-on build/schema.graphql",
+		"fetchSchema": "node build/fetch-schema.js --config=local && wait-on build/schema.graphql",
 		"report": "vite-bundle-visualizer",
 		"unit": "vitest run --coverage",
 		"unit-watch": "vitest watch",
