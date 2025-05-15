@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<div class="tw-flex tw-shrink-0 tw-items-center tw-mb-1">
+	<div class="tw-flex tw-flex-col tw-h-full">
+		<div class="tw-flex tw-flex-col">
 			<KvUserAvatar
 				class="avatar tw-border-white tw-rounded-full tw-border-2"
 				:key="loan.id"
@@ -18,7 +18,7 @@
 			{{ journeyDescription }}
 		</p>
 		<div
-			class="tw-flex tw-overflow-x-auto tw-overflow-y-hidden"
+			class="tw-flex-col tw-overflow-x-auto tw-overflow-y-hidden"
 			:class="{
 				'tw-flex-col tw-py-2 tw-px-2': isMobile,
 				'tw-flex-row tw-py-4 tw-px-0.5': !isMobile,

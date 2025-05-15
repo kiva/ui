@@ -103,6 +103,7 @@
 				</div>
 				<div class="tw-mt-3">
 					<h3
+						ref="triggerButton"
 						class="tw-text-center tw-mb-2"
 					>
 						My impact journeys
@@ -113,18 +114,44 @@
 						@badge-clicked="handleBadgeSectionClicked"
 					/>
 
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						:is-earned-section="isEarnedSectionModal"
-						:loans="loans"
-						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeJourneyLevelClicked"
-					/>
+					<KvSideSheet
+						:visible="showBadgeModal"
+						:headline="selectedBadgeData?.challengeName"
+						:show-back-button="false"
+						:show-go-to-link="false"
+						:kv-track-function="$kvTrackEvent"
+						:animation-source-element="triggerButton"
+						@side-sheet-closed="handleBadgeModalClosed"
+					>
+						<template #default>
+							<div
+								class="tw-flex tw-flex-col tw-overflow-y-auto"
+								style="max-height: calc(100vh - 150px);padding-bottom: 50px;"
+							>
+								<BadgeModalContentJourney
+									:key="selectedBadgeData.id"
+									:badge="selectedBadgeData"
+									:loans="loans"
+									@badge-level-clicked="handleBadgeJourneyLevelClicked"
+								/>
+							</div>
+						</template>
+						<template #controls>
+							<div
+								class="tw-bg-white tw-absolute tw-bottom-0 tw-border-t tw-w-full tw-border-tertiary"
+								style="z-index: 100"
+							>
+								<div class="tw-flex tw-justify-end tw-bg-white">
+									<kv-button
+										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto md:tw-max-w-xs"
+										@click="handleContinueJourneyClicked"
+									>
+										Continue this journey
+									</kv-button>
+								</div>
+							</div>
+						</template>
+					</KvSideSheet>
 				</div>
 			</section>
 			<EarnedBadgesSection
@@ -156,7 +183,7 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import BadgeModalContentJourney from '#src/components/MyKiva/BadgeModalContentJourney';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -173,6 +200,9 @@ import {
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { KvButton, KvSideSheet } from '@kiva/kv-components';
+
+const { getBadgeWithVisibleTiers } = useBadgeData();
 
 const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
@@ -208,6 +238,7 @@ const updatesOffset = ref(0);
 const heroSlides = ref([]);
 const isHeroEnabled = ref(false);
 const selectedJourney = ref('');
+const triggerButton = ref(null);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -241,6 +272,12 @@ const handleEarnedBadgeClicked = badge => {
 	selectedBadgeData.value = badge;
 	isEarnedSectionModal.value = true;
 	showBadgeModal.value = true;
+};
+
+const handleContinueJourneyClicked = () => {
+	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
+	const { id } = badgeWithVisibleTiers;
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
 const handleBadgeJourneyLevelClicked = payload => {

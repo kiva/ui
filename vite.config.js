@@ -124,7 +124,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 				clientPort: 24679,
 				port: 24678,
 			},
-			...(!isProd && { allowedHosts: ['kiva-ui.local'] }),
+			...(!isProd && { allowedHosts: ['kiva-ui.local', 'monolith.kiva.local'] }),
 		},
 		optimizeDeps: {
 			include: [
