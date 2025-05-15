@@ -23,6 +23,7 @@
 				:slides="heroSlides"
 				:badges-data="badgeData"
 				:lender="lender"
+				:user-in-homepage="userInHomepage"
 				@update-journey="updateJourney"
 			/>
 		</section>
