@@ -11,7 +11,7 @@
 			<p
 				v-else
 				class="tw-mr-auto md:tw-mr-0"
-				:class="{'tw-text-h2': userInHomepage, 'tw-text-h3': !userInHomepage}"
+				:class="{'tw-text-h2 tw-pb-0.5': userInHomepage, 'tw-text-h3': !userInHomepage}"
 				v-html="headerMsg"
 			>
 			</p>
