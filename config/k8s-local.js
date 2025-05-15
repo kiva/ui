@@ -50,5 +50,10 @@ export default merge(base, {
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
 		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
+		viteConfig: {
+			server: {
+				allowedHosts: [monolithHostname],
+			},
+		},
 	}
 });

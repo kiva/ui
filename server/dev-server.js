@@ -3,6 +3,7 @@ import chokidar from 'chokidar';
 import express from 'express';
 import helmet from 'helmet';
 import locale from 'locale';
+import { merge } from 'webpack-merge';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import promBundle from 'express-prom-bundle';
@@ -48,11 +49,11 @@ const port = argv.port || config.server.port;
 const app = express();
 (async function createServer() {
 	// Setup Vite Server
-	const vite = await createViteServer({
+	const vite = await createViteServer(merge({
 		server: { middlewareMode: true },
 		appType: 'custom',
 		root: path.resolve(__dirname, '../'),
-	});
+	}, config.server.viteConfig ?? {}));
 
 	// promise to delay request handling until bundles are created
 	let resolveHandlerReady;
