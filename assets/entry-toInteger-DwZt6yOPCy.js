@@ -1,0 +1,1 @@
+import{t as i}from"./entry-toNumber-BqtdDPOj-V.js";var o=i,e=1/0,I=17976931348623157e292;function f(r){if(!r)return r===0?r:0;if(r=o(r),r===e||r===-1/0){var t=r<0?-1:1;return t*I}return r===r?r:0}var m=f,N=m;function F(r){var t=N(r),n=t%1;return t===t?n?t-n:t:0}var s=F;export{s as t};
