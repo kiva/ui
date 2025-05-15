@@ -29,5 +29,15 @@ export default merge(base, {
 		sessionUri: `https://www.${kivaHost}/start-ui-session`,
 		memcachedEnabled: false,
 		memcachedServers: '',
+		viteConfig: {
+			server: {
+				allowedHosts: [host],
+				hmr: {
+					// Use a different client port to allow Caddy to reverse proxy with SSL cert
+					clientPort: 24679,
+					port: 24678,
+				},
+			},
+		}
 	},
 });
