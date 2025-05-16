@@ -5,7 +5,7 @@
 			class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6"
 		/>
 		<h2
-			v-else
+			v-else-if="!userInHomepage"
 			class="tw-mb-3"
 		>
 			Take the <u>next step</u> on your impact journey
@@ -149,6 +149,10 @@ const props = defineProps({
 	lender: {
 		type: Object,
 		default: () => ({})
+	},
+	userInHomepage: {
+		type: Boolean,
+		default: false
 	},
 });
 

@@ -8,12 +8,14 @@
 	<MyKivaHero
 		:user-info="userInfo"
 		:is-loading="isLoading"
+		:user-in-homepage="userInHomepage"
 		@show-navigation="handleShowNavigation"
 	/>
 	<MyKivaProfile
 		:lender="lender"
 		:user-info="userInfo"
 		:is-loading="isLoading"
+		:user-in-homepage="userInHomepage"
 	/>
 	<MyKivaContainer>
 		<section v-if="isHeroEnabled" class="tw-mt-2">
@@ -21,6 +23,7 @@
 				:slides="heroSlides"
 				:badges-data="badgeData"
 				:lender="lender"
+				:user-in-homepage="userInHomepage"
 				@update-journey="updateJourney"
 			/>
 		</section>
@@ -377,6 +380,10 @@ const fetchContentfulHeroData = () => {
 const updateJourney = journey => {
 	selectedJourney.value = journey;
 };
+
+const userInHomepage = computed(() => {
+	return router.currentRoute.value?.path === '/mykiva';
+});
 
 onMounted(async () => {
 	const uiSettingsQueryResult = await apollo.query({

@@ -1,45 +1,43 @@
 import { merge } from 'webpack-merge';
-import base from './index.js';
-import devVm from './dev-vm.js';
+import base from './k8s-local.js';
 
-export default merge(base, devVm, {
+const host = 'kiva-ui.local';
+const kivaHost = 'development.kiva.org';
+
+export default merge(base, {
 	app: {
 		apolloBatching: false,
 		apolloNetworkErrorRetryActive: true,
 		apolloNetworkErrorRetryAttempts: 2,
-		host: 'kiva-ui.local',
-		publicPath: '/',
-		photoPath: 'https://www.development.kiva.org/img/',
-		graphqlUri: 'https://gateway.development.kiva.org/graphql',
-		enableAnalytics: false,
-		enableSnowplow: false,
-		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
-		enableGA: false,
-		gaId: 'UA-11686022-7', // dev-vm property
-		enableSentry: false,
-		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@o7540.ingest.sentry.io/1201287',
-		// apolloQueryFetchLogging: process.env.APOLLO_QUERY_FETCH_LOGGING || true,
-		// Testing values for stellate, uncomment and adjust as needed
-		// stellateDebugHeaders: process.env.STELLATE_DEBUG_HEADERS || true,
-		// stellateGraphqlUri: process.env.STELLATE_GRAPHQL_URI || 'https://kiva-staging.stellate.sh',
-		// eslint-disable-next-line max-len
-		// stellateCachedOperations: process.env.STELLATE_CACHED_OPERATIONS || 'configSetting,experimentIds,experimentSetting',
 		auth0: {
-			loginRedirectUrls: {
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.development.kiva.org/authenticate?authLevel=recent',
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://kiva-ui.local/ui-login?force=true',
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://kiva-ui.local/ui-login?force=true',
-			},
+			apiAudience: `https://gateway.${kivaHost}/graphql`,
+			browserCallbackUri: `https://${host}/process-browser-auth`,
 			enable: true,
-			browserCallbackUri: 'https://kiva-ui.local/process-browser-auth',
-			serverCallbackUri: 'https://kiva-ui.local/process-ssr-auth',
-			apiAudience: 'https://gateway.development.kiva.org/graphql',
+			loginRedirectUrls: {
+				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: `https://${host}/ui-login?force=true`,
+				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: `https://${host}/ui-login?force=true`,
+			},
+			serverCallbackUri: `https://${host}/process-ssr-auth`,
 		},
+		graphqlUri: `https://gateway.${kivaHost}/graphql`,
+		host,
+		photoPath: `https://www.${kivaHost}/img/`,
+		publicPath: '/',
 	},
 	server: {
-		graphqlUri: 'https://gateway.development.kiva.org/graphql',
-		sessionUri: 'https://www.development.kiva.org/start-ui-session',
+		graphqlUri: `https://gateway.${kivaHost}/graphql`,
+		sessionUri: `https://www.${kivaHost}/start-ui-session`,
 		memcachedEnabled: false,
-		disableCluster: true,
-	}
+		memcachedServers: '',
+		viteConfig: {
+			server: {
+				allowedHosts: [host],
+				hmr: {
+					// Use a different client port to allow Caddy to reverse proxy with SSL cert
+					clientPort: 24679,
+					port: 24678,
+				},
+			},
+		}
+	},
 });
