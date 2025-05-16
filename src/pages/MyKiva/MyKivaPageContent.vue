@@ -276,7 +276,13 @@ const handleEarnedBadgeClicked = badge => {
 
 const handleContinueJourneyClicked = () => {
 	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
-	const { id } = badgeWithVisibleTiers;
+	const { id, challengeName } = badgeWithVisibleTiers;
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		`${challengeName} Continue Journey Clicked`,
+		challengeName,
+	);
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 

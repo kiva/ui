@@ -151,12 +151,12 @@ export default function useBadgeModal(currentBadge) {
 			transform = isMobile.value ? 'scaleX(-1)' : 'rotate(-82deg)';
 		} else if (difference === 1) {
 			if (isMobile.value) {
-				width = isMiddle ? '154px' : '124px';
+				width = isMiddle ? '154px' : '150px';
 			}
 			const mobileTop = isMiddle ? '-166px' : '-111%';
 			top = isMobile.value ? mobileTop : '-15%';
 			left = isMobile.value ? '-8%' : '-114%';
-			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';
+			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(0deg)';
 		} else if (difference === 2) {
 			if (isMobile.value) {
 				width = '215px';
