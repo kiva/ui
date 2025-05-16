@@ -118,14 +118,6 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			},
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.vue'],
 		},
-		server: {
-			hmr: {
-				// Use a different client port to allow Caddy to reverse proxy with SSL cert
-				clientPort: 24679,
-				port: 24678,
-			},
-			...(!isProd && { allowedHosts: ['kiva-ui.local', 'monolith.kiva.local'] }),
-		},
 		optimizeDeps: {
 			include: [
 				'vue',
