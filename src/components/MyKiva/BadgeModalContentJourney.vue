@@ -61,14 +61,25 @@
 							</div>
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative">
-							<div class="tw-font-small">
+							<div class="tw-font-small" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
 								{{ getTierName(index) }}
 							</div>
 							<div
-								class="tw-flex tw-items-center tw-rounded tw-pr-2"
-								:class="{'tw-bg-[#EDF4F1]': !(index === positions.length - 1) && showEarnBadge(index),}"
+								class="tw-flex tw-items-center tw-rounded tw-px-1 tw-py-1 tw-space-x-1"
+								:class="{'badge-green-background':
+									!(index === positions.length - 1) && showEarnBadge(index),}"
 							>
-								<kv-icon class="tw-text-white tw-bg-green" name="check-with-bg" />
+								<kv-icon
+									v-if="(!(index === positions.length - 1) && showEarnBadge(index))"
+									class="badge-green tw-w-[18px]"
+									name="progress-checkmark"
+								/>
+								<choose-checkmark
+									v-if="getBadgeStatus(index) !== BADGE_LOCKED &&
+										!(!(index === positions.length - 1) && showEarnBadge(index))
+									"
+									class="tw-w-[18px]"
+								/>
 								<span :class="{'tw-font-medium' : getBadgeStatus(index) !== BADGE_LOCKED}">
 									{{ tierCaption(index) }}
 								</span>
@@ -112,8 +123,9 @@ import useBadgeModal,
 	getBadgeShape,
 } from '#src/composables/useBadgeModal';
 import { KvUserAvatar } from '@kiva/kv-components';
-import useBadgeData from '#src/composables/useBadgeData';
 import KvIcon from '#src/components/Kv/KvIcon';
+import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
+import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -224,5 +236,13 @@ const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/le
 
 .avatar :deep(img), .avatar :deep(.loading-placeholder ) {
 	@apply !tw-w-4 !tw-h-4;
+}
+
+.badge-green {
+	@apply tw-text-[#276A43];
+}
+
+.badge-green-background {
+	@apply tw-bg-[#EDF4F1]
 }
 </style>
