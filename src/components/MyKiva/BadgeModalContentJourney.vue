@@ -26,13 +26,13 @@
 				}"
 			>
 				<div
-					v-for="(position, index) in positions"
+					v-for="(_, index) in positions"
 					:key="index"
 				>
 					<div
 						class="badge tw-relative tw-flex tw-items-center"
 						:style="{
-							marginTop: `${isMobile || position == 1 ? 0 : 75}px`,
+							marginTop: `${isMobile || index === 0 ? 0 : 75}px`,
 							zIndex: positions.length - index,
 						}"
 					>
@@ -60,17 +60,16 @@
 								{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
 							</div>
 						</div>
-						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative">
-							<div class="tw-font-small" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
+						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-1">
+							<div class="tw-font-small tw-px-1" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
 								{{ getTierName(index) }}
 							</div>
 							<div
 								class="tw-flex tw-items-center tw-rounded tw-px-1 tw-py-1 tw-space-x-1"
-								:class="{'badge-green-background':
-									!(index === positions.length - 1) && showEarnBadge(index),}"
+								:class="{'badge-green-background': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
 							>
 								<kv-icon
-									v-if="(!(index === positions.length - 1) && showEarnBadge(index))"
+									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
 									class="badge-green tw-w-[18px]"
 									name="progress-checkmark"
 								/>
@@ -119,6 +118,7 @@ import useBadgeModal,
 {
 	MOBILE_BREAKPOINT,
 	BADGE_COMPLETED,
+	BADGE_IN_PROGRESS,
 	BADGE_LOCKED,
 	getBadgeShape,
 } from '#src/composables/useBadgeModal';
@@ -167,7 +167,7 @@ const getBadgeStatus = index => {
 		return BADGE_COMPLETED;
 	}
 	if (showEarnBadge(index)) {
-		return BADGE_COMPLETED;
+		return BADGE_IN_PROGRESS;
 	}
 	return BADGE_LOCKED;
 };
