@@ -17,12 +17,20 @@
 			class="tw-absolute tw-h-full tw-top-0"
 			:style="outlineStyles"
 		/>
-		<component
+		<div
 			v-else-if="isLocked"
-			:is="solidComponent"
-			class="tw-absolute tw-top-0"
-			style="height: 96%;"
-		/>
+			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"
+		>
+			<component
+				:is="solidComponent"
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
+				style="
+					fill:
+						lightgray 50% / cover no-repeat, #FFE8B3;
+						background-blend-mode: color-dodge, normal;
+					"
+			/>
+		</div>
 		<div
 			v-if="isLocked"
 			class="tw-absolute tw-flex"
@@ -30,7 +38,7 @@
 			style="left: calc(50% - 14px); top: calc(48% - 14px)"
 		>
 			<KvMaterialIcon
-				class="tw-w-3.5 tw-h-3.5 tw-text-white"
+				class="tw-w-3.5 tw-h-3.5 tw-text-black"
 				:icon="mdiLock"
 			/>
 		</div>

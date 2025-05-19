@@ -45,7 +45,6 @@
 								:shape="getBadgeShape(badgeWithVisibleTiers.id)"
 							>
 								<img
-									:ref="el => setImgRefs(el, index)"
 									:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
 									alt="Badge"
 									style="height: 133px; width: 133px;"
@@ -78,7 +77,6 @@
 					</div>
 					<div
 						v-if="!(index === positions.length - 1)"
-						:ref="el => setLineRefs(el, index)"
 						class="tw-h-[1px]"
 					>
 						<div
@@ -217,16 +215,6 @@ const journeyDescription = computed(() => {
 
 const RightLeaningLine = defineAsyncComponent(() => import('#src/assets/images/right-leaning-line.svg'));
 const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/left-leaning-line.svg'));
-
-const imgRefs = ref([]);
-const lineRefs = ref([]);
-
-const setImgRefs = (el, index) => {
-	if (el) imgRefs.value[index] = el;
-};
-const setLineRefs = (el, index) => {
-	if (el) lineRefs.value[index] = el;
-};
 </script>
 
 <style lang="postcss" scoped>
