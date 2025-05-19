@@ -138,6 +138,18 @@
 									@badge-level-clicked="handleBadgeJourneyLevelClicked"
 								/>
 							</div>
+							<div
+								class="
+									tw-w-full tw-bg-red tw-absolute tw-bottom-[81px]
+									tw-left-0 tw-h-[124px] tw-bg-white tw-opacity-50
+								"
+								style="
+									background:
+										linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+									z-index: 999;
+								"
+							>
+							</div>
 						</template>
 						<template #controls>
 							<div
@@ -173,9 +185,9 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { useRouter } from 'vue-router';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
