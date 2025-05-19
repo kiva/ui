@@ -112,8 +112,10 @@
 					</h3>
 					<BadgesSection
 						:badge-data="badgeData"
+						:next-step-section-clicked="nextStepSectionClicked"
 						:selected-journey="selectedJourney"
 						@badge-clicked="handleBadgeSectionClicked"
+						@next-step-event-sent="nextStepSectionClicked = false"
 					/>
 
 					<BadgeModal
@@ -211,6 +213,7 @@ const updatesOffset = ref(0);
 const heroSlides = ref([]);
 const isHeroEnabled = ref(false);
 const selectedJourney = ref('');
+const nextStepSectionClicked = ref(false);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -335,6 +338,7 @@ const fetchContentfulHeroData = () => {
 };
 
 const updateJourney = journey => {
+	nextStepSectionClicked.value = true;
 	selectedJourney.value = journey;
 };
 

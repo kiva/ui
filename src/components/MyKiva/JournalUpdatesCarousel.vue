@@ -145,8 +145,10 @@ const loadMoreUpdates = () => {
 watch(
 	() => updates,
 	() => {
-		if (updates.value.length > 0 && updates.value.length < 3) {
+		if (updates.value.length) {
 			$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+		}
+		if (updates.value.length > 0 && updates.value.length < 3) {
 			carouselIndex.value = 0;
 		}
 		if (updates.value.length > 3) {
