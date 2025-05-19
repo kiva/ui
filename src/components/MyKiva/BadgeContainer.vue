@@ -23,12 +23,7 @@
 		>
 			<component
 				:is="solidComponent"
-				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
-				style="
-					fill:
-						lightgray 50% / cover no-repeat, #FFE8B3;
-						background-blend-mode: color-dodge, normal;
-					"
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-text-[#FFE8B3]"
 			/>
 		</div>
 		<div
