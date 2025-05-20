@@ -55,7 +55,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
 import BadgeContainer from './BadgeContainer';
 
-const emit = defineEmits(['badge-clicked', 'next-step-event-sent']);
+const emit = defineEmits(['badge-clicked']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -68,10 +68,6 @@ const props = defineProps({
 		type: String,
 		default: ''
 	},
-	nextStepSectionClicked: {
-		type: Boolean,
-		default: true,
-	}
 });
 
 const { selectedJourney } = toRefs(props);
@@ -122,10 +118,6 @@ watch(selectedJourney, () => {
 		const badge = visibleBadges.value.find(b => b.id === selectedJourney.value);
 		if (badge) {
 			badgeClicked(badge);
-			if (props.nextStepSectionClicked) {
-				$kvTrackEvent('portfolio', 'view', 'Earn a badge', badge.challengeName, badge.level || 0);
-				emit('next-step-event-sent');
-			}
 		}
 	}
 });
