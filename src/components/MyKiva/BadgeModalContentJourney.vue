@@ -63,7 +63,17 @@
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
 							<div class="tw-font-small tw-px-0" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
-								{{ getTierName(index) }}
+								<span v-if="getBadgeStatus(index) == BADGE_COMPLETED">
+									{{ getTierData(index).achievementData.target }}
+									loans to
+									{{ getTierData(index).tierName }}
+								</span>
+								<span v-if="getBadgeStatus(index) == BADGE_IN_PROGRESS">
+									Support {{
+										(getTierData(index).achievementData.target -
+											badgeWithVisibleTiers.achievementData.totalProgressToAchievement)
+									}} more loans to {{ getTierData(index).tierName }}
+								</span>
 							</div>
 							<div
 								class="tw-inline-flex tw-items-center tw-rounded tw-px-1 tw-space-x-1"
@@ -188,9 +198,9 @@ const tierCaption = index => {
 	}
 };
 
-const getTierName = index => {
+const getTierData = index => {
 	const levelData = getTierBadgeDataByLevel(badgeWithVisibleTiers.value, index + 1);
-	return levelData.tierName;
+	return levelData;
 };
 
 const handleBadgeClick = index => {
