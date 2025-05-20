@@ -51,15 +51,6 @@
 									style="height: 133px; width: 133px;"
 								>
 							</BadgeContainer>
-							<div
-								v-if="showEarnBadge(index)"
-								class="tw-absolute tw-flex tw-items-center tw-justify-center tw-rounded-full tw-min-w-3
-									tw-min-h-3 tw-font-medium tw-bg-gray-200 tw-text-center tw-z-2 tw-px-0.5
-									tw-aspect-square tw-text-small"
-								:style="getNumberCircleStyles()"
-							>
-								{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
-							</div>
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
 							<div class="tw-font-small tw-px-0" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
