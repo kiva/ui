@@ -120,6 +120,7 @@
 					<KvSideSheet
 						:visible="showBadgeModal"
 						:show-back-button="false"
+						:show-headline-border="false"
 						:headline="selectedBadgeData?.challengeName"
 						:show-go-to-link="false"
 						:kv-track-function="$kvTrackEvent"

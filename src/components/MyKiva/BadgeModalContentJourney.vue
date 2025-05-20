@@ -1,15 +1,16 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-h-full">
-		<div class="tw-flex tw-flex-col">
-			<KvUserAvatar
-				class="avatar tw-border-white tw-rounded-full tw-border-2"
-				:key="loan.id"
-				v-for="(loan, i) in journeyLoans.slice(0, 3)"
-				:lender-name="loan.name"
-				:lender-image-url="loan.image.url"
-				:class="{ 'tw--ml-2.5': i > 0 }"
-				:style="{ 'z-index': journeyTotalLoans }"
-			/>
+		<div class="tw-flex tw-space-x-1 tw-align-middle tw-items-center tw-pb-2 tw-pl-2">
+			<div class="tw-flex">
+				<KvUserAvatar
+					class="avatar tw-border-white tw-rounded-full tw-border-2"
+					:key="loan.id"
+					v-for="(loan, index) in journeyLoans.slice(0, 3)"
+					:lender-name="loan.name"
+					:lender-image-url="loan.image.url"
+					:style="{ 'z-index': journeyTotalLoans, 'margin-left': index > 0 ? '-25px' : 0 }"
+				/>
+			</div>
 			<p v-if="extraLoanCount > 0">
 				+{{ extraLoanCount }}
 			</p>
