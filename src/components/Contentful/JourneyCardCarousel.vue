@@ -1,11 +1,7 @@
 <template>
 	<div>
-		<KvLoadingPlaceholder
-			v-if="isLoading"
-			class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6"
-		/>
 		<h2
-			v-else-if="!userInHomepage"
+			v-if="!userInHomepage"
 			class="tw-mb-3"
 		>
 			Take the <u>next step</u> on your impact journey
@@ -26,15 +22,8 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<!-- Loading placeholder for the carousel -->
-				<KvLoadingPlaceholder
-					v-if="isLoading"
-					class="!tw-rounded journey-card"
-				/>
-
 				<!-- Journey card slide -->
 				<div
-					v-else
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
 					:class="{ '!tw-bg-left-top': isNonBadgeSlide(slide) }"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
@@ -117,35 +106,37 @@
 import {
 	computed,
 	ref,
-	watch,
-	inject
+	inject,
+	onMounted
 } from 'vue';
+import logReadQueryError from '#src/util/logReadQueryError';
 import { useRouter } from 'vue-router';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { CONTENTFUL_CAROUSEL_KEY } from '#src/util/myKivaUtils';
+import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import useBadgeData from '#src/composables/useBadgeData';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
-const PLACEHOLDER_SLIDES_LENGTH = 2;
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
+const {
+	getContentfulLevelData,
+	combineBadgeData,
+} = useBadgeData(apollo);
+
 const emit = defineEmits(['update-journey']);
 
-const props = defineProps({
-	slides: {
-		type: Array,
-		default: () => ([]),
-	},
-	badgesData: {
-		type: Array,
-		default: () => ([])
-	},
+defineProps({
 	lender: {
 		type: Object,
 		default: () => ({})
@@ -157,9 +148,10 @@ const props = defineProps({
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-const isLoading = ref(true);
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
+const badgesData = ref([]);
+const slides = ref([]);
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
@@ -179,11 +171,10 @@ const isNonBadgeSlide = slide => {
 };
 
 const orderedSlides = computed(() => {
-	let showedSlides = Array(PLACEHOLDER_SLIDES_LENGTH).fill({ milestoneDiff: 0 });
 	const achievementSlides = [];
 
 	defaultBadges.forEach(badgeKey => {
-		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
+		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
 		if (achievementContent) {
 			// eslint-disable-next-line no-unsafe-optional-chaining
 			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
@@ -197,7 +188,7 @@ const orderedSlides = computed(() => {
 			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
 			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
 
-			const slideData = props.slides.find(slide => {
+			const slideData = slides.value.find(slide => {
 				const richTextSlideData = getRichTextUiSettingsData(slide);
 				return richTextSlideData?.achievementKey === badgeKey;
 			});
@@ -212,15 +203,11 @@ const orderedSlides = computed(() => {
 		}
 	});
 
-	if (achievementSlides.length > 0) {
-		showedSlides = achievementSlides;
-	}
-
-	let sortedSlides = showedSlides.sort((a, b) => {
+	let sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
-	const nonBadgesSlides = props.slides.filter(slide => {
+	const nonBadgesSlides = slides.value.filter(slide => {
 		return isNonBadgeSlide(slide);
 	});
 
@@ -354,12 +341,39 @@ const handleChange = interaction => {
 	);
 };
 
-// Watch orderedSlides to update isLoading
-watch(orderedSlides, (newSlides, oldSlides) => {
-	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
-		isLoading.value = false;
+onMounted(() => {
+	try {
+		const contentfulChallengeResult = apollo.readQuery({
+			query: contentfulEntriesQuery,
+			variables: { contentType: 'challenge', limit: 200 }
+		});
+
+		const achievementsResult = apollo.readQuery({
+			query: userAchievementProgressQuery
+		});
+
+		const slidesResult = apollo.readQuery({
+			query: contentfulEntriesQuery,
+			variables: {
+				contentType: 'carousel',
+				contentKey: CONTENTFUL_CAROUSEL_KEY,
+			}
+		});
+
+		slides.value = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+
+		const badgeContentfulData = (contentfulChallengeResult.contentful?.entries?.items ?? [])
+			.map(entry => getContentfulLevelData(entry));
+
+		const badgeAchievementData = [
+			...(achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [])
+		];
+
+		badgesData.value = combineBadgeData(badgeAchievementData, badgeContentfulData);
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
 	}
-}, { immediate: true, deep: true });
+});
 </script>
 
 <style lang="postcss" scoped>
