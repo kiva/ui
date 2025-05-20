@@ -297,32 +297,40 @@ const loadMoreUpdates = () => {
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
 
 const fetchMyKivaData = () => {
-	const result = apollo.readQuery({ query: myKivaQuery });
+	try {
+		const result = apollo.readQuery({ query: myKivaQuery });
 
-	userInfo.value = result.my ?? {};
-	lender.value = result.my?.lender ?? null;
-	lender.value = {
-		...lender.value,
-		public: userInfo.value?.userAccount?.public ?? false,
-		inviterName: userInfo.value?.userAccount?.inviterName ?? null,
-	};
-	loans.value = result.my?.loans?.values ?? [];
-	totalLoans.value = result.my?.loans?.totalCount ?? 0;
-	if (loans.value.length > 0) {
-		showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
+		userInfo.value = result.my ?? {};
+		lender.value = result.my?.lender ?? null;
+		lender.value = {
+			...lender.value,
+			public: userInfo.value?.userAccount?.public ?? false,
+			inviterName: userInfo.value?.userAccount?.inviterName ?? null,
+		};
+		loans.value = result.my?.loans?.values ?? [];
+		totalLoans.value = result.my?.loans?.totalCount ?? 0;
+		if (loans.value.length > 0) {
+			showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
+		}
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage myKivaQuery');
 	}
 };
 
 const fetchContentfulHeroData = () => {
-	const result = apollo.readQuery({
-		query: contentfulEntriesQuery,
-		variables: {
-			contentType: 'carousel',
-			contentKey: CONTENTFUL_CAROUSEL_KEY,
-		}
-	});
+	try {
+		const result = apollo.readQuery({
+			query: contentfulEntriesQuery,
+			variables: {
+				contentType: 'carousel',
+				contentKey: CONTENTFUL_CAROUSEL_KEY,
+			}
+		});
 
-	heroSlides.value = result.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+		heroSlides.value = result.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
+	}
 };
 
 const updateJourney = journey => {
@@ -334,13 +342,17 @@ const userInHomepage = computed(() => {
 });
 
 onMounted(() => {
-	const uiSettingsQueryResult = apollo.readQuery({
-		query: uiConfigSettingQuery,
-		variables: {
-			key: MY_KIVA_HERO_ENABLE_KEY,
-		}
-	});
-	isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+	try {
+		const uiSettingsQueryResult = apollo.readQuery({
+			query: uiConfigSettingQuery,
+			variables: {
+				key: MY_KIVA_HERO_ENABLE_KEY,
+			}
+		});
+		isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
+	}
 
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
