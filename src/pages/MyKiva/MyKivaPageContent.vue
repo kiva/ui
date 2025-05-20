@@ -166,7 +166,7 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote, CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import {
 	ref,
@@ -176,9 +176,6 @@ import {
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-
-const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
-const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
 const router = useRouter();
 const apollo = inject('apollo');
@@ -300,38 +297,40 @@ const loadMoreUpdates = () => {
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
 
 const fetchMyKivaData = () => {
-	return apollo.query({ query: myKivaQuery })
-		.then(result => {
-			userInfo.value = result.data?.my ?? {};
-			lender.value = result.data?.my?.lender ?? null;
-			lender.value = {
-				...lender.value,
-				public: userInfo.value?.userAccount?.public ?? false,
-				inviterName: userInfo.value?.userAccount?.inviterName ?? null,
-			};
-			loans.value = result.data?.my?.loans?.values ?? [];
-			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
-			if (loans.value.length > 0) {
-				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
-			}
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage myKivaQuery');
-		});
+	try {
+		const result = apollo.readQuery({ query: myKivaQuery });
+
+		userInfo.value = result.my ?? {};
+		lender.value = result.my?.lender ?? null;
+		lender.value = {
+			...lender.value,
+			public: userInfo.value?.userAccount?.public ?? false,
+			inviterName: userInfo.value?.userAccount?.inviterName ?? null,
+		};
+		loans.value = result.my?.loans?.values ?? [];
+		totalLoans.value = result.my?.loans?.totalCount ?? 0;
+		if (loans.value.length > 0) {
+			showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
+		}
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage myKivaQuery');
+	}
 };
 
 const fetchContentfulHeroData = () => {
-	apollo.query({
-		query: contentfulEntriesQuery,
-		variables: {
-			contentType: 'carousel',
-			contentKey: CONTENTFUL_CAROUSEL_KEY,
-		}
-	})
-		.then(result => {
-			heroSlides.value = result.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
+	try {
+		const result = apollo.readQuery({
+			query: contentfulEntriesQuery,
+			variables: {
+				contentType: 'carousel',
+				contentKey: CONTENTFUL_CAROUSEL_KEY,
+			}
 		});
+
+		heroSlides.value = result.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
+	}
 };
 
 const updateJourney = journey => {
@@ -342,19 +341,23 @@ const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
 });
 
-onMounted(async () => {
-	const uiSettingsQueryResult = await apollo.query({
-		query: uiConfigSettingQuery,
-		variables: {
-			key: MY_KIVA_HERO_ENABLE_KEY,
-		}
-	});
-	isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'data.general.uiConfigSetting.value');
+onMounted(() => {
+	try {
+		const uiSettingsQueryResult = apollo.readQuery({
+			query: uiConfigSettingQuery,
+			variables: {
+				key: MY_KIVA_HERO_ENABLE_KEY,
+			}
+		});
+		isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
+	}
 
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 
-	await fetchMyKivaData();
+	fetchMyKivaData();
 	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
