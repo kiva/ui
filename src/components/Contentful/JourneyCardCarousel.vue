@@ -371,7 +371,7 @@ onMounted(() => {
 
 		badgesData.value = combineBadgeData(badgeAchievementData, badgeContentfulData);
 	} catch (e) {
-		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
+		logReadQueryError(e, 'MyKivaPage journeyCardCarouselData');
 	}
 });
 </script>
