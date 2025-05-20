@@ -147,7 +147,6 @@ const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badg
 
 const {
 	getTierPositions,
-	getNumberCircleStyles,
 } = useBadgeModal(badgeWithVisibleTiers.value);
 
 const emit = defineEmits(['badge-level-clicked']);
@@ -175,7 +174,7 @@ const getBadgeStatus = index => {
 const tierCaption = index => {
 	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
 	if (tier.completedDate) {
-		return `Achieved on ${format(new Date(tier.completedDate), 'MMMM do, yyyy')}`;
+		return `Achieved on ${format(new Date(tier.completedDate), 'MMMM do, yyyy')}!`;
 	}
 	if (getBadgeStatus(index) === BADGE_LOCKED) {
 		return `${tier.target} loans`;
