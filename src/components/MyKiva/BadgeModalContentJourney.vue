@@ -60,13 +60,13 @@
 								{{ badgeWithVisibleTiers.achievementData.totalProgressToAchievement }}
 							</div>
 						</div>
-						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-1">
-							<div class="tw-font-small tw-px-1" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
+						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
+							<div class="tw-font-small tw-px-0" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
 								{{ getTierName(index) }}
 							</div>
 							<div
-								class="tw-flex tw-items-center tw-rounded tw-px-1 tw-py-1 tw-space-x-1"
-								:class="{'badge-green-background': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								class="tw-inline-flex tw-items-center tw-rounded tw-px-1 tw-space-x-1"
+								:class="{'badge-green-background tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
 							>
 								<kv-icon
 									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
@@ -74,9 +74,7 @@
 									name="progress-checkmark"
 								/>
 								<choose-checkmark
-									v-if="getBadgeStatus(index) !== BADGE_LOCKED &&
-										!(!(index === positions.length - 1) && showEarnBadge(index))
-									"
+									v-if="getBadgeStatus(index) == BADGE_COMPLETED"
 									class="tw-w-[18px]"
 								/>
 								<span :class="{'tw-font-medium' : getBadgeStatus(index) !== BADGE_LOCKED}">
