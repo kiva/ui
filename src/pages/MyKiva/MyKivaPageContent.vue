@@ -128,17 +128,12 @@
 						@side-sheet-closed="handleBadgeModalClosed"
 					>
 						<template #default>
-							<div
-								class="tw-flex tw-flex-col tw-overflow-y-auto"
-								style="max-height: calc(100vh - 150px);padding-bottom: 50px;"
-							>
-								<BadgeModalContentJourney
-									:key="selectedBadgeData.id"
-									:badge="selectedBadgeData"
-									:loans="loans"
-									@badge-level-clicked="handleBadgeJourneyLevelClicked"
-								/>
-							</div>
+							<BadgeModalContentJourney
+								:key="selectedBadgeData.id"
+								:badge="selectedBadgeData"
+								:loans="loans"
+								@badge-level-clicked="handleBadgeJourneyLevelClicked"
+							/>
 							<div
 								class="
 									tw-w-full tw-bg-red tw-absolute tw-bottom-[81px]
@@ -154,8 +149,7 @@
 						</template>
 						<template #controls>
 							<div
-								class="tw-bg-white tw-absolute tw-bottom-0 tw-border-t tw-w-full tw-border-tertiary"
-								style="z-index: 100"
+								class="tw-bg-white tw-border-t tw-w-full tw-border-tertiary"
 							>
 								<div class="tw-flex tw-justify-end tw-bg-white">
 									<kv-button
