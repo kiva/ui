@@ -140,7 +140,7 @@
 									tw-left-0 tw-h-[124px] tw-bg-white tw-opacity-50
 								"
 								style="
-									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0));
+									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
 									z-index: 999;
 									pointer-events: none;
 								"
