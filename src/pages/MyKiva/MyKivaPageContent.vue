@@ -105,6 +105,7 @@
 				</div>
 				<div class="tw-mt-3">
 					<h3
+						ref="triggerButton"
 						class="tw-text-center tw-mb-2"
 					>
 						My impact journeys
@@ -114,19 +115,53 @@
 						:selected-journey="selectedJourney"
 						@badge-clicked="handleBadgeSectionClicked"
 					/>
-
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						:is-earned-section="isEarnedSectionModal"
-						:loans="loans"
-						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeJourneyLevelClicked"
-					/>
+					<KvSideSheet
+						:visible="showBadgeModal"
+						:show-back-button="false"
+						:show-headline-border="false"
+						:headline="computedHeadLine"
+						:show-go-to-link="false"
+						:kv-track-function="$kvTrackEvent"
+						:animation-source-element="triggerButton"
+						@side-sheet-closed="handleBadgeModalClosed"
+					>
+						<template #default>
+							<BadgeModalContentJourney
+								:key="selectedBadgeData.id"
+								:badge="selectedBadgeData"
+								:loans="loans"
+								@badge-level-clicked="handleBadgeJourneyLevelClicked"
+							/>
+							<div
+								class="
+									tw-w-full tw-bg-red tw-absolute
+									tw-left-0 tw-bg-white tw-opacity-50
+								"
+								style="
+									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
+									bottom: 81px;
+									height: 124px;
+									pointer-events: none;
+									z-index: 999;
+								"
+							>
+							</div>
+						</template>
+						<template #controls>
+							<div
+								class="tw-bg-white tw-border-t tw-w-full tw-border-tertiary"
+							>
+								<div class="tw-flex tw-justify-end tw-bg-white">
+									<kv-button
+										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto md:tw-max-w-xs"
+										@click="handleContinueJourneyClicked"
+									>
+										Continue this journey
+									</kv-button>
+								</div>
+							</div>
+						</template>
+					</KvSideSheet>
 				</div>
 			</section>
 			<EarnedBadgesSection
@@ -148,9 +183,9 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { useRouter } from 'vue-router';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
@@ -160,7 +195,7 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import BadgeModalContentJourney from '#src/components/MyKiva/BadgeModalContentJourney';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -177,6 +212,9 @@ import {
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { KvButton, KvSideSheet } from '@kiva/kv-components';
+
+const { getBadgeWithVisibleTiers } = useBadgeData();
 
 const router = useRouter();
 const apollo = inject('apollo');
@@ -209,6 +247,7 @@ const updatesOffset = ref(0);
 const heroSlides = ref([]);
 const isHeroEnabled = ref(false);
 const selectedJourney = ref('');
+const triggerButton = ref(null);
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -218,6 +257,8 @@ const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
+
+const computedHeadLine = computed(() => `${selectedBadgeData.value?.challengeName} impact journey`);
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
@@ -242,6 +283,18 @@ const handleEarnedBadgeClicked = badge => {
 	selectedBadgeData.value = badge;
 	isEarnedSectionModal.value = true;
 	showBadgeModal.value = true;
+};
+
+const handleContinueJourneyClicked = () => {
+	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
+	const { id, challengeName } = badgeWithVisibleTiers;
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		`${challengeName} Continue Journey Clicked`,
+		challengeName,
+	);
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
 const handleBadgeJourneyLevelClicked = payload => {
