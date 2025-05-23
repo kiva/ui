@@ -121,7 +121,7 @@
 						:visible="showBadgeModal"
 						:show-back-button="false"
 						:show-headline-border="false"
-						:headline="selectedBadgeData?.challengeName"
+						:headline="computedHeadLine"
 						:show-go-to-link="false"
 						:kv-track-function="$kvTrackEvent"
 						:animation-source-element="triggerButton"
@@ -258,6 +258,8 @@ const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
+
+const computedHeadLine = computed(() => `${selectedBadgeData.value?.challengeName} impact journey`);
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;

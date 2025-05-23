@@ -56,14 +56,10 @@
 							<div class="tw-font-small tw-px-0" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
 								<span v-if="getBadgeStatus(index) == BADGE_COMPLETED">
 									{{ getTierData(index).achievementData.target }}
-									loans to
-									{{ getTierData(index).tierName }}
+									loans {{ badgeSubtitle }}
 								</span>
 								<span v-if="getBadgeStatus(index) == BADGE_IN_PROGRESS">
-									Support {{
-										(getTierData(index).achievementData.target -
-											badgeWithVisibleTiers.achievementData.totalProgressToAchievement)
-									}} more loans to {{ getTierData(index).tierName }}
+									{{ tierSubtitle(index) }}
 								</span>
 							</div>
 							<div
@@ -128,6 +124,13 @@ import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-check
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
+const ID_WOMENS_EQUALITY = 'womens-equality';
+const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
+const ID_CLIMATE_ACTION = 'climate-action';
+const ID_REFUGEE_EQUALITY = 'refugee-equality';
+const ID_BASIC_NEEDS = 'basic-needs';
+const ID_EQUITY = 'equity';
+
 const props = defineProps({
 	badge: {
 		type: Object,
@@ -140,7 +143,6 @@ const props = defineProps({
 });
 
 const { getBadgeWithVisibleTiers, getTierBadgeDataByLevel, getFilteredLoansByJourney } = useBadgeData();
-
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
@@ -201,6 +203,41 @@ const handleBadgeClick = index => {
 			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
 		});
 	}
+};
+
+const badgeSubtitle = computed(() => {
+	let subtitle;
+	switch (badgeWithVisibleTiers.value.id) {
+		case ID_WOMENS_EQUALITY:
+			subtitle = 'to women';
+			break;
+		case ID_US_ECONOMIC_EQUALITY:
+			subtitle = 'to U.S. entrepreneurs';
+			break;
+		case ID_CLIMATE_ACTION:
+			subtitle = 'to climate action';
+			break;
+		case ID_REFUGEE_EQUALITY:
+			subtitle = 'to refugees';
+			break;
+		case ID_BASIC_NEEDS:
+			subtitle = 'for fundamental needs';
+			break;
+		case ID_EQUITY:
+			return '1 loan to anyone in need';
+		default:
+			subtitle = '';
+			break;
+	}
+	return subtitle;
+});
+
+const tierSubtitle = index => {
+	const { target } = getTierData(index).achievementData;
+	const totalProgress = badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
+	const remainingLoans = target - totalProgress;
+	const loanString = (remainingLoans === 1) ? 'loan' : 'loans';
+	return `Support ${remainingLoans} more ${loanString} ${badgeSubtitle.value}`;
 };
 
 const journeyLoans = computed(() => getFilteredLoansByJourney(badgeWithVisibleTiers.value, props.loans));
