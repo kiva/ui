@@ -64,16 +64,16 @@
 							</div>
 							<div
 								class="tw-inline-flex tw-items-center tw-rounded tw-px-1 tw-space-x-1"
-								:class="{'badge-green-background tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								:class="{'tw-text-ecogreen-1 tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
 							>
 								<kv-icon
 									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
-									class="badge-green tw-w-[18px]"
+									class="tw-text-ecogreen-3 icon-width"
 									name="progress-checkmark"
 								/>
 								<choose-checkmark
 									v-if="getBadgeStatus(index) == BADGE_COMPLETED"
-									class="tw-w-[18px]"
+									class="icon-width"
 								/>
 								<span :class="{'tw-font-medium' : getBadgeStatus(index) !== BADGE_LOCKED}">
 									{{ tierCaption(index) }}
@@ -83,16 +83,16 @@
 					</div>
 					<div
 						v-if="!(index === positions.length - 1)"
-						class="tw-h-[1px]"
+						class="tw-h-0.5"
 					>
 						<div
 							class="tw-pl-7"
 							v-if="(index % 2 === 0)"
 						>
-							<RightLeaningLine class="tw-h-[200px]" />
+							<RightLeaningLine class="leaning-line" />
 						</div>
 						<div v-else class="tw-pl-6">
-							<LeftLeaningLine class="tw-h-[200px]" />
+							<LeftLeaningLine class="leaning-line" />
 						</div>
 					</div>
 				</div>
@@ -266,6 +266,14 @@ const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/le
 </script>
 
 <style lang="postcss" scoped>
+.leaning-line {
+	height: 200px;
+}
+
+.icon-width {
+	width: 18px;
+}
+
 .badge-mobile:not(:last-of-type) {
 	@apply tw-mb-1.5;
 }
