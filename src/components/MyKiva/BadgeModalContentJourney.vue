@@ -64,7 +64,7 @@
 							</div>
 							<div
 								class="tw-inline-flex tw-items-center tw-rounded tw-px-1 tw-space-x-1"
-								:class="{'tw-text-ecogreen-1 tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								:class="{'tw-bg-ecogreen-1 tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
 							>
 								<kv-icon
 									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
@@ -280,13 +280,5 @@ const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/le
 
 .avatar :deep(img), .avatar :deep(.loading-placeholder ) {
 	@apply !tw-w-4 !tw-h-4;
-}
-
-.badge-green {
-	@apply tw-text-[#276A43];
-}
-
-.badge-green-background {
-	@apply tw-bg-[#EDF4F1]
 }
 </style>
