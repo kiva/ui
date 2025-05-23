@@ -267,6 +267,6 @@ onMounted(() => {
 }
 
 .svg-background {
-	@apply tw-text-[#FFE8B3]
+	color: #FFE8B3;
 }
 </style>

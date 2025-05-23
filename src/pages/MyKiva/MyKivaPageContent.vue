@@ -116,7 +116,6 @@
 						:selected-journey="selectedJourney"
 						@badge-clicked="handleBadgeSectionClicked"
 					/>
-
 					<KvSideSheet
 						:visible="showBadgeModal"
 						:show-back-button="false"
@@ -136,13 +135,15 @@
 							/>
 							<div
 								class="
-									tw-w-full tw-bg-red tw-absolute tw-bottom-[81px]
-									tw-left-0 tw-h-[124px] tw-bg-white tw-opacity-50
+									tw-w-full tw-bg-red tw-absolute
+									tw-left-0 tw-bg-white tw-opacity-50
 								"
 								style="
 									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
-									z-index: 999;
+									bottom: 81px;
+									height: 124px;
 									pointer-events: none;
+									z-index: 999;
 								"
 							>
 							</div>

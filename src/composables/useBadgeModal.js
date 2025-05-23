@@ -1,9 +1,5 @@
 import { ref } from 'vue';
 import Alea from '#src/util/experiment/Alea';
-import useIsMobile from '#src/composables/useIsMobile';
-import LineLarge from '#src/assets/images/my-kiva/journey-line-large.svg';
-import LineMedium from '#src/assets/images/my-kiva/journey-line-medium.svg';
-import LineSmall from '#src/assets/images/my-kiva/journey-line-small.svg';
 import {
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
@@ -67,7 +63,6 @@ export const getBadgeShape = badgeId => {
  */
 export default function useBadgeModal(currentBadge) {
 	const badge = ref(currentBadge);
-	const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 	/**
 	 * Gets the positioning of the badge tiers in the journey (3 possible positions)
@@ -97,106 +92,7 @@ export default function useBadgeModal(currentBadge) {
 		return positions;
 	};
 
-	/**
-	 * Gets the appropriate line component for the badge tier in the journey based on positioning
-	 *
-	 * @param previousPosition The position of the previous badge tier
-	 * @param currentPosition The position of the current badge tier
-	 * @returns The line component for the current badge tier
-	 */
-	const getLineComponent = (previousPosition, currentPosition) => {
-		const difference = currentPosition - previousPosition;
-		let component = LineSmall;
-		if (isMobile.value) {
-			if (Math.abs(difference) === 2) {
-				component = LineLarge;
-			} else if (Math.abs(difference) === 1) {
-				if (currentPosition === 1) {
-					component = LineMedium;
-				} else {
-					component = LineSmall;
-				}
-			}
-		}
-		return component;
-	};
-
-	/**
-	 * Gets the CSS styles for the line component based on the position in the journey
-	 *
-	 * @param previousPosition The position of the previous badge tier
-	 * @param currentPosition The position of the current badge tier
-	 * @returns The CSS styles for the current badge tier line component
-	 */
-	const getLineStyle = (previousPosition, currentPosition) => {
-		const difference = currentPosition - previousPosition;
-		let width = '134px';
-		let top;
-		let left;
-		let transform;
-		const isMiddle = currentPosition === 1;
-		if (difference === -2) {
-			if (isMobile.value) width = '215px';
-			top = isMobile.value ? '-121%' : '56%';
-			left = isMobile.value ? '12%' : '-106%';
-			transform = isMobile.value ? 'rotate(-72deg)' : 'rotate(-82deg)';
-		} else if (difference === -1) {
-			if (isMobile.value) {
-				width = isMiddle ? '146px' : '124px';
-			}
-			const mobileTop = isMiddle ? '-162px' : '-108%';
-			const mobileLeft = isMiddle ? undefined : '11%';
-			top = isMobile.value ? mobileTop : '42%';
-			left = isMobile.value ? mobileLeft : '-116%';
-			transform = isMobile.value ? 'scaleX(-1)' : 'rotate(-82deg)';
-		} else if (difference === 1) {
-			if (isMobile.value) {
-				width = isMiddle ? '154px' : '124px';
-			}
-			const mobileTop = isMiddle ? '-166px' : '-111%';
-			top = isMobile.value ? mobileTop : '-15%';
-			left = isMobile.value ? '-8%' : '-114%';
-			transform = isMobile.value ? 'rotate(-2deg)' : 'rotate(180deg)';
-		} else if (difference === 2) {
-			if (isMobile.value) {
-				width = '215px';
-				transform = 'scaleX(-1) rotate(-69deg)';
-			}
-			top = isMobile.value ? '-120%' : '-95%';
-			left = isMobile.value ? '-94px' : '-56%';
-		}
-		return {
-			width,
-			...(top && { top }),
-			...(left && { left }),
-			...(transform && { transform }),
-		};
-	};
-
-	/**
-	 * Gets the styles needed for positioning the small circle on the badge journey for progress
-	 *
-	 * @returns The styles for the small circle
-	 */
-	const getNumberCircleStyles = () => {
-		switch (badge.value.id) {
-			case ID_WOMENS_EQUALITY:
-				return { right: '20px', bottom: '6px' };
-			case ID_REFUGEE_EQUALITY:
-				return { right: '10px', bottom: '18px' };
-			case ID_BASIC_NEEDS:
-				return { right: '10px', bottom: '10px' };
-			case ID_US_ECONOMIC_EQUALITY:
-			case ID_CLIMATE_ACTION:
-			default:
-				return { right: '-2px', bottom: '-2px' };
-		}
-	};
-
 	return {
 		getTierPositions,
-		getLineComponent,
-		getLineStyle,
-		getNumberCircleStyles,
 	};
 }

@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-h-full">
-		<div class="tw-flex tw-space-x-1 tw-align-middle tw-items-center tw-pb-2 tw-pl-2">
+		<div class="tw-flex tw-space-x-1 tw-align-middle tw-pb-2 tw-pl-2">
 			<div class="tw-flex">
 				<KvUserAvatar
 					class="avatar tw-border-white tw-rounded-full tw-border-2"
@@ -15,10 +15,10 @@
 				+{{ extraLoanCount }}
 			</p>
 		</div>
-		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1.5 tw-mx-2">
+		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1.5 tw-mx-1">
 			{{ journeyDescription }}
 		</p>
-		<div class="tw-flex tw-justify-center tw-w-full">
+		<div class="tw-flex tw-justify-start tw-w-full">
 			<div
 				class="tw-flex tw-flex-col tw-overflow-x-auto tw-overflow-y-hidden tw-items-start"
 				:class="{
@@ -124,12 +124,6 @@ import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-check
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
-const ID_WOMENS_EQUALITY = 'womens-equality';
-const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
-const ID_CLIMATE_ACTION = 'climate-action';
-const ID_REFUGEE_EQUALITY = 'refugee-equality';
-const ID_BASIC_NEEDS = 'basic-needs';
-const ID_EQUITY = 'equity';
 
 const props = defineProps({
 	badge: {
@@ -142,7 +136,18 @@ const props = defineProps({
 	}
 });
 
-const { getBadgeWithVisibleTiers, getTierBadgeDataByLevel, getFilteredLoansByJourney } = useBadgeData();
+const {
+	getBadgeWithVisibleTiers,
+	getFilteredLoansByJourney,
+	getTierBadgeDataByLevel,
+	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_EQUITY,
+	ID_REFUGEE_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY,
+ } = useBadgeData();
+
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
