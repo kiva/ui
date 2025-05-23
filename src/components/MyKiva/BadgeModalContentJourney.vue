@@ -124,7 +124,6 @@ import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-check
 import useBadgeData from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
-
 const props = defineProps({
 	badge: {
 		type: Object,
@@ -146,7 +145,7 @@ const {
 	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
- } = useBadgeData();
+} = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
