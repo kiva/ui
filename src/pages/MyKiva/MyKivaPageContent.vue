@@ -21,7 +21,6 @@
 		<section v-if="isHeroEnabled" class="tw-mt-2">
 			<JourneyCardCarousel
 				:slides="heroSlides"
-				:badges-data="badgeData"
 				:lender="lender"
 				:user-in-homepage="userInHomepage"
 				@update-journey="updateJourney"
@@ -67,30 +66,30 @@
 			</div>
 		</section>
 	</MyKivaContainer>
-	<template v-if="isAchievementDataLoaded">
-		<section class="tw-my-2">
-			<MyKivaStats :user-achievements="badgeAchievementData" />
-			<MyKivaContainer>
-				<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
-					<router-link
-						v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
-						to="/portfolio/lending-stats"
-						class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
-					>
-						See all lending stats
-					</router-link>
-					<button
-						class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
+	<section class="tw-my-2">
+		<MyKivaStats :user-achievements="badgeAchievementData" />
+		<MyKivaContainer>
+			<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
+				<router-link
+					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+					to="/portfolio/lending-stats"
+					class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
+				>
+					See all lending stats
+				</router-link>
+				<button
+					class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
 							tw-bg-action hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
-						v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
-						@click="$router.push('/lend-by-category')"
-						variant="secondary"
-					>
-						Make a loan
-					</button>
-				</div>
-			</MyKivaContainer>
-		</section>
+					v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
+					@click="$router.push('/lend-by-category')"
+					variant="secondary"
+				>
+					Make a loan
+				</button>
+			</div>
+		</MyKivaContainer>
+	</section>
+	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
 			<section class="tw-py-2">
 				<div
@@ -171,7 +170,10 @@
 			/>
 		</MyKivaContainer>
 	</template>
-	<div v-if="showLoanFootnote" class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5">
+	<div
+		v-if="showLoanFootnote && isAchievementDataLoaded"
+		class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5"
+	>
 		<MyKivaContainer>
 			<section>
 				*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
@@ -187,7 +189,6 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
-import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
@@ -201,7 +202,7 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote, MY_KIVA_HERO_ENABLE_KEY } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import {
 	ref,
@@ -214,9 +215,6 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { KvButton, KvSideSheet } from '@kiva/kv-components';
 
 const { getBadgeWithVisibleTiers } = useBadgeData();
-
-const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
-const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
 const router = useRouter();
 const apollo = inject('apollo');
@@ -353,38 +351,24 @@ const loadMoreUpdates = () => {
 const showSingleArray = computed(() => loans.value.length === 1 && loanUpdates.value.length === 1);
 
 const fetchMyKivaData = () => {
-	return apollo.query({ query: myKivaQuery })
-		.then(result => {
-			userInfo.value = result.data?.my ?? {};
-			lender.value = result.data?.my?.lender ?? null;
-			lender.value = {
-				...lender.value,
-				public: userInfo.value?.userAccount?.public ?? false,
-				inviterName: userInfo.value?.userAccount?.inviterName ?? null,
-			};
-			loans.value = result.data?.my?.loans?.values ?? [];
-			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
-			if (loans.value.length > 0) {
-				showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
-			}
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage myKivaQuery');
-		});
-};
+	try {
+		const result = apollo.readQuery({ query: myKivaQuery });
 
-const fetchContentfulHeroData = () => {
-	apollo.query({
-		query: contentfulEntriesQuery,
-		variables: {
-			contentType: 'carousel',
-			contentKey: CONTENTFUL_CAROUSEL_KEY,
+		userInfo.value = result.my ?? {};
+		lender.value = result.my?.lender ?? null;
+		lender.value = {
+			...lender.value,
+			public: userInfo.value?.userAccount?.public ?? false,
+			inviterName: userInfo.value?.userAccount?.inviterName ?? null,
+		};
+		loans.value = result.my?.loans?.values ?? [];
+		totalLoans.value = result.my?.loans?.totalCount ?? 0;
+		if (loans.value.length > 0) {
+			showLoanFootnote.value = loans.value.some(l => hasLoanFunFactFootnote(l));
 		}
-	})
-		.then(result => {
-			heroSlides.value = result.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-		}).catch(e => {
-			logReadQueryError(e, 'MyKivaPage contentfulEntriesQuery');
-		});
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage myKivaQuery');
+	}
 };
 
 const updateJourney = journey => {
@@ -395,26 +379,25 @@ const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
 });
 
-onMounted(async () => {
-	const uiSettingsQueryResult = await apollo.query({
-		query: uiConfigSettingQuery,
-		variables: {
-			key: MY_KIVA_HERO_ENABLE_KEY,
-		}
-	});
-	isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'data.general.uiConfigSetting.value');
+onMounted(() => {
+	try {
+		const uiSettingsQueryResult = apollo.readQuery({
+			query: uiConfigSettingQuery,
+			variables: {
+				key: MY_KIVA_HERO_ENABLE_KEY,
+			}
+		});
+		isHeroEnabled.value = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
+	}
 
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 
-	await fetchMyKivaData();
+	fetchMyKivaData();
 	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
-
-	// Fetch Contentful data if the hero is enabled
-	if (isHeroEnabled.value) {
-		fetchContentfulHeroData();
-	}
 });
 </script>
