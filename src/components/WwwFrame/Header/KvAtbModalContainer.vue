@@ -1,54 +1,20 @@
 <template>
-	<KvCartModal
-		v-if="modalVisible"
-		:style="{
-			'--modal-right': `${modalPosition.right}px`,
-			'--modal-top': `${modalPosition.top}px`
-		}"
-		class="cart-modal !tw-top-0"
-		:visible="modalVisible"
+	<KvAtbModal
+		:modal-visible="modalVisible"
+		:user-data="userData"
+		:added-loan="addedLoan"
+		:my-kiva-experiment-enabled="myKivaExperimentEnabled"
+		:show-modal-content="showModalContent"
 		:photo-path="PHOTO_PATH"
-		:basket-count="basketCount"
-		:category-name="oneLoanAwayCategory"
-		@cart-modal-closed="closeCartModal"
-	>
-		<template #content>
-			<div
-				v-if="showModalContent || isFirstLoan"
-				class="tw-w-full tw-mx-2.5 tw-border-t tw-border-tertiary tw-py-2"
-			>
-				<KvCartPill
-					class="!tw-w-full tw-justify-center"
-					:borrower-name="borrowerName"
-					:milestones-number="contributingAchievements.length"
-					:is-close-next-milestone="showOneAway"
-					:custom-message="pillMsg"
-				>
-					<template #icon>
-						<div
-							:class="{
-								// eslint-disable-next-line max-len
-								'tw-flex tw-items-center tw-justify-center tw-bg-gray-100 tw-p-0.5 tw-rounded tw-whitespace-nowrap'
-									: showOneAway,
-							}"
-						>
-							<EquityBadge v-if="isFirstLoan" class="tw-min-w-3" />
-							<IconChoice
-								v-else
-								class="tw-min-w-3"
-							/>
-							<div
-								v-if="showOneAway"
-								class="tw-text-h5"
-							>
-								{{ oneAwayText }}
-							</div>
-						</div>
-					</template>
-				</KvCartPill>
-			</div>
-		</template>
-	</KvCartModal>
+		:one-loan-away-category="oneLoanAwayCategory"
+		:one-loan-away-filtered-url="oneLoanAwayFilteredUrl"
+		:one-away-text="oneAwayText"
+		:milestones-number="contributingAchievements.length"
+		:milestones-progress="milestonesProgress"
+		:has-ever-logged-in="hasEverLoggedIn"
+		@close-redirect="handleRedirect"
+		@reset-modal="resetModal"
+	/>
 </template>
 
 <script setup>
@@ -59,14 +25,13 @@ import {
 	ref,
 	watch,
 	toRefs,
-	onUnmounted,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
 import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
-import { KvCartModal, KvCartPill } from '@kiva/kv-components';
+import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, {
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
@@ -74,9 +39,6 @@ import useBadgeData, {
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
 } from '#src/composables/useBadgeData';
-import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
-import _throttle from 'lodash/throttle';
-import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
@@ -117,8 +79,6 @@ const userData = ref({});
 const basketData = ref([]);
 const contributingAchievements = ref([]);
 const showModalContent = ref(false);
-const headerBottomPosition = ref(0);
-const headerLeftPosition = ref(0);
 const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
@@ -134,39 +94,6 @@ const basketCount = computed(() => {
 
 const isGuest = computed(() => !userData.value?.my);
 
-const borrowerName = computed(() => addedLoan.value?.name);
-
-const updateHeaderPosition = () => {
-	const header = document.getElementsByTagName('header')[0];
-	const headerPosition = header?.getBoundingClientRect() ?? null;
-
-	let targets = [...document.querySelectorAll('[data-testid="header-basket"]')];
-	let target = targets.find(t => t?.clientHeight);
-
-	if (!target) {
-		// No basket found, using About as the closest position
-		targets = [...document.querySelectorAll('[data-testid="header-about"]')];
-		target = targets.find(t => t?.clientHeight);
-	}
-
-	const basketPosition = target?.getBoundingClientRect() ?? null;
-	if (basketPosition && basketPosition?.right !== headerLeftPosition.value) {
-		headerLeftPosition.value = basketPosition?.right;
-	}
-
-	if (headerPosition && headerPosition?.bottom !== headerBottomPosition.value) {
-		headerBottomPosition.value = headerPosition?.bottom;
-	}
-};
-
-const updateHeaderPositionThrottled = _throttle(updateHeaderPosition, 100);
-
-const modalPosition = computed(() => {
-	const right = `${window.innerWidth - headerLeftPosition.value - 200}`; // 200 to be in the middle of the basket
-	const top = `${headerBottomPosition.value}`;
-	return { right, top };
-});
-
 const resetModal = () => {
 	showModalContent.value = false;
 	oneLoanAwayFilteredUrl.value = '';
@@ -174,22 +101,9 @@ const resetModal = () => {
 	modalVisible.value = false;
 };
 
-const handleRedirect = type => {
-	if (type === 'view-basket') {
-		router.push({ path: '/basket' });
-	} else if (type === 'support-another' && oneLoanAwayFilteredUrl.value) {
-		router.push(oneLoanAwayFilteredUrl.value);
-	} else {
-		resetModal();
-	}
-};
-
-const closeCartModal = closedBy => {
-	const { type } = closedBy;
-	if (type) {
-		$kvTrackEvent('basket', 'dismiss', 'basket-modal', type);
-		handleRedirect(type);
-	}
+const handleRedirect = payload => {
+	$kvTrackEvent('basket', 'dismiss', 'basket-modal', payload.type);
+	router.push(payload.path);
 	resetModal();
 };
 
@@ -227,39 +141,6 @@ const isFirstLoan = computed(() => {
 	return myKivaExperimentEnabled.value
 		&& ((isGuest.value && !hasEverLoggedIn.value) || (!isGuest.value && !userData.value?.my?.loans?.totalCount))
 		&& basketCount.value === 1;
-});
-
-const showOneAway = computed(() => oneLoanAwayCategory.value && oneLoanAwayFilteredUrl.value && !isFirstLoan.value);
-
-const milestonesProgressCount = computed(() => {
-	return Object.values(milestonesProgress.value).reduce((acc, value) => {
-		return acc + (value > 0 ? value : 0);
-	}, 0);
-});
-
-const pillMsg = computed(() => {
-	if (isFirstLoan.value) {
-		const initialHeading = `Supporting ${borrowerName.value} helps`;
-		if (addedLoan.value?.borrowerCount > 1 || addedLoan.value?.themes.includes('Social Enterprise')) {
-			return `${initialHeading} them invest in themselves.`;
-		}
-		if (addedLoan.value?.gender === 'male') {
-			return `${initialHeading} him invest in himself.`;
-		}
-
-		return `${initialHeading} her invest in herself.`;
-	}
-	if (showOneAway.value) {
-		return 'You’re close to your next milestone!';
-	}
-
-	const milestonesCopy = milestonesProgressCount.value > 1
-		? `${milestonesProgressCount.value} of your milestones`
-		: 'your next milestone';
-
-	return borrowerName.value
-		? `Supporting ${borrowerName.value} will hit ${milestonesCopy}!`
-		: 'Supporting this loan achieves a milestone!';
 });
 
 const updateTierTable = () => {
@@ -354,24 +235,6 @@ onMounted(async () => {
 		await fetchBasketData();
 		await fetchAchievementFromBasket();
 	}
-
-	updateHeaderPosition();
-	window.addEventListener('scroll', updateHeaderPositionThrottled);
-	window.addEventListener('resize', updateHeaderPositionThrottled);
-});
-
-onUnmounted(() => {
-	window.removeEventListener('scroll', updateHeaderPositionThrottled);
-	window.removeEventListener('resize', updateHeaderPositionThrottled);
 });
 
 </script>
-
-<style lang="postcss" scoped>
-@screen md {
-	.cart-modal:deep(div.container) {
-		right: var(--modal-right) !important;
-		top: var(--modal-top) !important;
-	}
-}
-</style>
