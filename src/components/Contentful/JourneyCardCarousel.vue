@@ -107,7 +107,6 @@ import {
 	computed,
 	ref,
 	inject,
-	onMounted
 } from 'vue';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { useRouter } from 'vue-router';
@@ -341,7 +340,8 @@ const handleChange = interaction => {
 	);
 };
 
-onMounted(() => {
+// Read cached queries in the client side
+if (typeof window !== 'undefined') {
 	try {
 		const contentfulChallengeResult = apollo.readQuery({
 			query: contentfulEntriesQuery,
@@ -373,7 +373,7 @@ onMounted(() => {
 	} catch (e) {
 		logReadQueryError(e, 'MyKivaPage journeyCardCarouselData');
 	}
-});
+}
 </script>
 
 <style lang="postcss" scoped>
