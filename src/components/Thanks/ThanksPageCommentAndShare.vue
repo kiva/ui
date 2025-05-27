@@ -171,7 +171,7 @@
 								blueskyShareUrl({utmCampaign, utmContent}),
 								'Thanks for sharing!')"
 						>
-							<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+							<kv-material-icon name="bluesky" :icon="BlueskyIcon" class="social__icon" />
 							<span>Share to your followers</span>
 						</button>
 						<button

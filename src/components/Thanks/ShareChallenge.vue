@@ -84,7 +84,7 @@
 									utmCampaign,
 									selectedLoanId]"
 							>
-								<kv-icon name="bluesky" title="Bluesky" />
+								<kv-material-icon :icon="KvBlueskyIcon" style="width: 28px; fill: #1185FE" />
 								<span>Share</span>
 							</button>
 							<button
@@ -142,7 +142,12 @@ import { mdiLink } from '@mdi/js';
 import { getFullUrl } from '#src/util/urlUtils';
 import clipboardCopy from 'clipboard-copy';
 import KvIcon from '#src/components/Kv/KvIcon';
-import { KvPageContainer, KvGrid, KvMaterialIcon } from '@kiva/kv-components';
+import {
+	KvPageContainer,
+	KvGrid,
+	KvMaterialIcon,
+	KvBlueskyIcon
+} from '@kiva/kv-components';
 
 export default {
 	name: 'ShareChallenge',
@@ -186,7 +191,8 @@ export default {
 				class: '',
 				disabled: false,
 				text: 'Copy link'
-			}
+			},
+			KvBlueskyIcon
 		};
 	},
 	computed: {
