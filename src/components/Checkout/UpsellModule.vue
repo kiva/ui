@@ -121,7 +121,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 @media screen and (width >= 1160px) {
 	.upsellLoanDetails {

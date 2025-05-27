@@ -109,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .alert {
 	margin: 1rem 0 1.5rem;

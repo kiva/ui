@@ -168,7 +168,7 @@ export default {
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
-	@import '#src/assets/scss/settings';
+	@use '#src/assets/scss/settings' as *;
 
 	.story-card,
 	.story-card__imageCard {
@@ -244,7 +244,7 @@ export default {
 	.story-card :deep(.tw-prose) h1 b,
 	.story-card :deep(.tw-prose) h2 b,
 	.story-card :deep(.tw-prose) h3 b {
-		color: rgba(var(--text-action));
+		color: rgb(var(--text-action));
 	}
 
 	.story-card :deep(.tw-prose) h1 u::after,

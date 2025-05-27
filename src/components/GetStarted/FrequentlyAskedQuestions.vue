@@ -98,7 +98,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .frequently-asked-questions-section-wrapper {
 	margin-bottom: 4rem;

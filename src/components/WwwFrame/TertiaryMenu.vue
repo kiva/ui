@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .tertiary-nav {
 	:deep(li) {

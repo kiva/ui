@@ -1,4 +1,4 @@
-@import "#src/assets/scss/settings";
+@use "../settings" as *;
 
 // Form validation
 label.error {

@@ -183,8 +183,8 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
+@use 'foundation-sites/scss/foundation' as f;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
@@ -449,19 +449,19 @@ $loan-triangle-size: rem-calc(12);
 		&--facebook {
 			display: flex;
 			justify-content: center;
-			@include button-style($color-facebook, auto, #fff);
+			@include f.button-style($color-facebook, auto, #fff);
 		}
 
 		&--bluesky {
 			display: flex;
 			justify-content: center;
-			@include button-style($color-bluesky, auto, #fff);
+			@include f.button-style($color-bluesky, auto, #fff);
 		}
 
 		&--linkedin {
 			display: flex;
 			justify-content: center;
-			@include button-style($color-linkedin, auto, #fff);
+			@include f.button-style($color-linkedin, auto, #fff);
 		}
 
 		&--link {

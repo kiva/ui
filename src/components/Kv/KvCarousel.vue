@@ -322,8 +322,8 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
+@use 'foundation-sites/scss/foundation' as f;
 
 $arrow-width: rem-calc(41);
 $arrow-margin: rem-calc(8);
@@ -383,7 +383,7 @@ $bar-indicator-margin: rem-calc(4);
 		}
 
 		&[disabled] {
-			@include button-disabled();
+			@include f.button-disabled();
 
 			background: $kiva-text-light;
 		}

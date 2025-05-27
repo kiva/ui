@@ -262,8 +262,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 /* stylelint-disable no-descending-specificity */
 .profile {
@@ -430,15 +430,6 @@ export default {
 			display: block;
 			margin-left: auto;
 		}
-	}
-}
-
-// Firefox looks like crap when animating blurs + transforms
-// https://bugzilla.mozilla.org/show_bug.cgi?id=925025
-@-moz-document url-prefix() {
-	.profile__portrait-img,
-	.profile__body-wrapper-wrapper {
-		filter: blur(0) !important;
 	}
 }
 </style>

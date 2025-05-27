@@ -386,7 +386,7 @@ export default {
 
 <style lang="postcss" scoped>
 .logo {
-	box-shadow: 0 0 18px rgba(0 0 0 / 20%);
+	box-shadow: 0 0 18px rgb(0 0 0 / 20%);
 }
 
 .radio-error :deep(label > div) {

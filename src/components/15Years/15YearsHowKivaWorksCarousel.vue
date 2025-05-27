@@ -140,8 +140,8 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 /* themable properties
 --fifteen-years-font-family-monospace
@@ -191,8 +191,6 @@ export default {
 	}
 
 	&__prevnext-btn {
-		@include h5();
-
 		pointer-events: auto;
 		display: flex;
 		justify-content: center;
@@ -206,6 +204,8 @@ export default {
 		color: $white;
 		color: var(--fifteen-years-color-carousel-btn-color, #{$white});
 		z-index: 3;
+
+		@include h5();
 
 		&:hover {
 			.carousel__prevnext-btn-year {
