@@ -84,7 +84,7 @@
 									utmCampaign,
 									selectedLoanId]"
 							>
-								<kv-material-icon :icon="KvBlueskyIcon" style="width: 28px; fill: #1185FE" />
+								<kv-material-icon name="bluesky" :icon="KvBlueskyIcon" style="width: 28px; fill: #1185FE" />
 								<span>Share</span>
 							</button>
 							<button
