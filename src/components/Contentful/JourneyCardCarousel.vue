@@ -71,7 +71,7 @@
 									</p>
 								</div>
 							</div>
-							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
+							<div class="tw-flex tw-flex-col tw-gap-1.5">
 								<button
 									v-if="showSecondaryCta(slide)"
 									@click="goToSecondaryCtaUrl(slide)"
@@ -327,7 +327,7 @@ const singleSlideWidth = computed(() => {
 	if (isMobile.value) {
 		return '90%';
 	}
-	return '520px';
+	return '336px';
 });
 
 const handleChange = interaction => {
@@ -382,7 +382,7 @@ onMounted(() => {
 	height: 402px;
 
 	@screen md {
-		height: 390px;
+		height: 422px;
 	}
 }
 
