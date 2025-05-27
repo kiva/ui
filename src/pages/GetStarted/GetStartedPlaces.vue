@@ -386,7 +386,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgb(0 0 0 / 15%);
 $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgb(0 0 0 / 35%);

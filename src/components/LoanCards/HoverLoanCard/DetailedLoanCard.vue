@@ -370,7 +370,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $parent-row-max-width: 63.75rem;
 $row-arrow-width: 2.5rem;

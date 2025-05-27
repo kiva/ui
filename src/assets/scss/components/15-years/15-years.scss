@@ -1,3 +1,5 @@
+@use '../../settings' as *;
+
 $tomato: #CD4A3D;
 $mint: #9EEBD5;
 $sky: #B8CEF8;
@@ -85,13 +87,8 @@ $offwhite: #F8F8F8;
 	text-decoration: underline;
 	color: $twilight;
 
-	// white-space: nowrap;
-
 	&:hover {
 		text-decoration: none;
-
-		// background-color: $twilight;
-		// color: $offwhite;
 		cursor: pointer;
 	}
 }

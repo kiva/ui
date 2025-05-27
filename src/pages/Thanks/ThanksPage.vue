@@ -708,7 +708,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .page-content {
 	padding: 1.625rem 0 0;

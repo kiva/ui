@@ -220,8 +220,8 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/loan-cards/hover-loan-card';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/loan-cards/hover-loan-card' as *;
 
 .hover-loan-card {
 	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109);

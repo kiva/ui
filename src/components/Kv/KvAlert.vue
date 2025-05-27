@@ -65,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:color';
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .kv-alert {
 	width: 100%;

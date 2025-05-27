@@ -383,7 +383,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .section {
 	border-bottom: solid rem-calc(1) rgb(var(--border-tertiary));

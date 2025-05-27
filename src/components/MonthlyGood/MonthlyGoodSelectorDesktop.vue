@@ -285,7 +285,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $offwhite: #F8F8F8;
 $kivaaction: #2B7C5F;

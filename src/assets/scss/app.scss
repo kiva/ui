@@ -1,18 +1,14 @@
-// import all the variables
-@import 'settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+// import global styles
+@use 'global/fonts';
+@use 'global/page-layout';
+@use 'global/line-breaks';
+@use 'global/forms';
+@use 'global/transitions';
+@use 'global/print';
+@use 'global/drop-in';
 
 // import global foundation components
-@include foundation-flex-classes ();
-@include foundation-flex-grid ();
-@include foundation-visibility-classes ();
-
-// import global styles
-/* stylelint-disable no-invalid-position-at-import-rule */
-@import 'global/fonts';
-@import 'global/page-layout';
-@import 'global/line-breaks';
-@import 'global/forms';
-@import 'global/transitions';
-@import 'global/print';
-@import 'global/drop-in';
+@use 'foundation-sites/scss/foundation' as f;
+@include f.foundation-flex-classes ();
+@include f.foundation-flex-grid ();
+@include f.foundation-visibility-classes ();

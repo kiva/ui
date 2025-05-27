@@ -257,8 +257,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import "#src/assets/scss/components/15-years/15-years";
+@use '#src/assets/scss/settings' as *;
+@use "#src/assets/scss/components/15-years/15-years" as *;
 
 .partners {
 	background-color: $offwhite;
@@ -409,16 +409,16 @@ export default {
 		height: 100%;
 
 		p {
-			@include breakpoint('large') {
-				font-size: rem-calc(18);
-			}
-
 			margin-top: 1.5rem;
 			position: relative;
 			transition: max-height 0.5s linear;
 			overflow: hidden;
 			max-height: rem-calc(69);
 			padding: 0 0.75rem rem-calc(40) 0; // room for fade element and scroll bars
+
+			@include breakpoint('large') {
+				font-size: rem-calc(18);
+			}
 		}
 
 		p.expanded {

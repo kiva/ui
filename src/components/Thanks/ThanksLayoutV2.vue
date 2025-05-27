@@ -414,7 +414,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 // We use v-deep to overwrite slot item styles for this context without
 // modifying the thanks page v1 styles or the slotted in components

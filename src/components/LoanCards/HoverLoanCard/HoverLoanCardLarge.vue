@@ -171,8 +171,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/loan-cards/hover-loan-card';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/loan-cards/hover-loan-card' as *;
 
 .hover-loan-card-large {
 	@extend .base-portrait-hover-loan-card;

@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .loan-story {
 	padding: rem-calc(5) rem-calc(2);
