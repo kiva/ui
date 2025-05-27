@@ -222,7 +222,7 @@ import CommentAsk from '#src/components/Thanks/CommentAsk';
 import KvIcon from '#src/components/Kv/KvIcon';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import {
-	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton
+	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton, BlueskyIcon
 } from '@kiva/kv-components';
 import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
 
@@ -297,6 +297,7 @@ export default {
 			},
 			utmCampaign: 'social_share_checkout',
 			kivaShare,
+			BlueskyIcon
 		};
 	},
 	computed: {

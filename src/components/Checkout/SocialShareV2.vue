@@ -38,7 +38,7 @@
 					utmCampaign,
 					selectedLoanId]"
 			>
-				<kv-material-icon :icon="KvBlueskyIcon" class="social__icon"/>
+				<kv-material-icon :icon="KvBlueskyIcon" class="social__icon" />
 				<span>Share</span>
 			</button>
 			<button
