@@ -184,7 +184,6 @@ export default {
 <style lang="scss" scoped>
 @use 'sass:math';
 @use '#src/assets/scss/settings' as *;
-@use 'foundation-sites/scss/foundation' as f;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
@@ -449,19 +448,19 @@ $loan-triangle-size: rem-calc(12);
 		&--facebook {
 			display: flex;
 			justify-content: center;
-			@include f.button-style($color-facebook, auto, #fff);
+			@include button-style($color-facebook, auto, #fff);
 		}
 
 		&--bluesky {
 			display: flex;
 			justify-content: center;
-			@include f.button-style($color-bluesky, auto, #fff);
+			@include button-style($color-bluesky, auto, #fff);
 		}
 
 		&--linkedin {
 			display: flex;
 			justify-content: center;
-			@include f.button-style($color-linkedin, auto, #fff);
+			@include button-style($color-linkedin, auto, #fff);
 		}
 
 		&--link {

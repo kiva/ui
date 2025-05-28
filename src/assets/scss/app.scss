@@ -8,7 +8,7 @@
 @use 'global/drop-in';
 
 // import global foundation components
-@use 'foundation-sites/scss/foundation' as f;
-@include f.foundation-flex-classes ();
-@include f.foundation-flex-grid ();
-@include f.foundation-visibility-classes ();
+@use 'settings' as *;
+@include foundation-flex-classes ();
+@include foundation-flex-grid ();
+@include foundation-visibility-classes ();

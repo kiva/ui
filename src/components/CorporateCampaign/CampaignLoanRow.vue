@@ -310,7 +310,6 @@ export default {
 
 <style lang="scss" scoped>
 @use '#src/assets/scss/settings' as *;
-@use 'foundation-sites/scss/foundation' as f;
 
 .component-wrapper {
 	text-align: left;

@@ -69,8 +69,8 @@
 // is working on switching to the new module system for their v7 release (as
 // noted in https://github.com/foundation/foundation-sites/releases/tag/v6.9.0)
 // but until then we need to use the @import syntax here in order for the
-// breakpoint mixin to work correctly.
-@import 'foundation-sites/scss/util/util';
+// foundation mixins to work correctly.
+@import 'foundation-sites/scss/foundation';
 
 // 1. Global
 // ---------
@@ -641,13 +641,13 @@ $input-checked-border-color: $kiva-green;
 // 17. Dropdown
 // ------------
 
-// $dropdown-padding: 0;
-// $dropdown-background: $body-background;
-// $dropdown-border: 1px solid $light-gray;
-// $dropdown-font-size: $global-font-size;
-// $dropdown-width: auto;
-// $dropdown-radius: $global-radius;
-// $dropdown-sizes: ();
+$dropdown-padding: 0;
+$dropdown-background: $body-background;
+$dropdown-border: 1px solid $light-gray;
+$dropdown-font-size: $global-font-size;
+$dropdown-width: auto;
+$dropdown-radius: $global-radius;
+$dropdown-sizes: ();
 
 // 18. Dropdown Menu
 // -----------------
