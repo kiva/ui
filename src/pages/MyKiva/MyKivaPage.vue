@@ -1,6 +1,15 @@
 <template>
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
-		<my-kiva-page-content />
+		<my-kiva-page-content
+			:is-hero-enabled="isHeroEnabled"
+			:user-info="userInfo"
+			:lender="lender"
+			:loans="loans"
+			:total-loans="totalLoans"
+			:hero-slides="heroSlides"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
+		/>
 	</www-page>
 </template>
 
@@ -26,6 +35,17 @@ export default {
 	components: {
 		WwwPage,
 		MyKivaPageContent,
+	},
+	data() {
+		return {
+			isHeroEnabled: false,
+			userInfo: {},
+			loans: [],
+			totalLoans: 0,
+			lender: null,
+			heroContentfulData: [],
+			heroTieredAchievements: [],
+		};
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -56,6 +76,63 @@ export default {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
 		},
+	},
+	methods: {
+		fetchMyKivaData() {
+			try {
+				const result = this.apollo.readQuery({ query: myKivaQuery });
+
+				this.userInfo = result.my ?? {};
+				this.lender = result.my?.lender ?? null;
+				this.lender = {
+					...this.lender,
+					public: this.userInfo.userAccount?.public ?? false,
+					inviterName: this.userInfo.userAccount?.inviterName ?? null,
+				};
+				this.loans = result.my?.loans?.values ?? [];
+				this.totalLoans = result.my?.loans?.totalCount ?? 0;
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage myKivaQuery');
+			}
+		},
+	},
+	created() {
+		try {
+			const uiSettingsQueryResult = this.apollo.readQuery({
+				query: uiConfigSettingQuery,
+				variables: {
+					key: MY_KIVA_HERO_ENABLE_KEY,
+				}
+			});
+			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
+
+			if (this.isHeroEnabled) {
+				const contentfulChallengeResult = this.apollo.readQuery({
+					query: contentfulEntriesQuery,
+					variables: { contentType: 'challenge', limit: 200 }
+				});
+
+				const achievementsResult = this.apollo.readQuery({
+					query: userAchievementProgressQuery
+				});
+
+				const slidesResult = this.apollo.readQuery({
+					query: contentfulEntriesQuery,
+					variables: {
+						contentType: 'carousel',
+						contentKey: CONTENTFUL_CAROUSEL_KEY,
+					}
+				});
+
+				this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+				this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
+				this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? []; // eslint-disable-line max-len
+			}
+		} catch (e) {
+			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
+		}
+
+		this.fetchMyKivaData();
 	},
 };
 </script>
