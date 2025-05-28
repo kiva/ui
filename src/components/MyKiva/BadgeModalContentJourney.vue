@@ -63,8 +63,9 @@
 								</span>
 							</div>
 							<div
-								class="tw-inline-flex tw-items-center tw-rounded tw-px-1 tw-space-x-1"
-								:class="{'tw-bg-eco-green-1 tw-py-1': getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
+								:class="{'tw-bg-eco-green-1 tw-px-1 tw-py-1':
+									getBadgeStatus(index) == BADGE_IN_PROGRESS}"
 							>
 								<kv-icon
 									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
