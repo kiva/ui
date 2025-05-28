@@ -390,7 +390,6 @@ export default {
 
 <style lang="scss" scoped>
 @use '#src/assets/scss/settings' as *;
-@use 'foundation-sites/scss/foundation' as f;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
@@ -400,7 +399,7 @@ $color-copy-link: #2B7C5F;
 .social {
 	&__btn {
 		&--facebook {
-			@include f.button-style($color-facebook, auto, #fff);
+			@include button-style($color-facebook, auto, #fff);
 
 			.social__icon {
 				fill: #fff;
