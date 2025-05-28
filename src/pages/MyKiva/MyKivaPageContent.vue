@@ -124,6 +124,7 @@
 						:kv-track-function="$kvTrackEvent"
 						:animation-source-element="triggerButton"
 						@side-sheet-closed="handleComponentClosed"
+						:width-dimensions="'lg:tw-w-[480px] md:tw-w-[460px] sm:tw-w-full'"
 					>
 						<template #default>
 							<BadgeModalContentJourney
