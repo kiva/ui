@@ -1,32 +1,23 @@
 <template>
 	<div>
-		<template v-if="isLoading">
-			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6" />
-			<KvLoadingPlaceholder
-				class="tw-mb-2 lg:tw-mb-3 !tw-w-full md:!tw-w-1/2"
-				:style="{ height: '17rem' }"
-			/>
-		</template>
-		<template v-else>
-			<h2
-				v-html="title"
-				class="tw-mb-3.5"
-				:class="{ 'tw-text-center': !filteredLoans.length }"
-			></h2>
-			<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
-				<KvButton
-					v-kv-track-event="[
-						'portfolio',
-						'click',
-						btnEventLabel
-					]" v-if="showCtaWhenNoLoans && (!filteredLoans.length || !hasActiveLoans)"
-					:to="link"
-				>
-					{{ btnCta }}
-				</KvButton>
-			</div>
-		</template>
-		<div v-if="hasActiveLoans && !isLoading">
+		<h2
+			v-html="title"
+			class="tw-mb-3.5"
+			:class="{ 'tw-text-center': !filteredLoans.length }"
+		></h2>
+		<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
+			<KvButton
+				v-kv-track-event="[
+					'portfolio',
+					'click',
+					btnEventLabel
+				]" v-if="showCtaWhenNoLoans && (!filteredLoans.length || !hasActiveLoans)"
+				:to="link"
+			>
+				{{ btnCta }}
+			</KvButton>
+		</div>
+		<div v-if="hasActiveLoans">
 			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="filteredLoans.length > 1" class="tabs">
 				<template #tabNav>
 					<KvTab
@@ -136,7 +127,7 @@
 <script setup>
 import _throttle from 'lodash/throttle';
 import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton, KvLoadingPlaceholder
+	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
 } from '@kiva/kv-components';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
@@ -171,10 +162,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 		required: true,
-	},
-	isLoading: {
-		type: Boolean,
-		default: false,
 	},
 	totalLoans: {
 		type: Number,
@@ -298,7 +285,7 @@ const singleSlideWidth = computed(() => {
 	if (viewportWidth < 450) {
 		return '100%';
 	}
-	if (window.innerWidth < 1024) {
+	if (typeof window !== 'undefined' && window.innerWidth < 1024) {
 		return '468px';
 	}
 	return '520px';

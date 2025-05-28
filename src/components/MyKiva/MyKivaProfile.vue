@@ -3,13 +3,7 @@
 		<div
 			:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
 		>
-			<KvLoadingPlaceholder
-				v-if="isLoading"
-				class="!tw-h-5 tw-mt-6 md:tw-mt-0 tw-mr-auto md:tw-mr-0"
-				:style="{ width: '10rem' }"
-			/>
 			<p
-				v-else
 				class="tw-mr-auto md:tw-mr-0"
 				:class="{'tw-text-h2 tw-pb-0.5': userInHomepage, 'tw-text-h3': !userInHomepage}"
 				v-html="headerMsg"
@@ -29,7 +23,6 @@
 					class="avatar !tw-h-10 !tw-w-10"
 					:lender-image-url="lenderImageUrl"
 					:lender-name="lenderName"
-					:is-loading="isLoading"
 				/>
 			</a>
 		</div>
@@ -39,7 +32,6 @@
 <script setup>
 import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import { computed, toRefs } from 'vue';
 
 const props = defineProps({
@@ -50,10 +42,6 @@ const props = defineProps({
 	userInfo: {
 		type: Object,
 		default: () => ({}),
-	},
-	isLoading: {
-		type: Boolean,
-		default: false,
 	},
 	userInHomepage: {
 		type: Boolean,
