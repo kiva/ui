@@ -46,30 +46,23 @@
 						]"
 					>
 						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
-								<img
-									v-if="!isNonBadgeSlide(slide)"
-									class="tw-h-6"
-									:src="badgeUrl(slide)"
+							<div class="tw-text-primary-inverse">
+								<h2
+									class="tw-text-h3"
+									:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
 								>
-								<div class="tw-text-primary-inverse">
-									<h2
-										class="tw-text-h3"
-										:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
-									>
-										{{ title(slide) }}
-									</h2>
-									<p
-										v-if="subTitle(slide)"
-										class="tw-text-small tw-font-medium"
-										:class="{
-											'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
-												isNonBadgeSlide(slide)
-										}"
-									>
-										{{ subTitle(slide) }}
-									</p>
-								</div>
+									{{ title(slide) }}
+								</h2>
+								<p
+									v-if="subTitle(slide)"
+									class="tw-text-small tw-font-medium"
+									:class="{
+										'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
+											isNonBadgeSlide(slide)
+									}"
+								>
+									{{ subTitle(slide) }}
+								</p>
 							</div>
 							<div class="tw-flex tw-flex-col tw-gap-1.5">
 								<button
@@ -262,20 +255,21 @@ const backgroundImg = slide => {
 };
 
 const title = slide => {
+	if (slide.totalProgressToAchievement) {
+		return `Your progress: ${slide.totalProgressToAchievement}/${slide.target} loans`;
+	}
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.title || '';
+
+	return richTextUiSettingsData?.title || '';
 };
 
 const subTitle = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	if (isNonBadgeSlide(slide)) {
-		return richTextUiSettingsData.contentText || '';
+	if (slide.totalProgressToAchievement) {
+		return 'Keep lending to reach your next achievement';
 	}
 
-	return `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
+	return 'Get started to reach your first achievement';
 };
-
-const badgeUrl = slide => slide?.badgeImgUrl || '';
 
 const primaryCtaText = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
@@ -360,7 +354,7 @@ const handleChange = interaction => {
 	height: 402px;
 
 	@screen md {
-		height: 422px;
+		height: 390px;
 	}
 }
 
