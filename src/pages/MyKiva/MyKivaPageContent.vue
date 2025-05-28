@@ -116,14 +116,14 @@
 						@badge-clicked="handleBadgeSectionClicked"
 					/>
 					<KvSideSheet
-						:visible="showBadgeModal"
+						:visible="showSideSheet"
 						:show-back-button="false"
 						:show-headline-border="false"
 						:headline="computedHeadLine"
 						:show-go-to-link="false"
 						:kv-track-function="$kvTrackEvent"
 						:animation-source-element="triggerButton"
-						@side-sheet-closed="handleBadgeModalClosed"
+						@side-sheet-closed="handleComponentClosed"
 					>
 						<template #default>
 							<BadgeModalContentJourney
@@ -162,6 +162,18 @@
 							</div>
 						</template>
 					</KvSideSheet>
+					<BadgeModal
+						v-if="selectedBadgeData"
+						:show="showBadgeModal"
+						:badge="selectedBadgeData"
+						:lender="lender"
+						:state="state"
+						:tier="tier"
+						:is-earned-section="isEarnedSectionModal"
+						:loans="loans"
+						@badge-modal-closed="handleComponentClosed"
+						@badge-level-clicked="handleBadgeJourneyLevelClicked"
+					/>
 				</div>
 			</section>
 			<EarnedBadgesSection
@@ -195,6 +207,7 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
+import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgeModalContentJourney from '#src/components/MyKiva/BadgeModalContentJourney';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
@@ -229,25 +242,26 @@ const {
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
+const heroSlides = ref([]);
+const isEarnedSectionModal = ref(false);
+const isHeroEnabled = ref(false);
 const lender = ref(null);
-const showNavigation = ref(false);
-const userInfo = ref({});
 const loans = ref([]);
 const loanUpdates = ref([]);
-const totalUpdates = ref(0);
-const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
+const selectedJourney = ref('');
+const showBadgeModal = ref(false);
+const showLoanFootnote = ref(false);
+const showNavigation = ref(false);
+const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
 const tier = ref(null);
-const isEarnedSectionModal = ref(false);
-const showLoanFootnote = ref(false);
 const totalLoans = ref(0);
+const totalUpdates = ref(0);
+const triggerButton = ref(null);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
-const heroSlides = ref([]);
-const isHeroEnabled = ref(false);
-const selectedJourney = ref('');
-const triggerButton = ref(null);
+const userInfo = ref({});
 
 const isLoading = computed(() => !lender.value);
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
@@ -273,7 +287,7 @@ const handleBadgeSectionClicked = badge => {
 	state.value = STATE_JOURNEY;
 	selectedBadgeData.value = badge;
 	isEarnedSectionModal.value = false;
-	showBadgeModal.value = true;
+	showSideSheet.value = true;
 };
 
 const handleEarnedBadgeClicked = badge => {
@@ -311,7 +325,7 @@ const handleBadgeJourneyLevelClicked = payload => {
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
-const handleBadgeModalClosed = () => {
+const handleComponentClosed = () => {
 	selectedJourney.value = '';
 	const queryParams = { ...router.currentRoute?.value?.query };
 	if (queryParams.journey) {
@@ -319,6 +333,7 @@ const handleBadgeModalClosed = () => {
 		router.push({ ...router.currentRoute.value, query: queryParams });
 	}
 	selectedBadgeData.value = undefined;
+	showSideSheet.value = false;
 	showBadgeModal.value = false;
 };
 
