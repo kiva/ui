@@ -71,7 +71,7 @@
 									</p>
 								</div>
 							</div>
-							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
+							<div class="tw-flex tw-flex-col tw-gap-1.5">
 								<button
 									v-if="showSecondaryCta(slide)"
 									@click="goToSecondaryCtaUrl(slide)"
@@ -107,7 +107,6 @@ import {
 	computed,
 	ref,
 	inject,
-	onMounted
 } from 'vue';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { useRouter } from 'vue-router';
@@ -327,7 +326,7 @@ const singleSlideWidth = computed(() => {
 	if (isMobile.value) {
 		return '90%';
 	}
-	return '520px';
+	return '336px';
 });
 
 const handleChange = interaction => {
@@ -341,7 +340,8 @@ const handleChange = interaction => {
 	);
 };
 
-onMounted(() => {
+// Read cached queries in the client side
+if (typeof window !== 'undefined') {
 	try {
 		const contentfulChallengeResult = apollo.readQuery({
 			query: contentfulEntriesQuery,
@@ -373,7 +373,7 @@ onMounted(() => {
 	} catch (e) {
 		logReadQueryError(e, 'MyKivaPage journeyCardCarouselData');
 	}
-});
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -382,7 +382,7 @@ onMounted(() => {
 	height: 402px;
 
 	@screen md {
-		height: 390px;
+		height: 422px;
 	}
 }
 

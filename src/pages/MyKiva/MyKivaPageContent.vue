@@ -379,7 +379,8 @@ const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
 });
 
-onMounted(() => {
+// Read cached queries in the client side
+if (typeof window !== 'undefined') {
 	try {
 		const uiSettingsQueryResult = apollo.readQuery({
 			query: uiConfigSettingQuery,
@@ -392,10 +393,13 @@ onMounted(() => {
 		logReadQueryError(e, 'MyKivaPage uiConfigSettingQuery');
 	}
 
+	fetchMyKivaData();
+}
+
+onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 
-	fetchMyKivaData();
 	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
