@@ -35,17 +35,6 @@
 		</section>
 		<section class="tw-py-2">
 			<div
-				class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-				style="line-height: 0;"
-			>
-				<span
-					class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-					style="line-height: 0; font-weight: 600;"
-				>
-					MY IMPACT
-				</span>
-			</div>
-			<div
 				:class="[
 					'tw-flex',
 					{ 'tw-flex-col': !showSingleArray },

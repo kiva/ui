@@ -8,11 +8,11 @@
 			/>
 		</template>
 		<template v-else>
-			<h2
+			<h3
 				v-html="title"
-				class="tw-mb-3.5"
+				class="tw-mb-2.5"
 				:class="{ 'tw-text-center': !filteredLoans.length }"
-			></h2>
+			></h3>
 			<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
 				<KvButton
 					v-kv-track-event="[
