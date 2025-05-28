@@ -268,9 +268,15 @@ const loansToDisplay = computed(() => props.loans.slice(0, 3));
 const moduleTitle = computed(() => {
 	let title = '';
 	if (props.isGuest || props.isOptedIn) {
-		title += 'Thank you!<br />';
+		title += 'Thank you';
+
+		if (numberOfBadges.value === 1) {
+			title += ' and congrats';
+		}
+		title += '! <br />';
 	}
-	title += numberOfBadges.value === 1 ? 'You reached a milestone' : `You reached ${numberOfBadges.value} milestones`;
+
+	title += 'You\'ve reached a new achievement';
 	title += props.isOptedIn ? '.' : '!';
 	return title;
 });
