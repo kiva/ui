@@ -4,8 +4,8 @@
 			:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
 		>
 			<p
-				class="tw-mr-auto md:tw-mr-0"
-				:class="{'tw-text-h2 tw-pb-0.5': userInHomepage, 'tw-text-h3': !userInHomepage}"
+				class="tw-text-h3 tw-mr-auto md:tw-mr-0"
+				:class="{'tw-pb-0.5': userInHomepage}"
 				v-html="headerMsg"
 			>
 			</p>

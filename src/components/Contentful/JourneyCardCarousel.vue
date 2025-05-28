@@ -357,10 +357,10 @@ const handleChange = interaction => {
 <style lang="postcss" scoped>
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-	height: 402px;
+	height: 382px;
 
 	@screen md {
-		height: 390px;
+		height: 360px;
 	}
 }
 
