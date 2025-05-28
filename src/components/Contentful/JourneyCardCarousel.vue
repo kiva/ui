@@ -264,6 +264,12 @@ const title = slide => {
 };
 
 const subTitle = slide => {
+	if (isNonBadgeSlide(slide)) {
+		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+
+		return richTextUiSettingsData.contentText || '';
+	}
+
 	if (slide.totalProgressToAchievement) {
 		return 'Keep lending to reach your next achievement';
 	}
