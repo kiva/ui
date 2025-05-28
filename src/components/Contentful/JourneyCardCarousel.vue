@@ -46,25 +46,23 @@
 						]"
 					>
 						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
-								<div class="tw-text-primary-inverse">
-									<h2
-										class="tw-text-h3"
-										:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
-									>
-										{{ title(slide) }}
-									</h2>
-									<p
-										v-if="subTitle(slide)"
-										class="tw-text-small tw-font-medium"
-										:class="{
-											'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
-												isNonBadgeSlide(slide)
-										}"
-									>
-										{{ subTitle(slide) }}
-									</p>
-								</div>
+							<div class="tw-text-primary-inverse">
+								<h2
+									class="tw-text-h3"
+									:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
+								>
+									{{ title(slide) }}
+								</h2>
+								<p
+									v-if="subTitle(slide)"
+									class="tw-text-small tw-font-medium"
+									:class="{
+										'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
+											isNonBadgeSlide(slide)
+									}"
+								>
+									{{ subTitle(slide) }}
+								</p>
 							</div>
 							<div class="tw-flex tw-flex-col tw-gap-1.5">
 								<button
