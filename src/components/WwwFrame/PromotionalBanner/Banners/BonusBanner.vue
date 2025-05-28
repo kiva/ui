@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 a.bonus-banner:hover {
 	text-decoration: none;

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import { coverageConfigDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue';
-import GitRevisionPlugin from 'git-revision-webpack-plugin';
+import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
 import svgLoader from 'vite-svg-loader';
 import svgStore from 'vite-plugin-svg-store';
@@ -64,6 +64,9 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			},
 			preprocessorOptions: {
 				scss: {
+					loadPaths: [
+						resolve('node_modules'),
+					],
 					// Suppress deprecation warnings from node modules
 					quietDeps: true,
 				},

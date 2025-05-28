@@ -79,7 +79,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $arrow-width: 8;
 $outer-arrow-width: rem-calc($arrow-width);

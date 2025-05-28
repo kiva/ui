@@ -314,7 +314,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $card-width: rem-calc(290);
 $max-card-width: rem-calc(330);

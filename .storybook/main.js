@@ -11,14 +11,14 @@ const config = {
     name: "@storybook/vue3-vite",
     options: {},
   },
-  docs: {
-    autodocs: "tag",
-  },
   async viteFinal(config) {
     // Merge custom configuration into the default config
     const { mergeConfig } = await import('vite');
 
     return mergeConfig(config, {
+		define: {
+			'process.env': {},
+		},
 		build: {
 			rollupOptions: {
 				output: {

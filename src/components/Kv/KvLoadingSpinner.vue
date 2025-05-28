@@ -14,8 +14,8 @@
 
 <style lang="scss">
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/math';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/math' as *;
 
 .loading-spinner {
 	$loader-width: 4rem !default;

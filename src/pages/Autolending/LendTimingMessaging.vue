@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .lend-timing-messaging > div {
 	margin-top: 1.5rem;

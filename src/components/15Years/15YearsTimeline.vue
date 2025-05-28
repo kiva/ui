@@ -241,18 +241,15 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 @mixin timeline-link() {
 	@include link();
 
-	color: $mint;
-
-	// &:hover {
-	// 	background-color: $offwhite;
-	// 	color: $twilight;
-	// }
+	& {
+		color: $mint;
+	}
 }
 
 /* stylelint-disable no-descending-specificity */
@@ -303,8 +300,6 @@ export default {
 	}
 
 	&__prevnext-btn {
-		@include h5();
-
 		pointer-events: auto;
 		display: flex;
 		justify-content: center;
@@ -314,6 +309,8 @@ export default {
 		border-radius: 50%;
 		fill: $offwhite;
 		color: $offwhite;
+
+		@include h5();
 
 		&:hover {
 			.carousel__prevnext-btn-year {
@@ -623,8 +620,6 @@ export default {
 
 	&__btn-year,
 	&__btn-title {
-		@include h5();
-
 		display: block;
 		color: $offwhite;
 		width: 8rem;
@@ -632,6 +627,8 @@ export default {
 		overflow: hidden;
 		opacity: 1;
 		transition: opacity 0.3s ease-in-out;
+
+		@include h5();
 	}
 
 	&__btn-year {

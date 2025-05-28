@@ -374,7 +374,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 @include breakpoint(xxlarge) {
 	#carousel_exp :deep(section) > div:nth-child(2) {

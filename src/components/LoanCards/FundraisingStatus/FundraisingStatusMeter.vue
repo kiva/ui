@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $loan-card-meter-height-short: rem-calc(4);
 $loan-card-meter-height-medium: rem-calc(6);

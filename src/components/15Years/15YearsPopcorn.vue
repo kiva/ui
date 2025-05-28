@@ -71,7 +71,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 .popcorn {
 	overflow: visible;

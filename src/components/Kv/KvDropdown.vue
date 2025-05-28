@@ -182,9 +182,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
-@include foundation-dropdown ();
+@use 'foundation-sites/scss/foundation' as f;
+@include f.foundation-dropdown ();
 </style>
 
 <style lang="postcss" scoped>

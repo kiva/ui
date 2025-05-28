@@ -896,7 +896,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 // This CSS came from original terms page.
 ul.light li {
@@ -931,6 +931,8 @@ div.summary-row > :last-child {
 }
 
 div.summary-row > :first-child {
+	margin-bottom: 1.1111111111rem;
+
 	p:last-child {
 		margin-bottom: 0;
 	}
@@ -938,8 +940,6 @@ div.summary-row > :first-child {
 	@include breakpoint(xlarge) {
 		border-right: 1px solid $light-gray;
 	}
-
-	margin-bottom: 1.1111111111rem;
 }
 
 @include breakpoint(xlarge) {

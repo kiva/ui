@@ -1697,7 +1697,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .corporate-campaign-landing {
 	&__status--incontext {
@@ -1780,6 +1780,7 @@ export default {
 #campaignLoanSection {
 	// ensure we scroll past the sticky header
 	scroll-margin-top: rem-calc(85);
+
 	@include breakpoint(large) {
 		scroll-margin-top: rem-calc(116);
 	}
