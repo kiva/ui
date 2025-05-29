@@ -27,9 +27,6 @@
 						<LoanCards
 							v-if="filteredLoans.length > 0"
 						/>
-						<JourneysSection
-							v-if="showMyKivaJourneySection"
-						/>
 						<education-module v-if="post" :post="post" />
 						<kiva-credit-stats />
 						<account-updates />
@@ -78,7 +75,6 @@ import YourTeams from './YourTeams';
 import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
-import JourneysSection from './JourneysSection';
 import LoanCards from './LoanCards';
 
 export default {
@@ -100,7 +96,6 @@ export default {
 		YourDonations,
 		TeamChallenge,
 		MyKivaPage,
-		JourneysSection,
 		LoanCards,
 	},
 	data() {
@@ -111,7 +106,6 @@ export default {
 			allowedTeams: [],
 			userPreferences: null,
 			showMyKivaPage: false,
-			showMyKivaJourneySection: false,
 			loans: [],
 			filteredLoans: [],
 			showLoanFootnote: false,
@@ -169,8 +163,6 @@ export default {
 		);
 		if (!myKivaAllUsersEnabled) {
 			this.showMyKivaPage = isMykivaEnabled;
-		} else {
-			this.showMyKivaJourneySection = isMykivaEnabled;
 		}
 
 		if (!this.showMyKivaPage) {
