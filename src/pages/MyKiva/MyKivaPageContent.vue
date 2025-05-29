@@ -79,48 +79,31 @@
 	</section>
 	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
-			<section class="tw-py-2">
-				<div
-					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-					style="line-height: 0;"
+			<section class="tw-pt-2 tw-pb-4">
+				<h3
+					class="tw-text-center tw-mb-2"
 				>
-					<span
-						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-						style="line-height: 0; font-weight: 600;"
-					>
-						MILESTONES AND ACHIEVEMENTS
-					</span>
-				</div>
-				<div class="tw-mt-3">
-					<h3
-						class="tw-text-center tw-mb-2"
-					>
-						My impact journeys
-					</h3>
-					<BadgesSection
-						:badge-data="badgeData"
-						:selected-journey="selectedJourney"
-						@badge-clicked="handleBadgeSectionClicked"
-					/>
+					Your Achievements
+				</h3>
+				<BadgesSection
+					:badge-data="badgeData"
+					:selected-journey="selectedJourney"
+					@badge-clicked="handleBadgeSectionClicked"
+				/>
 
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						:is-earned-section="isEarnedSectionModal"
-						:loans="loans"
-						@badge-modal-closed="handleBadgeModalClosed"
-						@badge-level-clicked="handleBadgeJourneyLevelClicked"
-					/>
-				</div>
+				<BadgeModal
+					v-if="selectedBadgeData"
+					:show="showBadgeModal"
+					:badge="selectedBadgeData"
+					:lender="lender"
+					:state="state"
+					:tier="tier"
+					:is-earned-section="isEarnedSectionModal"
+					:loans="loans"
+					@badge-modal-closed="handleBadgeModalClosed"
+					@badge-level-clicked="handleBadgeJourneyLevelClicked"
+				/>
 			</section>
-			<EarnedBadgesSection
-				:completed-badges="completedBadges"
-				@badge-clicked="handleEarnedBadgeClicked"
-			/>
 		</MyKivaContainer>
 	</template>
 	<div
@@ -150,7 +133,6 @@ import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
-import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
@@ -172,7 +154,6 @@ const {
 	fetchContentfulData,
 	badgeAchievementData,
 	badgeData,
-	completedBadges,
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
@@ -241,19 +222,14 @@ const handleBadgeTileClicked = selectedTier => {
 };
 
 const handleBadgeSectionClicked = badge => {
-	state.value = STATE_JOURNEY;
-	selectedBadgeData.value = badge;
-	isEarnedSectionModal.value = false;
-	showBadgeModal.value = true;
-};
-
-const handleEarnedBadgeClicked = badge => {
-	const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
-	state.value = STATE_EARNED;
-	tier.value = selectedTier;
-	selectedBadgeData.value = badge;
-	isEarnedSectionModal.value = true;
-	showBadgeModal.value = true;
+	if (!badge.hasStarted) {
+		router.push(getLoanFindingUrl(badge.id, router.currentRoute.value));
+	} else {
+		state.value = STATE_JOURNEY;
+		selectedBadgeData.value = badge;
+		isEarnedSectionModal.value = false;
+		showBadgeModal.value = true;
+	}
 };
 
 const handleBadgeJourneyLevelClicked = payload => {

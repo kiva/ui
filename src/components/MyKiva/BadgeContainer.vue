@@ -12,7 +12,7 @@
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
 		<slot></slot>
 		<component
-			v-if="isInProgress"
+			v-if="isInProgress && !isCarousel"
 			:is="outlineComponent"
 			class="tw-absolute tw-h-full tw-top-0"
 			:style="outlineStyles"
@@ -88,10 +88,23 @@ const props = defineProps({
 	showShine: {
 		type: Boolean,
 		default: false,
+	},
+	isCarousel: {
+		type: Boolean,
+		default: false,
+	},
+	hasStarted: {
+		type: Boolean,
+		default: false,
 	}
 });
 
-const isInProgress = computed(() => props.status === BADGE_IN_PROGRESS);
+const isInProgress = computed(() => {
+	if (props.isCarousel && props.hasStarted) {
+		return;
+	}
+	return props.status === BADGE_IN_PROGRESS;
+});
 
 const isLocked = computed(() => props.status === BADGE_LOCKED);
 
