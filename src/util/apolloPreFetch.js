@@ -1,4 +1,3 @@
-import _filter from 'lodash/filter';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
@@ -77,6 +76,7 @@ export function preFetchApolloQuery(config, client, args) {
 export async function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
 	const allComponents = await getDeepComponents(components);
-	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
-	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
+	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with preFetch
+	const preFetchOperations = allComponents.flatMap(c => c.apollo ?? []).filter(op => op?.preFetch);
+	return Promise.all(preFetchOperations.map(op => preFetchApolloQuery(op, apolloClient, args)));
 }
