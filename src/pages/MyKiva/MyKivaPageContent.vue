@@ -125,13 +125,12 @@
 								class="
 									tw-w-full tw-bg-red tw-absolute
 									tw-left-0 tw-bg-white tw-opacity-50
+									tw-pointer-events-none tw-z-sticky
 								"
 								style="
 									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
 									bottom: 81px;
 									height: 124px;
-									pointer-events: none;
-									z-index: 999;
 								"
 							>
 							</div>

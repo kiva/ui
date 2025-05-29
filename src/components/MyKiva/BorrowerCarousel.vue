@@ -331,7 +331,7 @@ watch(() => loans.value, () => {
 	} else {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
 	}
-});
+}, { immediate: true });
 
 onMounted(() => {
 	window.addEventListener('resize', throttledResize);

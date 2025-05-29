@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-h-full">
-		<div class="tw-flex tw-space-x-1 tw-align-middle tw-pb-2 tw-pl-2">
+		<div class="tw-flex tw-space-x-1 tw-items-center tw-pb-2 tw-pl-2">
 			<div class="tw-flex">
 				<KvUserAvatar
 					class="avatar tw-border-white tw-rounded-full tw-border-2"
@@ -38,7 +38,7 @@
 						}"
 					>
 						<div
-							class="tw-relative tw-flex tw-text-center tw-bg-white tw-cursor-pointer"
+							class="tw-relative tw-flex tw-w-133 tw-text-center tw-bg-white tw-cursor-pointer"
 							@click="handleBadgeClick(index)"
 						>
 							<BadgeContainer
@@ -276,7 +276,7 @@ const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/le
 }
 
 .icon-width {
-	width: 18px;
+	width: 20px;
 }
 
 .badge-mobile:not(:last-of-type) {

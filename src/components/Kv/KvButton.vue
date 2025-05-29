@@ -34,7 +34,6 @@ export default {
 <style lang="scss">
 @use 'sass:color';
 @use '#src/assets/scss/settings' as *;
-@use 'foundation-sites/scss/foundation' as f;
 
 @mixin secondary-styles() {
 	background-color: $button-secondary-background;
@@ -56,7 +55,7 @@ export default {
 	font-weight: $button-font-weight;
 	box-shadow: $button-primary-shadow;
 
-	@include f.button();
+	@include button();
 	@include button-primary-styles();
 
 	&.rounded {
@@ -80,7 +79,7 @@ export default {
 	&.alert {
 		box-shadow: $button-secondary-shadow color.adjust($kiva-accent-red, $lightness: -10%);
 
-		@include f.button-style($kiva-accent-red, auto, $white);
+		@include button-style($kiva-accent-red, auto, $white);
 	}
 
 	&.classic {
@@ -138,7 +137,7 @@ export default {
 
 	&.disabled,
 	&[disabled] {
-		@include f.button-disabled();
+		@include button-disabled();
 	}
 
 	&.expanded {
