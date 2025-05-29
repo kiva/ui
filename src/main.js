@@ -4,7 +4,6 @@ import VueProgressBar from '@aacassandra/vue3-progressbar';
 import Vue3TouchEvents from 'vue3-touch-events';
 
 import App from '#src/App';
-import createRouter from '#src/router';
 import createApolloClient from '#src/api/apollo';
 import kivaPlugins from '#src/plugins';
 import kvAnalytics from '#src/plugins/kv-analytics-plugin';
@@ -20,16 +19,23 @@ export default function createApp({
 	locale,
 	fetch,
 	kivaUserAgent,
-	url = '',
-	isServer = false,
+	router,
+	cdnNotedLoggedIn = false, // TODO: supply this from the server
 } = {}) {
+	const renderConfig = {
+		cdnNotedLoggedIn,
+	};
+
 	// Create a new app instance
 	const app = createSSRApp(App);
 
-	// Create a new router instance
-	const router = createRouter({ isServer });
+	// Install router
 	app.use(router);
-	const route = router.resolve(url);
+	const route = router.currentRoute.value;
+
+	// Determine if the route should use CDN caching
+	const useCDNCaching = route.meta?.useCDNCaching && !route.meta?.preventCDNCaching;
+	renderConfig.useCDNCaching = useCDNCaching;
 
 	const head = createHead();
 	// head for composition api
@@ -56,23 +62,26 @@ export default function createApp({
 	const apolloClient = createApolloClient({
 		...apollo,
 		appConfig,
-		cookieStore,
-		kvAuth0,
+		cookieStore: useCDNCaching ? null : cookieStore,
+		kvAuth0: useCDNCaching ? null : kvAuth0,
 		fetch,
 		userAgent: kivaUserAgent,
 		route,
 	});
 
+	if (!useCDNCaching) {
+		app.provide('cookieStore', cookieStore);
+		app.provide('device', device);
+		app.provide('kvAuth0', kvAuth0);
+		app.provide('locale', locale);
+	}
 	app.provide('apollo', apolloClient);
-	app.provide('cookieStore', cookieStore);
-	app.provide('device', device);
-	app.provide('kvAuth0', kvAuth0);
-	app.provide('locale', locale);
 	app.provide('$kvTrackEvent', app.config.globalProperties.$kvTrackEvent); // provide kvTrackEvent for composition api
 	app.provide('$appConfig', appConfig); // provide appConfig for composition api
+	app.provide('$renderConfig', renderConfig); // provide renderConfig for composition api
 
-	// Provide application config to all components
-	app.config.globalProperties.$appConfig = appConfig;
+	app.config.globalProperties.$appConfig = appConfig; // provide application config for options api
+	app.config.globalProperties.$renderConfig = renderConfig; // provide renderConfig for options api
 
 	return {
 		app,

@@ -53,6 +53,11 @@ async function getFetch() {
 	return fetch;
 }
 
+async function getRouter() {
+	const { default: createRouter } = await import('#src/router');
+	return createRouter({ isServer: false });
+}
+
 async function getUserId(apolloClient) {
 	const { default: userIdQuery } = await import('#src/graphql/query/userId.graphql');
 	const result = await apolloClient.query({ query: userIdQuery });
@@ -219,31 +224,34 @@ function setupClientRouting({
 }
 
 async function initApp() {
-	const [{ default: createApp }, cookieStore, device, locale, fetch] = await Promise.all([
+	const [{ default: createApp }, cookieStore, device, locale, fetch, router] = await Promise.all([
 		import('#src/main'),
 		getCookieStore(),
 		getDevice(),
 		getLocale(),
 		getFetch(),
+		getRouter(),
 	]);
 	const kvAuth0 = await getKvAuth0(cookieStore);
 
 	// Create the App instance
 	const {
 		app,
-		router,
 		apolloClient,
-	} = createApp({
+	} = await createApp({
 		appConfig: config,
 		apollo: {
 			uri: config.graphqlUri,
 			types: config.graphqlPossibleTypes,
 		},
+		// Since we're in the browser and not the CDN, just check if the user is logged in
+		cdnNotedLoggedIn: kvAuth0.isNotedLoggedIn(),
 		cookieStore,
 		device,
 		kvAuth0,
 		locale,
 		fetch,
+		router,
 	});
 
 	// Apply Server state to Client Store
@@ -266,8 +274,6 @@ async function initApp() {
 		setupAnalytics(app, apolloClient);
 	}
 
-	// Wait until router has resolved all async before hooks and async components
-	await router.isReady();
 	setupClientRouting({
 		app, apolloClient, cookieStore, kvAuth0, router
 	});
