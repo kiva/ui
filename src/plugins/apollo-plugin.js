@@ -21,7 +21,7 @@ export default app => {
 				} = this.$options.apollo;
 
 				if (query) {
-					const basketId = this.cookieStore.get('kvbskt');
+					const basketId = this.cookieStore?.get('kvbskt') ?? null;
 					const isContentfulPreview = this.$route?.query?.preview === 'true';
 
 					// if the query was prefetched, read the data from the cache
@@ -30,7 +30,7 @@ export default app => {
 							const data = this.apollo.readQuery({
 								query,
 								variables: {
-									basketId,
+									...(basketId && { basketId }),
 									...preFetchVariables({
 										cookieStore: this.cookieStore,
 										route: this.$route,
@@ -56,7 +56,7 @@ export default app => {
 						const observer = this.apollo.watchQuery({
 							query,
 							variables: {
-								basketId,
+								...(basketId && { basketId }),
 								...variables.call(this),
 								...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
 							}
@@ -65,7 +65,7 @@ export default app => {
 						// Use Vue's $watch to reactively update the query variables when the component data changes
 						// This will cause a new query result to be fetched if it is not available in the cache
 						this.$watch(variables, vars => observer.setVariables({
-							basketId,
+							...(basketId && { basketId }),
 							...vars,
 							...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
 						}), { deep: true });

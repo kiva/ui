@@ -61,10 +61,7 @@ export function preFetchApolloQuery(config, client, args) {
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables({ client, ...args }) : {};
 		client.query({
 			query: config.query,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-				...prefetchVariables,
-			},
+			variables: cookieStore ? { basketId: cookieStore.get('kvbskt'), ...prefetchVariables } : prefetchVariables,
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
