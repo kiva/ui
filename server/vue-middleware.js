@@ -76,21 +76,29 @@ export default function createMiddleware({ config, vite }) {
 	}
 
 	async function middleware(req, res, next) {
-		const cookies = cookie.parse(req.headers.cookie || '');
-		const userAgent = req.get('user-agent');
+		// Get device information from the user agent
+		const userAgent = req.get('User-Agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
-		// Set the first user visit to the web
-		req.session.firstPage = !req.session?.firstPage ? req.url : req.session.firstPage;
+		// Get ESI information from the request
+		const esiTag = req.url.match(/\/esi-ui\/(.*)/)?.[1];
+		const topUrl = req.get('Fastly-Top-Url');
+		const esi = esiTag && topUrl ? {
+			tagName: esiTag,
+			topUrl,
+		} : null;
 
+		// Setup rendering context
 		const context = {
 			url: req.url,
-			config: { ...config.app, firstPage: req.session?.firstPage },
+			esi,
+			config: config.app,
 			kivaUserAgent: config.server.userAgent,
-			cookies,
+			cookies: cookie.parse(req.get('Cookie') || ''),
 			user: req.user || {},
 			locale: req.locale,
 			device,
+			cdnNotedLoggedIn: req.get('Fastly-Noted-Logged-In') === 'true',
 		};
 
 		// set html response headers
@@ -107,7 +115,7 @@ export default function createMiddleware({ config, vite }) {
 			// render the app
 			const { error, html, setCookies } = await render(context);
 			// set any cookies created during the app render
-			setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+			setCookies?.forEach(setCookie => res.append('Set-Cookie', setCookie));
 			if (error) {
 				handleError(error, req, res, next);
 			} else {
