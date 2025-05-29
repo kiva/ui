@@ -14,6 +14,9 @@ function getAuthContext(context, user, token) {
 
 export default ({ kvAuth0 }) => {
 	return setContext((operation, previousContext) => {
+		// If no kvAuth0 object is passed, return the previous context
+		if (!kvAuth0) return previousContext;
+
 		// If auth0 is not enabled, don't add anything to the context
 		if (!kvAuth0.enabled) return getAuthContext(previousContext);
 

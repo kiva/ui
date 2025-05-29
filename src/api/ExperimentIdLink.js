@@ -25,8 +25,10 @@ function buildExpHeaders(cache) {
 	return experimentAssignments.join();
 }
 
-export default () => {
+export default ({ cookieStore }) => {
 	return setContext((operation, previousContext) => {
+		if (!cookieStore) return previousContext;
+
 		// Initialize new context
 		const newContext = { ...previousContext };
 		newContext.headers = newContext.headers ?? {};
