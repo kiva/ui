@@ -1,5 +1,6 @@
 <template>
 	<AsyncPortfolioSection
+		class="!tw-bg-transparent md:!tw-p-0"
 		@visible="fetchAsyncData"
 	>
 		<h3 class="tw-mb-3 md:tw-mb-2 tw-text-center md:tw-text-left">
