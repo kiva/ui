@@ -16,7 +16,7 @@
 			>
 				Thank you! <br>
 			</span>
-			You’re making progress on your impact journey{{ isOptedIn ? '.' : '!' }}
+			You’ve made progress toward your next achievement{{ isOptedIn ? '.' : '!' }}
 		</h2>
 
 		<JourneyImg
@@ -54,7 +54,7 @@
 				@click="handleClickImpactJourneys"
 			>
 				<p class="tw-green-3 tw-text-base">
-					What are impact journeys?
+					What are achievements?
 				</p>
 				<KvMaterialIcon
 					:icon="mdiChevronDown"
@@ -70,9 +70,9 @@
 					class="tw-text-primary"
 				>
 					<p class="tw-pt-2">
-						Impact journeys are your personal guide to making a difference.
+						Achievements are your personal guide to making a difference.
 						<br><br>
-						Get inspired, track your progress, celebrate impact milestones,
+						Get inspired, track your progress, celebrate each level you reach,
 						and easily see the real change you can make!
 					</p>
 				</div>

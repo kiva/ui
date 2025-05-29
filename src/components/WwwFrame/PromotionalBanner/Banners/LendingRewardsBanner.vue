@@ -8,7 +8,7 @@
 </template>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .lending-rewards-banner {
 	background-color: $kiva-green;

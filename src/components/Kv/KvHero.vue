@@ -80,7 +80,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .hero {
 	position: relative;

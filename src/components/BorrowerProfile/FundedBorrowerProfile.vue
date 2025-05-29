@@ -401,7 +401,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .loans-container {
 	max-width: 67rem;

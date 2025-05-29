@@ -335,8 +335,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 .header {
 	background: $offwhite;
@@ -585,8 +585,6 @@ export default {
 
 /* taken from 15YearsIndividuals */
 .prevnext {
-	@include h5();
-
 	display: flex;
 	margin: 0 auto;
 	justify-content: space-between;
@@ -594,6 +592,8 @@ export default {
 	width: 100%;
 	padding: 0 rem-calc(16);
 	padding-top: rem-calc(24);
+
+	@include h5();
 
 	@include breakpoint(large) {
 		margin: 0;
@@ -638,13 +638,13 @@ export default {
 	}
 
 	&__btn {
-		@include h5();
-
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		fill: $twilight;
 		color: $twilight;
+
+		@include h5();
 
 		&--prev {
 			.prevnext__btn-icon {

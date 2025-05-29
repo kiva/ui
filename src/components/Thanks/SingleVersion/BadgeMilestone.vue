@@ -122,8 +122,8 @@ const moduleTitle = computed(() => {
 		title += 'Take the next step on your impact journey.';
 	} else {
 		title += badgeDataAchieved.value?.length === 1
-			? 'You reached a milestone'
-			: `You reached ${badgeDataAchieved.value?.length} milestones`;
+			? 'You reached an achievement'
+			: `You reached ${badgeDataAchieved.value?.length} achievements`;
 		title += props.isOptedIn && !props.kivaCardsModuleShown ? '.' : '!';
 	}
 

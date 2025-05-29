@@ -64,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .kv-verification-code-input {
 	font-size: 3em; // All sizing is relative to this. You could override this from the parent.

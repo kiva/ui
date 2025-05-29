@@ -55,12 +55,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 .fifteen-yr-button {
-	@include h5();
-
 	display: inline-block;
 	border-radius: rem-calc(20);
 	text-decoration: none;
@@ -78,6 +76,8 @@ export default {
 	@include breakpoint('large') {
 		padding: rem-calc(18) rem-calc(48);
 	}
+
+	@include h5();
 
 	&:hover {
 		text-decoration: none;

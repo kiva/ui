@@ -268,7 +268,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .list-loan-card {
 	background-color: $white;

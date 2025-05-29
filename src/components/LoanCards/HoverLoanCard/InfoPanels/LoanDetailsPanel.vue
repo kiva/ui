@@ -261,7 +261,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .panel-title {
 	margin-bottom: rem-calc(10);

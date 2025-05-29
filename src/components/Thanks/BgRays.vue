@@ -23,8 +23,8 @@
 }
 
 .ray {
-	background: linear-gradient(180deg, rgba(241 179 67 / 3%) 0%,
-	rgba(241 179 67 / 25%) 50%, rgba(241 179 67 / 3%) 100%);
+	background: linear-gradient(180deg, rgb(241 179 67 / 3%) 0%,
+	rgb(241 179 67 / 25%) 50%, rgb(241 179 67 / 3%) 100%);
 	border-radius:80% 80% 0 0;
 	animation: ray_anim 2.5s ease-in-out infinite;
 	@apply tw-absolute tw-ml-1;

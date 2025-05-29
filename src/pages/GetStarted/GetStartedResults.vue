@@ -269,7 +269,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .loan-results {
 	padding-top: 1.5rem;

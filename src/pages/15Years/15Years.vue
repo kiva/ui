@@ -53,8 +53,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
 
 .fifteen-years-page {
 	.row {

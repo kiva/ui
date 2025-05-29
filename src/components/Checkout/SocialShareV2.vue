@@ -186,8 +186,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;

@@ -161,7 +161,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .expandable-loan-card-expanded {
 	.expandable-loan-card-expanded-container {

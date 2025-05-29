@@ -90,8 +90,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:color';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $cta-color: #02582e;
 
@@ -111,10 +110,10 @@ $cta-color: #02582e;
 }
 
 .cta-button {
-	@include button-style($cta-color, auto, #fff);
-
 	// Include in order to override the default box-shadow of this button
 	box-shadow: 0 2px color.adjust($cta-color, $lightness: -10%);
+
+	@include button-style($cta-color, auto, #fff);
 }
 
 .cta-link {

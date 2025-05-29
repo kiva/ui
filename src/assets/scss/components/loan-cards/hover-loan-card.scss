@@ -1,4 +1,4 @@
-@import '#src/assets/scss/settings';
+@use '../../settings' as *;
 
 // Reference
 $small-default-hover-image-width: rem-calc(480);

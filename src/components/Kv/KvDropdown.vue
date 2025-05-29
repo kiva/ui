@@ -182,8 +182,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 @include foundation-dropdown ();
 </style>
 

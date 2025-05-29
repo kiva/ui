@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 $banner-padding-mobile: 0.75rem;
 $banner-padding-desktop: 1.5rem;
