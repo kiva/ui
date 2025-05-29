@@ -35,15 +35,15 @@ export default async ({ isServer, url }) => {
 
 		// Set the router's initial location, ignoring any errors about redirection
 		router.push(url).catch(() => { });
-	}
 
-	// Wait for the router to resolve all async before hooks and async components
-	await router.isReady();
+		// Wait for the router to resolve all async before hooks and async components
+		await router.isReady();
 
-	// If server-side rendering and there are no matched routes, throw a 404 error
-	if (isServer && !router.currentRoute.value.matched.length) {
-		// TODO: Check for + redirect to kiva php app external route
-		throw { code: 404 };
+		// If there are no matched routes, throw a 404 error
+		if (!router.currentRoute.value.matched.length) {
+			// TODO: Check for + redirect to kiva php app external route
+			throw { code: 404 };
+		}
 	}
 
 	return router;

@@ -10,7 +10,7 @@ import kvAnalytics from '#src/plugins/kv-analytics-plugin';
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
-export default function createApp({
+export default async function createApp({
 	apollo = {},
 	appConfig = {},
 	cookieStore,
@@ -31,6 +31,9 @@ export default function createApp({
 
 	// Install router
 	app.use(router);
+
+	// Wait for the router to be ready before reading the current route
+	await router.isReady();
 	const route = router.currentRoute.value;
 
 	// Determine if the route should use CDN caching
