@@ -129,7 +129,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		ssr: {
 			noExternal: [
 				'@kiva/kv-components',
-				'@kiva/kv-shop'
+				'@kiva/kv-shop',
+				'timesync',
 			],
 		},
 		test: {
