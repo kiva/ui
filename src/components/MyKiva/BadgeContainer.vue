@@ -17,12 +17,15 @@
 			class="tw-absolute tw-h-full tw-top-0"
 			:style="outlineStyles"
 		/>
-		<component
+		<div
 			v-else-if="isLocked"
-			:is="solidComponent"
-			class="tw-absolute tw-top-0"
-			style="height: 96%;"
-		/>
+			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"
+		>
+			<component
+				:is="solidComponent"
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full svg-background"
+			/>
+		</div>
 		<div
 			v-if="isLocked"
 			class="tw-absolute tw-flex"
@@ -30,7 +33,7 @@
 			style="left: calc(50% - 14px); top: calc(48% - 14px)"
 		>
 			<KvMaterialIcon
-				class="tw-w-3.5 tw-h-3.5 tw-text-white"
+				class="tw-w-3.5 tw-h-3.5 tw-text-black"
 				:icon="mdiLock"
 			/>
 		</div>
@@ -274,5 +277,9 @@ onMounted(() => {
 	100% {
 		@apply tw-top-full tw-left-full;
 	}
+}
+
+.svg-background {
+	color: #FFE8B3;
 }
 </style>
