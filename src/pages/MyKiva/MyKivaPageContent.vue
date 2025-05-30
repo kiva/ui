@@ -83,9 +83,9 @@
 				<div class="tw-mt-3">
 					<h3
 						ref="triggerButton"
-						class="tw-text-center tw-mb-4"
+						class="tw-mb-4"
 					>
-						Your Achievements
+						Achievements
 					</h3>
 					<BadgesSection
 						:badge-data="badgeData"
