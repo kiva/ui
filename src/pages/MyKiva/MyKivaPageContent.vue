@@ -81,9 +81,9 @@
 		<MyKivaContainer>
 			<section class="tw-pt-2 tw-pb-4">
 				<h3
-					class="tw-text-center tw-mb-2"
+					class="tw-mb-2"
 				>
-					Your Achievements
+					Achievements
 				</h3>
 				<BadgesSection
 					:badge-data="badgeData"
