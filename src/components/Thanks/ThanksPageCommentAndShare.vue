@@ -411,7 +411,7 @@ $color-copy-link: #2B7C5F;
 			border: 1px solid $color-bluesky;
 
 			.social__icon {
-				fill: $color-bluesky;
+				color: $color-bluesky;
 			}
 		}
 
