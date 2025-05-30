@@ -80,22 +80,12 @@
 	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
 			<section class="tw-pt-2 tw-pb-4">
-				<h3
-					class="tw-text-center tw-mb-2"
-				>
-					<span
-						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
-						style="line-height: 0; font-weight: 600;"
-					>
-						Your Achievements
-					</span>
-				</h3>
 				<div class="tw-mt-3">
 					<h3
 						ref="triggerButton"
-						class="tw-text-center tw-mb-2"
+						class="tw-text-center tw-mb-4"
 					>
-						My impact journeys
+						Your Achievements
 					</h3>
 					<BadgesSection
 						:badge-data="badgeData"
