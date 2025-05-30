@@ -163,10 +163,6 @@
 					/>
 				</div>
 			</section>
-			<EarnedBadgesSection
-				:completed-badges="completedBadges"
-				@badge-clicked="handleEarnedBadgeClicked"
-			/>
 		</MyKivaContainer>
 	</template>
 	<div
@@ -301,15 +297,6 @@ const handleBadgeSectionClicked = badge => {
 		isEarnedSectionModal.value = false;
 		showSideSheet.value = true;
 	}
-};
-
-const handleEarnedBadgeClicked = badge => {
-	const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
-	state.value = STATE_EARNED;
-	tier.value = selectedTier;
-	selectedBadgeData.value = badge;
-	isEarnedSectionModal.value = true;
-	showBadgeModal.value = true;
 };
 
 const handleContinueJourneyClicked = () => {
