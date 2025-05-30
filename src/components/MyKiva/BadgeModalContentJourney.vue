@@ -53,22 +53,24 @@
 							</BadgeContainer>
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
-							<div class="tw-font-small tw-px-0">
-								<span>Level {{ levelCaption(index) }}</span>
-							</div>
-							<div
-								class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
-								:class="{'tw-bg-eco-green-1 tw-px-1 tw-py-1':
-									getBadgeStatus(index) == BADGE_IN_PROGRESS}"
-							>
-								<kv-icon
-									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
-									class="tw-text-eco-green-3 icon-width"
-									name="progress-checkmark"
-								/>
-								<span :class="{'tw-font-medium' : getBadgeStatus(index) == BADGE_IN_PROGRESS}">
-									{{ progressCaption(index) }}
-								</span>
+							<div class="tw-space-y-0.5">
+								<div class="tw-font-small tw-px-0">
+									<span>Level {{ levelCaption(index) }}</span>
+								</div>
+								<div
+									class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
+									:class="{'tw-bg-eco-green-1 tw-px-1 tw-py-1':
+										getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								>
+									<kv-icon
+										v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
+										class="tw-text-eco-green-3 icon-width"
+										name="progress-checkmark"
+									/>
+									<span :class="{'tw-font-medium' : getBadgeStatus(index) == BADGE_IN_PROGRESS}">
+										{{ progressCaption(index) }}
+									</span>
+								</div>
 							</div>
 							<div
 								class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
