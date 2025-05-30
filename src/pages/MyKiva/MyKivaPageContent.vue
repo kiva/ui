@@ -79,18 +79,17 @@
 	</section>
 	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
-			<section class="tw-py-2">
-				<div
-					class="tw-w-full tw-text-center tw-border-t tw-border-eco-green-3 tw-my-3"
-					style="line-height: 0;"
+			<section class="tw-pt-2 tw-pb-4">
+				<h3
+					class="tw-text-center tw-mb-2"
 				>
 					<span
 						class="tw-bg-secondary tw-text-primary tw-px-1 tw-text-h4"
 						style="line-height: 0; font-weight: 600;"
 					>
-						MILESTONES AND ACHIEVEMENTS
+						Your Achievements
 					</span>
-				</div>
+				</h3>
 				<div class="tw-mt-3">
 					<h3
 						ref="triggerButton"
@@ -198,7 +197,6 @@ import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
-import EarnedBadgesSection from '#src/components/MyKiva/EarnedBadgesSection';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
@@ -223,7 +221,6 @@ const {
 	fetchContentfulData,
 	badgeAchievementData,
 	badgeData,
-	completedBadges,
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
@@ -296,10 +293,14 @@ const handleBadgeTileClicked = selectedTier => {
 };
 
 const handleBadgeSectionClicked = badge => {
-	state.value = STATE_JOURNEY;
-	selectedBadgeData.value = badge;
-	isEarnedSectionModal.value = false;
-	showSideSheet.value = true;
+	if (!badge.hasStarted) {
+		router.push(getLoanFindingUrl(badge.id, router.currentRoute.value));
+	} else {
+		state.value = STATE_JOURNEY;
+		selectedBadgeData.value = badge;
+		isEarnedSectionModal.value = false;
+		showSideSheet.value = true;
+	}
 };
 
 const handleEarnedBadgeClicked = badge => {
