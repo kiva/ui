@@ -44,7 +44,7 @@
 							<BadgeContainer
 								:status="getBadgeStatus(index)"
 								:shape="getBadgeShape(badgeWithVisibleTiers.id)"
-								style="width: 133px height: 133px"
+								style="width: 133px; height: 133px;"
 							>
 								<img
 									:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
