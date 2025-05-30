@@ -113,7 +113,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 				// alias kv-component directory
 				'#kv-components': resolve('node_modules/@kiva/kv-components/dist/vue'),
 				// alias promise module to handle timesync calling require('promise')
-				promise: resolve('build/promise.js'),
+				promise: resolve('build/promise/promise.js'),
 				// this alias is required for the rendering of src/components/Contentful/DynamicRichText.vue
 				// it should only be used on the client build in production
 				// eslint-disable-next-line max-len
@@ -130,7 +130,6 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			noExternal: [
 				'@kiva/kv-components',
 				'@kiva/kv-shop',
-				'timesync',
 			],
 		},
 		test: {
