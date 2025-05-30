@@ -38,17 +38,17 @@
 						}"
 					>
 						<div
-							class="tw-relative tw-flex tw-w-133 tw-text-center tw-bg-white tw-cursor-pointer"
+							class="tw-relative tw-flex tw-text-center tw-bg-white tw-cursor-pointer"
 							@click="handleBadgeClick(index)"
 						>
 							<BadgeContainer
 								:status="getBadgeStatus(index)"
 								:shape="getBadgeShape(badgeWithVisibleTiers.id)"
+								style="height: 133px; width: 133px;"
 							>
 								<img
 									:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
 									alt="Badge"
-									style="height: 133px; width: 133px;"
 								>
 							</BadgeContainer>
 						</div>
