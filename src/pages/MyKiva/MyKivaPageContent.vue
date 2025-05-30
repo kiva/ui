@@ -267,7 +267,7 @@ const allBadgesCompleted = computed(() => {
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
 
-const computedHeadLine = computed(() => `${selectedBadgeData.value?.challengeName} impact journey`);
+const computedHeadLine = computed(() => `Achievements for lending to ${selectedBadgeData.value?.challengeName}`);
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
