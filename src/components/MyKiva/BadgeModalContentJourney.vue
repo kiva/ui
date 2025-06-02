@@ -53,31 +53,34 @@
 							</BadgeContainer>
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
-							<div class="tw-font-small tw-px-0" v-if="getBadgeStatus(index) !== BADGE_LOCKED">
-								<span v-if="getBadgeStatus(index) == BADGE_COMPLETED">
-									{{ getTierData(index).achievementData.target }}
-									loans {{ badgeSubtitle }}
-								</span>
-								<span v-if="getBadgeStatus(index) == BADGE_IN_PROGRESS">
-									{{ tierSubtitle(index) }}
-								</span>
+							<div class="tw-space-y-0.5">
+								<div class="tw-font-small tw-px-0">
+									<span>Level {{ levelCaption(index) }}</span>
+								</div>
+								<div
+									class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
+									:class="{'tw-bg-eco-green-1 tw-px-1 tw-py-1':
+										getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								>
+									<kv-icon
+										v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
+										class="tw-text-eco-green-3 icon-width"
+										name="progress-checkmark"
+									/>
+									<span :class="{'tw-font-medium' : getBadgeStatus(index) == BADGE_IN_PROGRESS}">
+										{{ progressCaption(index) }}
+									</span>
+								</div>
 							</div>
 							<div
 								class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
-								:class="{'tw-bg-eco-green-1 tw-px-1 tw-py-1':
-									getBadgeStatus(index) == BADGE_IN_PROGRESS}"
+								v-if="getBadgeStatus(index) == BADGE_COMPLETED"
 							>
-								<kv-icon
-									v-if="(getBadgeStatus(index) == BADGE_IN_PROGRESS)"
-									class="tw-text-eco-green-3 icon-width"
-									name="progress-checkmark"
-								/>
 								<choose-checkmark
-									v-if="getBadgeStatus(index) == BADGE_COMPLETED"
 									class="icon-width"
 								/>
-								<span :class="{'tw-font-medium' : getBadgeStatus(index) !== BADGE_LOCKED}">
-									{{ tierCaption(index) }}
+								<span class="tw-font-medium">
+									{{ completedCaption(index) }}
 								</span>
 							</div>
 						</div>
@@ -139,13 +142,6 @@ const props = defineProps({
 const {
 	getBadgeWithVisibleTiers,
 	getFilteredLoansByJourney,
-	getTierBadgeDataByLevel,
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_EQUITY,
-	ID_REFUGEE_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY,
 } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -178,26 +174,54 @@ const getBadgeStatus = index => {
 	return BADGE_LOCKED;
 };
 
-const tierCaption = index => {
+const levelCaption = index => {
 	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
-	if (tier.completedDate) {
-		return `Achieved on ${format(new Date(tier.completedDate), 'MMMM do, yyyy')}!`;
-	}
-	if (getBadgeStatus(index) === BADGE_LOCKED) {
-		return `${tier.target} loans`;
-	}
-	if (tier.target) {
-		return `
-			Progress
-			${badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement}/${tier.target}
-			loans
-		`;
+	switch (tier.level) {
+		case 1:
+			return 'one';
+		case 2:
+			return 'two';
+		case 3:
+			return 'three';
+		case 4:
+			return 'four';
+		case 5:
+			return 'five';
+		case 6:
+			return 'six';
+		case 7:
+			return 'seven';
+		case 8:
+			return 'eight';
+		case 9:
+			return 'nine';
+		case 10:
+			return 'ten';
+		default:
+			return tier.level;
 	}
 };
 
-const getTierData = index => {
-	const levelData = getTierBadgeDataByLevel(badgeWithVisibleTiers.value, index + 1);
-	return levelData;
+const progressCaption = index => {
+	let floor;
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
+	if (getBadgeStatus(index) === BADGE_IN_PROGRESS) {
+		floor = tier.target - badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
+	} else if (getBadgeStatus(index) === BADGE_LOCKED) {
+		floor = 0;
+	} else {
+		floor = Math.min(badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement, tier.target);
+	}
+	return `
+		Progress:
+		${floor}/${tier.target}
+		loans
+	`;
+};
+
+const completedCaption = index => {
+	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
+	return `Achieved on ${format(new Date(tier.completedDate), 'MMMM do, yyyy')}!`;
 };
 
 const handleBadgeClick = index => {
@@ -208,41 +232,6 @@ const handleBadgeClick = index => {
 			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
 		});
 	}
-};
-
-const badgeSubtitle = computed(() => {
-	let subtitle;
-	switch (badgeWithVisibleTiers.value.id) {
-		case ID_WOMENS_EQUALITY:
-			subtitle = 'to women';
-			break;
-		case ID_US_ECONOMIC_EQUALITY:
-			subtitle = 'to U.S. entrepreneurs';
-			break;
-		case ID_CLIMATE_ACTION:
-			subtitle = 'to climate action';
-			break;
-		case ID_REFUGEE_EQUALITY:
-			subtitle = 'to refugees';
-			break;
-		case ID_BASIC_NEEDS:
-			subtitle = 'for fundamental needs';
-			break;
-		case ID_EQUITY:
-			return '1 loan to anyone in need';
-		default:
-			subtitle = '';
-			break;
-	}
-	return subtitle;
-});
-
-const tierSubtitle = index => {
-	const { target } = getTierData(index).achievementData;
-	const totalProgress = badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
-	const remainingLoans = target - totalProgress;
-	const loanString = (remainingLoans === 1) ? 'loan' : 'loans';
-	return `Support ${remainingLoans} more ${loanString} ${badgeSubtitle.value}`;
 };
 
 const journeyLoans = computed(() => getFilteredLoansByJourney(badgeWithVisibleTiers.value, props.loans));
