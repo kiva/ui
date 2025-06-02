@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import KvButton from '#src/components/Kv/KvButton';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
@@ -102,18 +102,7 @@ export default {
 			const price = numeral(this.price).format('0.00');
 			this.isAdding = true;
 			this.apollo.mutate({
-				mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
-					shop (basketId: $basketId) {
-						id
-						updateLoanReservation (loanReservation: {
-							id: $loanId
-							price: $price
-						}) {
-							id
-							price
-						}
-					}
-				}`,
+				mutation: updateLoanReservation,
 				variables: {
 					loanId: this.loanId,
 					price,
