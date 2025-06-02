@@ -239,7 +239,7 @@ import LoanCardController from '#src/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
 import { preFetchAll } from '#src/util/apolloPreFetch';
-import { setLendAmount } from '#src/util/basketUtils';
+import { createNewBasket, setLendAmount } from '#src/util/basketUtils';
 
 // Content Group Types
 const CampaignHero = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignHero'));
@@ -1532,13 +1532,11 @@ export default {
 			this.checkoutLightboxClosed();
 			trackTransactionEvent(payload.transactionId, this.apollo, this.cookieStore);
 			// establish a new basket
-			this.apollo.mutate({
-				mutation: gql`mutation createNewBasketForUser { shop { id createBasket } }`,
-			}).then(({ data }) => {
-				// extract new basket id
-				const newBasketId = data.shop?.createBasket ?? null;
+			createNewBasket({
+				apollo: this.apollo,
+				cookieStore: this.cookieStore,
+			}).then(newBasketId => {
 				if (newBasketId) {
-					this.cookieStore.set('kvbskt', newBasketId, { secure: true });
 					this.getPromoInformationFromBasket();
 				}
 			});
