@@ -23,7 +23,7 @@
 		>
 			<component
 				:is="solidComponent"
-				class="tw-absolute tw-top-0 tw-w-full tw-h-full svg-background"
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
 			/>
 		</div>
 		<div
@@ -277,9 +277,5 @@ onMounted(() => {
 	100% {
 		@apply tw-top-full tw-left-full;
 	}
-}
-
-.svg-background {
-	color: #FFE8B3;
 }
 </style>
