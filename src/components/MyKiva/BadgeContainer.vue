@@ -11,19 +11,13 @@
 		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
 		<slot></slot>
-		<component
-			v-if="isInProgress && !isCarousel"
-			:is="outlineComponent"
-			class="tw-absolute tw-h-full tw-top-0"
-			:style="outlineStyles"
-		/>
 		<div
-			v-else-if="isLocked"
+			v-if="isLocked"
 			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"
 		>
 			<component
 				:is="solidComponent"
-				class="tw-absolute tw-top-0 tw-w-full tw-h-full svg-background"
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
 			/>
 		</div>
 		<div
@@ -59,15 +53,9 @@ import {
 	BADGE_SHAPE_OBLONG,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
-	BADGE_SHAPE_EQUITY,
 } from '#src/composables/useBadgeModal';
 import { mdiLock } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import OutlineArch from '#src/assets/images/my-kiva/badge-outline-arch.svg';
-import OutlineCircle from '#src/assets/images/my-kiva/badge-outline-circle.svg';
-import OutlineOblong from '#src/assets/images/my-kiva/badge-outline-oblong.svg';
-import OutlineOval from '#src/assets/images/my-kiva/badge-outline-oval.svg';
-import OutlineRectangle from '#src/assets/images/my-kiva/badge-outline-rectangle.svg';
 import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg';
 import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg';
 import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg';
@@ -75,7 +63,6 @@ import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg';
 import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
-import OutlineEquity from '#src/assets/images/my-kiva/badge-outline-equity.svg';
 
 const props = defineProps({
 	status: {
@@ -115,23 +102,6 @@ const animateLock = ref(false);
 const firstShine = ref(null);
 const secondShine = ref(null);
 
-const outlineComponent = computed(() => {
-	switch (props.shape) {
-		case BADGE_SHAPE_ARCH:
-			return OutlineArch;
-		case BADGE_SHAPE_OBLONG:
-			return OutlineOblong;
-		case BADGE_SHAPE_OVAL:
-			return OutlineOval;
-		case BADGE_SHAPE_RECTANGLE:
-			return OutlineRectangle;
-		case BADGE_SHAPE_EQUITY:
-			return OutlineEquity;
-		default:
-			return OutlineCircle;
-	}
-});
-
 const solidComponent = computed(() => {
 	switch (props.shape) {
 		case BADGE_SHAPE_ARCH:
@@ -144,25 +114,6 @@ const solidComponent = computed(() => {
 			return SolidRectangle;
 		default:
 			return SolidCircle;
-	}
-});
-
-const outlineStyles = computed(() => {
-	switch (props.shape) {
-		case BADGE_SHAPE_ARCH:
-			return { width: '90%', left: '5%' };
-		case BADGE_SHAPE_OBLONG:
-			return { height: '96%', top: '2%' };
-		case BADGE_SHAPE_OVAL:
-			return { width: '103%', left: '-1%' };
-		case BADGE_SHAPE_RECTANGLE:
-			return { width: '94%', left: '3%' };
-		case BADGE_SHAPE_EQUITY:
-			return {
-				width: '120%', height: '110%', left: '-9.8%', top: '-3.5%'
-			};
-		default:
-			return { width: '97%', left: '2%' };
 	}
 });
 
@@ -277,9 +228,5 @@ onMounted(() => {
 	100% {
 		@apply tw-top-full tw-left-full;
 	}
-}
-
-.svg-background {
-	color: #FFE8B3;
 }
 </style>
