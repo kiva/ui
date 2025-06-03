@@ -110,7 +110,9 @@ import {
 	defineProps,
 	ref,
 	computed,
-	defineAsyncComponent
+	defineAsyncComponent,
+	onMounted,
+	onUnmounted
 } from 'vue';
 import { format } from 'date-fns';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -126,6 +128,7 @@ import { KvUserAvatar } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
 import useBadgeData from '#src/composables/useBadgeData';
+import _throttle from 'lodash/throttle';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -145,6 +148,8 @@ const {
 } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const scrollEl = ref(null);
+const toggleGradient = ref(false);
 
 const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
 
@@ -152,7 +157,7 @@ const {
 	getTierPositions,
 } = useBadgeModal(badgeWithVisibleTiers.value);
 
-const emit = defineEmits(['badge-level-clicked']);
+const emit = defineEmits(['badge-level-clicked', 'toggle-gradient']);
 
 const positions = ref(getTierPositions());
 
@@ -257,6 +262,31 @@ const journeyDescription = computed(() => {
 
 const RightLeaningLine = defineAsyncComponent(() => import('#src/assets/images/right-leaning-line.svg'));
 const LeftLeaningLine = defineAsyncComponent(() => import('#src/assets/images/left-leaning-line.svg'));
+
+const handleToggleGradient = e => {
+	const atBottom = e.target.scrollTop + e.target.clientHeight + 1 >= e.target.scrollHeight;
+	if (toggleGradient.value !== atBottom) {
+		toggleGradient.value = atBottom;
+		emit('toggle-gradient', toggleGradient.value);
+	}
+};
+
+const throttledHandleToggleGradient = _throttle(handleToggleGradient, 100);
+
+onMounted(() => {
+	// Sidesheet scrollable section
+	scrollEl.value = document.querySelector('.tw-overflow-y-auto.tw-overscroll-y-contain');
+
+	if (scrollEl.value) {
+		scrollEl.value.addEventListener('scroll', throttledHandleToggleGradient);
+	}
+});
+
+onUnmounted(() => {
+	if (scrollEl.value) {
+		scrollEl.value.removeEventListener('scroll', throttledHandleToggleGradient);
+	}
+});
 </script>
 
 <style lang="postcss" scoped>
