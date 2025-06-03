@@ -116,7 +116,7 @@
 		"piscina": "^4.7.0",
 		"popper.js": "^1.16.1",
 		"prom-client": "^15.0.0",
-		"promise": "file:build/promise",
+		"promise": "file:src/util/promise",
 		"qrcode.vue": "^3.4.1",
 		"serialize-javascript": "^6.0.2",
 		"set-cookie-parser": "^2.4.6",
