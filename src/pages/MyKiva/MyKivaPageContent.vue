@@ -85,7 +85,7 @@
 						ref="triggerButton"
 						class="tw-mb-4"
 					>
-						Achievements
+						My achievements
 					</h3>
 					<BadgesSection
 						:badge-data="badgeData"
