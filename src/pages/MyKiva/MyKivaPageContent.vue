@@ -312,32 +312,26 @@ const handleComponentClosed = () => {
 const handleContinueJourneyClicked = () => {
 	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
 	const { id, challengeName } = badgeWithVisibleTiers;
+	let eventLabel = `${challengeName} Continue Journey Clicked`;
 	if (allBadgesCompleted.value) {
-		$kvTrackEvent(
-			'portfolio',
-			'click',
-			`${challengeName} See all of your impact stats`,
-			challengeName,
-		);
-		return router.push('/portfolio/lending-stats');
+		eventLabel = `${challengeName} See all of your impact stats`;
 	}
-
 	if (isSelectedJourneyComplete.value) {
-		$kvTrackEvent(
-			'portfolio',
-			'click',
-			`${challengeName} See all journeys`,
-			challengeName,
-		);
-
-		return handleComponentClosed();
+		eventLabel = `${challengeName} See all journeys`;
 	}
 	$kvTrackEvent(
 		'portfolio',
 		'click',
-		`${challengeName} Continue Journey Clicked`,
+		eventLabel,
 		challengeName,
 	);
+
+	if (allBadgesCompleted.value) {
+		return router.push('/portfolio/lending-stats');
+	}
+	if (isSelectedJourneyComplete.value) {
+		return handleComponentClosed();
+	}
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 

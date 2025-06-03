@@ -55,7 +55,7 @@
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
 							<div class="tw-space-y-0.5">
 								<div class="tw-font-small tw-px-0">
-									<span>Level {{ levelCaption(index) }}</span>
+									<span>Achievement {{ levelCaption(index) }}</span>
 								</div>
 								<div
 									class="tw-inline-flex tw-items-center tw-rounded tw-space-x-1"
@@ -183,25 +183,25 @@ const levelCaption = index => {
 	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
 	switch (tier.level) {
 		case 1:
-			return 'one';
+			return 'One';
 		case 2:
-			return 'two';
+			return 'Two';
 		case 3:
-			return 'three';
+			return 'Three';
 		case 4:
-			return 'four';
+			return 'Four';
 		case 5:
-			return 'five';
+			return 'Five';
 		case 6:
-			return 'six';
+			return 'Six';
 		case 7:
-			return 'seven';
+			return 'Seven';
 		case 8:
-			return 'eight';
+			return 'Eight';
 		case 9:
-			return 'nine';
+			return 'Nine';
 		case 10:
-			return 'ten';
+			return 'Ten';
 		default:
 			return tier.level;
 	}
@@ -274,8 +274,7 @@ const handleToggleGradient = e => {
 const throttledHandleToggleGradient = _throttle(handleToggleGradient, 100);
 
 onMounted(() => {
-	// Sidesheet scrollable section
-	scrollEl.value = document.querySelector('.tw-overflow-y-auto.tw-overscroll-y-contain');
+	scrollEl.value = document.getElementById('sidesheet-content');
 
 	if (scrollEl.value) {
 		scrollEl.value.addEventListener('scroll', throttledHandleToggleGradient);
