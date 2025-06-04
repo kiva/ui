@@ -271,7 +271,7 @@ const handleToggleGradient = e => {
 	}
 };
 
-const throttledHandleToggleGradient = _throttle(handleToggleGradient, 100);
+const throttledHandleToggleGradient = _throttle(handleToggleGradient, 300);
 
 onMounted(() => {
 	scrollEl.value = document.getElementById('sidesheet-content');

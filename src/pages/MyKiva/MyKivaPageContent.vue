@@ -112,12 +112,17 @@
 								@toggle-gradient="($event) => hideBotomGradient = $event"
 							/>
 							<div
-								v-if="!hideBotomGradient"
 								class="
 									tw-w-full tw-bg-red tw-absolute
 									tw-left-0 tw-bg-white tw-opacity-50
 									tw-pointer-events-none tw-z-sticky
+									tw-transition-opacity tw-duration-500
+									tw-ease-in-out
 								"
+								:class="{
+									'tw-opacity-0': hideBotomGradient,
+									'tw-opacity-full': !hideBotomGradient,
+								}"
 								style="
 									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
 									bottom: 81px;
