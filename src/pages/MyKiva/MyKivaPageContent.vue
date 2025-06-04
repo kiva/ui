@@ -109,13 +109,20 @@
 								:badge="selectedBadgeData"
 								:loans="loans"
 								@badge-level-clicked="handleBadgeJourneyLevelClicked"
+								@toggle-gradient="($event) => hideBotomGradient = $event"
 							/>
 							<div
 								class="
 									tw-w-full tw-bg-red tw-absolute
 									tw-left-0 tw-bg-white tw-opacity-50
 									tw-pointer-events-none tw-z-sticky
+									tw-transition-opacity tw-duration-500
+									tw-ease-in-out
 								"
+								:class="{
+									'tw-opacity-0': hideBotomGradient,
+									'tw-opacity-full': !hideBotomGradient,
+								}"
 								style="
 									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
 									bottom: 81px;
@@ -130,10 +137,10 @@
 							>
 								<div class="tw-flex tw-justify-end tw-bg-white">
 									<kv-button
-										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto md:tw-max-w-xs"
+										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto"
 										@click="handleContinueJourneyClicked"
 									>
-										Continue this journey
+										{{ journeyCtaBtn }}
 									</kv-button>
 								</div>
 							</div>
@@ -258,6 +265,7 @@ const totalUpdates = ref(0);
 const triggerButton = ref(null);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
+const hideBotomGradient = ref(false);
 
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
@@ -289,15 +297,46 @@ const handleBadgeSectionClicked = badge => {
 	}
 };
 
+const isSelectedJourneyComplete = computed(() => {
+	return selectedBadgeData.value?.achievementData?.tiers?.length === selectedBadgeData.value?.level;
+});
+
+const handleComponentClosed = () => {
+	selectedJourney.value = '';
+	const queryParams = { ...router.currentRoute?.value?.query };
+	if (queryParams.journey) {
+		delete queryParams.journey;
+		router.push({ ...router.currentRoute.value, query: queryParams });
+	}
+	selectedBadgeData.value = undefined;
+	showSideSheet.value = false;
+	showBadgeModal.value = false;
+	hideBotomGradient.value = false;
+};
+
 const handleContinueJourneyClicked = () => {
 	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
 	const { id, challengeName } = badgeWithVisibleTiers;
+	let eventLabel = `${challengeName} Continue Journey Clicked`;
+	if (allBadgesCompleted.value) {
+		eventLabel = `${challengeName} See all of your impact stats`;
+	}
+	if (isSelectedJourneyComplete.value) {
+		eventLabel = `${challengeName} See all journeys`;
+	}
 	$kvTrackEvent(
 		'portfolio',
 		'click',
-		`${challengeName} Continue Journey Clicked`,
+		eventLabel,
 		challengeName,
 	);
+
+	if (allBadgesCompleted.value) {
+		return router.push('/portfolio/lending-stats');
+	}
+	if (isSelectedJourneyComplete.value) {
+		return handleComponentClosed();
+	}
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
@@ -313,18 +352,6 @@ const handleBadgeJourneyLevelClicked = payload => {
 	);
 
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
-};
-
-const handleComponentClosed = () => {
-	selectedJourney.value = '';
-	const queryParams = { ...router.currentRoute?.value?.query };
-	if (queryParams.journey) {
-		delete queryParams.journey;
-		router.push({ ...router.currentRoute.value, query: queryParams });
-	}
-	selectedBadgeData.value = undefined;
-	showSideSheet.value = false;
-	showBadgeModal.value = false;
 };
 
 const fetchUserUpdates = loadMore => {
@@ -360,6 +387,16 @@ const showLoanFootnote = computed(() => props.loans.some(l => hasLoanFunFactFoot
 const updateJourney = journey => {
 	selectedJourney.value = journey;
 };
+
+const journeyCtaBtn = computed(() => {
+	if (allBadgesCompleted.value) {
+		return 'See all of your impact stats';
+	}
+	if (isSelectedJourneyComplete.value) {
+		return 'See all journeys';
+	}
+	return 'Continue this journey';
+});
 
 const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
