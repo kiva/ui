@@ -56,9 +56,7 @@ export default async context => {
 	};
 
 	if (esi) {
-		logFormatter(`Rendering ESI: ${context.url}`);
 		return renderESI(renderingOptions);
 	}
-	logFormatter(`Rendering Page: ${context.url}`);
 	return renderPage(renderingOptions);
 };
