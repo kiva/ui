@@ -7,13 +7,13 @@
 			>
 				{{ prefix }}
 			</span>
-			<p class="tw-text-h1 md:tw-text-jumbo">
+			<p class="tw-text-h1">
 				{{ parsedValue(value) }}
 			</p>
 		</div>
 		<p
 			v-html="label"
-			class="tw-text-base tw-text-center md:tw-text-left md:tw-ml-1"
+			class="tw-text-base tw-text-center md:tw-text-left md:tw-ml-1 md:tw-mt-1"
 			style="line-height: 22px;"
 		></p>
 	</div>

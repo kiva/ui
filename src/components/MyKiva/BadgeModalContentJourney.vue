@@ -128,7 +128,6 @@ import { KvUserAvatar } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
 import useBadgeData from '#src/composables/useBadgeData';
-import _throttle from 'lodash/throttle';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -271,19 +270,17 @@ const handleToggleGradient = e => {
 	}
 };
 
-const throttledHandleToggleGradient = _throttle(handleToggleGradient, 300);
-
 onMounted(() => {
 	scrollEl.value = document.getElementById('sidesheet-content');
 
 	if (scrollEl.value) {
-		scrollEl.value.addEventListener('scroll', throttledHandleToggleGradient);
+		scrollEl.value.addEventListener('scroll', handleToggleGradient);
 	}
 });
 
 onUnmounted(() => {
 	if (scrollEl.value) {
-		scrollEl.value.removeEventListener('scroll', throttledHandleToggleGradient);
+		scrollEl.value.removeEventListener('scroll', handleToggleGradient);
 	}
 });
 </script>

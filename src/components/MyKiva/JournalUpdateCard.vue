@@ -1,8 +1,8 @@
 <template>
-	<div class="tw-rounded tw-bg-white tw-p-2 update-card">
+	<div class="tw-rounded tw-bg-white tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
 		<div class="tw-flex tw-gap-1">
 			<div
-				class="tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8 tw-rounded-full tw-shadow"
+				class="tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8 tw-rounded-full tw-shadow tw-shrink-0"
 			>
 				<BorrowerImage
 					class="tw-w-full tw-rounded-full tw-bg-brand"
@@ -18,7 +18,7 @@
 				/>
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
-				<p class="tw-mb-0.5 tw-font-medium">
+				<p class="tw-mb-0.5 tw-font-medium tw-line-clamp-1">
 					{{ title }}
 				</p>
 				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded tw-w-auto">
@@ -39,7 +39,7 @@
 		</div>
 		<div
 			:class="[
-				'tw-flex tw-items-center tw-mt-2.5',
+				'tw-flex tw-items-center tw-mt-auto',
 				{ 'tw-justify-between': isFundraising },
 				{ 'tw-justify-end': !isFundraising },
 			]"
@@ -146,13 +146,3 @@ const shareLoan = () => {
 	$kvTrackEvent('portfolio', 'click', 'borrower-update-share-loan', loan.value.id);
 };
 </script>
-
-<style lang="postcss" scoped>
-.update-card {
-	width: 322px;
-
-	@screen md {
-		width: 422px;
-	}
-}
-</style>

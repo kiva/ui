@@ -6,16 +6,20 @@
 		@navigation-closed="showNavigation = false"
 	/>
 	<MyKivaHero
-		:user-info="userInfo"
-		:user-in-homepage="userInHomepage"
+		v-if="!userInHomepage"
 		@show-navigation="handleShowNavigation"
 	/>
-	<MyKivaProfile
-		:lender="lender"
-		:user-info="userInfo"
-		:user-in-homepage="userInHomepage"
-	/>
 	<MyKivaContainer>
+		<h3 class="tw-mt-4">
+			{{ userInfo?.userAccount?.firstName }}'s impact overview
+		</h3>
+		<MyKivaStats :user-balance="userBalance" class="tw-mt-2" />
+		<MyKivaProfile
+			:lender="lender"
+			:user-info="userInfo"
+			:user-in-homepage="userInHomepage"
+			class="tw-mt-4"
+		/>
 		<section v-if="isHeroEnabled" class="tw-mt-2">
 			<JourneyCardCarousel
 				:slides="heroSlides"
@@ -26,14 +30,14 @@
 				@update-journey="updateJourney"
 			/>
 		</section>
-		<section v-if="!allBadgesCompleted && !isHeroEnabled" class="tw-pt-2">
+		<section v-if="!allBadgesCompleted && !isHeroEnabled">
 			<BadgeTile
 				:user-info="userInfo"
 				:badges-data="badgeData"
 				@badge-clicked="handleBadgeTileClicked"
 			/>
 		</section>
-		<section class="tw-py-2">
+		<section class="tw-my-4">
 			<div
 				:class="[
 					'tw-flex',
@@ -54,124 +58,85 @@
 			</div>
 		</section>
 	</MyKivaContainer>
-	<section class="tw-my-2">
-		<MyKivaStats :user-achievements="badgeAchievementData" />
-		<MyKivaContainer>
-			<div class="tw-flex tw-flex-col tw-w-full lg:tw-hidden tw-mt-2">
-				<router-link
-					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
-					to="/portfolio/lending-stats"
-					class="tw-text-action tw-mx-auto tw-mb-2 hover:tw-text-action tw-font-medium"
-				>
-					See all lending stats
-				</router-link>
-				<button
-					class="tw-w-full tw-rounded tw-min-h-6 tw-border tw-font-medium tw-text-center tw-text-white
-							tw-bg-action hover:tw-bg-secondary tw-border-tertiary hover:tw-border-primary"
-					v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
-					@click="$router.push('/lend-by-category')"
-					variant="secondary"
-				>
-					Make a loan
-				</button>
-			</div>
-		</MyKivaContainer>
-	</section>
 	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
-			<section class="tw-pt-2 tw-pb-4">
-				<div class="tw-mt-3">
-					<h3
-						ref="triggerButton"
-						class="tw-mb-4"
-					>
-						My achievements
-					</h3>
-					<BadgesSection
-						:badge-data="badgeData"
-						:selected-journey="selectedJourney"
-						@badge-clicked="handleBadgeSectionClicked"
-					/>
-					<KvSideSheet
-						:visible="showSideSheet"
-						:show-back-button="false"
-						:show-headline-border="false"
-						:headline="computedHeadLine"
-						:show-go-to-link="false"
-						:kv-track-function="$kvTrackEvent"
-						:animation-source-element="triggerButton"
-						@side-sheet-closed="handleComponentClosed"
-						:width-dimensions="{ default: '100%', lg: '480px', md: '460px', sm:'100%' }"
-					>
-						<template #default>
-							<BadgeModalContentJourney
-								:key="selectedBadgeData.id"
-								:badge="selectedBadgeData"
-								:loans="loans"
-								@badge-level-clicked="handleBadgeJourneyLevelClicked"
-								@toggle-gradient="($event) => hideBotomGradient = $event"
-							/>
-							<div
-								class="
-									tw-w-full tw-bg-red tw-absolute
-									tw-left-0 tw-bg-white tw-opacity-50
-									tw-pointer-events-none tw-z-sticky
-									tw-transition-opacity tw-duration-500
-									tw-ease-in-out
-								"
-								:class="{
-									'tw-opacity-0': hideBotomGradient,
-									'tw-opacity-full': !hideBotomGradient,
-								}"
-								style="
-									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
-									bottom: 81px;
-									height: 124px;
-								"
-							>
+			<section class="tw-mb-4">
+				<h3>My achievements</h3>
+				<BadgesSection
+					:badge-data="badgeData"
+					:selected-journey="selectedJourney"
+					@badge-clicked="handleBadgeSectionClicked"
+					class="tw-mt-2"
+				/>
+				<KvSideSheet
+					:visible="showSideSheet"
+					:show-back-button="false"
+					:show-headline-border="false"
+					:headline="computedHeadLine"
+					:show-go-to-link="false"
+					:kv-track-function="$kvTrackEvent"
+					:animation-source-element="null"
+					@side-sheet-closed="handleComponentClosed"
+					:width-dimensions="{ default: '100%', lg: '480px', md: '460px', sm:'100%' }"
+				>
+					<template #default>
+						<BadgeModalContentJourney
+							:key="selectedBadgeData.id"
+							:badge="selectedBadgeData"
+							:loans="loans"
+							@badge-level-clicked="handleBadgeJourneyLevelClicked"
+							@toggle-gradient="($event) => hideBottomGradient = $event"
+						/>
+						<div
+							class="
+								tw-w-full tw-bg-red tw-absolute
+								tw-left-0 tw-bg-white tw-opacity-50
+								tw-pointer-events-none tw-z-sticky
+								tw-transition-opacity tw-duration-500
+								tw-ease-in-out
+							"
+							:class="{
+								'tw-opacity-0': hideBottomGradient,
+								'tw-opacity-full': !hideBottomGradient,
+							}"
+							style="
+								background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
+								bottom: 81px;
+								height: 124px;
+							"
+						>
+						</div>
+					</template>
+					<template #controls>
+						<div
+							class="tw-bg-white tw-w-full"
+						>
+							<div class="tw-flex tw-justify-end tw-bg-white">
+								<kv-button
+									class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto md:tw-max-w-xs"
+									@click="handleContinueJourneyClicked"
+								>
+									{{ journeyCtaBtn }}
+								</kv-button>
 							</div>
-						</template>
-						<template #controls>
-							<div
-								class="tw-bg-white tw-border-t tw-w-full tw-border-tertiary"
-							>
-								<div class="tw-flex tw-justify-end tw-bg-white">
-									<kv-button
-										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto"
-										@click="handleContinueJourneyClicked"
-									>
-										{{ journeyCtaBtn }}
-									</kv-button>
-								</div>
-							</div>
-						</template>
-					</KvSideSheet>
-					<BadgeModal
-						v-if="selectedBadgeData"
-						:show="showBadgeModal"
-						:badge="selectedBadgeData"
-						:lender="lender"
-						:state="state"
-						:tier="tier"
-						:is-earned-section="isEarnedSectionModal"
-						:loans="loans"
-						@badge-modal-closed="handleComponentClosed"
-						@badge-level-clicked="handleBadgeJourneyLevelClicked"
-					/>
-				</div>
+						</div>
+					</template>
+				</KvSideSheet>
+				<BadgeModal
+					v-if="selectedBadgeData"
+					:show="showBadgeModal"
+					:badge="selectedBadgeData"
+					:lender="lender"
+					:state="state"
+					:tier="tier"
+					:is-earned-section="isEarnedSectionModal"
+					:loans="loans"
+					@badge-modal-closed="handleComponentClosed"
+					@badge-level-clicked="handleBadgeJourneyLevelClicked"
+				/>
 			</section>
 		</MyKivaContainer>
 	</template>
-	<div
-		v-if="showLoanFootnote && isAchievementDataLoaded"
-		class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5"
-	>
-		<MyKivaContainer>
-			<section>
-				*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
-			</section>
-		</MyKivaContainer>
-	</div>
 </template>
 
 <script setup>
@@ -191,7 +156,6 @@ import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import {
 	ref,
@@ -262,10 +226,9 @@ const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
 const tier = ref(null);
 const totalUpdates = ref(0);
-const triggerButton = ref(null);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
-const hideBotomGradient = ref(false);
+const hideBottomGradient = ref(false);
 
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
@@ -311,7 +274,7 @@ const handleComponentClosed = () => {
 	selectedBadgeData.value = undefined;
 	showSideSheet.value = false;
 	showBadgeModal.value = false;
-	hideBotomGradient.value = false;
+	hideBottomGradient.value = false;
 };
 
 const handleContinueJourneyClicked = () => {
@@ -381,8 +344,6 @@ const loadMoreUpdates = () => {
 };
 
 const showSingleArray = computed(() => props.loans.length === 1 && loanUpdates.value.length === 1);
-
-const showLoanFootnote = computed(() => props.loans.some(l => hasLoanFunFactFootnote(l)));
 
 const updateJourney = journey => {
 	selectedJourney.value = journey;
