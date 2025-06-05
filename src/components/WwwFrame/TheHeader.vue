@@ -1,10 +1,5 @@
 <template>
-	<header
-		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="{
-			'md:tw-sticky tw-z-banner tw-w-full tw-top-0' : enableBasketExperiment,
-		}"
-	>
+	<header class="tw-transition-all tw-duration-1000 tw-ease-in-out">
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
@@ -39,45 +34,33 @@
 						/>
 						<div class="tw-flex-1"></div>
 						<span
-							v-show="hasBasket"
 							@click="$emit('show-basket')"
 							data-testid="header-basket"
-							class="header__button header__basket tw-cursor-pointer tw-inline-flex"
+							class="header__button header__basket tw-cursor-pointer"
 							v-kv-track-event="['TopNav','click-Basket']"
+							:style="isUserDataLoading ? {
+								display: 'var(--ui-data-corporate-basket-count-display, inline-flex)',
+							} : {
+								display: hasBasket ? 'inline-flex' : 'none'
+							}"
 						>
-							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+							<span
+								class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
+								:style="isUserDataLoading ? {content:'var(--ui-data-corporate-basket-count)'} : {}"
+							>
 								{{ basketCount - lcaLoanCount }}
 							</span>
 							Basket
 						</span>
-						<router-link
+						<my-kiva-button
 							v-show="!isVisitor"
 							:id="myKivaMenuId"
-							to="/portfolio"
-							data-testid="header-portfolio"
-							target="_blank"
-							class="header__button header__portfolio tw-inline-flex"
-							v-kv-track-event="['TopNav','click-Portfolio']"
-						>
-							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								{{ $filters.numeral(balance, '$0') }}
-							</span>
-							<template v-if="isDefaultProfilePic">
-								<span class="tw-sr-only">My Portfolio</span>
-								<kv-material-icon
-									:icon="mdiAccountCircle"
-									class="tw-inline-block tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5"
-								/>
-							</template>
-							<img
-								v-else
-								:src="profilePic"
-								alt="My portfolio"
-								class="data-hj-suppress tw-inline-block
-									tw-w-2.5 tw-h-2.5 md:tw-w-3.5 md:tw-h-3.5
-									tw-rounded-full tw-overflow-hidden tw-object-fill"
-							>
-						</router-link>
+							class="header__button header__portfolio"
+							:balance="balance"
+							:is-user-data-loading="isUserDataLoading"
+							:profile-pic="profilePic"
+							:profile-pic-id="profilePicId"
+						/>
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
@@ -339,22 +322,26 @@
 
 							<!-- Basket -->
 							<div
-								:class="{
-									'tw-hidden': !hasBasket,
-									'tw-flex': hasBasket
+								:style="isUserDataLoading ? {
+									display: 'var(--ui-data-basket-count-display, flex)',
+								} : {
+									display: hasBasket ? 'flex' : 'none'
 								}"
 							>
 								<router-link
 									to="/basket"
 									data-testid="header-basket"
-									class="tw-hidden"
+									class="header__button header__basket"
 									:class="{
-										'header__button header__basket md:tw-flex': hasBasket,
-										'header__button header__basket !tw-flex': hasBasket && hasLargeBasket
+										'tw-hidden md:tw-flex': !hasLargeBasket,
+										'tw-flex': hasLargeBasket,
 									}"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									<span
+										class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
+										:style="isUserDataLoading ? {content:'var(--ui-data-basket-number)'} : {}"
+									>
 										{{ basketNumber }}
 									</span>
 									<span class="tw-hidden md:tw-flex">Basket</span>
@@ -364,15 +351,14 @@
 								<router-link
 									to="/basket"
 									data-testid="header-basket"
-									class="tw-flex tw-items-center"
-									:class="{
-										'tw-hidden': !hasBasket,
-										'tw-relative md:tw-hidden tw-text-eco-green-4': hasBasket
-									}"
+									class="tw-flex tw-items-center tw-relative md:tw-hidden tw-text-eco-green-4"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<!-- eslint-disable-next-line max-len -->
-									<span class="tw-absolute tw-w-4 tw-h-4 tw-pt-1 tw-text-white tw-text-center tw-text-small tw-font-medium">
+									<span
+										class="tw-absolute tw-w-4 tw-h-4 tw-pt-1
+											tw-text-white tw-text-center tw-text-small tw-font-medium"
+										:style="isUserDataLoading ? {content:'var(--ui-data-basket-count)'} : {}"
+									>
 										{{ basketCount }}
 									</span>
 									<kv-material-icon
@@ -406,33 +392,15 @@
 							</kv-button>
 
 							<!-- Logged in Profile -->
-							<router-link
+							<my-kiva-button
 								v-show="!isVisitor"
 								:id="myKivaMenuId"
-								data-testid="header-portfolio"
-								to="/portfolio"
-								class="header__button header__portfolio tw-inline-flex"
-								v-kv-track-event="['TopNav','click-Portfolio']"
-							>
-								<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-									{{ $filters.numeral(balance, '$0') }}
-								</span>
-								<template v-if="isDefaultProfilePic">
-									<span class="tw-sr-only">My Portfolio</span>
-									<kv-material-icon
-										:icon="mdiAccountCircle"
-										class="tw-inline-block tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5"
-									/>
-								</template>
-								<img
-									v-else
-									:src="profilePic"
-									alt="My portfolio"
-									class="data-hj-suppress tw-inline-block
-										tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5
-										tw-rounded-full tw-overflow-hidden tw-object-fill"
-								>
-							</router-link>
+								class="header__button header__portfolio"
+								:balance="balance"
+								:is-user-data-loading="isUserDataLoading"
+								:profile-pic="profilePic"
+								:profile-pic-id="profilePicId"
+							/>
 
 							<kv-dropdown
 								:controller="myKivaMenuId"
@@ -559,23 +527,24 @@
 				</template>
 			</kv-page-container>
 		</nav>
-		<promo-credit-banner v-if="!hidePromoCreditBanner" :basket-state="basketState" />
+		<promo-credit-banner v-if="!hidePromoCreditBanner" />
 	</header>
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue';
-import { handleApolloErrors } from '#src/util/apolloPreFetch';
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-import logReadQueryError from '#src/util/logReadQueryError';
-import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
+import {
+	hasLentBeforeCookie,
+	hasDepositBeforeCookie,
+	userHasLentBefore,
+	userHasDepositBefore,
+} from '#src/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
-import headerQuery from '#src/graphql/query/wwwHeader.graphql';
-import { gql } from 'graphql-tag';
+import headerQueryPrivate from '#src/graphql/query/wwwHeaderPrivate.graphql';
+import headerQueryPublic from '#src/graphql/query/wwwHeaderPublic.graphql';
 import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
 import KvDropdown from '#src/components/Kv/KvDropdown';
 import {
-	mdiAccountCircle,
 	mdiChevronDown,
 	mdiMagnify,
 	mdiBriefcase,
@@ -583,6 +552,7 @@ import {
 import CampaignLogoGroup from '#src/components/CorporateCampaign/CampaignLogoGroup';
 import _throttle from 'lodash/throttle';
 import numeral from 'numeral';
+import MyKivaButton from '#src/components/WwwFrame/Header/MyKivaButton';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
@@ -594,21 +564,7 @@ import {
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
-const hasLentBeforeCookie = 'kvu_lb';
-const hasDepositBeforeCookie = 'kvu_db';
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-
-const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
-	my {
-		id
-		loans(limit:1) {
-				totalCount
-		}
-		transactions(limit:1, filter:{category:deposit}) {
-				totalCount
-		}
-	}
-}`;
 
 export default {
 	name: 'TheHeader',
@@ -618,6 +574,7 @@ export default {
 		KvDropdown,
 		KvMaterialIcon,
 		KvPageContainer,
+		MyKivaButton,
 		PromoCreditBanner,
 		SearchBar,
 		KvButton,
@@ -628,14 +585,12 @@ export default {
 	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
 	data() {
 		return {
-			isVisitor: true,
 			isBorrower: false,
 			isLendMenuDesired: false,
 			isLendMenuVisible: false,
 			hideLendMenuTimeout: null,
 			loanId: null,
 			trusteeId: null,
-			isFreeTrial: false,
 			basketCount: 0,
 			lcaLoanCount: 0,
 			balance: 0,
@@ -645,8 +600,6 @@ export default {
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
-			basketState: {},
-			mdiAccountCircle,
 			mdiChevronDown,
 			mdiMagnify,
 			mdiBriefcase,
@@ -656,7 +609,7 @@ export default {
 			basketTotal: 0,
 			teams: null,
 			teamsMenuEnabled: false,
-			loansInBasket: [],
+			isUserDataLoading: false,
 		};
 	},
 	emits: ['show-basket'],
@@ -689,11 +642,11 @@ export default {
 		},
 	},
 	computed: {
+		isVisitor() {
+			return !this.userId && !this.isUserDataLoading;
+		},
 		isTrustee() {
 			return !!this.trusteeId;
-		},
-		isDefaultProfilePic() {
-			return isLegacyPlaceholderAvatar(this.profilePicId);
 		},
 		trusteeLoansUrl() {
 			return {
@@ -707,9 +660,9 @@ export default {
 		},
 		hasBasket() {
 			if (this.corporate) {
-				return this.basketCount - this.lcaLoanCount > 0 && !this.isFreeTrial;
+				return this.basketCount - this.lcaLoanCount > 0;
 			}
-			return this.basketCount > 0 && !this.isFreeTrial;
+			return this.basketCount > 0;
 		},
 		hidePromoCreditBanner() {
 			// hide this banner on managed lending landing + checkout pages
@@ -739,92 +692,45 @@ export default {
 			}
 			return this.basketCount;
 		},
-		enableBasketExperiment() {
-			return this.enableAddToBasketExp && this.isInExperimentPages;
-		},
 	},
-	apollo: {
-		query: headerQuery,
-		preFetch(config, client, args) {
-			return client.query({
-				query: headerQuery,
-			}).then(({ data, errors }) => {
-				if (errors) {
-					// Handle Apollo errors with custom code
-					return handleApolloErrors(config.errorHandlers, errors, args);
-				}
-
-				const { cookieStore } = args;
-				const hasLentBeforeValue = cookieStore.get(hasLentBeforeCookie);
-				const hasDepositBeforeValue = cookieStore.get(hasDepositBeforeCookie);
-
-				// eslint-disable-next-line max-len
-				return (data?.my?.userAccount?.id && (hasLentBeforeValue === undefined || hasDepositBeforeValue === undefined)) ? client.query({ query: optimizelyUserDataQuery }) : Promise.resolve();
-			});
+	apollo: [
+		{
+			query: headerQueryPublic,
+			preFetch: true,
+			result({ data }) {
+				this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
+			},
 		},
-		result({ data }) {
-			this.userId = data?.my?.userAccount?.id ?? null;
-			this.isVisitor = !data?.my?.userAccount?.id;
-			this.isBorrower = data?.my?.isBorrower ?? false;
-			this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
-			this.trusteeId = data?.my?.trustee?.id ?? null;
-			this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
-			this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
-			this.profilePic = data?.my?.lender?.image?.url ?? '';
-			this.profilePicId = data?.my?.lender?.image?.id ?? null;
-			this.basketState = data || {};
-			this.hasEverLoggedIn = data?.hasEverLoggedIn;
-			this.basketTotal = data.shop?.basket?.items?.values?.reduce((sum, item) => {
-				return sum + +(item?.price ?? 0);
-			}, 0) ?? 0;
-			this.teams = data?.my?.teams ?? {};
-			this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
-
-			// Add To Basket Experiment MP-346
-			const loans = data?.shop?.basket?.items?.values
-				?.filter(loan => loan?.__typename === 'LoanReservation'); // eslint-disable-line no-underscore-dangle
-			this.loansInBasket = loans?.slice(0, 3).map(item => {
-				return {
-					id: item.id,
-					name: item?.loan?.name ?? '',
-					image: item?.loan?.image?.url ?? '',
-				};
-			}) ?? [];
-		},
-		errorHandlers: {
-			'shop.invalidBasketId': ({ cookieStore, route }) => {
-				cookieStore.remove('kvbskt', { path: '/', secure: true });
-				// on server, reject with url to trigger redirect
-				if (typeof window === 'undefined') {
-					return Promise.reject(route);
+		{
+			query: headerQueryPrivate,
+			preFetch(config, client, { renderConfig }) {
+				if (renderConfig.useCDNCaching) {
+					// if using CDN caching, don't prefetch
+					return Promise.resolve();
 				}
-				// otherwise on client refresh the page
-				window.location = route.fullPath;
-			}
-		}
-	},
+				return client.query({ query: headerQueryPrivate });
+			},
+			result({ data }) {
+				this.isUserDataLoading = false;
+				this.userId = data?.my?.userAccount?.id ?? null;
+				this.isBorrower = data?.my?.isBorrower ?? false;
+				this.loanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
+				this.trusteeId = data?.my?.trustee?.id ?? null;
+				this.basketCount = data?.shop?.nonTrivialItemCount ?? 0;
+				this.balance = Math.floor(data?.my?.userAccount?.balance ?? 0);
+				this.profilePic = data?.my?.lender?.image?.url ?? '';
+				this.profilePicId = data?.my?.lender?.image?.id ?? null;
+				this.hasEverLoggedIn = data?.hasEverLoggedIn;
+				this.basketTotal = numeral(data.shop?.basket?.totals?.itemTotal).value() || 0;
+				this.teams = data?.my?.teams ?? {};
+			},
+		},
+	],
 	created() {
-		// MARS-194 User Metrics for Optimizely A/B experiment
-		let hasLentBefore = this.cookieStore.get(hasLentBeforeCookie);
-		let hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie);
-
-		if (hasLentBefore === undefined || hasDepositBefore === undefined) {
-			try {
-				let userData = {};
-				userData = this.apollo.readQuery({
-					query: optimizelyUserDataQuery,
-				});
-
-				hasLentBefore = userData?.my?.loans?.totalCount > 0;
-				hasDepositBefore = userData?.my?.transactions?.totalCount > 0;
-
-				this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
-				this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-			} catch (e) {
-				logReadQueryError(e, 'User Data For Optimizely Metrics');
-			}
-		}
-
+		const { cdnNotedLoggedIn, useCDNCaching } = this.$renderConfig;
+		this.isUserDataLoading = useCDNCaching && cdnNotedLoggedIn;
+	},
+	mounted() {
 		const { version } = this.apollo.readFragment({
 			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 			fragment: experimentVersionFragment,
@@ -834,16 +740,19 @@ export default {
 			this.cookieStore.set(COMMS_OPT_IN_EXP_KEY, version, { path: '/' });
 		}
 
-		userHasLentBefore(this.cookieStore.get(hasLentBeforeCookie) === 'true');
-		userHasDepositBefore(this.cookieStore.get(hasDepositBeforeCookie) === 'true');
-	},
-	mounted() {
+		// MARS-194 User Metrics for Optimizely A/B experiment
+		const hasLentBefore = this.cookieStore.get(hasLentBeforeCookie) === 'true';
+		const hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie) === 'true';
+
+		userHasLentBefore(hasLentBefore);
+		userHasDepositBefore(hasDepositBefore);
+
 		// MARS-246 Hotjar user attributes
 		setHotJarUserAttributes({
 			userId: this.userId,
 			hasEverLoggedIn: this.hasEverLoggedIn,
-			hasLentBefore: this.cookieStore.get(hasLentBeforeCookie) === 'true',
-			hasDepositBefore: this.cookieStore.get(hasDepositBeforeCookie) === 'true',
+			hasLentBefore,
+			hasDepositBefore,
 		});
 		window.addEventListener('resize', this.determineIfMobile());
 	},

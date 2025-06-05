@@ -20,7 +20,8 @@ export default async function createApp({
 	fetch,
 	kivaUserAgent,
 	router,
-	cdnNotedLoggedIn = false, // TODO: supply this from the server
+	cdnNotedLoggedIn = false,
+	isServer = false,
 } = {}) {
 	const renderConfig = {
 		cdnNotedLoggedIn,
@@ -32,8 +33,11 @@ export default async function createApp({
 	// Install router
 	app.use(router);
 
-	// Wait for the router to be ready before reading the current route
-	await router.isReady();
+	if (!isServer) {
+		// Wait for the router to be ready before reading the current route
+		await router.isReady();
+	}
+
 	const route = router.currentRoute.value;
 
 	// Determine if the route should use CDN caching
@@ -65,8 +69,8 @@ export default async function createApp({
 	const apolloClient = createApolloClient({
 		...apollo,
 		appConfig,
-		cookieStore: useCDNCaching ? null : cookieStore,
-		kvAuth0: useCDNCaching ? null : kvAuth0,
+		cookieStore: useCDNCaching && isServer ? null : cookieStore,
+		kvAuth0: useCDNCaching && isServer ? null : kvAuth0,
 		fetch,
 		userAgent: kivaUserAgent,
 		route,
@@ -91,5 +95,6 @@ export default async function createApp({
 		head,
 		router,
 		apolloClient,
+		renderConfig,
 	};
 }
