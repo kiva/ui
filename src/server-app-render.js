@@ -1,85 +1,21 @@
 /* eslint-disable vue/multi-word-component-names, no-throw-literal */
 import { renderSSRHead } from '@unhead/ssr';
-import serialize from 'serialize-javascript';
 import { renderToString } from 'vue/server-renderer';
-import headScript from '#src/head/script';
-import oneTrustEvent from '#src/head/oneTrustEvent';
 import createApp from '#src/main';
 import createRouter from '#src/router';
+import fillTemplate from '#src/rendering/fillTemplate';
+import { renderExternals } from '#src/rendering/externals';
+import renderGlobals from '#src/rendering/globals';
+import renderConfigGlobal from '#src/rendering/kvConfig';
+import { renderPreloadLinks } from '#src/rendering/preloadLinks';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import { authenticationGuard } from '#src/util/authenticationGuard';
 import setBasketCookie from '#src/util/basketCookie';
 import logFormatter from '#src/util/logFormatter';
 import { buildUserDataGlobal } from '#src/util/optimizelyUserMetrics';
 import setVisitorIdCookie from '#src/util/visitorCookie';
-import renderGlobals from '#src/util/renderGlobals';
 
 const isDev = process.env.NODE_ENV !== 'production';
-
-function fillTemplate(template, data) {
-	let html = template;
-	Object.keys(data).forEach(key => {
-		html = html.replace(`\${${key}}`, data[key]);
-	});
-	// TODO: minify html
-	return html;
-}
-
-// This function renders a <link> tag for a given file
-function renderPreloadLink(file) {
-	if (file.endsWith('.js')) {
-		return `<link rel="modulepreload" crossorigin href="${file}">`;
-	}
-	if (file.endsWith('.css')) {
-		return `<link rel="stylesheet" href="${file}">`;
-	}
-	// TODO: handle other file types if needed
-	return '';
-}
-
-// This function renders <link> tags for all files in the manifest for the given modules
-function renderPreloadLinks(modules, manifest = {}) {
-	let links = '';
-	const seen = new Set();
-	modules.forEach(id => {
-		const files = manifest[id];
-		if (files) {
-			files.forEach(file => {
-				if (!seen.has(file)) {
-					seen.add(file);
-					links += renderPreloadLink(file);
-				}
-			});
-		}
-	});
-	return links;
-}
-
-let renderedConfig = '';
-let renderedExternals = '';
-
-// This adds non-vue-rendered html strings to the request context.
-// These strings are added to the final html response using server/index.template.html
-function renderExtraHtml(config) {
-	// render config if it hasn't been rendered yet
-	if (!renderedConfig) {
-		renderedConfig = renderGlobals({ __KV_CONFIG__: config });
-	}
-	// render externals if they haven't been rendered yet
-	if (!renderedExternals) {
-		// add OneTrust loader
-		if (config.oneTrust && config.oneTrust.enable) {
-			const key = `${config.oneTrust.key}${config.oneTrust.domainSuffix}`;
-			const src = `https://cdn.cookielaw.org/consent/${key}/otSDKStub.js`;
-			renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
-		}
-		// add primary head script
-		const renderedHeadScript = serialize(headScript);
-		const renderedOneTrustEvent = serialize(oneTrustEvent);
-		// eslint-disable-next-line max-len
-		renderedExternals += `<script>(${renderedHeadScript})(window.__KV_CONFIG__, ${renderedOneTrustEvent});</script>`;
-	}
-}
 
 export default async function renderPage({
 	cookieStore,
@@ -107,7 +43,8 @@ export default async function renderPage({
 		app,
 		head,
 		apolloClient,
-	} = createApp({
+		renderConfig,
+	} = await createApp({
 		name: '',
 		appConfig: config,
 		apollo: {
@@ -122,13 +59,11 @@ export default async function renderPage({
 		fetch,
 		kivaUserAgent,
 		router,
+		isServer: true,
 	});
 
-	// render content for template
-	renderExtraHtml(config);
-
 	try {
-		if (!router.currentRoute.value.meta?.useCDNCaching) {
+		if (!renderConfig.useCDNCaching) {
 			// Set the visitor id cookie
 			setVisitorIdCookie(cookieStore);
 
@@ -149,7 +84,8 @@ export default async function renderPage({
 			cookieStore,
 			kvAuth0,
 			route: router.currentRoute.value,
-			device
+			device,
+			renderConfig,
 		});
 
 		let sp; // Vue serverPrefetch timing start
@@ -192,8 +128,8 @@ export default async function renderPage({
 			// https://github.com/vitejs/vite/issues/6887#issuecomment-1038664078
 			appHtml: isDev ? '' : appHtml,
 			appState,
-			appConfig: renderedConfig,
-			externals: renderedExternals,
+			appConfig: renderConfigGlobal(config),
+			externals: renderExternals(config),
 			googleTagmanagerId: config.googleTagmanagerId,
 			preloadLinks,
 		};

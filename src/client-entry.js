@@ -2,15 +2,13 @@
 /* eslint-disable no-underscore-dangle, vue/require-name-property */
 import '#src/assets/scss/tailwind/tailwind.css';
 import '#src/assets/scss/app.scss';
+import { mergeApolloCacheData } from '#src/util/apolloCacheUtils';
 
 // Facilitate using sprite icon SVGs in KvIcon
 // eslint-disable-next-line import/no-unresolved
 import 'virtual:svg-store';
 
 const config = window.__KV_CONFIG__ || {};
-
-// Set webpack public asset path based on configuration
-// __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
 async function getCookieStore() {
 	const { default: CookieStore } = await import('#src/util/cookieStore');
@@ -254,13 +252,16 @@ async function initApp() {
 		router,
 	});
 
-	// Apply Server state to Client Store
-	if (window.__APOLLO_STATE__) {
-		apolloClient.cache.restore(window.__APOLLO_STATE__);
-	}
 	// Apply persisted state from session storage to Client Store
 	if (config.apolloPersistCache) {
-		setupApolloCachePersistence(apolloClient.cache);
+		await setupApolloCachePersistence(apolloClient.cache);
+	}
+	// Apply Server state to Client Store
+	if (window.__APOLLO_STATE__) {
+		mergeApolloCacheData(apolloClient, window.__APOLLO_STATE__);
+	}
+	if (window.__APOLLO_STATE_ESI__) {
+		mergeApolloCacheData(apolloClient, window.__APOLLO_STATE_ESI__);
 	}
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);

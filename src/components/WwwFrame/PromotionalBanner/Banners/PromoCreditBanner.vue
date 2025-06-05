@@ -1,6 +1,14 @@
 <template>
 	<div
-		v-if="isFromImpactDashboard"
+		v-if="isUserDataLoading"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		data-testid="banner-placeholder"
+		style="display: var(--ui-data-promo-credit-banner-display, block);"
+	>
+		&nbsp;
+	</div>
+	<div
+		v-else-if="isFromImpactDashboard"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner-impact-dashboard"
 	>
@@ -15,7 +23,7 @@
 		>
 
 			Please go back to your first Kiva tab or <span class="tw-underline">
-				click here</span> to use your {{ promoData.bonusBalanceFormatted }} promo credit.
+				click here</span> to use your {{ bonusBalanceFormatted }} promo credit.
 
 		</a>
 	</div>
@@ -24,9 +32,9 @@
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner"
 	>
-		<template v-if="promoData.displayName && promoData.pageId">
+		<template v-if="promoFundDisplayName && managedAccountPageId">
 			<router-link
-				:to="`/cc/${promoData.pageId}`"
+				:to="`/cc/${managedAccountPageId}`"
 				class="
 					tw-text-white
 					tw-no-underline hover:tw-no-underline hover:tw-text-white
@@ -35,7 +43,7 @@
 				v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 			>
 				<span class="tw-underline">
-					Complete a loan to receive your lending reward from {{ promoData.displayName }}!
+					Complete a loan to receive your lending reward from {{ promoFundDisplayName }}!
 				</span>
 			</router-link>
 		</template>
@@ -51,7 +59,7 @@
 		data-testid="bonus-banner"
 	>
 		<a
-			v-if="promoData && !promoData.pageId"
+			v-if="!managedAccountPageId"
 			href="/lend/freeCreditEligible"
 			class="
 				tw-text-white
@@ -61,11 +69,11 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			Select a borrower to <span class="tw-underline">
-				lend your {{ $filters.numeral(promoData.bonusBalance, '$0.00') }} free credit</span>
+				lend your {{ $filters.numeral(bonusBalance, '$0.00') }} free credit</span>
 		</a>
 		<router-link
-			v-if="promoData && promoData.pageId"
-			:to="`/cc/${promoData.pageId}`"
+			v-if="managedAccountPageId"
+			:to="`/cc/${managedAccountPageId}`"
 			class="
 				tw-text-white
 				tw-no-underline hover:tw-no-underline hover:tw-text-white
@@ -74,7 +82,7 @@
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
 			<span class="tw-underline">
-				You have {{ $filters.numeral(promoData.available, '$0.00') }} from {{ promoData.displayName }} to lend!
+				You have {{ $filters.numeral(creditAvailable, '$0.00') }} from {{ promoFundDisplayName }} to lend!
 			</span>
 		</router-link>
 	</div>
@@ -84,15 +92,18 @@
 import numeral from 'numeral';
 import { gql } from 'graphql-tag';
 import { indexIn } from '#src/util/comparators';
+import {
+	isFromImpactDashboard,
+	userPromoBalanceFragment,
+	basketPromoAvailableFragment,
+	bonusBalance,
+} from '#src/util/promoCreditBanner';
 
-const promoCampaignInfo = gql`
-	query promoCampaign($basketId: String, $promoFundId: String) {
+const userPromoCredits = gql`
+	query userPromoCredits($basketId: String) {
 		my {
 			id
-			userAccount {
-				id
-				promoBalance
-			}
+			...UserPromoBalance
 		}
 		shop (basketId: $basketId) {
 			id
@@ -106,13 +117,22 @@ const promoCampaignInfo = gql`
 						available
 						promoFund {
 							id
+							displayName
 						}
 					}
 				}
-				totals {
-					creditAvailableTotal
-				}
 			}
+			...BasketPromoAvailable
+		}
+	}
+	${userPromoBalanceFragment}
+	${basketPromoAvailableFragment}
+`;
+
+const promoCampaignInfo = gql`
+	query promoCampaign($basketId: String, $promoFundId: String) {
+		shop (basketId: $basketId) {
+			id
 			promoCampaign (promoFundId: $promoFundId) {
 				promoFund {
 					id
@@ -129,12 +149,9 @@ const promoCampaignInfo = gql`
 `;
 export default {
 	name: 'PromoCreditBanner',
-	inject: ['apollo', 'cookieStore'],
-	props: {
-		basketState: {
-			type: Object,
-			default: () => {},
-		},
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
 	},
 	data() {
 		return {
@@ -142,18 +159,47 @@ export default {
 			hasFreeCredits: false,
 			lendingRewardOffered: false,
 			promoCampaignData: null,
+			priorityBasketCredit: null,
+			isUserDataLoading: false,
 		};
 	},
+	apollo: [
+		{
+			query: userPromoCredits,
+			preFetch(config, client, { renderConfig }) {
+				if (renderConfig.useCDNCaching) {
+					// if using CDN caching, don't prefetch
+					return Promise.resolve();
+				}
+				return client.query({ query: userPromoCredits });
+			},
+			result({ data }) {
+				this.isUserDataLoading = false;
+				this.setPromoState(data);
+				this.setPriorityBasketCredit(data);
+			},
+		},
+		{
+			query: promoCampaignInfo,
+			preFetch: false,
+			variables() {
+				return {
+					promoFundId: this.promoFundId ?? null,
+				};
+			},
+			result({ data }) {
+				this.promoCampaignData = data?.shop?.promoCampaign ?? null;
+			}
+		},
+	],
 	created() {
-		if (this.basketState && Object.entries(this.basketState).length) {
-			this.setPromoState(this.basketState);
-		}
-	},
-	mounted() {
-		// verify promoCampaign information
-		this.fetchManagedAccountCampaign();
+		const { useCDNCaching } = this.$renderConfig;
+		this.isUserDataLoading = useCDNCaching;
 	},
 	computed: {
+		bonusBalanceFormatted() {
+			return numeral(this.bonusBalance).format('$0[.]00');
+		},
 		impactDashboardLink() {
 			// return the impact dashboard link
 			// get all query params and remove the fromContext
@@ -163,19 +209,7 @@ export default {
 			return `${this.$route.query?.fromContext}?${new URLSearchParams(queryParams).toString()}`;
 		},
 		isFromImpactDashboard() {
-			return this.$route.query?.fromContext?.startsWith('/impact-dashboard') ?? false;
-		},
-		priorityBasketCredit() {
-			// get credits list
-			const basketCredits = this.basketState?.shop?.basket?.credits?.values ?? [];
-			if (!basketCredits.length) return false;
-			// establish precedence for credit types
-			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
-			// copy and sort the credits
-			const creditsArrayCopy = basketCredits.map(credit => credit);
-			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
-			// return the 1st credit for presentation
-			return creditsArrayCopy.length ? creditsArrayCopy[0] : null;
+			return isFromImpactDashboard(this.$route);
 		},
 		creditAvailable() {
 			return this.priorityBasketCredit?.available ?? null;
@@ -191,69 +225,27 @@ export default {
 		managedAccountPageId() {
 			return this.promoCampaignData?.managedAccount?.pageId ?? null;
 		},
-		promoData() {
-			return {
-				bonusBalance: this.bonusBalance,
-				bonusBalanceFormatted: numeral(this.bonusBalance).format('$0[.]00'),
-				available: this.creditAvailable,
-				displayName: this.promoFundDisplayName,
-				pageId: this.managedAccountPageId,
-			};
-		}
-	},
-	watch: {
-		basketState: {
-			handler(basketState) {
-				if (basketState && Object.entries(basketState).length) {
-					this.setPromoState(basketState);
-				}
-			},
-			immediate: true,
-			deep: true,
-		}
 	},
 	methods: {
-		fetchManagedAccountCampaign() {
-			this.apollo.query({
-				query: promoCampaignInfo,
-				variables: this.promoFundId ? {
-					promoFundId: String(this.promoFundId)
-				} : {}
-			})
-				.then(({ data }) => {
-					this.promoCampaignData = data?.shop?.promoCampaign ?? null;
-				});
-		},
 		setPromoState(promotionData) {
-			// parse individual promo credit type amounts
-			const bonusAvailableTotal = numeral(
-				promotionData.shop?.basket?.totals?.bonusAvailableTotal
-			).value();
-			const freeTrialAvailableTotal = numeral(
-				promotionData.shop?.basket?.totals?.freeTrialAvailableTotal
-			).value();
-			const redemptionCodeAvailableTotal = numeral(
-				promotionData.shop?.basket?.totals?.redemptionCodeAvailableTotal
-			).value();
-			const universalCodeAvailableTotal = numeral(
-				promotionData.shop?.basket?.totals?.universalCodeAvailableTotal
-			).value();
-
-			const basketPromoBalance = bonusAvailableTotal
-				+ freeTrialAvailableTotal
-				+ redemptionCodeAvailableTotal
-				+ universalCodeAvailableTotal;
-
-			// Parse user promoBalance and creditAvailableTotal from basket
-			const userPromoBalance = numeral(promotionData?.my?.userAccount?.promoBalance ?? 0).value();
-			// if we have promo balance from the user or the basket proceed with that
-			this.bonusBalance = userPromoBalance >= basketPromoBalance
-				? userPromoBalance : basketPromoBalance;
+			// set the bonus balance
+			this.bonusBalance = bonusBalance(promotionData);
 
 			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
 			this.hasFreeCredits = promotionData?.shop?.basket?.hasFreeCredits;
-		}
+		},
+		setPriorityBasketCredit(promotionData) {
+			// get credits list
+			const basketCredits = promotionData?.shop?.basket?.credits?.values ?? [];
+			// establish precedence for credit types
+			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
+			// copy and sort the credits
+			const creditsArrayCopy = basketCredits.map(credit => credit);
+			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
+			// use the 1st credit for presentation
+			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
+		},
 	}
 };
 </script>
