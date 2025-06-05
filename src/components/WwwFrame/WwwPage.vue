@@ -1,6 +1,6 @@
 <template>
 	<div class="www-page">
-		<the-banner-area v-show="!isKivaAppReferral" />
+		<global-promo-contentful v-show="!isKivaAppReferral" />
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
@@ -22,10 +22,10 @@ import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.grap
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-import TheBannerArea from './TheBannerArea';
 
 export default {
 	name: 'WwwPage',
@@ -34,7 +34,7 @@ export default {
 	],
 	components: {
 		CookieBanner,
-		TheBannerArea,
+		GlobalPromoContentful,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,

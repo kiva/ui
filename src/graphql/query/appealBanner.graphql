@@ -1,40 +1,10 @@
-query appealBanner($basketId: String) {
-	my {
-		id
-		userAccount {
-			id
-			promoBalance
-		}
-	}
-	shop (basketId: $basketId) {
-		id
-		basket {
-			id
-			hasFreeCredits
-			totals {
-				redemptionCodeAvailableTotal
-			}
-		}
-		lendingRewardOffered
-	}
+query appealBanner {
 	general {
-		appeal_enabled: featureSetting(key: "endofyear_appeal.enabled") {
-			key
-			value
-		}
-		appeal_match_enabled: featureSetting(key: "endofyear_appeal_match.enabled") {
-			key
-			value
-		}
-		appeal_bonus_active: uiConfigSetting(key: "endofyear_appeal_bonus") {
-			key
-			value
-		}
 		kivaStats {
 			latestDonationCampaign {
-        		amount_raised
-        		target_amount
-    		}
-    	}
+				amount_raised
+				target_amount
+			}
+		}
 	}
 }
