@@ -55,7 +55,10 @@ export default {
 		LendListMenu,
 		LendMegaMenu,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	data() {
 		return {
 			userId: null,

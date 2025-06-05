@@ -14,7 +14,10 @@ import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerCo
 
 export default {
 	name: 'TheBannerArea',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	components: {
 		GlobalPromoContentful,
 	},

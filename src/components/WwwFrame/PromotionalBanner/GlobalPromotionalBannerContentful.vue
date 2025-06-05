@@ -77,7 +77,10 @@ export default {
 			enableDepositExperiment: false,
 		};
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	apollo: {
 		query: bannerQuery,
 		preFetch: true,

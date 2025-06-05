@@ -581,7 +581,11 @@ export default {
 		TheLendMenu: defineAsyncComponent(() => import('#src/components/WwwFrame/LendMenu/TheLendMenu')),
 		TeamsMenu,
 	},
-	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+		kvAuth0: { default: null },
+	},
 	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
 	data() {
 		return {

@@ -42,7 +42,10 @@ export default {
 		KvButton,
 		KvMaterialIcon
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	data() {
 		return {
 			count: 0,
