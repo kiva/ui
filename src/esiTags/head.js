@@ -15,8 +15,8 @@ import {
 	basketPromoAvailableFragment,
 	userPromoBalanceFragment,
 	lendingRewardFragment,
-	promoCreditBannerData,
-} from './globalData/promoCreditBanner';
+	promoBannerData,
+} from './globalData/promoBanners';
 import { userAvatarFragment, userAvatarData } from './globalData/userAvatar';
 import { userBalanceFragment, userBalanceData } from './globalData/userBalance';
 
@@ -102,7 +102,7 @@ export default async function renderESIHead({
 		...userAvatarData(userDataGlobals),
 		...userBalanceData(userDataGlobals),
 		...basketCountData(userDataGlobals, cookieStore),
-		...promoCreditBannerData(userDataGlobals, topUrlObj),
+		...promoBannerData(userDataGlobals, topUrlObj),
 	}, 'ui-data');
 
 	return {

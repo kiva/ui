@@ -1,7 +1,7 @@
-import { promoCreditBannerData } from '#src/esiTags/globalData/promoCreditBanner';
-import { isFromImpactDashboard, bonusBalance } from '#src/util/promoCreditBanner';
+import { promoBannerData } from '#src/esiTags/globalData/promoBanners';
+import { isFromImpactDashboard, bonusBalance } from '#src/util/promoCredit';
 
-vi.mock('#src/util/promoCreditBanner', async importOriginal => {
+vi.mock('#src/util/promoCredit', async importOriginal => {
 	const mod = await importOriginal();
 	return {
 		...mod,
@@ -10,13 +10,13 @@ vi.mock('#src/util/promoCreditBanner', async importOriginal => {
 	};
 });
 
-describe('promoCreditBannerData', () => {
+describe('promoBannerData', () => {
 	it('shows banner if isFromImpactDashboard returns true', () => {
 		isFromImpactDashboard.mockReturnValue(true);
 		bonusBalance.mockReturnValue(0);
 		const data = {};
 		const route = new URL('https://kiva.org/?fromContext=/impact-dashboard');
-		const result = promoCreditBannerData(data, route);
+		const result = promoBannerData(data, route);
 		expect(result).toEqual({});
 	});
 
@@ -25,7 +25,7 @@ describe('promoCreditBannerData', () => {
 		bonusBalance.mockReturnValue(0);
 		const data = { shop: { lendingRewardOffered: true } };
 		const route = {};
-		const result = promoCreditBannerData(data, route);
+		const result = promoBannerData(data, route);
 		expect(result).toEqual({});
 	});
 
@@ -34,7 +34,7 @@ describe('promoCreditBannerData', () => {
 		bonusBalance.mockReturnValue(10);
 		const data = {};
 		const route = {};
-		const result = promoCreditBannerData(data, route);
+		const result = promoBannerData(data, route);
 		expect(result).toEqual({});
 	});
 
@@ -43,7 +43,7 @@ describe('promoCreditBannerData', () => {
 		bonusBalance.mockReturnValue(0);
 		const data = {};
 		const route = {};
-		const result = promoCreditBannerData(data, route);
+		const result = promoBannerData(data, route);
 		expect(result).toEqual({ 'promo-credit-banner-display': 'none' });
 	});
 });

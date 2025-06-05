@@ -1,6 +1,6 @@
-import { isFromImpactDashboard, bonusBalance } from '#src/util/promoCreditBanner';
+import { isFromImpactDashboard, bonusBalance } from '#src/util/promoCredit';
 
-describe('promoCreditBanner', () => {
+describe('promoCredit', () => {
 	describe('isFromImpactDashboard', () => {
 		it('returns true for URL with fromContext=/impact-dashboard', () => {
 			const url = new URL('https://kiva.org/?fromContext=/impact-dashboard/foo');
