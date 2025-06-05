@@ -57,8 +57,8 @@ const apollo = inject('apollo');
 
 defineProps({
 	userBalance: {
-		type: Number,
-		default: 0,
+		type: String,
+		default: '',
 	},
 });
 
