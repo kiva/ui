@@ -175,7 +175,10 @@ import SearchList from './SearchList';
 
 export default {
 	name: 'LendListMenu',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	components: {
 		CountryList,
 		KvAccordionItem,

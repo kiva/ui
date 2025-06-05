@@ -214,7 +214,10 @@ import SearchList from './SearchList';
 
 export default {
 	name: 'LendMegaMenu',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	components: {
 		CountryList,
 		KvGrid,

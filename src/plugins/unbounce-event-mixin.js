@@ -2,7 +2,10 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 
 export default {
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	mounted() {
 		const unbounceEmailCaptureRoute = this.$route?.meta?.unbounceEmailCapture ?? false;
 		const unbouncePopUpRoute = this.$route?.meta?.unbouncePopUp ?? false;
