@@ -97,7 +97,7 @@ import {
 	userPromoBalanceFragment,
 	basketPromoAvailableFragment,
 	bonusBalance,
-} from '#src/util/promoCreditBanner';
+} from '#src/util/promoCredit';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {

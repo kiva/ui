@@ -2,13 +2,13 @@ import { gql } from 'graphql-tag';
 import {
 	isFromImpactDashboard,
 	bonusBalance,
-} from '#src/util/promoCreditBanner';
+} from '#src/util/promoCredit';
 
 // Re-exporting fragments to indicate they are required for this module
 export {
 	userPromoBalanceFragment,
 	basketPromoAvailableFragment,
-} from '#src/util/promoCreditBanner';
+} from '#src/util/promoCredit';
 
 export const lendingRewardFragment = gql`
 	fragment LendingReward on Shop {
@@ -32,13 +32,13 @@ function shouldShowPromoCreditBanner(data, url) {
 }
 
 /**
- * Set data to be used as CSS variables for the promo credit banner.
+ * Set data to be used as CSS variables for promotional banners.
  * @param {Object} data - The user data from the GraphQL query with the
  *   userPromoBalanceFragment, basketPromoAvailableFragment, and
  *   lendingRewardFragment.
  * @param {URL} url - The current URL.
  */
-export function promoCreditBannerData(data, route) {
+export function promoBannerData(data, route) {
 	const userData = {};
 
 	if (!shouldShowPromoCreditBanner(data, route)) {
