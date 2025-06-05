@@ -1,4 +1,4 @@
-import { isFromImpactDashboard, bonusBalance } from '#src/util/promoCredit';
+import { isFromImpactDashboard, bonusBalance, hasPromoSession } from '#src/util/promoCredit';
 
 describe('promoCredit', () => {
 	describe('isFromImpactDashboard', () => {
@@ -83,6 +83,64 @@ describe('promoCredit', () => {
 			const data2 = { shop: {} };
 			expect(bonusBalance(data1)).toBe(0);
 			expect(bonusBalance(data2)).toBe(0);
+		});
+	});
+
+	describe('hasPromoSession', () => {
+		it('returns true if any basket promo total is > 0', () => {
+			const data = {
+				shop: {
+					basket: {
+						totals: {
+							bonusAvailableTotal: '10',
+							freeTrialAvailableTotal: '0',
+							redemptionCodeAvailableTotal: '0',
+							universalCodeAvailableTotal: '0',
+						},
+					},
+				},
+			};
+			expect(hasPromoSession(data)).toBe(true);
+		});
+
+		it('returns true if user promoBalance is > 0', () => {
+			const data = {
+				my: { userAccount: { promoBalance: '5' } },
+				shop: {
+					basket: {
+						totals: {
+							bonusAvailableTotal: '0',
+							freeTrialAvailableTotal: '0',
+							redemptionCodeAvailableTotal: '0',
+							universalCodeAvailableTotal: '0',
+						},
+					},
+				},
+			};
+			expect(hasPromoSession(data)).toBe(true);
+		});
+
+		it('returns false if all promo balances are 0 or missing', () => {
+			const data = {
+				my: { userAccount: { promoBalance: '0' } },
+				shop: {
+					basket: {
+						totals: {
+							bonusAvailableTotal: '0',
+							freeTrialAvailableTotal: '0',
+							redemptionCodeAvailableTotal: '0',
+							universalCodeAvailableTotal: '0',
+						},
+					},
+				},
+			};
+			expect(hasPromoSession(data)).toBe(false);
+		});
+
+		it('handles missing basket or userAccount gracefully', () => {
+			expect(hasPromoSession({})).toBe(false);
+			expect(hasPromoSession({ my: {} })).toBe(false);
+			expect(hasPromoSession({ shop: {} })).toBe(false);
 		});
 	});
 });

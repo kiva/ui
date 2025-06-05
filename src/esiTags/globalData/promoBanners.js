@@ -1,7 +1,6 @@
-import { gql } from 'graphql-tag';
 import {
+	hasPromoSession,
 	isFromImpactDashboard,
-	bonusBalance,
 } from '#src/util/promoCredit';
 
 // Re-exporting fragments to indicate they are required for this module
@@ -10,22 +9,12 @@ export {
 	basketPromoAvailableFragment,
 } from '#src/util/promoCredit';
 
-export const lendingRewardFragment = gql`
-	fragment LendingReward on Shop {
-		id
-		lendingRewardOffered
-	}
-`;
-
 // Check if the promo credit banner should be shown based on user data and URL.
 function shouldShowPromoCreditBanner(data, url) {
 	if (isFromImpactDashboard(url)) {
 		return true;
 	}
-	if (data?.shop?.lendingRewardOffered) {
-		return true;
-	}
-	if (bonusBalance(data) > 0) {
+	if (hasPromoSession(data)) {
 		return true;
 	}
 	return false;

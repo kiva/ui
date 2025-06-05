@@ -1,21 +1,3 @@
-/**
- * Global exclude list for promotion banners + disclaimers
- */
-export const globalBannerDenyList = [
-	'/checkout',
-	'/confirm-instant-donation/*',
-	'/donate/support-kiva',
-	'/error',
-	'/instant-donation-thanks/*',
-	'/instant-lending-error',
-	'/join-team',
-	'/register/social',
-	'/possibility/giving-tuesday',
-	'/possibility/12-days-of-lending',
-	'/possibility/year-end',
-	'/process-instant-lending/*',
-];
-
 function matchRoute(route, pattern) {
 	// Match specific urls
 	if (pattern === route) {

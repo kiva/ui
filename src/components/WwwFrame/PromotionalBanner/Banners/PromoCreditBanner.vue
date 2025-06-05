@@ -110,7 +110,6 @@ const userPromoCredits = gql`
 			lendingRewardOffered
 			basket {
 				id
-				hasFreeCredits
 				credits {
 					values {
 						id
@@ -156,7 +155,6 @@ export default {
 	data() {
 		return {
 			bonusBalance: 0,
-			hasFreeCredits: false,
 			lendingRewardOffered: false,
 			promoCampaignData: null,
 			priorityBasketCredit: null,
@@ -233,7 +231,6 @@ export default {
 
 			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
-			this.hasFreeCredits = promotionData?.shop?.basket?.hasFreeCredits;
 		},
 		setPriorityBasketCredit(promotionData) {
 			// get credits list
