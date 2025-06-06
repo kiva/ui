@@ -22,7 +22,7 @@
 			<div
 				class="tw-flex tw-flex-col tw-overflow-x-auto tw-overflow-y-hidden tw-items-start"
 				:class="{
-					'tw-flex-col tw-py-2 tw-px-2': isMobile,
+					'tw-flex-col tw-pt-2 tw-px-1': isMobile,
 					'tw-flex-row tw-py-4 tw-px-0.5': !isMobile,
 				}"
 			>
@@ -33,7 +33,7 @@
 					<div
 						class="badge tw-relative tw-flex tw-items-center"
 						:style="{
-							marginTop: `${isMobile || index === 0 ? 0 : 75}px`,
+							marginTop: badgeMarginTop(index),
 							zIndex: positions.length - index,
 						}"
 					>
@@ -44,7 +44,8 @@
 							<BadgeContainer
 								:status="getBadgeStatus(index)"
 								:shape="getBadgeShape(badgeWithVisibleTiers.id)"
-								style="width: 128px; height: 128px;"
+								:style="{ width: iconSize, height: iconSize }"
+								:class="{ 'tw--ml-1.5': isWomenBadge }"
 							>
 								<img
 									:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
@@ -52,7 +53,7 @@
 								>
 							</BadgeContainer>
 						</div>
-						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-px-2 tw-space-y-1">
+						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-pl-2 tw-space-y-1">
 							<div class="tw-space-y-0.5">
 								<div class="tw-font-small tw-px-0">
 									<span>Achievement {{ levelCaption(index) }}</span>
@@ -90,13 +91,26 @@
 						class="tw-h-0.5"
 					>
 						<div
-							class="tw-pl-7"
+							class="tw-overflow-hidden"
+							:class="{
+								'tw-pl-3 md:tw-pl-5': isWomenBadge,
+								'tw-pl-5 md:tw-pl-7': !isWomenBadge,
+							}"
+							:style="{ height: lineImageContainerHeight }"
 							v-if="(index % 2 === 0)"
 						>
-							<RightLeaningLine class="leaning-line" />
+							<RightLeaningLine :style="{ height: lineImageHeight }" />
 						</div>
-						<div v-else class="tw-pl-6">
-							<LeftLeaningLine class="leaning-line" />
+						<div
+							v-else
+							class="tw-overflow-hidden"
+							:class="{
+								'tw-pl-3 md:tw-pl-5': isWomenBadge,
+								'tw-pl-4 md:tw-pl-6': !isWomenBadge,
+							}"
+							:style="{ height: lineImageContainerHeight }"
+						>
+							<LeftLeaningLine :style="{ height: lineImageHeight }" />
 						</div>
 					</div>
 				</div>
@@ -127,7 +141,7 @@ import useBadgeModal,
 import { KvUserAvatar } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -151,6 +165,20 @@ const scrollEl = ref(null);
 const toggleGradient = ref(false);
 
 const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
+
+const badgeMarginTop = index => {
+	if (index === 0) {
+		return '0px';
+	} if (isMobile.value) {
+		return '25px';
+	}
+	return '75px';
+};
+
+const isWomenBadge = computed(() => badgeWithVisibleTiers.value.id === ID_WOMENS_EQUALITY);
+const iconSize = computed(() => (isMobile.value ? '98px' : '128px'));
+const lineImageHeight = computed(() => (isMobile.value ? '150px' : '200px'));
+const lineImageContainerHeight = computed(() => (isMobile.value ? '50px' : '100px'));
 
 const {
 	getTierPositions,
@@ -286,11 +314,9 @@ onUnmounted(() => {
 </script>
 
 <style lang="postcss" scoped>
-.leaning-line {
-	height: 200px;
-}
-
 .icon-width {
+	@apply tw-shrink-0;
+
 	width: 22px;
 }
 
