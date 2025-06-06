@@ -113,7 +113,15 @@
 						>
 							<div class="tw-flex tw-justify-end tw-bg-white">
 								<kv-button
-									class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto md:tw-max-w-xs"
+									class="
+										tw-mb-2
+										tw-pt-2
+										tw-px-4
+										tw-w-full
+										md:tw-w-auto
+										md:tw-max-w-xs
+										tw-whitespace-nowrap
+									"
 									@click="handleContinueJourneyClicked"
 								>
 									{{ journeyCtaBtn }}
