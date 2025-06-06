@@ -120,6 +120,20 @@ describe('promoCredit', () => {
 			expect(hasPromoSession(data)).toBe(true);
 		});
 
+		it('returns true if lendingRewardOffered is true', () => {
+			const data = {
+				shop: { lendingRewardOffered: true },
+			};
+			expect(hasPromoSession(data)).toBe(true);
+		});
+
+		it('returns true if basket has free credits', () => {
+			const data = {
+				shop: { basket: { hasFreeCredits: true } },
+			};
+			expect(hasPromoSession(data)).toBe(true);
+		});
+
 		it('returns false if all promo balances are 0 or missing', () => {
 			const data = {
 				my: { userAccount: { promoBalance: '0' } },

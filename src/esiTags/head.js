@@ -14,7 +14,7 @@ import { basketCountFragment, basketCountData } from './globalData/basketCount';
 import {
 	basketPromoAvailableFragment,
 	userPromoBalanceFragment,
-	lendingRewardFragment,
+	globalPromoFragment,
 	promoBannerData,
 } from './globalData/promoBanners';
 import { userAvatarFragment, userAvatarData } from './globalData/userAvatar';
@@ -23,6 +23,9 @@ import { userBalanceFragment, userBalanceData } from './globalData/userBalance';
 async function fetchUserDataGlobals(apollo, cookieStore) {
 	const { data } = await apollo.query({
 		query: gql`query esiHead($basketId: String) {
+			contentful {
+				...GlobalPromoFragment
+			}
 			my {
 				id
 				...UserAvatar
@@ -33,12 +36,11 @@ async function fetchUserDataGlobals(apollo, cookieStore) {
 				id
 				...BasketCount
 				...BasketPromoAvailable
-				...LendingReward
 			}
 		}
 		${basketCountFragment}
 		${basketPromoAvailableFragment}
-		${lendingRewardFragment}
+		${globalPromoFragment}
 		${userAvatarFragment}
 		${userBalanceFragment}
 		${userPromoBalanceFragment}
