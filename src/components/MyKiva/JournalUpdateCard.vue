@@ -27,7 +27,7 @@
 			</div>
 		</div>
 		<div class="tw-my-1">
-			<p>{{ subject }}</p>
+			<p>Subject line: {{ subject }}</p>
 			<span v-html="truncatedBody"></span>
 			<button
 				v-if="showTruncatedBody"
