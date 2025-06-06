@@ -76,7 +76,7 @@ export default async function createApp({
 		route,
 	});
 
-	if (!useCDNCaching) {
+	if (!useCDNCaching || !isServer) {
 		app.provide('cookieStore', cookieStore);
 		app.provide('device', device);
 		app.provide('kvAuth0', kvAuth0);
