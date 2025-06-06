@@ -1,37 +1,34 @@
 <template>
-	<MyKivaContainer>
-		<div
-			:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
+	<div
+		:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
+	>
+		<p
+			class="tw-text-h3 tw-mr-auto md:tw-mr-0"
+			:class="{'tw-pb-0.5': userInHomepage}"
+			v-html="headerMsg"
 		>
-			<p
-				class="tw-text-h3 tw-mr-auto md:tw-mr-0"
-				:class="{'tw-pb-0.5': userInHomepage}"
-				v-html="headerMsg"
-			>
-			</p>
-			<a
-				v-if="!userInHomepage"
-				href="/settings/account"
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					'Account profile pic'
-				]"
-			>
-				<ActivityAvatar
-					:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
-					class="avatar !tw-h-10 !tw-w-10"
-					:lender-image-url="lenderImageUrl"
-					:lender-name="lenderName"
-				/>
-			</a>
-		</div>
-	</MyKivaContainer>
+		</p>
+		<a
+			v-if="!userInHomepage"
+			href="/settings/account"
+			v-kv-track-event="[
+				'portfolio',
+				'click',
+				'Account profile pic'
+			]"
+		>
+			<ActivityAvatar
+				:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
+				class="avatar !tw-h-10 !tw-w-10"
+				:lender-image-url="lenderImageUrl"
+				:lender-name="lenderName"
+			/>
+		</a>
+	</div>
 </template>
 
 <script setup>
 import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
-import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import { computed, toRefs } from 'vue';
 
 const props = defineProps({
@@ -64,7 +61,7 @@ const lenderName = computed(() => {
 
 const headerMsg = computed(() => {
 	return props.userInHomepage
-		? `For you, <u>${lenderName.value}</u>`
+		? 'Looking for your next step?'
 		: lenderName.value;
 });
 

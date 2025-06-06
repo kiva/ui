@@ -60,16 +60,10 @@ export default {
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is funded' },
 				{ text: 'They use the money to improve their life' },
-				{ text: `They start repaying you in <span class="tw-text-action"> ${this.weeksToRepay} </span>` }
+				// eslint-disable-next-line max-len
+				{ text: `${this.repaymentsStarted ? 'Their next repayment is coming in' : 'They start repaying you in'} <span class="tw-text-action"> ${this.weeksToRepay} </span>` }
 			]
 		};
-	},
-	mounted() {
-		if (this.repaymentsStarted) {
-			this.steps[3] = { text: 'They started repaying you' };
-			// eslint-disable-next-line max-len
-			this.steps.push({ text: `Their next repayment is coming in <span class="tw-text-action">${this.weeksToRepay}</span>` });
-		}
 	},
 	methods: {
 		getDelayStyle(index) {

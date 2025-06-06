@@ -1,10 +1,11 @@
 <template>
 	<KvCarousel
 		ref="carousel"
-		class="badges-carousel tw-w-full md:tw-overflow-visible"
+		class="badges-carousel tw-w-full tw-overflow-visible"
 		:multiple-slides-visible="true"
 		:slide-max-width="singleSlideWidth"
-		:embla-options="{ loop: false, align: 'start'}"
+		slides-to-scroll="visible"
+		:embla-options="{ loop: false }"
 		@change="handleChange"
 	>
 		<template v-for="(badge, index) in visibleBadges" #[`slide${index+1}`] :key="badge.id || index">
@@ -159,11 +160,15 @@ watch(selectedJourney, () => {
 </script>
 
 <style lang="postcss" scoped>
-.badges-carousel:deep(.kv-carousel__controls) {
-	@apply tw-hidden;
+.badges-carousel :deep(div:first-child) {
+	@apply tw-gap-2;
 }
 
-.badges-carousel:deep(div:first-child) {
-	@apply tw-gap-x-1.5 lg:tw-gap-x-4;
+.badges-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+}
+
+.badges-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 </style>

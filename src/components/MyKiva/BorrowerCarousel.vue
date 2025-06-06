@@ -2,7 +2,7 @@
 	<div>
 		<h3
 			v-html="title"
-			class="tw-mb-3.5"
+			class="tw-mb-2"
 			:class="{ 'tw-text-center': !filteredLoans.length }"
 		></h3>
 		<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
@@ -17,62 +17,11 @@
 				{{ btnCta }}
 			</KvButton>
 		</div>
-		<div v-if="hasActiveLoans">
-			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="filteredLoans.length > 1" class="tabs">
-				<template #tabNav>
-					<KvTab
-						v-for="(loan, index) in filteredLoans"
-						:key="index"
-						:label="index + 1"
-						:for-panel="`${loan.id}`"
-					>
-						<div class="tw-flex tw-flex-col tw-justify-start tw-items-center tw-w-10">
-							<div
-								class="tw-w-8 tw-h-8 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
-									tw-rounded-full tw-shadow"
-							>
-								<BorrowerImage
-									class="tw-w-full tw-rounded-full"
-									:alt="getBorrowerName(loan)"
-									:aspect-ratio="1"
-									:default-image="{ width: 80, faceZoom: 50 }"
-									:hash="getBorrowerHash(loan)"
-									:images="[
-										{ width: 80, faceZoom: 50, viewSize: 1024 },
-										{ width: 72, faceZoom: 50, viewSize: 734 },
-										{ width: 64, faceZoom: 50 },
-									]"
-								/>
-							</div>
-							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal tw-pt-0.5">
-								{{ getBorrowerName(loan) }}
-							</h5>
-						</div>
-					</KvTab>
-					<KvTab v-if="totalLoans > filteredLoans.length" for-panel="view-more">
-						<a
-							href="/portfolio/loans" v-kv-track-event="[
-								'portfolio',
-								'click',
-								'view-all'
-							]"
-						>View all</a>
-					</KvTab>
-				</template>
-				<template #tabPanels>
-					<KvTabPanel
-						v-for="(loan, index) in filteredLoans"
-						:key="index"
-						:id="`${loan.id}`"
-					>
-						<p class="tw-hidden" :id="loan.id"></p>
-					</KvTabPanel>
-				</template>
-			</KvTabs>
+		<div v-if="hasActiveLoans" class="tw-relative">
 			<div class="carousel-container">
 				<KvCarousel
 					ref="carousel"
-					class="borrower-carousel tw-w-full md:tw-overflow-visible"
+					class="borrower-carousel tw-w-full tw-overflow-visible"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
@@ -90,15 +39,18 @@
 					</template>
 				</KvCarousel>
 			</div>
-			<div class="tw-text-right" v-if="hasCompletedBorrowers">
-				<a
-					class="tw-text-h5"
-					href="/portfolio/loans" v-kv-track-event="[
-						'portfolio',
-						'click',
-						'See all borrowers'
-					]"
-				>See all borrowers</a>
+			<div
+				v-if="hasCompletedBorrowers"
+				class="tw-text-left tw-mt-1 md:tw-text-right md:tw-mt-0 md:tw-absolute md:tw-right-0"
+				style="bottom: -0.5rem"
+			>
+				<KvButton
+					to="/portfolio/loans"
+					v-kv-track-event="['portfolio', 'click', 'See all borrowers']"
+					variant="secondary"
+				>
+					See all borrowers
+				</KvButton>
 			</div>
 		</div>
 		<!-- Loan Comment Component -->
@@ -126,10 +78,7 @@
 
 <script setup>
 import _throttle from 'lodash/throttle';
-import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
-} from '@kiva/kv-components';
-import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
 import {
 	defineProps,
 	ref,
@@ -156,8 +105,8 @@ const SHARE_CAMPAIGN = 'social_share_portfolio';
 
 const props = defineProps({
 	/**
-   * Array of loans
-   * */
+	 * Array of loans
+	 */
 	loans: {
 		type: Array,
 		default: () => ([]),
@@ -208,14 +157,6 @@ const activeLoans = computed(() => {
 
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
-const getBorrowerName = loan => {
-	return loan?.name ?? '';
-};
-
-const getBorrowerHash = loan => {
-	return loan?.image?.hash ?? '';
-};
-
 const title = computed(() => {
 	if (!loans.value.length) {
 		return 'Change a life <u>today</u>!';
@@ -264,26 +205,12 @@ const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
-const handleChange = event => {
-	previousLastIndex.value = lastVisitedLoanIdx.value;
-	if (lastVisitedLoanIdx.value !== event) {
-		$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
-	}
-
-	if (event < filteredLoans.value.length) {
-		carousel.value.goToSlide(event);
-		lastVisitedLoanIdx.value = event;
-	} else {
-		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
-	}
-};
-
 const singleSlideWidth = computed(() => {
 	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
 
 	// Handle small mobile screens
 	if (viewportWidth < 450) {
-		return '100%';
+		return '90%';
 	}
 	if (typeof window !== 'undefined' && window.innerWidth < 1024) {
 		return '468px';
@@ -360,5 +287,17 @@ onBeforeUnmount(() => {
 
 :deep(.tabs) div[role=tablist] {
 	@apply md:tw-gap-3.5 tw-items-baseline;
+}
+
+.borrower-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+}
+
+.borrower-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
+}
+
+.borrower-carousel :deep(div:first-child) {
+	@apply tw-gap-2;
 }
 </style>
