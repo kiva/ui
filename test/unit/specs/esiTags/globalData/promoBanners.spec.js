@@ -1,5 +1,6 @@
 import { promoBannerData } from '#src/esiTags/globalData/promoBanners';
 import { isFromImpactDashboard, hasPromoSession } from '#src/util/promoCredit';
+import { activePromoBanner, showBannerForPromo } from '#src/util/globalPromoBanner';
 
 vi.mock('#src/util/promoCredit', async importOriginal => {
 	const mod = await importOriginal();
@@ -10,31 +11,59 @@ vi.mock('#src/util/promoCredit', async importOriginal => {
 	};
 });
 
+vi.mock('#src/util/globalPromoBanner', async importOriginal => {
+	const mod = await importOriginal();
+	return {
+		...mod,
+		activePromoBanner: vi.fn(),
+		showBannerForPromo: vi.fn(),
+	};
+});
+
 describe('promoBannerData', () => {
-	it('shows banner if isFromImpactDashboard returns true', () => {
+	it('shows promo credit banner if isFromImpactDashboard returns true', () => {
 		isFromImpactDashboard.mockReturnValue(true);
-		hasPromoSession.mockReturnValue(false);
-		const data = {};
-		const route = new URL('https://kiva.org/?fromContext=/impact-dashboard');
-		const result = promoBannerData(data, route);
-		expect(result).toEqual({});
+		const result = promoBannerData({}, {});
+		expect(result).not.toHaveProperty('promo-credit-banner-display', 'none');
 	});
 
-	it('shows banner if hasPromoSession returns true', () => {
+	it('shows promo credit banner if hasPromoSession returns true', () => {
 		isFromImpactDashboard.mockReturnValue(false);
 		hasPromoSession.mockReturnValue(true);
-		const data = { shop: { lendingRewardOffered: true } };
-		const route = {};
-		const result = promoBannerData(data, route);
-		expect(result).toEqual({});
+		const result = promoBannerData({}, {});
+		expect(result).not.toHaveProperty('promo-credit-banner-display', 'none');
 	});
 
-	it('hides banner if all checks are false', () => {
+	it('hides promo credit banner if all checks are false', () => {
 		isFromImpactDashboard.mockReturnValue(false);
 		hasPromoSession.mockReturnValue(false);
-		const data = {};
-		const route = {};
-		const result = promoBannerData(data, route);
-		expect(result).toEqual({ 'promo-credit-banner-display': 'none' });
+		const result = promoBannerData({}, {});
+		expect(result).toHaveProperty('promo-credit-banner-display', 'none');
+	});
+
+	it('shows global banner if showBannerForPromo returns true', () => {
+		hasPromoSession.mockReturnValue(true);
+		activePromoBanner.mockReturnValue({ fields: { showForPromo: true } });
+		showBannerForPromo.mockReturnValue(true);
+		const result = promoBannerData({}, {});
+		expect(result).not.toHaveProperty('global-promo-banner-display', 'none');
+	});
+
+	it('hides global banner if showBannerForPromo returns false and hasPromoSession is true', () => {
+		hasPromoSession.mockReturnValue(true);
+		activePromoBanner.mockReturnValue({ fields: { showForPromo: false } });
+		showBannerForPromo.mockReturnValue(false);
+		const result = promoBannerData({}, {});
+		expect(result).toHaveProperty('global-promo-banner-display', 'none');
+	});
+
+	it('hides both banners if both checks are false', () => {
+		isFromImpactDashboard.mockReturnValue(false);
+		hasPromoSession.mockReturnValue(false);
+		activePromoBanner.mockReturnValue(undefined);
+		showBannerForPromo.mockReturnValue(false);
+		const result = promoBannerData({}, {});
+		expect(result).toHaveProperty('global-promo-banner-display', 'none');
+		expect(result).toHaveProperty('promo-credit-banner-display', 'none');
 	});
 });

@@ -1,20 +1,22 @@
-import {
-	hasPromoSession,
-	isFromImpactDashboard,
-} from '#src/util/promoCredit';
+import { hasPromoSession, isFromImpactDashboard } from '#src/util/promoCredit';
+import { activePromoBanner, showBannerForPromo } from '#src/util/globalPromoBanner';
 
 // Re-exporting fragments to indicate they are required for this module
-export {
-	userPromoBalanceFragment,
-	basketPromoAvailableFragment,
-} from '#src/util/promoCredit';
+export { userPromoBalanceFragment, basketPromoAvailableFragment } from '#src/util/promoCredit';
+export { globalPromoFragment } from '#src/util/globalPromoBanner';
+
+// Check if the global promo banner should be shown based on promo status and banner settings.
+function shouldShowGlobalPromoBanner(data, hasPromo, url) {
+	const activeBanner = activePromoBanner(data, url.pathname);
+	return activeBanner && (!hasPromo || showBannerForPromo(activeBanner));
+}
 
 // Check if the promo credit banner should be shown based on user data and URL.
-function shouldShowPromoCreditBanner(data, url) {
-	if (isFromImpactDashboard(url)) {
+function shouldShowPromoCreditBanner(hasPromo, url) {
+	if (hasPromo) {
 		return true;
 	}
-	if (hasPromoSession(data)) {
+	if (isFromImpactDashboard(url)) {
 		return true;
 	}
 	return false;
@@ -27,10 +29,15 @@ function shouldShowPromoCreditBanner(data, url) {
  *   lendingRewardFragment.
  * @param {URL} url - The current URL.
  */
-export function promoBannerData(data, route) {
+export function promoBannerData(data, url) {
 	const userData = {};
+	const hasPromo = hasPromoSession(data);
 
-	if (!shouldShowPromoCreditBanner(data, route)) {
+	if (!shouldShowGlobalPromoBanner(data, hasPromo, url)) {
+		userData['global-promo-banner-display'] = 'none';
+	}
+
+	if (!shouldShowPromoCreditBanner(hasPromo, url)) {
 		userData['promo-credit-banner-display'] = 'none';
 	}
 
