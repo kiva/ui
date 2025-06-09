@@ -49,6 +49,7 @@ export default merge(base, {
 		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
+		processESITags: true,
 		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
 		viteConfig: {
 			server: {

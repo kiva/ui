@@ -9,11 +9,6 @@ const isProd = process.env.NODE_ENV === 'production';
 let cache;
 let esi;
 
-// Only resolve ESI tags if not in production
-if (!isProd) {
-	esi = new ESI();
-}
-
 export default async function render({
 	context,
 	serverConfig,
@@ -21,12 +16,17 @@ export default async function render({
 	ssrManifest,
 	template
 }) {
-	const processESITags = esi && !context.esi;
-
 	// if cache is not initialized, initialize it
 	if (!cache) {
 		cache = initCache(serverConfig);
 	}
+
+	// if this server needs to process edge-side includes (ESI) tags, create the ESI handler
+	if (!esi && serverConfig.processESITags) {
+		esi = new ESI();
+	}
+	// only process ESI tags if the handler is initialized and the current request is not for an ESI tag
+	const processESITags = esi && !context.esi;
 
 	// get graphql api possible types for the graphql client
 	const s = Date.now();
