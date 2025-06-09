@@ -97,7 +97,7 @@ const hideBotomGradient = ref(false);
 
 const emit = defineEmits(['badge-journey-level-clicked', 'continue-journey-clicked', 'sidesheet-closed']);
 
-const computedHeadLine = computed(() => `Achievements for lending to ${props.selectedBadgeData?.challengeName}`);
+const computedHeadLine = computed(() => `Your achievements for lending to ${props.selectedBadgeData?.challengeName}`);
 
 const handleComponentClosed = () => {
 	hideBotomGradient.value = false;
