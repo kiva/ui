@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-h-full">
-		<div class="tw-flex tw-space-x-1 tw-items-center tw-pb-2 tw-pl-2">
+		<div v-if="journeyLoans.length" class="tw-flex tw-space-x-1 tw-items-center tw-pb-2 tw-pl-2">
 			<div class="tw-flex">
 				<KvUserAvatar
 					class="avatar tw-border-white tw-rounded-full tw-border-2"

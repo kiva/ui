@@ -92,60 +92,16 @@
 						:selected-journey="selectedJourney"
 						@badge-clicked="handleBadgeSectionClicked"
 					/>
-					<KvSideSheet
+					<JourneySideSheet
 						:visible="showSideSheet"
-						:show-back-button="false"
-						:show-headline-border="false"
-						:headline="computedHeadLine"
-						:show-go-to-link="false"
-						:kv-track-function="$kvTrackEvent"
-						:animation-source-element="triggerButton"
-						@side-sheet-closed="handleComponentClosed"
-						:width-dimensions="{ default: '100%', lg: '480px', md: '460px', sm:'100%' }"
-					>
-						<template #default>
-							<BadgeModalContentJourney
-								:key="selectedBadgeData.id"
-								:badge="selectedBadgeData"
-								:loans="loans"
-								@badge-level-clicked="handleBadgeJourneyLevelClicked"
-								@toggle-gradient="($event) => hideBotomGradient = $event"
-							/>
-							<div
-								class="
-									tw-w-full tw-bg-red tw-absolute
-									tw-left-0 tw-bg-white tw-opacity-50
-									tw-pointer-events-none tw-z-sticky
-									tw-transition-opacity tw-duration-500
-									tw-ease-in-out
-								"
-								:class="{
-									'tw-opacity-0': hideBotomGradient,
-									'tw-opacity-full': !hideBotomGradient,
-								}"
-								style="
-									background: linear-gradient(to top, rgb(255 255 255), rgb(255 255 255 / 0%));
-									bottom: 81px;
-									height: 124px;
-								"
-							>
-							</div>
-						</template>
-						<template #controls>
-							<div
-								class="tw-bg-white tw-border-t tw-w-full tw-border-tertiary"
-							>
-								<div class="tw-flex tw-justify-end tw-bg-white">
-									<kv-button
-										class="tw-mb-2 tw-pt-2 tw-px-4 tw-w-full md:tw-w-auto"
-										@click="handleContinueJourneyClicked"
-									>
-										{{ journeyCtaBtn }}
-									</kv-button>
-								</div>
-							</div>
-						</template>
-					</KvSideSheet>
+						:selected-badge-data="selectedBadgeData"
+						:loans="loans"
+						:all-badges-completed="allBadgesCompleted"
+						:is-selected-journey-complete="isSelectedJourneyComplete"
+						@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
+						@continue-journey-clicked="handleContinueJourneyClicked"
+						@sidesheet-closed="handleComponentClosed"
+					/>
 					<BadgeModal
 						v-if="selectedBadgeData"
 						:show="showBadgeModal"
@@ -185,7 +141,6 @@ import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
-import BadgeModalContentJourney from '#src/components/MyKiva/BadgeModalContentJourney';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -201,7 +156,7 @@ import {
 } from 'vue';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-import { KvButton, KvSideSheet } from '@kiva/kv-components';
+import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 
 const { getBadgeWithVisibleTiers } = useBadgeData();
 
@@ -274,8 +229,6 @@ const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
-
-const computedHeadLine = computed(() => `Achievements for lending to ${selectedBadgeData.value?.challengeName}`);
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
@@ -387,16 +340,6 @@ const showLoanFootnote = computed(() => props.loans.some(l => hasLoanFunFactFoot
 const updateJourney = journey => {
 	selectedJourney.value = journey;
 };
-
-const journeyCtaBtn = computed(() => {
-	if (allBadgesCompleted.value) {
-		return 'See all of your impact stats';
-	}
-	if (isSelectedJourneyComplete.value) {
-		return 'See all journeys';
-	}
-	return 'Continue this journey';
-});
 
 const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
