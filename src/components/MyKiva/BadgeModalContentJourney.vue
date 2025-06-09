@@ -254,7 +254,7 @@ const journeyLoansNames = computed(() => {
 const journeyDescription = computed(() => {
 	const journeyLoansCopy = journeyTotalLoans.value
 		// eslint-disable-next-line max-len
-		? `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward this impact journey. `
+		? `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward these achievements. `
 		: '';
 
 	return `${journeyLoansCopy}${badgeWithVisibleTiers.value.description}`;
