@@ -138,7 +138,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 
 const { loans, totalLoans } = toRefs(props);
 const carousel = ref(null);
-const tabs = ref(null);
 const windowWidth = ref(0);
 const openWhatIsNext = ref(false);
 const lastVisitedLoanIdx = ref(0);
@@ -228,11 +227,10 @@ const handleResize = () => {
 
 const throttledResize = _throttle(handleResize, 200);
 
-const onInteractCarousel = interaction => {
+const onInteractCarousel = () => {
 	if (previousLastIndex.value === lastVisitedLoanIdx.value) {
 		$kvTrackEvent('portfolio', 'click', 'borrower-card-carousel');
 	}
-	tabs.value.tabContext.selectedIndex = interaction.value;
 };
 
 const openCommentModal = payload => {
@@ -283,10 +281,6 @@ onBeforeUnmount(() => {
 	@screen lg {
 		max-width: 520px;
 	}
-}
-
-:deep(.tabs) div[role=tablist] {
-	@apply md:tw-gap-3.5 tw-items-baseline;
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) {
