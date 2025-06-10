@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle, vue/require-name-property */
 import '#src/assets/scss/tailwind/tailwind.css';
 import '#src/assets/scss/app.scss';
-import { mergeApolloCacheData } from '#src/util/apolloCacheUtils';
 
 // Facilitate using sprite icon SVGs in KvIcon
 // eslint-disable-next-line import/no-unresolved
@@ -60,6 +59,14 @@ async function getUserId(apolloClient) {
 	const { default: userIdQuery } = await import('#src/graphql/query/userId.graphql');
 	const result = await apolloClient.query({ query: userIdQuery });
 	return result?.data?.my?.userAccount?.id ?? null;
+}
+
+async function hydrateApolloCache(apolloClient) {
+	const { applyStateToCache, mergeStateObjects } = await import('#src/util/apolloCacheUtils');
+	const data = window.__APOLLO_STATE_ESI__
+		? mergeStateObjects(window.__APOLLO_STATE__, window.__APOLLO_STATE_ESI__)
+		: window.__APOLLO_STATE__;
+	applyStateToCache(apolloClient, data);
 }
 
 async function setupApolloCachePersistence(cache) {
@@ -258,10 +265,7 @@ async function initApp() {
 	}
 	// Apply Server state to Client Store
 	if (window.__APOLLO_STATE__) {
-		mergeApolloCacheData(apolloClient, window.__APOLLO_STATE__);
-	}
-	if (window.__APOLLO_STATE_ESI__) {
-		mergeApolloCacheData(apolloClient, window.__APOLLO_STATE_ESI__);
+		await hydrateApolloCache(apolloClient);
 	}
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);
