@@ -31,6 +31,9 @@
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
 		/>
+		<div @click="handleSelectLoan">
+			Click me
+		</div>
 		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
 				v-show="addToBasketExpEnabled && showBubble"
@@ -80,8 +83,25 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
-			gender
+			inPfp
+			pfpMinLenders
+			description
 			...loanCardFieldsExtended
+			... on LoanPartner {
+				partner {
+					arrearsRate
+					avgBorrowerCost
+					avgBorrowerCostType
+					avgProfitability
+					chargesFeesInterest
+					defaultRate
+					id
+					loansAtRiskRate
+					name
+					riskRating
+					currencyExchangeLossRate
+				}
+			}
 		}
 		loanThemeFilter {
 			id
@@ -103,7 +123,7 @@ const loanQuery = gql`
 
 export default {
 	name: 'KvClassicLoanCardContainer',
-	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals'],
+	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals', 'handle-select-loan'],
 	props: {
 		loanId: {
 			type: Number,
@@ -481,6 +501,9 @@ export default {
 				basketSize: this.basketCount,
 			};
 			this.$emit('show-cart-modal', addedLoan);
+		},
+		handleSelectLoan() {
+			this.$emit('handle-select-loan', this.loan);
 		}
 	},
 	mounted() {

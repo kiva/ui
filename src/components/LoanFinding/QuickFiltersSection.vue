@@ -39,6 +39,7 @@
 						@add-to-basket="addToBasket"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
+						@handle-select-loan="handleSelectLoan"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -93,7 +94,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'data-loaded'],
+	emits: ['add-to-basket', 'data-loaded', 'handle-select-loan'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -316,6 +317,9 @@ export default {
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			this.loans = loans;
+		},
+		handleSelectLoan(payload) {
+			this.$emit('handle-select-loan', payload);
 		}
 	},
 	watch: {
