@@ -360,22 +360,16 @@ const handleChange = interaction => {
 	height: 382px;
 
 	@screen md {
-		height: 360px;
+		height: 340px;
 	}
 }
 
-.journey-card-carousel:deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-gap-x-4 tw-py-1.5 tw-w-full tw-overflow-visible;
+.journey-card-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
-.journey-card-carousel:deep(.kv-carousel__controls > button) {
-	@apply tw-w-5 tw-h-5 tw-border-0;
-
-	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-}
-
-.journey-card-carousel:deep(.kv-carousel__controls > div) {
-	@apply tw-hidden;
+.journey-card-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 
 .journey-card-carousel:deep(div:first-child) {

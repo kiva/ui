@@ -17,6 +17,7 @@
 		<badges-list
 			:completed-achievements="completedAchievements"
 			:is-loading="isLoading"
+			:loans="loans"
 		/>
 	</section>
 </template>
@@ -41,6 +42,10 @@ export default {
 		isLoading: {
 			type: Boolean,
 			default: false
+		},
+		loans: {
+			type: Array,
+			default: () => []
 		},
 	},
 	components: {

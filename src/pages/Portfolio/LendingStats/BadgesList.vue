@@ -31,8 +31,15 @@
 			@click="handleBadgeClicked"
 			style="width: 140px;"
 		/>
+		<JourneySideSheet
+			v-if="showSideSheet"
+			:visible="showSideSheet"
+			:loans="loans"
+			:selected-badge-data="selectedBadgeData"
+			@sidesheet-closed="handleSideSheetClosed"
+		/>
 		<BadgeModal
-			v-if="selectedBadgeData"
+			v-if="showBadgeModal"
 			:show="showBadgeModal"
 			:badge="selectedBadgeData"
 			:state="state"
@@ -49,6 +56,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { STATE_EARNED } from '#src/composables/useBadgeModal';
 import BadgeCard from '#src/components/LenderProfile/BadgeCard';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 
 export default {
 	name: 'BadgesList',
@@ -57,6 +65,7 @@ export default {
 		KvLoadingPlaceholder,
 		BadgeCard,
 		BadgeModal,
+		JourneySideSheet,
 	},
 	props: {
 		completedAchievements: {
@@ -67,6 +76,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		loans: {
+			type: Array,
+			default: () => ([])
+		},
 	},
 	data() {
 		return {
@@ -74,6 +87,7 @@ export default {
 			selectedBadgeData: null,
 			state: STATE_EARNED,
 			tier: null,
+			showSideSheet: false,
 		};
 	},
 	computed: {
@@ -107,12 +121,21 @@ export default {
 			const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
 			this.tier = selectedTier;
 			this.selectedBadgeData = badge;
-			this.showBadgeModal = true;
+			if (this.tier) {
+				this.showSideSheet = true;
+			} else {
+				this.showBadgeModal = true;
+			}
 		},
 		handleBadgeModalClosed() {
 			this.selectedBadgeData = undefined;
 			this.showBadgeModal = false;
-		}
+		},
+		handleSideSheetClosed() {
+			this.showSideSheet = false;
+			this.selectedBadgeData = undefined;
+			this.tier = null;
+		},
 	},
 };
 </script>
