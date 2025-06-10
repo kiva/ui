@@ -6,7 +6,7 @@
 				<div class="tw-w-full lg:tw-w-auto">
 					<div class="tw-flex tw-items-center">
 						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
-						<h2 v-html="title" class="tw-text-h2 tw-text-primary"></h2>
+						<h2 v-if="title" v-html="title" class="tw-text-h2 tw-text-primary"></h2>
 					</div>
 					<p
 						v-if="subtitle"
@@ -19,6 +19,7 @@
 			<kv-carousel
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
 				id="customizedCarousel"
+				:key="loans.length"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
