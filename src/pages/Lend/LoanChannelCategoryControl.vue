@@ -621,7 +621,7 @@ export default {
 				this.apollo.mutate({
 					mutation: updateLoanReservation,
 					variables: {
-						loanid: this.selectedChannelLoanIds[id],
+						loanId: this.selectedChannelLoanIds[id],
 						price: numeral(25).format('0.00'),
 					},
 				})

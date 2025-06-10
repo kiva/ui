@@ -1593,7 +1593,7 @@ export default {
 						mutation: updateLoanReservationTeam,
 						variables: {
 							teamId: this.teamId,
-							loanid: loan.id
+							loanId: loan.id
 						}
 					});
 				});
