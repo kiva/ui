@@ -62,11 +62,19 @@ async function getUserId(apolloClient) {
 }
 
 async function hydrateApolloCache(apolloClient) {
+	// Gather the state from the server.
+	const states = [
+		window.__APOLLO_STATE__,
+		window.__APOLLO_STATE_ESI__,
+	].filter(x => !!x);
+	// If no state is available, skip hydration.
+	// This can happen if the server didn't render any data.
+	if (states.length === 0) {
+		return;
+	}
+	// Apply the merged state to the Apollo cache.
 	const { applyStateToCache, mergeStateObjects } = await import('#src/util/apolloCacheUtils');
-	const data = window.__APOLLO_STATE_ESI__
-		? mergeStateObjects(window.__APOLLO_STATE__, window.__APOLLO_STATE_ESI__)
-		: window.__APOLLO_STATE__;
-	applyStateToCache(apolloClient, data);
+	applyStateToCache(apolloClient, mergeStateObjects(...states));
 }
 
 async function setupApolloCachePersistence(cache) {
@@ -264,9 +272,7 @@ async function initApp() {
 		await setupApolloCachePersistence(apolloClient.cache);
 	}
 	// Apply Server state to Client Store
-	if (window.__APOLLO_STATE__) {
-		await hydrateApolloCache(apolloClient);
-	}
+	await hydrateApolloCache(apolloClient);
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);
 	setupTouchDetection(apolloClient);
