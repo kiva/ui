@@ -57,6 +57,16 @@
 				/>
 			</div>
 		</section>
+		<section class="tw-my-4">
+			<LendingCategorySection
+				id="recommended-loans"
+				:title="recommendeLoansTitle"
+				:loans="recommendedLoans"
+				:enable-huge-amount="enableHugeAmount"
+				:user-balance="userBalance"
+				@add-to-basket="trackCategory($event, 'recommended')"
+			/>
+		</section>
 	</MyKivaContainer>
 	<template v-if="isAchievementDataLoaded">
 		<MyKivaContainer>
@@ -98,6 +108,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
@@ -112,6 +123,7 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import {
 	ref,
 	computed,
@@ -169,6 +181,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	enableHugeAmount: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const isEarnedSectionModal = ref(false);
@@ -184,6 +200,7 @@ const totalUpdates = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
+const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 
 const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
@@ -191,6 +208,12 @@ const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+});
+
+const recommendeLoansTitle = computed(() => {
+	return props.loans.length < 1
+		? 'Recommended for you'
+		: 'Recommended for you based on your lending history';
 });
 
 const handleShowNavigation = () => {
@@ -291,6 +314,20 @@ const fetchUserUpdates = loadMore => {
 		});
 };
 
+const fetchRecommendedLoans = async () => {
+	const userId = parseInt(props.userInfo?.id, 10) || null;
+
+	runRecommendationsQuery(apollo, {
+		userId,
+		origin: 'web:my_kiva_page',
+		limit: 15
+	}).then(result => {
+		recommendedLoans.value = result?.loans ?? [];
+	}).catch(e => {
+		logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
+	});
+};
+
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
 	fetchUserUpdates(true);
@@ -306,11 +343,46 @@ const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
 });
 
-onMounted(() => {
+const trackCategory = ({ success }) => {
+	if (success) $kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');
+};
+
+onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 	fetchUserUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
+	fetchRecommendedLoans();
 });
 </script>
+
+<style lang="postcss" scoped>
+:deep(#recommended-loans #customizedCarousel div:first-child div div div) {
+	@apply !tw-rounded;
+}
+
+:deep(#recommended-loans h2) {
+	@apply tw-text-h3 tw-font-sans;
+}
+
+:deep(#recommended-loans > div) {
+	@apply tw-px-0;
+}
+
+#recommended-loans :deep(.kv-carousel) {
+	@apply tw-w-full tw-overflow-visible;
+}
+
+#recommended-loans :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+}
+
+#recommended-loans :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
+}
+
+#recommended-loans :deep(div:first-child) {
+	@apply tw-gap-2;
+}
+</style>

@@ -9,6 +9,7 @@
 			:hero-slides="heroSlides"
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
+			:enable-huge-amount="enableHugeLendAmount"
 		/>
 	</www-page>
 </template>
@@ -24,6 +25,7 @@ import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -36,6 +38,7 @@ export default {
 		WwwPage,
 		MyKivaPageContent,
 	},
+	mixins: [hugeLendAmount],
 	data() {
 		return {
 			isHeroEnabled: false,
