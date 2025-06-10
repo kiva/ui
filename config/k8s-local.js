@@ -1,4 +1,4 @@
-import { merge } from 'webpack-merge';
+import merge from 'deepmerge';
 import base from './dynamic.js';
 
 const transport = process.env.TRANSPORT || 'https';

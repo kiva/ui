@@ -1,4 +1,4 @@
-import { merge } from 'webpack-merge';
+import merge from 'deepmerge';
 import base from './k8s-local.js';
 
 export default merge(base, {
