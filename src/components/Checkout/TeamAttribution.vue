@@ -89,7 +89,7 @@ export default {
 				mutation: updateLoanReservationTeam,
 				variables: {
 					teamId: updatedTeamId,
-					loanid: this.loanId
+					loanId: this.loanId
 				}
 			}).then(data => {
 				if (data.errors) {
