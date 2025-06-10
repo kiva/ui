@@ -87,21 +87,6 @@ const loanQuery = gql`
 			pfpMinLenders
 			description
 			...loanCardFieldsExtended
-			... on LoanPartner {
-				partner {
-					arrearsRate
-					avgBorrowerCost
-					avgBorrowerCostType
-					avgProfitability
-					chargesFeesInterest
-					defaultRate
-					id
-					loansAtRiskRate
-					name
-					riskRating
-					currencyExchangeLossRate
-				}
-			}
 		}
 		loanThemeFilter {
 			id

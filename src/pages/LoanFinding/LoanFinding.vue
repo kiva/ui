@@ -168,14 +168,6 @@ import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendat
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
 
-import { setLendAmount, INVALID_BASKET_ERROR } from '#src/util/basketUtils';
-
-import {
-	isLessThan25,
-} from '#src/util/loanUtils';
-
-import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
-
 const prefetchedFlssVariables = {
 	pageLimit: 4,
 	origin: FLSS_ORIGIN_LEND_BY_CATEGORY
