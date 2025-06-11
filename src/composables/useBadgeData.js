@@ -572,6 +572,29 @@ export default function useBadgeData() {
 		});
 	};
 
+	/**
+	 * Get badge headline
+	 *
+	 * @param badge The badge to filter loans by
+	 * @returns badge headline
+	 */
+	const getTierBadgeHeadline = badgeId => {
+		switch (badgeId) {
+			case ID_WOMENS_EQUALITY:
+				return 'lending to women';
+			case ID_CLIMATE_ACTION:
+				return 'supporting climate solutions';
+			case ID_US_ECONOMIC_EQUALITY:
+				return 'lending to U.S entrepreneurs';
+			case ID_BASIC_NEEDS:
+				return 'supporting basic needs';
+			case ID_REFUGEE_EQUALITY:
+				return 'lending to refugees';
+			default:
+				return '';
+		}
+	};
+
 	return {
 		badgeAchievementData,
 		badgeContentfulData,
@@ -593,6 +616,7 @@ export default function useBadgeData() {
 		getLevelName,
 		getLoanFindingUrl,
 		getTierBadgeDataByLevel,
+		getTierBadgeHeadline,
 		ID_BASIC_NEEDS,
 		ID_CLIMATE_ACTION,
 		ID_REFUGEE_EQUALITY,
