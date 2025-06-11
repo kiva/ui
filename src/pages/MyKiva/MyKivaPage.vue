@@ -10,6 +10,7 @@
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:enable-huge-amount="enableHugeLendAmount"
+			:lending-stats="lendingStats"
 		/>
 	</www-page>
 </template>
@@ -48,6 +49,7 @@ export default {
 			lender: null,
 			heroContentfulData: [],
 			heroTieredAchievements: [],
+			lendingStats: {},
 		};
 	},
 	apollo: {
@@ -94,6 +96,13 @@ export default {
 				};
 				this.loans = result.my?.loans?.values ?? [];
 				this.totalLoans = result.my?.loans?.totalCount ?? 0;
+
+				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
+
+				this.lendingStats = {
+					...statsResult.my?.lendingStats,
+					...statsResult.my?.userStats,
+				};
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

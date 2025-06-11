@@ -13,7 +13,11 @@
 		<h3 class="tw-mt-4">
 			{{ userInfo?.userAccount?.firstName }}'s impact overview
 		</h3>
-		<MyKivaStats :user-balance="userBalance" class="tw-mt-2" />
+		<MyKivaStats
+			:user-balance="userBalance"
+			:lending-stats="lendingStats"
+			class="tw-mt-2"
+		/>
 		<MyKivaProfile
 			:lender="lender"
 			:user-info="userInfo"
@@ -184,6 +188,10 @@ const props = defineProps({
 	enableHugeAmount: {
 		type: Boolean,
 		default: false,
+	},
+	lendingStats: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
