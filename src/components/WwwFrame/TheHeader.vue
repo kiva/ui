@@ -731,8 +731,8 @@ export default {
 		},
 	],
 	created() {
-		const { cdnNotedLoggedIn, useCDNCaching } = this.$renderConfig;
-		this.isUserDataLoading = useCDNCaching && cdnNotedLoggedIn;
+		const { useCDNCaching } = this.$renderConfig;
+		this.isUserDataLoading = useCDNCaching;
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
