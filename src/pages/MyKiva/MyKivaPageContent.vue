@@ -363,26 +363,26 @@ onMounted(async () => {
 }
 
 :deep(#recommended-loans h2) {
-	@apply tw-text-h3 tw-font-sans;
+	@apply !tw-text-h3 !tw-font-sans;
 }
 
 :deep(#recommended-loans > div) {
-	@apply tw-px-0;
+	@apply !tw-px-0;
 }
 
 #recommended-loans :deep(.kv-carousel) {
-	@apply tw-w-full tw-overflow-visible;
+	@apply !tw-w-full !tw-overflow-visible;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply !tw-hidden md:!tw-flex !tw-justify-start !tw-mt-2;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
+	@apply !tw-invisible !tw-mx-0 !tw-w-2;
 }
 
 #recommended-loans :deep(div:first-child) {
-	@apply tw-gap-2;
+	@apply !tw-gap-2;
 }
 </style>
