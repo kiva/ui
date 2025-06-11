@@ -591,7 +591,7 @@ export default function useBadgeData() {
 			case ID_REFUGEE_EQUALITY:
 				return 'lending to refugees';
 			default:
-				return '';
+				return 'lending';
 		}
 	};
 

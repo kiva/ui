@@ -1093,5 +1093,10 @@ describe('useBadgeData.js', () => {
 			const { getTierBadgeHeadline } = useBadgeData();
 			expect(getTierBadgeHeadline(ID_BASIC_NEEDS)).toEqual('supporting basic needs');
 		});
+
+		it('should return expected headline for default cases', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_EQUITY)).toEqual('lending');
+		});
 	});
 });
