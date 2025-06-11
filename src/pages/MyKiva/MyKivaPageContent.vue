@@ -362,11 +362,19 @@ onMounted(async () => {
 	@apply !tw-rounded;
 }
 
+:deep(#recommended-loans #customizedCarousel div:first-child > div > div.loan-card-active-hover a picture) {
+	@apply !tw-rounded-t;
+}
+
 :deep(#recommended-loans h2) {
 	@apply !tw-text-h3 !tw-font-sans;
 }
 
 :deep(#recommended-loans > div) {
+	@apply !tw-px-0;
+}
+
+:deep(#recommended-loans > div > div) {
 	@apply !tw-px-0;
 }
 
