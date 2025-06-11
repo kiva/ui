@@ -176,8 +176,7 @@ export default {
 			if (this.isSelectedJourneyComplete) {
 				return this.handleSideSheetClosed();
 			}
-			console.log(this.$router);
-			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute));
+			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
 		},
 		handleBadgeJourneyLevelClicked(payload) {
 			const { getLoanFindingUrl } = useBadgeData();
@@ -191,7 +190,7 @@ export default {
 				clickedTier.level,
 			);
 
-			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute));
+			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
 		}
 	},
 };
