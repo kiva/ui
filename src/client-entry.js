@@ -187,7 +187,13 @@ async function setupSentry(app, router) {
 }
 
 function setupClientRouting({
-	app, apolloClient, cookieStore, kvAuth0, router
+	apolloClient,
+	app,
+	cookieStore,
+	device,
+	kvAuth0,
+	renderConfig,
+	router,
 }) {
 	// Add router hook for handling asyncData.
 	// Doing it after initial route is resolved so that we don't double-fetch
@@ -208,7 +214,9 @@ function setupClientRouting({
 			// Pre-fetch graphql queries from activated components
 			await preFetchAll(activated, apolloClient, {
 				cookieStore,
+				device,
 				kvAuth0,
+				renderConfig,
 				route: to,
 			});
 			next();
@@ -251,6 +259,7 @@ async function initApp() {
 	const {
 		app,
 		apolloClient,
+		renderConfig,
 	} = await createApp({
 		appConfig: config,
 		apollo: {
@@ -286,7 +295,13 @@ async function initApp() {
 	}
 
 	setupClientRouting({
-		app, apolloClient, cookieStore, kvAuth0, router
+		apolloClient,
+		app,
+		cookieStore,
+		device,
+		kvAuth0,
+		renderConfig,
+		router,
 	});
 
 	// Mount app in DOM
