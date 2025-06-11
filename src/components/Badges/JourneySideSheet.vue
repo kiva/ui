@@ -1,5 +1,6 @@
 <template>
 	<KvSideSheet
+		class="sidesheet-journey"
 		:visible="visible"
 		:show-back-button="false"
 		:show-headline-border="false"
@@ -123,3 +124,15 @@ const journeyCtaBtn = computed(() => {
 });
 
 </script>
+
+<style lang="postcss" scoped>
+
+.sidesheet-journey :deep(h2) {
+	@apply tw-text-h3;
+}
+
+.sidesheet-journey :deep(#sidesheet-content > div) {
+	@apply tw-py-0;
+}
+
+</style>
