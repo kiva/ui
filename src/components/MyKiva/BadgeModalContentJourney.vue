@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-h-full">
-		<div v-if="journeyLoans.length" class="tw-flex tw-space-x-1 tw-items-center tw-pb-2 tw-pl-2">
+		<div v-if="journeyLoans.length" class="tw-flex tw-space-x-1 tw-items-center tw-pb-0.5 tw-pl-1">
 			<div class="tw-flex">
 				<KvUserAvatar
 					class="avatar tw-border-white tw-rounded-full tw-border-2"
@@ -15,7 +15,7 @@
 				+{{ extraLoanCount }}
 			</p>
 		</div>
-		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1.5 tw-mx-1">
+		<p class="tw-border-b-2 tw-border-tertiary tw-pb-1 tw-mx-1">
 			{{ journeyDescription }}
 		</p>
 		<div class="tw-flex tw-justify-start tw-w-full">
@@ -23,7 +23,7 @@
 				class="tw-flex tw-flex-col tw-overflow-x-auto tw-overflow-y-hidden tw-items-start"
 				:class="{
 					'tw-flex-col tw-pt-2 tw-px-1': isMobile,
-					'tw-flex-row tw-py-4 tw-px-0.5': !isMobile,
+					'tw-flex-row tw-py-2 tw-px-0.5': !isMobile,
 				}"
 			>
 				<div
@@ -53,8 +53,8 @@
 								>
 							</BadgeContainer>
 						</div>
-						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-pl-2 tw-space-y-1">
-							<div class="tw-space-y-0.5">
+						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-pl-2 tw-space-y-0.5">
+							<div>
 								<div class="tw-font-small tw-px-0">
 									<span>Achievement {{ levelCaption(index) }}</span>
 								</div>
@@ -93,8 +93,8 @@
 						<div
 							class="tw-overflow-hidden"
 							:class="{
-								'tw-pl-3 md:tw-pl-5': isWomenBadge,
-								'tw-pl-5 md:tw-pl-7': !isWomenBadge,
+								'tw-pl-3 md:tw-pl-4': isWomenBadge,
+								'tw-pl-5 md:tw-pl-5': !isWomenBadge,
 							}"
 							:style="{ height: lineImageContainerHeight }"
 							v-if="(index % 2 === 0)"
@@ -105,8 +105,8 @@
 							v-else
 							class="tw-overflow-hidden"
 							:class="{
-								'tw-pl-3 md:tw-pl-5': isWomenBadge,
-								'tw-pl-4 md:tw-pl-6': !isWomenBadge,
+								'tw-pl-3 md:tw-pl-4': isWomenBadge,
+								'tw-pl-4 md:tw-pl-5': !isWomenBadge,
 							}"
 							:style="{ height: lineImageContainerHeight }"
 						>
@@ -172,12 +172,12 @@ const badgeMarginTop = index => {
 	} if (isMobile.value) {
 		return '25px';
 	}
-	return '75px';
+	return '50px';
 };
 
 const isWomenBadge = computed(() => badgeWithVisibleTiers.value.id === ID_WOMENS_EQUALITY);
-const iconSize = computed(() => (isMobile.value ? '98px' : '128px'));
-const lineImageHeight = computed(() => (isMobile.value ? '150px' : '200px'));
+const iconSize = computed(() => (isMobile.value ? '98px' : '108px'));
+const lineImageHeight = computed(() => (isMobile.value ? '150px' : '170px'));
 const lineImageContainerHeight = computed(() => (isMobile.value ? '50px' : '100px'));
 
 const {
