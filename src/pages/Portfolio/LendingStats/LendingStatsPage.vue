@@ -67,6 +67,7 @@
 					/>
 					<hr class="tw-border-tertiary tw-mt-4">
 					<badges-section
+						:badges-data="badgesData"
 						:is-loading="badgesLoading"
 						:loans="loans"
 						:completed-achievements="completedAchievements"
