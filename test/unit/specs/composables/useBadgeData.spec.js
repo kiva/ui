@@ -1077,7 +1077,6 @@ describe('useBadgeData.js', () => {
 			const { getTierBadgeHeadline } = useBadgeData();
 			expect(getTierBadgeHeadline(ID_WOMENS_EQUALITY)).toEqual('lending to women');
 		});
-		// Repeat for each badge
 		it('should return expected headline for us-economic-equality', () => {
 			const { getTierBadgeHeadline } = useBadgeData();
 			expect(getTierBadgeHeadline(ID_US_ECONOMIC_EQUALITY)).toEqual('lending to U.S entrepreneurs');
