@@ -114,7 +114,7 @@ const levelCaption = badge => {
 
 const ctaCaption = badge => {
 	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
-		return 'See this journey';
+		return 'See details';
 	}
 	return badge.hasStarted ? 'Continue' : 'Get started';
 };

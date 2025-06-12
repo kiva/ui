@@ -123,7 +123,7 @@ const journeyCtaBtn = computed(() => {
 	if (props.isSelectedJourneyComplete) {
 		return 'See all journeys';
 	}
-	return 'Continue this journey';
+	return 'Keep going';
 });
 
 </script>
