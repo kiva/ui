@@ -21,8 +21,8 @@ export default async function render({
 		cache = initCache(serverConfig);
 	}
 
-	// if this server needs to process edge-side includes (ESI) tags, create the ESI handler
-	if (!esi && serverConfig.processESITags) {
+	// if this server needs to simulate a CDN, create the edge-side includes (ESI) handler
+	if (!esi && serverConfig.simulateCDN) {
 		esi = new ESI();
 	}
 	// only process ESI tags if the handler is initialized and the current request is not for an ESI tag

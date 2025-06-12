@@ -76,6 +76,9 @@ export default function createMiddleware({ config, vite }) {
 	}
 
 	async function middleware(req, res, next) {
+		// Get cookies from the request
+		const cookies = cookie.parse(req.get('Cookie') || '');
+
 		// Get device information from the user agent
 		const userAgent = req.get('User-Agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
@@ -88,17 +91,24 @@ export default function createMiddleware({ config, vite }) {
 			topUrl,
 		} : null;
 
+		// Check if CDN indicates that the user is logged in
+		const cdnNotedLoggedIn = config.server.simulateCDN
+			// If simulating CDN, check login sync cookie
+			? cookies.kvls && cookies.kvls !== 'o'
+			// If not simulating CDN, check Fastly header
+			: req.get('Fastly-Noted-Logged-In') === 'true';
+
 		// Setup rendering context
 		const context = {
 			url: req.url,
 			esi,
 			config: config.app,
 			kivaUserAgent: config.server.userAgent,
-			cookies: cookie.parse(req.get('Cookie') || ''),
+			cookies,
 			user: req.user || {},
 			locale: req.locale,
 			device,
-			cdnNotedLoggedIn: req.get('Fastly-Noted-Logged-In') === 'true',
+			cdnNotedLoggedIn,
 		};
 
 		// set html response headers
