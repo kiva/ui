@@ -42,29 +42,26 @@
 
 <script setup>
 import numeral from 'numeral';
-import logReadQueryError from '#src/util/logReadQueryError';
-import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import StatItem from '#src/components/MyKiva/StatItem';
 import { KvButton } from '@kiva/kv-components';
-import {
-	ref,
-	computed,
-	onMounted,
-	inject,
-} from 'vue';
+import { computed } from 'vue';
 
-const apollo = inject('apollo');
-
-defineProps({
+const props = defineProps({
 	userBalance: {
 		type: String,
 		default: '',
 	},
+	lendingStats: {
+		type: Object,
+		default: () => ({}),
+	},
 });
 
-const livesTouched = ref(0);
-const totalAmountLent = ref(0);
-const totalCountriesLentTo = ref(0);
+const livesTouched = computed(() => props.lendingStats?.lentTo?.borrowers?.totalCount ?? 0);
+
+const totalAmountLent = computed(() => numeral(props.lendingStats?.amount_of_loans ?? 0).value());
+
+const totalCountriesLentTo = computed(() => props.lendingStats?.lentTo?.countries?.totalCount ?? 0);
 
 const countryLabel = computed(() => {
 	return totalCountriesLentTo.value === 1 ? 'Country<br>lent to' : 'Countries<br>lent to';
@@ -72,18 +69,6 @@ const countryLabel = computed(() => {
 
 const livesTouchedLabel = computed(() => {
 	return livesTouched.value === 1 ? 'Life<br>touched' : 'Lives<br>touched';
-});
-
-onMounted(() => {
-	try {
-		const result = apollo.readQuery({ query: lendingStatsQuery });
-
-		livesTouched.value = result.my?.lendingStats?.lentTo?.borrowers?.totalCount ?? 0;
-		totalAmountLent.value = numeral(result.my?.userStats?.amount_of_loans ?? 0).value();
-		totalCountriesLentTo.value = result.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
-	} catch (e) {
-		logReadQueryError(e, 'MyKivaPage myKivaStatsQuery');
-	}
 });
 </script>
 
