@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<h3
+			v-if="hasActiveLoans"
 			v-html="title"
 			class="tw-mb-2"
-			:class="{ 'tw-text-center': !filteredLoans.length }"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
@@ -205,13 +205,6 @@ const activeLoans = computed(() => {
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
 const title = computed(() => {
-	if (!loans.value.length) {
-		return 'Change a life <u>today</u>!';
-	}
-	if (!hasActiveLoans.value) {
-		return `You changed <u>${totalLoans.value} lives</u>!`;
-	}
-
 	if (totalLoans.value === 1) {
 		return 'You’re <u>changing a life</u> right now!';
 	}
@@ -299,9 +292,7 @@ const handleChange = event => {
 };
 
 watch(() => loans.value, () => {
-	if (!hasActiveLoans.value) {
-		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
-	} else {
+	if (hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
 	}
 }, { immediate: true });
