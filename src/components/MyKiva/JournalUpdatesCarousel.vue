@@ -27,11 +27,11 @@
 					class="tw-flex tw-items-center tw-h-full tw-pr-3"
 				>
 					<kv-button
-						class="tw-mt-2"
+						class="tw-mt-2 tw-whitespace-nowrap"
 						variant="secondary"
 						@click="loadMoreUpdates"
 					>
-						Load more<br>updates
+						Load more
 					</kv-button>
 				</div>
 			</template>

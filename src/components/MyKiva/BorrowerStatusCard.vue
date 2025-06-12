@@ -85,7 +85,10 @@
 							md:tw-pointer-events-none"
 						@click="toggleWhatIsNext"
 					>
-						<p class="tw-text-action tw-font-medium md:tw-text-black tw-pt-0 md:tw-pt-1">
+						<p
+							class="tw-text-action tw-font-medium md:tw-text-black tw-pt-0 md:tw-pt-1
+								md:tw-w-full md:tw-text-left"
+						>
 							What's next
 						</p>
 						<KvMaterialIcon

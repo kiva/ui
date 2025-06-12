@@ -10,7 +10,6 @@
 			:is-loading="isLoading"
 			:show-menu="true"
 			:cards-number="6"
-			:show-cta-when-no-loans="false"
 			:show-carousel-tabs="true"
 			class="portfolio-borrowers-carousel"
 		/>
