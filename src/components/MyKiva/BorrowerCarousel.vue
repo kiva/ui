@@ -42,15 +42,6 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="totalLoans > filteredLoans.length" for-panel="view-more">
-						<a
-							href="/portfolio/loans" v-kv-track-event="[
-								'portfolio',
-								'click',
-								'view-all'
-							]"
-						>View all</a>
-					</KvTab>
 				</template>
 				<template #tabPanels>
 					<KvTabPanel
@@ -80,6 +71,20 @@
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
 						/>
+					</template>
+					<template v-if="totalLoans > filteredLoans.length" #see-all>
+						<div
+							:key="`view-more-card`"
+							class="tw-flex tw-items-center tw-h-full tw-pl-4"
+						>
+							<kv-button
+								class="tw-mt-2 tw-whitespace-nowrap"
+								variant="secondary"
+								@click="loadMore"
+							>
+								See all
+							</kv-button>
+						</div>
 					</template>
 				</KvCarousel>
 			</div>
@@ -122,6 +127,7 @@
 
 <script setup>
 import _throttle from 'lodash/throttle';
+import { useRouter } from 'vue-router';
 import {
 	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
 } from '@kiva/kv-components';
@@ -182,6 +188,8 @@ const props = defineProps({
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const router = useRouter();
 
 const { loans, totalLoans } = toRefs(props);
 const tabs = ref(null);
@@ -289,6 +297,11 @@ const handleChange = event => {
 	} else {
 		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
 	}
+};
+
+const loadMore = () => {
+	$kvTrackEvent('portfolio', 'click', 'view-all');
+	router.push('/portfolio/loans');
 };
 
 watch(() => loans.value, () => {

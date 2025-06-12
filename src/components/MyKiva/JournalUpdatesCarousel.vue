@@ -24,7 +24,7 @@
 			<template v-if="showLoadMore" #view-more>
 				<div
 					:key="`view-more-card`"
-					class="tw-flex tw-items-center tw-h-full tw-pr-3"
+					class="tw-flex tw-items-center tw-h-full tw-pl-4"
 				>
 					<kv-button
 						class="tw-mt-2 tw-whitespace-nowrap"

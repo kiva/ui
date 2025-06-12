@@ -15,7 +15,7 @@
 					'tw-bg-white': badge.hasStarted,
 					'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
 				}"
-				style="min-height: 210px;"
+				style="min-height: 228px;"
 				@click="badgeClicked(badge)"
 			>
 				<BadgeContainer
