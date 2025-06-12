@@ -1,0 +1,224 @@
+import { ref, computed } from 'vue';
+import gql from 'graphql-tag';
+import _merge from 'lodash/merge';
+import logFormatter from '#src/util/logFormatter';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import loanCardQuery from '#src/graphql/query/loanCardData.graphql';
+import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
+
+/**
+ * Vue composable for loading borrower profile data
+ *
+ * @param {Object} apolloClient - Apollo Client instance
+ * @returns Badge data and utilities
+ */
+export default function useBorrowerProfileData(apolloClient) {
+	const bpWatchedQuery = ref();
+	const loanCardWatchedQuery = ref();
+	const bpWatchedQueryData = ref();
+	const loanCardWatchedQueryData = ref();
+	const bpData = ref();
+	const achievementsData = ref();
+
+	// Loading state and computed properties
+	const loading = computed(() => !bpWatchedQueryData.value || !loanCardWatchedQueryData.value);
+	const loan = computed(() => bpData.value?.lend?.loan ?? null);
+	const loanId = computed(() => loan.value?.id ?? 0);
+	const userBalance = computed(() => bpData.value?.my?.userAccount?.balance);
+	const name = computed(() => loan.value?.name ?? '');
+	const hash = computed(() => loan.value?.image?.hash ?? '');
+	const country = computed(() => loan.value?.geocode?.country?.name ?? '');
+	const loanUse = computed(() => loan.value?.use ?? '');
+	const loanWhySpecial = computed(() => loan.value?.whySpecial ?? '');
+	const loanGeocode = computed(() => loan.value?.geocode ?? null);
+	const loanStatus = computed(() => loan.value?.status ?? '');
+	const loanPartner = computed(() => (loan.value && 'partner' in loan.value ? loan.value.partner : null));
+	const loanTrustee = computed(() => (loan.value && 'trustee' in loan.value ? loan.value.trustee : null));
+	const anonymizationLevel = computed(() => loan.value?.anonymizationLevel ?? '');
+	const userProperties = computed(() => loan.value?.userProperties ?? null);
+	const description = computed(() => loan.value?.description ?? '');
+	const borrowerCount = computed(() => loan.value?.borrowerCount ?? 0);
+	const borrowers = computed(() => loan.value?.borrowers ?? null);
+	const previousLoanId = computed(() => loan.value?.previousLoanId ?? 0);
+	const originalLanguage = computed(() => loan.value?.originalLanguage ?? null);
+	const descriptionInOriginalLanguage = computed(() => loan.value?.descriptionInOriginalLanguage ?? '');
+	const reviewer = computed(() => (loan.value && 'reviewer' in loan.value ? loan.value.reviewer : null));
+	const partnerName = computed(() => (loan.value && 'partnerName' in loan.value ? loan.value.partnerName : ''));
+	const video = computed(() => loan.value?.video ?? null);
+	const businessName = computed(() => (loan.value && 'businessName' in loan.value ? loan.value.businessName : ''));
+	const businessDescription = computed(() => (
+		loan.value && 'businessDescription' in loan.value ? loan.value.businessDescription : ''
+	));
+	const dualStatementNote = computed(() => (
+		loan.value && 'dualStatementNote' in loan.value ? loan.value.dualStatementNote : ''
+	));
+	const moreInfoAboutLoan = computed(() => (
+		loan.value && 'moreInfoAboutLoan' in loan.value ? loan.value.moreInfoAboutLoan : ''
+	));
+	const purpose = computed(() => (loan.value && 'purpose' in loan.value ? loan.value.purpose : ''));
+	const sector = computed(() => loan.value?.sector ?? null);
+	const yearsInBusiness = computed(() => (
+		loan.value && 'yearsInBusiness' in loan.value ? loan.value.yearsInBusiness : ''
+	));
+	const socialLinks = computed(() => (loan.value && 'socialLinks' in loan.value ? loan.value.socialLinks : null));
+	const unreservedAmount = computed(() => loan.value?.unreservedAmount ?? 0);
+	const fundraisingPercent = computed(() => loan.value?.fundraisingPercent ?? 0);
+	const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
+	const timeLeft = computed(() => loan.value?.fundraisingTimeLeft ?? '');
+	const lenders = computed(() => loan.value?.lenders ?? null);
+	const inPfp = computed(() => loan.value?.inPfp ?? false);
+	const loanLenderRepaymentTerm = computed(() => loan.value?.lenderRepaymentTerm ?? 0);
+	const loanTermLenderRepaymentTerm = computed(() => loan.value?.terms?.lenderRepaymentTerm ?? 0);
+	const repaymentInterval = computed(() => loan.value?.repaymentInterval ?? '');
+	const disbursalDate = computed(() => loan.value?.disbursalDate ?? '');
+	const terms = computed(() => loan.value?.terms ?? null);
+	const endorsement = computed(() => (loan.value && 'endorsement' in loan.value ? loan.value.endorsement : ''));
+	const loanAmount = computed(() => loan.value?.loanAmount || 0);
+	const paidAmount = computed(() => loan.value?.paidAmount || 0);
+	const comments = computed(() => loan.value?.comments?.values ?? []);
+
+	const loadBPData = loanDataId => {
+		if (!loanDataId || typeof loanDataId !== 'number') {
+			console.error('Invalid loanDataId:', loanDataId);
+			return;
+		}
+		console.log('loadBPData called with loanDataId:', loanDataId);
+		try {
+			const mergeData = () => {
+				bpData.value = _merge(
+					bpWatchedQueryData.value ? JSON.parse(JSON.stringify(bpWatchedQueryData.value)) : {},
+					loanCardWatchedQueryData.value ? JSON.parse(JSON.stringify(loanCardWatchedQueryData.value)) : {},
+				);
+				console.log('Merged bpData:', bpData.value);
+			};
+
+			// Parse GraphQL queries
+			const parsedBorrowerProfileQuery = gql`${borrowerProfileSideSheetQuery}`;
+			const parsedLoanCardQuery = gql`${loanCardQuery}`;
+			const parsedAchievementsQuery = gql`${postCheckoutAchievementsQuery}`;
+
+			bpWatchedQuery.value = apolloClient.watchQuery({
+				query: parsedBorrowerProfileQuery,
+				variables: { loanId: loanDataId },
+				fetchPolicy: 'network-only'
+			}).subscribe({
+				next: result => {
+					console.log('borrowerProfileSideSheetQuery result:', result);
+					bpWatchedQueryData.value = result.data;
+					mergeData();
+				},
+				error: error => {
+					console.error('borrowerProfileSideSheetQuery error:', {
+						message: error.message,
+						graphQLErrors: error.graphQLErrors,
+						networkError: error.networkError,
+					});
+				}
+			});
+
+			loanCardWatchedQuery.value = apolloClient.watchQuery({
+				query: parsedLoanCardQuery,
+				variables: { loanId: loanDataId },
+				fetchPolicy: 'network-only'
+			}).subscribe({
+				next: result => {
+					console.log('loanCardQuery result:', result);
+					loanCardWatchedQueryData.value = result.data;
+					mergeData();
+				},
+				error: error => {
+					console.error('loanCardQuery error:', {
+						message: error.message,
+						graphQLErrors: error.graphQLErrors,
+						networkError: error.networkError,
+					});
+				}
+			});
+
+			apolloClient.query({
+				query: parsedAchievementsQuery,
+				variables: { loanIds: [loanDataId] }
+			}).then(result => {
+				console.log('postCheckoutAchievementsQuery result:', result);
+				achievementsData.value = result;
+			}).catch(error => {
+				console.error('postCheckoutAchievementsQuery error:', {
+					message: error.message,
+					graphQLErrors: error.graphQLErrors,
+					networkError: error.networkError,
+				});
+			});
+		} catch (e) {
+			console.error('Error in loadBPData:', {
+				message: e.message,
+				graphQLErrors: e.graphQLErrors,
+				networkError: e.networkError,
+				stack: e.stack,
+			});
+			logFormatter(e, 'error');
+		}
+	};
+
+	const clearBPData = () => {
+		console.log('Clearing borrower profile data');
+		bpWatchedQuery.value?.unsubscribe();
+		loanCardWatchedQuery.value?.unsubscribe();
+		bpWatchedQueryData.value = undefined;
+		loanCardWatchedQueryData.value = undefined;
+		bpData.value = undefined;
+		achievementsData.value = undefined;
+	};
+
+	return {
+		achievementsData,
+		anonymizationLevel,
+		borrowerCount,
+		borrowers,
+		businessDescription,
+		businessName,
+		clearBPData,
+		comments,
+		country,
+		description,
+		descriptionInOriginalLanguage,
+		disbursalDate,
+		dualStatementNote,
+		endorsement,
+		fundraisingPercent,
+		hash,
+		inPfp,
+		lenders,
+		loadBPData,
+		loading,
+		loan,
+		loanAmount,
+		loanGeocode,
+		loanId,
+		loanLenderRepaymentTerm,
+		loanPartner,
+		loanStatus,
+		loanTermLenderRepaymentTerm,
+		loanTrustee,
+		loanUse,
+		loanWhySpecial,
+		moreInfoAboutLoan,
+		name,
+		originalLanguage,
+		paidAmount,
+		partnerName,
+		pfpMinLenders,
+		previousLoanId,
+		purpose,
+		repaymentInterval,
+		reviewer,
+		sector,
+		socialLinks,
+		terms,
+		timeLeft,
+		unreservedAmount,
+		userBalance,
+		userProperties,
+		video,
+		yearsInBusiness,
+	};
+}

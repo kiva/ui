@@ -122,7 +122,7 @@
 		@side-sheet-closed="handleCloseSideSheet"
 	>
 		<template #default>
-			<BorrowerSideSheetContent :loan="selectedLoan" />
+			<BorrowerSideSheetContent v-if="selectedLoan?.id" :loan-id="selectedLoan.id" />
 		</template>
 		<template #controls>
 			<div class="tw-bg-white tw-border-t tw-flex tw-border-tertiary">
@@ -130,10 +130,10 @@
 					<KvLendCta
 						:loan="selectedLoan"
 						:is-loading="false"
+						:is-adding="isAdding"
 						:unreserved-amount="selectedLoan?.unreservedAmount"
 						:show-preset-amounts="true"
 						:kv-track-function="$kvTrackEvent"
-						@add-to-basket="onLendCtaAddToBasket"
 					/>
 				</div>
 			</div>
@@ -146,6 +146,8 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dolla
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
+
+import * as Sentry from '@sentry/vue';
 
 import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
 import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
@@ -168,6 +170,8 @@ import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendat
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
 
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+
 const prefetchedFlssVariables = {
 	pageLimit: 4,
 	origin: FLSS_ORIGIN_LEND_BY_CATEGORY
@@ -189,6 +193,7 @@ const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket'],
 	components: {
 		BorrowerSideSheetContent,
 		FiveDollarsBanner,
@@ -513,15 +518,44 @@ export default {
 			this.selectedLoan = loan;
 			this.showSideSheet = true;
 		},
-		onLendCtaAddToBasket(result) {
-			// KvLendCta should emit success/failure events
-			if (result.success) {
-				this.$kvTrackEvent('Lending', 'Add to basket', 'Side sheet lend');
-				// Optionally close the side sheet or show confirmation
-				// this.handleCloseSideSheet();
-			} else {
-				this.$showTipMsg(result.error, 'error');
-			}
+		addToBasket(lendAmount) {
+			this.isAdding = true;
+			this.errorMsg = '';
+			return setLendAmount({
+				amount: lendAmount,
+				apollo: this.apollo,
+				loanId: this.loanId,
+			}).then(() => {
+				this.isAdding = false;
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					null,
+					this.loanId,
+					this.lessThan25 ? this.amountLeft : 25
+				);
+			}).catch(e => {
+				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+					? e?.[0]?.message
+					: 'There was a problem adding the loan to your basket';
+				this.errorMsg = msg;
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(e);
+				// Handle errors from adding to basket
+				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+					return handleInvalidBasket({
+						cookieStore: this.cookieStore,
+						loan: {
+							id: this.loanId,
+							price: lendAmount
+						}
+					});
+				}
+				this.$showTipMsg(msg, 'error');
+				this.isAdding = false;
+			});
 		}
 	},
 	created() {
