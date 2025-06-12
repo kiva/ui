@@ -26,7 +26,6 @@ export default merge(base, {
 	},
 	server: {
 		graphqlUri: `https://gateway.${kivaHost}/graphql`,
-		sessionUri: `https://www.${kivaHost}/start-ui-session`,
 		memcachedEnabled: false,
 		memcachedServers: '',
 		viteConfig: {
