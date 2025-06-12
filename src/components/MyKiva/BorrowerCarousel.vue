@@ -1,22 +1,10 @@
 <template>
 	<div>
 		<h3
+			v-if="hasActiveLoans"
 			v-html="title"
 			class="tw-mb-2"
-			:class="{ 'tw-text-center': !filteredLoans.length }"
 		></h3>
-		<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
-			<KvButton
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					btnEventLabel
-				]" v-if="showCtaWhenNoLoans && (!filteredLoans.length || !hasActiveLoans)"
-				:to="link"
-			>
-				{{ btnCta }}
-			</KvButton>
-		</div>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
 				v-if="filteredLoans.length > 1 && showCarouselTabs"
@@ -187,10 +175,6 @@ const props = defineProps({
 		type: Number,
 		default: 9,
 	},
-	showCtaWhenNoLoans: {
-		type: Boolean,
-		default: true,
-	},
 	showCarouselTabs: {
 		type: Boolean,
 		default: false,
@@ -221,40 +205,10 @@ const activeLoans = computed(() => {
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
 const title = computed(() => {
-	if (!loans.value.length) {
-		return 'Change a life <u>today</u>!';
-	}
-	if (!hasActiveLoans.value) {
-		return `You changed <u>${totalLoans.value} lives</u>!`;
-	}
-
 	if (totalLoans.value === 1) {
 		return 'You’re <u>changing a life</u> right now!';
 	}
 	return `You’re <u>changing ${activeLoans.value.length} lives</u> right now!`;
-});
-
-const btnCta = computed(() => {
-	if (!loans.value.length) {
-		return 'Make a loan';
-	}
-
-	return 'See previously supported borrowers';
-});
-
-const link = computed(() => {
-	if (!loans.value.length) {
-		return '/lend-by-category';
-	}
-
-	return '/portfolio/loans';
-});
-
-const btnEventLabel = computed(() => {
-	if (!hasActiveLoans.value) {
-		return 'see-previously-supported-people';
-	}
-	return 'Make a loan - no loans state';
 });
 
 const filteredLoans = computed(() => {
@@ -338,9 +292,7 @@ const handleChange = event => {
 };
 
 watch(() => loans.value, () => {
-	if (!hasActiveLoans.value) {
-		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
-	} else {
+	if (hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
 	}
 }, { immediate: true });

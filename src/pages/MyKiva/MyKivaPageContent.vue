@@ -11,7 +11,7 @@
 	/>
 	<MyKivaContainer>
 		<h3 class="tw-mt-4">
-			{{ userInfo?.userAccount?.firstName }}'s impact overview
+			<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
 		</h3>
 		<MyKivaStats
 			:user-balance="userBalance"
