@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
-import gql from 'graphql-tag';
 import _merge from 'lodash/merge';
 import logFormatter from '#src/util/logFormatter';
+import { watchLoanData } from '#src/util/loanUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import loanCardQuery from '#src/graphql/query/loanCardData.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
@@ -10,9 +10,17 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
  * Vue composable for loading borrower profile data
  *
  * @param {Object} apolloClient - Apollo Client instance
+ * @param {Object} cookieStore - Cookie store instance
  * @returns Badge data and utilities
  */
-export default function useBorrowerProfileData(apolloClient) {
+export default function useBorrowerProfileData(apolloClient, cookieStore) {
+	if (!apolloClient) {
+		throw new Error('ApolloClient is required');
+	}
+	if (!cookieStore) {
+		throw new Error('CookieStore is required');
+	}
+
 	const bpWatchedQuery = ref();
 	const loanCardWatchedQuery = ref();
 	const bpWatchedQueryData = ref();
@@ -92,62 +100,66 @@ export default function useBorrowerProfileData(apolloClient) {
 				console.log('Merged bpData:', bpData.value);
 			};
 
-			// Parse GraphQL queries
-			const parsedBorrowerProfileQuery = gql`${borrowerProfileSideSheetQuery}`;
-			const parsedLoanCardQuery = gql`${loanCardQuery}`;
-			const parsedAchievementsQuery = gql`${postCheckoutAchievementsQuery}`;
-
-			bpWatchedQuery.value = apolloClient.watchQuery({
-				query: parsedBorrowerProfileQuery,
-				variables: { loanId: loanDataId },
-				fetchPolicy: 'network-only'
-			}).subscribe({
-				next: result => {
-					console.log('borrowerProfileSideSheetQuery result:', result);
-					bpWatchedQueryData.value = result.data;
-					mergeData();
+			// Watch borrower profile side sheet query
+			const bpObserver = watchLoanData({
+				apollo: apolloClient,
+				cookieStore,
+				loanId: loanDataId,
+				loanQuery: borrowerProfileSideSheetQuery,
+				callback: result => {
+					if (result.error) {
+						console.error('borrowerProfileSideSheetQuery error:', {
+							message: result.error.message,
+							graphQLErrors: result.error.graphQLErrors,
+							networkError: result.error.networkError,
+						});
+					} else {
+						console.log('borrowerProfileSideSheetQuery result:', result);
+						bpWatchedQueryData.value = result.data;
+						mergeData();
+					}
 				},
-				error: error => {
-					console.error('borrowerProfileSideSheetQuery error:', {
-						message: error.message,
-						graphQLErrors: error.graphQLErrors,
-						networkError: error.networkError,
-					});
-				}
 			});
+			bpWatchedQuery.value = bpObserver.subscription;
 
-			loanCardWatchedQuery.value = apolloClient.watchQuery({
-				query: parsedLoanCardQuery,
-				variables: { loanId: loanDataId },
-				fetchPolicy: 'network-only'
-			}).subscribe({
-				next: result => {
-					console.log('loanCardQuery result:', result);
-					loanCardWatchedQueryData.value = result.data;
-					mergeData();
+			// Watch loan card query
+			const loanCardObserver = watchLoanData({
+				apollo: apolloClient,
+				cookieStore,
+				loanId: loanDataId,
+				loanQuery: loanCardQuery,
+				callback: result => {
+					if (result.error) {
+						console.error('loanCardQuery error:', {
+							message: result.error.message,
+							graphQLErrors: result.error.graphQLErrors,
+							networkError: result.error.networkError,
+						});
+					} else {
+						console.log('loanCardQuery result:', result);
+						loanCardWatchedQueryData.value = result.data;
+						mergeData();
+					}
 				},
-				error: error => {
-					console.error('loanCardQuery error:', {
-						message: error.message,
-						graphQLErrors: error.graphQLErrors,
-						networkError: error.networkError,
-					});
-				}
 			});
+			loanCardWatchedQuery.value = loanCardObserver.subscription;
 
+			// Query post-checkout achievements
 			apolloClient.query({
-				query: parsedAchievementsQuery,
-				variables: { loanIds: [loanDataId] }
-			}).then(result => {
-				console.log('postCheckoutAchievementsQuery result:', result);
-				achievementsData.value = result;
-			}).catch(error => {
-				console.error('postCheckoutAchievementsQuery error:', {
-					message: error.message,
-					graphQLErrors: error.graphQLErrors,
-					networkError: error.networkError,
+				query: postCheckoutAchievementsQuery,
+				variables: { loanIds: [loanDataId] },
+			})
+				.then(result => {
+					console.log('postCheckoutAchievementsQuery result:', result);
+					achievementsData.value = result;
+				})
+				.catch(error => {
+					console.error('postCheckoutAchievementsQuery error:', {
+						message: error.message,
+						graphQLErrors: error.graphQLErrors,
+						networkError: error.networkError,
+					});
 				});
-			});
 		} catch (e) {
 			console.error('Error in loadBPData:', {
 				message: e.message,

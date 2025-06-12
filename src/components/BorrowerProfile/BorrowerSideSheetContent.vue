@@ -1,26 +1,22 @@
 <template>
 	<section class="tw-bg-secondary md:tw-bg-secondary" style="margin: -16px">
-		<div class="tw-flex tw-flex-col tw-px-4 tw-py-2">
+		<div v-if="loan" class="tw-flex tw-flex-col tw-px-4 tw-py-2">
 			<SideSheetHeader />
-			<SideSheetLoanTags :loan-id="bpLoanId" />
+			<SideSheetLoanTags :loan-id="loan.id" />
 			<LoanProgress
-				class="tw-mb-2 tw-mt-1.5"
-				data-testid="bp-summary-progress"
-				:money-left="unreservedAmount"
-				:progress-percent="fundraisingPercent"
-				:time-left="timeLeft"
-				:loan-status="inPfp ? 'pfp' : 'fundraising'"
-				:number-of-lenders="numLenders"
+				class="tw-mb-2 tw-mt-1.5" data-testid="bp-summary-progress" :money-left="unreservedAmount"
+				:progress-percent="fundraisingPercent" :time-left="timeLeft"
+				:loan-status="inPfp ? 'pfp' : 'fundraising'" :number-of-lenders="numLenders"
 				:pfp-min-lenders="pfpMinLenders"
 			/>
 			<SideSheetLoanHowMoneyHelps />
 			<SideSheetLoanStory />
 			<CommentsAndWhySpecial />
-			<MoreAboutLoan :loan-id="bpLoanId" />
+			<MoreAboutLoan :loan-id="loan.id" />
 			<SideSheetCountry />
-			<LendersAndTeams :loan-id="bpLoanId" />
-			<LendersAndTeams :loan-id="bpLoanId" :is-lender="false" />
-			<DetailsTabs :name="name" />
+			<LendersAndTeams :loan-id="loan.id" />
+			<LendersAndTeams :loan-id="loan.id" :is-lender="false" />
+			<DetailsTabs :name="loan.name" />
 		</div>
 	</section>
 </template>
@@ -61,49 +57,61 @@ export default {
 		}
 	},
 	data() {
-		// Initialize the composable with the injected apollo client
-		console.log('this.apollo', this.apollo);
-		const borrowerProfile = useBorrowerProfileData(this.apollo);
 		return {
-			borrowerProfile
+			borrowerProfile: null // Initialize as null, set in created
 		};
 	},
-	computed: {
-		bpLoanId() {
-			return this.borrowerProfile?.loan?.id;
-		},
-		inPfp() {
-			return this.borrowerProfile?.loan?.inPfp ?? false;
-		},
-		pfpMinLenders() {
-			return this.borrowerProfile?.loan?.pfpMinLenders ?? 0;
-		},
-		numLenders() {
-			return this.borrowerProfile?.loan?.lenders?.totalCount ?? 0;
-		},
-		fundraisingPercent() {
-			if (this.unreservedAmount === '0') return '0';
-			return this.borrowerProfile?.loan?.fundraisingPercent ?? 0;
-		},
-		timeLeft() {
-			return this.borrowerProfile?.loan?.fundraisingTimeLeft ?? '';
-		},
-		unreservedAmount() {
-			return this.borrowerProfile?.loan?.unreservedAmount ?? '0';
-		},
-		name() {
-			return this.borrowerProfile?.loan?.name;
+	created() {
+		// Initialize composable after injections are available
+		if (!this.apollo || !this.cookieStore) {
+			console.error('Apollo or cookieStore is undefined in created hook');
+			return;
+		}
+		try {
+			this.borrowerProfile = useBorrowerProfileData(this.apollo, this.cookieStore);
+			console.log('BorrowerProfile initialized:', this.borrowerProfile);
+		} catch (e) {
+			console.error('Error initializing useBorrowerProfileData:', e);
 		}
 	},
-	async mounted() {
+	computed: {
+		loan() {
+			return this.borrowerProfile?.loan ?? null;
+		},
+		inPfp() {
+			return this.borrowerProfile?.inPfp ?? false;
+		},
+		pfpMinLenders() {
+			return this.borrowerProfile?.pfpMinLenders ?? 0;
+		},
+		numLenders() {
+			return this.borrowerProfile?.lenders?.totalCount ?? 0;
+		},
+		fundraisingPercent() {
+			if (this.borrowerProfile?.unreservedAmount === '0') return '0';
+			return this.borrowerProfile?.fundraisingPercent ?? 0;
+		},
+		timeLeft() {
+			return this.borrowerProfile?.fundraisingTimeLeft ?? '';
+		},
+		unreservedAmount() {
+			return this.borrowerProfile?.unreservedAmount ?? '0';
+		}
+	},
+	mounted() {
+		if (!this.borrowerProfile) {
+			console.error('BorrowerProfile not initialized, skipping loadBPData');
+			return;
+		}
 		try {
+			console.log('Loading data for loanId:', this.loanId);
 			this.borrowerProfile.loadBPData(this.loanId);
 		} catch (e) {
-			console.error('Error:', e);
+			console.error('Error in loadBPData:', e);
 		}
 	},
 	beforeUnmount() {
-		this.borrowerProfile.clearBPData();
+		if (this.borrowerProfile) this.borrowerProfile.clearBPData();
 	}
 };
 </script>
