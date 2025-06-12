@@ -44,11 +44,13 @@
 								display: hasBasket ? 'inline-flex' : 'none'
 							}"
 						>
-							<span
-								class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
-								:style="isUserDataLoading ? {content:'var(--ui-data-corporate-basket-count)'} : {}"
-							>
-								{{ basketCount - lcaLoanCount }}
+							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+								<div v-if="isUserDataLoading" class="tw-w-2 tw-h-3">
+									<kv-loading-placeholder />
+								</div>
+								<template v-else>
+									{{ basketCount - lcaLoanCount }}
+								</template>
 							</span>
 							Basket
 						</span>
@@ -338,11 +340,13 @@
 									}"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<span
-										class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
-										:style="isUserDataLoading ? {content:'var(--ui-data-basket-number)'} : {}"
-									>
-										{{ basketNumber }}
+									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+										<div v-if="isUserDataLoading" class="tw-w-2 tw-h-3">
+											<kv-loading-placeholder />
+										</div>
+										<template v-else>
+											{{ basketNumber }}
+										</template>
 									</span>
 									<span class="tw-hidden md:tw-flex">Basket</span>
 								</router-link>
@@ -357,9 +361,13 @@
 									<span
 										class="tw-absolute tw-w-4 tw-h-4 tw-pt-1
 											tw-text-white tw-text-center tw-text-small tw-font-medium"
-										:style="isUserDataLoading ? {content:'var(--ui-data-basket-count)'} : {}"
 									>
-										{{ basketCount }}
+										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-2">
+											<kv-loading-placeholder />
+										</div>
+										<template v-else>
+											{{ basketCount }}
+										</template>
 									</span>
 									<kv-material-icon
 										:icon="mdiBriefcase"
@@ -559,7 +567,7 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 import {
-	KvButton, KvMaterialIcon, KvPageContainer
+	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer
 } from '@kiva/kv-components';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
@@ -572,6 +580,7 @@ export default {
 		CampaignLogoGroup,
 		KivaLogo,
 		KvDropdown,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvPageContainer,
 		MyKivaButton,
