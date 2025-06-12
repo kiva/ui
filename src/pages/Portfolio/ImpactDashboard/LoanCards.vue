@@ -9,7 +9,7 @@
 			:total-loans="totalLoans"
 			:is-loading="isLoading"
 			:show-menu="true"
-			:cards-number="6"
+			:cards-number="7"
 			:show-carousel-tabs="true"
 			class="portfolio-borrowers-carousel"
 		/>
