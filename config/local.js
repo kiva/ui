@@ -17,6 +17,5 @@ export default merge(base, {
 		gzipEnabled: true,
 		memcachedEnabled: false,
 		memcachedServers: '',
-		sessionUri: '',
 	},
 });
