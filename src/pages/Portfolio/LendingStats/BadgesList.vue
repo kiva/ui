@@ -136,6 +136,13 @@ export default {
 			const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
 			this.tier = selectedTier;
 			this.selectedBadgeData = badge;
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				'Badge journey map',
+				badge.challengeName,
+				badge.level
+			);
 			if (this.tier) {
 				this.showSideSheet = true;
 			} else {
