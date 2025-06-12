@@ -18,7 +18,6 @@ import {
 	promoBannerData,
 } from './globalData/promoBanners';
 import { userAvatarFragment, userAvatarData } from './globalData/userAvatar';
-import { userBalanceFragment, userBalanceData } from './globalData/userBalance';
 
 async function fetchUserDataGlobals(apollo, cookieStore) {
 	const { data } = await apollo.query({
@@ -29,7 +28,6 @@ async function fetchUserDataGlobals(apollo, cookieStore) {
 			my {
 				id
 				...UserAvatar
-				...UserBalance
 				...UserPromoBalance
 			}
 			shop(basketId: $basketId) {
@@ -42,7 +40,6 @@ async function fetchUserDataGlobals(apollo, cookieStore) {
 		${basketPromoAvailableFragment}
 		${globalPromoFragment}
 		${userAvatarFragment}
-		${userBalanceFragment}
 		${userPromoBalanceFragment}
 		`,
 		variables: {
@@ -102,7 +99,6 @@ export default async function renderESIHead({
 	});
 	html += renderCssVariables({
 		...userAvatarData(userDataGlobals),
-		...userBalanceData(userDataGlobals),
 		...basketCountData(userDataGlobals, cookieStore),
 		...promoBannerData(userDataGlobals, topUrlObj),
 	}, 'ui-data');

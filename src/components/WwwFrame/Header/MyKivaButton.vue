@@ -8,15 +8,19 @@
 		<span class="tw-sr-only">My Portfolio</span>
 		<span
 			class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
-			:style="isUserDataLoading ? {content:'var(--ui-data-user-balance)'} : {}"
 		>
-			{{ $filters.numeral(balance, '$0') }}
+			<div v-if="isUserDataLoading" class="tw-w-3 tw-h-3">
+				<kv-loading-placeholder />
+			</div>
+			<template v-else>
+				{{ $filters.numeral(balance, '$0') }}
+			</template>
 		</span>
 		<kv-material-icon
 			:icon="mdiAccountCircle"
 			class="tw-w-3 tw-h-3 md:tw-w-3.5 md:tw-h-3.5"
 			:style="isUserDataLoading ? {
-				display: 'var(--ui-data-user-avatar-default-display, inline-block)'
+				display: 'var(--ui-data-user-avatar-legacy-display, inline-block)'
 			} : {
 				display: isDefaultProfilePic ? 'inline-block' : 'none'
 			}"
@@ -41,7 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { mdiAccountCircle } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
 
 const { profilePicId } = defineProps({
