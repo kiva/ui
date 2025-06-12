@@ -45,7 +45,7 @@
 							}"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								<div v-if="isUserDataLoading" class="tw-w-2 tw-h-3">
+								<div v-if="isUserDataLoading" class="tw-w-1 tw-h-3">
 									<kv-loading-placeholder />
 								</div>
 								<template v-else>
@@ -341,7 +341,7 @@
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
 									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-										<div v-if="isUserDataLoading" class="tw-w-2 tw-h-3">
+										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-3">
 											<kv-loading-placeholder />
 										</div>
 										<template v-else>
@@ -359,10 +359,11 @@
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
 									<span
-										class="tw-absolute tw-w-4 tw-h-4 tw-pt-1
-											tw-text-white tw-text-center tw-text-small tw-font-medium"
+										class="tw-absolute tw-w-4 tw-h-4 tw-pt-0.5
+											tw-flex tw-items-center tw-justify-center
+											tw-text-white tw-text-small tw-font-medium"
 									>
-										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-2">
+										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-1.5">
 											<kv-loading-placeholder />
 										</div>
 										<template v-else>
