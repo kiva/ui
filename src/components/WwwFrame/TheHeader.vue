@@ -647,7 +647,7 @@ export default {
 	},
 	computed: {
 		isVisitor() {
-			return !this.userId && !this.isUserDataLoading;
+			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
 		},
 		isTrustee() {
 			return !!this.trusteeId;
@@ -731,8 +731,7 @@ export default {
 		},
 	],
 	created() {
-		const { useCDNCaching } = this.$renderConfig;
-		this.isUserDataLoading = useCDNCaching;
+		this.isUserDataLoading = this.$renderConfig?.useCDNCaching ?? false;
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
