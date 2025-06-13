@@ -164,12 +164,10 @@ export default {
 	apollo: [
 		{
 			query: userPromoCredits,
-			preFetch(config, client, { renderConfig }) {
-				if (renderConfig.useCDNCaching) {
-					// if using CDN caching, don't prefetch
-					return Promise.resolve();
-				}
-				return client.query({ query: userPromoCredits });
+			preFetch: true,
+			shouldPreFetch(config, { renderConfig }) {
+				// Don't prefetch if using CDN caching
+				return !renderConfig.useCDNCaching;
 			},
 			result({ data }) {
 				this.isUserDataLoading = false;
