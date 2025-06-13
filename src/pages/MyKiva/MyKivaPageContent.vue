@@ -264,7 +264,7 @@ const handleContinueJourneyClicked = () => {
 		eventLabel = `${challengeName} See all of your impact stats`;
 	}
 	if (isSelectedJourneyComplete.value) {
-		eventLabel = `${challengeName} See all journeys`;
+		eventLabel = `${challengeName} See all`;
 	}
 	$kvTrackEvent(
 		'portfolio',
