@@ -71,42 +71,39 @@
 				@add-to-basket="trackCategory($event, 'recommended')"
 			/>
 		</section>
+		<section class="tw-mb-4">
+			<h3>My achievements</h3>
+			<BadgesSection
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+				class="tw-mt-2"
+			/>
+			<JourneySideSheet
+				v-if="showSideSheet"
+				:visible="showSideSheet"
+				:selected-badge-data="selectedBadgeData"
+				:loans="loans"
+				:all-badges-completed="allBadgesCompleted"
+				:is-selected-journey-complete="isSelectedJourneyComplete"
+				@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
+				@continue-journey-clicked="handleContinueJourneyClicked"
+				@sidesheet-closed="handleComponentClosed"
+			/>
+			<BadgeModal
+				v-if="selectedBadgeData"
+				:show="showBadgeModal"
+				:badge="selectedBadgeData"
+				:lender="lender"
+				:state="state"
+				:tier="tier"
+				:is-earned-section="isEarnedSectionModal"
+				:loans="loans"
+				@badge-modal-closed="handleComponentClosed"
+				@badge-level-clicked="handleBadgeJourneyLevelClicked"
+			/>
+		</section>
 	</MyKivaContainer>
-	<template v-if="isAchievementDataLoaded">
-		<MyKivaContainer>
-			<section class="tw-mb-4">
-				<h3>My achievements</h3>
-				<BadgesSection
-					:badge-data="badgeData"
-					:selected-journey="selectedJourney"
-					@badge-clicked="handleBadgeSectionClicked"
-					class="tw-mt-2"
-				/>
-				<JourneySideSheet
-					:visible="showSideSheet"
-					:selected-badge-data="selectedBadgeData"
-					:loans="loans"
-					:all-badges-completed="allBadgesCompleted"
-					:is-selected-journey-complete="isSelectedJourneyComplete"
-					@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
-					@continue-journey-clicked="handleContinueJourneyClicked"
-					@sidesheet-closed="handleComponentClosed"
-				/>
-				<BadgeModal
-					v-if="selectedBadgeData"
-					:show="showBadgeModal"
-					:badge="selectedBadgeData"
-					:lender="lender"
-					:state="state"
-					:tier="tier"
-					:is-earned-section="isEarnedSectionModal"
-					:loans="loans"
-					@badge-modal-closed="handleComponentClosed"
-					@badge-level-clicked="handleBadgeJourneyLevelClicked"
-				/>
-			</section>
-		</MyKivaContainer>
-	</template>
 </template>
 
 <script setup>
@@ -147,7 +144,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const {
 	fetchAchievementData,
 	fetchContentfulData,
-	badgeAchievementData,
 	badgeData,
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
@@ -210,7 +206,6 @@ const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 
-const isAchievementDataLoaded = computed(() => !!badgeAchievementData.value);
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
 const allBadgesCompleted = computed(() => {
