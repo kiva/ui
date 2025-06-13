@@ -23,6 +23,7 @@
 			:user-balance="userBalance"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@show-cart-modal="showCartModal"
+			@handle-select-loan="handleSelectLoan"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
@@ -50,7 +51,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'handle-select-loan'],
 	props: {
 		spotlightData: {
 			type: Object,
@@ -102,6 +103,11 @@ export default {
 			return this.spotlightData?.viewAllLink ?? '';
 		}
 	},
+	methods: {
+		handleSelectLoan(payload) {
+			this.$emit('handle-select-loan', payload);
+		}
+	}
 };
 </script>
 

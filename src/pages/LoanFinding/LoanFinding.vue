@@ -3,7 +3,9 @@
 		<kv-atb-modal-container
 			:added-loan="addedLoan"
 		/>
-		<div class="tw-w-full">
+		<div
+			ref="animationSourceElement"
+		>
 			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
 
 			<!-- eslint-disable-next-line max-len -->
@@ -26,6 +28,7 @@
 				@add-to-basket="trackCategory($event, 'recommended')"
 				:class="{ 'tw-pt-3' : !isLoggedIn }"
 				@show-cart-modal="handleCartModal"
+				@handle-select-loan="handleSelectLoan"
 			/>
 
 			<!-- Almost Funded loans row -->
@@ -41,6 +44,7 @@
 				@add-to-basket="trackCategory($event, 'almost-funded')"
 				class="tw-pt-3 tw-mb-2"
 				@show-cart-modal="handleCartModal"
+				@handle-select-loan="handleSelectLoan"
 			/>
 
 			<!-- Five dollars row -->
@@ -58,6 +62,7 @@
 				@add-to-basket="trackCategory($event, 'five-dollars')"
 				class="tw-pt-3 tw-mb-2"
 				@show-cart-modal="handleCartModal"
+				@handle-select-loan="handleSelectLoan"
 			/>
 
 			<div class="tw-flex tw-flex-col">
@@ -71,6 +76,7 @@
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
 					@show-cart-modal="handleCartModal"
+					@handle-select-loan="handleSelectLoan"
 				/>
 
 				<!-- Element to trigger spotlight observer -->
@@ -87,6 +93,7 @@
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 					@show-cart-modal="handleCartModal"
+					@handle-select-loan="handleSelectLoan"
 				/>
 			</div>
 
@@ -99,32 +106,71 @@
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 				@show-cart-modal="handleCartModal"
+				@handle-select-loan="handleSelectLoan"
 			/>
 		</div>
 	</www-page>
+	<KvSideSheet
+		v-if="isMounted"
+		:animation-source-element="animationSourceElement"
+		:kv-track-function="$kvTrackEvent"
+		:show-back-button="false"
+		:show-go-to-link="true"
+		:show-headline-border="true"
+		:visible="showSideSheet"
+		:width-dimensions="{ default: '100%', lg: '590px', md: '590px', sm:'100%' }"
+		@side-sheet-closed="handleCloseSideSheet"
+	>
+		<template #default>
+			<BorrowerSideSheetContent v-if="selectedLoan?.id" :loan-id="selectedLoan.id" />
+		</template>
+		<template #controls>
+			<div class="tw-bg-white tw-border-t tw-flex tw-border-tertiary">
+				<div class="tw-flex tw-ml-auto tw-mr-auto sm:tw-ml-auto tw-py-2 tw-px-2">
+					<KvLendCta
+						:loan="selectedLoan"
+						:is-loading="false"
+						:is-adding="isAdding"
+						:unreserved-amount="selectedLoan?.unreservedAmount"
+						:show-preset-amounts="true"
+						:kv-track-function="$kvTrackEvent"
+					/>
+				</div>
+			</div>
+		</template>
+	</KvSideSheet>
 </template>
 
 <script>
-import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-import WwwPage from '#src/components/WwwFrame/WwwPage';
-import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
-import QuickFiltersSection from '#src/components/LoanFinding/QuickFiltersSection';
-import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
-import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
+import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
-import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import { createIntersectionObserver } from '#src/util/observerUtils';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
+
+import * as Sentry from '@sentry/vue';
+
+import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
+import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
+import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
+import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
+import QuickFiltersSection from '#src/components/LoanFinding/QuickFiltersSection';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import WwwPage from '#src/components/WwwFrame/WwwPage';
+
+import { createIntersectionObserver } from '#src/util/observerUtils';
+import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
+import { KvLendCta, KvSideSheet } from '@kiva/kv-components';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
+
+import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
-import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
-import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import userInfoQuery from '#src/graphql/query/userInfo.graphql';
+
+import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -147,13 +193,17 @@ const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket'],
 	components: {
-		WwwPage,
-		LendingCategorySection,
-		QuickFiltersSection,
-		PartnerSpotlightSection,
+		BorrowerSideSheetContent,
 		FiveDollarsBanner,
 		KvAtbModalContainer,
+		KvLendCta,
+		KvSideSheet,
+		LendingCategorySection,
+		PartnerSpotlightSection,
+		QuickFiltersSection,
+		WwwPage,
 	},
 	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
 	head() {
@@ -171,22 +221,28 @@ export default {
 	},
 	data() {
 		return {
-			userInfo: {},
-			firstRowLoans: [],
 			almostFundedLoans: new Array(9).fill({ id: 0 }),
-			secondCategoryLoans: new Array(9).fill({ id: 0 }),
+			animationSourceElement: undefined,
+			enableAlmostFundedRow: false,
+			enableLoanRecommendations: false,
+			enableQFMobileVersion: false,
+			enableThreeLoansRecommended: false,
+			firstRowLoans: [],
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
+			HandOrangeIcon,
+			isMounted: false,
 			matchedLoansTotal: 0,
-			spotlightLoans: [],
+			secondCategoryLoans: new Array(9).fill({ id: 0 }),
+			selectedLoan: undefined,
+			showFiveDollarsBanner: false,
+			showSideSheet: false,
 			spotlightIndex: 0,
+			spotlightLoans: [],
 			spotlightViewportObserver: null,
 			userBalance: undefined,
-			showFiveDollarsBanner: false,
-			enableThreeLoansRecommended: false,
-			enableQFMobileVersion: false,
-			enableAlmostFundedRow: false,
-			HandOrangeIcon,
-			enableLoanRecommendations: false,
+			userInfo: {},
+			isAdding: false,
+			selectedOption: '25'
 		};
 	},
 	apollo: {
@@ -453,6 +509,53 @@ export default {
 				const daysDifference = timeDifference / (1000 * 3600 * 24);
 				if (daysDifference < 3) this.showFiveDollarsBanner = true;
 			}
+		},
+		handleCloseSideSheet() {
+			this.showSideSheet = false;
+			this.selectedLoan = undefined;
+		},
+		handleSelectLoan(loan) {
+			this.selectedLoan = loan;
+			this.showSideSheet = true;
+		},
+		addToBasket(lendAmount) {
+			this.isAdding = true;
+			this.errorMsg = '';
+			return setLendAmount({
+				amount: lendAmount,
+				apollo: this.apollo,
+				loanId: this.loanId,
+			}).then(() => {
+				this.isAdding = false;
+				this.$kvTrackEvent(
+					'loan-card',
+					'add-to-basket',
+					null,
+					this.loanId,
+					this.lessThan25 ? this.amountLeft : 25
+				);
+			}).catch(e => {
+				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+					? e?.[0]?.message
+					: 'There was a problem adding the loan to your basket';
+				this.errorMsg = msg;
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(e);
+				// Handle errors from adding to basket
+				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+					return handleInvalidBasket({
+						cookieStore: this.cookieStore,
+						loan: {
+							id: this.loanId,
+							price: lendAmount
+						}
+					});
+				}
+				this.$showTipMsg(msg, 'error');
+				this.isAdding = false;
+			});
 		}
 	},
 	created() {
@@ -543,14 +646,10 @@ export default {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
-
 		if (this.enableFiveDollarsNotes) this.getFiveDollarsLoans();
-
 		if (this.enableAlmostFundedRow) this.getAlmostFundedLoans();
-
 		// create observer for spotlight loans
 		this.createSpotlightViewportObserver();
-
 		trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -558,6 +657,8 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+		this.animationSourceElement = this.$refs.animationSourceElement;
+		this.isMounted = true;
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

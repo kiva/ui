@@ -39,6 +39,7 @@
 						class="tw-h-full"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
+						@handle-select-loan="handleSelectLoan"
 					/>
 				</template>
 				<template v-if="showViewMoreCard" #[`slide${loans.length}`]>
@@ -65,7 +66,7 @@ export default {
 		KvClassicLoanCardContainer,
 		ViewMoreCard,
 	},
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'handle-select-loan'],
 	props: {
 		title: {
 			type: String,
@@ -167,6 +168,9 @@ export default {
 		},
 		isWindowWidth() {
 			this.windowWidth = window.innerWidth;
+		},
+		handleSelectLoan(payload) {
+			this.$emit('handle-select-loan', payload);
 		}
 	},
 	mounted() {

@@ -1,0 +1,125 @@
+query BorrowerProfileSideSheet($loanId: Int!) {
+  lend {
+    loan(id: $loanId) {
+      id
+      description
+      previousLoanId
+      repaymentInterval
+      disbursalDate
+      terms {
+        currency
+        currencyFullName
+        flexibleFundraisingEnabled
+        lenderRepaymentTerm
+        loanAmount
+        lossLiabilityCurrencyExchange
+        lossLiabilityNonpayment
+        disbursalDate
+        disbursalAmount
+        expectedPayments {
+          amount
+          localAmount
+          dueToKivaDate
+          effectiveDate
+        }
+      }
+      borrowers {
+        id
+        firstName
+      }
+      paidAmount
+      geocode {
+        country {
+          id
+          numLoansFundraising
+          ppp
+          geocode {
+            latitude
+            longitude
+          }
+        }
+      }
+      ... on LoanDirect {
+        businessName
+        businessDescription
+        purpose
+        yearsInBusiness
+        socialLinks {
+          etsy
+          facebook
+          instagram
+          linkedin
+          twitter
+          website
+          yelp
+        }
+        trustee {
+          id
+          organizationName
+          stats {
+            id
+            numDefaultedLoans
+            numLoansEndorsedPublic
+            repaymentRate
+            totalLoansValue
+          }
+        }
+        endorsement
+      }
+      ... on LoanPartner {
+        dualStatementNote
+        moreInfoAboutLoan
+        reviewer {
+          id
+          bylineName
+          showName
+        }
+        partner {
+          id
+          arrearsRate
+          avgBorrowerCost
+          avgBorrowerCostType
+          avgProfitability
+          chargesFeesInterest
+          currencyExchangeLossRate
+          defaultRate
+          loanAlertText
+          loansAtRiskRate
+          name
+          riskRating
+        }
+      }
+      inPfp
+      pfpMinLenders
+      descriptionInOriginalLanguage
+      originalLanguage {
+        id
+        name
+      }
+      video {
+        youtubeId
+      }
+      whySpecial
+      comments {
+        values {
+          id
+          authorName
+          authorImageUrl
+          authorLendingAction {
+            lender {
+              id
+              teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
+                values {
+                  id
+                  name
+                  teamPublicId
+                }
+              }
+            }
+          }
+          body
+        }
+      }
+    }
+  }
+}
