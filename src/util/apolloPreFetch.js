@@ -45,6 +45,11 @@ export function handleApolloErrors(handlers = {}, errors = [], args = {}) {
 
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
+	// If the shouldPreFetch function is defined and returns false, skip pre-fetching
+	if (typeof config.shouldPreFetch === 'function' && !config.shouldPreFetch(config, args)) {
+		return Promise.resolve();
+	}
+
 	if (typeof config.preFetch === 'function') {
 		// Call the manual pre-fetch function
 		const preFetchPromise = config.preFetch(config, client, args);
@@ -77,6 +82,8 @@ export async function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
 	const allComponents = await getDeepComponents(components);
 	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with preFetch
-	const preFetchOperations = allComponents.flatMap(c => c.apollo ?? []).filter(op => op?.preFetch);
+	const preFetchOperations = allComponents
+		.flatMap(c => c.apollo ?? [])
+		.filter(op => op?.preFetch && op?.shouldPreFetch !== false);
 	return Promise.all(preFetchOperations.map(op => preFetchApolloQuery(op, apolloClient, args)));
 }

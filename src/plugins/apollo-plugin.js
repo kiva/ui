@@ -21,17 +21,31 @@ export default app => {
 
 				// Load data for each query in the component
 				for (let i = 0; i < operations.length; i += 1) {
+					const operation = operations[i];
 					const {
 						query,
 						preFetch,
+						shouldPreFetch = true,
 						preFetchVariables = () => { },
 						variables = () => { },
 						result = () => { },
-					} = operations[i];
+					} = operation;
 
 					if (query) {
+						// Check if the query was prefetched
+						let preFetched = preFetch && shouldPreFetch;
+						if (typeof shouldPreFetch === 'function') {
+							preFetched = preFetch && shouldPreFetch(operation, {
+								cookieStore: this.cookieStore,
+								device: this.device,
+								kvAuth0: this.kvAuth0,
+								renderConfig: this.$renderConfig,
+								route: this.$route,
+							});
+						}
+
 						// if the query was prefetched, read the data from the cache
-						if (preFetch) {
+						if (preFetched) {
 							try {
 								const data = this.apollo.readQuery({
 									query,
