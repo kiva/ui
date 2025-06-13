@@ -237,10 +237,8 @@ const levelCaption = index => {
 const progressCaption = index => {
 	let floor;
 	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
-	if (getBadgeStatus(index) === BADGE_IN_PROGRESS) {
-		floor = tier.target - badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
-	} else if (getBadgeStatus(index) === BADGE_LOCKED) {
-		floor = 0;
+	if ([BADGE_IN_PROGRESS, BADGE_LOCKED].includes(getBadgeStatus(index))) {
+		floor = badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
 	} else {
 		floor = Math.min(badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement, tier.target);
 	}
