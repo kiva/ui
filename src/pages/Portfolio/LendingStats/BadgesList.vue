@@ -168,7 +168,7 @@ export default {
 				eventLabel = `${challengeName} See all of your impact stats`;
 			}
 			if (this.isSelectedJourneyComplete) {
-				eventLabel = `${challengeName} See all journeys`;
+				eventLabel = `${challengeName} See all`;
 			}
 			this.$kvTrackEvent(
 				'portfolio',

@@ -121,7 +121,7 @@ const journeyCtaBtn = computed(() => {
 		return 'See all of your impact stats';
 	}
 	if (props.isSelectedJourneyComplete) {
-		return 'See all journeys';
+		return 'See all';
 	}
 	return 'Keep going';
 });
