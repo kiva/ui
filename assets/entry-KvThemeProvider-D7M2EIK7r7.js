@@ -1,0 +1,1 @@
+import{c as r,o,g as l,x as s}from"./entry-vue.esm-bundler-DRMQxQJg8r.js";import{s as a}from"./entry-KvAtbModal-DhF29XDIKL.js";const n={props:{theme:{type:Object,default:null}}};function m(e,c,t,p,i,d){return o(),r("div",{style:s({...t.theme,color:"rgb(var(--text-primary))"})},[l(e.$slots,"default")],4)}const y=a(n,[["render",m]]);export{y as h};
