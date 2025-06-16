@@ -1,4 +1,7 @@
 <template>
+	<KvAtbModalContainer
+		:added-loan="addedLoan"
+	/>
 	<MyKivaNavigation
 		:visible="showNavigation"
 		:user-info="userInfo"
@@ -69,6 +72,7 @@
 				:enable-huge-amount="enableHugeAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
+				@show-cart-modal="handleCartModal"
 			/>
 		</section>
 		<section class="tw-mb-4">
@@ -134,6 +138,7 @@ import {
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
+import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
 const { getBadgeWithVisibleTiers } = useBadgeData();
 
@@ -205,6 +210,7 @@ const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
+const addedLoan = ref(null);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
@@ -348,6 +354,10 @@ const userInHomepage = computed(() => {
 
 const trackCategory = ({ success }) => {
 	if (success) $kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');
+};
+
+const handleCartModal = loan => {
+	addedLoan.value = loan;
 };
 
 onMounted(async () => {
