@@ -180,7 +180,7 @@ export default {
 			preFetch: false,
 			variables() {
 				return {
-					promoFundId: this.promoFundId ?? null,
+					promoFundId: this.promoFundId ? String(this.promoFundId) : null,
 				};
 			},
 			result({ data }) {
