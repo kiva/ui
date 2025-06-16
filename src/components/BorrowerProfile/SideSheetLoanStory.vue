@@ -74,27 +74,28 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
+import { computed, ref, inject } from 'vue';
 import { toParagraphs } from '#src/util/loanUtils';
 import { KvLightbox } from '@kiva/kv-components';
 import PreviousLoanDescription from './PreviousLoanDescription';
 
+const borrowerProfile = inject('borrowerProfile');
+
 const {
-	loading,
-	name,
-	loanId,
-	description,
+	anonymizationLevel,
 	borrowerCount,
 	borrowers,
-	previousLoanId,
-	originalLanguage,
+	description,
 	descriptionInOriginalLanguage,
-	reviewer,
-	anonymizationLevel,
+	loading,
+	loanId,
+	name,
+	originalLanguage,
 	partnerName,
+	previousLoanId,
+	reviewer,
 	video,
-} = useBorrowerProfileData();
+} = borrowerProfile;
 
 const isLightboxVisible = ref(false);
 

@@ -83,9 +83,6 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
-			inPfp
-			pfpMinLenders
-			description
 			...loanCardFieldsExtended
 		}
 		loanThemeFilter {

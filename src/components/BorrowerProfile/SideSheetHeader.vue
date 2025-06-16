@@ -29,7 +29,7 @@
 				</h5>
 			</div>
 		</div>
-		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 lg:!tw-w-full tw-mx-auto tw-mt-3" style="height: 3rem;" />
+		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-my-2" style="height: 2rem;" />
 		<h1 v-else class="tw-text-h2 tw-text-center tw-py-2 tw-px-2.5 lg:tw-px-0">
 			{{ name }}
 		</h1>
@@ -39,13 +39,16 @@
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
 import { mdiMapMarker } from '@mdi/js';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 
 import { KvBorrowerImage, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 
+const borrowerProfile = inject('borrowerProfile');
 const $appConfig = inject('$appConfig');
 const { photoPath } = $appConfig;
 
-const { name, hash, country } = useBorrowerProfileData();
+// Use the injected borrower profile data - direct access since it's the composable object
+const name = computed(() => borrowerProfile?.name?.value ?? '');
+const hash = computed(() => borrowerProfile?.hash?.value ?? '');
+const country = computed(() => borrowerProfile?.country?.value ?? '');
 const loading = computed(() => !name.value || !hash.value || !country.value);
 </script>

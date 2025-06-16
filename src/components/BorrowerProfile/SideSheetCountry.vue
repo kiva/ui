@@ -24,12 +24,12 @@ import {
 	onMounted,
 	ref,
 } from 'vue';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import { KvMap } from '@kiva/kv-components';
 import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
 import CountryInfo from './CountryInfo';
 
 const apollo = inject('apollo');
+const borrowerProfile = inject('borrowerProfile');
 const mapZoomLevel = 5;
 const mapInitialZoom = 4;
 const mapAutoZoomDelay = 500;
@@ -37,10 +37,8 @@ const mapAspectRatio = 1.3;
 
 const loanCountryFacets = ref([]);
 
-const {
-	loanGeocode,
-	loading,
-} = useBorrowerProfileData();
+const loanGeocode = computed(() => borrowerProfile?.loanGeocode?.value);
+const loading = computed(() => borrowerProfile?.loading?.value);
 
 const mapLat = computed(() => {
 	if (loanGeocode?.value?.latitude) {
@@ -74,13 +72,22 @@ const loansInRegionLink = computed(() => {
 		}
 		return `/lend?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
 	}
-
 	return '';
 });
 
 const fetchCountryFacets = async () => {
-	const facetsResponse = await apollo.query(loanFacetsQuery);
-	loanCountryFacets.value = facetsResponse?.lend?.countryFacets ?? [];
+	try {
+		const facetsResponse = await apollo.query({
+			query: loanFacetsQuery,
+			variables: {
+				isoCodeFilters: loanGeocode?.value?.country?.isoCode,
+			},
+		});
+		loanCountryFacets.value = facetsResponse?.data.lend?.countryFacets ?? [];
+	} catch (error) {
+		console.error('Error fetching country facets:', error);
+		loanCountryFacets.value = [];
+	}
 };
 
 onMounted(() => {

@@ -1,0 +1,47 @@
+#import '../fragments/loanCardFieldsExtended.graphql'
+
+query loanCardData(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$basketId: String
+) {
+	my {
+		id
+		userAccount {
+			id
+		}
+	}
+	lend {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters
+			) {
+			totalCount
+			values {
+				id
+				...loanCardFieldsExtended
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+	}
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

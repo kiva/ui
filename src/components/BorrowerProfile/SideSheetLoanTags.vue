@@ -1,6 +1,8 @@
 <template>
 	<div class="tw-flex tw-justify-center">
+		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-mt-1" style="height: 1.5rem;" />
 		<KvLoanCallouts
+			v-else
 			:callouts="loanCallouts"
 			:add-bg-color="false"
 			class="loan-callouts"
@@ -9,23 +11,22 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, reactive } from 'vue';
-import { loanCardComputedProperties, KvLoanCallouts } from '@kiva/kv-components';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
+import {
+	computed,
+	reactive,
+	inject
+} from 'vue';
+import { loanCardComputedProperties, KvLoanCallouts, KvLoadingPlaceholder } from '@kiva/kv-components';
 
-const props = defineProps({
-	loanId: {
-		type: Number,
-		default: 0,
-		required: true
-	}
-});
+const borrowerProfile = inject('borrowerProfile');
 
-const { loan } = useBorrowerProfileData();
+const loan = computed(() => borrowerProfile?.loan?.value ?? undefined);
+const loanId = computed(() => borrowerProfile?.loan?.value?.id ?? undefined);
+const loading = computed(() => !loan.value || !loanId.value);
 
 const computedPropertiesVariables = reactive({
 	loan,
-	loanId: props.loanId,
+	loanId,
 	categoryPageName: '',
 	customCallouts: [],
 });
