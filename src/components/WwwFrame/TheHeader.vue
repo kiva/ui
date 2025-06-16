@@ -38,14 +38,14 @@
 							data-testid="header-basket"
 							class="header__button header__basket tw-cursor-pointer"
 							v-kv-track-event="['TopNav','click-Basket']"
-							:style="isUserDataLoading ? {
+							:style="isBasketLoading ? {
 								display: 'var(--ui-data-corporate-basket-count-display, inline-flex)',
 							} : {
 								display: hasBasket ? 'inline-flex' : 'none'
 							}"
 						>
 							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-								<div v-if="isUserDataLoading" class="tw-w-1 tw-h-3">
+								<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 									<kv-loading-placeholder />
 								</div>
 								<template v-else>
@@ -324,7 +324,7 @@
 
 							<!-- Basket -->
 							<div
-								:style="isUserDataLoading ? {
+								:style="isBasketLoading ? {
 									display: 'var(--ui-data-basket-count-display, flex)',
 								} : {
 									display: hasBasket ? 'flex' : 'none'
@@ -341,7 +341,7 @@
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
 									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
-										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-3">
+										<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 											<kv-loading-placeholder />
 										</div>
 										<template v-else>
@@ -363,7 +363,7 @@
 											tw-flex tw-items-center tw-justify-center
 											tw-text-white tw-text-small tw-font-medium"
 									>
-										<div v-if="isUserDataLoading" class="tw-w-1 tw-h-1.5">
+										<div v-if="isBasketLoading" class="tw-w-1 tw-h-1.5">
 											<kv-loading-placeholder />
 										</div>
 										<template v-else>
@@ -623,6 +623,7 @@ export default {
 			basketTotal: 0,
 			teams: null,
 			teamsMenuEnabled: false,
+			isBasketLoading: false,
 			isUserDataLoading: false,
 		};
 	},
@@ -723,6 +724,7 @@ export default {
 				return !renderConfig.useCDNCaching;
 			},
 			result({ data }) {
+				this.isBasketLoading = false;
 				this.isUserDataLoading = false;
 				this.userId = data?.my?.userAccount?.id ?? null;
 				this.isBorrower = data?.my?.isBorrower ?? false;
@@ -739,7 +741,8 @@ export default {
 		},
 	],
 	created() {
-		this.isUserDataLoading = this.$renderConfig?.useCDNCaching ?? false;
+		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
+		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
