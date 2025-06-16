@@ -1,30 +1,26 @@
 <template>
-	<section class="tw-bg-secondary md:tw-bg-secondary" style="margin: -16px">
-		<div v-if="loan" class="tw-flex tw-flex-col">
-			<div class="tw-px-4 tw-py-2">
-				<SideSheetHeader />
-				<SideSheetLoanTags />
-				<LoanProgress
-					:loan-status="inPfp ? 'pfp' : 'fundraising'" :money-left="unreservedAmount"
-					:number-of-lenders="numLenders" :pfp-min-lenders="pfpMinLenders"
-					:progress-percent="fundraisingPercent" :time-left="timeLeft" class="tw-mb-2 tw-mt-1.5"
-					data-testid="bp-summary-progress"
-				/>
-				<SideSheetLoanHowMoneyHelps />
-				<SideSheetLoanStory />
-			</div>
-			<div class="tw-bg-white tw-px-4">
-				<CommentsAndWhySpecial :loan-id="loanId" />
-			</div>
-			<div class="tw-px-4 tw-py-2 tw-space-y-6">
-				<MoreAboutLoan :loan-id="loanId" />
-				<BorrowerCountry :loan-id="loanId" />
-				<LendersAndTeams :loan-id="loanId" />
-				<LendersAndTeams :loan-id="loanId" display-type="teams" />
-				<DetailsTabs :name="loan.name" />
-			</div>
-		</div>
-	</section>
+	<div class="tw-px-4 tw-py-2">
+		<SideSheetHeader />
+		<SideSheetLoanTags />
+		<LoanProgress
+			:loan-status="inPfp ? 'pfp' : 'fundraising'" :money-left="unreservedAmount"
+			:number-of-lenders="numLenders" :pfp-min-lenders="pfpMinLenders"
+			:progress-percent="fundraisingPercent" :time-left="timeLeft" class="tw-mb-2 tw-mt-1.5"
+			data-testid="bp-summary-progress"
+		/>
+		<SideSheetLoanHowMoneyHelps />
+		<SideSheetLoanStory />
+	</div>
+	<div class="tw-bg-white tw-px-4">
+		<CommentsAndWhySpecial :loan-id="loanId" />
+	</div>
+	<div class="tw-px-4 tw-py-2 tw-space-y-6">
+		<MoreAboutLoan :loan-id="loanId" />
+		<BorrowerCountry :loan-id="loanId" />
+		<LendersAndTeams :loan-id="loanId" />
+		<LendersAndTeams :loan-id="loanId" display-type="teams" />
+		<DetailsTabs :name="loan.name" />
+	</div>
 </template>
 
 <script>

@@ -118,7 +118,7 @@
 		:show-go-to-link="true"
 		:show-headline-border="true"
 		:visible="showSideSheet"
-		:width-dimensions="{ default: '100%', lg: '590px', md: '590px', sm:'100%' }"
+		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
 		@side-sheet-closed="handleCloseSideSheet"
 	>
 		<template #default>
