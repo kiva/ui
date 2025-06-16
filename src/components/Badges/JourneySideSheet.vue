@@ -1,5 +1,6 @@
 <template>
 	<KvSideSheet
+		class="sidesheet-journey"
 		:visible="visible"
 		:show-back-button="false"
 		:show-headline-border="false"
@@ -59,6 +60,7 @@
 
 <script setup>
 import BadgeModalContentJourney from '#src/components/MyKiva/BadgeModalContentJourney';
+import useBadgeData from '#src/composables/useBadgeData';
 import {
 	ref,
 	computed,
@@ -95,9 +97,11 @@ const props = defineProps({
 const triggerButton = ref(null);
 const hideBotomGradient = ref(false);
 
+const { getTierBadgeHeadline } = useBadgeData();
+
 const emit = defineEmits(['badge-journey-level-clicked', 'continue-journey-clicked', 'sidesheet-closed']);
 
-const computedHeadLine = computed(() => `Your achievements for lending to ${props.selectedBadgeData?.challengeName}`);
+const computedHeadLine = computed(() => `Your achievements for ${getTierBadgeHeadline(props.selectedBadgeData?.id)}`);
 
 const handleComponentClosed = () => {
 	hideBotomGradient.value = false;
@@ -117,9 +121,9 @@ const journeyCtaBtn = computed(() => {
 		return 'See all of your impact stats';
 	}
 	if (props.isSelectedJourneyComplete) {
-		return 'See all journeys';
+		return 'See all';
 	}
-	return 'Continue this journey';
+	return 'Keep going';
 });
 
 </script>

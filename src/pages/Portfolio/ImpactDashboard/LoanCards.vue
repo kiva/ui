@@ -9,8 +9,8 @@
 			:total-loans="totalLoans"
 			:is-loading="isLoading"
 			:show-menu="true"
-			:cards-number="6"
-			:show-cta-when-no-loans="false"
+			:cards-number="7"
+			:show-carousel-tabs="true"
 			class="portfolio-borrowers-carousel"
 		/>
 	</AsyncPortfolioSection>

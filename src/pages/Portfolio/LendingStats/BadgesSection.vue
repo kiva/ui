@@ -18,6 +18,7 @@
 			:completed-achievements="completedAchievements"
 			:is-loading="isLoading"
 			:loans="loans"
+			:badges-data="badgesData"
 		/>
 	</section>
 </template>
@@ -44,6 +45,10 @@ export default {
 			default: false
 		},
 		loans: {
+			type: Array,
+			default: () => []
+		},
+		badgesData: {
 			type: Array,
 			default: () => []
 		},

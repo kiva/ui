@@ -1071,4 +1071,32 @@ describe('useBadgeData.js', () => {
 			expect(getFilteredLoansByJourney({ id: ID_WOMENS_EQUALITY }, loans)).toEqual([]);
 		});
 	});
+
+	describe('getBadgeHeadline', () => {
+		it('should return expected headline for women-equality', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_WOMENS_EQUALITY)).toEqual('lending to women');
+		});
+		it('should return expected headline for us-economic-equality', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_US_ECONOMIC_EQUALITY)).toEqual('lending to U.S entrepreneurs');
+		});
+		it('should return expected headline for climate-action', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_CLIMATE_ACTION)).toEqual('supporting climate solutions');
+		});
+		it('should return expected headline for refugee-equality', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_REFUGEE_EQUALITY)).toEqual('lending to refugees');
+		});
+		it('should return expected headline for basic-needs', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_BASIC_NEEDS)).toEqual('supporting basic needs');
+		});
+
+		it('should return expected headline for default cases', () => {
+			const { getTierBadgeHeadline } = useBadgeData();
+			expect(getTierBadgeHeadline(ID_EQUITY)).toEqual('lending');
+		});
+	});
 });

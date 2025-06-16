@@ -37,5 +37,5 @@ defineProps({
 	},
 });
 
-const parsedValue = value => numeral(value).format('0,0');
+const parsedValue = value => numeral(value).format('0,0', Math.floor);
 </script>

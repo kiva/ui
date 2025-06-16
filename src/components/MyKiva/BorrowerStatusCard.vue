@@ -85,7 +85,10 @@
 							md:tw-pointer-events-none"
 						@click="toggleWhatIsNext"
 					>
-						<p class="tw-text-action tw-font-medium md:tw-text-black tw-pt-0 md:tw-pt-1">
+						<p
+							class="tw-text-action tw-font-medium md:tw-text-black
+								md:tw-w-full md:tw-text-left md:tw-mt-5 md:tw-mb-1"
+						>
 							What's next
 						</p>
 						<KvMaterialIcon
@@ -96,6 +99,7 @@
 					<kv-expandable easing="ease-in-out" class="tw-block md:tw-hidden">
 						<div v-show="open">
 							<LoanNextSteps
+								id="loan-next-steps"
 								:weeks-to-repay="weeksToRepay"
 								:current-step="currentStep"
 								:repayments-started="!isFundraising"
@@ -104,6 +108,7 @@
 						</div>
 					</kv-expandable>
 					<LoanNextSteps
+						id="loan-next-steps"
 						class="tw-hidden md:tw-block"
 						:weeks-to-repay="weeksToRepay"
 						:current-step="currentStep"
@@ -297,7 +302,6 @@ watch(() => menuOpen.value, () => {
 </script>
 
 <style lang="postcss" scoped>
-
 .card-container {
 	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
 
@@ -312,5 +316,11 @@ watch(() => menuOpen.value, () => {
 
 .menu-trigger, .vertical-menu {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+}
+
+:deep(#loan-next-steps .step-text) {
+	@screen md {
+		line-height: 1.25;
+	}
 }
 </style>

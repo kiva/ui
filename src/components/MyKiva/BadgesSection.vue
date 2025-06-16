@@ -9,13 +9,19 @@
 		@change="handleChange"
 	>
 		<template v-for="(badge, index) in visibleBadges" #[`slide${index+1}`] :key="badge.id || index">
+			<KvLoadingPlaceholder
+				v-if="isLoading"
+				class="!tw-rounded"
+				:style="{ 'width': singleSlideWidth, 'min-height': CARD_MIN_HEIGHT }"
+			/>
 			<div
+				v-else
 				class="tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded tw-cursor-pointer"
 				:class="{
 					'tw-bg-white': badge.hasStarted,
 					'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
 				}"
-				style="min-height: 210px;"
+				:style="{ 'min-height': CARD_MIN_HEIGHT }"
 				@click="badgeClicked(badge)"
 			>
 				<BadgeContainer
@@ -65,10 +71,11 @@ import useBadgeData from '#src/composables/useBadgeData';
 import {
 	getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS, MOBILE_BREAKPOINT
 } from '#src/composables/useBadgeModal';
-import { KvCarousel } from '@kiva/kv-components';
+import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import BadgeContainer from './BadgeContainer';
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const CARD_MIN_HEIGHT = '228px';
 
 const emit = defineEmits(['badge-clicked']);
 
@@ -90,11 +97,20 @@ const { selectedJourney } = toRefs(props);
 const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
 const currentIndex = ref(0);
+const isLoading = ref(true);
 
 const visibleBadges = computed(() => {
-	return props.badgeData
+	let showedSlides = Array(5);
+
+	const badgesSlides = props.badgeData
 		.filter(b => defaultBadges.includes(b.id))
 		.sort(indexIn(defaultBadges, 'id'));
+
+	if (badgesSlides.length > 0) {
+		showedSlides = badgesSlides;
+	}
+
+	return showedSlides;
 });
 
 const getBadgeStatus = badge => {
@@ -114,7 +130,7 @@ const levelCaption = badge => {
 
 const ctaCaption = badge => {
 	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
-		return 'See this journey';
+		return 'See details';
 	}
 	return badge.hasStarted ? 'Continue' : 'Get started';
 };
@@ -157,6 +173,13 @@ watch(selectedJourney, () => {
 		}
 	}
 });
+
+// Watch visibleBadges to update isLoading
+watch(visibleBadges, (newSlides, oldSlides) => {
+	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
+		isLoading.value = false;
+	}
+}, { immediate: true, deep: true });
 </script>
 
 <style lang="postcss" scoped>
