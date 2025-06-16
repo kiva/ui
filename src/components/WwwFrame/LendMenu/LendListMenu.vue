@@ -24,7 +24,7 @@
 				<kv-tab for-panel="nav-lend-regions">
 					Regions
 				</kv-tab>
-				<kv-tab for-panel="nav-my-kiva" v-if="userId">
+				<kv-tab for-panel="nav-my-kiva" v-if="userId || isUserDataLoading">
 					My Kiva
 				</kv-tab>
 			</template>
@@ -114,7 +114,7 @@
 						</kv-accordion-item>
 					</template>
 				</kv-tab-panel>
-				<kv-tab-panel id="nav-my-kiva" v-if="userId">
+				<kv-tab-panel id="nav-my-kiva" v-if="userId || isUserDataLoading">
 					<ul class="tw-font-medium">
 						<li>
 							<router-link
@@ -217,6 +217,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		isUserDataLoading: {
+			type: Boolean,
+			default: false,
 		},
 		showMGUpsellLink: {
 			type: Boolean,
