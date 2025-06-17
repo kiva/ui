@@ -25,7 +25,7 @@
 				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				:per-step="perStepRecommendedRow"
-				@add-to-basket="trackCategory($event, 'recommended')"
+				@add-to-basket="addToBasket"
 				:class="{ 'tw-pt-3' : !isLoggedIn }"
 				@show-cart-modal="handleCartModal"
 				@handle-select-loan="handleSelectLoan"
@@ -120,28 +120,19 @@
 		:visible="showSideSheet"
 		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
 		@side-sheet-closed="handleCloseSideSheet"
+		class="tw-overflow-y-none"
 	>
-		<template #default>
-			<BorrowerSideSheetContent v-if="selectedLoan?.id" :loan-id="selectedLoan.id" />
-		</template>
-		<template #controls>
-			<div class="tw-bg-white tw-border-t tw-flex tw-border-tertiary">
-				<div class="tw-flex tw-ml-auto tw-mr-auto sm:tw-ml-auto tw-py-2 tw-px-2">
-					<KvLendCta
-						:loan="selectedLoan"
-						:is-loading="false"
-						:is-adding="isAdding"
-						:unreserved-amount="selectedLoan?.unreservedAmount"
-						:show-preset-amounts="true"
-						:kv-track-function="$kvTrackEvent"
-					/>
-				</div>
-			</div>
-		</template>
+		<BorrowerSideSheetContent
+			class="tw-overflow-y-none"
+			:loan-id="selectedLoan?.id"
+			:is-adding="isAdding"
+			@add-to-basket="addToBasket"
+		/>
 	</KvSideSheet>
 </template>
 
 <script>
+import numeral from 'numeral';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
@@ -159,7 +150,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import { KvLendCta, KvSideSheet } from '@kiva/kv-components';
+import { KvSideSheet } from '@kiva/kv-components';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -170,7 +161,10 @@ import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendat
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
 
-import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
+
+import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -193,12 +187,10 @@ const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
-	emits: ['add-to-basket'],
 	components: {
 		BorrowerSideSheetContent,
 		FiveDollarsBanner,
 		KvAtbModalContainer,
-		KvLendCta,
 		KvSideSheet,
 		LendingCategorySection,
 		PartnerSpotlightSection,
@@ -519,44 +511,74 @@ export default {
 			this.showSideSheet = true;
 		},
 		addToBasket(lendAmount) {
+			console.log('Were reaching here');
+			this.$kvTrackEvent(
+				'Lending',
+				'Add to basket',
+				'lend-button-click',
+				this.selectedLoan?.id,
+				lendAmount
+			);
 			this.isAdding = true;
-			this.errorMsg = '';
-			return setLendAmount({
-				amount: lendAmount,
-				apollo: this.apollo,
-				loanId: this.loanId,
-			}).then(() => {
-				this.isAdding = false;
-				this.$kvTrackEvent(
-					'loan-card',
-					'add-to-basket',
-					null,
-					this.loanId,
-					this.lessThan25 ? this.amountLeft : 25
-				);
-			}).catch(e => {
-				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
-					? e?.[0]?.message
-					: 'There was a problem adding the loan to your basket';
-				this.errorMsg = msg;
-				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
-				Sentry.captureException(e);
-				// Handle errors from adding to basket
-				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
-					// eslint-disable-next-line max-len
-					this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
-					return handleInvalidBasket({
-						cookieStore: this.cookieStore,
-						loan: {
-							id: this.loanId,
-							price: lendAmount
+			this.apollo.mutate({
+				mutation: updateLoanReservation,
+				variables: {
+					loanid: this.selectedLoan?.id,
+					price: numeral(lendAmount).format('0.00'),
+				},
+			}).then(({ errors }) => {
+				if (errors) {
+					// Handle errors from adding to basket
+					errors.forEach(error => {
+						try {
+							this.$kvTrackEvent(
+								'Lending',
+								'Add-to-Basket',
+								`Failed: ${error.message.substring(0, 40)}...`
+							);
+							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							if (hasBasketExpired(error?.extensions?.code)) {
+								// eslint-disable-next-line max-len
+								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+								return handleInvalidBasket({
+									cookieStore: this.cookieStore,
+									loan: {
+										id: this.selectedLoan?.id,
+										price: lendAmount
+									}
+								});
+							}
+							this.$showTipMsg(error.message, 'error');
+						} catch (e) {
+							// no-op
 						}
 					});
+				} else {
+					try {
+						// track facebook add to basket
+						if (typeof window !== 'undefined' && typeof fbq === 'function') {
+							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
+						}
+					} catch (e) {
+						console.error(e);
+					}
+
+					return this.apollo.query({
+						query: loanCardBasketed,
+						variables: {
+							id: this.selectedLoan?.id,
+						},
+						fetchPolicy: 'network-only',
+					});
 				}
-				this.$showTipMsg(msg, 'error');
+			}).catch(error => {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Sentry.captureException(error);
+			}).finally(() => {
 				this.isAdding = false;
 			});
-		}
+		},
 	},
 	created() {
 		const loanRecommendationsData = trackExperimentVersion(

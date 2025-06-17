@@ -21,15 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, watch } from 'vue';
+import { computed, inject } from 'vue';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const borrowerProfile = inject('borrowerProfile');
 
 const loanUse = computed(() => borrowerProfile?.loanUse?.value);
 const loading = computed(() => !loanUse.value);
-
-watch(loanUse, () => {
-	console.log('SideSheetLoanHowMoneyHelps loanUse:', loanUse);
-});
 </script>
