@@ -133,6 +133,9 @@ export default async function renderPage({
 			externals: renderExternals(config),
 			googleTagmanagerId: config.googleTagmanagerId,
 			preloadLinks,
+			// Do not add manifest for local development, as the urls in the manifest do not match their
+			// correct location in the vite dev server and cause 404s.
+			webManifest: isDev ? '' : '<link rel="manifest" href="/static/manifest.webmanifest">',
 		};
 
 		return {
