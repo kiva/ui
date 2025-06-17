@@ -3,6 +3,7 @@ import { renderSSRHead } from '@unhead/ssr';
 import { renderToString } from 'vue/server-renderer';
 import createApp from '#src/main';
 import createRouter from '#src/router';
+import getCDNHeaders from '#src/rendering/cdnHeaders';
 import fillTemplate from '#src/rendering/fillTemplate';
 import { renderExternals } from '#src/rendering/externals';
 import renderGlobals from '#src/rendering/globals';
@@ -135,6 +136,7 @@ export default async function renderPage({
 		};
 
 		return {
+			cdnHeaders: getCDNHeaders(renderConfig),
 			html: fillTemplate(template, templateData),
 			setCookies: cookieStore.getSetCookies(),
 		};

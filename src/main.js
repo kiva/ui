@@ -41,7 +41,7 @@ export default async function createApp({
 	const route = router.currentRoute.value;
 
 	// Determine if the route should use CDN caching
-	const useCDNCaching = route.meta?.useCDNCaching && !route.meta?.preventCDNCaching;
+	const useCDNCaching = route.meta?.useCDNCaching;
 	renderConfig.useCDNCaching = useCDNCaching;
 
 	const head = createHead();

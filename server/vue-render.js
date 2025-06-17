@@ -45,7 +45,7 @@ export default async function render({
 		// render the app
 		context.template = template;
 		context.ssrManifest = ssrManifest;
-		const { html, setCookies } = await serverEntry(context);
+		const { cdnHeaders, html, setCookies } = await serverEntry(context);
 
 		// if using ESI, process the html to resolve ESI tags
 		const finalHtml = processESITags ? await esi.process(html, {
@@ -58,6 +58,7 @@ export default async function render({
 
 		// send the final rendered html
 		return {
+			cdnHeaders,
 			html: finalHtml,
 			setCookies,
 		};
