@@ -577,6 +577,8 @@ export default {
 				Sentry.captureException(error);
 			}).finally(() => {
 				this.isAdding = false;
+				this.handleCloseSideSheet();
+				this.handleCartModal();
 			});
 		},
 	},
