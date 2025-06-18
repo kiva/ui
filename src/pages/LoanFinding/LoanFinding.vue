@@ -126,6 +126,7 @@
 			class="tw-overflow-y-none"
 			:loan-id="selectedLoan?.id"
 			:is-adding="isAdding"
+			:basket-items="basketItems"
 			@add-to-basket="addToBasket"
 		/>
 	</KvSideSheet>
@@ -215,6 +216,7 @@ export default {
 		return {
 			almostFundedLoans: new Array(9).fill({ id: 0 }),
 			animationSourceElement: undefined,
+			basketItems: [],
 			enableAlmostFundedRow: false,
 			enableLoanRecommendations: false,
 			enableQFMobileVersion: false,
@@ -511,7 +513,6 @@ export default {
 			this.showSideSheet = true;
 		},
 		addToBasket(lendAmount) {
-			console.log('Were reaching here');
 			this.$kvTrackEvent(
 				'Lending',
 				'Add to basket',
@@ -562,13 +563,16 @@ export default {
 					} catch (e) {
 						console.error(e);
 					}
-
+					const basketId = this.cookieStore.get('kvbskt');
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
 							id: this.selectedLoan?.id,
+							basketId: basketId || undefined
 						},
 						fetchPolicy: 'network-only',
+					}).then(({ data }) => {
+						this.basketItems = data?.shop?.basket?.items?.values || [];
 					});
 				}
 			}).catch(error => {
@@ -577,9 +581,30 @@ export default {
 				Sentry.captureException(error);
 			}).finally(() => {
 				this.isAdding = false;
-				this.handleCloseSideSheet();
 				this.handleCartModal();
 			});
+		},
+		// Method to initially load basket items
+		async loadInitialBasketItems() {
+			try {
+				const basketId = this.cookieStore.get('kvbskt');
+				if (!basketId) {
+					this.basketItems = [];
+					return;
+				}
+				const { data } = await this.apollo.query({
+					query: loanCardBasketed,
+					variables: {
+						id: 0, // dummy id since we only need basket data
+						basketId
+					},
+					fetchPolicy: 'network-only'
+				});
+				this.basketItems = data?.shop?.basket?.items?.values || [];
+			} catch (error) {
+				console.error('Error loading initial basket items:', error);
+				this.basketItems = [];
+			}
 		},
 	},
 	created() {
@@ -683,6 +708,9 @@ export default {
 		);
 		this.animationSourceElement = this.$refs.animationSourceElement;
 		this.isMounted = true;
+
+		// Load initial basket items
+		this.loadInitialBasketItems();
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

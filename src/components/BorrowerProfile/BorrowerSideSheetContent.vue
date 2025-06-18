@@ -4,9 +4,13 @@
 			<SideSheetHeader />
 			<SideSheetLoanTags />
 			<LoanProgress
-				:loan-status="inPfp ? 'pfp' : 'fundraising'" :money-left="unreservedAmount"
-				:number-of-lenders="numLenders" :pfp-min-lenders="pfpMinLenders"
-				:progress-percent="fundraisingPercent" :time-left="timeLeft" class="tw-mb-2 tw-mt-1.5"
+				:loan-status="inPfp ? 'pfp' : 'fundraising'"
+				:money-left="unreservedAmount"
+				:number-of-lenders="numLenders"
+				:pfp-min-lenders="pfpMinLenders"
+				:progress-percent="fundraisingPercent"
+				:time-left="timeLeft"
+				class="tw-mb-2 tw-mt-1.5"
 				data-testid="bp-summary-progress"
 			/>
 			<SideSheetLoanHowMoneyHelps />
@@ -22,9 +26,7 @@
 			<LendersAndTeams :loan-id="loanId" display-type="teams" />
 			<DetailsTabs :name="loan?.name" />
 		</div>
-		<div
-			class="cta-container"
-		>
+		<div class="cta-container">
 			<KvLendCta
 				:loan="loan"
 				:is-loading="false"
@@ -94,6 +96,10 @@ export default {
 		isAdding: {
 			type: Boolean,
 			required: true
+		},
+		basketItems: {
+			type: Array,
+			default: () => []
 		}
 	},
 	setup(props, { emit }) {
@@ -104,8 +110,10 @@ export default {
 			return {};
 		}
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
+
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
+
 		const inPfp = computed(() => borrowerProfile.inPfp.value);
 		const loan = computed(() => borrowerProfile.loan.value);
 		const numLenders = computed(() => (borrowerProfile.lenders.value?.totalCount ?? undefined));
@@ -129,9 +137,11 @@ export default {
 				console.error('Error in loadBPData:', e);
 			}
 		});
+
 		onBeforeUnmount(() => {
 			borrowerProfile.clearBPData();
 		});
+
 		return {
 			addToBasket,
 			fundraisingPercent,
@@ -146,16 +156,17 @@ export default {
 	}
 };
 </script>
+
 <style lang="postcss" scoped>
 .cta-container {
-  box-shadow: 2px 0px 12px 0px #0000004D;
-  margin-left: -15px;
-  margin-right: -15px;
+	box-shadow: 2px 0px 12px 0px #0000004D;
+	margin-left: -15px;
+	margin-right: -15px;
 
-  @apply tw-sticky tw-bottom-0 tw-bg-white tw-py-1.5 lg:tw-py-2 tw-px-2.5 lg:tw-px-3;
+	@apply tw-sticky tw-bottom-0 tw-bg-white tw-py-1.5 lg:tw-py-2 tw-px-2.5 lg:tw-px-3;
 }
 
 :deep(.cta-container > div) {
-  @apply tw-whitespace-normal;
+	@apply tw-whitespace-normal;
 }
 </style>
