@@ -3,7 +3,7 @@
 		class="tw-relative tw-inline-block tw-w-auto"
 		:class="{
 			'tw-grayscale': isInProgress,
-			'invisible-badge tw-cursor-pointer': isLocked,
+			'tw-cursor-pointer': isLocked,
 			'tw-overflow-hidden': showShine,
 		}"
 		@click="handleBadgeClick"
@@ -15,10 +15,10 @@
 			v-if="isLocked"
 			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"
 		>
-			<component
-				:is="solidComponent"
+			<img
 				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
-			/>
+				:src="solidComponent"
+			>
 		</div>
 		<div
 			v-if="isLocked"
@@ -56,13 +56,13 @@ import {
 } from '#src/composables/useBadgeModal';
 import { mdiLock } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg';
-import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg';
-import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg';
-import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg';
-import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
+import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg?url';
+import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg?url';
+import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg?url';
+import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg?url';
+import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg?url';
 
 const props = defineProps({
 	status: {
@@ -152,10 +152,6 @@ onMounted(() => {
 <style lang="postcss" scoped>
 :deep(svg) {
 	@apply tw-h-full tw-w-full;
-}
-
-.invisible-badge :deep(img) {
-	@apply tw-invisible;
 }
 
 @keyframes wiggle {
