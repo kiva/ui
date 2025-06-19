@@ -107,6 +107,18 @@
 				@badge-level-clicked="handleBadgeJourneyLevelClicked"
 			/>
 		</section>
+		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
+			<h3>More ways to help</h3>
+			<JourneyCardCarousel
+				:slides="moreWaysToHelpSlides"
+				:lender="lender"
+				:user-in-homepage="userInHomepage"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				@update-journey="updateJourney"
+				class="tw-mt-2"
+			/>
+		</section>
 	</MyKivaContainer>
 </template>
 
@@ -116,6 +128,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
+import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -139,6 +152,8 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+
+const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 
 const { getBadgeWithVisibleTiers } = useBadgeData();
 
@@ -211,6 +226,7 @@ const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
+const moreWaysToHelpSlides = ref([]);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
@@ -360,6 +376,22 @@ const handleCartModal = loan => {
 	addedLoan.value = loan;
 };
 
+const fetchMoreWaysToHelpData = async () => {
+	try {
+		const moreWaysResult = await apollo.query({
+			query: contentfulEntriesQuery,
+			variables: {
+				contentType: 'carousel',
+				contentKey: CONTENTFUL_MORE_WAYS_KEY,
+			}
+		});
+
+		moreWaysToHelpSlides.value = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage myKiva MoreWaysToHelpQuery');
+	}
+};
+
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
@@ -367,6 +399,7 @@ onMounted(async () => {
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
+	fetchMoreWaysToHelpData();
 });
 </script>
 
