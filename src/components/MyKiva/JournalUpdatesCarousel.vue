@@ -41,8 +41,17 @@
 			title=""
 			@lightbox-closed="closeLightbox"
 		>
-			<p>{{ updateSubject }}</p>
-			<span v-html="updateBody"></span>
+			<CheckoutReceipt
+				v-if="receipt"
+				:lender="lender"
+				:receipt="receipt"
+				enable-kiva-card-tracking
+				class="tw-pt-2"
+			/>
+			<template v-else>
+				<p>{{ updateSubject }}</p>
+				<span v-html="updateBody"></span>
+			</template>
 		</KvLightbox>
 		<ShareButton
 			class="tw-block !tw-w-auto"
@@ -73,6 +82,8 @@ import {
 	computed,
 	watch,
 } from 'vue';
+import thanksPageReceiptQuery from '#src/graphql/query/thanksPageReceipt.graphql';
+import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -95,6 +106,9 @@ const props = defineProps({
 	},
 });
 
+const cookieStore = inject('cookieStore');
+const apollo = inject('apollo');
+
 const { loan, updates, totalUpdates } = toRefs(props);
 
 const emit = defineEmits(['load-more-updates']);
@@ -105,6 +119,7 @@ const updateSubject = ref('');
 const updateBody = ref('');
 const shareLoan = ref(false);
 const carouselIndex = ref(0);
+const receipt = ref(null);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -127,11 +142,25 @@ const singleSlideWidth = computed(() => {
 	return '422px';
 });
 
-const openLightbox = updateId => {
+const getCheckoutReceipt = async () => {
+	const update = updates.value.find(u => u.id === clickedUpdate.value);
+	const response = await apollo.query({
+		query: thanksPageReceiptQuery,
+		variables: {
+			checkoutId: update.id,
+			visitorId: cookieStore.get('uiv') || null,
+		}
+	});
+
+	receipt.value = response?.data?.shop?.receipt ?? null;
+};
+
+const openLightbox = async updateId => {
 	clickedUpdate.value = updateId;
 	const update = props.updates.find(u => u.id === updateId);
 	updateSubject.value = update.subject;
 	updateBody.value = update.body;
+	await getCheckoutReceipt();
 	isLightboxVisible.value = true;
 };
 
