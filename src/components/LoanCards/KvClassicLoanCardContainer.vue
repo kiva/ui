@@ -30,10 +30,8 @@
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
+			@show-loan-details="showLoanDetails"
 		/>
-		<div @click="handleSelectLoan">
-			Click me
-		</div>
 		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
 				v-show="addToBasketExpEnabled && showBubble"
@@ -105,7 +103,7 @@ const loanQuery = gql`
 
 export default {
 	name: 'KvClassicLoanCardContainer',
-	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals', 'handle-select-loan'],
+	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals', 'show-loan-details'],
 	props: {
 		loanId: {
 			type: Number,
@@ -327,6 +325,9 @@ export default {
 				this.isAdding = false;
 			});
 		},
+		showLoanDetails() {
+			this.$emit('show-loan-details', this.loan);
+		},
 		toggleBookmark() {
 			if (!this.loanId) return;
 
@@ -484,9 +485,6 @@ export default {
 			};
 			this.$emit('show-cart-modal', addedLoan);
 		},
-		handleSelectLoan() {
-			this.$emit('handle-select-loan', this.loan);
-		}
 	},
 	mounted() {
 		if (this.loan) {

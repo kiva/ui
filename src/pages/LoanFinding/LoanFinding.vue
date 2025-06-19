@@ -28,7 +28,7 @@
 				@add-to-basket="addToBasket"
 				:class="{ 'tw-pt-3' : !isLoggedIn }"
 				@show-cart-modal="handleCartModal"
-				@handle-select-loan="handleSelectLoan"
+				@show-loan-details="showLoanDetails"
 			/>
 
 			<!-- Almost Funded loans row -->
@@ -44,7 +44,7 @@
 				@add-to-basket="trackCategory($event, 'almost-funded')"
 				class="tw-pt-3 tw-mb-2"
 				@show-cart-modal="handleCartModal"
-				@handle-select-loan="handleSelectLoan"
+				@show-loan-details="showLoanDetails"
 			/>
 
 			<!-- Five dollars row -->
@@ -62,7 +62,7 @@
 				@add-to-basket="trackCategory($event, 'five-dollars')"
 				class="tw-pt-3 tw-mb-2"
 				@show-cart-modal="handleCartModal"
-				@handle-select-loan="handleSelectLoan"
+				@show-loan-details="showLoanDetails"
 			/>
 
 			<div class="tw-flex tw-flex-col">
@@ -76,7 +76,7 @@
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
 					@show-cart-modal="handleCartModal"
-					@handle-select-loan="handleSelectLoan"
+					@show-loan-details="showLoanDetails"
 				/>
 
 				<!-- Element to trigger spotlight observer -->
@@ -93,7 +93,7 @@
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 					@show-cart-modal="handleCartModal"
-					@handle-select-loan="handleSelectLoan"
+					@show-loan-details="showLoanDetails"
 				/>
 			</div>
 
@@ -106,7 +106,7 @@
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 				@show-cart-modal="handleCartModal"
-				@handle-select-loan="handleSelectLoan"
+				@show-loan-details="showLoanDetails"
 			/>
 		</div>
 	</www-page>
@@ -508,7 +508,7 @@ export default {
 			this.showSideSheet = false;
 			this.selectedLoan = undefined;
 		},
-		handleSelectLoan(loan) {
+		showLoanDetails(loan) {
 			this.selectedLoan = loan;
 			this.showSideSheet = true;
 		},

@@ -30,16 +30,17 @@
 					<kv-classic-loan-card-container
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
-						:loan-id="loan.id"
-						:use-full-width="true"
-						:show-tags="true"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
+						:loan-id="loan.id"
+						:show-tags="true"
+						:use-full-width="true"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
-						@handle-select-loan="handleSelectLoan"
+						@show-loan-details="showLoanDetails"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -94,7 +95,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'data-loaded', 'handle-select-loan'],
+	emits: ['add-to-basket', 'data-loaded', 'show-loan-details'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -318,8 +319,8 @@ export default {
 			);
 			this.loans = loans;
 		},
-		handleSelectLoan(payload) {
-			this.$emit('handle-select-loan', payload);
+		showLoanDetails(payload) {
+			this.$emit('show-loan-details', payload);
 		}
 	},
 	watch: {
