@@ -118,7 +118,7 @@ export default {
 		const loan = computed(() => borrowerProfile.loan.value);
 		const numLenders = computed(() => (borrowerProfile.lenders.value?.totalCount ?? undefined));
 		const pfpMinLenders = computed(() => borrowerProfile.pfpMinLenders.value);
-		const timeLeft = computed(() => (borrowerProfile.timeLeft.value ?? ''));
+		const timeLeft = computed(() => borrowerProfile.timeLeft.value ?? '');
 		const unreservedAmount = computed(() => borrowerProfile.unreservedAmount.value ?? undefined);
 		const userBalance = computed(() => borrowerProfile?.userBalance?.value);
 		const fundraisingPercent = computed(() => {

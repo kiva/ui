@@ -8,7 +8,7 @@
 				:alt="name"
 				:hash="hash"
 				:aspect-ratio="5 / 8"
-				:photo-path="photoPath"
+				:photo-path="appConfig?.photoPath"
 				:default-image="{ width: 480 }"
 				:images="[
 					{ width: 480, viewSize: 1024 },
@@ -43,8 +43,7 @@ import { mdiMapMarker } from '@mdi/js';
 import { KvBorrowerImage, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 
 const borrowerProfile = inject('borrowerProfile');
-const $appConfig = inject('$appConfig');
-const { photoPath } = $appConfig;
+const appConfig = inject('$appConfig');
 
 // Use the injected borrower profile data - direct access since it's the composable object
 const name = computed(() => borrowerProfile?.name?.value ?? '');

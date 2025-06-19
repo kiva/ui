@@ -1,10 +1,9 @@
 import { ref, computed } from 'vue';
-import _merge from 'lodash/merge';
 import logFormatter from '#src/util/logFormatter';
 import { watchLoanData } from '#src/util/loanUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
-import loanCardQueryExtended from '#src/graphql/query/loanCardDataExtended.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
+import loanLocalResolvers from '#src/api/localResolvers/loan';
 
 /**
  * Vue composable for loading borrower profile data
@@ -17,58 +16,18 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	if (!apolloClient) throw new Error('ApolloClient is required');
 	if (!cookieStore) throw new Error('CookieStore is required');
 
-	const bpWatchedQuery = ref();
-	const loanCardWatchedQuery = ref();
-	const bpWatchedQueryData = ref();
-	const loanCardWatchedQueryData = ref();
 	const bpData = ref();
 	const achievementsData = ref();
 	const currentLoanId = ref(null);
 
+	// Get the local resolvers
+	const localResolvers = loanLocalResolvers();
+	const loanResolvers = localResolvers.resolvers.LoanPartner;
+
 	// Loading state and computed properties
-	const loading = computed(() => !bpWatchedQueryData.value || !loanCardWatchedQueryData.value);
+	const loading = computed(() => !bpData.value);
 
-	// Extract and merge the specific loan from both data sources
-	const loan = computed(() => {
-		const mergedData = bpData.value;
-		if (!mergedData || !currentLoanId.value) return null;
-		let individualLoan = null;
-		let arrayLoan = null;
-		// Get detailed loan from borrowerProfileSideSheetQuery (lend.loan)
-		if (mergedData.lend?.loan?.id === currentLoanId.value) individualLoan = mergedData.lend.loan;
-		// Get basic loan from loanCardQueryExtended (lend.loans.values)
-		if (mergedData.lend?.loans?.values) {
-			arrayLoan = mergedData.lend.loans.values.find(currLoan => currLoan.id === currentLoanId.value);
-		}
-		// Merge both data sources - prioritize array loan for basic display fields,
-		// preserve individual loan for detailed profile fields
-		if (individualLoan && arrayLoan) {
-			const mergedLoan = {
-				// Start with individual loan (has detailed fields)
-				...individualLoan,
-				// Override with array loan (has basic display fields)
-				...arrayLoan,
-				// Explicitly preserve important detailed fields that array loan doesn't have
-				businessDescription: individualLoan.businessDescription || arrayLoan.businessDescription,
-				businessName: individualLoan.businessName || arrayLoan.businessName,
-				comments: individualLoan.comments || arrayLoan.comments,
-				description: individualLoan.description || arrayLoan.description,
-				descriptionInOriginalLanguage:
-					individualLoan.descriptionInOriginalLanguage || arrayLoan.descriptionInOriginalLanguage,
-				endorsement: individualLoan.endorsement || arrayLoan.endorsement,
-				purpose: individualLoan.purpose || arrayLoan.purpose,
-				socialLinks: individualLoan.socialLinks || arrayLoan.socialLinks,
-				trustee: individualLoan.trustee || arrayLoan.trustee,
-				yearsInBusiness: individualLoan.yearsInBusiness || arrayLoan.yearsInBusiness,
-			};
-			return mergedLoan;
-		}
-		// Fallback to whichever one we have
-		if (arrayLoan) return arrayLoan;
-		if (individualLoan) return individualLoan;
-		return null;
-	});
-
+	const loan = computed(() => bpData.value?.lend?.loan);
 	const loanId = computed(() => loan.value?.id ?? 0);
 	const userBalance = computed(() => bpData.value?.my?.userAccount?.balance);
 	const name = computed(() => loan.value?.name ?? '');
@@ -107,10 +66,24 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		loan.value && 'yearsInBusiness' in loan.value ? loan.value.yearsInBusiness : ''
 	));
 	const socialLinks = computed(() => (loan.value && 'socialLinks' in loan.value ? loan.value.socialLinks : null));
-	const unreservedAmount = computed(() => loan.value?.unreservedAmount ?? 0);
-	const fundraisingPercent = computed(() => loan.value?.fundraisingPercent ?? 0);
+
+	// Use local resolvers for computed @client fields
+	const unreservedAmount = computed(() => {
+		const result = loanResolvers.unreservedAmount(loan.value);
+		return parseFloat(result);
+	});
+
+	const fundraisingPercent = computed(() => {
+		if (!loan.value) return 0;
+		return loanResolvers.fundraisingPercent(loan.value);
+	});
+
+	const timeLeft = computed(() => {
+		if (!loan.value) return '';
+		return loanResolvers.fundraisingTimeLeft(loan.value);
+	});
+
 	const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
-	const timeLeft = computed(() => loan.value?.fundraisingTimeLeft ?? '');
 	const lenders = computed(() => loan.value?.lenders ?? null);
 	const inPfp = computed(() => loan.value?.inPfp ?? false);
 	const loanLenderRepaymentTerm = computed(() => loan.value?.lenderRepaymentTerm ?? 0);
@@ -128,47 +101,18 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		// Store the current loan ID for filtering
 		currentLoanId.value = loanDataId;
 		try {
-			const mergeData = () => {
-				bpData.value = _merge(
-					bpWatchedQueryData.value ? JSON.parse(JSON.stringify(bpWatchedQueryData.value)) : {},
-					loanCardWatchedQueryData.value ? JSON.parse(JSON.stringify(loanCardWatchedQueryData.value)) : {},
-				);
-			};
 			// Watch borrower profile side sheet query
-			const bpObserver = watchLoanData({
+			watchLoanData({
 				apollo: apolloClient,
 				cookieStore,
 				loanId: loanDataId,
 				loanQuery: borrowerProfileSideSheetQuery,
 				callback: result => {
 					if (!result.error) {
-						bpWatchedQueryData.value = result.data;
-						mergeData();
+						bpData.value = result.data;
 					}
 				},
 			});
-			bpWatchedQuery.value = bpObserver.subscription;
-			// Watch loan card query with specific loan ID filter
-			const loanCardObserver = watchLoanData({
-				apollo: apolloClient,
-				cookieStore,
-				loanId: loanDataId,
-				loanQuery: loanCardQueryExtended,
-				// Add filters to get the specific loan
-				variables: {
-					filters: {
-						loanIds: [loanDataId]
-					},
-					limit: 1
-				},
-				callback: result => {
-					if (!result.error) {
-						loanCardWatchedQueryData.value = result.data;
-						mergeData();
-					}
-				},
-			});
-			loanCardWatchedQuery.value = loanCardObserver.subscription;
 			// Query post-checkout achievements
 			apolloClient.query({
 				query: postCheckoutAchievementsQuery,
@@ -183,10 +127,6 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	};
 
 	const clearBPData = () => {
-		bpWatchedQuery.value?.unsubscribe();
-		loanCardWatchedQuery.value?.unsubscribe();
-		bpWatchedQueryData.value = undefined;
-		loanCardWatchedQueryData.value = undefined;
 		bpData.value = undefined;
 		achievementsData.value = undefined;
 		currentLoanId.value = null;
