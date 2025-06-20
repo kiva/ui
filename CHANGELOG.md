@@ -1,3 +1,13 @@
+## [3.20.0-rc.2](https://github.com/kiva/ui/compare/v3.20.0-rc.1...v3.20.0-rc.2) (2025-06-20)
+
+### 🎉 New Features
+
+* mykiva borrowers carousel updated ([#6094](https://github.com/kiva/ui/issues/6094)) ([7a59ca6](https://github.com/kiva/ui/commit/7a59ca61b56f0053e3272ce1a138d23981ba6006))
+
+### 🐛 Bugfixes
+
+* import svg locked container in component to reduce compiled file size ([c77a2a2](https://github.com/kiva/ui/commit/c77a2a2211317845584cc27cb3b5cc2850dfb554))
+
 ## [3.20.0-rc.1](https://github.com/kiva/ui/compare/v3.19.0...v3.20.0-rc.1) (2025-06-18)
 
 ### 🎉 New Features
