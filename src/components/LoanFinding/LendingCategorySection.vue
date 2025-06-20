@@ -27,18 +27,20 @@
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
-						:loan-id="loan.id"
-						:use-full-width="true"
-						:show-tags="true"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:large-card="isLargeCard"
-						:user-balance="userBalance"
-						:five-dollars-selected="fiveDollarsSelected"
-						:enable-huge-amount="enableHugeAmount"
-						@add-to-basket="addToBasket"
-						class="tw-h-full"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-huge-amount="enableHugeAmount"
+						:five-dollars-selected="fiveDollarsSelected"
+						:large-card="isLargeCard"
+						:loan-id="loan.id"
+						:show-tags="true"
+						:use-full-width="true"
+						:user-balance="userBalance"
+						:custom-loan-details="true"
+						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
+						@show-loan-details="showLoanDetails"
+						class="tw-h-full"
 					/>
 				</template>
 				<template v-if="showViewMoreCard" #[`slide${loans.length}`]>
@@ -65,7 +67,7 @@ export default {
 		KvClassicLoanCardContainer,
 		ViewMoreCard,
 	},
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'show-loan-details'],
 	props: {
 		title: {
 			type: String,
@@ -167,6 +169,9 @@ export default {
 		},
 		isWindowWidth() {
 			this.windowWidth = window.innerWidth;
+		},
+		showLoanDetails(payload) {
+			this.$emit('show-loan-details', payload);
 		}
 	},
 	mounted() {
