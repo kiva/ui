@@ -159,7 +159,7 @@ export default {
 
 <style lang="postcss" scoped>
 .cta-container {
-	box-shadow: 2px 0px 12px 0px #0000004D;
+	box-shadow: 2px 0 12px 0 #0000004D;
 	margin-left: -15px;
 	margin-right: -15px;
 
