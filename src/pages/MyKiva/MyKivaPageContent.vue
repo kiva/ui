@@ -94,18 +94,6 @@
 				@continue-journey-clicked="handleContinueJourneyClicked"
 				@sidesheet-closed="handleComponentClosed"
 			/>
-			<BadgeModal
-				v-if="selectedBadgeData"
-				:show="showBadgeModal"
-				:badge="selectedBadgeData"
-				:lender="lender"
-				:state="state"
-				:tier="tier"
-				:is-earned-section="isEarnedSectionModal"
-				:loans="loans"
-				@badge-modal-closed="handleComponentClosed"
-				@badge-level-clicked="handleBadgeJourneyLevelClicked"
-			/>
 		</section>
 	</MyKivaContainer>
 </template>
@@ -121,7 +109,6 @@ import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -200,11 +187,9 @@ const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
 const selectedJourney = ref('');
-const showBadgeModal = ref(false);
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
-const tier = ref(null);
 const totalUpdates = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
@@ -258,7 +243,6 @@ const handleComponentClosed = () => {
 	}
 	selectedBadgeData.value = undefined;
 	showSideSheet.value = false;
-	showBadgeModal.value = false;
 	hideBottomGradient.value = false;
 };
 
