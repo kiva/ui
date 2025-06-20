@@ -1,0 +1,10 @@
+import{B as u}from"./entry-BorrowerStatusCard-WIvmRYSuKO.js";import{m as y}from"./entry-utils-DPTlI_yqzd.js";import{a as k}from"./entry-apollo-story-mixin-CB9BNmK9U5.js";import{c as f}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import"./entry-vue.esm-bundler-DRMQxQJg8r.js";import"./entry-HeroBackground-Cx-CfN6L5i.js";import"./entry-numeral-DJCTM12wUX.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-KvAtbModal-DhF29XDIKL.js";import"./entry-KvContentfulImg-BLSyPcUXeC.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-BorrowerImage-B50fwNCO-O.js";import"./entry-imageUtils-DMLkgPJKqw.js";import"./entry-mdi-BLrElsGAq2.js";import"./entry-KvExpandable-XPVfq9sG7p.js";import"./entry-KvMaterialIcon-CFyzC4J9vc.js";import"./entry-vue-router-BVImLU1LFc.js";import"./entry-index-BTftIkQSSB.js";import"./entry-index-COmIkRYU2t.js";import"./entry-index-D4S0JsTkt8.js";import"./entry-index-D_23gIjsxn.js";import"./entry-index-CbPSoDvqj7.js";import"./entry-loan-data-mock-K6LggmKLGT.js";const G={title:"MyKiva/BorrowerStatusCard",component:u},t=y(3),g={data:{lend:{loan:t[0]}}},l=(a={})=>{const s=(S,{argTypes:d})=>({props:Object.keys(d),components:{BorrowerStatusCard:u},mixins:[k({queryResult:g}),f()],setup(){return{args:a}},provide:{$kvTrackEvent:()=>Promise.resolve({fn:()=>({})})},template:`
+            <borrower-status-card v-bind="args" />
+        `});return s.args=a,s},r=l({loan:t[0]}),o=l({loan:{...t[0],status:"payingBack"}});var e,m,p;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:`story({
+  loan: mockLoans[0]
+})`,...(p=(m=r.parameters)==null?void 0:m.docs)==null?void 0:p.source}}};var i,n,c;o.parameters={...o.parameters,docs:{...(i=o.parameters)==null?void 0:i.docs,source:{originalSource:`story({
+  loan: {
+    ...mockLoans[0],
+    status: 'payingBack'
+  }
+})`,...(c=(n=o.parameters)==null?void 0:n.docs)==null?void 0:c.source}}};const H=["Default","Repaying"];export{r as Default,o as Repaying,H as __namedExportsOrder,G as default};
