@@ -87,6 +87,7 @@ query BorrowerProfileSideSheet($loanId: Int!) {
 		name
 	  }
 	  loanFundraisingInfo {
+		id
         fundedAmount
         reservedAmount
       }
