@@ -1,4 +1,4 @@
-query userUpdates($limit: Int, $offset: Int) {
+query userUpdates($limit: Int, $offset: Int, $since: Long!, $trxLimit: Long, $trxOffset: Long) {
     my {
         id
         updates(limit: $limit, offset: $offset) {
@@ -28,6 +28,41 @@ query userUpdates($limit: Int, $offset: Int) {
                             name
                         }
                     }
+                }
+            }
+        }
+    }
+    recentCheckouts(since: $since, limit: $trxLimit, offset: $trxOffset) {
+        values {
+            receipt {
+                manifest {
+                    id
+                    items {
+                        values {
+                            id
+                            ... on Donation {
+                                id
+                                basketItemType
+                                price
+                            }
+                            ... on KivaCard {
+                                basketItemType
+                                id
+                                price
+                            }
+                            ... on LoanReservation {
+                                basketItemType
+                                id
+                                price
+                            }
+                        }
+                    }
+                    transactionTime
+                    totals {
+                        itemTotal
+                        kivaCreditRemaining
+                    }
+                    checkoutTransactionId
                 }
             }
         }

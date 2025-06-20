@@ -5,6 +5,7 @@
 				class="tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8 tw-rounded-full tw-shadow tw-shrink-0"
 			>
 				<BorrowerImage
+					v-if="hash"
 					class="tw-w-full tw-rounded-full tw-bg-brand"
 					:alt="borrowerName"
 					:aspect-ratio="1"
@@ -16,18 +17,22 @@
 						{ width: 64, faceZoom: 50 },
 					]"
 				/>
+				<KvUserAvatar
+					v-else
+					class="kiva-logo lg:tw-w-8"
+				/>
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
 				<p class="tw-mb-0.5 tw-font-medium tw-line-clamp-1">
 					{{ title }}
 				</p>
 				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded tw-w-auto">
-					🎉 {{ loanStatus }}
+					{{ loanStatus }}
 				</div>
 			</div>
 		</div>
 		<div class="tw-my-1">
-			<p>Subject line: {{ subject }}</p>
+			<p>{{ subjectLine }}</p>
 			<span v-html="truncatedBody"></span>
 			<button
 				v-if="showTruncatedBody"
@@ -75,7 +80,7 @@
 import { format } from 'date-fns';
 import { mdiExportVariant } from '@mdi/js';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvMaterialIcon, KvUserAvatar } from '@kiva/kv-components';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
 	computed,
@@ -105,15 +110,20 @@ const loan = computed(() => update.value?.loan ?? {});
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
 const hash = computed(() => loan.value?.image?.hash ?? '');
-const title = computed(() => `${borrowerName.value} from ${borrowerCountry.value}`);
+const title = computed(() => {
+	if (update.value?.isTransaction) return 'Kiva';
+
+	return `${borrowerName.value} from ${borrowerCountry.value}`;
+});
 
 const isFundraising = computed(() => isLoanFundraising(loan.value));
 
 const loanStatus = computed(() => {
+	if (update.value?.isTransaction) return 'Transaction';
 	if (isFundraising.value) {
-		return 'Fundraising';
+		return '🎉 Fundraising';
 	}
-	return 'Repaying';
+	return '🎉 Repaying';
 });
 
 const subject = computed(() => update.value?.subject ?? '');
@@ -128,7 +138,7 @@ const truncatedBody = computed(() => {
 	return truncatedCopy;
 });
 
-const showTruncatedBody = computed(() => body.value.length > truncatedBody.value.length);
+const showTruncatedBody = computed(() => body.value.length > truncatedBody.value.length || update.value?.isTransaction);
 
 const uploadDate = computed(() => {
 	const date = update.value?.date ?? '';
@@ -145,4 +155,17 @@ const shareLoan = () => {
 	emit('share-loan-clicked');
 	$kvTrackEvent('portfolio', 'click', 'borrower-update-share-loan', loan.value.id);
 };
+
+const subjectLine = computed(() => {
+	if (update.value?.isTransaction) {
+		return subject.value;
+	}
+	return `Subject line: ${subject.value}`;
+});
 </script>
+
+<style lang="postcss" scoped>
+	.kiva-logo:deep(div:first-child) {
+		@apply tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8;
+	}
+</style>
