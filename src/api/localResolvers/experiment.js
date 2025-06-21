@@ -19,6 +19,10 @@ import logFormatter from '#src/util/logFormatter';
  * @returns {Object} The local resolvers
  */
 export default ({ cookieStore, route }) => {
+	if (!cookieStore) {
+		return {};
+	}
+
 	return {
 		resolvers: {
 			Query: {

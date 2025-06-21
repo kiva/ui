@@ -9,9 +9,6 @@ import 'virtual:svg-store';
 
 const config = window.__KV_CONFIG__ || {};
 
-// Set webpack public asset path based on configuration
-// __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
-
 async function getCookieStore() {
 	const { default: CookieStore } = await import('#src/util/cookieStore');
 	return new CookieStore();
@@ -53,10 +50,31 @@ async function getFetch() {
 	return fetch;
 }
 
+async function getRouter() {
+	const { default: createRouter } = await import('#src/router');
+	return createRouter({ isServer: false });
+}
+
 async function getUserId(apolloClient) {
 	const { default: userIdQuery } = await import('#src/graphql/query/userId.graphql');
 	const result = await apolloClient.query({ query: userIdQuery });
 	return result?.data?.my?.userAccount?.id ?? null;
+}
+
+async function hydrateApolloCache(apolloClient) {
+	// Gather the state from the server.
+	const states = [
+		window.__APOLLO_STATE__,
+		window.__APOLLO_STATE_ESI__,
+	].filter(x => !!x);
+	// If no state is available, skip hydration.
+	// This can happen if the server didn't render any data.
+	if (states.length === 0) {
+		return;
+	}
+	// Apply the merged state to the Apollo cache.
+	const { applyStateToCache, mergeStateObjects } = await import('#src/util/apolloCacheUtils');
+	applyStateToCache(apolloClient, mergeStateObjects(...states));
 }
 
 async function setupApolloCachePersistence(cache) {
@@ -169,7 +187,13 @@ async function setupSentry(app, router) {
 }
 
 function setupClientRouting({
-	app, apolloClient, cookieStore, kvAuth0, router
+	apolloClient,
+	app,
+	cookieStore,
+	device,
+	kvAuth0,
+	renderConfig,
+	router,
 }) {
 	// Add router hook for handling asyncData.
 	// Doing it after initial route is resolved so that we don't double-fetch
@@ -190,7 +214,9 @@ function setupClientRouting({
 			// Pre-fetch graphql queries from activated components
 			await preFetchAll(activated, apolloClient, {
 				cookieStore,
+				device,
 				kvAuth0,
+				renderConfig,
 				route: to,
 			});
 			next();
@@ -219,41 +245,43 @@ function setupClientRouting({
 }
 
 async function initApp() {
-	const [{ default: createApp }, cookieStore, device, locale, fetch] = await Promise.all([
+	const [{ default: createApp }, cookieStore, device, locale, fetch, router] = await Promise.all([
 		import('#src/main'),
 		getCookieStore(),
 		getDevice(),
 		getLocale(),
 		getFetch(),
+		getRouter(),
 	]);
 	const kvAuth0 = await getKvAuth0(cookieStore);
 
 	// Create the App instance
 	const {
 		app,
-		router,
 		apolloClient,
-	} = createApp({
+		renderConfig,
+	} = await createApp({
 		appConfig: config,
 		apollo: {
 			uri: config.graphqlUri,
 			types: config.graphqlPossibleTypes,
 		},
+		// Since we're in the browser and not the CDN, just check if the user is logged in
+		cdnNotedLoggedIn: kvAuth0.isNotedLoggedIn(),
 		cookieStore,
 		device,
 		kvAuth0,
 		locale,
 		fetch,
+		router,
 	});
 
-	// Apply Server state to Client Store
-	if (window.__APOLLO_STATE__) {
-		apolloClient.cache.restore(window.__APOLLO_STATE__);
-	}
 	// Apply persisted state from session storage to Client Store
 	if (config.apolloPersistCache) {
-		setupApolloCachePersistence(apolloClient.cache);
+		await setupApolloCachePersistence(apolloClient.cache);
 	}
+	// Apply Server state to Client Store
+	await hydrateApolloCache(apolloClient);
 
 	setupAuthErrorHandling(kvAuth0, apolloClient);
 	setupTouchDetection(apolloClient);
@@ -266,10 +294,14 @@ async function initApp() {
 		setupAnalytics(app, apolloClient);
 	}
 
-	// Wait until router has resolved all async before hooks and async components
-	await router.isReady();
 	setupClientRouting({
-		app, apolloClient, cookieStore, kvAuth0, router
+		apolloClient,
+		app,
+		cookieStore,
+		device,
+		kvAuth0,
+		renderConfig,
+		router,
 	});
 
 	// Mount app in DOM

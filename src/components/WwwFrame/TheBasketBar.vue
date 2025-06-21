@@ -42,7 +42,10 @@ export default {
 		KvButton,
 		KvMaterialIcon
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	data() {
 		return {
 			count: 0,
@@ -52,6 +55,10 @@ export default {
 	apollo: {
 		query: countQuery,
 		preFetch: true,
+		shouldPreFetch(config, { renderConfig }) {
+			// Don't prefetch if using CDN caching
+			return !renderConfig.useCDNCaching;
+		},
 		result({ data }) {
 			this.count = data?.shop?.nonTrivialItemCount || 0;
 		}

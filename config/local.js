@@ -1,4 +1,4 @@
-import { merge } from 'webpack-merge';
+import merge from 'deepmerge';
 import base from './k8s-local.js';
 
 export default merge(base, {
@@ -17,6 +17,5 @@ export default merge(base, {
 		gzipEnabled: true,
 		memcachedEnabled: false,
 		memcachedServers: '',
-		sessionUri: '',
 	},
 });

@@ -61,7 +61,8 @@ describe('experiment.js', () => {
 		afterEach(vi.clearAllMocks);
 
 		it('should return undefined assignment when active experiments list is empty', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getActiveExperiments.mockImplementationOnce(() => Promise.resolve([]));
 
 			const result = await resolvers.Query.experiment(null, { id: 'asd' }, {});
@@ -80,7 +81,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return undefined assignment when active experiments list is missing experiment', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 
 			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
 
@@ -98,7 +100,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return undefined assignment when active experiments has similarly named experiment', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getActiveExperiments.mockImplementationOnce(() => Promise.resolve([`asd_${EXP_ID}`]));
 
 			const result = await resolvers.Query.experiment(null, { id: 'x' }, {});
@@ -117,7 +120,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return undefined assignment when experiment settings are missing', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getExperimentSetting.mockImplementationOnce(() => Promise.resolve({}));
 
 			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
@@ -136,7 +140,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return current assignment when assignment is forced', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'z', hash: HASH, population: 1
 			});
@@ -155,7 +160,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when assignment is forced and hash was unset', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'z', population: 1
 			});
@@ -175,7 +181,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return current assignment when assignment is forced and population was unset', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'z', hash: HASH
 			});
@@ -194,7 +201,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when assignment is forced and hash changes', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'z', hash: HASH, population: 1
 			});
@@ -215,7 +223,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return current assignment when assignment is forced and population changes', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getExperimentSetting.mockImplementationOnce(() => Promise.resolve({ ...experiment, population: 0.5 }));
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'z', hash: HASH, population: 1
@@ -235,7 +244,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when undefined assignment is forced and population changes', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getExperimentSetting.mockImplementationOnce(() => Promise.resolve({ ...experiment, population: 0.5 }));
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: undefined, hash: HASH, population: 1
@@ -256,7 +266,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when unassigned assignment is forced and population changes', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getExperimentSetting.mockImplementationOnce(() => Promise.resolve({ ...experiment, population: 0.5 }));
 			getForcedAssignment.mockReturnValueOnce({
 				id: EXP_ID, version: 'unassigned', hash: HASH, population: 1
@@ -277,7 +288,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when assignment is forced and distribution changes', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			getExperimentSetting.mockImplementationOnce(() => Promise.resolve({
 				...experiment,
 				distribution: {
@@ -377,7 +389,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return new assignment when no assignment is forced', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			assignVersionForLoginId.mockReturnValue('b');
 
 			let result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});
@@ -408,7 +421,8 @@ describe('experiment.js', () => {
 		});
 
 		it('should return undefined assignment when assignment returns undefined', async () => {
-			const { resolvers } = expResolverFactory({});
+			const cookieStore = {};
+			const { resolvers } = expResolverFactory({ cookieStore });
 			assignVersionForLoginId.mockReturnValueOnce(undefined);
 
 			const result = await resolvers.Query.experiment(null, { id: EXP_ID }, {});

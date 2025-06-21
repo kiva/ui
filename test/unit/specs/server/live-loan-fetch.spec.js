@@ -1,12 +1,12 @@
 // @vitest-environment node
-import fetch from '../../../../server/util/fetch';
-import fetchLoansByType from '../../../../server/util/live-loan/live-loan-fetch';
+import fetch from '#server/util/fetch';
+import fetchLoansByType from '#server/util/live-loan/live-loan-fetch';
 
 // mock out the fetch module so that no real requests are made
-vi.mock('../../../../server/util/fetch');
+vi.mock('#server/util/fetch');
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
-vi.mock('../../../../server/util/argv', () => ({ default: {} }));
+vi.mock('#server/util/argv', () => ({ default: {} }));
 
 describe('live-loan-fetch', () => {
 	describe('fetchRecommendationsByFilter', () => {

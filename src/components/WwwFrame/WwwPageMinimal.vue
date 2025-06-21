@@ -13,37 +13,19 @@
 </template>
 
 <script>
-import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
-import appInstallMixin from '#src/plugins/app-install-mixin';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
-import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 
 export default {
 	name: 'WwwPageMinimal',
-	inject: [
-		'apollo',
-		'cookieStore',
-	],
 	components: {
 		CookieBanner,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,
 	},
-	mixins: [
-		appInstallMixin
-	],
-	apollo: {
-		preFetch(_, client) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				assignAllActiveExperiments(client)
-			]);
-		}
-	}
 };
 </script>
 

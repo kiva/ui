@@ -1,6 +1,10 @@
+import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
+
+export const hasLentBeforeCookie = 'kvu_lb';
+export const hasDepositBeforeCookie = 'kvu_db';
 
 function setUserAttribute(key, value) {
 	if (typeof window === 'undefined') {
@@ -48,19 +52,50 @@ export function userHasDepositBefore(hasDepositedBefore) {
 	setUserAttribute('has_deposited_before', hasDepositedBefore ? 'yes' : 'no');
 }
 
+export const optimizelyUserDataQuery = gql`query optimizelyUserDataQuery {
+	my {
+		id
+		loans(limit:1) {
+				totalCount
+		}
+		transactions(limit:1, filter:{category:deposit}) {
+				totalCount
+		}
+	}
+}`;
+
+export async function setUserDataCookies(cookieStore, apolloClient) {
+	if (!cookieStore.get(hasLentBeforeCookie) || !cookieStore.get(hasDepositBeforeCookie)) {
+		const { data } = await apolloClient.query({
+			query: optimizelyUserDataQuery,
+		});
+
+		const hasLentBefore = data?.my?.loans?.totalCount > 0;
+		const hasDepositBefore = data?.my?.transactions?.totalCount > 0;
+
+		cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
+		cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
+	}
+}
+
 export function buildUserDataGlobal(currentRoute, cookieStore, apolloClient) {
-	let data = null;
 	const transactionId = currentRoute.query?.kiva_transaction_id
 		? numeral(currentRoute.query?.kiva_transaction_id).value()
 		: null;
+
+	if (!transactionId) {
+		return null;
+	}
+
+	let data = null;
 	try {
-		data = transactionId ? apolloClient.readQuery({
+		data = apolloClient.readQuery({
 			query: thanksPageQuery,
 			variables: {
 				checkoutId: transactionId,
 				visitorId: cookieStore.get('uiv') || null,
 			}
-		}) : {};
+		});
 	} catch (e) {
 		logReadQueryError(e, `Thanks page on server-entry failed: (transaction_id: ${transactionId})`);
 	}

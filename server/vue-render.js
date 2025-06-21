@@ -1,11 +1,13 @@
+import ESI from 'nodesi';
+import { getCookieHeader } from './util/cookies.js';
 import initCache from './util/initCache.js';
 import { info } from './util/log.js';
 import getGqlPossibleTypes from './util/getGqlPossibleTypes.js';
-import getSessionCookies from './util/getSessionCookies.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 let cache;
+let esi;
 
 export default async function render({
 	context,
@@ -14,14 +16,20 @@ export default async function render({
 	ssrManifest,
 	template
 }) {
-	const s = Date.now();
-
 	// if cache is not initialized, initialize it
 	if (!cache) {
 		cache = initCache(serverConfig);
 	}
 
+	// if this server needs to simulate a CDN, create the edge-side includes (ESI) handler
+	if (!esi && serverConfig.simulateCDN) {
+		esi = new ESI();
+	}
+	// only process ESI tags if the handler is initialized and the current request is not for an ESI tag
+	const processESITags = esi && !context.esi;
+
 	// get graphql api possible types for the graphql client
+	const s = Date.now();
 	const typesPromise = getGqlPossibleTypes(serverConfig.graphqlUri, cache)
 		.finally(() => {
 			if (!isProd) {
@@ -29,38 +37,34 @@ export default async function render({
 			}
 		});
 
-	// fetch initial session cookies in case starting session with this request
-	const cookiePromise = getSessionCookies(serverConfig.sessionUri, context.cookies)
-		.finally(() => {
-			if (!isProd) {
-				info(`session fetch: ${Date.now() - s}ms`);
-			}
-		});
-
-	let setCookies = [];
 	try {
-		const [types, cookieInfo] = await Promise.all([typesPromise, cookiePromise]);
 		// add fetched types to rendering context
+		const types = await typesPromise;
 		context.config.graphqlPossibleTypes = types;
-		// update cookies in the rendering context with any newly fetched session cookies
-		context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
-		// collect any newly fetched 'Set-Cookie' headers to send after the render
-		setCookies = [...cookieInfo.setCookies];
+
 		// render the app
 		context.template = template;
 		context.ssrManifest = ssrManifest;
-		const { html, setCookies: appSetCookies } = await serverEntry(context);
-		// collect any cookies created during the app render
-		setCookies = [...setCookies, ...appSetCookies];
+		const { cdnHeaders, html, setCookies } = await serverEntry(context);
+
+		// if using ESI, process the html to resolve ESI tags
+		const finalHtml = processESITags ? await esi.process(html, {
+			baseUrl: `http://localhost:${serverConfig.port}`,
+			headers: {
+				Cookie: getCookieHeader(context.cookies),
+				'Fastly-Top-Url': context.url,
+			},
+		}) : html;
+
 		// send the final rendered html
 		return {
-			html,
+			cdnHeaders,
+			html: finalHtml,
 			setCookies,
 		};
 	} catch (err) {
 		// collect any cookies created during the app render
-		const contextSetCookies = context?.setCookies ?? [];
-		setCookies = [...setCookies, ...contextSetCookies];
+		const setCookies = context?.setCookies ?? [];
 		// send the error
 		return {
 			error: err,

@@ -1,6 +1,6 @@
 <template>
 	<div class="www-page">
-		<the-banner-area v-show="!isKivaAppReferral" />
+		<global-promo-contentful v-show="!isKivaAppReferral" />
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
@@ -21,30 +21,24 @@
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
-import appInstallMixin from '#src/plugins/app-install-mixin';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
-import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
+import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-import TheBannerArea from './TheBannerArea';
 
 export default {
 	name: 'WwwPage',
 	inject: [
 		'apollo',
-		'cookieStore',
 	],
 	components: {
 		CookieBanner,
-		TheBannerArea,
+		GlobalPromoContentful,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,
 	},
-	mixins: [
-		appInstallMixin
-	],
 	props: {
 		grayBackground: {
 			type: Boolean,
@@ -64,15 +58,10 @@ export default {
 			isKivaAppReferral: false,
 		};
 	},
-	apollo: {
-		preFetch(_, client) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				assignAllActiveExperiments(client)
-			]);
-		},
-	},
 	created() {
+		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
+	},
+	mounted() {
 		try {
 			const data = this.apollo.readQuery({
 				query: hasEverLoggedInQuery,
@@ -82,8 +71,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'User has ever logged in');
 		}
-
-		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 	},
 	computed: {
 		mainClasses() {

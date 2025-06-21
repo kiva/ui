@@ -14,6 +14,5 @@ export default [
 	'register',
 	'settings',
 	'start-verification',
-	'UI_REVISION',
-	'ui-site-map'
+	'UI_REVISION'
 ];

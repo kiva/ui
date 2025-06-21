@@ -1,0 +1,8 @@
+query wwwHeaderPublic {
+	general {
+		teamsMenuEnabled: featureSetting(key: "teams_in_navbar.enabled") {
+			key
+			value
+		}
+	}
+}

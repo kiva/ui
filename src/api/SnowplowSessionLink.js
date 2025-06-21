@@ -16,6 +16,8 @@ function getSPCookieSession(cookieStore) {
 
 export default ({ cookieStore }) => {
 	return setContext((operation, previousContext) => {
+		if (!cookieStore) return previousContext;
+
 		// fetch session id
 		const spSessionId = getSPCookieSession(cookieStore);
 		// pass along existing context if no session id exists

@@ -24,6 +24,7 @@ const globalOptions = {
 	},
 	mocks: {
 		$kvTrackEvent: () => {},
+		$renderConfig: {},
 		$router: mockRouter,
 		$filters: {
 			numeral: () => {

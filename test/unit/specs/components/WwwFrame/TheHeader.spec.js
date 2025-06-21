@@ -21,15 +21,11 @@ describe('TheHeader', () => {
 						RouterLink: { ...emptyComponent },
 					},
 					mocks: {
+						...globalOptions.mocks,
 						$route: {
 							path: '/'
 						},
 					}
-				},
-				data() {
-					return {
-						isVisitor: false
-					};
 				},
 			},
 		);

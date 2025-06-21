@@ -1,4 +1,3 @@
-import _filter from 'lodash/filter';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
@@ -46,6 +45,11 @@ export function handleApolloErrors(handlers = {}, errors = [], args = {}) {
 
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
+	// If the shouldPreFetch function is defined and returns false, skip pre-fetching
+	if (typeof config.shouldPreFetch === 'function' && !config.shouldPreFetch(config, args)) {
+		return Promise.resolve();
+	}
+
 	if (typeof config.preFetch === 'function') {
 		// Call the manual pre-fetch function
 		const preFetchPromise = config.preFetch(config, client, args);
@@ -61,10 +65,7 @@ export function preFetchApolloQuery(config, client, args) {
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables({ client, ...args }) : {};
 		client.query({
 			query: config.query,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-				...prefetchVariables,
-			},
+			variables: cookieStore ? { basketId: cookieStore.get('kvbskt'), ...prefetchVariables } : prefetchVariables,
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
@@ -80,6 +81,9 @@ export function preFetchApolloQuery(config, client, args) {
 export async function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
 	const allComponents = await getDeepComponents(components);
-	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
-	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
+	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with preFetch
+	const preFetchOperations = allComponents
+		.flatMap(c => c.apollo ?? [])
+		.filter(op => op?.preFetch && op?.shouldPreFetch !== false);
+	return Promise.all(preFetchOperations.map(op => preFetchApolloQuery(op, apolloClient, args)));
 }

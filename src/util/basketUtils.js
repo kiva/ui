@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/vue';
-import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import logFormatter from '#src/util/logFormatter';
 import basketCountQuery from '#src/graphql/query/basketCount.graphql';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import basketLoansInfoQuery from '#src/graphql/query/basketLoansInfo.graphql';
+import createNewBasketMutation from '#src/graphql/mutation/shopCreateNewBsket.graphql';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 
 export const INVALID_BASKET_ERROR = 'invalidBasket';
 
@@ -22,22 +23,24 @@ function logSetLendAmountError(loanId, err) {
 	}
 }
 
+export async function createNewBasket({ apollo, cookieStore }) {
+	// Create a new basket
+	const { data } = await apollo.mutate({ mutation: createNewBasketMutation });
+	const newBasketId = data?.shop?.createBasket;
+
+	// Set the new basket ID in the cookie
+	if (newBasketId) {
+		cookieStore.set('kvbskt', newBasketId, { path: '/', secure: true });
+	}
+
+	return newBasketId;
+}
+
 export function setLendAmount({ amount, apollo, loanId }) {
 	return new Promise((resolve, reject) => {
 		const price = numeral(amount).format('0.00');
 		apollo.mutate({
-			mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
-				shop (basketId: $basketId) {
-					id
-					updateLoanReservation (loanReservation: {
-						id: $loanId
-						price: $price
-					}) {
-						id
-						price
-					}
-				}
-			}`,
+			mutation: updateLoanReservation,
 			variables: {
 				loanId,
 				price,

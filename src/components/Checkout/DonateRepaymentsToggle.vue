@@ -166,7 +166,7 @@ export default {
 			return this.apollo.mutate({
 				mutation: updateLoanReservationDonateRepayments,
 				variables: {
-					loanid: loan.id,
+					loanId: loan.id,
 					donateRepayments
 				}
 			}).then(data => {

@@ -110,6 +110,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			alias: {
 				// alias src directory
 				'#src': resolve('src'),
+				// alias server directory
+				'#server': resolve('server'),
 				// alias kv-component directory
 				'#kv-components': resolve('node_modules/@kiva/kv-components/dist/vue'),
 				// alias promise module to handle timesync calling require('promise')

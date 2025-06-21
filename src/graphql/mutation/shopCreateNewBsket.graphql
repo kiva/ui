@@ -1,0 +1,6 @@
+mutation createNewBasket {
+	shop {
+		id
+		createBasket
+	}
+}

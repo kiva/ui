@@ -1,6 +1,10 @@
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 
 export default ({ cookieStore, kvAuth0 }) => {
+	if (!cookieStore || !kvAuth0) {
+		return {};
+	}
+
 	return {
 		resolvers: {
 			My: {

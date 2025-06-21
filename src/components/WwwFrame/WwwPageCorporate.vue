@@ -26,20 +26,14 @@
 </template>
 
 <script>
-import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import TheBasketBar from '#src/components/WwwFrame/TheBasketBar';
 import TheBrowserCheck from '#src/components/WwwFrame/TheBrowserCheck';
 import TheFooterCorporate from '#src/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '#src/components/WwwFrame/TheHeader';
-import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 
 export default {
 	name: 'WwwPageCorporate',
-	inject: [
-		'apollo',
-		'cookieStore',
-	],
 	components: {
 		CookieBanner,
 		TheBasketBar,
@@ -62,13 +56,5 @@ export default {
 			default: '28'
 		}
 	},
-	apollo: {
-		preFetch(_, client) {
-			return Promise.all([
-				client.query({ query: hasEverLoggedInQuery }),
-				assignAllActiveExperiments(client)
-			]);
-		},
-	}
 };
 </script>

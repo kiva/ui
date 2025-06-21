@@ -3,7 +3,7 @@ import chokidar from 'chokidar';
 import express from 'express';
 import helmet from 'helmet';
 import locale from 'locale';
-import { merge } from 'webpack-merge';
+import merge from 'deepmerge';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import promBundle from 'express-prom-bundle';

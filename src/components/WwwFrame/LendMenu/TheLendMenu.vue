@@ -10,6 +10,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
 		/>
 		<lend-mega-menu
@@ -22,6 +23,7 @@
 			:user-id="userId"
 			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
 		/>
 	</div>
@@ -55,7 +57,10 @@ export default {
 		LendListMenu,
 		LendMegaMenu,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	data() {
 		return {
 			userId: null,
@@ -73,15 +78,19 @@ export default {
 				'Asia',
 				'Oceania'
 			],
-			loadingSemaphore: 0,
 			isRegionsLoading: true,
 			isChannelsLoading: true,
+			isUserDataLoading: false,
 			showMGUpsellLink: false,
 		};
 	},
 	apollo: {
 		query: pageQuery,
 		preFetch: true,
+		shouldPreFetch(config, { renderConfig }) {
+			// Don't prefetch if using CDN caching
+			return !renderConfig.useCDNCaching;
+		},
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
 		},
@@ -161,10 +170,14 @@ export default {
 					fetchPolicy: 'network-only',
 				});
 
+				this.isUserDataLoading = false;
 				this.favoritesCount = data?.lend?.loans?.totalCount ?? 0;
 				this.savedSearches = data?.my?.savedSearches?.values ?? [];
 			}
 		},
+	},
+	created() {
+		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 	},
 	mounted() {
 		this.$nextTick(() => {

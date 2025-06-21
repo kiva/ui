@@ -102,7 +102,6 @@ export const server = {
 	memcachedEnabled: true,
 	memcachedServers,
 	port: 8888,
-	sessionUri: `https://www.${baseUrl}/start-ui-session`,
 	minVueWorkers: parseInt(process.env.MIN_VUE_WORKERS, 10) || 1,
 	maxVueWorkers: parseInt(process.env.MAX_VUE_WORKERS, 10) || 3,
 	vueWorkerIdleTimeout: parseInt(process.env.VUE_WORKER_IDLE_TIMEOUT, 10) || 0,
