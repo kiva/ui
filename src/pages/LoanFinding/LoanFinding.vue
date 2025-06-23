@@ -3,110 +3,97 @@
 		<kv-atb-modal-container
 			:added-loan="addedLoan"
 		/>
-		<div
-			ref="animationSourceElement"
-		>
-			<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
-
-			<!-- eslint-disable-next-line max-len -->
-			<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-				<h3 class="tw-text-h3 tw-text-primary">
-					Welcome back{{ firstName ? ', ' : '' }}
-					<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
-				</h3>
-			</div>
-
-			<!-- First category row: Recommended loans section -->
-			<lending-category-section
-				:title="firstRowTitle"
-				:subtitle="firstRowSubtitle"
-				:loans="firstRowLoans"
+		<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
+		<!-- eslint-disable-next-line max-len -->
+		<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
+			<h3 class="tw-text-h3 tw-text-primary">
+				Welcome back{{ firstName ? ', ' : '' }}
+				<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
+			</h3>
+		</div>
+		<!-- First category row: Recommended loans section -->
+		<lending-category-section
+			:title="firstRowTitle"
+			:subtitle="firstRowSubtitle"
+			:loans="firstRowLoans"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:user-balance="userBalance"
+			:per-step="perStepRecommendedRow"
+			@add-to-basket="addToBasket"
+			:class="{ 'tw-pt-3' : !isLoggedIn }"
+			@show-cart-modal="handleCartModal"
+			@show-loan-details="showLoanDetails"
+		/>
+		<!-- Almost Funded loans row -->
+		<lending-category-section
+			id="almost-funded-section"
+			v-if="enableAlmostFundedRow"
+			:title="almostFundedRowTitle"
+			:subtitle="almostFundedRowSubtitle"
+			:loans="almostFundedLoans"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:user-balance="userBalance"
+			@add-to-basket="trackCategory($event, 'almost-funded')"
+			class="tw-pt-3 tw-mb-2"
+			@show-cart-modal="handleCartModal"
+			@show-loan-details="showLoanDetails"
+		/>
+		<!-- Five dollars row -->
+		<lending-category-section
+			id="five-dollars-section"
+			v-if="enableFiveDollarsNotes"
+			:title="fiveDollarsRowTitle"
+			:subtitle="fiveDollarsRowSubtitle"
+			:loans="fiveDollarsRowLoans"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:user-balance="userBalance"
+			:five-dollars-selected="true"
+			:title-icon="HandOrangeIcon"
+			@add-to-basket="trackCategory($event, 'five-dollars')"
+			class="tw-pt-3 tw-mb-2"
+			@show-cart-modal="handleCartModal"
+			@show-loan-details="showLoanDetails"
+		/>
+		<div class="tw-flex tw-flex-col">
+			<quick-filters-section
+				class="tw-mt-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
+				:enable-qf-mobile="enableQFMobileVersion"
+				:enable-almost-funded-row="enableAlmostFundedRow"
 				:user-balance="userBalance"
-				:per-step="perStepRecommendedRow"
-				@add-to-basket="addToBasket"
-				:class="{ 'tw-pt-3' : !isLoggedIn }"
+				@add-to-basket="trackCategory($event, 'quick-filters')"
+				@data-loaded="trackQuickFiltersDisplayedLoans"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
 			/>
-
-			<!-- Almost Funded loans row -->
+			<!-- Element to trigger spotlight observer -->
+			<div ref="spotlightObserver"></div>
+			<!-- Second category row: Matched loans section -->
 			<lending-category-section
-				id="almost-funded-section"
-				v-if="enableAlmostFundedRow"
-				:title="almostFundedRowTitle"
-				:subtitle="almostFundedRowSubtitle"
-				:loans="almostFundedLoans"
+				:title="secondCategoryTitle"
+				:subtitle="secondCategorySubtitle"
+				:loans="secondCategoryLoans"
+				class="tw-py-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
-				@add-to-basket="trackCategory($event, 'almost-funded')"
-				class="tw-pt-3 tw-mb-2"
-				@show-cart-modal="handleCartModal"
-				@show-loan-details="showLoanDetails"
-			/>
-
-			<!-- Five dollars row -->
-			<lending-category-section
-				id="five-dollars-section"
-				v-if="enableFiveDollarsNotes"
-				:title="fiveDollarsRowTitle"
-				:subtitle="fiveDollarsRowSubtitle"
-				:loans="fiveDollarsRowLoans"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:user-balance="userBalance"
-				:five-dollars-selected="true"
-				:title-icon="HandOrangeIcon"
-				@add-to-basket="trackCategory($event, 'five-dollars')"
-				class="tw-pt-3 tw-mb-2"
-				@show-cart-modal="handleCartModal"
-				@show-loan-details="showLoanDetails"
-			/>
-
-			<div class="tw-flex tw-flex-col">
-				<quick-filters-section
-					class="tw-mt-3"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:enable-qf-mobile="enableQFMobileVersion"
-					:enable-almost-funded-row="enableAlmostFundedRow"
-					:user-balance="userBalance"
-					@add-to-basket="trackCategory($event, 'quick-filters')"
-					@data-loaded="trackQuickFiltersDisplayedLoans"
-					@show-cart-modal="handleCartModal"
-					@show-loan-details="showLoanDetails"
-				/>
-
-				<!-- Element to trigger spotlight observer -->
-				<div ref="spotlightObserver"></div>
-
-				<!-- Second category row: Matched loans section -->
-				<lending-category-section
-					:title="secondCategoryTitle"
-					:subtitle="secondCategorySubtitle"
-					:loans="secondCategoryLoans"
-					class="tw-py-3"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:user-balance="userBalance"
-					@add-to-basket="trackCategory($event, 'matched-lending')"
-					@show-cart-modal="handleCartModal"
-					@show-loan-details="showLoanDetails"
-				/>
-			</div>
-
-			<partner-spotlight-section
-				class="tw-pt-3"
-				:spotlight-data="activeSpotlightData"
-				:loans="spotlightLoans"
-				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:user-balance="userBalance"
-				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
+				@add-to-basket="trackCategory($event, 'matched-lending')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
 			/>
 		</div>
+		<partner-spotlight-section
+			class="tw-pt-3"
+			:spotlight-data="activeSpotlightData"
+			:loans="spotlightLoans"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:user-balance="userBalance"
+			@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
+			@show-cart-modal="handleCartModal"
+			@show-loan-details="showLoanDetails"
+		/>
 	</www-page>
 	<KvSideSheet
 		v-if="isMounted"
-		:animation-source-element="animationSourceElement"
 		:kv-track-function="$kvTrackEvent"
 		:show-back-button="false"
 		:show-go-to-link="true"
@@ -207,7 +194,6 @@ export default {
 	data() {
 		return {
 			almostFundedLoans: new Array(9).fill({ id: 0 }),
-			animationSourceElement: undefined,
 			basketItems: [],
 			enableAlmostFundedRow: false,
 			enableLoanRecommendations: false,
@@ -699,7 +685,6 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		this.animationSourceElement = this.$refs.animationSourceElement;
 		this.isMounted = true;
 
 		// Load initial basket items
