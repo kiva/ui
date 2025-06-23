@@ -206,6 +206,7 @@ const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
+const transactions = ref([]);
 const moreWaysToHelpSlides = ref([]);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
@@ -297,17 +298,75 @@ const handleBadgeJourneyLevelClicked = payload => {
 	router.push(getLoanFindingUrl(id, router.currentRoute.value));
 };
 
+// const getFormattedTransactions = () => {
+// 	return transactions.value.map(trx => {
+// 		const manifest = trx?.receipt?.manifest ?? null;
+// 		const total = manifest?.totals?.itemTotal || 0;
+// 		const newBalance = manifest?.totals?.kivaCreditRemaining;
+
+// 		const loans = manifest?.items?.values?.filter(i => i?.basketItemType === 'loan_reservation');
+// 		const kivaCards = manifest?.items?.values?.filter(i => i?.basketItemType === 'kiva_card');
+// 		const donations = manifest?.items?.values?.filter(i => i?.basketItemType === 'donation');
+
+// 		const formatItem = (count, singular) => {
+// 			if (!count) return null;
+// 			const plural = `${singular}s`;
+// 			return `${count} ${count === 1 ? singular : plural}`;
+// 		};
+
+// 		const items = [
+// 			formatItem(loans?.length, 'loan'),
+// 			formatItem(kivaCards?.length, 'Kiva card'),
+// 			formatItem(donations?.length, 'donation')
+// 		].filter(Boolean);
+
+// 		let cartItems = '';
+// 		if (items.length === 1) {
+// 			cartItems = `${items[0]}`;
+// 		} else if (items.length === 2) {
+// 			cartItems = items.join(' and ');
+// 		} else if (items.length > 2) {
+// 			cartItems = `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+// 		}
+
+// 		return {
+// 			id: Number(manifest?.id) ?? null,
+// 			receipt: trx?.receipt?.manifest ?? null,
+// 			isTransaction: true,
+// 			date: manifest?.transactionTime,
+// 			// eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
+// 			subject: `Your transaction was successfully completed! You contributed a total of $${total} and your new balance is $${newBalance}. This included ${cartItems}.`
+// 		};
+// 	});
+// };
+
 const fetchUserUpdates = loadMore => {
+	const oneMonthBefore = new Date();
+	oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
+	const timestamp = oneMonthBefore.getTime();
+
 	apollo.query({
 		query: userUpdatesQuery,
 		variables: {
 			limit: updatesLimit.value,
-			offset: updatesOffset.value
+			offset: updatesOffset.value,
+			trxLimit: updatesLimit.value,
+			trxOffset: updatesOffset.value,
+			since: timestamp,
 		}
 	})
 		.then(result => {
-			totalUpdates.value = result.data?.my?.updates?.totalCount ?? 0;
-			const updates = result.data?.my?.updates?.values ?? [];
+			transactions.value = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
+			totalUpdates.value = transactions.value.length + (result.data?.my?.updates?.totalCount ?? 0);
+
+			// TODO: reenable when paging indexing is fixed
+			// const formattedTransactions = getFormattedTransactions();
+			// const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions)
+			// 	.sort((a, b) => new Date(b.date) - new Date(a.date));
+			const updates = [...(result.data?.my?.updates?.values ?? [])]
+				.sort((a, b) => new Date(b.date) - new Date(a.date));
+
 			if (loadMore) {
 				loanUpdates.value = loanUpdates.value.concat(updates);
 			} else {
