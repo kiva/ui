@@ -1,3 +1,14 @@
+## [3.21.0-rc.1](https://github.com/kiva/ui/compare/v3.20.0...v3.21.0-rc.1) (2025-06-23)
+
+### 🎉 New Features
+
+* huge lend amount added as feature ([#6099](https://github.com/kiva/ui/issues/6099)) ([d9e65a1](https://github.com/kiva/ui/commit/d9e65a130e281308007ddc0449663c71e4d6e665))
+* more ways to help carousel added at my kiva page ([#6096](https://github.com/kiva/ui/issues/6096)) ([0872a21](https://github.com/kiva/ui/commit/0872a2118875081f8b21b56ff7596fb92de63509))
+
+### 💅 Code Style Changes
+
+* remove unused code from MyKivaPageContent ([1d54595](https://github.com/kiva/ui/commit/1d54595a42cdb8f507e98a002f8a035f4cc061c5))
+
 ## [3.20.0](https://github.com/kiva/ui/compare/v3.19.0...v3.20.0) (2025-06-23)
 
 ### 🎉 New Features

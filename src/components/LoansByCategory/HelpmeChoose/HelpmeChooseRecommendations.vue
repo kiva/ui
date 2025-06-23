@@ -54,7 +54,6 @@
 				loan-card-type="ListLoanCard"
 				:rounded-corners="true"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeAmount"
 				@add-to-basket="handleAddToBasket"
 			/>
 		</div>
@@ -110,10 +109,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	data() {

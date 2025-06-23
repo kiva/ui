@@ -90,10 +90,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
-		},
 		isLoggedIn: {
 			type: Boolean,
 			default: false
@@ -123,8 +119,7 @@ export default {
 
 				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
 
-				const showHugeAmount = this.enableHugeAmount && this.isLoggedIn;
-				const priceArray = getDropdownPriceArrayCheckout(remainingAmount, minAmount, this.enableFiveDollarsNotes, showHugeAmount); // eslint-disable-line max-len
+				const priceArray = getDropdownPriceArrayCheckout(remainingAmount, minAmount, this.enableFiveDollarsNotes, this.isLoggedIn); // eslint-disable-line max-len
 				if (!priceArray.includes(numeral(this.price).format('0,0'))) {
 					priceArray.push(numeral(this.price).format('0,0'));
 				}

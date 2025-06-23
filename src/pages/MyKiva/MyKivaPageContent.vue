@@ -69,7 +69,6 @@
 				id="recommended-loans"
 				:title="recommendeLoansTitle"
 				:loans="recommendedLoans"
-				:enable-huge-amount="enableHugeAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
@@ -94,17 +93,17 @@
 				@continue-journey-clicked="handleContinueJourneyClicked"
 				@sidesheet-closed="handleComponentClosed"
 			/>
-			<BadgeModal
-				v-if="selectedBadgeData"
-				:show="showBadgeModal"
-				:badge="selectedBadgeData"
+		</section>
+		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
+			<h3>More ways to help</h3>
+			<JourneyCardCarousel
+				:slides="moreWaysToHelpSlides"
 				:lender="lender"
-				:state="state"
-				:tier="tier"
-				:is-earned-section="isEarnedSectionModal"
-				:loans="loans"
-				@badge-modal-closed="handleComponentClosed"
-				@badge-level-clicked="handleBadgeJourneyLevelClicked"
+				:user-in-homepage="userInHomepage"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				@update-journey="updateJourney"
+				class="tw-mt-2"
 			/>
 		</section>
 	</MyKivaContainer>
@@ -116,12 +115,12 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
+import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -139,6 +138,8 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+
+const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 
 const { getBadgeWithVisibleTiers } = useBadgeData();
 
@@ -186,10 +187,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	enableHugeAmount: {
-		type: Boolean,
-		default: false,
-	},
 	lendingStats: {
 		type: Object,
 		default: () => ({}),
@@ -200,17 +197,16 @@ const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
 const selectedJourney = ref('');
-const showBadgeModal = ref(false);
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
-const tier = ref(null);
 const totalUpdates = ref(0);
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
+const moreWaysToHelpSlides = ref([]);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
@@ -258,7 +254,6 @@ const handleComponentClosed = () => {
 	}
 	selectedBadgeData.value = undefined;
 	showSideSheet.value = false;
-	showBadgeModal.value = false;
 	hideBottomGradient.value = false;
 };
 
@@ -360,6 +355,22 @@ const handleCartModal = loan => {
 	addedLoan.value = loan;
 };
 
+const fetchMoreWaysToHelpData = async () => {
+	try {
+		const moreWaysResult = await apollo.query({
+			query: contentfulEntriesQuery,
+			variables: {
+				contentType: 'carousel',
+				contentKey: CONTENTFUL_MORE_WAYS_KEY,
+			}
+		});
+
+		moreWaysToHelpSlides.value = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage myKiva MoreWaysToHelpQuery');
+	}
+};
+
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
@@ -367,6 +378,7 @@ onMounted(async () => {
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
+	fetchMoreWaysToHelpData();
 });
 </script>
 

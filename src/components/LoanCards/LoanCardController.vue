@@ -49,7 +49,6 @@
 
 		:show-tags="showTags"
 		:enable-five-dollars-notes="enableFiveDollarsNotes"
-		:enable-huge-amount="enableHugeAmount"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -206,10 +205,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	inject: ['apollo'],
