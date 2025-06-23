@@ -194,7 +194,7 @@ watch(
 		if (updates.value.length > 0 && updates.value.length < 3) {
 			carouselIndex.value = 0;
 		}
-		if (updates.value.length > 3) {
+		if (updates.value.length > 6) {
 			carouselIndex.value = updates.value.length - 2;
 		}
 	},
