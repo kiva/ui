@@ -88,19 +88,6 @@
 					</template>
 				</KvCarousel>
 			</div>
-			<div
-				v-if="hasCompletedBorrowers"
-				class="tw-text-left tw-mt-1 md:tw-text-right md:tw-mt-0 md:tw-absolute md:tw-right-0"
-				style="bottom: -0.5rem"
-			>
-				<KvButton
-					to="/portfolio/loans"
-					v-kv-track-event="['portfolio', 'click', 'See all borrowers']"
-					variant="secondary"
-				>
-					See all borrowers
-				</KvButton>
-			</div>
 		</div>
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
@@ -143,8 +130,6 @@ import {
 } from 'vue';
 import {
 	PAYING_BACK,
-	ENDED,
-	DEFAULTED,
 	FUNDED,
 	FUNDRAISING,
 	RAISED
@@ -241,10 +226,6 @@ const singleSlideWidth = computed(() => {
 		return '468px';
 	}
 	return '520px';
-});
-
-const hasCompletedBorrowers = computed(() => {
-	return loans.value.some(loan => loan?.status === ENDED || loan?.status === DEFAULTED);
 });
 
 const handleResize = () => {

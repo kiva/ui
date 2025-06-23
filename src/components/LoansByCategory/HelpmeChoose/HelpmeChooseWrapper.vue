@@ -34,7 +34,6 @@
 				:user-data="userData"
 				:is-loading="isLoading"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeAmount"
 			/>
 		</div>
 
@@ -46,7 +45,6 @@
 				:use-full-width="true"
 				:show-tags="true"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeAmount"
 				:user-balance="userBalance"
 				:add-to-basket-exp-enabled="enableAddToBasketExp"
 				@show-cart-modal="showCartModal"
@@ -96,10 +94,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	inject: ['apollo', 'cookieStore'],

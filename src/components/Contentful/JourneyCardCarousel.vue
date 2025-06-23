@@ -49,7 +49,7 @@
 							<div class="tw-text-primary-inverse">
 								<h2
 									class="tw-text-h3"
-									:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
+									:class="titleClass(slide)"
 								>
 									{{ title(slide) }}
 								</h2>
@@ -198,13 +198,15 @@ const orderedSlides = computed(() => {
 				return richTextSlideData?.achievementKey === badgeKey;
 			});
 
-			achievementSlides.push({
-				...slideData,
-				milestoneDiff,
-				target: tier.target,
-				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-				badgeImgUrl: contentfulData?.imageUrl,
-			});
+			if (slideData) {
+				achievementSlides.push({
+					...slideData,
+					milestoneDiff,
+					target: tier.target,
+					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+					badgeImgUrl: contentfulData?.imageUrl,
+				});
+			}
 		}
 	});
 
@@ -290,6 +292,36 @@ const primaryCtaVariant = slide => {
 const secondaryCtaText = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return richTextUiSettingsData.secondaryCtaText || '';
+};
+
+const isTitleFontSans = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.titleSans === 'true';
+};
+
+const titleColor = slide => {
+	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	return richTextUiSettingsData.titleColor;
+};
+
+const titleClass = slide => {
+	let className = '';
+
+	if (isTitleFontSans(slide)) {
+		className += 'tw-font-sans';
+	}
+
+	if (titleColor(slide)) {
+		className += ` ${titleColor(slide)}`;
+	} else if (isNonBadgeSlide(slide)) {
+		className += ' tw-text-action';
+	}
+
+	if (!subTitle(slide)) {
+		className += ' tw-mb-1.5';
+	}
+
+	return className;
 };
 
 const getUrlParamsFromString = string => {

@@ -8,7 +8,6 @@
 		/>
 		<loan-channel-category-control
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
-			:enable-huge-amount="enableHugeLendAmount"
 			@show-cart-modal="handleCartModal"
 		/>
 
@@ -26,7 +25,6 @@ import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInter
 import LoanChannelCategoryControl from '#src/pages/Lend/LoanChannelCategoryControl';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
@@ -40,7 +38,7 @@ export default {
 		WwwPage,
 		KvAtbModalContainer,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin],
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
@@ -80,9 +78,6 @@ export default {
 		this.initializeAddToBasketInterstitial();
 
 		this.initializeFiveDollarsNotes();
-
-		// Enable huge lend amount
-		this.initializeHugeLendAmount();
 	},
 	methods: {
 		initializeAddToBasketInterstitial() {

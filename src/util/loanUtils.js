@@ -129,7 +129,7 @@ export function getDropdownPriceArray(
 	minAmount,
 	enableFiveDollarsNotes,
 	inPfp = false,
-	enableHugeAmount = false,
+	isLoggedIn = false,
 ) {
 	const parsedAmountLeft = parseFloat(unreservedAmount);
 	let combinedPricesArray = [];
@@ -138,7 +138,7 @@ export function getDropdownPriceArray(
 		? build5DollarsPriceArray(parsedAmountLeft).slice(0, 28)
 		: buildPriceArray(parsedAmountLeft, minAmount).slice(0, 20);
 
-	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	const showHugeAmount = isLoggedIn && parsedAmountLeft > 500;
 	if (showHugeAmount) {
 		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
 		combinedPricesArray = priceArray.concat(hugePriceArray);
@@ -146,7 +146,7 @@ export function getDropdownPriceArray(
 	return showHugeAmount ? combinedPricesArray : priceArray;
 }
 
-export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes, enableHugeAmount) {
+export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enableFiveDollarsNotes, isLoggedIn) {
 	const parsedAmountLeft = parseFloat(remainingAmount);
 	if (enableFiveDollarsNotes) {
 		return build5DollarsPriceArray(parsedAmountLeft).slice(0, 47);
@@ -157,7 +157,7 @@ export function getDropdownPriceArrayCheckout(remainingAmount, minAmount, enable
 		return element % 25 === 0;
 	});
 
-	const showHugeAmount = enableHugeAmount && parsedAmountLeft > 500;
+	const showHugeAmount = isLoggedIn && parsedAmountLeft > 500;
 	if (showHugeAmount) {
 		const hugePriceArray = buildHugePriceArray(parsedAmountLeft);
 		combinedPricesArray = reducedArray.slice(0, 20).concat(hugePriceArray);

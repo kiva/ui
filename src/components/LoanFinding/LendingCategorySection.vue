@@ -27,7 +27,9 @@
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
+						class="tw-h-full"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:enable-huge-amount="enableHugeAmount"
 						:five-dollars-selected="fiveDollarsSelected"
@@ -36,11 +38,9 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:user-balance="userBalance"
-						:custom-loan-details="true"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
-						class="tw-h-full"
 					/>
 				</template>
 				<template v-if="showViewMoreCard" #[`slide${loans.length}`]>
@@ -120,10 +120,6 @@ export default {
 		pageLimit: {
 			type: Number,
 			default: 6
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	inject: ['apollo', 'cookieStore'],
