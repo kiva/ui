@@ -1,3 +1,9 @@
+## [3.22.0-rc.2](https://github.com/kiva/ui/compare/v3.22.0-rc.1...v3.22.0-rc.2) (2025-06-23)
+
+### 🐛 Bugfixes
+
+* hide transaction updates for now ([2f821de](https://github.com/kiva/ui/commit/2f821dee44054c0a2c3c3f5bcb78cf70dac6aad1))
+
 ## [3.22.0-rc.1](https://github.com/kiva/ui/compare/v3.21.0...v3.22.0-rc.1) (2025-06-23)
 
 ### 🎉 New Features
