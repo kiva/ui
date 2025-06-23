@@ -56,7 +56,6 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:challenge-data="challengeData"
 					:show-loans-activity-feed="showLoansActivityFeed"
-					:enable-huge-amount="enableHugeLendAmount"
 					@add-to-basket="addToBasketCallback"
 					:team-name="teamName"
 					@show-cart-modal="handleCartModal"
@@ -81,7 +80,6 @@ import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import myTeamsQuery from '#src/graphql/query/myTeams.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import goalParticipationForLoanQuery from '#src/graphql/query/goalParticipationForLoan.graphql';
 import myPublicLenderInfoQuery from '#src/graphql/query/myPublicLenderInfo.graphql';
 import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
@@ -155,7 +153,7 @@ export default {
 			hasBasket: false,
 		};
 	},
-	mixins: [fiveDollarsTest, hugeLendAmount, basketModalMixin, addToBasketExpMixin],
+	mixins: [fiveDollarsTest, basketModalMixin, addToBasketExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {
@@ -292,9 +290,6 @@ export default {
 	},
 	created() {
 		this.initializeFiveDollarsNotes();
-
-		// Enable huge lend amount
-		this.initializeHugeLendAmount();
 
 		// Extended FLSS Loan Filter Experiment
 		const showMoreFiltersExp = this.apollo.readFragment({

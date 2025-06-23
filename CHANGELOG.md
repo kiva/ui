@@ -1,3 +1,206 @@
+## [3.21.0](https://github.com/kiva/ui/compare/v3.20.0...v3.21.0) (2025-06-23)
+
+### 🎉 New Features
+
+* huge lend amount added as feature ([#6099](https://github.com/kiva/ui/issues/6099)) ([d9e65a1](https://github.com/kiva/ui/commit/d9e65a130e281308007ddc0449663c71e4d6e665))
+* more ways to help carousel added at my kiva page ([#6096](https://github.com/kiva/ui/issues/6096)) ([0872a21](https://github.com/kiva/ui/commit/0872a2118875081f8b21b56ff7596fb92de63509))
+
+### 💅 Code Style Changes
+
+* remove unused code from MyKivaPageContent ([1d54595](https://github.com/kiva/ui/commit/1d54595a42cdb8f507e98a002f8a035f4cc061c5))
+
+### 🧹 Chores
+
+* **release:** 3.21.0-rc.1 [skip ci] ([93f71a6](https://github.com/kiva/ui/commit/93f71a63befef399280b48f676b4f5760f481d72)), closes [#6099](https://github.com/kiva/ui/issues/6099) [#6096](https://github.com/kiva/ui/issues/6096)
+
+## [3.21.0-rc.1](https://github.com/kiva/ui/compare/v3.20.0...v3.21.0-rc.1) (2025-06-23)
+
+### 🎉 New Features
+
+* huge lend amount added as feature ([#6099](https://github.com/kiva/ui/issues/6099)) ([d9e65a1](https://github.com/kiva/ui/commit/d9e65a130e281308007ddc0449663c71e4d6e665))
+* more ways to help carousel added at my kiva page ([#6096](https://github.com/kiva/ui/issues/6096)) ([0872a21](https://github.com/kiva/ui/commit/0872a2118875081f8b21b56ff7596fb92de63509))
+
+### 💅 Code Style Changes
+
+* remove unused code from MyKivaPageContent ([1d54595](https://github.com/kiva/ui/commit/1d54595a42cdb8f507e98a002f8a035f4cc061c5))
+
+## [3.20.0](https://github.com/kiva/ui/compare/v3.19.0...v3.20.0) (2025-06-23)
+
+### 🎉 New Features
+
+* add badge sidesheet to public profile ([9ca6f6a](https://github.com/kiva/ui/commit/9ca6f6aeee143691a80dac2588f3c2246fdd7459))
+* add bluesky name to icon ([304f8f7](https://github.com/kiva/ui/commit/304f8f765d9091d7e02cff9addb3cd66f3d1acae))
+* add lending to default case ([a7984d9](https://github.com/kiva/ui/commit/a7984d9da69ec18fc93e3a0c6be16b2a7dc40ac5))
+* add semi-working SideSheet for BadgeJourneys ([74a749b](https://github.com/kiva/ui/commit/74a749b17e21fac6fbed84d225b79579e4a6f4f6))
+* adding badge sidesheet to lending stats page ([cb79037](https://github.com/kiva/ui/commit/cb790375932936ab1bd245322eb154e9682b9628))
+* adding tracking to borrower card carousel ([498d6c8](https://github.com/kiva/ui/commit/498d6c8a18d66f47996b412afa972486c949f870))
+* adding transition to bottom gradient ([d196315](https://github.com/kiva/ui/commit/d19631541d102e2a8dabb22b049413e9aa8b8e91))
+* adjust sidesheet copy and headline ([9c6ec4f](https://github.com/kiva/ui/commit/9c6ec4f1fe29fc91eefa7075107c314e0837087f))
+* almost funded loan channel updates ([#6015](https://github.com/kiva/ui/issues/6015)) ([5b0d3d0](https://github.com/kiva/ui/commit/5b0d3d0835adbafd4e333d682ca1d68b1fc815ba))
+* atb modal added to mykiva page ([#6090](https://github.com/kiva/ui/issues/6090)) ([e6c7ae5](https://github.com/kiva/ui/commit/e6c7ae52edfb34c506f81b75b285818129f7e98e))
+* atb modal experience replached with shared component ([#6032](https://github.com/kiva/ui/issues/6032)) ([2661f13](https://github.com/kiva/ui/commit/2661f13c429ed0b982f7ad91269440b81b5a9153))
+* bubbles added back to borrower carousel ([9ab9995](https://github.com/kiva/ui/commit/9ab99954eb9c86597593a1b3553ca6c754fe24cb))
+* carousel controls added to mykiva borrowers slides ([#6017](https://github.com/kiva/ui/issues/6017)) ([9b996ab](https://github.com/kiva/ui/commit/9b996abdbaec397aaf8cbb53967523c6174845f9))
+* change achievements section title ([05c42f3](https://github.com/kiva/ui/commit/05c42f3513ed176fbf4844e54e8c8a22770eeceb))
+* change achievements title to my achievements in my kiva ([19078e6](https://github.com/kiva/ui/commit/19078e6bb11a9db37a37495f5c6992afaf613bc0))
+* change cta and event label when journey is complete ([08ed047](https://github.com/kiva/ui/commit/08ed0475362d92c54f5ad355e15502b27d05ec76))
+* changing my kiva homepage header ([019b9da](https://github.com/kiva/ui/commit/019b9da49bfc9c8118773bfccf384b0e0b2ec025))
+* copy changes in achievements CTA and journey CTA ([c8ff997](https://github.com/kiva/ui/commit/c8ff99790de1c41b59e85b1346091da803c79032))
+* handling gradient and completed journey ([432347e](https://github.com/kiva/ui/commit/432347eeefed3a8961d7a9fa2aeb5c98fedd3b52))
+* headline changes in badge journey ([786f98e](https://github.com/kiva/ui/commit/786f98e97305f0c7d94a6fb0b55dbd38a4ab4a43))
+* loaders added to mykiva achievements section ([#6086](https://github.com/kiva/ui/issues/6086)) ([ba5fe74](https://github.com/kiva/ui/commit/ba5fe74784a93f221042e206750c5c31076d6b31))
+* misc fixes from in-person design/product review ([d43884f](https://github.com/kiva/ui/commit/d43884f1dc556f69295b194cfac3db30af92eaf0))
+* missing icons ([51cb025](https://github.com/kiva/ui/commit/51cb025a56ce8a23e9c284a7bac5a8deda3c8918))
+* more mykiva tweaks ([8c1910a](https://github.com/kiva/ui/commit/8c1910a4bc30125e116146e133c3c92ecb6bfb06))
+* mykiva borrowers carousel updated ([#6094](https://github.com/kiva/ui/issues/6094)) ([7a59ca6](https://github.com/kiva/ui/commit/7a59ca61b56f0053e3272ce1a138d23981ba6006))
+* mykiva data prefetched ([#6030](https://github.com/kiva/ui/issues/6030)) ([20abe84](https://github.com/kiva/ui/commit/20abe8432736f2f5398f1ebe964da6e38bee4115))
+* mykiva hero carousel loading refactor ([#6031](https://github.com/kiva/ui/issues/6031)) ([45068c7](https://github.com/kiva/ui/commit/45068c79123a5ac2e2b68cbc342abda6db319c5d))
+* mykiva journeys section updated ([#6052](https://github.com/kiva/ui/issues/6052)) ([0a0af37](https://github.com/kiva/ui/commit/0a0af375212234225ee977fc83bdad13b7c70f00))
+* new badges shapes and new badges size from contentful ([8481da9](https://github.com/kiva/ui/commit/8481da9baced591d86a22dc555afacda1a1f58d4))
+* recommended loans added to mykiva page ([#6072](https://github.com/kiva/ui/issues/6072)) ([544ce67](https://github.com/kiva/ui/commit/544ce6750282208c01dac31801d3d35980ec4fef))
+* redirect /loans-that-are-almost-funded to /almost-funded ([8cc862c](https://github.com/kiva/ui/commit/8cc862cf1f89fca47651580b28845a9f4cbe3585))
+* refactor sidesheet button click event tracking and use id instead of classes for sidesheet content ([5318d78](https://github.com/kiva/ui/commit/5318d78088b0485b40a343ad87759ff8ce992e9a))
+* spacing and size tweaks, and removing My Impact separator ([89be2a9](https://github.com/kiva/ui/commit/89be2a91d1f9350b9c286f9f9deb3b11e9cd47bb))
+* track borrower card on swipe and while using controls ([dfafa9c](https://github.com/kiva/ui/commit/dfafa9ca5ec7cf84f41a9c57f95526958efce9a1))
+* update copy in thank you page for achievements ([70da794](https://github.com/kiva/ui/commit/70da794017b043e166b01c31c04d9d50f4e05807))
+* update sidesheet changes ([c9962bb](https://github.com/kiva/ui/commit/c9962bb6445fe84a25332d185cd61dcc0e59b925))
+* updating language from atb and pill to achievements wording ([b7fd98c](https://github.com/kiva/ui/commit/b7fd98cfd3de82d10baebf1d3d8d7d365022d77a))
+
+### 🐛 Bugfixes
+
+*  mykiva recommended loans fix ([#6073](https://github.com/kiva/ui/issues/6073)) ([c96aab7](https://github.com/kiva/ui/commit/c96aab782638ff8b7369246a5dd91c2be98318b6))
+* add missing semicolon to style ([ab44247](https://github.com/kiva/ui/commit/ab4424741b138f085a2e0b87dc5d7e9a1f5b8d54))
+* add widthDimensions to KvSideSheet ([cb7803a](https://github.com/kiva/ui/commit/cb7803a764985cccb2214c094ebde0453ad5494a))
+* adjust badge journey image sizing for mobile following design feedback ([b131af0](https://github.com/kiva/ui/commit/b131af00601c2b6820d47661a75484040afda05e))
+* **apollo-plugin:** check for contentful preview param in route ([6dc4489](https://github.com/kiva/ui/commit/6dc448904d6992f7e5f198f4ed866562fbca1767))
+* apply final set of computed strings ([97253cc](https://github.com/kiva/ui/commit/97253cc5dbcd7e60da3cae4577e0ef939cd452bb))
+* apply PR revisions ([19fb9b4](https://github.com/kiva/ui/commit/19fb9b4b0f10bb20aac968c2cae8cfdc1fdd5379))
+* BadgeContainer width ([74e06df](https://github.com/kiva/ui/commit/74e06df389d8490f83728001a0a6014cec421883))
+* borrower status fix ([afc56cd](https://github.com/kiva/ui/commit/afc56cd00acf3834e735e7a0e0ec8bbf6abf3ee5))
+* change card size in my kiva carousel ([2db5bf6](https://github.com/kiva/ui/commit/2db5bf65d3615e93b2ff2279fdb52c52f6e08f1b))
+* change fill to color for bluesky icon ([d827790](https://github.com/kiva/ui/commit/d827790b3aea3fef14c444e86030bda7769f546a))
+* conflict ([ad39bad](https://github.com/kiva/ui/commit/ad39badf432adb85d34c6e623b491086bd2583d9))
+* current route ([31da79e](https://github.com/kiva/ui/commit/31da79e9d2c86221f8057328b7c4d46509cf6fb8))
+* ensure foundation mixins use settings variables ([25e4d53](https://github.com/kiva/ui/commit/25e4d5356a51b5d9f8a69c4428894bac17e4f66b))
+* ensure timesync is bundled for the server build ([0870cbb](https://github.com/kiva/ui/commit/0870cbbe17ff11acfcd272ddea89bb1c68b64182))
+* fix badge headline ([a7a36e7](https://github.com/kiva/ui/commit/a7a36e7b21cbb2fda9825ab8c7e7bf9a36aa670e))
+* fix copy in MyKivaPageContent ([f92577a](https://github.com/kiva/ui/commit/f92577aa133a3e6f7def742a4b259ce139461846))
+* fix import of KvBlueskyIcon ([a98dfbf](https://github.com/kiva/ui/commit/a98dfbfc6064839197b14f1604fdff24e5f98acb))
+* fix MyKivPageContent section header ([40ffcd2](https://github.com/kiva/ui/commit/40ffcd2393b8f1d9959d1a47c6693eaf377f76ab))
+* fix openModal vs openSidesheet ([d8013c0](https://github.com/kiva/ui/commit/d8013c08f2b0a00c8ccef2ff91f73d07ed019f90))
+* fix package.json versioning ([cc308e1](https://github.com/kiva/ui/commit/cc308e1ff12fd449c67dc551eedfda4a7611c9d3))
+* fix space-y styling ([f8690ce](https://github.com/kiva/ui/commit/f8690ceeb24dcb6ca84c7bc165227774345c5bbb))
+* fix styling for different badge styles ([36fa8a6](https://github.com/kiva/ui/commit/36fa8a61084a164ac0469f6e1a878461820d39a3))
+* fix tw class names ([fc0c1b0](https://github.com/kiva/ui/commit/fc0c1b0ecd96816ceb59ca9eea32c8f4b4f11726))
+* fixed checkmark icons ([e257fa8](https://github.com/kiva/ui/commit/e257fa8b29718fd3660fe22697f6662111481875))
+* hide journey carousel title if user is in homepage ([bb7e9ad](https://github.com/kiva/ui/commit/bb7e9ad1c0d7989b1a7b54c3084306695d4b2d99))
+* import svg locked container in component to reduce compiled file size ([c77a2a2](https://github.com/kiva/ui/commit/c77a2a2211317845584cc27cb3b5cc2850dfb554))
+* linter and import fix ([31c3c50](https://github.com/kiva/ui/commit/31c3c505fc25a7cfb25232f1f163132feb8593f8))
+* loan progress in journey for in-progress and locked badges ([de492dc](https://github.com/kiva/ui/commit/de492dcae29ddbb23d35ffeae4bb3d5a320f9a8f))
+* lowercase achievements ([2b5c0bd](https://github.com/kiva/ui/commit/2b5c0bdedac4ce44362e0bebe437433dde104149))
+* make scrim click-throughable ([f5d99b0](https://github.com/kiva/ui/commit/f5d99b0f021130c00a2ee6c8cc154173fc6d2b36))
+* merge conflicts ([c6b43b0](https://github.com/kiva/ui/commit/c6b43b0d53827dc624a138cc0d8e2407211918ed))
+* mikiva stats fixed ([d3043fe](https://github.com/kiva/ui/commit/d3043fee33b227fadf81c6bbb5c2deb778c430fa))
+* missing actions on click events in lending stats sidesheet ([3485be2](https://github.com/kiva/ui/commit/3485be2e334e885f5da2c1f1500840f53c8356c5))
+* missing new hp events ([bc592da](https://github.com/kiva/ui/commit/bc592da7ad5009e6aa58cec3ee2a8c8ec487179e))
+* missing open sidesheet trackingin lending stats ([8aaf3ff](https://github.com/kiva/ui/commit/8aaf3ffde2e6226b594506a6f35a884f30cad9fe))
+* missing sector icons in lending sector stats ([83301af](https://github.com/kiva/ui/commit/83301afb7aa5ac9c1d73f51093c0ad3ff37a7caf))
+* more styling fixes ([f44a935](https://github.com/kiva/ui/commit/f44a9357cd9b3c1aa6acc150d889eba9aef1962a))
+* move promise module to src/util/ from build/ ([f167f42](https://github.com/kiva/ui/commit/f167f429728e7847789a4685a8f05800a1a147fc))
+* mykiva data prefetch refactor ([#6043](https://github.com/kiva/ui/issues/6043)) ([ca9c525](https://github.com/kiva/ui/commit/ca9c525553d708cb6a3201344595d355d408adeb))
+* mykiva lending stats prefetch fixed ([#6081](https://github.com/kiva/ui/issues/6081)) ([70ec609](https://github.com/kiva/ui/commit/70ec6096aee7c9558d6f6a4cd6e2295cdd8c3fa5))
+* mykiva recommended row mobile fixes ([9884588](https://github.com/kiva/ui/commit/98845888c9590c6bf5893789e4ee793b98667555))
+* mykiva small tweaks ([1283150](https://github.com/kiva/ui/commit/128315083c6672ad7ac2d733e4e4557218b1a228))
+* non loans cases removed from borowers carousel ([d5985a3](https://github.com/kiva/ui/commit/d5985a38634cf234b953a1abd11cfcd35377ddf9))
+* padding between header and journey carousel in my kiva hp ([2814a89](https://github.com/kiva/ui/commit/2814a896c32e7e56134d59317818c69b38d1b2b5))
+* provide current route ref value from server entry and remove contentful cookie ([146a82f](https://github.com/kiva/ui/commit/146a82f3c1b0c9ed76ce4fe5e2add17bb121183d))
+* read queries moved to created at mykiva page ([#6034](https://github.com/kiva/ui/issues/6034)) ([0225678](https://github.com/kiva/ui/commit/0225678755807f468b161d1819efa8307344ffd7))
+* remove badge icon and reduce card height ([c6b1470](https://github.com/kiva/ui/commit/c6b14709d47441155b696c76e5e638f636632a4e))
+* remove bluesky svg from ui repo ([a39b486](https://github.com/kiva/ui/commit/a39b486d30e7ab0583c3c1b4ed79fbc2a2e3e346))
+* remove code related to removed mykiva borrower circles ([0bf8598](https://github.com/kiva/ui/commit/0bf859858d7d8631718aa15d1dad322d8ae94b4b))
+* remove comment ([c4fd3f2](https://github.com/kiva/ui/commit/c4fd3f22f3c815ebe6a8152f9941369fc0f9f601))
+* remove EarnedBadgesSection ([666281a](https://github.com/kiva/ui/commit/666281afbccf8251273cf2a93e9f5a39b921a9ad))
+* remove extra head closing tag ([34e41f3](https://github.com/kiva/ui/commit/34e41f3c4dd8cac29178c0872a0797a2b1bbc5f4))
+* remove journey carousel tracking ([26a6284](https://github.com/kiva/ui/commit/26a6284b226ffd3811b56096191ad116ac77d3b1))
+* remove perimeterX config ([c93e288](https://github.com/kiva/ui/commit/c93e288dc800b92792fb023f29bd3e10e5d00eda))
+* remove redirect no longer needed now that the combo page supports all channels ([50ec97a](https://github.com/kiva/ui/commit/50ec97a8196aa69651887fbfc5a347f00ec575c9))
+* remove repeated padding ([e53066a](https://github.com/kiva/ui/commit/e53066a1532ab25939d43b784d6a680e4c764956))
+* remove small badge loan icon ([3e07122](https://github.com/kiva/ui/commit/3e071225afa2548abb0e87f7cd5c0edb17084017))
+* remove svg background ([ef3c0c4](https://github.com/kiva/ui/commit/ef3c0c46272b9dc24c2acb686f5c038b81ac7b69))
+* remove unnecessary div ([fcda4aa](https://github.com/kiva/ui/commit/fcda4aa4b2fb33d12a9c5e6c248a4dda5d523372))
+* resolve issue with button wrap in completed journey side sheet ([5ecdfc0](https://github.com/kiva/ui/commit/5ecdfc08984307c1a7405245a7bfca250601b31d))
+* resolve prop warning for user balance ([9fd8dae](https://github.com/kiva/ui/commit/9fd8daed31af890fdcc9acb3b3318dd7a4ea47fd))
+* revert unwanted changes ([580dc5b](https://github.com/kiva/ui/commit/580dc5b8312d4a86848faa6cc3109e7f5b54858a))
+* run npm install @kiva/kv-components ([e93f381](https://github.com/kiva/ui/commit/e93f381701857860f21c92a19bb5242c4a03f9c5))
+* set vite options per config file ([64d2a8d](https://github.com/kiva/ui/commit/64d2a8d70a224825c237e7f9a969ee497dd92123))
+* show sort dropdown for basic needs category ([#6014](https://github.com/kiva/ui/issues/6014)) ([49f3943](https://github.com/kiva/ui/commit/49f39432544e52ea8bf4ffe308c8a01131e66b2e))
+* storybook vite environment config default ([2b5e844](https://github.com/kiva/ui/commit/2b5e84416b378e30f6a696db1b48780a69c5a052))
+* style fixes ([69f9d40](https://github.com/kiva/ui/commit/69f9d409dd579f525d5c778c0ca94a6738cd8a98))
+* subtitle for non badge cards ([95e4513](https://github.com/kiva/ui/commit/95e45134e838930e788fe4713319f1cf6ad001ba))
+* tracking no active borrowers ([76b78e0](https://github.com/kiva/ui/commit/76b78e00b36c32fd2b676519f354c60d2dde369d))
+* update @kiva/kv-components package ([f7240e2](https://github.com/kiva/ui/commit/f7240e26d73af7605a866495c63043212deaa079))
+* update BadgeContainer image styling ([c44f63c](https://github.com/kiva/ui/commit/c44f63c387ea0d619f654dbde5548f248bf54f9d))
+* update borrower update subject line ([15b5da5](https://github.com/kiva/ui/commit/15b5da5826bfe2cced40eae48110780d6bc74165))
+* update components lib to get latest selected state changes for side sheet lend cta ([31fdd5b](https://github.com/kiva/ui/commit/31fdd5b5b7dedb71611aa41d54757de805f98f2b))
+* use local config for fetching graphql schema ([3cb9dd1](https://github.com/kiva/ui/commit/3cb9dd1f4391432cdc0cfb7c20f7d60abeca5971))
+* use local promise module ([15f5b97](https://github.com/kiva/ui/commit/15f5b974edd2679a656f8a5a70f0e97b9d0cb67e))
+
+### 🪚 Refactors
+
+* bring back dev-custom-host config with new inheritance ([086d7e3](https://github.com/kiva/ui/commit/086d7e3fe0e2e78205ff680c6b12f5bcff31f985))
+* remove duplicate values and adjust config inheritance to local <- k8s-local <- dynamic ([f192685](https://github.com/kiva/ui/commit/f1926853875e912f7fde190a7b4b2c832d375aac))
+* remove outline from badge container ([b5397a1](https://github.com/kiva/ui/commit/b5397a137dc64aff0fe711bb6c485b38ad52441d))
+* replace lodash/map usage in renderGlobals ([9a4120a](https://github.com/kiva/ui/commit/9a4120a2d30fd67af2818e0f5d9e9a3422823e47))
+* use sass modules instead of imports ([1e89853](https://github.com/kiva/ui/commit/1e898534606967fe7a69b3fccfee5762699fefe1))
+
+### 📚 Documentation Changes
+
+* update nvm usage instructions ([6b38bcb](https://github.com/kiva/ui/commit/6b38bcbc207612adeccc545a337f402090bccc1c))
+
+### 🔍 Tests
+
+* spacing changes in sidesheet journey ([2f474a0](https://github.com/kiva/ui/commit/2f474a03251daffffdcc3ec1383f72b38669d3b0))
+* use js stylelint config and allow tailwind at rules ([01a9f7c](https://github.com/kiva/ui/commit/01a9f7ca0e773966e65c8009509536b0dd0eb85d))
+
+### 💅 Code Style Changes
+
+* add SideSheet to BadgeJourneys ([1f4fd09](https://github.com/kiva/ui/commit/1f4fd09eb01bfb9ce4075757978eea64faf95818))
+
+### 🧹 Chores
+
+* add extra ! to string ([0f59f46](https://github.com/kiva/ui/commit/0f59f46f207c0b109d67f377ceb46ecfff34bcd7))
+* add image mask to all solid svgs ([800110a](https://github.com/kiva/ui/commit/800110ae01483a018cd662f792fb7526d0a77304))
+* add image mask to solid circle svg ([7981575](https://github.com/kiva/ui/commit/798157581b89406cbd1dd8af6ce1926ee18a3859))
+* add scrim to BadgeJourney SideSheet ([ce26834](https://github.com/kiva/ui/commit/ce2683408ef1a8d69d9c88daa670438bf79e70ce))
+* CSS code change for linting ([293526e](https://github.com/kiva/ui/commit/293526ef467b2ec0dc8a7b241f1a3b9b9cbd1f97))
+* **deps:** bump cross-spawn from 7.0.3 to 7.0.6 ([41c31ff](https://github.com/kiva/ui/commit/41c31ff3a75dede837b0a060ce10f0a1a6049c8a))
+* **deps:** update `vue`, `vue-router`, and `@vue/compiler-sfc` to latest ([27aa82f](https://github.com/kiva/ui/commit/27aa82fde6320e8d099d4e62872a8c38b8b34057))
+* **deps:** update kv-components and kv-shop to latest ([45c8866](https://github.com/kiva/ui/commit/45c886633e0a9d19020e01431180b1924c9fc1d2))
+* **deps:** update vite, sass, storybook, stylelint, and related dependencies ([093937a](https://github.com/kiva/ui/commit/093937aaeee9c4447a8fbc662685471075a4a57c))
+* fix css code style ([bcd5981](https://github.com/kiva/ui/commit/bcd5981ec475971000b713c978541db4426c558d))
+* fix css code styling ([31b8800](https://github.com/kiva/ui/commit/31b88004de3a6bd0be681d20f915e7842c78e98f))
+* fix css/tailwind ([44d7784](https://github.com/kiva/ui/commit/44d77843e2fe5ea5f67c23f1967017f782aae6d3))
+* one final lint fix ([586d1d8](https://github.com/kiva/ui/commit/586d1d833e7d96283ad8cf61e94336d62ae5d24f))
+* **release:** 3.20.0-rc.1 [skip ci] ([5718796](https://github.com/kiva/ui/commit/57187962dd8a8ca08bd5c7d475db52195377d331)), closes [#6015](https://github.com/kiva/ui/issues/6015) [#6090](https://github.com/kiva/ui/issues/6090) [#6032](https://github.com/kiva/ui/issues/6032) [#6017](https://github.com/kiva/ui/issues/6017) [#6086](https://github.com/kiva/ui/issues/6086) [#6030](https://github.com/kiva/ui/issues/6030) [#6031](https://github.com/kiva/ui/issues/6031) [#6052](https://github.com/kiva/ui/issues/6052) [#6072](https://github.com/kiva/ui/issues/6072) [#6073](https://github.com/kiva/ui/issues/6073) [#6043](https://github.com/kiva/ui/issues/6043) [#6081](https://github.com/kiva/ui/issues/6081) [#6034](https://github.com/kiva/ui/issues/6034) [#6014](https://github.com/kiva/ui/issues/6014)
+* **release:** 3.20.0-rc.2 [skip ci] ([86e0f4f](https://github.com/kiva/ui/commit/86e0f4fc27a07a15c45015e1d4e374d41ed5f214)), closes [#6094](https://github.com/kiva/ui/issues/6094)
+* remove nonexistent imports ([0d5fedc](https://github.com/kiva/ui/commit/0d5fedc23b75e2f8a7688839366dbd3913283417))
+* remove unused config files ([3f23c07](https://github.com/kiva/ui/commit/3f23c070ea96dd6dccf0d21925c92508b3d4391b))
+* revert breaking style changes ([66dc243](https://github.com/kiva/ui/commit/66dc24341a3d6bee1a8ea7cb76496305940a676e))
+* style fixes ([ae91833](https://github.com/kiva/ui/commit/ae918338679af1012ff37e38e2d8ba31117d044c))
+* update code to work with latest KvSidesheet ([c9a1f34](https://github.com/kiva/ui/commit/c9a1f344504c3b770172e4a8aeeb885cb59109a8))
+* update kv-components ([42b520f](https://github.com/kiva/ui/commit/42b520f2f338d755bf9feb3030bf485b5840fc64))
+* update package.json ([23cbe79](https://github.com/kiva/ui/commit/23cbe79205ad00f7b35ce0c90c9e671f77178f62))
+
+## [3.20.0-rc.2](https://github.com/kiva/ui/compare/v3.20.0-rc.1...v3.20.0-rc.2) (2025-06-20)
+
+### 🎉 New Features
+
+* mykiva borrowers carousel updated ([#6094](https://github.com/kiva/ui/issues/6094)) ([7a59ca6](https://github.com/kiva/ui/commit/7a59ca61b56f0053e3272ce1a138d23981ba6006))
+
+### 🐛 Bugfixes
+
+* import svg locked container in component to reduce compiled file size ([c77a2a2](https://github.com/kiva/ui/commit/c77a2a2211317845584cc27cb3b5cc2850dfb554))
+
 ## [3.20.0-rc.1](https://github.com/kiva/ui/compare/v3.19.0...v3.20.0-rc.1) (2025-06-18)
 
 ### 🎉 New Features

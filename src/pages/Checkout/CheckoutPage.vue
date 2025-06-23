@@ -40,7 +40,6 @@
 							:teams="teams"
 							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-huge-amount="enableHugeLendAmount"
 							:is-logged-in="isLoggedIn"
 							:show-incentive-upsell="showIncentiveUpsell"
 							:incentive-goal="depositIncentiveAmountToLend"
@@ -271,7 +270,6 @@
 				>
 					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeLendAmount"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
@@ -329,7 +327,6 @@ import { isLoanFundraising } from '#src/util/loanUtils';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
@@ -398,7 +395,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, hugeLendAmount],
+	mixins: [checkoutUtils, fiveDollarsTest],
 	head: {
 		title: 'Checkout'
 	},
@@ -630,9 +627,6 @@ export default {
 		this.matchedText = matchedLoansWithCredit[0]?.loan?.matchingText ?? '';
 
 		this.initializeFiveDollarsNotes();
-
-		// Enable huge lend amount
-		this.initializeHugeLendAmount();
 
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
