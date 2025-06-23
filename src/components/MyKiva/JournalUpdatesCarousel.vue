@@ -160,7 +160,9 @@ const openLightbox = async updateId => {
 	const update = props.updates.find(u => u.id === updateId);
 	updateSubject.value = update.subject;
 	updateBody.value = update.body;
-	await getCheckoutReceipt();
+	if (update?.isTransaction) {
+		await getCheckoutReceipt();
+	}
 	isLightboxVisible.value = true;
 };
 
