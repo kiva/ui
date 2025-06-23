@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!oading">
+	<div class="tw-bg-eco-green-1" style="margin-left: -16px; margin-right: -16px;">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags />
@@ -17,16 +17,18 @@
 			<SideSheetLoanStory />
 		</div>
 		<div class="tw-bg-white tw-px-4">
-			<CommentsAndWhySpecial :loan-id="loanId" />
+			<CommentsAndWhySpecial :loan-id="loanId" class="tw-py-2" />
 		</div>
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />
 			<BorrowerCountry :loan-id="loanId" />
 			<LendersAndTeams :loan-id="loanId" />
 			<LendersAndTeams :loan-id="loanId" display-type="teams" />
-			<DetailsTabs :name="loan?.name" />
 		</div>
-		<div class="cta-container">
+		<div class="tw-bg-white tw-px-4">
+			<DetailsTabs :loan-id="loanId" :name="loan?.name" />
+		</div>
+		<div v-if="!loading" class="cta-container">
 			<KvLendCta
 				:loan="loan"
 				:is-loading="false"
@@ -121,6 +123,7 @@ export default {
 		const timeLeft = computed(() => borrowerProfile.timeLeft.value ?? '');
 		const unreservedAmount = computed(() => borrowerProfile.unreservedAmount.value ?? undefined);
 		const userBalance = computed(() => borrowerProfile?.userBalance?.value);
+		const loading = computed(() => borrowerProfile?.loading?.value);
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
 			return borrowerProfile.fundraisingPercent.value ?? undefined;
@@ -146,6 +149,7 @@ export default {
 			addToBasket,
 			fundraisingPercent,
 			inPfp,
+			loading,
 			loan,
 			numLenders,
 			pfpMinLenders,
@@ -160,9 +164,6 @@ export default {
 <style lang="postcss" scoped>
 .cta-container {
 	box-shadow: 2px 0 12px 0 #0000004D;
-	margin-left: -15px;
-	margin-right: -15px;
-
 	@apply tw-sticky tw-bottom-0 tw-bg-white tw-py-1.5 lg:tw-py-2 tw-px-2.5 lg:tw-px-3;
 }
 

@@ -119,11 +119,10 @@
 		:show-headline-border="true"
 		:visible="showSideSheet"
 		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+		@go-to-link="goToLink"
 		@side-sheet-closed="handleCloseSideSheet"
-		class="tw-overflow-y-none"
 	>
 		<BorrowerSideSheetContent
-			class="tw-overflow-y-none"
 			:loan-id="selectedLoan?.id"
 			:is-adding="isAdding"
 			:basket-items="basketItems"
@@ -224,10 +223,12 @@ export default {
 			firstRowLoans: [],
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			HandOrangeIcon,
+			isAdding: false,
 			isMounted: false,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
 			selectedLoan: undefined,
+			selectedOption: '25',
 			showFiveDollarsBanner: false,
 			showSideSheet: false,
 			spotlightIndex: 0,
@@ -235,8 +236,6 @@ export default {
 			spotlightViewportObserver: null,
 			userBalance: undefined,
 			userInfo: {},
-			isAdding: false,
-			selectedOption: '25'
 		};
 	},
 	apollo: {
@@ -606,6 +605,10 @@ export default {
 				this.basketItems = [];
 			}
 		},
+		goToLink() {
+			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
+			window.open(`lend/${this.selectedLoan?.id}`);
+		}
 	},
 	created() {
 		const loanRecommendationsData = trackExperimentVersion(

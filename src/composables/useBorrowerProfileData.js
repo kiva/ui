@@ -3,7 +3,6 @@ import logFormatter from '#src/util/logFormatter';
 import { watchLoanData } from '#src/util/loanUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
-import loanLocalResolvers from '#src/api/localResolvers/loan';
 
 /**
  * Vue composable for loading borrower profile data
@@ -19,10 +18,6 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	const bpData = ref();
 	const achievementsData = ref();
 	const currentLoanId = ref(null);
-
-	// Get the local resolvers
-	const localResolvers = loanLocalResolvers();
-	const loanResolvers = localResolvers.resolvers.LoanPartner;
 
 	// Loading state and computed properties
 	const loading = computed(() => !bpData.value);
@@ -67,21 +62,9 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	));
 	const socialLinks = computed(() => (loan.value && 'socialLinks' in loan.value ? loan.value.socialLinks : null));
 
-	// Use local resolvers for computed @client fields
-	const unreservedAmount = computed(() => {
-		const result = loanResolvers.unreservedAmount(loan.value);
-		return parseFloat(result);
-	});
-
-	const fundraisingPercent = computed(() => {
-		if (!loan.value) return 0;
-		return loanResolvers.fundraisingPercent(loan.value);
-	});
-
-	const timeLeft = computed(() => {
-		if (!loan.value) return '';
-		return loanResolvers.fundraisingTimeLeft(loan.value);
-	});
+	const unreservedAmount = computed(() => loan.value?.unreservedAmount);
+	const fundraisingPercent = computed(() => loan.value?.fundraisingPercent ?? 0);
+	const timeLeft = computed(() => loan.value?.fundraisingTimeLeft ?? '');
 
 	const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
 	const lenders = computed(() => loan.value?.lenders ?? null);
