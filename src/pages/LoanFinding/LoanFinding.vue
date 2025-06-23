@@ -20,7 +20,6 @@
 				:subtitle="firstRowSubtitle"
 				:loans="firstRowLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				:per-step="perStepRecommendedRow"
 				@add-to-basket="trackCategory($event, 'recommended')"
@@ -36,7 +35,6 @@
 				:subtitle="almostFundedRowSubtitle"
 				:loans="almostFundedLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'almost-funded')"
 				class="tw-pt-3 tw-mb-2"
@@ -51,7 +49,6 @@
 				:subtitle="fiveDollarsRowSubtitle"
 				:loans="fiveDollarsRowLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				:five-dollars-selected="true"
 				:title-icon="HandOrangeIcon"
@@ -66,7 +63,6 @@
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:enable-qf-mobile="enableQFMobileVersion"
 					:enable-almost-funded-row="enableAlmostFundedRow"
-					:enable-huge-amount="enableHugeLendAmount"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'quick-filters')"
 					@data-loaded="trackQuickFiltersDisplayedLoans"
@@ -83,7 +79,6 @@
 					:loans="secondCategoryLoans"
 					class="tw-py-3"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:enable-huge-amount="enableHugeLendAmount"
 					:user-balance="userBalance"
 					@add-to-basket="trackCategory($event, 'matched-lending')"
 					@show-cart-modal="handleCartModal"
@@ -95,7 +90,6 @@
 				:spotlight-data="activeSpotlightData"
 				:loans="spotlightLoans"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
-				:enable-huge-amount="enableHugeLendAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 				@show-cart-modal="handleCartModal"
@@ -120,7 +114,6 @@ import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.gr
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import hugeLendAmount from '#src/plugins/huge-lend-amount-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
@@ -155,7 +148,7 @@ export default {
 		FiveDollarsBanner,
 		KvAtbModalContainer,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, hugeLendAmount, basketModalMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -492,9 +485,6 @@ export default {
 		}
 
 		this.initializeFiveDollarsNotes();
-
-		// Enable huge lend amount
-		this.initializeHugeLendAmount();
 
 		this.userBalance = this.userInfo?.balance;
 

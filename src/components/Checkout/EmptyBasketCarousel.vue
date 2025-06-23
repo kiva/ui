@@ -31,7 +31,6 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-huge-amount="enableHugeAmount"
 							@updating-totals="$emit('updating-totals', $event)"
 							@add-to-basket="addToBasket(index)"
 							class="tw-h-full"
@@ -61,10 +60,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	data() {

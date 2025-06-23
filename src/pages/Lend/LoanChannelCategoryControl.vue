@@ -78,7 +78,6 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
@@ -96,7 +95,6 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						@show-cart-modal="showCartModal"
 					/>
 				</div>
@@ -109,7 +107,6 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
@@ -127,7 +124,6 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-huge-amount="enableHugeAmount"
 							:user-balance="userBalance"
 							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
@@ -145,7 +141,6 @@
 						@update="getHelpMeChooseLoans($event)"
 						:is-loading="isLoadingHC"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						@show-cart-modal="showCartModal"
 					/>
 				</div>
@@ -285,10 +280,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	components: {

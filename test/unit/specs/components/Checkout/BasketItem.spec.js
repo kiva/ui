@@ -110,7 +110,6 @@ describe('BasketItem loan', () => {
 					disableRedirects: false,
 					loan: loanReservation,
 					teams: basketLoanTeams,
-					enableHugeAmount: true,
 					isLoggedIn: true,
 				},
 			},
