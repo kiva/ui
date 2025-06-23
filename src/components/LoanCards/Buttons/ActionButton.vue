@@ -9,7 +9,6 @@
 		:show-now="showNow"
 		:amount-left="amountLeft"
 		:enable-five-dollars-notes="enableFiveDollarsNotes"
-		:enable-huge-amount="enableHugeAmount"
 		:is-visitor="isVisitor"
 	/>
 </template>
@@ -89,10 +88,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 		isVisitor: {
 			type: Boolean,

@@ -72,10 +72,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
-		},
 		isVisitor: {
 			type: Boolean,
 			default: true
@@ -101,8 +97,7 @@ export default {
 			// IF we wanted to show this interface on loans with less than 25 remaining they would see the selector
 			const minAmount = parseFloat(this.amountLeft < 25 ? this.loan.minNoteSize : 25); // 25_hard_coded
 			// cap at 20 prices
-			const showHugeAmount = this.enableHugeAmount && !this.isVisitor;
-			const priceArray = getDropdownPriceArray(this.amountLeft, minAmount, this.enableFiveDollarsNotes, false, showHugeAmount); // eslint-disable-line
+			const priceArray = getDropdownPriceArray(this.amountLeft, minAmount, this.enableFiveDollarsNotes, false, !this.isVisitor); // eslint-disable-line
 			const amountLeftFixed = Number(this.amountLeft).toFixed();
 			if (this.isCompleteLoanActive && !priceArray.includes(amountLeftFixed)) {
 				priceArray.push(amountLeftFixed);

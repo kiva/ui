@@ -69,7 +69,6 @@
 				id="recommended-loans"
 				:title="recommendeLoansTitle"
 				:loans="recommendedLoans"
-				:enable-huge-amount="enableHugeAmount"
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
@@ -187,10 +186,6 @@ const props = defineProps({
 	heroTieredAchievements: {
 		type: Array,
 		default: () => ([]),
-	},
-	enableHugeAmount: {
-		type: Boolean,
-		default: false,
 	},
 	lendingStats: {
 		type: Object,

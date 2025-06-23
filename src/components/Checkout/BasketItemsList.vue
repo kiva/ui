@@ -8,7 +8,6 @@
 					:loan="loan"
 					:teams="teams"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:enable-huge-amount="enableHugeAmount"
 					:is-logged-in="isLoggedIn"
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
@@ -104,10 +103,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 		isLoggedIn: {
 			type: Boolean,

@@ -79,7 +79,6 @@
 						:amount-left="amountLeft"
 						:show-now="!enableFiveDollarsNotes"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 						@click="trackInteraction({
@@ -135,7 +134,6 @@
 						:amount-left="amountLeft"
 						:show-now="!enableFiveDollarsNotes"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						:is-visitor="isVisitor"
 						class="tw-mt-0 tw-w-full"
 
@@ -245,10 +243,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false
-		},
-		enableHugeAmount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	computed: {
