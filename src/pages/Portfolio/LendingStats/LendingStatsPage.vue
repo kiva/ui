@@ -67,7 +67,9 @@
 					/>
 					<hr class="tw-border-tertiary tw-mt-4">
 					<badges-section
+						:badges-data="badgesData"
 						:is-loading="badgesLoading"
+						:loans="loans"
 						:completed-achievements="completedAchievements"
 					/>
 					<hr class="tw-border-tertiary tw-mb-4">
@@ -125,6 +127,7 @@ export default {
 			userId: null,
 			allAchievements: [],
 			badgesData: [],
+			loans: [],
 		};
 	},
 	apollo: {
@@ -164,7 +167,11 @@ export default {
 				limit: 200,
 			}
 		}).then(({ data }) => {
-			this.allAchievements = data ?? {};
+			const userAchievementProgress = { ...data?.userAchievementProgress ?? {} };
+			const contentful = { ...data?.contentful ?? {} };
+
+			this.allAchievements = { userAchievementProgress, contentful };
+			this.loans = data?.my?.loans?.values ?? [];
 		});
 	},
 	computed: {
@@ -199,7 +206,13 @@ export default {
 			return getCompletedBadges(this.badgesData);
 		},
 		iconForSector(sector) {
-			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
+			const sectorName = sector.name
+				.replace(/&/g, '')
+				.replace(/\s+/g, '-')
+				.trim()
+				.toLowerCase();
+
+			return `sector-${sectorName}`;
 		}
 	}
 };

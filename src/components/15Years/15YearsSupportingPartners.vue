@@ -82,7 +82,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/settings' as *;
 
 .supporting-partners {
 	padding-top: 7rem;

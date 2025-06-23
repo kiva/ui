@@ -124,7 +124,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .mobile-nav {
 	background-color: $kiva-bg-lightgray;

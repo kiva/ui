@@ -106,24 +106,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .section-with-background {
 	padding: 0;
 	position: relative;
 
 	&__content-wrapper {
-		padding: 2rem 0;
-
-		@include breakpoint(large) {
-			padding: 4rem 0;
-		}
-
 		width: 100%;
 		overflow: hidden;
 		z-index: 2;
 		margin: 0;
 		top: 0;
+		padding: 2rem 0;
+
+		@include breakpoint(large) {
+			padding: 4rem 0;
+		}
 	}
 
 	&__background-wrapper {

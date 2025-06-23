@@ -1,45 +1,59 @@
 <template>
-	<div class="tw-w-full tw-inline-flex tw-flex-wrap tw-justify-center tw-gap-2.5">
-		<div
-			v-for="(badge, index) in visibleBadges"
-			:key="index"
-			class="badge-container tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded tw-cursor-pointer"
-			:class="{
-				'tw-bg-white': badge.hasStarted,
-				'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
-			}"
-			@click="badgeClicked(badge)"
-		>
-			<span class="tw-text-base !tw-font-medium tw-text-center tw-mb-1">
-				{{ badge.challengeName }}
-			</span>
-			<BadgeContainer
-				:status="getBadgeStatus(badge)"
-				:shape="getBadgeShape(badge.id)"
-				class="tw-self-start tw-mx-auto"
-				style="height: 133px;"
+	<KvCarousel
+		ref="carousel"
+		class="badges-carousel tw-w-full tw-overflow-visible"
+		:multiple-slides-visible="true"
+		:slide-max-width="singleSlideWidth"
+		slides-to-scroll="visible"
+		:embla-options="{ loop: false }"
+		@change="handleChange"
+	>
+		<template v-for="(badge, index) in visibleBadges" #[`slide${index+1}`] :key="badge.id || index">
+			<KvLoadingPlaceholder
+				v-if="isLoading"
+				class="!tw-rounded"
+				:style="{ 'width': singleSlideWidth, 'min-height': CARD_MIN_HEIGHT }"
+			/>
+			<div
+				v-else
+				class="tw-flex tw-flex-col tw-justify-between tw-p-1.5 tw-rounded tw-cursor-pointer"
+				:class="{
+					'tw-bg-white': badge.hasStarted,
+					'tw-border-4 tw-border-tertiary tw-border-dashed': !badge.hasStarted
+				}"
+				:style="{ 'min-height': CARD_MIN_HEIGHT }"
+				@click="badgeClicked(badge)"
 			>
-				<img
-					:src="getActiveTierData(badge).imageUrl"
-					:alt="badge.challengeName"
-					class="tw-h-full tw-mx-auto"
+				<BadgeContainer
+					:status="getBadgeStatus(badge)"
+					:shape="getBadgeShape(badge.id)"
+					:is-carousel="true"
+					:has-started="badge.hasStarted"
+					class="tw-self-start tw-mx-auto"
+					style="height: 133px;"
 				>
-			</BadgeContainer>
-			<div class="tw-flex tw-flex-col tw-gap-0.5 tw-font-medium tw-grow">
-				<span
-					v-if="badge.hasStarted"
-					class="tw-mx-auto"
-				>
-					{{ levelCaption(badge) }}
-				</span>
-				<button
-					class="tw-text-action hover:tw-underline tw-mt-auto"
-				>
-					{{ ctaCaption(badge) }}
-				</button>
+					<img
+						:src="getActiveTierData(badge).imageUrl"
+						:alt="badge.challengeName"
+						class="tw-h-full tw-mx-auto"
+					>
+				</BadgeContainer>
+				<div class="tw-flex tw-flex-col tw-gap-0.5 tw-font-medium tw-grow">
+					<span
+						v-if="badge.hasStarted"
+						class="tw-mx-auto"
+					>
+						{{ levelCaption(badge) }}
+					</span>
+					<button
+						class="tw-text-action hover:tw-underline tw-mt-auto"
+					>
+						{{ ctaCaption(badge) }}
+					</button>
+				</div>
 			</div>
-		</div>
-	</div>
+		</template>
+	</KvCarousel>
 </template>
 
 <script setup>
@@ -47,13 +61,21 @@ import {
 	computed,
 	watch,
 	inject,
-	toRefs
+	toRefs,
+	ref,
 } from 'vue';
+import useIsMobile from '#src/composables/useIsMobile';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
-import { getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS } from '#src/composables/useBadgeModal';
+import {
+	getBadgeShape, BADGE_COMPLETED, BADGE_IN_PROGRESS, MOBILE_BREAKPOINT
+} from '#src/composables/useBadgeModal';
+import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import BadgeContainer from './BadgeContainer';
+
+const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const CARD_MIN_HEIGHT = '228px';
 
 const emit = defineEmits(['badge-clicked']);
 
@@ -74,10 +96,21 @@ const { selectedJourney } = toRefs(props);
 
 const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
 
+const currentIndex = ref(0);
+const isLoading = ref(true);
+
 const visibleBadges = computed(() => {
-	return props.badgeData
+	let showedSlides = Array(5);
+
+	const badgesSlides = props.badgeData
 		.filter(b => defaultBadges.includes(b.id))
 		.sort(indexIn(defaultBadges, 'id'));
+
+	if (badgesSlides.length > 0) {
+		showedSlides = badgesSlides;
+	}
+
+	return showedSlides;
 });
 
 const getBadgeStatus = badge => {
@@ -92,14 +125,14 @@ const levelCaption = badge => {
 	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
 		return 'Complete!';
 	}
-	return `Level ${getActiveTierData(badge).level}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length}`;
+	return `${getActiveTierData(badge).level - 1}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length} achievements`; // eslint-disable-line max-len
 };
 
 const ctaCaption = badge => {
 	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
-		return 'See this journey';
+		return 'See details';
 	}
-	return badge.hasStarted ? 'Continue' : 'Start this journey';
+	return badge.hasStarted ? 'Continue' : 'Get started';
 };
 
 const badgeClicked = badge => {
@@ -113,6 +146,25 @@ const badgeClicked = badge => {
 	emit('badge-clicked', badge);
 };
 
+const singleSlideWidth = computed(() => {
+	if (isMobile.value) {
+		return '172px';
+	}
+	return '220px';
+});
+
+const handleChange = interaction => {
+	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
+	currentIndex.value = interaction.value;
+
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		'achievements-carousel',
+		`${direction}-step-carousel`,
+	);
+};
+
 watch(selectedJourney, () => {
 	if (selectedJourney.value) {
 		const badge = visibleBadges.value.find(b => b.id === selectedJourney.value);
@@ -121,18 +173,25 @@ watch(selectedJourney, () => {
 		}
 	}
 });
+
+// Watch visibleBadges to update isLoading
+watch(visibleBadges, (newSlides, oldSlides) => {
+	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
+		isLoading.value = false;
+	}
+}, { immediate: true, deep: true });
 </script>
 
 <style lang="postcss" scoped>
-.badge-container {
-    width: 157px;
+.badges-carousel :deep(div:first-child) {
+	@apply tw-gap-2;
+}
 
-	@media (width >= 410px) {
-		width: 175px;
-	}
+.badges-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+}
 
-    @screen md {
-        width: 220px;
-    }
+.badges-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 </style>

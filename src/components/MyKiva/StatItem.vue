@@ -7,13 +7,13 @@
 			>
 				{{ prefix }}
 			</span>
-			<p class="tw-text-h1 md:tw-text-jumbo">
+			<p class="tw-text-h1">
 				{{ parsedValue(value) }}
 			</p>
 		</div>
 		<p
 			v-html="label"
-			class="tw-text-base tw-text-center md:tw-text-left md:tw-ml-1"
+			class="tw-text-base tw-text-center md:tw-text-left md:tw-ml-1 md:tw-mt-1"
 			style="line-height: 22px;"
 		></p>
 	</div>
@@ -24,7 +24,7 @@ import numeral from 'numeral';
 
 defineProps({
 	value: {
-		type: Number,
+		type: [Number, String],
 		required: true,
 	},
 	label: {
@@ -37,5 +37,5 @@ defineProps({
 	},
 });
 
-const parsedValue = value => numeral(value).format('0,0');
+const parsedValue = value => numeral(value).format('0,0', Math.floor);
 </script>

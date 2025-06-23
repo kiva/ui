@@ -251,8 +251,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 .individuals {
 	background: $tomato;
@@ -339,13 +339,13 @@ export default {
 
 /* begin prevnext: TODO dedupe */
 .prevnext {
-	@include h5();
-
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	position: relative;
 	z-index: 2;
+
+	@include h5();
 
 	&__btn-text {
 		border-radius: rem-calc(16);
@@ -359,13 +359,13 @@ export default {
 	}
 
 	&__btn {
-		@include h5();
-
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		fill: $offwhite;
 		color: $offwhite;
+
+		@include h5();
 
 		&--prev {
 			.prevnext__btn-icon {

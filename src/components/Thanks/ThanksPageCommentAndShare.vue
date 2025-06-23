@@ -171,7 +171,7 @@
 								blueskyShareUrl({utmCampaign, utmContent}),
 								'Thanks for sharing!')"
 						>
-							<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+							<kv-material-icon name="bluesky" :icon="KvBlueskyIcon" class="social__icon" />
 							<span>Share to your followers</span>
 						</button>
 						<button
@@ -222,7 +222,7 @@ import CommentAsk from '#src/components/Thanks/CommentAsk';
 import KvIcon from '#src/components/Kv/KvIcon';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import {
-	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton
+	KvMaterialIcon, KvProgressBar, KvGrid, KvPageContainer, KvButton, KvBlueskyIcon
 } from '@kiva/kv-components';
 import kivaShare from '#src/assets/images/thanks-page/kiva-share.png';
 
@@ -297,6 +297,7 @@ export default {
 			},
 			utmCampaign: 'social_share_checkout',
 			kivaShare,
+			KvBlueskyIcon
 		};
 	},
 	computed: {
@@ -389,8 +390,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
@@ -411,7 +411,7 @@ $color-copy-link: #2B7C5F;
 			border: 1px solid $color-bluesky;
 
 			.social__icon {
-				fill: $color-bluesky;
+				color: $color-bluesky;
 			}
 		}
 

@@ -675,6 +675,7 @@ export default [
 		component: () => import('#src/pages/UiSiteMap/UiSiteMapPage'),
 		meta: {
 			excludeFromStaticSitemap: true,
+			useCDNCaching: true,
 		}
 	},
 	{

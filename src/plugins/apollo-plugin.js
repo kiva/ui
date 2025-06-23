@@ -22,7 +22,7 @@ export default app => {
 
 				if (query) {
 					const basketId = this.cookieStore.get('kvbskt');
-					const isContentfulPreview = this.cookieStore.get('contentfulPreview');
+					const isContentfulPreview = this.$route?.query?.preview === 'true';
 
 					// if the query was prefetched, read the data from the cache
 					if (preFetch) {

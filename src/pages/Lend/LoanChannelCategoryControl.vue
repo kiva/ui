@@ -467,7 +467,7 @@ export default {
 					}
 				};
 				const { route } = args;
-				const { query, params, path } = (route?.value ?? route ?? {});
+				const { query, params, path } = (route ?? {});
 
 				// Filter routes on route.param.category to get current path
 				const targetedLoanChannelURL = params.category;
@@ -860,7 +860,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .loan-count {
 	text-align: center;

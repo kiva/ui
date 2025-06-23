@@ -1,11 +1,7 @@
 <template>
 	<div>
-		<KvLoadingPlaceholder
-			v-if="isLoading"
-			class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6"
-		/>
 		<h2
-			v-else
+			v-if="!userInHomepage"
 			class="tw-mb-3"
 		>
 			Take the <u>next step</u> on your impact journey
@@ -26,15 +22,8 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<!-- Loading placeholder for the carousel -->
-				<KvLoadingPlaceholder
-					v-if="isLoading"
-					class="!tw-rounded journey-card"
-				/>
-
 				<!-- Journey card slide -->
 				<div
-					v-else
 					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
 					:class="{ '!tw-bg-left-top': isNonBadgeSlide(slide) }"
 					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
@@ -57,32 +46,25 @@
 						]"
 					>
 						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-							<div class="tw-flex tw-items-center tw-gap-1 tw-w-full">
-								<img
-									v-if="!isNonBadgeSlide(slide)"
-									class="tw-h-6"
-									:src="badgeUrl(slide)"
+							<div class="tw-text-primary-inverse">
+								<h2
+									class="tw-text-h3"
+									:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
 								>
-								<div class="tw-text-primary-inverse">
-									<h2
-										class="tw-text-h3"
-										:class="{ 'tw-text-action': isNonBadgeSlide(slide) }"
-									>
-										{{ title(slide) }}
-									</h2>
-									<p
-										v-if="subTitle(slide)"
-										class="tw-text-small tw-font-medium"
-										:class="{
-											'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
-												isNonBadgeSlide(slide)
-										}"
-									>
-										{{ subTitle(slide) }}
-									</p>
-								</div>
+									{{ title(slide) }}
+								</h2>
+								<p
+									v-if="subTitle(slide)"
+									class="tw-text-small tw-font-medium"
+									:class="{
+										'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
+											isNonBadgeSlide(slide)
+									}"
+								>
+									{{ subTitle(slide) }}
+								</p>
 							</div>
-							<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-1.5 md:tw-gap-2.5">
+							<div class="tw-flex tw-flex-col tw-gap-1.5">
 								<button
 									v-if="showSecondaryCta(slide)"
 									@click="goToSecondaryCtaUrl(slide)"
@@ -117,45 +99,64 @@
 import {
 	computed,
 	ref,
-	watch,
-	inject
+	inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-import { KvCarousel, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import useBadgeData from '#src/composables/useBadgeData';
+import { KvCarousel, KvButton } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
-const PLACEHOLDER_SLIDES_LENGTH = 2;
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
+
+const {
+	getContentfulLevelData,
+	combineBadgeData,
+} = useBadgeData(apollo);
 
 const emit = defineEmits(['update-journey']);
 
 const props = defineProps({
-	slides: {
-		type: Array,
-		default: () => ([]),
-	},
-	badgesData: {
-		type: Array,
-		default: () => ([])
-	},
 	lender: {
 		type: Object,
 		default: () => ({})
 	},
+	userInHomepage: {
+		type: Boolean,
+		default: false
+	},
+	slides: {
+		type: Array,
+		default: () => ([]),
+	},
+	heroContentfulData: {
+		type: Array,
+		default: () => ([]),
+	},
+	heroTieredAchievements: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-const isLoading = ref(true);
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
+
+const badgesData = computed(() => {
+	const badgeContentfulData = (props.heroContentfulData ?? [])
+		.map(entry => getContentfulLevelData(entry));
+
+	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
+});
 
 const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
@@ -175,11 +176,10 @@ const isNonBadgeSlide = slide => {
 };
 
 const orderedSlides = computed(() => {
-	let showedSlides = Array(PLACEHOLDER_SLIDES_LENGTH).fill({ milestoneDiff: 0 });
 	const achievementSlides = [];
 
 	defaultBadges.forEach(badgeKey => {
-		const achievementContent = props.badgesData.find(achievement => badgeKey === achievement.id);
+		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
 		if (achievementContent) {
 			// eslint-disable-next-line no-unsafe-optional-chaining
 			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
@@ -208,11 +208,7 @@ const orderedSlides = computed(() => {
 		}
 	});
 
-	if (achievementSlides.length > 0) {
-		showedSlides = achievementSlides;
-	}
-
-	let sortedSlides = showedSlides.sort((a, b) => {
+	let sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
@@ -259,20 +255,27 @@ const backgroundImg = slide => {
 };
 
 const title = slide => {
+	if (slide.totalProgressToAchievement) {
+		return `Your progress: ${slide.totalProgressToAchievement}/${slide.target} loans`;
+	}
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.title || '';
+
+	return richTextUiSettingsData?.title || '';
 };
 
 const subTitle = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	if (isNonBadgeSlide(slide)) {
+		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+
 		return richTextUiSettingsData.contentText || '';
 	}
 
-	return `Progress: ${slide.totalProgressToAchievement}/${slide.target} loans complete`;
-};
+	if (slide.totalProgressToAchievement) {
+		return 'Keep lending to reach your next achievement';
+	}
 
-const badgeUrl = slide => slide?.badgeImgUrl || '';
+	return 'Get started to reach your first achievement';
+};
 
 const primaryCtaText = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
@@ -336,7 +339,7 @@ const singleSlideWidth = computed(() => {
 	if (isMobile.value) {
 		return '90%';
 	}
-	return '520px';
+	return '336px';
 });
 
 const handleChange = interaction => {
@@ -349,37 +352,24 @@ const handleChange = interaction => {
 		`${direction}-step-carousel`,
 	);
 };
-
-// Watch orderedSlides to update isLoading
-watch(orderedSlides, (newSlides, oldSlides) => {
-	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
-		isLoading.value = false;
-	}
-}, { immediate: true, deep: true });
 </script>
 
 <style lang="postcss" scoped>
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-	height: 402px;
+	height: 382px;
 
 	@screen md {
-		height: 390px;
+		height: 340px;
 	}
 }
 
-.journey-card-carousel:deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-gap-x-4 tw-py-1.5 tw-w-full tw-overflow-visible;
+.journey-card-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
-.journey-card-carousel:deep(.kv-carousel__controls > button) {
-	@apply tw-w-5 tw-h-5 tw-border-0;
-
-	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-}
-
-.journey-card-carousel:deep(.kv-carousel__controls > div) {
-	@apply tw-hidden;
+.journey-card-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 
 .journey-card-carousel:deep(div:first-child) {
@@ -387,6 +377,6 @@ watch(orderedSlides, (newSlides, oldSlides) => {
 }
 
 .slide-gradient {
-	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgba(0 0 0 / 0%) 100%);
+	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
 }
 </style>

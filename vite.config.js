@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import { coverageConfigDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue';
-import GitRevisionPlugin from 'git-revision-webpack-plugin';
+import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
 import svgLoader from 'vite-svg-loader';
 import svgStore from 'vite-plugin-svg-store';
@@ -64,6 +64,9 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			},
 			preprocessorOptions: {
 				scss: {
+					loadPaths: [
+						resolve('node_modules'),
+					],
 					// Suppress deprecation warnings from node modules
 					quietDeps: true,
 				},
@@ -110,21 +113,13 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 				// alias kv-component directory
 				'#kv-components': resolve('node_modules/@kiva/kv-components/dist/vue'),
 				// alias promise module to handle timesync calling require('promise')
-				promise: resolve('build/promise.js'),
+				promise: resolve('src/util/promise/promise.js'),
 				// this alias is required for the rendering of src/components/Contentful/DynamicRichText.vue
 				// it should only be used on the client build in production
 				// eslint-disable-next-line max-len
 				...(isSsrBuild === false && mode === 'production' && { vue: path.resolve(__dirname, 'node_modules', 'vue', 'dist', 'vue.esm-bundler.js') })
 			},
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.vue'],
-		},
-		server: {
-			hmr: {
-				// Use a different client port to allow Caddy to reverse proxy with SSL cert
-				clientPort: 24679,
-				port: 24678,
-			},
-			...(!isProd && { allowedHosts: ['kiva-ui.local'] }),
 		},
 		optimizeDeps: {
 			include: [
@@ -134,7 +129,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		ssr: {
 			noExternal: [
 				'@kiva/kv-components',
-				'@kiva/kv-shop'
+				'@kiva/kv-shop',
 			],
 		},
 		test: {

@@ -1,13 +1,14 @@
 <template>
-	<div v-if="updates.length > 0" class="tw-my-3">
-		<h3 class="tw-my-2">
+	<div v-if="updates.length > 0">
+		<h3 class="tw-mt-4 tw-mb-2">
 			Updates
 		</h3>
 		<KvCarousel
-			class="tw-w-full updates-carousel md:tw-overflow-visible"
+			class="tw-w-full updates-carousel tw-overflow-visible"
 			:key="updates.length"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
+			:slide-max-width="singleSlideWidth"
 			:embla-options="{ loop: false, startIndex: carouselIndex }"
 			@interact-carousel="interactCarousel"
 		>
@@ -23,14 +24,14 @@
 			<template v-if="showLoadMore" #view-more>
 				<div
 					:key="`view-more-card`"
-					class="tw-flex tw-items-center tw-h-full tw-pr-3"
+					class="tw-flex tw-items-center tw-h-full tw-pl-4"
 				>
 					<kv-button
-						class="tw-mt-2"
+						class="tw-mt-2 tw-whitespace-nowrap"
 						variant="secondary"
 						@click="loadMoreUpdates"
 					>
-						Load more<br>updates
+						Load more
 					</kv-button>
 				</div>
 			</template>
@@ -62,6 +63,8 @@
 import { KvCarousel, KvLightbox, KvButton } from '@kiva/kv-components';
 import JournalUpdateCard from '#src/components/MyKiva/JournalUpdateCard';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import useIsMobile from '#src/composables/useIsMobile';
+import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import {
 	ref,
 	toRefs,
@@ -103,6 +106,8 @@ const updateBody = ref('');
 const shareLoan = ref(false);
 const carouselIndex = ref(0);
 
+const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+
 const inPfp = computed(() => loan.value?.inPfp ?? false);
 
 const shareCampaign = computed(() => {
@@ -114,6 +119,13 @@ const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
 const numLenders = computed(() => loan.value?.lenders?.numLenders ?? 0);
 
 const showLoadMore = computed(() => updates.value?.length < totalUpdates.value);
+
+const singleSlideWidth = computed(() => {
+	if (isMobile.value) {
+		return '90%';
+	}
+	return '422px';
+});
 
 const openLightbox = updateId => {
 	clickedUpdate.value = updateId;
@@ -145,8 +157,10 @@ const loadMoreUpdates = () => {
 watch(
 	() => updates,
 	() => {
-		if (updates.value.length > 0 && updates.value.length < 3) {
+		if (updates.value.length) {
 			$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
+		}
+		if (updates.value.length > 0 && updates.value.length < 3) {
 			carouselIndex.value = 0;
 		}
 		if (updates.value.length > 3) {
@@ -159,10 +173,14 @@ watch(
 
 <style lang="postcss" scoped>
 .updates-carousel :deep(.kv-carousel__controls) {
-	@apply tw-justify-start;
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
 .updates-carousel :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0;
+	@apply tw-invisible tw-mx-0 tw-w-2;
+}
+
+.updates-carousel :deep(div:first-child) {
+	@apply tw-gap-2;
 }
 </style>

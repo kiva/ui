@@ -322,8 +322,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $arrow-width: rem-calc(41);
 $arrow-margin: rem-calc(8);

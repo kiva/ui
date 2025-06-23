@@ -40,13 +40,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t">
+		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t tw-flex tw-flex-col">
 			<HeroBackground style="height: 96px;" class="!tw-block" :loan-id="loan.id" />
 			<div
-				class="tw-flex tw-justify-center tw-gap-1.5 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5
-					md:tw-pb-1.5"
+				class="tw-flex tw-justify-center tw-gap-1 md:tw-gap-3 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5
+					md:tw-pb-1.5 tw-flex-grow tw-pb-1.5"
 			>
-				<div class="tw-flex-1">
+				<div class="tw-text-center md:tw-text-left tw-flex-grow md:tw-flex-1">
 					<div
 						class="tw-w-10 tw-h-10 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
 							tw-rounded-full tw-shadow tw--mt-5"
@@ -64,29 +64,31 @@
 							]"
 						/>
 					</div>
-					<h3 class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2">
+					<div class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-font-medium">
 						{{ title }}
-					</h3>
-					<p class="tw-text-center md:tw-text-left">
-						{{ description }}{{ hasLoanFunFactFootnote(loan) ? '*' : '' }}
-						<br>
-						<button
-							v-if="!showMenu"
-							class="tw-text-action"
-							@click="viewDetails"
-							variant="primary"
-						>
-							View details
-						</button>
+					</div>
+					<p class="tw-text-center md:tw-text-left tw-line-clamp-3 md:tw-line-clamp-6">
+						{{ description }}
 					</p>
-				</div>
-				<div class="tw-flex-1">
 					<button
-						class="tw-flex tw-items-center tw-justify-center tw-py-2 tw-w-full
+						v-if="!showMenu"
+						class="tw-text-action tw-inline"
+						@click="viewDetails"
+						variant="primary"
+					>
+						View details
+					</button>
+				</div>
+				<div class="md:tw-flex-1">
+					<button
+						class="tw-flex tw-items-center tw-justify-center tw-w-full
 							md:tw-pointer-events-none"
 						@click="toggleWhatIsNext"
 					>
-						<p class="tw-text-action tw-font-medium md:tw-text-black">
+						<p
+							class="tw-text-action tw-font-medium md:tw-text-black
+								md:tw-w-full md:tw-text-left md:tw-mt-5 md:tw-mb-1"
+						>
 							What's next
 						</p>
 						<KvMaterialIcon
@@ -97,7 +99,7 @@
 					<kv-expandable easing="ease-in-out" class="tw-block md:tw-hidden">
 						<div v-show="open">
 							<LoanNextSteps
-								class="tw-mb-5"
+								id="loan-next-steps"
 								:weeks-to-repay="weeksToRepay"
 								:current-step="currentStep"
 								:repayments-started="!isFundraising"
@@ -106,7 +108,8 @@
 						</div>
 					</kv-expandable>
 					<LoanNextSteps
-						class="tw-hidden md:tw-block tw-mb-5"
+						id="loan-next-steps"
+						class="tw-hidden md:tw-block"
 						:weeks-to-repay="weeksToRepay"
 						:current-step="currentStep"
 						:repayments-started="!isFundraising"
@@ -142,7 +145,6 @@ import {
 import {
 	FUNDRAISING,
 } from '#src/api/fixtures/LoanStatusEnum';
-import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 
 const COMMENT_ID = 'comment';
 const DETAILS_ID = 'details';
@@ -199,54 +201,6 @@ const pronoun = computed(() => {
 const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`);
 const loanUse = computed(() => loan.value?.use ?? '');
 
-const loanFunFact = computed(() => {
-	const region = loan.value?.geocode?.country?.region ?? '';
-	if (region === 'North America') {
-		switch (borrowerCountry.value) {
-			case 'United States':
-				return '3 in 5 U.S. business owners felt less stressed about finances after support from Kiva.';
-			case 'Puerto Rico':
-				// eslint-disable-next-line max-len
-				return 'Small businesses are a crucial part of Puerto Rico\'s economy, employing around 44% of Puerto Rico\'s workforce.';
-			case 'Dominican Republic':
-				// eslint-disable-next-line max-len
-				return 'Poverty in the Dominican Republic has decreased significantly, from 40% of the population in 2003 to 20% in 2019.';
-			case 'Haiti':
-				// eslint-disable-next-line max-len
-				return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability.';
-			case 'Mexico':
-				// eslint-disable-next-line max-len
-				return 'In Mexico, financial access is improving, with over half of adults able to access a bank account. ';
-			default:
-				// eslint-disable-next-line max-len
-				return 'North America is highly vulnerable to climate disasters like hurricanes, rising sea levels, and extreme weather, but it is increasingly focused on renewable energy and sustainability. ';
-		}
-	}
-	switch (region) {
-		case 'Central America':
-			// eslint-disable-next-line max-len
-			return 'In Central America, 95% of people surveyed said their quality of life improved as a result of their loan.';
-		case 'South America':
-			// eslint-disable-next-line max-len
-			return 'People living in poverty in South America has decreased from ~30% in 2002 to less than 20% by 2020.';
-		case 'Africa':
-			// eslint-disable-next-line max-len
-			return 'In Africa, 92% of people surveyed said their confidence in their own abilities improved as a result of their loan.';
-		case 'Middle East':
-			// eslint-disable-next-line max-len
-			return 'The number of people with bank accounts is on the rise in the Middle East, a vital step in driving economic opportunity.';
-		case 'Eastern Europe':
-			// eslint-disable-next-line max-len
-			return 'Eastern European countries have made progress in reducing poverty levels over the past decade through social protection programs.';
-		case 'Asia':
-			// eslint-disable-next-line max-len
-			return 'In Asia, 86% of people surveyed were better able to manage their finances as a result of their loan.';
-		default:
-			// eslint-disable-next-line max-len
-			return 'In areas of Oceania like Fiji, the gender gap is improving—with more women able to access financial services.';
-	}
-});
-
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
 
 const loanStatus = computed(() => {
@@ -258,7 +212,7 @@ const loanStatus = computed(() => {
 const description = computed(() => {
 	return `${borrowerName.value}
 		${isFundraising.value ? 'will use' : 'used'}
-		${pronoun.value} loan ${loanUse.value} ${loanFunFact.value}`;
+		${pronoun.value} loan ${loanUse.value}`;
 });
 const currentStep = computed(() => {
 	if (isFundraising.value) {
@@ -348,7 +302,6 @@ watch(() => menuOpen.value, () => {
 </script>
 
 <style lang="postcss" scoped>
-
 .card-container {
 	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
 
@@ -363,5 +316,11 @@ watch(() => menuOpen.value, () => {
 
 .menu-trigger, .vertical-menu {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+}
+
+:deep(#loan-next-steps .step-text) {
+	@screen md {
+		line-height: 1.25;
+	}
 }
 </style>

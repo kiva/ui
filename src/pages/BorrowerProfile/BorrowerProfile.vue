@@ -450,13 +450,12 @@ export default {
 	apollo: {
 		query: preFetchQuery,
 		preFetch(_config, client, { route, cookieStore }) {
-			const currentRoute = route.value ?? route ?? {};
-			const publicId = getPublicId(currentRoute);
+			const publicId = getPublicId(route);
 			return client
 				.query({
 					query: preFetchQuery,
 					variables: {
-						loanId: Number(currentRoute.params?.id ?? 0),
+						loanId: Number(route?.params?.id ?? 0),
 						publicId,
 						getInviter: !!publicId,
 						basketId: cookieStore.get('kvbskt')
@@ -465,9 +464,9 @@ export default {
 				.then(({ data }) => {
 					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
 					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
-						const { query = {} } = currentRoute;
+						const { query = {} } = route;
 						return Promise.reject({
-							path: `/lend-classic/${currentRoute.params?.id}`,
+							path: `/lend-classic/${route?.params?.id}`,
 							query,
 						});
 					}
@@ -489,10 +488,10 @@ export default {
 
 					if (redirectToLendClassic) {
 						// redirect to legacy borrower profile
-						const { query = {} } = currentRoute;
+						const { query = {} } = route;
 						query.minimal = false;
 						return Promise.reject({
-							path: `/lend-classic/${Number(currentRoute.params?.id ?? 0)}`,
+							path: `/lend-classic/${Number(route?.params?.id ?? 0)}`,
 							query,
 						});
 					}
@@ -504,10 +503,9 @@ export default {
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
-			const currentRoute = route?.value ?? route;
-			const publicId = getPublicId(currentRoute);
+			const publicId = getPublicId(route);
 			return {
-				loanId: Number(currentRoute?.params?.id ?? 0),
+				loanId: Number(route?.params?.id ?? 0),
 				publicId,
 				getInviter: !!publicId,
 				basketId: cookieStore.get('kvbskt'),

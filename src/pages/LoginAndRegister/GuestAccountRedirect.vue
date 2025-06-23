@@ -45,8 +45,7 @@ export default {
 
 				// Check to see if user is authenticated
 				if (!data?.my?.userAccount?.id) {
-					const currentRoute = route.value ?? route ?? {};
-					const username = currentRoute.query?.username ?? '';
+					const username = route?.query?.username ?? '';
 
 					return Promise.reject({
 						path: '/ui-login',

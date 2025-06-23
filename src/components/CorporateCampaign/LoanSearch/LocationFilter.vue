@@ -134,8 +134,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import '#src/assets/scss/settings';
-
 .country-filters {
 	&__region-section {
 		margin-bottom: 1rem;

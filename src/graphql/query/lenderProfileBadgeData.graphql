@@ -41,4 +41,17 @@ query lenderProfileBadgeData(
       limit: $limit
     )
   }
+  my {
+    id
+    loans(limit: 50) {
+      values {
+        id
+        name
+        image {
+          id
+          url
+        }
+      }
+    }
+  }
 }

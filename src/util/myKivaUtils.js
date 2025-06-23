@@ -10,6 +10,8 @@ const MY_KIVA_EXP = 'my_kiva_jan_2025';
 const MY_KIVA_LOAN_LIMIT = 4;
 export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
+export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
+export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 
 export const createUserPreferencesMutation = gql`
 	mutation createUserPreferences($preferences: String) {

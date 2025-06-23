@@ -5,8 +5,8 @@
 </template>
 
 <style lang="scss">
-@import '#src/assets/scss/settings';
-@import '#src/assets/scss/components/15-years/15-years';
+@use '#src/assets/scss/settings' as *;
+@use '#src/assets/scss/components/15-years/15-years' as *;
 
 @import 'https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap';
 

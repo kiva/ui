@@ -192,7 +192,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 // Hack to allow the entire footer to still be visible when the MG sticky is active
 footer.www-footer {
@@ -212,7 +212,7 @@ footer.www-footer {
 </style>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
+@use '#src/assets/scss/settings' as *;
 
 .monthly-good-selector {
 	&.sticky {

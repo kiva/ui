@@ -44,7 +44,7 @@ export default function createApolloClient({
 			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
-			ContentfulPreviewLink({ cookieStore }),
+			ContentfulPreviewLink({ route }),
 			NetworkErrorLoggingLink(),
 			NetworkErrorRetryLink({
 				activateRetry: appConfig?.apolloNetworkErrorRetryActive,

@@ -86,7 +86,7 @@
 								blueskyShareUrl({utmCampaign, utmContent}),
 								'Thanks for sharing to Bluesky!')"
 						>
-							<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+							<kv-material-icon :icon="KvBlueskyIcon" name="bluesky" class="social__icon" />
 							<span>Share to your followers</span>
 						</button>
 						<button
@@ -128,7 +128,12 @@ import { getFullUrl } from '#src/util/urlUtils';
 import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
-import { KvMaterialIcon, KvGrid, KvPageContainer } from '@kiva/kv-components';
+import {
+	KvBlueskyIcon,
+	KvGrid,
+	KvMaterialIcon,
+	KvPageContainer,
+} from '@kiva/kv-components';
 
 const userQuery = gql`query userQuery {
 	my {
@@ -189,6 +194,7 @@ export default {
 			message: "Kiva is an easy way to make a real difference in someone's life.",
 			utmCampaign: 'social_share_checkout',
 			contentfulContent: null,
+			KvBlueskyIcon
 		};
 	},
 	computed: {
@@ -254,8 +260,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;
@@ -276,7 +281,7 @@ $color-copy-link: #2B7C5F;
 			border: 1px solid $color-bluesky;
 
 			.social__icon {
-				fill: $color-bluesky;
+				color: $color-bluesky;
 			}
 		}
 

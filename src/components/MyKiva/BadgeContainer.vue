@@ -3,7 +3,7 @@
 		class="tw-relative tw-inline-block tw-w-auto"
 		:class="{
 			'tw-grayscale': isInProgress,
-			'invisible-badge tw-cursor-pointer': isLocked,
+			'tw-cursor-pointer': isLocked,
 			'tw-overflow-hidden': showShine,
 		}"
 		@click="handleBadgeClick"
@@ -11,18 +11,15 @@
 		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
 		<slot></slot>
-		<component
-			v-if="isInProgress"
-			:is="outlineComponent"
-			class="tw-absolute tw-h-full tw-top-0"
-			:style="outlineStyles"
-		/>
-		<component
-			v-else-if="isLocked"
-			:is="solidComponent"
-			class="tw-absolute tw-top-0"
-			style="height: 96%;"
-		/>
+		<div
+			v-if="isLocked"
+			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"
+		>
+			<img
+				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
+				:src="solidComponent"
+			>
+		</div>
 		<div
 			v-if="isLocked"
 			class="tw-absolute tw-flex"
@@ -30,7 +27,7 @@
 			style="left: calc(50% - 14px); top: calc(48% - 14px)"
 		>
 			<KvMaterialIcon
-				class="tw-w-3.5 tw-h-3.5 tw-text-white"
+				class="tw-w-3.5 tw-h-3.5 tw-text-black"
 				:icon="mdiLock"
 			/>
 		</div>
@@ -56,23 +53,16 @@ import {
 	BADGE_SHAPE_OBLONG,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
-	BADGE_SHAPE_EQUITY,
 } from '#src/composables/useBadgeModal';
 import { mdiLock } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import OutlineArch from '#src/assets/images/my-kiva/badge-outline-arch.svg';
-import OutlineCircle from '#src/assets/images/my-kiva/badge-outline-circle.svg';
-import OutlineOblong from '#src/assets/images/my-kiva/badge-outline-oblong.svg';
-import OutlineOval from '#src/assets/images/my-kiva/badge-outline-oval.svg';
-import OutlineRectangle from '#src/assets/images/my-kiva/badge-outline-rectangle.svg';
-import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg';
-import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg';
-import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg';
-import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg';
-import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
-import OutlineEquity from '#src/assets/images/my-kiva/badge-outline-equity.svg';
+import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg?url';
+import SolidCircle from '#src/assets/images/my-kiva/badge-solid-circle.svg?url';
+import SolidOblong from '#src/assets/images/my-kiva/badge-solid-oblong.svg?url';
+import SolidOval from '#src/assets/images/my-kiva/badge-solid-oval.svg?url';
+import SolidRectangle from '#src/assets/images/my-kiva/badge-solid-rectangle.svg?url';
 
 const props = defineProps({
 	status: {
@@ -88,33 +78,29 @@ const props = defineProps({
 	showShine: {
 		type: Boolean,
 		default: false,
+	},
+	isCarousel: {
+		type: Boolean,
+		default: false,
+	},
+	hasStarted: {
+		type: Boolean,
+		default: false,
 	}
 });
 
-const isInProgress = computed(() => props.status === BADGE_IN_PROGRESS);
+const isInProgress = computed(() => {
+	if (props.isCarousel && props.hasStarted) {
+		return;
+	}
+	return props.status === BADGE_IN_PROGRESS;
+});
 
 const isLocked = computed(() => props.status === BADGE_LOCKED);
 
 const animateLock = ref(false);
 const firstShine = ref(null);
 const secondShine = ref(null);
-
-const outlineComponent = computed(() => {
-	switch (props.shape) {
-		case BADGE_SHAPE_ARCH:
-			return OutlineArch;
-		case BADGE_SHAPE_OBLONG:
-			return OutlineOblong;
-		case BADGE_SHAPE_OVAL:
-			return OutlineOval;
-		case BADGE_SHAPE_RECTANGLE:
-			return OutlineRectangle;
-		case BADGE_SHAPE_EQUITY:
-			return OutlineEquity;
-		default:
-			return OutlineCircle;
-	}
-});
 
 const solidComponent = computed(() => {
 	switch (props.shape) {
@@ -128,25 +114,6 @@ const solidComponent = computed(() => {
 			return SolidRectangle;
 		default:
 			return SolidCircle;
-	}
-});
-
-const outlineStyles = computed(() => {
-	switch (props.shape) {
-		case BADGE_SHAPE_ARCH:
-			return { width: '90%', left: '5%' };
-		case BADGE_SHAPE_OBLONG:
-			return { height: '96%', top: '2%' };
-		case BADGE_SHAPE_OVAL:
-			return { width: '103%', left: '-1%' };
-		case BADGE_SHAPE_RECTANGLE:
-			return { width: '94%', left: '3%' };
-		case BADGE_SHAPE_EQUITY:
-			return {
-				width: '120%', height: '110%', left: '-9.8%', top: '-3.5%'
-			};
-		default:
-			return { width: '97%', left: '2%' };
 	}
 });
 
@@ -185,10 +152,6 @@ onMounted(() => {
 <style lang="postcss" scoped>
 :deep(svg) {
 	@apply tw-h-full tw-w-full;
-}
-
-.invisible-badge :deep(img) {
-	@apply tw-invisible;
 }
 
 @keyframes wiggle {

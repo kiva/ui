@@ -1,33 +1,17 @@
 <template>
 	<div>
-		<template v-if="isLoading">
-			<KvLoadingPlaceholder class="tw-my-2 lg:tw-mb-4 !tw-w-full md:!tw-w-1/2 !tw-h-6" />
-			<KvLoadingPlaceholder
-				class="tw-mb-2 lg:tw-mb-3 !tw-w-full md:!tw-w-1/2"
-				:style="{ height: '17rem' }"
-			/>
-		</template>
-		<template v-else>
-			<h2
-				v-html="title"
-				class="tw-mb-3.5"
-				:class="{ 'tw-text-center': !filteredLoans.length }"
-			></h2>
-			<div :class="{'tw-flex tw-justify-center': !filteredLoans.length }">
-				<KvButton
-					v-kv-track-event="[
-						'portfolio',
-						'click',
-						btnEventLabel
-					]" v-if="showCtaWhenNoLoans && (!filteredLoans.length || !hasActiveLoans)"
-					:to="link"
-				>
-					{{ btnCta }}
-				</KvButton>
-			</div>
-		</template>
-		<div v-if="hasActiveLoans && !isLoading">
-			<KvTabs ref="tabs" @tab-changed="handleChange" v-if="filteredLoans.length > 1" class="tabs">
+		<h3
+			v-if="hasActiveLoans"
+			v-html="title"
+			class="tw-mb-2"
+		></h3>
+		<div v-if="hasActiveLoans" class="tw-relative">
+			<KvTabs
+				v-if="filteredLoans.length > 1 && showCarouselTabs"
+				ref="tabs"
+				class="tabs"
+				@tab-changed="handleChange"
+			>
 				<template #tabNav>
 					<KvTab
 						v-for="(loan, index) in filteredLoans"
@@ -58,15 +42,6 @@
 							</h5>
 						</div>
 					</KvTab>
-					<KvTab v-if="totalLoans > filteredLoans.length" for-panel="view-more">
-						<a
-							href="/portfolio/loans" v-kv-track-event="[
-								'portfolio',
-								'click',
-								'view-all'
-							]"
-						>View all</a>
-					</KvTab>
 				</template>
 				<template #tabPanels>
 					<KvTabPanel
@@ -81,7 +56,7 @@
 			<div class="carousel-container">
 				<KvCarousel
 					ref="carousel"
-					class="borrower-carousel tw-w-full md:tw-overflow-visible"
+					class="borrower-carousel tw-w-full tw-overflow-visible"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
@@ -97,17 +72,21 @@
 							@open-share-modal="openShareModal"
 						/>
 					</template>
+					<template v-if="totalLoans > filteredLoans.length" #see-all>
+						<div
+							:key="`view-more-card`"
+							class="tw-flex tw-items-center tw-h-full tw-pl-4"
+						>
+							<kv-button
+								class="tw-mt-2 tw-whitespace-nowrap"
+								variant="secondary"
+								@click="loadMore"
+							>
+								See all
+							</kv-button>
+						</div>
+					</template>
 				</KvCarousel>
-			</div>
-			<div class="tw-text-right" v-if="hasCompletedBorrowers">
-				<a
-					class="tw-text-h5"
-					href="/portfolio/loans" v-kv-track-event="[
-						'portfolio',
-						'click',
-						'See all borrowers'
-					]"
-				>See all borrowers</a>
 			</div>
 		</div>
 		<!-- Loan Comment Component -->
@@ -135,10 +114,10 @@
 
 <script setup>
 import _throttle from 'lodash/throttle';
+import { useRouter } from 'vue-router';
 import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton, KvLoadingPlaceholder
+	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
 } from '@kiva/kv-components';
-import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
 	defineProps,
 	ref,
@@ -151,30 +130,25 @@ import {
 } from 'vue';
 import {
 	PAYING_BACK,
-	ENDED,
-	DEFAULTED,
 	FUNDED,
 	FUNDRAISING,
 	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
 
 const props = defineProps({
 	/**
-   * Array of loans
-   * */
+	 * Array of loans
+	 */
 	loans: {
 		type: Array,
 		default: () => ([]),
 		required: true,
-	},
-	isLoading: {
-		type: Boolean,
-		default: false,
 	},
 	totalLoans: {
 		type: Number,
@@ -192,17 +166,19 @@ const props = defineProps({
 		type: Number,
 		default: 9,
 	},
-	showCtaWhenNoLoans: {
+	showCarouselTabs: {
 		type: Boolean,
-		default: true,
+		default: false,
 	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
+const router = useRouter();
+
 const { loans, totalLoans } = toRefs(props);
-const carousel = ref(null);
 const tabs = ref(null);
+const carousel = ref(null);
 const windowWidth = ref(0);
 const openWhatIsNext = ref(false);
 const lastVisitedLoanIdx = ref(0);
@@ -213,6 +189,7 @@ const commentLoanData = ref({
 	visible: false,
 });
 const shareLoan = ref(false);
+const previousLastIndex = ref(0);
 
 const activeLoans = computed(() => {
 	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
@@ -220,49 +197,11 @@ const activeLoans = computed(() => {
 
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
-const getBorrowerName = loan => {
-	return loan?.name ?? '';
-};
-
-const getBorrowerHash = loan => {
-	return loan?.image?.hash ?? '';
-};
-
 const title = computed(() => {
-	if (!loans.value.length) {
-		return 'Change a life <u>today</u>!';
-	}
-	if (!hasActiveLoans.value) {
-		return `You changed <u>${totalLoans.value} lives</u>!`;
-	}
-
 	if (totalLoans.value === 1) {
 		return 'You’re <u>changing a life</u> right now!';
 	}
 	return `You’re <u>changing ${activeLoans.value.length} lives</u> right now!`;
-});
-
-const btnCta = computed(() => {
-	if (!loans.value.length) {
-		return 'Make a loan';
-	}
-
-	return 'See previously supported borrowers';
-});
-
-const link = computed(() => {
-	if (!loans.value.length) {
-		return '/lend-by-category';
-	}
-
-	return '/portfolio/loans';
-});
-
-const btnEventLabel = computed(() => {
-	if (!hasActiveLoans.value) {
-		return 'see-previously-supported-people';
-	}
-	return 'Make a loan - no loans state';
 });
 
 const filteredLoans = computed(() => {
@@ -276,30 +215,17 @@ const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
-const handleChange = event => {
-	if (event < filteredLoans.value.length) {
-		carousel.value.goToSlide(event);
-		lastVisitedLoanIdx.value = event;
-	} else {
-		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
-	}
-};
-
 const singleSlideWidth = computed(() => {
 	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
 
 	// Handle small mobile screens
 	if (viewportWidth < 450) {
-		return '100%';
+		return '90%';
 	}
-	if (window.innerWidth < 1024) {
+	if (typeof window !== 'undefined' && window.innerWidth < 1024) {
 		return '468px';
 	}
 	return '520px';
-});
-
-const hasCompletedBorrowers = computed(() => {
-	return loans.value.some(loan => loan?.status === ENDED || loan?.status === DEFAULTED);
 });
 
 const handleResize = () => {
@@ -309,6 +235,9 @@ const handleResize = () => {
 const throttledResize = _throttle(handleResize, 200);
 
 const onInteractCarousel = interaction => {
+	if (previousLastIndex.value === lastVisitedLoanIdx.value) {
+		$kvTrackEvent('portfolio', 'click', 'borrower-card-carousel');
+	}
 	tabs.value.tabContext.selectedIndex = interaction.value;
 };
 
@@ -329,13 +258,38 @@ const closeShareModal = () => {
 	sharedLoan.value = null;
 };
 
-watch(() => loans.value, () => {
-	if (!hasActiveLoans.value) {
-		$kvTrackEvent('portfolio', 'view', 'No active borrowers');
+const getBorrowerName = loan => {
+	return loan?.name ?? '';
+};
+
+const getBorrowerHash = loan => {
+	return loan?.image?.hash ?? '';
+};
+
+const handleChange = event => {
+	previousLastIndex.value = lastVisitedLoanIdx.value;
+	if (lastVisitedLoanIdx.value !== event) {
+		$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
+	}
+
+	if (event < filteredLoans.value.length) {
+		carousel.value.goToSlide(event);
+		lastVisitedLoanIdx.value = event;
 	} else {
+		tabs.value.tabContext.selectedIndex = lastVisitedLoanIdx.value;
+	}
+};
+
+const loadMore = () => {
+	$kvTrackEvent('portfolio', 'click', 'view-all');
+	router.push('/portfolio/loans');
+};
+
+watch(() => loans.value, () => {
+	if (hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
 	}
-});
+}, { immediate: true });
 
 onMounted(() => {
 	window.addEventListener('resize', throttledResize);
@@ -350,8 +304,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
-
-.carousel-container {
+.carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
 
 	@screen md {
@@ -363,8 +316,16 @@ onBeforeUnmount(() => {
 	}
 }
 
-:deep(.borrower-carousel) div.kv-carousel__controls {
-	@apply tw-hidden;
+.borrower-carousel :deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+}
+
+.borrower-carousel :deep(.kv-carousel__controls) div {
+	@apply tw-invisible tw-mx-0 tw-w-2;
+}
+
+.borrower-carousel :deep(div:first-child) {
+	@apply tw-gap-2;
 }
 
 :deep(.tabs) div[role=tablist] {

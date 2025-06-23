@@ -56,8 +56,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '#src/assets/scss/settings';
-@import "#src/assets/scss/components/15-years/15-years";
+@use '#src/assets/scss/settings' as *;
+@use "#src/assets/scss/components/15-years/15-years" as *;
 
 .card {
 	position: relative;
@@ -100,9 +100,9 @@ export default {
 	}
 
 	&__title {
-		@include h4();
-
 		text-transform: none;
+
+		@include h4();
 
 		@include breakpoint(large) {
 			font-size: rem-calc(18);
@@ -110,9 +110,9 @@ export default {
 	}
 
 	&__text {
-		@include link();
-
 		white-space: normal;
+
+		@include link();
 
 		@include breakpoint(large) {
 			font-size: rem-calc(11);

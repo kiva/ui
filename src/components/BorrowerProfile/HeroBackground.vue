@@ -88,9 +88,8 @@ export default {
 		`,
 		preFetch: true,
 		preFetchVariables({ route }) {
-			const currentRoute = route?.value ?? route;
 			return {
-				loanId: Number(currentRoute?.params?.id ?? 0),
+				loanId: Number(route?.params?.id ?? 0),
 			};
 		},
 		variables() {

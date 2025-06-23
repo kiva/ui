@@ -31,7 +31,8 @@ export default {
 	},
 	computed: {
 		isInExperimentPages() {
-			return this.$route.path.includes('lend');
+			const { path } = this.$route;
+			return path.includes('lend') || path.includes('mykiva');
 		},
 	}
 };

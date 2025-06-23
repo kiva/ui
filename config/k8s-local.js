@@ -1,21 +1,16 @@
 import { merge } from 'webpack-merge';
-import base from './index.js';
-import devVm from './dev-vm.js';
+import base from './dynamic.js';
 
 const transport = process.env.TRANSPORT || 'https';
 const monolithHostname = process.env.MONOLITH_HOSTNAME || 'monolith.kiva.local';
 const apiHostname = process.env.API_HOSTNAME || 'api.kiva.local';
 const apolloBatching = process.env.APOLLO_BATCH !== 'false';
 
-export default merge(base, devVm, {
+export default merge(base, {
 	app: {
 		apolloBatching,
-		host: `${monolithHostname}`,
-		transport: `${transport}`,
-		publicPath: `${transport}://${monolithHostname}/`,
-		photoPath: `${transport}://${monolithHostname}/img/`,
-		graphqlUri: `${transport}://${apiHostname}/graphql`,
 		auth0: {
+			checkFakeAuth: true,
 			loginRedirectUrls: {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: `http://${monolithHostname}/login?force=1`,
 				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: `http://${monolithHostname}/pa2/login/login?authLevel=recent`,
@@ -27,13 +22,38 @@ export default merge(base, devVm, {
 			browserCallbackUri: `${transport}://${monolithHostname}/process-browser-auth`,
 			serverCallbackUri: `${transport}://${monolithHostname}/process-ssr-auth`,
 		},
+		graphqlUri: `${transport}://${apiHostname}/graphql`,
+		host: `${monolithHostname}`,
+		enableAnalytics: process.env.ENABLE_ANALYTICS === 'true',
+		enableFB: process.env.ENABLE_FB === 'true',
+		enableGA: process.env.ENABLE_GA === 'true',
+		enableGTM: process.env.ENABLE_GTM === 'true',
+		enableHotjar: process.env.ENABLE_HOTJAR === 'true',
+		enableOptimizely: process.env.ENABLE_OPTIMIZELY === 'true',
+		enableSentry: process.env.ENABLE_SENTRY === 'true',
+		enableSnowplow: process.env.ENABLE_SNOWPLOW === 'true',
+		fbApplicationId: '263964058630',
+		fbOgNameSpace: 'vm-kiva',
+		gaId: 'UA-11686022-7',
+		hotjarId: '3112979',
+		oneTrust: {
+			enable: process.env.ENABLE_ONE_TRUST === 'true',
+		},
+		photoPath: `${transport}://${monolithHostname}/img/`,
+		publicPath: `${transport}://${monolithHostname}/`,
+		transport: `${transport}`,
+		sentryURI: '',
 	},
 	server: {
+		disableCluster: true,
 		graphqlUri: `${transport}://${apiHostname}/graphql`,
-		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
-		// memcachedEnabled: false,
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
-		disableCluster: true,
+		sessionUri: `${transport}://${monolithHostname}/start-ui-session`,
+		viteConfig: {
+			server: {
+				allowedHosts: [monolithHostname],
+			},
+		},
 	}
 });

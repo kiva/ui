@@ -22,8 +22,15 @@
 				</div>
 			</div>
 		</section>
+		<JourneySideSheet
+			v-if="showSideSheet"
+			class="badge-journey"
+			:visible="showSideSheet"
+			:selected-badge-data="selectedBadgeData"
+			@sidesheet-closed="handleSideSheetClosed"
+		/>
 		<BadgeModal
-			v-if="selectedBadgeData"
+			v-if="showBadgeModal"
 			:show="showBadgeModal"
 			:badge="selectedBadgeData"
 			:state="state"
@@ -38,10 +45,11 @@
 import { computed, inject, ref } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
 import useBadgeData from '#src/composables/useBadgeData';
-import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import { STATE_EARNED } from '#src/composables/useBadgeModal';
+import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import AsyncLenderSection from './AsyncLenderSection';
 import BadgeCard from './BadgeCard';
+import JourneySideSheet from '../Badges/JourneySideSheet';
 
 const props = defineProps({
 	lenderInfo: {
@@ -66,6 +74,7 @@ const showBadgeModal = ref(false);
 const selectedBadgeData = ref();
 const state = ref(STATE_EARNED);
 const tier = ref(null);
+const showSideSheet = ref(false);
 
 const sortedTieredBadges = computed(() => {
 	const tieredBadges = [];
@@ -111,11 +120,31 @@ const handleBadgeClicked = badge => {
 	const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
 	tier.value = selectedTier;
 	selectedBadgeData.value = badge;
-	showBadgeModal.value = true;
+	if (tier.value) {
+		showSideSheet.value = true;
+	} else {
+		showBadgeModal.value = true;
+	}
 };
 
 const handleBadgeModalClosed = () => {
-	selectedBadgeData.value = undefined;
 	showBadgeModal.value = false;
+	selectedBadgeData.value = undefined;
+};
+
+const handleSideSheetClosed = () => {
+	showSideSheet.value = false;
+	selectedBadgeData.value = undefined;
+	tier.value = null;
 };
 </script>
+
+<style lang="postcss" scoped>
+:deep(.badge-journey div#journey-controls) {
+	display: none;
+}
+
+:deep(.badge-journey div#journey-bottom-gradient) {
+	bottom: 0 !important;
+}
+</style>

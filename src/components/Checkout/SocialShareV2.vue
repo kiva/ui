@@ -38,7 +38,7 @@
 					utmCampaign,
 					selectedLoanId]"
 			>
-				<kv-icon name="bluesky" title="Bluesky" class="social__icon" />
+				<kv-material-icon :icon="KvBlueskyIcon" class="social__icon" />
 				<span>Share</span>
 			</button>
 			<button
@@ -81,12 +81,14 @@
 import orderBy from 'lodash/orderBy';
 import KvIcon from '#src/components/Kv/KvIcon';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import { KvBlueskyIcon, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'SocialShareV2',
 	inject: ['apollo'],
 	components: {
-		KvIcon
+		KvIcon,
+		KvMaterialIcon
 	},
 	props: {
 		lender: {
@@ -113,7 +115,8 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
-			utmCampaign: 'social_share_checkout'
+			utmCampaign: 'social_share_checkout',
+			KvBlueskyIcon
 		};
 	},
 	mixins: [socialSharingMixin],
@@ -183,8 +186,7 @@ export default {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '#src/assets/scss/settings';
-@import 'node_modules/foundation-sites/scss/foundation';
+@use '#src/assets/scss/settings' as *;
 
 $color-facebook: #3b5998;
 $color-bluesky: #1185FE;

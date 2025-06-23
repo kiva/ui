@@ -31,8 +31,18 @@
 			@click="handleBadgeClicked"
 			style="width: 140px;"
 		/>
+		<JourneySideSheet
+			v-if="showSideSheet"
+			:visible="showSideSheet"
+			:loans="loans"
+			:selected-badge-data="selectedBadgeData"
+			:is-selected-journey-complete="isSelectedJourneyComplete"
+			@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
+			@continue-journey-clicked="handleContinueJourneyClicked"
+			@sidesheet-closed="handleSideSheetClosed"
+		/>
 		<BadgeModal
-			v-if="selectedBadgeData"
+			v-if="showBadgeModal"
 			:show="showBadgeModal"
 			:badge="selectedBadgeData"
 			:state="state"
@@ -49,6 +59,8 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { STATE_EARNED } from '#src/composables/useBadgeModal';
 import BadgeCard from '#src/components/LenderProfile/BadgeCard';
 import BadgeModal from '#src/components/MyKiva/BadgeModal';
+import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
+import useBadgeData from '#src/composables/useBadgeData';
 
 export default {
 	name: 'BadgesList',
@@ -57,6 +69,7 @@ export default {
 		KvLoadingPlaceholder,
 		BadgeCard,
 		BadgeModal,
+		JourneySideSheet,
 	},
 	props: {
 		completedAchievements: {
@@ -67,6 +80,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		loans: {
+			type: Array,
+			default: () => ([])
+		},
+		badgesData: {
+			type: Array,
+			default: () => ([])
+		},
 	},
 	data() {
 		return {
@@ -74,6 +95,7 @@ export default {
 			selectedBadgeData: null,
 			state: STATE_EARNED,
 			tier: null,
+			showSideSheet: false,
 		};
 	},
 	computed: {
@@ -101,17 +123,81 @@ export default {
 				...this.sortedEventBadges
 			];
 		},
+		allBadgesCompleted() {
+			const tieredBadges = this.badgesData?.filter(b => defaultBadges.includes(b?.id));
+			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+		},
+		isSelectedJourneyComplete() {
+			return this.selectedBadgeData?.achievementData?.tiers?.length === this.selectedBadgeData?.level;
+		},
 	},
 	methods: {
 		handleBadgeClicked(badge) {
 			const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
 			this.tier = selectedTier;
 			this.selectedBadgeData = badge;
-			this.showBadgeModal = true;
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				'Badge journey map',
+				badge.challengeName,
+				badge.level
+			);
+			if (this.tier) {
+				this.showSideSheet = true;
+			} else {
+				this.showBadgeModal = true;
+			}
 		},
 		handleBadgeModalClosed() {
 			this.selectedBadgeData = undefined;
 			this.showBadgeModal = false;
+		},
+		handleSideSheetClosed() {
+			this.showSideSheet = false;
+			this.selectedBadgeData = undefined;
+			this.tier = null;
+		},
+		handleContinueJourneyClicked() {
+			const { getLoanFindingUrl, getBadgeWithVisibleTiers } = useBadgeData();
+			const badgeWithVisibleTiers = getBadgeWithVisibleTiers(this.selectedBadgeData);
+			const { id, challengeName } = badgeWithVisibleTiers;
+
+			let eventLabel = `${challengeName} Continue Journey Clicked`;
+			if (this.allBadgesCompleted) {
+				eventLabel = `${challengeName} See all of your impact stats`;
+			}
+			if (this.isSelectedJourneyComplete) {
+				eventLabel = `${challengeName} See all`;
+			}
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				eventLabel,
+				challengeName,
+			);
+
+			if (this.allBadgesCompleted) {
+				return this.$router.push('/portfolio/lending-stats');
+			}
+			if (this.isSelectedJourneyComplete) {
+				return this.handleSideSheetClosed();
+			}
+			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
+		},
+		handleBadgeJourneyLevelClicked(payload) {
+			const { getLoanFindingUrl } = useBadgeData();
+			const { id, challengeName, tier: clickedTier } = payload;
+
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				'Earn a badge - within badge journey map modal',
+				challengeName,
+				clickedTier.level,
+			);
+
+			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
 		}
 	},
 };

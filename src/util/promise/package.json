@@ -1,0 +1,7 @@
+{
+	"name": "promise",
+	"version": "1.0.0",
+	"description": "A wrapper around the native Promise object.",
+	"main": "promise.js",
+	"type": "module"
+}

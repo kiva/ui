@@ -1,38 +1,34 @@
 <template>
-	<MyKivaContainer>
-		<div class="profile tw-flex tw-items-end tw-justify-end tw-gap-4">
-			<KvLoadingPlaceholder
-				v-if="isLoading"
-				class="!tw-h-5 tw-mt-6 md:tw-mt-0 tw-mr-auto md:tw-mr-0"
-				:style="{ width: '10rem' }"
+	<div
+		:class="{'profile tw-flex tw-items-end tw-justify-end tw-gap-4': !userInHomepage}"
+	>
+		<p
+			class="tw-text-h3 tw-mr-auto md:tw-mr-0"
+			:class="{'tw-pb-0.5': userInHomepage}"
+			v-html="headerMsg"
+		>
+		</p>
+		<a
+			v-if="!userInHomepage"
+			href="/settings/account"
+			v-kv-track-event="[
+				'portfolio',
+				'click',
+				'Account profile pic'
+			]"
+		>
+			<ActivityAvatar
+				:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
+				class="avatar !tw-h-10 !tw-w-10"
+				:lender-image-url="lenderImageUrl"
+				:lender-name="lenderName"
 			/>
-			<h3 v-else class="tw-mr-auto md:tw-mr-0">
-				{{ lenderName }}
-			</h3>
-			<a
-				href="/settings/account"
-				v-kv-track-event="[
-					'portfolio',
-					'click',
-					'Account profile pic'
-				]"
-			>
-				<ActivityAvatar
-					:class="{'tw-border-4 tw-border-white': !lenderImageUrl}"
-					class="avatar !tw-h-10 !tw-w-10"
-					:lender-image-url="lenderImageUrl"
-					:lender-name="lenderName"
-					:is-loading="isLoading"
-				/>
-			</a>
-		</div>
-	</MyKivaContainer>
+		</a>
+	</div>
 </template>
 
 <script setup>
 import ActivityAvatar from '#src/components/Iwd/ActivityAvatar';
-import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import { computed, toRefs } from 'vue';
 
 const props = defineProps({
@@ -44,7 +40,7 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	isLoading: {
+	userInHomepage: {
 		type: Boolean,
 		default: false,
 	},
@@ -55,7 +51,18 @@ const { lender, userInfo } = toRefs(props);
 const lenderName = computed(() => {
 	const firstName = userInfo?.value?.userAccount?.firstName ?? '';
 	const lastName = userInfo?.value?.userAccount?.lastName ?? '';
+
+	if (props.userInHomepage) {
+		return `${firstName}`;
+	}
+
 	return `${firstName} ${lastName}`;
+});
+
+const headerMsg = computed(() => {
+	return props.userInHomepage
+		? 'Looking for your next step?'
+		: lenderName.value;
 });
 
 const lenderImageUrl = computed(() => {
