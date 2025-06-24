@@ -31,7 +31,6 @@
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						:five-dollars-selected="fiveDollarsSelected"
 						:large-card="isLargeCard"
 						:loan-id="loan.id"

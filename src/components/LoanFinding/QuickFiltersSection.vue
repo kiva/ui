@@ -33,7 +33,6 @@
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-huge-amount="enableHugeAmount"
 						:loan-id="loan.id"
 						:show-tags="true"
 						:use-full-width="true"
