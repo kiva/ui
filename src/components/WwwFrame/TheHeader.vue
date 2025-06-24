@@ -932,7 +932,6 @@ export default {
 
 /* CSS grid areas to manage position changes across breakpoints without markup duplication */
 .header__logo { grid-area: logo; }
-.header__explore { grid-area: explore; }
 .header__lend { grid-area: lend; }
 .header__search { grid-area: search; }
 .header__right-side { grid-area: right-side; }
@@ -965,8 +964,8 @@ export default {
 
 @screen lg {
 	.header.header--tablet-open {
-		grid-template-areas: "logo explore lend search right-side";
-		grid-template-columns: auto auto auto 1fr auto;
+		grid-template-areas: "logo lend search right-side";
+		grid-template-columns: auto auto 1fr auto;
 	}
 }
 
