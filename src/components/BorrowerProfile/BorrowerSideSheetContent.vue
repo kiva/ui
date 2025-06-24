@@ -26,8 +26,8 @@
 			<LendersAndTeams v-if="!!lenderCount" :loan-id="loanId" />
 			<LendersAndTeams v-if="!!teamCount" :loan-id="loanId" display-type="teams" />
 		</div>
-		<div class="tw-bg-white tw-px-4">
-			<DetailsTabs :loan-id="loanId" :name="loan?.name" />
+		<div v-if="loanId && loan?.name" class="tw-bg-white tw-px-4">
+			<DetailsTabs :loan-id="loanId" :name="loan.name" />
 		</div>
 		<div v-if="!loading" class="cta-container">
 			<KvLendCta
@@ -43,7 +43,6 @@
 				:show-preset-amounts="true"
 				:kv-track-category="'borrower-profile'"
 				:external-links="true"
-				:max-amount="maxAmount"
 				:unreserved-amount="unreservedAmount"
 				@add-to-basket="addToBasket"
 			/>
@@ -59,6 +58,7 @@ import {
 	onMounted,
 	provide
 } from 'vue';
+import { useRouter } from 'vue-router';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 
 import { KvLendCta } from '@kiva/kv-components';
@@ -112,8 +112,10 @@ export default {
 			console.error('Apollo or cookieStore is undefined in setup');
 			return {};
 		}
-		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 
+		const currentRoute = useRouter().currentRoute.value;
+
+		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
 
@@ -150,6 +152,8 @@ export default {
 
 		return {
 			addToBasket,
+			cookieStore,
+			currentRoute,
 			fundraisingPercent,
 			inPfp,
 			lenderCount,
