@@ -194,7 +194,7 @@ watch(
 		}
 
 		if (prevUpdatesLength > 0 && prevUpdatesLength !== newUpdates.value?.length) {
-			carouselIndex.value = prevUpdatesLength - 1;
+			carouselIndex.value = prevUpdatesLength;
 		}
 
 		prevUpdatesLength = newUpdates.value?.length ?? 0;
