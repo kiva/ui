@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!loading" class="tw-px-2.5 lg:tw-px-0">
+	<div v-if="!loading">
 		<iframe
 			v-if="youtubeId" class="tw-aspect-video tw-mx-auto tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
 			width="560" height="315" :src="`https://www.youtube.com/embed/${youtubeId}?rel=0`"

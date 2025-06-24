@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-px-2.5 lg:tw-px-0">
+	<div>
 		<div class="tw-flex tw-items-stretch tw-gap-2">
 			<div class="tw-w-0.5 tw-bg-brand-200"></div>
 			<div class="tw-w-full tw-pb-1">
