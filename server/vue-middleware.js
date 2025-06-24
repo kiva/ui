@@ -132,7 +132,7 @@ export default function createMiddleware({ config, vite }) {
 					res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
 				} else {
 					// Don't cache pages in the browser
-					res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+					res.setHeader('Cache-Control', 'max-age=0');
 					// Set CDN caching headers
 					if (cdnHeaders) {
 						Object.keys(cdnHeaders).forEach(headerName => {
