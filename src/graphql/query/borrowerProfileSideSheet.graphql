@@ -131,6 +131,7 @@ query BorrowerProfileSideSheet($loanId: Int!) {
 			... on LoanPartner {
 				dualStatementNote
 				moreInfoAboutLoan
+				partnerName
 				reviewer {
 					id
 					bylineName
