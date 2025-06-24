@@ -46,7 +46,7 @@
 				</div>
 			</div>
 		</div>
-		<p v-html="getBadgeTitle(badge)" class="tw-font-medium tw-text-center tw-pt-1"></p>
+		<p v-html="getBadgeTitle(badge)" class="tw-text-center tw-pt-1"></p>
 	</div>
 </template>
 
@@ -72,7 +72,7 @@ const getBadgeTitle = badge => {
 	const levelCaption = getLevelCaption(badge);
 
 	// eslint-disable-next-line max-len
-	return `${badge.challengeName} <br /> ${badge.level > 0 ? `${levelCaption} of <span class="tw-lowercase">${getLevelCaption({ level: tiers })}</span>` : ''}`;
+	return `<span class="tw-font-medium">${badge.challengeName}</span> <br /> ${badge.level > 0 ? `${levelCaption} of <span class="tw-lowercase">${getLevelCaption({ level: tiers })}</span>` : ''}`;
 };
 
 const getBadgeImgUrl = badge => {
