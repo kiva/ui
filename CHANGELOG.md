@@ -1,3 +1,27 @@
+## [3.22.0](https://github.com/kiva/ui/compare/v3.21.0...v3.22.0) (2025-06-23)
+
+### 🎉 New Features
+
+* transaction complete update in my kiva journal carousel ([97353ab](https://github.com/kiva/ui/commit/97353ab0fa80dc7137f1c0b6f3c43808a4a3bc68))
+
+### 🐛 Bugfixes
+
+* conflicts ([2ee15e7](https://github.com/kiva/ui/commit/2ee15e78918a44aa367023af685e45e4a8b7c8df))
+* hide transaction updates for now ([2f821de](https://github.com/kiva/ui/commit/2f821dee44054c0a2c3c3f5bcb78cf70dac6aad1))
+* only get receipt data on transaction update ([b67d780](https://github.com/kiva/ui/commit/b67d7804c63fa5edac259be81d19e4e1b2b64685))
+* update components for side sheet fix ([6e61c2d](https://github.com/kiva/ui/commit/6e61c2db9bb372df1cd39aaa6495d73181ab6304))
+
+### 🧹 Chores
+
+* **release:** 3.22.0-rc.1 [skip ci] ([487a985](https://github.com/kiva/ui/commit/487a985b637d3b311d3ce361f298b6451094c36d))
+* **release:** 3.22.0-rc.2 [skip ci] ([2a978d1](https://github.com/kiva/ui/commit/2a978d1845a3ec87520e3eddd5c9aeba062b6f02))
+
+## [3.22.0-rc.2](https://github.com/kiva/ui/compare/v3.22.0-rc.1...v3.22.0-rc.2) (2025-06-23)
+
+### 🐛 Bugfixes
+
+* hide transaction updates for now ([2f821de](https://github.com/kiva/ui/commit/2f821dee44054c0a2c3c3f5bcb78cf70dac6aad1))
+
 ## [3.22.0-rc.1](https://github.com/kiva/ui/compare/v3.21.0...v3.22.0-rc.1) (2025-06-23)
 
 ### 🎉 New Features
