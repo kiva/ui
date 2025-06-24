@@ -158,6 +158,7 @@ const props = defineProps({
 const {
 	getBadgeWithVisibleTiers,
 	getFilteredLoansByJourney,
+	getLevelCaption,
 } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -206,33 +207,7 @@ const getBadgeStatus = index => {
 	return BADGE_LOCKED;
 };
 
-const levelCaption = index => {
-	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
-	switch (tier.level) {
-		case 1:
-			return 'One';
-		case 2:
-			return 'Two';
-		case 3:
-			return 'Three';
-		case 4:
-			return 'Four';
-		case 5:
-			return 'Five';
-		case 6:
-			return 'Six';
-		case 7:
-			return 'Seven';
-		case 8:
-			return 'Eight';
-		case 9:
-			return 'Nine';
-		case 10:
-			return 'Ten';
-		default:
-			return tier.level;
-	}
-};
+const levelCaption = index => getLevelCaption(badgeWithVisibleTiers.value.achievementData.tiers[index]);
 
 const progressCaption = index => {
 	let floor;
