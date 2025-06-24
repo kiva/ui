@@ -120,6 +120,7 @@ const updateBody = ref('');
 const shareLoan = ref(false);
 const carouselIndex = ref(0);
 const receipt = ref(null);
+let prevUpdatesLength = 0;
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -187,16 +188,16 @@ const loadMoreUpdates = () => {
 
 watch(
 	() => updates,
-	() => {
-		if (updates.value.length) {
+	newUpdates => {
+		if (newUpdates.value.length) {
 			$kvTrackEvent('portfolio', 'view', 'At least one journal update viewed');
 		}
-		if (updates.value.length > 0 && updates.value.length < 3) {
-			carouselIndex.value = 0;
+
+		if (prevUpdatesLength > 0 && prevUpdatesLength !== newUpdates.value?.length) {
+			carouselIndex.value = prevUpdatesLength - 1;
 		}
-		if (updates.value.length > 6) {
-			carouselIndex.value = updates.value.length - 2;
-		}
+
+		prevUpdatesLength = newUpdates.value?.length ?? 0;
 	},
 	{ deep: true },
 );
