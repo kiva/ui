@@ -23,8 +23,8 @@
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />
 			<BorrowerCountry :loan-id="loanId" />
-			<LendersAndTeams :loan-id="loanId" />
-			<LendersAndTeams :loan-id="loanId" display-type="teams" />
+			<LendersAndTeams v-if="!!lenderCount" :loan-id="loanId" />
+			<LendersAndTeams v-if="!!teamCount" :loan-id="loanId" display-type="teams" />
 		</div>
 		<div class="tw-bg-white tw-px-4">
 			<DetailsTabs :loan-id="loanId" :name="loan?.name" />
@@ -124,6 +124,8 @@ export default {
 		const timeLeft = computed(() => borrowerProfile.timeLeft.value ?? '');
 		const unreservedAmount = computed(() => borrowerProfile.unreservedAmount.value ?? undefined);
 		const userBalance = computed(() => borrowerProfile?.userBalance?.value);
+		const teamCount = computed(() => borrowerProfile?.teamCount);
+		const lenderCount = computed(() => borrowerProfile?.lenderCount);
 		const loading = computed(() => borrowerProfile?.loading?.value);
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
@@ -150,10 +152,12 @@ export default {
 			addToBasket,
 			fundraisingPercent,
 			inPfp,
+			lenderCount,
 			loading,
 			loan,
 			numLenders,
 			pfpMinLenders,
+			teamCount,
 			timeLeft,
 			unreservedAmount,
 			userBalance,

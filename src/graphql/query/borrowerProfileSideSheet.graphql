@@ -49,6 +49,9 @@ query BorrowerProfileSideSheet($loanId: Int!) {
 			lenders {
 				totalCount
 			}
+			teams {
+				totalCount
+			}
 			borrowers {
 				id
 				firstName

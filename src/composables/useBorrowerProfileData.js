@@ -78,6 +78,8 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	const loanAmount = computed(() => loan.value?.loanAmount || 0);
 	const paidAmount = computed(() => loan.value?.paidAmount || 0);
 	const comments = computed(() => loan.value?.comments?.values ?? []);
+	const teamCount = computed(() => loan.value?.teams?.totalCount);
+	const lenderCount = computed(() => loan.value?.lenders?.totalCount);
 
 	const loadBPData = loanDataId => {
 		if (!loanDataId || typeof loanDataId !== 'number') return;
@@ -133,6 +135,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		fundraisingPercent,
 		hash,
 		inPfp,
+		lenderCount,
 		lenders,
 		loadBPData,
 		loading,
@@ -159,6 +162,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		reviewer,
 		sector,
 		socialLinks,
+		teamCount,
 		terms,
 		timeLeft,
 		unreservedAmount,
