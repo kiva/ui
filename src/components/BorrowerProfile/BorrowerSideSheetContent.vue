@@ -4,6 +4,7 @@
 			<SideSheetHeader />
 			<SideSheetLoanTags />
 			<LoanProgress
+				:loading="loading"
 				:loan-status="inPfp ? 'pfp' : 'fundraising'"
 				:money-left="unreservedAmount"
 				:number-of-lenders="numLenders"
