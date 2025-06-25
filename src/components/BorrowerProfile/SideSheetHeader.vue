@@ -29,7 +29,7 @@
 				</h5>
 			</div>
 		</div>
-		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-my-2" style="height: 2rem;" />
+		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-my-2 tw-h-4" />
 		<h1 v-else class="tw-text-h2 tw-text-center tw-py-2 tw-px-2.5 lg:tw-px-0">
 			{{ name }}
 		</h1>

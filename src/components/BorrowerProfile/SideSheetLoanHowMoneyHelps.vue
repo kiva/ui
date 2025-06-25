@@ -11,7 +11,7 @@
 				<h4 v-else class="tw-pb-1">
 					HOW THIS MONEY HELPS
 				</h4>
-				<KvLoadingPlaceholder v-if="loading" class="tw-mt-0.5" style="height: 1rem;" />
+				<KvLoadingPlaceholder v-if="loading" class="tw-mt-0.5 tw-h-2" />
 				<p v-else>
 					Helps {{ loanUse }}
 				</p>

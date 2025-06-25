@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-eco-green-1" style="margin-left: -16px; margin-right: -16px;">
+	<div class="tw-bg-eco-green-1 tw--mx-2">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags />
@@ -59,9 +59,9 @@ import {
 	provide
 } from 'vue';
 import { useRouter } from 'vue-router';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
-
 import { KvLendCta } from '@kiva/kv-components';
+import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
+import logFormatter from '#src/util/logFormatter';
 
 import CommentsAndWhySpecial from './CommentsAndWhySpecial';
 import BorrowerCountry from './BorrowerCountry';
@@ -109,7 +109,7 @@ export default {
 		const apollo = inject('apollo');
 		const cookieStore = inject('cookieStore');
 		if (!apollo || !cookieStore) {
-			console.error('Apollo or cookieStore is undefined in setup');
+			logFormatter('Apollo or cookieStore is undefined in setup', 'error');
 			return {};
 		}
 
@@ -126,8 +126,8 @@ export default {
 		const timeLeft = computed(() => borrowerProfile.timeLeft.value ?? '');
 		const unreservedAmount = computed(() => borrowerProfile.unreservedAmount.value ?? undefined);
 		const userBalance = computed(() => borrowerProfile?.userBalance?.value);
-		const teamCount = computed(() => borrowerProfile?.teamCount);
-		const lenderCount = computed(() => borrowerProfile?.lenderCount);
+		const teamCount = computed(() => borrowerProfile?.teamCount?.value);
+		const lenderCount = computed(() => borrowerProfile?.lenderCount?.value);
 		const loading = computed(() => borrowerProfile?.loading?.value);
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
@@ -142,7 +142,7 @@ export default {
 			try {
 				borrowerProfile.loadBPData(props.loanId);
 			} catch (e) {
-				console.error('Error in loadBPData:', e);
+				logFormatter(`Error in loadBPData: ${e}`, 'error');
 			}
 		});
 

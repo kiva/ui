@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-flex tw-justify-center">
-		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-mt-1" style="height: 1.5rem;" />
+		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-mt-1 tw-h-3" />
 		<KvLoanCallouts
 			v-else
 			:callouts="loanCallouts"

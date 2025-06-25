@@ -18,6 +18,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	const bpData = ref();
 	const achievementsData = ref();
 	const currentLoanId = ref(null);
+	const subscription = ref();
 
 	// Loading state and computed properties
 	const loading = computed(() => !bpData.value);
@@ -87,7 +88,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		currentLoanId.value = loanDataId;
 		try {
 			// Watch borrower profile side sheet query
-			watchLoanData({
+			const watchedQuery = watchLoanData({
 				apollo: apolloClient,
 				cookieStore,
 				loanId: loanDataId,
@@ -98,6 +99,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 					}
 				},
 			});
+			subscription.value = watchedQuery.subscription;
 			// Query post-checkout achievements
 			apolloClient.query({
 				query: postCheckoutAchievementsQuery,
@@ -107,11 +109,13 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 					achievementsData.value = result;
 				});
 		} catch (e) {
+			subscription.value?.unsubscribe();
 			logFormatter(e, 'error');
 		}
 	};
 
 	const clearBPData = () => {
+		subscription.value?.unsubscribe();
 		bpData.value = undefined;
 		achievementsData.value = undefined;
 		currentLoanId.value = null;

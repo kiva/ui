@@ -25,6 +25,7 @@ import {
 	ref,
 } from 'vue';
 import { KvMap } from '@kiva/kv-components';
+import logFormatter from '#src/util/logFormatter';
 import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
 import CountryInfo from './CountryInfo';
 
@@ -85,7 +86,7 @@ const fetchCountryFacets = async () => {
 		});
 		loanCountryFacets.value = facetsResponse?.data.lend?.countryFacets ?? [];
 	} catch (error) {
-		console.error('Error fetching country facets:', error);
+		logFormatter(`Error fetching country facets: ${error}`, 'error');
 		loanCountryFacets.value = [];
 	}
 };
