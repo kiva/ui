@@ -2,10 +2,9 @@
 	<div>
 		<div class="tw-flex tw-items-stretch tw-gap-2">
 			<div class="tw-w-0.5 tw-bg-brand-200"></div>
-			<div class="tw-w-full tw-pb-1">
+			<div class="tw-w-full tw-space-y-2" :class="loading ? 'tw-pb-4' : 'tw-pb-1'">
 				<KvLoadingPlaceholder
 					v-if="loading"
-					class="tw-mb-2"
 					:style="{width: 60 + (Math.random() * 15) + '%', height: '1rem'}"
 				/>
 				<h4 v-else class="tw-pb-1">
