@@ -205,7 +205,7 @@ const VALID_LOAN_STATUS = [
 ];
 
 const activeLoans = computed(() => {
-	return loans.value.filter(l => VALID_LOAN_STATUS.includes(l?.status) || l?.delinquent);
+	return loans.value.filter(l => VALID_LOAN_STATUS.includes(l?.status));
 });
 
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
@@ -219,7 +219,7 @@ const title = computed(() => {
 
 const filteredLoans = computed(() => {
 	return loans.value.filter(loan => VALID_LOAN_STATUS
-		.includes(loan?.status) || loan?.delinquent).slice(0, props.cardsNumber);
+		.includes(loan?.status)).slice(0, props.cardsNumber);
 });
 
 const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);

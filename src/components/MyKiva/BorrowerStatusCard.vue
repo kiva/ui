@@ -213,7 +213,6 @@ const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`
 const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
-const isPayingBackDelinquent = computed(() => loan.value?.status === PAYING_BACK && loan.value?.delinquent);
 
 const showWhatIsNextColumn = computed(() => {
 	return !([REFUNDED, EXPIRED, ENDED].includes(loan.value?.status));
@@ -226,8 +225,8 @@ const stepsCopy = computed(() => {
 	return 'What’s next?';
 });
 
-const getPrintableStatus = status => {
-	switch (status) {
+const loanStatus = computed(() => {
+	switch (loan.value?.status) {
 		case FUNDRAISING:
 			return 'Fundraising';
 		case FUNDED:
@@ -243,13 +242,6 @@ const getPrintableStatus = status => {
 		default:
 			return 'Repaid';
 	}
-};
-
-const loanStatus = computed(() => {
-	if (isPayingBackDelinquent.value) {
-		return 'Repaying';
-	}
-	return getPrintableStatus(loan.value?.status);
 });
 
 const description = computed(() => {
