@@ -1,5 +1,5 @@
 <template>
-	<header class="tw-transition-all tw-duration-1000 tw-ease-in-out">
+	<header class="tw-transition-all tw-duration-1000 tw-ease-in-out tw-sticky tw-top-0" style="z-index: 999;">
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
