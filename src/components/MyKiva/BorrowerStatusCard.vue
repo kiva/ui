@@ -88,10 +88,14 @@
 						<p
 							class="tw-text-action tw-font-medium md:tw-text-black
 								md:tw-w-full md:tw-text-left md:tw-mt-5 md:tw-mb-1"
+							:class="{
+								'!tw-text-action': isRefunded || isExpired,
+							}"
 						>
-							What's next
+							{{ stepsCopy }}
 						</p>
 						<KvMaterialIcon
+							v-if="!isRefunded && !isExpired"
 							class="tw-w-3 tw-h-3 tw-text-action md:tw-hidden"
 							:icon="open ? mdiChevronUp : mdiChevronDown"
 						/>
@@ -144,6 +148,10 @@ import {
 } from 'vue';
 import {
 	FUNDRAISING,
+	REFUNDED,
+	EXPIRED,
+	PAYING_BACK,
+	ENDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 
 const COMMENT_ID = 'comment';
@@ -202,16 +210,32 @@ const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`
 const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+const isRefunded = computed(() => loan.value?.status === REFUNDED);
+const isExpired = computed(() => loan.value?.status === EXPIRED);
+const isPayingBackDelinquent = computed(() => loan.value?.status === PAYING_BACK && loan.value?.delinquent);
+
+const stepsCopy = computed(() => {
+	if (isRefunded.value || isExpired.value) {
+		return 'Learn what this means';
+	}
+	return 'What’s next?';
+});
 
 const loanStatus = computed(() => {
-	if (isFundraising.value) {
+	if (isFundraising.value && !isPayingBackDelinquent.value) {
 		return 'Fundraising';
 	}
-	return 'Repaying';
+	return 'Repaid';
 });
 const description = computed(() => {
+	let loanUsageDescription = isFundraising.value ? 'will use ' : 'used ';
+
+	if (isRefunded.value || isExpired.value) {
+		loanUsageDescription = 'asked for a loan to ';
+	}
+
 	return `${borrowerName.value}
-		${isFundraising.value ? 'will use' : 'used'}
+		${loanUsageDescription}
 		${pronoun.value} loan ${loanUse.value}`;
 });
 const currentStep = computed(() => {
@@ -246,6 +270,11 @@ const weeksToRepay = computed(() => {
 const toggleWhatIsNext = () => {
 	if (!open.value) {
 		$kvTrackEvent('portfolio', 'click', 'What’s next?', borrowerName.value, loan.value.id);
+	}
+	if (isRefunded.value || isExpired.value) {
+		console.log('hello');
+		// eslint-disable-next-line max-len
+		window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
 	}
 	emit('toggle-what-is-next', !open.value);
 };

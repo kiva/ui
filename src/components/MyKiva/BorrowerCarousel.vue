@@ -132,7 +132,10 @@ import {
 	PAYING_BACK,
 	FUNDED,
 	FUNDRAISING,
-	RAISED
+	RAISED,
+	EXPIRED,
+	REFUNDED,
+	ENDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
@@ -191,8 +194,18 @@ const commentLoanData = ref({
 const shareLoan = ref(false);
 const previousLastIndex = ref(0);
 
+const VALID_LOAN_STATUS = [
+	FUNDED,
+	FUNDRAISING,
+	PAYING_BACK,
+	RAISED,
+	EXPIRED,
+	REFUNDED,
+	ENDED,
+];
+
 const activeLoans = computed(() => {
-	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
+	return loans.value.filter(l => VALID_LOAN_STATUS.includes(l?.status) || l?.delinquent);
 });
 
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
@@ -205,8 +218,8 @@ const title = computed(() => {
 });
 
 const filteredLoans = computed(() => {
-	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED]
-		.includes(loan?.status)).slice(0, props.cardsNumber);
+	return loans.value.filter(loan => VALID_LOAN_STATUS
+		.includes(loan?.status) || loan?.delinquent).slice(0, props.cardsNumber);
 });
 
 const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);
