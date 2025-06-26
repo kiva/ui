@@ -151,7 +151,6 @@ import {
 	REFUNDED,
 	EXPIRED,
 	PAYING_BACK,
-	ENDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 
 const COMMENT_ID = 'comment';
