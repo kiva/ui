@@ -31,9 +31,11 @@
 			<JourneyCardCarousel
 				:slides="heroSlides"
 				:lender="lender"
+				:user-info="userInfo"
 				:user-in-homepage="userInHomepage"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
+				:slides-number="3"
 				@update-journey="updateJourney"
 			/>
 		</section>
