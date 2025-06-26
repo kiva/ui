@@ -10,7 +10,7 @@
 	>
 		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
-		<slot></slot>
+		<slot v-if="!isLocked"></slot>
 		<div
 			v-if="isLocked"
 			class="tw-absolute tw-top-0 tw-w-full tw-h-full tw-bg-no-repeat tw-bg-cover tw-bg-center"

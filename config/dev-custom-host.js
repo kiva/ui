@@ -1,4 +1,4 @@
-import { merge } from 'webpack-merge';
+import merge from 'deepmerge';
 import base from './k8s-local.js';
 
 const host = 'kiva-ui.local';
@@ -26,7 +26,6 @@ export default merge(base, {
 	},
 	server: {
 		graphqlUri: `https://gateway.${kivaHost}/graphql`,
-		sessionUri: `https://www.${kivaHost}/start-ui-session`,
 		memcachedEnabled: false,
 		memcachedServers: '',
 		viteConfig: {

@@ -43,9 +43,6 @@ export default function createMiddleware({ config, vite }) {
 		template = fs.readFileSync(resolve(__dirname, '../index.html'), 'utf-8');
 	}
 
-	// Set webpack public asset path based on configuration
-	// clientManifest.publicPath = config.app.publicPath || '/';
-
 	let render;
 	if (!vite) {
 		// Create a worker pool to render the app for production
@@ -76,41 +73,78 @@ export default function createMiddleware({ config, vite }) {
 	}
 
 	async function middleware(req, res, next) {
-		const cookies = cookie.parse(req.headers.cookie || '');
-		const userAgent = req.get('user-agent');
+		// Get cookies from the request
+		const cookies = cookie.parse(req.get('Cookie') || '');
+
+		// Get device information from the user agent
+		const userAgent = req.get('User-Agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
 
-		// Set the first user visit to the web
-		req.session.firstPage = !req.session?.firstPage ? req.url : req.session.firstPage;
+		// Get ESI information from the request
+		const esiTag = req.url.match(/\/esi-ui\/(.*)/)?.[1];
+		const topUrl = req.get('Fastly-Top-Url');
+		const esi = esiTag && topUrl ? {
+			tagName: esiTag,
+			topUrl,
+		} : null;
 
+		// Check if CDN indicates that the user is logged in
+		const cdnNotedLoggedIn = config.server.simulateCDN
+			// If simulating CDN, check login sync cookie
+			? cookies.kvls && cookies.kvls !== 'o'
+			// If not simulating CDN, check Fastly header
+			: req.get('Fastly-Noted-Logged-In') === 'true';
+
+		// Setup rendering context
 		const context = {
 			url: req.url,
-			config: { ...config.app, firstPage: req.session?.firstPage },
+			esi,
+			config: config.app,
 			kivaUserAgent: config.server.userAgent,
 			cookies,
 			user: req.user || {},
 			locale: req.locale,
 			device,
+			cdnNotedLoggedIn,
 		};
 
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
-		// Set strict cache-control headers for protected pages
-		if (req?.url && protectedRoutes.filter(route => {
-			return req?.url?.indexOf(route) !== -1;
-		}).length) {
-			res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
-		} else {
-			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-		}
+
 		try {
 			// render the app
-			const { error, html, setCookies } = await render(context);
+			const {
+				cdnHeaders,
+				error,
+				html,
+				setCookies
+			} = await render(context);
 			// set any cookies created during the app render
-			setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+			setCookies?.forEach(setCookie => res.append('Set-Cookie', setCookie));
+			// handle any errors
 			if (error) {
 				handleError(error, req, res, next);
 			} else {
+				if (req?.url && protectedRoutes.some(route => {
+					return req?.url?.indexOf(route) !== -1;
+				})) {
+					// Set strict cache-control headers for protected pages
+					res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
+				} else {
+					// Don't cache pages in the browser
+					res.setHeader('Cache-Control', 'max-age=0');
+					// Set CDN caching headers
+					if (cdnHeaders) {
+						Object.keys(cdnHeaders).forEach(headerName => {
+							res.setHeader(headerName, cdnHeaders[headerName]);
+						});
+						// Delete the session object for this request so that session changes are not saved and no
+						// session cookie is sent in the response. To cache in the CDN we must not set any cookies, but
+						// a session cookie will be created if a session was created or regenerated in this request.
+						delete req.session;
+					}
+				}
+
 				// send the final rendered html
 				res.send(html);
 			}

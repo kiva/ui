@@ -46,7 +46,7 @@
 				</div>
 			</div>
 		</div>
-		<p v-html="getBadgeTitle(badge)" class="tw-font-medium tw-text-center tw-pt-1"></p>
+		<p v-html="getBadgeTitle(badge)" class="tw-text-center tw-pt-1"></p>
 	</div>
 </template>
 
@@ -54,7 +54,7 @@
 import { ref } from 'vue';
 import useBadgeData from '#src/composables/useBadgeData';
 
-const { getTierBadgeDataByLevel } = useBadgeData();
+const { getBadgeWithVisibleTiers, getLevelCaption } = useBadgeData();
 
 defineProps({
 	badge: {
@@ -68,8 +68,11 @@ defineEmits(['click']);
 const mouseOver = ref(false);
 
 const getBadgeTitle = badge => {
-	const levelData = getTierBadgeDataByLevel(badge, badge.level);
-	return `${levelData.challengeName} <br /> ${levelData.level > 0 ? `(level ${levelData.level})` : ''}`;
+	const tiers = getBadgeWithVisibleTiers(badge).achievementData.tiers.length;
+	const levelCaption = getLevelCaption(badge);
+
+	// eslint-disable-next-line max-len
+	return `<span class="tw-font-medium">${badge.challengeName}</span> <br /> ${badge.level > 0 ? `${levelCaption} of <span class="tw-lowercase">${getLevelCaption({ level: tiers })}</span>` : ''}`;
 };
 
 const getBadgeImgUrl = badge => {

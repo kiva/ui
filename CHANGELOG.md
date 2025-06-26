@@ -1,3 +1,80 @@
+## [3.23.0-rc.1](https://github.com/kiva/ui/compare/v3.22.0...v3.23.0-rc.1) (2025-06-25)
+
+### 🎉 New Features
+
+* add server directory alias ([13dad4b](https://github.com/kiva/ui/commit/13dad4b02f6aa9bfb31b4548e1234829989316f3))
+* allow shouldPreFetch option for apollo preFetching ([01d2c56](https://github.com/kiva/ui/commit/01d2c562219e639940e861c63bd419ff9b41b809))
+* cache data merge method for Apollo Client ([18b43d1](https://github.com/kiva/ui/commit/18b43d1c7970a8554be8ddce490eec3d61fd7543))
+* change level caption in lending stats ([3e7ff91](https://github.com/kiva/ui/commit/3e7ff9149477fb1c4bc6a2118301e2556f6a8fc1))
+* create basket util ([f42853c](https://github.com/kiva/ui/commit/f42853cc9c19c5a8e7a9122a1e88da3ab65ca04d))
+* process ESI tags for local development and remove session cookie fetch ([49c00c3](https://github.com/kiva/ui/commit/49c00c37592ac9dfcaf786a685c3714bf5ef6ecf))
+* render common unique request content with edge-side-includes tag ([278c9c5](https://github.com/kiva/ui/commit/278c9c508637fe0032e4e130ceabc5f090844bad))
+* server rendering mode for ESI tags and provide router from entry points instead of main ([8be6c02](https://github.com/kiva/ui/commit/8be6c024afd7df9e66c6de62fad29c198db67d9d))
+* set CDN caching control headers ([5039a88](https://github.com/kiva/ui/commit/5039a88551b40fc37024678cfb326ea34f0404e5))
+* set initial basket util ([4a7cf9b](https://github.com/kiva/ui/commit/4a7cf9b3a89727b152b921211432534f0a1b6557))
+* simulate CDN request headers locally ([d160ccb](https://github.com/kiva/ui/commit/d160ccbd32ed29a4fef4b458ef34d047056ad3da))
+* support multiple apollo queries in components ([0ff59ea](https://github.com/kiva/ui/commit/0ff59eaadc9fbff42f739292d4734a88cca697a0))
+* use esiTags/head for loading promo banner and promo credit info ([de87d02](https://github.com/kiva/ui/commit/de87d02b8b0b7765e5ab6943d8300b3bd41b10bf))
+* utility methods for app install prompt ([5a0ccc9](https://github.com/kiva/ui/commit/5a0ccc9301da0671fdcb20c84a9f3b390be9696d))
+* utility methods for promo credit banner ([a748c59](https://github.com/kiva/ui/commit/a748c590b1d1a805978232f2456257064fe5e515))
+* visitor cookie util ([a488e89](https://github.com/kiva/ui/commit/a488e897356a33016701ced09bb3368340908bae))
+
+### 🐛 Bugfixes
+
+* add alt text for user avatar ([dcf49cd](https://github.com/kiva/ui/commit/dcf49cd952b2fc513e0c7eee59ca20febd9d4bb5))
+* adjust basket count placeholder sizing ([fd68958](https://github.com/kiva/ui/commit/fd689581f82119132e1f1af55e6becfdd643e2b2))
+* always provide global injections in the browser client ([fa0d445](https://github.com/kiva/ui/commit/fa0d4459ab0ed6fdfb4bb5287eff33828179e537))
+* basket data not loading for visitor to cached page ([7ef28fa](https://github.com/kiva/ui/commit/7ef28fa96b42948e10f694d27fa9a69e12d76818))
+* carousel index on load more ([a2564f0](https://github.com/kiva/ui/commit/a2564f0789d11ee5e7b519cb11733626241ca77a))
+* cast promoFundId to string ([e3826e0](https://github.com/kiva/ui/commit/e3826e0abce0bc1e506fd5230b396a61a75579e5))
+* font bold only for challenge name ([6dffeff](https://github.com/kiva/ui/commit/6dffeff1812348366c5b95cb5f9f0ed5cdf0ffe3))
+* handle apollo state from server being undefined ([1ddbed0](https://github.com/kiva/ui/commit/1ddbed0292de6c1559986959db2a5ab16eff884c))
+* handle undefined cookieStore and kvAuth0 when rendering for CDN ([3d11d85](https://github.com/kiva/ui/commit/3d11d858e3bc73b8147d0f5eec871081e497ff71))
+* handle warnings about unprovided injections ([18f7159](https://github.com/kiva/ui/commit/18f71594722c45e81c74a22935e6b6c925635a7e))
+* hide badge image when is locked ([94fbfa8](https://github.com/kiva/ui/commit/94fbfa8bba91ae2e314af031a857bd891dce6bec))
+* index issue with carousel updates ([1be9e6d](https://github.com/kiva/ui/commit/1be9e6df8ee6b0fe82c4089a6f7b2e5c79fb1ecc))
+* **LendMenu:** show My Kiva sections when using cdn caching and noted logged in ([0c6e7b4](https://github.com/kiva/ui/commit/0c6e7b4666e69859b31689d960a3ac289c241973))
+* merge apollo states before hydrating the cache with them ([9efaa4e](https://github.com/kiva/ui/commit/9efaa4e7da14faa0009fc66401c11e2bfab2df99))
+* move nodesi to dependencies instead of devDependencies ([295ec86](https://github.com/kiva/ui/commit/295ec861ab34e4cf3f6bbd3186a7a28837745d7e))
+* moving first index to the new item ([bbf6039](https://github.com/kiva/ui/commit/bbf60398bfac72a4020b17fddb3fbbf6e7463925))
+* only render navigation progress bar on client ([78b719d](https://github.com/kiva/ui/commit/78b719d5519f7fc459e7ad33db03a303bc872c19))
+* only use max-age to prevent browser caching ([bad8ccb](https://github.com/kiva/ui/commit/bad8ccb96d3887fcfc61f3f390db284e2f716a30))
+* prevent basket bar data prefetch if using cdn caching ([1163c31](https://github.com/kiva/ui/commit/1163c318ef1f7a7b1c950df7def48ac943d4f1f2))
+* provide device and render config for client-side prefetch ([619e46c](https://github.com/kiva/ui/commit/619e46c73a25292b84fa440e5805e375126e30c1))
+* remove development logging messages ([5cab312](https://github.com/kiva/ui/commit/5cab31253446a1ce9253c43a4711fa2150cb76c3))
+* remove header gap caused by non-existent grid area ([6d50e2b](https://github.com/kiva/ui/commit/6d50e2b2444ff3b98d95e22e0924a68ab4c077dc))
+* remove unused app-install-mixin ([8f8017f](https://github.com/kiva/ui/commit/8f8017fa9a6cb049ec67539ac6bbf71c0e68740a))
+* remove web manifest in local development ([3209549](https://github.com/kiva/ui/commit/3209549bc8de9be7f831d61abe583d6777cfbb9c))
+* **TheHeader:** separate basket and user data loading flags ([5bddde3](https://github.com/kiva/ui/commit/5bddde3516312f8d6b248c80f54e4bae37e1bcde))
+* use cdnNotedLoggedIn to set isVisitor ([6a4ed3b](https://github.com/kiva/ui/commit/6a4ed3b8af14a5b0e4f4b7436ccd6c117bbcfa4c))
+* use config file for local esi processing flag ([8d48c46](https://github.com/kiva/ui/commit/8d48c46734afb08639e6ba87ad5ff66254fe6130))
+* use loading placeholder for balance ([630a249](https://github.com/kiva/ui/commit/630a249a14f90c58b91643afb58803959b72b5f2))
+* use loading placeholder for basket count ([5ebd7f7](https://github.com/kiva/ui/commit/5ebd7f7689e637b49016e9fdc81bb82e6a8eecc9))
+* use shouldPreFetch to skip data fetch on server when using CDN caching ([35139c1](https://github.com/kiva/ui/commit/35139c114ce13292a82de52dc15f4073eb42ef9c))
+* wait for router to be ready in main ([c985b06](https://github.com/kiva/ui/commit/c985b06c3d150ab2f189b9cde6e786ff3ee4d55e))
+
+### 🏗️ Build System
+
+* switch back to using main branch of github-actions repo ([2438768](https://github.com/kiva/ui/commit/24387684fb0633919f7b9c33149ada0b91abda14))
+* test faster s3 uploads ([53c7fd8](https://github.com/kiva/ui/commit/53c7fd83f012394cb86bc10e7f07f930a25e7556))
+
+### 🪚 Refactors
+
+* loanid -> loanId ([ca26845](https://github.com/kiva/ui/commit/ca26845c389b5a163744586f5df0bb6bc6a98444))
+* move promo banner logic to shared utility module ([a5bfe20](https://github.com/kiva/ui/commit/a5bfe2072b7c1081929dbc544a42173468111168))
+* rename promo credit banner files ([70c21b6](https://github.com/kiva/ui/commit/70c21b6037d1ebabf21060d78519aa960136f21f))
+* replace webpack-merge with deepmerge ([e33a5c2](https://github.com/kiva/ui/commit/e33a5c27396c0e5db2a7f519821d7a53bb4f6eb0))
+
+### 🔍 Tests
+
+* add test for promise module ([e3e0ada](https://github.com/kiva/ui/commit/e3e0ada14203bbeac23e4db51d3a27be715a8f8e))
+* test for server/util/cookies ([7f79a67](https://github.com/kiva/ui/commit/7f79a677fa5e0f2de41aca9194ef385aba97d82b))
+
+### 🧹 Chores
+
+* **deps:** install deepmerge ([e3a22a9](https://github.com/kiva/ui/commit/e3a22a912e7f98544f3eb00ce09f328572e81f11))
+* remove sessionUri config variable ([6d72f3e](https://github.com/kiva/ui/commit/6d72f3e7a2620bc50ff97916e48f7fbf8e5645f1))
+
 ## [3.22.0](https://github.com/kiva/ui/compare/v3.21.0...v3.22.0) (2025-06-23)
 
 ### 🎉 New Features

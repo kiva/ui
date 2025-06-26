@@ -4,14 +4,13 @@ import VueProgressBar from '@aacassandra/vue3-progressbar';
 import Vue3TouchEvents from 'vue3-touch-events';
 
 import App from '#src/App';
-import createRouter from '#src/router';
 import createApolloClient from '#src/api/apollo';
 import kivaPlugins from '#src/plugins';
 import kvAnalytics from '#src/plugins/kv-analytics-plugin';
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
-export default function createApp({
+export default async function createApp({
 	apollo = {},
 	appConfig = {},
 	cookieStore,
@@ -20,16 +19,30 @@ export default function createApp({
 	locale,
 	fetch,
 	kivaUserAgent,
-	url = '',
+	router,
+	cdnNotedLoggedIn = false,
 	isServer = false,
 } = {}) {
+	const renderConfig = {
+		cdnNotedLoggedIn,
+	};
+
 	// Create a new app instance
 	const app = createSSRApp(App);
 
-	// Create a new router instance
-	const router = createRouter({ isServer });
+	// Install router
 	app.use(router);
-	const route = router.resolve(url);
+
+	if (!isServer) {
+		// Wait for the router to be ready before reading the current route
+		await router.isReady();
+	}
+
+	const route = router.currentRoute.value;
+
+	// Determine if the route should use CDN caching
+	const useCDNCaching = route.meta?.useCDNCaching;
+	renderConfig.useCDNCaching = useCDNCaching;
 
 	const head = createHead();
 	// head for composition api
@@ -56,28 +69,32 @@ export default function createApp({
 	const apolloClient = createApolloClient({
 		...apollo,
 		appConfig,
-		cookieStore,
-		kvAuth0,
+		cookieStore: useCDNCaching && isServer ? null : cookieStore,
+		kvAuth0: useCDNCaching && isServer ? null : kvAuth0,
 		fetch,
 		userAgent: kivaUserAgent,
 		route,
 	});
 
+	if (!useCDNCaching || !isServer) {
+		app.provide('cookieStore', cookieStore);
+		app.provide('device', device);
+		app.provide('kvAuth0', kvAuth0);
+		app.provide('locale', locale);
+	}
 	app.provide('apollo', apolloClient);
-	app.provide('cookieStore', cookieStore);
-	app.provide('device', device);
-	app.provide('kvAuth0', kvAuth0);
-	app.provide('locale', locale);
 	app.provide('$kvTrackEvent', app.config.globalProperties.$kvTrackEvent); // provide kvTrackEvent for composition api
 	app.provide('$appConfig', appConfig); // provide appConfig for composition api
+	app.provide('$renderConfig', renderConfig); // provide renderConfig for composition api
 
-	// Provide application config to all components
-	app.config.globalProperties.$appConfig = appConfig;
+	app.config.globalProperties.$appConfig = appConfig; // provide application config for options api
+	app.config.globalProperties.$renderConfig = renderConfig; // provide renderConfig for options api
 
 	return {
 		app,
 		head,
 		router,
 		apolloClient,
+		renderConfig,
 	};
 }

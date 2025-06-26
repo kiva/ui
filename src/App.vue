@@ -4,7 +4,7 @@
 		:data-hydrated="dataHydrated"
 	>
 		<router-view />
-		<vue-progress-bar />
+		<vue-progress-bar v-if="dataHydrated" />
 		<the-tip-message />
 	</div>
 </template>

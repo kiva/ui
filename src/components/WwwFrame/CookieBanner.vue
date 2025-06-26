@@ -27,7 +27,9 @@ import getCacheKey from '#src/util/getCacheKey';
 export default {
 	name: 'CookieBanner',
 	serverCacheKey: () => getCacheKey('CookieBanner'),
-	inject: ['cookieStore'],
+	inject: {
+		cookieStore: { default: null },
+	},
 	components: {
 		KvButton
 	},

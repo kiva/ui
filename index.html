@@ -2,11 +2,12 @@
 <html data-vue-meta-server-rendered lang="en" ${htmlAttrs}>
 	<head>
 		${appConfig}
+		<esi:include src="/esi-ui/head" />
 		${externals}
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="manifest" href="/static/manifest.webmanifest">
+		${webManifest}
 		${headTags}
 		${preloadLinks}
 	</head>

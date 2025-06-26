@@ -56,7 +56,10 @@ export default {
 	components: {
 		KvToast,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	apollo: {
 		query: tipMessageData,
 		preFetch: true,

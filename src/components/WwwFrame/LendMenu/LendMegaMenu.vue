@@ -79,7 +79,7 @@
 								</li>
 							</ul>
 							<!-- My Kiva -->
-							<div v-if="userId">
+							<div v-if="userId || isUserDataLoading">
 								<!-- blank line to keep things lined up just right -->
 								<span class="tw-inline-block tw-py-1">&nbsp;</span>
 
@@ -214,7 +214,10 @@ import SearchList from './SearchList';
 
 export default {
 	name: 'LendMegaMenu',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+	},
 	components: {
 		CountryList,
 		KvGrid,
@@ -238,6 +241,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		isUserDataLoading: {
+			type: Boolean,
+			default: false,
 		},
 		userId: {
 			type: Number,
