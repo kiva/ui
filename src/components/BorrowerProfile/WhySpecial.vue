@@ -10,7 +10,7 @@
 		<h2 class="tw-sr-only">
 			Why this loan is special
 		</h2>
-		<p v-if="!loading" class="tw-text-h2">
+		<p v-if="!loading" class="tw-text-h2 tw-my-1">
 			{{ fullWhySpecial }}
 		</p>
 	</article>

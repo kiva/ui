@@ -70,41 +70,51 @@
 				</div>
 			</div>
 			<template v-else-if="loanStatus === 'pfp'">
-				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
-					<span class="tw-text-h3 tw-block tw-m-0">
-						{{ timeLeft }} left
-					</span>
-
-					<span class="tw-text-h4 tw-text-secondary tw-block">
-						in private fundraising
-					</span>
-				</p>
-				<div class="tw-flex-auto tw-text-right">
-					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-lenders-to-go">
-						{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
+				<div v-if="loading">
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+				</div>
+				<div v-else class="tw-flex tw-flex-auto">
+					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
+						<span class="tw-text-h3 tw-block tw-m-0">
+							{{ timeLeft }} left
+						</span>
+						<span class="tw-text-h4 tw-text-secondary tw-block">
+							in private fundraising
+						</span>
 					</p>
-					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
-						{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
-					</p>
+					<div class="tw-flex-auto tw-text-right">
+						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-lenders-to-go">
+							{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
+						</p>
+						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
+							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
+						</p>
+					</div>
 				</div>
 			</template>
 			<template v-else>
-				<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
-					<span class="tw-text-h3 tw-block tw-m-0">
-						{{ timeLeft }}
-					</span>
-
-					<span class="tw-text-h4 tw-text-secondary tw-block">
-						remaining
-					</span>
-				</p>
-				<div class="tw-flex-auto tw-text-right">
-					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-						{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
+				<div v-if="loading" class="tw-flex tw-flex-auto tw-justify-between">
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+				</div>
+				<div v-else class="tw-flex tw-flex-auto">
+					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
+						<span class="tw-text-h3 tw-block tw-m-0">
+							{{ timeLeft }}
+						</span>
+						<span class="tw-text-h4 tw-text-secondary tw-block">
+							remaining
+						</span>
 					</p>
-					<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
-						{{ progressPercentRounded }} funded
-					</p>
+					<div class="tw-flex-auto tw-text-right">
+						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
+						</p>
+						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
+							{{ progressPercentRounded }} funded
+						</p>
+					</div>
 				</div>
 			</template>
 		</figcaption>
@@ -114,14 +124,19 @@
 <script>
 import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import numeral from 'numeral';
-import { KvProgressBar } from '@kiva/kv-components';
+import { KvProgressBar, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanProgress',
 	components: {
 		KvProgressBar,
+		KvLoadingPlaceholder
 	},
 	props: {
+		loading: {
+			type: Boolean,
+			default: true
+		},
 		moneyLeft: {
 			type: String,
 			default: '0.00',

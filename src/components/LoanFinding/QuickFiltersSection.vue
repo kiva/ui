@@ -30,14 +30,16 @@
 					<kv-classic-loan-card-container
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
-						:loan-id="loan.id"
-						:use-full-width="true"
-						:show-tags="true"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:loan-id="loan.id"
+						:show-tags="true"
+						:use-full-width="true"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
+						@show-loan-details="showLoanDetails"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -91,7 +93,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'data-loaded'],
+	emits: ['add-to-basket', 'data-loaded', 'show-loan-details'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -310,6 +312,9 @@ export default {
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			this.loans = loans;
+		},
+		showLoanDetails(payload) {
+			this.$emit('show-loan-details', payload);
 		}
 	},
 	watch: {

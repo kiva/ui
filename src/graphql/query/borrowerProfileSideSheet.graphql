@@ -1,0 +1,160 @@
+query BorrowerProfileSideSheet($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			# for loan-progress and lend cta components
+			unreservedAmount @client
+			fundraisingPercent @client
+			fundraisingTimeLeft @client
+			description
+			descriptionInOriginalLanguage
+			disbursalDate
+			id
+			inPfp
+			loanAmount
+			name
+			paidAmount
+			pfpMinLenders
+			plannedExpirationDate
+			previousLoanId
+			repaymentInterval
+			tags
+			use
+			whySpecial
+			activity {
+				id
+				name
+			}
+			image {
+				id
+				url
+				hash
+			}
+			terms {
+				currency
+				currencyFullName
+				disbursalAmount
+				disbursalDate
+				flexibleFundraisingEnabled
+				lenderRepaymentTerm
+				loanAmount
+				lossLiabilityCurrencyExchange
+				lossLiabilityNonpayment
+				expectedPayments {
+					amount
+					dueToKivaDate
+					effectiveDate
+					localAmount
+				}
+			}
+			lenders {
+				totalCount
+			}
+			teams {
+				totalCount
+			}
+			borrowers {
+				id
+				firstName
+			}
+			geocode {
+				country {
+					id
+					name
+					numLoansFundraising
+					ppp
+					geocode {
+						latitude
+						longitude
+					}
+				}
+			}
+			video {
+				youtubeId
+			}
+			originalLanguage {
+				id
+				name
+			}
+			comments {
+				values {
+					id
+					authorName
+					authorImageUrl
+					authorLendingAction {
+						lender {
+							id
+							teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
+								values {
+									id
+									name
+									teamPublicId
+								}
+							}
+						}
+					}
+					body
+				}
+			}
+			sector {
+				id
+				name
+			}
+			loanFundraisingInfo {
+				id
+				fundedAmount
+				reservedAmount
+			}
+			... on LoanDirect {
+				businessName
+				businessDescription
+				purpose
+				yearsInBusiness
+				socialLinks {
+					etsy
+					facebook
+					instagram
+					linkedin
+					twitter
+					website
+					yelp
+				}
+				trustee {
+					id
+					organizationName
+					stats {
+						id
+						numDefaultedLoans
+						numLoansEndorsedPublic
+						repaymentRate
+						totalLoansValue
+					}
+				}
+				endorsement
+			}
+			... on LoanPartner {
+				dualStatementNote
+				moreInfoAboutLoan
+				partnerName
+				reviewer {
+					id
+					bylineName
+					showName
+				}
+				partner {
+					id
+					arrearsRate
+					avgBorrowerCost
+					avgBorrowerCostType
+					avgProfitability
+					chargesFeesInterest
+					currencyExchangeLossRate
+					defaultRate
+					loanAlertText
+					loansAtRiskRate
+					name
+					riskRating
+				}
+			}
+		}
+	}
+}

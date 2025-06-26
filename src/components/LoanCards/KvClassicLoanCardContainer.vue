@@ -29,6 +29,7 @@
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
+			@show-loan-details="showLoanDetails"
 		/>
 		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
@@ -79,7 +80,6 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
-			gender
 			...loanCardFieldsExtended
 		}
 		loanThemeFilter {
@@ -102,7 +102,7 @@ const loanQuery = gql`
 
 export default {
 	name: 'KvClassicLoanCardContainer',
-	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals'],
+	emits: ['add-to-basket', 'show-cart-modal', 'updating-totals', 'show-loan-details'],
 	props: {
 		loanId: {
 			type: Number,
@@ -320,6 +320,9 @@ export default {
 				this.isAdding = false;
 			});
 		},
+		showLoanDetails() {
+			this.$emit('show-loan-details', this.loan);
+		},
 		toggleBookmark() {
 			if (!this.loanId) return;
 
@@ -476,7 +479,7 @@ export default {
 				basketSize: this.basketCount,
 			};
 			this.$emit('show-cart-modal', addedLoan);
-		}
+		},
 	},
 	mounted() {
 		if (this.loan) {
