@@ -35,6 +35,14 @@ export const CATEGORIES = {
 	[ID_BASIC_NEEDS]: 'basic-needs',
 };
 
+const COUNTRIES_ISO_CODE = ['PR', 'US'];
+const WOMENS_EQUALITY_FILTER = 'female';
+const REFUGEE_THEME = 'refugees/displaced';
+const BASIC_NEEDS_SECTORS = [6, 10];
+const BASIC_NEEDS_THEME = 'water and sanitation';
+const CLIMATE_ACTION_THEME = 'clean energy';
+const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
+
 /**
  * Utilities for loading and combining tiered badge data
  *
@@ -539,37 +547,59 @@ export default function useBadgeData() {
 	const getFilteredLoansByJourney = (badge, loans) => {
 		return loans.filter(loan => {
 			if (badge.id === ID_US_ECONOMIC_EQUALITY) {
-				const countriesIsoCode = ['PR', 'US'];
-
-				return countriesIsoCode.includes(loan?.geocode?.country?.isoCode);
+				return COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode);
 			}
 			if (badge.id === ID_WOMENS_EQUALITY) {
-				const womensEqualityFilter = 'female';
-
-				return loan?.gender === womensEqualityFilter;
+				return loan?.gender === WOMENS_EQUALITY_FILTER;
 			}
 			if (badge.id === ID_REFUGEE_EQUALITY) {
-				const refugeeTheme = 'refugees/displaced';
-
-				return loan?.themes?.some(theme => theme?.toLowerCase() === refugeeTheme);
+				return loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME);
 			}
 			if (badge.id === ID_BASIC_NEEDS) {
-				const basicNeedsSectors = [6, 10];
-				const basicNeedsTheme = 'water and sanitation';
-
-				return basicNeedsSectors.includes(loan?.sector?.id)
-					|| loan?.themes?.some(theme => theme?.toLowerCase() === basicNeedsTheme);
+				return BASIC_NEEDS_SECTORS.includes(loan?.sector?.id)
+					|| loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME);
 			}
 			if (badge.id === ID_CLIMATE_ACTION) {
-				const climateActionTheme = 'clean energy';
-				const climateActionTags = ['#eco-friendly', '#sustainable ag'];
-
-				return loan?.tags?.some(tag => climateActionTags.includes(tag?.toLowerCase()))
-					|| loan?.themes?.some(theme => theme?.toLowerCase() === climateActionTheme);
+				return loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase()))
+					|| loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME);
 			}
 
 			return null;
 		});
+	};
+
+	/**
+	 * Get journeys by loan using defined search filters in vue-admin
+	 *
+	 * @param loan The loan to filter
+	 * @returns The journeys by loan array
+	 */
+	const getJourneysByLoan = loan => {
+		const journeys = [];
+
+		if (COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode)) {
+			journeys.push(ID_US_ECONOMIC_EQUALITY);
+		}
+
+		if (loan?.gender === WOMENS_EQUALITY_FILTER) {
+			journeys.push(ID_WOMENS_EQUALITY);
+		}
+
+		if (loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME)) {
+			journeys.push(ID_REFUGEE_EQUALITY);
+		}
+
+		// eslint-disable-next-line max-len
+		if (BASIC_NEEDS_SECTORS.includes(loan?.sector?.id) || loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME)) {
+			journeys.push(ID_BASIC_NEEDS);
+		}
+
+		// eslint-disable-next-line max-len
+		if (loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase())) || loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME)) {
+			journeys.push(ID_CLIMATE_ACTION);
+		}
+
+		return journeys;
 	};
 
 	/**
@@ -657,5 +687,6 @@ export default function useBadgeData() {
 		ID_WOMENS_EQUALITY,
 		isBadgeKeyValid,
 		getLevelCaption,
+		getJourneysByLoan,
 	};
 }

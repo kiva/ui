@@ -1072,6 +1072,119 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
+	describe('getJourneysByLoan', () => {
+		const { getJourneysByLoan } = useBadgeData();
+
+		it('should return expected journey for us-economic-equality loans', () => {
+			const loan = {
+				id: 1,
+				geocode: {
+					country: {
+						isoCode: 'US'
+					}
+				}
+			};
+			expect(getJourneysByLoan(loan)).toEqual([ID_US_ECONOMIC_EQUALITY]);
+
+			const loan2 = {
+				id: 1,
+				geocode: {
+					country: {
+						isoCode: 'PR'
+					}
+				}
+			};
+			expect(getJourneysByLoan(loan2)).toEqual([ID_US_ECONOMIC_EQUALITY]);
+		});
+
+		it('should return expected journey for climate-action loans', () => {
+			const loan = {
+				id: 1,
+				tags: [
+					'#Eco-friendly'
+				]
+			};
+			expect(getJourneysByLoan(loan)).toEqual([ID_CLIMATE_ACTION]);
+
+			const loan2 = {
+				id: 1,
+				themes: [
+					'Clean Energy'
+				]
+			};
+			expect(getJourneysByLoan(loan2)).toEqual([ID_CLIMATE_ACTION]);
+		});
+
+		it('should return expected journey for womens-equality loan', () => {
+			const loan = {
+				id: 1,
+				gender: 'female'
+			};
+
+			expect(getJourneysByLoan(loan)).toEqual([ID_WOMENS_EQUALITY]);
+		});
+
+		it('should return expected journey for refugee-equality loan', () => {
+			const loan = {
+				id: 1,
+				themes: [
+					'Refugees/Displaced'
+				]
+			};
+
+			expect(getJourneysByLoan(loan)).toEqual([ID_REFUGEE_EQUALITY]);
+		});
+
+		it('should return expected filtered loans for basic-needs', () => {
+			const loan = {
+				id: 1,
+				sector: {
+					id: 6,
+				}
+			};
+			expect(getJourneysByLoan(loan)).toEqual([ID_BASIC_NEEDS]);
+
+			const loan2 = {
+				id: 1,
+				sector: {
+					id: 6,
+				}
+			};
+			expect(getJourneysByLoan(loan2)).toEqual([ID_BASIC_NEEDS]);
+
+			const loan3 = {
+				id: 3,
+				themes: [
+					'Water and Sanitation'
+				]
+			};
+			expect(getJourneysByLoan(loan3)).toEqual([ID_BASIC_NEEDS]);
+		});
+
+		it('should return an empty array when no match a filter', () => {
+			const loan = {
+				id: 1,
+				gender: 'male',
+				geocode: {
+					country: {
+						isoCode: 'PE'
+					}
+				},
+				sector: {
+					id: 2
+				},
+				themes: [
+					'Education'
+				],
+				tags: [
+					'#Agriculture'
+				]
+			};
+
+			expect(getJourneysByLoan(loan)).toEqual([]);
+		});
+	});
+
 	describe('getBadgeHeadline', () => {
 		it('should return expected headline for women-equality', () => {
 			const { getTierBadgeHeadline } = useBadgeData();
