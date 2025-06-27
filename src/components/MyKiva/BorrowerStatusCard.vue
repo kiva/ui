@@ -88,10 +88,14 @@
 						<p
 							class="tw-text-action tw-font-medium md:tw-text-black
 								md:tw-w-full md:tw-text-left md:tw-mt-5 md:tw-mb-1"
+							:class="{
+								'!tw-text-action': !showWhatIsNextColumn,
+							}"
 						>
-							What's next
+							{{ stepsCopy }}
 						</p>
 						<KvMaterialIcon
+							v-if="showWhatIsNextColumn"
 							class="tw-w-3 tw-h-3 tw-text-action md:tw-hidden"
 							:icon="open ? mdiChevronUp : mdiChevronDown"
 						/>
@@ -99,6 +103,7 @@
 					<kv-expandable easing="ease-in-out" class="tw-block md:tw-hidden">
 						<div v-show="open">
 							<LoanNextSteps
+								v-if="showWhatIsNextColumn"
 								id="loan-next-steps"
 								:weeks-to-repay="weeksToRepay"
 								:current-step="currentStep"
@@ -108,6 +113,7 @@
 						</div>
 					</kv-expandable>
 					<LoanNextSteps
+						v-if="showWhatIsNextColumn"
 						id="loan-next-steps"
 						class="tw-hidden md:tw-block"
 						:weeks-to-repay="weeksToRepay"
@@ -144,6 +150,11 @@ import {
 } from 'vue';
 import {
 	FUNDRAISING,
+	REFUNDED,
+	EXPIRED,
+	PAYING_BACK,
+	ENDED,
+	FUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 
 const COMMENT_ID = 'comment';
@@ -203,15 +214,45 @@ const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
 
-const loanStatus = computed(() => {
-	if (isFundraising.value) {
-		return 'Fundraising';
-	}
-	return 'Repaying';
+const showWhatIsNextColumn = computed(() => {
+	return !([REFUNDED, EXPIRED, ENDED].includes(loan.value?.status));
 });
+
+const stepsCopy = computed(() => {
+	if (!showWhatIsNextColumn.value) {
+		return 'Learn what this means';
+	}
+	return 'What’s next?';
+});
+
+const loanStatus = computed(() => {
+	switch (loan.value?.status) {
+		case FUNDRAISING:
+			return 'Fundraising';
+		case FUNDED:
+			return 'Funded';
+		case PAYING_BACK:
+			return 'Repaying';
+		case REFUNDED:
+			return 'Refunded';
+		case EXPIRED:
+			return 'Expired';
+		case ENDED:
+			return 'Ended in default';
+		default:
+			return 'Repaid';
+	}
+});
+
 const description = computed(() => {
+	let loanUsageDescription = isFundraising.value ? 'will use ' : 'used ';
+
+	if (showWhatIsNextColumn.value) {
+		loanUsageDescription = 'asked for a loan to ';
+	}
+
 	return `${borrowerName.value}
-		${isFundraising.value ? 'will use' : 'used'}
+		${loanUsageDescription}
 		${pronoun.value} loan ${loanUse.value}`;
 });
 const currentStep = computed(() => {
@@ -246,6 +287,10 @@ const weeksToRepay = computed(() => {
 const toggleWhatIsNext = () => {
 	if (!open.value) {
 		$kvTrackEvent('portfolio', 'click', 'What’s next?', borrowerName.value, loan.value.id);
+	}
+	if (!showWhatIsNextColumn.value) {
+		// eslint-disable-next-line max-len
+		window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
 	}
 	emit('toggle-what-is-next', !open.value);
 };

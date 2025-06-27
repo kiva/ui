@@ -59,9 +59,9 @@ export default {
 			steps: [
 				{ text: 'Your contribution is received ' },
 				{ text: 'Their loan is funded' },
-				{ text: 'They use the money to improve their life' },
+				{ text: 'They used the money to improve their life' },
 				// eslint-disable-next-line max-len
-				{ text: `${this.repaymentsStarted ? 'Their next repayment is coming in' : 'They start repaying you in'} <span class="tw-text-action"> ${this.weeksToRepay} </span>` }
+				{ text: `${this.repaymentsStarted ? `Their next repayment is coming in <span class="tw-text-action"> ${this.weeksToRepay} </span>` : 'They completed their repayments'}` }
 			]
 		};
 	},
