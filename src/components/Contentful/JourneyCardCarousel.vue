@@ -202,7 +202,7 @@ const orderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	defaultBadges.forEach(async badgeKey => {
+	defaultBadges.forEach(badgeKey => {
 		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
 
 		if (achievementContent) {
