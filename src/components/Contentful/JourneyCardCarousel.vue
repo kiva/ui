@@ -439,7 +439,7 @@ const handleChange = interaction => {
 }
 
 .journey-card-carousel:deep(div:first-child) {
-	@apply tw-gap-2;
+	@apply tw-gap-2 lg:tw-gap-4;
 }
 
 .slide-gradient {
