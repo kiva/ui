@@ -1,8 +1,7 @@
 <template>
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0' : ''"
-		style="z-index: 999;"
+		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<nav
 			aria-label="Primary navigation"
