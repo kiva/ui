@@ -1,5 +1,8 @@
 <template>
-	<header class="tw-transition-all tw-duration-1000 tw-ease-in-out">
+	<header
+		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
+		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
+	>
 		<nav
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
@@ -599,32 +602,32 @@ export default {
 	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
 	data() {
 		return {
+			aboutMenuId: 'about-header-dropdown',
+			balance: 0,
+			basketCount: 0,
+			basketTotal: 0,
+			hasEverLoggedIn: false,
+			hideLendMenuTimeout: null,
+			isBasketLoading: false,
 			isBorrower: false,
 			isLendMenuDesired: false,
 			isLendMenuVisible: false,
-			hideLendMenuTimeout: null,
-			loanId: null,
-			trusteeId: null,
-			basketCount: 0,
+			isMobile: false,
+			isUserDataLoading: false,
 			lcaLoanCount: 0,
-			balance: 0,
-			profilePic: '',
-			profilePicId: null,
-			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
-			myKivaMenuId: 'my-kiva-header-dropdown',
-			searchOpen: false,
+			loanId: null,
+			mdiBriefcase,
 			mdiChevronDown,
 			mdiMagnify,
-			mdiBriefcase,
-			userId: null,
-			hasEverLoggedIn: false,
-			isMobile: false,
-			basketTotal: 0,
+			myKivaMenuId: 'my-kiva-header-dropdown',
+			profilePic: '',
+			profilePicId: null,
+			searchOpen: false,
 			teams: null,
 			teamsMenuEnabled: false,
-			isBasketLoading: false,
-			isUserDataLoading: false,
+			trusteeId: null,
+			userId: null,
 		};
 	},
 	emits: ['show-basket'],
