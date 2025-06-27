@@ -169,6 +169,7 @@ const openLightbox = async updateId => {
 
 const closeLightbox = () => {
 	isLightboxVisible.value = false;
+	receipt.value = null;
 	$kvTrackEvent('portfolio', 'click', 'borrower-update-lightbox-closed', clickedUpdate.value);
 };
 
