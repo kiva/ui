@@ -12,6 +12,7 @@ export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
+export const AVOID_TRANSACTION_LOANS_KEY = 'loan_repayment';
 
 export const createUserPreferencesMutation = gql`
 	mutation createUserPreferences($preferences: String) {
