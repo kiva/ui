@@ -79,5 +79,38 @@ query myKivaQuery {
       id
       preferences
     }
+    transactions(
+      filter: {
+        category: loan
+      }
+    ) {
+      values {
+        category
+        loan {
+          id
+          name
+          gender
+          tags
+          ... on LoanPartner {
+            themes
+          }
+          sector {
+            id
+          }
+          geocode {
+            city
+            state
+            country {
+              id
+              name
+              isoCode
+              region
+            }
+          }
+        }
+        type
+        createTime
+      }
+    }
   }
 }
