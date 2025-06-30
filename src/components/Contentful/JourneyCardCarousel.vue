@@ -107,13 +107,13 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvButton } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
-const AVOID_TRANSACTION_LOANS_KEY = 'loan_repayment';
 const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
