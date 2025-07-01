@@ -18,6 +18,7 @@ query userRepaymentTransactions($limit: Int, $offset: Int) {
 		  }
           geocode {
             country {
+			  id
               name
             }
           }
