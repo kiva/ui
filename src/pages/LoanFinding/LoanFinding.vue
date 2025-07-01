@@ -124,7 +124,6 @@ import * as Sentry from '@sentry/vue';
 
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
-import { getExperimentSettingCached, trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
@@ -139,9 +138,11 @@ import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalConta
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import { KvSideSheet } from '@kiva/kv-components';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import isBpModalEnabled, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/is-bp-modal-enabled-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 
@@ -166,7 +167,6 @@ const prefetchedRecommendationsVariables = {
 const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
 const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
 const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
-const HOME_BP_MODAL_EXP_KEY = 'home_page_bp_modal';
 const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
@@ -184,7 +184,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, isBpModalEnabled],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -494,20 +494,6 @@ export default {
 				if (daysDifference < 3) this.showFiveDollarsBanner = true;
 			}
 		},
-		async initializeIsBpModalEnabledExp() {
-			const bpModalExp = getExperimentSettingCached(this.apollo, HOME_BP_MODAL_EXP_KEY);
-			if (bpModalExp?.enabled) {
-				const { version } = trackExperimentVersion(
-					this.apollo,
-					this.$kvTrackEvent,
-					'loan-finding',
-					'bpModal',
-				);
-				if (version) {
-					this.isBpModalEnabled = version === 'b';
-				}
-			}
-		},
 		handleCloseSideSheet() {
 			this.showSideSheet = false;
 			this.selectedLoan = undefined;
@@ -615,7 +601,7 @@ export default {
 			window.open(`lend/${this.selectedLoan?.id}`);
 		}
 	},
-	async created() {
+	created() {
 		const loanRecommendationsData = trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
@@ -692,8 +678,6 @@ export default {
 			{ id: 0 }, { id: 0 },
 			{ id: 0 }, { id: 0 },
 		];
-
-		await this.initializeIsBpModalEnabledExp();
 
 		// check for $5 notes banner cookie
 		if (this.enableFiveDollarsNotes) this.check5DollarsBannerCookie();
