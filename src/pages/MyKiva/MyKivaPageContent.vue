@@ -59,10 +59,12 @@
 					:total-loans="totalLoans"
 				/>
 				<JournalUpdatesCarousel
-					:updates="loanUpdates"
+					v-if="visibleUpdates.length"
+					:updates="visibleUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
 					@load-more-updates="loadMoreUpdates"
+					:has-more="hasMoreUpdates"
 				/>
 			</div>
 		</section>
@@ -140,6 +142,7 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import userRepaymentTransactionsQuery from '#src/graphql/query/userRepaymentTransactions.graphql';
 
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 
@@ -195,7 +198,10 @@ const props = defineProps({
 	},
 });
 
+const UPDATES_BATCH_SIZE = 4;
+
 const isEarnedSectionModal = ref(false);
+const repaymentCards = ref([]);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
 const selectedJourney = ref('');
@@ -210,6 +216,7 @@ const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
 const transactions = ref([]);
 const moreWaysToHelpSlides = ref([]);
+const updatesShown = ref(UPDATES_BATCH_SIZE);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
@@ -342,6 +349,57 @@ const getFormattedTransactions = () => {
 	});
 };
 
+const formatRepaymentCards = repayments => {
+	if (repayments.length === 0) return [];
+
+	// 1-5 repayments: show each as a separate card
+	if (repayments.length <= 5) {
+		return repayments.map((trx, idx) => ({
+			id: `repayment-${trx.effectiveTime}-${idx}`,
+			isRepayment: true,
+			isTransaction: true,
+			status: 'repayment',
+			date: trx.effectiveTime,
+			subject: 'Success!',
+			// eslint-disable-next-line max-len
+			body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+			amount: trx.amount,
+			loan: trx.loan,
+			image: trx.loan?.image?.url || null,
+		}));
+	}
+
+	// 6 or more repayments: show a single summary card with the first 3 images
+	const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
+	const uniqueBorrowers = new Set(repayments.map(trx => trx.loan?.name).filter(Boolean));
+	const uniqueCountries = new Set(repayments.map(trx => trx.loan?.geocode?.country?.name).filter(Boolean));
+	const firstThreeImages = repayments.slice(0, 3).map(trx => ({
+		hash: trx.loan?.image?.hash,
+		alt: trx.loan?.name || 'Borrower',
+		defaultImage: { width: 80, faceZoom: 50 },
+		images: [
+			{ width: 80, faceZoom: 50, viewSize: 1024 },
+			{ width: 72, faceZoom: 50, viewSize: 734 },
+			{ width: 64, faceZoom: 50 }
+		]
+	}));
+
+	return [{
+		id: `repayment-summary-${repayments[0]?.effectiveTime || Date.now()}`,
+		isRepayment: true,
+		isTransaction: true,
+		status: 'repayment-summary',
+		date: repayments[0]?.effectiveTime || new Date().toISOString(),
+		subject: `${uniqueBorrowers.size} borrowers`,
+		// eslint-disable-next-line max-len
+		body: `Success!<br>${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+		amount: totalAmount,
+		loan: null,
+		image: null,
+		repaymentImages: firstThreeImages,
+	}];
+};
+
 const fetchUserUpdates = loadMore => {
 	const oneMonthBefore = new Date();
 	oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
@@ -362,8 +420,7 @@ const fetchUserUpdates = loadMore => {
 			totalUpdates.value = transactions.value.length + (result.data?.my?.updates?.totalCount ?? 0);
 
 			const formattedTransactions = getFormattedTransactions();
-			const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions)
-				.sort((a, b) => new Date(b.date) - new Date(a.date));
+			const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
 
 			if (loadMore) {
 				loanUpdates.value = loanUpdates.value.concat(updates);
@@ -392,6 +449,7 @@ const fetchRecommendedLoans = async () => {
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
 	fetchUserUpdates(true);
+	updatesShown.value += UPDATES_BATCH_SIZE;
 };
 
 const showSingleArray = computed(() => props.loans.length === 1 && loanUpdates.value.length === 1);
@@ -428,10 +486,56 @@ const fetchMoreWaysToHelpData = async () => {
 	}
 };
 
+// Add this function to fetch all repayment transactions for the last month
+const fetchRepaymentTransactions = async () => {
+	const now = new Date();
+	const oneMonthBefore = new Date();
+	oneMonthBefore.setMonth(now.getMonth() - 1);
+
+	const result = await apollo.query({
+		query: userRepaymentTransactionsQuery,
+		variables: {
+			limit: 100,
+			offset: 0,
+		},
+	});
+
+	const repayments = result.data?.my?.transactions?.values ?? [];
+
+	// Only keep repayments from the last month and of type "loan_repayment"
+	const recentRepayments = repayments.filter(trx => {
+		const trxDate = new Date(trx.effectiveTime);
+		const isRepayment = trx.type === 'loan_repayment';
+		const inLastMonth = trxDate >= oneMonthBefore && trxDate <= now;
+		return isRepayment && inLastMonth;
+	});
+
+	return recentRepayments;
+};
+
+const mergedUpdates = computed(() => {
+	// repaymentCards and loanUpdates are both arrays of formatted objects
+	const all = [...repaymentCards.value, ...loanUpdates.value];
+	// Sort by date descending (most recent first)
+	return all.sort((a, b) => new Date(b.date) - new Date(a.date));
+});
+
+const visibleUpdates = computed(() => mergedUpdates.value.slice(0, updatesShown.value).map(update => ({
+	...update,
+})));
+
+const hasMoreUpdates = computed(() => mergedUpdates.value.length > updatesShown.value);
+
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 	fetchUserUpdates();
+
+	const repayments = await fetchRepaymentTransactions();
+	// TEMP: Only use the first 5 repayments to test the 1-5 logic
+	const repaymentsForTest = repayments; // .slice(0, 5);
+	repaymentCards.value = formatRepaymentCards(repaymentsForTest);
+
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();

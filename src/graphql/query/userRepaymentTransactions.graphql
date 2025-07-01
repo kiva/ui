@@ -1,0 +1,26 @@
+query userRepaymentTransactions($limit: Int, $offset: Int) {
+  my {
+	id
+    transactions(limit: $limit, offset: $offset) {
+      totalCount
+      values {
+        type
+        amount
+        effectiveTime
+
+        loan {
+          name
+		  image{
+        	url
+			hash
+		  }
+          geocode {
+            country {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

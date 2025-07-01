@@ -1,7 +1,13 @@
 <template>
 	<div class="tw-rounded tw-bg-white tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
 		<div class="tw-flex tw-gap-1">
+			<!-- Show triple image for repayment summary cards -->
+			<div v-if="update.isRepayment && update.status === 'repayment-summary' && update.repaymentImages">
+				<BorrowerImageTriple :images="update.repaymentImages" />
+			</div>
+			<!-- Show single image for other cards -->
 			<div
+				v-else
 				class="tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8 tw-rounded-full tw-shadow tw-shrink-0"
 			>
 				<BorrowerImage
@@ -14,7 +20,7 @@
 					:images="[
 						{ width: 80, faceZoom: 50, viewSize: 1024 },
 						{ width: 72, faceZoom: 50, viewSize: 734 },
-						{ width: 64, faceZoom: 50 },
+						{ width: 64, faceZoom: 50 }
 					]"
 				/>
 				<KvUserAvatar
@@ -33,9 +39,18 @@
 		</div>
 		<div class="tw-my-1">
 			<p>{{ subjectLine }}</p>
-			<span v-html="truncatedBody"></span>
+			<!-- Show full body for repayment cards, truncated for others -->
+			<span v-html="update.isRepayment ? body : truncatedBody"></span>
+			<!-- Show "Use your funds" for repayment cards, "read more" for others -->
 			<button
-				v-if="showTruncatedBody"
+				v-if="update.isRepayment"
+				class="tw-inline tw-text-action hover:tw-underline"
+				@click="useFunds"
+			>
+				relend Now.
+			</button>
+			<button
+				v-else-if="showTruncatedBody"
 				class="tw-inline tw-text-action hover:tw-underline"
 				@click="openLightbox"
 			>
@@ -67,9 +82,9 @@
 			</button>
 
 			<div class="tw-flex tw-text-secondary tw-text-small">
-				<div v-if="updateNumber">
+				<span v-if="updateNumber">
 					Update #{{ updateNumber }} <span class="tw-mx-1">&bull;</span>
-				</div>
+				</span>
 				<span>{{ uploadDate }}</span>
 			</div>
 		</div>
@@ -80,6 +95,7 @@
 import { format } from 'date-fns';
 import { mdiExportVariant } from '@mdi/js';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerImageTriple from '#src/components/BorrowerProfile/BorrowerImageTriple';
 import { KvMaterialIcon, KvUserAvatar } from '@kiva/kv-components';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
@@ -87,6 +103,7 @@ import {
 	toRefs,
 	defineProps,
 	inject,
+	onMounted,
 } from 'vue';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -111,14 +128,19 @@ const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
 const hash = computed(() => loan.value?.image?.hash ?? '');
 const title = computed(() => {
+	if (update.value?.isTransaction && update.value?.isRepayment) {
+		return `${borrowerName.value} from ${borrowerCountry.value}`;
+	}
 	if (update.value?.isTransaction) return 'Kiva';
-
 	return `${borrowerName.value} from ${borrowerCountry.value}`;
 });
 
 const isFundraising = computed(() => isLoanFundraising(loan.value));
 
 const loanStatus = computed(() => {
+	if (update.value?.isTransaction && update.value?.isRepayment) {
+		return 'Repayment';
+	}
 	if (update.value?.isTransaction) return 'Transaction';
 	if (isFundraising.value) {
 		return '🎉 Fundraising';
@@ -154,6 +176,21 @@ const openLightbox = () => {
 const shareLoan = () => {
 	emit('share-loan-clicked');
 	$kvTrackEvent('portfolio', 'click', 'borrower-update-share-loan', loan.value.id);
+};
+
+// Fire Snowplow event when at least one repayment card is shown
+onMounted(() => {
+	if (update.value?.isRepayment) {
+		$kvTrackEvent('portfolio', 'view', 'At least one repayment update viewed');
+	}
+});
+
+// Update the CTA click handler for repayment cards
+const useFunds = () => {
+	// Fire Snowplow event for repayment card click
+	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
+	// Redirect user to relending or funds usage page
+	window.location.href = '/lend/filter';
 };
 
 const subjectLine = computed(() => {
