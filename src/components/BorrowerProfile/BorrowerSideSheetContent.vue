@@ -4,6 +4,7 @@
 			<SideSheetHeader />
 			<SideSheetLoanTags />
 			<LoanProgress
+				v-if="!showNextSteps"
 				:loading="loading"
 				:loan-status="inPfp ? 'pfp' : 'fundraising'"
 				:money-left="unreservedAmount"
@@ -13,6 +14,15 @@
 				:time-left="timeLeft"
 				class="tw-mb-2 tw-mt-1.5"
 				data-testid="bp-summary-progress"
+			/>
+			<LoanNextSteps
+				v-if="!loading && showNextSteps"
+				class="tw-py-2"
+				:loan-id="loanId"
+				:weeks-to-repay="weeksToRepay"
+				:current-step="currentStep"
+				:repayments-started="!isFundraising"
+				no-animation
 			/>
 			<SideSheetLoanHowMoneyHelps />
 			<SideSheetLoanStory />
@@ -63,6 +73,9 @@ import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
 
+import { addMonths, differenceInWeeks } from 'date-fns';
+import { FUNDRAISING } from '#src/api/fixtures/LoanStatusEnum';
+import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import CommentsAndWhySpecial from './CommentsAndWhySpecial';
 import BorrowerCountry from './BorrowerCountry';
 import DetailsTabs from './DetailsTabs';
@@ -88,6 +101,7 @@ export default {
 		SideSheetLoanHowMoneyHelps,
 		SideSheetLoanStory,
 		SideSheetLoanTags,
+		LoanNextSteps,
 	},
 	emits: ['add-to-basket'],
 	inject: ['$kvTrackEvent'],
@@ -138,6 +152,39 @@ export default {
 			emit('add-to-basket', payload);
 		};
 
+		const showNextSteps = computed(() => ['/portfolio', '/mykiva'].includes(currentRoute?.fullPath));
+
+		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+
+		const currentStep = computed(() => {
+			if (isFundraising.value) {
+				return 1;
+			}
+			return 4;
+		});
+
+		const weeksToRepay = computed(() => {
+			const today = new Date();
+			const date = loan.value?.terms?.expectedPayments
+				?.find(payment => differenceInWeeks(Date.parse(payment?.dueToKivaDate), today) > 0)
+				?.dueToKivaDate ?? null;
+			if (date) {
+				// Get the number of weeks between the first repayment date (in the future) and now
+				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
+			}
+
+			// Calculating a possible range of weeks between the planned expiration date and a month after
+			const expDate = Date.parse(loan.value?.plannedExpirationDate);
+			const minDate = differenceInWeeks(addMonths(today, 1), today);
+			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
+
+			if (minDate === maxDate || maxDate < 0) {
+				return `${minDate} weeks`;
+			}
+
+			return `${minDate} - ${maxDate} weeks`;
+		});
+
 		onMounted(() => {
 			try {
 				borrowerProfile.loadBPData(props.loanId);
@@ -165,6 +212,9 @@ export default {
 			timeLeft,
 			unreservedAmount,
 			userBalance,
+			showNextSteps,
+			weeksToRepay,
+			currentStep,
 		};
 	}
 };

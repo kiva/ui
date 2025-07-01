@@ -58,7 +58,7 @@
 					ref="carousel"
 					class="borrower-carousel tw-w-full tw-overflow-visible"
 					:multiple-slides-visible="true"
-					:slide-max-width="singleSlideWidth"
+					:slide-max-width="'336px'"
 					:embla-options="{ loop: false, align: 'center'}"
 					@change="onInteractCarousel"
 				>
@@ -70,6 +70,7 @@
 							@toggle-what-is-next="openWhatIsNext = $event"
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
+							@open-side-sheet="showLoanDetails"
 						/>
 					</template>
 					<template v-if="totalLoans > filteredLoans.length" #see-all>
@@ -109,6 +110,23 @@
 			:is-portfolio="true"
 			@lightbox-closed="closeShareModal"
 		/>
+		<KvSideSheet
+			:kv-track-function="$kvTrackEvent"
+			:show-back-button="false"
+			:show-go-to-link="true"
+			:show-headline-border="true"
+			:visible="showSideSheet"
+			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+			@go-to-link="goToLink"
+			@side-sheet-closed="handleCloseSideSheet"
+		>
+			<BorrowerSideSheetContent
+				:loan-id="selectedLoan?.id"
+				:is-adding="isAdding"
+				:basket-items="basketItems"
+				@add-to-basket="addToBasket"
+			/>
+		</KvSideSheet>
 	</div>
 </template>
 
@@ -116,7 +134,7 @@
 import _throttle from 'lodash/throttle';
 import { useRouter } from 'vue-router';
 import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
+	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton, KvSideSheet
 } from '@kiva/kv-components';
 import {
 	defineProps,
@@ -140,6 +158,13 @@ import {
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
+import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
+import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import numeral from 'numeral';
+import useTipMessage from '#src/composables/useTipMessage';
+import * as Sentry from '@sentry/vue';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
@@ -176,6 +201,10 @@ const props = defineProps({
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
+
+const { $showTipMsg } = useTipMessage(apollo);
 
 const router = useRouter();
 
@@ -193,6 +222,11 @@ const commentLoanData = ref({
 });
 const shareLoan = ref(false);
 const previousLastIndex = ref(0);
+
+const showSideSheet = ref(false);
+const selectedLoan = ref(undefined);
+const isAdding = ref(false);
+const basketItems = ref([]);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -227,19 +261,6 @@ const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);
 const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
-
-const singleSlideWidth = computed(() => {
-	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
-
-	// Handle small mobile screens
-	if (viewportWidth < 450) {
-		return '90%';
-	}
-	if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-		return '468px';
-	}
-	return '520px';
-});
 
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
@@ -298,6 +319,93 @@ const loadMore = () => {
 	router.push('/portfolio/loans');
 };
 
+const goToLink = () => {
+	$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
+	window.open(`lend/${this.selectedLoan?.id}`);
+};
+
+const handleCloseSideSheet = () => {
+	showSideSheet.value = false;
+	selectedLoan.value = undefined;
+};
+
+const addToBasket = lendAmount => {
+	$kvTrackEvent(
+		'Lending',
+		'Add to basket',
+		'lend-button-click',
+		selectedLoan.value?.id,
+		lendAmount
+	);
+	isAdding.value = true;
+	apollo.mutate({
+		mutation: updateLoanReservation,
+		variables: {
+			loanId: Number(selectedLoan.value?.id),
+			price: numeral(lendAmount).format('0.00'),
+		},
+	}).then(({ errors }) => {
+		if (errors) {
+			// Handle errors from adding to basket
+			errors.forEach(error => {
+				try {
+					$kvTrackEvent(
+						'Lending',
+						'Add-to-Basket',
+						`Failed: ${error.message.substring(0, 40)}...`
+					);
+					Sentry.captureMessage(`Add to Basket: ${error.message}`);
+					if (hasBasketExpired(error?.extensions?.code)) {
+						// eslint-disable-next-line max-len
+						$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+						return handleInvalidBasket({
+							cookieStore,
+							loan: {
+								id: selectedLoan.value?.id,
+								price: lendAmount
+							}
+						});
+					}
+					$showTipMsg(error.message, 'error');
+				} catch (e) {
+					// no-op
+				}
+			});
+		} else {
+			try {
+				// track facebook add to basket
+				if (typeof window !== 'undefined' && typeof fbq === 'function') {
+					window.fbq('track', 'AddToCart', { content_category: 'Loan' });
+				}
+			} catch (e) {
+				console.error(e);
+			}
+			const basketId = cookieStore.get('kvbskt');
+			return apollo.query({
+				query: loanCardBasketed,
+				variables: {
+					id: selectedLoan.value?.id,
+					basketId: basketId || undefined
+				},
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				basketItems.value = data?.shop?.basket?.items?.values || [];
+			});
+		}
+	}).catch(error => {
+		$showTipMsg('Failed to add loan. Please try again.', 'error');
+		$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+		Sentry.captureException(error);
+	}).finally(() => {
+		isAdding.value = false;
+	});
+};
+
+const showLoanDetails = payload => {
+	selectedLoan.value = payload?.loan ?? null;
+	showSideSheet.value = true;
+};
+
 watch(() => loans.value, () => {
 	if (hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
@@ -319,14 +427,6 @@ onBeforeUnmount(() => {
 <style lang="postcss" scoped>
 .carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
-
-	@screen md {
-		max-width: 468px;
-	}
-
-	@screen lg {
-		max-width: 520px;
-	}
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) {
