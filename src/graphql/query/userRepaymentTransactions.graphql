@@ -9,8 +9,10 @@ query userRepaymentTransactions($limit: Int, $offset: Int) {
         effectiveTime
 
         loan {
+		  id
           name
 		  image{
+			id
         	url
 			hash
 		  }

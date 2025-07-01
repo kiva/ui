@@ -390,9 +390,10 @@ const formatRepaymentCards = repayments => {
 		isTransaction: true,
 		status: 'repayment-summary',
 		date: repayments[0]?.effectiveTime || new Date().toISOString(),
-		subject: `${uniqueBorrowers.size} borrowers`,
+		title: `${uniqueBorrowers.size} Borrowers`,
+		subject: 'Success!',
 		// eslint-disable-next-line max-len
-		body: `Success!<br>${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+		body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - relend it now.`,
 		amount: totalAmount,
 		loan: null,
 		image: null,

@@ -30,7 +30,7 @@
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
 				<p class="tw-mb-0.5 tw-font-medium tw-line-clamp-1">
-					{{ title }}
+					{{ update.title || title }}
 				</p>
 				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded tw-w-auto">
 					{{ loanStatus }}
