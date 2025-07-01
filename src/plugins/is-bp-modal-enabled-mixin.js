@@ -15,8 +15,9 @@ export default {
 				const { version } = trackExperimentVersion(
 					this.apollo,
 					this.$kvTrackEvent,
-					'loan-finding',
-					'bpModal',
+					'home',
+					HOME_BP_MODAL_EXP_KEY,
+					'EXP-MP-671-Dec2024',
 				);
 				if (version) {
 					this.isBpModalEnabled = version === 'b';
@@ -24,4 +25,7 @@ export default {
 			}
 		}
 	},
+	mounted() {
+		this.initializeIsBpModalEnabledExp();
+	}
 };

@@ -210,7 +210,6 @@ export default {
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			HandOrangeIcon,
 			isAdding: false,
-			isBpModalEnabled: false,
 			isMounted: false,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
