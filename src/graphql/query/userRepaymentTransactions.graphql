@@ -1,29 +1,29 @@
 query userRepaymentTransactions($limit: Int, $offset: Int) {
-  my {
-	id
-    transactions(limit: $limit, offset: $offset) {
-      totalCount
-      values {
-        type
-        amount
-        effectiveTime
+    my {
+        id
+        transactions(limit: $limit, offset: $offset) {
+            totalCount
+            values {
+                type
+                amount
+                effectiveTime
 
-        loan {
-		  id
-          name
-		  image{
-			id
-        	url
-			hash
-		  }
-          geocode {
-            country {
-			  id
-              name
+                loan {
+                    id
+                    name
+                    image {
+                        id
+                        url
+                        hash
+                    }
+                    geocode {
+                        country {
+                            id
+                            name
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 }
