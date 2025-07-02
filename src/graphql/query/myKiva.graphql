@@ -2,56 +2,8 @@ query myKivaQuery {
   my {
     id
     isBorrower
-    loans(limit: 50) {
+    loans {
       totalCount
-      values {
-        id
-        name
-        gender
-        status
-        use
-        image {
-          id
-          url
-          hash
-        }
-        geocode {
-          city
-          state
-          country {
-            id
-            name
-            isoCode
-            region
-          }
-        }
-        loanAmount
-        plannedExpirationDate
-        terms {
-          currency
-          currencyFullName
-          lossLiabilityNonpayment
-          lossLiabilityCurrencyExchange
-          loanAmount
-          disbursalDate
-          disbursalAmount
-          flexibleFundraisingEnabled
-          lenderRepaymentTerm
-          expectedPayments {
-            amount
-            localAmount
-            dueToKivaDate
-            effectiveDate
-          }
-        }
-        tags
-        ... on LoanPartner {
-          themes
-        }
-        sector {
-          id
-        }
-      }
     }
     lender {
       id
@@ -79,7 +31,12 @@ query myKivaQuery {
       id
       preferences
     }
-    transactions(limit: 100) {
+    transactions(
+      filter: {
+        category: loan
+      }
+      limit: 100
+    ) {
       values {
         category
 		amount
@@ -88,6 +45,32 @@ query myKivaQuery {
           id
           name
           gender
+          status
+          use
+          image {
+            id
+            url
+            hash
+          }
+          loanAmount
+          plannedExpirationDate
+          terms {
+            currency
+            currencyFullName
+            lossLiabilityNonpayment
+            lossLiabilityCurrencyExchange
+            loanAmount
+            disbursalDate
+            disbursalAmount
+            flexibleFundraisingEnabled
+            lenderRepaymentTerm
+            expectedPayments {
+              amount
+              localAmount
+              dueToKivaDate
+              effectiveDate
+            }
+          }
           tags
           ... on LoanPartner {
             themes

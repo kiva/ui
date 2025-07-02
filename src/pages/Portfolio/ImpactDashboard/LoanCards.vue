@@ -21,6 +21,7 @@ import { ref, inject } from 'vue';
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 // Query to gather user loans
@@ -35,47 +36,67 @@ const userQuery = gql`query userQuery {
         mostRecentBorrowedLoan {
             id
 		}
-        loans(limit: 50) {
+        loans {
             totalCount
+        }
+        transactions(
+            filter: {
+                category: loan
+            }
+            limit: 100
+        ) {
             values {
-                id
-                name
-                gender
-                status
-                use
-                image {
+                category
+                loan {
                     id
-                    hash
-                }
-                geocode {
-                    city
-                    state
-                    country {
+                    name
+                    gender
+                    status
+                    use
+                    image {
                         id
-                        name
-                        isoCode
-                        region
+                        url
+                        hash
                     }
-                }
-                loanAmount
-                fundraisingPercent @client
-                plannedExpirationDate
-                loanFundraisingInfo {
-					id
-					fundedAmount
-					reservedAmount
-				}
-                terms {
-                    expectedPayments {
+                    loanAmount
+                    plannedExpirationDate
+                    terms {
+                        currency
+                        currencyFullName
+                        lossLiabilityNonpayment
+                        lossLiabilityCurrencyExchange
+                        loanAmount
+                        disbursalDate
+                        disbursalAmount
+                        flexibleFundraisingEnabled
+                        lenderRepaymentTerm
+                        expectedPayments {
                         amount
                         localAmount
                         dueToKivaDate
                         effectiveDate
+                        }
+                    }
+                    tags
+                    ... on LoanPartner {
+                        themes
+                    }
+                    sector {
+                        id
+                    }
+                    geocode {
+                        city
+                        state
+                        country {
+                        id
+                        name
+                        isoCode
+                        region
+                        }
                     }
                 }
-                inPfp
-                pfpMinLenders
-                anonymizationLevel
+                type
+                createTime
             }
         }
     }
@@ -91,7 +112,11 @@ const lender = ref({});
 const fetchAsyncData = () => {
 	apollo.query({ query: userQuery })
 		.then(result => {
-			loans.value = result.data?.my?.loans?.values ?? [];
+			const transactions = result.data?.my?.transactions?.values?.filter(t => {
+				return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+			});
+
+			loans.value = transactions?.map(t => t.loan) ?? [];
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			lender.value = {
 				public: result.data?.my?.userAccount?.public ?? false,
