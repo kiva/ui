@@ -69,7 +69,7 @@ export default {
 				{ text: 'Their loan is funded' },
 				{ text: 'They used the money to improve their life' },
 				// eslint-disable-next-line max-len
-				{ text: `${this.repaymentsStarted ? `First repayment in <span class="tw-text-action"> ${this.weeksToRepay} </span>` : 'They completed their repayments'}` }
+				{ text: `${this.repaymentsStarted ? `First repayment in <br /> <span class="tw-text-action"> ${this.weeksToRepay} </span>` : 'They completed their repayments'}` }
 			]
 		};
 	},

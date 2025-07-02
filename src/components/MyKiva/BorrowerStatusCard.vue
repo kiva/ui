@@ -81,7 +81,6 @@
 							{{ stepsCopy }}
 						</p>
 						<KvMaterialIcon
-							v-if="showWhatIsNextColumn"
 							class="tw-w-3 tw-h-3 tw-text-action"
 							:icon="mdiChevronRight"
 						/>
@@ -99,9 +98,7 @@ import {
 	mdiChevronRight,
 	mdiDotsVertical,
 } from '@mdi/js';
-import { addMonths, differenceInWeeks } from 'date-fns';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import { useRouter } from 'vue-router';
 import {
 	ref,
 	computed,
@@ -210,11 +207,12 @@ const description = computed(() => {
 
 const showLoanDetails = () => {
 	$kvTrackEvent('portfolio', 'click', stepsCopy.value, borrowerName.value, loan.value.id);
-	if (!showWhatIsNextColumn.value) {
-		// eslint-disable-next-line max-len
-		window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
+	if (showWhatIsNextColumn.value) {
+		emit('open-side-sheet', { loan: loan.value });
+		return;
 	}
-	emit('open-side-sheet', { loan: loan.value });
+
+	window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
 };
 
 const menuAction = id => {
