@@ -64,7 +64,6 @@
 					:lender="lender"
 					:total-updates="totalUpdates"
 					@load-more-updates="loadMoreUpdates"
-					:has-more="hasMoreUpdates"
 				/>
 			</div>
 		</section>
@@ -198,8 +197,6 @@ const props = defineProps({
 	},
 });
 
-const UPDATES_BATCH_SIZE = 4;
-
 const isEarnedSectionModal = ref(false);
 const repaymentCards = ref([]);
 const loanUpdates = ref([]);
@@ -208,7 +205,7 @@ const selectedJourney = ref('');
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
-const totalUpdates = ref(0);
+
 const updatesLimit = ref(3);
 const updatesOffset = ref(0);
 const hideBottomGradient = ref(false);
@@ -216,7 +213,8 @@ const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
 const transactions = ref([]);
 const moreWaysToHelpSlides = ref([]);
-const updatesShown = ref(UPDATES_BATCH_SIZE);
+const updatesShown = ref(updatesLimit.value);
+const realTotalUpdates = ref(0);
 
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
 
@@ -230,6 +228,15 @@ const recommendeLoansTitle = computed(() => {
 		? 'Recommended for you'
 		: 'Recommended for you based on your lending history';
 });
+const mergedUpdates = computed(() => {
+	// repaymentCards and loanUpdates are both arrays of formatted objects
+	const all = [...repaymentCards.value, ...loanUpdates.value];
+	// Sort by date descending (most recent first)
+	return all.sort((a, b) => new Date(b.date) - new Date(a.date));
+});
+
+// Update totalUpdates to include the real total from the backend plus repayment cards
+const totalUpdates = computed(() => realTotalUpdates.value + repaymentCards.value.length);
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
@@ -362,7 +369,7 @@ const formatRepaymentCards = repayments => {
 			date: trx.effectiveTime,
 			subject: 'Success!',
 			// eslint-disable-next-line max-len
-			body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+			body: `<br />${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
 			amount: trx.amount,
 			loan: trx.loan,
 			image: trx.loan?.image?.url || null,
@@ -393,7 +400,7 @@ const formatRepaymentCards = repayments => {
 		title: `${uniqueBorrowers.size} Borrowers`,
 		subject: 'Success!',
 		// eslint-disable-next-line max-len
-		body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - relend it now.`,
+		body: `<br />${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
 		amount: totalAmount,
 		loan: null,
 		image: null,
@@ -405,11 +412,10 @@ const fetchUserUpdates = loadMore => {
 	const oneMonthBefore = new Date();
 	oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 	const timestamp = oneMonthBefore.getTime();
-
 	apollo.query({
 		query: userUpdatesQuery,
 		variables: {
-			limit: updatesLimit.value,
+			limit: 1000, // updatesLimit.value,
 			offset: updatesOffset.value,
 			trxLimit: updatesLimit.value,
 			trxOffset: updatesOffset.value,
@@ -418,10 +424,11 @@ const fetchUserUpdates = loadMore => {
 	})
 		.then(result => {
 			transactions.value = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
-			totalUpdates.value = transactions.value.length + (result.data?.my?.updates?.totalCount ?? 0);
-
 			const formattedTransactions = getFormattedTransactions();
 			const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
+
+			// Store the real total count from the backend
+			realTotalUpdates.value = result.data?.my?.updates?.totalCount ?? 0;
 
 			if (loadMore) {
 				loanUpdates.value = loanUpdates.value.concat(updates);
@@ -450,7 +457,7 @@ const fetchRecommendedLoans = async () => {
 const loadMoreUpdates = () => {
 	updatesOffset.value += updatesLimit.value;
 	fetchUserUpdates(true);
-	updatesShown.value += UPDATES_BATCH_SIZE;
+	updatesShown.value += updatesLimit.value;
 };
 
 const showSingleArray = computed(() => props.loans.length === 1 && loanUpdates.value.length === 1);
@@ -487,7 +494,6 @@ const fetchMoreWaysToHelpData = async () => {
 	}
 };
 
-// Add this function to fetch all repayment transactions for the last month
 const fetchRepaymentTransactions = async () => {
 	const now = new Date();
 	const oneMonthBefore = new Date();
@@ -514,33 +520,40 @@ const fetchRepaymentTransactions = async () => {
 	return recentRepayments;
 };
 
-const mergedUpdates = computed(() => {
-	// repaymentCards and loanUpdates are both arrays of formatted objects
-	const all = [...repaymentCards.value, ...loanUpdates.value];
-	// Sort by date descending (most recent first)
-	return all.sort((a, b) => new Date(b.date) - new Date(a.date));
-});
-
 const visibleUpdates = computed(() => mergedUpdates.value.slice(0, updatesShown.value).map(update => ({
 	...update,
 })));
 
-const hasMoreUpdates = computed(() => mergedUpdates.value.length > updatesShown.value);
-
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
-	fetchUserUpdates();
 
 	const repayments = await fetchRepaymentTransactions();
-	// TEMP: Only use the first 5 repayments to test the 1-5 logic
-	const repaymentsForTest = repayments; // .slice(0, 5);
-	repaymentCards.value = formatRepaymentCards(repaymentsForTest);
+
+	let repaymentCardsToShow = [];
+	if (repayments.length > 5) {
+		// 6+ repayments: show a single summary card
+		repaymentCardsToShow = formatRepaymentCards(repayments);
+	} else {
+		// 1-5 repayments: show each as a separate card
+		repaymentCardsToShow = formatRepaymentCards(repayments);
+	}
+
+	repaymentCards.value = repaymentCardsToShow;
+
+	await fetchUserUpdates();
 
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
 	fetchMoreWaysToHelpData();
+
+	console.log('repaymentCards', repaymentCards.value);
+	console.log('loanUpdates', loanUpdates.value);
+	console.log('mergedUpdates', mergedUpdates.value);
+	console.log('visibleUpdates', visibleUpdates.value);
+	console.log('totalUpdates', totalUpdates.value);
+	console.log('updatesShown', updatesShown.value);
 });
 </script>
 

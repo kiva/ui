@@ -28,7 +28,7 @@
 import { getKivaImageUrl } from '#src/util/imageUtils';
 
 export default {
-	name: 'BorrowerImageTriple',
+	name: 'MultiBorrowerImage',
 	props: {
 		images: {
 			type: Array,

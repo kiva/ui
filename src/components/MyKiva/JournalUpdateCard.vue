@@ -3,7 +3,7 @@
 		<div class="tw-flex tw-gap-1">
 			<!-- Show triple image for repayment summary cards -->
 			<div v-if="update.isRepayment && update.status === 'repayment-summary' && update.repaymentImages">
-				<BorrowerImageTriple :images="update.repaymentImages" />
+				<MultiBorrowerImage :images="update.repaymentImages" />
 			</div>
 			<!-- Show single image for other cards -->
 			<div
@@ -38,19 +38,26 @@
 			</div>
 		</div>
 		<div class="tw-my-1">
-			<p>{{ subjectLine }}</p>
-			<!-- Show full body for repayment cards, truncated for others -->
-			<span v-html="update.isRepayment ? body : truncatedBody"></span>
-			<!-- Show "Use your funds" for repayment cards, "read more" for others -->
-			<button
-				v-if="update.isRepayment"
-				class="tw-inline tw-text-action hover:tw-underline"
-				@click="useFunds"
+			<p class="tw-font-bold tw-mb-1">
+				{{ subject }}
+			</p>
+			<p
+				class="tw-whitespace-pre-line tw-line-clamp-5"
 			>
-				relend Now.
-			</button>
+				<span v-html="body" class=" "></span>
+				<span v-if="update.isRepayment">
+					<button
+						v-if="update.isRepayment"
+						class="tw-inline tw-text-action hover:tw-underline"
+						@click="useFunds"
+					>
+						relend now.
+					</button>
+				</span>
+			</p>
+
 			<button
-				v-else-if="showTruncatedBody"
+				v-if="!update.isRepayment && showTruncatedBody "
 				class="tw-inline tw-text-action hover:tw-underline"
 				@click="openLightbox"
 			>
@@ -95,7 +102,6 @@
 import { format } from 'date-fns';
 import { mdiExportVariant } from '@mdi/js';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import BorrowerImageTriple from '#src/components/BorrowerProfile/BorrowerImageTriple';
 import { KvMaterialIcon, KvUserAvatar } from '@kiva/kv-components';
 import { isLoanFundraising } from '#src/util/loanUtils';
 import {
@@ -105,6 +111,7 @@ import {
 	inject,
 	onMounted,
 } from 'vue';
+import MultiBorrowerImage from '#src/components/BorrowerProfile/MultiBorrowerImage';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -149,9 +156,8 @@ const loanStatus = computed(() => {
 });
 
 const subject = computed(() => update.value?.subject ?? '');
-const body = computed(() => {
-	return update.value?.body ?? '';
-});
+const body = computed(() => update.value?.body ?? '');
+
 const truncatedBody = computed(() => {
 	let truncatedCopy = body.value.split(' ').splice(0, 14).join(' ');
 	if (truncatedCopy.length < body.value.length) {
@@ -178,27 +184,17 @@ const shareLoan = () => {
 	$kvTrackEvent('portfolio', 'click', 'borrower-update-share-loan', loan.value.id);
 };
 
-// Fire Snowplow event when at least one repayment card is shown
 onMounted(() => {
 	if (update.value?.isRepayment) {
 		$kvTrackEvent('portfolio', 'view', 'At least one repayment update viewed');
 	}
 });
 
-// Update the CTA click handler for repayment cards
 const useFunds = () => {
-	// Fire Snowplow event for repayment card click
 	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
-	// Redirect user to relending or funds usage page
 	window.location.href = '/lend/filter';
 };
 
-const subjectLine = computed(() => {
-	if (update.value?.isTransaction) {
-		return subject.value;
-	}
-	return `Subject line: ${subject.value}`;
-});
 </script>
 
 <style lang="postcss" scoped>
