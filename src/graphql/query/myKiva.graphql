@@ -79,13 +79,11 @@ query myKivaQuery {
       id
       preferences
     }
-    transactions(
-      filter: {
-        category: loan
-      }
-    ) {
+    transactions(limit: 100) {
       values {
         category
+		amount
+		effectiveTime
         loan {
           id
           name
@@ -97,6 +95,11 @@ query myKivaQuery {
           sector {
             id
           }
+		  image{
+			id
+			url
+			hash
+		  }
           geocode {
             city
             state
@@ -110,6 +113,7 @@ query myKivaQuery {
         }
         type
         createTime
+        # Add other fields you need, e.g. amount, status, etc.
       }
     }
   }
