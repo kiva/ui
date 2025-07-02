@@ -3,13 +3,13 @@
 		<div
 			v-for="(img, idx) in images"
 			:key="idx"
-			class="tw-rounded-full tw-overflow-hidden tw-border-4 tw-border-white"
+			class="tw-rounded-full tw-overflow-hidden tw-border-4 tw-border-white tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8"
 			:class="idx !== 0 ? 'tw--ml-6' : ''"
-			:style="`width: ${imgWidth}px; height: ${imgWidth}px; z-index: ${10 + idx};`"
+			:style="`z-index: ${10 + idx};`"
 		>
 			<picture
-				class="tw-inline-block tw-relative tw-overflow-hidden"
-				:style="`padding-bottom: 100%; width: ${imgWidth}px; height: ${imgWidth}px;`"
+				class="tw-inline-block tw-relative tw-overflow-hidden tw-w-full tw-h-full"
+				style="padding-bottom: 100%;"
 			>
 				<source :srcset="getSrcset(img)" :sizes="getSizes(img)">
 				<img

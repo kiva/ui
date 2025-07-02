@@ -37,8 +37,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-my-1">
+		<div
+			class="tw-my-1 " style="height:200px;"
+		>
 			<p class="tw-font-bold tw-mb-1">
+				{{ borrowerName }}
 				{{ subject }}
 			</p>
 			<p
