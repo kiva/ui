@@ -499,13 +499,18 @@ const fetchRepaymentTransactions = async () => {
 	const oneMonthBefore = new Date();
 	oneMonthBefore.setMonth(now.getMonth() - 1);
 
-	const result = await apollo.query({
-		query: userRepaymentTransactionsQuery,
-		variables: {
-			limit: 100,
-			offset: 0,
-		},
-	});
+	let result;
+	try {
+		result = await apollo.query({
+			query: userRepaymentTransactionsQuery,
+			variables: {
+				limit: 100,
+				offset: 0,
+			},
+		});
+	} catch (e) {
+		logReadQueryError(e, 'MyKivaPage userRepaymentTransactionsQuery');
+	}
 
 	const repayments = result.data?.my?.transactions?.values ?? [];
 
