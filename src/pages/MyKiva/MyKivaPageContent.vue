@@ -415,7 +415,7 @@ const fetchUserUpdates = loadMore => {
 	apollo.query({
 		query: userUpdatesQuery,
 		variables: {
-			limit: 1000, // updatesLimit.value,
+			limit: updatesLimit.value,
 			offset: updatesOffset.value,
 			trxLimit: updatesLimit.value,
 			trxOffset: updatesOffset.value,
@@ -547,13 +547,6 @@ onMounted(async () => {
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
 	fetchMoreWaysToHelpData();
-
-	console.log('repaymentCards', repaymentCards.value);
-	console.log('loanUpdates', loanUpdates.value);
-	console.log('mergedUpdates', mergedUpdates.value);
-	console.log('visibleUpdates', visibleUpdates.value);
-	console.log('totalUpdates', totalUpdates.value);
-	console.log('updatesShown', updatesShown.value);
 });
 </script>
 
