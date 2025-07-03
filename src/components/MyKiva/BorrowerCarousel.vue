@@ -222,9 +222,9 @@ const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
 const title = computed(() => {
 	if (totalLoans.value === 1) {
-		return 'You’re <u>changing a life</u> right now!';
+		return 'You’re <u>changing a life</u>!';
 	}
-	return `You’re <u>changing ${activeLoans.value.length} lives</u> right now!`;
+	return `You’re <u>changing ${totalLoans.value} lives</u>!`;
 });
 
 const filteredLoans = computed(() => {
