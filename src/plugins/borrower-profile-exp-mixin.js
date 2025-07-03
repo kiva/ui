@@ -4,8 +4,6 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 export default {
 	methods: {
 		loadBPData(loanId) {
-			console.log('loadBpData running');
-			console.log('loanId', loanId);
 			this.apollo.query({
 				query: borrowerProfileSideSheetQuery,
 				variables: {
