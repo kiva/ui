@@ -19,10 +19,11 @@
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
 			:per-step="perStepRecommendedRow"
-			@add-to-basket="addToBasket"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
+			@add-to-basket="addToBasket"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<!-- Almost Funded loans row -->
 		<lending-category-section
@@ -33,10 +34,11 @@
 			:loans="almostFundedLoans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
-			@add-to-basket="trackCategory($event, 'almost-funded')"
 			class="tw-pt-3 tw-mb-2"
+			@add-to-basket="trackCategory($event, 'almost-funded')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<!-- Five dollars row -->
 		<lending-category-section
@@ -49,10 +51,11 @@
 			:user-balance="userBalance"
 			:five-dollars-selected="true"
 			:title-icon="HandOrangeIcon"
-			@add-to-basket="trackCategory($event, 'five-dollars')"
 			class="tw-pt-3 tw-mb-2"
+			@add-to-basket="trackCategory($event, 'five-dollars')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<div class="tw-flex tw-flex-col">
 			<quick-filters-section
@@ -65,6 +68,7 @@
 				@data-loaded="trackQuickFiltersDisplayedLoans"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
+				@mouse-enter-loan-card="loadBPData"
 			/>
 			<!-- Element to trigger spotlight observer -->
 			<div ref="spotlightObserver"></div>
@@ -79,6 +83,7 @@
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
+				@mouse-enter-loan-card="loadBPData"
 			/>
 		</div>
 		<partner-spotlight-section
@@ -90,6 +95,7 @@
 			@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 	</www-page>
 	<KvSideSheet
@@ -136,13 +142,13 @@ import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import { KvSideSheet } from '@kiva/kv-components';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
+
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
-
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
-import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 
@@ -177,7 +183,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -685,10 +691,8 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		this.isMounted = true;
-
-		// Load initial basket items
 		this.loadInitialBasketItems();
+		this.isMounted = true;
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

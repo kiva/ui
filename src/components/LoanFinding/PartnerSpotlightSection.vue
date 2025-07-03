@@ -23,6 +23,7 @@
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@show-cart-modal="showCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouseenter="$emit('mouse-enter-loan-card', $event)"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
@@ -50,7 +51,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'show-loan-details'],
+	emits: ['add-to-basket', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		spotlightData: {
 			type: Object,

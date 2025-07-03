@@ -40,6 +40,7 @@
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
+						@mouseenter="$emit('mouse-enter-loan-card', loan?.id)"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -66,6 +67,7 @@
 				:loan-search-state="flssLoanSearch"
 				:page-limit="loanSearchState.pageLimit"
 				@add-to-basket="addToBasket"
+				@mouseenter="$emit('mouse-enter-loan-card', $event)"
 			/>
 		</div>
 	</div>
@@ -93,7 +95,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'data-loaded', 'show-loan-details'],
+	emits: ['add-to-basket', 'data-loaded', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
