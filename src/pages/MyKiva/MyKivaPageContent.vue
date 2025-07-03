@@ -300,10 +300,8 @@ const mergedUpdates = computed(() => {
 	const updates = loanUpdates.value;
 
 	if (isFirstLoad.value) {
-		const repaymentsToShow = repayments.slice(0, 3);
-		const updatesToShow = updates.slice(0, 3 - repaymentsToShow.length);
-		return [...repaymentsToShow, ...updatesToShow]
-			.sort((a, b) => new Date(b.date) - new Date(a.date));
+		return [...repayments, ...updates]
+			.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, displayedCount.value);
 	}
 
 	if (!hasShownHiddenRepayments.value && hiddenRepayments.value.length > 0) {
