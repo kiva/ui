@@ -696,10 +696,10 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		this.isMounted = true;
-
 		// Load initial basket items
 		this.loadInitialBasketItems();
+		this.initializeIsBpModalEnabledExp('lend-by-category');
+		this.isMounted = true;
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

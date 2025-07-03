@@ -9,11 +9,11 @@ export default {
 		};
 	},
 	methods: {
-		initializeIsBpModalEnabledExp() {
+		initializeIsBpModalEnabledExp(category) {
 			const { version } = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
-				'event-tracking',
+				category,
 				HOME_BP_MODAL_EXP_KEY,
 				'EXP-MP-671-Dec2024',
 			);
@@ -22,7 +22,4 @@ export default {
 			}
 		}
 	},
-	mounted() {
-		this.initializeIsBpModalEnabledExp();
-	}
 };
