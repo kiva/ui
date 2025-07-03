@@ -92,38 +92,20 @@
 			@show-loan-details="showLoanDetails"
 		/>
 	</www-page>
-	<KvSideSheet
-		v-if="isMounted"
-		:kv-track-function="$kvTrackEvent"
-		:show-back-button="false"
-		:show-go-to-link="true"
-		:show-headline-border="true"
-		:visible="showSideSheet"
-		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
-		@go-to-link="goToLink"
-		@side-sheet-closed="handleCloseSideSheet"
-	>
-		<BorrowerSideSheetContent
-			:loan-id="selectedLoan?.id"
-			:is-adding="isAdding"
-			:basket-items="basketItems"
-			@add-to-basket="addToBasket"
-		/>
-	</KvSideSheet>
+	<BorrowerSideSheetWrapper
+		:show-side-sheet="showSideSheet"
+		:selected-loan="selectedLoan"
+		@close-side-sheet="handleCloseSideSheet"
+	/>
 </template>
 
 <script>
-import numeral from 'numeral';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
 
-import * as Sentry from '@sentry/vue';
-
-import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
 import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
@@ -133,7 +115,6 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import { KvSideSheet } from '@kiva/kv-components';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -142,9 +123,7 @@ import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.gr
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-
-import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
-import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -168,10 +147,9 @@ export default {
 	name: 'LoanFinding',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BorrowerSideSheetContent,
+		BorrowerSideSheetWrapper,
 		FiveDollarsBanner,
 		KvAtbModalContainer,
-		KvSideSheet,
 		LendingCategorySection,
 		PartnerSpotlightSection,
 		QuickFiltersSection,
@@ -194,7 +172,6 @@ export default {
 	data() {
 		return {
 			almostFundedLoans: new Array(9).fill({ id: 0 }),
-			basketItems: [],
 			enableAlmostFundedRow: false,
 			enableLoanRecommendations: false,
 			enableQFMobileVersion: false,
@@ -202,8 +179,6 @@ export default {
 			firstRowLoans: [],
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			HandOrangeIcon,
-			isAdding: false,
-			isMounted: false,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
 			selectedLoan: undefined,
@@ -490,104 +465,6 @@ export default {
 			this.selectedLoan = loan;
 			this.showSideSheet = true;
 		},
-		addToBasket(lendAmount) {
-			this.$kvTrackEvent(
-				'Lending',
-				'Add to basket',
-				'lend-button-click',
-				this.selectedLoan?.id,
-				lendAmount
-			);
-			this.isAdding = true;
-			this.apollo.mutate({
-				mutation: updateLoanReservation,
-				variables: {
-					loanId: Number(this.selectedLoan?.id),
-					price: numeral(lendAmount).format('0.00'),
-				},
-			}).then(({ errors }) => {
-				if (errors) {
-					// Handle errors from adding to basket
-					errors.forEach(error => {
-						try {
-							this.$kvTrackEvent(
-								'Lending',
-								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
-							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
-							if (hasBasketExpired(error?.extensions?.code)) {
-								// eslint-disable-next-line max-len
-								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
-								return handleInvalidBasket({
-									cookieStore: this.cookieStore,
-									loan: {
-										id: this.selectedLoan?.id,
-										price: lendAmount
-									}
-								});
-							}
-							this.$showTipMsg(error.message, 'error');
-						} catch (e) {
-							// no-op
-						}
-					});
-				} else {
-					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
-					} catch (e) {
-						console.error(e);
-					}
-					const basketId = this.cookieStore.get('kvbskt');
-					return this.apollo.query({
-						query: loanCardBasketed,
-						variables: {
-							id: this.selectedLoan?.id,
-							basketId: basketId || undefined
-						},
-						fetchPolicy: 'network-only',
-					}).then(({ data }) => {
-						this.basketItems = data?.shop?.basket?.items?.values || [];
-					});
-				}
-			}).catch(error => {
-				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
-				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
-				Sentry.captureException(error);
-			}).finally(() => {
-				this.isAdding = false;
-				this.handleCartModal();
-			});
-		},
-		// Method to initially load basket items
-		async loadInitialBasketItems() {
-			try {
-				const basketId = this.cookieStore.get('kvbskt');
-				if (!basketId) {
-					this.basketItems = [];
-					return;
-				}
-				const { data } = await this.apollo.query({
-					query: loanCardBasketed,
-					variables: {
-						id: 0, // dummy id since we only need basket data
-						basketId
-					},
-					fetchPolicy: 'network-only'
-				});
-				this.basketItems = data?.shop?.basket?.items?.values || [];
-			} catch (error) {
-				console.error('Error loading initial basket items:', error);
-				this.basketItems = [];
-			}
-		},
-		goToLink() {
-			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
-			window.open(`lend/${this.selectedLoan?.id}`);
-		}
 	},
 	created() {
 		const loanRecommendationsData = trackExperimentVersion(
@@ -685,10 +562,6 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		this.isMounted = true;
-
-		// Load initial basket items
-		this.loadInitialBasketItems();
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();
