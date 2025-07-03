@@ -41,11 +41,15 @@
 			class="tw-my-1 " style="height:200px;"
 		>
 			<p class="tw-font-bold tw-mb-1">
-				{{ borrowerName }}
-				{{ subject }}
+				<span v-if="update.isRepayment">
+					{{ subject }}
+				</span>
+				<span v-else-if="subject">
+					Subject line: {{ subject }}
+				</span>
 			</p>
 			<p
-				class="tw-whitespace-pre-line tw-line-clamp-5"
+				class="tw-line-clamp-5"
 			>
 				<span v-html="body" class=" "></span>
 				<span v-if="update.isRepayment">

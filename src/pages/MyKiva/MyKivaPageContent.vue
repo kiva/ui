@@ -113,7 +113,6 @@
 </template>
 
 <script setup>
-/* 1. Imports */
 import { useRouter } from 'vue-router';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
@@ -167,11 +166,12 @@ const props = defineProps({
 	lendingStats: { type: Object, default: () => ({}) },
 	transactions: { type: Array, default: () => [] },
 });
-
+const hasShownHiddenRepayments = ref(false);
 const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
 const selectedJourney = ref('');
+const displayedCount = ref(3);
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
@@ -246,7 +246,6 @@ const getFormattedTransactions = () => {
 
 const formatRepaymentCards = repayments => {
 	if (repayments.length === 0) return [];
-
 	if (repayments.length <= 5) {
 		return repayments.map((trx, idx) => ({
 			id: `repayment-${trx.effectiveTime}-${idx}`,
@@ -293,11 +292,31 @@ const formatRepaymentCards = repayments => {
 		repaymentImages: firstThreeImages,
 	}];
 };
-
 const repaymentCards = computed(() => formatRepaymentCards(repaymentsRaw.value));
+const repaymentsCount = computed(() => repaymentCards.value.length);
+const hiddenRepayments = computed(() => repaymentCards.value.slice(3));
 const mergedUpdates = computed(() => {
-	const all = [...repaymentCards.value, ...loanUpdates.value].sort((a, b) => new Date(b.date) - new Date(a.date));
-	return isFirstLoad.value ? all.slice(0, 3) : all;
+	const repayments = repaymentCards.value;
+	const updates = loanUpdates.value;
+
+	if (isFirstLoad.value) {
+		const repaymentsToShow = repayments.slice(0, 3);
+		const updatesToShow = updates.slice(0, 3 - repaymentsToShow.length);
+		return [...repaymentsToShow, ...updatesToShow]
+			.sort((a, b) => new Date(b.date) - new Date(a.date));
+	}
+
+	if (!hasShownHiddenRepayments.value && hiddenRepayments.value.length > 0) {
+		const hidden = hiddenRepayments.value;
+		const updatesToShow = updates.slice(0, 3 - hidden.length);
+		return [...hidden, ...updatesToShow]
+			.sort((a, b) => new Date(b.date) - new Date(a.date));
+	}
+
+	const repaymentsAndUpdates = [...repaymentCards.value, ...loanUpdates.value];
+	return repaymentsAndUpdates
+		.sort((a, b) => new Date(b.date) - new Date(a.date))
+		.slice(0, displayedCount.value);
 });
 const totalUpdates = computed(() => realTotalUpdates.value + repaymentCards.value.length);
 
@@ -377,7 +396,7 @@ const userInHomepage = computed(() => {
 	return router.currentRoute.value?.path === '/mykiva';
 });
 
-const fetchUserUpdates = loadMore => {
+const fetchUserUpdates = (loadMore, limit = updatesLimit.value) => {
 	const oneMonthBefore = new Date();
 	oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 	const timestamp = oneMonthBefore.getTime();
@@ -385,7 +404,7 @@ const fetchUserUpdates = loadMore => {
 	return apollo.query({
 		query: userUpdatesQuery,
 		variables: {
-			limit: updatesLimit.value,
+			limit,
 			offset: updatesOffset.value,
 			trxLimit: updatesLimit.value,
 			trxOffset: updatesOffset.value,
@@ -403,7 +422,6 @@ const fetchUserUpdates = loadMore => {
 				loanUpdates.value = loanUpdates.value.concat(updates);
 			} else {
 				loanUpdates.value = updates;
-				isFirstLoad.value = false;
 			}
 		})
 		.finally(() => {
@@ -426,9 +444,28 @@ const fetchRecommendedLoans = async () => {
 		logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 	});
 };
-const loadMoreUpdates = () => {
-	updatesOffset.value += updatesLimit.value;
-	fetchUserUpdates(true);
+const fetchInitialUpdates = async () => {
+	const neededUpdates = Math.max(0, 3 - repaymentsCount.value);
+	updatesLimit.value = neededUpdates;
+	updatesOffset.value = 0;
+	await fetchUserUpdates(false, neededUpdates);
+};
+const loadMoreUpdates = async () => {
+	isFirstLoad.value = false;
+
+	const hiddenCount = hiddenRepayments.value.length;
+	let neededUpdates = 3;
+	if (hiddenCount > 0 && !hasShownHiddenRepayments.value) {
+		neededUpdates = Math.max(0, 3 - hiddenCount);
+		hasShownHiddenRepayments.value = true;
+	} else {
+		neededUpdates = 3;
+	}
+	updatesLimit.value = neededUpdates;
+	updatesOffset.value += neededUpdates;
+	await fetchUserUpdates(true, neededUpdates);
+
+	displayedCount.value += 3;
 };
 const fetchMoreWaysToHelpData = async () => {
 	try {
@@ -449,7 +486,7 @@ const fetchMoreWaysToHelpData = async () => {
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
-	await fetchUserUpdates();
+	await fetchInitialUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
