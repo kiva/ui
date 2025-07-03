@@ -7,7 +7,7 @@
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
-				v-if="filteredLoans.length > 1 && showCarouselTabs"
+				v-show="filteredLoans.length > 1 && showCarouselTabs"
 				ref="tabs"
 				class="tabs"
 				@tab-changed="handleChange"
