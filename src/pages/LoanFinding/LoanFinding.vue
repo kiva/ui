@@ -19,7 +19,6 @@
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
 			:per-step="perStepRecommendedRow"
-			@add-to-basket="addToBasket"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
