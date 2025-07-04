@@ -1,0 +1,1 @@
+function i(){return!(typeof window>"u"||!("IntersectionObserver"in window)||!("IntersectionObserverEntry"in window)||!("intersectionRatio"in window.IntersectionObserverEntry.prototype))}function s({callback:r,options:n,targets:t}={}){if(i()){const e=new IntersectionObserver(r,n);return t.forEach(o=>e.observe(o)),e}}export{s as c};
