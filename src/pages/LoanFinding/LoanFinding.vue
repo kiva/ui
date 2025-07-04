@@ -148,10 +148,9 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import { KvSideSheet } from '@kiva/kv-components';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import borrowerProfileExpMixin, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/borrower-profile-exp-mixin';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 
-import isBpModalEnabled, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/is-bp-modal-enabled-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
@@ -190,7 +189,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, isBpModalEnabled, borrowerProfileExpMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
