@@ -1,3 +1,4 @@
+import logReadQueryError from '#src/util/logReadQueryError';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
@@ -16,6 +17,8 @@ export default {
 				variables: {
 					loanId
 				}
+			}).catch(e => {
+				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
 			});
 		},
 		initializeIsBpModalEnabledExp(category) {
