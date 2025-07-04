@@ -40,6 +40,7 @@
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
+						@mouseenter="$emit('mouse-enter-loan-card', loan?.id)"
 					/>
 				</template>
 				<template v-if="showViewMoreCard" #[`slide${loans.length}`]>
@@ -66,7 +67,7 @@ export default {
 		KvClassicLoanCardContainer,
 		ViewMoreCard,
 	},
-	emits: ['add-to-basket', 'show-loan-details'],
+	emits: ['add-to-basket', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		title: {
 			type: String,
