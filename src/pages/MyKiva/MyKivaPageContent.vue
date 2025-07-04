@@ -57,6 +57,7 @@
 				<MyKivaBorrowerCarousel
 					:loans="loans"
 					:total-loans="totalLoans"
+					show-menu
 				/>
 				<JournalUpdatesCarousel
 					:updates="loanUpdates"

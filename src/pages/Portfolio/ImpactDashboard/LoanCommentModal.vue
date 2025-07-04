@@ -101,7 +101,6 @@ export default {
 					this.closeModal();
 					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.borrowerName, this.loan.loanId); // eslint-disable-line max-len
 					this.$showTipMsg(`Thank you for helping ${this.loan.borrowerName}!`, 'confirmation', true);
-					this.$router.push(`/lend/${this.loan.loanId}`);
 				} else {
 					throw new Error('Comment not added');
 				}
