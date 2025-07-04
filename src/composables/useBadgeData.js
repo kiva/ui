@@ -25,7 +25,7 @@ export const FILTERS = {
 	[ID_US_ECONOMIC_EQUALITY]: { country: ['PR', 'US'] },
 	[ID_CLIMATE_ACTION]: { tag: ['8', '9'] },
 	[ID_REFUGEE_EQUALITY]: { attribute: ['28'] },
-	[ID_BASIC_NEEDS]: { sector: ['6', '10'] },
+	[ID_BASIC_NEEDS]: { sector: ['6', '10', '20', '21'] },
 };
 export const CATEGORIES = {
 	[ID_WOMENS_EQUALITY]: 'women',
@@ -38,7 +38,7 @@ export const CATEGORIES = {
 const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
 const REFUGEE_THEME = 'refugees/displaced';
-const BASIC_NEEDS_SECTORS = [6, 10];
+const BASIC_NEEDS_SECTORS = [6, 10, 20, 21];
 const BASIC_NEEDS_THEME = 'water and sanitation';
 const CLIMATE_ACTION_THEME = 'clean energy';
 const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];

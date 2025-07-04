@@ -31,7 +31,7 @@
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
-						:custom-loan-details="true"
+						:custom-loan-details="isBpModalEnabled"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:loan-id="loan.id"
 						:show-tags="true"
@@ -113,6 +113,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isBpModalEnabled: {
+			type: Boolean,
+			defaut: false
+		}
 	},
 	data() {
 		return {
