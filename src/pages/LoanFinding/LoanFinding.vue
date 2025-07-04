@@ -105,7 +105,7 @@
 		/>
 	</www-page>
 	<KvSideSheet
-		v-if="isMounted && isBpModalEnabled"
+		v-if="isBpModalEnabled"
 		:kv-track-function="$kvTrackEvent"
 		:show-back-button="false"
 		:show-go-to-link="true"
@@ -125,11 +125,7 @@
 </template>
 
 <script>
-import numeral from 'numeral';
-import * as Sentry from '@sentry/vue';
-
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
@@ -155,7 +151,6 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 
 const prefetchedFlssVariables = {
@@ -178,7 +173,6 @@ const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 
 export default {
 	name: 'LoanFinding',
-	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerSideSheetContent,
 		FiveDollarsBanner,
@@ -206,7 +200,6 @@ export default {
 	data() {
 		return {
 			almostFundedLoans: new Array(9).fill({ id: 0 }),
-			basketItems: [],
 			enableAlmostFundedRow: false,
 			enableLoanRecommendations: false,
 			enableQFMobileVersion: false,
@@ -214,11 +207,8 @@ export default {
 			firstRowLoans: [],
 			fiveDollarsRowLoans: new Array(30).fill({ id: 0 }),
 			HandOrangeIcon,
-			isAdding: false,
-			isMounted: false,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
-			selectedLoan: undefined,
 			selectedOption: '25',
 			showFiveDollarsBanner: false,
 			showSideSheet: false,
@@ -506,78 +496,6 @@ export default {
 			this.selectedLoan = loan;
 			this.showSideSheet = true;
 		},
-		addToBasket(lendAmount) {
-			this.$kvTrackEvent(
-				'Lending',
-				'Add to basket',
-				'lend-button-click',
-				this.selectedLoan?.id,
-				lendAmount
-			);
-			this.isAdding = true;
-			this.apollo.mutate({
-				mutation: updateLoanReservation,
-				variables: {
-					loanId: Number(this.selectedLoan?.id),
-					price: numeral(lendAmount).format('0.00'),
-				},
-			}).then(({ errors }) => {
-				if (errors) {
-					// Handle errors from adding to basket
-					errors.forEach(error => {
-						try {
-							this.$kvTrackEvent(
-								'Lending',
-								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
-							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
-							if (hasBasketExpired(error?.extensions?.code)) {
-								// eslint-disable-next-line max-len
-								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
-								return handleInvalidBasket({
-									cookieStore: this.cookieStore,
-									loan: {
-										id: this.selectedLoan?.id,
-										price: lendAmount
-									}
-								});
-							}
-							this.$showTipMsg(error.message, 'error');
-						} catch (e) {
-							// no-op
-						}
-					});
-				} else {
-					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
-					} catch (e) {
-						console.error(e);
-					}
-					const basketId = this.cookieStore.get('kvbskt');
-					return this.apollo.query({
-						query: loanCardBasketed,
-						variables: {
-							id: this.selectedLoan?.id,
-							basketId: basketId || undefined
-						},
-						fetchPolicy: 'network-only',
-					}).then(({ data }) => {
-						this.basketItems = data?.shop?.basket?.items?.values || [];
-					});
-				}
-			}).catch(error => {
-				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
-				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
-				Sentry.captureException(error);
-			}).finally(() => {
-				this.isAdding = false;
-				this.handleCartModal();
-			});
-		},
 		// Method to initially load basket items
 		async loadInitialBasketItems() {
 			try {
@@ -599,10 +517,6 @@ export default {
 				console.error('Error loading initial basket items:', error);
 				this.basketItems = [];
 			}
-		},
-		goToLink() {
-			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
-			window.open(`lend/${this.selectedLoan?.id}`);
 		}
 	},
 	created() {
@@ -701,10 +615,8 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		// Load initial basket items
 		this.loadInitialBasketItems();
 		this.initializeIsBpModalEnabledExp('lend-by-category');
-		this.isMounted = true;
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();
