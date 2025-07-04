@@ -10,7 +10,7 @@
 		@side-sheet-closed="handleCloseSideSheet"
 	>
 		<BorrowerSideSheetContent
-			:loan-id="selectedLoan?.id"
+			:loan-id="selectedLoanId"
 			:is-adding="isAdding"
 			:basket-items="basketItems"
 			@add-to-basket="addToBasket"
@@ -35,9 +35,9 @@ import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import { KvSideSheet } from '@kiva/kv-components';
 
 const props = defineProps({
-	selectedLoan: {
-		type: Object,
-		default: () => ({})
+	selectedLoanId: {
+		type: Number,
+		default: null,
 	},
 	showSideSheet: {
 		type: Boolean,
@@ -82,14 +82,14 @@ const addToBasket = lendAmount => {
 		'Lending',
 		'Add to basket',
 		'lend-button-click',
-		props.selectedLoan?.id,
+		props.selectedLoanId,
 		lendAmount
 	);
 	isAdding.value = true;
 	apollo.mutate({
 		mutation: updateLoanReservation,
 		variables: {
-			loanId: Number(props.selectedLoan?.id),
+			loanId: Number(props.selectedLoanId),
 			price: numeral(lendAmount).format('0.00'),
 		},
 	}).then(({ errors }) => {
@@ -109,7 +109,7 @@ const addToBasket = lendAmount => {
 						return handleInvalidBasket({
 							cookieStore,
 							loan: {
-								id: props.selectedLoan?.id,
+								id: props.selectedLoanId,
 								price: lendAmount
 							}
 						});
@@ -132,7 +132,7 @@ const addToBasket = lendAmount => {
 			return apollo.query({
 				query: loanCardBasketed,
 				variables: {
-					id: props.selectedLoan?.id,
+					id: props.selectedLoanId,
 					basketId: basketId || undefined
 				},
 				fetchPolicy: 'network-only',
@@ -150,8 +150,8 @@ const addToBasket = lendAmount => {
 };
 
 const goToLink = () => {
-	$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${props.selectedLoan?.id}`);
-	window.open(`lend/${props.selectedLoan?.id}`);
+	$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${props.selectedLoanId}`);
+	window.open(`lend/${props.selectedLoanId}`);
 };
 
 const handleCloseSideSheet = () => {

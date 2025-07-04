@@ -93,7 +93,7 @@
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
 			:loan="commentLoanData"
-			@comment-modal-closed="commentLoanData.visible = false"
+			@comment-modal-closed="handleCloseCommentModal"
 		/>
 		<!-- Share Button -->
 		<ShareButton
@@ -112,7 +112,7 @@
 		/>
 		<BorrowerSideSheetWrapper
 			:show-side-sheet="showSideSheet"
-			:selected-loan="selectedLoan"
+			:selected-loan-id="selectedLoanId"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</div>
@@ -202,7 +202,7 @@ const shareLoan = ref(false);
 const previousLastIndex = ref(0);
 
 const showSideSheet = ref(false);
-const selectedLoan = ref(undefined);
+const selectedLoanId = ref(null);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -268,6 +268,12 @@ const closeShareModal = () => {
 	sharedLoan.value = null;
 };
 
+const handleCloseCommentModal = () => {
+	selectedLoanId.value = commentLoanData.value?.loanId ?? null;
+	commentLoanData.value.visible = false;
+	showSideSheet.value = true;
+};
+
 const getBorrowerName = loan => {
 	return loan?.name ?? '';
 };
@@ -297,11 +303,11 @@ const loadMore = () => {
 
 const handleCloseSideSheet = () => {
 	showSideSheet.value = false;
-	selectedLoan.value = undefined;
+	selectedLoanId.value = null;
 };
 
 const showLoanDetails = payload => {
-	selectedLoan.value = payload?.loan ?? null;
+	selectedLoanId.value = payload?.loan?.id ?? null;
 	showSideSheet.value = true;
 };
 

@@ -94,7 +94,7 @@
 	</www-page>
 	<BorrowerSideSheetWrapper
 		:show-side-sheet="showSideSheet"
-		:selected-loan="selectedLoan"
+		:selected-loan-id="selectedLoanId"
 		@close-side-sheet="handleCloseSideSheet"
 	/>
 </template>
@@ -181,7 +181,7 @@ export default {
 			HandOrangeIcon,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
-			selectedLoan: undefined,
+			selectedLoanId: null,
 			selectedOption: '25',
 			showFiveDollarsBanner: false,
 			showSideSheet: false,
@@ -459,10 +459,10 @@ export default {
 		},
 		handleCloseSideSheet() {
 			this.showSideSheet = false;
-			this.selectedLoan = undefined;
+			this.selectedLoanId = null;
 		},
 		showLoanDetails(loan) {
-			this.selectedLoan = loan;
+			this.selectedLoanId = loan?.id ?? null;
 			this.showSideSheet = true;
 		},
 	},
