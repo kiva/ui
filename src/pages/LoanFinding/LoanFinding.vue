@@ -19,8 +19,9 @@
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
 			:per-step="perStepRecommendedRow"
-			@add-to-basket="addToBasket"
+			:is-bp-modal-enabled="isBpModalEnabled"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
+			@add-to-basket="addToBasket"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 		/>
@@ -33,8 +34,9 @@
 			:loans="almostFundedLoans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
-			@add-to-basket="trackCategory($event, 'almost-funded')"
+			:is-bp-modal-enabled="isBpModalEnabled"
 			class="tw-pt-3 tw-mb-2"
+			@add-to-basket="trackCategory($event, 'almost-funded')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 		/>
@@ -49,8 +51,9 @@
 			:user-balance="userBalance"
 			:five-dollars-selected="true"
 			:title-icon="HandOrangeIcon"
-			@add-to-basket="trackCategory($event, 'five-dollars')"
+			:is-bp-modal-enabled="isBpModalEnabled"
 			class="tw-pt-3 tw-mb-2"
+			@add-to-basket="trackCategory($event, 'five-dollars')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 		/>
@@ -61,6 +64,7 @@
 				:enable-qf-mobile="enableQFMobileVersion"
 				:enable-almost-funded-row="enableAlmostFundedRow"
 				:user-balance="userBalance"
+				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 				@data-loaded="trackQuickFiltersDisplayedLoans"
 				@show-cart-modal="handleCartModal"
@@ -76,6 +80,7 @@
 				class="tw-py-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
+				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
@@ -87,13 +92,14 @@
 			:loans="spotlightLoans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
+			:is-bp-modal-enabled="isBpModalEnabled"
 			@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 		/>
 	</www-page>
 	<KvSideSheet
-		v-if="isMounted"
+		v-if="isMounted && isBpModalEnabled"
 		:kv-track-function="$kvTrackEvent"
 		:show-back-button="false"
 		:show-go-to-link="true"
@@ -114,14 +120,14 @@
 
 <script>
 import numeral from 'numeral';
+import * as Sentry from '@sentry/vue';
+
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
-
-import * as Sentry from '@sentry/vue';
 
 import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
 import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
@@ -132,10 +138,11 @@ import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalConta
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import { KvSideSheet } from '@kiva/kv-components';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import isBpModalEnabled, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/is-bp-modal-enabled-mixin';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 
@@ -157,12 +164,12 @@ const prefetchedRecommendationsVariables = {
 	limit: 4
 };
 
-const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
-const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
-const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
-const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
 const ALMOST_FUNDED_ROW_EXP_KEY = 'lh_almost_funded_row';
+const FIVE_DOLLARS_BANNER_KEY = 'kvfivedollarsbanner';
+const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
+const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
+const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 
 export default {
 	name: 'LoanFinding',
@@ -177,7 +184,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, isBpModalEnabled],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -243,12 +250,16 @@ export default {
 						variables: { id: FLSS_ONGOING_EXP_KEY }
 					}),
 					client.query({
+						query: experimentAssignmentQuery,
+						variables: { id: HOME_BP_MODAL_EXP_KEY }
+					}),
+					client.query({
 						query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
 						variables: useRecommendations ? {
 							...prefetchedRecommendationsVariables,
 							userId
 						} : prefetchedFlssVariables
-					})
+					}),
 				]);
 			});
 		}
@@ -685,10 +696,10 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
-		this.isMounted = true;
-
 		// Load initial basket items
 		this.loadInitialBasketItems();
+		this.initializeIsBpModalEnabledExp('lend-by-category');
+		this.isMounted = true;
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();
