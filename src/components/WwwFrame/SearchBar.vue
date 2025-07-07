@@ -188,7 +188,7 @@ export default {
 					]);
 				}
 			});
-			this.$kvTrackEvent('event-tracking', 'click', 'Nav-search-bar');
+			this.$kvTrackEvent('search', 'click', 'Nav-search-bar');
 		},
 		onBlur() {
 			this.hasFocus = false;
@@ -225,9 +225,9 @@ export default {
 			this.searching = true;
 
 			if (typeof suggestion === 'string') {
-				this.$kvTrackEvent('event-tracking', 'click', 'custom-search-option', suggestion);
+				this.$kvTrackEvent('search', 'click', 'custom-search-option', suggestion);
 			} else {
-				this.$kvTrackEvent('event-tracking', 'click', 'type-ahead-search', suggestion.label);
+				this.$kvTrackEvent('search', 'click', 'type-ahead-search', suggestion.label);
 			}
 
 			if (suggestion.url) {
