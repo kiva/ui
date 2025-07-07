@@ -23,7 +23,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	// Loading state and computed properties
 	const loading = computed(() => !bpData.value);
 
-	const isGuest = computed(() => bpData.value?.my);
+	const isGuest = computed(() => !bpData.value?.my);
 	const loan = computed(() => bpData.value?.lend?.loan);
 	const loanId = computed(() => loan.value?.id ?? 0);
 
