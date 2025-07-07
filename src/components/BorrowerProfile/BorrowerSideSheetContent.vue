@@ -44,6 +44,7 @@
 				:kv-track-category="'borrower-profile'"
 				:external-links="true"
 				:unreserved-amount="unreservedAmount"
+				:is-visitor="isGuest"
 				@add-to-basket="addToBasket"
 			/>
 		</div>
@@ -129,6 +130,7 @@ export default {
 		const teamCount = computed(() => borrowerProfile?.teamCount?.value);
 		const lenderCount = computed(() => borrowerProfile?.lenderCount?.value);
 		const loading = computed(() => borrowerProfile?.loading?.value);
+		const isGuest = computed(() => borrowerProfile?.isGuest?.value);
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
 			return borrowerProfile.fundraisingPercent.value ?? undefined;
@@ -156,6 +158,7 @@ export default {
 			currentRoute,
 			fundraisingPercent,
 			inPfp,
+			isGuest,
 			lenderCount,
 			loading,
 			loan,
