@@ -23,30 +23,32 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	// Loading state and computed properties
 	const loading = computed(() => !bpData.value);
 
+	const isGuest = computed(() => bpData.value?.my);
 	const loan = computed(() => bpData.value?.lend?.loan);
 	const loanId = computed(() => loan.value?.id ?? 0);
-	const userBalance = computed(() => bpData.value?.my?.userAccount?.balance);
-	const name = computed(() => loan.value?.name ?? '');
-	const hash = computed(() => loan.value?.image?.hash ?? '');
-	const country = computed(() => loan.value?.geocode?.country?.name ?? '');
-	const loanUse = computed(() => loan.value?.use ?? '');
-	const loanWhySpecial = computed(() => loan.value?.whySpecial ?? '');
-	const loanGeocode = computed(() => loan.value?.geocode ?? null);
-	const loanStatus = computed(() => loan.value?.status ?? '');
-	const loanPartner = computed(() => (loan.value && 'partner' in loan.value ? loan.value.partner : null));
-	const loanTrustee = computed(() => (loan.value && 'trustee' in loan.value ? loan.value.trustee : null));
+
 	const anonymizationLevel = computed(() => loan.value?.anonymizationLevel ?? '');
-	const userProperties = computed(() => loan.value?.userProperties ?? null);
-	const description = computed(() => loan.value?.description ?? '');
 	const borrowerCount = computed(() => loan.value?.borrowerCount ?? 0);
 	const borrowers = computed(() => loan.value?.borrowers ?? null);
-	const previousLoanId = computed(() => loan.value?.previousLoanId ?? 0);
-	const originalLanguage = computed(() => loan.value?.originalLanguage ?? null);
-	const descriptionInOriginalLanguage = computed(() => loan.value?.descriptionInOriginalLanguage ?? '');
-	const reviewer = computed(() => (loan.value && 'reviewer' in loan.value ? loan.value.reviewer : null));
-	const partnerName = computed(() => (loan.value && 'partnerName' in loan.value ? loan.value.partnerName : ''));
-	const video = computed(() => loan.value?.video ?? null);
 	const businessName = computed(() => (loan.value && 'businessName' in loan.value ? loan.value.businessName : ''));
+	const country = computed(() => loan.value?.geocode?.country?.name ?? '');
+	const description = computed(() => loan.value?.description ?? '');
+	const descriptionInOriginalLanguage = computed(() => loan.value?.descriptionInOriginalLanguage ?? '');
+	const hash = computed(() => loan.value?.image?.hash ?? '');
+	const loanGeocode = computed(() => loan.value?.geocode ?? null);
+	const loanPartner = computed(() => (loan.value && 'partner' in loan.value ? loan.value.partner : null));
+	const loanStatus = computed(() => loan.value?.status ?? '');
+	const loanTrustee = computed(() => (loan.value && 'trustee' in loan.value ? loan.value.trustee : null));
+	const loanUse = computed(() => loan.value?.use ?? '');
+	const loanWhySpecial = computed(() => loan.value?.whySpecial ?? '');
+	const name = computed(() => loan.value?.name ?? '');
+	const originalLanguage = computed(() => loan.value?.originalLanguage ?? null);
+	const partnerName = computed(() => (loan.value && 'partnerName' in loan.value ? loan.value.partnerName : ''));
+	const previousLoanId = computed(() => loan.value?.previousLoanId ?? 0);
+	const reviewer = computed(() => (loan.value && 'reviewer' in loan.value ? loan.value.reviewer : null));
+	const userBalance = computed(() => bpData.value?.my?.userAccount?.balance);
+	const userProperties = computed(() => loan.value?.userProperties ?? null);
+	const video = computed(() => loan.value?.video ?? null);
 	const businessDescription = computed(() => (
 		loan.value && 'businessDescription' in loan.value ? loan.value.businessDescription : ''
 	));
@@ -67,20 +69,20 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	const fundraisingPercent = computed(() => loan.value?.fundraisingPercent ?? 0);
 	const timeLeft = computed(() => loan.value?.fundraisingTimeLeft ?? '');
 
-	const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
-	const lenders = computed(() => loan.value?.lenders ?? null);
+	const comments = computed(() => loan.value?.comments?.values ?? []);
+	const disbursalDate = computed(() => loan.value?.disbursalDate ?? '');
+	const endorsement = computed(() => (loan.value && 'endorsement' in loan.value ? loan.value.endorsement : ''));
 	const inPfp = computed(() => loan.value?.inPfp ?? false);
+	const lenderCount = computed(() => loan.value?.lenders?.totalCount);
+	const lenders = computed(() => loan.value?.lenders ?? null);
+	const loanAmount = computed(() => loan.value?.loanAmount || 0);
 	const loanLenderRepaymentTerm = computed(() => loan.value?.lenderRepaymentTerm ?? 0);
 	const loanTermLenderRepaymentTerm = computed(() => loan.value?.terms?.lenderRepaymentTerm ?? 0);
-	const repaymentInterval = computed(() => loan.value?.repaymentInterval ?? '');
-	const disbursalDate = computed(() => loan.value?.disbursalDate ?? '');
-	const terms = computed(() => loan.value?.terms ?? null);
-	const endorsement = computed(() => (loan.value && 'endorsement' in loan.value ? loan.value.endorsement : ''));
-	const loanAmount = computed(() => loan.value?.loanAmount || 0);
 	const paidAmount = computed(() => loan.value?.paidAmount || 0);
-	const comments = computed(() => loan.value?.comments?.values ?? []);
+	const pfpMinLenders = computed(() => loan.value?.pfpMinLenders ?? 0);
+	const repaymentInterval = computed(() => loan.value?.repaymentInterval ?? '');
 	const teamCount = computed(() => loan.value?.teams?.totalCount);
-	const lenderCount = computed(() => loan.value?.lenders?.totalCount);
+	const terms = computed(() => loan.value?.terms ?? null);
 
 	const loadBPData = loanDataId => {
 		if (!loanDataId || typeof loanDataId !== 'number') return;
@@ -139,6 +141,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 		fundraisingPercent,
 		hash,
 		inPfp,
+		isGuest,
 		lenderCount,
 		lenders,
 		loadBPData,
