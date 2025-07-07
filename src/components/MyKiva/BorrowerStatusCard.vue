@@ -138,17 +138,6 @@ const { loan } = toRefs(props);
 const menuOpen = ref(false);
 const optionsMenu = ref(null);
 
-const menuOptions = [
-	{
-		id: COMMENT_ID,
-		label: 'Leave a comment',
-	},
-	{
-		id: SHARE_ID,
-		label: 'Share',
-	},
-];
-
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
 const hash = computed(() => loan.value?.image?.hash ?? '');
@@ -161,6 +150,23 @@ const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`
 const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+const isFunded = computed(() => loan.value?.status === FUNDED);
+
+const menuOptions = computed(() => {
+	const options = [{
+		id: SHARE_ID,
+		label: 'Share',
+	}];
+
+	if (!isFunded.value) {
+		options.unshift({
+			id: COMMENT_ID,
+			label: 'Leave a comment',
+		});
+	}
+
+	return options;
+});
 
 const showWhatIsNextColumn = computed(() => {
 	return !([REFUNDED, EXPIRED, ENDED].includes(loan.value?.status));
