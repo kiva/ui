@@ -150,7 +150,6 @@ const title = computed(() => `${borrowerName.value} in ${borrowerCountry.value}`
 const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
-const isFunded = computed(() => loan.value?.status === FUNDED);
 
 const menuOptions = computed(() => {
 	const options = [{
@@ -158,7 +157,7 @@ const menuOptions = computed(() => {
 		label: 'Share',
 	}];
 
-	if (!isFunded.value) {
+	if (isFundraising.value) {
 		options.unshift({
 			id: COMMENT_ID,
 			label: 'Leave a comment',
