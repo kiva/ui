@@ -99,6 +99,7 @@
 		/>
 	</www-page>
 	<BorrowerSideSheetWrapper
+		v-if="isBpModalEnabled"
 		:show-side-sheet="showSideSheet"
 		:selected-loan-id="selectedLoanId"
 		@close-side-sheet="handleCloseSideSheet"
