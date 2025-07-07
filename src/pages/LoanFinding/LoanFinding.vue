@@ -24,6 +24,7 @@
 			@add-to-basket="addToBasket"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<!-- Almost Funded loans row -->
 		<lending-category-section
@@ -39,6 +40,7 @@
 			@add-to-basket="trackCategory($event, 'almost-funded')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<!-- Five dollars row -->
 		<lending-category-section
@@ -56,6 +58,7 @@
 			@add-to-basket="trackCategory($event, 'five-dollars')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 		<div class="tw-flex tw-flex-col">
 			<quick-filters-section
@@ -69,6 +72,7 @@
 				@data-loaded="trackQuickFiltersDisplayedLoans"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
+				@mouse-enter-loan-card="loadBPData"
 			/>
 			<!-- Element to trigger spotlight observer -->
 			<div ref="spotlightObserver"></div>
@@ -84,6 +88,7 @@
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
+				@mouse-enter-loan-card="loadBPData"
 			/>
 		</div>
 		<partner-spotlight-section
@@ -96,6 +101,7 @@
 			@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
+			@mouse-enter-loan-card="loadBPData"
 		/>
 	</www-page>
 	<BorrowerSideSheetWrapper
@@ -124,12 +130,12 @@ import { createIntersectionObserver } from '#src/util/observerUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
-import isBpModalEnabled, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/is-bp-modal-enabled-mixin';
+import borrowerProfileExpMixin, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/borrower-profile-exp-mixin';
+import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
+
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
-
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
-import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 
@@ -163,7 +169,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, isBpModalEnabled],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',

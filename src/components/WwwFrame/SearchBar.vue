@@ -188,6 +188,7 @@ export default {
 					]);
 				}
 			});
+			this.$kvTrackEvent('search', 'click', 'Nav-search-bar');
 		},
 		onBlur() {
 			this.hasFocus = false;
@@ -222,6 +223,12 @@ export default {
 		runSearch(suggestion) {
 			let query;
 			this.searching = true;
+
+			if (typeof suggestion === 'string') {
+				this.$kvTrackEvent('search', 'click', 'custom-search-option', suggestion);
+			} else {
+				this.$kvTrackEvent('search', 'click', 'type-ahead-search', suggestion.label);
+			}
 
 			if (suggestion.url) {
 				window.location = suggestion.url;

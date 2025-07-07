@@ -1,4 +1,7 @@
 query BorrowerProfileSideSheet($loanId: Int!) {
+	my {
+		id
+	},
 	lend {
 		loan(id: $loanId) {
 			# for loan-progress and lend cta components
