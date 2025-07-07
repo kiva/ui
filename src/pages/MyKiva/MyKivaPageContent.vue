@@ -293,7 +293,6 @@ const formatRepaymentCards = repayments => {
 	}];
 };
 const repaymentCards = computed(() => formatRepaymentCards(repaymentsRaw.value));
-const repaymentsCount = computed(() => repaymentCards.value.length);
 const hiddenRepayments = computed(() => repaymentCards.value.slice(3));
 const mergedUpdates = computed(() => {
 	const repayments = repaymentCards.value;
@@ -403,9 +402,9 @@ const fetchUserUpdates = (loadMore, limit = updatesLimit.value) => {
 		query: userUpdatesQuery,
 		variables: {
 			limit,
-			offset: updatesOffset.value,
-			trxLimit: updatesLimit.value,
-			trxOffset: updatesOffset.value,
+			offset: 0, // Always fetch from the beginning
+			trxLimit: limit,
+			trxOffset: 0,
 			since: timestamp,
 		}
 	})
@@ -416,11 +415,8 @@ const fetchUserUpdates = (loadMore, limit = updatesLimit.value) => {
 
 			realTotalUpdates.value = result.data?.my?.updates?.totalCount ?? 0;
 
-			if (loadMore) {
-				loanUpdates.value = loanUpdates.value.concat(updates);
-			} else {
-				loanUpdates.value = updates;
-			}
+			// Always replace the array, never concat
+			loanUpdates.value = updates;
 		})
 		.finally(() => {
 			updatesLoading.value = false;
@@ -443,27 +439,18 @@ const fetchRecommendedLoans = async () => {
 	});
 };
 const fetchInitialUpdates = async () => {
-	const neededUpdates = Math.max(0, 3 - repaymentsCount.value);
-	updatesLimit.value = neededUpdates;
+	displayedCount.value = 3;
+	updatesLimit.value = displayedCount.value;
 	updatesOffset.value = 0;
-	await fetchUserUpdates(false, neededUpdates);
+	await fetchUserUpdates(false, updatesLimit.value);
 };
+
 const loadMoreUpdates = async () => {
 	isFirstLoad.value = false;
-
-	const hiddenCount = hiddenRepayments.value.length;
-	let neededUpdates = 3;
-	if (hiddenCount > 0 && !hasShownHiddenRepayments.value) {
-		neededUpdates = Math.max(0, 3 - hiddenCount);
-		hasShownHiddenRepayments.value = true;
-	} else {
-		neededUpdates = 3;
-	}
-	updatesLimit.value = neededUpdates;
-	updatesOffset.value += neededUpdates;
-	await fetchUserUpdates(true, neededUpdates);
-
-	displayedCount.value += 3;
+	displayedCount.value += 3; // Increase by 3 each time
+	updatesLimit.value = displayedCount.value;
+	updatesOffset.value = 0; // Always fetch from the beginning
+	await fetchUserUpdates(true, updatesLimit.value);
 };
 const fetchMoreWaysToHelpData = async () => {
 	try {
