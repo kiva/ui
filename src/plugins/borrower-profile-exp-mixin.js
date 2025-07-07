@@ -8,6 +8,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+import logFormatter from '#src/util/logFormatter';
 
 export const HOME_BP_MODAL_EXP_KEY = 'home_page_bp_modal';
 
@@ -65,7 +66,7 @@ export default {
 				});
 				this.basketItems = data?.shop?.basket?.items?.values || [];
 			} catch (error) {
-				console.error('Error loading initial basket items:', error);
+				logFormatter(error, 'error');
 				this.basketItems = [];
 			}
 		},
@@ -118,7 +119,7 @@ export default {
 							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
 						}
 					} catch (e) {
-						console.error(e);
+						logFormatter(e, 'error');
 					}
 					const basketId = this.cookieStore.get('kvbskt');
 					return this.apollo.query({
