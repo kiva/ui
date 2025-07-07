@@ -31,7 +31,14 @@ function getMockApollo() {
 // Render the search bar, optionally taking an ApolloClient instance to provide to the component
 function renderSearchBar(apollo = getMockApollo()) {
 	return render(SearchBar, {
-		global: { provide: { apollo } }
+		global: {
+			provide: { apollo },
+			mocks: {
+				lockScrollSmallOnly: vi.fn(),
+				unlockScrollSmallOnly: vi.fn(),
+				$kvTrackEvent: vi.fn(),
+			},
+		},
 	});
 }
 
