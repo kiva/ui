@@ -105,7 +105,7 @@
 		/>
 	</www-page>
 	<BorrowerSideSheetWrapper
-		v-if="isBpModalEnabled"
+		v-if="isBpModalEnabled && showSideSheet"
 		:basket-items="basketItems"
 		:is-adding="isAdding"
 		:kv-track-function="$kvTrackEvent"

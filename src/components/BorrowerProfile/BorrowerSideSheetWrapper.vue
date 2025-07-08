@@ -33,7 +33,7 @@ defineProps({
 		default: false
 	},
 	kvTrackFunction: {
-		type: () => {},
+		type: Function,
 		default: () => {}
 	},
 	selectedLoanId: {
