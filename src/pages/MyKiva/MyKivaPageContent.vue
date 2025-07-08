@@ -309,7 +309,7 @@ export default {
 			return this.loans.length === 1 && this.loanUpdates.length === 1;
 		},
 		userInHomepage() {
-			return this.router.currentRoute.value?.path === '/mykiva';
+			return this.$router.currentRoute.value?.path === '/mykiva';
 		},
 	},
 	methods: {
@@ -318,11 +318,11 @@ export default {
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
 		},
 		handleBadgeTileClicked(selectedTier) {
-			this.router.push(this.getLoanFindingUrl(selectedTier.badge.id, this.router.currentRoute.value));
+			this.$router.push(this.getLoanFindingUrl(selectedTier.badge.id, this.$router.currentRoute.value));
 		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
-				this.router.push(this.getLoanFindingUrl(badge.id, this.router.currentRoute.value));
+				this.$router.push(this.getLoanFindingUrl(badge.id, this.$router.currentRoute.value));
 			} else {
 				this.state = STATE_JOURNEY;
 				this.selectedBadgeData = badge;
@@ -332,10 +332,10 @@ export default {
 		},
 		handleComponentClosed() {
 			this.selectedJourney = '';
-			const queryParams = { ...this.router.currentRoute?.value?.query };
+			const queryParams = { ...this.$router.currentRoute?.value?.query };
 			if (queryParams.journey) {
 				delete queryParams.journey;
-				this.router.push({ ...this.router.currentRoute.value, query: queryParams });
+				this.$router.push({ ...this.$router.currentRoute.value, query: queryParams });
 			}
 			this.selectedBadgeData = undefined;
 			this.showJourneySideSheet = false;
@@ -358,12 +358,12 @@ export default {
 				challengeName,
 			);
 			if (this.allBadgesCompleted) {
-				return this.router.push('/portfolio/lending-stats');
+				return this.$router.push('/portfolio/lending-stats');
 			}
 			if (this.isSelectedJourneyComplete) {
 				return this.handleComponentClosed();
 			}
-			this.router.push(this.getLoanFindingUrl(id, this.router.currentRoute.value));
+			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value));
 		},
 		handleBadgeJourneyLevelClicked(payload) {
 			const { id, challengeName, tier: clickedTier } = payload;
@@ -375,7 +375,7 @@ export default {
 				challengeName,
 				clickedTier.level,
 			);
-			this.router.push(this.getLoanFindingUrl(id, this.router.currentRoute.value));
+			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value));
 		},
 		getFormattedTransactions() {
 			return this.transactionsTypes.map(trx => {
