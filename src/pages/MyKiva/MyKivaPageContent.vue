@@ -52,9 +52,11 @@
 				<MyKivaBorrowerCarousel
 					:loans="loans"
 					:total-loans="totalLoans"
+					show-menu
 				/>
 				<JournalUpdatesCarousel
-					:updates="loanUpdates"
+					v-if="!updatesLoading && mergedUpdates.length"
+					:updates="mergedUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
 					@load-more-updates="loadMoreUpdates"
@@ -158,6 +160,8 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
+const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
+
 export default {
 	name: 'MyKivaPageContent',
 	mixins: [borrowerProfileExpMixin],
@@ -215,6 +219,10 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+		transactions: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	data() {
 		const { getBadgeWithVisibleTiers } = useBadgeData();
@@ -225,18 +233,23 @@ export default {
 			badgeData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
+
 		return {
 			addedLoan: null,
 			badgeData,
-			CONTENTFUL_MORE_WAYS_KEY: 'my-kiva-more-ways-carousel',
+			CONTENTFUL_MORE_WAYS_KEY,
+			displayedCount: 3,
 			fetchAchievementData,
 			fetchContentfulData,
 			getBadgeWithVisibleTiers,
 			getLoanFindingUrl,
+			hasShownHiddenRepayments: false,
 			hideBottomGradient: false,
 			isEarnedSectionModal: false,
+			isFirstLoad: true,
 			loanUpdates: [],
 			moreWaysToHelpSlides: [],
+			realTotalUpdates: 0,
 			recommendedLoans: Array(6).fill({ id: 0 }),
 			router,
 			selectedBadgeData: null,
@@ -245,15 +258,49 @@ export default {
 			showJourneySideSheet: false,
 			showNavigation: false,
 			state: STATE_JOURNEY,
-			totalUpdates: 0,
-			transactions: [],
+			transactionsTypes: [],
 			updatesLimit: 3,
-			updatesOffset: 0,
+			updatesLoading: true,
+			updatesOffset: 3,
 		};
 	},
 	computed: {
 		userBalance() {
 			return this.userInfo.userAccount?.balance ?? '';
+		},
+		repaymentsRaw() {
+			return this.transactions.filter(trx => trx.type === 'loan_repayment');
+		},
+		repaymentCards() {
+			return this.formatRepaymentCards(this.repaymentsRaw);
+		},
+		hiddenRepayments() {
+			return this.repaymentCards.slice(3);
+		},
+		mergedUpdates() {
+			const repayments = this.repaymentCards;
+			const updates = this.loanUpdates;
+
+			if (this.isFirstLoad) {
+				return [...repayments, ...updates]
+					.sort((a, b) => new Date(b.date) - new Date(a.date))
+					.slice(0, this.displayedCount);
+			}
+
+			if (!this.hasShownHiddenRepayments && this.hiddenRepayments.length > 0) {
+				const hidden = this.hiddenRepayments;
+				const updatesToShow = updates.slice(0, 3 - hidden.length);
+				return [...hidden, ...updatesToShow]
+					.sort((a, b) => new Date(b.date) - new Date(a.date));
+			}
+
+			const repaymentsAndUpdates = [...this.repaymentCards, ...this.loanUpdates];
+			return repaymentsAndUpdates
+				.sort((a, b) => new Date(b.date) - new Date(a.date))
+				.slice(0, this.displayedCount);
+		},
+		totalUpdates() {
+			return this.realTotalUpdates + this.repaymentCards.length;
 		},
 		allBadgesCompleted() {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
@@ -340,7 +387,7 @@ export default {
 			this.router.push(this.getLoanFindingUrl(id, this.router.currentRoute.value));
 		},
 		getFormattedTransactions() {
-			return this.transactions.map(trx => {
+			return this.transactionsTypes.map(trx => {
 				const manifest = trx?.receipt?.manifest ?? null;
 				const total = manifest?.totals?.itemTotal || 0;
 				const newBalance = manifest?.totals?.kivaCreditRemaining;
@@ -375,30 +422,74 @@ export default {
 				};
 			});
 		},
-		fetchUserUpdates(loadMore = false) {
+		formatRepaymentCards(repayments) {
+			if (repayments.length === 0) return [];
+			if (repayments.length <= 5) {
+				return repayments.map((trx, idx) => ({
+					id: `repayment-${trx.effectiveTime}-${idx}`,
+					isRepayment: true,
+					isTransaction: true,
+					status: 'repayment',
+					date: trx.effectiveTime,
+					subject: 'Success!',
+					// eslint-disable-next-line max-len
+					body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+					amount: trx.amount,
+					loan: trx.loan,
+					image: trx.loan?.image?.url || null,
+				}));
+			}
+			const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
+			const uniqueBorrowers = new Set(repayments.map(trx => trx.loan?.name).filter(Boolean));
+			const uniqueCountries = new Set(repayments.map(trx => trx.loan?.geocode?.country?.name).filter(Boolean));
+			const firstThreeImages = repayments.slice(0, 3).map(trx => ({
+				hash: trx.loan?.image?.hash,
+				alt: trx.loan?.name || 'Borrower',
+				defaultImage: { width: 80, faceZoom: 50 },
+				images: [
+					{ width: 80, faceZoom: 50, viewSize: 1024 },
+					{ width: 72, faceZoom: 50, viewSize: 734 },
+					{ width: 64, faceZoom: 50 }
+				]
+			}));
+			return [{
+				id: `repayment-summary-${repayments[0]?.effectiveTime || Date.now()}`,
+				isRepayment: true,
+				isTransaction: true,
+				status: 'repayment-summary',
+				date: repayments[0]?.effectiveTime || new Date().toISOString(),
+				title: `${uniqueBorrowers.size} Borrowers`,
+				subject: 'Success!',
+				// eslint-disable-next-line max-len
+				body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+				amount: totalAmount,
+				loan: null,
+				image: null,
+				repaymentImages: firstThreeImages,
+			}];
+		},
+		fetchUserUpdates(limit = this.updatesLimit) {
 			const oneMonthBefore = new Date();
 			oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 			const timestamp = oneMonthBefore.getTime();
-			this.apollo.query({
+			return this.apollo.query({
 				query: userUpdatesQuery,
 				variables: {
-					limit: this.updatesLimit,
-					offset: this.updatesOffset,
-					trxLimit: this.updatesLimit,
-					trxOffset: this.updatesOffset,
+					limit,
+					offset: 0, // Always fetch from the beginning
+					trxLimit: limit,
+					trxOffset: 0,
 					since: timestamp,
 				}
 			}).then(result => {
-				this.transactions = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
-				this.totalUpdates = this.transactions.length + (result.data?.my?.updates?.totalCount ?? 0);
+				this.transactionsTypes = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
 				const formattedTransactions = this.getFormattedTransactions();
-				const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions)
-					.sort((a, b) => new Date(b.date) - new Date(a.date));
-				if (loadMore) {
-					this.loanUpdates = this.loanUpdates.concat(updates);
-				} else {
-					this.loanUpdates = updates;
-				}
+				const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
+				this.realTotalUpdates = result.data?.my?.updates?.totalCount ?? 0;
+				// Always replace the array, never concat
+				this.loanUpdates = updates;
+			}).finally(() => {
+				this.updatesLoading = false;
 			}).catch(e => {
 				logReadQueryError(e, 'MyKivaPage updatesQuery');
 			});
@@ -415,9 +506,18 @@ export default {
 				logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 			});
 		},
-		loadMoreUpdates() {
-			this.updatesOffset += this.updatesLimit;
-			this.fetchUserUpdates(true);
+		async fetchInitialUpdates() {
+			this.displayedCount = 3;
+			this.updatesLimit = this.displayedCount;
+			this.updatesOffset = 0;
+			await this.fetchUserUpdates(this.updatesLimit);
+		},
+		async loadMoreUpdates() {
+			this.isFirstLoad = false;
+			this.displayedCount += 3; // Increase by 3 each time
+			this.updatesLimit = this.displayedCount;
+			this.updatesOffset = 0; // Always fetch from the beginning
+			await this.fetchUserUpdates(this.updatesLimit);
 		},
 		updateJourney(journey) {
 			this.selectedJourney = journey;
@@ -434,7 +534,7 @@ export default {
 					query: contentfulEntriesQuery,
 					variables: {
 						contentType: 'carousel',
-						contentKey: this.CONTENTFUL_MORE_WAYS_KEY,
+						contentKey: CONTENTFUL_MORE_WAYS_KEY,
 					}
 				});
 				this.moreWaysToHelpSlides = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
@@ -454,7 +554,7 @@ export default {
 	async mounted() {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
-		this.fetchUserUpdates();
+		await this.fetchInitialUpdates();
 		this.fetchAchievementData(this.apollo);
 		this.fetchContentfulData(this.apollo);
 		this.fetchRecommendedLoans();

@@ -23,6 +23,7 @@ query BorrowerProfileSideSheet($loanId: Int!) {
 			tags
 			use
 			whySpecial
+			status
 			activity {
 				id
 				name
