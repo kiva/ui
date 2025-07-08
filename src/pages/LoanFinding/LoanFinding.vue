@@ -106,8 +106,17 @@
 	</www-page>
 	<BorrowerSideSheetWrapper
 		v-if="isBpModalEnabled"
-		:show-side-sheet="showSideSheet"
+		:basket-items="basketItems"
+		:is-adding="isAdding"
+		:kv-track-function="$kvTrackEvent"
 		:selected-loan-id="selectedLoan?.id"
+		:show-back-button="false"
+		:show-go-to-link="true"
+		:show-headline-border="true"
+		:show-side-sheet="showSideSheet"
+		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+		@add-to-basket="addToBasket"
+		@go-to-link="goToLink"
 		@close-side-sheet="handleCloseSideSheet"
 	/>
 </template>

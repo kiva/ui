@@ -108,30 +108,26 @@
 				@update-journey="updateJourney"
 			/>
 		</section>
-		<KvSideSheet
-			v-if="isBpModalEnabled && showBPSideSheet"
+		<BorrowerSideSheetWrapper
+			v-if="isBpModalEnabled & showBPSideSheet"
+			:basket-items="basketItems"
+			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
+			:selected-loan-id="selectedLoan?.id"
 			:show-back-button="false"
 			:show-go-to-link="true"
 			:show-headline-border="true"
-			:visible="showBPSideSheet"
+			:show-side-sheet="showBPSideSheet"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
-			@side-sheet-closed="handleCloseSideSheet"
-		>
-			<BorrowerSideSheetContent
-				:loan-id="selectedLoan?.id"
-				:is-adding="isAdding"
-				:basket-items="basketItems"
-				@add-to-basket="addToBasket"
-			/>
-		</KvSideSheet>
+			@close-side-sheet="handleCloseSideSheet"
+		/>
 	</MyKivaContainer>
 </template>
 
 <script>
 import { useRouter } from 'vue-router';
-import { KvSideSheet } from '@kiva/kv-components';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -139,7 +135,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
-import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
@@ -168,12 +164,11 @@ export default {
 	components: {
 		BadgesSection,
 		BadgeTile,
-		BorrowerSideSheetContent,
+		BorrowerSideSheetWrapper,
 		JournalUpdatesCarousel,
 		JourneyCardCarousel,
 		JourneySideSheet,
 		KvAtbModalContainer,
-		KvSideSheet,
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
@@ -233,7 +228,6 @@ export default {
 			badgeData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
-
 		return {
 			addedLoan: null,
 			badgeData,
@@ -280,20 +274,17 @@ export default {
 		mergedUpdates() {
 			const repayments = this.repaymentCards;
 			const updates = this.loanUpdates;
-
 			if (this.isFirstLoad) {
 				return [...repayments, ...updates]
 					.sort((a, b) => new Date(b.date) - new Date(a.date))
 					.slice(0, this.displayedCount);
 			}
-
 			if (!this.hasShownHiddenRepayments && this.hiddenRepayments.length > 0) {
 				const hidden = this.hiddenRepayments;
 				const updatesToShow = updates.slice(0, 3 - hidden.length);
 				return [...hidden, ...updatesToShow]
 					.sort((a, b) => new Date(b.date) - new Date(a.date));
 			}
-
 			const repaymentsAndUpdates = [...this.repaymentCards, ...this.loanUpdates];
 			return repaymentsAndUpdates
 				.sort((a, b) => new Date(b.date) - new Date(a.date))
