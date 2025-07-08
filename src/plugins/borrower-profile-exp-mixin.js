@@ -70,19 +70,19 @@ export default {
 				this.basketItems = [];
 			}
 		},
-		addToBasket(lendAmount) {
+		addToBasket({ loanId, lendAmount }) {
 			this.$kvTrackEvent(
 				'Lending',
 				'Add to basket',
 				'lend-button-click',
-				this.selectedLoan?.id,
+				loanId,
 				lendAmount
 			);
 			this.isAdding = true;
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {
-					loanId: Number(this.selectedLoan?.id),
+					loanId,
 					price: numeral(lendAmount).format('0.00'),
 				},
 			}).then(({ errors }) => {
@@ -102,7 +102,7 @@ export default {
 								return handleInvalidBasket({
 									cookieStore: this.cookieStore,
 									loan: {
-										id: this.selectedLoan?.id,
+										id: loanId,
 										price: lendAmount
 									}
 								});
@@ -125,7 +125,7 @@ export default {
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
-							id: this.selectedLoan?.id,
+							id: loanId,
 							basketId: basketId || undefined
 						},
 						fetchPolicy: 'network-only',

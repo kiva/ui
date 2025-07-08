@@ -69,7 +69,7 @@ const emit = defineEmits([
 ]);
 
 const addToBasket = lendAmount => {
-	emit('add-to-basket', lendAmount);
+	emit('add-to-basket', { loanId: this.selectedLoanId, lendAmount });
 };
 
 const goToLink = () => {
