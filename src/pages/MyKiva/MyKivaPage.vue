@@ -10,6 +10,7 @@
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
+			:transactions="transactions"
 		/>
 	</www-page>
 </template>
@@ -47,6 +48,7 @@ export default {
 			heroContentfulData: [],
 			heroTieredAchievements: [],
 			lendingStats: {},
+			transactions: [],
 		};
 	},
 	apollo: {
@@ -105,6 +107,7 @@ export default {
 					...statsResult.my?.lendingStats,
 					...statsResult.my?.userStats,
 				};
+				this.transactions = result.my?.transactions?.values ?? [];
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

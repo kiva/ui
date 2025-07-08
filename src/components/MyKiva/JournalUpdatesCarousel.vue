@@ -120,7 +120,7 @@ const updateBody = ref('');
 const shareLoan = ref(false);
 const carouselIndex = ref(0);
 const receipt = ref(null);
-let prevUpdatesLength = 0;
+let prevUpdatesLength = 3;
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -195,7 +195,7 @@ watch(
 		}
 
 		if (prevUpdatesLength > 0 && prevUpdatesLength !== newUpdates.value?.length) {
-			carouselIndex.value = prevUpdatesLength;
+			carouselIndex.value = prevUpdatesLength - 1;
 		}
 
 		prevUpdatesLength = newUpdates.value?.length ?? 0;

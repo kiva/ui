@@ -60,7 +60,8 @@
 					show-menu
 				/>
 				<JournalUpdatesCarousel
-					:updates="loanUpdates"
+					v-if="!updatesLoading && mergedUpdates.length"
+					:updates="mergedUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
 					@load-more-updates="loadMoreUpdates"
@@ -143,13 +144,10 @@ import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
-
 const { getBadgeWithVisibleTiers } = useBadgeData();
-
 const router = useRouter();
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-
 const {
 	fetchAchievementData,
 	fetchContentfulData,
@@ -158,151 +156,55 @@ const {
 } = useBadgeData(apollo);
 
 const props = defineProps({
-	isHeroEnabled: {
-		type: Boolean,
-		default: false,
-	},
-	userInfo: {
-		type: Object,
-		default: () => ({}),
-	},
-	loans: {
-		type: Array,
-		default: () => ([]),
-	},
-	totalLoans: {
-		type: Number,
-		default: 0,
-	},
-	lender: {
-		type: Object,
-		default: null,
-	},
-	heroSlides: {
-		type: Array,
-		default: () => ([]),
-	},
-	heroContentfulData: {
-		type: Array,
-		default: () => ([]),
-	},
-	heroTieredAchievements: {
-		type: Array,
-		default: () => ([]),
-	},
-	lendingStats: {
-		type: Object,
-		default: () => ({}),
-	},
+	isHeroEnabled: { type: Boolean, default: false },
+	userInfo: { type: Object, default: () => ({}) },
+	loans: { type: Array, default: () => ([]) },
+	totalLoans: { type: Number, default: 0 },
+	lender: { type: Object, default: null },
+	heroSlides: { type: Array, default: () => ([]) },
+	heroContentfulData: { type: Array, default: () => ([]) },
+	heroTieredAchievements: { type: Array, default: () => ([]) },
+	lendingStats: { type: Object, default: () => ({}) },
+	transactions: { type: Array, default: () => [] },
 });
-
+const hasShownHiddenRepayments = ref(false);
 const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
 const selectedJourney = ref('');
+const displayedCount = ref(3);
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
-const totalUpdates = ref(0);
 const updatesLimit = ref(3);
-const updatesOffset = ref(0);
+const updatesOffset = ref(updatesLimit.value);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
 const addedLoan = ref(null);
-const transactions = ref([]);
+const transactionsTypes = ref([]);
 const moreWaysToHelpSlides = ref([]);
+const realTotalUpdates = ref(0);
+const updatesLoading = ref(true);
+const isFirstLoad = ref(true);
 
+const repaymentsRaw = computed(() => props.transactions.filter(trx => trx.type === 'loan_repayment'));
 const userBalance = computed(() => props.userInfo.userAccount?.balance ?? '');
-
 const allBadgesCompleted = computed(() => {
 	const tieredBadges = badgeData.value?.filter(b => defaultBadges.includes(b?.id));
 	return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 });
-
 const recommendeLoansTitle = computed(() => {
 	return props.loans.length < 1
 		? 'Recommended for you'
 		: 'Recommended for you based on your lending history';
 });
-
-const handleShowNavigation = () => {
-	showNavigation.value = true;
-	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
-};
-
-const handleBadgeTileClicked = selectedTier => {
-	router.push(getLoanFindingUrl(selectedTier.badge.id, router.currentRoute.value));
-};
-
-const handleBadgeSectionClicked = badge => {
-	if (!badge.hasStarted) {
-		router.push(getLoanFindingUrl(badge.id, router.currentRoute.value));
-	} else {
-		state.value = STATE_JOURNEY;
-		selectedBadgeData.value = badge;
-		isEarnedSectionModal.value = false;
-		showSideSheet.value = true;
-	}
-};
-
+const showSingleArray = computed(() => props.loans.length === 1 && loanUpdates.value.length === 1);
 const isSelectedJourneyComplete = computed(() => {
 	return selectedBadgeData.value?.achievementData?.tiers?.length === selectedBadgeData.value?.level;
 });
 
-const handleComponentClosed = () => {
-	selectedJourney.value = '';
-	const queryParams = { ...router.currentRoute?.value?.query };
-	if (queryParams.journey) {
-		delete queryParams.journey;
-		router.push({ ...router.currentRoute.value, query: queryParams });
-	}
-	selectedBadgeData.value = undefined;
-	showSideSheet.value = false;
-	hideBottomGradient.value = false;
-};
-
-const handleContinueJourneyClicked = () => {
-	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
-	const { id, challengeName } = badgeWithVisibleTiers;
-	let eventLabel = `${challengeName} Continue Journey Clicked`;
-	if (allBadgesCompleted.value) {
-		eventLabel = `${challengeName} See all of your impact stats`;
-	}
-	if (isSelectedJourneyComplete.value) {
-		eventLabel = `${challengeName} See all`;
-	}
-	$kvTrackEvent(
-		'portfolio',
-		'click',
-		eventLabel,
-		challengeName,
-	);
-
-	if (allBadgesCompleted.value) {
-		return router.push('/portfolio/lending-stats');
-	}
-	if (isSelectedJourneyComplete.value) {
-		return handleComponentClosed();
-	}
-	router.push(getLoanFindingUrl(id, router.currentRoute.value));
-};
-
-const handleBadgeJourneyLevelClicked = payload => {
-	const { id, challengeName, tier: clickedTier } = payload;
-
-	$kvTrackEvent(
-		'portfolio',
-		'click',
-		state.value === STATE_EARNED ? 'Already earned badge modal' : 'Earn a badge - within badge journey map modal',
-		challengeName,
-		clickedTier.level,
-	);
-
-	router.push(getLoanFindingUrl(id, router.currentRoute.value));
-};
-
 const getFormattedTransactions = () => {
-	return transactions.value.map(trx => {
+	return transactionsTypes.value.map(trx => {
 		const manifest = trx?.receipt?.manifest ?? null;
 		const total = manifest?.totals?.itemTotal || 0;
 		const newBalance = manifest?.totals?.kivaCreditRemaining;
@@ -343,39 +245,187 @@ const getFormattedTransactions = () => {
 	});
 };
 
-const fetchUserUpdates = loadMore => {
+const formatRepaymentCards = repayments => {
+	if (repayments.length === 0) return [];
+	if (repayments.length <= 5) {
+		return repayments.map((trx, idx) => ({
+			id: `repayment-${trx.effectiveTime}-${idx}`,
+			isRepayment: true,
+			isTransaction: true,
+			status: 'repayment',
+			date: trx.effectiveTime,
+			subject: 'Success!',
+			// eslint-disable-next-line max-len
+			body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+			amount: trx.amount,
+			loan: trx.loan,
+			image: trx.loan?.image?.url || null,
+		}));
+	}
+
+	const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
+	const uniqueBorrowers = new Set(repayments.map(trx => trx.loan?.name).filter(Boolean));
+	const uniqueCountries = new Set(repayments.map(trx => trx.loan?.geocode?.country?.name).filter(Boolean));
+	const firstThreeImages = repayments.slice(0, 3).map(trx => ({
+		hash: trx.loan?.image?.hash,
+		alt: trx.loan?.name || 'Borrower',
+		defaultImage: { width: 80, faceZoom: 50 },
+		images: [
+			{ width: 80, faceZoom: 50, viewSize: 1024 },
+			{ width: 72, faceZoom: 50, viewSize: 734 },
+			{ width: 64, faceZoom: 50 }
+		]
+	}));
+
+	return [{
+		id: `repayment-summary-${repayments[0]?.effectiveTime || Date.now()}`,
+		isRepayment: true,
+		isTransaction: true,
+		status: 'repayment-summary',
+		date: repayments[0]?.effectiveTime || new Date().toISOString(),
+		title: `${uniqueBorrowers.size} Borrowers`,
+		subject: 'Success!',
+		// eslint-disable-next-line max-len
+		body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${userBalance.value}. Don't let it go unused - `,
+		amount: totalAmount,
+		loan: null,
+		image: null,
+		repaymentImages: firstThreeImages,
+	}];
+};
+const repaymentCards = computed(() => formatRepaymentCards(repaymentsRaw.value));
+const hiddenRepayments = computed(() => repaymentCards.value.slice(3));
+const mergedUpdates = computed(() => {
+	const repayments = repaymentCards.value;
+	const updates = loanUpdates.value;
+
+	if (isFirstLoad.value) {
+		return [...repayments, ...updates]
+			.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, displayedCount.value);
+	}
+
+	if (!hasShownHiddenRepayments.value && hiddenRepayments.value.length > 0) {
+		const hidden = hiddenRepayments.value;
+		const updatesToShow = updates.slice(0, 3 - hidden.length);
+		return [...hidden, ...updatesToShow]
+			.sort((a, b) => new Date(b.date) - new Date(a.date));
+	}
+
+	const repaymentsAndUpdates = [...repaymentCards.value, ...loanUpdates.value];
+	return repaymentsAndUpdates
+		.sort((a, b) => new Date(b.date) - new Date(a.date))
+		.slice(0, displayedCount.value);
+});
+const totalUpdates = computed(() => realTotalUpdates.value + repaymentCards.value.length);
+
+const handleShowNavigation = () => {
+	showNavigation.value = true;
+	$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
+};
+const handleBadgeTileClicked = selectedTier => {
+	router.push(getLoanFindingUrl(selectedTier.badge.id, router.currentRoute.value));
+};
+const handleBadgeSectionClicked = badge => {
+	if (!badge.hasStarted) {
+		router.push(getLoanFindingUrl(badge.id, router.currentRoute.value));
+	} else {
+		state.value = STATE_JOURNEY;
+		selectedBadgeData.value = badge;
+		isEarnedSectionModal.value = false;
+		showSideSheet.value = true;
+	}
+};
+const handleComponentClosed = () => {
+	selectedJourney.value = '';
+	const queryParams = { ...router.currentRoute?.value?.query };
+	if (queryParams.journey) {
+		delete queryParams.journey;
+		router.push({ ...router.currentRoute.value, query: queryParams });
+	}
+	selectedBadgeData.value = undefined;
+	showSideSheet.value = false;
+	hideBottomGradient.value = false;
+};
+const handleContinueJourneyClicked = () => {
+	const badgeWithVisibleTiers = getBadgeWithVisibleTiers(selectedBadgeData.value);
+	const { id, challengeName } = badgeWithVisibleTiers;
+	let eventLabel = `${challengeName} Continue Journey Clicked`;
+	if (allBadgesCompleted.value) {
+		eventLabel = `${challengeName} See all of your impact stats`;
+	}
+	if (isSelectedJourneyComplete.value) {
+		eventLabel = `${challengeName} See all`;
+	}
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		eventLabel,
+		challengeName,
+	);
+	if (allBadgesCompleted.value) {
+		return router.push('/portfolio/lending-stats');
+	}
+	if (isSelectedJourneyComplete.value) {
+		return handleComponentClosed();
+	}
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
+};
+const handleBadgeJourneyLevelClicked = payload => {
+	const { id, challengeName, tier: clickedTier } = payload;
+	$kvTrackEvent(
+		'portfolio',
+		'click',
+		state.value === STATE_EARNED ? 'Already earned badge modal' : 'Earn a badge - within badge journey map modal',
+		challengeName,
+		clickedTier.level,
+	);
+	router.push(getLoanFindingUrl(id, router.currentRoute.value));
+};
+const trackCategory = ({ success }) => {
+	if (success) $kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');
+};
+const handleCartModal = loan => {
+	addedLoan.value = loan;
+};
+const updateJourney = journey => {
+	selectedJourney.value = journey;
+};
+const userInHomepage = computed(() => {
+	return router.currentRoute.value?.path === '/mykiva';
+});
+
+const fetchUserUpdates = (loadMore, limit = updatesLimit.value) => {
 	const oneMonthBefore = new Date();
 	oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 	const timestamp = oneMonthBefore.getTime();
 
-	apollo.query({
+	return apollo.query({
 		query: userUpdatesQuery,
 		variables: {
-			limit: updatesLimit.value,
-			offset: updatesOffset.value,
-			trxLimit: updatesLimit.value,
-			trxOffset: updatesOffset.value,
+			limit,
+			offset: 0, // Always fetch from the beginning
+			trxLimit: limit,
+			trxOffset: 0,
 			since: timestamp,
 		}
 	})
 		.then(result => {
-			transactions.value = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
-			totalUpdates.value = transactions.value.length + (result.data?.my?.updates?.totalCount ?? 0);
-
+			transactionsTypes.value = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
 			const formattedTransactions = getFormattedTransactions();
-			const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions)
-				.sort((a, b) => new Date(b.date) - new Date(a.date));
+			const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
 
-			if (loadMore) {
-				loanUpdates.value = loanUpdates.value.concat(updates);
-			} else {
-				loanUpdates.value = updates;
-			}
-		}).catch(e => {
+			realTotalUpdates.value = result.data?.my?.updates?.totalCount ?? 0;
+
+			// Always replace the array, never concat
+			loanUpdates.value = updates;
+		})
+		.finally(() => {
+			updatesLoading.value = false;
+		})
+		.catch(e => {
 			logReadQueryError(e, 'MyKivaPage updatesQuery');
 		});
 };
-
 const fetchRecommendedLoans = async () => {
 	const userId = parseInt(props.userInfo?.id, 10) || null;
 
@@ -389,30 +439,20 @@ const fetchRecommendedLoans = async () => {
 		logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 	});
 };
-
-const loadMoreUpdates = () => {
-	updatesOffset.value += updatesLimit.value;
-	fetchUserUpdates(true);
+const fetchInitialUpdates = async () => {
+	displayedCount.value = 3;
+	updatesLimit.value = displayedCount.value;
+	updatesOffset.value = 0;
+	await fetchUserUpdates(false, updatesLimit.value);
 };
 
-const showSingleArray = computed(() => props.loans.length === 1 && loanUpdates.value.length === 1);
-
-const updateJourney = journey => {
-	selectedJourney.value = journey;
+const loadMoreUpdates = async () => {
+	isFirstLoad.value = false;
+	displayedCount.value += 3; // Increase by 3 each time
+	updatesLimit.value = displayedCount.value;
+	updatesOffset.value = 0; // Always fetch from the beginning
+	await fetchUserUpdates(true, updatesLimit.value);
 };
-
-const userInHomepage = computed(() => {
-	return router.currentRoute.value?.path === '/mykiva';
-});
-
-const trackCategory = ({ success }) => {
-	if (success) $kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');
-};
-
-const handleCartModal = loan => {
-	addedLoan.value = loan;
-};
-
 const fetchMoreWaysToHelpData = async () => {
 	try {
 		const moreWaysResult = await apollo.query({
@@ -432,7 +472,7 @@ const fetchMoreWaysToHelpData = async () => {
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
-	fetchUserUpdates();
+	await fetchInitialUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
