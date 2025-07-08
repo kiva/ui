@@ -145,6 +145,11 @@ export default {
 		const lenderCount = computed(() => borrowerProfile?.lenderCount?.value);
 		const loading = computed(() => borrowerProfile?.loading?.value);
 		const isGuest = computed(() => borrowerProfile?.isGuest?.value);
+		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+		const currentStep = computed(() => {
+			if (isFundraising.value) return 1;
+			return 4;
+		});
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
 			return borrowerProfile.fundraisingPercent.value ?? undefined;
@@ -156,15 +161,6 @@ export default {
 
 		const showNextSteps = computed(() => ['/portfolio', '/mykiva'].includes(currentRoute?.fullPath));
 
-		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
-
-		const currentStep = computed(() => {
-			if (isFundraising.value) {
-				return 1;
-			}
-			return 4;
-		});
-
 		const weeksToRepay = computed(() => {
 			const today = new Date();
 			const date = loan.value?.terms?.expectedPayments
@@ -174,16 +170,13 @@ export default {
 				// Get the number of weeks between the first repayment date (in the future) and now
 				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
 			}
-
 			// Calculating a possible range of weeks between the planned expiration date and a month after
 			const expDate = Date.parse(loan.value?.plannedExpirationDate);
 			const minDate = differenceInWeeks(addMonths(today, 1), today);
 			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
 			if (minDate === maxDate || maxDate < 0) {
 				return `${minDate} weeks`;
 			}
-
 			return `${minDate} - ${maxDate} weeks`;
 		});
 
@@ -203,21 +196,22 @@ export default {
 			addToBasket,
 			cookieStore,
 			currentRoute,
+			currentStep,
 			fundraisingPercent,
 			inPfp,
+			isFundraising,
 			isGuest,
 			lenderCount,
 			loading,
 			loan,
 			numLenders,
 			pfpMinLenders,
+			showNextSteps,
 			teamCount,
 			timeLeft,
 			unreservedAmount,
 			userBalance,
-			showNextSteps,
 			weeksToRepay,
-			currentStep,
 		};
 	}
 };
