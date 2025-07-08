@@ -23,7 +23,7 @@ import { defineProps } from 'vue';
 import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
 import { KvSideSheet } from '@kiva/kv-components';
 
-defineProps({
+const props = defineProps({
 	basketItems: {
 		type: Array,
 		default: () => []
@@ -69,7 +69,7 @@ const emit = defineEmits([
 ]);
 
 const addToBasket = lendAmount => {
-	emit('add-to-basket', { loanId: this.selectedLoanId, lendAmount });
+	emit('add-to-basket', { loanId: props.selectedLoanId, lendAmount });
 };
 
 const goToLink = () => {
