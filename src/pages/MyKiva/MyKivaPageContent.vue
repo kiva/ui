@@ -70,7 +70,7 @@
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
 				:is-bp-modal-enabled="isBpModalEnabled"
-				@add-to-basket="handleAddToBasket"
+				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
 				@mouse-enter-loan-card="loadBPData"
@@ -512,10 +512,6 @@ export default {
 		},
 		updateJourney(journey) {
 			this.selectedJourney = journey;
-		},
-		handleAddToBasket($event) {
-			this.trackCategory($event, 'recommended');
-			this.addToBasket($event);
 		},
 		trackCategory({ success }) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');

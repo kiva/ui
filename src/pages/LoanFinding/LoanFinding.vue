@@ -21,7 +21,7 @@
 			:per-step="perStepRecommendedRow"
 			:is-bp-modal-enabled="isBpModalEnabled"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
-			@add-to-basket="addToBasket"
+			@add-to-basket="trackCategory($event, 'recommended')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 			@mouse-enter-loan-card="loadBPData"

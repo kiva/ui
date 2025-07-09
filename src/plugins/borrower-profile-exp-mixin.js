@@ -71,6 +71,7 @@ export default {
 			}
 		},
 		addToBasket({ loanId, lendAmount }) {
+			if (!loanId || !lendAmount) return;
 			this.$kvTrackEvent(
 				'Lending',
 				'Add to basket',

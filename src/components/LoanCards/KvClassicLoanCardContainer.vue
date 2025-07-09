@@ -288,12 +288,7 @@ export default {
 					}, 1000);
 				}
 				this.isAdding = false;
-				this.$emit('add-to-basket', {
-					loanId: this.loanId,
-					lendAmount,
-					name: this.loan?.name,
-					success: true
-				});
+				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(
 					'loan-card',
 					'add-to-basket',
