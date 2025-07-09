@@ -22,7 +22,7 @@
 				<a
 					:href="`/blog/${slug}`"
 					class="tw-no-underline hover:tw-underline"
-					@click="$emit('track', { title, slug, category })"
+					@click="emit('track', { title, slug, category })"
 				>
 					{{ title }}
 				</a>
@@ -39,6 +39,8 @@
 <script setup>
 import { computed } from 'vue';
 import summaryTag from '#src/components/BorrowerProfile/SummaryTag';
+
+const emit = defineEmits(['track']);
 
 const props = defineProps({
 	image: {
