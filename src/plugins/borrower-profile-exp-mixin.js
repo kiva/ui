@@ -5,6 +5,8 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 
+import basketModalMixin from '#src/plugins/basket-modal-mixin';
+
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -14,9 +16,9 @@ export const HOME_BP_MODAL_EXP_KEY = 'home_page_bp_modal';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
+	mixins: [basketModalMixin],
 	data() {
 		return {
-			addedLoan: {},
 			basketItems: [],
 			isAdding: false,
 			isBpModalEnabled: false,
@@ -24,9 +26,6 @@ export default {
 		};
 	},
 	methods: {
-		handleCartModal(addedLoan) {
-			this.addedLoan = addedLoan;
-		},
 		formatAddedLoan() {
 			const addedLoan = {
 				id: this.selectedLoan.id,
@@ -154,7 +153,6 @@ export default {
 				Sentry.captureException(error);
 			}).finally(() => {
 				this.isAdding = false;
-				this.handleCartModal();
 			});
 		},
 	},
