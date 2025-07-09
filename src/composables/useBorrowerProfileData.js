@@ -106,10 +106,9 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 			apolloClient.query({
 				query: postCheckoutAchievementsQuery,
 				variables: { loanIds: [loanDataId] },
-			})
-				.then(result => {
-					achievementsData.value = result;
-				});
+			}).then(result => {
+				achievementsData.value = result;
+			});
 		} catch (e) {
 			subscription.value?.unsubscribe();
 			logFormatter(e, 'error');

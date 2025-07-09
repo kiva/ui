@@ -16,6 +16,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	data() {
 		return {
+			addedLoan: {},
 			basketItems: [],
 			isAdding: false,
 			isBpModalEnabled: false,
@@ -23,12 +24,24 @@ export default {
 		};
 	},
 	methods: {
+		handleCartModal(addedLoan) {
+			this.addedLoan = addedLoan;
+		},
+		formatAddedLoan() {
+			const addedLoan = {
+				id: this.selectedLoan.id,
+				name: this.selectedLoan.name ?? '',
+				gender: this.selectedLoan?.gender ?? '',
+				borrowerCount: this.selectedLoan?.borrowerCount ?? 1,
+				themes: this.selectedLoan?.themes ?? [],
+				basketSize: this.basketItems.length,
+			};
+			this.handleCartModal(addedLoan);
+		},
 		loadBPData(loanId) {
 			this.apollo.query({
 				query: borrowerProfileSideSheetQuery,
-				variables: {
-					loanId
-				}
+				variables: { loanId }
 			}).catch(e => {
 				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
 			});
@@ -41,9 +54,7 @@ export default {
 				HOME_BP_MODAL_EXP_KEY,
 				'EXP-MP-671-Dec2024',
 			);
-			if (version) {
-				this.isBpModalEnabled = version === 'b';
-			}
+			if (version) this.isBpModalEnabled = version === 'b';
 		},
 		goToLink() {
 			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
@@ -123,6 +134,9 @@ export default {
 						logFormatter(e, 'error');
 					}
 					const basketId = this.cookieStore.get('kvbskt');
+					setTimeout(() => {
+						this.formatAddedLoan();
+					}, 1000);
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {

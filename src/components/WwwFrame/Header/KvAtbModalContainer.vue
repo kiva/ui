@@ -210,6 +210,7 @@ const fetchAchievementFromBasket = async () => {
 };
 
 watch(addedLoan, async () => {
+	if (!addedLoan?.value?.id) return;
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements([...loansIdsInBasket.value, addedLoan.value?.id]);

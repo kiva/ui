@@ -139,7 +139,6 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import borrowerProfileExpMixin, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/borrower-profile-exp-mixin';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 
@@ -177,7 +176,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, borrowerProfileExpMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',

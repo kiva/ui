@@ -229,7 +229,6 @@ export default {
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
 		return {
-			addedLoan: null,
 			badgeData,
 			CONTENTFUL_MORE_WAYS_KEY,
 			displayedCount: 3,
@@ -515,9 +514,6 @@ export default {
 		},
 		trackCategory({ success }) {
 			if (success) this.$kvTrackEvent('loan-card', 'add-to-basket', 'recommended-my-kiva-page');
-		},
-		handleCartModal(loan) {
-			this.addedLoan = loan;
 		},
 		async fetchMoreWaysToHelpData() {
 			try {
