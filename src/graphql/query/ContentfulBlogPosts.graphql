@@ -1,0 +1,11 @@
+query ContentfulBlogPosts($customFields: String, $limit: Int, $skip: Int) {
+    contentful {
+        blogPosts: entries(
+            contentType: "blogPost"
+            customFields: $customFields
+            limit: $limit
+            skip: $skip
+        )
+        __typename
+    }
+}
