@@ -236,9 +236,9 @@ export default {
 		const { getBadgeWithVisibleTiers } = useBadgeData();
 		const router = useRouter();
 		const {
+			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
-			badgeData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
 		return {
