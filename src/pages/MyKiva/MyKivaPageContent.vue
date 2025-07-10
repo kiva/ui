@@ -123,6 +123,9 @@
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
+		<section v-if="blogCards.length" class="tw-my-4">
+			<LatestBlogCarousel :blog-cards="blogCards" />
+		</section>
 	</MyKivaContainer>
 </template>
 
@@ -133,6 +136,8 @@ import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
+import useContentful from '#src/composables/useContentful';
+
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
@@ -145,6 +150,7 @@ import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
 import useBadgeData from '#src/composables/useBadgeData';
+import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
@@ -155,8 +161,6 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-
-const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 
 export default {
 	name: 'MyKivaPageContent',
@@ -169,6 +173,7 @@ export default {
 		JourneyCardCarousel,
 		JourneySideSheet,
 		KvAtbModalContainer,
+		LatestBlogCarousel,
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
@@ -220,6 +225,14 @@ export default {
 		},
 	},
 	data() {
+		const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
+		const blogCategories = [
+			'gender-equality',
+			'supporting-marginalized-us-entrepreneurs',
+			'refugees',
+			'climate-change'
+		];
+		const { getMostRecentBlogPost } = useContentful(this.apollo);
 		const { getBadgeWithVisibleTiers } = useBadgeData();
 		const router = useRouter();
 		const {
@@ -230,12 +243,15 @@ export default {
 		} = useBadgeData(this.apollo);
 		return {
 			badgeData,
+			blogCards: [],
+			blogCategories,
 			CONTENTFUL_MORE_WAYS_KEY,
 			displayedCount: 3,
 			fetchAchievementData,
 			fetchContentfulData,
 			getBadgeWithVisibleTiers,
 			getLoanFindingUrl,
+			getMostRecentBlogPost,
 			hasShownHiddenRepayments: false,
 			hideBottomGradient: false,
 			isEarnedSectionModal: false,
@@ -521,13 +537,23 @@ export default {
 					query: contentfulEntriesQuery,
 					variables: {
 						contentType: 'carousel',
-						contentKey: CONTENTFUL_MORE_WAYS_KEY,
+						contentKey: this.CONTENTFUL_MORE_WAYS_KEY,
 					}
 				});
 				this.moreWaysToHelpSlides = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKiva MoreWaysToHelpQuery');
 			}
+		},
+		async fetchBlogCards() {
+			const posts = await Promise.all(
+				this.blogCategories.map(cat => this.getMostRecentBlogPost(cat))
+			);
+			this.blogCards.value = posts.map((post, idx) => (post ? {
+				...post,
+				category: post.category,
+				categorySlug: this.blogCategories[idx]
+			} : null)).filter(Boolean);
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
@@ -541,6 +567,7 @@ export default {
 	async mounted() {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
+		this.fetchBlogCards();
 		await this.fetchInitialUpdates();
 		this.fetchAchievementData(this.apollo);
 		this.fetchContentfulData(this.apollo);
