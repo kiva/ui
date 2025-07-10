@@ -19,8 +19,8 @@
 			</span>
 		</div>
 
-		<div class="tw-p-2 tw-flex-1 tw-flex tw-flex-col">
-			<p class="tw-text-base tw-leading-snug tw-line-clamp-3 tw-text-black">
+		<div class="tw-px-2 tw-pt-1.5 tw-flex-1 tw-flex tw-flex-col">
+			<p class="tw-font-medium tw-leading-snug tw-line-clamp-3 tw-text-black">
 				<a
 					:href="`/blog/${slug}`"
 					class="tw-text-black tw-font-bold tw-no-underline hover:tw-underline "
@@ -77,7 +77,7 @@ const formattedDate = computed(() => {
 });
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 
 .blog-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
