@@ -110,6 +110,9 @@
 				class="tw-mt-2"
 			/>
 		</section>
+		<section v-if="blogCards.length" class="tw-my-4">
+			<LatestBlogCarousel :blog-cards="blogCards" />
+		</section>
 	</MyKivaContainer>
 </template>
 
@@ -131,6 +134,7 @@ import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import {
 	ref,
@@ -142,6 +146,7 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import useContentful from '#src/composables/useContentful';
 
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 const { getBadgeWithVisibleTiers } = useBadgeData();
@@ -155,6 +160,8 @@ const {
 	getLoanFindingUrl,
 } = useBadgeData(apollo);
 
+const { getMostRecentBlogPost } = useContentful(apollo);
+
 const props = defineProps({
 	isHeroEnabled: { type: Boolean, default: false },
 	userInfo: { type: Object, default: () => ({}) },
@@ -167,6 +174,9 @@ const props = defineProps({
 	lendingStats: { type: Object, default: () => ({}) },
 	transactions: { type: Array, default: () => [] },
 });
+
+const blogCategories = ['gender-equality', 'supporting-marginalized-us-entrepreneurs', 'refugees', 'climate-change'];
+const blogCards = ref([]);
 const hasShownHiddenRepayments = ref(false);
 const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
@@ -469,15 +479,33 @@ const fetchMoreWaysToHelpData = async () => {
 	}
 };
 
+const fetchBlogCards = async () => {
+	const posts = await Promise.all(
+		blogCategories.map(cat => getMostRecentBlogPost(cat))
+	);
+	blogCards.value = posts
+		.map((post, idx) => (post
+			? {
+				...post,
+				category: post.category,
+				categorySlug: blogCategories[idx]
+
+			}
+			: null))
+		.filter(Boolean);
+};
+
 onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
+	fetchBlogCards();
 	await fetchInitialUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
 	fetchMoreWaysToHelpData();
 });
+
 </script>
 
 <style lang="postcss" scoped>
