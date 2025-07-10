@@ -133,6 +133,7 @@ export default {
 						logFormatter(e, 'error');
 					}
 					const basketId = this.cookieStore.get('kvbskt');
+					// Show modal after 1s (Defined in CSS)
 					setTimeout(() => {
 						this.formatAddedLoan();
 					}, 1000);
