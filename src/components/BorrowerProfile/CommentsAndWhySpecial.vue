@@ -106,7 +106,7 @@
 									</div>
 								</div>
 								<!-- name and team info -->
-								<div>
+								<div class="tw-m-auto">
 									<h3>
 										{{ comment.authorName }}
 									</h3>

@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-mb-1.5">
+	<div class="tw-flex">
 		<dt class="tw-flex-1 tw-mb-0">
 			<button
 				@click="$emit('show-definition')" class="tw-underline tw-font-book"
