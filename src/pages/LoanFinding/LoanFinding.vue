@@ -21,7 +21,7 @@
 			:per-step="perStepRecommendedRow"
 			:is-bp-modal-enabled="isBpModalEnabled"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
-			@add-to-basket="addToBasket"
+			@add-to-basket="trackCategory($event, 'recommended')"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
 			@mouse-enter-loan-card="loadBPData"
@@ -105,9 +105,18 @@
 		/>
 	</www-page>
 	<BorrowerSideSheetWrapper
-		v-if="isBpModalEnabled"
+		v-if="isBpModalEnabled && showSideSheet"
+		:basket-items="basketItems"
+		:is-adding="isAdding"
+		:kv-track-function="$kvTrackEvent"
+		:selected-loan-id="selectedLoan?.id"
+		:show-back-button="false"
+		:show-go-to-link="true"
+		:show-headline-border="true"
 		:show-side-sheet="showSideSheet"
-		:selected-loan-id="selectedLoanId"
+		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+		@add-to-basket="addToBasket"
+		@go-to-link="goToLink"
 		@close-side-sheet="handleCloseSideSheet"
 	/>
 </template>
@@ -119,6 +128,7 @@ import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dat
 import HandOrangeIcon from '#src/assets/images/hand_orange.svg';
 import { spotlightData } from '#src/assets/data/components/LoanFinding/spotlightData.json';
 
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import FiveDollarsBanner from '#src/components/LoanFinding/FiveDollarsBanner';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import PartnerSpotlightSection from '#src/components/LoanFinding/PartnerSpotlightSection';
@@ -129,7 +139,6 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import borrowerProfileExpMixin, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/borrower-profile-exp-mixin';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 
@@ -137,7 +146,6 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -159,7 +167,6 @@ const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
 
 export default {
 	name: 'LoanFinding',
-	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerSideSheetWrapper,
 		FiveDollarsBanner,
@@ -169,7 +176,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, basketModalMixin, borrowerProfileExpMixin],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',
@@ -195,7 +202,6 @@ export default {
 			HandOrangeIcon,
 			matchedLoansTotal: 0,
 			secondCategoryLoans: new Array(9).fill({ id: 0 }),
-			selectedLoanId: null,
 			selectedOption: '25',
 			showFiveDollarsBanner: false,
 			showSideSheet: false,
@@ -477,10 +483,10 @@ export default {
 		},
 		handleCloseSideSheet() {
 			this.showSideSheet = false;
-			this.selectedLoanId = null;
+			this.selectedLoan = null;
 		},
 		showLoanDetails(loan) {
-			this.selectedLoanId = loan?.id ?? null;
+			this.selectedLoan = loan ?? undefined;
 			this.showSideSheet = true;
 		},
 	},
@@ -580,6 +586,7 @@ export default {
 			FLSS_ONGOING_EXP_KEY,
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
+		this.loadInitialBasketItems();
 		this.initializeIsBpModalEnabledExp('lend-by-category');
 	},
 	beforeUnmount() {
