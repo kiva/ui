@@ -6,6 +6,5 @@ query ContentfulBlogPosts($customFields: String, $limit: Int, $skip: Int) {
             limit: $limit
             skip: $skip
         )
-        __typename
     }
 }

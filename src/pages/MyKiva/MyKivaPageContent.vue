@@ -110,8 +110,8 @@
 				class="tw-mt-2"
 			/>
 		</section>
-		<section class="tw-my-4">
-			<LatestBlogCarousel v-if="blogCards.length" :blog-cards="blogCards" />
+		<section v-if="blogCards.length" class="tw-my-4">
+			<LatestBlogCarousel :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
 </template>
@@ -175,12 +175,7 @@ const props = defineProps({
 	transactions: { type: Array, default: () => [] },
 });
 
-const blogCategories = [
-	{ slug: 'gender-equality', label: 'women' },
-	{ slug: 'supporting-marginalized-us-entrepreneurs', label: 'US' },
-	{ slug: 'refugees', label: 'refugees' },
-	{ slug: 'climate-change', label: 'climate' },
-];
+const blogCategories = ['gender-equality', 'supporting-marginalized-us-entrepreneurs', 'refugees', 'climate-change'];
 const blogCards = ref([]);
 const hasShownHiddenRepayments = ref(false);
 const isEarnedSectionModal = ref(false);
@@ -486,13 +481,14 @@ const fetchMoreWaysToHelpData = async () => {
 
 const fetchBlogCards = async () => {
 	const posts = await Promise.all(
-		blogCategories.map(cat => getMostRecentBlogPost(cat.slug))
+		blogCategories.map(cat => getMostRecentBlogPost(cat))
 	);
 	blogCards.value = posts
 		.map((post, idx) => (post
 			? {
 				...post,
-				category: blogCategories[idx].label
+				category: post.category,
+				categorySlug: blogCategories[idx]
 
 			}
 			: null))
