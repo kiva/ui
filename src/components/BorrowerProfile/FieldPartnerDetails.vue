@@ -1,9 +1,9 @@
 <template>
-	<section class="tw-prose">
-		<h2>
+	<section>
+		<h2 class="tw-mb-2">
 			{{ partnerName }}
 		</h2>
-		<dl class="tw-mb-4">
+		<dl>
 			<description-list-item
 				data-testid="bp-field-partner-details-avg-cost"
 				:term="'Average cost to borrower'"

@@ -1,13 +1,13 @@
 <template>
-	<section class="tw-prose">
-		<p data-testid="bp-details-trustee-description">
+	<section>
+		<p class="tw-mb-1.5" data-testid="bp-details-trustee-description">
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.
 		</p>
-		<h2 data-testid="bp-details-trustee-name">
+		<h2 class="tw-mb-2" data-testid="bp-details-trustee-name">
 			{{ trusteeName }}
 		</h2>
-		<dl class="tw-mb-4">
+		<dl>
 			<description-list-item
 				data-testid="bp-details-trustee-kiva-borrowers"
 				:term="'Kiva borrowers'"

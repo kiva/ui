@@ -505,7 +505,7 @@ export default {
 			query: userInfoQuery,
 		});
 
-		this.userInfo = cachedUserInfo.my?.userAccount ?? {};
+		this.userInfo = cachedUserInfo?.my?.userAccount ?? {};
 
 		let cachedRecommendedLoans = [];
 		if (this.enableLoanRecommendations) {

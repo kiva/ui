@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-eco-green-1 tw--mx-2">
+	<div class="tw--mx-2 tw-bg-secondary">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags />
@@ -12,7 +12,7 @@
 				:pfp-min-lenders="pfpMinLenders"
 				:progress-percent="fundraisingPercent"
 				:time-left="timeLeft"
-				class="tw-mb-2 tw-mt-1.5"
+				class="tw-mt-2 tw-mb-3"
 				data-testid="bp-summary-progress"
 			/>
 			<LoanNextSteps
@@ -27,8 +27,8 @@
 			<SideSheetLoanHowMoneyHelps />
 			<SideSheetLoanStory />
 		</div>
-		<div class="tw-bg-white tw-px-4">
-			<CommentsAndWhySpecial :loan-id="loanId" class="tw-py-2" />
+		<div class="tw-bg-primary tw-px-4">
+			<CommentsAndWhySpecial :loan-id="loanId" />
 		</div>
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />

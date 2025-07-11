@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div v-if="!partnerName && !loading">
-				<div class="tw-prose tw-mb-2">
+				<div class="tw-prose tw-my-2">
 					<h3>
 						Business description
 					</h3>
