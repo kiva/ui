@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="tw-relative !tw-overflow-y-hidden !tw-p-0">
-			<KvLoadingPlaceholder v-if="loading" style="aspect-ratio: 8 / 5" class="tw-w-full tw-h-full" />
+			<KvLoadingPlaceholder v-if="loading" style="aspect-ratio: 8 / 5" class="tw-w-full tw-h-full tw-mt-2" />
 			<div v-else class="tw-pt-2">
 				<KvBorrowerImage
 					class="tw-w-full tw-bg-black lg:tw-rounded tw--mb-1.5 md:tw--mb-1"
