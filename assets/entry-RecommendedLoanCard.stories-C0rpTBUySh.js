@@ -1,0 +1,41 @@
+import{R as e}from"./entry-RecommendedLoanCard-CuNnVA-jKZ.js";import{a as m}from"./entry-apollo-story-mixin-CB9BNmK9U5.js";import{c as l}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import"./entry-numeral-DJCTM12wUX.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-time-left-mixin-0bOea5NDKY.js";import"./entry-index-CNzTSTNafD.js";import"./entry-index-COmIkRYU2t.js";import"./entry-index-D4S0JsTkt8.js";import"./entry-index-CbPSoDvqj7.js";import"./entry-index-B_bQk9qe3C.js";import"./entry-index-D_23gIjsxn.js";import"./entry-FundraisingStatusMeter-C86xie2a30.js";import"./entry-vue.esm-bundler-Duz9TGGLcr.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-KvLoadingParagraph-ufObAeTcU6.js";import"./entry-getCacheKey-BaxR1X5Dnr.js";import"./entry-KvLoadingPlaceholder-Yl0v0aWM25.js";import"./entry-KvSecondaryNav-Bp1Uuall6y.js";import"./entry-basketItems-AJqL_yrdZS.js";import"./entry-updateLoanReservation-BaDuxVurTB.js";import"./entry-KvButton-Cu62d9pqPk.js";import"./entry-KvIcon-CsCXhYCLXZ.js";import"./iframe-jmm4mDPu.js";import"./entry-KvLoadingSpinner-Dwi3H6l02V.js";import"./entry-exports-CudK1O5XNw.js";import"./entry-KvFlag-CS4DYWP5vB.js";const c={data:{lend:{loan:{id:1998250,geocode:{country:{name:"Malawi",isoCode:"MW"}},image:{default:"https://www-dev-kiva-org-0.freetls.fastly.net/img/w480h300/d5ad26cd7acc24317edc1c04c6250074.jpg",retina:"https://www-dev-kiva-org-0.freetls.fastly.net/img/w960h600/d5ad26cd7acc24317edc1c04c6250074.jpg"},name:"Microloan Foundation Malawi",sector:{name:"Services"},whySpecial:"It helps Lending Partners withstand negative economic impacts of the COVID-19 pandemic.",userProperties:{lentTo:null},use:"this Lending Partner provide loans to women in rural Malawi during the COVID-19 crisis.",status:"fundraising",loanAmount:"250000.00",borrowerCount:1,anonymizationLevel:"none",fullLoanUse:"A loan of $250,000 helps this Lending Partner provide loans to women in rural Malawi during the COVID-19 crisis.",loanFundraisingInfo:{fundedAmount:"218950.00",reservedAmount:"0.00",isExpiringSoon:!1},plannedExpirationDate:"2020-09-10T19:30:13Z"}}}},b={title:"Loan Cards/Recommended Loan Card",component:e},o=()=>({mixins:[m({queryResult:c}),l()],components:{RecommendedLoanCard:e},template:`
+        <div class="row">
+            <div class="small-4 columns">
+                <recommended-loan-card :loan-id="1998250" />
+            </div>
+        </div>
+    `}),n=()=>({mixins:[m({loading:!0}),l()],components:{RecommendedLoanCard:e},template:`
+        <div class="row">
+            <div class="small-4 columns">
+                <recommended-loan-card :loan-id="1998250" />
+            </div>
+        </div>
+    `});var i,r,a;o.parameters={...o.parameters,docs:{...(i=o.parameters)==null?void 0:i.docs,source:{originalSource:`() => ({
+  mixins: [apolloStoryMixin({
+    queryResult
+  }), cookieStoreStoryMixin()],
+  components: {
+    RecommendedLoanCard
+  },
+  template: \`
+        <div class="row">
+            <div class="small-4 columns">
+                <recommended-loan-card :loan-id="1998250" />
+            </div>
+        </div>
+    \`
+})`,...(a=(r=o.parameters)==null?void 0:r.docs)==null?void 0:a.source}}};var t,s,d;n.parameters={...n.parameters,docs:{...(t=n.parameters)==null?void 0:t.docs,source:{originalSource:`() => ({
+  mixins: [apolloStoryMixin({
+    loading: true
+  }), cookieStoreStoryMixin()],
+  components: {
+    RecommendedLoanCard
+  },
+  template: \`
+        <div class="row">
+            <div class="small-4 columns">
+                <recommended-loan-card :loan-id="1998250" />
+            </div>
+        </div>
+    \`
+})`,...(d=(s=n.parameters)==null?void 0:s.docs)==null?void 0:d.source}}};const z=["Default","Loading"];export{o as Default,n as Loading,z as __namedExportsOrder,b as default};
