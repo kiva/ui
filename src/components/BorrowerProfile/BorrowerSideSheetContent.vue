@@ -1,5 +1,5 @@
 <template>
-	<div class="tw--mx-2" style="background-color: rgb(245 245 245)">
+	<div class="tw--mx-2 tw-bg-secondary">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags />
