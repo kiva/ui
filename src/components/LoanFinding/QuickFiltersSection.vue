@@ -30,14 +30,17 @@
 					<kv-classic-loan-card-container
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
-						:loan-id="loan.id"
-						:use-full-width="true"
-						:show-tags="true"
+						:add-to-basket-exp-enabled="enableAddToBasketExp"
+						:custom-loan-details="isBpModalEnabled"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:loan-id="loan.id"
+						:show-tags="true"
+						:use-full-width="true"
 						:user-balance="userBalance"
 						@add-to-basket="addToBasket"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
+						@show-loan-details="showLoanDetails"
+						@mouseenter="$emit('mouse-enter-loan-card', loan?.id)"
 					/>
 				</div>
 				<div class="tw-w-full tw-my-4">
@@ -64,6 +67,7 @@
 				:loan-search-state="flssLoanSearch"
 				:page-limit="loanSearchState.pageLimit"
 				@add-to-basket="addToBasket"
+				@mouseenter="$emit('mouse-enter-loan-card', $event)"
 			/>
 		</div>
 	</div>
@@ -91,7 +95,7 @@ export default {
 	},
 	inject: ['apollo'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket', 'data-loaded'],
+	emits: ['add-to-basket', 'data-loaded', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -109,6 +113,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isBpModalEnabled: {
+			type: Boolean,
+			defaut: false
+		}
 	},
 	data() {
 		return {
@@ -310,6 +318,9 @@ export default {
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
 			this.loans = loans;
+		},
+		showLoanDetails(payload) {
+			this.$emit('show-loan-details', payload);
 		}
 	},
 	watch: {

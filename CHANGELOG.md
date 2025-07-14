@@ -1,3 +1,134 @@
+## [3.24.0-rc.3](https://github.com/kiva/ui/compare/v3.24.0-rc.2...v3.24.0-rc.3) (2025-07-14)
+
+### 🐛 Bugfixes
+
+* hide next steps in borrower side sheet for recommended loans carousel ([1001623](https://github.com/kiva/ui/commit/10016235cdbbed50f125e9a10d62ba8f05eee870))
+* resolve console warning for blog carousel ([f514b22](https://github.com/kiva/ui/commit/f514b229728a4d33190f2fa819a8a16a27109a65))
+
+## [3.24.0-rc.2](https://github.com/kiva/ui/compare/v3.24.0-rc.1...v3.24.0-rc.2) (2025-07-14)
+
+### 🐛 Bugfixes
+
+* fix datasorurce for blog carousel ([c7c57b1](https://github.com/kiva/ui/commit/c7c57b12fa37d168e3b24c2c5c659468b3a2a65e))
+* fix datasorurce for blog carousel ([8d2d4a9](https://github.com/kiva/ui/commit/8d2d4a9dc7055c8fb031d1c1adf4e3ca5145551d))
+
+## [3.24.0-rc.1](https://github.com/kiva/ui/compare/v3.23.0...v3.24.0-rc.1) (2025-07-14)
+
+### 🎉 New Features
+
+* add basketItems at LoanFinding ([4879a6a](https://github.com/kiva/ui/commit/4879a6a41471494e36a209fa28541b04ce2ca94b))
+* add huge lending amounts to LBC page ([4601619](https://github.com/kiva/ui/commit/46016192219027d21a9d8a418f4f40d78bfa09de))
+* add isBpModalEnabled mixin ([5d78d41](https://github.com/kiva/ui/commit/5d78d41a0d610afdd3f412032898c5437396afb9))
+* add more loan status and copy changes to what's next ([cdfd429](https://github.com/kiva/ui/commit/cdfd429b3acb4b19b117e8352e5c2386f0857afd))
+* add show-loan-details and custom-loan-details ([dda4449](https://github.com/kiva/ui/commit/dda44495617aa59644a20d87650eff2910d83a3f))
+* add sidesheet to LBC page ([4e3c769](https://github.com/kiva/ui/commit/4e3c76979979229d5c28f3da4b6d0b1ce643b791))
+* addToBasket now functioning ([db94fc0](https://github.com/kiva/ui/commit/db94fc0f9a1eabc91d0e6778965937f66635c772))
+* **blog-carousel:** add latest blog carousel ([060ae69](https://github.com/kiva/ui/commit/060ae6931fb3128a7033654e35e852f90d484e9d))
+* **blog-carousel:** add latest blog carousel ([7ca5726](https://github.com/kiva/ui/commit/7ca572637766becd23f84bfa7175c7814617fc1f))
+* **blog-carousel:** add latest blog carousel ([5348b94](https://github.com/kiva/ui/commit/5348b942921d87f777815ec0b9c0f10c1824a0bc))
+* borrowers carousel headline update ([#6116](https://github.com/kiva/ui/issues/6116)) ([97dbbd5](https://github.com/kiva/ui/commit/97dbbd5d80ed86173c34befd65163e53fa457bc3))
+* compact borrower card and show bp sidesheet on cta ([e269a39](https://github.com/kiva/ui/commit/e269a397d073184b330b7fb141dced82c7163c2f))
+* improve sidesheet reactivity to loan adding ([a7f6b4c](https://github.com/kiva/ui/commit/a7f6b4c7033df60cc86265d4e7110cc9b4a5eaa4))
+* journeys carousel update ([#6110](https://github.com/kiva/ui/issues/6110)) ([c0589f9](https://github.com/kiva/ui/commit/c0589f9d9b8b9ca6009b134c1ef6a44622d70e24))
+* make first working copy of borrower sidesheet ([7342e94](https://github.com/kiva/ui/commit/7342e945c848ff0b088eea3a7e062b5ab92b6466))
+* mykiva borrowers carousel updated ([#6114](https://github.com/kiva/ui/issues/6114)) ([57218b0](https://github.com/kiva/ui/commit/57218b05bcf9860cdf7670d6c63ac72c4e4ac704))
+* open sidesheet when leaving a comment ([6cde8bc](https://github.com/kiva/ui/commit/6cde8bc5ccda22be61bd5691fce2f2e60458a6d2))
+* show repayment summary card with correct copy and triple image ([a3ac890](https://github.com/kiva/ui/commit/a3ac890b386cc31ff6381ad975b3a3031cba20bc))
+* show repayment summary card with correct copy and triple image ([655e59b](https://github.com/kiva/ui/commit/655e59b202100d3565ec33671a01974819caf861))
+* show repayment summary card with correct copy and triple image ([2b6fa5f](https://github.com/kiva/ui/commit/2b6fa5f787bd66fc2d44251cf5c78970df128863))
+* show repayment summary card with correct copy and triple image ([56406c4](https://github.com/kiva/ui/commit/56406c459926691c8dafc516583b6a9bd6820bb4))
+* show repayment summary card with correct copy and triple image ([159f98b](https://github.com/kiva/ui/commit/159f98bd1b1583d603432c7e075a23e6415519d7))
+* show repayment summary card with correct copy and triple image ([6895175](https://github.com/kiva/ui/commit/6895175f45096c72fcf0b58cf223ee5e4905cb30))
+* show repayment summary card with correct copy and triple image ([bf52f98](https://github.com/kiva/ui/commit/bf52f9802d88df36e8e19baab3f350a4ef2e4b3a))
+* show repayment summary card with correct copy and triple image ([eaa4a11](https://github.com/kiva/ui/commit/eaa4a1158e0e0c233cd49d06665f00b6ab4cb81a))
+* show repayment summary card with correct copy and triple image ([7f0c09e](https://github.com/kiva/ui/commit/7f0c09e9e1f30cd28302b32f7cbb3cb730333dc0))
+* show repayment summary card with correct copy and triple image ([685dc38](https://github.com/kiva/ui/commit/685dc38ac33af1fda0ae4b1dd8946da1328113b7))
+* show repayment summary card with correct copy and triple image ([e6be5bf](https://github.com/kiva/ui/commit/e6be5bf449d88238eac79ac926a88916536bcd92))
+* show repayment summary card with correct copy and triple image ([3773759](https://github.com/kiva/ui/commit/37737593087971c149da148f80951a2c7af15352))
+
+### 🐛 Bugfixes
+
+* add BP emitters and listeners ([33954df](https://github.com/kiva/ui/commit/33954df3c9bc8bc8809a30bd063f0f7e47a86adb))
+* add isBpModalEnabled prop to LoanFinding ([cdab402](https://github.com/kiva/ui/commit/cdab4023efda5d1a975057b4504fc4d8117d2868))
+* add lendAmount to ATB emit ([cf91c71](https://github.com/kiva/ui/commit/cf91c7147b6a9be2a2153ea30eefc5ab42a41607))
+* add loading as prop from BorrowerProfileContent ([97b4354](https://github.com/kiva/ui/commit/97b43544a6167e905933dc282c88f539867ef3a6))
+* add loading prop to LoanProgress ([be893aa](https://github.com/kiva/ui/commit/be893aaef4e2badbe6af6c43d576569db50fff29))
+* add logReadQueryError to mixin ([1173233](https://github.com/kiva/ui/commit/1173233d22c9e9d63fdda6d09eac52865d53000f))
+* add missing search bar test mocks ([10da540](https://github.com/kiva/ui/commit/10da540d5af3ec1f38d4f6fb74562d51c511ed60))
+* add partName to borroweRProfileSideSheet graphql query ([1e6b14f](https://github.com/kiva/ui/commit/1e6b14f9d260ef9410bddbc4a3a144b876af935a))
+* add tracking to nav search bar ([23b8417](https://github.com/kiva/ui/commit/23b8417c21d3f416d3813d963a5f1af0d88d932a))
+* add y margin to WhySpecial to fix text cutoff ([d0197ca](https://github.com/kiva/ui/commit/d0197ca7d693dec805c5ea23096eb0f2ab2b6165))
+* add z-index tailwind class ([2b72a7d](https://github.com/kiva/ui/commit/2b72a7d5cc5834b8e13f1d2ca7368e8202688627))
+* apply conditional render to lenders and teams based on count ([37e6114](https://github.com/kiva/ui/commit/37e61149e3dd35070fd408f20fea1b033a0c19e8))
+* apply extended borrower-profile-exp-mixin ([7ce58eb](https://github.com/kiva/ui/commit/7ce58ebc6c1c04f1d6ff1738da2120b2fedefbe7))
+* apply logFomatter, fix tailwind classes, apply unsubscribe ([237b995](https://github.com/kiva/ui/commit/237b9956d953681311162fa68088a7fa9031495c))
+* apply minor loading style fixes ([c67fb3e](https://github.com/kiva/ui/commit/c67fb3e8061c09b69bbe6f555a2bf30fec4b25dd))
+* apply mixin and kvTrackEvent fixes ([1290e36](https://github.com/kiva/ui/commit/1290e36bac0b381ccf30fab2b301ca30f0495759))
+* apply review fixes ([37c1e10](https://github.com/kiva/ui/commit/37c1e106fcca7caf5a3f0b3d6239c903c9b803d0))
+* apply style fixes ([45af44c](https://github.com/kiva/ui/commit/45af44c9dbfb7b6e8142a9bba6e5878bfb819757))
+* apply style fixes ([84eb62c](https://github.com/kiva/ui/commit/84eb62c493e1bc4011ef689a072c9a663cc8c0be))
+* apply tw-bg-secondary to BorrowerSideSheetContent ([99f60c9](https://github.com/kiva/ui/commit/99f60c930aac113e2bbf6a64eaeb31677fc50849))
+* **blog-carousel:** ensure hydration, defensive rendering, and card click tracking ([57eb3cf](https://github.com/kiva/ui/commit/57eb3cf72ed3f1cdf90ce081ec4509fc592a6571))
+* change category ([ebe6d4a](https://github.com/kiva/ui/commit/ebe6d4a69ac906f22f7f535a10b9f4230a905158))
+* change menu logic to fundraising status ([62e0c01](https://github.com/kiva/ui/commit/62e0c01e093a0022de64b7836398e75c3787da48))
+* fix dimensions of controls template ([8d54e99](https://github.com/kiva/ui/commit/8d54e99de6445ddfdaaa8a46ab26ebb9611dc2eb))
+* fix local GraphQL resolvers ([e35690a](https://github.com/kiva/ui/commit/e35690a537a3af5117f9fc8fa76562502ba299fb))
+* fix minor lifecycle warnings ([33f29cf](https://github.com/kiva/ui/commit/33f29cf64e35cd8109881d72c27b537ab2877611))
+* fix minor style issue when showSingleArray is active ([b879648](https://github.com/kiva/ui/commit/b87964889d060e21944640cf4e1a72d401e5899d))
+* fix missing merge resolve ([71f5e41](https://github.com/kiva/ui/commit/71f5e4111861b6d368b3f22ec1d1504f95536415))
+* fix missing return setup isFundraising variable in BorrowerSideSheetContent ([f7be86a](https://github.com/kiva/ui/commit/f7be86a7b7bf9fa4338a2717136feae3a36a9ff2))
+* fix props usage in MyKivaPageContent ([f5496a1](https://github.com/kiva/ui/commit/f5496a1c16863b00198d7e2d595d5ac3bcf2e9cb))
+* fix SideSheetWrapper and implement in MyKivaPageContent ([e0bc87f](https://github.com/kiva/ui/commit/e0bc87ff4219a6b63db296fa29f9798dce5eee4e))
+* fix this.router to this. ([de30264](https://github.com/kiva/ui/commit/de302641a944c931204b5b1107c540d00e467e74))
+* fix type declaration for function in BorrowerSideSheetWrapper ([deb9d07](https://github.com/kiva/ui/commit/deb9d07b1caab1c43a1f2ff0f13292f94fe91afe))
+* implement logFormatter ([2c3f0d6](https://github.com/kiva/ui/commit/2c3f0d6534a4f9e65658f7fc52baf4a904ea0ea4))
+* invert isguest boolean logic ([9a53f2c](https://github.com/kiva/ui/commit/9a53f2c7f7ca24f0fe280d76c5110a1a8d4b0ee7))
+* loanId variable mutation ([c85d883](https://github.com/kiva/ui/commit/c85d883c8818ff09dac9703df4d78b8c00e8c8f1))
+* make nav header sticky ([f9623c1](https://github.com/kiva/ui/commit/f9623c15966f24039a4a5693ba2f24f57ca89ef7))
+* merge basket modal mixin into borrower-profile mixin ([24d9287](https://github.com/kiva/ui/commit/24d928731aa8e4a722216ea34112502202da774d))
+* merge is-bp-modal-enabled-mixin into bp-exp-mixin ([85a7f51](https://github.com/kiva/ui/commit/85a7f5152c217ffcdbce92a938bb0a21b13b16fd))
+* missing flag in sidesheet wrapper ([ea6fc47](https://github.com/kiva/ui/commit/ea6fc47a76c5f16af20b7a6072ec373b5b05a81d))
+* optional chaining for logged out user ([bc37762](https://github.com/kiva/ui/commit/bc377621aa757114c69509308718399be90ae0e9))
+* paying back delinquent case was already handled with paying back status ([a11d106](https://github.com/kiva/ui/commit/a11d106d33a38c7218b4f10a0df17535b80b9669))
+* redirect to help kiva page ([7380cf8](https://github.com/kiva/ui/commit/7380cf86fdc5c2de7449e0bcb7344e5654ec3980))
+* reintroduce add-to-basket mixin, extend borrower-profile-exp-mixin ([3aa06d0](https://github.com/kiva/ui/commit/3aa06d033b9cee99e5383c392894b196e5e6bd66))
+* remove animationSourceElement ([b466d43](https://github.com/kiva/ui/commit/b466d43545872fbb841a664cf39a3b0d38218109))
+* remove console logs ([9d58306](https://github.com/kiva/ui/commit/9d58306f8fced2fda13caafee692ce325c14e012))
+* remove duplicate loansIdsInBasket values ([df5089b](https://github.com/kiva/ui/commit/df5089badaeb348c24284c416d8f00df3f36ef9f))
+* remove enableHugeAmount props ([7523574](https://github.com/kiva/ui/commit/75235749e12e33ec5ccef3a322d06972f527c498))
+* remove leave a comment option if loan is funded ([5fafc15](https://github.com/kiva/ui/commit/5fafc15f52231aadb1e3d6a11206a04ee5a6a561))
+* remove redundant addToBasket calls in ATB emits ([b49e6c1](https://github.com/kiva/ui/commit/b49e6c10967e8f276897a6300215b0c78ccd1823))
+* remove unused graphql query ([2df3a74](https://github.com/kiva/ui/commit/2df3a74fdb5f08994824658994eec95e511b1329))
+* remove unused status ([41fd9d3](https://github.com/kiva/ui/commit/41fd9d3f28cd8d9b1a977d724d3adb39d148c46c))
+* removing unused addToBasket ([9196db7](https://github.com/kiva/ui/commit/9196db71c73b53919736050c8d0315212f25fdd0))
+* reset receipt value after you click close lightbox ([ffd967a](https://github.com/kiva/ui/commit/ffd967a0536db23dda20dda6b1afce8de18b3c72))
+* run initializeIsBpModalEnabledExp on component mount ([8a420b1](https://github.com/kiva/ui/commit/8a420b1e368ae93bc974e5bcf9b37b7dfedbce9b))
+* show transactions and cards in two different arrays ([e507775](https://github.com/kiva/ui/commit/e507775f4ecad839815411806cf4d6e3cb9ee593))
+* simplify check for isBpModalEnabled ([d36f911](https://github.com/kiva/ui/commit/d36f911d57ba8bc968ca47126e5fe3c21be1bac2))
+* solve conflicts ([2af3b12](https://github.com/kiva/ui/commit/2af3b12440c4ee17938f01fcfebc4b62e4e4a965))
+* solve conflicts ([0ee5711](https://github.com/kiva/ui/commit/0ee5711fbe6f32e8f5d8361a554605a1a447da95))
+* style spacing fix ([1fc48fb](https://github.com/kiva/ui/commit/1fc48fb15e1a811ee0afa6f9fcbb423dd2d20810))
+* tabs needed to be rendered so ref can be defined ([090fae7](https://github.com/kiva/ui/commit/090fae721e4e485c5ea369afe2999bd8908d29e0))
+* update basic needs filters ([8d3c53d](https://github.com/kiva/ui/commit/8d3c53d2117496cd78dfc1a2f690803b7cd048af))
+* use add-to-basket-exp-mixin ([78e5d5d](https://github.com/kiva/ui/commit/78e5d5de33ff187ba61daeec9845a720027a2959))
+
+### 🪚 Refactors
+
+* clean up some code and remove unnecessary computed ([a444acb](https://github.com/kiva/ui/commit/a444acb87eefc20cee10d6e83406410980bc3a6c))
+* create borrower sidesheet wrapper to handle add to basket method ([dde6350](https://github.com/kiva/ui/commit/dde6350c6c1e3020c38e050654833ea1911a271a))
+* loan next steps ([d5dbda5](https://github.com/kiva/ui/commit/d5dbda5f62a275ed008c4dda0d651d32b399cc6a))
+
+### 💅 Code Style Changes
+
+* add comment for timeout context ([9f0a3a5](https://github.com/kiva/ui/commit/9f0a3a53dc8d3539774c11d14b3e2c20ce1f41c0))
+* add id to graphql query ([3cdb4f5](https://github.com/kiva/ui/commit/3cdb4f56e400dd57a973cdf5e8d58bfe25956e3c))
+* remove length zero no unit code ([21782bb](https://github.com/kiva/ui/commit/21782bb3772ddd33418ad7c94ebe50b302927dc1))
+
+### 🧹 Chores
+
+* more work, still not working ([fa2a084](https://github.com/kiva/ui/commit/fa2a08489280fb48ac4262a718135d5aaafb5db7))
+* still working on it all ([bc12d3c](https://github.com/kiva/ui/commit/bc12d3c99ea77daab35142d4bfaaa648a012f5a7))
+
 ## [3.23.0](https://github.com/kiva/ui/compare/v3.22.0...v3.23.0) (2025-06-26)
 
 ### 🎉 New Features

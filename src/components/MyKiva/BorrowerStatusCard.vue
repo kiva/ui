@@ -41,7 +41,7 @@
 			</div>
 		</div>
 		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t tw-flex tw-flex-col">
-			<HeroBackground style="height: 96px;" class="!tw-block" :loan-id="loan.id" />
+			<HeroBackground style="height: 92px;" class="!tw-block" :loan-id="loan.id" />
 			<div
 				class="tw-flex tw-justify-center tw-gap-1 md:tw-gap-3 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5
 					md:tw-pb-1.5 tw-flex-grow tw-pb-1.5"
@@ -67,54 +67,24 @@
 					<div class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-font-medium">
 						{{ title }}
 					</div>
-					<p class="tw-text-center md:tw-text-left tw-line-clamp-3 md:tw-line-clamp-6">
+					<p class="tw-text-center md:tw-text-left tw-line-clamp-2">
 						{{ description }}
 					</p>
 					<button
-						v-if="!showMenu"
-						class="tw-text-action tw-inline"
-						@click="viewDetails"
-						variant="primary"
-					>
-						View details
-					</button>
-				</div>
-				<div class="md:tw-flex-1">
-					<button
-						class="tw-flex tw-items-center tw-justify-center tw-w-full
-							md:tw-pointer-events-none"
-						@click="toggleWhatIsNext"
+						class="tw-flex tw-items-center tw-justify-center tw-mt-1"
+						@click="showLoanDetails"
 					>
 						<p
-							class="tw-text-action tw-font-medium md:tw-text-black
-								md:tw-w-full md:tw-text-left md:tw-mt-5 md:tw-mb-1"
+							class="tw-text-action tw-font-medium
+								md:tw-w-full md:tw-text-left"
 						>
-							What's next
+							{{ stepsCopy }}
 						</p>
 						<KvMaterialIcon
-							class="tw-w-3 tw-h-3 tw-text-action md:tw-hidden"
-							:icon="open ? mdiChevronUp : mdiChevronDown"
+							class="tw-w-3 tw-h-3 tw-text-action"
+							:icon="mdiChevronRight"
 						/>
 					</button>
-					<kv-expandable easing="ease-in-out" class="tw-block md:tw-hidden">
-						<div v-show="open">
-							<LoanNextSteps
-								id="loan-next-steps"
-								:weeks-to-repay="weeksToRepay"
-								:current-step="currentStep"
-								:repayments-started="!isFundraising"
-								no-animation
-							/>
-						</div>
-					</kv-expandable>
-					<LoanNextSteps
-						id="loan-next-steps"
-						class="tw-hidden md:tw-block"
-						:weeks-to-repay="weeksToRepay"
-						:current-step="currentStep"
-						:repayments-started="!isFundraising"
-						no-animation
-					/>
 				</div>
 			</div>
 		</div>
@@ -125,15 +95,10 @@
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
-	mdiChevronDown,
-	mdiChevronUp,
+	mdiChevronRight,
 	mdiDotsVertical,
 } from '@mdi/js';
-import KvExpandable from '#src/components/Kv/KvExpandable';
-import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
-import { addMonths, differenceInWeeks } from 'date-fns';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import { useRouter } from 'vue-router';
 import {
 	ref,
 	computed,
@@ -144,25 +109,24 @@ import {
 } from 'vue';
 import {
 	FUNDRAISING,
+	REFUNDED,
+	EXPIRED,
+	PAYING_BACK,
+	ENDED,
+	FUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 
 const COMMENT_ID = 'comment';
-const DETAILS_ID = 'details';
 const SHARE_ID = 'share';
 
-const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const emit = defineEmits(['toggle-what-is-next', 'open-comment-modal', 'open-share-modal']);
+const emit = defineEmits(['open-comment-modal', 'open-share-modal', 'open-side-sheet']);
 
 const props = defineProps({
 	loan: {
 		type: Object,
 		required: true,
-	},
-	openWhatIsNext: {
-		type: Boolean,
-		required: false,
 	},
 	showMenu: {
 		type: Boolean,
@@ -170,25 +134,9 @@ const props = defineProps({
 	},
 });
 
-const { loan, openWhatIsNext } = toRefs(props);
-const open = ref(openWhatIsNext.value);
+const { loan } = toRefs(props);
 const menuOpen = ref(false);
 const optionsMenu = ref(null);
-
-const menuOptions = [
-	{
-		id: COMMENT_ID,
-		label: 'Leave a comment',
-	},
-	{
-		id: DETAILS_ID,
-		label: 'View details',
-	},
-	{
-		id: SHARE_ID,
-		label: 'Share',
-	},
-];
 
 const borrowerName = computed(() => loan.value?.name ?? '');
 const borrowerCountry = computed(() => loan.value?.geocode?.country?.name ?? '');
@@ -203,70 +151,78 @@ const loanUse = computed(() => loan.value?.use ?? '');
 
 const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
 
+const menuOptions = computed(() => {
+	const options = [{
+		id: SHARE_ID,
+		label: 'Share',
+	}];
+
+	if (isFundraising.value) {
+		options.unshift({
+			id: COMMENT_ID,
+			label: 'Leave a comment',
+		});
+	}
+
+	return options;
+});
+
+const showWhatIsNextColumn = computed(() => {
+	return !([REFUNDED, EXPIRED, ENDED].includes(loan.value?.status));
+});
+
+const stepsCopy = computed(() => {
+	if (!showWhatIsNextColumn.value) {
+		return 'Learn what this means';
+	}
+	return 'What’s next?';
+});
+
 const loanStatus = computed(() => {
-	if (isFundraising.value) {
-		return 'Fundraising';
+	switch (loan.value?.status) {
+		case FUNDRAISING:
+			return 'Fundraising';
+		case FUNDED:
+			return 'Funded';
+		case PAYING_BACK:
+			return 'Repaying';
+		case REFUNDED:
+			return 'Refunded';
+		case EXPIRED:
+			return 'Expired';
+		case ENDED:
+			return 'Ended in default';
+		default:
+			return 'Repaid';
 	}
-	return 'Repaying';
 });
+
 const description = computed(() => {
+	let loanUsageDescription = isFundraising.value ? 'will use ' : 'used ';
+	loanUsageDescription += pronoun.value;
+
+	if (showWhatIsNextColumn.value) {
+		loanUsageDescription = 'asked for a ';
+	}
+
 	return `${borrowerName.value}
-		${isFundraising.value ? 'will use' : 'used'}
-		${pronoun.value} loan ${loanUse.value}`;
-});
-const currentStep = computed(() => {
-	if (isFundraising.value) {
-		return 1;
-	}
-	return 4;
+		${loanUsageDescription}
+		loan ${loanUse.value}`;
 });
 
-const weeksToRepay = computed(() => {
-	const today = new Date();
-	const date = loan.value?.terms?.expectedPayments
-		?.find(payment => differenceInWeeks(Date.parse(payment?.dueToKivaDate), today) > 0)
-		?.dueToKivaDate ?? null;
-	if (date) {
-		// Get the number of weeks between the first repayment date (in the future) and now
-		return `${differenceInWeeks(Date.parse(date), today)} weeks`;
+const showLoanDetails = () => {
+	$kvTrackEvent('portfolio', 'click', stepsCopy.value, borrowerName.value, loan.value.id);
+	if (showWhatIsNextColumn.value) {
+		emit('open-side-sheet', { loan: loan.value });
+		return;
 	}
 
-	// Calculating a possible range of weeks between the planned expiration date and a month after
-	const expDate = Date.parse(loan.value?.plannedExpirationDate);
-	const minDate = differenceInWeeks(addMonths(today, 1), today);
-	const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
-	if (minDate === maxDate || maxDate < 0) {
-		return `${minDate} weeks`;
-	}
-
-	return `${minDate} - ${maxDate} weeks`;
-});
-
-const toggleWhatIsNext = () => {
-	if (!open.value) {
-		$kvTrackEvent('portfolio', 'click', 'What’s next?', borrowerName.value, loan.value.id);
-	}
-	emit('toggle-what-is-next', !open.value);
-};
-
-const viewDetails = () => {
-	$kvTrackEvent(
-		'portfolio',
-		'click',
-		props.showMenu ? 'recent-loans' : 'View details',
-		borrowerName.value,
-		loan.value.id
-	);
-
-	router.push(`/lend/${loan.value?.id}`);
+	window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
 };
 
 const menuAction = id => {
 	if (id === COMMENT_ID) {
 		emit('open-comment-modal', { loanId: loan.value?.id, borrowerName: borrowerName.value });
-	} else if (id === DETAILS_ID) {
-		viewDetails();
 	} else if (id === SHARE_ID) {
 		$kvTrackEvent('portfolio', 'click', 'share-lightbox', 'social_share_portfolio');
 		emit('open-share-modal', { loan: loan.value });
@@ -284,10 +240,6 @@ const withinBoundaryCheck = event => {
 	}
 };
 
-watch(() => openWhatIsNext.value, () => {
-	open.value = openWhatIsNext.value;
-});
-
 watch(() => menuOpen.value, () => {
 	if (props.showMenu) {
 		setTimeout(() => {
@@ -303,15 +255,10 @@ watch(() => menuOpen.value, () => {
 
 <style lang="postcss" scoped>
 .card-container {
+	width: 336px;
+	min-height: 268px;
+
 	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
-
-	@screen md {
-		width: 468px;
-	}
-
-	@screen lg {
-		width: 520px;
-	}
 }
 
 .menu-trigger, .vertical-menu {

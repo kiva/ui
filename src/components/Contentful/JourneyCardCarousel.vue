@@ -96,6 +96,7 @@
 </template>
 
 <script setup>
+import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
 	ref,
@@ -106,12 +107,14 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvButton } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
+const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -120,11 +123,16 @@ const router = useRouter();
 const {
 	getContentfulLevelData,
 	combineBadgeData,
+	getJourneysByLoan,
 } = useBadgeData(apollo);
 
 const emit = defineEmits(['update-journey']);
 
 const props = defineProps({
+	userInfo: {
+		type: Object,
+		default: () => ({}),
+	},
 	lender: {
 		type: Object,
 		default: () => ({})
@@ -144,6 +152,10 @@ const props = defineProps({
 	heroTieredAchievements: {
 		type: Array,
 		default: () => ([]),
+	},
+	slidesNumber: {
+		type: Number,
+		default: 0,
 	},
 });
 
@@ -177,9 +189,22 @@ const isNonBadgeSlide = slide => {
 
 const orderedSlides = computed(() => {
 	const achievementSlides = [];
+	let loanJourneys = [];
+	let sortedSlides = [];
+
+	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
+		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
+		return t.type !== AVOID_TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+	});
+
+	if (transactionLoans?.length) {
+		const transactionLoan = transactionLoans?.[0]?.loan ?? {};
+		loanJourneys = getJourneysByLoan(transactionLoan);
+	}
 
 	defaultBadges.forEach(badgeKey => {
 		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
+
 		if (achievementContent) {
 			// eslint-disable-next-line no-unsafe-optional-chaining
 			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
@@ -205,14 +230,19 @@ const orderedSlides = computed(() => {
 					target: tier.target,
 					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
 					badgeImgUrl: contentfulData?.imageUrl,
+					badgeKey,
 				});
 			}
 		}
 	});
 
-	let sortedSlides = achievementSlides.sort((a, b) => {
+	sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
+
+	if (loanJourneys.length) {
+		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
+	}
 
 	const nonBadgesSlides = props.slides.filter(slide => {
 		return isNonBadgeSlide(slide);
@@ -223,6 +253,10 @@ const orderedSlides = computed(() => {
 			...sortedSlides,
 			...nonBadgesSlides,
 		];
+	}
+
+	if (props.slidesNumber) {
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;
@@ -405,7 +439,7 @@ const handleChange = interaction => {
 }
 
 .journey-card-carousel:deep(div:first-child) {
-	@apply tw-gap-2;
+	@apply tw-gap-2 lg:tw-gap-4;
 }
 
 .slide-gradient {

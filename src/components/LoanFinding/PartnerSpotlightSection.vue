@@ -20,8 +20,11 @@
 			:loans="loans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
+			:is-bp-modal-enabled="isBpModalEnabled"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@show-cart-modal="showCartModal"
+			@show-loan-details="showLoanDetails"
+			@mouseenter="$emit('mouse-enter-loan-card', $event)"
 		/>
 
 		<div class="tw-flex tw-justify-center tw-mt-4">
@@ -49,7 +52,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		spotlightData: {
 			type: Object,
@@ -67,6 +70,10 @@ export default {
 			type: String,
 			default: undefined
 		},
+		isBpModalEnabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		headline() {
@@ -97,6 +104,11 @@ export default {
 			return this.spotlightData?.viewAllLink ?? '';
 		}
 	},
+	methods: {
+		showLoanDetails(payload) {
+			this.$emit('show-loan-details', payload);
+		}
+	}
 };
 </script>
 

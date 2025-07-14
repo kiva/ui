@@ -3,11 +3,11 @@
 		<h3
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-mb-2"
+			class="tw-mt-4 tw-mb-2"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
-				v-if="filteredLoans.length > 1 && showCarouselTabs"
+				v-show="filteredLoans.length > 1 && showCarouselTabs"
 				ref="tabs"
 				class="tabs"
 				@tab-changed="handleChange"
@@ -58,7 +58,7 @@
 					ref="carousel"
 					class="borrower-carousel tw-w-full tw-overflow-visible"
 					:multiple-slides-visible="true"
-					:slide-max-width="singleSlideWidth"
+					:slide-max-width="'336px'"
 					:embla-options="{ loop: false, align: 'center'}"
 					@change="onInteractCarousel"
 				>
@@ -70,6 +70,7 @@
 							@toggle-what-is-next="openWhatIsNext = $event"
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
+							@open-side-sheet="showLoanDetails"
 						/>
 					</template>
 					<template v-if="totalLoans > filteredLoans.length" #see-all>
@@ -92,7 +93,7 @@
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
 			:loan="commentLoanData"
-			@comment-modal-closed="commentLoanData.visible = false"
+			@comment-modal-closed="handleCloseCommentModal"
 		/>
 		<!-- Share Button -->
 		<ShareButton
@@ -109,6 +110,12 @@
 			:is-portfolio="true"
 			@lightbox-closed="closeShareModal"
 		/>
+		<BorrowerSideSheetWrapper
+			:show-side-sheet="showSideSheet"
+			:selected-loan-id="selectedLoanId"
+			:show-next-steps="true"
+			@close-side-sheet="handleCloseSideSheet"
+		/>
 	</div>
 </template>
 
@@ -116,7 +123,7 @@
 import _throttle from 'lodash/throttle';
 import { useRouter } from 'vue-router';
 import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton,
+	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton
 } from '@kiva/kv-components';
 import {
 	defineProps,
@@ -132,11 +139,15 @@ import {
 	PAYING_BACK,
 	FUNDED,
 	FUNDRAISING,
-	RAISED
+	RAISED,
+	EXPIRED,
+	REFUNDED,
+	ENDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
@@ -191,21 +202,34 @@ const commentLoanData = ref({
 const shareLoan = ref(false);
 const previousLastIndex = ref(0);
 
+const showSideSheet = ref(false);
+const selectedLoanId = ref(null);
+
+const VALID_LOAN_STATUS = [
+	FUNDED,
+	FUNDRAISING,
+	PAYING_BACK,
+	RAISED,
+	EXPIRED,
+	REFUNDED,
+	ENDED,
+];
+
 const activeLoans = computed(() => {
-	return loans.value.filter(l => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED].includes(l?.status));
+	return loans.value.filter(l => VALID_LOAN_STATUS.includes(l?.status));
 });
 
 const hasActiveLoans = computed(() => activeLoans.value.length > 0);
 
 const title = computed(() => {
 	if (totalLoans.value === 1) {
-		return 'You’re <u>changing a life</u> right now!';
+		return 'You’re <u>changing a life</u>!';
 	}
-	return `You’re <u>changing ${activeLoans.value.length} lives</u> right now!`;
+	return `You’re <u>changing ${totalLoans.value} lives</u>!`;
 });
 
 const filteredLoans = computed(() => {
-	return loans.value.filter(loan => [FUNDED, FUNDRAISING, PAYING_BACK, RAISED]
+	return loans.value.filter(loan => VALID_LOAN_STATUS
 		.includes(loan?.status)).slice(0, props.cardsNumber);
 });
 
@@ -214,19 +238,6 @@ const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);
 const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
-
-const singleSlideWidth = computed(() => {
-	const viewportWidth = typeof window !== 'undefined' ? windowWidth.value : 520;
-
-	// Handle small mobile screens
-	if (viewportWidth < 450) {
-		return '90%';
-	}
-	if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-		return '468px';
-	}
-	return '520px';
-});
 
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
@@ -258,6 +269,12 @@ const closeShareModal = () => {
 	sharedLoan.value = null;
 };
 
+const handleCloseCommentModal = () => {
+	selectedLoanId.value = commentLoanData.value?.loanId ?? null;
+	commentLoanData.value.visible = false;
+	showSideSheet.value = true;
+};
+
 const getBorrowerName = loan => {
 	return loan?.name ?? '';
 };
@@ -285,6 +302,16 @@ const loadMore = () => {
 	router.push('/portfolio/loans');
 };
 
+const handleCloseSideSheet = () => {
+	showSideSheet.value = false;
+	selectedLoanId.value = null;
+};
+
+const showLoanDetails = payload => {
+	selectedLoanId.value = payload?.loan?.id ?? null;
+	showSideSheet.value = true;
+};
+
 watch(() => loans.value, () => {
 	if (hasActiveLoans.value) {
 		$kvTrackEvent('portfolio', 'view', 'Active borrowers', filteredLoans.value.length);
@@ -306,14 +333,6 @@ onBeforeUnmount(() => {
 <style lang="postcss" scoped>
 .carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
-
-	@screen md {
-		max-width: 468px;
-	}
-
-	@screen lg {
-		max-width: 520px;
-	}
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) {

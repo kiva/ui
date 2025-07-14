@@ -212,7 +212,7 @@ const fetchAchievementFromBasket = async () => {
 watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
-		fetchPostCheckoutAchievements([...loansIdsInBasket.value, addedLoan.value?.id]);
+		fetchPostCheckoutAchievements(loansIdsInBasket.value);
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
