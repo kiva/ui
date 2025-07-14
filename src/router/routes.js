@@ -116,6 +116,10 @@ export default [
 		redirect: '/lend/:id'
 	},
 	{
+		path: '/get-started',
+		redirect: '/about/how',
+	},
+	{
 
 		path: '/instant-donation-thanks/:result',
 		component: () => import('#src/pages/InstantActions/InstantDonationThanks'),
