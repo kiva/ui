@@ -42,26 +42,18 @@
 			/>
 		</section>
 		<section class="tw-my-4">
-			<div
-				:class="[
-					'tw-flex',
-					{ 'tw-flex-col': !showSingleArray },
-					{ 'tw-flex-col lg:tw-flex-row lg:tw-gap-3': showSingleArray }
-				]"
-			>
-				<MyKivaBorrowerCarousel
-					:loans="loans"
-					:total-loans="totalLoans"
-					show-menu
-				/>
-				<JournalUpdatesCarousel
-					v-if="!updatesLoading && mergedUpdates.length"
-					:updates="mergedUpdates"
-					:lender="lender"
-					:total-updates="totalUpdates"
-					@load-more-updates="loadMoreUpdates"
-				/>
-			</div>
+			<MyKivaBorrowerCarousel
+				:loans="loans"
+				:total-loans="totalLoans"
+				show-menu
+			/>
+			<JournalUpdatesCarousel
+				v-if="!updatesLoading && mergedUpdates.length"
+				:updates="mergedUpdates"
+				:lender="lender"
+				:total-updates="totalUpdates"
+				@load-more-updates="loadMoreUpdates"
+			/>
 		</section>
 		<section class="tw-my-4">
 			<LendingCategorySection
@@ -319,9 +311,6 @@ export default {
 		},
 		isSelectedJourneyComplete() {
 			return this.selectedBadgeData?.achievementData?.tiers?.length === this.selectedBadgeData?.level;
-		},
-		showSingleArray() {
-			return this.loans.length === 1 && this.loanUpdates.length === 1;
 		},
 		userInHomepage() {
 			return this.$router.currentRoute.value?.path === '/mykiva';
