@@ -580,7 +580,7 @@ export default {
 		// check for $5 notes banner cookie
 		if (this.enableFiveDollarsNotes) this.check5DollarsBannerCookie();
 	},
-	async mounted() {
+	mounted() {
 		this.getRecommendedLoans();
 		this.getSecondCategoryData();
 		this.verifySpotlightIndex();
@@ -603,7 +603,6 @@ export default {
 
 			if (queryLoanId) {
 				this.selectedLoan = { id: Number(queryLoanId) };
-				await this.$nextTick();
 				this.showSideSheet = true;
 			}
 		}
