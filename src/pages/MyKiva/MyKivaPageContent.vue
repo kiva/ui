@@ -59,13 +59,16 @@
 					:total-loans="totalLoans"
 					show-menu
 				/>
-				<JournalUpdatesCarousel
-					v-if="!updatesLoading && mergedUpdates.length"
-					:updates="mergedUpdates"
-					:lender="lender"
-					:total-updates="totalUpdates"
-					@load-more-updates="loadMoreUpdates"
-				/>
+				<async-my-kiva-section @visible="fetchInitialUpdates">
+					<JournalUpdatesCarousel
+						v-if="!updatesLoading && visibleUpdates.length"
+						:updates="visibleUpdates"
+						:lender="lender"
+						:total-updates="totalUpdates"
+						:at-end-of-carousel="atEndOfCarousel"
+						@load-more-updates="loadMoreUpdates"
+					/>
+				</async-my-kiva-section>
 			</div>
 		</section>
 		<section class="tw-my-4">
@@ -147,6 +150,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import useContentful from '#src/composables/useContentful';
+import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
 const { getBadgeWithVisibleTiers } = useBadgeData();
@@ -177,7 +181,6 @@ const props = defineProps({
 
 const blogCategories = ['gender-equality', 'supporting-marginalized-us-entrepreneurs', 'refugees', 'climate-change'];
 const blogCards = ref([]);
-const hasShownHiddenRepayments = ref(false);
 const isEarnedSectionModal = ref(false);
 const loanUpdates = ref([]);
 const selectedBadgeData = ref();
@@ -186,7 +189,7 @@ const displayedCount = ref(3);
 const showNavigation = ref(false);
 const showSideSheet = ref(false);
 const state = ref(STATE_JOURNEY);
-const updatesLimit = ref(3);
+const updatesLimit = ref(15);
 const updatesOffset = ref(updatesLimit.value);
 const hideBottomGradient = ref(false);
 const recommendedLoans = ref(Array(6).fill({ id: 0 }));
@@ -304,29 +307,22 @@ const formatRepaymentCards = repayments => {
 	}];
 };
 const repaymentCards = computed(() => formatRepaymentCards(repaymentsRaw.value));
-const hiddenRepayments = computed(() => repaymentCards.value.slice(3));
+
 const mergedUpdates = computed(() => {
 	const repayments = repaymentCards.value;
 	const updates = loanUpdates.value;
-
-	if (isFirstLoad.value) {
-		return [...repayments, ...updates]
-			.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, displayedCount.value);
-	}
-
-	if (!hasShownHiddenRepayments.value && hiddenRepayments.value.length > 0) {
-		const hidden = hiddenRepayments.value;
-		const updatesToShow = updates.slice(0, 3 - hidden.length);
-		return [...hidden, ...updatesToShow]
-			.sort((a, b) => new Date(b.date) - new Date(a.date));
-	}
-
-	const repaymentsAndUpdates = [...repaymentCards.value, ...loanUpdates.value];
-	return repaymentsAndUpdates
-		.sort((a, b) => new Date(b.date) - new Date(a.date))
-		.slice(0, displayedCount.value);
+	return [...repayments, ...updates]
+		.sort((a, b) => new Date(b.date) - new Date(a.date));
 });
-const totalUpdates = computed(() => realTotalUpdates.value + repaymentCards.value.length);
+const totalUpdates = computed(() => {
+	return mergedUpdates.value.length;
+});
+
+const visibleUpdates = computed(() => mergedUpdates.value.slice(0, displayedCount.value));
+
+const atEndOfCarousel = computed(() => {
+	return displayedCount.value >= totalUpdates.value;
+});
 
 const handleShowNavigation = () => {
 	showNavigation.value = true;
@@ -451,17 +447,13 @@ const fetchRecommendedLoans = async () => {
 };
 const fetchInitialUpdates = async () => {
 	displayedCount.value = 3;
-	updatesLimit.value = displayedCount.value;
 	updatesOffset.value = 0;
 	await fetchUserUpdates(false, updatesLimit.value);
 };
 
 const loadMoreUpdates = async () => {
 	isFirstLoad.value = false;
-	displayedCount.value += 3; // Increase by 3 each time
-	updatesLimit.value = displayedCount.value;
-	updatesOffset.value = 0; // Always fetch from the beginning
-	await fetchUserUpdates(true, updatesLimit.value);
+	displayedCount.value += 3;
 };
 const fetchMoreWaysToHelpData = async () => {
 	try {
@@ -499,7 +491,6 @@ onMounted(async () => {
 	$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 	fireHotJarEvent('my_kiva_viewed');
 	fetchBlogCards();
-	await fetchInitialUpdates();
 	fetchAchievementData(apollo);
 	fetchContentfulData(apollo);
 	fetchRecommendedLoans();
