@@ -80,7 +80,7 @@
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
 						<strong>Basically,</strong><br>
-						This section describes what Kiva does. Lending on Kiva is risky and you might not get repaid what you lend. Please read our page called “<a href="https://www.kiva.org/about/due-diligence/risk">Due Diligence</a>” for more information on the different types of risk you assume when you make a loan.
+						This section describes what Kiva does. Lending on Kiva is risky and you might not get repaid what you lend. Please read our page called “<a href="https://www.kiva.org/about/due-diligence#due-diligence-risk-types-faq">Due Diligence</a>” for more information on the different types of risk you assume when you make a loan.
 					</p>
 				</div>
 			</div>
