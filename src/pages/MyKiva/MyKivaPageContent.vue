@@ -115,7 +115,6 @@
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
-		<p>Blog cards: {{ blogCards.length }}</p>
 		<section v-if="blogCards.length" class="tw-my-4">
 			<LatestBlogCarousel :blog-cards="blogCards" />
 		</section>
@@ -544,7 +543,6 @@ export default {
 				category: post.category,
 				categorySlug: this.blogCategories[idx]
 			} : null)).filter(Boolean);
-			console.log('Blog cards fetched:', this.blogCards);
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
