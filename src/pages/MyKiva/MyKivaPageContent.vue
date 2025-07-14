@@ -115,6 +115,7 @@
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
+		<p>Blog cards: {{ blogCards.length }}</p>
 		<section v-if="blogCards.length" class="tw-my-4">
 			<LatestBlogCarousel :blog-cards="blogCards" />
 		</section>
@@ -538,11 +539,12 @@ export default {
 			const posts = await Promise.all(
 				this.blogCategories.map(cat => this.getMostRecentBlogPost(cat))
 			);
-			this.blogCards.value = posts.map((post, idx) => (post ? {
+			this.blogCards = posts.map((post, idx) => (post ? {
 				...post,
 				category: post.category,
 				categorySlug: this.blogCategories[idx]
 			} : null)).filter(Boolean);
+			console.log('Blog cards fetched:', this.blogCards);
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
