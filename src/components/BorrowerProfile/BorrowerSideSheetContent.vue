@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-eco-green-1 tw--mx-2">
+	<div class="tw--mx-2 tw-bg-secondary">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags />
@@ -12,7 +12,7 @@
 				:pfp-min-lenders="pfpMinLenders"
 				:progress-percent="fundraisingPercent"
 				:time-left="timeLeft"
-				class="tw-mb-2 tw-mt-1.5"
+				class="tw-mt-2 tw-mb-3"
 				data-testid="bp-summary-progress"
 			/>
 			<LoanNextSteps
@@ -27,8 +27,8 @@
 			<SideSheetLoanHowMoneyHelps />
 			<SideSheetLoanStory />
 		</div>
-		<div class="tw-bg-white tw-px-4">
-			<CommentsAndWhySpecial :loan-id="loanId" class="tw-py-2" />
+		<div class="tw-bg-primary tw-px-4">
+			<CommentsAndWhySpecial :loan-id="loanId" />
 		</div>
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />
@@ -145,6 +145,11 @@ export default {
 		const lenderCount = computed(() => borrowerProfile?.lenderCount?.value);
 		const loading = computed(() => borrowerProfile?.loading?.value);
 		const isGuest = computed(() => borrowerProfile?.isGuest?.value);
+		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+		const currentStep = computed(() => {
+			if (isFundraising.value) return 1;
+			return 4;
+		});
 		const fundraisingPercent = computed(() => {
 			if (borrowerProfile.unreservedAmount.value === '0') return '0';
 			return borrowerProfile.fundraisingPercent.value ?? undefined;
@@ -156,15 +161,6 @@ export default {
 
 		const showNextSteps = computed(() => ['/portfolio', '/mykiva'].includes(currentRoute?.fullPath));
 
-		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
-
-		const currentStep = computed(() => {
-			if (isFundraising.value) {
-				return 1;
-			}
-			return 4;
-		});
-
 		const weeksToRepay = computed(() => {
 			const today = new Date();
 			const date = loan.value?.terms?.expectedPayments
@@ -174,16 +170,13 @@ export default {
 				// Get the number of weeks between the first repayment date (in the future) and now
 				return `${differenceInWeeks(Date.parse(date), today)} weeks`;
 			}
-
 			// Calculating a possible range of weeks between the planned expiration date and a month after
 			const expDate = Date.parse(loan.value?.plannedExpirationDate);
 			const minDate = differenceInWeeks(addMonths(today, 1), today);
 			const maxDate = differenceInWeeks(addMonths(expDate, 1), today);
-
 			if (minDate === maxDate || maxDate < 0) {
 				return `${minDate} weeks`;
 			}
-
 			return `${minDate} - ${maxDate} weeks`;
 		});
 
@@ -203,21 +196,22 @@ export default {
 			addToBasket,
 			cookieStore,
 			currentRoute,
+			currentStep,
 			fundraisingPercent,
 			inPfp,
+			isFundraising,
 			isGuest,
 			lenderCount,
 			loading,
 			loan,
 			numLenders,
 			pfpMinLenders,
+			showNextSteps,
 			teamCount,
 			timeLeft,
 			unreservedAmount,
 			userBalance,
-			showNextSteps,
 			weeksToRepay,
-			currentStep,
 		};
 	}
 };
