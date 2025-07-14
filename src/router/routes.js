@@ -117,7 +117,7 @@ export default [
 	},
 	{
 		path: '/get-started',
-		redirect: '/about/how',
+		redirect: '/homepage-classic',
 	},
 	{
 
