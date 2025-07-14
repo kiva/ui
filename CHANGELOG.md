@@ -1,3 +1,10 @@
+## [3.24.0-rc.2](https://github.com/kiva/ui/compare/v3.24.0-rc.1...v3.24.0-rc.2) (2025-07-14)
+
+### 🐛 Bugfixes
+
+* fix datasorurce for blog carousel ([c7c57b1](https://github.com/kiva/ui/commit/c7c57b12fa37d168e3b24c2c5c659468b3a2a65e))
+* fix datasorurce for blog carousel ([8d2d4a9](https://github.com/kiva/ui/commit/8d2d4a9dc7055c8fb031d1c1adf4e3ca5145551d))
+
 ## [3.24.0-rc.1](https://github.com/kiva/ui/compare/v3.23.0...v3.24.0-rc.1) (2025-07-14)
 
 ### 🎉 New Features
