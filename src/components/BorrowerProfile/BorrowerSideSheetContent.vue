@@ -118,7 +118,11 @@ export default {
 		basketItems: {
 			type: Array,
 			default: () => []
-		}
+		},
+		showNextSteps: {
+			type: Boolean,
+			default: false
+		},
 	},
 	setup(props, { emit }) {
 		const apollo = inject('apollo');
@@ -158,8 +162,6 @@ export default {
 		const addToBasket = payload => {
 			emit('add-to-basket', payload);
 		};
-
-		const showNextSteps = computed(() => ['/portfolio', '/mykiva'].includes(currentRoute?.fullPath));
 
 		const weeksToRepay = computed(() => {
 			const today = new Date();
@@ -206,7 +208,6 @@ export default {
 			loan,
 			numLenders,
 			pfpMinLenders,
-			showNextSteps,
 			teamCount,
 			timeLeft,
 			unreservedAmount,

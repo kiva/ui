@@ -13,6 +13,7 @@
 			:basket-items="basketItems"
 			:is-adding="isAdding"
 			:loan-id="selectedLoanId"
+			:show-next-steps="showNextSteps"
 			@add-to-basket="addToBasket"
 		/>
 	</KvSideSheet>
@@ -52,6 +53,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	showNextSteps: {
+		type: Boolean,
+		default: false
+	},
 	showSideSheet: {
 		type: Boolean,
 		default: false
@@ -59,7 +64,7 @@ const props = defineProps({
 	widthDimensions: {
 		type: Object,
 		default: () => {}
-	}
+	},
 });
 
 const emit = defineEmits([
