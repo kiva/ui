@@ -538,7 +538,7 @@ export default {
 			const posts = await Promise.all(
 				this.blogCategories.map(cat => this.getMostRecentBlogPost(cat))
 			);
-			this.blogCards.value = posts.map((post, idx) => (post ? {
+			this.blogCards = posts.map((post, idx) => (post ? {
 				...post,
 				category: post.category,
 				categorySlug: this.blogCategories[idx]
