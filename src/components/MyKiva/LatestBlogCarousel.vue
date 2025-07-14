@@ -11,7 +11,6 @@
 				align: 'start',
 			}"
 			:multiple-slides-visible="true"
-			@change="handleChange"
 		>
 			<template v-for="(card, idx) in blogCards" #[`slide${idx}`] :key="card.slug || idx">
 				<BlogCard
