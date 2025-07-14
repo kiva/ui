@@ -1,3 +1,10 @@
+## [3.24.0-rc.3](https://github.com/kiva/ui/compare/v3.24.0-rc.2...v3.24.0-rc.3) (2025-07-14)
+
+### 🐛 Bugfixes
+
+* hide next steps in borrower side sheet for recommended loans carousel ([1001623](https://github.com/kiva/ui/commit/10016235cdbbed50f125e9a10d62ba8f05eee870))
+* resolve console warning for blog carousel ([f514b22](https://github.com/kiva/ui/commit/f514b229728a4d33190f2fa819a8a16a27109a65))
+
 ## [3.24.0-rc.2](https://github.com/kiva/ui/compare/v3.24.0-rc.1...v3.24.0-rc.2) (2025-07-14)
 
 ### 🐛 Bugfixes
