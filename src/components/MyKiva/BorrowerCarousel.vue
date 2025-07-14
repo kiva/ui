@@ -113,6 +113,7 @@
 		<BorrowerSideSheetWrapper
 			:show-side-sheet="showSideSheet"
 			:selected-loan-id="selectedLoanId"
+			:show-next-steps="true"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</div>
