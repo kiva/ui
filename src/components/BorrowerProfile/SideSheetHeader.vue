@@ -1,23 +1,24 @@
 <template>
 	<div>
 		<div class="tw-relative !tw-overflow-y-hidden !tw-p-0">
-			<KvLoadingPlaceholder v-if="loading" style="aspect-ratio: 8 / 5" class="tw-w-full tw-h-full" />
-			<KvBorrowerImage
-				v-else
-				class="tw-w-full tw-bg-black lg:tw-rounded tw--mb-1.5 md:tw--mb-1"
-				:alt="name"
-				:hash="hash"
-				:aspect-ratio="5 / 8"
-				:photo-path="appConfig?.photoPath"
-				:default-image="{ width: 480 }"
-				:images="[
-					{ width: 480, viewSize: 1024 },
-					{ width: 480, viewSize: 768 },
-					{ width: 416, viewSize: 480 },
-					{ width: 374, viewSize: 414 },
-					{ width: 335, viewSize: 375 },
-				]"
-			/>
+			<KvLoadingPlaceholder v-if="loading" style="aspect-ratio: 8 / 5" class="tw-w-full tw-h-full tw-mt-2" />
+			<div v-else class="tw-pt-2">
+				<KvBorrowerImage
+					class="tw-w-full tw-bg-black lg:tw-rounded tw--mb-1.5 md:tw--mb-1"
+					:alt="name"
+					:hash="hash"
+					:aspect-ratio="5 / 8"
+					:photo-path="appConfig?.photoPath"
+					:default-image="{ width: 480 }"
+					:images="[
+						{ width: 480, viewSize: 1024 },
+						{ width: 480, viewSize: 768 },
+						{ width: 416, viewSize: 480 },
+						{ width: 374, viewSize: 414 },
+						{ width: 335, viewSize: 375 },
+					]"
+				/>
+			</div>
 			<div
 				v-if="!loading"
 				class="tw-flex tw-items-center tw-gap-1 tw-rounded-full tw-px-1 tw-py-0.5

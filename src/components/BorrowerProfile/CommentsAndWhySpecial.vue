@@ -10,7 +10,7 @@
 		<h2 class="tw-sr-only">
 			Loan Comments
 		</h2>
-		<div v-if="!loading" class="tw-mt-2 md:tw-mt-3 lg:tw-mt-5 tw-mb-4 md:tw-mb-5 lg:tw-mb-7">
+		<div v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5">
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
 				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`] :key="index">
 					<div>
@@ -106,7 +106,7 @@
 									</div>
 								</div>
 								<!-- name and team info -->
-								<div>
+								<div class="tw-m-auto">
 									<h3>
 										{{ comment.authorName }}
 									</h3>
