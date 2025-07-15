@@ -199,7 +199,8 @@ onMounted(() => {
 
 const useFunds = () => {
 	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
-	window.location.href = `/lend/filter?header=You-can-impact-${update.value.livesImpacted}-lives-right-now`;
+	// eslint-disable-next-line max-len
+	window.location.href = `/lend/filter?header=You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
 };
 
 </script>

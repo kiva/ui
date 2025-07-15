@@ -154,6 +154,8 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
+const IMPACT_THRESHOLD = 25;
+
 export default {
 	name: 'MyKivaPageContent',
 	mixins: [borrowerProfileExpMixin],
@@ -419,7 +421,7 @@ export default {
 		},
 		formatRepaymentCards(repayments) {
 			if (repayments.length === 0) return [];
-			const livesImpacted = Math.floor(this.userBalance / 25) + 1;
+			const livesToImpact = Math.floor(this.userBalance / IMPACT_THRESHOLD) + 1;
 
 			if (repayments.length <= 5) {
 				return repayments.map((trx, idx) => ({
@@ -434,7 +436,7 @@ export default {
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
-					livesImpacted,
+					livesToImpact,
 				}));
 			}
 			const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
@@ -464,7 +466,7 @@ export default {
 				loan: null,
 				image: null,
 				repaymentImages: firstThreeImages,
-				livesImpacted,
+				livesToImpact,
 			}];
 		},
 		fetchUserUpdates(limit = this.updatesLimit) {
