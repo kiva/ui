@@ -419,6 +419,8 @@ export default {
 		},
 		formatRepaymentCards(repayments) {
 			if (repayments.length === 0) return [];
+			const livesImpacted = Math.floor(this.userBalance / 25) + 1;
+
 			if (repayments.length <= 5) {
 				return repayments.map((trx, idx) => ({
 					id: `repayment-${trx.effectiveTime}-${idx}`,
@@ -432,6 +434,7 @@ export default {
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
+					livesImpacted,
 				}));
 			}
 			const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
@@ -461,6 +464,7 @@ export default {
 				loan: null,
 				image: null,
 				repaymentImages: firstThreeImages,
+				livesImpacted,
 			}];
 		},
 		fetchUserUpdates(limit = this.updatesLimit) {

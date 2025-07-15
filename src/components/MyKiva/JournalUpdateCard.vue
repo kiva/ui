@@ -199,7 +199,7 @@ onMounted(() => {
 
 const useFunds = () => {
 	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
-	window.location.href = '/lend/filter';
+	window.location.href = `/lend/filter?header=You-can-impact-${update.value.livesImpacted}-lives-right-now`;
 };
 
 </script>
