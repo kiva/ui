@@ -484,10 +484,19 @@ export default {
 		handleCloseSideSheet() {
 			this.showSideSheet = false;
 			this.selectedLoan = null;
+
+			const queryParams = { ...this.$router.currentRoute?.value?.query };
+			delete queryParams.loanId;
+			const routerData = this.$router.resolve({ ...this.$router.currentRoute.value, query: queryParams });
+			window.history.pushState({}, '', routerData?.fullPath);
 		},
 		showLoanDetails(loan) {
 			this.selectedLoan = loan ?? undefined;
 			this.showSideSheet = true;
+
+			const queryParams = { ...this.$router.currentRoute?.value?.query };
+			const routerData = this.$router.resolve({ ...this.$router.currentRoute.value, query: { ...queryParams, loanId: loan.id } }); // eslint-disable-line max-len
+			window.history.pushState({}, '', routerData?.fullPath);
 		},
 	},
 	created() {
@@ -588,6 +597,15 @@ export default {
 		);
 		this.loadInitialBasketItems();
 		this.initializeIsBpModalEnabledExp('lend-by-category');
+
+		if (this.isBpModalEnabled) {
+			const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+
+			if (queryLoanId) {
+				this.selectedLoan = { id: Number(queryLoanId) };
+				this.showSideSheet = true;
+			}
+		}
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

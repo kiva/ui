@@ -37,6 +37,7 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:user-balance="userBalance"
+						:custom-href="getCustomHref($router, loan.id, isBpModalEnabled)"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -77,6 +78,7 @@
 import QuickFilters from '#src/components/LoansByCategory/QuickFilters/QuickFilters';
 import { runFacetsQueries, fetchLoanFacets, runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { fetchCategories, FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
+import { getCustomHref } from '#src/util/loanUtils';
 import { transformIsoCodes } from '#src/util/loanSearch/filters/regions';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import KvPagination from '#src/components/Kv/KvPagination';
@@ -149,6 +151,7 @@ export default {
 			allFacets: [],
 			emptyState: false,
 			showOverlay: false,
+			getCustomHref,
 		};
 	},
 	computed: {

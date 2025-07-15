@@ -37,6 +37,7 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:user-balance="userBalance"
+						:custom-href="getCustomHref($router, loan.id, isBpModalEnabled)"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -57,6 +58,7 @@
 import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import { getCustomHref } from '#src/util/loanUtils';
 import { KvCarousel } from '@kiva/kv-components';
 import ViewMoreCard from './ViewMoreCard';
 
@@ -131,7 +133,8 @@ export default {
 	data() {
 		return {
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
-			handleResize: _throttle(this.isWindowWidth, 200)
+			handleResize: _throttle(this.isWindowWidth, 200),
+			getCustomHref,
 		};
 	},
 	computed: {
