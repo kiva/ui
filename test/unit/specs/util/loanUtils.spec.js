@@ -5,6 +5,7 @@ import {
 	ERL_COOKIE_NAME,
 	TOP_UP_CAMPAIGN,
 	BASE_CAMPAIGN,
+	getCustomHref,
 } from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
@@ -463,6 +464,65 @@ describe('loanUtils.js', () => {
 			expect(result).toBe('25');
 			expect(mockCookieStoreGet).toHaveBeenCalledTimes(0);
 			expect(mockCookieStoreSet).toHaveBeenCalledTimes(0);
+		});
+	});
+
+	describe('getCustomHref', () => {
+		let mockRouter;
+
+		beforeEach(() => {
+			mockRouter = {
+				currentRoute: {
+					value: {
+						query: { foo: 'bar', baz: 'qux' }
+					}
+				},
+				resolve: vi.fn()
+			};
+		});
+
+		it('should return empty string if isBpModalEnabled is false', () => {
+			const result = getCustomHref(mockRouter, '123', false);
+			expect(result).toBe('');
+			expect(mockRouter.resolve).not.toHaveBeenCalled();
+		});
+
+		it('should call router.resolve with merged query and loanId', () => {
+			const resolvedHref = '/some/path?foo=bar&baz=qux&loanId=123';
+			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
+
+			const result = getCustomHref(mockRouter, '123', true);
+
+			expect(mockRouter.resolve).toHaveBeenCalledWith({
+				query: { foo: 'bar', baz: 'qux', loanId: '123' }
+			});
+			expect(result).toBe(resolvedHref);
+		});
+
+		it('should override existing loanId in query', () => {
+			mockRouter.currentRoute.value.query = { foo: 'bar', loanId: 'old' };
+			const resolvedHref = '/some/path?foo=bar&loanId=456';
+			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
+
+			const result = getCustomHref(mockRouter, '456', true);
+
+			expect(mockRouter.resolve).toHaveBeenCalledWith({
+				query: { foo: 'bar', loanId: '456' }
+			});
+			expect(result).toBe(resolvedHref);
+		});
+
+		it('should handle empty query object', () => {
+			mockRouter.currentRoute.value.query = {};
+			const resolvedHref = '/some/path?loanId=789';
+			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
+
+			const result = getCustomHref(mockRouter, '789', true);
+
+			expect(mockRouter.resolve).toHaveBeenCalledWith({
+				query: { loanId: '789' }
+			});
+			expect(result).toBe(resolvedHref);
 		});
 	});
 });
