@@ -1,3 +1,31 @@
+## [3.25.0-rc.1](https://github.com/kiva/ui/compare/v3.24.0...v3.25.0-rc.1) (2025-07-16)
+
+### 🎉 New Features
+
+* '/about-how-it-works' -> '/homepage' ([ccef257](https://github.com/kiva/ui/commit/ccef2577969c39774475ce004f0ae4df6c6970e0))
+* add brand bg to tw safelist for KvTreepMap ([eeb286d](https://github.com/kiva/ui/commit/eeb286d26e2823eecba5eef5ba312c46dcfacc88))
+* add header query to combo page redirect ([3e5b7e2](https://github.com/kiva/ui/commit/3e5b7e295f5b8af3344978bf9ad9edd114e6f0c7))
+* causes card removal ([1f7ae24](https://github.com/kiva/ui/commit/1f7ae24d8346bc506262175e24c489d4adb41f8b))
+* deleted editPreferences component; returned path + redirect for /get-started ([f4ab69b](https://github.com/kiva/ui/commit/f4ab69bd88ebfbb56a7cd4cc5ea129dca4a0d40b))
+* deleted imgs related to /get-started files ([d0a979d](https://github.com/kiva/ui/commit/d0a979dd21c66549d57cc8ac5e34de3c8554c743))
+* lbc loan card update ([#6134](https://github.com/kiva/ui/issues/6134)) ([9bf9cd6](https://github.com/kiva/ui/commit/9bf9cd6de2a51cfa619f81f9335b9227da72fdb9))
+* lbc redirect test added ([#6138](https://github.com/kiva/ui/issues/6138)) ([8f0cf8c](https://github.com/kiva/ui/commit/8f0cf8cc5ead2f14a69195d89f46a2d1b78961ba))
+* lending stats experiment added to mykiva page ([#6141](https://github.com/kiva/ui/issues/6141)) ([531f978](https://github.com/kiva/ui/commit/531f978fba7235d4d01962db47c4672de0fed7eb))
+* sunsetting /get-started page ([4705707](https://github.com/kiva/ui/commit/470570736448bae1eb55cf204ff2a1425bdb042c))
+
+### 🐛 Bugfixes
+
+* add further updates to TOU text ([395f4ee](https://github.com/kiva/ui/commit/395f4ee9e780ef05e675df8406bdc0e0ab7d4414))
+* apply thead and tbody to RepaymentSchedule trows ([65f1b29](https://github.com/kiva/ui/commit/65f1b29951dbe5219194432c25d2079f465561e1))
+* missing loading prop in loan progress ([b91e370](https://github.com/kiva/ui/commit/b91e370777bb7545dbea459a2bbcc3991bda13e6))
+* remove unneeded story ([10da6ce](https://github.com/kiva/ui/commit/10da6ce1e387fafca57512908aa568bb0551febb))
+* simplify redirect ([6819f49](https://github.com/kiva/ui/commit/6819f4961342ac9ed37e09229219c12d1cfd08d0))
+* update TOU ([cd84944](https://github.com/kiva/ui/commit/cd8494496fa3b8548d5cab541efdeea9fcc831bd))
+
+### 🪚 Refactors
+
+* change variable name and other code refactoring ([193cde9](https://github.com/kiva/ui/commit/193cde98bf1c8362a2a610640ef4275297051e72))
+
 ## [3.24.0](https://github.com/kiva/ui/compare/v3.23.0...v3.24.0) (2025-07-14)
 
 ### 🎉 New Features
