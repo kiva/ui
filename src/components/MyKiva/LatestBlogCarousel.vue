@@ -19,7 +19,7 @@
 					:title="card.title"
 					:date="card.date"
 					:slug="card.slug"
-					@track="trackBlogCard({ title: card.title, slug: card.slug, category: card.category })"
+					@track="trackBlogCard"
 				/>
 			</template>
 		</KvCarousel>
@@ -51,11 +51,8 @@ const singleSlideWidth = computed(() => {
 	return '336px';
 });
 
-function trackBlogCard({ title, slug, category }) {
-	// Replace with your actual tracking function
-	if (typeof $kvTrackEvent === 'function') {
-		$kvTrackEvent('portfolio', 'click', `${category}:${title}`, slug);
-	}
+function trackBlogCard(payload) {
+	$kvTrackEvent('portfolio', 'click', `Blog-${payload}`);
 }
 </script>
 <style lang="postcss" scoped>
