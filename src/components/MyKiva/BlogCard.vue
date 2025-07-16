@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="blog-card tw-w-full tw-relative tw-rounded tw-bg-cover
-				tw-bg-center tw-bg-white tw-block focus:tw-outline-none cursor-pointer"
+				tw-bg-center tw-bg-white tw-block focus:tw-outline-none cursor-pointer hover:tw-shadow-md"
 		@click="handleCardClick"
 		role="link"
 		@keydown.enter="handleCardClick"
@@ -25,7 +25,7 @@
 
 		<div class="tw-px-2 tw-pt-1.5 tw-flex-1 tw-flex tw-flex-col">
 			<p class="tw-font-medium tw-leading-snug tw-line-clamp-3 tw-text-black">
-				<span class="tw-text-black tw-font-bold tw-no-underline hover:tw-underline">
+				<span class="blog-card-title tw-text-black tw-font-bold tw-no-underline">
 					{{ title }}
 				</span>
 			</p>
@@ -77,7 +77,7 @@ const formattedDate = computed(() => {
 });
 
 function handleCardClick() {
-	emit('track', `Blog-${props.category.replace(/\./g, '').replace(/\s+/g, '-')}`);
+	emit('track', `${props.category.replace(/\./g, '').replace(/\s+/g, '-')}`);
 	window.open(`/blog/${props.slug}`, '_blank', 'noopener');
 }
 </script>
@@ -88,10 +88,19 @@ function handleCardClick() {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
 	height: 420px;
 	padding-bottom: 1rem;
+	cursor: pointer;
 
 	@screen md {
 		height: 380px;
 	}
+}
+
+.blog-card-title {
+	transition: text-decoration 0.2s;
+}
+
+.blog-card:hover .blog-card-title {
+	text-decoration: underline;
 }
 
 </style>
