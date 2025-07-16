@@ -101,6 +101,17 @@ tw-bg-stone-1
 tw-bg-marigold-1
 tw-bg-eco-green-1
 tw-bg-desert-rose-1
+# KvTreeMapChart Background Colors
+tw-bg-brand-100
+tw-bg-brand-200
+tw-bg-brand-300
+tw-bg-brand-400
+tw-bg-brand-500
+tw-bg-brand-600
+tw-bg-brand-700
+tw-bg-brand-800
+tw-bg-brand-900
+tw-bg-brand-1000
 
 # Whitespace Classes
 tw-whitespace-normal
