@@ -1,3 +1,14 @@
+## [3.25.0-rc.2](https://github.com/kiva/ui/compare/v3.25.0-rc.1...v3.25.0-rc.2) (2025-07-16)
+
+### 🎉 New Features
+
+* fix href to match all the card and open a new window, fix the tracking ([8041059](https://github.com/kiva/ui/commit/8041059a61a034c5f35728a452ee541b147b0480))
+* fix href to match all the card and open a new window, fix the tracking ([6aad103](https://github.com/kiva/ui/commit/6aad103b5e017b1d7eba74a366fb5548ba15aa28))
+
+### 🐛 Bugfixes
+
+* minor tweaks to tou ([a121bd8](https://github.com/kiva/ui/commit/a121bd8be412c8eb1889a6aff8c2aeb19b084582))
+
 ## [3.25.0-rc.1](https://github.com/kiva/ui/compare/v3.24.0...v3.25.0-rc.1) (2025-07-16)
 
 ### 🎉 New Features
