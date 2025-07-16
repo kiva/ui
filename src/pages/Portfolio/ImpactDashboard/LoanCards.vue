@@ -21,7 +21,7 @@ import { ref, inject } from 'vue';
 import { gql } from 'graphql-tag';
 import logReadQueryError from '#src/util/logReadQueryError';
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
-import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 // Query to gather user loans
@@ -113,7 +113,7 @@ const fetchAsyncData = () => {
 	apollo.query({ query: userQuery })
 		.then(result => {
 			const transactions = result.data?.my?.transactions?.values?.filter(t => {
-				return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+				return t.type === TRANSACTION_LOANS_KEY;
 			});
 
 			loans.value = transactions?.map(t => t.loan) ?? [];

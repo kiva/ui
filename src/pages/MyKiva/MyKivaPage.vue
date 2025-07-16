@@ -19,7 +19,7 @@
 <script>
 import { readBoolSetting } from '#src/util/settingsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY, AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY, TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -106,7 +106,7 @@ export default {
 				};
 
 				const transactions = this.userInfo?.transactions?.values?.filter(t => {
-					return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+					return t.type === TRANSACTION_LOANS_KEY;
 				});
 
 				this.loans = transactions?.map(t => t.loan) ?? [];
