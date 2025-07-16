@@ -26,6 +26,7 @@
 			:is-team-pick="isTeamPick"
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
+			:custom-href="customHref"
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
@@ -159,6 +160,10 @@ export default {
 		addToBasketExpEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		customHref: {
+			type: String,
+			default: '',
 		},
 	},
 	inject: ['apollo', 'cookieStore'],

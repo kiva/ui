@@ -16,9 +16,7 @@
 			<div v-if="isPartnerLoan || !isPartnerLoan && loanDisbursed">
 				<p class="tw-inline-block tw-pb-3">
 					Repayments {{ statusLanguageCheck }} in
-				</p>
-				<p class="tw-inline-block tw-font-medium ">
-					{{ formattedFirstRepaymentDate }}
+					<span class="tw-font-medium"> {{ formattedFirstRepaymentDate }}</span>
 				</p>
 				<span v-if="status === 'payingBack'">
 					<p class="tw-inline-block">
@@ -31,30 +29,90 @@
 
 				<!-- Table for small screens -->
 				<table class="md:tw-hidden tw-w-full">
-					<tr
-						v-for="(repayment, index) in parsedRepaymentSchedule"
-						:key="index"
-						class="tw-mb-1"
-					>
-						<td
-							class="
-							tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
-							tw-mb-2 tw-pb-1.5"
+					<tbody>
+						<tr
+							v-for="(repayment, index) in parsedRepaymentSchedule"
+							:key="index"
+							class="tw-mb-1"
 						>
-							<p class="tw-text-h4 tw-py-1.5">
+							<td
+								class="
+								tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
+								tw-mb-2 tw-pb-1.5"
+							>
+								<p class="tw-text-h4 tw-py-1.5">
+									{{ repayment.formattedRepaymentDate }}
+								</p>
+								<hr class="tw-mb-1.5 tw-mx-1.5">
+								<p class="tw-mb-1.5">
+									Expected: {{ repayment.formattedMonthlyPayment }}
+								</p>
+								<p v-if="!repayment.repaid && !repayment.delinquent">
+									Available {{ repayment.formattedRepaymentDate }}
+								</p>
+								<!-- if payment is received -->
+								<p
+									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+									style="width: 11.5rem;"
+									v-if="repayment.repaid && !repayment.delinquent"
+								>
+									<kv-material-icon
+										:icon="mdiCheckboxMarkedCircle"
+										class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
+									/>
+									Repayment received
+								</p>
+								<!-- if payment is not received on time -->
+								<p
+									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+									style="width: 7.5rem;"
+									v-if="!repayment.repaid && repayment.delinquent"
+								>
+									<kv-material-icon
+										class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
+										:icon="mdiMinusCircle"
+									/>
+									Delinquent
+								</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<!-- Table for medium and up screens -->
+				<table class="tw-table-auto tw-hidden md:tw-table">
+					<thead class="tw-bg-secondary tw-text-left">
+						<tr>
+							<th><span class="tw-sr-only">Date</span></th>
+							<th class="table-heading-spacing">
+								Expected
+							</th>
+							<th class="table-heading-spacing">
+								Status
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							v-for="(repayment, index) in parsedRepaymentSchedule"
+							:key="index"
+							class="tw-mb-1"
+						>
+							<td class="table-data-spacing">
 								{{ repayment.formattedRepaymentDate }}
-							</p>
-							<hr class="tw-mb-1.5 tw-mx-1.5">
-							<p class="tw-mb-1.5">
-								Expected: {{ repayment.formattedMonthlyPayment }}
-							</p>
-							<p v-if="!repayment.repaid && !repayment.delinquent">
+							</td>
+							<td class="table-data-spacing">
+								{{ repayment.formattedMonthlyPayment }}
+							</td>
+							<td
+								class="table-data-spacing"
+								v-if="!repayment.repaid && !repayment.delinquent"
+							>
 								Available {{ repayment.formattedRepaymentDate }}
-							</p>
+							</td>
 							<!-- if payment is received -->
-							<p
-								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-								style="width: 11.5rem;"
+							<td
+								class="table-data-spacing"
 								v-if="repayment.repaid && !repayment.delinquent"
 							>
 								<kv-material-icon
@@ -62,11 +120,10 @@
 									class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
 								/>
 								Repayment received
-							</p>
+							</td>
 							<!-- if payment is not received on time -->
-							<p
-								class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-								style="width: 7.5rem;"
+							<td
+								class="table-data-spacing"
 								v-if="!repayment.repaid && repayment.delinquent"
 							>
 								<kv-material-icon
@@ -74,62 +131,9 @@
 									:icon="mdiMinusCircle"
 								/>
 								Delinquent
-							</p>
-						</td>
-					</tr>
-				</table>
-
-				<!-- Table for medium and up screens -->
-				<table class="tw-table-auto tw-hidden md:tw-table">
-					<tr class="tw-bg-secondary tw-text-left">
-						<th><span class="tw-sr-only">Date</span></th>
-						<th class="table-heading-spacing">
-							Expected
-						</th>
-						<th class="table-heading-spacing">
-							Status
-						</th>
-					</tr>
-					<tr
-						v-for="(repayment, index) in parsedRepaymentSchedule"
-						:key="index"
-						class="tw-mb-1"
-					>
-						<td class="table-data-spacing">
-							{{ repayment.formattedRepaymentDate }}
-						</td>
-						<td class="table-data-spacing">
-							{{ repayment.formattedMonthlyPayment }}
-						</td>
-						<td
-							class="table-data-spacing"
-							v-if="!repayment.repaid && !repayment.delinquent"
-						>
-							Available {{ repayment.formattedRepaymentDate }}
-						</td>
-						<!-- if payment is received -->
-						<td
-							class="table-data-spacing"
-							v-if="repayment.repaid && !repayment.delinquent"
-						>
-							<kv-material-icon
-								:icon="mdiCheckboxMarkedCircle"
-								class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
-							/>
-							Repayment received
-						</td>
-						<!-- if payment is not received on time -->
-						<td
-							class="table-data-spacing"
-							v-if="!repayment.repaid && repayment.delinquent"
-						>
-							<kv-material-icon
-								class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
-								:icon="mdiMinusCircle"
-							/>
-							Delinquent
-						</td>
-					</tr>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 				<p v-if="!isPartnerLoan && loanDisbursed">
 					<!-- eslint-disable-next-line max-len -->

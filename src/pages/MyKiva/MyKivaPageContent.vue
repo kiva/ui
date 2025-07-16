@@ -8,6 +8,12 @@
 	/>
 	<MyKivaHero v-if="!userInHomepage" @show-navigation="handleShowNavigation" />
 	<MyKivaContainer>
+		<MyKivaProfile
+			class="tw-mt-4"
+			:lender="lender"
+			:user-info="userInfo"
+			v-if="!userInHomepage"
+		/>
 		<h3 class="tw-mt-4">
 			<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
 		</h3>
@@ -16,13 +22,16 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<MyKivaProfile
-			class="tw-mt-4"
-			:lender="lender"
-			:user-info="userInfo"
-			:user-in-homepage="userInHomepage"
-		/>
-		<section v-if="isHeroEnabled" class="tw-mt-2">
+		<section v-if="isLendingStatsExp" class="tw-mt-4">
+			<LendingStats />
+		</section>
+		<section v-else-if="isHeroEnabled" class="tw-mt-4">
+			<h3
+				v-if="userInHomepage"
+				class="tw-mb-2"
+			>
+				Looking for your next step?
+			</h3>
 			<JourneyCardCarousel
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
@@ -42,29 +51,18 @@
 			/>
 		</section>
 		<section class="tw-my-4">
-			<div
-				:class="[
-					'tw-flex',
-					{ 'tw-flex-col': !showSingleArray },
-					{ 'tw-flex-col lg:tw-flex-row lg:tw-gap-3': showSingleArray }
-				]"
-			>
-				<MyKivaBorrowerCarousel
-					:loans="loans"
-					:total-loans="totalLoans"
-					show-menu
-				/>
-				<async-my-kiva-section @visible="fetchInitialUpdates">
-					<JournalUpdatesCarousel
-						v-if="!updatesLoading && visibleUpdates.length"
-						:updates="visibleUpdates"
-						:lender="lender"
-						:total-updates="totalUpdates"
-						:at-end-of-carousel="atEndOfCarousel"
-						@load-more-updates="loadMoreUpdates"
-					/>
-				</async-my-kiva-section>
-			</div>
+			<MyKivaBorrowerCarousel
+				:loans="loans"
+				:total-loans="totalLoans"
+				show-menu
+			/>
+			<JournalUpdatesCarousel
+				v-if="!updatesLoading && mergedUpdates.length"
+				:updates="mergedUpdates"
+				:lender="lender"
+				:total-updates="totalUpdates"
+				@load-more-updates="loadMoreUpdates"
+			/>
 		</section>
 		<section class="tw-my-4">
 			<LendingCategorySection
@@ -157,6 +155,7 @@ import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import LendingStats from '#src/components/MyKiva/LendingStats';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -164,6 +163,8 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+
+const IMPACT_THRESHOLD = 25;
 
 export default {
 	name: 'MyKivaPageContent',
@@ -184,6 +185,7 @@ export default {
 		MyKivaNavigation,
 		MyKivaProfile,
 		MyKivaStats,
+		LendingStats,
 	},
 	props: {
 		isHeroEnabled: {
@@ -225,6 +227,10 @@ export default {
 		transactions: {
 			type: Array,
 			default: () => [],
+		},
+		isLendingStatsExp: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -322,9 +328,6 @@ export default {
 		},
 		isSelectedJourneyComplete() {
 			return this.selectedBadgeData?.achievementData?.tiers?.length === this.selectedBadgeData?.level;
-		},
-		showSingleArray() {
-			return this.loans.length === 1 && this.loanUpdates.length === 1;
 		},
 		userInHomepage() {
 			return this.$router.currentRoute.value?.path === '/mykiva';
@@ -433,6 +436,8 @@ export default {
 		},
 		formatRepaymentCards(repayments) {
 			if (repayments.length === 0) return [];
+			const livesToImpact = Math.floor(this.userBalance / IMPACT_THRESHOLD) + 1;
+
 			if (repayments.length <= 5) {
 				return repayments.map((trx, idx) => ({
 					id: `repayment-${trx.effectiveTime}-${idx}`,
@@ -446,6 +451,7 @@ export default {
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
+					livesToImpact,
 				}));
 			}
 			const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
@@ -475,6 +481,7 @@ export default {
 				loan: null,
 				image: null,
 				repaymentImages: firstThreeImages,
+				livesToImpact,
 			}];
 		},
 		fetchUserUpdates(limit = this.updatesLimit) {
@@ -552,7 +559,7 @@ export default {
 			const posts = await Promise.all(
 				this.blogCategories.map(cat => this.getMostRecentBlogPost(cat))
 			);
-			this.blogCards.value = posts.map((post, idx) => (post ? {
+			this.blogCards = posts.map((post, idx) => (post ? {
 				...post,
 				category: post.category,
 				categorySlug: this.blogCategories[idx]

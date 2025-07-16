@@ -94,7 +94,7 @@ export default {
 		},
 		ctaLink: {
 			type: String,
-			default: '/get-started',
+			default: '/about/how',
 		},
 	},
 	data() {
