@@ -69,6 +69,7 @@
 						:loan-status="inPfp ? 'pfp' : 'fundraising'"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
+						:loading="isLoading"
 					/>
 				</template>
 			</div>
