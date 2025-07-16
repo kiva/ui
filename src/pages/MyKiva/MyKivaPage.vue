@@ -107,7 +107,12 @@ export default {
 
 				const transactions = this.userInfo?.transactions?.values?.filter(t => {
 					return t.type !== AVOID_TRANSACTION_LOANS_KEY;
-				});
+				}).reduce((unique, t) => {
+					if (!unique.some(tr => tr.loan.id === t.loan.id)) {
+						unique.push(t);
+					}
+					return unique;
+				}, []);
 
 				this.loans = transactions?.map(t => t.loan) ?? [];
 				this.totalLoans = result.my?.loans?.totalCount ?? 0;
