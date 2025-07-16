@@ -21,7 +21,7 @@
 					@share-loan-clicked="shareLoanClicked"
 				/>
 			</template>
-			<template v-if="showLoadMore || atEndOfCarousel" #view-more>
+			<template v-if="!updatesLoading" #view-more>
 				<div
 					:key="`view-more-card`"
 					class="tw-flex tw-items-center tw-h-full tw-pl-4"
@@ -114,7 +114,7 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
-	atEndOfCarousel: {
+	updatesLoading: {
 		type: Boolean,
 		default: false,
 	},

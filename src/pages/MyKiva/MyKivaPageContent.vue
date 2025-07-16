@@ -62,7 +62,7 @@
 					:updates="visibleUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
-					:at-end-of-carousel="atEndOfCarousel"
+					:updates-loading="updatesLoading"
 					@load-more-updates="loadMoreUpdates"
 				/>
 			</AsyncMyKivaSection>
@@ -316,10 +316,6 @@ export default {
 			return this.loans.length < 1
 				? 'Recommended for you'
 				: 'Recommended for you based on your lending history';
-		},
-
-		atEndOfCarousel() {
-			return this.displayedCount >= this.totalUpdates;
 		},
 		isSelectedJourneyComplete() {
 			return this.selectedBadgeData?.achievementData?.tiers?.length === this.selectedBadgeData?.level;
