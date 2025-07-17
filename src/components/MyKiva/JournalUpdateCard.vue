@@ -2,8 +2,8 @@
 	<div class="tw-rounded tw-bg-white tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
 		<div class="tw-flex tw-gap-1">
 			<!-- Show triple image for repayment summary cards -->
-			<div v-if="update.isRepayment && update.status === 'repayment-summary' && update.repaymentImages">
-				<MultiBorrowerImage :images="update.repaymentImages" />
+			<div v-if="update.isRepayment && update.status === 'repayment-summary' && repaymentImages.length">
+				<MultiBorrowerImage :images="repaymentImages" />
 			</div>
 			<!-- Show single image for other cards -->
 			<div
@@ -179,6 +179,15 @@ const uploadDate = computed(() => {
 	const date = update.value?.date ?? '';
 	const dateObj = !date ? new Date() : new Date(date);
 	return format(dateObj, 'LLL. d, yyyy');
+});
+
+const repaymentImages = computed(() => {
+	return update.value?.repaymentImages.reduce((unique, img) => {
+		if (!unique.some(imgoObj => imgoObj.hash === img.hash)) {
+			unique.push(img);
+		}
+		return unique;
+	}, []);
 });
 
 const openLightbox = () => {
