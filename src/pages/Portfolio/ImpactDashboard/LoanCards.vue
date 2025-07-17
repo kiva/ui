@@ -4,26 +4,33 @@
 		@visible="fetchAsyncData"
 	>
 		<BorrowerCarousel
-			:lender="lender"
-			:loans="loans"
-			:total-loans="totalLoans"
-			:show-menu="true"
-			:cards-number="7"
-			:show-carousel-tabs="true"
 			class="portfolio-borrowers-carousel"
+			:basket-items="basketItems"
+			:cards-number="7"
+			:is-adding="isAdding"
+			:lender="lender" :loans="loans"
+			:selected-loan="selectedLoan"
+			:show-carousel-tabs="true"
+			:total-loans="totalLoans"
+			@add-to-basket="addToBasket"
+			@go-to-link="goToLink"
+			@handle-selected-loan="handleSelectedLoan"
+			show-menu
 		/>
 	</AsyncPortfolioSection>
 </template>
 
-<script setup>
-import { ref, inject } from 'vue';
+<script>
 import { gql } from 'graphql-tag';
-import logReadQueryError from '#src/util/logReadQueryError';
-import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+
 import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+
+import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+import logReadQueryError from '#src/util/logReadQueryError';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-// Query to gather user loans
 const userQuery = gql`query userQuery {
 	my {
         id
@@ -101,25 +108,41 @@ const userQuery = gql`query userQuery {
     }
 }`;
 
-const apollo = inject('apollo');
-const loans = ref([]);
-const totalLoans = ref(0);
-const lender = ref({});
-
-const fetchAsyncData = () => {
-	apollo.query({ query: userQuery })
-		.then(result => {
-			const transactions = result.data?.my?.transactions?.values?.filter(t => {
-				return t.type !== AVOID_TRANSACTION_LOANS_KEY;
-			});
-			loans.value = transactions?.map(t => t.loan) ?? [];
-			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
-			lender.value = {
-				public: result.data?.my?.userAccount?.public ?? false,
-				inviterName: result.data?.my?.userAccount?.inviterName ?? null,
-			};
-		}).catch(e => {
-			logReadQueryError(e, 'Portfolio Page Loans userQuery');
-		});
+export default {
+	name: 'LoanCards',
+	components: {
+		AsyncPortfolioSection,
+		BorrowerCarousel
+	},
+	mixins: [borrowerProfileExpMixin],
+	inject: ['apollo'],
+	data() {
+		return {
+			loans: [],
+			totalLoans: 0,
+			lender: {}
+		};
+	},
+	async mounted() {
+		this.loadInitialBasketItems();
+	},
+	methods: {
+		fetchAsyncData() {
+			this.apollo.query({ query: userQuery })
+				.then(result => {
+					const transactions = result.data?.my?.transactions?.values?.filter(t => {
+						return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+					});
+					this.loans = transactions?.map(t => t.loan) ?? [];
+					this.totalLoans = result.data?.my?.loans?.totalCount ?? 0;
+					this.lender = {
+						public: result.data?.my?.userAccount?.public ?? false,
+						inviterName: result.data?.my?.userAccount?.inviterName ?? null,
+					};
+				}).catch(e => {
+					logReadQueryError(e, 'Portfolio Page Loans userQuery');
+				});
+		}
+	}
 };
 </script>

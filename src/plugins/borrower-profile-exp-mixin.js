@@ -4,7 +4,6 @@ import * as Sentry from '@sentry/vue';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
-
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
@@ -26,6 +25,9 @@ export default {
 		};
 	},
 	methods: {
+		handleSelectedLoan(loan) {
+			this.selectedLoan = loan;
+		},
 		formatAddedLoan() {
 			const addedLoan = {
 				id: this.selectedLoan.id,

@@ -323,9 +323,6 @@ export default {
 		},
 	},
 	methods: {
-		handleSelectedLoan(loan) {
-			this.selectedLoan = loan;
-		},
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
