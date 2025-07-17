@@ -23,11 +23,10 @@
 <script>
 import { gql } from 'graphql-tag';
 
-import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import logReadQueryError from '#src/util/logReadQueryError';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -120,7 +119,8 @@ export default {
 		return {
 			loans: [],
 			totalLoans: 0,
-			lender: {}
+			lender: {},
+			isLoading: true,
 		};
 	},
 	async mounted() {
@@ -131,7 +131,7 @@ export default {
 			this.apollo.query({ query: userQuery })
 				.then(result => {
 					const transactions = result.data?.my?.transactions?.values?.filter(t => {
-						return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+						return t.type !== TRANSACTION_LOANS_KEY;
 					});
 					this.loans = transactions?.map(t => t.loan) ?? [];
 					this.totalLoans = result.data?.my?.loans?.totalCount ?? 0;
@@ -139,6 +139,7 @@ export default {
 						public: result.data?.my?.userAccount?.public ?? false,
 						inviterName: result.data?.my?.userAccount?.inviterName ?? null,
 					};
+					this.isLoading = false;
 				}).catch(e => {
 					logReadQueryError(e, 'Portfolio Page Loans userQuery');
 				});

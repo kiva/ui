@@ -8,6 +8,12 @@
 	/>
 	<MyKivaHero v-if="!userInHomepage" @show-navigation="handleShowNavigation" />
 	<MyKivaContainer>
+		<MyKivaProfile
+			class="tw-mt-4"
+			:lender="lender"
+			:user-info="userInfo"
+			v-if="!userInHomepage"
+		/>
 		<h3 class="tw-mt-4">
 			<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
 		</h3>
@@ -16,13 +22,16 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<MyKivaProfile
-			class="tw-mt-4"
-			:lender="lender"
-			:user-info="userInfo"
-			:user-in-homepage="userInHomepage"
-		/>
-		<section v-if="isHeroEnabled" class="tw-mt-2">
+		<section v-if="isLendingStatsExp" class="tw-mt-4">
+			<LendingStats />
+		</section>
+		<section v-else-if="isHeroEnabled" class="tw-mt-4">
+			<h3
+				v-if="userInHomepage"
+				class="tw-mb-2"
+			>
+				Looking for your next step?
+			</h3>
 			<JourneyCardCarousel
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
@@ -53,13 +62,16 @@
 				@handle-selected-loan="handleSelectedLoan"
 				show-menu
 			/>
-			<JournalUpdatesCarousel
-				v-if="!updatesLoading && mergedUpdates.length"
-				:updates="mergedUpdates"
-				:lender="lender"
-				:total-updates="totalUpdates"
-				@load-more-updates="loadMoreUpdates"
-			/>
+			<AsyncMyKivaSection @visible="fetchInitialUpdates">
+				<JournalUpdatesCarousel
+					v-if="!updatesLoading && visibleUpdates.length"
+					:updates="visibleUpdates"
+					:lender="lender"
+					:total-updates="totalUpdates"
+					:updates-loading="updatesLoading"
+					@load-more-updates="loadMoreUpdates"
+				/>
+			</AsyncMyKivaSection>
 		</section>
 		<section class="tw-my-4">
 			<LendingCategorySection
@@ -144,6 +156,7 @@ import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
@@ -152,6 +165,7 @@ import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
+import LendingStats from '#src/components/MyKiva/LendingStats';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -160,10 +174,13 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
+const IMPACT_THRESHOLD = 25;
+
 export default {
 	name: 'MyKivaPageContent',
 	mixins: [borrowerProfileExpMixin],
 	components: {
+		AsyncMyKivaSection,
 		BadgesSection,
 		BadgeTile,
 		BorrowerSideSheetWrapper,
@@ -179,6 +196,7 @@ export default {
 		MyKivaNavigation,
 		MyKivaProfile,
 		MyKivaStats,
+		LendingStats,
 	},
 	props: {
 		isHeroEnabled: {
@@ -221,6 +239,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		isLendingStatsExp: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -250,7 +272,6 @@ export default {
 			getBadgeWithVisibleTiers,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
-			hasShownHiddenRepayments: false,
 			hideBottomGradient: false,
 			isEarnedSectionModal: false,
 			isFirstLoad: true,
@@ -266,7 +287,7 @@ export default {
 			showNavigation: false,
 			state: STATE_JOURNEY,
 			transactionsTypes: [],
-			updatesLimit: 3,
+			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
 		};
@@ -279,33 +300,20 @@ export default {
 			return this.transactions.filter(trx => trx.type === 'loan_repayment');
 		},
 		repaymentCards() {
-			return this.formatRepaymentCards(this.repaymentsRaw);
-		},
-		hiddenRepayments() {
-			return this.repaymentCards.slice(3);
+			const cards = this.formatRepaymentCards(this.repaymentsRaw);
+			return Array.isArray(cards) ? cards : [];
 		},
 		mergedUpdates() {
-			const repayments = this.repaymentCards;
-			const updates = this.loanUpdates;
-			if (this.isFirstLoad) {
-				return [...repayments, ...updates]
-					.sort((a, b) => new Date(b.date) - new Date(a.date))
-					.slice(0, this.displayedCount);
-			}
-			if (!this.hasShownHiddenRepayments && this.hiddenRepayments.length > 0) {
-				const hidden = this.hiddenRepayments;
-				const updatesToShow = updates.slice(0, 3 - hidden.length);
-				return [...hidden, ...updatesToShow]
-					.sort((a, b) => new Date(b.date) - new Date(a.date));
-			}
-			const repaymentsAndUpdates = [...this.repaymentCards, ...this.loanUpdates];
-			return repaymentsAndUpdates
-				.sort((a, b) => new Date(b.date) - new Date(a.date))
-				.slice(0, this.displayedCount);
+			const repayments = Array.isArray(this.repaymentCards) ? this.repaymentCards : [];
+			const updates = Array.isArray(this.loanUpdates) ? this.loanUpdates : [];
+			const merged = [...repayments, ...updates]
+				.sort((a, b) => new Date(b.date) - new Date(a.date));
+			return merged;
 		},
 		totalUpdates() {
-			return this.realTotalUpdates + this.repaymentCards.length;
+			return this.mergedUpdates?.length || 0;
 		},
+
 		allBadgesCompleted() {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
 			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
@@ -321,6 +329,11 @@ export default {
 		userInHomepage() {
 			return this.$router.currentRoute.value?.path === '/mykiva';
 		},
+		visibleUpdates() {
+			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
+			return updates;
+		},
+
 	},
 	methods: {
 		handleShowNavigation() {
@@ -375,6 +388,7 @@ export default {
 			}
 			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value));
 		},
+
 		handleBadgeJourneyLevelClicked(payload) {
 			const { id, challengeName, tier: clickedTier } = payload;
 			this.$kvTrackEvent(
@@ -425,6 +439,8 @@ export default {
 		},
 		formatRepaymentCards(repayments) {
 			if (repayments.length === 0) return [];
+			const livesToImpact = Math.floor(this.userBalance / IMPACT_THRESHOLD) + 1;
+
 			if (repayments.length <= 5) {
 				return repayments.map((trx, idx) => ({
 					id: `repayment-${trx.effectiveTime}-${idx}`,
@@ -438,6 +454,7 @@ export default {
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
+					livesToImpact,
 				}));
 			}
 			const totalAmount = repayments.reduce((sum, trx) => sum + Number(trx.amount), 0);
@@ -467,12 +484,15 @@ export default {
 				loan: null,
 				image: null,
 				repaymentImages: firstThreeImages,
+				livesToImpact,
 			}];
 		},
-		fetchUserUpdates(limit = this.updatesLimit) {
+		fetchUserUpdates() {
+			const limit = this.updatesLimit;
 			const oneMonthBefore = new Date();
 			oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 			const timestamp = oneMonthBefore.getTime();
+
 			return this.apollo.query({
 				query: userUpdatesQuery,
 				variables: {
@@ -482,18 +502,23 @@ export default {
 					trxOffset: 0,
 					since: timestamp,
 				}
-			}).then(result => {
-				this.transactionsTypes = result.data?.recentCheckouts?.values?.filter(t => t?.receipt?.manifest);
-				const formattedTransactions = this.getFormattedTransactions();
-				const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
-				this.realTotalUpdates = result.data?.my?.updates?.totalCount ?? 0;
-				// Always replace the array, never concat
-				this.loanUpdates = updates;
-			}).finally(() => {
-				this.updatesLoading = false;
-			}).catch(e => {
-				logReadQueryError(e, 'MyKivaPage updatesQuery');
-			});
+			})
+				.then(result => {
+					this.transactionsTypes = result.data?.recentCheckouts?.values
+						?.filter(t => t?.receipt?.manifest);
+					const formattedTransactions = this.getFormattedTransactions();
+					const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
+
+					this.realTotalUpdates = result.data?.my?.updates?.totalCount ?? 0;
+
+					this.loanUpdates = updates;
+				})
+				.finally(() => {
+					this.updatesLoading = false;
+				})
+				.catch(e => {
+					logReadQueryError(e, 'MyKivaPage updatesQuery');
+				});
 		},
 		async fetchRecommendedLoans() {
 			const userId = parseInt(this.userInfo?.id, 10) || null;
@@ -509,16 +534,13 @@ export default {
 		},
 		async fetchInitialUpdates() {
 			this.displayedCount = 3;
-			this.updatesLimit = this.displayedCount;
+			this.updatesLimit = 15;
 			this.updatesOffset = 0;
 			await this.fetchUserUpdates(this.updatesLimit);
 		},
 		async loadMoreUpdates() {
 			this.isFirstLoad = false;
-			this.displayedCount += 3; // Increase by 3 each time
-			this.updatesLimit = this.displayedCount;
-			this.updatesOffset = 0; // Always fetch from the beginning
-			await this.fetchUserUpdates(this.updatesLimit);
+			this.displayedCount += 3;
 		},
 		updateJourney(journey) {
 			this.selectedJourney = journey;
@@ -563,7 +585,6 @@ export default {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
 		this.fetchBlogCards();
-		await this.fetchInitialUpdates();
 		this.fetchAchievementData(this.apollo);
 		this.fetchContentfulData(this.apollo);
 		this.fetchRecommendedLoans();

@@ -164,6 +164,7 @@ const FLSS_ONGOING_EXP_KEY = 'EXP-FLSS-Ongoing-Sitewide-3';
 const LOAN_RECOMMENDATIONS_EXP_KEY = 'lh_loan_recommendations';
 const QUICK_FILTERS_MOBILE_EXP_KEY = 'lh_qf_mobile_version';
 const THREE_LOANS_RECOMMENDED_ROW_EXP_KEY = 'lh_three_loans_recommended_row';
+const COMBO_PAGE_REDIRECT_EXP_KEY = 'lbc_combo_redirect';
 
 export default {
 	name: 'LoanFinding',
@@ -219,10 +220,20 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: LOAN_RECOMMENDATIONS_EXP_KEY }
 				}),
-				client.query({ query: userInfoQuery })
-			]).then(([recommendationsExp, userInfo]) => {
+				client.query({ query: userInfoQuery }),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: COMBO_PAGE_REDIRECT_EXP_KEY }
+				}),
+			]).then(([recommendationsExp, userInfo, redirectExp]) => {
 				const useRecommendations = recommendationsExp?.data?.experiment?.version === 'b';
 				const userId = userInfo?.data?.my?.userAccount?.id || null;
+				const isRedirectExp = redirectExp?.data?.experiment?.version === 'b';
+
+				// Redirect to /lend-category-beta if redirect experiment is active
+				if (isRedirectExp) {
+					return Promise.reject({ path: '/lend-category-beta' });
+				}
 
 				return Promise.all([
 					client.query({
@@ -606,6 +617,15 @@ export default {
 				this.showSideSheet = true;
 			}
 		}
+
+		// Track experiment version for combo page redirect
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'Lending',
+			COMBO_PAGE_REDIRECT_EXP_KEY,
+			'EXP-MP-1758-Jul2025',
+		);
 	},
 	beforeUnmount() {
 		this.destroySpotlightViewportObserver();

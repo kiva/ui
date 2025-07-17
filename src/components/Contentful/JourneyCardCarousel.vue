@@ -107,7 +107,7 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvButton } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
@@ -194,7 +194,7 @@ const orderedSlides = computed(() => {
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
-		return t.type !== AVOID_TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
 	});
 
 	if (transactionLoans?.length) {

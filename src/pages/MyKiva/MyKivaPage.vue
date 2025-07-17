@@ -11,6 +11,7 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
+			:is-lending-stats-exp="isLendingStatsExp"
 		/>
 	</www-page>
 </template>
@@ -18,14 +19,18 @@
 <script>
 import { readBoolSetting } from '#src/util/settingsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY, AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY, TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+
+const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -49,6 +54,8 @@ export default {
 			heroTieredAchievements: [],
 			lendingStats: {},
 			transactions: [],
+			heroSlides: [],
+			isLendingStatsExp: false,
 		};
 	},
 	apollo: {
@@ -57,11 +64,15 @@ export default {
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
 
-				if (isHeroEnabled) {
+				const myKivaStatsExp = result[3];
+				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
+
+				if (isHeroEnabled && !isMyKivaStatsExp) {
 					return Promise.all([
 						client.query({
 							query: contentfulEntriesQuery,
@@ -95,7 +106,7 @@ export default {
 				};
 
 				const transactions = this.userInfo?.transactions?.values?.filter(t => {
-					return t.type !== AVOID_TRANSACTION_LOANS_KEY;
+					return t.type === TRANSACTION_LOANS_KEY;
 				});
 
 				this.loans = transactions?.map(t => t.loan) ?? [];
@@ -123,7 +134,17 @@ export default {
 			});
 			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
 
-			if (this.isHeroEnabled) {
+			const lendingStatsExpData = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				LENDING_STATS_EXP_KEY,
+				'EXP-MP-1729-Jul2025'
+			);
+
+			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
+
+			if (this.isHeroEnabled && !this.isLendingStatsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }

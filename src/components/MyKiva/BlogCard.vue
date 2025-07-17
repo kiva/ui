@@ -1,6 +1,10 @@
 <template>
 	<div
-		class="blog-card tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center tw-bg-white"
+		class="blog-card tw-w-full tw-relative tw-rounded tw-bg-cover
+				tw-bg-center tw-bg-white tw-block focus:tw-outline-none cursor-pointer hover:tw-shadow-md"
+		@click="handleCardClick"
+		role="link"
+		@keydown.enter="handleCardClick"
 	>
 		<div
 			class="tw-bg-cover tw-bg-center tw-rounded-t"
@@ -21,13 +25,9 @@
 
 		<div class="tw-px-2 tw-pt-1.5 tw-flex-1 tw-flex tw-flex-col">
 			<p class="tw-font-medium tw-leading-snug tw-line-clamp-3 tw-text-black">
-				<a
-					:href="`/blog/${slug}`"
-					class="tw-text-black tw-font-bold tw-no-underline hover:tw-underline "
-					@click="emit('track', { title, slug, category })"
-				>
+				<span class="blog-card-title tw-text-black tw-font-bold tw-no-underline">
 					{{ title }}
-				</a>
+				</span>
 			</p>
 		</div>
 		<div class="tw-absolute tw-left-0 tw-bottom-0 tw-pl-2 tw-pb-2 tw-text-gray-500 tw-text-small">
@@ -75,6 +75,11 @@ const formattedDate = computed(() => {
 		year: 'numeric',
 	});
 });
+
+function handleCardClick() {
+	emit('track', `${props.category.replace(/\./g, '').replace(/\s+/g, '-')}`);
+	window.open(`/blog/${props.slug}`, '_blank', 'noopener');
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -83,10 +88,19 @@ const formattedDate = computed(() => {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
 	height: 420px;
 	padding-bottom: 1rem;
+	cursor: pointer;
 
 	@screen md {
 		height: 380px;
 	}
+}
+
+.blog-card-title {
+	transition: text-decoration 0.2s;
+}
+
+.blog-card:hover .blog-card-title {
+	text-decoration: underline;
 }
 
 </style>

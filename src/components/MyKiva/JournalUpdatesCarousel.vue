@@ -21,17 +21,27 @@
 					@share-loan-clicked="shareLoanClicked"
 				/>
 			</template>
-			<template v-if="showLoadMore" #view-more>
+			<template v-if="!updatesLoading" #view-more>
 				<div
 					:key="`view-more-card`"
 					class="tw-flex tw-items-center tw-h-full tw-pl-4"
 				>
 					<kv-button
+						v-if="showLoadMore"
 						class="tw-mt-2 tw-whitespace-nowrap"
 						variant="secondary"
 						@click="loadMoreUpdates"
 					>
 						Load more
+					</kv-button>
+					<kv-button
+						v-else
+						class="tw-mt-2 tw-whitespace-nowrap"
+						variant="secondary"
+						:to="'/portfolio'"
+						tag="router-link"
+					>
+						View portfolio
 					</kv-button>
 				</div>
 			</template>
@@ -104,6 +114,11 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	updatesLoading: {
+		type: Boolean,
+		default: false,
+	},
+
 });
 
 const cookieStore = inject('cookieStore');

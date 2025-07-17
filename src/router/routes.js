@@ -117,30 +117,7 @@ export default [
 	},
 	{
 		path: '/get-started',
-		component: () => import('#src/pages/GetStarted/GetStarted'),
-		children: [
-			{
-				path: '',
-				component: () => import('#src/pages/GetStarted/GetStartedCauses'),
-				meta: {
-					excludeFromStaticSitemap: true,
-				}
-			},
-			{
-				path: 'places',
-				component: () => import('#src/pages/GetStarted/GetStartedPlaces'),
-				meta: {
-					excludeFromStaticSitemap: true,
-				}
-			},
-			{
-				path: 'results',
-				component: () => import('#src/pages/GetStarted/GetStartedResults'),
-				meta: {
-					excludeFromStaticSitemap: true,
-				}
-			},
-		]
+		redirect: '/',
 	},
 	{
 
