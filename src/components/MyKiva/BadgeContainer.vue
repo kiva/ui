@@ -6,7 +6,6 @@
 			'tw-cursor-pointer': isLocked,
 			'tw-overflow-hidden': showShine,
 		}"
-		@click="handleBadgeClick"
 	>
 		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
@@ -85,7 +84,6 @@ const isInProgress = computed(() => {
 
 const isLocked = computed(() => props.status === BADGE_LOCKED);
 
-const animateLock = ref(false);
 const firstShine = ref(null);
 const secondShine = ref(null);
 
@@ -103,13 +101,6 @@ const solidComponent = computed(() => {
 			return SolidCircle;
 	}
 });
-
-const handleBadgeClick = () => {
-	if (isLocked.value) {
-		animateLock.value = true;
-		setTimeout(() => { animateLock.value = false; }, 1600);
-	}
-};
 
 const handleShine = () => {
 	if (firstShine.value && secondShine.value) {
@@ -181,10 +172,6 @@ onMounted(() => {
 	55%, 100% {
 		transform: rotateZ(0);
 	}
-}
-
-.animate-wiggle {
-	animation: wiggle 2s linear;
 }
 
 /** Shine */
