@@ -1,6 +1,6 @@
 <template>
 	<article>
-		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
+		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8 tw-py-2 md:tw-py-3 lg:tw-py-5">
 			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '1.6rem'}" />
 			<kv-loading-placeholder
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
@@ -10,7 +10,10 @@
 		<h2 class="tw-sr-only">
 			Loan Comments
 		</h2>
-		<div v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5">
+		<div
+			v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
+			:key="`comments-${loanId}-${disableCache}`"
+		>
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
 				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`] :key="index">
 					<div>
@@ -239,6 +242,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		disableCache: {
+			type: Boolean,
+			default: false
+		}
 	},
 	mixins: [
 		clickOutside,
@@ -353,6 +360,7 @@ export default {
 				variables: {
 					loanId: this.loanId
 				},
+				fetchPolicy: this.disableCache ? 'network-only' : 'cache-first'
 			}).then(result => {
 				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
 				this.loading = false;

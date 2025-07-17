@@ -92,7 +92,8 @@
 		</div>
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
-			:loan="commentLoanData"
+			:loan="selectedLoan"
+			:is-visible="isVisible"
 			@comment-modal-closed="handleCloseCommentModal"
 		/>
 		<!-- Share Button -->
@@ -111,9 +112,15 @@
 			@lightbox-closed="closeShareModal"
 		/>
 		<BorrowerSideSheetWrapper
-			:show-side-sheet="showSideSheet"
-			:selected-loan-id="selectedLoanId"
+			:basket-items="basketItems"
+			:disable-cash="disableCache"
+			:is-adding="isAdding"
+			:kv-track-function="$kvTrackEvent"
+			:selected-loan-id="selectedLoan?.id"
 			:show-next-steps="true"
+			:show-side-sheet="showSideSheet"
+			@add-to-basket="addToBasket"
+			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</div>
@@ -126,13 +133,14 @@ import {
 	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton
 } from '@kiva/kv-components';
 import {
-	defineProps,
-	ref,
 	computed,
-	toRefs,
+	defineEmits,
+	defineProps,
 	inject,
-	onMounted,
 	onBeforeUnmount,
+	onMounted,
+	ref,
+	toRefs,
 	watch,
 } from 'vue';
 import {
@@ -151,6 +159,12 @@ import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSi
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
+
+const emit = defineEmits([
+	'add-to-basket',
+	'go-to-link',
+	'handle-selected-loan'
+]);
 
 const props = defineProps({
 	/**
@@ -181,6 +195,18 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	basketItems: {
+		type: Array,
+		default: () => []
+	},
+	isAdding: {
+		type: Boolean,
+		default: false
+	},
+	selectedLoan: {
+		type: Object,
+		default: () => ({})
+	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -188,22 +214,18 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { loans, totalLoans } = toRefs(props);
-const tabs = ref(null);
-const carousel = ref(null);
-const windowWidth = ref(0);
-const openWhatIsNext = ref(false);
-const lastVisitedLoanIdx = ref(0);
-const sharedLoan = ref(null);
-const commentLoanData = ref({
-	loanId: 0,
-	borrowerName: '',
-	visible: false,
-});
-const shareLoan = ref(false);
-const previousLastIndex = ref(0);
 
+const carousel = ref(null);
+const disableCache = ref(false);
+const isVisible = ref(false);
+const lastVisitedLoanIdx = ref(0);
+const openWhatIsNext = ref(false);
+const previousLastIndex = ref(0);
+const sharedLoan = ref(null);
+const shareLoan = ref(false);
 const showSideSheet = ref(false);
-const selectedLoanId = ref(null);
+const tabs = ref(null);
+const windowWidth = ref(0);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -239,6 +261,14 @@ const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
 
+const addToBasket = payload => {
+	emit('add-to-basket', payload);
+};
+
+const goToLink = () => {
+	emit('go-to-link');
+};
+
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
 };
@@ -253,10 +283,8 @@ const onInteractCarousel = interaction => {
 };
 
 const openCommentModal = payload => {
-	commentLoanData.value = {
-		...payload,
-		visible: true
-	};
+	emit('handle-selected-loan', payload?.loan ?? null);
+	isVisible.value = true;
 };
 
 const openShareModal = payload => {
@@ -270,9 +298,9 @@ const closeShareModal = () => {
 };
 
 const handleCloseCommentModal = () => {
-	selectedLoanId.value = commentLoanData.value?.loanId ?? null;
-	commentLoanData.value.visible = false;
+	isVisible.value = false;
 	showSideSheet.value = true;
+	disableCache.value = true;
 };
 
 const getBorrowerName = loan => {
@@ -288,7 +316,6 @@ const handleChange = event => {
 	if (lastVisitedLoanIdx.value !== event) {
 		$kvTrackEvent('portfolio', 'click', 'borrower-tab-toggle');
 	}
-
 	if (event < filteredLoans.value.length) {
 		carousel.value.goToSlide(event);
 		lastVisitedLoanIdx.value = event;
@@ -303,12 +330,13 @@ const loadMore = () => {
 };
 
 const handleCloseSideSheet = () => {
+	emit('handle-selected-loan', undefined);
 	showSideSheet.value = false;
-	selectedLoanId.value = null;
+	disableCache.value = false;
 };
 
 const showLoanDetails = payload => {
-	selectedLoanId.value = payload?.loan?.id ?? null;
+	emit('handle-selected-loan', payload?.loan);
 	showSideSheet.value = true;
 };
 
@@ -320,7 +348,6 @@ watch(() => loans.value, () => {
 
 onMounted(() => {
 	window.addEventListener('resize', throttledResize);
-
 	handleResize();
 });
 

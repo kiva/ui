@@ -43,8 +43,14 @@
 		</section>
 		<section class="tw-my-4">
 			<MyKivaBorrowerCarousel
+				:basket-items="basketItems"
+				:is-adding="isAdding"
 				:loans="loans"
+				:selected-loan="selectedLoan"
 				:total-loans="totalLoans"
+				@add-to-basket="addToBasket"
+				@go-to-link="goToLink"
+				@handle-selected-loan="handleSelectedLoan"
 				show-menu
 			/>
 			<JournalUpdatesCarousel
@@ -58,7 +64,7 @@
 		<section class="tw-my-4">
 			<LendingCategorySection
 				id="recommended-loans"
-				:title="recommendeLoansTitle"
+				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
 				:is-bp-modal-enabled="isBpModalEnabled"
@@ -304,7 +310,7 @@ export default {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
 			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 		},
-		recommendeLoansTitle() {
+		recommendedLoansTitle() {
 			return this.loans.length < 1
 				? 'Recommended for you'
 				: 'Recommended for you based on your lending history';
@@ -317,6 +323,9 @@ export default {
 		},
 	},
 	methods: {
+		handleSelectedLoan(loan) {
+			this.selectedLoan = loan;
+		},
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
@@ -546,10 +555,10 @@ export default {
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
-			this.selectedLoan = undefined;
+			this.handleSelectedLoan(undefined);
 		},
 		showLoanDetails(loan) {
-			this.selectedLoan = loan;
+			this.handleSelectedLoan(loan);
 			this.showBPSideSheet = true;
 		}
 	},

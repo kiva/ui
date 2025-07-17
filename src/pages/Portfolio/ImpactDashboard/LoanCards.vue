@@ -7,7 +7,6 @@
 			:lender="lender"
 			:loans="loans"
 			:total-loans="totalLoans"
-			:is-loading="isLoading"
 			:show-menu="true"
 			:cards-number="7"
 			:show-carousel-tabs="true"
@@ -103,9 +102,7 @@ const userQuery = gql`query userQuery {
 }`;
 
 const apollo = inject('apollo');
-
 const loans = ref([]);
-const isLoading = ref(true);
 const totalLoans = ref(0);
 const lender = ref({});
 
@@ -115,14 +112,12 @@ const fetchAsyncData = () => {
 			const transactions = result.data?.my?.transactions?.values?.filter(t => {
 				return t.type !== AVOID_TRANSACTION_LOANS_KEY;
 			});
-
 			loans.value = transactions?.map(t => t.loan) ?? [];
 			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
 			lender.value = {
 				public: result.data?.my?.userAccount?.public ?? false,
 				inviterName: result.data?.my?.userAccount?.inviterName ?? null,
 			};
-			isLoading.value = false;
 		}).catch(e => {
 			logReadQueryError(e, 'Portfolio Page Loans userQuery');
 		});
