@@ -54,7 +54,7 @@
 import { ref } from 'vue';
 import useBadgeData from '#src/composables/useBadgeData';
 
-const { getBadgeWithVisibleTiers, getLevelCaption } = useBadgeData();
+const { getLevelCaption } = useBadgeData();
 
 defineProps({
 	badge: {
@@ -68,7 +68,7 @@ defineEmits(['click']);
 const mouseOver = ref(false);
 
 const getBadgeTitle = badge => {
-	const tiers = getBadgeWithVisibleTiers(badge).achievementData.tiers.length;
+	const tiers = badge.achievementData.tiers.length;
 	const levelCaption = getLevelCaption(badge);
 
 	// eslint-disable-next-line max-len

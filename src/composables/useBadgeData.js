@@ -342,27 +342,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Gets the badge data visible tiers to ensure the user doesn't get overwhelmed
-	 *
-	 * @param combinedBadgeData The combined data for the badge
-	 * @returns The badge data with tiers to show to the user
-	 */
-	const getBadgeWithVisibleTiers = combinedBadgeData => {
-		const currentTier = getActiveTierData(combinedBadgeData);
-		const visibleData = JSON.parse(JSON.stringify(combinedBadgeData));
-
-		if (currentTier.level < 4) {
-			visibleData.contentfulData.splice(3);
-			visibleData.achievementData.tiers.splice(3);
-		} else if (currentTier.level > 3 && currentTier.level < 6) {
-			visibleData.contentfulData.splice(5);
-			visibleData.achievementData.tiers.splice(5);
-		}
-
-		return visibleData;
-	};
-
-	/**
 	 * Get the badge key and check if it has a valid format
 	 *
 	 * @param badgeKey The badge key to validate
@@ -669,7 +648,6 @@ export default function useBadgeData() {
 		fetchContentfulData,
 		fetchLoanIdData,
 		getActiveTierData,
-		getBadgeWithVisibleTiers,
 		getCompletedBadges,
 		getContentfulLevelData,
 		getEarnedBadgeExplanation,

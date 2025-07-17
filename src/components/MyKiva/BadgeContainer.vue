@@ -20,17 +20,6 @@
 				:src="solidComponent"
 			>
 		</div>
-		<div
-			v-if="isLocked"
-			class="tw-absolute tw-flex"
-			:class="{ 'animate-wiggle': animateLock }"
-			style="left: calc(50% - 14px); top: calc(48% - 14px)"
-		>
-			<KvMaterialIcon
-				class="tw-w-3.5 tw-h-3.5 tw-text-black"
-				:icon="mdiLock"
-			/>
-		</div>
 	</div>
 </template>
 
@@ -54,8 +43,6 @@ import {
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
 } from '#src/composables/useBadgeModal';
-import { mdiLock } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
 import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg?url';
