@@ -60,6 +60,7 @@
 				@add-to-basket="addToBasket"
 				@go-to-link="goToLink"
 				@handle-selected-loan="handleSelectedLoan"
+				@mouse-enter-status-card="handleStatusCardMouseEnter"
 				show-menu
 			/>
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
@@ -574,10 +575,13 @@ export default {
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
-			this.handleSelectedLoan(undefined);
+			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(loan) {
-			this.handleSelectedLoan(loan);
+		handleStatusCardMouseEnter(payload) {
+			this.handleSelectedLoan({ loanId: payload });
+		},
+		showLoanDetails(loanId) {
+			this.handleSelectedLoan({ loanId });
 			this.showBPSideSheet = true;
 		}
 	},

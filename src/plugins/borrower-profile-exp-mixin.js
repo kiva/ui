@@ -1,9 +1,9 @@
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
-import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
@@ -25,8 +25,21 @@ export default {
 		};
 	},
 	methods: {
-		handleSelectedLoan(loan) {
-			this.selectedLoan = loan;
+		handleSelectedLoan({ loanId, fetchPolicy }) {
+			if (!loanId) {
+				this.selectedLoan = undefined;
+				return;
+			}
+			this.selectedLoan = { id: loanId }; // pre-load id before GraphQL query to speed up rendering
+			return this.apollo.query({
+				query: borrowerProfileSideSheetQuery,
+				variables: { loanId },
+				fetchPolicy: fetchPolicy ?? 'cache-first',
+			}).then(({ data }) => {
+				this.selectedLoan = data?.lend?.loan;
+			}).catch(e => {
+				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
+			});
 		},
 		formatAddedLoan() {
 			const addedLoan = {

@@ -233,6 +233,7 @@ export default {
 		KvRadio,
 		WhySpecial,
 	},
+	mixins: [clickOutside],
 	props: {
 		loanId: {
 			type: Number,
@@ -247,9 +248,6 @@ export default {
 			default: false
 		}
 	},
-	mixins: [
-		clickOutside,
-	],
 	data() {
 		return {
 			kivaKUrl,
@@ -301,6 +299,20 @@ export default {
 			});
 		},
 	},
+	watch: {
+		loanId(newId, oldId) {
+			if (newId !== oldId && newId) this.loadData();
+		}
+	},
+	mounted() {
+		this.createObserver();
+		window.addEventListener('resize', this.throttledResize);
+		this.determineIfMobile();
+	},
+	beforeUnmount() {
+		this.destroyObserver();
+		window.removeEventListener('resize', this.throttledResize);
+	},
 	methods: {
 		createObserver() {
 			// Watch for this element being close to entering the viewport
@@ -328,6 +340,7 @@ export default {
 			}
 		},
 		loadData() {
+			if (!this.loanId) return;
 			this.apollo.query({
 				query: gql`query loanComments($loanId: Int!) {
 					lend {
@@ -433,15 +446,6 @@ export default {
 			this.isCommentLightboxVisible = true;
 			this.selectedCommentBody = commentBody;
 		},
-	},
-	mounted() {
-		this.createObserver();
-		window.addEventListener('resize', this.throttledResize);
-		this.determineIfMobile();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
-		window.removeEventListener('resize', this.throttledResize);
-	},
+	}
 };
 </script>

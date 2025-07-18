@@ -156,12 +156,10 @@ const menuOptions = computed(() => {
 		id: SHARE_ID,
 		label: 'Share',
 	}];
-	if (isFundraising.value) {
-		options.unshift({
-			id: COMMENT_ID,
-			label: 'Leave a comment',
-		});
-	}
+	options.unshift({
+		id: COMMENT_ID,
+		label: 'Leave a comment',
+	});
 	return options;
 });
 

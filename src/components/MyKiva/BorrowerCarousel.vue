@@ -71,6 +71,7 @@
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
 							@open-side-sheet="showLoanDetails"
+							@mouseenter="$emit('mouse-enter-status-card', loan?.id)"
 						/>
 					</template>
 					<template v-if="totalLoans > filteredLoans.length" #see-all>
@@ -100,8 +101,8 @@
 		<ShareButton
 			v-if="sharedLoan"
 			class="tw-block !tw-w-auto"
-			:loan="sharedLoan"
 			variant="hidden"
+			:loan="sharedLoan"
 			:lender="lender"
 			:campaign="SHARE_CAMPAIGN"
 			:in-pfp="inPfp"
@@ -163,7 +164,8 @@ const SHARE_CAMPAIGN = 'social_share_portfolio';
 const emit = defineEmits([
 	'add-to-basket',
 	'go-to-link',
-	'handle-selected-loan'
+	'handle-selected-loan',
+	'mouse-enter-status-card'
 ]);
 
 const props = defineProps({
@@ -283,7 +285,7 @@ const onInteractCarousel = interaction => {
 };
 
 const openCommentModal = payload => {
-	emit('handle-selected-loan', payload?.loan ?? null);
+	emit('handle-selected-loan', { loanId: payload?.loan?.id });
 	isVisible.value = true;
 };
 
@@ -330,13 +332,13 @@ const loadMore = () => {
 };
 
 const handleCloseSideSheet = () => {
-	emit('handle-selected-loan', undefined);
+	emit('handle-selected-loan', { loanId: undefined });
 	showSideSheet.value = false;
 	disableCache.value = false;
 };
 
 const showLoanDetails = payload => {
-	emit('handle-selected-loan', payload?.loan);
+	emit('handle-selected-loan', { loanId: payload?.loan?.id });
 	showSideSheet.value = true;
 };
 
