@@ -174,6 +174,7 @@ const blogCategories = [
 	'refugees',
 	'climate-change'
 ];
+const repaymentOptions = ['loan_repayment', 'direct_loan_repayment'];
 
 export default {
 	name: 'MyKivaPageContent',
@@ -286,7 +287,7 @@ export default {
 			return this.userInfo.userAccount?.balance ?? '';
 		},
 		repaymentsRaw() {
-			return this.transactions.filter(trx => trx.type === 'loan_repayment');
+			return this.transactions.filter(trx => repaymentOptions.includes(trx.type));
 		},
 		repaymentCards() {
 			const cards = this.formatRepaymentCards(this.repaymentsRaw);
