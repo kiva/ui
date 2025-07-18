@@ -120,6 +120,15 @@ export default [
 		redirect: '/',
 	},
 	{
+		path: '/gfm-beta',
+		component: () => import('#src/pages/GivingFunds/GivingFundsManagementPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+		status: 'dev',
+	},
+	{
 
 		path: '/instant-donation-thanks/:result',
 		component: () => import('#src/pages/InstantActions/InstantDonationThanks'),
