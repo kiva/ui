@@ -30,7 +30,11 @@
 								v-for="(fund, i) in activeFundraisers"
 								:key="`active-fundraiser-${i}`"
 							>
-								You hava active fundraiser for <b>{{ fund.name }}</b> <a :href="`/gf-beta/${fund.id}`" target="_blank">View</a>
+								You hava active fundraiser for <b>{{ fund.name }}</b> <a
+									:href="`/gf-beta/${fund.id}`"
+									target="_blank"
+									v-kv-track-event="['giving-funds', 'click', 'View active fundraiser']"
+								>View</a>
 							</div>
 						</div>
 					</div>
@@ -61,6 +65,7 @@
 									:href="`/gf-beta/${fund.id}`"
 									target="_blank"
 									variant="secondary"
+									v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
 								>
 									View Fund
 								</KvButton>
@@ -115,7 +120,6 @@ const activeFundraisers = computed(() => {
 });
 
 const fetchGivingFundData = async () => {
-	console.log('Fetching giving fund data...');
 	try {
 		const response = await apollo.query({
 			query: myGivingFundsQuery,
