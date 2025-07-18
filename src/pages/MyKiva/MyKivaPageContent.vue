@@ -141,8 +141,6 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router';
-
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
@@ -176,6 +174,14 @@ import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 const IMPACT_THRESHOLD = 25;
+const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
+const blogCategories = [
+	'gender-equality',
+	'supporting-marginalized-us-entrepreneurs',
+	'refugees',
+	'climate-change'
+];
+const repaymentOptions = ['loan_repayment', 'direct_loan_repayment'];
 
 export default {
 	name: 'MyKivaPageContent',
@@ -246,22 +252,14 @@ export default {
 		},
 	},
 	data() {
-		const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
-		const blogCategories = [
-			'gender-equality',
-			'supporting-marginalized-us-entrepreneurs',
-			'refugees',
-			'climate-change'
-		];
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
-		const { getBadgeWithVisibleTiers } = useBadgeData();
-		const router = useRouter();
 		const {
 			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
+
 		return {
 			badgeData,
 			blogCards: [],
@@ -270,7 +268,6 @@ export default {
 			displayedCount: 3,
 			fetchAchievementData,
 			fetchContentfulData,
-			getBadgeWithVisibleTiers,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
 			hideBottomGradient: false,
@@ -280,7 +277,6 @@ export default {
 			moreWaysToHelpSlides: [],
 			realTotalUpdates: 0,
 			recommendedLoans: Array(6).fill({ id: 0 }),
-			router,
 			selectedBadgeData: null,
 			selectedJourney: '',
 			showBPSideSheet: false,
@@ -298,7 +294,7 @@ export default {
 			return this.userInfo.userAccount?.balance ?? '';
 		},
 		repaymentsRaw() {
-			return this.transactions.filter(trx => trx.type === 'loan_repayment');
+			return this.transactions.filter(trx => repaymentOptions.includes(trx.type));
 		},
 		repaymentCards() {
 			const cards = this.formatRepaymentCards(this.repaymentsRaw);
@@ -366,8 +362,8 @@ export default {
 			this.hideBottomGradient = false;
 		},
 		handleContinueJourneyClicked() {
-			const badgeWithVisibleTiers = this.getBadgeWithVisibleTiers(this.selectedBadgeData);
-			const { id, challengeName } = badgeWithVisibleTiers;
+			const { id, challengeName } = this.selectedBadgeData;
+
 			let eventLabel = `${challengeName} Continue Journey Clicked`;
 			if (this.allBadgesCompleted) {
 				eventLabel = `${challengeName} See all of your impact stats`;

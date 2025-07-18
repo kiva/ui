@@ -94,7 +94,7 @@ const props = defineProps({
 
 const { selectedJourney } = toRefs(props);
 
-const { getActiveTierData, getBadgeWithVisibleTiers } = useBadgeData();
+const { getActiveTierData } = useBadgeData();
 
 const currentIndex = ref(0);
 const isLoading = ref(true);
@@ -125,7 +125,7 @@ const levelCaption = badge => {
 	if (getBadgeStatus(badge) === BADGE_COMPLETED) {
 		return 'Complete!';
 	}
-	return `${getActiveTierData(badge).level - 1}/${getBadgeWithVisibleTiers(badge).achievementData.tiers.length} achievements`; // eslint-disable-line max-len
+	return `${getActiveTierData(badge).level - 1}/${badge.achievementData.tiers.length} achievements`; // eslint-disable-line max-len
 };
 
 const ctaCaption = badge => {

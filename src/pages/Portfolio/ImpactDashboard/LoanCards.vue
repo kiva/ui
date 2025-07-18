@@ -26,7 +26,6 @@ import { gql } from 'graphql-tag';
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import logReadQueryError from '#src/util/logReadQueryError';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
-import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -43,65 +42,53 @@ const userQuery = gql`query userQuery {
 		}
         loans {
             totalCount
-        }
-        transactions(
-            filter: {
-                category: loan
-            }
-            limit: 100
-        ) {
             values {
-                category
-                loan {
+                id
+                name
+                gender
+                status
+                use
+                image {
                     id
-                    name
-                    gender
-                    status
-                    use
-                    image {
-                        id
-                        url
-                        hash
-                    }
+                    url
+                    hash
+                }
+                loanAmount
+                plannedExpirationDate
+                terms {
+                    currency
+                    currencyFullName
+                    lossLiabilityNonpayment
+                    lossLiabilityCurrencyExchange
                     loanAmount
-                    plannedExpirationDate
-                    terms {
-                        currency
-                        currencyFullName
-                        lossLiabilityNonpayment
-                        lossLiabilityCurrencyExchange
-                        loanAmount
-                        disbursalDate
-                        disbursalAmount
-                        flexibleFundraisingEnabled
-                        lenderRepaymentTerm
-                        expectedPayments {
-                        amount
-                        localAmount
-                        dueToKivaDate
-                        effectiveDate
-                        }
-                    }
-                    tags
-                    ... on LoanPartner {
-                        themes
-                    }
-                    sector {
-                        id
-                    }
-                    geocode {
-                        city
-                        state
-                        country {
-                        id
-                        name
-                        isoCode
-                        region
-                        }
+                    disbursalDate
+                    disbursalAmount
+                    flexibleFundraisingEnabled
+                    lenderRepaymentTerm
+                    expectedPayments {
+                    amount
+                    localAmount
+                    dueToKivaDate
+                    effectiveDate
                     }
                 }
-                type
-                createTime
+                tags
+                ... on LoanPartner {
+                    themes
+                }
+                sector {
+                    id
+                }
+                geocode {
+                    city
+                    state
+                    country {
+                    id
+                    name
+                    isoCode
+                    region
+                    }
+                }
             }
         }
     }
@@ -130,10 +117,7 @@ export default {
 		fetchAsyncData() {
 			this.apollo.query({ query: userQuery })
 				.then(result => {
-					const transactions = result.data?.my?.transactions?.values?.filter(t => {
-						return t.type !== TRANSACTION_LOANS_KEY;
-					});
-					this.loans = transactions?.map(t => t.loan) ?? [];
+					this.loans = result.data?.my?.loans?.values ?? [];
 					this.totalLoans = result.data?.my?.loans?.totalCount ?? 0;
 					this.lender = {
 						public: result.data?.my?.userAccount?.public ?? false,
