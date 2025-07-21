@@ -63,7 +63,7 @@
 				width: 219px;
 				height: 1px;
 				border-radius: 20px;
-				background: var(--Brand-Greens-Green-2, #78C79F);
+				background: var(--brand-greens-green-2, #78C79F);
 				border: none;
 			"
 		>
