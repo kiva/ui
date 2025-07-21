@@ -70,7 +70,7 @@
 							@toggle-what-is-next="openWhatIsNext = $event"
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
-							@open-side-sheet="showLoanDetails"
+							@open-side-sheet="handleSelectedLoan"
 							@mouseenter="$emit('mouse-enter-status-card', loan?.id)"
 						/>
 					</template>
@@ -337,7 +337,7 @@ const handleCloseSideSheet = () => {
 	disableCache.value = false;
 };
 
-const showLoanDetails = payload => {
+const handleSelectedLoan = payload => {
 	emit('handle-selected-loan', { loanId: payload?.loan?.id });
 	showSideSheet.value = true;
 };

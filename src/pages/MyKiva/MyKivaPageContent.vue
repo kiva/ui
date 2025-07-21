@@ -576,8 +576,8 @@ export default {
 		handleStatusCardMouseEnter(payload) {
 			this.handleSelectedLoan({ loanId: payload });
 		},
-		showLoanDetails(loanId) {
-			this.handleSelectedLoan({ loanId });
+		showLoanDetails(payload) {
+			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 		}
 	},
