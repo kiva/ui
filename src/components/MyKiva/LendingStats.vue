@@ -1,30 +1,30 @@
 <template>
-	<div class="tw-mb-6">
-		<h3 class="tw-text-primary tw-mb-2">
+	<div class="tw-mb-3.5">
+		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
 		<p class="tw-text-base">
 			Next steps for you based on your lending history
 		</p>
 	</div>
-	<div class="tw-bg-white tw-rounded tw-shadow tw-p-4 tw-w-full" style="max-width: 800px;">
+	<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full" style="max-width: 800px;">
 		<div class="tw-mb-4">
 			<!-- Pill above the list -->
 			<span
-				class="tw-inline-flex tw-items-center tw-gap-2 tw-mb-4 tw-rounded-full tw-bg-eco-green-1
-				tw-px-3 tw-py-1 tw-text-[13px] tw-leading-tight"
+				class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
+				tw-px-3 tw-py-1 tw-leading-tight"
 				title="Your lending reach"
 			>
-				<GlobeSearch
-					class="tw-w-3 tw-h-3 tw-text-brand-700"
-					style="vertical-align: middle;"
-				/>
-				<span class="tw-text-primary" style="font-weight: 621;">
+				<GlobeSearch class="tw-w-3 tw-h-3 tw-text-brand-550 tw-align-middle" />
+				<span class="tw-text-primary" tw-font-medium>
 					{{ loanRegions }}/{{ totalRegions }} Regions supported
 				</span>
 			</span>
 			<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
-				<ul class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2 tw-w-full">
+				<ul
+					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4
+						tw-gap-y-2 tw-gap-x-2 tw-w-full md:[&>li]:tw-max-w-[170x]"
+				>
 					<li
 						v-for="(region, idx) in props.regions"
 						:key="region.name"
@@ -33,17 +33,23 @@
 						<RoundCheckbox
 							:id="`continent-checkbox-${idx}`"
 							:checked="region.hasLoans"
-							class="tw-mr-2"
+							class="tw-mr-0.5"
 							:readonly="true"
+							:disabled="true"
 						>
-							<span
-								class="tw-text-base md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
-								tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
-								style="line-height: 1.25; font-weight: 621;"
-								:title="region.name"
+							<div
+								class="tw-block tw-min-w-0 tw-w-full tw-max-w-[90px]
+							sm:tw-max-w-[120px] md:tw-max-w-[160px] lg:tw-max-w-[200px]"
 							>
-								{{ region.name }}
-							</span>
+								<span
+									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
+									tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
+									style="line-height: 1.25;"
+									:title="region.name"
+								>
+									{{ region.name }}
+								</span>
+							</div>
 						</RoundCheckbox>
 					</li>
 				</ul>
