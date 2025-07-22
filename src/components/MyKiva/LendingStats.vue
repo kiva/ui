@@ -87,7 +87,7 @@ const props = defineProps({
 });
 
 const totalRegions = computed(() => props.regions.length);
-const loanRegions = computed(() => 0); // props.regions.filter(region => region.hasLoans).length);
+const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
 
 const pillHeader = computed(() => {
 	if (totalRegions.value === 0) {
