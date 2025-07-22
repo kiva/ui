@@ -3,11 +3,9 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { gql } from 'graphql-tag';
-import logFormatter from '#src/util/logFormatter';
 
 export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
-const MY_KIVA_LOAN_LIMIT = 4;
 export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
@@ -164,33 +162,12 @@ export const setMyKivaRedirectCookie = cookieStore => {
  *
  * @param apollo The current Apollo client
  * @param $kvTrackEvent The Kiva tracking event function
- * @param userPreferences The user preferences object
- * @param loanTotal The total number of loans the user has made
  * @param myKivaFlagEnabled Whether the MyKiva flag is enabled
  * @param cookieStore The cookie store
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (
-	apollo,
-	$kvTrackEvent,
-	userPreferences,
-	loanTotal,
-	myKivaFlagEnabled,
-	cookieStore,
-) => {
-	// Parse the user preferences to determine if the user has seen MyKiva
-	let parsedPreferences = {};
-	let hasSeenMyKiva = false;
-	try {
-		const preferences = userPreferences?.preferences ?? '';
-		parsedPreferences = preferences ? JSON.parse(preferences) : {};
-		hasSeenMyKiva = !!(parsedPreferences?.[MY_KIVA_PREFERENCE_KEY] ?? false);
-	} catch (e) {
-		logFormatter('getIsMyKivaEnabled JSON parsing exception', 'error');
-	}
-
-	// eslint-disable-next-line max-len
-	if (hasSeenMyKiva || loanTotal < MY_KIVA_LOAN_LIMIT || myKivaFlagEnabled || checkGuestAssignmentCookie(cookieStore)) {
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled, cookieStore) => {
+	if (myKivaFlagEnabled) {
 		const { version: myKivaVersion } = apollo.readFragment({
 			id: `Experiment:${MY_KIVA_EXP}`,
 			fragment: experimentVersionFragment,
@@ -205,33 +182,12 @@ export const getIsMyKivaEnabled = (
 			'EXP-MP-1235-Jan2025'
 		);
 
-		// Ensure that the user continues to see MyKiva after passing the loan limit
-		// eslint-disable-next-line max-len
-		// Only update the user preferences if running client-side and defined instead that guests users have undefined userPreferences.
-		if (isMyKivaExperimentEnabled
-			&& !hasSeenMyKiva
-			&& typeof window !== 'undefined'
-			&& typeof userPreferences !== 'undefined'
-		) {
-			const newPreferences = { [MY_KIVA_PREFERENCE_KEY]: 1 };
-
-			if (userPreferences === null) {
-				// Handle the case where the user has no previous preferences
-				createUserPreferences(apollo, newPreferences);
-			} else {
-				updateUserPreferences(apollo, userPreferences, parsedPreferences, newPreferences);
-			}
-		}
-
-		// The user preference hasSeenMyKiva can be true when we override for internal testing
-		const showMyKiva = hasSeenMyKiva || isMyKivaExperimentEnabled;
-
 		// Set cookie used in Fastly VCL to redirect to MyKiva homepage
-		if (showMyKiva) {
+		if (isMyKivaExperimentEnabled) {
 			setMyKivaRedirectCookie(cookieStore);
 		}
 
-		return showMyKiva;
+		return isMyKivaExperimentEnabled;
 	}
 
 	return false;

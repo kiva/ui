@@ -156,8 +156,6 @@ export default {
 		const isMykivaEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			userData?.userPreferences,
-			userData.lender?.loanCount,
 			myKivaAllUsersEnabled,
 			this.cookieStore,
 		);

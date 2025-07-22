@@ -4,7 +4,6 @@ import {
 	updateUserPreferences,
 	getIsMyKivaEnabled,
 	fetchPostCheckoutAchievements,
-	MY_KIVA_PREFERENCE_KEY,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
 	setGuestAssignmentCookie,
@@ -15,8 +14,6 @@ import {
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import * as experimentUtils from '#src/util/experiment/experimentUtils';
-import * as logFormatter from '#src/util/logFormatter';
-import { expect } from '@storybook/test';
 
 vi.mock('#src/util/logReadQueryError');
 
@@ -320,216 +317,60 @@ describe('myKivaUtils.js', () => {
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
-		let preferencesMock;
 		let trackExperimentVersionMock;
-		let windowMock;
-		let myKivaFlagEnabled;
+		let cookieStoreMock;
 
 		beforeEach(() => {
-			apolloMock = { readFragment: vi.fn(), mutate: vi.fn() };
+			apolloMock = { readFragment: vi.fn() };
 			$kvTrackEventMock = vi.fn();
-			preferencesMock = {};
 			trackExperimentVersionMock = vi.spyOn(experimentUtils, 'trackExperimentVersion');
-			windowMock = vi.spyOn(window, 'window', 'get').mockImplementation(() => ({}));
-			myKivaFlagEnabled = false;
+			cookieStoreMock = { set: vi.fn() };
 		});
 
 		afterEach(vi.restoreAllMocks);
 
-		it('should return true if loanTotal is less than MY_KIVA_LOAN_LIMIT', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false if loanTotal is greater than or equal to MY_KIVA_LOAN_LIMIT', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false if user is in control', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return true if user is in variant', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return true if hasSeenMyKiva is true', () => {
-			preferencesMock = {
-				id: 123,
-				preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-			};
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false if hasSeenMyKiva is missing', () => {
-			preferencesMock = {
-				id: 123,
-				preferences: '',
-			};
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
-			expect(result).toBe(false);
-		});
-
-		it('should handle bad preferences json', () => {
-			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
-			preferencesMock = {
-				id: 123,
-				preferences: 'asdasd',
-			};
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
-			expect(result).toBe(false);
-			expect(mockLogFormatter).toBeCalledTimes(1);
-			expect(mockLogFormatter).toBeCalledWith('getIsMyKivaEnabled JSON parsing exception', 'error');
-		});
-
-		it('should call trackExperimentVersion', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(trackExperimentVersionMock).toBeCalledTimes(1);
-		});
-
-		it('should only call apollo if client-side', () => {
-			windowMock.mockImplementation(() => ({}));
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(apolloMock.mutate).toBeCalledTimes(1);
-		});
-
-		it('should not call apollo if server-side', () => {
-			windowMock.mockImplementation(() => (undefined));
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(apolloMock.mutate).toBeCalledTimes(0);
-		});
-
-		it('should call apollo to create new user preferences', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, null, 3, myKivaFlagEnabled);
-
-			expect(apolloMock.mutate).toBeCalledWith({
-				mutation: createUserPreferencesMutation,
-				variables: {
-					preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-				},
-			});
-		});
-
-		it('should call apollo to update user preferences', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-
-			getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 3, myKivaFlagEnabled);
-
-			expect(apolloMock.mutate).toBeCalledWith({
-				mutation: updateUserPreferencesMutation,
-				variables: {
-					updateUserPreferencesId: preferencesMock.id,
-					preferences: JSON.stringify({ [MY_KIVA_PREFERENCE_KEY]: 1 }),
-				},
-			});
-		});
-
 		it('should return false if myKivaFlagEnabled is false', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, false, cookieStoreMock);
 			expect(result).toBe(false);
+			expect(apolloMock.readFragment).not.toHaveBeenCalled();
+			expect(trackExperimentVersionMock).not.toHaveBeenCalled();
+			expect(cookieStoreMock.set).not.toHaveBeenCalled();
 		});
 
-		it('should return true if myKivaFlagEnabled is true', () => {
+		it('should return true and set cookie if experiment version is "b"', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-			myKivaFlagEnabled = true;
-
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, preferencesMock, 4, myKivaFlagEnabled);
-
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
 			expect(result).toBe(true);
-		});
-
-		it('should set the redirect cookie when conditions are met', () => {
-			const mockApollo = {
-				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
-			};
-			const mockTrackEvent = vi.fn();
-			const mockCookieStore = {
-				set: vi.fn(),
-			};
-			const userPreferences = { preferences: JSON.stringify({}) };
-			const loanTotal = 5;
-
-			const result = getIsMyKivaEnabled(
-				mockApollo,
-				mockTrackEvent,
-				userPreferences,
-				loanTotal,
-				true,
-				mockCookieStore
-			);
-
-			expect(result).toBe(true);
-			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+			expect(apolloMock.readFragment).toHaveBeenCalledWith({
 				id: 'Experiment:my_kiva_jan_2025',
 				fragment: expect.any(Object),
 			});
-			expect(mockTrackEvent).toHaveBeenCalled();
-			expect(mockCookieStore.set).toHaveBeenCalledWith(
+			expect(trackExperimentVersionMock).toHaveBeenCalledWith(
+				apolloMock,
+				$kvTrackEventMock,
+				'event-tracking',
+				'my_kiva_jan_2025',
+				'EXP-MP-1235-Jan2025'
+			);
+			expect(cookieStoreMock.set).toHaveBeenCalledWith(
 				'mykivaredirect',
 				'true',
 				expect.any(Date)
 			);
 		});
 
-		it('should not set the redirect cookie if conditions are not met', () => {
-			const mockApollo = {
-				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
-			};
-			const mockTrackEvent = vi.fn();
-			const mockCookieStore = {
-				set: vi.fn(),
-			};
-			const userPreferences = { preferences: JSON.stringify({}) };
-			const loanTotal = 3; // Below the loan limit
-
-			const result = getIsMyKivaEnabled(
-				mockApollo,
-				mockTrackEvent,
-				userPreferences,
-				loanTotal,
-				myKivaFlagEnabled,
-				mockCookieStore
-			);
-
+		it('should return false and not set cookie if experiment version is not "b"', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
 			expect(result).toBe(false);
-			expect(mockApollo.readFragment).toHaveBeenCalled();
-			expect(mockTrackEvent).toHaveBeenCalled();
-			expect(mockCookieStore.set).not.toHaveBeenCalled();
+			expect(apolloMock.readFragment).toHaveBeenCalled();
+			expect(trackExperimentVersionMock).toHaveBeenCalled();
+			expect(cookieStoreMock.set).not.toHaveBeenCalled();
+		});
+
+		it('should not throw if cookieStore is undefined', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			expect(() => getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, undefined)).not.toThrow();
 		});
 	});
 });

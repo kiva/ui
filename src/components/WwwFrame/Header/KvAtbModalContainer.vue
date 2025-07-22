@@ -224,8 +224,6 @@ onMounted(async () => {
 	myKivaExperimentEnabled.value = getIsMyKivaEnabled(
 		apollo,
 		$kvTrackEvent,
-		userData.value?.my?.userPreferences,
-		!isGuest.value ? userData.value?.my?.loans?.totalCount : 0,
 		myKivaFlagEnabled.value,
 		cookieStore,
 	);
