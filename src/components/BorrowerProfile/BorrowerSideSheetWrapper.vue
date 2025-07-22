@@ -11,6 +11,7 @@
 	>
 		<BorrowerSideSheetContent
 			:basket-items="basketItems"
+			:disable-cache="disableCache"
 			:is-adding="isAdding"
 			:loan-id="selectedLoanId"
 			:show-next-steps="showNextSteps"
@@ -28,6 +29,10 @@ const props = defineProps({
 	basketItems: {
 		type: Array,
 		default: () => []
+	},
+	disableCache: {
+		type: Boolean,
+		default: false
 	},
 	isAdding: {
 		type: Boolean,

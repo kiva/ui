@@ -33,7 +33,7 @@ export const Default = story({
 	secondaryCtaText: "",
 	subtitle: "Keep lending to reach your next achievement",
 	title: "Your progress: 2/3 loans",
-	titleColor: ""	
+	titleColor: ""
 });
 
 export const MoreWays = story({
