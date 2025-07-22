@@ -26,11 +26,13 @@
 				]"
 				style="aspect-ratio: 1 / 1;"
 			>
-				<KvMaterialIcon
-					v-if="inputValue"
-					:icon="mdiCheckCircle"
-					class="tw-w-3.5 tw-h-3.5 tw-text-brand-550"
-				/>
+				<transition name="fade">
+					<KvMaterialIcon
+						v-if="inputValue"
+						:icon="mdiCheckCircle"
+						class="tw-w-3.5 tw-h-3.5 tw-text-brand-550"
+					/>
+				</transition>
 			</div>
 			<div class="tw-block tw-min-w-0 tw-w-full md:tw-max-w-[140px]">
 				<slot></slot>
@@ -111,5 +113,12 @@ watch(() => props.checked, val => {
 	&--readonly {
 		pointer-events: none;
 	}
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
 }
 </style>

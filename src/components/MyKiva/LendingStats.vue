@@ -32,7 +32,7 @@
 					>
 						<RoundCheckbox
 							:id="`continent-checkbox-${idx}`"
-							:checked="region.hasLoans"
+							:checked="checkedArr[idx]"
 							class="tw-mr-0.5"
 							:readonly="true"
 							:disabled="true"
@@ -75,7 +75,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import {
+	computed, onMounted, ref, onUnmounted
+} from 'vue';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearch from '#src/assets/icons/inline/globe-search.svg';
 
@@ -85,6 +87,8 @@ const props = defineProps({
 		default: () => []
 	}
 });
+
+let interval = null;
 
 const totalRegions = computed(() => props.regions.length);
 const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
@@ -98,4 +102,29 @@ const pillHeader = computed(() => {
 	}
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
+
+// Local checked state for fade effect
+const checkedArr = ref(props.regions.map(() => false));
+
+onMounted(() => {
+	setTimeout(() => {
+		let idx = 0;
+		interval = setInterval(() => {
+			idx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= idx);
+			if (idx !== -1) {
+				checkedArr.value[idx] = true;
+				idx += 1;
+			} else {
+				clearInterval(interval);
+			}
+		}, 200);
+	}, 800);
+});
+
+onUnmounted(() => {
+	if (interval) {
+		clearInterval(interval);
+	}
+});
+
 </script>
