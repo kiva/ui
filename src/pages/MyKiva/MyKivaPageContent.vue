@@ -52,8 +52,15 @@
 		</section>
 		<section class="tw-my-4">
 			<MyKivaBorrowerCarousel
+				:basket-items="basketItems"
+				:is-adding="isAdding"
 				:loans="loans"
+				:selected-loan="selectedLoan"
 				:total-loans="totalLoans"
+				@add-to-basket="addToBasket"
+				@go-to-link="goToLink"
+				@handle-selected-loan="handleSelectedLoan"
+				@mouse-enter-status-card="handleStatusCardMouseEnter"
 				show-menu
 			/>
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
@@ -70,7 +77,7 @@
 		<section class="tw-my-4">
 			<LendingCategorySection
 				id="recommended-loans"
-				:title="recommendeLoansTitle"
+				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
 				:is-bp-modal-enabled="isBpModalEnabled"
@@ -308,7 +315,7 @@ export default {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
 			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
 		},
-		recommendeLoansTitle() {
+		recommendedLoansTitle() {
 			return this.loans.length < 1
 				? 'Recommended for you'
 				: 'Recommended for you based on your lending history';
@@ -564,10 +571,13 @@ export default {
 		},
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
-			this.selectedLoan = undefined;
+			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(loan) {
-			this.selectedLoan = loan;
+		handleStatusCardMouseEnter(payload) {
+			this.handleSelectedLoan({ loanId: payload });
+		},
+		showLoanDetails(payload) {
+			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 		}
 	},

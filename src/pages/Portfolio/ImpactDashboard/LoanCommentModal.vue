@@ -1,6 +1,6 @@
 <template>
 	<kv-lightbox
-		:visible="loan.visible"
+		:visible="isVisible"
 		:title="modalTitle"
 		@lightbox-closed="closeModal"
 	>
@@ -62,6 +62,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {}
+		},
+		isVisible: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -79,10 +83,10 @@ export default {
 			return '';
 		},
 		modalTitle() {
-			return `Tell others why you love this loan to ${this.loan.borrowerName}`;
+			return `Tell others why you love this loan to ${this.loan.name}`;
 		},
 		commentPlaceholder() {
-			return `Tell others why this loan to ${this.loan.borrowerName} is great!`;
+			return `Tell others why this loan to ${this.loan.name} is great!`;
 		}
 	},
 	methods: {
@@ -92,15 +96,15 @@ export default {
 			this.apollo.mutate({
 				mutation: loanAddComment,
 				variables: {
-					id: this.loan.loanId,
+					id: this.loan.id,
 					body: this.userComment
 				}
 			}).then(({ data }) => {
 				// comment was added successfully
 				if (data.loan.addComment) {
 					this.closeModal();
-					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.borrowerName, this.loan.loanId); // eslint-disable-line max-len
-					this.$showTipMsg(`Thank you for helping ${this.loan.borrowerName}!`, 'confirmation', true);
+					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.name, this.loan.id); // eslint-disable-line max-len
+					this.$showTipMsg(`Thank you for helping ${this.loan.name}!`, 'confirmation', true);
 				} else {
 					throw new Error('Comment not added');
 				}

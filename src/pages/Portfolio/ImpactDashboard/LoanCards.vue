@@ -4,26 +4,31 @@
 		@visible="fetchAsyncData"
 	>
 		<BorrowerCarousel
-			:lender="lender"
-			:loans="loans"
-			:total-loans="totalLoans"
-			:is-loading="isLoading"
-			:show-menu="true"
-			:cards-number="7"
-			:show-carousel-tabs="true"
 			class="portfolio-borrowers-carousel"
+			:basket-items="basketItems"
+			:cards-number="7"
+			:is-adding="isAdding"
+			:lender="lender" :loans="loans"
+			:selected-loan="selectedLoan"
+			:show-carousel-tabs="true"
+			:total-loans="totalLoans"
+			@add-to-basket="addToBasket"
+			@go-to-link="goToLink"
+			@handle-selected-loan="handleSelectedLoan"
+			show-menu
 		/>
 	</AsyncPortfolioSection>
 </template>
 
-<script setup>
-import { ref, inject } from 'vue';
+<script>
 import { gql } from 'graphql-tag';
-import logReadQueryError from '#src/util/logReadQueryError';
+
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+import logReadQueryError from '#src/util/logReadQueryError';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-// Query to gather user loans
 const userQuery = gql`query userQuery {
 	my {
         id
@@ -89,25 +94,40 @@ const userQuery = gql`query userQuery {
     }
 }`;
 
-const apollo = inject('apollo');
-
-const loans = ref([]);
-const isLoading = ref(true);
-const totalLoans = ref(0);
-const lender = ref({});
-
-const fetchAsyncData = () => {
-	apollo.query({ query: userQuery })
-		.then(result => {
-			loans.value = result.data?.my?.loans?.values ?? [];
-			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
-			lender.value = {
-				public: result.data?.my?.userAccount?.public ?? false,
-				inviterName: result.data?.my?.userAccount?.inviterName ?? null,
-			};
-			isLoading.value = false;
-		}).catch(e => {
-			logReadQueryError(e, 'Portfolio Page Loans userQuery');
-		});
+export default {
+	name: 'LoanCards',
+	components: {
+		AsyncPortfolioSection,
+		BorrowerCarousel
+	},
+	mixins: [borrowerProfileExpMixin],
+	inject: ['apollo'],
+	data() {
+		return {
+			loans: [],
+			totalLoans: 0,
+			lender: {},
+			isLoading: true,
+		};
+	},
+	async mounted() {
+		this.loadInitialBasketItems();
+	},
+	methods: {
+		fetchAsyncData() {
+			this.apollo.query({ query: userQuery })
+				.then(result => {
+					this.loans = result.data?.my?.loans?.values ?? [];
+					this.totalLoans = result.data?.my?.loans?.totalCount ?? 0;
+					this.lender = {
+						public: result.data?.my?.userAccount?.public ?? false,
+						inviterName: result.data?.my?.userAccount?.inviterName ?? null,
+					};
+					this.isLoading = false;
+				}).catch(e => {
+					logReadQueryError(e, 'Portfolio Page Loans userQuery');
+				});
+		}
+	}
 };
 </script>
