@@ -9,18 +9,18 @@
 	</div>
 	<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full" style="max-width: 800px;">
 		<div class="tw-mb-4">
-			<!-- Pill above the list -->
 			<span
+				v-if="pillHeader"
 				class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
 				tw-px-3 tw-py-1 tw-leading-tight"
 				title="Your lending reach"
 			>
 				<GlobeSearch class="tw-w-3 tw-h-3 tw-text-brand-550 tw-align-middle" />
 				<span class="tw-text-primary" tw-font-medium>
-					{{ loanRegions }}/{{ totalRegions }} Regions supported
+					{{ pillHeader }}
 				</span>
 			</span>
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
+			<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
 				<ul
 					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4
 						tw-gap-y-2 tw-gap-x-2 tw-w-full md:[&>li]:tw-max-w-[170x]"
@@ -56,6 +56,7 @@
 			</div>
 		</div>
 		<hr
+			v-if="loanRegions"
 			class="tw-my-4 tw-mx-auto"
 			style="
 				width: 219px;
@@ -74,7 +75,7 @@
 </template>
 
 <script setup>
-
+import { computed } from 'vue';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearch from '#src/assets/icons/inline/globe-search.svg';
 
@@ -85,6 +86,16 @@ const props = defineProps({
 	}
 });
 
-const totalRegions = props.regions.length;
-const loanRegions = props.regions.filter(region => region.hasLoans).length;
+const totalRegions = computed(() => props.regions.length);
+const loanRegions = computed(() => 0); // props.regions.filter(region => region.hasLoans).length);
+
+const pillHeader = computed(() => {
+	if (totalRegions.value === 0) {
+		return '';
+	}
+	if (loanRegions.value === 0) {
+		return 'Make a global impact';
+	}
+	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
+});
 </script>
