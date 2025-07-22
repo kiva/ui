@@ -1,10 +1,13 @@
 <template>
 	<div
-		class="kv-checkbox"
-		:class="{ 'kv-checkbox--right' : checkboxRight, 'kv-checkbox--readonly': readonly }"
+		class="tw-block tw-relative"
+		:class="{
+			'tw-flex-row-reverse': checkboxRight,
+			'pointer-events-none': readonly
+		}"
 	>
 		<input
-			class="input"
+			class="tw-sr-only"
 			type="checkbox"
 			:id="id"
 			:disabled="disabled"
@@ -12,13 +15,23 @@
 			v-bind="$attrs"
 		>
 		<label
-			class="label"
+			class="tw-flex tw-items-center tw-font-normal tw-m-0"
 			:for="id"
 		>
-			<div class="checkbox-indicator">
-				<GreenRoundCheckbox v-if="inputValue" style="vertical-align: middle;" />
+			<div
+				:class="[
+					// eslint-disable-next-line max-len
+					'tw-relative tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-transition-colors tw-flex tw-items-center tw-justify-center',
+					inputValue ? 'tw-bg-transparent' : 'tw-bg-gray-200'
+				]"
+			>
+				<KvMaterialIcon
+					v-if="inputValue"
+					:icon="mdiCheckCircle"
+					class="tw-w-4 tw-h-4 tw-text-brand-700"
+				/>
 			</div>
-			<div>
+			<div class="tw-block tw-min-w-0">
 				<slot></slot>
 			</div>
 		</label>
@@ -27,7 +40,8 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import GreenRoundCheckbox from '#src/assets/icons/inline/round-green-checkbox.svg';
+import { KvMaterialIcon } from '@kiva/kv-components';
+import { mdiCheckCircle } from '@mdi/js';
 
 const props = defineProps({
 	id: { type: String, required: true },
@@ -74,18 +88,6 @@ watch(() => props.checked, val => {
 		position: relative;
 		box-shadow: none;
 		transition: background-color 200ms ease-in-out;
-
-		&::after {
-			content: '';
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			width: 7px;
-			height: 12px;
-			border: solid transparent;
-			border-width: 0 3px 3px 0;
-			transform: translate(-50%, -50%) rotate(45deg);
-		}
 	}
 
 	&--right {
@@ -98,17 +100,6 @@ watch(() => props.checked, val => {
 
 	.input {
 		@include visually-hidden();
-
-		&:checked + .label {
-			.checkbox-indicator {
-				background-color: #2AA967;
-				border: none;
-
-				&::after {
-					border-color: white;
-				}
-			}
-		}
 
 		&[disabled] + .label {
 			@include disabled();
