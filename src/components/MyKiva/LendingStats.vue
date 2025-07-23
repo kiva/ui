@@ -16,19 +16,18 @@
 				title="Your lending reach"
 			>
 				<GlobeSearch class="tw-w-3 tw-h-3 tw-text-brand-550 tw-align-middle" />
-				<span class="tw-text-primary" tw-font-medium>
+				<span class="tw-text-primary tw-font-medium">
 					{{ pillHeader }}
 				</span>
 			</span>
 			<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
 				<ul
-					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4
-						tw-gap-y-2 tw-gap-x-2 tw-w-full md:[&>li]:tw-max-w-[170x]"
+					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2 tw-w-full"
 				>
 					<li
 						v-for="(region, idx) in props.regions"
 						:key="region.name"
-						class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0"
+						class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 					>
 						<RoundCheckbox
 							:id="`continent-checkbox-${idx}`"
@@ -36,40 +35,33 @@
 							class="tw-mr-0.5"
 							:readonly="true"
 							:disabled="true"
-						>
-							<div
-								class="tw-block tw-min-w-0 tw-w-full tw-max-w-[90px]
-							sm:tw-max-w-[120px] md:tw-max-w-[160px] lg:tw-max-w-[200px]"
+						/>
+						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
+							<span
+								class="tw-font-medium md:tw-text-lg tw-text-primary
+									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full"
+								style="line-height: 1.25;"
+								:title="region.name"
 							>
-								<span
-									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
-									tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
-									style="line-height: 1.25;"
-									:title="region.name"
-								>
-									{{ region.name }}
-								</span>
-							</div>
-						</RoundCheckbox>
+								{{ region.name }}
+							</span>
+						</div>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<hr
 			v-if="loanRegions"
-			class="tw-my-4 tw-mx-auto"
+			class="tw-my-4 tw-mx-auto tw-border-none"
 			style="
 				width: 219px;
 				height: 1px;
 				border-radius: 20px;
 				background: var(--brand-greens-green-2, #78C79F);
-				border: none;
 			"
 		>
 		<div>
 			<!-- Second major section content goes here -->
-			<p class="tw-text-base tw-text-gray-700">
-			</p>
 		</div>
 	</div>
 </template>

@@ -40,10 +40,6 @@ query thanksPage {
 			lenderNews
 			loanUpdates
 		}
-		userPreferences {
-			id
-			preferences
-		}
 	}
 	general {
 		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {

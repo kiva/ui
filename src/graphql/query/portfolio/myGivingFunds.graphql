@@ -1,0 +1,61 @@
+query MyGivingFunds {
+  my {
+	id
+    givingFunds {
+      totalCount
+      values {
+        amountDonated
+        campaign {
+          campaignPromoFundId
+          category {
+            contentfulEntry {
+              entry
+            }
+            name
+            description
+            id
+          }
+        }
+        display {
+          ctaTitle
+          ctaDescription
+        }
+        id
+        goals {
+          totalCount
+          values {
+            id
+            status
+            targets {
+              values {
+                ... on FundraiserTarget {
+                  participation {
+                    amount
+                    totalCount
+                  }
+                  status
+                  targetAmount
+                  type
+                }
+              }
+            }
+            startDate
+            endDate
+            cta {
+              description
+              title
+            }
+          }
+        }
+        lendingStats {
+          totalLent
+          totalLivesTouched
+        }
+        owner {
+          id
+          name
+        }
+      }
+    }
+  }
+}

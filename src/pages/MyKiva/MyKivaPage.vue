@@ -19,7 +19,7 @@
 <script>
 import { readBoolSetting } from '#src/util/settingsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY, AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -105,11 +105,7 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 
-				const transactions = this.userInfo?.transactions?.values?.filter(t => {
-					return t.type !== AVOID_TRANSACTION_LOANS_KEY;
-				});
-
-				this.loans = transactions?.map(t => t.loan) ?? [];
+				this.loans = result.my?.loans?.values ?? [];
 				this.totalLoans = result.my?.loans?.totalCount ?? 0;
 
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
