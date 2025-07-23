@@ -99,7 +99,7 @@ const pillHeader = computed(() => {
     max-width: 170px;
 }
 .region-max-width { max-width: 90px; }
-@media (min-width: 640px) { .region-max-width { max-width: 120px; } }
-@media (min-width: 768px) { .region-max-width { max-width: 160px; } }
-@media (min-width: 1024px) { .region-max-width { max-width: 200px; } }
+@media (width >= 640px) { .region-max-width { max-width: 120px; } }
+@media (width >= 768px) { .region-max-width { max-width: 160px; } }
+@media (width >= 1024px) { .region-max-width { max-width: 200px; } }
 </style>
