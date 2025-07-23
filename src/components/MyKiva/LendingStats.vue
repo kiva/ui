@@ -8,7 +8,7 @@
 		</p>
 	</div>
 	<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full" style="max-width: 800px;">
-		<div class="tw-mb-4">
+		<div ref="loanRegionsElement" class="tw-mb-4">
 			<span
 				v-if="pillHeader"
 				class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
@@ -76,10 +76,13 @@
 
 <script setup>
 import {
-	computed, onMounted, ref, onUnmounted
+	computed, ref, onUnmounted, onMounted
 } from 'vue';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearch from '#src/assets/icons/inline/globe-search.svg';
+import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
+
+const { delayUntilVisible } = useDelayUntilVisible();
 
 const props = defineProps({
 	regions: {
@@ -88,7 +91,8 @@ const props = defineProps({
 	}
 });
 
-let interval = null;
+const interval = ref(null);
+const loanRegionsElement = ref(null);
 
 const totalRegions = computed(() => props.regions.length);
 const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
@@ -107,23 +111,26 @@ const pillHeader = computed(() => {
 const checkedArr = ref(props.regions.map(() => false));
 
 onMounted(() => {
-	setTimeout(() => {
-		let idx = 0;
-		interval = setInterval(() => {
-			idx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= idx);
-			if (idx !== -1) {
-				checkedArr.value[idx] = true;
-				idx += 1;
-			} else {
-				clearInterval(interval);
-			}
-		}, 200);
-	}, 800);
+	delayUntilVisible(() => {
+		setTimeout(() => {
+			let currentIdx = 0;
+			interval.value = setInterval(() => {
+				// eslint-disable-next-line max-len
+				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+				if (currentIdx !== -1) {
+					checkedArr.value[currentIdx] = true;
+					currentIdx += 1;
+				} else {
+					clearInterval(interval.value);
+				}
+			}, 200);
+		}, 800);
+	}, [loanRegionsElement.value]);
 });
 
 onUnmounted(() => {
-	if (interval) {
-		clearInterval(interval);
+	if (interval.value) {
+		clearInterval(interval.value);
 	}
 });
 
