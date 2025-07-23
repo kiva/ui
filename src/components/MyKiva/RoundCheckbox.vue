@@ -21,23 +21,20 @@
 			<div
 				:class="[
 					'tw-relative',
-					'tw-w-3.5',
-					'tw-h-3.5',
+					inputValue ? 'tw-w-3.5 tw-h-3.5 tw-bg-transparent' : 'tw-w-3 tw-h-3 tw-bg-gray-200',
 					'tw-rounded-full',
-					'tw-bg-gray-200',
 					'tw-mr-2',
 					'tw-transition-colors',
 					'tw-flex',
 					'tw-items-center',
 					'tw-justify-center',
-					'tw-aspect-square',
-					inputValue ? 'tw-bg-transparent' : ''
+					'tw-aspect-square'
 				]"
 			>
 				<KvMaterialIcon
 					v-if="inputValue"
 					:icon="mdiCheckCircle"
-					class="tw-w-3.5 tw-h-3.5 tw-text-brand-550 tw-flex tw-items-center tw-justify-center"
+					class="tw-absolute tw-inset-0 tw-w-3.5 tw-h-3.5 tw-text-brand-550"
 				/>
 			</div>
 			<div class="tw-block tw-min-w-0 tw-w-full">

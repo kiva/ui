@@ -27,7 +27,7 @@
 					<li
 						v-for="(region, idx) in props.regions"
 						:key="region.name"
-						class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0 region-cell"
+						class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 					>
 						<RoundCheckbox
 							:id="`continent-checkbox-${idx}`"
@@ -35,19 +35,17 @@
 							class="tw-mr-0.5"
 							:readonly="true"
 							:disabled="true"
-						>
-							<div class="tw-block tw-min-w-0 tw-w-full region-max-width">
-								<span
-									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block
-											tw-whitespace-nowrap tw-truncate sm:tw-whitespace-normal
-											sm:tw-truncate-none"
-									style="line-height: 1.25;"
-									:title="region.name"
-								>
-									{{ region.name }}
-								</span>
-							</div>
-						</RoundCheckbox>
+						/>
+						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
+							<span
+								class="tw-font-medium md:tw-text-lg tw-text-primary
+									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full"
+								style="line-height: 1.25;"
+								:title="region.name"
+							>
+								{{ region.name }}
+							</span>
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -93,13 +91,3 @@ const pillHeader = computed(() => {
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
 </script>
-
-<style scoped>
-.region-cell {
-    max-width: 170px;
-}
-.region-max-width { max-width: 90px; }
-@media (width >= 640px) { .region-max-width { max-width: 120px; } }
-@media (width >= 768px) { .region-max-width { max-width: 160px; } }
-@media (width >= 1024px) { .region-max-width { max-width: 200px; } }
-</style>
