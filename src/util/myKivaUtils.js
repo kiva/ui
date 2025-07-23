@@ -2,7 +2,6 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { gql } from 'graphql-tag';
 
 export const MY_KIVA_PREFERENCE_KEY = 'myKivaJan2025Exp';
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
@@ -11,33 +10,6 @@ export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
-
-export const createUserPreferencesMutation = gql`
-	mutation createUserPreferences($preferences: String) {
-		my {
-			createUserPreferences(userPreferences: { preferences: $preferences }) {
-				id
-				preferences
-			}
-		}
-	}
-`;
-
-export const updateUserPreferencesMutation = gql`
-	mutation UpdateUserPreferences(
-		$updateUserPreferencesId: Int!,
-		$preferences: String
-	) {
-		my {
-			updateUserPreferences(id: $updateUserPreferencesId, userPreferences: {
-				preferences: $preferences
-		}) {
-				id
-				preferences
-			}
-		}
-	}
-`;
 
 /**
  * Determines whether the provided loan needs a footnote
@@ -75,49 +47,6 @@ export const fetchPostCheckoutAchievements = async (apollo, loanIds) => {
 		});
 	} catch (e) {
 		logReadQueryError(e, 'myKivaUtils postCheckoutAchievementsQuery');
-	}
-};
-
-/**
- * Creates user preferences for the current user
- *
- * @param apollo The current Apollo client
- * @param newPreferences The new preferences to add
- * @returns The results of the mutation
- */
-export const createUserPreferences = async (apollo, newPreferences) => {
-	try {
-		return await apollo.mutate({
-			mutation: createUserPreferencesMutation,
-			variables: { preferences: JSON.stringify(newPreferences) },
-		});
-	} catch (e) {
-		logReadQueryError(e, 'myKivaUtils createUserPreferencesMutation');
-	}
-};
-
-/**
- * Updates the user preferences for the current user
- *
- * @param apollo The current Apollo client
- * @param userPreferences The original user preferences
- * @param parsedPreferences The parsed user preferences
- * @param newPreferences The new preferences to add
- * @returns The updated user preferences
- */
-export const updateUserPreferences = async (apollo, userPreferences, parsedPreferences, newPreferences) => {
-	try {
-		const preferences = JSON.stringify({ ...parsedPreferences, ...newPreferences });
-
-		return await apollo.mutate({
-			mutation: updateUserPreferencesMutation,
-			variables: {
-				updateUserPreferencesId: userPreferences.id,
-				preferences,
-			},
-		});
-	} catch (e) {
-		logReadQueryError(e, 'myKivaUtils updateUserPreferencesMutation');
 	}
 };
 
