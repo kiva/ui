@@ -97,18 +97,20 @@ export const setMyKivaRedirectCookie = cookieStore => {
  */
 export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled, cookieStore) => {
 	if (myKivaFlagEnabled) {
+		const hadGuestAssignment = checkGuestAssignmentCookie(cookieStore);
+
 		const { version: myKivaVersion } = apollo.readFragment({
 			id: `Experiment:${MY_KIVA_EXP}`,
 			fragment: experimentVersionFragment,
 		}) ?? {};
-		const isMyKivaExperimentEnabled = myKivaVersion === 'b';
 
-		trackExperimentVersion(
-			apollo,
-			$kvTrackEvent,
+		const isMyKivaExperimentEnabled = hadGuestAssignment || myKivaVersion === 'b';
+
+		$kvTrackEvent(
 			'event-tracking',
-			MY_KIVA_EXP,
-			'EXP-MP-1235-Jan2025'
+			'EXP-MP-1235-Jan2025',
+			// Ensure tracking is consistent for guest users who login
+			hadGuestAssignment ? 'b' : myKivaVersion,
 		);
 
 		// Set cookie used in Fastly VCL to redirect to MyKiva homepage

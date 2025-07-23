@@ -9,7 +9,6 @@ import {
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import * as experimentUtils from '#src/util/experiment/experimentUtils';
 
 vi.mock('#src/util/logReadQueryError');
 
@@ -235,40 +234,35 @@ describe('myKivaUtils.js', () => {
 	describe('getIsMyKivaEnabled', () => {
 		let apolloMock;
 		let $kvTrackEventMock;
-		let trackExperimentVersionMock;
 		let cookieStoreMock;
 
 		beforeEach(() => {
 			apolloMock = { readFragment: vi.fn() };
 			$kvTrackEventMock = vi.fn();
-			trackExperimentVersionMock = vi.spyOn(experimentUtils, 'trackExperimentVersion');
-			cookieStoreMock = { set: vi.fn() };
+			cookieStoreMock = { set: vi.fn(), get: vi.fn() };
 		});
-
-		afterEach(vi.restoreAllMocks);
 
 		it('should return false if myKivaFlagEnabled is false', () => {
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, false, cookieStoreMock);
 			expect(result).toBe(false);
 			expect(apolloMock.readFragment).not.toHaveBeenCalled();
-			expect(trackExperimentVersionMock).not.toHaveBeenCalled();
+			expect($kvTrackEventMock).not.toHaveBeenCalled();
 			expect(cookieStoreMock.set).not.toHaveBeenCalled();
 		});
 
 		it('should return true and set cookie if experiment version is "b"', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
+			cookieStoreMock.get.mockReturnValue(undefined);
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
 			expect(result).toBe(true);
 			expect(apolloMock.readFragment).toHaveBeenCalledWith({
 				id: 'Experiment:my_kiva_jan_2025',
 				fragment: expect.any(Object),
 			});
-			expect(trackExperimentVersionMock).toHaveBeenCalledWith(
-				apolloMock,
-				$kvTrackEventMock,
+			expect($kvTrackEventMock).toHaveBeenCalledWith(
 				'event-tracking',
-				'my_kiva_jan_2025',
-				'EXP-MP-1235-Jan2025'
+				'EXP-MP-1235-Jan2025',
+				'b'
 			);
 			expect(cookieStoreMock.set).toHaveBeenCalledWith(
 				'mykivaredirect',
@@ -277,12 +271,35 @@ describe('myKivaUtils.js', () => {
 			);
 		});
 
-		it('should return false and not set cookie if experiment version is not "b"', () => {
+		// eslint-disable-next-line max-len
+		it('should return true and set cookie if guest assignment cookie exists (regardless of experiment version)', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+			cookieStoreMock.get.mockReturnValue('true');
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
+			expect(result).toBe(true);
+			expect($kvTrackEventMock).toHaveBeenCalledWith(
+				'event-tracking',
+				'EXP-MP-1235-Jan2025',
+				'b'
+			);
+			expect(cookieStoreMock.set).toHaveBeenCalledWith(
+				'mykivaredirect',
+				'true',
+				expect.any(Date)
+			);
+		});
+
+		it('should return false and not set cookie if experiment version is not "b" and no guest assignment', () => {
+			apolloMock.readFragment.mockReturnValue({ version: 'a' });
+			cookieStoreMock.get.mockReturnValue(undefined);
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
 			expect(result).toBe(false);
 			expect(apolloMock.readFragment).toHaveBeenCalled();
-			expect(trackExperimentVersionMock).toHaveBeenCalled();
+			expect($kvTrackEventMock).toHaveBeenCalledWith(
+				'event-tracking',
+				'EXP-MP-1235-Jan2025',
+				'a'
+			);
 			expect(cookieStoreMock.set).not.toHaveBeenCalled();
 		});
 
