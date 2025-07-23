@@ -20,11 +20,18 @@
 		>
 			<div
 				:class="[
-					// eslint-disable-next-line max-len
-					'tw-relative tw-w-3.5 tw-h-3.5 tw-rounded-full tw-mr-2 tw-transition-colors tw-flex tw-items-center tw-justify-center',
+					'tw-relative',
+					'tw-w-3.5',
+					'tw-h-3.5',
+					'tw-rounded-full',
+					'tw-mr-2',
+					'tw-transition-colors',
+					'tw-flex',
+					'tw-items-center',
+					'tw-justify-center',
+					'tw-aspect-square',
 					inputValue ? 'tw-bg-transparent' : 'tw-bg-gray-200'
 				]"
-				style="aspect-ratio: 1 / 1;"
 			>
 				<KvMaterialIcon
 					v-if="inputValue"
@@ -32,7 +39,7 @@
 					class="tw-w-3.5 tw-h-3.5 tw-text-brand-550"
 				/>
 			</div>
-			<div class="tw-block tw-min-w-0 tw-w-full md:tw-max-w-[140px]">
+			<div class="tw-block tw-min-w-0 tw-w-full md:max-w-xs">
 				<slot></slot>
 			</div>
 		</label>

@@ -16,7 +16,7 @@
 				title="Your lending reach"
 			>
 				<GlobeSearch class="tw-w-3 tw-h-3 tw-text-brand-550 tw-align-middle" />
-				<span class="tw-text-primary" tw-font-medium>
+				<span class="tw-text-primary tw-font-medium">
 					{{ pillHeader }}
 				</span>
 			</span>
@@ -37,13 +37,9 @@
 							:readonly="true"
 							:disabled="true"
 						>
-							<div
-								class="tw-block tw-min-w-0 tw-w-full tw-max-w-[90px]
-							sm:tw-max-w-[120px] md:tw-max-w-[160px] lg:tw-max-w-[200px]"
-							>
+							<div class="tw-block tw-min-w-0 tw-w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
 								<span
-									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
-									tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
+									class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0"
 									style="line-height: 1.25;"
 									:title="region.name"
 								>
