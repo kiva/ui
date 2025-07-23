@@ -22,13 +22,12 @@
 			</span>
 			<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
 				<ul
-					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4
-						tw-gap-y-2 tw-gap-x-2 tw-w-full md:[&>li]:tw-max-w-[170x]"
+					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2 tw-w-full"
 				>
 					<li
 						v-for="(region, idx) in props.regions"
 						:key="region.name"
-						class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0"
+						class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0 region-cell"
 					>
 						<RoundCheckbox
 							:id="`continent-checkbox-${idx}`"
@@ -37,13 +36,11 @@
 							:readonly="true"
 							:disabled="true"
 						>
-							<div
-								class="tw-block tw-min-w-0 tw-w-full tw-max-w-[90px]
-							sm:tw-max-w-[120px] md:tw-max-w-[160px] lg:tw-max-w-[200px]"
-							>
+							<div class="tw-block tw-min-w-0 tw-w-full region-max-width">
 								<span
-									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
-									tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
+									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block
+											tw-whitespace-nowrap tw-truncate sm:tw-whitespace-normal
+											sm:tw-truncate-none"
 									style="line-height: 1.25;"
 									:title="region.name"
 								>
@@ -96,3 +93,13 @@ const pillHeader = computed(() => {
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
 </script>
+
+<style scoped>
+.region-cell {
+    max-width: 170px;
+}
+.region-max-width { max-width: 90px; }
+@media (min-width: 640px) { .region-max-width { max-width: 120px; } }
+@media (min-width: 768px) { .region-max-width { max-width: 160px; } }
+@media (min-width: 1024px) { .region-max-width { max-width: 200px; } }
+</style>
