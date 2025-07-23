@@ -5,20 +5,30 @@
 		:style="{ backgroundImage: `url(${bgImage})` }"
 	>
 		<div
+			v-if="images.length"
+			class="tw-p-1"
+			style="min-height: 220px;"
+		>
+			<KvCarousel
+				class="carousel"
+				:embla-options="{ loop: false, align: 'center' }"
+				:is-dotted="true"
+			>
+				<template v-for="(image, index) in images" #[`slide${index+1}`] :key="index">
+					<img
+						:src="image"
+						class="tw-rounded tw-w-full"
+						loading="lazy"
+					>
+				</template>
+			</KvCarousel>
+		</div>
+		<div
 			v-if="tagText"
 			class="tw-absolute tw-bg-secondary tw-rounded tw-px-1.5 tw-py-0.5 tw-text-small tw-left-1.5 tw-top-1.5
-				tw-drop-shadow-sm tw-font-medium"
-		>
-			{{ tagText }}
-		</div>
-		<div class="tw-p-1">
-			<img
-				v-if="imageUrl"
-				:src="imageUrl"
-				class="tw-rounded tw-w-full"
-				loading="lazy"
-			>
-		</div>
+				tw-drop-shadow-sm tw-font-medium tw-flex tw-items-center"
+			v-html="tagText"
+		></div>
 		<div
 			class="
 				tw-w-full
@@ -32,7 +42,7 @@
 			"
 			:class="{
 				'slide-gradient': hasGradient,
-				'tw-absolute': !imageUrl,
+				'tw-absolute': !images.length,
 			}"
 			:style="[
 				{ 'height': overlayHeight },
@@ -94,7 +104,7 @@ import {
 } from 'vue';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
-import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
+import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
@@ -187,11 +197,11 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Image URL to be displayed in the card.
+	 * Array of image URLs for the carousel.
 	 */
-	imageUrl: {
-		type: String,
-		default: '',
+	images: {
+		type: Array,
+		default: () => ([]),
 	},
 	/**
 	 * Text for the tag displayed at the top of the card.
@@ -248,5 +258,9 @@ const titleClass = computed(() => {
 
 .slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
+}
+
+.carousel :deep(.kv-carousel__controls) {
+	@apply !tw-mt-2;
 }
 </style>

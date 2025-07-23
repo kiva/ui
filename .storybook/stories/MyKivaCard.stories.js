@@ -63,7 +63,28 @@ export const Recommended = story({
 	subtitle: "",
 	title: "Give women an equal opportunity to succeed.",
 	titleColor: "tw-text-action-highlight",
-	imageUrl: "https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
+	images: ["https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg"],
 	tagText: "Recommended: Loans to Women",
+	showCtaIcon: true,
+});
+
+export const MultipleRecommended = story({
+	hasGradient: false,
+	isBgTopAligned: true,
+	isBlackSubtitle: true,
+	isFullWidthPrimaryCta: true,
+	isTitleFontSans: true,
+	primaryCtaText: "Fund a Woman",
+	primaryCtaVariant: "primary",
+	secondaryCtaText: "",
+	subtitle: "",
+	title: "Give women an equal opportunity to succeed.",
+	titleColor: "tw-text-action-highlight",
+	images: [
+		"https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
+		"https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
+		"https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
+	],
+	tagText: "&#128507; Your top category: Women",
 	showCtaIcon: true,
 });
