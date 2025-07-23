@@ -37,9 +37,13 @@
 							:readonly="true"
 							:disabled="true"
 						>
-							<div class="tw-block tw-min-w-0 tw-w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+							<div
+								class="tw-block tw-min-w-0 tw-w-full tw-max-w-[90px]
+							sm:tw-max-w-[120px] md:tw-max-w-[160px] lg:tw-max-w-[200px]"
+							>
 								<span
-									class="tw-flex tw-items-center tw-w-full tw-overflow-hidden tw-min-w-0"
+									class="tw-font-medium md:tw-text-lg tw-text-primary tw-block tw-whitespace-nowrap
+									tw-truncate sm:tw-whitespace-normal sm:tw-truncate-none"
 									style="line-height: 1.25;"
 									:title="region.name"
 								>
@@ -53,19 +57,16 @@
 		</div>
 		<hr
 			v-if="loanRegions"
-			class="tw-my-4 tw-mx-auto"
+			class="tw-my-4 tw-mx-auto tw-border-none"
 			style="
 				width: 219px;
 				height: 1px;
 				border-radius: 20px;
 				background: var(--brand-greens-green-2, #78C79F);
-				border: none;
 			"
 		>
 		<div>
 			<!-- Second major section content goes here -->
-			<p class="tw-text-base tw-text-gray-700">
-			</p>
 		</div>
 	</div>
 </template>

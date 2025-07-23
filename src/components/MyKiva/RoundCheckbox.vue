@@ -24,22 +24,23 @@
 					'tw-w-3.5',
 					'tw-h-3.5',
 					'tw-rounded-full',
+					'tw-bg-gray-200',
 					'tw-mr-2',
 					'tw-transition-colors',
 					'tw-flex',
 					'tw-items-center',
 					'tw-justify-center',
 					'tw-aspect-square',
-					inputValue ? 'tw-bg-transparent' : 'tw-bg-gray-200'
+					inputValue ? 'tw-bg-transparent' : ''
 				]"
 			>
 				<KvMaterialIcon
 					v-if="inputValue"
 					:icon="mdiCheckCircle"
-					class="tw-w-3.5 tw-h-3.5 tw-text-brand-550"
+					class="tw-w-3.5 tw-h-3.5 tw-text-brand-550 tw-flex tw-items-center tw-justify-center"
 				/>
 			</div>
-			<div class="tw-block tw-min-w-0 tw-w-full md:max-w-xs">
+			<div class="tw-block tw-min-w-0 tw-w-full">
 				<slot></slot>
 			</div>
 		</label>
@@ -70,53 +71,3 @@ watch(() => props.checked, val => {
 });
 
 </script>
-
-<style lang="scss" scoped>
-@use '#src/assets/scss/settings' as *;
-
-.kv-checkbox {
-	display: block;
-	position: relative;
-
-	.label {
-		display: flex;
-		align-items: center;
-		font-size: 1em;
-		line-height: inherit;
-		margin: 0;
-	}
-
-	.checkbox-indicator {
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background-color: #e5e7eb;
-		border: none;
-		margin-right: 0.5em;
-		position: relative;
-		box-shadow: none;
-		transition: background-color 200ms ease-in-out;
-	}
-
-	&--right {
-		.checkbox-indicator {
-			order: 1;
-			margin-right: 0;
-			margin-left: 0.5em;
-		}
-	}
-
-	.input {
-		@include visually-hidden();
-
-		&[disabled] + .label {
-			@include disabled();
-		}
-
-	}
-
-	&--readonly {
-		pointer-events: none;
-	}
-}
-</style>
