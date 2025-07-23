@@ -1,4 +1,7 @@
 query myKivaForAllUsers {
+	my {
+		id
+	}
 	general {
 		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
 			key
