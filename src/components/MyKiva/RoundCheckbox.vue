@@ -74,10 +74,11 @@ watch(() => props.checked, val => {
 <style lang="postcss" scoped>
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity 0.5s;
+	transition: opacity 0.5s;
 }
+
 .fade-enter-from, .fade-leave-to {
-    opacity: 0;
+	opacity: 0;
 }
 
 </style>
