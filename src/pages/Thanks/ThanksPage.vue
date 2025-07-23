@@ -14,7 +14,6 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
-				:is-my-kiva-all-users="myKivaFlagEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -32,7 +31,7 @@
 				:receipt="receipt"
 				:badges-achieved="badgesAchieved"
 				:guest-username="guestUsername"
-				:is-my-kiva-all-users="myKivaFlagEnabled"
+				:my-kiva-enabled="myKivaExperimentEnabled"
 			/>
 		</template>
 		<template v-if="activeView === MARKETING_OPT_IN_VIEW">
@@ -298,7 +297,6 @@ export default {
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
-			myKivaFlagEnabled: false,
 		};
 	},
 	apollo: {
@@ -527,9 +525,6 @@ export default {
 		// Enable single version TY page
 		this.thanksSingleVersionEnabled = readBoolSetting(data, TY_SINGLE_VERSION_KEY);
 
-		// Enable My Kiva Page for all users
-		this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
-
 		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
 			|| this.$route.query?.optedIn === 'true';
 
@@ -539,9 +534,7 @@ export default {
 		this.myKivaExperimentEnabled = getIsMyKivaEnabled(
 			this.apollo,
 			this.$kvTrackEvent,
-			data?.my?.userPreferences,
-			!this.isGuest ? data?.my?.loans?.totalCount : 1,
-			this.myKivaFlagEnabled,
+			readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY),
 			this.cookieStore,
 		);
 

@@ -2,10 +2,6 @@ query userAtbModal {
 	hasEverLoggedIn @client
 	my {
 		id
-		userPreferences {
-			id
-			preferences
-		}
 		loans {
 			totalCount
 		}
