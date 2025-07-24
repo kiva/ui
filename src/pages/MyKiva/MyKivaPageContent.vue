@@ -25,6 +25,7 @@
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
 				:regions="lendingStats.regionsWithLoanStatus"
+				:loans="loans"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">

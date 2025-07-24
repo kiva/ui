@@ -1,24 +1,24 @@
 <template>
 	<div
-		class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center tw-select-none journey-card"
+		class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center tw-select-none tw-bg-white journey-card"
 		:class="{ '!tw-bg-left-top': isBgTopAligned }"
 		:style="{ backgroundImage: `url(${bgImage})` }"
 	>
 		<div
 			v-if="images.length"
 			class="tw-p-1"
-			style="min-height: 220px;"
+			style="min-height: 235px;"
 		>
 			<KvCarousel
 				class="carousel"
+				:key="images.length"
 				:embla-options="{ loop: false, align: 'center' }"
 				:is-dotted="true"
 			>
 				<template v-for="(image, index) in images" #[`slide${index+1}`] :key="index">
 					<img
 						:src="image"
-						class="tw-rounded tw-w-full"
-						loading="lazy"
+						class="tw-rounded tw-w-full tw-aspect-video"
 					>
 				</template>
 			</KvCarousel>
@@ -27,8 +27,10 @@
 			v-if="tagText"
 			class="tw-absolute tw-bg-secondary tw-rounded tw-px-1.5 tw-py-0.5 tw-text-small tw-left-1.5 tw-top-1.5
 				tw-drop-shadow-sm tw-font-medium tw-flex tw-items-center"
-			v-html="tagText"
-		></div>
+		>
+			<TrophyIcon class="tw-mr-1" v-if="showTagIcon" />
+			<span>{{ tagText }}</span>
+		</div>
 		<div
 			class="
 				tw-w-full
@@ -79,6 +81,7 @@
 					<KvButton
 						@click="emit('primary-cta-clicked')"
 						:variant="primaryCtaVariant"
+						class="card-primary-cta"
 						:class="{ 'tw-w-full': isFullWidthPrimaryCta }"
 					>
 						<div class="tw-flex tw-items-center tw-w-full">
@@ -88,7 +91,7 @@
 							<KvMaterialIcon
 								v-if="showCtaIcon"
 								:icon="mdiArrowTopRight"
-								class="!tw-w-2.5 !tw-h-2.5 tw-ml-3"
+								class="!tw-w-2.5 !tw-h-2.5 tw-ml-2"
 							/>
 						</div>
 					</KvButton>
@@ -106,6 +109,7 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
+import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
@@ -217,6 +221,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Whether to show the tag icon (TrophyIcon).
+	 */
+	showTagIcon: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -262,5 +273,9 @@ const titleClass = computed(() => {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply !tw-mt-2;
+}
+
+:deep(.card-primary-cta > span > span) {
+	@apply tw-px-1;
 }
 </style>

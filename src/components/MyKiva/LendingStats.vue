@@ -7,61 +7,80 @@
 			Next steps for you based on your lending history
 		</p>
 	</div>
-	<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full" style="max-width: 800px;">
-		<div ref="loanRegionsElement" class="tw-mb-4">
-			<span
-				v-if="pillHeader"
-				class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
+	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
+		<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
+			<div ref="loanRegionsElement" class="tw-mb-4">
+				<span
+					v-if="pillHeader"
+					class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
 				tw-px-3 tw-py-1 tw-leading-tight"
-				title="Your lending reach"
-			>
-				<GlobeSearch class="tw-w-3 tw-h-3 tw-text-brand-550 tw-align-middle" />
-				<span class="tw-text-primary tw-font-medium">
-					{{ pillHeader }}
-				</span>
-			</span>
-			<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
-				<ul
-					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2 tw-w-full"
+					title="Your lending reach"
 				>
-					<li
-						v-for="(region, idx) in props.regions"
-						:key="region.name"
-						class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
+					<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
+					<span class="tw-text-primary tw-font-medium tw-text-h5">
+						{{ pillHeader }}
+					</span>
+				</span>
+				<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
+					<ul
+						class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2
+							tw-w-full"
 					>
-						<RoundCheckbox
-							:id="`continent-checkbox-${idx}`"
-							:checked="checkedArr[idx]"
-							class="tw-mr-0.5"
-							:readonly="true"
-							:disabled="true"
-						/>
-						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
-							<span
-								class="tw-font-medium md:tw-text-lg tw-text-primary
+						<li
+							v-for="(region, idx) in props.regions"
+							:key="region.name"
+							class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
+						>
+							<RoundCheckbox
+								:id="`continent-checkbox-${idx}`"
+								:checked="checkedArr[idx]"
+								class="tw-mr-0.5"
+								:readonly="true"
+								:disabled="true"
+							/>
+							<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
+								<span
+									class="tw-font-medium md:tw-text-lg tw-text-primary
 									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full"
-								style="line-height: 1.25;"
-								:title="region.name"
-							>
-								{{ region.name }}
-							</span>
-						</div>
-					</li>
-				</ul>
+									style="line-height: 1.25;"
+									:title="region.name"
+								>
+									{{ region.name }}
+								</span>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
-		</div>
-		<hr
-			v-if="loanRegions"
-			class="tw-my-4 tw-mx-auto tw-border-none"
-			style="
+			<hr
+				v-if="loanRegions"
+				class="tw-my-4 tw-mx-auto tw-border-none"
+				style="
 				width: 219px;
 				height: 1px;
 				border-radius: 20px;
-				background: var(--brand-greens-green-2, #78C79F);
-			"
-		>
-		<div>
+					background: var(--brand-greens-green-2, #78C79F);
+				"
+			>
+			<div>
 			<!-- Second major section content goes here -->
+			</div>
+		</div>
+		<div class="card-cointainer">
+			<MyKivaCard
+				class="kiva-card"
+				:title="cardTitle"
+				:show-cta-icon="true"
+				:primary-cta-text="cardCtaText"
+				primary-cta-variant="primary"
+				:is-full-width-primary-cta="true"
+				:is-title-font-sans="true"
+				title-color="tw-text-action-highlight"
+				:images="topCategoryImages"
+				:tag-text="cardTagText"
+				:show-tag-icon="showTagIcon"
+				@primary-cta-clicked="goToTopCategory"
+			/>
 		</div>
 	</div>
 </template>
@@ -70,21 +89,46 @@
 import {
 	computed, ref, onUnmounted, onMounted
 } from 'vue';
+import { useRouter } from 'vue-router';
+import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
-import GlobeSearch from '#src/assets/icons/inline/globe-search.svg';
+import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
+import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
+import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
+const router = useRouter();
+
+const {
+	getTopCategoryByLoans,
+	getLoanFindingUrl,
+} = useBadgeData();
+
 const props = defineProps({
+	/**
+	 * Array of regions with loan status
+	 */
 	regions: {
 		type: Array,
 		default: () => []
-	}
+	},
+	/**
+	 * Array of loans
+	 */
+	loans: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
+const topCategory = ref(null);
+const topCategoryLoans = ref([]);
+const topCategoryTarget = ref('');
+const topCategoryUrl = ref('');
 
 const totalRegions = computed(() => props.regions.length);
 const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
@@ -102,6 +146,64 @@ const pillHeader = computed(() => {
 // Local checked state for fade effect
 const checkedArr = ref(props.regions.map(() => false));
 
+const topCategoryImages = computed(() => {
+	if (topCategoryLoans.value.length) {
+		return topCategoryLoans.value.map(loan => loan.cardImage.url).slice(0, 3);
+	}
+	return [NoLoansImg];
+});
+
+const cardTitle = computed(() => {
+	if (topCategory.value) {
+		let targetText = '';
+		if (topCategoryImages.value.length > 1) {
+			targetText = topCategoryTarget.value === 'woman' ? 'women' : `${topCategoryTarget.value}s`;
+		} else {
+			targetText = topCategoryTarget.value;
+		}
+		return `You've funded ${topCategoryImages.value.length} ${targetText}!`;
+	}
+	return 'Give women an equal opportunity to succeed.';
+});
+
+const cardCtaText = computed(() => {
+	if (topCategory.value) {
+		return `Support another ${topCategoryTarget.value}`;
+	}
+	return 'Fund a Woman';
+});
+
+const cardTagText = computed(() => {
+	if (topCategory.value) {
+		let categoryText = '';
+		switch (topCategory.value) {
+			case 'us-economic-equality':
+				categoryText = 'Kiva US';
+				break;
+			case 'climate-action':
+				categoryText = 'Climate';
+				break;
+			case 'refugee-equality':
+				categoryText = 'Refugees';
+				break;
+			case 'basic-needs':
+				categoryText = 'Basic Needs';
+				break;
+			default:
+				categoryText = 'Women';
+		}
+		return `Your top category: ${categoryText}`;
+	}
+	return 'Recommended: Loans to Women';
+});
+
+const showTagIcon = computed(() => !!topCategory.value);
+
+const goToTopCategory = () => {
+	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
+	router.push(route);
+};
+
 onMounted(() => {
 	delayUntilVisible(() => {
 		setTimeout(() => {
@@ -118,6 +220,11 @@ onMounted(() => {
 			}, 200);
 		}, 800);
 	}, [loanRegionsElement.value]);
+
+	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
+	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
+	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
+	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
 });
 
 onUnmounted(() => {
@@ -125,5 +232,18 @@ onUnmounted(() => {
 		clearInterval(interval.value);
 	}
 });
-
 </script>
+
+<style lang="postcss" scoped>
+.card-cointainer {
+	max-width: 100%;
+
+	@screen lg {
+		max-width: 350px;
+	}
+}
+
+.kiva-card :deep(h2) {
+	font-size: 22px !important;
+}
+</style>

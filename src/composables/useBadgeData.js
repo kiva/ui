@@ -35,6 +35,14 @@ export const CATEGORIES = {
 	[ID_BASIC_NEEDS]: 'basic-needs',
 };
 
+export const CATEGORY_TARGETS = {
+	[ID_WOMENS_EQUALITY]: 'woman',
+	[ID_US_ECONOMIC_EQUALITY]: 'entrepreneur',
+	[ID_CLIMATE_ACTION]: 'person',
+	[ID_REFUGEE_EQUALITY]: 'refugee',
+	[ID_BASIC_NEEDS]: 'person',
+};
+
 const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
 const REFUGEE_THEME = 'refugees/displaced';
@@ -582,6 +590,31 @@ export default function useBadgeData() {
 	};
 
 	/**
+	 * Get top category
+	 *
+	 * @param loans The loans to filter
+	 * @returns Top category by loans
+	 */
+	const getTopCategoryByLoans = loans => {
+		const groupedLoans = [];
+		Object.keys(CATEGORIES).forEach(category => {
+			const filteredLoans = getFilteredLoansByJourney({ id: category }, loans);
+			if (filteredLoans.length > 0) {
+				groupedLoans.push({
+					category,
+					loans: filteredLoans,
+				});
+			}
+		});
+
+		groupedLoans.sort((a, b) => b.loans.length - a.loans.length);
+		if (groupedLoans.length > 0) {
+			return groupedLoans[0];
+		}
+		return null;
+	};
+
+	/**
 	 * Get badge headline
 	 *
 	 * @param badge The badge to filter loans by
@@ -666,5 +699,6 @@ export default function useBadgeData() {
 		isBadgeKeyValid,
 		getLevelCaption,
 		getJourneysByLoan,
+		getTopCategoryByLoans,
 	};
 }
