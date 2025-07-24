@@ -146,30 +146,6 @@ const pillHeader = computed(() => {
 // Local checked state for fade effect
 const checkedArr = ref(props.regions.map(() => false));
 
-onMounted(() => {
-	delayUntilVisible(() => {
-		setTimeout(() => {
-			let currentIdx = 0;
-			interval.value = setInterval(() => {
-				// eslint-disable-next-line max-len
-				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
-				if (currentIdx !== -1) {
-					checkedArr.value[currentIdx] = true;
-					currentIdx += 1;
-				} else {
-					clearInterval(interval.value);
-				}
-			}, 200);
-		}, 800);
-	}, [loanRegionsElement.value]);
-});
-
-onUnmounted(() => {
-	if (interval.value) {
-		clearInterval(interval.value);
-	}
-});
-
 const topCategoryImages = computed(() => {
 	if (topCategoryLoans.value.length) {
 		return topCategoryLoans.value.map(loan => loan.cardImage.url).slice(0, 3);
@@ -221,24 +197,40 @@ const cardTagText = computed(() => {
 	return 'Recommended: Loans to Women';
 });
 
-const showTagIcon = computed(() => {
-	if (topCategory.value) {
-		return true;
-	}
-	return false;
-});
+const showTagIcon = computed(() => !!topCategory.value);
 
 const goToTopCategory = () => {
-	if (topCategoryUrl.value) {
-		router.push(topCategoryUrl.value);
-	}
+	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
+	router.push(route);
 };
 
 onMounted(() => {
+	delayUntilVisible(() => {
+		setTimeout(() => {
+			let currentIdx = 0;
+			interval.value = setInterval(() => {
+				// eslint-disable-next-line max-len
+				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+				if (currentIdx !== -1) {
+					checkedArr.value[currentIdx] = true;
+					currentIdx += 1;
+				} else {
+					clearInterval(interval.value);
+				}
+			}, 200);
+		}, 800);
+	}, [loanRegionsElement.value]);
+
 	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
 	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
 	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
 	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
+});
+
+onUnmounted(() => {
+	if (interval.value) {
+		clearInterval(interval.value);
+	}
 });
 </script>
 
