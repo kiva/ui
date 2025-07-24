@@ -302,6 +302,9 @@ export default {
 	watch: {
 		loanId(newId, oldId) {
 			if (newId !== oldId && newId) this.loadData();
+		},
+		disableCache(newDC, oldDC) {
+			if (newDC !== oldDC && newDC) this.loadData();
 		}
 	},
 	mounted() {

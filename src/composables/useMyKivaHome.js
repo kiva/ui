@@ -39,8 +39,6 @@ export default function useMyKivaHome(apollo, $kvTrackEvent, cookieStore) {
 			redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
 				apollo,
 				$kvTrackEvent,
-				userData.value?.userPreferences,
-				userData.value?.loans?.totalCount ?? 0,
 				myKivaFlagEnabled.value,
 				cookieStore,
 			) && userData.value?.id;

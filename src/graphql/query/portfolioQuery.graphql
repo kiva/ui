@@ -31,10 +31,6 @@ query portfolioQuery {
 			id
 			preferences
 		}
-		lender {
-			id
-			loanCount
-		}
 	}
 	general {
 		team_challenge_enable: uiConfigSetting(key: "portfolio_team_challenge_enable") {

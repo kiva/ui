@@ -451,8 +451,6 @@ export default {
 			newAtbExpEnabled: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
-			userPreferences: null,
-			lenderLoanCount: null,
 		};
 	},
 	apollo: {
@@ -537,8 +535,6 @@ export default {
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 
 			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
-			this.userPreferences = data?.my?.userPreferences ?? null;
-			this.lenderLoanCount = data?.my?.lender?.loanCount ?? 0;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -645,8 +641,6 @@ export default {
 			this.isMyKivaEnabled = getIsMyKivaEnabled(
 				this.apollo,
 				this.$kvTrackEvent,
-				this.userPreferences,
-				this.lenderLoanCount,
 				this.myKivaFlagEnabled,
 				this.cookieStore,
 			);

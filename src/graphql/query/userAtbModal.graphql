@@ -6,10 +6,6 @@ query userAtbModal {
           id
           balance
         }
-		userPreferences {
-			id
-			preferences
-		}
 		loans {
 			totalCount
 		}

@@ -110,9 +110,22 @@ export default {
 
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
 
+				const countryFacets = statsResult.lend?.countryFacets ?? [];
+				const allRegions = [
+					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
+				];
+
+				const regionsWithLoanStatus = allRegions.map(region => {
+					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
+						const match = item?.region === region;
+						return match;
+					});
+					return { name: region, hasLoans };
+				});
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,
 					...statsResult.my?.userStats,
+					regionsWithLoanStatus,
 				};
 				this.transactions = result.my?.transactions?.values ?? [];
 			} catch (e) {
