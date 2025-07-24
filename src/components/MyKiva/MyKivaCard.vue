@@ -27,8 +27,10 @@
 			v-if="tagText"
 			class="tw-absolute tw-bg-secondary tw-rounded tw-px-1.5 tw-py-0.5 tw-text-small tw-left-1.5 tw-top-1.5
 				tw-drop-shadow-sm tw-font-medium tw-flex tw-items-center"
-			v-html="tagText"
-		></div>
+		>
+			<TrophyIcon class="tw-mr-1" v-if="showTagIcon" />
+			<span>{{ tagText }}</span>
+		</div>
 		<div
 			class="
 				tw-w-full
@@ -107,6 +109,7 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
+import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
@@ -215,6 +218,13 @@ const props = defineProps({
 	 * Whether to show the call-to-action icon (arrow).
 	 */
 	showCtaIcon: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether to show the tag icon (TrophyIcon).
+	 */
+	showTagIcon: {
 		type: Boolean,
 		default: false,
 	},

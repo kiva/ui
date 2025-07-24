@@ -77,6 +77,8 @@
 				:is-title-font-sans="true"
 				title-color="tw-text-action-highlight"
 				:images="topCategoryImages"
+				:tag-text="cardTagText"
+				:show-tag-icon="showTagIcon"
 				@primary-cta-clicked="goToTopCategory"
 			/>
 		</div>
@@ -193,6 +195,37 @@ const cardCtaText = computed(() => {
 		return `Support another ${topCategoryTarget.value}`;
 	}
 	return 'Fund a Woman';
+});
+
+const cardTagText = computed(() => {
+	if (topCategory.value) {
+		let categoryText = '';
+		switch (topCategory.value) {
+			case 'us-economic-equality':
+				categoryText = 'Kiva US';
+				break;
+			case 'climate-action':
+				categoryText = 'Climate';
+				break;
+			case 'refugee-equality':
+				categoryText = 'Refugees';
+				break;
+			case 'basic-needs':
+				categoryText = 'Basic Needs';
+				break;
+			default:
+				categoryText = 'Women';
+		}
+		return `Your top category: ${categoryText}`;
+	}
+	return 'Recommended: Loans to Women';
+});
+
+const showTagIcon = computed(() => {
+	if (topCategory.value) {
+		return true;
+	}
+	return false;
 });
 
 const goToTopCategory = () => {
