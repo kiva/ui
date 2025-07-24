@@ -1,4 +1,4 @@
-3<template>
+<template>
 	<div
 		class="tw-block tw-relative"
 		:class="{
