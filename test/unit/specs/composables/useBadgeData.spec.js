@@ -951,6 +951,46 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
+	describe('getTopCategoryByLoans', () => {
+		const { getTopCategoryByLoans } = useBadgeData();
+
+		it('should return null if no loans are provided', () => {
+			const loans = [];
+			expect(getTopCategoryByLoans(loans)).toEqual(null);
+		});
+
+		it('should return most repeated category object', () => {
+			const loans = [
+				{
+					id: 1,
+					gender: 'female'
+				},
+				{
+					id: 2,
+					gender: 'female'
+				},
+				{
+					gender: 'male',
+					geocode: {
+						country: {
+							isoCode: 'PE'
+						}
+					},
+					sector: {
+						id: 2
+					},
+					themes: [
+						'Education'
+					],
+					tags: [
+						'#Agriculture'
+					]
+				}
+			];
+			expect(getTopCategoryByLoans(loans)).toEqual({ category: 'womens-equality', loans: [loans[0], loans[1]] });
+		});
+	});
+
 	describe('getBadgeHeadline', () => {
 		it('should return expected headline for women-equality', () => {
 			const { getTierBadgeHeadline } = useBadgeData();
