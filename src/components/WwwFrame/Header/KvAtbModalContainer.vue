@@ -186,7 +186,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP && !hasUserBalance.value) || achievementReached) {
+		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && !hasUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
