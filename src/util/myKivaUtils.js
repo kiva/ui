@@ -82,7 +82,7 @@ export const setMyKivaRedirectCookie = cookieStore => {
 	const expires = new Date();
 	// Set the cookie to expire in 2 months
 	expires.setMonth(expires.getMonth() + 2);
-	cookieStore?.set('mykivaredirect', 'true', expires);
+	cookieStore?.set('mykivaredirectv2', 'true', expires);
 };
 
 /**
