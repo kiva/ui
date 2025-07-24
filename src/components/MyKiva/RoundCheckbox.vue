@@ -21,9 +21,10 @@
 			<div
 				:class="[
 					'tw-relative',
-					inputValue ? 'tw-w-3.5 tw-h-3.5 tw-bg-transparent' : 'tw-w-3 tw-h-3 tw-bg-gray-200',
+					inputValue ? 'tw-text-brand-550' : 'tw-bg-gray-200',
 					'tw-rounded-full',
-					'tw-mr-2',
+					'tw-w-2.5 tw-h-2.5',
+					'tw-mr-0.5',
 					'tw-transition-colors',
 					'tw-flex',
 					'tw-items-center',
@@ -35,7 +36,7 @@
 					<KvMaterialIcon
 						v-if="inputValue"
 						:icon="mdiCheckCircle"
-						class="tw-absolute tw-inset-0 tw-w-3.5 tw-h-3.5 tw-text-brand-550"
+						class="check-icon"
 					/>
 				</transition>
 			</div>
@@ -74,11 +75,15 @@ watch(() => props.checked, val => {
 <style lang="postcss" scoped>
 
 .fade-enter-active, .fade-leave-active {
-	transition: opacity 0.5s;
+	@apply tw-transition-opacity tw-duration-500;
 }
 
 .fade-enter-from, .fade-leave-to {
-	opacity: 0;
+	@apply tw-opacity-0;
+}
+
+:deep(.check-icon svg) {
+	@apply tw-w-3 tw-h-3;
 }
 
 </style>
