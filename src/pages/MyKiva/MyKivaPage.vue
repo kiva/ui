@@ -112,7 +112,6 @@ export default {
 						regionCounts.set(region, (regionCounts.get(region) || 0) + (facet.count || 0));
 					}
 				});
-				console.log('statsResult', statsResult);
 				const allRegions = [...regionCounts.keys()];
 				const regionsData = allRegions.map(region => ({
 					name: region,
