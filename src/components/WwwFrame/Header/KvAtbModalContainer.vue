@@ -81,6 +81,7 @@ const basketCount = computed(() => {
 });
 
 const isGuest = computed(() => !userData.value?.my);
+const hasUserBalance = computed(() => Boolean(Math.floor(userData.value?.my?.userAccount?.balance)));
 
 const resetModal = () => {
 	showModalContent.value = false;
@@ -173,7 +174,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		} else if (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) {
+		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && !hasUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
@@ -201,7 +202,7 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP && !hasUserBalance.value) {
 		modalVisible.value = true;
 	}
 });
