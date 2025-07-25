@@ -27,7 +27,7 @@
 							tw-w-full"
 					>
 						<li
-							v-for="(region, idx) in props.regions"
+							v-for="(region, idx) in props.regionsData"
 							:key="region.name"
 							class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 						>
@@ -58,7 +58,37 @@
 				style="width: 219px; height: 1px;"
 			>
 			<div>
-			<!-- Second major section content goes here -->
+				<!-- Second major section content goes here -->
+				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
+				<div class="tw-w-full tw-flex-wrap tw-gap-2 tw-mt-2">
+					<a
+						v-for="(region, idx) in pendingRegions"
+						:key="idx"
+						class="tw-flex tw-mb-2 tw-w-1/2 tw-cursor-pointer"
+						@click="handleRecommendRegionClick(region)"
+					>
+						<div
+							class="
+							tw-flex tw-flex-col tw-w-full
+							tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+							tw-transition-shadow tw-duration-200"
+						>
+							<svg
+								class="tw-w-full tw-h-16 tw-rounded-t tw-bg-gray-200"
+								viewBox="0 0 100 100"
+								preserveAspectRatio="none"
+							>
+								<rect width="100" height="100" fill="#e5e7eb" />
+							</svg>
+							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
+								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
+								<UpCornerArrowIcon
+									class="tw-justify-end tw-w-2 tw-h-2 tw-text-brand-550 tw-align-middle"
+								/>
+							</div>
+						</div>
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="card-cointainer">
@@ -79,7 +109,6 @@
 		</div>
 	</div>
 </template>
-
 <script setup>
 import {
 	computed,
@@ -92,6 +121,7 @@ import { useRouter } from 'vue-router';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
+import UpCornerArrowIcon from '#src/assets/icons/inline/up-corner-arrow.svg';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
@@ -110,9 +140,10 @@ const props = defineProps({
 	/**
 	 * Array of regions with loan status
 	 */
-	regions: {
+	regionsData: {
 		type: Array,
-		default: () => []
+		default: () => [],
+		required: true,
 	},
 	/**
 	 * Array of loans
@@ -120,6 +151,7 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
+		required: true,
 	},
 });
 
@@ -130,21 +162,30 @@ const topCategoryLoans = ref([]);
 const topCategoryTarget = ref('');
 const topCategoryUrl = ref('');
 
-const totalRegions = computed(() => props.regions.length);
-const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
+const totalRegions = computed(() => props.regionsData.length);
+const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
+const showTagIcon = computed(() => !!topCategory.value);
 
 const pillHeader = computed(() => {
-	if (totalRegions.value === 0) {
-		return '';
-	}
-	if (loanRegions.value === 0) {
-		return 'Make a global impact';
-	}
+	if (totalRegions.value === 0) return '';
+	if (loanRegions.value === 0) return 'Make a global impact';
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
 
-// Local checked state for fade effect
-const checkedArr = ref(props.regions.map(() => false));
+const pendingRegions = computed(() => {
+	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count);
+});
+
+const formattedPendingRegions = computed(() => {
+	const regions = pendingRegions.value;
+	if (!regions || regions.length === 0) return '';
+	const formattedNames = regions.map(region => `<span class="tw-font-medium">
+		${region.name === 'Middle East' ? 'the Middle East' : region.name}
+		</span>`);
+	if (formattedNames.length === 1) return formattedNames[0];
+	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
+	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
+});
 
 const topCategoryImages = computed(() => {
 	if (topCategoryLoans.value.length) {
@@ -197,7 +238,14 @@ const cardTagText = computed(() => {
 	return 'Recommended: Loans to Women';
 });
 
-const showTagIcon = computed(() => !!topCategory.value);
+const handleRecommendRegionClick = region => {
+	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	const formattedRegion = region?.name
+		?.toLowerCase()
+		?.replace(/\s+/g, '-')
+		?.replace(/[^a-z0-9-]/g, '');
+	router.push(`/impact/${formattedRegion}`);
+};
 
 const goToTopCategory = () => {
 	$kvTrackEvent(
@@ -211,13 +259,16 @@ const goToTopCategory = () => {
 	router.push(route);
 };
 
+// Local checked state for fade effect
+const checkedArr = ref(props.regionsData.map(() => false));
+
 onMounted(() => {
 	delayUntilVisible(() => {
 		setTimeout(() => {
 			let currentIdx = 0;
 			interval.value = setInterval(() => {
 				// eslint-disable-next-line max-len
-				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+				currentIdx = props.regionsData.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
 				if (currentIdx !== -1) {
 					checkedArr.value[currentIdx] = true;
 					currentIdx += 1;
@@ -235,9 +286,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (interval.value) {
-		clearInterval(interval.value);
-	}
+	if (interval.value) clearInterval(interval.value);
 });
 </script>
 

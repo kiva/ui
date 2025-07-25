@@ -24,7 +24,7 @@
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
-				:regions="lendingStats.regionsWithLoanStatus"
+				:regions-data="lendingStats.regionsData"
 				:loans="loans"
 			/>
 		</section>
