@@ -172,7 +172,7 @@ const pillHeader = computed(() => {
 });
 
 const pendingRegions = computed(() => {
-	return props.regionsData.filter(region => !region.hasLoans).sort(region => region.count);
+	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count);
 });
 
 const formattedPendingRegions = computed(() => {
@@ -185,6 +185,15 @@ const formattedPendingRegions = computed(() => {
 	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
 	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
 });
+
+const handleRecommendRegionClick = region => {
+	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	const formattedRegion = region?.name
+		?.toLowerCase()
+		?.replace(/\s+/g, '-')
+		?.replace(/[^a-z0-9-]/g, '');
+	router.push(`/impact/${formattedRegion}`);
+};
 
 // Local checked state for fade effect
 const checkedArr = ref(props.regionsData.map(() => false));
