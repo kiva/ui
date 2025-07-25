@@ -33,11 +33,7 @@ import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, {
-	ID_WOMENS_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_BASIC_NEEDS,
+	CATEGORY_TARGETS,
 } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
@@ -45,14 +41,6 @@ import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } f
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
-
-const categoryNames = {
-	[ID_WOMENS_EQUALITY]: 'woman',
-	[ID_US_ECONOMIC_EQUALITY]: 'entrepreneur',
-	[ID_CLIMATE_ACTION]: 'person',
-	[ID_REFUGEE_EQUALITY]: 'refugee',
-	[ID_BASIC_NEEDS]: 'person',
-};
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
@@ -93,6 +81,7 @@ const basketCount = computed(() => {
 });
 
 const isGuest = computed(() => !userData.value?.my);
+const hasUserBalance = computed(() => Boolean(Math.floor(userData.value?.my?.userAccount?.balance)));
 
 const resetModal = () => {
 	showModalContent.value = false;
@@ -180,12 +169,12 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		if (oneLoanAwayAchievement?.id && !isFirstLoan.value && !achievementReached) {
 			const loanUrl = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);
 			oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
-			oneLoanAwayCategory.value = categoryNames[oneLoanAwayAchievement.id];
+			oneLoanAwayCategory.value = CATEGORY_TARGETS[oneLoanAwayAchievement.id];
 			const { target } = oneLoanAwayAchievement;
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		} else if (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) {
+		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && !hasUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
@@ -213,7 +202,7 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP && !hasUserBalance.value) {
 		modalVisible.value = true;
 	}
 });

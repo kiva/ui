@@ -37,6 +37,7 @@
 			<LendingStats
 				v-else
 				:regions="lendingStats.regionsWithLoanStatus"
+				:loans="loans"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
