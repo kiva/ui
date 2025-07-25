@@ -54,13 +54,8 @@
 			</div>
 			<hr
 				v-if="loanRegions"
-				class="tw-my-4 tw-mx-auto tw-border-none"
-				style="
-				width: 219px;
-				height: 1px;
-				border-radius: 20px;
-					background: var(--brand-greens-green-2, #78C79F);
-				"
+				class="tw-my-4 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
+				style="width: 219px; height: 1px;"
 			>
 			<div>
 			<!-- Second major section content goes here -->
