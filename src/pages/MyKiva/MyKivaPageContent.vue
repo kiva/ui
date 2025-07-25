@@ -23,7 +23,19 @@
 			:lending-stats="lendingStats"
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
+			<JourneyCardCarousel
+				v-if="userLentToAllRegions"
+				class="tw-mt-2"
+				:lender="lender"
+				:user-in-homepage="userInHomepage"
+				:slides-number="2"
+				:slides="heroSlides"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				@update-journey="updateJourney"
+			/>
 			<LendingStats
+				v-else
 				:regions="lendingStats.regionsWithLoanStatus"
 			/>
 		</section>
@@ -252,6 +264,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		userLentToAllRegions: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);

@@ -12,6 +12,7 @@
 			:lending-stats="lendingStats"
 			:transactions="transactions"
 			:is-lending-stats-exp="isLendingStatsExp"
+			:user-lent-to-all-regions="userLentToAllRegions"
 		/>
 	</www-page>
 </template>
@@ -56,6 +57,7 @@ export default {
 			transactions: [],
 			heroSlides: [],
 			isLendingStatsExp: false,
+			userLentToAllRegions: false,
 		};
 	},
 	apollo: {
@@ -72,7 +74,24 @@ export default {
 				const myKivaStatsExp = result[3];
 				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
 
-				if (isHeroEnabled && !isMyKivaStatsExp) {
+				const statsResult = result[1]?.data || {};
+				const countryFacets = statsResult.lend?.countryFacets ?? [];
+				const allRegions = [
+					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
+				];
+
+				const regionsWithLoanStatus = allRegions.map(region => {
+					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
+						const match = item?.region === region;
+						return match;
+					});
+					return { name: region, hasLoans };
+				});
+
+				const userLentToAllRegions = regionsWithLoanStatus
+					.filter(r => r?.hasLoans).length === allRegions.length;
+
+				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions) {
 					return Promise.all([
 						client.query({
 							query: contentfulEntriesQuery,
@@ -122,6 +141,10 @@ export default {
 					});
 					return { name: region, hasLoans };
 				});
+
+				this.userLentToAllRegions = regionsWithLoanStatus
+					.filter(r => r?.hasLoans).length === allRegions.length;
+
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,
 					...statsResult.my?.userStats,
@@ -153,7 +176,9 @@ export default {
 
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 
-			if (this.isHeroEnabled && !this.isLendingStatsExp) {
+			this.fetchMyKivaData();
+
+			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
@@ -178,8 +203,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
 		}
-
-		this.fetchMyKivaData();
 	},
 };
 </script>
