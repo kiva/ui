@@ -164,6 +164,7 @@ const topCategoryUrl = ref('');
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
+const showTagIcon = computed(() => !!topCategory.value);
 
 const pillHeader = computed(() => {
 	if (totalRegions.value === 0) return '';
@@ -185,18 +186,6 @@ const formattedPendingRegions = computed(() => {
 	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
 	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
 });
-
-const handleRecommendRegionClick = region => {
-	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
-	const formattedRegion = region?.name
-		?.toLowerCase()
-		?.replace(/\s+/g, '-')
-		?.replace(/[^a-z0-9-]/g, '');
-	router.push(`/impact/${formattedRegion}`);
-};
-
-// Local checked state for fade effect
-const checkedArr = ref(props.regionsData.map(() => false));
 
 const topCategoryImages = computed(() => {
 	if (topCategoryLoans.value.length) {
@@ -249,7 +238,14 @@ const cardTagText = computed(() => {
 	return 'Recommended: Loans to Women';
 });
 
-const showTagIcon = computed(() => !!topCategory.value);
+const handleRecommendRegionClick = region => {
+	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	const formattedRegion = region?.name
+		?.toLowerCase()
+		?.replace(/\s+/g, '-')
+		?.replace(/[^a-z0-9-]/g, '');
+	router.push(`/impact/${formattedRegion}`);
+};
 
 const goToTopCategory = () => {
 	$kvTrackEvent(
@@ -262,6 +258,9 @@ const goToTopCategory = () => {
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
 };
+
+// Local checked state for fade effect
+const checkedArr = ref(props.regionsData.map(() => false));
 
 onMounted(() => {
 	delayUntilVisible(() => {
