@@ -24,6 +24,7 @@
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
+				ref="lendingStats"
 				:regions="lendingStats.regionsWithLoanStatus"
 				:loans="loans"
 			/>
@@ -264,6 +265,7 @@ export default {
 		} = useBadgeData(this.apollo);
 
 		return {
+			lendingStatsObserver: null,
 			badgeData,
 			blogCards: [],
 			blogCategories,
@@ -594,6 +596,30 @@ export default {
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
 		this.initializeIsBpModalEnabledExp('my-kiva-page-content');
+
+		this.$nextTick(() => {
+			const loanRegionsEl = this.$refs.lendingStats?.loanRegionsElement;
+			if (loanRegionsEl) {
+				const observer = new window.IntersectionObserver(
+					(entries, obs) => {
+						entries.forEach(entry => {
+							if (entry.isIntersecting) {
+								this.$kvTrackEvent('event-tracking', 'show', 'regions-lent-to');
+								obs.disconnect();
+							}
+						});
+					},
+					{ threshold: 0.2 }
+				);
+				observer.observe(loanRegionsEl);
+				this.lendingStatsObserver = observer;
+			}
+		});
+	},
+	beforeUnmount() {
+		if (this.lendingStatsObserver) {
+			this.lendingStatsObserver.disconnect();
+		}
 	},
 };
 </script>
