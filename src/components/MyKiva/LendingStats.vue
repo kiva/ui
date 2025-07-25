@@ -125,6 +125,7 @@ const props = defineProps({
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
+defineExpose({ loanRegionsElement });
 const topCategory = ref(null);
 const topCategoryLoans = ref([]);
 const topCategoryTarget = ref('');
