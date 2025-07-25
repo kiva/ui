@@ -1,0 +1,1 @@
+import{m as f,a as u}from"./entry-index-CNzTSTNafD.js";import{r as i,t}from"./entry-index-COmIkRYU2t.js";import{g as o}from"./entry-index-D_23gIjsxn.js";function s(e,n){return i(2,arguments),t(e).getTime()-t(n).getTime()}function g(e,n,a){i(2,arguments);var r=s(e,n)/f;return o()(r)}function l(e,n,a){i(2,arguments);var r=s(e,n)/u;return o()(r)}export{l as a,s as b,g as d};
