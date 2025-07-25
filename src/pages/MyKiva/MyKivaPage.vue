@@ -68,10 +68,8 @@ export default {
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
-
 				const myKivaStatsExp = result[3];
 				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
-
 				if (isHeroEnabled && !isMyKivaStatsExp) {
 					return Promise.all([
 						client.query({
@@ -96,7 +94,6 @@ export default {
 		fetchMyKivaData() {
 			try {
 				const result = this.apollo.readQuery({ query: myKivaQuery });
-
 				this.userInfo = result.my ?? {};
 				this.lender = result.my?.lender ?? null;
 				this.lender = {
@@ -104,28 +101,28 @@ export default {
 					public: this.userInfo.userAccount?.public ?? false,
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
-
 				this.loans = result.my?.loans?.values ?? [];
 				this.totalLoans = result.my?.loans?.totalCount ?? 0;
-
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
-
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
-				const allRegions = [
-					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
-				];
-
-				const regionsWithLoanStatus = allRegions.map(region => {
-					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
-						const match = item?.region === region;
-						return match;
-					});
-					return { name: region, hasLoans };
+				const regionCounts = new Map();
+				countryFacets.forEach(facet => {
+					const region = facet.country?.region;
+					if (region) {
+						regionCounts.set(region, (regionCounts.get(region) || 0) + (facet.count || 0));
+					}
 				});
+				console.log('statsResult', statsResult);
+				const allRegions = [...regionCounts.keys()];
+				const regionsData = allRegions.map(region => ({
+					name: region,
+					hasLoans: statsResult.my?.lendingStats?.countriesLentTo.some(item => item?.region === region),
+					count: regionCounts.get(region) || 0
+				}));
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,
 					...statsResult.my?.userStats,
-					regionsWithLoanStatus,
+					regionsData,
 				};
 				this.transactions = result.my?.transactions?.values ?? [];
 			} catch (e) {
@@ -142,7 +139,6 @@ export default {
 				}
 			});
 			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
-
 			const lendingStatsExpData = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -150,19 +146,15 @@ export default {
 				LENDING_STATS_EXP_KEY,
 				'EXP-MP-1729-Jul2025'
 			);
-
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
-
 			if (this.isHeroEnabled && !this.isLendingStatsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
 				});
-
 				const achievementsResult = this.apollo.readQuery({
 					query: userAchievementProgressQuery
 				});
-
 				const slidesResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: {
@@ -170,7 +162,6 @@ export default {
 						contentKey: CONTENTFUL_CAROUSEL_KEY,
 					}
 				});
-
 				this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
 				this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
 				this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? []; // eslint-disable-line max-len
@@ -178,7 +169,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
 		}
-
 		this.fetchMyKivaData();
 	},
 };

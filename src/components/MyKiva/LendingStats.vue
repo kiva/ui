@@ -25,7 +25,7 @@
 					class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2 tw-w-full"
 				>
 					<li
-						v-for="(region, idx) in props.regions"
+						v-for="(region, idx) in props.regionsData"
 						:key="region.name"
 						class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 					>
@@ -60,47 +60,103 @@
 				background: var(--brand-greens-green-2, #78C79F);
 			"
 		>
-		<div>
+		<section>
 			<!-- Second major section content goes here -->
-		</div>
+			<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
+			<div class="tw-w-full tw-flex-wrap tw-gap-2 tw-mt-2">
+				<a
+					v-for="(region, idx) in pendingRegions"
+					:key="idx"
+					class="tw-flex tw-mb-2 tw-w-1/2 tw-cursor-pointer"
+					@click="handleRecommendRegionClick(region)"
+				>
+					<div
+						class="
+						tw-flex tw-flex-col tw-w-full
+						tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+						tw-transition-shadow tw-duration-200"
+					>
+						<svg
+							class="tw-w-full tw-h-16 tw-rounded-t tw-bg-gray-200"
+							viewBox="0 0 100 100"
+							preserveAspectRatio="none"
+						>
+							<rect width="100" height="100" fill="#e5e7eb" />
+						</svg>
+						<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
+							<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
+							<UpCornerArrow class="tw-justify-end tw-w-2 tw-h-2 tw-text-brand-550 tw-align-middle" />
+						</div>
+					</div>
+				</a>
+			</div>
+		</section>
 	</div>
 </template>
-
 <script setup>
 import {
-	computed, ref, onUnmounted, onMounted
+	computed,
+	defineProps,
+	inject,
+	onMounted,
+	onUnmounted,
+	ref,
 } from 'vue';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearch from '#src/assets/icons/inline/globe-search.svg';
+import UpCornerArrow from '#src/assets/icons/inline/up-corner-arrow.svg';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
 const props = defineProps({
-	regions: {
+	regionsData: {
 		type: Array,
-		default: () => []
+		default: () => [],
+		required: true,
 	}
 });
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 
-const totalRegions = computed(() => props.regions.length);
-const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
+const totalRegions = computed(() => props.regionsData.length);
+const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 
 const pillHeader = computed(() => {
-	if (totalRegions.value === 0) {
-		return '';
-	}
-	if (loanRegions.value === 0) {
-		return 'Make a global impact';
-	}
+	if (totalRegions.value === 0) return '';
+	if (loanRegions.value === 0) return 'Make a global impact';
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
 
+const pendingRegions = computed(() => {
+	return props.regionsData.filter(region => !region.hasLoans).sort(region => region.count);
+});
+
+const formattedPendingRegions = computed(() => {
+	const regions = pendingRegions.value;
+	if (!regions || regions.length === 0) return '';
+	const formattedNames = regions.map(region => `<span class="tw-font-medium">
+		${region.name === 'Middle East' ? 'the Middle East' : region.name}
+		</span>`);
+	if (formattedNames.length === 1) return formattedNames[0];
+	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
+	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
+});
+
 // Local checked state for fade effect
-const checkedArr = ref(props.regions.map(() => false));
+const checkedArr = ref(props.regionsData.map(() => false));
+
+const handleRecommendRegionClick = region => {
+	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	const formattedRegion = region?.name
+		?.toLowerCase()
+		?.replace(/\s+/g, '-')
+		?.replace(/[^a-z0-9-]/g, '');
+	window.location.href = `/impact/${formattedRegion}`;
+};
 
 onMounted(() => {
 	delayUntilVisible(() => {
@@ -108,7 +164,7 @@ onMounted(() => {
 			let currentIdx = 0;
 			interval.value = setInterval(() => {
 				// eslint-disable-next-line max-len
-				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+				currentIdx = props.regionsData.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
 				if (currentIdx !== -1) {
 					checkedArr.value[currentIdx] = true;
 					currentIdx += 1;
@@ -121,9 +177,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (interval.value) {
-		clearInterval(interval.value);
-	}
+	if (interval.value) clearInterval(interval.value);
 });
 
 </script>
