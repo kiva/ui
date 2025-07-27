@@ -195,6 +195,11 @@ export default {
             }
         }
 
+        &[disabled] + .label {
+            .square {
+                @include disabled();
+            }
+        }
     }
 
     &--right {
@@ -204,16 +209,20 @@ export default {
             margin-left: 0.5em;
         }
     }
-	.kv-checkbox--blur-disabled {
-		filter: blur(1px);
-		opacity: 0.5;
-		pointer-events: none;
-	}
-	:deep(.check-icon svg) {
-		width: 100%;
-		height: 100%;
-		display: block;
-		transform: scale(1.2);
-	}
+
+    .kv-checkbox--blur-disabled {
+        filter: blur(1px);
+        opacity: 0.5 !important;
+        pointer-events: none;
+        background-color: inherit !important;
+        border-color: inherit !important;
+    }
+
+    :deep(.check-icon svg) {
+        width: 100%;
+        height: 100%;
+        display: block;
+        transform: scale(1.2);
+    }
 }
 </style>
