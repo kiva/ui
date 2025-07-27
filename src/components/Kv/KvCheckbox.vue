@@ -127,7 +127,7 @@ export default {
 <style lang="scss" scoped>
 @use '#src/assets/scss/settings' as *;
 
-// Move .square to the top level, before .kv-checkbox
+// 1. Base .square styles
 .square {
     width: 1em;
     height: 1em;
@@ -154,6 +154,14 @@ export default {
     }
 }
 
+// 2. Modifier for right-aligned checkbox
+.kv-checkbox--right .square {
+    order: 1;
+    margin-right: 0;
+    margin-left: 0.5em;
+}
+
+// 3. Main .kv-checkbox block
 .kv-checkbox {
     display: block;
     position: relative;
@@ -200,14 +208,6 @@ export default {
             .square {
                 @include disabled();
             }
-        }
-    }
-
-    &--right {
-        .square {
-            order: 1;
-            margin-right: 0;
-            margin-left: 0.5em;
         }
     }
 
