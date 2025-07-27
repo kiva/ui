@@ -149,3 +149,34 @@ export const MultiLine = () => ({
 		</kv-checkbox>
 	`,
 });
+
+export const RoundVariant = () => ({
+    components: {
+        KvCheckbox
+    },
+    data() {
+        return {
+            round1: false,
+            round2: true,
+        }
+    },
+    template: `
+        <fieldset>
+            <legend>Round Variant</legend>
+            <kv-checkbox
+                id="round-1"
+                v-model="round1"
+                variant="round"
+            >
+                Round Option 1
+            </kv-checkbox>
+            <kv-checkbox
+                id="round-2"
+                v-model="round2"
+                variant="round"
+            >
+                Round Option 2
+            </kv-checkbox>
+        </fieldset>
+    `,
+});

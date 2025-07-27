@@ -31,12 +31,13 @@
 							:key="region.name"
 							class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 						>
-							<RoundCheckbox
+							<KvCheckbox
 								:id="`continent-checkbox-${idx}`"
 								:checked="checkedArr[idx]"
 								class="tw-mr-0.5"
 								:readonly="true"
 								:disabled="true"
+								variant="square"
 							/>
 							<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 								<span
@@ -91,7 +92,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
-import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
+import KvCheckbox from '#src/components/Kv/KvCheckbox';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';

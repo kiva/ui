@@ -1,172 +1,87 @@
 <template>
 	<div
-		class="kv-checkbox"
-		:class="{ 'kv-checkbox--right' : checkboxRight }"
+		class="tw-block tw-relative"
+		:class="{
+			'tw-flex-row-reverse': checkboxRight,
+			'pointer-events-none': readonly
+		}"
 	>
 		<input
-			class="input"
+			class="tw-sr-only"
 			type="checkbox"
 			:id="id"
 			:disabled="disabled"
 			v-model="inputValue"
 			v-bind="$attrs"
-			@change="onChange($event)"
 		>
 		<label
-			class="label"
+			class="tw-flex tw-items-center tw-font-normal tw-m-0"
 			:for="id"
 		>
-			<div class="square"></div>
-			<div>
-				<!-- @slot Contents of the label element -->
+			<div
+				:class="[
+					'tw-relative',
+					inputValue ? 'tw-text-brand-550' : 'tw-bg-gray-200',
+					variant === 'round' ? 'tw-rounded-full' : 'tw-rounded-none',
+					'tw-w-2.5 tw-h-2.5',
+					'tw-mr-0.5',
+					'tw-transition-colors',
+					'tw-flex',
+					'tw-items-center',
+					'tw-justify-center',
+					'tw-aspect-square'
+				]"
+			>
+				<transition name="fade">
+					<KvMaterialIcon
+						v-if="inputValue"
+						:icon="checkIcon"
+						class="check-icon"
+					/>
+				</transition>
+			</div>
+			<div class="tw-block tw-min-w-0 tw-w-full">
 				<slot></slot>
 			</div>
 		</label>
 	</div>
 </template>
 
-<script>
-export default {
-	name: 'KvCheckbox',
-	model: {
-		prop: 'checked',
-		event: 'change'
-	},
-	emits: ['update'],
-	props: {
-		id: {
-			type: String,
-			required: true
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		},
-		checked: {
-			type: Boolean,
-			default: null
-		},
-		checkboxRight: {
-			type: Boolean,
-			default: false
-		},
-		modelValue: {
-			type: Boolean,
-			default: null,
-		},
-	},
-	data() {
-		return {
-			inputValue: this.checked,
-		};
-	},
-	methods: {
-		onChange(event) {
-			this.$emit('update', event.target.checked);
-		},
-	},
-	watch: {
-		modelValue: {
-			handler(newValue) {
-				if (newValue !== null) {
-					this.inputValue = newValue;
-				}
-			},
-			immediate: true,
-		},
-		checked: {
-			handler(newValue) {
-				if (newValue !== null) {
-					this.inputValue = newValue;
-				}
-			},
-		},
-	},
-};
+<script setup>
+import { ref, watch, computed } from 'vue';
+import { KvMaterialIcon } from '@kiva/kv-components';
+import { mdiCheckCircle, mdiCheckboxMarked } from '@mdi/js';
+
+const props = defineProps({
+	id: { type: String, required: true },
+	disabled: { type: Boolean, default: false },
+	checked: { type: Boolean, default: false },
+	checkboxRight: { type: Boolean, default: false },
+	modelValue: { type: Boolean, default: undefined },
+	readonly: { type: Boolean, default: false },
+	variant: { type: String, default: 'square' } // 'square' or 'round'
+});
+
+const inputValue = ref(props.modelValue ?? props.checked);
+
+watch(() => props.modelValue, val => {
+	if (val !== undefined) inputValue.value = val;
+});
+watch(() => props.checked, val => {
+	if (val !== undefined) inputValue.value = val;
+});
+
+const checkIcon = computed(() => (props.variant === 'round' ? mdiCheckCircle : mdiCheckboxMarked));
 </script>
 
-<style lang="scss" scoped>
-@use '#src/assets/scss/settings' as *;
-
-.kv-checkbox {
-	display: block;
-	position: relative;
-
-	.label {
-		display: flex;
-		align-items: baseline;
-		font-size: 1em;
-		line-height: inherit;
-		margin: 0;
-	}
-
-	.square {
-		width: 1em;
-		height: 1em;
-		top: 0.125em;
-		flex-shrink: 0;
-		border-radius: 0.125em;
-		background-color: #fff;
-		border: 0.125em solid $input-border-color;
-		margin-right: 0.5em;
-		position: relative;
-		box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
-		transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
-
-		&::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0.225em;
-			width: 0.3125em;
-			height: 0.625em;
-			border: solid transparent;
-			border-width: 0 0.125em 0.125em 0;
-			transform: rotate(45deg);
-		}
-	}
-
-	&--right {
-		.square {
-			order: 1;
-			margin-right: 0;
-			margin-left: 0.5em;
-		}
-	}
-
-	.input {
-		@include visually-hidden();
-
-		&:checked + .label {
-			.square {
-				background-color: $input-checked-color;
-				border-color: $input-checked-border-color;
-				border-width: 0.0625em;
-
-				&::after {
-					top: 0.0825em;
-					left: 0.2875em;
-					border-color: white;
-				}
-			}
-		}
-
-		&:focus + .label {
-			.square {
-				@include input-focus();
-			}
-		}
-
-		&:active + .label {
-			.square {
-				background-color: $input-active-color;
-				border-color: $input-checked-border-color;
-			}
-		}
-
-		&[disabled] + .label {
-			@include disabled();
-		}
-	}
+<style lang="postcss" scoped>
+.fade-enter-active, .fade-leave-active {
+    @apply tw-transition-opacity tw-duration-500;
+}
+.fade-enter-from, .fade-leave-to {
+    @apply tw-opacity-0;
+}
+:deep(.check-icon svg) {
+    @apply tw-w-3 tw-h-3;
 }
 </style>
