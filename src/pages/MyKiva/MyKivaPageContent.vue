@@ -22,10 +22,28 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section class="tw-mt-4">
+		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
 				:regions="lendingStats.regionsWithLoanStatus"
 				:loans="loans"
+			/>
+		</section>
+		<section v-else-if="isHeroEnabled" class="tw-mt-4">
+			<h3
+				v-if="userInHomepage"
+				class="tw-mb-2"
+			>
+				Looking for your next step?
+			</h3>
+			<JourneyCardCarousel
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:lender="lender"
+				:slides-number="3"
+				:slides="heroSlides"
+				:user-in-homepage="userInHomepage"
+				:user-info="userInfo"
+				@update-journey="updateJourney"
 			/>
 		</section>
 
