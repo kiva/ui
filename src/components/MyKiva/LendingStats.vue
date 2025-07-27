@@ -37,7 +37,8 @@
 								class="tw-mr-0.5"
 								:readonly="true"
 								:disabled="true"
-								variant="square"
+								variant="round"
+								:blur-on-disabled="false"
 							/>
 							<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 								<span

@@ -167,6 +167,7 @@ export const RoundVariant = () => ({
                 id="round-1"
                 v-model="round1"
                 variant="round"
+				size="large"
             >
                 Round Option 1
             </kv-checkbox>
