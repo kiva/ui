@@ -127,33 +127,6 @@ export default {
 <style lang="scss" scoped>
 @use '#src/assets/scss/settings' as *;
 
-// Move .square to the top level, before .kv-checkbox
-.square {
-    width: 1em;
-    height: 1em;
-    top: 0.125em;
-    flex-shrink: 0;
-    border-radius: 0.125em;
-    background-color: #fff;
-    border: 0.125em solid $input-border-color;
-    margin-right: 0.5em;
-    position: relative;
-    box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
-    transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0.225em;
-        width: 0.3125em;
-        height: 0.625em;
-        border: solid transparent;
-        border-width: 0 0.125em 0.125em 0;
-        transform: rotate(45deg);
-    }
-}
-
 .kv-checkbox {
     display: block;
     position: relative;
@@ -164,6 +137,32 @@ export default {
         font-size: 1em;
         line-height: inherit;
         margin: 0;
+    }
+
+    .square {
+        width: 1em;
+        height: 1em;
+        top: 0.125em;
+        flex-shrink: 0;
+        border-radius: 0.125em;
+        background-color: #fff;
+        border: 0.125em solid $input-border-color;
+        margin-right: 0.5em;
+        position: relative;
+        box-shadow: 0 0 0 0 rgb(79 175 78 / 20%);
+        transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0.225em;
+            width: 0.3125em;
+            height: 0.625em;
+            border: solid transparent;
+            border-width: 0 0.125em 0.125em 0;
+            transform: rotate(45deg);
+        }
     }
 
     .input {
