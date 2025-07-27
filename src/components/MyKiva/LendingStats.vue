@@ -54,13 +54,8 @@
 			</div>
 			<hr
 				v-if="loanRegions"
-				class="tw-my-4 tw-mx-auto tw-border-none"
-				style="
-				width: 219px;
-				height: 1px;
-				border-radius: 20px;
-					background: var(--brand-greens-green-2, #78C79F);
-				"
+				class="tw-my-4 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
+				style="width: 219px; height: 1px;"
 			>
 			<div>
 			<!-- Second major section content goes here -->
@@ -88,7 +83,7 @@
 <script setup>
 import {
 	computed, ref, onUnmounted, onMounted,
-	defineExpose
+	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
@@ -101,6 +96,7 @@ import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 const { delayUntilVisible } = useDelayUntilVisible();
 
 const router = useRouter();
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const {
 	getTopCategoryByLoans,
@@ -201,6 +197,13 @@ const cardTagText = computed(() => {
 const showTagIcon = computed(() => !!topCategory.value);
 
 const goToTopCategory = () => {
+	$kvTrackEvent(
+		'event-tracking',
+		'click',
+		'top-category-recommendation',
+		topCategory.value ? topCategory.value : ' empty-state'
+	);
+
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
 };
