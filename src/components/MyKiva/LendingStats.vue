@@ -82,8 +82,8 @@
 							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
 								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
 								<KvMaterialIcon
-									class="tw-justify-end tw-w-2 tw-h-2"
-									:icon="UpCornerArrowIcon"
+									class="tw-justify-end tw-w-3 tw-h-3"
+									:icon="mdiArrowTopRight"
 								/>
 							</div>
 						</div>
@@ -119,11 +119,11 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { KvMaterialIcon } from '@kiva/kv-components';
+import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import UpCornerArrowIcon from '#src/assets/icons/inline/up-corner-arrow';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
