@@ -58,7 +58,6 @@
 				style="width: 219px; height: 1px;"
 			>
 			<div>
-				<!-- Second major section content goes here -->
 				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
 				<div class="tw-w-full tw-flex-wrap tw-gap-2 tw-mt-2">
 					<a
@@ -82,8 +81,9 @@
 							</svg>
 							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
 								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
-								<UpCornerArrowIcon
-									class="tw-justify-end tw-w-2 tw-h-2 tw-text-brand-550 tw-align-middle"
+								<KvMaterialIcon
+									class="tw-justify-end tw-w-2 tw-h-2"
+									:icon="UpCornerArrowIcon"
 								/>
 							</div>
 						</div>
@@ -118,13 +118,16 @@ import {
 	inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
+import { KvMaterialIcon } from '@kiva/kv-components';
+
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
-import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
+
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import UpCornerArrowIcon from '#src/assets/icons/inline/up-corner-arrow.svg';
+import UpCornerArrowIcon from '#src/assets/icons/inline/up-corner-arrow';
+import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -240,11 +243,7 @@ const cardTagText = computed(() => {
 
 const handleRecommendRegionClick = region => {
 	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
-	const formattedRegion = region?.name
-		?.toLowerCase()
-		?.replace(/\s+/g, '-')
-		?.replace(/[^a-z0-9-]/g, '');
-	router.push(`/impact/${formattedRegion}`);
+	router.push(`/lend-category-beta?country=${region?.countries.join(',')}`);
 };
 
 const goToTopCategory = () => {
@@ -254,7 +253,6 @@ const goToTopCategory = () => {
 		'top-category-recommendation',
 		topCategory.value ? topCategory.value : ' empty-state'
 	);
-
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
 };
@@ -278,7 +276,6 @@ onMounted(() => {
 			}, 200);
 		}, 800);
 	}, [loanRegionsElement.value]);
-
 	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
 	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
 	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';

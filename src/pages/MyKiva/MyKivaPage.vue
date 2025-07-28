@@ -106,17 +106,24 @@ export default {
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
 				const regionCounts = new Map();
+				const regionCountries = new Map();
 				countryFacets.forEach(facet => {
 					const region = facet.country?.region;
+					const isoCode = facet.country?.isoCode;
 					if (region) {
 						regionCounts.set(region, (regionCounts.get(region) || 0) + (facet.count || 0));
+						if (isoCode) {
+							const currentCountries = regionCountries.get(region) || [];
+							regionCountries.set(region, [...currentCountries, isoCode]);
+						}
 					}
 				});
 				const allRegions = [...regionCounts.keys()];
 				const regionsData = allRegions.map(region => ({
 					name: region,
 					hasLoans: statsResult.my?.lendingStats?.countriesLentTo.some(item => item?.region === region),
-					count: regionCounts.get(region) || 0
+					count: regionCounts.get(region) || 0,
+					countries: regionCountries.get(region) || []
 				}));
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,
