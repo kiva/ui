@@ -176,7 +176,7 @@ const pillHeader = computed(() => {
 });
 
 const pendingRegions = computed(() => {
-	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count);
+	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count).slice(0, 2);
 });
 
 const formattedPendingRegions = computed(() => {
