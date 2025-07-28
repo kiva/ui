@@ -6,23 +6,12 @@
 		>
 			Take the <u>next step</u> on your impact journey
 		</h2>
-		<KvCarousel
-			:key="orderedSlides.length"
-			:embla-options="{
-				loop: false,
-				align: 'start',
-			}"
-			:slide-max-width="singleSlideWidth"
-			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full tw-overflow-visible"
-			@change="handleChange"
-		>
-			<template
-				v-for="(slide, index) in orderedSlides"
-				#[`slide${index}`]
-				:key="index"
-			>
+		<template v-if="inLendingStats">
+			<div class="tw-w-full tw-h-full tw-flex tw-flex-col md:tw-flex-row lg:tw-flex-nowrap tw-gap-4">
 				<MyKivaCard
+					v-for="(slide, index) in orderedSlides"
+					class="achievement-card"
+					:key="index"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -38,13 +27,49 @@
 					@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
 					@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
 				/>
-			</template>
-		</KvCarousel>
-		<MyKivaSharingModal
-			:lender="lender"
-			:is-visible="isSharingModalVisible"
-			@close-modal="isSharingModalVisible = false"
-		/>
+			</div>
+		</template>
+		<template v-else>
+			<KvCarousel
+				:key="orderedSlides.length"
+				:embla-options="{
+					loop: false,
+					align: 'start',
+				}"
+				:slide-max-width="singleSlideWidth"
+				:multiple-slides-visible="true"
+				class="journey-card-carousel tw-w-full tw-overflow-visible"
+				@change="handleChange"
+			>
+				<template
+					v-for="(slide, index) in orderedSlides"
+					#[`slide${index}`]
+					:key="index"
+				>
+					<MyKivaCard
+						:bg-image="backgroundImg(slide)"
+						:is-bg-top-aligned="isNonBadgeSlide(slide)"
+						:has-gradient="!isNonBadgeSlide(slide)"
+						:title="title(slide)"
+						:subtitle="subTitle(slide)"
+						:is-black-subtitle="isNonBadgeSlide(slide)"
+						:secondary-cta-text="secondaryCtaText(slide)"
+						:primary-cta-text="primaryCtaText(slide)"
+						:primary-cta-variant="primaryCtaVariant(slide)"
+						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
+						:is-title-font-sans="isTitleFontSans(slide)"
+						:title-color="titleColor(slide)"
+						@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
+						@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
+					/>
+				</template>
+			</KvCarousel>
+			<MyKivaSharingModal
+				:lender="lender"
+				:is-visible="isSharingModalVisible"
+				@close-modal="isSharingModalVisible = false"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -110,6 +135,10 @@ const props = defineProps({
 	slidesNumber: {
 		type: Number,
 		default: 0,
+	},
+	inLendingStats: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -362,5 +391,13 @@ const handleChange = interaction => {
 
 .journey-card-carousel:deep(div:first-child) {
 	@apply tw-gap-2 lg:tw-gap-4;
+}
+
+.achievement-card {
+	@apply tw-w-full;
+
+	@screen lg {
+		min-width: 336px;
+	}
 }
 </style>

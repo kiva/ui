@@ -23,22 +23,24 @@
 			:lending-stats="lendingStats"
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
-			<JourneyCardCarousel
-				v-if="userLentToAllRegions"
-				class="tw-mt-2"
-				:lender="lender"
-				:user-in-homepage="userInHomepage"
-				:slides-number="2"
-				:slides="heroSlides"
-				:hero-contentful-data="heroContentfulData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				@update-journey="updateJourney"
-			/>
 			<LendingStats
-				v-else
+				:user-lent-to-all-regions="userLentToAllRegions"
 				:regions="lendingStats.regionsWithLoanStatus"
 				:loans="loans"
-			/>
+			>
+				<template #achievements>
+					<JourneyCardCarousel
+						:lender="lender"
+						:user-in-homepage="userInHomepage"
+						:slides-number="2"
+						:slides="heroSlides"
+						:hero-contentful-data="heroContentfulData"
+						:hero-tiered-achievements="heroTieredAchievements"
+						in-lending-stats
+						@update-journey="updateJourney"
+					/>
+				</template>
+			</LendingStats>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
 			<h3

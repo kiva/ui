@@ -33,6 +33,19 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 
+const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
+	const allRegions = [
+		...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
+	];
+	const regionsWithLoanStatus = allRegions.map(region => {
+		const hasLoans = countriesLentTo.some(item => item?.region === region);
+		return { name: region, hasLoans };
+	});
+	const userLentToAllRegions = regionsWithLoanStatus.filter(r => r?.hasLoans).length === allRegions.length;
+
+	return { regionsWithLoanStatus, userLentToAllRegions };
+};
+
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
  * specifically for header component data preFetch
@@ -76,20 +89,8 @@ export default {
 
 				const statsResult = result[1]?.data || {};
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
-				const allRegions = [
-					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
-				];
-
-				const regionsWithLoanStatus = allRegions.map(region => {
-					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
-						const match = item?.region === region;
-						return match;
-					});
-					return { name: region, hasLoans };
-				});
-
-				const userLentToAllRegions = regionsWithLoanStatus
-					.filter(r => r?.hasLoans).length === allRegions.length;
+				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
+				const { userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
 
 				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions) {
 					return Promise.all([
@@ -130,20 +131,11 @@ export default {
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
 
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
-				const allRegions = [
-					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
-				];
+				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
+				// eslint-disable-next-line max-len
+				const { regionsWithLoanStatus, userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
 
-				const regionsWithLoanStatus = allRegions.map(region => {
-					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
-						const match = item?.region === region;
-						return match;
-					});
-					return { name: region, hasLoans };
-				});
-
-				this.userLentToAllRegions = regionsWithLoanStatus
-					.filter(r => r?.hasLoans).length === allRegions.length;
+				this.userLentToAllRegions = userLentToAllRegions;
 
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,

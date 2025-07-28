@@ -7,9 +7,13 @@
 			Next steps for you based on your lending history
 		</p>
 	</div>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
-		<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
-			<div ref="loanRegionsElement" class="tw-mb-4">
+	<div
+		ref="loanRegionsElement"
+		class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4"
+		:class="{'tw-flex-wrap xl:tw-flex-nowrap': userLentToAllRegions}"
+	>
+		<div v-if="!userLentToAllRegions" class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
+			<div class="tw-mb-4">
 				<span
 					v-if="pillHeader"
 					class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
@@ -61,6 +65,7 @@
 			<!-- Second major section content goes here -->
 			</div>
 		</div>
+		<slot v-else name="achievements"></slot>
 		<div class="card-cointainer">
 			<MyKivaCard
 				class="kiva-card"
@@ -120,6 +125,10 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
+	},
+	userLentToAllRegions: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -245,8 +254,8 @@ onUnmounted(() => {
 .card-cointainer {
 	max-width: 100%;
 
-	@screen lg {
-		max-width: 350px;
+	@screen md {
+		max-width: 336px;
 	}
 }
 
