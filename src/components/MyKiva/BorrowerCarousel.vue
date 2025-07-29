@@ -114,7 +114,7 @@
 		/>
 		<BorrowerSideSheetWrapper
 			:basket-items="basketItems"
-			:disable-cash="disableCache"
+			:disable-cache="disableCache"
 			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
 			:selected-loan-id="selectedLoan?.id"
