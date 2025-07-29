@@ -65,6 +65,22 @@
 			<!-- Second major section content goes here -->
 			</div>
 		</div>
+		<div v-if="!userLentToAllRegions" class="card-container">
+			<MyKivaCard
+				class="kiva-card"
+				:title="cardTitle"
+				:show-cta-icon="true"
+				:primary-cta-text="cardCtaText"
+				primary-cta-variant="primary"
+				:is-full-width-primary-cta="true"
+				:is-title-font-sans="true"
+				title-color="tw-text-action-highlight"
+				:images="topCategoryImages"
+				:tag-text="cardTagText"
+				:show-tag-icon="showTagIcon"
+				@primary-cta-clicked="goToTopCategory"
+			/>
+		</div>
 		<JourneyCardCarousel
 			v-else
 			:lender="lender"
@@ -88,6 +104,7 @@ import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -268,3 +285,17 @@ onUnmounted(() => {
 
 defineExpose({ loanRegionsElement });
 </script>
+
+<style lang="postcss" scoped>
+.card-container {
+	max-width: 100%;
+
+	@screen md {
+		max-width: 336px;
+	}
+}
+
+.kiva-card :deep(h2) {
+	font-size: 22px !important;
+}
+</style>
