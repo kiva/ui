@@ -72,13 +72,11 @@
 							tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
 							tw-transition-shadow tw-duration-200"
 						>
-							<svg
-								class="tw-w-full tw-h-16 tw-rounded-t tw-bg-gray-200"
-								viewBox="0 0 100 100"
-								preserveAspectRatio="none"
+							<img
+								:src="`/src/assets/images/my-kiva/${region?.name}.png`"
+								:alt="`Map of ${region?.name}`"
+								class="tw-w-full tw-h-16 tw-rounded-t tw-object-cover"
 							>
-								<rect width="100" height="100" fill="#e5e7eb" />
-							</svg>
 							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
 								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
 								<KvMaterialIcon
