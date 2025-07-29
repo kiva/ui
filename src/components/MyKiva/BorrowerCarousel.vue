@@ -114,7 +114,7 @@
 		/>
 		<BorrowerSideSheetWrapper
 			:basket-items="basketItems"
-			:disable-cash="disableCache"
+			:disable-cache="disableCache"
 			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
 			:selected-loan-id="selectedLoan?.id"
@@ -299,10 +299,12 @@ const closeShareModal = () => {
 	sharedLoan.value = null;
 };
 
-const handleCloseCommentModal = () => {
+const handleCloseCommentModal = wasCommentAdded => {
 	isVisible.value = false;
-	showSideSheet.value = true;
-	disableCache.value = true;
+	if (wasCommentAdded) {
+		showSideSheet.value = true;
+		disableCache.value = true;
+	}
 };
 
 const getBorrowerName = loan => {
