@@ -87,11 +87,8 @@
 
 <script setup>
 import {
-	computed,
-	ref,
-	onUnmounted,
-	onMounted,
-	inject,
+	computed, ref, onUnmounted, onMounted,
+	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
@@ -248,6 +245,8 @@ onUnmounted(() => {
 		clearInterval(interval.value);
 	}
 });
+
+defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>
