@@ -109,11 +109,8 @@
 </template>
 <script setup>
 import {
-	computed,
-	ref,
-	onUnmounted,
-	onMounted,
-	inject,
+	computed, ref, onUnmounted, onMounted,
+	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { KvMaterialIcon } from '@kiva/kv-components';
@@ -283,6 +280,8 @@ onMounted(() => {
 onUnmounted(() => {
 	if (interval.value) clearInterval(interval.value);
 });
+
+defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>

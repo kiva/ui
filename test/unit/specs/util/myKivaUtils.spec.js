@@ -213,7 +213,7 @@ describe('myKivaUtils.js', () => {
 
 			expect(mockCookieStore.set).toHaveBeenCalledTimes(1);
 			expect(mockCookieStore.set).toHaveBeenCalledWith(
-				'mykivaredirect',
+				'mykivaredirectv2',
 				'true',
 				expect.any(Date)
 			);
@@ -265,7 +265,7 @@ describe('myKivaUtils.js', () => {
 				'b'
 			);
 			expect(cookieStoreMock.set).toHaveBeenCalledWith(
-				'mykivaredirect',
+				'mykivaredirectv2',
 				'true',
 				expect.any(Date)
 			);
@@ -283,7 +283,7 @@ describe('myKivaUtils.js', () => {
 				'b'
 			);
 			expect(cookieStoreMock.set).toHaveBeenCalledWith(
-				'mykivaredirect',
+				'mykivaredirectv2',
 				'true',
 				expect.any(Date)
 			);
