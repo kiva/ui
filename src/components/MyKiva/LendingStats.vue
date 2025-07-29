@@ -83,6 +83,7 @@
 		</div>
 		<JourneyCardCarousel
 			v-else
+			user-in-homepage
 			:lender="lender"
 			:slides-number="3"
 			:slides="allRegionsLentSlides"
