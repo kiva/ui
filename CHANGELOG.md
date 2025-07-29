@@ -1,3 +1,66 @@
+## [3.26.0-rc.1](https://github.com/kiva/ui/compare/v3.25.0...v3.26.0-rc.1) (2025-07-29)
+
+### 🎉 New Features
+
+* 🌟 [MP-1655] - Done hide atb modal if user still has balance otherwise show up ([97e07ea](https://github.com/kiva/ui/commit/97e07ea2f31b60408b4017890ac803efa795f3ee))
+* 🌟 [MP-1655] - PR feedback, validating achievement first ([7248e62](https://github.com/kiva/ui/commit/7248e62ccd0de84ff2389ad96d494178a5a94807))
+* add animation to region checkmarks ([0140ddf](https://github.com/kiva/ui/commit/0140ddffef280c0f6d1e364b27d695e3a9e70543))
+* add card for regions - data ([54481c3](https://github.com/kiva/ui/commit/54481c307ce9967f3d716c86162434843082b795))
+* add card for regions - data ([c4cb56b](https://github.com/kiva/ui/commit/c4cb56b878fd9ca5f4cf60ac387e14829d6c6812))
+* add card for regions - data ([8a8297a](https://github.com/kiva/ui/commit/8a8297abfa7d6a0fbf562395c160a6e2040dba61))
+* add card for regions - data ([a09886f](https://github.com/kiva/ui/commit/a09886ffafd2d4562ec109f10322610e1ee82320))
+* add card for regions - data ([40f3a8d](https://github.com/kiva/ui/commit/40f3a8df8ce316551cd7d68c28c7af74c59097f8))
+* add card for regions - data ([faca596](https://github.com/kiva/ui/commit/faca596fcc5168926b46c3458b65aa4ea518c998))
+* add card for regions - data ([e1e917a](https://github.com/kiva/ui/commit/e1e917a20c146b68c5f52806584f1f565c20f52b))
+* add card for regions - data ([c0e794f](https://github.com/kiva/ui/commit/c0e794f10485dee18304bb9095703c151fd846a9))
+* add card for regions - data ([feed600](https://github.com/kiva/ui/commit/feed600bf90754df2864bc6e8dd023efe3db2ab5))
+* add card for regions - data ([f6f2861](https://github.com/kiva/ui/commit/f6f2861641d94a4dbfb6516913ecc0d4318820ac))
+* add card for regions - data ([b390b4f](https://github.com/kiva/ui/commit/b390b4f35e015187f84e72f1f54f9e93d6d569ae))
+* add card for regions - data - fix ([3bb0056](https://github.com/kiva/ui/commit/3bb00560890286f481c422a09449c8ac34f1ba46))
+* add card for regions initial markup ([7c71c4b](https://github.com/kiva/ui/commit/7c71c4b4518a424ebec518d142e835382ca1b987))
+* badge journey modal update ([#6151](https://github.com/kiva/ui/issues/6151)) ([2ade64a](https://github.com/kiva/ui/commit/2ade64a8341d2a84f7de9bbfa949b4069c8bbbca))
+* carousel added to mykiva card ([a9e8d2d](https://github.com/kiva/ui/commit/a9e8d2db3468763154f2df37cb05091dae583151))
+* mykiva card added ([#6156](https://github.com/kiva/ui/issues/6156)) ([aaaad7c](https://github.com/kiva/ui/commit/aaaad7cc75bdd04dd5153fac781f00007d2868c6))
+* mykiva top category card ([#6164](https://github.com/kiva/ui/issues/6164)) ([0e1fcdb](https://github.com/kiva/ui/commit/0e1fcdb1a8dfe9d876df72aa3c1c3a603dab4055))
+* remove user preferences from mykiva logic and fix ty page redirect issue ([95a1e9c](https://github.com/kiva/ui/commit/95a1e9cbe61a486ebd1e6ca0a6e98653164f8eef))
+* setup stub page and query for giving funds management ([ead882d](https://github.com/kiva/ui/commit/ead882d851a2aab51ccefaa70c5564f7e4c99927))
+* start animation when region container is visible ([01aadcf](https://github.com/kiva/ui/commit/01aadcf9982f369d10cd0ab19e235429542d1bdb))
+* tracking data blog cards - data - fix ([1e8f10e](https://github.com/kiva/ui/commit/1e8f10ee1cdc48dc28cb3496f9d957c1a5f2d66d))
+* tracking event added to recommended card ([#6166](https://github.com/kiva/ui/issues/6166)) ([81a55a6](https://github.com/kiva/ui/commit/81a55a6f37a45d0d1b9116ebc5228967d9e42fa6))
+* update datasource and add lazy loading to the updates carousel ([c33252b](https://github.com/kiva/ui/commit/c33252b92c282a509fc342ee2a958dd4ce3a393a))
+* update datasource and add lazy loading to the updates carousel ([032d0cb](https://github.com/kiva/ui/commit/032d0cb659b1cbcf409c4e6dc2933bff0730beb4))
+
+### 🐛 Bugfixes
+
+* add back my > id for query ([cbb0641](https://github.com/kiva/ui/commit/cbb0641799d9830c450ce15d6ff8abce9d817db0))
+* add click events and remove console ([723c23f](https://github.com/kiva/ui/commit/723c23f8d46bd97fed458c39e984d2bd00882f5f))
+* applies pre-loading onmouseeneter ([5bab9dc](https://github.com/kiva/ui/commit/5bab9dc2cca7bf11ba91378351cf1638c60a7ca1))
+* checkmark sizes and differences from design ([7442b88](https://github.com/kiva/ui/commit/7442b883b4e41920729ee20fa12eff19fe98f9f3))
+* conflicts ([8859ddf](https://github.com/kiva/ui/commit/8859ddf8cb8d1c69957868b08f397f5def00af00))
+* create watch for disableCache prop in BorrowerCarousel ([0355758](https://github.com/kiva/ui/commit/0355758d88a147346d467c357226d9a9708e6b87))
+* fix basketSize with nonTrivialCount value ([2acfebb](https://github.com/kiva/ui/commit/2acfebb478b7838bf85044db2e9351f29982f2be))
+* fix showLoanDetails arguments handling ([2b7cf24](https://github.com/kiva/ui/commit/2b7cf247e94f0f9816bfe4c55c64b4b3a8c9ba1e))
+* hide dev routes in prod ui site map ([b0d17d6](https://github.com/kiva/ui/commit/b0d17d6bdf39e0a66eba04d827a62cede096f367))
+* lint ([06d2f23](https://github.com/kiva/ui/commit/06d2f23345d231f34ae3352bbd0bc92d4c189dc7))
+* move user preferences utils to dedicated file ([9b74b02](https://github.com/kiva/ui/commit/9b74b02530e84f59a6387a36c1ff0244d914a74f))
+* my kiva loans query reverted ([#6153](https://github.com/kiva/ui/issues/6153)) ([3e68434](https://github.com/kiva/ui/commit/3e6843430cb1b951171a52c16ef5f425a09da9cd))
+* refactor LoanCards to leverage bp-exp mixin ([bc24547](https://github.com/kiva/ui/commit/bc245470078563274abe7c9b9f232eb35338393f))
+* refactorization of BorrowerCarousel to leverage mixin props ([cc05395](https://github.com/kiva/ui/commit/cc0539579fbc418c46d20eaa405613f75f55c598))
+* remove tw fake line ([#6165](https://github.com/kiva/ui/issues/6165)) ([af1a73b](https://github.com/kiva/ui/commit/af1a73ba461f6df1d9ae07a8ce2b6ec41220f11d))
+* removed unused import ([7abf873](https://github.com/kiva/ui/commit/7abf873cdab9ffa6eb7b3fe3de233b5a4849a56a))
+* removing characters ([056a2ca](https://github.com/kiva/ui/commit/056a2ca2afc4604a1bd2f4c19a02a7e629783876))
+* respect guest assignment cookie and ensure assignment tracking is correct for the session ([644e87a](https://github.com/kiva/ui/commit/644e87a7fd31ed4039666b91e61511ef39043d74))
+* revert removal of isFundraising loan check ([1abf27b](https://github.com/kiva/ui/commit/1abf27ba2ca56bcedbb05c22395bda5baf9100b3))
+* showing unique transactions in my kiva page ([#6147](https://github.com/kiva/ui/issues/6147)) ([f5c2c7a](https://github.com/kiva/ui/commit/f5c2c7a0e5243fa879ee10ce308dde66e064107d))
+* update cards avatars fixed ([#6148](https://github.com/kiva/ui/issues/6148)) ([7b8349d](https://github.com/kiva/ui/commit/7b8349dd8fff0a7e15345f140c0f22d3839bdbe8))
+* update mykiva redirect cookie name ([dbc263d](https://github.com/kiva/ui/commit/dbc263dba4df43cdd34f334e449339682df557bb))
+* use global kv-card-frame component, tweak styles and visual layout, stub forthcoming elements ([ce2ccd1](https://github.com/kiva/ui/commit/ce2ccd197efffb9899dfbfef86baf15fc8514559))
+
+### 🧹 Chores
+
+* update kv-components ([e09dd93](https://github.com/kiva/ui/commit/e09dd93dcc92668ca7afda423e3f45778f83bf4b))
+* update kv-components ^6.37.0 ([60847f9](https://github.com/kiva/ui/commit/60847f9f0bd311300250de594fd946b41605e441))
+
 ## [3.25.0](https://github.com/kiva/ui/compare/v3.24.0...v3.25.0) (2025-07-16)
 
 ### 🎉 New Features
