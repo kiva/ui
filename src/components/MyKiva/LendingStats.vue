@@ -65,23 +65,14 @@
 			<!-- Second major section content goes here -->
 			</div>
 		</div>
-		<slot v-else name="achievements"></slot>
-		<div class="card-cointainer">
-			<MyKivaCard
-				class="kiva-card"
-				:title="cardTitle"
-				:show-cta-icon="true"
-				:primary-cta-text="cardCtaText"
-				primary-cta-variant="primary"
-				:is-full-width-primary-cta="true"
-				:is-title-font-sans="true"
-				title-color="tw-text-action-highlight"
-				:images="topCategoryImages"
-				:tag-text="cardTagText"
-				:show-tag-icon="showTagIcon"
-				@primary-cta-clicked="goToTopCategory"
-			/>
-		</div>
+		<JourneyCardCarousel
+			v-else
+			:lender="lender"
+			:slides-number="3"
+			:slides="allRegionsLentSlides"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
+		/>
 	</div>
 </template>
 
@@ -94,9 +85,9 @@ import { useRouter } from 'vue-router';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -126,6 +117,22 @@ const props = defineProps({
 	userLentToAllRegions: {
 		type: Boolean,
 		default: false,
+	},
+	heroSlides: {
+		type: Array,
+		default: () => [],
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroContentfulData: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroTieredAchievements: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
@@ -217,6 +224,19 @@ const goToTopCategory = () => {
 	router.push(route);
 };
 
+const allRegionsLentSlides = computed(() => {
+	return [...props.heroSlides,
+		{
+			title: cardTitle.value,
+			ctaText: cardCtaText.value,
+			images: topCategoryImages.value,
+			tagText: cardTagText.value,
+			showTagIcon: showTagIcon.value,
+			primaryCta: goToTopCategory,
+			isCustomCard: true,
+		}];
+});
+
 onMounted(() => {
 	delayUntilVisible(() => {
 		setTimeout(() => {
@@ -248,17 +268,3 @@ onUnmounted(() => {
 
 defineExpose({ loanRegionsElement });
 </script>
-
-<style lang="postcss" scoped>
-.card-cointainer {
-	max-width: 100%;
-
-	@screen md {
-		max-width: 336px;
-	}
-}
-
-.kiva-card :deep(h2) {
-	font-size: 22px !important;
-}
-</style>

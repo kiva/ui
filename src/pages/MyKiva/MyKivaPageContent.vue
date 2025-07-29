@@ -27,21 +27,12 @@
 				ref="lendingStats"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:regions="lendingStats.regionsWithLoanStatus"
+				:hero-slides="lendingStatsSlides"
 				:loans="loans"
-			>
-				<template #achievements>
-					<JourneyCardCarousel
-						:lender="lender"
-						:user-in-homepage="userInHomepage"
-						:slides-number="2"
-						:slides="heroSlides"
-						:hero-contentful-data="heroContentfulData"
-						:hero-tiered-achievements="heroTieredAchievements"
-						in-lending-stats
-						@update-journey="updateJourney"
-					/>
-				</template>
-			</LendingStats>
+				:lender="lender"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
 			<h3
@@ -354,7 +345,9 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
-
+		lendingStatsSlides() {
+			return this.heroSlides.filter(slide => slide?.fields?.key?.includes('journey')).slice(0, 2);
+		}
 	},
 	methods: {
 		handleShowNavigation() {

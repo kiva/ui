@@ -6,12 +6,40 @@
 		>
 			Take the <u>next step</u> on your impact journey
 		</h2>
-		<template v-if="inLendingStats">
-			<div class="tw-w-full tw-h-full tw-flex tw-flex-col md:tw-flex-row lg:tw-flex-nowrap tw-gap-4">
+		<KvCarousel
+			:key="orderedSlides.length"
+			:embla-options="{
+				loop: false,
+				align: 'start',
+			}"
+			:slide-max-width="singleSlideWidth"
+			:multiple-slides-visible="true"
+			class="journey-card-carousel tw-w-full tw-overflow-visible"
+			@change="handleChange"
+		>
+			<template
+				v-for="(slide, index) in orderedSlides"
+				#[`slide${index}`]
+				:key="index"
+			>
 				<MyKivaCard
-					v-for="(slide, index) in orderedSlides"
-					class="achievement-card"
-					:key="index"
+					v-if="isCustomCard(slide)"
+					class="kiva-card"
+					:title="slide.title"
+					:show-cta-icon="true"
+					:primary-cta-text="slide.ctaText"
+					primary-cta-variant="primary"
+					:is-full-width-primary-cta="true"
+					:is-title-font-sans="true"
+					title-color="tw-text-action-highlight"
+					:images="slide.images"
+					:tag-text="slide.tagText"
+					:show-tag-icon="slide.showTagIcon"
+					@primary-cta-clicked="slide.primaryCta"
+				/>
+				<MyKivaCard
+					v-else
+					class="tw-h-full"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -27,49 +55,13 @@
 					@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
 					@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
 				/>
-			</div>
-		</template>
-		<template v-else>
-			<KvCarousel
-				:key="orderedSlides.length"
-				:embla-options="{
-					loop: false,
-					align: 'start',
-				}"
-				:slide-max-width="singleSlideWidth"
-				:multiple-slides-visible="true"
-				class="journey-card-carousel tw-w-full tw-overflow-visible"
-				@change="handleChange"
-			>
-				<template
-					v-for="(slide, index) in orderedSlides"
-					#[`slide${index}`]
-					:key="index"
-				>
-					<MyKivaCard
-						:bg-image="backgroundImg(slide)"
-						:is-bg-top-aligned="isNonBadgeSlide(slide)"
-						:has-gradient="!isNonBadgeSlide(slide)"
-						:title="title(slide)"
-						:subtitle="subTitle(slide)"
-						:is-black-subtitle="isNonBadgeSlide(slide)"
-						:secondary-cta-text="secondaryCtaText(slide)"
-						:primary-cta-text="primaryCtaText(slide)"
-						:primary-cta-variant="primaryCtaVariant(slide)"
-						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-						:is-title-font-sans="isTitleFontSans(slide)"
-						:title-color="titleColor(slide)"
-						@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
-						@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
-					/>
-				</template>
-			</KvCarousel>
-			<MyKivaSharingModal
-				:lender="lender"
-				:is-visible="isSharingModalVisible"
-				@close-modal="isSharingModalVisible = false"
-			/>
-		</template>
+			</template>
+		</KvCarousel>
+		<MyKivaSharingModal
+			:lender="lender"
+			:is-visible="isSharingModalVisible"
+			@close-modal="isSharingModalVisible = false"
+		/>
 	</div>
 </template>
 
@@ -135,10 +127,6 @@ const props = defineProps({
 	slidesNumber: {
 		type: Number,
 		default: 0,
-	},
-	inLendingStats: {
-		type: Boolean,
-		default: false,
 	},
 });
 
@@ -378,14 +366,17 @@ const handleChange = interaction => {
 		`${direction}-step-carousel`,
 	);
 };
+
+const isCustomCard = slide => !!slide?.isCustomCard;
+
 </script>
 
 <style lang="postcss" scoped>
-.journey-card-carousel :deep(.kv-carousel__controls) {
+:deep(.journey-card-carousel > .kv-carousel__controls) {
 	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
-.journey-card-carousel :deep(.kv-carousel__controls) div {
+:deep(.journey-card-carousel > .kv-carousel__controls) div {
 	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 
@@ -393,11 +384,7 @@ const handleChange = interaction => {
 	@apply tw-gap-2 lg:tw-gap-4;
 }
 
-.achievement-card {
-	@apply tw-w-full;
-
-	@screen lg {
-		min-width: 336px;
-	}
+.kiva-card :deep(h2) {
+	font-size: 22px !important;
 }
 </style>
