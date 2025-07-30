@@ -64,7 +64,7 @@
 			>
 			<div>
 				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
-				<div class="tw-w-full tw-flex-wrap tw-gap-2 tw-mt-2">
+				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-mt-2">
 					<a
 						v-for="(region, idx) in pendingRegions"
 						:key="idx"
@@ -73,12 +73,12 @@
 					>
 						<div
 							class="
-							tw-flex tw-flex-col tw-w-full
-							tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
-							tw-transition-shadow tw-duration-200"
+								tw-flex tw-flex-col tw-w-full
+								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+								tw-transition-shadow tw-duration-200"
 						>
 							<img
-								:src="`/src/assets/images/my-kiva/${region?.name}.png`"
+								:src="regionImageSource(region)"
 								:alt="`Map of ${region?.name}`"
 								class="tw-w-full tw-h-16 tw-rounded-t tw-object-cover"
 							>
@@ -135,6 +135,16 @@ import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+
+import Africa from '#src/assets/images/my-kiva/Africa.png';
+import Asia from '#src/assets/images/my-kiva/Asia.png';
+import CentralAmerica from '#src/assets/images/my-kiva/Central America.png';
+import EasternEurope from '#src/assets/images/my-kiva/Eastern Europe.png';
+import MiddleEast from '#src/assets/images/my-kiva/Middle East.png';
+import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
+import Oceania from '#src/assets/images/my-kiva/Oceania.png';
+import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
+
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
@@ -199,6 +209,19 @@ const topCategoryUrl = ref('');
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 const showTagIcon = computed(() => !!topCategory.value);
+
+const regionImages = {
+	Africa,
+	Asia,
+	'Central America': CentralAmerica,
+	'Eastern Europe': EasternEurope,
+	'Middle East': MiddleEast,
+	'North America': NorthAmerica,
+	Oceania,
+	'South America': SouthAmerica,
+};
+
+const regionImageSource = region => (regionImages[region?.name] || '');
 
 const pillHeader = computed(() => {
 	if (totalRegions.value === 0) return '';
