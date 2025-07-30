@@ -14,7 +14,7 @@
 			:total-loans="totalLoans"
 			show-menu
 			@handle-selected-loan="showLoanDetails"
-			@mouse-enter-status-card="handleStatusCardMouseEnter"
+			@mouse-enter-status-card="loadBPData"
 		/>
 		<BorrowerSideSheetWrapper
 			:basket-items="basketItems"
@@ -145,9 +145,6 @@ export default {
 		showLoanDetails(payload) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showSideSheet = true;
-		},
-		handleStatusCardMouseEnter(payload) {
-			this.loadBPData(payload);
 		},
 	}
 };
