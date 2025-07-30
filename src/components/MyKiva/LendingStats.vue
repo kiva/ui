@@ -62,18 +62,18 @@
 			>
 			<div>
 				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
-				<div class="tw-w-full tw-flex tw-gap-2 tw-mt-2">
+				<div class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-2 tw-mt-2">
 					<a
 						v-for="(region, idx) in pendingRegions"
 						:key="idx"
-						class="tw-flex tw-mb-2 tw-w-1/2 tw-cursor-pointer"
+						class="tw-flex tw-mb-2 tw-w-full md:tw-w-1/2 tw-cursor-pointer"
 						@click="handleRecommendRegionClick(region)"
 					>
 						<div
 							class="
-							tw-flex tw-flex-col tw-w-full
-							tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
-							tw-transition-shadow tw-duration-200"
+								tw-flex tw-flex-col tw-w-full
+								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+								tw-transition-shadow tw-duration-200"
 						>
 							<img
 								:src="`/src/assets/images/my-kiva/${region?.name}.png`"
