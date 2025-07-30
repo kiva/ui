@@ -25,8 +25,8 @@
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
 				ref="lendingStats"
+				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
-				:regions="lendingStats.regionsWithLoanStatus"
 				:hero-slides="heroSlides"
 				:loans="loans"
 				:lender="lender"
@@ -607,20 +607,22 @@ export default {
 		this.initializeIsBpModalEnabledExp('my-kiva-page-content');
 
 		this.$nextTick(() => {
-			const loanRegionsEl = this.$refs.lendingStats?.loanRegionsElement;
-			if (loanRegionsEl) {
-				this.lendingStatsObserver = createIntersectionObserver({
-					targets: [loanRegionsEl],
-					threshold: 0.2,
-					callback: entries => {
-						entries.forEach(entry => {
-							if (entry.isIntersecting) {
-								this.$kvTrackEvent('event-tracking', 'show', 'regions-lent-to');
-								this.lendingStatsObserver.disconnect();
-							}
-						});
-					}
-				});
+			if (this.isLendingStatsExp) {
+				const loanRegionsEl = this.$refs.lendingStats?.loanRegionsElement;
+				if (loanRegionsEl) {
+					this.lendingStatsObserver = createIntersectionObserver({
+						targets: [loanRegionsEl],
+						threshold: 0.2,
+						callback: entries => {
+							entries.forEach(entry => {
+								if (entry.isIntersecting) {
+									this.$kvTrackEvent('event-tracking', 'show', 'regions-lent-to');
+									this.lendingStatsObserver.disconnect();
+								}
+							});
+						}
+					});
+				}
 			}
 		});
 	},
