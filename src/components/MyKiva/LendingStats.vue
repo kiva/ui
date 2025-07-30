@@ -15,12 +15,14 @@
 			<div class="tw-mb-4">
 				<span
 					v-if="pillHeader"
-					class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
-				tw-px-3 tw-py-1 tw-leading-tight"
+					class="
+						tw-inline-flex tw-items-center tw-gap-1.5
+						tw-mb-2 md:tw-mb-3 tw-rounded
+						tw-bg-eco-green-1 tw-px-3 tw-py-1"
 					title="Your lending reach"
 				>
 					<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-					<span class="tw-text-primary tw-font-medium tw-text-h5">
+					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
 						{{ pillHeader }}
 					</span>
 				</span>
