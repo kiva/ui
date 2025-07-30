@@ -62,7 +62,7 @@
 			>
 			<div>
 				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
-				<div class="tw-w-full tw-flex-wrap tw-gap-2 tw-mt-2">
+				<div class="tw-w-full tw-flex tw-gap-2 tw-mt-2">
 					<a
 						v-for="(region, idx) in pendingRegions"
 						:key="idx"
