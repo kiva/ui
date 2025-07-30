@@ -67,16 +67,16 @@
 		<div v-if="!userLentToAllRegions" class="card-container">
 			<MyKivaCard
 				class="kiva-card"
-				:title="cardTitle"
-				:show-cta-icon="true"
-				:primary-cta-text="cardCtaText"
 				primary-cta-variant="primary"
-				:is-full-width-primary-cta="true"
-				:is-title-font-sans="true"
 				title-color="tw-text-action-highlight"
 				:images="topCategoryImages"
-				:tag-text="cardTagText"
+				:is-full-width-primary-cta="true"
+				:is-title-font-sans="true"
+				:primary-cta-text="cardCtaText"
+				:show-cta-icon="true"
 				:show-tag-icon="showTagIcon"
+				:tag-text="cardTagText"
+				:title="cardTitle"
 				@primary-cta-clicked="goToTopCategory"
 			/>
 		</div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-flex-col">
+	<div class="tw-flex tw-flex-col tw-relative" style="z-index: 0;">
 		<ul class="steps-list tw-flex tw-flex-col lg:tw-flex-row tw-justify-end tw-gap-1">
 			<li
 				v-for="(step, index) in steps"
