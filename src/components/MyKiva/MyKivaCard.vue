@@ -18,7 +18,7 @@
 				<template v-for="(image, index) in images" #[`slide${index+1}`] :key="index">
 					<img
 						:src="image"
-						class="tw-rounded tw-w-full tw-aspect-video tw-object-cover"
+						class="tw-rounded tw-w-full tw-aspect-video tw-object-cover tw-object-top"
 					>
 				</template>
 			</KvCarousel>
