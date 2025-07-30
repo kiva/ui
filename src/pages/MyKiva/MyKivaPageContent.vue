@@ -27,7 +27,7 @@
 				ref="lendingStats"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:regions="lendingStats.regionsWithLoanStatus"
-				:hero-slides="lendingStatsSlides"
+				:hero-slides="heroSlides"
 				:loans="loans"
 				:lender="lender"
 				:hero-contentful-data="heroContentfulData"
@@ -345,9 +345,6 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
-		lendingStatsSlides() {
-			return this.heroSlides.filter(slide => slide?.fields?.key?.includes('journey')).slice(0, 2);
-		}
 	},
 	methods: {
 		handleShowNavigation() {

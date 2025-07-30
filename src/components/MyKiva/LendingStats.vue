@@ -9,8 +9,7 @@
 	</div>
 	<div
 		ref="loanRegionsElement"
-		class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4"
-		:class="{'tw-flex-wrap xl:tw-flex-nowrap': userLentToAllRegions}"
+		:class="{'tw-flex tw-flex-col lg:tw-flex-row tw-gap-4': !userLentToAllRegions}"
 	>
 		<div v-if="!userLentToAllRegions" class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
 			<div class="tw-mb-4">
@@ -84,6 +83,7 @@
 		<JourneyCardCarousel
 			v-else
 			user-in-homepage
+			in-lending-stats
 			:lender="lender"
 			:slides-number="3"
 			:slides="allRegionsLentSlides"

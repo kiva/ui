@@ -39,7 +39,7 @@
 				/>
 				<MyKivaCard
 					v-else
-					class="tw-h-full"
+					class="tw-w-full tw-h-full"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -127,6 +127,14 @@ const props = defineProps({
 	slidesNumber: {
 		type: Number,
 		default: 0,
+	},
+	heroSlides: {
+		type: Array,
+		default: () => ([]),
+	},
+	inLendingStats: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -228,6 +236,10 @@ const orderedSlides = computed(() => {
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	}
+	if (props.inLendingStats) {
+		const customCard = props.slides.find(slide => slide.isCustomCard);
+		sortedSlides[props.slidesNumber - 1] = customCard;
 	}
 
 	return sortedSlides;
