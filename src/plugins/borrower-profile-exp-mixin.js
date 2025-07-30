@@ -7,11 +7,8 @@ import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import logFormatter from '#src/util/logFormatter';
-
-export const HOME_BP_MODAL_EXP_KEY = 'home_page_bp_modal';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -21,7 +18,6 @@ export default {
 			basketItems: [],
 			basketSize: 0,
 			isAdding: false,
-			isBpModalEnabled: false,
 			selectedLoan: undefined,
 		};
 	},
@@ -60,16 +56,6 @@ export default {
 			}).catch(e => {
 				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
 			});
-		},
-		initializeIsBpModalEnabledExp(category) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				category,
-				HOME_BP_MODAL_EXP_KEY,
-				'EXP-MP-671-Dec2024',
-			);
-			if (version) this.isBpModalEnabled = version === 'b';
 		},
 		goToLink() {
 			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);

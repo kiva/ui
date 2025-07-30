@@ -8,25 +8,34 @@
 			:basket-items="basketItems"
 			:cards-number="7"
 			:is-adding="isAdding"
-			:lender="lender" :loans="loans"
-			:selected-loan="selectedLoan"
+			:lender="lender"
+			:loans="loans"
 			:show-carousel-tabs="true"
 			:total-loans="totalLoans"
+			show-menu
+			@handle-selected-loan="showLoanDetails"
+			@mouse-enter-status-card="handleStatusCardMouseEnter"
+		/>
+		<BorrowerSideSheetWrapper
+			:basket-items="basketItems"
+			:is-adding="isAdding"
+			:kv-track-function="$kvTrackEvent"
+			:selected-loan-id="selectedLoan?.id"
+			:show-next-steps="true"
+			:show-side-sheet="showSideSheet"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
-			@handle-selected-loan="handleSelectedLoan"
-			show-menu
+			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</AsyncPortfolioSection>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import logReadQueryError from '#src/util/logReadQueryError';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
-
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 const userQuery = gql`query userQuery {
@@ -98,7 +107,8 @@ export default {
 	name: 'LoanCards',
 	components: {
 		AsyncPortfolioSection,
-		BorrowerCarousel
+		BorrowerCarousel,
+		BorrowerSideSheetWrapper,
 	},
 	mixins: [borrowerProfileExpMixin],
 	inject: ['apollo'],
@@ -108,6 +118,7 @@ export default {
 			totalLoans: 0,
 			lender: {},
 			isLoading: true,
+			showSideSheet: false,
 		};
 	},
 	async mounted() {
@@ -127,7 +138,17 @@ export default {
 				}).catch(e => {
 					logReadQueryError(e, 'Portfolio Page Loans userQuery');
 				});
-		}
+		},
+		handleCloseSideSheet() {
+			this.showSideSheet = false;
+		},
+		showLoanDetails(payload) {
+			this.handleSelectedLoan({ loanId: payload?.id });
+			this.showSideSheet = true;
+		},
+		handleStatusCardMouseEnter(payload) {
+			this.loadBPData(payload);
+		},
 	}
 };
 </script>

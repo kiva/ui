@@ -12,7 +12,7 @@
 		</h2>
 		<div
 			v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
-			:key="`comments-${loanId}-${disableCache}`"
+			:key="`comments-${loanId}`"
 		>
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
 				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`] :key="index">
@@ -243,10 +243,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		disableCache: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -303,9 +299,6 @@ export default {
 		loanId(newId, oldId) {
 			if (newId !== oldId && newId) this.loadData();
 		},
-		disableCache(newDC, oldDC) {
-			if (newDC !== oldDC && newDC) this.loadData();
-		}
 	},
 	mounted() {
 		this.createObserver();
@@ -376,7 +369,7 @@ export default {
 				variables: {
 					loanId: this.loanId
 				},
-				fetchPolicy: this.disableCache ? 'network-only' : 'cache-first'
+				fetchPolicy: 'network-only',
 			}).then(result => {
 				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
 				this.loading = false;
