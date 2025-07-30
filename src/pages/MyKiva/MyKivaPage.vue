@@ -12,6 +12,7 @@
 			:lending-stats="lendingStats"
 			:transactions="transactions"
 			:is-lending-stats-exp="isLendingStatsExp"
+			:user-lent-to-all-regions="userLentToAllRegions"
 		/>
 	</www-page>
 </template>
@@ -31,6 +32,19 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
+
+const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
+	const allRegions = [
+		...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
+	];
+	const regionsWithLoanStatus = allRegions.map(region => {
+		const hasLoans = countriesLentTo.some(item => item?.region === region);
+		return { name: region, hasLoans };
+	});
+	const userLentToAllRegions = regionsWithLoanStatus.filter(r => r?.hasLoans).length === allRegions.length;
+
+	return { regionsWithLoanStatus, userLentToAllRegions };
+};
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -56,6 +70,7 @@ export default {
 			transactions: [],
 			heroSlides: [],
 			isLendingStatsExp: false,
+			userLentToAllRegions: false,
 		};
 	},
 	apollo: {
@@ -72,7 +87,12 @@ export default {
 				const myKivaStatsExp = result[3];
 				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
 
-				if (isHeroEnabled && !isMyKivaStatsExp) {
+				const statsResult = result[1]?.data || {};
+				const countryFacets = statsResult.lend?.countryFacets ?? [];
+				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
+				const { userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
+
+				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions) {
 					return Promise.all([
 						client.query({
 							query: contentfulEntriesQuery,
@@ -111,17 +131,12 @@ export default {
 				const statsResult = this.apollo.readQuery({ query: lendingStatsQuery });
 
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
-				const allRegions = [
-					...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
-				];
+				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
+				// eslint-disable-next-line max-len
+				const { regionsWithLoanStatus, userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
 
-				const regionsWithLoanStatus = allRegions.map(region => {
-					const hasLoans = statsResult.my?.lendingStats?.countriesLentTo.some(item => {
-						const match = item?.region === region;
-						return match;
-					});
-					return { name: region, hasLoans };
-				});
+				this.userLentToAllRegions = userLentToAllRegions;
+
 				this.lendingStats = {
 					...statsResult.my?.lendingStats,
 					...statsResult.my?.userStats,
@@ -153,7 +168,9 @@ export default {
 
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 
-			if (this.isHeroEnabled && !this.isLendingStatsExp) {
+			this.fetchMyKivaData();
+
+			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
@@ -178,8 +195,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
 		}
-
-		this.fetchMyKivaData();
 	},
 };
 </script>

@@ -25,8 +25,13 @@
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
 				ref="lendingStats"
+				:user-lent-to-all-regions="userLentToAllRegions"
 				:regions="lendingStats.regionsWithLoanStatus"
+				:hero-slides="heroSlides"
 				:loans="loans"
+				:lender="lender"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -255,6 +260,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		userLentToAllRegions: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -336,7 +345,6 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
-
 	},
 	methods: {
 		handleShowNavigation() {
