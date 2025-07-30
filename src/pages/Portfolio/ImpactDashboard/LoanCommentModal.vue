@@ -2,7 +2,7 @@
 	<kv-lightbox
 		:visible="isVisible"
 		:title="modalTitle"
-		@lightbox-closed="closeModal"
+		@lightbox-closed="() => closeModal()"
 	>
 		<div class="tw-text-center">
 			<div class="tw-relative">
@@ -102,7 +102,7 @@ export default {
 			}).then(({ data }) => {
 				// comment was added successfully
 				if (data.loan.addComment) {
-					this.closeModal();
+					this.closeModal(true);
 					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.name, this.loan.id); // eslint-disable-line max-len
 					this.$showTipMsg(`Thank you for helping ${this.loan.name}!`, 'confirmation', true);
 				} else {
@@ -115,9 +115,9 @@ export default {
 				this.loading = false;
 			});
 		},
-		closeModal() {
+		closeModal(wasCommentAdded = false) {
 			this.userComment = '';
-			this.$emit('comment-modal-closed');
+			this.$emit('comment-modal-closed', wasCommentAdded);
 		}
 	},
 };

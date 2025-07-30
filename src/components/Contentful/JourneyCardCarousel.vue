@@ -23,6 +23,23 @@
 				:key="index"
 			>
 				<MyKivaCard
+					v-if="isCustomCard(slide)"
+					class="kiva-card"
+					:title="slide.title"
+					:show-cta-icon="true"
+					:primary-cta-text="slide.ctaText"
+					primary-cta-variant="primary"
+					:is-full-width-primary-cta="true"
+					:is-title-font-sans="true"
+					title-color="tw-text-action-highlight"
+					:images="slide.images"
+					:tag-text="slide.tagText"
+					:show-tag-icon="slide.showTagIcon"
+					@primary-cta-clicked="slide.primaryCta"
+				/>
+				<MyKivaCard
+					v-else
+					class="tw-w-full tw-h-full"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -110,6 +127,14 @@ const props = defineProps({
 	slidesNumber: {
 		type: Number,
 		default: 0,
+	},
+	heroSlides: {
+		type: Array,
+		default: () => ([]),
+	},
+	inLendingStats: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -211,6 +236,10 @@ const orderedSlides = computed(() => {
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	}
+	if (props.inLendingStats) {
+		const customCard = props.slides.find(slide => slide.isCustomCard);
+		sortedSlides[props.slidesNumber - 1] = customCard;
 	}
 
 	return sortedSlides;
@@ -349,18 +378,25 @@ const handleChange = interaction => {
 		`${direction}-step-carousel`,
 	);
 };
+
+const isCustomCard = slide => !!slide?.isCustomCard;
+
 </script>
 
 <style lang="postcss" scoped>
-.journey-card-carousel :deep(.kv-carousel__controls) {
+:deep(.journey-card-carousel > .kv-carousel__controls) {
 	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
-.journey-card-carousel :deep(.kv-carousel__controls) div {
+:deep(.journey-card-carousel > .kv-carousel__controls) div {
 	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 
 .journey-card-carousel:deep(div:first-child) {
 	@apply tw-gap-2 lg:tw-gap-4;
+}
+
+.kiva-card :deep(h2) {
+	font-size: 22px !important;
 }
 </style>

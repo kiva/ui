@@ -7,9 +7,12 @@
 			Next steps for you based on your lending history
 		</p>
 	</div>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
-		<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
-			<div ref="loanRegionsElement" class="tw-mb-4">
+	<div
+		ref="loanRegionsElement"
+		:class="{'tw-flex tw-flex-col lg:tw-flex-row tw-gap-4': !userLentToAllRegions}"
+	>
+		<div v-if="!userLentToAllRegions" class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
+			<div class="tw-mb-4">
 				<span
 					v-if="pillHeader"
 					class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
@@ -89,22 +92,32 @@
 				</div>
 			</div>
 		</div>
-		<div class="card-cointainer">
+		<div v-if="!userLentToAllRegions" class="card-container">
 			<MyKivaCard
 				class="kiva-card"
-				:title="cardTitle"
-				:show-cta-icon="true"
-				:primary-cta-text="cardCtaText"
 				primary-cta-variant="primary"
-				:is-full-width-primary-cta="true"
-				:is-title-font-sans="true"
 				title-color="tw-text-action-highlight"
 				:images="topCategoryImages"
-				:tag-text="cardTagText"
+				:is-full-width-primary-cta="true"
+				:is-title-font-sans="true"
+				:primary-cta-text="cardCtaText"
+				:show-cta-icon="true"
 				:show-tag-icon="showTagIcon"
+				:tag-text="cardTagText"
+				:title="cardTitle"
 				@primary-cta-clicked="goToTopCategory"
 			/>
 		</div>
+		<JourneyCardCarousel
+			v-else
+			user-in-homepage
+			in-lending-stats
+			:lender="lender"
+			:slides-number="3"
+			:slides="allRegionsLentSlides"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
+		/>
 	</div>
 </template>
 <script setup>
@@ -123,6 +136,7 @@ import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
+import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -150,6 +164,26 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 		required: true,
+	},
+	userLentToAllRegions: {
+		type: Boolean,
+		default: false,
+	},
+	heroSlides: {
+		type: Array,
+		default: () => [],
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroContentfulData: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroTieredAchievements: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
@@ -254,6 +288,18 @@ const goToTopCategory = () => {
 
 // Local checked state for fade effect
 const checkedArr = ref(props.regionsData.map(() => false));
+const allRegionsLentSlides = computed(() => {
+	return [...props.heroSlides,
+		{
+			title: cardTitle.value,
+			ctaText: cardCtaText.value,
+			images: topCategoryImages.value,
+			tagText: cardTagText.value,
+			showTagIcon: showTagIcon.value,
+			primaryCta: goToTopCategory,
+			isCustomCard: true,
+		}];
+});
 
 onMounted(() => {
 	delayUntilVisible(() => {
@@ -285,11 +331,11 @@ defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>
-.card-cointainer {
+.card-container {
 	max-width: 100%;
 
-	@screen lg {
-		max-width: 350px;
+	@screen md {
+		max-width: 336px;
 	}
 }
 
