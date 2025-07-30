@@ -112,7 +112,7 @@ export default {
 		fetchMyKivaData() {
 			try {
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
-				const lendingStateQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
+				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
 				this.userInfo = myKivaQueryResult.my ?? {};
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
@@ -122,7 +122,7 @@ export default {
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
-				const countryFacets = lendingStateQueryResult.lend?.countryFacets ?? [];
+				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
 				const regionCounts = new Map();
 				const regionCountries = new Map();
 				countryFacets.forEach(facet => {
@@ -139,7 +139,7 @@ export default {
 				const allRegions = [...regionCounts.keys()];
 				const regionsData = allRegions.map(region => ({
 					name: region,
-					hasLoans: lendingStateQueryResult
+					hasLoans: lendingStatsQueryResult
 						.my?.lendingStats?.countriesLentTo
 						.some(item => item?.region === region),
 					count: regionCounts.get(region) || 0,
@@ -147,8 +147,8 @@ export default {
 				}));
 				this.userLentToAllRegions = regionsData.map(region => region.hasLoans).every(Boolean) || false;
 				this.lendingStats = {
-					...lendingStateQueryResult.my?.lendingStats,
-					...lendingStateQueryResult.my?.userStats,
+					...lendingStatsQueryResult.my?.lendingStats,
+					...lendingStatsQueryResult.my?.userStats,
 					regionsData,
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
