@@ -87,6 +87,7 @@
 							target="_blank"
 							:title="`Open Privacy ${enableCommsExperiment ? 'Notice' : 'Policy' } in a new window`"
 						>Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}</a>.
+						Preferences can be managed in settings.
 						<p v-if="v$.termsAgreement?.$error" class="input-error tw-text-danger tw-text-base">
 							You must agree to the Kiva Terms of service & Privacy
 							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.

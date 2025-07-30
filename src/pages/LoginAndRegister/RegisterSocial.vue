@@ -99,7 +99,7 @@
 						and
 						<a href="/legal/privacy" target="_blank">
 							Privacy {{ enableCommsExperiment ? 'Notice' : 'Policy' }}
-						</a> (required)
+						</a>. Preferences can be managed in settings. (Required)
 						<template #checked>
 							You must agree to the Kiva Terms of Use and Privacy
 							{{ enableCommsExperiment ? 'Notice' : 'Policy' }}.
