@@ -66,6 +66,7 @@
 				class="tw-underline"
 				title="Open Privacy Policy in a new window"
 			>Privacy Policy</a>.
+			Preferences can be managed in settings.
 		</p>
 	</div>
 </template>
