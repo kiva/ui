@@ -18,7 +18,7 @@
 				<template v-for="(image, index) in images" #[`slide${index+1}`] :key="index">
 					<img
 						:src="image"
-						class="tw-rounded tw-w-full tw-aspect-video"
+						class="tw-rounded tw-w-full tw-aspect-video tw-object-cover tw-object-top"
 					>
 				</template>
 			</KvCarousel>
@@ -105,11 +105,11 @@
 import {
 	computed,
 } from 'vue';
+import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
 import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
-import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 

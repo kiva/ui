@@ -19,7 +19,7 @@
 					:title="card.title"
 					:date="card.date"
 					:slug="card.slug"
-					@track="trackBlogCard"
+					@track="() => trackBlogCard(card)"
 				/>
 			</template>
 		</KvCarousel>
@@ -51,8 +51,8 @@ const singleSlideWidth = computed(() => {
 	return '336px';
 });
 
-function trackBlogCard(payload) {
-	$kvTrackEvent('portfolio', 'click', `Blog-${payload}`);
+function trackBlogCard(card) {
+	$kvTrackEvent('portfolio', 'click', `Blog-${card.category}:${card.title}`);
 }
 </script>
 <style lang="postcss" scoped>

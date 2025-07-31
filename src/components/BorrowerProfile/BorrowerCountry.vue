@@ -66,8 +66,8 @@ export default {
 		this.loadCoordinates();
 	},
 	methods: {
-		loadCoordinates(loanId) {
-			if (!loanId) return;
+		loadCoordinates() {
+			if (!this.loanId) return;
 			return this.apollo.query({
 				query: gql`query borrowerCountryCoords($loanId: Int!) {
 					lend {
@@ -87,7 +87,7 @@ export default {
 						}
 					}
 				}`,
-				variables: { loanId }
+				variables: { loanId: this.loanId }
 			}).then(({ data }) => {
 				const geocode = data?.lend?.loan?.geocode;
 				this.mapLat = geocode?.latitude ?? null;

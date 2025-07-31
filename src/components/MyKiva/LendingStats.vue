@@ -7,17 +7,22 @@
 			Next steps for you based on your lending history
 		</p>
 	</div>
-	<div class="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
-		<div class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
-			<div ref="loanRegionsElement" class="tw-mb-4">
+	<div
+		ref="loanRegionsElement"
+		:class="{'tw-flex tw-flex-col lg:tw-flex-row tw-gap-4': !userLentToAllRegions}"
+	>
+		<div v-if="!userLentToAllRegions" class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
+			<div class="tw-mb-4">
 				<span
 					v-if="pillHeader"
-					class="tw-inline-flex tw-items-center tw-gap-1.5 tw-mb-2 md:tw-mb-3 tw-rounded tw-bg-eco-green-1
-				tw-px-3 tw-py-1 tw-leading-tight"
+					class="
+						tw-inline-flex tw-items-center tw-gap-1.5
+						tw-mb-2 md:tw-mb-3 tw-rounded
+						tw-bg-eco-green-1 tw-px-3 tw-py-1"
 					title="Your lending reach"
 				>
 					<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-					<span class="tw-text-primary tw-font-medium tw-text-h5">
+					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
 						{{ pillHeader }}
 					</span>
 				</span>
@@ -27,7 +32,7 @@
 							tw-w-full"
 					>
 						<li
-							v-for="(region, idx) in props.regions"
+							v-for="(region, idx) in props.regionsData"
 							:key="region.name"
 							class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 						>
@@ -58,43 +63,92 @@
 				style="width: 219px; height: 1px;"
 			>
 			<div>
-			<!-- Second major section content goes here -->
+				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
+				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-mt-2">
+					<a
+						v-for="(region, idx) in pendingRegions"
+						:key="idx"
+						class="tw-flex tw-mb-2 tw-w-1/2 tw-cursor-pointer"
+						@click="handleRecommendRegionClick(region)"
+					>
+						<div
+							class="
+								tw-flex tw-flex-col tw-w-full
+								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+								tw-transition-shadow tw-duration-200"
+						>
+							<img
+								:src="regionImageSource(region)"
+								:alt="`Map of ${region?.name}`"
+								class="tw-w-full tw-h-16 tw-rounded-t tw-object-cover"
+							>
+							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
+								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
+								<KvMaterialIcon
+									class="tw-justify-end tw-w-3 tw-h-3"
+									:icon="mdiArrowTopRight"
+								/>
+							</div>
+						</div>
+					</a>
+				</div>
 			</div>
 		</div>
-		<div class="card-cointainer">
+		<div v-if="!userLentToAllRegions" class="card-container">
 			<MyKivaCard
 				class="kiva-card"
-				:title="cardTitle"
-				:show-cta-icon="true"
-				:primary-cta-text="cardCtaText"
 				primary-cta-variant="primary"
-				:is-full-width-primary-cta="true"
-				:is-title-font-sans="true"
 				title-color="tw-text-action-highlight"
 				:images="topCategoryImages"
-				:tag-text="cardTagText"
+				:is-full-width-primary-cta="true"
+				:is-title-font-sans="true"
+				:primary-cta-text="cardCtaText"
+				:show-cta-icon="true"
 				:show-tag-icon="showTagIcon"
+				:tag-text="cardTagText"
+				:title="cardTitle"
 				@primary-cta-clicked="goToTopCategory"
 			/>
 		</div>
+		<JourneyCardCarousel
+			v-else
+			user-in-homepage
+			in-lending-stats
+			:lender="lender"
+			:slides-number="3"
+			:slides="allRegionsLentSlides"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
+		/>
 	</div>
 </template>
-
 <script setup>
 import {
-	computed,
-	ref,
-	onUnmounted,
-	onMounted,
-	inject,
+	computed, ref, onUnmounted, onMounted,
+	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
+import { KvMaterialIcon } from '@kiva/kv-components';
+import { mdiArrowTopRight } from '@mdi/js';
+
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
-import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
+
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
+import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+
+import Africa from '#src/assets/images/my-kiva/Africa.png';
+import Asia from '#src/assets/images/my-kiva/Asia.png';
+import CentralAmerica from '#src/assets/images/my-kiva/Central America.png';
+import EasternEurope from '#src/assets/images/my-kiva/Eastern Europe.png';
+import MiddleEast from '#src/assets/images/my-kiva/Middle East.png';
+import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
+import Oceania from '#src/assets/images/my-kiva/Oceania.png';
+import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
+
+import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -110,9 +164,10 @@ const props = defineProps({
 	/**
 	 * Array of regions with loan status
 	 */
-	regions: {
+	regionsData: {
 		type: Array,
-		default: () => []
+		default: () => [],
+		required: true,
 	},
 	/**
 	 * Array of loans
@@ -120,6 +175,27 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
+		required: true,
+	},
+	userLentToAllRegions: {
+		type: Boolean,
+		default: false,
+	},
+	heroSlides: {
+		type: Array,
+		default: () => [],
+	},
+	lender: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroContentfulData: {
+		type: Object,
+		default: () => ({}),
+	},
+	heroTieredAchievements: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
@@ -130,21 +206,43 @@ const topCategoryLoans = ref([]);
 const topCategoryTarget = ref('');
 const topCategoryUrl = ref('');
 
-const totalRegions = computed(() => props.regions.length);
-const loanRegions = computed(() => props.regions.filter(region => region.hasLoans).length);
+const totalRegions = computed(() => props.regionsData.length);
+const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
+const showTagIcon = computed(() => !!topCategory.value);
+
+const regionImages = {
+	Africa,
+	Asia,
+	'Central America': CentralAmerica,
+	'Eastern Europe': EasternEurope,
+	'Middle East': MiddleEast,
+	'North America': NorthAmerica,
+	Oceania,
+	'South America': SouthAmerica,
+};
+
+const regionImageSource = region => (regionImages[region?.name] || '');
 
 const pillHeader = computed(() => {
-	if (totalRegions.value === 0) {
-		return '';
-	}
-	if (loanRegions.value === 0) {
-		return 'Make a global impact';
-	}
+	if (totalRegions.value === 0) return '';
+	if (loanRegions.value === 0) return 'Make a global impact';
 	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
 });
 
-// Local checked state for fade effect
-const checkedArr = ref(props.regions.map(() => false));
+const pendingRegions = computed(() => {
+	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count).slice(0, 2);
+});
+
+const formattedPendingRegions = computed(() => {
+	const regions = pendingRegions.value;
+	if (!regions || regions.length === 0) return '';
+	const formattedNames = regions.map(region => `<span class="tw-font-medium">
+		${region.name === 'Middle East' ? 'the Middle East' : region.name}
+		</span>`);
+	if (formattedNames.length === 1) return formattedNames[0];
+	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
+	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
+});
 
 const topCategoryImages = computed(() => {
 	if (topCategoryLoans.value.length) {
@@ -197,7 +295,10 @@ const cardTagText = computed(() => {
 	return 'Recommended: Loans to Women';
 });
 
-const showTagIcon = computed(() => !!topCategory.value);
+const handleRecommendRegionClick = region => {
+	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	router.push(`/lend-category-beta?country=${region?.countries.join(',')}`);
+};
 
 const goToTopCategory = () => {
 	$kvTrackEvent(
@@ -206,10 +307,24 @@ const goToTopCategory = () => {
 		'top-category-recommendation',
 		topCategory.value ? topCategory.value : ' empty-state'
 	);
-
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
 };
+
+// Local checked state for fade effect
+const checkedArr = ref(props.regionsData.map(() => false));
+const allRegionsLentSlides = computed(() => {
+	return [...props.heroSlides,
+		{
+			title: cardTitle.value,
+			ctaText: cardCtaText.value,
+			images: topCategoryImages.value,
+			tagText: cardTagText.value,
+			showTagIcon: showTagIcon.value,
+			primaryCta: goToTopCategory,
+			isCustomCard: true,
+		}];
+});
 
 onMounted(() => {
 	delayUntilVisible(() => {
@@ -217,7 +332,7 @@ onMounted(() => {
 			let currentIdx = 0;
 			interval.value = setInterval(() => {
 				// eslint-disable-next-line max-len
-				currentIdx = props.regions.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+				currentIdx = props.regionsData.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
 				if (currentIdx !== -1) {
 					checkedArr.value[currentIdx] = true;
 					currentIdx += 1;
@@ -227,7 +342,6 @@ onMounted(() => {
 			}, 200);
 		}, 800);
 	}, [loanRegionsElement.value]);
-
 	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
 	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
 	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
@@ -235,18 +349,18 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (interval.value) {
-		clearInterval(interval.value);
-	}
+	if (interval.value) clearInterval(interval.value);
 });
+
+defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>
-.card-cointainer {
+.card-container {
 	max-width: 100%;
 
-	@screen lg {
-		max-width: 350px;
+	@screen md {
+		max-width: 336px;
 	}
 }
 
