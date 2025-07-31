@@ -130,7 +130,7 @@ import {
 	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
@@ -149,7 +149,6 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
-import KvCheckbox from '#src/components/Kv/KvCheckbox';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
