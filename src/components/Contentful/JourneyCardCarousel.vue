@@ -149,7 +149,7 @@ const badgesData = computed(() => {
 	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
 });
 
-const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
+const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
 	const uiSettings = richTextContent.find(

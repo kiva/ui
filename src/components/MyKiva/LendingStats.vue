@@ -9,16 +9,19 @@
 	</div>
 	<div
 		ref="loanRegionsElement"
-		:class="{'tw-flex tw-flex-col lg:tw-flex-row tw-gap-4': !userLentToAllRegions}"
+		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
-		<div v-if="!userLentToAllRegions" class="tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full">
-			<div class="tw-mb-4">
+		<div
+			v-if="!userLentToAllRegions"
+			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
+		>
+			<div>
 				<span
 					v-if="pillHeader"
 					class="
-						tw-inline-flex tw-items-center tw-gap-1.5
-						tw-mb-2 md:tw-mb-3 tw-rounded
-						tw-bg-eco-green-1 tw-px-3 tw-py-1"
+						tw-inline-flex tw-items-center tw-gap-1
+						tw-mb-2 tw-rounded
+						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
 					title="Your lending reach"
 				>
 					<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
@@ -61,16 +64,16 @@
 			</div>
 			<hr
 				v-if="loanRegions"
-				class="tw-my-4 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
+				class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
 				style="width: 219px; height: 1px;"
 			>
-			<div>
-				<div class="tw-w-full" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
-				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-mt-2">
+			<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
+				<div class="tw-w-full tw-pb-1.5" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
+				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-min-h-0">
 					<a
 						v-for="(region, idx) in pendingRegions"
 						:key="idx"
-						class="tw-flex tw-mb-2 tw-w-1/2 tw-cursor-pointer"
+						class="tw-flex tw-w-1/2 tw-cursor-pointer"
 						@click="handleRecommendRegionClick(region)"
 					>
 						<div
@@ -82,12 +85,22 @@
 							<img
 								:src="regionImageSource(region)"
 								:alt="`Map of ${region?.name}`"
-								class="tw-w-full tw-h-16 tw-rounded-t tw-object-cover"
+								class="region-image tw-w-full tw-rounded-t tw-object-cover tw-min-h-0"
 							>
-							<div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2">
-								<span class="tw-justify-start tw-font-medium">Lend in {{ region?.name }}</span>
+							<div
+								class="
+									tw-flex
+									tw-justify-between
+									tw-w-full
+									tw-p-1
+									md:tw-p-2
+									tw-items-start
+								"
+								:title="region?.name"
+							>
+								<span class="tw-font-medium">Lend in {{ region?.name }}</span>
 								<KvMaterialIcon
-									class="tw-justify-end tw-w-3 tw-h-3"
+									class="tw-w-3 tw-h-3 tw-shrink-0"
 									:icon="mdiArrowTopRight"
 								/>
 							</div>
@@ -98,9 +111,10 @@
 		</div>
 		<div v-if="!userLentToAllRegions" class="card-container">
 			<MyKivaCard
-				class="kiva-card"
+				class="kiva-card tw-h-full"
 				primary-cta-variant="primary"
 				title-color="tw-text-action-highlight"
+				:bg-image="StatsCardBg"
 				:images="topCategoryImages"
 				:is-full-width-primary-cta="true"
 				:is-title-font-sans="true"
@@ -114,6 +128,7 @@
 		</div>
 		<JourneyCardCarousel
 			v-else
+			class="carousel"
 			user-in-homepage
 			in-lending-stats
 			:lender="lender"
@@ -149,6 +164,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -356,6 +372,14 @@ defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>
+.stats-wrapper {
+	height: auto;
+
+	@screen md {
+		height: 362px;
+	}
+}
+
 .card-container {
 	max-width: 100%;
 
@@ -366,5 +390,17 @@ defineExpose({ loanRegionsElement });
 
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
+}
+
+.region-image {
+	height: 145px;
+
+	@screen md {
+		height: 191px;
+	}
+}
+
+.carousel > :deep(section > .kv-carousel__controls) {
+	@apply tw-hidden;
 }
 </style>
