@@ -70,7 +70,6 @@ export default {
 	created() {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 
-		// Also set nav update experiment flag from Apollo cache (for CSR/hydration)
 		try {
 			const navUpdateExp = this.apollo.readQuery({
 				query: experimentAssignmentQuery.default,
@@ -78,7 +77,6 @@ export default {
 			});
 			this.isNavUpdateExp = navUpdateExp?.experiment?.version === 'b';
 
-			// Track experiment version (mimic Lending Stats pattern)
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
