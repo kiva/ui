@@ -82,7 +82,7 @@ export default {
 				this.$kvTrackEvent,
 				'Lending',
 				'kiva_nav_update',
-				'EXP-MP-1817-Jul2025'
+				'EXP-MP-1696-Aug2025'
 			);
 		} catch (e) {
 			// It's ok if not in cache yet
