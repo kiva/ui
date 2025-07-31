@@ -142,7 +142,7 @@
 <script setup>
 import {
 	computed, ref, onUnmounted, onMounted,
-	defineExpose, inject,
+	inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
@@ -312,7 +312,12 @@ const cardTagText = computed(() => {
 });
 
 const handleRecommendRegionClick = region => {
-	$kvTrackEvent('event-tracking', 'click', 'region-recommendation', region?.name);
+	$kvTrackEvent(
+		'event-tracking',
+		'click',
+		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
+		region?.name
+	);
 	router.push(`/lend-category-beta?country=${region?.countries.join(',')}`);
 };
 
@@ -321,7 +326,7 @@ const goToTopCategory = () => {
 		'event-tracking',
 		'click',
 		'top-category-recommendation',
-		topCategory.value ? topCategory.value : ' empty-state'
+		topCategory.value ? topCategory.value : 'empty-state'
 	);
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
@@ -362,13 +367,20 @@ onMounted(() => {
 	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
 	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
 	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
+
+	$kvTrackEvent(
+		'event-tracking',
+		'show',
+		// eslint-disable-next-line no-nested-ternary
+		!props.loans.length
+			? 'empty-states-no-regions'
+			: (props.userLentToAllRegions ? 'lent-to-all-regions' : 'regions-lent-to')
+	);
 });
 
 onUnmounted(() => {
 	if (interval.value) clearInterval(interval.value);
 });
-
-defineExpose({ loanRegionsElement });
 </script>
 
 <style lang="postcss" scoped>

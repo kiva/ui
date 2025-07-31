@@ -169,7 +169,7 @@ export default {
 			const lendingStatsExpData = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
-				'Lending',
+				'event-tracking',
 				LENDING_STATS_EXP_KEY,
 				'EXP-MP-1729-Jul2025'
 			);
