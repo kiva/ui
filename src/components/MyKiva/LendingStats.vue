@@ -28,7 +28,7 @@
 				</span>
 				<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
 					<ul
-						class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-2 tw-gap-x-2
+						class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-1 tw-gap-x-0.5
 							tw-w-full"
 					>
 						<li
@@ -36,18 +36,20 @@
 							:key="region.name"
 							class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 						>
-							<RoundCheckbox
+							<kv-checkbox
 								:id="`continent-checkbox-${idx}`"
-								:checked="checkedArr[idx]"
+								:model-value="checkedArr[idx]"
 								class="tw-mr-0.5"
 								:readonly="true"
 								:disabled="true"
+								variant="round"
+								:blur-on-disabled="false"
 							/>
 							<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 								<span
 									class="tw-font-medium md:tw-text-lg tw-text-primary
-									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full"
-									style="line-height: 1.25;"
+									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
+
 									:title="region.name"
 								>
 									{{ region.name }}
@@ -128,11 +130,10 @@ import {
 	defineExpose, inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
-
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 
@@ -145,7 +146,6 @@ import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
 import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
-import RoundCheckbox from '#src/components/MyKiva/RoundCheckbox';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
