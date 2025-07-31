@@ -369,18 +369,13 @@ export function getLendCtaSelectedOption(cookieStore, enableFiveDollarsNotes, ca
 }
 
 /**
- * Gets the custom href for the loan card if borrower profile modal is enabled
+ * Gets the custom href for the loan card
  *
  * @param {Object} router The router object from the Vue component
  * @param {string} loanId The ID of the loan
- * @param {boolean} isBpModalEnabled Whether the borrower profile modal is enabled
  * @returns {string} The custom href for the loan card
  */
-export function getCustomHref(router, loanId, isBpModalEnabled) {
-	if (!isBpModalEnabled) {
-		return '';
-	}
-
+export function getCustomHref(router, loanId) {
 	const resolvedRoute = router.resolve({
 		query: { ...router.currentRoute.value.query, loanId },
 	});

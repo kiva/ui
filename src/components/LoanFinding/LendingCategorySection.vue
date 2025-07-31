@@ -29,7 +29,7 @@
 					<kv-classic-loan-card-container
 						class="tw-h-full"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
-						:custom-loan-details="isBpModalEnabled"
+						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:five-dollars-selected="fiveDollarsSelected"
 						:large-card="isLargeCard"
@@ -37,7 +37,7 @@
 						:show-tags="true"
 						:use-full-width="true"
 						:user-balance="userBalance"
-						:custom-href="getCustomHref($router, loan.id, isBpModalEnabled)"
+						:custom-href="getCustomHref($router, loan.id)"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -123,10 +123,6 @@ export default {
 			type: Number,
 			default: 6
 		},
-		isBpModalEnabled: {
-			type: Boolean,
-			defaut: false
-		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],

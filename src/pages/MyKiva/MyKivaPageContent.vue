@@ -64,12 +64,11 @@
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				:loans="loans"
-				:selected-loan="selectedLoan"
 				:total-loans="totalLoans"
 				@add-to-basket="addToBasket"
 				@go-to-link="goToLink"
-				@handle-selected-loan="handleSelectedLoan"
-				@mouse-enter-status-card="handleStatusCardMouseEnter"
+				@handle-selected-loan="showLoanDetails"
+				@mouse-enter-status-card="loadBPData"
 				show-menu
 			/>
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
@@ -89,7 +88,6 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
-				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
@@ -129,7 +127,7 @@
 			/>
 		</section>
 		<BorrowerSideSheetWrapper
-			v-if="isBpModalEnabled && showBPSideSheet"
+			v-if="showBPSideSheet"
 			:basket-items="basketItems"
 			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
@@ -587,9 +585,6 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		handleStatusCardMouseEnter(payload) {
-			this.handleSelectedLoan({ loanId: payload });
-		},
 		showLoanDetails(payload) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
@@ -604,7 +599,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-		this.initializeIsBpModalEnabledExp('my-kiva-page-content');
 
 		this.$nextTick(() => {
 			if (this.isLendingStatsExp) {
