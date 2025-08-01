@@ -42,6 +42,8 @@
 				tw-align-bottom
 				tw-rounded-b
 				tw-grow
+				tw-flex
+				tw-flex-col
 			"
 			:class="[
 				cardContentClasses,
@@ -51,7 +53,7 @@
 				}
 			]"
 		>
-			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1 tw-shrink-0">
+			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1 tw-shrink-0 tw-grow">
 				<div class="tw-text-primary-inverse">
 					<h2
 						class="tw-text-h3"
