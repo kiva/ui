@@ -1,18 +1,10 @@
 <template>
 	<div
-		class="
-			tw-w-full
-			tw-relative
-			tw-rounded
-			tw-bg-cover
-			tw-bg-center
-			tw-select-none
-			tw-bg-white
-			journey-card
-			tw-flex
-			tw-flex-col
-		"
-		:class="{ 'tw-bg-contain tw-bg-top tw-bg-no-repeat': isBgTopAligned }"
+		:class="[
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col',
+			backgroundSize,
+			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned }
+		]"
 		:style="{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }"
 	>
 		<div
@@ -45,17 +37,19 @@
 		<div
 			class="
 				tw-w-full
+				tw-h-1/2
 				tw-bottom-0
-				tw-pb-1
-				tw-px-1
 				tw-align-bottom
 				tw-rounded-b
 				tw-grow
 			"
-			:class="{
-				'slide-gradient': hasGradient,
-				'tw-absolute': !images.length,
-			}"
+			:class="[
+				cardContentClasses,
+				{
+					'slide-gradient': hasGradient,
+					'tw-absolute': !images.length,
+				}
+			]"
 		>
 			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1 tw-shrink-0">
 				<div class="tw-text-primary-inverse">
@@ -119,6 +113,22 @@ import { mdiArrowTopRight } from '@mdi/js';
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
 const props = defineProps({
+	/**
+	 * Background size class for the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	backgroundSize: {
+		type: String,
+		default: 'tw-bg-cover',
+	},
+	/**
+	 * Classes to apply to the content area of the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	cardContentClasses: {
+		type: String,
+		default: 'tw-pb-1.5 tw-px-1.5 md:tw-pb-2 md:tw-px-2',
+	},
 	/**
 	 * Background image URL for the whole card.
 	 */
@@ -259,6 +269,13 @@ const titleClass = computed(() => {
 <style lang="postcss" scoped>
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+	min-height: 340px;
+
+	@screen md {
+		.journey-card {
+			min-height: 382px;
+		}
+	}
 }
 
 .slide-gradient {

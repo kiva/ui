@@ -115,6 +115,7 @@
 				primary-cta-variant="primary"
 				title-color="tw-text-action-highlight"
 				:bg-image="StatsCardBg"
+				card-content-padding="tw-pb-1 tw-px-1"
 				:images="topCategoryImages"
 				:is-full-width-primary-cta="true"
 				:is-title-font-sans="true"
@@ -131,6 +132,7 @@
 			class="carousel"
 			user-in-homepage
 			in-lending-stats
+			background-size="tw-bg-contain"
 			:lender="lender"
 			:slides-number="3"
 			:slides="allRegionsLentSlides"

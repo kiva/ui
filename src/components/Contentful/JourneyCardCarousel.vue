@@ -40,6 +40,7 @@
 				<MyKivaCard
 					v-else
 					class="tw-w-full tw-h-full"
+					:background-size="backgroundSize"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -100,6 +101,10 @@ const {
 const emit = defineEmits(['update-journey']);
 
 const props = defineProps({
+	backgroundSize: {
+		type: String,
+		default: 'tw-bg-cover',
+	},
 	userInfo: {
 		type: Object,
 		default: () => ({}),
@@ -390,10 +395,6 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 
 :deep(.journey-card-carousel > .kv-carousel__controls) div {
 	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-
-.journey-card-carousel:deep(div:first-child) {
-	@apply tw-gap-2 lg:tw-gap-4;
 }
 
 .kiva-card :deep(h2) {
