@@ -41,6 +41,7 @@
 				Looking for your next step?
 			</h3>
 			<JourneyCardCarousel
+				background-size="tw-bg-contain"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:lender="lender"
