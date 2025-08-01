@@ -24,7 +24,6 @@
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
-				ref="lendingStats"
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"
@@ -42,6 +41,7 @@
 				Looking for your next step?
 			</h3>
 			<JourneyCardCarousel
+				background-size="tw-bg-contain"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:lender="lender"
@@ -176,7 +176,6 @@ import LendingStats from '#src/components/MyKiva/LendingStats';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 import { defaultBadges } from '#src/util/achievementUtils';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -273,7 +272,6 @@ export default {
 		} = useBadgeData(this.apollo);
 
 		return {
-			lendingStatsObserver: null,
 			badgeData,
 			blogCards: [],
 			blogCategories,
@@ -599,31 +597,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-
-		this.$nextTick(() => {
-			if (this.isLendingStatsExp) {
-				const loanRegionsEl = this.$refs.lendingStats?.loanRegionsElement;
-				if (loanRegionsEl) {
-					this.lendingStatsObserver = createIntersectionObserver({
-						targets: [loanRegionsEl],
-						threshold: 0.2,
-						callback: entries => {
-							entries.forEach(entry => {
-								if (entry.isIntersecting) {
-									this.$kvTrackEvent('event-tracking', 'show', 'regions-lent-to');
-									this.lendingStatsObserver.disconnect();
-								}
-							});
-						}
-					});
-				}
-			}
-		});
-	},
-	beforeUnmount() {
-		if (this.lendingStatsObserver) {
-			this.lendingStatsObserver.disconnect();
-		}
 	},
 };
 </script>
