@@ -3,7 +3,8 @@
 		:class="[
 			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col',
 			backgroundSize,
-			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned }
+			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
+			{ 'single-image': hasSingleImage }
 		]"
 		:style="{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }"
 	>
@@ -54,7 +55,7 @@
 			]"
 		>
 			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1 tw-shrink-0 tw-grow">
-				<div class="tw-text-primary-inverse">
+				<div class="text-content tw-text-primary-inverse">
 					<h2
 						class="tw-text-h3"
 						:class="titleClass"
@@ -266,6 +267,8 @@ const titleClass = computed(() => {
 
 	return className;
 });
+
+const hasSingleImage = computed(() => props.images.length === 1);
 </script>
 
 <style lang="postcss" scoped>
@@ -286,6 +289,16 @@ const titleClass = computed(() => {
 
 .carousel > :deep(div:first-child) {
 	height: calc(100% - 28px);
+}
+
+.single-image {
+	.text-content {
+		@apply tw-grow tw-content-center;
+	}
+
+	.carousel > :deep(div:first-child) {
+		@apply tw-h-full;
+	}
 }
 
 .carousel :deep(img) {
