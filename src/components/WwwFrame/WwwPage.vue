@@ -19,16 +19,13 @@
 	</div>
 </template>
 
-<script setup>
-import {
-	ref, computed, inject, onMounted
-} from 'vue';
+<script>
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheNewHeader from './TheNewHeader';
 import TheHeader from './TheHeader';
@@ -37,42 +34,78 @@ import TheBasketBar from './TheBasketBar';
 
 const NAV_UPDATE_EXP_KEY = 'kiva_nav_update';
 
-const apollo = inject('apollo');
-const route = inject('route'); // If using vue-router's provide/inject, otherwise use useRoute()
-const grayBackground = ref(false);
-const hideSearchInHeader = ref(false);
-const mainClass = ref('');
+export default {
+	name: 'WwwPage',
+	inject: [
+		'apollo',
+		'cookieStore',
+	],
+	components: {
+		CookieBanner,
+		GlobalPromoContentful,
+		TheBasketBar,
+		TheFooter,
+		TheHeader,
+		TheNewHeader,
+	},
+	props: {
+		grayBackground: {
+			type: Boolean,
+			default: false,
+		},
+		hideSearchInHeader: {
+			type: Boolean,
+			default: false,
+		},
+		mainClass: {
+			type: [Object, String],
+			default: '',
+		},
+	},
+	data() {
+		return {
+			isKivaAppReferral: false,
+			isNavUpdateExp: false,
+		};
+	},
+	created() {
+		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 
-const isKivaAppReferral = ref(route?.query?.kivaAppReferral === 'true');
-const isNavUpdateExp = ref(false);
-
-try {
-	const experimentData = apollo.readQuery({
-		query: experimentAssignmentQuery,
-		variables: { id: NAV_UPDATE_EXP_KEY }
-	});
-	if (experimentData?.experiment) {
-		isNavUpdateExp.value = experimentData.experiment.version === 'b';
-	}
-} catch (e) {
-	// fallback: stick with default
-}
-
-onMounted(() => {
-	try {
-		const data = apollo.readQuery({
-			query: hasEverLoggedInQuery,
+		const cachedData = this.apollo.readQuery({
+			query: experimentAssignmentQuery,
+			variables: { id: NAV_UPDATE_EXP_KEY }
 		});
-		userHasEverLoggedInBefore(data?.hasEverLoggedIn);
-	} catch (e) {
-		logReadQueryError(e, 'User has ever logged in');
-	}
-});
+		if (cachedData?.experiment) {
+			this.isNavUpdateExp = cachedData.experiment.version === 'b';
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'event-tracking',
+				NAV_UPDATE_EXP_KEY,
+				'EXP-MP-1696-Aug2025'
+			);
+		}
+	},
+	mounted() {
+		try {
+			const data = this.apollo.readQuery({
+				query: hasEverLoggedInQuery,
+			});
 
-const mainClasses = computed(() => [
-	mainClass.value,
-	{ 'tw-bg-secondary': grayBackground.value },
-]);
+			userHasEverLoggedInBefore(data?.hasEverLoggedIn);
+		} catch (e) {
+			logReadQueryError(e, 'User has ever logged in');
+		}
+	},
+	computed: {
+		mainClasses() {
+			return [
+				this.mainClass,
+				{ 'tw-bg-secondary': this.grayBackground },
+			];
+		},
+	}
+};
 </script>
 
 <style lang="scss">
