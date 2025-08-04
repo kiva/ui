@@ -47,12 +47,12 @@ const isKivaAppReferral = ref(route?.query?.kivaAppReferral === 'true');
 const isNavUpdateExp = ref(false);
 
 try {
-	const cachedData = apollo.readQuery({
+	const experimentData = apollo.readQuery({
 		query: experimentAssignmentQuery,
 		variables: { id: NAV_UPDATE_EXP_KEY }
 	});
-	if (cachedData?.experiment) {
-		isNavUpdateExp.value = cachedData.experiment.version === 'b';
+	if (experimentData?.experiment) {
+		isNavUpdateExp.value = experimentData.experiment.version === 'b';
 	}
 } catch (e) {
 	// fallback: stick with default
