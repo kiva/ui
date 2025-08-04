@@ -71,12 +71,12 @@ export default {
 	created() {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
 
-		const cachedData = this.apollo.readQuery({
+		const experimentData = this.apollo.readQuery({
 			query: experimentAssignmentQuery,
 			variables: { id: NAV_UPDATE_EXP_KEY }
 		});
-		if (cachedData?.experiment) {
-			this.isNavUpdateExp = cachedData.experiment.version === 'b';
+		if (experimentData?.experiment) {
+			this.isNavUpdateExp = experimentData.experiment.version === 'b';
 			trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
