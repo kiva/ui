@@ -82,18 +82,17 @@
 								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
 								tw-transition-shadow tw-duration-200"
 						>
-							<img
-								:src="regionImageSource(region)"
-								:alt="`Map of ${region?.name}`"
-								class="region-image tw-w-full tw-rounded-t tw-object-cover tw-min-h-0"
-							>
+							<div
+								:style="{ backgroundImage: `url(${regionImageSource(region)})` }"
+								class="region-image tw-w-full tw-rounded-t tw-bg-top tw-bg-cover tw-min-h-0"
+							></div>
 							<div
 								class="
 									tw-flex
 									tw-justify-between
 									tw-w-full
 									tw-p-1
-									md:tw-p-2
+									md:tw-px-2
 									tw-items-start
 								"
 								:title="region?.name"
