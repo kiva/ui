@@ -32,7 +32,7 @@
 					:is-full-width-primary-cta="true"
 					:is-title-font-sans="true"
 					title-color="tw-text-action-highlight"
-					:images="slide.images"
+					:loans="slide.loans"
 					:tag-text="slide.tagText"
 					:show-tag-icon="slide.showTagIcon"
 					@primary-cta-clicked="slide.primaryCta"
