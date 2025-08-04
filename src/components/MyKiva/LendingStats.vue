@@ -84,7 +84,7 @@
 						>
 							<div
 								:style="{ backgroundImage: `url(${regionImageSource(region)})` }"
-								class="region-image tw-w-full tw-rounded-t tw-bg-top tw-bg-cover tw-min-h-0 tw-grow"
+								class="region-image tw-w-full tw-rounded-t tw-bg-center tw-bg-cover tw-min-h-0 tw-grow"
 							></div>
 							<div
 								class="
