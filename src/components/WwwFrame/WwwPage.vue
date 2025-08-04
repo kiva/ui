@@ -19,13 +19,16 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+import {
+	ref, computed, inject, onMounted
+} from 'vue';
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
-import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+
+import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheNewHeader from './TheNewHeader';
 import TheHeader from './TheHeader';
@@ -34,80 +37,42 @@ import TheBasketBar from './TheBasketBar';
 
 const NAV_UPDATE_EXP_KEY = 'kiva_nav_update';
 
-export default {
-	name: 'WwwPage',
-	inject: [
-		'apollo',
-	],
-	components: {
-		CookieBanner,
-		GlobalPromoContentful,
-		TheBasketBar,
-		TheFooter,
-		TheHeader,
-		TheNewHeader,
-	},
-	props: {
-		grayBackground: {
-			type: Boolean,
-			default: false,
-		},
-		hideSearchInHeader: {
-			type: Boolean,
-			default: false,
-		},
-		mainClass: {
-			type: [Object, String],
-			default: '',
-		},
-	},
-	data() {
-		return {
-			isKivaAppReferral: false,
-			isNavUpdateExp: false,
-		};
-	},
-	created() {
-		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
+const apollo = inject('apollo');
+const route = inject('route'); // If using vue-router's provide/inject, otherwise use useRoute()
+const grayBackground = ref(false);
+const hideSearchInHeader = ref(false);
+const mainClass = ref('');
 
-		try {
-			const navUpdateExp = this.apollo.readQuery({
-				query: experimentAssignmentQuery.default,
-				variables: { id: NAV_UPDATE_EXP_KEY }
-			});
-			this.isNavUpdateExp = navUpdateExp?.experiment?.version === 'b';
+const isKivaAppReferral = ref(route?.query?.kivaAppReferral === 'true');
+const isNavUpdateExp = ref(false);
 
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				'kiva_nav_update',
-				'EXP-MP-1696-Aug2025'
-			);
-		} catch (e) {
-			// It's ok if not in cache yet
-		}
-	},
-	mounted() {
-		try {
-			const data = this.apollo.readQuery({
-				query: hasEverLoggedInQuery,
-			});
-
-			userHasEverLoggedInBefore(data?.hasEverLoggedIn);
-		} catch (e) {
-			logReadQueryError(e, 'User has ever logged in');
-		}
-	},
-	computed: {
-		mainClasses() {
-			return [
-				this.mainClass,
-				{ 'tw-bg-secondary': this.grayBackground },
-			];
-		},
+try {
+	const cachedData = apollo.readQuery({
+		query: experimentAssignmentQuery,
+		variables: { id: NAV_UPDATE_EXP_KEY }
+	});
+	if (cachedData?.experiment) {
+		isNavUpdateExp.value = cachedData.experiment.version === 'b';
 	}
-};
+} catch (e) {
+	// fallback: stick with default
+}
+
+onMounted(() => {
+	try {
+		const data = apollo.readQuery({
+			query: hasEverLoggedInQuery,
+		});
+		userHasEverLoggedInBefore(data?.hasEverLoggedIn);
+	} catch (e) {
+		logReadQueryError(e, 'User has ever logged in');
+	}
+});
+
+const mainClasses = computed(() => [
+	mainClass.value,
+	{ 'tw-bg-secondary': grayBackground.value },
+]);
 </script>
 
 <style lang="scss">
