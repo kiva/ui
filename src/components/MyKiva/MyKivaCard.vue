@@ -1,16 +1,20 @@
 <template>
 	<div
-		class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center tw-select-none tw-bg-white journey-card"
-		:class="{ '!tw-bg-left-top': isBgTopAligned }"
-		:style="{ backgroundImage: `url(${bgImage})` }"
+		:class="[
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col',
+			backgroundSize,
+			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
+			{ 'single-image': hasSingleImage }
+		]"
+		:style="{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }"
 	>
 		<div
 			v-if="images.length"
 			class="tw-p-1"
-			style="min-height: 235px;"
+			style="height: 70%;"
 		>
 			<KvCarousel
-				class="carousel"
+				class="carousel tw-h-full"
 				:key="images.length"
 				:embla-options="{ loop: false, align: 'center' }"
 				:is-dotted="true"
@@ -34,24 +38,24 @@
 		<div
 			class="
 				tw-w-full
+				tw-h-1/2
 				tw-bottom-0
-				tw-pb-1.5
-				tw-px-1.5
-				md:tw-pb-2
-				md:tw-px-2
 				tw-align-bottom
 				tw-rounded-b
+				tw-grow
+				tw-flex
+				tw-flex-col
 			"
-			:class="{
-				'slide-gradient': hasGradient,
-				'tw-absolute': !images.length,
-			}"
-			:style="[
-				{ 'height': overlayHeight },
+			:class="[
+				cardContentClasses,
+				{
+					'slide-gradient': hasGradient,
+					'tw-absolute': !images.length,
+				}
 			]"
 		>
-			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-				<div class="tw-text-primary-inverse">
+			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1 tw-shrink-0 tw-grow">
+				<div class="text-content tw-text-primary-inverse">
 					<h2
 						class="tw-text-h3"
 						:class="titleClass"
@@ -106,14 +110,28 @@ import {
 	computed,
 } from 'vue';
 import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
-import useIsMobile from '#src/composables/useIsMobile';
-import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
 const props = defineProps({
+	/**
+	 * Background size class for the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	backgroundSize: {
+		type: String,
+		default: 'tw-bg-cover',
+	},
+	/**
+	 * Classes to apply to the content area of the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	cardContentClasses: {
+		type: String,
+		default: 'tw-pb-1.5 tw-px-1.5 md:tw-pb-2 md:tw-px-2',
+	},
 	/**
 	 * Background image URL for the whole card.
 	 */
@@ -230,13 +248,7 @@ const props = defineProps({
 	},
 });
 
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-
 const showSecondaryCta = computed(() => !!props.secondaryCtaText);
-
-const overlayHeight = computed(() => {
-	return showSecondaryCta.value && isMobile.value ? '60%' : '50%';
-});
 
 const titleClass = computed(() => {
 	let className = '';
@@ -255,20 +267,42 @@ const titleClass = computed(() => {
 
 	return className;
 });
+
+const hasSingleImage = computed(() => props.images.length === 1);
 </script>
 
 <style lang="postcss" scoped>
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-	min-height: 382px;
+	min-height: 340px;
 
 	@screen md {
-		min-height: 340px;
+		.journey-card {
+			min-height: 382px;
+		}
 	}
 }
 
 .slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
+}
+
+.carousel > :deep(div:first-child) {
+	height: calc(100% - 28px);
+}
+
+.single-image {
+	.text-content {
+		@apply tw-grow tw-content-center;
+	}
+
+	.carousel > :deep(div:first-child) {
+		@apply tw-h-full;
+	}
+}
+
+.carousel :deep(img) {
+	@apply tw-h-full;
 }
 
 .carousel :deep(.kv-carousel__controls) {
