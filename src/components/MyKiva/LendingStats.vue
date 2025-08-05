@@ -115,7 +115,7 @@
 				title-color="tw-text-action-highlight"
 				:bg-image="StatsCardBg"
 				card-content-classes="tw-pb-1 tw-px-1"
-				:loans="topCategoryLoans"
+				:loans="topCategoryLoansForCardCarousel"
 				:is-full-width-primary-cta="true"
 				:is-title-font-sans="true"
 				:primary-cta-text="cardCtaText"
@@ -149,7 +149,7 @@ import { useRouter } from 'vue-router';
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
-import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
@@ -172,7 +172,7 @@ const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const {
-	getTopCategoryByLoans,
+	getTopCategoryWithLoans,
 	getLoanFindingUrl,
 } = useBadgeData();
 
@@ -218,9 +218,8 @@ const props = defineProps({
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(null);
-const topCategoryLoans = ref([]);
-const topCategoryTarget = ref('');
 const topCategoryUrl = ref('');
+const topCategoryLoansForCardCarousel = ref();
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
@@ -263,27 +262,36 @@ const formattedPendingRegions = computed(() => {
 const cardTitle = computed(() => {
 	if (topCategory.value) {
 		let targetText = '';
-		if (topCategoryLoans.value.length > 1) {
-			targetText = topCategoryTarget.value === 'woman' ? 'women' : `${topCategoryTarget.value}s`;
+		if (topCategory.value?.loansCount > 1) {
+			switch (topCategory.value?.target) {
+				case 'woman':
+					targetText = 'women';
+					break;
+				case 'person':
+					targetText = 'people';
+					break;
+				default:
+					targetText = `${topCategory.value?.target}s`;
+			}
 		} else {
-			targetText = topCategoryTarget.value;
+			targetText = topCategory.value?.target;
 		}
-		return `You've funded ${topCategoryLoans.value.length} ${targetText}!`;
+		return `You've funded ${topCategory.value?.loansCount} ${targetText}!`;
 	}
 	return 'Give women an equal opportunity to succeed.';
 });
 
 const cardCtaText = computed(() => {
-	if (topCategory.value) {
-		return `Support another ${topCategoryTarget.value}`;
+	if (topCategory.value?.target) {
+		return `Support another ${topCategory.value?.target}`;
 	}
 	return 'Fund a Woman';
 });
 
 const cardTagText = computed(() => {
-	if (topCategory.value) {
+	if (topCategory.value?.category) {
 		let categoryText = '';
-		switch (topCategory.value) {
+		switch (topCategory.value.category) {
 			case 'us-economic-equality':
 				categoryText = 'Kiva US';
 				break;
@@ -332,7 +340,7 @@ const allRegionsLentSlides = computed(() => {
 		{
 			title: cardTitle.value,
 			ctaText: cardCtaText.value,
-			loans: topCategoryLoans.value,
+			loans: topCategoryLoansForCardCarousel.value,
 			tagText: cardTagText.value,
 			showTagIcon: showTagIcon.value,
 			primaryCta: goToTopCategory,
@@ -356,10 +364,9 @@ onMounted(() => {
 			}, 200);
 		}, 800);
 	}, [loanRegionsElement.value]);
-	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
-	topCategoryLoans.value = (getTopCategoryByLoans(props.loans)?.loans ?? []).slice(0, 3);
-	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
+	topCategory.value = getTopCategoryWithLoans(props.heroTieredAchievements);
 	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
+	topCategoryLoansForCardCarousel.value = topCategory.value?.loans?.slice(0, 3);
 
 	$kvTrackEvent(
 		'event-tracking',

@@ -25,7 +25,7 @@ import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
-import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import userAchievementProgressWithLoansQuery from '#src/graphql/query/userAchievementProgressWithLoans.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -79,6 +79,7 @@ export default {
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
+				client.query({ query: userAchievementProgressWithLoansQuery }),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
@@ -98,7 +99,6 @@ export default {
 							query: contentfulEntriesQuery,
 							variables: { contentType: 'challenge', limit: 200 }
 						}),
-						client.query({ query: userAchievementProgressQuery })
 					]).catch(error => {
 						logReadQueryError(error, 'myKivaPage Hero Data Prefetch');
 					});
@@ -175,13 +175,14 @@ export default {
 			);
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 			this.fetchMyKivaData();
+			const achievementsResult = this.apollo.readQuery({
+				query: userAchievementProgressWithLoansQuery
+			});
+			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
 			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
-				});
-				const achievementsResult = this.apollo.readQuery({
-					query: userAchievementProgressQuery
 				});
 				const slidesResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
@@ -192,7 +193,6 @@ export default {
 				});
 				this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
 				this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
-				this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? []; // eslint-disable-line max-len
 			}
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
