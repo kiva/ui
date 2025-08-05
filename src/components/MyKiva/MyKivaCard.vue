@@ -1,7 +1,8 @@
 <template>
 	<div
 		:class="[
-			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col',
+			// eslint-disable-next-line max-len
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full',
 			backgroundSize,
 			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
 			{ 'single-image': hasSingleBorrowerImage }
@@ -331,6 +332,14 @@ const hasSingleBorrowerImage = computed(() => props?.loans && props.loans.length
 
 .carousel :deep(img) {
 	@apply tw-h-full;
+}
+
+.carousel :deep(picture) {
+	@apply md:!tw-pb-0 tw-h-full;
+}
+
+.carousel :deep(picture img) {
+	@apply tw-object-cover;
 }
 
 .carousel :deep(.kv-carousel__controls) {

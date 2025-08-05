@@ -381,7 +381,7 @@ onUnmounted(() => {
 	height: auto;
 
 	@screen md {
-		height: 380px;
+		height: 362px;
 	}
 }
 
