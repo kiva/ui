@@ -14,6 +14,7 @@ import useBadgeData, {
 	ID_2BB,
 	FILTERS,
 	CATEGORIES,
+	CATEGORY_TARGETS,
 } from '#src/composables/useBadgeData';
 import { defaultBadges } from '#src/util/achievementUtils';
 import {
@@ -951,43 +952,113 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getTopCategoryByLoans', () => {
-		const { getTopCategoryByLoans } = useBadgeData();
+	describe('getTopCategoryWithLoans', () => {
+		const { getTopCategoryWithLoans } = useBadgeData();
 
-		it('should return null if no loans are provided', () => {
-			const loans = [];
-			expect(getTopCategoryByLoans(loans)).toEqual(null);
+		it('should return null if no tiered lending achievements are provided', () => {
+			const tieredLendingAchievements = [];
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
 		});
 
-		it('should return most repeated category object', () => {
-			const loans = [
+		it('should return the category with the highest loan count', () => {
+			const tieredLendingAchievements = [
 				{
-					id: 1,
-					gender: 'female'
-				},
-				{
-					id: 2,
-					gender: 'female'
-				},
-				{
-					gender: 'male',
-					geocode: {
-						country: {
-							isoCode: 'PE'
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 5,
+					matchingLoans: {
+						loans: {
+							values: [
+								{ id: 1, name: 'Loan 1' },
+								{ id: 2, name: 'Loan 2' },
+								{ id: 3, name: 'Loan 3' },
+								{ id: 4, name: 'Loan 4' },
+								{ id: 5, name: 'Loan 5' }
+							]
 						}
-					},
-					sector: {
-						id: 2
-					},
-					themes: [
-						'Education'
-					],
-					tags: [
-						'#Agriculture'
-					]
+					}
+				},
+				{
+					id: ID_CLIMATE_ACTION,
+					totalProgressToAchievement: 3,
+					matchingLoans: {
+						loans: {
+							values: [
+								{ id: 6, name: 'Loan 6' },
+								{ id: 7, name: 'Loan 7' },
+								{ id: 8, name: 'Loan 8' }
+							]
+						}
+					}
+				},
+				{
+					id: ID_BASIC_NEEDS,
+					totalProgressToAchievement: 2,
+					matchingLoans: {
+						loans: {
+							values: [
+								{ id: 9, name: 'Loan 9' },
+								{ id: 10, name: 'Loan 10' }
+							]
+						}
+					}
 				}
 			];
-			expect(getTopCategoryByLoans(loans)).toEqual({ category: 'womens-equality', loans: [loans[0], loans[1]] });
+
+			const expected = {
+				category: ID_WOMENS_EQUALITY,
+				loansCount: 5,
+				loans: [
+					{ id: 1, name: 'Loan 1' },
+					{ id: 2, name: 'Loan 2' },
+					{ id: 3, name: 'Loan 3' },
+					{ id: 4, name: 'Loan 4' },
+					{ id: 5, name: 'Loan 5' }
+				],
+				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
+			};
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
+		});
+
+		it('should handle achievements with no matching loans', () => {
+			const tieredLendingAchievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 0,
+					matchingLoans: {
+						loans: {
+							values: []
+						}
+					}
+				}
+			];
+
+			const expected = {
+				category: ID_WOMENS_EQUALITY,
+				loansCount: 0,
+				loans: [],
+				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
+			};
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
+		});
+
+		it('should handle achievements with missing matchingLoans structure', () => {
+			const tieredLendingAchievements = [
+				{
+					id: ID_CLIMATE_ACTION,
+					totalProgressToAchievement: 3
+				}
+			];
+
+			const expected = {
+				category: ID_CLIMATE_ACTION,
+				loansCount: 3,
+				loans: [],
+				target: CATEGORY_TARGETS[ID_CLIMATE_ACTION]
+			};
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
 		});
 	});
 
