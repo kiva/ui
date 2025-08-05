@@ -454,9 +454,8 @@ export default {
 					isTransaction: true,
 					status: 'repayment',
 					date: trx.effectiveTime,
-					subject: 'Success!',
 					// eslint-disable-next-line max-len
-					body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+					body: `Success! ${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
@@ -483,9 +482,8 @@ export default {
 				status: 'repayment-summary',
 				date: repayments[0]?.effectiveTime || new Date().toISOString(),
 				title: `${uniqueBorrowers.size} Borrowers`,
-				subject: 'Success!',
 				// eslint-disable-next-line max-len
-				body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+				body: `Success! ${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
 				amount: totalAmount,
 				loan: null,
 				image: null,

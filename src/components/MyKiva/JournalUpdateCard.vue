@@ -38,20 +38,12 @@
 			</div>
 		</div>
 		<div
-			class="tw-my-1 " style="height:200px;"
+			class="tw-my-1"
 		>
-			<p class="tw-font-bold tw-mb-1">
-				<span v-if="update.isRepayment">
-					{{ subject }}
-				</span>
-				<span v-else-if="subject">
-					Subject line: {{ subject }}
-				</span>
-			</p>
 			<p
-				class="tw-line-clamp-5"
+				class="tw-line-clamp-3"
 			>
-				<span v-html="body" class=" "></span>
+				<span v-html="displayText" class=" "></span>
 				<span v-if="update.isRepayment">
 					<button
 						v-if="update.isRepayment"
@@ -165,6 +157,18 @@ const loanStatus = computed(() => {
 const subject = computed(() => update.value?.subject ?? '');
 const body = computed(() => update.value?.body ?? '');
 
+function stripHtmlTags(html) {
+	return html.replace(/<[^>]*>/g, '');
+}
+const displayText = computed(() => {
+	if (update.value?.isRepayment) {
+		return body.value;
+	}
+	if (subject.value) {
+		return stripHtmlTags(`Re: ${subject.value} ${body.value}`);
+	}
+	return body.value;
+});
 const truncatedBody = computed(() => {
 	let truncatedCopy = body.value.split(' ').splice(0, 14).join(' ');
 	if (truncatedCopy.length < body.value.length) {
