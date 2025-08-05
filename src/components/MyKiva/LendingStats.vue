@@ -69,7 +69,7 @@
 			>
 			<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
 				<div class="tw-w-full tw-pb-1.5" v-html="`Make your first loan in ${formattedPendingRegions}`"></div>
-				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-min-h-0">
+				<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-min-h-0 tw-grow">
 					<a
 						v-for="(region, idx) in pendingRegions"
 						:key="idx"
@@ -82,18 +82,17 @@
 								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
 								tw-transition-shadow tw-duration-200"
 						>
-							<img
-								:src="regionImageSource(region)"
-								:alt="`Map of ${region?.name}`"
-								class="region-image tw-w-full tw-rounded-t tw-object-cover tw-min-h-0"
-							>
+							<div
+								:style="{ backgroundImage: `url(${regionImageSource(region)})` }"
+								class="region-image tw-w-full tw-rounded-t tw-bg-center tw-bg-cover tw-min-h-0 tw-grow"
+							></div>
 							<div
 								class="
 									tw-flex
 									tw-justify-between
 									tw-w-full
 									tw-p-1
-									md:tw-p-2
+									md:tw-px-2
 									tw-items-start
 								"
 								:title="region?.name"
@@ -109,14 +108,14 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="!userLentToAllRegions" class="card-container">
+		<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 			<MyKivaCard
 				class="kiva-card tw-h-full"
 				primary-cta-variant="primary"
 				title-color="tw-text-action-highlight"
 				:bg-image="StatsCardBg"
 				card-content-classes="tw-pb-1 tw-px-1"
-				:images="topCategoryImages"
+				:loans="topCategoryLoans"
 				:is-full-width-primary-cta="true"
 				:is-title-font-sans="true"
 				:primary-cta-text="cardCtaText"
@@ -152,7 +151,6 @@ import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
 import Asia from '#src/assets/images/my-kiva/Asia.png';
@@ -262,22 +260,15 @@ const formattedPendingRegions = computed(() => {
 	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
 });
 
-const topCategoryImages = computed(() => {
-	if (topCategoryLoans.value.length) {
-		return topCategoryLoans.value.map(loan => loan.cardImage.url).slice(0, 3);
-	}
-	return [NoLoansImg];
-});
-
 const cardTitle = computed(() => {
 	if (topCategory.value) {
 		let targetText = '';
-		if (topCategoryImages.value.length > 1) {
+		if (topCategoryLoans.value.length > 1) {
 			targetText = topCategoryTarget.value === 'woman' ? 'women' : `${topCategoryTarget.value}s`;
 		} else {
 			targetText = topCategoryTarget.value;
 		}
-		return `You've funded ${topCategoryImages.value.length} ${targetText}!`;
+		return `You've funded ${topCategoryLoans.value.length} ${targetText}!`;
 	}
 	return 'Give women an equal opportunity to succeed.';
 });
@@ -341,7 +332,7 @@ const allRegionsLentSlides = computed(() => {
 		{
 			title: cardTitle.value,
 			ctaText: cardCtaText.value,
-			images: topCategoryImages.value,
+			loans: topCategoryLoans.value,
 			tagText: cardTagText.value,
 			showTagIcon: showTagIcon.value,
 			primaryCta: goToTopCategory,
@@ -366,7 +357,7 @@ onMounted(() => {
 		}, 800);
 	}, [loanRegionsElement.value]);
 	topCategory.value = getTopCategoryByLoans(props.loans)?.category ?? null;
-	topCategoryLoans.value = getTopCategoryByLoans(props.loans)?.loans ?? [];
+	topCategoryLoans.value = (getTopCategoryByLoans(props.loans)?.loans ?? []).slice(0, 3);
 	topCategoryTarget.value = CATEGORY_TARGETS[topCategory.value] || '';
 	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
 
@@ -386,7 +377,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="postcss" scoped>
-.stats-wrapper {
+.stats-wrapper, .card-container {
 	height: auto;
 
 	@screen md {
@@ -395,10 +386,10 @@ onUnmounted(() => {
 }
 
 .card-container {
-	max-width: 100%;
+	width: 100%;
 
 	@screen md {
-		max-width: 336px;
+		width: 336px;
 	}
 }
 
