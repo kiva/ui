@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-mb-3.5">
+	<div class="tw-mb-2.5">
 		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
