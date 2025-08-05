@@ -1,10 +1,9 @@
 <template>
 	<div class="www-page">
 		<global-promo-contentful v-show="!isKivaAppReferral" />
-		<the-new-header v-if="isNavUpdateExp" />
 		<the-header
-			v-else
 			v-show="!isKivaAppReferral"
+			:is-nav-update-exp="isNavUpdateExp"
 			:hide-search-in-header="hideSearchInHeader"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
@@ -27,7 +26,6 @@ import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
-import TheNewHeader from './TheNewHeader';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -46,7 +44,6 @@ export default {
 		TheBasketBar,
 		TheFooter,
 		TheHeader,
-		TheNewHeader,
 	},
 	props: {
 		grayBackground: {
