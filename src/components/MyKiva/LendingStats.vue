@@ -218,7 +218,7 @@ const props = defineProps({
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
-const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value, router.currentRoute.value));
+const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value?.category, router.currentRoute.value));
 const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3) || []);
 
 const totalRegions = computed(() => props.regionsData.length);
@@ -319,7 +319,7 @@ const handleRecommendRegionClick = region => {
 		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 		region?.name
 	);
-	router.push(`/lend-category-beta?country=${region?.countries.join(',')}`);
+	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 };
 
 const goToTopCategory = () => {
@@ -327,7 +327,7 @@ const goToTopCategory = () => {
 		'event-tracking',
 		'click',
 		'top-category-recommendation',
-		topCategory.value ? topCategory.value : 'empty-state'
+		topCategory.value ? topCategory.value?.category : 'empty-state'
 	);
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);
