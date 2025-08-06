@@ -1020,7 +1020,7 @@ describe('useBadgeData.js', () => {
 			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
 		});
 
-		it('should handle achievements with no matching loans', () => {
+		it('should return null when all achievements have no loans', () => {
 			const tieredLendingAchievements = [
 				{
 					id: ID_WOMENS_EQUALITY,
@@ -1033,17 +1033,21 @@ describe('useBadgeData.js', () => {
 				}
 			];
 
-			const expected = {
-				category: ID_WOMENS_EQUALITY,
-				loansCount: 0,
-				loans: [],
-				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
-			};
-
-			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
 		});
 
-		it('should handle achievements with missing matchingLoans structure', () => {
+		it('should return null when achievements with missing matchingLoans have no loans', () => {
+			const tieredLendingAchievements = [
+				{
+					id: ID_CLIMATE_ACTION,
+					totalProgressToAchievement: 0
+				}
+			];
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
+		});
+
+		it('should return the category when achievements with missing matchingLoans have loans', () => {
 			const tieredLendingAchievements = [
 				{
 					id: ID_CLIMATE_ACTION,
@@ -1055,6 +1059,44 @@ describe('useBadgeData.js', () => {
 				category: ID_CLIMATE_ACTION,
 				loansCount: 3,
 				loans: [],
+				target: CATEGORY_TARGETS[ID_CLIMATE_ACTION]
+			};
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
+		});
+
+		it('should filter out categories with 0 loans and return the one with loans', () => {
+			const tieredLendingAchievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 0,
+					matchingLoans: {
+						loans: {
+							values: []
+						}
+					}
+				},
+				{
+					id: ID_CLIMATE_ACTION,
+					totalProgressToAchievement: 2,
+					matchingLoans: {
+						loans: {
+							values: [
+								{ id: 1, name: 'Loan 1' },
+								{ id: 2, name: 'Loan 2' }
+							]
+						}
+					}
+				}
+			];
+
+			const expected = {
+				category: ID_CLIMATE_ACTION,
+				loansCount: 2,
+				loans: [
+					{ id: 1, name: 'Loan 1' },
+					{ id: 2, name: 'Loan 2' }
+				],
 				target: CATEGORY_TARGETS[ID_CLIMATE_ACTION]
 			};
 

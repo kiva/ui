@@ -219,7 +219,7 @@ const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
 const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value, router.currentRoute.value));
-const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3));
+const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3) || []);
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
