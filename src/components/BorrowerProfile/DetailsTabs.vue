@@ -235,11 +235,13 @@ export default {
 		closeLightbox() {
 			// close lightbox
 			this.isLightboxVisible = false;
-			// clear content
-			this.lightboxTitle = '';
-			this.lightboxContent = null;
+			setTimeout(() => {
+				// clear content
+				this.lightboxTitle = '';
+				this.lightboxContent = null;
+			}, 500); // Delay to allow modal to close before clearing content
 		},
-		loadContentfulDefintions(contentEntryKey) {
+		loadContentfulDefinitions(contentEntryKey) {
 			this.apollo.query({
 				query: gql`query contentfulDefinitions {
 					contentful {
@@ -356,7 +358,7 @@ export default {
 		showContentfulEntry(contentKey) {
 			// check for loaded data
 			if (!this.contentfulDefinitions) {
-				this.loadContentfulDefintions(contentKey);
+				this.loadContentfulDefinitions(contentKey);
 				return false;
 			}
 			// extract target entry

@@ -13,7 +13,7 @@ const story = (args = {}) => {
 		setup() { return { args }; },
 		template: `
 			<div style="width: 330px;">
-				<MyKivaCard v-bind="args" />
+				<MyKivaCard v-bind="args" style="${args.height ? `height: ${args.height}px;` : ''}" />
 			</div>
 		`,
 	});
@@ -85,6 +85,25 @@ export const MultipleRecommended = story({
 		"https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
 		"https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg",
 	],
-	tagText: "&#128507; Your top category: Women",
+	tagText: "Your top category: Women",
 	showCtaIcon: true,
+	showTagIcon: true,
+});
+
+export const TallCard = story({
+	hasGradient: false,
+	isBgTopAligned: true,
+	isBlackSubtitle: true,
+	isFullWidthPrimaryCta: true,
+	isTitleFontSans: true,
+	primaryCtaText: "Fund a Woman",
+	primaryCtaVariant: "primary",
+	secondaryCtaText: "",
+	subtitle: "",
+	title: "Give women an equal opportunity to succeed.",
+	titleColor: "tw-text-action-highlight",
+	images: ["https://www.development.kiva.org/img/w600/a54fdc6d3be8a104d9e3f113728eedb6.jpg"],
+	tagText: "Recommended: Loans to Women",
+	showCtaIcon: true,
+	height: 500
 });

@@ -590,26 +590,24 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Get top category
+	 * Redesign to work with userAchievementProgressWithLoans.tieredLendingAchievements
 	 *
-	 * @param loans The loans to filter
-	 * @returns Top category by loans
+	 * @param tieredLendingAchievements The tiered lending achievements with loans
+	 * @returns The top category with loans
 	 */
-	const getTopCategoryByLoans = loans => {
-		const groupedLoans = [];
-		Object.keys(CATEGORIES).forEach(category => {
-			const filteredLoans = getFilteredLoansByJourney({ id: category }, loans);
-			if (filteredLoans.length > 0) {
-				groupedLoans.push({
-					category,
-					loans: filteredLoans,
-				});
-			}
-		});
+	const getTopCategoryWithLoans = tieredLendingAchievements => {
+		const categories = tieredLendingAchievements.map(c => {
+			return {
+				category: c.id,
+				loansCount: c.totalProgressToAchievement ?? 0,
+				loans: c.matchingLoans?.loans?.values ?? [],
+				target: CATEGORY_TARGETS[c.id] ?? '',
+			};
+		}).filter(c => c.loansCount > 0); // Only include categories with loans
 
-		groupedLoans.sort((a, b) => b.loans.length - a.loans.length);
-		if (groupedLoans.length > 0) {
-			return groupedLoans[0];
+		categories.sort((a, b) => b.loansCount - a.loansCount);
+		if (categories.length > 0) {
+			return categories[0];
 		}
 		return null;
 	};
@@ -699,6 +697,6 @@ export default function useBadgeData() {
 		isBadgeKeyValid,
 		getLevelCaption,
 		getJourneysByLoan,
-		getTopCategoryByLoans,
+		getTopCategoryWithLoans,
 	};
 }

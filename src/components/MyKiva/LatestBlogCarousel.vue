@@ -52,7 +52,7 @@ const singleSlideWidth = computed(() => {
 });
 
 function trackBlogCard(card) {
-	$kvTrackEvent('portfolio', 'click', `Blog-${card.category}:${card.title}`);
+	$kvTrackEvent('portfolio', 'click', `Blog-${card.category}`);
 }
 </script>
 <style lang="postcss" scoped>

@@ -19,7 +19,6 @@
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
 			:per-step="perStepRecommendedRow"
-			:is-bp-modal-enabled="isBpModalEnabled"
 			:class="{ 'tw-pt-3' : !isLoggedIn }"
 			@add-to-basket="trackCategory($event, 'recommended')"
 			@show-cart-modal="handleCartModal"
@@ -35,7 +34,6 @@
 			:loans="almostFundedLoans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
-			:is-bp-modal-enabled="isBpModalEnabled"
 			class="tw-pt-3 tw-mb-2"
 			@add-to-basket="trackCategory($event, 'almost-funded')"
 			@show-cart-modal="handleCartModal"
@@ -53,7 +51,6 @@
 			:user-balance="userBalance"
 			:five-dollars-selected="true"
 			:title-icon="HandOrangeIcon"
-			:is-bp-modal-enabled="isBpModalEnabled"
 			class="tw-pt-3 tw-mb-2"
 			@add-to-basket="trackCategory($event, 'five-dollars')"
 			@show-cart-modal="handleCartModal"
@@ -67,7 +64,6 @@
 				:enable-qf-mobile="enableQFMobileVersion"
 				:enable-almost-funded-row="enableAlmostFundedRow"
 				:user-balance="userBalance"
-				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'quick-filters')"
 				@data-loaded="trackQuickFiltersDisplayedLoans"
 				@show-cart-modal="handleCartModal"
@@ -84,7 +80,6 @@
 				class="tw-py-3"
 				:enable-five-dollars-notes="enableFiveDollarsNotes"
 				:user-balance="userBalance"
-				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'matched-lending')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
@@ -97,7 +92,6 @@
 			:loans="spotlightLoans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
-			:is-bp-modal-enabled="isBpModalEnabled"
 			@add-to-basket="trackCategory($event, `spotlight-${activeSpotlightData.keyword}`)"
 			@show-cart-modal="handleCartModal"
 			@show-loan-details="showLoanDetails"
@@ -105,7 +99,7 @@
 		/>
 	</www-page>
 	<BorrowerSideSheetWrapper
-		v-if="isBpModalEnabled && showSideSheet"
+		v-if="showSideSheet"
 		:basket-items="basketItems"
 		:is-adding="isAdding"
 		:kv-track-function="$kvTrackEvent"
@@ -139,7 +133,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { FLSS_ORIGIN_LEND_BY_CATEGORY } from '#src/util/flssUtils';
-import borrowerProfileExpMixin, { HOME_BP_MODAL_EXP_KEY } from '#src/plugins/borrower-profile-exp-mixin';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import retryAfterExpiredBasket from '#src/plugins/retry-after-expired-basket-mixin';
 
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -247,10 +241,6 @@ export default {
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: { id: FLSS_ONGOING_EXP_KEY }
-					}),
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: { id: HOME_BP_MODAL_EXP_KEY }
 					}),
 					client.query({
 						query: useRecommendations ? loanRecommendationsQueryExtended : flssLoansQueryExtended,
@@ -607,15 +597,12 @@ export default {
 			'EXP-VUE-FLSS-Ongoing-Sitewide'
 		);
 		this.loadInitialBasketItems();
-		this.initializeIsBpModalEnabledExp('lend-by-category');
 
-		if (this.isBpModalEnabled) {
-			const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
 
-			if (queryLoanId) {
-				this.selectedLoan = { id: Number(queryLoanId) };
-				this.showSideSheet = true;
-			}
+		if (queryLoanId) {
+			this.selectedLoan = { id: Number(queryLoanId) };
+			this.showSideSheet = true;
 		}
 
 		// Track experiment version for combo page redirect

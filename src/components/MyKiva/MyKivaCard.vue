@@ -1,32 +1,59 @@
 <template>
 	<div
-		class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center tw-select-none tw-bg-white journey-card"
-		:class="{ '!tw-bg-left-top': isBgTopAligned }"
-		:style="{ backgroundImage: `url(${bgImage})` }"
+		:class="[
+			// eslint-disable-next-line max-len
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full',
+			backgroundSize,
+			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
+			{ 'single-image': hasSingleBorrowerImage }
+		]"
+		:style="{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }"
 	>
 		<div
-			v-if="images.length"
-			class="tw-p-1"
-			style="min-height: 235px;"
+			v-if="loans"
+			class="tw-py-1 tw-px-1 md:tw-pt-2 md:tw-px-2 tw-grow tw-min-h-0"
 		>
+			<img
+				v-if="loans && !loans.length"
+				:src="NoLoansImg"
+				class="tw-rounded tw-w-full tw-aspect-video tw-object-cover tw-object-top tw-h-full"
+			>
 			<KvCarousel
-				class="carousel"
-				:key="images.length"
+				v-else
+				class="carousel tw-h-full"
 				:embla-options="{ loop: false, align: 'center' }"
 				:is-dotted="true"
 			>
-				<template v-for="(image, index) in images" #[`slide${index+1}`] :key="index">
-					<img
-						:src="image"
-						class="tw-rounded tw-w-full tw-aspect-video tw-object-cover"
-					>
+				<template v-for="(loan, index) in loans" #[`slide${index+1}`] :key="index">
+					<KvBorrowerImage
+						class="tw-relative tw-w-full tw-bg-black tw-rounded"
+						:alt="`Photo of ${loan.name}`"
+						:aspect-ratio="3 / 4"
+						:default-image="{ width: 336 }"
+						:hash="loan.image.hash"
+						:images="[{ width: 336 }]"
+						:photo-path="$appConfig.photoPath"
+					/>
 				</template>
 			</KvCarousel>
 		</div>
 		<div
 			v-if="tagText"
-			class="tw-absolute tw-bg-secondary tw-rounded tw-px-1.5 tw-py-0.5 tw-text-small tw-left-1.5 tw-top-1.5
-				tw-drop-shadow-sm tw-font-medium tw-flex tw-items-center"
+			class="
+				tw-absolute
+				tw-bg-secondary
+				tw-rounded
+				tw-px-1.5
+				tw-py-0.5
+				tw-text-small
+				tw-left-1.5
+				tw-top-1.5
+				md:tw-left-2.5
+				md:tw-top-2.5
+				tw-drop-shadow-sm
+				tw-font-medium
+				tw-flex
+				tw-items-center"
 		>
 			<TrophyIcon class="tw-mr-1" v-if="showTagIcon" />
 			<span>{{ tagText }}</span>
@@ -35,23 +62,24 @@
 			class="
 				tw-w-full
 				tw-bottom-0
-				tw-pb-1.5
-				tw-px-1.5
-				md:tw-pb-2
-				md:tw-px-2
 				tw-align-bottom
 				tw-rounded-b
+				tw-flex
+				tw-flex-col
+				tw-pb-1
+				tw-px-1
+				md:tw-pb-2
+				md:tw-px-2
 			"
-			:class="{
-				'slide-gradient': hasGradient,
-				'tw-absolute': !images.length,
-			}"
-			:style="[
-				{ 'height': overlayHeight },
+			:class="[
+				{
+					'slide-gradient': hasGradient,
+					'tw-absolute': !loans,
+				}
 			]"
 		>
-			<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-				<div class="tw-text-primary-inverse">
+			<div class="tw-flex tw-flex-col tw-justify-end tw-shrink-0 tw-gap-0.5">
+				<div class="text-content tw-text-primary-inverse">
 					<h2
 						class="tw-text-h3"
 						:class="titleClass"
@@ -101,19 +129,37 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import {
-	computed,
-} from 'vue';
+<script setup>
+import { computed } from 'vue';
 import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
-import useIsMobile from '#src/composables/useIsMobile';
-import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
-import { KvButton, KvMaterialIcon, KvCarousel } from '@kiva/kv-components';
+import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+import {
+	KvButton,
+	KvMaterialIcon,
+	KvBorrowerImage,
+	KvCarousel,
+} from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
 const props = defineProps({
+	/**
+	 * Background size class for the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	backgroundSize: {
+		type: String,
+		default: 'tw-bg-cover',
+	},
+	/**
+	 * Classes to apply to the content area of the card.
+	 * This should be a string of Tailwind CSS classes.
+	 */
+	cardContentClasses: {
+		type: String,
+		default: 'tw-pb-1.5 tw-px-1.5 md:tw-pb-2 md:tw-px-2',
+	},
 	/**
 	 * Background image URL for the whole card.
 	 */
@@ -201,11 +247,12 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Array of image URLs for the carousel.
+	 * Array of loan objects to display in the carousel.
+	 * Fallback image will be used if empty array is provided.
 	 */
-	images: {
+	loans: {
 		type: Array,
-		default: () => ([]),
+		default: undefined,
 	},
 	/**
 	 * Text for the tag displayed at the top of the card.
@@ -230,13 +277,7 @@ const props = defineProps({
 	},
 });
 
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-
 const showSecondaryCta = computed(() => !!props.secondaryCtaText);
-
-const overlayHeight = computed(() => {
-	return showSecondaryCta.value && isMobile.value ? '60%' : '50%';
-});
 
 const titleClass = computed(() => {
 	let className = '';
@@ -255,20 +296,50 @@ const titleClass = computed(() => {
 
 	return className;
 });
+
+const hasSingleBorrowerImage = computed(() => props?.loans && props.loans.length <= 1);
 </script>
 
 <style lang="postcss" scoped>
 .journey-card {
 	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-	min-height: 382px;
+	min-height: 340px;
 
 	@screen md {
-		min-height: 340px;
+		.journey-card {
+			min-height: 382px;
+		}
 	}
 }
 
 .slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
+}
+
+.carousel > :deep(div:first-child) {
+	height: calc(100% - 28px);
+}
+
+.single-image {
+	.text-content {
+		@apply tw-grow tw-content-center;
+	}
+
+	.carousel > :deep(div:first-child) {
+		@apply tw-h-full;
+	}
+}
+
+.carousel :deep(img) {
+	@apply tw-h-full;
+}
+
+.carousel :deep(picture) {
+	@apply md:!tw-pb-0 tw-h-full;
+}
+
+.carousel :deep(picture img) {
+	@apply tw-object-cover;
 }
 
 .carousel :deep(.kv-carousel__controls) {

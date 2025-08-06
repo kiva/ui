@@ -24,9 +24,13 @@
 		/>
 		<section v-if="isLendingStatsExp" class="tw-mt-4">
 			<LendingStats
-				ref="lendingStats"
-				:regions="lendingStats.regionsWithLoanStatus"
+				:regions-data="lendingStats.regionsData"
+				:user-lent-to-all-regions="userLentToAllRegions"
+				:hero-slides="heroSlides"
 				:loans="loans"
+				:lender="lender"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -59,12 +63,11 @@
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				:loans="loans"
-				:selected-loan="selectedLoan"
 				:total-loans="totalLoans"
 				@add-to-basket="addToBasket"
 				@go-to-link="goToLink"
-				@handle-selected-loan="handleSelectedLoan"
-				@mouse-enter-status-card="handleStatusCardMouseEnter"
+				@handle-selected-loan="showLoanDetails"
+				@mouse-enter-status-card="loadBPData"
 				show-menu
 			/>
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
@@ -84,7 +87,6 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
-				:is-bp-modal-enabled="isBpModalEnabled"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails"
@@ -124,7 +126,7 @@
 			/>
 		</section>
 		<BorrowerSideSheetWrapper
-			v-if="isBpModalEnabled && showBPSideSheet"
+			v-if="showBPSideSheet"
 			:basket-items="basketItems"
 			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
@@ -173,7 +175,6 @@ import LendingStats from '#src/components/MyKiva/LendingStats';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 import { defaultBadges } from '#src/util/achievementUtils';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -255,6 +256,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		userLentToAllRegions: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -266,7 +271,6 @@ export default {
 		} = useBadgeData(this.apollo);
 
 		return {
-			lendingStatsObserver: null,
 			badgeData,
 			blogCards: [],
 			blogCategories,
@@ -336,7 +340,6 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
-
 	},
 	methods: {
 		handleShowNavigation() {
@@ -451,9 +454,8 @@ export default {
 					isTransaction: true,
 					status: 'repayment',
 					date: trx.effectiveTime,
-					subject: 'Success!',
 					// eslint-disable-next-line max-len
-					body: `${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+					body: `Success! ${trx.loan?.name || 'A borrower'} from ${trx.loan?.geocode?.country?.name || 'Unknown country'} repaid you $${trx.amount}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
 					amount: trx.amount,
 					loan: trx.loan,
 					image: trx.loan?.image?.url || null,
@@ -480,9 +482,8 @@ export default {
 				status: 'repayment-summary',
 				date: repayments[0]?.effectiveTime || new Date().toISOString(),
 				title: `${uniqueBorrowers.size} Borrowers`,
-				subject: 'Success!',
 				// eslint-disable-next-line max-len
-				body: `${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
+				body: `Success! ${uniqueBorrowers.size} people from ${uniqueCountries.size} countries repaid you $${totalAmount.toFixed(2)}! Your new balance is now $${this.userBalance}. Don't let it go unused - `,
 				amount: totalAmount,
 				loan: null,
 				image: null,
@@ -579,9 +580,6 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		handleStatusCardMouseEnter(payload) {
-			this.handleSelectedLoan({ loanId: payload });
-		},
 		showLoanDetails(payload) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
@@ -596,30 +594,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-		this.initializeIsBpModalEnabledExp('my-kiva-page-content');
-
-		this.$nextTick(() => {
-			const loanRegionsEl = this.$refs.lendingStats?.loanRegionsElement;
-			if (loanRegionsEl) {
-				this.lendingStatsObserver = createIntersectionObserver({
-					targets: [loanRegionsEl],
-					threshold: 0.2,
-					callback: entries => {
-						entries.forEach(entry => {
-							if (entry.isIntersecting) {
-								this.$kvTrackEvent('event-tracking', 'show', 'regions-lent-to');
-								this.lendingStatsObserver.disconnect();
-							}
-						});
-					}
-				});
-			}
-		});
-	},
-	beforeUnmount() {
-		if (this.lendingStatsObserver) {
-			this.lendingStatsObserver.disconnect();
-		}
 	},
 };
 </script>

@@ -28,7 +28,7 @@
 			<SideSheetLoanStory />
 		</div>
 		<div class="tw-bg-primary tw-px-4">
-			<CommentsAndWhySpecial :loan-id="loanId" :disable-cache="disableCache" />
+			<CommentsAndWhySpecial :loan-id="loanId" />
 		</div>
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />
@@ -118,10 +118,6 @@ export default {
 		basketItems: {
 			type: Array,
 			default: () => []
-		},
-		disableCache: {
-			type: Boolean,
-			default: false
 		},
 		showNextSteps: {
 			type: Boolean,

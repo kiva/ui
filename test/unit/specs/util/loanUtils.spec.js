@@ -481,17 +481,11 @@ describe('loanUtils.js', () => {
 			};
 		});
 
-		it('should return empty string if isBpModalEnabled is false', () => {
-			const result = getCustomHref(mockRouter, '123', false);
-			expect(result).toBe('');
-			expect(mockRouter.resolve).not.toHaveBeenCalled();
-		});
-
 		it('should call router.resolve with merged query and loanId', () => {
 			const resolvedHref = '/some/path?foo=bar&baz=qux&loanId=123';
 			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
 
-			const result = getCustomHref(mockRouter, '123', true);
+			const result = getCustomHref(mockRouter, '123');
 
 			expect(mockRouter.resolve).toHaveBeenCalledWith({
 				query: { foo: 'bar', baz: 'qux', loanId: '123' }
@@ -504,7 +498,7 @@ describe('loanUtils.js', () => {
 			const resolvedHref = '/some/path?foo=bar&loanId=456';
 			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
 
-			const result = getCustomHref(mockRouter, '456', true);
+			const result = getCustomHref(mockRouter, '456');
 
 			expect(mockRouter.resolve).toHaveBeenCalledWith({
 				query: { foo: 'bar', loanId: '456' }
@@ -517,7 +511,7 @@ describe('loanUtils.js', () => {
 			const resolvedHref = '/some/path?loanId=789';
 			mockRouter.resolve.mockReturnValue({ href: resolvedHref });
 
-			const result = getCustomHref(mockRouter, '789', true);
+			const result = getCustomHref(mockRouter, '789');
 
 			expect(mockRouter.resolve).toHaveBeenCalledWith({
 				query: { loanId: '789' }

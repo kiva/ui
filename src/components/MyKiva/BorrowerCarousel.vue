@@ -64,13 +64,14 @@
 				>
 					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
 						<BorrowerStatusCard
-							:loan="loan" class="tw-h-full"
+							class="tw-h-full"
+							:loan="loan"
 							:open-what-is-next="openWhatIsNext"
 							:show-menu="showMenu"
 							@toggle-what-is-next="openWhatIsNext = $event"
 							@open-comment-modal="openCommentModal"
 							@open-share-modal="openShareModal"
-							@open-side-sheet="handleSelectedLoan"
+							@open-side-sheet="openSideSheet"
 							@mouseenter="$emit('mouse-enter-status-card', loan?.id)"
 						/>
 					</template>
@@ -93,16 +94,17 @@
 		</div>
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
-			:loan="selectedLoan"
-			:is-visible="isVisible"
+			:loan="loanForMenu"
+			:is-visible="isCommentModalVisible"
+			:show-tip="false"
 			@comment-modal-closed="handleCloseCommentModal"
 		/>
 		<!-- Share Button -->
 		<ShareButton
-			v-if="sharedLoan"
+			v-if="loanForMenu"
 			class="tw-block !tw-w-auto"
 			variant="hidden"
-			:loan="sharedLoan"
+			:loan="loanForMenu"
 			:lender="lender"
 			:campaign="SHARE_CAMPAIGN"
 			:in-pfp="inPfp"
@@ -111,18 +113,6 @@
 			:open-lightbox="shareLoan"
 			:is-portfolio="true"
 			@lightbox-closed="closeShareModal"
-		/>
-		<BorrowerSideSheetWrapper
-			:basket-items="basketItems"
-			:disable-cache="disableCache"
-			:is-adding="isAdding"
-			:kv-track-function="$kvTrackEvent"
-			:selected-loan-id="selectedLoan?.id"
-			:show-next-steps="true"
-			:show-side-sheet="showSideSheet"
-			@add-to-basket="addToBasket"
-			@go-to-link="goToLink"
-			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</div>
 </template>
@@ -156,14 +146,11 @@ import {
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
 
 const emit = defineEmits([
-	'add-to-basket',
-	'go-to-link',
 	'handle-selected-loan',
 	'mouse-enter-status-card'
 ]);
@@ -199,15 +186,11 @@ const props = defineProps({
 	},
 	basketItems: {
 		type: Array,
-		default: () => []
+		default: () => ([]),
 	},
 	isAdding: {
 		type: Boolean,
 		default: false
-	},
-	selectedLoan: {
-		type: Object,
-		default: () => ({})
 	},
 });
 
@@ -218,14 +201,12 @@ const router = useRouter();
 const { loans, totalLoans } = toRefs(props);
 
 const carousel = ref(null);
-const disableCache = ref(false);
-const isVisible = ref(false);
+const isCommentModalVisible = ref(false);
 const lastVisitedLoanIdx = ref(0);
 const openWhatIsNext = ref(false);
 const previousLastIndex = ref(0);
-const sharedLoan = ref(null);
+const loanForMenu = ref(undefined);
 const shareLoan = ref(false);
-const showSideSheet = ref(false);
 const tabs = ref(null);
 const windowWidth = ref(0);
 
@@ -257,19 +238,11 @@ const filteredLoans = computed(() => {
 		.includes(loan?.status)).slice(0, props.cardsNumber);
 });
 
-const inPfp = computed(() => sharedLoan.value?.inPfp ?? false);
+const inPfp = computed(() => loanForMenu.value?.inPfp ?? false);
 
-const pfpMinLenders = computed(() => sharedLoan.value?.pfpMinLenders ?? 0);
+const pfpMinLenders = computed(() => loanForMenu.value?.pfpMinLenders ?? 0);
 
-const numLenders = computed(() => sharedLoan.value?.lenders?.numLenders ?? 0);
-
-const addToBasket = payload => {
-	emit('add-to-basket', payload);
-};
-
-const goToLink = () => {
-	emit('go-to-link');
-};
+const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
@@ -285,26 +258,40 @@ const onInteractCarousel = interaction => {
 };
 
 const openCommentModal = payload => {
-	emit('handle-selected-loan', { loanId: payload?.loan?.id });
-	isVisible.value = true;
+	loanForMenu.value = payload?.loan;
+	if (loanForMenu.value) {
+		isCommentModalVisible.value = true;
+	}
 };
 
 const openShareModal = payload => {
-	sharedLoan.value = payload?.loan ?? null;
-	shareLoan.value = true;
+	loanForMenu.value = payload?.loan;
+	if (loanForMenu.value) {
+		shareLoan.value = true;
+	}
+};
+
+const clearLoanAfterDelay = () => {
+	setTimeout(() => {
+		loanForMenu.value = undefined;
+	}, 500); // Delay to allow modal to close before clearing loan
 };
 
 const closeShareModal = () => {
 	shareLoan.value = false;
-	sharedLoan.value = null;
+	clearLoanAfterDelay();
+};
+
+const openSideSheet = payload => {
+	emit('handle-selected-loan', { id: payload?.loan?.id });
 };
 
 const handleCloseCommentModal = wasCommentAdded => {
-	isVisible.value = false;
+	isCommentModalVisible.value = false;
 	if (wasCommentAdded) {
-		showSideSheet.value = true;
-		disableCache.value = true;
+		openSideSheet({ loan: { id: loanForMenu.value.id } });
 	}
+	clearLoanAfterDelay();
 };
 
 const getBorrowerName = loan => {
@@ -331,17 +318,6 @@ const handleChange = event => {
 const loadMore = () => {
 	$kvTrackEvent('portfolio', 'click', 'view-all');
 	router.push('/portfolio/loans');
-};
-
-const handleCloseSideSheet = () => {
-	emit('handle-selected-loan', { loanId: undefined });
-	showSideSheet.value = false;
-	disableCache.value = false;
-};
-
-const handleSelectedLoan = payload => {
-	emit('handle-selected-loan', { loanId: payload?.loan?.id });
-	showSideSheet.value = true;
 };
 
 watch(() => loans.value, () => {
