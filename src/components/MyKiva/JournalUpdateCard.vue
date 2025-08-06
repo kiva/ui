@@ -165,7 +165,7 @@ const displayText = computed(() => {
 		return body.value;
 	}
 	if (subject.value) {
-		return stripHtmlTags(`Re: ${subject.value} ${body.value}`);
+		return stripHtmlTags(`Re: ${subject.value.trim()}. ${body.value}`);
 	}
 	return body.value;
 });
