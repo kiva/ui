@@ -164,6 +164,9 @@ const displayText = computed(() => {
 	if (update.value?.isRepayment) {
 		return body.value;
 	}
+	if (update.value?.isTransaction) {
+		return subject.value;
+	}
 	if (subject.value) {
 		return stripHtmlTags(`Re: ${subject.value.trim()}. ${body.value}`);
 	}
