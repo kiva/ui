@@ -3,7 +3,20 @@
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
+		<KvWwwHeader
+			v-if="isNavUpdateExp"
+			ref="newExpHeader"
+			:logged-in="!isVisitor"
+			:basket-count="basketCount"
+			:login-url="loginUrl"
+			:balance="balance"
+			:is-borrower="isBorrower"
+			:is-trustee="isTrustee"
+			:user-id="userId"
+			@load-lend-menu-data="loadMenu"
+		/>
 		<nav
+			v-else
 			aria-label="Primary navigation"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 		>
@@ -27,7 +40,7 @@
 				<template v-else-if="corporate">
 					<div
 						class="
-						tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center align-middle"
+							tw-flex tw-gap-2.5 lg:tw-gap-6 tw-items-center align-middle"
 					>
 						<campaign-logo-group
 							class="tw-h-2.5 lg:tw-h-3.5"
@@ -571,12 +584,15 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 import {
-	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer
+	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
 } from '@kiva/kv-components';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
+const NAV_UPDATE_EXP_KEY = 'kiva_nav_update';
 
 export default {
 	name: 'TheHeader',
@@ -593,6 +609,7 @@ export default {
 		KvButton,
 		TheLendMenu: defineAsyncComponent(() => import('#src/components/WwwFrame/LendMenu/TheLendMenu')),
 		TeamsMenu,
+		KvWwwHeader,
 	},
 	inject: {
 		apollo: { default: null },
@@ -628,6 +645,7 @@ export default {
 			teamsMenuEnabled: false,
 			trusteeId: null,
 			userId: null,
+			isNavUpdateExp: false,
 		};
 	},
 	emits: ['show-basket'],
@@ -746,6 +764,22 @@ export default {
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
+
+		const navExpData = this.apollo.readQuery({
+			query: experimentAssignmentQuery,
+			variables: { id: NAV_UPDATE_EXP_KEY }
+		});
+
+		if (navExpData?.experiment) {
+			this.isNavUpdateExp = navExpData.experiment.version === 'b';
+			trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'event-tracking',
+				NAV_UPDATE_EXP_KEY,
+				'EXP-MP-1696-Aug2025'
+			);
+		}
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -772,6 +806,10 @@ export default {
 			hasDepositBefore,
 		});
 		window.addEventListener('resize', this.determineIfMobile());
+
+		if (this.$refs?.newExpHeader) {
+			this.$refs?.newExpHeader?.getSuggestions?.(this.apollo);
+		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.determineIfMobile());
@@ -886,6 +924,11 @@ export default {
 			const withinBoundary = event.composedPath().includes(target);
 			if (!withinBoundary) {
 				this.toggleLendMenu(true);
+			}
+		},
+		loadMenu() {
+			if (this.$refs.newExpHeader) {
+				this.$refs.newExpHeader.loadMenuData(this.apollo);
 			}
 		},
 	},
