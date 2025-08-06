@@ -217,9 +217,9 @@ const props = defineProps({
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
-const topCategory = ref(null);
-const topCategoryUrl = ref('');
-const topCategoryLoansForCardCarousel = ref();
+const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
+const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value, router.currentRoute.value));
+const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3));
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
@@ -364,9 +364,6 @@ onMounted(() => {
 			}, 200);
 		}, 800);
 	}, [loanRegionsElement.value]);
-	topCategory.value = getTopCategoryWithLoans(props.heroTieredAchievements);
-	topCategoryUrl.value = getLoanFindingUrl(topCategory.value, router.currentRoute.value);
-	topCategoryLoansForCardCarousel.value = topCategory.value?.loans?.slice(0, 3);
 
 	$kvTrackEvent(
 		'event-tracking',
