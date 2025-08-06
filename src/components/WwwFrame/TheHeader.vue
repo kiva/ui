@@ -96,7 +96,7 @@
 				<template v-else>
 					<div
 						class="header
-								tw-grid xl:tw-gap-x-4 tw-items-center"
+							tw-grid xl:tw-gap-x-4 tw-items-center"
 						:class="{
 							'tw-gap-x-1 ': isMobile,
 							'tw-gap-x-2.5': !isMobile,
@@ -142,8 +142,8 @@
 							<div
 								v-show="isLendMenuVisible"
 								class="
-										tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
-										tw-bg-primary tw-border-b tw-border-tertiary"
+									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+									tw-bg-primary tw-border-b tw-border-tertiary"
 								data-testid="header-lend-dropdown-list"
 								style="margin-top: 1px;"
 							>
@@ -163,12 +163,12 @@
 							data-testid="header-search-area"
 							id="top-nav-search-area"
 							class="
-									header__search
-									tw-py-1.5 md:py-0
-									tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
-									tw-border-t tw-border-tertiary md:tw-border-t-0
-									lg:tw-block
-								"
+								header__search
+								tw-py-1.5 md:py-0
+								tw--mx-2.5 tw-px-2 md:tw-mx-0 md:tw-px-0
+								tw-border-t tw-border-tertiary md:tw-border-t-0
+								lg:tw-block
+							"
 							:class="{
 								'tw-hidden': !searchOpen || isVisitor,
 								'md:tw-hidden': hasBasket && isVisitor && !searchOpen || !searchOpen,
@@ -182,7 +182,7 @@
 
 						<div
 							class="header__right-side
-							tw-flex tw-justify-end xl:tw-gap-4 align-middle"
+						tw-flex tw-justify-end xl:tw-gap-4 align-middle"
 							:class="{
 								'tw-gap-1': isMobile,
 								'tw-gap-2.5': !isMobile,
@@ -243,7 +243,7 @@
 										About
 										<kv-material-icon
 											class="tw-w-3 tw-h-3
-												tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
+											tw-transition-transform tw-duration-300 group-hover:tw-rotate-180"
 											:icon="mdiChevronDown"
 										/>
 									</span>
@@ -376,8 +376,8 @@
 								>
 									<span
 										class="tw-absolute tw-w-4 tw-h-4 tw-pt-0.5
-												tw-flex tw-items-center tw-justify-center
-												tw-text-white tw-text-small tw-font-medium"
+											tw-flex tw-items-center tw-justify-center
+											tw-text-white tw-text-small tw-font-medium"
 									>
 										<div v-if="isBasketLoading" class="tw-w-1 tw-h-1.5">
 											<kv-loading-placeholder />
