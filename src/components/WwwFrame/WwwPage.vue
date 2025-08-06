@@ -3,7 +3,6 @@
 		<global-promo-contentful v-show="!isKivaAppReferral" />
 		<the-header
 			v-show="!isKivaAppReferral"
-			:is-nav-update-exp="isNavUpdateExp"
 			:hide-search-in-header="hideSearchInHeader"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
@@ -23,14 +22,10 @@ import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.grap
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-
-const NAV_UPDATE_EXP_KEY = 'kiva_nav_update';
 
 export default {
 	name: 'WwwPage',
@@ -62,26 +57,10 @@ export default {
 	data() {
 		return {
 			isKivaAppReferral: false,
-			isNavUpdateExp: false,
 		};
 	},
 	created() {
 		this.isKivaAppReferral = this.$route?.query?.kivaAppReferral === 'true';
-
-		const experimentData = this.apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: NAV_UPDATE_EXP_KEY }
-		});
-		if (experimentData?.experiment) {
-			this.isNavUpdateExp = experimentData.experiment.version === 'b';
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				NAV_UPDATE_EXP_KEY,
-				'EXP-MP-1696-Aug2025'
-			);
-		}
 	},
 	mounted() {
 		try {
