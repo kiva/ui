@@ -603,7 +603,7 @@ export default function useBadgeData() {
 				loans: c.matchingLoans?.loans?.values ?? [],
 				target: CATEGORY_TARGETS[c.id] ?? '',
 			};
-		});
+		}).filter(c => c.loansCount > 0); // Only include categories with loans
 
 		categories.sort((a, b) => b.loansCount - a.loansCount);
 		if (categories.length > 0) {
