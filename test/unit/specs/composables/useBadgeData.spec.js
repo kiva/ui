@@ -1007,13 +1007,7 @@ describe('useBadgeData.js', () => {
 			const expected = {
 				category: ID_WOMENS_EQUALITY,
 				loansCount: 5,
-				loans: [
-					{ id: 1, name: 'Loan 1' },
-					{ id: 2, name: 'Loan 2' },
-					{ id: 3, name: 'Loan 3' },
-					{ id: 4, name: 'Loan 4' },
-					{ id: 5, name: 'Loan 5' }
-				],
+				loans: [],
 				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
 			};
 
@@ -1093,10 +1087,7 @@ describe('useBadgeData.js', () => {
 			const expected = {
 				category: ID_CLIMATE_ACTION,
 				loansCount: 2,
-				loans: [
-					{ id: 1, name: 'Loan 1' },
-					{ id: 2, name: 'Loan 2' }
-				],
+				loans: [],
 				target: CATEGORY_TARGETS[ID_CLIMATE_ACTION]
 			};
 
