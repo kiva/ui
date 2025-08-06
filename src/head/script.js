@@ -1,9 +1,10 @@
 export default (config, globalOneTrustEvent) => {
 	// check for opt out of 3rd party scripts + cookies
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
+	const isKvgdprEnable = document?.cookie?.includes('kvgdpr') > -1;
 	let optout = false;
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-		if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
+		if (isKvgdprEnable && cookies[i].indexOf('opted_out=true') > -1) {
 			optout = true;
 		}
 	}
