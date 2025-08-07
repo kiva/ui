@@ -66,7 +66,7 @@
 				:total-loans="totalLoans"
 				@add-to-basket="addToBasket"
 				@go-to-link="goToLink"
-				@handle-selected-loan="showLoanDetails"
+				@handle-selected-loan="showLoanDetails($event, true)"
 				@mouse-enter-status-card="loadBPData"
 				show-menu
 			/>
@@ -89,7 +89,7 @@
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
-				@show-loan-details="showLoanDetails"
+				@show-loan-details="showLoanDetails($event)"
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
@@ -135,6 +135,7 @@
 			:show-go-to-link="true"
 			:show-headline-border="true"
 			:show-side-sheet="showBPSideSheet"
+			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
@@ -297,6 +298,7 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
+			showNextSteps: false,
 		};
 	},
 	computed: {
@@ -580,9 +582,14 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(payload) {
+		showLoanDetails(payload, showNextSteps = false) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
+			if (showNextSteps) {
+				this.showNextSteps = true;
+			} else {
+				this.showNextSteps = false;
+			}
 		}
 	},
 	async mounted() {
