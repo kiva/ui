@@ -1,6 +1,6 @@
 <template>
 	<article>
-		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8">
+		<div v-if="loading" class="tw-w-full tw-my-5 md:tw-my-6 lg:tw-my-8 tw-py-2 md:tw-py-3 lg:tw-py-5">
 			<kv-loading-placeholder class="tw-w-full tw-mb-2 lg:tw-mb-3" :style="{height: '1.6rem'}" />
 			<kv-loading-placeholder
 				class="tw-mb-2" :style="{width: 60 + (Math.random() * 15) + '%', height: '1.6rem'}"
@@ -10,7 +10,10 @@
 		<h2 class="tw-sr-only">
 			Loan Comments
 		</h2>
-		<div v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5">
+		<div
+			v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
+			:key="`comments-${loanId}`"
+		>
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
 				<template v-for="(comment, index) in enhancedComments" #[`slide${index}`] :key="index">
 					<div>
@@ -230,6 +233,7 @@ export default {
 		KvRadio,
 		WhySpecial,
 	},
+	mixins: [clickOutside],
 	props: {
 		loanId: {
 			type: Number,
@@ -240,9 +244,6 @@ export default {
 			default: false,
 		},
 	},
-	mixins: [
-		clickOutside,
-	],
 	data() {
 		return {
 			kivaKUrl,
@@ -294,6 +295,20 @@ export default {
 			});
 		},
 	},
+	watch: {
+		loanId(newId, oldId) {
+			if (newId !== oldId && newId) this.loadData();
+		},
+	},
+	mounted() {
+		this.createObserver();
+		window.addEventListener('resize', this.throttledResize);
+		this.determineIfMobile();
+	},
+	beforeUnmount() {
+		this.destroyObserver();
+		window.removeEventListener('resize', this.throttledResize);
+	},
 	methods: {
 		createObserver() {
 			// Watch for this element being close to entering the viewport
@@ -321,6 +336,7 @@ export default {
 			}
 		},
 		loadData() {
+			if (!this.loanId) return;
 			this.apollo.query({
 				query: gql`query loanComments($loanId: Int!) {
 					lend {
@@ -353,6 +369,7 @@ export default {
 				variables: {
 					loanId: this.loanId
 				},
+				fetchPolicy: 'network-only',
 			}).then(result => {
 				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
 				this.loading = false;
@@ -425,15 +442,6 @@ export default {
 			this.isCommentLightboxVisible = true;
 			this.selectedCommentBody = commentBody;
 		},
-	},
-	mounted() {
-		this.createObserver();
-		window.addEventListener('resize', this.throttledResize);
-		this.determineIfMobile();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
-		window.removeEventListener('resize', this.throttledResize);
-	},
+	}
 };
 </script>

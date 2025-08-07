@@ -1,12 +1,13 @@
 <template>
 	<kv-lightbox
-		:visible="loan.visible"
+		:visible="isVisible"
 		:title="modalTitle"
-		@lightbox-closed="closeModal"
+		@lightbox-closed="() => closeModal()"
 	>
 		<div class="tw-text-center">
 			<div class="tw-relative">
 				<textarea
+					ref="commentTextarea"
 					class="tw-w-full tw-border tw-border-secondary tw-rounded-sm tw-h-7 tw-p-1 comment-input"
 					v-model="userComment"
 					:placeholder="commentPlaceholder"
@@ -61,8 +62,16 @@ export default {
 	props: {
 		loan: {
 			type: Object,
-			default: () => {}
-		}
+			default: () => ({}),
+		},
+		isVisible: {
+			type: Boolean,
+			default: false
+		},
+		showTip: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -79,10 +88,20 @@ export default {
 			return '';
 		},
 		modalTitle() {
-			return `Tell others why you love this loan to ${this.loan.borrowerName}`;
+			return `Tell others why you love this loan to ${this.loan.name}`;
 		},
 		commentPlaceholder() {
-			return `Tell others why this loan to ${this.loan.borrowerName} is great!`;
+			return `Tell others why this loan to ${this.loan.name} is great!`;
+		}
+	},
+	watch: {
+		isVisible(newValue) {
+			if (newValue) {
+				this.$nextTick(() => {
+					// Focus the textarea when the modal opens
+					this.$refs.commentTextarea?.focus();
+				});
+			}
 		}
 	},
 	methods: {
@@ -92,15 +111,17 @@ export default {
 			this.apollo.mutate({
 				mutation: loanAddComment,
 				variables: {
-					id: this.loan.loanId,
+					id: this.loan.id,
 					body: this.userComment
 				}
 			}).then(({ data }) => {
 				// comment was added successfully
 				if (data.loan.addComment) {
-					this.closeModal();
-					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.borrowerName, this.loan.loanId); // eslint-disable-line max-len
-					this.$showTipMsg(`Thank you for helping ${this.loan.borrowerName}!`, 'confirmation', true);
+					this.closeModal(true);
+					this.$kvTrackEvent('portfolio', 'click', 'Leave a loan comment', this.loan.name, this.loan.id); // eslint-disable-line max-len
+					if (this.showTip) {
+						this.$showTipMsg(`Thank you for helping ${this.loan.name}!`, 'confirmation', true);
+					}
 				} else {
 					throw new Error('Comment not added');
 				}
@@ -111,9 +132,9 @@ export default {
 				this.loading = false;
 			});
 		},
-		closeModal() {
+		closeModal(wasCommentAdded = false) {
 			this.userComment = '';
-			this.$emit('comment-modal-closed');
+			this.$emit('comment-modal-closed', wasCommentAdded);
 		}
 	},
 };

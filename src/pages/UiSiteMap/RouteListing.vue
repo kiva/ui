@@ -96,7 +96,7 @@ export default {
 			if (route.redirect) {
 				return this.redirectRoutes.push(routeWithDefaults);
 			}
-			if (route.status === 'dev') {
+			if (route.status === 'dev' && !this.$appConfig?.host?.includes('www.kiva.org')) {
 				return this.devRoutes.push(routeWithDefaults);
 			}
 

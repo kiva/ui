@@ -1,18 +1,14 @@
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 
+import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
-import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
-
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import logFormatter from '#src/util/logFormatter';
-
-export const HOME_BP_MODAL_EXP_KEY = 'home_page_bp_modal';
 
 export default {
 	inject: ['apollo', 'cookieStore'],
@@ -20,12 +16,28 @@ export default {
 	data() {
 		return {
 			basketItems: [],
+			basketSize: 0,
 			isAdding: false,
-			isBpModalEnabled: false,
 			selectedLoan: undefined,
 		};
 	},
 	methods: {
+		handleSelectedLoan({ loanId, fetchPolicy }) {
+			if (!loanId) {
+				this.selectedLoan = undefined;
+				return;
+			}
+			this.selectedLoan = { id: loanId }; // pre-load id before GraphQL query to speed up rendering
+			return this.apollo.query({
+				query: borrowerProfileSideSheetQuery,
+				variables: { loanId },
+				fetchPolicy: fetchPolicy ?? 'cache-first',
+			}).then(({ data }) => {
+				this.selectedLoan = data?.lend?.loan;
+			}).catch(e => {
+				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
+			});
+		},
 		formatAddedLoan() {
 			const addedLoan = {
 				id: this.selectedLoan.id,
@@ -33,7 +45,7 @@ export default {
 				gender: this.selectedLoan?.gender ?? '',
 				borrowerCount: this.selectedLoan?.borrowerCount ?? 1,
 				themes: this.selectedLoan?.themes ?? [],
-				basketSize: this.basketItems.length,
+				basketSize: this.basketSize,
 			};
 			this.handleCartModal(addedLoan);
 		},
@@ -44,16 +56,6 @@ export default {
 			}).catch(e => {
 				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
 			});
-		},
-		initializeIsBpModalEnabledExp(category) {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				category,
-				HOME_BP_MODAL_EXP_KEY,
-				'EXP-MP-671-Dec2024',
-			);
-			if (version) this.isBpModalEnabled = version === 'b';
 		},
 		goToLink() {
 			this.$kvTrackEvent('borrower-profile', 'go-to-old-bp', undefined, `${this.selectedLoan?.id}`);
@@ -75,6 +77,7 @@ export default {
 					fetchPolicy: 'network-only'
 				});
 				this.basketItems = data?.shop?.basket?.items?.values || [];
+				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 			} catch (error) {
 				logFormatter(error, 'error');
 				this.basketItems = [];
@@ -145,11 +148,13 @@ export default {
 						},
 						fetchPolicy: 'network-only',
 					}).then(({ data }) => {
-						this.basketItems = data?.shop?.basket?.items?.values || [];
+						this.basketItems = data?.shop?.basket?.items?.values;
+						this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 					});
 				}
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+				logFormatter(error, 'error');
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(error);
 			}).finally(() => {

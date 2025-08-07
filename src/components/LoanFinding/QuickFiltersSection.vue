@@ -31,13 +31,13 @@
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
 						:add-to-basket-exp-enabled="enableAddToBasketExp"
-						:custom-loan-details="isBpModalEnabled"
+						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:loan-id="loan.id"
 						:show-tags="true"
 						:use-full-width="true"
 						:user-balance="userBalance"
-						:custom-href="getCustomHref($router, loan.id, isBpModalEnabled)"
+						:custom-href="getCustomHref($router, loan.id)"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -115,10 +115,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		isBpModalEnabled: {
-			type: Boolean,
-			defaut: false
-		}
 	},
 	data() {
 		return {

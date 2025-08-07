@@ -35,6 +35,14 @@ export const CATEGORIES = {
 	[ID_BASIC_NEEDS]: 'basic-needs',
 };
 
+export const CATEGORY_TARGETS = {
+	[ID_WOMENS_EQUALITY]: 'woman',
+	[ID_US_ECONOMIC_EQUALITY]: 'entrepreneur',
+	[ID_CLIMATE_ACTION]: 'person',
+	[ID_REFUGEE_EQUALITY]: 'refugee',
+	[ID_BASIC_NEEDS]: 'person',
+};
+
 const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
 const REFUGEE_THEME = 'refugees/displaced';
@@ -342,27 +350,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Gets the badge data visible tiers to ensure the user doesn't get overwhelmed
-	 *
-	 * @param combinedBadgeData The combined data for the badge
-	 * @returns The badge data with tiers to show to the user
-	 */
-	const getBadgeWithVisibleTiers = combinedBadgeData => {
-		const currentTier = getActiveTierData(combinedBadgeData);
-		const visibleData = JSON.parse(JSON.stringify(combinedBadgeData));
-
-		if (currentTier.level < 4) {
-			visibleData.contentfulData.splice(3);
-			visibleData.achievementData.tiers.splice(3);
-		} else if (currentTier.level > 3 && currentTier.level < 6) {
-			visibleData.contentfulData.splice(5);
-			visibleData.achievementData.tiers.splice(5);
-		}
-
-		return visibleData;
-	};
-
-	/**
 	 * Get the badge key and check if it has a valid format
 	 *
 	 * @param badgeKey The badge key to validate
@@ -603,6 +590,29 @@ export default function useBadgeData() {
 	};
 
 	/**
+	 * Redesign to work with userAchievementProgressWithLoans.tieredLendingAchievements
+	 *
+	 * @param tieredLendingAchievements The tiered lending achievements with loans
+	 * @returns The top category with loans
+	 */
+	const getTopCategoryWithLoans = tieredLendingAchievements => {
+		const categories = tieredLendingAchievements.map(c => {
+			return {
+				category: c.id,
+				loansCount: c.totalProgressToAchievement ?? 0,
+				loans: [], // TODO: add loan purchase data when available from achievement service
+				target: CATEGORY_TARGETS[c.id] ?? '',
+			};
+		}).filter(c => c.loansCount > 0); // Only include categories with loans
+
+		categories.sort((a, b) => b.loansCount - a.loansCount);
+		if (categories.length > 0) {
+			return categories[0];
+		}
+		return null;
+	};
+
+	/**
 	 * Get badge headline
 	 *
 	 * @param badge The badge to filter loans by
@@ -669,7 +679,6 @@ export default function useBadgeData() {
 		fetchContentfulData,
 		fetchLoanIdData,
 		getActiveTierData,
-		getBadgeWithVisibleTiers,
 		getCompletedBadges,
 		getContentfulLevelData,
 		getEarnedBadgeExplanation,
@@ -688,5 +697,6 @@ export default function useBadgeData() {
 		isBadgeKeyValid,
 		getLevelCaption,
 		getJourneysByLoan,
+		getTopCategoryWithLoans,
 	};
 }

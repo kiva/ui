@@ -2,8 +2,8 @@
 	<div class="tw-rounded tw-bg-white tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
 		<div class="tw-flex tw-gap-1">
 			<!-- Show triple image for repayment summary cards -->
-			<div v-if="update.isRepayment && update.status === 'repayment-summary' && update.repaymentImages">
-				<MultiBorrowerImage :images="update.repaymentImages" />
+			<div v-if="update.isRepayment && update.status === 'repayment-summary' && repaymentImages.length">
+				<MultiBorrowerImage :images="repaymentImages" />
 			</div>
 			<!-- Show single image for other cards -->
 			<div
@@ -38,20 +38,12 @@
 			</div>
 		</div>
 		<div
-			class="tw-my-1 " style="height:200px;"
+			class="tw-my-1"
 		>
-			<p class="tw-font-bold tw-mb-1">
-				<span v-if="update.isRepayment">
-					{{ subject }}
-				</span>
-				<span v-else-if="subject">
-					Subject line: {{ subject }}
-				</span>
-			</p>
 			<p
-				class="tw-line-clamp-5"
+				class="tw-line-clamp-3"
 			>
-				<span v-html="body" class=" "></span>
+				<span v-html="displayText" class=" "></span>
 				<span v-if="update.isRepayment">
 					<button
 						v-if="update.isRepayment"
@@ -165,6 +157,21 @@ const loanStatus = computed(() => {
 const subject = computed(() => update.value?.subject ?? '');
 const body = computed(() => update.value?.body ?? '');
 
+function stripHtmlTags(html) {
+	return html.replace(/<[^>]*>/g, '');
+}
+const displayText = computed(() => {
+	if (update.value?.isRepayment) {
+		return body.value;
+	}
+	if (update.value?.isTransaction) {
+		return subject.value;
+	}
+	if (subject.value) {
+		return stripHtmlTags(`Re: ${subject.value.trim()}. ${body.value}`);
+	}
+	return body.value;
+});
 const truncatedBody = computed(() => {
 	let truncatedCopy = body.value.split(' ').splice(0, 14).join(' ');
 	if (truncatedCopy.length < body.value.length) {
@@ -179,6 +186,15 @@ const uploadDate = computed(() => {
 	const date = update.value?.date ?? '';
 	const dateObj = !date ? new Date() : new Date(date);
 	return format(dateObj, 'LLL. d, yyyy');
+});
+
+const repaymentImages = computed(() => {
+	return update.value?.repaymentImages.reduce((unique, img) => {
+		if (!unique.some(imgoObj => imgoObj.hash === img.hash)) {
+			unique.push(img);
+		}
+		return unique;
+	}, []);
 });
 
 const openLightbox = () => {

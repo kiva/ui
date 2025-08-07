@@ -156,14 +156,12 @@ const menuOptions = computed(() => {
 		id: SHARE_ID,
 		label: 'Share',
 	}];
-
 	if (isFundraising.value) {
 		options.unshift({
 			id: COMMENT_ID,
 			label: 'Leave a comment',
 		});
 	}
-
 	return options;
 });
 
@@ -200,11 +198,9 @@ const loanStatus = computed(() => {
 const description = computed(() => {
 	let loanUsageDescription = isFundraising.value ? 'will use ' : 'used ';
 	loanUsageDescription += pronoun.value;
-
 	if (showWhatIsNextColumn.value) {
 		loanUsageDescription = 'asked for a ';
 	}
-
 	return `${borrowerName.value}
 		${loanUsageDescription}
 		loan ${loanUse.value}`;
@@ -216,18 +212,16 @@ const showLoanDetails = () => {
 		emit('open-side-sheet', { loan: loan.value });
 		return;
 	}
-
 	window.location = 'https://help.kiva.org/s/article/What-happens-if-a-loan-doesn-t-fully-fund-on-Kiva-1611075923145';
 };
 
 const menuAction = id => {
 	if (id === COMMENT_ID) {
-		emit('open-comment-modal', { loanId: loan.value?.id, borrowerName: borrowerName.value });
+		emit('open-comment-modal', { loan: loan.value, borrowerName: borrowerName.value });
 	} else if (id === SHARE_ID) {
 		$kvTrackEvent('portfolio', 'click', 'share-lightbox', 'social_share_portfolio');
 		emit('open-share-modal', { loan: loan.value });
 	}
-
 	menuOpen.value = false;
 };
 

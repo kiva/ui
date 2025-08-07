@@ -24,10 +24,6 @@ query initializeCheckout($basketId: String) {
 			totalCount
 		}
 		depositIncentiveAmountToLend
-		userPreferences {
-			id
-			preferences
-		}
 	}
 	general {
 		guestCheckoutEnabled: featureSetting(key: "guest_checkout.enabled") {

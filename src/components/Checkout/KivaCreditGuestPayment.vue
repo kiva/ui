@@ -50,6 +50,7 @@
 					target="_blank"
 					title="Open Privacy Policy in a new window"
 				>Privacy Policy</a>.
+				Preferences can be managed in settings.
 				<p v-if="v$.termsAgreement?.$error" class="input-error tw-text-danger tw-text-base">
 					You must agree to the Kiva Terms of service & Privacy
 					policy.

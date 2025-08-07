@@ -22,69 +22,40 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<!-- Journey card slide -->
-				<div
-					class="tw-w-full tw-relative tw-rounded tw-bg-cover tw-bg-center journey-card"
-					:class="{ '!tw-bg-left-top': isNonBadgeSlide(slide) }"
-					:style="{ backgroundImage: `url(${backgroundImg(slide)})` }"
-				>
-					<div
-						class="
-							tw-absolute
-							tw-w-full
-							tw-bottom-0
-							tw-pb-1.5
-							tw-px-1.5
-							md:tw-pb-2
-							md:tw-px-2
-							tw-align-bottom
-							tw-rounded-b
-						"
-						:class="{ 'slide-gradient': !isNonBadgeSlide(slide) }"
-						:style="[
-							{ 'height': overlayHeight(slide) },
-						]"
-					>
-						<div class="tw-flex tw-flex-col tw-justify-end tw-h-full !tw-gap-1.5">
-							<div class="tw-text-primary-inverse">
-								<h2
-									class="tw-text-h3"
-									:class="titleClass(slide)"
-								>
-									{{ title(slide) }}
-								</h2>
-								<p
-									v-if="subTitle(slide)"
-									class="tw-text-small tw-font-medium"
-									:class="{
-										'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800':
-											isNonBadgeSlide(slide)
-									}"
-								>
-									{{ subTitle(slide) }}
-								</p>
-							</div>
-							<div class="tw-flex tw-flex-col tw-gap-1.5">
-								<button
-									v-if="showSecondaryCta(slide)"
-									@click="goToSecondaryCtaUrl(slide)"
-									variant="tertiary"
-									class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
-									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
-								>
-									{{ secondaryCtaText(slide) }}
-								</button>
-								<KvButton
-									@click="goToPrimaryCtaUrl(slide)"
-									:variant="primaryCtaVariant(slide)"
-									:class="{ 'tw-w-full': isNonBadgeSlide(slide) }"
-								>
-									{{ primaryCtaText(slide) }}
-								</KvButton>
-							</div>
-						</div>
-					</div>
-				</div>
+				<MyKivaCard
+					v-if="isCustomCard(slide)"
+					class="kiva-card"
+					:category="slide.category"
+					:title="slide.title"
+					:show-cta-icon="true"
+					:primary-cta-text="slide.ctaText"
+					primary-cta-variant="primary"
+					:is-full-width-primary-cta="true"
+					:is-title-font-sans="true"
+					title-color="tw-text-action-highlight"
+					:loans="slide.loans"
+					:tag-text="slide.tagText"
+					:show-tag-icon="slide.showTagIcon"
+					@primary-cta-clicked="slide.primaryCta"
+				/>
+				<MyKivaCard
+					v-else
+					class="tw-w-full tw-h-full"
+					:bg-image="backgroundImg(slide)"
+					:is-bg-top-aligned="isNonBadgeSlide(slide)"
+					:has-gradient="!isNonBadgeSlide(slide)"
+					:title="title(slide)"
+					:subtitle="subTitle(slide)"
+					:is-black-subtitle="isNonBadgeSlide(slide)"
+					:secondary-cta-text="secondaryCtaText(slide)"
+					:primary-cta-text="primaryCtaText(slide)"
+					:primary-cta-variant="primaryCtaVariant(slide)"
+					:is-full-width-primary-cta="isNonBadgeSlide(slide)"
+					:is-title-font-sans="isTitleFontSans(slide)"
+					:title-color="titleColor(slide)"
+					@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
+					@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
+				/>
 			</template>
 		</KvCarousel>
 		<MyKivaSharingModal
@@ -107,10 +78,11 @@ import useIsMobile from '#src/composables/useIsMobile';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
-import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
-import { KvCarousel, KvButton } from '@kiva/kv-components';
+import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
+import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -157,6 +129,14 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	heroSlides: {
+		type: Array,
+		default: () => ([]),
+	},
+	inLendingStats: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -170,7 +150,7 @@ const badgesData = computed(() => {
 	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
 });
 
-const getRichTextContent = slide => slide.fields?.richText?.content ?? [];
+const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
 	const uiSettings = richTextContent.find(
@@ -194,7 +174,7 @@ const orderedSlides = computed(() => {
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
-		return t.type !== AVOID_TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
 	});
 
 	if (transactionLoans?.length) {
@@ -257,6 +237,10 @@ const orderedSlides = computed(() => {
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	}
+	if (props.inLendingStats) {
+		const customCard = props.slides.find(slide => slide.isCustomCard);
+		sortedSlides[props.slidesNumber - 1] = customCard;
 	}
 
 	return sortedSlides;
@@ -335,27 +319,10 @@ const isTitleFontSans = slide => {
 
 const titleColor = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
+	if (!richTextUiSettingsData.titleColor && isNonBadgeSlide(slide)) {
+		return 'tw-text-action';
+	}
 	return richTextUiSettingsData.titleColor;
-};
-
-const titleClass = slide => {
-	let className = '';
-
-	if (isTitleFontSans(slide)) {
-		className += 'tw-font-sans';
-	}
-
-	if (titleColor(slide)) {
-		className += ` ${titleColor(slide)}`;
-	} else if (isNonBadgeSlide(slide)) {
-		className += ' tw-text-action';
-	}
-
-	if (!subTitle(slide)) {
-		className += ' tw-mb-1.5';
-	}
-
-	return className;
 };
 
 const getUrlParamsFromString = string => {
@@ -395,12 +362,6 @@ const goToSecondaryCtaUrl = slide => {
 	}
 };
 
-const showSecondaryCta = slide => secondaryCtaText(slide);
-
-const overlayHeight = slide => {
-	return showSecondaryCta(slide) && isMobile.value ? '60%' : '50%';
-};
-
 const singleSlideWidth = computed(() => {
 	if (isMobile.value) {
 		return '90%';
@@ -418,31 +379,21 @@ const handleChange = interaction => {
 		`${direction}-step-carousel`,
 	);
 };
+
+const isCustomCard = slide => !!slide?.isCustomCard;
+
 </script>
 
 <style lang="postcss" scoped>
-.journey-card {
-	box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
-	height: 382px;
-
-	@screen md {
-		height: 340px;
-	}
-}
-
-.journey-card-carousel :deep(.kv-carousel__controls) {
+:deep(.journey-card-carousel > .kv-carousel__controls) {
 	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
 }
 
-.journey-card-carousel :deep(.kv-carousel__controls) div {
+:deep(.journey-card-carousel > .kv-carousel__controls) div {
 	@apply tw-invisible tw-mx-0 tw-w-2;
 }
 
-.journey-card-carousel:deep(div:first-child) {
-	@apply tw-gap-2 lg:tw-gap-4;
-}
-
-.slide-gradient {
-	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
+.kiva-card :deep(h2) {
+	font-size: 22px !important;
 }
 </style>

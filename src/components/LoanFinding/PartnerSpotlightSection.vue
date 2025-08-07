@@ -20,7 +20,6 @@
 			:loans="loans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
-			:is-bp-modal-enabled="isBpModalEnabled"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@show-cart-modal="showCartModal"
 			@show-loan-details="showLoanDetails"
@@ -70,10 +69,6 @@ export default {
 			type: String,
 			default: undefined
 		},
-		isBpModalEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	computed: {
 		headline() {

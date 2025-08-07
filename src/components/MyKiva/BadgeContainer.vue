@@ -6,7 +6,6 @@
 			'tw-cursor-pointer': isLocked,
 			'tw-overflow-hidden': showShine,
 		}"
-		@click="handleBadgeClick"
 	>
 		<FirstBadgeShine v-show="showShine" ref="firstShine" class="shine tw-w-full" />
 		<SecondBadgeShine v-show="showShine" ref="secondShine" class="second-shine tw-w-full" />
@@ -19,17 +18,6 @@
 				class="tw-absolute tw-top-0 tw-w-full tw-h-full"
 				:src="solidComponent"
 			>
-		</div>
-		<div
-			v-if="isLocked"
-			class="tw-absolute tw-flex"
-			:class="{ 'animate-wiggle': animateLock }"
-			style="left: calc(50% - 14px); top: calc(48% - 14px)"
-		>
-			<KvMaterialIcon
-				class="tw-w-3.5 tw-h-3.5 tw-text-black"
-				:icon="mdiLock"
-			/>
 		</div>
 	</div>
 </template>
@@ -54,8 +42,6 @@ import {
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_RECTANGLE,
 } from '#src/composables/useBadgeModal';
-import { mdiLock } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
 import FirstBadgeShine from '#src/assets/images/my-kiva/badge-shine/first.svg';
 import SecondBadgeShine from '#src/assets/images/my-kiva/badge-shine/second.svg';
 import SolidArch from '#src/assets/images/my-kiva/badge-solid-arch.svg?url';
@@ -98,7 +84,6 @@ const isInProgress = computed(() => {
 
 const isLocked = computed(() => props.status === BADGE_LOCKED);
 
-const animateLock = ref(false);
 const firstShine = ref(null);
 const secondShine = ref(null);
 
@@ -116,13 +101,6 @@ const solidComponent = computed(() => {
 			return SolidCircle;
 	}
 });
-
-const handleBadgeClick = () => {
-	if (isLocked.value) {
-		animateLock.value = true;
-		setTimeout(() => { animateLock.value = false; }, 1600);
-	}
-};
 
 const handleShine = () => {
 	if (firstShine.value && secondShine.value) {
@@ -194,10 +172,6 @@ onMounted(() => {
 	55%, 100% {
 		transform: rotateZ(0);
 	}
-}
-
-.animate-wiggle {
-	animation: wiggle 2s linear;
 }
 
 /** Shine */

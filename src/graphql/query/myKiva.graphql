@@ -4,6 +4,58 @@ query myKivaQuery {
     isBorrower
     loans {
       totalCount
+      values {
+        id
+        name
+        gender
+        status
+        use
+        image {
+          id
+          url
+          hash
+        }
+        cardImage: image {
+          id
+          url(customSize: "w600")
+        }
+        loanAmount
+        plannedExpirationDate
+        terms {
+          currency
+          currencyFullName
+          lossLiabilityNonpayment
+          lossLiabilityCurrencyExchange
+          loanAmount
+          disbursalDate
+          disbursalAmount
+          flexibleFundraisingEnabled
+          lenderRepaymentTerm
+          expectedPayments {
+            amount
+            localAmount
+            dueToKivaDate
+            effectiveDate
+          }
+        }
+        tags
+        ... on LoanPartner {
+          themes
+        }
+        sector {
+          id
+        }
+        geocode {
+          city
+          state
+          country {
+            id
+            name
+            isoCode
+            region
+          }
+        }
+      }
     }
     lender {
       id
@@ -35,40 +87,26 @@ query myKivaQuery {
       filter: {
         category: loan
       }
-      limit: 100
     ) {
       values {
         category
-		amount
-		effectiveTime
+        amount
+        effectiveTime
+        type
+        createTime
         loan {
           id
           name
           gender
-          status
-          use
           image {
             id
-            url
             hash
           }
-          loanAmount
-          plannedExpirationDate
-          terms {
-            currency
-            currencyFullName
-            lossLiabilityNonpayment
-            lossLiabilityCurrencyExchange
-            loanAmount
-            disbursalDate
-            disbursalAmount
-            flexibleFundraisingEnabled
-            lenderRepaymentTerm
-            expectedPayments {
-              amount
-              localAmount
-              dueToKivaDate
-              effectiveDate
+          geocode {
+            country {
+              id
+              name
+              isoCode
             }
           }
           tags
@@ -78,25 +116,7 @@ query myKivaQuery {
           sector {
             id
           }
-		  image{
-			id
-			url
-			hash
-		  }
-          geocode {
-            city
-            state
-            country {
-              id
-              name
-              isoCode
-              region
-            }
-          }
         }
-        type
-        createTime
-        # Add other fields you need, e.g. amount, status, etc.
       }
     }
   }

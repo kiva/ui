@@ -31,6 +31,7 @@ export default {
 	name: 'WwwPage',
 	inject: [
 		'apollo',
+		'cookieStore',
 	],
 	components: {
 		CookieBanner,

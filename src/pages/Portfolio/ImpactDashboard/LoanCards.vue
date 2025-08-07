@@ -4,27 +4,40 @@
 		@visible="fetchAsyncData"
 	>
 		<BorrowerCarousel
+			class="portfolio-borrowers-carousel"
+			:basket-items="basketItems"
+			:cards-number="7"
+			:is-adding="isAdding"
 			:lender="lender"
 			:loans="loans"
-			:total-loans="totalLoans"
-			:is-loading="isLoading"
-			:show-menu="true"
-			:cards-number="7"
 			:show-carousel-tabs="true"
-			class="portfolio-borrowers-carousel"
+			:total-loans="totalLoans"
+			show-menu
+			@handle-selected-loan="showLoanDetails"
+			@mouse-enter-status-card="loadBPData"
+		/>
+		<BorrowerSideSheetWrapper
+			:basket-items="basketItems"
+			:is-adding="isAdding"
+			:kv-track-function="$kvTrackEvent"
+			:selected-loan-id="selectedLoan?.id"
+			:show-next-steps="true"
+			:show-side-sheet="showSideSheet"
+			@add-to-basket="addToBasket"
+			@go-to-link="goToLink"
+			@close-side-sheet="handleCloseSideSheet"
 		/>
 	</AsyncPortfolioSection>
 </template>
 
-<script setup>
-import { ref, inject } from 'vue';
+<script>
 import { gql } from 'graphql-tag';
-import logReadQueryError from '#src/util/logReadQueryError';
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
-import { AVOID_TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
+import logReadQueryError from '#src/util/logReadQueryError';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-// Query to gather user loans
 const userQuery = gql`query userQuery {
 	my {
         id
@@ -38,93 +51,101 @@ const userQuery = gql`query userQuery {
 		}
         loans {
             totalCount
-        }
-        transactions(
-            filter: {
-                category: loan
-            }
-            limit: 100
-        ) {
             values {
-                category
-                loan {
+                id
+                name
+                gender
+                status
+                use
+                image {
                     id
-                    name
-                    gender
-                    status
-                    use
-                    image {
-                        id
-                        url
-                        hash
-                    }
+                    url
+                    hash
+                }
+                loanAmount
+                plannedExpirationDate
+                terms {
+                    currency
+                    currencyFullName
+                    lossLiabilityNonpayment
+                    lossLiabilityCurrencyExchange
                     loanAmount
-                    plannedExpirationDate
-                    terms {
-                        currency
-                        currencyFullName
-                        lossLiabilityNonpayment
-                        lossLiabilityCurrencyExchange
-                        loanAmount
-                        disbursalDate
-                        disbursalAmount
-                        flexibleFundraisingEnabled
-                        lenderRepaymentTerm
-                        expectedPayments {
-                        amount
-                        localAmount
-                        dueToKivaDate
-                        effectiveDate
-                        }
-                    }
-                    tags
-                    ... on LoanPartner {
-                        themes
-                    }
-                    sector {
-                        id
-                    }
-                    geocode {
-                        city
-                        state
-                        country {
-                        id
-                        name
-                        isoCode
-                        region
-                        }
+                    disbursalDate
+                    disbursalAmount
+                    flexibleFundraisingEnabled
+                    lenderRepaymentTerm
+                    expectedPayments {
+                    amount
+                    localAmount
+                    dueToKivaDate
+                    effectiveDate
                     }
                 }
-                type
-                createTime
+                tags
+                ... on LoanPartner {
+                    themes
+                }
+                sector {
+                    id
+                }
+                geocode {
+                    city
+                    state
+                    country {
+                    id
+                    name
+                    isoCode
+                    region
+                    }
+                }
             }
         }
     }
 }`;
 
-const apollo = inject('apollo');
-
-const loans = ref([]);
-const isLoading = ref(true);
-const totalLoans = ref(0);
-const lender = ref({});
-
-const fetchAsyncData = () => {
-	apollo.query({ query: userQuery })
-		.then(result => {
-			const transactions = result.data?.my?.transactions?.values?.filter(t => {
-				return t.type !== AVOID_TRANSACTION_LOANS_KEY;
-			});
-
-			loans.value = transactions?.map(t => t.loan) ?? [];
-			totalLoans.value = result.data?.my?.loans?.totalCount ?? 0;
-			lender.value = {
-				public: result.data?.my?.userAccount?.public ?? false,
-				inviterName: result.data?.my?.userAccount?.inviterName ?? null,
-			};
-			isLoading.value = false;
-		}).catch(e => {
-			logReadQueryError(e, 'Portfolio Page Loans userQuery');
-		});
+export default {
+	name: 'LoanCards',
+	components: {
+		AsyncPortfolioSection,
+		BorrowerCarousel,
+		BorrowerSideSheetWrapper,
+	},
+	mixins: [borrowerProfileExpMixin],
+	inject: ['apollo'],
+	data() {
+		return {
+			loans: [],
+			totalLoans: 0,
+			lender: {},
+			isLoading: true,
+			showSideSheet: false,
+		};
+	},
+	async mounted() {
+		this.loadInitialBasketItems();
+	},
+	methods: {
+		fetchAsyncData() {
+			this.apollo.query({ query: userQuery })
+				.then(result => {
+					this.loans = result.data?.my?.loans?.values ?? [];
+					this.totalLoans = result.data?.my?.loans?.totalCount ?? 0;
+					this.lender = {
+						public: result.data?.my?.userAccount?.public ?? false,
+						inviterName: result.data?.my?.userAccount?.inviterName ?? null,
+					};
+					this.isLoading = false;
+				}).catch(e => {
+					logReadQueryError(e, 'Portfolio Page Loans userQuery');
+				});
+		},
+		handleCloseSideSheet() {
+			this.showSideSheet = false;
+		},
+		showLoanDetails(payload) {
+			this.handleSelectedLoan({ loanId: payload?.id });
+			this.showSideSheet = true;
+		},
+	}
 };
 </script>

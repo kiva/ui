@@ -62,6 +62,10 @@ import BadgeModal from '#src/components/MyKiva/BadgeModal';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import useBadgeData from '#src/composables/useBadgeData';
 
+const {
+	getLoanFindingUrl,
+} = useBadgeData();
+
 export default {
 	name: 'BadgesList',
 	inject: ['apollo'],
@@ -96,6 +100,7 @@ export default {
 			state: STATE_EARNED,
 			tier: null,
 			showSideSheet: false,
+			getLoanFindingUrl,
 		};
 	},
 	computed: {
@@ -159,9 +164,7 @@ export default {
 			this.tier = null;
 		},
 		handleContinueJourneyClicked() {
-			const { getLoanFindingUrl, getBadgeWithVisibleTiers } = useBadgeData();
-			const badgeWithVisibleTiers = getBadgeWithVisibleTiers(this.selectedBadgeData);
-			const { id, challengeName } = badgeWithVisibleTiers;
+			const { id, challengeName } = this.selectedBadgeData;
 
 			let eventLabel = `${challengeName} Continue Journey Clicked`;
 			if (this.allBadgesCompleted) {
@@ -183,10 +186,9 @@ export default {
 			if (this.isSelectedJourneyComplete) {
 				return this.handleSideSheetClosed();
 			}
-			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
+			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value.path));
 		},
 		handleBadgeJourneyLevelClicked(payload) {
-			const { getLoanFindingUrl } = useBadgeData();
 			const { id, challengeName, tier: clickedTier } = payload;
 
 			this.$kvTrackEvent(
@@ -197,7 +199,7 @@ export default {
 				clickedTier.level,
 			);
 
-			this.$router.push(getLoanFindingUrl(id, this.$router.currentRoute.value.path));
+			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value.path));
 		}
 	},
 };

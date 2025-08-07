@@ -43,19 +43,22 @@
 						>
 							<BadgeContainer
 								:status="getBadgeStatus(index)"
-								:shape="getBadgeShape(badgeWithVisibleTiers.id)"
+								:shape="getBadgeShape(badge.id)"
 								:style="{ width: iconSize, height: iconSize }"
 								:class="{ 'tw--ml-1.5': isWomenBadge }"
 							>
 								<img
-									:src="badgeWithVisibleTiers.contentfulData[index].imageUrl"
+									:src="badge.contentfulData[index].imageUrl"
 									alt="Badge"
 								>
 							</BadgeContainer>
 						</div>
 						<div class="tw-text-left tw-bg-white tw-z-1 tw-relative tw-pl-2 tw-space-y-0.5">
 							<div>
-								<div class="tw-font-small tw-px-0">
+								<div
+									v-if="(getBadgeStatus(index) !== BADGE_LOCKED)"
+									class="tw-font-small tw-px-0"
+								>
 									<span>Achievement {{ levelCaption(index) }}</span>
 								</div>
 								<div
@@ -156,7 +159,6 @@ const props = defineProps({
 });
 
 const {
-	getBadgeWithVisibleTiers,
 	getFilteredLoansByJourney,
 	getLevelCaption,
 } = useBadgeData();
@@ -164,8 +166,6 @@ const {
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const scrollEl = ref(null);
 const toggleGradient = ref(false);
-
-const badgeWithVisibleTiers = computed(() => getBadgeWithVisibleTiers(props.badge));
 
 const badgeMarginTop = index => {
 	if (index === 0) {
@@ -176,14 +176,14 @@ const badgeMarginTop = index => {
 	return '50px';
 };
 
-const isWomenBadge = computed(() => badgeWithVisibleTiers.value.id === ID_WOMENS_EQUALITY);
+const isWomenBadge = computed(() => props.badge.id === ID_WOMENS_EQUALITY);
 const iconSize = computed(() => (isMobile.value ? '98px' : '108px'));
 const lineImageHeight = computed(() => (isMobile.value ? '150px' : '170px'));
 const lineImageContainerHeight = computed(() => (isMobile.value ? '50px' : '100px'));
 
 const {
 	getTierPositions,
-} = useBadgeModal(badgeWithVisibleTiers.value);
+} = useBadgeModal(props.badge);
 
 const emit = defineEmits(['badge-level-clicked', 'toggle-gradient']);
 
@@ -191,13 +191,13 @@ const positions = ref(getTierPositions());
 
 const showEarnBadge = index => {
 	return (
-		!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]
-		|| !!badgeWithVisibleTiers.value.achievementData.tiers[index - 1]?.completedDate
-	) && !badgeWithVisibleTiers.value.achievementData.tiers[index].completedDate;
+		!props.badge.achievementData.tiers[index - 1]
+		|| !!props.badge.achievementData.tiers[index - 1]?.completedDate
+	) && !props.badge.achievementData.tiers[index].completedDate;
 };
 
 const getBadgeStatus = index => {
-	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index] ?? {};
+	const tier = props.badge.achievementData.tiers[index] ?? {};
 	if (tier.completedDate) {
 		return BADGE_COMPLETED;
 	}
@@ -207,15 +207,18 @@ const getBadgeStatus = index => {
 	return BADGE_LOCKED;
 };
 
-const levelCaption = index => getLevelCaption(badgeWithVisibleTiers.value.achievementData.tiers[index]);
+const levelCaption = index => getLevelCaption(props.badge.achievementData.tiers[index]);
 
 const progressCaption = index => {
 	let floor;
-	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
-	if ([BADGE_IN_PROGRESS, BADGE_LOCKED].includes(getBadgeStatus(index))) {
-		floor = badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement;
+	const tier = props.badge.achievementData.tiers[index];
+	if ([BADGE_IN_PROGRESS].includes(getBadgeStatus(index))) {
+		floor = props.badge.achievementData.totalProgressToAchievement;
 	} else {
-		floor = Math.min(badgeWithVisibleTiers.value.achievementData.totalProgressToAchievement, tier.target);
+		floor = Math.min(props.badge.achievementData.totalProgressToAchievement, tier.target);
+	}
+	if ([BADGE_LOCKED].includes(getBadgeStatus(index))) {
+		return `${tier.target} loans`;
 	}
 	return `
 		Progress:
@@ -225,21 +228,21 @@ const progressCaption = index => {
 };
 
 const completedCaption = index => {
-	const tier = badgeWithVisibleTiers.value.achievementData.tiers[index];
+	const tier = props.badge.achievementData.tiers[index];
 	return `Achieved on ${format(new Date(tier.completedDate), 'MMMM do, yyyy')}!`;
 };
 
 const handleBadgeClick = index => {
 	if (getBadgeStatus(index) !== BADGE_LOCKED) {
 		emit('badge-level-clicked', {
-			id: badgeWithVisibleTiers.value.id,
-			challengeName: badgeWithVisibleTiers.value.challengeName,
-			tier: badgeWithVisibleTiers.value.achievementData.tiers[index]
+			id: props.badge.id,
+			challengeName: props.badge.challengeName,
+			tier: props.badge.achievementData.tiers[index]
 		});
 	}
 };
 
-const journeyLoans = computed(() => getFilteredLoansByJourney(badgeWithVisibleTiers.value, props.loans));
+const journeyLoans = computed(() => getFilteredLoansByJourney(props.badge, props.loans));
 const journeyTotalLoans = computed(() => journeyLoans.value.length);
 const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
 
@@ -257,7 +260,7 @@ const journeyDescription = computed(() => {
 		? `Your loan${journeyTotalLoans.value > 1 ? 's' : ''} to ${journeyLoansNames.value} ${journeyTotalLoans.value > 1 ? 'have' : 'has'} made progress toward these achievements. `
 		: '';
 
-	return `${journeyLoansCopy}${badgeWithVisibleTiers.value.description}`;
+	return `${journeyLoansCopy}${props.badge.description}`;
 });
 
 const RightLeaningLine = defineAsyncComponent(() => import('#src/assets/images/right-leaning-line.svg'));
