@@ -25,11 +25,11 @@ import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
-import userAchievementProgressWithLoansQuery from '#src/graphql/query/userAchievementProgressWithLoans.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 
@@ -79,7 +79,7 @@ export default {
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
-				client.query({ query: userAchievementProgressWithLoansQuery }),
+				client.query({ query: userAchievementProgressQuery }),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
@@ -176,7 +176,7 @@ export default {
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
-				query: userAchievementProgressWithLoansQuery
+				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
 			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {

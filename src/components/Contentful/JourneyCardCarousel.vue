@@ -25,6 +25,7 @@
 				<MyKivaCard
 					v-if="isCustomCard(slide)"
 					class="kiva-card"
+					:category="slide.category"
 					:title="slide.title"
 					:show-cta-icon="true"
 					:primary-cta-text="slide.ctaText"

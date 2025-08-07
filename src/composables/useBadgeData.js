@@ -600,7 +600,7 @@ export default function useBadgeData() {
 			return {
 				category: c.id,
 				loansCount: c.totalProgressToAchievement ?? 0,
-				loans: c.matchingLoans?.loans?.values ?? [],
+				loans: [], // TODO: add loan purchase data when available from achievement service
 				target: CATEGORY_TARGETS[c.id] ?? '',
 			};
 		}).filter(c => c.loansCount > 0); // Only include categories with loans
