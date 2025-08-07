@@ -2,8 +2,7 @@
 	<div
 		:class="[
 			// eslint-disable-next-line max-len
-			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full',
-			backgroundSize,
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
 			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
 			{ 'single-image': hasSingleBorrowerImage }
 		]"
@@ -159,14 +158,6 @@ const TrophyIcon = defineAsyncComponent(() => import('#src/assets/images/my-kiva
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
 const props = defineProps({
-	/**
-	 * Background size class for the card.
-	 * This should be a string of Tailwind CSS classes.
-	 */
-	backgroundSize: {
-		type: String,
-		default: 'tw-bg-cover',
-	},
 	/**
 	 * Classes to apply to the content area of the card.
 	 * This should be a string of Tailwind CSS classes.

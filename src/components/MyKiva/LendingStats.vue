@@ -132,7 +132,6 @@
 			class="carousel"
 			user-in-homepage
 			in-lending-stats
-			background-size="tw-bg-contain"
 			:lender="lender"
 			:slides-number="3"
 			:slides="allRegionsLentSlides"
