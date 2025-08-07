@@ -585,11 +585,7 @@ export default {
 		showLoanDetails(payload, showNextSteps = false) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
-			if (showNextSteps) {
-				this.showNextSteps = true;
-			} else {
-				this.showNextSteps = false;
-			}
+			this.showNextSteps = showNextSteps;
 		}
 	},
 	async mounted() {
