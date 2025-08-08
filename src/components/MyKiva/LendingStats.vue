@@ -3,7 +3,10 @@
 		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
-		<p class="tw-text-base">
+		<p v-if="!props.loans.length" class="tw-text-base">
+			Recommended for you
+		</p>
+		<p v-else class="tw-text-base">
 			Next steps for you based on your lending history
 		</p>
 	</div>
