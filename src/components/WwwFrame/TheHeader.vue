@@ -760,26 +760,31 @@ export default {
 				this.teams = data?.my?.teams ?? {};
 			},
 		},
+		{
+			query: experimentAssignmentQuery,
+			preFetch: true,
+			variables() {
+				return {
+					id: NAV_UPDATE_EXP_KEY
+				};
+			},
+			result({ data }) {
+				if (data?.experiment) {
+					this.isNavUpdateExp = data.experiment.version === 'b';
+					trackExperimentVersion(
+						this.apollo,
+						this.$kvTrackEvent,
+						'event-tracking',
+						NAV_UPDATE_EXP_KEY,
+						'EXP-MP-1696-Aug2025'
+					);
+				}
+			}
+		}
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
-
-		const navExpData = this.apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: NAV_UPDATE_EXP_KEY }
-		});
-
-		if (navExpData?.experiment) {
-			this.isNavUpdateExp = navExpData.experiment.version === 'b';
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				NAV_UPDATE_EXP_KEY,
-				'EXP-MP-1696-Aug2025'
-			);
-		}
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
