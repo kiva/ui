@@ -762,29 +762,29 @@ export default {
 		},
 		{
 			query: experimentAssignmentQuery,
-			preFetch: true,
-			variables() {
-				return {
-					id: NAV_UPDATE_EXP_KEY
-				};
+			preFetch(_, client) {
+				return client.query({
+					query: experimentAssignmentQuery,
+					variables: {
+						id: NAV_UPDATE_EXP_KEY,
+					},
+				});
 			},
-			result({ data }) {
-				if (data?.experiment) {
-					this.isNavUpdateExp = data.experiment.version === 'b';
-					trackExperimentVersion(
-						this.apollo,
-						this.$kvTrackEvent,
-						'event-tracking',
-						NAV_UPDATE_EXP_KEY,
-						'EXP-MP-1696-Aug2025'
-					);
-				}
-			}
 		}
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
+
+		const navExperiment = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			NAV_UPDATE_EXP_KEY,
+			'EXP-MP-1696-Aug2025'
+		);
+
+		this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
