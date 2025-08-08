@@ -3,7 +3,10 @@
 		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
-		<p class="tw-text-base">
+		<p v-if="!hasLoans" class="tw-text-base">
+			Recommended for you
+		</p>
+		<p v-else class="tw-text-base">
 			Next steps for you based on your lending history
 		</p>
 	</div>
@@ -224,6 +227,7 @@ const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 const showTagIcon = computed(() => !!topCategory.value);
+const hasLoans = computed(() => props.loans.length > 0);
 
 const regionImages = {
 	Africa,
