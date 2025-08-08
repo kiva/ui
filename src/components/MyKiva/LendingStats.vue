@@ -1,12 +1,17 @@
 <template>
-	<div class="tw-mb-2">
+	<div v-if="!hasLoans" class="tw-mb-2">
+		<h3 class="tw-text-primary tw-mb-1">
+			Your impact starts here
+		</h3>
+		<p class="tw-text-base">
+			Recommended for you
+		</p>
+	</div>
+	<div v-else class="tw-mb-2">
 		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
-		<p v-if="!hasLoans" class="tw-text-base">
-			Recommended for you
-		</p>
-		<p v-else class="tw-text-base">
+		<p class="tw-text-base">
 			Next steps for you based on your lending history
 		</p>
 	</div>
