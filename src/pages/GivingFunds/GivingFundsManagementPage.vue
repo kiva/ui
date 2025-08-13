@@ -38,19 +38,18 @@
 										<!--  eslint-disable max-len -->
 										<div
 											v-if="fund?.goals?.values?.filter(goal => goal?.status === 'IN_PROGRESS')?.length"
+											class="
+												tw-flex tw-items-center tw-gap-1
+												tw-mb-2 tw-rounded tw-bg-gray-100
+												tw-px-1.5
+											"
 										>
+											<kv-pulsing-dot />
 											<span
-												class="
-													tw-bg-gray-100
-													tw-text-small
-													tw-font-medium
-													tw-pt-0.5 tw-pb-0 tw-px-1.5
-													tw-rounded
-													tw-inline-block
-													tw-mb-2 tw-mr-1
-												"
+												class="tw-text-small tw-font-medium"
+												style="height: 30px; line-height: 32px;"
 											>
-												• Active Fundraiser
+												Active Fundraiser
 											</span>
 										</div>
 										<!-- eslint-enable max-len -->
@@ -70,22 +69,61 @@
 									<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-right tw-gap-1.5">
 										<KvButton
 											v-if="!isMobile"
-											:href="`#`"
+											:href="`/gf-beta/${fund.id}?action=donate`"
 											target="_blank"
 											variant="secondary"
-											@click.prevent="handleDonateToFund(fund.id)"
 											v-kv-track-event="['giving-funds', 'click', 'Donate']"
 										>
 											Donate
 										</KvButton>
-										<KvButton
-											:href="`/gf-beta/${fund.id}`"
-											target="_blank"
-											variant="secondary"
-											v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
+										<kv-utility-menu
+											analytics-category="giving-funds"
+											menu-position="right-aligned"
+											button-radius-class="tw-rounded"
+											button-size="medium"
+											button-border-class="tw-border tw-border-primary"
 										>
-											•••
-										</KvButton>
+											<ul>
+												<li class="tw-border-b tw-border-gray-100">
+													<a
+														class="
+															utility-menu-link
+															tw-rounded-t
+														"
+														:href="`/gf-beta/${fund.id}`"
+														target="_blank"
+														v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
+													>
+														View giving fund
+													</a>
+												</li>
+												<li class="tw-border-b tw-border-gray-100">
+													<a
+														class="
+															utility-menu-link
+														"
+														:href="`/gf-beta/${fund.id}?action=edit`"
+														target="_blank"
+														v-kv-track-event="['giving-funds', 'click', 'Edit fund']"
+													>
+														Edit fund
+													</a>
+												</li>
+												<li class="tw-border-b tw-border-gray-100">
+													<a
+														class="
+															utility-menu-link
+															tw-rounded-b
+														"
+														:href="`/gf-beta/${fund.id}?action=share`"
+														target="_blank"
+														v-kv-track-event="['giving-funds', 'click', 'Share fund']"
+													>
+														Share fund
+													</a>
+												</li>
+											</ul>
+										</kv-utility-menu>
 									</div>
 								</div>
 
@@ -123,21 +161,19 @@
 
 								<KvButton
 									class="tw-w-full tw-mt-3"
-									href="#"
+									:href="`/gf-beta/${fund.id}?action=start-fundraiser`"
 									target="_blank"
 									variant="secondary"
-									v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
-									@click.prevent="startFundraiser(fund.id)"
+									v-kv-track-event="['giving-funds', 'click', 'Start a fundraiser', fund.id]"
 								>
 									+ Start a fundraiser and invite others to join
 								</KvButton>
 								<KvButton
 									v-if="isMobile"
 									class="tw-w-full tw-mt-2"
-									:href="`#`"
+									:href="`/gf-beta/${fund.id}?action=donate`"
 									target="_blank"
 									variant="secondary"
-									@click.prevent="handleDonateToFund(fund.id)"
 									v-kv-track-event="['giving-funds', 'click', 'Donate']"
 								>
 									Donate
@@ -175,6 +211,8 @@ import {
 	KvGrid,
 	KvLoadingPlaceholder,
 	KvPageContainer,
+	KvPulsingDot,
+	KvUtilityMenu,
 } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import logFormatter from '#src/util/logFormatter';
@@ -208,17 +246,15 @@ const createNewFund = () => {
 	logFormatter('Create a new giving fund', 'info');
 };
 
-const handleDonateToFund = fundId => {
-	// Handle the logic for donating to a fund
-	logFormatter(`Donate to fund with ID: ${fundId}`, 'info');
-};
-
-const startFundraiser = fundId => {
-	// Handle the logic for starting a fundraiser
-	logFormatter(`Start a fundraiser for fund with ID: ${fundId}`, 'info');
-};
-
 onMounted(() => {
 	fetchGivingFundData();
 });
 </script>
+
+<style lang="postcss" scoped>
+.utility-menu-link {
+	@apply tw-block tw-p-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
+	@apply tw-no-underline active:tw-no-underline;
+	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
+}
+</style>
