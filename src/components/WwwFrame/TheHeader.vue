@@ -760,26 +760,31 @@ export default {
 				this.teams = data?.my?.teams ?? {};
 			},
 		},
+		{
+			query: experimentAssignmentQuery,
+			preFetch(_, client) {
+				return client.query({
+					query: experimentAssignmentQuery,
+					variables: {
+						id: NAV_UPDATE_EXP_KEY,
+					},
+				});
+			},
+		}
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
-		const navExpData = this.apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: NAV_UPDATE_EXP_KEY }
-		});
+		const navExperiment = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			NAV_UPDATE_EXP_KEY,
+			'EXP-MP-1696-Aug2025'
+		);
 
-		if (navExpData?.experiment) {
-			this.isNavUpdateExp = navExpData.experiment.version === 'b';
-			trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				NAV_UPDATE_EXP_KEY,
-				'EXP-MP-1696-Aug2025'
-			);
-		}
+		this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
