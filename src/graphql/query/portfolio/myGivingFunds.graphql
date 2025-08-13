@@ -16,6 +16,7 @@ query MyGivingFunds {
             id
           }
         }
+		currentAmountDonated
         display {
           ctaTitle
           ctaDescription
@@ -55,6 +56,7 @@ query MyGivingFunds {
           id
           name
         }
+		totalParticipants
       }
     }
   }
