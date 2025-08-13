@@ -210,7 +210,7 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP && showBasedOnUserBalance.value) {
+	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
 });
