@@ -33,60 +33,46 @@
 							class="tw-mb-2"
 						>
 							<div class="tw-p-2">
-								<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between">
+								<div class="tw-flex tw-justify-between">
 									<div>
-										<h3 class="tw-mb-1">
-											{{ fund?.campaign?.category?.name }}
-										</h3>
 										<!--  eslint-disable max-len -->
 										<div
 											v-if="fund?.goals?.values?.filter(goal => goal?.status === 'IN_PROGRESS')?.length"
 										>
-											<h4
-												class="tw-bg-brand-200 tw-pt-1 tw-pb-0.5 tw-px-1.5 tw-rounded-full tw-inline-block tw-mb-2 tw-mr-1"
+											<span
+												class="
+													tw-bg-gray-100
+													tw-text-small
+													tw-font-medium
+													tw-pt-0.5 tw-pb-0 tw-px-1.5
+													tw-rounded
+													tw-inline-block
+													tw-mb-2 tw-mr-1
+												"
 											>
-												Actively fundraising
-											</h4>
-											<kv-text-link
-												:href="`/gf-beta/${fund.id}`"
-												target="_blank"
-												v-kv-track-event="['giving-funds', 'click', 'View active fundraiser']"
-											>
-												View
-											</kv-text-link>
+												• Active Fundraiser
+											</span>
 										</div>
 										<!-- eslint-enable max-len -->
+										<h2 class="tw-mb-1">
+											{{ fund?.campaign?.category?.name }}
+										</h2>
 										<!--  eslint-disable max-len -->
 										<p v-if="fund?.campaign?.lendingStats?.totalLivesTouched">
-											You have helped support {{ fund?.campaign?.lendingStats?.totalLivesTouched }} {{ fund?.campaign?.category?.name }} entrpeneurs!
+											This fund has helped {{ fund?.campaign?.lendingStats?.totalLivesTouched }} people to date
 										</p>
 										<!-- eslint-enable max-len -->
 										<p v-else>
 											{{ fund?.campaign?.category?.description }}
 										</p>
-
-										<div class="tw-flex tw-justify-left tw-gap-4 tw-mt-2 md:tw-self-end">
-											<div v-if="fund?.amountDonated">
-												<h3>{{ fund?.amountDonated }}</h3>
-												<p class="tw-text-small tw-text-gray-500">
-													Total fund value
-												</p>
-											</div>
-											<div
-												v-if="fund?.campaign?.lendingStats?.totalLivesTouched"
-											>
-												<h3>{{ fund?.campaign?.lendingStats?.totalLivesTouched }}</h3>
-												<p class="tw-text-small tw-text-gray-500">
-													People reached
-												</p>
-											</div>
-										</div>
 									</div>
 
 									<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-right tw-gap-1.5">
 										<KvButton
+											v-if="!isMobile"
 											:href="`#`"
 											target="_blank"
+											variant="secondary"
 											@click.prevent="handleDonateToFund(fund.id)"
 											v-kv-track-event="['giving-funds', 'click', 'Donate']"
 										>
@@ -98,10 +84,64 @@
 											variant="secondary"
 											v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
 										>
-											View and Edit
+											•••
 										</KvButton>
 									</div>
 								</div>
+
+								<div
+									v-if="fund?.currentAmountDonated > 0"
+									class="tw-flex tw-gap-3 tw-mt-3 tw-flex-wrap"
+								>
+									<div v-if="fund?.currentAmountDonated">
+										<h2>{{ numeral(fund?.currentAmountDonated).format('$0,0') }}</h2>
+										<p class="tw-text-small tw-text-gray-500">
+											Your donations
+										</p>
+									</div>
+									<div v-if="fund?.currentAmountDonated">
+										<h2>{{ numeral(fund?.currentAmountDonated).format('$0,0') }}</h2>
+										<p class="tw-text-small tw-text-gray-500">
+											Total donations
+										</p>
+									</div>
+									<div v-if="fund?.campaign?.lendingStats?.totalLent">
+										<h2>
+											{{ numeral(fund?.campaign?.lendingStats?.totalLent).format('$0,0') }}
+										</h2>
+										<p class="tw-text-small tw-text-gray-500">
+											Total fund impact
+										</p>
+									</div>
+									<div v-if="fund?.totalParticipants">
+										<h2>{{ fund?.totalParticipants }}</h2>
+										<p class="tw-text-small tw-text-gray-500">
+											Participants
+										</p>
+									</div>
+								</div>
+
+								<KvButton
+									class="tw-w-full tw-mt-3"
+									href="#"
+									target="_blank"
+									variant="secondary"
+									v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
+									@click.prevent="startFundraiser(fund.id)"
+								>
+									+ Start a fundraiser and invite others to join
+								</KvButton>
+								<KvButton
+									v-if="isMobile"
+									class="tw-w-full tw-mt-2"
+									:href="`#`"
+									target="_blank"
+									variant="secondary"
+									@click.prevent="handleDonateToFund(fund.id)"
+									v-kv-track-event="['giving-funds', 'click', 'Donate']"
+								>
+									Donate
+								</KvButton>
 							</div>
 						</kv-card-frame>
 					</div>
@@ -135,12 +175,14 @@ import {
 	KvGrid,
 	KvLoadingPlaceholder,
 	KvPageContainer,
-	KvTextLink,
 } from '@kiva/kv-components';
+import useIsMobile from '#src/composables/useIsMobile';
 import logFormatter from '#src/util/logFormatter';
+import numeral from 'numeral';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 
 const apollo = inject('apollo');
+const { isMobile } = useIsMobile();
 
 const loading = ref(true);
 const givingFundsInfo = ref({});
@@ -169,6 +211,11 @@ const createNewFund = () => {
 const handleDonateToFund = fundId => {
 	// Handle the logic for donating to a fund
 	logFormatter(`Donate to fund with ID: ${fundId}`, 'info');
+};
+
+const startFundraiser = fundId => {
+	// Handle the logic for starting a fundraiser
+	logFormatter(`Start a fundraiser for fund with ID: ${fundId}`, 'info');
 };
 
 onMounted(() => {
