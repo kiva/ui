@@ -8,6 +8,9 @@ query basketItems($basketId: String) {
 			items {
 				values {
 					id
+					... on LoanReservation {
+						price
+					}
 				}
 			}
 		}
