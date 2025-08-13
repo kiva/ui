@@ -1,3 +1,22 @@
+## [3.27.0-rc.1](https://github.com/kiva/ui/compare/v3.26.0...v3.27.0-rc.1) (2025-08-13)
+
+### 🎉 New Features
+
+* prefetch exp query using client ([7064aa9](https://github.com/kiva/ui/commit/7064aa9cbe3fc8a70ae113dc383887ca480eef2f))
+
+### 🐛 Bugfixes
+
+* moving nav header exp query to prefetch ([ea5fd79](https://github.com/kiva/ui/commit/ea5fd79c93685fc3d37607733a0961c2bc7d7a89))
+* mp-1921 update empty copy ([63820a7](https://github.com/kiva/ui/commit/63820a7cdd10e06f372ce1d1730d24934db0edd2))
+* mp-1921 update empty copy ([b6fe6bf](https://github.com/kiva/ui/commit/b6fe6bf9dace1752e0f8f432ed9ca2a2afc1a26c))
+* mp-1921 update empty copy ([a8e9395](https://github.com/kiva/ui/commit/a8e9395b6a3b9b3eeba5624a20cfd1a48c8659d8))
+* show next steps for mykiva borrowers carousel ([#6204](https://github.com/kiva/ui/issues/6204)) ([d52227f](https://github.com/kiva/ui/commit/d52227f529bd6f77420dcace32986d3c52e9dbb7))
+* update gf mgmt dash with new data fields, style updates and mobile support ([799e25f](https://github.com/kiva/ui/commit/799e25f250a58fb380e836693b25dd367e1a33cb))
+
+### 🧹 Chores
+
+* update kv-components ([dfb380b](https://github.com/kiva/ui/commit/dfb380bfb0bc80fadef1bd8a5a76d83800be8b34))
+
 ## [3.26.0](https://github.com/kiva/ui/compare/v3.25.0...v3.26.0) (2025-08-07)
 
 ### 🎉 New Features
