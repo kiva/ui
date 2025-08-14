@@ -15,22 +15,34 @@
 			:bg-variant="'tertiary'"
 		/>
 		<figcaption class="tw-flex">
-			<div v-if="loanStatus === 'funded' || loanStatus === 'raised'">
-				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
-					This loan is fully funded!
-				</p>
-				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block">
-						100% funded
+			<div
+				v-if="loanStatus === 'funded' || loanStatus === 'raised'"
+				class="tw-w-full"
+			>
+				<div
+					v-if="loading"
+					class="tw-flex tw-justify-between"
+				>
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+				</div>
+				<div v-else>
+					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+						This loan is fully funded!
 					</p>
-					<p class="tw-text-h4 tw-text-action tw-block">
-						<router-link
-							:to="`/lend-classic/${$route.params.id}?minimal=false`"
-							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
-						>
-							View the full borrower profile
-						</router-link>
-					</p>
+					<div class="md:tw-flex tw-gap-2">
+						<p class="tw-text-h4 tw-text-secondary tw-block">
+							100% funded
+						</p>
+						<p class="tw-text-h4 tw-text-action tw-block">
+							<router-link
+								:to="`/lend-classic/${routeId}?minimal=false`"
+								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+							>
+								View the full borrower profile
+							</router-link>
+						</p>
+					</div>
 				</div>
 			</div>
 			<div v-else-if="loanStatus === 'expired'">
@@ -43,7 +55,7 @@
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
-							:to="`/lend-classic/${$route.params.id}?minimal=false`"
+							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
 							View the full borrower profile
@@ -61,7 +73,7 @@
 					</p>
 					<p class="tw-text-h4 tw-text-action tw-block">
 						<router-link
-							:to="`/lend-classic/${$route.params.id}?minimal=false`"
+							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
 							View the full borrower profile
@@ -165,6 +177,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		loanId: {
+			type: Number,
+			default: 0
+		}
 	},
 	computed: {
 		pfpProgressPercent() {
@@ -183,6 +199,9 @@ export default {
 
 			return rounded;
 		},
+		routeId() {
+			return this.loanId ? this.loanId : this.$route.params.id;
+		}
 	},
 };
 </script>
