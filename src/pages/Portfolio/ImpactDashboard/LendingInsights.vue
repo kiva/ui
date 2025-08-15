@@ -104,6 +104,12 @@ export default {
 		KvMaterialIcon
 		// LoanCountOverTimeFigure,
 	},
+	props: {
+		isPercentileByYearExp: {
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
 			loading: true,
