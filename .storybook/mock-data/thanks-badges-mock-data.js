@@ -40,17 +40,6 @@ export const mockUserAchievementProgress = {
 			"id": MOCK_TIERED_BADGE_ID,
 			"description": "Take action and address financial inequity in communities throughout the United States that have been historically and systemically marginalized.",
 			"totalProgressToAchievement": 2,
-			"matchingLoans": {
-				"id": "e70330c2-7da7-37b5-a290-51a12ccdda27",
-				"filters": [
-					{
-						"countryIsoCode": {
-							"eq": "US"
-						}
-					}
-				],
-				"__typename": "FundraisingLoanSavedSearchPageOutput"
-			},
 			"tiers": [
 				{
 					"target": 2,

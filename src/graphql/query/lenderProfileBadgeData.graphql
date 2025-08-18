@@ -21,10 +21,6 @@ query lenderProfileBadgeData(
       id
       description
       totalProgressToAchievement
-      matchingLoans {
-        id
-        filters
-      }
       tiers {
         target
         tierStatement

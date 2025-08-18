@@ -123,7 +123,6 @@
 				title-color="tw-text-action-highlight"
 				:bg-image="StatsCardBg"
 				card-content-classes="tw-pb-1 tw-px-1"
-				:category="topCategory?.category"
 				:loans="topCategoryLoansForCardCarousel"
 				:is-full-width-primary-cta="true"
 				:is-title-font-sans="true"
@@ -354,7 +353,6 @@ const allRegionsLentSlides = computed(() => {
 			showTagIcon: showTagIcon.value,
 			primaryCta: goToTopCategory,
 			isCustomCard: true,
-			category: topCategory.value?.category,
 		}];
 });
 
