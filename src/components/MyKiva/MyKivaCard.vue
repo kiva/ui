@@ -13,8 +13,8 @@
 			class="tw-py-1 tw-px-1 md:tw-pt-2 md:tw-px-2 tw-grow tw-min-h-0"
 		>
 			<img
-				v-if="loans"
-				:src="fallbackImage"
+				v-if="loans && !loans.length"
+				:src="NoLoansImg"
 				class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
 				style="max-height: 300px;"
 			>
@@ -139,19 +139,6 @@ import {
 } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
-import FallbackBasicNeedsImg from '#src/assets/images/my-kiva/fallback-category-images/basic-needs.jpg';
-import FallbackClimateActionImg from '#src/assets/images/my-kiva/fallback-category-images/climate-action.jpg';
-import FallbackRefugeeEqualityImg from '#src/assets/images/my-kiva/fallback-category-images/refugee-equality.jpg';
-// eslint-disable-next-line max-len
-import FallbackUsEconomicEqualityImg from '#src/assets/images/my-kiva/fallback-category-images/us-economic-equality.jpg';
-import FallbackWomensEqualityImg from '#src/assets/images/my-kiva/fallback-category-images/womens-equality.jpg';
-import {
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY,
-} from '#src/composables/useBadgeData';
 
 const TrophyIcon = defineAsyncComponent(() => import('#src/assets/images/my-kiva/trophy.svg'));
 
@@ -165,13 +152,6 @@ const props = defineProps({
 	cardContentClasses: {
 		type: String,
 		default: 'tw-pb-1.5 tw-px-1.5 md:tw-pb-2 md:tw-px-2',
-	},
-	/**
-	 * The category of the card, used to determine fallback image if no loans are provided.
-	 */
-	category: {
-		type: String,
-		default: undefined,
 	},
 	/**
 	 * Background image URL for the whole card.
@@ -311,23 +291,6 @@ const titleClass = computed(() => {
 });
 
 const hasSingleBorrowerImage = computed(() => props?.loans && props.loans.length <= 1);
-
-const fallbackImage = computed(() => {
-	switch (props.category) {
-		case ID_BASIC_NEEDS:
-			return FallbackBasicNeedsImg;
-		case ID_CLIMATE_ACTION:
-			return FallbackClimateActionImg;
-		case ID_REFUGEE_EQUALITY:
-			return FallbackRefugeeEqualityImg;
-		case ID_US_ECONOMIC_EQUALITY:
-			return FallbackUsEconomicEqualityImg;
-		case ID_WOMENS_EQUALITY:
-			return FallbackWomensEqualityImg;
-		default:
-			return NoLoansImg;
-	}
-});
 </script>
 
 <style lang="postcss" scoped>

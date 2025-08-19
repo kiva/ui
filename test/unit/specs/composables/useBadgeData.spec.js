@@ -627,218 +627,6 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getFilteredLoansByJourney', () => {
-		it('should return expected filtered loans for us-economic-equality', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					geocode: {
-						country: {
-							isoCode: 'US'
-						}
-					}
-				},
-				{
-					id: 2,
-					geocode: {
-						country: {
-							isoCode: 'PR'
-						}
-					}
-				},
-				{
-					id: 3,
-					geocode: {
-						country: {
-							isoCode: 'PE'
-						}
-					}
-				},
-			];
-			expect(getFilteredLoansByJourney({ id: ID_US_ECONOMIC_EQUALITY }, loans)).toEqual([
-				{
-					id: 1,
-					geocode: {
-						country: {
-							isoCode: 'US'
-						}
-					}
-				},
-				{
-					id: 2,
-					geocode: {
-						country: {
-							isoCode: 'PR'
-						}
-					}
-				}
-			]);
-		});
-
-		it('should return expected filtered loans for climate-action', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					tags: [
-						'Test'
-					]
-				},
-				{
-					id: 2,
-					tags: [
-						'#Eco-friendly'
-					]
-				},
-				{
-					id: 3,
-					tags: [
-						'Agriculture'
-					]
-				},
-				{
-					id: 3,
-					themes: [
-						'Clean Energy'
-					]
-				}
-			];
-			expect(getFilteredLoansByJourney({ id: ID_CLIMATE_ACTION }, loans)).toEqual([
-				{
-					id: 2,
-					tags: [
-						'#Eco-friendly'
-					]
-				},
-				{
-					id: 3,
-					themes: [
-						'Clean Energy'
-					]
-				}
-			]);
-		});
-
-		it('should return expected filtered loans for womens-equality', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					gender: 'female'
-				}, {
-					id: 2,
-					gender: 'male'
-				}
-			];
-
-			expect(getFilteredLoansByJourney({ id: ID_WOMENS_EQUALITY }, loans)).toEqual([
-				{
-					id: 1,
-					gender: 'female'
-				}
-			]);
-		});
-
-		it('should return expected filtered loans for refugee-equality', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					themes: [
-						'Refugees/Displaced'
-					]
-				},
-				{
-					id: 2,
-					themes: [
-						'Education'
-					]
-				}
-			];
-
-			expect(getFilteredLoansByJourney({ id: ID_REFUGEE_EQUALITY }, loans)).toEqual([
-				{
-					id: 1,
-					themes: [
-						'Refugees/Displaced'
-					]
-				}
-			]);
-		});
-
-		it('should return expected filtered loans for basic-needs', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					sector: {
-						id: 6,
-					}
-				},
-				{
-					id: 2,
-					sector: {
-						id: 7,
-					}
-				},
-				{
-					id: 3,
-					themes: [
-						'Water and Sanitation'
-					]
-				}
-			];
-
-			expect(getFilteredLoansByJourney({ id: ID_BASIC_NEEDS }, loans)).toEqual([
-				{
-					id: 1,
-					sector: {
-						id: 6,
-					}
-				},
-				{
-					id: 3,
-					themes: [
-						'Water and Sanitation'
-					]
-				}
-			]);
-		});
-
-		it('should return an empty array when no loans match a filter', () => {
-			const { getFilteredLoansByJourney } = useBadgeData();
-
-			const loans = [
-				{
-					id: 1,
-					gender: 'male',
-					geocode: {
-						country: {
-							isoCode: 'PE'
-						}
-					},
-					sector: {
-						id: 2
-					},
-					themes: [
-						'Education'
-					],
-					tags: [
-						'#Agriculture'
-					]
-				},
-			];
-
-			expect(getFilteredLoansByJourney({ id: ID_WOMENS_EQUALITY }, loans)).toEqual([]);
-		});
-	});
-
 	describe('getJourneysByLoan', () => {
 		const { getJourneysByLoan } = useBadgeData();
 
@@ -960,54 +748,42 @@ describe('useBadgeData.js', () => {
 			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
 		});
 
-		it('should return the category with the highest loan count', () => {
+		it('should return the category with the highest loan count and extract loans from loanPurchases', () => {
 			const tieredLendingAchievements = [
 				{
 					id: ID_WOMENS_EQUALITY,
 					totalProgressToAchievement: 5,
-					matchingLoans: {
-						loans: {
-							values: [
-								{ id: 1, name: 'Loan 1' },
-								{ id: 2, name: 'Loan 2' },
-								{ id: 3, name: 'Loan 3' },
-								{ id: 4, name: 'Loan 4' },
-								{ id: 5, name: 'Loan 5' }
-							]
-						}
-					}
+					loanPurchases: [
+						{ loan: { id: 1, name: 'Loan 1' }, purchaseTime: '2024-01-01' },
+						{ loan: { id: 2, name: 'Loan 2' }, purchaseTime: '2024-01-02' },
+						{ loan: { id: 3, name: 'Loan 3' }, purchaseTime: '2024-01-03' }
+					]
 				},
 				{
 					id: ID_CLIMATE_ACTION,
 					totalProgressToAchievement: 3,
-					matchingLoans: {
-						loans: {
-							values: [
-								{ id: 6, name: 'Loan 6' },
-								{ id: 7, name: 'Loan 7' },
-								{ id: 8, name: 'Loan 8' }
-							]
-						}
-					}
+					loanPurchases: [
+						{ loan: { id: 6, name: 'Loan 6' }, purchaseTime: '2024-01-06' },
+						{ loan: { id: 7, name: 'Loan 7' }, purchaseTime: '2024-01-07' }
+					]
 				},
 				{
 					id: ID_BASIC_NEEDS,
 					totalProgressToAchievement: 2,
-					matchingLoans: {
-						loans: {
-							values: [
-								{ id: 9, name: 'Loan 9' },
-								{ id: 10, name: 'Loan 10' }
-							]
-						}
-					}
+					loanPurchases: [
+						{ loan: { id: 9, name: 'Loan 9' }, purchaseTime: '2024-01-09' }
+					]
 				}
 			];
 
 			const expected = {
 				category: ID_WOMENS_EQUALITY,
 				loansCount: 5,
-				loans: [],
+				loans: [
+					{ id: 1, name: 'Loan 1' },
+					{ id: 2, name: 'Loan 2' },
+					{ id: 3, name: 'Loan 3' }
+				],
 				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
 			};
 
@@ -1019,18 +795,14 @@ describe('useBadgeData.js', () => {
 				{
 					id: ID_WOMENS_EQUALITY,
 					totalProgressToAchievement: 0,
-					matchingLoans: {
-						loans: {
-							values: []
-						}
-					}
+					loanPurchases: []
 				}
 			];
 
 			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
 		});
 
-		it('should return null when achievements with missing matchingLoans have no loans', () => {
+		it('should return null when achievements with missing loanPurchases have no loans', () => {
 			const tieredLendingAchievements = [
 				{
 					id: ID_CLIMATE_ACTION,
@@ -1041,7 +813,7 @@ describe('useBadgeData.js', () => {
 			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(null);
 		});
 
-		it('should return the category when achievements with missing matchingLoans have loans', () => {
+		it('should return the category when achievements with missing loanPurchases have loans', () => {
 			const tieredLendingAchievements = [
 				{
 					id: ID_CLIMATE_ACTION,
@@ -1064,31 +836,52 @@ describe('useBadgeData.js', () => {
 				{
 					id: ID_WOMENS_EQUALITY,
 					totalProgressToAchievement: 0,
-					matchingLoans: {
-						loans: {
-							values: []
-						}
-					}
+					loanPurchases: []
 				},
 				{
 					id: ID_CLIMATE_ACTION,
 					totalProgressToAchievement: 2,
-					matchingLoans: {
-						loans: {
-							values: [
-								{ id: 1, name: 'Loan 1' },
-								{ id: 2, name: 'Loan 2' }
-							]
-						}
-					}
+					loanPurchases: [
+						{ loan: { id: 1, name: 'Loan 1' }, purchaseTime: '2024-01-01' },
+						{ loan: { id: 2, name: 'Loan 2' }, purchaseTime: '2024-01-02' }
+					]
 				}
 			];
 
 			const expected = {
 				category: ID_CLIMATE_ACTION,
 				loansCount: 2,
-				loans: [],
+				loans: [
+					{ id: 1, name: 'Loan 1' },
+					{ id: 2, name: 'Loan 2' }
+				],
 				target: CATEGORY_TARGETS[ID_CLIMATE_ACTION]
+			};
+
+			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
+		});
+
+		it('should handle null loan objects in loanPurchases', () => {
+			const tieredLendingAchievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 2,
+					loanPurchases: [
+						{ loan: { id: 1, name: 'Loan 1' }, purchaseTime: '2024-01-01' },
+						{ loan: null, purchaseTime: '2024-01-02' },
+						{ loan: { id: 3, name: 'Loan 3' }, purchaseTime: '2024-01-03' }
+					]
+				}
+			];
+
+			const expected = {
+				category: ID_WOMENS_EQUALITY,
+				loansCount: 2,
+				loans: [
+					{ id: 1, name: 'Loan 1' },
+					{ id: 3, name: 'Loan 3' }
+				],
+				target: CATEGORY_TARGETS[ID_WOMENS_EQUALITY]
 			};
 
 			expect(getTopCategoryWithLoans(tieredLendingAchievements)).toEqual(expected);
