@@ -4,20 +4,21 @@
 			<SideSheetHeader />
 			<SideSheetLoanTags />
 			<LoanProgress
-				v-if="!showNextSteps"
 				:loading="loading"
-				:loan-status="inPfp ? 'pfp' : 'fundraising'"
+				:loan-status="loanStatus"
 				:money-left="unreservedAmount"
 				:number-of-lenders="numLenders"
 				:pfp-min-lenders="pfpMinLenders"
 				:progress-percent="fundraisingPercent"
 				:time-left="timeLeft"
+				:loan-id="loanId"
 				class="tw-mt-2 tw-mb-3"
+				:class="{ '!tw-mb-1.5': showNextSteps }"
 				data-testid="bp-summary-progress"
 			/>
 			<LoanNextSteps
 				v-if="!loading && showNextSteps"
-				class="tw-py-2"
+				class="tw-py-2 tw-mb-1"
 				:loan-id="loanId"
 				:weeks-to-repay="weeksToRepay"
 				:current-step="currentStep"
@@ -182,6 +183,11 @@ export default {
 			return `${minDate} - ${maxDate} weeks`;
 		});
 
+		const loanStatus = computed(() => {
+			if (inPfp.value) return 'pfp';
+			return !isFundraising.value ? 'funded' : 'fundraising';
+		});
+
 		onMounted(() => {
 			try {
 				borrowerProfile.loadBPData(props.loanId);
@@ -213,6 +219,7 @@ export default {
 			unreservedAmount,
 			userBalance,
 			weeksToRepay,
+			loanStatus,
 		};
 	}
 };

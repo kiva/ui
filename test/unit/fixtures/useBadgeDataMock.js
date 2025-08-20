@@ -9029,9 +9029,6 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'us-economic-equality',
 			milestoneProgress: undefined,
-			matchingLoans: {
-				filters: [],
-			},
 			totalProgressToAchievement: 2,
 			tiers: [
 				{
@@ -9175,9 +9172,6 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'climate-action',
 			totalProgressToAchievement: 1,
-			matchingLoans: {
-				filters: [],
-			},
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9319,9 +9313,6 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'womens-equality',
 			totalProgressToAchievement: 0,
-			matchingLoans: {
-				filters: [],
-			},
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9462,9 +9453,6 @@ export const combinedData = [
 			__typename: 'TieredLendingAchievement',
 			id: 'refugee-equality',
 			totalProgressToAchievement: 0,
-			matchingLoans: {
-				filters: [],
-			},
 			tiers: [
 				{
 					__typename: 'Tier',
@@ -9605,9 +9593,6 @@ export const combinedData = [
 		achievementData: {
 			__typename: 'TieredLendingAchievement',
 			id: 'basic-needs',
-			matchingLoans: {
-				filters: [],
-			},
 			totalProgressToAchievement: 0,
 			tiers: [
 				{

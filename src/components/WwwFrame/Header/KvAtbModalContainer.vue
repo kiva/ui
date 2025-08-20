@@ -75,13 +75,13 @@ const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
 const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
+const basketTotal = ref(0);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
 });
 
 const isGuest = computed(() => !userData.value?.my);
-const hasUserBalance = computed(() => Boolean(Math.floor(userData.value?.my?.userAccount?.balance)));
 
 const resetModal = () => {
 	showModalContent.value = false;
@@ -116,6 +116,9 @@ const fetchBasketData = async () => {
 		},
 	}).then(({ data }) => {
 		basketData.value = data?.shop?.basket?.items?.values ?? [];
+		basketTotal.value = basketData.value.reduce((total, item) => {
+			return total + (parseFloat(item.price) || 0);
+		}, 0);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB Basket Data');
 	});
@@ -124,6 +127,11 @@ const fetchBasketData = async () => {
 const loansIdsInBasket = computed(() => {
 	// eslint-disable-next-line no-underscore-dangle
 	return basketData.value.filter(item => item.__typename === 'LoanReservation').map(item => item.id);
+});
+
+const showBasedOnUserBalance = computed(() => {
+	const userBalance = Math.floor(userData.value?.my?.userAccount?.balance ?? 0);
+	return userBalance - basketTotal.value < 25;
 });
 
 const isFirstLoan = computed(() => {
@@ -174,7 +182,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
 			modalVisible.value = true;
-		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && !hasUserBalance.value) {
+		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && showBasedOnUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
 			modalVisible.value = true;
 		}
@@ -202,7 +210,7 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP && !hasUserBalance.value) {
+	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
 });

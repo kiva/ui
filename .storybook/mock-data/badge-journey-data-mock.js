@@ -57,7 +57,6 @@ export const badgeWomensEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "womens-equality",
 		"totalProgressToAchievement": 0,
-		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -172,7 +171,6 @@ export const badgeUsEconomicEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "us-economic-equality",
 		"totalProgressToAchievement": 0,
-		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -288,7 +286,6 @@ export const badgeClimateAction = {
 		"__typename": "TieredLendingAchievement",
 		"id": "climate-action",
 		"totalProgressToAchievement": 0,
-		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -403,7 +400,6 @@ export const badgeRefugeeEquality = {
 		"__typename": "TieredLendingAchievement",
 		"id": "refugee-equality",
 		"totalProgressToAchievement": 0,
-		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",
@@ -518,7 +514,6 @@ export const badgeBasicNeeds = {
 		"__typename": "TieredLendingAchievement",
 		"id": "basic-needs",
 		"totalProgressToAchievement": 0,
-		"matchingLoans": { "filters": {} },
 		"tiers": [
 			{
 				"__typename": "Tier",

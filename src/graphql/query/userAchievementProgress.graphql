@@ -16,9 +16,16 @@ query UserAchievementProgress($publicId: String) {
       id
 	  description
       totalProgressToAchievement
-      matchingLoans {
-        id
-        filters
+	  loanPurchases (limit: 3) {
+        loan {
+          id
+		  name
+          image {
+			id
+            hash
+			url
+          }
+        }
       }
       tiers {
         target

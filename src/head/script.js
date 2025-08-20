@@ -2,9 +2,16 @@ export default (config, globalOneTrustEvent) => {
 	// check for opt out of 3rd party scripts + cookies
 	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 	let optout = false;
+	let piiOptout = false;
+
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-		if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
-			optout = true;
+		if (cookies[i].includes('kvgdpr')) {
+			if (cookies[i].includes('opted_out=true')) {
+				optout = true;
+			}
+			if (cookies[i].includes('pii_opted_out=true')) {
+				piiOptout = true;
+			}
 		}
 	}
 	// scaffold global dataLayer
@@ -118,9 +125,6 @@ export default (config, globalOneTrustEvent) => {
 					// reactivate optimizely events
 					OneTrust.InsertHtml('', 'head', activateOptimizely, null, 'C0002');
 				}
-				if (config.enableGA && !optout) {
-					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0002');
-				}
 				if (config.enableSnowplow) {
 					OneTrust.InsertHtml('', 'head', insertSnowplow, null, 'C0002');
 				}
@@ -145,6 +149,9 @@ export default (config, globalOneTrustEvent) => {
 			* */
 
 			if (config.enableAnalytics) {
+				if (config.enableGA && !optout && !piiOptout) {
+					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0004');
+				}
 				if (config.enableGTM && !optout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
 				}
@@ -174,7 +181,7 @@ export default (config, globalOneTrustEvent) => {
 				// eslint-disable-next-line dot-notation
 				window['optimizely'].push({ type: 'sendEvents' });
 			}
-			if (config.enableGA && !optout) {
+			if (config.enableGA && !optout && !piiOptout) {
 				insertGoogleAnalytics();
 			}
 			if (config.enableSnowplow) {
