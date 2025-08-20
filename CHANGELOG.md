@@ -1,3 +1,9 @@
+## [3.28.1-rc.1](https://github.com/kiva/ui/compare/v3.28.0...v3.28.1-rc.1) (2025-08-20)
+
+### 🐛 Bugfixes
+
+* more tweaks to statuses shown in borrower carousel ([e8c7ae5](https://github.com/kiva/ui/commit/e8c7ae58f536f560133b02afb358fe7c8d50a07c))
+
 ## [3.28.0](https://github.com/kiva/ui/compare/v3.27.0...v3.28.0) (2025-08-20)
 
 ### 🎉 New Features
