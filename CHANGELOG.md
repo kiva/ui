@@ -1,3 +1,18 @@
+## [3.28.0-rc.1](https://github.com/kiva/ui/compare/v3.27.0...v3.28.0-rc.1) (2025-08-20)
+
+### 🎉 New Features
+
+* [MP-1916] - using new `pii_opted_out` flag for insert GA script and move to category 'C0004' ([4d7c73c](https://github.com/kiva/ui/commit/4d7c73cb856ce224a263b24919d969c43272cc53))
+* portfolio percentile by year experiment setup ([#6216](https://github.com/kiva/ui/issues/6216)) ([9307d50](https://github.com/kiva/ui/commit/9307d50892f6f4d67d358bff32bf06e638075044))
+* progress bar added to bp side sheet alongside next steps ([#6215](https://github.com/kiva/ui/issues/6215)) ([14a6c25](https://github.com/kiva/ui/commit/14a6c25971401becfaeaee209acde687d6e8fc44))
+
+### 🐛 Bugfixes
+
+* atb modal showed based on user balance and basket total ([#6213](https://github.com/kiva/ui/issues/6213)) ([db653bd](https://github.com/kiva/ui/commit/db653bdfc4ab6cb3268d4979aad2a42acd6634f5))
+* integrate new utility menu, pulsing do and update links ([af6487a](https://github.com/kiva/ui/commit/af6487adb0bca96e604f6b30858b8c23d74eb5b0))
+* resolve issue with incorrect loan status in borrower carousel ([2448fec](https://github.com/kiva/ui/commit/2448fec33a799557a2103252983ee7a7c8a3d5ad))
+* use loan purchases for top category in lending stats and badge journey modal ([4216a25](https://github.com/kiva/ui/commit/4216a25d1df2b24f697bac6084e15501e7505ff0))
+
 ## [3.27.0](https://github.com/kiva/ui/compare/v3.26.0...v3.27.0) (2025-08-13)
 
 ### 🎉 New Features
