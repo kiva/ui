@@ -88,7 +88,7 @@ const fetchCategories = () => {
 		});
 		categories.value = categories.value.sort((a, b) => a.name.localeCompare(b.name));
 	}).catch(error => {
-		logFormatter('MyKiva LendMenuQuery', error);
+		logFormatter(error, 'MyKiva LendMenuQuery');
 	});
 };
 
@@ -125,7 +125,7 @@ const fetchCountries = () => {
 			};
 		});
 	}).catch(error => {
-		logFormatter('MyKiva countryListQuery', error);
+		logFormatter(error, 'MyKiva CountryListQuery');
 	});
 };
 
