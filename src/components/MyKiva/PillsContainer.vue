@@ -4,7 +4,7 @@
 			v-for="(item, index) in items"
 			:key="index"
 			:custom-message="item.label"
-			class="tw-bg-gray-100 tw-px-3 tw-py-1.5 tw-font-medium tw-cursor-pointer"
+			class="tw-bg-gray-100 tw-px-3 tw-py-1.5 tw-font-medium tw-cursor-pointer pill"
 			@click="emit('pill-clicked', item)"
 		/>
 	</div>
@@ -24,10 +24,6 @@ defineProps({
 </script>
 
 <style lang="postcss" scoped>
-.pill {
-	border-radius: 16px;
-}
-
 .pill :deep(p) {
 	@apply tw-text-nowrap;
 }
