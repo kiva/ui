@@ -13,6 +13,7 @@
 			:is-borrower="isBorrower"
 			:is-trustee="isTrustee"
 			:user-id="userId"
+			:is-mobile="isMobile"
 			@load-lend-menu-data="loadMenu"
 		/>
 		<nav
@@ -646,6 +647,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
+			throttledDetermineIfMobile: null,
 		};
 	},
 	emits: ['show-basket'],
@@ -810,20 +812,20 @@ export default {
 			hasLentBefore,
 			hasDepositBefore,
 		});
-		window.addEventListener('resize', this.determineIfMobile());
 
-		if (this.$refs?.newExpHeader) {
-			this.$refs?.newExpHeader?.getSuggestions?.(this.apollo);
-		}
+		this.throttledDetermineIfMobile = _throttle(() => {
+			this.determineIfMobile();
+		}, 200);
+
+		this.determineIfMobile();
+		window.addEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	beforeUnmount() {
-		window.removeEventListener('resize', this.determineIfMobile());
+		window.removeEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	methods: {
 		determineIfMobile() {
-			return _throttle(() => {
-				this.isMobile = document.documentElement.clientWidth < 735;
-			}, 200);
+			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;
