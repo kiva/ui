@@ -5,11 +5,13 @@ export default (config, globalOneTrustEvent) => {
 	let piiOptout = false;
 
 	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-		if (cookies[i].includes('kvgdpr')) {
-			if (cookies[i].includes('opted_out=true')) {
+		const cookie = cookies[i].trim();
+		if (cookie.startsWith('kvgdpr=')) {
+			const kvCookie = cookie.substring('kvgdpr='.length);
+			if (/(\b|&)opted_out=true(\b|&)/.test(kvCookie)) {
 				optout = true;
 			}
-			if (cookies[i].includes('pii_opted_out=true')) {
+			if (/(\b|&)pii_opted_out=true(\b|&)/.test(kvCookie)) {
 				piiOptout = true;
 			}
 		}
