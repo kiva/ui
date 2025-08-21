@@ -828,7 +828,7 @@ export default {
 	},
 	methods: {
 		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 734;
+			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;
