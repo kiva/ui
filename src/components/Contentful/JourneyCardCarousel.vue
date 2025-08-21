@@ -40,7 +40,6 @@
 				<MyKivaCard
 					v-else
 					class="tw-w-full tw-h-full"
-					:background-size="backgroundSize"
 					:bg-image="backgroundImg(slide)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
@@ -101,10 +100,6 @@ const {
 const emit = defineEmits(['update-journey']);
 
 const props = defineProps({
-	backgroundSize: {
-		type: String,
-		default: 'tw-bg-cover',
-	},
 	userInfo: {
 		type: Object,
 		default: () => ({}),

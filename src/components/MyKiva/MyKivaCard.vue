@@ -2,8 +2,7 @@
 	<div
 		:class="[
 			// eslint-disable-next-line max-len
-			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full',
-			backgroundSize,
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
 			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
 			{ 'single-image': hasSingleBorrowerImage }
 		]"
@@ -16,7 +15,8 @@
 			<img
 				v-if="loans && !loans.length"
 				:src="NoLoansImg"
-				class="tw-rounded tw-w-full tw-aspect-video tw-object-cover tw-object-top tw-h-full"
+				class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
+				style="max-height: 300px;"
 			>
 			<KvCarousel
 				v-else
@@ -130,9 +130,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import TrophyIcon from '#src/assets/images/my-kiva/trophy.svg';
-import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+import { computed, defineAsyncComponent } from 'vue';
 import {
 	KvButton,
 	KvMaterialIcon,
@@ -140,18 +138,13 @@ import {
 	KvCarousel,
 } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
+import NoLoansImg from '#src/assets/images/my-kiva/no-loans-image.jpg';
+
+const TrophyIcon = defineAsyncComponent(() => import('#src/assets/images/my-kiva/trophy.svg'));
 
 const emit = defineEmits(['secondary-cta-clicked', 'primary-cta-clicked']);
 
 const props = defineProps({
-	/**
-	 * Background size class for the card.
-	 * This should be a string of Tailwind CSS classes.
-	 */
-	backgroundSize: {
-		type: String,
-		default: 'tw-bg-cover',
-	},
 	/**
 	 * Classes to apply to the content area of the card.
 	 * This should be a string of Tailwind CSS classes.

@@ -39,6 +39,7 @@ import { gql } from 'graphql-tag';
 import { indexIn } from '#src/util/comparators';
 import publicLendMenuQuery from '#src/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '#src/graphql/query/lendMenuPrivateData.graphql';
+import countryListQuery from '#src/graphql/query/countryList.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
@@ -133,20 +134,7 @@ export default {
 		},
 		async onLoad() {
 			this.apollo.watchQuery({
-				query: gql`query countryFacets {
-					lend {
-						countryFacets {
-							count
-							country {
-								id
-								name
-								region
-								isoCode
-							}
-						}
-					}
-
-				}`
+				query: countryListQuery,
 			}).subscribe({
 				next: ({ data }) => {
 					this.countryFacets = _get(data, 'lend.countryFacets');

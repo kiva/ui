@@ -66,7 +66,7 @@
 				:total-loans="totalLoans"
 				@add-to-basket="addToBasket"
 				@go-to-link="goToLink"
-				@handle-selected-loan="showLoanDetails"
+				@handle-selected-loan="showLoanDetails($event, true)"
 				@mouse-enter-status-card="loadBPData"
 				show-menu
 			/>
@@ -89,7 +89,7 @@
 				:user-balance="userBalance"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
-				@show-loan-details="showLoanDetails"
+				@show-loan-details="showLoanDetails($event)"
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
@@ -135,6 +135,7 @@
 			:show-go-to-link="true"
 			:show-headline-border="true"
 			:show-side-sheet="showBPSideSheet"
+			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
@@ -144,6 +145,14 @@
 			<LatestBlogCarousel :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
+	<section class="tw-mt-4 tw-bg-white tw-py-4">
+		<div
+			style="max-width: 1200px;"
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+		>
+			<BailoutChips />
+		</div>
+	</section>
 </template>
 
 <script>
@@ -171,6 +180,7 @@ import LendingCategorySection from '#src/components/LoanFinding/LendingCategoryS
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import LendingStats from '#src/components/MyKiva/LendingStats';
+import BailoutChips from '#src/components/MyKiva/BailoutChips';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -210,6 +220,7 @@ export default {
 		MyKivaProfile,
 		MyKivaStats,
 		LendingStats,
+		BailoutChips,
 	},
 	props: {
 		isHeroEnabled: {
@@ -297,6 +308,7 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
+			showNextSteps: false,
 		};
 	},
 	computed: {
@@ -580,9 +592,10 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(payload) {
+		showLoanDetails(payload, showNextSteps = false) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
+			this.showNextSteps = showNextSteps;
 		}
 	},
 	async mounted() {

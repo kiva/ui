@@ -1,7 +1,10 @@
 <template>
 	<div class="card-container">
-		<div class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-font-medium">
-			🎉 {{ loanStatus }}
+		<div
+			v-if="loanStatus"
+			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-font-medium"
+		>
+			{{ loanStatus }}
 		</div>
 		<div
 			v-if="showMenu"
@@ -108,10 +111,13 @@ import {
 	watch,
 } from 'vue';
 import {
+	DEFAULTED,
 	FUNDRAISING,
 	REFUNDED,
 	EXPIRED,
+	INACTIVE_EXPIRED,
 	PAYING_BACK,
+	RAISED,
 	ENDED,
 	FUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
@@ -179,19 +185,23 @@ const stepsCopy = computed(() => {
 const loanStatus = computed(() => {
 	switch (loan.value?.status) {
 		case FUNDRAISING:
-			return 'Fundraising';
+			return '🎉 Fundraising';
+		case RAISED:
 		case FUNDED:
-			return 'Funded';
+			return '🎉 Funded';
 		case PAYING_BACK:
-			return 'Repaying';
+			return '🎉 Repaying';
 		case REFUNDED:
 			return 'Refunded';
+		case INACTIVE_EXPIRED:
 		case EXPIRED:
 			return 'Expired';
-		case ENDED:
+		case DEFAULTED:
 			return 'Ended in default';
+		case ENDED:
+			return '🎉 Repaid';
 		default:
-			return 'Repaid';
+			return '';
 	}
 });
 

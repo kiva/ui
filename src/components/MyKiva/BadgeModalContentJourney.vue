@@ -158,10 +158,7 @@ const props = defineProps({
 	}
 });
 
-const {
-	getFilteredLoansByJourney,
-	getLevelCaption,
-} = useBadgeData();
+const { getLevelCaption } = useBadgeData();
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const scrollEl = ref(null);
@@ -242,8 +239,11 @@ const handleBadgeClick = index => {
 	}
 };
 
-const journeyLoans = computed(() => getFilteredLoansByJourney(props.badge, props.loans));
-const journeyTotalLoans = computed(() => journeyLoans.value.length);
+const journeyLoans = computed(() => {
+	return (props.badge.achievementData?.loanPurchases ?? [])
+		?.map(purchase => purchase.loan).filter(loan => loan != null);
+});
+const journeyTotalLoans = computed(() => props.badge.achievementData?.totalProgressToAchievement ?? 0);
 const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
 
 const journeyLoansNames = computed(() => {

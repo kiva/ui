@@ -1,5 +1,13 @@
 <template>
-	<div class="tw-mb-2">
+	<div v-if="!hasLoans" class="tw-mb-2">
+		<h3 class="tw-text-primary tw-mb-1">
+			Your impact starts here
+		</h3>
+		<p class="tw-text-base">
+			Recommended for you
+		</p>
+	</div>
+	<div v-else class="tw-mb-2">
 		<h3 class="tw-text-primary tw-mb-1">
 			Ready to grow your impact?
 		</h3>
@@ -131,7 +139,6 @@
 			class="carousel"
 			user-in-homepage
 			in-lending-stats
-			background-size="tw-bg-contain"
 			:lender="lender"
 			:slides-number="3"
 			:slides="allRegionsLentSlides"
@@ -218,12 +225,13 @@ const props = defineProps({
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
-const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value, router.currentRoute.value));
+const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value?.category, router.currentRoute.value));
 const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3) || []);
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 const showTagIcon = computed(() => !!topCategory.value);
+const hasLoans = computed(() => props.loans.length > 0);
 
 const regionImages = {
 	Africa,
@@ -319,7 +327,7 @@ const handleRecommendRegionClick = region => {
 		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 		region?.name
 	);
-	router.push(`/lend-category-beta?country=${region?.countries.join(',')}`);
+	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 };
 
 const goToTopCategory = () => {
@@ -327,7 +335,7 @@ const goToTopCategory = () => {
 		'event-tracking',
 		'click',
 		'top-category-recommendation',
-		topCategory.value ? topCategory.value : 'empty-state'
+		topCategory.value ? topCategory.value?.category : 'empty-state'
 	);
 	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
 	router.push(route);

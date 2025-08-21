@@ -2,7 +2,6 @@ import { ref, computed } from 'vue';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { gql } from 'graphql-tag';
 import { defaultBadges } from '#src/util/achievementUtils';
 
 export const ID_EQUITY = 'equity';
@@ -59,7 +58,6 @@ const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
 export default function useBadgeData() {
 	const badgeAchievementData = ref();
 	const badgeContentfulData = ref();
-	const badgeLoanIdData = ref();
 
 	/**
 	 * Gets a cleaned up version of Contentful badge data
@@ -118,33 +116,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Calls Apollo to get the badge Contentful data
-	 *
-	 * @param apollo The current instance of Apollo
-	 * @param combinedBadgeData The combined data for the badge
-	 */
-	const fetchLoanIdData = (apollo, combinedBadgeData) => {
-		apollo.query({
-			query: gql`query badgeLoanIds($filters: [FundraisingLoanSearchFilterInput!], $limit: Int!) {
-				fundraisingLoans(filters: $filters, limit: $limit) {
-					values {
-						id
-					}
-				}
-			}`,
-			variables: {
-				filters: combinedBadgeData.achievementData.matchingLoans.filters,
-				limit: 6,
-			}
-		})
-			.then(result => {
-				badgeLoanIdData.value = (result?.data?.fundraisingLoans?.values ?? []).map(l => l.id);
-			}).catch(e => {
-				logReadQueryError(e, 'useBadgeData badgeLoanIds');
-			});
-	};
-
-	/**
 	 * Combines the badge data into a more usable form
 	 *
 	 * @param allAchievementData All of the data for the user from the achievement service
@@ -199,9 +170,6 @@ export default function useBadgeData() {
 								completedDate: t.completedDate?.replace('[UTC]', ''),
 							})),
 							milestoneProgress: milestoneProgressArr,
-							matchingLoans: {
-								filters: achievementData.matchingLoans?.filters ?? [],
-							}
 						},
 						hasStarted,
 						level,
@@ -266,9 +234,6 @@ export default function useBadgeData() {
 	 *     "id": "",
 	 *     "description": "",
 	 *     "totalProgressToAchievement": 0,
-	 *     "matchingLoans": {
-	 *       "filters": [],
-	 *     },
 	 *     "tiers": [
 	 *       {
 	 *         "target": 1,
@@ -525,37 +490,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Get filtered loans by journey using defined search filters in vue-admin
-	 *
-	 * @param badge The badge to filter loans by
-	 * @param loans The loans to filter
-	 * @returns The filtered loans
-	 */
-	const getFilteredLoansByJourney = (badge, loans) => {
-		return loans.filter(loan => {
-			if (badge.id === ID_US_ECONOMIC_EQUALITY) {
-				return COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode);
-			}
-			if (badge.id === ID_WOMENS_EQUALITY) {
-				return loan?.gender === WOMENS_EQUALITY_FILTER;
-			}
-			if (badge.id === ID_REFUGEE_EQUALITY) {
-				return loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME);
-			}
-			if (badge.id === ID_BASIC_NEEDS) {
-				return BASIC_NEEDS_SECTORS.includes(loan?.sector?.id)
-					|| loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME);
-			}
-			if (badge.id === ID_CLIMATE_ACTION) {
-				return loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase()))
-					|| loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME);
-			}
-
-			return null;
-		});
-	};
-
-	/**
 	 * Get journeys by loan using defined search filters in vue-admin
 	 *
 	 * @param loan The loan to filter
@@ -600,7 +534,7 @@ export default function useBadgeData() {
 			return {
 				category: c.id,
 				loansCount: c.totalProgressToAchievement ?? 0,
-				loans: c.matchingLoans?.loans?.values ?? [],
+				loans: c.loanPurchases?.map(purchase => purchase.loan).filter(loan => loan != null) ?? [],
 				target: CATEGORY_TARGETS[c.id] ?? '',
 			};
 		}).filter(c => c.loansCount > 0); // Only include categories with loans
@@ -672,17 +606,14 @@ export default function useBadgeData() {
 		badgeAchievementData,
 		badgeContentfulData,
 		badgeData,
-		badgeLoanIdData,
 		combineBadgeData,
 		completedBadges,
 		fetchAchievementData,
 		fetchContentfulData,
-		fetchLoanIdData,
 		getActiveTierData,
 		getCompletedBadges,
 		getContentfulLevelData,
 		getEarnedBadgeExplanation,
-		getFilteredLoansByJourney,
 		getHighestPriorityDisplayBadge,
 		getLastCompletedBadgeLevelData,
 		getLevelName,

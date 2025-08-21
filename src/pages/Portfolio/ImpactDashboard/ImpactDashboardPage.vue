@@ -22,7 +22,9 @@
 							:allowed-teams="allowedTeams"
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
-						<lending-insights />
+						<lending-insights
+							:is-percentile-by-year-exp="isPercentileByYearExp"
+						/>
 						<your-donations />
 						<LoanCards
 							v-if="filteredLoans.length > 0"
@@ -56,8 +58,10 @@ import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfoli
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import {
@@ -76,6 +80,8 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import LoanCards from './LoanCards';
+
+const PERCENTILE_BY_YEAR_EXP_KEY = 'portfolio_year_percentile';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -109,6 +115,7 @@ export default {
 			loans: [],
 			filteredLoans: [],
 			showLoanFootnote: false,
+			isPercentileByYearExp: false
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -116,6 +123,7 @@ export default {
 		preFetch(config, client) {
 			return Promise.all([
 				client.query({ query: portfolioQuery }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: PERCENTILE_BY_YEAR_EXP_KEY } }),
 			]);
 		},
 	},
@@ -175,6 +183,15 @@ export default {
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
+
+		const percentileByYearExpData = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			PERCENTILE_BY_YEAR_EXP_KEY,
+			'EXP-MP-1847-Aug2025'
+		);
+		this.isPercentileByYearExp = percentileByYearExpData.version === 'b';
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {
