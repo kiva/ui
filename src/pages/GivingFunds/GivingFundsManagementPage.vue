@@ -12,11 +12,34 @@
 						<kv-button
 							variant="primary"
 							:href="`#`"
-							@click.prevent="createNewFund"
+							@click.prevent="isCreateFundLightboxVisible = true"
 							v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
 						>
 							Start a new fund
 						</kv-button>
+						<kv-lightbox
+							:visible="isCreateFundLightboxVisible"
+							title="Choose your impact area"
+							@lightbox-closed="isCreateFundLightboxVisible = false"
+						>
+							<p class="tw-pb-2">
+								Select the cause you want to support with your fund.
+							</p>
+							<kv-impact-vertical-selector
+								:category-list="givingFundCategories"
+								:hidden-categories="usersGivingFundCategoryIds"
+								@category-selected="selectedCategoryId"
+							/>
+							<template #controls>
+								<kv-button
+									variant="primary"
+									@click.prevent="createNewFund"
+									v-kv-track-event="['giving-funds', 'click', 'Continue (created fund submit)']"
+								>
+									Continue
+								</kv-button>
+							</template>
+						</kv-lightbox>
 					</div>
 
 					<kv-loading-placeholder
@@ -36,22 +59,16 @@
 								<div class="tw-flex tw-justify-between">
 									<div>
 										<!--  eslint-disable max-len -->
-										<div
+										<kv-pill
 											v-if="fund?.goals?.values?.filter(goal => goal?.status === 'IN_PROGRESS')?.length"
-											class="
-												tw-flex tw-items-center tw-gap-1
-												tw-mb-2 tw-rounded tw-bg-gray-100
-												tw-px-1.5
-											"
+											bg-class="tw-bg-gray-100"
+											rounded-class="tw-rounded-full"
 										>
-											<kv-pulsing-dot />
-											<span
-												class="tw-text-small tw-font-medium"
-												style="height: 30px; line-height: 32px;"
-											>
-												Active Fundraiser
-											</span>
-										</div>
+											<template #icon>
+												<kv-pulsing-dot />
+											</template>
+											Active Fundraiser
+										</kv-pill>
 										<!-- eslint-enable max-len -->
 										<h2 class="tw-mb-1">
 											{{ fund?.campaign?.category?.name }}
@@ -200,6 +217,7 @@
 
 <script setup>
 import {
+	computed,
 	onMounted,
 	ref,
 	inject,
@@ -209,14 +227,19 @@ import {
 	KvButton,
 	KvCardFrame,
 	KvGrid,
+	KvImpactVerticalSelector,
+	KvLightbox,
 	KvLoadingPlaceholder,
 	KvPageContainer,
+	KvPill,
 	KvPulsingDot,
 	KvUtilityMenu,
 } from '@kiva/kv-components';
+// import { addGivingFund } from '@kiva/kv-shop';
 import useIsMobile from '#src/composables/useIsMobile';
 import logFormatter from '#src/util/logFormatter';
 import numeral from 'numeral';
+import loanCategories from '#src/graphql/query/loanCategories.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 
 const apollo = inject('apollo');
@@ -226,6 +249,14 @@ const loading = ref(true);
 const givingFundsInfo = ref({});
 const givingFundsTotalCount = ref(0);
 const givingFundsEntries = ref([]);
+const isCreateFundLightboxVisible = ref(false);
+const givingFundCategories = ref([]);
+const selectedCategoryId = ref(null);
+
+// List of category ids already present on the user's giving funds, used to exclude options for new fund creation
+const usersGivingFundCategoryIds = computed(() => {
+	return givingFundsEntries.value.map(fund => fund?.campaign?.category?.id);
+});
 
 const fetchGivingFundData = async () => {
 	try {
@@ -241,13 +272,75 @@ const fetchGivingFundData = async () => {
 	}
 };
 
+/**
+ * Map a category ID to a fund target.
+ * CLIMATE_IMPACTED, EDUCATION, FINANCIAL_INCLUSION, MARGINALIZED_US, REFUGEES, WOMEN
+ * NOTE: These are also hard-coded in MLCS
+ */
+const getFundTargetFromCateogryId = categoryId => {
+	if (!categoryId) return null;
+	switch (categoryId) {
+		case '28fe587c-f6f4-4329-b4ed-ac094b2c14b3':
+			return 'CLIMATE_IMPACTED';
+		case '486bca95-7425-42ee-baf7-960eef7b3d0c':
+			return 'REFUGEES';
+		case '914823b9-b4e3-4980-8811-09dbe0f19860':
+			return 'EDUCATION';
+		case '87ec8472-5cd7-49a7-a565-3f0b03e42a32':
+			return 'MARGINALIZED_US';
+		case '8ace83f1-e02d-404d-a3c4-83fa0be69403':
+			return 'WOMEN';
+		case 'f36abd3e-a304-4948-9378-b697b775ec2b':
+		default:
+			return 'FINANCIAL_INCLUSION';
+	}
+};
+
+const createGivingFund = async categoryId => {
+	console.log(getFundTargetFromCateogryId(categoryId));
+	try {
+		// await addGivingFund({
+		// 	apollo,
+		// 	fundTarget: getFundTargetFromCateogryId(categoryId),
+		// 	userId: '',
+		// });
+		logFormatter('Giving fund created successfully', 'success');
+	} catch (error) {
+		logFormatter(`Error creating giving fund: ${error}`, 'error');
+	}
+};
+
+const fetchGivingFundLoanCategories = async () => {
+	try {
+		const response = await apollo.query({
+			query: loanCategories,
+			variables: {
+				filters: {
+					type: 'GIVING_FUND',
+				},
+			},
+		});
+		givingFundCategories.value = response?.data?.categories.values;
+	} catch (error) {
+		logFormatter(`Error fetching giving fund loan categories: ${error}`, 'error');
+	}
+};
+
 const createNewFund = () => {
+	if (!selectedCategoryId.value) {
+		logFormatter('No category selected for new giving fund', 'error');
+		// show a tip message
+		return;
+	}
+	createGivingFund(selectedCategoryId?.value);
 	// Handle the logic for creating a new giving fund
 	logFormatter('Create a new giving fund', 'info');
+	isCreateFundLightboxVisible.value = false;
 };
 
 onMounted(() => {
 	fetchGivingFundData();
+	fetchGivingFundLoanCategories();
 });
 </script>
 
