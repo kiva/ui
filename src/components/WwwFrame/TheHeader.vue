@@ -647,6 +647,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
+			throttledDetermineIfMobile: null,
 		};
 	},
 	emits: ['show-basket'],
@@ -812,19 +813,15 @@ export default {
 			hasDepositBefore,
 		});
 
-		this.determineIfMobile();
-		window.addEventListener('resize', _throttle(() => {
+		this.throttledDetermineIfMobile = _throttle(() => {
 			this.determineIfMobile();
-		}, 200));
+		}, 200);
 
-		if (this.$refs?.newExpHeader) {
-			this.$refs?.newExpHeader?.getSuggestions?.(this.apollo);
-		}
+		this.determineIfMobile();
+		window.addEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	beforeUnmount() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
+		window.removeEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	methods: {
 		determineIfMobile() {
