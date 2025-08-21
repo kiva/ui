@@ -44,17 +44,18 @@ import PillsContainer from './PillsContainer';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const LOAN_FINDING_PAGE = 'lend-category-beta';
+const CATEGORY_PAGE = 'lend-by-category';
+const FILTER_PAGE = 'lend/filter';
 
 const categories = ref([]);
 const regionItems = ref([]);
 
 const featuredItems = [
-	{ label: 'Women', url: `/${LOAN_FINDING_PAGE}/women` },
-	{ label: 'Kenya', url: `/${LOAN_FINDING_PAGE}/kenya` },
-	{ label: 'Almost Funded', url: `/${LOAN_FINDING_PAGE}/loans-that-are-almost-funded` },
-	{ label: 'Philippines', url: `/${LOAN_FINDING_PAGE}/philippines` },
-	{ label: 'Agriculture', url: `/${LOAN_FINDING_PAGE}/agriculture` },
+	{ label: 'Women', url: `/${CATEGORY_PAGE}/women` },
+	{ label: 'Kenya', url: `/${CATEGORY_PAGE}/kenya` },
+	{ label: 'Almost Funded', url: `/${CATEGORY_PAGE}/loans-that-are-almost-funded` },
+	{ label: 'Philippines', url: `/${CATEGORY_PAGE}/philippines` },
+	{ label: 'Agriculture', url: `/${CATEGORY_PAGE}/agriculture` },
 ];
 
 const regionDisplayOrder = [
@@ -83,7 +84,7 @@ const fetchCategories = () => {
 			const updatedCat = JSON.parse(JSON.stringify(category));
 			updatedCat.label = updatedCat.name;
 			updatedCat.url = updatedCat.url
-				.replace('lend', `${LOAN_FINDING_PAGE}`);
+				.replace('lend', `${CATEGORY_PAGE}`);
 			return updatedCat;
 		});
 		categories.value = categories.value.sort((a, b) => a.name.localeCompare(b.name));
@@ -121,7 +122,7 @@ const fetchCountries = () => {
 		regionItems.value = regions.map(region => {
 			return {
 				label: region.name,
-				url: `/${LOAN_FINDING_PAGE}?country=${region.countries.map(country => country.isoCode).join(',')}`
+				url: `/${FILTER_PAGE}?country=${region.countries.map(country => country.isoCode).join(',')}`
 			};
 		});
 	}).catch(error => {
