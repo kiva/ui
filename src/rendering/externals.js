@@ -24,7 +24,8 @@ export function renderExternals(config) {
 let renderedOptInExternals = '';
 export function renderOptInExternals(config, cookieStore) {
 	// Check if the user has opted out of 3rd party cookies
-	if (cookieStore.get('kvgdpr')?.indexOf('opted_out=true') > -1) {
+	const cookie = cookieStore.get('kvgdpr')?.trim();
+	if (cookie && /(\b|&)opted_out=true(\b|&)/.test(cookie)) {
 		return '';
 	}
 
