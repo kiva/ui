@@ -28,10 +28,11 @@
 							<kv-impact-vertical-selector
 								:category-list="givingFundCategories"
 								:hidden-categories="usersGivingFundCategoryIds"
-								@category-selected="selectedCategoryId"
+								@category-selected="selectedCategoryId = $event"
 							/>
 							<template #controls>
 								<kv-button
+									:state="selectedCategoryId ? '' : 'disabled'"
 									variant="primary"
 									@click.prevent="createNewFund"
 									v-kv-track-event="['giving-funds', 'click', 'Continue (created fund submit)']"
@@ -235,12 +236,13 @@ import {
 	KvPulsingDot,
 	KvUtilityMenu,
 } from '@kiva/kv-components';
-// import { addGivingFund } from '@kiva/kv-shop';
+import { addGivingFund } from '@kiva/kv-shop';
 import useIsMobile from '#src/composables/useIsMobile';
 import logFormatter from '#src/util/logFormatter';
 import numeral from 'numeral';
 import loanCategories from '#src/graphql/query/loanCategories.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
+import userIdQuery from '#src/graphql/query/userId.graphql';
 
 const apollo = inject('apollo');
 const { isMobile } = useIsMobile();
@@ -252,6 +254,7 @@ const givingFundsEntries = ref([]);
 const isCreateFundLightboxVisible = ref(false);
 const givingFundCategories = ref([]);
 const selectedCategoryId = ref(null);
+const userId = ref(null);
 
 // List of category ids already present on the user's giving funds, used to exclude options for new fund creation
 const usersGivingFundCategoryIds = computed(() => {
@@ -277,7 +280,7 @@ const fetchGivingFundData = async () => {
  * CLIMATE_IMPACTED, EDUCATION, FINANCIAL_INCLUSION, MARGINALIZED_US, REFUGEES, WOMEN
  * NOTE: These are also hard-coded in MLCS
  */
-const getFundTargetFromCateogryId = categoryId => {
+const getFundTargetFromCategoryId = categoryId => {
 	if (!categoryId) return null;
 	switch (categoryId) {
 		case '28fe587c-f6f4-4329-b4ed-ac094b2c14b3':
@@ -297,13 +300,12 @@ const getFundTargetFromCateogryId = categoryId => {
 };
 
 const createGivingFund = async categoryId => {
-	console.log(getFundTargetFromCateogryId(categoryId));
 	try {
-		// await addGivingFund({
-		// 	apollo,
-		// 	fundTarget: getFundTargetFromCateogryId(categoryId),
-		// 	userId: '',
-		// });
+		await addGivingFund({
+			apollo,
+			fundTarget: getFundTargetFromCategoryId(categoryId),
+			userId: userId.value,
+		});
 		logFormatter('Giving fund created successfully', 'success');
 	} catch (error) {
 		logFormatter(`Error creating giving fund: ${error}`, 'error');
@@ -326,21 +328,32 @@ const fetchGivingFundLoanCategories = async () => {
 	}
 };
 
-const createNewFund = () => {
+const createNewFund = async () => {
 	if (!selectedCategoryId.value) {
 		logFormatter('No category selected for new giving fund', 'error');
 		// show a tip message
 		return;
 	}
-	createGivingFund(selectedCategoryId?.value);
-	// Handle the logic for creating a new giving fund
-	logFormatter('Create a new giving fund', 'info');
+	await createGivingFund(selectedCategoryId?.value);
+	fetchGivingFundData();
 	isCreateFundLightboxVisible.value = false;
+};
+
+const fetchUserId = async () => {
+	try {
+		const response = await apollo.query({
+			query: userIdQuery,
+		});
+		userId.value = response?.data?.my?.id;
+	} catch (error) {
+		logFormatter(`Error fetching userId: ${error}`, 'error');
+	}
 };
 
 onMounted(() => {
 	fetchGivingFundData();
 	fetchGivingFundLoanCategories();
+	fetchUserId();
 });
 </script>
 
