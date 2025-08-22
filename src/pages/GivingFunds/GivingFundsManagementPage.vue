@@ -10,6 +10,7 @@
 							</div>
 						</h1>
 						<kv-button
+							v-if="givingFundsEntries?.length"
 							variant="primary"
 							:href="`#`"
 							@click.prevent="isCreateFundLightboxVisible = true"
@@ -204,10 +205,19 @@
 						v-else
 						class="tw-mb-2"
 					>
-						<div class="tw-p-2">
-							<p class="tw-text-center tw-text-gray-500">
-								You have not created any giving funds yet.
-							</p>
+						<div class="tw-flex tw-flex-col tw-items-center tw-text-center tw-p-2">
+							<h2 class="tw-mb-2">
+								Start a fund and invite others to support your cause.
+							</h2>
+
+							<kv-button
+								variant="primary"
+								:href="`#`"
+								@click.prevent="isCreateFundLightboxVisible = true"
+								v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
+							>
+								Start a new fund
+							</kv-button>
 						</div>
 					</kv-card-frame>
 				</div>
