@@ -4,11 +4,14 @@
 			<KvGrid class="tw-grid-cols-12 md:tw-mx-0">
 				<div class="tw-col-span-12 tw-pt-1.5 md:tw-pt-3">
 					<div class="tw-py-2 md:tw-py-3 tw-flex tw-flex-col md:tw-flex-row tw-justify-between">
-						<h1 class="tw-mb-2 tw-break-words">
-							<div>
-								Giving Funds
-							</div>
-						</h1>
+						<div>
+							<h1 class="tw-mb-1 tw-break-words">
+								Your Giving Funds
+							</h1>
+							<p class="tw-text-small">
+								Start a fund, support a cause, and invite others to join.
+							</p>
+						</div>
 						<kv-button
 							v-if="givingFundsEntries?.length"
 							variant="primary"
@@ -205,9 +208,11 @@
 						v-else
 						class="tw-mb-2"
 					>
-						<div class="tw-flex tw-flex-col tw-items-center tw-text-center tw-p-2">
-							<h2 class="tw-mb-2">
-								Start a fund and invite others to support your cause.
+						<div class="tw-flex tw-flex-col tw-items-center tw-text-center tw-p-4">
+							<h2
+								class="tw-mb-4"
+							>
+								Start a fund and invite others<br class="tw-hidden md:tw-inline"> to support your cause.
 							</h2>
 
 							<kv-button
