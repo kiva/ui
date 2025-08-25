@@ -5,6 +5,7 @@
 	>
 		<KvWwwHeader
 			v-if="isNavUpdateExp"
+			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 			ref="newExpHeader"
 			:logged-in="!isVisitor"
 			:basket-count="basketCount"
@@ -14,6 +15,7 @@
 			:is-trustee="isTrustee"
 			:user-id="userId"
 			:is-mobile="isMobile"
+			:lender-image-url="profilePic"
 			@load-lend-menu-data="loadMenu"
 		/>
 		<nav
