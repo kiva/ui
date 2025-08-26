@@ -18,7 +18,6 @@
 			:lender-image-url="profilePic"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
-			@update:menu-open="onMenuChange"
 		/>
 		<nav
 			v-else
