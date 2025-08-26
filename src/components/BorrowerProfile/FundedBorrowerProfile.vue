@@ -46,6 +46,7 @@
 											data-testid="bp-summary-progress"
 											class="tw-mb-2"
 											:progress-percent="progressPercent"
+											:loading="isLoading"
 											:loan-status="loanStatus"
 										/>
 									</div>
