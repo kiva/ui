@@ -46,6 +46,7 @@
 											data-testid="bp-summary-progress"
 											class="tw-mb-2"
 											:progress-percent="progressPercent"
+											:loading="isLoading"
 											:loan-status="loanStatus"
 										/>
 									</div>
@@ -181,7 +182,7 @@ export default {
 	data() {
 		return {
 			viewportObserver: null,
-			isLoading: false,
+			isLoading: true,
 			categories: [],
 			rows: null,
 			isVisitor: true,
