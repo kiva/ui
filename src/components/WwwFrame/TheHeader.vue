@@ -16,6 +16,7 @@
 			:user-id="userId"
 			:is-mobile="isMobile"
 			:lender-image-url="profilePic"
+			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
 		/>
 		<nav
@@ -560,7 +561,9 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import {
+	defineAsyncComponent, watch
+} from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -814,6 +817,13 @@ export default {
 			hasLentBefore,
 			hasDepositBefore,
 		});
+
+		watch(
+			() => this.$refs.newExpHeader?.menuOpen,
+			menuOpen => {
+				document.body.style.overflow = this.isMobile && menuOpen ? 'hidden' : '';
+			}
+		);
 
 		this.throttledDetermineIfMobile = _throttle(() => {
 			this.determineIfMobile();
