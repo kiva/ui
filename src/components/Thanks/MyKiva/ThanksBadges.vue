@@ -487,7 +487,7 @@ watch(() => badgeData.value, () => {
 
 <style lang="postcss" scoped>
 .content-box {
-	@apply tw-rounded md:tw-rounded-lg tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full
+	@apply tw-rounded md:tw-rounded-xl tw-mx-auto tw-bg-white tw-shadow-lg tw-p-3 tw-w-full
 		print:tw-shadow-transparent;
 
 	max-width: 620px;

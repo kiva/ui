@@ -22,7 +22,7 @@
 		<div v-else>
 			<div class="tw-flex tw-flex-row tw-items-center">
 				<img
-					class="tw-w-8 tw-h-8 tw-flex-none tw-rounded-sm tw-mr-2"
+					class="tw-w-8 tw-h-8 tw-flex-none tw-rounded-xs tw-mr-2"
 					:src="teamImage"
 				>
 				<h3>{{ goal.name }}</h3>

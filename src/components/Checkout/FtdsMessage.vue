@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-bg-brand-100 tw-rounded-sm tw-py-1 tw-px-1.5 tw-flex tw-justify-center tw-items-center">
+	<div class="tw-bg-brand-100 tw-rounded-xs tw-py-1 tw-px-1.5 tw-flex tw-justify-center tw-items-center">
 		<img :src="sparkleUrl" alt="FTDs Sparkle">
 		<p>
 			<!-- eslint-disable-next-line max-len -->

@@ -17,7 +17,7 @@
 				tw-border
 				tw-border-tertiary
 				tw-py-0.5
-				tw-rounded-sm
+				tw-rounded-xs
 				tw-bg-white
 				tw-overflow-auto
 				tw-z-2"

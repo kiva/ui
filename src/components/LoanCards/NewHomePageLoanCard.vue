@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-flex tw-flex-col card-container selected-card tw-rounded-sm"
+		class="tw-flex tw-flex-col card-container selected-card tw-rounded-xs"
 		:id="`${loanId}-loan-card`"
 	>
 		<router-link

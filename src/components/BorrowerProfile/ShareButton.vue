@@ -14,7 +14,7 @@
 		<template #modal-content>
 			<div class="tw-relative">
 				<textarea
-					class="tw-w-full tw-border tw-border-tertiary tw-rounded-sm tw-h-12 tw-p-2"
+					class="tw-w-full tw-border tw-border-tertiary tw-rounded-xs tw-h-12 tw-p-2"
 					style="height: 10rem;"
 					v-model="modifiedShareMessage"
 				>

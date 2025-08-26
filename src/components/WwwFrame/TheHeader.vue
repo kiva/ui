@@ -64,7 +64,7 @@
 								display: hasBasket ? 'inline-flex' : 'none'
 							}"
 						>
-							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+							<span class="tw-bg-secondary tw-rounded-xs tw-py-0.5 tw-px-1 tw-mr-1">
 								<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 									<kv-loading-placeholder />
 								</div>
@@ -360,7 +360,7 @@
 									}"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									<span class="tw-bg-secondary tw-rounded-xs tw-py-0.5 tw-px-1 tw-mr-1">
 										<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 											<kv-loading-placeholder />
 										</div>

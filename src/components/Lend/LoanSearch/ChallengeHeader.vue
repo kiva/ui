@@ -4,7 +4,7 @@
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<img
 					v-if="teamImageUrl"
-					class="tw-w-4 tw-h-4 lg:tw-w-8 lg:tw-h-8 tw-flex-none tw-rounded-sm"
+					class="tw-w-4 tw-h-4 lg:tw-w-8 lg:tw-h-8 tw-flex-none tw-rounded-xs"
 					:src="teamImageUrl"
 				>
 				<div>
