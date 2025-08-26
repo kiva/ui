@@ -182,7 +182,7 @@ export default {
 	data() {
 		return {
 			viewportObserver: null,
-			isLoading: false,
+			isLoading: true,
 			categories: [],
 			rows: null,
 			isVisitor: true,
