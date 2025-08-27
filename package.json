@@ -43,15 +43,9 @@
 		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
-<<<<<<< HEAD
 		"@kiva/kv-components": "^6.49.4",
 		"@kiva/kv-shop": "^3.3.15",
 		"@kiva/kv-tokens": "^3.4.1",
-=======
-		"@kiva/kv-components": "^6.49.2",
-		"@kiva/kv-shop": "^3.3.6",
-		"@kiva/kv-tokens": "^3.4.0",
->>>>>>> a363bcfb0 (fix: mp-1978 integrate cta changes)
 		"@mdi/js": "^7.4.47",
 		"@opentelemetry/api": "^1.7.0",
 		"@opentelemetry/auto-instrumentations-node": "^0.40.2",
