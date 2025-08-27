@@ -26,16 +26,34 @@
 							title="Choose your impact area"
 							@lightbox-closed="isCreateFundLightboxVisible = false"
 						>
-							<p class="tw-pb-2">
+							<p
+								v-if="!hasAllFundTypes"
+								class="tw-pb-2"
+							>
 								Select the cause you want to support with your fund.
 							</p>
+							<p v-else class="tw-text-center">
+								You have created funds for all available causes.<br>
+								Please contact support if you would like to create another fund.
+							</p>
 							<kv-impact-vertical-selector
+								v-if="!creatingFund && !hasAllFundTypes"
 								:category-list="orderedGivingFundCategories"
 								:hidden-categories="usersGivingFundCategoryIds"
 								@category-selected="selectedCategoryId = $event"
 							/>
+							<div
+								v-else-if="creatingFund && !hasAllFundTypes"
+								class="tw-flex tw-flex-col tw-justify-center tw-items-center tw-p-2"
+							>
+								<kv-loading-spinner size="medium" />
+								<p class="tw-pt-2">
+									Creating your new fund...
+								</p>
+							</div>
 							<template #controls>
 								<kv-button
+									v-if="!creatingFund"
 									:state="selectedCategoryId ? '' : 'disabled'"
 									variant="primary"
 									@click.prevent="createNewFund"
@@ -91,7 +109,7 @@
 									<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-right tw-gap-1.5">
 										<KvButton
 											v-if="!isMobile"
-											:href="`/gf-beta/${fund.id}?action=donate`"
+											:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 											target="_blank"
 											variant="secondary"
 											v-kv-track-event="['giving-funds', 'click', 'Donate']"
@@ -112,7 +130,7 @@
 															utility-menu-link
 															tw-rounded-t
 														"
-														:href="`/gf-beta/${fund.id}`"
+														:href="`${givingFundRootPath}/${fund.id}`"
 														target="_blank"
 														v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
 													>
@@ -124,7 +142,7 @@
 														class="
 															utility-menu-link
 														"
-														:href="`/gf-beta/${fund.id}?action=edit`"
+														:href="`${givingFundRootPath}/${fund.id}?action=edit`"
 														target="_blank"
 														v-kv-track-event="['giving-funds', 'click', 'Edit fund']"
 													>
@@ -137,7 +155,7 @@
 															utility-menu-link
 															tw-rounded-b
 														"
-														:href="`/gf-beta/${fund.id}?action=share`"
+														:href="`${givingFundRootPath}/${fund.id}?action=share`"
 														target="_blank"
 														v-kv-track-event="['giving-funds', 'click', 'Share fund']"
 													>
@@ -183,7 +201,7 @@
 
 								<KvButton
 									class="tw-w-full tw-mt-3"
-									:href="`/gf-beta/${fund.id}?action=start-fundraiser`"
+									:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
 									target="_blank"
 									variant="secondary"
 									v-kv-track-event="['giving-funds', 'click', 'Start a fundraiser', fund.id]"
@@ -193,7 +211,7 @@
 								<KvButton
 									v-if="isMobile"
 									class="tw-w-full tw-mt-2"
-									:href="`/gf-beta/${fund.id}?action=donate`"
+									:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 									target="_blank"
 									variant="secondary"
 									v-kv-track-event="['giving-funds', 'click', 'Donate']"
@@ -246,6 +264,7 @@ import {
 	KvImpactVerticalSelector,
 	KvLightbox,
 	KvLoadingPlaceholder,
+	KvLoadingSpinner,
 	KvPageContainer,
 	KvPill,
 	KvPulsingDot,
@@ -268,6 +287,8 @@ const givingFundsTotalCount = ref(0);
 const givingFundsEntries = ref([]);
 const isCreateFundLightboxVisible = ref(false);
 const givingFundCategories = ref([]);
+const givingFundRootPath = ref('/gf-beta');
+const creatingFund = ref(false);
 const selectedCategoryId = ref(null);
 const userId = ref(null);
 
@@ -294,10 +315,16 @@ const usersGivingFundCategoryIds = computed(() => {
 	return givingFundsEntries.value.map(fund => fund?.campaign?.category?.id);
 });
 
+// Computed property to check if user has all fund types
+const hasAllFundTypes = computed(() => {
+	return orderedGivingFundCategoryIds.every(id => usersGivingFundCategoryIds.value.includes(id));
+});
+
 const fetchGivingFundData = async () => {
 	try {
 		const response = await apollo.query({
 			query: myGivingFundsQuery,
+			fetchPolicy: 'network-only',
 		});
 		givingFundsInfo.value = response?.data?.my?.givingFunds;
 		givingFundsTotalCount.value = response?.data?.my?.givingFunds?.totalCount;
@@ -332,19 +359,6 @@ const getFundTargetFromCategoryId = categoryId => {
 	}
 };
 
-const createGivingFund = async categoryId => {
-	try {
-		await addGivingFund({
-			apollo,
-			fundTarget: getFundTargetFromCategoryId(categoryId),
-			userId: userId.value,
-		});
-		logFormatter('Giving fund created successfully', 'success');
-	} catch (error) {
-		logFormatter(`Error creating giving fund: ${error}`, 'error');
-	}
-};
-
 const fetchGivingFundLoanCategories = async () => {
 	try {
 		const response = await apollo.query({
@@ -364,11 +378,24 @@ const fetchGivingFundLoanCategories = async () => {
 const createNewFund = async () => {
 	if (!selectedCategoryId.value) {
 		logFormatter('No category selected for new giving fund', 'error');
-		// show a tip message
 		return;
 	}
-	await createGivingFund(selectedCategoryId?.value);
+	try {
+		creatingFund.value = true;
+		const newFundResponse = await addGivingFund({
+			apollo,
+			fundTarget: getFundTargetFromCategoryId(selectedCategoryId.value),
+			userId: userId.value,
+		});
+		// open the new fund in a new tab after creation
+		if (newFundResponse?.id) {
+			window.open(`${givingFundRootPath.value}/${newFundResponse.id}`, '_blank');
+		}
+	} catch (error) {
+		logFormatter(`Error creating giving fund: ${error}`, 'error');
+	}
 	fetchGivingFundData();
+	creatingFund.value = false;
 	isCreateFundLightboxVisible.value = false;
 };
 
