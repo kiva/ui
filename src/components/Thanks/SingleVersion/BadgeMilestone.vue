@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="showBadgeModule"
-		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
+		class="tw-rounded md:tw-rounded-xl tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
 			tw-gap-2 print:tw-hidden tw-items-center tw-text-center tw-overflow-hidden tw-relative"
 	>
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />

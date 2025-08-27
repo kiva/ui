@@ -8,7 +8,7 @@
 			<div class="tw-relative">
 				<textarea
 					ref="commentTextarea"
-					class="tw-w-full tw-border tw-border-secondary tw-rounded-sm tw-h-7 tw-p-1 comment-input"
+					class="tw-w-full tw-border tw-border-secondary tw-rounded-xs tw-h-7 tw-p-1 comment-input"
 					v-model="userComment"
 					:placeholder="commentPlaceholder"
 				>

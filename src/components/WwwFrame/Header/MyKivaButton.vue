@@ -7,7 +7,7 @@
 	>
 		<span class="tw-sr-only">My Portfolio</span>
 		<span
-			class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1"
+			class="tw-bg-secondary tw-rounded-xs tw-py-0.5 tw-px-1 tw-mr-1"
 		>
 			<div v-if="isUserDataLoading" class="tw-w-3 tw-h-3">
 				<kv-loading-placeholder />

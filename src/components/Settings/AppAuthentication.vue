@@ -55,7 +55,7 @@
 						Instead of scanning, use your authenticator app's "Manual entry" or equivalent option
 						and enter the code below. Your app will generate a 6-digit code, which you’ll use below.
 					</p>
-					<div class="tw-bg-tertiary tw-border tw-rounded-sm tw-font-medium tw-p-1 tw-mb-2">
+					<div class="tw-bg-tertiary tw-border tw-rounded-xs tw-font-medium tw-p-1 tw-mb-2">
 						{{ secret }}
 					</div>
 				</template>

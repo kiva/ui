@@ -8,7 +8,7 @@
 							<h1 class="tw-mb-1 tw-break-words">
 								Your Giving Funds
 							</h1>
-							<p class="tw-text-small">
+							<p>
 								Start a fund, support a cause, and invite others to join.
 							</p>
 						</div>
@@ -30,7 +30,7 @@
 								Select the cause you want to support with your fund.
 							</p>
 							<kv-impact-vertical-selector
-								:category-list="givingFundCategories"
+								:category-list="orderedGivingFundCategories"
 								:hidden-categories="usersGivingFundCategoryIds"
 								@category-selected="selectedCategoryId = $event"
 							/>
@@ -270,6 +270,24 @@ const isCreateFundLightboxVisible = ref(false);
 const givingFundCategories = ref([]);
 const selectedCategoryId = ref(null);
 const userId = ref(null);
+
+// Computed property to order givingFundCategories by a specific id order
+const orderedGivingFundCategoryIds = [
+	'f36abd3e-a304-4948-9378-b697b775ec2b',
+	'8ace83f1-e02d-404d-a3c4-83fa0be69403',
+	'486bca95-7425-42ee-baf7-960eef7b3d0c',
+	'28fe587c-f6f4-4329-b4ed-ac094b2c14b3',
+	'87ec8472-5cd7-49a7-a565-3f0b03e42a32',
+	'914823b9-b4e3-4980-8811-09dbe0f19860',
+];
+const orderedGivingFundCategories = computed(() => {
+	// Defensive: if categories not loaded, return empty array
+	if (!Array.isArray(givingFundCategories.value)) return [];
+	// Sort by the order in orderedGivingFundCategoryIds
+	return orderedGivingFundCategoryIds
+		.map(id => givingFundCategories.value.find(cat => cat.id === id))
+		.filter(Boolean);
+});
 
 // List of category ids already present on the user's giving funds, used to exclude options for new fund creation
 const usersGivingFundCategoryIds = computed(() => {

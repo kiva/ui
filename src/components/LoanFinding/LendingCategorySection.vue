@@ -191,7 +191,7 @@ export default {
 	@apply tw-justify-center;
 	@apply tw-w-16;
 	@apply tw-mx-auto;
-	@apply tw-rounded-lg;
+	@apply tw-rounded-xl;
 
 	box-shadow: 0 2px 5px 2px rgb(0 0 0 / 18%);
 }

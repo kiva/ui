@@ -7,7 +7,7 @@
 			<span
 				v-if="promoCredit.amount !== 0"
 				class="
-					tw-inline-block tw-rounded-sm
+					tw-inline-block tw-rounded-xs
 					-tw-ml-1 tw-mb-1 tw-pt-0.5 tw-px-1 tw-pb-0
 					tw-text-brand-1000 tw-bg-secondary"
 			>

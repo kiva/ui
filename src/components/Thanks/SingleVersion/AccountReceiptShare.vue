@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
+		class="tw-rounded md:tw-rounded-xl tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4 tw-flex tw-flex-col
 			print:tw-shadow-transparent"
 	>
 		<div v-if="isGuest" class="tw-mb-2 print:tw-hidden">
