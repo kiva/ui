@@ -17,6 +17,7 @@
 			<PillsContainer
 				key="categories"
 				:items="categories"
+				:show-more-cta-mobile="true"
 				@pill-clicked="handlePillClick"
 			/>
 		</div>
