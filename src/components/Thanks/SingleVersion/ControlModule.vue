@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-rounded md:tw-rounded-lg tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8
+		class="tw-rounded md:tw-rounded-xl tw-bg-white tw-shadow-lg tw-px-3 md:tw-px-8
 			tw-py-4 tw-flex tw-flex-col tw-text-center tw-gap-3 tw-mb-2.5"
 	>
 		<div

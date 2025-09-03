@@ -31,7 +31,7 @@
 					class="tw-w-full tw-flex tw-items-center tw-mb-1.5"
 				>
 					<img
-						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
+						class="tw-h-5 tw-w-5 tw-rounded-xs tw-overflow-hidden tw-mr-1"
 						:src="getImage(`mg-${selectedGroup.value}.svg`)"
 					>
 					{{ selectedGroup.marketingName }}
@@ -54,7 +54,7 @@
 					@click="selectCause(option)"
 				>
 					<img
-						class="tw-h-5 tw-w-5 tw-rounded-sm tw-overflow-hidden tw-mr-1"
+						class="tw-h-5 tw-w-5 tw-rounded-xs tw-overflow-hidden tw-mr-1"
 						:src="getImage(`mg-${option.value}.svg`)"
 					>
 					{{ option.marketingName }}

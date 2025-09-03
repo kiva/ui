@@ -111,7 +111,7 @@
 					<div class="tw-relative">
 						<textarea
 							class="
-								tw-w-full tw-border tw-border-tertiary tw-rounded-sm tw-px-2 tw-py-1 tw-min-h-16 tw-mb-1.5
+								tw-w-full tw-border tw-border-tertiary tw-rounded-xs tw-px-2 tw-py-1 tw-min-h-16 tw-mb-1.5
 								tw-ring-inset tw-appearance-none tw-resize-none
 								focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-action focus:tw-border-transparent
 							"

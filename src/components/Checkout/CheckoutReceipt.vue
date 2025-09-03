@@ -3,7 +3,7 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<div class="checkout-receipt__wrapper tw-bg-primary tw-p-4 tw-rounded-sm tw-border tw-border-tertiary">
+		<div class="checkout-receipt__wrapper tw-bg-primary tw-p-4 tw-rounded-xs tw-border tw-border-tertiary">
 			<section data-testid="lender-info" class="section section--lender-info">
 				<div>{{ formattedTransactionTime }}</div>
 				<div class="data-hj-suppress">

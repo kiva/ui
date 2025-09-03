@@ -2,7 +2,7 @@
 	<footer class="the-footer-corporate tw-bg-secondary tw-text-primary">
 		<nav aria-label="Footer navigation">
 			<div class="tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-6 tw-text-center">
-				<div class="tw-bg-white tw-rounded-sm tw-p-2 tw-mb-3 tw-mx-auto" style="max-width: 400px;">
+				<div class="tw-bg-white tw-rounded-xs tw-p-2 tw-mb-3 tw-mx-auto" style="max-width: 400px;">
 					<campaign-logo-group
 						class="the-footer-corporate__logos tw-h-3 md:tw-h-4"
 						:corporate-logo-url="corporateLogoUrl"

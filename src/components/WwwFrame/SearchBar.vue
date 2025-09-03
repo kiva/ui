@@ -62,7 +62,7 @@
 						@click="runSearch(suggestion)"
 						data-testid="header-search-result-item"
 						class="
-							tw-pl-1.5 tw-py-0.5 tw-rounded-sm
+							tw-pl-1.5 tw-py-0.5 tw-rounded-xs
 							tw-font-medium tw-cursor-pointer
 							hover:tw-bg-secondary hover:tw-underline
 						"
@@ -273,7 +273,7 @@ export default {
 			// Build an array of strings, inserting the <mark> tags at the appropriate indices
 			const charArray = _map(label, (character, index) => {
 				const prefix = starts.indexOf(index) > -1
-					? '<mark class="tw-bg-tertiary tw-rounded-sm tw-mix-blend-multiply tw-p-0.5 tw--m-0.5">' : '';
+					? '<mark class="tw-bg-tertiary tw-rounded-xs tw-mix-blend-multiply tw-p-0.5 tw--m-0.5">' : '';
 				const suffix = ends.indexOf(index) > -1 ? '</mark>' : '';
 				return `${prefix}${character}${suffix}`;
 			});

@@ -113,7 +113,7 @@
 								tw-p-2
 								tw-mb-4
 								tw-border tw-border-tertiary
-								tw-rounded-sm
+								tw-rounded-xs
 								tw-appearance-none
 								tw-text-base
 								tw-bg-primary

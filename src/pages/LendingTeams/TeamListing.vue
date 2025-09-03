@@ -116,11 +116,11 @@
 			<div class="tw-flex tw-flex-row">
 				<img
 					v-if="team.image && team.image.url"
-					class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-sm"
+					class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-xs"
 					:src="team.image.url"
 				>
 				<img
-					v-else class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-sm"
+					v-else class="tw-w-12 tw-h-12 tw-flex-none tw-rounded-xs"
 					:src="teamNoImage"
 				>
 

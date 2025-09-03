@@ -5,6 +5,7 @@
 	>
 		<KvWwwHeader
 			v-if="isNavUpdateExp"
+			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 			ref="newExpHeader"
 			:logged-in="!isVisitor"
 			:basket-count="basketCount"
@@ -13,6 +14,9 @@
 			:is-borrower="isBorrower"
 			:is-trustee="isTrustee"
 			:user-id="userId"
+			:is-mobile="isMobile"
+			:lender-image-url="profilePic"
+			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
 		/>
 		<nav
@@ -60,7 +64,7 @@
 								display: hasBasket ? 'inline-flex' : 'none'
 							}"
 						>
-							<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+							<span class="tw-bg-secondary tw-rounded-xs tw-py-0.5 tw-px-1 tw-mr-1">
 								<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 									<kv-loading-placeholder />
 								</div>
@@ -356,7 +360,7 @@
 									}"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
-									<span class="tw-bg-secondary tw-rounded-sm tw-py-0.5 tw-px-1 tw-mr-1">
+									<span class="tw-bg-secondary tw-rounded-xs tw-py-0.5 tw-px-1 tw-mr-1">
 										<div v-if="isBasketLoading" class="tw-w-1 tw-h-3">
 											<kv-loading-placeholder />
 										</div>
@@ -557,7 +561,9 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import {
+	defineAsyncComponent, watch
+} from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -646,6 +652,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
+			throttledDetermineIfMobile: null,
 		};
 	},
 	emits: ['show-basket'],
@@ -810,20 +817,27 @@ export default {
 			hasLentBefore,
 			hasDepositBefore,
 		});
-		window.addEventListener('resize', this.determineIfMobile());
 
-		if (this.$refs?.newExpHeader) {
-			this.$refs?.newExpHeader?.getSuggestions?.(this.apollo);
-		}
+		watch(
+			() => this.$refs.newExpHeader?.menuOpen,
+			menuOpen => {
+				document.body.style.overflow = this.isMobile && menuOpen ? 'hidden' : '';
+			}
+		);
+
+		this.throttledDetermineIfMobile = _throttle(() => {
+			this.determineIfMobile();
+		}, 200);
+
+		this.determineIfMobile();
+		window.addEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	beforeUnmount() {
-		window.removeEventListener('resize', this.determineIfMobile());
+		window.removeEventListener('resize', this.throttledDetermineIfMobile);
 	},
 	methods: {
 		determineIfMobile() {
-			return _throttle(() => {
-				this.isMobile = document.documentElement.clientWidth < 735;
-			}, 200);
+			this.isMobile = document.documentElement.clientWidth < 735;
 		},
 		toggleLendMenu(immediate = false) {
 			const wasVisible = this.isLendMenuVisible;

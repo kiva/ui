@@ -61,7 +61,7 @@
 						v-else
 						v-for="leaderboardTeam in teamsToShow(timeFrame)"
 						:key="leaderboardTeam.team.id"
-						class="tw-text-small tw-rounded-sm tw-flex tw-flex-row tw-p-1"
+						class="tw-text-small tw-rounded-xs tw-flex tw-flex-row tw-p-1"
 					>
 						<img
 							v-if="leaderboardTeam.team.image && leaderboardTeam.team.image.url"

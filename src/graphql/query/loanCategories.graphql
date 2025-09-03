@@ -1,0 +1,19 @@
+query LoanCategories($filters: CategorySearchInput) {
+  categories(filters: $filters) {
+    totalCount
+    values {
+      id
+      name
+      categoryType
+      description
+      ... on LoanCategorySearchOutput {
+        contentfulEntry {
+          entry
+        }
+        savedSearch {
+          id
+        }
+      }
+    }
+  }
+}

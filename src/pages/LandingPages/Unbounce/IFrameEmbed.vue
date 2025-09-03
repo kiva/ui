@@ -73,8 +73,12 @@ export default {
 			const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
 			let optout = false;
 			for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
-				if (cookies[i].indexOf('kvgdpr') > -1 && cookies[i].indexOf('opted_out=true') > -1) {
-					optout = true;
+				const cookie = cookies[i].trim();
+				if (cookie.startsWith('kvgdpr=')) {
+					const kvCookie = cookie.substring('kvgdpr='.length);
+					if (/(\b|&)opted_out=true(\b|&)/.test(kvCookie)) {
+						optout = true;
+					}
 				}
 			}
 			// event?.detail?.groups should be a string like: 'C0001:1,C0003:1,C0002:1,C0004:1'

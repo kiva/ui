@@ -92,7 +92,7 @@ export default {
 <style scoped lang="postcss">
 .info {
 	@apply tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2 tw-shadow-lg tw-py-1
-		md:tw-rounded-lg tw-rounded-b tw-px-2.5 md:tw-px-4;
+		md:tw-rounded-xl tw-rounded-b tw-px-2.5 md:tw-px-4;
 }
 
 .container {

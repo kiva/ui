@@ -115,7 +115,9 @@ import {
 	FUNDRAISING,
 	REFUNDED,
 	EXPIRED,
+	INACTIVE_EXPIRED,
 	PAYING_BACK,
+	RAISED,
 	ENDED,
 	FUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
@@ -184,12 +186,14 @@ const loanStatus = computed(() => {
 	switch (loan.value?.status) {
 		case FUNDRAISING:
 			return '🎉 Fundraising';
+		case RAISED:
 		case FUNDED:
 			return '🎉 Funded';
 		case PAYING_BACK:
 			return '🎉 Repaying';
 		case REFUNDED:
 			return 'Refunded';
+		case INACTIVE_EXPIRED:
 		case EXPIRED:
 			return 'Expired';
 		case DEFAULTED:

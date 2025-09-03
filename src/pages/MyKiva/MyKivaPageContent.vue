@@ -145,6 +145,14 @@
 			<LatestBlogCarousel :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
+	<section class="tw-mt-4 tw-bg-white tw-py-4">
+		<div
+			style="max-width: 1200px;"
+			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"
+		>
+			<BailoutChips />
+		</div>
+	</section>
 </template>
 
 <script>
@@ -172,6 +180,7 @@ import LendingCategorySection from '#src/components/LoanFinding/LendingCategoryS
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import LendingStats from '#src/components/MyKiva/LendingStats';
+import BailoutChips from '#src/components/MyKiva/BailoutChips';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
@@ -211,6 +220,7 @@ export default {
 		MyKivaProfile,
 		MyKivaStats,
 		LendingStats,
+		BailoutChips,
 	},
 	props: {
 		isHeroEnabled: {
