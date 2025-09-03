@@ -598,7 +598,7 @@ import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-const NAV_UPDATE_EXP_KEY = 'kiva_nav_update';
+const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
 
 export default {
 	name: 'TheHeader',
