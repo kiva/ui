@@ -123,6 +123,10 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	balance: {
+		type: Number,
+		default: 0,
+	},
 });
 
 const { update } = toRefs(props);
@@ -213,10 +217,20 @@ onMounted(() => {
 	}
 });
 
+const headerTitle = computed(() => {
+	if (props.balance === 1) {
+		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-life-right-now`;
+	}
+	if (props.balance > 0 && props.balance > 1) {
+		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
+	}
+	return 'You can impact lives right now';
+});
+
 const useFunds = () => {
 	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
-	// eslint-disable-next-line max-len
-	window.location.href = `/lend/filter?header=You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
+
+	window.location.href = `/lend/filter?header=${headerTitle.value}`;
 };
 
 </script>

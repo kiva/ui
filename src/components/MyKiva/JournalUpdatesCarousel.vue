@@ -17,6 +17,7 @@
 					:loan="loan"
 					:update="update"
 					:update-number="`${totalUpdates - index}`"
+					:balance="balance"
 					@read-more-clicked="openLightbox"
 					@share-loan-clicked="shareLoanClicked"
 				/>
@@ -118,7 +119,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-
+	balance: {
+		type: Number,
+		default: 0,
+	},
 });
 
 const cookieStore = inject('cookieStore');
