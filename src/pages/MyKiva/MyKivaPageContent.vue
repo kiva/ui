@@ -644,7 +644,7 @@ export default {
 	@apply !tw-invisible !tw-mx-0 !tw-w-2;
 }
 
-#recommended-loans :deep(div:first-child) {
+#recommended-loans :deep(.kv-carousel > div:first-child) {
 	@apply !tw-gap-2;
 }
 </style>
