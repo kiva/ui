@@ -17,7 +17,6 @@
 					:loan="loan"
 					:update="update"
 					:update-number="`${totalUpdates - index}`"
-					:balance="balance"
 					@read-more-clicked="openLightbox"
 					@share-loan-clicked="shareLoanClicked"
 				/>
@@ -118,10 +117,6 @@ const props = defineProps({
 	updatesLoading: {
 		type: Boolean,
 		default: false,
-	},
-	balance: {
-		type: Number,
-		default: 0,
 	},
 });
 

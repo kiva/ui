@@ -123,10 +123,6 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	balance: {
-		type: Number,
-		default: 0,
-	},
 });
 
 const { update } = toRefs(props);
@@ -218,10 +214,10 @@ onMounted(() => {
 });
 
 const headerTitle = computed(() => {
-	if (props.balance === 1) {
+	if (update.value?.livesToImpact === 1) {
 		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-life-right-now`;
 	}
-	if (props.balance > 0 && props.balance > 1) {
+	if (update.value?.livesToImpact > 1) {
 		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
 	}
 	return 'You can impact lives right now';

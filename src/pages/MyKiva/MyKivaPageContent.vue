@@ -77,7 +77,6 @@
 					:lender="lender"
 					:total-updates="totalUpdates"
 					:updates-loading="updatesLoading"
-					:balance="newBalance"
 					@load-more-updates="loadMoreUpdates"
 				/>
 			</AsyncMyKivaSection>
