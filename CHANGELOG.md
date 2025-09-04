@@ -1,3 +1,76 @@
+## [3.29.0](https://github.com/kiva/ui/compare/v3.28.0...v3.29.0) (2025-09-03)
+
+### 🎉 New Features
+
+* [MP-1916] - fix false positive cases ([691de66](https://github.com/kiva/ui/commit/691de66ec72e4b55f2b370f2232491458a1029c6))
+* [MP-1916] - fix false positive cases in Vue Components ([65b9dfb](https://github.com/kiva/ui/commit/65b9dfb76083694cf2d2da879771dea2ac0c70c2))
+* [MP-1962] - fix issue with loader on funded borrower profile `/lend/:id` ([cc55527](https://github.com/kiva/ui/commit/cc555271ee944b437e81b40ccf5f63ef2d6bf2d8))
+* initial setup impact vertical selector and create a fund button ([be5bfc6](https://github.com/kiva/ui/commit/be5bfc679643a3f9f3ea0c5b537ac55ae71e381d))
+* more cta added to mykiva bailout category section ([#6242](https://github.com/kiva/ui/issues/6242)) ([98d348d](https://github.com/kiva/ui/commit/98d348d75cdc8717412571f51e8aa882da3bd719))
+* mykiva bailout section ([#6223](https://github.com/kiva/ui/issues/6223)) ([e6fd1d0](https://github.com/kiva/ui/commit/e6fd1d0f2eb8905e2d5c0ce7799da62c672f4710))
+* update header component and fix determineMobile method ([bec4117](https://github.com/kiva/ui/commit/bec4117a6de92e57f8d74dd85d3614d3908778dc))
+* user avatar in header and update component ([e5e1f82](https://github.com/kiva/ui/commit/e5e1f825f26265850be77d1178f3f492066444b5))
+
+### 🐛 Bugfixes
+
+* [MP-1962] - apply PR feedback ([452fec2](https://github.com/kiva/ui/commit/452fec2635b6c585ebaa1ce0498400b8f541fe5d))
+* additinoal copy and style tweaks for empty state ([890be54](https://github.com/kiva/ui/commit/890be5439175bc68e155bcc0e399a1aa25ad4d05))
+* copy and button updates for zero funds state ([fc2e112](https://github.com/kiva/ui/commit/fc2e11216fe88d7736100a8c7de90a37820fc547))
+* enable loading state, fund list refresh and redirect when creating new funds ([24d0151](https://github.com/kiva/ui/commit/24d0151062bcc1afad08aa3f5238b23ae22e28d7))
+* install and use impact vertical selector in gf management page ([2936117](https://github.com/kiva/ui/commit/2936117c87530db58dba21e07b45022e4f437224))
+* lock page scrolling when menu is open in new header ([3bfe1ab](https://github.com/kiva/ui/commit/3bfe1abe9b57f290e7db9e55ec45e819baf441ee))
+* mobile width value ([cbdf04c](https://github.com/kiva/ui/commit/cbdf04c0f48f02e59e53edf5f72a1eb356158ec9))
+* more tweaks to statuses shown in borrower carousel ([e8c7ae5](https://github.com/kiva/ui/commit/e8c7ae58f536f560133b02afb358fe7c8d50a07c))
+* mp-1978 integrate cta changes ([95da37f](https://github.com/kiva/ui/commit/95da37fc58df4dda16b62c4ea834043bc6f8564b))
+* mp-1978 integrate cta changes ([1dc709d](https://github.com/kiva/ui/commit/1dc709d1ccfc497fc069a2f2073a30f0dbe7493b))
+* mp-1978 integrate cta changes ([4780b48](https://github.com/kiva/ui/commit/4780b480479543d29808b4957cc34792554f681b))
+* remove resize listener correctly ([6ccfccb](https://github.com/kiva/ui/commit/6ccfccb1dba5300504969580c152c8540a1ae3ff))
+* unused event emit ([608f299](https://github.com/kiva/ui/commit/608f299a7486c4aef0d44e51611974e47dd3dfd1))
+
+### 🧹 Chores
+
+* kv components ([e2c82c1](https://github.com/kiva/ui/commit/e2c82c1ebdddb72b9ac9048e9a37bce2ea81c264))
+* kv components ([986775f](https://github.com/kiva/ui/commit/986775f866cb025a9785f6564a303f0d1baaf157))
+* kv tokens update ([#6226](https://github.com/kiva/ui/issues/6226)) ([6fb6874](https://github.com/kiva/ui/commit/6fb687477aae71ffb6e4859f290b6e56a8d9c059))
+* **release:** 3.28.1-rc.1 [skip ci] ([bead437](https://github.com/kiva/ui/commit/bead4370108529c006f1339d0265f946d1a19488))
+* **release:** 3.29.0-rc.1 [skip ci] ([bb09973](https://github.com/kiva/ui/commit/bb09973c7240cd7d64453c47f8afa19799302264)), closes [#6242](https://github.com/kiva/ui/issues/6242) [#6223](https://github.com/kiva/ui/issues/6223) [#6226](https://github.com/kiva/ui/issues/6226)
+* resolve conflicts with package files ([4a50fe7](https://github.com/kiva/ui/commit/4a50fe783a397ccf95a0266bfe37a1404d2d03e0))
+
+## [3.29.0-rc.1](https://github.com/kiva/ui/compare/v3.28.1-rc.1...v3.29.0-rc.1) (2025-09-03)
+
+### 🎉 New Features
+
+* [MP-1916] - fix false positive cases ([691de66](https://github.com/kiva/ui/commit/691de66ec72e4b55f2b370f2232491458a1029c6))
+* [MP-1916] - fix false positive cases in Vue Components ([65b9dfb](https://github.com/kiva/ui/commit/65b9dfb76083694cf2d2da879771dea2ac0c70c2))
+* [MP-1962] - fix issue with loader on funded borrower profile `/lend/:id` ([cc55527](https://github.com/kiva/ui/commit/cc555271ee944b437e81b40ccf5f63ef2d6bf2d8))
+* initial setup impact vertical selector and create a fund button ([be5bfc6](https://github.com/kiva/ui/commit/be5bfc679643a3f9f3ea0c5b537ac55ae71e381d))
+* more cta added to mykiva bailout category section ([#6242](https://github.com/kiva/ui/issues/6242)) ([98d348d](https://github.com/kiva/ui/commit/98d348d75cdc8717412571f51e8aa882da3bd719))
+* mykiva bailout section ([#6223](https://github.com/kiva/ui/issues/6223)) ([e6fd1d0](https://github.com/kiva/ui/commit/e6fd1d0f2eb8905e2d5c0ce7799da62c672f4710))
+* update header component and fix determineMobile method ([bec4117](https://github.com/kiva/ui/commit/bec4117a6de92e57f8d74dd85d3614d3908778dc))
+* user avatar in header and update component ([e5e1f82](https://github.com/kiva/ui/commit/e5e1f825f26265850be77d1178f3f492066444b5))
+
+### 🐛 Bugfixes
+
+* [MP-1962] - apply PR feedback ([452fec2](https://github.com/kiva/ui/commit/452fec2635b6c585ebaa1ce0498400b8f541fe5d))
+* additinoal copy and style tweaks for empty state ([890be54](https://github.com/kiva/ui/commit/890be5439175bc68e155bcc0e399a1aa25ad4d05))
+* copy and button updates for zero funds state ([fc2e112](https://github.com/kiva/ui/commit/fc2e11216fe88d7736100a8c7de90a37820fc547))
+* enable loading state, fund list refresh and redirect when creating new funds ([24d0151](https://github.com/kiva/ui/commit/24d0151062bcc1afad08aa3f5238b23ae22e28d7))
+* install and use impact vertical selector in gf management page ([2936117](https://github.com/kiva/ui/commit/2936117c87530db58dba21e07b45022e4f437224))
+* lock page scrolling when menu is open in new header ([3bfe1ab](https://github.com/kiva/ui/commit/3bfe1abe9b57f290e7db9e55ec45e819baf441ee))
+* mobile width value ([cbdf04c](https://github.com/kiva/ui/commit/cbdf04c0f48f02e59e53edf5f72a1eb356158ec9))
+* mp-1978 integrate cta changes ([95da37f](https://github.com/kiva/ui/commit/95da37fc58df4dda16b62c4ea834043bc6f8564b))
+* mp-1978 integrate cta changes ([1dc709d](https://github.com/kiva/ui/commit/1dc709d1ccfc497fc069a2f2073a30f0dbe7493b))
+* mp-1978 integrate cta changes ([4780b48](https://github.com/kiva/ui/commit/4780b480479543d29808b4957cc34792554f681b))
+* remove resize listener correctly ([6ccfccb](https://github.com/kiva/ui/commit/6ccfccb1dba5300504969580c152c8540a1ae3ff))
+* unused event emit ([608f299](https://github.com/kiva/ui/commit/608f299a7486c4aef0d44e51611974e47dd3dfd1))
+
+### 🧹 Chores
+
+* kv components ([e2c82c1](https://github.com/kiva/ui/commit/e2c82c1ebdddb72b9ac9048e9a37bce2ea81c264))
+* kv components ([986775f](https://github.com/kiva/ui/commit/986775f866cb025a9785f6564a303f0d1baaf157))
+* kv tokens update ([#6226](https://github.com/kiva/ui/issues/6226)) ([6fb6874](https://github.com/kiva/ui/commit/6fb687477aae71ffb6e4859f290b6e56a8d9c059))
+* resolve conflicts with package files ([4a50fe7](https://github.com/kiva/ui/commit/4a50fe783a397ccf95a0266bfe37a1404d2d03e0))
+
 ## [3.28.1-rc.1](https://github.com/kiva/ui/compare/v3.28.0...v3.28.1-rc.1) (2025-08-20)
 
 ### 🐛 Bugfixes
