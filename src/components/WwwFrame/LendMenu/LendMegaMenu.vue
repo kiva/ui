@@ -121,7 +121,7 @@
 									</li>
 									<li>
 										<a
-											href="/lend/countries-not-lent"
+											href="/lend-category-beta?countries-not-lent-to=true"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>

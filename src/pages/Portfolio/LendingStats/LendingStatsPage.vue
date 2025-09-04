@@ -28,7 +28,7 @@
 						:not-lent-to="countriesNotLentTo"
 						:lent-to="countriesLentTo"
 						item-key="isoCode"
-						unlent-url="/lend/countries-not-lent"
+						unlent-url="/lend-category-beta?countries-not-lent-to=true"
 						section-id="lend-stat-countries"
 						show-more-id="show-more-countries"
 						lend-new-id="lend-new-country"
