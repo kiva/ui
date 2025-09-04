@@ -129,7 +129,10 @@ export default {
 			return this.isPartnerLoan ? this.loanLenderRepaymentTerm : this.loanTermLenderRepaymentTerm;
 		},
 		repaymentSchedule() {
-			const schedule = this.isPartnerLoan ? this.repaymentInterval : 'Monthly';
+			const intervalMap = { at_end: 'end of term' };
+			const schedule = this.isPartnerLoan
+				? intervalMap[this.repaymentInterval]
+				|| this.repaymentInterval : 'Monthly';
 			const scheduleUpperCase = schedule.toString().charAt(0).toUpperCase() + schedule.toString().slice(1);
 			return scheduleUpperCase;
 		},
