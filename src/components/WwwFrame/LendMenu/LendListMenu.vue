@@ -151,7 +151,7 @@
 						<li>
 							<a
 								:href="isCountriesNotLentToEnabled ?
-									'/lend-category-beta?countries-not-lent-to=true'
+									'/lend/filter?countries-not-lent-to=true'
 									: '/lend/countries-lent-to'"
 								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
