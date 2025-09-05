@@ -202,7 +202,7 @@ export default {
 
 			// retain countries not lent to location in /lend
 			if (this.url.includes('new-countries-for-you')) {
-				return '/lend-category-beta?countries-not-lent-to=true';
+				return '/lend/countries-not-lent';
 			}
 
 			// otherwise transform to use /lend-by-category as root path
