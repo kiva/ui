@@ -220,7 +220,7 @@ const headerTitle = computed(() => {
 	if (update.value?.livesToImpact > 1) {
 		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
 	}
-	return `You-can-impact-lives-right-now`;
+	return 'You-can-impact-lives-right-now';
 });
 
 const useFunds = () => {
