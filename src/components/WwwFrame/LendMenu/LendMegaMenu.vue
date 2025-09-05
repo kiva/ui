@@ -121,7 +121,9 @@
 									</li>
 									<li>
 										<a
-											href="/lend/countries-not-lent"
+											:href="isCountriesNotLentToEnabled ?
+												'/lend/filter?countries-not-lent-to=true'
+												: '/lend/countries-lent-to'"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>
@@ -241,6 +243,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		isCountriesNotLentToEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		isUserDataLoading: {
 			type: Boolean,
