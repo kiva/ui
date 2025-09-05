@@ -119,7 +119,7 @@
 											Saved searches
 										</span>
 									</li>
-									<li>
+									<li v-if="isCountriesNotLentToEnabled">
 										<a
 											href="/lend-category-beta?countries-not-lent-to=true"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
@@ -241,6 +241,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		isCountriesNotLentToEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		isUserDataLoading: {
 			type: Boolean,

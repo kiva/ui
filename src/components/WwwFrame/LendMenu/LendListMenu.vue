@@ -148,7 +148,7 @@
 						<li v-else>
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
-						<li>
+						<li v-if="isCountriesNotLentToEnabled">
 							<a
 								href="/lend-category-beta?countries-not-lent-to=true"
 								class="lend-link tw-text-primary"
@@ -217,6 +217,10 @@ export default {
 		isChannelsLoading: {
 			type: Boolean,
 			default: true,
+		},
+		isCountriesNotLentToEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		isUserDataLoading: {
 			type: Boolean,
