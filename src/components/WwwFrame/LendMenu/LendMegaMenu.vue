@@ -119,9 +119,11 @@
 											Saved searches
 										</span>
 									</li>
-									<li v-if="isCountriesNotLentToEnabled">
+									<li>
 										<a
-											href="/lend-category-beta?countries-not-lent-to=true"
+											:href="isCountriesNotLentToEnabled ?
+												'/lend-category-beta?countries-not-lent-to=true'
+												: '/lend/countries-lent-to'"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
 										>

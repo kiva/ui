@@ -148,9 +148,11 @@
 						<li v-else>
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
-						<li v-if="isCountriesNotLentToEnabled">
+						<li>
 							<a
-								href="/lend-category-beta?countries-not-lent-to=true"
+								:href="isCountriesNotLentToEnabled ?
+									'/lend-category-beta?countries-not-lent-to=true'
+									: '/lend/countries-lent-to'"
 								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
