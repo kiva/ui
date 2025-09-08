@@ -473,20 +473,20 @@ onUnmounted(() => {
 }
 
 .goal-card-bg::before {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 500px;
-    background: url(/static/src/assets/images/my-kiva/goal-card-bg.jpg) lightgray center / cover no-repeat;
-		background-blend-mode: overlay;
-    transform: rotate(17deg);
-    left: 40%;
-    right: 0;
-    z-index: 0;
+	content: '';
+	position: absolute;
+	width: 400px;
+	height: 500px;
+	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray center / cover no-repeat;
+	background-blend-mode: overlay;
+	transform: rotate(17deg);
+	left: 40%;
+	right: 0;
+	z-index: 0;
 }
 
 .goal-card-bg > * {
-    position: relative;
-    z-index: 1;
+	position: relative;
+	z-index: 1;
 }
 </style>
