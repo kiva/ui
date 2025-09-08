@@ -20,6 +20,43 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<div
+			v-if="showSetGoalCard"
+			class="card-container goal-card-bg"
+		>
+			<div>
+				<span
+					class="
+						tw-inline-flex tw-items-center tw-gap-1
+						tw-mb-2 tw-rounded
+						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
+					title="Your lending reach"
+				>
+					<KvMaterialIcon
+						class="tw-w-2 tw-h-2 tw-shrink-0"
+						:icon="mdiCheckCircleOutline"
+					/>
+					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+						My goal
+					</span>
+				</span>
+			</div>
+			<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
+				<div class="tw-mx-auto">
+					<GoalCardCareImg />
+				</div>
+				<h3>Set your first giving goal!</h3>
+				<p class="tw-text-small tw-pb-2">
+					How many more people will you help this year?
+				</p>
+				<KvButton
+					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+					@click="emit('open-goal-modal')"
+				>
+					Set a goal
+				</KvButton>
+			</div>
+		</div>
+		<div
 			v-if="!userLentToAllRegions"
 			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
 		>
@@ -153,8 +190,8 @@ import {
 	inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
-import { mdiArrowTopRight } from '@mdi/js';
+import { KvMaterialIcon, KvCheckbox, KvButton } from '@kiva/kv-components';
+import { mdiArrowTopRight, mdiCheckCircleOutline } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
@@ -172,6 +209,7 @@ import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
+import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -222,6 +260,7 @@ const props = defineProps({
 	},
 });
 
+const showSetGoalCard = ref(true);
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
@@ -232,6 +271,8 @@ const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 const showTagIcon = computed(() => !!topCategory.value);
 const hasLoans = computed(() => props.loans.length > 0);
+
+const emit = defineEmits(['open-goal-modal']);
 
 const regionImages = {
 	Africa,
@@ -419,5 +460,28 @@ onUnmounted(() => {
 
 .carousel > :deep(section > .kv-carousel__controls) {
 	@apply tw-hidden;
+}
+
+.goal-card-bg {
+	@apply tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+		tw-overflow-hidden tw-bg-white tw-shrink-0;
+}
+
+.goal-card-bg::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background: url(/static/src/assets/images/my-kiva/goal-card-bg.jpg) lightgray center / cover no-repeat;
+		background-blend-mode: overlay;
+    transform: rotate(17deg);
+    left: 40%;
+    right: 0;
+    z-index: 0;
+}
+
+.goal-card-bg > * {
+    position: relative;
+    z-index: 1;
 }
 </style>
