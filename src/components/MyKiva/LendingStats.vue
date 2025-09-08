@@ -231,7 +231,7 @@ const props = defineProps({
 	isNextStepsExp: {
 		type: Boolean,
 		default: false,
-	}
+	},
 });
 
 const interval = ref(null);
