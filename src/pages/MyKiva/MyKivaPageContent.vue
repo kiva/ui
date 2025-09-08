@@ -604,8 +604,6 @@ export default {
 		}
 	},
 	async mounted() {
-		console.log('lendingStatesExp', this.isLendingStatsExp);
-		console.log('nextStepsExp', this.isNextStepsExp);
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
 		this.fetchBlogCards();
