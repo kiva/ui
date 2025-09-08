@@ -262,7 +262,7 @@ const props = defineProps({
 	},
 	showSetGoalCard: {
 		type: Boolean,
-		default: true,
+		default: false,
 	}
 });
 
@@ -474,19 +474,16 @@ onUnmounted(() => {
 
 .goal-card-bg::before {
 	content: '';
-	position: absolute;
 	width: 400px;
 	height: 500px;
-	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray center / cover no-repeat;
-	background-blend-mode: overlay;
+	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
 	transform: rotate(17deg);
 	left: 40%;
-	right: 0;
-	z-index: 0;
+
+	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
 }
 
 .goal-card-bg > * {
-	position: relative;
-	z-index: 1;
+	@apply tw-relative tw-z-1;
 }
 </style>
