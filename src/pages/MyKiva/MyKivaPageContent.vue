@@ -31,6 +31,7 @@
 				:lender="lender"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
+				:is-next-steps-exp="isNextStepsExp"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -264,6 +265,10 @@ export default {
 			default: () => [],
 		},
 		isLendingStatsExp: {
+			type: Boolean,
+			default: false,
+		},
+		isNextStepsExp: {
 			type: Boolean,
 			default: false,
 		},
@@ -599,6 +604,8 @@ export default {
 		}
 	},
 	async mounted() {
+		console.log('lendingStatesExp', this.isLendingStatsExp);
+		console.log('nextStepsExp', this.isNextStepsExp);
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
 		this.fetchBlogCards();

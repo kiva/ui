@@ -16,6 +16,14 @@
 		</p>
 	</div>
 	<div
+		v-if="isNextStepsExp && !userLentToAllRegions"
+	>
+		<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
+			Goals Card goes here
+		</div>
+	</div>
+	<div
+		v-else
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
@@ -116,7 +124,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
+		<div v-if="!userLentToAllRegions && !isNextStepsExp" class="card-container tw-shrink-0">
 			<MyKivaCard
 				class="kiva-card tw-h-full"
 				primary-cta-variant="primary"
@@ -220,6 +228,10 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	isNextStepsExp: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const interval = ref(null);
