@@ -153,35 +153,37 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
-			<MyKivaCard
-				class="kiva-card tw-h-full"
-				primary-cta-variant="primary"
-				title-color="tw-text-action-highlight"
-				:bg-image="StatsCardBg"
-				card-content-classes="tw-pb-1 tw-px-1"
-				:loans="topCategoryLoansForCardCarousel"
-				:is-full-width-primary-cta="true"
-				:is-title-font-sans="true"
-				:primary-cta-text="cardCtaText"
-				:show-cta-icon="true"
-				:show-tag-icon="showTagIcon"
-				:tag-text="cardTagText"
-				:title="cardTitle"
-				@primary-cta-clicked="goToTopCategory"
+		<template v-if="!showSetGoalCard">
+			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
+				<MyKivaCard
+					class="kiva-card tw-h-full"
+					primary-cta-variant="primary"
+					title-color="tw-text-action-highlight"
+					:bg-image="StatsCardBg"
+					card-content-classes="tw-pb-1 tw-px-1"
+					:loans="topCategoryLoansForCardCarousel"
+					:is-full-width-primary-cta="true"
+					:is-title-font-sans="true"
+					:primary-cta-text="cardCtaText"
+					:show-cta-icon="true"
+					:show-tag-icon="showTagIcon"
+					:tag-text="cardTagText"
+					:title="cardTitle"
+					@primary-cta-clicked="goToTopCategory"
+				/>
+			</div>
+			<JourneyCardCarousel
+				v-else
+				class="carousel"
+				user-in-homepage
+				in-lending-stats
+				:lender="lender"
+				:slides-number="3"
+				:slides="allRegionsLentSlides"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
 			/>
-		</div>
-		<JourneyCardCarousel
-			v-else
-			class="carousel"
-			user-in-homepage
-			in-lending-stats
-			:lender="lender"
-			:slides-number="3"
-			:slides="allRegionsLentSlides"
-			:hero-contentful-data="heroContentfulData"
-			:hero-tiered-achievements="heroTieredAchievements"
-		/>
+		</template>
 	</div>
 </template>
 <script setup>
@@ -258,9 +260,12 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	showSetGoalCard: {
+		type: Boolean,
+		default: true,
+	}
 });
 
-const showSetGoalCard = ref(true);
 const interval = ref(null);
 const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
