@@ -89,6 +89,7 @@ export default {
 			isChannelsLoading: true,
 			isUserDataLoading: false,
 			showMGUpsellLink: false,
+			countriesNotLentToExpVersion: null,
 		};
 	},
 	apollo: {
@@ -132,6 +133,9 @@ export default {
 		hasUserId() {
 			return !!this.userId;
 		},
+		countriesNotLentToEnabled() {
+			return this.hasUserId && this.countriesNotLentToExpVersion === 'b';
+		}
 	},
 	methods: {
 		initCountriesNotLentToExperiment() {
@@ -142,7 +146,7 @@ export default {
 				COUNTRIES_NOT_LENT_TO_EXP,
 				'EXP-MP-1824-Aug2025',
 			);
-			this.countriesNotLentToEnabled = this.hasUserId && version === 'b';
+			this.countriesNotLentToExpVersion = version;
 		},
 		onClose() {
 			this.$refs.list.onClose();
