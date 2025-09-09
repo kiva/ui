@@ -81,7 +81,7 @@
 				</dd>
 			</div>
 		</kv-grid>
-		<div>
+		<div v-if="isPercentileByYearExp">
 			<img
 				:src="clockIllustrationUrl"
 				class="tw-w-5 tw-h-5 tw-mr-1.5"
