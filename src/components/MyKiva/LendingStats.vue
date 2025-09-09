@@ -16,7 +16,7 @@
 		</p>
 	</div>
 	<div
-		v-if="isNextStepsExp && !userLentToAllRegions"
+		v-if="isNextStepsExp"
 	>
 		<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
 			Goals Card goes here
