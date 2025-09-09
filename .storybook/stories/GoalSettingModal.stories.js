@@ -1,5 +1,5 @@
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
-import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
+
 export default {
 	title: 'MyKiva/GoalSettingModal',
 	component: GoalSettingModal,
@@ -8,7 +8,7 @@ export default {
 const story = (args) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		components: { GoalSettingModal, CategoryForm },
+		components: { GoalSettingModal },
 		setup() { return { args }; },
 		template: `
 			<div>

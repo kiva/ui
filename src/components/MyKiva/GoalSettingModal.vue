@@ -9,8 +9,8 @@
 		<component
 			:is="contentComponent"
 			:categories="categories"
-			:selected-category-id="goalCategory.id"
-			@select-category="handleSelectedCategory"
+			:pre-selected-category="selectedCategory.id"
+			@category-selected="handleCategorySelected"
 		/>
 		<template #controls>
 			<div class="tw-text-right">
@@ -33,6 +33,12 @@ import {
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
+import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
+import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
+import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
+import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
+import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
+import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
 defineProps({
 	show: {
@@ -44,46 +50,46 @@ defineProps({
 const formStep = ref(1);
 const categories = [
 	{
-		id: 1,
+		id: '1',
 		name: 'Women',
 		description: 'Open doors for women around the world',
-		icon: 'women.svg',
 		eventProp: 'women',
+		customImage: womenImg,
 	},
 	{
-		id: 2,
+		id: '2',
 		name: 'Refugees',
 		description: 'Transform the future for refugees',
-		icon: 'refugees.svg',
 		eventProp: 'refugees',
+		customImage: refugeesImg,
 	},
 	{
-		id: 3,
+		id: '3',
 		name: 'Climate Action',
 		description: 'Support the front lines of the climate crisis',
-		icon: 'climate-action.svg',
 		eventProp: 'climate',
+		customImage: climateActionImg,
 	},
 	{
-		id: 4,
+		id: '4',
 		name: 'U.S. Entrepreneurs',
 		description: 'Support small businesses in the U.S.',
-		icon: 'us-entrepreneurs.svg',
 		eventProp: 'us-entrepreneur',
+		customImage: usEntrepreneursImg,
 	},
 	{
-		id: 5,
+		id: '5',
 		name: 'Basic Needs',
 		description: 'Clean water, healthcare, and sanitation',
-		icon: 'basic-needs.svg',
 		eventProp: 'basic-needs',
+		customImage: basicNeedsImg,
 	},
 	{
-		id: 6,
+		id: '6',
 		name: 'Support All',
 		description: 'Every loan makes real change',
-		icon: 'support-all.svg',
 		eventProp: 'help-everyone',
+		customImage: supportAllImg,
 	}
 ];
 
@@ -91,7 +97,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['goal-modal-closed']);
-const goalCategory = ref(categories[0]);
+const selectedCategory = ref(categories[0]);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 
@@ -102,9 +108,10 @@ const contentComponent = computed(() => {
 	}
 });
 
-const handleSelectedCategory = category => {
-	$kvTrackEvent('portfolio', 'select', 'choose-goal-category', category.eventProp);
-	goalCategory.value = category;
+const handleCategorySelected = categoryId => {
+	const categoryIdx = categoryId - 1;
+	$kvTrackEvent('portfolio', 'select', 'choose-goal-category', categories[categoryIdx]?.eventProp);
+	selectedCategory.value = categories[categoryIdx];
 };
 
 const ctaCopy = computed(() => {
