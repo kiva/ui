@@ -81,6 +81,16 @@
 				</dd>
 			</div>
 		</kv-grid>
+		<div>
+			<img
+				:src="clockIllustrationUrl"
+				class="tw-w-5 tw-h-5 tw-mr-1.5"
+				alt="Clock icon"
+			>
+			<p class="tw-font-book tw-text-small">
+				{{ daysUntilDeadline }} days to make contribution this year
+			</p>
+		</div>
 	</async-portfolio-section>
 </template>
 
@@ -91,7 +101,9 @@ import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
+import { differenceInCalendarDays } from 'date-fns';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
+import clockIllustrationUrl from '#src/assets/images/kiva-classic-illustrations/clock-illustration.svg?url';
 
 export default {
 	name: 'LendingInsights',
@@ -121,7 +133,16 @@ export default {
 			percentile: 0,
 			numberOfLoans: 0,
 			mdiArrowRight,
+			clockIllustrationUrl,
 		};
+	},
+	computed: {
+		// For days until a specific future date
+		daysUntilDeadline() {
+			const today = new Date();
+			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
+			return differenceInCalendarDays(deadline, today);
+		}
 	},
 	methods: {
 		fetchAsyncData() {
