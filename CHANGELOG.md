@@ -1,3 +1,40 @@
+## [3.30.0](https://github.com/kiva/ui/compare/v3.29.0...v3.30.0) (2025-09-10)
+
+### 🎉 New Features
+
+* create set a goal card ([4c294c5](https://github.com/kiva/ui/commit/4c294c5dfb36373b0ddf9348720e6b564226adbc))
+* fixed eslint issues ([a535890](https://github.com/kiva/ui/commit/a535890b3378feb0d3c9d7482ec4ebfd1d88fa1a))
+* fixed header ([84fc166](https://github.com/kiva/ui/commit/84fc166d6c8f38bdf33b5c17e1351b4792f987b0))
+* line fixes ([0d0fd74](https://github.com/kiva/ui/commit/0d0fd74a7489d224f74f570958d0478c484dfafc))
+* removed original implementation; simplified solution ([e6d6354](https://github.com/kiva/ui/commit/e6d6354929358568b3759734c1d70d727a5da71b))
+
+### 🐛 Bugfixes
+
+* apply copy fix to repayment schedule ([9490180](https://github.com/kiva/ui/commit/9490180715c73f5ac6f3ba3153e50c1a5b267866))
+* change nav experiment key to match cps ([89b8d3a](https://github.com/kiva/ui/commit/89b8d3a640a982537666cf24d28496c7b2856848))
+* enable computed variable for experiment check ([ace5f5c](https://github.com/kiva/ui/commit/ace5f5c9382691beb0251d86d6715a44a4d8c06c))
+* implement initCountriesNotLentToExperiment in TheLendMenu ([45a6714](https://github.com/kiva/ui/commit/45a6714798640104f99670591627581a6c4d8732))
+* isolate getting and serving image to narrow down exception ([3364f54](https://github.com/kiva/ui/commit/3364f54a9db898fc65338def2c2b829827c165ad))
+* lint and indentation ([5c54c2d](https://github.com/kiva/ui/commit/5c54c2d0b73b55731ac7f6aa2e04d4ce48ce7e0e))
+* make link toggle based on experiment state ([36a5f7b](https://github.com/kiva/ui/commit/36a5f7b991bb9aae0a1dc92b5140167f5a288d21))
+* more nav tweaks ([74e346e](https://github.com/kiva/ui/commit/74e346e312a9c30de45f421783fcba902106b745))
+* replace links ([58cd7a1](https://github.com/kiva/ui/commit/58cd7a172b8a2854381b895ca2f2549ac39ab804))
+* replace old countries not lent to link with new redirect ([3273a1f](https://github.com/kiva/ui/commit/3273a1f300f2a6f668a0b2dd8fccc1874b15a658))
+* resolve flex gap issues in mykiva recommended carousel ([8aa9889](https://github.com/kiva/ui/commit/8aa988958f9cd6b021e918902110cb4e9335adb1))
+* revert link changes in non-Menu components ([2832d3a](https://github.com/kiva/ui/commit/2832d3a9c3ad56bceb5c473c96bacca10d06a1b4))
+* update package for nav ([b9d4b43](https://github.com/kiva/ui/commit/b9d4b435ed764c6b039da9284d3e68b36dc82455))
+* update package for nav changes ([21de1b6](https://github.com/kiva/ui/commit/21de1b6bbf5fc0ca292470f30e854e6e53b6c20f))
+* use exp flag as a prop and lending stats content with new card ([747e345](https://github.com/kiva/ui/commit/747e3453bf0ad5ba1720ee6b3e902a5cd802eef4))
+
+### 🪚 Refactors
+
+* using tw classes for card bg ([098c3b7](https://github.com/kiva/ui/commit/098c3b7a7f65f53e610180cd95a6a38e09fe61b3))
+
+### 🧹 Chores
+
+* kv components ([fcd91f3](https://github.com/kiva/ui/commit/fcd91f3da4f8c328db56018a5d162474d02b232a))
+* **release:** 3.30.0-rc.1 [skip ci] ([77e5eb2](https://github.com/kiva/ui/commit/77e5eb28da622957125d78498eead1613b4756ae))
+
 ## [3.30.0-rc.1](https://github.com/kiva/ui/compare/v3.29.0...v3.30.0-rc.1) (2025-09-09)
 
 ### 🎉 New Features
