@@ -16,19 +16,11 @@
 		</p>
 	</div>
 	<div
-		v-if="isNextStepsExp"
-	>
-		<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
-			Goals Card goes here
-		</div>
-	</div>
-	<div
-		v-else
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<div
-			v-if="showSetGoalCard"
+			v-if="isNextStepsExp"
 			class="card-container goal-card-bg"
 		>
 			<div>
@@ -270,10 +262,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	showSetGoalCard: {
-		type: Boolean,
-		default: false,
-	}
 });
 
 const interval = ref(null);
