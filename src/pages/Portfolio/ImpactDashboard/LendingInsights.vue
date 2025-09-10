@@ -81,6 +81,17 @@
 				</dd>
 			</div>
 		</kv-grid>
+		<div
+			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
+		>
+			<kv-material-icon
+				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
+				:icon="mdiClockOutline"
+			/>
+			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+				{{ daysUntilDeadline }} days to make contribution this year
+			</p>
+		</div>
 	</async-portfolio-section>
 </template>
 
@@ -168,18 +179,6 @@
 				</router-link>
 			</div>
 		</kv-grid>
-		<div
-			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
-			v-if="isPercentileByYearExp"
-		>
-			<kv-material-icon
-				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
-				:icon="mdiClockOutline"
-			/>
-			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
-				{{ daysUntilDeadline }} days to make contribution this year
-			</p>
-		</div>
 	</async-portfolio-section>
 </template>
 
