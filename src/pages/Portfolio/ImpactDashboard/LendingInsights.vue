@@ -1,7 +1,7 @@
 <template>
-	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-4">
-		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
-			Your lending insights
+	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-1">
+		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+			Lending insights
 		</h2>
 		<kv-grid as="dl" class="stats-container">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -38,6 +38,15 @@
 					<loan-count-over-time-figure />
 				</kv-lightbox> -->
 			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-bg-eco-green-3 tw-rounded">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="stat-value">
+					{{ percentile }}
+				</dt>
+				<dd class="stat-def">
+					Lending percentile
+				</dd>
+			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
@@ -71,23 +80,16 @@
 					/>
 				</router-link>
 			</div>
-			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
-				<dt v-show="!loading" class="stat-value">
-					{{ percentile }}
-				</dt>
-				<dd class="stat-def">
-					Lending percentile
-				</dd>
-			</div>
 		</kv-grid>
-		<div v-if="isPercentileByYearExp">
-			<img
-				:src="clockIllustrationUrl"
-				class="tw-w-5 tw-h-5 tw-mr-1.5"
-				alt="Clock icon"
-			>
-			<p class="tw-font-book tw-text-small">
+		<div
+			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
+			v-if="isPercentileByYearExp"
+		>
+			<kv-material-icon
+				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
+				:icon="mdiClockOutline"
+			/>
+			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
 				{{ daysUntilDeadline }} days to make contribution this year
 			</p>
 		</div>
@@ -98,12 +100,11 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import { mdiArrowRight } from '@mdi/js';
+import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-import clockIllustrationUrl from '#src/assets/images/kiva-classic-illustrations/clock-illustration.svg?url';
 
 export default {
 	name: 'LendingInsights',
@@ -133,7 +134,7 @@ export default {
 			percentile: 0,
 			numberOfLoans: 0,
 			mdiArrowRight,
-			clockIllustrationUrl,
+			mdiClockOutline,
 		};
 	},
 	computed: {
@@ -185,8 +186,7 @@ export default {
 
 <style lang="postcss" scoped>
 .stats-container {
-	background-color: rgb(255 255 255 / 5%);
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
 }
 
 .stat-placeholder {
