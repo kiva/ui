@@ -20,7 +20,7 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<div
-			v-if="showSetGoalCard"
+			v-if="isNextStepsExp"
 			class="card-container goal-card-bg"
 		>
 			<div>
@@ -153,7 +153,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!showSetGoalCard">
+		<template v-if="!isNextStepsExp">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -260,10 +260,10 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	showSetGoalCard: {
+	isNextStepsExp: {
 		type: Boolean,
 		default: false,
-	}
+	},
 });
 
 const interval = ref(null);

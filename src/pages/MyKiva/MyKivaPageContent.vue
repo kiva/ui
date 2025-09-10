@@ -22,7 +22,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isLendingStatsExp" class="tw-mt-4">
+		<section v-if="isLendingStatsExp || isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -31,6 +31,7 @@
 				:lender="lender"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
+				:is-next-steps-exp="isNextStepsExp"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -264,6 +265,10 @@ export default {
 			default: () => [],
 		},
 		isLendingStatsExp: {
+			type: Boolean,
+			default: false,
+		},
+		isNextStepsExp: {
 			type: Boolean,
 			default: false,
 		},

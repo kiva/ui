@@ -16,6 +16,7 @@
 			:user-id="userId"
 			:is-mobile="isMobile"
 			:lender-image-url="profilePic"
+			:countries-not-lent-to-url="countriesNotLentToUrl"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
 		/>
@@ -154,6 +155,7 @@
 								<kv-page-container>
 									<the-lend-menu
 										ref="lendMenu"
+										:countries-not-lent-to-url="countriesNotLentToUrl"
 										@pointerenter="onLendMenuPointerEnter"
 										@pointerleave="onLendMenuPointerLeave"
 									/>
@@ -599,6 +601,7 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
+const COUNTRIES_NOT_LENT_TO_EXP = 'combo_page_countries_not_lent_to';
 
 export default {
 	name: 'TheHeader',
@@ -652,6 +655,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
+			isCountriesNotLentToExp: null,
 			throttledDetermineIfMobile: null,
 		};
 	},
@@ -735,6 +739,14 @@ export default {
 			}
 			return this.basketCount;
 		},
+		countriesNotLentToEnabled() {
+			return !!this.userId && this.isCountriesNotLentToExp;
+		},
+		countriesNotLentToUrl() {
+			return this.countriesNotLentToEnabled
+				? '/lend/filter?countries-not-lent-to=true'
+				: '/lend/countries-not-lent';
+		},
 	},
 	apollo: [
 		{
@@ -792,6 +804,16 @@ export default {
 		);
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
+
+		const countriesNotLentToExperiment = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'lend-menu',
+			COUNTRIES_NOT_LENT_TO_EXP,
+			'EXP-MP-1824-Aug2025',
+		);
+
+		this.isCountriesNotLentToExp = countriesNotLentToExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
