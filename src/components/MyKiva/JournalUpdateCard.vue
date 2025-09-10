@@ -213,10 +213,20 @@ onMounted(() => {
 	}
 });
 
+const headerTitle = computed(() => {
+	if (update.value?.livesToImpact === 1) {
+		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-life-right-now`;
+	}
+	if (update.value?.livesToImpact > 1) {
+		return `You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
+	}
+	return 'You-can-impact-lives-right-now';
+});
+
 const useFunds = () => {
 	$kvTrackEvent('portfolio', 'click', 'repayment-update-read-more', update.value.id);
-	// eslint-disable-next-line max-len
-	window.location.href = `/lend/filter?header=You-can-impact-${encodeURIComponent(update.value.livesToImpact)}-lives-right-now`;
+
+	window.location.href = `/lend/filter?header=${headerTitle.value}`;
 };
 
 </script>

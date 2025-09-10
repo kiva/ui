@@ -8,8 +8,9 @@
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
-			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:is-countries-not-lent-to-enabled="countriesNotLentToEnabled"
+			:is-regions-loading="isRegionsLoading"
 			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
 		/>
@@ -21,8 +22,9 @@
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
-			:is-regions-loading="isRegionsLoading"
 			:is-channels-loading="isChannelsLoading"
+			:is-countries-not-lent-to-enabled="countriesNotLentToEnabled"
+			:is-regions-loading="isRegionsLoading"
 			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
 		/>
@@ -36,12 +38,16 @@ import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import { gql } from 'graphql-tag';
 
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+
 import { indexIn } from '#src/util/comparators';
 import publicLendMenuQuery from '#src/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '#src/graphql/query/lendMenuPrivateData.graphql';
 import countryListQuery from '#src/graphql/query/countryList.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
+
+const COUNTRIES_NOT_LENT_TO_EXP = 'combo_page_countries_not_lent_to';
 
 const pageQuery = gql`query lendMenu {
 		my {
@@ -83,6 +89,7 @@ export default {
 			isChannelsLoading: true,
 			isUserDataLoading: false,
 			showMGUpsellLink: false,
+			countriesNotLentToExpVersion: null,
 		};
 	},
 	apollo: {
@@ -126,8 +133,21 @@ export default {
 		hasUserId() {
 			return !!this.userId;
 		},
+		countriesNotLentToEnabled() {
+			return this.hasUserId && this.countriesNotLentToExpVersion === 'b';
+		}
 	},
 	methods: {
+		initCountriesNotLentToExperiment() {
+			const { version } = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'lend-menu',
+				COUNTRIES_NOT_LENT_TO_EXP,
+				'EXP-MP-1824-Aug2025',
+			);
+			this.countriesNotLentToExpVersion = version;
+		},
 		onClose() {
 			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
@@ -165,6 +185,7 @@ export default {
 		},
 	},
 	created() {
+		this.initCountriesNotLentToExperiment();
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 	},
 	mounted() {

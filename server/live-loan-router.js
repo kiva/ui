@@ -81,9 +81,11 @@ async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAU
 }
 
 async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
+	let loan;
+	let loanImg;
+
 	try {
-		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
-		let loanImg;
+		loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
 		const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
 		const imgCachedName = `loan-card-img-${style}-${loan.id}${queryTypeSuffix}`;
 		const cachedLoanImg = await getFromCache(imgCachedName, cache);
@@ -103,7 +105,18 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 			});
 			// Continue before setting to the cache completes to speed up response times
 		}
+	} catch (err) {
+		error(`Error getting served image, ${err}`, {
+			error: err,
+			params: req.params,
+			style,
+			type,
+		});
+		res.sendStatus(500);
+	}
 
+	// Separate out sending response to isolate exception catching
+	try {
 		res.contentType('image/jpeg');
 		res.set('Cache-Control', [
 			'no-store, no-cache, must-revalidate, max-age=0, private',
@@ -111,11 +124,12 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 		]);
 		res.send(loanImg);
 	} catch (err) {
-		error(`Error serving image, ${err}`, {
+		error(`Error serving image response, ${err}`, {
 			error: err,
 			params: req.params,
 			style,
 			type,
+			loanUrl: loan?.image?.retina || ''
 		});
 		res.sendStatus(500);
 	}
