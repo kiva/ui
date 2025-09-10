@@ -745,7 +745,7 @@ export default {
 		countriesNotLentToUrl() {
 			return this.countriesNotLentToEnabled
 				? '/lend/filter?countries-not-lent-to=true'
-				: '/lend/countries-lent-to';
+				: '/lend/countries-not-lent';
 		},
 	},
 	apollo: [

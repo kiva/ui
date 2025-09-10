@@ -244,7 +244,7 @@ export default {
 		},
 		countriesNotLentToUrl: {
 			type: String,
-			default: '/lend/countries-lent-to',
+			default: '/lend/countries-not-lent',
 		},
 		isUserDataLoading: {
 			type: Boolean,
