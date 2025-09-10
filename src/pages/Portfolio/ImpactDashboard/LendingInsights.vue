@@ -84,6 +84,7 @@
 	</async-portfolio-section>
 </template>
 
+<!-- To-Do: Remove v-if version when experiment is over -->
 <template v-else>
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-1">
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
