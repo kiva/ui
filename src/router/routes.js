@@ -21,6 +21,10 @@ export default [
 		component: () => import('#src/pages/Build/BuildPage'),
 	},
 	{
+		path: '/build/app-gallery',
+		component: () => import('#src/pages/Build/AppGalleryPage'),
+	},
+	{
 		path: '/build/code-of-conduct',
 		component: () => import('#src/pages/Build/CodeOfConductPage'),
 	},
