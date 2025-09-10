@@ -12,6 +12,7 @@
 			:lending-stats="lendingStats"
 			:transactions="transactions"
 			:is-lending-stats-exp="isLendingStatsExp"
+			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
 		/>
 	</www-page>
@@ -32,6 +33,7 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
 	const allRegions = [
@@ -63,6 +65,7 @@ export default {
 			heroTieredAchievements: [],
 			isHeroEnabled: false,
 			isLendingStatsExp: false,
+			isNextStepsExp: false,
 			lender: null,
 			lendingStats: {},
 			loans: [],
@@ -79,6 +82,7 @@ export default {
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
@@ -173,7 +177,15 @@ export default {
 				LENDING_STATS_EXP_KEY,
 				'EXP-MP-1729-Jul2025'
 			);
+			const nextStepsExpData = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'event-tracking',
+				NEXT_STEPS_EXP_KEY,
+				'EXP-MP-1984-Sept2025'
+			);
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
+			this.isNextStepsExp = nextStepsExpData.version === 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
