@@ -25,19 +25,19 @@
 					/>
 				</router-link>
 				<!-- <button
-					class="tw-text-link"
-					@click="loanLightboxVisible = true"
-					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-				>
-					Details
-				</button>
-				<kv-lightbox
-					:visible="loanLightboxVisible"
-					title="Loan count"
-					@lightbox-closed="loanLightboxVisible = false"
-				>
-					<loan-count-over-time-figure />
-				</kv-lightbox> -->
+                    class="tw-text-link"
+                    @click="loanLightboxVisible = true"
+                    v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+                >
+                    Details
+                </button>
+                <kv-lightbox
+                    :visible="loanLightboxVisible"
+                    title="Loan count"
+                    @lightbox-closed="loanLightboxVisible = false"
+                >
+                    <loan-count-over-time-figure />
+                </kv-lightbox> -->
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
@@ -82,17 +82,6 @@
 				</dd>
 			</div>
 		</kv-grid>
-		<div
-			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
-		>
-			<kv-material-icon
-				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
-				:icon="mdiClockOutline"
-			/>
-			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
-				{{ daysUntilDeadline }} days to make contribution this year
-			</p>
-		</div>
 	</async-portfolio-section>
 </template>
 
