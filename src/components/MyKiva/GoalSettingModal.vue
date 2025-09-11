@@ -78,6 +78,7 @@ const categories = [
 		eventProp: 'women',
 		customImage: womenImg,
 		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
+		title: 'women',
 	},
 	{
 		id: '2',
@@ -86,6 +87,7 @@ const categories = [
 		eventProp: 'refugees',
 		customImage: refugeesImg,
 		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
+		title: 'refugees',
 	},
 	{
 		id: '3',
@@ -94,6 +96,7 @@ const categories = [
 		eventProp: 'climate',
 		customImage: climateActionImg,
 		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
+		title: 'climate action',
 	},
 	{
 		id: '4',
@@ -102,6 +105,7 @@ const categories = [
 		eventProp: 'us-entrepreneur',
 		customImage: usEntrepreneursImg,
 		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
+		title: 'US entrepreneurs',
 	},
 	{
 		id: '5',
@@ -110,6 +114,7 @@ const categories = [
 		eventProp: 'basic-needs',
 		customImage: basicNeedsImg,
 		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
+		title: 'basic needs',
 	},
 	{
 		id: '6',
@@ -118,6 +123,7 @@ const categories = [
 		eventProp: 'help-everyone',
 		customImage: supportAllImg,
 		loanCount: props.totalLoans,
+		title: null,
 	}
 ];
 
@@ -165,9 +171,14 @@ const selectedCategoryLoanCount = computed(() => {
 });
 
 const title = computed(() => {
-	return formStep.value === 1
-		? 'Choose one of Kiva’s key impact areas'
-		: `How many more loans to ${selectedCategory.value?.name} will you support this year?`;
+	if (formStep.value === 1) {
+		return 'Choose one of Kiva’s key impact areas';
+	}
+	if (selectedCategory.value?.title) {
+		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
+	}
+
+	return 'How many more people will you support this year?';
 });
 
 const resetForm = () => {
