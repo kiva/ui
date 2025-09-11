@@ -1,6 +1,10 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
-<template v-if="!isPercentileByYearExp">
-	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-4">
+<template>
+	<async-portfolio-section
+		v-if="!isPercentileByYearExp"
+		@visible="fetchAsyncData"
+		data-testid="lending-insights"
+		class="!tw-bg-eco-green-4"
+	>
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
@@ -83,11 +87,13 @@
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
-</template>
-
-<!-- To-Do: Remove v-else version when experiment is over -->
-<template v-else>
-	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-1">
+	<!-- To-Do: Remove v-else version when experiment is over -->
+	<async-portfolio-section
+		v-else
+		@visible="fetchAsyncData"
+		data-testid="lending-insights"
+		class="!tw-bg-eco-green-1"
+	>
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 			Lending insights
 		</h2>
