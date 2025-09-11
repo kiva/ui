@@ -221,6 +221,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const {
 	getTopCategoryWithLoans,
 	getLoanFindingUrl,
+	getAllCategoryLoanCounts,
 } = useBadgeData();
 
 const props = defineProps({

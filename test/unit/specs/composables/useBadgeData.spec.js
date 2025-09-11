@@ -915,4 +915,53 @@ describe('useBadgeData.js', () => {
 			expect(getTierBadgeHeadline(ID_EQUITY)).toEqual('lending');
 		});
 	});
+
+	describe('getAllCategoryLoanCounts', () => {
+		it('should return an object with all category loan counts initialized to zero', () => {
+			const { getAllCategoryLoanCounts } = useBadgeData();
+			const expected = {
+				[ID_WOMENS_EQUALITY]: 0,
+				[ID_US_ECONOMIC_EQUALITY]: 0,
+				[ID_CLIMATE_ACTION]: 0,
+				[ID_REFUGEE_EQUALITY]: 0,
+				[ID_BASIC_NEEDS]: 0
+			};
+			expect(getAllCategoryLoanCounts()).toEqual(expected);
+		});
+
+		it('should return an object with all category loan counts when categories are added', () => {
+			const { getAllCategoryLoanCounts } = useBadgeData();
+			const tieredLendingAchievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 2,
+				},
+				{
+					id: ID_US_ECONOMIC_EQUALITY,
+					totalProgressToAchievement: 0,
+				},
+				{
+					id: ID_CLIMATE_ACTION,
+					totalProgressToAchievement: 3,
+				},
+				{
+					id: ID_REFUGEE_EQUALITY,
+					totalProgressToAchievement: 0,
+				},
+				{
+					id: ID_BASIC_NEEDS,
+					totalProgressToAchievement: 1,
+				}
+			];
+
+			const expected = {
+				[ID_WOMENS_EQUALITY]: 2,
+				[ID_US_ECONOMIC_EQUALITY]: 0,
+				[ID_CLIMATE_ACTION]: 3,
+				[ID_REFUGEE_EQUALITY]: 0,
+				[ID_BASIC_NEEDS]: 1
+			};
+			expect(getAllCategoryLoanCounts(tieredLendingAchievements)).toEqual(expected);
+		});
+	});
 });
