@@ -1,9 +1,9 @@
-<template v-if="isPercentileByYearExp">
+<template v-if="!isPercentileByYearExp">
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-4">
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
-		<kv-grid as="dl" class="stats-container-exp">
+		<kv-grid as="dl" class="stats-container">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
@@ -95,13 +95,13 @@
 	</async-portfolio-section>
 </template>
 
-<!-- To-Do: Remove v-if version when experiment is over -->
+<!-- To-Do: Remove v-else version when experiment is over -->
 <template v-else>
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-1">
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 			Lending insights
 		</h2>
-		<kv-grid as="dl" class="stats-container">
+		<kv-grid as="dl" class="stats-container-exp">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
@@ -179,6 +179,17 @@
 				</router-link>
 			</div>
 		</kv-grid>
+		<div
+			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
+		>
+			<kv-material-icon
+				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
+				:icon="mdiClockOutline"
+			/>
+			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+				{{ daysUntilDeadline }} days to make contribution this year
+			</p>
+		</div>
 	</async-portfolio-section>
 </template>
 
@@ -272,12 +283,12 @@ export default {
 
 <style lang="postcss" scoped>
 .stats-container {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
+		background-color: rgb(255 255 255 / 5%);
+		@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
 }
 
 .stats-container-exp {
-		background-color: rgb(255 255 255 / 5%);
-		@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
 }
 
 .stat-placeholder {
