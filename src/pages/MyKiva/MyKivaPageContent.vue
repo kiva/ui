@@ -32,6 +32,7 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
+				:total-loans="totalLoans"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">

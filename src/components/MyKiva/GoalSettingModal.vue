@@ -2,18 +2,25 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:visible="show"
-		:title="lightboxTitle"
 		@lightbox-closed="closeLightbox"
 	>
-		<h2 v-html="isMobile ? title : ''" class="tw-mb-3 tw-text-center"></h2>
+		<template #header>
+			<h2 v-if="!isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+		</template>
+		<h2 v-if="isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
 		<component
 			:is="contentComponent"
 			:categories="categories"
 			:pre-selected-category="selectedCategory.id"
+			:selected-category="selectedCategory"
+			:selected-category-loan-count="selectedCategoryLoanCount"
 			@category-selected="handleCategorySelected"
 		/>
 		<template #controls>
-			<div class="tw-text-right">
+			<div class="tw-flex tw-justify-end tw-gap-2">
+				<KvButton v-if="formStep === 2" variant="secondary" @click="formStep -= 1">
+					Back
+				</KvButton>
 				<KvButton @click="handleClick">
 					{{ ctaCopy }}
 				</KvButton>
@@ -33,6 +40,13 @@ import {
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
+import {
+	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY
+} from '#src/composables/useBadgeData';
 import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
 import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
 import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
@@ -40,11 +54,19 @@ import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entre
 import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
-defineProps({
+const props = defineProps({
 	show: {
 		type: Boolean,
 		default: false,
 	},
+	totalLoans: {
+		type: Number,
+		default: 0,
+	},
+	categoriesLoanCount: {
+		type: Object,
+		default: () => ({}),
+	}
 });
 
 const formStep = ref(1);
@@ -55,6 +77,8 @@ const categories = [
 		description: 'Open doors for women around the world',
 		eventProp: 'women',
 		customImage: womenImg,
+		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
+		title: 'women',
 	},
 	{
 		id: '2',
@@ -62,6 +86,8 @@ const categories = [
 		description: 'Transform the future for refugees',
 		eventProp: 'refugees',
 		customImage: refugeesImg,
+		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
+		title: 'refugees',
 	},
 	{
 		id: '3',
@@ -69,6 +95,8 @@ const categories = [
 		description: 'Support the front lines of the climate crisis',
 		eventProp: 'climate',
 		customImage: climateActionImg,
+		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
+		title: 'climate action',
 	},
 	{
 		id: '4',
@@ -76,6 +104,8 @@ const categories = [
 		description: 'Support small businesses in the U.S.',
 		eventProp: 'us-entrepreneur',
 		customImage: usEntrepreneursImg,
+		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
+		title: 'US entrepreneurs',
 	},
 	{
 		id: '5',
@@ -83,6 +113,8 @@ const categories = [
 		description: 'Clean water, healthcare, and sanitation',
 		eventProp: 'basic-needs',
 		customImage: basicNeedsImg,
+		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
+		title: 'basic needs',
 	},
 	{
 		id: '6',
@@ -90,21 +122,24 @@ const categories = [
 		description: 'Every loan makes real change',
 		eventProp: 'help-everyone',
 		customImage: supportAllImg,
+		loanCount: props.totalLoans,
+		title: null,
 	}
 ];
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const emit = defineEmits(['goal-modal-closed']);
+const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
+const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
-		case 1: return CategoryForm;
-		case 2: default: return undefined;
+		case 2: return NumberChoice;
+		case 1: default: return CategoryForm;
 	}
 });
 
@@ -118,24 +153,45 @@ const ctaCopy = computed(() => {
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
 });
 
-const title = computed(() => {
-	return formStep.value === 1
-		? 'Choose one of Kiva’s key impact areas'
-		: 'You’ve helped 3 women this year. <u>How many more</u> will you support? ';
-});
-
-const lightboxTitle = computed(() => {
-	return isMobile.value ? '' : title.value;
-});
-
-const handleClick = () => {
+const handleClick = goalNumber => {
 	if (formStep.value === 1) {
+		formStep.value += 1;
 		$kvTrackEvent('portfolio', 'click', 'goal-setting-continue');
+	} else {
+		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', goalNumber);
+		emit('set-goal', {
+			category: selectedCategory.value,
+			goalNumber,
+		});
 	}
 };
 
+const selectedCategoryLoanCount = computed(() => {
+	return selectedCategory.value?.loanCount || 0;
+});
+
+const title = computed(() => {
+	if (formStep.value === 1) {
+		return 'Choose one of Kiva’s key impact areas';
+	}
+	if (selectedCategory.value?.title) {
+		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
+	}
+
+	return 'How many more people will you support this year?';
+});
+
+const resetForm = () => {
+	formStep.value = 1;
+	selectedCategory.value = { ...categories[0] };
+};
+
 const closeLightbox = () => {
-	emit('goal-modal-closed');
+	emit('close-goal-modal');
+	// Avoid showing category choice step when closing the modal
+	setTimeout(() => {
+		resetForm();
+	}, 300);
 };
 </script>
 
