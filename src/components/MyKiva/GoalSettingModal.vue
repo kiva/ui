@@ -188,6 +188,7 @@ const resetForm = () => {
 
 const closeLightbox = () => {
 	emit('close-goal-modal');
+	// Avoid showing category choice step when closing the modal
 	setTimeout(() => {
 		resetForm();
 	}, 300);
