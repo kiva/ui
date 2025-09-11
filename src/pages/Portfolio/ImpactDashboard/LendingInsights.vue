@@ -279,8 +279,8 @@ export default {
 
 <style lang="postcss" scoped>
 .stats-container {
-		background-color: rgb(255 255 255 / 5%);
-		@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+	background-color: rgb(255 255 255 / 5%);
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
 }
 
 .stats-container-exp {
