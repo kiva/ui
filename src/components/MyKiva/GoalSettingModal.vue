@@ -2,10 +2,12 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:visible="show"
-		:title="lightboxTitle"
 		@lightbox-closed="closeLightbox"
 	>
-		<h2 v-html="isMobile ? title : ''" class="tw-mb-3 tw-text-center"></h2>
+		<template #header>
+			<h2 v-if="!isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+		</template>
+		<h2 v-if="isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
 		<component
 			:is="contentComponent"
 			:categories="categories"
@@ -169,10 +171,6 @@ const title = computed(() => {
 		? 'Choose one of Kiva’s key impact areas'
 		// eslint-disable-next-line max-len
 		: `You’ve helped ${selectedCategoryLoanCount.value} ${selectedCategory.value?.title} this year. <u>How many more</u> will you support? `;
-});
-
-const lightboxTitle = computed(() => {
-	return isMobile.value ? '' : title.value;
 });
 
 const closeLightbox = () => {
