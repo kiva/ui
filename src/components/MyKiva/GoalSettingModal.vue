@@ -78,7 +78,6 @@ const categories = [
 		eventProp: 'women',
 		customImage: womenImg,
 		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
-		title: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] > 1 ? 'women' : 'woman',
 	},
 	{
 		id: '2',
@@ -87,7 +86,6 @@ const categories = [
 		eventProp: 'refugees',
 		customImage: refugeesImg,
 		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
-		title: `refugee${props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY] > 1 ? 's' : ''}`,
 	},
 	{
 		id: '3',
@@ -96,7 +94,6 @@ const categories = [
 		eventProp: 'climate',
 		customImage: climateActionImg,
 		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
-		title: props.categoriesLoanCount?.[ID_CLIMATE_ACTION] > 1 ? 'people' : 'person',
 	},
 	{
 		id: '4',
@@ -105,7 +102,6 @@ const categories = [
 		eventProp: 'us-entrepreneur',
 		customImage: usEntrepreneursImg,
 		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
-		title: props.categoriesLoanCount?.[ID_CLIMATE_ACTION] > 1 ? 'people' : 'person',
 	},
 	{
 		id: '5',
@@ -114,7 +110,6 @@ const categories = [
 		eventProp: 'basic-needs',
 		customImage: basicNeedsImg,
 		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
-		title: props.categoriesLoanCount?.[ID_BASIC_NEEDS] > 1 ? 'people' : 'person',
 	},
 	{
 		id: '6',
@@ -123,7 +118,6 @@ const categories = [
 		eventProp: 'help-everyone',
 		customImage: supportAllImg,
 		loanCount: props.totalLoans,
-		title: props.totalLoans > 1 ? 'people' : 'person',
 	}
 ];
 
@@ -159,6 +153,10 @@ const handleClick = goalNumber => {
 		$kvTrackEvent('portfolio', 'click', 'goal-setting-continue');
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', goalNumber);
+		emit('set-goal', {
+			category: selectedCategory.value,
+			goalNumber,
+		});
 	}
 };
 
@@ -169,12 +167,19 @@ const selectedCategoryLoanCount = computed(() => {
 const title = computed(() => {
 	return formStep.value === 1
 		? 'Choose one of Kiva’s key impact areas'
-		// eslint-disable-next-line max-len
-		: `You’ve helped ${selectedCategoryLoanCount.value} ${selectedCategory.value?.title} this year. <u>How many more</u> will you support? `;
+		: `How many more loans to ${selectedCategory.value?.name} will you support this year?`;
 });
+
+const resetForm = () => {
+	formStep.value = 1;
+	selectedCategory.value = { ...categories[0] };
+};
 
 const closeLightbox = () => {
 	emit('close-goal-modal');
+	setTimeout(() => {
+		resetForm();
+	}, 300);
 };
 </script>
 
