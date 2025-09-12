@@ -97,6 +97,20 @@
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 			Lending insights
 		</h2>
+		<div>
+			<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+				2025
+			</h2>
+			<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+				Lifetime
+			</h2>
+			<div class="tw-flex tw-rounded tw-bg-brand-100 tw-border tw-border-brand-200">
+				<star-shine class="tw-h-full tw-w-full tw-flex-shrink-0" />
+				<p class="tw-font-normal tw-flex-shrink-0">
+					Filter by year now live
+				</p>
+			</div>
+		</div>
 		<kv-grid as="dl" class="stats-container-exp">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
@@ -197,6 +211,7 @@ import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
+import StarShine from '#src/assets/icons/inline/star_shine.svg';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -207,7 +222,8 @@ export default {
 		AsyncPortfolioSection,
 		KvGrid,
 		KvLoadingPlaceholder,
-		KvMaterialIcon
+		KvMaterialIcon,
+		StarShine,
 		// LoanCountOverTimeFigure,
 	},
 	props: {
