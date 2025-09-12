@@ -187,8 +187,11 @@
 </template>
 <script setup>
 import {
-	computed, ref, onUnmounted, onMounted,
+	computed,
 	inject,
+	onMounted,
+	onUnmounted,
+	ref,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { KvMaterialIcon, KvCheckbox, KvButton } from '@kiva/kv-components';
@@ -223,6 +226,8 @@ const {
 	getLoanFindingUrl,
 	getAllCategoryLoanCounts,
 } = useBadgeData();
+
+const emit = defineEmits(['store-goals-preferences']);
 
 const props = defineProps({
 	/**
@@ -422,8 +427,8 @@ const description = computed(() => {
 	return 'Next steps for you based on your lending history';
 });
 
-const setGoal = () => {
-	// TODO: Implement goal setting functionality MP-2042
+const setGoal = preferences => {
+	emit('store-goals-preferences', preferences);
 	showGoalModal.value = false;
 };
 
