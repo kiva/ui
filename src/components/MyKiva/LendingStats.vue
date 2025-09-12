@@ -188,7 +188,6 @@
 <script setup>
 import {
 	computed,
-	emit,
 	inject,
 	onMounted,
 	onUnmounted,
@@ -228,7 +227,7 @@ const {
 	getAllCategoryLoanCounts,
 } = useBadgeData();
 
-defineEmits(['store-goals-preferences']);
+const emit = defineEmits(['store-goals-preferences']);
 
 const props = defineProps({
 	/**
