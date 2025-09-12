@@ -33,6 +33,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
+				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -190,6 +191,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+import updateUserPreferences from '#src/util/userPreferencesUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -602,6 +604,19 @@ export default {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
+		},
+		async storeGoalPreferences(newPreferences) {
+			try {
+				await updateUserPreferences(
+					this.apollo,
+					this.userInfo?.userPreferences?.preferences,
+					this.userInfo?.userPreferences?.preferences
+						? JSON.parse(this.userInfo.userPreferences.preferences) : {},
+					newPreferences,
+				);
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage storeGoalPreferences');
+			}
 		}
 	},
 	async mounted() {
