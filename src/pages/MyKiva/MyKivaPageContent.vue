@@ -608,9 +608,8 @@ export default {
 		async storeGoalPreferences(newPreferences) {
 			await updateUserPreferences(
 				this.apollo,
-				this.userInfo?.userPreferences?.preferences,
-				this.userInfo?.userPreferences?.preferences
-					? JSON.parse(this.userInfo.userPreferences.preferences) : {},
+				this.userInfo?.userPreferences,
+				this.userInfo?.userPreferences ? JSON.parse(this.userInfo.userPreferences) : {},
 				newPreferences,
 			);
 		}
