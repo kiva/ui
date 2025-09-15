@@ -1,3 +1,44 @@
+## [3.31.0-rc.1](https://github.com/kiva/ui/compare/v3.30.0...v3.31.0-rc.1) (2025-09-15)
+
+### 🎉 New Features
+
+* add a/b testing on MyKiva for NextSteps experiment ([021666c](https://github.com/kiva/ui/commit/021666ccd7c20ed05a0bbe231760a657812a371d))
+* add comment in modal closing timeout ([d12a4d4](https://github.com/kiva/ui/commit/d12a4d449598d6eec88d1581d69e06922e5a726a))
+* added boolean flag ([8b540c9](https://github.com/kiva/ui/commit/8b540c96d6630b7edd0ea0af245edcc42a5f5160))
+* added countdown for YTD lending stats ([eb6c401](https://github.com/kiva/ui/commit/eb6c4011e2918843a12d0e38aac9d44d52e6bc53))
+* comment addition ([9ecb8ca](https://github.com/kiva/ui/commit/9ecb8ca06651554b2388b233c590f5083f609d8c))
+* copy changes and integrate modal with lending stats component ([3df30a2](https://github.com/kiva/ui/commit/3df30a21091009f1d4efa483f52a0f39f4db2f61))
+* countdown code block within correct version ([249ca83](https://github.com/kiva/ui/commit/249ca8306c91706f4e5d8004ea68b05e6c7231a1))
+* create goal setting modal and form first step ([3e9d81e](https://github.com/kiva/ui/commit/3e9d81e2e6fb34e4ea132fb1bc853ab477cfde72))
+* revised implementation ([71fa8b3](https://github.com/kiva/ui/commit/71fa8b322cafa03b900556f37ce955034f50eac7))
+* select number for category goal ([8ace114](https://github.com/kiva/ui/commit/8ace114e448630aafcea298a4dc80e2af4269c26))
+* switched contexts ([529d2e7](https://github.com/kiva/ui/commit/529d2e7b73546191a37fc54ee75b8a218c033311))
+* two template versions (exp and non-exp version) ([bb9216f](https://github.com/kiva/ui/commit/bb9216f67326fea5fb6a1cbd8bacb735090c0ae0))
+
+### 🐛 Bugfixes
+
+* add trailing comma ([f6edf41](https://github.com/kiva/ui/commit/f6edf41176d292ec9c2bb2d6667432242356db29))
+* comment addition ([dfd5180](https://github.com/kiva/ui/commit/dfd51806d9ee9fb29706f4a018a44b68518e6b6d))
+* eslint template error, migrated conditional statements ([97fe6b9](https://github.com/kiva/ui/commit/97fe6b925e4af28d281435c3837ceb97f6f45356))
+* implement template rendering logic fixes ([e436ee0](https://github.com/kiva/ui/commit/e436ee0cd9b38c488508b02a998e6a84d05d7468))
+* lightbox title in desktop ([2577f50](https://github.com/kiva/ui/commit/2577f50d2198cd9b505313bcf3aedf084cbb45f7))
+* make use of existing Goal Card code ([48eeb59](https://github.com/kiva/ui/commit/48eeb59eaf3a38fec5e42a0a2279b284f2085b73))
+* reimplement template conditional rendring ([aa91f64](https://github.com/kiva/ui/commit/aa91f64d30882f3eb95b8cfc6ce22a28bcd34976))
+* remove console logs ([ae701c6](https://github.com/kiva/ui/commit/ae701c628c41f7bc3c5a1f6b1681e71d682e2b21))
+* removed countdown codeblock ([fec4873](https://github.com/kiva/ui/commit/fec48733a3195a52952f9a898b5484b4f1689a96))
+* removed extra whitespaces ([65fe096](https://github.com/kiva/ui/commit/65fe096d37a50829301c6ce4052d8f678f7b40a7))
+* resolve issue with countries exp nav redirect ([af5e639](https://github.com/kiva/ui/commit/af5e6396beb911230fbcee71cfab361173781b30))
+* some urls were incorrect ([6fda0e4](https://github.com/kiva/ui/commit/6fda0e465c6caff7c93c7b1df02a48fe34bffd74))
+* title for support all category ([03126ad](https://github.com/kiva/ui/commit/03126ad933ed4884fda5a784eb73ea9119fd6569))
+
+### 🪚 Refactors
+
+* using impact vertical selector for listing categories ([48bc369](https://github.com/kiva/ui/commit/48bc369039c563c38b1e5b80d3d38fb6876699bf))
+
+### 🧹 Chores
+
+* rm App Gallery link from build page [CP-2190] ([1590b85](https://github.com/kiva/ui/commit/1590b85b3797ae9197fd0da6f8bb6856d10b15ed))
+
 ## [3.30.0](https://github.com/kiva/ui/compare/v3.29.0...v3.30.0) (2025-09-10)
 
 ### 🎉 New Features
