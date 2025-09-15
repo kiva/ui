@@ -606,17 +606,13 @@ export default {
 			this.showNextSteps = showNextSteps;
 		},
 		async storeGoalPreferences(newPreferences) {
-			try {
-				await updateUserPreferences(
-					this.apollo,
-					this.userInfo?.userPreferences?.preferences,
-					this.userInfo?.userPreferences?.preferences
-						? JSON.parse(this.userInfo.userPreferences.preferences) : {},
-					newPreferences,
-				);
-			} catch (e) {
-				logReadQueryError(e, 'MyKivaPage storeGoalPreferences');
-			}
+			await updateUserPreferences(
+				this.apollo,
+				this.userInfo?.userPreferences?.preferences,
+				this.userInfo?.userPreferences?.preferences
+					? JSON.parse(this.userInfo.userPreferences.preferences) : {},
+				newPreferences,
+			);
 		}
 	},
 	async mounted() {
