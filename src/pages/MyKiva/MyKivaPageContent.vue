@@ -33,6 +33,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
+				:user-goal="userGoal"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -359,6 +360,13 @@ export default {
 		visibleUpdates() {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
+		},
+		userGoal() {
+			const preferences = this.userInfo?.userPreferences ?? null;
+			if (!preferences) return false;
+			const parsedPreferences = JSON.parse(preferences.preferences);
+			const existingGoals = parsedPreferences?.goals || [];
+			return existingGoals.length ? existingGoals[0] : null;
 		},
 	},
 	methods: {

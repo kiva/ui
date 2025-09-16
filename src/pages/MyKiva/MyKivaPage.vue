@@ -185,13 +185,13 @@ export default {
 				'EXP-MP-1984-Sept2025'
 			);
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
-			this.isNextStepsExp = nextStepsExpData.version === 'b';
+			this.isNextStepsExp = nextStepsExpData.version !== 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {
+			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions || this.isNextStepsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }

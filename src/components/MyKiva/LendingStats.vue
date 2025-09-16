@@ -11,43 +11,13 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
-		<div
-			v-if="isNextStepsExp"
-			class="card-container goal-card-bg"
-		>
-			<div>
-				<span
-					class="
-						tw-inline-flex tw-items-center tw-gap-1
-						tw-mb-2 tw-rounded
-						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
-					title="Your lending reach"
-				>
-					<KvMaterialIcon
-						class="tw-w-2 tw-h-2 tw-shrink-0"
-						:icon="mdiCheckCircleOutline"
-					/>
-					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
-						My goal
-					</span>
-				</span>
-			</div>
-			<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
-				<div class="tw-mx-auto">
-					<GoalCardCareImg />
-				</div>
-				<h3>Set your first impact goal!</h3>
-				<p class="tw-text-small tw-pb-2">
-					How many more people will you help this year?
-				</p>
-				<KvButton
-					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-					@click="showGoalModal = true;"
-				>
-					Set a goal
-				</KvButton>
-			</div>
-		</div>
+		<GoalCard
+			v-if="!userLentToAllRegions"
+			:hero-tiered-achievements="heroTieredAchievements"
+			:hero-slides="heroSlides"
+			:user-goal="userGoal"
+			@open-goal-modal="showGoalModal = true"
+		/>
 		<div
 			v-if="!userLentToAllRegions"
 			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
@@ -145,7 +115,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp">
+		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -174,6 +144,7 @@
 				:slides="allRegionsLentSlides"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
+				:user-goal="userGoal"
 			/>
 		</template>
 		<GoalSettingModal
@@ -194,8 +165,8 @@ import {
 	ref,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon, KvCheckbox, KvButton } from '@kiva/kv-components';
-import { mdiArrowTopRight, mdiCheckCircleOutline } from '@mdi/js';
+import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
+import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
@@ -213,7 +184,7 @@ import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
-import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
+import GoalCard from '#src/components/MyKiva/GoalCard';
 import GoalSettingModal from './GoalSettingModal';
 
 const { delayUntilVisible } = useDelayUntilVisible();
@@ -274,6 +245,10 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	userGoal: {
+		type: Object,
+		default: null,
+	}
 });
 
 const interval = ref(null);
