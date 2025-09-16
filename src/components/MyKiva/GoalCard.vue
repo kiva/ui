@@ -99,7 +99,6 @@ defineEmits(['open-goal-modal']);
 // Placeholder for current progress, replace with actual progress data when available
 const currentGoalProgress = computed(() => 3);
 
-// Placeholder for goal loans, replace with actual goal data when available
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 
 const userHasGoal = computed(() => !!props.userGoal);
@@ -125,7 +124,9 @@ const getContentfulKey = category => {
 };
 
 const achievementGoalImg = computed(() => {
-	const key = `my-kiva-${getContentfulKey(props.userGoal?.category)}-journey`;
+	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
+	if (!contentfulCategory) return '';
+	const key = `my-kiva-${contentfulCategory}-journey`;
 
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
 	const formattedRichText = formatRichTextContent(richText);

@@ -614,9 +614,15 @@ export default {
 			this.showNextSteps = showNextSteps;
 		},
 		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo.userPreferences;
+			const existingPreferences = this.userInfo?.userPreferences ?? null;
+			if (!existingPreferences) {
+				await createUserPreferences(
+					this.apollo,
+					{ goals: {} }
+				);
+			}
 			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
-			const existingGoals = parsedPreferences.goals || [];
+			const existingGoals = parsedPreferences?.goals || [];
 			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
 			if (goalIndex !== -1) {
 				const goalToUpdate = { ...newPreferences };
@@ -632,13 +638,7 @@ export default {
 					parsedPreferences,
 					{ goals: existingGoals }
 				);
-			} else {
-				await createUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
+				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
 			}
 		}
 	},
